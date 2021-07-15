@@ -2,216 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248CC3C98E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D69E3C98EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhGOGub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 02:50:31 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15017 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhGOGua (ORCPT
+        id S235016AbhGOGv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:51:27 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:44110 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229526AbhGOGvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 02:50:30 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQPww6r2rzbcqn;
-        Thu, 15 Jul 2021 14:44:16 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 14:47:34 +0800
-Received: from [10.67.102.248] (10.67.102.248) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 14:47:34 +0800
-Subject: Re: [PATCH] perf probe: Fix add event failed when 32-bit perf running
- in 64-bit kernel
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
-        <fche@redhat.com>, <ravi.bangoria@linux.ibm.com>,
-        <yao.jin@linux.intel.com>, <srikar@linux.vnet.ibm.com>,
-        <Jianlin.Lv@arm.com>, <lihuafei1@huawei.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210714065432.188061-1-yangjihong1@huawei.com>
- <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
- <9cb859df-f2ef-732b-756e-c8d2acefe85c@huawei.com>
- <20210715135821.c58ca2ff97b0c1db449db0b4@kernel.org>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <03aadc60-d43e-0b4b-822e-39818d9203ef@huawei.com>
-Date:   Thu, 15 Jul 2021 14:47:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 15 Jul 2021 02:51:25 -0400
+X-UUID: 3c27fbf2c7a543018509cf9b8c31415b-20210715
+X-UUID: 3c27fbf2c7a543018509cf9b8c31415b-20210715
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 653275214; Thu, 15 Jul 2021 14:48:30 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 15 Jul 2021 14:48:28 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 15 Jul 2021 14:48:28 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: [PATCH v3 1/3] dt-bindings: phy: mediatek: tphy: add support hardware version 3
+Date:   Thu, 15 Jul 2021 14:48:20 +0800
+Message-ID: <1626331702-27825-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-In-Reply-To: <20210715135821.c58ca2ff97b0c1db449db0b4@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.248]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Hiramatsu,
+The PHYA architecture is updated, and doesn't support slew rate
+calibration anymore on 7nm or advanced process, add a new version
+number to support it.
+Due to the FreqMeter bank is not used but reserved, it's backward
+with v2 until now.
+For mt8195, no function changes when use generic v2 or v3 compatible,
+but prefer to use v3's compatible, it will not waste the time to
+calibrate the slew rate, and also correspond with hardware version.
 
-On 2021/7/15 12:58, Masami Hiramatsu wrote:
-> On Thu, 15 Jul 2021 09:20:01 +0800
-> Yang Jihong <yangjihong1@huawei.com> wrote:
-> 
->> Hello Hiramatsu,
->>
->> On 2021/7/14 16:35, Masami Hiramatsu wrote:
->>> Hi Yang,
->>>
->>> On Wed, 14 Jul 2021 14:54:32 +0800
->>> Yang Jihong <yangjihong1@huawei.com> wrote:
->>>
->>>> The "address" member  of "struct probe_trace_point" uses long data type.
->>>> If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
->>>> 32 bits. As a result, upper 32 bits of address read from kernel are truncated,
->>>> An error occurs during address comparison in kprobe_warn_out_range function.
->>>
->>> Good catch!
->>> I didn't imagine that such a use case. But that is important because perf
->>> probe can be used for cross-arch probe definition too.
->>>
->>>>
->>>> Before:
->>>>
->>>>     # perf probe -a schedule
->>>>     schedule is out of .text, skip it.
->>>>       Error: Failed to add events.
->>>>
->>>> Solution:
->>>>     Change data type of "address" variable to u64 and change corresponding
->>>> address printing and value assignment.
->>>
->>> OK, as far as I can see, the other parts of the perf also uses u64 for
->>> "address" storing variables. (e.g. symbols, maps etc.)
->>>
->>>>
->>>> After:
->>>>
->>>>     # perf.new.new probe -a schedule
->>>>     Added new event:
->>>>       probe:schedule       (on schedule)
->>>>
->>>>     You can now use it in all perf tools, such as:
->>>>
->>>>             perf record -e probe:schedule -aR sleep 1
->>>>
->>>>     # perf probe -l
->>>>       probe:schedule       (on schedule)
->>>
->>> I think you missed one thing here.
->>> Usually, this shows the filename and line number of schedule().
->> Yes,  I tried the following diff and now it can show the filename (as is
->> function entry, relative line number is 0), thank you very much :)
->>
->> The test result in my environment is as follows:
->>
->> # perf probe -a schedule
->> Added new event:
->>     probe:schedule       (on schedule)
->>
->> You can now use it in all perf tools, such as:
->>
->>           perf record -e probe:schedule -aR sleep 1
->>
->> # perf probe -l schedule -k vmlinux.debug
->>     probe:schedule       (on schedule@kernel/sched/core.c)
->>
-> 
-> OK, good!
-> 
->>
->> Can I put the following diff together and submit a v2 patch?
-> 
-> Yes, please include this fix in your patch, because it is what your patch
-> has to do :)
-> 
-OK，I have submitted the v2 patch:
-https://lore.kernel.org/patchwork/patch/1460154/
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+v3: add Acked-by Rob
+v2: add more commit log suggested by Rob
+---
+ .../devicetree/bindings/phy/mediatek,tphy.yaml     | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Thanks very much for your patient review.:)
+diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+index ef9d9d4e6875..838852cb8527 100644
+--- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
++++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+@@ -15,7 +15,7 @@ description: |
+   controllers on MediaTek SoCs, includes USB2.0, USB3.0, PCIe and SATA.
+ 
+   Layout differences of banks between T-PHY V1 (mt8173/mt2701) and
+-  T-PHY V2 (mt2712) when works on USB mode:
++  T-PHY V2 (mt2712) / V3 (mt8195) when works on USB mode:
+   -----------------------------------
+   Version 1:
+   port        offset    bank
+@@ -34,7 +34,7 @@ description: |
+   u2 port2    0x1800    U2PHY_COM
+               ...
+ 
+-  Version 2:
++  Version 2/3:
+   port        offset    bank
+   u2 port0    0x0000    MISC
+               0x0100    FMREG
+@@ -59,7 +59,8 @@ description: |
+ 
+   SPLLC shared by u3 ports and FMREG shared by u2 ports on V1 are put back
+   into each port; a new bank MISC for u2 ports and CHIP for u3 ports are
+-  added on V2.
++  added on V2; the FMREG bank for slew rate calibration is not used anymore
++  and reserved on V3;
+ 
+ properties:
+   $nodename:
+@@ -79,8 +80,11 @@ properties:
+               - mediatek,mt2712-tphy
+               - mediatek,mt7629-tphy
+               - mediatek,mt8183-tphy
+-              - mediatek,mt8195-tphy
+           - const: mediatek,generic-tphy-v2
++      - items:
++          - enum:
++              - mediatek,mt8195-tphy
++          - const: mediatek,generic-tphy-v3
+       - const: mediatek,mt2701-u3phy
+         deprecated: true
+       - const: mediatek,mt2712-u3phy
+@@ -91,7 +95,7 @@ properties:
+     description:
+       Register shared by multiple ports, exclude port's private register.
+       It is needed for T-PHY V1, such as mt2701 and mt8173, but not for
+-      T-PHY V2, such as mt2712.
++      T-PHY V2/V3, such as mt2712.
+     maxItems: 1
+ 
+   "#address-cells":
+-- 
+2.18.0
 
-Jihong
-> Thank you!
-> 
->>>
->>> Could you try below diff?
->>>
->>> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
->>> index 7d2ba8419b0c..609ca1671501 100644
->>> --- a/tools/perf/util/dwarf-aux.c
->>> +++ b/tools/perf/util/dwarf-aux.c
->>> @@ -113,14 +113,14 @@ static Dwarf_Line *cu_getsrc_die(Dwarf_Die *cu_die, Dwarf_Addr addr)
->>>     *
->>>     * Find a line number and file name for @addr in @cu_die.
->>>     */
->>> -int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
->>> -		    const char **fname, int *lineno)
->>> +int cu_find_lineinfo(Dwarf_Die *cu_die, Dwarf_Addr addr,
->>> +		     const char **fname, int *lineno)
->>>    {
->>>    	Dwarf_Line *line;
->>>    	Dwarf_Die die_mem;
->>>    	Dwarf_Addr faddr;
->>>    
->>> -	if (die_find_realfunc(cu_die, (Dwarf_Addr)addr, &die_mem)
->>> +	if (die_find_realfunc(cu_die, addr, &die_mem)
->>>    	    && die_entrypc(&die_mem, &faddr) == 0 &&
->>>    	    faddr == addr) {
->>>    		*fname = dwarf_decl_file(&die_mem);
->>> @@ -128,7 +128,7 @@ int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
->>>    		goto out;
->>>    	}
->>>    
->>> -	line = cu_getsrc_die(cu_die, (Dwarf_Addr)addr);
->>> +	line = cu_getsrc_die(cu_die, addr);
->>>    	if (line && dwarf_lineno(line, lineno) == 0) {
->>>    		*fname = dwarf_linesrc(line, NULL, NULL);
->>>    		if (!*fname)
->>> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
->>> index cb99646843a9..7ee0fa19b5c4 100644
->>> --- a/tools/perf/util/dwarf-aux.h
->>> +++ b/tools/perf/util/dwarf-aux.h
->>> @@ -19,7 +19,7 @@ const char *cu_find_realpath(Dwarf_Die *cu_die, const char *fname);
->>>    const char *cu_get_comp_dir(Dwarf_Die *cu_die);
->>>    
->>>    /* Get a line number and file name for given address */
->>> -int cu_find_lineinfo(Dwarf_Die *cudie, unsigned long addr,
->>> +int cu_find_lineinfo(Dwarf_Die *cudie, Dwarf_Addr addr,
->>>    		     const char **fname, int *lineno);
->>>    
->>>    /* Walk on functions at given address */
->>> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
->>> index 8ba01bbdf05c..50d861a80f57 100644
->>> --- a/tools/perf/util/probe-finder.c
->>> +++ b/tools/perf/util/probe-finder.c
->>> @@ -1727,7 +1727,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
->>>    	}
->>>    
->>>    	/* Find a corresponding line (filename and lineno) */
->>> -	cu_find_lineinfo(&cudie, addr, &fname, &lineno);
->>> +	cu_find_lineinfo(&cudie, (Dwarf_Addr)addr, &fname, &lineno);
->>>    	/* Don't care whether it failed or not */
->>>    
->>>    	/* Find a corresponding function (name, baseline and baseaddr) */
->>> @@ -1828,8 +1828,7 @@ static int line_range_add_line(const char *src, unsigned int lineno,
->>>    }
->>>    
->>>    static int line_range_walk_cb(const char *fname, int lineno,
->>> -			      Dwarf_Addr addr __maybe_unused,
->>> -			      void *data)
->>> +			      Dwarf_Addr addr, void *data)
->>>    {
->>>    	struct line_finder *lf = data;
->>>    	const char *__fname;
->>>
->>>
-> 
-> 
