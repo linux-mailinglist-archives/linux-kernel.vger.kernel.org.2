@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17A43CAB55
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989E33CAB52
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245115AbhGOTTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38428 "EHLO mail.kernel.org"
+        id S245042AbhGOTTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243670AbhGOTEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243681AbhGOTEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:04:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65DE7613E9;
-        Thu, 15 Jul 2021 19:00:28 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B276161404;
+        Thu, 15 Jul 2021 19:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375628;
-        bh=Eo8Jbmb8tL5W0zT3vAsE3KWlJekJz4W0Ag3DYmH9gQQ=;
+        s=korg; t=1626375631;
+        bh=AykE/DNX1ohxHWrctLld96qWYnNgwrQLNEkWEleFwec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QKsdVKz44dg4J6oJqWmXhZ9tjDGEHhRKJ93BUCGxXYGc+/TfLAfScdlv8UfPJXZ8p
-         Y9tBb2r4r3qQEQLj7dFVepRQSCKpctwZgGPEpgpXWyiDm/Y2VUsV7e88thkVWZ6aVe
-         XCyBysGC+7izrOol15labCwVKrXsx2rHa97Nw0IQ=
+        b=vDADvKUlvuDW/1gREkyEoPWIQ/1OLbqur+YVxKypVaZiE9i4S8xdyd8qkML8eRWi5
+         jp5yBe2a+Bu2i27HHfq83xmoFHATa2fneEgpYfb6jC1EznvXrq1lgtpRHKDP2ysQ3c
+         qJKpA/WjcLFoevcmD/AJYKrij23c0qdtZTAfs9kY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH 5.12 169/242] drm/vc4: crtc: Skip the TXP
-Date:   Thu, 15 Jul 2021 20:38:51 +0200
-Message-Id: <20210715182622.996843908@linuxfoundation.org>
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>
+Subject: [PATCH 5.12 170/242] drm/vc4: hdmi: Prevent clock unbalance
+Date:   Thu, 15 Jul 2021 20:38:52 +0200
+Message-Id: <20210715182623.159968385@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,42 +41,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Maxime Ripard <maxime@cerno.tech>
 
-commit 47a50743031ad4138050ae6d266ddd3dfe845ead upstream.
+commit 5b006000423667ef0f55721fc93e477b31f22d28 upstream.
 
-The vc4_set_crtc_possible_masks is meant to run over all the encoders
-and then set their possible_crtcs mask to their associated pixelvalve.
+Since we fixed the hooks to disable the encoder at boot, we now have an
+unbalanced clk_disable call at boot since we never enabled them in the
+first place.
 
-However, since the commit 39fcb2808376 ("drm/vc4: txp: Turn the TXP into
-a CRTC of its own"), the TXP has been turned to a CRTC and encoder of
-its own, and while it does indeed register an encoder, it no longer has
-an associated pixelvalve. The code will thus run over the TXP encoder
-and set a bogus possible_crtcs mask, overriding the one set in the TXP
-bind function.
+Let's mimic the state of the hardware and enable the clocks at boot if
+the controller is enabled to get the use-count right.
 
-In order to fix this, let's skip any virtual encoder.
-
-Cc: <stable@vger.kernel.org> # v5.9+
-Fixes: 39fcb2808376 ("drm/vc4: txp: Turn the TXP into a CRTC of its own")
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: <stable@vger.kernel.org> # v5.10+
+Fixes: 09c438139b8f ("drm/vc4: hdmi: Implement finer-grained hooks")
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210507150515.257424-3-maxime@cerno.tech
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210507150515.257424-7-maxime@cerno.tech
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/vc4/vc4_crtc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/vc4/vc4_hdmi.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -1076,6 +1076,9 @@ static void vc4_set_crtc_possible_masks(
- 		struct vc4_encoder *vc4_encoder;
- 		int i;
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -2012,6 +2012,14 @@ static int vc4_hdmi_bind(struct device *
+ 	if (vc4_hdmi->variant->reset)
+ 		vc4_hdmi->variant->reset(vc4_hdmi);
  
-+		if (encoder->encoder_type == DRM_MODE_ENCODER_VIRTUAL)
-+			continue;
++	if ((of_device_is_compatible(dev->of_node, "brcm,bcm2711-hdmi0") ||
++	     of_device_is_compatible(dev->of_node, "brcm,bcm2711-hdmi1")) &&
++	    HDMI_READ(HDMI_VID_CTL) & VC4_HD_VID_CTL_ENABLE) {
++		clk_prepare_enable(vc4_hdmi->pixel_clock);
++		clk_prepare_enable(vc4_hdmi->hsm_clock);
++		clk_prepare_enable(vc4_hdmi->pixel_bvb_clock);
++	}
 +
- 		vc4_encoder = to_vc4_encoder(encoder);
- 		for (i = 0; i < ARRAY_SIZE(pv_data->encoder_types); i++) {
- 			if (vc4_encoder->type == encoder_types[i]) {
+ 	pm_runtime_enable(dev);
+ 
+ 	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
 
 
