@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E703CA6C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245723CA6EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238407AbhGOSub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50262 "EHLO mail.kernel.org"
+        id S238221AbhGOSv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:51:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239284AbhGOSr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:47:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09044613D9;
-        Thu, 15 Jul 2021 18:45:04 +0000 (UTC)
+        id S239331AbhGOSsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:48:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B7E8613D0;
+        Thu, 15 Jul 2021 18:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374705;
-        bh=ApT4D9DXa2TEQ75VBk11BJuLRyxzA9ADztiKPJCNzZ0=;
+        s=korg; t=1626374707;
+        bh=YLvMeZgML27z001Ivd15EcAZngsxhTD5qonkMYCvLFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qHIfjEbaXv2mWP7DvywduEqj6XMuXLaL0qTLs8brkZtX33HH6OhR6P1bgkOnxxeET
-         PdMMt6rmE+pXhUjufyAlS2YZH2bK1GWmhpeIiMOVMmu2ErCuiENFGGvD5cIKGO5CBJ
-         P01NtJ1e/haTv/z2Bm4/PALvsfYyqiZtUwxPHbTk=
+        b=qs4TTg0z32FjlsQbsvF5g1KkoqV/NBsbac3g3YQ7OME7OjjXhf1Y6f/iddE2d4AwS
+         K+mNRi6LpMXIPIpej7Fe7PKaTVojMLI1z+PKurD06xc4yOBzOLMBcaeMMNfubPLMDt
+         5KaQhNQ350TW4fvmEngzFrFXFzg9aDenHZxc00Oo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.4 111/122] PCI: aardvark: Fix checking for PIO Non-posted Request
-Date:   Thu, 15 Jul 2021 20:39:18 +0200
-Message-Id: <20210715182521.107457685@linuxfoundation.org>
+Subject: [PATCH 5.4 112/122] PCI: aardvark: Implement workaround for the readback value of VEND_ID
+Date:   Thu, 15 Jul 2021 20:39:19 +0200
+Message-Id: <20210715182521.292790967@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -43,31 +43,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pali Rohár <pali@kernel.org>
 
-commit 8ceeac307a79f68c0d0c72d6e48b82fa424204ec upstream.
+commit 7f71a409fe3d9358da07c77f15bb5b7960f12253 upstream.
 
-PIO_NON_POSTED_REQ for PIO_STAT register is incorrectly defined. Bit 10 in
-register PIO_STAT indicates the response is to a non-posted request.
+Marvell Armada 3700 Functional Errata, Guidelines, and Restrictions
+document describes in erratum 4.1 PCIe value of vendor ID (Ref #: 243):
 
-Link: https://lore.kernel.org/r/20210624213345.3617-2-pali@kernel.org
+    The readback value of VEND_ID (RD0070000h [15:0]) is 1B4Bh, while it
+    should read 11ABh.
+
+    The firmware can write the correct value, 11ABh, through VEND_ID
+    (RD0076044h [15:0]).
+
+Implement this workaround in aardvark driver for both PCI vendor id and PCI
+subsystem vendor id.
+
+This change affects and fixes PCI vendor id of emulated PCIe root bridge.
+After this change emulated PCIe root bridge has correct vendor id.
+
+Link: https://lore.kernel.org/r/20210624222621.4776-5-pali@kernel.org
+Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
 Signed-off-by: Pali Rohár <pali@kernel.org>
 Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Reviewed-by: Marek Behún <kabel@kernel.org>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/pci-aardvark.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 --- a/drivers/pci/controller/pci-aardvark.c
 +++ b/drivers/pci/controller/pci-aardvark.c
-@@ -61,7 +61,7 @@
- #define   PIO_COMPLETION_STATUS_UR		1
- #define   PIO_COMPLETION_STATUS_CRS		2
- #define   PIO_COMPLETION_STATUS_CA		4
--#define   PIO_NON_POSTED_REQ			BIT(0)
-+#define   PIO_NON_POSTED_REQ			BIT(10)
- #define PIO_ADDR_LS				(PIO_BASE_ADDR + 0x8)
- #define PIO_ADDR_MS				(PIO_BASE_ADDR + 0xc)
- #define PIO_WR_DATA				(PIO_BASE_ADDR + 0x10)
+@@ -127,6 +127,7 @@
+ #define     LTSSM_MASK				0x3f
+ #define     LTSSM_L0				0x10
+ #define     RC_BAR_CONFIG			0x300
++#define VENDOR_ID_REG				(LMI_BASE_ADDR + 0x44)
+ 
+ /* PCIe core controller registers */
+ #define CTRL_CORE_BASE_ADDR			0x18000
+@@ -268,6 +269,16 @@ static void advk_pcie_setup_hw(struct ad
+ 	reg |= (IS_RC_MSK << IS_RC_SHIFT);
+ 	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
+ 
++	/*
++	 * Replace incorrect PCI vendor id value 0x1b4b by correct value 0x11ab.
++	 * VENDOR_ID_REG contains vendor id in low 16 bits and subsystem vendor
++	 * id in high 16 bits. Updating this register changes readback value of
++	 * read-only vendor id bits in PCIE_CORE_DEV_ID_REG register. Workaround
++	 * for erratum 4.1: "The value of device and vendor ID is incorrect".
++	 */
++	reg = (PCI_VENDOR_ID_MARVELL << 16) | PCI_VENDOR_ID_MARVELL;
++	advk_writel(pcie, reg, VENDOR_ID_REG);
++
+ 	/* Set Advanced Error Capabilities and Control PF0 register */
+ 	reg = PCIE_CORE_ERR_CAPCTL_ECRC_CHK_TX |
+ 		PCIE_CORE_ERR_CAPCTL_ECRC_CHK_TX_EN |
 
 
