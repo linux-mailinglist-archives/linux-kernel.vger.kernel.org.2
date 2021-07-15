@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594963CAAC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DBB3CABE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244848AbhGOTPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
+        id S244577AbhGOT0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:26:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238947AbhGOS6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:58:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 322F7613CF;
-        Thu, 15 Jul 2021 18:55:31 +0000 (UTC)
+        id S243233AbhGOTJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47003613FE;
+        Thu, 15 Jul 2021 19:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375331;
-        bh=nAhI8lIzEIovRd+ILJuBnP4fLOSRmMpp03U/bbbWxKo=;
+        s=korg; t=1626375918;
+        bh=fkdniDa+xDCETYQggD9oaebwsk6k8b5LwB+FE25nR24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hg8Da8vwW65MHOIEygFehT126C19JOM+pSNp3hQoggMCrNgoQHplBg4QyaeeCrEWG
-         odiO/GtrgF4mppyQ9DGwAQuM5cuiL848HkpORG20CNUk2JgWMkWPKzNYLc+x6nkltE
-         voN4EUaJX/SHOqOG0t5Zb9WzKWHhb+hEI4qjXxJM=
+        b=FKBSmilaOmnE3VIjp385tDINN2rcRNmB4i7eyU25J+BOKMx7IZd/3OuQXHOYoz7PO
+         jhNRq951gVpzBrL26yM1Rxx0X32lTl06Vgp/KdiZjyAIpJppYxVDph5h5TDTzT8k8Q
+         Gk7eAGow6Nd5oih5mBKb5QnXmVVMtPyVNtSpZwp4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 041/242] net: stmmac: the XPCS obscures a potential "PHY not found" error
-Date:   Thu, 15 Jul 2021 20:36:43 +0200
-Message-Id: <20210715182559.277798128@linuxfoundation.org>
+Subject: [PATCH 5.13 049/266] drm: rockchip: add missing registers for RK3066
+Date:   Thu, 15 Jul 2021 20:36:44 +0200
+Message-Id: <20210715182622.861830800@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,99 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Alex Bee <knaerzche@gmail.com>
 
-[ Upstream commit 4751d2aa321f2828d8c5d2f7ce4ed18a01e47f46 ]
+[ Upstream commit 742203cd56d150eb7884eb45abb7d9dbc2bdbf04 ]
 
-stmmac_mdio_register() has logic to search for PHYs on the MDIO bus and
-assign them IRQ lines, as well as to set priv->plat->phy_addr.
+Add dither_up, dsp_lut_en and data_blank registers to enable their
+respective functionality for RK3066's VOP.
 
-If no PHY is found, the "found" variable remains set to 0 and the
-function errors out.
+While at that also fix .rb_swap and .format registers for all windows,
+which have to be set though RK3066_SYS_CTRL1 register.
+Also remove .scl from win1: Scaling is only supported on the primary
+plane.
 
-After the introduction of commit f213bbe8a9d6 ("net: stmmac: Integrate
-it with DesignWare XPCS"), the "found" variable was immediately reused
-for searching for a PCS on the same MDIO bus.
-
-This can result in 2 types of potential problems (none of them seems to
-be seen on the only Intel system that sets has_xpcs = true, otherwise it
-would have been reported):
-
-1. If a PCS is found but a PHY is not, then the code happily exits with
-   no error. One might say "yes, but this is not possible, because
-   of_mdiobus_register will probe a PHY for all MDIO addresses,
-   including for the XPCS, so if an XPCS exists, then a PHY certainly
-   exists too". Well, that is not true, see intel_mgbe_common_data():
-
-	/* Ensure mdio bus scan skips intel serdes and pcs-xpcs */
-	plat->mdio_bus_data->phy_mask = 1 << INTEL_MGBE_ADHOC_ADDR;
-	plat->mdio_bus_data->phy_mask |= 1 << INTEL_MGBE_XPCS_ADDR;
-
-2. A PHY is found but an MDIO device with the XPCS PHY ID isn't, and in
-   that case, the error message will be "No PHY found". Confusing.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Link: https://lore.kernel.org/r/20210527155959.3270478-1-olteanv@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210528130554.72191-4-knaerzche@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_mdio.c | 21 +++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-index d64116e0543e..a4ba27bf3131 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-@@ -444,6 +444,12 @@ int stmmac_mdio_register(struct net_device *ndev)
- 		found = 1;
- 	}
+diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+index b8dcee64a1f7..a6fe03c3748a 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
++++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+@@ -349,8 +349,8 @@ static const struct vop_win_phy rk3066_win0_data = {
+ 	.nformats = ARRAY_SIZE(formats_win_full),
+ 	.format_modifiers = format_modifiers_win_full,
+ 	.enable = VOP_REG(RK3066_SYS_CTRL1, 0x1, 0),
+-	.format = VOP_REG(RK3066_SYS_CTRL0, 0x7, 4),
+-	.rb_swap = VOP_REG(RK3066_SYS_CTRL0, 0x1, 19),
++	.format = VOP_REG(RK3066_SYS_CTRL1, 0x7, 4),
++	.rb_swap = VOP_REG(RK3066_SYS_CTRL1, 0x1, 19),
+ 	.act_info = VOP_REG(RK3066_WIN0_ACT_INFO, 0x1fff1fff, 0),
+ 	.dsp_info = VOP_REG(RK3066_WIN0_DSP_INFO, 0x0fff0fff, 0),
+ 	.dsp_st = VOP_REG(RK3066_WIN0_DSP_ST, 0x1fff1fff, 0),
+@@ -361,13 +361,12 @@ static const struct vop_win_phy rk3066_win0_data = {
+ };
  
-+	if (!found && !mdio_node) {
-+		dev_warn(dev, "No PHY found\n");
-+		err = -ENODEV;
-+		goto no_phy_found;
-+	}
-+
- 	/* Try to probe the XPCS by scanning all addresses. */
- 	if (priv->hw->xpcs) {
- 		struct mdio_xpcs_args *xpcs = &priv->hw->xpcs_args;
-@@ -452,6 +458,7 @@ int stmmac_mdio_register(struct net_device *ndev)
+ static const struct vop_win_phy rk3066_win1_data = {
+-	.scl = &rk3066_win_scl,
+ 	.data_formats = formats_win_full,
+ 	.nformats = ARRAY_SIZE(formats_win_full),
+ 	.format_modifiers = format_modifiers_win_full,
+ 	.enable = VOP_REG(RK3066_SYS_CTRL1, 0x1, 1),
+-	.format = VOP_REG(RK3066_SYS_CTRL0, 0x7, 7),
+-	.rb_swap = VOP_REG(RK3066_SYS_CTRL0, 0x1, 23),
++	.format = VOP_REG(RK3066_SYS_CTRL1, 0x7, 7),
++	.rb_swap = VOP_REG(RK3066_SYS_CTRL1, 0x1, 23),
+ 	.act_info = VOP_REG(RK3066_WIN1_ACT_INFO, 0x1fff1fff, 0),
+ 	.dsp_info = VOP_REG(RK3066_WIN1_DSP_INFO, 0x0fff0fff, 0),
+ 	.dsp_st = VOP_REG(RK3066_WIN1_DSP_ST, 0x1fff1fff, 0),
+@@ -382,8 +381,8 @@ static const struct vop_win_phy rk3066_win2_data = {
+ 	.nformats = ARRAY_SIZE(formats_win_lite),
+ 	.format_modifiers = format_modifiers_win_lite,
+ 	.enable = VOP_REG(RK3066_SYS_CTRL1, 0x1, 2),
+-	.format = VOP_REG(RK3066_SYS_CTRL0, 0x7, 10),
+-	.rb_swap = VOP_REG(RK3066_SYS_CTRL0, 0x1, 27),
++	.format = VOP_REG(RK3066_SYS_CTRL1, 0x7, 10),
++	.rb_swap = VOP_REG(RK3066_SYS_CTRL1, 0x1, 27),
+ 	.dsp_info = VOP_REG(RK3066_WIN2_DSP_INFO, 0x0fff0fff, 0),
+ 	.dsp_st = VOP_REG(RK3066_WIN2_DSP_ST, 0x1fff1fff, 0),
+ 	.yrgb_mst = VOP_REG(RK3066_WIN2_MST, 0xffffffff, 0),
+@@ -408,6 +407,9 @@ static const struct vop_common rk3066_common = {
+ 	.dither_down_en = VOP_REG(RK3066_DSP_CTRL0, 0x1, 11),
+ 	.dither_down_mode = VOP_REG(RK3066_DSP_CTRL0, 0x1, 10),
+ 	.dsp_blank = VOP_REG(RK3066_DSP_CTRL1, 0x1, 24),
++	.dither_up = VOP_REG(RK3066_DSP_CTRL0, 0x1, 9),
++	.dsp_lut_en = VOP_REG(RK3066_SYS_CTRL1, 0x1, 31),
++	.data_blank = VOP_REG(RK3066_DSP_CTRL1, 0x1, 25),
+ };
  
- 		xpcs->bus = new_bus;
- 
-+		found = 0;
- 		for (addr = 0; addr < max_addr; addr++) {
- 			xpcs->addr = addr;
- 
-@@ -461,13 +468,12 @@ int stmmac_mdio_register(struct net_device *ndev)
- 				break;
- 			}
- 		}
--	}
- 
--	if (!found && !mdio_node) {
--		dev_warn(dev, "No PHY found\n");
--		mdiobus_unregister(new_bus);
--		mdiobus_free(new_bus);
--		return -ENODEV;
-+		if (!found && !mdio_node) {
-+			dev_warn(dev, "No XPCS found\n");
-+			err = -ENODEV;
-+			goto no_xpcs_found;
-+		}
- 	}
- 
- bus_register_done:
-@@ -475,6 +481,9 @@ bus_register_done:
- 
- 	return 0;
- 
-+no_xpcs_found:
-+no_phy_found:
-+	mdiobus_unregister(new_bus);
- bus_register_fail:
- 	mdiobus_free(new_bus);
- 	return err;
+ static const struct vop_win_data rk3066_vop_win_data[] = {
 -- 
 2.30.2
 
