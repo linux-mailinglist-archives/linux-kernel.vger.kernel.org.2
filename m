@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AE93CAA1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072BB3CAA27
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243820AbhGOTL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:11:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37234 "EHLO mail.kernel.org"
+        id S240643AbhGOTMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:12:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242894AbhGOTAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:00:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E14860D07;
-        Thu, 15 Jul 2021 18:57:10 +0000 (UTC)
+        id S243012AbhGOTAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:00:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4910161158;
+        Thu, 15 Jul 2021 18:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375431;
-        bh=Uos9+KnPgKQ1lzahEFwmTisuEs0itSOpPl5U0et2OZI=;
+        s=korg; t=1626375435;
+        bh=7kuPAle+KPL7uygDvyN/+ufX7FKfapEBVkAtmCuLYLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cyx08xFVi2cAbkw3bPsaA59Xpxotxyyh0a0h6DpB9uQbnz0l0BpgfPNZbPCwz7Lhs
-         Zsd4ygsFOiZNMh9bAgFIjRJbS7jzJNNIG/7UuNZtlTTQVcuvBalGkSZ12D+FFrFou1
-         oPy5gxfGFhtE2bOJuTuIqxeki9rxeQQDgYHdT0rQ=
+        b=nxuNr3T+oTqKtmQAvjB99+WWCkgp3E2Wqyh4nWY4iPp9EIpIWW4HjagSdIJLh46Z+
+         v7uShLNgjEZPyKuJxLJSAsHtg3cnouWnRQnJ5X/vd1KqM80JdaU3Vr7TOhkRF+qIF7
+         JuVtLMfQuDk26OftVA7PwH045IyqcZccfkx5QGbw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tobias Brunner <tobias@strongswan.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 085/242] xfrm: Fix error reporting in xfrm_state_construct.
-Date:   Thu, 15 Jul 2021 20:37:27 +0200
-Message-Id: <20210715182607.977275450@linuxfoundation.org>
+Subject: [PATCH 5.12 086/242] dm writecache: commit just one block, not a full page
+Date:   Thu, 15 Jul 2021 20:37:28 +0200
+Message-Id: <20210715182608.164155579@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,72 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Klassert <steffen.klassert@secunet.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 6fd06963fa74197103cdbb4b494763127b3f2f34 ]
+[ Upstream commit 991bd8d7bc78966b4dc427b53a144f276bffcd52 ]
 
-When memory allocation for XFRMA_ENCAP or XFRMA_COADDR fails,
-the error will not be reported because the -ENOMEM assignment
-to the err variable is overwritten before. Fix this by moving
-these two in front of the function so that memory allocation
-failures will be reported.
+Some architectures have pages larger than 4k and committing a full
+page causes needless overhead.
 
-Reported-by: Tobias Brunner <tobias@strongswan.org>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fix this by writing a single block when committing the superblock.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_user.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ drivers/md/dm-writecache.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index 5a0ef4361e43..817e714dedea 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -580,6 +580,20 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
+diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
+index 7bb4d83e90cc..51b26db56ba9 100644
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -532,11 +532,7 @@ static void ssd_commit_superblock(struct dm_writecache *wc)
  
- 	copy_from_user_state(x, p);
- 
-+	if (attrs[XFRMA_ENCAP]) {
-+		x->encap = kmemdup(nla_data(attrs[XFRMA_ENCAP]),
-+				   sizeof(*x->encap), GFP_KERNEL);
-+		if (x->encap == NULL)
-+			goto error;
-+	}
-+
-+	if (attrs[XFRMA_COADDR]) {
-+		x->coaddr = kmemdup(nla_data(attrs[XFRMA_COADDR]),
-+				    sizeof(*x->coaddr), GFP_KERNEL);
-+		if (x->coaddr == NULL)
-+			goto error;
-+	}
-+
- 	if (attrs[XFRMA_SA_EXTRA_FLAGS])
- 		x->props.extra_flags = nla_get_u32(attrs[XFRMA_SA_EXTRA_FLAGS]);
- 
-@@ -600,23 +614,9 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
- 				   attrs[XFRMA_ALG_COMP])))
- 		goto error;
- 
--	if (attrs[XFRMA_ENCAP]) {
--		x->encap = kmemdup(nla_data(attrs[XFRMA_ENCAP]),
--				   sizeof(*x->encap), GFP_KERNEL);
--		if (x->encap == NULL)
--			goto error;
--	}
+ 	region.bdev = wc->ssd_dev->bdev;
+ 	region.sector = 0;
+-	region.count = PAGE_SIZE >> SECTOR_SHIFT;
 -
- 	if (attrs[XFRMA_TFCPAD])
- 		x->tfcpad = nla_get_u32(attrs[XFRMA_TFCPAD]);
- 
--	if (attrs[XFRMA_COADDR]) {
--		x->coaddr = kmemdup(nla_data(attrs[XFRMA_COADDR]),
--				    sizeof(*x->coaddr), GFP_KERNEL);
--		if (x->coaddr == NULL)
--			goto error;
--	}
+-	if (unlikely(region.sector + region.count > wc->metadata_sectors))
+-		region.count = wc->metadata_sectors - region.sector;
 -
- 	xfrm_mark_get(attrs, &x->mark);
++	region.count = wc->block_size >> SECTOR_SHIFT;
+ 	region.sector += wc->start_sector;
  
- 	xfrm_smark_init(attrs, &x->props.smark);
+ 	req.bi_op = REQ_OP_WRITE;
 -- 
 2.30.2
 
