@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6831F3CA6DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06243CA6E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234651AbhGOSu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:50:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
+        id S239926AbhGOSvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:51:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237964AbhGOSsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:48:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F478613CF;
-        Thu, 15 Jul 2021 18:45:23 +0000 (UTC)
+        id S238252AbhGOSsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:48:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0421D613D1;
+        Thu, 15 Jul 2021 18:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374724;
-        bh=lbj5tQP/91AutpptD6Bz2B8dJjJb3WEZaJd7sEjtdSc=;
+        s=korg; t=1626374726;
+        bh=x2d3s+M9ffO8WKcKbJnipoQ6rY/uOJF9uGl6E3dC7IY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q7YaXfNBi5rpPfsXUesMepzsyBN+z2la7uMz0TJKJnclYK+T1U2OCZRiEfTssqMzu
-         kPMXG89erwqzPOB7e+AXks/ItueslAikrE7Lp53rE79dF8P3oLDcnx4dYaeF+cZHxJ
-         mIjULdBn6lbZSTj/CzWHeeYxFUlB1aijcCx35mk0=
+        b=GNTRZhRT8aBBU1ID7amlMUr4zVE5CgOeVzJ1O0TYH1LSRZlFhfJ6N+8h2HjDnVHcU
+         DBmhMkONHW7XjOfxLBmDlA4h3XjMBmDiBBuVruaCBK3ToqT05mJDKah+tlFhp4v2uc
+         +hz304NkHsVa6B1FEzPYXBE5ZeQSXs+xXB+T7924=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 078/122] drm/radeon: Add the missed drm_gem_object_put() in radeon_user_framebuffer_create()
-Date:   Thu, 15 Jul 2021 20:38:45 +0200
-Message-Id: <20210715182511.015024377@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH 5.4 079/122] drm/rockchip: dsi: remove extra component_del() call
+Date:   Thu, 15 Jul 2021 20:38:46 +0200
+Message-Id: <20210715182511.287062400@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -41,32 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Thomas Hebb <tommyhebb@gmail.com>
 
-commit 9ba85914c36c8fed9bf3e8b69c0782908c1247b7 upstream.
+commit b354498bbe65c917d521b3b56317ddc9ab217425 upstream.
 
-radeon_user_framebuffer_create() misses to call drm_gem_object_put() in
-an error path. Add the missed function call to fix it.
+commit cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support") added
+this devcnt field and call to component_del(). However, these both
+appear to be erroneous changes left over from an earlier version of the
+patch. In the version merged, nothing ever modifies devcnt, meaning
+component_del() runs unconditionally and in addition to the
+component_del() calls in dw_mipi_dsi_rockchip_host_detach(). The second
+call fails to delete anything and produces a warning in dmesg.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+If we look at the previous version of the patch[1], however, we see that
+it had logic to calculate devcnt and call component_add() in certain
+situations. This was removed in v6, and the fact that the deletion code
+was not appears to have been an oversight.
+
+[1] https://patchwork.kernel.org/project/dri-devel/patch/20180821140515.22246-8-heiko@sntech.de/
+
+Fixes: cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support")
 Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/201385acb0eeb5dfb037afdc6a94bfbcdab97f99.1618797778.git.tommyhebb@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/radeon/radeon_display.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/drivers/gpu/drm/radeon/radeon_display.c
-+++ b/drivers/gpu/drm/radeon/radeon_display.c
-@@ -1333,6 +1333,7 @@ radeon_user_framebuffer_create(struct dr
- 	/* Handle is imported dma-buf, so cannot be migrated to VRAM for scanout */
- 	if (obj->import_attach) {
- 		DRM_DEBUG_KMS("Cannot create framebuffer from imported dma_buf\n");
-+		drm_gem_object_put(obj);
- 		return ERR_PTR(-EINVAL);
- 	}
+--- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
++++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
+@@ -231,7 +231,6 @@ struct dw_mipi_dsi_rockchip {
+ 	struct dw_mipi_dsi *dmd;
+ 	const struct rockchip_dw_dsi_chip_data *cdata;
+ 	struct dw_mipi_dsi_plat_data pdata;
+-	int devcnt;
+ };
  
+ struct dphy_pll_parameter_map {
+@@ -1001,9 +1000,6 @@ static int dw_mipi_dsi_rockchip_remove(s
+ {
+ 	struct dw_mipi_dsi_rockchip *dsi = platform_get_drvdata(pdev);
+ 
+-	if (dsi->devcnt == 0)
+-		component_del(dsi->dev, &dw_mipi_dsi_rockchip_ops);
+-
+ 	dw_mipi_dsi_remove(dsi->dmd);
+ 
+ 	return 0;
 
 
