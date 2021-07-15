@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F313CA8F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C773CABA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243375AbhGOTEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58132 "EHLO mail.kernel.org"
+        id S242643AbhGOTVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:21:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241460AbhGOSy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 516B3613D0;
-        Thu, 15 Jul 2021 18:51:32 +0000 (UTC)
+        id S240432AbhGOTFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D39C613E0;
+        Thu, 15 Jul 2021 19:02:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375092;
-        bh=bt7xYdT3o41wmLlK6OKXwu3KBxgrFKysomVDbmPufA4=;
+        s=korg; t=1626375724;
+        bh=a9XVL2KJ0JroVTPxy1S9ksp1mr+U+sM7H6KVZIxwG1A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cVUe1hhBhQI1lG8os/rTRU0cgFgwjnvwJ+ZYNPXcSzhef4ZD9qeze/np43SGjeKRB
-         vMcDKAKJ7FCgC8QzwEd+vpwYjey1KnDQLRJ5Yn5HCb0ggpG7esQwh++K2Dnv6cwjv4
-         nnQEIi6eg8S+dCHaIFJBvZ+etbtAvA2YAfc1gOu4=
+        b=C4apIq1SL3sL0lwzndN9oFSDeh7+lRMAXEPy1xW4BV6VpntruwdvH0cIsgcL6wW7D
+         wgtY+/uErrQ4KmEnPIGGQsaR9Jph4pLF4LKr7cSfwyAabZmNpwVCSDWYzKa+7IjmB3
+         K7ZcXRh2u4a6ijj15a/BNlEEj2YH662vbSatdMO0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH 5.10 157/215] drm/rockchip: dsi: remove extra component_del() call
+        stable@vger.kernel.org, Jianmin Lv <lvjianmin@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.12 167/242] drm/radeon: Call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64
 Date:   Thu, 15 Jul 2021 20:38:49 +0200
-Message-Id: <20210715182627.285847411@linuxfoundation.org>
+Message-Id: <20210715182622.693834717@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,55 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hebb <tommyhebb@gmail.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-commit b354498bbe65c917d521b3b56317ddc9ab217425 upstream.
+commit c1bfd74bfef77bcefc88d12eaf8996c0dfd51331 upstream.
 
-commit cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support") added
-this devcnt field and call to component_del(). However, these both
-appear to be erroneous changes left over from an earlier version of the
-patch. In the version merged, nothing ever modifies devcnt, meaning
-component_del() runs unconditionally and in addition to the
-component_del() calls in dw_mipi_dsi_rockchip_host_detach(). The second
-call fails to delete anything and produces a warning in dmesg.
+On the Loongson64 platform used with Radeon GPU, shutdown or reboot failed
+when console=tty is in the boot cmdline.
 
-If we look at the previous version of the patch[1], however, we see that
-it had logic to calculate devcnt and call component_add() in certain
-situations. This was removed in v6, and the fact that the deletion code
-was not appears to have been an oversight.
+radeon_suspend_kms() puts the hw in the suspend state, especially set fb
+state as FBINFO_STATE_SUSPENDED:
 
-[1] https://patchwork.kernel.org/project/dri-devel/patch/20180821140515.22246-8-heiko@sntech.de/
+        if (fbcon) {
+                console_lock();
+                radeon_fbdev_set_suspend(rdev, 1);
+                console_unlock();
+        }
 
-Fixes: cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support")
+Then avoid to do any more fb operations in the related functions:
+
+        if (p->state != FBINFO_STATE_RUNNING)
+                return;
+
+So call radeon_suspend_kms() in radeon_pci_shutdown() for Loongson64 to fix
+this issue, it looks like some kind of workaround like powerpc.
+
+Co-developed-by: Jianmin Lv <lvjianmin@loongson.cn>
+Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/201385acb0eeb5dfb037afdc6a94bfbcdab97f99.1618797778.git.tommyhebb@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c |    4 ----
- 1 file changed, 4 deletions(-)
+ drivers/gpu/drm/radeon/radeon_drv.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-@@ -243,7 +243,6 @@ struct dw_mipi_dsi_rockchip {
- 	struct dw_mipi_dsi *dmd;
- 	const struct rockchip_dw_dsi_chip_data *cdata;
- 	struct dw_mipi_dsi_plat_data pdata;
--	int devcnt;
- };
+--- a/drivers/gpu/drm/radeon/radeon_drv.c
++++ b/drivers/gpu/drm/radeon/radeon_drv.c
+@@ -386,13 +386,13 @@ radeon_pci_shutdown(struct pci_dev *pdev
+ 	if (radeon_device_is_virtual())
+ 		radeon_pci_remove(pdev);
  
- struct dphy_pll_parameter_map {
-@@ -1141,9 +1140,6 @@ static int dw_mipi_dsi_rockchip_remove(s
- {
- 	struct dw_mipi_dsi_rockchip *dsi = platform_get_drvdata(pdev);
- 
--	if (dsi->devcnt == 0)
--		component_del(dsi->dev, &dw_mipi_dsi_rockchip_ops);
--
- 	dw_mipi_dsi_remove(dsi->dmd);
- 
- 	return 0;
+-#ifdef CONFIG_PPC64
++#if defined(CONFIG_PPC64) || defined(CONFIG_MACH_LOONGSON64)
+ 	/*
+ 	 * Some adapters need to be suspended before a
+ 	 * shutdown occurs in order to prevent an error
+-	 * during kexec.
+-	 * Make this power specific becauase it breaks
+-	 * some non-power boards.
++	 * during kexec, shutdown or reboot.
++	 * Make this power and Loongson specific because
++	 * it breaks some other boards.
+ 	 */
+ 	radeon_suspend_kms(pci_get_drvdata(pdev), true, true, false);
+ #endif
 
 
