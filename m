@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B393CACC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5883CAD07
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344768AbhGOTog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:44:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50894 "EHLO mail.kernel.org"
+        id S1344557AbhGOTtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:49:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244822AbhGOTPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:15:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 038296140E;
-        Thu, 15 Jul 2021 19:11:24 +0000 (UTC)
+        id S244622AbhGOTSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:18:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0290A61420;
+        Thu, 15 Jul 2021 19:13:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376285;
-        bh=R10IEylSKFdiya8iUs3Ly/1gr7s/BHDBmFKJQozhd8A=;
+        s=korg; t=1626376402;
+        bh=kfcPFkTHXH0uaD2baG9cJbDNvsviwsK8Z5CUc7cS8QA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aJJFewi2WvnQNvPZlSIhWgK6foA1lTRpNIIBbCDMW4MqjZo9o55SU1G+KYdZDFrH7
-         wBW9EIcMRFqGHJDYBLvaKRux1ZvRat8pccMVMwTkpOC6vGQiRjCEmjgPI5Fp6gGW4b
-         hPIOsV2rkZR6RhRFO2etsqEw+vqpT8orbwEP+IZ0=
+        b=yGnf1p6DiL6bWa/pslMEWdEWzZB5053c9m6e4FqKmOwgdCyiGbSgcr8f6TwZR84dA
+         ADOugeXf4ICywMI7rAw5J1t3P04S3JVQO4poEZHHH4avzMF+rL18+L0u6NDKhfYJZ6
+         mHWPjrxKmc0IeEKxnhzHJiGRmyyGubPd6QHkNhk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>, nouveau@lists.freedesktop.org
-Subject: [PATCH 5.13 204/266] drm/nouveau: Dont set allow_fb_modifiers explicitly
-Date:   Thu, 15 Jul 2021 20:39:19 +0200
-Message-Id: <20210715182646.086809769@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Simon Ser <contact@emersion.fr>
+Subject: [PATCH 5.13 205/266] drm/ingenic: Switch IPU plane to type OVERLAY
+Date:   Thu, 15 Jul 2021 20:39:20 +0200
+Message-Id: <20210715182646.203914100@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,47 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit cee93c028288b9af02919f3bd8593ba61d1e610d upstream.
+commit 68b433fe6937cfa3f8975d18643d5956254edd6a upstream.
 
-Since
+It should have been an OVERLAY from the beginning. The documentation
+stipulates that there should be an unique PRIMARY plane per CRTC.
 
-commit 890880ddfdbe256083170866e49c87618b706ac7
-Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Fri Jan 4 09:56:10 2019 +0100
-
-    drm: Auto-set allow_fb_modifiers when given modifiers at plane init
-
-this is done automatically as part of plane init, if drivers set the
-modifier list correctly. Which is the case here.
-
-Note that this fixes an inconsistency: We've set the cap everywhere,
-but only nv50+ supports modifiers. Hence cc stable, but not further
-back then the patch from Paul.
-
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Cc: stable@vger.kernel.org # v5.1 +
-Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: nouveau@lists.freedesktop.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-6-daniel.vetter@ffwll.ch
+Fixes: fc1acf317b01 ("drm/ingenic: Add support for the IPU")
+Cc: <stable@vger.kernel.org> # 5.8+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Acked-by: Simon Ser <contact@emersion.fr>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210329175046.214629-2-paul@crapouillou.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/nouveau/nouveau_display.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c |   11 +++++------
+ drivers/gpu/drm/ingenic/ingenic-ipu.c     |    2 +-
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
---- a/drivers/gpu/drm/nouveau/nouveau_display.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_display.c
-@@ -697,7 +697,6 @@ nouveau_display_create(struct drm_device
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -419,7 +419,7 @@ static void ingenic_drm_plane_enable(str
+ 	unsigned int en_bit;
  
- 	dev->mode_config.preferred_depth = 24;
- 	dev->mode_config.prefer_shadow = 1;
--	dev->mode_config.allow_fb_modifiers = true;
+ 	if (priv->soc_info->has_osd) {
+-		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
++		if (plane != &priv->f0)
+ 			en_bit = JZ_LCD_OSDC_F1EN;
+ 		else
+ 			en_bit = JZ_LCD_OSDC_F0EN;
+@@ -434,7 +434,7 @@ void ingenic_drm_plane_disable(struct de
+ 	unsigned int en_bit;
  
- 	if (drm->client.device.info.chipset < 0x11)
- 		dev->mode_config.async_page_flip = false;
+ 	if (priv->soc_info->has_osd) {
+-		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
++		if (plane != &priv->f0)
+ 			en_bit = JZ_LCD_OSDC_F1EN;
+ 		else
+ 			en_bit = JZ_LCD_OSDC_F0EN;
+@@ -461,8 +461,7 @@ void ingenic_drm_plane_config(struct dev
+ 
+ 	ingenic_drm_plane_enable(priv, plane);
+ 
+-	if (priv->soc_info->has_osd &&
+-	    plane->type == DRM_PLANE_TYPE_PRIMARY) {
++	if (priv->soc_info->has_osd && plane != &priv->f0) {
+ 		switch (fourcc) {
+ 		case DRM_FORMAT_XRGB1555:
+ 			ctrl |= JZ_LCD_OSDCTRL_RGB555;
+@@ -510,7 +509,7 @@ void ingenic_drm_plane_config(struct dev
+ 	}
+ 
+ 	if (priv->soc_info->has_osd) {
+-		if (plane->type == DRM_PLANE_TYPE_PRIMARY) {
++		if (plane != &priv->f0) {
+ 			xy_reg = JZ_REG_LCD_XYP1;
+ 			size_reg = JZ_REG_LCD_SIZE1;
+ 		} else {
+@@ -561,7 +560,7 @@ static void ingenic_drm_plane_atomic_upd
+ 		height = newstate->src_h >> 16;
+ 		cpp = newstate->fb->format->cpp[0];
+ 
+-		if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
++		if (!priv->soc_info->has_osd || plane == &priv->f0)
+ 			hwdesc = &priv->dma_hwdescs->hwdesc_f0;
+ 		else
+ 			hwdesc = &priv->dma_hwdescs->hwdesc_f1;
+--- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
++++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+@@ -767,7 +767,7 @@ static int ingenic_ipu_bind(struct devic
+ 
+ 	err = drm_universal_plane_init(drm, plane, 1, &ingenic_ipu_plane_funcs,
+ 				       soc_info->formats, soc_info->num_formats,
+-				       NULL, DRM_PLANE_TYPE_PRIMARY, NULL);
++				       NULL, DRM_PLANE_TYPE_OVERLAY, NULL);
+ 	if (err) {
+ 		dev_err(dev, "Failed to init plane: %i\n", err);
+ 		return err;
 
 
