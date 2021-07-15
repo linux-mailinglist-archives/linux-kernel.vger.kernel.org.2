@@ -2,85 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE633CAC56
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE5E3CAD06
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245336AbhGOTc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
+        id S1347408AbhGOTwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244157AbhGOTKm (ORCPT
+        with ESMTP id S242630AbhGOTSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:10:42 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98B2C028B9F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:00:19 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id w8-20020a0568304108b02904b3da3d49e5so7305797ott.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:00:19 -0700 (PDT)
+        Thu, 15 Jul 2021 15:18:08 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A408C0604DE
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:02:49 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id p9so4762370pjl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:02:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=9GEmaDpQMUFvZjd/2LqfDua2IjDBMZfqrvLpdIshpRE=;
-        b=LIW3L+U+KAOFBPJFqfMwPRPpFQZwpGABowsd08a+L3VQ0P/P4WR9//YMhNJlEeQM9T
-         m44000IsOL4B5VY7j8OHXsGyN8DgUJAxRhDHN7Gln3Q8HXVtdGz2/HXA8BJUMRgnaOjC
-         qycJ2q3183q2w9awG3PEfoxkz+hm5Xei9zoDk=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oe0BZYoHi++518OmcwQpv+uyHbR3qsM3BitMXqojLoA=;
+        b=KkSoOuy20ieZTTXspwwIJZ/qwvEcmIUCW96k3EuDRkw1sCkqqKfcmfbO91AF6k1qhS
+         8qnpkDZ6aWj0wfJH/0hAVGRBjnP0q0JPwZg61NCU6R+M8HCzy6OVuMROhqb2IxlGGoCv
+         h1+17kiQAK58iY2HB5gvPlpH+s2RiLYwdKFn4epefcWw4HfC7qk7/xXjY8aVibZ26rts
+         AoJs2gHmC4xTh18jlPJvspNV3vIEX4rBUvYS8GYD11eUpQ7dqa57tcEImxEXNrBDBqn0
+         pwW57P75F9EH0EvkFeWxKfIN17JyRtO8gcNDpqmXT6o+6jdGBDLaigPBdnc8a1FhTSz1
+         yzZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=9GEmaDpQMUFvZjd/2LqfDua2IjDBMZfqrvLpdIshpRE=;
-        b=f4wPs5vctyj2yWszt8sk4I8xO+7ZBPjuVG5ZZTST8KQkZjSh1J2CtM1JGGtROY19AI
-         uTLYE+4GWsc8axteVr3hzdGERM5qo9rcJ1R8VnOmlxA3P1lPvOGBqkCoKdaCKJ8EQcDi
-         HU16p4OWwug54ZFxLWIVYr159H9NMiM8Oq7aYDax/7um1oxJwqTEVX9nzjx456GYy3xu
-         1V5OgndLttNx/5BSEaPxhPxrjqcFz916mtVqba4XGg6AFJoFjAKlMKN0dtWNMmzh5eKY
-         nn3wcYnh6n5/uLplGxltH6ylEDR5f7JjFGnmxK3JP9F97KRW/GXqiMs57Uujhaf3JhTK
-         g1fA==
-X-Gm-Message-State: AOAM532XUfuPnaIzNz4U+VVQ7fq4HF/RLBr2UL/TP89ljIKrtbvLS+dN
-        ffQ2RFPofnd3MP+HRMornWAkux7LkBDGRlr84CVDUQ==
-X-Google-Smtp-Source: ABdhPJxf21q1Ik3LU9OiVWzgN+Ii0qixpl5UQbE9oflle2O6F5lL6xJzhxgcmT9tg8sYDKVmYXEZLaWvr8DSlyGYBeY=
-X-Received: by 2002:a9d:650e:: with SMTP id i14mr4963674otl.233.1626375619183;
- Thu, 15 Jul 2021 12:00:19 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 15 Jul 2021 21:00:18 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oe0BZYoHi++518OmcwQpv+uyHbR3qsM3BitMXqojLoA=;
+        b=iNuGtJWKJ0iZS1QO37S3MX4hv6UO96sAqnzMrNpKAUei/t5jMU04v2GRumzWn+DA05
+         ZRyW7LKiqcuU0oqXPBPXDCgteXu86wIEZR9+E7CsMQJT6COpR1gWRUz6ICDTUd8TCJYl
+         kRFzuNuiXFR9MuJ6c+Yd34JDxm7RXGTD1RJzuDL9rFoBDmXyuAwTzfrU7y8vh21UxvCj
+         bn+QbDatTwfAUn2qZ4JfFC3wRwojDI9FuLVTkjfRA2CKNZwBkKb68ex0jwzfsGc9UrR5
+         enE3DzC5kxjIDc8bOZUMtxjHbsgK4oUojCCplzmBzoYXTaXb6g+HTmH5/E29oJAntWUd
+         eHzg==
+X-Gm-Message-State: AOAM532i36Ru3EL0huPLlZlYdgm3nWMB3ZCD1c5MzFdjlBo+iIQrM4HI
+        CQZB5Y6+CZ6I3TwgOYyKv7cH/A==
+X-Google-Smtp-Source: ABdhPJw1dGPTVY/rw4APz9cGy+L54ppHFLemTQp3wX/mwVOXEld90LmZMJamyx8+JoKLrw9sxnMJtQ==
+X-Received: by 2002:a17:90a:738e:: with SMTP id j14mr11741420pjg.227.1626375768822;
+        Thu, 15 Jul 2021 12:02:48 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id s20sm10639941pjn.23.2021.07.15.12.02.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 12:02:48 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 19:02:44 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 08/40] x86/traps: Define RMP violation #PF
+ error code
+Message-ID: <YPCGVKESqZFWwdyB@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-9-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <e6375232222bc357897b62c1752c06d8@codeaurora.org>
-References: <1625592020-22658-1-git-send-email-khsieh@codeaurora.org>
- <1625592020-22658-8-git-send-email-khsieh@codeaurora.org> <CAE-0n51U8faPjxfFcd3uuOk27urR2rCSGhg1Kat1AO6LLixYTw@mail.gmail.com>
- <e6375232222bc357897b62c1752c06d8@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 15 Jul 2021 21:00:18 +0200
-Message-ID: <CAE-0n50ysxXkjWjmRhxUywPLEH4jkkDnweM969QX0bkKA2WU=A@mail.gmail.com>
-Subject: Re: [PATCH 7/7] drm/msm/dp: retrain link when loss of symbol lock detected
-To:     khsieh@codeaurora.org
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        airlied@linux.ie, daniel@ffwll.ch, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707183616.5620-9-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting khsieh@codeaurora.org (2021-07-09 10:16:52)
-> On 2021-07-08 00:21, Stephen Boyd wrote:
-> > Quoting Kuogee Hsieh (2021-07-06 10:20:20)
-> >> Main link symbol locked is achieved at end of link training 2. Some
-> >> dongle main link symbol may become unlocked again if host did not end
-> >> link training soon enough after completion of link training 2. Host
-> >> have to re train main link if loss of symbol lock detected before
-> >> end link training so that the coming video stream can be transmitted
-> >> to sink properly.
-> >>
-> >> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> >
-> > I guess this is a fix for the original driver, so it should be tagged
-> > with Fixes appropriately.
-> Actually, this is fix on patch #6 : drm/msm/dp: do not end dp link
-> training until video is ready
-> Should i merge patch #6 and #7 together?
-> Or can you suggest what should I do?
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> Bit 31 in the page fault-error bit will be set when processor encounters
+> an RMP violation.
+> 
+> While at it, use the BIT() macro.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/asm/trap_pf.h | 18 +++++++++++-------
+>  arch/x86/mm/fault.c            |  1 +
+>  2 files changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/trap_pf.h b/arch/x86/include/asm/trap_pf.h
+> index 10b1de500ab1..29f678701753 100644
+> --- a/arch/x86/include/asm/trap_pf.h
+> +++ b/arch/x86/include/asm/trap_pf.h
+> @@ -2,6 +2,8 @@
+>  #ifndef _ASM_X86_TRAP_PF_H
+>  #define _ASM_X86_TRAP_PF_H
+>  
+> +#include <vdso/bits.h>  /* BIT() macro */
 
-Yes if it fixes the patch before this one it should be combined.
+What are people's thoughts on using linux/bits.h instead of vdso.bits.h, even
+though the vDSO version is technically sufficient?  Seeing the "vdso" reference
+definitely made me blink slowly a few times.
+
+> +
+>  /*
+>   * Page fault error code bits:
+>   *
+> @@ -12,15 +14,17 @@
+>   *   bit 4 ==				1: fault was an instruction fetch
+>   *   bit 5 ==				1: protection keys block access
+>   *   bit 15 ==				1: SGX MMU page-fault
+> + *   bit 31 ==				1: fault was an RMP violation
+>   */
+>  enum x86_pf_error_code {
+> -	X86_PF_PROT	=		1 << 0,
+> -	X86_PF_WRITE	=		1 << 1,
+> -	X86_PF_USER	=		1 << 2,
+> -	X86_PF_RSVD	=		1 << 3,
+> -	X86_PF_INSTR	=		1 << 4,
+> -	X86_PF_PK	=		1 << 5,
+> -	X86_PF_SGX	=		1 << 15,
+> +	X86_PF_PROT	=		BIT(0),
+> +	X86_PF_WRITE	=		BIT(1),
+> +	X86_PF_USER	=		BIT(2),
+> +	X86_PF_RSVD	=		BIT(3),
+> +	X86_PF_INSTR	=		BIT(4),
+> +	X86_PF_PK	=		BIT(5),
+> +	X86_PF_SGX	=		BIT(15),
+> +	X86_PF_RMP	=		BIT(31),
+>  };
+>  
+>  #endif /* _ASM_X86_TRAP_PF_H */
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 1c548ad00752..2715240c757e 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -545,6 +545,7 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code, unsigned long ad
+>  		 !(error_code & X86_PF_PROT) ? "not-present page" :
+>  		 (error_code & X86_PF_RSVD)  ? "reserved bit violation" :
+>  		 (error_code & X86_PF_PK)    ? "protection keys violation" :
+> +		 (error_code & X86_PF_RMP)   ? "rmp violation" :
+>  					       "permissions violation");
+>  
+>  	if (!(error_code & X86_PF_USER) && user_mode(regs)) {
+> -- 
+> 2.17.1
+> 
