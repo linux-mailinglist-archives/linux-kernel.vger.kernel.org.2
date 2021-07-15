@@ -2,233 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32F83C9C51
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ABD3C9C56
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241003AbhGOKEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:04:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24404 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232043AbhGOKEv (ORCPT
+        id S241062AbhGOKFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240948AbhGOKFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:04:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626343318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CNbe1og/tc+798JHBvXCBvhqALKUF9irU9Aw/lDGGBk=;
-        b=R+lgGK2hNIGDm7n4hY+1x0Tx0emNcSBFT+4YmI/3I0+noy7Eut2fCV6C9yh7TyFIm75yPK
-        OQHV3v+GBpD6iRmQxWnzuwySeuKeea53wsvfQICnoy+Y0kOwftNooRPbXBVZKYllaNusXW
-        /JVVaBA3PY48u6NN1upWcdKS4tJmKIs=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-ZTEcBDOzPO2rT04G3y3Q4Q-1; Thu, 15 Jul 2021 06:01:57 -0400
-X-MC-Unique: ZTEcBDOzPO2rT04G3y3Q4Q-1
-Received: by mail-wr1-f69.google.com with SMTP id a4-20020a0560001884b02901401e436a18so3071947wri.21
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:01:56 -0700 (PDT)
+        Thu, 15 Jul 2021 06:05:34 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C564C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:02:40 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id x16so2964637plg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t0TwHbiKa4jLrlaR4uupjt1Nvt6BBHkFS2kGDMtNo4U=;
+        b=HcMXqSaXb9gxcUOng+pdaNIC6T39etk+CGwXxJfakwtDxMCQP/Ub9AVO20E22Iky90
+         bzsGzt63onQLH7vuDrGBnXHvTGHrTN3sxtA1mnUf/UVsUOSmhSQ7t5vN87zALFKmDagd
+         XLNlHOISy7LHvgtJRmutkj0fs/6S+5Yaw1QW26HAWfREqBk5zaLoUV5CXIvgqc3J+FLg
+         4g4fZWnCRpYYKOwZjF6rcK0VyMifuMFIiNKWWX51Ub3xgjPaJ7ZzHvmd8UbKfJ10kJYK
+         hUxjDv95E6DWLC88fc8WV6JErE4G5GF/dtWvpsCA1frH7/pCHGADEoL6vxQDW3M9Laiv
+         bIJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=CNbe1og/tc+798JHBvXCBvhqALKUF9irU9Aw/lDGGBk=;
-        b=RGcCnR6EYLxzyjKTIKEkT/zR7GceJV/tCI7vT7oluS9WvwHsZFwvqEOxROJYj90Iv1
-         hsuV9Ap/fiV2J2urCEHMA3g5kSaHaAKuQKVbH305TmrUPZChKsYvZiT/jSTyXvejia2g
-         uZ7K0jdLAS02EbM3ioymLPEf82UjfjUt3LRCrSMmNF5yJpXBTHmioPaK1sW3Js+pq0gA
-         TTSDrXCBywuCsBbKcbkDBEd608D9PwZ8QzSov7C+DCmGMx1zhLO86Yw7UP4ad0wTZs+6
-         ckhEFJKFofykvqQMGN16RVq019WcGhjRqzm491ednZ7Bd/lgTE56eZv41uoYwb9Ln1VA
-         3anA==
-X-Gm-Message-State: AOAM531bexoiqZWBidik8UHO+88VJtki8wcUFq5m5wCnhsnVRFXD2I2Y
-        VuSJUsEcpqTpnq3YD1uaJ/cB5uuuYNobzV7RZn/QkWj4LsyedHKhs932sDnsnwP0LbgPKBWvWbb
-        joqYqUrv6Uvb26+N0TSmeTceI
-X-Received: by 2002:adf:f907:: with SMTP id b7mr4420259wrr.357.1626343314022;
-        Thu, 15 Jul 2021 03:01:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCdk3gFlH7qR1OyRZRpfzhZ2RUgGdXu37nEgkGzBJryV1CwYLv6QTxt7ftew3Y5A11F14TUA==
-X-Received: by 2002:adf:f907:: with SMTP id b7mr4420139wrr.357.1626343312969;
-        Thu, 15 Jul 2021 03:01:52 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23bb3.dip0.t-ipconnect.de. [79.242.59.179])
-        by smtp.gmail.com with ESMTPSA id l20sm4956850wmq.3.2021.07.15.03.01.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 03:01:52 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] s390x: KVM: accept STSI for CPU topology
- information
-To:     Cornelia Huck <cohuck@redhat.com>,
-        Pierre Morel <pmorel@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, thuth@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-References: <1626276343-22805-1-git-send-email-pmorel@linux.ibm.com>
- <1626276343-22805-2-git-send-email-pmorel@linux.ibm.com>
- <db788a8c-99a9-6d99-07ab-b49e953d91a2@redhat.com> <87fswfdiuu.fsf@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <57e57ba5-62ea-f1ff-0d83-5605d57be92d@redhat.com>
-Date:   Thu, 15 Jul 2021 12:01:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t0TwHbiKa4jLrlaR4uupjt1Nvt6BBHkFS2kGDMtNo4U=;
+        b=Sar/g0pGn64rpJhD+pbNQNpnei23YAI7Vf5MoRT7JuC59gFNVKO1deZYmWTuVpJuF9
+         ZSzLI9ARMftoDsMlTnkRZrv+HmxxkJ7byVdCTZuM72wLKYdkwREQnm6YOeX1w4eawsAB
+         VmG/M2cfufEZg6ky1WzdVpTaCUXhZ86DZ6P4Xy4IxzWNy0vZYg66ZJHy3q+19vy5EEFW
+         hGYGQKotreyDcgLYCTzLZk0/igjz9Hpzo1fhAL/4TSIcze+W6sZtCbW8VYJWDRqk438k
+         jGOMeG6c/QzK4KVfrD1nc35NCcwWTs54qKl5Dqqzae/vWXkPgdm9RTBll7DLH2DXyeOJ
+         KFqg==
+X-Gm-Message-State: AOAM533v9C+dj7mtpOClx1TGyzhD09pe8OBUgrK8dw95gtKVM/LichzU
+        ANP1BSukXhHv/w/du9336kJf
+X-Google-Smtp-Source: ABdhPJxCFuHiksDVSuB6pWpOnNml95yP2UdSGoIo3HnPkTK/Cr7ozZlySqDVCqwRyJdXKhmXeXhiAw==
+X-Received: by 2002:a17:90a:d80f:: with SMTP id a15mr3705242pjv.174.1626343359575;
+        Thu, 15 Jul 2021 03:02:39 -0700 (PDT)
+Received: from localhost ([2405:6581:5360:1800:7285:c2ff:fec2:8f97])
+        by smtp.gmail.com with ESMTPSA id 21sm5727017pfh.103.2021.07.15.03.02.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 03:02:38 -0700 (PDT)
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+To:     robh+dt@kernel.org, michal.simek@xilinx.com, mdf@kernel.org,
+        trix@redhat.com
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Subject: [PATCH] dt-bindings: fpga: convert Xilinx Zynq MPSoC bindings to YAML
+Date:   Thu, 15 Jul 2021 19:02:36 +0900
+Message-Id: <20210715100236.228531-1-iwamatsu@nigauri.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <87fswfdiuu.fsf@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.07.21 11:30, Cornelia Huck wrote:
-> On Thu, Jul 15 2021, David Hildenbrand <david@redhat.com> wrote:
-> 
->> On 14.07.21 17:25, Pierre Morel wrote:
->>> STSI(15.1.x) gives information on the CPU configuration topology.
->>> Let's accept the interception of STSI with the function code 15 and
->>> let the userland part of the hypervisor handle it.
->>>
->>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
->>> ---
->>>    arch/s390/kvm/priv.c | 11 ++++++++++-
->>>    1 file changed, 10 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
->>> index 9928f785c677..4ab5f8b7780e 100644
->>> --- a/arch/s390/kvm/priv.c
->>> +++ b/arch/s390/kvm/priv.c
->>> @@ -856,7 +856,7 @@ static int handle_stsi(struct kvm_vcpu *vcpu)
->>>    	if (vcpu->arch.sie_block->gpsw.mask & PSW_MASK_PSTATE)
->>>    		return kvm_s390_inject_program_int(vcpu, PGM_PRIVILEGED_OP);
->>>    
->>> -	if (fc > 3) {
->>> +	if (fc > 3 && fc != 15) {
->>>    		kvm_s390_set_psw_cc(vcpu, 3);
->>>    		return 0;
->>>    	}
->>> @@ -893,6 +893,15 @@ static int handle_stsi(struct kvm_vcpu *vcpu)
->>>    			goto out_no_data;
->>>    		handle_stsi_3_2_2(vcpu, (void *) mem);
->>>    		break;
->>> +	case 15:
->>> +		if (sel1 != 1 || sel2 < 2 || sel2 > 6)
->>> +			goto out_no_data;
->>> +		if (vcpu->kvm->arch.user_stsi) {
->>> +			insert_stsi_usr_data(vcpu, operand2, ar, fc, sel1, sel2);
->>> +			return -EREMOTE;
-> 
-> This bypasses the trace event further down.
-> 
->>> +		}
->>> +		kvm_s390_set_psw_cc(vcpu, 3);
->>> +		return 0;
->>>    	}
->>>    	if (kvm_s390_pv_cpu_is_protected(vcpu)) {
->>>    		memcpy((void *)sida_origin(vcpu->arch.sie_block), (void *)mem,
->>>
->>
->> 1. Setting GPRS to 0
->>
->> I was wondering why we have the "vcpu->run->s.regs.gprs[0] = 0;"
->> for existing fc 1,2,3 in case we set cc=0.
->>
->> Looking at the doc, all I find is:
->>
->> "CC 0: Requested configuration-level number placed in
->> general register 0 or requested SYSIB informa-
->> tion stored"
->>
->> But I don't find where it states that we are supposed to set
->> general register 0 to 0. Wouldn't we also have to do it for
->> fc=15 or for none?
->>
->> If fc 1,2,3 and 15 are to be handled equally, I suggest the following:
->>
->> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
->> index 9928f785c677..6eb86fa58b0b 100644
->> --- a/arch/s390/kvm/priv.c
->> +++ b/arch/s390/kvm/priv.c
->> @@ -893,17 +893,23 @@ static int handle_stsi(struct kvm_vcpu *vcpu)
->>                           goto out_no_data;
->>                   handle_stsi_3_2_2(vcpu, (void *) mem);
->>                   break;
->> +       case 15:
->> +               if (sel1 != 1 || sel2 < 2 || sel2 > 6)
->> +                       goto out_no_data;
->> +               break;
->>           }
->> -       if (kvm_s390_pv_cpu_is_protected(vcpu)) {
->> -               memcpy((void *)sida_origin(vcpu->arch.sie_block), (void *)mem,
->> -                      PAGE_SIZE);
->> -               rc = 0;
->> -       } else {
->> -               rc = write_guest(vcpu, operand2, ar, (void *)mem, PAGE_SIZE);
->> -       }
->> -       if (rc) {
->> -               rc = kvm_s390_inject_prog_cond(vcpu, rc);
->> -               goto out;
->> +       if (mem) {
->> +               if (kvm_s390_pv_cpu_is_protected(vcpu)) {
->> +                       memcpy((void *)sida_origin(vcpu->arch.sie_block),
->> +                              (void *)mem, PAGE_SIZE);
->> +               } else {
->> +                       rc = write_guest(vcpu, operand2, ar, (void *)mem,
->> +                                        PAGE_SIZE);
->> +                       if (rc) {
->> +                               rc = kvm_s390_inject_prog_cond(vcpu, rc);
->> +                               goto out;
->> +                       }
->> +               }
->>           }
->>           if (vcpu->kvm->arch.user_stsi) {
->>                   insert_stsi_usr_data(vcpu, operand2, ar, fc, sel1, sel2);
-> 
-> Something like that sounds good, the code is getting a bit convoluted.
-> 
->>
->>
->> 2. maximum-MNest facility
->>
->> "
->> 1. If the maximum-MNest facility is installed and
->> selector 2 exceeds the nonzero model-depen-
->> dent maximum-selector-2 value."
->>
->> 2. If the maximum-MNest facility is not installed and
->> selector 2 is not specified as two.
->> "
->>
->> We will we be handling the presence/absence of the maximum-MNest facility
->> (for our guest?) in QEMU, corect?
->>
->> I do wonder if we should just let any fc=15 go to user space let the whole
->> sel1 / sel2 checking be handled there. I don't think it's a fast path after all.
->> But no strong opinion.
-> 
-> If that makes handling easier, I think it would be a good idea.
-> 
->>
->> How do we identify availability of maximum-MNest facility?
->>
->>
->> 3. User space awareness
->>
->> How can user space identify that we actually forward these intercepts?
->> How can it enable them? The old KVM_CAP_S390_USER_STSI capability
->> is not sufficient.
-> 
-> Why do you think that it is not sufficient? USER_STSI basically says
-> "you may get an exit that tells you about a buffer to fill in some more
-> data for a stsi command, and we also tell you which call". If userspace
-> does not know what to add for a certain call, it is free to just do
-> nothing, and if it does not get some calls it would support, that should
-> not be a problem, either?
+Convert FPGA Manager for Xilinx Zynq MPSoC bindings documentation to
+YAML.
 
-If you migrate your VM from machine a to machine b, from kernel a to 
-kernel b, and kernel b does not trigger exits to user space for fc=15, 
-how could QEMU spot and catch the different capabilities to make sure 
-the guest can continue using the feature?
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+---
+ .../bindings/fpga/xlnx,zynqmp-pcap-fpga.txt   | 25 -------------
+ .../bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml  | 36 +++++++++++++++++++
+ 2 files changed, 36 insertions(+), 25 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt
+ create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml
 
-
+diff --git a/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt b/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt
+deleted file mode 100644
+index 3052bf619dd547..00000000000000
+--- a/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt
++++ /dev/null
+@@ -1,25 +0,0 @@
+-Devicetree bindings for Zynq Ultrascale MPSoC FPGA Manager.
+-The ZynqMP SoC uses the PCAP (Processor configuration Port) to configure the
+-Programmable Logic (PL). The configuration uses  the firmware interface.
+-
+-Required properties:
+-- compatible: should contain "xlnx,zynqmp-pcap-fpga"
+-
+-Example for full FPGA configuration:
+-
+-	fpga-region0 {
+-		compatible = "fpga-region";
+-		fpga-mgr = <&zynqmp_pcap>;
+-		#address-cells = <0x1>;
+-		#size-cells = <0x1>;
+-	};
+-
+-	firmware {
+-		zynqmp_firmware: zynqmp-firmware {
+-			compatible = "xlnx,zynqmp-firmware";
+-			method = "smc";
+-			zynqmp_pcap: pcap {
+-				compatible = "xlnx,zynqmp-pcap-fpga";
+-			};
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml b/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml
+new file mode 100644
+index 00000000000000..565b835b7fbac0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/fpga/xlnx,zynqmp-pcap-fpga.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Xilinx Zynq Ultrascale MPSoC FPGA Manager Device Tree Bindings
++
++maintainers:
++  - Michal Simek <michal.simek@xilinx.com>
++
++description: |
++  Device Tree Bindings for Zynq Ultrascale MPSoC FPGA Manager.
++  The ZynqMP SoC uses the PCAP (Processor configuration Port) to
++  configure the Programmable Logic (PL). The configuration uses the
++  firmware interface.
++
++properties:
++  compatible:
++    const: xlnx,zynqmp-pcap-fpga
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    firmware {
++      zynqmp_firmware: zynqmp-firmware {
++        zynqmp_pcap: pcap {
++          compatible = "xlnx,zynqmp-pcap-fpga";
++        };
++      };
++    };
++...
 -- 
-Thanks,
-
-David / dhildenb
+2.32.0
 
