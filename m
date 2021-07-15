@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8218B3C9B0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC0D3C9B22
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240853AbhGOJLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:11:19 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:44364 "EHLO
+        id S241016AbhGOJLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:11:34 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:44556 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240810AbhGOJLL (ORCPT
+        with ESMTP id S240858AbhGOJLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:11:11 -0400
-X-UUID: 64458e8ace49461eab24f717575ee1fc-20210715
-X-UUID: 64458e8ace49461eab24f717575ee1fc-20210715
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        Thu, 15 Jul 2021 05:11:17 -0400
+X-UUID: 6865d9a4e51241f3b168169041879012-20210715
+X-UUID: 6865d9a4e51241f3b168169041879012-20210715
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1973841917; Thu, 15 Jul 2021 17:08:16 +0800
+        with ESMTP id 1772682842; Thu, 15 Jul 2021 17:08:17 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 15 Jul 2021 17:08:15 +0800
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 15 Jul 2021 17:08:16 +0800
 Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 15 Jul 2021 17:08:14 +0800
+ Transport; Thu, 15 Jul 2021 17:08:15 +0800
 From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -36,9 +36,9 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, Yuwen Ng <yuwen.ng@mediatek.com>,
         Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH v3 04/13] dt-bindings: usb: mtu3: add wakeup interrupt
-Date:   Thu, 15 Jul 2021 17:07:49 +0800
-Message-ID: <1626340078-29111-5-git-send-email-chunfeng.yun@mediatek.com>
+Subject: [PATCH v3 05/13] usb: common: add helper to get role-switch-default-mode
+Date:   Thu, 15 Jul 2021 17:07:50 +0800
+Message-ID: <1626340078-29111-6-git-send-email-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1626340078-29111-1-git-send-email-chunfeng.yun@mediatek.com>
 References: <1626340078-29111-1-git-send-email-chunfeng.yun@mediatek.com>
@@ -49,43 +49,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an dedicated interrupt which is usually EINT to support runtime PM,
-meanwhile add "interrupt-names" property, for backward compatibility,
-it's optional and used when wakeup interrupt exists
+Add helper to get "role-switch-default-mode", and convert it
+to the corresponding enum usb_dr_mode
 
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
-v3: add Acked-by Rob
-v2: no changes
+v2~3: no changes
 ---
- .../devicetree/bindings/usb/mediatek,mtu3.yaml      | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/usb/common/common.c | 20 ++++++++++++++++++++
+ include/linux/usb/otg.h     |  1 +
+ 2 files changed, 21 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-index 104f1f7edaf0..77db1233516e 100644
---- a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-+++ b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-@@ -38,7 +38,18 @@ properties:
-       - const: ippc
+diff --git a/drivers/usb/common/common.c b/drivers/usb/common/common.c
+index 347fb3d3894a..c9bdeb4ddcb5 100644
+--- a/drivers/usb/common/common.c
++++ b/drivers/usb/common/common.c
+@@ -200,6 +200,26 @@ enum usb_dr_mode usb_get_dr_mode(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(usb_get_dr_mode);
  
-   interrupts:
--    maxItems: 1
-+    description:
-+      use "interrupts-extended" when the interrupts are connected to the
-+      separate interrupt controllers
-+    minItems: 1
-+    items:
-+      - description: SSUSB device controller interrupt
-+      - description: optional, wakeup interrupt used to support runtime PM
++/**
++ * usb_get_role_switch_default_mode - Get default mode for given device
++ * @dev: Pointer to the given device
++ *
++ * The function gets string from property 'role-switch-default-mode',
++ * and returns the corresponding enum usb_dr_mode.
++ */
++enum usb_dr_mode usb_get_role_switch_default_mode(struct device *dev)
++{
++	const char *str;
++	int ret;
 +
-+  interrupt-names:
-+    items:
-+      - const: device
-+      - const: wakeup
++	ret = device_property_read_string(dev, "role-switch-default-mode", &str);
++	if (ret < 0)
++		return USB_DR_MODE_UNKNOWN;
++
++	return usb_get_dr_mode_from_string(str);
++}
++EXPORT_SYMBOL_GPL(usb_get_role_switch_default_mode);
++
+ /**
+  * usb_decode_interval - Decode bInterval into the time expressed in 1us unit
+  * @epd: The descriptor of the endpoint
+diff --git a/include/linux/usb/otg.h b/include/linux/usb/otg.h
+index 7ceeecbb9e02..6475f880be37 100644
+--- a/include/linux/usb/otg.h
++++ b/include/linux/usb/otg.h
+@@ -128,5 +128,6 @@ enum usb_dr_mode {
+  * and returns the corresponding enum usb_dr_mode
+  */
+ extern enum usb_dr_mode usb_get_dr_mode(struct device *dev);
++extern enum usb_dr_mode usb_get_role_switch_default_mode(struct device *dev);
  
-   power-domains:
-     description: A phandle to USB power domain node to control USB's MTCMOS
+ #endif /* __LINUX_USB_OTG_H */
 -- 
 2.18.0
 
