@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B28B3C9D08
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC2E3C9D0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241592AbhGOKpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:45:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241577AbhGOKpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:45:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 991E361360;
-        Thu, 15 Jul 2021 10:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626345749;
-        bh=6SvJdTyDLxPXM39RN4GTu1nso3QzjXVBQKML1UEPpm0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MM/spXA5pvWtxFAcuJsv7mMtvPtMZ6yPW7U2qULoxWPdU1CocKxzPIkTisKCUbmjR
-         sXkTDYUBLSF4yr0Qjjo8JD2pv80aVOA32QHu/znPEFYrzonbZQCTu+YlF6j3g1/eGd
-         GKavOu8bV+YAxk5qKR5qOaBYQ+PdXUCptH04UZZWomaHRvFxocOTy90Lagi+EBWzjw
-         Pb3hsbfzYKawK6F9dbDpVaYMN8wIAnBhRG8gRA5D5ZK1eSNHKeczbRJfx6aLsnQlBA
-         LvL84GGQWj+uZ3zJphInzWsuRTilL8Zm4Ep1tb5EM9pwGQtVg+4uQR1WTreJU6erqM
-         FgRGVwzJTZxlA==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH 2/2] timers: Fix get_next_timer_interrupt() with no timers pending
-Date:   Thu, 15 Jul 2021 12:42:18 +0200
-Message-Id: <20210715104218.81276-3-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210715104218.81276-1-frederic@kernel.org>
-References: <20210715104218.81276-1-frederic@kernel.org>
+        id S241599AbhGOKsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229973AbhGOKsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 06:48:10 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AA8C06175F;
+        Thu, 15 Jul 2021 03:45:16 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id me13-20020a17090b17cdb0290173bac8b9c9so5913955pjb.3;
+        Thu, 15 Jul 2021 03:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IHBjkWgqS/NOdM7d9Jyx0y5kUtcIn0jIJPI+JSBGKAE=;
+        b=rJNcvfxjnwtlwcC9UEJcg6LDpoLcuMLdztJerSbCVAeqHTiE+kG5tlKWkMInUTH2O9
+         jumVZu0ljDnnKh1Vn3dIW8q4TgD0ClmOcGOVmQBILDmulaSnK+M5vRGhOBY0D6rRRihI
+         O4Es3+Q1VPYnEEpS5hkkyPmypJ1KnFkZjxU3DOYPJoS0zlOeiChN0iq+crFmD3ZzvSy0
+         nHe4JyEfrYYydh0s3DIGB/+Nmap3aK8zGfWgv1vdPRbDnTdMT5UW3qEnXihuFeWCbOES
+         w8TdqsJ9x5QmJzDe7LmhS3HaE5rGUnkvqVpgS8RcIS5gOYs5Jwe6XyN5kRgA1zt7QOJ6
+         e9gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IHBjkWgqS/NOdM7d9Jyx0y5kUtcIn0jIJPI+JSBGKAE=;
+        b=KAUN/J8/qszK5g5cVpQ3L3Ug5zDmYm/JDNLN8LX7bR7xuPVCYGrMpVyjC53AEx5Vap
+         1rAYboQfZhYXR+Xi1ElrJWpIdn+9ck/6++YDQQQIOsJA3lBAkZGNmr3lrD8oYms/Q7Bg
+         JlQnREEWC0mSHWHQvKiwPL/z1pUOU4jz7z0RLrpHcwCqnhTkkS8Iuub25OdWsXcrn/rA
+         puMFIT3gW13QpE6rrsfLmZPk7Y6jsFnMUunovF7/cmV8mzzj70xUO9rBEZhYnACRKurB
+         ngniWpNNWHeTpDgJyUK+aQU02lA5SOdLMdbM3skDB5DsDXjJ1B248RpV/7cBVzsf+2Gw
+         Aotg==
+X-Gm-Message-State: AOAM531a3Z7KWv5RuXHsphG2qRJTVtEzIORahJBpdQa8v9KkYaEn87nf
+        A5Vu+7cqiifBT3tXiIHQ3hE=
+X-Google-Smtp-Source: ABdhPJztWtQgx3wKN8L+Bpy2CdMFj40VEP2AkLDCRuLvPAR9WGstnpFlEcctcGW8gIPXwoSOoMg4dQ==
+X-Received: by 2002:a17:90a:b795:: with SMTP id m21mr3624401pjr.143.1626345915877;
+        Thu, 15 Jul 2021 03:45:15 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id f4sm6704452pgs.3.2021.07.15.03.45.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Jul 2021 03:45:15 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Joerg Roedel <joro@8bytes.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] KVM: x86/cpuid: Expose the true number of available ASIDs
+Date:   Thu, 15 Jul 2021 18:45:05 +0800
+Message-Id: <20210715104505.96220-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+From: Like Xu <likexu@tencent.com>
 
-31cd0e119d50 ("timers: Recalculate next timer interrupt only when
-necessary") subtly altered get_next_timer_interrupt()'s behaviour. The
-function no longer consistently returns KTIME_MAX with no timers
-pending.
+The original fixed number "8" was first introduced 11 years ago. Time has
+passed and now let KVM report the true number of address space identifiers
+(ASIDs) that are supported by the processor returned in Fn8000_000A_EBX.
 
-In order to decide if there are any timers pending we check whether the
-next expiry will happen NEXT_TIMER_MAX_DELTA jiffies from now.
-Unfortunately, the next expiry time and the timer base clock are no
-longer updated in unison. The former changes upon certain timer
-operations (enqueue, expire, detach), whereas the latter keeps track of
-jiffies as they move forward. Ultimately breaking the logic above.
+It helps user-space to make better decisions about guest values.
 
-A simplified example:
-
-- Upon entering get_next_timer_interrupt() with:
-
-	jiffies = 1
-	base->clk = 0;
-	base->next_expiry = NEXT_TIMER_MAX_DELTA;
-
-  'base->next_expiry == base->clk + NEXT_TIMER_MAX_DELTA', the function
-  returns KTIME_MAX.
-
-- 'base->clk' is updated to the jiffies value.
-
-- The next time we enter get_next_timer_interrupt(), taking into account
-  no timer operations happened:
-
-	base->clk = 1;
-	base->next_expiry = NEXT_TIMER_MAX_DELTA;
-
-  'base->next_expiry != base->clk + NEXT_TIMER_MAX_DELTA', the function
-  returns a valid expire time, which is incorrect.
-
-This ultimately might unnecessarily rearm sched's timer on nohz_full
-setups, and add latency to the system[1].
-
-So, introduce 'base->timers_pending'[2], update it every time
-'base->next_expiry' changes, and use it in get_next_timer_interrupt().
-
-[1] See tick_nohz_stop_tick().
-[2] A quick pahole check on x86_64 and arm64 shows it doesn't make
-    'struct timer_base' any bigger.
-
-Fixes: 31cd0e119d50 ("timers: Recalculate next timer interrupt only when necessary")
-Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Fixes: c2c63a493924 ("KVM: SVM: Report emulated SVM features to userspace")
+Signed-off-by: Like Xu <likexu@tencent.com>
 ---
- kernel/time/timer.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/x86/kvm/cpuid.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 3fadb58fc9d7..9eb11c2209e5 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -207,6 +207,7 @@ struct timer_base {
- 	unsigned int		cpu;
- 	bool			next_expiry_recalc;
- 	bool			is_idle;
-+	bool			timers_pending;
- 	DECLARE_BITMAP(pending_map, WHEEL_SIZE);
- 	struct hlist_head	vectors[WHEEL_SIZE];
- } ____cacheline_aligned;
-@@ -595,6 +596,7 @@ static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
- 		 * can reevaluate the wheel:
- 		 */
- 		base->next_expiry = bucket_expiry;
-+		base->timers_pending = true;
- 		base->next_expiry_recalc = false;
- 		trigger_dyntick_cpu(base, timer);
- 	}
-@@ -1582,6 +1584,7 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
- 	}
- 
- 	base->next_expiry_recalc = false;
-+	base->timers_pending = !(next == base->clk + NEXT_TIMER_MAX_DELTA);
- 
- 	return next;
- }
-@@ -1633,7 +1636,6 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
- 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
- 	u64 expires = KTIME_MAX;
- 	unsigned long nextevt;
--	bool is_max_delta;
- 
- 	/*
- 	 * Pretend that there is no timer pending if the cpu is offline.
-@@ -1646,7 +1648,6 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
- 	if (base->next_expiry_recalc)
- 		base->next_expiry = __next_timer_interrupt(base);
- 	nextevt = base->next_expiry;
--	is_max_delta = (nextevt == base->clk + NEXT_TIMER_MAX_DELTA);
- 
- 	/*
- 	 * We have a fresh next event. Check whether we can forward the
-@@ -1664,7 +1665,7 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
- 		expires = basem;
- 		base->is_idle = false;
- 	} else {
--		if (!is_max_delta)
-+		if (base->timers_pending)
- 			expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
- 		/*
- 		 * If we expect to sleep more than a tick, mark the base idle.
-@@ -1947,6 +1948,7 @@ int timers_prepare_cpu(unsigned int cpu)
- 		base = per_cpu_ptr(&timer_bases[b], cpu);
- 		base->clk = jiffies;
- 		base->next_expiry = base->clk + NEXT_TIMER_MAX_DELTA;
-+		base->timers_pending = false;
- 		base->is_idle = false;
- 	}
- 	return 0;
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 739be5da3bca..133827704fd3 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -967,8 +967,11 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+ 			break;
+ 		}
+ 		entry->eax = 1; /* SVM revision 1 */
+-		entry->ebx = 8; /* Lets support 8 ASIDs in case we add proper
+-				   ASID emulation to nested SVM */
++		/*
++		 * Let's support at least 8 ASIDs in case we
++		 * add proper ASID emulation to nested SVM.
++		 */
++		entry->ebx = max_t(unsigned int, 8, entry->ebx);
+ 		entry->ecx = 0; /* Reserved */
+ 		cpuid_entry_override(entry, CPUID_8000_000A_EDX);
+ 		break;
 -- 
-2.25.1
+2.32.0
 
