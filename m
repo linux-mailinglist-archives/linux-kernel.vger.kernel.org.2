@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1DA3CAE72
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DE73CAE74
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhGOVWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhGOVWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:22:31 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F67FC061764
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:19:37 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id v18-20020a17090ac912b0290173b9578f1cso6353863pjt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=student-cerritos-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D/oa7ytReZ7VT9msXCUi1s8afmQOHTlsDnMU7xTspFQ=;
-        b=Tsc/3qGxyPXDJVwIcY/MFuc39MZRQ/yL+cifcIxUQrbCutxd+aTIDmDk2yaDApKoyL
-         uG0OaT9FXAU67sWQquKMwkhlQRH2dpxys9XoiI18skcwR7o23bLHgmpEw56AYjfGs8uY
-         UMIY0JqEqfO45Rug5xo7hZ+gR55/3ii1c2CFmstjwJ8kAyXbD7WYDD2MbpxsMDwkMdzc
-         hHJ0rvcZQnpmBrAX9sRjp0Q8tUaOpkhf+1fuibu5uQEqV3nq3q5O2OJr7PBR0DK+fD1P
-         KwHzT1Gcw9aiYqzb4JP29Iw9O69ONR/s61kAI8krSAeMyALq1844rPI+YmY0xgIgAJGv
-         k3Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D/oa7ytReZ7VT9msXCUi1s8afmQOHTlsDnMU7xTspFQ=;
-        b=EjLwgaGtXRFkVQUNDr44yjspx94XQUzQTsPtMgRGyN7AFgE5QjEmD4iFlJn9XX8ZYh
-         GxvVYu7KJ6ZBmk8XDp1m5IDwnbU+3jEWRidFwFt3qTyMQKyEWrS74HZzqjtWWww++dkl
-         Gf2nPh2uaTPrsi6l78l1ZXKxITAov1uraFUJazaqFPwfBHl7JPa+i7WbR/u5eMTDVZQX
-         DrZppUf0I5uIhIWUHSmwKd6m7EIGnTmLhYsV3lILcappu+mkL6Poqg22L5i7aLEPcM53
-         IjJeyNwShNB29eE/CmWkr9IlpPop5/8A4pSEn5iTuUmhMC4hkqHVZBuGcksqgdkKrBH7
-         Zr8g==
-X-Gm-Message-State: AOAM530etUuy9d/4oo0FdPnPM/rX7JolMpfh1UkdOgw/qVysX5FWFvje
-        XYcJDCyKHJbJjhGgt4LQvHvwZA==
-X-Google-Smtp-Source: ABdhPJyXwrDuL9owj0pgU9mb9Di2Om1AdVvARUdtT5LpybVG35EeznfPk8MEu3RZO7cci27Kc5jayA==
-X-Received: by 2002:a17:90a:590d:: with SMTP id k13mr6308052pji.56.1626383976720;
-        Thu, 15 Jul 2021 14:19:36 -0700 (PDT)
-Received: from fedora.. (066-215-081-126.biz.spectrum.com. [66.215.81.126])
-        by smtp.gmail.com with ESMTPSA id gb10sm9811371pjb.43.2021.07.15.14.19.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 14:19:36 -0700 (PDT)
-From:   Amy Parker <apark0006@student.cerritos.edu>
-To:     pavel@ucw.cz
-Cc:     Amy Parker <apark0006@student.cerritos.edu>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] drivers/leds/TODO: update TODO to reflect changes
-Date:   Thu, 15 Jul 2021 14:18:57 -0700
-Message-Id: <fd4841b1fa09bfefb707563d85a2388d41c3b424.1626383424.git.apark0006@student.cerritos.edu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626383424.git.apark0006@student.cerritos.edu>
-References: <cover.1626383424.git.apark0006@student.cerritos.edu>
+        id S230336AbhGOVW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:22:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhGOVW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:22:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7ADC60D07;
+        Thu, 15 Jul 2021 21:20:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626384003;
+        bh=BDfVjRBSfQ1ziLLEmDwkrceOcQwLTwt3pBExg/I/12A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O1B0UaIhlWhN8/dZZ6nJQyypDzIu4FGdq96diDOp3qrcEPKgVpmDLtmvo/2BsOrkX
+         fOIsOXZVjU4NPuNBIQqs+at8wpVhGEptm52ASu4o0pabxw1p/xi34Zcy4JLSgFCFOd
+         KmCcibYiEOmLJ2m8kr3iG/NUsfHMKra8zNz5RdI/RbllhJMXLgtykbUJDxSYY5TmB/
+         zxYHziLtiAd9DltLaqXnNT1m+7vBv02uLC93AUXKakuPfoN4FGYAScBTjZJin2iW4e
+         Uf7jzO8WC1QAaGsYI4znD6ZvcFjSA78cbO4oz0oTf0/8pOlJClhpM9GipZi2DpkA/X
+         xs+BtGjb3clyg==
+Date:   Thu, 15 Jul 2021 14:20:02 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 094/138] iomap: Convert iomap_page_release to take a
+ folio
+Message-ID: <20210715212002.GG22357@magnolia>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-95-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715033704.692967-95-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous commit in this chain (swap led_brightness from enum to
-typedef) fixed the removed issue in this TODO. This patch updates
-the TODO to indicate this.
+On Thu, Jul 15, 2021 at 04:36:20AM +0100, Matthew Wilcox (Oracle) wrote:
+> iomap_page_release() was also assuming that it was being passed a
+> head page.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Signed-off-by: Amy Parker <apark0006@student.cerritos.edu>
----
- drivers/leds/TODO | 4 ----
- 1 file changed, 4 deletions(-)
+Eh, looks pretty straightforward to me...
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-diff --git a/drivers/leds/TODO b/drivers/leds/TODO
-index e1d771513b98..7b97bb733392 100644
---- a/drivers/leds/TODO
-+++ b/drivers/leds/TODO
-@@ -1,10 +1,6 @@
- -*- org -*-
- 
- * On/off LEDs should have max_brightness of 1
--* Get rid of led_brightness
--
--It is really an integer, as maximum is configurable. Get rid of it, or
--make it into typedef or something.
- 
- * Review atomicity requirements in LED subsystem
- 
--- 
-2.31.1
+--D
 
+> ---
+>  fs/iomap/buffered-io.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index c15a0ac52a32..251ec45426aa 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -59,18 +59,18 @@ iomap_page_create(struct inode *inode, struct folio *folio)
+>  	return iop;
+>  }
+>  
+> -static void
+> -iomap_page_release(struct page *page)
+> +static void iomap_page_release(struct folio *folio)
+>  {
+> -	struct iomap_page *iop = detach_page_private(page);
+> -	unsigned int nr_blocks = i_blocks_per_page(page->mapping->host, page);
+> +	struct iomap_page *iop = folio_detach_private(folio);
+> +	unsigned int nr_blocks = i_blocks_per_folio(folio->mapping->host,
+> +							folio);
+>  
+>  	if (!iop)
+>  		return;
+>  	WARN_ON_ONCE(atomic_read(&iop->read_bytes_pending));
+>  	WARN_ON_ONCE(atomic_read(&iop->write_bytes_pending));
+>  	WARN_ON_ONCE(bitmap_full(iop->uptodate, nr_blocks) !=
+> -			PageUptodate(page));
+> +			folio_test_uptodate(folio));
+>  	kfree(iop);
+>  }
+>  
+> @@ -456,6 +456,8 @@ EXPORT_SYMBOL_GPL(iomap_is_partially_uptodate);
+>  int
+>  iomap_releasepage(struct page *page, gfp_t gfp_mask)
+>  {
+> +	struct folio *folio = page_folio(page);
+> +
+>  	trace_iomap_releasepage(page->mapping->host, page_offset(page),
+>  			PAGE_SIZE);
+>  
+> @@ -466,7 +468,7 @@ iomap_releasepage(struct page *page, gfp_t gfp_mask)
+>  	 */
+>  	if (PageDirty(page) || PageWriteback(page))
+>  		return 0;
+> -	iomap_page_release(page);
+> +	iomap_page_release(folio);
+>  	return 1;
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_releasepage);
+> @@ -474,6 +476,8 @@ EXPORT_SYMBOL_GPL(iomap_releasepage);
+>  void
+>  iomap_invalidatepage(struct page *page, unsigned int offset, unsigned int len)
+>  {
+> +	struct folio *folio = page_folio(page);
+> +
+>  	trace_iomap_invalidatepage(page->mapping->host, offset, len);
+>  
+>  	/*
+> @@ -483,7 +487,7 @@ iomap_invalidatepage(struct page *page, unsigned int offset, unsigned int len)
+>  	if (offset == 0 && len == PAGE_SIZE) {
+>  		WARN_ON_ONCE(PageWriteback(page));
+>  		cancel_dirty_page(page);
+> -		iomap_page_release(page);
+> +		iomap_page_release(folio);
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_invalidatepage);
+> -- 
+> 2.30.2
+> 
