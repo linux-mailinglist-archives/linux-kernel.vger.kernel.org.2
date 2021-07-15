@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8E13CACEB
+	by mail.lfdr.de (Postfix) with ESMTP id 7A00C3CACEC
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343904AbhGOTri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:47:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51090 "EHLO mail.kernel.org"
+        id S1344053AbhGOTrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:47:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244301AbhGOTQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:16:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4A07613ED;
-        Thu, 15 Jul 2021 19:12:23 +0000 (UTC)
+        id S244299AbhGOTQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:16:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ECF2613D7;
+        Thu, 15 Jul 2021 19:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376344;
-        bh=2M7JojDu52S5+PbtEO65Idqxw6cb7+62V046UCki0XI=;
+        s=korg; t=1626376346;
+        bh=SC0SrYxpAj381JD7DFm4xcmROiC9Ok/KwUycPC30xhc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1HHDpM0aKZUWRJTE3rzzyv7TpgmdoeCeXlyW1R3gQZ4oBpS1dlzLDGJVs0N+91/8V
-         oUPQHvFn8eGCPvZA5jXdC7CQLchXIknFDwCas49AxYDPzEd+ZMEjX1daRA4WwmPiIz
-         j4cPZEhkNF4PSqce4I+26rWqp3qPb4fOlEZL+EP8=
+        b=sV75XKTi8r3If0rfC6cg36Ch/mluWKcXEk8DEzdcN5oW+8Mzycup5+4dEOJUC51ua
+         CUoEb1CNL2HZhhoZ6KEwsxPMiyeemPSIfS2HYsq016r8bra7RkW7JhQAOXAbfnbMon
+         wbde9nMXd41kf3sEEXgPO3aAVF4eTGTzqycfHs1s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.13 231/266] lkdtm: Enable DOUBLE_FAULT on all architectures
-Date:   Thu, 15 Jul 2021 20:39:46 +0200
-Message-Id: <20210715182650.217658895@linuxfoundation.org>
+        stable@vger.kernel.org, Yun Zhou <yun.zhou@windriver.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.13 232/266] seq_buf: Fix overflow in seq_buf_putmem_hex()
+Date:   Thu, 15 Jul 2021 20:39:47 +0200
+Message-Id: <20210715182650.274192333@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -38,34 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Yun Zhou <yun.zhou@windriver.com>
 
-commit f123c42bbeff26bfe8bdb08a01307e92d51eec39 upstream.
+commit d3b16034a24a112bb83aeb669ac5b9b01f744bb7 upstream.
 
-Where feasible, I prefer to have all tests visible on all architectures,
-but to have them wired to XFAIL. DOUBLE_FAIL was set up to XFAIL, but
-wasn't actually being added to the test list.
+There's two variables being increased in that loop (i and j), and i
+follows the raw data, and j follows what is being written into the buffer.
+We should compare 'i' to MAX_MEMHEX_BYTES or compare 'j' to HEX_CHARS.
+Otherwise, if 'j' goes bigger than HEX_CHARS, it will overflow the
+destination buffer.
 
-Fixes: cea23efb4de2 ("lkdtm/bugs: Make double-fault test always available")
+Link: https://lore.kernel.org/lkml/20210625122453.5e2fe304@oasis.local.home/
+Link: https://lkml.kernel.org/r/20210626032156.47889-1-yun.zhou@windriver.com
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210623203936.3151093-7-keescook@chromium.org
+Fixes: 5e3ca0ec76fce ("ftrace: introduce the "hex" output method")
+Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/lkdtm/core.c |    2 --
- 1 file changed, 2 deletions(-)
+ lib/seq_buf.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/misc/lkdtm/core.c
-+++ b/drivers/misc/lkdtm/core.c
-@@ -177,9 +177,7 @@ static const struct crashtype crashtypes
- 	CRASHTYPE(STACKLEAK_ERASING),
- 	CRASHTYPE(CFI_FORWARD_PROTO),
- 	CRASHTYPE(FORTIFIED_STRSCPY),
--#ifdef CONFIG_X86_32
- 	CRASHTYPE(DOUBLE_FAULT),
--#endif
- #ifdef CONFIG_PPC_BOOK3S_64
- 	CRASHTYPE(PPC_SLB_MULTIHIT),
- #endif
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -229,8 +229,10 @@ int seq_buf_putmem_hex(struct seq_buf *s
+ 
+ 	WARN_ON(s->size == 0);
+ 
++	BUILD_BUG_ON(MAX_MEMHEX_BYTES * 2 >= HEX_CHARS);
++
+ 	while (len) {
+-		start_len = min(len, HEX_CHARS - 1);
++		start_len = min(len, MAX_MEMHEX_BYTES);
+ #ifdef __BIG_ENDIAN
+ 		for (i = 0, j = 0; i < start_len; i++) {
+ #else
 
 
