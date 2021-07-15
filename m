@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5633A3CA97D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C823CABB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241387AbhGOTG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:06:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60762 "EHLO mail.kernel.org"
+        id S244468AbhGOTWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:22:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241183AbhGOS4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1F3613D6;
-        Thu, 15 Jul 2021 18:53:45 +0000 (UTC)
+        id S239286AbhGOTGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:06:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF6B36141E;
+        Thu, 15 Jul 2021 19:02:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375226;
-        bh=19ICkVh5it/5+IOgolq39gZO6qVQRuxNYNevM4zbGJ4=;
+        s=korg; t=1626375757;
+        bh=nA0u2vSnDAToGgwNOLeswbRytUAFyY7uC47mcXzBRyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ker7jAl5b4VZJvQB1BJ6iXsp5yxJqg4XBW4cCVScmb+qVZb7X2GhbqoV76hG9XNw5
-         P+pVVcfz31r3wwLry+W7t0vzfn33U4YHiBTECpIhF1M1VtcHvCSXK80EZ7dJuqTTGd
-         a+Lvf9BuIunNLA2d/s7QQAk/8orFxqbNHdkgEWkE=
+        b=KRvGWvKqLA5dI+QQrxVg+yApIQ3kqEdffETBzS9Y/zzJg9RbTvYghgiwpG77uGECI
+         SLJYTfnzeQcap+SiEptXeUu0xfBPqr6AVH5se0ycrwQht9vByh9cg90y39+iIpDdn5
+         6MQ5po5L9YMgYVSAAN5Ei4ZsgvGQabGkx6wIqyrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: [PATCH 5.10 213/215] smackfs: restrict bytes count in smk_set_cipso()
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.12 223/242] media: dtv5100: fix control-request directions
 Date:   Thu, 15 Jul 2021 20:39:45 +0200
-Message-Id: <20210715182636.747467525@linuxfoundation.org>
+Message-Id: <20210715182632.248506194@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Johan Hovold <johan@kernel.org>
 
-commit 49ec114a6e62d8d320037ce71c1aaf9650b3cafd upstream.
+commit 8c8b9a9be2afa8bd6a72ad1130532baab9fab89d upstream.
 
-Oops, I failed to update subject line.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
->From 07571157c91b98ce1a4aa70967531e64b78e8346 Mon Sep 17 00:00:00 2001
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Date: Mon, 12 Apr 2021 22:25:06 +0900
-Subject: [PATCH 5.10 213/215] smackfs: restrict bytes count in smk_set_cipso()
+Fix the control requests which erroneously used usb_rcvctrlpipe().
 
-Commit 7ef4c19d245f3dc2 ("smackfs: restrict bytes count in smackfs write
-functions") missed that count > SMK_CIPSOMAX check applies to only
-format == SMK_FIXED24_FMT case.
-
-Reported-by: syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Fixes: 8466028be792 ("V4L/DVB (8734): Initial support for AME DTV-5100 USB2.0 DVB-T")
+Cc: stable@vger.kernel.org      # 2.6.28
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/smack/smackfs.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/usb/dvb-usb/dtv5100.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -855,6 +855,8 @@ static ssize_t smk_set_cipso(struct file
- 	if (format == SMK_FIXED24_FMT &&
- 	    (count < SMK_CIPSOMIN || count > SMK_CIPSOMAX))
- 		return -EINVAL;
-+	if (count > PAGE_SIZE)
-+		return -EINVAL;
+--- a/drivers/media/usb/dvb-usb/dtv5100.c
++++ b/drivers/media/usb/dvb-usb/dtv5100.c
+@@ -26,6 +26,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 			   u8 *wbuf, u16 wlen, u8 *rbuf, u16 rlen)
+ {
+ 	struct dtv5100_state *st = d->priv;
++	unsigned int pipe;
+ 	u8 request;
+ 	u8 type;
+ 	u16 value;
+@@ -34,6 +35,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 	switch (wlen) {
+ 	case 1:
+ 		/* write { reg }, read { value } */
++		pipe = usb_rcvctrlpipe(d->udev, 0);
+ 		request = (addr == DTV5100_DEMOD_ADDR ? DTV5100_DEMOD_READ :
+ 							DTV5100_TUNER_READ);
+ 		type = USB_TYPE_VENDOR | USB_DIR_IN;
+@@ -41,6 +43,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 		break;
+ 	case 2:
+ 		/* write { reg, value } */
++		pipe = usb_sndctrlpipe(d->udev, 0);
+ 		request = (addr == DTV5100_DEMOD_ADDR ? DTV5100_DEMOD_WRITE :
+ 							DTV5100_TUNER_WRITE);
+ 		type = USB_TYPE_VENDOR | USB_DIR_OUT;
+@@ -54,7 +57,7 @@ static int dtv5100_i2c_msg(struct dvb_us
  
- 	data = memdup_user_nul(buf, count);
- 	if (IS_ERR(data))
+ 	memcpy(st->data, rbuf, rlen);
+ 	msleep(1); /* avoid I2C errors */
+-	return usb_control_msg(d->udev, usb_rcvctrlpipe(d->udev, 0), request,
++	return usb_control_msg(d->udev, pipe, request,
+ 			       type, value, index, st->data, rlen,
+ 			       DTV5100_USB_TIMEOUT);
+ }
+@@ -141,7 +144,7 @@ static int dtv5100_probe(struct usb_inte
+ 
+ 	/* initialize non qt1010/zl10353 part? */
+ 	for (i = 0; dtv5100_init[i].request; i++) {
+-		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
++		ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+ 				      dtv5100_init[i].request,
+ 				      USB_TYPE_VENDOR | USB_DIR_OUT,
+ 				      dtv5100_init[i].value,
 
 
