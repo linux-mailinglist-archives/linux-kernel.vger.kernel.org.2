@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1933C9A68
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A013C9A64
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240666AbhGOIWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 04:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232568AbhGOIWm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 04:22:42 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09F6C06175F;
-        Thu, 15 Jul 2021 01:19:49 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso3501671pjp.5;
-        Thu, 15 Jul 2021 01:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E1r2M9qlATX1/79jz2l+ymskeoXA9h+PcZ2ca6/n34o=;
-        b=jtgMOGkqqw+vOJ+t3+o3wTS+9Z1k34ju3mvZxn/7HxptmbXYo6xcg2QlTpwajGlDAY
-         FJkqGOzWEsaqGcT+yELG8R0oqZLrqAxZ29tfgk0dfmUm/tBYQclFDuXmNZM4ILIVO1Jc
-         e3oDGXGjEXq7SJ5igFusO/AJ7vK00Tg54CBPGoUP1bwh1HthlNNQPsUTC/bsyhiViUy1
-         kn0SIKkcCA930T0Ad6XwqhxS8GBtuZ4vJQzsSoL6G8FuolDx/+StFxKzkzXZbWws1YY3
-         flEA9JCqYo710jMKWSSKAo53VJaxzAY+ZJnCzx5AnszC5r0Rbnt0joRJVKEFZsilLrsI
-         LpmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E1r2M9qlATX1/79jz2l+ymskeoXA9h+PcZ2ca6/n34o=;
-        b=rDN8nkfCdATTlj1au9XwXGCrgDMg+njKL8TUlRYnSIMqVIpKRpTMSAN2Q0zHIy7EbA
-         YZC7nttxP4/vR1y2SRn5/zvTS7B9Abmk2fbQpENajTyWs/5fL/B17t1pTwb+G/Gvm7fy
-         vTtseKLTVg/SIm6MRYts8RW0ahhIqQP9tmMd7N1j/9Yu4RKaUKyGTT6Wgg9gCOIAJM1E
-         S0ryUyPDwfztDJlZMapKqQkdcD4EmqmXsxtQgkoJ16jNxvizPa8fnrxQp3wHkQSswkc1
-         Hc+AXo1P1aowOtY4xia8kzNvx2VXgUOnAb+oI5qz4SEk6KNcP80UpT7NRPCK6hwQi5en
-         tnSg==
-X-Gm-Message-State: AOAM530KARH67U4u/kJnxoxEbYcK8X9LWHzv0k5kwpdBa5xSxeIl/LTY
-        w72cHrI0dxKUxnUXH4BRlr85Fnky+kFsPm02v9c=
-X-Google-Smtp-Source: ABdhPJyLs62FEQsWmboMufwHaDM87ewRCz7YqxGw6FoE9mG97+g+11egQHlwwH5gHoZyuVrpIQFss5f6PkHLcOx6g24=
-X-Received: by 2002:a17:90b:1194:: with SMTP id gk20mr4153360pjb.181.1626337189528;
- Thu, 15 Jul 2021 01:19:49 -0700 (PDT)
+        id S240637AbhGOIWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 04:22:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232568AbhGOIWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 04:22:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77D1561183;
+        Thu, 15 Jul 2021 08:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626337170;
+        bh=x0erQbbigJxy9Ld3NKrtzpD/jdcxjRhm1Tqxclbap+0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y+iQv3zsW/c+md095zgIbme+FPYBlWFYh1qTW+6+Llku7chqjHOhjZgs6JELrJfR1
+         r5GJgzXGSbkTbOwN51DL/sqOuM+FdLiqw0dKDVTYpEjpZx5dBqPiLWfDX0gfZs540l
+         VPKubJT+iTLhwBJ4JejDlrR/T7IYKAVh3UOCnIgE=
+Date:   Thu, 15 Jul 2021 10:19:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Long Li <longli@microsoft.com>
+Cc:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [Patch v3 2/3] Drivers: hv: add Azure Blob driver
+Message-ID: <YO/vjkTD2UA5qJqG@kroah.com>
+References: <1626230722-1971-1-git-send-email-longli@linuxonhyperv.com>
+ <1626230722-1971-3-git-send-email-longli@linuxonhyperv.com>
+ <YO8deHGP7GBYQp5x@kroah.com>
+ <BY5PR21MB1506BDE89848097EF2488FB9CE139@BY5PR21MB1506.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210714064129.1321277-1-victor.liu@nxp.com> <YO6qfQMcvr9szZTJ@smile.fi.intel.com>
- <1f1b38f9c42093bea5e6a8ccb458bdf799069157.camel@nxp.com> <YO6+nkzDlNM/KJio@smile.fi.intel.com>
- <YO7AcaHyB8js9FJg@smile.fi.intel.com> <0ae047e216298e6239e39ec40a2d545ac07a7406.camel@nxp.com>
- <CAHp75VfHuBJAYqms0tx_y3qjFfJJ_ynCOkbeYchBY0CvDJBp=Q@mail.gmail.com> <CAHp75VfFx4eDF484QKXgB=rhu3AptnDvX+2C+qd+U_3atfjnjQ@mail.gmail.com>
-In-Reply-To: <CAHp75VfFx4eDF484QKXgB=rhu3AptnDvX+2C+qd+U_3atfjnjQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 15 Jul 2021 11:19:13 +0300
-Message-ID: <CAHp75VchZmbd4BquLGnCAfvNVE-8dRoUULnWUFTJjNAiLnHHBA@mail.gmail.com>
-Subject: Re: [RFC PATCH] clk: fractional-divider: Correct max_{m,n} handed
- over to rational_best_approximation()
-To:     Liu Ying <victor.liu@nxp.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR21MB1506BDE89848097EF2488FB9CE139@BY5PR21MB1506.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Mauro (below Q about sphinx and docs)
+On Wed, Jul 14, 2021 at 09:14:13PM +0000, Long Li wrote:
+> > Subject: Re: [Patch v3 2/3] Drivers: hv: add Azure Blob driver
+> > 
+> > On Tue, Jul 13, 2021 at 07:45:21PM -0700, longli@linuxonhyperv.com wrote:
+> > > From: Long Li <longli@microsoft.com>
+> > >
+> > > Azure Blob storage provides scalable and durable data storage for Azure.
+> > >
+> > (https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fazu
+> > > re.microsoft.com%2Fen-
+> > us%2Fservices%2Fstorage%2Fblobs%2F&amp;data=04%7
+> > >
+> > C01%7Clongli%40microsoft.com%7C950a81a410c54c2475a308d946ec0c09%7C
+> > 72f9
+> > >
+> > 88bf86f141af91ab2d7cd011db47%7C1%7C0%7C637618801920394272%7CUnk
+> > nown%7C
+> > >
+> > TWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiL
+> > CJXVC
+> > >
+> > I6Mn0%3D%7C1000&amp;sdata=iLDP6EYsoCDlLvToJB31hIQxW3NdCnR0UH31
+> > FRDwvRI%
+> > > 3D&amp;reserved=0)
+> > >
+> > > This driver adds support for accelerated access to Azure Blob storage.
+> > > As an alternative to REST APIs, it provides a fast data path that uses
+> > > host native network stack and secure direct data link for storage server
+> > access.
+> > 
+> > So it goes around the block layer?  Why?
+> 
+> Azure Blob is object-oriented storage solution designed for cloud environments.
+> While it's entirely possible to go through block layer, it's not as efficient as using
+> its native APIs for data access. Some of the security features (authentication, 
+> tokens, lifecycle management) are not easily integrated into block layer. The
+> object model in Azure Blob is designed to be scalable and doesn't have many
+> limitations that block layer enforces (e.g. number of sectors).
 
-On Thu, Jul 15, 2021 at 11:14 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Thu, Jul 15, 2021 at 11:02 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
+What does the kernel's filesystem and block developers and maintainers
+think about this end-run around that subsystem?  Do they agree with this
+one-off-custom-ioctl api?  Who has reviewed this api to assure you that
+it is sane and actually works properly?
 
-...
+And are you sure that the block layer is not efficient?  You just lost
+all use of caching and io_uring and loads of other kernel infrastructure
+that has been developed and relied on for decades.  You also just
+abandoned the POSIX model and forced people to use a
+random-custom-library just to access their storage devices, breaking all
+existing programs in the world.
 
-> Now I realize one more item which is missed in the big picture.
-> When we have overflowed the denominator (n) and shifted the values, we
-> are expecting that the caller will check the rate and use another
-> 2^scale (see (6) below) prescaler if needed to drop frequency to the
-> needed values. The first few users of this were the drivers of the IPs
-> which have an additional prescaler themselves. I dunno if there is any
-> flag in CCF to show that the set frequency is 2^scale higher than
-> asked.
->
-> It means if
->
->         r_o / r_u >> N_lim (5)
->
-> we will get m and n *saturated* without this snipped, while with it
-> they will be much much better with a nuance that resulting frequency
-> is shifted left by
->
->         scale = ln2(r_o/r_u) - nlim (6)
->
-> scale bits.
+What programs today use this new api?  Where is the api published and
+what ensures that it will remain stable?  What happens when it changes
+over time, do we have to rebuild all userspace applications?  What
+happens to the kernel code over time, how do you handle changes to the
+api there?
 
-I think I have at some point to introduce a documentation and explain
-all this from the thread there.
+You are going to need a lot of people to agree that this is ok to
+circumvent in order to allow this to be accepted, have you done that
+yet?
 
-Mauro, is sphinx capable of producing TeX formulas?
+> Please refer to this link for different storage models in Azure:
+> https://docs.microsoft.com/en-us/azure/storage/common/storage-introduction#core-storage-services
 
--- 
-With Best Regards,
-Andy Shevchenko
+Links are not good for changelogs as the kernel changelog is for
+forever, while random company urls we have no control over.
+
+thanks,
+
+greg k-h
