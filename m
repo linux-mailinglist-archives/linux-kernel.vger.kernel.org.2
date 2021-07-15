@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC03B3CACCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283B23CACDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345262AbhGOToq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:44:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51284 "EHLO mail.kernel.org"
+        id S244557AbhGOTqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:46:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244837AbhGOTPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:15:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85FA76141D;
-        Thu, 15 Jul 2021 19:11:41 +0000 (UTC)
+        id S242871AbhGOTPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:15:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E46160FF4;
+        Thu, 15 Jul 2021 19:12:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376302;
-        bh=OSCJ7Nc1IxcH8xx6U5OG5FjvhGPZcW7dI1JL+GUw39Y=;
+        s=korg; t=1626376327;
+        bh=/90fiOXrGHLe77dycWdZCTCuRQWKsBP2W2WUifJhfkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KEXHIl7u4wL6Rz16qr5k142dpQQi/cLTG9rk4kwgScBnMPaw+8VnPSRcDokveT79r
-         oUz1uX3nRUOVhMltGwn3C28z/8qdBlBIxe4Q4tCb5W6GivF/AIpO40EVNOoHzlwilT
-         iV23uTYM3v7e/Oy5HW93CkxhI93782R2UObV2qX8=
+        b=dsnR7Mo17dDIqtoSgx7tAKrAXcPjikAUjLXZa/Jh0Kll0XAeO8NCOX/hKUXgBYV2q
+         Wba30HjuCmQ+6WEJn8NGGzp5D05z2DgnnW3FI87wlkX0FLinxZsZSzwMRYaz4TeI8L
+         yLVycHTavP8u48seah+Xb86qkyLloHPQLLC54ZuQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.13 206/266] drm/i915/display: Do not zero past infoframes.vsc
-Date:   Thu, 15 Jul 2021 20:39:21 +0200
-Message-Id: <20210715182646.349674659@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.13 207/266] mmc: sdhci-acpi: Disable write protect detection on Toshiba Encore 2 WT8-B
+Date:   Thu, 15 Jul 2021 20:39:22 +0200
+Message-Id: <20210715182646.487320475@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -40,39 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 07b72960d2b4a087ff2445e286159e69742069cc upstream.
+commit 94ee6782e045645abd9180ab9369b01293d862bd upstream.
 
-intel_dp_vsc_sdp_unpack() was using a memset() size (36, struct dp_sdp)
-larger than the destination (24, struct drm_dp_vsc_sdp), clobbering
-fields in struct intel_crtc_state after infoframes.vsc. Use the actual
-target size for the memset().
+On the Toshiba Encore 2 WT8-B the  microSD slot always reports the card
+being write-protected even though microSD cards do not have a write-protect
+switch at all.
 
-Fixes: 1b404b7dbb10 ("drm/i915/dp: Read out DP SDPs")
+Add a new DMI_QUIRK_SD_NO_WRITE_PROTECT quirk entry to sdhci-acpi.c's
+DMI quirk table for this.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20210503092157.5689-1-hdegoede@redhat.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: José Roberto de Souza <jose.souza@intel.com>
-Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210617213301.1824728-1-keescook@chromium.org
-(cherry picked from commit c88e2647c5bb45d04dc4302018ebe6ebbf331823)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/display/intel_dp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-acpi.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -2850,7 +2850,7 @@ static int intel_dp_vsc_sdp_unpack(struc
- 	if (size < sizeof(struct dp_sdp))
- 		return -EINVAL;
+--- a/drivers/mmc/host/sdhci-acpi.c
++++ b/drivers/mmc/host/sdhci-acpi.c
+@@ -822,6 +822,17 @@ static const struct dmi_system_id sdhci_
+ 		},
+ 		.driver_data = (void *)DMI_QUIRK_SD_NO_WRITE_PROTECT,
+ 	},
++	{
++		/*
++		 * The Toshiba WT8-B's microSD slot always reports the card being
++		 * write-protected.
++		 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "TOSHIBA ENCORE 2 WT8-B"),
++		},
++		.driver_data = (void *)DMI_QUIRK_SD_NO_WRITE_PROTECT,
++	},
+ 	{} /* Terminating entry */
+ };
  
--	memset(vsc, 0, size);
-+	memset(vsc, 0, sizeof(*vsc));
- 
- 	if (sdp->sdp_header.HB0 != 0)
- 		return -EINVAL;
 
 
