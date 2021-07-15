@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE5A3C996D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BABE3C9975
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240244AbhGOHPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37558 "EHLO
+        id S239839AbhGOHRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239259AbhGOHO6 (ORCPT
+        with ESMTP id S236350AbhGOHRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:14:58 -0400
-Received: from mxout4.routing.net (mxout4.routing.net [IPv6:2a03:2900:1:a::9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21311C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:12:06 -0700 (PDT)
-Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
-        by mxout4.routing.net (Postfix) with ESMTP id CFAD11008A2;
-        Thu, 15 Jul 2021 07:12:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1626333124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=bHCbwCI5MpbahEdZ+ZAHQEIG0Qqobtp7he3SCKGjng4=;
-        b=UZUcYAROrcxiZ4qtTYQi8LA4YUQLgFnIF9U7QtMoI6bCOudaAFgjKITsbnZAIgaTV/JdPb
-        7AG/U/I8x8rYv7Aiu3iRaFl4yFrXbjRerIQiiv/GyG6VCUAQgaS2+NQUS2epxEChEEbMfg
-        M/uPVC4nbhNRnOoWQ3Dy/MyF30X37RA=
-Received: from localhost.localdomain (fttx-pool-80.245.79.66.bambit.de [80.245.79.66])
-        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id 9C17B3606AA;
-        Thu, 15 Jul 2021 07:12:01 +0000 (UTC)
-From:   Frank Wunderlich <linux@fw-web.de>
-To:     iommu@lists.linux-foundation.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, yong.wu@mediatek.com
-Subject: [PATCH] iommu: check if group is NULL before remove device
-Date:   Thu, 15 Jul 2021 09:11:50 +0200
-Message-Id: <20210715071150.82157-1-linux@fw-web.de>
-X-Mailer: git-send-email 2.25.1
+        Thu, 15 Jul 2021 03:17:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0C2C06175F;
+        Thu, 15 Jul 2021 00:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Nthw7+H9DsL3CqcVPXgloMpkXopb6k/WOK6hCfAUI9E=; b=Yf5fDEh/TbD3agyP0vCxl08zZk
+        VxIVuUOtkRIotrEii4sjruD/CK52P0fMofWhTiSQF0W9GJbjsKHc7xMT4Hxyt8UbMJynwnmza9AIa
+        uSnR+JA68HQ1w1H4nWotj1TORoXTli9/2s4yiDMkD4c0We/pLGidninGkJBsCBt3t7wIMtFgDjtGX
+        LgwFgGoR18bggom19evLRe+N0KYCqoqcZgwclLF21d09GnyJX8UU9VPAgADErdMiVwsfSMSMc82AW
+        GcalPNYUjjyHY9/xqgzKCEMfVmnJJoolCIyLmCm5V7aq2Va9owd6CnSHY/kVOKJGPD0uNeUajGpiM
+        6o6mztkw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3vXJ-0035SQ-FE; Thu, 15 Jul 2021 07:12:26 +0000
+Date:   Thu, 15 Jul 2021 08:11:57 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
+        osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] block: skip queue if NULL on blk_cleanup_queue()
+Message-ID: <YO/fvbe5LeAP2Mtq@infradead.org>
+References: <20210715045531.420201-1-mcgrof@kernel.org>
+ <20210715045531.420201-7-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mail-ID: c6a9bf0f-a649-438f-8b8f-4f345d6069d2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715045531.420201-7-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+On Wed, Jul 14, 2021 at 09:55:31PM -0700, Luis Chamberlain wrote:
+> Now that error handling for add_disk*() calls is added, we must
+> accept a common form for when errors are detected on the the
+> add_disk*() calls, and that is to call blk_cleanup_disk() on
+> error always. One of the corner cases possible is a driver bug
+> where the queue is already gone and we cannot blk_get_queue(),
+> and so may be NULL. When blk_cleanup_disk() is called in this
+> case blk_cleanup_queue() will crash with a null dereference.
+> 
+> Make this an accepted condition and just skip it. This allows us
+> to also test for it safely with error injection.
 
-if probe is failing, iommu_group may be not initialized,
-so freeing it will result in NULL pointer access
+So you plan to call blk_cleanup_disk when add_disk fails?
 
-Fixes: d72e31c93746 ("iommu: IOMMU Groups")
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
----
- drivers/iommu/iommu.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 5419c4b9f27a..63f0af10c403 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -924,6 +924,9 @@ void iommu_group_remove_device(struct device *dev)
- 	struct iommu_group *group = dev->iommu_group;
- 	struct group_device *tmp_device, *device = NULL;
- 
-+	if (!group)
-+		return;
-+
- 	dev_info(dev, "Removing from iommu group %d\n", group->id);
- 
- 	/* Pre-notify listeners that a device is being removed. */
--- 
-2.25.1
-
+For all drivers using blk_alloc_disk/blk_mq_alloc_disk there should
+always be a queue.  The others ones aren't ready to handle errors
+from add_disk yet in any way I think (and I plan to fix this up
+ASAP).
