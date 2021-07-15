@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360473CA987
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AB93CABCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241639AbhGOTHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:07:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33848 "EHLO mail.kernel.org"
+        id S245698AbhGOTYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:24:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242216AbhGOS44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF151613CF;
-        Thu, 15 Jul 2021 18:54:01 +0000 (UTC)
+        id S241077AbhGOTHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:07:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46117613F9;
+        Thu, 15 Jul 2021 19:03:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375242;
-        bh=UG+xe0gmkJyUMV6rYwQSTi0E/RhmITZ7uSIMV8LI6cM=;
+        s=korg; t=1626375808;
+        bh=SC0SrYxpAj381JD7DFm4xcmROiC9Ok/KwUycPC30xhc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XdeiihRtKMHLEt0QVxhPZzYqvrHQsb1nQAzyG2qIWCHPDloBkMwh9Ka5+nX6ISNyE
-         GQ7oPSwKuFngGPDFl0rOmbcE2qMHcIGu7wD5Rb7ZBZI/3U6Y2TspZxNFvIPcbcTFsP
-         a+G9AWA3d4PyrSvsd/V12t9kxBCxuTitO99QlsPQ=
+        b=VOq9UWkOGkjR6sEyZ5JGbIV8QfaF+n7zdHFgCXYEp9mCS5BUMQ+dBLnQT6L4ITd7A
+         KeErOCiGWUioSMDLLvAbAH2L1/dCunARm8jwy6l8q3r9NMWnw213PM1fxOdZqfk/RC
+         Dxo1SNeg5wk3TF20kHQo6bz7KmjV7Zdk/oyEfhQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Konstantin Kharlamov <Hi-Angel@yandex.ru>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 5.10 198/215] PCI: Leave Apple Thunderbolt controllers on for s2idle or standby
+        stable@vger.kernel.org, Yun Zhou <yun.zhou@windriver.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.12 208/242] seq_buf: Fix overflow in seq_buf_putmem_hex()
 Date:   Thu, 15 Jul 2021 20:39:30 +0200
-Message-Id: <20210715182634.175714720@linuxfoundation.org>
+Message-Id: <20210715182629.880367460@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,65 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Kharlamov <Hi-Angel@yandex.ru>
+From: Yun Zhou <yun.zhou@windriver.com>
 
-commit 4694ae373dc2114f9a82f6ae15737e65af0c6dea upstream.
+commit d3b16034a24a112bb83aeb669ac5b9b01f744bb7 upstream.
 
-On Macbook 2013, resuming from suspend-to-idle or standby resulted in the
-external monitor no longer being detected, a stacktrace, and errors like
-this in dmesg:
+There's two variables being increased in that loop (i and j), and i
+follows the raw data, and j follows what is being written into the buffer.
+We should compare 'i' to MAX_MEMHEX_BYTES or compare 'j' to HEX_CHARS.
+Otherwise, if 'j' goes bigger than HEX_CHARS, it will overflow the
+destination buffer.
 
-  pcieport 0000:06:00.0: can't change power state from D3hot to D0 (config space inaccessible)
+Link: https://lore.kernel.org/lkml/20210625122453.5e2fe304@oasis.local.home/
+Link: https://lkml.kernel.org/r/20210626032156.47889-1-yun.zhou@windriver.com
 
-The reason is that we know how to turn power to the Thunderbolt controller
-*off* via the SXIO/SXFP/SXLF methods, but we don't know how to turn power
-back on.  We have to rely on firmware to turn the power back on.
-
-When going to the "suspend-to-idle" or "standby" system sleep states,
-firmware is not involved either on the suspend side or the resume side, so
-we can't use SXIO/SXFP/SXLF to turn the power off.
-
-Skip SXIO/SXFP/SXLF when firmware isn't involved in suspend, e.g., when
-we're going to the "suspend-to-idle" or "standby" system sleep states.
-
-Fixes: 1df5172c5c25 ("PCI: Suspend/resume quirks for Apple thunderbolt")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212767
-Link: https://lore.kernel.org/r/20210520235501.917397-1-Hi-Angel@yandex.ru
-Signed-off-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Lukas Wunner <lukas@wunner.de>
 Cc: stable@vger.kernel.org
+Fixes: 5e3ca0ec76fce ("ftrace: introduce the "hex" output method")
+Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/quirks.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ lib/seq_buf.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -27,6 +27,7 @@
- #include <linux/nvme.h>
- #include <linux/platform_data/x86/apple.h>
- #include <linux/pm_runtime.h>
-+#include <linux/suspend.h>
- #include <linux/switchtec.h>
- #include <asm/dma.h>	/* isa_dma_bridge_buggy */
- #include "pci.h"
-@@ -3667,6 +3668,16 @@ static void quirk_apple_poweroff_thunder
- 		return;
- 	if (pci_pcie_type(dev) != PCI_EXP_TYPE_UPSTREAM)
- 		return;
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -229,8 +229,10 @@ int seq_buf_putmem_hex(struct seq_buf *s
+ 
+ 	WARN_ON(s->size == 0);
+ 
++	BUILD_BUG_ON(MAX_MEMHEX_BYTES * 2 >= HEX_CHARS);
 +
-+	/*
-+	 * SXIO/SXFP/SXLF turns off power to the Thunderbolt controller.
-+	 * We don't know how to turn it back on again, but firmware does,
-+	 * so we can only use SXIO/SXFP/SXLF if we're suspending via
-+	 * firmware.
-+	 */
-+	if (!pm_suspend_via_firmware())
-+		return;
-+
- 	bridge = ACPI_HANDLE(&dev->dev);
- 	if (!bridge)
- 		return;
+ 	while (len) {
+-		start_len = min(len, HEX_CHARS - 1);
++		start_len = min(len, MAX_MEMHEX_BYTES);
+ #ifdef __BIG_ENDIAN
+ 		for (i = 0, j = 0; i < start_len; i++) {
+ #else
 
 
