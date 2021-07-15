@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FE03CAD72
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2D83CAD6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344692AbhGOUBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:01:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46460 "EHLO mail.kernel.org"
+        id S1343863AbhGOUBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:01:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245416AbhGOT6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245422AbhGOT6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:58:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B60561167;
-        Thu, 15 Jul 2021 19:54:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF22D613C9;
+        Thu, 15 Jul 2021 19:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626378890;
-        bh=lerGOnSYus8vIfj3B0eHBWlmQtEDko6BAArnD5ahpKQ=;
+        s=k20201202; t=1626378893;
+        bh=cqaP2qSL289NbVmzp2jQGNpJC6oOR6ORaU2+jb0bmTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a2j9+GRBV9nnUWslh3DPNNioYvy2UxkrDMBfd50OuzarhVfs30B0NbgwDXnlviIdi
-         A6mNbI7FhMcltcYrDt3AxDpH7JXWkx09u1N6Ddshb8QbBcYdUNQx9I+j3ZOiLQWq4s
-         rVQyrqi6tvOHyS3CETrMomGBaqeK7P3DyH0wb5vro4DfRy3dMFUN6Uz9itY41Kif3O
-         zKMCgG26pTGPUcu2e6HEwIu7Inw81WpTjPeh9br6nb23b544FY9uBmX1mA4ehn6BLc
-         Yc5g6gE1sBNJJtW5f0/XAEOioXyOzcRBaG7A5JTH39YzjcFVkzh2lR0FVMmRDGzkao
-         Ha4FdgbXEcCfg==
+        b=mIUjIXhdRDbiTxDSNrTBHTDwvicprpO59NDPscKol2GkYZ8YlmnEdD87UF4yZ6zOm
+         1w/yCmrxa6JRg3eKT1nMrq+hxQRe8r4B4N/A88uFej2/OL7KhPvtqeYHv3vYaqmFZP
+         zZfJHlhQMcXnaiEf+OBvQeYXD4DhmEbtN6WAUV6CNbVzjAmgWadBcSgqtgICIElhyb
+         +6/ZWycEtHkBD9pDppr85uuUZiWfM7OAOynXnQxmZaBmcKlfMQvL4DCSPWfTYXFHX1
+         eGhG4ciXt4oVoCW5M8QzCqRzfha4n5zPR3tm1MZzIjW4ody1FoqRYU14A4WN/quWSg
+         h+UJ1wLQ9zmhQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Vincent Pelletier <plr.vincent@gmail.com>,
-        Support Opensource <support.opensource@diasemi.com>,
+To:     Jaroslav Kysela <perex@perex.cz>,
         Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        Colin King <colin.king@canonical.com>
+Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6] regulator: da9063: Add support for full-current mode.
-Date:   Thu, 15 Jul 2021 20:54:01 +0100
-Message-Id: <162637868447.27563.13293081169063391335.b4-ty@kernel.org>
+Subject: Re: [PATCH] ASoC: codecs: lpass-rx-macro: clean up for-loop indentation in switch statement
+Date:   Thu, 15 Jul 2021 20:54:02 +0100
+Message-Id: <162637837991.27358.2893417037818285699.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <824518e6391b783a12eba9ff0527f06607a34bfb.1626160826.git.plr.vincent@gmail.com>
-References: <824518e6391b783a12eba9ff0527f06607a34bfb.1626160826.git.plr.vincent@gmail.com>
+In-Reply-To: <20210709152424.460446-1-colin.king@canonical.com>
+References: <20210709152424.460446-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,26 +43,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 07:20:31 +0000, Vincent Pelletier wrote:
-> In addition to the ability of merging some power outputs, this chip has
-> an overdrive mode.
-> BCORE1, BCORE2 and BPRO have this ability, in which case the legal
-> current draw is increased from 2 amps to 2.5 amps (at the expense of
-> a quiescent current increase), and the configurable current limits
-> are doubled.
-> If a current higher than maximum half-current mode is requested, enable
-> overdrive, and scale the current limit down.
-> Symmetrically, scale the current limit up when querying a overdrive-enabled
-> regulator.
+On Fri, 9 Jul 2021 16:24:24 +0100, Colin King wrote:
+> The for-loop is not indented enough and needs one more level
+> of indentation. Add in the indentation across the block of code.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] regulator: da9063: Add support for full-current mode.
-      commit: 541ee8f640327f951e7039278057827322231ab0
+[1/1] ASoC: codecs: lpass-rx-macro: clean up for-loop indentation in switch statement
+      commit: 622d9ac3d969d0f62bbe68f4844bb5b8adea5a40
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
