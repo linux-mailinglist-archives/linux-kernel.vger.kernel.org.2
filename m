@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FA83CABEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A213CA959
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343606AbhGOTYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46340 "EHLO mail.kernel.org"
+        id S243000AbhGOTGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:06:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242114AbhGOTHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:07:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 883A4613D0;
-        Thu, 15 Jul 2021 19:03:37 +0000 (UTC)
+        id S241896AbhGOS4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B007613CC;
+        Thu, 15 Jul 2021 18:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375818;
-        bh=oDj4QzskaiCbEtmnzszlg04IE4Xh1gAq207OnqONIEU=;
+        s=korg; t=1626375197;
+        bh=nA0u2vSnDAToGgwNOLeswbRytUAFyY7uC47mcXzBRyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KdcFFyw0ZOfN8Y3BfcFcgxWJS3rPTcyDcKnHL+KTgS6L/ofJPwsS8r0/niKs8bMO/
-         6013VMJzU/P7SIhmY9a1DB5v27u5DZjRtx+A7FekIZo9CcCDMyIDN5o7t9gXu6U+20
-         8ruc2UwfRU3GFTEN+c83R3Yn6R//r8etG+4Tsq5c=
+        b=uWGlOHNC11Vh5rqPG8rENPPQNWgseYEw28Cc1BGo9GlVuyFIO/S9JkadW8FjNmTYb
+         orB4WFDpJFoN5bfajjTTTIbreMiejWvPgNN79ZfIpQA5ZH99gYpwED8dfRYeptLTtZ
+         Ogxm45b64SCZhwnEj+srZaigWfABxgC23D1eyMIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH 5.12 212/242] ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.10 202/215] media: dtv5100: fix control-request directions
 Date:   Thu, 15 Jul 2021 20:39:34 +0200
-Message-Id: <20210715182630.516082374@linuxfoundation.org>
+Message-Id: <20210715182634.861456233@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Johan Hovold <johan@kernel.org>
 
-commit 9272e5d0028d45a3b45b58c9255e6e0df53f7ad9 upstream.
+commit 8c8b9a9be2afa8bd6a72ad1130532baab9fab89d upstream.
 
-In the out_err_bus_register error branch of tpci200_pci_probe,
-tpci200->info->cfg_regs is freed by tpci200_uninstall()->
-tpci200_unregister()->pci_iounmap(..,tpci200->info->cfg_regs)
-in the first time.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-But later, iounmap() is called to free tpci200->info->cfg_regs
-again.
+Fix the control requests which erroneously used usb_rcvctrlpipe().
 
-My patch sets tpci200->info->cfg_regs to NULL after tpci200_uninstall()
-to avoid the double free.
-
-Fixes: cea2f7cdff2af ("Staging: ipack/bridges/tpci200: Use the TPCI200 in big endian mode")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Link: https://lore.kernel.org/r/20210524093205.8333-1-lyl2019@mail.ustc.edu.cn
+Fixes: 8466028be792 ("V4L/DVB (8734): Initial support for AME DTV-5100 USB2.0 DVB-T")
+Cc: stable@vger.kernel.org      # 2.6.28
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ipack/carriers/tpci200.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb/dtv5100.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/ipack/carriers/tpci200.c
-+++ b/drivers/ipack/carriers/tpci200.c
-@@ -596,8 +596,11 @@ static int tpci200_pci_probe(struct pci_
+--- a/drivers/media/usb/dvb-usb/dtv5100.c
++++ b/drivers/media/usb/dvb-usb/dtv5100.c
+@@ -26,6 +26,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 			   u8 *wbuf, u16 wlen, u8 *rbuf, u16 rlen)
+ {
+ 	struct dtv5100_state *st = d->priv;
++	unsigned int pipe;
+ 	u8 request;
+ 	u8 type;
+ 	u16 value;
+@@ -34,6 +35,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 	switch (wlen) {
+ 	case 1:
+ 		/* write { reg }, read { value } */
++		pipe = usb_rcvctrlpipe(d->udev, 0);
+ 		request = (addr == DTV5100_DEMOD_ADDR ? DTV5100_DEMOD_READ :
+ 							DTV5100_TUNER_READ);
+ 		type = USB_TYPE_VENDOR | USB_DIR_IN;
+@@ -41,6 +43,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 		break;
+ 	case 2:
+ 		/* write { reg, value } */
++		pipe = usb_sndctrlpipe(d->udev, 0);
+ 		request = (addr == DTV5100_DEMOD_ADDR ? DTV5100_DEMOD_WRITE :
+ 							DTV5100_TUNER_WRITE);
+ 		type = USB_TYPE_VENDOR | USB_DIR_OUT;
+@@ -54,7 +57,7 @@ static int dtv5100_i2c_msg(struct dvb_us
  
- out_err_bus_register:
- 	tpci200_uninstall(tpci200);
-+	/* tpci200->info->cfg_regs is unmapped in tpci200_uninstall */
-+	tpci200->info->cfg_regs = NULL;
- out_err_install:
--	iounmap(tpci200->info->cfg_regs);
-+	if (tpci200->info->cfg_regs)
-+		iounmap(tpci200->info->cfg_regs);
- out_err_ioremap:
- 	pci_release_region(pdev, TPCI200_CFG_MEM_BAR);
- out_err_pci_request:
+ 	memcpy(st->data, rbuf, rlen);
+ 	msleep(1); /* avoid I2C errors */
+-	return usb_control_msg(d->udev, usb_rcvctrlpipe(d->udev, 0), request,
++	return usb_control_msg(d->udev, pipe, request,
+ 			       type, value, index, st->data, rlen,
+ 			       DTV5100_USB_TIMEOUT);
+ }
+@@ -141,7 +144,7 @@ static int dtv5100_probe(struct usb_inte
+ 
+ 	/* initialize non qt1010/zl10353 part? */
+ 	for (i = 0; dtv5100_init[i].request; i++) {
+-		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
++		ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+ 				      dtv5100_init[i].request,
+ 				      USB_TYPE_VENDOR | USB_DIR_OUT,
+ 				      dtv5100_init[i].value,
 
 
