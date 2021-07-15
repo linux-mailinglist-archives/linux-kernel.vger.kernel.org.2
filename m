@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED013CA7DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5770C3CA5AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240788AbhGOS4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54496 "EHLO mail.kernel.org"
+        id S229797AbhGOSnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:43:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231390AbhGOSvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:51:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76D76613EB;
-        Thu, 15 Jul 2021 18:48:25 +0000 (UTC)
+        id S229506AbhGOSny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:43:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE55C613CC;
+        Thu, 15 Jul 2021 18:40:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374905;
-        bh=sw1Mjaqo8v/gCUu1GMZxhFsM9wftk0TLQ674ix8g2fA=;
+        s=korg; t=1626374460;
+        bh=7B8J8Q6iAZvGAEwKlJhNjZzre+LVz0+Y/y5z3CsLS90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xfeKKiAQctwtsQuMghtALdan2JtIwIhlcnNlW/3c3n56SEjjpjm8OLDKroUbj6Z2n
-         1U8OuIosiRORc75ngBvcT0ctHMgqrjfmi2cPnNdk9EBop5Mlga1Jo4GoimT37AZgY3
-         1q4EEoy/XGxYhtfshcSXrpgjkUhHdBrOEO6K5z9Q=
+        b=0Jt184s8adKjwrSU+MJWnlYQdWJoM9gL5UZC5vjXOOuC/5pu1qq8Uz9Yk4d3V4mQE
+         p0kU2ivY66BAuofcqeNWt89M6rm/UPNaQ2Z3IvwwzST5UUIBCh2PdfZwtg0tZzSICL
+         UlEf0baPy3zb0FHKEttNSHYIus3zkcmRYlhcsRrQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        Mark Yacoub <markyacoub@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Stefan Agner <stefan@agner.ch>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 076/215] drm/amd/display: Verify Gamma & Degamma LUT sizes in amdgpu_dm_atomic_check
+Subject: [PATCH 5.4 001/122] drm/mxsfb: Dont select DRM_KMS_FB_HELPER
 Date:   Thu, 15 Jul 2021 20:37:28 +0200
-Message-Id: <20210715182612.902107638@linuxfoundation.org>
+Message-Id: <20210715182448.859770198@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,115 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Yacoub <markyacoub@chromium.org>
+From: Thomas Zimmermann <tzimmermann@suse.de>
 
-[ Upstream commit 03fc4cf45d30533d54f0f4ebc02aacfa12f52ce2 ]
+[ Upstream commit 13b29cc3a722c2c0bc9ab9f72f9047d55d08a2f9 ]
 
-For each CRTC state, check the size of Gamma and Degamma LUTs  so
-unexpected and larger sizes wouldn't slip through.
+Selecting DRM_FBDEV_EMULATION will include the correct settings for
+fbdev emulation. Drivers should not override this.
 
-TEST: IGT:kms_color::pipe-invalid-gamma-lut-sizes
-
-v2: fix assignments in if clauses, Mark's email.
-
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-3-tzimmermann@suse.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  4 ++
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |  1 +
- .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 41 ++++++++++++++++---
- 3 files changed, 40 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/mxsfb/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index b413a7a2e92f..bdcec5b3f5e5 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8745,6 +8745,10 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 		    old_crtc_state->vrr_enabled == new_crtc_state->vrr_enabled)
- 			continue;
- 
-+		ret = amdgpu_dm_verify_lut_sizes(new_crtc_state);
-+		if (ret)
-+			goto fail;
-+
- 		if (!new_crtc_state->enable)
- 			continue;
- 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-index 1df7f1b18049..6c7235bb2f41 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-@@ -498,6 +498,7 @@ void amdgpu_dm_trigger_timing_sync(struct drm_device *dev);
- #define MAX_COLOR_LEGACY_LUT_ENTRIES 256
- 
- void amdgpu_dm_init_color_mod(void);
-+int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state);
- int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc);
- int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
- 				      struct dc_plane_state *dc_plane_state);
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-index 5df05f0d18bc..179ff4b42f20 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-@@ -284,6 +284,37 @@ static int __set_input_tf(struct dc_transfer_func *func,
- 	return res ? 0 : -ENOMEM;
- }
- 
-+/**
-+ * Verifies that the Degamma and Gamma LUTs attached to the |crtc_state| are of
-+ * the expected size.
-+ * Returns 0 on success.
-+ */
-+int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state)
-+{
-+	const struct drm_color_lut *lut = NULL;
-+	uint32_t size = 0;
-+
-+	lut = __extract_blob_lut(crtc_state->degamma_lut, &size);
-+	if (lut && size != MAX_COLOR_LUT_ENTRIES) {
-+		DRM_DEBUG_DRIVER(
-+			"Invalid Degamma LUT size. Should be %u but got %u.\n",
-+			MAX_COLOR_LUT_ENTRIES, size);
-+		return -EINVAL;
-+	}
-+
-+	lut = __extract_blob_lut(crtc_state->gamma_lut, &size);
-+	if (lut && size != MAX_COLOR_LUT_ENTRIES &&
-+	    size != MAX_COLOR_LEGACY_LUT_ENTRIES) {
-+		DRM_DEBUG_DRIVER(
-+			"Invalid Gamma LUT size. Should be %u (or %u for legacy) but got %u.\n",
-+			MAX_COLOR_LUT_ENTRIES, MAX_COLOR_LEGACY_LUT_ENTRIES,
-+			size);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * amdgpu_dm_update_crtc_color_mgmt: Maps DRM color management to DC stream.
-  * @crtc: amdgpu_dm crtc state
-@@ -317,14 +348,12 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
- 	bool is_legacy;
- 	int r;
- 
--	degamma_lut = __extract_blob_lut(crtc->base.degamma_lut, &degamma_size);
--	if (degamma_lut && degamma_size != MAX_COLOR_LUT_ENTRIES)
--		return -EINVAL;
-+	r = amdgpu_dm_verify_lut_sizes(&crtc->base);
-+	if (r)
-+		return r;
- 
-+	degamma_lut = __extract_blob_lut(crtc->base.degamma_lut, &degamma_size);
- 	regamma_lut = __extract_blob_lut(crtc->base.gamma_lut, &regamma_size);
--	if (regamma_lut && regamma_size != MAX_COLOR_LUT_ENTRIES &&
--	    regamma_size != MAX_COLOR_LEGACY_LUT_ENTRIES)
--		return -EINVAL;
- 
- 	has_degamma =
- 		degamma_lut && !__is_lut_linear(degamma_lut, degamma_size);
+diff --git a/drivers/gpu/drm/mxsfb/Kconfig b/drivers/gpu/drm/mxsfb/Kconfig
+index 0dca8f27169e..33916b7b2c50 100644
+--- a/drivers/gpu/drm/mxsfb/Kconfig
++++ b/drivers/gpu/drm/mxsfb/Kconfig
+@@ -10,7 +10,6 @@ config DRM_MXSFB
+ 	depends on COMMON_CLK
+ 	select DRM_MXS
+ 	select DRM_KMS_HELPER
+-	select DRM_KMS_FB_HELPER
+ 	select DRM_KMS_CMA_HELPER
+ 	select DRM_PANEL
+ 	help
 -- 
 2.30.2
 
