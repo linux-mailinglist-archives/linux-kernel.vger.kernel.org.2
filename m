@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292A03CACEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4813CACEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245164AbhGOTsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:48:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58176 "EHLO mail.kernel.org"
+        id S245055AbhGOTsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242862AbhGOTRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242879AbhGOTRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:17:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0560F613E9;
-        Thu, 15 Jul 2021 19:12:46 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B966613F3;
+        Thu, 15 Jul 2021 19:12:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376367;
-        bh=TywS3+8OR6jJVRM/MIr9EVIcjLg13f71Y5+XN6BhK9g=;
+        s=korg; t=1626376369;
+        bh=C1ShubNXVTEITTM499ROiCEtSal1Awt21Bbup50aTP8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hc129YW6UMHbRDuRbXfcDPAlIs7Jl6fGBa5/dkQBgKuMj4IZOX00Yw/2RtC6586o4
-         9Mj87NvmvBCDVy4hs6iJN75bg9btKh60E7H8EpDvtgLXY2/BGYRoieCtuT3/OSYxnR
-         ZX1txo9+7EojeeE6ntijktbh51oA0atXH5iALyW8=
+        b=BV693sN6JYoMGOafVLvX8F38yXnGolt7F3GXzvZCqinCiG+nw0ZTwOPlJSDy15lqL
+         Kxsfn0hojUdAfe6G8Fv3NPYUdMfBFuPPh+krLoSvbBkxivcfJc7gREZbqzYKwyhqSc
+         xD8x8hFDj42I77WKFROhp+Zl/ApoU7qaO8HguEUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.13 240/266] dm writecache: flush origin device when writing and cache is full
-Date:   Thu, 15 Jul 2021 20:39:55 +0200
-Message-Id: <20210715182650.997401987@linuxfoundation.org>
+Subject: [PATCH 5.13 241/266] dm btree remove: assign new_root only when removal succeeds
+Date:   Thu, 15 Jul 2021 20:39:56 +0200
+Message-Id: <20210715182651.114971217@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -39,62 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Hou Tao <houtao1@huawei.com>
 
-commit ee55b92a7391bf871939330f662651b54be51b73 upstream.
+commit b6e58b5466b2959f83034bead2e2e1395cca8aeb upstream.
 
-Commit d53f1fafec9d086f1c5166436abefdaef30e0363 ("dm writecache: do
-direct write if the cache is full") changed dm-writecache, so that it
-writes directly to the origin device if the cache is full.
-Unfortunately, it doesn't forward flush requests to the origin device,
-so that there is a bug where flushes are being ignored.
+remove_raw() in dm_btree_remove() may fail due to IO read error
+(e.g. read the content of origin block fails during shadowing),
+and the value of shadow_spine::root is uninitialized, but
+the uninitialized value is still assign to new_root in the
+end of dm_btree_remove().
 
-Fix this by adding missing flush forwarding.
+For dm-thin, the value of pmd->details_root or pmd->root will become
+an uninitialized value, so if trying to read details_info tree again
+out-of-bound memory may occur as showed below:
 
-For PMEM mode, we fix this bug by disabling direct writes to the origin
-device, because it performs better.
+  general protection fault, probably for non-canonical address 0x3fdcb14c8d7520
+  CPU: 4 PID: 515 Comm: dmsetup Not tainted 5.13.0-rc6
+  Hardware name: QEMU Standard PC
+  RIP: 0010:metadata_ll_load_ie+0x14/0x30
+  Call Trace:
+   sm_metadata_count_is_more_than_one+0xb9/0xe0
+   dm_tm_shadow_block+0x52/0x1c0
+   shadow_step+0x59/0xf0
+   remove_raw+0xb2/0x170
+   dm_btree_remove+0xf4/0x1c0
+   dm_pool_delete_thin_device+0xc3/0x140
+   pool_message+0x218/0x2b0
+   target_message+0x251/0x290
+   ctl_ioctl+0x1c4/0x4d0
+   dm_ctl_ioctl+0xe/0x20
+   __x64_sys_ioctl+0x7b/0xb0
+   do_syscall_64+0x40/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Fixes: d53f1fafec9d ("dm writecache: do direct write if the cache is full")
-Cc: stable@vger.kernel.org # v5.7+
+Fixing it by only assign new_root when removal succeeds
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-writecache.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/md/persistent-data/dm-btree-remove.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -1297,8 +1297,12 @@ static int writecache_map(struct dm_targ
- 			writecache_flush(wc);
- 			if (writecache_has_error(wc))
- 				goto unlock_error;
-+			if (unlikely(wc->cleaner))
-+				goto unlock_remap_origin;
- 			goto unlock_submit;
- 		} else {
-+			if (dm_bio_get_target_bio_nr(bio))
-+				goto unlock_remap_origin;
- 			writecache_offload_bio(wc, bio);
- 			goto unlock_return;
- 		}
-@@ -1377,7 +1381,7 @@ read_next_block:
- 			}
- 			e = writecache_pop_from_freelist(wc, (sector_t)-1);
- 			if (unlikely(!e)) {
--				if (!found_entry) {
-+				if (!WC_MODE_PMEM(wc) && !found_entry) {
- direct_write:
- 					e = writecache_find_entry(wc, bio->bi_iter.bi_sector, WFE_RETURN_FOLLOWING);
- 					if (e) {
-@@ -2481,7 +2485,7 @@ overflow:
- 		goto bad;
+--- a/drivers/md/persistent-data/dm-btree-remove.c
++++ b/drivers/md/persistent-data/dm-btree-remove.c
+@@ -549,7 +549,8 @@ int dm_btree_remove(struct dm_btree_info
+ 		delete_at(n, index);
  	}
  
--	ti->num_flush_bios = 1;
-+	ti->num_flush_bios = WC_MODE_PMEM(wc) ? 1 : 2;
- 	ti->flush_supported = true;
- 	ti->num_discard_bios = 1;
+-	*new_root = shadow_root(&spine);
++	if (!r)
++		*new_root = shadow_root(&spine);
+ 	exit_shadow_spine(&spine);
  
+ 	return r;
 
 
