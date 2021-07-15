@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C173C9D30
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920B53C9D38
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241672AbhGOKte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232055AbhGOKtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:49:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30C5C61380;
-        Thu, 15 Jul 2021 10:46:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626345999;
-        bh=DG3LveTVAU6PEbDuGHpdRTy1eY78W4ev4Y4ViSg12X8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWnIO3kmhnVuKJw4p6WLmqkpE8Pgqv2yTuzK6P+ux+cfORUTE9Vo6+UGuOlPgVtao
-         VdY28fLTSlIf8l2YrnwamxkP+dc8poqf1T91RLOJLtcYjZvMidL0yQCgv0n+SgrRmt
-         WKHfD4L/d7HqmC0MglaQ4MmDKtKv33oZduzKIjRE=
-Date:   Thu, 15 Jul 2021 12:46:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 129/593] crypto: qce: skcipher: Fix incorrect sg
- count for dma transfers
-Message-ID: <YPASCTljJFr07jcU@kroah.com>
-References: <20210712060843.180606720@linuxfoundation.org>
- <20210712060857.335221127@linuxfoundation.org>
- <20210714194028.GA15200@amd>
+        id S241680AbhGOKuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:50:55 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11423 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232055AbhGOKuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 06:50:54 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQWGJ3wr1zcdHc;
+        Thu, 15 Jul 2021 18:44:40 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 18:47:55 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 15 Jul
+ 2021 18:47:55 +0800
+Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
+ page_pool packets
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     Networking <netdev@vger.kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        "Jonathan Lemon" <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        "Cong Wang" <cong.wang@bytedance.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
+ <bf326953-495f-db01-e554-42f4421d237a@huawei.com>
+ <CAC_iWjLypqTGMxw_1ng1H8r5Yiv83G3yxUW8T1863XzFM-ShpA@mail.gmail.com>
+ <CAC_iWjLfsvr_Z2te=ABfEAecAOkQBiu22QZ8GhorA4MYnt4Uxg@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <401f10b2-3b92-a3f9-f01e-df2e190c8ff3@huawei.com>
+Date:   Thu, 15 Jul 2021 18:47:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714194028.GA15200@amd>
+In-Reply-To: <CAC_iWjLfsvr_Z2te=ABfEAecAOkQBiu22QZ8GhorA4MYnt4Uxg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 09:40:28PM +0200, Pavel Machek wrote:
-> Hi!
+On 2021/7/15 18:38, Ilias Apalodimas wrote:
+> On Thu, 15 Jul 2021 at 13:00, Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+>>
+>> On Thu, 15 Jul 2021 at 07:01, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>
+>>> On 2021/7/9 14:29, Ilias Apalodimas wrote:
+>>>> As Alexander points out, when we are trying to recycle a cloned/expanded
+>>>> SKB we might trigger a race.  The recycling code relies on the
+>>>> pp_recycle bit to trigger,  which we carry over to cloned SKBs.
+>>>> If that cloned SKB gets expanded or if we get references to the frags,
+>>>> call skbb_release_data() and overwrite skb->head, we are creating separate
+>>>> instances accessing the same page frags.  Since the skb_release_data()
+>>>> will first try to recycle the frags,  there's a potential race between
+>>>> the original and cloned SKB, since both will have the pp_recycle bit set.
+>>>>
+>>>> Fix this by explicitly those SKBs not recyclable.
+>>>> The atomic_sub_return effectively limits us to a single release case,
+>>>> and when we are calling skb_release_data we are also releasing the
+>>>> option to perform the recycling, or releasing the pages from the page pool.
+>>>>
+>>>> Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
+>>>> Reported-by: Alexander Duyck <alexanderduyck@fb.com>
+>>>> Suggested-by: Alexander Duyck <alexanderduyck@fb.com>
+>>>> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+>>>> ---
+>>>> Changes since v1:
+>>>> - Set the recycle bit to 0 during skb_release_data instead of the
+>>>>   individual fucntions triggering the issue, in order to catch all
+>>>>   cases
+>>>>  net/core/skbuff.c | 4 +++-
+>>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>>>> index 12aabcda6db2..f91f09a824be 100644
+>>>> --- a/net/core/skbuff.c
+>>>> +++ b/net/core/skbuff.c
+>>>> @@ -663,7 +663,7 @@ static void skb_release_data(struct sk_buff *skb)
+>>>>       if (skb->cloned &&
+>>>>           atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
+>>>>                             &shinfo->dataref))
+>>>> -             return;
+>>>> +             goto exit;
+>>>
+>>> Is it possible this patch may break the head frag page for the original skb,
+>>> supposing it's head frag page is from the page pool and below change clears
+>>> the pp_recycle for original skb, causing a page leaking for the page pool?
+>>>
+>>
+>> So this would leak eventually dma mapping if the skb is cloned (and
+>> the dataref is now +1) and we are freeing the original skb first?
+>>
 > 
-> > [ Upstream commit 1339a7c3ba05137a2d2fe75f602311bbfc6fab33 ]
-> > 
-> > Use the sg count returned by dma_map_sg to call into
-> > dmaengine_prep_slave_sg rather than using the original sg count. dma_map_sg
-> > can merge consecutive sglist entries, thus making the original sg count
-> > wrong. This is a fix for memory coruption issues observed while testing
-> > encryption/decryption of large messages using libkcapi framework.
-> > 
-> > Patch has been tested further by running full suite of tcrypt.ko tests
-> > including fuzz tests.
-> 
-> This still needs more work AFAICT.
-> 
-> > index a2d3da0ad95f..5a6559131eac 100644
-> > --- a/drivers/crypto/qce/skcipher.c
-> > +++ b/drivers/crypto/qce/skcipher.c
-> > @@ -122,21 +122,22 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
-> >  	sg_mark_end(sg);
-> >  	rctx->dst_sg = rctx->dst_tbl.sgl;
-> 
-> ret is == 0 at this point.
-> 
-> > -	ret = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
-> > -	if (ret < 0)
-> > +	dst_nents = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
-> > +	if (dst_nents < 0)
-> >  		goto error_free;
-> 
-> And we go to the error path, and return ret... instead of returning failure.
-> 
-> >  	if (diff_dst) {
-> > -		ret = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
-> > -		if (ret < 0)
-> > +		src_nents = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
-> > +		if (src_nents < 0)
-> >  			goto error_unmap_dst;
-> >  		rctx->src_sg = req->src;
-> 
-> Same problem happens here.
-> 
-> The problem is already fixed in the mainline; I believe we want that
-> in 5.10-stable at least.
-> 
-> commit a8bc4f5e7a72e4067f5afd7e98b61624231713ca
-> Author: Wei Yongjun <weiyongjun1@huawei.com>
-> Date:   Wed Jun 2 11:36:45 2021 +0000
-> 
->     crypto: qce - fix error return code in qce_skcipher_async_req_handle()
-> 
->     Fix to return a negative error code from the error handling
->         case instead of 0, as done elsewhere in this function.
-> 
->     Fixes: 1339a7c3ba05 ("crypto: qce: skcipher: Fix incorrect sg
->     count for dma transfers")
->         Reported-by: Hulk Robot <hulkci@huawei.com>
-> 	    Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> 	    
-> 
+> Apologies for the noise, my description was not complete.
+> The case you are thinking is clone an SKB and then expand the original?
 
-This is also already in this 5.10.50 release.
+Yes.
+It seems we might need different pp_recycle bit for head frag and data frag.
 
-thanks,
-
-greg k-h
+> 
+> thanks
+> /Ilias
+> 
+> 
+>>>>
+>>>>       skb_zcopy_clear(skb, true);
+>>>>
+>>>> @@ -674,6 +674,8 @@ static void skb_release_data(struct sk_buff *skb)
+>>>>               kfree_skb_list(shinfo->frag_list);
+>>>>
+>>>>       skb_free_head(skb);
+>>>> +exit:
+>>>> +     skb->pp_recycle = 0;
+>>>>  }
+>>>>
+>>>>  /*
+>>>>
+> .
+> 
