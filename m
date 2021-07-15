@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE783CA9B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA2F3CABD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbhGOTIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:08:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35016 "EHLO mail.kernel.org"
+        id S1343899AbhGOTYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241637AbhGOS5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:57:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4394C613D8;
-        Thu, 15 Jul 2021 18:54:56 +0000 (UTC)
+        id S242533AbhGOTH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:07:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 977DB6140A;
+        Thu, 15 Jul 2021 19:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375296;
-        bh=LmPYPspyED4WBFtx+BnP0s9Gg5Ua+lcvDotTG9WIFAI=;
+        s=korg; t=1626375839;
+        bh=+ZbkuVJEHJBuzO5PpuUSnc0YNDHUydqlwvn1ED6Y+ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RR0PMtZ2CfxOfgJQRmvP/zdIDip+jnXy561eprek49Ant/tsgprG3pi0KSabqtX+A
-         yKOpSWdKpBUdxbc6mdCgWMuCS3aFim/ZX3wt4bVhBsnTKv4AhBfRYVkVyhUsGdSnEh
-         B0ZYa7JpYdFcqgokGSCxXoasWyROVRkzJTOT9C40=
+        b=RKn0niwvMgaDx8uOlK+r+33fnBz+FFARwT9qLwSftvxU5QxFXUbtTODR6Fi8otDfb
+         VGCeB2mhm4aJ8Zdo/Nq5iGuDNVKjOt+oLfqMJXu8E08AowMUOz7J6R2e9S7tSXGW4f
+         Vz4pw9gSBepELtT/PX8fV4GgMFBfQHn+91CtaSos=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 009/242] drm/amdgpu: change the default timeout for kernel compute queues
+Subject: [PATCH 5.13 016/266] MIPS: Loongson64: Fix build error secondary_kexec_args undeclared under !SMP
 Date:   Thu, 15 Jul 2021 20:36:11 +0200
-Message-Id: <20210715182553.434744203@linuxfoundation.org>
+Message-Id: <20210715182616.704279907@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Youling Tang <tangyouling@loongson.cn>
 
-[ Upstream commit 67387dfe0f6630f2d4f412ce77debec23a49db7a ]
+[ Upstream commit 6a73022ee3fdf7e60f2ba0a3a835dd421c05b5b5 ]
 
-Change to 60s.  This matches what we already do in virtualization.
-Infinite timeout can lead to deadlocks in the kernel.
+On the Loongson64 platform, if CONFIG_SMP is not set, the following build
+error will occur:
+arch/mips/loongson64/reset.c:133:2: error:'secondary_kexec_args' undeclared
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Because the definition and declaration of secondary_kexec_args are in the
+CONFIG_SMP, the secondary_kexec_args variable should be used in CONFIG_SMP.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 8 +++-----
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c    | 4 ++--
- 2 files changed, 5 insertions(+), 7 deletions(-)
+ arch/mips/loongson64/reset.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index a32b41e4c24e..1b69aa74056d 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3141,8 +3141,8 @@ static int amdgpu_device_get_job_timeout_settings(struct amdgpu_device *adev)
- 	int ret = 0;
- 
- 	/*
--	 * By default timeout for non compute jobs is 10000.
--	 * And there is no timeout enforced on compute jobs.
-+	 * By default timeout for non compute jobs is 10000
-+	 * and 60000 for compute jobs.
- 	 * In SR-IOV or passthrough mode, timeout for compute
- 	 * jobs are 60000 by default.
- 	 */
-@@ -3151,10 +3151,8 @@ static int amdgpu_device_get_job_timeout_settings(struct amdgpu_device *adev)
- 	if (amdgpu_sriov_vf(adev))
- 		adev->compute_timeout = amdgpu_sriov_is_pp_one_vf(adev) ?
- 					msecs_to_jiffies(60000) : msecs_to_jiffies(10000);
--	else if (amdgpu_passthrough(adev))
--		adev->compute_timeout =  msecs_to_jiffies(60000);
- 	else
--		adev->compute_timeout = MAX_SCHEDULE_TIMEOUT;
-+		adev->compute_timeout =  msecs_to_jiffies(60000);
- 
- 	if (strnlen(input, AMDGPU_MAX_TIMEOUT_PARAM_LENGTH)) {
- 		while ((timeout_setting = strsep(&input, ",")) &&
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index e92e7dea71da..f9728ee10298 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -272,9 +272,9 @@ module_param_named(msi, amdgpu_msi, int, 0444);
-  *   for SDMA and Video.
-  *
-  * By default(with no lockup_timeout settings), the timeout for all non-compute(GFX, SDMA and Video)
-- * jobs is 10000. And there is no timeout enforced on compute jobs.
-+ * jobs is 10000. The timeout for compute is 60000.
-  */
--MODULE_PARM_DESC(lockup_timeout, "GPU lockup timeout in ms (default: for bare metal 10000 for non-compute jobs and infinity timeout for compute jobs; "
-+MODULE_PARM_DESC(lockup_timeout, "GPU lockup timeout in ms (default: for bare metal 10000 for non-compute jobs and 60000 for compute jobs; "
- 		"for passthrough or sriov, 10000 for all jobs."
- 		" 0: keep default value. negative: infinity timeout), "
- 		"format: for bare metal [Non-Compute] or [GFX,Compute,SDMA,Video]; "
+diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+index c97bfdc8c922..758d5d26aaaa 100644
+--- a/arch/mips/loongson64/reset.c
++++ b/arch/mips/loongson64/reset.c
+@@ -126,11 +126,12 @@ static void loongson_kexec_shutdown(void)
+ 	for_each_possible_cpu(cpu)
+ 		if (!cpu_online(cpu))
+ 			cpu_device_up(get_cpu_device(cpu));
++
++	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+ #endif
+ 	kexec_args[0] = kexec_argc;
+ 	kexec_args[1] = fw_arg1;
+ 	kexec_args[2] = fw_arg2;
+-	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+ 	memcpy((void *)fw_arg1, kexec_argv, KEXEC_ARGV_SIZE);
+ 	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+ }
+@@ -141,7 +142,9 @@ static void loongson_crash_shutdown(struct pt_regs *regs)
+ 	kexec_args[0] = kdump_argc;
+ 	kexec_args[1] = fw_arg1;
+ 	kexec_args[2] = fw_arg2;
++#ifdef CONFIG_SMP
+ 	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
++#endif
+ 	memcpy((void *)fw_arg1, kdump_argv, KEXEC_ARGV_SIZE);
+ 	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+ }
 -- 
 2.30.2
 
