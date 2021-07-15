@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1EA3CAC4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41FB3CAC01
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243903AbhGOTc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46412 "EHLO mail.kernel.org"
+        id S244169AbhGOT1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:27:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242709AbhGOTIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:08:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2AB16140C;
-        Thu, 15 Jul 2021 19:04:40 +0000 (UTC)
+        id S243594AbhGOTJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6987261418;
+        Thu, 15 Jul 2021 19:05:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375881;
-        bh=SAJYWcgcH/e2eq5T9fBY2MEs3b92Zz95isfe+F+4SJ4=;
+        s=korg; t=1626375958;
+        bh=+kTrYCl2x0xHEW9LPfjcjBWmOZuqBJz7h7U13wIdCis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BExJKMK41jNMTld65oxA7jDPbHYpfLS67zBRLMk9DV0Mq6Dao/W3Ys0s6Ej/lRnvs
-         I0/mE3FN1QUxbfx3+t1JyySuuusEpjGnEdWS69AF1ZOokrQaRH3E9spcAsUaNM2ORu
-         y5xSnaeWPF+AyVDIICfvF7ckErn7JI4em7DCvUxg=
+        b=xX6O1BAu5i1VlY0Ti150S792TpJEiwgQcdYh0mHn8U52EyVtd12Sy5n3+RK+hfHHI
+         lEOMEPK1cLsRnPPKu7ulykp2Y73kK5oqy0EV3YLKpt1iDRA3ymsFyD7j8c660FCCoa
+         byeaIwCB1gRl3XjxoecSYiLNinLBjd2aDpZgCipA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org, Davide Caratti <dcaratti@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 026/266] reiserfs: add check for invalid 1st journal block
-Date:   Thu, 15 Jul 2021 20:36:21 +0200
-Message-Id: <20210715182618.676769188@linuxfoundation.org>
+Subject: [PATCH 5.13 029/266] net/sched: cls_api: increase max_reclassify_loop
+Date:   Thu, 15 Jul 2021 20:36:24 +0200
+Message-Id: <20210715182619.237236905@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,55 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Davide Caratti <dcaratti@redhat.com>
 
-[ Upstream commit a149127be52fa7eaf5b3681a0317a2bbb772d5a9 ]
+[ Upstream commit 05ff8435e50569a0a6b95e5ceaea43696e8827ab ]
 
-syzbot reported divide error in reiserfs.
-The problem was in incorrect journal 1st block.
+modern userspace applications, like OVN, can configure the TC datapath to
+"recirculate" packets several times. If more than 4 "recirculation" rules
+are configured, packets can be dropped by __tcf_classify().
+Changing the maximum number of reclassifications (from 4 to 16) should be
+sufficient to prevent drops in most use cases, and guard against loops at
+the same time.
 
-Syzbot's reproducer manualy generated wrong superblock
-with incorrect 1st block. In journal_init() wasn't
-any checks about this particular case.
-
-For example, if 1st journal block is before superblock
-1st block, it can cause zeroing important superblock members
-in do_journal_end().
-
-Link: https://lore.kernel.org/r/20210517121545.29645-1-paskripkin@gmail.com
-Reported-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/reiserfs/journal.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ net/sched/cls_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
-index 9edc8e2b154e..0834b101c316 100644
---- a/fs/reiserfs/journal.c
-+++ b/fs/reiserfs/journal.c
-@@ -2758,6 +2758,20 @@ int journal_init(struct super_block *sb, const char *j_dev_name,
- 		goto free_and_return;
- 	}
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index 279f9e2a2319..d73b5c5514a9 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -1531,7 +1531,7 @@ static inline int __tcf_classify(struct sk_buff *skb,
+ 				 u32 *last_executed_chain)
+ {
+ #ifdef CONFIG_NET_CLS_ACT
+-	const int max_reclassify_loop = 4;
++	const int max_reclassify_loop = 16;
+ 	const struct tcf_proto *first_tp;
+ 	int limit = 0;
  
-+	/*
-+	 * Sanity check to see if journal first block is correct.
-+	 * If journal first block is invalid it can cause
-+	 * zeroing important superblock members.
-+	 */
-+	if (!SB_ONDISK_JOURNAL_DEVICE(sb) &&
-+	    SB_ONDISK_JOURNAL_1st_BLOCK(sb) < SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
-+		reiserfs_warning(sb, "journal-1393",
-+				 "journal 1st super block is invalid: 1st reserved block %d, but actual 1st block is %d",
-+				 SB_JOURNAL_1st_RESERVED_BLOCK(sb),
-+				 SB_ONDISK_JOURNAL_1st_BLOCK(sb));
-+		goto free_and_return;
-+	}
-+
- 	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
- 		reiserfs_warning(sb, "sh-462",
- 				 "unable to initialize journal device");
 -- 
 2.30.2
 
