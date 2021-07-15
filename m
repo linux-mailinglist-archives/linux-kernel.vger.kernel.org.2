@@ -2,157 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCAF3CA069
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26F83CA06B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237894AbhGOOU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        id S238636AbhGOOUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237582AbhGOOUZ (ORCPT
+        with ESMTP id S237908AbhGOOUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:20:25 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA38FC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 07:17:31 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id f5so2873881qvu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 07:17:31 -0700 (PDT)
+        Thu, 15 Jul 2021 10:20:43 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A401C06175F;
+        Thu, 15 Jul 2021 07:17:50 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id l7so8009300wrv.7;
+        Thu, 15 Jul 2021 07:17:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CNbwYH1jj9aPFq6ITR5bv7LJgp03H7MSJ97sfJLz5XY=;
-        b=tFhKa2IuUYww1ovA8t2rMqAqDzZYwIpTItc+P1P+RdsuZVM10lHlQ/zdhfeuW1/bb/
-         530T9KuI9i/v5lXBMTUvzmlgg2XVVtVjtFX+qoxoLjRtxJOkzSQHjXl39mDVpid2Wi+U
-         dmamAz6Ef/R8im8UNZbsowPsABXZeqpm6lAZ2xCxQUtDyLEgch1OxtnH+W/j2PVxMLRO
-         yPF71fcdBDInztryeysZWH7lFc8jCZaLq5G5dqS6N4ULcI2mAOyj2MHZThwL2p+Wuouq
-         pYmAtumCUd0nfX0iYt6845ULT8Y7IoaEFb8U/XFl/JD5bK1pHkzUHI0tmOIbVsOu+kUB
-         ztSQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=PQ0mRS7JGPmYjKtMWt8AoNncND+n747CDg6SOb6Jxew=;
+        b=bWErtR3CDd+cf+YpCFvzQQmxRnHzMaQ0CNn8Ik8vGd53X7TWQZLVoh8dc0ZneV1qgB
+         t32KuhPlwPlrsG0rYcL7mu8XKypzfCzKgV723C8EWDNPHNC8gGXz67Yw2Cn2oWpRY65T
+         +HMw5nv2GMJC50wGaVqkI4R3O1NmQzjroyNVd9PicCG/EBdZy0FHmyMZN1FVOwmKpLka
+         E7W6B53CsGfXLzRXj99cUrzz895099ziJBZP2EPjBzB+ilUWWzHxYZ3N9npBNfMJ+p82
+         d5zXsHV3G7PQoVgTKoUJHtqZ5H26ZhWUqq3feIG5U7WUTABQnFxzQgofoZtgHatZ39Co
+         6ATw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CNbwYH1jj9aPFq6ITR5bv7LJgp03H7MSJ97sfJLz5XY=;
-        b=VIl6SMpBUgLGnf0csBIUjjh/uLveANFGeHyfVBrn9/xtH0Do2gxI96P1tx7H+RV9Kn
-         Ajxfnhb8eQka4I/X0o+ynkj+Z8PyjIetoXwjYFDpSQp/k1b+gjYICs+Y7Cq5cEGLIGbx
-         sndNILpo0VGshtA6XUmHG4IbTvBEuLJADecddoc8DP7cvXR3Gsiykgen60eySKqZ8DG4
-         y1oOp1Yo3qfNbDtfp19KE1cccDW8b3geYA0x+A3Z+XhSXwvj4z/d8EEUPZZ7FjftlVvf
-         ORkbEw3epaZd/1dkn4xXHPOrUD64kOWzWm/K4PAVPdo/8M3fvqhrLINRahpcfpOYNXzY
-         kI5g==
-X-Gm-Message-State: AOAM530zdR2hlVcgEHHsc3KqEPe94q1na7JwE0OPL8R9S1Prbi8BRppy
-        myL2icamroJKLaqfCfX0cYBt0ae6xT9hZMDPLk1gtw==
-X-Google-Smtp-Source: ABdhPJwBwTxf19Rj3bFnP7Y2WCjEr1Mx7LovQqCJqWhS61xXy1AERdeEC9IeReWD2Bb20SOSh+O2Aadr7C8kREb60ng=
-X-Received: by 2002:a05:6214:dce:: with SMTP id 14mr4619816qvt.40.1626358651017;
- Thu, 15 Jul 2021 07:17:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210714214346.1397942-1-mw@semihalf.com> <20210714214346.1397942-2-mw@semihalf.com>
- <BYAPR11MB3256CACCFB4A08B5D450D3A087129@BYAPR11MB3256.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB3256CACCFB4A08B5D450D3A087129@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 15 Jul 2021 16:17:20 +0200
-Message-ID: <CAPv3WKeN55zEW65yfyPizB0WA4HLtcf=m-7yUgpk7O1hCKW4SA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "jaz@semihalf.com" <jaz@semihalf.com>,
-        "gjb@semihalf.com" <gjb@semihalf.com>,
-        "upstream@semihalf.com" <upstream@semihalf.com>,
-        "Samer.El-Haj-Mahmoud@arm.com" <Samer.El-Haj-Mahmoud@arm.com>,
-        "jon@solid-run.com" <jon@solid-run.com>,
-        "tn@semihalf.com" <tn@semihalf.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PQ0mRS7JGPmYjKtMWt8AoNncND+n747CDg6SOb6Jxew=;
+        b=YPcqhPkfC364ah/L5ROVWTDfi7uyrw5H1jP9uueGDeREMA/3aCAlMCGUq1/7RSNJIk
+         NAoGg/97dfglohfZAv1G756Qao36QfaAJOwN+/2O6wd1D0k1Z5lYAqM/Gw3MsKqI6cLs
+         DPoQWbwfdFy2b3vatZq2Z2qZO+2egTuyGtW1oZAiPZur9J1lpG2pUFn/WOtCOU4hc6R6
+         BtKabRwG2eRYKsUebDLTDzGmPgCLayKbQ4fPfelgC1qPr0mZCKC8PVJ1Ud0XWvJlJgKF
+         su7Fg6pIrBBLmPCdK3Fn5E8+SBmOjST/b9DBjEyLaTub1pBqOYAXmQozeUrW6NwogLPc
+         NGHg==
+X-Gm-Message-State: AOAM5321TWGzvjBz5h9ccCcXxmKDy9CGq9l629gCreDmDcJzgyFt/sw0
+        6DU1g4nO9mAYF6qP0Y5pAHU=
+X-Google-Smtp-Source: ABdhPJy2jO38f7gR15Ikuoe1OibWL20F7ECgujshI8YJJHjeh28EEYfFpUw3f6lgW97h5iBp67MgDQ==
+X-Received: by 2002:a5d:6c6e:: with SMTP id r14mr6067703wrz.242.1626358668767;
+        Thu, 15 Jul 2021 07:17:48 -0700 (PDT)
+Received: from poker.lan (static.2-229-210-222.ip198.fastwebnet.it. [2.229.210.222])
+        by smtp.gmail.com with ESMTPSA id u16sm7989094wrw.36.2021.07.15.07.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 07:17:47 -0700 (PDT)
+From:   Andrea Merello <andrea.merello@gmail.com>
+To:     jic23@kernel.org, lars@metafoo.de
+Cc:     robh+dt@kernel.org, matt.ranostay@konsulko.com,
+        andriy.shevchenko@linux.intel.com, vlad.dogaru@intel.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Andrea Merello <andrea.merello@gmail.com>
+Subject: [PATCH 0/4] Add support for Bosch BNO055 IMU
+Date:   Thu, 15 Jul 2021 16:17:38 +0200
+Message-Id: <20210715141742.15072-1-andrea.merello@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This series (tries to) add support for Bosch BNO055 IMU to Linux IIO
+subsystem. It is made up four patches:
 
+1/4: adds some IIO modifiers to the IIO core layer, in order to being
+     able to expose the linear acceleration among standard attributes.
 
-czw., 15 lip 2021 o 16:07 Moore, Robert <robert.moore@intel.com> napisa=C5=
-=82(a):
->
-> This was already reported (with a patch that we've already merged) by sem=
-ihalf-wojtas-marcin
->
+2/4: adds the core IIO BNO055 driver
 
-I'm not sure to be aware of the process. Reported where?
-Are you planning to import the upstream patch on your own and I should
-rebase the SPCR driver change on top once it lands?
+3/4: adds DT bindings for the serdev BNO055 driver - Note: I've put
+     as "maintainer" the one that ./scripts/get_maintainer.pl suggested
+     to me, but I wasn't sure about this.
 
-Best regards,
-Marcin
+4/4: adds serdev BNO055 driver to actually use the IMU via serial line
 
-> -----Original Message-----
-> From: Marcin Wojtas <mw@semihalf.com>
-> Sent: Wednesday, July 14, 2021 2:44 PM
-> To: linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; devel@acpic=
-a.org
-> Cc: jaz@semihalf.com; gjb@semihalf.com; upstream@semihalf.com; Samer.El-H=
-aj-Mahmoud@arm.com; jon@solid-run.com; tn@semihalf.com; rjw@rjwysocki.net; =
-lenb@kernel.org; Moore, Robert <robert.moore@intel.com>; Marcin Wojtas <mw@=
-semihalf.com>
-> Subject: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
->
-> ACPICA commit d95c7d206b5836c7770e8e9cd613859887fded8f
->
-> The Microsoft Debug Port Table 2 (DBG2) specification revision September =
-21, 2020 comprises additional Serial Port Subtypes [1].
-> Reflect that in the actbl1.h header file.
->
-> [1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/acp=
-i-debug-port-table
->
-> Link: https://github.com/acpica/acpica/commit/d95c7d20
-> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-> ---
->  include/acpi/actbl1.h | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
->
-> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index ef2872de=
-a01c..7bbb3e2bd33f 100644
-> --- a/include/acpi/actbl1.h
-> +++ b/include/acpi/actbl1.h
-> @@ -482,7 +482,7 @@ struct acpi_csrt_descriptor {
->   * DBG2 - Debug Port Table 2
->   *        Version 0 (Both main table and subtables)
->   *
-> - * Conforms to "Microsoft Debug Port Table 2 (DBG2)", December 10, 2015
-> + * Conforms to "Microsoft Debug Port Table 2 (DBG2)", September 21,
-> + 2020
->   *
->   ***********************************************************************=
-*******/
->
-> @@ -532,11 +532,24 @@ struct acpi_dbg2_device {
->
->  #define ACPI_DBG2_16550_COMPATIBLE  0x0000
->  #define ACPI_DBG2_16550_SUBSET      0x0001
-> +#define ACPI_DBG2_MAX311XE_SPI      0x0002
->  #define ACPI_DBG2_ARM_PL011         0x0003
-> +#define ACPI_DBG2_MSM8X60           0x0004
-> +#define ACPI_DBG2_16550_NVIDIA      0x0005
-> +#define ACPI_DBG2_TI_OMAP           0x0006
-> +#define ACPI_DBG2_APM88XXXX         0x0008
-> +#define ACPI_DBG2_MSM8974           0x0009
-> +#define ACPI_DBG2_SAM5250           0x000A
-> +#define ACPI_DBG2_INTEL_USIF        0x000B
-> +#define ACPI_DBG2_IMX6              0x000C
->  #define ACPI_DBG2_ARM_SBSA_32BIT    0x000D
->  #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
->  #define ACPI_DBG2_ARM_DCC           0x000F
->  #define ACPI_DBG2_BCM2835           0x0010
-> +#define ACPI_DBG2_SDM845_1_8432MHZ  0x0011
-> +#define ACPI_DBG2_16550_WITH_GAS    0x0012
-> +#define ACPI_DBG2_SDM845_7_372MHZ   0x0013
-> +#define ACPI_DBG2_INTEL_LPSS        0x0014
->
->  #define ACPI_DBG2_1394_STANDARD     0x0000
->
-> --
-> 2.29.0
->
+Previously at least another driver for the very same chip has been
+posted to the Linux ML [0], but it has been never merged, and it seems
+no one cared of it since quite a long time.
+
+This driver differs from the above driver on the following aspects:
+
+- This driver supports serial access, instead of I2C access (however it
+  is designed in a modular way that should make it easy to eventually add
+  I2C support later on).
+
+- The above driver tried to support all IMU HW modes by allowing to choose
+  one in the DT, and adapting IIO attributes accordingly. This driver does
+  not rely on DT for this, instead an attribute "operation_mode" is
+  exposed. All IIO attributes used in all modes are exposed; more on this
+  later on. This driver BTW supports only a subset of the HW-supported
+  modes.
+
+- This driver has some support for managing the IMU calibration
+
+This driver supports three operation modes:
+
+  - AMG (accelerometer, magnetometer and gyroscope) mode, which provides
+  raw measurements from the said sensors, and allows for setting some
+  parameters about them (e.g. filter cut-off frequency, max sensor ranges,
+  etc).
+
+  - Two flavors of fusion mode, which still provide AMG measures, while
+  they also provide other data calculated by the IMU (e.g. rotation
+  angles, linear acceleration, etc). In this mode user has no freedom to
+  set any sensor parameter, since the HW locks them.
+
+IIO attributes exposing sensors parameters are always present, but in
+fusion modes the available values are constrained to just the one used
+by the HW. This is reflected in the '*_available' IIO attributes.
+
+Trying to set a not-supported value always falls back to the closest
+supported one, which in this case is just the one in use by the HW.
+
+IIO attributes for unavailable measurements (e.g. Euler angles in AMG
+mode) just read zero (which is consistent WRT what you get when reading
+from a buffer with those attributes enabled).
+Another option could be make them return -EINVAL or to make those
+attributes reading as "N/A" or something like that, but in those cases I
+wouldn't know what to do with buffers..
+
+About the IMU calibration:
+
+The IMU supports for two sets of calibration parameters:
+ - SIC matrix, which has to be provided by the user, and that this driver
+   doesn't currently care about of (yet)
+ - offset and radius parameters, which the IMU can automatically find
+   out, and for which this driver has support
+
+The driver provides access to autocalibration flags (i.e. you can known if
+the IMU has successfully autocalibrated) and to calibration data blob.
+The user can save this blob in a "firmware" file (i.e. in /lib/firmware)
+that the driver looks for at probe time. If found, then the IMU is
+initialized with this calibration data. This saves the user from performing
+the calibration procedure every time (which consist of moving the IMU in
+various way).
+
+The driver looks for calibration data file using two different names:
+first a file whose name is suffixed with the IMU unique ID is searched
+for; this is useful when there is more than one IMU instance. If this
+file is not found, then a "generic" calibration file is searched for
+(which can be used when only one IMU is present, without struggling with
+fancy names, that change on each device).
+
+In fusion modes the HW applies calibration data to all measurements, while
+in AMG mode the calibration data is not used by the HW.
+
+The IIO 'offset' attributes provide access to the offsets from calibration
+data, so that the user can apply them to the accel, angvel and magn IIO
+attributes.
+
+There is an hack here: since the HW does already apply the offsets when in
+fusion modes, then we report 'zero' for all offsets when we are in fusion
+modes. In this way offsets can be always applied by the user and this leads
+to correct results in all operation modes.
+
+Alternatively we could try to un-correct the measures when in fusion mode,
+and let the offset attributes to report actual calibration offset, but this
+seems awkward to me, and I can see some problems about races WRT HW
+autocalibration (which always run in background anyway).
+
+The last alternative could be to expose two sets of IIO attributes for
+accel, anglvel and magn measures, which would refer to the same registers
+indeed; one attribute set has associated offsets, while the other hasn't.
+Then we make only one set "readable", depending by the current operation
+mode. Unfortunately they would all still be "raw" anyway, since they still
+need to get the 'scale' attribute applied. Furthermore this may complicate
+things with buffer and bursts handling.
+
+I've implemented the 1st solution because IMHO it's simpler and still
+reasonably coherent.
+
+About access protocol and serdev module:
+
+The serial protocol is quite simple, but there are tricks to make it
+really works. Those tricks and workarounds are documented in the driver
+source file.
+
+The core BNO055 driver tries to group readings in burst when appropriate,
+in order to optimize triggered buffer operation. The threshold for
+splitting a burst (i.e. max number of unused bytes in the middle of a
+burst that will be throw away) is provided to the core driver by the
+lowlevel access driver (which is the bno055_sl serdev driver indeed) at
+probe time.
+
+If an I2C access driver will be written, then it can provide its own
+threshold value (which depends by the protocol overhead, etc..) to the
+core bno055 driver.
+
+Finally, I wrote and tested this driver on a Zynq-based custom board that
+runs a kernel v5.4 and I've rebased on latest mainline tree on which I've
+just compile-tested.
+
+[0] https://www.spinics.net/lists/linux-iio/msg25508.html
+
+Andrea Merello (4):
+  iio: add modifiers for linear acceleration
+  iio: imu: add Bosch Sensortec BNO055 core driver
+  dt-bindings: iio: imu: add bosch BNO055 serdev driver bindings
+  iio: imu: add BNO055 serdev driver
+
+ .../bindings/iio/imu/bosch,bno055-serial.yaml |   40 +
+ drivers/iio/imu/Kconfig                       |    1 +
+ drivers/iio/imu/Makefile                      |    1 +
+ drivers/iio/imu/bno055/Kconfig                |   12 +
+ drivers/iio/imu/bno055/Makefile               |    7 +
+ drivers/iio/imu/bno055/bno055.c               | 1361 +++++++++++++++++
+ drivers/iio/imu/bno055/bno055.h               |   12 +
+ drivers/iio/imu/bno055/bno055_sl.c            |  576 +++++++
+ drivers/iio/industrialio-core.c               |    3 +
+ include/uapi/linux/iio/types.h                |    4 +-
+ 10 files changed, 2016 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
+ create mode 100644 drivers/iio/imu/bno055/Kconfig
+ create mode 100644 drivers/iio/imu/bno055/Makefile
+ create mode 100644 drivers/iio/imu/bno055/bno055.c
+ create mode 100644 drivers/iio/imu/bno055/bno055.h
+ create mode 100644 drivers/iio/imu/bno055/bno055_sl.c
+
+--
+2.17.1
