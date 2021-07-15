@@ -2,80 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11273C9E6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200963C9E7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbhGOMQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 08:16:32 -0400
-Received: from out2.migadu.com ([188.165.223.204]:10232 "EHLO out2.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235490AbhGOMQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 08:16:30 -0400
-X-Greylist: delayed 97199 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Jul 2021 08:16:29 EDT
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1626351215;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H2Yw9AN3KwBdHFnlDR1STrMLBYZe8oyuXo4MVMd+q78=;
-        b=KKpiLUaOAyU+5gx/aRHFbL6OJzRtrB9mE20u3+ErGTvzCetVsnseony6tpJEMiXsMaQPyk
-        3Gb87FhQDLQF3aKtV3N2cgj9KPlmTP8hhNxMXNmC9GHLB0gq7ufABjyjlbUn47Fl9Jdr6T
-        958Cfpphz3KoRR+M7nz+aO/OXgG3Wqc=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, kuba@kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        johannes.berg@intel.com, avagin@gmail.com, ryazanov.s.a@gmail.com,
-        vladimir.oltean@nxp.com, roopa@cumulusnetworks.com,
-        yajun.deng@linux.dev, zhudi21@huawei.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] rtnetlink: use nlmsg_notify() in rtnetlink_send()
-Date:   Thu, 15 Jul 2021 20:12:57 +0800
-Message-Id: <20210715121258.18385-2-yajun.deng@linux.dev>
-In-Reply-To: <20210715121258.18385-1-yajun.deng@linux.dev>
-References: <20210715121258.18385-1-yajun.deng@linux.dev>
+        id S236668AbhGOMT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 08:19:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32483 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237223AbhGOMT1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 08:19:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626351394; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=NqFgpslk2ZytaLjLhoQfMGXxeRlmTVdttrtVGn8Aqpo=;
+ b=OFw3YYKrfORJdR54IUpFj7KQ34h7KhnV6rQCi7WZNoIzYnwOPVtPUUHlR0TgHcXYvQdC3ZhY
+ jXaE2L5auTG6hp72zXX6WrKUMhOFwhz6jBQ2yH53tLlMAV3/ylLFM2b4UxDvWTwwbs8bhMW3
+ RncWrtsYTH2hlGVfGXwzqH8avic=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60f0270417c2b4047dec772f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Jul 2021 12:16:04
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92D2BC43217; Thu, 15 Jul 2021 12:16:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 99CDDC433F1;
+        Thu, 15 Jul 2021 12:16:02 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 15 Jul 2021 17:46:02 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/2] soc: qcom: rpmhpd: Make power_on actually
+ enable the domain
+In-Reply-To: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
+References: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
+Message-ID: <902f7665ab9045e87fb07f848b994316@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The netlink_{broadcast, unicast} don't deal with 'if (err > 0' statement
-but nlmsg_{multicast, unicast} do. The nlmsg_notify() contains them.
-so use nlmsg_notify() instead. so that the caller wouldn't deal with
-'if (err > 0' statement.
+Hey Bjorn,
 
-v2: use nlmsg_notify() will do well.
+Thanks for the patch.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- net/core/rtnetlink.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+On 2021-07-03 08:24, Bjorn Andersson wrote:
+> The general expectation is that powering on a power-domain should make
+> the power domain deliver some power, and if a specific performace state
 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index f6af3e74fc44..670d74ab91ae 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -710,15 +710,8 @@ static int rtnl_link_fill(struct sk_buff *skb, const struct net_device *dev)
- int rtnetlink_send(struct sk_buff *skb, struct net *net, u32 pid, unsigned int group, int echo)
- {
- 	struct sock *rtnl = net->rtnl;
--	int err = 0;
- 
--	NETLINK_CB(skb).dst_group = group;
--	if (echo)
--		refcount_inc(&skb->users);
--	netlink_broadcast(rtnl, skb, pid, group, GFP_KERNEL);
--	if (echo)
--		err = netlink_unicast(rtnl, skb, pid, MSG_DONTWAIT);
--	return err;
-+	return nlmsg_notify(rtnl, skb, pid, group, echo, GFP_KERNEL);
- }
- 
- int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid)
+s/performace/performance/
+
+> is needed further requests has to be made.
+> 
+> But in contrast with other power-domain implementations (e.g. rpmpd) 
+> the
+> RPMh does not have an interface to enable the power, so the driver has
+> to vote for a particular corner (performance level) in rpmh_power_on().
+> 
+> But the corner is never initialized, so a typical request to simply
+> enable the power domain would not actually turn on the hardware. 
+> Further
+> more, when no more clients vote for a performance state (i.e. the
+> aggregated vote is 0) the power domain would be turn off.
+> 
+> Fix both of these issues by always voting for a corner with non-zero
+> value, when the power domain is enabled.
+> 
+> The tracking of the lowest non-zero corner is performed to handle the
+> corner case if there's ever a domain with a non-zero lowest corner, in
+> which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
+> would be allowed to use this lowest corner.
+> 
+> Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Resending because the hunk in rpmhpd_update_level_mapping() was left in 
+> the
+> index.
+> 
+>  drivers/soc/qcom/rpmhpd.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+> index fa209b479ab3..76ea6b053ef0 100644
+> --- a/drivers/soc/qcom/rpmhpd.c
+> +++ b/drivers/soc/qcom/rpmhpd.c
+> @@ -30,6 +30,7 @@
+>   * @active_only:	True if it represents an Active only peer
+>   * @corner:		current corner
+>   * @active_corner:	current active corner
+> + * @enable_corner:	lowest non-zero corner
+>   * @level:		An array of level (vlvl) to corner (hlvl) mappings
+>   *			derived from cmd-db
+>   * @level_count:	Number of levels supported by the power domain. max
+> @@ -47,6 +48,7 @@ struct rpmhpd {
+>  	const bool	active_only;
+>  	unsigned int	corner;
+>  	unsigned int	active_corner;
+> +	unsigned int	enable_corner;
+>  	u32		level[RPMH_ARC_MAX_LEVELS];
+>  	size_t		level_count;
+>  	bool		enabled;
+> @@ -385,13 +387,13 @@ static int rpmhpd_aggregate_corner(struct rpmhpd
+> *pd, unsigned int corner)
+>  static int rpmhpd_power_on(struct generic_pm_domain *domain)
+>  {
+>  	struct rpmhpd *pd = domain_to_rpmhpd(domain);
+> -	int ret = 0;
+> +	unsigned int corner;
+> +	int ret;
+> 
+>  	mutex_lock(&rpmhpd_lock);
+> 
+> -	if (pd->corner)
+> -		ret = rpmhpd_aggregate_corner(pd, pd->corner);
+> -
+> +	corner = max(pd->corner, pd->enable_corner);
+> +	ret = rpmhpd_aggregate_corner(pd, corner);
+>  	if (!ret)
+>  		pd->enabled = true;
+> 
+> @@ -436,6 +438,10 @@ static int rpmhpd_set_performance_state(struct
+> generic_pm_domain *domain,
+>  		i--;
+> 
+>  	if (pd->enabled) {
+> +		/* Ensure that the domain isn't turn off */
+> +		if (i < pd->enable_corner)
+> +			i = pd->enable_corner;
+> +
+>  		ret = rpmhpd_aggregate_corner(pd, i);
+>  		if (ret)
+>  			goto out;
+> @@ -472,6 +478,10 @@ static int rpmhpd_update_level_mapping(struct
+> rpmhpd *rpmhpd)
+>  	for (i = 0; i < rpmhpd->level_count; i++) {
+>  		rpmhpd->level[i] = buf[i];
+> 
+> +		/* Remember the first non-zero corner */
+
+Shouldn't we be tracking the corner that
+corresponds to the first non-zero level
+instead?
+
+> +		if (!rpmhpd->enable_corner)
+> +			rpmhpd->enable_corner = i;
+> +
+>  		/*
+>  		 * The AUX data may be zero padded.  These 0 valued entries at
+>  		 * the end of the map must be ignored.
+
 -- 
-2.32.0
-
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
