@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AC63CA5BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912263CA5C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhGOSoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:44:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
+        id S229854AbhGOSoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhGOSoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:44:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22CA7613CF;
-        Thu, 15 Jul 2021 18:41:20 +0000 (UTC)
+        id S231739AbhGOSoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79E0561396;
+        Thu, 15 Jul 2021 18:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374481;
-        bh=+n/x3X3syMB0NwAeBa2LIF0LSLn5ym67R9S5/kr0OG0=;
+        s=korg; t=1626374484;
+        bh=ZP1acyJ8uDVnQc1RK57kx3rIAh4r8Qwak6pgb9sNWd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ON877WVZ7qN2DYZi9LZexB+CTkJNuokTSL+tH6qsGK4oOONiiqu/s+lQQP/dAPZam
-         9eKb8pMSlHfLCYY8VsNpFmg9o4frCtmrmTWvaiwUdux9VsrxnjOmSsZ/Y8tiX/BSBn
-         pvznAJwsbNq7oHyjF2xmQZHIm/O00lJHFQTWXfLQ=
+        b=N68uiY6lFCH5Xgjmzc6x+aGeLUSZe0Ee/IrdFfhC0Dt7MWiu9vvGlxwv3eRfveNiV
+         X5Fv3lk1HdAd2eO48WiFdeOOvZ9G/Ynp17zG0dYf2DuEP3QSTcDrDrT3ZOWZqm84Lt
+         BtGcMIlgEESluQHApwKdNJIP6VlCo4YXUNoD2uDA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Robert Foss <robert.foss@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 018/122] igb: handle vlan types with checker enabled
-Date:   Thu, 15 Jul 2021 20:37:45 +0200
-Message-Id: <20210715182454.272470353@linuxfoundation.org>
+Subject: [PATCH 5.4 019/122] drm/bridge: cdns: Fix PM reference leak in cdns_dsi_transfer()
+Date:   Thu, 15 Jul 2021 20:37:46 +0200
+Message-Id: <20210715182454.406242802@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -42,73 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit c7cbfb028b95360403d579c47aaaeef1ff140964 ]
+[ Upstream commit 33f90f27e1c5ccd648d3e78a1c28be9ee8791cf1 ]
 
-The sparse build (C=2) finds some issues with how the driver
-dealt with the (very difficult) hardware that in some generations
-uses little-endian, and in others uses big endian, for the VLAN
-field. The code as written picks __le16 as a type and for some
-hardware revisions we override it to __be16 as done in this
-patch. This impacted the VF driver as well so fix it there too.
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Also change the vlan_tci assignment to override the sparse
-warning without changing functionality.
-
-Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1621840862-106024-1-git-send-email-zou_wei@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 5 +++--
- drivers/net/ethernet/intel/igbvf/netdev.c | 4 ++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/bridge/cdns-dsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index 7a4e2b014dd6..c37f0590b3a4 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -2651,7 +2651,8 @@ static int igb_parse_cls_flower(struct igb_adapter *adapter,
- 			}
+diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
+index 6166dca6be81..0cb9dd6986ec 100644
+--- a/drivers/gpu/drm/bridge/cdns-dsi.c
++++ b/drivers/gpu/drm/bridge/cdns-dsi.c
+@@ -1026,7 +1026,7 @@ static ssize_t cdns_dsi_transfer(struct mipi_dsi_host *host,
+ 	struct mipi_dsi_packet packet;
+ 	int ret, i, tx_len, rx_len;
  
- 			input->filter.match_flags |= IGB_FILTER_FLAG_VLAN_TCI;
--			input->filter.vlan_tci = match.key->vlan_priority;
-+			input->filter.vlan_tci =
-+				(__force __be16)match.key->vlan_priority;
- 		}
- 	}
+-	ret = pm_runtime_get_sync(host->dev);
++	ret = pm_runtime_resume_and_get(host->dev);
+ 	if (ret < 0)
+ 		return ret;
  
-@@ -8255,7 +8256,7 @@ static void igb_process_skb_fields(struct igb_ring *rx_ring,
- 
- 		if (igb_test_staterr(rx_desc, E1000_RXDEXT_STATERR_LB) &&
- 		    test_bit(IGB_RING_FLAG_RX_LB_VLAN_BSWAP, &rx_ring->flags))
--			vid = be16_to_cpu(rx_desc->wb.upper.vlan);
-+			vid = be16_to_cpu((__force __be16)rx_desc->wb.upper.vlan);
- 		else
- 			vid = le16_to_cpu(rx_desc->wb.upper.vlan);
- 
-diff --git a/drivers/net/ethernet/intel/igbvf/netdev.c b/drivers/net/ethernet/intel/igbvf/netdev.c
-index 0f2b68f4bb0f..77cb2ab7dab4 100644
---- a/drivers/net/ethernet/intel/igbvf/netdev.c
-+++ b/drivers/net/ethernet/intel/igbvf/netdev.c
-@@ -83,14 +83,14 @@ static int igbvf_desc_unused(struct igbvf_ring *ring)
- static void igbvf_receive_skb(struct igbvf_adapter *adapter,
- 			      struct net_device *netdev,
- 			      struct sk_buff *skb,
--			      u32 status, u16 vlan)
-+			      u32 status, __le16 vlan)
- {
- 	u16 vid;
- 
- 	if (status & E1000_RXD_STAT_VP) {
- 		if ((adapter->flags & IGBVF_FLAG_RX_LB_VLAN_BSWAP) &&
- 		    (status & E1000_RXDEXT_STATERR_LB))
--			vid = be16_to_cpu(vlan) & E1000_RXD_SPC_VLAN_MASK;
-+			vid = be16_to_cpu((__force __be16)vlan) & E1000_RXD_SPC_VLAN_MASK;
- 		else
- 			vid = le16_to_cpu(vlan) & E1000_RXD_SPC_VLAN_MASK;
- 		if (test_bit(vid, adapter->active_vlans))
 -- 
 2.30.2
 
