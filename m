@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAFE3CA6D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12703CA6E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239796AbhGOSu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50540 "EHLO mail.kernel.org"
+        id S237602AbhGOSvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239492AbhGOSsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:48:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F003061396;
-        Thu, 15 Jul 2021 18:45:18 +0000 (UTC)
+        id S239563AbhGOSsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:48:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5004F61158;
+        Thu, 15 Jul 2021 18:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374719;
-        bh=lxo5OpBggpjvMAzCMAYvT0FbGUxzwNEToMFBodGRDhg=;
+        s=korg; t=1626374721;
+        bh=eWt/Pgp9ZAHzb7tz++3SmyziJHNnYt8Y3CLGHrP1eRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZIY+LOdUTyyQ14y+AJ9FZPtI+c0/3DofJbaxOEW8/wD3UVK0jUhJ2bAhW0Jl9VeJv
-         NqC30q8ECCWTUebuxqPB76Z0RBDC3FRI9/8jxqF86+X55qQ7SOZATpBbDSKAhW3mjF
-         KrkF4N3BCDZeaJHVKX7EU765svkd5eMcK2XymFPk=
+        b=wf79cRd7ELBGLDwRFmcoFid774AYgqg+aL3IKKKjhE0ihiB47z0kU+AO4Y8ccJ6jr
+         mpKvIgas87GGbuYtZ4yfzqg9UYqlmGAFF6D8/8ESvsA3AGjihagTarmF97ZC9pwEH2
+         St2RYZw9jFwD0Wh1YN/ktlCfzvOIqLtAR+mgUF5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 076/122] powerpc/barrier: Avoid collision with clangs __lwsync macro
-Date:   Thu, 15 Jul 2021 20:38:43 +0200
-Message-Id: <20210715182510.027484730@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Joseph Greathouse <Joseph.Greathouse@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>
+Subject: [PATCH 5.4 077/122] drm/amdgpu: Update NV SIMD-per-CU to 2
+Date:   Thu, 15 Jul 2021 20:38:44 +0200
+Message-Id: <20210715182510.551071873@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -40,57 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Joseph Greathouse <Joseph.Greathouse@amd.com>
 
-commit 015d98149b326e0f1f02e44413112ca8b4330543 upstream.
+commit aa6158112645aae514982ad8d56df64428fcf203 upstream.
 
-A change in clang 13 results in the __lwsync macro being defined as
-__builtin_ppc_lwsync, which emits 'lwsync' or 'msync' depending on what
-the target supports. This breaks the build because of -Werror in
-arch/powerpc, along with thousands of warnings:
+Navi series GPUs have 2 SIMDs per CU (and then 2 CUs per WGP).
+The NV enum headers incorrectly listed this as 4, which later meant
+we were incorrectly reporting the number of SIMDs in the HSA
+topology. This could cause problems down the line for user-space
+applications that want to launch a fixed amount of work to each
+SIMD.
 
- In file included from arch/powerpc/kernel/pmc.c:12:
- In file included from include/linux/bug.h:5:
- In file included from arch/powerpc/include/asm/bug.h:109:
- In file included from include/asm-generic/bug.h:20:
- In file included from include/linux/kernel.h:12:
- In file included from include/linux/bitops.h:32:
- In file included from arch/powerpc/include/asm/bitops.h:62:
- arch/powerpc/include/asm/barrier.h:49:9: error: '__lwsync' macro redefined [-Werror,-Wmacro-redefined]
- #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
-        ^
- <built-in>:308:9: note: previous definition is here
- #define __lwsync __builtin_ppc_lwsync
-        ^
- 1 error generated.
-
-Undefine this macro so that the runtime patching introduced by
-commit 2d1b2027626d ("powerpc: Fixup lwsync at runtime") continues to
-work properly with clang and the build no longer breaks.
-
+Signed-off-by: Joseph Greathouse <Joseph.Greathouse@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1386
-Link: https://github.com/llvm/llvm-project/commit/62b5df7fe2b3fda1772befeda15598fbef96a614
-Link: https://lore.kernel.org/r/20210528182752.1852002-1-nathan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/barrier.h |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/amd/include/navi10_enum.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/include/asm/barrier.h
-+++ b/arch/powerpc/include/asm/barrier.h
-@@ -44,6 +44,8 @@
- #    define SMPWMB      eieio
- #endif
+--- a/drivers/gpu/drm/amd/include/navi10_enum.h
++++ b/drivers/gpu/drm/amd/include/navi10_enum.h
+@@ -430,7 +430,7 @@ ARRAY_2D_DEPTH
+  */
  
-+/* clang defines this macro for a builtin, which will not work with runtime patching */
-+#undef __lwsync
- #define __lwsync()	__asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
- #define dma_rmb()	__lwsync()
- #define dma_wmb()	__asm__ __volatile__ (stringify_in_c(SMPWMB) : : :"memory")
+ typedef enum ENUM_NUM_SIMD_PER_CU {
+-NUM_SIMD_PER_CU                          = 0x00000004,
++NUM_SIMD_PER_CU                          = 0x00000002,
+ } ENUM_NUM_SIMD_PER_CU;
+ 
+ /*
 
 
