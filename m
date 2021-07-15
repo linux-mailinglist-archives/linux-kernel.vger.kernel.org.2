@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37CD3CACD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081483CACD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242117AbhGOTpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:45:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50542 "EHLO mail.kernel.org"
+        id S238538AbhGOTpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243137AbhGOTPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243321AbhGOTPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:15:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AE31613CA;
-        Thu, 15 Jul 2021 19:12:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A373613D6;
+        Thu, 15 Jul 2021 19:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376320;
-        bh=m/i/HMsx2BkqaC2YrJ2TGwZdRfxs3GJ877IyQhux/hQ=;
+        s=korg; t=1626376323;
+        bh=LzPTVCKk5pTrMWa6qyP+fACmjrQbtz4UR69fbiu+ICk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQJqr6515QBOgRkZ9i6mL2icoYPtUUILSXdFUBLmS0XyWdPa5USvueZr5A3KFB3a7
-         0NrDN/XxdTgpS/22kPkY7pnjUmYQiq1xw45zfNQVNoACIRJXfgFuvCCp37D1wNAOYK
-         UhWenBgZB3YMBdFeuefob1dK8M3vdo5Q0RFmxVi8=
+        b=r2e3eT2z3X33FHY7YnFXJpZmrD+H9zn61cb4w7RPch2KAtH/H+2YbFHCBDpnkDrQl
+         GI87GfIDLTTQe9BWtHVtIVXgxRqssKhaq+9PP28MnD+dq8+faeN++Tfj3fMl73tmFS
+         gkF+L+dL6+yl5k67ce5KRicVJQUi6FhT49VAW/zU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Varad Gautam <varad.gautam@suse.com>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        netdev@vger.kernel.org,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH 5.13 222/266] xfrm: policy: Read seqcount outside of rcu-read side in xfrm_policy_lookup_bytype
-Date:   Thu, 15 Jul 2021 20:39:37 +0200
-Message-Id: <20210715182648.498960569@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 5.13 223/266] thermal/drivers/int340x/processor_thermal: Fix tcc setting
+Date:   Thu, 15 Jul 2021 20:39:38 +0200
+Message-Id: <20210715182648.652063874@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -46,103 +41,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Varad Gautam <varad.gautam@suse.com>
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-commit d7b0408934c749f546b01f2b33d07421a49b6f3e upstream.
+commit fe6a6de6692e7f7159c1ff42b07ecd737df712b4 upstream.
 
-xfrm_policy_lookup_bytype loops on seqcount mutex xfrm_policy_hash_generation
-within an RCU read side critical section. Although ill advised, this is fine if
-the loop is bounded.
+The following fixes are done for tcc sysfs interface:
+- TCC is 6 bits only from bit 29-24
+- TCC of 0 is valid
+- When BIT(31) is set, this register is read only
+- Check for invalid tcc value
+- Error for negative values
 
-xfrm_policy_hash_generation wraps mutex hash_resize_mutex, which is used to
-serialize writers (xfrm_hash_resize, xfrm_hash_rebuild). This is fine too.
-
-On PREEMPT_RT=y, the read_seqcount_begin call within xfrm_policy_lookup_bytype
-emits a mutex lock/unlock for hash_resize_mutex. Mutex locking is fine, since
-RCU read side critical sections are allowed to sleep with PREEMPT_RT.
-
-xfrm_hash_resize can, however, block on synchronize_rcu while holding
-hash_resize_mutex.
-
-This leads to the following situation on PREEMPT_RT, where the writer is
-blocked on RCU grace period expiry, while the reader is blocked on a lock held
-by the writer:
-
-Thead 1 (xfrm_hash_resize)	Thread 2 (xfrm_policy_lookup_bytype)
-
-				rcu_read_lock();
-mutex_lock(&hash_resize_mutex);
-				read_seqcount_begin(&xfrm_policy_hash_generation);
-				mutex_lock(&hash_resize_mutex); // block
-xfrm_bydst_resize();
-synchronize_rcu(); // block
-		<RCU stalls in xfrm_policy_lookup_bytype>
-
-Move the read_seqcount_begin call outside of the RCU read side critical section,
-and do an rcu_read_unlock/retry if we got stale data within the critical section.
-
-On non-PREEMPT_RT, this shortens the time spent within RCU read side critical
-section in case the seqcount needs a retry, and avoids unbounded looping.
-
-Fixes: 77cc278f7b20 ("xfrm: policy: Use sequence counters with associated lock")
-Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-Cc: linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: stable@vger.kernel.org # v4.9
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Cc: "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Acked-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Fixes: fdf4f2fb8e899 ("drivers: thermal: processor_thermal_device: Export sysfs interface for TCC offset")
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: stable@vger.kernel.org
+Acked-by: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210628215803.75038-1-srinivas.pandruvada@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- net/xfrm/xfrm_policy.c |   21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ drivers/thermal/intel/int340x_thermal/processor_thermal_device.c |   20 ++++++----
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -2092,12 +2092,15 @@ static struct xfrm_policy *xfrm_policy_l
- 	if (unlikely(!daddr || !saddr))
- 		return NULL;
+--- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
++++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
+@@ -100,24 +100,27 @@ static ssize_t tcc_offset_degree_celsius
+ 	if (err)
+ 		return err;
  
--	rcu_read_lock();
-  retry:
--	do {
--		sequence = read_seqcount_begin(&xfrm_policy_hash_generation);
--		chain = policy_hash_direct(net, daddr, saddr, family, dir);
--	} while (read_seqcount_retry(&xfrm_policy_hash_generation, sequence));
-+	sequence = read_seqcount_begin(&xfrm_policy_hash_generation);
-+	rcu_read_lock();
+-	val = (val >> 24) & 0xff;
++	val = (val >> 24) & 0x3f;
+ 	return sprintf(buf, "%d\n", (int)val);
+ }
+ 
+-static int tcc_offset_update(int tcc)
++static int tcc_offset_update(unsigned int tcc)
+ {
+ 	u64 val;
+ 	int err;
+ 
+-	if (!tcc)
++	if (tcc > 63)
+ 		return -EINVAL;
+ 
+ 	err = rdmsrl_safe(MSR_IA32_TEMPERATURE_TARGET, &val);
+ 	if (err)
+ 		return err;
+ 
+-	val &= ~GENMASK_ULL(31, 24);
+-	val |= (tcc & 0xff) << 24;
++	if (val & BIT(31))
++		return -EPERM;
 +
-+	chain = policy_hash_direct(net, daddr, saddr, family, dir);
-+	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence)) {
-+		rcu_read_unlock();
-+		goto retry;
-+	}
++	val &= ~GENMASK_ULL(29, 24);
++	val |= (tcc & 0x3f) << 24;
  
- 	ret = NULL;
- 	hlist_for_each_entry_rcu(pol, chain, bydst) {
-@@ -2128,11 +2131,15 @@ static struct xfrm_policy *xfrm_policy_l
- 	}
+ 	err = wrmsrl_safe(MSR_IA32_TEMPERATURE_TARGET, val);
+ 	if (err)
+@@ -126,14 +129,15 @@ static int tcc_offset_update(int tcc)
+ 	return 0;
+ }
  
- skip_inexact:
--	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence))
-+	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence)) {
-+		rcu_read_unlock();
- 		goto retry;
-+	}
+-static int tcc_offset_save;
++static unsigned int tcc_offset_save;
  
--	if (ret && !xfrm_pol_hold_rcu(ret))
-+	if (ret && !xfrm_pol_hold_rcu(ret)) {
-+		rcu_read_unlock();
- 		goto retry;
-+	}
- fail:
- 	rcu_read_unlock();
+ static ssize_t tcc_offset_degree_celsius_store(struct device *dev,
+ 				struct device_attribute *attr, const char *buf,
+ 				size_t count)
+ {
++	unsigned int tcc;
+ 	u64 val;
+-	int tcc, err;
++	int err;
  
+ 	err = rdmsrl_safe(MSR_PLATFORM_INFO, &val);
+ 	if (err)
+@@ -142,7 +146,7 @@ static ssize_t tcc_offset_degree_celsius
+ 	if (!(val & BIT(30)))
+ 		return -EACCES;
+ 
+-	if (kstrtoint(buf, 0, &tcc))
++	if (kstrtouint(buf, 0, &tcc))
+ 		return -EINVAL;
+ 
+ 	err = tcc_offset_update(tcc);
 
 
