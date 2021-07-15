@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1363CABEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67513CA974
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343643AbhGOTYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46406 "EHLO mail.kernel.org"
+        id S241056AbhGOTGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:06:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240943AbhGOTHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:07:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3E50613DC;
-        Thu, 15 Jul 2021 19:03:39 +0000 (UTC)
+        id S241166AbhGOS4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 699DB613E3;
+        Thu, 15 Jul 2021 18:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375820;
-        bh=XqrB24X1ye5kgsWGM7gXL+a8soN9g30UbzZFfOELc3I=;
+        s=korg; t=1626375218;
+        bh=/xAl3+ufaRYvViM9X/jH9KVK3SbaGpRy3LXtVJ1+Zs0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qZd0vqCs3qMFtIvdgoTQRQC/qQxnYLwXESjoilIMwNs/6GSXqBcz6cSBzI8Y/or+C
-         LkLKLiD2uvS/bexPXkqfBJt8WOu+nDwBJAWLP44W6WwGKQ+FPcemmyqv9SRt4KK2Rw
-         ABwnV7RqUrDqbGxD8GX6pPdvPW7hkxbGBOHUuzeI=
+        b=TZmB4vfmZvUFQTY+cYHnTxBtnQu+60c7dXiQcOUi8tTNiFYWCoBh6u51PCKM9x8YP
+         VCXMD5K4kN8IFyIhnPBNrIaxmvOf1+/nw7m5+eyYmGaQQPDIRWgm1bYEN3bVkmhxEb
+         f8nWrgmypcT81kjb8vMq8kt2y19cm82wtKPMRXRc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 5.12 203/242] nvmem: core: add a missing of_node_put
+        stable@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [PATCH 5.10 193/215] coresight: Propagate symlink failure
 Date:   Thu, 15 Jul 2021 20:39:25 +0200
-Message-Id: <20210715182629.017718823@linuxfoundation.org>
+Message-Id: <20210715182633.257572675@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Jeremy Linton <jeremy.linton@arm.com>
 
-commit 63879e2964bceee2aa5bbe8b99ea58bba28bb64f upstream.
+commit 51dd19a7e9f8fbbb7cd92b8a357091911eae7f78 upstream.
 
-'for_each_child_of_node' performs an of_node_get on each iteration, so a
-return from the middle of the loop requires an of_node_put.
+If the symlink is unable to be created, the driver goes
+ahead and continues device creation. Instead lets propagate
+the failure, and fail the probe.
 
-Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210611102321.11509-1-srinivas.kandagatla@linaro.org
+Link: https://lore.kernel.org/r/20210526204042.2681700-1-jeremy.linton@arm.com
+Fixes: 8a7365c2d418 ("coresight: Expose device connections via sysfs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20210614175901.532683-7-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvmem/core.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/hwtracing/coresight/coresight-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -686,15 +686,17 @@ static int nvmem_add_cells_from_of(struc
- 			continue;
- 		if (len < 2 * sizeof(u32)) {
- 			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
-+			of_node_put(child);
- 			return -EINVAL;
+--- a/drivers/hwtracing/coresight/coresight-core.c
++++ b/drivers/hwtracing/coresight/coresight-core.c
+@@ -1347,7 +1347,7 @@ static int coresight_fixup_device_conns(
  		}
- 
- 		cell = kzalloc(sizeof(*cell), GFP_KERNEL);
--		if (!cell)
-+		if (!cell) {
-+			of_node_put(child);
- 			return -ENOMEM;
-+		}
- 
- 		cell->nvmem = nvmem;
--		cell->np = of_node_get(child);
- 		cell->offset = be32_to_cpup(addr++);
- 		cell->bytes = be32_to_cpup(addr);
- 		cell->name = kasprintf(GFP_KERNEL, "%pOFn", child);
-@@ -715,11 +717,12 @@ static int nvmem_add_cells_from_of(struc
- 				cell->name, nvmem->stride);
- 			/* Cells already added will be freed later. */
- 			kfree_const(cell->name);
--			of_node_put(cell->np);
- 			kfree(cell);
-+			of_node_put(child);
- 			return -EINVAL;
- 		}
- 
-+		cell->np = of_node_get(child);
- 		nvmem_cell_add(cell);
  	}
  
+-	return 0;
++	return ret;
+ }
+ 
+ static int coresight_remove_match(struct device *dev, void *data)
 
 
