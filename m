@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE383CAF77
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEC23CAF78
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhGOW6u convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Jul 2021 18:58:50 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:40943 "EHLO
+        id S231539AbhGOXAe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Jul 2021 19:00:34 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:45971 "EHLO
         relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhGOW6s (ORCPT
+        with ESMTP id S229624AbhGOXAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:58:48 -0400
+        Thu, 15 Jul 2021 19:00:33 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 23C041BF204;
-        Thu, 15 Jul 2021 22:55:53 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 00:55:52 +0200
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 8287F1BF205;
+        Thu, 15 Jul 2021 22:57:38 +0000 (UTC)
+Date:   Fri, 16 Jul 2021 00:57:37 +0200
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Clark Wang <xiaoning.wang@nxp.com>
 Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
         vitor.soares@synopsys.com, boris.brezillon@bootlin.com,
         linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] i3c: master: svc: add support for slave to stop
- returning data
-Message-ID: <20210716005552.6078c7eb@xps13>
-In-Reply-To: <20210715082413.3042149-4-xiaoning.wang@nxp.com>
+Subject: Re: [PATCH 4/4] i3c: master: svc: set ODSTOP to let I2C device see
+ the STOP signal
+Message-ID: <20210716005737.49760d66@xps13>
+In-Reply-To: <20210715082413.3042149-5-xiaoning.wang@nxp.com>
 References: <20210715082413.3042149-1-xiaoning.wang@nxp.com>
-        <20210715082413.3042149-4-xiaoning.wang@nxp.com>
+        <20210715082413.3042149-5-xiaoning.wang@nxp.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
@@ -38,110 +38,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Clark,
 
-Clark Wang <xiaoning.wang@nxp.com> wrote on Thu, 15 Jul 2021 16:24:12
+Clark Wang <xiaoning.wang@nxp.com> wrote on Thu, 15 Jul 2021 16:24:13
 +0800:
 
-> When i3c controller reads data from slave device, slave device can stop
-> returning data with an ACK after any byte.
-> Add this support for svc i3c controller. Otherwise, it will go TIMEOUT
-> error path when the slave device ends the read operation early.
+> If using I2C/I3C mixed mode, need to set ODSTOP. Otherwise, the I2C
+> devices cannot see the stop signal. It may cause message sending errors.
 
-Is this part of the I3C specification? I am not aware about it.
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
+> 
 > Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
 > ---
->  drivers/i3c/master/svc-i3c-master.c | 28 ++++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 8 deletions(-)
+>  drivers/i3c/master/svc-i3c-master.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
-> index 9d80435638ea..892e57fec4b0 100644
+> index 892e57fec4b0..b05cc7f521e6 100644
 > --- a/drivers/i3c/master/svc-i3c-master.c
 > +++ b/drivers/i3c/master/svc-i3c-master.c
-> @@ -865,7 +865,7 @@ static int svc_i3c_master_read(struct svc_i3c_master *master,
->  			       u8 *in, unsigned int len)
->  {
->  	int offset = 0, i, ret;
-> -	u32 mdctrl;
-> +	u32 mdctrl, mstatus;
->  
->  	while (offset < len) {
->  		unsigned int count;
-> @@ -874,8 +874,15 @@ static int svc_i3c_master_read(struct svc_i3c_master *master,
->  					 mdctrl,
->  					 !(mdctrl & SVC_I3C_MDATACTRL_RXEMPTY),
->  					 0, 1000);
-> -		if (ret)
-> -			return ret;
-> +		if (ret) {
-> +			ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS,
-> +				 mstatus, SVC_I3C_MSTATUS_COMPLETE(mstatus),
-> +				 0, 1000);
-> +			if (ret)
-> +				return ret;
-> +			else
-> +				return offset;
-> +		}
->  
->  		count = SVC_I3C_MDATACTRL_RXCOUNT(mdctrl);
->  		for (i = 0; i < count; i++)
-> @@ -884,7 +891,7 @@ static int svc_i3c_master_read(struct svc_i3c_master *master,
->  		offset += count;
->  	}
->  
-> -	return 0;
-> +	return offset;
->  }
->  
->  static int svc_i3c_master_write(struct svc_i3c_master *master,
-> @@ -917,7 +924,7 @@ static int svc_i3c_master_write(struct svc_i3c_master *master,
->  static int svc_i3c_master_xfer(struct svc_i3c_master *master,
->  			       bool rnw, unsigned int xfer_type, u8 addr,
->  			       u8 *in, const u8 *out, unsigned int xfer_len,
-> -			       unsigned int read_len, bool continued)
-> +			       unsigned int *read_len, bool continued)
->  {
->  	u32 reg;
+> @@ -449,7 +449,7 @@ static int svc_i3c_master_bus_init(struct i3c_master_controller *m)
+>  	struct i3c_device_info info = {};
+>  	unsigned long fclk_rate, fclk_period_ns;
+>  	unsigned int high_period_ns, od_low_period_ns;
+> -	u32 ppbaud, pplow, odhpp, odbaud, i2cbaud, reg;
+> +	u32 ppbaud, pplow, odhpp, odbaud, odstop, i2cbaud, reg;
 >  	int ret;
-> @@ -927,7 +934,7 @@ static int svc_i3c_master_xfer(struct svc_i3c_master *master,
->  	       SVC_I3C_MCTRL_IBIRESP_NACK |
->  	       SVC_I3C_MCTRL_DIR(rnw) |
->  	       SVC_I3C_MCTRL_ADDR(addr) |
-> -	       SVC_I3C_MCTRL_RDTERM(read_len),
-> +	       SVC_I3C_MCTRL_RDTERM(*read_len),
->  	       master->regs + SVC_I3C_MCTRL);
 >  
->  	ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
-> @@ -939,8 +946,10 @@ static int svc_i3c_master_xfer(struct svc_i3c_master *master,
->  		ret = svc_i3c_master_read(master, in, xfer_len);
->  	else
->  		ret = svc_i3c_master_write(master, out, xfer_len);
-> -	if (ret)
-> +	if (ret < 0)
->  		goto emit_stop;
-> +	if (rnw)
-> +		*read_len = ret;
->  
->  	ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
->  				 SVC_I3C_MSTATUS_COMPLETE(reg), 0, 1000);
-> @@ -1012,7 +1021,7 @@ static void svc_i3c_master_start_xfer_locked(struct svc_i3c_master *master)
->  
->  		ret = svc_i3c_master_xfer(master, cmd->rnw, xfer->type,
->  					  cmd->addr, cmd->in, cmd->out,
-> -					  cmd->len, cmd->read_len,
-> +					  cmd->len, &cmd->read_len,
->  					  cmd->continued);
->  		if (ret)
->  			break;
-> @@ -1141,6 +1150,9 @@ static int svc_i3c_master_send_direct_ccc_cmd(struct svc_i3c_master *master,
->  	if (!wait_for_completion_timeout(&xfer->comp, msecs_to_jiffies(1000)))
->  		svc_i3c_master_dequeue_xfer(master, xfer);
->  
-> +	if (cmd->read_len != xfer_len)
-> +		ccc->dests[0].payload.len = cmd->read_len;
-> +
->  	ret = xfer->ret;
->  	svc_i3c_master_free_xfer(xfer);
->  
+>  	/* Timings derivation */
+> @@ -479,6 +479,7 @@ static int svc_i3c_master_bus_init(struct i3c_master_controller *m)
+>  	switch (bus->mode) {
+>  	case I3C_BUS_MODE_PURE:
+>  		i2cbaud = 0;
+> +		odstop = 0;
+>  		break;
+>  	case I3C_BUS_MODE_MIXED_FAST:
+>  	case I3C_BUS_MODE_MIXED_LIMITED:
+> @@ -487,6 +488,7 @@ static int svc_i3c_master_bus_init(struct i3c_master_controller *m)
+>  		 * between the high and low period does not really matter.
+>  		 */
+>  		i2cbaud = DIV_ROUND_UP(1000, od_low_period_ns) - 2;
+> +		odstop = 1;
+>  		break;
+>  	case I3C_BUS_MODE_MIXED_SLOW:
+>  		/*
+> @@ -494,6 +496,7 @@ static int svc_i3c_master_bus_init(struct i3c_master_controller *m)
+>  		 * constraints as the FM+ mode.
+>  		 */
+>  		i2cbaud = DIV_ROUND_UP(2500, od_low_period_ns) - 2;
+> +		odstop = 1;
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> @@ -502,7 +505,7 @@ static int svc_i3c_master_bus_init(struct i3c_master_controller *m)
+>  	reg = SVC_I3C_MCONFIG_MASTER_EN |
+>  	      SVC_I3C_MCONFIG_DISTO(0) |
+>  	      SVC_I3C_MCONFIG_HKEEP(0) |
+> -	      SVC_I3C_MCONFIG_ODSTOP(0) |
+> +	      SVC_I3C_MCONFIG_ODSTOP(odstop) |
+>  	      SVC_I3C_MCONFIG_PPBAUD(ppbaud) |
+>  	      SVC_I3C_MCONFIG_PPLOW(pplow) |
+>  	      SVC_I3C_MCONFIG_ODBAUD(odbaud) |
+
+
+
 
 Thanks,
 Miquèl
