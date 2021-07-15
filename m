@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08A73CA9E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D823CA9E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244110AbhGOTKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:10:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
+        id S244133AbhGOTKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:10:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243210AbhGOTAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:00:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E07610C7;
-        Thu, 15 Jul 2021 18:57:22 +0000 (UTC)
+        id S241233AbhGOTAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:00:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E301601FE;
+        Thu, 15 Jul 2021 18:57:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375442;
-        bh=6rF2GL9WIIQWkZO/BED3ShKt4VEZx8DQg4Uu0Zr1E20=;
+        s=korg; t=1626375445;
+        bh=RDbpPRpPUHIEKUJqvm9HdxzVT2iLNoTodQeRLLStWfI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lg6vLErifHd8hCP16l2a7LQTRICooTvN0mjVoHN3Shu8Ggtn/P3wQ8JJHFBhSpDmU
-         1H7jwJX3XjO2QDevH7c0v3BVRd5P0z0VftTHjaXkHIaanDnuY+9CYPzIiNt8YLj4a7
-         JV10QkYlwF4C+u2UZtoqgn8zuOEgvX/5cHhdZRHk=
+        b=Do02RgZ3MtcNbUQ9TN9BZEQC+1xphRUtVSBze6SQqKAH1AyXSkG45TMmFPMpMBnSw
+         G6urTHEIZRMKzMUVFWRXskdKVABYDGLZ3X+MrfS+qc4XzSO12ChiNY2juk/O/LOTmO
+         05Dz5qOVpPTlbW7u4eC+VTKm28XhwTsYW/s27FrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Jonathan Kim <jonathan.kim@amd.com>,
+        Felix Kuehling <felix.kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 089/242] cw1200: add missing MODULE_DEVICE_TABLE
-Date:   Thu, 15 Jul 2021 20:37:31 +0200
-Message-Id: <20210715182608.721340691@linuxfoundation.org>
+Subject: [PATCH 5.12 090/242] drm/amdkfd: fix circular locking on get_wave_state
+Date:   Thu, 15 Jul 2021 20:37:32 +0200
+Message-Id: <20210715182608.907447999@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,35 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Jonathan Kim <jonathan.kim@amd.com>
 
-[ Upstream commit dd778f89225cd258e8f0fed2b7256124982c8bb5 ]
+[ Upstream commit 63f6e01237257e7226efc5087f3f0b525d320f54 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+get_wave_state acquires the mmap_lock on copy_to_user but so do
+mmu_notifiers.  mmu_notifiers allows dqm locking so do get_wave_state
+outside the dqm_lock to prevent circular locking.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1620788714-14300-1-git-send-email-zou_wei@huawei.com
+v2: squash in unused variable removal.
+
+Signed-off-by: Jonathan Kim <jonathan.kim@amd.com>
+Reviewed-by: Felix Kuehling <felix.kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/st/cw1200/cw1200_sdio.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../drm/amd/amdkfd/kfd_device_queue_manager.c | 28 +++++++++----------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/wireless/st/cw1200/cw1200_sdio.c b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-index b65ec14136c7..4c30b5772ce0 100644
---- a/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-+++ b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-@@ -53,6 +53,7 @@ static const struct sdio_device_id cw1200_sdio_ids[] = {
- 	{ SDIO_DEVICE(SDIO_VENDOR_ID_STE, SDIO_DEVICE_ID_STE_CW1200) },
- 	{ /* end: all zeroes */			},
- };
-+MODULE_DEVICE_TABLE(sdio, cw1200_sdio_ids);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+index a4266c4bca13..df05eca73275 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+@@ -1677,29 +1677,27 @@ static int get_wave_state(struct device_queue_manager *dqm,
+ 			  u32 *save_area_used_size)
+ {
+ 	struct mqd_manager *mqd_mgr;
+-	int r;
  
- /* hwbus_ops implemetation */
+ 	dqm_lock(dqm);
  
+-	if (q->properties.type != KFD_QUEUE_TYPE_COMPUTE ||
+-	    q->properties.is_active || !q->device->cwsr_enabled) {
+-		r = -EINVAL;
+-		goto dqm_unlock;
+-	}
+-
+ 	mqd_mgr = dqm->mqd_mgrs[KFD_MQD_TYPE_CP];
+ 
+-	if (!mqd_mgr->get_wave_state) {
+-		r = -EINVAL;
+-		goto dqm_unlock;
++	if (q->properties.type != KFD_QUEUE_TYPE_COMPUTE ||
++	    q->properties.is_active || !q->device->cwsr_enabled ||
++	    !mqd_mgr->get_wave_state) {
++		dqm_unlock(dqm);
++		return -EINVAL;
+ 	}
+ 
+-	r = mqd_mgr->get_wave_state(mqd_mgr, q->mqd, ctl_stack,
+-			ctl_stack_used_size, save_area_used_size);
+-
+-dqm_unlock:
+ 	dqm_unlock(dqm);
+-	return r;
++
++	/*
++	 * get_wave_state is outside the dqm lock to prevent circular locking
++	 * and the queue should be protected against destruction by the process
++	 * lock.
++	 */
++	return mqd_mgr->get_wave_state(mqd_mgr, q->mqd, ctl_stack,
++			ctl_stack_used_size, save_area_used_size);
+ }
+ 
+ static int process_termination_cpsch(struct device_queue_manager *dqm,
 -- 
 2.30.2
 
