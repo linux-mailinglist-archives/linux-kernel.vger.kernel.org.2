@@ -2,152 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52ABD3C9C56
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE743C9C5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241062AbhGOKFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240948AbhGOKFe (ORCPT
+        id S240948AbhGOKH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:07:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26669 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231149AbhGOKH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:05:34 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C564C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:02:40 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id x16so2964637plg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t0TwHbiKa4jLrlaR4uupjt1Nvt6BBHkFS2kGDMtNo4U=;
-        b=HcMXqSaXb9gxcUOng+pdaNIC6T39etk+CGwXxJfakwtDxMCQP/Ub9AVO20E22Iky90
-         bzsGzt63onQLH7vuDrGBnXHvTGHrTN3sxtA1mnUf/UVsUOSmhSQ7t5vN87zALFKmDagd
-         XLNlHOISy7LHvgtJRmutkj0fs/6S+5Yaw1QW26HAWfREqBk5zaLoUV5CXIvgqc3J+FLg
-         4g4fZWnCRpYYKOwZjF6rcK0VyMifuMFIiNKWWX51Ub3xgjPaJ7ZzHvmd8UbKfJ10kJYK
-         hUxjDv95E6DWLC88fc8WV6JErE4G5GF/dtWvpsCA1frH7/pCHGADEoL6vxQDW3M9Laiv
-         bIJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t0TwHbiKa4jLrlaR4uupjt1Nvt6BBHkFS2kGDMtNo4U=;
-        b=Sar/g0pGn64rpJhD+pbNQNpnei23YAI7Vf5MoRT7JuC59gFNVKO1deZYmWTuVpJuF9
-         ZSzLI9ARMftoDsMlTnkRZrv+HmxxkJ7byVdCTZuM72wLKYdkwREQnm6YOeX1w4eawsAB
-         VmG/M2cfufEZg6ky1WzdVpTaCUXhZ86DZ6P4Xy4IxzWNy0vZYg66ZJHy3q+19vy5EEFW
-         hGYGQKotreyDcgLYCTzLZk0/igjz9Hpzo1fhAL/4TSIcze+W6sZtCbW8VYJWDRqk438k
-         jGOMeG6c/QzK4KVfrD1nc35NCcwWTs54qKl5Dqqzae/vWXkPgdm9RTBll7DLH2DXyeOJ
-         KFqg==
-X-Gm-Message-State: AOAM533v9C+dj7mtpOClx1TGyzhD09pe8OBUgrK8dw95gtKVM/LichzU
-        ANP1BSukXhHv/w/du9336kJf
-X-Google-Smtp-Source: ABdhPJxCFuHiksDVSuB6pWpOnNml95yP2UdSGoIo3HnPkTK/Cr7ozZlySqDVCqwRyJdXKhmXeXhiAw==
-X-Received: by 2002:a17:90a:d80f:: with SMTP id a15mr3705242pjv.174.1626343359575;
-        Thu, 15 Jul 2021 03:02:39 -0700 (PDT)
-Received: from localhost ([2405:6581:5360:1800:7285:c2ff:fec2:8f97])
-        by smtp.gmail.com with ESMTPSA id 21sm5727017pfh.103.2021.07.15.03.02.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 03:02:38 -0700 (PDT)
-From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-To:     robh+dt@kernel.org, michal.simek@xilinx.com, mdf@kernel.org,
-        trix@redhat.com
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Subject: [PATCH] dt-bindings: fpga: convert Xilinx Zynq MPSoC bindings to YAML
-Date:   Thu, 15 Jul 2021 19:02:36 +0900
-Message-Id: <20210715100236.228531-1-iwamatsu@nigauri.org>
-X-Mailer: git-send-email 2.32.0
+        Thu, 15 Jul 2021 06:07:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626343474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J/qLm57mbPWrZeJcdrgHK0l6gj+db50iQeEDK6SvJPI=;
+        b=O0nnLH5tg6tX/GdH+ELFnlfDwWDMD4vXu605mOsPwtpQeG2J0kBtK2m/6JaT3Q4cyo18DE
+        qYD3wdFF85xnl0SCL/sQHETp1MDtpwNSouXx8Z9BgY/aHydsEE8n64gFgNVuek/bY77IHi
+        QhhDL7WlyR/tT/HqnjaCOYRwyFh9hI8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-zMuebjl5ObivlDZPLqUA_A-1; Thu, 15 Jul 2021 06:04:32 -0400
+X-MC-Unique: zMuebjl5ObivlDZPLqUA_A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3AC9910AEF98;
+        Thu, 15 Jul 2021 10:04:29 +0000 (UTC)
+Received: from localhost (ovpn-114-184.ams2.redhat.com [10.36.114.184])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10AFB2C00F;
+        Thu, 15 Jul 2021 10:04:27 +0000 (UTC)
+Date:   Thu, 15 Jul 2021 11:04:27 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hch@lst.de, virtio-fs@redhat.com,
+        v9fs-developer@lists.sourceforge.net, miklos@szeredi.hu
+Subject: Re: [PATCH v3 1/3] init: split get_fs_names
+Message-ID: <YPAIK9wfhk7V6Xi9@stefanha-x1.localdomain>
+References: <20210714202321.59729-1-vgoyal@redhat.com>
+ <20210714202321.59729-2-vgoyal@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="JuHm8BGS67qlvg5y"
+Content-Disposition: inline
+In-Reply-To: <20210714202321.59729-2-vgoyal@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert FPGA Manager for Xilinx Zynq MPSoC bindings documentation to
-YAML.
 
-Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
----
- .../bindings/fpga/xlnx,zynqmp-pcap-fpga.txt   | 25 -------------
- .../bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml  | 36 +++++++++++++++++++
- 2 files changed, 36 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt
- create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml
+--JuHm8BGS67qlvg5y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt b/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt
-deleted file mode 100644
-index 3052bf619dd547..00000000000000
---- a/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--Devicetree bindings for Zynq Ultrascale MPSoC FPGA Manager.
--The ZynqMP SoC uses the PCAP (Processor configuration Port) to configure the
--Programmable Logic (PL). The configuration uses  the firmware interface.
--
--Required properties:
--- compatible: should contain "xlnx,zynqmp-pcap-fpga"
--
--Example for full FPGA configuration:
--
--	fpga-region0 {
--		compatible = "fpga-region";
--		fpga-mgr = <&zynqmp_pcap>;
--		#address-cells = <0x1>;
--		#size-cells = <0x1>;
--	};
--
--	firmware {
--		zynqmp_firmware: zynqmp-firmware {
--			compatible = "xlnx,zynqmp-firmware";
--			method = "smc";
--			zynqmp_pcap: pcap {
--				compatible = "xlnx,zynqmp-pcap-fpga";
--			};
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml b/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml
-new file mode 100644
-index 00000000000000..565b835b7fbac0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml
-@@ -0,0 +1,36 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/fpga/xlnx,zynqmp-pcap-fpga.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Xilinx Zynq Ultrascale MPSoC FPGA Manager Device Tree Bindings
-+
-+maintainers:
-+  - Michal Simek <michal.simek@xilinx.com>
-+
-+description: |
-+  Device Tree Bindings for Zynq Ultrascale MPSoC FPGA Manager.
-+  The ZynqMP SoC uses the PCAP (Processor configuration Port) to
-+  configure the Programmable Logic (PL). The configuration uses the
-+  firmware interface.
-+
-+properties:
-+  compatible:
-+    const: xlnx,zynqmp-pcap-fpga
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    firmware {
-+      zynqmp_firmware: zynqmp-firmware {
-+        zynqmp_pcap: pcap {
-+          compatible = "xlnx,zynqmp-pcap-fpga";
-+        };
-+      };
-+    };
-+...
--- 
-2.32.0
+On Wed, Jul 14, 2021 at 04:23:19PM -0400, Vivek Goyal wrote:
+> From: Christoph Hellwig <hch@lst.de>
+>=20
+> Split get_fs_names into one function that splits up the command line
+> argument, and one that gets the list of all registered file systems.
+>=20
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  init/do_mounts.c | 48 ++++++++++++++++++++++++++----------------------
+>  1 file changed, 26 insertions(+), 22 deletions(-)
+
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+
+--JuHm8BGS67qlvg5y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDwCCsACgkQnKSrs4Gr
+c8hXjwgAnj/tXk8SQSwMuw8hoXxqRU6EXvbwTvctsNlGAIONbV1sIb3Bn9/QZp6W
+qeaiRi1GFk8aM5sMnlW+F+wRCsmW18Qhq3Umr9NcAVqjmbriRWTQ5lt8Z+/m8WQl
+mawAlrsHrCX2gu+HjWRp+najwQ/VDUXCwAuX76rWtx6Mn1BBtLywe02oZwDEAGOg
++/r7MnZ18FeFtAd3qntCjBrLwgdFaTCwe8MCC1rpVwSqGaxTRGMiwSG+MOV1MKDv
+fLdONf5m00nxtjArJIEh3deMWm/T5dKBLnHaMCuXz8QOhfXdYvy7IweX3nSfqIJJ
+2iV6nJTNeOMTAJ4IEJyp5fNL36qc9Q==
+=h3T0
+-----END PGP SIGNATURE-----
+
+--JuHm8BGS67qlvg5y--
 
