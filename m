@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52EF3CA9EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB333CA9DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241388AbhGOTLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:11:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35016 "EHLO mail.kernel.org"
+        id S243978AbhGOTK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242335AbhGOS7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:59:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 613BD61158;
-        Thu, 15 Jul 2021 18:56:33 +0000 (UTC)
+        id S242365AbhGOS7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1E1A601FE;
+        Thu, 15 Jul 2021 18:56:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375393;
-        bh=ntt+QbwwZjDylx63TgbvU9XSa74tzKkwq5pUAK4TrhE=;
+        s=korg; t=1626375396;
+        bh=IuiwSptQ5Z8ADJkX/wvC2jxc0AwthtD6/yBlCmD2C5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bbg2M61v1FRJDBgfUX7R/eHdayvJycGzdavQ6QrSV4XphVny3etFBBDJEoJSN1YZF
-         7l7hBVONAJfYMgd7lBom1OOn02D26+U7PEbm3P1TneNhM3DNAUtIwhlx3cpLtA/9VL
-         s+O5jkMBglh4z5crv58BjPcXsX4P0IGR6egTB75I=
+        b=hBb9JG7PvmAvX277eWcFGnwKFPzeFCvD9l85JcKQmAiQhc88ceXvwQnLzcWJnMwe+
+         TPxYW31wR2M4Xng+TvYd75oSUx+v4qLNHWFCEfgqFLE6hX3Y9nwLzDiB7mS6zkPhYY
+         DKy1MMkHTxUzMkXSCv38S89Pji3slpn7GY0b/GKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 026/242] drm/sched: Avoid data corruptions
-Date:   Thu, 15 Jul 2021 20:36:28 +0200
-Message-Id: <20210715182556.435460167@linuxfoundation.org>
+        stable@vger.kernel.org, Arturo Giusti <koredump@protonmail.com>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 027/242] udf: Fix NULL pointer dereference in udf_symlink function
+Date:   Thu, 15 Jul 2021 20:36:29 +0200
+Message-Id: <20210715182556.635188505@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,42 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+From: Arturo Giusti <koredump@protonmail.com>
 
-[ Upstream commit 0b10ab80695d61422337ede6ff496552d8ace99d ]
+[ Upstream commit fa236c2b2d4436d9f19ee4e5d5924e90ffd7bb43 ]
 
-Wait for all dependencies of a job  to complete before
-killing it to avoid data corruptions.
+In function udf_symlink, epos.bh is assigned with the value returned
+by udf_tgetblk. The function udf_tgetblk is defined in udf/misc.c
+and returns the value of sb_getblk function that could be NULL.
+Then, epos.bh is used without any check, causing a possible
+NULL pointer dereference when sb_getblk fails.
 
-Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210519141407.88444-1-andrey.grodzovsky@amd.com
+This fix adds a check to validate the value of epos.bh.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=213083
+Signed-off-by: Arturo Giusti <koredump@protonmail.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/scheduler/sched_entity.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/udf/namei.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
-index 72c39608236b..1b2fdf7f3ccd 100644
---- a/drivers/gpu/drm/scheduler/sched_entity.c
-+++ b/drivers/gpu/drm/scheduler/sched_entity.c
-@@ -222,11 +222,16 @@ static void drm_sched_entity_kill_jobs_cb(struct dma_fence *f,
- static void drm_sched_entity_kill_jobs(struct drm_sched_entity *entity)
- {
- 	struct drm_sched_job *job;
-+	struct dma_fence *f;
- 	int r;
- 
- 	while ((job = to_drm_sched_job(spsc_queue_pop(&entity->job_queue)))) {
- 		struct drm_sched_fence *s_fence = job->s_fence;
- 
-+		/* Wait for all dependencies to avoid data corruptions */
-+		while ((f = job->sched->ops->dependency(job, entity)))
-+			dma_fence_wait(f, false);
-+
- 		drm_sched_fence_scheduled(s_fence);
- 		dma_fence_set_error(&s_fence->finished, -ESRCH);
- 
+diff --git a/fs/udf/namei.c b/fs/udf/namei.c
+index f146b3089f3d..6c5692ad42b5 100644
+--- a/fs/udf/namei.c
++++ b/fs/udf/namei.c
+@@ -934,6 +934,10 @@ static int udf_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 				iinfo->i_location.partitionReferenceNum,
+ 				0);
+ 		epos.bh = udf_tgetblk(sb, block);
++		if (unlikely(!epos.bh)) {
++			err = -ENOMEM;
++			goto out_no_entry;
++		}
+ 		lock_buffer(epos.bh);
+ 		memset(epos.bh->b_data, 0x00, bsize);
+ 		set_buffer_uptodate(epos.bh);
 -- 
 2.30.2
 
