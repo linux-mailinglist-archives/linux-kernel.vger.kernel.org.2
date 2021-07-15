@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5770C3CA5AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A933CA5C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhGOSnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:43:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43842 "EHLO mail.kernel.org"
+        id S232764AbhGOSoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhGOSny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:43:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE55C613CC;
-        Thu, 15 Jul 2021 18:40:59 +0000 (UTC)
+        id S229695AbhGOSoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF6A0613CF;
+        Thu, 15 Jul 2021 18:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374460;
-        bh=7B8J8Q6iAZvGAEwKlJhNjZzre+LVz0+Y/y5z3CsLS90=;
+        s=korg; t=1626374486;
+        bh=epLAffIQc77bcA44wYbXzn+8dh4Eepktdm8W90mUD4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Jt184s8adKjwrSU+MJWnlYQdWJoM9gL5UZC5vjXOOuC/5pu1qq8Uz9Yk4d3V4mQE
-         p0kU2ivY66BAuofcqeNWt89M6rm/UPNaQ2Z3IvwwzST5UUIBCh2PdfZwtg0tZzSICL
-         UlEf0baPy3zb0FHKEttNSHYIus3zkcmRYlhcsRrQ=
+        b=ZdJQTTXG4N81DB4zQtyJ+nD5gonJYO1ukfwRrE6Ec0oIVH1GKl9ZA97OLK7qTaNSw
+         IF8y9b9boDejOz89HvwtySfv4QxQqKDwEqXUs0cLdsxCpcZb1QM1xv6UamSS9qWwyA
+         269OkysFJppM6mA7IotPXrnAWsnmh+GeQ5wNk04M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Stefan Agner <stefan@agner.ch>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 001/122] drm/mxsfb: Dont select DRM_KMS_FB_HELPER
-Date:   Thu, 15 Jul 2021 20:37:28 +0200
-Message-Id: <20210715182448.859770198@linuxfoundation.org>
+Subject: [PATCH 5.4 002/122] drm/zte: Dont select DRM_KMS_FB_HELPER
+Date:   Thu, 15 Jul 2021 20:37:29 +0200
+Message-Id: <20210715182449.148551728@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,32 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Zimmermann <tzimmermann@suse.de>
 
-[ Upstream commit 13b29cc3a722c2c0bc9ab9f72f9047d55d08a2f9 ]
+[ Upstream commit a50e74bec1d17e95275909660c6b43ffe11ebcf0 ]
 
 Selecting DRM_FBDEV_EMULATION will include the correct settings for
 fbdev emulation. Drivers should not override this.
 
 Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Stefan Agner <stefan@agner.ch>
 Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-3-tzimmermann@suse.de
+Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-4-tzimmermann@suse.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mxsfb/Kconfig | 1 -
+ drivers/gpu/drm/zte/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/mxsfb/Kconfig b/drivers/gpu/drm/mxsfb/Kconfig
-index 0dca8f27169e..33916b7b2c50 100644
---- a/drivers/gpu/drm/mxsfb/Kconfig
-+++ b/drivers/gpu/drm/mxsfb/Kconfig
-@@ -10,7 +10,6 @@ config DRM_MXSFB
- 	depends on COMMON_CLK
- 	select DRM_MXS
- 	select DRM_KMS_HELPER
--	select DRM_KMS_FB_HELPER
+diff --git a/drivers/gpu/drm/zte/Kconfig b/drivers/gpu/drm/zte/Kconfig
+index 90ebaedc11fd..aa8594190b50 100644
+--- a/drivers/gpu/drm/zte/Kconfig
++++ b/drivers/gpu/drm/zte/Kconfig
+@@ -3,7 +3,6 @@ config DRM_ZTE
+ 	tristate "DRM Support for ZTE SoCs"
+ 	depends on DRM && ARCH_ZX
  	select DRM_KMS_CMA_HELPER
- 	select DRM_PANEL
- 	help
+-	select DRM_KMS_FB_HELPER
+ 	select DRM_KMS_HELPER
+ 	select SND_SOC_HDMI_CODEC if SND_SOC
+ 	select VIDEOMODE_HELPERS
 -- 
 2.30.2
 
