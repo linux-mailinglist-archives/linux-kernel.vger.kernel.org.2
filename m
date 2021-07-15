@@ -2,316 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354003C9BE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2720D3C9BEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238624AbhGOJfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:35:02 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7017 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234883AbhGOJez (ORCPT
+        id S234685AbhGOJhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhGOJha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:34:55 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQTWx2F59zXj5y;
-        Thu, 15 Jul 2021 17:26:21 +0800 (CST)
-Received: from dggema765-chm.china.huawei.com (10.1.198.207) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 17:32:00 +0800
-Received: from [10.174.185.210] (10.174.185.210) by
- dggema765-chm.china.huawei.com (10.1.198.207) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 15 Jul 2021 17:31:59 +0800
-Subject: Re: [PATCH v7 10/15] iommu/io-pgtable-arm: Implement
- arm_lpae_unmap_pages()
-To:     Georgi Djakov <quic_c_gdjako@quicinc.com>, <will@kernel.org>,
-        <robin.murphy@arm.com>
-CC:     <joro@8bytes.org>, <isaacm@codeaurora.org>,
-        <baolu.lu@linux.intel.com>, <pratikp@codeaurora.org>,
-        <iommu@lists.linux-foundation.org>,
+        Thu, 15 Jul 2021 05:37:30 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E54C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:34:37 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id s18so7837398ljg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:34:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=C3CkEFd9UOYi1Rf2FF7o7V/WgdPMoWDYSczwchx7NFo=;
+        b=QYw0EWmsbXuKcbjoi4L+X5jwaFfIc2NBam033odRe68AbNM+13vDQ4lyglPHludr14
+         RB6cQaM22rWvE9HLUZdvWY3Z9aZyAPqIm4hSaB3QjsE8IEjH58em30KFUf2AiCqSP3qa
+         kVzpiL3RZrt/eAmTWU/UzbQVmYrYD8u/igeyF9OAeO+bB1lmQiuD2kch4h2U7LexZXXH
+         1xQtBzEM9+YMbKecVb0mnJswA943GYEq0m8Z6tJ1Ez5OGnFqNqp5phXc08cDkJinC8OG
+         ss9nIdmrWPmJrXFPqDnCoMNZbFKFFl5ZSvJs5/CPsyNJkn9vv0PVkG4JQ2EOm1G2uhkJ
+         4m+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=C3CkEFd9UOYi1Rf2FF7o7V/WgdPMoWDYSczwchx7NFo=;
+        b=IhHW0mqoefBgZENsxFQHuzoW2qciD69hSCAY9mHW5le6hHL1rCwRbeEEg+WW6MAG/9
+         BdWUu17tfXG2A9yz4v83P10uhOXbeK4Om5rEoUpAgj0+BiY2oeZGjX5YOowqE8a1dWBV
+         muKN0DdiX43rTlJQ+S1pTslN9aM7ujMkL/gLIsowpBDj8lbgBxn//+CJ5NR1mqIJgNoQ
+         STtKl/NAfP/AeEf/YYtcu/M1oljgzCbPIrR5Xvb2m5S6jYX+PCsq3glBlHAuxR+63PZ8
+         DtGifuKKKbovNJdu/C9M4ZAN0KcSPykeQmfi+OqA5J2+QnC34LEaHrhG3lhpxTG/M81J
+         KyRw==
+X-Gm-Message-State: AOAM530E9KKdnlQ18kJtE8ntaIn/SLdll0Ue7eXIQpyh9n5NaCJhqlD6
+        hOwb9LB5mbeAwaa6AU+su3I=
+X-Google-Smtp-Source: ABdhPJxj8hN6a1UU8K3nF+iRc4+DuZMPW5GVBlINqE+CDbym2ksXvh2ZoSE36yCkGkUd+/TNaJFiPQ==
+X-Received: by 2002:a2e:9f17:: with SMTP id u23mr3231356ljk.489.1626341675617;
+        Thu, 15 Jul 2021 02:34:35 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id m10sm4496lfr.72.2021.07.15.02.34.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 02:34:35 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 12:34:31 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        David Airlie <airlied@linux.ie>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <djakov@kernel.org>,
-        <wanghaibin.wang@huawei.com>
-References: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
- <1623850736-389584-11-git-send-email-quic_c_gdjako@quicinc.com>
-From:   Kunkun Jiang <jiangkunkun@huawei.com>
-Message-ID: <f0c8e5d4-a8af-69a1-b14b-99309857f82f@huawei.com>
-Date:   Thu, 15 Jul 2021 17:31:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        "Cyr, Aric" <Aric.Cyr@amd.com>,
+        Sebastian Wick <sebastian@sebastianwick.net>,
+        Vitaly Prosyak <vitaly.prosyak@amd.com>
+Subject: Re: [PATCH 1/2] drm: add crtc background color property
+Message-ID: <20210715123431.48770751@eldfell>
+In-Reply-To: <7682e4c6-a040-a2b6-915d-b99ad3ddd53e@amd.com>
+References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
+        <20210707084557.22443-2-raphael.gallais-pou@foss.st.com>
+        <20210709110459.79ca406a@eldfell>
+        <3c8331cf-fded-b6e6-3e25-666634f4b87a@foss.st.com>
+        <20210712110310.540df27d@eldfell>
+        <f8e7db99-a4e4-c4d7-5d6a-67950184701c@amd.com>
+        <20210713105214.5730c959@eldfell>
+        <70c8467c-560d-517d-63a0-97763803b06d@amd.com>
+        <20210714103518.578e70aa@eldfell>
+        <7682e4c6-a040-a2b6-915d-b99ad3ddd53e@amd.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1623850736-389584-11-git-send-email-quic_c_gdjako@quicinc.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.185.210]
-X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
- dggema765-chm.china.huawei.com (10.1.198.207)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/hcNQydbxYJzXYEbluMtbPQw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/16 21:38, Georgi Djakov wrote:
-> From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
->
-> Implement the unmap_pages() callback for the ARM LPAE io-pgtable
-> format.
->
-> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
-> ---
->   drivers/iommu/io-pgtable-arm.c | 120 +++++++++++++++++++++++++----------------
->   1 file changed, 74 insertions(+), 46 deletions(-)
->
-> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-> index ea66b10c04c4..fe8fa0ee9c98 100644
-> --- a/drivers/iommu/io-pgtable-arm.c
-> +++ b/drivers/iommu/io-pgtable-arm.c
-> @@ -46,6 +46,9 @@
->   #define ARM_LPAE_PGD_SIZE(d)						\
->   	(sizeof(arm_lpae_iopte) << (d)->pgd_bits)
->   
-> +#define ARM_LPAE_PTES_PER_TABLE(d)					\
-> +	(ARM_LPAE_GRANULE(d) >> ilog2(sizeof(arm_lpae_iopte)))
-> +
->   /*
->    * Calculate the index at level l used to map virtual address a using the
->    * pagetable in d.
-> @@ -239,22 +242,19 @@ static void __arm_lpae_sync_pte(arm_lpae_iopte *ptep, int num_entries,
->   				   sizeof(*ptep) * num_entries, DMA_TO_DEVICE);
->   }
->   
-> -static void __arm_lpae_set_pte(arm_lpae_iopte *ptep, arm_lpae_iopte pte,
-> -			       int num_entries, struct io_pgtable_cfg *cfg)
-> +static void __arm_lpae_clear_pte(arm_lpae_iopte *ptep, struct io_pgtable_cfg *cfg)
->   {
-> -	int i;
->   
-> -	for (i = 0; i < num_entries; i++)
-> -		ptep[i] = pte;
-> +	*ptep = 0;
->   
->   	if (!cfg->coherent_walk)
-> -		__arm_lpae_sync_pte(ptep, num_entries, cfg);
-> +		__arm_lpae_sync_pte(ptep, 1, cfg);
->   }
->   
-Thank you for providing this patchset, I am updating my patches based on it.
+--Sig_/hcNQydbxYJzXYEbluMtbPQw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-But can we keep __arm_lpae_set_pte()? I think it's better to remove 
-'num_entries'.
-I am really need it. If you remove it, I have to add it back.😅
+On Wed, 14 Jul 2021 12:13:58 -0400
+Harry Wentland <harry.wentland@amd.com> wrote:
+
+> On 2021-07-14 3:35 a.m., Pekka Paalanen wrote:
+> > On Tue, 13 Jul 2021 09:54:35 -0400
+> > Harry Wentland <harry.wentland@amd.com> wrote:
+> >  =20
+> >> On 2021-07-13 3:52 a.m., Pekka Paalanen wrote: =20
+> >>> On Mon, 12 Jul 2021 12:15:59 -0400
+> >>> Harry Wentland <harry.wentland@amd.com> wrote:
+> >>>    =20
+> >>>> On 2021-07-12 4:03 a.m., Pekka Paalanen wrote:   =20
+> >>>>> On Fri, 9 Jul 2021 18:23:26 +0200
+> >>>>> Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com> wrote:
+> >>>>>      =20
+> >>>>>> On 7/9/21 10:04 AM, Pekka Paalanen wrote:     =20
+> >>>>>>> On Wed, 7 Jul 2021 08:48:47 +0000
+> >>>>>>> Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com> wrot=
+e:
+> >>>>>>>       =20
+> >>>>>>>> Some display controllers can be programmed to present non-black =
+colors
+> >>>>>>>> for pixels not covered by any plane (or pixels covered by the
+> >>>>>>>> transparent regions of higher planes).  Compositors that want a =
+UI with
+> >>>>>>>> a solid color background can potentially save memory bandwidth by
+> >>>>>>>> setting the CRTC background property and using smaller planes to=
+ display
+> >>>>>>>> the rest of the content.
+> >>>>>>>>
+> >>>>>>>> To avoid confusion between different ways of encoding RGB data, =
+we
+> >>>>>>>> define a standard 64-bit format that should be used for this pro=
+perty's
+> >>>>>>>> value.  Helper functions and macros are provided to generate and=
+ dissect
+> >>>>>>>> values in this standard format with varying component precision =
+values.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.=
+com>
+> >>>>>>>> Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+> >>>>>>>> ---
+> >>>>>>>>   drivers/gpu/drm/drm_atomic_state_helper.c |  1 +
+> >>>>>>>>   drivers/gpu/drm/drm_atomic_uapi.c         |  4 +++
+> >>>>>>>>   drivers/gpu/drm/drm_blend.c               | 34 +++++++++++++++=
+++++++--
+> >>>>>>>>   drivers/gpu/drm/drm_mode_config.c         |  6 ++++
+> >>>>>>>>   include/drm/drm_blend.h                   |  1 +
+> >>>>>>>>   include/drm/drm_crtc.h                    | 12 ++++++++
+> >>>>>>>>   include/drm/drm_mode_config.h             |  5 ++++
+> >>>>>>>>   include/uapi/drm/drm_mode.h               | 28 +++++++++++++++=
+++++
+> >>>>>>>>   8 files changed, 89 insertions(+), 2 deletions(-)   =20
+> >>>
+> >>> ...
+> >>>    =20
+> >>>>>>> The question about full vs. limited range seems unnecessary to me=
+, as
+> >>>>>>> the background color will be used as-is in the blending stage, so
+> >>>>>>> userspace can just program the correct value that fits the pipeli=
+ne it
+> >>>>>>> is setting up.
+> >>>>>>>
+> >>>>>>> One more question is, as HDR exists, could we need background col=
+ors
+> >>>>>>> with component values greater than 1.0?       =20
+> >>>>>>
+> >>>>>> AR4H color format should cover that case, isn't it ?     =20
+> >>>>>
+> >>>>> Yes, but with the inconvenience I mentioned.
+> >>>>>
+> >>>>> This is a genuine question though, would anyone actually need
+> >>>>> background color values > 1.0. I don't know of any case yet where it
+> >>>>> would be required. It would imply that plane blending happens in a
+> >>>>> color space where >1.0 values are meaningful. I'm not even sure if =
+any
+> >>>>> hardware supporting that exists.
+> >>>>>
+> >>>>> Maybe it would be best to assume that only [0.0, 1.0] pixel value r=
+ange
+> >>>>> is useful, and mention in the commit message that if someone really
+> >>>>> needs values outside of that, they should create another background
+> >>>>> color property. Then, you can pick a simple unsigned integer pixel
+> >>>>> format, too. (I didn't see any 16 bit-per-channel formats like that=
+ in
+> >>>>> drm_fourcc.h though.)
+> >>>>>      =20
+> >>>>
+> >>>> I don't think we should artificially limit this to [0.0, 1.0]. As you
+> >>>> mentioned above when talking about full vs limited, the userspace
+> >>>> understands what's the correct value that fits the pipeline. If that
+> >>>> pipeline is FP16 with > 1.0 values then it would make sense that the
+> >>>> background color can be > 1.0.   =20
+> >>>
+> >>> Ok. The standard FP32 format then for ease of use and guaranteed enou=
+gh
+> >>> range and precision for far into the future?
+> >>>    =20
+> >>
+> >> I don't have a strong preference for FP16 vs FP32. My understanding is
+> >> that FP16 is enough to represent linearly encoded data in a way that
+> >> looks smooth to humans.
+> >>
+> >> scRGB uses FP16 with linear encoding in a range of [-0.5, 7.4999].
+> >> =20
+> >>> Or do you want to keep it in 64 bits total, so the UABI can pack
+> >>> everything into a u64 instead of needing to create a blob?
+> >>>
+> >>> I don't mind as long as it's clearly documented what it is and how it
+> >>> works, and it carries enough precision.
+> >>>
+> >>> But FP16 with its 10 bits of precision might be too little for integer
+> >>> 12-16 bpc pipelines and sinks? =20
+> >=20
+> > The 10 bits worries me still.
+> >=20
+> > If you have a pipeline that works in [0.0, 1.0] range only, then FP16
+> > limits precision to 10 bits (in the upper half of the range?).
+> >  =20
+> >>>
+> >>> If the values can go beyond [0.0, 1.0] range, then does the blending
+> >>> hardware and the degamma/ctm/gamma coming afterwards cope with them, =
+or
+> >>> do they get clamped anyway?
+> >>>    =20
+> >>
+> >> That probably depends on the HW and how it's configured. AMD HW can ha=
+ndle
+> >> values above and below [0.0, 1.0]. =20
+> >=20
+> > Right, so how would userspace know what will happen?
+> >=20
+> > Or do we need to specify that while values outside that unit range are
+> > expressable, it is hardware-specific on how they will behave, so
+> > generic userspace should not attempt to use values outside of the unit
+> > range?
+> >=20
+> > I guess this caveat should be documented for everything, not just for
+> > background color? LUT inputs and outputs, CTM input and output ranges,
+> > FB formats...
+> >  =20
+>=20
+> I'm not sure we should artificially limit the interface at this point, or
+> document hypotheticals. At this point I don't even know whether going bey=
+ond
+> [0.0, 1.0] would be a challenge for any HW that supports floating point
+> formats.
+
+Exactly, we don't know. Yet we have to document how background color
+works. If background color can express values outside of [0.0, 1.0],
+the documentation must say something about it.
+
+If there is no way to know, then documentation must say you don't know
+(or that it is hardware-specific, which to generic userspace is the
+same thing).
+
+If userspace does not know what happens, then obviously it will avoid
+using values it does not know what happens with.
+
+For example, let's say that blending can produce values outside of
+[0.0, 1.0]. The next step in the pipeline is DEGAMMA, which is a 1D
+LUT. How do you sample a 1D LUT with input values beyond [0.0, 1.0]? Do
+you clamp them to the unit range? Does the clamping still happen even
+when the LUT is in pass-through mode?
+
+And in general, how big or how negative values will actually go through
+the pipeline?
+
+Of course the background color property should not document everything
+above, but it must say something, like "The handling of values outside
+of [0.0, 1.0] depends on the capabilities of the hardware blending
+engine." That makes the handling unknown to generic userspace, but
+userspace drivers could make use of it.
+
+The important bit is to understand that the background color values may
+sometimes (when?) not reach the sink unmodified even if userspace has
+configured the KMS pipeline to not modify them.
+
+I would expect that values in [0.0, 1.0] have no problem passing
+through the KMS pipeline unharmed, and there are obvious expectations
+about how a LUT or a CTM processes them. But as soon as values outside
+of that range are possible, a whole slew of questions arises. The
+documentation must not be silent, it must set expectations like "it's
+hardware specific" if that's what it is.
+
 
 Thanks,
-Kunkun Jiang
->   static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
->   			       struct iommu_iotlb_gather *gather,
-> -			       unsigned long iova, size_t size, int lvl,
-> -			       arm_lpae_iopte *ptep);
-> +			       unsigned long iova, size_t size, size_t pgcount,
-> +			       int lvl, arm_lpae_iopte *ptep);
->   
->   static void __arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->   				phys_addr_t paddr, arm_lpae_iopte prot,
-> @@ -298,7 +298,7 @@ static int arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->   			size_t sz = ARM_LPAE_BLOCK_SIZE(lvl, data);
->   
->   			tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
-> -			if (__arm_lpae_unmap(data, NULL, iova + i * sz, sz,
-> +			if (__arm_lpae_unmap(data, NULL, iova + i * sz, sz, 1,
->   					     lvl, tblp) != sz) {
->   				WARN_ON(1);
->   				return -EINVAL;
-> @@ -526,14 +526,15 @@ static size_t arm_lpae_split_blk_unmap(struct arm_lpae_io_pgtable *data,
->   				       struct iommu_iotlb_gather *gather,
->   				       unsigned long iova, size_t size,
->   				       arm_lpae_iopte blk_pte, int lvl,
-> -				       arm_lpae_iopte *ptep)
-> +				       arm_lpae_iopte *ptep, size_t pgcount)
->   {
->   	struct io_pgtable_cfg *cfg = &data->iop.cfg;
->   	arm_lpae_iopte pte, *tablep;
->   	phys_addr_t blk_paddr;
->   	size_t tablesz = ARM_LPAE_GRANULE(data);
->   	size_t split_sz = ARM_LPAE_BLOCK_SIZE(lvl, data);
-> -	int i, unmap_idx = -1;
-> +	int ptes_per_table = ARM_LPAE_PTES_PER_TABLE(data);
-> +	int i, unmap_idx_start = -1, num_entries = 0, max_entries;
->   
->   	if (WARN_ON(lvl == ARM_LPAE_MAX_LEVELS))
->   		return 0;
-> @@ -542,15 +543,18 @@ static size_t arm_lpae_split_blk_unmap(struct arm_lpae_io_pgtable *data,
->   	if (!tablep)
->   		return 0; /* Bytes unmapped */
->   
-> -	if (size == split_sz)
-> -		unmap_idx = ARM_LPAE_LVL_IDX(iova, lvl, data);
-> +	if (size == split_sz) {
-> +		unmap_idx_start = ARM_LPAE_LVL_IDX(iova, lvl, data);
-> +		max_entries = ptes_per_table - unmap_idx_start;
-> +		num_entries = min_t(int, pgcount, max_entries);
-> +	}
->   
->   	blk_paddr = iopte_to_paddr(blk_pte, data);
->   	pte = iopte_prot(blk_pte);
->   
-> -	for (i = 0; i < tablesz / sizeof(pte); i++, blk_paddr += split_sz) {
-> +	for (i = 0; i < ptes_per_table; i++, blk_paddr += split_sz) {
->   		/* Unmap! */
-> -		if (i == unmap_idx)
-> +		if (i >= unmap_idx_start && i < (unmap_idx_start + num_entries))
->   			continue;
->   
->   		__arm_lpae_init_pte(data, blk_paddr, pte, lvl, 1, &tablep[i]);
-> @@ -568,76 +572,92 @@ static size_t arm_lpae_split_blk_unmap(struct arm_lpae_io_pgtable *data,
->   			return 0;
->   
->   		tablep = iopte_deref(pte, data);
-> -	} else if (unmap_idx >= 0) {
-> -		io_pgtable_tlb_add_page(&data->iop, gather, iova, size);
-> -		return size;
-> +	} else if (unmap_idx_start >= 0) {
-> +		for (i = 0; i < num_entries; i++)
-> +			io_pgtable_tlb_add_page(&data->iop, gather, iova + i * size, size);
-> +
-> +		return num_entries * size;
->   	}
->   
-> -	return __arm_lpae_unmap(data, gather, iova, size, lvl, tablep);
-> +	return __arm_lpae_unmap(data, gather, iova, size, pgcount, lvl, tablep);
->   }
->   
->   static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
->   			       struct iommu_iotlb_gather *gather,
-> -			       unsigned long iova, size_t size, int lvl,
-> -			       arm_lpae_iopte *ptep)
-> +			       unsigned long iova, size_t size, size_t pgcount,
-> +			       int lvl, arm_lpae_iopte *ptep)
->   {
->   	arm_lpae_iopte pte;
->   	struct io_pgtable *iop = &data->iop;
-> +	int i = 0, num_entries, max_entries, unmap_idx_start;
->   
->   	/* Something went horribly wrong and we ran out of page table */
->   	if (WARN_ON(lvl == ARM_LPAE_MAX_LEVELS))
->   		return 0;
->   
-> -	ptep += ARM_LPAE_LVL_IDX(iova, lvl, data);
-> +	unmap_idx_start = ARM_LPAE_LVL_IDX(iova, lvl, data);
-> +	ptep += unmap_idx_start;
->   	pte = READ_ONCE(*ptep);
->   	if (WARN_ON(!pte))
->   		return 0;
->   
->   	/* If the size matches this level, we're in the right place */
->   	if (size == ARM_LPAE_BLOCK_SIZE(lvl, data)) {
-> -		__arm_lpae_set_pte(ptep, 0, 1, &iop->cfg);
-> -
-> -		if (!iopte_leaf(pte, lvl, iop->fmt)) {
-> -			/* Also flush any partial walks */
-> -			io_pgtable_tlb_flush_walk(iop, iova, size,
-> -						  ARM_LPAE_GRANULE(data));
-> -			ptep = iopte_deref(pte, data);
-> -			__arm_lpae_free_pgtable(data, lvl + 1, ptep);
-> -		} else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
-> -			/*
-> -			 * Order the PTE update against queueing the IOVA, to
-> -			 * guarantee that a flush callback from a different CPU
-> -			 * has observed it before the TLBIALL can be issued.
-> -			 */
-> -			smp_wmb();
-> -		} else {
-> -			io_pgtable_tlb_add_page(iop, gather, iova, size);
-> +		max_entries = ARM_LPAE_PTES_PER_TABLE(data) - unmap_idx_start;
-> +		num_entries = min_t(int, pgcount, max_entries);
-> +
-> +		while (i < num_entries) {
-> +			pte = READ_ONCE(*ptep);
-> +			if (WARN_ON(!pte))
-> +				break;
-> +
-> +			__arm_lpae_clear_pte(ptep, &iop->cfg);
-> +
-> +			if (!iopte_leaf(pte, lvl, iop->fmt)) {
-> +				/* Also flush any partial walks */
-> +				io_pgtable_tlb_flush_walk(iop, iova + i * size, size,
-> +							  ARM_LPAE_GRANULE(data));
-> +				__arm_lpae_free_pgtable(data, lvl + 1, iopte_deref(pte, data));
-> +			} else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
-> +				/*
-> +				 * Order the PTE update against queueing the IOVA, to
-> +				 * guarantee that a flush callback from a different CPU
-> +				 * has observed it before the TLBIALL can be issued.
-> +				 */
-> +				smp_wmb();
-> +			} else {
-> +				io_pgtable_tlb_add_page(iop, gather, iova + i * size, size);
-> +			}
-> +
-> +			ptep++;
-> +			i++;
->   		}
->   
-> -		return size;
-> +		return i * size;
->   	} else if (iopte_leaf(pte, lvl, iop->fmt)) {
->   		/*
->   		 * Insert a table at the next level to map the old region,
->   		 * minus the part we want to unmap
->   		 */
->   		return arm_lpae_split_blk_unmap(data, gather, iova, size, pte,
-> -						lvl + 1, ptep);
-> +						lvl + 1, ptep, pgcount);
->   	}
->   
->   	/* Keep on walkin' */
->   	ptep = iopte_deref(pte, data);
-> -	return __arm_lpae_unmap(data, gather, iova, size, lvl + 1, ptep);
-> +	return __arm_lpae_unmap(data, gather, iova, size, pgcount, lvl + 1, ptep);
->   }
->   
-> -static size_t arm_lpae_unmap(struct io_pgtable_ops *ops, unsigned long iova,
-> -			     size_t size, struct iommu_iotlb_gather *gather)
-> +static size_t arm_lpae_unmap_pages(struct io_pgtable_ops *ops, unsigned long iova,
-> +				   size_t pgsize, size_t pgcount,
-> +				   struct iommu_iotlb_gather *gather)
->   {
->   	struct arm_lpae_io_pgtable *data = io_pgtable_ops_to_data(ops);
->   	struct io_pgtable_cfg *cfg = &data->iop.cfg;
->   	arm_lpae_iopte *ptep = data->pgd;
->   	long iaext = (s64)iova >> cfg->ias;
->   
-> -	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
-> +	if (WARN_ON(!pgsize || (pgsize & cfg->pgsize_bitmap) != pgsize || !pgcount))
->   		return 0;
->   
->   	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_TTBR1)
-> @@ -645,7 +665,14 @@ static size_t arm_lpae_unmap(struct io_pgtable_ops *ops, unsigned long iova,
->   	if (WARN_ON(iaext))
->   		return 0;
->   
-> -	return __arm_lpae_unmap(data, gather, iova, size, data->start_level, ptep);
-> +	return __arm_lpae_unmap(data, gather, iova, pgsize, pgcount,
-> +				data->start_level, ptep);
-> +}
-> +
-> +static size_t arm_lpae_unmap(struct io_pgtable_ops *ops, unsigned long iova,
-> +			     size_t size, struct iommu_iotlb_gather *gather)
-> +{
-> +	return arm_lpae_unmap_pages(ops, iova, size, 1, gather);
->   }
->   
->   static phys_addr_t arm_lpae_iova_to_phys(struct io_pgtable_ops *ops,
-> @@ -761,6 +788,7 @@ arm_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg)
->   	data->iop.ops = (struct io_pgtable_ops) {
->   		.map		= arm_lpae_map,
->   		.unmap		= arm_lpae_unmap,
-> +		.unmap_pages	= arm_lpae_unmap_pages,
->   		.iova_to_phys	= arm_lpae_iova_to_phys,
->   	};
->   
+pq
 
+--Sig_/hcNQydbxYJzXYEbluMtbPQw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDwAScACgkQI1/ltBGq
+qqcUkg//ZIGZ2dUK9K+97Vl05q58NQTTcYRzkH9IGM/HbMdKmoiANV2CiGkHVBhy
+sYe0B4an9g4Qg1mPOoYCvUOFOrWdX2wNuUGch5ghzf5gwIXfFWsLOUw8NjHh/6Nv
+lljaeROHi8SgkxVFajmC3jsHqerZ7c4aYPC7JSorKV+mjh/1LdUVTjCGry2Q8PPr
+FsYZ4ATm2nsGRLodnKILvmpG6KWOIgU7K0o30DaAvI0mDIxWjlv2uoex9rfLWW7s
+FTDLfkmAQ7kY/L/91kAqn/YOTxCuAQ3ZZHKiiYk6o5HP1kwcbeC2V7cwbXSr+Yjk
+g76u4cjqCNlwfnhfOXZ9/McoELUfIbUHTsJctRtA+9Dw4cdlve7z7XJSwj8aEP4t
+R0qleEVqIERVnpSn/GiHDGdjyXmR6EiKyu2MtZgH5evpYRI7g0p7HsFmOsU2Y2RD
+QMTrsAAmD0sVEHBkTVVulG/lqTmG0YRGMFfomSloxWShQ7nRkOlxwc7pR+hBdICd
+SRsgpKc3w4wB1mH+dffUwpnjDW0yVIClJY8AXP1AxRE/mNrQJqTLlom6j823wmkK
+SZRMQxQky7j6owAiZuV12TTDVl0ZXcQJpo2vzrZslVHpyMinHiEnq6kDKXlur0K6
+MH4ZnqgczuMOh4nY2ORgZHUxZjBVPVHHVTJq9nGvRZqyXUIZnGI=
+=16uJ
+-----END PGP SIGNATURE-----
+
+--Sig_/hcNQydbxYJzXYEbluMtbPQw--
