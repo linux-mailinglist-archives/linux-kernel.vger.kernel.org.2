@@ -2,61 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC893CAE65
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B653CAE69
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhGOVS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:18:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhGOVS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:18:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1E78D61374;
-        Thu, 15 Jul 2021 21:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626383733;
-        bh=uWI0EGfCf0YFjzV6kk4x2uFjYgpgQPQSey+uAd+UAN4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HjGb4b2u+2Nh5RmrR1QWdGtMbXaxUDLEfbMCyDuYUNTg1IXqKMXSkmPy5AkphDwRx
-         D51TAg+qgX0XN/wFlt619FuZi2a+FgvNlhRUtC+HhB+b7VIbKDyzp8tPPDeRLab76w
-         WThMfC5wBCAEEzQ5WNRLHxb+4ic7jMxGvCroSpcIeF2SPFXVQGVc4X3N9DKoV9rQTZ
-         r//o0nyXJ6N/beKZyvS2P8zhjqaGfusxdZOoGL3CV7Zw7lwa8d+pv/8h5WUAd5O0uC
-         Hw0UtqwO9Mmt6zIR57RtVsDKAEY2PGlldDEPecO8wyRM63pRojyxsoRygl4X2qiBrQ
-         Qqi/7jB+gmcHw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0CBD6609EA;
-        Thu, 15 Jul 2021 21:15:33 +0000 (UTC)
-Subject: Re: [GIT PULL] fallthrough fixes for Clang for 5.14-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210714200523.GA10606@embeddedor>
-References: <20210714200523.GA10606@embeddedor>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210714200523.GA10606@embeddedor>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/Wimplicit-fallthrough-clang-5.14-rc2
-X-PR-Tracked-Commit-Id: b7eb335e26a9c7f258c96b3962c283c379d3ede0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e9338abf0e186336022293d2e454c106761f262b
-Message-Id: <162638373299.3912.330918314511213806.pr-tracker-bot@kernel.org>
-Date:   Thu, 15 Jul 2021 21:15:32 +0000
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+        id S230343AbhGOVTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:19:12 -0400
+Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:65294 "EHLO
+        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229978AbhGOVTL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:19:11 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+        id e12a8b70-e5b1-11eb-ba24-005056bd6ce9;
+        Fri, 16 Jul 2021 00:16:15 +0300 (EEST)
+Date:   Fri, 16 Jul 2021 00:16:11 +0300
+From:   andy@surfacebook.localdomain
+To:     "ashiduka@fujitsu.com" <ashiduka@fujitsu.com>
+Cc:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "erosca@de.adit-jv.com" <erosca@de.adit-jv.com>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "wsa+renesas@sang-engineering.com" <wsa+renesas@sang-engineering.com>,
+        "yoshihiro.shimoda.uh@renesas.com" <yoshihiro.shimoda.uh@renesas.com>,
+        "uli+renesas@fpond.eu" <uli+renesas@fpond.eu>,
+        "george_davis@mentor.com" <george_davis@mentor.com>,
+        "andrew_gabbasov@mentor.com" <andrew_gabbasov@mentor.com>,
+        "jiada_wang@mentor.com" <jiada_wang@mentor.com>,
+        "yuichi.kusakabe@denso-ten.com" <yuichi.kusakabe@denso-ten.com>,
+        "yasano@jp.adit-jv.com" <yasano@jp.adit-jv.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jslaby@suse.com" <jslaby@suse.com>,
+        "yohhei.fukui@denso-ten.com" <yohhei.fukui@denso-ten.com>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        "torii.ken1@fujitsu.com" <torii.ken1@fujitsu.com>
+Subject: Re: [PATCH] serial: sh-sci: Support custom speed setting
+Message-ID: <YPClm+OPLVhlhgdm@surfacebook.localdomain>
+References: <20200129161955.30562-1-erosca@de.adit-jv.com>
+ <CAMuHMdWV0kkKq6sKOHsdz+FFGNHphzq_q7rvmYAL=U4fH2H3wQ@mail.gmail.com>
+ <20200210205735.GB1347752@kroah.com>
+ <OSBPR01MB29496E76BE5FD0C5BC56D0F0C1FD0@OSBPR01MB2949.jpnprd01.prod.outlook.com>
+ <CAMuHMdXYPG8t=vBn6c2B=8TwbWJfFCjW8peDLgHBwW_AxpH5Hw@mail.gmail.com>
+ <OSBPR01MB50612C6EF774733B3496AECADFFD0@OSBPR01MB5061.jpnprd01.prod.outlook.com>
+ <OSBPR01MB506141BA2FDD08FE11FC4DEBDFCB0@OSBPR01MB5061.jpnprd01.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <OSBPR01MB506141BA2FDD08FE11FC4DEBDFCB0@OSBPR01MB5061.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 14 Jul 2021 15:05:23 -0500:
+Mon, Mar 30, 2020 at 07:43:09AM +0000, ashiduka@fujitsu.com kirjoitti:
+> Dear Greg, Geert,
+> 
+> > Right.
+> > Adding "#include <sys/ioctl.h>" to Greg's sample code causes a
+> > compilation error.
+> <snip>
+> > Is it normal to declare ioctl() without "#include <sys/ioctl.h>" ?
+> 
+> I would be happy if you could give me some comments.
+> 
+> > http://www.panix.com/~grante/arbitrary-baud.c
+> 
+> We think this sample code is no good.
+> Should I work on glibc changes instead of kernel fixes?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/Wimplicit-fallthrough-clang-5.14-rc2
+Side note: I hope introducing spd_cust hack hadn't made upstream.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e9338abf0e186336022293d2e454c106761f262b
+To the point. Use BOTHER as in code excerpt. Yes, there is a problematic parts
+with the headers regarding to this feature. But you may look how others solve
+it.
 
-Thank you!
+https://github.com/npat-efault/picocom/blob/master/termios2.txt
+
+> > Subject: RE: [PATCH] serial: sh-sci: Support custom speed setting
+> > 
+> > Dear Greg, Geert,
+> > 
+> > > I guess you mean the forward declaration of ioctrl()?
+> > > No, they should include <sys/ioctl.h> instead.
+> > 
+> > Right.
+> > Adding "#include <sys/ioctl.h>" to Greg's sample code causes a
+> > compilation error.
+> > 
+> > > > I saw the code above, I thought I wouldn't write such code
+> > normally.
+> > > Why not?
+> > 
+> > Is it normal to declare ioctl() without "#include <sys/ioctl.h>" ?
+> > 
+> > Thanks & Best Regards,
+> > Yuusuke Ashiduka <ashiduka@fujitsu.com>
+> > Embedded System Development Dept. Embedded System Development Div.
+> > FUJITSU COMPUTER TECHNOLOGIES Ltd.
+> > 
+> > > -----Original Message-----
+> > > From: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > Sent: Thursday, March 12, 2020 6:03 PM
+> > > To: Torii, Kenichi/鳥居 健一 <torii.ken1@fujitsu.com>
+> > > Cc: gregkh@linuxfoundation.org; erosca@de.adit-jv.com;
+> > > linux-serial@vger.kernel.org;
+> > linux-renesas-soc@vger.kernel.org;
+> > > wsa+renesas@sang-engineering.com;
+> > > yoshihiro.shimoda.uh@renesas.com; uli+renesas@fpond.eu;
+> > > george_davis@mentor.com; andrew_gabbasov@mentor.com;
+> > > jiada_wang@mentor.com; yuichi.kusakabe@denso-ten.com;
+> > > yasano@jp.adit-jv.com; linux-kernel@vger.kernel.org;
+> > > jslaby@suse.com; yohhei.fukui@denso-ten.com; Ashizuka, Yuusuke/
+> > > 芦塚 雄介 <ashiduka@fujitsu.com>; magnus.damm@gmail.com
+> > > Subject: Re: [PATCH] serial: sh-sci: Support custom speed setting
+> > >
+> > > Hi Torii-san,
+> > >
+> > > On Thu, Mar 12, 2020 at 6:10 AM torii.ken1@fujitsu.com
+> > > <torii.ken1@fujitsu.com> wrote:
+> > > > On Tue, 11 Feb 2020 05:57:35 +0900,
+> > > > Greg Kroah-Hartman wrote:
+> > > > > On Thu, Jan 30, 2020 at 01:32:50PM +0100, Geert Uytterhoeven
+> > > wrote:
+> > > > > > On Wed, Jan 29, 2020 at 5:20 PM Eugeniu Rosca
+> > > <erosca@de.adit-jv.com> wrote:
+> > > > > > > From: Torii Kenichi <torii.ken1@jp.fujitsu.com>
+> > > > > > >
+> > > > > > > This patch is necessary to use BT module and XM module
+> > with
+> > > DENSO TEN
+> > > > > > > development board.
+> > > > > > >
+> > > > > > > This patch supports ASYNC_SPD_CUST flag by
+> > ioctl(TIOCSSERIAL),
+> > > enables
+> > > > > > > custom speed setting with setserial(1).
+> > > > > > >
+> > > > > > > The custom speed is calculated from uartclk and
+> > > custom_divisor.
+> > > > > > > If custom_divisor is zero, custom speed setting is invalid.
+> > > > > > >
+> > > > > > > Signed-off-by: Torii Kenichi <torii.ken1@jp.fujitsu.com>
+> > > > > > > [erosca: rebase against v5.5]
+> > > > > > > Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > > > > >
+> > > > > > Thanks for your patch!
+> > > > > >
+> > > > > > While this seems to work fine[*], I have a few
+> > > comments/questions:
+> > > > > >   1. This feature seems to be deprecated:
+> > > > > >
+> > > > > >          sh-sci e6e68000.serial: setserial sets custom speed
+> > > on
+> > > > > > ttySC1. This is deprecated.
+> > > > > >
+> > > > > >   2. As the wanted speed is specified as a divider, the
+> > resulting
+> > > speed
+> > > > > >      may be off, cfr. the example for 57600 below.
+> > > > > >      Note that the SCIF device has multiple clock inputs,
+> > and
+> > > can do
+> > > > > >      57600 perfectly if the right crystal has been fitted.
+> > > > > >
+> > > > > >  3. What to do with "[PATCH/RFC] serial: sh-sci: Update
+> > uartclk
+> > > based
+> > > > > >      on selected clock"
+> > > (https://patchwork.kernel.org/patch/11103703/)?
+> > > > > >      Combined with this, things become pretty complicated
+> > and
+> > > > > >      unpredictable, as uartclk now always reflect the
+> > frequency
+> > > of the
+> > > > > >      last used base clock, which was the optimal one for the
+> > > previously
+> > > > > >      used speed....
+> > > > > >
+> > > > > > I think it would be easier if we just had an API to specify
+> > > a raw speed.
+> > > > > > Perhaps that already exists?
+> > > > >
+> > > > > Yes, see:
+> > > > >       http://www.panix.com/~grante/arbitrary-baud.c
+> > > >
+> > > > I saw the code above, I thought I wouldn't write such code
+> > normally.
+> > > >
+> > > > >#include <linux/termios.h>
+> > > > >
+> > > > >int ioctl(int d, int request, ...);
+> > > >
+> > > > Do application programmers have to accept this bad code?
+> > >
+> > > I guess you mean the forward declaration of ioctrl()?
+> > > No, they should include <sys/ioctl.h> instead.
+> > >
+> > > Gr{oetje,eeting}s,
+> > >
+> > >                         Geert
+> > >
+> > > --
+> > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 --
+> > > geert@linux-m68k.org
+> > >
+> > > In personal conversations with technical people, I call myself
+> > a
+> > > hacker. But
+> > > when I'm talking to journalists I just say "programmer" or
+> > something
+> > > like that.
+> > >                                 -- Linus Torvalds
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+With Best Regards,
+Andy Shevchenko
+
+
