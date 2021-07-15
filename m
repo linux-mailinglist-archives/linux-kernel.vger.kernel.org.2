@@ -2,157 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098A43CA29E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A8E3CA2B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhGOQp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:45:57 -0400
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:37666 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232742AbhGOQp4 (ORCPT
+        id S233989AbhGOQtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:49:04 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:49892 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232171AbhGOQtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:45:56 -0400
-Received: by mail-lf1-f43.google.com with SMTP id b26so11013675lfo.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:43:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o0LG8VpqZSNIb8OFmmUa+XlaugtG0sYfQ1H76uCWCu8=;
-        b=VTFHx/WUe69CjFEgfoT3Rv4SJ1KBtZpacihBg7evQluslqZISIlTV+uZkozujigMSE
-         LdbrYpiZ16L5BCezzbczKCru/PcMJhWbr4MoiujLwO0BbN6w3h+hULOZb2bKn9lessyD
-         7R+rYBt3QFqjWwH3Cgqd2kIuDQPjH5w2sd7ejO0xBgX+0lS2+75wKvxbfUYnxqoKQBXo
-         sjdgp1ZXf1tX4q8UV5vM3IwcYy7HyddDRVjYq//OXFbotmHnjMCHxT8U4aBNOqM0DXTC
-         BbTTip2RKTqEQfVCoj62HZgEiZ4JnbIo3pFEuGsK7Oxunsp5mYqS070e8BxKfzVM6EB4
-         MGVw==
-X-Gm-Message-State: AOAM531GVwXUng4Ccetv7wXDKMMpI8Ac1oafH3epcMMhS0AaPLGEkXWb
-        qg9rvRKvZlGAqMehXL+OrUGOwYNT5buURHnFDzd4lR94
-X-Google-Smtp-Source: ABdhPJx6JntxzzycFp9ytICVmP508k+HP4hjE6kblc11AIGmSMf9hfGRnr9pGDGqudrQu/ppk7DHXURB8cWtyFzGQgg=
-X-Received: by 2002:a19:8c09:: with SMTP id o9mr4211739lfd.152.1626367381325;
- Thu, 15 Jul 2021 09:43:01 -0700 (PDT)
+        Thu, 15 Jul 2021 12:49:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:Message-Id:Date:Cc:To:From
+        :references:content-disposition:in-reply-to;
+        bh=XXtkehQ2ONU8oCrAkxOjAUpUG3U+0n5Rbx+vQpsbqo0=; b=VsZ9pl6IcXQEaJc+OIOPSTH2s2
+        ImpLpkZPiYqR2MqPe8J/TCGrfa8lTDqG4w41mP8plFxEbBU2ba8ajzYIU158IKdhsRSvxpR71yYdi
+        lVVs77Hk2Pwh/yOG9jaNYPjpiBTmg03B32Cgaw3UpyR0EHixI4UWL/Pt0GPEJp5VOWqnyGa2Yz0/s
+        3C1qrOy1FusMqR+BnvbDOrd/Ep7SkhCwGvaL1a1HrPR88k6xVDa+RE9U5jtSx6AVj/RxyiHhm3et7
+        frKUyhYk2p67XlqGrIorntTlVANHFYgzmZDPkv3iqb7xQICE4bdtcuTXqP5XORIq/327zHaHt0vWM
+        S5WTyqtw==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m44Ur-0001yb-1a; Thu, 15 Jul 2021 10:46:01 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m44Un-0001n6-Ig; Thu, 15 Jul 2021 10:45:57 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Thu, 15 Jul 2021 10:45:28 -0600
+Message-Id: <20210715164544.6827-1-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210715000206.025df9d2@rorschach.local.home>
-In-Reply-To: <20210715000206.025df9d2@rorschach.local.home>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 15 Jul 2021 09:42:49 -0700
-Message-ID: <CAM9d7chv7FvL-EoYOxOkBwRz6jvJEX5Oe1c3GkSyxSPEKPPq3w@mail.gmail.com>
-Subject: Re: [PATCH] tracing: Do no reference char * as a string in histograms
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_NO_TEXT autolearn=no autolearn_force=no version=3.4.2
+Subject: [PATCH v1 00/16] .map_sg() error cleanup
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+Hi,
 
-On Wed, Jul 14, 2021 at 9:02 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
->
-> The histogram logic was allowing events with char * pointers to be used as
-> normal strings. But it was easy to crash the kernel with:
->
->  # echo 'hist:keys=filename' > events/syscalls/sys_enter_openat/trigger
->
-> And open some files, and boom!
->
->  BUG: unable to handle page fault for address: 00007f2ced0c3280
->  #PF: supervisor read access in kernel mode
->  #PF: error_code(0x0000) - not-present page
->  PGD 1173fa067 P4D 1173fa067 PUD 1171b6067 PMD 1171dd067 PTE 0
->  Oops: 0000 [#1] PREEMPT SMP
->  CPU: 6 PID: 1810 Comm: cat Not tainted 5.13.0-rc5-test+ #61
->  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
-> v03.03 07/14/2016
->  RIP: 0010:strlen+0x0/0x20
->  Code: f6 82 80 2a 0b a9 20 74 11 0f b6 50 01 48 83 c0 01 f6 82 80 2a 0b
-> a9 20 75 ef c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 <80> 3f 00 74
-> 10 48 89 f8 48 83 c0 01 80 38 00 75 f7 48 29 f8 c3
->
->  RSP: 0018:ffffbdbf81567b50 EFLAGS: 00010246
->  RAX: 0000000000000003 RBX: ffff93815cdb3800 RCX: ffff9382401a22d0
->  RDX: 0000000000000100 RSI: 0000000000000000 RDI: 00007f2ced0c3280
->  RBP: 0000000000000100 R08: ffff9382409ff074 R09: ffffbdbf81567c98
->  R10: ffff9382409ff074 R11: 0000000000000000 R12: ffff9382409ff074
->  R13: 0000000000000001 R14: ffff93815a744f00 R15: 00007f2ced0c3280
->  FS:  00007f2ced0f8580(0000) GS:ffff93825a800000(0000)
-> knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 00007f2ced0c3280 CR3: 0000000107069005 CR4: 00000000001706e0
->  Call Trace:
->   event_hist_trigger+0x463/0x5f0
->   ? find_held_lock+0x32/0x90
->   ? sched_clock_cpu+0xe/0xd0
->   ? lock_release+0x155/0x440
->   ? kernel_init_free_pages+0x6d/0x90
->   ? preempt_count_sub+0x9b/0xd0
->   ? kernel_init_free_pages+0x6d/0x90
->   ? get_page_from_freelist+0x12c4/0x1680
->   ? __rb_reserve_next+0xe5/0x460
->   ? ring_buffer_lock_reserve+0x12a/0x3f0
->   event_triggers_call+0x52/0xe0
->   ftrace_syscall_enter+0x264/0x2c0
->   syscall_trace_enter.constprop.0+0x1ee/0x210
->   do_syscall_64+0x1c/0x80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Where it triggered a fault on strlen(key) where key was the filename.
->
-> The reason is that filename is a char * to user space, and the histogram
-> code just blindly dereferenced it, with obvious bad results.
->
-> I originally tried to use strncpy_from_user/kernel_nofault() but found
-> that there's other places that its dereferenced and not worth the effort.
->
-> Just do not allow "char *" to act like strings.
+This series is spun out and expanded from my work to add P2PDMA support
+to DMA map operations[1].
 
-It'd lose convenience and expressiveness but it's hard to argue if
-it crashes the kernel.  So,
+The P2PDMA work requires distinguishing different error conditions in
+a map_sg operation. dma_map_sgtable() already allows for returning an
+error code (where as dma_map_sg() is only allowed to return zero)
+however, it currently only returns -EINVAL when a .map_sg() call returns
+zero.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+This series cleans up all .map_sg() implementations to return appropriate
+error codes. After the cleanup, dma_map_sg() will still return zero,
+however dma_map_sgtable() will pass the error code from the .map_sg()
+call. Thanks go to Martn Oliveira for doing a lot of the cleanup of the
+obscure implementations.
+
+The patch set is based off of v5.14-rc1 and a git repo can be found
+here:
+
+  https://github.com/sbates130272/linux-p2pmem map_sg_err_cleanup_v1
 
 Thanks,
-Namhyung
+
+Logan
+
+[1] https://lore.kernel.org/linux-block/20210513223203.5542-1-logang@deltatee.com/
+
+--
+
+Logan Gunthorpe (5):
+  dma-mapping: Allow map_sg() ops to return negative error codes
+  dma-direct: Return appropriate error code from dma_direct_map_sg()
+  iommu: Return full error code from iommu_map_sg[_atomic]()
+  dma-iommu: Return error code from iommu_dma_map_sg()
+  dma-mapping: Disallow .map_sg operations from returning zero on error
+
+Martin Oliveira (11):
+  alpha: return error code from alpha_pci_map_sg()
+  ARM/dma-mapping: return error code from .map_sg() ops
+  ia64/sba_iommu: return error code from sba_map_sg_attrs()
+  MIPS/jazzdma: return error code from jazz_dma_map_sg()
+  powerpc/iommu: return error code from .map_sg() ops
+  s390/pci: return error code from s390_dma_map_sg()
+  sparc/iommu: return error codes from .map_sg() ops
+  parisc: return error code from .map_sg() ops
+  xen: swiotlb: return error code from xen_swiotlb_map_sg()
+  x86/amd_gart: return error code from gart_map_sg()
+  dma-mapping: return error code from dma_dummy_map_sg()
+
+ arch/alpha/kernel/pci_iommu.c           | 10 +++-
+ arch/arm/mm/dma-mapping.c               | 22 +++++---
+ arch/ia64/hp/common/sba_iommu.c         |  9 +--
+ arch/mips/jazz/jazzdma.c                |  2 +-
+ arch/powerpc/kernel/iommu.c             |  4 +-
+ arch/powerpc/platforms/ps3/system-bus.c |  2 +-
+ arch/powerpc/platforms/pseries/vio.c    |  5 +-
+ arch/s390/pci/pci_dma.c                 | 12 ++--
+ arch/sparc/kernel/iommu.c               |  4 +-
+ arch/sparc/kernel/pci_sun4v.c           |  4 +-
+ arch/sparc/mm/iommu.c                   |  2 +-
+ arch/x86/kernel/amd_gart_64.c           | 16 +++---
+ drivers/iommu/dma-iommu.c               | 20 ++++---
+ drivers/iommu/iommu.c                   | 15 +++--
+ drivers/parisc/ccio-dma.c               |  2 +-
+ drivers/parisc/sba_iommu.c              |  2 +-
+ drivers/xen/swiotlb-xen.c               |  2 +-
+ include/linux/dma-map-ops.h             |  6 +-
+ include/linux/dma-mapping.h             | 35 +++---------
+ include/linux/iommu.h                   | 22 ++++----
+ kernel/dma/direct.c                     |  2 +-
+ kernel/dma/dummy.c                      |  2 +-
+ kernel/dma/mapping.c                    | 73 ++++++++++++++++++++++---
+ 23 files changed, 165 insertions(+), 108 deletions(-)
 
 
->
-> Cc: stable@vger.kernel.org
-> Fixes: 79e577cbce4c4 ("tracing: Support string type key properly")
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_events_hist.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index 0207aeed31e6..16a9dfc9fffc 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -1689,7 +1689,9 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
->         if (WARN_ON_ONCE(!field))
->                 goto out;
->
-> -       if (is_string_field(field)) {
-> +       /* Pointers to strings are just pointers and dangerous to dereference */
-> +       if (is_string_field(field) &&
-> +           (field->filter_type != FILTER_PTR_STRING)) {
->                 flags |= HIST_FIELD_FL_STRING;
->
->                 hist_field->size = MAX_FILTER_STR_VAL;
-> @@ -4495,8 +4497,6 @@ static inline void add_to_key(char *compound_key, void *key,
->                 field = key_field->field;
->                 if (field->filter_type == FILTER_DYN_STRING)
->                         size = *(u32 *)(rec + field->offset) >> 16;
-> -               else if (field->filter_type == FILTER_PTR_STRING)
-> -                       size = strlen(key);
->                 else if (field->filter_type == FILTER_STATIC_STRING)
->                         size = field->size;
->
-> --
-> 2.31.1
->
+base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
+--
+2.20.1
