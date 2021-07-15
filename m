@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF0E3CA943
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCC93CAB1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242864AbhGOTFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:05:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59882 "EHLO mail.kernel.org"
+        id S242406AbhGOTRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:17:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240120AbhGOS4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65032613D1;
-        Thu, 15 Jul 2021 18:53:10 +0000 (UTC)
+        id S243363AbhGOTEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B564613DF;
+        Thu, 15 Jul 2021 19:00:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375190;
-        bh=dyshn5kvxDEI0SM2myXYKNppDxlJZf63QS5mPCGGb8c=;
+        s=korg; t=1626375603;
+        bh=gWwBBg4a6xmnU0NOxAxZXtYOk15quw5sP7AcEnJZ1rg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GmPfx9DVbmXFryobMV/UeDc8143EwZ+AAeI2vkcr/gHfFK6Pd5wYW3cd4n9cRcdxN
-         NJmN/q8dHUprKpLbzEVx6FY9WGF3oFhn2fU8q1OnzQQAkMPScq1JYC95NDhfpeF9DD
-         vICvaUss/H7DFCVnp07HNHmuBfLKCOyFIVZ5oV+g=
+        b=gwFkPODqthd0p6OMfzQHDYCDy7GI9l284PYBP+/v//DTuQbFyvS85jBibgt3OOQDf
+         jiht0/ob/bySs+0UQaWInb/i8FrQs4FlcFLpOowVPLn/cOhbwItHIgK1m+d3hm6la3
+         fLwj+xklE3PijC09MHhW9Kr1VgZjKyRRouvDOJUo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gulam Mohamed <gulam.mohamed@oracle.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hanjun Guo <guohanjun@huawei.com>
-Subject: [PATCH 5.10 145/215] scsi: iscsi: Fix iSCSI cls conn state
+        stable@vger.kernel.org, Xiaochen Shen <xiaochen.shen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 5.12 155/242] selftests/resctrl: Fix incorrect parsing of option "-t"
 Date:   Thu, 15 Jul 2021 20:38:37 +0200
-Message-Id: <20210715182625.263662643@linuxfoundation.org>
+Message-Id: <20210715182620.485014708@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,106 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Xiaochen Shen <xiaochen.shen@intel.com>
 
-commit 0dcf8febcb7b9d42bec98bc068e01d1a6ea578b8 upstream.
+commit 1421ec684a43379b2aa3cfda20b03d38282dc990 upstream.
 
-In commit 9e67600ed6b8 ("scsi: iscsi: Fix race condition between login and
-sync thread") I missed that libiscsi was now setting the iSCSI class state,
-and that patch ended up resetting the state during conn stoppage and using
-the wrong state value during ep_disconnect. This patch moves the setting of
-the class state to the class module and then fixes the two issues above.
+Resctrl test suite accepts command line argument "-t" to specify the
+unit tests to run in the test list (e.g., -t mbm,mba,cmt,cat) as
+documented in the help.
 
-Link: https://lore.kernel.org/r/20210406171746.5016-1-michael.christie@oracle.com
-Fixes: 9e67600ed6b8 ("scsi: iscsi: Fix race condition between login and sync thread")
-Cc: Gulam Mohamed <gulam.mohamed@oracle.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+When calling strtok() to parse the option, the incorrect delimiters
+argument ":\t" is used. As a result, passing "-t mbm,mba,cmt,cat" throws
+an invalid option error.
+
+Fix this by using delimiters argument "," instead of ":\t" for parsing
+of unit tests list. At the same time, remove the unnecessary "spaces"
+between the unit tests in help documentation to prevent confusion.
+
+Fixes: 790bf585b0ee ("selftests/resctrl: Add Cache Allocation Technology (CAT) selftest")
+Fixes: 78941183d1b1 ("selftests/resctrl: Add Cache QoS Monitoring (CQM) selftest")
+Fixes: ecdbb911f22d ("selftests/resctrl: Add MBM test")
+Fixes: 034c7678dd2c ("selftests/resctrl: Add README for resctrl tests")
+Cc: stable@vger.kernel.org
+Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/scsi/libiscsi.c             |   26 +++-----------------------
- drivers/scsi/scsi_transport_iscsi.c |   18 +++++++++++++++---
- 2 files changed, 18 insertions(+), 26 deletions(-)
 
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -3089,9 +3089,10 @@ fail_mgmt_tasks(struct iscsi_session *se
- 	}
- }
+---
+ tools/testing/selftests/resctrl/README          |    2 +-
+ tools/testing/selftests/resctrl/resctrl_tests.c |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+--- a/tools/testing/selftests/resctrl/README
++++ b/tools/testing/selftests/resctrl/README
+@@ -47,7 +47,7 @@ Parameter '-h' shows usage information.
  
--static void iscsi_start_session_recovery(struct iscsi_session *session,
--					 struct iscsi_conn *conn, int flag)
-+void iscsi_conn_stop(struct iscsi_cls_conn *cls_conn, int flag)
- {
-+	struct iscsi_conn *conn = cls_conn->dd_data;
-+	struct iscsi_session *session = conn->session;
- 	int old_stop_stage;
+ usage: resctrl_tests [-h] [-b "benchmark_cmd [options]"] [-t test list] [-n no_of_bits]
+         -b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CQM default benchmark is builtin fill_buf
+-        -t test list: run tests specified in the test list, e.g. -t mbm, mba, cqm, cat
++        -t test list: run tests specified in the test list, e.g. -t mbm,mba,cqm,cat
+         -n no_of_bits: run cache tests using specified no of bits in cache bit mask
+         -p cpu_no: specify CPU number to run the test. 1 is default
+         -h: help
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -40,7 +40,7 @@ static void cmd_help(void)
+ 	printf("\t-b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CQM");
+ 	printf("\t default benchmark is builtin fill_buf\n");
+ 	printf("\t-t test list: run tests specified in the test list, ");
+-	printf("e.g. -t mbm, mba, cqm, cat\n");
++	printf("e.g. -t mbm,mba,cqm,cat\n");
+ 	printf("\t-n no_of_bits: run cache tests using specified no of bits in cache bit mask\n");
+ 	printf("\t-p cpu_no: specify CPU number to run the test. 1 is default\n");
+ 	printf("\t-h: help\n");
+@@ -98,7 +98,7 @@ int main(int argc, char **argv)
  
- 	mutex_lock(&session->eh_mutex);
-@@ -3149,27 +3150,6 @@ static void iscsi_start_session_recovery
- 	spin_unlock_bh(&session->frwd_lock);
- 	mutex_unlock(&session->eh_mutex);
- }
--
--void iscsi_conn_stop(struct iscsi_cls_conn *cls_conn, int flag)
--{
--	struct iscsi_conn *conn = cls_conn->dd_data;
--	struct iscsi_session *session = conn->session;
--
--	switch (flag) {
--	case STOP_CONN_RECOVER:
--		cls_conn->state = ISCSI_CONN_FAILED;
--		break;
--	case STOP_CONN_TERM:
--		cls_conn->state = ISCSI_CONN_DOWN;
--		break;
--	default:
--		iscsi_conn_printk(KERN_ERR, conn,
--				  "invalid stop flag %d\n", flag);
--		return;
--	}
--
--	iscsi_start_session_recovery(session, conn, flag);
--}
- EXPORT_SYMBOL_GPL(iscsi_conn_stop);
- 
- int iscsi_conn_bind(struct iscsi_cls_session *cls_session,
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -2479,10 +2479,22 @@ static void iscsi_if_stop_conn(struct is
- 	 * it works.
- 	 */
- 	mutex_lock(&conn_mutex);
-+	switch (flag) {
-+	case STOP_CONN_RECOVER:
-+		conn->state = ISCSI_CONN_FAILED;
-+		break;
-+	case STOP_CONN_TERM:
-+		conn->state = ISCSI_CONN_DOWN;
-+		break;
-+	default:
-+		iscsi_cls_conn_printk(KERN_ERR, conn,
-+				      "invalid stop flag %d\n", flag);
-+		goto unlock;
-+	}
-+
- 	conn->transport->stop_conn(conn, flag);
--	conn->state = ISCSI_CONN_DOWN;
-+unlock:
- 	mutex_unlock(&conn_mutex);
--
- }
- 
- static void stop_conn_work_fn(struct work_struct *work)
-@@ -2973,7 +2985,7 @@ static int iscsi_if_ep_disconnect(struct
- 		mutex_lock(&conn->ep_mutex);
- 		conn->ep = NULL;
- 		mutex_unlock(&conn->ep_mutex);
--		conn->state = ISCSI_CONN_DOWN;
-+		conn->state = ISCSI_CONN_FAILED;
- 	}
- 
- 	transport->ep_disconnect(ep);
+ 					return -1;
+ 				}
+-				token = strtok(NULL, ":\t");
++				token = strtok(NULL, ",");
+ 			}
+ 			break;
+ 		case 'p':
 
 
