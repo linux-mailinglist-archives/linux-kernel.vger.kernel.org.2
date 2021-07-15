@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C873C9DF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFE43C9DFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhGOLwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhGOLwF (ORCPT
+        id S230038AbhGOLwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:52:25 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:15020 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhGOLwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:52:05 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B08C06175F;
-        Thu, 15 Jul 2021 04:49:11 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id l8-20020a05600c1d08b02902333d79327aso2809579wms.3;
-        Thu, 15 Jul 2021 04:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SPeDyGqSFTj9HX+TvNrLA2iuffSVaR/KQ4kPJuR8e/M=;
-        b=Qy/WO4VrpSuEySNBwwsfFYofOH+IjOzbTGpeTrOkiKNb4/6EczG0KPE+o2vY6wLLBE
-         uk+4/8dW+lgtRR2DrK0QRrBjuyHresMx4q/iF07XkrSInCbdDW6co1gor7SRmR+/vxIl
-         lPZ1TGGP2lINEnRrDiWF53s3jRz4EsSrQHwE7PEaJMRJManpe8l0UVzQk7fyuuQlFIK3
-         s4DAE3MdZ8SfyNAENfyEDdX77VoH+qyyZqhFs+ZpeXmGVgOqavGJbMJ+/kimF6Lhlyeo
-         7cxKoV7icjbliOzMjnmWJwQ2PSUREXgKpW+5CyQR03hIkg45y+8cGKsNagObqKcdYz/I
-         yfrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SPeDyGqSFTj9HX+TvNrLA2iuffSVaR/KQ4kPJuR8e/M=;
-        b=ozGf7kHyBabDYhaoreMvQXb6fLg+gmmCB+3zZbHbP3eifebkVKIzJAyHvjD7Qj58We
-         JdBnohjnm1gQkMs1+5z1dKtxKnvyZGLsHLYNdiSYviIw7OESl7/Nm8KJX0/Cjgm5CYIm
-         V6tpjKnKBWXcOQqabZK886TJS5LbeRK0AqzDedJ5qsy1x7xf0o7H2WZrRdCPQ1bzxeLf
-         y1ygwVxsMJVqXQ1pgj5S6k9RucrXforeEY891PX0yzAfvYQ97uwvxdRHnPRf4JmIdcne
-         q9BEOfBQ39dzF817YalSeV5J7UqR/SISnY0Z8/FRAV4TJ6iFtzjNwCvzg72R9PgvF00S
-         CyhQ==
-X-Gm-Message-State: AOAM531zq5twUYmZbT1Dn/nVTcOz85ZRqO9qnS+50gkm9CnTIrZFYdKZ
-        1/KQHdNmtzvi3N7JqBzuT+Y=
-X-Google-Smtp-Source: ABdhPJxl7aRVCwersA2utu/73GOu1JUMoD3qRN3k/qfhuWo8/Mc32tscT2CS07sOz1/1eJFHhqtynQ==
-X-Received: by 2002:a05:600c:5106:: with SMTP id o6mr9981855wms.18.1626349750216;
-        Thu, 15 Jul 2021 04:49:10 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id u12sm6383779wrt.50.2021.07.15.04.49.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 04:49:09 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 14:49:08 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware process the
- layer 4 checksum
-Message-ID: <20210715114908.ripblpevmdujkf2m@skbuf>
-References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
- <20210714191723.31294-3-LinoSanfilippo@gmx.de>
- <20210714194812.stay3oqyw3ogshhj@skbuf>
- <YO9F2LhTizvr1l11@lunn.ch>
- <20210715065455.7nu7zgle2haa6wku@skbuf>
- <trinity-84a570e8-7b5f-44f7-b10c-169d4307d653-1626347772540@3c-app-gmx-bap31>
+        Thu, 15 Jul 2021 07:52:24 -0400
+Received: from dggeml759-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQXdG5h0jzbcPV;
+        Thu, 15 Jul 2021 19:46:10 +0800 (CST)
+Received: from [10.174.178.165] (10.174.178.165) by
+ dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 19:49:28 +0800
+Subject: Re: [PATCH] pinctrl: single: Fix error return code in
+ pcs_parse_bits_in_pinctrl_entry()
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Manjunathappa Prakash <prakash.pm@ti.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210715064206.3193-1-thunder.leizhen@huawei.com>
+From:   "weiyongjun (A)" <weiyongjun1@huawei.com>
+Message-ID: <55d02087-e2c7-9a0c-e20e-ff6f106703a3@huawei.com>
+Date:   Thu, 15 Jul 2021 19:49:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <trinity-84a570e8-7b5f-44f7-b10c-169d4307d653-1626347772540@3c-app-gmx-bap31>
+In-Reply-To: <20210715064206.3193-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.165]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeml759-chm.china.huawei.com (10.1.199.138)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 01:16:12PM +0200, Lino Sanfilippo wrote:
-> Sure, I will test this solution. But I think NETIF_F_FRAGLIST should also be
-> cleared in this case, right?
+> Fix to return -ENOTSUPP instead of 0 when PCS_HAS_PINCONF is true, which
+> is the same as that returned in pcs_parse_pinconf().
+>
+> In addition, I found the value of pcs->flags is not overwritten in
+> pcs_parse_bits_in_pinctrl_entry() and its subfunctions, so moving this
+> check to the beginning of the function eliminates unnecessary rollback
+> operations.
+>
+> Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>   drivers/pinctrl/pinctrl-single.c | 21 ++++++++-------------
+>   1 file changed, 8 insertions(+), 13 deletions(-)
+>
+>
+>   	npins_in_row = pcs->width / pcs->bits_per_pin;
+>   
+>   	vals = devm_kzalloc(pcs->dev,
+> @@ -1212,29 +1217,19 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
+>   		goto free_pins;
+>   	}
+>   
+> -	gsel = pinctrl_generic_add_group(pcs->pctl, np->name, pins, found, pcs);
+> -	if (gsel < 0) {
+> -		res = gsel;
+> +	res = pinctrl_generic_add_group(pcs->pctl, np->name, pins, found, pcs);
+> +	if (res < 0)
+>   		goto free_function;
+> -	}
 
-Hmm, interesting question. I think only hns3 makes meaningful use of
-NETIF_F_FRAGLIST, right? I'm looking at hns3_fill_skb_to_desc().
-Other drivers seem to set it for ridiculous reasons - looking at commit
-66aa0678efc2 ("ibmveth: Support to enable LSO/CSO for Trunk VEA.") -
-they set NETIF_F_FRAGLIST and then linearize the skb chain anyway. The
-claimed 4x throughput benefit probably has to do with less skbs
-traversing the stack? I don't know.
 
-Anyway, it is hard to imagine all the things that could go wrong with
-chains of IP fragments on a DSA interface, precisely because I have so
-few examples to look at. I would say, header taggers are probably fine,
-tail taggers not so much, so apply the same treatment as for NETIF_F_SG?
+This change cause 'gsel' not set.
+
+Do not mix this cleanup with bugfix.
+
+
+
