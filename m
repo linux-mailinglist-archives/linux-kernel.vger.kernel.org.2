@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119C33CACB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76793CACA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242271AbhGOTmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:42:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51470 "EHLO mail.kernel.org"
+        id S243919AbhGOTlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244676AbhGOTPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:15:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 823E761419;
-        Thu, 15 Jul 2021 19:11:06 +0000 (UTC)
+        id S244657AbhGOTPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:15:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D085461407;
+        Thu, 15 Jul 2021 19:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376267;
-        bh=Jj+qxO9uQu4VlJFCOItiFlKT7Z1OzVTswRFWi2+JbfI=;
+        s=korg; t=1626376269;
+        bh=HDtToeUWPZsFEOlPRMfiW8xFcEzbc6m4na45d4HkCJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D9c6voVCFEJAsehhIasSa5BAgObBza+9GEK4cEpac/S1db84OAgPVUDfFvr4Wl39G
-         rx0Z4RGrOBTNEiNHgpFxSAyTyNwI50AYTRtYN0XojltT55nO8XDGIuOOG/xMNTWO7Z
-         mfexnSZ0sc73gKeMtBuhCfNRP5o8FghqTHzks6f0=
+        b=VPFJbxRtx67gOjZumaofTfVm6LhnCNjRtQ0hv2vtC6Z4OUv6cqP6ojF/fpjLPYQET
+         wxNwy+BndulLm8LP5iLzs819VhRa81OpL9uU7/mYf0KKAhwRXNCRWIfjXafgYOLD15
+         9oe9C/zC6O8DXecMrscpUcAUTXqRkc9LZTFmDHoE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>
-Subject: [PATCH 5.13 197/266] drm/amd/display: fix incorrrect valid irq check
-Date:   Thu, 15 Jul 2021 20:39:12 +0200
-Message-Id: <20210715182645.285452979@linuxfoundation.org>
+        stable@vger.kernel.org, Sachi King <nakato@nakato.io>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.13 198/266] pinctrl/amd: Add device HID for new AMD GPIO controller
+Date:   Thu, 15 Jul 2021 20:39:13 +0200
+Message-Id: <20210715182645.390581965@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,33 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guchun Chen <guchun.chen@amd.com>
+From: Maximilian Luz <luzmaximilian@gmail.com>
 
-commit e38ca7e422791a4d1c01e56dbf7f9982db0ed365 upstream.
+commit 1ca46d3e43569186bd1decfb02a6b4c4ddb4304b upstream.
 
-valid DAL irq should be < DAL_IRQ_SOURCES_NUMBER.
+Add device HID AMDI0031 to the AMD GPIO controller driver match table.
+This controller can be found on Microsoft Surface Laptop 4 devices and
+seems similar enough that we can just copy the existing AMDI0030 entry.
 
-Signed-off-by: Guchun Chen <guchun.chen@amd.com>
-Reviewed-and-tested-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Cc: <stable@vger.kernel.org> # 5.10+
+Tested-by: Sachi King <nakato@nakato.io>
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Link: https://lore.kernel.org/r/20210512210316.1982416-1-luzmaximilian@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/dc/irq_types.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/pinctrl-amd.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/display/dc/irq_types.h
-+++ b/drivers/gpu/drm/amd/display/dc/irq_types.h
-@@ -165,7 +165,7 @@ enum irq_type
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -991,6 +991,7 @@ static int amd_gpio_remove(struct platfo
+ static const struct acpi_device_id amd_gpio_acpi_match[] = {
+ 	{ "AMD0030", 0 },
+ 	{ "AMDI0030", 0},
++	{ "AMDI0031", 0},
+ 	{ },
  };
- 
- #define DAL_VALID_IRQ_SRC_NUM(src) \
--	((src) <= DAL_IRQ_SOURCES_NUMBER && (src) > DC_IRQ_SOURCE_INVALID)
-+	((src) < DAL_IRQ_SOURCES_NUMBER && (src) > DC_IRQ_SOURCE_INVALID)
- 
- /* Number of Page Flip IRQ Sources. */
- #define DAL_PFLIP_IRQ_SRC_NUM \
+ MODULE_DEVICE_TABLE(acpi, amd_gpio_acpi_match);
 
 
