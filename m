@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863253CABBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A20D3CABBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245240AbhGOTXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46122 "EHLO mail.kernel.org"
+        id S245337AbhGOTXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:23:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240025AbhGOTGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:06:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30524613F3;
-        Thu, 15 Jul 2021 19:02:46 +0000 (UTC)
+        id S241950AbhGOTGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:06:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A676613FB;
+        Thu, 15 Jul 2021 19:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375766;
-        bh=g82bctk938ScfdJINpkIncGH+nIC5VosejmaIJZh80I=;
+        s=korg; t=1626375769;
+        bh=PTmuQ+jgb47AOA2Ebl+Ynrr6Y303UUE+WJIg1P24iZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DN5M44R+Uz7LwkqgGl+vcLgnWYMhO6yL4x9heDjB1aNvkJzLvz2j2aW3jNYrQoJ3j
-         JRPO64TF7UDLMPNnr+0lCIHIjWXcVTO9l95wY6HZne5X6hb2DmK8OhvaSPy5Vk8SKS
-         b9Y42v8tnV47lcuvezPrTcXv7TWRrsnenwP7jh1s=
+        b=tKsvPRVZphFHaR7SADfDI0O0/3sxD721ajlnU8xggd/jQFu2sSZolRIrMgxHZ49P3
+         OQgNokDt7Mr0jVR7ID1Q9PN8Ut9oab0Fnj8GqELTl8zzAFQ9FeTu19FHy3Fxq9SUgq
+         2NnI4Y8RDsiARuiOg2PO2trVnBOQKuK3abXXccxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org,
+        syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com,
+        Antti Palosaari <crope@iki.fi>,
+        Johan Hovold <johan@kernel.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.12 227/242] media: gspca/sunplus: fix zero-length control requests
-Date:   Thu, 15 Jul 2021 20:39:49 +0200
-Message-Id: <20210715182632.874200480@linuxfoundation.org>
+Subject: [PATCH 5.12 228/242] media: rtl28xxu: fix zero-length control request
+Date:   Thu, 15 Jul 2021 20:39:50 +0200
+Message-Id: <20210715182633.025050739@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -42,7 +45,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Hovold <johan@kernel.org>
 
-commit b4bb4d425b7b02424afea2dfdcd77b3b4794175e upstream.
+commit 25d5ce3a606a1eb23a9265d615a92a876ff9cb5f upstream.
 
 The direction of the pipe argument must match the request-type direction
 bit or control requests may fail depending on the host-controller-driver
@@ -52,50 +55,33 @@ Control transfers without a data stage are treated as OUT requests by
 the USB stack and should be using usb_sndctrlpipe(). Failing to do so
 will now trigger a warning.
 
-Fix the single zero-length control request which was using the
-read-register helper, and update the helper so that zero-length reads
-fail with an error message instead.
+Fix the zero-length i2c-read request used for type detection by
+attempting to read a single byte instead.
 
-Fixes: 6a7eba24e4f0 ("V4L/DVB (8157): gspca: all subdrivers")
-Cc: stable@vger.kernel.org      # 2.6.27
+Reported-by: syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com
+Fixes: d0f232e823af ("[media] rtl28xxu: add heuristic to detect chip type")
+Cc: stable@vger.kernel.org      # 4.0
+Cc: Antti Palosaari <crope@iki.fi>
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/gspca/sunplus.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/media/usb/dvb-usb-v2/rtl28xxu.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/media/usb/gspca/sunplus.c
-+++ b/drivers/media/usb/gspca/sunplus.c
-@@ -242,6 +242,10 @@ static void reg_r(struct gspca_dev *gspc
- 		gspca_err(gspca_dev, "reg_r: buffer overflow\n");
- 		return;
- 	}
-+	if (len == 0) {
-+		gspca_err(gspca_dev, "reg_r: zero-length read\n");
-+		return;
-+	}
- 	if (gspca_dev->usb_err < 0)
- 		return;
- 	ret = usb_control_msg(gspca_dev->dev,
-@@ -250,7 +254,7 @@ static void reg_r(struct gspca_dev *gspc
- 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 			0,		/* value */
- 			index,
--			len ? gspca_dev->usb_buf : NULL, len,
-+			gspca_dev->usb_buf, len,
- 			500);
- 	if (ret < 0) {
- 		pr_err("reg_r err %d\n", ret);
-@@ -727,7 +731,7 @@ static int sd_start(struct gspca_dev *gs
- 		case MegaImageVI:
- 			reg_w_riv(gspca_dev, 0xf0, 0, 0);
- 			spca504B_WaitCmdStatus(gspca_dev);
--			reg_r(gspca_dev, 0xf0, 4, 0);
-+			reg_w_riv(gspca_dev, 0xf0, 4, 0);
- 			spca504B_WaitCmdStatus(gspca_dev);
- 			break;
- 		default:
+--- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
++++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
+@@ -612,8 +612,9 @@ static int rtl28xxu_read_config(struct d
+ static int rtl28xxu_identify_state(struct dvb_usb_device *d, const char **name)
+ {
+ 	struct rtl28xxu_dev *dev = d_to_priv(d);
++	u8 buf[1];
+ 	int ret;
+-	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 0, NULL};
++	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 1, buf};
+ 
+ 	dev_dbg(&d->intf->dev, "\n");
+ 
 
 
