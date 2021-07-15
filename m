@@ -2,183 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF653C9586
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE67F3C958B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234674AbhGOBRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:17:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:45156 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234288AbhGOBRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:17:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52CDE1396;
-        Wed, 14 Jul 2021 18:14:48 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 29DF73F7D8;
-        Wed, 14 Jul 2021 18:14:42 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH v7 5/5] lib/test_printf.c: add test cases for '%pD'
-Date:   Thu, 15 Jul 2021 09:14:07 +0800
-Message-Id: <20210715011407.7449-6-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210715011407.7449-1-justin.he@arm.com>
-References: <20210715011407.7449-1-justin.he@arm.com>
+        id S234532AbhGOBXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 21:23:03 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6819 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhGOBXC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 21:23:02 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQGcJ09KhzXtFy;
+        Thu, 15 Jul 2021 09:14:24 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 09:20:01 +0800
+Received: from [10.67.102.248] (10.67.102.248) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 09:20:01 +0800
+Subject: Re: [PATCH] perf probe: Fix add event failed when 32-bit perf running
+ in 64-bit kernel
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
+        <fche@redhat.com>, <ravi.bangoria@linux.ibm.com>,
+        <yao.jin@linux.intel.com>, <srikar@linux.vnet.ibm.com>,
+        <Jianlin.Lv@arm.com>, <lihuafei1@huawei.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210714065432.188061-1-yangjihong1@huawei.com>
+ <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <9cb859df-f2ef-732b-756e-c8d2acefe85c@huawei.com>
+Date:   Thu, 15 Jul 2021 09:20:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.248]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm000003.china.huawei.com (7.185.36.128)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the behaviour of specifier '%pD' is changed to print the full path
-of struct file, the related test cases are also updated.
+Hello Hiramatsu,
 
-Given the full path string of '%pD' is prepended from the end of the scratch
-buffer, the check of "wrote beyond the nul-terminator" should be skipped
-for '%pD'.
+On 2021/7/14 16:35, Masami Hiramatsu wrote:
+> Hi Yang,
+> 
+> On Wed, 14 Jul 2021 14:54:32 +0800
+> Yang Jihong <yangjihong1@huawei.com> wrote:
+> 
+>> The "address" member  of "struct probe_trace_point" uses long data type.
+>> If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
+>> 32 bits. As a result, upper 32 bits of address read from kernel are truncated,
+>> An error occurs during address comparison in kprobe_warn_out_range function.
+> 
+> Good catch!
+> I didn't imagine that such a use case. But that is important because perf
+> probe can be used for cross-arch probe definition too.
+> 
+>>
+>> Before:
+>>
+>>    # perf probe -a schedule
+>>    schedule is out of .text, skip it.
+>>      Error: Failed to add events.
+>>
+>> Solution:
+>>    Change data type of "address" variable to u64 and change corresponding
+>> address printing and value assignment.
+> 
+> OK, as far as I can see, the other parts of the perf also uses u64 for
+> "address" storing variables. (e.g. symbols, maps etc.)
+> 
+>>
+>> After:
+>>
+>>    # perf.new.new probe -a schedule
+>>    Added new event:
+>>      probe:schedule       (on schedule)
+>>
+>>    You can now use it in all perf tools, such as:
+>>
+>>            perf record -e probe:schedule -aR sleep 1
+>>
+>>    # perf probe -l
+>>      probe:schedule       (on schedule)
+> 
+> I think you missed one thing here.
+> Usually, this shows the filename and line number of schedule().
+Yes,  I tried the following diff and now it can show the filename (as is 
+function entry, relative line number is 0), thank you very much :)
 
-Parameterize the new using_scratch_space in __test(), do_test() and wrapper
-macros to skip the test case mentioned above,
+The test result in my environment is as follows:
 
-Signed-off-by: Jia He <justin.he@arm.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- lib/test_printf.c | 49 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 39 insertions(+), 10 deletions(-)
+# perf probe -a schedule
+Added new event:
+   probe:schedule       (on schedule)
 
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index cabdf9f5fd15..381c9dcd3c2d 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -16,6 +16,7 @@
- 
- #include <linux/bitmap.h>
- #include <linux/dcache.h>
-+#include <linux/fs.h>
- #include <linux/socket.h>
- #include <linux/in.h>
- 
-@@ -37,8 +38,8 @@ static char *alloced_buffer __initdata;
- 
- extern bool no_hash_pointers;
- 
--static int __printf(4, 0) __init
--do_test(int bufsize, const char *expect, int elen,
-+static int __printf(5, 0) __init
-+do_test(int bufsize, const char *expect, int elen, bool using_scratch_space,
- 	const char *fmt, va_list ap)
- {
- 	va_list aq;
-@@ -78,7 +79,7 @@ do_test(int bufsize, const char *expect, int elen,
- 		return 1;
- 	}
- 
--	if (memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
-+	if (!using_scratch_space && memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
- 		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
- 			bufsize, fmt);
- 		return 1;
-@@ -97,8 +98,9 @@ do_test(int bufsize, const char *expect, int elen,
- 	return 0;
- }
- 
--static void __printf(3, 4) __init
--__test(const char *expect, int elen, const char *fmt, ...)
-+static void __printf(4, 5) __init
-+__test(const char *expect, int elen, bool using_scratch_space,
-+	const char *fmt, ...)
- {
- 	va_list ap;
- 	int rand;
-@@ -119,11 +121,11 @@ __test(const char *expect, int elen, const char *fmt, ...)
- 	 * enough and 0), and then we also test that kvasprintf would
- 	 * be able to print it as expected.
- 	 */
--	failed_tests += do_test(BUF_SIZE, expect, elen, fmt, ap);
-+	failed_tests += do_test(BUF_SIZE, expect, elen, using_scratch_space, fmt, ap);
- 	rand = 1 + prandom_u32_max(elen+1);
- 	/* Since elen < BUF_SIZE, we have 1 <= rand <= BUF_SIZE. */
--	failed_tests += do_test(rand, expect, elen, fmt, ap);
--	failed_tests += do_test(0, expect, elen, fmt, ap);
-+	failed_tests += do_test(rand, expect, elen, using_scratch_space, fmt, ap);
-+	failed_tests += do_test(0, expect, elen, using_scratch_space, fmt, ap);
- 
- 	p = kvasprintf(GFP_KERNEL, fmt, ap);
- 	if (p) {
-@@ -138,8 +140,15 @@ __test(const char *expect, int elen, const char *fmt, ...)
- 	va_end(ap);
- }
- 
-+/*
-+ * More relaxed test for non-standard formats that are using the provided buffer
-+ * as a scratch space and write beyond the trailing '\0'.
-+ */
-+#define test_using_scratch_space(expect, fmt, ...)			\
-+	__test(expect, strlen(expect), true, fmt, ##__VA_ARGS__)
-+
- #define test(expect, fmt, ...)					\
--	__test(expect, strlen(expect), fmt, ##__VA_ARGS__)
-+	__test(expect, strlen(expect), false, fmt, ##__VA_ARGS__)
- 
- static void __init
- test_basic(void)
-@@ -150,7 +159,7 @@ test_basic(void)
- 	test("", &nul);
- 	test("100%", "100%%");
- 	test("xxx%yyy", "xxx%cyyy", '%');
--	__test("xxx\0yyy", 7, "xxx%cyyy", '\0');
-+	__test("xxx\0yyy", 7, false, "xxx%cyyy", '\0');
- }
- 
- static void __init
-@@ -501,6 +510,25 @@ dentry(void)
- 	test("  bravo/alfa|  bravo/alfa", "%12pd2|%*pd2", &test_dentry[2], 12, &test_dentry[2]);
- }
- 
-+static struct vfsmount test_vfsmnt __initdata = {};
-+
-+static struct file test_file __initdata = {
-+	.f_path = { .dentry = &test_dentry[2],
-+		    .mnt = &test_vfsmnt,
-+	},
-+};
-+
-+static void __init
-+f_d_path(void)
-+{
-+	test("(null)", "%pD", NULL);
-+	test("(efault)", "%pD", PTR_INVALID);
-+
-+	test_using_scratch_space("/bravo/alfa   |/bravo/alfa   ", "%-14pD|%*pD", &test_file, -14, &test_file);
-+	test_using_scratch_space("   /bravo/alfa|   /bravo/alfa", "%14pD|%*pD", &test_file, 14, &test_file);
-+	test_using_scratch_space("   /bravo/alfa|/bravo/alfa   ", "%14pD|%-14pD", &test_file, &test_file);
-+}
-+
- static void __init
- struct_va_format(void)
- {
-@@ -789,6 +817,7 @@ test_pointer(void)
- 	ip();
- 	uuid();
- 	dentry();
-+	f_d_path();
- 	struct_va_format();
- 	time_and_date();
- 	struct_clk();
--- 
-2.17.1
+You can now use it in all perf tools, such as:
 
+         perf record -e probe:schedule -aR sleep 1
+
+# perf probe -l schedule -k vmlinux.debug
+   probe:schedule       (on schedule@kernel/sched/core.c)
+
+
+Can I put the following diff together and submit a v2 patch?
+> 
+> Could you try below diff?
+> 
+> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> index 7d2ba8419b0c..609ca1671501 100644
+> --- a/tools/perf/util/dwarf-aux.c
+> +++ b/tools/perf/util/dwarf-aux.c
+> @@ -113,14 +113,14 @@ static Dwarf_Line *cu_getsrc_die(Dwarf_Die *cu_die, Dwarf_Addr addr)
+>    *
+>    * Find a line number and file name for @addr in @cu_die.
+>    */
+> -int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
+> -		    const char **fname, int *lineno)
+> +int cu_find_lineinfo(Dwarf_Die *cu_die, Dwarf_Addr addr,
+> +		     const char **fname, int *lineno)
+>   {
+>   	Dwarf_Line *line;
+>   	Dwarf_Die die_mem;
+>   	Dwarf_Addr faddr;
+>   
+> -	if (die_find_realfunc(cu_die, (Dwarf_Addr)addr, &die_mem)
+> +	if (die_find_realfunc(cu_die, addr, &die_mem)
+>   	    && die_entrypc(&die_mem, &faddr) == 0 &&
+>   	    faddr == addr) {
+>   		*fname = dwarf_decl_file(&die_mem);
+> @@ -128,7 +128,7 @@ int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
+>   		goto out;
+>   	}
+>   
+> -	line = cu_getsrc_die(cu_die, (Dwarf_Addr)addr);
+> +	line = cu_getsrc_die(cu_die, addr);
+>   	if (line && dwarf_lineno(line, lineno) == 0) {
+>   		*fname = dwarf_linesrc(line, NULL, NULL);
+>   		if (!*fname)
+> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+> index cb99646843a9..7ee0fa19b5c4 100644
+> --- a/tools/perf/util/dwarf-aux.h
+> +++ b/tools/perf/util/dwarf-aux.h
+> @@ -19,7 +19,7 @@ const char *cu_find_realpath(Dwarf_Die *cu_die, const char *fname);
+>   const char *cu_get_comp_dir(Dwarf_Die *cu_die);
+>   
+>   /* Get a line number and file name for given address */
+> -int cu_find_lineinfo(Dwarf_Die *cudie, unsigned long addr,
+> +int cu_find_lineinfo(Dwarf_Die *cudie, Dwarf_Addr addr,
+>   		     const char **fname, int *lineno);
+>   
+>   /* Walk on functions at given address */
+> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+> index 8ba01bbdf05c..50d861a80f57 100644
+> --- a/tools/perf/util/probe-finder.c
+> +++ b/tools/perf/util/probe-finder.c
+> @@ -1727,7 +1727,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
+>   	}
+>   
+>   	/* Find a corresponding line (filename and lineno) */
+> -	cu_find_lineinfo(&cudie, addr, &fname, &lineno);
+> +	cu_find_lineinfo(&cudie, (Dwarf_Addr)addr, &fname, &lineno);
+>   	/* Don't care whether it failed or not */
+>   
+>   	/* Find a corresponding function (name, baseline and baseaddr) */
+> @@ -1828,8 +1828,7 @@ static int line_range_add_line(const char *src, unsigned int lineno,
+>   }
+>   
+>   static int line_range_walk_cb(const char *fname, int lineno,
+> -			      Dwarf_Addr addr __maybe_unused,
+> -			      void *data)
+> +			      Dwarf_Addr addr, void *data)
+>   {
+>   	struct line_finder *lf = data;
+>   	const char *__fname;
+> 
+> 
