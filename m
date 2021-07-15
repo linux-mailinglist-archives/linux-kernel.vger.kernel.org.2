@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290503CACE4
+	by mail.lfdr.de (Postfix) with ESMTP id 753213CACE5
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240014AbhGOTqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:46:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51362 "EHLO mail.kernel.org"
+        id S245171AbhGOTqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:46:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244272AbhGOTQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:16:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B773061408;
-        Thu, 15 Jul 2021 19:12:30 +0000 (UTC)
+        id S244578AbhGOTQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:16:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 632E9613D3;
+        Thu, 15 Jul 2021 19:12:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376351;
-        bh=i9Pf6XDHwUj8qAH/lWTH5t2HTzE3F+8oeBpscwO63mA=;
+        s=korg; t=1626376355;
+        bh=oDo10AzQge5BzZp8ZlH2JbguAcT40IVB0RUlXv6agrA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=unwN0Wbpog40gBj5pNfdVkNwS3hGWBpVtrePiiFqNHyUDQw5aiboggA4ns9xQdWPd
-         zxeoFHjlLX5rPWpDgwSMlaDhAqTqS/gybuO1ZxYYx/Nvt4lrHE4IuKd4JkAZcYUdfU
-         uVPCPWuG4z/swnf03hNt/YOahYT7i2Be3N/sQdoo=
+        b=ItHE6Wf07h02AnGvj6m0WDWt2oMlkUIPRGY1ugxbFDFE2d7PWaUkZQS50g9J1t3HI
+         YCtmlVpaSa+zhAx20gbFqxa3I7uWwZMrKAXyHfqaaNWK2ET0ThkFJPrep/iF8Ux2MW
+         pnWV74mEVAh+uSryqwkGABwdi3HCQeI7XH/fvoy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Joel Fernandes <joelaf@google.com>,
         Paul Burton <paulburton@google.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.13 234/266] tracing: Simplify & fix saved_tgids logic
-Date:   Thu, 15 Jul 2021 20:39:49 +0200
-Message-Id: <20210715182650.416438456@linuxfoundation.org>
+Subject: [PATCH 5.13 235/266] tracing: Resize tgid_map to pid_max, not PID_MAX_DEFAULT
+Date:   Thu, 15 Jul 2021 20:39:50 +0200
+Message-Id: <20210715182650.504459077@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -43,109 +43,174 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Burton <paulburton@google.com>
 
-commit b81b3e959adb107cd5b36c7dc5ba1364bbd31eb2 upstream.
+commit 4030a6e6a6a4a42ff8c18414c9e0c93e24cc70b8 upstream.
 
-The tgid_map array records a mapping from pid to tgid, where the index
-of an entry within the array is the pid & the value stored at that index
-is the tgid.
+Currently tgid_map is sized at PID_MAX_DEFAULT entries, which means that
+on systems where pid_max is configured higher than PID_MAX_DEFAULT the
+ftrace record-tgid option doesn't work so well. Any tasks with PIDs
+higher than PID_MAX_DEFAULT are simply not recorded in tgid_map, and
+don't show up in the saved_tgids file.
 
-The saved_tgids_next() function iterates over pointers into the tgid_map
-array & dereferences the pointers which results in the tgid, but then it
-passes that dereferenced value to trace_find_tgid() which treats it as a
-pid & does a further lookup within the tgid_map array. It seems likely
-that the intent here was to skip over entries in tgid_map for which the
-recorded tgid is zero, but instead we end up skipping over entries for
-which the thread group leader hasn't yet had its own tgid recorded in
-tgid_map.
+In particular since systemd v243 & above configure pid_max to its
+highest possible 1<<22 value by default on 64 bit systems this renders
+the record-tgids option of little use.
 
-A minimal fix would be to remove the call to trace_find_tgid, turning:
+Increase the size of tgid_map to the configured pid_max instead,
+allowing it to cover the full range of PIDs up to the maximum value of
+PID_MAX_LIMIT if the system is configured that way.
 
-  if (trace_find_tgid(*ptr))
+On 64 bit systems with pid_max == PID_MAX_LIMIT this will increase the
+size of tgid_map from 256KiB to 16MiB. Whilst this 64x increase in
+memory overhead sounds significant 64 bit systems are presumably best
+placed to accommodate it, and since tgid_map is only allocated when the
+record-tgid option is actually used presumably the user would rather it
+spends sufficient memory to actually record the tgids they expect.
 
-into:
+The size of tgid_map could also increase for CONFIG_BASE_SMALL=y
+configurations, but these seem unlikely to be systems upon which people
+are both configuring a large pid_max and running ftrace with record-tgid
+anyway.
 
-  if (*ptr)
+Of note is that we only allocate tgid_map once, the first time that the
+record-tgid option is enabled. Therefore its size is only set once, to
+the value of pid_max at the time the record-tgid option is first
+enabled. If a user increases pid_max after that point, the saved_tgids
+file will not contain entries for any tasks with pids beyond the earlier
+value of pid_max.
 
-..but it seems like this logic can be much simpler if we simply let
-seq_read() iterate over the whole tgid_map array & filter out empty
-entries by returning SEQ_SKIP from saved_tgids_show(). Here we take that
-approach, removing the incorrect logic here entirely.
-
-Link: https://lkml.kernel.org/r/20210630003406.4013668-1-paulburton@google.com
+Link: https://lkml.kernel.org/r/20210701172407.889626-2-paulburton@google.com
 
 Fixes: d914ba37d714 ("tracing: Add support for recording tgid of tasks")
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Joel Fernandes <joelaf@google.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Paul Burton <paulburton@google.com>
+[ Fixed comment coding style ]
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace.c |   38 +++++++++++++-------------------------
- 1 file changed, 13 insertions(+), 25 deletions(-)
+ kernel/trace/trace.c |   63 ++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 16 deletions(-)
 
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
-@@ -5608,37 +5608,20 @@ static const struct file_operations trac
+@@ -2184,8 +2184,15 @@ void tracing_reset_all_online_cpus(void)
+ 	}
+ }
  
- static void *saved_tgids_next(struct seq_file *m, void *v, loff_t *pos)
- {
--	int *ptr = v;
-+	int pid = ++(*pos);
++/*
++ * The tgid_map array maps from pid to tgid; i.e. the value stored at index i
++ * is the tgid last observed corresponding to pid=i.
++ */
+ static int *tgid_map;
  
--	if (*pos || m->count)
--		ptr++;
--
--	(*pos)++;
--
--	for (; ptr <= &tgid_map[PID_MAX_DEFAULT]; ptr++) {
--		if (trace_find_tgid(*ptr))
--			return ptr;
--	}
-+	if (pid > PID_MAX_DEFAULT)
++/* The maximum valid index into tgid_map. */
++static size_t tgid_map_max;
++
+ #define SAVED_CMDLINES_DEFAULT 128
+ #define NO_CMDLINE_MAP UINT_MAX
+ static arch_spinlock_t trace_cmdline_lock = __ARCH_SPIN_LOCK_UNLOCKED;
+@@ -2458,24 +2465,41 @@ void trace_find_cmdline(int pid, char co
+ 	preempt_enable();
+ }
+ 
++static int *trace_find_tgid_ptr(int pid)
++{
++	/*
++	 * Pairs with the smp_store_release in set_tracer_flag() to ensure that
++	 * if we observe a non-NULL tgid_map then we also observe the correct
++	 * tgid_map_max.
++	 */
++	int *map = smp_load_acquire(&tgid_map);
++
++	if (unlikely(!map || pid > tgid_map_max))
 +		return NULL;
++
++	return &map[pid];
++}
++
+ int trace_find_tgid(int pid)
+ {
+-	if (unlikely(!tgid_map || !pid || pid > PID_MAX_DEFAULT))
+-		return 0;
++	int *ptr = trace_find_tgid_ptr(pid);
  
--	return NULL;
-+	return &tgid_map[pid];
+-	return tgid_map[pid];
++	return ptr ? *ptr : 0;
+ }
+ 
+ static int trace_save_tgid(struct task_struct *tsk)
+ {
++	int *ptr;
++
+ 	/* treat recording of idle task as a success */
+ 	if (!tsk->pid)
+ 		return 1;
+ 
+-	if (unlikely(!tgid_map || tsk->pid > PID_MAX_DEFAULT))
++	ptr = trace_find_tgid_ptr(tsk->pid);
++	if (!ptr)
+ 		return 0;
+ 
+-	tgid_map[tsk->pid] = tsk->tgid;
++	*ptr = tsk->tgid;
+ 	return 1;
+ }
+ 
+@@ -5171,6 +5195,8 @@ int trace_keep_overwrite(struct tracer *
+ 
+ int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
+ {
++	int *map;
++
+ 	if ((mask == TRACE_ITER_RECORD_TGID) ||
+ 	    (mask == TRACE_ITER_RECORD_CMD))
+ 		lockdep_assert_held(&event_mutex);
+@@ -5193,10 +5219,19 @@ int set_tracer_flag(struct trace_array *
+ 		trace_event_enable_cmd_record(enabled);
+ 
+ 	if (mask == TRACE_ITER_RECORD_TGID) {
+-		if (!tgid_map)
+-			tgid_map = kvcalloc(PID_MAX_DEFAULT + 1,
+-					   sizeof(*tgid_map),
+-					   GFP_KERNEL);
++		if (!tgid_map) {
++			tgid_map_max = pid_max;
++			map = kvcalloc(tgid_map_max + 1, sizeof(*tgid_map),
++				       GFP_KERNEL);
++
++			/*
++			 * Pairs with smp_load_acquire() in
++			 * trace_find_tgid_ptr() to ensure that if it observes
++			 * the tgid_map we just allocated then it also observes
++			 * the corresponding tgid_map_max value.
++			 */
++			smp_store_release(&tgid_map, map);
++		}
+ 		if (!tgid_map) {
+ 			tr->trace_flags &= ~TRACE_ITER_RECORD_TGID;
+ 			return -ENOMEM;
+@@ -5610,18 +5645,14 @@ static void *saved_tgids_next(struct seq
+ {
+ 	int pid = ++(*pos);
+ 
+-	if (pid > PID_MAX_DEFAULT)
+-		return NULL;
+-
+-	return &tgid_map[pid];
++	return trace_find_tgid_ptr(pid);
  }
  
  static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
  {
--	void *v;
--	loff_t l = 0;
--
--	if (!tgid_map)
-+	if (!tgid_map || *pos > PID_MAX_DEFAULT)
- 		return NULL;
+-	if (!tgid_map || *pos > PID_MAX_DEFAULT)
+-		return NULL;
++	int pid = *pos;
  
--	v = &tgid_map[0];
--	while (l <= *pos) {
--		v = saved_tgids_next(m, v, &l);
--		if (!v)
--			return NULL;
--	}
--
--	return v;
-+	return &tgid_map[*pos];
+-	return &tgid_map[*pos];
++	return trace_find_tgid_ptr(pid);
  }
  
  static void saved_tgids_stop(struct seq_file *m, void *v)
-@@ -5647,9 +5630,14 @@ static void saved_tgids_stop(struct seq_
- 
- static int saved_tgids_show(struct seq_file *m, void *v)
- {
--	int pid = (int *)v - tgid_map;
-+	int *entry = (int *)v;
-+	int pid = entry - tgid_map;
-+	int tgid = *entry;
-+
-+	if (tgid == 0)
-+		return SEQ_SKIP;
- 
--	seq_printf(m, "%d %d\n", pid, trace_find_tgid(pid));
-+	seq_printf(m, "%d %d\n", pid, tgid);
- 	return 0;
- }
- 
 
 
