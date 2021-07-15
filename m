@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5123C959E
+	by mail.lfdr.de (Postfix) with ESMTP id BB3EF3C959F
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbhGOBgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45656 "EHLO
+        id S235432AbhGOBg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 21:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235254AbhGOBgw (ORCPT
+        with ESMTP id S235370AbhGOBgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:36:52 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82769C061762
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:33:59 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o11-20020a056902110bb029055b266be219so5394733ybu.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:33:59 -0700 (PDT)
+        Wed, 14 Jul 2021 21:36:54 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA826C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:34:01 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id u8-20020a0562141c08b02902e82df307f0so2979882qvc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=1xMjO4kgd9GThnwLrzWb6z2olJzN511MeRsxBTktrzk=;
-        b=pRHGVkQD82aM2yJLyYhoIsWE+JyJ2wImCtJzcHe4/zJiRulZVfj42YGWY58XGlIXdV
-         5LYqcPYKAL5K2+GrKgD0g9zb+LCgiC2+WD1efwrmxYxAl6xpJEO7qHTQnkMk2rSbOp2c
-         kwivQbYIiyFTMMF8c5LxseFw2ku7iCZeEXz2yNFGLhmo/R1LHHDn7cEe+Nr4VbCCEQn7
-         ZtY0VB/quv6SH8ELwa+HWCCudGga4JtSXzH0BXu0QIhcyKTi0DrM6F1DSnAyp2Zi2G0V
-         36HW9ohU2uMy8l/Q3o/wFm5VZ+SI2DhIbcbteEf5P9yR3PUiTi6AjPx/3Jqi1KojtC9h
-         P7fQ==
+        bh=l9ulLD/fU9W0OzwZvZuuX6b1DWiP15Rr9ZcqPkR8f8k=;
+        b=CkCzHjKN+XzIPI2Z5zYy3Yi3XPmd2TIinrVvFVKDdgrl54PJA5sH0dgxtyPE2HP9cI
+         vGdd3rUu9rt/3q6Ruq9Ctp4SQ8IKLu6SJUbIjTWtk/+x4oI7ZtpIVyUsW8uJS6MYyaqg
+         BXNifY1jn40WqPMglg65h+DZMQvLMfug1LaKOeF82/wsnF/odLT1t0LbwqYJxU95K2ax
+         XjXH6rv+s/EnPO6Yhc30BVHg6pkqrJpo6utrc9R8atbw9MjLGff2NsfOsFaIsLmbFDQu
+         KdPoWYqhJhaTjf44ssIjf1PfJk3ubGwkzKiJEMyM3J6475CYoTeenCUVFBQsow1c7sPV
+         fcTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=1xMjO4kgd9GThnwLrzWb6z2olJzN511MeRsxBTktrzk=;
-        b=m8N7+Nkf45U5DXoxeAH4/8O3baumsg2N9lqWleb3XX0hFGlXw2jpLLN75jFDLAb9R+
-         y9KxWHylgoVMyMhzPI+6fdHoK675Ct05I4HW6jmBvBAsblTd96Y7rVRCjpYUOJXWhHDd
-         7LZg4FmmDbSpfuFbt8swh4QUnRAJGZ0zhveb9w8TfuhkQdRGv1RpzRi0VyLNkDHo8V97
-         u7csNQ+SZI1ihinjeU5Zke2Epxd4rYu9GnuXsk3zL1xjfl9mJ9Rlh0sDxE8S8ZxffitM
-         z1q7AlKDZRURF9zPEW/Wt3Ym7ElU74lONANDFWznH6GaE9rcdAtd+Corbucp5ZAivYui
-         BEng==
-X-Gm-Message-State: AOAM5334TbVKD06J3/4la60+Pc9cK1R/wbA5Qah+WsWvgnaYEs0zb19T
-        baKNP2FktsBrbomTH8ZA6SrjY1cbsPv0
-X-Google-Smtp-Source: ABdhPJyOLYEmVqY779oa560cGqUl3Entvz5QJopYEhEmjtBsyZCK85zVwW3Pn4IcYC6QO5vVsWKtIP6J/5m+
+        bh=l9ulLD/fU9W0OzwZvZuuX6b1DWiP15Rr9ZcqPkR8f8k=;
+        b=NijgjSV9wwbeq9eJTMAtank75+LKGTu47dUrucncs5I7j8MwhdyvPrKYUqmfpEIifi
+         tNOcG6n+a63utWSmYM5Q0heWlF05nERj1DDJNZN7mUsK4pvQeAdeVGiC2tmTcGUKs0ih
+         hoEBfz3hSC+hfGV3TZmigVRsw5Jx+R1D2ogLM4SoklwFdB9L2Yf5DDB0lnPaSQpJv/1n
+         LvoQZKZgqtx6YzsFbweF7H+FKddIyv4dPncJe1hfHGC27HtaLw5F1XHBc/SVs+zoKK+2
+         j3yE/l6nbUGSBpcnsQYotW7dwoAH+Mo/ewn+Qf6CvwD0bJSz1J4o76CcepBhMZWoBei+
+         iRFQ==
+X-Gm-Message-State: AOAM531xxFnPJxaGBgjearHbJ2hMVdPXC0HVqzhZhZAo0p3nSF711NoD
+        zZxraozfokmpU+QIWh/jtMPJoTI9S9Nx
+X-Google-Smtp-Source: ABdhPJwkeYsMicvviGQ328kdTa+3vamfieBa/crfDN2NpM25ZiGM1zK9Rz0mMWhNhBeIMraKrLaQFf3rF7vy
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:c0a3:e3b0:6b14:de32])
- (user=irogers job=sendgmr) by 2002:a5b:4d2:: with SMTP id u18mr1321425ybp.158.1626312838591;
- Wed, 14 Jul 2021 18:33:58 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 18:33:38 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6214:d6d:: with SMTP id
+ 13mr1049593qvs.3.1626312840822; Wed, 14 Jul 2021 18:34:00 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 18:33:39 -0700
 In-Reply-To: <20210715013343.2286699-1-irogers@google.com>
-Message-Id: <20210715013343.2286699-3-irogers@google.com>
+Message-Id: <20210715013343.2286699-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20210715013343.2286699-1-irogers@google.com>
 X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH 2/7] perf doc: Fix doc.dep
+Subject: [PATCH 3/7] perf doc: Remove references to user-manual
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -67,67 +67,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The doc.dep dependencies for the Makefile fail to build as
-build-docdep.perl is missing. Add this file from git.
+Perf doesn't have a user-manual.txt, but git does and this explains why
+there are references here. Having these references breaks 'make info' as
+user-manual.info can't be created given the missing dependency. Remove
+all references to user-manual so that 'make info' can succeed.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/Documentation/build-docdep.perl | 46 ++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
- create mode 100755 tools/perf/Documentation/build-docdep.perl
+ tools/perf/Documentation/Makefile | 25 -------------------------
+ 1 file changed, 25 deletions(-)
 
-diff --git a/tools/perf/Documentation/build-docdep.perl b/tools/perf/Documentation/build-docdep.perl
-new file mode 100755
-index 000000000000..ba4205e0302a
---- /dev/null
-+++ b/tools/perf/Documentation/build-docdep.perl
-@@ -0,0 +1,46 @@
-+#!/usr/bin/perl
-+
-+my %include = ();
-+my %included = ();
-+
-+for my $text (<*.txt>) {
-+    open I, '<', $text || die "cannot read: $text";
-+    while (<I>) {
-+	if (/^include::/) {
-+	    chomp;
-+	    s/^include::\s*//;
-+	    s/\[\]//;
-+	    $include{$text}{$_} = 1;
-+	    $included{$_} = 1;
-+	}
-+    }
-+    close I;
-+}
-+
-+# Do we care about chained includes???
-+my $changed = 1;
-+while ($changed) {
-+    $changed = 0;
-+    while (my ($text, $included) = each %include) {
-+	for my $i (keys %$included) {
-+	    # $text has include::$i; if $i includes $j
-+	    # $text indirectly includes $j.
-+	    if (exists $include{$i}) {
-+		for my $j (keys %{$include{$i}}) {
-+		    if (!exists $include{$text}{$j}) {
-+			$include{$text}{$j} = 1;
-+			$included{$j} = 1;
-+			$changed = 1;
-+		    }
-+		}
-+	    }
-+	}
-+    }
-+}
-+
-+while (my ($text, $included) = each %include) {
-+    if (! exists $included{$text} &&
-+	(my $base = $text) =~ s/\.txt$//) {
-+	print "$base.html $base.xml : ", join(" ", keys %$included), "\n";
-+    }
-+}
+diff --git a/tools/perf/Documentation/Makefile b/tools/perf/Documentation/Makefile
+index 859ec1496716..03300c151858 100644
+--- a/tools/perf/Documentation/Makefile
++++ b/tools/perf/Documentation/Makefile
+@@ -186,8 +186,6 @@ man7: $(DOC_MAN7)
+ 
+ info: $(OUTPUT)perf.info $(OUTPUT)perfman.info
+ 
+-pdf: $(OUTPUT)user-manual.pdf
+-
+ install: install-man
+ 
+ check-man-tools:
+@@ -225,11 +223,6 @@ install-info: info
+ 	  echo "No directory found in $(DESTDIR)$(infodir)" >&2 ; \
+ 	fi
+ 
+-install-pdf: pdf
+-	$(call QUIET_INSTALL, Documentation-pdf) \
+-		$(INSTALL) -d -m 755 $(DESTDIR)$(pdfdir); \
+-		$(INSTALL) -m 644 $(OUTPUT)user-manual.pdf $(DESTDIR)$(pdfdir)
+-
+ #install-html: html
+ #	'$(SHELL_PATH_SQ)' ./install-webdoc.sh $(DESTDIR)$(htmldir)
+ 
+@@ -304,24 +297,6 @@ $(OUTPUT)%.xml : %.txt
+ XSLT = docbook.xsl
+ XSLTOPTS = --xinclude --stringparam html.stylesheet docbook-xsl.css
+ 
+-$(OUTPUT)user-manual.html: $(OUTPUT)user-manual.xml
+-	$(QUIET_XSLTPROC)xsltproc $(XSLTOPTS) -o $@ $(XSLT) $<
+-
+-$(OUTPUT)perf.info: $(OUTPUT)user-manual.texi
+-	$(QUIET_MAKEINFO)$(MAKEINFO) --no-split -o $@ $(OUTPUT)user-manual.texi
+-
+-$(OUTPUT)user-manual.texi: $(OUTPUT)user-manual.xml
+-	$(QUIET_DB2TEXI)$(RM) $@+ $@ && \
+-	$(DOCBOOK2X_TEXI) $(OUTPUT)user-manual.xml --encoding=UTF-8 --to-stdout >$@++ && \
+-	$(PERL_PATH) fix-texi.perl <$@++ >$@+ && \
+-	rm $@++ && \
+-	mv $@+ $@
+-
+-$(OUTPUT)user-manual.pdf: $(OUTPUT)user-manual.xml
+-	$(QUIET_DBLATEX)$(RM) $@+ $@ && \
+-	$(DBLATEX) -o $@+ -p /etc/asciidoc/dblatex/asciidoc-dblatex.xsl -s /etc/asciidoc/dblatex/asciidoc-dblatex.sty $< && \
+-	mv $@+ $@
+-
+ $(OUTPUT)perfman.texi: $(MAN_XML) cat-texi.perl
+ 	$(QUIET_DB2TEXI)$(RM) $@+ $@ && \
+ 	($(foreach xml,$(MAN_XML),$(DOCBOOK2X_TEXI) --encoding=UTF-8 \
 -- 
 2.32.0.402.g57bb445576-goog
 
