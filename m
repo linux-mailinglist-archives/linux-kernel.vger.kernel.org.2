@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D6D3CA690
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C0E3CA694
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239865AbhGOSss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:48:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48812 "EHLO mail.kernel.org"
+        id S238216AbhGOSsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:48:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236532AbhGOSrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:47:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F075761396;
-        Thu, 15 Jul 2021 18:44:13 +0000 (UTC)
+        id S238608AbhGOSrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:47:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FA61613CF;
+        Thu, 15 Jul 2021 18:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374654;
-        bh=5TlJLhKCdmnQ2KEj8PczzkA6k7Gtm1NuaR798d7HNhI=;
+        s=korg; t=1626374656;
+        bh=z5Rbatm3/B688/YXdmnYps1Dc0MQAoXNf2M5Dk3b6Q0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vFvstwexy43pLmZBAdNr4kbJGeCfXb3b/fmDH4jXI4wLaxkH5m0T5ekUpXBEdPEoR
-         R370xw5G4zHFr9NXpNao5+bOvgFQ+1K+tyJVIix990mflcVNsFNwuE3l56A9tjcDc0
-         g1jnUd3d3xkSrIW0DK03boBJHjIEVAGAXQscrWfg=
+        b=O+BIj13ymFGRTaed2CpWWO8TPRQual6O184yAIAUWIFC16Hl7UOOXzEHK4sCBddOb
+         zM1m6BePvJEU8Em2xX+f97W9bzby0fEK36hyO/Gds1nndBWyTbbz5rzo7inkmPqVV4
+         Hkxez7/W5B6Hk+1K2LB6oXiIJMN9lKUDdoHYQYy0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Roman Stratiienko <r.stratiienko@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 5.4 091/122] clocksource/arm_arch_timer: Improve Allwinner A64 timer workaround
-Date:   Thu, 15 Jul 2021 20:38:58 +0200
-Message-Id: <20210715182515.473663789@linuxfoundation.org>
+        stable@vger.kernel.org, Russ Weight <russell.h.weight@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH 5.4 092/122] fpga: stratix10-soc: Add missing fpga_mgr_free() call
+Date:   Thu, 15 Jul 2021 20:38:59 +0200
+Message-Id: <20210715182515.750125714@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -41,43 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Holland <samuel@sholland.org>
+From: Russ Weight <russell.h.weight@intel.com>
 
-commit 8b33dfe0ba1c84c1aab2456590b38195837f1e6e upstream.
+commit d9ec9daa20eb8de1efe6abae78c9835ec8ed86f9 upstream.
 
-Bad counter reads are experienced sometimes when bit 10 or greater rolls
-over. Originally, testing showed that at least 10 lower bits would be
-set to the same value during these bad reads. However, some users still
-reported time skips.
+The stratix10-soc driver uses fpga_mgr_create() function and is therefore
+responsible to call fpga_mgr_free() to release the class driver resources.
+Add a missing call to fpga_mgr_free in the s10_remove() function.
 
-Wider testing revealed that on some chips, occasionally only the lowest
-9 bits would read as the anomalous value. During these reads (which
-still happen only when bit 10), bit 9 would read as the correct value.
-
-Reduce the mask by one bit to cover these cases as well.
-
-Cc: stable@vger.kernel.org
-Fixes: c950ca8c35ee ("clocksource/drivers/arch_timer: Workaround for Allwinner A64 timer instability")
-Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210515021439.55316-1-samuel@sholland.org
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Fixes: e7eef1d7633a ("fpga: add intel stratix10 soc fpga manager driver")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210614170909.232415-3-mdf@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clocksource/arm_arch_timer.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/fpga/stratix10-soc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -348,7 +348,7 @@ static u64 notrace arm64_858921_read_cnt
- 	do {								\
- 		_val = read_sysreg(reg);				\
- 		_retries--;						\
--	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
-+	} while (((_val + 1) & GENMASK(8, 0)) <= 1 && _retries);	\
- 									\
- 	WARN_ON_ONCE(!_retries);					\
- 	_val;								\
+--- a/drivers/fpga/stratix10-soc.c
++++ b/drivers/fpga/stratix10-soc.c
+@@ -476,6 +476,7 @@ static int s10_remove(struct platform_de
+ 	struct s10_priv *priv = mgr->priv;
+ 
+ 	fpga_mgr_unregister(mgr);
++	fpga_mgr_free(mgr);
+ 	stratix10_svc_free_channel(priv->chan);
+ 
+ 	return 0;
 
 
