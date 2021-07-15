@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83F83CA9CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984F83CABE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243124AbhGOTJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:09:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35494 "EHLO mail.kernel.org"
+        id S244411AbhGOTZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242029AbhGOS6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:58:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F7461158;
-        Thu, 15 Jul 2021 18:55:17 +0000 (UTC)
+        id S243170AbhGOTJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DE03610C7;
+        Thu, 15 Jul 2021 19:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375317;
-        bh=cBV5QgIo5EZBwL+gydbh0YbSpYNlLs+JP4llokTnucM=;
+        s=korg; t=1626375904;
+        bh=PDip7UMICabZJusfIYr4dImGif7NVSaSU49L/wTO0cs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iS5OOeO4VEzTVUWe4pvCuNPhA5GEaituDRPbxDOjOos46aHHVAtKJVKIGwFu/kgiI
-         wAz9OHhZBAP10irps4MoBd607he2Nb3YAn4HMegdtqOhmHU3oSs5r/NfeWn5S80kJM
-         TGel8fc0GpIXE5fw68kDdi5tVcuMqqR8ntbBd3Cc=
+        b=oYRb+IVyyaI7ewJY4WQhIklhlO4yI1QiyGJpxp/Iy40pWOC8uitAvCQv2HYAX2VI6
+         jOC9wWuSSMEbIltdR+Rg13aBKSfomKhwCmHFGEzOQeIbtAB/CW2+U563tq09BD4T44
+         MWYGHDRDTt7jlD8SGP5EzX6RY/LqdgssyIQ4sPCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Daniel Wheeler <daniel.wheeler@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 036/242] drm/amd/display: fix odm scaling
-Date:   Thu, 15 Jul 2021 20:36:38 +0200
-Message-Id: <20210715182558.338650241@linuxfoundation.org>
+Subject: [PATCH 5.13 044/266] drm/amd/display: fix odm scaling
+Date:   Thu, 15 Jul 2021 20:36:39 +0200
+Message-Id: <20210715182622.061596699@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,10 +73,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  7 files changed, 232 insertions(+), 386 deletions(-)
 
 diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-index 0c26c2ade782..325e0d656d6a 100644
+index 8cb937c046aa..78278a10d899 100644
 --- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
 +++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-@@ -652,124 +652,23 @@ static void calculate_split_count_and_index(struct pipe_ctx *pipe_ctx, int *spli
+@@ -695,124 +695,23 @@ static void calculate_split_count_and_index(struct pipe_ctx *pipe_ctx, int *spli
  	}
  }
  
@@ -214,7 +214,7 @@ index 0c26c2ade782..325e0d656d6a 100644
  }
  
  static void calculate_recout(struct pipe_ctx *pipe_ctx)
-@@ -778,26 +677,21 @@ static void calculate_recout(struct pipe_ctx *pipe_ctx)
+@@ -821,26 +720,21 @@ static void calculate_recout(struct pipe_ctx *pipe_ctx)
  	const struct dc_stream_state *stream = pipe_ctx->stream;
  	struct scaler_data *data = &pipe_ctx->plane_res.scl_data;
  	struct rect surf_clip = plane_state->clip_rect;
@@ -246,7 +246,7 @@ index 0c26c2ade782..325e0d656d6a 100644
  	} else
  		data->recout.x = 0;
  
-@@ -818,26 +712,31 @@ static void calculate_recout(struct pipe_ctx *pipe_ctx)
+@@ -861,26 +755,31 @@ static void calculate_recout(struct pipe_ctx *pipe_ctx)
  	if (data->recout.height + data->recout.y > stream->dst.y + stream->dst.height)
  		data->recout.height = stream->dst.y + stream->dst.height - data->recout.y;
  
@@ -292,7 +292,7 @@ index 0c26c2ade782..325e0d656d6a 100644
  	}
  }
  
-@@ -891,9 +790,15 @@ static void calculate_scaling_ratios(struct pipe_ctx *pipe_ctx)
+@@ -934,9 +833,15 @@ static void calculate_scaling_ratios(struct pipe_ctx *pipe_ctx)
  			pipe_ctx->plane_res.scl_data.ratios.vert_c, 19);
  }
  
@@ -310,7 +310,7 @@ index 0c26c2ade782..325e0d656d6a 100644
  		int src_size,
  		int taps,
  		struct fixed31_32 ratio,
-@@ -901,91 +806,87 @@ static inline void adjust_vp_and_init_for_seamless_clip(
+@@ -944,91 +849,87 @@ static inline void adjust_vp_and_init_for_seamless_clip(
  		int *vp_offset,
  		int *vp_size)
  {
@@ -471,7 +471,7 @@ index 0c26c2ade782..325e0d656d6a 100644
  	 */
  	get_vp_scan_direction(
  			plane_state->rotation,
-@@ -994,145 +895,62 @@ static void calculate_inits_and_adj_vp(struct pipe_ctx *pipe_ctx)
+@@ -1037,145 +938,62 @@ static void calculate_inits_and_adj_vp(struct pipe_ctx *pipe_ctx)
  			&flip_vert_scan_dir,
  			&flip_horz_scan_dir);
  
@@ -656,7 +656,7 @@ index 0c26c2ade782..325e0d656d6a 100644
  }
  
  bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
-@@ -1140,48 +958,42 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+@@ -1183,48 +1001,42 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
  	const struct dc_plane_state *plane_state = pipe_ctx->plane_state;
  	struct dc_crtc_timing *timing = &pipe_ctx->stream->timing;
  	bool res = false;
@@ -727,7 +727,7 @@ index 0c26c2ade782..325e0d656d6a 100644
  	if (pipe_ctx->plane_res.xfm != NULL)
  		res = pipe_ctx->plane_res.xfm->funcs->transform_get_optimal_number_of_taps(
  				pipe_ctx->plane_res.xfm, &pipe_ctx->plane_res.scl_data, &plane_state->scaling_quality);
-@@ -1208,9 +1020,31 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+@@ -1251,9 +1063,31 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
  					&plane_state->scaling_quality);
  	}
  
@@ -761,7 +761,7 @@ index 0c26c2ade782..325e0d656d6a 100644
  
  	DC_LOG_SCALER("%s pipe %d:\nViewport: height:%d width:%d x:%d y:%d  Recout: height:%d width:%d x:%d y:%d  HACTIVE:%d VACTIVE:%d\n"
  			"src_rect: height:%d width:%d x:%d y:%d  dst_rect: height:%d width:%d x:%d y:%d  clip_rect: height:%d width:%d x:%d y:%d\n",
-@@ -1239,8 +1073,8 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+@@ -1282,8 +1116,8 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
  			plane_state->clip_rect.x,
  			plane_state->clip_rect.y);
  
@@ -773,10 +773,10 @@ index 0c26c2ade782..325e0d656d6a 100644
  	return res;
  }
 diff --git a/drivers/gpu/drm/amd/display/dc/dc_types.h b/drivers/gpu/drm/amd/display/dc/dc_types.h
-index 80757a0ea7c6..2c3ce5d65718 100644
+index 432754eaf10b..a6f21f9de6e4 100644
 --- a/drivers/gpu/drm/amd/display/dc/dc_types.h
 +++ b/drivers/gpu/drm/amd/display/dc/dc_types.h
-@@ -270,11 +270,6 @@ struct dc_edid_caps {
+@@ -271,11 +271,6 @@ struct dc_edid_caps {
  	struct dc_panel_patch panel_patch;
  };
  
@@ -819,10 +819,10 @@ index 98ab4b776924..a33f522a2648 100644
  			SCL_V_INIT_FRAC_BOT_C, init_frac,
  			SCL_V_INIT_INT_BOT_C, init_int);
 diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-index 3e3c898848bd..2b6eb8c5614b 100644
+index 8357aa3c41d5..d7d70b9bb387 100644
 --- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
 +++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -2284,12 +2284,14 @@ int dcn20_populate_dml_pipes_from_context(
+@@ -2289,12 +2289,14 @@ int dcn20_populate_dml_pipes_from_context(
  
  			pipes[pipe_cnt].pipe.src.source_scan = pln->rotation == ROTATION_ANGLE_90
  					|| pln->rotation == ROTATION_ANGLE_270 ? dm_vert : dm_horz;
@@ -844,7 +844,7 @@ index 3e3c898848bd..2b6eb8c5614b 100644
  			pipes[pipe_cnt].pipe.src.surface_height_y = pln->plane_size.surface_size.height;
  			pipes[pipe_cnt].pipe.src.surface_width_c = pln->plane_size.chroma_size.width;
 diff --git a/drivers/gpu/drm/amd/display/dc/dml/display_mode_structs.h b/drivers/gpu/drm/amd/display/dc/dml/display_mode_structs.h
-index 0c5128187e08..ea01994a6133 100644
+index 2ece3690bfa3..a0f0c54c863b 100644
 --- a/drivers/gpu/drm/amd/display/dc/dml/display_mode_structs.h
 +++ b/drivers/gpu/drm/amd/display/dc/dml/display_mode_structs.h
 @@ -253,6 +253,8 @@ struct _vcs_dpi_display_pipe_source_params_st {
@@ -857,10 +857,10 @@ index 0c5128187e08..ea01994a6133 100644
  	unsigned int data_pitch_c;
  	unsigned int meta_pitch;
 diff --git a/drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c b/drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c
-index bc0485a59018..c1bf3cab2f15 100644
+index 2a967458065b..8e5c9d22b364 100644
 --- a/drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c
 +++ b/drivers/gpu/drm/amd/display/dc/dml/display_mode_vba.c
-@@ -627,6 +627,19 @@ static void fetch_pipe_params(struct display_mode_lib *mode_lib)
+@@ -630,6 +630,19 @@ static void fetch_pipe_params(struct display_mode_lib *mode_lib)
  				}
  			}
  		}
