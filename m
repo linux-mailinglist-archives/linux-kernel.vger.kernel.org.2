@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFA53CACB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CD03CACC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238762AbhGOTnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:43:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50846 "EHLO mail.kernel.org"
+        id S1344699AbhGOTnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:43:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244605AbhGOTO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:14:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82055613D7;
-        Thu, 15 Jul 2021 19:10:38 +0000 (UTC)
+        id S244587AbhGOTO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:14:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D54BF613FE;
+        Thu, 15 Jul 2021 19:10:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376239;
-        bh=eWt/Pgp9ZAHzb7tz++3SmyziJHNnYt8Y3CLGHrP1eRs=;
+        s=korg; t=1626376241;
+        bh=zVnrzu6C+mHptIFCtc3PyHqup5NPS/GTlv78a3Q3xGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EZCwPtMZr+VVg1mM/df3AO5Excr2duuFaxoB1p0NZSCEAwQcqyS+a1iIugr6K4IXP
-         UQc48aipzY23MRMGhUEDfZfy08WfyasALv6V6K2TWYkcRWQC8NPpdsCMzw106UnxGO
-         4jtMU8bj+jb6aPFSxtQ88BDHXp7xsxqRdVrbEZvQ=
+        b=v6v9w0HeBIwAjo03nHwhOcX9EZMXk8n/m37rC59E6s8ZgC/jcUNQ5F4PTSbF2Duim
+         Xa0AktXqF+dE6Al4VzYT0BxvdNxITbsb9XkKsUl/79MMEbt62Xs5FY+B4lgpS54iAm
+         JPY3s5gVKODWk3DrKXoumbLBgIo0lj9f1P4w7yww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Joseph Greathouse <Joseph.Greathouse@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>
-Subject: [PATCH 5.13 186/266] drm/amdgpu: Update NV SIMD-per-CU to 2
-Date:   Thu, 15 Jul 2021 20:39:01 +0200
-Message-Id: <20210715182644.116970223@linuxfoundation.org>
+        stable@vger.kernel.org, Aaron Liu <aaron.liu@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.13 187/266] drm/amdgpu: enable sdma0 tmz for Raven/Renoir(V2)
+Date:   Thu, 15 Jul 2021 20:39:02 +0200
+Message-Id: <20210715182644.221198869@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,38 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joseph Greathouse <Joseph.Greathouse@amd.com>
+From: Aaron Liu <aaron.liu@amd.com>
 
-commit aa6158112645aae514982ad8d56df64428fcf203 upstream.
+commit e2329e74a615cc58b25c42b7aa1477a5e3f6a435 upstream.
 
-Navi series GPUs have 2 SIMDs per CU (and then 2 CUs per WGP).
-The NV enum headers incorrectly listed this as 4, which later meant
-we were incorrectly reporting the number of SIMDs in the HSA
-topology. This could cause problems down the line for user-space
-applications that want to launch a fixed amount of work to each
-SIMD.
+Without driver loaded, SDMA0_UTCL1_PAGE.TMZ_ENABLE is set to 1
+by default for all asic. On Raven/Renoir, the sdma goldsetting
+changes SDMA0_UTCL1_PAGE.TMZ_ENABLE to 0.
+This patch restores SDMA0_UTCL1_PAGE.TMZ_ENABLE to 1.
 
-Signed-off-by: Joseph Greathouse <Joseph.Greathouse@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Aaron Liu <aaron.liu@amd.com>
+Acked-by: Luben Tuikov <luben.tuikov@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/include/navi10_enum.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/amd/include/navi10_enum.h
-+++ b/drivers/gpu/drm/amd/include/navi10_enum.h
-@@ -430,7 +430,7 @@ ARRAY_2D_DEPTH
-  */
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
+@@ -144,7 +144,7 @@ static const struct soc15_reg_golden gol
+ 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC0_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
+ 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC1_IB_CNTL, 0x800f0111, 0x00000100),
+ 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC1_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
+-	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_PAGE, 0x000003ff, 0x000003c0),
++	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_PAGE, 0x000003ff, 0x000003e0),
+ 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_WATERMK, 0xfc000000, 0x00000000)
+ };
  
- typedef enum ENUM_NUM_SIMD_PER_CU {
--NUM_SIMD_PER_CU                          = 0x00000004,
-+NUM_SIMD_PER_CU                          = 0x00000002,
- } ENUM_NUM_SIMD_PER_CU;
+@@ -288,7 +288,7 @@ static const struct soc15_reg_golden gol
+ 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_POWER_CNTL, 0x003fff07, 0x40000051),
+ 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC0_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
+ 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC1_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
+-	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_PAGE, 0x000003ff, 0x000003c0),
++	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_PAGE, 0x000003ff, 0x000003e0),
+ 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_WATERMK, 0xfc000000, 0x03fbe1fe)
+ };
  
- /*
 
 
