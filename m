@@ -2,188 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2632F3C9DF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C873C9DF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhGOLse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:48:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56298 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhGOLsd (ORCPT
+        id S229949AbhGOLwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhGOLwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:48:33 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 05DAE2291C;
-        Thu, 15 Jul 2021 11:45:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626349540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNOiYM64D0XdBystkwy6NCXzF/faGnX77dvFKQJZz90=;
-        b=AV7jvbq6DvW3jzotSD7kwBtv9bxmixN3jIxa3YxTbl6XqKMbOuaYRmUgV067qYtpRcso4Q
-        sxPOUkw14SIrT/uzTAR+lp0oxD+6VCacuLW3Jhy0Hg8QAqoH8jaGtI3cTj8fdZurdtFcII
-        5SXjIeaGjIIUkcivwDIq7lTd4bjypfI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626349540;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNOiYM64D0XdBystkwy6NCXzF/faGnX77dvFKQJZz90=;
-        b=5/zsxVNPpAXvbQD0+jHZIV/Qf/mQMKVhzNOtYTYAHsHzV9N31TxS9Z4lmqOLa5oKw0VHys
-        mhH3AdCG21XsScDg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id CECCA13D89;
-        Thu, 15 Jul 2021 11:45:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id zK4OMeMf8GDbMQAAGKfGzw
-        (envelope-from <tzimmermann@suse.de>); Thu, 15 Jul 2021 11:45:39 +0000
-Subject: Re: [PATCH -next v2] drm/bochs: Fix missing pci_disable_device() on
- error in bochs_pci_probe()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-Cc:     airlied@linux.ie, kraxel@redhat.com
-References: <20210715020551.1030812-1-yangyingliang@huawei.com>
- <49771e7d-666a-bac3-2cd7-23008a95ad8e@suse.de>
- <22ff114a-9810-37f4-43c2-22ce55d6482f@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <5d694c99-18fe-9790-df6a-d6d258b133f5@suse.de>
-Date:   Thu, 15 Jul 2021 13:45:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 15 Jul 2021 07:52:05 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B08C06175F;
+        Thu, 15 Jul 2021 04:49:11 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id l8-20020a05600c1d08b02902333d79327aso2809579wms.3;
+        Thu, 15 Jul 2021 04:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SPeDyGqSFTj9HX+TvNrLA2iuffSVaR/KQ4kPJuR8e/M=;
+        b=Qy/WO4VrpSuEySNBwwsfFYofOH+IjOzbTGpeTrOkiKNb4/6EczG0KPE+o2vY6wLLBE
+         uk+4/8dW+lgtRR2DrK0QRrBjuyHresMx4q/iF07XkrSInCbdDW6co1gor7SRmR+/vxIl
+         lPZ1TGGP2lINEnRrDiWF53s3jRz4EsSrQHwE7PEaJMRJManpe8l0UVzQk7fyuuQlFIK3
+         s4DAE3MdZ8SfyNAENfyEDdX77VoH+qyyZqhFs+ZpeXmGVgOqavGJbMJ+/kimF6Lhlyeo
+         7cxKoV7icjbliOzMjnmWJwQ2PSUREXgKpW+5CyQR03hIkg45y+8cGKsNagObqKcdYz/I
+         yfrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SPeDyGqSFTj9HX+TvNrLA2iuffSVaR/KQ4kPJuR8e/M=;
+        b=ozGf7kHyBabDYhaoreMvQXb6fLg+gmmCB+3zZbHbP3eifebkVKIzJAyHvjD7Qj58We
+         JdBnohjnm1gQkMs1+5z1dKtxKnvyZGLsHLYNdiSYviIw7OESl7/Nm8KJX0/Cjgm5CYIm
+         V6tpjKnKBWXcOQqabZK886TJS5LbeRK0AqzDedJ5qsy1x7xf0o7H2WZrRdCPQ1bzxeLf
+         y1ygwVxsMJVqXQ1pgj5S6k9RucrXforeEY891PX0yzAfvYQ97uwvxdRHnPRf4JmIdcne
+         q9BEOfBQ39dzF817YalSeV5J7UqR/SISnY0Z8/FRAV4TJ6iFtzjNwCvzg72R9PgvF00S
+         CyhQ==
+X-Gm-Message-State: AOAM531zq5twUYmZbT1Dn/nVTcOz85ZRqO9qnS+50gkm9CnTIrZFYdKZ
+        1/KQHdNmtzvi3N7JqBzuT+Y=
+X-Google-Smtp-Source: ABdhPJxl7aRVCwersA2utu/73GOu1JUMoD3qRN3k/qfhuWo8/Mc32tscT2CS07sOz1/1eJFHhqtynQ==
+X-Received: by 2002:a05:600c:5106:: with SMTP id o6mr9981855wms.18.1626349750216;
+        Thu, 15 Jul 2021 04:49:10 -0700 (PDT)
+Received: from skbuf ([82.76.66.29])
+        by smtp.gmail.com with ESMTPSA id u12sm6383779wrt.50.2021.07.15.04.49.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 04:49:09 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 14:49:08 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware process the
+ layer 4 checksum
+Message-ID: <20210715114908.ripblpevmdujkf2m@skbuf>
+References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
+ <20210714191723.31294-3-LinoSanfilippo@gmx.de>
+ <20210714194812.stay3oqyw3ogshhj@skbuf>
+ <YO9F2LhTizvr1l11@lunn.ch>
+ <20210715065455.7nu7zgle2haa6wku@skbuf>
+ <trinity-84a570e8-7b5f-44f7-b10c-169d4307d653-1626347772540@3c-app-gmx-bap31>
 MIME-Version: 1.0
-In-Reply-To: <22ff114a-9810-37f4-43c2-22ce55d6482f@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="aqlkHsf0eQfhuGP9gSI1va5sw3lzu55Iq"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <trinity-84a570e8-7b5f-44f7-b10c-169d4307d653-1626347772540@3c-app-gmx-bap31>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---aqlkHsf0eQfhuGP9gSI1va5sw3lzu55Iq
-Content-Type: multipart/mixed; boundary="jiN1hXlrZAcYwDZmtPkSVWLJ0mmfLmxnR";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org
-Cc: airlied@linux.ie, kraxel@redhat.com
-Message-ID: <5d694c99-18fe-9790-df6a-d6d258b133f5@suse.de>
-Subject: Re: [PATCH -next v2] drm/bochs: Fix missing pci_disable_device() on
- error in bochs_pci_probe()
-References: <20210715020551.1030812-1-yangyingliang@huawei.com>
- <49771e7d-666a-bac3-2cd7-23008a95ad8e@suse.de>
- <22ff114a-9810-37f4-43c2-22ce55d6482f@huawei.com>
-In-Reply-To: <22ff114a-9810-37f4-43c2-22ce55d6482f@huawei.com>
+On Thu, Jul 15, 2021 at 01:16:12PM +0200, Lino Sanfilippo wrote:
+> Sure, I will test this solution. But I think NETIF_F_FRAGLIST should also be
+> cleared in this case, right?
 
---jiN1hXlrZAcYwDZmtPkSVWLJ0mmfLmxnR
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Hmm, interesting question. I think only hns3 makes meaningful use of
+NETIF_F_FRAGLIST, right? I'm looking at hns3_fill_skb_to_desc().
+Other drivers seem to set it for ridiculous reasons - looking at commit
+66aa0678efc2 ("ibmveth: Support to enable LSO/CSO for Trunk VEA.") -
+they set NETIF_F_FRAGLIST and then linearize the skb chain anyway. The
+claimed 4x throughput benefit probably has to do with less skbs
+traversing the stack? I don't know.
 
-Hi
-
-Am 15.07.21 um 13:03 schrieb Yang Yingliang:
->=20
-> On 2021/7/15 17:30, Thomas Zimmermann wrote:
->> Hi,
->>
->> for the change
->>
->>
->> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->>
->>
->> but there are some style issues AFAICS.
-> OK, need I resend it with the style changes and your ack ?
-
-Please do. I'll merge it a few days later if no further comments come in.=
-
-
-Best regards
-Thomas
-
->>
->> Am 15.07.21 um 04:05 schrieb Yang Yingliang:
->>> Replace pci_enable_device() with pcim_enable_device(),
->>> pci_disable_device() will be called in release automatically.
->>>
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->>
->> S-o-b line goes first
->>
->>> ---
->>> v2:
->>> =C2=A0=C2=A0 use pcim_enable_device()
->>
->> This changelog should rather be located between the commit description=
-=20
->> and the first S-o-b line.
->>
->> Best regards
->> Thomas
->>
->>> ---
->>> =C2=A0 drivers/gpu/drm/tiny/bochs.c | 2 +-
->>> =C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/tiny/bochs.c b/drivers/gpu/drm/tiny/boch=
-s.c
->>> index a2cfecfa8556..73415fa9ae0f 100644
->>> --- a/drivers/gpu/drm/tiny/bochs.c
->>> +++ b/drivers/gpu/drm/tiny/bochs.c
->>> @@ -648,7 +648,7 @@ static int bochs_pci_probe(struct pci_dev *pdev, =
-
->>> const struct pci_device_id *ent
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(dev))
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return PTR_ERR=
-(dev);
->>> =C2=A0 -=C2=A0=C2=A0=C2=A0 ret =3D pci_enable_device(pdev);
->>> +=C2=A0=C2=A0=C2=A0 ret =3D pcim_enable_device(pdev);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_free_=
-dev;
->>>
->>
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---jiN1hXlrZAcYwDZmtPkSVWLJ0mmfLmxnR--
-
---aqlkHsf0eQfhuGP9gSI1va5sw3lzu55Iq
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmDwH+MFAwAAAAAACgkQlh/E3EQov+CP
-rA//VBmygDY27/jOPapIR8wIXFeNX8Mp8qn9EKO+u8UzAbM85Ylsj157m2hw4RPeusCogzJOiq5z
-3XpadiQaDFjQ8emXOBZFdzHEwcxRP43V+xVYzfPtHSuagcgsOlafVJXK+MHTqRaJ8CVTGUvXfPVH
-mtnsJRvXHsS71vs1hOMYyv97mKWIuvrH3eSTTroL6RBWQXX9Gs2p9JjS+s+4ur1zaPnohJ5RnCbU
-OGjseWN9R7KisRcFmFrEKpBGjffo8wTb/3QkLXQ/63hGXZwWmlIsQ4uadKCY2bvPYX6j/WdSM+vP
-+M2X01nBjsVKjpbJy1DJzkMf2RmQIat1IY+s4e58Y0vFPwdRKwNmC+IwayzT9432djV1KrcNu4Az
-fnXS+LvuWO9U2qpiw+j1KWa6Z3AnoTjHZaWZqlMiGbtONjKWvQMaPm6CGOT0HgRE2OhvZ6VIweLy
-l4DYUs6kbxpVTtYhwSyZ42rf6v89O3X8KJLLmuJLBWQx4dP3m9qztkyAY3/lB2K1VhpdGloqMFIo
-8+ocheH+FtUCHPhpwEAEXk0LMQTyT0YWkhJ5wrmwp+bca9FtF7Qaszdxuask52+aYSh7Pq3qXd4d
-0iYQxv2CCKeJn6J1uE+8F/VHkmANvkQdf6izpCU2xV/VIjA8ef6eINzO0THZ1Af2p3jlXfTX11Cq
-ooM=
-=m5u5
------END PGP SIGNATURE-----
-
---aqlkHsf0eQfhuGP9gSI1va5sw3lzu55Iq--
+Anyway, it is hard to imagine all the things that could go wrong with
+chains of IP fragments on a DSA interface, precisely because I have so
+few examples to look at. I would say, header taggers are probably fine,
+tail taggers not so much, so apply the same treatment as for NETIF_F_SG?
