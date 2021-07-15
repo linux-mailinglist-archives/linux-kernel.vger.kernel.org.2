@@ -2,172 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFE23C977A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 06:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678B53C96D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 06:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236943AbhGOEde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 00:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236815AbhGOEdd (ORCPT
+        id S231607AbhGOEDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 00:03:54 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6932 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231439AbhGOEDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 00:33:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1F8C06175F;
-        Wed, 14 Jul 2021 21:30:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=Hf7dlVTrrxzjorpFuDOy2LkOvKLbhUufEWJ9AFfF4wA=; b=Wsz6NRi/jqgHRaaxE06zt5CDYY
-        WXHL5GKedaaUXt3M5baPA/jxi3BrEWcCVsZRBPDi1UfSFHtJi7HlEchG+ox+HXmY0YUS+/6pqcsfa
-        avvTMnCGqdJTPCqnsLgslSiERec5S6Z1I8EXN6tdgAmwc8VF2KXPfeTLUMoOGWCLb1mUf4oH8Gi2s
-        YSvjXLpBjWTxA6Lvom4qlJy2f3bJxHZkoSkCFCyqQjvaAZS4UvamwQXdMk9lhvaYxlVwQ8AH3eGPv
-        HC4M/03D8RIe2EIlPSDjohh7oAI8Zimu1ImAulH8hHTtXb5TRVlWZFV4bGTUHDlOEDwEpH+5BTvdw
-        GtWOCB9g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3szl-002xZ7-Eu; Thu, 15 Jul 2021 04:29:30 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v14 066/138] mm/writeback: Add __folio_end_writeback()
-Date:   Thu, 15 Jul 2021 04:35:52 +0100
-Message-Id: <20210715033704.692967-67-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210715033704.692967-1-willy@infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
+        Thu, 15 Jul 2021 00:03:52 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQLDN0J0hz7tvt;
+        Thu, 15 Jul 2021 11:57:24 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 12:00:58 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 15 Jul
+ 2021 12:00:57 +0800
+Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
+ page_pool packets
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        <netdev@vger.kernel.org>
+CC:     Alexander Duyck <alexanderduyck@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "Jesper Dangaard Brouer" <brouer@redhat.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <bf326953-495f-db01-e554-42f4421d237a@huawei.com>
+Date:   Thu, 15 Jul 2021 12:00:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-test_clear_page_writeback() is actually an mm-internal function, although
-it's named as if it's a pagecache function.  Move it to mm/internal.h,
-rename it to __folio_end_writeback() and change the return type to bool.
+On 2021/7/9 14:29, Ilias Apalodimas wrote:
+> As Alexander points out, when we are trying to recycle a cloned/expanded
+> SKB we might trigger a race.  The recycling code relies on the
+> pp_recycle bit to trigger,  which we carry over to cloned SKBs.
+> If that cloned SKB gets expanded or if we get references to the frags,
+> call skbb_release_data() and overwrite skb->head, we are creating separate
+> instances accessing the same page frags.  Since the skb_release_data()
+> will first try to recycle the frags,  there's a potential race between
+> the original and cloned SKB, since both will have the pp_recycle bit set.
+> 
+> Fix this by explicitly those SKBs not recyclable.
+> The atomic_sub_return effectively limits us to a single release case,
+> and when we are calling skb_release_data we are also releasing the
+> option to perform the recycling, or releasing the pages from the page pool.
+> 
+> Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
+> Reported-by: Alexander Duyck <alexanderduyck@fb.com>
+> Suggested-by: Alexander Duyck <alexanderduyck@fb.com>
+> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> ---
+> Changes since v1:
+> - Set the recycle bit to 0 during skb_release_data instead of the 
+>   individual fucntions triggering the issue, in order to catch all 
+>   cases
+>  net/core/skbuff.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 12aabcda6db2..f91f09a824be 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -663,7 +663,7 @@ static void skb_release_data(struct sk_buff *skb)
+>  	if (skb->cloned &&
+>  	    atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
+>  			      &shinfo->dataref))
+> -		return;
+> +		goto exit;
 
-The conversion from page to folio is mostly about accounting the number
-of pages being written back, although it does eliminate a couple of
-calls to compound_head().
+Is it possible this patch may break the head frag page for the original skb,
+supposing it's head frag page is from the page pool and below change clears
+the pp_recycle for original skb, causing a page leaking for the page pool?
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/page-flags.h |  1 -
- mm/filemap.c               |  2 +-
- mm/internal.h              |  1 +
- mm/page-writeback.c        | 29 +++++++++++++++--------------
- 4 files changed, 17 insertions(+), 16 deletions(-)
-
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index ddb660688086..6f9d1f26b1ef 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -655,7 +655,6 @@ static __always_inline void SetPageUptodate(struct page *page)
- 
- CLEARPAGEFLAG(Uptodate, uptodate, PF_NO_TAIL)
- 
--int test_clear_page_writeback(struct page *page);
- int __test_set_page_writeback(struct page *page, bool keep_write);
- 
- #define test_set_page_writeback(page)			\
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 5c4e3185ecb3..a74c69a938ab 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1535,7 +1535,7 @@ void folio_end_writeback(struct folio *folio)
- 	 * reused before the folio_wake().
- 	 */
- 	folio_get(folio);
--	if (!test_clear_page_writeback(&folio->page))
-+	if (!__folio_end_writeback(folio))
- 		BUG();
- 
- 	smp_mb__after_atomic();
-diff --git a/mm/internal.h b/mm/internal.h
-index fa31a7f0ed79..08e8a28994d1 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -43,6 +43,7 @@ static inline void *folio_raw_mapping(struct folio *folio)
- 
- vm_fault_t do_swap_page(struct vm_fault *vmf);
- void folio_rotate_reclaimable(struct folio *folio);
-+bool __folio_end_writeback(struct folio *folio);
- 
- void free_pgtables(struct mmu_gather *tlb, struct vm_area_struct *start_vma,
- 		unsigned long floor, unsigned long ceiling);
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index e542ea37d605..8d5d7921b157 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -583,7 +583,7 @@ static void wb_domain_writeout_add(struct wb_domain *dom,
- 
- /*
-  * Increment @wb's writeout completion count and the global writeout
-- * completion count. Called from test_clear_page_writeback().
-+ * completion count. Called from __folio_end_writeback().
-  */
- static inline void __wb_writeout_add(struct bdi_writeback *wb, long nr)
- {
-@@ -2731,27 +2731,28 @@ int clear_page_dirty_for_io(struct page *page)
- }
- EXPORT_SYMBOL(clear_page_dirty_for_io);
- 
--int test_clear_page_writeback(struct page *page)
-+bool __folio_end_writeback(struct folio *folio)
- {
--	struct address_space *mapping = page_mapping(page);
--	int ret;
-+	long nr = folio_nr_pages(folio);
-+	struct address_space *mapping = folio_mapping(folio);
-+	bool ret;
- 
--	lock_page_memcg(page);
-+	folio_memcg_lock(folio);
- 	if (mapping && mapping_use_writeback_tags(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct backing_dev_info *bdi = inode_to_bdi(inode);
- 		unsigned long flags;
- 
- 		xa_lock_irqsave(&mapping->i_pages, flags);
--		ret = TestClearPageWriteback(page);
-+		ret = folio_test_clear_writeback(folio);
- 		if (ret) {
--			__xa_clear_mark(&mapping->i_pages, page_index(page),
-+			__xa_clear_mark(&mapping->i_pages, folio_index(folio),
- 						PAGECACHE_TAG_WRITEBACK);
- 			if (bdi->capabilities & BDI_CAP_WRITEBACK_ACCT) {
- 				struct bdi_writeback *wb = inode_to_wb(inode);
- 
--				dec_wb_stat(wb, WB_WRITEBACK);
--				__wb_writeout_add(wb, 1);
-+				wb_stat_mod(wb, WB_WRITEBACK, -nr);
-+				__wb_writeout_add(wb, nr);
- 			}
- 		}
- 
-@@ -2761,14 +2762,14 @@ int test_clear_page_writeback(struct page *page)
- 
- 		xa_unlock_irqrestore(&mapping->i_pages, flags);
- 	} else {
--		ret = TestClearPageWriteback(page);
-+		ret = folio_test_clear_writeback(folio);
- 	}
- 	if (ret) {
--		dec_lruvec_page_state(page, NR_WRITEBACK);
--		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
--		inc_node_page_state(page, NR_WRITTEN);
-+		lruvec_stat_mod_folio(folio, NR_WRITEBACK, -nr);
-+		zone_stat_mod_folio(folio, NR_ZONE_WRITE_PENDING, -nr);
-+		node_stat_mod_folio(folio, NR_WRITTEN, nr);
- 	}
--	unlock_page_memcg(page);
-+	folio_memcg_unlock(folio);
- 	return ret;
- }
- 
--- 
-2.30.2
-
+>  
+>  	skb_zcopy_clear(skb, true);
+>  
+> @@ -674,6 +674,8 @@ static void skb_release_data(struct sk_buff *skb)
+>  		kfree_skb_list(shinfo->frag_list);
+>  
+>  	skb_free_head(skb);
+> +exit:
+> +	skb->pp_recycle = 0;
+>  }
+>  
+>  /*
+> 
