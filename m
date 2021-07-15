@@ -2,152 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2983CA36F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730963CA372
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhGORAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:00:13 -0400
-Received: from out28-173.mail.aliyun.com ([115.124.28.173]:49928 "EHLO
-        out28-173.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhGORAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:00:11 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07441034|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.153769-0.00185027-0.844381;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.KiFz-tR_1626368228;
-Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KiFz-tR_1626368228)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Fri, 16 Jul 2021 00:57:15 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     paul@crapouillou.net, paulburton@kernel.org,
-        tsbogend@alpha.franken.de
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maoxiaochuan@loongson.cn, f.fainelli@gmail.com, git@xen0n.name,
-        chenhuacai@kernel.org, cand@gmx.com, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Subject: [PATCH v2] MIPS: Ingenic: Add system type for new Ingenic SoCs.
-Date:   Fri, 16 Jul 2021 00:57:07 +0800
-Message-Id: <1626368227-119499-1-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
+        id S230441AbhGORAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:00:40 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:25264 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229516AbhGORAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:00:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626368266; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=l4DRsUoZGtcADhEklaMtduzhydcdDx0wJqAoQU07Rn8=;
+ b=Z1R6mZqROum3/H75W+zVcPEWZZY/ISBfB+xA/ZwHlLMKo/mNaO50Ze1n5dsuheT+VEMUXkdq
+ d8ezPyDpcTYXAYIERpPHn+7EXLrs/xIl1UGKuAPrc22DTzjdSNZK8xoYnnZSX3FVVwUPLw0y
+ jC+wU//zsX8XNtGnb+OLgab3Huw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60f068f3d0100c7cf9902544 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Jul 2021 16:57:23
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3AFBC4323A; Thu, 15 Jul 2021 16:57:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38E22C43217;
+        Thu, 15 Jul 2021 16:57:22 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Thu, 15 Jul 2021 09:57:22 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] bus: mhi: possible ABBA deadlock in mhi_pm_m0_transition()
+ and mhi_send_cmd()
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <0a213c92-32d5-efc8-079b-dd20d5ecfe20@gmail.com>
+References: <0a213c92-32d5-efc8-079b-dd20d5ecfe20@gmail.com>
+Message-ID: <2fbeeb8dc647dc88e69ec6624c2078d1@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add JZ4730, JZ4750, JZ4755, JZ4760, JZ4760B, X2000H, and X2100 system
-type for cat /proc/cpuinfo to give out JZ4730, JZ4750, JZ4755, JZ4760,
-JZ4760B, X2000H, and X2100.
+On 2021-07-15 02:45 AM, Jia-Ju Bai wrote:
+> Hello,
+> 
+> I find there is a possible ABBA deadlock in the MHI driver in Linux 
+> 5.10:
+> 
+> In mhi_pm_m0_transition():
+> 262:     read_lock_bh(&mhi_cntrl->pm_lock);
+> 281:     spin_lock_irq(&mhi_cmd->lock);
+> 
+> In mhi_send_cmd():
+> 1181:   spin_lock_bh(&mhi_cmd->lock);
+> 1207:   read_lock_bh(&mhi_cntrl->pm_lock);
+> 
+> When mhi_pm_m0_transition() and mhi_send_cmd() are concurrently
+> executed, the deadlock can occur.
+> 
+> I check the code and find a possible case of such concurrent execution:
+> 
+> #CPU1:
+> mhi_poll (mhi_event->process_event(...))
+>   mhi_process_ctrl_ev_ring
+>     mhi_pm_m0_transition
+> 
+> #CPU2:
+> mhi_prepare_for_transfer
+>   mhi_prepare_channel
+>     mhi_send_cmd
+> 
+> Note that mhi_poll() and mhi_prepare_for_transfer() are both exported
+> by EXPORT_SYMBOL.
+> Thus, I guess these two functions could be concurrently called by a MHI 
+> driver.
+> 
+> I am not quite sure whether this possible deadlock is real and how to
+> fix it if it is real.
+> Any feedback would be appreciated, thanks :)
+> 
+> 
+> Best wishes,
+> Jia-Ju Bai
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Few pointers from your example:
+
+1. mhi_poll() is currently not used by any client upstream yet.
+2. Polling is not to be used for single event ring (shared control + 
+data) cases
+since it is meant to be for client drivers with dedicated data packets 
+only.
+3. mhi_send_cmd() will always be called after an mhi_pm_m0_transition() 
+has
+completed by design since we wait for the device to be held in M0 prior 
+to it.
+
+Would like to know what Mani and Hemant have to say. I don't think we 
+can run in
+to the scenario from your example so we should be safe.
+
+Thanks,
+Bhaumik
 ---
-
-Notes:
-    v1->v2:
-    1.Add system type for JZ4750 and JZ4755 as Paul Cercueil's suggestion.
-    2.Add Paul Cercueil's Reviewed-by.
-
- arch/mips/generic/board-ingenic.c | 21 +++++++++++++++++++++
- arch/mips/include/asm/bootinfo.h  |  3 +++
- arch/mips/include/asm/cpu.h       |  4 ++--
- 3 files changed, 26 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/generic/board-ingenic.c b/arch/mips/generic/board-ingenic.c
-index dd855b7..4774636 100644
---- a/arch/mips/generic/board-ingenic.c
-+++ b/arch/mips/generic/board-ingenic.c
-@@ -21,6 +21,10 @@
- static __init char *ingenic_get_system_type(unsigned long machtype)
- {
- 	switch (machtype) {
-+	case MACH_INGENIC_X2100:
-+		return "X2100";
-+	case MACH_INGENIC_X2000H:
-+		return "X2000H";
- 	case MACH_INGENIC_X2000E:
- 		return "X2000E";
- 	case MACH_INGENIC_X2000:
-@@ -37,8 +41,18 @@ static __init char *ingenic_get_system_type(unsigned long machtype)
- 		return "JZ4775";
- 	case MACH_INGENIC_JZ4770:
- 		return "JZ4770";
-+	case MACH_INGENIC_JZ4760B:
-+		return "JZ4760B";
-+	case MACH_INGENIC_JZ4760:
-+		return "JZ4760";
-+	case MACH_INGENIC_JZ4755:
-+		return "JZ4755";
-+	case MACH_INGENIC_JZ4750:
-+		return "JZ4750";
- 	case MACH_INGENIC_JZ4725B:
- 		return "JZ4725B";
-+	case MACH_INGENIC_JZ4730:
-+		return "JZ4730";
- 	default:
- 		return "JZ4740";
- 	}
-@@ -61,8 +75,13 @@ static __init const void *ingenic_fixup_fdt(const void *fdt, const void *match_d
- }
- 
- static const struct of_device_id ingenic_of_match[] __initconst = {
-+	{ .compatible = "ingenic,jz4730", .data = (void *)MACH_INGENIC_JZ4730 },
- 	{ .compatible = "ingenic,jz4740", .data = (void *)MACH_INGENIC_JZ4740 },
- 	{ .compatible = "ingenic,jz4725b", .data = (void *)MACH_INGENIC_JZ4725B },
-+	{ .compatible = "ingenic,jz4750", .data = (void *)MACH_INGENIC_JZ4750 },
-+	{ .compatible = "ingenic,jz4755", .data = (void *)MACH_INGENIC_JZ4755 },
-+	{ .compatible = "ingenic,jz4760", .data = (void *)MACH_INGENIC_JZ4760 },
-+	{ .compatible = "ingenic,jz4760b", .data = (void *)MACH_INGENIC_JZ4760B },
- 	{ .compatible = "ingenic,jz4770", .data = (void *)MACH_INGENIC_JZ4770 },
- 	{ .compatible = "ingenic,jz4775", .data = (void *)MACH_INGENIC_JZ4775 },
- 	{ .compatible = "ingenic,jz4780", .data = (void *)MACH_INGENIC_JZ4780 },
-@@ -71,6 +90,8 @@ static const struct of_device_id ingenic_of_match[] __initconst = {
- 	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 },
- 	{ .compatible = "ingenic,x2000", .data = (void *)MACH_INGENIC_X2000 },
- 	{ .compatible = "ingenic,x2000e", .data = (void *)MACH_INGENIC_X2000E },
-+	{ .compatible = "ingenic,x2000h", .data = (void *)MACH_INGENIC_X2000H },
-+	{ .compatible = "ingenic,x2100", .data = (void *)MACH_INGENIC_X2100 },
- 	{}
- };
- 
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index 4c2e817..2128ba9 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -75,6 +75,7 @@ enum ingenic_machine_type {
- 	MACH_INGENIC_JZ4750,
- 	MACH_INGENIC_JZ4755,
- 	MACH_INGENIC_JZ4760,
-+	MACH_INGENIC_JZ4760B,
- 	MACH_INGENIC_JZ4770,
- 	MACH_INGENIC_JZ4775,
- 	MACH_INGENIC_JZ4780,
-@@ -83,6 +84,8 @@ enum ingenic_machine_type {
- 	MACH_INGENIC_X1830,
- 	MACH_INGENIC_X2000,
- 	MACH_INGENIC_X2000E,
-+	MACH_INGENIC_X2000H,
-+	MACH_INGENIC_X2100,
- };
- 
- extern char *system_type;
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 35072c4..6ceb5bd 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -46,8 +46,8 @@
- #define PRID_COMP_NETLOGIC	0x0c0000
- #define PRID_COMP_CAVIUM	0x0d0000
- #define PRID_COMP_LOONGSON	0x140000
--#define PRID_COMP_INGENIC_13	0x130000	/* X2000 */
--#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4740, JZ4750, X1830 */
-+#define PRID_COMP_INGENIC_13	0x130000	/* X2000, X2100 */
-+#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750, JZ4755, JZ4760, X1830 */
- #define PRID_COMP_INGENIC_D1	0xd10000	/* JZ4770, JZ4775, X1000 */
- #define PRID_COMP_INGENIC_E1	0xe10000	/* JZ4780 */
- 
--- 
-2.7.4
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
