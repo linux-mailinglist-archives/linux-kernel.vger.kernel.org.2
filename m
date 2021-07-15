@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74E03CA930
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5633CAB7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242789AbhGOTFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:05:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59942 "EHLO mail.kernel.org"
+        id S243339AbhGOTUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:20:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241044AbhGOSzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C5B7613D0;
-        Thu, 15 Jul 2021 18:52:37 +0000 (UTC)
+        id S242657AbhGOTFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F8CE613D4;
+        Thu, 15 Jul 2021 19:01:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375158;
-        bh=oeHtHu3SOTnq8xDXXFlMf7eT9quDwllg4ho5H1FEKSM=;
+        s=korg; t=1626375689;
+        bh=jWZGCnsAY9L7zigkpJsKBGOJiuu91rRo/tR1JLcJN4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MsgB3K7to3sMFZVy5pX6iZ4lRT1P+onj9mZX0FjVmRkKsSTxgtRcZd46DDBElVPlU
-         ZQ8zHgzfqWup3Io0QMertUtp9vUMBNcaiBD0TOwXiGWvhFnDCiezICpM4KjYOd24pt
-         s0uH8wULRHSoAyXUFjtq6lOBSJNllALFXg7U856w=
+        b=wba65wKEidl+eBZEIIRvG6KoXYm3GyzjywAML95g0aHG97M8J0cmvadrI/uANip6+
+         iodeMIeWDj5jQuLUp+Lik9xk/PfmqnmuG6EhcmOgFJ7v30fi4tLuQC0mbXUbX83jGE
+         UQKzpOkUqRhA3gzGVOOynboBgyXB74CRqsxg0l+s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 5.10 183/215] mfd: syscon: Free the allocated name field of struct regmap_config
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.12 193/242] ASoC: tegra: Set driver_name=tegra for all machine drivers
 Date:   Thu, 15 Jul 2021 20:39:15 +0200
-Message-Id: <20210715182631.652324619@linuxfoundation.org>
+Message-Id: <20210715182627.196711882@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +39,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Limeng <Meng.Li@windriver.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit 56a1188159cb2b87fbcb5a7a7afb38a4dd9db0c1 upstream.
+commit f6eb84fa596abf28959fc7e0b626f925eb1196c7 upstream.
 
-The commit 529a1101212a("mfd: syscon: Don't free allocated name
-for regmap_config") doesn't free the allocated name field of struct
-regmap_config, but introduce a memory leak. There is another
-commit 94cc89eb8fa5("regmap: debugfs: Fix handling of name string
-for debugfs init delays") fixing this debugfs init issue from root
-cause. With this fixing, the name field in struct regmap_debugfs_node
-is removed. When initialize debugfs for syscon driver, the name
-field of struct regmap_config is not used anymore. So, the allocated
-name field of struct regmap_config is need to be freed directly after
-regmap initialization to avoid memory leak.
+The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
+Tegra UCMs don't match by the path/name.
+
+All Tegra machine drivers are specifying the card's name, but it has no
+effect if model name is specified in the device-tree since it overrides
+the card's name. We need to set the driver_name to "tegra" in order to
+get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
+path has a form of driver_name/card_name.
+
+The old lookup paths that are based on driver module name continue to
+work as before. Note that UCM matching never worked for Tegra ASoC drivers
+if they were compiled as built-in, this is fixed by supporting the new
+naming scheme.
 
 Cc: stable@vger.kernel.org
-Fixes: 529a1101212a("mfd: syscon: Don't free allocated name for regmap_config")
-Signed-off-by: Meng Li <Meng.Li@windriver.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210529154649.25936-2-digetx@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/mfd/syscon.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mfd/syscon.c
-+++ b/drivers/mfd/syscon.c
-@@ -108,6 +108,7 @@ static struct syscon *of_syscon_register
- 	syscon_config.max_register = resource_size(&res) - reg_io_width;
+---
+ sound/soc/tegra/tegra_alc5632.c  |    1 +
+ sound/soc/tegra/tegra_max98090.c |    1 +
+ sound/soc/tegra/tegra_rt5640.c   |    1 +
+ sound/soc/tegra/tegra_rt5677.c   |    1 +
+ sound/soc/tegra/tegra_sgtl5000.c |    1 +
+ sound/soc/tegra/tegra_wm8753.c   |    1 +
+ sound/soc/tegra/tegra_wm8903.c   |    1 +
+ sound/soc/tegra/tegra_wm9712.c   |    1 +
+ sound/soc/tegra/trimslice.c      |    1 +
+ 9 files changed, 9 insertions(+)
+
+--- a/sound/soc/tegra/tegra_alc5632.c
++++ b/sound/soc/tegra/tegra_alc5632.c
+@@ -139,6 +139,7 @@ static struct snd_soc_dai_link tegra_alc
  
- 	regmap = regmap_init_mmio(NULL, base, &syscon_config);
-+	kfree(syscon_config.name);
- 	if (IS_ERR(regmap)) {
- 		pr_err("regmap init failed\n");
- 		ret = PTR_ERR(regmap);
-@@ -144,7 +145,6 @@ err_clk:
- 	regmap_exit(regmap);
- err_regmap:
- 	iounmap(base);
--	kfree(syscon_config.name);
- err_map:
- 	kfree(syscon);
- 	return ERR_PTR(ret);
+ static struct snd_soc_card snd_soc_tegra_alc5632 = {
+ 	.name = "tegra-alc5632",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_alc5632_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -182,6 +182,7 @@ static struct snd_soc_dai_link tegra_max
+ 
+ static struct snd_soc_card snd_soc_tegra_max98090 = {
+ 	.name = "tegra-max98090",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_max98090_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -132,6 +132,7 @@ static struct snd_soc_dai_link tegra_rt5
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5640 = {
+ 	.name = "tegra-rt5640",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_rt5640_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -175,6 +175,7 @@ static struct snd_soc_dai_link tegra_rt5
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5677 = {
+ 	.name = "tegra-rt5677",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_rt5677_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_sgtl5000.c
++++ b/sound/soc/tegra/tegra_sgtl5000.c
+@@ -97,6 +97,7 @@ static struct snd_soc_dai_link tegra_sgt
+ 
+ static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
+ 	.name = "tegra-sgtl5000",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_sgtl5000_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_wm8753.c
++++ b/sound/soc/tegra/tegra_wm8753.c
+@@ -101,6 +101,7 @@ static struct snd_soc_dai_link tegra_wm8
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8753 = {
+ 	.name = "tegra-wm8753",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8753_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -235,6 +235,7 @@ static struct snd_soc_dai_link tegra_wm8
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8903 = {
+ 	.name = "tegra-wm8903",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8903_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_wm9712.c
++++ b/sound/soc/tegra/tegra_wm9712.c
+@@ -54,6 +54,7 @@ static struct snd_soc_dai_link tegra_wm9
+ 
+ static struct snd_soc_card snd_soc_tegra_wm9712 = {
+ 	.name = "tegra-wm9712",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm9712_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/trimslice.c
++++ b/sound/soc/tegra/trimslice.c
+@@ -94,6 +94,7 @@ static struct snd_soc_dai_link trimslice
+ 
+ static struct snd_soc_card snd_soc_trimslice = {
+ 	.name = "tegra-trimslice",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &trimslice_tlv320aic23_dai,
+ 	.num_links = 1,
 
 
