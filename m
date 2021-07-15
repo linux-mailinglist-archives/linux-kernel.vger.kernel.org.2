@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229823CABE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86BE3CA9E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344533AbhGOT0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:26:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46122 "EHLO mail.kernel.org"
+        id S242091AbhGOTKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:10:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243503AbhGOTJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:09:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 741FA613F9;
-        Thu, 15 Jul 2021 19:05:51 +0000 (UTC)
+        id S241718AbhGOS7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:59:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A66AC613DB;
+        Thu, 15 Jul 2021 18:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375951;
-        bh=co4ViAOkLJgTbOD/bShjc5Cfzwin0PgwlTQtXi3wqAk=;
+        s=korg; t=1626375366;
+        bh=XM0qc8OEyEQoRAXRwwR3NOU253deuvnzcoUFNMEsi9M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XoBTs4I5/n52YWc0Zf6tm6DctVQ5YBq2jAQ6d4c1VyyHsrDvLqEgA3/mysh+1lGRk
-         0lf8nWWzy7l9SNU95FCfOF0j51RHV7vmYfvloVDoSSZ266KeYhhBUKvV6vxEoR3mdN
-         KtADT3kcEmmZYaDIK0FA1G+79a8ImO779Lr7TU6Q=
+        b=zoUymOrBa5SaCA/aMa2mEpARYdF9iABAghAWGf7ByyYmhfGqhBafQMr/2FixLA/0B
+         Uv8oYUCndKZyNgGIn9rvnTgVBS9/e6hGd4Vdi514Ob2SV5DLUelEvoYSKwMTTRzRlA
+         2pOn6evqSoyZPIGrWn54cS6w0zeUx4HFfT6w+Sus=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 062/266] drm/amd/display: Avoid HDCP over-read and corruption
+Subject: [PATCH 5.12 055/242] RDMA/cxgb4: Fix missing error code in create_qp()
 Date:   Thu, 15 Jul 2021 20:36:57 +0200
-Message-Id: <20210715182625.190491995@linuxfoundation.org>
+Message-Id: <20210715182602.026096595@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-References: <20210715182613.933608881@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit 06888d571b513cbfc0b41949948def6cb81021b2 ]
+[ Upstream commit aeb27bb76ad8197eb47890b1ff470d5faf8ec9a5 ]
 
-Instead of reading the desired 5 bytes of the actual target field,
-the code was reading 8. This could result in a corrupted value if the
-trailing 3 bytes were non-zero, so instead use an appropriately sized
-and zero-initialized bounce buffer, and read only 5 bytes before casting
-to u64.
+The error code is missing in this code scenario so 0 will be returned. Add
+the error code '-EINVAL' to the return value 'ret'.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Eliminates the follow smatch warning:
+
+drivers/infiniband/hw/cxgb4/qp.c:298 create_qp() warn: missing error code 'ret'.
+
+Link: https://lore.kernel.org/r/1622545669-20625-1-git-send-email-jiapeng.chong@linux.alibaba.com
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/cxgb4/qp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
-index 2cbd931363bd..6d26d9c63ab2 100644
---- a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
-+++ b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
-@@ -29,8 +29,10 @@ static inline enum mod_hdcp_status validate_bksv(struct mod_hdcp *hdcp)
- {
- 	uint64_t n = 0;
- 	uint8_t count = 0;
-+	u8 bksv[sizeof(n)] = { };
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index d109bb3822a5..c9403743346e 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -295,6 +295,7 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
+ 	if (user && (!wq->sq.bar2_pa || (need_rq && !wq->rq.bar2_pa))) {
+ 		pr_warn("%s: sqid %u or rqid %u not in BAR2 range\n",
+ 			pci_name(rdev->lldi.pdev), wq->sq.qid, wq->rq.qid);
++		ret = -EINVAL;
+ 		goto free_dma;
+ 	}
  
--	memcpy(&n, hdcp->auth.msg.hdcp1.bksv, sizeof(uint64_t));
-+	memcpy(bksv, hdcp->auth.msg.hdcp1.bksv, sizeof(hdcp->auth.msg.hdcp1.bksv));
-+	n = *(uint64_t *)bksv;
- 
- 	while (n) {
- 		count++;
 -- 
 2.30.2
 
