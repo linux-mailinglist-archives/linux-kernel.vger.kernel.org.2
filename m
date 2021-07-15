@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682E63CAB28
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A313CAB2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244274AbhGOTR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:17:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39760 "EHLO mail.kernel.org"
+        id S244355AbhGOTR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:17:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243418AbhGOTEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CED2A613D0;
-        Thu, 15 Jul 2021 19:00:11 +0000 (UTC)
+        id S243423AbhGOTEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27519613D8;
+        Thu, 15 Jul 2021 19:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375612;
-        bh=r8kwZdWEjeJQgavL3sZHDfFvoV3qOI6K31qBnTF5WkQ=;
+        s=korg; t=1626375614;
+        bh=m/uSeaYwYSy3F559zEKb0I+NuHdp+bdo7Pc8iYTmtEc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t2sdkKWCIpGOOSnt3CNIhOggP/Pbo7J8RB5hw8qjeNpC6DUTX7SquRpc1g/U2i1+u
-         HzLN/P6mmxOJOcueCe0uTlxw4CeYxzkrb/yvfMkahS8Dl/lSAtwXw1wzhPFT0IqNXY
-         AoL9lTDBsDCB+ECZG571cD3nVEvtQu4wtb8AXTWU=
+        b=olQD7lht5Fp2gAZCR9QWcPRbfX0IvcuDw/FmUGh/NlyajulKK0AhgMTZC1vuHW+za
+         MIrhx957wXxTxQ1zTZNsayGPVOICGVnwocf/7cQn87OeapcNDqIYsegFqP7iSZkCXT
+         Vm2OrQIN+WgZTGu8qQUXJ4cEPQ/p4pkMF1/9F2KQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shaul Triebitz <shaul.triebitz@intel.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 118/242] iwlwifi: mvm: fix error print when session protection ends
-Date:   Thu, 15 Jul 2021 20:38:00 +0200
-Message-Id: <20210715182613.890885891@linuxfoundation.org>
+Subject: [PATCH 5.12 119/242] iwlwifi: pcie: free IML DMA memory allocation
+Date:   Thu, 15 Jul 2021 20:38:01 +0200
+Message-Id: <20210715182614.045752776@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,47 +40,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shaul Triebitz <shaul.triebitz@intel.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 976ac0af7ba2c5424bc305b926c0807d96fdcc83 ]
+[ Upstream commit 310f60f53a86eba680d9bc20a371e13b06a5f903 ]
 
-When the session protection ends and the Driver is not
-associated or a beacon was not heard, the Driver
-prints "No beacons heard...".
-That's confusing for the case where not associated.
-Change the print when not associated to "Not associated...".
+In the case of gen3 devices with image loader (IML) support,
+we were leaking the IML DMA allocation and never freeing it.
+Fix that.
 
-Signed-off-by: Shaul Triebitz <shaul.triebitz@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210617100544.41a5a5a894fa.I9eabb76e7a3a7f4abbed8f2ef918f1df8e825726@changeid
+Link: https://lore.kernel.org/r/iwlwifi.20210618105614.07e117dbedb7.I7bb9ebbe0617656986c2a598ea5e827b533bd3b9@changeid
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/time-event.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c  | 15 ++++++++++-----
+ .../net/wireless/intel/iwlwifi/pcie/internal.h    |  3 +++
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c b/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
-index 0b012f8c9eb2..9a4a1b363254 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
-@@ -289,6 +289,8 @@ static void iwl_mvm_te_handle_notif(struct iwl_mvm *mvm,
- 			 * and know the dtim period.
- 			 */
- 			iwl_mvm_te_check_disconnect(mvm, te_data->vif,
-+				!te_data->vif->bss_conf.assoc ?
-+				"Not associated and the time event is over already..." :
- 				"No beacon heard and the time event is over already...");
- 			break;
- 		default:
-@@ -787,6 +789,8 @@ void iwl_mvm_rx_session_protect_notif(struct iwl_mvm *mvm,
- 			 * and know the dtim period.
- 			 */
- 			iwl_mvm_te_check_disconnect(mvm, vif,
-+						    !vif->bss_conf.assoc ?
-+						    "Not associated and the session protection is over already..." :
- 						    "No beacon heard and the session protection is over already...");
- 			spin_lock_bh(&mvm->time_event_lock);
- 			iwl_mvm_te_clear_data(mvm, te_data);
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c b/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c
+index cecc32e7dbe8..2dbc51daa2f8 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c
+@@ -79,7 +79,6 @@ int iwl_pcie_ctxt_info_gen3_init(struct iwl_trans *trans,
+ 	struct iwl_prph_scratch *prph_scratch;
+ 	struct iwl_prph_scratch_ctrl_cfg *prph_sc_ctrl;
+ 	struct iwl_prph_info *prph_info;
+-	void *iml_img;
+ 	u32 control_flags = 0;
+ 	int ret;
+ 	int cmdq_size = max_t(u32, IWL_CMD_QUEUE_SIZE,
+@@ -187,14 +186,15 @@ int iwl_pcie_ctxt_info_gen3_init(struct iwl_trans *trans,
+ 	trans_pcie->prph_scratch = prph_scratch;
+ 
+ 	/* Allocate IML */
+-	iml_img = dma_alloc_coherent(trans->dev, trans->iml_len,
+-				     &trans_pcie->iml_dma_addr, GFP_KERNEL);
+-	if (!iml_img) {
++	trans_pcie->iml = dma_alloc_coherent(trans->dev, trans->iml_len,
++					     &trans_pcie->iml_dma_addr,
++					     GFP_KERNEL);
++	if (!trans_pcie->iml) {
+ 		ret = -ENOMEM;
+ 		goto err_free_ctxt_info;
+ 	}
+ 
+-	memcpy(iml_img, trans->iml, trans->iml_len);
++	memcpy(trans_pcie->iml, trans->iml, trans->iml_len);
+ 
+ 	iwl_enable_fw_load_int_ctx_info(trans);
+ 
+@@ -243,6 +243,11 @@ void iwl_pcie_ctxt_info_gen3_free(struct iwl_trans *trans)
+ 	trans_pcie->ctxt_info_dma_addr = 0;
+ 	trans_pcie->ctxt_info_gen3 = NULL;
+ 
++	dma_free_coherent(trans->dev, trans->iml_len, trans_pcie->iml,
++			  trans_pcie->iml_dma_addr);
++	trans_pcie->iml_dma_addr = 0;
++	trans_pcie->iml = NULL;
++
+ 	iwl_pcie_ctxt_info_free_fw_img(trans);
+ 
+ 	dma_free_coherent(trans->dev, sizeof(*trans_pcie->prph_scratch),
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/internal.h b/drivers/net/wireless/intel/iwlwifi/pcie/internal.h
+index d9688c7bed07..53af3f29eab8 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/internal.h
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/internal.h
+@@ -279,6 +279,8 @@ struct cont_rec {
+  *	Context information addresses will be taken from here.
+  *	This is driver's local copy for keeping track of size and
+  *	count for allocating and freeing the memory.
++ * @iml: image loader image virtual address
++ * @iml_dma_addr: image loader image DMA address
+  * @trans: pointer to the generic transport area
+  * @scd_base_addr: scheduler sram base address in SRAM
+  * @kw: keep warm address
+@@ -329,6 +331,7 @@ struct iwl_trans_pcie {
+ 	};
+ 	struct iwl_prph_info *prph_info;
+ 	struct iwl_prph_scratch *prph_scratch;
++	void *iml;
+ 	dma_addr_t ctxt_info_dma_addr;
+ 	dma_addr_t prph_info_dma_addr;
+ 	dma_addr_t prph_scratch_dma_addr;
 -- 
 2.30.2
 
