@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98773CA80E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4E23CA5DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241606AbhGOS6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:58:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53266 "EHLO mail.kernel.org"
+        id S229553AbhGOSoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237428AbhGOSvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:51:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26C72613CF;
-        Thu, 15 Jul 2021 18:48:58 +0000 (UTC)
+        id S231395AbhGOSoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC951613CA;
+        Thu, 15 Jul 2021 18:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374938;
-        bh=qarjEZJNnjlvLPUP3ffhPcY4y2NFpZUcIFKS3921EC4=;
+        s=korg; t=1626374472;
+        bh=TMzPzvQwFNp+5+SRLt8873mTQakIk68eo+B+7cG/M6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n8ErQf6quIOpaQdSO0lkW/8S/UjSiws8ORchkvVZY2MM8A8VEwn2dYapZHxIekG/N
-         WAvPPK+JOVzGSOs+g8F3O4dsrFuLmhnk84rXeA5g12pX26UZtCEdAMBRVJtTiepFBf
-         /lkSUOt5gF+eAAswQtEV67N1A0Ipl78whIBMQ4dU=
+        b=Z5stEusN1ihVDft9s43C9l8Gu78iDUuUiv7ToHQrLjj+Ige6asdgx+WMZ9NSk+erX
+         bLiWRKvbyPrCr0bGotSRz53MfkrfqeWAUv9a/7St298msJ1XS/s2oqAoiqUQQ2nnD8
+         XkKlkscs0NrrVUAVI2MdYYdnCmsbd0NgACCe6GRY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 089/215] net: ipa: Add missing of_node_put() in ipa_firmware_load()
+Subject: [PATCH 5.4 014/122] drm/virtio: Fix double free on probe failure
 Date:   Thu, 15 Jul 2021 20:37:41 +0200
-Message-Id: <20210715182615.110683266@linuxfoundation.org>
+Message-Id: <20210715182452.927127869@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit b244163f2c45c12053cb0291c955f892e79ed8a9 ]
+[ Upstream commit cec7f1774605a5ef47c134af62afe7c75c30b0ee ]
 
-This node pointer is returned by of_parse_phandle() with refcount
-incremented in this function. of_node_put() on it before exiting
-this function.
+The virtio_gpu_init() will free vgdev and vgdev->vbufs on failure.
+But such failure will be caught by virtio_gpu_probe() and then
+virtio_gpu_release() will be called to do some cleanup which
+will free vgdev and vgdev->vbufs again. So let's set dev->dev_private
+to NULL to avoid double free.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Acked-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210517084913.403-2-xieyongji@bytedance.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/ipa_main.c | 1 +
+ drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index cd4d993b0bbb..4162a608a3bf 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -589,6 +589,7 @@ static int ipa_firmware_load(struct device *dev)
- 	}
- 
- 	ret = of_address_to_resource(node, 0, &res);
-+	of_node_put(node);
- 	if (ret) {
- 		dev_err(dev, "error %d getting \"memory-region\" resource\n",
- 			ret);
+diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
+index 6dcc05ab31eb..4f855b242dfd 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_kms.c
++++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
+@@ -218,6 +218,7 @@ err_ttm:
+ err_vbufs:
+ 	vgdev->vdev->config->del_vqs(vgdev->vdev);
+ err_vqs:
++	dev->dev_private = NULL;
+ 	kfree(vgdev);
+ 	return ret;
+ }
 -- 
 2.30.2
 
