@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D251E3C9B55
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40213C9B57
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238204AbhGOJZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
+        id S240225AbhGOJ0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhGOJZi (ORCPT
+        with ESMTP id S229620AbhGOJ0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:25:38 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321F7C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:22:45 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id d9-20020a17090ae289b0290172f971883bso5727821pjz.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:22:45 -0700 (PDT)
+        Thu, 15 Jul 2021 05:26:41 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C889C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:23:48 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id s18so5438482pgg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:23:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NYwMREptpH+SMYjUdvFTHh1r7G+lr2bq6Llrywdvilo=;
-        b=uR3vskA5gv8/lie36FQ5MbR6XsNMJ+dgsZwEBrZUImZoufJFrJn2lNe1jNOwbcg+Y1
-         nwLfUVpZvLAsY8yVOdNI/vXhfy5qFjLVqatDwW4kIhxvilbJom9SJjXSB5H8QVau/ZMY
-         /do2Z+ngWIspm+KEbATbMSLjYGM4urexTID36AbqJ4KFEupxT0x9Ei0s/7G84xsxn4MF
-         uZZ/XVesEOFnkMyk9dMbJPjeXRzkkHgl6GKpiA+e3qaaoCRZAIIBBiJ0cNZqPgQkZ9Ou
-         1c1SYWGNQRTvIAIe4Go6N9aQIQWSVdiROCJLL58afmDlTHukf/VzARGb5Jhgwi2SZXtJ
-         AGoA==
+        bh=8tGxs+ledb1QN4h36o9TBKNkqwYbwPt1Wseu2AbjCrI=;
+        b=xgR65XM8/M3g9Zqj7xaqRQnhswuu1Z76iXjfUDZynZ0GS4tz8L9cgKpkL1U8DuwUE4
+         7VOaeCOwVVH0ZXi3U6GOqsHKpduCxBXYzkYkXtp09u5PLbuKXkSC9A4Ozc7k34H+7wKU
+         raaRIyy7bGhKIDr1KotUohQgu7rWcYnO8ljkkbZMilciT6KZmyRiL+hfEF/PIM5bs/1g
+         PyXnJ1GkuLYhLDJisULz+7mJ67spIpQyT2JlNRvijudzGCurIhXBep8qEI9VF5weEl8r
+         eP3ubc0RpE2dxVov3JlMz+8Tz+4NTCt1dXPy7yOm8r9sK5QuJ0UKsmRg6b82ZsiYPCDe
+         61Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NYwMREptpH+SMYjUdvFTHh1r7G+lr2bq6Llrywdvilo=;
-        b=PJL0Bc3LcCZNoMdUCm4mZDt/K5ltsE6mMLD8y52ROozvGsWVzEspycXfKPrX3emylh
-         nb4sml0WGUJ45w84RBBPLPZHXcsKn/gCBIuu/ZVFVUdYt+7QjyIIsj8TlPfz6fIWaKzd
-         /H9mjeiXFp6prBcGVkfcUeSMvHX5kfflpfIBZunAr8IPKT4gvZDdhxqy/tfLcQ5gsunl
-         0RCcmFVZxSrN5Mq5QzWjUTWoYgWpmXb+X1498RaPuIXW2Z2qN26SQzcth/svO8Nxqmph
-         WY/ej3ZMBEbzgXLeU8APLJiSuh6jC9/caU467lVBvoo918QAY/fpy9h/70qdgL62U4oI
-         0tqg==
-X-Gm-Message-State: AOAM532Ys/hB2StGJpn+c3J3GIMFzILDKqyiEhadqf+f8VAqeag21iCk
-        5FQcOPAaI8+0S6X/KP6k/aY=
-X-Google-Smtp-Source: ABdhPJw3PICK0TgRXinqxXnC3NhR0qntn+uH2ZB9tj7hrsee2GJQV0H51Ymleus68Z7IM8DFvZ5Uhw==
-X-Received: by 2002:a17:90b:3756:: with SMTP id ne22mr3506101pjb.144.1626340964712;
-        Thu, 15 Jul 2021 02:22:44 -0700 (PDT)
-Received: from archl-c2lm.. ([103.51.72.31])
-        by smtp.gmail.com with ESMTPSA id k25sm5571603pfa.213.2021.07.15.02.22.38
+        bh=8tGxs+ledb1QN4h36o9TBKNkqwYbwPt1Wseu2AbjCrI=;
+        b=ej3uLZlibNBjt9zfZ+BWQ1/lhdMGcpy8RwNLUe5mVI+KhJ/h3iX7uSMGXOhDaMMF1M
+         3YWd7DM5ZJbUAbR3rrRFmYYV6fzbH+jp0Cc45ZqWa3kxQcZg+Cj/XMAckJJ8ButKCesh
+         GZVxRCeOHIQ+xJnhGQdN4lSlxkyAZ4Ecqd9oX9sI5bGuA1IO14l+ncHlOk45UTte9SXp
+         Nkh8Fyz495YZ1wHhwDmqibhZEbrnNCDXfxpb7HkFIqbegwHbB1e1O7K84mWyCGaIsNc9
+         Lb7tx47KcCPtcp1dNG3uFdaddnJkdnJYPbT1V14O4B9ecjrgXZqW8x0bopQR1RUXHlgb
+         YRDw==
+X-Gm-Message-State: AOAM533k1BTt/IyBfZ5yzRqdi7Ar/5NvqQuIkBPQSO4DywYBm0Fwhjgy
+        6YqCylUCEkte8Ybkrn3AKirs
+X-Google-Smtp-Source: ABdhPJx4F1nuZubI9ezz8OqE0sdgK+YOulDXehCFHx24pniSxpNbY0ka3i68k7ATg0f+fUfw0ThspQ==
+X-Received: by 2002:a63:5117:: with SMTP id f23mr3605556pgb.200.1626341028027;
+        Thu, 15 Jul 2021 02:23:48 -0700 (PDT)
+Received: from localhost ([2405:6581:5360:1800:7285:c2ff:fec2:8f97])
+        by smtp.gmail.com with ESMTPSA id w18sm5298816pjg.50.2021.07.15.02.23.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 02:22:44 -0700 (PDT)
-From:   Anand Moon <linux.amoon@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Anand Moon <linux.amoon@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dmitry Osipenko <digetx@gmail.com>
-Subject: [PATCHv2] ARM: multi_v7_defconfig: Enable CONFIG_MMC_MESON_MX_SDHC
-Date:   Thu, 15 Jul 2021 09:22:25 +0000
-Message-Id: <20210715092233.1084-1-linux.amoon@gmail.com>
+        Thu, 15 Jul 2021 02:23:47 -0700 (PDT)
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+To:     robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        michal.simek@xilinx.com
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        navam@xilinx.com, peter.crosthwaite@xilinx.com,
+        shubhrajyoti.datta@xilinx.com, soren.brinkmann@xilinx.com,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Subject: [PATCH v2] dt-bindings: serial: convert Cadence UART bindings to YAML
+Date:   Thu, 15 Jul 2021 18:22:52 +0900
+Message-Id: <20210715092252.225740-1-iwamatsu@nigauri.org>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -78,31 +66,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CONFIG_MMC_MESON_MX_SDHC so that SDHC host controller
-on Amlogic SoCs boards enable support for eMMC and MMC drivers.
+Convert serial for Cadence UART bindings documentation to YAML.
 
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
----
-Tested on Odroid C1+
-V1 > fix the typo Anlogic --> Amlogic
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 52a0400fdd92..8b3f62a0eb22 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -870,6 +870,7 @@ CONFIG_MMC_SDHCI_PXAV2=m
- CONFIG_MMC_SDHCI_SPEAR=y
- CONFIG_MMC_SDHCI_S3C_DMA=y
- CONFIG_MMC_SDHCI_BCM_KONA=y
-+CONFIG_MMC_MESON_MX_SDHC=y
- CONFIG_MMC_MESON_MX_SDIO=y
- CONFIG_MMC_SDHCI_ST=y
- CONFIG_MMC_OMAP=y
+---
+v2:
+  - Fix enum of compatible
+  - Change from additionalProperties: false to unevaluatedProperties: false
+  - Update compatible string in examples.
+
+ .../devicetree/bindings/serial/cdns,uart.txt  | 27 --------
+ .../devicetree/bindings/serial/cdns,uart.yaml | 66 +++++++++++++++++++
+ 2 files changed, 66 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/serial/cdns,uart.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/cdns,uart.yaml
+
+diff --git a/Documentation/devicetree/bindings/serial/cdns,uart.txt b/Documentation/devicetree/bindings/serial/cdns,uart.txt
+deleted file mode 100644
+index 4efc560f90abbd..00000000000000
+--- a/Documentation/devicetree/bindings/serial/cdns,uart.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-Binding for Cadence UART Controller
+-
+-Required properties:
+-- compatible :
+-  Use "xlnx,xuartps","cdns,uart-r1p8" for Zynq-7xxx SoC.
+-  Use "xlnx,zynqmp-uart","cdns,uart-r1p12" for Zynq Ultrascale+ MPSoC.
+-- reg: Should contain UART controller registers location and length.
+-- interrupts: Should contain UART controller interrupts.
+-- clocks: Must contain phandles to the UART clocks
+-  See ../clocks/clock-bindings.txt for details.
+-- clock-names: Tuple to identify input clocks, must contain "uart_clk" and "pclk"
+-  See ../clocks/clock-bindings.txt for details.
+-
+-
+-Optional properties:
+-- cts-override : Override the CTS modem status signal. This signal will
+-  always be reported as active instead of being obtained from the modem status
+-  register. Define this if your serial port does not use this pin
+-
+-Example:
+-	uart@e0000000 {
+-		compatible = "cdns,uart-r1p8";
+-		clocks = <&clkc 23>, <&clkc 40>;
+-		clock-names = "uart_clk", "pclk";
+-		reg = <0xE0000000 0x1000>;
+-		interrupts = <0 27 4>;
+-	};
+diff --git a/Documentation/devicetree/bindings/serial/cdns,uart.yaml b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
+new file mode 100644
+index 00000000000000..fcdbe6f87e9808
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/serial/cdns,uart.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cadence UART Controller Device Tree Bindings
++
++maintainers:
++  - Michal Simek <michal.simek@xilinx.com>
++
++allOf:
++  - $ref: /schemas/serial.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - description: UART controller for Zynq-7xxx SoC
++        items:
++          - const: xlnx,xuartps
++          - const: cdns,uart-r1p8
++      - description: UART controller for Zynq Ultrascale+ MPSoC
++        items:
++          - const: xlnx,zynqmp-uart
++          - const: cdns,uart-r1p12
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: uart_clk
++      - const: pclk
++
++  cts-override:
++    description: |
++      Override the CTS modem status signal. This signal will
++      always be reported as active instead of being obtained
++      from the modem status register. Define this if your serial
++      port does not use this pin.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    uart0: serial@e0000000 {
++      compatible = "xlnx,xuartps", "cdns,uart-r1p8";
++      clocks = <&clkc 23>, <&clkc 40>;
++      clock-names = "uart_clk", "pclk";
++      reg = <0xE0000000 0x1000>;
++      interrupts = <0 27 4>;
++    };
 -- 
 2.32.0
 
