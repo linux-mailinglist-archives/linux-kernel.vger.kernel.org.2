@@ -2,127 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF77F3CABAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540643CAC23
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243620AbhGOTWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38802 "EHLO mail.kernel.org"
+        id S1344798AbhGOTa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:30:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241738AbhGOTFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3596E613F8;
-        Thu, 15 Jul 2021 19:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626375739;
-        bh=n2XZJyZBIm6enyikoJCT42Xvt6qjE7EzdCfC71Yt4AA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cQagM3RJLZVZLHygmSWPy1TDr+T/gXWDrLq5uVgwQd3UvioXizA06K7o05LSnw+nd
-         RKKZywBOeij2NbGsb+Xept6EGu7Qmr8tz4T3a/zdyAsJP/4UZED3KM+dBG9QYb9Rzf
-         oTKtQSXdDeE+pI1Gb4mkY1bjoiyGcQHYhbpX5ijfjcSMED4nhcFMysk/Tvy+kEwbna
-         L03rzsBXVZClzZQ5qnVim9YtoDp0joInrAsinAZQGyNAnYyKjaciVxLQ5ufpusp8DN
-         4r1Q0JDT6hpIK8a9CkLsMeNVMxkuW28lM0BKybKJa9pO/LKUZD8ZlZ5Rgf10eeV0Fd
-         lcAImxPfpfqxA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 11192403F2; Thu, 15 Jul 2021 16:02:16 -0300 (-03)
-Date:   Thu, 15 Jul 2021 16:02:16 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 01/20] perf nsinfo: fix refcounting
-Message-ID: <YPCGONcQx5SxEKdY@kernel.org>
-References: <cover.1626343282.git.rickyman7@gmail.com>
- <55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com>
+        id S240088AbhGOTIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:08:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B04461405;
+        Thu, 15 Jul 2021 19:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626375862;
+        bh=sSfdFG1yfoFFStZ7sM321zVIUkf/KkHKVjILJ0gVDYo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dyNgNVY1wEx3lP6DryfoDGQDSZ8AD93C5eVk3TuuW3LxU0dXycxS9HOblcBasubqQ
+         cpmweXnqvNXcbbLP+id14NcfpgvZZHPdUIHBMVhM6Afz3ljx7JTxSS4+MoJn6cF65t
+         Tx3Nlbmo64dfaKA5ViZ3LxtreSa3WvVbL+ilRIV8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 003/266] drm/ast: Fixed CVE for DP501
+Date:   Thu, 15 Jul 2021 20:35:58 +0200
+Message-Id: <20210715182614.513513689@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 15, 2021 at 06:07:06PM +0200, Riccardo Mancini escreveu:
-> ASan reports a memory leak of nsinfo during the execution of the perf
-> test "31: Lookup mmap thread".
-> The leak is caused by a refcounted variable being replaced without
-> dropping the refcount.
-> 
-> This patch makes sure that the refcnt of nsinfo is decreased whenever
-> a refcounted variable is replaced with a new value.
+From: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
 
-So, there are multiple fixes in just one patch, I'll split it into
-three, no need to resend.
+[ Upstream commit ba4e0339a6a33e2ba341703ce14ae8ca203cb2f1 ]
 
-I'll try and check if finding Fixes: for the three is easy, that way
-stable@vger.kernel.org will figure out which of the supported releases
-need each of them.
+[Bug][DP501]
+If ASPEED P2A (PCI to AHB) bridge is disabled and disallowed for
+CVE_2019_6260 item3, and then the monitor's EDID is unable read through
+Parade DP501.
+The reason is the DP501's FW is mapped to BMC addressing space rather
+than Host addressing space.
+The resolution is that using "pci_iomap_range()" maps to DP501's FW that
+stored on the end of FB (Frame Buffer).
+In this case, FrameBuffer reserves the last 2MB used for the image of
+DP501.
 
-- Arnaldo
+Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210421085859.17761-1-kuohsiang_chou@aspeedtech.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/ast/ast_dp501.c | 139 +++++++++++++++++++++++---------
+ drivers/gpu/drm/ast/ast_drv.h   |  12 +++
+ drivers/gpu/drm/ast/ast_main.c  |  11 ++-
+ 3 files changed, 125 insertions(+), 37 deletions(-)
+
+diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_dp501.c
+index 88121c0e0d05..cd93c44f2662 100644
+--- a/drivers/gpu/drm/ast/ast_dp501.c
++++ b/drivers/gpu/drm/ast/ast_dp501.c
+@@ -189,6 +189,9 @@ bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size)
+ 	u32 i, data;
+ 	u32 boot_address;
  
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/builtin-inject.c   | 5 +++--
->  tools/perf/util/map.c         | 2 ++
->  tools/perf/util/probe-event.c | 4 +++-
->  3 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index 5d6f583e2cd35be0..ffd2b25039e36e1d 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -361,9 +361,10 @@ static struct dso *findnew_dso(int pid, int tid, const char *filename,
->  		dso = machine__findnew_dso_id(machine, filename, id);
->  	}
->  
-> -	if (dso)
-> +	if (dso) {
-> +		nsinfo__put(dso->nsinfo);
->  		dso->nsinfo = nsi;
-> -	else
-> +	} else
->  		nsinfo__put(nsi);
->  
->  	thread__put(thread);
-> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-> index 8af693d9678cefe0..72e7f3616157ead4 100644
-> --- a/tools/perf/util/map.c
-> +++ b/tools/perf/util/map.c
-> @@ -192,6 +192,8 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
->  			if (!(prot & PROT_EXEC))
->  				dso__set_loaded(dso);
->  		}
-> +
-> +		nsinfo__put(dso->nsinfo);
->  		dso->nsinfo = nsi;
->  
->  		if (build_id__is_defined(bid))
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> index c14e1d228e56b1c6..e05750cea34c3a95 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -179,8 +179,10 @@ struct map *get_target_map(const char *target, struct nsinfo *nsi, bool user)
->  		struct map *map;
->  
->  		map = dso__new_map(target);
-> -		if (map && map->dso)
-> +		if (map && map->dso) {
-> +			nsinfo__put(map->dso->nsinfo);
->  			map->dso->nsinfo = nsinfo__get(nsi);
-> +		}
->  		return map;
->  	} else {
->  		return kernel_get_module_map(target);
-> -- 
-> 2.31.1
-> 
-
++	if (ast->config_mode != ast_use_p2a)
++		return false;
++
+ 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
+ 	if (data) {
+ 		boot_address = get_fw_base(ast);
+@@ -207,6 +210,9 @@ static bool ast_launch_m68k(struct drm_device *dev)
+ 	u8 *fw_addr = NULL;
+ 	u8 jreg;
+ 
++	if (ast->config_mode != ast_use_p2a)
++		return false;
++
+ 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
+ 	if (!data) {
+ 
+@@ -271,25 +277,55 @@ u8 ast_get_dp501_max_clk(struct drm_device *dev)
+ 	struct ast_private *ast = to_ast_private(dev);
+ 	u32 boot_address, offset, data;
+ 	u8 linkcap[4], linkrate, linklanes, maxclk = 0xff;
++	u32 *plinkcap;
+ 
+-	boot_address = get_fw_base(ast);
+-
+-	/* validate FW version */
+-	offset = 0xf000;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if ((data & 0xf0) != 0x10) /* version: 1x */
+-		return maxclk;
+-
+-	/* Read Link Capability */
+-	offset  = 0xf014;
+-	*(u32 *)linkcap = ast_mindwm(ast, boot_address + offset);
+-	if (linkcap[2] == 0) {
+-		linkrate = linkcap[0];
+-		linklanes = linkcap[1];
+-		data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
+-		if (data > 0xff)
+-			data = 0xff;
+-		maxclk = (u8)data;
++	if (ast->config_mode == ast_use_p2a) {
++		boot_address = get_fw_base(ast);
++
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = ast_mindwm(ast, boot_address + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
++			return maxclk;
++
++		/* Read Link Capability */
++		offset  = AST_DP501_LINKRATE;
++		plinkcap = (u32 *)linkcap;
++		*plinkcap  = ast_mindwm(ast, boot_address + offset);
++		if (linkcap[2] == 0) {
++			linkrate = linkcap[0];
++			linklanes = linkcap[1];
++			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
++			if (data > 0xff)
++				data = 0xff;
++			maxclk = (u8)data;
++		}
++	} else {
++		if (!ast->dp501_fw_buf)
++			return AST_DP501_DEFAULT_DCLK;	/* 1024x768 as default */
++
++		/* dummy read */
++		offset = 0x0000;
++		data = readl(ast->dp501_fw_buf + offset);
++
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = readl(ast->dp501_fw_buf + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
++			return maxclk;
++
++		/* Read Link Capability */
++		offset = AST_DP501_LINKRATE;
++		plinkcap = (u32 *)linkcap;
++		*plinkcap = readl(ast->dp501_fw_buf + offset);
++		if (linkcap[2] == 0) {
++			linkrate = linkcap[0];
++			linklanes = linkcap[1];
++			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
++			if (data > 0xff)
++				data = 0xff;
++			maxclk = (u8)data;
++		}
+ 	}
+ 	return maxclk;
+ }
+@@ -298,26 +334,57 @@ bool ast_dp501_read_edid(struct drm_device *dev, u8 *ediddata)
+ {
+ 	struct ast_private *ast = to_ast_private(dev);
+ 	u32 i, boot_address, offset, data;
++	u32 *pEDIDidx;
+ 
+-	boot_address = get_fw_base(ast);
+-
+-	/* validate FW version */
+-	offset = 0xf000;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if ((data & 0xf0) != 0x10)
+-		return false;
+-
+-	/* validate PnP Monitor */
+-	offset = 0xf010;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if (!(data & 0x01))
+-		return false;
++	if (ast->config_mode == ast_use_p2a) {
++		boot_address = get_fw_base(ast);
+ 
+-	/* Read EDID */
+-	offset = 0xf020;
+-	for (i = 0; i < 128; i += 4) {
+-		data = ast_mindwm(ast, boot_address + offset + i);
+-		*(u32 *)(ediddata + i) = data;
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = ast_mindwm(ast, boot_address + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
++			return false;
++
++		/* validate PnP Monitor */
++		offset = AST_DP501_PNPMONITOR;
++		data = ast_mindwm(ast, boot_address + offset);
++		if (!(data & AST_DP501_PNP_CONNECTED))
++			return false;
++
++		/* Read EDID */
++		offset = AST_DP501_EDID_DATA;
++		for (i = 0; i < 128; i += 4) {
++			data = ast_mindwm(ast, boot_address + offset + i);
++			pEDIDidx = (u32 *)(ediddata + i);
++			*pEDIDidx = data;
++		}
++	} else {
++		if (!ast->dp501_fw_buf)
++			return false;
++
++		/* dummy read */
++		offset = 0x0000;
++		data = readl(ast->dp501_fw_buf + offset);
++
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = readl(ast->dp501_fw_buf + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
++			return false;
++
++		/* validate PnP Monitor */
++		offset = AST_DP501_PNPMONITOR;
++		data = readl(ast->dp501_fw_buf + offset);
++		if (!(data & AST_DP501_PNP_CONNECTED))
++			return false;
++
++		/* Read EDID */
++		offset = AST_DP501_EDID_DATA;
++		for (i = 0; i < 128; i += 4) {
++			data = readl(ast->dp501_fw_buf + offset + i);
++			pEDIDidx = (u32 *)(ediddata + i);
++			*pEDIDidx = data;
++		}
+ 	}
+ 
+ 	return true;
+diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
+index e82ab8628770..911f9f414774 100644
+--- a/drivers/gpu/drm/ast/ast_drv.h
++++ b/drivers/gpu/drm/ast/ast_drv.h
+@@ -150,6 +150,7 @@ struct ast_private {
+ 
+ 	void __iomem *regs;
+ 	void __iomem *ioregs;
++	void __iomem *dp501_fw_buf;
+ 
+ 	enum ast_chip chip;
+ 	bool vga2_clone;
+@@ -325,6 +326,17 @@ int ast_mode_config_init(struct ast_private *ast);
+ #define AST_MM_ALIGN_SHIFT 4
+ #define AST_MM_ALIGN_MASK ((1 << AST_MM_ALIGN_SHIFT) - 1)
+ 
++#define AST_DP501_FW_VERSION_MASK	GENMASK(7, 4)
++#define AST_DP501_FW_VERSION_1		BIT(4)
++#define AST_DP501_PNP_CONNECTED		BIT(1)
++
++#define AST_DP501_DEFAULT_DCLK	65
++
++#define AST_DP501_GBL_VERSION	0xf000
++#define AST_DP501_PNPMONITOR	0xf010
++#define AST_DP501_LINKRATE	0xf014
++#define AST_DP501_EDID_DATA	0xf020
++
+ int ast_mm_init(struct ast_private *ast);
+ 
+ /* ast post */
+diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
+index c29cc7f19863..189d783f6e2c 100644
+--- a/drivers/gpu/drm/ast/ast_main.c
++++ b/drivers/gpu/drm/ast/ast_main.c
+@@ -99,7 +99,7 @@ static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
+ 	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
+ 		/* Double check it's actually working */
+ 		data = ast_read32(ast, 0xf004);
+-		if (data != 0xFFFFFFFF) {
++		if ((data != 0xFFFFFFFF) && (data != 0x00)) {
+ 			/* P2A works, grab silicon revision */
+ 			ast->config_mode = ast_use_p2a;
+ 
+@@ -411,6 +411,7 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
+ 		return ast;
+ 	dev = &ast->base;
+ 
++	dev->pdev = pdev;
+ 	pci_set_drvdata(pdev, dev);
+ 
+ 	ast->regs = pcim_iomap(pdev, 1, 0);
+@@ -450,6 +451,14 @@ struct ast_private *ast_device_create(const struct drm_driver *drv,
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
++	/* map reserved buffer */
++	ast->dp501_fw_buf = NULL;
++	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
++		ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
++		if (!ast->dp501_fw_buf)
++			drm_info(dev, "failed to map reserved buffer!\n");
++	}
++
+ 	ret = ast_mode_config_init(ast);
+ 	if (ret)
+ 		return ERR_PTR(ret);
 -- 
+2.30.2
 
-- Arnaldo
+
+
