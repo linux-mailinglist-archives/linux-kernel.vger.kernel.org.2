@@ -2,266 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BEA3C9DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8B53C9DE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241991AbhGOLe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:34:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2216 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232053AbhGOLez (ORCPT
+        id S229631AbhGOLoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:44:39 -0400
+Received: from smtp88.ord1d.emailsrvr.com ([184.106.54.88]:34084 "EHLO
+        smtp88.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229553AbhGOLoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:34:55 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FB4Bf5021635;
-        Thu, 15 Jul 2021 07:32:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=USMSKQAwftGexVdE6uZMqcABuwt0ejNR32T6iWVdDCc=;
- b=DIiQdFuE66neWEg6dazjmKaPedSYQvE1KJBrnSMJcSqZqN9sNQSdmm90iccpTYpmmjDr
- yw3/OHvbi21LkXTU3S6aqYckyyMTpv7PNBQyDdjt/9Y1aLGWoSLFWPj+vrQN5D2IZJpB
- +wQaMPlwzN3plUx2qzSWE6kPjOQr+Rj4Nhvi59AV21EtgglkbI5BRd/SKxanh9dIyV1j
- YfH126Rbs5mwWTLJR0HG6LbFIQlisxq6FyPOT1UFCioH2mNGQbqTdH6+/nnfZInYyI2a
- 7Szewzt1PqLDlO6rhyQf0ugHACiW8Ii3CUp+ByffQW6mrO41vlLb6DRMEf6koj5Ffcm/ +w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39sph48j01-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 07:32:02 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16FB4Z9T023611;
-        Thu, 15 Jul 2021 07:32:01 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39sph48hyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 07:32:01 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16FBSoZS006751;
-        Thu, 15 Jul 2021 11:31:59 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 39q2tha84m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 11:31:59 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16FBVuTP34210254
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Jul 2021 11:31:56 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0899FAE04D;
-        Thu, 15 Jul 2021 11:31:56 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C6B2AE045;
-        Thu, 15 Jul 2021 11:31:55 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.77.125])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 15 Jul 2021 11:31:55 +0000 (GMT)
-Subject: Re: [PATCH v1 1/2] s390x: KVM: accept STSI for CPU topology
- information
-To:     Cornelia Huck <cohuck@redhat.com>,
-        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, thuth@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-References: <1626276343-22805-1-git-send-email-pmorel@linux.ibm.com>
- <1626276343-22805-2-git-send-email-pmorel@linux.ibm.com>
- <db788a8c-99a9-6d99-07ab-b49e953d91a2@redhat.com> <87fswfdiuu.fsf@redhat.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <7910990d-d396-7dd9-c4fe-7029aa03f751@linux.ibm.com>
-Date:   Thu, 15 Jul 2021 13:31:55 +0200
+        Thu, 15 Jul 2021 07:44:39 -0400
+X-Greylist: delayed 439 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Jul 2021 07:44:39 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1626348867;
+        bh=3cztsMwQmMdPTT+daePLLQcpJuknVNxL+D3iQl4SaG4=;
+        h=Subject:To:From:Date:From;
+        b=M23+6fH0emXzo+TwwyfxUhEVkN/Kj1IdT8u2+VxSvBs848IzUunlMrq/RuQrkJLM3
+         c8U9tmaIuvy4Ev6FwvuCHo5Gk8g2BIE37U5fahPJfKMoIQndKRyQmGP7g1KvY5pbW4
+         +lS/zkKVnc+9u5fvtZBwVartlKxvRAMGBfaU6gNo=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp20.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id D6A7BC00AA;
+        Thu, 15 Jul 2021 07:34:26 -0400 (EDT)
+Subject: Re: [PATCH] comedi: usbdux: free allocated memory/urbs on failure
+To:     Salah Triki <salah.triki@gmail.com>, hsweeten@visionengravers.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20210715022652.GA2054080@pc>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <5f688e04-80cc-e37b-3f6f-3360b5af89aa@mev.co.uk>
+Date:   Thu, 15 Jul 2021 12:34:25 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <87fswfdiuu.fsf@redhat.com>
+In-Reply-To: <20210715022652.GA2054080@pc>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: mFpAzo4uP_YcQpXoncuMXJEm2hy4UIZz
-X-Proofpoint-ORIG-GUID: 5MAPDR23YXm4_Mgb5OzTtXtkPMLZcaia
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-15_07:2021-07-14,2021-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 priorityscore=1501 clxscore=1015 spamscore=0
- lowpriorityscore=0 mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107150081
+X-Classification-ID: a242d17c-20e9-4b90-ba75-3c0943789a6f-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/15/21 11:30 AM, Cornelia Huck wrote:
-> On Thu, Jul 15 2021, David Hildenbrand <david@redhat.com> wrote:
+On 15/07/2021 03:26, Salah Triki wrote:
+> Free allocated memory/urbs on failure in order to prevent memory leaks.
 > 
->> On 14.07.21 17:25, Pierre Morel wrote:
->>> STSI(15.1.x) gives information on the CPU configuration topology.
->>> Let's accept the interception of STSI with the function code 15 and
->>> let the userland part of the hypervisor handle it.
->>>
->>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
->>> ---
->>>    arch/s390/kvm/priv.c | 11 ++++++++++-
->>>    1 file changed, 10 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
->>> index 9928f785c677..4ab5f8b7780e 100644
->>> --- a/arch/s390/kvm/priv.c
->>> +++ b/arch/s390/kvm/priv.c
->>> @@ -856,7 +856,7 @@ static int handle_stsi(struct kvm_vcpu *vcpu)
->>>    	if (vcpu->arch.sie_block->gpsw.mask & PSW_MASK_PSTATE)
->>>    		return kvm_s390_inject_program_int(vcpu, PGM_PRIVILEGED_OP);
->>>    
->>> -	if (fc > 3) {
->>> +	if (fc > 3 && fc != 15) {
->>>    		kvm_s390_set_psw_cc(vcpu, 3);
->>>    		return 0;
->>>    	}
->>> @@ -893,6 +893,15 @@ static int handle_stsi(struct kvm_vcpu *vcpu)
->>>    			goto out_no_data;
->>>    		handle_stsi_3_2_2(vcpu, (void *) mem);
->>>    		break;
->>> +	case 15:
->>> +		if (sel1 != 1 || sel2 < 2 || sel2 > 6)
->>> +			goto out_no_data;
->>> +		if (vcpu->kvm->arch.user_stsi) {
->>> +			insert_stsi_usr_data(vcpu, operand2, ar, fc, sel1, sel2);
->>> +			return -EREMOTE;
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> ---
+>   drivers/comedi/drivers/usbdux.c | 42 ++++++++++++++++++++++++++++-----
+>   1 file changed, 36 insertions(+), 6 deletions(-)
 > 
-> This bypasses the trace event further down.
-> 
-
-Right, I can add a trace.
-Note that we had no trace in the past.
-
->>> +		}
->>> +		kvm_s390_set_psw_cc(vcpu, 3);
->>> +		return 0;
->>>    	}
->>>    	if (kvm_s390_pv_cpu_is_protected(vcpu)) {
->>>    		memcpy((void *)sida_origin(vcpu->arch.sie_block), (void *)mem,
->>>
->>
->> 1. Setting GPRS to 0
->>
->> I was wondering why we have the "vcpu->run->s.regs.gprs[0] = 0;"
->> for existing fc 1,2,3 in case we set cc=0.
->>
->> Looking at the doc, all I find is:
->>
->> "CC 0: Requested configuration-level number placed in
->> general register 0 or requested SYSIB informa-
->> tion stored"
->>
->> But I don't find where it states that we are supposed to set
->> general register 0 to 0. Wouldn't we also have to do it for
->> fc=15 or for none?
->>
->> If fc 1,2,3 and 15 are to be handled equally, I suggest the following:
->>
->> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
->> index 9928f785c677..6eb86fa58b0b 100644
->> --- a/arch/s390/kvm/priv.c
->> +++ b/arch/s390/kvm/priv.c
->> @@ -893,17 +893,23 @@ static int handle_stsi(struct kvm_vcpu *vcpu)
->>                           goto out_no_data;
->>                   handle_stsi_3_2_2(vcpu, (void *) mem);
->>                   break;
->> +       case 15:
->> +               if (sel1 != 1 || sel2 < 2 || sel2 > 6)
->> +                       goto out_no_data;
->> +               break;
->>           }
->> -       if (kvm_s390_pv_cpu_is_protected(vcpu)) {
->> -               memcpy((void *)sida_origin(vcpu->arch.sie_block), (void *)mem,
->> -                      PAGE_SIZE);
->> -               rc = 0;
->> -       } else {
->> -               rc = write_guest(vcpu, operand2, ar, (void *)mem, PAGE_SIZE);
->> -       }
->> -       if (rc) {
->> -               rc = kvm_s390_inject_prog_cond(vcpu, rc);
->> -               goto out;
->> +       if (mem) {
->> +               if (kvm_s390_pv_cpu_is_protected(vcpu)) {
->> +                       memcpy((void *)sida_origin(vcpu->arch.sie_block),
->> +                              (void *)mem, PAGE_SIZE);
->> +               } else {
->> +                       rc = write_guest(vcpu, operand2, ar, (void *)mem,
->> +                                        PAGE_SIZE);
->> +                       if (rc) {
->> +                               rc = kvm_s390_inject_prog_cond(vcpu, rc);
->> +                               goto out;
->> +                       }
->> +               }
->>           }
->>           if (vcpu->kvm->arch.user_stsi) {
->>                   insert_stsi_usr_data(vcpu, operand2, ar, fc, sel1, sel2);
-> 
-> Something like that sounds good, the code is getting a bit convoluted.
+> diff --git a/drivers/comedi/drivers/usbdux.c b/drivers/comedi/drivers/usbdux.c
+> index 0350f303d557..fe388a9a588a 100644
+> --- a/drivers/comedi/drivers/usbdux.c
+> +++ b/drivers/comedi/drivers/usbdux.c
+> @@ -1456,7 +1456,7 @@ static int usbdux_alloc_usb_buffers(struct comedi_device *dev)
+>   		/* one frame: 1ms */
+>   		urb = usb_alloc_urb(1, GFP_KERNEL);
+>   		if (!urb)
+> -			return -ENOMEM;
+> +			goto free_ai_urbs1;
+>   		devpriv->ai_urbs[i] = urb;
+>   
+>   		urb->dev = usb;
+> @@ -1465,7 +1465,7 @@ static int usbdux_alloc_usb_buffers(struct comedi_device *dev)
+>   		urb->transfer_flags = URB_ISO_ASAP;
+>   		urb->transfer_buffer = kzalloc(SIZEINBUF, GFP_KERNEL);
+>   		if (!urb->transfer_buffer)
+> -			return -ENOMEM;
+> +			goto free_ai_urbs2;
+>   
+>   		urb->complete = usbduxsub_ai_isoc_irq;
+>   		urb->number_of_packets = 1;
+> @@ -1478,7 +1478,7 @@ static int usbdux_alloc_usb_buffers(struct comedi_device *dev)
+>   		/* one frame: 1ms */
+>   		urb = usb_alloc_urb(1, GFP_KERNEL);
+>   		if (!urb)
+> -			return -ENOMEM;
+> +			goto free_ao_urbs1;
+>   		devpriv->ao_urbs[i] = urb;
+>   
+>   		urb->dev = usb;
+> @@ -1487,7 +1487,7 @@ static int usbdux_alloc_usb_buffers(struct comedi_device *dev)
+>   		urb->transfer_flags = URB_ISO_ASAP;
+>   		urb->transfer_buffer = kzalloc(SIZEOUTBUF, GFP_KERNEL);
+>   		if (!urb->transfer_buffer)
+> -			return -ENOMEM;
+> +			goto free_ao_urbs2;
+>   
+>   		urb->complete = usbduxsub_ao_isoc_irq;
+>   		urb->number_of_packets = 1;
+> @@ -1504,17 +1504,47 @@ static int usbdux_alloc_usb_buffers(struct comedi_device *dev)
+>   	if (devpriv->pwm_buf_sz) {
+>   		urb = usb_alloc_urb(0, GFP_KERNEL);
+>   		if (!urb)
+> -			return -ENOMEM;
+> +			goto free_ao_urbs0;
+>   		devpriv->pwm_urb = urb;
+>   
+>   		/* max bulk ep size in high speed */
+>   		urb->transfer_buffer = kzalloc(devpriv->pwm_buf_sz,
+>   					       GFP_KERNEL);
+>   		if (!urb->transfer_buffer)
+> -			return -ENOMEM;
+> +			goto free_urb;
+>   	}
+>   
+>   	return 0;
+> +
+> +free_urb:
+> +	usb_free_urb(urb);
+> +
+> +free_ao_urbs0:
+> +	i = devpriv->n_ao_urbs;
+> +
+> +free_ao_urbs1:
+> +	i--;
+> +
+> +free_ao_urbs2:
+> +	while (i >= 0) {
+> +		kfree(devpriv->ao_urbs[i]->transfer_buffer);
+> +		usb_free_urb(devpriv->ao_urbs[i]);
+> +		i--;
+> +	}
+> +	i = devpriv->n_ai_urbs;
+> +
+> +free_ai_urbs1:
+> +	i--;
+> +
+> +free_ai_urbs2:
+> +	while (i >= 0) {
+> +		kfree(devpriv->ai_urbs[i]->transfer_buffer);
+> +		usb_free_urb(devpriv->ai_urbs[i]);
+> +		i--;
+> +	}
+> +
+> +	return -ENOMEM;
+> +
+>   }
+>   
+>   static void usbdux_free_usb_buffers(struct comedi_device *dev)
 > 
 
-OK for me, in that case we can also suppress the check for FC=15 and let 
-that to user space as it was suggested in a previous comment
+NAK.
 
->>
->>
->> 2. maximum-MNest facility
->>
->> "
->> 1. If the maximum-MNest facility is installed and
->> selector 2 exceeds the nonzero model-depen-
->> dent maximum-selector-2 value."
->>
->> 2. If the maximum-MNest facility is not installed and
->> selector 2 is not specified as two.
->> "
->>
->> We will we be handling the presence/absence of the maximum-MNest facility
->> (for our guest?) in QEMU, corect?
->>
->> I do wonder if we should just let any fc=15 go to user space let the whole
->> sel1 / sel2 checking be handled there. I don't think it's a fast path after all.
->> But no strong opinion.
-> 
-> If that makes handling easier, I think it would be a good idea.
+Actually, there is no need for this because usbdux_free_usb_buffers() 
+will soon be called to clean up when this fails.[*]  Also, it isn't 
+cleaning up enough to prevent double frees when 
+usbdux_free_usb_buffers() is called later.
 
-OK too
 
-> 
->>
->> How do we identify availability of maximum-MNest facility?
->>
->>
->> 3. User space awareness
->>
->> How can user space identify that we actually forward these intercepts?
->> How can it enable them? The old KVM_CAP_S390_USER_STSI capability
->> is not sufficient.
-> 
-> Why do you think that it is not sufficient? USER_STSI basically says
-> "you may get an exit that tells you about a buffer to fill in some more
-> data for a stsi command, and we also tell you which call". If userspace
-> does not know what to add for a certain call, it is free to just do
-> nothing, and if it does not get some calls it would support, that should
-> not be a problem, either?
-> 
->>
->> I do wonder if we want KVM_CAP_S390_USER_STSI_15 or sth like that to change
->> the behavior once enabled by user space.
->>
->>
->> 4. Without vcpu->kvm->arch.user_stsi, we indicate cc=0 to our guest,
->> also for fc 1,2,3. Is that actually what we want? (or do we simply not care
->> because the guest is not supposed to use stsi?)
-> 
-> If returning an empty buffer is ok, it should not be a problem, I
-> guess. (I have not looked yet at the actual definitions.)
-> 
-
-When user_stsi is 0 for fc 1,2,3 the buffer is filled in the kernel, for 
-15 the kernel can not do this.
+[*] The error returned from usbdux_alloc_usb_buffers() is propagated as 
+an error returned by usbdux_auto_attach(). The Comedi core calls the 
+"detach()" handler (usbdux_detach()) to clean up when the 
+"auto_attach()" handler (usbdux_auto_attach()) returns an error. 
+usbdux_detach() calls usbdux_free_usb_buffers() to clean up the 
+(possibly partial) allocations done by usbdux_alloc_usb_buffers().
 
 -- 
-Pierre Morel
-IBM Lab Boeblingen
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
