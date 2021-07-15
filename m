@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C761C3C959C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A813C959D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235144AbhGOBgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        id S235312AbhGOBgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 21:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234878AbhGOBgs (ORCPT
+        with ESMTP id S234878AbhGOBgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:36:48 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D2CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:33:54 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id e19-20020ad442b30000b02902dc988b8675so2987861qvr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:33:54 -0700 (PDT)
+        Wed, 14 Jul 2021 21:36:50 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE55C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:33:57 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id bi3-20020a05620a3183b02903b55bbe1ef9so2562541qkb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 18:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=8vnGhtmp+njtNtIuKwFZim7rfIp3lR+vOjiRHXUJKyQ=;
-        b=FtVARWUY3U8/9Tw4oLPAphMR3pXqBM60v7dYlimahcB70OGTYW8bslo/9wNAXlFI46
-         y22CdMWEZVZaw/xZpduxvuTcA9WTxKSwMCBvw6xh7vscbm3aZNrVpBOI6yk4DJqPMTSq
-         8FsPf9s36iTloS5gBmOUBHtek2X1XFCx/mvCmGlpGeA6pcOnzeY03cU20vakLfX/FfYF
-         iATRuajUrB2xiDkEo0OF7eDMjB9+Yh10SFXV87f/Yi02TkB8gWMU4AjV7siy7YcI7Js3
-         +OdGfKfe4jC6GvJZ2GJREsSfVFXgNPNVm25oqdgLkyDYNBu3K93Ydza8w4f7IhYQga85
-         ZyWA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=q4BHOu/wzrpYqkE7mCMBCj6/ZE93wztWfxyCm7cmFBc=;
+        b=W70LOBXjGPw6qkIkmwPRBu9X/rO3vxDEUhYFmK3v7r9Giv42BOe3r6w8KP6RaUZmhU
+         HDiV2CKSIKjVwY6QJduve0Hr6z65b2WegIiK6S5zx6seC6AdmyJx0C1yqrm8psZCMHZG
+         hQDXqvzhdvmetv6zPO8zFXawoxAyFWVvxcqUrnaRL6Ls69bEYLoi0qffdliEJtKQYrP+
+         oJiVzVgZRVLFppHjuz8ZNepjeZG29nQ1DlB1Js3nZbLDNabTEsbjHOSL/aUMKjTneGam
+         taR+egNJn3lVJNPpsX+EMc3n7ZB89Ybb6CvKtGR58kGXjZb1weYiDnTzo2ZvoHsh1JNL
+         slhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=8vnGhtmp+njtNtIuKwFZim7rfIp3lR+vOjiRHXUJKyQ=;
-        b=Vh7V5YjLqZJXfGz8oc/FejLiQFA2+5yX/hSfS6Ziyx6L00cRy4vBzuKD5chidLue2/
-         KytIs6M1xyuEUACU0xhtw6uClDifMbIi6uIRk1YhSUsR74walYBBqK72uksHKL95AJtE
-         Y17NAYGY1vk76ZlAatHHndgE1djNlHwLeYjWAkeuKGWDNnYfi8Z2CHUazM+EMyf+joaR
-         aMh4QwI8faG64yNKmLKQc1v4wBAuRLaaFl0V45S47C44uXP8sr6OXsi/6TolTvNzDAB3
-         QGnJKvU0c8Kxt5jD978NwMN31FnlTlakTU/KgACxfYTgcuCn0UihCBQDmigFvCiKku00
-         yLnA==
-X-Gm-Message-State: AOAM530XgXa8SvaIkCgewd9bZJwjkJtyFHjOLGU+NRK1dcg8miU25gY+
-        jxTZGdYywtVbrFawJjMj9EsT1bLpoMhz
-X-Google-Smtp-Source: ABdhPJxUUNr0W3XsmB5xISQcI8yr8AX+7mp+8KI4DxlCKSI8oq0R1FwhPnhrhA7lYo2TKDZ0wgkv/2OtvDyO
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=q4BHOu/wzrpYqkE7mCMBCj6/ZE93wztWfxyCm7cmFBc=;
+        b=AzRFPDVtNtdcs3gnmadYZJBdturwPrrmUo1phNQmMPu/O7woHxOsTBKRjei0gGy7lZ
+         0ocAdefzvJK8fY6697qwEvyixrJAp2OZ6zilCG4iFWDuKNeNZur21DZ/VtfqBpHose4o
+         /b3dGG1RjNPSlIB0UGiaL2TR8bgks9Is6z0RfYadNC+Ul+ALKcsDauJi9ZCev84w16SP
+         QKKyOuECn9HG7meaNj7XxOaiaWPs3nFv9p3Mab+ngkFRTedbdje5a1RA8FhY/k7pCpMH
+         zmfk36oxq8JnExOnubnStYj0AlvuH+OrxQSnp3PQMUGtXgwYi8cCt75Jrf8tAkW9bhUP
+         7+1g==
+X-Gm-Message-State: AOAM531cBKFH2atDGV5u9/3cQ68Ahh+OiSNpZC3DeFb1zTLWYRecVfXl
+        c19FVUrac/TDRmJq6/j5nnzBD7ByUxez
+X-Google-Smtp-Source: ABdhPJyUmDFahCxgVA4ss9+o7IBSi9Md8e1si6j9kEE5+qw0mTEqSY8II6I+kFzgOOAxk7OhXz4KHrG3YN9t
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:c0a3:e3b0:6b14:de32])
- (user=irogers job=sendgmr) by 2002:a05:6214:13c8:: with SMTP id
- cg8mr1210074qvb.23.1626312833833; Wed, 14 Jul 2021 18:33:53 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 18:33:36 -0700
-Message-Id: <20210715013343.2286699-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6214:172:: with SMTP id
+ y18mr1256939qvs.14.1626312836130; Wed, 14 Jul 2021 18:33:56 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 18:33:37 -0700
+In-Reply-To: <20210715013343.2286699-1-irogers@google.com>
+Message-Id: <20210715013343.2286699-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20210715013343.2286699-1-irogers@google.com>
 X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH 0/7] Tidy perf Documentation build
+Subject: [PATCH 1/7] perf doc: Fix perfman.info build
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -63,26 +67,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Perf's Documenation Makefile is based off git's, but some parts of it
-were never completed. 'make info' also fails. These patches fix 'make
-info' and do some related tidy up. Two missing files are added from git.
+Before this change 'make perfman.info' fails as cat-texi.perl is
+missing. It also fails as the makeinfo output isn't written into the
+appropriate file. Add cat-texi.perl from git. Add missing output file
+flag for makeinfo.
 
-Ian Rogers (7):
-  perf doc: Fix perfman.info build
-  perf doc: Fix doc.dep
-  perf doc: Remove references to user-manual
-  perf doc: Add info pages to all target.
-  perf doc: Remove cmd-list.perl references
-  perf doc: Remove howto-index.sh related references.
-  perf doc: Reorganize ARTICLES variables.
-
- tools/perf/Documentation/Makefile          | 74 +++-------------------
- tools/perf/Documentation/build-docdep.perl | 46 ++++++++++++++
- tools/perf/Documentation/cat-texi.perl     | 46 ++++++++++++++
- 3 files changed, 100 insertions(+), 66 deletions(-)
- create mode 100755 tools/perf/Documentation/build-docdep.perl
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/Documentation/Makefile      |  2 +-
+ tools/perf/Documentation/cat-texi.perl | 46 ++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+), 1 deletion(-)
  create mode 100755 tools/perf/Documentation/cat-texi.perl
 
+diff --git a/tools/perf/Documentation/Makefile b/tools/perf/Documentation/Makefile
+index 6e54979c2124..859ec1496716 100644
+--- a/tools/perf/Documentation/Makefile
++++ b/tools/perf/Documentation/Makefile
+@@ -331,7 +331,7 @@ $(OUTPUT)perfman.texi: $(MAN_XML) cat-texi.perl
+ 	mv $@+ $@
+ 
+ $(OUTPUT)perfman.info: $(OUTPUT)perfman.texi
+-	$(QUIET_MAKEINFO)$(MAKEINFO) --no-split --no-validate $*.texi
++	$(QUIET_MAKEINFO)$(MAKEINFO) --no-split --no-validate -o $@ $*.texi
+ 
+ $(patsubst %.txt,%.texi,$(MAN_TXT)): %.texi : %.xml
+ 	$(QUIET_DB2TEXI)$(RM) $@+ $@ && \
+diff --git a/tools/perf/Documentation/cat-texi.perl b/tools/perf/Documentation/cat-texi.perl
+new file mode 100755
+index 000000000000..14d2f8341517
+--- /dev/null
++++ b/tools/perf/Documentation/cat-texi.perl
+@@ -0,0 +1,46 @@
++#!/usr/bin/perl -w
++
++use strict;
++use warnings;
++
++my @menu = ();
++my $output = $ARGV[0];
++
++open my $tmp, '>', "$output.tmp";
++
++while (<STDIN>) {
++	next if (/^\\input texinfo/../\@node Top/);
++	next if (/^\@bye/ || /^\.ft/);
++	if (s/^\@top (.*)/\@node $1,,,Top/) {
++		push @menu, $1;
++	}
++	s/\(\@pxref\{\[(URLS|REMOTES)\]}\)//;
++	s/\@anchor\{[^{}]*\}//g;
++	print $tmp $_;
++}
++close $tmp;
++
++print '\input texinfo
++@setfilename gitman.info
++@documentencoding UTF-8
++@dircategory Development
++@direntry
++* Git Man Pages: (gitman).  Manual pages for Git revision control system
++@end direntry
++@node Top,,, (dir)
++@top Git Manual Pages
++@documentlanguage en
++@menu
++';
++
++for (@menu) {
++	print "* ${_}::\n";
++}
++print "\@end menu\n";
++open $tmp, '<', "$output.tmp";
++while (<$tmp>) {
++	print;
++}
++close $tmp;
++print "\@bye\n";
++unlink "$output.tmp";
 -- 
 2.32.0.402.g57bb445576-goog
 
