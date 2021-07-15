@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC343CABB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7198F3CA977
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244021AbhGOTW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45710 "EHLO mail.kernel.org"
+        id S242213AbhGOTGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:06:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242775AbhGOTGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:06:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 313D5613DF;
-        Thu, 15 Jul 2021 19:02:39 +0000 (UTC)
+        id S241028AbhGOS4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4140613C4;
+        Thu, 15 Jul 2021 18:53:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375759;
-        bh=2HI+/sRWXFFVhfZRSSABrrORznPJcyMpA1UMZaKJhBY=;
+        s=korg; t=1626375228;
+        bh=M/YarBLgGLZs5J4oVWxU+ihkCU8UuKy2p89D/jtlqE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QRkDwg8pwplLMdTFoCh3XVIfMtdWoIhi45euPwhHX2aB95nhxy67kqQyJO0I96Mh8
-         V3oP/8DGWFNJvtu5Jpwj+vZEVCgtOClKI1qDkEbcmNURIE9jrkFv/1UWWVRA0sMmRG
-         +E33Dy92IcPmpq5rzKL+H140+28d4KAXk9I3wxqI=
+        b=jffPUDN0GiVitqBqZznaWELhbHK8erYtE8WT+AT8Aw/Gty4GiTmwHzEG9DHkuGKvE
+         euJwRa/hpFM+Fo31DWYbAxlbmtiZQRk3PhIADnq6CvnPnyG5PzXQAazqR+AcwvIyro
+         vIOnTZ3xUDXOZIhkigpwVhp+1bnnT08Idx75UpDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com,
+        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com,
         Pavel Skripkin <paskripkin@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.12 224/242] media: zr364xx: fix memory leak in zr364xx_start_readpipe
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.10 214/215] ext4: fix memory leak in ext4_fill_super
 Date:   Thu, 15 Jul 2021 20:39:46 +0200
-Message-Id: <20210715182632.381864812@linuxfoundation.org>
+Message-Id: <20210715182636.931701201@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +43,154 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 0a045eac8d0427b64577a24d74bb8347c905ac65 upstream.
+commit 618f003199c6188e01472b03cdbba227f1dc5f24 upstream.
 
-syzbot reported memory leak in zr364xx driver.
-The problem was in non-freed urb in case of
-usb_submit_urb() fail.
+static int kthread(void *_create) will return -ENOMEM
+or -EINTR in case of internal failure or
+kthread_stop() call happens before threadfn call.
 
-backtrace:
-  [<ffffffff82baedf6>] kmalloc include/linux/slab.h:561 [inline]
-  [<ffffffff82baedf6>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
-  [<ffffffff82f7cce8>] zr364xx_start_readpipe+0x78/0x130 drivers/media/usb/zr364xx/zr364xx.c:1022
-  [<ffffffff84251dfc>] zr364xx_board_init drivers/media/usb/zr364xx/zr364xx.c:1383 [inline]
-  [<ffffffff84251dfc>] zr364xx_probe+0x6a3/0x851 drivers/media/usb/zr364xx/zr364xx.c:1516
-  [<ffffffff82bb6507>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-  [<ffffffff826018a9>] really_probe+0x159/0x500 drivers/base/dd.c:576
+To prevent fancy error checking and make code
+more straightforward we moved all cleanup code out
+of kmmpd threadfn.
 
-Fixes: ccbf035ae5de ("V4L/DVB (12278): zr364xx: implement V4L2_CAP_STREAMING")
-Cc: stable@vger.kernel.org
-Reported-by: syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com
+Also, dropped struct mmpd_data at all. Now struct super_block
+is a threadfn data and struct buffer_head embedded into
+struct ext4_sb_info.
+
+Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/r/20210430185046.15742-1-paskripkin@gmail.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/zr364xx/zr364xx.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/ext4.h  |    4 ++++
+ fs/ext4/mmp.c   |   28 +++++++++++++---------------
+ fs/ext4/super.c |   10 ++++------
+ 3 files changed, 21 insertions(+), 21 deletions(-)
 
---- a/drivers/media/usb/zr364xx/zr364xx.c
-+++ b/drivers/media/usb/zr364xx/zr364xx.c
-@@ -1032,6 +1032,7 @@ static int zr364xx_start_readpipe(struct
- 	DBG("submitting URB %p\n", pipe_info->stream_urb);
- 	retval = usb_submit_urb(pipe_info->stream_urb, GFP_KERNEL);
- 	if (retval) {
-+		usb_free_urb(pipe_info->stream_urb);
- 		printk(KERN_ERR KBUILD_MODNAME ": start read pipe failed\n");
- 		return retval;
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1480,6 +1480,7 @@ struct ext4_sb_info {
+ 	struct kobject s_kobj;
+ 	struct completion s_kobj_unregister;
+ 	struct super_block *s_sb;
++	struct buffer_head *s_mmp_bh;
+ 
+ 	/* Journaling */
+ 	struct journal_s *s_journal;
+@@ -3624,6 +3625,9 @@ extern struct ext4_io_end_vec *ext4_last
+ /* mmp.c */
+ extern int ext4_multi_mount_protect(struct super_block *, ext4_fsblk_t);
+ 
++/* mmp.c */
++extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
++
+ /* verity.c */
+ extern const struct fsverity_operations ext4_verityops;
+ 
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -127,9 +127,9 @@ void __dump_mmp_msg(struct super_block *
+  */
+ static int kmmpd(void *data)
+ {
+-	struct super_block *sb = ((struct mmpd_data *) data)->sb;
+-	struct buffer_head *bh = ((struct mmpd_data *) data)->bh;
++	struct super_block *sb = (struct super_block *) data;
+ 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
++	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
+ 	struct mmp_struct *mmp;
+ 	ext4_fsblk_t mmp_block;
+ 	u32 seq = 0;
+@@ -245,12 +245,18 @@ static int kmmpd(void *data)
+ 	retval = write_mmp_block(sb, bh);
+ 
+ exit_thread:
+-	EXT4_SB(sb)->s_mmp_tsk = NULL;
+-	kfree(data);
+-	brelse(bh);
+ 	return retval;
+ }
+ 
++void ext4_stop_mmpd(struct ext4_sb_info *sbi)
++{
++	if (sbi->s_mmp_tsk) {
++		kthread_stop(sbi->s_mmp_tsk);
++		brelse(sbi->s_mmp_bh);
++		sbi->s_mmp_tsk = NULL;
++	}
++}
++
+ /*
+  * Get a random new sequence number but make sure it is not greater than
+  * EXT4_MMP_SEQ_MAX.
+@@ -275,7 +281,6 @@ int ext4_multi_mount_protect(struct supe
+ 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+ 	struct buffer_head *bh = NULL;
+ 	struct mmp_struct *mmp = NULL;
+-	struct mmpd_data *mmpd_data;
+ 	u32 seq;
+ 	unsigned int mmp_check_interval = le16_to_cpu(es->s_mmp_update_interval);
+ 	unsigned int wait_time = 0;
+@@ -364,24 +369,17 @@ skip:
+ 		goto failed;
  	}
+ 
+-	mmpd_data = kmalloc(sizeof(*mmpd_data), GFP_KERNEL);
+-	if (!mmpd_data) {
+-		ext4_warning(sb, "not enough memory for mmpd_data");
+-		goto failed;
+-	}
+-	mmpd_data->sb = sb;
+-	mmpd_data->bh = bh;
++	EXT4_SB(sb)->s_mmp_bh = bh;
+ 
+ 	/*
+ 	 * Start a kernel thread to update the MMP block periodically.
+ 	 */
+-	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data, "kmmpd-%.*s",
++	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb, "kmmpd-%.*s",
+ 					     (int)sizeof(mmp->mmp_bdevname),
+ 					     bdevname(bh->b_bdev,
+ 						      mmp->mmp_bdevname));
+ 	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
+ 		EXT4_SB(sb)->s_mmp_tsk = NULL;
+-		kfree(mmpd_data);
+ 		ext4_warning(sb, "Unable to create kmmpd thread for %s.",
+ 			     sb->s_id);
+ 		goto failed;
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1260,8 +1260,8 @@ static void ext4_put_super(struct super_
+ 	ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
+ 	sbi->s_ea_block_cache = NULL;
+ 
+-	if (sbi->s_mmp_tsk)
+-		kthread_stop(sbi->s_mmp_tsk);
++	ext4_stop_mmpd(sbi);
++
+ 	brelse(sbi->s_sbh);
+ 	sb->s_fs_info = NULL;
+ 	/*
+@@ -5173,8 +5173,7 @@ failed_mount3a:
+ 	ext4_es_unregister_shrinker(sbi);
+ failed_mount3:
+ 	del_timer_sync(&sbi->s_err_report);
+-	if (sbi->s_mmp_tsk)
+-		kthread_stop(sbi->s_mmp_tsk);
++	ext4_stop_mmpd(sbi);
+ failed_mount2:
+ 	rcu_read_lock();
+ 	group_desc = rcu_dereference(sbi->s_group_desc);
+@@ -5927,8 +5926,7 @@ static int ext4_remount(struct super_blo
+ 				 */
+ 				ext4_mark_recovery_complete(sb, es);
+ 			}
+-			if (sbi->s_mmp_tsk)
+-				kthread_stop(sbi->s_mmp_tsk);
++			ext4_stop_mmpd(sbi);
+ 		} else {
+ 			/* Make sure we can mount this feature set readwrite */
+ 			if (ext4_has_feature_readonly(sb) ||
 
 
