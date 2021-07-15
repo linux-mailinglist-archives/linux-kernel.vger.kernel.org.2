@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BF93CABD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE783CA9B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343829AbhGOTYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46412 "EHLO mail.kernel.org"
+        id S235345AbhGOTIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:08:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241614AbhGOTHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:07:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42C8D61400;
-        Thu, 15 Jul 2021 19:03:56 +0000 (UTC)
+        id S241637AbhGOS5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:57:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4394C613D8;
+        Thu, 15 Jul 2021 18:54:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375836;
-        bh=4WLk7xslN4QJLfFAgeeGGRJMsiwnd0T7uFKjsNRSBk8=;
+        s=korg; t=1626375296;
+        bh=LmPYPspyED4WBFtx+BnP0s9Gg5Ua+lcvDotTG9WIFAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rmJbTvaLf0LTzV5xN/IbEJ/2wa3yYQYgYMdaZtW7u1w5U9Alqd6/a4Iy1RESDxaPz
-         qu9BntvP32E1ZxhK/yedBpFdmqeUHlA+TItKmEx5rKjeetPAL/PC+iyNtMhuAketMF
-         XwNkK6AO/zh53Ji6yUs7uMg6V2gD0huHwJecYw3Y=
+        b=RR0PMtZ2CfxOfgJQRmvP/zdIDip+jnXy561eprek49Ant/tsgprG3pi0KSabqtX+A
+         yKOpSWdKpBUdxbc6mdCgWMuCS3aFim/ZX3wt4bVhBsnTKv4AhBfRYVkVyhUsGdSnEh
+         B0ZYa7JpYdFcqgokGSCxXoasWyROVRkzJTOT9C40=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 015/266] clk: renesas: rcar-usb2-clock-sel: Fix error handling in .probe()
-Date:   Thu, 15 Jul 2021 20:36:10 +0200
-Message-Id: <20210715182616.532025460@linuxfoundation.org>
+Subject: [PATCH 5.12 009/242] drm/amdgpu: change the default timeout for kernel compute queues
+Date:   Thu, 15 Jul 2021 20:36:11 +0200
+Message-Id: <20210715182553.434744203@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-References: <20210715182613.933608881@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit a20a40a8bbc2cf4b29d7248ea31e974e9103dd7f ]
+[ Upstream commit 67387dfe0f6630f2d4f412ce77debec23a49db7a ]
 
-The error handling paths after pm_runtime_get_sync() have no refcount
-decrement, which leads to refcount leak.
+Change to 60s.  This matches what we already do in virtualization.
+Infinite timeout can lead to deadlocks in the kernel.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Link: https://lore.kernel.org/r/20210415073338.22287-1-dinghao.liu@zju.edu.cn
-[geert: Remove now unused variable priv]
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/renesas/rcar-usb2-clock-sel.c | 24 ++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 8 +++-----
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c    | 4 ++--
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/clk/renesas/rcar-usb2-clock-sel.c b/drivers/clk/renesas/rcar-usb2-clock-sel.c
-index 34a85dc95beb..9fb79bd79435 100644
---- a/drivers/clk/renesas/rcar-usb2-clock-sel.c
-+++ b/drivers/clk/renesas/rcar-usb2-clock-sel.c
-@@ -128,10 +128,8 @@ static int rcar_usb2_clock_sel_resume(struct device *dev)
- static int rcar_usb2_clock_sel_remove(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct usb2_clock_sel_priv *priv = platform_get_drvdata(pdev);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index a32b41e4c24e..1b69aa74056d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -3141,8 +3141,8 @@ static int amdgpu_device_get_job_timeout_settings(struct amdgpu_device *adev)
+ 	int ret = 0;
  
- 	of_clk_del_provider(dev->of_node);
--	clk_hw_unregister(&priv->hw);
- 	pm_runtime_put(dev);
- 	pm_runtime_disable(dev);
+ 	/*
+-	 * By default timeout for non compute jobs is 10000.
+-	 * And there is no timeout enforced on compute jobs.
++	 * By default timeout for non compute jobs is 10000
++	 * and 60000 for compute jobs.
+ 	 * In SR-IOV or passthrough mode, timeout for compute
+ 	 * jobs are 60000 by default.
+ 	 */
+@@ -3151,10 +3151,8 @@ static int amdgpu_device_get_job_timeout_settings(struct amdgpu_device *adev)
+ 	if (amdgpu_sriov_vf(adev))
+ 		adev->compute_timeout = amdgpu_sriov_is_pp_one_vf(adev) ?
+ 					msecs_to_jiffies(60000) : msecs_to_jiffies(10000);
+-	else if (amdgpu_passthrough(adev))
+-		adev->compute_timeout =  msecs_to_jiffies(60000);
+ 	else
+-		adev->compute_timeout = MAX_SCHEDULE_TIMEOUT;
++		adev->compute_timeout =  msecs_to_jiffies(60000);
  
-@@ -164,9 +162,6 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->rsts))
- 		return PTR_ERR(priv->rsts);
- 
--	pm_runtime_enable(dev);
--	pm_runtime_get_sync(dev);
--
- 	clk = devm_clk_get(dev, "usb_extal");
- 	if (!IS_ERR(clk) && !clk_prepare_enable(clk)) {
- 		priv->extal = !!clk_get_rate(clk);
-@@ -183,6 +178,8 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
- 		return -ENOENT;
- 	}
- 
-+	pm_runtime_enable(dev);
-+	pm_runtime_get_sync(dev);
- 	platform_set_drvdata(pdev, priv);
- 	dev_set_drvdata(dev, priv);
- 
-@@ -190,11 +187,20 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
- 	init.ops = &usb2_clock_sel_clock_ops;
- 	priv->hw.init = &init;
- 
--	clk = clk_register(NULL, &priv->hw);
--	if (IS_ERR(clk))
--		return PTR_ERR(clk);
-+	ret = devm_clk_hw_register(NULL, &priv->hw);
-+	if (ret)
-+		goto pm_put;
-+
-+	ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
-+	if (ret)
-+		goto pm_put;
-+
-+	return 0;
- 
--	return of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
-+pm_put:
-+	pm_runtime_put(dev);
-+	pm_runtime_disable(dev);
-+	return ret;
- }
- 
- static const struct dev_pm_ops rcar_usb2_clock_sel_pm_ops = {
+ 	if (strnlen(input, AMDGPU_MAX_TIMEOUT_PARAM_LENGTH)) {
+ 		while ((timeout_setting = strsep(&input, ",")) &&
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index e92e7dea71da..f9728ee10298 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -272,9 +272,9 @@ module_param_named(msi, amdgpu_msi, int, 0444);
+  *   for SDMA and Video.
+  *
+  * By default(with no lockup_timeout settings), the timeout for all non-compute(GFX, SDMA and Video)
+- * jobs is 10000. And there is no timeout enforced on compute jobs.
++ * jobs is 10000. The timeout for compute is 60000.
+  */
+-MODULE_PARM_DESC(lockup_timeout, "GPU lockup timeout in ms (default: for bare metal 10000 for non-compute jobs and infinity timeout for compute jobs; "
++MODULE_PARM_DESC(lockup_timeout, "GPU lockup timeout in ms (default: for bare metal 10000 for non-compute jobs and 60000 for compute jobs; "
+ 		"for passthrough or sriov, 10000 for all jobs."
+ 		" 0: keep default value. negative: infinity timeout), "
+ 		"format: for bare metal [Non-Compute] or [GFX,Compute,SDMA,Video]; "
 -- 
 2.30.2
 
