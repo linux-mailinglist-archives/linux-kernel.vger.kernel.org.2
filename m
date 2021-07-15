@@ -2,109 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79293CAF63
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40603CAF65
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhGOWtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 18:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
+        id S230308AbhGOWvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhGOWtT (ORCPT
+        with ESMTP id S229462AbhGOWva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:49:19 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D610C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 15:46:26 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id w1so6483527ilg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 15:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PDRjDg+N0S3DSpjc+dVjqWHiIJo37OqBZ5jBNnXL3Qw=;
-        b=dswt9SKj/DeGlkAO/cWq1G0Tu44eFfZRF9ygeqdmXH2JrCMjogNb+la+sTHq0BXBGp
-         QGifXCrEp2yP5HaEAb/mGJMq8EmokITNqECk5nP72RVG3KoQV4k5w50sc7qJpm143kd5
-         RlQ9YLqBp/QiyCpgZZl7t2BHrJ+1tWpVbS71Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PDRjDg+N0S3DSpjc+dVjqWHiIJo37OqBZ5jBNnXL3Qw=;
-        b=TdY474+m8fbuoL1EL2bhuKWpbry+VaQU81n0T4o+y5+NJoDFcQSOTD2U6E9XfwMVnt
-         cnBKdr86sUoFirt0xowq7x1nSf1jzqwWJ1X5lnEINfcr0fop0nSi0lc0vxt9v6xxbZgP
-         pYHboNQYVuiWe0u2hHGr2lTj/75VuWhxjY8WvhCO5BteDLTjBcy5gfK1oH/XKNFgWGIa
-         baht8xo5aLtw3vjC5u6rEeRSMu+Np+LvZWqzt00fYP81PF5iCZnnlTM52EnmlQsQukDs
-         +tD+HGsbWs8gkW6XROBpW54i8pe1sri8cmSirHJM0d8DQhIPWIMYGCop4GRW4r+pehA8
-         0bBQ==
-X-Gm-Message-State: AOAM531lL+IkT1jah5vuadGGheiUtNcpyCTauLanoyXFh+OeiGBxPb4M
-        IfRtzYbkwi8O7q6WFHghojtzpQ==
-X-Google-Smtp-Source: ABdhPJx7P6a0LYSqkKYSdFlmz8AHCe00pCXoKXmmFdAGWiMrvBmoOQJpRHoWbP01KB3nomlOtYN4hw==
-X-Received: by 2002:a92:d07:: with SMTP id 7mr4095367iln.114.1626389185702;
-        Thu, 15 Jul 2021 15:46:25 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i7sm3511749ilb.67.2021.07.15.15.46.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 15:46:25 -0700 (PDT)
-Subject: Re: [PATCH] firmware_loader: Fix use-after-free Read in
- firmware_loading_store
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     Hillf Danton <hdanton@sina.com>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+77cea49e091776a57689@syzkaller.appspotmail.com,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210708031321.50800-1-skhan@linuxfoundation.org>
- <20210709091721.1869-1-hdanton@sina.com>
- <d851dd11-1b4f-4ed2-bad2-0c267e3d6021@linuxfoundation.org>
- <3eb42554-c054-6e46-54ce-b9f637b72751@linuxfoundation.org>
- <20210715222817.tjsotu7fuhwz37ki@garbanzo>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d17eeb0f-a46e-2515-43a6-36c16002928a@linuxfoundation.org>
-Date:   Thu, 15 Jul 2021 16:46:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 15 Jul 2021 18:51:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6390C06175F;
+        Thu, 15 Jul 2021 15:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4qnSrdZ/w1EUw3zlkvJMz7MVun67Nfs0vsvhY9+UfNI=; b=aUikITyByImuKlueFD/xvuB2jf
+        vRl67XKzSCrw+VgQRCOVNNHC7AShTiw1eMjI2XVUg7cAKuglCLo/fFFjP+JJ8BLDE/YbBybXIOSuo
+        Uh2YL4Vz8C8a/6NCHrMQFbwChE1lA5+Su+cEpHHT4e4usjB2cFslFNUW9d7izazTOX4L72EvNag+X
+        dKd6Lxnh8p27bmSFkHnt8LI+5iIKOgKuj7bDhELu06GPOkARzeOzV16BdNGD/9bkcPPpiasN/nAHn
+        nyYrGj7UMBC0INae5MEOjwOzg2Wng0EcgrrH1B4lSON7rNrEnKa4RiJPfQXNqq4IPueaf39kWcoXo
+        t5AI+gvg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m4A9A-003wr7-5o; Thu, 15 Jul 2021 22:48:10 +0000
+Date:   Thu, 15 Jul 2021 23:48:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 098/138] iomap: Use folio offsets instead of page
+ offsets
+Message-ID: <YPC7ILHEYv1JKKJW@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-99-willy@infradead.org>
+ <20210715212657.GI22357@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20210715222817.tjsotu7fuhwz37ki@garbanzo>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715212657.GI22357@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 4:28 PM, Luis Chamberlain wrote:
-> On Fri, Jul 09, 2021 at 10:38:12AM -0600, Shuah Khan wrote:
->> However I am seeing the following over and over again in the
->> log - hence I think it is safer to check the aborted status
->> in __fw_load_abort().
->>
->> ? __list_del_entry_valid+0xe0/0xf0
->> [  348.604808][T12994]  __list_del_entry_valid+0xe0/0xf0
->> [  348.610020][T12994]  firmware_loading_store+0x141/0x650
->> [  348.615761][T12994]  ? firmware_data_write+0x4e0/0x4e0
->> [  348.621064][T12994]  ? sysfs_file_ops+0x1c0/0x1c0
->> [  348.625921][T12994]  dev_attr_store+0x50/0x80
->>
->> Also the fallback logic takes actions based on errors as in
->> fw_load_sysfs_fallback() that returns -EAGAIN which would
->> trigger request_firmware() again.
->>
->> Based on all of this I think this fix is needed, if only I can
->> test for sure.
+On Thu, Jul 15, 2021 at 02:26:57PM -0700, Darrick J. Wong wrote:
+> > +	size_t poff = offset_in_folio(folio, *pos);
+> > +	size_t plen = min_t(loff_t, folio_size(folio) - poff, length);
 > 
-> Shuah, curious if you had read this patch from Anirudh Rayabharam
-> and my response to that v4 patch iteration?
+> I'm confused about 'size_t poff' here vs. 'unsigned end' later -- why do
+> we need a 64-bit quantity for poff?  I suppose some day we might want to
+> have folios larger than 4GB or so, but so far we don't need that large
+> of a byte offset within a page/folio, right?
 > 
-> https://lkml.kernel.org/r/20210518155921.4181-1-mail@anirudhrb.com
-> 
+> Or are you merely moving the codebase towards using size_t for all byte
+> offsets?
 
-Yes. I realized I am trying to fix the same problem we have been
-discussing. :) Sorry for the noise.
+Both.  'end' isn't a byte count -- it's a block count.
 
-Ignore my patch. I will follow the thread.
+> >  	if (orig_pos <= isize && orig_pos + length > isize) {
+> > -		unsigned end = offset_in_page(isize - 1) >> block_bits;
+> > +		unsigned end = offset_in_folio(folio, isize - 1) >> block_bits;
 
-thanks,
--- Shuah
+That right shift makes it not-a-byte-count.
 
+I don't especially want to do all the work needed to support folios >2GB,
+but I do like using size_t to represent a byte count.
 
