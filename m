@@ -2,167 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AE03C9F71
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9F33C9F74
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237672AbhGON2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:28:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237618AbhGON2o (ORCPT
+        id S237694AbhGON3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:29:05 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:15023 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231713AbhGON3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:28:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626355550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ah4MbGoLYz8PpeIyy6Wrw1o1Gg/0NPYNIWwDGG2q9MQ=;
-        b=Yjhgzq/9+T6TYDTj+dynlj69arM5UrkCmKAk20jjnNhSrYVT8URBEC8oqVsOkxcpTH8Lzm
-        NKiP1/RUzrLl++zGnllN90+vhBd6bGAsawFHgHDVW7zvmLWRYnatN+PGuJCNg7QfGUhESt
-        5FRyJX2omwilLAkjRexwCtZ0wBSrp2s=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-KNEcbUJ1MDmwosUHdBktJA-1; Thu, 15 Jul 2021 09:25:49 -0400
-X-MC-Unique: KNEcbUJ1MDmwosUHdBktJA-1
-Received: by mail-lj1-f200.google.com with SMTP id j2-20020a2e6e020000b02900f2f75a122aso3187516ljc.19
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 06:25:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ah4MbGoLYz8PpeIyy6Wrw1o1Gg/0NPYNIWwDGG2q9MQ=;
-        b=gZy1r83umvqk9snj+vrnBqp0vL+ifYwHkQO0pJd/3nk6bCyrV1g9EX9mDy7R94lSw7
-         q4bYkCfdvros+b6ncZoSs/zflFZnVqP4m2XBw/KvcPP7d9Kf9FtMM8ijSBtuE0sM+N8Q
-         /RglvKDToiXPSwknncwN1i6OvuMhfyjt9Nbr0JozgX494yCBYpY3berH/Sh1FglKuEdD
-         DV5o1MJDJfwmrPMIhO2EvwOzg/aonZ3wZJGG+QD6XN7afB9gkI3ZxhcRMnduz/tcGtYA
-         5+YbzV4B1D6MovGgz2p2uDUOboBq7QjbyPCKXCDVTppfIsfl+UTiJaTwIwBeNgLPWqEt
-         VvOg==
-X-Gm-Message-State: AOAM530wGcoC8iUoCwSaRI3jn39rje12VGLNP5thuTrUb+rgV48gCFDy
-        /+LF9uJTiunSyLVuF+p2Bl/BdX8WZedc8mDIAj6Jhl+jG4kNT16NU5x6J9JpV3k7YD7D1/oNJ4Z
-        spEKSzE0OSCiyWhMrL2WK7/ewo8xtbnr/X7+uXq5o
-X-Received: by 2002:a05:6512:3a86:: with SMTP id q6mr3149860lfu.548.1626355548019;
-        Thu, 15 Jul 2021 06:25:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4dI6Pl2Y//20EnkEGgAcCVbyTORH0YWaTKsr2JdguYEYFI2ihDlt/NUiNtPNi9bYu/OMUSwAlGGsYWpUxV5M=
-X-Received: by 2002:a05:6512:3a86:: with SMTP id q6mr3149783lfu.548.1626355547649;
- Thu, 15 Jul 2021 06:25:47 -0700 (PDT)
+        Thu, 15 Jul 2021 09:29:02 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQZmm2VdYzbc3L;
+        Thu, 15 Jul 2021 21:22:48 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 21:26:06 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 15 Jul
+ 2021 21:26:05 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <virtualization@lists.linux-foundation.org>
+CC:     <kraxel@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <tzimmermann@suse.de>
+Subject: [PATCH -next v2 resend] drm/bochs: Fix missing pci_disable_device() on error in bochs_pci_probe()
+Date:   Thu, 15 Jul 2021 21:28:45 +0800
+Message-ID: <20210715132845.2415619-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210713211502.464259-1-nitesh@redhat.com> <20210713211502.464259-7-nitesh@redhat.com>
- <YO7SiFE1dE0dFhkE@unreal> <CAFki+Lm-CpKZai1fV5aMJzEb-x+003m8wLQShSrYpyNh3XC50Q@mail.gmail.com>
- <YO7ggLW78FWE4z+1@unreal>
-In-Reply-To: <YO7ggLW78FWE4z+1@unreal>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Thu, 15 Jul 2021 09:25:36 -0400
-Message-ID: <CAFki+L=KoVzAv-_tLjAJV91BR+fHTPffMsCs-AgSCNyE0d-0DQ@mail.gmail.com>
-Subject: Re: [PATCH v3 06/14] RDMA/irdma: Use irq_set_affinity_and_hint
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
-        frederic@kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
-        peterz@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
-        Stefan Assmann <sassmann@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>, kashyap.desai@broadcom.com,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com,
-        Alaa Hleihel <ahleihel@redhat.com>,
-        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
-        saeedm@nvidia.com, benve@cisco.com, govind@gmx.com,
-        jassisinghbrar@gmail.com, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Al Stone <ahs3@redhat.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 9:03 AM Leon Romanovsky <leonro@nvidia.com> wrote:
->
-> On Wed, Jul 14, 2021 at 08:56:41AM -0400, Nitesh Lal wrote:
-> > On Wed, Jul 14, 2021 at 8:03 AM Leon Romanovsky <leonro@nvidia.com> wrote:
-> > >
-> > > On Tue, Jul 13, 2021 at 05:14:54PM -0400, Nitesh Narayan Lal wrote:
-> > > > The driver uses irq_set_affinity_hint() to update the affinity_hint mask
-> > > > that is consumed by the userspace to distribute the interrupts and to apply
-> > > > the provided mask as the affinity for its interrupts. However,
-> > > > irq_set_affinity_hint() applying the provided cpumask as an affinity for
-> > > > the interrupt is an undocumented side effect.
-> > > >
-> > > > To remove this side effect irq_set_affinity_hint() has been marked
-> > > > as deprecated and new interfaces have been introduced. Hence, replace the
-> > > > irq_set_affinity_hint() with the new interface irq_set_affinity_and_hint()
-> > > > where the provided mask needs to be applied as the affinity and
-> > > > affinity_hint pointer needs to be set and replace with
-> > > > irq_update_affinity_hint() where only affinity_hint needs to be updated.
-> > > >
-> > > > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> > > > ---
-> > > >  drivers/infiniband/hw/irdma/hw.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-> > > > index 7afb8a6a0526..7f13a051d4de 100644
-> > > > --- a/drivers/infiniband/hw/irdma/hw.c
-> > > > +++ b/drivers/infiniband/hw/irdma/hw.c
-> > > > @@ -537,7 +537,7 @@ static void irdma_destroy_irq(struct irdma_pci_f *rf,
-> > > >       struct irdma_sc_dev *dev = &rf->sc_dev;
-> > > >
-> > > >       dev->irq_ops->irdma_dis_irq(dev, msix_vec->idx);
-> > > > -     irq_set_affinity_hint(msix_vec->irq, NULL);
-> > > > +     irq_update_affinity_hint(msix_vec->irq, NULL);
-> > > >       free_irq(msix_vec->irq, dev_id);
-> > > >  }
-> > > >
-> > > > @@ -1087,7 +1087,7 @@ irdma_cfg_ceq_vector(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
-> > > >       }
-> > > >       cpumask_clear(&msix_vec->mask);
-> > > >       cpumask_set_cpu(msix_vec->cpu_affinity, &msix_vec->mask);
-> > > > -     irq_set_affinity_hint(msix_vec->irq, &msix_vec->mask);
-> > > > +     irq_set_affinity_and_hint(msix_vec->irq, &msix_vec->mask);
-> > >
-> > > I think that it needs to be irq_update_affinity_hint().
-> > >
-> >
-> > Ah! I got a little confused from our last conversation about mlx5.
-> >
-> > IIUC mlx5 sub-function use case uses irdma (?) and that's why I thought
-> > that perhaps we would also want to define the affinity here from the beginning.
->
-> mlx5 is connected to mlx5_ib/mlx5_vdpa e.t.c.
->
-> Not sure about that, but I think that only mlx5 implements SIOV model.
->
-> >
-> > In any case, I will make the change and re-post.
-> >
+Replace pci_enable_device() with pcim_enable_device(),
+pci_disable_device() will be called in release automatically.
 
-Just FYI, I am hoping to collect more comments in the non-reviewed
-patches and address them in v4.
-Hence, I will wait for this week if I don't get anything I will just
-post another version by making the change in this driver.
+v2:
+  use pcim_enable_device()
 
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ drivers/gpu/drm/bochs/bochs_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bochs/bochs_drv.c b/drivers/gpu/drm/bochs/bochs_drv.c
+index c828cadbabff..8065c9537237 100644
+--- a/drivers/gpu/drm/bochs/bochs_drv.c
++++ b/drivers/gpu/drm/bochs/bochs_drv.c
+@@ -118,7 +118,7 @@ static int bochs_pci_probe(struct pci_dev *pdev,
+ 	if (IS_ERR(dev))
+ 		return PTR_ERR(dev);
+ 
+-	ret = pci_enable_device(pdev);
++	ret = pcim_enable_device(pdev);
+ 	if (ret)
+ 		goto err_free_dev;
+ 
 -- 
-Thanks
-Nitesh
+2.25.1
 
