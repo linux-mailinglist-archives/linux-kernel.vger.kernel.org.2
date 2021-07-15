@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC1E3C9B3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33E23C9B52
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbhGOJUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:20:20 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:38607 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229620AbhGOJUT (ORCPT
+        id S237459AbhGOJYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:24:42 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11314 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhGOJYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:20:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UfsATuc_1626340644;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UfsATuc_1626340644)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 15 Jul 2021 17:17:25 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] Smack: Fix wrong semantics in smk_access_entry()
-Date:   Thu, 15 Jul 2021 17:17:24 +0800
-Message-Id: <20210715091724.45768-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+        Thu, 15 Jul 2021 05:24:39 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GQTKR3PH3z7tf4;
+        Thu, 15 Jul 2021 17:17:15 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 17:21:40 +0800
+Received: from [10.174.179.0] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 15 Jul
+ 2021 17:21:39 +0800
+Subject: Re: [PATCH 1/1] stm class: dummy_stm: Fix error return code in
+ dummy_stm_init()
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-stm32 <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210508023615.1827-1-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <e25baf8f-607c-6aa6-6902-c76b47834e55@huawei.com>
+Date:   Thu, 15 Jul 2021 17:21:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210508023615.1827-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the smk_access_entry() function, if no matching rule is found
-in the rust_list, a negative error code will be used to perform bit
-operations with the MAY_ enumeration value. This is semantically
-wrong. This patch fixes this issue.
+Hi all:
+  Can someone review it? Although it is unlikely that the OOM will
+occur during initialization, this is indeed a coding error.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- security/smack/smack_access.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
-index 1f391f6a3d47..d2186e2757be 100644
---- a/security/smack/smack_access.c
-+++ b/security/smack/smack_access.c
-@@ -81,23 +81,22 @@ int log_policy = SMACK_AUDIT_DENIED;
- int smk_access_entry(char *subject_label, char *object_label,
- 			struct list_head *rule_list)
- {
--	int may = -ENOENT;
- 	struct smack_rule *srp;
- 
- 	list_for_each_entry_rcu(srp, rule_list, list) {
- 		if (srp->smk_object->smk_known == object_label &&
- 		    srp->smk_subject->smk_known == subject_label) {
--			may = srp->smk_access;
--			break;
-+			int may = srp->smk_access;
-+			/*
-+			 * MAY_WRITE implies MAY_LOCK.
-+			 */
-+			if ((may & MAY_WRITE) == MAY_WRITE)
-+				may |= MAY_LOCK;
-+			return may;
- 		}
- 	}
- 
--	/*
--	 * MAY_WRITE implies MAY_LOCK.
--	 */
--	if ((may & MAY_WRITE) == MAY_WRITE)
--		may |= MAY_LOCK;
--	return may;
-+	return -ENOENT;
- }
- 
- /**
--- 
-2.19.1.3.ge56e4f7
-
+On 2021/5/8 10:36, Zhen Lei wrote:
+> Although 'ret' has been initialized to -ENOMEM, but it will be reassigned
+> by the "ret = stm_register_device(...)" statement in the for loop. So
+> that, the value of 'ret' is unknown when kasprintf() failed.
+> 
+> Fixes: bcfdf8afdebe ("stm class: dummy_stm: Create multiple devices")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  drivers/hwtracing/stm/dummy_stm.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/stm/dummy_stm.c b/drivers/hwtracing/stm/dummy_stm.c
+> index 38528ffdc0b3..36d32e7afb35 100644
+> --- a/drivers/hwtracing/stm/dummy_stm.c
+> +++ b/drivers/hwtracing/stm/dummy_stm.c
+> @@ -68,7 +68,7 @@ static int dummy_stm_link(struct stm_data *data, unsigned int master,
+>  
+>  static int dummy_stm_init(void)
+>  {
+> -	int i, ret = -ENOMEM;
+> +	int i, ret;
+>  
+>  	if (nr_dummies < 0 || nr_dummies > DUMMY_STM_MAX)
+>  		return -EINVAL;
+> @@ -80,8 +80,10 @@ static int dummy_stm_init(void)
+>  
+>  	for (i = 0; i < nr_dummies; i++) {
+>  		dummy_stm[i].name = kasprintf(GFP_KERNEL, "dummy_stm.%d", i);
+> -		if (!dummy_stm[i].name)
+> +		if (!dummy_stm[i].name) {
+> +			ret = -ENOMEM;
+>  			goto fail_unregister;
+> +		}
+>  
+>  		dummy_stm[i].sw_start		= master_min;
+>  		dummy_stm[i].sw_end		= master_max;
+> 
