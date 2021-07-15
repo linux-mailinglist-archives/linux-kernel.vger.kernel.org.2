@@ -2,133 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65633CA3B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B353CA3D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhGORSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231165AbhGORSC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:18:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA08C06175F;
-        Thu, 15 Jul 2021 10:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GFDHONlvPqRbyByNjuaBzwGs2142b4swUJyvK7OfAiQ=; b=rWvP9lxYarf7TISkJdsj4Sazvi
-        WaPlUqL638WVf7m64/Wju/JXlQeG1/CYdGPqaiuNz1cLjcZvJatca2EJBATe+n+/HmQFZpka31RHc
-        1TTqA83FyVoOQVMp6JQmCK3H60huUFX5CSKuH6+kWzWw34nwc4XSEwWYs05ZKgDWTxCUqmy/eMePN
-        /3lJzlYa/2k1wvnzgCh3VhHcWwwRDQ9W5J8QfqLOMGQ9wj26lDK2QgrGQvkq9rgKl88YNwgH2P2dT
-        yaTGEuaSaeU4FtYpFEchBoWN4vLd2JqA5a4a3DwRuXhvi5a6keaSbetdQnm7Qrbr5jO0uOHMy/e7a
-        eShLMozA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m44wV-003YjQ-0A; Thu, 15 Jul 2021 17:14:49 +0000
-Date:   Thu, 15 Jul 2021 18:14:34 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 000/138] Memory folios
-Message-ID: <YPBs+hcxo31JanPM@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <YPBal2dhY+Rv3APB@mit.edu>
-MIME-Version: 1.0
+        id S233862AbhGORVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:21:24 -0400
+Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:4033
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229786AbhGORVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:21:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gRe/YahjxfC368AtvVekbaOHdw87qf+okCBBaBdY4JdQ/MjAAFR3L0O/3DjB4akgJc+/k1ElkrhyVK0YIKZINcC4UlkKA+IlOHng1+duA47FS6hgagNhlT5vu8VELgImUIN04JYrn0dHE8YIBqITnrobsiSFawqKBpqD/R4TESCfN5Y3/hxh0JaJFD4jUM4H0aw+nrgwzv3I2JjCdj+vpDii47LGFZi5dlRYCGoWnuQ/fRsJEgzHNT/lQn5NKVBlHvZcWQB60Ifmoi71D7KdLA+fDOnUAwcqLsgTMUyXauRnNYFu5IAF4eONB5TiHgK5BDmdCkzwRhZt+NhjJUHetQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DFdfjgXpn7ic9hLGG/Q/JiOttTHqvmzOyKgW1RHbdtU=;
+ b=oMEH2znCLyrJh8BkIHMDLz7GN8b33lxuLCaQNbifAAyDgRaeVrxX3lMliZnhuw6KAUeGJfBUogZ28zssu5OFDSRDIEYe20U+ndlxNVJk5BE89urimFqSKYQGi8uzqke95Btpu37//DgtVNpB+GIZpY7e2ubH3bkBkmgwEQ4bLuoCZbYNvxnqb0/lQVdWaBKkzVFduX0hFV4q86PT0rE8ctqNEVttNqT8vLNApbIVKDsDAo17X8eoz2k0L6ojIvunio3P5vyDlx8ELIDPxtq2Sho+8LGSbupxoGxkaikjUQ6CtPaI3r4llSJHZ0eRan6oovoVpshCfdgSpRzRYNfsLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DFdfjgXpn7ic9hLGG/Q/JiOttTHqvmzOyKgW1RHbdtU=;
+ b=LDnm2Vl3Q46VCtsLDDrlX6JaCbApW25qnMGG/xXhZzJCoTTFaiWLVohuEeGLwcGiKisFvn8OrQo/gvsufp/P6T5LQv8fxyMwfk7kVQeKXqT92QVlvnBZJz3omY1l/XrI4GVtMk+icfNJKUD9H3RyFhjTyZqvIUnMcc98UOx3qruVNfVv7/tFX+gc2Yib7q23xywKElXWMTvwPd6m/Z0EHD16M4J3+e+Frif3hvFBNsl5I0VZAsQDbmnRt3SZ1kvGkzQsLv5RQje/F0TWsNrsKBGB+zgKQLSFOJ4n49MgpoX6eAqYguiE000zVt7tZUmXGOjO3LwIW1CY/E9J72KgSQ==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5540.namprd12.prod.outlook.com (2603:10b6:208:1cb::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Thu, 15 Jul
+ 2021 17:18:28 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4331.024; Thu, 15 Jul 2021
+ 17:18:28 +0000
+Date:   Thu, 15 Jul 2021 14:18:26 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
+Subject: Re: [RFC v2] /dev/iommu uAPI proposal
+Message-ID: <20210715171826.GG543781@nvidia.com>
+References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <7ea349f8-8c53-e240-fe80-382954ba7f28@huawei.com>
+ <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <a8edb2c1-9c9c-6204-072c-4f1604b7dace@huawei.com>
+ <BN9PR11MB54336D6A8CAE31F951770A428C129@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210715124813.GC543781@nvidia.com>
+ <20210715135757.GC590891@otc-nc-03>
+ <20210715152325.GF543781@nvidia.com>
+ <20210715162141.GA593686@otc-nc-03>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPBal2dhY+Rv3APB@mit.edu>
+In-Reply-To: <20210715162141.GA593686@otc-nc-03>
+X-ClientProxiedBy: CH2PR12CA0027.namprd12.prod.outlook.com
+ (2603:10b6:610:57::37) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR12CA0027.namprd12.prod.outlook.com (2603:10b6:610:57::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Thu, 15 Jul 2021 17:18:28 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m450E-002jZj-Ux; Thu, 15 Jul 2021 14:18:26 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 27b25a49-4b9c-4774-d571-08d947b48fc6
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5540:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB55408F6FC0C90651F01A4255C2129@BL0PR12MB5540.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V2lZY/EffyBW30qahltZLLGnnz49Xr2CwjMT63X216ZzSBdnBhkL3j33i6sPY1bJI7EvBWfX+YXzarcjiLnFQNtaPBTT7ESipYzBykwtxOq62wudQlZl/En2BiR+jFHYIUwiWjnG/gb+BjtEzJQ7gX53sO1nOL3VYBbEBwxgdB93ELKlRlMvSfFH3V7dS/wpjnwXUNT/q38henJ7pVC27zts5kSGCr9vA8IiDmeaMtIZz/gLO6CMTBd0zExGbwZzX+2/M+O5Jq64tnrkpA6PlT1lSRPo79MKHnk3hxluYWRhgxrfWpuwfBb0NNtTNo4PR5RcX93NYg97DX3hxuRFJHj5hyednUb49+EFOCVbvvr6ziusblrGTMkAboTKeyfwyBuX2O/GlAIuCxlUVtTmOx47ze7HXFZ8DrEAGrA6cxZa0NPuhfTv1rzif66+X3TWAtWteUgndFmCA+aZP0Ty4G8BxtiOkprFsqehUIo6Hky9gOgVCUS6so6ujrsmDJvPPUhfjElw9hbSrx4stgF0L6h5lB+sTujyS1NiiT1zQDAtv32udLY2vGBynF3b/Md580LOEIqHh+h7NHppbF+Es1s7WGgzITc9byrBqSmdYa12JdjSS/jIP+MAAjtYzPSvlJ6ACzE31bJKLLq4dtdiexH6w4DRHhixTdKP+LoLsm/whFuJ8FnoQdQjH0Qzm/firOeQKzGDsRB2mK7M4YvkgA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(426003)(4326008)(9786002)(9746002)(2616005)(8936002)(38100700002)(1076003)(478600001)(33656002)(8676002)(5660300002)(86362001)(36756003)(186003)(26005)(54906003)(316002)(2906002)(83380400001)(66476007)(66556008)(66946007)(7416002)(6916009)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mBmeg97zzuHbpQGj7NlDUdIKj9OYKdFo0ah20IZYhoPXFIiJPeYbvUA2Lz10?=
+ =?us-ascii?Q?rBDMOuHYeA71rcdd7qM0LRivUFhqw5KXqVlJP3wTQFAvEkc40MmNq42/Nzng?=
+ =?us-ascii?Q?zPl1vTaL2wBIRcSiP7ewk3OWhn5KYBhcT6X/+JkmmvWdA0DRnCiADmUJAQg4?=
+ =?us-ascii?Q?vdnipHcc2B1jd893ala0Ax4zIRSIMEoDzOMtCGjf75wLDXMZNmWc4foU5o29?=
+ =?us-ascii?Q?KqQjDiLCS5EDGtUTOQ+y803JdpIze4p4Y7+/ml78TfBQjFDfN8FPUAk/KIgD?=
+ =?us-ascii?Q?umL95oJ3evqCkX5HZAwLhs6dtC8Pln132wAnUpGi6rsZaMSX+AU0iuZbZm3L?=
+ =?us-ascii?Q?GHGO1F5v142P98ErGUgXuShN2ZdabYRcehweU4jVTW/PN69U2g6yXOZymCug?=
+ =?us-ascii?Q?kuEBJ55b/Qxo9GPCQjdMt6/MxI/f8kujRjuye0PMJd3aCbm+Sr7cMWw6/eDF?=
+ =?us-ascii?Q?owsomyrgAZRsHQNpCdzMlb63fT+N6+DptqBwuXg9vVEZ/lXT5Bl5dsi/F3Sp?=
+ =?us-ascii?Q?nc8mbjrffrVW5b6EZQIYxj9BTmmE1Tymd5irTnj24Ct7gKytgja0HgokDbBF?=
+ =?us-ascii?Q?TkFZy1KSymqb6qEhgeVeZvedaRqG/0kwZT933IRM1CKqj3mNrH8iiOYeuwr7?=
+ =?us-ascii?Q?ccVodFd0c7IHPYa+62lE2EXr/R6raPeq75C3py8nQV4Skgm4Gf82xAcmP4nX?=
+ =?us-ascii?Q?trwpiJ/TufDg2gbPfxeKJBn+0a+fGI1pXQz8JWnI/bn17NQ1NbcAB2x2IXiU?=
+ =?us-ascii?Q?hurtZPCdUepOAD4E/fxVGyZ50hijcxxp6QBrPgWrSmV4hdJUtmqZPwly/AFP?=
+ =?us-ascii?Q?vrd2YCGpVmxROpJdgk1dqa2AYA2/2UxjPaSvNjcwM4PowoJp9gjDvnSuSttl?=
+ =?us-ascii?Q?TcPjpcxL3cXl6fGfXkQDFw09AJkewFYHz8f9nSO3fLM146QLriGkMStGLVW+?=
+ =?us-ascii?Q?co4ybGiBNByJOmnwYGtZG/oHoynEYYvVvTyoQy0/LWyP4wk/cZshuzse65pG?=
+ =?us-ascii?Q?lNVjAj7WUj/N1y/AtrH4JXnkMjNK9qnEkGVQrfMyeHNwT1DJ7zgyXH4mrgIn?=
+ =?us-ascii?Q?H5NzUndsizxNcZQm0iT8p9IyUo0yrAWZYD2Vn6p0Hk/Xuw5uZBQNaKWZQBKk?=
+ =?us-ascii?Q?04s93t4wVDbwo8Q3g4Itzu7Nhq7/DFqpkVFE9DSq5v178Nu+4cF0F/bX4xyc?=
+ =?us-ascii?Q?TDbNtVU/B6Fe7MeTXWe5c5UvF2EaegFJheAyaYRDZY2bgLzJ8RU1juZaNP0x?=
+ =?us-ascii?Q?8UU6EmrBlPaCh1gjAuibM9zp3pVb1Q0P7HbolK64m3OpXuPvnKYpvamf5iTQ?=
+ =?us-ascii?Q?jjuZOIQBiQYyJHaMvUOu0WZF?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27b25a49-4b9c-4774-d571-08d947b48fc6
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 17:18:28.4321
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CAQ49bA6e3dfnrix9i7rGiwgMgBxhh7VfmMjVp2RJQZUt36rlg8FoGWQI3ea3IhW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5540
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 11:56:07AM -0400, Theodore Y. Ts'o wrote:
-> On Thu, Jul 15, 2021 at 04:34:46AM +0100, Matthew Wilcox (Oracle) wrote:
-> > Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
-> > benefit from a larger "page size".  As an example, an earlier iteration
-> > of this idea which used compound pages (and wasn't particularly tuned)
-> > got a 7% performance boost when compiling the kernel.
+On Thu, Jul 15, 2021 at 09:21:41AM -0700, Raj, Ashok wrote:
+> On Thu, Jul 15, 2021 at 12:23:25PM -0300, Jason Gunthorpe wrote:
+> > On Thu, Jul 15, 2021 at 06:57:57AM -0700, Raj, Ashok wrote:
+> > > On Thu, Jul 15, 2021 at 09:48:13AM -0300, Jason Gunthorpe wrote:
+> > > > On Thu, Jul 15, 2021 at 06:49:54AM +0000, Tian, Kevin wrote:
+> > > > 
+> > > > > No. You are right on this case. I don't think there is a way to 
+> > > > > differentiate one mdev from the other if they come from the
+> > > > > same parent and attached by the same guest process. In this
+> > > > > case the fault could be reported on either mdev (e.g. the first
+> > > > > matching one) to get it fixed in the guest.
+> > > > 
+> > > > If the IOMMU can't distinguish the two mdevs they are not isolated
+> > > > and would have to share a group. Since group sharing is not supported
+> > > > today this seems like a non-issue
+> > > 
+> > > Does this mean we have to prevent 2 mdev's from same pdev being assigned to
+> > > the same guest? 
 > > 
-> > Using compound pages or THPs exposes a weakness of our type system.
-> > Functions are often unprepared for compound pages to be passed to them,
-> > and may only act on PAGE_SIZE chunks.  Even functions which are aware of
-> > compound pages may expect a head page, and do the wrong thing if passed
-> > a tail page.
-> > 
-> > We also waste a lot of instructions ensuring that we're not looking at
-> > a tail page.  Almost every call to PageFoo() contains one or more hidden
-> > calls to compound_head().  This also happens for get_page(), put_page()
-> > and many more functions.
-> > 
-> > This patch series uses a new type, the struct folio, to manage memory.
-> > It converts enough of the page cache, iomap and XFS to use folios instead
-> > of pages, and then adds support for multi-page folios.  It passes xfstests
-> > (running on XFS) with no regressions compared to v5.14-rc1.
+> > No, it means that the IOMMU layer has to be able to distinguish them.
 > 
-> Hey Willy,
+> Ok, the guest has no control over it, as it see 2 separate pci devices and
+> thinks they are all different.
 > 
-> I must confess I've lost the thread of the plot in terms of how you
-> hope to get the Memory folio work merged upstream.  There are some
-> partial patch sets that just have the mm core, and then there were
-> some larger patchsets include some in the past which as I recall,
-> would touch ext4 (but which isn't in this set).
+> Only time when it can fail is during the bind operation. From guest
+> perspective a bind in vIOMMU just turns into a write to local table and a
+> invalidate will cause the host to update the real copy from the shadow.
 > 
-> I was wondering if you could perhaps post a roadmap for how this patch
-> set might be broken up, and which subsections you were hoping to
-> target for the upcoming merge window versus the following merge
-> windows.
+> There is no way to fail the bind? and Allocation of the PASID is also a
+> separate operation and has no clue how its going to be used in the guest.
 
-Hi Ted!  Great questions.  This particular incarnation of the
-patch set is the one Linus asked for -- show the performance win
-of using compound pages in the page cache.  I think of this patchset
-as having six parts:
+You can't attach the same RID to the same PASID twice. The IOMMU code
+should prevent this.
 
-1-32: core; introduce struct folio, get/put, flags
-33-50: memcg
-51-89: page cache, part 1
-90-107: block + iomap
-108-124: page cache, part 2
-125-138: actually use compound pages in the page cache
+As we've talked about several times, it seems to me the vIOMMU
+interface is misdesigned for the requirements you have. The hypervisor
+should have a role in allocating the PASID since there are invisible
+hypervisor restrictions. This is one of them.
 
-I'm hoping to get the first three parts (patches 1-89) into the
-next merge window.  That gets us to the point where filesystems
-can start to use folios themselves (ie it does the initial Amdahl
-step and then everything else can happen in parallel)
+> Do we have any isolation requirements here? its the same process. So if the
+> page-request it sent to guest and even if you report it for mdev1, after
+> the PRQ is resolved by guest, the request from mdev2 from the same guest
+> should simply work?
 
-> Also I assume that for file systems that aren't converted to use
-> Folios, there won't be any performance regressions --- is that
-> correct?  Or is that something we need to watch for?  Put another way,
-> if we don't land all of the memory folio patches before the end of the
-> calendar year, and we cut an LTS release with some file systems
-> converted and some file systems not yet converted, are there any
-> potential problems in that eventuality?
+I think we already talked about this and said it should not be done.
 
-I suppose I can't guarantee that there will be no performance
-regressions as a result (eg 5899593f51e6 was a regression that
-was seen as a result of some of the prep work for folios), but
-I do not anticipate any for unconverted filesystems.  There might
-be a tiny performance penalty for supporting arbitrary-order pages
-instead of just orders 0 and 9, but I haven't seen anything to
-suggest it's noticable.  I would expect to see a tiny performance
-win from removing all the compound_head() calls in the VFS core.
-
-I have a proposal in to Plumbers filesystem track where I intend to
-go over all the ways I'm going to want filesystems to change to take
-advantage of folios.  I think that will be a good venue to discuss how
-to handle buffer_head based filesystems in a multi-page folio world.
-
-I wouldn't expect anything to have to change before the end of the year.
-I only have four patches in my extended tree which touch ext4, and
-they're all in the context of making treewide changes to all
-filesystems:
- - Converting ->set_page_dirty to ->dirty_folio,
- - Converting ->invalidatepage to ->invalidate_folio,
- - Converting ->readpage to ->read_folio,
- - Changing readahead_page() to readahead_folio()
-
-None of those patches are in great shape at this point, and I wouldn't ask
-anyone to review them.  I am anticipating that some filesystems will never
-be converted to multi-page folios (although all filesystems should be
-converted to single-page folios so we can remove the folio compat code).
+Jason
