@@ -2,96 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD8E3CAED5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843693CAEDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhGOWCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 18:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhGOWCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:02:53 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4F4C06175F;
-        Thu, 15 Jul 2021 14:59:59 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id jx7-20020a17090b46c7b02901757deaf2c8so5245516pjb.0;
-        Thu, 15 Jul 2021 14:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LgRikEli+/avgIwH+NnboKsPZ+6R8HRC38xPaFWuCr8=;
-        b=kZh3vAl+f0WgVsJMzR3pTx+dCgm5ZY0V7NIvxKOo/9+zAFrZcWDKt/YKDLZk2L9aHH
-         pCiWTIazb6gHurbAMF6fSru/NgMUcXH6BK917dDzZo6kzw1/C9z5+VHUK9kzOvZxiYSc
-         I08vnMj3cOjvYKwPCLhbWOsdSbPMSGBFXLLPeCvUxSUV7xnH6EFmjcQLiIzXf0g5/FVL
-         PvKMSwLRFtibMtBLb23jY6v6D7srwOkN2DplfomTa00AKLOZaBoZNN9UnBS2wjuWJPS/
-         ANZwqMEhNb90TMsM4F7qjwku1EMusD9LUDXPm9lgQWlM+S2Zj9sWFt20hiSD1diR3mET
-         L5NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LgRikEli+/avgIwH+NnboKsPZ+6R8HRC38xPaFWuCr8=;
-        b=YDU5MiAcTZeGxxueHxvjbxJ8zeN64r8cal20Yx4x9Hp18FazSPVWih5ku0FESd1Nxx
-         Trvq6HepBl5LexG8NfIfrJHMbEpmcf9tjPZiYXAjA+V8FYz7B7Kc7dzmsI9sUfshg9uc
-         38aUll52CEPVbBqC1OkaoWi79Pw9IfgRqBL9U0njxKkE4H0HIAEAgXescizlZ11ijw/z
-         DCrjQsVueBSgI3yPpZBdVsHmvJuCBCuVeZ9l5vl+9zakrpmk5/uhh6LDZ3ScoKuLEsul
-         PWZGm01bnEW0kzWwTqNfePQMPK2/0BKHNLO0UaLxYkCVVm+83aoGtNROc6xFNZTvuwoR
-         LI2Q==
-X-Gm-Message-State: AOAM531V5oxRhaeGm6r8GGV9/7gVTScbqgd/icRfLPGvUYVmomwr1+W5
-        pYLcULio6/OdQNz2BoR8A724/cp+6s+dGA==
-X-Google-Smtp-Source: ABdhPJw3Ur/laHKM7WbDvH73mC0otoELe44/BziYWh8+aatVmT6XIxwugf3d2DQnNM38Cv7kH/jBWA==
-X-Received: by 2002:a17:90a:74c5:: with SMTP id p5mr6184164pjl.117.1626386398106;
-        Thu, 15 Jul 2021 14:59:58 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id f5sm7647886pfn.134.2021.07.15.14.59.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 14:59:57 -0700 (PDT)
-Subject: Re: [PATCH 5.4 000/122] 5.4.133-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210715182448.393443551@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8dbe6ac8-a655-22ad-8af4-2323c3ea9379@gmail.com>
-Date:   Thu, 15 Jul 2021 14:59:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231701AbhGOWES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:04:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231876AbhGOWEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 18:04:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3780660FE7;
+        Thu, 15 Jul 2021 22:01:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626386481;
+        bh=EO40IYT9v1nClf3prfyuJT+UTB+r8LgL48MhF/4fssg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eNtxQy0yK0wxjrhikZjLEuchIkxicTL5XK5smE0JWADnB9mLTbXkIuWSVpk2xxXur
+         nFjgm4p0i7KDm3PPzXWESR0708JMhln9ZQXjyn90ei1eVjiCf4Rn4S5uk4NcvlCVij
+         ZZlQh8O0NJEA9vwOWZg6sAvHJx/9z53MmzKhPKEykiMyQzFVRO5dO4HGPWuA2u54CW
+         WMshcTeOOvu5RD0Tpf81Bi3fvIpk5crPmmPtpXEe/btBfQvshXhQQHZNtXJLhbI3n8
+         8XKk5LdaSkL7DCKhGGlCGLGdiN6NaVQQBUzv1twHtP+yad7U/uCZYb6rIHOtVGF+dA
+         SBOypKQ2uOFYg==
+Date:   Thu, 15 Jul 2021 15:01:20 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 105/138] iomap: Convert iomap_add_to_ioend to take a
+ folio
+Message-ID: <20210715220120.GP22357@magnolia>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-106-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715033704.692967-106-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 11:37 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.133 release.
-> There are 122 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Jul 15, 2021 at 04:36:31AM +0100, Matthew Wilcox (Oracle) wrote:
+> We still iterate one block at a time, but now we call compound_head()
+> less often.  Rename file_offset to pos to fit the rest of the file.
 > 
-> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/iomap/buffered-io.c | 66 +++++++++++++++++++-----------------------
+>  1 file changed, 30 insertions(+), 36 deletions(-)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.133-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index ac33f19325ab..8e767aec8d07 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -1252,36 +1252,29 @@ iomap_can_add_to_ioend(struct iomap_writepage_ctx *wpc, loff_t offset,
+>   * first, otherwise finish off the current ioend and start another.
+>   */
+>  static void
+> -iomap_add_to_ioend(struct inode *inode, loff_t offset, struct page *page,
+> +iomap_add_to_ioend(struct inode *inode, loff_t pos, struct folio *folio,
+>  		struct iomap_page *iop, struct iomap_writepage_ctx *wpc,
+>  		struct writeback_control *wbc, struct list_head *iolist)
+>  {
+> -	sector_t sector = iomap_sector(&wpc->iomap, offset);
+> +	sector_t sector = iomap_sector(&wpc->iomap, pos);
+>  	unsigned len = i_blocksize(inode);
+> -	unsigned poff = offset & (PAGE_SIZE - 1);
+> -	bool merged, same_page = false;
+> +	size_t poff = offset_in_folio(folio, pos);
+>  
+> -	if (!wpc->ioend || !iomap_can_add_to_ioend(wpc, offset, sector)) {
+> +	if (!wpc->ioend || !iomap_can_add_to_ioend(wpc, pos, sector)) {
+>  		if (wpc->ioend)
+>  			list_add(&wpc->ioend->io_list, iolist);
+> -		wpc->ioend = iomap_alloc_ioend(inode, wpc, offset, sector, wbc);
+> +		wpc->ioend = iomap_alloc_ioend(inode, wpc, pos, sector, wbc);
+>  	}
+>  
+> -	merged = __bio_try_merge_page(wpc->ioend->io_bio, page, len, poff,
+> -			&same_page);
+>  	if (iop)
+>  		atomic_add(len, &iop->write_bytes_pending);
+> -
+> -	if (!merged) {
+> -		if (bio_full(wpc->ioend->io_bio, len)) {
+> -			wpc->ioend->io_bio =
+> -				iomap_chain_bio(wpc->ioend->io_bio);
+> -		}
+> -		bio_add_page(wpc->ioend->io_bio, page, len, poff);
+> +	if (!bio_add_folio(wpc->ioend->io_bio, folio, len, poff)) {
+> +		wpc->ioend->io_bio = iomap_chain_bio(wpc->ioend->io_bio);
+> +		bio_add_folio(wpc->ioend->io_bio, folio, len, poff);
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+The paranoiac in me wonders if we ought to have some sort of error
+checking here just in case we encounter double failures?
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+>  	}
+>  
+>  	wpc->ioend->io_size += len;
+> -	wbc_account_cgroup_owner(wbc, page, len);
+> +	wbc_account_cgroup_owner(wbc, &folio->page, len);
+>  }
+>  
+>  /*
+> @@ -1309,40 +1302,41 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+>  	struct iomap_page *iop = to_iomap_page(folio);
+>  	struct iomap_ioend *ioend, *next;
+>  	unsigned len = i_blocksize(inode);
+> -	u64 file_offset; /* file offset of page */
+> +	unsigned nblocks = i_blocks_per_folio(inode, folio);
+> +	loff_t pos = folio_pos(folio);
+>  	int error = 0, count = 0, i;
+>  	LIST_HEAD(submit_list);
+>  
+> -	WARN_ON_ONCE(i_blocks_per_page(inode, page) > 1 && !iop);
+> +	WARN_ON_ONCE(nblocks > 1 && !iop);
+>  	WARN_ON_ONCE(iop && atomic_read(&iop->write_bytes_pending) != 0);
+>  
+>  	/*
+> -	 * Walk through the page to find areas to write back. If we run off the
+> -	 * end of the current map or find the current map invalid, grab a new
+> -	 * one.
+> +	 * Walk through the folio to find areas to write back. If we
+> +	 * run off the end of the current map or find the current map
+> +	 * invalid, grab a new one.
+>  	 */
+> -	for (i = 0, file_offset = page_offset(page);
+> -	     i < (PAGE_SIZE >> inode->i_blkbits) && file_offset < end_offset;
+> -	     i++, file_offset += len) {
+> +	for (i = 0; i < nblocks; i++, pos += len) {
+> +		if (pos >= end_offset)
+> +			break;
+
+Any particular reason this isn't:
+
+	for (i = 0; i < nblocks && pos < end_offset; i++, pos += len) {
+
+?
+
+Everything from here on out looks decent to me.
+
+--D
+
+>  		if (iop && !test_bit(i, iop->uptodate))
+>  			continue;
+>  
+> -		error = wpc->ops->map_blocks(wpc, inode, file_offset);
+> +		error = wpc->ops->map_blocks(wpc, inode, pos);
+>  		if (error)
+>  			break;
+>  		if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
+>  			continue;
+>  		if (wpc->iomap.type == IOMAP_HOLE)
+>  			continue;
+> -		iomap_add_to_ioend(inode, file_offset, page, iop, wpc, wbc,
+> +		iomap_add_to_ioend(inode, pos, folio, iop, wpc, wbc,
+>  				 &submit_list);
+>  		count++;
+>  	}
+>  
+>  	WARN_ON_ONCE(!wpc->ioend && !list_empty(&submit_list));
+> -	WARN_ON_ONCE(!PageLocked(page));
+> -	WARN_ON_ONCE(PageWriteback(page));
+> -	WARN_ON_ONCE(PageDirty(page));
+> +	WARN_ON_ONCE(!folio_test_locked(folio));
+> +	WARN_ON_ONCE(folio_test_writeback(folio));
+> +	WARN_ON_ONCE(folio_test_dirty(folio));
+>  
+>  	/*
+>  	 * We cannot cancel the ioend directly here on error.  We may have
+> @@ -1358,16 +1352,16 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+>  		 * now.
+>  		 */
+>  		if (wpc->ops->discard_page)
+> -			wpc->ops->discard_page(page, file_offset);
+> +			wpc->ops->discard_page(&folio->page, pos);
+>  		if (!count) {
+> -			ClearPageUptodate(page);
+> -			unlock_page(page);
+> +			folio_clear_uptodate(folio);
+> +			folio_unlock(folio);
+>  			goto done;
+>  		}
+>  	}
+>  
+> -	set_page_writeback(page);
+> -	unlock_page(page);
+> +	folio_start_writeback(folio);
+> +	folio_unlock(folio);
+>  
+>  	/*
+>  	 * Preserve the original error if there was one, otherwise catch
+> @@ -1388,9 +1382,9 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+>  	 * with a partial page truncate on a sub-page block sized filesystem.
+>  	 */
+>  	if (!count)
+> -		end_page_writeback(page);
+> +		folio_end_writeback(folio);
+>  done:
+> -	mapping_set_error(page->mapping, error);
+> +	mapping_set_error(folio->mapping, error);
+>  	return error;
+>  }
+>  
+> -- 
+> 2.30.2
+> 
