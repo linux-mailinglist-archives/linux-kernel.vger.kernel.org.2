@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2793CA031
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035AE3CA033
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238276AbhGOOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:05:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229462AbhGOOFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:05:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F5EE6128D;
-        Thu, 15 Jul 2021 14:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626357763;
-        bh=grQW3UgWfXU4yxwPEIzF0tsiYGHqaSRZYJBDNFj47i4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=h7p/Z2Fh0durFJqN2B8OLm4ac4IMDfIhaepdrfM8ah8taH71CAdxgLR4xH6EaMHJ1
-         cX4bAF5rv16Vzi75kKwQiEC1U66a37cFRuCGHyeRDFrauYUYtQOJOWSCfPKzaxtUeB
-         M8xDD7PvXYXlOacZ7O/2V1sRP8m7Hf4uhQJD3/dZtK5xnC+kjUFg6EDH1rMv+FvRGH
-         qXvOY2sOsjad/4/a58uy/9XzduON8s4l3EbZ4txEtXhkde/TU+3DcbMjV1ZamaGkyl
-         Qj3poUfZSwovsz0XHFsINscwC/c1BCYvzFa8YrpHuD3MNRyLN/FHceDuVeGQ1DrEtR
-         Cu1uuZgpiQPRA==
-Message-ID: <98f3852d84645b88963f987bb3373bb56ddd8d3e.camel@kernel.org>
-Subject: Re: [PATCH] ceph: don't WARN if we're still opening a session to an
- MDS
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 15 Jul 2021 10:02:41 -0400
-In-Reply-To: <20210715134039.10466-1-lhenriques@suse.de>
-References: <20210715134039.10466-1-lhenriques@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S238329AbhGOOGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238287AbhGOOGJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:06:09 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87F6C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 07:03:16 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so6127960wmb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 07:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2WsNhg8rfzlYQA7icIiNW7dz15gmr8Kr8gn8mV6ZBqk=;
+        b=Sedwnxw+rSX8nJTUL9a4CGnb5fHYZfC0Y6MTnyhDW01fcnLklNE0zYQVuPxmZMBGEm
+         ENP0JTSLENkYkTsUox94U6Ovkt4cUqk1l4YOi9IrEPwolg3kbcYoatbWGPd/nQ74EdPh
+         byuqKlV0m1tt5uPFDCfh7vN/0GLMw4fQekAdBAgw7i0khkZZOXbnGZsRJ6XE6BdlKCFT
+         RuemuBmQ9WE7IOZ/CrPB4u6Q9Uy/KO5AqjQRimJPKNnPle70ngRdLT+WvXWJ8PIUw2uR
+         7RP7Homp2F0duBN6QlhjTh/WHOf5IGy4vlmgsAv+daAFB3NhKauS66LHME3sVYjeh1oc
+         piwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2WsNhg8rfzlYQA7icIiNW7dz15gmr8Kr8gn8mV6ZBqk=;
+        b=Cpe5xcbEHPK8TmIgp6cETVt9qwFIs3hNESJ0YyhJGSrfZonU9jfL3hHz0G4r0ebqEQ
+         YfLWgGYcr8/JoNKAODennSzHCLhbmpKWFqbBV6W45VBLifoWIQo3FtLQxOfwDa4RFrEO
+         4xjqcCfjf4sdXOSSuRXktqy8R9Q4K4aLIAl8nR/pDR0uq2BbDa3xYQBAJzk7dA5l2Y9d
+         z1GqQOsIRUCjuhpK3tKsCMe/vFUatF9Ta808KTxKnZiXglSREygRzACx3/EfL/wWCx0b
+         uWoX2oB8tVHCr8aqsLLzRCQXk7B3dqDqKf7Gw5kajaIo4xl9SQW//gK8nVwGTstOhcw2
+         CHpg==
+X-Gm-Message-State: AOAM532Os9XvL5xfvigBsJo60/oFGdz+ItaSAY1MS95b8jeUixIgnJSE
+        JMgeTDjJXynpe2srAXvooIsdaQ==
+X-Google-Smtp-Source: ABdhPJyYgmZ4hUFoY/29/oPUjjMZSBa/jj3D79n9EYtV3h1wK6zTeAxwVrARG9H7V15gDgaBDB6WeQ==
+X-Received: by 2002:a1c:7701:: with SMTP id t1mr4848290wmi.139.1626357795083;
+        Thu, 15 Jul 2021 07:03:15 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:2869:dbdd:92c7:6be2? ([2a01:e34:ed2f:f020:2869:dbdd:92c7:6be2])
+        by smtp.googlemail.com with ESMTPSA id n20sm5151440wmk.12.2021.07.15.07.03.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 07:03:14 -0700 (PDT)
+Subject: Re: [PATCH v2 1/9] units: Add the HZ macros
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        Christian Eggers <ceggers@arri.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
+ <YOxvAwb1Ho9iTxWg@smile.fi.intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <d61fbdb3-470f-af09-112c-a28a610630ae@linaro.org>
+Date:   Thu, 15 Jul 2021 16:03:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YOxvAwb1Ho9iTxWg@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-15 at 14:40 +0100, Luis Henriques wrote:
-> If MDSs aren't available while mounting a filesystem, the session state will
-> transition from SESSION_OPENING to SESSION_CLOSING.  And in that scenario
-> check_session_state() will be called from delayed_work() and trigger this
-> WARN.
+On 12/07/2021 18:34, Andy Shevchenko wrote:
+> On Wed, Feb 24, 2021 at 03:42:11PM +0100, Daniel Lezcano wrote:
+>> The macros for the unit conversion for frequency are duplicated in
+>> different places.
+>>
+>> Provide these macros in the 'units' header, so they can be reused.
 > 
-> Avoid this by only WARNing after a session has already been established
-> (i.e., the s_ttl will be different from 0).
-> 
-> Fixes: 62575e270f66 ("ceph: check session state after bumping session->s_seq")
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> ---
->  fs/ceph/mds_client.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> index e5af591d3bd4..86f09b1110a2 100644
-> --- a/fs/ceph/mds_client.c
-> +++ b/fs/ceph/mds_client.c
-> @@ -4468,7 +4468,7 @@ bool check_session_state(struct ceph_mds_session *s)
->  		break;
->  	case CEPH_MDS_SESSION_CLOSING:
->  		/* Should never reach this when we're unmounting */
-> -		WARN_ON_ONCE(true);
-> +		WARN_ON_ONCE(s->s_ttl);
->  		fallthrough;
->  	case CEPH_MDS_SESSION_NEW:
->  	case CEPH_MDS_SESSION_RESTARTING:
+> Any progress on this? Are you planning to resubmit?
 
-Mea culpa -- I've been meaning to fix that up. I'll plan to merge this
-later today.
+Yes, I'll resubmit a new series.
 
-Thanks!
+
+
+
 -- 
-Jeff Layton <jlayton@kernel.org>
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
