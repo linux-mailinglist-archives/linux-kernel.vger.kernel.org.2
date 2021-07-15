@@ -2,36 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9793CA8F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B376B3CAB26
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242873AbhGOTEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59074 "EHLO mail.kernel.org"
+        id S243292AbhGOTRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:17:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242040AbhGOSyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF927613C4;
-        Thu, 15 Jul 2021 18:51:50 +0000 (UTC)
+        id S243391AbhGOTEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 116F2610C7;
+        Thu, 15 Jul 2021 19:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375111;
-        bh=WnfKwdefcVhKmY+SMQ457/yqAt2i1E6NF6MSh8EUvak=;
+        s=korg; t=1626375607;
+        bh=SMo/T7Ka7E8f0cAteUTp8D85XzExdOnkdsf86LhuHO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VXnZBrHPJYIMWoyRfYx5TwchxT539pmM1BR05Jc1lLG1+3FfjIZyqCaC8qe2CC7BR
-         wE8mrwDWaCIPlAk68wiFMxotSezDG7LRwgYQmPQ12LRwJ6/cQgi0Jwtny0EGO3snYu
-         Zlvm+kgRXfekqJU/cUBpUv3Wgjn0k9ieGHc86V/g=
+        b=AgMf4Pffa6C2BXVbuq0g3uh/c8PuRsetn1I9etGbk6jZ4hly5mt7L46Qmd8B/ZgC/
+         ZIsgOulPDE6NC0EW93pG5ZGUvUof9IcEkjJ16d6TdRrVPFLc2TjFbyM6eCcGzi4+MO
+         3yRoRdPZG+edUpLx+xkPCAwpOEwn2jfov9BZNz0w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 147/215] powerpc/barrier: Avoid collision with clangs __lwsync macro
+        stable@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.12 157/242] mm/mremap: hold the rmap lock in write mode when moving page table entries.
 Date:   Thu, 15 Jul 2021 20:38:39 +0200
-Message-Id: <20210715182625.614403654@linuxfoundation.org>
+Message-Id: <20210715182620.807276868@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +50,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-commit 015d98149b326e0f1f02e44413112ca8b4330543 upstream.
+commit 97113eb39fa7972722ff490b947d8af023e1f6a2 upstream.
 
-A change in clang 13 results in the __lwsync macro being defined as
-__builtin_ppc_lwsync, which emits 'lwsync' or 'msync' depending on what
-the target supports. This breaks the build because of -Werror in
-arch/powerpc, along with thousands of warnings:
+To avoid a race between rmap walk and mremap, mremap does
+take_rmap_locks().  The lock was taken to ensure that rmap walk don't miss
+a page table entry due to PTE moves via move_pagetables().  The kernel
+does further optimization of this lock such that if we are going to find
+the newly added vma after the old vma, the rmap lock is not taken.  This
+is because rmap walk would find the vmas in the same order and if we don't
+find the page table attached to older vma we would find it with the new
+vma which we would iterate later.
 
- In file included from arch/powerpc/kernel/pmc.c:12:
- In file included from include/linux/bug.h:5:
- In file included from arch/powerpc/include/asm/bug.h:109:
- In file included from include/asm-generic/bug.h:20:
- In file included from include/linux/kernel.h:12:
- In file included from include/linux/bitops.h:32:
- In file included from arch/powerpc/include/asm/bitops.h:62:
- arch/powerpc/include/asm/barrier.h:49:9: error: '__lwsync' macro redefined [-Werror,-Wmacro-redefined]
- #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
-        ^
- <built-in>:308:9: note: previous definition is here
- #define __lwsync __builtin_ppc_lwsync
-        ^
- 1 error generated.
+As explained in commit eb66ae030829 ("mremap: properly flush TLB before
+releasing the page") mremap is special in that it doesn't take ownership
+of the page.  The optimized version for PUD/PMD aligned mremap also
+doesn't hold the ptl lock.  This can result in stale TLB entries as show
+below.
 
-Undefine this macro so that the runtime patching introduced by
-commit 2d1b2027626d ("powerpc: Fixup lwsync at runtime") continues to
-work properly with clang and the build no longer breaks.
+This patch updates the rmap locking requirement in mremap to handle the race condition
+explained below with optimized mremap::
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1386
-Link: https://github.com/llvm/llvm-project/commit/62b5df7fe2b3fda1772befeda15598fbef96a614
-Link: https://lore.kernel.org/r/20210528182752.1852002-1-nathan@kernel.org
+Optmized PMD move
+
+    CPU 1                           CPU 2                                   CPU 3
+
+    mremap(old_addr, new_addr)      page_shrinker/try_to_unmap_one
+
+    mmap_write_lock_killable()
+
+                                    addr = old_addr
+                                    lock(pte_ptl)
+    lock(pmd_ptl)
+    pmd = *old_pmd
+    pmd_clear(old_pmd)
+    flush_tlb_range(old_addr)
+
+    *new_pmd = pmd
+                                                                            *new_addr = 10; and fills
+                                                                            TLB with new addr
+                                                                            and old pfn
+
+    unlock(pmd_ptl)
+                                    ptep_clear_flush()
+                                    old pfn is free.
+                                                                            Stale TLB entry
+
+Optimized PUD move also suffers from a similar race.  Both the above race
+condition can be fixed if we force mremap path to take rmap lock.
+
+Link: https://lkml.kernel.org/r/20210616045239.370802-7-aneesh.kumar@linux.ibm.com
+Fixes: 2c91bd4a4e2e ("mm: speed up mremap by 20x on large regions")
+Fixes: c49dd3401802 ("mm: speedup mremap on 1GB or larger regions")
+Link: https://lore.kernel.org/linux-mm/CAHk-=wgXVR04eBNtxQfevontWnP6FDm+oj5vauQXP3S-huwbPw@mail.gmail.com
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Acked-by: Hugh Dickins <hughd@google.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Kalesh Singh <kaleshsingh@google.com>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/barrier.h |    2 ++
- 1 file changed, 2 insertions(+)
+ mm/mremap.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/include/asm/barrier.h
-+++ b/arch/powerpc/include/asm/barrier.h
-@@ -46,6 +46,8 @@
- #    define SMPWMB      eieio
- #endif
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -439,7 +439,7 @@ unsigned long move_page_tables(struct vm
+ 			if (!new_pud)
+ 				break;
+ 			if (move_pgt_entry(NORMAL_PUD, vma, old_addr, new_addr,
+-					   old_pud, new_pud, need_rmap_locks))
++					   old_pud, new_pud, true))
+ 				continue;
+ 		}
  
-+/* clang defines this macro for a builtin, which will not work with runtime patching */
-+#undef __lwsync
- #define __lwsync()	__asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
- #define dma_rmb()	__lwsync()
- #define dma_wmb()	__asm__ __volatile__ (stringify_in_c(SMPWMB) : : :"memory")
+@@ -466,7 +466,7 @@ unsigned long move_page_tables(struct vm
+ 			 * moving at the PMD level if possible.
+ 			 */
+ 			if (move_pgt_entry(NORMAL_PMD, vma, old_addr, new_addr,
+-					   old_pmd, new_pmd, need_rmap_locks))
++					   old_pmd, new_pmd, true))
+ 				continue;
+ 		}
+ 
 
 
