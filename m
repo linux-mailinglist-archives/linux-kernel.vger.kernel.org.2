@@ -2,116 +2,1027 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC983C961D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC723C9626
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhGODG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        id S232589AbhGODJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhGODGZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:06:25 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26F9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:03:31 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id h9so6497125ljm.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:03:31 -0700 (PDT)
+        with ESMTP id S230433AbhGODJs (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:09:48 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9111DC06175F
+        for <Linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:06:55 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so5141237pju.4
+        for <Linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:06:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RYi1IyWrC6TuRygKynXKx82+IBLap68KkX0wmFXBOkI=;
-        b=fPgdJBwqBnYQWiYd11LvyqHQtqUg5/9lZMIisCur2LqH+wrbPrb9p+wFI6xx7YdYJS
-         Zyodjwg+cvnrnoCDxqgrKvbXFwm0GydR0FqhsRyxPaZB2yy17AJfsKZtvbS5WayU829b
-         DjW/QpTuFE35GDQfTVHNZBWp5+5xBCNEPY3XA=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1Aaytw5T/IUmOf+FNN86SiLBu/jGGQLrRfsJmMBA18U=;
+        b=K+wJQ7n4lt2/X/8f37FXKqYFfSpBDxrwBmvz0rv/31f7xk56JAl1u6sU7XCOFSOMfw
+         f64cpnv9zW5+4F3lIk3/qGtyrKVKWCXrI47p9OpDlGVs560mvscXIwtgJsURj956UsEb
+         afyj/vxP1EHROiOq8hC8K1MkgiIy9JbTPMbRJlNwi8zwImILfKyGVuRU7sHBbXr75xXM
+         GbDuc7By9s2OSUO+TSvQPbY3kKhBuMsleoPBwr+ZdhL5rvay2caABUms5TU1JETVvQ3i
+         ejK9sreqOscdVF4FLx2FAPXas4B8G1RDtNTC4wsY7wXBaRLYbaLRMqNa3OSa9lXfKVLe
+         nuvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RYi1IyWrC6TuRygKynXKx82+IBLap68KkX0wmFXBOkI=;
-        b=Wtrhd/kwY+hxkThKFenxeLYKx+BF9Bq9mqTQ56ZDNdk5y6hVOCsL0CmJ6+1UdZ2SXy
-         L9m6zy+yddpX7+aDspNR+wPpwFNV0zXkPv5NpWRat0GtfzW30XoMOd3Znij67DyXB2Hg
-         FCrTk8UmEvpzPGgDhUVPH9zJKpzwG8rFbbqchJmvQlPbi0A7b7/cmJyVKcjuZZblwlzQ
-         TIGMPT869nWq8HBYCKuu2Vsme28WR2R4OccHtRSQMp9r6+NIOGZWKvJZ0Cnw9ayVzMrX
-         jM+tQj8PSZz3HFm2IsSkGfcAEPEKpUQlC/3Hf6dq2io2BT6rticroxAvYkhdBwUl62Zn
-         EFRA==
-X-Gm-Message-State: AOAM531zMUxAjNQyPqWiTCKDsL9TZyeEPdVkJC6Nh4lG4f6AZ1XjQ6M0
-        UUjZxQnYQ+Aky/zt1yautauvruGbgOvfccSuQamiLw==
-X-Google-Smtp-Source: ABdhPJzQk7yOOJgOlV+e8lb/HTrDPbR3LKAVSGY0Jd+8uj7pVvf9Q2SmmBlLZPXG7O+C0Le3DWUNEbjtrttH5wZspC0=
-X-Received: by 2002:a05:651c:2115:: with SMTP id a21mr1224483ljq.185.1626318210041;
- Wed, 14 Jul 2021 20:03:30 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1Aaytw5T/IUmOf+FNN86SiLBu/jGGQLrRfsJmMBA18U=;
+        b=ZN8fpsvP2OTQW2amOgUM7p8UnoaD1LriytaAgT2uMMvyxwUDWlzihOhbloQ/X75je1
+         JW2Ao8wk7pPsU8WiDKjheMFqHIDbXKgXwxcjaYAMs7usoJtm0Uf8OlzbNU8Fchdjps7c
+         xthmdsVDVaCOzC/7WRdpHMxACQkT3hIrGQtzDkcEgw7NDMc62ilQZ7x7B12AEBQTb+ls
+         TXkfxd/VIQmBWPNuF/Afg3fOj731Y038DcWli2ScPWdBMcKt0RkpspCnEkRBABGiCVys
+         BKK61N3BuSH+EZWBVMIDnUHsx2bAOziGzRGO1ZQlyv9/eAWvnbUMMunhapT15nwM4SIJ
+         oSaA==
+X-Gm-Message-State: AOAM531jQ73Mf/PDHXF4qVQJCMIkcmtzabDgBabotWw1AnDkLo9KuWmH
+        X2YyQeoDBt54wsnvSF/7s1U=
+X-Google-Smtp-Source: ABdhPJylHPEX5gEK35c3P/QkyfnoQsvP9L0UdDLkzwu1W9SirGDjTZSBJuaGScF1mKlghdx/XjhOeA==
+X-Received: by 2002:a17:90a:1109:: with SMTP id d9mr1437423pja.183.1626318414551;
+        Wed, 14 Jul 2021 20:06:54 -0700 (PDT)
+Received: from Likes-MacBook-Pro.local ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id d1sm3521046pju.16.2021.07.14.20.06.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 20:06:54 -0700 (PDT)
+Subject: Re: [PATCH 1/2] perf vendor events intel: Add core event list for
+ Elkhartlake
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, acme@kernel.org,
+        mingo@redhat.com,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        jolsa@kernel.org, Peter Zijlstra <peterz@infradead.org>
+References: <20210706060053.23591-1-yao.jin@linux.intel.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+Message-ID: <29bf6fa3-b23c-c646-b8fa-44580a4e404b@gmail.com>
+Date:   Thu, 15 Jul 2021 11:06:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com>
-In-Reply-To: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 15 Jul 2021 11:03:19 +0800
-Message-ID: <CAGXv+5FKvz7zwi1k=TZ3YTJJ+facezqN_oigRFEeR26OrejRnw@mail.gmail.com>
-Subject: Re: [PATCH 0/8] Due to changes in hardware design, add patch to
-To:     Kewei Xu <kewei.xu@mediatek.com>
-Cc:     wsa@the-dreams.de, Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        leilk.liu@mediatek.com, qii.wang@mediatek.com,
-        qiangming.xia@mediatek.com, ot_daolong.zhu@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210706060053.23591-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 6/7/2021 2:00 pm, Jin Yao wrote:
+> Add JSON core events for Elkhartlake to perf.
+> 
+> Based on JSON list v1.01:
+> 
+> https://download.01.org/perfmon/EHL/
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+>   .../arch/x86/elkhartlake/cache.json           | 227 +++++++++++++
+>   .../arch/x86/elkhartlake/floating-point.json  |  13 +
+>   .../arch/x86/elkhartlake/frontend.json        |  26 ++
+>   .../arch/x86/elkhartlake/memory.json          |  74 +++++
+>   .../arch/x86/elkhartlake/other.json           | 302 ++++++++++++++++++
+>   .../arch/x86/elkhartlake/pipeline.json        | 135 ++++++++
+>   .../arch/x86/elkhartlake/virtual-memory.json  |  86 +++++
+>   tools/perf/pmu-events/arch/x86/mapfile.csv    |   1 +
+>   8 files changed, 864 insertions(+)
+>   create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/cache.json
+>   create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/floating-point.json
+>   create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/frontend.json
+>   create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/memory.json
+>   create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/other.json
+>   create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/pipeline.json
+>   create mode 100644 tools/perf/pmu-events/arch/x86/elkhartlake/virtual-memory.json
+> 
+> diff --git a/tools/perf/pmu-events/arch/x86/elkhartlake/cache.json b/tools/perf/pmu-events/arch/x86/elkhartlake/cache.json
+> new file mode 100644
+> index 000000000000..5ccca7bf4a90
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/elkhartlake/cache.json
+> @@ -0,0 +1,227 @@
+> +[
+> +    {
+> +        "BriefDescription": "Counts the number of cacheable memory requests that access the LLC. Counts on a per core basis.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x2e",
+> +        "EventName": "LONGEST_LAT_CACHE.ANY",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of cacheable memory requests that access the Last Level Cache (LLC). Requests include demand loads, reads for ownership (RFO), instruction fetches and L1 HW prefetches. If the platform has an L3 cache, the LLC is the L3 cache, otherwise it is the L2 cache. Counts on a per core basis.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x4f"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of cacheable memory requests that miss in the LLC. Counts on a per core basis.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x2e",
+> +        "EventName": "LONGEST_LAT_CACHE.MISS",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of cacheable memory requests that miss in the Last Level Cache (LLC). If the platform has an L3 cache, the LLC is the L3 cache, otherwise it is the L2 cache. Counts on a per core basis.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x41"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event LONGEST_LAT_CACHE.ANY",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x2e",
+> +        "EventName": "LONGEST_LAT_CACHE.REFERENCE",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x4f"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of cycles the core is stalled due to an instruction cache or TLB miss which hit in DRAM or MMIO (Non-DRAM).",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "MEM_BOUND_STALLS.IFETCH_DRAM_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of cycles a core is stalled due to an instruction cache or translation lookaside buffer (TLB) access which hit in DRAM or MMIO (non-DRAM).",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x20"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of cycles the core is stalled due to an instruction cache or TLB miss which hit in the L2 cache.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "MEM_BOUND_STALLS.IFETCH_L2_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of cycles a core is stalled due to an instruction cache or Translation Lookaside Buffer (TLB) access which hit in the L2 cache.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x8"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of cycles the core is stalled due to an instruction cache or TLB miss which hit in the LLC or other core with HITE/F/M.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "MEM_BOUND_STALLS.IFETCH_LLC_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of cycles a core is stalled due to an instruction cache or Translation Lookaside Buffer (TLB) access which hit in the Last Level Cache (LLC) or other core with HITE/F/M.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x10"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of cycles the core is stalled due to a demand load miss which hit in DRAM or MMIO (Non-DRAM).",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "MEM_BOUND_STALLS.LOAD_DRAM_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of cycles the core is stalled due to a demand load which hit in the L2 cache.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "MEM_BOUND_STALLS.LOAD_L2_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of cycles a core is stalled due to a demand load which hit in the L2 cache.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of cycles the core is stalled due to a demand load which hit in the LLC or other core with HITE/F/M.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "MEM_BOUND_STALLS.LOAD_LLC_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of cycles a core is stalled due to a demand load which hit in the Last Level Cache (LLC) or other core with HITE/F/M.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of cycles a core is stalled due to a store buffer being full.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "MEM_BOUND_STALLS.STORE_BUFFER_FULL",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x40"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of load ops retired that hit in DRAM.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "Data_LA": "1",
+> +        "Errata": "https://hsdes.intel.com/appstore/article/#/1707187406",
 
-On Thu, Jul 15, 2021 at 10:37 AM Kewei Xu <kewei.xu@mediatek.com> wrote:
->
-> 1. In order to facilitate the review, the two series of patches submitted
->    before have been integrated together.
+Seriously, for this url ?
 
-I'm not sure that really helps. We'll see.
-
-> 2. Resubmit a patch to fixing the incorrect register value.
-
-Fixes can be submitted separately, or at the very least, put at the very
-front of the series.
-
-> 3. Add modify bus speed calculation formula patch
-
-When resubmitting patch series, please add appropriate versioning and
-changelogs. This will help maintainers understand that this is a new
-version of the series, and what has changed. This includes times when
-the original patches weren't changed, but additional patches were added.
-
-Please also keep the original series subject, which IIRC was about adding
-support for MT8195 I2C. The subject you now used should be part of the
-cover letter.
-
-If you combine different patch series, you should use the highest version
-number + 1.
-
-
-Regards
-ChenYu
-
->
-> Kewei Xu (8):
->   dt-bindings: i2c: update bindings for MT8195 SoC
->   i2c: mediatek: Dump i2c/dma register when a timeout occurs
->   i2c: mediatek: fixing the incorrect register offset
->   i2c: mediatek: Reset the handshake signal between i2c and dma
->   i2c: mediatek: Add OFFSET_EXT_CONF setting back
->   dt-bindings: i2c: add attribute default-timing-adjust
->   i2c: mediatek: Isolate speed setting via dts for special devices
->   i2c: mediatek: modify bus speed calculation formula
->
->  .../devicetree/bindings/i2c/i2c-mt65xx.txt         |   3 +
->  drivers/i2c/busses/i2c-mt65xx.c                    | 229 +++++++++++++++++++--
->  2 files changed, 217 insertions(+), 15 deletions(-)
->
-> --
-> 1.9.1
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> +        "EventCode": "0xd1",
+> +        "EventName": "MEM_LOAD_UOPS_RETIRED.DRAM_HIT",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x80"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of load uops retired that hit in the L1 data cache.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "Data_LA": "1",
+> +        "EventCode": "0xd1",
+> +        "EventName": "MEM_LOAD_UOPS_RETIRED.L1_HIT",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of load uops retired that miss in the L1 data cache.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "Data_LA": "1",
+> +        "EventCode": "0xd1",
+> +        "EventName": "MEM_LOAD_UOPS_RETIRED.L1_MISS",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x8"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of load uops retired that hit in the L2 cache.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "Data_LA": "1",
+> +        "EventCode": "0xd1",
+> +        "EventName": "MEM_LOAD_UOPS_RETIRED.L2_HIT",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of load uops retired that miss in the L2 cache.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "Data_LA": "1",
+> +        "EventCode": "0xd1",
+> +        "EventName": "MEM_LOAD_UOPS_RETIRED.L2_MISS",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x10"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of load uops retired that hit in the L3 cache.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xd1",
+> +        "EventName": "MEM_LOAD_UOPS_RETIRED.L3_HIT",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of load uops retired.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "Data_LA": "1",
+> +        "EventCode": "0xd0",
+> +        "EventName": "MEM_UOPS_RETIRED.ALL_LOADS",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the total number of load uops retired.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x81"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of store uops retired.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "Data_LA": "1",
+> +        "EventCode": "0xd0",
+> +        "EventName": "MEM_UOPS_RETIRED.ALL_STORES",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the total number of store uops retired.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x82"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to instruction cache misses.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.ICACHE",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x20"
+> +    }
+> +]
+> \ No newline at end of file
+> diff --git a/tools/perf/pmu-events/arch/x86/elkhartlake/floating-point.json b/tools/perf/pmu-events/arch/x86/elkhartlake/floating-point.json
+> new file mode 100644
+> index 000000000000..21d85ba3266f
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/elkhartlake/floating-point.json
+> @@ -0,0 +1,13 @@
+> +[
+> +    {
+> +        "BriefDescription": "Counts the number of floating point divide uops retired (x87 and SSE, including x87 sqrt).",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xc2",
+> +        "EventName": "UOPS_RETIRED.FPDIV",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x8"
+> +    }
+> +]
+> \ No newline at end of file
+> diff --git a/tools/perf/pmu-events/arch/x86/elkhartlake/frontend.json b/tools/perf/pmu-events/arch/x86/elkhartlake/frontend.json
+> new file mode 100644
+> index 000000000000..e53f4ff2b758
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/elkhartlake/frontend.json
+> @@ -0,0 +1,26 @@
+> +[
+> +    {
+> +        "BriefDescription": "Counts the number of requests to the instruction cache for one or more bytes of a cache line.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x80",
+> +        "EventName": "ICACHE.ACCESSES",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the total number of requests to the instruction cache.  The event only counts new cache line accesses, so that multiple back to back fetches to the exact same cache line or byte chunk count as one.  Specifically, the event counts when accesses from sequential code crosses the cache line boundary, or when a branch target is moved to a new line or to a non-sequential byte chunk of the same line.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x3"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of instruction cache misses.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x80",
+> +        "EventName": "ICACHE.MISSES",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of missed requests to the instruction cache.  The event only counts new cache line accesses, so that multiple back to back fetches to the exact same cache line and byte chunk count as one.  Specifically, the event counts when accesses from sequential code crosses the cache line boundary, or when a branch target is moved to a new line or to a non-sequential byte chunk of the same line.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x2"
+> +    }
+> +]
+> \ No newline at end of file
+> diff --git a/tools/perf/pmu-events/arch/x86/elkhartlake/memory.json b/tools/perf/pmu-events/arch/x86/elkhartlake/memory.json
+> new file mode 100644
+> index 000000000000..7c427047baad
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/elkhartlake/memory.json
+> @@ -0,0 +1,74 @@
+> +[
+> +    {
+> +        "BriefDescription": "Counts cacheable demand data reads, L1 data cache hardware prefetches and software prefetches (except PREFETCHW) that were not supplied by the L3 cache.",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_DATA_AND_L1PF_RD.L3_MISS",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x3F04000001",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts cacheable demand data reads, L1 data cache hardware prefetches and software prefetches (except PREFETCHW) that were not supplied by the L3 cache.",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_DATA_AND_L1PF_RD.L3_MISS_LOCAL",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x2104000001",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event OCR.DEMAND_DATA_AND_L1PF_RD.L3_MISS",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_DATA_RD.L3_MISS",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x3F04000001",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event OCR.DEMAND_DATA_AND_L1PF_RD.L3_MISS_LOCAL",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_DATA_RD.L3_MISS_LOCAL",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x2104000001",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts demand reads for ownership (RFO) and software prefetches for exclusive ownership (PREFETCHW) that were not supplied by the L3 cache.",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_RFO.L3_MISS",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x3F04000002",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts demand reads for ownership (RFO) and software prefetches for exclusive ownership (PREFETCHW) that were not supplied by the L3 cache.",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_RFO.L3_MISS_LOCAL",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x2104000002",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    }
+> +]
+> \ No newline at end of file
+> diff --git a/tools/perf/pmu-events/arch/x86/elkhartlake/other.json b/tools/perf/pmu-events/arch/x86/elkhartlake/other.json
+> new file mode 100644
+> index 000000000000..f999b89297ab
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/elkhartlake/other.json
+> @@ -0,0 +1,302 @@
+> +[
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event MEM_BOUND_STALLS.LOAD_DRAM_HIT",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "C0_STALLS.LOAD_DRAM_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event MEM_BOUND_STALLS.LOAD_L2_HIT",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "C0_STALLS.LOAD_L2_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event MEM_BOUND_STALLS.LOAD_LLC_HIT",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x34",
+> +        "EventName": "C0_STALLS.LOAD_LLC_HIT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts cacheable demand data reads, L1 data cache hardware prefetches and software prefetches (except PREFETCHW) that have any type of response.",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_DATA_AND_L1PF_RD.ANY_RESPONSE",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x10001",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event OCR.DEMAND_DATA_AND_L1PF_RD.ANY_RESPONSE",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_DATA_RD.ANY_RESPONSE",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x10001",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts demand reads for ownership (RFO) and software prefetches for exclusive ownership (PREFETCHW) that have any type of response.",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0XB7",
+> +        "EventName": "OCR.DEMAND_RFO.ANY_RESPONSE",
+> +        "MSRIndex": "0x1a6,0x1a7",
+> +        "MSRValue": "0x10002",
+> +        "Offcore": "1",
+> +        "PublicDescription": "Offcore response can be programmed only with a specific pair of event select and counter MSR, and with specific event codes and predefine mask bit value in a dedicated MSR to specify attributes of the offcore transaction.",
+> +        "SampleAfterValue": "100003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the total number of issue slots that were not consumed by the backend because allocation is stalled due to a mispredicted jump or a machine clear.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x73",
+> +        "EventName": "TOPDOWN_BAD_SPECULATION.ALL",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the total number of issue slots that were not consumed by the backend because allocation is stalled due to a mispredicted jump or a machine clear. Only issue slots wasted due to fast nukes such as memory ordering nukes are counted. Other nukes are not accounted for. Counts all issue slots blocked during this recovery window including relevant microcode flows and while uops are not yet available in the instruction queue (IQ). Also includes the issue slots that were consumed by the backend but were thrown away because they were younger than the mispredict or machine clear.",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x6"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to fast nukes such as memory ordering and memory disambiguation machine clears.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x73",
+> +        "EventName": "TOPDOWN_BAD_SPECULATION.FASTNUKE",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to branch mispredicts.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x73",
+> +        "EventName": "TOPDOWN_BAD_SPECULATION.MISPREDICT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated. Refer to new event TOPDOWN_BAD_SPECULATION.FASTNUKE",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x73",
+> +        "EventName": "TOPDOWN_BAD_SPECULATION.MONUKE",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the total number of issue slots every cycle that were not consumed by the backend due to backend stalls.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x74",
+> +        "EventName": "TOPDOWN_BE_BOUND.ALL",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to certain allocation restrictions.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x74",
+> +        "EventName": "TOPDOWN_BE_BOUND.ALLOC_RESTRICTIONS",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to memory reservation stalls in which a scheduler is not able to accept uops.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x74",
+> +        "EventName": "TOPDOWN_BE_BOUND.MEM_SCHEDULER",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to IEC or FPC RAT stalls, which can be due to FIQ or IEC reservation stalls in which the integer, floating point or SIMD scheduler is not able to accept uops.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x74",
+> +        "EventName": "TOPDOWN_BE_BOUND.NON_MEM_SCHEDULER",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x8"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to the physical register file unable to accept an entry (marble stalls).",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x74",
+> +        "EventName": "TOPDOWN_BE_BOUND.REGISTER",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x20"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to the reorder buffer being full (ROB stalls).",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x74",
+> +        "EventName": "TOPDOWN_BE_BOUND.REORDER_BUFFER",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x40"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to scoreboards from the instruction queue (IQ), jump execution unit (JEU), or microcode sequencer (MS).",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x74",
+> +        "EventName": "TOPDOWN_BE_BOUND.SERIALIZATION",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x10"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x74",
+> +        "EventName": "TOPDOWN_BE_BOUND.STORE_BUFFER",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not consumed by the backend due to frontend stalls.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.ALL",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to BACLEARS.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.BRANCH_DETECT",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to BACLEARS, which occurs when the Branch Target Buffer (BTB) prediction or lack thereof, was corrected by a later branch predictor in the frontend. Includes BACLEARS due to all branch types including conditional and unconditional jumps, returns, and indirect branches.",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to BTCLEARS.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.BRANCH_RESTEER",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to BTCLEARS, which occurs when the Branch Target Buffer (BTB) predicts a taken branch.",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x40"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to the microcode sequencer (MS).",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.CISC",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to decode stalls.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.DECODE",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x8"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to ITLB misses.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.ITLB",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to Instruction Table Lookaside Buffer (ITLB) misses.",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x10"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to other common frontend stalls not categorized.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.OTHER",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x80"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of issue slots every cycle that were not delivered by the frontend due to wrong predecodes.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x71",
+> +        "EventName": "TOPDOWN_FE_BOUND.PREDECODE",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the total number of consumed retirement slots.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xc2",
+> +        "EventName": "TOPDOWN_RETIRING.ALL",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "1000003"
+> +    }
+> +]
+> \ No newline at end of file
+> diff --git a/tools/perf/pmu-events/arch/x86/elkhartlake/pipeline.json b/tools/perf/pmu-events/arch/x86/elkhartlake/pipeline.json
+> new file mode 100644
+> index 000000000000..988708f50603
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/elkhartlake/pipeline.json
+> @@ -0,0 +1,135 @@
+> +[
+> +    {
+> +        "BriefDescription": "Counts the total number of branch instructions retired for all branch types.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xc4",
+> +        "EventName": "BR_INST_RETIRED.ALL_BRANCHES",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the total number of instructions in which the instruction pointer (IP) of the processor is resteered due to a branch instruction and the branch instruction successfully retires.  All branch type instructions are accounted for.",
+> +        "SampleAfterValue": "200003"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the total number of mispredicted branch instructions retired for all branch types.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xc5",
+> +        "EventName": "BR_MISP_RETIRED.ALL_BRANCHES",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the total number of mispredicted branch instructions retired.  All branch type instructions are accounted for.  Prediction of the branch target address enables the processor to begin executing instructions before the non-speculative execution path is known. The branch prediction unit (BPU) predicts the target address based on the instruction pointer (IP) of the branch and on the execution path through which execution reached this IP.    A branch misprediction occurs when the prediction is wrong, and results in discarding all instructions executed in the speculative path and re-fetching from the correct path.",
+> +        "SampleAfterValue": "200003"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of unhalted core clock cycles. (Fixed event)",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "33",
+> +        "EventName": "CPU_CLK_UNHALTED.CORE",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "33",
+> +        "PublicDescription": "Counts the number of core cycles while the core is not in a halt state.  The core enters the halt state when it is running the HLT instruction. The core frequency may change from time to time. For this reason this event may have a changing ratio with regards to time. This event uses fixed counter 1.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of unhalted core clock cycles.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x3c",
+> +        "EventName": "CPU_CLK_UNHALTED.CORE_P",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of core cycles while the core is not in a halt state.  The core enters the halt state when it is running the HLT instruction. The core frequency may change from time to time. For this reason this event may have a changing ratio with regards to time. This event uses a programmable general purpose performance counter.",
+> +        "SampleAfterValue": "2000003"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of unhalted reference clock cycles at TSC frequency.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x3c",
+> +        "EventName": "CPU_CLK_UNHALTED.REF",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of reference cycles that the core is not in a halt state. The core enters the halt state when it is running the HLT instruction. This event is not affected by core frequency changes and increments at a fixed frequency that is also used for the Time Stamp Counter (TSC). This event uses fixed counter 2.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of unhalted reference clock cycles at TSC frequency. (Fixed event)",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "34",
+> +        "EventName": "CPU_CLK_UNHALTED.REF_TSC",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "34",
+> +        "PublicDescription": "Counts the number of reference cycles that the core is not in a halt state. The core enters the halt state when it is running the HLT instruction. This event is not affected by core frequency changes and increments at a fixed frequency that is also used for the Time Stamp Counter (TSC). This event uses fixed counter 2.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x3"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of unhalted reference clock cycles at TSC frequency.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x3c",
+> +        "EventName": "CPU_CLK_UNHALTED.REF_TSC_P",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of reference cycles that the core is not in a halt state. The core enters the halt state when it is running the HLT instruction.  This event is not affected by core frequency changes and increments at a fixed frequency that is also used for the Time Stamp Counter (TSC). This event uses a programmable general purpose performance counter.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "This event is deprecated.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xcd",
+> +        "EventName": "CYCLES_DIV_BUSY.ANY",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "2000003"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the total number of instructions retired. (Fixed event)",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "32",
+> +        "EventName": "INST_RETIRED.ANY",
+> +        "PEBS": "1",
+> +        "PEBScounters": "32",
+> +        "PublicDescription": "Counts the total number of instructions that retired. For instructions that consist of multiple uops, this event counts the retirement of the last uop of the instruction. This event continues counting during hardware interrupts, traps, and inside interrupt handlers. This event uses fixed counter 0.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x1"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the total number of instructions retired.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xc0",
+> +        "EventName": "INST_RETIRED.ANY_P",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the total number of instructions that retired. For instructions that consist of multiple uops, this event counts the retirement of the last uop of the instruction. This event continues counting during hardware interrupts, traps, and inside interrupt handlers. This event uses a programmable general purpose performance counter.",
+> +        "SampleAfterValue": "2000003"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the total number of machine clears including memory ordering, memory disambiguation, self-modifying code, page faults and floating point assist.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xc3",
+> +        "EventName": "MACHINE_CLEARS.ANY",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "SampleAfterValue": "20003"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of uops that are from complex flows issued by the micro-sequencer (MS).",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0xc2",
+> +        "EventName": "UOPS_RETIRED.MS",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBS": "1",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of uops that are from complex flows issued by the Microcode Sequencer (MS). This includes uops from flows due to complex instructions, faults, assists, and inserted flows.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x1"
+> +    }
+> +]
+> \ No newline at end of file
+> diff --git a/tools/perf/pmu-events/arch/x86/elkhartlake/virtual-memory.json b/tools/perf/pmu-events/arch/x86/elkhartlake/virtual-memory.json
+> new file mode 100644
+> index 000000000000..246df2fe737b
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/elkhartlake/virtual-memory.json
+> @@ -0,0 +1,86 @@
+> +[
+> +    {
+> +        "BriefDescription": "Counts the number of page walks completed due to load DTLB misses to a 2M or 4M page.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x08",
+> +        "EventName": "DTLB_LOAD_MISSES.WALK_COMPLETED_2M_4M",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of page walks completed due to loads (including SW prefetches) whose address translations missed in all Translation Lookaside Buffer (TLB) levels and were mapped to 2M or 4M pages. Includes page walks that page fault.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of page walks completed due to load DTLB misses to a 4K page.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x08",
+> +        "EventName": "DTLB_LOAD_MISSES.WALK_COMPLETED_4K",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of page walks completed due to loads (including SW prefetches) whose address translations missed in all Translation Lookaside Buffer (TLB) levels and were mapped to 4K pages. Includes page walks that page fault.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of page walks completed due to store DTLB misses to a 2M or 4M page.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x49",
+> +        "EventName": "DTLB_STORE_MISSES.WALK_COMPLETED_2M_4M",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of page walks completed due to stores whose address translations missed in all Translation Lookaside Buffer (TLB) levels and were mapped to 2M or 4M pages.  Includes page walks that page fault.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of page walks completed due to store DTLB misses to a 4K page.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x49",
+> +        "EventName": "DTLB_STORE_MISSES.WALK_COMPLETED_4K",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of page walks completed due to stores whose address translations missed in all Translation Lookaside Buffer (TLB) levels and were mapped to 4K pages.  Includes page walks that page fault.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x2"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of times there was an ITLB miss and a new translation was filled into the ITLB.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x81",
+> +        "EventName": "ITLB.FILLS",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of times the machine was unable to find a translation in the Instruction Translation Lookaside Buffer (ITLB) and a new translation was filled into the ITLB. The event is speculative in nature, but will not count translations (page walks) that are begun and not finished, or translations that are finished but not filled into the ITLB.",
+> +        "SampleAfterValue": "200003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of page walks completed due to instruction fetch misses to a 2M or 4M page.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x85",
+> +        "EventName": "ITLB_MISSES.WALK_COMPLETED_2M_4M",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of page walks completed due to instruction fetches whose address translations missed in all Translation Lookaside Buffer (TLB) levels and were mapped to 2M or 4M pages.  Includes page walks that page fault.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x4"
+> +    },
+> +    {
+> +        "BriefDescription": "Counts the number of page walks completed due to instruction fetch misses to a 4K page.",
+> +        "CollectPEBSRecord": "2",
+> +        "Counter": "0,1,2,3",
+> +        "EventCode": "0x85",
+> +        "EventName": "ITLB_MISSES.WALK_COMPLETED_4K",
+> +        "PDIR_COUNTER": "na",
+> +        "PEBScounters": "0,1,2,3",
+> +        "PublicDescription": "Counts the number of page walks completed due to instruction fetches whose address translations missed in all Translation Lookaside Buffer (TLB) levels and were mapped to 4K pages.  Includes page walks that page fault.",
+> +        "SampleAfterValue": "2000003",
+> +        "UMask": "0x2"
+> +    }
+> +]
+> \ No newline at end of file
+> diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-events/arch/x86/mapfile.csv
+> index 5f5df6560202..64719168ab0a 100644
+> --- a/tools/perf/pmu-events/arch/x86/mapfile.csv
+> +++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
+> @@ -41,6 +41,7 @@ GenuineIntel-6-A7,v1,icelake,core
+>   GenuineIntel-6-6A,v1,icelakex,core
+>   GenuineIntel-6-6C,v1,icelakex,core
+>   GenuineIntel-6-86,v1,tremontx,core
+> +GenuineIntel-6-96,v1,elkhartlake,core
+>   AuthenticAMD-23-([12][0-9A-F]|[0-9A-F]),v2,amdzen1,core
+>   AuthenticAMD-23-[[:xdigit:]]+,v1,amdzen2,core
+>   AuthenticAMD-25-[[:xdigit:]]+,v1,amdzen3,core
+> 
