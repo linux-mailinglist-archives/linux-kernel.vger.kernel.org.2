@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047DA3CADC4
+	by mail.lfdr.de (Postfix) with ESMTP id 718DF3CADC5
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244673AbhGOUUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:20:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27407 "EHLO
+        id S1343659AbhGOUU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:20:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44261 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240371AbhGOUUD (ORCPT
+        by vger.kernel.org with ESMTP id S245663AbhGOUT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:20:03 -0400
+        Thu, 15 Jul 2021 16:19:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626380228;
+        s=mimecast20190719; t=1626380222;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d+qr2gkGCf8UGCRyFBArhsHy6tP5+E2Jys4dwvbHGGg=;
-        b=aMUCSUZKp9d3uUGZ6vWY978dOOAy+ffWs+7XwEPj/S/jSfyH3OY/yLHMQYCmI8l4CnYORg
-        Z/6qAvYuOA4kbelwQk79CCiUA9v+MJ577lqa33hs/dLoHyS28+rl3VWgvbs2tZKJOYx6o5
-        JbFHPWV+IFX/QSj083mcCu8rIHqHvwc=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-555-2oebktaONf2-jIhSKPTtNw-1; Thu, 15 Jul 2021 16:16:56 -0400
-X-MC-Unique: 2oebktaONf2-jIhSKPTtNw-1
-Received: by mail-qk1-f200.google.com with SMTP id y5-20020a37af050000b02903a9c3f8b89fso4709246qke.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:16:56 -0700 (PDT)
+        bh=MaYhfyg3rdsKTSiNE3E1njhtBDjCspL0vB5Uj2aGpxY=;
+        b=hXfW/GfgCoUy3oggnhSRbT8LTaqfx7RgnfaPVmY+O0EDysQEY0ydzboJTf811uT7nu/SNq
+        KtBXoFqUIv+bXQBR8sDdxa5FUM1ooWRnS19xg3YGwsjjtnla8B1dnzzNelfWO6KLzWGHGy
+        n6apwl/l62NKVK92ZFf+uegz4TDmwy4=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-EvrngWvDPNucxc-n9n2wDA-1; Thu, 15 Jul 2021 16:17:01 -0400
+X-MC-Unique: EvrngWvDPNucxc-n9n2wDA-1
+Received: by mail-qt1-f198.google.com with SMTP id h17-20020ac858510000b0290251fc608f73so4927445qth.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:17:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=d+qr2gkGCf8UGCRyFBArhsHy6tP5+E2Jys4dwvbHGGg=;
-        b=Edp6gdq69jK2LrKYv1k5lrugagWfwjYs0GBXof9IcH3w1VYN8gYjjl+BnJukcwJJWr
-         F3GbtCvqohLN7aKca1FoBv0Cmhzduelg2yRfwqbGlAcWYKCYqZk9wqiBNlJ9Gn25qK/y
-         LuqE93S6OGBwS9MtnMI8e4hjCci7UJ5BsUPP5MSGby1dRqrESuElt+nyeKRKKBDrg81t
-         bYcmbH8Hs8c3L75nmUsiCpZqRo/L0v3pKQjH1lpKRlCrA3b6cbyAZL0eH0hO3Zt/GHi3
-         5ebpmikv0Ae7WEzMqsokLHP/tq76tZ25d+P7ElEiLiOYBm8QxRKOnWNttdRvM6FiATgk
-         MsHQ==
-X-Gm-Message-State: AOAM533X7vB/WHyk49t+SFicK1ZVobmSR+dc/feGgd/hD3uuo5bJc6gc
-        5R/5YI6eizg3Hj653PoCTTfGBZ1qUg8b6l0EAggjyf7/tQ3lCZTEZYDlBl/LMEopgwhPQ9Dzvbj
-        8WFrjlJDZmfpf+teXNtNQtnhlad0Ns/Ti0Zzpb98vVFFQii0hw73zTwYcCXJhGN77bjzheQtJPg
+        bh=MaYhfyg3rdsKTSiNE3E1njhtBDjCspL0vB5Uj2aGpxY=;
+        b=hZh0+aDfVTkSF0CEX9SML5ASwE+oZOhsDQDXNNp7Yg5CPuFGDq0BGbIjGmqFZIT28l
+         SAv0LJeX+1kSsIPA7QheUhpZZZtr5l1xGD9kNlwGMEJe89nLzLO3/xaX5fdVJhsgzNw9
+         vvVSM++OfdEwoLDTUK5YOYmAEQFD/lP3UYNv7YB9IZcdTb8qq/Fdd8d8V6KWlvH0Ozzq
+         gYHLdwpvu22XAbpMLCrq2ozA+dYRquzyH44LzlBTqZiELvVnW+UCyqm5UfFWUSgQM5+R
+         MeIpvvweoFY+OEla/CZV+hUXiAz7YuWLPltBVKFbmz79+YQJx5FYGbMuWzvOPZ8S5cpD
+         D5YQ==
+X-Gm-Message-State: AOAM5302N4EI0hUT5Inqh9mRTcJ/fZh1vgE1AoFVBxbeFth9zw6F/DNJ
+        e6f1QwCXVtLbUaoCxCzJu4WabSn6NL6TqWSTHIHdD5c0KXmFwkL/fi0gfdbHc5UiVzPa6UmUdrN
+        UvEdBT/p2+TyucsCewPLJR/dt/kwnzMfCP6hjjPu5hhWV+a8ic1E7mBRt/D5NxjNaCMw3uTvI1Q
         ==
-X-Received: by 2002:ac8:7690:: with SMTP id g16mr5672239qtr.221.1626380215170;
-        Thu, 15 Jul 2021 13:16:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3n2A17eCVd0ShKH2hDWtxhMPVbHnKs9Bym1cK2+XbUnXj4wDOYY9VEDs7W8nbrHHR4ZqZjA==
-X-Received: by 2002:ac8:7690:: with SMTP id g16mr5672205qtr.221.1626380214903;
-        Thu, 15 Jul 2021 13:16:54 -0700 (PDT)
+X-Received: by 2002:a05:622a:514:: with SMTP id l20mr2187572qtx.215.1626380219342;
+        Thu, 15 Jul 2021 13:16:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGaMVuZvegxB+EpIeGAd6z2m3L4/IrqbWZR8YZVvAN7k/ztEs5ecS1pObFzi2lieDQcRpKxQ==
+X-Received: by 2002:a05:622a:514:: with SMTP id l20mr2187534qtx.215.1626380219041;
+        Thu, 15 Jul 2021 13:16:59 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id w185sm2965820qkd.30.2021.07.15.13.16.53
+        by smtp.gmail.com with ESMTPSA id f12sm1587479qtj.10.2021.07.15.13.16.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 13:16:54 -0700 (PDT)
+        Thu, 15 Jul 2021 13:16:58 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Axel Rasmussen <axelrasmussen@google.com>,
@@ -69,9 +69,9 @@ Cc:     Axel Rasmussen <axelrasmussen@google.com>,
         Hugh Dickins <hughd@google.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH v5 24/26] mm/pagemap: Recognize uffd-wp bit for shmem/hugetlbfs
-Date:   Thu, 15 Jul 2021 16:16:51 -0400
-Message-Id: <20210715201651.212134-1-peterx@redhat.com>
+Subject: [PATCH v5 25/26] mm/userfaultfd: Enable write protection for shmem & hugetlbfs
+Date:   Thu, 15 Jul 2021 16:16:55 -0400
+Message-Id: <20210715201655.212184-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210715201422.211004-1-peterx@redhat.com>
 References: <20210715201422.211004-1-peterx@redhat.com>
@@ -81,44 +81,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This requires the pagemap code to be able to recognize the newly introduced
-swap special pte for uffd-wp, meanwhile the general case for hugetlb that we
-recently start to support.  It should make pagemap uffd-wp support complete.
+We've had all the necessary changes ready for both shmem and hugetlbfs.  Turn
+on all the shmem/hugetlbfs switches for userfaultfd-wp.
+
+We can expand UFFD_API_RANGE_IOCTLS_BASIC with _UFFDIO_WRITEPROTECT too because
+all existing types now support write protection mode.
+
+Since vma_can_userfault() will be used elsewhere, move into userfaultfd_k.h.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- fs/proc/task_mmu.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/userfaultfd.c                 | 21 ++-------------------
+ include/linux/userfaultfd_k.h    | 12 ++++++++++++
+ include/uapi/linux/userfaultfd.h | 10 ++++++++--
+ mm/userfaultfd.c                 |  9 +++------
+ 4 files changed, 25 insertions(+), 27 deletions(-)
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 9c5af77b5290..988e29fa1f00 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1389,6 +1389,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
- 		flags |= PM_SWAP;
- 		if (is_pfn_swap_entry(entry))
- 			page = pfn_swap_entry_to_page(entry);
-+	} else if (pte_swp_uffd_wp_special(pte)) {
-+		flags |= PM_UFFD_WP;
- 	}
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 644df737fbb2..980879117110 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -1275,24 +1275,6 @@ static __always_inline int validate_range(struct mm_struct *mm,
+ 	return 0;
+ }
  
- 	if (page && !PageAnon(page))
-@@ -1522,10 +1524,15 @@ static int pagemap_hugetlb_range(pte_t *ptep, unsigned long hmask,
- 		if (page_mapcount(page) == 1)
- 			flags |= PM_MMAP_EXCLUSIVE;
+-static inline bool vma_can_userfault(struct vm_area_struct *vma,
+-				     unsigned long vm_flags)
+-{
+-	/* FIXME: add WP support to hugetlbfs and shmem */
+-	if (vm_flags & VM_UFFD_WP) {
+-		if (is_vm_hugetlb_page(vma) || vma_is_shmem(vma))
+-			return false;
+-	}
+-
+-	if (vm_flags & VM_UFFD_MINOR) {
+-		if (!(is_vm_hugetlb_page(vma) || vma_is_shmem(vma)))
+-			return false;
+-	}
+-
+-	return vma_is_anonymous(vma) || is_vm_hugetlb_page(vma) ||
+-	       vma_is_shmem(vma);
+-}
+-
+ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
+ 				unsigned long arg)
+ {
+@@ -1966,7 +1948,8 @@ static int userfaultfd_api(struct userfaultfd_ctx *ctx,
+ 		~(UFFD_FEATURE_MINOR_HUGETLBFS | UFFD_FEATURE_MINOR_SHMEM);
+ #endif
+ #ifndef CONFIG_HAVE_ARCH_USERFAULTFD_WP
+-	uffdio_api.features &= ~UFFD_FEATURE_PAGEFAULT_FLAG_WP;
++	uffdio_api.features &=
++	    ~(UFFD_FEATURE_PAGEFAULT_FLAG_WP | UFFD_FEATURE_WP_HUGETLBFS_SHMEM);
+ #endif
+ 	uffdio_api.ioctls = UFFD_API_IOCTLS;
+ 	ret = -EFAULT;
+diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+index 92606d95b005..4382240de7c3 100644
+--- a/include/linux/userfaultfd_k.h
++++ b/include/linux/userfaultfd_k.h
+@@ -16,6 +16,7 @@
+ #include <linux/fcntl.h>
+ #include <linux/mm.h>
+ #include <asm-generic/pgtable_uffd.h>
++#include <linux/hugetlb_inline.h>
  
-+		if (huge_pte_uffd_wp(pte))
-+			flags |= PM_UFFD_WP;
+ /* The set of all possible UFFD-related VM flags. */
+ #define __VM_UFFD_FLAGS (VM_UFFD_MISSING | VM_UFFD_WP | VM_UFFD_MINOR)
+@@ -138,6 +139,17 @@ static inline bool userfaultfd_armed(struct vm_area_struct *vma)
+ 	return vma->vm_flags & __VM_UFFD_FLAGS;
+ }
+ 
++static inline bool vma_can_userfault(struct vm_area_struct *vma,
++				     unsigned long vm_flags)
++{
++	if (vm_flags & VM_UFFD_MINOR)
++		return is_vm_hugetlb_page(vma) || vma_is_shmem(vma);
 +
- 		flags |= PM_PRESENT;
- 		if (pm->show_pfn)
- 			frame = pte_pfn(pte) +
- 				((addr & ~hmask) >> PAGE_SHIFT);
-+	} else if (pte_swp_uffd_wp_special(pte)) {
-+		flags |= PM_UFFD_WP;
- 	}
++	return vma_is_anonymous(vma) || is_vm_hugetlb_page(vma) ||
++	       vma_is_shmem(vma);
++}
++
++
+ extern int dup_userfaultfd(struct vm_area_struct *, struct list_head *);
+ extern void dup_userfaultfd_complete(struct list_head *);
  
- 	for (; addr != end; addr += PAGE_SIZE) {
+diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
+index 05b31d60acf6..a67b5185a7a9 100644
+--- a/include/uapi/linux/userfaultfd.h
++++ b/include/uapi/linux/userfaultfd.h
+@@ -32,7 +32,8 @@
+ 			   UFFD_FEATURE_SIGBUS |		\
+ 			   UFFD_FEATURE_THREAD_ID |		\
+ 			   UFFD_FEATURE_MINOR_HUGETLBFS |	\
+-			   UFFD_FEATURE_MINOR_SHMEM)
++			   UFFD_FEATURE_MINOR_SHMEM |		\
++			   UFFD_FEATURE_WP_HUGETLBFS_SHMEM)
+ #define UFFD_API_IOCTLS				\
+ 	((__u64)1 << _UFFDIO_REGISTER |		\
+ 	 (__u64)1 << _UFFDIO_UNREGISTER |	\
+@@ -46,7 +47,8 @@
+ #define UFFD_API_RANGE_IOCTLS_BASIC		\
+ 	((__u64)1 << _UFFDIO_WAKE |		\
+ 	 (__u64)1 << _UFFDIO_COPY |		\
+-	 (__u64)1 << _UFFDIO_CONTINUE)
++	 (__u64)1 << _UFFDIO_CONTINUE |		\
++	 (__u64)1 << _UFFDIO_WRITEPROTECT)
+ 
+ /*
+  * Valid ioctl command number range with this API is from 0x00 to
+@@ -189,6 +191,9 @@ struct uffdio_api {
+ 	 *
+ 	 * UFFD_FEATURE_MINOR_SHMEM indicates the same support as
+ 	 * UFFD_FEATURE_MINOR_HUGETLBFS, but for shmem-backed pages instead.
++	 *
++	 * UFFD_FEATURE_WP_HUGETLBFS_SHMEM indicates that userfaultfd
++	 * write-protection mode is supported on both shmem and hugetlbfs.
+ 	 */
+ #define UFFD_FEATURE_PAGEFAULT_FLAG_WP		(1<<0)
+ #define UFFD_FEATURE_EVENT_FORK			(1<<1)
+@@ -201,6 +206,7 @@ struct uffdio_api {
+ #define UFFD_FEATURE_THREAD_ID			(1<<8)
+ #define UFFD_FEATURE_MINOR_HUGETLBFS		(1<<9)
+ #define UFFD_FEATURE_MINOR_SHMEM		(1<<10)
++#define UFFD_FEATURE_WP_HUGETLBFS_SHMEM		(1<<11)
+ 	__u64 features;
+ 
+ 	__u64 ioctls;
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index a8038903effd..6587ed787707 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -724,15 +724,12 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
+ 
+ 	err = -ENOENT;
+ 	dst_vma = find_dst_vma(dst_mm, start, len);
+-	/*
+-	 * Make sure the vma is not shared, that the dst range is
+-	 * both valid and fully within a single existing vma.
+-	 */
+-	if (!dst_vma || (dst_vma->vm_flags & VM_SHARED))
++
++	if (!dst_vma)
+ 		goto out_unlock;
+ 	if (!userfaultfd_wp(dst_vma))
+ 		goto out_unlock;
+-	if (!vma_is_anonymous(dst_vma))
++	if (!vma_can_userfault(dst_vma, dst_vma->vm_flags))
+ 		goto out_unlock;
+ 
+ 	if (is_vm_hugetlb_page(dst_vma)) {
 -- 
 2.31.1
 
