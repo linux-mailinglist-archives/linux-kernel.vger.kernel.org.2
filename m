@@ -2,136 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9D63C9F27
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C7E3C9F29
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237359AbhGONOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhGONOl (ORCPT
+        id S237346AbhGONPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:15:21 -0400
+Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:41677 "EHLO
+        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbhGONPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:14:41 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FB9C06175F;
-        Thu, 15 Jul 2021 06:11:48 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id k20so6218325pgg.7;
-        Thu, 15 Jul 2021 06:11:48 -0700 (PDT)
+        Thu, 15 Jul 2021 09:15:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mqqUIT6Gur6oNcZJ1XWtXgF8bqDE8LVYz2m/jR4Qhac=;
-        b=mUHJFEeJ3iQSW5S3TDxP9BkECwt2+W+N5dt+izcX3VUjbVrJ3x9/fUwhP2HKX28trs
-         +ymMx4/kdKhVdVxycOcUNHdAo7tbqjFKM9pCPjUe8YAf99vNkB9V8P3itd2ZF23JQxW0
-         y3roMNVxfukO9SYMTNK7YB42aSb8HfMK0r4bObZ5zseJLKQrQpxeEak4EgG7QX2W12r1
-         xxGmz0MXGhizFsxuxl7nMPfbYM3HzLYJiaJJ/zWH6I8ajQJonDpKgdZSyNtz7hvEUBfA
-         LXqe4Z40gC64vCsG8LxrsGBh+y+VRO3KLp8S5PGzJZtcdAY2JdeeOa+kzR0ugqo8B4q/
-         2uSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mqqUIT6Gur6oNcZJ1XWtXgF8bqDE8LVYz2m/jR4Qhac=;
-        b=EC5Eq2xz6oU6HTnGK6XP6TajS4jS9Nv8wqMCj2aYWfTgTNnpBERvWDguNLfXjOF7TE
-         zTscJEnByHGZOZfNFGQmEOfA1ZOy7OqzI5WH5Gld6XoNixwM0LG1zAvOG4s9OZWl/uSR
-         UdRDGF3FJC+mxm5KeBFlY+sqB2LeqXq3XYh+JTPp6Dan4ppKkrGccGDANXoFlJHjzJdV
-         0AlWFXSh9Py7k4Y5+cgGa9AAuUZh906e0zeB+evD+nxAWfv38m8Pa2YOI1dAYthH229E
-         grw2AsY77eBrt2TmduQuCmfq7oRHIc3u6/h7NIMDxRKl/CtBZHpIU4rbkJqTBKEkKx1n
-         SuZA==
-X-Gm-Message-State: AOAM530sMGGJSCfeXQ5MqQQQPVRjhzzvpCsj+Yesn7ih+TF3Qmr2W5Lz
-        r/ymxG6JQEv5SyOEhkyTqY0=
-X-Google-Smtp-Source: ABdhPJzbQGwkKOCn3t2H9yhy5Rmtec/AnidC+GrfO1rZ7k/p/VcG736AZ8d3sHAOXDTLXUm8+XsSXg==
-X-Received: by 2002:a05:6a00:1411:b029:302:d9d6:651d with SMTP id l17-20020a056a001411b0290302d9d6651dmr4618169pfu.56.1626354707982;
-        Thu, 15 Jul 2021 06:11:47 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id m34sm7528228pgb.85.2021.07.15.06.11.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 06:11:47 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-To:     Nikolay Borisov <nborisov@suse.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com
-Cc:     anand.jain@oracle.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
- <7ae7a858-9893-c41c-ed96-10651c295087@suse.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <b8fe8fa5-c022-187f-b10d-3f73e668008a@gmail.com>
-Date:   Thu, 15 Jul 2021 21:11:43 +0800
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1626354747; x=1657890747;
+  h=to:cc:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=AqZy8HmmWkaGvQFDci/L+GLAUjlRxpXnx9pIV90+KUE=;
+  b=ekxsoCdWT/crflPaUxyjrQQNiKyxBOmGK8jcZgZevBPuPtX17R+Cmw5r
+   fFzUiUf+3Q7ZmzFkZkpeGxq+FP9T1FsIvM6LBHgDIblt+LH24DWi+1JHv
+   5rZ5o4FQL6JXXA5yC4tKHFTRYo+aGd15lgD3xwoF4B6qIYJJG+cTx2gJk
+   I=;
+X-IronPort-AV: E=Sophos;i="5.84,242,1620691200"; 
+   d="scan'208";a="12271328"
+Subject: Re: Coverity Scan model file, license, public access
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 15 Jul 2021 13:12:13 +0000
+Received: from EX13D02EUB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id 06584A17C2;
+        Thu, 15 Jul 2021 13:12:12 +0000 (UTC)
+Received: from u6fc700a6f3c650.ant.amazon.com (10.43.161.199) by
+ EX13D02EUB001.ant.amazon.com (10.43.166.150) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 15 Jul 2021 13:12:08 +0000
+To:     Kroah-Hartman <greg@kroah.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "foersleo@amazon.de" <foersleo@amazon.de>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        "Gustavo A. R. Silva" <garsilva@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <d7f096ee-7a9b-684e-433a-f8f3f0e6288d@amazon.de>
+ <YOSKuEcPoy/dw0st@kroah.com>
+From:   Norbert Manthey <nmanthey@amazon.de>
+Message-ID: <a41221c8-86e5-494d-68fd-0a0b87c99e83@amazon.de>
+Date:   Thu, 15 Jul 2021 15:12:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <7ae7a858-9893-c41c-ed96-10651c295087@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YOSKuEcPoy/dw0st@kroah.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.161.199]
+X-ClientProxiedBy: EX13D49UWB003.ant.amazon.com (10.43.163.121) To
+ EX13D02EUB001.ant.amazon.com (10.43.166.150)
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/7/21 7:55 pm, Nikolay Borisov wrote:
-> 
-> 
-> On 15.07.21 г. 13:34, Desmond Cheong Zhi Xi wrote:
->> Syzbot reports a warning in close_fs_devices that happens because
->> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
->> on each device.
->>
->> This happens when a writeable device is removed in
->> __btrfs_free_extra_devids, but the rw device count is not decremented
->> accordingly. So when close_fs_devices is called, the removed device is
->> still counted and we get an off by 1 error.
->>
->> Here is one call trace that was observed:
->>    btrfs_mount_root():
->>      btrfs_scan_one_device():
->>        device_list_add();   <---------------- device added
->>      btrfs_open_devices():
->>        open_fs_devices():
->>          btrfs_open_one_device();   <-------- rw device count ++
->>      btrfs_fill_super():
->>        open_ctree():
->>          btrfs_free_extra_devids():
->> 	  __btrfs_free_extra_devids();  <--- device removed
->> 	  fail_tree_roots:
->> 	    btrfs_close_devices():
->> 	      close_fs_devices();   <------- rw device count off by 1
->>
->> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
->> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
->> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> 
-> Is there a reliable reproducer from syzbot? Can this be turned into an
-> xfstest?
-> 
-
-Syzbot has some reliable reproducers here:
-https://syzkaller.appspot.com/bug?id=113d9a01cbe0af3e291633ba7a7a3e983b86c3c0
-
-Seems like it constructs two images in-memory then mounts them. I'm not 
-sure if that's amenable to be converted into an xfstest?
-
->> ---
->>   fs/btrfs/volumes.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 807502cd6510..916c25371658 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
->>   		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
->>   			list_del_init(&device->dev_alloc_list);
->>   			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
->> +			fs_devices->rw_devices--;
->>   		}
->>   		list_del_init(&device->dev_list);
->>   		fs_devices->num_devices--;
->>
+T24gNy82LzIxIDY6NTQgUE0sIEtyb2FoLUhhcnRtYW4gd3JvdGU6Cj4gCj4gCj4gT24gVHVlLCBK
+dWwgMDYsIDIwMjEgYXQgMDk6NDU6NDdBTSArMDIwMCwgTm9yYmVydCBNYW50aGV5IHdyb3RlOgo+
+PiBEZWFyIGFsbCwKPj4KPj4gSSB3b3VsZCBsaWtlIHRvIHdvcmsgd2l0aCBjb2RlIGFuYWx5c2lz
+IG9uIHRoZSBMaW51eCBrZXJuZWwuIFRoZQo+PiBjdXJyZW50bHkgdXNlZCBDb3Zlcml0eSBzZXR1
+cCBhbHJlYWR5IHVzZXMgYSBtb2RlbCBmaWxlIFsxXSB0byBpbXByb3ZlCj4+IHRoZSBwcmVjaXNp
+b24gb2YgdGhlIGFuYWx5c2lzLiBUbyB0aGUgYmVzdCBvZiBteSBrbm93bGVkZ2UsIHRoaXMgbW9k
+ZWwKPj4gZmlsZSBpcyBjdXJyZW50bHkgbm90IHB1YmxpY2x5IGFjY2Vzc2libGUuIEkgZGlkIG5v
+dCBmaW5kIGEgbGljZW5zZQo+PiBhdHRhY2hlZCB0byAgWzFdLCBub3IgYW55IGluZm9ybWF0aW9u
+IGFib3V0IGxpY2Vuc2luZy4KPiAKPiBJIGhhdmUgbm8gaWRlYSB3aG8gd3JvdGUgdGhhdCB0aGlu
+Zywgc29ycnkuCgpJcyB0aGVyZSBhbnlib2R5IGVsc2Ugd2hvIGtub3dzIG1vcmUgYWJvdXQgdGhl
+IGhpc3Rvcnkgb2YgdGhlIHVzZWQKQ292ZXJpdHkgbW9kZWw/IFRoYW5rcy4KCkJlc3QsCk5vcmJl
+cnQKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4g
+MzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwg
+Sm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcg
+dW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
