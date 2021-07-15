@@ -2,91 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DAA3CA0CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B163CA0D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237063AbhGOOkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:40:36 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:47224
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232420AbhGOOkg (ORCPT
+        id S237091AbhGOOlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:41:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16228 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231522AbhGOOlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:40:36 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 0713340667;
-        Thu, 15 Jul 2021 14:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626359861;
-        bh=JGcQEchEiku0wkt2P19S6Q7dycfr5k0NIGTesruM8js=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=bLTnesM6OtRMkaqTN7QhzDq/u9TnRysWShkqaruogOp6YEL4xeJa6wTFcC/VzlyAh
-         grEu6tc6wvczn9CP7VkcChjAXckNAAIL0Ai7Lf1aMmUu9qBckAKeggxrM0L3i57hmu
-         0YF/N1qAEWFpK6AoqP9IPtPgJjANQ5fAhQyrZyvVEn3fKhdBJWYmEnzRDsJQFT7Sr9
-         MP4pL9UwUHNkBA1HUvelcTQ4GYDoAsp96G3OCRHE56sAfo1WQBddBudISG4Kr9YQ9G
-         hkG3xnM0OYDAS8+B6iRgH62Kcn84hpY0pQnuCdaa1RYFpySJxFOBY4eNcNZdnKJWQc
-         mfBYjUTM/y+EQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Xinhui.Pan@amd.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amdgpu/display: make a const array common_rates static, makes object smaller
-Date:   Thu, 15 Jul 2021 15:37:40 +0100
-Message-Id: <20210715143740.28403-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 15 Jul 2021 10:41:52 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FEcXEL061781;
+        Thu, 15 Jul 2021 10:38:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=h9JBxXeLxWWQ9sCap/qOTvbfXuNQJBiH+4CvkUhVb+4=;
+ b=iHslGimfgPX2wKpGsr0mLuv49WaAPDnk50DjET66z6ld/49VzXk4t8ATOnW6DaZnUZM/
+ 8Qm2j+ONpxMoEPg/0EsIakBFM1OtK2IRmRxNPSRCo/vnw5pz3GFwviFabXTK0EIVBghl
+ J1RM4vdzbSCb5DbUEKZIX9Etidy58aIptap1BvITW408pp/wewCYImpUvmDDhLCw/W4x
+ Z2jVq1Wx0xJf1LZ8V+E84pWPUJDB/yn7a3d+8IhEZt4gSGQmAqmR26uKDA8TVlDDfTDa
+ SjLqKVjVZyCRiXodSme5uptuy3R/CNpZxP98A31r7MsxobMEPG69crwHuCaakXzI3Myv Mw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39t0735033-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 10:38:57 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16FEcv5M064292;
+        Thu, 15 Jul 2021 10:38:57 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39t0735029-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 10:38:57 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16FEcSM6008128;
+        Thu, 15 Jul 2021 14:38:55 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02wdc.us.ibm.com with ESMTP id 39q36d54m8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 14:38:55 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16FEctWY39322080
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Jul 2021 14:38:55 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1B65BAE060;
+        Thu, 15 Jul 2021 14:38:55 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 649A0AE063;
+        Thu, 15 Jul 2021 14:38:54 +0000 (GMT)
+Received: from [9.85.184.30] (unknown [9.85.184.30])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 15 Jul 2021 14:38:54 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+ <20210715154451.3f0c264e.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <0e5fae99-762e-8060-c9ed-36674effa68b@linux.ibm.com>
+Date:   Thu, 15 Jul 2021 10:38:54 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210715154451.3f0c264e.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: AoBOOyFr7VEgGkhvJhKoWsAf6hcuL6RO
+X-Proofpoint-GUID: BkIqz9IG_MiJyaNvs-fHYzFlZUGEre4c
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-15_10:2021-07-14,2021-07-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
+ impostorscore=0 clxscore=1015 spamscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107150102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Don't populate the const array common_rates on the stack but instead it
-static. Makes the object code smaller by 80 bytes:
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
- 268019	  98322	    256	 366597	  59805	../display/amdgpu_dm/amdgpu_dm.o
+On 7/15/21 9:44 AM, Halil Pasic wrote:
+> On Wed,  7 Jul 2021 11:41:56 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+> First sorry for being this late with having a more serious look at the
+> code.
+>
+>
+>> @@ -270,6 +270,9 @@ static struct ap_queue_status vfio_ap_irq_enable(struct vfio_ap_queue *q,
+>>    * We take the matrix_dev lock to ensure serialization on queues and
+>>    * mediated device access.
+>>    *
+>> + * Note: This function must be called with a read lock held on
+>> + *	 vcpu->kvm->arch.crypto.pqap_hook_rwsem.
+>> + *
+>
+> That is a fine synchronization for the pqap_hook, but I don't think it
+> is sufficient for everything.
+>
+>
+>>    * Return 0 if we could handle the request inside KVM.
+>>    * otherwise, returns -EOPNOTSUPP to let QEMU handle the fault.
+>>    */
+>> @@ -287,22 +290,12 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+>>   		return -EOPNOTSUPP;
+>>
+>>   	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
+>> -	mutex_lock(&matrix_dev->lock);
+> Here you drop a matrix_dev->lock critical section. And then
+> you do all the interesting stuff. E.g.
+> q = vfio_ap_get_queue(matrix_mdev, apqn);
+> and
+> vfio_ap_irq_enable(q, status & 0x07, vcpu->run->s.regs.gprs[2]);.
+> Since in vfio_ap_get_queue() we do the check if the queue belongs
+> to the given guest, and examine the matrix (apm, aqm) I suppose
+> that needs to be done holding a lock that protects the matrix,
+> and to my best knowledge this is still matrix_dev->lock. It would
+> probably make sense to convert matrix_dev->lock into an rw_semaphore,
+> or to introduce a some new rwlock which protects less state in the
+> future, but right now AFAICT it is still matrix_dev->lock.
+>
+> So I don't think this patch should pass review.
 
-After:
-   text	   data	    bss	    dec	    hex	filename
- 267843	  98418	    256	 366517	  597b5	../display/amdgpu_dm/amdgpu_dm.o
+Good catch. In an earlier patch review, Jason G suggested locking the 
+kvm->lock
+mutex outside of the kvm_arch_crypto_set_masks() and 
+kvm_arch_crypto_clear_masks()
+functions to resolve the lockdep splat resulting from locking the 
+matrix_dev->lock
+mutex prior to the kvm->lock mutex. I believe this will allow me to remove
+the kvm_busy/wait queue scenario without introducing a new rwsem.
 
-Reduction of 80 bytes
-
-(gcc version 10.3.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 2d48bb09645f..b196bb6eafc0 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -7580,8 +7580,10 @@ static uint add_fs_modes(struct amdgpu_dm_connector *aconnector)
- 	 * 60 	    - Commonly used
- 	 * 48,72,96 - Multiples of 24
- 	 */
--	const uint32_t common_rates[] = { 23976, 24000, 25000, 29970, 30000,
--					 48000, 50000, 60000, 72000, 96000 };
-+	static const uint32_t common_rates[] = {
-+		23976, 24000, 25000, 29970, 30000,
-+		48000, 50000, 60000, 72000, 96000
-+	};
- 
- 	/*
- 	 * Find mode with highest refresh rate with the same resolution
--- 
-2.31.1
+>
+> Regards,
+> Halil
+>
+>>   	if (!vcpu->kvm->arch.crypto.pqap_hook)
+>>   		goto out_unlock;
+>>   	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
+>>   				   struct ap_matrix_mdev, pqap_hook);
+>>
+>> -	/*
+>> -	 * If the KVM pointer is in the process of being set, wait until the
+>> -	 * process has completed.
+>> -	 */
+>> -	wait_event_cmd(matrix_mdev->wait_for_kvm,
+>> -		       !matrix_mdev->kvm_busy,
+>> -		       mutex_unlock(&matrix_dev->lock),
+>> -		       mutex_lock(&matrix_dev->lock));
+>> -
+>>   	/* If the there is no guest using the mdev, there is nothing to do */
+>>   	if (!matrix_mdev->kvm)
+>>   		goto out_unlock;
 
