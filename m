@@ -2,89 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270173CAE02
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC763CAE0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236922AbhGOUjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:39:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235972AbhGOUjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DFD5613D4;
-        Thu, 15 Jul 2021 20:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626381381;
-        bh=qWFQ91w7Drwc+LMGTbz4n4hkc/PAiybe38t1z6unfr8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k0uqSirnK8Ds9cxHtJXyhq1iojKOvP0gan/9fqhocybfUeJgKGM00oztlxWRN+1TN
-         lz8oCRz2Kb2E1CdSF1BTLLQCbcnPK2NOxBr0mN4oFRJz+FWolWagjpR58h+L+A/xrf
-         7/alsDSrGvFMkG6H6CRLJzH0pldXK7uYsHbC809gfHc0TdHj07QXp8JKcql/xagUls
-         LORWHmlMqXFqqH169ru5mHqt9lckp/JbeDwGNDJadaG/sf5tGxd2BkRHqPeZrRG/j9
-         1wErQoeK9seR92hzctfhZVPw28eqodJeBeuvRK4xqcBFA/J1tHWpDHv88BRqx2hKsa
-         OgxWQghuw8BNg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5C302403F2; Thu, 15 Jul 2021 17:36:19 -0300 (-03)
-Date:   Thu, 15 Jul 2021 17:36:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 18/20] perf trace: free strings in
- trace__parse_events_option
-Message-ID: <YPCcQ5qrryTLoNaS@kernel.org>
-References: <cover.1626343282.git.rickyman7@gmail.com>
- <34d08535b11124106b859790549991abff5a7de8.1626343282.git.rickyman7@gmail.com>
+        id S237226AbhGOUmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236255AbhGOUmY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 16:42:24 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80614C06175F;
+        Thu, 15 Jul 2021 13:39:30 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id y4so6632816pfi.9;
+        Thu, 15 Jul 2021 13:39:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AlufaE/uhtXpJS+X/Cv/4V7lXF/7VmTD9+u29xK53j4=;
+        b=WMkOTGATLrOKWgNXjdLG5Bd02p15Mv9Rt65nn2iAH5WKiK/nK3v1POvrH8bj1d5U5k
+         eiN06yyVW6UmSAVlvVogGbmqKhiP8EgFYiNnSGJiO57Zckwlbj7mwz/l6XkL44XozFLu
+         FuD2P3hWdepZc6s+nMxUAEF+4ave0lpkK3rRAzsH0BweeD78buL/8g0oAC1w/Y+/TMeY
+         OyRnG/9g2yPoOCsqptvAHL2w7ZLXbi7xXK5XyGAAX8QQKId2ssiXjjRNAvAFCP+p2jjJ
+         pcNdVwZXOeVp3V8ccMT2TCnRO07XFukbnjVglhT+GCiSMSIDLVwavehDhBCbqbgHCNCJ
+         cboA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AlufaE/uhtXpJS+X/Cv/4V7lXF/7VmTD9+u29xK53j4=;
+        b=lT17t0rHQ7ziJxXJ8/3KFX9PKGRjd72pFy5cyUy4sW0DneAEzvJ2Rdqx5Ql5hVN5n5
+         lpEHIral3qI1dslzELtbDbdJGeMJXnSb522kb9dTv3P0X4WeIXkzd92UhTCM/8aZg2RC
+         vrK3yx4OIAMWx1x9an8FWA6jGjii4+LZWDplAjpbA25j6CUT9mVM1gs0M71cugqL//uO
+         IFkLeCkXJzdAj7d8F+ISlwqanwdkZPKFTuGZ0XtEFRp0Dpmf54yU+KHh0nhENNi3we/3
+         K7s1RNPQmZ9doAc1d9vvyTrn/2dg1niKNiv+W8zUm2dViOK3bGxiBbO/pZ9lMpwgTKSW
+         G9Dw==
+X-Gm-Message-State: AOAM5301ElUaKVZxU00+n7TGdd7NXPR8Kyi9TEeaCPG+AxC0XgbwGDgl
+        tyPBgC6zIvFD+KWZTY+OW1A=
+X-Google-Smtp-Source: ABdhPJyBxF680f6wW7jw2RGmcltUb3M8jWjlKmoX0ibfr7N5zAVVXNLcEMVdMH7PUcEtwX5M3uNrQA==
+X-Received: by 2002:a63:6644:: with SMTP id a65mr6296216pgc.431.1626381569951;
+        Thu, 15 Jul 2021 13:39:29 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:5ddb:aee3:1e4b:38])
+        by smtp.gmail.com with ESMTPSA id d13sm7353266pfn.136.2021.07.15.13.39.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 13:39:28 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 13:39:26 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Maxim Mikityanskiy <maxtram95@gmail.com>,
+        linux-leds@vger.kernel.org, Daniel Kurtz <djkurtz@chromium.org>,
+        Oliver Neukum <oneukum@suse.de>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] HID: hid-input: Add offhook and ring LEDs for
+ headsets
+Message-ID: <YPCc/k89XNTmeKVo@google.com>
+References: <20210703220202.5637-1-maxtram95@gmail.com>
+ <20210703220202.5637-2-maxtram95@gmail.com>
+ <CAO-hwJJxJqgW6CGPmvL41teh6vgWfSg55qoXWL3TjQx+mvsbHg@mail.gmail.com>
+ <nycvar.YFH.7.76.2107152057230.8253@cbobk.fhfr.pm>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <34d08535b11124106b859790549991abff5a7de8.1626343282.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <nycvar.YFH.7.76.2107152057230.8253@cbobk.fhfr.pm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 15, 2021 at 06:07:23PM +0200, Riccardo Mancini escreveu:
-> ASan reports several memory leaks running the perf test
-> "88: Check open filename arg using perf trace + vfs_getname".
-> The fourth of these leaks is related to some strings never being freed
-> in trace__parse_events_option.
+On Thu, Jul 15, 2021 at 08:57:44PM +0200, Jiri Kosina wrote:
+> On Tue, 6 Jul 2021, Benjamin Tissoires wrote:
 > 
-> This patch adds the missing frees.
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/builtin-trace.c | 3 +++
->  1 file changed, 3 insertions(+)
+> > > A lot of USBHID headsets available on the market have LEDs that indicate
+> > > ringing and off-hook states when used with VoIP applications. This
+> > > commit exposes these LEDs via the standard sysfs interface.
+> > >
+> > > Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+> > > ---
+> > >  drivers/hid/hid-input.c                | 2 ++
+> > >  drivers/input/input-leds.c             | 2 ++
+> > >  include/uapi/linux/input-event-codes.h | 2 ++
+> > >  3 files changed, 6 insertions(+)
+> > >
+> > > diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> > > index 4286a51f7f16..44b8243f9924 100644
+> > > --- a/drivers/hid/hid-input.c
+> > > +++ b/drivers/hid/hid-input.c
+> > > @@ -798,6 +798,8 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+> > >                 case 0x4b:  map_led (LED_MISC);     break;    /*   "Generic Indicator"        */
+> > >                 case 0x19:  map_led (LED_MAIL);     break;    /*   "Message Waiting"          */
+> > >                 case 0x4d:  map_led (LED_CHARGING); break;    /*   "External Power Connected" */
+> > > +               case 0x17:  map_led (LED_OFFHOOK);  break;    /*   "Off-Hook"                 */
+> > > +               case 0x18:  map_led (LED_RING);     break;    /*   "Ring"                     */
+> > >
+> > >                 default: goto ignore;
+> > >                 }
+> > > diff --git a/drivers/input/input-leds.c b/drivers/input/input-leds.c
+> > > index 0b11990ade46..bc6e25b9af25 100644
+> > > --- a/drivers/input/input-leds.c
+> > > +++ b/drivers/input/input-leds.c
+> > > @@ -33,6 +33,8 @@ static const struct {
+> > >         [LED_MISC]      = { "misc" },
+> > >         [LED_MAIL]      = { "mail" },
+> > >         [LED_CHARGING]  = { "charging" },
+> > > +       [LED_OFFHOOK]   = { "offhook" },
+> > 
+> > I am pretty sure this also needs to be reviewed by the led folks.
+> > Adding them in Cc.
 > 
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index d9c65d55a9ae7526..4a677f3ff273887a 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -4659,6 +4659,9 @@ static int trace__parse_events_option(const struct option *opt, const char *str,
->  		err = parse_events_option(&o, lists[0], 0);
->  	}
->  out:
-> +	free(strace_groups_dir);
-> +	free(lists[0]);
-> +	free(lists[1]);
->  	if (sep)
->  		*sep = ',';
->  
-> -- 
-> 2.31.1
-> 
+> Can we please get Ack from the LED maintainers? Thanks.
+
+I do not think we should be adding more LED bits to the input
+subsystem/events; this functionality should be routed purely though LED
+subsystem. input-leds is a bridge for legacy input functionality
+reflecting it onto the newer LED subsystem.
+
+Thanks.
 
 -- 
-
-- Arnaldo
+Dmitry
