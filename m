@@ -2,108 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961CC3C9B27
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170333C9B2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235267AbhGOJMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
+        id S237031AbhGOJNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhGOJMo (ORCPT
+        with ESMTP id S232291AbhGOJNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:12:44 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69072C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:09:51 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id y4so5390919pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:09:51 -0700 (PDT)
+        Thu, 15 Jul 2021 05:13:01 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC04C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:10:07 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id a12so8610249lfb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:10:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KUb2QkrkQ8ko4G078uye8RdkQ5z0d+6I4mThvq6tm5M=;
-        b=LsTt8+jKu7B2i3FTudYEE6Cx0zDvQrhi/SyMFOLRQ0RA8dvTjPxYA4KfIQGrVmwQiD
-         XkFdISvOWcgEJyCbg4z/KPXoUG6xgRwwZBPCt6raWN9FRWTbWUsGnk5s289nys7fn4sX
-         B0+Oy0Xuz4roi2d5VWeGko2eDqXACou67289I=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=9gvzqDIemci/icf/CrYzh97il3z5m8X8hyJ/qIYo0Os=;
+        b=euuQfcNwchFF0Y8fNGufYfpPZ7625E3ZZdMSRWqNhXJGkDZ0lpXM65j0xjEIfGNKsL
+         PpLtyhuq5ND+/sndpzLBaseILlcl5J00OcImMuRgKA3k2tLQkMXlfUBbnwWfcjguwh57
+         hv4WzebAdnrET9I62mAljQ9qEjROYz9EIpvSu9+PSgP/8BBHJCcdMdr2nOhqp9BdJ5wW
+         k2vK/eP97V8fWrvdMZUr5/h6tXgYPhydkiIjwvV1nY7ESjTWFidDSv+coknKxoivzJO+
+         njxn+ijYPmYKCwVY5IQ8n9kjJKQzwrh5w3F+kBYQ6JblAM4fwgFRD2mbXCNvZrTWismb
+         V9QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KUb2QkrkQ8ko4G078uye8RdkQ5z0d+6I4mThvq6tm5M=;
-        b=WW5NhOvS6rtOfUjTguNCA5HFZlLPQAnLFHQWi7gcizAO88UfzBgyaIIP5wNygX/pCK
-         L+3K48w3r/GDm/Jw/j+uoJAwxrv/gPd05voEed0WeFv1p4zwws0cURdGxn4ra3fKCWBF
-         jIG5meezK5tmxctnQABEBdmNFI1vUc28F9oRdTX7yYRn1BAgYOzfbML2aOHGRajMh8Jh
-         h7hfpHs25G0Jplk9YAQXjZQsc052Jh6OvD57JG+OrcKvC2H30ezETyTR/+BKnf2fE/Al
-         /Djg9f6gbUjpJvnCLoyyqUw+GI+Uxhd5ZNjbT2l8VlWfSuLKB3XqU/PgUMDeIh2yhLwZ
-         icRw==
-X-Gm-Message-State: AOAM5319SjUW4iGRxsiWizffZxyEUUcMcOqkQ78mf4qBDEjANfgN79+b
-        ixYArqGWzGvr/PBQOv05RHNZ4w==
-X-Google-Smtp-Source: ABdhPJwlXpAIZhgHr+sKRH9JqJhO8b5bbttsmXnjTJUyUqXp5WVPhcSpjW5bawKM30k3u+REa/x7wA==
-X-Received: by 2002:a65:67d6:: with SMTP id b22mr3565984pgs.271.1626340190981;
-        Thu, 15 Jul 2021 02:09:50 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:cf9:3b54:4709:3747])
-        by smtp.gmail.com with ESMTPSA id o10sm5837260pfu.131.2021.07.15.02.09.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=9gvzqDIemci/icf/CrYzh97il3z5m8X8hyJ/qIYo0Os=;
+        b=gUTNyjxyD0l/hBm0WGwRLuZOFjySfEGlyMncPcSJ+DMYfLtlq65RInhWwrb+Qo/6Pn
+         /RaUlBjhwFYFPIBcXhN+b68g4mjQOycYYNsxMBf3CPrJ+5E9Bsyqawz+1iK5/7j3JnTL
+         NyMBmvu7nUo2FNn0dflMTqQ70RLYrEYmsrxdWZbfO0UVjHMZ+pgNvo3WNbehY4K0Y86E
+         5eVu5r8u6ARxwY2zCYFXa4bDUdCMajcYX8m+qWhXl0xCXGJVxuqHwX/L+rJJpPDT8M6k
+         7YIc+sNuXdE+XK3ZFyXKRtdLI4g1E9UB138+Y/3T9sVFWdCJbT++IdSw9tSrepUBiaS/
+         RmWA==
+X-Gm-Message-State: AOAM532law46d0VGBCt7wRVlxNQufLaBbpEkqQ91GVn1H4Uie6KI+SqT
+        6Wkte1JnqeFGnGrtub2iH5Y=
+X-Google-Smtp-Source: ABdhPJzpoXFKX9X8/dQqRnjhIcXDouI3TuXkrZh4nORPxX/nb+O3lqZMaxqyQKCewVl80SaCJFfklg==
+X-Received: by 2002:a19:911e:: with SMTP id t30mr2616500lfd.229.1626340206336;
+        Thu, 15 Jul 2021 02:10:06 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id t22sm145010lfd.131.2021.07.15.02.10.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 02:09:50 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 18:09:45 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/2] rcu/tree: handle VM stoppage in stall detection
-Message-ID: <YO/7WS/WefdkFFbj@google.com>
-References: <20210521155624.174524-1-senozhatsky@chromium.org>
+        Thu, 15 Jul 2021 02:10:06 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 12:10:02 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
+        tzimmermann@suse.de, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH v4 03/17] drm/uAPI: Add "active bpc" as feedback channel
+ for "max bpc" drm property
+Message-ID: <20210715121002.32fa8e1d@eldfell>
+In-Reply-To: <d55fcc23-2531-9da8-5c0c-68454e15411b@tuxedocomputers.com>
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+        <20210618091116.14428-4-wse@tuxedocomputers.com>
+        <18bbd0cf-4c37-ce9d-eb63-de4131a201e1@tuxedocomputers.com>
+        <11cd3340-46a1-9a6a-88f5-95c225863509@tuxedocomputers.com>
+        <20210630112141.319f67eb@eldfell>
+        <ca2827b5-9f6f-164b-6b3f-3f01898d3202@tuxedocomputers.com>
+        <20210701104256.247538e1@eldfell>
+        <b8db0280-f979-26a6-bf1b-148f8c4cc638@tuxedocomputers.com>
+        <d55fcc23-2531-9da8-5c0c-68454e15411b@tuxedocomputers.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521155624.174524-1-senozhatsky@chromium.org>
+Content-Type: multipart/signed; boundary="Sig_/SMR4M7.1Z/f8VbFUwKkibVw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/22 00:56), Sergey Senozhatsky wrote:
-> Soft watchdog timer function checks if a virtual machine
-> was suspended and hence what looks like a lockup in fact
-> is a false positive.
-> 
-> This is what kvm_check_and_clear_guest_paused() does: it
-> tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
-> and if it's set then we need to touch all watchdogs and bail
-> out.
-> 
-> Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
-> check works fine.
-> 
-> There is, however, one more watchdog that runs from IRQ, so
-> watchdog timer fn races with it, and that watchdog is not aware
-> of PVCLOCK_GUEST_STOPPED - RCU stall detector.
-> 
-> apic_timer_interrupt()
->  smp_apic_timer_interrupt()
->   hrtimer_interrupt()
->    __hrtimer_run_queues()
->     tick_sched_timer()
->      tick_sched_handle()
->       update_process_times()
->        rcu_sched_clock_irq()
-> 
-> This triggers RCU stalls on our devices during VM resume.
-> 
-> If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
-> before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
-> then there is nothing on this VCPU that touches watchdogs and
-> RCU reads stale gp stall timestamp and new jiffies value, which
-> makes it think that RCU has stalled.
-> 
-> Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
-> don't report RCU stalls when we resume the VM.
+--Sig_/SMR4M7.1Z/f8VbFUwKkibVw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hello Paul,
+On Wed, 14 Jul 2021 20:18:57 +0200
+Werner Sembach <wse@tuxedocomputers.com> wrote:
 
-I've noticed that this patch set didn't make it to Linus's tree.
-Was it intentional?
+> Am 01.07.21 um 13:30 schrieb Werner Sembach:
+> > Am 01.07.21 um 09:42 schrieb Pekka Paalanen: =20
+> >> On Wed, 30 Jun 2021 11:42:10 +0200
+> >> Werner Sembach <wse@tuxedocomputers.com> wrote:
+> >> =20
+> >>> Am 30.06.21 um 10:21 schrieb Pekka Paalanen: =20
+> >>>> On Tue, 29 Jun 2021 13:02:05 +0200
+> >>>> Werner Sembach <wse@tuxedocomputers.com> wrote:
+> >>>>    =20
+> >>>>> Am 28.06.21 um 19:03 schrieb Werner Sembach: =20
+> >>>>>> Am 18.06.21 um 11:11 schrieb Werner Sembach: =20
+> >>>>>>> Add a new general drm property "active bpc" which can be used by =
+graphic
+> >>>>>>> drivers to report the applied bit depth per pixel back to userspa=
+ce.
+> >>>>>>>
+> >>>>>>> While "max bpc" can be used to change the color depth, there was =
+no way to
+> >>>>>>> check which one actually got used. While in theory the driver cho=
+oses the
+> >>>>>>> best/highest color depth within the max bpc setting a user might =
+not be
+> >>>>>>> fully aware what his hardware is or isn't capable off. This is me=
+ant as a
+> >>>>>>> quick way to double check the setup.
+> >>>>>>>
+> >>>>>>> In the future, automatic color calibration for screens might also=
+ depend on
+> >>>>>>> this information being available.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> >>>>>>> ---
+> >>>>>>>    drivers/gpu/drm/drm_connector.c | 51 +++++++++++++++++++++++++=
+++++++++
+> >>>>>>>    include/drm/drm_connector.h     |  8 ++++++
+> >>>>>>>    2 files changed, 59 insertions(+)
+
+> New idea: Instead of the "active"-properties with various if cases in=20
+> the kernel code, there could just be blob properties exposing the hdmi=20
+> infoframes, hdmi general control packages, dp misc0 and misc1 and dp vsc=
+=20
+> sdp.
+>=20
+> Combined they have all the color information and it is made sure that=20
+> it's what is actually send to the monitor (I would consider sending=20
+> something differed then what is told in the infoframes a bug).
+>=20
+> They also have built in version numbers, if in the future they contain=20
+> more information.
+>=20
+> Only disadvantage: We leave parsing for human readable output to the=20
+> userspace.
+>=20
+> Alternatively keep the "active"-properties but fill them from the=20
+> infoframes.
+>=20
+> I'm not entirely sure where to do that on amd, because there the=20
+> infoframes are directly created in the dc code shortly before writing=20
+> them to the hardware registers and immediately forgotten afterwards. But=
+=20
+> you still have access to the connector struct from that code so the=20
+> property could be updated directly there.
+>=20
+
+Hi,
+
+I'm not fundamentally against that as long as we have a common
+userspace library to parse those blobs. In libdrm perhaps? Or a new
+library?
+
+But I also don't know about the technical feasibility, is it a good
+idea.
+
+OTOH, that could be the best thing for testing drivers vs. KMS UAPI
+when you don't have a hardware HDMI/DP grabber to inspect the
+infoframes. So maybe kernel CI would like that?
+
+
+Thanks,
+pq
+
+--Sig_/SMR4M7.1Z/f8VbFUwKkibVw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDv+2oACgkQI1/ltBGq
+qqcCww//b733aNOKh+AB43HwqpEMB7fT+jzdnNxC0QgSctkmcrnbNn4D9JFx+Q0z
+d5UVW1d1NQd8Fxhy1MkibsiaNWln1fmz1iBrBX+yMO7GzC/BF0S5XqObAwGRqMjg
+X3+maA4bxJ+qXPIsPzmHMXKO4f0ZRLdEsqOckWuNh1idIa3YY9Vh0yH4MVfNC3QL
+QLGsMvl7ohzxNd4QG5U6379JJ7A5Jf6JEvdHMWOx261Qd3CoKYqmCcQ+ktZMoj3K
+Wp9aRqBhNNa9JW9fUmwQHjJHgJT4K9dvzpjxwS77DAGmwMJ1LdF3pIo8LsOxIEer
+rSSXmV9QsRkPwfIGwbImrlpGt5vfKHGwqlzaQGgo6VSwVKTYvzcYu7NIeAD9Uqhg
+DJPk9yFPmLWULf4vIKDfHgif1AERVgJrgZM2qBSsA2EHyOYe+dbWQibnJCmUb/PD
+1FkY4UEWVgB/IMi2Z7YZehwsJnr38MqTk8oLRMQXfT081PENqCGcnEtjDXkxB2vp
+kxzXuSj55cVJOm1ubEmcmVa9MIFCtcj80i7iplk5IBLdYo9bsgN+r9kYURLNzKbt
+TMN/tFdnqRQIuSSyVBa8TxtqIZqk4RO/3rwzpcTaZGYEwz5kn+zE2Ly7Z9uzYVT4
+GrACR/syePdF3NdF5EDZjUlRlc5Z99S212BXc6VAXzG4cpz50zE=
+=eCGP
+-----END PGP SIGNATURE-----
+
+--Sig_/SMR4M7.1Z/f8VbFUwKkibVw--
