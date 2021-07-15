@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866BE3CA58B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404CB3CA58E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhGOSeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhGOSeC (ORCPT
+        id S230325AbhGOSeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:34:31 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:59291 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhGOSea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:34:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC66C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XvBzUI9q5SdUC3+GLbvDvcpwu2AP6zcoqrSLGMfDoLI=; b=uVS6KcrcP2Nm6Xm5ddznkWpNYD
-        sCl1YHNrGVdCgmrch/GVkS2KC9g1EGo+PefYChH9voczBALZ95f3GIPzpYZDzDh0R41jS7xNr7mp6
-        kE7uu11faElqZwBarl5ydMQNqEGLyv/vocuOdVIEmQ3+2Un5p4hgtMULaqNTSNfU4HbLaaKjjgkWY
-        olIZ4f8Jd6LOswjrxQpyr03aWgpi1fpLVP+WhWniqQVClRNj/3GxLjLgNaHsw5R/Rl41xjGKWE+Mr
-        yRmnTeyEpDKydjKwkUfltA5VqXjP2p6OPY6s9msd4OsIXJmeMDysBJluKcLEV+LGIBBUnMiq9USWK
-        y4MCN4Cg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m467h-003d0R-9x; Thu, 15 Jul 2021 18:30:22 +0000
-Date:   Thu, 15 Jul 2021 19:30:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mm: KSM: fix ksm_run data type
-Message-ID: <YPB+tT0AcOB4UZQ5@casper.infradead.org>
-References: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
- <343394260f599d940cacc37f1dcc0309239ae220.1626371112.git.zhansayabagdaulet@gmail.com>
- <YPB7rBlU1SinK6FR@casper.infradead.org>
- <CA+CK2bCPMmbr+=h4evTkbJoEFQu_th_NOe0Gp11hU7xz3fLZ8A@mail.gmail.com>
+        Thu, 15 Jul 2021 14:34:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1626373897; x=1657909897;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xpeO1UlOfz03vCZPOKMaLcC15cHuHWekXiIrFd2h630=;
+  b=KtplTw6nTScT0R54FA9FlNgafCeQQ4rBNhbpGa1r2pQdWTvS6smlN086
+   B/0qOyFFXFF+8LfVR8Y4/p3JnX6gu5ulWfRn9k9eJhCJgKeeEkrVQsuRu
+   71yOrV9lCG3U2CEBtbh3hkJ02WE2/kJmZtWGvFNmQz2r2lb64PIwudQCF
+   Y=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 15 Jul 2021 11:31:36 -0700
+X-QCInternal: smtphost
+Received: from nalasexr03e.na.qualcomm.com ([10.49.195.114])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Jul 2021 11:31:35 -0700
+Received: from quicinc.com (10.80.80.8) by nalasexr03e.na.qualcomm.com
+ (10.49.195.114) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 15 Jul
+ 2021 11:31:34 -0700
+Date:   Thu, 15 Jul 2021 11:31:33 -0700
+From:   Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     <agross@kernel.org>, <linus.walleij@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH 5/5] dt-bindings: clock: Introduce pdc bindings for SDX65
+Message-ID: <20210715183126.GA6897@quicinc.com>
+References: <20210709200339.17638-1-quic_vamslank@quicinc.com>
+ <20210709200339.17638-6-quic_vamslank@quicinc.com>
+ <YOkUd3B0vvclk7un@yoga>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bCPMmbr+=h4evTkbJoEFQu_th_NOe0Gp11hU7xz3fLZ8A@mail.gmail.com>
+In-Reply-To: <YOkUd3B0vvclk7un@yoga>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasexr03e.na.qualcomm.com (10.49.195.114)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 02:21:21PM -0400, Pavel Tatashin wrote:
-> On Thu, Jul 15, 2021 at 2:18 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Fri, Jul 16, 2021 at 12:01:01AM +0600, Zhansaya Bagdauletkyzy wrote:
-> > > +++ b/mm/ksm.c
-> > > @@ -289,7 +289,7 @@ static int ksm_nr_node_ids = 1;
-> > >  #define KSM_RUN_MERGE        1
-> > >  #define KSM_RUN_UNMERGE      2
-> > >  #define KSM_RUN_OFFLINE      4
-> > > -static unsigned long ksm_run = KSM_RUN_STOP;
-> > > +static unsigned int ksm_run = KSM_RUN_STOP;
-> >
-> > Should this be an enum instead?
+On Fri, Jul 09, 2021 at 10:31:03PM -0500, Bjorn Andersson wrote:
+> On Fri 09 Jul 15:03 CDT 2021, quic_vamslank@quicinc.com wrote:
 > 
-> I think "unsigned int" is OK here, as it is exposed as uint to users:
-> Documentation/ABI/testing/sysfs-kernel-mm-ksm
+> > From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
+> > 
+> > Add compatible for SDX65 pdc.
+> > 
 > 
-> /sys/kernel/mm/ksm/run
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > 
-> run: write 0 to disable ksm, read 0 while ksm is disabled.
+> That said, this patch is independent from the clock patches and would be
+> picked up by a different maintainer than the clock patches, so including
+> it in the same series only risk complicating the pickup of the patch.
 > 
-> - write 1 to run ksm, read 1 while ksm is running.
-> - write 2 to disable ksm and unmerge all its pages.
+> And with that in mind, looking at the recipients of all your patches you
+> forgot toadd Stephen to the clock patches, Linus is not involved in
+> the clock patches and you completely missed the irq maintainer.
+> 
+> Please use scripts/get_maintainer.pl to list the appropriate recipients
+> for each patch(series), to ensure that your patches will get the
+> attention they deserve.
 
-The document is out of date then as it does not mention 'offline'.
+Thanks for the review comments Bjorn. I'll run get_maintainer.pl like you
+suggested.
 
-Also, why does the call to kstrtouint() specify base 10?  If it is a
-bitmap, then permitting 0x [1] is more natural.  I would expect to see
-base 0 there.
-
-[1] or even 0b, although I see that _parse_integer_fixup_radix does not
-support the 0b notation.
+Thanks,
+Vamsi
