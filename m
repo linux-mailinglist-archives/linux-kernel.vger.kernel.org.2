@@ -2,92 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FA33C98B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AF93C98BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbhGOGRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 02:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
+        id S236913AbhGOGXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhGOGRD (ORCPT
+        with ESMTP id S231149AbhGOGXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 02:17:03 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162B1C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:14:10 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso4586106wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:14:09 -0700 (PDT)
+        Thu, 15 Jul 2021 02:23:01 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E62AC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:20:08 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id n10so2664918plk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:20:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Iumvt163jDkMqM/bm6t4hJsjhwsrpweE3EWP0akQoGw=;
-        b=v0bm2dL3TxiL2iRA2uvNpplZnLGwT4WyT6g4m5P1Ulx1CkWqfEgYinOyNg6r4sIxg9
-         VuKXAXVruEtKvE0GmJH0tTigtNY7q86+TS8x6kyiC6e5r/cevRg1HD8qIqhVGkEwmhZE
-         HNQxx1RtoF+xQ1QA2bIkxD45h2ptjnaBtrgRPirU8I2CYrEpcqkoIIIyWlTujHE/uNPs
-         hj5vDTPRRDLtJNkrYAvh9Wli4YYpymYuoYoDT+t9jzjGZI8cctPJlzp+vCRy7kX0Dc79
-         JShKhLoAAGEa3HkzOwX36T8850SJibc9b42ah081Aq+UKKzPlfw8YK71mkEKVkNA4dDj
-         WwUA==
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3KEYRV18inQTvxQEnqR/XVe6/C5rX+tc+VWpSwxHYPA=;
+        b=VKLtGA+Eu/71OhbovI75hGlNKv6anN9s84itIzsfFEminUCEj7EMW+9LuLjH4s8qyl
+         qbPz62Qkv/52TuLe0OxHtGpTeN5XCIlLBF5ZfnVzAyox8b8uvekArNjyzf4CFoYoVL16
+         VwtxPXcMa4pUGx5cjrofYbSvsc/QYbYXFUnZne9Q3kA5dPWAXC+UodCttN/Dl6KFh3yx
+         xy8kJMhdRkAZobISbgNz3c9Vl3M5ujsTlDb0s11C3mfnI90HlRcU4y67bTr4hvgUJaLB
+         3aIgzEjl/18UtraL0xRGv98D2/fDEpVb+yo817YdKlcnQjqCwjr+vhIwtsE25BM085mL
+         LONQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Iumvt163jDkMqM/bm6t4hJsjhwsrpweE3EWP0akQoGw=;
-        b=jRjzpztpO8RGyLY3lKFcKntROsQLl+Aik2U9U7f9/t/VlQuQUqIBqGWeoGejE8jaEm
-         3OX6bN7pTMS64vcCO/IyfBiu7hkPesmmmIzA/4+S06Gn8ezkc57t3C/Dyt6WurUfpUj8
-         OC4KNdRrZ80aqcqSHWBlbCab+hoE70kBVlFi6TRdf4oO8OwayXG9SGXA+creHiz9eWZ4
-         UxMd1by5mUt5fBNa6upW1Dnm0FZMQwAcFioro7SlM9ZAUnTbxFYcKonOFDbCvDlmxU53
-         +q9aCN8FvVDx315tyooAki5RzZTqbm536Mh3oe/BZpSe0UA3daLe7lwhfbA/NfRH2MTT
-         K8BQ==
-X-Gm-Message-State: AOAM532TUOAk7q8dMUzv4uSW2u6RowvjHT3R9V6bXrpuxU1ljX2Okng4
-        Hxm4kO7tSJNEBdXS7UcxH31e3CNJHYAgQAq1ILnk/w==
-X-Google-Smtp-Source: ABdhPJyAX1wvxD9+8DDTkqHEx4+aLwegkb+vexvERQtz9pZgDaAkFcb1AMnbCE9SzCYkZtQg54XXTQX5Qo0U8+YNbnw=
-X-Received: by 2002:a1c:9a51:: with SMTP id c78mr8520824wme.103.1626329648490;
- Wed, 14 Jul 2021 23:14:08 -0700 (PDT)
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3KEYRV18inQTvxQEnqR/XVe6/C5rX+tc+VWpSwxHYPA=;
+        b=BYmmYdNZnltqROFYn69q3eKlYrSacReAqdMXJ0Gk6712+1pUn9OXipDZjvKElyMzKy
+         XIBRQ9IDw4vMvktt5oQsTM1vLL1wTXcMwopMoaBUAgm4MuM2GC/LQ84bCPREQwQm/meK
+         ODZ30j7szCDjY4k5Q0+89j4VxNpwekHc+MKcx2RHebf79JhSi7i6Voq695K47/1/FI2X
+         j0oUBftBCh9UCR3A34zeHfGvjXgzibcU6asL41Yr2W6Tb+DsytTM+uXStCUw30mKKnZ2
+         MtFUU7TelsZttvj4KTOFweqgMVfH1L4bnTa/T7xBWeACNjs1XuwNKWf0nb+KGPGYDEMJ
+         UX1A==
+X-Gm-Message-State: AOAM532KwW5x8VbHnCNFBgoPINXichGE0HRPpXYYGvQPXES4hesmfnvO
+        GuKvZXQnzNOmnejmqE1mJ3zdaqGgeAc=
+X-Google-Smtp-Source: ABdhPJyqZ7oJFlKXoHbeQ6MasTn8ZV58Ycg6hIwJbWFpqbmbcmtq3SDYKcAMtWPnMxOr005WRz7Lzg==
+X-Received: by 2002:a17:90a:3e0f:: with SMTP id j15mr2678681pjc.178.1626330006434;
+        Wed, 14 Jul 2021 23:20:06 -0700 (PDT)
+Received: from [192.168.1.123] (M106072041033.v4.enabler.ne.jp. [106.72.41.33])
+        by smtp.gmail.com with ESMTPSA id u21sm4937658pfh.163.2021.07.14.23.20.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jul 2021 23:20:05 -0700 (PDT)
+Cc:     akira.tsukamoto@gmail.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] riscv: __asm_copy_to-from_user: Optimize unaligned
+ memory access and pipeline stall
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>
+References: <3e1dbea4-3b0f-de32-5447-2e23c6d4652a@gmail.com>
+ <60c1f087-1e8b-8f22-7d25-86f5f3dcee3f@gmail.com>
+ <20210710014915.GA149706@roeck-us.net>
+ <CAMuHMdWrrP37Kfp4yC8G5f6SvMtD6u_=JkqX-Nd97FS_mayYWQ@mail.gmail.com>
+From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Message-ID: <f0d06d39-3dc8-fb10-4d37-a75ef866cdc8@gmail.com>
+Date:   Thu, 15 Jul 2021 15:20:03 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210714231506.886386-1-dlatypov@google.com>
-In-Reply-To: <20210714231506.886386-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 15 Jul 2021 14:13:57 +0800
-Message-ID: <CABVgOS=b6+KXp8LP5tAoaFev6yDX4gjrD1i9vBv58Y7JkO_E1A@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: tool: add --kernel_args to allow setting module params
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMuHMdWrrP37Kfp4yC8G5f6SvMtD6u_=JkqX-Nd97FS_mayYWQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 7:15 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> kunit.py currently does not make it possible for users to specify module
-> parameters (/kernel arguments more generally) unless one directly tweaks
-> the kunit.py code itself.
->
-> This hasn't mattered much so far, but this would make it easier to port
-> existing tests that expose module parameters over to KUnit and/or let
-> current KUnit tests take advantage of them.
->
-> Tested using an kunit internal parameter:
-> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit \
->     --kernel_args=kunit.filter_glob=kunit_status
-> ...
-> Testing complete. 2 tests run. 0 failed. 0 crashed. 0 skipped.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-Thanks! This is probably overdue: while I still think we want to avoid
-this being necessary for most uses, it definitely was a gap in
-kunit_tool functionality.
 
-I tested this and it worked fine, but did cause several of the
-kunit_tool_tests to fail, largely due to there being changes to the
-arguments of run_kernel(). Those should just require the associated
-tests to be updated.
+On 7/14/2021 3:10 AM, Geert Uytterhoeven wrote:
+> Hi Günter, Tsukamoto-san,
+> 
+> On Sat, Jul 10, 2021 at 3:50 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>> On Wed, Jun 23, 2021 at 09:40:39PM +0900, Akira Tsukamoto wrote:
+>>> This patch will reduce cpu usage dramatically in kernel space especially
+>>> for application which use sys-call with large buffer size, such as network
+>>> applications. The main reason behind this is that every unaligned memory
+>>> access will raise exceptions and switch between s-mode and m-mode causing
+>>> large overhead.
+>>>
+>>> First copy in bytes until reaches the first word aligned boundary in
+>>> destination memory address. This is the preparation before the bulk
+>>> aligned word copy.
+>>>
+>>> The destination address is aligned now, but oftentimes the source address
+>>> is not in an aligned boundary. To reduce the unaligned memory access, it
+>>> reads the data from source in aligned boundaries, which will cause the
+>>> data to have an offset, and then combines the data in the next iteration
+>>> by fixing offset with shifting before writing to destination. The majority
+>>> of the improving copy speed comes from this shift copy.
+>>>
+>>> In the lucky situation that the both source and destination address are on
+>>> the aligned boundary, perform load and store with register size to copy the
+>>> data. Without the unrolling, it will reduce the speed since the next store
+>>> instruction for the same register using from the load will stall the
+>>> pipeline.
+>>>
+>>> At last, copying the remainder in one byte at a time.
+>>>
+>>> Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
+>>
+>> This patch causes all riscv32 qemu emulations to stall during boot.
+>> The log suggests that something in kernel/user communication may be wrong.
+>>
+>> Bad case:
+>>
+>> Starting syslogd: OK
+>> Starting klogd: OK
+>> /etc/init.d/S02sysctl: line 68: syntax error: EOF in backquote substitution
+>> /etc/init.d/S20urandom: line 1: syntax error: unterminated quoted string
+>> Starting network: /bin/sh: syntax error: unterminated quoted string
+> 
+>> # first bad commit: [ca6eaaa210deec0e41cbfc380bf89cf079203569] riscv: __asm_copy_to-from_user: Optimize unaligned memory access and pipeline stall
+> 
+> Same here on vexriscv. Bisected to the same commit.
+> 
+> The actual scripts look fine when using "cat", but contain some garbage
+> when executing them using "sh -v".
+> 
+> Tsukamoto-san: glancing at the patch:
+> 
+> +       addi    a0, a0, 8*SZREG
+> +       addi    a1, a1, 8*SZREG
+> 
+> I think you forgot about rv32, where registers cover only 4
+> bytes each?
 
--- David
+Thanks Günter and Geert for the pointing out the errors.
+I will send the fixes, probably this weekend.
+
+Akira
