@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836DE3CAD53
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A5D3CAD59
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244605AbhGOT54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:57:56 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:37695 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345146AbhGOTyp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:54:45 -0400
-Received: by mail-pl1-f179.google.com with SMTP id a14so3985356pls.4;
-        Thu, 15 Jul 2021 12:51:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mOZJguT6e/3qRtTmvglKU9JRoKMGH/7hjY62u5soSk8=;
-        b=ZUi1OAQEE5vhE9yn0Ne7DvMF7nZPFR52sOggUoyx3Kq5QhMDEroPfL0DiNFA65TA4g
-         FbrZHK8Ev/oDgRcq8dstvR9M1hgMzDRixI+sFMdTcP/qVs2TwCUYYdNLtxeRFYFpXj0e
-         pNIvC05LVRrCGbgS3aMym66woFSOvHfB6D+4q4YGOvhH0wj1nAOVFTzKvcUM+b41JZ50
-         mrdUi728xDHsE5v/dbNLgOQEq51c1kGSuzgat7Gwsv8FMpNocLY+vHm60V8aOZa6Nh7n
-         STMpncZ+qDygKOSakcZoy4fpnUuJFxlPXNvoPxWZEHnbYE79GzzL/kNANC8lfeNvwGDs
-         H07Q==
-X-Gm-Message-State: AOAM533hR/5boazrL8v5XIO8nj8Ht/OydrqvgwWZQ5YSCFcwj03ExNz2
-        QUyRlK42OImVA1QxPd7f3ws=
-X-Google-Smtp-Source: ABdhPJwjYNjp+FUDGCk59hrqetTx4Z8BQ8/4Mba8i0AYXQM4OCICd+2wzT80C3/eHSYFlY+bFkda5w==
-X-Received: by 2002:a17:90a:4812:: with SMTP id a18mr11649926pjh.40.1626378710845;
-        Thu, 15 Jul 2021 12:51:50 -0700 (PDT)
-Received: from localhost ([191.96.120.37])
-        by smtp.gmail.com with ESMTPSA id o1sm6095214pjf.56.2021.07.15.12.51.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 12:51:50 -0700 (PDT)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk
-Cc:     hare@suse.de, bvanassche@acm.org, ming.lei@redhat.com,
-        hch@infradead.org, jack@suse.cz, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 3/3] nbd: add error handling support for add_disk()
-Date:   Thu, 15 Jul 2021 12:51:41 -0700
-Message-Id: <20210715195141.1882285-4-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210715195141.1882285-1-mcgrof@kernel.org>
-References: <20210715195141.1882285-1-mcgrof@kernel.org>
+        id S243890AbhGOT6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:58:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345576AbhGOTyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:54:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18E9A61073;
+        Thu, 15 Jul 2021 19:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626378721;
+        bh=XBqQm/qyQmEIVPgYlJirxh3AhpJzp/fXOspqXaszJhQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lWI4/VjdPWxyaFNDCvqb4MfF2OS84B/SJBa/xK4iSBX/iFYjosXhjhcDhxcftnLen
+         VrT22NbJLEkf/GvaAvH7Uo1vvQPx85WmWwAX7Y4Wehgsba+aqfPQ1EwMOnjhkyEmLw
+         XX3zGL4VvpUW/IegsjTAhqEM/17UZ+4F86s4dJ91p+94vPeqo4HWwbFG6+/osO/y5b
+         vIPoWbEK0a6vbSeKp43lap1JDQ/j1r6067eAfMhQxj91l7f+E25k0Z1IDD5+DqQZc2
+         GGmWRMo1giNIR8NPbEQKbB/RWrMWnCRgKoMIdj/D4VriDm5yANmFUjQ1oUpGyuXDbr
+         ITF19iKvSQygA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 96B4D403F2; Thu, 15 Jul 2021 16:51:58 -0300 (-03)
+Date:   Thu, 15 Jul 2021 16:51:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Kan Liang <kan.liang@intel.com>, Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 03/20] perf test: session_topology: delete session->evlist
+Message-ID: <YPCR3idcrZV0Zifh@kernel.org>
+References: <cover.1626343282.git.rickyman7@gmail.com>
+ <822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+Em Thu, Jul 15, 2021 at 06:07:08PM +0200, Riccardo Mancini escreveu:
+> ASan reports a memory leak related to session->evlist while running
+> the perf test "41: Session topology".
+> 
+> When perf_data is in write mode, session->evlist is owned by the
+> caller, which should also take care of deleting it.
+> 
+> This patch adds the missing evlist__delete.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/nbd.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Thanks, applied.
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index b7d663736d35..0ecc1e4e16fd 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1730,10 +1730,14 @@ static int nbd_dev_add(int index)
- 	disk->fops = &nbd_fops;
- 	disk->private_data = nbd;
- 	sprintf(disk->disk_name, "nbd%d", index);
--	add_disk(disk);
-+	err = add_disk(disk);
-+	if (err)
-+		goto out_err_disk;
- 	nbd_total_devices++;
- 	return index;
+- Arnaldo
+
  
-+out_err_disk:
-+	blk_cleanup_disk(disk);
- out_free_idr:
- 	idr_remove(&nbd_index_idr, index);
- out_free_tags:
--- 
-2.27.0
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/tests/topology.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+> index ec4e3b21b8311f57..b5efe675b321746e 100644
+> --- a/tools/perf/tests/topology.c
+> +++ b/tools/perf/tests/topology.c
+> @@ -61,6 +61,7 @@ static int session_write_header(char *path)
+>  	TEST_ASSERT_VAL("failed to write header",
+>  			!perf_session__write_header(session, session->evlist, data.file.fd, true));
+>  
+> +	evlist__delete(session->evlist);
+>  	perf_session__delete(session);
+>  
+>  	return 0;
+> -- 
+> 2.31.1
+> 
 
+-- 
+
+- Arnaldo
