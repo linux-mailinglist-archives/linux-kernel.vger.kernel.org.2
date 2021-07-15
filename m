@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A268C3CA9D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21913CABE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243786AbhGOTKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:10:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34342 "EHLO mail.kernel.org"
+        id S244455AbhGOTZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:25:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242373AbhGOS7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:59:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA2D3613CA;
-        Thu, 15 Jul 2021 18:56:42 +0000 (UTC)
+        id S242874AbhGOTJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03504613F7;
+        Thu, 15 Jul 2021 19:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375403;
+        s=korg; t=1626375890;
         bh=MbgXbctIS4MN5Fco/wMzsI2RvzamO0gMcpHWVPZjc5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c8gih07Eb4k9TOoEj58YbjeEsSG6cpAUHUKpp5A3WvcO4qycxAl7DY7Xc369V/m4y
-         FuUvHDF5Ko5mKBCC7UTQrYJqeAx5umSSetO+W0SewUxJRMccHrnubGYU/2VZKINViT
-         gNF7bsSwOow3pt9ysXpNIUQSun3YKNSAqF23+KEY=
+        b=mdMhFRItCuDJ2GywIWf/hUphGMBQ8ZCZQKtJzDIyaAyhLSmB6FDM32CBS7/weyv5G
+         TpcisCukmFhO4PKoyf3KLarrZ6x4MfkAXOJrTv4xum05P/SmCKeMAkqC1TWgIOgG3p
+         GefNmOr74CgMvJa3xPdqPQFsNcKg7d9cGmnJl5sg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Zou Wei <zou_wei@huawei.com>,
         Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 030/242] drm/vc4: hdmi: Fix PM reference leak in vc4_hdmi_encoder_pre_crtc_co()
-Date:   Thu, 15 Jul 2021 20:36:32 +0200
-Message-Id: <20210715182557.219795791@linuxfoundation.org>
+Subject: [PATCH 5.13 038/266] drm/vc4: hdmi: Fix PM reference leak in vc4_hdmi_encoder_pre_crtc_co()
+Date:   Thu, 15 Jul 2021 20:36:33 +0200
+Message-Id: <20210715182621.019296620@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
