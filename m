@@ -2,73 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98D93CA487
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179613CA48D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbhGORfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:35:19 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:34510 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhGORfS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:35:18 -0400
-Received: by mail-il1-f176.google.com with SMTP id e13so5716566ilc.1;
-        Thu, 15 Jul 2021 10:32:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L/JbGcL5UneA3N/Kc5Uozt/sqM+fxDCCN86JX+ouls8=;
-        b=rmRquY++yXkmmDvnK1Pnj0Z80PDIHMlBgNEp7w4PVmMf4gQ4JlCplo5yGfvXSfGFo8
-         yu84TsC9DYGnVcw7eKcXJOD20hbyibR5qHE38d5YXRgKSVopVu933GDiauVHzhSArvxo
-         Fj9UNQCzVq/445vW8UI+OGkeoN3A69nVSzG1vO8H8EQ2UgqnHJSceuKti14inQYoNddO
-         JqBMaeNQHfNc+8JqVI8yn2HVAko8n6djiIL3ak/rxR4hjrgAuZP2j6E4sn68eoV+iojS
-         r/GCX69QD+KSImyjcDk9SGaEqpulVgzrTxcq8EQOLPb8n71iUYCYCoTiE7BLz0rMxHUa
-         FNOw==
-X-Gm-Message-State: AOAM533vaNJTCl0TAaCA7Q2EyUS1ZStMOL2IamEe6rooacZMAXUdojAf
-        T7ULFpxSaSmbO27oUShs+Q==
-X-Google-Smtp-Source: ABdhPJxRce3xk7bLPbUtrq3dhlbc3XHR2GwbzcDzq62pAY3jd5i1HhXD3Gj/7AQzjzrQAKLR+K3S/Q==
-X-Received: by 2002:a92:a806:: with SMTP id o6mr3526259ilh.53.1626370344492;
-        Thu, 15 Jul 2021 10:32:24 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r4sm3316508ilb.42.2021.07.15.10.32.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 10:32:23 -0700 (PDT)
-Received: (nullmailer pid 1292199 invoked by uid 1000);
-        Thu, 15 Jul 2021 17:32:21 -0000
-Date:   Thu, 15 Jul 2021 11:32:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alex Helms <alexander.helms.jy@renesas.com>
-Cc:     michal.simek@xilinx.com, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-renesas-soc@vger.kernel.org,
-        geert+renesas@glider.be, sboyd@kernel.org, mturquette@baylibre.com,
-        linux-clk@vger.kernel.org, david.cater.jc@renesas.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: Add binding for Renesas 8T49N241
-Message-ID: <20210715173221.GA1292141@robh.at.kernel.org>
-References: <20210713214126.2278-1-alexander.helms.jy@renesas.com>
- <20210713214126.2278-2-alexander.helms.jy@renesas.com>
+        id S235533AbhGORfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229832AbhGORfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:35:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81F9261357;
+        Thu, 15 Jul 2021 17:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626370370;
+        bh=TspSQrdYsvKt5G7QcaVoQ0OF/C4arsn9rMRe1c/kxyM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dDCAiTXJG4zAADbDB2J1ySxzdNnRW27h0jNcySNLpkzYbZ93gpsuku0T3b2y1SlaF
+         uLoTTvqABrxpbHXPq+idioHuJF6aHCDEVErVy3mhwdIelvp+1pe+ovuUMcu8Z1pMZ0
+         b2jtsmqQkjxTBPo9XGCUR73zBkawS4WdchelHsNI=
+Date:   Thu, 15 Jul 2021 19:32:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH stable-5.10] io_uring: fix clear IORING_SETUP_R_DISABLED
+ in wrong function
+Message-ID: <YPBxP6kNmTKLrxKI@kroah.com>
+References: <20210715131825.2410912-1-yangyingliang@huawei.com>
+ <YPA2kfnTb5VtSTMm@kroah.com>
+ <2d9aa268-fd78-17ec-df0f-00daa1138a72@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210713214126.2278-2-alexander.helms.jy@renesas.com>
+In-Reply-To: <2d9aa268-fd78-17ec-df0f-00daa1138a72@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 14:41:25 -0700, Alex Helms wrote:
-> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
-> The 8T49N241 accepts up to two differential or single-ended input clocks
-> and a fundamental-mode crystal input. The internal PLL can lock to either
-> of the input reference clocks or to the crystal to behave as a frequency
-> synthesizer.
+On Thu, Jul 15, 2021 at 09:27:53AM -0600, Jens Axboe wrote:
+> On 7/15/21 7:22 AM, Greg KH wrote:
+> > On Thu, Jul 15, 2021 at 09:18:25PM +0800, Yang Yingliang wrote:
+> >> In commit 3ebba796fa25 ("io_uring: ensure that SQPOLL thread is started for exit"),
+> >> the IORING_SETUP_R_DISABLED is cleared in io_sq_offload_start(), but when backport
+> >> it to stable-5.10, IORING_SETUP_R_DISABLED is cleared in __io_req_task_submit(),
+> >> move clearing IORING_SETUP_R_DISABLED to io_sq_offload_start() to fix this.
+> >>
+> >> Fixes: 6cae8095490ca ("io_uring: ensure that SQPOLL thread is started for exit")
+> >> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> >> ---
+> >>  fs/io_uring.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > I need an ack from Jens before I can take this...
 > 
-> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
-> ---
->  .../bindings/clock/renesas,8t49n241.yaml      | 190 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 196 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
-> 
+> Ack, that looks like a bad merge. Fine to apply this patch, thanks.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+THanks, now queued up.
+
+greg k-h
