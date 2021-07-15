@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96813CACE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA43E3CACED
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244149AbhGOTqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:46:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50994 "EHLO mail.kernel.org"
+        id S244740AbhGOTrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:47:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243298AbhGOTQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:16:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B002F613C0;
-        Thu, 15 Jul 2021 19:12:16 +0000 (UTC)
+        id S243965AbhGOTQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:16:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09C47613D0;
+        Thu, 15 Jul 2021 19:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376337;
-        bh=/Xh4/2EnHRcT7GuxdNLXyhEeMEacqY+CT4ddg3qBIxQ=;
+        s=korg; t=1626376339;
+        bh=sxeWXK9/YKizUNdUotgqt9AIZTxWnYMASNYAdk3TRhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IKwcUG3fe7fqdx9ygqhA1CDfTNdV3ucBqSZCnPSuskpTyhysC8IxmXiPnZU/yihqn
-         SItjumPFne4Zae6gECheLTd0VQDuN6N6S32g/8hem7z3cjo/2pIfrN+1ezTFggsUWY
-         tJwaP9a8EWEPe7WUlEU+5ZdcxWxgz9FtoRPrlI74=
+        b=n87vHVpCTzyZHJ6FMfSnNLvLKxMWU6XuYKXFalc5hFJpRSi0ENaleLjEPBhkRyjgx
+         1tEV7FJB2iQyUsZoFaWq18Dc8EIVYxTgi6ifUl2zX6cAysZEGqTggNnyaolpnp6JRi
+         BrkJ6obD0pHCv9y2fWU77VPbFR2kF3fVE/WphaqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.13 228/266] lkdtm/bugs: XFAIL UNALIGNED_LOAD_STORE_WRITE
-Date:   Thu, 15 Jul 2021 20:39:43 +0200
-Message-Id: <20210715182649.403467594@linuxfoundation.org>
+Subject: [PATCH 5.13 229/266] selftests/lkdtm: Fix expected text for CR4 pinning
+Date:   Thu, 15 Jul 2021 20:39:44 +0200
+Message-Id: <20210715182649.623039848@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -40,31 +40,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kees Cook <keescook@chromium.org>
 
-commit a15676ac8f24a9ac5fd881cf17be4be13fa0910a upstream.
+commit c2eb472bbe25b3f360990f23b293b3fbadfa4bc0 upstream.
 
-When built under CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS, this test is
-expected to fail (i.e. not trip an exception).
+The error text for CR4 pinning changed. Update the test to match.
 
-Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
+Fixes: a13b9d0b9721 ("x86/cpu: Use pinning mask for CR4 bits needing to be 0")
 Cc: stable@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210623203936.3151093-5-keescook@chromium.org
+Link: https://lore.kernel.org/r/20210623203936.3151093-3-keescook@chromium.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/lkdtm/bugs.c |    3 +++
- 1 file changed, 3 insertions(+)
+ tools/testing/selftests/lkdtm/tests.txt |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -161,6 +161,9 @@ void lkdtm_UNALIGNED_LOAD_STORE_WRITE(vo
- 	if (*p == 0)
- 		val = 0x87654321;
- 	*p = val;
-+
-+	if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
-+		pr_err("XFAIL: arch has CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS\n");
- }
- 
- void lkdtm_SOFTLOCKUP(void)
+--- a/tools/testing/selftests/lkdtm/tests.txt
++++ b/tools/testing/selftests/lkdtm/tests.txt
+@@ -11,7 +11,7 @@ CORRUPT_LIST_ADD list_add corruption
+ CORRUPT_LIST_DEL list_del corruption
+ STACK_GUARD_PAGE_LEADING
+ STACK_GUARD_PAGE_TRAILING
+-UNSET_SMEP CR4 bits went missing
++UNSET_SMEP pinned CR4 bits changed:
+ DOUBLE_FAULT
+ CORRUPT_PAC
+ UNALIGNED_LOAD_STORE_WRITE
 
 
