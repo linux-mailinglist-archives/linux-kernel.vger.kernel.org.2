@@ -2,405 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBD23C95C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2783C95CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 04:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234878AbhGOCBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 22:01:40 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:60532 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231324AbhGOCBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 22:01:22 -0400
-Received: from li-pc.loongson.cn (unknown [10.20.41.133])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn0I5lu9gFi4gAA--.18314S4;
-        Thu, 15 Jul 2021 09:58:19 +0800 (CST)
-From:   lichenyang <lichenyang@loongson.cn>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devel@linuxdriverproject.org, Huacai Chen <chenhuacai@kernel.org>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v2 3/3] drm/loongson: Add interrupt driver for LS7A
-Date:   Thu, 15 Jul 2021 09:58:09 +0800
-Message-Id: <20210715015809.107821-3-lichenyang@loongson.cn>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210715015809.107821-1-lichenyang@loongson.cn>
-References: <20210715015809.107821-1-lichenyang@loongson.cn>
+        id S231736AbhGOCGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 22:06:39 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6929 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhGOCGi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 22:06:38 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQHd66V24z7ByX;
+        Thu, 15 Jul 2021 10:00:10 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 10:03:38 +0800
+Received: from [10.174.179.191] (10.174.179.191) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 10:03:37 +0800
+Subject: Re: [PATCH] mm/vmalloc: fix wrong behavior in vread
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <serapheim.dimitro@delphix.com>, <urezki@gmail.com>,
+        <wangkefeng.wang@huawei.com>, <weiyongjun1@huawei.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+References: <20210714015959.3204871-1-chenwandun@huawei.com>
+ <20210714162910.4cb5434f7745dcf7ce9d85c2@linux-foundation.org>
+From:   Chen Wandun <chenwandun@huawei.com>
+Message-ID: <1789353e-8507-a748-644c-cd3a34b5412b@huawei.com>
+Date:   Thu, 15 Jul 2021 10:03:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210714162910.4cb5434f7745dcf7ce9d85c2@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn0I5lu9gFi4gAA--.18314S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3KF4fJw13Xw4kZFyUtr45trb_yoWkXw4kpF
-        43Aa4Y9rW5tF47uwn8AFZ8Ar13C3y3K3s7WFZrG343Krykt34UXa4rCFW7Jr47ZrW7Jw4a
-        qFyxGFWrCF1Uu3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2
-        jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm
-        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK6svPMxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5N_-PUUUUU==
-X-CM-SenderInfo: xolfxvxq1d0wo6or00hjvr0hdfq/1tbiAQADA13QvNqyDAABsV
+X-Originating-IP: [10.174.179.191]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LS7A DC vsync interrupt enable and close function, and
-register irq_handler function interface.
-Add vbrank event processing flow.
 
-V2:
-- Remove the useless flags parameter.
-- Added error handling in the loongson_drm_load function.
+在 2021/7/15 7:29, Andrew Morton 写道:
+> On Wed, 14 Jul 2021 09:59:59 +0800 Chen Wandun <chenwandun@huawei.com> wrote:
+>
+>> commit f608788cd2d6 ("mm/vmalloc: use rb_tree instead of list for vread()
+>> lookups") use rb_tree instread of list to speed up lookup, but function
+>> __find_vmap_area is try to find a vmap_area that include target address,
+>> if target address is smaller than the leftmost node in vmap_area_root,
+>> it will return NULL, then vread will read nothing. This behavior is
+>> different from the primitive semantics.
+> What is "the primitive semantics"?  Does this refer to behaviour prior
+> to f608788cd2d6?
 
-Signed-off-by: lichenyang <lichenyang@loongson.cn>
----
- drivers/gpu/drm/loongson/Makefile        |   3 +-
- drivers/gpu/drm/loongson/loongson_crtc.c |  43 +++++++++-
- drivers/gpu/drm/loongson/loongson_drv.c  |  22 +++--
- drivers/gpu/drm/loongson/loongson_drv.h  |  17 +++-
- drivers/gpu/drm/loongson/loongson_irq.c  | 105 +++++++++++++++++++++++
- 5 files changed, 179 insertions(+), 11 deletions(-)
- create mode 100644 drivers/gpu/drm/loongson/loongson_irq.c
+If address is smaller than the leftmost node in vmap_area_root and
 
-diff --git a/drivers/gpu/drm/loongson/Makefile b/drivers/gpu/drm/loongson/Makefile
-index 773b806e99a2..cc50b65c7e03 100644
---- a/drivers/gpu/drm/loongson/Makefile
-+++ b/drivers/gpu/drm/loongson/Makefile
-@@ -11,5 +11,6 @@ loongson-y := loongson_drv.o \
- 	loongson_device.o \
- 	loongson_connector.o \
- 	loongson_encoder.o \
--	loongson_i2c.o
-+	loongson_i2c.o \
-+	loongson_irq.o
- obj-$(CONFIG_DRM_LOONGSON) += loongson.o
-diff --git a/drivers/gpu/drm/loongson/loongson_crtc.c b/drivers/gpu/drm/loongson/loongson_crtc.c
-index 4cb65fa08778..4c62d5b2bd56 100644
---- a/drivers/gpu/drm/loongson/loongson_crtc.c
-+++ b/drivers/gpu/drm/loongson/loongson_crtc.c
-@@ -154,19 +154,25 @@ static void loongson_crtc_mode_set_nofb(struct drm_crtc *crtc)
- }
- 
- static void loongson_crtc_atomic_enable(struct drm_crtc *crtc,
--					struct drm_atomic_state *old_state)
-+					struct drm_atomic_state *old_crtc_state)
- {
- 	struct drm_device *dev = crtc->dev;
- 	struct loongson_device *ldev = dev->dev_private;
- 	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
- 	u32 reg_offset = lcrtc->reg_offset;
- 
-+	if (lcrtc->cfg_reg & CFG_ENABLE)
-+		goto vblank_on;
-+
- 	lcrtc->cfg_reg |= CFG_ENABLE;
- 	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
-+
-+vblank_on:
-+	drm_crtc_vblank_on(crtc);
- }
- 
- static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
--					 struct drm_atomic_state *old_state)
-+					 struct drm_atomic_state *old_crtc_state)
- {
- 	struct drm_device *dev = crtc->dev;
- 	struct loongson_device *ldev = dev->dev_private;
-@@ -175,10 +181,36 @@ static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
- 
- 	lcrtc->cfg_reg &= ~CFG_ENABLE;
- 	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
-+
-+	spin_lock_irq(&crtc->dev->event_lock);
-+	if (crtc->state->event) {
-+		drm_crtc_send_vblank_event(crtc, crtc->state->event);
-+		crtc->state->event = NULL;
-+	}
-+	spin_unlock_irq(&crtc->dev->event_lock);
-+
-+	drm_crtc_vblank_off(crtc);
-+}
-+
-+static void loongson_crtc_atomic_flush(struct drm_crtc *crtc,
-+				       struct drm_crtc_state *old_crtc_state)
-+{
-+	struct drm_pending_vblank_event *event = crtc->state->event;
-+
-+	if (event) {
-+		crtc->state->event = NULL;
-+
-+		spin_lock_irq(&crtc->dev->event_lock);
-+		if (drm_crtc_vblank_get(crtc) == 0)
-+			drm_crtc_arm_vblank_event(crtc, event);
-+		else
-+			drm_crtc_send_vblank_event(crtc, event);
-+		spin_unlock_irq(&crtc->dev->event_lock);
-+	}
- }
- 
- static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
--						const struct drm_display_mode *mode)
-+		const struct drm_display_mode *mode)
- {
- 	if (mode->hdisplay > 1920)
- 		return MODE_BAD;
-@@ -194,9 +226,10 @@ static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
- 
- static const struct drm_crtc_helper_funcs loongson_crtc_helper_funcs = {
- 	.mode_valid = loongson_mode_valid,
-+	.mode_set_nofb = loongson_crtc_mode_set_nofb,
-+	.atomic_flush = loongson_crtc_atomic_flush,
- 	.atomic_enable = loongson_crtc_atomic_enable,
- 	.atomic_disable = loongson_crtc_atomic_disable,
--	.mode_set_nofb = loongson_crtc_mode_set_nofb,
- };
- 
- static const struct drm_crtc_funcs loongson_crtc_funcs = {
-@@ -206,6 +239,8 @@ static const struct drm_crtc_funcs loongson_crtc_funcs = {
- 	.destroy = drm_crtc_cleanup,
- 	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
- 	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
-+	.enable_vblank = loongson_crtc_enable_vblank,
-+	.disable_vblank = loongson_crtc_disable_vblank,
- };
- 
- int loongson_crtc_init(struct loongson_device *ldev, int index)
-diff --git a/drivers/gpu/drm/loongson/loongson_drv.c b/drivers/gpu/drm/loongson/loongson_drv.c
-index 252be9e25aff..13003f6ae062 100644
---- a/drivers/gpu/drm/loongson/loongson_drv.c
-+++ b/drivers/gpu/drm/loongson/loongson_drv.c
-@@ -24,7 +24,7 @@ static const struct drm_mode_config_funcs loongson_mode_funcs = {
- 	.mode_valid = drm_vram_helper_mode_valid
- };
- 
--static int loongson_device_init(struct drm_device *dev, uint32_t flags)
-+static int loongson_device_init(struct drm_device *dev)
- {
- 	struct loongson_device *ldev = dev->dev_private;
- 	struct pci_dev *gpu_pdev;
-@@ -131,7 +131,7 @@ int loongson_modeset_init(struct loongson_device *ldev)
- 	return 0;
- }
- 
--static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
-+static int loongson_drm_load(struct drm_device *dev)
- {
- 	struct loongson_device *ldev;
- 	int ret;
-@@ -143,7 +143,7 @@ static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
- 	dev->dev_private = ldev;
- 	ldev->dev = dev;
- 
--	ret = loongson_device_init(dev, flags);
-+	ret = loongson_device_init(dev);
- 	if (ret)
- 		goto err;
- 
-@@ -164,8 +164,16 @@ static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
- 	pci_set_drvdata(dev->pdev, dev);
- 
- 	ret = loongson_modeset_init(ldev);
--	if (ret)
-+	if (ret) {
- 		dev_err(dev->dev, "Fatal error during modeset init: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = loongson_irq_init(ldev);
-+	if (ret) {
-+		dev_err(dev->dev, "Fatal error during irq init: %d\n", ret);
-+		goto err;
-+	}
- 
- 	drm_kms_helper_poll_init(dev);
- 	drm_mode_config_reset(dev);
-@@ -192,6 +200,10 @@ static struct drm_driver loongson_drm_driver = {
- 	.fops = &fops,
- 	DRM_GEM_VRAM_DRIVER,
- 
-+	.irq_handler = loongson_irq_handler,
-+	.irq_preinstall = loongson_irq_preinstall,
-+	.irq_uninstall = loongson_irq_uninstall,
-+
- 	.name = DRIVER_NAME,
- 	.desc = DRIVER_DESC,
- 	.date = DRIVER_DATE,
-@@ -221,7 +233,7 @@ static int loongson_pci_probe(struct pci_dev *pdev,
- 		goto err_free;
- 	}
- 
--	ret = loongson_drm_load(dev, 0x0);
-+	ret = loongson_drm_load(dev);
- 	if (ret) {
- 		drm_err(dev, "failed to load loongson: %d\n", ret);
- 		goto err_pdev;
-diff --git a/drivers/gpu/drm/loongson/loongson_drv.h b/drivers/gpu/drm/loongson/loongson_drv.h
-index 24a534c3c79c..60f5bd48f7f2 100644
---- a/drivers/gpu/drm/loongson/loongson_drv.h
-+++ b/drivers/gpu/drm/loongson/loongson_drv.h
-@@ -4,9 +4,11 @@
- #define __LOONGSON_DRV_H__
- 
- #include <drm/drm_drv.h>
-+#include <drm/drm_fourcc.h>
-+#include <drm/drm_vblank.h>
- #include <drm/drm_gem.h>
-+#include <drm/drm_irq.h>
- #include <drm/drm_fb_helper.h>
--#include <drm/drm_fourcc.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
-@@ -49,6 +51,7 @@
- #define FB_HSYNC_REG (0x1420)
- #define FB_VDISPLAY_REG (0x1480)
- #define FB_VSYNC_REG (0x14a0)
-+#define FB_INT_REG (0x1570)
- 
- #define CFG_FMT GENMASK(2, 0)
- #define CFG_FBSWITCH BIT(7)
-@@ -60,6 +63,10 @@
- #define FB_PANCFG_DEF 0x80001311
- #define FB_HSYNC_PULSE (1 << 30)
- #define FB_VSYNC_PULSE (1 << 30)
-+#define FB_VSYNC1_ENABLE (1 << 16)
-+#define FB_VSYNC0_ENABLE (1 << 18)
-+#define FB_VSYNC1_INT (1 << 0)
-+#define FB_VSYNC0_INT (1 << 2)
- 
- /* PIX PLL */
- #define LOOPC_MIN 24
-@@ -136,6 +143,14 @@ int loongson_encoder_init(struct loongson_device *ldev, int index);
- /* plane */
- int loongson_plane_init(struct loongson_crtc *lcrtc);
- 
-+/* irq */
-+int loongson_irq_init(struct loongson_device *ldev);
-+int loongson_crtc_enable_vblank(struct drm_crtc *crtc);
-+void loongson_crtc_disable_vblank(struct drm_crtc *crtc);
-+irqreturn_t loongson_irq_handler(int irq, void *arg);
-+void loongson_irq_preinstall(struct drm_device *dev);
-+void loongson_irq_uninstall(struct drm_device *dev);
-+
- /* i2c */
- int loongson_dc_gpio_init(struct loongson_device *ldev);
- 
-diff --git a/drivers/gpu/drm/loongson/loongson_irq.c b/drivers/gpu/drm/loongson/loongson_irq.c
-new file mode 100644
-index 000000000000..d212e16f3c00
---- /dev/null
-+++ b/drivers/gpu/drm/loongson/loongson_irq.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include "loongson_drv.h"
-+#include <linux/pci.h>
-+
-+int loongson_irq_init(struct loongson_device *ldev)
-+{
-+	struct drm_device *dev;
-+	int ret, irq;
-+
-+	dev = ldev->dev;
-+	irq = dev->pdev->irq;
-+
-+	ret = drm_vblank_init(dev, ldev->num_crtc);
-+	if (ret) {
-+		dev_err(dev->dev, "Fatal error during vblank init: %d\n", ret);
-+		return ret;
-+	}
-+	DRM_INFO("drm vblank init finished\n");
-+
-+	ret = drm_irq_install(dev, irq);
-+	if (ret) {
-+		dev_err(dev->dev, "Fatal error during irq install: %d\n", ret);
-+		return ret;
-+	}
-+	DRM_INFO("loongson irq initialized\n");
-+
-+	return 0;
-+}
-+
-+int loongson_crtc_enable_vblank(struct drm_crtc *crtc)
-+{
-+	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
-+	struct loongson_device *ldev = lcrtc->ldev;
-+	u32 reg_val;
-+
-+	if (lcrtc->crtc_id) {
-+		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-+		reg_val |= FB_VSYNC1_ENABLE;
-+		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-+	} else {
-+		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-+		reg_val |= FB_VSYNC0_ENABLE;
-+		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-+	}
-+
-+	return 0;
-+}
-+
-+void loongson_crtc_disable_vblank(struct drm_crtc *crtc)
-+{
-+	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
-+	struct loongson_device *ldev = lcrtc->ldev;
-+	u32 reg_val;
-+
-+	if (lcrtc->crtc_id) {
-+		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-+		reg_val &= ~FB_VSYNC1_ENABLE;
-+		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-+	} else {
-+		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-+		reg_val &= ~FB_VSYNC0_ENABLE;
-+		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-+	}
-+}
-+
-+irqreturn_t loongson_irq_handler(int irq, void *arg)
-+{
-+	struct drm_device *dev = (struct drm_device *) arg;
-+	struct loongson_device *ldev = dev->dev_private;
-+	struct loongson_crtc *lcrtc;
-+	u32 val;
-+
-+	val = ls7a_mm_rreg(ldev, FB_INT_REG);
-+	ls7a_mm_wreg(ldev, FB_INT_REG, val & (0xffff << 16));
-+
-+	if (val & FB_VSYNC0_INT) {
-+		lcrtc = ldev->mode_info[0].crtc;
-+		drm_crtc_handle_vblank(&lcrtc->base);
-+	}
-+
-+	if (val & FB_VSYNC1_INT) {
-+		lcrtc = ldev->mode_info[1].crtc;
-+		drm_crtc_handle_vblank(&lcrtc->base);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+void loongson_irq_preinstall(struct drm_device *dev)
-+{
-+	struct loongson_device *ldev = dev->dev_private;
-+
-+	ls7a_mm_wreg(ldev, FB_INT_REG, 0x0000 << 16);
-+}
-+
-+void loongson_irq_uninstall(struct drm_device *dev)
-+{
-+	struct loongson_device *ldev = dev->dev_private;
-+
-+	if (ldev == NULL)
-+		return;
-+
-+	ls7a_mm_wreg(ldev, FB_INT_REG, 0x0000 << 16);
-+}
--- 
-2.31.1
+the read size is big enough when reading [addr, addr + count),
 
+"the primitive semantics" will fill holes by zero and copy valid vmap_area.
+
+In such scenario,  f608788cd2d6 will read noting.
+
+>
+>> The correct way is find the first vmap_are that bigger than target addr,
+>> that is what function find_vmap_area_exceed_addr does.
+> Is this problem observable from userspace?  If so, what are the effects
+> and what must an application do to trigger it?
+
+Reading /proc/kcore will be affected.
+
+Thanks,
+
+Wandun
+
+> .
