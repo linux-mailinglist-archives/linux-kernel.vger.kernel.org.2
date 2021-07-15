@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181763CAD0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036083CAD02
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243901AbhGOTwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58956 "EHLO mail.kernel.org"
+        id S1345511AbhGOTuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:50:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242702AbhGOTSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:18:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00EE56140E;
-        Thu, 15 Jul 2021 19:13:07 +0000 (UTC)
+        id S245051AbhGOTTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:19:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CC84613E5;
+        Thu, 15 Jul 2021 19:14:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376388;
-        bh=2HI+/sRWXFFVhfZRSSABrrORznPJcyMpA1UMZaKJhBY=;
+        s=korg; t=1626376445;
+        bh=kZo4fde+p3X2ftfMdEtwKCs+3ogPBCg1LLGIL/Cr07Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bc5D/i0c6z85jEcmCu3sanU3WHhfpt0B9oEp9skIDuLItLl+y6vY1KeDTyf0ZsY5j
-         MLq1jqzR7Qx7YAhjkWLpMbcqaVacKgXxmVk1HYiQBP8g9pNoGKIfWDycxVJdm3e8tr
-         Vm5yfFATPE0L91m0gdo0MbgrX3yFweXcFNUXr94s=
+        b=jgKggMADMskmk4ENIKjzMZDCz14HDqa1bhq6sm2/Smp+ZJrMGqQTRuPv6h04octwW
+         bAK3wzG2JVMQZVbMWb2hRMLvXlyHR+yuM7b6mnsjqopGJyzIF7AMOg3iqTyqOUe4w9
+         3UWw+YrUlQfSDWTaCunycy3V7efNOBY8KAyPoQ+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Bernhard Wimmer <be.wimm@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.13 248/266] media: zr364xx: fix memory leak in zr364xx_start_readpipe
-Date:   Thu, 15 Jul 2021 20:40:03 +0200
-Message-Id: <20210715182651.864412428@linuxfoundation.org>
+Subject: [PATCH 5.13 249/266] media: ccs: Fix the op_pll_multiplier address
+Date:   Thu, 15 Jul 2021 20:40:04 +0200
+Message-Id: <20210715182651.958503171@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -42,43 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Bernhard Wimmer <be.wimm@gmail.com>
 
-commit 0a045eac8d0427b64577a24d74bb8347c905ac65 upstream.
+commit 0e3e0c9369c822b7f1dd11504eeb98cfd4aabf24 upstream.
 
-syzbot reported memory leak in zr364xx driver.
-The problem was in non-freed urb in case of
-usb_submit_urb() fail.
+According to the CCS spec the op_pll_multiplier address is 0x030e,
+not 0x031e.
 
-backtrace:
-  [<ffffffff82baedf6>] kmalloc include/linux/slab.h:561 [inline]
-  [<ffffffff82baedf6>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
-  [<ffffffff82f7cce8>] zr364xx_start_readpipe+0x78/0x130 drivers/media/usb/zr364xx/zr364xx.c:1022
-  [<ffffffff84251dfc>] zr364xx_board_init drivers/media/usb/zr364xx/zr364xx.c:1383 [inline]
-  [<ffffffff84251dfc>] zr364xx_probe+0x6a3/0x851 drivers/media/usb/zr364xx/zr364xx.c:1516
-  [<ffffffff82bb6507>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-  [<ffffffff826018a9>] really_probe+0x159/0x500 drivers/base/dd.c:576
-
-Fixes: ccbf035ae5de ("V4L/DVB (12278): zr364xx: implement V4L2_CAP_STREAMING")
+Signed-off-by: Bernhard Wimmer <be.wimm@gmail.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Cc: stable@vger.kernel.org
-Reported-by: syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 6493c4b777c2 ("media: smiapp: Import CCS definitions")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/zr364xx/zr364xx.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/i2c/ccs/ccs-limits.c |    4 ++++
+ drivers/media/i2c/ccs/ccs-limits.h |    4 ++++
+ drivers/media/i2c/ccs/ccs-regs.h   |    6 +++++-
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
---- a/drivers/media/usb/zr364xx/zr364xx.c
-+++ b/drivers/media/usb/zr364xx/zr364xx.c
-@@ -1032,6 +1032,7 @@ static int zr364xx_start_readpipe(struct
- 	DBG("submitting URB %p\n", pipe_info->stream_urb);
- 	retval = usb_submit_urb(pipe_info->stream_urb, GFP_KERNEL);
- 	if (retval) {
-+		usb_free_urb(pipe_info->stream_urb);
- 		printk(KERN_ERR KBUILD_MODNAME ": start read pipe failed\n");
- 		return retval;
- 	}
+--- a/drivers/media/i2c/ccs/ccs-limits.c
++++ b/drivers/media/i2c/ccs/ccs-limits.c
+@@ -1,5 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
+ /* Copyright (C) 2019--2020 Intel Corporation */
++/*
++ * Generated by Documentation/driver-api/media/drivers/ccs/mk-ccs-regs;
++ * do not modify.
++ */
+ 
+ #include "ccs-limits.h"
+ #include "ccs-regs.h"
+--- a/drivers/media/i2c/ccs/ccs-limits.h
++++ b/drivers/media/i2c/ccs/ccs-limits.h
+@@ -1,5 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause */
+ /* Copyright (C) 2019--2020 Intel Corporation */
++/*
++ * Generated by Documentation/driver-api/media/drivers/ccs/mk-ccs-regs;
++ * do not modify.
++ */
+ 
+ #ifndef __CCS_LIMITS_H__
+ #define __CCS_LIMITS_H__
+--- a/drivers/media/i2c/ccs/ccs-regs.h
++++ b/drivers/media/i2c/ccs/ccs-regs.h
+@@ -1,5 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause */
+ /* Copyright (C) 2019--2020 Intel Corporation */
++/*
++ * Generated by Documentation/driver-api/media/drivers/ccs/mk-ccs-regs;
++ * do not modify.
++ */
+ 
+ #ifndef __CCS_REGS_H__
+ #define __CCS_REGS_H__
+@@ -202,7 +206,7 @@
+ #define CCS_R_OP_PIX_CLK_DIV					(0x0308 | CCS_FL_16BIT)
+ #define CCS_R_OP_SYS_CLK_DIV					(0x030a | CCS_FL_16BIT)
+ #define CCS_R_OP_PRE_PLL_CLK_DIV				(0x030c | CCS_FL_16BIT)
+-#define CCS_R_OP_PLL_MULTIPLIER					(0x031e | CCS_FL_16BIT)
++#define CCS_R_OP_PLL_MULTIPLIER					(0x030e | CCS_FL_16BIT)
+ #define CCS_R_PLL_MODE						0x0310
+ #define CCS_PLL_MODE_SHIFT					0U
+ #define CCS_PLL_MODE_MASK					0x1
 
 
