@@ -2,154 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12A93CAEC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4433CAECE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhGOVzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
+        id S231727AbhGOV4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhGOVzR (ORCPT
+        with ESMTP id S231342AbhGOV4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:55:17 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21EEC06175F;
-        Thu, 15 Jul 2021 14:52:23 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 20CEF340;
-        Thu, 15 Jul 2021 23:52:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1626385942;
-        bh=dtLiFCNDSexfyH15a7bmgwdeqptuw9ABLW2eQdtb++0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZhFCBJu/xFlMoypAQir3x0fSrGb4gqHdW9nd4hjcfBCLbejEXklnRYkvKgfaJrD9J
-         CMnwGqvFcn66EuQIYyiQl8xv41TxaWVVIFDzSSWfpOiSf1sH05fflNqb/yeekoyzmb
-         PjDunLMu2mHcI/P/EY0MC0DP4nnS7/N0CdhqAsME=
-Date:   Fri, 16 Jul 2021 00:52:20 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     festevam@gmail.com, krzk@kernel.org, devicetree@vger.kernel.org,
-        kernel@pengutronix.de, kernel@puri.sm,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
-        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
-        shawnguo@kernel.org, slongerbeam@gmail.com
-Subject: Re: [PATCH v6 2/3] media: imx: add a driver for i.MX8MQ mipi csi rx
- phy and controller
-Message-ID: <YPCuFA+utjudv11H@pendragon.ideasonboard.com>
-References: <20210714111931.324485-1-martin.kepplinger@puri.sm>
- <20210714111931.324485-3-martin.kepplinger@puri.sm>
- <YO8r6pZAduu1ZMK4@pendragon.ideasonboard.com>
- <ce71a71a358247eca3b72ddcddd703206c90f284.camel@puri.sm>
+        Thu, 15 Jul 2021 17:56:18 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CA8C061762
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:53:23 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so7468860pju.4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fT5PdprpzzVdpuGRQjB10wOKBXaawvXKa53cRx1HK6I=;
+        b=svmrN+O4TI98vQfj9n2X/vE50XmQmqn1PaXKCP4Nr/CQyCC4gpvE/2A44G7O3EEASy
+         /EfSX6dHh4q+I/a6RzTa5Z+Q8thrryvjaD57bsWLXbdH95pEPz+xykR9xEgUdH4Bv4Z3
+         ZoAGTa8Dt+Ijjc+XetNUvdXC7ojCQeJcD0LZiPZWKk/RdXBOQA7PxVYGDtHqNFQ/g3+1
+         ouQ3Nz6ZGFswmzMs7fe8Jr1UislrbNvLnmgdVpL88bQPCqp5nJlc9aQYclxLYlImlTzk
+         iqbO3a14CqCw0bGU2cATmeN0NT1CTHGMNXISk50SAZ9lM50oC08Hg9k5l20FPm3XWnsR
+         s63g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fT5PdprpzzVdpuGRQjB10wOKBXaawvXKa53cRx1HK6I=;
+        b=nopZxafoZ4fYQYjjDaRbtyKOsTVFRh7kFRRl5vFwF+D9A6haxuDsA3xjOAQpwq64Bp
+         iCsAo/fsVX+pCaIOCnqrFfII8js91aGyxwnI/lbQsOUpy0skZBoL3UzAUCaJ8lhC44n9
+         qGO7PvyiuqLEfV38qqPDvU0qcNvMGaWZpQdLFBFxmcqxfFptDYg7G+IJZhGvEd2yNnjw
+         HG2fxGYIdjCgWo3fyEDBQfgMckgPBs1GnePePPeptGKU/z8VGaddBc9H1vbPXdvkU9LX
+         Iznl/7RZQJ3R+38NZtZAiQe8eL7kwlgxXx4Kj1xrwnXm+83QPeY29nitXcXJNQQy3wit
+         rToQ==
+X-Gm-Message-State: AOAM533G0vIHH5lU+2SW1FBOD610k+gsNr1AoYEbAUtfkY2RXJEw3UAU
+        77p3kpEyr/9c6qJAepOiAdKoWQ==
+X-Google-Smtp-Source: ABdhPJwIwDUr/HSzt1W7U3WJexPF19d/NdRvrPK8Jq2C1qfjx7umE1NH31E27//HtmrPWVEOD8ZZLw==
+X-Received: by 2002:a17:90a:9b89:: with SMTP id g9mr12007893pjp.200.1626386003022;
+        Thu, 15 Jul 2021 14:53:23 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id m21sm7561729pfo.159.2021.07.15.14.53.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 14:53:22 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 21:53:18 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 10/40] x86/fault: Add support to handle the
+ RMP fault for user address
+Message-ID: <YPCuTiNET/hJHqOY@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-11-brijesh.singh@amd.com>
+ <3c6b6fc4-05b2-8d18-2eb8-1bd1a965c632@intel.com>
+ <2b4accb6-b68e-02d3-6fed-975f90558099@amd.com>
+ <a249b101-87d1-2e66-d7d6-af737c045cc3@intel.com>
+ <5592d8ff-e2c3-6474-4a10-96abe1962d6f@amd.com>
+ <bfb857d2-8e3c-4a3b-c64e-96a16c0c6d49@intel.com>
+ <aef6be8a-c93a-1aaa-57fe-116e70483542@amd.com>
+ <c3c71a5b-8100-63f2-1792-d7b53731147c@intel.com>
+ <298d2e19-566d-2e58-b639-724c10885646@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ce71a71a358247eca3b72ddcddd703206c90f284.camel@puri.sm>
+In-Reply-To: <298d2e19-566d-2e58-b639-724c10885646@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-
-On Thu, Jul 15, 2021 at 09:37:24AM +0200, Martin Kepplinger wrote:
-> Am Mittwoch, dem 14.07.2021 um 21:24 +0300 schrieb Laurent Pinchart:
-> > On Wed, Jul 14, 2021 at 01:19:30PM +0200, Martin Kepplinger wrote:
-> > > Add a driver to support the i.MX8MQ MIPI CSI receiver. The hardware side
-> > > is based on
-> > > https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/media/platform/imx8/mxc-mipi-csi2_yav.c?h=imx_5.4.70_2.3.0
-> > > 
-> > > It's built as part of VIDEO_IMX7_CSI because that's documented to support
-> > > i.MX8M platforms. This driver adds i.MX8MQ support where currently only the
-> > > i.MX8MM platform has been supported.
-> > > 
-> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > > ---
-> > >  drivers/staging/media/imx/Makefile           |   1 +
-> > >  drivers/staging/media/imx/imx8mq-mipi-csi2.c | 949 +++++++++++++++++++
-> > >  2 files changed, 950 insertions(+)
-> > >  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
-> > > 
-> > > diff --git a/drivers/staging/media/imx/Makefile
-> > > b/drivers/staging/media/imx/Makefile
-> > > index 6ac33275cc97..19c2fc54d424 100644
-> > > --- a/drivers/staging/media/imx/Makefile
-> > > +++ b/drivers/staging/media/imx/Makefile
-> > > @@ -16,3 +16,4 @@ obj-$(CONFIG_VIDEO_IMX_CSI) += imx6-mipi-csi2.o
-
-[snip]
-
-> > > +static int imx8mq_mipi_csi_calc_hs_settle(struct csi_state *state)
-> > > +{
-> > > +       u32 width = state->format_mbus[MIPI_CSI2_PAD_SINK].width;
-> > > +       u32 height = state->format_mbus[MIPI_CSI2_PAD_SINK].height;
-> > > +       s64 link_freq;
-> > > +       u32 lane_rate;
-> > > +
-> > > +       /* Calculate the line rate from the pixel rate. */
-> > > +       link_freq = v4l2_get_link_freq(state->src_sd->ctrl_handler,
-> > > +                                      state->csi2_fmt->width,
-> > > +                                      state->bus.num_data_lanes * 2);
-> > > +       if (link_freq < 0) {
-> > > +               dev_err(state->dev, "Unable to obtain link frequency: %d\n",
-> > > +                       (int)link_freq);
-> > > +               return link_freq;
-> > > +       }
-> > > +
-> > > +       lane_rate = link_freq * 2;
-> > > +       if (lane_rate < 80000000 || lane_rate > 1500000000) {
-> > > +               dev_dbg(state->dev, "Out-of-bound lane rate %u\n", lane_rate);
-> > > +               return -EINVAL;
-> > > +       }
-> > > +
-> > > +       /* https://community.nxp.com/t5/i-MX-Processors/Explenation-for-HS-SETTLE-parameter-in-MIPI-CSI-D-PHY-registers/m-p/764275/highlight/true#M118744 */
-> > > +       if (lane_rate < 250000000)
-> > > +               state->hs_settle = 0xb;
-> > > +       else if (lane_rate < 500000000)
-> > > +               state->hs_settle = 0x8;
-> > > +       else
-> > > +               state->hs_settle = 0x6;
-> > 
-> > We could possibly compute this value based on the formula from the table
-> > in that page, but maybe that's overkill ? If you want to give it a try,
-> > it would be along those lines.
-> > 
-> >         /*
-> >          * The D-PHY specification requires Ths-settle to be in the range
-> >          * 85ns + 6*UI to 140ns + 10*UI, with the unit interval UI being half
-> >          * the clock period.
-> >          *
-> >          * The Ths-settle value is expressed in the hardware as a multiple of
-> >          * the Esc clock period:
-> >          *
-> >          * Ths-settle = (PRG_RXHS_SETTLE + 1) * Tperiod of RxClkInEsc
-> >          *
-> >          * Due to the one cycle inaccuracy introduced by rounding, the
-> >          * documentation recommends picking a value away from the boundaries.
-> >          * Let's pick the average.
-> >          */
-> >         esc_clk_rate = clk_get_rate(...);
-> > 
-> >         min_ths_settle = 85 + 6 * 1000000 / (lane_rate / 1000);
-> >         max_ths_settle = 140 + 10 * 1000000 / (lane_rate / 1000);
-> >         ths_settle = (min_ths_settle + max_ths_settle) / 2;
-> > 
-> >         state->hs_settle = ths_settle * esc_clk_rate / 1000000000 - 1;
+On Mon, Jul 12, 2021, Brijesh Singh wrote:
 > 
-> I experimented a bit but would like to leave this as a task for later
-> if that's ok. it's correct and simple now. also, using clks[i].clk
-> based on the name string would feel better to submit seperately later.
+> 
+> On 7/12/21 11:29 AM, Dave Hansen wrote:
+> > On 7/12/21 9:24 AM, Brijesh Singh wrote:
+> > > Apologies if I was not clear in the messaging, that's exactly what I
+> > > mean that we don't feed RMP entries during the page state change.
+> > > 
+> > > The sequence of the operation is:
+> > > 
+> > > 1. Guest issues a VMGEXIT (page state change) to add a page in the RMP
+> > > 2. Hyperivosr adds the page in the RMP table.
+> > > 
+> > > The check will be inside the hypervisor (#2), to query the backing page
+> > > type, if the backing page is from the hugetlbfs, then don't add the page
+> > > in the RMP, and fail the page state change VMGEXIT.
+> > 
+> > Right, but *LOOOOOONG* before that, something walked the page tables and
+> > stuffed the PFN into the NPT (that's the AMD equivalent of EPT, right?).
+> >   You could also avoid this whole mess by refusing to allow hugetblfs to
+> > be mapped into the guest in the first place.
+> > 
+> 
+> Ah, that should be doable. For SEV stuff, we require the VMM to register the
+> memory region to the hypervisor during the VM creation time. I can check the
+> hugetlbfs while registering the memory region and fail much earlier.
 
-That's OK with me, but I may then submit a patch on top fairly soon :-)
-Have you been able to test if this code works on your device ? The main
-reason why I think it's better is that it doesn't hardcode a specific
-escape clock frequency assumption, so it should be able to accommodate a
-wider range of use cases. If we change it later, there's always a risk
-of regressions, while if we do this from the start, we'll figure out
-quickly if it doesn't work in some cases.
+That's technically unnecessary, because this patch is working on the wrong set of
+page tables when handling faults from KVM.
 
--- 
-Regards,
+The host page tables constrain KVM's NPT, but the two are not mirrors of each
+other.  Specifically, KVM cannot exceed the size of the host page tables because
+that would give the guest access to memory it does not own, but KVM isn't required
+to use the same size as the host.  E.g. a 1gb page in the host can be 1gb, 2mb, or
+4kb in the NPT.
 
-Laurent Pinchart
+The code "works" because the size contraints mean it can't get false negatives,
+only false positives, false positives will never be fatal, e.g. the fault handler
+may unnecessarily demote a 1gb, and demoting a host page will further constrain
+KVM's NPT.
+
+The distinction matters because it changes our options.  For RMP violations on
+NPT due to page size mismatches, KVM can and should handle the fault without
+consulting the primary MMU, i.e. by demoting the NPT entry.  That means KVM does
+not need to care about hugetlbfs or any other backing type that cannot be split
+since KVM will never initiate a host page split in response to a #NPT RMP violation.
+
+That doesn't mean that hugetlbfs will magically work since e.g. get/put_user()
+will fault and fail, but that's a generic non-KVM problem since nothing prevents
+remapping and/or accessing the page(s) outside of KVM context.
+
+The other reason to not disallow hugetlbfs and co. is that a guest that's
+enlightened to operate at 2mb granularity, e.g. always do page state changes on
+2mb chunks, can play nice with hugetlbfs without ever hitting an RMP violation.
+
+Last thought, have we taken care in the guest side of things to work at 2mb
+granularity when possible?  AFAICT, PSMASH is effectively a one-way street since
+RMPUPDATE to restore a 2mb RMP is destructive, i.e. requires PVALIDATE on the
+entire 2mb chunk, and the guest can't safely do that without reinitializing the
+whole page, e.g. would either lose data or have to save/init/restore.
