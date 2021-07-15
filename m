@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356443CA9D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788933CAA99
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243507AbhGOTJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:09:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34948 "EHLO mail.kernel.org"
+        id S244484AbhGOTOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:14:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240918AbhGOS6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240997AbhGOS6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 14:58:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D559613ED;
-        Thu, 15 Jul 2021 18:55:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2ADA613D4;
+        Thu, 15 Jul 2021 18:55:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375340;
-        bh=vRhNXClf9Vk824eWZ0E1A24JGfsQynC8Y7DYt02HcVI=;
+        s=korg; t=1626375343;
+        bh=X0bu4H7WOFKLkbG4+PvRP5lJ23vKTpaLCOAkkv0fX30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZTMUQrkCWYcIurYGX4jolf7dt3tF/qoX0jvuPYFnShNX6j23hrj7yqisD1QGcjUw8
-         KYHWAQRfQl4/fSzspXQmKaH9KF83zwjmlv1uOnqpVP+Cn6ngT9QIwqiRPvfTBtq1uQ
-         ci2sB+3BQTBuqgv2HfdeAPkD0nDeXnCw4Qb5mp3k=
+        b=zK2w+NLRL88ER8JupN/fp18vOgW2SZ583ZoNr8nLA75qngFiGPZ9FeRBYdG/7uMKa
+         1W+9eeUlqnXzMAo9sdpBDwBwv7+U1VCH53akz1oHISLqlzwJfoAimdKDtF7JIOKnQe
+         kz7mynOcJ1DlA+Fx9SOTBKHOLE3q8xuSbfY84RKU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Robert Foss <robert.foss@linaro.org>,
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 045/242] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
-Date:   Thu, 15 Jul 2021 20:36:47 +0200
-Message-Id: <20210715182600.057406035@linuxfoundation.org>
+Subject: [PATCH 5.12 046/242] virtio-net: Add validation for used length
+Date:   Thu, 15 Jul 2021 20:36:48 +0200
+Message-Id: <20210715182600.275545240@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,41 +41,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit f674555ee5444c8987dfea0922f1cf6bf0c12847 ]
+[ Upstream commit ad993a95c508417acdeb15244109e009e50d8758 ]
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+This adds validation for used length (might come
+from an untrusted device) to avoid data corruption
+or loss.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210531135622.3348252-1-yukuai3@huawei.com
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Link: https://lore.kernel.org/r/20210531135852.113-1-xieyongji@bytedance.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/virtio_net.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-index d0c65610ebb5..f56ff97c9899 100644
---- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-@@ -2369,9 +2369,9 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
- 	clk_prepare_enable(clk);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 0824e6999e49..447582fa20a5 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -660,6 +660,12 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 	len -= vi->hdr_len;
+ 	stats->bytes += len;
  
- 	pm_runtime_enable(dev);
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0) {
--		dev_err(dev, "pm_runtime_get_sync failed\n");
-+		dev_err(dev, "pm_runtime_resume_and_get failed\n");
- 		pm_runtime_disable(dev);
- 		goto clk_disable;
++	if (unlikely(len > GOOD_PACKET_LEN)) {
++		pr_debug("%s: rx error: len %u exceeds max size %d\n",
++			 dev->name, len, GOOD_PACKET_LEN);
++		dev->stats.rx_length_errors++;
++		goto err_len;
++	}
+ 	rcu_read_lock();
+ 	xdp_prog = rcu_dereference(rq->xdp_prog);
+ 	if (xdp_prog) {
+@@ -761,6 +767,7 @@ err:
+ err_xdp:
+ 	rcu_read_unlock();
+ 	stats->xdp_drops++;
++err_len:
+ 	stats->drops++;
+ 	put_page(page);
+ xdp_xmit:
+@@ -814,6 +821,12 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 	head_skb = NULL;
+ 	stats->bytes += len - vi->hdr_len;
+ 
++	if (unlikely(len > truesize)) {
++		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
++			 dev->name, len, (unsigned long)ctx);
++		dev->stats.rx_length_errors++;
++		goto err_skb;
++	}
+ 	rcu_read_lock();
+ 	xdp_prog = rcu_dereference(rq->xdp_prog);
+ 	if (xdp_prog) {
+@@ -938,13 +951,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
  	}
+ 	rcu_read_unlock();
+ 
+-	if (unlikely(len > truesize)) {
+-		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+-			 dev->name, len, (unsigned long)ctx);
+-		dev->stats.rx_length_errors++;
+-		goto err_skb;
+-	}
+-
+ 	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
+ 			       metasize);
+ 	curr_skb = head_skb;
 -- 
 2.30.2
 
