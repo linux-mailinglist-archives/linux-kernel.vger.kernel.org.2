@@ -2,151 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6CD3C993C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365F43C9937
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240185AbhGOG6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 02:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        id S237870AbhGOG5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234666AbhGOG6L (ORCPT
+        with ESMTP id S235839AbhGOG5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 02:58:11 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945C7C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:55:18 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id k20so5039999pgg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:55:18 -0700 (PDT)
+        Thu, 15 Jul 2021 02:57:52 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1F2C061760;
+        Wed, 14 Jul 2021 23:54:59 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id d2so6363478wrn.0;
+        Wed, 14 Jul 2021 23:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fPcqApWBuKW7GfPlsaG9+/zGPf3URdDkl4ZR0Uvn25Y=;
-        b=uY0D8Ya2x+0imIxIe22xA5N5VZFl2IpsSAix9tg7YJ/I1K/E9j/ayNn3HQifuCqMq/
-         o6f5dfFIO8lwYj4NTYRofH6xBiIUd+bsFN8fEd3m0t8BXnG92NSabVqFVc6jVZFbXHwm
-         Z82H62ogynCdiCQ18K7ciZvQ/ZeQI8TpV+N5TqLj7xsvTsWA9F38iZ8/iV2vaDILl6wA
-         evd2m9qPP856CKUWOWxkPYgoRXNzRMLtfVwo3RrIMc0vYk/D+7Pkc0EWNcY3J9cPDP2S
-         e57rbuTgLLe/Ezr+aDtwUNRoW9rHgw2zwpXrQksdoEtJd3Ty6GhpatVDN3u7Mc2KuwUG
-         wM5w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M5NwdGajzImtf+rA0R6crLR2Js+53H3IkmZEIs+p8zo=;
+        b=vQEk7dhVjFoCUsFK+Wi0ucD8cSPeN45ankMJXJtuVI2X8GYbrNRb4MhH5WmhH5R1RF
+         G6SVhJG38896HrJfvazIJZQIq9C2LPnB6GHG2dXQ1o87T2W2TxawyJaiGlxMSooegWV9
+         Jm16K/EG+awC8l9IGUxoY+tGOUCpuZCX37LrkW8ceGdLtWbLyshZF5OoQkJwE9dGRcIH
+         +Bezgby8u6uC70VblHKbvBYnat/HyRV9ES1wK2tSexQSEhmX2lKGXsqVIOQxn1mhlGCT
+         eltbKpYal5bGGOuq0K6a0iyCzh+UzZvh3T2gI4sfE/ZIjjEFU6AeAOxur4K8REeIRHYL
+         GC/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fPcqApWBuKW7GfPlsaG9+/zGPf3URdDkl4ZR0Uvn25Y=;
-        b=gfHN/YkOSQy2rrJShNp10/ZD3GeaydsWMK9OBtwP6OYc77FTJzDF9YZW2sJPwUoVqV
-         WRmuWPkKL9UHt/R6a0jSbNNLy6QW9YG+HL0/6HzssvSd0JOpT8/9GI65Mnzw7NElVC44
-         sGvXxdbSznrEdF63ryMfVtmYfKkQsF96Xrd5L34n4ZNHn8ek4+pk7CWgCrETl5H2gI2/
-         5XPcPuXPkZPNrX7k++qydGn7TXVW/dvue9mdr91/tfgxEr9bgEKvjMbzZVXQx3GOHoEw
-         hjuOMpsij82ykLWu+ejTKy1WMercNs7AqY/5I8cJp8xDlfbbdFXOeFPFwcjCic0n64iB
-         MMWQ==
-X-Gm-Message-State: AOAM532fvT4ZqeJVZrIcGcZHseGxDaXoFoOO2nLggZva1pYLXn6sC+MI
-        fIbZ9Mw7RoZ0pE1C8skcNhI=
-X-Google-Smtp-Source: ABdhPJwbdVzI7mwu4v3hTn3RyzVvkmqETYUtX4ANHEhGqAhzwipI6YdUyZ4M+qNyWT9T8TGFM6SapQ==
-X-Received: by 2002:a65:60d7:: with SMTP id r23mr2846699pgv.417.1626332118249;
-        Wed, 14 Jul 2021 23:55:18 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id j20sm5032689pfc.203.2021.07.14.23.55.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M5NwdGajzImtf+rA0R6crLR2Js+53H3IkmZEIs+p8zo=;
+        b=UdHQz5i4fdYet2wS00+dlYaW2syxWzdBawPBgfWP3a4+WJdRX+bWNGpVdqfXpgI0CT
+         fv0Wi16l7GcG6fRocyIomh79z5pUVKfmmLJITvm1oAQxuonS5i8ILKFJphXJSpqOUK+Y
+         vvMYE8tEfG9d6cpwMriEeLsiVdIKjw0qN7HZPY8ar+cWRg5POt/pLCPts0eLgT4vZt3z
+         6nEu4wjvlqfX+oCOkj6vNEWMqKSNTCmheFQfVSHNKeiWNNytqbJZcsNwTpiKcg80GPPl
+         hQpAn4xrMcQ+hdppDDT8p7gGrRq1bX66zbfSVm/2nS+v7hfbwP5H71zC0v7kdpW9i/Io
+         qBkQ==
+X-Gm-Message-State: AOAM531Ue0mak63xYwTVJf9Jgkiv+ZAeLNz1fkfYGmMhU426Jd9eCrVH
+        kcfoplmSLn/0leDscmPodfM=
+X-Google-Smtp-Source: ABdhPJxQLW3ZwX2obsB/Y1J7wZN/NF/RYBsmwg3N+XhHqbFia9Ck++fZv9Zn/yoyVNEC1w6PUE4dnQ==
+X-Received: by 2002:a5d:5257:: with SMTP id k23mr3518536wrc.50.1626332097607;
+        Wed, 14 Jul 2021 23:54:57 -0700 (PDT)
+Received: from skbuf ([82.76.66.29])
+        by smtp.gmail.com with ESMTPSA id d18sm3867386wmp.46.2021.07.14.23.54.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 23:55:17 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/3] clocksource/drivers/timer-of: Add boilerplate macros for timer module driver
-Date:   Thu, 15 Jul 2021 14:54:54 +0800
-Message-Id: <20210715065455.392923-3-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210715065455.392923-1-zhang.lyra@gmail.com>
-References: <20210715065455.392923-1-zhang.lyra@gmail.com>
+        Wed, 14 Jul 2021 23:54:57 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 09:54:55 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware process the
+ layer 4 checksum
+Message-ID: <20210715065455.7nu7zgle2haa6wku@skbuf>
+References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
+ <20210714191723.31294-3-LinoSanfilippo@gmx.de>
+ <20210714194812.stay3oqyw3ogshhj@skbuf>
+ <YO9F2LhTizvr1l11@lunn.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YO9F2LhTizvr1l11@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Wed, Jul 14, 2021 at 10:15:20PM +0200, Andrew Lunn wrote:
+> On Wed, Jul 14, 2021 at 10:48:12PM +0300, Vladimir Oltean wrote:
+> > Hi Lino,
+> > 
+> > On Wed, Jul 14, 2021 at 09:17:23PM +0200, Lino Sanfilippo wrote:
+> > > If the checksum calculation is offloaded to the network device (e.g due to
+> > > NETIF_F_HW_CSUM inherited from the DSA master device), the calculated
+> > > layer 4 checksum is incorrect. This is since the DSA tag which is placed
+> > > after the layer 4 data is seen as a part of the data portion and thus
+> > > errorneously included into the checksum calculation.
+> > > To avoid this, always calculate the layer 4 checksum in software.
+> > > 
+> > > Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+> > > ---
+> > 
+> > This needs to be solved more generically for all tail taggers. Let me
+> > try out a few things tomorrow and come with a proposal.
+> 
+> Maybe the skb_linearize() is also a generic problem, since many of the
+> tag drivers are using skb_put()? It looks like skb_linearize() is
+> cheap because checking if the skb is already linear is cheap. So maybe
+> we want to do it unconditionally?
 
-To support module build, platform driver structs, .probe(), match table and
-module macros need to be added to the timer driver. So this patch provides
-a few macros to take care of these things, and that would reduce the repeat
-code lines in every sigle driver.
+Yeah, but we should let the stack deal with both issues in validate_xmit_skb().
+There is a skb_needs_linearize() call which returns false because the
+DSA interface inherits NETIF_F_SG from the master via dsa_slave_create():
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/clocksource/timer-of.c | 13 +++++++++++++
- drivers/clocksource/timer-of.h | 20 ++++++++++++++++++++
- 2 files changed, 33 insertions(+)
+	slave_dev->features = master->vlan_features | NETIF_F_HW_TC;
 
-diff --git a/drivers/clocksource/timer-of.c b/drivers/clocksource/timer-of.c
-index 7f108978fd51..ecd7f7379400 100644
---- a/drivers/clocksource/timer-of.c
-+++ b/drivers/clocksource/timer-of.c
-@@ -8,7 +8,9 @@
- #include <linux/interrupt.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-+#include <linux/of_device.h>
- #include <linux/of_irq.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- 
- #include "timer-of.h"
-@@ -229,3 +231,14 @@ void timer_of_cleanup(struct timer_of *to)
- 	if (to->flags & TIMER_OF_BASE)
- 		timer_of_base_exit(&to->of_base);
- }
-+
-+int platform_timer_probe(struct platform_device *pdev)
-+{
-+	int (*init_cb)(struct device_node *node);
-+	struct device_node *np = pdev->dev.of_node;
-+
-+	init_cb = of_device_get_match_data(&pdev->dev);
-+
-+	return init_cb(np);
-+}
-+EXPORT_SYMBOL_GPL(platform_timer_probe);
-diff --git a/drivers/clocksource/timer-of.h b/drivers/clocksource/timer-of.h
-index 1b8cfac5900a..129f539d5f54 100644
---- a/drivers/clocksource/timer-of.h
-+++ b/drivers/clocksource/timer-of.h
-@@ -3,6 +3,7 @@
- #define __TIMER_OF_H__
- 
- #include <linux/clockchips.h>
-+#include <linux/platform_device.h>
- 
- #define TIMER_OF_BASE	0x1
- #define TIMER_OF_CLOCK	0x2
-@@ -71,4 +72,23 @@ extern int timer_of_init(struct device_node *np,
- 
- extern void timer_of_cleanup(struct timer_of *to);
- 
-+extern int platform_timer_probe(struct platform_device *pdev);
-+
-+#define TIMER_PLATFORM_DRIVER_BEGIN(drv_name)	\
-+static const struct of_device_id drv_name##_timer_match_table[] = {
-+
-+#define TIMER_MATCH(compat, _data) { .compatible = compat, .data = _data },
-+
-+#define TIMER_PLATFORM_DRIVER_END(drv_name)			\
-+	{},							\
-+};								\
-+MODULE_DEVICE_TABLE(of, drv_name##_timer_match_table);		\
-+static struct platform_driver drv_name##_driver = {		\
-+	.probe  = platform_timer_probe,				\
-+	.driver = {						\
-+		.name = #drv_name,				\
-+		.of_match_table = drv_name##_timer_match_table,	\
-+	},							\
-+};								\
-+module_platform_driver(drv_name##_driver)
- #endif
--- 
-2.25.1
+Arguably that's the problem right there, we shouldn't inherit neither
+NETIF_F_HW_CSUM nor NETIF_F_SG from the list of features inheritable by
+8021q uppers.
 
+- If we inherit NETIF_F_SG we obligate ourselves to call skb_linearize()
+  for tail taggers on xmit. DSA probably doesn't break anything for
+  header taggers though even if the xmit skb is paged, since the DSA
+  header would always be part of the skb head, so this is a feature we
+  could keep for them.
+- If we inherit NETIF_F_HW_CSUM from the master for tail taggers, it is
+  actively detrimential to keep this feature enabled, as proven my Lino.
+  As for header taggers, I fail to see how this would be helpful, since
+  the DSA master would always fail to see the real IP header (it has
+  been pushed to the right by the DSA tag), and therefore, the DSA
+  master offload would be effectively bypassed. So no point, really, in
+  inheriting it in the first place in any situation.
+
+Lino, to fix these bugs by letting validate_xmit_skb() know what works
+for DSA and what doesn't, could you please:
+
+(a) move the current slave_dev->features assignment to
+    dsa_slave_setup_tagger()? We now support changing the tagging
+    protocol at runtime, and everything that depends on what the tagging
+    protocol is (in this case, tag_ops->needed_headroom vs
+    tag_ops->needed_tailroom) should be put in that function.
+(b) unconditionally clear NETIF_F_HW_CSUM from slave_dev->features,
+    after inheriting the vlan_features from the master?
+(c) clear NETIF_F_SG from slave_dev->features if we have a non-zero
+    tag_ops->needed_tailroom?
+
+Thanks.
+
+By the way I didn't get the chance to test anything, sorry if there is
+any mistake in my reasoning.
