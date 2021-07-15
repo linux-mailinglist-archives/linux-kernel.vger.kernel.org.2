@@ -2,141 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920B53C9D38
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355483C9D3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241680AbhGOKuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:50:55 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:11423 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbhGOKuy (ORCPT
+        id S241690AbhGOKvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:51:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28528 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232055AbhGOKvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:50:54 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQWGJ3wr1zcdHc;
-        Thu, 15 Jul 2021 18:44:40 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 18:47:55 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 15 Jul
- 2021 18:47:55 +0800
-Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
- page_pool packets
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Networking <netdev@vger.kernel.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        "Jonathan Lemon" <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        "Cong Wang" <cong.wang@bytedance.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
- <bf326953-495f-db01-e554-42f4421d237a@huawei.com>
- <CAC_iWjLypqTGMxw_1ng1H8r5Yiv83G3yxUW8T1863XzFM-ShpA@mail.gmail.com>
- <CAC_iWjLfsvr_Z2te=ABfEAecAOkQBiu22QZ8GhorA4MYnt4Uxg@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <401f10b2-3b92-a3f9-f01e-df2e190c8ff3@huawei.com>
-Date:   Thu, 15 Jul 2021 18:47:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 15 Jul 2021 06:51:15 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FAXwl0090894;
+        Thu, 15 Jul 2021 06:48:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ajXHLHDEBxtcysRI+JtyCQLk+dpnXZmt4tX8qjYsO6E=;
+ b=Ov8h1iIYScH6ysIFJulNnX5jTffQCUIIMeJwl6PZa/Z/FMEKCyMjoYV54/QkXw2uDL7e
+ tqBElkxjC3hKo3bLpFui8I98VBgembnW9DWUA5lKNom6JIibNX6eMOAPLRpl9K53TCGv
+ OKXm/3vys0X+YU+S9pKj5vbPJCa4S5uZiwep0vQrMFrtfPXaVE526sYkCoDYcT17IpSX
+ PX8q70PLTQQX3iGtsuAw6KNCx1PYitlHI231tqYugqiX5NqEMmyOs6bhTVvIJGdbvic6
+ C0gnMj30a1edsdvTqqX5HC/EwzjWNs+91UD5YrU4fbEYwIRTwn4a7F0KGrtmqoCB0gk9 oQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39sc8m2cu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 06:48:22 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16FAZIr7095574;
+        Thu, 15 Jul 2021 06:48:22 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39sc8m2ctc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 06:48:22 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16FAlahE014044;
+        Thu, 15 Jul 2021 10:48:19 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 39q36895wh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 10:48:19 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16FAmGLP28246340
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Jul 2021 10:48:16 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 177D6AE059;
+        Thu, 15 Jul 2021 10:48:16 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 98819AE070;
+        Thu, 15 Jul 2021 10:48:15 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.77.125])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 15 Jul 2021 10:48:15 +0000 (GMT)
+Subject: Re: [PATCH v1 2/2] KVM: s390: Topology expose TOPOLOGY facility
+To:     David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
+        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com
+References: <1626276343-22805-1-git-send-email-pmorel@linux.ibm.com>
+ <1626276343-22805-3-git-send-email-pmorel@linux.ibm.com>
+ <3a7836ad-f748-296e-cd1a-a10cbc570474@redhat.com>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <d0f4ac74-af7b-87ef-f451-bfa3ad90ad01@linux.ibm.com>
+Date:   Thu, 15 Jul 2021 12:48:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWjLfsvr_Z2te=ABfEAecAOkQBiu22QZ8GhorA4MYnt4Uxg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <3a7836ad-f748-296e-cd1a-a10cbc570474@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: rIfUhqHvEZ2PmSvGgBLtE7jtLTSYW3HG
+X-Proofpoint-ORIG-GUID: 3H3nkTlfYU4CSM610bGfVQkbWNPFflsM
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-15_07:2021-07-14,2021-07-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ adultscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=999 spamscore=0 suspectscore=0 impostorscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107150077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/15 18:38, Ilias Apalodimas wrote:
-> On Thu, 15 Jul 2021 at 13:00, Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
->>
->> On Thu, 15 Jul 2021 at 07:01, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>
->>> On 2021/7/9 14:29, Ilias Apalodimas wrote:
->>>> As Alexander points out, when we are trying to recycle a cloned/expanded
->>>> SKB we might trigger a race.  The recycling code relies on the
->>>> pp_recycle bit to trigger,  which we carry over to cloned SKBs.
->>>> If that cloned SKB gets expanded or if we get references to the frags,
->>>> call skbb_release_data() and overwrite skb->head, we are creating separate
->>>> instances accessing the same page frags.  Since the skb_release_data()
->>>> will first try to recycle the frags,  there's a potential race between
->>>> the original and cloned SKB, since both will have the pp_recycle bit set.
->>>>
->>>> Fix this by explicitly those SKBs not recyclable.
->>>> The atomic_sub_return effectively limits us to a single release case,
->>>> and when we are calling skb_release_data we are also releasing the
->>>> option to perform the recycling, or releasing the pages from the page pool.
->>>>
->>>> Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
->>>> Reported-by: Alexander Duyck <alexanderduyck@fb.com>
->>>> Suggested-by: Alexander Duyck <alexanderduyck@fb.com>
->>>> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
->>>> ---
->>>> Changes since v1:
->>>> - Set the recycle bit to 0 during skb_release_data instead of the
->>>>   individual fucntions triggering the issue, in order to catch all
->>>>   cases
->>>>  net/core/skbuff.c | 4 +++-
->>>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->>>> index 12aabcda6db2..f91f09a824be 100644
->>>> --- a/net/core/skbuff.c
->>>> +++ b/net/core/skbuff.c
->>>> @@ -663,7 +663,7 @@ static void skb_release_data(struct sk_buff *skb)
->>>>       if (skb->cloned &&
->>>>           atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
->>>>                             &shinfo->dataref))
->>>> -             return;
->>>> +             goto exit;
->>>
->>> Is it possible this patch may break the head frag page for the original skb,
->>> supposing it's head frag page is from the page pool and below change clears
->>> the pp_recycle for original skb, causing a page leaking for the page pool?
->>>
->>
->> So this would leak eventually dma mapping if the skb is cloned (and
->> the dataref is now +1) and we are freeing the original skb first?
->>
-> 
-> Apologies for the noise, my description was not complete.
-> The case you are thinking is clone an SKB and then expand the original?
 
-Yes.
-It seems we might need different pp_recycle bit for head frag and data frag.
+
+On 7/15/21 10:52 AM, David Hildenbrand wrote:
+> On 14.07.21 17:25, Pierre Morel wrote:
+>> We add the KVM extension KVM_CAP_S390_CPU_TOPOLOGY, this will
+>> allow the userland hypervisor to handle the interception of the
+>> PTF (Perform topology Function) instruction.
+> 
+> Ehm, no you don't add any new capability. Or my eyes are too tired to 
+> spot it :)
+
+hum, yes, sorry, seems I kept my old commit message as I let fall the 
+capability after internal reviews.
+
 
 > 
-> thanks
-> /Ilias
+>>
+>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+>> ---
+>>   arch/s390/tools/gen_facilities.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/s390/tools/gen_facilities.c 
+>> b/arch/s390/tools/gen_facilities.c
+>> index 606324e56e4e..2c260eb22bae 100644
+>> --- a/arch/s390/tools/gen_facilities.c
+>> +++ b/arch/s390/tools/gen_facilities.c
+>> @@ -112,6 +112,7 @@ static struct facility_def facility_defs[] = {
+>>           .name = "FACILITIES_KVM_CPUMODEL",
+>>           .bits = (int[]){
+>> +            11, /* configuration topology facility */
+>>               12, /* AP Query Configuration Information */
+>>               15, /* AP Facilities Test */
+>>               156, /* etoken facility */
+>>
 > 
 > 
->>>>
->>>>       skb_zcopy_clear(skb, true);
->>>>
->>>> @@ -674,6 +674,8 @@ static void skb_release_data(struct sk_buff *skb)
->>>>               kfree_skb_list(shinfo->frag_list);
->>>>
->>>>       skb_free_head(skb);
->>>> +exit:
->>>> +     skb->pp_recycle = 0;
->>>>  }
->>>>
->>>>  /*
->>>>
-> .
-> 
+
+-- 
+Pierre Morel
+IBM Lab Boeblingen
