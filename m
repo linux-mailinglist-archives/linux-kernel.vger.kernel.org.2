@@ -2,143 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEB83CA240
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946F33CA246
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhGOQau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:30:50 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50078 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhGOQat (ORCPT
+        id S231378AbhGOQbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:31:42 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:42639 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231313AbhGOQbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:30:49 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16FGRtvi097106;
-        Thu, 15 Jul 2021 11:27:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626366475;
-        bh=yqdDGVMZGZw7Dd8p/1raa8mEn1N+JmX9OWjoB0Uc0II=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=QCtBQmnTIC3Rw9sJqGO8Uyd151LXCGeJr9rIXcEI+5D/pdEhEIQdIaWVpF0zev2wt
-         hvecoqFk4BpB4SpgpWef9t86enTVHNVwnDEtoHJ6bksiQyu7rfoQ7VWnD/i5JwdXB1
-         DjYyICgBPTnvL0flYwRP0bTSAainLZezktOvFdBw=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16FGRt3g018620
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Jul 2021 11:27:55 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Jul 2021 11:27:54 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 15 Jul 2021 11:27:54 -0500
-Received: from [10.250.234.142] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16FGRqtD053964;
-        Thu, 15 Jul 2021 11:27:53 -0500
-Subject: Re: [PATCH 1/2] spi: cadence-quadspi: Disable Auto-HW polling
-From:   Apurva Nandan <a-nandan@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <20210713125743.1540-1-a-nandan@ti.com>
- <20210713125743.1540-2-a-nandan@ti.com> <20210713182550.GG4098@sirena.org.uk>
- <f1947183-81d2-3519-d25f-71d93f59e434@ti.com>
- <20210714162805.GE4719@sirena.org.uk>
- <dfa38823-b63f-1807-6141-682930de2f3a@ti.com>
-Message-ID: <1cebc261-e0aa-572a-8083-1e3ec0d09195@ti.com>
-Date:   Thu, 15 Jul 2021 21:57:51 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 15 Jul 2021 12:31:40 -0400
+Received: by mail-io1-f54.google.com with SMTP id x10so7133683ion.9;
+        Thu, 15 Jul 2021 09:28:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DU/pjsNZXYd/mflQi0Kfu+Fvn8JWm+lHh6CuqP6iNvc=;
+        b=JIXY0Owi76ZQ/JRznR/HBbA2yATjQTiKax6wg/GZ8YzN/cBnuWaRIIjPbS3N0am6w1
+         YZA0lAK0vTfnQAeLfUlGOyNtdMsvLmUm6DL56pvr/Qz3P4S+I6IW6l/xzNxX9Za4Ox3w
+         0kuOR9LUngxFgBGJ9XdEHh8eehCiYSd+6/ntjOMFIsmRIcC4UUMN1GKzYxnAGkL8zRe0
+         QluzykRdNhXN39pbKHBGDjVuYFWFS0ZBFNt5EIABTrC5EwvFXFljRrYNw2IpZWk9lk+Z
+         5mTY12D3x6ntKygV/0+zDLcndOzV/cufjBCsk0FeVMUxZI9rXX9WHG36ytpdzN1Fhd3x
+         NoJA==
+X-Gm-Message-State: AOAM530yIYwhk2xqx7Jl2rxCsyC2C3ulQlh2iNngsJeNLwvYkdMTKVss
+        karZ2dPg6TzmhV1XXnv/2g==
+X-Google-Smtp-Source: ABdhPJyfCdrhjQU34aG9qE+M9t/V6VN32ihTfjbCf3Coc++/H9jqzMpmnWxNQkGbjUo/KkWnF+pVcw==
+X-Received: by 2002:a6b:4e02:: with SMTP id c2mr3883015iob.166.1626366526415;
+        Thu, 15 Jul 2021 09:28:46 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id a11sm3368502ilf.79.2021.07.15.09.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 09:28:45 -0700 (PDT)
+Received: (nullmailer pid 1194569 invoked by uid 1000);
+        Thu, 15 Jul 2021 16:28:40 -0000
+Date:   Thu, 15 Jul 2021 10:28:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Iwona Winiarska <iwona.winiarska@intel.com>
+Cc:     linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        x86@kernel.org, devicetree@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+Subject: Re: [PATCH 04/14] dt-bindings: Add bindings for peci-aspeed
+Message-ID: <20210715162840.GA1187226@robh.at.kernel.org>
+References: <20210712220447.957418-1-iwona.winiarska@intel.com>
+ <20210712220447.957418-5-iwona.winiarska@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <dfa38823-b63f-1807-6141-682930de2f3a@ti.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712220447.957418-5-iwona.winiarska@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 13, 2021 at 12:04:37AM +0200, Iwona Winiarska wrote:
+> Add device tree bindings for the peci-aspeed controller driver.
+> 
+> Co-developed-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+> Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+> ---
+>  .../devicetree/bindings/peci/peci-aspeed.yaml | 111 ++++++++++++++++++
+>  1 file changed, 111 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/peci/peci-aspeed.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/peci/peci-aspeed.yaml b/Documentation/devicetree/bindings/peci/peci-aspeed.yaml
+> new file mode 100644
+> index 000000000000..6061e06009fb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/peci/peci-aspeed.yaml
+> @@ -0,0 +1,111 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/peci/peci-aspeed.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Aspeed PECI Bus Device Tree Bindings
+> +
+> +maintainers:
+> +  - Iwona Winiarska <iwona.winiarska@intel.com>
+> +  - Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+> +
+> +allOf:
+> +  - $ref: peci-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2400-peci
+> +      - aspeed,ast2500-peci
+> +      - aspeed,ast2600-peci
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: |
+> +      Clock source for PECI controller. Should reference the external
+> +      oscillator clock.
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  clock-divider:
+> +    description: This value determines PECI controller internal clock
+> +      dividing rate. The divider will be calculated as 2 raised to the
+> +      power of the given value.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 7
+> +    default: 0
+> +
+
+> +  msg-timing:
+> +    description: |
+> +      Message timing negotiation period. This value will determine the period
+> +      of message timing negotiation to be issued by PECI controller. The unit
+> +      of the programmed value is four times of PECI clock period.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 255
+> +    default: 1
+> +
+> +  addr-timing:
+> +    description: |
+> +      Address timing negotiation period. This value will determine the period
+> +      of address timing negotiation to be issued by PECI controller. The unit
+> +      of the programmed value is four times of PECI clock period.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 255
+> +    default: 1
+> +
+> +  rd-sampling-point:
+> +    description: |
+> +      Read sampling point selection. The whole period of a bit time will be
+> +      divided into 16 time frames. This value will determine the time frame
+> +      in which the controller will sample PECI signal for data read back.
+> +      Usually in the middle of a bit time is the best.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 15
+> +    default: 8
+> +
+> +  cmd-timeout-ms:
+> +    description: |
+> +      Command timeout in units of ms.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 1
+> +    maximum: 1000
+> +    default: 1000
+
+Are all of these properties common for PECI or specific to this 
+controller? The former needs to go into the common schema. The latter 
+need vendor prefixes.
 
 
-On 14-Jul-21 11:21 PM, Apurva Nandan wrote:
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - resets
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/ast2600-clock.h>
+> +    peci-controller@1e78b000 {
+> +      compatible = "aspeed,ast2600-peci";
+> +      reg = <0x1e78b000 0x100>;
+> +      interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
+> +      clocks = <&syscon ASPEED_CLK_GATE_REF0CLK>;
+> +      resets = <&syscon ASPEED_RESET_PECI>;
+> +      clock-divider = <0>;
+> +      msg-timing = <1>;
+> +      addr-timing = <1>;
+> +      rd-sampling-point = <8>;
+> +      cmd-timeout-ms = <1000>;
+> +    };
+> +...
+> -- 
+> 2.31.1
 > 
 > 
-> On 14-Jul-21 9:58 PM, Mark Brown wrote:
->> On Wed, Jul 14, 2021 at 06:52:12PM +0530, Nandan, Apurva wrote:
->>> On 13-Jul-21 11:55 PM, Mark Brown wrote:
->>>> On Tue, Jul 13, 2021 at 12:57:41PM +0000, Apurva Nandan wrote:
->>
->>>>> cadence-quadspi controller doesn't allow an address phase when
->>>>> auto-polling the busy bit on the status register. Unlike SPI NOR
->>
->>>> Would it not be better to only disable this on NAND rather than
->>>> disabling it completely?
->>
->>> I am not sure how it is possible currently in the controller, could you
->>> please suggest a way? Also, should we have this logic of checking flash
->>> device type in the cadence-quadspi controller? SPI controller should be
->>> generic to all flash cores right?
->>
->> Surely the controller can tell if an address phase (or other unsupported
->> feature) is present?
->>
-> 
-> Yeah sure, understood.
-> 
-
-There are issues in this, I noticed it when tried to implement.
-
-So, the controller driver can't tell if an address phase is present, as
-it is just dealing with write page/reg operation and auto HW poll
-operation (whose address phase we are concerned with) isn't visible to
-it (as it is running solely on hardware).
-
-Now, whether the poll instruction should have an address phase or not
-depends on the connected flash chip, which the controller wouldn't be
-aware of as it only takes in a spimem op from the flash cores for execution.
-
-Hence, it can't disable auto HW polling by checking the the address
-phase and passing any flag information for this from flash cores would
-be inappropriate.
-
-More to this, not just address phase but any kind of variation in the
-read register operation would result in polling failure.
-
-Suppose, SPI-NOR flash is in QuadSPI/QPI mode, should the controller
-send poll instruction in 4s-4s-4s, 1s-4s-4s, or 1s-1s-1s mode? Some
-flashes keep it in 1s-1s-1s mode others keep it in 4s-4s-4s i.e it
-varies. For example, Winbond W25Q256FV SPI-NOR requires 4s-4s-4s read
-reg op when in QPI mode but it requires 1s-1s-1s read reg op when using
-QuadSPI instead of QPI mode. There can be other variations as well e.g.
-Gigadevice GD25LB256E requires 8 "don't care" bytes after command phase
-in QPI mode above 140MHz.
-
-Any SPI operation that is going underneath the visibility of flash core
-can can problems. I agree offloading the status polling process to
-controller HW is beneficial but on the other hand it restricts the flash
-on having a fixed type of polling operation. This would reduce the
-number of flash devices it will support (out of the box).
-What should be the right way out for this situation?
-
->>> In my opinion, it shouldn't harm as spi-nor core doesn't depend on HW
->>> polling anyways and auto-HW polling is a minor overhead.
->>
->> Flash stuff seems to quite often end up happening when the system is
->> heavily loaded for other reasons, it's much more of an issue with things
->> that are done more with PIO but still seems useful to avoid having to
->> poll in software, either it'll reduce CPU load or reduce latency and
->> increase throughput.
->>
-> 
-> Yes, got the point. Will amend it.
-> 
-> Thanks,
-> Apurva Nandan
-> 
-
-Thanks,
-Apurva Nandan
