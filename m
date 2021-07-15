@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33E23C9B52
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D251E3C9B55
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237459AbhGOJYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:24:42 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11314 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhGOJYj (ORCPT
+        id S238204AbhGOJZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhGOJZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:24:39 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GQTKR3PH3z7tf4;
-        Thu, 15 Jul 2021 17:17:15 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 17:21:40 +0800
-Received: from [10.174.179.0] (10.174.179.0) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 15 Jul
- 2021 17:21:39 +0800
-Subject: Re: [PATCH 1/1] stm class: dummy_stm: Fix error return code in
- dummy_stm_init()
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Thu, 15 Jul 2021 05:25:38 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321F7C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:22:45 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id d9-20020a17090ae289b0290172f971883bso5727821pjz.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NYwMREptpH+SMYjUdvFTHh1r7G+lr2bq6Llrywdvilo=;
+        b=uR3vskA5gv8/lie36FQ5MbR6XsNMJ+dgsZwEBrZUImZoufJFrJn2lNe1jNOwbcg+Y1
+         nwLfUVpZvLAsY8yVOdNI/vXhfy5qFjLVqatDwW4kIhxvilbJom9SJjXSB5H8QVau/ZMY
+         /do2Z+ngWIspm+KEbATbMSLjYGM4urexTID36AbqJ4KFEupxT0x9Ei0s/7G84xsxn4MF
+         uZZ/XVesEOFnkMyk9dMbJPjeXRzkkHgl6GKpiA+e3qaaoCRZAIIBBiJ0cNZqPgQkZ9Ou
+         1c1SYWGNQRTvIAIe4Go6N9aQIQWSVdiROCJLL58afmDlTHukf/VzARGb5Jhgwi2SZXtJ
+         AGoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NYwMREptpH+SMYjUdvFTHh1r7G+lr2bq6Llrywdvilo=;
+        b=PJL0Bc3LcCZNoMdUCm4mZDt/K5ltsE6mMLD8y52ROozvGsWVzEspycXfKPrX3emylh
+         nb4sml0WGUJ45w84RBBPLPZHXcsKn/gCBIuu/ZVFVUdYt+7QjyIIsj8TlPfz6fIWaKzd
+         /H9mjeiXFp6prBcGVkfcUeSMvHX5kfflpfIBZunAr8IPKT4gvZDdhxqy/tfLcQ5gsunl
+         0RCcmFVZxSrN5Mq5QzWjUTWoYgWpmXb+X1498RaPuIXW2Z2qN26SQzcth/svO8Nxqmph
+         WY/ej3ZMBEbzgXLeU8APLJiSuh6jC9/caU467lVBvoo918QAY/fpy9h/70qdgL62U4oI
+         0tqg==
+X-Gm-Message-State: AOAM532Ys/hB2StGJpn+c3J3GIMFzILDKqyiEhadqf+f8VAqeag21iCk
+        5FQcOPAaI8+0S6X/KP6k/aY=
+X-Google-Smtp-Source: ABdhPJw3PICK0TgRXinqxXnC3NhR0qntn+uH2ZB9tj7hrsee2GJQV0H51Ymleus68Z7IM8DFvZ5Uhw==
+X-Received: by 2002:a17:90b:3756:: with SMTP id ne22mr3506101pjb.144.1626340964712;
+        Thu, 15 Jul 2021 02:22:44 -0700 (PDT)
+Received: from archl-c2lm.. ([103.51.72.31])
+        by smtp.gmail.com with ESMTPSA id k25sm5571603pfa.213.2021.07.15.02.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 02:22:44 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Anand Moon <linux.amoon@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-stm32 <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210508023615.1827-1-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <e25baf8f-607c-6aa6-6902-c76b47834e55@huawei.com>
-Date:   Thu, 15 Jul 2021 17:21:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dmitry Osipenko <digetx@gmail.com>
+Subject: [PATCHv2] ARM: multi_v7_defconfig: Enable CONFIG_MMC_MESON_MX_SDHC
+Date:   Thu, 15 Jul 2021 09:22:25 +0000
+Message-Id: <20210715092233.1084-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210508023615.1827-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all:
-  Can someone review it? Although it is unlikely that the OOM will
-occur during initialization, this is indeed a coding error.
+Enable CONFIG_MMC_MESON_MX_SDHC so that SDHC host controller
+on Amlogic SoCs boards enable support for eMMC and MMC drivers.
 
-On 2021/5/8 10:36, Zhen Lei wrote:
-> Although 'ret' has been initialized to -ENOMEM, but it will be reassigned
-> by the "ret = stm_register_device(...)" statement in the for loop. So
-> that, the value of 'ret' is unknown when kasprintf() failed.
-> 
-> Fixes: bcfdf8afdebe ("stm class: dummy_stm: Create multiple devices")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  drivers/hwtracing/stm/dummy_stm.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/stm/dummy_stm.c b/drivers/hwtracing/stm/dummy_stm.c
-> index 38528ffdc0b3..36d32e7afb35 100644
-> --- a/drivers/hwtracing/stm/dummy_stm.c
-> +++ b/drivers/hwtracing/stm/dummy_stm.c
-> @@ -68,7 +68,7 @@ static int dummy_stm_link(struct stm_data *data, unsigned int master,
->  
->  static int dummy_stm_init(void)
->  {
-> -	int i, ret = -ENOMEM;
-> +	int i, ret;
->  
->  	if (nr_dummies < 0 || nr_dummies > DUMMY_STM_MAX)
->  		return -EINVAL;
-> @@ -80,8 +80,10 @@ static int dummy_stm_init(void)
->  
->  	for (i = 0; i < nr_dummies; i++) {
->  		dummy_stm[i].name = kasprintf(GFP_KERNEL, "dummy_stm.%d", i);
-> -		if (!dummy_stm[i].name)
-> +		if (!dummy_stm[i].name) {
-> +			ret = -ENOMEM;
->  			goto fail_unregister;
-> +		}
->  
->  		dummy_stm[i].sw_start		= master_min;
->  		dummy_stm[i].sw_end		= master_max;
-> 
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+Tested on Odroid C1+
+V1 > fix the typo Anlogic --> Amlogic
+---
+ arch/arm/configs/multi_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 52a0400fdd92..8b3f62a0eb22 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -870,6 +870,7 @@ CONFIG_MMC_SDHCI_PXAV2=m
+ CONFIG_MMC_SDHCI_SPEAR=y
+ CONFIG_MMC_SDHCI_S3C_DMA=y
+ CONFIG_MMC_SDHCI_BCM_KONA=y
++CONFIG_MMC_MESON_MX_SDHC=y
+ CONFIG_MMC_MESON_MX_SDIO=y
+ CONFIG_MMC_SDHCI_ST=y
+ CONFIG_MMC_OMAP=y
+-- 
+2.32.0
+
