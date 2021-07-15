@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D583CA9C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E083CA9C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242790AbhGOTJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:09:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34230 "EHLO mail.kernel.org"
+        id S242846AbhGOTJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:09:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241276AbhGOS6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241273AbhGOS6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 14:58:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B045F613E7;
-        Thu, 15 Jul 2021 18:55:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 097D0613E9;
+        Thu, 15 Jul 2021 18:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375306;
-        bh=skqswtmKqrqAPY5m7IrXU75ApWqmW8CDHzvsnzp79pw=;
+        s=korg; t=1626375308;
+        bh=gyNbe78AFY1UzqreDnREF1h2G5X1Dv9nW1W/K3xfdW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E7aUbGJTp9WTJCovgTMNQuFjTyE5HzAThT+3q5VYydNATX+X5SJSitkXzMsRjuAI6
-         tbusOd3Ryf3GYeARiFp0keTkEtbHUAyJTgKkvWMc/NhfWelTpURp2dCW1DFwMD/gxt
-         tSDKNTIqY4y5vjG2bSDmgX8RuQnugJ4DFDqlmGIE=
+        b=Hx0D3QQJ110Wshk91T1U71nQK45+jfm2PAzfMiM8P6cbPvb29817nQZoZ2NA/FdYI
+         blohLhB31GB+wcPqiDKsFPAEEInrhdqTwcSiQoDsQYmpRA7U8VNR0Z9H6R/TqCfd/+
+         aC+0km7Wr/I8XTBkqBUufmo86LbQBpxJVgRTuW0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Dave Switzer <david.switzer@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 032/242] igb: handle vlan types with checker enabled
-Date:   Thu, 15 Jul 2021 20:36:34 +0200
-Message-Id: <20210715182557.595976094@linuxfoundation.org>
+Subject: [PATCH 5.12 033/242] igb: fix assignment on big endian machines
+Date:   Thu, 15 Jul 2021 20:36:35 +0200
+Message-Id: <20210715182557.789971903@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -44,71 +44,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-[ Upstream commit c7cbfb028b95360403d579c47aaaeef1ff140964 ]
+[ Upstream commit b514958dd1a3bd57638b0e63b8e5152b1960e6aa ]
 
-The sparse build (C=2) finds some issues with how the driver
-dealt with the (very difficult) hardware that in some generations
-uses little-endian, and in others uses big endian, for the VLAN
-field. The code as written picks __le16 as a type and for some
-hardware revisions we override it to __be16 as done in this
-patch. This impacted the VF driver as well so fix it there too.
+The igb driver was trying hard to be sparse correct, but somehow
+ended up converting a variable into little endian order and then
+tries to OR something with it.
 
-Also change the vlan_tci assignment to override the sparse
-warning without changing functionality.
+A much plainer way of doing things is to leave all variables and
+OR operations in CPU (non-endian) mode, and then convert to
+little endian only once, which is what this change does.
+
+This probably fixes a bug that might have been seen only on
+big endian systems.
 
 Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 Tested-by: Dave Switzer <david.switzer@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 5 +++--
- drivers/net/ethernet/intel/igbvf/netdev.c | 4 ++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/igb/igb_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index caa8929289ae..894b9b87dba1 100644
+index 894b9b87dba1..434220a342df 100644
 --- a/drivers/net/ethernet/intel/igb/igb_main.c
 +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -2643,7 +2643,8 @@ static int igb_parse_cls_flower(struct igb_adapter *adapter,
- 			}
+@@ -6277,12 +6277,12 @@ int igb_xmit_xdp_ring(struct igb_adapter *adapter,
+ 	cmd_type |= len | IGB_TXD_DCMD;
+ 	tx_desc->read.cmd_type_len = cpu_to_le32(cmd_type);
  
- 			input->filter.match_flags |= IGB_FILTER_FLAG_VLAN_TCI;
--			input->filter.vlan_tci = match.key->vlan_priority;
-+			input->filter.vlan_tci =
-+				(__force __be16)match.key->vlan_priority;
- 		}
- 	}
+-	olinfo_status = cpu_to_le32(len << E1000_ADVTXD_PAYLEN_SHIFT);
++	olinfo_status = len << E1000_ADVTXD_PAYLEN_SHIFT;
+ 	/* 82575 requires a unique index per ring */
+ 	if (test_bit(IGB_RING_FLAG_TX_CTX_IDX, &tx_ring->flags))
+ 		olinfo_status |= tx_ring->reg_idx << 4;
  
-@@ -8593,7 +8594,7 @@ static void igb_process_skb_fields(struct igb_ring *rx_ring,
+-	tx_desc->read.olinfo_status = olinfo_status;
++	tx_desc->read.olinfo_status = cpu_to_le32(olinfo_status);
  
- 		if (igb_test_staterr(rx_desc, E1000_RXDEXT_STATERR_LB) &&
- 		    test_bit(IGB_RING_FLAG_RX_LB_VLAN_BSWAP, &rx_ring->flags))
--			vid = be16_to_cpu(rx_desc->wb.upper.vlan);
-+			vid = be16_to_cpu((__force __be16)rx_desc->wb.upper.vlan);
- 		else
- 			vid = le16_to_cpu(rx_desc->wb.upper.vlan);
+ 	netdev_tx_sent_queue(txring_txq(tx_ring), tx_buffer->bytecount);
  
-diff --git a/drivers/net/ethernet/intel/igbvf/netdev.c b/drivers/net/ethernet/intel/igbvf/netdev.c
-index fb3fbcb13331..630c1155f196 100644
---- a/drivers/net/ethernet/intel/igbvf/netdev.c
-+++ b/drivers/net/ethernet/intel/igbvf/netdev.c
-@@ -83,14 +83,14 @@ static int igbvf_desc_unused(struct igbvf_ring *ring)
- static void igbvf_receive_skb(struct igbvf_adapter *adapter,
- 			      struct net_device *netdev,
- 			      struct sk_buff *skb,
--			      u32 status, u16 vlan)
-+			      u32 status, __le16 vlan)
- {
- 	u16 vid;
- 
- 	if (status & E1000_RXD_STAT_VP) {
- 		if ((adapter->flags & IGBVF_FLAG_RX_LB_VLAN_BSWAP) &&
- 		    (status & E1000_RXDEXT_STATERR_LB))
--			vid = be16_to_cpu(vlan) & E1000_RXD_SPC_VLAN_MASK;
-+			vid = be16_to_cpu((__force __be16)vlan) & E1000_RXD_SPC_VLAN_MASK;
- 		else
- 			vid = le16_to_cpu(vlan) & E1000_RXD_SPC_VLAN_MASK;
- 		if (test_bit(vid, adapter->active_vlans))
 -- 
 2.30.2
 
