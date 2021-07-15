@@ -2,137 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927133C9600
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 04:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785B33C95E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 04:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236563AbhGOCdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 22:33:22 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:57528 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233148AbhGOCdO (ORCPT
+        id S232435AbhGOCc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 22:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231156AbhGOCc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 22:33:14 -0400
-X-UUID: 6aed61614b424139815e4be14d9e0364-20210715
-X-UUID: 6aed61614b424139815e4be14d9e0364-20210715
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <kewei.xu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1762703519; Thu, 15 Jul 2021 10:30:16 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 15 Jul 2021 10:30:16 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 15 Jul 2021 10:30:15 +0800
-From:   Kewei Xu <kewei.xu@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <matthias.bgg@gmail.com>, <robh+dt@kernel.org>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>,
-        <kewei.xu@mediatek.com>, <ot_daolong.zhu@mediatek.com>
-Subject: [PATCH 8/8] i2c: mediatek: modify bus speed calculation formula
-Date:   Thu, 15 Jul 2021 10:29:17 +0800
-Message-ID: <1626316157-24935-9-git-send-email-kewei.xu@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com>
-References: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com>
+        Wed, 14 Jul 2021 22:32:56 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94287C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 19:30:04 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id w194so4736367oie.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 19:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zsHOwqmd3gVtSyPvrq3bj+t+QcLk1cjJ97mnMG1JuTQ=;
+        b=P/paEghrn7R0+4aEZbs+8fP+9UYyjwthyOYqnQLyk5i5mNMUuDUtynTPXNn9U0W9ZS
+         FiGN+H9hknurhKNTqys+eQH4yKWddMMUyJaHXm5jRxFLxgrnfpwxTnUoXYM/v67fGfZY
+         dRzRis0mgQiPJhT3XbhW0tmW5U/0wu8thkSJJCyJKYtRmsncfAHQO4gzeElhysfJI8QD
+         OUr5XdOOwaS5Rth74mXV48nrkosXXbGg6UG+Ig2Ngo7SVXrohs5VYXRc8rhyxyB40FYI
+         6OsXvlTArCH1o7qegZ1JFAg4RRd6jt3G6ThD8SAjD8SUs6Ypu+Xot5hLknFKtgUGn7vR
+         T/1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zsHOwqmd3gVtSyPvrq3bj+t+QcLk1cjJ97mnMG1JuTQ=;
+        b=sPqifc4Po/vEUTxR5mRcVJc4A5DQ52SNOtj2bKgVl5lYs7HcXmABCg7a5Ar/rJDN2j
+         8dpwc9Cs3jRiEu3B2yBnVhk/i9mjQX9bGXilf24wdWTcoXlqXN0gMK2x5DZBujziyGDd
+         q4GG4FgqdAAN2UlIE8kxGFwqrLO1qCtqld2eegqg0MOlI3LHYRIT6B6s4g24Q9NTiIzt
+         UJ2/hWiJ+TapbAwNnlirP35zfBz1jipCpjaRAzXX0xi0ClpNR40plf1Ibhu28B9TPwuo
+         vx5vPYA44EJyUtZBNmOCbwALyntQCNbm1OF//5vbBdV2BeAQw9zPUl9nr795PXijVl6/
+         B5Qg==
+X-Gm-Message-State: AOAM532mrQBE+WMdn6dcQwPAbOwI2vdRyIA/2+8vXU6ElvImc0leIsLe
+        WRZtCpJN/6eLPReMQtRBLbxWonJMVSnA45sFPDg=
+X-Google-Smtp-Source: ABdhPJx5BcEy/tgdpmACYEzaVSWRMuBot7n5L335EUTu4qlSGPPHJQcO7n++gn6M6sjpPDxyzkhHi09zbR+7cF/Njuw=
+X-Received: by 2002:a05:6808:210e:: with SMTP id r14mr789609oiw.90.1626316203958;
+ Wed, 14 Jul 2021 19:30:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <1623844402-4731-1-git-send-email-zhenguo6858@gmail.com> <CAGGV+3+5g_DbBvjT+EqEGaaLv2-50hrpr5dZSF+SyH8gvzs6RQ@mail.gmail.com>
+In-Reply-To: <CAGGV+3+5g_DbBvjT+EqEGaaLv2-50hrpr5dZSF+SyH8gvzs6RQ@mail.gmail.com>
+From:   =?UTF-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>
+Date:   Thu, 15 Jul 2021 10:29:36 +0800
+Message-ID: <CAGGV+3K_ctHMY=s-1RToPgiQBdrVGPRqJ5SeWRzfY_dDM+5mXw@mail.gmail.com>
+Subject: Re: [PATCH v2] tty: n_gsm: CR bit value should be 0 when config "initiator=0"
+To:     =?UTF-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When clock-div is 0 or greater than 1, the bus speed
-calculated by the old speed calculation formula will be
-larger than the target speed. So we update the formula.
+Dear Jiri,Greg
 
-Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
----
- drivers/i2c/busses/i2c-mt65xx.c | 32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ngsm as responser=EF=BC=8Cpls review the process again.
+because according to this process, it can't work.
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 486076f..4e43a79 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -68,11 +68,12 @@
- #define I2C_DEFAULT_CLK_DIV		5
- #define MAX_SAMPLE_CNT_DIV		8
- #define MAX_STEP_CNT_DIV		64
--#define MAX_CLOCK_DIV			256
-+#define MAX_CLOCK_DIV_8BITS		256
-+#define MAX_CLOCK_DIV_5BITS		32
- #define MAX_HS_STEP_CNT_DIV		8
--#define I2C_STANDARD_MODE_BUFFER	(1000 / 2)
--#define I2C_FAST_MODE_BUFFER		(300 / 2)
--#define I2C_FAST_MODE_PLUS_BUFFER	(20 / 2)
-+#define I2C_STANDARD_MODE_BUFFER	(1000 / 3)
-+#define I2C_FAST_MODE_BUFFER		(300 / 3)
-+#define I2C_FAST_MODE_PLUS_BUFFER	(20 / 3)
- 
- #define I2C_CONTROL_RS                  (0x1 << 1)
- #define I2C_CONTROL_DMA_EN              (0x1 << 2)
-@@ -719,14 +720,25 @@ static int mtk_i2c_calculate_speed(struct mtk_i2c *i2c, unsigned int clk_src,
- 	unsigned int best_mul;
- 	unsigned int cnt_mul;
- 	int ret = -EINVAL;
-+	int clock_div_constraint = 0;
- 
- 	if (target_speed > I2C_MAX_HIGH_SPEED_MODE_FREQ)
- 		target_speed = I2C_MAX_HIGH_SPEED_MODE_FREQ;
- 
-+	if (i2c->default_timing_adjust) {
-+		clock_div_constraint = 0;
-+	} else if (i2c->dev_comp->ltiming_adjust &&
-+		   i2c->ac_timing.inter_clk_div > 1) {
-+		clock_div_constraint = 1;
-+	} else if (i2c->dev_comp->ltiming_adjust &&
-+		   i2c->ac_timing.inter_clk_div == 0) {
-+		clock_div_constraint = -1;
-+	}
-+
- 	max_step_cnt = mtk_i2c_max_step_cnt(target_speed);
- 	base_step_cnt = max_step_cnt;
- 	/* Find the best combination */
--	opt_div = DIV_ROUND_UP(clk_src >> 1, target_speed);
-+	opt_div = DIV_ROUND_UP(clk_src >> 1, target_speed) + clock_div_constraint;
- 	best_mul = MAX_SAMPLE_CNT_DIV * max_step_cnt;
- 
- 	/* Search for the best pair (sample_cnt, step_cnt) with
-@@ -761,7 +773,8 @@ static int mtk_i2c_calculate_speed(struct mtk_i2c *i2c, unsigned int clk_src,
- 	sample_cnt = base_sample_cnt;
- 	step_cnt = base_step_cnt;
- 
--	if ((clk_src / (2 * sample_cnt * step_cnt)) > target_speed) {
-+	if ((clk_src / (2 * (sample_cnt * step_cnt - clock_div_constraint))) >
-+		 target_speed) {
- 		/* In this case, hardware can't support such
- 		 * low i2c_bus_freq
- 		 */
-@@ -846,13 +859,16 @@ static int mtk_i2c_set_speed_adjust_timing(struct mtk_i2c *i2c,
- 	target_speed = i2c->speed_hz;
- 	parent_clk /= i2c->clk_src_div;
- 
--	if (i2c->dev_comp->timing_adjust)
--		max_clk_div = MAX_CLOCK_DIV;
-+	if (i2c->dev_comp->timing_adjust && i2c->dev_comp->ltiming_adjust)
-+		max_clk_div = MAX_CLOCK_DIV_5BITS;
-+	else if (i2c->dev_comp->timing_adjust)
-+		max_clk_div = MAX_CLOCK_DIV_8BITS;
- 	else
- 		max_clk_div = 1;
- 
- 	for (clk_div = 1; clk_div <= max_clk_div; clk_div++) {
- 		clk_src = parent_clk / clk_div;
-+		i2c->ac_timing.inter_clk_div = clk_div - 1;
- 
- 		if (target_speed > I2C_MAX_FAST_MODE_PLUS_FREQ) {
- 			/* Set master code speed register */
--- 
-1.9.1
+Thanks!
 
+=E8=B5=B5=E6=8C=AF=E5=9B=BD <zhenguo6858@gmail.com> =E4=BA=8E2021=E5=B9=B47=
+=E6=9C=887=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=882:12=E5=86=99=E9=81=
+=93=EF=BC=9A
+>
+> Dear Jiri,Greg
+>
+>  1:   our development board uses linux kernel , uart dev node is "/dev/tt=
+yGS2"
+>  2:   config uart "/dev/ttyGS2" ,we use ngsm ldisc,and config
+> "c.initiator =3D 0;" code is as follows
+>
+>   #include <stdio.h>
+>   #include <stdint.h>
+>   #include <linux/gsmmux.h>
+>   #include <linux/tty.h>
+>   #define DEFAULT_SPEED      B115200
+>   #define SERIAL_PORT        /dev/ttyGS2
+>
+>      int ldisc =3D N_GSM0710;
+>      struct gsm_config c;
+>      struct termios configuration;
+>      uint32_t first;
+>
+>      /* open the serial port */
+>      fd =3D open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
+>
+>      /* configure the serial port : speed, flow control ... */
+>
+>      /* use n_gsm line discipline */
+>      ioctl(fd, TIOCSETD, &ldisc);
+>
+>      /* get n_gsm configuration */
+>      ioctl(fd, GSMIOC_GETCONF, &c);
+>      /* we are responter and need encoding 0 (basic) */
+>      c.initiator =3D 0;
+>      c.encapsulation =3D 0;
+>      /* our modem defaults to a maximum size of 127 bytes */
+>      c.mru =3D 127;
+>      c.mtu =3D 127;
+>     /* set the new configuration */
+>      ioctl(fd, GSMIOC_SETCONF, &c);
+>      /* get first gsmtty device node */
+>      ioctl(fd, GSMIOC_GETFIRST, &first);
+>      printf("first muxed line: /dev/gsmtty%i\n", first);
+>
+>      /* and wait for ever to keep the line discipline enabled */
+>      daemon(0,0);
+>      pause();
+>
+> 3:  connect to ubuntu by uart serial port cable,ubuntu uart dev node
+> is /"dev/ttyUSB0"
+> send  DLC0 SABM command by "/dev/ttyUSB0",but linux development board
+> can't response,code is as follows
+>
+> int main(int argc, char **argv)
+> {
+>     int fd;
+> fd =3D open("/dev/ttyUSB0,O_RDWR | O_NOCTTY | O_NDELAY);
+> char buf[256]=3D{0xf9,0x03,0x3f,0x01,0x1c,0xf9};
+> write(fd,buf,6);
+> close(fd);
+> }
+>
+> 4:  linux development board receive data,by uart,gsm_queue will check
+> CR,find CR=3D1.so go to invalid,pls check again.
+> static void gsm_queue(struct gsm_mux *gsm)
+> {
+> cr ^=3D 1 - gsm->initiator; /* Flip so 1 always means command */
+> dlci =3D gsm->dlci[address];
+>
+> switch (gsm->control) {
+> case SABM|PF:
+> if (cr =3D=3D 0)
+> goto invalid;
+> if (dlci =3D=3D NULL)
+> dlci =3D gsm_dlci_alloc(gsm, address);
+> if (dlci =3D=3D NULL)
+> return;
+> if (dlci->dead)
+> gsm_response(gsm, address, DM);
+> else {
+> gsm_response(gsm, address, UA);
+> gsm_dlci_open(dlci);
+> }
+> break;
