@@ -2,128 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1803CAA52
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9663C3CA9DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243947AbhGOTMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242071AbhGOTAi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:00:38 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F43BC0610D3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:56:41 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id o201so6363314pfd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:56:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n4/4wnowezgYAcO8PLspC/E18g0vHJpWDQH9C88XPvE=;
-        b=PEYSJW5ywitp83MZTMzWpoWAjMd6cRgpvN+WoN5IgceUfvr7eYZ+iIY/sdVTeQ4f3z
-         55r7On1no16MG/cV7wm6lQa+OWP9zu/zlUvwcb1/68aSQhLjTEu92b1Bi0ayZXK9+RDB
-         e4u4LI9SR6fRJj0fTDRUxaYmrVA1qS/Izi32/2SK1zG9NhTviCXYPgH2Y+saYsJgC8II
-         mZDg+jmHoNXhrvWTeqw6JEn+PlxtoP2fB8T8s/O/6xzBaR+p5y4OKdR7077r5EuhbFLZ
-         cgxPO/8BODmINWQNHeTO9uzNEe+l0CEt+ZZenQK9vDBLW5XYwqZ14jMGtdHyw5ktP6JP
-         LtTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n4/4wnowezgYAcO8PLspC/E18g0vHJpWDQH9C88XPvE=;
-        b=MwndNA/FRZ+AUE/UBeeb6t6UI/s5/GIJGuGq8kIAIVs49Rwr3Lx8RvTZB4f6+yGMG7
-         x8eQ4VCYVsfqNlOC7hfetRHmS/l4IrxrnBvHQuGLXD8WdPgmR5K1oSxbcP2K1ZbooKxS
-         sawJ362Fc1Ambj4ucgzNJVipT7WGFG4hc4CKqVYs4SwDDlYDDcCrZ7eT1n7mBE8gi6YG
-         x0EfdcqmKyKOwKnAzvMTXkaxfh+Lha6AtMzFKGoVX7I2HjQBHqF3bT/+hxxoSVyfrUoD
-         FvWWxzxrGUGmaLwswQEihO2qdYIiWvhE+3jynoU+k9LyjV/xZCa/i6xJ/1TaFw4TX5fT
-         Vm7Q==
-X-Gm-Message-State: AOAM533l1l1r9FHmXpvv9eRQ01kdAKSz/DIxgDr1tPlfoHHThZpKlx5D
-        uaLWVAFZEKKqfcCPzkJ9a8IzY2In4hwrlA==
-X-Google-Smtp-Source: ABdhPJyogjmWEjLfXV67H9TMDIAfEMbPO+MfSgWNeUFUmwzfnR9voMcOxAjAQpWD9XX7wn4ODnJYlw==
-X-Received: by 2002:a65:614d:: with SMTP id o13mr5988572pgv.351.1626375400818;
-        Thu, 15 Jul 2021 11:56:40 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id r29sm7413174pfq.102.2021.07.15.11.56.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 11:56:40 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 18:56:36 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 06/40] x86/sev: Add helper functions for
- RMPUPDATE and PSMASH instruction
-Message-ID: <YPCE5D6h7V0iZiX/@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-7-brijesh.singh@amd.com>
- <CAMkAt6quzRMiEJ=iYDocRvpaYuNcV5vm=swbowK+KG=j7FjyKA@mail.gmail.com>
- <8ab309cd-8465-d543-55c8-5f6529fe74fd@intel.com>
+        id S243906AbhGOTKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:10:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242505AbhGOS7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:59:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8707F613D0;
+        Thu, 15 Jul 2021 18:56:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626375410;
+        bh=h8VhkJGv7XBlYbGJhIbYQWwxLGpNUt9qSt9i6JbEzSA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=FbZLfbNCxaDykYsqZQEwXtA10VhNEzqCz3CH0vTk3EzdlTlUjwcC6hKBXttGHUd0C
+         iqNZrkhCK1tO8JtwqYFp5PRkd9h2RVaHQ1Ei9x69q7HEm7tx49MRJV5QDhfEUHvSzM
+         ejM2uL8Mt0+zvFoarESpfMUM7d3isPs8hSFUi+R1W0rR+1WnzDYTbyfbif48ZHw3iW
+         QqtICE2h98rG7/Mhw2goBD5Ll1Xlp6DTPMchAlel9IflNb9/ml6jo/2rSULp2VJMHk
+         DESwQFImwuypPe/2wM3CGVDGu7YuiNdAV3/C8vq9dB1jfSo51mZVIPmiVGz4jMHCbm
+         ZxM6FrMIW1biw==
+Date:   Thu, 15 Jul 2021 13:56:49 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Billie Alsup (balsup)" <balsup@cisco.com>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Guohan Lu <lguohan@gmail.com>,
+        "Madhava Reddy Siddareddygari (msiddare)" <msiddare@cisco.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Sergey Miroshnichenko <s.miroshnichenko@yadro.com>
+Subject: Re: [RFC][PATCH] PCI: Reserve address space for powered-off devices
+ behind PCIe bridges
+Message-ID: <20210715185649.GA1984276@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <8ab309cd-8465-d543-55c8-5f6529fe74fd@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <545AA576-42A5-47A7-A08A-062582B1569A@cisco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021, Dave Hansen wrote:
-> On 7/12/21 11:44 AM, Peter Gonda wrote:
-> >> +int psmash(struct page *page)
-> >> +{
-> >> +       unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
-> >> +       int ret;
-> >> +
-> >> +       if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> >> +               return -ENXIO;
-> >> +
-> >> +       /* Retry if another processor is modifying the RMP entry. */
-> >> +       do {
-> >> +               /* Binutils version 2.36 supports the PSMASH mnemonic. */
-> >> +               asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
-> >> +                             : "=a"(ret)
-> >> +                             : "a"(spa)
-> >> +                             : "memory", "cc");
-> >> +       } while (ret == FAIL_INUSE);
-> > Should there be some retry limit here for safety? Or do we know that
-> > we'll never be stuck in this loop? Ditto for the loop in rmpupdate.
+On Thu, Jul 15, 2021 at 06:12:25PM +0000, Billie Alsup (balsup) wrote:
+> It took me a while to figure out that the "New Outlook" option
+> doesn't actually allow sending plain text, so I have to switch to
+> "Old Outlook" mode.
+
+Since you've gone to that much trouble already, also note
+http://vger.kernel.org/majordomo-info.html and
+https://people.kernel.org/tglx/notes-about-netiquette 
+
+BTW, the attribution in the email you quoted below got corrupted in
+such a way that it appears that I wrote the whole thing, instead of 
+what actually happened, which is that I wrote a half dozen lines of
+response to your email.  Linux uses old skool email conventions ;)
+
+> It is not clear as to what parameters Linux would use to consider a
+> window broken.
+
+By "broken," I just mean things that are prohibited by the PCI spec,
+like "region doesn't fit in a window of an upstream device" or
+"non-prefetchable region placed in a prefetchable window."
+
+> But if the kernel preserves some bridge window
+> assignment, then it seems feasible for our BIOS to run this same
+> algorithm (reading PLX persistent scratch registers to determine
+> window sizes).  I will raise this possibility with our own kernel
+> team to discuss with the bios team.  We can also look more closely
+> at the resource_alignment options to see if that might suffice.
+> Thanks for the information!
+
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Date: Thursday, July 15, 2021 at 10:14 AM
+> To: "Billie Alsup (balsup)" <balsup@cisco.com>
+> Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Bjorn Helgaas <bhelgaas@google.com>, Guohan Lu <lguohan@gmail.com>, "Madhava Reddy Siddareddygari (msiddare)" <msiddare@cisco.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Sergey Miroshnichenko <s.miroshnichenko@yadro.com>
+> Subject: Re: [RFC][PATCH] PCI: Reserve address space for powered-off devices behind PCIe bridges
 > 
-> It's probably fine to just leave this.  While you could *theoretically*
-> lose this race forever, it's unlikely to happen in practice.  If it
-> does, you'll get an easy-to-understand softlockup backtrace which should
-> point here pretty quickly.
-
-But should failure here even be tolerated?  The TDX cases spin on flows that are
-_not_ due to (direct) contenion, e.g. a pending interrupt while flushing the
-cache or lack of randomness when generating a key.  In this case, there are two
-CPUs racing to modify the RMP entry, which implies that the final state of the
-RMP entry is not deterministic.
-
-> I think TDX has a few of these as well.  Most of the "SEAMCALL"s from
-> host to the firmware doing the security enforcement have something like
-> an -EBUSY as well.  I believe they just retry forever too.
+> On Thu, Jul 15, 2021 at 04:52:26PM +0000, Billie Alsup (balsup) wrote:
+> We are aware of how Cisco device specific this code is, and hadn't
+> intended to upstream it.  This code was originally written for an
+> older kernel version (4.8.28-WR9.0.0.26_cgl).  I am not the original
+> author; I just ported it into various SONiC linux kernels.  We use
+> ACPI with SONiC (although not on our non-SONiC products), so I
+> thought I might be able to define such windows within the ACPI tree
+> and have some generic code to read such configuration information
+> from the ACPI tables,. However, initial attempts failed so I went
+> with the existing approach.  I believe we did look at the hpmmiosize
+> parameter, but iirc it applied to each bridge, rather than being a
+> pool of address space to dynamically parcel out as necessary.
+> 
+> Right.  I mentioned "pci=resource_alignment=" because it claims to be
+> able to specify window sizes for specific bridges.  But I haven't
+> exercised that myself.
+> 
+> There are multiple bridges involved in the hardware (there are 8
+> hot-plug fabric cards, each with multiple PCI devices).  Devices on
+> the card are in multiple power zones, so all devices are not
+> immediately visible to the pci scanning code.  The top level bridge
+> reserves close to 5G.  The 2nd level (towards the fabric cards)
+> reserve 4.5G.  The 3rd level has 9 bridges each reserving 512M.  The
+> 4th level reserves 384M (with a 512M alignment restriction iirc).
+> The 5th level reserves 384M (again with an alignment restriction).
+> That defines the bridge hierarchy visible at boot.  Things behind
+> that 5th level are hot-plugged where there are two more bridge
+> levels and 5 devices (1 requiring 2x64M blocks and 4 requiring
+> 1x64M).
+> 
+> I'm not sure if the Cisco kernel team has revisited the hpmmiosize
+> and resource_alignment parameters since this initial implementation.
+> Reading the description of Sergey's patches, he seems to be
+> approaching the same problem from a different direction.   It is
+> unclear if such an approach is practical for our environment.   It
+> would require updates to all of our SONiC drivers to support
+> stopping/remapping/restarting, and it is unclear if that is
+> acceptable.  It is certainly less preferable to pre-reserving the
+> required space.  For our embedded product, we know exactly what
+> devices will be plugged in, and allowing that to be pre-programmed
+> into the PLX eeprom gives us the flexibility we need.  
+> 
+> If you know up front what devices are possible and how much space they
+> need, possibly your firmware could assign the bridge windows you need.
+> Linux generally does not change window assignments unless they are
+> broken.
+> 
+> Bjorn
+> 
+> 
