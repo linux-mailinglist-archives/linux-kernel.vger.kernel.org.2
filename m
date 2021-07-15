@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FD63C96AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44233C96AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhGODxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:53:01 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15014 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbhGODw7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:52:59 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQL034H72zbcqP;
-        Thu, 15 Jul 2021 11:46:43 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 11:49:57 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 15 Jul
- 2021 11:49:57 +0800
-Subject: Re: [PATCH rfc v5 2/4] page_pool: add interface to manipulate frag
- count in page pool
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <fenghua.yu@intel.com>,
-        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        "Feng Tang" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        "Willem de Bruijn" <willemb@google.com>, <wenxu@ucloud.cn>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        <kpsingh@kernel.org>, <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, <songliubraving@fb.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <1626255285-5079-1-git-send-email-linyunsheng@huawei.com>
- <1626255285-5079-3-git-send-email-linyunsheng@huawei.com>
- <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
- <CAKgT0UcDxSmMqCGvrWeYFiKNsxWXskF+pUhKQVCC6totduUyDQ@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <73ef1add-01df-7783-7982-da9e59c26330@huawei.com>
-Date:   Thu, 15 Jul 2021 11:49:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S233682AbhGODyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:54:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231378AbhGODym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:54:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E877A61260;
+        Thu, 15 Jul 2021 03:51:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626321109;
+        bh=zIDGkmlUgIcJ8m1hju69tcRsdb7X1rACjkflE4i/S8M=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=J4LGlPDKjIyWxmNQMGq6+gL9PG/MTFmW6So3m0K4toC2VEGpR9B00yqlzZ8RsErDR
+         Jvz+4IB8pweMsC2/Wi19i2C/qhtckSSCkCFpBV9636xsbt1FJY/b8CBAQWTqD112YO
+         MTvV996YH5FzKVNK6nS/yNOOvNmKuCNLbGFTtQh/1Oy0uO/9JRC3hNv+mDLCqPFN+w
+         cvYXFBuGsrM9DRK4EK4nod+ekDx1DZ/nxrPiHDUs/f2UuhyRYB2SlIlrLRfYYndeUN
+         uE/kGRBc1zV9L4/DyyKYkd7g/3aGy141GSaC/u0xnXAyjzrVIxSk6HPF51WfUNKlMw
+         0Rx2I0qbdZG3Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 90AD15C03DE; Wed, 14 Jul 2021 20:51:49 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 20:51:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+Message-ID: <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
+ <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+ <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
+ <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UcDxSmMqCGvrWeYFiKNsxWXskF+pUhKQVCC6totduUyDQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/14 22:46, Alexander Duyck wrote:
-> On Wed, Jul 14, 2021 at 3:18 AM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
->>
->>
->>
->> On 14/07/2021 11.34, Yunsheng Lin wrote:
->>> As suggested by Alexander, "A DMA mapping should be page
->>> aligned anyway so the lower 12 bits would be reserved 0",
->>> so it might make more sense to repurpose the lower 12 bits
->>> of the dma address to store the frag count for frag page
->>> support in page pool for 32 bit systems with 64 bit dma,
->>> which should be rare those days.
->>
->> Do we have any real driver users with 32-bit arch and 64-bit DMA, that
->> want to use this new frag-count system you are adding to page_pool?
->>
->> This "lower 12-bit use" complicates the code we need to maintain
->> forever. My guess is that it is never used, but we need to update and
->> maintain it, and it will never be tested.
->>
->> Why don't you simply reject using page_pool flag PP_FLAG_PAGE_FRAG
->> during setup of the page_pool for this case?
->>
->>   if ((pool->p.flags & PP_FLAG_PAGE_FRAG) &&
->>       (sizeof(dma_addr_t) > sizeof(unsigned long)))
->>     goto reject-setup;
->>
->>
+On Wed, Jul 14, 2021 at 12:44:36PM +0800, Zhouyi Zhou wrote:
+> On Tue, Jul 13, 2021 at 11:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Tue, Jul 13, 2021 at 06:18:12AM -0700, Paul E. McKenney wrote:
+> > > On Tue, Jul 13, 2021 at 09:09:04AM -0400, Mathieu Desnoyers wrote:
+> > > > ----- On Jul 13, 2021, at 12:16 AM, paulmck paulmck@kernel.org wrote:
+> > > >
+> > > > > On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
+> > > > >> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > >>
+> > > > >> Hi Paul,
+> > > > >>
+> > > > >> During my studying of RCU, I did a grep in the kernel source tree.
+> > > > >> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
+> > > > >> should be CONFIG_TASKS_TRACE_RCU instead.
+> > > > >>
+> > > > >> Without memory fencing, the idle/userspace task inspection may not
+> > > > >> be so accurate.
+> > > > >>
+> > > > >> Thanks for your constant encouragement for my studying.
+> > > > >>
+> > > > >> Best Wishes
+> > > > >> Zhouyi
+> > > > >>
+> > > > >> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > >
+> > > > > Good eyes, and those could cause real bugs, so thank you!
+> > > >
+> > > > Hi Paul,
+> > > >
+> > > > This makes me wonder: what is missing testing-wise in rcutorture to
+> > > > catch those issues with testing before they reach mainline ?
+> > >
+> > > My guess:  Running on weakly ordered architectures.  ;-)
+> >
+> > And another guess:  A tool that identifies use of Kconfig options
+> > that are not defined in any Kconfig* file.
+> Based on Paul's second guess ;-),  I did a small research, and I think
+> the best answer is to modify scripts/checkpatch.pl. We modify checkpatch.pl
+> to identify use of Kconfig options that are not defined in any Kconfig* file.
 > 
-> That sounds good to me if we want to go that route. It would simplify
-> this quite a bit since essentially we could just drop these if blocks.
+> As I am a C/C++ programmer, I would be glad to take some time to learn
+> perl (checkpatch is implented in perl) first if no other volunteer is
+> about to do it ;-)
 
-Ok, let's wait for a few day to see if there is anyone with 32-bit arch
-and 64-bit DMA system care enough to use the frag-count support in the page
-pool.
+I haven't heard anyone else volunteer.  ;-)
 
-> 
-> Thanks.
-> 
-> - Alex
-> .
-> 
+Others might have opinions on where best to implement these checks,
+but I must confess that I have not given it much thought.
+
+							Thanx, Paul
