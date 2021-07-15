@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3097B3CA960
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5013CABB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242606AbhGOTGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:06:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32802 "EHLO mail.kernel.org"
+        id S243797AbhGOTW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:22:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241608AbhGOS4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8C13613D8;
-        Thu, 15 Jul 2021 18:53:19 +0000 (UTC)
+        id S241438AbhGOTFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D15A613F1;
+        Thu, 15 Jul 2021 19:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375200;
-        bh=xC4Cywdx5k8+00hFAZiH//pamxKy7ytJ3zUtH0unhlM=;
+        s=korg; t=1626375731;
+        bh=+KNdvSiSTwrRQseY2ACMiYBWQDELdkM7Ft8ARJ2W67w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1xEdB6WtAkR/CFPmHRgBaW/uJj+n7FuGjUPCjP+51B/e5WuPITMIW00p/pDfjvpdV
-         44Va97KZAtEe7k4KPZ6Gj2seyNRIrmS4XAV2OFkqnntb82lE8haW8anRblD4fu4N5T
-         Ut9kvJwjjZYNI+UMa8GpKRFJFKbhnMvNp6IONBAY=
+        b=g/RZ/IuwQL90s2SVkRLnbad9ZZzaLEeUsFtqoXgeTBBhpm6WtYHLPQ4w46l7wuCQx
+         3288wYN81HAeECyCatsI0pgIDcDDFJq6qZFfTk6VBklm1eh5g4ZcQi+BNHHjMvb+t2
+         bT7dIbYSehLX/e6rmosYCATJLCqxoLvy8Gy/+wUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 203/215] media: zr364xx: fix memory leak in zr364xx_start_readpipe
+        stable@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [PATCH 5.12 213/242] coresight: Propagate symlink failure
 Date:   Thu, 15 Jul 2021 20:39:35 +0200
-Message-Id: <20210715182635.059466207@linuxfoundation.org>
+Message-Id: <20210715182630.681224360@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Jeremy Linton <jeremy.linton@arm.com>
 
-commit 0a045eac8d0427b64577a24d74bb8347c905ac65 upstream.
+commit 51dd19a7e9f8fbbb7cd92b8a357091911eae7f78 upstream.
 
-syzbot reported memory leak in zr364xx driver.
-The problem was in non-freed urb in case of
-usb_submit_urb() fail.
+If the symlink is unable to be created, the driver goes
+ahead and continues device creation. Instead lets propagate
+the failure, and fail the probe.
 
-backtrace:
-  [<ffffffff82baedf6>] kmalloc include/linux/slab.h:561 [inline]
-  [<ffffffff82baedf6>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
-  [<ffffffff82f7cce8>] zr364xx_start_readpipe+0x78/0x130 drivers/media/usb/zr364xx/zr364xx.c:1022
-  [<ffffffff84251dfc>] zr364xx_board_init drivers/media/usb/zr364xx/zr364xx.c:1383 [inline]
-  [<ffffffff84251dfc>] zr364xx_probe+0x6a3/0x851 drivers/media/usb/zr364xx/zr364xx.c:1516
-  [<ffffffff82bb6507>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-  [<ffffffff826018a9>] really_probe+0x159/0x500 drivers/base/dd.c:576
-
-Fixes: ccbf035ae5de ("V4L/DVB (12278): zr364xx: implement V4L2_CAP_STREAMING")
+Link: https://lore.kernel.org/r/20210526204042.2681700-1-jeremy.linton@arm.com
+Fixes: 8a7365c2d418 ("coresight: Expose device connections via sysfs")
 Cc: stable@vger.kernel.org
-Reported-by: syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20210614175901.532683-7-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/zr364xx/zr364xx.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/hwtracing/coresight/coresight-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/media/usb/zr364xx/zr364xx.c
-+++ b/drivers/media/usb/zr364xx/zr364xx.c
-@@ -1034,6 +1034,7 @@ static int zr364xx_start_readpipe(struct
- 	DBG("submitting URB %p\n", pipe_info->stream_urb);
- 	retval = usb_submit_urb(pipe_info->stream_urb, GFP_KERNEL);
- 	if (retval) {
-+		usb_free_urb(pipe_info->stream_urb);
- 		printk(KERN_ERR KBUILD_MODNAME ": start read pipe failed\n");
- 		return retval;
+--- a/drivers/hwtracing/coresight/coresight-core.c
++++ b/drivers/hwtracing/coresight/coresight-core.c
+@@ -1367,7 +1367,7 @@ static int coresight_fixup_device_conns(
+ 		}
  	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int coresight_remove_match(struct device *dev, void *data)
 
 
