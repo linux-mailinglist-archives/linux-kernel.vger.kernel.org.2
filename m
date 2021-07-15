@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B4F3CA805
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881443CA5B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241977AbhGOS57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:57:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55104 "EHLO mail.kernel.org"
+        id S230366AbhGOSn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:43:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236777AbhGOSvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:51:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1493A613FE;
-        Thu, 15 Jul 2021 18:48:50 +0000 (UTC)
+        id S229574AbhGOSn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:43:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B63A9613CF;
+        Thu, 15 Jul 2021 18:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374931;
-        bh=aAtpwhKuMZGDxNZ3FqxdQXfUEParfME5aHdCkcyIr3M=;
+        s=korg; t=1626374465;
+        bh=ppceDNdzdKWA3ASmqleqCUSg/GjatIfNhTui98Vl9wk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P0rp/CK/51mEhcUvFexeNuZgDagGQuYf2x+w+XdIjONi7MXGN4PXz9DLXQ4B/Dj3+
-         4otvPG5i3Ih/Qi+EdAV/umahW2+I3xfu+4VV4vz76rIuF/z92Mgaoj032EMifNmE8I
-         JUBnpM9z5i/GelESJ4LgH9TOt2HowCWArqUFKfVs=
+        b=bmcg10CpmMq1sDpnGPvr66WjVO3Bd0jg/vIBQ7Jf8lfUhEnSJmL2gbU4JbjEaiAs5
+         xJdGs4Bv3s5idi0YGulj3vE1WoV//nSmtJxuIFipuyWygDtz9zulL3tH/GHxSJCRvo
+         uBczyppbmzmIlw42EnvqoAYa6n6BJt5wkInz0XRE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 086/215] ice: mark PTYPE 2 as reserved
+Subject: [PATCH 5.4 011/122] net: Treat __napi_schedule_irqoff() as __napi_schedule() on PREEMPT_RT
 Date:   Thu, 15 Jul 2021 20:37:38 +0200
-Message-Id: <20210715182614.607567535@linuxfoundation.org>
+Message-Id: <20210715182451.396021896@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-[ Upstream commit 0c526d440f76676733cb470b454db9d5507a3a50 ]
+[ Upstream commit 8380c81d5c4fced6f4397795a5ae65758272bbfd ]
 
-The entry for PTYPE 2 in the ice_ptype_lkup table incorrectly states
-that this is an L2 packet with no payload. According to the datasheet,
-this PTYPE is actually unused and reserved.
+__napi_schedule_irqoff() is an optimized version of __napi_schedule()
+which can be used where it is known that interrupts are disabled,
+e.g. in interrupt-handlers, spin_lock_irq() sections or hrtimer
+callbacks.
 
-Fix the lookup entry to indicate this is an unused entry that is
-reserved.
+On PREEMPT_RT enabled kernels this assumptions is not true. Force-
+threaded interrupt handlers and spinlocks are not disabling interrupts
+and the NAPI hrtimer callback is forced into softirq context which runs
+with interrupts enabled as well.
 
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Chasing all usage sites of __napi_schedule_irqoff() is a whack-a-mole
+game so make __napi_schedule_irqoff() invoke __napi_schedule() for
+PREEMPT_RT kernels.
+
+The callers of ____napi_schedule() in the networking core have been
+audited and are correct on PREEMPT_RT kernels as well.
+
+Reported-by: Juri Lelli <juri.lelli@redhat.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_lan_tx_rx.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/dev.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_lan_tx_rx.h b/drivers/net/ethernet/intel/ice/ice_lan_tx_rx.h
-index 98a7f27c532b..c0ee0541e53f 100644
---- a/drivers/net/ethernet/intel/ice/ice_lan_tx_rx.h
-+++ b/drivers/net/ethernet/intel/ice/ice_lan_tx_rx.h
-@@ -608,7 +608,7 @@ static const struct ice_rx_ptype_decoded ice_ptype_lkup[] = {
- 	/* L2 Packet types */
- 	ICE_PTT_UNUSED_ENTRY(0),
- 	ICE_PTT(1, L2, NONE, NOF, NONE, NONE, NOF, NONE, PAY2),
--	ICE_PTT(2, L2, NONE, NOF, NONE, NONE, NOF, NONE, NONE),
-+	ICE_PTT_UNUSED_ENTRY(2),
- 	ICE_PTT_UNUSED_ENTRY(3),
- 	ICE_PTT_UNUSED_ENTRY(4),
- 	ICE_PTT_UNUSED_ENTRY(5),
+diff --git a/net/core/dev.c b/net/core/dev.c
+index e226f266da9e..3810eaf89b26 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5972,11 +5972,18 @@ EXPORT_SYMBOL(napi_schedule_prep);
+  * __napi_schedule_irqoff - schedule for receive
+  * @n: entry to schedule
+  *
+- * Variant of __napi_schedule() assuming hard irqs are masked
++ * Variant of __napi_schedule() assuming hard irqs are masked.
++ *
++ * On PREEMPT_RT enabled kernels this maps to __napi_schedule()
++ * because the interrupt disabled assumption might not be true
++ * due to force-threaded interrupts and spinlock substitution.
+  */
+ void __napi_schedule_irqoff(struct napi_struct *n)
+ {
+-	____napi_schedule(this_cpu_ptr(&softnet_data), n);
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		____napi_schedule(this_cpu_ptr(&softnet_data), n);
++	else
++		__napi_schedule(n);
+ }
+ EXPORT_SYMBOL(__napi_schedule_irqoff);
+ 
 -- 
 2.30.2
 
