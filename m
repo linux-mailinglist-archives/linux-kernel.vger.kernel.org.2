@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7FD3CABC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12433CABC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245015AbhGOTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:23:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46430 "EHLO mail.kernel.org"
+        id S243898AbhGOTX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:23:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242439AbhGOTGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:06:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF7C613CF;
-        Thu, 15 Jul 2021 19:03:11 +0000 (UTC)
+        id S242389AbhGOTGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:06:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44E8361370;
+        Thu, 15 Jul 2021 19:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375792;
-        bh=LcNL+hWRmsP7dl5Pm/XW7pnFZsSnmwQz0WjmeYEgdL0=;
+        s=korg; t=1626375794;
+        bh=31ZrS06a1Aeqc3n+7vR4NdsKfG+zUQ9h3vFAyT/9evg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b/hY5G21JmxTWZZVCaBGTJniOOzoUOkM5jIrSF/ZbwK7BYR4n7qjgIwn61klI6Ldz
-         EGR1UNWY6Ih23e+qp9n+TVGkugTK2GUaAxz8zhZuugOgQAGFm3rq9npAuCmkveKEdr
-         oNPYs2dpZ1nA9hg0qKdmDhKmT183hUrnz2hkNTE8=
+        b=u8WxWVTmbSSg+5DaoMEqa/d5oL8NUzdcVqJGAQgHxwIlu+P969iETQTuNukvJep14
+         lFi2rl5HW5OfLchv65DlsWZzx1CMpb0+iIhEJ7XWDsvdgUrIJa29yWFU1s+rX9Qx09
+         VsP6alhAEn3jVICSbBa+yIFoqkZYWUrvJbfZZgs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        kernel test robot <lkp@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 5.12 237/242] drm/ast: Remove reference to struct drm_device.pdev
-Date:   Thu, 15 Jul 2021 20:39:59 +0200
-Message-Id: <20210715182634.577299401@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Subject: [PATCH 5.12 238/242] jfs: fix GPF in diFree
+Date:   Thu, 15 Jul 2021 20:40:00 +0200
+Message-Id: <20210715182634.754322573@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -43,50 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 0ecb51824e838372e01330752503ddf9c0430ef7 upstream.
+commit 9d574f985fe33efd6911f4d752de6f485a1ea732 upstream.
 
-Using struct drm_device.pdev is deprecated. Upcast with to_pci_dev()
-from struct drm_device.dev to get the PCI device structure.
+Avoid passing inode with
+JFS_SBI(inode->i_sb)->ipimap == NULL to
+diFree()[1]. GFP will appear:
 
-v9:
-	* fix remaining pdev references
+	struct inode *ipimap = JFS_SBI(ip->i_sb)->ipimap;
+	struct inomap *imap = JFS_IP(ipimap)->i_imap;
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-Fixes: ba4e0339a6a3 ("drm/ast: Fixed CVE for DP501")
-Cc: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-Cc: kernel test robot <lkp@intel.com>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Dave Airlie <airlied@redhat.com>
-Cc: dri-devel@lists.freedesktop.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20210429105101.25667-2-tzimmermann@suse.de
+JFS_IP() will return invalid pointer when ipimap == NULL
+
+Call Trace:
+ diFree+0x13d/0x2dc0 fs/jfs/jfs_imap.c:853 [1]
+ jfs_evict_inode+0x2c9/0x370 fs/jfs/inode.c:154
+ evict+0x2ed/0x750 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x3fe/0x820 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
+
+Reported-and-tested-by: syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/ast/ast_main.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/jfs/inode.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -411,7 +411,6 @@ struct ast_private *ast_device_create(co
- 		return ast;
- 	dev = &ast->base;
+--- a/fs/jfs/inode.c
++++ b/fs/jfs/inode.c
+@@ -151,7 +151,8 @@ void jfs_evict_inode(struct inode *inode
+ 			if (test_cflag(COMMIT_Freewmap, inode))
+ 				jfs_free_zero_link(inode);
  
--	dev->pdev = pdev;
- 	pci_set_drvdata(pdev, dev);
+-			diFree(inode);
++			if (JFS_SBI(inode->i_sb)->ipimap)
++				diFree(inode);
  
- 	ast->regs = pcim_iomap(pdev, 1, 0);
-@@ -453,8 +452,8 @@ struct ast_private *ast_device_create(co
- 
- 	/* map reserved buffer */
- 	ast->dp501_fw_buf = NULL;
--	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
--		ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
-+	if (dev->vram_mm->vram_size < pci_resource_len(pdev, 0)) {
-+		ast->dp501_fw_buf = pci_iomap_range(pdev, 0, dev->vram_mm->vram_size, 0);
- 		if (!ast->dp501_fw_buf)
- 			drm_info(dev, "failed to map reserved buffer!\n");
- 	}
+ 			/*
+ 			 * Free the inode from the quota allocation.
 
 
