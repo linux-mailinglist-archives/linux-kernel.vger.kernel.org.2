@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFA73CA8FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D493CAB62
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243613AbhGOTEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59616 "EHLO mail.kernel.org"
+        id S245564AbhGOTTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239944AbhGOSzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B700613DA;
-        Thu, 15 Jul 2021 18:52:21 +0000 (UTC)
+        id S241628AbhGOTFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5718B6141A;
+        Thu, 15 Jul 2021 19:01:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375142;
-        bh=+eZ0yTPFBqX/+7MawF+ewYY+p2odJue09D667njTbPw=;
+        s=korg; t=1626375671;
+        bh=ABPESi/tvCvsDdS+Q26E3nZ0CcXREcFW90/hodmz2z0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MzfqFH0GCh4xhoYQxC7+UEwlerbzyJy0iyilFRleDYvhjlPIRn1bLKu30P/6Qm2Vo
-         80g2p+wZiI0OaxZIrBW0SQYfUP+CF7TW87asH7dRPlNmj+frAmJ65yerkf4fqFEtxl
-         FVH+PFBH5601CuoOc1LbcGKLYXwp6PWu0gqvx7Xo=
+        b=DcCfXgUzNK5Gx5wDi0FyNuBoaOeKnw8BSmff5p81YF24wvyjmsRI6FzG4h5wM+Xd9
+         NR3/dCJhhLkhqqWBdkHkfI+1plhUNlJI2yOsCE0Yhf+tfWMqabEGNQUek99Y8lWzRQ
+         bRAyq6+YAGljx6pUYQQetSJTBsiFNryI77ElydaU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Sergeev <asergeev@carbonrobotics.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.10 176/215] i40e: fix PTP on 5Gb links
+        stable@vger.kernel.org, Christian Loehle <cloehle@hyperstone.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.12 186/242] mmc: core: Allow UHS-I voltage switch for SDSC cards if supported
 Date:   Thu, 15 Jul 2021 20:39:08 +0200
-Message-Id: <20210715182630.580341150@linuxfoundation.org>
+Message-Id: <20210715182626.054194048@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+From: Christian Löhle <CLoehle@hyperstone.com>
 
-commit 26b0ce8dd3dd704393dbace4dc416adfeffe531f upstream.
+commit 09247e110b2efce3a104e57e887c373e0a57a412 upstream.
 
-As reported by Alex Sergeev, the i40e driver is incrementing the PTP
-clock at 40Gb speeds when linked at 5Gb. Fix this bug by making
-sure that the right multiplier is selected when linked at 5Gb.
+While initializing an UHS-I SD card, the mmc core first tries to switch to
+1.8V I/O voltage, before it continues to change the settings for the bus
+speed mode.
 
-Fixes: 3dbdd6c2f70a ("i40e: Add support for 5Gbps cards")
+However, the current behaviour in the mmc core is inconsistent and doesn't
+conform to the SD spec. More precisely, an SD card that supports UHS-I must
+set both the SD_OCR_CCS bit and the SD_OCR_S18R bit in the OCR register
+response. When switching to 1.8V I/O the mmc core correctly checks both of
+the bits, but only the SD_OCR_S18R bit when changing the settings for bus
+speed mode.
+
+Rather than actually fixing the code to confirm to the SD spec, let's
+deliberately deviate from it by requiring only the SD_OCR_S18R bit for both
+parts. This enables us to support UHS-I for SDSC cards (outside spec),
+which is actually being supported by some existing SDSC cards. Moreover,
+this fixes the inconsistent behaviour.
+
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+Link: https://lore.kernel.org/r/CWXP265MB26803AE79E0AD5ED083BF2A6C4529@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
 Cc: stable@vger.kernel.org
-Reported-by: Alex Sergeev <asergeev@carbonrobotics.com>
-Suggested-by: Alex Sergeev <asergeev@carbonrobotics.com>
-Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+[Ulf: Rewrote commit message and comments to clarify the changes]
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/intel/i40e/i40e_ptp.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/mmc/core/sd.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/drivers/net/ethernet/intel/i40e/i40e_ptp.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ptp.c
-@@ -11,13 +11,14 @@
-  * operate with the nanosecond field directly without fear of overflow.
-  *
-  * Much like the 82599, the update period is dependent upon the link speed:
-- * At 40Gb link or no link, the period is 1.6ns.
-- * At 10Gb link, the period is multiplied by 2. (3.2ns)
-+ * At 40Gb, 25Gb, or no link, the period is 1.6ns.
-+ * At 10Gb or 5Gb link, the period is multiplied by 2. (3.2ns)
-  * At 1Gb link, the period is multiplied by 20. (32ns)
-  * 1588 functionality is not supported at 100Mbps.
-  */
- #define I40E_PTP_40GB_INCVAL		0x0199999999ULL
- #define I40E_PTP_10GB_INCVAL_MULT	2
-+#define I40E_PTP_5GB_INCVAL_MULT	2
- #define I40E_PTP_1GB_INCVAL_MULT	20
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -847,11 +847,13 @@ try_again:
+ 		return err;
  
- #define I40E_PRTTSYN_CTL1_TSYNTYPE_V1  BIT(I40E_PRTTSYN_CTL1_TSYNTYPE_SHIFT)
-@@ -465,6 +466,9 @@ void i40e_ptp_set_increment(struct i40e_
- 	case I40E_LINK_SPEED_10GB:
- 		mult = I40E_PTP_10GB_INCVAL_MULT;
- 		break;
-+	case I40E_LINK_SPEED_5GB:
-+		mult = I40E_PTP_5GB_INCVAL_MULT;
-+		break;
- 	case I40E_LINK_SPEED_1GB:
- 		mult = I40E_PTP_1GB_INCVAL_MULT;
- 		break;
+ 	/*
+-	 * In case CCS and S18A in the response is set, start Signal Voltage
+-	 * Switch procedure. SPI mode doesn't support CMD11.
++	 * In case the S18A bit is set in the response, let's start the signal
++	 * voltage switch procedure. SPI mode doesn't support CMD11.
++	 * Note that, according to the spec, the S18A bit is not valid unless
++	 * the CCS bit is set as well. We deliberately deviate from the spec in
++	 * regards to this, which allows UHS-I to be supported for SDSC cards.
+ 	 */
+-	if (!mmc_host_is_spi(host) && rocr &&
+-	   ((*rocr & 0x41000000) == 0x41000000)) {
++	if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
+ 		err = mmc_set_uhs_voltage(host, pocr);
+ 		if (err == -EAGAIN) {
+ 			retries--;
 
 
