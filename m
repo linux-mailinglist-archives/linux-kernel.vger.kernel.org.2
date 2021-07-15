@@ -2,141 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A2C3CAE5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A7C3CAE61
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhGOVPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:15:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38070 "EHLO mail.kernel.org"
+        id S230347AbhGOVQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:16:01 -0400
+Received: from mout.gmx.net ([212.227.15.15]:50951 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhGOVPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:15:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56E92613C3;
-        Thu, 15 Jul 2021 21:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626383575;
-        bh=2eoV3DBsVUIXnYKXMQsw7fTnkX0xs2z47Hnn9YDnfoM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MpgVnTbhKqPGXysIWxc/iZW8xzbKcOVDoeh0uz3/FcT6fxcKP0XwMvCN+43xM7Rks
-         wo/6Or5fqBYYoXKSHDhmhAvwCwn6ctVzvjP9dCa7IrGlHPuOG/JgMpjb9g7Y69l68E
-         XNRCgHoVdUHXprYuX+SXSwf4/i65PUPIYcRkW9u84yTu/48N+h8MSgDMmsH+K3eIqf
-         1vQZuoEUrEN53/q/IwMpC27kvST5VALGQRLxD+svGo2znpktYRLuHYLmFAYnXw9wp1
-         AG2gAWnjRsWEh3FuM8myxNriPfZLDGULof27xFH6bApYwUTxuVWZg3LRIjFo9ZJLwY
-         Gu5lpeYCVh9uQ==
-Date:   Thu, 15 Jul 2021 14:12:54 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 091/138] block: Add bio_for_each_folio_all()
-Message-ID: <20210715211254.GE22357@magnolia>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-92-willy@infradead.org>
+        id S229526AbhGOVP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:15:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626383578;
+        bh=UaOK20gJEjadF8wLwylmxnXCll7IKWSwFLcRatRYL3w=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=Bra9MbANHVHc8JLRiVRT24O74i9ZzFoeVXNIoJULKvWyjo8fCuB9N1KUCLj6CerAn
+         PzXeJV/BJiYsGRtnxsk/j92MaTgDMTUlv5aRQuQJ5Nct0WUO4lW83T91hwv2HxHhYJ
+         t83Pm1aVH8MREqNURHBsUNEVAZH/XKpxVAbAgUb4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from mir ([94.31.86.21]) by mail.gmx.net (mrgmx005 [212.227.17.190])
+ with ESMTPSA (Nemesis) id 1MbAh0-1lX0ld4BlQ-00bZqp; Thu, 15 Jul 2021 23:12:58
+ +0200
+Date:   Thu, 15 Jul 2021 23:12:55 +0200
+From:   Stefan Lippers-Hollmann <s.l-h@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Wesley Chalmers <Wesley.Chalmers@amd.com>,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.13 106/266] drm/amd/display: Cover edge-case when
+ changing DISPCLK WDIVIDER
+Message-ID: <20210715231255.38f8442b@mir>
+In-Reply-To: <20210715182632.619513356@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
+        <20210715182632.619513356@linuxfoundation.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-92-willy@infradead.org>
+Content-Type: multipart/signed; boundary="Sig_/sJaXVH=V8dO53BoZF8MiZz6";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Provags-ID: V03:K1:PAf/42bBMYLOAANFXPQRRZ6TxHYWmMMl5EOVQLwCeOPPR0T8M5x
+ 9ZnEfDL896VH4rDl4KLkUNFBOR8qohsFHsezvwn4p+2tAUSWcN3d7u39gREPyyotyJ2pWlG
+ kGPs6XWrjgCrrRhTMjpyPL1WeSMEl+evq8m2UwbL0iiAnoUujghPpL7ngKfvLTAt8YwkAeo
+ sLHR7zufwFrS5hR6/Zbvw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jyeHK8dgNbk=:rhHXnPm4hBsbJrZa8jlOGH
+ gBuiGS75WWkxbiUXt337UVy18Y6u/Y37DPSaGI6Xy4/JT/em6Kx1u1rQltv15wghLy6Ll2DY0
+ 6KPHC2eIOu2AIJsSY1LVGD4FGll5LQaZ33e7BuTD0pfrAzsOA7x42e5TezXe34iHQrD0my8fJ
+ 15MEYSrrUXSLHdSN9POTBvMGfH+0AK9iKCCOyOn7cWGw5Zyg711TOlAoFtb66tMD585ApF2gH
+ hYi+vTOmhDz324xjB5zVR7oET57VT9Te9Z99QIRDD3iHxIlheHHcyud+TvmSziU1stah4jkhn
+ +nju4OXOkLdCMxvSCKyZrvbZBRe16JAcvkOAMhipeZdxWaXCiPxFXHDL4khgwPsDtOAhpJibD
+ DA5vBOSVIK5GGwdulJHcdouKNmMKHBPMsWD/kmwJsydNWLA0H51Bv/m+Inx0buVmsLjb2O7HV
+ T7g32HHoPpf7lI/VSGCegiRp1Zds9/XDSsnJh84Wl1zLoyuhxafSZZAp35JOzvJzRHfRZHT+H
+ TK4CIYeqW3JGzDQ9XkJq40UKnf4MFickUsCbkJXbldBtV9oN8hELwiQEBpVkWWeFFy2zVrTJA
+ ysj19Sh6BSmIUBr2ciieT8CIfTVKaI1j8DOAYIsAy0876wOyWrchXN6E4Zni+Kq8rRc9UA1FJ
+ /jDJdJGT1+jNyrzrC2r5aRhCEXUIAOrBNB0+y/m20yVLAi6qUhTrSxBl57yoD/3scPW1B8mxT
+ u2jE+jJPTrfRkcnzw6cLHHi3qXVucmqYNnhStqJIAVU9GGeRgxOmyO6ciuGVZ8AHpSHREs0wz
+ hgTO7MFBWxQgcs3aDb4OezXuLm0/qT5Mc62+6KFAjJ+t843iknE2tcMq2dHgpavXNRtU2/N1K
+ N6jZl5o2l1zD6XmOUbu4sD1R4Yev+KsssIilC+1LrFrNLReYDCknSTUhVEFUbiURfHr11XNTn
+ s+euYHggpSQ70lXhsSvbl5A9+hrkyAI9lO7/caljydSTQ/SLrwKNXLelWUyFCoebALSoH1L2+
+ YS4Ni0E2ehkIDYOZQCrxtp+SBBLmp8P4sR9e6rIKbbD2fIMjSwk1MxoexmCSkH9Q87J3i8pSd
+ wMjKm8/oEJ7Csl/btVXHaOP/NCS0OSFLYfI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:36:17AM +0100, Matthew Wilcox (Oracle) wrote:
-> Allow callers to iterate over each folio instead of each page.  The
-> bio need not have been constructed using folios originally.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  include/linux/bio.h | 43 ++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index ade93e2de6a1..d462bbc95c4b 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -189,7 +189,7 @@ static inline void bio_advance_iter_single(const struct bio *bio,
->   */
->  #define bio_for_each_bvec_all(bvl, bio, i)		\
->  	for (i = 0, bvl = bio_first_bvec_all(bio);	\
-> -	     i < (bio)->bi_vcnt; i++, bvl++)		\
-> +	     i < (bio)->bi_vcnt; i++, bvl++)
->  
->  #define bio_iter_last(bvec, iter) ((iter).bi_size == (bvec).bv_len)
->  
-> @@ -314,6 +314,47 @@ static inline struct bio_vec *bio_last_bvec_all(struct bio *bio)
->  	return &bio->bi_io_vec[bio->bi_vcnt - 1];
->  }
->  
-> +struct folio_iter {
-> +	struct folio *folio;
-> +	size_t offset;
-> +	size_t length;
+--Sig_/sJaXVH=V8dO53BoZF8MiZz6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hm... so after every bio_{first,next}_folio call, we can access the
-folio, the offset, and the length (both in units of bytes) within the
-folio?
+Hi
 
-> +	size_t _seg_count;
-> +	int _i;
+On 2021-07-15, Greg Kroah-Hartman wrote:
+> From: Wesley Chalmers <Wesley.Chalmers@amd.com>
+>=20
+> [ Upstream commit 78ebca321999699f30ea19029726d1a3908b395f ]
+>=20
+> [WHY]
+> When changing the DISPCLK_WDIVIDER value from 126 to 127, the change in
+> clock rate is too great for the FIFOs to handle. This can cause visible
+> corruption during clock change.
+>=20
+> HW has handed down this register sequence to fix the issue.
+>=20
+> [HOW]
+> The sequence, from HW:
+> a.	127 -> 126
+> Read  DIG_FIFO_CAL_AVERAGE_LEVEL
+> FIFO level N =3D DIG_FIFO_CAL_AVERAGE_LEVEL / 4
+> Set DCCG_FIFO_ERRDET_OVR_EN =3D 1
+> Write 1 to OTGx_DROP_PIXEL for (N-4) times
+> Set DCCG_FIFO_ERRDET_OVR_EN =3D 0
+> Write DENTIST_DISPCLK_RDIVIDER =3D 126
+>=20
+> Because of frequency stepping, sequence a can be executed to change the
+> divider from 127 to any other divider value.
+>=20
+> b.	126 -> 127
+> Read  DIG_FIFO_CAL_AVERAGE_LEVEL
+> FIFO level N =3D DIG_FIFO_CAL_AVERAGE_LEVEL / 4
+> Set DCCG_FIFO_ERRDET_OVR_EN =3D 1
+> Write 1 to OTGx_ADD_PIXEL for (12-N) times
+> Set DCCG_FIFO_ERRDET_OVR_EN =3D 0
+> Write DENTIST_DISPCLK_RDIVIDER =3D 127
+>=20
+> Because of frequency stepping, divider must first be set from any other
+> divider value to 126 before executing sequence b.
+[...]
 
-And these are private variables that the iteration code should not
-scribble over?
+This patch seem to introduce a build regression for x86_64:
 
-> +};
-> +
-> +static inline
-> +void bio_first_folio(struct folio_iter *fi, struct bio *bio, int i)
-> +{
-> +	struct bio_vec *bvec = bio_first_bvec_all(bio) + i;
-> +
-> +	fi->folio = page_folio(bvec->bv_page);
-> +	fi->offset = bvec->bv_offset +
-> +			PAGE_SIZE * (bvec->bv_page - &fi->folio->page);
-> +	fi->_seg_count = bvec->bv_len;
-> +	fi->length = min(folio_size(fi->folio) - fi->offset, fi->_seg_count);
-> +	fi->_i = i;
-> +}
-> +
-> +static inline void bio_next_folio(struct folio_iter *fi, struct bio *bio)
-> +{
-> +	fi->_seg_count -= fi->length;
-> +	if (fi->_seg_count) {
-> +		fi->folio = folio_next(fi->folio);
-> +		fi->offset = 0;
-> +		fi->length = min(folio_size(fi->folio), fi->_seg_count);
-> +	} else if (fi->_i + 1 < bio->bi_vcnt) {
-> +		bio_first_folio(fi, bio, fi->_i + 1);
-> +	} else {
-> +		fi->folio = NULL;
-> +	}
-> +}
-> +
-> +/*
-> + * Iterate over each folio in a bio.
-> + */
-> +#define bio_for_each_folio_all(fi, bio)				\
-> +	for (bio_first_folio(&fi, bio, 0); fi.folio; bio_next_folio(&fi, bio))
+  CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dcn20_clk_=
+mgr.o
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c: In function 'dcn20_update_clocks_update_dentist':
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:154:26: error: 'const struct stream_encoder_funcs' has no mem=
+ber named 'get_fifo_cal_average_level'
+  154 |    if (!stream_enc->funcs->get_fifo_cal_average_level)
+      |                          ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:156:34: error: 'const struct stream_encoder_funcs' has no mem=
+ber named 'get_fifo_cal_average_level'
+  156 |    fifo_level =3D stream_enc->funcs->get_fifo_cal_average_level(
+      |                                  ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:159:15: error: 'const struct dccg_funcs' has no member named =
+'set_fifo_errdet_ovr_en'
+  159 |    dccg->funcs->set_fifo_errdet_ovr_en(
+      |               ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:163:16: error: 'const struct dccg_funcs' has no member named =
+'otg_drop_pixel'
+  163 |     dccg->funcs->otg_drop_pixel(
+      |                ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:166:15: error: 'const struct dccg_funcs' has no member named =
+'set_fifo_errdet_ovr_en'
+  166 |    dccg->funcs->set_fifo_errdet_ovr_en(
+      |               ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:185:26: error: 'const struct stream_encoder_funcs' has no mem=
+ber named 'get_fifo_cal_average_level'
+  185 |    if (!stream_enc->funcs->get_fifo_cal_average_level)
+      |                          ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:187:34: error: 'const struct stream_encoder_funcs' has no mem=
+ber named 'get_fifo_cal_average_level'
+  187 |    fifo_level =3D stream_enc->funcs->get_fifo_cal_average_level(
+      |                                  ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:190:15: error: 'const struct dccg_funcs' has no member named =
+'set_fifo_errdet_ovr_en'
+  190 |    dccg->funcs->set_fifo_errdet_ovr_en(dccg, true);
+      |               ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:192:16: error: 'const struct dccg_funcs' has no member named =
+'otg_add_pixel'
+  192 |     dccg->funcs->otg_add_pixel(dccg,
+      |                ^~
+/build/linux-5.13/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dc=
+n20_clk_mgr.c:194:15: error: 'const struct dccg_funcs' has no member named =
+'set_fifo_errdet_ovr_en'
+  194 |    dccg->funcs->set_fifo_errdet_ovr_en(dccg, false);
+      |               ^~
+make[5]: *** [/build/linux-aptosid-5.13/scripts/Makefile.build:273: drivers=
+/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dcn20_clk_mgr.o] Error 1
+make[4]: *** [/build/linux-aptosid-5.13/scripts/Makefile.build:516: drivers=
+/gpu/drm/amd/amdgpu] Error 2
+make[3]: *** [/build/linux-aptosid-5.13/scripts/Makefile.build:516: drivers=
+/gpu/drm] Error 2
+make[2]: *** [/build/linux-aptosid-5.13/scripts/Makefile.build:516: drivers=
+/gpu] Error 2
+make[1]: *** [/build/linux-aptosid-5.13/Makefile:1864: drivers] Error 2
+make: *** [/build/linux-aptosid-5.13/Makefile:215: __sub-make] Error 2
 
-...so I guess a sample iteration loop would be something like:
+Regards
+	Stefan Lippers-Hollmann
 
-	struct bio *bio = <get one from somewhere>;
-	struct folio_iter fi;
+--Sig_/sJaXVH=V8dO53BoZF8MiZz6
+Content-Type: application/pgp-signature
+Content-Description: Digitale Signatur von OpenPGP
 
-	bio_for_each_folio_all(fi, bio) {
-		if (folio_test_dirty(fi.folio))
-			printk("folio idx 0x%lx is dirty, i hates dirty data!",
-					folio_index(fi.folio));
-			panic();
-	}
+-----BEGIN PGP SIGNATURE-----
 
-I'll go look through the rest of the patches, but this so far looks
-pretty straightforward to me.
+iQIzBAEBCgAdFiEEMQMcJCzZm4GSqVV4v+AtZbHRQu0FAmDwpNcACgkQv+AtZbHR
+Qu27EQ//WEqe/zmh7ICj7Ofq6/ZcQ7/TZhS//5oJM/SyaI8RGsWhJMQFWow5NYLA
+lWKC5/VsIlNFywbh2XCdvXA491ZzY6zfDrZXpi8P76/2Js0aptKohAnFosJ6PMD1
++8TVlaJOjlEPjXe44V7EfAtIdTGKS+epGyKUX61ZH1v5ls3pbQzChcGleoe2x/kp
+J9YYFWxfZ7+mPj/bWwjmH6ikmjs7oigAUEQmDEqzM0FU0o/HaY/Rr9sU3rxWbjLZ
+3oVrcxIkiQCSDu8VdUvqtkg1yiUvGpqQ0Nl3D8NkNwsrLid2/N9K+jEbxuadnhLJ
+01lIudzZ50Z6Eeg5IwyIajICNmk+pU8aSr6+m7J9J6YaBO24HGteIcOvRLhMRK66
+66VFMsQZLW0jypdqSzFB+/Qi7+AQL5swTQY0zwG57bBy6FvGSzyq+DlEgg61RSo+
+0ZR27v73QWBOuXwlnrBpQ0TtKPj8FDyeDWOVkwFKyc4hwpXMkDzHUbSQSjo/cRTH
+6DVaqCiuZbP+Atd37UZlCibsiHBulKeNdqc656ikcJiABjQY2BetPOTM1xkPzNzV
+cVwJ+S8qLfQPufbWCdtlum5qFNVOxKC9bEoNT+aaAEHU/O5cD9a1eunIEVvHs7P4
+OCy0pTtB1EiuyRYOf82qO5tf6peHEZpc6bMmOrUDol4UujQrAuE=
+=vYSO
+-----END PGP SIGNATURE-----
 
---D
-
-> +
->  enum bip_flags {
->  	BIP_BLOCK_INTEGRITY	= 1 << 0, /* block layer owns integrity data */
->  	BIP_MAPPED_INTEGRITY	= 1 << 1, /* ref tag has been remapped */
-> -- 
-> 2.30.2
-> 
+--Sig_/sJaXVH=V8dO53BoZF8MiZz6--
