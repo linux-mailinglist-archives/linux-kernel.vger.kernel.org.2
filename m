@@ -2,270 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43BE3CAD82
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7783CAD84
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239621AbhGOUFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
+        id S1343840AbhGOUF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346515AbhGOUEx (ORCPT
+        with ESMTP id S242218AbhGOUFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:04:53 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A853C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:49:23 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 7C41E92009C; Thu, 15 Jul 2021 21:49:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 6E03492009B;
-        Thu, 15 Jul 2021 21:49:22 +0200 (CEST)
-Date:   Thu, 15 Jul 2021 21:49:22 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] serial: 8250: Add proper clock handling for OxSemi
- PCIe devices
-In-Reply-To: <CAHp75VfnCG-C6bUzhhC9jQGOSgMXVLZ=QtH0mdhAD85yeqBC7A@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2107131504270.9461@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2106260539240.37803@angie.orcam.me.uk> <alpine.DEB.2.21.2106260604540.37803@angie.orcam.me.uk> <YOyi0cPdIVSCcpmw@surfacebook.localdomain> <alpine.DEB.2.21.2107130150420.9461@angie.orcam.me.uk>
- <CAHp75VfnCG-C6bUzhhC9jQGOSgMXVLZ=QtH0mdhAD85yeqBC7A@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 15 Jul 2021 16:05:04 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35850C0613F0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:50:05 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so7455595otl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1YLndUxOOPY8Sr1BrjsF6xRwJEfXRqU5cb5ChMJ5I0o=;
+        b=ilM60R3oL3fDNSoPOqAJo5H35jI1pAxERRGZ5FINwozVhTWmMylm937FoNsNZTIjiS
+         30eNAyBpalxY4OOTjNnkD99GOF/6FWeBndVDgRvCR2xzb9sTVCjQGhbGAlf+/DCCGc0W
+         NvPxl0gogn2ggL2LlYKjxdhLbhm14N78sa2wv+kc0J/ch7Eao8UME4PAEC+cMPxlaP42
+         khyDc356azAy6rU8fsgmnmijQCNRd53mEEWVNZSVBwyIV/KNgP+jfFaYYXA5vFiuWn6T
+         ms8Dr4nZmkCotxEFSfFDLU8OJOSa3Vc/J4dYsfv/bjCfqZp5bIv2SnMGn5xSMQaaGxJx
+         6Y8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1YLndUxOOPY8Sr1BrjsF6xRwJEfXRqU5cb5ChMJ5I0o=;
+        b=t/vmNzJX+RP9FkND+nzQ7PUb4ZdCSOcTSmkOJc1tolcP5HmXVhzFuiBMMgEe/Fbbm9
+         hvWLtByHFz6zgzbfzgzHq2VtC5hVvbOyGcXnGn9RmqCzkxXXnhxt7YrD4KeVAyL23UTX
+         M02QopcDUbYMVFdiK3WYVLr+calA14pcpM8/6l+JhvzH0XoxaY3pQPsA2VS/hLDwWzQg
+         g/7d7oDtzmbEATWRjo6iPB1Fuure9JxJhNVm97Jqm931bcBH6nTB5CG3pXX7RzJ9bwIQ
+         4SHSqdpe5TWLXh1jc1d6Lq6EqaQF/HyKRaMB3aAaMwk/lQiCnurgDBk2RPbdeAnwAaAV
+         PxhA==
+X-Gm-Message-State: AOAM532skKwtu81Tfh2APA92FdmPqs1NcCgJ4f6EImQ2freEFASmAzi9
+        bTjwVls57g05zNbBkNVAIYbPCg==
+X-Google-Smtp-Source: ABdhPJyZwjUMocwsEorC/bB3r5mo2VUVVLxjfj5HSITW72ekMa51Ktj/ONyzjy5RdWjjIN7e3VghaQ==
+X-Received: by 2002:a05:6830:2366:: with SMTP id r6mr5013660oth.188.1626378604584;
+        Thu, 15 Jul 2021 12:50:04 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c11sm1279191oot.25.2021.07.15.12.50.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 12:50:04 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 14:50:01 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH 2/5] clk: qcom: Add SDX65 GCC support
+Message-ID: <YPCRadKzQRZdtOfO@yoga>
+References: <20210709200339.17638-1-quic_vamslank@quicinc.com>
+ <20210709200339.17638-3-quic_vamslank@quicinc.com>
+ <YOkTVXcZpSRUE+Wy@yoga>
+ <20210715184325.GB6897@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715184325.GB6897@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021, Andy Shevchenko wrote:
+On Thu 15 Jul 13:43 CDT 2021, Vamsi Krishna Lanka wrote:
 
-> > > Please no. We really would like to get rid of that ugly hack. The BOTHER exists
-> > > for ages.
-> >
-> >  I have actually carefully considered it before submission and:
-> >
-> > 1. it remains a supported user API with a tool included with contemporary
-> >    distributions, and
+> On Fri, Jul 09, 2021 at 10:26:13PM -0500, Bjorn Andersson wrote:
+> > On Fri 09 Jul 15:03 CDT 2021, quic_vamslank@quicinc.com wrote:
+> > 
+> > > From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
+> > > 
+> > > Add Global Clock Controller (GCC) support for SDX65 SoCs from Qualcomm.
+> > > 
+> > 
+> > This doesn't mention the fact that you add a new PLL type. I do however
+> > think you should do that in a separate commit, preceding the gcc driver
+> > patch.
 > 
-> What supported API?
-
- The TIOCGSERIAL/TIOCSSERIAL ioctls.  It's not clear to me why you're 
-asking; as a serial driver expert you must have been surely aware of their 
-existence.
-
-> > 2. with this device you can't set all the possible whole-number baud
-> >    rates let alone UART clock frequencies with the BOTHER API, and
+> Sure, will do.
 > 
-> How does SPD_CUST make it different?
-
- You can program the divider registers directly with any bit pattern 
-supported by hardware.  You don't know what use for it has been out there 
-in the field for the last ~30 years.
-
-> > 3. it doesn't hurt.
+> > 
+> > > Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> > > ---
+> > >  drivers/clk/qcom/Kconfig         |    8 +
+> > >  drivers/clk/qcom/Makefile        |    1 +
+> > >  drivers/clk/qcom/clk-alpha-pll.c |  170 +++
+> > >  drivers/clk/qcom/clk-alpha-pll.h |    4 +
+> > >  drivers/clk/qcom/clk-rcg.h       |    4 +
+> > >  drivers/clk/qcom/gcc-sdx65.c     | 1648 ++++++++++++++++++++++++++++++
+> > >  6 files changed, 1835 insertions(+)
+> > >  create mode 100644 drivers/clk/qcom/gcc-sdx65.c
+> > [..]
+> > > diff --git a/drivers/clk/qcom/clk-rcg.h b/drivers/clk/qcom/clk-rcg.h
+> > > index 99efcc7f8d88..33a7fe992207 100644
+> > > --- a/drivers/clk/qcom/clk-rcg.h
+> > > +++ b/drivers/clk/qcom/clk-rcg.h
+> > > @@ -149,6 +149,10 @@ struct clk_rcg2 {
+> > >  	const struct freq_tbl	*freq_tbl;
+> > >  	struct clk_regmap	clkr;
+> > >  	u8			cfg_off;
+> > > +	u8                      flags;
+> > > +#define FORCE_ENABLE_RCG        BIT(0)
+> > 
+> > Unused.
 > 
-> It hurts development a lot.
-
- It is there and the presence or absence of the feature for OxSemi devices 
-does not affect anything but OxSemi support code.
-
-> > If you'd like to get rid of SPD_CUST, then just do so, but until then I
-> > fail to see a point to have it supported with some devices but not other
-> > ones.
+> Will remove.
 > 
-> It _is_ the current state of affairs. Most of the contemporary drivers
-> do not support this "feature" at all.
-
- It is currently a supported feature for OxSemi devices (and most if not 
-all 8250 derivatives), and I don't see a reason to selectively remove it 
-with this specifice submission.  There may be installations out there that 
-rely on it -- there have been shortcomings in the implementation, which 
-are the motivation for this patch series, but mind that we've had support 
-for OxSemi Tornado devices since 2008.  That's a lot of time.
-
- Driver writers for other UART implementations may choose to have it or 
-not to with their new code written from scratch.  As a matter of interest 
-I've checked zs.c, one of the serial hw drivers I had considerable input 
-to and it uses its own ZS_BPS_TO_BRG macro rather than `uart_get_divisor', 
-so it does not support this feature (and dz.c only has a set of 15 fixed 
-baud rates, which is where the original termio B<rate> macro bit patterns, 
-as well as the EXTA and EXTB macros for the externally supplied clock 
-chosen by the 16th bit pattern, come from).
-
- And as I say: if you want to remove it, then do it globally and tell 
-people that as from Linux x.y.z this feature is no longer supported, so 
-that is clear and unambiguos and some poor IT soul out there does not get 
-hit by a random obscure driver feature removal with a kernel upgrade.
-
- NB in the course of this effort I've learnt the hard way that `setserial' 
-is even invoked automatically nowadays in startup/shutdown scripts for 
-port state saving and restoration, so a random unannounced feature removal 
-here can wreak havoc with people's installations they have configured 
-years ago.
-
-> >  NB if you do get to it, then please consider adding an equally flexible
-> > API too, e.g. for fractional baud rates (134.5bps haha); I won't mind if
-> > it's less hackish though.
+> > 
+> > > +#define HW_CLK_CTRL_MODE        BIT(1)
+> > 
+> > We don't implement HW_CLK_CTRL_MODE upstream yet, so you shouldn't
+> > specify it for your clocks - or just add the definefor it.
+> > 
+> > > +#define DFS_SUPPORT             BIT(2)
+> > 
+> > Unused.
 > 
-> Why do you need fractional baud rates for the small speeds? I do not
-> believe we have any good use case for that. And 1/2 from 134 is less
-> than 0.5% which is tolerable by UART by definition.
-
- Just pointing out the incompleteness of the implementation should 
-SPD_CUST be removed.
-
-> So, please no, drop it.
-
- Based on my consideration given above, no, I maintain keeping the feature 
-is the right approach, at least for this change concerned.  After all its 
-purpose is to correct baud rate setting and not to remove vaguely related 
-features.
-
-> >  The relevant stuff has been included as comments along with actual code
-> > already, and the rest is the usual submission-time rationale.  This will
-> > be the initial source of information when someone studies the history of
-> > this code (`git log').
+> Will remove.
 > 
-> I do not object to this, but perhaps in the form of documentation it
-> would serve a better job (no-one will need to go deep into the Git
-> history for this, especially non-developer people who just got a
-> tarball, for example).
-
- Why would a non-developer need to dive into it while also hesitating to 
-go through the git log?  Moreover, why would a developer hesitate digging 
-through the git log while trying to understand code?
-
- Maybe I'm old-fashioned, but coming from long before we had any sensible 
-repository (umm, the MIPS port and I believe m68k had CVS in the old days, 
-but try to find anything with CVS!) let alone git I can't overrate my 
-appreciation for its features, and our requirement for sensible change 
-descriptions is not there for nothing.  So looking through `git log' is 
-the first thing I do when I want to understand why a piece of code unknown 
-to me looks like it does.
-
-> >  I don't consider it cast in stone however, so if there's any particular
-> > piece you'd like to see elsewhere, then please point out to me what to
-> > move and where.  Or give any guidance other than just: "Rewrite it!"
+> > 
+> > >  };
+> > >  
+> > >  #define to_clk_rcg2(_hw) container_of(to_clk_regmap(_hw), struct clk_rcg2, clkr)
+> > > diff --git a/drivers/clk/qcom/gcc-sdx65.c b/drivers/clk/qcom/gcc-sdx65.c
+> > [..]
+> > > +static struct clk_alpha_pll_postdiv gpll0_out_even = {
+> > > +	.offset = 0x0,
+> > > +	.post_div_shift = 10,
+> > > +	.post_div_table = post_div_table_gpll0_out_even,
+> > > +	.num_post_div = ARRAY_SIZE(post_div_table_gpll0_out_even),
+> > > +	.width = 4,
+> > > +	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID_EVO],
+> > > +	.clkr.hw.init = &(struct clk_init_data){
+> > > +		.name = "gpll0_out_even",
+> > > +		.parent_data = &(const struct clk_parent_data){
+> > 
+> > A parent_data with a single .hw is better specified using parent_hws.
 > 
-> At least that table with divisors and deviation with accompanying
-> text. But I dare to say 90-95% of the commit message and leave
-> something like "Here is a new driver. documentation is there." To
-> where? Documentation/admin-guide seems most suitable right now
-> (looking at the presence of auxdisplay folder), however I think that
-> maybe dedicated folder like Documentation/hardware-notes maybe better.
-
- Not a new driver really, but a bug fix for the broken calculation we 
-currently have given how inaccurately the particular input clock rate 
-chosen by the designer of the ASIC gets divided at least for some of our 
-standard baud rates.  You may have seen with my previous fix that the 
-original submitter for the OxSemi handlers didn't even get the base baud 
-rate right (and that stuff has been included as vendor-supplied drivers 
-with various OxSemi-based serial port card manufacturers!), so I can't 
-really tell what happened there.
-
- It looks to me like nice if not ultimate UART hardware ruined by broken 
-software, sigh.  Which may have contributed to the withdrawal of the ASICs 
-from manufacturing as with the extra quality stripped by missing software 
-support obviously they may not have been able to compete solely by price 
-with cheap UARTs made elsewhere that provide a basic feature set only (and 
-no documentation).
-
- NB it does DMA as one would expect especially at the higher baud rates, 
-and earlier OxSemi PCI or discrete UARTs have similar features (including 
-the clock prescaler), none of which we handle.  If we started, only then I 
-guess we could call it a new driver.  I have the datasheets, but I can't 
-dedicate more time I'm afraid beyond what is absolutely necessary to get 
-the broken PCIe stuff right.
-
- OK though, you've convinced me.
-
-> +Cc: Mauro. What do you think about this? We need a folder where we
-> rather describe hardware features and maybe some driver implementation
-> details.
-
- Not for serial hardware drivers, but a while ago I committed what now 
-lives at Documentation/networking/device_drivers/fddi/defza.rst along with 
-several other networking driver notes, so I imagine we can have a similar 
-collection for 8250 stuff and the like.
-
-> >  I have found it unclear where the line is drawn between having support
-> > code included with 8250_pci.c proper and having it split off to a separate
-> > file.  All the device-specific files seem to provide complex handling,
-> > well beyond just calculating the clock.
+> Sure, will use parent_hws.
 > 
-> Lines of code in the current 8250_pci in conjunction with expansion.
-> To me 331 (okay, it's something like 280?) LOC + sounds like a very
-> good justification to split.
-
- OK, the size argument alone makes some sense to me, though OTOH splitting 
-sources into many files prevents the compiler from doing interprocedural 
-optimisations, which can only be partially compensated by LTO (if enabled 
-in the first place).
-
- I'll see what I can do here anyway.  Mind that non-PCIe OxSemi stuff 
-remains incomplete, as I noted above, so it'll be a partial driver anyway.
-
-> > > > + * We iterate over the table and choose the product of an oversampling
-> > > > + * rate and a clock prescaler that gives the lowest integer division
-> > > > + * result deviation, or if an exact integer divider is found we stop
-> > > > + * looking for right away.  We do some fixup if the resulting clock
+> > 
+> > > +			.hw = &gpll0.clkr.hw,
+> > > +		},
+> > > +		.num_parents = 1,
+> > > +		.ops = &clk_alpha_pll_postdiv_lucid_evo_ops,
+> > > +	},
+> > > +};
+> > > +
+> > > +static const struct parent_map gcc_parent_map_0[] = {
+> > > +	{ P_BI_TCXO, 0 },
+> > > +	{ P_GPLL0_OUT_MAIN, 1 },
+> > > +	{ P_GPLL0_OUT_EVEN, 6 },
+> > > +	{ P_CORE_BI_PLL_TEST_SE, 7 },
+> > > +};
+> > > +
+> > > +static const struct clk_parent_data gcc_parent_data_0[] = {
+> > > +	{ .fw_name = "bi_tcxo" },
+> > > +	{ .hw = &gpll0.clkr.hw },
+> > > +	{ .hw = &gpll0_out_even.clkr.hw },
+> > > +	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
+> > > +};
+> > 
+> > Nice to see that you use clk_parent_data, fw_name and hw right from the
+> > start.
+> > 
+> > We typically remove core_bi_pll_test_se from the various parent lists,
+> > as this is not something that's expected to be ever used. Please do the
+> > same.
 > 
-> for it right
-
- Fixed, thanks!
-
-> >  Essentially we need to find such three integers (with extra constraints)
-> > the product of which is closest to (500000000 / baud_rate) -- which IMHO
-> > amounts to factorisation, an NP-complete problem as you have been surely
-> > aware (and the whole world relies on), and I have decided that this simple
-> > table-driven approximation is good enough to handle the usual baud rates,
-> > especially the higher ones.  For several baud rates it gives more accurate
-> > results (lower deviation) than the factors proposed in the manufacturer's
-> > datasheets.
+> Sorry, I couldn't completely follow. Should I remove core_bi_pll_test_se from
+> both fw_name and name ? 
 > 
-> And my point is to calculate is always based on the asked baud rate.
-> Yes. I understand what you wrote above and sometimes only brute force
-> can be used, but in the kernel we have integer arithmetics which helps
-> a lot besides the fact of bits twiddlings.
 
- Well, the algorithm is for finding the closest rational number expressed 
-by a numerator and a denominator to the required one.  We have no problem 
-with that, because the divisor is integer (which is of course a rational 
-number too, but finding the numerator where the denominator if constant 1 
-is trivial).
+Yes, please drop "core_bi_pll_test_se" (and hence P_CORE_BI_PLL_TEST_SE)
+throughout the driver.
 
-> >  I just fail to see how your proposed algorithm could be factored in here,
-> > but I'll be happy to be proved wrong, so I'll appreciate guidance.
+Thanks,
+Bjorn
+
+> > 
+> > > +
+> > > +static const struct clk_parent_data gcc_parent_data_0_ao[] = {
+> > > +	{ .fw_name = "bi_tcxo_ao" },
+> > > +	{ .hw = &gpll0.clkr.hw },
+> > > +	{ .hw = &gpll0_out_even.clkr.hw },
+> > > +	{ .fw_name = "core_bi_pll_test_se", .name = "core_bi_pll_test_se" },
+> > > +};
+> > [..]
+> > > +static struct clk_regmap *gcc_sdx65_clocks[] = {
+> > > +	[GCC_AHB_PCIE_LINK_CLK] = &gcc_ahb_pcie_link_clk.clkr,
+> > > +	[GCC_BLSP1_AHB_CLK] = &gcc_blsp1_ahb_clk.clkr,
+> > > +	[GCC_BLSP1_QUP1_I2C_APPS_CLK] = &gcc_blsp1_qup1_i2c_apps_clk.clkr,
+> > > +	[GCC_BLSP1_QUP1_I2C_APPS_CLK_SRC] =
+> > > +		&gcc_blsp1_qup1_i2c_apps_clk_src.clkr,
+> > 
+> > Skip the line wrap.
 > 
-> It's possible that it doesn't fit in the current form or for all three
-> integers. Just give some time and think about it. Maybe you can come
-> up with a better idea. I usually point to one case I have solved [1]
-> to show that ugly tables can be dropped (in some cases it makes sense
-> to leave them, though).
+> Done.
 > 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/spi/spi-pxa2xx.c?id=9df461eca18f5395ee84670cdba6755dddec1898
-
- Well, I considered a naïve algorithm, but it would be quadratic, it would 
-make a lot of redundant calculations, and division is not exactly a fast 
-operation; some targets we support have no hardware division instruction 
-even.  Needless to say it would still have to encode the ranges supported.  
-And any code size gain from the naïve algorithm might still not match the 
-268 bytes the table consumes, especially with RISC targets.
-
- I think my proposal is a reasonable compromise that addresses the problem 
-at hand, and if you or anyone else finds a better solution sometime, then 
-you are free to improve it.  Perfect is the enemy of good enough, so the 
-potential existence of an ultimate solution that hasn't been discovered 
-yet shouldn't block progress in a hope that the solution gets found soon 
-enough.
-
- I'll repost the outstanding pieces of the series with the adjustments I 
-have agreed to make.
-
-  Maciej
+> > 
+> > > +	[GCC_BLSP1_QUP1_SPI_APPS_CLK] = &gcc_blsp1_qup1_spi_apps_clk.clkr,
+> > > +	[GCC_BLSP1_QUP1_SPI_APPS_CLK_SRC] =
+> > > +		&gcc_blsp1_qup1_spi_apps_clk_src.clkr,
+> > > +	[GCC_BLSP1_QUP2_I2C_APPS_CLK] = &gcc_blsp1_qup2_i2c_apps_clk.clkr,
+> > > +	[GCC_BLSP1_QUP2_I2C_APPS_CLK_SRC] =
+> > > +		&gcc_blsp1_qup2_i2c_apps_clk_src.clkr,
+> > > +	[GCC_BLSP1_QUP2_SPI_APPS_CLK] = &gcc_blsp1_qup2_spi_apps_clk.clkr,
+> > > +	[GCC_BLSP1_QUP2_SPI_APPS_CLK_SRC] =
+> > [..]
+> > > +static int gcc_sdx65_probe(struct platform_device *pdev)
+> > > +{
+> > > +	struct regmap *regmap;
+> > > +	int ret;
+> > > +
+> > > +	regmap = qcom_cc_map(pdev, &gcc_sdx65_desc);
+> > > +	if (IS_ERR(regmap))
+> > > +		return PTR_ERR(regmap);
+> > > +	/*
+> > > +	 * Keep the clocks always-ON as they are critical to the functioning
+> > > +	 * of the system:
+> > > +	 * GCC_SYS_NOC_CPUSS_AHB_CLK, GCC_CPUSS_AHB_CLK, GCC_CPUSS_GNOC_CLK
+> > > +	 */
+> > > +	regmap_update_bits(regmap, 0x6d008, BIT(0), BIT(0));
+> > > +	regmap_update_bits(regmap, 0x6d008, BIT(21), BIT(21));
+> > > +	regmap_update_bits(regmap, 0x6d008, BIT(22), BIT(22));
+> > > +
+> > > +	ret = qcom_cc_really_probe(pdev, &gcc_sdx65_desc, regmap);
+> > 
+> > Just "return qcom_cc_really_probe()"
+> 
+> Done.
+> 
