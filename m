@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7643C9DBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5C43C9DBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241953AbhGOLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:31:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:51400 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241774AbhGOLbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:31:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BF8831B;
-        Thu, 15 Jul 2021 04:28:10 -0700 (PDT)
-Received: from bogus (unknown [10.57.79.213])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2ED903F694;
-        Thu, 15 Jul 2021 04:28:09 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 12:27:10 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 03/13] mailbox: pcc: Refactor all PCC channel information
- into a structure
-Message-ID: <20210715112710.55ylycforkessxju@bogus>
-References: <20210708180851.2311192-1-sudeep.holla@arm.com>
- <20210708180851.2311192-4-sudeep.holla@arm.com>
- <20210714165434.GC6592@e120937-lin>
+        id S241786AbhGOLaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:30:35 -0400
+Received: from mail-yb1-f178.google.com ([209.85.219.178]:40821 "EHLO
+        mail-yb1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239113AbhGOLae (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 07:30:34 -0400
+Received: by mail-yb1-f178.google.com with SMTP id p22so8474382yba.7;
+        Thu, 15 Jul 2021 04:27:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+W8ELn/zFAvft5g8sYWYS9+LY4YGOgrltlgjHqPH+4E=;
+        b=KketO8vJATWz08ULV54iv8bMIFNpQXZbesm1LMiB02xGyUwhwtv0tMBtXFXw+FjWCo
+         WKlBaFNLUVeuhnuHY6iWvjhAaHAyBNJuN4eZr3//l24UlO8D+F8oDMl6/ErIyaMcgdMj
+         B2UBLczltmfFbYbOhU1BSM4gm/7IZSL7ZxPs5UCwFoxp7xPuMeWuGmpFF6UTLqJxk5SN
+         MgUwjif3muLlpLG0RdCsu0OQeOQaEAMWfMTZnJuv5SjJb2nM57/M90NtHFOAM5mJaf9m
+         +xkg2zou0hs64I9oy+vOo669FtzQXrVxt8iGV7GJuPPSMtr8gg3sVlbGp1FUVsQTqQLD
+         7Fuw==
+X-Gm-Message-State: AOAM531ZGB05rHT+L4h1ErznMKmEkFPi5nf2Y+W/G/4Gdpfg05i/yB/M
+        yLXFh3TDhGJu6ItuVFPAY6X3v5ISTBsSZT1LY8M=
+X-Google-Smtp-Source: ABdhPJy1l/jsObrnrl7Gdd93dH1lUdyiAvfTZq1DLYzxiUayWNTGyY4wIFrB4zh3JBjH5i7ZKt+/9SmlVh2gwDmVki4=
+X-Received: by 2002:a25:4102:: with SMTP id o2mr4697605yba.23.1626348460634;
+ Thu, 15 Jul 2021 04:27:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714165434.GC6592@e120937-lin>
+References: <20210625224744.1020108-1-kernel@esmil.dk> <20210625224744.1020108-3-kernel@esmil.dk>
+ <YO1aSSSankv+cAru@google.com> <20210714203843.GA3476672@robh.at.kernel.org> <YPAYQvhHwPOrnyik@google.com>
+In-Reply-To: <YPAYQvhHwPOrnyik@google.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Thu, 15 Jul 2021 13:27:29 +0200
+Message-ID: <CANBLGcwTtHZgJ3XakANOvB6-kiuf7W3igLKzBKW2ZfQ5zN_Y0w@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] mfd: tps65086: Make interrupt line optional
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+        "Andrew F. Davis" <afd@ti.com>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 05:54:34PM +0100, Cristian Marussi wrote:
-> On Thu, Jul 08, 2021 at 07:08:41PM +0100, Sudeep Holla wrote:
-> > Currently all the PCC channel specific information are stored/maintained
-> > in global individual arrays for each of those information. It is not
-> > scalable and not clean if we have to stash more channel specific
-> > information. Couple of reasons to stash more information are to extend
-> > the support to Type 3/4 PCCT subspace and also to avoid accessing the
-> > PCCT table entries themselves each time we need the information.
-> > 
-> > This patch moves all those PCC channel specific information into a
-> > separate structure pcc_chan_info.
-> > 
-> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
-> 
-> Hi Sudeep,
-> 
-> >  drivers/mailbox/pcc.c | 106 +++++++++++++++++++++---------------------
-> >  1 file changed, 53 insertions(+), 53 deletions(-)
-> > 
-> > diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
-> > index 23391e224a68..c5f481a615b0 100644
-> > --- a/drivers/mailbox/pcc.c
-> > +++ b/drivers/mailbox/pcc.c
-> > @@ -64,12 +64,20 @@
-> >  
-> >  static struct mbox_chan *pcc_mbox_channels;
-> >  
-> > -/* Array of cached virtual address for doorbell registers */
-> > -static void __iomem **pcc_doorbell_vaddr;
-> > -/* Array of cached virtual address for doorbell ack registers */
-> > -static void __iomem **pcc_doorbell_ack_vaddr;
-> > -/* Array of doorbell interrupts */
-> > -static int *pcc_doorbell_irq;
-> > +/**
-> > + * struct pcc_chan_info - PCC channel specific information
-> > + *
-> > + * @db_vaddr: cached virtual address for doorbell register
-> > + * @db_ack_vaddr: cached virtual address for doorbell ack register
-> > + * @db_irq: doorbell interrupt
-> > + */
-> > +struct pcc_chan_info {
-> > +	void __iomem *db_vaddr;
-> > +	void __iomem *db_ack_vaddr;
-> > +	int db_irq;
-> > +};
+On Thu, 15 Jul 2021 at 13:13, Lee Jones <lee.jones@linaro.org> wrote:
+> On Wed, 14 Jul 2021, Rob Herring wrote:
+> > On Tue, Jul 13, 2021 at 10:18:01AM +0100, Lee Jones wrote:
+> > > On Sat, 26 Jun 2021, Emil Renner Berthing wrote:
+> > >
+> > > > The BeagleV Starlight v0.9 board[1] doesn't have the IRQB line routed to
+> > > > the SoC, but it is still useful to be able to reach the PMIC over I2C
+> > >
+> > > What is still useful?
+> > >
+> > > The GPIO and Regulator drivers?
+> > >
+> > > > for the other functionality it provides.
+> > > >
+> > > > [1] https://github.com/beagleboard/beaglev-starlight
+> > > >
+> > > > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> > > > ---
+> > > >  .../devicetree/bindings/mfd/ti,tps65086.yaml  |  3 ---
+> > > >  drivers/mfd/tps65086.c                        | 21 ++++++++++---------
+> > > >  2 files changed, 11 insertions(+), 13 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml b/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> > > > index ba638bd10a58..4b629fcc0df9 100644
+> > > > --- a/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> > > > +++ b/Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+> > > > @@ -87,9 +87,6 @@ additionalProperties: false
+> > > >  required:
+> > > >    - compatible
+> > > >    - reg
+> > > > -  - interrupts
+> > > > -  - interrupt-controller
+> > > > -  - '#interrupt-cells'
+> > >
+> > > I can't say that I've been keeping up with the latest DT binding
+> > > changes, but shouldn't these lines be relocated into some kind of
+> > > optional listing?
+> > >
+> > > Or are optional properties omitted from documentation?
+> >
+> > Optional properties are the ones not listed in the 'required' list.
 >
-> Given that this db_irq represents the optional completion interrupt that is
-> used platform-->OSPM to signal command completions and/or notifications/
-> delayed_responses and it is mentioned indeed in ACPI 6.4 as "Platform
-> Interrupt" and also referred in this driver as such somewherelse, is it not
-> misleading to call it then here "doorbell interrupt" since the "doorbell" in
-> this context is usually the interrupt that goes the other way around
-> OSPM-->Platform and is indeed handled by a different set of dedicated Doorbell
-> registers ? (that are indeed called Doorbell throughout this driver down below
-> ...but I understand this was the nomenclature used also before in this driver)
->
+> Ah, so they are already documented somewhere else in the file?
 
-Exactly, I share your thoughts and I completely agree. I didn't want to change
-it in this patch as that would mix 2 different change and makes it hard to
-review. I assume you might have already seen the 8/13 which renames this
-before we add more such registers in later patches.
-
---
-Regards,
-Sudeep
+Yes, just a few lines above.
