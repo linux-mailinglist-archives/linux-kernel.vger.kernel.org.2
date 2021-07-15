@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7375B3CACFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1243CACF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245485AbhGOTtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:49:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58960 "EHLO mail.kernel.org"
+        id S245019AbhGOTs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:48:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244760AbhGOTSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244401AbhGOTSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:18:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8D5361410;
-        Thu, 15 Jul 2021 19:13:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C0B061421;
+        Thu, 15 Jul 2021 19:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376393;
-        bh=z5CRr9uHvX/YCjApLw/rtBTEcqZGDMlsFP/f3WWWQy8=;
+        s=korg; t=1626376395;
+        bh=P3nul/DVQE1yucoSl3ntix5TE48M+uyV2iDO53DBZQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OFhCvMxvhCTz3wkiMMu4KFs4k9wSEKT/3+nBFnK3C4ajamEKL/k5QGrE9nYttUgSS
-         d4vI+9aWafzWKfJgUVx7pbUc3w/uRSUAm1QsKo4kee8Nn4sv8ycOQZ1+s/5odYJVs1
-         czYq+LYA3D9fHIYdlBEIiD5FAM5BMI0xSiZ03u0o=
+        b=1b3N+ukzyX1addTobLMGNjqUYUmLM2aVnJQeVHW3kLAfSftSJyAzft6HSSvCNqr8r
+         i9HhovhcLt1IJ3JW1Sr/WaomprHmjPDPYcw2pC1P+8YT0DuCOljQpd3+FEAR0uHTh8
+         pxdQHYdaih/UCgfgGGQ90okmo5Zp4uzV0TG0/JQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 5.13 211/266] docs: Makefile: Use CONFIG_SHELL not SHELL
-Date:   Thu, 15 Jul 2021 20:39:26 +0200
-Message-Id: <20210715182647.036264216@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Timo Sigurdsson <public_timo.s@silentcreek.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.13 212/266] ata: ahci_sunxi: Disable DIPM
+Date:   Thu, 15 Jul 2021 20:39:27 +0200
+Message-Id: <20210715182647.159848335@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -39,35 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Timo Sigurdsson <public_timo.s@silentcreek.de>
 
-commit 222a28edce38b62074a950fb243df621c602b4d3 upstream.
+commit f6bca4d91b2ea052e917cca3f9d866b5cc1d500a upstream.
 
-Fix think-o about which variable to find the Kbuild-configured shell.
-This has accidentally worked due to most shells setting $SHELL by
-default.
+DIPM is unsupported or broken on sunxi. Trying to enable the power
+management policy med_power_with_dipm on an Allwinner A20 SoC based board
+leads to immediate I/O errors and the attached SATA disk disappears from
+the /dev filesystem. A reset (power cycle) is required to make the SATA
+controller or disk work again. The A10 and A20 SoC data sheets and manuals
+don't mention DIPM at all [1], so it's fair to assume that it's simply not
+supported. But even if it was, it should be considered broken and best be
+disabled in the ahci_sunxi driver.
 
-Fixes: 51e46c7a4007 ("docs, parallelism: Rearrange how jobserver reservations are made")
+[1] https://github.com/allwinner-zh/documents/tree/master/
+
+Fixes: c5754b5220f0 ("ARM: sunxi: Add support for Allwinner SUNXi SoCs sata to ahci_platform")
 Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210617225808.3907377-1-keescook@chromium.org
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+Tested-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+Link: https://lore.kernel.org/r/20210614072539.3307-1-public_timo.s@silentcreek.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- Documentation/Makefile |    2 +-
+ drivers/ata/ahci_sunxi.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -76,7 +76,7 @@ quiet_cmd_sphinx = SPHINX  $@ --> file:/
- 	PYTHONDONTWRITEBYTECODE=1 \
- 	BUILDDIR=$(abspath $(BUILDDIR)) SPHINX_CONF=$(abspath $(srctree)/$(src)/$5/$(SPHINX_CONF)) \
- 	$(PYTHON3) $(srctree)/scripts/jobserver-exec \
--	$(SHELL) $(srctree)/Documentation/sphinx/parallel-wrapper.sh \
-+	$(CONFIG_SHELL) $(srctree)/Documentation/sphinx/parallel-wrapper.sh \
- 	$(SPHINXBUILD) \
- 	-b $2 \
- 	-c $(abspath $(srctree)/$(src)) \
+--- a/drivers/ata/ahci_sunxi.c
++++ b/drivers/ata/ahci_sunxi.c
+@@ -200,7 +200,7 @@ static void ahci_sunxi_start_engine(stru
+ }
+ 
+ static const struct ata_port_info ahci_sunxi_port_info = {
+-	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ,
++	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ | ATA_FLAG_NO_DIPM,
+ 	.pio_mask	= ATA_PIO4,
+ 	.udma_mask	= ATA_UDMA6,
+ 	.port_ops	= &ahci_platform_ops,
 
 
