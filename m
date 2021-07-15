@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA7C3CA8A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFB13CA67F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242665AbhGOTCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58132 "EHLO mail.kernel.org"
+        id S237994AbhGOSsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241729AbhGOSyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A43F613CF;
-        Thu, 15 Jul 2021 18:51:41 +0000 (UTC)
+        id S238435AbhGOSq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:46:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D4EC613D1;
+        Thu, 15 Jul 2021 18:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375101;
-        bh=tB9n9DecfNlZ8D3SRM40CXHbkxGOBPpWXf2po1dV+kg=;
+        s=korg; t=1626374642;
+        bh=zwBPlP15GbZeL7/OOSXPzt1lhHHQkIyK6HZoikE3Jt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j1OblpDdKfSJZHz2qNm7CUIIbXrkLWaMBbkgzX9g2iMtKL4X5wJ9HHrpdk3CSu2gt
-         5sSavOHNpsRMRM58WwN0qIZT9YHUV/VWdWjttsiOagE3qR4Ga4hiiUrDg+KYHBoht2
-         lzd0vG025CRJW4nJ0BQbat78JC5qneP+TC5YoEbo=
+        b=o/Qa0I7LoJvx8OvTqDUJDzShNMfoGGI+yt6OpwkJ5vz7AwCYp8NxsFfg6ocUAL/1E
+         YyENBMzNiFkOHToudwTu0oJ0/SZlkULG8WEdgwdIUyAyE7KwQGaBo3MbwEWfqGsK0t
+         hMvW+H06CAGDxSqAGKQ4ToQcBMCmOMyODlcR2cu8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH 5.10 161/215] drm/tegra: Dont set allow_fb_modifiers explicitly
-Date:   Thu, 15 Jul 2021 20:38:53 +0200
-Message-Id: <20210715182627.992575303@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 087/122] mmc: core: clear flags before allowing to retune
+Date:   Thu, 15 Jul 2021 20:38:54 +0200
+Message-Id: <20210715182513.841034208@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,84 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-commit be4306ad928fcf736cbe2616b6dd19d91f1bc083 upstream.
+commit 77347eda64ed5c9383961d1de9165f9d0b7d8df6 upstream.
 
-Since
+It might be that something goes wrong during tuning so the MMC core will
+immediately trigger a retune. In our case it was:
 
-commit 890880ddfdbe256083170866e49c87618b706ac7
-Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Fri Jan 4 09:56:10 2019 +0100
+ - we sent a tuning block
+ - there was an error so we need to send an abort cmd to the eMMC
+ - the abort cmd had a CRC error
+ - retune was set by the MMC core
 
-    drm: Auto-set allow_fb_modifiers when given modifiers at plane init
+This lead to a vicious circle causing a performance regression of 75%.
+So, clear retuning flags before we enable retuning to start with a known
+cleared state.
 
-this is done automatically as part of plane init, if drivers set the
-modifier list correctly. Which is the case here.
-
-It was slightly inconsistently though, since planes with only linear
-modifier support haven't listed that explicitly. Fix that, and cc:
-stable to allow userspace to rely on this. Again don't backport
-further than where Paul's patch got added.
-
-Cc: stable@vger.kernel.org # v5.1 +
-Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: linux-tegra@vger.kernel.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20210413094904.3736372-10-daniel.vetter@ffwll.ch
+Reported-by Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Fixes: bd11e8bd03ca ("mmc: core: Flag re-tuning is needed on CRC errors")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210624151616.38770-2-wsa+renesas@sang-engineering.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/tegra/dc.c  |   10 ++++++++--
- drivers/gpu/drm/tegra/drm.c |    2 --
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/mmc/core/core.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -947,6 +947,11 @@ static const struct drm_plane_helper_fun
- 	.atomic_disable = tegra_cursor_atomic_disable,
- };
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -953,11 +953,14 @@ int mmc_execute_tuning(struct mmc_card *
  
-+static const uint64_t linear_modifiers[] = {
-+	DRM_FORMAT_MOD_LINEAR,
-+	DRM_FORMAT_MOD_INVALID
-+};
-+
- static struct drm_plane *tegra_dc_cursor_plane_create(struct drm_device *drm,
- 						      struct tegra_dc *dc)
- {
-@@ -975,7 +980,7 @@ static struct drm_plane *tegra_dc_cursor
+ 	err = host->ops->execute_tuning(host, opcode);
  
- 	err = drm_universal_plane_init(drm, &plane->base, possible_crtcs,
- 				       &tegra_plane_funcs, formats,
--				       num_formats, NULL,
-+				       num_formats, linear_modifiers,
- 				       DRM_PLANE_TYPE_CURSOR, NULL);
- 	if (err < 0) {
- 		kfree(plane);
-@@ -1094,7 +1099,8 @@ static struct drm_plane *tegra_dc_overla
+-	if (err)
++	if (err) {
+ 		pr_err("%s: tuning execution failed: %d\n",
+ 			mmc_hostname(host), err);
+-	else
++	} else {
++		host->retune_now = 0;
++		host->need_retune = 0;
+ 		mmc_retune_enable(host);
++	}
  
- 	err = drm_universal_plane_init(drm, &plane->base, possible_crtcs,
- 				       &tegra_plane_funcs, formats,
--				       num_formats, NULL, type, NULL);
-+				       num_formats, linear_modifiers,
-+				       type, NULL);
- 	if (err < 0) {
- 		kfree(plane);
- 		return ERR_PTR(err);
---- a/drivers/gpu/drm/tegra/drm.c
-+++ b/drivers/gpu/drm/tegra/drm.c
-@@ -1127,8 +1127,6 @@ static int host1x_drm_probe(struct host1
- 	drm->mode_config.max_width = 4096;
- 	drm->mode_config.max_height = 4096;
- 
--	drm->mode_config.allow_fb_modifiers = true;
--
- 	drm->mode_config.normalize_zpos = true;
- 
- 	drm->mode_config.funcs = &tegra_drm_mode_config_funcs;
+ 	return err;
+ }
 
 
