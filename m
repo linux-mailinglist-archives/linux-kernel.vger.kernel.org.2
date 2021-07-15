@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE523CAB97
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74E03CA930
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245032AbhGOTU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39762 "EHLO mail.kernel.org"
+        id S242789AbhGOTFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:05:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241545AbhGOTFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC26613CF;
-        Thu, 15 Jul 2021 19:01:26 +0000 (UTC)
+        id S241044AbhGOSzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C5B7613D0;
+        Thu, 15 Jul 2021 18:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375687;
-        bh=V4JGcCcIve5zm2wBydiLP5y0SxYpXcftaSdlt/R27uI=;
+        s=korg; t=1626375158;
+        bh=oeHtHu3SOTnq8xDXXFlMf7eT9quDwllg4ho5H1FEKSM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zH7d2ID+1u211w/FQ+MTcAcnLc49jyyaZa3/iiLSw0yn/iEk2MVB9V35YNi4kpG0o
-         8IuIJPCsZL1ASalDv/emVn8MeNcx+8L9f6syTKB0EbS0EOHgT6LAu9ySVP4gxvK9Ev
-         TbQc5jIV/8VS5yNDpbsoZRxwhELi6f2eR/C+tskw=
+        b=MsgB3K7to3sMFZVy5pX6iZ4lRT1P+onj9mZX0FjVmRkKsSTxgtRcZd46DDBElVPlU
+         ZQ8zHgzfqWup3Io0QMertUtp9vUMBNcaiBD0TOwXiGWvhFnDCiezICpM4KjYOd24pt
+         s0uH8wULRHSoAyXUFjtq6lOBSJNllALFXg7U856w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russ Weight <russell.h.weight@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH 5.12 192/242] fpga: stratix10-soc: Add missing fpga_mgr_free() call
-Date:   Thu, 15 Jul 2021 20:39:14 +0200
-Message-Id: <20210715182626.997307609@linuxfoundation.org>
+        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 5.10 183/215] mfd: syscon: Free the allocated name field of struct regmap_config
+Date:   Thu, 15 Jul 2021 20:39:15 +0200
+Message-Id: <20210715182631.652324619@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russ Weight <russell.h.weight@intel.com>
+From: Limeng <Meng.Li@windriver.com>
 
-commit d9ec9daa20eb8de1efe6abae78c9835ec8ed86f9 upstream.
+commit 56a1188159cb2b87fbcb5a7a7afb38a4dd9db0c1 upstream.
 
-The stratix10-soc driver uses fpga_mgr_create() function and is therefore
-responsible to call fpga_mgr_free() to release the class driver resources.
-Add a missing call to fpga_mgr_free in the s10_remove() function.
+The commit 529a1101212a("mfd: syscon: Don't free allocated name
+for regmap_config") doesn't free the allocated name field of struct
+regmap_config, but introduce a memory leak. There is another
+commit 94cc89eb8fa5("regmap: debugfs: Fix handling of name string
+for debugfs init delays") fixing this debugfs init issue from root
+cause. With this fixing, the name field in struct regmap_debugfs_node
+is removed. When initialize debugfs for syscon driver, the name
+field of struct regmap_config is not used anymore. So, the allocated
+name field of struct regmap_config is need to be freed directly after
+regmap initialization to avoid memory leak.
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Reviewed-by: Xu Yilun <yilun.xu@intel.com>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
-Fixes: e7eef1d7633a ("fpga: add intel stratix10 soc fpga manager driver")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210614170909.232415-3-mdf@kernel.org
+Cc: stable@vger.kernel.org
+Fixes: 529a1101212a("mfd: syscon: Don't free allocated name for regmap_config")
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/fpga/stratix10-soc.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/syscon.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/fpga/stratix10-soc.c
-+++ b/drivers/fpga/stratix10-soc.c
-@@ -454,6 +454,7 @@ static int s10_remove(struct platform_de
- 	struct s10_priv *priv = mgr->priv;
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -108,6 +108,7 @@ static struct syscon *of_syscon_register
+ 	syscon_config.max_register = resource_size(&res) - reg_io_width;
  
- 	fpga_mgr_unregister(mgr);
-+	fpga_mgr_free(mgr);
- 	stratix10_svc_free_channel(priv->chan);
- 
- 	return 0;
+ 	regmap = regmap_init_mmio(NULL, base, &syscon_config);
++	kfree(syscon_config.name);
+ 	if (IS_ERR(regmap)) {
+ 		pr_err("regmap init failed\n");
+ 		ret = PTR_ERR(regmap);
+@@ -144,7 +145,6 @@ err_clk:
+ 	regmap_exit(regmap);
+ err_regmap:
+ 	iounmap(base);
+-	kfree(syscon_config.name);
+ err_map:
+ 	kfree(syscon);
+ 	return ERR_PTR(ret);
 
 
