@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235E13C9662
+	by mail.lfdr.de (Postfix) with ESMTP id B58F83C9664
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234246AbhGODT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:19:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:46074 "EHLO foss.arm.com"
+        id S234265AbhGODTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:19:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:46084 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234086AbhGODTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:19:24 -0400
+        id S234351AbhGODT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:19:27 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA20D11D4;
-        Wed, 14 Jul 2021 20:16:31 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F9651042;
+        Wed, 14 Jul 2021 20:16:34 -0700 (PDT)
 Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 68A823F7D8;
-        Wed, 14 Jul 2021 20:16:29 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4535B3F7D8;
+        Wed, 14 Jul 2021 20:16:32 -0700 (PDT)
 From:   Jia He <justin.he@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christoph Hellwig <hch@infradead.org>, nd@arm.com,
-        Jia He <justin.he@arm.com>, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org
-Subject: [PATCH RFC 11/13] md/bitmap: simplify the printing with '%pD' specifier
-Date:   Thu, 15 Jul 2021 11:15:31 +0800
-Message-Id: <20210715031533.9553-12-justin.he@arm.com>
+        Jia He <justin.he@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: [PATCH RFC 12/13] mm: simplify the printing with '%pd' specifier
+Date:   Thu, 15 Jul 2021 11:15:32 +0800
+Message-Id: <20210715031533.9553-13-justin.he@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210715031533.9553-1-justin.he@arm.com>
 References: <20210715031533.9553-1-justin.he@arm.com>
@@ -33,51 +33,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the behavior of '%pD' is changed to print the full path of file,
-the log printing can be simplified.
+Use '%pd' to simplify the printing since kbasename(file_path()) is to
+get the last dentry of the full path.
 
-Given the space with proper length would be allocated in vprintk_store(),
-it is worthy of dropping kmalloc()/kfree() to avoid additional space
-allocation. The error case is well handled in d_path_unsafe(), the error
-string would be copied in '%pD' buffer, no need to additionally handle
-IS_ERR().
-
-Cc: Song Liu <song@kernel.org>
-Cc: linux-raid@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Jia He <justin.he@arm.com>
 ---
- drivers/md/md-bitmap.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ mm/memory.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-index e29c6298ef5c..a82f1c2ef83c 100644
---- a/drivers/md/md-bitmap.c
-+++ b/drivers/md/md-bitmap.c
-@@ -862,21 +862,12 @@ static void md_bitmap_file_unmap(struct bitmap_storage *store)
-  */
- static void md_bitmap_file_kick(struct bitmap *bitmap)
- {
--	char *path, *ptr = NULL;
+diff --git a/mm/memory.c b/mm/memory.c
+index 747a01d495f2..350692ada6f7 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5217,18 +5217,14 @@ void print_vma_addr(char *prefix, unsigned long ip)
+ 	vma = find_vma(mm, ip);
+ 	if (vma && vma->vm_file) {
+ 		struct file *f = vma->vm_file;
+-		char *buf = (char *)__get_free_page(GFP_NOWAIT);
+-		if (buf) {
+-			char *p;
 -
- 	if (!test_and_set_bit(BITMAP_STALE, &bitmap->flags)) {
- 		md_bitmap_update_sb(bitmap);
- 
- 		if (bitmap->storage.file) {
--			path = kmalloc(PAGE_SIZE, GFP_KERNEL);
--			if (path)
--				ptr = file_path(bitmap->storage.file,
--					     path, PAGE_SIZE);
--
--			pr_warn("%s: kicking failed bitmap file %s from array!\n",
--				bmname(bitmap), IS_ERR(ptr) ? "" : ptr);
--
--			kfree(path);
-+			pr_warn("%s: kicking failed bitmap file %pD from array!\n",
-+				bmname(bitmap), bitmap->storage.file);
- 		} else
- 			pr_warn("%s: disabling internal bitmap due to errors\n",
- 				bmname(bitmap));
+-			p = file_path(f, buf, PAGE_SIZE);
+-			if (IS_ERR(p))
+-				p = "?";
+-			printk("%s%s[%lx+%lx]", prefix, kbasename(p),
++
++		if (f)
++			printk("%s%pd[%lx+%lx]", prefix, f->f_path.dentry,
+ 					vma->vm_start,
+ 					vma->vm_end - vma->vm_start);
+-			free_page((unsigned long)buf);
+-		}
++		else
++			printk("%s?[%lx+%lx]", prefix, vma->vm_start,
++					vma->vm_end - vma->vm_start);
+ 	}
+ 	mmap_read_unlock(mm);
+ }
 -- 
 2.17.1
 
