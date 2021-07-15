@@ -2,78 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE6D3CA15B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AE23CA169
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238712AbhGOPWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:22:32 -0400
-Received: from mga01.intel.com ([192.55.52.88]:37631 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238380AbhGOPWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:22:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="232393404"
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="232393404"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 08:19:12 -0700
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="495513685"
-Received: from bmookkia-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.123.85])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 08:19:11 -0700
-Subject: Re: [PATCH v2 6/6] tools/tdx: Add a sample attestation user app
-To:     Mian Yousaf Kaukab <ykaukab@suse.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210707204249.3046665-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210715083635.GA112769@suse.de>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <a7757efc-cb62-013f-8976-427b354ff0f1@linux.intel.com>
-Date:   Thu, 15 Jul 2021 08:19:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237252AbhGOP0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 11:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhGOP0o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 11:26:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8CEC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M5BuhxlRetjxwk3aIO2mhdXoXwLCgAo192GMMEmNGHQ=; b=btpOYnTLgWRM14ebatKKky+imq
+        Tfkge9+tYk2iLN/UmStntyXetYyR8tWpRBjsNmSwZ76emVQLFGYods1wVzIk3ij6sjnkxucMSPzsp
+        ULPRBwr0vqRBIB2ZsNF1kceZOHvCfAZYqhvNyTS3tyRm2mk/fjR3AXR/zdH0Eh8Ls8nyGi/1e0T58
+        RdniPWXJhUpg3nWuFibb2OauWA9Nju2HE8T29htnHN8uYTa3D//U0C9bzSiZ2fJXRO7VY+0kicVAB
+        OVA8wc7fOX0ChLTL+6MuMnSxvwtISfqJHbGPtZyu+5QgSkg2LNn9vwh4o+qLz2EvM3lRsZiyPAV65
+        oG5S71FQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m43CC-003TBY-TF; Thu, 15 Jul 2021 15:22:47 +0000
+Date:   Thu, 15 Jul 2021 16:22:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Bin Wang <wangbin224@huawei.com>
+Cc:     linux-mm@kvack.org, naoya.horiguchi@nec.com,
+        akpm@linux-foundation.org, wuxu.wu@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/hwpoison: dissolve error hugepages of file mapping
+Message-ID: <YPBSwEdagjXjx2jO@casper.infradead.org>
+References: <20210715150852.1655-1-wangbin224@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210715083635.GA112769@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715150852.1655-1-wangbin224@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 15, 2021 at 11:08:52PM +0800, Bin Wang wrote:
+> We handle error on hugetlb file with hugetlbfs_error_remove_page(),
+> which removes the error hugepages from page cache. And with the
+> HWPoison flag in head page, it is safe to free the error hugepages
+> and dissolve it.
 
+How is that safe?  If you're going to dissolve the huge page, you
+need to figure out which subpage needs to have the HWPoison flag set.
 
-On 7/15/21 1:36 AM, Mian Yousaf Kaukab wrote:
-> In tdg_attest_ioctl() TDX_CMD_GEN_QUOTE case is calling
-> tdx_mcall_tdreport() same as TDX_CMD_GET_TDREPORT case. Then what is
-> the point of calling get_tdreport() here? Do you mean to call
-> gen_report_data()?
-
-Yes, I also noticed this issue and fixed the attestation driver to
-to get TDREPORT data as input to get TDQUOTE.
-
-I will be posting the fixed version of attestation driver today.
-
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
