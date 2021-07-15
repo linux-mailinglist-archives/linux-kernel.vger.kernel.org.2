@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44313CAB6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526743CA908
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244239AbhGOTUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:20:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242638AbhGOTFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242232AbhGOTFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 15 Jul 2021 15:05:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 290636141D;
-        Thu, 15 Jul 2021 19:01:15 +0000 (UTC)
+Received: from mail.kernel.org ([198.145.29.99]:60090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241769AbhGOSzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D222613D0;
+        Thu, 15 Jul 2021 18:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375675;
-        bh=mTUfbD5MVl4Nd0GYhQMLHXk0Dpo6nGARDrZOMGB3n4k=;
+        s=korg; t=1626375181;
+        bh=gNsi4EIxhYmRpvHNddMeznVhuB3sZHL0WArFcs/Ycwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=guB3YOYwNjV/tu7O6WrH5O0tkYV2A8Mn4NodgFSgK3+eAEKgCLPzWPvwFBFrzXc9p
-         u/AbGQxM+P4/5LPT3EsMSN8KCJIUHSY8kepG+bWkzhNKa2VG1jijk0CxqnVp54+3we
-         NnArspZshiKlhXYMy32mg0YzPnpea/wmyWK2I188=
+        b=VFwG8utkogu6eshh+jb/UDmkuA80WcCxACNNgmONdC12A+IvSB7WCa3jq6kjvt+um
+         3V0xRyvVd+hdqg6uk86FJJhzxYIIYYFbzR9VNXAUN/hq6Caesv1zkHgQaktSeE+C1i
+         ubg34OYUQaV3hjHaKQecJdVTtUxoq6VG62qT/l2o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.12 161/242] drm/amdgpu: add new dimgrey cavefish DID
+Subject: [PATCH 5.10 151/215] drm/radeon: Add the missed drm_gem_object_put() in radeon_user_framebuffer_create()
 Date:   Thu, 15 Jul 2021 20:38:43 +0200
-Message-Id: <20210715182621.475616609@linuxfoundation.org>
+Message-Id: <20210715182626.291774548@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-commit 06ac9b6c736ac9da600b1782d7ac6d6e746286c4 upstream.
+commit 9ba85914c36c8fed9bf3e8b69c0782908c1247b7 upstream.
 
-Add new PCI device id.
+radeon_user_framebuffer_create() misses to call drm_gem_object_put() in
+an error path. Add the missed function call to fix it.
 
-Reviewed-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c |    1 +
+ drivers/gpu/drm/radeon/radeon_display.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -1123,6 +1123,7 @@ static const struct pci_device_id pciidl
- 	{0x1002, 0x73E0, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
- 	{0x1002, 0x73E1, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
- 	{0x1002, 0x73E2, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
-+	{0x1002, 0x73E3, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
- 	{0x1002, 0x73FF, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
+--- a/drivers/gpu/drm/radeon/radeon_display.c
++++ b/drivers/gpu/drm/radeon/radeon_display.c
+@@ -1334,6 +1334,7 @@ radeon_user_framebuffer_create(struct dr
+ 	/* Handle is imported dma-buf, so cannot be migrated to VRAM for scanout */
+ 	if (obj->import_attach) {
+ 		DRM_DEBUG_KMS("Cannot create framebuffer from imported dma_buf\n");
++		drm_gem_object_put(obj);
+ 		return ERR_PTR(-EINVAL);
+ 	}
  
- 	{0, 0, 0}
 
 
