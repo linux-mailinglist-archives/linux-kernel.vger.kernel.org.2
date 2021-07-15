@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCC93CAB1D
+	by mail.lfdr.de (Postfix) with ESMTP id 74AB53CAB1E
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242406AbhGOTRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:17:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38800 "EHLO mail.kernel.org"
+        id S243751AbhGOTR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:17:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243363AbhGOTEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243377AbhGOTEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:04:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B564613DF;
-        Thu, 15 Jul 2021 19:00:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD6D461158;
+        Thu, 15 Jul 2021 19:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375603;
-        bh=gWwBBg4a6xmnU0NOxAxZXtYOk15quw5sP7AcEnJZ1rg=;
+        s=korg; t=1626375605;
+        bh=Lrpn29ql0xqhMrkZzmDpW6BQgwWK+WinwHTw7COMlJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gwFkPODqthd0p6OMfzQHDYCDy7GI9l284PYBP+/v//DTuQbFyvS85jBibgt3OOQDf
-         jiht0/ob/bySs+0UQaWInb/i8FrQs4FlcFLpOowVPLn/cOhbwItHIgK1m+d3hm6la3
-         fLwj+xklE3PijC09MHhW9Kr1VgZjKyRRouvDOJUo=
+        b=B2Jq3GdLn65+8iJROnmGR/57eil6BXgL+DvrZro07b7zAXUHKKdxC9UX8ouQ5Qfwq
+         W/Zz9XJGnbdcdxlJQjGqnYVwPTPjkMsaKDFBu2TL4kvXyYALDpbVsDPALXwj/jlH0q
+         Bf+h6QgJOOogARR75Cq5ALd+Uw6ZRhO2kkb7eZgs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaochen Shen <xiaochen.shen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 5.12 155/242] selftests/resctrl: Fix incorrect parsing of option "-t"
-Date:   Thu, 15 Jul 2021 20:38:37 +0200
-Message-Id: <20210715182620.485014708@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.12 156/242] MIPS: MT extensions are not available on MIPS32r1
+Date:   Thu, 15 Jul 2021 20:38:38 +0200
+Message-Id: <20210715182620.641269257@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,67 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaochen Shen <xiaochen.shen@intel.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 1421ec684a43379b2aa3cfda20b03d38282dc990 upstream.
+commit cad065ed8d8831df67b9754cc4437ed55d8b48c0 upstream.
 
-Resctrl test suite accepts command line argument "-t" to specify the
-unit tests to run in the test list (e.g., -t mbm,mba,cmt,cat) as
-documented in the help.
+MIPS MT extensions were added with the MIPS 34K processor, which was
+based on the MIPS32r2 ISA.
 
-When calling strtok() to parse the option, the incorrect delimiters
-argument ":\t" is used. As a result, passing "-t mbm,mba,cmt,cat" throws
-an invalid option error.
+This fixes a build error when building a generic kernel for a MIPS32r1
+CPU.
 
-Fix this by using delimiters argument "," instead of ":\t" for parsing
-of unit tests list. At the same time, remove the unnecessary "spaces"
-between the unit tests in help documentation to prevent confusion.
-
-Fixes: 790bf585b0ee ("selftests/resctrl: Add Cache Allocation Technology (CAT) selftest")
-Fixes: 78941183d1b1 ("selftests/resctrl: Add Cache QoS Monitoring (CQM) selftest")
-Fixes: ecdbb911f22d ("selftests/resctrl: Add MBM test")
-Fixes: 034c7678dd2c ("selftests/resctrl: Add README for resctrl tests")
-Cc: stable@vger.kernel.org
-Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Fixes: c434b9f80b09 ("MIPS: Kconfig: add MIPS_GENERIC_KERNEL symbol")
+Cc: stable@vger.kernel.org # v5.9
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/testing/selftests/resctrl/README          |    2 +-
- tools/testing/selftests/resctrl/resctrl_tests.c |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/cpu-features.h |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/tools/testing/selftests/resctrl/README
-+++ b/tools/testing/selftests/resctrl/README
-@@ -47,7 +47,7 @@ Parameter '-h' shows usage information.
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -64,6 +64,8 @@
+ 	((MIPS_ISA_REV >= (ge)) && (MIPS_ISA_REV < (lt)))
+ #define __isa_range_or_flag(ge, lt, flag) \
+ 	(__isa_range(ge, lt) || ((MIPS_ISA_REV < (lt)) && __isa(flag)))
++#define __isa_range_and_ase(ge, lt, ase) \
++	(__isa_range(ge, lt) && __ase(ase))
  
- usage: resctrl_tests [-h] [-b "benchmark_cmd [options]"] [-t test list] [-n no_of_bits]
-         -b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CQM default benchmark is builtin fill_buf
--        -t test list: run tests specified in the test list, e.g. -t mbm, mba, cqm, cat
-+        -t test list: run tests specified in the test list, e.g. -t mbm,mba,cqm,cat
-         -n no_of_bits: run cache tests using specified no of bits in cache bit mask
-         -p cpu_no: specify CPU number to run the test. 1 is default
-         -h: help
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -40,7 +40,7 @@ static void cmd_help(void)
- 	printf("\t-b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CQM");
- 	printf("\t default benchmark is builtin fill_buf\n");
- 	printf("\t-t test list: run tests specified in the test list, ");
--	printf("e.g. -t mbm, mba, cqm, cat\n");
-+	printf("e.g. -t mbm,mba,cqm,cat\n");
- 	printf("\t-n no_of_bits: run cache tests using specified no of bits in cache bit mask\n");
- 	printf("\t-p cpu_no: specify CPU number to run the test. 1 is default\n");
- 	printf("\t-h: help\n");
-@@ -98,7 +98,7 @@ int main(int argc, char **argv)
+ /*
+  * SMP assumption: Options of CPU 0 are a superset of all processors.
+@@ -421,7 +423,7 @@
+ #endif
  
- 					return -1;
- 				}
--				token = strtok(NULL, ":\t");
-+				token = strtok(NULL, ",");
- 			}
- 			break;
- 		case 'p':
+ #ifndef cpu_has_mipsmt
+-#define cpu_has_mipsmt		__isa_lt_and_ase(6, MIPS_ASE_MIPSMT)
++#define cpu_has_mipsmt		__isa_range_and_ase(2, 6, MIPS_ASE_MIPSMT)
+ #endif
+ 
+ #ifndef cpu_has_vp
 
 
