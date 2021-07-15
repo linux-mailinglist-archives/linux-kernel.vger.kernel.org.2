@@ -2,176 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEF13CAD61
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6613CAD3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344285AbhGOT7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:59:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46732 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344096AbhGOTrv (ORCPT
+        id S1344191AbhGOT4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:56:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36318 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345045AbhGOTuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:47:51 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 47B8620319;
-        Thu, 15 Jul 2021 19:44:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626378295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ec1vBoKZnQ32VwxiYH3yGMLZb69iWhDGQRTuBsgfBus=;
-        b=RgQa5ONdax+CYEL4rwx1quSr2ssIngSG6Dal1UmriIySAXRvQpQVKeML7n7vF53zZB2N9q
-        530LxnMuUWaL2pXwaEg4m/ZO9Ii+/Lm/7RUv8BSW7Oeyfvvdy+eWCCRIHTUPMeYQHwgSf2
-        rHFle+zEVYnVGcexoZzx46KTTYAwviM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626378295;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ec1vBoKZnQ32VwxiYH3yGMLZb69iWhDGQRTuBsgfBus=;
-        b=L4TbUkw/ap3KIixQePebAsRUEUO0tiyhW13Xu8dRSpMzl80Yq/+IdrLafw+Wp4wuNMh3M6
-        8tEDtp8DjqikvGAg==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 0F746A3BDB;
-        Thu, 15 Jul 2021 19:44:54 +0000 (UTC)
-Date:   Thu, 15 Jul 2021 21:44:53 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>,
-        Linux-BPF <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, clm@fb.com
-Subject: Re: [PATCH v3] mm/page_alloc: Require pahole v1.22 to cope with
- zero-sized struct pagesets
-Message-ID: <20210715194453.GI24916@kitsune.suse.cz>
-References: <20210527171923.GG30378@techsingularity.net>
- <CAEf4BzZB7Z3fGyVH1+a9SvTtm1LBBG2T++pYiTjRVxbrodzzZA@mail.gmail.com>
- <20210528074248.GI30378@techsingularity.net>
- <CAEf4BzYrfKtecSEbf3yZs5v6aeSkNRJuHfed3kKz-6Vy1eeKuA@mail.gmail.com>
- <20210531093554.GT30378@techsingularity.net>
+        Thu, 15 Jul 2021 15:50:01 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FJY0HO033239;
+        Thu, 15 Jul 2021 15:46:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=DO+E8NiV2Y5oW7QZ1cVyK9xrKfnb/pFaXLa+lGNYbfI=;
+ b=ajQRYxjhOB1LyvJZeWZiSEkLSovy+jqpMmBVab/BTyyBjdyl1MK7geBqClS7RaCuZNaI
+ 4KU7SwjizXF0upIpMzwMPoGWwbMBVDTFk5lH5gvm1ocV5PJKVNVNum0U3bh1/xJmoVyi
+ 79oSy1uhemyJDuhCWcffT11m7FqLSvO/s7y1Kph1jMx/PHcNXwNGe5BgEinHk87P6I1q
+ etqArucujXwmtfLDLL+86AM3t7KL3+Ar/y6Jpz1NEdcwTf8XkxwiLxb82dAwwRNKS4XB
+ T3oyz5cJVjY6eA5XPI6gpbhKZ9wavkAdePlJLnF+aqXMORvo/lNbC9MGg1MKgKPrJp7F 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39sug0r03x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 15:46:44 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16FJYpir038850;
+        Thu, 15 Jul 2021 15:46:44 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39sug0r033-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 15:46:44 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16FJbgcA015476;
+        Thu, 15 Jul 2021 19:46:42 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma01wdc.us.ibm.com with ESMTP id 39q36dn2w9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 19:46:42 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16FJkgUR38863288
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Jul 2021 19:46:42 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EDE2AE067;
+        Thu, 15 Jul 2021 19:46:42 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5306BAE06D;
+        Thu, 15 Jul 2021 19:46:41 +0000 (GMT)
+Received: from localhost (unknown [9.211.106.233])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Thu, 15 Jul 2021 19:46:40 +0000 (GMT)
+From:   Fabiano Rosas <farosas@linux.ibm.com>
+To:     Pratik Sampat <psampat@linux.ibm.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
+Subject: Re: [PATCH v3 1/1] powerpc/pseries: Interface to represent PAPR
+ firmware attributes
+In-Reply-To: <60575876-b15d-6dee-dbb7-c68b9e304557@linux.ibm.com>
+References: <20210712105140.33388-1-psampat@linux.ibm.com>
+ <20210712105140.33388-2-psampat@linux.ibm.com>
+ <87lf6bo7v0.fsf@linux.ibm.com>
+ <60575876-b15d-6dee-dbb7-c68b9e304557@linux.ibm.com>
+Date:   Thu, 15 Jul 2021 16:46:38 -0300
+Message-ID: <87lf672wdd.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531093554.GT30378@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: a0bNXcy2J-n-XNiwByW7QrGsv_iNqiU_
+X-Proofpoint-ORIG-GUID: mrYjsOkyQ-E4RBvzf5ieZGQ7m4OaIkVv
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-15_14:2021-07-14,2021-07-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ adultscore=0 phishscore=0 priorityscore=1501 impostorscore=0
+ suspectscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107150132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Pratik Sampat <psampat@linux.ibm.com> writes:
 
-On Mon, May 31, 2021 at 10:35:54AM +0100, Mel Gorman wrote:
-> On Sat, May 29, 2021 at 08:10:36PM -0700, Andrii Nakryiko wrote:
-> > On Fri, May 28, 2021 at 12:42 AM Mel Gorman <mgorman@techsingularity.net> wrote:
-> > >
-> > > On Thu, May 27, 2021 at 03:17:48PM -0700, Andrii Nakryiko wrote:
-> > > > > Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
-> > > > > per-cpu list protection to local_lock" currently staged in mmotm. In his
-> > > > > own words
-> > > > >
-> > > > >   The immediate problem is two different definitions of numa_node per-cpu
-> > > > >   variable. They both are at the same offset within .data..percpu ELF
-> > > > >   section, they both have the same name, but one of them is marked as
-> > > > >   static and another as global. And one is int variable, while another
-> > > > >   is struct pagesets. I'll look some more tomorrow, but adding Jiri and
-> > > > >   Arnaldo for visibility.
-> > > > >
-> > > > >   [110907] DATASEC '.data..percpu' size=178904 vlen=303
-> > > > >   ...
-> > > > >         type_id=27753 offset=163976 size=4 (VAR 'numa_node')
-> > > > >         type_id=27754 offset=163976 size=4 (VAR 'numa_node')
-> > > > >
-> > > > >   [27753] VAR 'numa_node' type_id=27556, linkage=static
-> > > > >   [27754] VAR 'numa_node' type_id=20, linkage=global
-> > > > >
-> > > > >   [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > > >
-> > > > >   [27556] STRUCT 'pagesets' size=0 vlen=1
-> > > > >         'lock' type_id=507 bits_offset=0
-> > > > >
-> > > > >   [506] STRUCT '(anon)' size=0 vlen=0
-> > > > >   [507] TYPEDEF 'local_lock_t' type_id=506
-> > > > >
-> > > > > The patch in question introduces a zero-sized per-cpu struct and while
-> > > > > this is not wrong, versions of pahole prior to 1.22 get confused during
-> > > > > BTF generation with two separate variables occupying the same address.
-> > > > >
-> > > > > This patch adds a requirement for pahole 1.22 before setting
-> > > > > DEBUG_INFO_BTF.  While pahole 1.22 does not exist yet, a fix is in the
-> > > > > pahole git tree as ("btf_encoder: fix and complete filtering out zero-sized
-> > > > > per-CPU variables").
-> > > > >
-> > > > > Reported-by: Michal Suchanek <msuchanek@suse.de>
-> > > > > Reported-by: Hritik Vijay <hritikxx8@gmail.com>
-> > > > > Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > > > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> > > > > ---
-> > > >
-> > > > I still think that v1 ([0]) is a more appropriate temporary solution
-> > > > until pahole 1.22 is released and widely packaged. Suddenly raising
-> > > > the minimum version to 1.22, which is not even released even, is a
-> > > > pretty big compatibility concern for all the users that rely on
-> > > > CONFIG_DEBUG_INFO_BTF.
-> > >
-> > > On the flip side, we have a situation where a build tool (pahole) has a
-> > > problem whereby correct code does not result in a working kernel. It's
-> > > not that dissimilar to preventing the kernel being built on an old
-> > > compiler. While I accept it's unfortunate, Christoph had a point where
-> > > introducing workarounds in the kernel could lead to a prolification of
-> > > workarounds for pahole or other reasons that are potentially tricky to
-> > > revert as long as distributions exist that do not ship with a sufficiently
-> > > reason package.
-> > >
-> > > > Just a few days ago pahole 1.16 worked fine and
-> > > > here we suddenly (and silently due to how Kconfig functions) raise
-> > > > that to a version that doesn't exist. That's going to break workflows
-> > > > for a lot of people.
-> > > >
-> > >
-> > > People do have a workaround though. For the system building the kernel,
-> > > they can patch pahole and revert the check so a bootable kernel can be
-> > > built. It's not convenient but it is manageable and pahole has until
-> > > 5.13 releases to release a v1.22. The downsides for the alternative --
-> > > a non-booting kernel are much more severe.
-> > >
-> > > > I'm asking to have that ugly work-around to ensure sizeof(struct
-> > > > pagesets) > 0 as a temporary solution only.
-> > >
-> > > Another temporary solution is to locally build pahole and either revert
-> > > the check or fake the 1.22 release number with the self-built pahole.
-> > >
-> > 
-> > Well, luckily it seems we anticipated issues like that and added
-> > --skip_encoding_btf_vars argument, which I completely forgot about and
-> > just accidentally came across reviewing Arnaldo's latest pahole patch.
-> > I think that one is a much better solution, as then it will impact
-> > only those that explicitly relies on availability of BTF for per-CPU
-> > variables, which is a subset of all possible uses for kernel BTF. Sent
-> > a patch ([0]), please take a look.
-> > 
-> >   [0] https://lore.kernel.org/linux-mm/20210530002536.3193829-1-andrii@kernel.org/T/#u
-> 
-> I'm happy to have this patch used as an alternative to forcing 1.22 to
-> be the minimum version of pahole required.
+> Hello,
+>
+> On 12/07/21 9:13 pm, Fabiano Rosas wrote:
+>> "Pratik R. Sampat" <psampat@linux.ibm.com> writes:
+>>
+>> Hi, have you seen Documentation/core-api/kobject.rst, particularly the
+>> part that says:
+>>
+>> "When you see a sysfs directory full of other directories, generally each
+>>     of those directories corresponds to a kobject in the same kset."
+>>
+>> Taking a look at samples/kobject/kset-example.c, it seems to provide an
+>> overall structure that is closer to what other modules do when creating
+>> sysfs entries. It uses less dynamic allocations and deals a bit better
+>> with cleaning up the state afterwards.
+>>
+> Thank you for pointing me towards this example, the kset approach is
+> interesting and the example indeed does handle cleanups better.
+>
+> Currently, we use "machine_device_initcall()" to register this
+> functionality, do you suggest I convert this into a tristate module
+> instead where I can include a "module_exit" for cleanups?
 
-Is pahole 1.22 available already?
+Ugh.. I was hoping we could get away with having all cleanups done at
+kobject release time. But now I see that it is not called unless we
+decrement the reference count. Nevermind then.
 
-Adding the a patch that reports different version is kind of annoying.
+>>> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_ALL, 0,
+>>> +				 virt_to_phys(esi_buf), MAX_BUF_SZ);
+>>> +	esi_hdr = (struct h_energy_scale_info_hdr *) esi_buf;
+>>> +	if (ret != H_SUCCESS || esi_hdr->data_header_version != ESI_VERSION) {
+>> I really dislike this. If you want to bail due to version change, then
+>> at least include in the ABI document that we might not give the
+>> userspace any data at all.
+>
+> My only concern for having a version check is that, the attribute list
+> can change as well as the attributes itself may change.
+> If that is the case, then in a newer version if we do not bail out we
+> may parse data into our structs incorrectly.
 
-Thanks
+Sure, that is a valid concern. But the documentation for the header
+version field says:
 
-Michal
+  "Version of the Header. The header will be always backward compatible,
+  and changes will not impact the Array of attributes. Current version =
+  0x01"
+
+I guess this is a bit vague still, but I understood that:
+
+1- header elements continue to exist at the same position;
+2- the format of the array of attributes will not change.
+
+Are you saying that my interpretation above is not correct or that you
+don't trust the HV to enforce it?
+
+> My argument only hinges on that we should likely give no data at all
+> instead of junk or incorrect data.
+
+I agree. I just don't think it would be possible to end up with
+incorrect data, unless the HV has a bug.
+
+> Maybe I could make this check after the return check and give out a
+> version mismatch message like the following?
+> pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO VER MISMATCH - EXP: 0x%x, REC: 0x%x",
+>          ESI_VERSION, esi_hdr->data_header_version);
+
+Yes, this will help with debug if we ever end up in this situation.
+
+>>> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
+>>> +		goto out;
+>>> +	}
+>>> +
+>>> +	num_attrs = be64_to_cpu(esi_hdr->num_attrs);
+>>> +	/*
+>>> +	 * Typecast the energy buffer to the attribute structure at the offset
+>>> +	 * specified in the buffer
+>>> +	 */
+>> I think the code is now simple enough that this comment could be
+>> removed.
+>
+> ack
+>
+>>> +	esi_attrs = (struct energy_scale_attribute *)
+>>> +		    (esi_buf + be64_to_cpu(esi_hdr->array_offset));
+>>> +
+>>> +	pgs = kcalloc(num_attrs, sizeof(*pgs), GFP_KERNEL);
+>> This is never freed.
+>>
+>>> +	if (!pgs)
+>>> +		goto out_pgs;
+>>> +
+>>> +	papr_kobj = kobject_create_and_add("papr", firmware_kobj);
+>>> +	if (!papr_kobj) {
+>>> +		pr_warn("kobject_create_and_add papr failed\n");
+>>> +		goto out_kobj;
+>>> +	}
+>>> +
+>>> +	esi_kobj = kobject_create_and_add("energy_scale_info", papr_kobj);
+>>> +	if (!esi_kobj) {
+>>> +		pr_warn("kobject_create_and_add energy_scale_info failed\n");
+>>> +		goto out_ekobj;
+>>> +	}
+>>> +
+>>> +	for (idx = 0; idx < num_attrs; idx++) {
+>>> +		char buf[4];
+>>> +		bool show_val_desc = true;
+>>> +
+>>> +		pgs[idx].pgattrs = kcalloc(MAX_ATTRS,
+>>> +					   sizeof(*pgs[idx].pgattrs),
+>>> +					   GFP_KERNEL);
+>>> +		if (!pgs[idx].pgattrs)
+>>> +			goto out_kobj;
+>>> +
+>>> +		pgs[idx].pg.attrs = kcalloc(MAX_ATTRS + 1,
+>>> +					    sizeof(*pgs[idx].pg.attrs),
+>>> +					    GFP_KERNEL);
+>> I think the kobject code expects this to be statically allocated, so
+>> you'd need to override the release function in some way to be able to
+>> free this.
+>
+> Right this and pgs both are never free'd because my understanding was
+> that as this functionality is invoked from machine_init, I'd expect it
+> to stay until shutdown.
+
+Yep, I thought the kset code would improve this, but I misread it. So
+I'm fine with keeping it like this.
+
+> However, if you believe that a module approach is cleaner, I can change
+> my implementation to accommodate for that and also include a
+> module_exit for cleanup of the above allocations
+>>> +		if (!pgs[idx].pg.attrs) {
+>>> +			kfree(pgs[idx].pgattrs);
+>>> +			goto out_kobj;
+>>> +		}
+>>> +
+>>> +		sprintf(buf, "%lld", be64_to_cpu(esi_attrs[idx].id));
+>> Do you mean pgs[idx].name instead of buf? Otherwise you're passing this
+>> stack allocated 'buf' to another function.
+>>
+> Yes you're right I should have either passed the pg struct or I should
+> have used strcpy, here the stack allocated buffer is being taken out of
+> scope which is incorrect.
+> Thanks for pointing this out!
+>
+>>> +		pgs[idx].pg.name = buf;
+>>> +
+>>> +		/* Do not add the value description if it does not exist */
+>>> +		if (strlen(esi_attrs[idx].value_desc) == 0)
+>>> +			show_val_desc = false;
+>>> +
+>>> +		if (add_attr_group(be64_to_cpu(esi_attrs[idx].id),
+>>> +				   MAX_ATTRS, &pgs[idx], show_val_desc)) {
+>>> +			pr_warn("Failed to create papr attribute group %s\n",
+>>> +				pgs[idx].pg.name);
+>>> +			goto out_pgattrs;
+>>> +		}
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +
+>>> +out_pgattrs:
+>>> +	for (i = 0; i < MAX_ATTRS; i++) {
+>>> +		kfree(pgs[i].pgattrs);
+>>> +		kfree(pgs[i].pg.attrs);
+>>> +	}
+>>> +out_ekobj:
+>>> +	kobject_put(esi_kobj);
+>>> +out_kobj:
+>>> +	kobject_put(papr_kobj);
+>>> +out_pgs:
+>>> +	kfree(pgs);
+>>> +out:
+>>> +	kfree(esi_buf);
+>>> +
+>>> +	return -ENOMEM;
+>>> +}
+>>> +
+>>> +machine_device_initcall(pseries, papr_init);
