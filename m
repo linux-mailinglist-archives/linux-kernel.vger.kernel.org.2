@@ -2,142 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2883CAFA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0033CAFA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhGOX0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 19:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
+        id S232112AbhGOX1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 19:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhGOX03 (ORCPT
+        with ESMTP id S230314AbhGOX1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 19:26:29 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9D9C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:23:34 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id m68so6929451qke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:23:34 -0700 (PDT)
+        Thu, 15 Jul 2021 19:27:44 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6E6C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:24:49 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 81-20020a370b540000b02903b854c43335so4965983qkl.21
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:24:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AjtdaoQZ45bxzGgCiJntGt6g0pRHoR9DO7a2agOTNlc=;
-        b=Y2s4sh/soW5dDmJ4H40KzRCbr0hs3j3SC7h8OU2TKaFP5nP83nI08bg8c1yQTPzZyS
-         cQIrIvd2YaI0WAChCQsCbHk3YONTzqnTyx8t1SB2r319Uli3fsVqr5NXG0HZ7dMkZP7W
-         vnwbfqXdv47mZIIJSuGmOPouyyQMvKcxAYShzQvL0TwRBU0aXvTcCLv2MZIPCJps2sTo
-         ZooxxaopxGFQemqFnn7uOWrPSOIPb+8ZCzEKj2Op7aizEhtiBLOcUyodhwRWjDY2WLMO
-         vIb9hHE4i6P/sfCue2EW/gCHAL7+H49j//wBev6cJLo/zF0ahmOvFLgdDIS4xNrVyB1n
-         w3eA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=xtzBKsfvMGcp1K3C06sE0keOSrupFddw8Qz1483rUH0=;
+        b=evFhSvwfDnvoiWO1FssNjqss2R2cZZALzVhwgMv5oZwHKK5vctruLuY5M6ue3Ibi7z
+         LJRY7c8SF0lTn82O8TKELaI36doUxZEQMkz4z3cpwyvXvQ+McSLAtXxR57VO5CMI5DfF
+         U0xem9u/xRTAkGhaJempk2GOHrt03K5BvVXjBafZW1XEicfV+Fg5BrX+uSD/bXixzPjf
+         MZEFgz54zrNhmrutQbOm8PC+mFDvMdn7Y7qKV3FW7y50+3YNT/CiZItEFarmZnw5G6p9
+         Og5OFaJoZtY3H+nhjelXyu2V235QgVa6UA19EsyLyXaNgzQwUXEmSlRwTuJTTgOEFoOM
+         eSCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AjtdaoQZ45bxzGgCiJntGt6g0pRHoR9DO7a2agOTNlc=;
-        b=m1GhKjRrDe4pZ+mabs4gJfr+oxYd6oUvUN2SvqkjpAIpM61kG8F3Yb758lCT6/+qzk
-         eGzyN2yTJQ1aih6AhkTjaMGx6SafS95m0hUiEtD3G5RKnZ4ZKoz+DR2ZcAjyBOAdJuOb
-         s0ot9Ojby/ZFAQsmlBnNMOCy8FNKgej2Wba15KOqGbe/0ucGawXafqiVvQNVyo7DQjYB
-         o6YredEjMeBRSNb1GWKF7lg/kWpSjRRbNNyS9+HNMGyKUXmV92n0aEzYy/X8ec4X7hNx
-         b4Wm8qSeVfohDwTjimw7kpWUuVmmM7t4aNoTqRmYpoHwpHjh/w3svUpg9fg0O8I1/ICK
-         ArhA==
-X-Gm-Message-State: AOAM533CvXbhY87HxTLxidDM8aUYkBlyL7F2hLfo1bdfD/M+wYblSjP0
-        UL5I0G/l2BCKAtzyXEPbr5w=
-X-Google-Smtp-Source: ABdhPJxMMCD85p1KEIX8VE2rohxiP2iEb8AwlHdJASvdDVJNd++dOyv9LYPa1XjQT2+bEJ8JytMWHw==
-X-Received: by 2002:ae9:f30c:: with SMTP id p12mr6459406qkg.153.1626391413877;
-        Thu, 15 Jul 2021 16:23:33 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id az37sm3143017qkb.91.2021.07.15.16.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 16:23:33 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 16:23:32 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Guodong Xu <guodong.xu@linaro.org>, tangchengchang@huawei.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>, tim.c.chen@linux.intel.com,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v7 4/4] lib: test_bitmap: add bitmap_print_to_buf test
- cases
-Message-ID: <YPDDdAwgYEptz2Uq@yury-ThinkPad>
-References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
- <20210715115856.11304-5-song.bao.hua@hisilicon.com>
- <YPAlg5c8uDSZ2WvZ@smile.fi.intel.com>
- <YPCe+f3GPDUuvwnW@yury-ThinkPad>
- <CAHp75VcoNPiKDaZzTVr3unV3F5u+LQwAjy1hKSq0WUw_tB6uAw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcoNPiKDaZzTVr3unV3F5u+LQwAjy1hKSq0WUw_tB6uAw@mail.gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=xtzBKsfvMGcp1K3C06sE0keOSrupFddw8Qz1483rUH0=;
+        b=kuYfF8GuYonLsWE5qILpe5VTG4BP32umoXnhBPppPW7Tt3PjAc6eGtY9UmA92g5hdF
+         OzZSkwcsSg49VDnZhRmA5w3SYe2Uf+uxYyYPhajL0KPVioELkqn8mDxnsrTebG76pH8J
+         +R8Il54HwmNQqUEhHtPnq+3QAsw4Rr3B9/N9b5XZKiFN+TGuSBTLM6VUzYQIuEWQCgKD
+         GD2wl0ehqogI0vRwXMyfOQca1RsdBFc7GaIA6PeJBI3qE1zHWVfUg4PaxcX2wBncwt33
+         I6pR1kQOAtHLR8s7WN2xxqdM/+14zqxXaRHaCaDQUSWs7RHL7ebgf54ZNWsnoBMp8QIp
+         Id3g==
+X-Gm-Message-State: AOAM532tRrr64r5f5ClY5qvE9z7o1/Ou/mmHjVIf3Z9GVWnYuG583y93
+        v9CmfC86M0THXlb/UZO/j3ucq8HnTs6M1Q==
+X-Google-Smtp-Source: ABdhPJyk0KcyBbmeslmFmqYbL+2LRCFwjepnPlaN0C5SZtW0Tu6BpW2c6jZevl+Ya0lDw9kpl1oucUsx4cvS/g==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:24a2:4c13:4cc0:8818])
+ (user=dlatypov job=sendgmr) by 2002:a05:6214:186d:: with SMTP id
+ eh13mr6867008qvb.35.1626391488871; Thu, 15 Jul 2021 16:24:48 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 16:24:41 -0700
+Message-Id: <20210715232441.1380885-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+Subject: [PATCH] lib/test: convert test_sort.c to use KUnit
+From:   Daniel Latypov <dlatypov@google.com>
+To:     akpm@linux-foundation.org
+Cc:     pravin.shedge4linux@gmail.com, brendanhiggins@google.com,
+        davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 12:32:45AM +0300, Andy Shevchenko wrote:
-> On Thu, Jul 15, 2021 at 11:48 PM Yury Norov <yury.norov@gmail.com> wrote:
-> > On Thu, Jul 15, 2021 at 03:09:39PM +0300, Andy Shevchenko wrote:
-> > > On Thu, Jul 15, 2021 at 11:58:56PM +1200, Barry Song wrote:
-> > > > The added test items cover both cases where bitmap buf of the printed
-> > > > result is greater than and less than 4KB.
-> > > > And it also covers the case where offset for bitmap_print_to_buf is
-> > > > non-zero which will happen when printed buf is larger than one page
-> > > > in sysfs bin_attribute.
-> > >
-> > > More test cases is always a good thing, thanks!
-> >
-> > Generally yes. But in this case... I believe, Barry didn't write that
-> > huge line below by himself. Most probably he copy-pasted the output of
-> > his bitmap_print_buf() into the test. If so, this code tests nothing,
-> > and just enforces current behavior of snprintf.
-> 
-> I'm not sure I got what you are telling me. The big line is to test
-> strings that are bigger than 4k.
+This follows up commit ebd09577be6c ("lib/test: convert
+lib/test_list_sort.c to use KUnit").
 
-I'm trying to say that human are not able to verify correctness of
-this line. The test is supposed to check bitmap_print_to_buf(), but
-reference output itself is generated by bitmap_print_to_buf(). This
-test will always pass by design, even if there's an error somewhere
-in the middle, isn't it?
+Converting this test to KUnit makes the test a bit shorter, standardizes
+how it reports pass/fail, and adds an easier way to run the test [1].
 
-> 
-> ...
-> 
-> > > > +static const char large_list[] __initconst = /* more than 4KB */
-> > > > +   "0,4,8,12,16,20,24,28,32-33,36-37,40-41,44-45,48-49,52-53,56-57,60-61,64,68,72,76,80,84,88,92,96-97,100-101,104-1"
-> > > > +   "05,108-109,112-113,116-117,120-121,124-125,128,132,136,140,144,148,152,156,160-161,164-165,168-169,172-173,176-1"
-> > > > +   "77,180-181,184-185,188-189,192,196,200,204,208,212,216,220,224-225,228-229,232-233,236-237,240-241,244-245,248-2"
-> >
-> > I don't like this behavior of the code: each individual line is not a
-> > valid bitmap_list. I would prefer to split original bitmap and print
-> > list representation of parts in a compatible format; considering a
-> > receiving part of this splitting machinery.
-> 
-> I agree that split is not the best here, but after all it's only 1
-> line and this is on purpose.
+Like ebd09577be6c, this leaves the file and Kconfig option name the
+same, but slightly changes their dependencies (needs CONFIG_KUNIT).
 
-What I see is that bitmap_print_to_buf() is called many times, and
-each time it returns something that is not a valid bitmap list string.
-If the caller was be able to concatenate all the lines returned by
-bitmap_print_to_buf(), he'd probably get correct result. But in such
-case, why don't he use scnprintf("pbl") directly?
+[1] Can be run via
+$ ./tools/testing/kunit/kunit.py run --kunitconfig /dev/stdin <<EOF
+CONFIG_KUNIT=y
+CONFIG_TEST_SORT=y
+EOF
 
-If there exists a real case where scnprintf("pbl") output is too long
-(or execution time is too slow) that we need to split, the right
-approach is to split the original bitmap, not an output of
-scnprintf("pbl").
+[11:30:27] Starting KUnit Kernel ...
+[11:30:30] ============================================================
+[11:30:30] ======== [PASSED] lib_sort ========
+[11:30:30] [PASSED] test_sort
+[11:30:30] ============================================================
+[11:30:30] Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
+[11:30:30] Elapsed time: 37.032s total, 0.001s configuring, 34.090s building, 0.000s running
 
-And I still don't understand, what prevents the higher levels from
-calling the scnprintf() directly in this specific case?
+Note: this is the time it took after a `make mrproper`.
+
+With an incremental rebuild, this looks more like:
+[11:38:58] Elapsed time: 6.444s total, 0.001s configuring, 3.416s building, 0.000s running
+
+Since the test has no dependencies, it can also be run (with some other
+tests) with just:
+$ ./tools/testing/kunit/kunit.py run
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ lib/Kconfig.debug |  5 +++--
+ lib/test_sort.c   | 40 +++++++++++++++++++---------------------
+ 2 files changed, 22 insertions(+), 23 deletions(-)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 831212722924..a9f7097fbb86 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2078,8 +2078,9 @@ config TEST_MIN_HEAP
+ 	  If unsure, say N.
+ 
+ config TEST_SORT
+-	tristate "Array-based sort test"
+-	depends on DEBUG_KERNEL || m
++	tristate "Array-based sort test" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
+ 	help
+ 	  This option enables the self-test function of 'sort()' at boot,
+ 	  or at module load time.
+diff --git a/lib/test_sort.c b/lib/test_sort.c
+index 52edbe10f2e5..be02e3a098cf 100644
+--- a/lib/test_sort.c
++++ b/lib/test_sort.c
+@@ -1,4 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
++
++#include <kunit/test.h>
++
+ #include <linux/sort.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -7,18 +10,17 @@
+ 
+ #define TEST_LEN 1000
+ 
+-static int __init cmpint(const void *a, const void *b)
++static int cmpint(const void *a, const void *b)
+ {
+ 	return *(int *)a - *(int *)b;
+ }
+ 
+-static int __init test_sort_init(void)
++static void test_sort(struct kunit *test)
+ {
+-	int *a, i, r = 1, err = -ENOMEM;
++	int *a, i, r = 1;
+ 
+-	a = kmalloc_array(TEST_LEN, sizeof(*a), GFP_KERNEL);
+-	if (!a)
+-		return err;
++	a = kunit_kmalloc_array(test, TEST_LEN, sizeof(*a), GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a);
+ 
+ 	for (i = 0; i < TEST_LEN; i++) {
+ 		r = (r * 725861) % 6599;
+@@ -27,24 +29,20 @@ static int __init test_sort_init(void)
+ 
+ 	sort(a, TEST_LEN, sizeof(*a), cmpint, NULL);
+ 
+-	err = -EINVAL;
+ 	for (i = 0; i < TEST_LEN-1; i++)
+-		if (a[i] > a[i+1]) {
+-			pr_err("test has failed\n");
+-			goto exit;
+-		}
+-	err = 0;
+-	pr_info("test passed\n");
+-exit:
+-	kfree(a);
+-	return err;
++		KUNIT_ASSERT_LE(test, a[i], a[i + 1]);
+ }
+ 
+-static void __exit test_sort_exit(void)
+-{
+-}
++static struct kunit_case sort_test_cases[] = {
++	KUNIT_CASE(test_sort),
++	{}
++};
++
++static struct kunit_suite sort_test_suite = {
++	.name = "lib_sort",
++	.test_cases = sort_test_cases,
++};
+ 
+-module_init(test_sort_init);
+-module_exit(test_sort_exit);
++kunit_test_suites(&sort_test_suite);
+ 
+ MODULE_LICENSE("GPL");
+
+base-commit: 8096acd7442e613fad0354fc8dfdb2003cceea0b
+-- 
+2.32.0.402.g57bb445576-goog
+
