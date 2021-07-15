@@ -2,75 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C203CAF76
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE383CAF77
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhGOW6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 18:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbhGOW6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4976E613AF;
-        Thu, 15 Jul 2021 22:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626389740;
-        bh=P9uyzQH7V/Vu5iTQd3DZbraQ8Ej5+Fm7bfjvma3F+c4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n2jY8kpWCk9OuIFpx7Sbt4ugXyih8DxDDZo9X87C+6a6klH0p3PEjKLEhlpNsihmv
-         dIVA1Sx5t2FNXUM5+lTvl+3ZqN48p7pvqjA0EsBTnRytiZ6qbfW+8KCW81SijAsRrY
-         riWkplRp/TzC32evC0K1O7aaDw2BL2B792GvYA/VhmhJP+CxtQqNtLsq5VhOxji6gr
-         E12NqYxl1ujJN1J+M/RJOQaOhexuFlBWuVfIpEiYxPUqgsXH9I4KSMTUjQph9xZTJD
-         ppzOrtguGGUm96LDyB0+E4zoJgNCzQgPw9GF1eC35VuySBJfCyMkcMZ8ktdO6osWUM
-         LYtqCC0m/qhJw==
-Date:   Thu, 15 Jul 2021 15:55:39 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 098/138] iomap: Use folio offsets instead of page
- offsets
-Message-ID: <20210715225539.GX22357@magnolia>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-99-willy@infradead.org>
- <20210715212657.GI22357@magnolia>
- <YPC7ILHEYv1JKKJW@casper.infradead.org>
+        id S231163AbhGOW6u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Jul 2021 18:58:50 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:40943 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbhGOW6s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 18:58:48 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 23C041BF204;
+        Thu, 15 Jul 2021 22:55:53 +0000 (UTC)
+Date:   Fri, 16 Jul 2021 00:55:52 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Clark Wang <xiaoning.wang@nxp.com>
+Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
+        vitor.soares@synopsys.com, boris.brezillon@bootlin.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] i3c: master: svc: add support for slave to stop
+ returning data
+Message-ID: <20210716005552.6078c7eb@xps13>
+In-Reply-To: <20210715082413.3042149-4-xiaoning.wang@nxp.com>
+References: <20210715082413.3042149-1-xiaoning.wang@nxp.com>
+        <20210715082413.3042149-4-xiaoning.wang@nxp.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPC7ILHEYv1JKKJW@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 11:48:00PM +0100, Matthew Wilcox wrote:
-> On Thu, Jul 15, 2021 at 02:26:57PM -0700, Darrick J. Wong wrote:
-> > > +	size_t poff = offset_in_folio(folio, *pos);
-> > > +	size_t plen = min_t(loff_t, folio_size(folio) - poff, length);
-> > 
-> > I'm confused about 'size_t poff' here vs. 'unsigned end' later -- why do
-> > we need a 64-bit quantity for poff?  I suppose some day we might want to
-> > have folios larger than 4GB or so, but so far we don't need that large
-> > of a byte offset within a page/folio, right?
-> > 
-> > Or are you merely moving the codebase towards using size_t for all byte
-> > offsets?
-> 
-> Both.  'end' isn't a byte count -- it's a block count.
-> 
-> > >  	if (orig_pos <= isize && orig_pos + length > isize) {
-> > > -		unsigned end = offset_in_page(isize - 1) >> block_bits;
-> > > +		unsigned end = offset_in_folio(folio, isize - 1) >> block_bits;
-> 
-> That right shift makes it not-a-byte-count.
-> 
-> I don't especially want to do all the work needed to support folios >2GB,
-> but I do like using size_t to represent a byte count.
+Hi Clark,
 
-DOH.  Yes, I just noticed that.
+Clark Wang <xiaoning.wang@nxp.com> wrote on Thu, 15 Jul 2021 16:24:12
++0800:
 
-TBH I doubt anyone's really going to care about 4GB folios anyway.
+> When i3c controller reads data from slave device, slave device can stop
+> returning data with an ACK after any byte.
+> Add this support for svc i3c controller. Otherwise, it will go TIMEOUT
+> error path when the slave device ends the read operation early.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Is this part of the I3C specification? I am not aware about it.
 
---D
+> Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+> ---
+>  drivers/i3c/master/svc-i3c-master.c | 28 ++++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+> index 9d80435638ea..892e57fec4b0 100644
+> --- a/drivers/i3c/master/svc-i3c-master.c
+> +++ b/drivers/i3c/master/svc-i3c-master.c
+> @@ -865,7 +865,7 @@ static int svc_i3c_master_read(struct svc_i3c_master *master,
+>  			       u8 *in, unsigned int len)
+>  {
+>  	int offset = 0, i, ret;
+> -	u32 mdctrl;
+> +	u32 mdctrl, mstatus;
+>  
+>  	while (offset < len) {
+>  		unsigned int count;
+> @@ -874,8 +874,15 @@ static int svc_i3c_master_read(struct svc_i3c_master *master,
+>  					 mdctrl,
+>  					 !(mdctrl & SVC_I3C_MDATACTRL_RXEMPTY),
+>  					 0, 1000);
+> -		if (ret)
+> -			return ret;
+> +		if (ret) {
+> +			ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS,
+> +				 mstatus, SVC_I3C_MSTATUS_COMPLETE(mstatus),
+> +				 0, 1000);
+> +			if (ret)
+> +				return ret;
+> +			else
+> +				return offset;
+> +		}
+>  
+>  		count = SVC_I3C_MDATACTRL_RXCOUNT(mdctrl);
+>  		for (i = 0; i < count; i++)
+> @@ -884,7 +891,7 @@ static int svc_i3c_master_read(struct svc_i3c_master *master,
+>  		offset += count;
+>  	}
+>  
+> -	return 0;
+> +	return offset;
+>  }
+>  
+>  static int svc_i3c_master_write(struct svc_i3c_master *master,
+> @@ -917,7 +924,7 @@ static int svc_i3c_master_write(struct svc_i3c_master *master,
+>  static int svc_i3c_master_xfer(struct svc_i3c_master *master,
+>  			       bool rnw, unsigned int xfer_type, u8 addr,
+>  			       u8 *in, const u8 *out, unsigned int xfer_len,
+> -			       unsigned int read_len, bool continued)
+> +			       unsigned int *read_len, bool continued)
+>  {
+>  	u32 reg;
+>  	int ret;
+> @@ -927,7 +934,7 @@ static int svc_i3c_master_xfer(struct svc_i3c_master *master,
+>  	       SVC_I3C_MCTRL_IBIRESP_NACK |
+>  	       SVC_I3C_MCTRL_DIR(rnw) |
+>  	       SVC_I3C_MCTRL_ADDR(addr) |
+> -	       SVC_I3C_MCTRL_RDTERM(read_len),
+> +	       SVC_I3C_MCTRL_RDTERM(*read_len),
+>  	       master->regs + SVC_I3C_MCTRL);
+>  
+>  	ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
+> @@ -939,8 +946,10 @@ static int svc_i3c_master_xfer(struct svc_i3c_master *master,
+>  		ret = svc_i3c_master_read(master, in, xfer_len);
+>  	else
+>  		ret = svc_i3c_master_write(master, out, xfer_len);
+> -	if (ret)
+> +	if (ret < 0)
+>  		goto emit_stop;
+> +	if (rnw)
+> +		*read_len = ret;
+>  
+>  	ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
+>  				 SVC_I3C_MSTATUS_COMPLETE(reg), 0, 1000);
+> @@ -1012,7 +1021,7 @@ static void svc_i3c_master_start_xfer_locked(struct svc_i3c_master *master)
+>  
+>  		ret = svc_i3c_master_xfer(master, cmd->rnw, xfer->type,
+>  					  cmd->addr, cmd->in, cmd->out,
+> -					  cmd->len, cmd->read_len,
+> +					  cmd->len, &cmd->read_len,
+>  					  cmd->continued);
+>  		if (ret)
+>  			break;
+> @@ -1141,6 +1150,9 @@ static int svc_i3c_master_send_direct_ccc_cmd(struct svc_i3c_master *master,
+>  	if (!wait_for_completion_timeout(&xfer->comp, msecs_to_jiffies(1000)))
+>  		svc_i3c_master_dequeue_xfer(master, xfer);
+>  
+> +	if (cmd->read_len != xfer_len)
+> +		ccc->dests[0].payload.len = cmd->read_len;
+> +
+>  	ret = xfer->ret;
+>  	svc_i3c_master_free_xfer(xfer);
+>  
+
+Thanks,
+Miquèl
