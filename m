@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127023CA9E3
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6193CA9E4
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241997AbhGOTKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:10:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60992 "EHLO mail.kernel.org"
+        id S244195AbhGOTKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:10:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241332AbhGOS6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 747C0613C4;
-        Thu, 15 Jul 2021 18:55:56 +0000 (UTC)
+        id S234100AbhGOS7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:59:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B786F613D6;
+        Thu, 15 Jul 2021 18:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375356;
-        bh=Rq6Vllx5aizCaYRvGFri4AYkM3uXqJdalDaJzcbLmwY=;
+        s=korg; t=1626375359;
+        bh=i09kXPCbvTLasuCF6x0xbGddtyuLPQXaRHxe8X5l2eA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2gwth65YQ8yxzPA51s9qu+nlm/z8X5FQMn9OrriEA3a/gJ25bSIOOw6MIfEQUk6c4
-         Dhl5bHlFchLZkYTn2C6uaSM2vaEIW6gJVx2tMBkzRQAeNC3QeVo1gyklIQ1sHMsvSt
-         nZb7/qzzC7KmHnZ25Tsl5WbuSv84MrgNjTJgSN9o=
+        b=tGtfZWODeCaul4NahPllMEip5Gx9D2FIadWcZ7bB4roLcfkq2J+8OvymhZTwvL/7r
+         rqt+6DwmPk9UXPlIL6io3XX3j+thCCUBmRQHmb/yIKNZv0AeK7wlwoAm7BkuE7SsiB
+         KRm5Ol9VXrSOYA0w9r6RiUvMbh+KveXTvWdboVuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org, Jiansong Chen <Jiansong.Chen@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 051/242] drm/amd/display: Avoid HDCP over-read and corruption
-Date:   Thu, 15 Jul 2021 20:36:53 +0200
-Message-Id: <20210715182601.283161448@linuxfoundation.org>
+Subject: [PATCH 5.12 052/242] drm/amdgpu: remove unsafe optimization to drop preamble ib
+Date:   Thu, 15 Jul 2021 20:36:54 +0200
+Message-Id: <20210715182601.499183124@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,39 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Jiansong Chen <Jiansong.Chen@amd.com>
 
-[ Upstream commit 06888d571b513cbfc0b41949948def6cb81021b2 ]
+[ Upstream commit 7d9c70d23550eb86a1bec1954ccaa8d6ec3a3328 ]
 
-Instead of reading the desired 5 bytes of the actual target field,
-the code was reading 8. This could result in a corrupted value if the
-trailing 3 bytes were non-zero, so instead use an appropriately sized
-and zero-initialized bounce buffer, and read only 5 bytes before casting
-to u64.
+Take the situation with gfxoff, the optimization may cause
+corrupt CE ram contents. In addition emit_cntxcntl callback
+has similar optimization which firmware can handle properly
+even for power feature.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Jiansong Chen <Jiansong.Chen@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
-index 73ca49f05bd3..eb56526ec32c 100644
---- a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
-+++ b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
-@@ -29,8 +29,10 @@ static inline enum mod_hdcp_status validate_bksv(struct mod_hdcp *hdcp)
- {
- 	uint64_t n = 0;
- 	uint8_t count = 0;
-+	u8 bksv[sizeof(n)] = { };
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
+index 97c11aa47ad0..7892958d5f59 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
+@@ -131,7 +131,7 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
+ 	struct amdgpu_device *adev = ring->adev;
+ 	struct amdgpu_ib *ib = &ibs[0];
+ 	struct dma_fence *tmp = NULL;
+-	bool skip_preamble, need_ctx_switch;
++	bool need_ctx_switch;
+ 	unsigned patch_offset = ~0;
+ 	struct amdgpu_vm *vm;
+ 	uint64_t fence_ctx;
+@@ -228,7 +228,6 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
+ 	if (need_ctx_switch)
+ 		status |= AMDGPU_HAVE_CTX_SWITCH;
  
--	memcpy(&n, hdcp->auth.msg.hdcp1.bksv, sizeof(uint64_t));
-+	memcpy(bksv, hdcp->auth.msg.hdcp1.bksv, sizeof(hdcp->auth.msg.hdcp1.bksv));
-+	n = *(uint64_t *)bksv;
+-	skip_preamble = ring->current_ctx == fence_ctx;
+ 	if (job && ring->funcs->emit_cntxcntl) {
+ 		status |= job->preamble_status;
+ 		status |= job->preemption_status;
+@@ -246,14 +245,6 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
+ 	for (i = 0; i < num_ibs; ++i) {
+ 		ib = &ibs[i];
  
- 	while (n) {
- 		count++;
+-		/* drop preamble IBs if we don't have a context switch */
+-		if ((ib->flags & AMDGPU_IB_FLAG_PREAMBLE) &&
+-		    skip_preamble &&
+-		    !(status & AMDGPU_PREAMBLE_IB_PRESENT_FIRST) &&
+-		    !amdgpu_mcbp &&
+-		    !amdgpu_sriov_vf(adev)) /* for SRIOV preemption, Preamble CE ib must be inserted anyway */
+-			continue;
+-
+ 		if (job && ring->funcs->emit_frame_cntl) {
+ 			if (secure != !!(ib->flags & AMDGPU_IB_FLAGS_SECURE)) {
+ 				amdgpu_ring_emit_frame_cntl(ring, false, secure);
 -- 
 2.30.2
 
