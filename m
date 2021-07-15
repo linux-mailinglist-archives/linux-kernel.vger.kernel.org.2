@@ -2,129 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9ECD3C9F69
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AE03C9F71
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbhGON1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:27:45 -0400
-Received: from mail-db8eur05on2077.outbound.protection.outlook.com ([40.107.20.77]:19809
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237453AbhGON1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:27:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b3SIUaE5RNNNX3cDmCCy5S+s77RL56l40mrCjRQr6ATkoYtpo4yQ2E5decnOKuTna33OnHGPi2/PRw7pPVOKB2eZX4lNAUp4S6cIBennUfNIUHiTgPH7M6aBYRmIAoKVdL4Y+YFJ3uI/0zl8jkzx+ilvT+IAKdYGjWZvXVlh07xy3z8+st6qbhNeBEidjYKlpaAyupsJ0kw47AnAtvkq2cJ4eejeyVl33H5o0LgrGvTP/PSrF8moF+lQZUtTz03GuVG6xn/az8WzR9QkxI3fXMR6JLt1+Gsd5Koy4Jv1VkcTsJqsaLYGiaaYGlt6lN7LUkkb9vIrAINH4yiElzc7jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a/rTcF4/LNuPq8qhODARE6HGazfu//8UGRbpZpujXwU=;
- b=Pu/8MW4RBO7FNq5uW/oREmGLL+T+wVb/vuKgb7uYo6EybXLxiMjgkemlwNIChH1/9PfwVQbOMW0k38OZPJx8lr9zLuvcrMj6t4sPFONt9Py4KqnjfsOUZvZMLSfy4cyNsFp3UONmUcb0L6Q4L8ZMms+PBWy0jQO0SMiZH+dZkRT403gpxEnlPGkkzLo+51Z9u3rA1Cg/Az8+qMS+EYd3TbtCUFOoIJq84+1OzAygUrnRVgMno0/473KNNnK8FBgsd7XS3liZEwzJEOdKyCqNt623hmiFWRBifUR7l3H5lH1e7XomeupzwfmPUZBpYcU1ltzBbAJVRBADVaUDcpN+CQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
- dkim=pass header.d=diasemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a/rTcF4/LNuPq8qhODARE6HGazfu//8UGRbpZpujXwU=;
- b=lajkOfVWrrLnmbvYH2j6MwvneulSLw9nASZW84qLBHIoYKee9AiSEwv0U4SwmNhhiWW8CmW6yCbKeFQJ3yo+zO77T6llNa2/NowjCEj86Z3ZPllCQzgB+M+CyWMYJLuBXaQfmN/Zx4r+vylCFkUWXhyzqIXqtTWGtQ5EyvQEQ1w=
-Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
- by DB8PR10MB3737.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:119::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Thu, 15 Jul
- 2021 13:24:47 +0000
-Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f855:c635:97a4:54c5]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f855:c635:97a4:54c5%9]) with mapi id 15.20.4331.024; Thu, 15 Jul 2021
- 13:24:47 +0000
-From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-To:     Vincent Pelletier <plr.vincent@gmail.com>,
-        Support Opensource <Support.Opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6] regulator: da9063: Add support for full-current mode.
-Thread-Topic: [PATCH v6] regulator: da9063: Add support for full-current mode.
-Thread-Index: AQHXd7eVexOOXcWgIkGRAuIceWWOtatEChWw
-Date:   Thu, 15 Jul 2021 13:24:47 +0000
-Message-ID: <DB9PR10MB4652AFDF3F223FE627FA5D2E80129@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-References: <824518e6391b783a12eba9ff0527f06607a34bfb.1626160826.git.plr.vincent@gmail.com>
-In-Reply-To: <824518e6391b783a12eba9ff0527f06607a34bfb.1626160826.git.plr.vincent@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=diasemi.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d797c84b-7535-43f7-2388-08d94793eac4
-x-ms-traffictypediagnostic: DB8PR10MB3737:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR10MB37373728B35D9F828C06A864A7129@DB8PR10MB3737.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tZVdfOWF9c9hOYIc1EC620nWE+Sevx4Oa/hrOAOV2BDYT4HYg6Agfu7grbklQcjq4Nbx5SbgzBePQu+wb/ByS0A+mN8UM/g+P9jWUZvJPaTmeiSgZa3+QKlmPywD7QWki9RDVsGqVqE5EBiAPz31AX3ryc54L0I3Oqv+fSJddUh8DC1Sr+XWdn+m7pSc0aLDRQoNLY516CN2v91/OTRKyYt0zdAAVBhFf7nO28H+zmeRwbrG0BovqXI85eW9xGZLd95+MwUs55VOlpbfiutViwQzvhJuwRfnESDu2ORsckiNKN8AkL3JQtuByyPxNz6y9uvd7gDA67kDFyztRfXjoRMPnzLNQcd/IgFh9uShftJpi+iPLpzkhfmxF/iTk3sTwBl9Y+SlgcLhuGvYhQmhICRmzKGrCUro8YFQEleGHJ9D+dzEc6qlOxKLnFP2qkHUcRJnCAkGuXs89yVn1zvyMGtkSgZYlTVpjOucCMNW8STYfAkR0laV03vd02M4VPY3sBgwk9PFWMZmo//gNA2eXIBHepfXR+zXFqPYxIU4gV2RYX2Mp3Pd88bAgqX2vGrBTdyNMkFFgQdPQCVSksw0Tbvnd5zpO17c76+Bm0geI0f+zxoPgDh0o56JwjCLlfkDL4ZvmzdFRLt+dD3quLJiXuhGKsZGIeo/D2iruwVbUNKmmjlCs0jsn5navr0AnQSFvTadJcVYPpsHGV/IZa4gGw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(376002)(136003)(396003)(366004)(478600001)(5660300002)(122000001)(6506007)(4744005)(33656002)(83380400001)(86362001)(26005)(55016002)(52536014)(186003)(8676002)(71200400001)(53546011)(9686003)(2906002)(38100700002)(64756008)(316002)(66446008)(66556008)(7696005)(8936002)(76116006)(66946007)(110136005)(66476007)(38070700004);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?z+1Wsn7/VsojjILd43Fkqh7tni4czpgJAvZ8BRdskOHXnFQO2imwBop4itpS?=
- =?us-ascii?Q?KT290mfgA+6K0AGRDO0T2yCdpyjmzXVDNvoMSUjAR+9fB52Db22gFRfensDD?=
- =?us-ascii?Q?IKU3VipVp7nW1JTpTKjdmFV4pLB5xAoCvaYdIp9YrAjgzagMyTLDUPKAPgPZ?=
- =?us-ascii?Q?8JIvnfkor7hsbS/ovqAkxb/L5oFtiwNi3Ltx5WTkpdcHB3G4DCSMK99Z/0x8?=
- =?us-ascii?Q?TI1Fz6i4uIbo9PeQcYWXR8uYdGrzRz5J1FJIqGb23dMpmipi+kB0vufbd0sx?=
- =?us-ascii?Q?6mzojbLXnZkK8H4Ko5+t6RpdRohsPE4qn3iFOUoHIRl67gWHZ1OucEJqgh+v?=
- =?us-ascii?Q?FCMPhatc96Iu1+TSwHigXPqibhhaGRyTFdJulWa2KqYEOrM2nBaUnRZe0uE6?=
- =?us-ascii?Q?EcJH15+ebyuUbxFtLSyE5gqSU9MAKoGHifB1JgNPGhci8bt331QnxrQ6yEbU?=
- =?us-ascii?Q?E0QhYe/vq584a+SbO8NWLsMI6Nf1hunMFPtd3C0Hlt4OtAD4rhxck+Z93EKm?=
- =?us-ascii?Q?ZHxMgMSnb5oj3Jx1CxQRKuWCsm04qP0zeBnnn9Hwqiy5Ez3rL+wv89FX5GyK?=
- =?us-ascii?Q?FApNLQ/zYmYrhfXOeCRT+DFP2FvVJOSwQ8AIAK42p2vJksIpJpjedF+FzqCy?=
- =?us-ascii?Q?aHSjYVeDNzZI0CmT6Tq5+DlzN4VtShwb7ZTceGHBCyhXKeLsLtkXRfwybdZ4?=
- =?us-ascii?Q?WvYaQeIIT5TJr4P+X9kmqWCy8rGHAP2wJkH6NnZGH8WbJF+rS4hSO/XBR/99?=
- =?us-ascii?Q?NoSYz6ON3USjNnSiYhnBcUlAYJgxGTokV+t6Qaeu1nvEQwP9fTVnj/zHCKWB?=
- =?us-ascii?Q?7jaA+c1req/zcNelf2kdoOs2MqvtTYMgT1r9lp5Psmks5DljkkHAkH0yPgSN?=
- =?us-ascii?Q?O2Ybk5rK9HnSHiayUJc8ufdNq2YRFSI/Ym/alHvT1+I80BNRJ76RPO43GIvT?=
- =?us-ascii?Q?qVORnulJiQtY4hx0uMjXuDFC4SyJ3YB8teS5pRDB5wbTLu261aq2U1z5V8Dt?=
- =?us-ascii?Q?6mw62klpEJUQvyGN0BSOq+6ZVIIpurDXVosFmDioZTyfgc6huqyOx2m1kYcM?=
- =?us-ascii?Q?lPLubIPfNbFg2IeNT116R86C0T6niojo26kuW3SoVoDcWZS5m2ch4ppPbOXh?=
- =?us-ascii?Q?mYw/fUK9eMYYvSwdIxIBijS4EqRzMFRtNvN9EOTDZQX+J2uUbnOW7FYI5J00?=
- =?us-ascii?Q?Kk0brQAaNvXqZz/EfvWfRBHo4tyOVVY9eJhcnsUr1MMGF+6YGQbN3Dzpftid?=
- =?us-ascii?Q?/Fl8vO6HELqw2ihfVcKU8DuV1WoRviQd435d91reHEJPFzhgUJ2Qv+DTcIh4?=
- =?us-ascii?Q?wsc9564vLOryqD5dDyqCB0l7?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S237672AbhGON2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:28:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237618AbhGON2o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 09:28:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626355550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ah4MbGoLYz8PpeIyy6Wrw1o1Gg/0NPYNIWwDGG2q9MQ=;
+        b=Yjhgzq/9+T6TYDTj+dynlj69arM5UrkCmKAk20jjnNhSrYVT8URBEC8oqVsOkxcpTH8Lzm
+        NKiP1/RUzrLl++zGnllN90+vhBd6bGAsawFHgHDVW7zvmLWRYnatN+PGuJCNg7QfGUhESt
+        5FRyJX2omwilLAkjRexwCtZ0wBSrp2s=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-551-KNEcbUJ1MDmwosUHdBktJA-1; Thu, 15 Jul 2021 09:25:49 -0400
+X-MC-Unique: KNEcbUJ1MDmwosUHdBktJA-1
+Received: by mail-lj1-f200.google.com with SMTP id j2-20020a2e6e020000b02900f2f75a122aso3187516ljc.19
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 06:25:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ah4MbGoLYz8PpeIyy6Wrw1o1Gg/0NPYNIWwDGG2q9MQ=;
+        b=gZy1r83umvqk9snj+vrnBqp0vL+ifYwHkQO0pJd/3nk6bCyrV1g9EX9mDy7R94lSw7
+         q4bYkCfdvros+b6ncZoSs/zflFZnVqP4m2XBw/KvcPP7d9Kf9FtMM8ijSBtuE0sM+N8Q
+         /RglvKDToiXPSwknncwN1i6OvuMhfyjt9Nbr0JozgX494yCBYpY3berH/Sh1FglKuEdD
+         DV5o1MJDJfwmrPMIhO2EvwOzg/aonZ3wZJGG+QD6XN7afB9gkI3ZxhcRMnduz/tcGtYA
+         5+YbzV4B1D6MovGgz2p2uDUOboBq7QjbyPCKXCDVTppfIsfl+UTiJaTwIwBeNgLPWqEt
+         VvOg==
+X-Gm-Message-State: AOAM530wGcoC8iUoCwSaRI3jn39rje12VGLNP5thuTrUb+rgV48gCFDy
+        /+LF9uJTiunSyLVuF+p2Bl/BdX8WZedc8mDIAj6Jhl+jG4kNT16NU5x6J9JpV3k7YD7D1/oNJ4Z
+        spEKSzE0OSCiyWhMrL2WK7/ewo8xtbnr/X7+uXq5o
+X-Received: by 2002:a05:6512:3a86:: with SMTP id q6mr3149860lfu.548.1626355548019;
+        Thu, 15 Jul 2021 06:25:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4dI6Pl2Y//20EnkEGgAcCVbyTORH0YWaTKsr2JdguYEYFI2ihDlt/NUiNtPNi9bYu/OMUSwAlGGsYWpUxV5M=
+X-Received: by 2002:a05:6512:3a86:: with SMTP id q6mr3149783lfu.548.1626355547649;
+ Thu, 15 Jul 2021 06:25:47 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: d797c84b-7535-43f7-2388-08d94793eac4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2021 13:24:47.3326
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7YNUCm1TXr+OVgsecjkwK7AGiwmNoV77Lo+yxFT7YPGPa/8Z494c51hb2vhmsw1ushIyvQAvNZ8JTZnYA1NeC0eP2zls4plA1ME1FuXGNiE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3737
+References: <20210713211502.464259-1-nitesh@redhat.com> <20210713211502.464259-7-nitesh@redhat.com>
+ <YO7SiFE1dE0dFhkE@unreal> <CAFki+Lm-CpKZai1fV5aMJzEb-x+003m8wLQShSrYpyNh3XC50Q@mail.gmail.com>
+ <YO7ggLW78FWE4z+1@unreal>
+In-Reply-To: <YO7ggLW78FWE4z+1@unreal>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Thu, 15 Jul 2021 09:25:36 -0400
+Message-ID: <CAFki+L=KoVzAv-_tLjAJV91BR+fHTPffMsCs-AgSCNyE0d-0DQ@mail.gmail.com>
+Subject: Re: [PATCH v3 06/14] RDMA/irdma: Use irq_set_affinity_and_hint
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
+        frederic@kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
+        Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, kashyap.desai@broadcom.com,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, benve@cisco.com, govind@gmx.com,
+        jassisinghbrar@gmail.com, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13 July 2021 08:21, Vincent Pelletier wrote:
-
-> In addition to the ability of merging some power outputs, this chip has
-> an overdrive mode.
-> BCORE1, BCORE2 and BPRO have this ability, in which case the legal
-> current draw is increased from 2 amps to 2.5 amps (at the expense of
-> a quiescent current increase), and the configurable current limits
-> are doubled.
-> If a current higher than maximum half-current mode is requested, enable
-> overdrive, and scale the current limit down.
-> Symmetrically, scale the current limit up when querying a overdrive-enabl=
-ed
-> regulator.
+On Wed, Jul 14, 2021 at 9:03 AM Leon Romanovsky <leonro@nvidia.com> wrote:
 >
-> Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+> On Wed, Jul 14, 2021 at 08:56:41AM -0400, Nitesh Lal wrote:
+> > On Wed, Jul 14, 2021 at 8:03 AM Leon Romanovsky <leonro@nvidia.com> wrote:
+> > >
+> > > On Tue, Jul 13, 2021 at 05:14:54PM -0400, Nitesh Narayan Lal wrote:
+> > > > The driver uses irq_set_affinity_hint() to update the affinity_hint mask
+> > > > that is consumed by the userspace to distribute the interrupts and to apply
+> > > > the provided mask as the affinity for its interrupts. However,
+> > > > irq_set_affinity_hint() applying the provided cpumask as an affinity for
+> > > > the interrupt is an undocumented side effect.
+> > > >
+> > > > To remove this side effect irq_set_affinity_hint() has been marked
+> > > > as deprecated and new interfaces have been introduced. Hence, replace the
+> > > > irq_set_affinity_hint() with the new interface irq_set_affinity_and_hint()
+> > > > where the provided mask needs to be applied as the affinity and
+> > > > affinity_hint pointer needs to be set and replace with
+> > > > irq_update_affinity_hint() where only affinity_hint needs to be updated.
+> > > >
+> > > > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> > > > ---
+> > > >  drivers/infiniband/hw/irdma/hw.c | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+> > > > index 7afb8a6a0526..7f13a051d4de 100644
+> > > > --- a/drivers/infiniband/hw/irdma/hw.c
+> > > > +++ b/drivers/infiniband/hw/irdma/hw.c
+> > > > @@ -537,7 +537,7 @@ static void irdma_destroy_irq(struct irdma_pci_f *rf,
+> > > >       struct irdma_sc_dev *dev = &rf->sc_dev;
+> > > >
+> > > >       dev->irq_ops->irdma_dis_irq(dev, msix_vec->idx);
+> > > > -     irq_set_affinity_hint(msix_vec->irq, NULL);
+> > > > +     irq_update_affinity_hint(msix_vec->irq, NULL);
+> > > >       free_irq(msix_vec->irq, dev_id);
+> > > >  }
+> > > >
+> > > > @@ -1087,7 +1087,7 @@ irdma_cfg_ceq_vector(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
+> > > >       }
+> > > >       cpumask_clear(&msix_vec->mask);
+> > > >       cpumask_set_cpu(msix_vec->cpu_affinity, &msix_vec->mask);
+> > > > -     irq_set_affinity_hint(msix_vec->irq, &msix_vec->mask);
+> > > > +     irq_set_affinity_and_hint(msix_vec->irq, &msix_vec->mask);
+> > >
+> > > I think that it needs to be irq_update_affinity_hint().
+> > >
+> >
+> > Ah! I got a little confused from our last conversation about mlx5.
+> >
+> > IIUC mlx5 sub-function use case uses irdma (?) and that's why I thought
+> > that perhaps we would also want to define the affinity here from the beginning.
+>
+> mlx5 is connected to mlx5_ib/mlx5_vdpa e.t.c.
+>
+> Not sure about that, but I think that only mlx5 implements SIOV model.
+>
+> >
+> > In any case, I will make the change and re-post.
+> >
 
-Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Just FYI, I am hoping to collect more comments in the non-reviewed
+patches and address them in v4.
+Hence, I will wait for this week if I don't get anything I will just
+post another version by making the change in this driver.
+
+-- 
+Thanks
+Nitesh
+
