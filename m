@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB8A3CAC38
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53583CAC3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244365AbhGOTbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45710 "EHLO mail.kernel.org"
+        id S244731AbhGOTbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243491AbhGOTJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:09:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81781613C0;
-        Thu, 15 Jul 2021 19:05:44 +0000 (UTC)
+        id S243538AbhGOTJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7DD613D0;
+        Thu, 15 Jul 2021 19:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375945;
-        bh=yF3Xfk587sd+A00D3s6oJyfhF4EB3WXKxWmJ+VimC3M=;
+        s=korg; t=1626375949;
+        bh=MO40KtTCzKgw6sjeqzbXc98VsztHqIQAJjBSUAiLKnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OCnjcKt7+tsMm1GW/GOIkO3h4BC4EuyEoDC/wgR7RZT9KTJVp0/XGMI8Rcll/8ENu
-         Rj/EZzFUowPXxXrgXLwduwJEKORE+kyX06k8PD6G1LBAFsexBWlcM6WM9Cv+DwDSia
-         PTKHQaB4j3W0pB+MNeWWc2NTc0M7z5jBWtSCJ4Bs=
+        b=jcXzvjv5mKK7oB+46oA/Nw6ro9Jinb8c9sboANIFN6o6YESxPy9a68tkQYndAveqy
+         liX9lIgVBCFUByl+WAcsFhw9DLRESQhB6ONsxpXPEgP1Dg9xQqEUxBxkQK+YI5AtRb
+         FhnaPTH3VM+TXpBvOBp1cjaeXo1StTSbbgDwH660=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Kevin Wang <kevin1.wang@amd.com>,
+        "Stanley.Yang" <Stanley.Yang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 059/266] MIPS: ingenic: Select CPU_SUPPORTS_CPUFREQ && MIPS_EXTERNAL_TIMER
-Date:   Thu, 15 Jul 2021 20:36:54 +0200
-Message-Id: <20210715182624.645494169@linuxfoundation.org>
+Subject: [PATCH 5.13 061/266] drm/amdgpu: fix sdma firmware version error in sriov
+Date:   Thu, 15 Jul 2021 20:36:56 +0200
+Message-Id: <20210715182625.019428754@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -40,38 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Kevin Wang <kevin1.wang@amd.com>
 
-[ Upstream commit eb3849370ae32b571e1f9a63ba52c61adeaf88f7 ]
+[ Upstream commit 2b8f731849800e3948763ccaff31cceac526789b ]
 
-The clock driving the XBurst CPUs in Ingenic SoCs is integer divided
-from the main PLL. As such, it is possible to control the frequency of
-the CPU, either by changing the divider, or by changing the rate of the
-main PLL.
+Re-adjust the function return order to avoid empty sdma version in the
+sriov environment. (read amdgpu_firmware_info)
 
-The XBurst CPUs also lack the CP0 timer; the TCU, a separate piece of
-hardware in the SoC, provides this functionality.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Kevin Wang <kevin1.wang@amd.com>
+Reviewed-by: Stanley.Yang <Stanley.Yang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index ed51970c08e7..344e6c622efd 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -428,6 +428,8 @@ config MACH_INGENIC_SOC
- 	select MIPS_GENERIC
- 	select MACH_INGENIC
- 	select SYS_SUPPORTS_ZBOOT_UART16550
-+	select CPU_SUPPORTS_CPUFREQ
-+	select MIPS_EXTERNAL_TIMER
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+index 240596b25fe4..9ab23947a151 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+@@ -145,9 +145,6 @@ static int sdma_v5_2_init_microcode(struct amdgpu_device *adev)
+ 	struct amdgpu_firmware_info *info = NULL;
+ 	const struct common_firmware_header *header = NULL;
  
- config LANTIQ
- 	bool "Lantiq based platforms"
+-	if (amdgpu_sriov_vf(adev) && (adev->asic_type == CHIP_SIENNA_CICHLID))
+-		return 0;
+-
+ 	DRM_DEBUG("\n");
+ 
+ 	switch (adev->asic_type) {
+@@ -182,6 +179,9 @@ static int sdma_v5_2_init_microcode(struct amdgpu_device *adev)
+ 		       (void *)&adev->sdma.instance[0],
+ 		       sizeof(struct amdgpu_sdma_instance));
+ 
++	if (amdgpu_sriov_vf(adev) && (adev->asic_type == CHIP_SIENNA_CICHLID))
++		return 0;
++
+ 	DRM_DEBUG("psp_load == '%s'\n",
+ 		  adev->firmware.load_type == AMDGPU_FW_LOAD_PSP ? "true" : "false");
+ 
 -- 
 2.30.2
 
