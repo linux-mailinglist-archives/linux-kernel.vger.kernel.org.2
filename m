@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248173CA04B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1739B3CA04C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238632AbhGOOKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:10:54 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44920
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236086AbhGOOKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:10:53 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 781DD40667;
-        Thu, 15 Jul 2021 14:07:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626358079;
-        bh=APYp9urHojI4rl75uCY+A2+u3xV4Ds1D+plCvqGn2Yc=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=WMIzLRLteGXuLOd8xT/W78DY+T3u7OT60sfvJmCM0P41ukI1kOyHja8wkMCgoPklT
-         GSNYkR+8ey9HEqC5Ked5p+enhc9XGAvc0OR36LaDqcBMnviX4cLJLD4Ccd5SvMcu1d
-         PcIqfqvTrJqBDXXWmjFVnFWsOqD1ZjqBoSKQTV9LTJ0iNLFlqTrWIHZTAFWTHUFCC6
-         hT9RY5wJEgBoc5zWBdwRZJO3WGtny2q5OsA9xcJcilgy6KGFhZKr++hwSa0Lm9I1Kg
-         caDLOYDqC81I4tJfkGX+Ft+8CWkEwe7v1Sd+7oAmRypxVfNwuBB4LhrIMU2NMfXPII
-         V8Wjie/Q38OrQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org
-Subject: [PATCH] serial: 8250: 8250_omap: make a const array static, makes object smaller
-Date:   Thu, 15 Jul 2021 15:07:59 +0100
-Message-Id: <20210715140759.27244-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S238613AbhGOOLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:11:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:53014 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229620AbhGOOLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:11:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C45666D;
+        Thu, 15 Jul 2021 07:08:42 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BF953F694;
+        Thu, 15 Jul 2021 07:08:41 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [patch 03/50] sched: Prepare for RT sleeping spin/rwlocks
+In-Reply-To: <20210715092703.GI2725@worktop.programming.kicks-ass.net>
+References: <20210713151054.700719949@linutronix.de> <20210713160746.207208684@linutronix.de> <87r1g0mqir.mognet@arm.com> <20210715092703.GI2725@worktop.programming.kicks-ass.net>
+Date:   Thu, 15 Jul 2021 15:08:36 +0100
+Message-ID: <87im1bmzyz.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 15/07/21 11:27, Peter Zijlstra wrote:
+> On Thu, Jul 15, 2021 at 12:20:28AM +0100, Valentin Schneider wrote:
+>> Hi,
+>>
+>> On 13/07/21 17:10, Thomas Gleixner wrote:
+>> > From: Thomas Gleixner <tglx@linutronix.de>
+>> >
+>> > Waiting for spinlocks and rwlocks on non RT enabled kernels is task::state
+>> > preserving. Any wakeup which matches the state is valid.
+>> >
+>> > RT enabled kernels substitutes them with 'sleeping' spinlocks. This creates
+>> > an issue vs. task::state.
+>> >
+>> > In order to block on the lock the task has to overwrite task::state and a
+>> > consecutive wakeup issued by the unlocker sets the state back to
+>> > TASK_RUNNING. As a consequence the task loses the state which was set
+>> > before the lock acquire and also any regular wakeup targeted at the task
+>> > while it is blocked on the lock.
+>> >
+>>
+>> I'm not sure I get this for spinlocks - p->__state != TASK_RUNNING means
+>> task is stopped (or about to be), IMO that doesn't go with spinning. I was
+>> thinking perhaps ptrace could be an issue, but I don't have a clear picture
+>> on that either. What am I missing?
+>
+> spinlocks will become rtmutex. They're going to clobber __state by
+> virtue of a nested block.
 
-Don't populate the const array k3_soc_devices on the stack but instead it
-static. Makes the object code smaller by 44 bytes:
+I wasn't expecting there to be any task taking spinlocks with state !=
+TASK_RUNNING, but I just didn't know where to look.
 
-Before:
-   text    data     bss     dec     hex filename
-  31628    5609     128   37365    91f5 drivers/tty/serial/8250/8250_omap.o
+For instance do_wait() sets current to TASK_INTERRUPTIBLE and can then faff
+around with some sighand locks before eventually calling into schedule(),
+so clearly that one would be affected by the clobbering.
 
-After:
-   text    data     bss     dec     hex filename
-  31520    5673     128   37321    91c9 drivers/tty/serial/8250/8250_omap.o
-Reduction of 44 bytes
-
-(gcc version 10.3.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/tty/serial/8250/8250_omap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index 79418d4beb48..b81d1bdc7b88 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -538,7 +538,7 @@ static void omap_8250_pm(struct uart_port *port, unsigned int state,
- static void omap_serial_fill_features_erratas(struct uart_8250_port *up,
- 					      struct omap8250_priv *priv)
- {
--	const struct soc_device_attribute k3_soc_devices[] = {
-+	static const struct soc_device_attribute k3_soc_devices[] = {
- 		{ .family = "AM65X",  },
- 		{ .family = "J721E", .revision = "SR1.0" },
- 		{ /* sentinel */ }
--- 
-2.31.1
-
+The more you know...
