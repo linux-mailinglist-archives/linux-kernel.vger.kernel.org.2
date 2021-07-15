@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE6A3CA85A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1973CA608
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242760AbhGOS77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:59:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57072 "EHLO mail.kernel.org"
+        id S235463AbhGOSpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:45:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240709AbhGOSxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:53:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2480D613CC;
-        Thu, 15 Jul 2021 18:50:07 +0000 (UTC)
+        id S236166AbhGOSpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:45:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 687AC613CA;
+        Thu, 15 Jul 2021 18:42:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375008;
-        bh=dJzOlOqTsyqzyoggp8QkDI/IQ7+pmpMV3TXSZdmE3mA=;
+        s=korg; t=1626374548;
+        bh=p0xEP71v2pVTXpsAnPOnIZadJ9WCWIox2A3wpKBA9TI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lnYEC6EYIGZ5FtE+GzAPx2Ky3DL5bxJDPuh0FI4UcknCzEsZG9nE8AVMevdpgGCof
-         cfoP1aN/9/VRv84ukuny5PuZ3buFrMe2cQ3HWtm6d2xCyDFrkmDm4H1/k17yJhvUra
-         zTCtVe/+GdG+hHEIYXPeFnTjuFR9X+5QDuXZVeW0=
+        b=kpnWgeihpXbdriwnQpi/oAjXuUiIguRJZoVTNLEA1uKrOsphu/y+jPz7HN+Nnu8ZG
+         e8Lqt2xX6oRsTac+eyTmT4Htd/YoQYoNc1R694iGlMcBKu/Nf8nx2pnGlxkWFUSKml
+         aGoKyS63AliJ/y6s6LrwNKUfmaGdO/QwY9Nx0XN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Lenski <dlenski@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 120/215] Bluetooth: btusb: Add a new QCA_ROME device (0cf3:e500)
-Date:   Thu, 15 Jul 2021 20:38:12 +0200
-Message-Id: <20210715182620.717726582@linuxfoundation.org>
+Subject: [PATCH 5.4 046/122] net: fix mistake path for netdev_features_strings
+Date:   Thu, 15 Jul 2021 20:38:13 +0200
+Message-Id: <20210715182500.651274299@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Lenski <dlenski@gmail.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-[ Upstream commit 0324d19cb99804d99e42c990b8b1e191575a091b ]
+[ Upstream commit 2d8ea148e553e1dd4e80a87741abdfb229e2b323 ]
 
-This patch adds the 0cf3:e500 Bluetooth device (from a QCA9377 board) as a
-QCA_ROME device.  It appears to be functionally identical to another device
-ID, also from a QCA9377 board, which was previously marked as QCA_ROME in
-0a03f98b98c201191e3ba15a0e33f46d8660e1fd
-("Bluetooth: Add a new 04ca:3015 QCA_ROME device").
+Th_strings arrays netdev_features_strings, tunable_strings, and
+phy_tunable_strings has been moved to file net/ethtool/common.c.
+So fixes the comment.
 
-Without this patch, the WiFi side of the QCA9377 board is slow or unusable
-when the Bluetooth side is in use.
-
-See https://askubuntu.com/a/1137852 for another report of QCA_ROME fixing
-this issue for this device ID.
-
-/sys/kernel/debug/usb/devices:
-
-T:  Bus=05 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
-D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0cf3 ProdID=e500 Rev= 0.01
-C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-
-Signed-off-by: Daniel Lenski <dlenski@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btusb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/netdev_features.h | 2 +-
+ include/uapi/linux/ethtool.h    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 8195333e5665..8f38a2a7da8c 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -269,6 +269,8 @@ static const struct usb_device_id blacklist_table[] = {
- 						     BTUSB_WIDEBAND_SPEECH },
- 	{ USB_DEVICE(0x0cf3, 0xe360), .driver_info = BTUSB_QCA_ROME |
- 						     BTUSB_WIDEBAND_SPEECH },
-+	{ USB_DEVICE(0x0cf3, 0xe500), .driver_info = BTUSB_QCA_ROME |
-+						     BTUSB_WIDEBAND_SPEECH },
- 	{ USB_DEVICE(0x0489, 0xe092), .driver_info = BTUSB_QCA_ROME |
- 						     BTUSB_WIDEBAND_SPEECH },
- 	{ USB_DEVICE(0x0489, 0xe09f), .driver_info = BTUSB_QCA_ROME |
+diff --git a/include/linux/netdev_features.h b/include/linux/netdev_features.h
+index 4b19c544c59a..640e7279f161 100644
+--- a/include/linux/netdev_features.h
++++ b/include/linux/netdev_features.h
+@@ -83,7 +83,7 @@ enum {
+ 
+ 	/*
+ 	 * Add your fresh new feature above and remember to update
+-	 * netdev_features_strings[] in net/core/ethtool.c and maybe
++	 * netdev_features_strings[] in net/ethtool/common.c and maybe
+ 	 * some feature mask #defines below. Please also describe it
+ 	 * in Documentation/networking/netdev-features.txt.
+ 	 */
+diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+index 7857aa413627..8d465e5322e7 100644
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -223,7 +223,7 @@ enum tunable_id {
+ 	ETHTOOL_PFC_PREVENTION_TOUT, /* timeout in msecs */
+ 	/*
+ 	 * Add your fresh new tunable attribute above and remember to update
+-	 * tunable_strings[] in net/core/ethtool.c
++	 * tunable_strings[] in net/ethtool/common.c
+ 	 */
+ 	__ETHTOOL_TUNABLE_COUNT,
+ };
+@@ -287,7 +287,7 @@ enum phy_tunable_id {
+ 	ETHTOOL_PHY_EDPD,
+ 	/*
+ 	 * Add your fresh new phy tunable attribute above and remember to update
+-	 * phy_tunable_strings[] in net/core/ethtool.c
++	 * phy_tunable_strings[] in net/ethtool/common.c
+ 	 */
+ 	__ETHTOOL_PHY_TUNABLE_COUNT,
+ };
 -- 
 2.30.2
 
