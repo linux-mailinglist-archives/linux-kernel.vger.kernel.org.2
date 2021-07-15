@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2A23CABEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762613CA98F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343946AbhGOTY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46434 "EHLO mail.kernel.org"
+        id S242347AbhGOTH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:07:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242535AbhGOTH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:07:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD486601FE;
-        Thu, 15 Jul 2021 19:04:00 +0000 (UTC)
+        id S242224AbhGOS5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:57:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A748E613D1;
+        Thu, 15 Jul 2021 18:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375841;
-        bh=swNqVe0z99ZqvzGEdEapp55al/zXzvnmMw+OPrrGzhc=;
+        s=korg; t=1626375254;
+        bh=0TEEtHfReXo4F18sk6Sba1Yo0FUOojEbgub7tLSmUa8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jc0pwCvKP9/fUedh8h4K1rysspa5Ait4sREdZUzk8ptvXnwuphr/b9I+Cck2r0B+F
-         +rpZn+RsDfjsGIO4VNnhL0Ka0aKiOpKZO44l3iDbzi+yCkjMWNbxoUazo+gWM7FvoP
-         gEBy2giC+GF7nlf0XctsoENO5gPbe3LGaeYiopVc=
+        b=RVxXFnpj5NcREMhYfW3Eyk6ZpKiTjYd2GQ+4rfcxmi0ItNlG0sDG6Cw8GYBkYJTdz
+         T+UsLUUwqm/hlw4g/lwS2WDdebgWagXGMFFYNdSCZYDzmbBVE0OCBLk+oSaDhpTik5
+         UujPasvyXz4qoQkdrQd6igUegcqAtdLtayvE2vEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bibo Mao <maobibo@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Aric Cyr <Aric.Cyr@amd.com>, Stylon Wang <stylon.wang@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 017/266] hugetlb: clear huge pte during flush function on mips platform
+Subject: [PATCH 5.12 010/242] drm/amd/display: fix use_max_lb flag for 420 pixel formats
 Date:   Thu, 15 Jul 2021 20:36:12 +0200
-Message-Id: <20210715182616.894584474@linuxfoundation.org>
+Message-Id: <20210715182553.605150321@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-References: <20210715182613.933608881@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bibo Mao <maobibo@loongson.cn>
+From: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
 
-[ Upstream commit 33ae8f801ad8bec48e886d368739feb2816478f2 ]
+[ Upstream commit 8809a7a4afe90ad9ffb42f72154d27e7c47551ae ]
 
-If multiple threads are accessing the same huge page at the same
-time, hugetlb_cow will be called if one thread write the COW huge
-page. And function huge_ptep_clear_flush is called to notify other
-threads to clear the huge pte tlb entry. The other threads clear
-the huge pte tlb entry and reload it from page table, the reload
-huge pte entry may be old.
+Right now the flag simply selects memory config 0 when flag is true
+however 420 modes benefit more from memory config 3.
 
-This patch fixes this issue on mips platform, and it clears huge
-pte entry before notifying other threads to flush current huge
-page entry, it is similar with other architectures.
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
+Acked-by: Stylon Wang <stylon.wang@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/hugetlb.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/hugetlb.h b/arch/mips/include/asm/hugetlb.h
-index 10e3be870df7..c2144409c0c4 100644
---- a/arch/mips/include/asm/hugetlb.h
-+++ b/arch/mips/include/asm/hugetlb.h
-@@ -46,7 +46,13 @@ static inline pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
- static inline void huge_ptep_clear_flush(struct vm_area_struct *vma,
- 					 unsigned long addr, pte_t *ptep)
- {
--	flush_tlb_page(vma, addr & huge_page_mask(hstate_vma(vma)));
-+	/*
-+	 * clear the huge pte entry firstly, so that the other smp threads will
-+	 * not get old pte entry after finishing flush_tlb_page and before
-+	 * setting new huge pte entry
-+	 */
-+	huge_ptep_get_and_clear(vma->vm_mm, addr, ptep);
-+	flush_tlb_page(vma, addr);
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
+index efa86d5c6847..98ab4b776924 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
+@@ -496,10 +496,13 @@ static enum lb_memory_config dpp1_dscl_find_lb_memory_config(struct dcn10_dpp *d
+ 	int vtaps_c = scl_data->taps.v_taps_c;
+ 	int ceil_vratio = dc_fixpt_ceil(scl_data->ratios.vert);
+ 	int ceil_vratio_c = dc_fixpt_ceil(scl_data->ratios.vert_c);
+-	enum lb_memory_config mem_cfg = LB_MEMORY_CONFIG_0;
  
- #define __HAVE_ARCH_HUGE_PTE_NONE
+-	if (dpp->base.ctx->dc->debug.use_max_lb)
+-		return mem_cfg;
++	if (dpp->base.ctx->dc->debug.use_max_lb) {
++		if (scl_data->format == PIXEL_FORMAT_420BPP8
++				|| scl_data->format == PIXEL_FORMAT_420BPP10)
++			return LB_MEMORY_CONFIG_3;
++		return LB_MEMORY_CONFIG_0;
++	}
+ 
+ 	dpp->base.caps->dscl_calc_lb_num_partitions(
+ 			scl_data, LB_MEMORY_CONFIG_1, &num_part_y, &num_part_c);
 -- 
 2.30.2
 
