@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6AE3CA8BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A193CA698
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239831AbhGOTCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:02:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59132 "EHLO mail.kernel.org"
+        id S240040AbhGOStA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:49:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242140AbhGOSyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9FEC610C7;
-        Thu, 15 Jul 2021 18:51:57 +0000 (UTC)
+        id S238645AbhGOSrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:47:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3D7F613D1;
+        Thu, 15 Jul 2021 18:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375118;
-        bh=WjFGojON94nyQhXVbDVrPG9n1lsvX6KpwqMvV6Swfso=;
+        s=korg; t=1626374659;
+        bh=YsgUxFkAQIZU3ZVISzNLMdUo6s3I6zNTSY1lPTFkK+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vyO0uf15YZxUihafutWzdSx6rM55us+T+/fSBJhR/1ULYPOv1nzZNDypjwORfgTwi
-         ypwkZ6torfYcjy6tOzMeMeDj74kdaNgITPzolbeO5n9dP0+0A7BHwKvUL5KdG/uCx7
-         +3XCgSXjNbsFlF166o8mqGpPp4ZdhhHUV+d57FIk=
+        b=ruPZuhjALrCxXo3JItpNp/gXaI0eRjASuWbOPnv77WxIJ5VrC5xHoT10VN92tZzuQ
+         yElWmLjNeDQvRm2bWcTQjoJjPecKP1/We2loHkgo52cqdr89V+XhGNuRcke+ELCF5P
+         GiWEfiKzWvN9hVhiUyr3q2pd7d1TIc2VifAutYAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 167/215] mmc: sdhci: Fix warning message when accessing RPMB in HS400 mode
-Date:   Thu, 15 Jul 2021 20:38:59 +0200
-Message-Id: <20210715182629.111648222@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH 5.4 093/122] MIPS: fix "mipsel-linux-ld: decompress.c:undefined reference to `memmove"
+Date:   Thu, 15 Jul 2021 20:39:00 +0200
+Message-Id: <20210715182515.933919315@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Cooper <alcooperx@gmail.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-commit d0244847f9fc5e20df8b7483c8a4717fe0432d38 upstream.
+This is _not_ an upstream commit and just for 5.4.y only.
 
-When an eMMC device is being run in HS400 mode, any access to the
-RPMB device will cause the error message "mmc1: Invalid UHS-I mode
-selected". This happens as a result of tuning being disabled before
-RPMB access and then re-enabled after the RPMB access is complete.
-When tuning is re-enabled, the system has to switch from HS400
-to HS200 to do the tuning and then back to HS400. As part of
-sequence to switch from HS400 to HS200 the system is temporarily
-put into HS mode. When switching to HS mode, sdhci_get_preset_value()
-is called and does not have support for HS mode and prints the warning
-message and returns the preset for SDR12. The fix is to add support
-for MMC and SD HS modes to sdhci_get_preset_value().
+kernel test robot reported a 5.4.y build issue found by randconfig [1]
+after backporting commit 89b158635ad7 ("lib/lz4: explicitly support
+in-place decompression"") due to "undefined reference to `memmove'".
 
-This can be reproduced on any system running eMMC in HS400 mode
-(not HS400ES) by using the "mmc" utility to run the following
-command: "mmc rpmb read-counter /dev/mmcblk0rpmb".
+However, upstream and 5.10 LTS seem fine. After digging further,
+I found commit a510b616131f ("MIPS: Add support for ZSTD-compressed
+kernels") introduced memmove() occasionally and it has been included
+since v5.10.
 
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210624163045.33651-1-alcooperx@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+This partially cherry-picks the memmove() part of commit a510b616131f
+to fix the reported build regression since we don't need the whole
+patch for 5.4 LTS at all.
+
+[1] https://lore.kernel.org/r/202107070120.6dOj1kB7-lkp@intel.com/
+Fixes: defcc2b5e54a ("lib/lz4: explicitly support in-place decompression") # 5.4.y
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/sdhci.c |    4 ++++
- drivers/mmc/host/sdhci.h |    1 +
- 2 files changed, 5 insertions(+)
+ arch/mips/boot/compressed/string.c |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -1813,6 +1813,10 @@ static u16 sdhci_get_preset_value(struct
- 	u16 preset = 0;
+--- a/arch/mips/boot/compressed/string.c
++++ b/arch/mips/boot/compressed/string.c
+@@ -5,6 +5,7 @@
+  * Very small subset of simple string routines
+  */
  
- 	switch (host->timing) {
-+	case MMC_TIMING_MMC_HS:
-+	case MMC_TIMING_SD_HS:
-+		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HIGH_SPEED);
-+		break;
- 	case MMC_TIMING_UHS_SDR12:
- 		preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
- 		break;
---- a/drivers/mmc/host/sdhci.h
-+++ b/drivers/mmc/host/sdhci.h
-@@ -253,6 +253,7 @@
++#include <linux/compiler_attributes.h>
+ #include <linux/types.h>
  
- /* 60-FB reserved */
- 
-+#define SDHCI_PRESET_FOR_HIGH_SPEED	0x64
- #define SDHCI_PRESET_FOR_SDR12 0x66
- #define SDHCI_PRESET_FOR_SDR25 0x68
- #define SDHCI_PRESET_FOR_SDR50 0x6A
+ void *memcpy(void *dest, const void *src, size_t n)
+@@ -27,3 +28,19 @@ void *memset(void *s, int c, size_t n)
+ 		ss[i] = c;
+ 	return s;
+ }
++
++void * __weak memmove(void *dest, const void *src, size_t n)
++{
++	unsigned int i;
++	const char *s = src;
++	char *d = dest;
++
++	if ((uintptr_t)dest < (uintptr_t)src) {
++		for (i = 0; i < n; i++)
++			d[i] = s[i];
++	} else {
++		for (i = n; i > 0; i--)
++			d[i - 1] = s[i - 1];
++	}
++	return dest;
++}
 
 
