@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6833CA4E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DE93CA4E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237120AbhGOSEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
+        id S237163AbhGOSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237035AbhGOSD7 (ORCPT
+        with ESMTP id S237067AbhGOSEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:03:59 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E27C061762
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:05 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id a6so10161569ljq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:05 -0700 (PDT)
+        Thu, 15 Jul 2021 14:04:01 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B616DC061762
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:07 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id u25so10101341ljj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Juo3AM+b40dS1hlfCODzT9PCdvoocT9eJfDW+eUcng8=;
-        b=XwEA5JR850+TGWCt6vJfhkjleSiwtQZzAqAkkd/ng64jUPk6N10XXFblaVpnhTkRY6
-         Vp3gHpAYGpjMuDDtFclHkmA8Lh4y7UMzJLof9RsM1a5syeWOzv3+v6uF32na48RTKEwT
-         LIldxzV4RPbj9aIDeVuke1TIFzu25vg01kF7acjcZm0NXuLs4MlcQlRHKBhykj2k4RfU
-         yNpSJGFgURlj/5skQIisfQs2w24QtOWyXvq7m8kz6774oCJ3scRlI02LNLQixcS69yjN
-         e6WlnQotTb/gZAqBS9USBUF4Rlp+95RNCZb4xlDMDLZbTCZ3348RfmiHLELt9RyMl73X
-         ov4w==
+        bh=2d9p90AIyYXuZyz8N1X+igPtEqtQ6xFMtj7iBan61/4=;
+        b=DG7GKyt4XSoEmdsNZbS2IReKQaI3T7Q+Co+VBceo4tACNkMJfUaeYqnuxt3bN1fnXj
+         GZohmTB12gTVjMurUepDi5ro5Qu1uQkqXHiScBoCVS8xWKdXNmPdoae4v7aN1/NHiowV
+         MJtcwIVJ4dbdleqfXwxAca/OZnHXfp/C5T/OgyikiLs6H1Zr7Jsbo8IxT8msrdozjb+c
+         fByH4YGIejRqn7Tb4gXsisqfZUNMxQcqxxisbxt7TbEzdZLYBySk0X6+X3YixXgSSHQE
+         Iq69f7+cLBQqJ8yvzByhikPJjkCC01ycMNR5WreQuy3LH4+RK/nwLv0RYh8QXdoP0MX6
+         UTRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Juo3AM+b40dS1hlfCODzT9PCdvoocT9eJfDW+eUcng8=;
-        b=nzlT5thBz1XYgQvtR1gRpsAxh5rEGCp16Ik3teaqNvGItVIFjofeyQwT2XBYwOS0pR
-         2P/FhGUmwoklkwuP8LRSKMGn8WGJgCKdnHnji/y0bxrL60LxDigSNE82Z4CrZFawKUVe
-         KRR5X3kmY6D5UKbmgrvckFN0eNXasiwgXrhZ3cJbaFycNVRG7ztPGXqS1Ok6M2MNU2NA
-         2fIZEXdlw0dckSoMmFdLZsQ4GmUdK1AUIMaReIWdkhmKyJD/sDonK9YWZ3y/7/tCKI2c
-         LUrbHCBnWl3mdUN/SPbwHfqkupDMX3iZfN2VMQ2VKBv/GHnPydGoEv65FirNE/S961wj
-         Jjbw==
-X-Gm-Message-State: AOAM531xunAyr/wuj02Kky3z4ACRCnlULBjgchfZB+fPj0fQSLzp0poZ
-        /0A9tnp6qScDuOCWqxgsozw=
-X-Google-Smtp-Source: ABdhPJwuiTKtNZkDuhZjUUNbAr6X37vDGYkYk/ZXWGJBYgBX33LWROANBmsf54sPkcLD8batIYicOQ==
-X-Received: by 2002:a2e:950:: with SMTP id 77mr5203883ljj.438.1626372063632;
-        Thu, 15 Jul 2021 11:01:03 -0700 (PDT)
+        bh=2d9p90AIyYXuZyz8N1X+igPtEqtQ6xFMtj7iBan61/4=;
+        b=NtkGS0D0/4eR6QW/vDGxSV08uHxq+6k+hsAR+1aQmFHJJHfgDcNl+aQHN/16qycF4M
+         hBE1RkukaWFT6zME+LDoTE3KjP99DJrchE1GgQJjBM4UWcOw/+VmCsLNd+pHVf55pPbe
+         hdLaYFgkajAq1YQ0k9PQSsgpSn6m4RPjnfAbtGUlzwPDKJkxXsMAgUpas091o8Ebu+sC
+         Dux2yWtr+ULlEgtJ2w9MLTgROEzx/8FOyo1fCw5d/x23Bhpj/g6LhCMadoQMS/ZmBoQA
+         FsvnWYX4TXUBoVdcEyC5Jl2bdFneSpZD/UWXTMulW6Vrqi3ukGEuwNdfyEfCneuUBPQu
+         g6cg==
+X-Gm-Message-State: AOAM532Tuiqf6VwNenVtZBTdzLsKEgMHoYpia8kRqDF9yuJMWpdPIiQe
+        zLDEGwaQV2JZvpX9f6vbb24=
+X-Google-Smtp-Source: ABdhPJz/T4eD4gvnZIxPn+tGbMZHDPbGOCEpm5Q+cGIfzkZX/+OASMlP53bWa1D5JtfFgWhs6RYlJg==
+X-Received: by 2002:a2e:a712:: with SMTP id s18mr5245619lje.161.1626372066140;
+        Thu, 15 Jul 2021 11:01:06 -0700 (PDT)
 Received: from asus ([37.151.208.206])
-        by smtp.gmail.com with ESMTPSA id b14sm461804lfb.149.2021.07.15.11.01.02
+        by smtp.gmail.com with ESMTPSA id r3sm497511lfc.280.2021.07.15.11.01.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 11:01:03 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 00:01:01 +0600
+        Thu, 15 Jul 2021 11:01:05 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 00:01:03 +0600
 From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
 To:     akpm@linux-foundation.org
 Cc:     tyhicks@linux.microsoft.com, pasha.tatashin@soleen.com,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mm: KSM: fix ksm_run data type
-Message-ID: <343394260f599d940cacc37f1dcc0309239ae220.1626371112.git.zhansayabagdaulet@gmail.com>
+Subject: [PATCH 2/2] mm: KSM: fix data type
+Message-ID: <3610f5373bb12ea04e025bafbf8350f75c0dbf4b.1626371112.git.zhansayabagdaulet@gmail.com>
 References: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -64,36 +64,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ksm_run is declared as unsigned long but in run_store(), it is converted
-to unsigned int. Change its type to unsigned int.
+ksm_stable_node_chains_prune_millisecs is declared as int, but in
+stable__node_chains_prune_millisecs_store(), it can store values up to
+UINT_MAX. Change the variable type to unsigned int.
 
 Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
 ---
- mm/ksm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/ksm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/mm/ksm.c b/mm/ksm.c
-index 3fa9bc8a67cf..057d0c245bf4 100644
+index 057d0c245bf4..2e4bd7662e52 100644
 --- a/mm/ksm.c
 +++ b/mm/ksm.c
-@@ -289,7 +289,7 @@ static int ksm_nr_node_ids = 1;
- #define KSM_RUN_MERGE	1
- #define KSM_RUN_UNMERGE	2
- #define KSM_RUN_OFFLINE	4
--static unsigned long ksm_run = KSM_RUN_STOP;
-+static unsigned int ksm_run = KSM_RUN_STOP;
- static void wait_while_offlining(void);
+@@ -259,7 +259,7 @@ static unsigned long ksm_stable_node_chains;
+ static unsigned long ksm_stable_node_dups;
  
- static DECLARE_WAIT_QUEUE_HEAD(ksm_thread_wait);
-@@ -2874,7 +2874,7 @@ KSM_ATTR(pages_to_scan);
- static ssize_t run_show(struct kobject *kobj, struct kobj_attribute *attr,
- 			char *buf)
+ /* Delay in pruning stale stable_node_dups in the stable_node_chains */
+-static int ksm_stable_node_chains_prune_millisecs = 2000;
++static unsigned int ksm_stable_node_chains_prune_millisecs = 2000;
+ 
+ /* Maximum number of page slots sharing a stable node */
+ static int ksm_max_page_sharing = 256;
+@@ -3105,11 +3105,11 @@ stable_node_chains_prune_millisecs_store(struct kobject *kobj,
+ 					 struct kobj_attribute *attr,
+ 					 const char *buf, size_t count)
  {
--	return sysfs_emit(buf, "%lu\n", ksm_run);
-+	return sysfs_emit(buf, "%u\n", ksm_run);
- }
+-	unsigned long msecs;
++	unsigned int msecs;
+ 	int err;
  
- static ssize_t run_store(struct kobject *kobj, struct kobj_attribute *attr,
+-	err = kstrtoul(buf, 10, &msecs);
+-	if (err || msecs > UINT_MAX)
++	err = kstrtouint(buf, 10, &msecs);
++	if (err)
+ 		return -EINVAL;
+ 
+ 	ksm_stable_node_chains_prune_millisecs = msecs;
 -- 
 2.25.1
 
