@@ -2,135 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB8C3CA028
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F763CA02A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238188AbhGON7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhGON7h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:59:37 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C224DC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 06:56:43 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id A67B4B359F6;
-        Thu, 15 Jul 2021 15:56:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626357399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5gFrzAD9gyEok+Qia8gREMsY5VrLSVlLzSrbiOJZrQA=;
-        b=PF+k6DqFcu5D/fykPd7emT6g0TUoA0bFlVszGVmwQT7gLLPd+V4+8EdCQQqC/M2A11aQ+i
-        FgSk8mUDh3ReH72HC0rYNLN9C0ayej8EtuDlljX8FIkHItm/liBZaAZjcX/YdLFLY+sP6y
-        Z76SpW5PDMV3vypY1B1JqaqS8LrcIOY=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        David Jeffery <djeffery@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Keith Busch <kbusch@kernel.org>
-Subject: New warning in nvme_setup_discard
-Date:   Thu, 15 Jul 2021 15:56:38 +0200
-Message-ID: <4729812.CpyZKHjjVO@natalenko.name>
+        id S237636AbhGOOBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:01:18 -0400
+Received: from mga05.intel.com ([192.55.52.43]:20638 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhGOOBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:01:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="296191419"
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="296191419"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 06:58:24 -0700
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="494592190"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 06:58:23 -0700
+Date:   Thu, 15 Jul 2021 06:57:57 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
+Subject: Re: [RFC v2] /dev/iommu uAPI proposal
+Message-ID: <20210715135757.GC590891@otc-nc-03>
+References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <7ea349f8-8c53-e240-fe80-382954ba7f28@huawei.com>
+ <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <a8edb2c1-9c9c-6204-072c-4f1604b7dace@huawei.com>
+ <BN9PR11MB54336D6A8CAE31F951770A428C129@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210715124813.GC543781@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715124813.GC543781@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+On Thu, Jul 15, 2021 at 09:48:13AM -0300, Jason Gunthorpe wrote:
+> On Thu, Jul 15, 2021 at 06:49:54AM +0000, Tian, Kevin wrote:
+> 
+> > No. You are right on this case. I don't think there is a way to 
+> > differentiate one mdev from the other if they come from the
+> > same parent and attached by the same guest process. In this
+> > case the fault could be reported on either mdev (e.g. the first
+> > matching one) to get it fixed in the guest.
+> 
+> If the IOMMU can't distinguish the two mdevs they are not isolated
+> and would have to share a group. Since group sharing is not supported
+> today this seems like a non-issue
 
-After a v5.13.2 massive update I encountered this:
-
-```
-[19231.556665] ------------[ cut here ]------------
-[19231.556674] WARNING: CPU: 20 PID: 502 at drivers/nvme/host/core.c:850 
-nvme_setup_discard+0x188/0x1f0
-...
-[19231.556776] CPU: 20 PID: 502 Comm: kworker/20:1H Not tainted 5.13.2 #1
-[19231.556780] Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIOS 
-3601 05/26/2021
-[19231.556784] Workqueue: kblockd blk_mq_run_work_fn
-[19231.556789] RIP: 0010:nvme_setup_discard+0x188/0x1f0
-[19231.556794] Code: 49 8b 44 24 10 4c 8b 90 40 0b 00 00 4c 2b 15 8f 09 d8 00 
-49 c1 fa 06 49 c1 e2 0c 4c 03 15 90 09 d8 00 4d 89 d0 e9 b9 fe ff ff <0f> 0b b8 
-00 00 00 80 49 01 c2 72 52 48 c7 c0 00 00 00 80 48 2b 05
-[19231.556798] RSP: 0018:ffffaed2416efc00 EFLAGS: 00010287
-[19231.556802] RAX: ffff8e67fb580000 RBX: ffff8e640bbe5240 RCX: 0000000000000020
-[19231.556805] RDX: ffff8e67fb580000 RSI: 000000000000001f RDI: 0000000000000000
-[19231.556808] RBP: ffff8e640bbe5388 R08: ffff8e677b580000 R09: 0000000008abb800
-[19231.556811] R10: ffff8e677b580000 R11: 0000000000000400 R12: ffff8e6405999c00
-[19231.556814] R13: 000000000000001f R14: ffff8e6405693000 R15: ffff8e640bbaf800
-[19231.556816] FS:  0000000000000000(0000) GS:ffff8e6b0ef00000(0000) knlGS:
-0000000000000000
-[19231.556819] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[19231.556822] CR2: ffff888c76ece000 CR3: 000000047a184000 CR4: 0000000000350ee0
-[19231.556825] Call Trace:
-[19231.556830]  nvme_setup_cmd+0x2d0/0x670
-[19231.556834]  nvme_queue_rq+0x79/0xc90
-[19231.556837]  ? __sbitmap_get_word+0x30/0x80
-[19231.556842]  ? sbitmap_get+0x85/0x180
-[19231.556846]  blk_mq_dispatch_rq_list+0x15c/0x810
-[19231.556851]  ? list_sort+0x21d/0x2f0
-[19231.556856]  __blk_mq_do_dispatch_sched+0x196/0x320
-[19231.556860]  __blk_mq_sched_dispatch_requests+0x14d/0x190
-[19231.556864]  blk_mq_sched_dispatch_requests+0x2f/0x60
-[19231.556867]  blk_mq_run_work_fn+0x43/0xc0
-[19231.556871]  process_one_work+0x24e/0x430
-[19231.556876]  worker_thread+0x54/0x4d0
-[19231.556880]  ? process_one_work+0x430/0x430
-[19231.556883]  kthread+0x1b3/0x1e0
-[19231.556886]  ? __kthread_init_worker+0x50/0x50
-[19231.556889]  ret_from_fork+0x22/0x30
-[19231.556895] ---[ end trace d9abdf019a56b4c7 ]---
-[19231.556906] blk_update_request: I/O error, dev nvme1n1, sector 632935424 op 
-0x3:(DISCARD) flags 0x0 phys_seg 31 prio class 0
-```
-
-or, in code:
-
-```
- 850     if (WARN_ON_ONCE(n != segments)) {
- 851         if (virt_to_page(range) == ns->ctrl->discard_page)
- 852             clear_bit_unlock(0, &ns->ctrl->discard_page_busy);
- 853         else
- 854             kfree(range);
- 855         return BLK_STS_IOERR;
- 856     }
-```
-
-BFQ scheduler is in use.
-
-Something similar was already fixed by a958937ff166fc60d1c3a721036f6ff41bfa2821, 
-but I do not have a multipath device here, it's just 2 NVMe SSDs in a soft 
-RAID10 with LUKS and LVM.
-
-Any idea what this might mean? v5.13.2 brought some commit into a stable tree 
-that are, as I still suspect, causing unreproducible panics [1] [2]. 
-Previously, I dropped that extra stuff from my kernel build and had no issues. 
-This time I also do not have any extra commits in the block layer, only those 
-that are in v5.13.2.
-
-Thanks.
-
-[1] https://lore.kernel.org/linux-block/3533087.dJKXTdksHR@spock/
-[2] https://lore.kernel.org/linux-block/2957867.CS06ZTPI5V@spock/
-
--- 
-Oleksandr Natalenko (post-factum)
-
-
+Does this mean we have to prevent 2 mdev's from same pdev being assigned to
+the same guest? 
