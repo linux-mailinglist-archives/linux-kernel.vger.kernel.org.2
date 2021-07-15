@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF863CA036
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163C43CA037
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238348AbhGOOIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232011AbhGOOIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:08:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 446246127C;
-        Thu, 15 Jul 2021 14:05:38 +0000 (UTC)
-Date:   Thu, 15 Jul 2021 16:05:35 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrei Vagin <avagin@gmail.com>, linux-api@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/2] move_mount: allow to add a mount into an existing
- group
-Message-ID: <20210715140535.eypw5ekwd53kcbab@wittgenstein>
-References: <20210715100714.120228-1-ptikhomirov@virtuozzo.com>
+        id S238376AbhGOOIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:08:37 -0400
+Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:43115 "EHLO
+        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232011AbhGOOIh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:08:37 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id 1BE141C3DF4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 15:05:43 +0100 (IST)
+Received: (qmail 4167 invoked from network); 15 Jul 2021 14:05:42 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Jul 2021 14:05:42 -0000
+Date:   Thu, 15 Jul 2021 15:05:41 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     ?????? <link@vivo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kernel@vivo.com,
+        syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com,
+        Wang Qing <wangqing@vivo.com>
+Subject: Re: Re: [PATCH v2] mm/page_alloc: fix
+ alloc_pages_bulk/set_page_owner panic on irq disabled
+Message-ID: <20210715140541.GT3809@techsingularity.net>
+References: <20210715115731.GS3809@techsingularity.net>
+ <AHYA9ADdD1ErH8DLzqN8tqrS.3.1626354134777.Hmail.link@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210715100714.120228-1-ptikhomirov@virtuozzo.com>
+In-Reply-To: <AHYA9ADdD1ErH8DLzqN8tqrS.3.1626354134777.Hmail.link@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 01:07:13PM +0300, Pavel Tikhomirov wrote:
-> Previously a sharing group (shared and master ids pair) can be only
-> inherited when mount is created via bindmount. This patch adds an
-> ability to add an existing private mount into an existing sharing group.
-> 
-> With this functionality one can first create the desired mount tree from
-> only private mounts (without the need to care about undesired mount
-> propagation or mount creation order implied by sharing group
-> dependencies), and next then setup any desired mount sharing between
-> those mounts in tree as needed.
-> 
-> This allows CRIU to restore any set of mount namespaces, mount trees and
-> sharing group trees for a container.
-> 
-> We have many issues with restoring mounts in CRIU related to sharing
-> groups and propagation:
-> - reverse sharing groups vs mount tree order requires complex mounts
->   reordering which mostly implies also using some temporary mounts
-> (please see https://lkml.org/lkml/2021/3/23/569 for more info)
-> 
-> - mount() syscall creates tons of mounts due to propagation
-> - mount re-parenting due to propagation
-> - "Mount Trap" due to propagation
-> - "Non Uniform" propagation, meaning that with different tricks with
->   mount order and temporary children-"lock" mounts one can create mount
->   trees which can't be restored without those tricks
-> (see https://www.linuxplumbersconf.org/event/7/contributions/640/)
-> 
-> With this new functionality we can resolve all the problems with
-> propagation at once.
-> 
-> Link: https://lore.kernel.org/r/20210715100714.120228-1-ptikhomirov@virtuozzo.com
-> Cc: Eric W. Biederman <ebiederm@xmission.com>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: Mattias Nissler <mnissler@chromium.org>
-> Cc: Aleksa Sarai <cyphar@cyphar.com>
-> Cc: Andrei Vagin <avagin@gmail.com>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-api@vger.kernel.org
-> Cc: lkml <linux-kernel@vger.kernel.org>
-> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-> ---
+On Thu, Jul 15, 2021 at 09:02:14PM +0800, ?????? wrote:
+> >> Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the bulk page allocator")
+> >> Reported-by: syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com
+> >> Suggested-by: Wang Qing <wangqing@vivo.com>
+> >> Signed-off-by: Yang Huan <link@vivo.com>
+> >
+> >https://lore.kernel.org/lkml/20210713152100.10381-2-mgorman@techsingularity.net/
+> >is now part of a series that has being sent to Linus. Hence, the Fixes
+> >part is no longer applicable and the patch will no longer be addresing
+> >an atomic sleep bug.  This patch should be treated as an enhancement
+>
+> Hi Mel Gorman, thanks for your reply.
+> I see the fix patch, it fix this bug by abandon alloc bulk feature when page_owner is set. 
+> But in my opinion, it can't really fix this bug, it's a circumvention plan.
 
-Looks good,
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Yes, it's a circumvention plan for reasons as laid out in the changelog.
 
-I also took a look at mount-v2 for CRIU you linked below. Looks like
-clean approach.
-I'll compile and run the selftests now.
+> >to allow bulk allocations when PAGE_OWNER is set. For that, it should
+> >include a note on the performance if PAGE_OWNER is used with either NFS
+> >or high-speed networking to justify the additional complexity.
+>
+> My patch just split the prep_new_page page_gfp into alloc_gfp(for alloc bulk is GFP_ATOMIC,
+> for other's no change) and trace page gfp.  So, we will not use the error way to get memory. 
+> So, I think this will not affect alloc bulk performance when page_owner is on(compare with origin patch) but
+> can really fix this  bug rather than evade.
+> And this patch can let alloc bulk feature and page_owner feature work togher
+> So, I will send patch again based on the fix patch.
+
+Your fix should revert the workaround. Also your changelog should note
+that in some cases that PAGE_OWNER information will be lost if the
+GFP_ATOMIC allocation from bulk allocation context fails.
+
+-- 
+Mel Gorman
+SUSE Labs
