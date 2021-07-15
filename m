@@ -2,116 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B553CAEC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12A93CAEC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhGOVyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:54:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229776AbhGOVyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:54:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED588613D4;
-        Thu, 15 Jul 2021 21:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626385906;
-        bh=6Oj1YIskroeIo98doAzAyq0ZaBG4ZNuSkw6bLyFZkuQ=;
+        id S231643AbhGOVzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230126AbhGOVzR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:55:17 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21EEC06175F;
+        Thu, 15 Jul 2021 14:52:23 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 20CEF340;
+        Thu, 15 Jul 2021 23:52:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626385942;
+        bh=dtLiFCNDSexfyH15a7bmgwdeqptuw9ABLW2eQdtb++0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K7//o4Kf3ebr4owF1Nuu5WrcpljB7Mk/gtKqc6RYzhIggMkoNhgGM90HMtaeb73It
-         KYwLev45eDH5guJs20tuO61bt1ir27w3N6Hid9Pv8IjHnbqTftfn5s0HvI5c4LKTpr
-         fRjto+/OAJoi0bza+NGyTmqK5nwCuiiQx7xYGkKl8+pTsWWAwNAqAbeaJDtrCVT+II
-         MaEWXeKG9BW2Fs3PtZPXp1J3ATnh7qzML8lbX7zyHj1FA7pjivTewO4aVpZwBN/gGN
-         3/n82iP9d5eBu0eYPzkJhZTBYW28YcFqdn33DdLk1TLIh30Q4L06GbXcPgYinm8jOV
-         DCkoaQ+9BTiaA==
-Date:   Thu, 15 Jul 2021 14:51:45 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 103/138] iomap: Convert iomap_read_inline_data to
- take a folio
-Message-ID: <20210715215145.GN22357@magnolia>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-104-willy@infradead.org>
+        b=ZhFCBJu/xFlMoypAQir3x0fSrGb4gqHdW9nd4hjcfBCLbejEXklnRYkvKgfaJrD9J
+         CMnwGqvFcn66EuQIYyiQl8xv41TxaWVVIFDzSSWfpOiSf1sH05fflNqb/yeekoyzmb
+         PjDunLMu2mHcI/P/EY0MC0DP4nnS7/N0CdhqAsME=
+Date:   Fri, 16 Jul 2021 00:52:20 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     festevam@gmail.com, krzk@kernel.org, devicetree@vger.kernel.org,
+        kernel@pengutronix.de, kernel@puri.sm,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
+        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
+        shawnguo@kernel.org, slongerbeam@gmail.com
+Subject: Re: [PATCH v6 2/3] media: imx: add a driver for i.MX8MQ mipi csi rx
+ phy and controller
+Message-ID: <YPCuFA+utjudv11H@pendragon.ideasonboard.com>
+References: <20210714111931.324485-1-martin.kepplinger@puri.sm>
+ <20210714111931.324485-3-martin.kepplinger@puri.sm>
+ <YO8r6pZAduu1ZMK4@pendragon.ideasonboard.com>
+ <ce71a71a358247eca3b72ddcddd703206c90f284.camel@puri.sm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-104-willy@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce71a71a358247eca3b72ddcddd703206c90f284.camel@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:36:29AM +0100, Matthew Wilcox (Oracle) wrote:
-> Inline data is restricted to being less than a page in size, so we
+Hi Martin,
 
-$deity I hope so.
+On Thu, Jul 15, 2021 at 09:37:24AM +0200, Martin Kepplinger wrote:
+> Am Mittwoch, dem 14.07.2021 um 21:24 +0300 schrieb Laurent Pinchart:
+> > On Wed, Jul 14, 2021 at 01:19:30PM +0200, Martin Kepplinger wrote:
+> > > Add a driver to support the i.MX8MQ MIPI CSI receiver. The hardware side
+> > > is based on
+> > > https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/media/platform/imx8/mxc-mipi-csi2_yav.c?h=imx_5.4.70_2.3.0
+> > > 
+> > > It's built as part of VIDEO_IMX7_CSI because that's documented to support
+> > > i.MX8M platforms. This driver adds i.MX8MQ support where currently only the
+> > > i.MX8MM platform has been supported.
+> > > 
+> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> > > ---
+> > >  drivers/staging/media/imx/Makefile           |   1 +
+> > >  drivers/staging/media/imx/imx8mq-mipi-csi2.c | 949 +++++++++++++++++++
+> > >  2 files changed, 950 insertions(+)
+> > >  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
+> > > 
+> > > diff --git a/drivers/staging/media/imx/Makefile
+> > > b/drivers/staging/media/imx/Makefile
+> > > index 6ac33275cc97..19c2fc54d424 100644
+> > > --- a/drivers/staging/media/imx/Makefile
+> > > +++ b/drivers/staging/media/imx/Makefile
+> > > @@ -16,3 +16,4 @@ obj-$(CONFIG_VIDEO_IMX_CSI) += imx6-mipi-csi2.o
 
-> don't need to handle multi-page folios.
+[snip]
+
+> > > +static int imx8mq_mipi_csi_calc_hs_settle(struct csi_state *state)
+> > > +{
+> > > +       u32 width = state->format_mbus[MIPI_CSI2_PAD_SINK].width;
+> > > +       u32 height = state->format_mbus[MIPI_CSI2_PAD_SINK].height;
+> > > +       s64 link_freq;
+> > > +       u32 lane_rate;
+> > > +
+> > > +       /* Calculate the line rate from the pixel rate. */
+> > > +       link_freq = v4l2_get_link_freq(state->src_sd->ctrl_handler,
+> > > +                                      state->csi2_fmt->width,
+> > > +                                      state->bus.num_data_lanes * 2);
+> > > +       if (link_freq < 0) {
+> > > +               dev_err(state->dev, "Unable to obtain link frequency: %d\n",
+> > > +                       (int)link_freq);
+> > > +               return link_freq;
+> > > +       }
+> > > +
+> > > +       lane_rate = link_freq * 2;
+> > > +       if (lane_rate < 80000000 || lane_rate > 1500000000) {
+> > > +               dev_dbg(state->dev, "Out-of-bound lane rate %u\n", lane_rate);
+> > > +               return -EINVAL;
+> > > +       }
+> > > +
+> > > +       /* https://community.nxp.com/t5/i-MX-Processors/Explenation-for-HS-SETTLE-parameter-in-MIPI-CSI-D-PHY-registers/m-p/764275/highlight/true#M118744 */
+> > > +       if (lane_rate < 250000000)
+> > > +               state->hs_settle = 0xb;
+> > > +       else if (lane_rate < 500000000)
+> > > +               state->hs_settle = 0x8;
+> > > +       else
+> > > +               state->hs_settle = 0x6;
+> > 
+> > We could possibly compute this value based on the formula from the table
+> > in that page, but maybe that's overkill ? If you want to give it a try,
+> > it would be along those lines.
+> > 
+> >         /*
+> >          * The D-PHY specification requires Ths-settle to be in the range
+> >          * 85ns + 6*UI to 140ns + 10*UI, with the unit interval UI being half
+> >          * the clock period.
+> >          *
+> >          * The Ths-settle value is expressed in the hardware as a multiple of
+> >          * the Esc clock period:
+> >          *
+> >          * Ths-settle = (PRG_RXHS_SETTLE + 1) * Tperiod of RxClkInEsc
+> >          *
+> >          * Due to the one cycle inaccuracy introduced by rounding, the
+> >          * documentation recommends picking a value away from the boundaries.
+> >          * Let's pick the average.
+> >          */
+> >         esc_clk_rate = clk_get_rate(...);
+> > 
+> >         min_ths_settle = 85 + 6 * 1000000 / (lane_rate / 1000);
+> >         max_ths_settle = 140 + 10 * 1000000 / (lane_rate / 1000);
+> >         ths_settle = (min_ths_settle + max_ths_settle) / 2;
+> > 
+> >         state->hs_settle = ths_settle * esc_clk_rate / 1000000000 - 1;
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> I experimented a bit but would like to leave this as a task for later
+> if that's ok. it's correct and simple now. also, using clks[i].clk
+> based on the name string would feel better to submit seperately later.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+That's OK with me, but I may then submit a patch on top fairly soon :-)
+Have you been able to test if this code works on your device ? The main
+reason why I think it's better is that it doesn't hardcode a specific
+escape clock frequency assumption, so it should be able to accommodate a
+wider range of use cases. If we change it later, there's always a risk
+of regressions, while if we do this from the start, we'll figure out
+quickly if it doesn't work in some cases.
 
---D
+-- 
+Regards,
 
-> ---
->  fs/iomap/buffered-io.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 5e0aa23d4693..c616ef1feb21 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -194,24 +194,24 @@ struct iomap_readpage_ctx {
->  	struct readahead_control *rac;
->  };
->  
-> -static void
-> -iomap_read_inline_data(struct inode *inode, struct page *page,
-> +static void iomap_read_inline_data(struct inode *inode, struct folio *folio,
->  		struct iomap *iomap)
->  {
->  	size_t size = i_size_read(inode);
->  	void *addr;
->  
-> -	if (PageUptodate(page))
-> +	if (folio_test_uptodate(folio))
->  		return;
->  
-> -	BUG_ON(page->index);
-> +	BUG_ON(folio->index);
-> +	BUG_ON(folio_multi(folio));
->  	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
->  
-> -	addr = kmap_atomic(page);
-> +	addr = kmap_local_folio(folio, 0);
->  	memcpy(addr, iomap->inline_data, size);
->  	memset(addr + size, 0, PAGE_SIZE - size);
-> -	kunmap_atomic(addr);
-> -	SetPageUptodate(page);
-> +	kunmap_local(addr);
-> +	folio_mark_uptodate(folio);
->  }
->  
->  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> @@ -236,7 +236,7 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->  
->  	if (iomap->type == IOMAP_INLINE) {
->  		WARN_ON_ONCE(pos);
-> -		iomap_read_inline_data(inode, &folio->page, iomap);
-> +		iomap_read_inline_data(inode, folio, iomap);
->  		return PAGE_SIZE;
->  	}
->  
-> @@ -614,7 +614,7 @@ static int iomap_write_begin(struct inode *inode, loff_t pos, size_t len,
->  
->  	page = folio_file_page(folio, pos >> PAGE_SHIFT);
->  	if (srcmap->type == IOMAP_INLINE)
-> -		iomap_read_inline_data(inode, page, srcmap);
-> +		iomap_read_inline_data(inode, folio, srcmap);
->  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
->  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
->  	else
-> -- 
-> 2.30.2
-> 
+Laurent Pinchart
