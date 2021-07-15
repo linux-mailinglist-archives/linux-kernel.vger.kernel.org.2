@@ -2,223 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2F33C97E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 06:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24963C97E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 06:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235314AbhGOFAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 01:00:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7010 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhGOFAs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 01:00:48 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQMRd44MDzXtG2;
-        Thu, 15 Jul 2021 12:52:13 +0800 (CST)
-Received: from dggpemm500015.china.huawei.com (7.185.36.181) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 12:57:52 +0800
-Received: from [10.174.179.224] (10.174.179.224) by
- dggpemm500015.china.huawei.com (7.185.36.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 12:57:51 +0800
-Subject: Re: [PATCH] Bluetooth: fix use-after-free error in lock_sock_nested()
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-CC:     <cj.chengjian@huawei.com>, Wei Yongjun <weiyongjun1@huawei.com>,
-        <yuehaibing@huawei.com>, <huawei.libin@huawei.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-References: <20210714031733.1395549-1-bobo.shaobowang@huawei.com>
- <CABBYNZL37yLgj1LP7r=rbEcsPXCPy1y55ar816eZXka2W=7-Aw@mail.gmail.com>
-From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
-Message-ID: <a1c4ddcb-afbd-c0e4-2003-90590b10ea84@huawei.com>
-Date:   Thu, 15 Jul 2021 12:57:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
-MIME-Version: 1.0
-In-Reply-To: <CABBYNZL37yLgj1LP7r=rbEcsPXCPy1y55ar816eZXka2W=7-Aw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.224]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500015.china.huawei.com (7.185.36.181)
-X-CFilter-Loop: Reflected
+        id S235544AbhGOFBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 01:01:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229675AbhGOFBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 01:01:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E50996128B;
+        Thu, 15 Jul 2021 04:58:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626325105;
+        bh=ZZjHLIf6BgR8SHkQEXsukwgJ87wnvXbcSyBtJE35oes=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UjlVURLjJbO9OZ2JsplC08g/8lA5olZtm5xelK5iidb0JL5CSkr0Ep5k/9SrlOoZ9
+         4exv69OPvY9OgMVe8KjFAwXh45Nbu0QX2WF+l5ps9SIS/bYljU5j27V7+ZqRLSwJXR
+         zwnOK85iwYffqkP9AzkgMUttFN6ykrJ6N1Wt2+c6QX5jSpbu1PTD74YNQrwJfzxaWs
+         r90bnticBl1uyaOBygD/Oc6sE8R6u24rB+qaZ0TT0kZZN4ndyxFLw7go7LnDw74Wn+
+         7VZ4CenyXONj5KMxUQUcmbYo6EaTOFY/hQqJao19KEWOjby8xk2J/QPYb6+UmyJKYt
+         fC0HL52ETcIOA==
+Date:   Thu, 15 Jul 2021 13:58:21 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
+        <fche@redhat.com>, <ravi.bangoria@linux.ibm.com>,
+        <yao.jin@linux.intel.com>, <srikar@linux.vnet.ibm.com>,
+        <Jianlin.Lv@arm.com>, <lihuafei1@huawei.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf probe: Fix add event failed when 32-bit perf
+ running in 64-bit kernel
+Message-Id: <20210715135821.c58ca2ff97b0c1db449db0b4@kernel.org>
+In-Reply-To: <9cb859df-f2ef-732b-756e-c8d2acefe85c@huawei.com>
+References: <20210714065432.188061-1-yangjihong1@huawei.com>
+        <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
+        <9cb859df-f2ef-732b-756e-c8d2acefe85c@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 15 Jul 2021 09:20:01 +0800
+Yang Jihong <yangjihong1@huawei.com> wrote:
 
-在 2021/7/15 5:50, Luiz Augusto von Dentz 写道:
-> Hi,
->
-> On Tue, Jul 13, 2021 at 8:20 PM Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
->> use-after-free error in lock_sock_nested() is reported:
->>
->> [  179.140137][ T3731] =====================================================
->> [  179.142675][ T3731] BUG: KMSAN: use-after-free in lock_sock_nested+0x280/0x2c0
->> [  179.145494][ T3731] CPU: 4 PID: 3731 Comm: kworker/4:2 Not tainted 5.12.0-rc6+ #54
->> [  179.148432][ T3731] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
->> [  179.151806][ T3731] Workqueue: events l2cap_chan_timeout
->> [  179.152730][ T3731] Call Trace:
->> [  179.153301][ T3731]  dump_stack+0x24c/0x2e0
->> [  179.154063][ T3731]  kmsan_report+0xfb/0x1e0
->> [  179.154855][ T3731]  __msan_warning+0x5c/0xa0
->> [  179.155579][ T3731]  lock_sock_nested+0x280/0x2c0
->> [  179.156436][ T3731]  ? kmsan_get_metadata+0x116/0x180
->> [  179.157257][ T3731]  l2cap_sock_teardown_cb+0xb8/0x890
->> [  179.158154][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
->> [  179.159141][ T3731]  ? kmsan_get_metadata+0x116/0x180
->> [  179.159994][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
->> [  179.160959][ T3731]  ? l2cap_sock_recv_cb+0x420/0x420
->> [  179.161834][ T3731]  l2cap_chan_del+0x3e1/0x1d50
->> [  179.162608][ T3731]  ? kmsan_get_metadata+0x116/0x180
->> [  179.163435][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
->> [  179.164406][ T3731]  l2cap_chan_close+0xeea/0x1050
->> [  179.165189][ T3731]  ? kmsan_internal_unpoison_shadow+0x42/0x70
->> [  179.166180][ T3731]  l2cap_chan_timeout+0x1da/0x590
->> [  179.167066][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
->> [  179.168023][ T3731]  ? l2cap_chan_create+0x560/0x560
->> [  179.168818][ T3731]  process_one_work+0x121d/0x1ff0
->> [  179.169598][ T3731]  worker_thread+0x121b/0x2370
->> [  179.170346][ T3731]  kthread+0x4ef/0x610
->> [  179.171010][ T3731]  ? process_one_work+0x1ff0/0x1ff0
->> [  179.171828][ T3731]  ? kthread_blkcg+0x110/0x110
->> [  179.172587][ T3731]  ret_from_fork+0x1f/0x30
->> [  179.173348][ T3731]
->> [  179.173752][ T3731] Uninit was created at:
->> [  179.174409][ T3731]  kmsan_internal_poison_shadow+0x5c/0xf0
->> [  179.175373][ T3731]  kmsan_slab_free+0x76/0xc0
->> [  179.176060][ T3731]  kfree+0x3a5/0x1180
->> [  179.176664][ T3731]  __sk_destruct+0x8af/0xb80
->> [  179.177375][ T3731]  __sk_free+0x812/0x8c0
->> [  179.178032][ T3731]  sk_free+0x97/0x130
->> [  179.178686][ T3731]  l2cap_sock_release+0x3d5/0x4d0
->> [  179.179457][ T3731]  sock_close+0x150/0x450
->> [  179.180117][ T3731]  __fput+0x6bd/0xf00
->> [  179.180787][ T3731]  ____fput+0x37/0x40
->> [  179.181481][ T3731]  task_work_run+0x140/0x280
->> [  179.182219][ T3731]  do_exit+0xe51/0x3e60
->> [  179.182930][ T3731]  do_group_exit+0x20e/0x450
->> [  179.183656][ T3731]  get_signal+0x2dfb/0x38f0
->> [  179.184344][ T3731]  arch_do_signal_or_restart+0xaa/0xe10
->> [  179.185266][ T3731]  exit_to_user_mode_prepare+0x2d2/0x560
->> [  179.186136][ T3731]  syscall_exit_to_user_mode+0x35/0x60
->> [  179.186984][ T3731]  do_syscall_64+0xc5/0x140
->> [  179.187681][ T3731]  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> [  179.188604][ T3731] =====================================================
->>
->> In our case, there are two Thread A and B:
->>
->> Context: Thread A:              Context: Thread B:
->>
->> l2cap_chan_timeout()            __se_sys_shutdown()
->>    l2cap_chan_close()              l2cap_sock_shutdown()
->>      l2cap_chan_del()                l2cap_chan_close()
->>        l2cap_sock_teardown_cb()        l2cap_sock_teardown_cb()
->>
->> Once l2cap_sock_teardown_cb() excuted, this sock will be marked as SOCK_ZAPPED,
->> and can be treated as killable in l2cap_sock_kill() if sock_orphan() has
->> excuted, at this time we close sock through sock_close() which end to call
->> l2cap_sock_kill() like Thread C:
->>
->> Context: Thread C:
->>
->> sock_close()
->>    l2cap_sock_release()
->>      sock_orphan()
->>      l2cap_sock_kill()  #free sock if refcnt is 1
->>
->> If C completed, Once A or B reaches l2cap_sock_teardown_cb() again,
->> use-after-free happened.
->>
->> We should set chan->data to NULL if sock is freed, for telling teardown
->> operation is not allowed in l2cap_sock_teardown_cb(), and also we should
->> avoid killing an already killed socket in l2cap_sock_close_cb().
->>
->> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
->> ---
->>   net/bluetooth/l2cap_sock.c | 14 ++++++++++++--
->>   1 file changed, 12 insertions(+), 2 deletions(-)
->>
->> diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
->> index c99d65ef13b1..ddc6a692b237 100644
->> --- a/net/bluetooth/l2cap_sock.c
->> +++ b/net/bluetooth/l2cap_sock.c
->> @@ -1215,14 +1215,18 @@ static int l2cap_sock_recvmsg(struct socket *sock, struct msghdr *msg,
->>    */
->>   static void l2cap_sock_kill(struct sock *sk)
->>   {
->> +       struct l2cap_chan *chan;
->> +
->>          if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
->>                  return;
->>
->>          BT_DBG("sk %p state %s", sk, state_to_string(sk->sk_state));
->>
->>          /* Kill poor orphan */
->> -
->> -       l2cap_chan_put(l2cap_pi(sk)->chan);
->> +       chan = l2cap_pi(sk)->chan;
->> +       l2cap_chan_put(chan);
+> Hello Hiramatsu,
+> 
+> On 2021/7/14 16:35, Masami Hiramatsu wrote:
+> > Hi Yang,
+> > 
+> > On Wed, 14 Jul 2021 14:54:32 +0800
+> > Yang Jihong <yangjihong1@huawei.com> wrote:
+> > 
+> >> The "address" member  of "struct probe_trace_point" uses long data type.
+> >> If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
+> >> 32 bits. As a result, upper 32 bits of address read from kernel are truncated,
+> >> An error occurs during address comparison in kprobe_warn_out_range function.
+> > 
+> > Good catch!
+> > I didn't imagine that such a use case. But that is important because perf
+> > probe can be used for cross-arch probe definition too.
+> > 
+> >>
+> >> Before:
+> >>
+> >>    # perf probe -a schedule
+> >>    schedule is out of .text, skip it.
+> >>      Error: Failed to add events.
+> >>
+> >> Solution:
+> >>    Change data type of "address" variable to u64 and change corresponding
+> >> address printing and value assignment.
+> > 
+> > OK, as far as I can see, the other parts of the perf also uses u64 for
+> > "address" storing variables. (e.g. symbols, maps etc.)
+> > 
+> >>
+> >> After:
+> >>
+> >>    # perf.new.new probe -a schedule
+> >>    Added new event:
+> >>      probe:schedule       (on schedule)
+> >>
+> >>    You can now use it in all perf tools, such as:
+> >>
+> >>            perf record -e probe:schedule -aR sleep 1
+> >>
+> >>    # perf probe -l
+> >>      probe:schedule       (on schedule)
+> > 
+> > I think you missed one thing here.
+> > Usually, this shows the filename and line number of schedule().
+> Yes,  I tried the following diff and now it can show the filename (as is 
+> function entry, relative line number is 0), thank you very much :)
+> 
+> The test result in my environment is as follows:
+> 
+> # perf probe -a schedule
+> Added new event:
+>    probe:schedule       (on schedule)
+> 
+> You can now use it in all perf tools, such as:
+> 
+>          perf record -e probe:schedule -aR sleep 1
+> 
+> # perf probe -l schedule -k vmlinux.debug
+>    probe:schedule       (on schedule@kernel/sched/core.c)
+> 
 
-There is a problem here, the above sentence `l2cap_chan_put(chan)` 
-should put after
+OK, good!
 
-following sentence.
+> 
+> Can I put the following diff together and submit a v2 patch?
 
->> +       if (refcount_read(&sk->sk_refcnt) == 1)
->> +               chan->data = NULL;
-> Instead of checking if it is the last reference here, wouldn't it be
-> better to reset the chan->data to NULL on l2cap_sock_destruct?
+Yes, please include this fix in your patch, because it is what your patch
+has to do :)
 
-Hi,
+Thank you!
 
-In my case it looks OK, this is the diff:
+> > 
+> > Could you try below diff?
+> > 
+> > diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> > index 7d2ba8419b0c..609ca1671501 100644
+> > --- a/tools/perf/util/dwarf-aux.c
+> > +++ b/tools/perf/util/dwarf-aux.c
+> > @@ -113,14 +113,14 @@ static Dwarf_Line *cu_getsrc_die(Dwarf_Die *cu_die, Dwarf_Addr addr)
+> >    *
+> >    * Find a line number and file name for @addr in @cu_die.
+> >    */
+> > -int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
+> > -		    const char **fname, int *lineno)
+> > +int cu_find_lineinfo(Dwarf_Die *cu_die, Dwarf_Addr addr,
+> > +		     const char **fname, int *lineno)
+> >   {
+> >   	Dwarf_Line *line;
+> >   	Dwarf_Die die_mem;
+> >   	Dwarf_Addr faddr;
+> >   
+> > -	if (die_find_realfunc(cu_die, (Dwarf_Addr)addr, &die_mem)
+> > +	if (die_find_realfunc(cu_die, addr, &die_mem)
+> >   	    && die_entrypc(&die_mem, &faddr) == 0 &&
+> >   	    faddr == addr) {
+> >   		*fname = dwarf_decl_file(&die_mem);
+> > @@ -128,7 +128,7 @@ int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
+> >   		goto out;
+> >   	}
+> >   
+> > -	line = cu_getsrc_die(cu_die, (Dwarf_Addr)addr);
+> > +	line = cu_getsrc_die(cu_die, addr);
+> >   	if (line && dwarf_lineno(line, lineno) == 0) {
+> >   		*fname = dwarf_linesrc(line, NULL, NULL);
+> >   		if (!*fname)
+> > diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+> > index cb99646843a9..7ee0fa19b5c4 100644
+> > --- a/tools/perf/util/dwarf-aux.h
+> > +++ b/tools/perf/util/dwarf-aux.h
+> > @@ -19,7 +19,7 @@ const char *cu_find_realpath(Dwarf_Die *cu_die, const char *fname);
+> >   const char *cu_get_comp_dir(Dwarf_Die *cu_die);
+> >   
+> >   /* Get a line number and file name for given address */
+> > -int cu_find_lineinfo(Dwarf_Die *cudie, unsigned long addr,
+> > +int cu_find_lineinfo(Dwarf_Die *cudie, Dwarf_Addr addr,
+> >   		     const char **fname, int *lineno);
+> >   
+> >   /* Walk on functions at given address */
+> > diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+> > index 8ba01bbdf05c..50d861a80f57 100644
+> > --- a/tools/perf/util/probe-finder.c
+> > +++ b/tools/perf/util/probe-finder.c
+> > @@ -1727,7 +1727,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
+> >   	}
+> >   
+> >   	/* Find a corresponding line (filename and lineno) */
+> > -	cu_find_lineinfo(&cudie, addr, &fname, &lineno);
+> > +	cu_find_lineinfo(&cudie, (Dwarf_Addr)addr, &fname, &lineno);
+> >   	/* Don't care whether it failed or not */
+> >   
+> >   	/* Find a corresponding function (name, baseline and baseaddr) */
+> > @@ -1828,8 +1828,7 @@ static int line_range_add_line(const char *src, unsigned int lineno,
+> >   }
+> >   
+> >   static int line_range_walk_cb(const char *fname, int lineno,
+> > -			      Dwarf_Addr addr __maybe_unused,
+> > -			      void *data)
+> > +			      Dwarf_Addr addr, void *data)
+> >   {
+> >   	struct line_finder *lf = data;
+> >   	const char *__fname;
+> > 
+> > 
 
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index f1b1edd0b697..32ef3328ab49 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -1500,6 +1500,9 @@ static void l2cap_sock_close_cb(struct l2cap_chan 
-*chan)
-  {
-         struct sock *sk = chan->data;
 
-+       if (!sk)
-+               return;
-+
-         l2cap_sock_kill(sk);
-  }
-
-@@ -1508,6 +1511,9 @@ static void l2cap_sock_teardown_cb(struct 
-l2cap_chan *chan, int err)
-         struct sock *sk = chan->data;
-         struct sock *parent;
-
-+       if (!sk)
-+               return;
-+
-         BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
-
-         /* This callback can be called both for server (BT_LISTEN)
-@@ -1700,6 +1706,7 @@ static void l2cap_sock_destruct(struct sock *sk)
-         BT_DBG("sk %p", sk);
-
-         if (l2cap_pi(sk)->chan)
-+              l2cap_pi(sk)->chan->data = NULL;
-                  l2cap_chan_put(l2cap_pi(sk)->chan);
-
-But if it has potential risk if l2cap_sock_destruct() can not be excuted 
-in time ?
-
-sk_free():
-
-         if (refcount_dec_and_test(&sk->sk_wmem_alloc)) //is possible 
-this condition false ?
-
-               __sk_free(sk)   -> ... l2cap_sock_destruct()
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
