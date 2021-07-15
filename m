@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228003CAF70
+	by mail.lfdr.de (Postfix) with ESMTP id D85EB3CAF72
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhGOWxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 18:53:36 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:45791 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232139AbhGOWxg (ORCPT
+        id S232406AbhGOWxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:53:46 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:42939 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230234AbhGOWxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:53:36 -0400
+        Thu, 15 Jul 2021 18:53:46 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 79FB21BF208;
-        Thu, 15 Jul 2021 22:50:40 +0000 (UTC)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id CBB8E1C0002;
+        Thu, 15 Jul 2021 22:50:49 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+To:     Zhihao Cheng <chengzhihao1@huawei.com>, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2] mtd: break circular locks in register_mtd_blktrans
-Date:   Fri, 16 Jul 2021 00:50:40 +0200
-Message-Id: <20210715225040.66117-1-miquel.raynal@bootlin.com>
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2] mtd: mtd_blkdevs: Initialize rq.limits.discard_granularity
+Date:   Fri, 16 Jul 2021 00:50:49 +0200
+Message-Id: <20210715225049.66252-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210617160904.570111-1-desmondcheongzx@gmail.com>
+In-Reply-To: <20210615093905.3473709-1-chengzhihao1@huawei.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'962bf783ef65d15b0f8ca9c33342cf3b20bf0d2e'
+X-linux-mtd-patch-commit: b'2b6d2833cd1d8a43a837a45da65860ef086443dc'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-17 at 16:09:04 UTC, Desmond Cheong Zhi Xi wrote:
-> Syzbot reported a circular locking dependency:
-> https://syzkaller.appspot.com/bug?id=7bd106c28e846d1023d4ca915718b1a0905444cb
+On Tue, 2021-06-15 at 09:39:05 UTC, Zhihao Cheng wrote:
+> Since commit b35fd7422c2f8("block: check queue's limits.discard_granularity
+> in __blkdev_issue_discard()") checks rq.limits.discard_granularity in
+> __blkdev_issue_discard(), we may get following warnings on formatted ftl:
 > 
-> This happens because of the following lock dependencies:
+>   WARNING: CPU: 2 PID: 7313 at block/blk-lib.c:51
+>   __blkdev_issue_discard+0x2a7/0x390
 > 
-> 1. loop_ctl_mutex -> bdev->bd_mutex (when loop_control_ioctl calls
-> loop_remove, which then calls del_gendisk; this also happens in
-> loop_exit which eventually calls loop_remove)
+> Reproducer:
+>   1. ftl_format /dev/mtd0
+>   2. modprobe ftl
+>   3. mkfs.vfat /dev/ftla
+>   4. mount -odiscard /dev/ftla temp
+>   5. dd if=/dev/zero of=temp/tst bs=1M count=10 oflag=direct
+>   6. dd if=/dev/zero of=temp/tst bs=1M count=10 oflag=direct
 > 
-> 2. bdev->bd_mutex -> mtd_table_mutex (when blkdev_get_by_dev calls
-> __blkdev_get, which then calls blktrans_open)
+> Fix it by initializing rq.limits.discard_granularity if device supports
+> discard operation.
 > 
-> 3. mtd_table_mutex -> major_names_lock (when register_mtd_blktrans
-> calls __register_blkdev)
-> 
-> 4. major_names_lock -> loop_ctl_mutex (when blk_request_module calls
-> loop_probe)
-> 
-> Hence there's an overall dependency of:
-> 
-> loop_ctl_mutex   ----------> bdev->bd_mutex
->       ^                            |
->       |                            |
->       |                            v
-> major_names_lock <---------  mtd_table_mutex
-> 
-> We can break this circular dependency by holding mtd_table_mutex only
-> for the required critical section in register_mtd_blktrans. This
-> avoids the mtd_table_mutex -> major_names_lock dependency.
-> 
-> Reported-and-tested-by: syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com
-> Co-developed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
