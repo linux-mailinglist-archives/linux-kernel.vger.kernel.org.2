@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F843CA05C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BDB3CA066
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232900AbhGOOS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:18:27 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:38330
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232422AbhGOOSZ (ORCPT
+        id S237317AbhGOOT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237214AbhGOOTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:18:25 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 51FA64060A;
-        Thu, 15 Jul 2021 14:15:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626358531;
-        bh=1aBUOcNt/rV/wPjiRY8zFNCi9+ykUnRX/oOakeygs28=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=s7P5SVQN60dmPE3LbFAcywsxSFvaZND37ByGIVluTcWHGXuzZdJ961Be1EzRiPk5o
-         mcdVsUw+wH6+hTPhAA/KYgkRUjYF1ZjYlxYzLIFtS/5kuS2JSIlMVpAPwQ2N211dME
-         U26oeGokLL+QdUTvgNlovevfUNf9jwlL/lW2rKXV3h3BDAcgHdRhCJxwG351/8WPgJ
-         SVvKn0e/QaSZZZzwM0GJnVUCGZZjf5JIIStxwcv5zRSqrecbij5kgtqmjfc+ykU9iq
-         sIOmlDN3P3EPvU/JoNMTuccQO/hF51gfGxcAZa6NM54doY24vLzAJ9TuwHOB1MalPO
-         GiAoXj/WJlOYA==
-From:   Colin King <colin.king@canonical.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: rt6245: make a const array func_base static, makes object smaller
-Date:   Thu, 15 Jul 2021 15:15:31 +0100
-Message-Id: <20210715141531.27672-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 15 Jul 2021 10:19:24 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C911EC061764;
+        Thu, 15 Jul 2021 07:16:31 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id l26so6749479oic.7;
+        Thu, 15 Jul 2021 07:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4VxI2L0yDJbm1mdgu23WFwFGwDvtph71lznk9ZAf7ns=;
+        b=iX8PYN7gHr/H92boVQFSkt/tEHrgmCZzcXEDnFwBIBvXzU7OxhsZqreKw+UjTPeArz
+         nXnPxOdf3XeapIBKhGhAa1km67S2Hex3hTKPDq2K/ahDUlhZ+mc5K8M0m2ts4O1dOFa5
+         vkkQr42eUR0o+cVgvKRzDG37AFZUV1dQA2k+dchmKyg6YAi2M1ebydlK3QXCfN2+UEog
+         e7+ESF9mqeEK8TIcn2Qtv3ZnXXZcKZ2Q0wX+9vJFbqhh0tebhGfrqtGwhBYkb4jY2hkR
+         UFFEGyQxtncwqYljGTRnhzbX+I5euxrYGI/GOXRsHp7QyhfJQcViGASVxoC5PUrxfCe8
+         H6xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4VxI2L0yDJbm1mdgu23WFwFGwDvtph71lznk9ZAf7ns=;
+        b=W/b7ryH/CVPJ+8Nj9qYn0wLyqEtl1O9tFqdg12xlAbUAvq0487iU4lcVfzWUaGbZ33
+         8+T5JUVtWfrW5N/NnI725Tcl9e0ioriE8Izf/KCFa3c1USkyHBNrNfAJi93hU+tAejKo
+         moMz91pOxIX785tbqrvHmcrhQM2OnZeSlnV2nePkj8HZ+6X87cK9Gg/61fUT+GhNup9p
+         ELCdqUfxb6JLI3n3rl7zCKqC6GRK7KpdsYgIph8xEbpC8mtzZavxkCM8JUfqYOThDDlW
+         rZFI1UalILQcJuy5KV5X7ugRwmRdnLezmmiABHBXIBKrh7VIznUvJwTATWQqQK743AER
+         CssA==
+X-Gm-Message-State: AOAM530NRtSqXUvc1FSroBBRT0142suo13Ql4hD1DkNOw371/04wLmbQ
+        dK1stmGrgUDXnnltCbEPgwc=
+X-Google-Smtp-Source: ABdhPJy/b6gtbTS1t6QfL9RXPPvNQQChgDPlcuKFIdFVILXHlSuVNWPoWfknIpXHkhY8SDvfKMQmfA==
+X-Received: by 2002:aca:bdc4:: with SMTP id n187mr3878062oif.169.1626358591289;
+        Thu, 15 Jul 2021 07:16:31 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.38])
+        by smtp.googlemail.com with ESMTPSA id b10sm1251418oiy.4.2021.07.15.07.16.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 07:16:30 -0700 (PDT)
+Subject: Re: [PATCH v2] net: ipv6: remove unused local variable
+To:     Rocco Yue <rocco.yue@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, rocco.yue@gmail.com
+References: <20210715042034.6525-1-rocco.yue@mediatek.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <20986885-73a5-8e58-0eb9-54b0723467e4@gmail.com>
+Date:   Thu, 15 Jul 2021 08:16:28 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210715042034.6525-1-rocco.yue@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 7/14/21 10:20 PM, Rocco Yue wrote:
+> The local variable "struct net *net" in the two functions of
+> inet6_rtm_getaddr() and inet6_dump_addr() are actually useless,
+> so remove them.
+> 
+> Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
+> ---
+>  net/ipv6/addrconf.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
 
-Don't populate the const array func_base on the stack but instead it
-static. Makes the object code smaller by 55 bytes:
+a v2 with no changelog. From what I can tell the only difference is
+"net: " in the Subject line which is not what I said in the last email.
 
-Before:
-   text    data     bss     dec    hex filename
-   6422    3216      64    9702   25e6 drivers/regulator/rt6245-regulator.o
+Let me try again: There are 2 trees - net for bug fixes and net-next for
+development (anything that is not a bug fix). Each patch should specify
+which tree the patch is for by putting 'net' or 'net-next' in the
+brackets ([]). This is a cleanup not a bug fix, so this patch should be:
 
-After:
-   text    data     bss     dec    hex filename
-   6303    3280      64    9647   25af drivers/regulator/rt6245-regulator.o
+[PATCH net-next] ipv6: remove unused local variable
 
-Reduction of 55 bytes
+and really that should be
 
-(gcc version 10.3.0)
+[PATCH net-next] ipv6: remove unnecessary local variable
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/regulator/rt6245-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you send more versions of a patch always put a changelog - a summary
+of what is different in the current patch versus the previous ones.
 
-diff --git a/drivers/regulator/rt6245-regulator.c b/drivers/regulator/rt6245-regulator.c
-index d3299a72fd10..cb22a207e9ff 100644
---- a/drivers/regulator/rt6245-regulator.c
-+++ b/drivers/regulator/rt6245-regulator.c
-@@ -144,7 +144,7 @@ static int rt6245_init_device_properties(struct device *dev)
- static int rt6245_reg_write(void *context, unsigned int reg, unsigned int val)
- {
- 	struct i2c_client *i2c = context;
--	const u8 func_base[] = { 0x6F, 0x73, 0x78, 0x61, 0x7C, 0 };
-+	static const u8 func_base[] = { 0x6F, 0x73, 0x78, 0x61, 0x7C, 0 };
- 	unsigned int code, bit_count;
- 
- 	code = func_base[reg];
--- 
-2.31.1
+No need to send another version of this patch unless you get a comment
+requesting change, or the maintainers ask for a re-send.
 
+Reviewed-by: David Ahern <dsahern@kernel.org>
