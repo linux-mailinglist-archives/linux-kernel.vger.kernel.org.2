@@ -2,193 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4E43CA1A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2333CA1A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239457AbhGOPs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
+        id S239489AbhGOPto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 11:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239409AbhGOPsx (ORCPT
+        with ESMTP id S239107AbhGOPtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:48:53 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DF5C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:45:59 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id b12so5805741pfv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:45:59 -0700 (PDT)
+        Thu, 15 Jul 2021 11:49:43 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638A4C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:46:50 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id s193so5604417qke.4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JGShUfArb1jvxyvk/PluPuoZRLwcvoX9Y9zVRmEA/LE=;
-        b=cvMFpY/OwXDzNZaxDIn8hCltxnXPgoxZFD59snXEi3mihiSlY3m0PQ5CTgOpg4squZ
-         AalmskJzdync5QA4IQCm5ffqiWDxrBvwFYYoNj4OuvK7gHrBpci2GtTUFW9X2DHQN0dR
-         HFbEerlqGDC1d4sIS9bwC7aNuwwnKpggKW6noufPRcHWlNV1y8HITB7LrzR6AarPqQ0y
-         0YNBcIldHRlrOP0V/M5EsmhAkdJeLG9FECbestqwaA742zw0BGPP1fqk0lZKvrFbreFl
-         hdSX1/zFa2nbrcaIeXkSea65z702JJp8xh2Zp3ZabADykfikzrxIsq/POXNItxZrpDTl
-         Z3yw==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wgs63a+PlXUyAcP9loz5v+J4Lbh2jAL3wVDQpLoayFY=;
+        b=glOWmH1hxE89FSiR2M95VQYHxvaK101zwu24VIHevlBstICEF3Yk5YQLNJv2wL60Rc
+         +7/xZwUt3dhaOYmqJVAcgFoGpbQHFbOE9ruzo80TfoRUnsTKXQu5oSAGllvHpenfchgV
+         y8blQxAs6etptfcSiIscIs+0dAp43fymriHg1gYH+9KxffwFE2EIW6du9FXC4bICsurs
+         mdcHwfyQmkk9LEr6SO81bZ5q7g9EGH0A1AiSZPqk/Hzj8FEX/TQuBfn0pw/EDl0tdzpy
+         00TvI8eOTqg8lkVZNRhngnvptP7LUcPY+E9APeR9M5Zvwam4JfuwFvOr8+Dy8yMhtMZT
+         KfVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JGShUfArb1jvxyvk/PluPuoZRLwcvoX9Y9zVRmEA/LE=;
-        b=fdE3Vkt7ogjg9wTt1IgBTDT8CUlpIn1+EKXzgCB3F2YEiGV5KDRarncwcRP/1gAnf9
-         Npy8PKk6yFqGzbE2SjqzXLeBh6C8tZIrqoMe0lGbLu5ISzhGu9K9B3MIcGfl94LT5ecx
-         yJCCRIb0WEDaPjlSASS05prOuayDDz/Z5yQfUyR1nNV38vhz6J/yipHcS3SDAfJ86jph
-         ak/BcCdEMQBNr8h4nD7iXNhcfYuF3N1lYEfHR77NWF0LXKluilsZ7iH1IvBXdbH+Fqhi
-         im9ORPSjRrb4+YV5e9P9Unv7i6CkPOR42D+ItTfj85fH+INbJqHhvUQqutagygFrhyse
-         dlRQ==
-X-Gm-Message-State: AOAM533DYZfbbhV3wFjfjlP+0Bgi8wfwB3v/X4EpmnqYtU7yIS2MUmeq
-        Pcc0XbZ+XZ0o3uP2tMPjPEi0wA==
-X-Google-Smtp-Source: ABdhPJwQyW7bUtVpri0q5g8r0vZu8sEyqzBKIbVZWvT5YFaKDe5mAIuTkn7DhgaMa4VDH0TCblUGFA==
-X-Received: by 2002:a65:6a0a:: with SMTP id m10mr5244127pgu.145.1626363958878;
-        Thu, 15 Jul 2021 08:45:58 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id t37sm7049539pfg.14.2021.07.15.08.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 08:45:58 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 15:45:54 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 01/40] KVM: SVM: Add support to handle AP
- reset MSR protocol
-Message-ID: <YPBYMiOB44dhhPfr@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-2-brijesh.singh@amd.com>
- <YO9GWVsZmfXJ4BRl@google.com>
- <e634061d-78f4-dcb2-b7e5-ebcb25585765@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wgs63a+PlXUyAcP9loz5v+J4Lbh2jAL3wVDQpLoayFY=;
+        b=EE565pNPdDN3XVPU13jYUlaU4O1OKQ7Y/Vqu04y904ZA2quHJqxF9re6LCoQs1+Yhy
+         x8x4SsniF1Q9EWQjNRTRZuVEp5SLXB9BXm3qY7aN22hPJaqJyaquDib1x4KnstxGTxZk
+         ZkMFQlLQXRJStPRQr3odYai17fXe8R2bDCDQ0F7Dxg2PslGuf3cozct3Wu7Wm66pZVnX
+         7Yag3bqQkf5QF4Pl329SZ5N4WTLeJAwA1/xYnccpJfiDG3p3Yfr/V4EjJoECJGD6GvLm
+         yagbNg7yVN5zKaKvhOv6FyiagOtZY1nm9Ju4Wz3+Ns6n+Ydv8GazGlfzgrbR1fQjZt0S
+         3W/A==
+X-Gm-Message-State: AOAM530dqHWL6EHwYviaDgy9YqRo+yFHkHp4L4b0dlSH2UcEJwxtdDZt
+        7MLqGAuLhWDNi9BSz6SLFs/TMavEgpqomACauNADUQ==
+X-Google-Smtp-Source: ABdhPJxkedmxZtlhSFUhXqTM9YTLPxlkbpSvX8iwDTZRzDuUXOrbYlA3WVzNtxjE8aVXysiR8wJL+N6pXyYuirI1SRQ=
+X-Received: by 2002:a37:313:: with SMTP id 19mr4552177qkd.295.1626364009325;
+ Thu, 15 Jul 2021 08:46:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e634061d-78f4-dcb2-b7e5-ebcb25585765@amd.com>
+References: <20210714214346.1397942-1-mw@semihalf.com> <20210714214346.1397942-2-mw@semihalf.com>
+ <BYAPR11MB3256CACCFB4A08B5D450D3A087129@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <CAPv3WKeN55zEW65yfyPizB0WA4HLtcf=m-7yUgpk7O1hCKW4SA@mail.gmail.com> <BYAPR11MB32569C7DB2041874F540A7A987129@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB32569C7DB2041874F540A7A987129@BYAPR11MB3256.namprd11.prod.outlook.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 15 Jul 2021 17:46:38 +0200
+Message-ID: <CAPv3WKcBKNAD880Mpf8z4vpY=3wbyyd3PiQ=uzKupaw=P_JpQg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
+To:     "Moore, Robert" <robert.moore@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "jaz@semihalf.com" <jaz@semihalf.com>,
+        "gjb@semihalf.com" <gjb@semihalf.com>,
+        "upstream@semihalf.com" <upstream@semihalf.com>,
+        "Samer.El-Haj-Mahmoud@arm.com" <Samer.El-Haj-Mahmoud@arm.com>,
+        "jon@solid-run.com" <jon@solid-run.com>,
+        "tn@semihalf.com" <tn@semihalf.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021, Tom Lendacky wrote:
-> On 7/14/21 3:17 PM, Sean Christopherson wrote:
-> >> +	case GHCB_MSR_AP_RESET_HOLD_REQ:
-> >> +		svm->ap_reset_hold_type = AP_RESET_HOLD_MSR_PROTO;
-> >> +		ret = kvm_emulate_ap_reset_hold(&svm->vcpu);
-> > 
-> > The hold type feels like it should be a param to kvm_emulate_ap_reset_hold().
-> 
-> I suppose it could be, but then the type would have to be tracked in the
-> kvm_vcpu_arch struct instead of the vcpu_svm struct, so I opted for the
-> latter. Maybe a helper function, sev_ap_reset_hold(), that sets the type
-> and then calls kvm_emulate_ap_reset_hold(), but I'm not seeing a big need
-> for it.
+czw., 15 lip 2021 o 17:44 Moore, Robert <robert.moore@intel.com> napisa=C5=
+=82(a):
+>
+> The patch was posted as a pull request on our github site.
+>
 
-Huh.  Why is kvm_emulate_ap_reset_hold() in x86.c?  That entire concept is very
-much SEV specific.  And if anyone argues its not SEV specific, then the hold type
-should also be considered generic, i.e. put in kvm_vcpu_arch.
+I'm aware of that, semihalf-wojtas-marcin is me :)
 
-> >> +
-> >> +		/*
-> >> +		 * Preset the result to a non-SIPI return and then only set
-> >> +		 * the result to non-zero when delivering a SIPI.
-> >> +		 */
-> >> +		set_ghcb_msr_bits(svm, 0,
-> >> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
-> >> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
-> >> +
-> >> +		set_ghcb_msr_bits(svm, GHCB_MSR_AP_RESET_HOLD_RESP,
-> >> +				  GHCB_MSR_INFO_MASK,
-> >> +				  GHCB_MSR_INFO_POS);
-> > 
-> > It looks like all uses set an arbitrary value and then the response.  I think
-> > folding the response into the helper would improve both readability and robustness.
-> 
-> Joerg pulled this patch out and submitted it as part of a small, three
-> patch series, so it might be best to address this in general in the
-> SEV-SNP patches or as a follow-on series specifically for this re-work.
-> 
-> > I also suspect the helper needs to do WRITE_ONCE() to guarantee the guest sees
-> > what it's supposed to see, though memory ordering is not my strong suit.
-> 
-> This is writing to the VMCB that is then used to set the value of the
-> guest MSR. I don't see anything done in general for writes to the VMCB, so
-> I wouldn't think this should be any different.
+> The merged patch will be released as part of the normal ACPICA release pr=
+ocess, which will then make it into Linux. You should then rebase.
 
-Ooooh, right.  I was thinking this was writing memory that's shared with the
-guest, but this is KVM's copy of the GCHB MSR, not the GHCB itself.  Thanks!
+Ok, thanks for explanation. When approximately can this happen?
 
-> > Might even be able to squeeze in a build-time assertion.
-> > 
-> > Also, do the guest-provided contents actually need to be preserved?  That seems
-> > somewhat odd.
-> 
-> Hmmm... not sure I see where the guest contents are being preserved.
+Best regards,
+Marcin
 
-The fact that set_ghcb_msr_bits() is a RMW flow implies _something_ is being
-preserved.  And unless KVM explicitly zeros/initializes control.ghcb_gpa, the
-value being preserved is the value last written by the guest.  E.g. for CPUID
-emulation, KVM reads the guest-requested function and register from ghcb_gpa,
-then writes back the result.  But set_ghcb_msr_bits() is a RMW on a subset of
-bits, and thus it's preserving the guest's value for the bits not being written.
-
-Unless there is an explicit need to preserve the guest value, the whole RMW thing
-is unnecessary and confusing.
-
-	case GHCB_MSR_CPUID_REQ: {
-		u64 cpuid_fn, cpuid_reg, cpuid_value;
-
-		cpuid_fn = get_ghcb_msr_bits(svm,
-					     GHCB_MSR_CPUID_FUNC_MASK,
-					     GHCB_MSR_CPUID_FUNC_POS);
-
-		/* Initialize the registers needed by the CPUID intercept */
-		vcpu->arch.regs[VCPU_REGS_RAX] = cpuid_fn;
-		vcpu->arch.regs[VCPU_REGS_RCX] = 0;
-
-		ret = svm_invoke_exit_handler(vcpu, SVM_EXIT_CPUID);
-		if (!ret) {
-			ret = -EINVAL;
-			break;
-		}
-
-		cpuid_reg = get_ghcb_msr_bits(svm,
-					      GHCB_MSR_CPUID_REG_MASK,
-					      GHCB_MSR_CPUID_REG_POS);
-		if (cpuid_reg == 0)
-			cpuid_value = vcpu->arch.regs[VCPU_REGS_RAX];
-		else if (cpuid_reg == 1)
-			cpuid_value = vcpu->arch.regs[VCPU_REGS_RBX];
-		else if (cpuid_reg == 2)
-			cpuid_value = vcpu->arch.regs[VCPU_REGS_RCX];
-		else
-			cpuid_value = vcpu->arch.regs[VCPU_REGS_RDX];
-
-		set_ghcb_msr_bits(svm, cpuid_value,
-				  GHCB_MSR_CPUID_VALUE_MASK,
-				  GHCB_MSR_CPUID_VALUE_POS);
-
-		set_ghcb_msr_bits(svm, GHCB_MSR_CPUID_RESP,
-				  GHCB_MSR_INFO_MASK,
-				  GHCB_MSR_INFO_POS);
-		break;
-	}
+> Bob
+>
+>
+> -----Original Message-----
+> From: Marcin Wojtas <mw@semihalf.com>
+> Sent: Thursday, July 15, 2021 7:17 AM
+> To: Moore, Robert <robert.moore@intel.com>
+> Cc: linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; devel@acpic=
+a.org; jaz@semihalf.com; gjb@semihalf.com; upstream@semihalf.com; Samer.El-=
+Haj-Mahmoud@arm.com; jon@solid-run.com; tn@semihalf.com; rjw@rjwysocki.net;=
+ lenb@kernel.org
+> Subject: Re: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
+>
+> Hi,
+>
+>
+> czw., 15 lip 2021 o 16:07 Moore, Robert <robert.moore@intel.com> napisa=
+=C5=82(a):
+> >
+> > This was already reported (with a patch that we've already merged) by
+> > semihalf-wojtas-marcin
+> >
+>
+> I'm not sure to be aware of the process. Reported where?
+> Are you planning to import the upstream patch on your own and I should re=
+base the SPCR driver change on top once it lands?
+>
+> Best regards,
+> Marcin
+>
+> > -----Original Message-----
+> > From: Marcin Wojtas <mw@semihalf.com>
+> > Sent: Wednesday, July 14, 2021 2:44 PM
+> > To: linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org;
+> > devel@acpica.org
+> > Cc: jaz@semihalf.com; gjb@semihalf.com; upstream@semihalf.com;
+> > Samer.El-Haj-Mahmoud@arm.com; jon@solid-run.com; tn@semihalf.com;
+> > rjw@rjwysocki.net; lenb@kernel.org; Moore, Robert
+> > <robert.moore@intel.com>; Marcin Wojtas <mw@semihalf.com>
+> > Subject: [PATCH 1/2] ACPICA: Add new DBG2 Serial Port Subtypes
+> >
+> > ACPICA commit d95c7d206b5836c7770e8e9cd613859887fded8f
+> >
+> > The Microsoft Debug Port Table 2 (DBG2) specification revision Septembe=
+r 21, 2020 comprises additional Serial Port Subtypes [1].
+> > Reflect that in the actbl1.h header file.
+> >
+> > [1]
+> > https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/acpi
+> > -debug-port-table
+> >
+> > Link: https://github.com/acpica/acpica/commit/d95c7d20
+> > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> > ---
+> >  include/acpi/actbl1.h | 15 ++++++++++++++-
+> >  1 file changed, 14 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h index
+> > ef2872dea01c..7bbb3e2bd33f 100644
+> > --- a/include/acpi/actbl1.h
+> > +++ b/include/acpi/actbl1.h
+> > @@ -482,7 +482,7 @@ struct acpi_csrt_descriptor {
+> >   * DBG2 - Debug Port Table 2
+> >   *        Version 0 (Both main table and subtables)
+> >   *
+> > - * Conforms to "Microsoft Debug Port Table 2 (DBG2)", December 10,
+> > 2015
+> > + * Conforms to "Microsoft Debug Port Table 2 (DBG2)", September 21,
+> > + 2020
+> >   *
+> >
+> > **********************************************************************
+> > ********/
+> >
+> > @@ -532,11 +532,24 @@ struct acpi_dbg2_device {
+> >
+> >  #define ACPI_DBG2_16550_COMPATIBLE  0x0000
+> >  #define ACPI_DBG2_16550_SUBSET      0x0001
+> > +#define ACPI_DBG2_MAX311XE_SPI      0x0002
+> >  #define ACPI_DBG2_ARM_PL011         0x0003
+> > +#define ACPI_DBG2_MSM8X60           0x0004
+> > +#define ACPI_DBG2_16550_NVIDIA      0x0005
+> > +#define ACPI_DBG2_TI_OMAP           0x0006
+> > +#define ACPI_DBG2_APM88XXXX         0x0008
+> > +#define ACPI_DBG2_MSM8974           0x0009
+> > +#define ACPI_DBG2_SAM5250           0x000A
+> > +#define ACPI_DBG2_INTEL_USIF        0x000B
+> > +#define ACPI_DBG2_IMX6              0x000C
+> >  #define ACPI_DBG2_ARM_SBSA_32BIT    0x000D
+> >  #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
+> >  #define ACPI_DBG2_ARM_DCC           0x000F
+> >  #define ACPI_DBG2_BCM2835           0x0010
+> > +#define ACPI_DBG2_SDM845_1_8432MHZ  0x0011
+> > +#define ACPI_DBG2_16550_WITH_GAS    0x0012
+> > +#define ACPI_DBG2_SDM845_7_372MHZ   0x0013
+> > +#define ACPI_DBG2_INTEL_LPSS        0x0014
+> >
+> >  #define ACPI_DBG2_1394_STANDARD     0x0000
+> >
+> > --
+> > 2.29.0
+> >
