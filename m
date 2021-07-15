@@ -2,112 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2CE3CAC4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CCE3CAC52
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244027AbhGOTcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:32:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243936AbhGOTKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:10:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A25A613CC;
-        Thu, 15 Jul 2021 19:07:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626376037;
-        bh=Cp8Xo+M1Hv5LVvgaQlisb6BnnD3o1fyiu8cNcRc/rs8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qYfPIA4imxrbMHV4D9Mm/6TI+eaBxbox0eBQg0R3gmFU+ce/f7ICQjv5PNpYHq/54
-         szbQAqpeNUnWoDDh/BQLX5yJUgxRDDRn8LHhoS6eWZlwXsGL9gXWT5xt2k0tgPhfXG
-         zeTf/MrySkQYIQ4KeidGrqq+2MrqHzsh713tA2KjkLOo1TZpUzayp8o85hE4swtZQj
-         QNrA3UQqKXiXRaeyiiuAUc9/nFBiu++1gmsER27WkSCXxx8l3xfAApZMw5jDThaSak
-         QLhOGfVSaac1iXERtY78DsIGXbHYoL1c34ciTjZdu0KDOh5LoLOPTE0qwb+828SO6U
-         OPe+baJxgihwA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8C9BC403F2; Thu, 15 Jul 2021 16:07:14 -0300 (-03)
-Date:   Thu, 15 Jul 2021 16:07:14 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 01/20] perf nsinfo: fix refcounting
-Message-ID: <YPCHYiZexSnyTnYg@kernel.org>
-References: <cover.1626343282.git.rickyman7@gmail.com>
- <55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com>
- <YPCGONcQx5SxEKdY@kernel.org>
+        id S244703AbhGOTcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:32:41 -0400
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:40707 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243967AbhGOTK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:10:27 -0400
+Received: by mail-pl1-f179.google.com with SMTP id j3so3911257plx.7;
+        Thu, 15 Jul 2021 12:07:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xe/jJ28/jZ0fzl37xAFp+ffR7wdRGJxUNet9cHVI4ZQ=;
+        b=JPlQuJd0h2wL8FxhScBbCAjMZDZOhEPurbNG7wzncRM2JfaKZtLxnBnn+N407zJwde
+         edQazwMDq4atRCDOb4rxJxlTh10i72lmjVwQPChpS7H0M+fS/+yivnCWMJxPBHNwq9PO
+         NcpQe6BnmzHvGjY4qyILocpeU/sTiXK5tvu6R4E2HiknrDa+kGfd9lSh9t0+Nm+es+se
+         f6ccQu/S2vUMmEkEeFAaTLDBAui0PlwgfKAn6wbZtT2PgW2PCb8f58+nZIrwuCaQzsMH
+         Jlur0cYoVvRaZeTqJP+10gJezCbLU2Mb78E9knIBL9nfq4hFlcDMG3yNKm50W+VIHeh9
+         8yfA==
+X-Gm-Message-State: AOAM5329FuC89RcyfcekBIKs943o5aPwd4oExNQ6Jqx0P+EFtLzVH83J
+        PQwdU0odbbrh1U1TgMC/da4=
+X-Google-Smtp-Source: ABdhPJyqZsVie7Az+tmYzhtw0u7uwr/sCCYJfTULhzEdBZyF3UBkrQ7vEgcy0yWjgIdoAqZuXnjx0Q==
+X-Received: by 2002:a17:90a:62ca:: with SMTP id k10mr5526164pjs.133.1626376050305;
+        Thu, 15 Jul 2021 12:07:30 -0700 (PDT)
+Received: from garbanzo ([191.96.120.37])
+        by smtp.gmail.com with ESMTPSA id u8sm10013024pjf.20.2021.07.15.12.07.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 12:07:29 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 12:07:26 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, jack@suse.cz, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] block: skip queue if NULL on blk_cleanup_queue()
+Message-ID: <20210715190726.xlukndxddvph4fx6@garbanzo>
+References: <20210715045531.420201-1-mcgrof@kernel.org>
+ <20210715045531.420201-7-mcgrof@kernel.org>
+ <YO/fvbe5LeAP2Mtq@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPCGONcQx5SxEKdY@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YO/fvbe5LeAP2Mtq@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 15, 2021 at 04:02:16PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Jul 15, 2021 at 06:07:06PM +0200, Riccardo Mancini escreveu:
-> > ASan reports a memory leak of nsinfo during the execution of the perf
-> > test "31: Lookup mmap thread".
-> > The leak is caused by a refcounted variable being replaced without
-> > dropping the refcount.
+On Thu, Jul 15, 2021 at 08:11:57AM +0100, Christoph Hellwig wrote:
+> On Wed, Jul 14, 2021 at 09:55:31PM -0700, Luis Chamberlain wrote:
+> > Now that error handling for add_disk*() calls is added, we must
+> > accept a common form for when errors are detected on the the
+> > add_disk*() calls, and that is to call blk_cleanup_disk() on
+> > error always. One of the corner cases possible is a driver bug
+> > where the queue is already gone and we cannot blk_get_queue(),
+> > and so may be NULL. When blk_cleanup_disk() is called in this
+> > case blk_cleanup_queue() will crash with a null dereference.
 > > 
-> > This patch makes sure that the refcnt of nsinfo is decreased whenever
-> > a refcounted variable is replaced with a new value.
+> > Make this an accepted condition and just skip it. This allows us
+> > to also test for it safely with error injection.
 > 
-> So, there are multiple fixes in just one patch, I'll split it into
-> three, no need to resend.
-> 
-> I'll try and check if finding Fixes: for the three is easy, that way
-> stable@vger.kernel.org will figure out which of the supported releases
-> need each of them.
+> So you plan to call blk_cleanup_disk when add_disk fails?
 
-The first patch becomes:
+Yes, they can open code things if they wish as well, but when possible yes.
 
-commit b36bbdefec297ee5b6e278904360ad14fa3b09de
-Author: Riccardo Mancini <rickyman7@gmail.com>
-Date:   Thu Jul 15 18:07:06 2021 +0200
+> For all drivers using blk_alloc_disk/blk_mq_alloc_disk there should
+> always be a queue.  The others ones aren't ready to handle errors
+> from add_disk yet in any way I think (and I plan to fix this up
+> ASAP).
 
-    perf inject: Fix dso->nsinfo refcounting
-    
-    ASan reports a memory leak of nsinfo during the execution of the perf
-    test "31: Lookup mmap thread".
-    
-    The leak is caused by a refcounted variable being replaced without
-    dropping the refcount.
-    
-    This patch makes sure that the refcnt of nsinfo is decreased when a
-    refcounted variable is replaced with a new value.
-    
-    Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-    Fixes: 27c9c3424fc217da ("perf inject: Add --buildid-all option")
-    Cc: Ian Rogers <irogers@google.com>
-    Cc: Jiri Olsa <jolsa@redhat.com>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Link: http://lore.kernel.org/lkml/55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com
-    [ Split from a larger patch ]
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Have an example in mind?
 
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 5d6f583e2cd35be0..ffd2b25039e36e1d 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -361,9 +361,10 @@ static struct dso *findnew_dso(int pid, int tid, const char *filename,
- 		dso = machine__findnew_dso_id(machine, filename, id);
- 	}
- 
--	if (dso)
-+	if (dso) {
-+		nsinfo__put(dso->nsinfo);
- 		dso->nsinfo = nsi;
--	else
-+	} else
- 		nsinfo__put(nsi);
- 
- 	thread__put(thread);
+  Luis
