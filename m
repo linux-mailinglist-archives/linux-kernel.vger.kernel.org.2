@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECD93CAC65
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2813CAC71
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245222AbhGOTdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:33:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51040 "EHLO mail.kernel.org"
+        id S1344199AbhGOTfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:35:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243120AbhGOTLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:11:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D10C5613DD;
-        Thu, 15 Jul 2021 19:08:27 +0000 (UTC)
+        id S241587AbhGOTL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:11:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3122E613DC;
+        Thu, 15 Jul 2021 19:08:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376108;
-        bh=2ozA3x8WpznmspZinYc9ZWSLYqnmg4yNP8tlXOX0c2A=;
+        s=korg; t=1626376110;
+        bh=wOVrGgzmc5xXjjsu0Ye3UynUuRmj4nk7BBzK9QZuw7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cNdW2voCZabZVRkJ0wle4W4Z8pL9pOdh0xbCu3YBqV87+7OdnXDsknziZzoWI1riV
-         pUfoZT7UGxUqw/FPy9lhOAtm6plc1UNf6RFxqHJIpFV56Ce4bdJymJ+lJv8GkpT6qK
-         5RhTsWeiA/+dQrO3TrnUvHCltXsRHA5a5tQmmHU4=
+        b=Y6ZYRv3zKxFA4r1TsJRXKjY5d4pEqI50SxVT7/PpUKDl5/OhiaNqNI3DKu+kVv/Th
+         cTN1BZepnfe+BMYYQyTWu/UQ73jOu56KACMSygjgb63/XmHOCQb95Gs05Iy8WgLMf2
+         kTXGAFCYXd3YYdrgMkXVLj1+AStScEs7b7idGPXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Fugang Duan <fugang.duan@nxp.com>,
         Joakim Zhang <qiangqing.zhang@nxp.com>,
+        kernel test robot <lkp@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 131/266] net: fec: add FEC_QUIRK_HAS_MULTI_QUEUES represents i.MX6SX ENET IP
-Date:   Thu, 15 Jul 2021 20:38:06 +0200
-Message-Id: <20210715182636.973092440@linuxfoundation.org>
+Subject: [PATCH 5.13 132/266] net: fec: add ndo_select_queue to fix TX bandwidth fluctuations
+Date:   Thu, 15 Jul 2021 20:38:07 +0200
+Message-Id: <20210715182637.182595673@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -42,134 +44,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Fugang Duan <fugang.duan@nxp.com>
 
-[ Upstream commit 471ff4455d61c9929ae912328859921708e1eafc ]
+[ Upstream commit 52c4a1a85f4b346c39c896c0168f4a843b3385ff ]
 
-Frieder Schrempf reported a TX throuthput issue [1], it happens quite often
-that the measured bandwidth in TX direction drops from its expected/nominal
-value to something like ~50% (for 100M) or ~67% (for 1G) connections.
+As we know that AVB is enabled by default, and the ENET IP design is
+queue 0 for best effort, queue 1&2 for AVB Class A&B. Bandwidth of each
+queue 1&2 set in driver is 50%, TX bandwidth fluctuated when selecting
+tx queues randomly with FEC_QUIRK_HAS_AVB quirk available.
 
-[1] https://lore.kernel.org/linux-arm-kernel/421cc86c-b66f-b372-32f7-21e59f9a98bc@kontron.de/
+This patch adds ndo_select_queue callback to select queues for
+transmitting to fix this issue. It will always return queue 0 if this is
+not a vlan packet, and return queue 1 or 2 based on priority of vlan
+packet.
 
-The issue becomes clear after digging into it, Net core would select
-queues when transmitting packets. Since FEC have not impletemented
-ndo_select_queue callback yet, so it will call netdev_pick_tx to select
-queues randomly.
+You may complain that in fact we only use single queue for trasmitting
+if we are not targeted to VLAN. Yes, but seems we have no choice, since
+AVB is enabled when the driver probed, we can't switch this feature
+dynamicly. After compare multiple queues to single queue, TX throughput
+almost no improvement.
 
-For i.MX6SX ENET IP with AVB support, driver default enables this
-feature. According to the setting of QOS/RCMRn/DMAnCFG registers, AVB
-configured to Credit-based scheme, 50% bandwidth of each queue 1&2.
+One way we can implemet is to configure the driver to multiple queues
+with Round-robin scheme by default. Then add ndo_setup_tc callback to
+enable/disable AVB feature for users. Unfortunately, ENET AVB IP seems
+not follow the standard 802.1Qav spec. We only can program
+DMAnCFG[IDLE_SLOPE] field to calculate bandwidth fraction. And idle
+slope is restricted to certain valus (a total of 19). It's far away from
+CBS QDisc implemented in Linux TC framework. If you strongly suggest to do
+this, I think we only can support limited numbers of bandwidth and reject
+others, but it's really urgly and wried.
 
-With below tests let me think more:
-1) With FEC_QUIRK_HAS_AVB quirk, can reproduce TX bandwidth fluctuations issue.
-2) Without FEC_QUIRK_HAS_AVB quirk, can't reproduce TX bandwidth fluctuations issue.
-
-The related difference with or w/o FEC_QUIRK_HAS_AVB quirk is that, whether we
-program FTYPE field of TxBD or not. As I describe above, AVB feature is
-enabled by default. With FEC_QUIRK_HAS_AVB quirk, frames in queue 0
-marked as non-AVB, and frames in queue 1&2 marked as AVB Class A&B. It's
-unreasonable if frames in queue 1&2 are not required to be time-sensitive.
-So when Net core select tx queues ramdomly, Credit-based scheme would work
-and lead to TX bandwidth fluctuated. On the other hand, w/o
-FEC_QUIRK_HAS_AVB quirk, frames in queue 1&2 are all marked as non-AVB, so
-Credit-based scheme would not work.
-
-Till now, how can we fix this TX throughput issue? Yes, please remove
-FEC_QUIRK_HAS_AVB quirk if you suffer it from time-nonsensitive networking.
-However, this quirk is used to indicate i.MX6SX, other setting depends
-on it. So this patch adds a new quirk FEC_QUIRK_HAS_MULTI_QUEUES to
-represent i.MX6SX, it is safe for us remove FEC_QUIRK_HAS_AVB quirk
-now.
-
-FEC_QUIRK_HAS_AVB quirk is set by default in the driver, and users may
-not know much about driver details, they would waste effort to find the
-root cause, that is not we want. The following patch is a implementation
-to fix it and users don't need to modify the driver.
+With this patch, VLAN tagged packets route to queue 0/1/2 based on vlan
+priority; VLAN untagged packets route to queue 0.
 
 Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 Reported-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
 Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fec.h      |  5 +++++
- drivers/net/ethernet/freescale/fec_main.c | 11 ++++++-----
- 2 files changed, 11 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/freescale/fec_main.c | 32 +++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
-index 0602d5d5d2ee..2e002e4b4b4a 100644
---- a/drivers/net/ethernet/freescale/fec.h
-+++ b/drivers/net/ethernet/freescale/fec.h
-@@ -467,6 +467,11 @@ struct bufdesc_ex {
-  */
- #define FEC_QUIRK_NO_HARD_RESET		(1 << 18)
- 
-+/* i.MX6SX ENET IP supports multiple queues (3 queues), use this quirk to
-+ * represents this ENET IP.
-+ */
-+#define FEC_QUIRK_HAS_MULTI_QUEUES	(1 << 19)
-+
- struct bufdesc_prop {
- 	int qid;
- 	/* Address of Rx and Tx buffers */
 diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index ad82cffc6f3f..98cd38379275 100644
+index 98cd38379275..8aea707a65a7 100644
 --- a/drivers/net/ethernet/freescale/fec_main.c
 +++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -122,7 +122,7 @@ static const struct fec_devinfo fec_imx6x_info = {
- 		  FEC_QUIRK_HAS_VLAN | FEC_QUIRK_HAS_AVB |
- 		  FEC_QUIRK_ERR007885 | FEC_QUIRK_BUG_CAPTURE |
- 		  FEC_QUIRK_HAS_RACC | FEC_QUIRK_HAS_COALESCE |
--		  FEC_QUIRK_CLEAR_SETUP_MII,
-+		  FEC_QUIRK_CLEAR_SETUP_MII | FEC_QUIRK_HAS_MULTI_QUEUES,
- };
+@@ -76,6 +76,8 @@ static void fec_enet_itr_coal_init(struct net_device *ndev);
  
- static const struct fec_devinfo fec_imx6ul_info = {
-@@ -421,6 +421,7 @@ fec_enet_txq_submit_frag_skb(struct fec_enet_priv_tx_q *txq,
- 				estatus |= FEC_TX_BD_FTYPE(txq->bd.qid);
- 			if (skb->ip_summed == CHECKSUM_PARTIAL)
- 				estatus |= BD_ENET_TX_PINS | BD_ENET_TX_IINS;
+ #define DRIVER_NAME	"fec"
+ 
++static const u16 fec_enet_vlan_pri_to_queue[8] = {0, 0, 1, 1, 1, 2, 2, 2};
 +
- 			ebdp->cbd_bdu = 0;
- 			ebdp->cbd_esc = cpu_to_fec32(estatus);
- 		}
-@@ -954,7 +955,7 @@ fec_restart(struct net_device *ndev)
- 	 * For i.MX6SX SOC, enet use AXI bus, we use disable MAC
- 	 * instead of reset MAC itself.
- 	 */
--	if (fep->quirks & FEC_QUIRK_HAS_AVB ||
-+	if (fep->quirks & FEC_QUIRK_HAS_MULTI_QUEUES ||
- 	    ((fep->quirks & FEC_QUIRK_NO_HARD_RESET) && fep->link)) {
- 		writel(0, fep->hwp + FEC_ECNTRL);
- 	} else {
-@@ -1165,7 +1166,7 @@ fec_stop(struct net_device *ndev)
- 	 * instead of reset MAC itself.
- 	 */
- 	if (!(fep->wol_flag & FEC_WOL_FLAG_SLEEP_ON)) {
--		if (fep->quirks & FEC_QUIRK_HAS_AVB) {
-+		if (fep->quirks & FEC_QUIRK_HAS_MULTI_QUEUES) {
- 			writel(0, fep->hwp + FEC_ECNTRL);
- 		} else {
- 			writel(1, fep->hwp + FEC_ECNTRL);
-@@ -2570,7 +2571,7 @@ static void fec_enet_itr_coal_set(struct net_device *ndev)
+ /* Pause frame feild and FIFO threshold */
+ #define FEC_ENET_FCE	(1 << 5)
+ #define FEC_ENET_RSEM_V	0x84
+@@ -3240,10 +3242,40 @@ static int fec_set_features(struct net_device *netdev,
+ 	return 0;
+ }
  
- 	writel(tx_itr, fep->hwp + FEC_TXIC0);
- 	writel(rx_itr, fep->hwp + FEC_RXIC0);
--	if (fep->quirks & FEC_QUIRK_HAS_AVB) {
-+	if (fep->quirks & FEC_QUIRK_HAS_MULTI_QUEUES) {
- 		writel(tx_itr, fep->hwp + FEC_TXIC1);
- 		writel(rx_itr, fep->hwp + FEC_RXIC1);
- 		writel(tx_itr, fep->hwp + FEC_TXIC2);
-@@ -3371,7 +3372,7 @@ static int fec_enet_init(struct net_device *ndev)
- 		fep->csum_flags |= FLAG_RX_CSUM_ENABLED;
- 	}
- 
--	if (fep->quirks & FEC_QUIRK_HAS_AVB) {
-+	if (fep->quirks & FEC_QUIRK_HAS_MULTI_QUEUES) {
- 		fep->tx_align = 0;
- 		fep->rx_align = 0x3f;
- 	}
++static u16 fec_enet_get_raw_vlan_tci(struct sk_buff *skb)
++{
++	struct vlan_ethhdr *vhdr;
++	unsigned short vlan_TCI = 0;
++
++	if (skb->protocol == htons(ETH_P_ALL)) {
++		vhdr = (struct vlan_ethhdr *)(skb->data);
++		vlan_TCI = ntohs(vhdr->h_vlan_TCI);
++	}
++
++	return vlan_TCI;
++}
++
++static u16 fec_enet_select_queue(struct net_device *ndev, struct sk_buff *skb,
++				 struct net_device *sb_dev)
++{
++	struct fec_enet_private *fep = netdev_priv(ndev);
++	u16 vlan_tag;
++
++	if (!(fep->quirks & FEC_QUIRK_HAS_AVB))
++		return netdev_pick_tx(ndev, skb, NULL);
++
++	vlan_tag = fec_enet_get_raw_vlan_tci(skb);
++	if (!vlan_tag)
++		return vlan_tag;
++
++	return fec_enet_vlan_pri_to_queue[vlan_tag >> 13];
++}
++
+ static const struct net_device_ops fec_netdev_ops = {
+ 	.ndo_open		= fec_enet_open,
+ 	.ndo_stop		= fec_enet_close,
+ 	.ndo_start_xmit		= fec_enet_start_xmit,
++	.ndo_select_queue       = fec_enet_select_queue,
+ 	.ndo_set_rx_mode	= set_multicast_list,
+ 	.ndo_validate_addr	= eth_validate_addr,
+ 	.ndo_tx_timeout		= fec_timeout,
 -- 
 2.30.2
 
