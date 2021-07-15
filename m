@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7198F3CA977
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DA63CABB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242213AbhGOTGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:06:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59882 "EHLO mail.kernel.org"
+        id S244036AbhGOTXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:23:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241028AbhGOS4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4140613C4;
-        Thu, 15 Jul 2021 18:53:47 +0000 (UTC)
+        id S242345AbhGOTGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:06:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 831B0613F5;
+        Thu, 15 Jul 2021 19:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375228;
-        bh=M/YarBLgGLZs5J4oVWxU+ihkCU8UuKy2p89D/jtlqE4=;
+        s=korg; t=1626375762;
+        bh=kZo4fde+p3X2ftfMdEtwKCs+3ogPBCg1LLGIL/Cr07Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jffPUDN0GiVitqBqZznaWELhbHK8erYtE8WT+AT8Aw/Gty4GiTmwHzEG9DHkuGKvE
-         euJwRa/hpFM+Fo31DWYbAxlbmtiZQRk3PhIADnq6CvnPnyG5PzXQAazqR+AcwvIyro
-         vIOnTZ3xUDXOZIhkigpwVhp+1bnnT08Idx75UpDE=
+        b=Yx36Xp+DcalfixxvS6Qk+acfqbhyHUn0gkRW50MJ5Afkfn40NPdBIUWS4UK6PBLnT
+         v8T3wDSCbwWrFMDsiXILlqpMUMvQ3unhbBhmPiO80ynFOpPTEoq4zeiPjNtSnhkeqi
+         q+HYIkzI3VYgsxvcpTcqbVk16k3WgYjYk3Gx61sw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 214/215] ext4: fix memory leak in ext4_fill_super
-Date:   Thu, 15 Jul 2021 20:39:46 +0200
-Message-Id: <20210715182636.931701201@linuxfoundation.org>
+        stable@vger.kernel.org, Bernhard Wimmer <be.wimm@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.12 225/242] media: ccs: Fix the op_pll_multiplier address
+Date:   Thu, 15 Jul 2021 20:39:47 +0200
+Message-Id: <20210715182632.551835739@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,156 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Bernhard Wimmer <be.wimm@gmail.com>
 
-commit 618f003199c6188e01472b03cdbba227f1dc5f24 upstream.
+commit 0e3e0c9369c822b7f1dd11504eeb98cfd4aabf24 upstream.
 
-static int kthread(void *_create) will return -ENOMEM
-or -EINTR in case of internal failure or
-kthread_stop() call happens before threadfn call.
+According to the CCS spec the op_pll_multiplier address is 0x030e,
+not 0x031e.
 
-To prevent fancy error checking and make code
-more straightforward we moved all cleanup code out
-of kmmpd threadfn.
-
-Also, dropped struct mmpd_data at all. Now struct super_block
-is a threadfn data and struct buffer_head embedded into
-struct ext4_sb_info.
-
-Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/20210430185046.15742-1-paskripkin@gmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Bernhard Wimmer <be.wimm@gmail.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: stable@vger.kernel.org
+Fixes: 6493c4b777c2 ("media: smiapp: Import CCS definitions")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/ext4.h  |    4 ++++
- fs/ext4/mmp.c   |   28 +++++++++++++---------------
- fs/ext4/super.c |   10 ++++------
- 3 files changed, 21 insertions(+), 21 deletions(-)
+ drivers/media/i2c/ccs/ccs-limits.c |    4 ++++
+ drivers/media/i2c/ccs/ccs-limits.h |    4 ++++
+ drivers/media/i2c/ccs/ccs-regs.h   |    6 +++++-
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1480,6 +1480,7 @@ struct ext4_sb_info {
- 	struct kobject s_kobj;
- 	struct completion s_kobj_unregister;
- 	struct super_block *s_sb;
-+	struct buffer_head *s_mmp_bh;
+--- a/drivers/media/i2c/ccs/ccs-limits.c
++++ b/drivers/media/i2c/ccs/ccs-limits.c
+@@ -1,5 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
+ /* Copyright (C) 2019--2020 Intel Corporation */
++/*
++ * Generated by Documentation/driver-api/media/drivers/ccs/mk-ccs-regs;
++ * do not modify.
++ */
  
- 	/* Journaling */
- 	struct journal_s *s_journal;
-@@ -3624,6 +3625,9 @@ extern struct ext4_io_end_vec *ext4_last
- /* mmp.c */
- extern int ext4_multi_mount_protect(struct super_block *, ext4_fsblk_t);
+ #include "ccs-limits.h"
+ #include "ccs-regs.h"
+--- a/drivers/media/i2c/ccs/ccs-limits.h
++++ b/drivers/media/i2c/ccs/ccs-limits.h
+@@ -1,5 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause */
+ /* Copyright (C) 2019--2020 Intel Corporation */
++/*
++ * Generated by Documentation/driver-api/media/drivers/ccs/mk-ccs-regs;
++ * do not modify.
++ */
  
-+/* mmp.c */
-+extern void ext4_stop_mmpd(struct ext4_sb_info *sbi);
-+
- /* verity.c */
- extern const struct fsverity_operations ext4_verityops;
+ #ifndef __CCS_LIMITS_H__
+ #define __CCS_LIMITS_H__
+--- a/drivers/media/i2c/ccs/ccs-regs.h
++++ b/drivers/media/i2c/ccs/ccs-regs.h
+@@ -1,5 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause */
+ /* Copyright (C) 2019--2020 Intel Corporation */
++/*
++ * Generated by Documentation/driver-api/media/drivers/ccs/mk-ccs-regs;
++ * do not modify.
++ */
  
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -127,9 +127,9 @@ void __dump_mmp_msg(struct super_block *
-  */
- static int kmmpd(void *data)
- {
--	struct super_block *sb = ((struct mmpd_data *) data)->sb;
--	struct buffer_head *bh = ((struct mmpd_data *) data)->bh;
-+	struct super_block *sb = (struct super_block *) data;
- 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-+	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
- 	struct mmp_struct *mmp;
- 	ext4_fsblk_t mmp_block;
- 	u32 seq = 0;
-@@ -245,12 +245,18 @@ static int kmmpd(void *data)
- 	retval = write_mmp_block(sb, bh);
- 
- exit_thread:
--	EXT4_SB(sb)->s_mmp_tsk = NULL;
--	kfree(data);
--	brelse(bh);
- 	return retval;
- }
- 
-+void ext4_stop_mmpd(struct ext4_sb_info *sbi)
-+{
-+	if (sbi->s_mmp_tsk) {
-+		kthread_stop(sbi->s_mmp_tsk);
-+		brelse(sbi->s_mmp_bh);
-+		sbi->s_mmp_tsk = NULL;
-+	}
-+}
-+
- /*
-  * Get a random new sequence number but make sure it is not greater than
-  * EXT4_MMP_SEQ_MAX.
-@@ -275,7 +281,6 @@ int ext4_multi_mount_protect(struct supe
- 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
- 	struct buffer_head *bh = NULL;
- 	struct mmp_struct *mmp = NULL;
--	struct mmpd_data *mmpd_data;
- 	u32 seq;
- 	unsigned int mmp_check_interval = le16_to_cpu(es->s_mmp_update_interval);
- 	unsigned int wait_time = 0;
-@@ -364,24 +369,17 @@ skip:
- 		goto failed;
- 	}
- 
--	mmpd_data = kmalloc(sizeof(*mmpd_data), GFP_KERNEL);
--	if (!mmpd_data) {
--		ext4_warning(sb, "not enough memory for mmpd_data");
--		goto failed;
--	}
--	mmpd_data->sb = sb;
--	mmpd_data->bh = bh;
-+	EXT4_SB(sb)->s_mmp_bh = bh;
- 
- 	/*
- 	 * Start a kernel thread to update the MMP block periodically.
- 	 */
--	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data, "kmmpd-%.*s",
-+	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb, "kmmpd-%.*s",
- 					     (int)sizeof(mmp->mmp_bdevname),
- 					     bdevname(bh->b_bdev,
- 						      mmp->mmp_bdevname));
- 	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
- 		EXT4_SB(sb)->s_mmp_tsk = NULL;
--		kfree(mmpd_data);
- 		ext4_warning(sb, "Unable to create kmmpd thread for %s.",
- 			     sb->s_id);
- 		goto failed;
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1260,8 +1260,8 @@ static void ext4_put_super(struct super_
- 	ext4_xattr_destroy_cache(sbi->s_ea_block_cache);
- 	sbi->s_ea_block_cache = NULL;
- 
--	if (sbi->s_mmp_tsk)
--		kthread_stop(sbi->s_mmp_tsk);
-+	ext4_stop_mmpd(sbi);
-+
- 	brelse(sbi->s_sbh);
- 	sb->s_fs_info = NULL;
- 	/*
-@@ -5173,8 +5173,7 @@ failed_mount3a:
- 	ext4_es_unregister_shrinker(sbi);
- failed_mount3:
- 	del_timer_sync(&sbi->s_err_report);
--	if (sbi->s_mmp_tsk)
--		kthread_stop(sbi->s_mmp_tsk);
-+	ext4_stop_mmpd(sbi);
- failed_mount2:
- 	rcu_read_lock();
- 	group_desc = rcu_dereference(sbi->s_group_desc);
-@@ -5927,8 +5926,7 @@ static int ext4_remount(struct super_blo
- 				 */
- 				ext4_mark_recovery_complete(sb, es);
- 			}
--			if (sbi->s_mmp_tsk)
--				kthread_stop(sbi->s_mmp_tsk);
-+			ext4_stop_mmpd(sbi);
- 		} else {
- 			/* Make sure we can mount this feature set readwrite */
- 			if (ext4_has_feature_readonly(sb) ||
+ #ifndef __CCS_REGS_H__
+ #define __CCS_REGS_H__
+@@ -202,7 +206,7 @@
+ #define CCS_R_OP_PIX_CLK_DIV					(0x0308 | CCS_FL_16BIT)
+ #define CCS_R_OP_SYS_CLK_DIV					(0x030a | CCS_FL_16BIT)
+ #define CCS_R_OP_PRE_PLL_CLK_DIV				(0x030c | CCS_FL_16BIT)
+-#define CCS_R_OP_PLL_MULTIPLIER					(0x031e | CCS_FL_16BIT)
++#define CCS_R_OP_PLL_MULTIPLIER					(0x030e | CCS_FL_16BIT)
+ #define CCS_R_PLL_MODE						0x0310
+ #define CCS_PLL_MODE_SHIFT					0U
+ #define CCS_PLL_MODE_MASK					0x1
 
 
