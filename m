@@ -2,206 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484D23C9D5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED693C9D5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241722AbhGOLAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
+        id S241735AbhGOLBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240413AbhGOLAf (ORCPT
+        with ESMTP id S240413AbhGOLBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:00:35 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EFBC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:57:41 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 141so8195692ljj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:57:41 -0700 (PDT)
+        Thu, 15 Jul 2021 07:01:12 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC2FC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:58:18 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id q4so8113321ljp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:58:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=kUzYOF+Pui+/I75Qhr4DvmdNbJq7Jy8ptwao2NR3kdg=;
-        b=GMnRE7I5TbmchgHxyTG5ByDoqCJLG/yi1OZs8iSb5pbm54yJ8MDssnqdyp/yselDdk
-         w/7cJ8D4nFkYdCuFGb8l1Vnf3PWDVhR9NVZDBAnHjZ0m9DGXLGzMIRk8iDIHgX+ohzZl
-         9yidPSlXzuQFg2Y2cTA3qUUSRkyr/1bJvr1QR9uRqexCa2rhmHDcPWe2zJMplC7tDZpT
-         UayNiwlWGEkIWKTlY0gbImih/Q1+Vg3pMsR4lNBqcbHY7P/n2i4xFQ7WnBnH4tqFmbtH
-         Eon9DgyDN5YvIgkOzr4SEXY+EIEBQHPbh7as1acZAzc6wn/oyZt58boPFISr5E0AfQ3x
-         Jzqw==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TBy0uciWgzBnyRgveHH1MFBpO9T+N0y7vThNEqm5Wtc=;
+        b=V03s5RT19tk7odrYfvtdPvpVkHs6NYLb0eeZazurQZ0uvvwUdwYw8yDKZG3Fp468qB
+         oyhlIJdU6B/oOwp4zFuYW7CqZUdGtcYaw4mZz0x64UUdxYU5x8xcwm8TX+y0WXlCMRc+
+         vKuBX5ySPyfnvvTu6awoVFyuJ5paxQtC9wynkQJO0nwfvjzUhKWTzPIDxVvHeyicc3tj
+         8XgqArocvS2xthQriJQ0jM4tgoWj2MT0t6wa15jqSlEhAtsPVvDEuCPRvz9oRqkhHCr/
+         qHCB4VVWaQV0Zgxc3cHjcIerkZypzbfx9DwjSFlcNZtePcJJlkBSobLU1xNJi1yoQjMl
+         6FrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kUzYOF+Pui+/I75Qhr4DvmdNbJq7Jy8ptwao2NR3kdg=;
-        b=E32A4vEHjn7DX/VRvzTyWTSSrGHGyt0ii9y9Rlm3i2dQMNvFtT3cpMBT8UdefMgYGs
-         Cl8X7kdCCw5Js9xlyZUCeHQ4zQYqKCBn0QIy2q1GKyNmg0gKhxKB0kBp6ZW9kH0PyhIX
-         W97Qz00PmIWA9a1yx16bqkM9TQRs1N1SrGE41xOcZvXOzfAki/ZD/vzwz7Ly9dLIcpYC
-         bIvyV80SP2a+fGCcOWYHYMRKeaJRydksXo3ADc3Uorgt6zfKvgFj7t8VhX6KPT+dhf6x
-         /QIz/nCeeWz11IR+U03MvuYSH1A0ZJxtULBJ1OYDw+GRAKHDbRsp+v+AVRrAul0+0S4T
-         8hGw==
-X-Gm-Message-State: AOAM531RApJdJtpZJVirOHPqukJeWcZWKxxzGPgA+JmMmdo0gUKwDDpg
-        kWN4CLUk34Ql1a46D4ockI67Yg==
-X-Google-Smtp-Source: ABdhPJyTA6w/sbL14AlzwBQEySRFLleWEmN4PHtGsm1l1itiJyfLMgN3IGdBKYJkgBbygWh8f8M1ew==
-X-Received: by 2002:a2e:904b:: with SMTP id n11mr3481143ljg.104.1626346659431;
-        Thu, 15 Jul 2021 03:57:39 -0700 (PDT)
-Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
-        by smtp.gmail.com with ESMTPSA id z8sm385585lfh.119.2021.07.15.03.57.38
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TBy0uciWgzBnyRgveHH1MFBpO9T+N0y7vThNEqm5Wtc=;
+        b=KO6xhTUWBJDnwyeHp7Jc3PBa65oGIK/XkKd/HGhHnA8dHeWtW58S6k8KNDHWW8ZoKa
+         hPuLEyPJ+Q1pYUjjxuVR4DKan7bqqkyQGEOgJTMTyl9J9ko3QPPsa+MufDGBArRkMGOS
+         5KCw3vMgpJ8uaVRCO8W3Hbm35V85a5+g5iYcYVI6mDaBpSie3m5ib15O0T/AUpTkxcqx
+         sIWKNd+Flsl9uvjOmRXNyfn3mJGOt9Kpk64dln9vYN/npKh8WfC12xSengVEMf2Z72ri
+         FmTeOh1YjRC45+de65fTr6DAUdPcEU8iVfs99KBKWRES7ynMt+uQakKvp2odqKvw5gMu
+         fsMA==
+X-Gm-Message-State: AOAM5302DovL9MmfRTseytRlPva2cWxEQXZ0LErOy+ZNb52HZRVtWmEa
+        sfTZll3m4J7JqARuRfZ+K/E=
+X-Google-Smtp-Source: ABdhPJwY91OrmT7/Ca0tvRe1D2yeHL/J1nyou/l/Ohcf7WKS1LBZsGrqpQQOtXmz6ldNOGTWjINCdA==
+X-Received: by 2002:a2e:bd06:: with SMTP id n6mr3402863ljq.95.1626346696594;
+        Thu, 15 Jul 2021 03:58:16 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id q15sm373739lfp.157.2021.07.15.03.58.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 03:57:38 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 12:57:37 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Dennis Rachui <drachui@de.adit-jv.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
-Message-ID: <YPAUoQ8KmmAE3fWD@oden.dyn.berto.se>
-References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
- <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
- <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
- <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
- <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
+        Thu, 15 Jul 2021 03:58:15 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 15 Jul 2021 12:58:13 +0200
+To:     Chen Wandun <chenwandun@huawei.com>
+Cc:     akpm@linux-foundation.org, serapheim.dimitro@delphix.com,
+        urezki@gmail.com, wangkefeng.wang@huawei.com,
+        weiyongjun1@huawei.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] mm/vmalloc: fix wrong behavior in vread
+Message-ID: <20210715105813.GA1879@pc638.lan>
+References: <20210714015959.3204871-1-chenwandun@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
+In-Reply-To: <20210714015959.3204871-1-chenwandun@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On 2021-07-14 21:40:51 +0300, Laurent Pinchart wrote:
-> Hi Niklas,
+On Wed, Jul 14, 2021 at 09:59:59AM +0800, Chen Wandun wrote:
+> commit f608788cd2d6 ("mm/vmalloc: use rb_tree instead of list for vread()
+> lookups") use rb_tree instread of list to speed up lookup, but function
+> __find_vmap_area is try to find a vmap_area that include target address,
+> if target address is smaller than the leftmost node in vmap_area_root,
+> it will return NULL, then vread will read nothing. This behavior is
+> different from the primitive semantics.
 > 
-> On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
-> > On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
-> > > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
-> > > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
-> > > > > Verify that streaming is not active before setting the pad format.
-> > > > > 
-> > > > > According to the VIDIOC documentation [1] changes to the active
-> > > > > format of a media pad via the VIDIOC_SUBDEV_S_FMT ioctl are
-> > > > > applied to the underlying hardware.
-> > > > > In rcar-csi2 a format change only applies to hardware, when the
-> > > > > pipeline is started. While the device is not in use, it is therefore
-> > > > > okay to update the format.
-> > > > > 
-> > > > > However, when the pipeline is active, this leads to a format
-> > > > > mismatch between driver and device.
-> > > > > Other applications can query the format with
-> > > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported
-> > > > > a format that does not fit the current stream.
-> > > > > 
-> > > > > This commit prevents format update while streaming is active
-> > > > > and returns -EBUSY to user space, as suggested by [1].
-> > > > > 
-> > > > > [1] Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rst
-> > > > 
-> > > > I like that this is addressed, but I wonder is this not something that 
-> > > > should be fixed in the V4L2 core and not in drivers?
-> > > 
-> > > Some drivers may support format changes during streaming (that's allowed
-> > > by the V4L2 API, I'm not sure if it's used anywhere though). While I'd
-> > > favour not duplicating the same logic in different (and differently
-> > > buggy) ways in drivers, I'm not sure how this could be implemented in a
-> > > sane way in the V4L2 core in its current state.
-> > 
-> > I understand it's possible from some devices to support to format 
-> > changes during streaming, but as you point out it's the exception and 
-> > not the rule, if used at all.
-> > 
-> > So my point is if we start to enforce this in drivers we are headed down 
-> > a road where this will be messier to clean up. Would it not make more 
-> > sens to default the V4L2 core to disallow format changes while streaming 
-> > and add a new flag to V4L2_SUBDEV_CAP_ to signal that the subdevice 
-> > supports format changes while streaming?
-> > 
-> > We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a subdevice 
-> > only supports read-only operations so I think it would not be too hard 
-> > to move this functionality into the core?
+> The correct way is find the first vmap_are that bigger than target addr,
+> that is what function find_vmap_area_exceed_addr does.
 > 
-> Yes, that's something we could try. The subdev core will then need to
-> track the streaming state, which may require wrapping the .s_stream()
-> call. Locking should then also likely be handled by the core. Probably
-> nothing impossible, but quite a bit of work. Any volunteer ? :-)
-
-We already track the stream count in struct media_entity and it's 
-incremented/decremented under the media device lock by 
-media_pipeline_start() and media_pipeline_stop(). So I don't think it's 
-such a hard feature to add.
-
-The large task IMHO is to figure out if we have any subdevice in tree 
-that allows format changes while streaming and that would need to set 
-this new V4L2_SUBDEV_CAP_ flag.
-
+> Fixes: f608788cd2d6 ("mm/vmalloc: use rb_tree instead of list for vread() lookups")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+> ---
+>  mm/vmalloc.c | 29 ++++++++++++++++++++++++++++-
+>  1 file changed, 28 insertions(+), 1 deletion(-)
 > 
-> > > > > Note: after creation of this commit, it was noticed that Steve
-> > > > > Longerbeam has a very similar solution in his fork.
-> > > > > 
-> > > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
-> > > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
-> > > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
-> > > > > ---
-> > > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 ++++++++++++++++++++-
-> > > > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > index e28eff0..98152e1 100644
-> > > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct v4l2_subdev *sd,
-> > > > >  {
-> > > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
-> > > > >  	struct v4l2_mbus_framefmt *framefmt;
-> > > > > +	int ret = 0;
-> > > > > +
-> > > > > +	mutex_lock(&priv->lock);
-> > > > >  
-> > > > >  	if (!rcsi2_code_to_fmt(format->format.code))
-> > > > >  		format->format.code = rcar_csi2_formats[0].code;
-> > > > >  
-> > > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
-> > > > > +
-> > > > > +		/*
-> > > > > +		 * Do not apply changes to active format while streaming.
-> > > > > +		 *
-> > > > > +		 * Since video streams could be forwarded from sink pad to any
-> > > > > +		 * source pad (depending on CSI-2 channel routing), all
-> > > > > +		 * media pads are effected by this rule.
-> > > > > +		 */
-> > > > > +		if (priv->stream_count > 0) {
-> > > > > +			ret = -EBUSY;
-> > > > > +			goto out;
-> > > > > +		}
-> > > > > +
-> > > > >  		priv->mf = format->format;
-> > > > >  	} else {
-> > > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > > > >  		*framefmt = format->format;
-> > > > >  	}
-> > > > >  
-> > > > > -	return 0;
-> > > > > +out:
-> > > > > +	mutex_unlock(&priv->lock);
-> > > > > +
-> > > > > +	return ret;
-> > > > >  }
-> > > > >  
-> > > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index d5cd52805149..47c3a551b6dc 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -787,6 +787,28 @@ unsigned long vmalloc_nr_pages(void)
+>  	return atomic_long_read(&nr_vmalloc_pages);
+>  }
+>  
+> +static struct vmap_area *find_vmap_area_exceed_addr(unsigned long addr)
+> +{
+> +	struct vmap_area *va = NULL;
+> +	struct rb_node *n = vmap_area_root.rb_node;
+> +
+> +	while (n) {
+> +		struct vmap_area *tmp;
+> +
+> +		tmp = rb_entry(n, struct vmap_area, rb_node);
+> +		if (tmp->va_end > addr) {
+> +			va = tmp;
+> +			if (tmp->va_start <= addr)
+> +				break;
+> +
+> +			n = n->rb_left;
+> +		} else
+> +			n = n->rb_right;
+> +	}
+> +
+> +	return va;
+> +}
+> +
+Can we combine pvm_find_va_enclose_addr() with your new function
+making it as one function? The aim is to reduce copy-paste and
+not create such new "find" functions.
 
--- 
-Regards,
-Niklas Söderlund
+The pvm_find_va_enclose_addr() seems does the same but only in
+reverse order. So something like:
+
+find_vmap_area_exceed_addr(bool reverse)
+
+Thanks!
+
+--
+Vlad Rezki
