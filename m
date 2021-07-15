@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12C03C996A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF4A3C9967
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239262AbhGOHOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:14:07 -0400
-Received: from smtp1.hiworks.co.kr ([121.254.168.204]:31362 "EHLO
-        smtp1.hiworks.co.kr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236815AbhGOHOG (ORCPT
+        id S239232AbhGOHMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236815AbhGOHM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:14:06 -0400
-Received: (qmail 124937 invoked from network); 15 Jul 2021 16:11:10 +0900
-Received: from unknown (HELO hiworks.co.kr) (192.168.10.180)
-        by 0 (qmail 1.03 + ejcp v14) with SMTP;
-        15 Jul 2021 16:11:10 +0900
-Received: (qmail 192802 invoked from network); 15 Jul 2021 16:11:11 +0900
-Received: from unknown (HELO localhost.localdomain) (tykwon@m2i.co.kr@58.75.176.98)
-        by 0 (qmail 1.03 + ejcp v14) with SMTP;
-        15 Jul 2021 16:11:11 +0900
-X-Authinfo: HIWORKS SMTP authenticated <tykwon@m2i.co.kr|58.75.176.98|tykwon@m2i.co.kr|210715161111_7349191945>
-From:   Kwon Tae-young <tykwon@m2i.co.kr>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     Kwon Tae-young <tykwon@m2i.co.kr>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mq-evk: Remove unnecessary blank lines
-Date:   Thu, 15 Jul 2021 16:07:49 +0900
-Message-Id: <20210715070749.13552-1-tykwon@m2i.co.kr>
-X-Mailer: git-send-email 2.17.1
+        Thu, 15 Jul 2021 03:12:29 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7F1C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:09:36 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id w1so4097186ilg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9B+oTQwgmo4p1Ky+jMiYsVX5twnQnFrh+/KabLkfKoM=;
+        b=gXX+pNEeNfCIXnvpl5zzg72jHjH+3zkYJyYwbmO1kzh6ft7/OouMUm8xc5cxG1XPp8
+         Vfl1oHQrkntzz2y4B62MFB0npJvEz/EllABrsOjYb23ZWwcji9c17WbupAJqSMCKjf0q
+         P9puY5/sExP8rW+vR6b7vTTJ9DDQLHDyikWKMFxq6Z+CSp+C0hNwnB5kLycCHNfoPdF0
+         ZME0I/BW6gRIqG6XyZirldBU3sEofWoFpeDFdYt+CBSvj2oKp21RqmylUxRHM9lqPuuJ
+         Njxiq/CD9vBHyByW1XrAxcB0Y//F+cqnQDlTU5eH2uxU8VpUmofQm/oQOYs4ipZrnaFl
+         xsFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9B+oTQwgmo4p1Ky+jMiYsVX5twnQnFrh+/KabLkfKoM=;
+        b=CjoLZpo9QKOn0wu+knfXvQ4rcNkAzAao7eB3WALQbUhJjzS+6+ISlUJBiyfD5lorJ+
+         a0T9enVpFH2nnjQouclGNEZOLtqawIkaSUvfzWa1ZBQ+Re/+o8nlKr5tN3nG3TaOifZ8
+         oE/whRX94DdJE1u2Li+oCdqYR+S76CkWKjutXjFJ/OY9fFjzDJxDo5Nb0o21QYmdqVNJ
+         UCRwaM6z6DlCoBMfWR44iLWp0aVJtA8edI3emx3sTVH2VehQroR/Zz+r2Oto1tuvOgYY
+         7ei/GbsUN6xj+poEK5/O6nv5n6YRjy4cELQUbDO9ouIqP11Nm7wqeFDj9ZQggvhM41gg
+         inBg==
+X-Gm-Message-State: AOAM533OeEwp3q3PCNKSEIul0J7fYEaru7pB0Tk7e/Vvp+8lkVtRbAy0
+        lWCYQmxdKs4bDdcCYWqZxrCWHcskwFIvW8f2E4RG0w==
+X-Google-Smtp-Source: ABdhPJwuKUmsa/XevSPh49jg4k4QcER8gMdTrKqp3qt3Rwy5IFwH+L9++y/Wz79S7Mh+BnEstfthYeRZOPSds8h1z9k=
+X-Received: by 2002:a92:d990:: with SMTP id r16mr1786919iln.204.1626332975821;
+ Thu, 15 Jul 2021 00:09:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com> <1626316157-24935-9-git-send-email-kewei.xu@mediatek.com>
+In-Reply-To: <1626316157-24935-9-git-send-email-kewei.xu@mediatek.com>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Thu, 15 Jul 2021 15:09:25 +0800
+Message-ID: <CA+Px+wWNcSkxvsEoUrgBN73+jhq8qjFJodYjQnY1zW2d0a5yRA@mail.gmail.com>
+Subject: Re: [PATCH 8/8] i2c: mediatek: modify bus speed calculation formula
+To:     Kewei Xu <kewei.xu@mediatek.com>
+Cc:     wsa@the-dreams.de, matthias.bgg@gmail.com, robh+dt@kernel.org,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        leilk.liu@mediatek.com, qii.wang@mediatek.com,
+        qiangming.xia@mediatek.com, ot_daolong.zhu@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unnecessary blank lines do NOT help readability, so remove them.
+On Thu, Jul 15, 2021 at 10:32 AM Kewei Xu <kewei.xu@mediatek.com> wrote:
+> When clock-div is 0 or greater than 1, the bus speed
+> calculated by the old speed calculation formula will be
+> larger than the target speed. So we update the formula.
+The patch sounds like a fix up.  Need a "Fixes" tag.
 
-Signed-off-by: Kwon Tae-young <tykwon@m2i.co.kr>
----
- arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 2 --
- 1 file changed, 2 deletions(-)
+>         for (clk_div = 1; clk_div <= max_clk_div; clk_div++) {
+>                 clk_src = parent_clk / clk_div;
+> +               i2c->ac_timing.inter_clk_div = clk_div - 1;
+Using the way to pass the parameter "inter_clk_div" to
+mtk_i2c_calculate_speed() looks like a hack.  inter_clk_div is set
+again[1] next to the for loop.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-index 4d2035e3dd7c..c6792d797336 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-@@ -423,7 +423,6 @@
- 		fsl,pins = <
- 			MX8MQ_IOMUXC_GPIO1_IO13_GPIO1_IO13		0x19
- 		>;
--
- 	};
- 
- 	pinctrl_fec1: fec1grp {
-@@ -480,7 +479,6 @@
- 			MX8MQ_IOMUXC_NAND_DATA01_QSPI_A_DATA1	0x82
- 			MX8MQ_IOMUXC_NAND_DATA02_QSPI_A_DATA2	0x82
- 			MX8MQ_IOMUXC_NAND_DATA03_QSPI_A_DATA3	0x82
--
- 		>;
- 	};
- 
--- 
-2.17.1
+[1]: https://elixir.bootlin.com/linux/v5.14-rc1/source/drivers/i2c/busses/i2c-mt65xx.c#L831
 
+
+
+I have no domain knowledge of what/how the patch fixes.  But if this
+is a standalone fixup patch, suggest separating to an independent
+patch.
