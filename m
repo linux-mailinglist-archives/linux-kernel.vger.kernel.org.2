@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC4C3CA5FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AF23CA600
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236851AbhGOSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:45:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45694 "EHLO mail.kernel.org"
+        id S236941AbhGOSpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:45:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235928AbhGOSpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:45:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90493613CA;
-        Thu, 15 Jul 2021 18:42:14 +0000 (UTC)
+        id S230116AbhGOSpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:45:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DACE2613CC;
+        Thu, 15 Jul 2021 18:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374535;
-        bh=NQy8nTnLvXU/vhv4B5FMdCwgkqRgd+S+GC6IS4N4NfY=;
+        s=korg; t=1626374537;
+        bh=DLMSh4j0AnmTMlzgxM/VboZ7+8wm4ULFHQ39d2I+ppE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WWBAZcB7UdWxg6DfellLC0D36bX3Q3gusmAyMzpBiEDVIUb/zKxk0fF+jQxcAwS55
-         fu56KAu4Ivo3R4dDm+lekpUGwdBMhd1eT332jta2B3eNLD8yV2oeKqZOfsEXH5SlC8
-         3dkoqy14owVZYb8mCPyy/9NbV4pgmHzMQyxic/YE=
+        b=Em4F1fISQPjcrzYEl6JPvMsrIHcaRkcmZOxV36EZ9IO+/dROvjdR/V/mXFp/x/kZt
+         RB7YJuyoYFb/DubiOxkzrFjCeZ5nkn4YEt5d1M1b0saCkhBUj0AQSISau2t69OOWk3
+         3erOaUcFldGie8B1TTRdpeO2kL7p434txLJPlo4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 041/122] wlcore/wl12xx: Fix wl12xx get_mac error if device is in ELP
-Date:   Thu, 15 Jul 2021 20:38:08 +0200
-Message-Id: <20210715182459.294742135@linuxfoundation.org>
+Subject: [PATCH 5.4 042/122] wl1251: Fix possible buffer overflow in wl1251_cmd_scan
+Date:   Thu, 15 Jul 2021 20:38:09 +0200
+Message-Id: <20210715182459.496395026@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -41,55 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Lee Gibson <leegib@gmail.com>
 
-[ Upstream commit 11ef6bc846dcdce838f0b00c5f6a562c57e5d43b ]
+[ Upstream commit d10a87a3535cce2b890897914f5d0d83df669c63 ]
 
-At least on wl12xx, reading the MAC after boot can fail with a warning
-at drivers/net/wireless/ti/wlcore/sdio.c:78 wl12xx_sdio_raw_read.
-The failed call comes from wl12xx_get_mac() that wlcore_nvs_cb() calls
-after request_firmware_work_func().
+Function wl1251_cmd_scan calls memcpy without checking the length.
+Harden by checking the length is within the maximum allowed size.
 
-After the error, no wireless interface is created. Reloading the wl12xx
-module makes the interface work.
-
-Turns out the wlan controller can be in a low-power ELP state after the
-boot from the bootloader or kexec, and needs to be woken up first.
-
-Let's wake the hardware and add a sleep after that similar to
-wl12xx_pre_boot() is already doing.
-
-Note that a similar issue could exist for wl18xx, but I have not seen it
-so far. And a search for wl18xx_get_mac and wl12xx_sdio_raw_read did not
-produce similar errors.
-
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Lee Gibson <leegib@gmail.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210603062814.19464-1-tony@atomide.com
+Link: https://lore.kernel.org/r/20210428115508.25624-1-leegib@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ti/wl12xx/main.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/wireless/ti/wl1251/cmd.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ti/wl12xx/main.c b/drivers/net/wireless/ti/wl12xx/main.c
-index 9d7dbfe7fe0c..c6da0cfb4afb 100644
---- a/drivers/net/wireless/ti/wl12xx/main.c
-+++ b/drivers/net/wireless/ti/wl12xx/main.c
-@@ -1503,6 +1503,13 @@ static int wl12xx_get_fuse_mac(struct wl1271 *wl)
- 	u32 mac1, mac2;
- 	int ret;
+diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
+index 9547aea01b0f..ea0215246c5c 100644
+--- a/drivers/net/wireless/ti/wl1251/cmd.c
++++ b/drivers/net/wireless/ti/wl1251/cmd.c
+@@ -466,9 +466,12 @@ int wl1251_cmd_scan(struct wl1251 *wl, u8 *ssid, size_t ssid_len,
+ 		cmd->channels[i].channel = channels[i]->hw_value;
+ 	}
  
-+	/* Device may be in ELP from the bootloader or kexec */
-+	ret = wlcore_write32(wl, WL12XX_WELP_ARM_COMMAND, WELP_ARM_COMMAND_VAL);
-+	if (ret < 0)
-+		goto out;
+-	cmd->params.ssid_len = ssid_len;
+-	if (ssid)
+-		memcpy(cmd->params.ssid, ssid, ssid_len);
++	if (ssid) {
++		int len = clamp_val(ssid_len, 0, IEEE80211_MAX_SSID_LEN);
 +
-+	usleep_range(500000, 700000);
-+
- 	ret = wlcore_set_partition(wl, &wl->ptable[PART_DRPW]);
- 	if (ret < 0)
- 		goto out;
++		cmd->params.ssid_len = len;
++		memcpy(cmd->params.ssid, ssid, len);
++	}
+ 
+ 	ret = wl1251_cmd_send(wl, CMD_SCAN, cmd, sizeof(*cmd));
+ 	if (ret < 0) {
 -- 
 2.30.2
 
