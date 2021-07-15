@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37093CA8F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445C83CA8EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243477AbhGOTE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57144 "EHLO mail.kernel.org"
+        id S243454AbhGOTEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240256AbhGOSxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:53:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E59C613ED;
-        Thu, 15 Jul 2021 18:50:54 +0000 (UTC)
+        id S239531AbhGOSxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:53:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA109613CA;
+        Thu, 15 Jul 2021 18:50:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375055;
-        bh=uVE04i3VRKABrlOZWq05fkd587OP1AIH8sa9nrjJCBM=;
+        s=korg; t=1626375060;
+        bh=/aw41K5/NSchCtxNyxON9OJdJYhSrdRVM1wLVHcs0hs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2N6HPgzXULrEFGQahfmJjCe6XJFZLFM2H52VEIZn3XmykS1OceN/n4KMRFLoQQawW
-         leRRkvyqk5brnvzypZy+JzSKFN7REwI7ioBkGMq96yhQHuVs+LF0EJuNI2LxdGjWy0
-         16Laxw7SOTo1ZPUXcmObW6+VTwa9yZxazvJ3e4YM=
+        b=D7/sRP+s950+4qtxnEXyHA6xUgLOCelPo8nZLdp2YGPCNn/9VTD8os4BhfKPGVIes
+         G6UA/HYvyzIBx2xiSOLQirepD/FDMjwVmlVH/ehRbBaW9wwhXcUEXhc93XkPMqY62E
+         eFD0bYzPw1yUg+X5MrjxEx7JXtMhQ4oN+xvfgdkw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Eric Desrochers <eric.desrochers@canonical.com>,
-        Mauricio Faria de Oliveira <mfo@canonical.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Oscar Salvador <osalvador@suse.de>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Hanjun Guo <guohanjun@huawei.com>
-Subject: [PATCH 5.10 139/215] loop: fix I/O error on fsync() in detached loop devices
-Date:   Thu, 15 Jul 2021 20:38:31 +0200
-Message-Id: <20210715182624.121950937@linuxfoundation.org>
+Subject: [PATCH 5.10 140/215] mm,hwpoison: return -EBUSY when migration fails
+Date:   Thu, 15 Jul 2021 20:38:32 +0200
+Message-Id: <20210715182624.294004469@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -43,72 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauricio Faria de Oliveira <mfo@canonical.com>
+From: Oscar Salvador <osalvador@suse.de>
 
-commit 4ceddce55eb35d15b0f87f5dcf6f0058fd15d3a4 upstream.
+commit 3f4b815a439adfb8f238335612c4b28bc10084d8
 
-There's an I/O error on fsync() in a detached loop device
-if it has been previously attached.
+Currently, we return -EIO when we fail to migrate the page.
 
-The issue is write cache is enabled in the attach path in
-loop_configure() but it isn't disabled in the detach path;
-thus it remains enabled in the block device regardless of
-whether it is attached or not.
+Migrations' failures are rather transient as they can happen due to
+several reasons, e.g: high page refcount bump, mapping->migrate_page
+failing etc.  All meaning that at that time the page could not be
+migrated, but that has nothing to do with an EIO error.
 
-Now fsync() can get an I/O request that will just be failed
-later in loop_queue_rq() as device's state is not 'Lo_bound'.
+Let us return -EBUSY instead, as we do in case we failed to isolate the
+page.
 
-So, disable write cache in the detach path.
+While are it, let us remove the "ret" print as its value does not change.
 
-Do so based on the queue flag, not the loop device flag for
-read-only (used to enable) as the queue flag can be changed
-via sysfs even on read-only loop devices (e.g., losetup -r.)
-
-Test-case:
-
-    # DEV=/dev/loop7
-
-    # IMG=/tmp/image
-    # truncate --size 1M $IMG
-
-    # losetup $DEV $IMG
-    # losetup -d $DEV
-
-Before:
-
-    # strace -e fsync parted -s $DEV print 2>&1 | grep fsync
-    fsync(3)                                = -1 EIO (Input/output error)
-    Warning: Error fsyncing/closing /dev/loop7: Input/output error
-    [  982.529929] blk_update_request: I/O error, dev loop7, sector 0 op 0x1:(WRITE) flags 0x800 phys_seg 0 prio class 0
-
-After:
-
-    # strace -e fsync parted -s $DEV print 2>&1 | grep fsync
-    fsync(3)                                = 0
-
-Co-developed-by: Eric Desrochers <eric.desrochers@canonical.com>
-Signed-off-by: Eric Desrochers <eric.desrochers@canonical.com>
-Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
-Tested-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Link: https://lkml.kernel.org/r/20201209092818.30417-1-osalvador@suse.de
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Hildenbrand <david@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/loop.c |    3 +++
- 1 file changed, 3 insertions(+)
+ mm/memory-failure.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -1224,6 +1224,9 @@ static int __loop_clr_fd(struct loop_dev
- 		goto out_unlock;
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1856,11 +1856,11 @@ static int __soft_offline_page(struct pa
+ 			pr_info("soft offline: %#lx: %s migration failed %d, type %lx (%pGp)\n",
+ 				pfn, msg_page[huge], ret, page->flags, &page->flags);
+ 			if (ret > 0)
+-				ret = -EIO;
++				ret = -EBUSY;
+ 		}
+ 	} else {
+-		pr_info("soft offline: %#lx: %s isolation failed: %d, page count %d, type %lx (%pGp)\n",
+-			pfn, msg_page[huge], ret, page_count(page), page->flags, &page->flags);
++		pr_info("soft offline: %#lx: %s isolation failed, page count %d, type %lx (%pGp)\n",
++			pfn, msg_page[huge], page_count(page), page->flags, &page->flags);
+ 		ret = -EBUSY;
  	}
- 
-+	if (test_bit(QUEUE_FLAG_WC, &lo->lo_queue->queue_flags))
-+		blk_queue_write_cache(lo->lo_queue, false, false);
-+
- 	/* freeze request queue during the transition */
- 	blk_mq_freeze_queue(lo->lo_queue);
- 
+ 	return ret;
 
 
