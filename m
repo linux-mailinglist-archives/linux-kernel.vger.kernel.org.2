@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B7A3CA6AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBDB3CA6B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237919AbhGOStz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:49:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49778 "EHLO mail.kernel.org"
+        id S236183AbhGOSuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:50:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237605AbhGOSri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:47:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15FA461396;
-        Thu, 15 Jul 2021 18:44:43 +0000 (UTC)
+        id S237256AbhGOSrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:47:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F3FD601FF;
+        Thu, 15 Jul 2021 18:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374684;
-        bh=NDiODlLmOEuq5EcKIsxhmc5kUyZ62mvvBBbePoXBd+A=;
+        s=korg; t=1626374686;
+        bh=heIKjzrVWDCz5r4LnpqUSfigJCY+N0dJARnlDFNZtsc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iuJMwFpkXI7XwtTISXrKtKwGC0yWPwS0aBfRYgQ0hceRQoXX2ezX1bpGC7UAK7h5e
-         b3g0jHXkpTtsFLWS6E/efRmh/w3AAnXBP8uKfPKOImwx6vFmH6Prc4AnJHPBaYWvIa
-         77fvzD3JJTHtpz+Lq412Cq0hV6DfYAK9pcb9T2II=
+        b=nQ3AMKIuixo1LzfoB9prz4756bUOJP/0G5gFZfg46HyPhW3c8dyHEqV1sRgXGk+t6
+         LdD/BYggv2ObH2BfksFKA3UfvgoFMnAr0mDXjbvZJv9y8EDoYY5bHf+5cKYguNlmqc
+         N9AX5yn7WAkFPy/tgJGGqMorDMnb8/eElDqF+bCc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yun Zhou <yun.zhou@windriver.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.4 103/122] seq_buf: Fix overflow in seq_buf_putmem_hex()
-Date:   Thu, 15 Jul 2021 20:39:10 +0200
-Message-Id: <20210715182519.391679222@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 104/122] rq-qos: fix missed wake-ups in rq_qos_throttle try two
+Date:   Thu, 15 Jul 2021 20:39:11 +0200
+Message-Id: <20210715182519.612194347@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -39,41 +39,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yun Zhou <yun.zhou@windriver.com>
+From: Jan Kara <jack@suse.cz>
 
-commit d3b16034a24a112bb83aeb669ac5b9b01f744bb7 upstream.
+commit 11c7aa0ddea8611007768d3e6b58d45dc60a19e1 upstream.
 
-There's two variables being increased in that loop (i and j), and i
-follows the raw data, and j follows what is being written into the buffer.
-We should compare 'i' to MAX_MEMHEX_BYTES or compare 'j' to HEX_CHARS.
-Otherwise, if 'j' goes bigger than HEX_CHARS, it will overflow the
-destination buffer.
+Commit 545fbd0775ba ("rq-qos: fix missed wake-ups in rq_qos_throttle")
+tried to fix a problem that a process could be sleeping in rq_qos_wait()
+without anyone to wake it up. However the fix is not complete and the
+following can still happen:
 
-Link: https://lore.kernel.org/lkml/20210625122453.5e2fe304@oasis.local.home/
-Link: https://lkml.kernel.org/r/20210626032156.47889-1-yun.zhou@windriver.com
+CPU1 (waiter1)		CPU2 (waiter2)		CPU3 (waker)
+rq_qos_wait()		rq_qos_wait()
+  acquire_inflight_cb() -> fails
+			  acquire_inflight_cb() -> fails
 
-Cc: stable@vger.kernel.org
-Fixes: 5e3ca0ec76fce ("ftrace: introduce the "hex" output method")
-Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+						completes IOs, inflight
+						  decreased
+  prepare_to_wait_exclusive()
+			  prepare_to_wait_exclusive()
+  has_sleeper = !wq_has_single_sleeper() -> true as there are two sleepers
+			  has_sleeper = !wq_has_single_sleeper() -> true
+  io_schedule()		  io_schedule()
+
+Deadlock as now there's nobody to wakeup the two waiters. The logic
+automatically blocking when there are already sleepers is really subtle
+and the only way to make it work reliably is that we check whether there
+are some waiters in the queue when adding ourselves there. That way, we
+are guaranteed that at least the first process to enter the wait queue
+will recheck the waiting condition before going to sleep and thus
+guarantee forward progress.
+
+Fixes: 545fbd0775ba ("rq-qos: fix missed wake-ups in rq_qos_throttle")
+CC: stable@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20210607112613.25344-1-jack@suse.cz
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/seq_buf.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ block/blk-rq-qos.c   |    4 ++--
+ include/linux/wait.h |    2 +-
+ kernel/sched/wait.c  |    9 +++++++--
+ 3 files changed, 10 insertions(+), 5 deletions(-)
 
---- a/lib/seq_buf.c
-+++ b/lib/seq_buf.c
-@@ -228,8 +228,10 @@ int seq_buf_putmem_hex(struct seq_buf *s
+--- a/block/blk-rq-qos.c
++++ b/block/blk-rq-qos.c
+@@ -266,8 +266,8 @@ void rq_qos_wait(struct rq_wait *rqw, vo
+ 	if (!has_sleeper && acquire_inflight_cb(rqw, private_data))
+ 		return;
  
- 	WARN_ON(s->size == 0);
+-	prepare_to_wait_exclusive(&rqw->wait, &data.wq, TASK_UNINTERRUPTIBLE);
+-	has_sleeper = !wq_has_single_sleeper(&rqw->wait);
++	has_sleeper = !prepare_to_wait_exclusive(&rqw->wait, &data.wq,
++						 TASK_UNINTERRUPTIBLE);
+ 	do {
+ 		/* The memory barrier in set_task_state saves us here. */
+ 		if (data.got_token)
+--- a/include/linux/wait.h
++++ b/include/linux/wait.h
+@@ -1121,7 +1121,7 @@ do {										\
+  * Waitqueues which are removed from the waitqueue_head at wakeup time
+  */
+ void prepare_to_wait(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
+-void prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
++bool prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
+ long prepare_to_wait_event(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
+ void finish_wait(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
+ long wait_woken(struct wait_queue_entry *wq_entry, unsigned mode, long timeout);
+--- a/kernel/sched/wait.c
++++ b/kernel/sched/wait.c
+@@ -232,17 +232,22 @@ prepare_to_wait(struct wait_queue_head *
+ }
+ EXPORT_SYMBOL(prepare_to_wait);
  
-+	BUILD_BUG_ON(MAX_MEMHEX_BYTES * 2 >= HEX_CHARS);
-+
- 	while (len) {
--		start_len = min(len, HEX_CHARS - 1);
-+		start_len = min(len, MAX_MEMHEX_BYTES);
- #ifdef __BIG_ENDIAN
- 		for (i = 0, j = 0; i < start_len; i++) {
- #else
+-void
++/* Returns true if we are the first waiter in the queue, false otherwise. */
++bool
+ prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state)
+ {
+ 	unsigned long flags;
++	bool was_empty = false;
+ 
+ 	wq_entry->flags |= WQ_FLAG_EXCLUSIVE;
+ 	spin_lock_irqsave(&wq_head->lock, flags);
+-	if (list_empty(&wq_entry->entry))
++	if (list_empty(&wq_entry->entry)) {
++		was_empty = list_empty(&wq_head->head);
+ 		__add_wait_queue_entry_tail(wq_head, wq_entry);
++	}
+ 	set_current_state(state);
+ 	spin_unlock_irqrestore(&wq_head->lock, flags);
++	return was_empty;
+ }
+ EXPORT_SYMBOL(prepare_to_wait_exclusive);
+ 
 
 
