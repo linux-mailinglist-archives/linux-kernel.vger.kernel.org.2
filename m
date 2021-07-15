@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2E63CABF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D505C3CAAA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244499AbhGOTZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:25:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46398 "EHLO mail.kernel.org"
+        id S244503AbhGOTOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:14:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243234AbhGOTJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:09:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EABBA613F5;
-        Thu, 15 Jul 2021 19:05:22 +0000 (UTC)
+        id S239588AbhGOS6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:58:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14751613D0;
+        Thu, 15 Jul 2021 18:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375923;
-        bh=e6O7bjXegayPtUa0HPvRQvDMvyDvMEVHzqqEcAPT+RE=;
+        s=korg; t=1626375338;
+        bh=J9jzMF9UE8azGOzNI1ZPfuhQllO46jyFP0pJ2whawEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UOP/Bpwkl9PFowwn6p/fpGESoUoJckDdr8MFY0GHifTglI0UEB+EHNh5HMjLekiLy
-         rfldWo0nhjAWWEICaxtZFsK6+B3X1UUz2JQ3Il33/DVfX8PrnnFBfBYuj1cMpCO5uz
-         VDYLZYQkej9xDohhrtTjDYcbAUijDaEpBtly1yR4=
+        b=2kZsly+QaX37dGnZ4iXG+RD5py9geV8mNRbF8kxOBRrKhObLiRNgwY4HUbhwMgnos
+         VVBJfvEgXg9pN2D/A34xxZiiO+d/FgbaozzeuJdwM3U3SXalSOu79qeiJmAIvTxW+W
+         eamX5wEmkWtWyFusocnRXDTE7lm4OeXvT+xGRZS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        kernel test robot <lkp@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 051/266] RDMA/rtrs: Change MAX_SESS_QUEUE_DEPTH
+Subject: [PATCH 5.12 044/242] clk: tegra: Ensure that PLLU configuration is applied properly
 Date:   Thu, 15 Jul 2021 20:36:46 +0200
-Message-Id: <20210715182623.175183253@linuxfoundation.org>
+Message-Id: <20210715182559.841361106@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-References: <20210715182613.933608881@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 3a98ea7041b7d18ac356da64823c2ba2f8391b3e ]
+[ Upstream commit a7196048cd5168096c2c4f44a3939d7a6dcd06b9 ]
 
-Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
-and the minimum chunk size is 4096 (2^12).
-Therefore the maximum sess_queue_depth is 65536 (2^16).
+The PLLU (USB) consists of the PLL configuration itself and configuration
+of the PLLU outputs. The PLLU programming is inconsistent on T30 vs T114,
+where T114 immediately bails out if PLLU is enabled and T30 re-enables
+a potentially already enabled PLL (left after bootloader) and then fully
+reprograms it, which could be unsafe to do. The correct way should be to
+skip enabling of the PLL if it's already enabled and then apply
+configuration to the outputs. This patch doesn't fix any known problems,
+it's a minor improvement.
 
-Link: https://lore.kernel.org/r/20210528113018.52290-6-jinpu.wang@ionos.com
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/clk/tegra/clk-pll.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 86e65cf30cab..d957bbf1ddd3 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -47,12 +47,15 @@ enum {
- 	MAX_PATHS_NUM = 128,
+diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
+index c5cc0a2dac6f..d709ecb7d8d7 100644
+--- a/drivers/clk/tegra/clk-pll.c
++++ b/drivers/clk/tegra/clk-pll.c
+@@ -1131,7 +1131,8 @@ static int clk_pllu_enable(struct clk_hw *hw)
+ 	if (pll->lock)
+ 		spin_lock_irqsave(pll->lock, flags);
  
- 	/*
--	 * With the size of struct rtrs_permit allocated on the client, 4K
--	 * is the maximum number of rtrs_permits we can allocate. This number is
--	 * also used on the client to allocate the IU for the user connection
--	 * to receive the RDMA addresses from the server.
-+	 * Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
-+	 * and the minimum chunk size is 4096 (2^12).
-+	 * So the maximum sess_queue_depth is 65536 (2^16) in theory.
-+	 * But mempool_create, create_qp and ib_post_send fail with
-+	 * "cannot allocate memory" error if sess_queue_depth is too big.
-+	 * Therefore the pratical max value of sess_queue_depth is
-+	 * somewhere between 1 and 65536 and it depends on the system.
- 	 */
--	MAX_SESS_QUEUE_DEPTH = 4096,
-+	MAX_SESS_QUEUE_DEPTH = 65536,
+-	_clk_pll_enable(hw);
++	if (!clk_pll_is_enabled(hw))
++		_clk_pll_enable(hw);
  
- 	RTRS_HB_INTERVAL_MS = 5000,
- 	RTRS_HB_MISSED_MAX = 5,
+ 	ret = clk_pll_wait_for_lock(pll);
+ 	if (ret < 0)
+@@ -1748,15 +1749,13 @@ static int clk_pllu_tegra114_enable(struct clk_hw *hw)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (clk_pll_is_enabled(hw))
+-		return 0;
+-
+ 	input_rate = clk_hw_get_rate(__clk_get_hw(osc));
+ 
+ 	if (pll->lock)
+ 		spin_lock_irqsave(pll->lock, flags);
+ 
+-	_clk_pll_enable(hw);
++	if (!clk_pll_is_enabled(hw))
++		_clk_pll_enable(hw);
+ 
+ 	ret = clk_pll_wait_for_lock(pll);
+ 	if (ret < 0)
 -- 
 2.30.2
 
