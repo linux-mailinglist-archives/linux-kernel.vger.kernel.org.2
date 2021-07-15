@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6783CA6B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953593CA6AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239562AbhGOSuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:50:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49704 "EHLO mail.kernel.org"
+        id S239801AbhGOStt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:49:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238906AbhGOSrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:47:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D3EB613D2;
-        Thu, 15 Jul 2021 18:44:39 +0000 (UTC)
+        id S231974AbhGOSrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:47:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD34A613D1;
+        Thu, 15 Jul 2021 18:44:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374679;
-        bh=SeriLztVEZSO4MnAK7lhv7P7uFNZ7GXLsYC/VB6qCTk=;
+        s=korg; t=1626374682;
+        bh=2wcLH/MjR6vnjHJ+bCuMtovL+XwRk6NvzTwRJB2jEXI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wQkb97F2YLfZWl1B9/9s16LgKQSWN4ShTVnsmIxlxa4zCIaxwZgubP9xZUrFXqIqA
-         /5KJFiNmen8DF3AqCEScUvbVjY0DQ0pGWAebt90266ktm9fVzTY5f93/pbos1QbRYG
-         UZyhoSTRd68k+X4YA4HATW6tf8U10JvWn3w1uGc0=
+        b=mN7zYkC8OIXrjVOL89Q4PUCH/Xj51cyKdM7vpIR15TBYu9szuocwNgccwe4TcdD7n
+         /eCAXFXxiF35d41rTIYGvxJveHqtgpeGLcVl2qZFEM9UZLCbM/H7JRxIJRhC4mXXn+
+         9MCvBSB0ATwJ9VlclLvWnw+Bfx4ZNh51V9VJdoXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 5.4 101/122] nvmem: core: add a missing of_node_put
-Date:   Thu, 15 Jul 2021 20:39:08 +0200
-Message-Id: <20210715182518.898251816@linuxfoundation.org>
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ferry Toth <ftoth@exalondelft.nl>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH 5.4 102/122] extcon: intel-mrfld: Sync hardware and software state on init
+Date:   Thu, 15 Jul 2021 20:39:09 +0200
+Message-Id: <20210715182519.076920793@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -40,58 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Ferry Toth <ftoth@exalondelft.nl>
 
-commit 63879e2964bceee2aa5bbe8b99ea58bba28bb64f upstream.
+commit ecb5bdff901139850fb3ca3ae2d0cccac045bc52 upstream.
 
-'for_each_child_of_node' performs an of_node_get on each iteration, so a
-return from the middle of the loop requires an of_node_put.
+extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
+DRD to detect a change in the switch position. This change initializes the
+status at probe time.
 
-Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210611102321.11509-1-srinivas.kandagatla@linaro.org
+Cc: stable@vger.kernel.org
+Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvmem/core.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/extcon/extcon-intel-mrfld.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -318,15 +318,17 @@ static int nvmem_add_cells_from_of(struc
- 			continue;
- 		if (len < 2 * sizeof(u32)) {
- 			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
-+			of_node_put(child);
- 			return -EINVAL;
- 		}
+--- a/drivers/extcon/extcon-intel-mrfld.c
++++ b/drivers/extcon/extcon-intel-mrfld.c
+@@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct pla
+ 	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
+ 	struct regmap *regmap = pmic->regmap;
+ 	struct mrfld_extcon_data *data;
++	unsigned int status;
+ 	unsigned int id;
+ 	int irq, ret;
  
- 		cell = kzalloc(sizeof(*cell), GFP_KERNEL);
--		if (!cell)
-+		if (!cell) {
-+			of_node_put(child);
- 			return -ENOMEM;
-+		}
+@@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct pla
+ 	/* Get initial state */
+ 	mrfld_extcon_role_detect(data);
  
- 		cell->nvmem = nvmem;
--		cell->np = of_node_get(child);
- 		cell->offset = be32_to_cpup(addr++);
- 		cell->bytes = be32_to_cpup(addr);
- 		cell->name = kasprintf(GFP_KERNEL, "%pOFn", child);
-@@ -347,11 +349,12 @@ static int nvmem_add_cells_from_of(struc
- 				cell->name, nvmem->stride);
- 			/* Cells already added will be freed later. */
- 			kfree_const(cell->name);
--			of_node_put(cell->np);
- 			kfree(cell);
-+			of_node_put(child);
- 			return -EINVAL;
- 		}
- 
-+		cell->np = of_node_get(child);
- 		nvmem_cell_add(cell);
- 	}
++	/*
++	 * Cached status value is used for cable detection, see comments
++	 * in mrfld_extcon_cable_detect(), we need to sync cached value
++	 * with a real state of the hardware.
++	 */
++	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
++	data->status = status;
++
+ 	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
+ 	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
  
 
 
