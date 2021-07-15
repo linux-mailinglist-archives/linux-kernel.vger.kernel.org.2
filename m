@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4163CA965
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450763CABB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242149AbhGOTGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:06:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32942 "EHLO mail.kernel.org"
+        id S243830AbhGOTWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:22:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241102AbhGOS4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60D49613D9;
-        Thu, 15 Jul 2021 18:53:24 +0000 (UTC)
+        id S241245AbhGOTFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED68C613F2;
+        Thu, 15 Jul 2021 19:02:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375204;
-        bh=g82bctk938ScfdJINpkIncGH+nIC5VosejmaIJZh80I=;
+        s=korg; t=1626375736;
+        bh=Q8tCaovNO/yY6nnNDbQcWGAtMidmnvcjFfhUOh6C8ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s+POgEanI2wL4UUqtaUGb5GfXEN4gN6+IgplfD77LjI1l0u7j1MvgJhY1LQFPjVaw
-         0qV/wc9W+7dLQDmTOgZ7wHZFknT9NIeMtmZQvnySS3lDT5PFEaiC1HGzHTo8R0v61N
-         fJO53UKLrf++gbhQ7JbshD2VhgA57cnfxtXuTqcc=
+        b=2VHxcTcGC1Iys1hjZrUWEDSQT9ZfWjwIS42ZDS3DG78nJOv9J4HKa1a/5pJcaS1Mb
+         nQaVve68rpI2WyMtsRk+yQRQuUugIiersqlxNxDeWjEuxCCFEkX63gpkDXd1/Zv3Uf
+         bsitOa/KUM+Xl+l1z0D/5UrBWWZA6feSyv2+WpYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 205/215] media: gspca/sunplus: fix zero-length control requests
+        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.12 215/242] dm zoned: check zone capacity
 Date:   Thu, 15 Jul 2021 20:39:37 +0200
-Message-Id: <20210715182635.407274965@linuxfoundation.org>
+Message-Id: <20210715182630.990899192@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Damien Le Moal <damien.lemoal@wdc.com>
 
-commit b4bb4d425b7b02424afea2dfdcd77b3b4794175e upstream.
+commit bab68499428ed934f0493ac74197ed6f36204260 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+The dm-zoned target cannot support zoned block devices with zones that
+have a capacity smaller than the zone size (e.g. NVMe zoned namespaces)
+due to the current chunk zone mapping implementation as it is assumed
+that zones and chunks have the same size with all blocks usable.
+If a zoned drive is found to have zones with a capacity different from
+the zone size, fail the target initialization.
 
-Control transfers without a data stage are treated as OUT requests by
-the USB stack and should be using usb_sndctrlpipe(). Failing to do so
-will now trigger a warning.
-
-Fix the single zero-length control request which was using the
-read-register helper, and update the helper so that zero-length reads
-fail with an error message instead.
-
-Fixes: 6a7eba24e4f0 ("V4L/DVB (8157): gspca: all subdrivers")
-Cc: stable@vger.kernel.org      # 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Cc: stable@vger.kernel.org # v5.9+
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/gspca/sunplus.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/md/dm-zoned-metadata.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/media/usb/gspca/sunplus.c
-+++ b/drivers/media/usb/gspca/sunplus.c
-@@ -242,6 +242,10 @@ static void reg_r(struct gspca_dev *gspc
- 		gspca_err(gspca_dev, "reg_r: buffer overflow\n");
- 		return;
+--- a/drivers/md/dm-zoned-metadata.c
++++ b/drivers/md/dm-zoned-metadata.c
+@@ -1390,6 +1390,13 @@ static int dmz_init_zone(struct blk_zone
+ 		return -ENXIO;
  	}
-+	if (len == 0) {
-+		gspca_err(gspca_dev, "reg_r: zero-length read\n");
-+		return;
-+	}
- 	if (gspca_dev->usb_err < 0)
- 		return;
- 	ret = usb_control_msg(gspca_dev->dev,
-@@ -250,7 +254,7 @@ static void reg_r(struct gspca_dev *gspc
- 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 			0,		/* value */
- 			index,
--			len ? gspca_dev->usb_buf : NULL, len,
-+			gspca_dev->usb_buf, len,
- 			500);
- 	if (ret < 0) {
- 		pr_err("reg_r err %d\n", ret);
-@@ -727,7 +731,7 @@ static int sd_start(struct gspca_dev *gs
- 		case MegaImageVI:
- 			reg_w_riv(gspca_dev, 0xf0, 0, 0);
- 			spca504B_WaitCmdStatus(gspca_dev);
--			reg_r(gspca_dev, 0xf0, 4, 0);
-+			reg_w_riv(gspca_dev, 0xf0, 4, 0);
- 			spca504B_WaitCmdStatus(gspca_dev);
- 			break;
- 		default:
+ 
++	/*
++	 * Devices that have zones with a capacity smaller than the zone size
++	 * (e.g. NVMe zoned namespaces) are not supported.
++	 */
++	if (blkz->capacity != blkz->len)
++		return -ENXIO;
++
+ 	switch (blkz->type) {
+ 	case BLK_ZONE_TYPE_CONVENTIONAL:
+ 		set_bit(DMZ_RND, &zone->flags);
 
 
