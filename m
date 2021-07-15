@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675AA3CAA96
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4642B3CAA9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244354AbhGOTOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:14:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38428 "EHLO mail.kernel.org"
+        id S244567AbhGOTO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:14:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243141AbhGOTBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243148AbhGOTBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:01:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB2ED613C4;
-        Thu, 15 Jul 2021 18:58:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C13D613E3;
+        Thu, 15 Jul 2021 18:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375492;
-        bh=3vY8jkLEb5T5wUhD3hW2OPPBQIV5VgHI3/oaBlcpP+M=;
+        s=korg; t=1626375494;
+        bh=QMZEI62nhCdbNul2Cz9sgO1rwB/vHYVKqfZ+XxwfKW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dn0kMN4NGkFKY68V5CqSoKgJcYvWzmnd8TkgXgehJwBLA7N6kPgapCBx+2Ozw9Egz
-         uODciY8ZOa2RyHasWI8UzpzZMBzpImgQLj2hfbDeTz5CMXkz6mxCzbqTbjXg6fp4oP
-         IEBJlz1EUVy4j7cuW9HS52kKvh00hJBvT1LwW63k=
+        b=WAHhEt1j5/CNEQ9pE85o1mWfEhRvh+LKnXf8U67dN+ZKpuO0dgxmzRvgNIIPqs2X2
+         71OTK4jXpF6OEl5WPIeRc1Sq/kvOiE0kUf0M1rqT10fW2gt4FsgCGZJgURpUaqznUG
+         chE9NhNKgNg5mT0TEqEpn7U/8l5iNW+/yf9zQ0s4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huang Pei <huangpei@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 108/242] MIPS: add PMD table accounting into MIPSpmd_alloc_one
-Date:   Thu, 15 Jul 2021 20:37:50 +0200
-Message-Id: <20210715182612.070677812@linuxfoundation.org>
+Subject: [PATCH 5.12 109/242] net: fec: add FEC_QUIRK_HAS_MULTI_QUEUES represents i.MX6SX ENET IP
+Date:   Thu, 15 Jul 2021 20:37:51 +0200
+Message-Id: <20210715182612.265323361@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,48 +42,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Pei <huangpei@loongson.cn>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-[ Upstream commit ed914d48b6a1040d1039d371b56273d422c0081e ]
+[ Upstream commit 471ff4455d61c9929ae912328859921708e1eafc ]
 
-This fixes Page Table accounting bug.
+Frieder Schrempf reported a TX throuthput issue [1], it happens quite often
+that the measured bandwidth in TX direction drops from its expected/nominal
+value to something like ~50% (for 100M) or ~67% (for 1G) connections.
 
-MIPS is the ONLY arch just defining __HAVE_ARCH_PMD_ALLOC_ONE alone.
-Since commit b2b29d6d011944 (mm: account PMD tables like PTE tables),
-"pmd_free" in asm-generic with PMD table accounting and "pmd_alloc_one"
-in MIPS without PMD table accounting causes PageTable accounting number
-negative, which read by global_zone_page_state(), always returns 0.
+[1] https://lore.kernel.org/linux-arm-kernel/421cc86c-b66f-b372-32f7-21e59f9a98bc@kontron.de/
 
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+The issue becomes clear after digging into it, Net core would select
+queues when transmitting packets. Since FEC have not impletemented
+ndo_select_queue callback yet, so it will call netdev_pick_tx to select
+queues randomly.
+
+For i.MX6SX ENET IP with AVB support, driver default enables this
+feature. According to the setting of QOS/RCMRn/DMAnCFG registers, AVB
+configured to Credit-based scheme, 50% bandwidth of each queue 1&2.
+
+With below tests let me think more:
+1) With FEC_QUIRK_HAS_AVB quirk, can reproduce TX bandwidth fluctuations issue.
+2) Without FEC_QUIRK_HAS_AVB quirk, can't reproduce TX bandwidth fluctuations issue.
+
+The related difference with or w/o FEC_QUIRK_HAS_AVB quirk is that, whether we
+program FTYPE field of TxBD or not. As I describe above, AVB feature is
+enabled by default. With FEC_QUIRK_HAS_AVB quirk, frames in queue 0
+marked as non-AVB, and frames in queue 1&2 marked as AVB Class A&B. It's
+unreasonable if frames in queue 1&2 are not required to be time-sensitive.
+So when Net core select tx queues ramdomly, Credit-based scheme would work
+and lead to TX bandwidth fluctuated. On the other hand, w/o
+FEC_QUIRK_HAS_AVB quirk, frames in queue 1&2 are all marked as non-AVB, so
+Credit-based scheme would not work.
+
+Till now, how can we fix this TX throughput issue? Yes, please remove
+FEC_QUIRK_HAS_AVB quirk if you suffer it from time-nonsensitive networking.
+However, this quirk is used to indicate i.MX6SX, other setting depends
+on it. So this patch adds a new quirk FEC_QUIRK_HAS_MULTI_QUEUES to
+represent i.MX6SX, it is safe for us remove FEC_QUIRK_HAS_AVB quirk
+now.
+
+FEC_QUIRK_HAS_AVB quirk is set by default in the driver, and users may
+not know much about driver details, they would waste effort to find the
+root cause, that is not we want. The following patch is a implementation
+to fix it and users don't need to modify the driver.
+
+Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Reported-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/pgalloc.h | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/freescale/fec.h      |  5 +++++
+ drivers/net/ethernet/freescale/fec_main.c | 11 ++++++-----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index 8b18424b3120..d0cf997b4ba8 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -59,11 +59,15 @@ do {							\
+diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
+index 0602d5d5d2ee..2e002e4b4b4a 100644
+--- a/drivers/net/ethernet/freescale/fec.h
++++ b/drivers/net/ethernet/freescale/fec.h
+@@ -467,6 +467,11 @@ struct bufdesc_ex {
+  */
+ #define FEC_QUIRK_NO_HARD_RESET		(1 << 18)
  
- static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
- {
--	pmd_t *pmd;
-+	pmd_t *pmd = NULL;
-+	struct page *pg;
++/* i.MX6SX ENET IP supports multiple queues (3 queues), use this quirk to
++ * represents this ENET IP.
++ */
++#define FEC_QUIRK_HAS_MULTI_QUEUES	(1 << 19)
++
+ struct bufdesc_prop {
+ 	int qid;
+ 	/* Address of Rx and Tx buffers */
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 89393fbc726f..15c9cffa8735 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -121,7 +121,7 @@ static const struct fec_devinfo fec_imx6x_info = {
+ 		  FEC_QUIRK_HAS_VLAN | FEC_QUIRK_HAS_AVB |
+ 		  FEC_QUIRK_ERR007885 | FEC_QUIRK_BUG_CAPTURE |
+ 		  FEC_QUIRK_HAS_RACC | FEC_QUIRK_HAS_COALESCE |
+-		  FEC_QUIRK_CLEAR_SETUP_MII,
++		  FEC_QUIRK_CLEAR_SETUP_MII | FEC_QUIRK_HAS_MULTI_QUEUES,
+ };
  
--	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
--	if (pmd)
-+	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
-+	if (pg) {
-+		pgtable_pmd_page_ctor(pg);
-+		pmd = (pmd_t *)page_address(pg);
- 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
-+	}
- 	return pmd;
- }
+ static const struct fec_devinfo fec_imx6ul_info = {
+@@ -420,6 +420,7 @@ fec_enet_txq_submit_frag_skb(struct fec_enet_priv_tx_q *txq,
+ 				estatus |= FEC_TX_BD_FTYPE(txq->bd.qid);
+ 			if (skb->ip_summed == CHECKSUM_PARTIAL)
+ 				estatus |= BD_ENET_TX_PINS | BD_ENET_TX_IINS;
++
+ 			ebdp->cbd_bdu = 0;
+ 			ebdp->cbd_esc = cpu_to_fec32(estatus);
+ 		}
+@@ -953,7 +954,7 @@ fec_restart(struct net_device *ndev)
+ 	 * For i.MX6SX SOC, enet use AXI bus, we use disable MAC
+ 	 * instead of reset MAC itself.
+ 	 */
+-	if (fep->quirks & FEC_QUIRK_HAS_AVB ||
++	if (fep->quirks & FEC_QUIRK_HAS_MULTI_QUEUES ||
+ 	    ((fep->quirks & FEC_QUIRK_NO_HARD_RESET) && fep->link)) {
+ 		writel(0, fep->hwp + FEC_ECNTRL);
+ 	} else {
+@@ -1164,7 +1165,7 @@ fec_stop(struct net_device *ndev)
+ 	 * instead of reset MAC itself.
+ 	 */
+ 	if (!(fep->wol_flag & FEC_WOL_FLAG_SLEEP_ON)) {
+-		if (fep->quirks & FEC_QUIRK_HAS_AVB) {
++		if (fep->quirks & FEC_QUIRK_HAS_MULTI_QUEUES) {
+ 			writel(0, fep->hwp + FEC_ECNTRL);
+ 		} else {
+ 			writel(1, fep->hwp + FEC_ECNTRL);
+@@ -2559,7 +2560,7 @@ static void fec_enet_itr_coal_set(struct net_device *ndev)
  
+ 	writel(tx_itr, fep->hwp + FEC_TXIC0);
+ 	writel(rx_itr, fep->hwp + FEC_RXIC0);
+-	if (fep->quirks & FEC_QUIRK_HAS_AVB) {
++	if (fep->quirks & FEC_QUIRK_HAS_MULTI_QUEUES) {
+ 		writel(tx_itr, fep->hwp + FEC_TXIC1);
+ 		writel(rx_itr, fep->hwp + FEC_RXIC1);
+ 		writel(tx_itr, fep->hwp + FEC_TXIC2);
+@@ -3356,7 +3357,7 @@ static int fec_enet_init(struct net_device *ndev)
+ 		fep->csum_flags |= FLAG_RX_CSUM_ENABLED;
+ 	}
+ 
+-	if (fep->quirks & FEC_QUIRK_HAS_AVB) {
++	if (fep->quirks & FEC_QUIRK_HAS_MULTI_QUEUES) {
+ 		fep->tx_align = 0;
+ 		fep->rx_align = 0x3f;
+ 	}
 -- 
 2.30.2
 
