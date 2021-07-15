@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F063C9857
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 07:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0D23C985E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 07:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239070AbhGOF0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 01:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237563AbhGOF0u (ORCPT
+        id S239140AbhGOF2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 01:28:38 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:19389 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhGOF2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 01:26:50 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12445C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 22:23:57 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id g8so1855074lfh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 22:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7gHi8C85J19Z/buybEtbR7DxC+/60ag6de4D5gu0A4s=;
-        b=TfwneCGKNPpYSyMgTbwLjXIVq/VuCm7QkyuoeUAOKk34NKwSLSvfuumyE2Tn5vcnhf
-         Tq1R1u4BlNAy4HcyQLVmse3G5iI9aKNHs5YBXdVGpV4jZggqG9W4piFHQgJwvptXZXSM
-         A2bCx760it7lS+DmEQzq5Z1TBJaNGZgDHKdqo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7gHi8C85J19Z/buybEtbR7DxC+/60ag6de4D5gu0A4s=;
-        b=J40WHr46U+aPnzemLrJ4aR4mm2vzesHjUPL+cxsj0Y6l9hSRuCLQZhlUnxGhgMAe47
-         0jW17Ng+Uiuf+MTw7mDAFjWK7hcR7t4jUh77rgnuFKZ3kLwx1B7ibmtksXCfUtINdHSj
-         NdzM5XJLgjR58XL7tFdr+g6jKWVMvuyzSM6REaucA8OdoNyD2OE9JKwXp3cRF80cNqWx
-         8fKi0plV9g13VB4xNadJdKBSxi+wmznGOsZ4jXLlGvz7xmiYJKdWqEs6sS9Y1B1dP4j3
-         G1BAJA4c9Prr2+jLswcz4ODdPNsitegrHpZ4SsmvDNlbY290FFTDJr7d6hdpRdeq28+L
-         iDng==
-X-Gm-Message-State: AOAM531PF6BiVD/1fQ1DcxcFf3pVwq58ZY9TXokrFnV6LoITFYR7zfbD
-        L89a7w3TFvDY0MhOR8VvO+gfZZ3/Evj8VuU3VulCeQ==
-X-Google-Smtp-Source: ABdhPJxyzZdXZbHnyDFU0e2E2xXXk9NuHsijUMcorMgs2GSg8C6hPxXb3FRaE5BAUxs943DBYUCs6RGDAffpPPVO4Cc=
-X-Received: by 2002:ac2:53a3:: with SMTP id j3mr1809482lfh.479.1626326635394;
- Wed, 14 Jul 2021 22:23:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com> <1626316157-24935-4-git-send-email-kewei.xu@mediatek.com>
-In-Reply-To: <1626316157-24935-4-git-send-email-kewei.xu@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 15 Jul 2021 13:23:44 +0800
-Message-ID: <CAGXv+5EOkBvxyigPF8vgnYXfF5Qz472aonPzB-Yw0n=XQU+03g@mail.gmail.com>
-Subject: Re: [PATCH 3/8] i2c: mediatek: fixing the incorrect register offset
-To:     Kewei Xu <kewei.xu@mediatek.com>
-Cc:     wsa@the-dreams.de, Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thu, 15 Jul 2021 01:28:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626326694;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=YvOvb7F9+bANpwvucgDOlOa9eGWo3BPDkvFZuhPIXrY=;
+    b=jLsq06flzzaEXx/DputCqkaJwAU4avvqYoqEfIyhNkmfoLNUo1f1G0NyOEvr8/faWe
+    odramQov7akwq71vQN9j8xfRtD6/3z+P7QuL8S0zUNiZh+pkowFdPNZ71vvusAwPqeBH
+    Di8UTVUIHt2bpW5rpzSCHqUF1IU+t1EPUrLTdffXJFU5CtZSo9oNxKwFUvHIlmiOek/j
+    M7TvyHVTNKFJE9EW5MhCuFe3lLdGjSuknPM6DUo4z2c4IxMNWtpPxS/moyvEyx31bpsC
+    w+CFFX7rdzbLHmKUDFqeTfZEr58dtYAJeQKjoKo9HXYnqTl6AjenMgKp7c3lL7ZTsACN
+    B5rQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaLvSd940="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
+    with ESMTPSA id 9043bbx6F5Oq1F8
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 15 Jul 2021 07:24:52 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, Willy Tarreau <w@1wt.eu>,
+        Nicolai Stange <nstange@suse.de>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        leilk.liu@mediatek.com, qii.wang@mediatek.com,
-        qiangming.xia@mediatek.com, ot_daolong.zhu@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v41 01/13] Linux Random Number Generator
+Date:   Thu, 15 Jul 2021 07:24:52 +0200
+Message-ID: <2681052.7KKukIsK80@positron.chronox.de>
+In-Reply-To: <202107150632.Yy6v9Pmq-lkp@intel.com>
+References: <1944948.TYRkL7eqjW@positron.chronox.de> <202107150632.Yy6v9Pmq-lkp@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Donnerstag, 15. Juli 2021, 00:55:23 CEST schrieb kernel test robot:
+
 Hi,
 
-On Thu, Jul 15, 2021 at 10:31 AM Kewei Xu <kewei.xu@mediatek.com> wrote:
->
-> The reason for the modification here is that the previous
-> offset information is incorrect, OFFSET_DEBUGSTAT = 0xE4 is
-> the correct value.
->
-> Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
+> All errors (new ones prefixed by >>):
+> >> drivers/char/lrng/lrng_chacha20.c:32:8: error: structure variable
+> >> 'chacha20' with 'latent_entropy' attribute has a non-integer field
+> >> 'block'
+>       32 | struct chacha20_state chacha20 __latent_entropy;
+> 
+>          |        ^~~~~~~~~~~~~~
+> 
+> vim +32 drivers/char/lrng/lrng_chacha20.c
+> 
+>     26
+>     27	/*
+>     28	 * Have a static memory blocks for the ChaCha20 DRNG instance to
+> avoid calling 29	 * kmalloc too early in the boot cycle. For subsequent
+> allocation requests, 30	 * such as per-NUMA-node DRNG instances, kmalloc
+> will be used. 31	 */
+> 
+>   > 32	struct chacha20_state chacha20 __latent_entropy;
+> 
+>     33
 
-This needs a fixes tag:
+Thanks for the notification.
 
-Fixes: 25708278f810 ("i2c: mediatek: Add i2c support for MediaTek MT8183")
+I think this is a false-positive discussed before. __latent_entropy is 
+seemingly allowed for an entire linear buffer as seen in the declaration of 
+the variable input_pool_data in driver/char/random.c which is an array of u32.
 
-Otherwise,
+The struct chacha20_state is a linear buffer of u32 words. 
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+struct chacha20_block {
+        u32 constants[4];
+        union {
+                u32 u[CHACHA_KEY_SIZE_WORDS];
+                u8  b[CHACHA_KEY_SIZE];
+        } key;
+        u32 counter;
+        u32 nonce[3];
+};
+
+Therefore it should be identical to the aforementioned example. The 
+__latent_entropy marker therefore seems to be appropriate for this structure.
+
+Ciao
+Stephan
+
+
