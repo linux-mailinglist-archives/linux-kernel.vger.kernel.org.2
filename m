@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158A83CA4E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6833CA4E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237047AbhGOSD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
+        id S237120AbhGOSEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236984AbhGOSD6 (ORCPT
+        with ESMTP id S237035AbhGOSD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:03:58 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F5FC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:03 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id x19so1356322ljc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:03 -0700 (PDT)
+        Thu, 15 Jul 2021 14:03:59 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E27C061762
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:05 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id a6so10161569ljq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=pxJym6eD7+8vdNj4v5MiZrKve7OxJSUGIHSmhhkgVNY=;
-        b=vBM5crOZ8I1Peo5qyHtDpOTiEGxU+hZWJ8//tDnMOhqEOkPQI9K/LWX0pdhWT88j5I
-         RlT5FCUwgd7wnyRwsmG8uc0d7bPrUdWuqnFpYzgIDMus2QFdQfUd47mtNr+4osMBornZ
-         5OhWDMxnKLhu98YwcZ3U7GA7vckvSfRI3kdXZi+eG0MwXn4yMvJNLEEQDLLA/0luRwy7
-         /oTsH3AGItufHwhXmoH/qsjTYcJDXQqR/5QebS9y6gT3BKm22Ltj/0KcrF7JidGBUVsC
-         RFou9FFd+TjrfSzSP15GMqHIKWDPGz0w9Rw761gEqrL234GAvCyBAWx0ZgM7UZ59/ji3
-         jf9Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Juo3AM+b40dS1hlfCODzT9PCdvoocT9eJfDW+eUcng8=;
+        b=XwEA5JR850+TGWCt6vJfhkjleSiwtQZzAqAkkd/ng64jUPk6N10XXFblaVpnhTkRY6
+         Vp3gHpAYGpjMuDDtFclHkmA8Lh4y7UMzJLof9RsM1a5syeWOzv3+v6uF32na48RTKEwT
+         LIldxzV4RPbj9aIDeVuke1TIFzu25vg01kF7acjcZm0NXuLs4MlcQlRHKBhykj2k4RfU
+         yNpSJGFgURlj/5skQIisfQs2w24QtOWyXvq7m8kz6774oCJ3scRlI02LNLQixcS69yjN
+         e6WlnQotTb/gZAqBS9USBUF4Rlp+95RNCZb4xlDMDLZbTCZ3348RfmiHLELt9RyMl73X
+         ov4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=pxJym6eD7+8vdNj4v5MiZrKve7OxJSUGIHSmhhkgVNY=;
-        b=UghtAKFvnfX/IFFXlR5Y9KbQh8AxrCxS3xyzlDUapZbT3zkmpx6BW8kyiJKIB+TuUy
-         dNrKznEIMdcKwwk9icPxZdkyTordYMXslpCpHMusbjSEoTciclnu2Nz/vsuHbYub0TBl
-         NjqWhrhf2ugRaG6S+HFXeGsd5coYlyG+dr0ULCfTbGolk1QI7Ivnx51TuArkTFkb6y31
-         tYqrh/ni1q69n2bbTZm6l/YOjhwO3R4IiwYHFgzkHgEsUMzI954xT053ravG08UiDHzC
-         lyHAV4ocSEBXJmXIxH5U3TqxXWAj48M5nMB15Xj4pVkRYJSfxdsPv+//zmx7w6Y2EPyI
-         QS0g==
-X-Gm-Message-State: AOAM531rbhM7wwZ+H1UyOX1SPrOyZciQukQuvg7C7oJh2rRRFhDFl9R8
-        HSRmkMFZNgNy3gnSjGA2Z75FNp6MiYXlcA==
-X-Google-Smtp-Source: ABdhPJzvljiyI7RxHgFUyZPEyRgch8KGI5MLAxr59j+47wXssmrB/HqtiXyC/3h/AT4Ty/38EJOFlQ==
-X-Received: by 2002:a2e:a44c:: with SMTP id v12mr5159326ljn.130.1626372061866;
-        Thu, 15 Jul 2021 11:01:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Juo3AM+b40dS1hlfCODzT9PCdvoocT9eJfDW+eUcng8=;
+        b=nzlT5thBz1XYgQvtR1gRpsAxh5rEGCp16Ik3teaqNvGItVIFjofeyQwT2XBYwOS0pR
+         2P/FhGUmwoklkwuP8LRSKMGn8WGJgCKdnHnji/y0bxrL60LxDigSNE82Z4CrZFawKUVe
+         KRR5X3kmY6D5UKbmgrvckFN0eNXasiwgXrhZ3cJbaFycNVRG7ztPGXqS1Ok6M2MNU2NA
+         2fIZEXdlw0dckSoMmFdLZsQ4GmUdK1AUIMaReIWdkhmKyJD/sDonK9YWZ3y/7/tCKI2c
+         LUrbHCBnWl3mdUN/SPbwHfqkupDMX3iZfN2VMQ2VKBv/GHnPydGoEv65FirNE/S961wj
+         Jjbw==
+X-Gm-Message-State: AOAM531xunAyr/wuj02Kky3z4ACRCnlULBjgchfZB+fPj0fQSLzp0poZ
+        /0A9tnp6qScDuOCWqxgsozw=
+X-Google-Smtp-Source: ABdhPJwuiTKtNZkDuhZjUUNbAr6X37vDGYkYk/ZXWGJBYgBX33LWROANBmsf54sPkcLD8batIYicOQ==
+X-Received: by 2002:a2e:950:: with SMTP id 77mr5203883ljj.438.1626372063632;
+        Thu, 15 Jul 2021 11:01:03 -0700 (PDT)
 Received: from asus ([37.151.208.206])
-        by smtp.gmail.com with ESMTPSA id j11sm691657ljc.74.2021.07.15.11.01.00
+        by smtp.gmail.com with ESMTPSA id b14sm461804lfb.149.2021.07.15.11.01.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 11:01:00 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 00:00:58 +0600
+        Thu, 15 Jul 2021 11:01:03 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 00:01:01 +0600
 From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
 To:     akpm@linux-foundation.org
 Cc:     tyhicks@linux.microsoft.com, pasha.tatashin@soleen.com,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] mm: KSM: fix data types
-Message-ID: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
+Subject: [PATCH 1/2] mm: KSM: fix ksm_run data type
+Message-ID: <343394260f599d940cacc37f1dcc0309239ae220.1626371112.git.zhansayabagdaulet@gmail.com>
+References: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change data types of some variables as there were a few discrepancies
-between the types and actual values that were stored.
+ksm_run is declared as unsigned long but in run_store(), it is converted
+to unsigned int. Change its type to unsigned int.
 
-Zhansaya Bagdauletkyzy (2):
-  mm: KSM: fix ksm_run data type
-  mm: KSM: fix data type
+Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+---
+ mm/ksm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- mm/ksm.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 3fa9bc8a67cf..057d0c245bf4 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -289,7 +289,7 @@ static int ksm_nr_node_ids = 1;
+ #define KSM_RUN_MERGE	1
+ #define KSM_RUN_UNMERGE	2
+ #define KSM_RUN_OFFLINE	4
+-static unsigned long ksm_run = KSM_RUN_STOP;
++static unsigned int ksm_run = KSM_RUN_STOP;
+ static void wait_while_offlining(void);
+ 
+ static DECLARE_WAIT_QUEUE_HEAD(ksm_thread_wait);
+@@ -2874,7 +2874,7 @@ KSM_ATTR(pages_to_scan);
+ static ssize_t run_show(struct kobject *kobj, struct kobj_attribute *attr,
+ 			char *buf)
+ {
+-	return sysfs_emit(buf, "%lu\n", ksm_run);
++	return sysfs_emit(buf, "%u\n", ksm_run);
+ }
+ 
+ static ssize_t run_store(struct kobject *kobj, struct kobj_attribute *attr,
 -- 
 2.25.1
 
