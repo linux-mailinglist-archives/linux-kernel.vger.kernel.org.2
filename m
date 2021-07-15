@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A92F3CACA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E7B3CAC95
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344849AbhGOTkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:40:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51362 "EHLO mail.kernel.org"
+        id S1343576AbhGOTjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:39:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244306AbhGOTOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:14:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D4BC60FF4;
-        Thu, 15 Jul 2021 19:10:15 +0000 (UTC)
+        id S244319AbhGOTOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:14:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 822EF613DF;
+        Thu, 15 Jul 2021 19:10:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376215;
-        bh=p4UoKnK//5jgto48d8wuORtdCGB0SzO6Zsdb0CdF16A=;
+        s=korg; t=1626376218;
+        bh=Lrpn29ql0xqhMrkZzmDpW6BQgwWK+WinwHTw7COMlJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nq+W9AGEwOuqr06ZYM+aiDgpOniEWPdCf9Gp3SHefzGdxadPVzwhULaK+GtYDz6Py
-         9U3lFxFqB8wXUjatKu2OyzAuVqCb0kHYHWZgc2AXgnAuKbdP1INYKuTvxIMuYdfB4i
-         7oN19lf2NWM8IuNV7oQDG8cUVML5vm1EJsCSblag=
+        b=mN90Sr8PlIawq20olapcDGBwmiOnJfgwiU1sCTtLanNQ/nadQXRklo6WlQmBrkMeu
+         jH+B1y1bRshX0LfMoxHRhsE2WV6D0JHvIpBSdEAUoiluKUOEThVYIOBKdSw+f2h/xz
+         4dqS1R46nN9K5NDYaZptLAoCrjb9CLH9JW5tupiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.13 177/266] PCI: tegra194: Fix host initialization during resume
-Date:   Thu, 15 Jul 2021 20:38:52 +0200
-Message-Id: <20210715182643.127074828@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.13 178/266] MIPS: MT extensions are not available on MIPS32r1
+Date:   Thu, 15 Jul 2021 20:38:53 +0200
+Message-Id: <20210715182643.237778036@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,36 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vidya Sagar <vidyas@nvidia.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit c4bf1f25c6c187864681d5ad4dd1fa92f62d5d32 upstream.
+commit cad065ed8d8831df67b9754cc4437ed55d8b48c0 upstream.
 
-Commit 275e88b06a27 ("PCI: tegra: Fix host link initialization") broke
-host initialization during resume as it misses out calling the API
-dw_pcie_setup_rc() which is required for host and MSI initialization.
+MIPS MT extensions were added with the MIPS 34K processor, which was
+based on the MIPS32r2 ISA.
 
-Link: https://lore.kernel.org/r/20210504172157.29712-1-vidyas@nvidia.com
-Fixes: 275e88b06a27 ("PCI: tegra: Fix host link initialization")
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+This fixes a build error when building a generic kernel for a MIPS32r1
+CPU.
+
+Fixes: c434b9f80b09 ("MIPS: Kconfig: add MIPS_GENERIC_KERNEL symbol")
+Cc: stable@vger.kernel.org # v5.9
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/controller/dwc/pcie-tegra194.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/include/asm/cpu-features.h |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -2214,6 +2214,8 @@ static int tegra_pcie_dw_resume_noirq(st
- 		goto fail_host_init;
- 	}
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -64,6 +64,8 @@
+ 	((MIPS_ISA_REV >= (ge)) && (MIPS_ISA_REV < (lt)))
+ #define __isa_range_or_flag(ge, lt, flag) \
+ 	(__isa_range(ge, lt) || ((MIPS_ISA_REV < (lt)) && __isa(flag)))
++#define __isa_range_and_ase(ge, lt, ase) \
++	(__isa_range(ge, lt) && __ase(ase))
  
-+	dw_pcie_setup_rc(&pcie->pci.pp);
-+
- 	ret = tegra_pcie_dw_start_link(&pcie->pci);
- 	if (ret < 0)
- 		goto fail_host_init;
+ /*
+  * SMP assumption: Options of CPU 0 are a superset of all processors.
+@@ -421,7 +423,7 @@
+ #endif
+ 
+ #ifndef cpu_has_mipsmt
+-#define cpu_has_mipsmt		__isa_lt_and_ase(6, MIPS_ASE_MIPSMT)
++#define cpu_has_mipsmt		__isa_range_and_ase(2, 6, MIPS_ASE_MIPSMT)
+ #endif
+ 
+ #ifndef cpu_has_vp
 
 
