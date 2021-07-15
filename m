@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446AE3CA999
+	by mail.lfdr.de (Postfix) with ESMTP id 91EA53CA99A
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242174AbhGOTHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:07:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34572 "EHLO mail.kernel.org"
+        id S233642AbhGOTHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:07:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241755AbhGOS51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:57:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BA4C61158;
-        Thu, 15 Jul 2021 18:54:32 +0000 (UTC)
+        id S240822AbhGOS5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B66C0613D0;
+        Thu, 15 Jul 2021 18:54:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375272;
-        bh=dT8hcCxhperB/T+8aYy1wP8AerwINrRNIYBFnfhjs7g=;
+        s=korg; t=1626375275;
+        bh=54JwrYKmyebOQcU6kiScVFvJq22l5JE8GEnssN0hO2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D87a8IhyhoRByih5sDluCxjAwZ2/wu0fVhwhSzn9BcCzHE86kEFk6nDqFcOMW4zGD
-         osIZ+0JacHXlXas7T14kaak318KxJNikCyaQJ/Zb+Kvv8dlCJg2y3nhNUPdnasJRNf
-         Y6yU44gPsb3DIqXlfTZ9eEZUlV74BhYWBoetLCdQ=
+        b=IfMaAKHq/7OrmO+iKu6Vf7KgCCKxZzarM73/9F524xT0j3EbKWdxeVIXD95Ycunv1
+         k32g8IYA7v2XsGECSELxkdabg3JJSX+cWNM1IZBwavNZDvyZGmcU/Ns2/gHEe1Zqki
+         ItzK5ju+LKnRZehMs0r2Zo/9HXqZTIuikDF3Q4zY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ansuel Smith <ansuelsmth@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Robert Foss <robert.foss@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 018/242] net: mdio: ipq8064: add regmap config to disable REGCACHE
-Date:   Thu, 15 Jul 2021 20:36:20 +0200
-Message-Id: <20210715182554.939231878@linuxfoundation.org>
+Subject: [PATCH 5.12 019/242] drm/bridge: lt9611: Add missing MODULE_DEVICE_TABLE
+Date:   Thu, 15 Jul 2021 20:36:21 +0200
+Message-Id: <20210715182555.119072739@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,88 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ansuel Smith <ansuelsmth@gmail.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit b097bea10215315e8ee17f88b4c1bbb521b1878c ]
+[ Upstream commit 8d0b1fe81e18eb66a2d4406386760795fe0d77d9 ]
 
-mdio drivers should not use REGCHACHE. Also disable locking since it's
-handled by the mdio users and regmap is always accessed atomically.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1620801955-19188-1-git-send-email-zou_wei@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/mdio/mdio-ipq8064.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/bridge/lontium-lt9611.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/mdio/mdio-ipq8064.c b/drivers/net/mdio/mdio-ipq8064.c
-index 1bd18857e1c5..f0a6bfa61645 100644
---- a/drivers/net/mdio/mdio-ipq8064.c
-+++ b/drivers/net/mdio/mdio-ipq8064.c
-@@ -10,7 +10,7 @@
- #include <linux/module.h>
- #include <linux/regmap.h>
- #include <linux/of_mdio.h>
--#include <linux/phy.h>
-+#include <linux/of_address.h>
- #include <linux/platform_device.h>
- #include <linux/mfd/syscon.h>
+diff --git a/drivers/gpu/drm/bridge/lontium-lt9611.c b/drivers/gpu/drm/bridge/lontium-lt9611.c
+index d734d9402c35..c1926154eda8 100644
+--- a/drivers/gpu/drm/bridge/lontium-lt9611.c
++++ b/drivers/gpu/drm/bridge/lontium-lt9611.c
+@@ -1209,6 +1209,7 @@ static struct i2c_device_id lt9611_id[] = {
+ 	{ "lontium,lt9611", 0 },
+ 	{}
+ };
++MODULE_DEVICE_TABLE(i2c, lt9611_id);
  
-@@ -96,14 +96,34 @@ ipq8064_mdio_write(struct mii_bus *bus, int phy_addr, int reg_offset, u16 data)
- 	return ipq8064_mdio_wait_busy(priv);
- }
- 
-+static const struct regmap_config ipq8064_mdio_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.can_multi_write = false,
-+	/* the mdio lock is used by any user of this mdio driver */
-+	.disable_locking = true,
-+
-+	.cache_type = REGCACHE_NONE,
-+};
-+
- static int
- ipq8064_mdio_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct ipq8064_mdio *priv;
-+	struct resource res;
- 	struct mii_bus *bus;
-+	void __iomem *base;
- 	int ret;
- 
-+	if (of_address_to_resource(np, 0, &res))
-+		return -ENOMEM;
-+
-+	base = ioremap(res.start, resource_size(&res));
-+	if (!base)
-+		return -ENOMEM;
-+
- 	bus = devm_mdiobus_alloc_size(&pdev->dev, sizeof(*priv));
- 	if (!bus)
- 		return -ENOMEM;
-@@ -115,15 +135,10 @@ ipq8064_mdio_probe(struct platform_device *pdev)
- 	bus->parent = &pdev->dev;
- 
- 	priv = bus->priv;
--	priv->base = device_node_to_regmap(np);
--	if (IS_ERR(priv->base)) {
--		if (priv->base == ERR_PTR(-EPROBE_DEFER))
--			return -EPROBE_DEFER;
--
--		dev_err(&pdev->dev, "error getting device regmap, error=%pe\n",
--			priv->base);
-+	priv->base = devm_regmap_init_mmio(&pdev->dev, base,
-+					   &ipq8064_mdio_regmap_config);
-+	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
--	}
- 
- 	ret = of_mdiobus_register(bus, np);
- 	if (ret)
+ static const struct of_device_id lt9611_match_table[] = {
+ 	{ .compatible = "lontium,lt9611" },
 -- 
 2.30.2
 
