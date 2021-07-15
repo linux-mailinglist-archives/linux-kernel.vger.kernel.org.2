@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7423CACC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FAD3CACC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244590AbhGOToE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:44:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
+        id S1344163AbhGOToQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:44:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244812AbhGOTPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244817AbhGOTPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:15:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 548D46141F;
-        Thu, 15 Jul 2021 19:11:20 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A67BB61410;
+        Thu, 15 Jul 2021 19:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376280;
-        bh=Y/rFZ/gWYfBMuHT/nVvmrlwPvtz/nHJVl5OFLAkJb/c=;
+        s=korg; t=1626376283;
+        bh=jdUvwb3AuhbX4v/oe7Lp7k7fYDLru8GDX8SXECYkGlk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wsXg8ezimm7WOt/qK2276nO5H5xH04KbrJFfXAMRnvuTOC3HFzlOlHCL6ZHMK3NEN
-         IiLbjNdZS0HCAW/ZmAed/rXWhmIzC+VHiiMqa2sSNidOhiL8GqmZ4ZYF/807hZRSOg
-         OH3oJKTpKiHWW3Jlra/9eTbLTqP+KNscxlrgaOxg=
+        b=y1LIn04qJljjg5Q61E/8AcRu0rqAjxa+aladmdod0J0NxaRR5wF0fYueclQWfl/a0
+         8sCNciTSrhv5NkJekB1qGIvgxu62EV8ODIiYWCyrmBC64LhGyzGfOCSbP+bFj2QJ88
+         RkZUa7DLa+A5XQZOYvV8RCGBPd7c5anvKuE+SEI4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
         Pekka Paalanen <pekka.paalanen@collabora.com>,
         Lyude Paul <lyude@redhat.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        Brian Starkey <brian.starkey@arm.com>,
         Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 5.13 202/266] drm/msm/mdp4: Fix modifier support enabling
-Date:   Thu, 15 Jul 2021 20:39:17 +0200
-Message-Id: <20210715182645.840301586@linuxfoundation.org>
+Subject: [PATCH 5.13 203/266] drm/arm/malidp: Always list modifiers
+Date:   Thu, 15 Jul 2021 20:39:18 +0200
+Message-Id: <20210715182645.963972159@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -47,65 +44,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit 35cbb8c91e9cf310277d3dfb4d046df8edf2df33 upstream.
+commit 26c3e7fd5a3499e408915dadae5d5360790aae9a upstream.
 
-Setting the cap without the modifier list is very confusing to
-userspace. Fix that by listing the ones we support explicitly.
+Even when all we support is linear, make that explicit. Otherwise the
+uapi is rather confusing.
 
-Stable backport so that userspace can rely on this working in a
-reasonable way, i.e. that the cap set implies IN_FORMATS is available.
-
+Acked-by: Liviu Dudau <liviu.dudau@arm.com>
 Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
 Reviewed-by: Lyude Paul <lyude@redhat.com>
 Cc: stable@vger.kernel.org
 Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc: Rob Clark <robdclark@chromium.org>
-Cc: Jordan Crouse <jordan@cosmicpenguin.net>
-Cc: Emil Velikov <emil.velikov@collabora.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Liviu Dudau <liviu.dudau@arm.com>
+Cc: Brian Starkey <brian.starkey@arm.com>
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-5-daniel.vetter@ffwll.ch
+Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-2-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c   |    2 --
- drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c |    8 +++++++-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/arm/malidp_planes.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-@@ -88,8 +88,6 @@ static int mdp4_hw_init(struct msm_kms *
- 	if (mdp4_kms->rev > 1)
- 		mdp4_write(mdp4_kms, REG_MDP4_RESET_STATUS, 1);
+--- a/drivers/gpu/drm/arm/malidp_planes.c
++++ b/drivers/gpu/drm/arm/malidp_planes.c
+@@ -927,6 +927,11 @@ static const struct drm_plane_helper_fun
+ 	.atomic_disable = malidp_de_plane_disable,
+ };
  
--	dev->mode_config.allow_fb_modifiers = true;
--
- out:
- 	pm_runtime_put_sync(dev->dev);
- 
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c
-@@ -349,6 +349,12 @@ enum mdp4_pipe mdp4_plane_pipe(struct dr
- 	return mdp4_plane->pipe;
- }
- 
-+static const uint64_t supported_format_modifiers[] = {
-+	DRM_FORMAT_MOD_SAMSUNG_64_32_TILE,
++static const uint64_t linear_only_modifiers[] = {
 +	DRM_FORMAT_MOD_LINEAR,
 +	DRM_FORMAT_MOD_INVALID
 +};
 +
- /* initialize plane */
- struct drm_plane *mdp4_plane_init(struct drm_device *dev,
- 		enum mdp4_pipe pipe_id, bool private_plane)
-@@ -377,7 +383,7 @@ struct drm_plane *mdp4_plane_init(struct
- 	type = private_plane ? DRM_PLANE_TYPE_PRIMARY : DRM_PLANE_TYPE_OVERLAY;
- 	ret = drm_universal_plane_init(dev, plane, 0xff, &mdp4_plane_funcs,
- 				 mdp4_plane->formats, mdp4_plane->nformats,
--				 NULL, type, NULL);
-+				 supported_format_modifiers, type, NULL);
- 	if (ret)
- 		goto fail;
+ int malidp_de_planes_init(struct drm_device *drm)
+ {
+ 	struct malidp_drm *malidp = drm->dev_private;
+@@ -990,8 +995,8 @@ int malidp_de_planes_init(struct drm_dev
+ 		 */
+ 		ret = drm_universal_plane_init(drm, &plane->base, crtcs,
+ 				&malidp_de_plane_funcs, formats, n,
+-				(id == DE_SMART) ? NULL : modifiers, plane_type,
+-				NULL);
++				(id == DE_SMART) ? linear_only_modifiers : modifiers,
++				plane_type, NULL);
  
+ 		if (ret < 0)
+ 			goto cleanup;
 
 
