@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D0A3CABA3
+	by mail.lfdr.de (Postfix) with ESMTP id 077173CABA2
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243343AbhGOTVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:21:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38160 "EHLO mail.kernel.org"
+        id S243286AbhGOTV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:21:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242714AbhGOTFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242718AbhGOTFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:05:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7D9661414;
-        Thu, 15 Jul 2021 19:01:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33BC3613CC;
+        Thu, 15 Jul 2021 19:01:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375715;
-        bh=h6SGYwkOPYKkFn333x4SYe2QVtcmWZIhEINtZl4VNX0=;
+        s=korg; t=1626375717;
+        bh=nkq24l6VqkSo1UqqPCrwRMRiEXo5Lx5JBG0l4bdAHQ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mla3t2aI4Z86pY1NoaVIF2zJiRiS7/vls9o1ivUwxZZKfEPscFXuvd8egghzjW+8X
-         mpD+N8cfd6FX1qUfM5hcVVwowBcxtA2dwAPV61wv6skipmfM/djlycfSQLSx28NRcb
-         usYkoDvgODCozkuMEZf6KHbgCuMmxY/nzUUeuU9w=
+        b=QGETh4keZbcPtYqImkIPuQ9D5LW5vKk+8Kh/wwCtOcDncec+P7xa6keULFd8k8rO2
+         3vH6tlPJrAw0x0P11YlrxNXOzmGGcyt20rdJ178tHsSBx92kmX5UB8wm8b4Y160yTX
+         9vOQf7TfioUrv63uWvF4eQMkdIcl7NH55FffhyuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaron Liu <aaron.liu@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.12 163/242] drm/amdgpu: enable sdma0 tmz for Raven/Renoir(V2)
-Date:   Thu, 15 Jul 2021 20:38:45 +0200
-Message-Id: <20210715182621.875363177@linuxfoundation.org>
+Subject: [PATCH 5.12 164/242] drm/amdgpu: fix NAK-G generation during PCI-e link width switch
+Date:   Thu, 15 Jul 2021 20:38:46 +0200
+Message-Id: <20210715182622.041495977@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,45 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aaron Liu <aaron.liu@amd.com>
+From: Evan Quan <evan.quan@amd.com>
 
-commit e2329e74a615cc58b25c42b7aa1477a5e3f6a435 upstream.
+commit 5a5da8ae9546031e43efd4fa5aa8baa481e83dfb upstream.
 
-Without driver loaded, SDMA0_UTCL1_PAGE.TMZ_ENABLE is set to 1
-by default for all asic. On Raven/Renoir, the sdma goldsetting
-changes SDMA0_UTCL1_PAGE.TMZ_ENABLE to 0.
-This patch restores SDMA0_UTCL1_PAGE.TMZ_ENABLE to 1.
+A lot of NAK-G being generated when link widht switching is happening.
+WA for this issue is to program the SPC to 4 symbols per clock during
+bootup when the native PCIE width is x4.
 
-Signed-off-by: Aaron Liu <aaron.liu@amd.com>
-Acked-by: Luben Tuikov <luben.tuikov@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_nbio.h |    1 +
+ drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c   |   28 ++++++++++++++++++++++++++++
+ drivers/gpu/drm/amd/amdgpu/nv.c          |    3 +++
+ 3 files changed, 32 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
-@@ -142,7 +142,7 @@ static const struct soc15_reg_golden gol
- 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC0_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
- 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC1_IB_CNTL, 0x800f0111, 0x00000100),
- 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC1_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
--	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_PAGE, 0x000003ff, 0x000003c0),
-+	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_PAGE, 0x000003ff, 0x000003e0),
- 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_WATERMK, 0xfc000000, 0x00000000)
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_nbio.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_nbio.h
+@@ -89,6 +89,7 @@ struct amdgpu_nbio_funcs {
+ 	void (*enable_aspm)(struct amdgpu_device *adev,
+ 			    bool enable);
+ 	void (*program_aspm)(struct amdgpu_device *adev);
++	void (*apply_lc_spc_mode_wa)(struct amdgpu_device *adev);
  };
  
-@@ -268,7 +268,7 @@ static const struct soc15_reg_golden gol
- 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_POWER_CNTL, 0x003fff07, 0x40000051),
- 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC0_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
- 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_RLC1_RB_WPTR_POLL_CNTL, 0xfffffff7, 0x00403000),
--	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_PAGE, 0x000003ff, 0x000003c0),
-+	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_PAGE, 0x000003ff, 0x000003e0),
- 	SOC15_REG_GOLDEN_VALUE(SDMA0, 0, mmSDMA0_UTCL1_WATERMK, 0xfc000000, 0x03fbe1fe)
- };
+ struct amdgpu_nbio {
+--- a/drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c
++++ b/drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c
+@@ -51,6 +51,8 @@
+ #define mmBIF_MMSCH1_DOORBELL_RANGE		0x01d8
+ #define mmBIF_MMSCH1_DOORBELL_RANGE_BASE_IDX	2
  
++#define smnPCIE_LC_LINK_WIDTH_CNTL		0x11140288
++
+ static void nbio_v2_3_remap_hdp_registers(struct amdgpu_device *adev)
+ {
+ 	WREG32_SOC15(NBIO, 0, mmREMAP_HDP_MEM_FLUSH_CNTL,
+@@ -463,6 +465,31 @@ static void nbio_v2_3_program_aspm(struc
+ 		WREG32_PCIE(smnPCIE_LC_CNTL3, data);
+ }
+ 
++static void nbio_v2_3_apply_lc_spc_mode_wa(struct amdgpu_device *adev)
++{
++	uint32_t reg_data = 0;
++	uint32_t link_width = 0;
++
++	if (!((adev->asic_type >= CHIP_NAVI10) &&
++	     (adev->asic_type <= CHIP_NAVI12)))
++		return;
++
++	reg_data = RREG32_PCIE(smnPCIE_LC_LINK_WIDTH_CNTL);
++	link_width = (reg_data & PCIE_LC_LINK_WIDTH_CNTL__LC_LINK_WIDTH_RD_MASK)
++		>> PCIE_LC_LINK_WIDTH_CNTL__LC_LINK_WIDTH_RD__SHIFT;
++
++	/*
++	 * Program PCIE_LC_CNTL6.LC_SPC_MODE_8GT to 0x2 (4 symbols per clock data)
++	 * if link_width is 0x3 (x4)
++	 */
++	if (0x3 == link_width) {
++		reg_data = RREG32_PCIE(smnPCIE_LC_CNTL6);
++		reg_data &= ~PCIE_LC_CNTL6__LC_SPC_MODE_8GT_MASK;
++		reg_data |= (0x2 << PCIE_LC_CNTL6__LC_SPC_MODE_8GT__SHIFT);
++		WREG32_PCIE(smnPCIE_LC_CNTL6, reg_data);
++	}
++}
++
+ const struct amdgpu_nbio_funcs nbio_v2_3_funcs = {
+ 	.get_hdp_flush_req_offset = nbio_v2_3_get_hdp_flush_req_offset,
+ 	.get_hdp_flush_done_offset = nbio_v2_3_get_hdp_flush_done_offset,
+@@ -484,4 +511,5 @@ const struct amdgpu_nbio_funcs nbio_v2_3
+ 	.remap_hdp_registers = nbio_v2_3_remap_hdp_registers,
+ 	.enable_aspm = nbio_v2_3_enable_aspm,
+ 	.program_aspm =  nbio_v2_3_program_aspm,
++	.apply_lc_spc_mode_wa = nbio_v2_3_apply_lc_spc_mode_wa,
+ };
+--- a/drivers/gpu/drm/amd/amdgpu/nv.c
++++ b/drivers/gpu/drm/amd/amdgpu/nv.c
+@@ -1073,6 +1073,9 @@ static int nv_common_hw_init(void *handl
+ {
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 
++	if (adev->nbio.funcs->apply_lc_spc_mode_wa)
++		adev->nbio.funcs->apply_lc_spc_mode_wa(adev);
++
+ 	/* enable pcie gen2/3 link */
+ 	nv_pcie_gen3_enable(adev);
+ 	/* enable aspm */
 
 
