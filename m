@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002063CA7D0
+	by mail.lfdr.de (Postfix) with ESMTP id 200843CA7CE
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237695AbhGOS4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:56:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54130 "EHLO mail.kernel.org"
+        id S241218AbhGOS4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:56:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239751AbhGOSvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:51:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE492613CF;
-        Thu, 15 Jul 2021 18:48:08 +0000 (UTC)
+        id S239847AbhGOSvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:51:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DA90613D0;
+        Thu, 15 Jul 2021 18:48:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374889;
-        bh=zsY48qFw8ymrMeZel0vvj8wQaPvNdXU9ZoRorx8BPeU=;
+        s=korg; t=1626374892;
+        bh=Urdi0RMyDw7osxiomLrzAYzglhIWs81NXDgqg0/pm+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AQciUGahbp2lMbYg/nBJbw/s5av9GzuZ6s1/04m0QxBgGYR7EPwJAeRrI2BmZLW44
-         kHAnITzN/ka2L/G4G9U21gKf1o8f2ByRcfwZUCrmSY3sK6g9CuzeyUJhNoPI9JuYzY
-         dB2psrTGk7AUdpXvLnvma8T+UA8P3gUt5TD6pNKI=
+        b=ySVTlL+cP9fLPpAJkMhLHV5mKR/cYa42qaecyGNRk8Pl3t4cnAYRki74fZaS5lqbB
+         e9zLvAN9246dDP0u2lc1Ik/mSlSsABKuDC08MZW6Hj/YjDM0xsbD37PJEmtASWCRXW
+         i2hQ9FgrnOCudE31IJFHgtBwYB6nxLXvFgExcEdI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Cohen <amcohen@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 070/215] selftests: Clean forgotten resources as part of cleanup()
-Date:   Thu, 15 Jul 2021 20:37:22 +0200
-Message-Id: <20210715182611.806021541@linuxfoundation.org>
+Subject: [PATCH 5.10 071/215] net: sgi: ioc3-eth: check return value after calling platform_get_resource()
+Date:   Thu, 15 Jul 2021 20:37:23 +0200
+Message-Id: <20210715182611.998259495@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -42,116 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amit Cohen <amcohen@nvidia.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit e67dfb8d15deb33c425d0b0ee22f2e5eef54c162 ]
+[ Upstream commit db8f7be1e1d64fbf113a456ef94534fbf5e9a9af ]
 
-Several tests do not set some ports down as part of their cleanup(),
-resulting in IPv6 link-local addresses and associated routes not being
-deleted.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-These leaks were found using a BPF tool that monitors ASIC resources.
-
-Solve this by setting the ports down at the end of the tests.
-
-Signed-off-by: Amit Cohen <amcohen@nvidia.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/drivers/net/mlxsw/devlink_trap_l3_drops.sh       | 3 +++
- .../selftests/drivers/net/mlxsw/devlink_trap_l3_exceptions.sh  | 3 +++
- tools/testing/selftests/drivers/net/mlxsw/qos_dscp_bridge.sh   | 2 ++
- tools/testing/selftests/net/forwarding/pedit_dsfield.sh        | 2 ++
- tools/testing/selftests/net/forwarding/pedit_l4port.sh         | 2 ++
- tools/testing/selftests/net/forwarding/skbedit_priority.sh     | 2 ++
- 6 files changed, 14 insertions(+)
+ drivers/net/ethernet/sgi/ioc3-eth.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/drivers/net/mlxsw/devlink_trap_l3_drops.sh b/tools/testing/selftests/drivers/net/mlxsw/devlink_trap_l3_drops.sh
-index f5abb1ebd392..269b2680611b 100755
---- a/tools/testing/selftests/drivers/net/mlxsw/devlink_trap_l3_drops.sh
-+++ b/tools/testing/selftests/drivers/net/mlxsw/devlink_trap_l3_drops.sh
-@@ -108,6 +108,9 @@ router_destroy()
- 	__addr_add_del $rp1 del 192.0.2.2/24 2001:db8:1::2/64
+diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
+index 6eef0f45b133..2b29fd4cbdf4 100644
+--- a/drivers/net/ethernet/sgi/ioc3-eth.c
++++ b/drivers/net/ethernet/sgi/ioc3-eth.c
+@@ -835,6 +835,10 @@ static int ioc3eth_probe(struct platform_device *pdev)
+ 	int err;
  
- 	tc qdisc del dev $rp2 clsact
-+
-+	ip link set dev $rp2 down
-+	ip link set dev $rp1 down
- }
- 
- setup_prepare()
-diff --git a/tools/testing/selftests/drivers/net/mlxsw/devlink_trap_l3_exceptions.sh b/tools/testing/selftests/drivers/net/mlxsw/devlink_trap_l3_exceptions.sh
-index 1fedfc9da434..1d157b1bd838 100755
---- a/tools/testing/selftests/drivers/net/mlxsw/devlink_trap_l3_exceptions.sh
-+++ b/tools/testing/selftests/drivers/net/mlxsw/devlink_trap_l3_exceptions.sh
-@@ -111,6 +111,9 @@ router_destroy()
- 	__addr_add_del $rp1 del 192.0.2.2/24 2001:db8:1::2/64
- 
- 	tc qdisc del dev $rp2 clsact
-+
-+	ip link set dev $rp2 down
-+	ip link set dev $rp1 down
- }
- 
- setup_prepare()
-diff --git a/tools/testing/selftests/drivers/net/mlxsw/qos_dscp_bridge.sh b/tools/testing/selftests/drivers/net/mlxsw/qos_dscp_bridge.sh
-index 5cbff8038f84..28a570006d4d 100755
---- a/tools/testing/selftests/drivers/net/mlxsw/qos_dscp_bridge.sh
-+++ b/tools/testing/selftests/drivers/net/mlxsw/qos_dscp_bridge.sh
-@@ -93,7 +93,9 @@ switch_destroy()
- 	lldptool -T -i $swp1 -V APP -d $(dscp_map 10) >/dev/null
- 	lldpad_app_wait_del
- 
-+	ip link set dev $swp2 down
- 	ip link set dev $swp2 nomaster
-+	ip link set dev $swp1 down
- 	ip link set dev $swp1 nomaster
- 	ip link del dev br1
- }
-diff --git a/tools/testing/selftests/net/forwarding/pedit_dsfield.sh b/tools/testing/selftests/net/forwarding/pedit_dsfield.sh
-index 55eeacf59241..64fbd211d907 100755
---- a/tools/testing/selftests/net/forwarding/pedit_dsfield.sh
-+++ b/tools/testing/selftests/net/forwarding/pedit_dsfield.sh
-@@ -75,7 +75,9 @@ switch_destroy()
- 	tc qdisc del dev $swp2 clsact
- 	tc qdisc del dev $swp1 clsact
- 
-+	ip link set dev $swp2 down
- 	ip link set dev $swp2 nomaster
-+	ip link set dev $swp1 down
- 	ip link set dev $swp1 nomaster
- 	ip link del dev br1
- }
-diff --git a/tools/testing/selftests/net/forwarding/pedit_l4port.sh b/tools/testing/selftests/net/forwarding/pedit_l4port.sh
-index 5f20d289ee43..10e594c55117 100755
---- a/tools/testing/selftests/net/forwarding/pedit_l4port.sh
-+++ b/tools/testing/selftests/net/forwarding/pedit_l4port.sh
-@@ -71,7 +71,9 @@ switch_destroy()
- 	tc qdisc del dev $swp2 clsact
- 	tc qdisc del dev $swp1 clsact
- 
-+	ip link set dev $swp2 down
- 	ip link set dev $swp2 nomaster
-+	ip link set dev $swp1 down
- 	ip link set dev $swp1 nomaster
- 	ip link del dev br1
- }
-diff --git a/tools/testing/selftests/net/forwarding/skbedit_priority.sh b/tools/testing/selftests/net/forwarding/skbedit_priority.sh
-index e3bd8a6bb8b4..bde11dc27873 100755
---- a/tools/testing/selftests/net/forwarding/skbedit_priority.sh
-+++ b/tools/testing/selftests/net/forwarding/skbedit_priority.sh
-@@ -72,7 +72,9 @@ switch_destroy()
- 	tc qdisc del dev $swp2 clsact
- 	tc qdisc del dev $swp1 clsact
- 
-+	ip link set dev $swp2 down
- 	ip link set dev $swp2 nomaster
-+	ip link set dev $swp1 down
- 	ip link set dev $swp1 nomaster
- 	ip link del dev br1
- }
+ 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!regs) {
++		dev_err(&pdev->dev, "Invalid resource\n");
++		return -EINVAL;
++	}
+ 	/* get mac addr from one wire prom */
+ 	if (ioc3eth_get_mac_addr(regs, mac_addr))
+ 		return -EPROBE_DEFER; /* not available yet */
 -- 
 2.30.2
 
