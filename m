@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838423CA71F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AA53CA71C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240261AbhGOSwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:52:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52144 "EHLO mail.kernel.org"
+        id S240057AbhGOSw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:52:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239286AbhGOSto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239301AbhGOSto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 14:49:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7B54613CF;
-        Thu, 15 Jul 2021 18:46:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13D0B613D0;
+        Thu, 15 Jul 2021 18:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374808;
-        bh=cJMaaJMtowFiLkow7PjF58jLQoCxdhCoY6hKVUPpwH4=;
+        s=korg; t=1626374810;
+        bh=4Fu4G4b/XGeKu5EbAcyA0kyrm0McafbQWyb4+B87B1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jQ/aiwuzthV6WDDjMzJxKbFsHVZiBWcw/TgNWmPywu06LAy3E6G5kgRyXeDBCfYO6
-         r732A7p3tLqoUmL2lqTAUMfl6yGkzBdp3kgcBoHoptg+sBkVQD07jy6hd82FccFxBc
-         EicucvewQ5AzI/eQZBFbJZK4WmAOOJfaTXVmt0bU=
+        b=ZqNJDEwHShtxZyyNJ5XVwo79e9Lgk8JLHaKQkgaeVCs6SYSfuVPz5lxsfV+AHcSb/
+         x0VMtDYH08WdwII7RAnSVtq5M/xMAbygRuGQZsJkIHk91oMJMoMzLfwRPukZCBLoUA
+         3x7skN5lPOvVfFOwSF6TQEyfDPgU1Rxio1MKeeMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 035/215] net/mlx5: Fix lag port remapping logic
-Date:   Thu, 15 Jul 2021 20:36:47 +0200
-Message-Id: <20210715182605.498705731@linuxfoundation.org>
+Subject: [PATCH 5.10 036/215] drm: rockchip: add missing registers for RK3188
+Date:   Thu, 15 Jul 2021 20:36:48 +0200
+Message-Id: <20210715182605.793336807@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -40,58 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: Alex Bee <knaerzche@gmail.com>
 
-[ Upstream commit 8613641063617c1dfc731b403b3ee4935ef15f87 ]
+[ Upstream commit ab64b448a175b8a5a4bd323b8f74758c2574482c ]
 
-Fix the logic so that if both ports netdevices are enabled or disabled,
-use the trivial mapping without swapping.
+Add dither_up, dsp_lut_en and data_blank registers to enable their
+respective functionality for RK3188's VOP.
+While at that also fix .dsp_blank register which is (only) set with
+BIT24 (same as RK3066)
 
-If only one of the netdevice's tx is enabled, use it to remap traffic to
-that port.
-
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210528130554.72191-3-knaerzche@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/lag.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-index 9025e5f38bb6..fe5476a76464 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-@@ -118,17 +118,24 @@ static bool __mlx5_lag_is_sriov(struct mlx5_lag *ldev)
- static void mlx5_infer_tx_affinity_mapping(struct lag_tracker *tracker,
- 					   u8 *port1, u8 *port2)
- {
-+	bool p1en;
-+	bool p2en;
-+
-+	p1en = tracker->netdev_state[MLX5_LAG_P1].tx_enabled &&
-+	       tracker->netdev_state[MLX5_LAG_P1].link_up;
-+
-+	p2en = tracker->netdev_state[MLX5_LAG_P2].tx_enabled &&
-+	       tracker->netdev_state[MLX5_LAG_P2].link_up;
-+
- 	*port1 = 1;
- 	*port2 = 2;
--	if (!tracker->netdev_state[MLX5_LAG_P1].tx_enabled ||
--	    !tracker->netdev_state[MLX5_LAG_P1].link_up) {
--		*port1 = 2;
-+	if ((!p1en && !p2en) || (p1en && p2en))
- 		return;
--	}
+diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+index 80053d91a301..b8dcee64a1f7 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
++++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+@@ -505,7 +505,10 @@ static const struct vop_common rk3188_common = {
+ 	.dither_down_sel = VOP_REG(RK3188_DSP_CTRL0, 0x1, 27),
+ 	.dither_down_en = VOP_REG(RK3188_DSP_CTRL0, 0x1, 11),
+ 	.dither_down_mode = VOP_REG(RK3188_DSP_CTRL0, 0x1, 10),
+-	.dsp_blank = VOP_REG(RK3188_DSP_CTRL1, 0x3, 24),
++	.dsp_blank = VOP_REG(RK3188_DSP_CTRL1, 0x1, 24),
++	.dither_up = VOP_REG(RK3188_DSP_CTRL0, 0x1, 9),
++	.dsp_lut_en = VOP_REG(RK3188_SYS_CTRL, 0x1, 28),
++	.data_blank = VOP_REG(RK3188_DSP_CTRL1, 0x1, 25),
+ };
  
--	if (!tracker->netdev_state[MLX5_LAG_P2].tx_enabled ||
--	    !tracker->netdev_state[MLX5_LAG_P2].link_up)
-+	if (p1en)
- 		*port2 = 1;
-+	else
-+		*port1 = 2;
- }
- 
- void mlx5_modify_lag(struct mlx5_lag *ldev,
+ static const struct vop_win_data rk3188_vop_win_data[] = {
 -- 
 2.30.2
 
