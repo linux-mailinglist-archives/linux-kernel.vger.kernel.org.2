@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9C73CA989
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BF73CABA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242286AbhGOTHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:07:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34066 "EHLO mail.kernel.org"
+        id S243401AbhGOTVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:21:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231933AbhGOS5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:57:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08A83613D6;
-        Thu, 15 Jul 2021 18:54:08 +0000 (UTC)
+        id S241875AbhGOTFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15275613C0;
+        Thu, 15 Jul 2021 19:01:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375249;
-        bh=iiwu6uUKvyYli5PVfLw3WWN1Oaeo1gZ/niOnYIkNBVM=;
+        s=korg; t=1626375710;
+        bh=bQ6o2NIi3EfTjmaHCOFG+RzRJtr0dJpoXEu17KBfHcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rLe0nQid//YpoYvHhTEhjtOc0GKRiXELlIvoTkMMMRdqotIXX6N1OxKftkHEA0JOM
-         GrH6UgFWWZEJy0YV0gXNY8+yND4eFjPTO4tOeEU7mwUpMt33PXG90l3/SthRgFi6Rc
-         50vjpwa8nsHqZChE3utxORqiI90MwudPQDIzpREA=
+        b=QDA5UzqWziPYV8WvF3UcdvYg4cZjKmprNG1u/Sc11e2a3xjTE1J6dziTmOPvAtfvj
+         yVMhP7iv4H/1Mm7eDH6Nd/hm/Up0kxa0R1jeCCtYNaOmbbvCwPmvR3V9HPpHG8nZVS
+         /1kyB5W3/uDDKJNIUP6KOcC9arXY/Eio3my6HiGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Paul Burton <paulburton@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.10 191/215] tracing: Resize tgid_map to pid_max, not PID_MAX_DEFAULT
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH 5.12 201/242] power: supply: ab8500: Fix an old bug
 Date:   Thu, 15 Jul 2021 20:39:23 +0200
-Message-Id: <20210715182632.924136252@linuxfoundation.org>
+Message-Id: <20210715182628.646907276@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,176 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Burton <paulburton@google.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-commit 4030a6e6a6a4a42ff8c18414c9e0c93e24cc70b8 upstream.
+commit f1c74a6c07e76fcb31a4bcc1f437c4361a2674ce upstream.
 
-Currently tgid_map is sized at PID_MAX_DEFAULT entries, which means that
-on systems where pid_max is configured higher than PID_MAX_DEFAULT the
-ftrace record-tgid option doesn't work so well. Any tasks with PIDs
-higher than PID_MAX_DEFAULT are simply not recorded in tgid_map, and
-don't show up in the saved_tgids file.
+Trying to get the AB8500 charging driver working I ran into a bit
+of bitrot: we haven't used the driver for a while so errors in
+refactorings won't be noticed.
 
-In particular since systemd v243 & above configure pid_max to its
-highest possible 1<<22 value by default on 64 bit systems this renders
-the record-tgids option of little use.
+This one is pretty self evident: use argument to the macro or we
+end up with a random pointer to something else.
 
-Increase the size of tgid_map to the configured pid_max instead,
-allowing it to cover the full range of PIDs up to the maximum value of
-PID_MAX_LIMIT if the system is configured that way.
-
-On 64 bit systems with pid_max == PID_MAX_LIMIT this will increase the
-size of tgid_map from 256KiB to 16MiB. Whilst this 64x increase in
-memory overhead sounds significant 64 bit systems are presumably best
-placed to accommodate it, and since tgid_map is only allocated when the
-record-tgid option is actually used presumably the user would rather it
-spends sufficient memory to actually record the tgids they expect.
-
-The size of tgid_map could also increase for CONFIG_BASE_SMALL=y
-configurations, but these seem unlikely to be systems upon which people
-are both configuring a large pid_max and running ftrace with record-tgid
-anyway.
-
-Of note is that we only allocate tgid_map once, the first time that the
-record-tgid option is enabled. Therefore its size is only set once, to
-the value of pid_max at the time the record-tgid option is first
-enabled. If a user increases pid_max after that point, the saved_tgids
-file will not contain entries for any tasks with pids beyond the earlier
-value of pid_max.
-
-Link: https://lkml.kernel.org/r/20210701172407.889626-2-paulburton@google.com
-
-Fixes: d914ba37d714 ("tracing: Add support for recording tgid of tasks")
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Joel Fernandes <joelaf@google.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Paul Burton <paulburton@google.com>
-[ Fixed comment coding style ]
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: stable@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Marcus Cooper <codekipper@gmail.com>
+Fixes: 297d716f6260 ("power_supply: Change ownership from driver to core")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace.c |   63 ++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 47 insertions(+), 16 deletions(-)
+ include/linux/mfd/abx500/ux500_chargalg.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2181,8 +2181,15 @@ void tracing_reset_all_online_cpus(void)
- 	}
- }
+--- a/include/linux/mfd/abx500/ux500_chargalg.h
++++ b/include/linux/mfd/abx500/ux500_chargalg.h
+@@ -15,7 +15,7 @@
+  * - POWER_SUPPLY_TYPE_USB,
+  * because only them store as drv_data pointer to struct ux500_charger.
+  */
+-#define psy_to_ux500_charger(x) power_supply_get_drvdata(psy)
++#define psy_to_ux500_charger(x) power_supply_get_drvdata(x)
  
-+/*
-+ * The tgid_map array maps from pid to tgid; i.e. the value stored at index i
-+ * is the tgid last observed corresponding to pid=i.
-+ */
- static int *tgid_map;
- 
-+/* The maximum valid index into tgid_map. */
-+static size_t tgid_map_max;
-+
- #define SAVED_CMDLINES_DEFAULT 128
- #define NO_CMDLINE_MAP UINT_MAX
- static arch_spinlock_t trace_cmdline_lock = __ARCH_SPIN_LOCK_UNLOCKED;
-@@ -2455,24 +2462,41 @@ void trace_find_cmdline(int pid, char co
- 	preempt_enable();
- }
- 
-+static int *trace_find_tgid_ptr(int pid)
-+{
-+	/*
-+	 * Pairs with the smp_store_release in set_tracer_flag() to ensure that
-+	 * if we observe a non-NULL tgid_map then we also observe the correct
-+	 * tgid_map_max.
-+	 */
-+	int *map = smp_load_acquire(&tgid_map);
-+
-+	if (unlikely(!map || pid > tgid_map_max))
-+		return NULL;
-+
-+	return &map[pid];
-+}
-+
- int trace_find_tgid(int pid)
- {
--	if (unlikely(!tgid_map || !pid || pid > PID_MAX_DEFAULT))
--		return 0;
-+	int *ptr = trace_find_tgid_ptr(pid);
- 
--	return tgid_map[pid];
-+	return ptr ? *ptr : 0;
- }
- 
- static int trace_save_tgid(struct task_struct *tsk)
- {
-+	int *ptr;
-+
- 	/* treat recording of idle task as a success */
- 	if (!tsk->pid)
- 		return 1;
- 
--	if (unlikely(!tgid_map || tsk->pid > PID_MAX_DEFAULT))
-+	ptr = trace_find_tgid_ptr(tsk->pid);
-+	if (!ptr)
- 		return 0;
- 
--	tgid_map[tsk->pid] = tsk->tgid;
-+	*ptr = tsk->tgid;
- 	return 1;
- }
- 
-@@ -4847,6 +4871,8 @@ int trace_keep_overwrite(struct tracer *
- 
- int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
- {
-+	int *map;
-+
- 	if ((mask == TRACE_ITER_RECORD_TGID) ||
- 	    (mask == TRACE_ITER_RECORD_CMD))
- 		lockdep_assert_held(&event_mutex);
-@@ -4869,10 +4895,19 @@ int set_tracer_flag(struct trace_array *
- 		trace_event_enable_cmd_record(enabled);
- 
- 	if (mask == TRACE_ITER_RECORD_TGID) {
--		if (!tgid_map)
--			tgid_map = kvcalloc(PID_MAX_DEFAULT + 1,
--					   sizeof(*tgid_map),
--					   GFP_KERNEL);
-+		if (!tgid_map) {
-+			tgid_map_max = pid_max;
-+			map = kvcalloc(tgid_map_max + 1, sizeof(*tgid_map),
-+				       GFP_KERNEL);
-+
-+			/*
-+			 * Pairs with smp_load_acquire() in
-+			 * trace_find_tgid_ptr() to ensure that if it observes
-+			 * the tgid_map we just allocated then it also observes
-+			 * the corresponding tgid_map_max value.
-+			 */
-+			smp_store_release(&tgid_map, map);
-+		}
- 		if (!tgid_map) {
- 			tr->trace_flags &= ~TRACE_ITER_RECORD_TGID;
- 			return -ENOMEM;
-@@ -5286,18 +5321,14 @@ static void *saved_tgids_next(struct seq
- {
- 	int pid = ++(*pos);
- 
--	if (pid > PID_MAX_DEFAULT)
--		return NULL;
--
--	return &tgid_map[pid];
-+	return trace_find_tgid_ptr(pid);
- }
- 
- static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
- {
--	if (!tgid_map || *pos > PID_MAX_DEFAULT)
--		return NULL;
-+	int pid = *pos;
- 
--	return &tgid_map[*pos];
-+	return trace_find_tgid_ptr(pid);
- }
- 
- static void saved_tgids_stop(struct seq_file *m, void *v)
+ /* Forward declaration */
+ struct ux500_charger;
 
 
