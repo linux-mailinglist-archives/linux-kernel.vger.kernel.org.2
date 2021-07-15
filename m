@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6193CA9E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2123CABF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244195AbhGOTKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:10:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
+        id S1344545AbhGOT0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:26:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234100AbhGOS7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:59:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B786F613D6;
-        Thu, 15 Jul 2021 18:55:58 +0000 (UTC)
+        id S243517AbhGOTJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D087E613CC;
+        Thu, 15 Jul 2021 19:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375359;
-        bh=i09kXPCbvTLasuCF6x0xbGddtyuLPQXaRHxe8X5l2eA=;
+        s=korg; t=1626375947;
+        bh=FGDvieCdZUvRXaq+SoPPGIBddDqrEwFMckzntCzx+sA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tGtfZWODeCaul4NahPllMEip5Gx9D2FIadWcZ7bB4roLcfkq2J+8OvymhZTwvL/7r
-         rqt+6DwmPk9UXPlIL6io3XX3j+thCCUBmRQHmb/yIKNZv0AeK7wlwoAm7BkuE7SsiB
-         KRm5Ol9VXrSOYA0w9r6RiUvMbh+KveXTvWdboVuU=
+        b=L0OsFmZ/EF3kSjqW3ryWzX+b1ym44Gyf6SNOZPu9CRXVSr0hAi1+XobYXANXt8C2F
+         ElYjgSYpDfhMqczl8XKwvh5lZmuOJrPdAbYGvp+dkOxy/JSDVOOITplWS9GJPgca1T
+         Yo5rod3Dz0MzsOptTAOrrTCmlhDtj6nnmJXBbruU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiansong Chen <Jiansong.Chen@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
+        stable@vger.kernel.org, Shiwu Zhang <shiwu.zhang@amd.com>,
+        Nirmoy Das <nirmoy.das@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 052/242] drm/amdgpu: remove unsafe optimization to drop preamble ib
-Date:   Thu, 15 Jul 2021 20:36:54 +0200
-Message-Id: <20210715182601.499183124@linuxfoundation.org>
+Subject: [PATCH 5.13 060/266] drm/amdgpu: fix metadata_size for ubo ioctl queries
+Date:   Thu, 15 Jul 2021 20:36:55 +0200
+Message-Id: <20210715182624.814720144@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
+References: <20210715182613.933608881@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiansong Chen <Jiansong.Chen@amd.com>
+From: Shiwu Zhang <shiwu.zhang@amd.com>
 
-[ Upstream commit 7d9c70d23550eb86a1bec1954ccaa8d6ec3a3328 ]
+[ Upstream commit eba98523724be7ad3539f2c975de1527e0c99dd6 ]
 
-Take the situation with gfxoff, the optimization may cause
-corrupt CE ram contents. In addition emit_cntxcntl callback
-has similar optimization which firmware can handle properly
-even for power feature.
+Although the kfd_ioctl_get_dmabuf_info() still fail it will indicate
+the caller right metadat_size useful for the same kfd ioctl next time.
 
-Signed-off-by: Jiansong Chen <Jiansong.Chen@amd.com>
-Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: Shiwu Zhang <shiwu.zhang@amd.com>
+Reviewed-by: Nirmoy Das <nirmoy.das@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
-index 97c11aa47ad0..7892958d5f59 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ib.c
-@@ -131,7 +131,7 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
- 	struct amdgpu_device *adev = ring->adev;
- 	struct amdgpu_ib *ib = &ibs[0];
- 	struct dma_fence *tmp = NULL;
--	bool skip_preamble, need_ctx_switch;
-+	bool need_ctx_switch;
- 	unsigned patch_offset = ~0;
- 	struct amdgpu_vm *vm;
- 	uint64_t fence_ctx;
-@@ -228,7 +228,6 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
- 	if (need_ctx_switch)
- 		status |= AMDGPU_HAVE_CTX_SWITCH;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+index f9434bc2f9b2..db00de33caa3 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+@@ -1246,6 +1246,9 @@ int amdgpu_bo_get_metadata(struct amdgpu_bo *bo, void *buffer,
  
--	skip_preamble = ring->current_ctx == fence_ctx;
- 	if (job && ring->funcs->emit_cntxcntl) {
- 		status |= job->preamble_status;
- 		status |= job->preemption_status;
-@@ -246,14 +245,6 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
- 	for (i = 0; i < num_ibs; ++i) {
- 		ib = &ibs[i];
+ 	BUG_ON(bo->tbo.type == ttm_bo_type_kernel);
+ 	ubo = to_amdgpu_bo_user(bo);
++	if (metadata_size)
++		*metadata_size = ubo->metadata_size;
++
+ 	if (buffer) {
+ 		if (buffer_size < ubo->metadata_size)
+ 			return -EINVAL;
+@@ -1254,8 +1257,6 @@ int amdgpu_bo_get_metadata(struct amdgpu_bo *bo, void *buffer,
+ 			memcpy(buffer, ubo->metadata, ubo->metadata_size);
+ 	}
  
--		/* drop preamble IBs if we don't have a context switch */
--		if ((ib->flags & AMDGPU_IB_FLAG_PREAMBLE) &&
--		    skip_preamble &&
--		    !(status & AMDGPU_PREAMBLE_IB_PRESENT_FIRST) &&
--		    !amdgpu_mcbp &&
--		    !amdgpu_sriov_vf(adev)) /* for SRIOV preemption, Preamble CE ib must be inserted anyway */
--			continue;
--
- 		if (job && ring->funcs->emit_frame_cntl) {
- 			if (secure != !!(ib->flags & AMDGPU_IB_FLAGS_SECURE)) {
- 				amdgpu_ring_emit_frame_cntl(ring, false, secure);
+-	if (metadata_size)
+-		*metadata_size = ubo->metadata_size;
+ 	if (flags)
+ 		*flags = ubo->metadata_flags;
+ 
 -- 
 2.30.2
 
