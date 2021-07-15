@@ -2,563 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61AF3C95BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA123C95BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhGOBwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhGOBwS (ORCPT
+        id S233148AbhGOByK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 21:54:10 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6821 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233625AbhGOByJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:52:18 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5875DC06175F;
-        Wed, 14 Jul 2021 18:49:25 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id w127so4586467oig.12;
-        Wed, 14 Jul 2021 18:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mXpNyOyXWMYKpMN1qWv5H0GBm/j+VjKgL00Ru4rlGik=;
-        b=Vc6DIqrUCFihVJxiYv2s0sz0UM6BSHgSbKh+V+vu0cDicRCA9cyGX42cXe78h983p6
-         OsFkmS6vvZnDdZxQ1H04n+cpYA38SAVzew2uMcC1rM8zogJsPG9PxyAmT5w7TMrvDJRt
-         4OipRVeqhCpcqeGQDrKyDUgFLFdLHIGLSSJIylvoKm0Z1F4nhum3VXdUPg7cdTgFXhAz
-         qQIpUAIgTwnWkP+yiGD9hLeTIh3CvcBSTSOZ47GloE1MAqGl9UWaOycIiKBQ24y4my6o
-         DXxaj3a6Aaru9Vp9k12q3dhw8W9aMIQ3JTAF5R5TaQmo7V1xGOt+hi4K8H6K/tPehurr
-         fUNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mXpNyOyXWMYKpMN1qWv5H0GBm/j+VjKgL00Ru4rlGik=;
-        b=Vey+hbpEhS7TAgh+aMKsZoDppSyUkYmW/dR26eQhi04J7Lfng5pf5YdHTCOu6FZR74
-         3ZhkRk9dwXafd3XZT65onamGlI+pjXug98f/MCT0tPdaSy146ZH6QpGkT28FsvTvlKcz
-         hTuZmZN0OHfCFNZja8xSCnt4TiU8yAPjJ1LYnON/gWMpXUuhuTMZgNxK/a8tzxlU3TZX
-         pF0zFAyG+R6JRHEp05Ea9RBrOZPgQcmWhbByZuXDFOHitml6Hbnmr1TzyukwfACqb4Ar
-         cKAndSm4oIFo9FH2cqpQe4VFkowmSIoVVZVdlSG8RaQmnLxGkMsDDTSirDANfWMAlHnf
-         OXew==
-X-Gm-Message-State: AOAM5311/VoXwzIgoqOLhb6xNsZRfA2FA2UVE0THzWtADzdwPomwW7ei
-        gaX0/0BGipaAjB6R+EM6VDGc8Oazk5NbR3z0huU=
-X-Google-Smtp-Source: ABdhPJx19NXVJbqyKQm403NMgC5SnDwF/wFzawtpW0DalX0MU+QDEL3WSaQREI/pqg8Ih19FqAW0fEXwkuwFtNKOqVo=
-X-Received: by 2002:aca:af10:: with SMTP id y16mr5093465oie.12.1626313764133;
- Wed, 14 Jul 2021 18:49:24 -0700 (PDT)
+        Wed, 14 Jul 2021 21:54:09 -0400
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQHJJ1NH6zXtG7;
+        Thu, 15 Jul 2021 09:45:36 +0800 (CST)
+Received: from [127.0.0.1] (10.40.193.166) by dggeme756-chm.china.huawei.com
+ (10.3.19.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
+ Jul 2021 09:51:14 +0800
+Subject: Re: [PATCH v7 00/15] Optimizing iommu_[map/unmap] performance
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Georgi Djakov <quic_c_gdjako@quicinc.com>, <will@kernel.org>,
+        <robin.murphy@arm.com>
+References: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
+ <e6c8993e-353e-6a05-9b6d-9a49de471cb6@kernel.org>
+ <4d466ea9-2c1a-2e19-af5b-0434441ee7cb@linux.intel.com>
+CC:     <isaacm@codeaurora.org>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <pratikp@codeaurora.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>
+From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
+Message-ID: <edfff22f-251d-e07d-fdbc-0eb00c821f15@hisilicon.com>
+Date:   Thu, 15 Jul 2021 09:51:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
 MIME-Version: 1.0
-References: <20210701002037.912625-1-drew@beagleboard.org> <20210701002037.912625-3-drew@beagleboard.org>
-In-Reply-To: <20210701002037.912625-3-drew@beagleboard.org>
-From:   Ley Foon Tan <lftan.linux@gmail.com>
-Date:   Thu, 15 Jul 2021 09:49:12 +0800
-Message-ID: <CAFiDJ5_mSuGx2pWm_LTitGEnScbv+MMbP1+N54CGvH8p8PE2PQ@mail.gmail.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO driver
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
-        Huan Feng <huan.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4d466ea9-2c1a-2e19-af5b-0434441ee7cb@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.193.166]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Drew
 
 
-On Thu, Jul 1, 2021 at 8:25 AM Drew Fustini <drew@beagleboard.org> wrote:
+在 2021/7/15 9:23, Lu Baolu 写道:
+> On 7/14/21 10:24 PM, Georgi Djakov wrote:
+>> On 16.06.21 16:38, Georgi Djakov wrote:
+>>> When unmapping a buffer from an IOMMU domain, the IOMMU framework 
+>>> unmaps
+>>> the buffer at a granule of the largest page size that is supported by
+>>> the IOMMU hardware and fits within the buffer. For every block that
+>>> is unmapped, the IOMMU framework will call into the IOMMU driver, and
+>>> then the io-pgtable framework to walk the page tables to find the entry
+>>> that corresponds to the IOVA, and then unmaps the entry.
+>>>
+>>> This can be suboptimal in scenarios where a buffer or a piece of a
+>>> buffer can be split into several contiguous page blocks of the same 
+>>> size.
+>>> For example, consider an IOMMU that supports 4 KB page blocks, 2 MB 
+>>> page
+>>> blocks, and 1 GB page blocks, and a buffer that is 4 MB in size is 
+>>> being
+>>> unmapped at IOVA 0. The current call-flow will result in 4 indirect 
+>>> calls,
+>>> and 2 page table walks, to unmap 2 entries that are next to each 
+>>> other in
+>>> the page-tables, when both entries could have been unmapped in one shot
+>>> by clearing both page table entries in the same call.
+>>>
+>>> The same optimization is applicable to mapping buffers as well, so
+>>> these patches implement a set of callbacks called unmap_pages and
+>>> map_pages to the io-pgtable code and IOMMU drivers which unmaps or maps
+>>> an IOVA range that consists of a number of pages of the same
+>>> page size that is supported by the IOMMU hardware, and allows for
+>>> manipulating multiple page table entries in the same set of indirect
+>>> calls. The reason for introducing these callbacks is to give other 
+>>> IOMMU
+>>> drivers/io-pgtable formats time to change to using the new 
+>>> callbacks, so
+>>> that the transition to using this approach can be done piecemeal.
+>>
+>> Hi Will,
+>>
+>> Did you get a chance to look at this patchset? Most patches are already
+>> acked/reviewed and all still applies clean on rc1.
 >
-> Add GPIO driver for the StarFive JH7100 SoC [1] used on the
-> BeagleV Starlight JH7100 board [2].
+> I also have the ops->[un]map_pages implementation for the Intel IOMMU
+> driver. I will post them once the iommu/core part get applied.
+
+I also implement those callbacks on ARM SMMUV3 based on this series, and 
+use dma_map_benchmark to have a test on
+the latency of map/unmap as follows, and i think it promotes much on the 
+latency of map/unmap. I will also plan to post
+the implementations for ARM SMMUV3 after this series are applied.
+
+t = 1(thread = 1):
+                    before opt(us)   after opt(us)
+g=1(4K size)        0.1/1.3          0.1/0.8
+g=2(8K size)        0.2/1.5          0.2/0.9
+g=4(16K size)       0.3/1.9          0.1/1.1
+g=8(32K size)       0.5/2.7          0.2/1.4
+g=16(64K size)      1.0/4.5          0.2/2.0
+g=32(128K size)     1.8/7.9          0.2/3.3
+g=64(256K size)     3.7/14.8         0.4/6.1
+g=128(512K size)    7.1/14.7         0.5/10.4
+g=256(1M size)      14.0/53.9        0.8/19.3
+g=512(2M size)      0.2/0.9          0.2/0.9
+g=1024(4M size)     0.5/1.5          0.4/1.0
+
+t = 10(thread = 10):
+                    before opt(us)   after opt(us)
+g=1(4K size)        0.3/7.0          0.1/5.8
+g=2(8K size)        0.4/6.7          0.3/6.0
+g=4(16K size)       0.5/6.3          0.3/5.6
+g=8(32K size)       0.5/8.3          0.2/6.3
+g=16(64K size)      1.0/17.3         0.3/12.4
+g=32(128K size)     1.8/36.0         0.2/24.2
+g=64(256K size)     4.3/67.2         1.2/46.4
+g=128(512K size)    7.8/93.7         1.3/94.2
+g=256(1M size)      14.7/280.8       1.8/191.5
+g=512(2M size)      3.6/3.2          1.5/2.5
+g=1024(4M size)     2.0/3.1          1.8/2.6
+
+
 >
-> [1] https://github.com/starfive-tech/beaglev_doc/
-> [2] https://github.com/beagleboard/beaglev-starlight
+> Best regards,
+> baolu
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
 >
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
->  MAINTAINERS                         |   8 +
->  drivers/gpio/Kconfig                |   8 +
->  drivers/gpio/Makefile               |   1 +
->  drivers/gpio/gpio-starfive-jh7100.c | 425 ++++++++++++++++++++++++++++
->  4 files changed, 442 insertions(+)
->  create mode 100644 drivers/gpio/gpio-starfive-jh7100.c
+> .
+>
 
-[...]
 
-> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-> index d7c81e1611a4..939922eaf5f3 100644
-> --- a/drivers/gpio/Makefile
-> +++ b/drivers/gpio/Makefile
-> @@ -132,6 +132,7 @@ obj-$(CONFIG_GPIO_SAMA5D2_PIOBU)    += gpio-sama5d2-piobu.o
->  obj-$(CONFIG_GPIO_SCH311X)             += gpio-sch311x.o
->  obj-$(CONFIG_GPIO_SCH)                 += gpio-sch.o
->  obj-$(CONFIG_GPIO_SIFIVE)              += gpio-sifive.o
-> +obj-$(CONFIG_GPIO_STARFIVE_JH7100)     += gpio-starfive-jh7100.o
-Sort in alphabetical order.
-
->  obj-$(CONFIG_GPIO_SIOX)                        += gpio-siox.o
->  obj-$(CONFIG_GPIO_SL28CPLD)            += gpio-sl28cpld.o
->  obj-$(CONFIG_GPIO_SODAVILLE)           += gpio-sodaville.o
-> diff --git a/drivers/gpio/gpio-starfive-jh7100.c b/drivers/gpio/gpio-starfive-jh7100.c
-> new file mode 100644
-> index 000000000000..b94ebfe9eaf7
-> --- /dev/null
-> +++ b/drivers/gpio/gpio-starfive-jh7100.c
-> @@ -0,0 +1,425 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * GPIO driver for StarFive JH7100 SoC
-> + *
-> + * Copyright (C) 2020 Shanghai StarFive Technology Co., Ltd.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/spinlock.h>
-Include files sort in alphabetical orde too.
-
-> +
-> +/*
-> + * refer to Section 12. GPIO Registers in JH7100 datasheet:
-> + * https://github.com/starfive-tech/beaglev_doc
-> + */
-> +
-> +/* global enable */
-> +#define GPIO_EN                0x0
-> +
-> +/* interrupt type */
-> +#define GPIO_IS_LOW    0x10
-> +#define GPIO_IS_HIGH   0x14
-> +
-> +/* edge trigger interrupt type */
-> +#define GPIO_IBE_LOW   0x18
-> +#define GPIO_IBE_HIGH  0x1c
-> +
-> +/* edge trigger interrupt polarity */
-> +#define GPIO_IEV_LOW   0x20
-> +#define GPIO_IEV_HIGH  0x24
-> +
-> +/* interrupt max */
-> +#define GPIO_IE_LOW    0x28
-> +#define GPIO_IE_HIGH   0x2c
-> +
-> +/* clear edge-triggered interrupt */
-> +#define GPIO_IC_LOW    0x30
-> +#define GPIO_IC_HIGH   0x34
-> +
-> +/* edge-triggered interrupt status (read-only) */
-> +#define GPIO_RIS_LOW   0x38
-> +#define GPIO_RIS_HIGH  0x3c
-> +
-> +/* interrupt status after masking (read-only) */
-> +#define GPIO_MIS_LOW   0x40
-> +#define GPIO_MIS_HIGH  0x44
-> +
-> +/* data value of gpio */
-> +#define GPIO_DIN_LOW   0x48
-> +#define GPIO_DIN_HIGH  0x4c
-> +
-> +/* GPIO0_DOUT_CFG is 0x50, GPIOn_DOUT_CFG is 0x50+(n*8) */
-> +#define GPIO_DOUT_X_REG        0x50
-> +
-> +/* GPIO0_DOEN_CFG is 0x54, GPIOn_DOEN_CFG is 0x54+(n*8) */
-> +#define GPIO_DOEN_X_REG        0x54
-> +
-> +#define MAX_GPIO        64
-> +
-> +struct starfive_gpio {
-> +       raw_spinlock_t          lock;
-> +       void __iomem            *base;
-> +       struct gpio_chip        gc;
-> +       unsigned long           enabled;
-> +       unsigned int            trigger[MAX_GPIO];
-> +       unsigned int            irq_parent[MAX_GPIO];
-> +};
-> +
-> +static int starfive_direction_input(struct gpio_chip *gc, unsigned int offset)
-> +{
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       unsigned long flags;
-> +
-> +       if (offset >= gc->ngpio)
-> +               return -EINVAL;
-> +
-> +       raw_spin_lock_irqsave(&chip->lock, flags);
-> +       writel_relaxed(0x1, chip->base + GPIO_DOEN_X_REG + offset * 8);
-> +       raw_spin_unlock_irqrestore(&chip->lock, flags);
-> +
-> +       return 0;
-> +}
-> +
-> +static int starfive_direction_output(struct gpio_chip *gc, unsigned int offset, int value)
-> +{
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       unsigned long flags;
-> +
-> +       if (offset >= gc->ngpio)
-> +               return -EINVAL;
-> +
-> +       raw_spin_lock_irqsave(&chip->lock, flags);
-> +       writel_relaxed(0x0, chip->base + GPIO_DOEN_X_REG + offset * 8);
-> +       writel_relaxed(value, chip->base + GPIO_DOUT_X_REG + offset * 8);
-> +       raw_spin_unlock_irqrestore(&chip->lock, flags);
-> +
-> +       return 0;
-> +}
-> +
-> +static int starfive_get_direction(struct gpio_chip *gc, unsigned int offset)
-> +{
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +
-> +       if (offset >= gc->ngpio)
-> +               return -EINVAL;
-> +
-> +       return readl_relaxed(chip->base + GPIO_DOEN_X_REG + offset * 8) & 0x1;
-> +}
-> +
-> +static int starfive_get_value(struct gpio_chip *gc, unsigned int offset)
-> +{
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       int value;
-> +
-> +       if (offset >= gc->ngpio)
-> +               return -EINVAL;
-> +
-> +       if (offset < 32) {
-> +               value = readl_relaxed(chip->base + GPIO_DIN_LOW);
-> +               value = (value >> offset) & 0x1;
-> +       } else {
-> +               value = readl_relaxed(chip->base + GPIO_DIN_HIGH);
-> +               value = (value >> (offset - 32)) & 0x1;
-> +       }
-> +
-> +       return value;
-> +}
-> +
-> +static void starfive_set_value(struct gpio_chip *gc, unsigned int offset, int value)
-> +{
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       unsigned long flags;
-> +
-> +       if (offset >= gc->ngpio)
-> +               return;
-> +
-> +       raw_spin_lock_irqsave(&chip->lock, flags);
-> +       writel_relaxed(value, chip->base + GPIO_DOUT_X_REG + offset * 8);
-> +       raw_spin_unlock_irqrestore(&chip->lock, flags);
-> +}
-> +
-> +static void starfive_set_ie(struct starfive_gpio *chip, int offset)
-> +{
-> +       unsigned long flags;
-> +       int old_value, new_value;
-> +       int reg_offset, index;
-> +
-> +       if (offset < 32) {
-> +               reg_offset = 0;
-> +               index = offset;
-> +       } else {
-> +               reg_offset = 4;
-> +               index = offset - 32;
-> +       }
-Quite a number of places do this checking/calculation, can move this
-to a helper function.
-
-> +       raw_spin_lock_irqsave(&chip->lock, flags);
-> +       old_value = readl_relaxed(chip->base + GPIO_IE_LOW + reg_offset);
-> +       new_value = old_value | (1 << index);
-> +       writel_relaxed(new_value, chip->base + GPIO_IE_LOW + reg_offset);
-> +       raw_spin_unlock_irqrestore(&chip->lock, flags);
-> +}
-> +
-> +static int starfive_irq_set_type(struct irq_data *d, unsigned int trigger)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       int offset = irqd_to_hwirq(d);
-> +       unsigned int reg_is, reg_ibe, reg_iev;
-> +       int reg_offset, index;
-> +
-> +       if (offset < 0 || offset >= gc->ngpio)
-> +               return -EINVAL;
-> +
-> +       if (offset < 32) {
-> +               reg_offset = 0;
-> +               index = offset;
-> +       } else {
-> +               reg_offset = 4;
-> +               index = offset - 32;
-> +       }
-> +
-> +       reg_is = readl_relaxed(chip->base + GPIO_IS_LOW + reg_offset);
-> +       reg_ibe = readl_relaxed(chip->base + GPIO_IBE_LOW + reg_offset);
-> +       reg_iev = readl_relaxed(chip->base + GPIO_IEV_LOW + reg_offset);
-> +
-> +       switch (trigger) {
-> +       case IRQ_TYPE_LEVEL_HIGH:
-> +               reg_is  &= ~(1 << index);
-> +               reg_ibe &= ~(1 << index);
-> +               reg_iev |= (1 << index);
-> +               break;
-> +       case IRQ_TYPE_LEVEL_LOW:
-> +               reg_is  &= ~(1 << index);
-> +               reg_ibe &= ~(1 << index);
-> +               reg_iev &= (1 << index);
-> +               break;
-> +       case IRQ_TYPE_EDGE_BOTH:
-> +               reg_is  |= ~(1 << index);
-> +               reg_ibe |= ~(1 << index);
-> +               // no need to set edge type when both
-Use /**/ comment style.
-
-> +               break;
-> +       case IRQ_TYPE_EDGE_RISING:
-> +               reg_is  |= ~(1 << index);
-> +               reg_ibe &= ~(1 << index);
-> +               reg_iev |= (1 << index);
-> +               break;
-> +       case IRQ_TYPE_EDGE_FALLING:
-> +               reg_is  |= ~(1 << index);
-> +               reg_ibe &= ~(1 << index);
-> +               reg_iev &= (1 << index);
-> +               break;
-> +       }
-> +
-> +       writel_relaxed(reg_is, chip->base + GPIO_IS_LOW + reg_offset);
-> +       writel_relaxed(reg_ibe, chip->base + GPIO_IBE_LOW + reg_offset);
-> +       writel_relaxed(reg_iev, chip->base + GPIO_IEV_LOW + reg_offset);
-> +       chip->trigger[offset] = trigger;
-> +       starfive_set_ie(chip, offset);
-> +       return 0;
-> +}
-> +
-> +/* chained_irq_{enter,exit} already mask the parent */
-> +static void starfive_irq_mask(struct irq_data *d)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       unsigned int value;
-> +       int offset = irqd_to_hwirq(d);
-> +       int reg_offset, index;
-> +
-> +       if (offset < 0 || offset >= gc->ngpio)
-> +               return;
-> +
-> +       if (offset < 32) {
-> +               reg_offset = 0;
-> +               index = offset;
-> +       } else {
-> +               reg_offset = 4;
-> +               index = offset - 32;
-> +       }
-> +
-> +       value = readl_relaxed(chip->base + GPIO_IE_LOW + reg_offset);
-> +       value &= ~(0x1 << index);
-> +       writel_relaxed(value, chip->base + GPIO_IE_LOW + reg_offset);
-> +}
-> +
-> +static void starfive_irq_unmask(struct irq_data *d)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       unsigned int value;
-> +       int offset = irqd_to_hwirq(d);
-> +       int reg_offset, index;
-> +
-> +       if (offset < 0 || offset >= gc->ngpio)
-> +               return;
-> +
-> +       if (offset < 32) {
-> +               reg_offset = 0;
-> +               index = offset;
-> +       } else {
-> +               reg_offset = 4;
-> +               index = offset - 32;
-> +       }
-> +
-> +       value = readl_relaxed(chip->base + GPIO_IE_LOW + reg_offset);
-> +       value |= (0x1 << index);
-> +       writel_relaxed(value, chip->base + GPIO_IE_LOW + reg_offset);
-> +}
-> +
-> +static void starfive_irq_enable(struct irq_data *d)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       int offset = irqd_to_hwirq(d);
-> +
-> +       starfive_irq_unmask(d);
-> +       assign_bit(offset, &chip->enabled, 1);
-> +}
-> +
-> +static void starfive_irq_disable(struct irq_data *d)
-> +{
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +       struct starfive_gpio *chip = gpiochip_get_data(gc);
-> +       int offset = irqd_to_hwirq(d) % MAX_GPIO; // must not fail
-> +
-> +       assign_bit(offset, &chip->enabled, 0);
-> +       starfive_set_ie(chip, offset);
-> +}
-> +
-> +static struct irq_chip starfive_irqchip = {
-> +       .name           = "starfive-jh7100-gpio",
-> +       .irq_set_type   = starfive_irq_set_type,
-> +       .irq_mask       = starfive_irq_mask,
-> +       .irq_unmask     = starfive_irq_unmask,
-> +       .irq_enable     = starfive_irq_enable,
-> +       .irq_disable    = starfive_irq_disable,
-> +};
-> +
-> +static irqreturn_t starfive_irq_handler(int irq, void *gc)
-> +{
-> +       int offset;
-> +       int reg_offset, index;
-> +       unsigned int value;
-> +       unsigned long flags;
-> +       struct starfive_gpio *chip = gc;
-> +
-> +       for (offset = 0; offset < MAX_GPIO; offset++) {
-> +               if (offset < 32) {
-> +                       reg_offset = 0;
-> +                       index = offset;
-> +               } else {
-> +                       reg_offset = 4;
-> +                       index = offset - 32;
-> +               }
-> +
-> +               raw_spin_lock_irqsave(&chip->lock, flags);
-> +               value = readl_relaxed(chip->base + GPIO_MIS_LOW + reg_offset);
-> +               if (value & BIT(index))
-> +                       writel_relaxed(BIT(index), chip->base + GPIO_IC_LOW +
-> +                                       reg_offset);
-> +               raw_spin_unlock_irqrestore(&chip->lock, flags);
-> +       }
-> +
-> +       return IRQ_HANDLED;
-> +}
-> +
-> +static int starfive_gpio_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       struct starfive_gpio *chip;
-> +       struct gpio_irq_chip *girq;
-> +       struct resource *res;
-> +       int irq, ret, ngpio;
-> +
-> +       chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
-> +       if (!chip)
-> +               return -ENOMEM;
-> +
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       chip->base = devm_ioremap_resource(dev, res);
-Can use device managed function devm_
-devm_platform_ioremap_resource(), then combile these 2 functions into
-1.
-
-> +       if (IS_ERR(chip->base)) {
-> +               dev_err(dev, "failed to allocate device memory\n");
-Perhaps change "allocate" to get or ioremap.
-
-> +               return PTR_ERR(chip->base);
-> +       }
-> +
-> +       irq = platform_get_irq(pdev, 0);
-> +       if (irq < 0) {
-> +               dev_err(dev, "Cannot get IRQ resource\n");
-> +               return irq;
-> +       }
-> +
-> +       raw_spin_lock_init(&chip->lock);
-> +       chip->gc.direction_input = starfive_direction_input;
-> +       chip->gc.direction_output = starfive_direction_output;
-> +       chip->gc.get_direction = starfive_get_direction;
-> +       chip->gc.get = starfive_get_value;
-> +       chip->gc.set = starfive_set_value;
-> +       chip->gc.base = 0;
-> +       chip->gc.ngpio = MAX_GPIO;
-> +       chip->gc.label = dev_name(dev);
-> +       chip->gc.parent = dev;
-> +       chip->gc.owner = THIS_MODULE;
-> +
-> +       girq = &chip->gc.irq;
-> +       girq->chip = &starfive_irqchip;
-> +       girq->parent_handler = NULL;
-> +       girq->num_parents = 0;
-> +       girq->parents = NULL;
-> +       girq->default_type = IRQ_TYPE_NONE;
-> +       girq->handler = handle_simple_irq;
-> +
-> +       ret = gpiochip_add_data(&chip->gc, chip);
-Use devm_version, devm_gpiochip_add_data().
-
-> +       if (ret) {
-> +               dev_err(dev, "gpiochip_add_data ret=%d!\n", ret);
-> +               return ret;
-> +       }
-> +
-> +       /* Disable all GPIO interrupts before enabling parent interrupts */
-Clear any pending interrupts as well when initialization.
-
-> +       iowrite32(0, chip->base + GPIO_IE_HIGH);
-> +       iowrite32(0, chip->base + GPIO_IE_LOW);
-> +       chip->enabled = 0;
-> +
-> +       ret = devm_request_irq(dev, irq, starfive_irq_handler, IRQF_SHARED,
-> +                              dev_name(dev), chip);
-> +       if (ret) {
-> +               dev_err(dev, "IRQ handler registering failed (%d)\n", ret);
-> +               return ret;
-> +       }
-> +
-> +       writel_relaxed(1, chip->base + GPIO_EN);
-> +
-> +       dev_info(dev, "StarFive GPIO chip registered %d GPIOs\n", ngpio);
-> +
-> +       return 0;
-> +}
-> +
-> +static const struct of_device_id starfive_gpio_match[] = {
-> +       { .compatible = "starfive,jh7100-gpio", },
-> +       { },
-> +};
-> +
-> +static struct platform_driver starfive_gpio_driver = {
-> +       .probe  = starfive_gpio_probe,
-> +       .driver = {
-> +               .name = "gpio_starfive_jh7100",
-> +               .of_match_table = of_match_ptr(starfive_gpio_match),
-> +       },
-> +};
-> +
-> +static int __init starfive_gpio_init(void)
-> +{
-> +       return platform_driver_register(&starfive_gpio_driver);
-> +}
-> +subsys_initcall(starfive_gpio_init);
-> +
-> +static void __exit starfive_gpio_exit(void)
-> +{
-> +       platform_driver_unregister(&starfive_gpio_driver);
-Do you expect GPIO driver can be removed?
-The driver needs proper removal, provides .remove callback.
-Example, call gpiochip_remove() , disable interrupt when removing.
-
-> +}
-> +module_exit(starfive_gpio_exit);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Huan Feng <huan.feng@starfivetech.com>");
-> +MODULE_DESCRIPTION("StarFive JH7100 GPIO driver");
-> --
-
-Regards
-Ley Foon
