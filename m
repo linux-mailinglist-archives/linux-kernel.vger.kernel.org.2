@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A9B3CA1FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EAB3CA201
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbhGOQMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
+        id S229769AbhGOQNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:13:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhGOQMd (ORCPT
+        with ESMTP id S229535AbhGOQNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:12:33 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA1EC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:09:40 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id d9so7078106ioo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:09:40 -0700 (PDT)
+        Thu, 15 Jul 2021 12:13:06 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF82C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:10:12 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id e11so4184655oii.9
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QAfALqs51WvThC5Hz7W9r8szif6l/jmmKFnr+uD8jrY=;
-        b=bBIe3Tnv4rMT9xetAaOr9rGjv5VSSCeKssmFD1rCDDsH31qhlwLDrv1ThRHNLdkaN0
-         0HflA1YmprSlqcD2TWBPdhYq65rw+oeRg1Z2KzX4N/bTnc5AdQIFPkoLAwtFalfYv6Ij
-         HPb5Ye8CKZPD7VpK4bi5JyC0CTq0FGMkQppdpN9TtGu5PgNZXTJDQrU+nSNc3TLop1pa
-         UHreTFguEhpKAxHeNggVfhnb2VmD3HTxdfikhuN2u9W1vlv7Btn0iegwUvz7M5QLDHm0
-         4OO/8R3jdPmz+izbhVbOsoGGxlEZludONqhUUvbBg0482ucyGIioA2oU06iiOPuacKMo
-         BvWg==
+        bh=6c3zyMYOnu8f5V0VEW0ba+C0gb8GX+p+9qHajQ6vagk=;
+        b=ky2omVb78fdTIgHSoV6mfHrwbcyGxVRmdbWzk6MLrtzpjB+9YIZzxHelwVAd3LKV+Q
+         UFfn8+ds8zYXDUtMiGqgx84L44tIlAoRVa+N5bFrVFkWHb75GKPrhJ4j8FuZ7lfPnKOH
+         +pg0qcn15QrD/RSLV4aTO1lDeB0xnh/5ly3iKrn/mRauK97lweuJU1NKYaygj+qSpn4P
+         nFMMlBRguz6x3SapXagwLr4hg4RS+OFC0uGStRO3oCLY6ybHJ2Hlk04guFvmj7UDN1av
+         bhMM5oKTtP47NEZGDVj5rgKq+9RbecBcmQMnTknECHpOxLIagKTGkInBHvzAIK1G6Kow
+         QbKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QAfALqs51WvThC5Hz7W9r8szif6l/jmmKFnr+uD8jrY=;
-        b=VEic5hZ67WNrhUlEJNi6QBF4Tdx8x4q5tvqMOGczTppacPl+UkiqFZ7g/c2HJ6H6PY
-         wm1X4ttIqtZzueSHFStscbDt/3OMQ4roi9rp5piKaDwZIMiRniPGOOBiLm6Dtpkz64wY
-         zG9T6qRdXdjCJDUw1zGE9WFNwi/vX0HdPi6joH0ZQC2VcIns0gwakpSP2AgUzq6cJgMH
-         L6SMZLSSySDCqmWAaiCL+tUTYKv2+GYGW3kB4ljYMDxrHSJ/bcu+TeLWVWg6RHZ2WMZo
-         CHhyD6gYOEpyvk1NbrjfN/htFsVP/VhuqohCA7q8wpu17+OXUNpXRhD/B5cTf0hdlBIp
-         Ucng==
-X-Gm-Message-State: AOAM532sEZRTuj9sWvlobcuIMxabwZ2LQ94rqMq91WDiXRxLkjbVYILL
-        j/vAilqOq/pJBzbKZj3yJBE4iA9LVPoCy8HqkeV2Dw==
-X-Google-Smtp-Source: ABdhPJy1eLNmmf94QFLMJGGSva19cd6SJrv459Q6Itvj+7XMru5j7nO+Btog11fdlbx6MX8awXjgJxAyi61dm0Bpv0M=
-X-Received: by 2002:a05:6602:3342:: with SMTP id c2mr3586974ioz.126.1626365379421;
- Thu, 15 Jul 2021 09:09:39 -0700 (PDT)
+        bh=6c3zyMYOnu8f5V0VEW0ba+C0gb8GX+p+9qHajQ6vagk=;
+        b=PnPJgptLSBORD+ESAGZeN+V1ygQ/6ApjdI+cbJvN95+8dFri7AkqQfV8y99pciGveE
+         ngTvjM4n6+2mV5D8cOyaQL7u/nUzQb6y4C4NwJjl1psT5wrOr6og9y+iebl0mhAyxyXc
+         Drwtw4aUfr7QPuzFcXAkynbgE7qyADHhFvb3bFX9BNiXJODj+CMNgeobBRGG1sAupPuD
+         2dJshBAvzZbuh99giYfafD3o8kIkLAe/dNfXt+KMgVo9sFiS+vHHLGcUcVnr7zhZl0zu
+         JX0JgAD6pNJBBBP8sjiqJjPobf0LOnVFPgHekv6cnjsvl+cQbQJx2T6UAF8ORnI59dkN
+         NcCg==
+X-Gm-Message-State: AOAM530vfFO1sVPasj3zPv3yQ3lI9bXbIudF2uthKx+5oStYuKaGS2dX
+        AScte7Sfo6Dt0O9OXb8+Xl3i04jZL8zEmN3LDp4=
+X-Google-Smtp-Source: ABdhPJzEq72ZaeVqWHRV9xBl988kk8YBBxczyWyRPiiSGDCmqJSum/5U8fkHz6YIoJumevbUrAXhI5T4FOdLnqOhd9c=
+X-Received: by 2002:aca:ac15:: with SMTP id v21mr8249953oie.5.1626365411814;
+ Thu, 15 Jul 2021 09:10:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210714231506.886386-1-dlatypov@google.com> <CABVgOS=b6+KXp8LP5tAoaFev6yDX4gjrD1i9vBv58Y7JkO_E1A@mail.gmail.com>
-In-Reply-To: <CABVgOS=b6+KXp8LP5tAoaFev6yDX4gjrD1i9vBv58Y7JkO_E1A@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 15 Jul 2021 09:09:27 -0700
-Message-ID: <CAGS_qxrrC0S+jE=RW2WeTq3jgw-STnFFb8cG=gyE2Nj+2MxDLg@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: tool: add --kernel_args to allow setting module params
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210714080652.113381-1-liviu@dudau.co.uk>
+In-Reply-To: <20210714080652.113381-1-liviu@dudau.co.uk>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 15 Jul 2021 12:10:01 -0400
+Message-ID: <CADnq5_OA-em2jM-vmwaM7xxycOS-18EPC0r_myb7REy9b4h_vA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix 10bit 4K display on CIK GPUs
+To:     Liviu Dudau <liviu@dudau.co.uk>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Mario Kleiner <mario.kleiner.de@gmail.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 11:14 PM David Gow <davidgow@google.com> wrote:
+On Wed, Jul 14, 2021 at 4:15 AM Liviu Dudau <liviu@dudau.co.uk> wrote:
 >
-> On Thu, Jul 15, 2021 at 7:15 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > kunit.py currently does not make it possible for users to specify module
-> > parameters (/kernel arguments more generally) unless one directly tweaks
-> > the kunit.py code itself.
-> >
-> > This hasn't mattered much so far, but this would make it easier to port
-> > existing tests that expose module parameters over to KUnit and/or let
-> > current KUnit tests take advantage of them.
-> >
-> > Tested using an kunit internal parameter:
-> > $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit \
-> >     --kernel_args=kunit.filter_glob=kunit_status
-> > ...
-> > Testing complete. 2 tests run. 0 failed. 0 crashed. 0 skipped.
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Commit 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at
+> 30bpp for DCE-11.0.") doesn't seems to have fixed 10bit 4K rendering over
+> DisplayPort for CIK GPUs. On my machine with a HAWAII GPU I get a broken
+> image that looks like it has an effective resolution of 1920x1080 but
+> scaled up in an irregular way. Reverting the commit or applying this
+> patch fixes the problem on v5.14-rc1.
 >
-> Thanks! This is probably overdue: while I still think we want to avoid
-> this being necessary for most uses, it definitely was a gap in
-> kunit_tool functionality.
->
-> I tested this and it worked fine, but did cause several of the
-> kunit_tool_tests to fail, largely due to there being changes to the
-> arguments of run_kernel(). Those should just require the associated
-> tests to be updated.
+> Fixes: 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at 30bpp for DCE-11.0.")
+> Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
 
-Oops, completely forgot about kunit_tool_test.py. Sent out a v3.
-I also went and added a test case to make sure the flag can be
-repeated and gets plumbed through properly.
+Harry or Mario any ideas?  Maybe we need finer grained DCE version
+checking?  I don't remember all of the caveats of this stuff.  DCE11
+and older is getting to be pretty old at this point.  I can just apply
+this if you don't have any insights.
 
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> -- David
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+> index a6a67244a322e..1596f6b7fed7c 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+> @@ -1062,7 +1062,7 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+>          * so use only 30 bpp on DCE_VERSION_11_0. Testing with DCE 11.2 and 8.3
+>          * did not show such problems, so this seems to be the exception.
+>          */
+> -       if (plane_state->ctx->dce_version != DCE_VERSION_11_0)
+> +       if (plane_state->ctx->dce_version > DCE_VERSION_11_0)
+>                 pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_36BPP;
+>         else
+>                 pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_30BPP;
+> --
+> 2.32.0
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
