@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A55B3C9CC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CC33C9CC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241429AbhGOKh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231670AbhGOKh0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:37:26 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D07DC06175F;
-        Thu, 15 Jul 2021 03:34:32 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso5918749pjc.0;
-        Thu, 15 Jul 2021 03:34:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+oSd5AIwHXyRxmbXI7YN1Do3jrBN/ZwcUGcPjvgZeFk=;
-        b=AFHnbrvTfgXatGFDpeKuSk4yYxFCvxAArkKWMB2xhrzPriZ/ItDVwlf7rzN6cGdXKS
-         aMvgfdXg19XYmqFFhWHPqLHctEIDlFvgNxMAItXD8hJQNgnZMOHUiIcbjEzMmp9/+7Fy
-         xWD8qhbnLO+NFEyMxNiPj2PuX2wtqXQTTcmSx18tbeTcKkZBj8DJ9ZWe0DbhX/xavYan
-         LeBhysNvsvj3U/jrYtUvwi0Zj2D/vMWyI7hdstrBLS5uTMeYaOGNOUDM1EMRAtASVbgP
-         WvLSIXnwdZoHmrVNYWqAyk1bWRwcXU1XHdxAQO4Q8FhtLU52cdQL3c1z1Rt431Wg+a+L
-         ux2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+oSd5AIwHXyRxmbXI7YN1Do3jrBN/ZwcUGcPjvgZeFk=;
-        b=Jlz9yRREoEOb9ZIA89kf/RtNhqvNZJNJNUxRVnT3aCgid0RfbgtpfS87rO2/D1yMxS
-         STMTqawEvxyTK++XF1mm3WOfO3c1/aqYO3TiRio9TesH7jz9Ppdrad91FqYJrUN50thC
-         6gM8HZOVykr/gpi/HW7VFaHXHC/MzMRQW6SNAaZ66Rf6c//qQxJmyClHufrgesY0eF1f
-         ct9ZL6L2PU2vOcT0dUyFj8dxWxkisROU1YS2ZHjnYVjG2joffezOCOgpcfj4qFKZerud
-         a5CgvWFWbCtnB5+XCLfteL+cnZYNnK49XHThfS8siTu4ZgL1dDj4T4xZFJ7Qs+2nBlZo
-         DJVw==
-X-Gm-Message-State: AOAM530IF0a5/NERFKwswMHYlxide7v0YBm4K2SbSTTIdjUrtNHFDwtl
-        yclNNX/euC1be1cknhkpUUA=
-X-Google-Smtp-Source: ABdhPJzsgVuM1EhE0Bt1tm9UkzYH3XoF5+771CCc0YfNyBorSFfKh1zma+esEJdf3zhFYWz2Y4Kgpw==
-X-Received: by 2002:a17:90a:8e82:: with SMTP id f2mr9659205pjo.177.1626345272037;
-        Thu, 15 Jul 2021 03:34:32 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id e18sm6059326pfc.85.2021.07.15.03.34.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 03:34:31 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        anand.jain@oracle.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: fix rw device counting in __btrfs_free_extra_devids
-Date:   Thu, 15 Jul 2021 18:34:03 +0800
-Message-Id: <20210715103403.176695-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S241418AbhGOKhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:37:15 -0400
+Received: from mga06.intel.com ([134.134.136.31]:16970 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231670AbhGOKhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 06:37:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="271634220"
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="271634220"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 03:34:21 -0700
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="452373614"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 03:34:17 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m3yh0-00DhHX-P0; Thu, 15 Jul 2021 13:34:10 +0300
+Date:   Thu, 15 Jul 2021 13:34:10 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jia He <justin.he@arm.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com
+Subject: Re: [PATCH v7 1/5] d_path: fix Kernel doc validator complaints
+Message-ID: <YPAPIsGkom68R1WR@smile.fi.intel.com>
+References: <20210715011407.7449-1-justin.he@arm.com>
+ <20210715011407.7449-2-justin.he@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715011407.7449-2-justin.he@arm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reports a warning in close_fs_devices that happens because
-fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
-on each device.
+On Thu, Jul 15, 2021 at 09:14:03AM +0800, Jia He wrote:
+> Kernel doc validator complains:
+>   Function parameter or member 'p' not described in 'prepend_name'
+>   Excess function parameter 'buffer' description in 'prepend_name'
 
-This happens when a writeable device is removed in
-__btrfs_free_extra_devids, but the rw device count is not decremented
-accordingly. So when close_fs_devices is called, the removed device is
-still counted and we get an off by 1 error.
+Yup!
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Here is one call trace that was observed:
-  btrfs_mount_root():
-    btrfs_scan_one_device():
-      device_list_add();   <---------------- device added
-    btrfs_open_devices():
-      open_fs_devices():
-        btrfs_open_one_device();   <-------- rw device count ++
-    btrfs_fill_super():
-      open_ctree():
-        btrfs_free_extra_devids():
-	  __btrfs_free_extra_devids();  <--- device removed
-	  fail_tree_roots:
-	    btrfs_close_devices():
-	      close_fs_devices();   <------- rw device count off by 1
+> Fixes: ad08ae586586 ("d_path: introduce struct prepend_buffer")
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>  fs/d_path.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/d_path.c b/fs/d_path.c
+> index 23a53f7b5c71..4eb31f86ca88 100644
+> --- a/fs/d_path.c
+> +++ b/fs/d_path.c
+> @@ -33,9 +33,8 @@ static void prepend(struct prepend_buffer *p, const char *str, int namelen)
+>  
+>  /**
+>   * prepend_name - prepend a pathname in front of current buffer pointer
+> - * @buffer: buffer pointer
+> - * @buflen: allocated length of the buffer
+> - * @name:   name string and length qstr structure
+> + * @p: prepend buffer which contains buffer pointer and allocated length
+> + * @name: name string and length qstr structure
+>   *
+>   * With RCU path tracing, it may race with d_move(). Use READ_ONCE() to
+>   * make sure that either the old or the new name pointer and length are
+> @@ -108,8 +107,7 @@ static int __prepend_path(const struct dentry *dentry, const struct mount *mnt,
+>   * prepend_path - Prepend path string to a buffer
+>   * @path: the dentry/vfsmount to report
+>   * @root: root vfsmnt/dentry
+> - * @buffer: pointer to the end of the buffer
+> - * @buflen: pointer to buffer length
+> + * @p: prepend buffer which contains buffer pointer and allocated length
+>   *
+>   * The function will first try to write out the pathname without taking any
+>   * lock other than the RCU read lock to make sure that dentries won't go away.
+> -- 
+> 2.17.1
+> 
 
-Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
-Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
----
- fs/btrfs/volumes.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 807502cd6510..916c25371658 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
- 		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
- 			list_del_init(&device->dev_alloc_list);
- 			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-+			fs_devices->rw_devices--;
- 		}
- 		list_del_init(&device->dev_list);
- 		fs_devices->num_devices--;
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
