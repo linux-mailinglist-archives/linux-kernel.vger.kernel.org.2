@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8C63CA7E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C91E3CA7E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbhGOS4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:56:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53770 "EHLO mail.kernel.org"
+        id S242214AbhGOS44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:56:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236817AbhGOSv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239292AbhGOSv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 14:51:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A285613ED;
-        Thu, 15 Jul 2021 18:48:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C9E8613E7;
+        Thu, 15 Jul 2021 18:48:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374910;
-        bh=gQvJRFM6NdQV4GzQ2npWN1NIBM9y32kxi3ccaS/EeTw=;
+        s=korg; t=1626374913;
+        bh=NQy8nTnLvXU/vhv4B5FMdCwgkqRgd+S+GC6IS4N4NfY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fryMttX3gHB4EY6FnNqQsVgRpfOvjxFPLce3WiwcwdexmnQVsKGlDRq5TbcG8KVSh
-         65uTyByTgwIsmOS50J6GfRctuHxiqke9iNn9M7YIM80qHfCYVvdXeg2kHcZ0gZ157m
-         2zjhilhMeuLnaP8lyRauy8hTxH15JSpyRCn9CJ20=
+        b=ZzuYdQUzFgK7fCYtBylJUcMsaYdUZ0kTvxckmjEDOhFdvece/FNB49/cNh4zgdQTY
+         b6OW2W4/1Kj5EbIEW46CO4lMRVG+FLiDDmBVwNi8DNJT9mGCkWvQt/3zSPSrXARjhf
+         /tl6Libv9HaIYBBrESurI8aPhuLSWLhSHgBBhBBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
+        Tony Lindgren <tony@atomide.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 078/215] dm writecache: commit just one block, not a full page
-Date:   Thu, 15 Jul 2021 20:37:30 +0200
-Message-Id: <20210715182613.261923973@linuxfoundation.org>
+Subject: [PATCH 5.10 079/215] wlcore/wl12xx: Fix wl12xx get_mac error if device is in ELP
+Date:   Thu, 15 Jul 2021 20:37:31 +0200
+Message-Id: <20210715182613.445945907@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -40,39 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 991bd8d7bc78966b4dc427b53a144f276bffcd52 ]
+[ Upstream commit 11ef6bc846dcdce838f0b00c5f6a562c57e5d43b ]
 
-Some architectures have pages larger than 4k and committing a full
-page causes needless overhead.
+At least on wl12xx, reading the MAC after boot can fail with a warning
+at drivers/net/wireless/ti/wlcore/sdio.c:78 wl12xx_sdio_raw_read.
+The failed call comes from wl12xx_get_mac() that wlcore_nvs_cb() calls
+after request_firmware_work_func().
 
-Fix this by writing a single block when committing the superblock.
+After the error, no wireless interface is created. Reloading the wl12xx
+module makes the interface work.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Turns out the wlan controller can be in a low-power ELP state after the
+boot from the bootloader or kexec, and needs to be woken up first.
+
+Let's wake the hardware and add a sleep after that similar to
+wl12xx_pre_boot() is already doing.
+
+Note that a similar issue could exist for wl18xx, but I have not seen it
+so far. And a search for wl18xx_get_mac and wl12xx_sdio_raw_read did not
+produce similar errors.
+
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210603062814.19464-1-tony@atomide.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-writecache.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/net/wireless/ti/wl12xx/main.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
-index 64c2980aaa54..894b58bbe56e 100644
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -532,11 +532,7 @@ static void ssd_commit_superblock(struct dm_writecache *wc)
+diff --git a/drivers/net/wireless/ti/wl12xx/main.c b/drivers/net/wireless/ti/wl12xx/main.c
+index 9d7dbfe7fe0c..c6da0cfb4afb 100644
+--- a/drivers/net/wireless/ti/wl12xx/main.c
++++ b/drivers/net/wireless/ti/wl12xx/main.c
+@@ -1503,6 +1503,13 @@ static int wl12xx_get_fuse_mac(struct wl1271 *wl)
+ 	u32 mac1, mac2;
+ 	int ret;
  
- 	region.bdev = wc->ssd_dev->bdev;
- 	region.sector = 0;
--	region.count = PAGE_SIZE >> SECTOR_SHIFT;
--
--	if (unlikely(region.sector + region.count > wc->metadata_sectors))
--		region.count = wc->metadata_sectors - region.sector;
--
-+	region.count = wc->block_size >> SECTOR_SHIFT;
- 	region.sector += wc->start_sector;
- 
- 	req.bi_op = REQ_OP_WRITE;
++	/* Device may be in ELP from the bootloader or kexec */
++	ret = wlcore_write32(wl, WL12XX_WELP_ARM_COMMAND, WELP_ARM_COMMAND_VAL);
++	if (ret < 0)
++		goto out;
++
++	usleep_range(500000, 700000);
++
+ 	ret = wlcore_set_partition(wl, &wl->ptable[PART_DRPW]);
+ 	if (ret < 0)
+ 		goto out;
 -- 
 2.30.2
 
