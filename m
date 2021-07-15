@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B91D3C9E1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5833C9E1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhGOMCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 08:02:35 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6934 "EHLO
+        id S231623AbhGOMCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 08:02:39 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6935 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhGOMCd (ORCPT
+        with ESMTP id S231521AbhGOMCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 08:02:33 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQXrg6bXGz7v49;
-        Thu, 15 Jul 2021 19:56:03 +0800 (CST)
+        Thu, 15 Jul 2021 08:02:38 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQXrm6nXLz7v6k;
+        Thu, 15 Jul 2021 19:56:08 +0800 (CST)
 Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 19:59:38 +0800
+ 15.1.2176.2; Thu, 15 Jul 2021 19:59:43 +0800
 Received: from SWX921481.china.huawei.com (10.126.202.216) by
  dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 15 Jul 2021 19:59:33 +0800
+ 15.1.2176.2; Thu, 15 Jul 2021 19:59:38 +0800
 From:   Barry Song <song.bao.hua@hisilicon.com>
 To:     <gregkh@linuxfoundation.org>, <akpm@linux-foundation.org>,
         <andriy.shevchenko@linux.intel.com>, <yury.norov@gmail.com>,
@@ -37,9 +37,9 @@ CC:     <dave.hansen@intel.com>, <linux@rasmusvillemoes.dk>,
         <tim.c.chen@linux.intel.com>, <linuxarm@huawei.com>,
         Tian Tao <tiantao6@hisilicon.com>,
         Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH v7 1/4] cpumask: introduce cpumap_print_to_buf to support large bitmask and list
-Date:   Thu, 15 Jul 2021 23:58:53 +1200
-Message-ID: <20210715115856.11304-2-song.bao.hua@hisilicon.com>
+Subject: [PATCH v7 2/4] topology: use bin_attribute to break the size limitation of cpumap ABI
+Date:   Thu, 15 Jul 2021 23:58:54 +1200
+Message-ID: <20210715115856.11304-3-song.bao.hua@hisilicon.com>
 X-Mailer: git-send-email 2.21.0.windows.1
 In-Reply-To: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
 References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
@@ -56,254 +56,186 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tian Tao <tiantao6@hisilicon.com>
 
-The existing cpumap_print_to_pagebuf() is used by cpu topology and other
-drivers to export hexadecimal bitmask and decimal list to userspace by
-sysfs ABI.
-
-Right now, those drivers are using a normal attribute for this kind of
-ABIs. A normal attribute typically has show entry as below:
-
-static ssize_t example_dev_show(struct device *dev,
-                struct device_attribute *attr, char *buf)
-{
-	...
-	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
-}
-show entry of attribute has no offset and count parameters and this
-means the file is limited to one page only.
-
-cpumap_print_to_pagebuf() API works terribly well for this kind of
-normal attribute with buf parameter and without offset, count:
-
-static inline ssize_t
-cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-{
-	return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
-				       nr_cpu_ids);
-}
-
-The problem is once we have many cpus, we have a chance to make bitmask
-or list more than one page. Especially for list, it could be as complex
-as 0,3,5,7,9,...... We have no simple way to know it exact size.
-
-It turns out bin_attribute is a way to break this limit. bin_attribute
-has show entry as below:
-static ssize_t
-example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-             struct bin_attribute *attr, char *buf,
-             loff_t offset, size_t count)
-{
-	...
-}
-
-With the new offset and count parameters, this makes sysfs ABI be able
-to support file size more than one page. For example, offset could be
->= 4096.
-
-This patch introduces cpumap_print_to_buf() and its bitmap infrastructure
-bitmap_print_to_buf() so that those drivers can move to bin_attribute to
-support large bitmask and list. At the same time, we have to pass those
-corresponding parameters such as offset, count from bin_attribute to this
-new API.
+Reading /sys/devices/system/cpu/cpuX/topology/ returns cpu topology.
+However, the size of this file is limited to PAGE_SIZE because of
+the limitation for sysfs attribute.
+This patch moves to use bin_attribute to extend the ABI to be more
+than one page so that cpumap bitmask and list won't be potentially
+trimmed.
 
 Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Stefano Brivio <sbrivio@redhat.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
-Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- v7:
- explanation deserves to be a paragraph in code according to Andy's
- comments;
+ drivers/base/topology.c | 115 ++++++++++++++++++++++------------------
+ 1 file changed, 63 insertions(+), 52 deletions(-)
 
- include/linux/bitmap.h  |  2 ++
- include/linux/cpumask.h | 63 +++++++++++++++++++++++++++++++++
- lib/bitmap.c            | 78 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 143 insertions(+)
-
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index a36cfcec4e77..0de6effa2797 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -226,6 +226,8 @@ void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int n
- unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord, unsigned int nbits);
- int bitmap_print_to_pagebuf(bool list, char *buf,
- 				   const unsigned long *maskp, int nmaskbits);
-+int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-+			int nmaskbits, loff_t off, size_t count);
- 
- #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
- #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index f3689a52bfd0..f81ade866cf7 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -983,6 +983,69 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
- 				      nr_cpu_ids);
+diff --git a/drivers/base/topology.c b/drivers/base/topology.c
+index 4d254fcc93d1..dd3980124e33 100644
+--- a/drivers/base/topology.c
++++ b/drivers/base/topology.c
+@@ -21,25 +21,27 @@ static ssize_t name##_show(struct device *dev,				\
+ 	return sysfs_emit(buf, "%d\n", topology_##name(dev->id));	\
  }
  
-+/**
-+ * cpumap_print_to_buf  - copies the cpumask into the buffer
-+ * @list: indicates whether the cpumap must be list
-+ *      true:  print in decimal list format
-+ *      false: print in hexadecimal bitmask format
-+ *
-+ * The existing cpumap_print_to_pagebuf() is used by cpu topology and other
-+ * drivers to export hexadecimal bitmask and decimal list to userspace by
-+ * sysfs ABI.
-+ * Drivers might be using a normal attribute for this kind of ABIs. A
-+ * normal attribute typically has show entry as below:
-+ * static ssize_t example_attribute_show(struct device *dev,
-+ * 		struct device_attribute *attr, char *buf)
-+ * {
-+ * 	...
-+ * 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
-+ * }
-+ * show entry of attribute has no offset and count parameters. this means
-+ * the file is limited to one page only.
-+ * cpumap_print_to_pagebuf() API works terribly well for this kind of
-+ * normal attribute with buf parameter and without offset, count:
-+ * cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-+ * {
-+ * }
-+ * The problem is once we have many cpus, we have a chance to make bitmask
-+ * or list more than one page. Especially for list, it could be as complex
-+ * as 0,3,5,7,9,... We have no simple way to know it exact size.
-+ * It turns out bin_attribute is a way to break this limit. bin_attribute
-+ * has show entry as below:
-+ * static ssize_t
-+ * example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-+ * 		struct bin_attribute *attr, char *buf,
-+ * 		loff_t offset, size_t count)
-+ * {
-+ * 	...
-+ * }
-+ * With the new offset and count parameters, this makes sysfs ABI be able
-+ * to support file size more than one page. For example, offset could be
-+ * >= 4096.
-+ * cpumap_print_to_buf() makes those drivers be able to to support large
-+ * bitmask and list after they move to use bin_attribute. In result, we
-+ * have to pass the corresponding parameters such as off, count from
-+ * bin_attribute show entry to this API.
-+ *
-+ * @mask: the cpumask to copy
-+ * @buf: the buffer to copy into
-+ * @off: in the string from which we are copying, We copy to @buf
-+ * @count: the maximum number of bytes to print
-+ *
-+ * The function copies the cpumask into the buffer either as comma-separated
-+ * list of cpus or hex values of cpumask; Typically used by bin_attribute to
-+ * export cpumask bitmask and list ABI.
-+ *
-+ * Returns the length of how many bytes have been copied.
-+ */
-+static inline ssize_t
-+cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
-+		loff_t off, size_t count)
-+{
-+	return bitmap_print_to_buf(list, buf, cpumask_bits(mask),
-+				   nr_cpu_ids, off, count);
-+}
-+
- #if NR_CPUS <= BITS_PER_LONG
- #define CPU_MASK_ALL							\
- (cpumask_t) { {								\
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 9401d39e4722..56bcffe2fa8c 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -487,6 +487,84 @@ int bitmap_print_to_pagebuf(bool list, char *buf, const unsigned long *maskp,
+-#define define_siblings_show_map(name, mask)				\
+-static ssize_t name##_show(struct device *dev,				\
+-			   struct device_attribute *attr, char *buf)	\
+-{									\
+-	return cpumap_print_to_pagebuf(false, buf, topology_##mask(dev->id));\
++#define define_siblings_read_func(name, mask)					\
++static ssize_t name##_read(struct file *file, struct kobject *kobj,		\
++				  struct bin_attribute *attr, char *buf,	\
++				  loff_t off, size_t count)			\
++{										\
++	struct device *dev = kobj_to_dev(kobj);                                 \
++										\
++	return cpumap_print_to_buf(false, buf, topology_##mask(dev->id),	\
++				   off, count);                                 \
++}										\
++										\
++static ssize_t name##_list_read(struct file *file, struct kobject *kobj,	\
++				  struct bin_attribute *attr, char *buf,	\
++				  loff_t off, size_t count)			\
++{										\
++	struct device *dev = kobj_to_dev(kobj);					\
++										\
++	return cpumap_print_to_buf(true, buf, topology_##mask(dev->id),		\
++				   off, count);					\
  }
- EXPORT_SYMBOL(bitmap_print_to_pagebuf);
  
-+/**
-+ * bitmap_print_to_buf  - convert bitmap to list or hex format ASCII string
-+ * @list: indicates whether the bitmap must be list
-+ *      true:  print in decimal list format
-+ *      false: print in hexadecimal bitmask format
-+ *
-+ * The bitmap_print_to_pagebuf() is used indirectly via its cpumap wrapper
-+ * cpumap_print_to_pagebuf() or directly by drivers to export hexadecimal
-+ * bitmask and decimal list to userspace by sysfs ABI.
-+ * Drivers might be using a normal attribute for this kind of ABIs. A
-+ * normal attribute typically has show entry as below:
-+ * static ssize_t example_attribute_show(struct device *dev,
-+ * 		struct device_attribute *attr, char *buf)
-+ * {
-+ * 	...
-+ * 	return bitmap_print_to_pagebuf(true, buf, &mask, nr_trig_max);
-+ * }
-+ * show entry of attribute has no offset and count parameters and this
-+ * means the file is limited to one page only.
-+ * bitmap_print_to_pagebuf() API works terribly well for this kind of
-+ * normal attribute with buf parameter and without offset, count:
-+ * bitmap_print_to_pagebuf(bool list, char *buf, const unsigned long *maskp,
-+ * 			   int nmaskbits)
-+ * {
-+ * }
-+ * The problem is once we have a large bitmap, we have a chance to get a
-+ * bitmask or list more than one page. Especially for list, it could be
-+ * as complex as 0,3,5,7,9,... We have no simple way to know it exact size.
-+ * It turns out bin_attribute is a way to break this limit. bin_attribute
-+ * has show entry as below:
-+ * static ssize_t
-+ * example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-+ * 		struct bin_attribute *attr, char *buf,
-+ * 		loff_t offset, size_t count)
-+ * {
-+ * 	...
-+ * }
-+ * With the new offset and count parameters, this makes sysfs ABI be able
-+ * to support file size more than one page. For example, offset could be
-+ * >= 4096.
-+ * bitmap_print_to_buf() and its cpumap wrapper cpumap_print_to_buf() makes
-+ * those drivers be able to support large bitmask and list after they move
-+ * to use bin_attribute. In result, we have to pass the corresponding
-+ * parameters such as off, count from bin_attribute show entry to this API.
-+ *
-+ * @buf: buffer into which string is placed
-+ * @maskp: pointer to bitmap to convert
-+ * @nmaskbits: size of bitmap, in bits
-+ * @off: in the string from which we are copying, We copy to @buf
-+ * @count: the maximum number of bytes to print
-+ *
-+ * The role of cpumap_print_to_buf() and cpumap_print_to_pagebuf() is similar,
-+ * the difference is that bitmap_print_to_pagebuf() mainly serves sysfs
-+ * attribute with the assumption the destination buffer is exactly one page
-+ * and won't be more than one page. cpumap_print_to_buf(), on the other hand,
-+ * mainly serves bin_attribute which doesn't work with exact one page, and it
-+ * can break the size limit of converted decimal list and hexadecimal bitmask.
-+ *
-+ * Returns the number of characters actually printed to @buf
-+ */
-+int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-+		int nmaskbits, loff_t off, size_t count)
-+{
-+	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
-+	ssize_t size;
-+	void *data;
+-#define define_siblings_show_list(name, mask)				\
+-static ssize_t name##_list_show(struct device *dev,			\
+-				struct device_attribute *attr,		\
+-				char *buf)				\
+-{									\
+-	return cpumap_print_to_pagebuf(true, buf, topology_##mask(dev->id));\
+-}
+-
+-#define define_siblings_show_func(name, mask)	\
+-	define_siblings_show_map(name, mask);	\
+-	define_siblings_show_list(name, mask)
+-
+ define_id_show_func(physical_package_id);
+ static DEVICE_ATTR_RO(physical_package_id);
+ 
+@@ -49,71 +51,80 @@ static DEVICE_ATTR_RO(die_id);
+ define_id_show_func(core_id);
+ static DEVICE_ATTR_RO(core_id);
+ 
+-define_siblings_show_func(thread_siblings, sibling_cpumask);
+-static DEVICE_ATTR_RO(thread_siblings);
+-static DEVICE_ATTR_RO(thread_siblings_list);
++define_siblings_read_func(thread_siblings, sibling_cpumask);
++static BIN_ATTR_RO(thread_siblings, 0);
++static BIN_ATTR_RO(thread_siblings_list, 0);
+ 
+-define_siblings_show_func(core_cpus, sibling_cpumask);
+-static DEVICE_ATTR_RO(core_cpus);
+-static DEVICE_ATTR_RO(core_cpus_list);
++define_siblings_read_func(core_cpus, sibling_cpumask);
++static BIN_ATTR_RO(core_cpus, 0);
++static BIN_ATTR_RO(core_cpus_list, 0);
+ 
+-define_siblings_show_func(core_siblings, core_cpumask);
+-static DEVICE_ATTR_RO(core_siblings);
+-static DEVICE_ATTR_RO(core_siblings_list);
++define_siblings_read_func(core_siblings, core_cpumask);
++static BIN_ATTR_RO(core_siblings, 0);
++static BIN_ATTR_RO(core_siblings_list, 0);
+ 
+-define_siblings_show_func(die_cpus, die_cpumask);
+-static DEVICE_ATTR_RO(die_cpus);
+-static DEVICE_ATTR_RO(die_cpus_list);
++define_siblings_read_func(die_cpus, die_cpumask);
++static BIN_ATTR_RO(die_cpus, 0);
++static BIN_ATTR_RO(die_cpus_list, 0);
+ 
+-define_siblings_show_func(package_cpus, core_cpumask);
+-static DEVICE_ATTR_RO(package_cpus);
+-static DEVICE_ATTR_RO(package_cpus_list);
++define_siblings_read_func(package_cpus, core_cpumask);
++static BIN_ATTR_RO(package_cpus, 0);
++static BIN_ATTR_RO(package_cpus_list, 0);
+ 
+ #ifdef CONFIG_SCHED_BOOK
+ define_id_show_func(book_id);
+ static DEVICE_ATTR_RO(book_id);
+-define_siblings_show_func(book_siblings, book_cpumask);
+-static DEVICE_ATTR_RO(book_siblings);
+-static DEVICE_ATTR_RO(book_siblings_list);
++define_siblings_read_func(book_siblings, book_cpumask);
++static BIN_ATTR_RO(book_siblings, 0);
++static BIN_ATTR_RO(book_siblings_list, 0);
+ #endif
+ 
+ #ifdef CONFIG_SCHED_DRAWER
+ define_id_show_func(drawer_id);
+ static DEVICE_ATTR_RO(drawer_id);
+-define_siblings_show_func(drawer_siblings, drawer_cpumask);
+-static DEVICE_ATTR_RO(drawer_siblings);
+-static DEVICE_ATTR_RO(drawer_siblings_list);
++define_siblings_read_func(drawer_siblings, drawer_cpumask);
++static BIN_ATTR_RO(drawer_siblings, 0);
++static BIN_ATTR_RO(drawer_siblings_list, 0);
+ #endif
+ 
++static struct bin_attribute *bin_attrs[] = {
++	&bin_attr_core_cpus,
++	&bin_attr_core_cpus_list,
++	&bin_attr_thread_siblings,
++	&bin_attr_thread_siblings_list,
++	&bin_attr_core_siblings,
++	&bin_attr_core_siblings_list,
++	&bin_attr_die_cpus,
++	&bin_attr_die_cpus_list,
++	&bin_attr_package_cpus,
++	&bin_attr_package_cpus_list,
++#ifdef CONFIG_SCHED_BOOK
++	&bin_attr_book_siblings,
++	&bin_attr_book_siblings_list,
++#endif
++#ifdef CONFIG_SCHED_DRAWER
++	&bin_attr_drawer_siblings,
++	&bin_attr_drawer_siblings_list,
++#endif
++	NULL
++};
 +
-+	data = kasprintf(GFP_KERNEL, fmt, nmaskbits, maskp);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
-+	kfree(data);
-+
-+	return size;
-+}
-+EXPORT_SYMBOL(bitmap_print_to_buf);
-+
- /*
-  * Region 9-38:4/10 describes the following bitmap structure:
-  * 0	   9  12    18			38	     N
+ static struct attribute *default_attrs[] = {
+ 	&dev_attr_physical_package_id.attr,
+ 	&dev_attr_die_id.attr,
+ 	&dev_attr_core_id.attr,
+-	&dev_attr_thread_siblings.attr,
+-	&dev_attr_thread_siblings_list.attr,
+-	&dev_attr_core_cpus.attr,
+-	&dev_attr_core_cpus_list.attr,
+-	&dev_attr_core_siblings.attr,
+-	&dev_attr_core_siblings_list.attr,
+-	&dev_attr_die_cpus.attr,
+-	&dev_attr_die_cpus_list.attr,
+-	&dev_attr_package_cpus.attr,
+-	&dev_attr_package_cpus_list.attr,
+ #ifdef CONFIG_SCHED_BOOK
+ 	&dev_attr_book_id.attr,
+-	&dev_attr_book_siblings.attr,
+-	&dev_attr_book_siblings_list.attr,
+ #endif
+ #ifdef CONFIG_SCHED_DRAWER
+ 	&dev_attr_drawer_id.attr,
+-	&dev_attr_drawer_siblings.attr,
+-	&dev_attr_drawer_siblings_list.attr,
+ #endif
+ 	NULL
+ };
+ 
+ static const struct attribute_group topology_attr_group = {
+ 	.attrs = default_attrs,
++	.bin_attrs = bin_attrs,
+ 	.name = "topology"
+ };
+ 
 -- 
 2.25.1
 
