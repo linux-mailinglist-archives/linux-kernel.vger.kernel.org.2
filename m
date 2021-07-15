@@ -2,75 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6723C9EC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB233C9ECE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhGOMko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 08:40:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhGOMkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 08:40:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E549161374;
-        Thu, 15 Jul 2021 12:37:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626352670;
-        bh=eygR12Zdi4ElhBZVM5qdhbNeXAWJEMurkn3VmUfmNMo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S89AydWSeZpSkU1HLhdBBZGD1m9n7VH/3oaCFnnKvhd8FoLUQKhx5Vfuot0LWzyth
-         SLpW7OElZ6nWTa5rUrMqBq6tc7Bs+6U8r1Big7lW2qwH48nnkfS8djUSCkfmRf6t5h
-         do2+XPFKaGKgOL0Ov4Dk3PhaCgq/x3JSqeAUuY3sTcvveYDl7FGM4xBdbrwLLQd0M+
-         DaTofYWjNQEsD5/aqT+h/uzG6qTp03if+4n+WOGrCNb5fm2KdLkDMoejj8HJk35juI
-         om561lWxHxCdCT1FS/b+ySrWZwyJ9WH4Jvj8OPcV6itnGDPcWRH3wCRM5YPluBxDay
-         2i2R5VdejQWoQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: regulator: Convert UniPhier regulator to json-schema
-Date:   Thu, 15 Jul 2021 13:37:13 +0100
-Message-Id: <162635247078.14929.7474046739493187418.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1624413137-17453-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1624413137-17453-1-git-send-email-hayashi.kunihiko@socionext.com>
+        id S232196AbhGOMlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 08:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231974AbhGOMk6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 08:40:58 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9B0C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 05:38:05 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id y38so8826788ybi.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 05:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AGW+c5GaM/xOaoIZowl6bOJR9OeKj5JF5OQ5bE4BgbI=;
+        b=wqNRKxZcXX8yhtdHdnxdo0thbHOhRAMMlA1btOsqQJv68zgsKtmhYdccJrROUvntww
+         Dqu5QdWohVBbu1A4XzGzyAEcMzK1qmT/lXVP/FMOtz5A0CPLfpptBWtRy6nEUI4fiQ3J
+         e4Pa1oIg4pOUQU0xt06AVDICiAt8oekyyhRD1aOjXA0bM4fQvv7FFNzrksffwp/uLn5l
+         0xXERwxcl9a4pKO6BMvWEtI8+v7yC2S32f7AjBLJYVHrLec24/i0wE8w8cOII/ppF3Lf
+         Gp6B55mUMQTLFV9TV4MjBXGJKO+AvtLadCJ7Vd7yU0KFJhsiMNnwfRO8iHv2LG5EfjzD
+         2jKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AGW+c5GaM/xOaoIZowl6bOJR9OeKj5JF5OQ5bE4BgbI=;
+        b=YaMEMa4AC8S0LT2a1M9E65oDUR9rcSZrahecdqa2giHVHl7mwe4nVpw9r3FItaA5oI
+         M1uv34Yfpq+CmC7ZVL25tlpwYY51Tz+6clh0O0/NyZBaRYow1DL9irEW5i2i/IoO7pe3
+         3Tfxali7VRKBwM2oE0FlFwE5UhpLrstPwk+NmagpFAP6BTxtmxwJBxRKTZIlTF0riOu5
+         8ksxdXt1SGpNXzV7VO/xwvO6OmpMUojJ8Zy7GqPRoA+yMYCgZy5zqEKSTr3vS9fO6ErY
+         lUZFMWXQQAW9hTsg0wCSsO3w8K4f7+v5BJrdsVFFViCO/gNBF33UOWw5kjnpPbS+WA/M
+         0vbA==
+X-Gm-Message-State: AOAM530AcRgX4N1hQBpRoPFz6HN+MvLGpW3xRZXjbLUisMFrVbHv8AOU
+        Xmsu/q9IRIGQ/fo0sg1PKcz697C7m1N8TcCC01+HCg==
+X-Google-Smtp-Source: ABdhPJwesHWjVlQ5vB1cCcE805wWh4704fk2bMHNJqXZ26teaNU1KqkHZUjaF/pToI/iqOK/rtlZbFmhfDpKnsEzMA4=
+X-Received: by 2002:a25:8b91:: with SMTP id j17mr4979349ybl.228.1626352683797;
+ Thu, 15 Jul 2021 05:38:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
+ <bf326953-495f-db01-e554-42f4421d237a@huawei.com> <CAC_iWjLypqTGMxw_1ng1H8r5Yiv83G3yxUW8T1863XzFM-ShpA@mail.gmail.com>
+ <CAC_iWjLfsvr_Z2te=ABfEAecAOkQBiu22QZ8GhorA4MYnt4Uxg@mail.gmail.com> <401f10b2-3b92-a3f9-f01e-df2e190c8ff3@huawei.com>
+In-Reply-To: <401f10b2-3b92-a3f9-f01e-df2e190c8ff3@huawei.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Thu, 15 Jul 2021 15:37:26 +0300
+Message-ID: <CAC_iWjJJO6-+W+wq2HWYYbrz89tCs6Oc44YMtb88_gGXMqm2RQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
+ page_pool packets
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 10:52:17 +0900, Kunihiko Hayashi wrote:
-> Convert the UniPhier regulator binding to DT schema format.
+On Thu, 15 Jul 2021 at 13:48, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2021/7/15 18:38, Ilias Apalodimas wrote:
+> > On Thu, 15 Jul 2021 at 13:00, Ilias Apalodimas
+> > <ilias.apalodimas@linaro.org> wrote:
+> >>
+> >> On Thu, 15 Jul 2021 at 07:01, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>>
+> >>> On 2021/7/9 14:29, Ilias Apalodimas wrote:
+> >>>> As Alexander points out, when we are trying to recycle a cloned/expanded
+> >>>> SKB we might trigger a race.  The recycling code relies on the
+> >>>> pp_recycle bit to trigger,  which we carry over to cloned SKBs.
+> >>>> If that cloned SKB gets expanded or if we get references to the frags,
+> >>>> call skbb_release_data() and overwrite skb->head, we are creating separate
+> >>>> instances accessing the same page frags.  Since the skb_release_data()
+> >>>> will first try to recycle the frags,  there's a potential race between
+> >>>> the original and cloned SKB, since both will have the pp_recycle bit set.
+> >>>>
+> >>>> Fix this by explicitly those SKBs not recyclable.
+> >>>> The atomic_sub_return effectively limits us to a single release case,
+> >>>> and when we are calling skb_release_data we are also releasing the
+> >>>> option to perform the recycling, or releasing the pages from the page pool.
+> >>>>
+> >>>> Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
+> >>>> Reported-by: Alexander Duyck <alexanderduyck@fb.com>
+> >>>> Suggested-by: Alexander Duyck <alexanderduyck@fb.com>
+> >>>> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> >>>> ---
+> >>>> Changes since v1:
+> >>>> - Set the recycle bit to 0 during skb_release_data instead of the
+> >>>>   individual fucntions triggering the issue, in order to catch all
+> >>>>   cases
+> >>>>  net/core/skbuff.c | 4 +++-
+> >>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> >>>> index 12aabcda6db2..f91f09a824be 100644
+> >>>> --- a/net/core/skbuff.c
+> >>>> +++ b/net/core/skbuff.c
+> >>>> @@ -663,7 +663,7 @@ static void skb_release_data(struct sk_buff *skb)
+> >>>>       if (skb->cloned &&
+> >>>>           atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
+> >>>>                             &shinfo->dataref))
+> >>>> -             return;
+> >>>> +             goto exit;
+> >>>
+> >>> Is it possible this patch may break the head frag page for the original skb,
+> >>> supposing it's head frag page is from the page pool and below change clears
+> >>> the pp_recycle for original skb, causing a page leaking for the page pool?
+> >>>
+> >>
+> >> So this would leak eventually dma mapping if the skb is cloned (and
+> >> the dataref is now +1) and we are freeing the original skb first?
+> >>
+> >
+> > Apologies for the noise, my description was not complete.
+> > The case you are thinking is clone an SKB and then expand the original?
+>
+> Yes.
+> It seems we might need different pp_recycle bit for head frag and data frag.
 
-Applied to
+We could just reset the pp_recycle flag on pskb_carve_inside_header,
+pskb_expand_header and pskb_carve_inside_nonlinear which were the
+three functions that might trigger the race to begin with.  The point
+on adding it on skb_release_data was to have a catch all for all
+future cases ...
+Let me stare at itt a bit more in case I can come up with something better
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/1] dt-bindings: regulator: Convert UniPhier regulator to json-schema
-      commit: 442a9d105e61591b36b653ba1ee0c02b0482b639
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Thanks
+/Ilias
+>
+> >
+> > thanks
+> > /Ilias
+> >
+> >
+> >>>>
+> >>>>       skb_zcopy_clear(skb, true);
+> >>>>
+> >>>> @@ -674,6 +674,8 @@ static void skb_release_data(struct sk_buff *skb)
+> >>>>               kfree_skb_list(shinfo->frag_list);
+> >>>>
+> >>>>       skb_free_head(skb);
+> >>>> +exit:
+> >>>> +     skb->pp_recycle = 0;
+> >>>>  }
+> >>>>
+> >>>>  /*
+> >>>>
+> > .
+> >
