@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DF83CA184
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886E63CA183
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238964AbhGOPcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
+        id S238945AbhGOPcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 11:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238918AbhGOPcw (ORCPT
+        with ESMTP id S238917AbhGOPcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 11:32:52 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2AAC06175F;
-        Thu, 15 Jul 2021 08:29:58 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id u14so9514169ljh.0;
-        Thu, 15 Jul 2021 08:29:58 -0700 (PDT)
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E67C061762
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:29:59 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id t143so7054730oie.8
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CdIcOYksg8pHKzRiudEnxrqrqTv11M4NJ2rvZF2H7WA=;
-        b=nme9HccGkB0Rg4iueecc8lJqpYtdkf+1N2oSO2tdCeT0oDINOZ0vs7G8YphTgtbCzE
-         vA/C8owaAns9B9CsksDXeWbn4+wBz9AcrKXlE4Zw/e9zXECh8DEqEyev5HCwCbTbWD4E
-         wGEAOKCmrKAubTQU+ugkBvy8Z+7P/iGVxcZhykLQkQ2NdBeOcj8z/VV1bggKUnQGfw7f
-         73T8RwpLPUHC21MYNHzjwdqLcCUBaoZ7MQJtgAeCEFSXISmSnE8V5ynckOwr2+kxKsrV
-         xgapFn6rlPS7cIr9g/PekIlptQIVRUkDm+inTxprmBOMTjrkYL+8TzSHSBZ41xdTuCWT
-         z/9w==
+        bh=PC2VbGgFNMREyj7t2K6qMwTJqqmujTnFnTwETsTl8KE=;
+        b=ZTkEOsNFqSsyfKnxnOTBkE8/wgJ/33qsotjSIS+MPztNmZ7sxk5xxqRKgMaMmufRXq
+         pGXb3buYLa8d22iZc16hKU72UJKlG9BMfGYbCJvmjr/81LJV7rfAEHCXZvtF0jhc8+BX
+         IsnyzyPfaqvpuHoV96ZEOhzyhN2drYCAtdRY+8buOoI446VAreXkeMWfjFBQyrI6v5AK
+         xq4SDid+0zfwHALvdfzZFJFoTPp79pdCC62oZJrUfwALZNMWwQBCatRXAmeS1S/3Ezj5
+         FFjN1VZ3o/XtFaV/w75AD6GlN1RX9agFPDIlFXYh6S7hb/Yjb5ZtRb8oPEb6tfAniIMX
+         IRTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=CdIcOYksg8pHKzRiudEnxrqrqTv11M4NJ2rvZF2H7WA=;
-        b=W+UkKzt39fAaMEvHeCKdgitWwuXFr7eJbDhIw+NZOLdgUGREslPXWw3h+COmbP9R0k
-         Kqgee5hOB4oDx4AMtYKfVzQSXzLRV/SI/OtD0m14h6sa55agwaZWysSeoaWp+lc+v2CB
-         fxUivzcIydF6iCb14dJEkoINRZnZXPNjbtrzS8IB/r9Nfrvwjsu332VQp5lO913UJZUy
-         SomaC0iq6Dj+jL859XFEyaOJYLcFKn5vaAx9eP2ebx9dROU7zs33+gTZeTg2z0LtJjHn
-         VjILdzKUkm9BXrh9rzFKvSGLV00MAU5x8CyORyGitezfNWUJcZ5JNGlN0THBf7rZqaLg
-         lFFg==
-X-Gm-Message-State: AOAM530ZHdmoo3z0f6IhQwvVGBOlsuztJLv2HsFTIxXkAu3aaUWjfOF2
-        4muqzvwuf0++a96QJ8HzdTHZwcHDNxE=
-X-Google-Smtp-Source: ABdhPJwhU1r2gnUTo6zmqgpT1R3dIr2OZf855m5yYz9IRQk6uAwjoF6BPFdbhFj4DO84ZiS0mlcukg==
-X-Received: by 2002:a2e:bc0a:: with SMTP id b10mr2439427ljf.271.1626362996402;
-        Thu, 15 Jul 2021 08:29:56 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.googlemail.com with ESMTPSA id j18sm176347ljq.19.2021.07.15.08.29.55
+        bh=PC2VbGgFNMREyj7t2K6qMwTJqqmujTnFnTwETsTl8KE=;
+        b=McsRUk6/7UqnhII6F08Xzih8g96v6xvgwn61jxcuKSnK/v/snkz0DZawT1nrbdFYoi
+         zn138pzk68JTDe8VRbPk5YHa3m6YI/duIBzH0ErYBpSd4uwrmKtKkjP0FYYRbLzOl8T6
+         VMWDEzawisZJddnXNjkCOA4TGsJVEMIoj1qJP8oYogNq6QTvT3BPOLBdWkBaOoWofTGh
+         Njw0JINY/tQkTPTZgikKxM9E43LLSrkiHP4fOlA1g4K4syo3oC4zDYuANuRiya+gWGHk
+         a2HpQ6c3HuhXv0o2zJ1HKBaGEMq9D1YaGUa+PQF6v7YXB94oWzmOnuCkT4GmZ4vhMiNC
+         IT1g==
+X-Gm-Message-State: AOAM531t50Pejm0qLLEcBCP5VUMJDUIqMxsldAldcsQB1azLbXg43OeX
+        /FeSNW635msQSv84LgbDxevaWg==
+X-Google-Smtp-Source: ABdhPJxLUGGvParA/BhFVdZiL1shYP+EoD1vvgU3uqV+DmLA8OKC1ZEL3QwlDa5F+UBxM0EK5gM0tw==
+X-Received: by 2002:aca:af91:: with SMTP id y139mr4048545oie.36.1626362998437;
+        Thu, 15 Jul 2021 08:29:58 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id k7sm778110otn.60.2021.07.15.08.29.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 08:29:56 -0700 (PDT)
-Subject: Re: [PATCH v3 06/12] dt-bindings: power: supply: smb347-charger:
- Document USB VBUS regulator
-To:     Rob Herring <robh@kernel.org>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210704225433.32029-1-digetx@gmail.com>
- <20210704225433.32029-7-digetx@gmail.com>
- <20210712153905.GA1980362@robh.at.kernel.org>
- <9032e807-b4d3-bacf-6c39-d3a2c7c57f3e@gmail.com>
- <20210714230140.GA3697673@robh.at.kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <bffaea79-92a2-0355-d213-31dbe3d2b0b1@gmail.com>
-Date:   Thu, 15 Jul 2021 18:29:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 15 Jul 2021 08:29:57 -0700 (PDT)
+Subject: Re: [PATCH] block: nbd: fix order of cleaning up the queue and
+ freeing the tagset
+To:     Wang Qing <wangqing@vivo.com>, Josef Bacik <josef@toxicpanda.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org
+Cc:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+References: <1625477143-18716-1-git-send-email-wangqing@vivo.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a5668e8c-99db-e7d2-85a5-adacbd607ef7@kernel.dk>
+Date:   Thu, 15 Jul 2021 09:29:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210714230140.GA3697673@robh.at.kernel.org>
+In-Reply-To: <1625477143-18716-1-git-send-email-wangqing@vivo.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.07.2021 02:01, Rob Herring пишет:
-> On Tue, Jul 13, 2021 at 03:22:40AM +0300, Dmitry Osipenko wrote:
->> 12.07.2021 18:39, Rob Herring пишет:
->>>> +  summit,inok-polarity:
->>>> +    description: |
->>>> +      Polarity of INOK signal indicating presence of external power supply.
->>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>> +    enum:
->>>> +      - 0 # SMB3XX_SYSOK_INOK_ACTIVE_LOW
->>>> +      - 1 # SMB3XX_SYSOK_INOK_ACTIVE_HIGH
->>>> +
->>>> +  usb-vbus:
->>>> +    $ref: "../../regulator/regulator.yaml#"
->>>> +    type: object
->>>        unevaluatedProperties: false
->>>
->>> With that,
->>>
->>> Reviewed-by: Rob Herring <robh@kernel.org>
->>>
->>
->> I tried to add the unevaluatedProperties + a random unrelated property
->> to the example usb-vbus node and dt_binding_check is happy with that. So
->> the unevaluatedProperties has no effect, is it supposed to be so?
-> 
-> Yes, until support lands upstream[1].
-> 
-> Rob
-> 
-> [1] https://github.com/Julian/jsonschema/pull/817
-> 
+On 7/5/21 3:25 AM, Wang Qing wrote:
+> Must release the queue before freeing the tagset.
 
-Thank you for the clarification.
+Applied, thanks.
+
+-- 
+Jens Axboe
+
