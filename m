@@ -2,188 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B523F3CAC50
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFE13CAC9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244200AbhGOTcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46400 "EHLO mail.kernel.org"
+        id S1344540AbhGOTkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:40:19 -0400
+Received: from mga05.intel.com ([192.55.52.43]:50311 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243994AbhGOTKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:10:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2816A613D6;
-        Thu, 15 Jul 2021 19:07:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626376051;
-        bh=sNwJPcMC4QHZVtTwEA0KWkXpkqmHuuMfLW28ut1gRlo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=YRQ9qY9riX+H9uGE48Q11ANNmQX79yEVzhj5hp7YkisprzIC5SpGEajSSG1GVBapR
-         nMjgtIsvcPPdg1XqGZCiyN1Wi7R4NrAL2O3jS+M4Nj6IlpsMqE7zH31rJkdYv3GDnq
-         oEdK2m8npftI+EfYlODmgowIoJ8tpqJUbwdj013sP7i4FlKp6zpk4tda5wJqzwEpoK
-         y2R6ypvS2HgSw6Vdy10l4kIOyayMrk4X2iKaG0vcxjLjwF6uvckXXKv2oPdWAwlKkH
-         1t92NZepjI77mBoqFKqDBE4OFjWDFSawmXSxAjkbL5z4RsSqIpcFGFV0mRIjyLRfFA
-         oYyj7ilLzJkMQ==
-Date:   Thu, 15 Jul 2021 14:07:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [RFC v4 1/7] PCI: Introduce domain_nr in pci_host_bridge
-Message-ID: <20210715190729.GA1986347@bjorn-Precision-5520>
+        id S244280AbhGOTOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:14:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="296255391"
+X-IronPort-AV: E=Sophos;i="5.84,243,1620716400"; 
+   d="scan'208";a="296255391"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 12:08:34 -0700
+X-IronPort-AV: E=Sophos;i="5.84,243,1620716400"; 
+   d="scan'208";a="495608620"
+Received: from snchan-mobl2.amr.corp.intel.com (HELO [10.209.125.33]) ([10.209.125.33])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 12:08:32 -0700
+Subject: Re: [PATCH Part2 RFC v4 06/40] x86/sev: Add helper functions for
+ RMPUPDATE and PSMASH instruction
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        brijesh.ksingh@gmail.com
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-7-brijesh.singh@amd.com>
+ <CAMkAt6quzRMiEJ=iYDocRvpaYuNcV5vm=swbowK+KG=j7FjyKA@mail.gmail.com>
+ <8ab309cd-8465-d543-55c8-5f6529fe74fd@intel.com>
+ <YPCE5D6h7V0iZiX/@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <a00bb4f7-ab06-5773-8c8b-3540c75b257a@intel.com>
+Date:   Thu, 15 Jul 2021 12:08:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPBwzO7c/rw09IkE@boqun-archlinux>
+In-Reply-To: <YPCE5D6h7V0iZiX/@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 01:30:52AM +0800, Boqun Feng wrote:
-> On Wed, Jul 14, 2021 at 02:33:19PM -0500, Bjorn Helgaas wrote:
-> > On Wed, Jul 14, 2021 at 06:27:31PM +0800, Boqun Feng wrote:
-> > > Currently we retrieve the PCI domain number of the host bridge from the
-> > > bus sysdata (or pci_config_window if PCI_DOMAINS_GENERIC=y). Actually
-> > > we have the information at PCI host bridge probing time, and it makes
-> > > sense that we store it into pci_host_bridge. One benefit of doing so is
-> > > the requirement for supporting PCI on Hyper-V for ARM64, because the
-> > > host bridge of Hyper-V doesn't have pci_config_window, whereas ARM64 is
-> > > a PCI_DOMAINS_GENERIC=y arch, so we cannot retrieve the PCI domain
-> > > number from pci_config_window on ARM64 Hyper-V guest.
-> > > 
-> > > As the preparation for ARM64 Hyper-V PCI support, we introduce the
-> > > domain_nr in pci_host_bridge and a sentinel value to allow drivers to
-> > > set domain numbers properly at probing time. Currently
-> > > CONFIG_PCI_DOMAINS_GENERIC=y archs are only users of this
-> > > newly-introduced field.
-> > 
-> > Thanks for pushing on this.  PCI_DOMAINS_GENERIC is really not very
-> > generic today and it will be good to make it more so.
-> > 
-> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > > ---
-> > >  drivers/pci/probe.c |  6 +++++-
-> > >  include/linux/pci.h | 10 ++++++++++
-> > >  2 files changed, 15 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> > > index 79177ac37880..60c50d4f156f 100644
-> > > --- a/drivers/pci/probe.c
-> > > +++ b/drivers/pci/probe.c
-> > > @@ -594,6 +594,7 @@ static void pci_init_host_bridge(struct pci_host_bridge *bridge)
-> > >  	bridge->native_pme = 1;
-> > >  	bridge->native_ltr = 1;
-> > >  	bridge->native_dpc = 1;
-> > > +	bridge->domain_nr = PCI_DOMAIN_NR_NOT_SET;
-> > >  
-> > >  	device_initialize(&bridge->dev);
-> > >  }
-> > > @@ -898,7 +899,10 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
-> > >  	bus->ops = bridge->ops;
-> > >  	bus->number = bus->busn_res.start = bridge->busnr;
-> > >  #ifdef CONFIG_PCI_DOMAINS_GENERIC
-> > > -	bus->domain_nr = pci_bus_find_domain_nr(bus, parent);
-> > > +	if (bridge->domain_nr == PCI_DOMAIN_NR_NOT_SET)
-> > > +		bus->domain_nr = pci_bus_find_domain_nr(bus, parent);
-> > > +	else
-> > > +		bus->domain_nr = bridge->domain_nr;
-> > 
-> > The domain_nr in struct pci_bus is really only used by
-> > pci_domain_nr().  It seems like it really belongs in the struct
-> > pci_host_bridge and probably doesn't need to be duplicated in the
-> > struct pci_bus.  But that's probably a project for the future.
-> 
-> Agreed. Maybe we can define pci_bus_domain_nr() as:
-> 
-> 	static inline int pci_domain_nr(struct pci_bus *bus)
-> 	{
-> 		struct device *bridge = bus->bridge;
-> 		struct pci_host_bridge *b = container_of(bridge, struct pci_host_bridge, dev);
-> 
-> 		return b->domain_nr;
-> 	}
-> 
-> but apart from corretness (e.g. should we use get_device() for
-> bus->bridge?), it makes more sense if ->domain_nr of pci_host_bridge
-> is used (as a way to set domain number at probing time) for most of
-> drivers and archs. ;-)
+On 7/15/21 11:56 AM, Sean Christopherson wrote:
+>>>> +       /* Retry if another processor is modifying the RMP entry. */
+>>>> +       do {
+>>>> +               /* Binutils version 2.36 supports the PSMASH mnemonic. */
+>>>> +               asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
+>>>> +                             : "=a"(ret)
+>>>> +                             : "a"(spa)
+>>>> +                             : "memory", "cc");
+>>>> +       } while (ret == FAIL_INUSE);
+>>> Should there be some retry limit here for safety? Or do we know that
+>>> we'll never be stuck in this loop? Ditto for the loop in rmpupdate.
+>> It's probably fine to just leave this.  While you could *theoretically*
+>> lose this race forever, it's unlikely to happen in practice.  If it
+>> does, you'll get an easy-to-understand softlockup backtrace which should
+>> point here pretty quickly.
+> But should failure here even be tolerated?  The TDX cases spin on flows that are
+> _not_ due to (direct) contenion, e.g. a pending interrupt while flushing the
+> cache or lack of randomness when generating a key.  In this case, there are two
+> CPUs racing to modify the RMP entry, which implies that the final state of the
+> RMP entry is not deterministic.
 
-If we're holding a struct pci_bus *, we must have a reference on the
-bus, which in turn holds a reference on upstream devices, so there
-should be no need for get_device() here.
+I was envisioning that two different CPUs could try to smash two
+*different* 4k physical pages, but collide since they share
+a 2M page.
 
-But yes, I think something like this is where we should be heading.
+But, in patch 33, this is called via:
 
-> > >  #endif
-> > >  
-> > >  	b = pci_find_bus(pci_domain_nr(bus), bridge->busnr);
-> > > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > > index 540b377ca8f6..952bb7d46576 100644
-> > > --- a/include/linux/pci.h
-> > > +++ b/include/linux/pci.h
-> > > @@ -526,6 +526,15 @@ static inline int pci_channel_offline(struct pci_dev *pdev)
-> > >  	return (pdev->error_state != pci_channel_io_normal);
-> > >  }
-> > >  
-> > > +/*
-> > > + * PCI Conventional has at most 256 PCI bus segments and PCI Express has at
-> > > + * most 65536 "PCI Segments Groups", therefore -1 is not a valid PCI domain
-> > 
-> > s/Segments/Segment/
-> > 
-> > Do you have a reference for these limits?  I don't think either
-> > Conventional PCI or PCIe actually specifies a hardware limit on the
-> > number of domains (I think PCI uses "segment group" to mean the same
-> > thing).
-> > 
-> > "Segment" in the Conventional PCI spec, r3.0, means a bus segment,
-> > which connects all the devices on a single bus.  Obviously there's a
-> > limit of 256 buses under a single host bridge, but that's different
-> > concept than a domain/segment group.
-> > 
-> > The PCI Firmware spec, r3.3, defines "Segment Group Number" as being
-> > in the range 0..65535, but as far as I know, that's just a firmware
-> > issue, and it applies equally to Conventional PCI and PCIe.
-> > 
-> > I think you're right that -1 is a reasonable sentinel; I just don't
-> > want to claim a difference here unless there really is one.
-> > 
-> 
-> I think you're right, I got confused on the concepts of "Segment" and
-> "Segment Group".
-> 
-> After digging in specs, I haven't find any difference on the limitation
-> between Conventional PCI and PCIe. The PCI Firmware spec, r3.2, refers
-> ACPI (3.0 and later) spec for the details of "Segment Group", and in
-> ACPI spec v6.3, the description _SEG object says:
-> 
-> """
-> The lower 16 bits of _SEG returned integer is the PCI Segment Group
-> number. Other bits are reserved.
-> """
-> 
-> So I'm thinking replacing the comments with:
-> 
-> Currently in ACPI spec, for each PCI host bridge, PCI Segment Group
-> number is limited to a 16-bit value, therefore (int)-1 is not a valid
-> PCI domain number, and can be used as a sentinel value indicating
-> ->domain_nr is not set by the driver (and CONFIG_PCI_DOMAINS_GENERIC=y
-> archs will set it with pci_bus_find_domain_nr()).
+> +		write_lock(&kvm->mmu_lock);
+> +
+> +		switch (op) {
+> +		case SNP_PAGE_STATE_SHARED:
+> +			rc = snp_make_page_shared(vcpu, gpa, pfn, level);
+...
 
-Yes, I think that's a better description.
-
-> > > + * number, and can be used as a sentinel value indicating ->domain_nr is not
-> > > + * set by the driver (and CONFIG_PCI_DOMAINS_GENERIC=y can set it in generic
-> > > + * code).
+Which should make collisions impossible.  Did I miss another call-site?
