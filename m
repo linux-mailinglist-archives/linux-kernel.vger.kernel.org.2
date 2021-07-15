@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3978C3CA397
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B843CA38F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhGORJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:09:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39723 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhGORJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:09:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="274418179"
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="274418179"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 10:06:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="452477748"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 15 Jul 2021 10:06:01 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m44oD-000Jr6-2D; Thu, 15 Jul 2021 17:06:01 +0000
-Date:   Fri, 16 Jul 2021 01:05:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Subject: [RFC PATCH] mm/hugetlb: __unmap_hugepage_range() can be static
-Message-ID: <20210715170524.GA48547@78ef4ef0cd6c>
-References: <20210714222450.48840-1-peterx@redhat.com>
+        id S231583AbhGORIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhGORIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 13:08:41 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51F7C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 10:05:47 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:bcf3:b2b1:dff6:480b])
+        by baptiste.telenet-ops.be with bizsmtp
+        id VV5j2500H4sai0K01V5jSP; Thu, 15 Jul 2021 19:05:44 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m44nv-001QWe-Ee; Thu, 15 Jul 2021 19:05:43 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m44nu-00BPqa-MB; Thu, 15 Jul 2021 19:05:42 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] riscv: dts: microchip: mpfs-icicle: Fix serial console
+Date:   Thu, 15 Jul 2021 19:05:36 +0200
+Message-Id: <98082e819007a0f22d7f0f82914b4d84aabdca6d.1626368678.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714222450.48840-1-peterx@redhat.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mm/hugetlb.c:4334:6: warning: symbol '__unmap_hugepage_range' was not declared. Should it be static?
+Currently, nothing is output on the serial console, unless
+"console=ttyS0,115200n8" or "earlycon" are appended to the kernel
+command line.  Enable automatic console selection using
+chosen/stdout-path by adding a proper alias, and configure the expected
+serial rate.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+While at it, add aliases for the other three serial ports, which are
+provided on the same micro-USB connector as the first one.
+
+Fixes: 0fa6107eca4186ad ("RISC-V: Initial DTS for Microchip ICICLE board")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- hugetlb.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../boot/dts/microchip/microchip-mpfs-icicle-kit.dts     | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 924553aa8f789ad..4bdd637b0c29a95 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4331,9 +4331,9 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 	return ret;
- }
+diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+index ec79944065c98ef2..d75ea11ed043c1f0 100644
+--- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
++++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+@@ -14,8 +14,15 @@ / {
+ 	model = "Microchip PolarFire-SoC Icicle Kit";
+ 	compatible = "microchip,mpfs-icicle-kit";
  
--void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
--			    unsigned long start, unsigned long end,
--			    struct page *ref_page)
-+static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
-+				   unsigned long start, unsigned long end,
-+				   struct page *ref_page)
- {
- 	struct mm_struct *mm = vma->vm_mm;
- 	unsigned long address;
++	aliases {
++		serial0 = &serial0;
++		serial1 = &serial1;
++		serial2 = &serial2;
++		serial3 = &serial3;
++	};
++
+ 	chosen {
+-		stdout-path = &serial0;
++		stdout-path = "serial0:115200n8";
+ 	};
+ 
+ 	cpus {
+-- 
+2.25.1
+
