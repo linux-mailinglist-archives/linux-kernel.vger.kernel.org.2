@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077173CABA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3491C3CA93B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243286AbhGOTV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:21:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38918 "EHLO mail.kernel.org"
+        id S242181AbhGOTFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242718AbhGOTFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33BC3613CC;
-        Thu, 15 Jul 2021 19:01:57 +0000 (UTC)
+        id S241909AbhGOS4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C5C2613C4;
+        Thu, 15 Jul 2021 18:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375717;
-        bh=nkq24l6VqkSo1UqqPCrwRMRiEXo5Lx5JBG0l4bdAHQ4=;
+        s=korg; t=1626375188;
+        bh=pJZwj/2qO08ARvSq+wP2r6Sdm1b7xs+2pt2ITJOuBXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QGETh4keZbcPtYqImkIPuQ9D5LW5vKk+8Kh/wwCtOcDncec+P7xa6keULFd8k8rO2
-         3vH6tlPJrAw0x0P11YlrxNXOzmGGcyt20rdJ178tHsSBx92kmX5UB8wm8b4Y160yTX
-         9vOQf7TfioUrv63uWvF4eQMkdIcl7NH55FffhyuY=
+        b=S7khkaJqDqaNJ/rVsE9aIS25AOqx3JuZws3XjGnrho6rsKq2isqkenu7YreYZBhS6
+         ZEQ4WZCwPYXTZ3RLhz7KV2lh4eNYnCsFp0GZwyYUZI15KKDMHjg5DUt1o3IXGLF6W4
+         9Wb1kamu4NlKcuDzv0Uc1pOsA9JSdlRPwTUL/6v8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.12 164/242] drm/amdgpu: fix NAK-G generation during PCI-e link width switch
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH 5.10 154/215] drm/vc4: crtc: Skip the TXP
 Date:   Thu, 15 Jul 2021 20:38:46 +0200
-Message-Id: <20210715182622.041495977@linuxfoundation.org>
+Message-Id: <20210715182626.726856393@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,96 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Maxime Ripard <maxime@cerno.tech>
 
-commit 5a5da8ae9546031e43efd4fa5aa8baa481e83dfb upstream.
+commit 47a50743031ad4138050ae6d266ddd3dfe845ead upstream.
 
-A lot of NAK-G being generated when link widht switching is happening.
-WA for this issue is to program the SPC to 4 symbols per clock during
-bootup when the native PCIE width is x4.
+The vc4_set_crtc_possible_masks is meant to run over all the encoders
+and then set their possible_crtcs mask to their associated pixelvalve.
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+However, since the commit 39fcb2808376 ("drm/vc4: txp: Turn the TXP into
+a CRTC of its own"), the TXP has been turned to a CRTC and encoder of
+its own, and while it does indeed register an encoder, it no longer has
+an associated pixelvalve. The code will thus run over the TXP encoder
+and set a bogus possible_crtcs mask, overriding the one set in the TXP
+bind function.
+
+In order to fix this, let's skip any virtual encoder.
+
+Cc: <stable@vger.kernel.org> # v5.9+
+Fixes: 39fcb2808376 ("drm/vc4: txp: Turn the TXP into a CRTC of its own")
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210507150515.257424-3-maxime@cerno.tech
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_nbio.h |    1 +
- drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c   |   28 ++++++++++++++++++++++++++++
- drivers/gpu/drm/amd/amdgpu/nv.c          |    3 +++
- 3 files changed, 32 insertions(+)
+ drivers/gpu/drm/vc4/vc4_crtc.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_nbio.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_nbio.h
-@@ -89,6 +89,7 @@ struct amdgpu_nbio_funcs {
- 	void (*enable_aspm)(struct amdgpu_device *adev,
- 			    bool enable);
- 	void (*program_aspm)(struct amdgpu_device *adev);
-+	void (*apply_lc_spc_mode_wa)(struct amdgpu_device *adev);
- };
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -1042,6 +1042,9 @@ static void vc4_set_crtc_possible_masks(
+ 		struct vc4_encoder *vc4_encoder;
+ 		int i;
  
- struct amdgpu_nbio {
---- a/drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c
-+++ b/drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c
-@@ -51,6 +51,8 @@
- #define mmBIF_MMSCH1_DOORBELL_RANGE		0x01d8
- #define mmBIF_MMSCH1_DOORBELL_RANGE_BASE_IDX	2
- 
-+#define smnPCIE_LC_LINK_WIDTH_CNTL		0x11140288
++		if (encoder->encoder_type == DRM_MODE_ENCODER_VIRTUAL)
++			continue;
 +
- static void nbio_v2_3_remap_hdp_registers(struct amdgpu_device *adev)
- {
- 	WREG32_SOC15(NBIO, 0, mmREMAP_HDP_MEM_FLUSH_CNTL,
-@@ -463,6 +465,31 @@ static void nbio_v2_3_program_aspm(struc
- 		WREG32_PCIE(smnPCIE_LC_CNTL3, data);
- }
- 
-+static void nbio_v2_3_apply_lc_spc_mode_wa(struct amdgpu_device *adev)
-+{
-+	uint32_t reg_data = 0;
-+	uint32_t link_width = 0;
-+
-+	if (!((adev->asic_type >= CHIP_NAVI10) &&
-+	     (adev->asic_type <= CHIP_NAVI12)))
-+		return;
-+
-+	reg_data = RREG32_PCIE(smnPCIE_LC_LINK_WIDTH_CNTL);
-+	link_width = (reg_data & PCIE_LC_LINK_WIDTH_CNTL__LC_LINK_WIDTH_RD_MASK)
-+		>> PCIE_LC_LINK_WIDTH_CNTL__LC_LINK_WIDTH_RD__SHIFT;
-+
-+	/*
-+	 * Program PCIE_LC_CNTL6.LC_SPC_MODE_8GT to 0x2 (4 symbols per clock data)
-+	 * if link_width is 0x3 (x4)
-+	 */
-+	if (0x3 == link_width) {
-+		reg_data = RREG32_PCIE(smnPCIE_LC_CNTL6);
-+		reg_data &= ~PCIE_LC_CNTL6__LC_SPC_MODE_8GT_MASK;
-+		reg_data |= (0x2 << PCIE_LC_CNTL6__LC_SPC_MODE_8GT__SHIFT);
-+		WREG32_PCIE(smnPCIE_LC_CNTL6, reg_data);
-+	}
-+}
-+
- const struct amdgpu_nbio_funcs nbio_v2_3_funcs = {
- 	.get_hdp_flush_req_offset = nbio_v2_3_get_hdp_flush_req_offset,
- 	.get_hdp_flush_done_offset = nbio_v2_3_get_hdp_flush_done_offset,
-@@ -484,4 +511,5 @@ const struct amdgpu_nbio_funcs nbio_v2_3
- 	.remap_hdp_registers = nbio_v2_3_remap_hdp_registers,
- 	.enable_aspm = nbio_v2_3_enable_aspm,
- 	.program_aspm =  nbio_v2_3_program_aspm,
-+	.apply_lc_spc_mode_wa = nbio_v2_3_apply_lc_spc_mode_wa,
- };
---- a/drivers/gpu/drm/amd/amdgpu/nv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/nv.c
-@@ -1073,6 +1073,9 @@ static int nv_common_hw_init(void *handl
- {
- 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
- 
-+	if (adev->nbio.funcs->apply_lc_spc_mode_wa)
-+		adev->nbio.funcs->apply_lc_spc_mode_wa(adev);
-+
- 	/* enable pcie gen2/3 link */
- 	nv_pcie_gen3_enable(adev);
- 	/* enable aspm */
+ 		vc4_encoder = to_vc4_encoder(encoder);
+ 		for (i = 0; i < ARRAY_SIZE(pv_data->encoder_types); i++) {
+ 			if (vc4_encoder->type == encoder_types[i]) {
 
 
