@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823D33CA1AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAFA3CA1AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239495AbhGOPxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:53:44 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57158 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238841AbhGOPxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:53:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=1EFyQ8ie4h3mbGIJ1dxorPzj8uRnod+uetVD2o2OJKM=; b=mgkXGI/nwWsq2mDsXt8XTySciO
-        kstWDHDz03080VYmuyyETkxNbVV3hSV5X/npVOZYSAjAOkQPNJlPoOb/wprd5cKLOsuQqVpX2JGEE
-        uqXhnOjkAtQtwLtvihB5K6dfOTarIRKHMhhiO2oRWAWduMX0KvktJPPm6XkAlviqlNPY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m43dE-00DVG6-Hv; Thu, 15 Jul 2021 17:50:36 +0200
-Date:   Thu, 15 Jul 2021 17:50:36 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware process the
- layer 4 checksum
-Message-ID: <YPBZTFlWwXK/hl95@lunn.ch>
-References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
- <20210714191723.31294-3-LinoSanfilippo@gmx.de>
- <20210714194812.stay3oqyw3ogshhj@skbuf>
- <YO9F2LhTizvr1l11@lunn.ch>
- <20210715065455.7nu7zgle2haa6wku@skbuf>
- <YPAzZXaC/En3s4ly@lunn.ch>
- <20210715143648.yutq6vceoblnhhfp@skbuf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715143648.yutq6vceoblnhhfp@skbuf>
+        id S239500AbhGOPyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 11:54:17 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:40633 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhGOPyP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 11:54:15 -0400
+Received: by mail-io1-f41.google.com with SMTP id l5so7020868iok.7;
+        Thu, 15 Jul 2021 08:51:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=JpZLiCBQnZ2+MHl1nUW2ILJ6GK8TQMEgnso1fyfpgW4=;
+        b=HOnJayphy1geKWltBulmDz/ZiUN0Ya71BwhgIt/PWlJhMFFAAyXcivj7rrzO3UTuEi
+         AlOVljyS6lNKQW/F1STsXVVH8YlG9P9lxGMN5eshRW1yleelrAhleBOUJ1y4HEn4MqHZ
+         iWf7cI9W48DHHZijmqFxois64lcWYFHYKy9H2QcE78dAFM59nUpGIcGBC7NyiD57A2A5
+         xlXlIS27S7hgUoiUpvZ2jgNSkJ1DmgJ1OGh5kqSSnoqZR/nd1Yv/WrPXapUmZAcw26+o
+         +ABK6cDdy3YLtAPi7TGmueyOMrYu2smkmoUEK8CytNjnRtVDZGB8SwJy2l0LyozapSCv
+         403A==
+X-Gm-Message-State: AOAM533JWPKoeuOmy7q5q7BPTYNTuw2Lf1IZRYUhqsGrmo44dkWHL32Q
+        2eLoJ05p8eCKVkM1nYdV0zcu74GtxA==
+X-Google-Smtp-Source: ABdhPJyfy6RNCVwpCt8/P77LlZHhH+LauiplhwP3w//gzu1aeDj+fIQWDdVj7YoLFnX7maRUNnZD0g==
+X-Received: by 2002:a05:6638:13ca:: with SMTP id i10mr952178jaj.90.1626364280999;
+        Thu, 15 Jul 2021 08:51:20 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id k10sm3374997ion.38.2021.07.15.08.51.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 08:51:19 -0700 (PDT)
+Received: (nullmailer pid 1138776 invoked by uid 1000);
+        Thu, 15 Jul 2021 15:51:17 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc:     devicetree@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+        robh+dt@kernel.org, perex@perex.cz, lgirdwood@gmail.com,
+        pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+        alsa-devel@alsa-project.org, broonie@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Baluta <daniel.baluta@nxp.com>, daniel.baluta@gmail.com,
+        tiwai@suse.com
+In-Reply-To: <20210715141802.880911-4-daniel.baluta@oss.nxp.com>
+References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com> <20210715141802.880911-4-daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH 3/3] dt-bindings: dsp: fsl: Document newly introduced fsl,properties
+Date:   Thu, 15 Jul 2021 09:51:17 -0600
+Message-Id: <1626364277.745081.1138775.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Tell me more (show me some code).
+On Thu, 15 Jul 2021 17:18:02 +0300, Daniel Baluta wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
+> 
+> Document firmware-name, tplg-name and machine-drv-name properties.
+> 
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> ---
+>  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 20 +++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
 
-https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/marvell/mvneta.c#L1747
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-and
+yamllint warnings/errors:
 
-https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/marvell/mvneta.c#L1944
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/arm,mhuv2.example.dt.yaml: dsp@596e8000: 'tplg-name' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/arm,mhuv2.example.dt.yaml: dsp@596e8000: 'machine-drv-name' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+\ndoc reference errors (make refcheckdocs):
 
-It uses skb_network_offset(skb) to know where the real header is. This
-should work independent of DSA or EDSA.
+See https://patchwork.ozlabs.org/patch/1505740
 
-mvpp2_main.c looks to have something similar. The older mv643xx_eth.c
-also has something, but it is more subtle. Ah, found it:
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/marvell/mv643xx_eth.c#L683
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-> I expect Marvell switches to be equally broken on the Broadcom genet
-> controller?
+pip3 install dtschema --upgrade
 
-Maybe. Depends on how genet works. A Broadcom switch connected to a
-Marvell MAC probably works, since the code is generic. It should work
-for any switch which uses head tagging, although mv643xx_eth.c is
-limited to 4 or 8 byte tags.
+Please check and re-submit.
 
-	Andrew
