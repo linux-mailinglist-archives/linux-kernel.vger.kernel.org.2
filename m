@@ -2,135 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBDB3CA6B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD45A3CA5A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236183AbhGOSuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:50:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237256AbhGOSrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:47:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F3FD601FF;
-        Thu, 15 Jul 2021 18:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374686;
-        bh=heIKjzrVWDCz5r4LnpqUSfigJCY+N0dJARnlDFNZtsc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQ3AMKIuixo1LzfoB9prz4756bUOJP/0G5gFZfg46HyPhW3c8dyHEqV1sRgXGk+t6
-         LdD/BYggv2ObH2BfksFKA3UfvgoFMnAr0mDXjbvZJv9y8EDoYY5bHf+5cKYguNlmqc
-         N9AX5yn7WAkFPy/tgJGGqMorDMnb8/eElDqF+bCc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 104/122] rq-qos: fix missed wake-ups in rq_qos_throttle try two
-Date:   Thu, 15 Jul 2021 20:39:11 +0200
-Message-Id: <20210715182519.612194347@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
-References: <20210715182448.393443551@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S229841AbhGOSmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhGOSmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:42:11 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF42C061762
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:39:17 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id h4so7428233pgp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:39:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f3Y0+ogDVT6wqAQ9ZQs2NyHc5pJHUCbPNwTdIK9PvNA=;
+        b=Qv3S59LCo5Nmv9xeE85vyXWs0GZOA6KpAsz49t1UEOxMwgH2P9Y4ljAK74msMmTt2O
+         UNWvggYks0hDjPx8QyMfkCWn1CjZq5S9eiunJ77QL6TXq8rwRbAtkjCrdhgbFBYUHgxn
+         L09H6z5RM3mwM5tX1LZl0rsd/lRhtL/FHHzGNIW6VhH3AJY+KQQ3s+h2yPt5segk0grk
+         8v5UWFkaC2eF83kmN+zNi9f9KERgDwDm+RB+yjbQirrVge0ZjGQhKibLQ48L41+LPY+j
+         7ZDohtKMPav2yX+ZJlS4XbJ63NiCsEP02INCQtD+ISzPHyO6hXsIkY+T4rbRtxzv5vb1
+         fVSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f3Y0+ogDVT6wqAQ9ZQs2NyHc5pJHUCbPNwTdIK9PvNA=;
+        b=kMw0XYTEnpjSxBsaxS8YcOavwthLKYVvE3Beq88yTc10NflIyY7H1JNLnIuQedNirl
+         qjcEsGutfOg+Qnj6miRZIl1K3q5TBfnb9TRmY5YYKlgrjn4R5DjtTeq0tV/cIMXKR5HR
+         ydPpRQssjR6VVanuZVoc46dQ15gy9InPQoek/tX1EcMLLXV2gemh7f3Y5iVbHrxM2ymM
+         0680Q5UdtBYqLqK2rwX7sT9LmhPvUQDjtLC+og9yD3ehsouTI4rSWP28P8GhQ8erjNCD
+         3Fk5D5ZiF66gL6LvwqFJTt+6nsfIkkXflS9PRTofyqeN4IAQhTskslFnl3R5gq76rpZp
+         bACw==
+X-Gm-Message-State: AOAM5315/8QSMOoRRYdQZhQ5nPYrXBOzD8PEDZXyt8AI7jq3AYaWBI6O
+        /tLznDqERDrXcSoqGN4YDBFH+w==
+X-Google-Smtp-Source: ABdhPJz+1iaVBL+ABO/O1tBChzrqhVRnDYERNo2Clv19fhDRGqCjbjbdtc1OIE70QPX9w7Agiv3K8Q==
+X-Received: by 2002:a62:19c9:0:b029:32a:129f:542d with SMTP id 192-20020a6219c90000b029032a129f542dmr5859523pfz.8.1626374356838;
+        Thu, 15 Jul 2021 11:39:16 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 73sm6267842pjz.24.2021.07.15.11.39.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 11:39:16 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 18:39:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 07/40] x86/sev: Split the physmap when
+ adding the page in RMP table
+Message-ID: <YPCA0A+Z3RKfdsa3@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-8-brijesh.singh@amd.com>
+ <YO9kP1v0TAFXISHD@google.com>
+ <d486a008-8340-66b0-9667-11c8a50974e4@amd.com>
+ <YPB1n0+G+0EoyEvE@google.com>
+ <41f83ddf-a8a5-daf3-dc77-15fc164f77c6@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41f83ddf-a8a5-daf3-dc77-15fc164f77c6@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+On Thu, Jul 15, 2021, Brijesh Singh wrote:
+> The memfd_secrets uses the set_direct_map_{invalid,default}_noflush() and it
+> is designed to remove/add the present bit in the direct map. We can't use
+> them, because in our case the page may get accessed by the KVM (e.g
+> kvm_guest_write, kvm_guest_map etc).
 
-commit 11c7aa0ddea8611007768d3e6b58d45dc60a19e1 upstream.
-
-Commit 545fbd0775ba ("rq-qos: fix missed wake-ups in rq_qos_throttle")
-tried to fix a problem that a process could be sleeping in rq_qos_wait()
-without anyone to wake it up. However the fix is not complete and the
-following can still happen:
-
-CPU1 (waiter1)		CPU2 (waiter2)		CPU3 (waker)
-rq_qos_wait()		rq_qos_wait()
-  acquire_inflight_cb() -> fails
-			  acquire_inflight_cb() -> fails
-
-						completes IOs, inflight
-						  decreased
-  prepare_to_wait_exclusive()
-			  prepare_to_wait_exclusive()
-  has_sleeper = !wq_has_single_sleeper() -> true as there are two sleepers
-			  has_sleeper = !wq_has_single_sleeper() -> true
-  io_schedule()		  io_schedule()
-
-Deadlock as now there's nobody to wakeup the two waiters. The logic
-automatically blocking when there are already sleepers is really subtle
-and the only way to make it work reliably is that we check whether there
-are some waiters in the queue when adding ourselves there. That way, we
-are guaranteed that at least the first process to enter the wait queue
-will recheck the waiting condition before going to sleep and thus
-guarantee forward progress.
-
-Fixes: 545fbd0775ba ("rq-qos: fix missed wake-ups in rq_qos_throttle")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20210607112613.25344-1-jack@suse.cz
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- block/blk-rq-qos.c   |    4 ++--
- include/linux/wait.h |    2 +-
- kernel/sched/wait.c  |    9 +++++++--
- 3 files changed, 10 insertions(+), 5 deletions(-)
-
---- a/block/blk-rq-qos.c
-+++ b/block/blk-rq-qos.c
-@@ -266,8 +266,8 @@ void rq_qos_wait(struct rq_wait *rqw, vo
- 	if (!has_sleeper && acquire_inflight_cb(rqw, private_data))
- 		return;
- 
--	prepare_to_wait_exclusive(&rqw->wait, &data.wq, TASK_UNINTERRUPTIBLE);
--	has_sleeper = !wq_has_single_sleeper(&rqw->wait);
-+	has_sleeper = !prepare_to_wait_exclusive(&rqw->wait, &data.wq,
-+						 TASK_UNINTERRUPTIBLE);
- 	do {
- 		/* The memory barrier in set_task_state saves us here. */
- 		if (data.got_token)
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -1121,7 +1121,7 @@ do {										\
-  * Waitqueues which are removed from the waitqueue_head at wakeup time
-  */
- void prepare_to_wait(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
--void prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
-+bool prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
- long prepare_to_wait_event(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
- void finish_wait(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
- long wait_woken(struct wait_queue_entry *wq_entry, unsigned mode, long timeout);
---- a/kernel/sched/wait.c
-+++ b/kernel/sched/wait.c
-@@ -232,17 +232,22 @@ prepare_to_wait(struct wait_queue_head *
- }
- EXPORT_SYMBOL(prepare_to_wait);
- 
--void
-+/* Returns true if we are the first waiter in the queue, false otherwise. */
-+bool
- prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state)
- {
- 	unsigned long flags;
-+	bool was_empty = false;
- 
- 	wq_entry->flags |= WQ_FLAG_EXCLUSIVE;
- 	spin_lock_irqsave(&wq_head->lock, flags);
--	if (list_empty(&wq_entry->entry))
-+	if (list_empty(&wq_entry->entry)) {
-+		was_empty = list_empty(&wq_head->head);
- 		__add_wait_queue_entry_tail(wq_head, wq_entry);
-+	}
- 	set_current_state(state);
- 	spin_unlock_irqrestore(&wq_head->lock, flags);
-+	return was_empty;
- }
- EXPORT_SYMBOL(prepare_to_wait_exclusive);
- 
-
-
+But KVM should never access a guest private page, i.e. the direct map should
+always be restored to PRESENT before KVM attempts to access the page.
