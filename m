@@ -2,316 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BE73C9F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840BD3C9F12
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233147AbhGONFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:05:51 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3416 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbhGONFt (ORCPT
+        id S233918AbhGONGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:06:55 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:37684 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbhGONGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:05:49 -0400
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GQZ151VnFz6D92V;
-        Thu, 15 Jul 2021 20:48:25 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 15 Jul 2021 15:02:54 +0200
-Received: from localhost (10.47.82.59) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 15 Jul
- 2021 14:02:53 +0100
-Date:   Thu, 15 Jul 2021 14:02:32 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        <linux-iio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add binding documentation
- for Renesas RZ/G2L A/D converter
-Message-ID: <20210715140232.0000408c@Huawei.com>
-In-Reply-To: <CA+V-a8spDa5PiGzp6-4mHTEMfQYJ5NnQ44vwgdtu_sfVG5OO5Q@mail.gmail.com>
-References: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-        <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-        <20210703181937.510ec0fa@jic23-huawei>
-        <CA+V-a8uzeepfd+8Wfd2n2EXeXQ9QJZhR+X8j29Y7DGNu8+aH+g@mail.gmail.com>
-        <20210714133913.000075a6@Huawei.com>
-        <CA+V-a8spDa5PiGzp6-4mHTEMfQYJ5NnQ44vwgdtu_sfVG5OO5Q@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Thu, 15 Jul 2021 09:06:53 -0400
+Received: by mail-wm1-f43.google.com with SMTP id y21-20020a7bc1950000b02902161fccabf1so6017091wmi.2;
+        Thu, 15 Jul 2021 06:03:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bJGICSHpYO0mCBny+k842bEvVqLK1SbOw3MzuL2d1yY=;
+        b=BPHpcpQWaWUT4p/Sm9aN6vUD08D6/OrtldnhWXlrO0QEC9KCWB4SM11uwn39fHtyKf
+         l4187YmtTnanmBBJtJyZ0tAmTQUAMTo9cpvQtQkmtOmh68MFTDlHlH4tuLArcqyiTyNY
+         lfhxt/e2ETfdyv6nWXOJWgkMCjdw+xUb1U5nECUDRTfUA0RibB2YF35n89lY1qF1XW3v
+         9ZX7janmaMyAxL8IayfPEbBRTs1yglhTEf9AYHhb8dGe72ERfYDYjv0/brCqTWsgwI5i
+         d1UmT15Zn9P2trQz8TZkjeV/sS9cLDrQC91nsBpJ+tBHGG+kY326MjPLGNQyH90o1ui0
+         Camw==
+X-Gm-Message-State: AOAM531J9PYDP9uvdkdUCkAoUSdRNSN19s1Yyp5vsvJIpsdwlHOzDLAJ
+        Y/F+BBT4zRasFmy5K6nhOIU=
+X-Google-Smtp-Source: ABdhPJyHb5wyZ5NLzoJUkEJliUgFAMAVKGopBAKAZ2T0I54iyj4rIaOGc0RWAOe5oNF3YZdG1AlzLQ==
+X-Received: by 2002:a7b:c846:: with SMTP id c6mr4464137wml.92.1626354238212;
+        Thu, 15 Jul 2021 06:03:58 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id b6sm8406146wmj.34.2021.07.15.06.03.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 06:03:57 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 13:03:56 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] Additional refactoring of Hyper-V arch specific
+ code
+Message-ID: <20210715130356.qbmrfnbpqbdaim3j@liuwe-devbox-debian-v2>
+References: <1626287687-2045-1-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.82.59]
-X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626287687-2045-1-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 19:24:27 +0100
-"Lad, Prabhakar" <prabhakar.csengg@gmail.com> wrote:
-
-> Hi Jonathan,
+On Wed, Jul 14, 2021 at 11:34:44AM -0700, Michael Kelley wrote:
+> This patch set moves additional Hyper-V code under arch/x86 into
+> arch-neutral hv_common.c where it can be shared by x86 and
+> and ARM64 implementations.  The move reduces the overall lines
+> of code across both architectures, and removes code under
+> arch/ that isn't really architecture-specific.
 > 
-> On Wed, Jul 14, 2021 at 1:39 PM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> >
-> > On Wed, 14 Jul 2021 10:11:49 +0100
-> > "Lad, Prabhakar" <prabhakar.csengg@gmail.com> wrote:
-> >  
-> > > Hi Jonathan,
-> > >
-> > > Thank you for the review.
-> > >
-> > > On Sat, Jul 3, 2021 at 6:17 PM Jonathan Cameron <jic23@kernel.org> wrote:  
-> > > >
-> > > > On Tue, 29 Jun 2021 23:03:27 +0100
-> > > > Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > >  
-> > > > > Add binding documentation for Renesas RZ/G2L A/D converter block.
-> > > > >
-> > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>  
-> > > > Hi,
-> > > >
-> > > > See inline
-> > > >
-> > > > Jonathan
-> > > >  
-> > > > > ---
-> > > > >  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 121 ++++++++++++++++++
-> > > > >  1 file changed, 121 insertions(+)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..db935d6d59eb
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > > > > @@ -0,0 +1,121 @@
-> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id: http://devicetree.org/schemas/iio/adc/renesas,rzg2l-adc.yaml#
-> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > +
-> > > > > +title: Renesas RZ/G2L ADC
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > > +
-> > > > > +description: |
-> > > > > +  A/D Converter block is a successive approximation analog-to-digital converter
-> > > > > +  with a 12-bit accuracy. Up to eight analog input channels can be selected.
-> > > > > +  Conversions can be performed in single or repeat mode. Result of the ADC is
-> > > > > +  stored in a 32-bit data register corresponding to each channel.
-> > > > > +
-> > > > > +properties:
-> > > > > +  compatible:
-> > > > > +    oneOf:
-> > > > > +      - items:
-> > > > > +          - enum:
-> > > > > +              - renesas,r9a07g044-adc   # RZ/G2{L,LC}
-> > > > > +          - const: renesas,rzg2l-adc
-> > > > > +
-> > > > > +  reg:
-> > > > > +    maxItems: 1
-> > > > > +
-> > > > > +  interrupts:
-> > > > > +    maxItems: 1
-> > > > > +
-> > > > > +  clocks:
-> > > > > +    items:
-> > > > > +      - description: converter clock
-> > > > > +      - description: peripheral clock
-> > > > > +
-> > > > > +  clock-names:
-> > > > > +    items:
-> > > > > +      - const: adclk
-> > > > > +      - const: pclk
-> > > > > +
-> > > > > +  power-domains:
-> > > > > +    maxItems: 1
-> > > > > +
-> > > > > +  resets:
-> > > > > +    maxItems: 2
-> > > > > +
-> > > > > +  reset-names:
-> > > > > +    items:
-> > > > > +      - const: presetn
-> > > > > +      - const: adrst-n
-> > > > > +
-> > > > > +  renesas-rzg2l,adc-trigger-mode:
-> > > > > +    $ref: /schemas/types.yaml#/definitions/uint8
-> > > > > +    description: Trigger mode for A/D converter
-> > > > > +    enum:
-> > > > > +      - 0 # Software trigger mode (Defaults)
-> > > > > +      - 1 # Asynchronous trigger using ADC_TRG trigger input pin
-> > > > > +      - 2 # Synchronous trigger (Trigger from MTU3a/GPT)  
-> > > >
-> > > > Is this a function of the board in some fashion?  If not it sounds like
-> > > > something that should be in control of userspace.  Normally we'd
-> > > > do that by having the driver register some iio_triggers and depending
-> > > > on which one is selected do the equivalent of what you have here.
-> > > >  
-> > > Agreed for Asynchronous and Synchronous triggers. WRT Software trigger
-> > > should this be registered as a  iio_triggers too or read_raw()
-> > > callback (with IIO_CHAN_INFO_RAW case)  should be treated as Software
-> > > trigger?
-> > >  
-> >
-> > Normally we'd use an external trigger to provide the software trigger
-> > (plus as you say sysfs reads will map to this functionality).
-> >
-> > Something like the sysfs trigger or the hrtimer one would get used, though
-> > also fine to use the dataready trigger from a different device (if you want
-> > approximately synced dta.
-> >  
-> We can live with syfs reads for now for SW triggers. Coming back to HW
-> triggers I responded too quickly!. I am now trying to implement a gpio
-> based HW trigger i.e. to kick adc conversion start but I couldn't find
-> any drivers doing that. I looked at iio-trig-interrupt.c which
-> registers irq based triggers, so something similar needs to be
-> implemented in the adc driver? If that is the case the gpio has to be
-> passed via to DT and use gpio_to_irq to register the handler. Or is it
-> that I am missing something here ?
+> The code is moved into hv_common.c because it must be
+> built-in to the kernel image, and not be part of a module.
+> 
+> No functional changes are intended.
+> 
+> ---
+> Changes in v2:
+> * Fixed problem when building with CONFIG_HYPERV=n
+>   (reported by kernel test robot <lkp@intel.com>)
+> 
 
-Ok, I'm not really following the usecase for this. Is the thought that you'll
-get lower latency / jitter triggering via a gpio rather than using a
-bus write to the device (though on an integrated ADC I can't see why that would
-be the case)?
+Thanks for the quick turnaround. I've pushed these three patches to
+hyperv-next.
 
-If so, then what is actually setting the gpio?  Something is ultimately
-acting as the real trigger.  A common model would be an hrtimer trigger
-for example.   If you then want to wire the driver up to capture on demand
-using the gpio (to reduce latency) that's fine, but the gpio itself is
-never a trigger in the sense of an IIO trigger (rather than a trigger
-to the ADC itself).  In that case, have the trigger handler set the
-the gpio and wait for data capture to finish.  Quite a few drivers
-do this as some devices can only start sampling on an external pin being
-set.  E.g. adc/ad7606.c 
-
-The iio-trig-interrupt is about using an external interrupt to trigger
-a capture initialized by a register write or similar, it's not a direct
-hardware capture signal.
-
-Jonathan
+Wei.
 
 > 
-> Cheers,
-> Prabhakar
+> Michael Kelley (3):
+>   Drivers: hv: Make portions of Hyper-V init code be arch neutral
+>   Drivers: hv: Add arch independent default functions for some Hyper-V
+>     handlers
+>   Drivers: hv: Move Hyper-V misc functionality to arch-neutral code
 > 
-> > > > > +    default: 0
-> > > > > +
-> > > > > +  gpios:
-> > > > > +    description:
-> > > > > +      ADC_TRG trigger input pin
-> > > > > +    maxItems: 1  
-> > > > Why is this mode useful?  I'm assuming the gpio write would take a register
-> > > > write and the software trigger mode also requires a register write.
-> > > >  
-> > > Yes gpio write would take a register write.
-> > >  
-> > > > Normally the reason for a pin like this is to support synchronising with
-> > > > external hardware.   If that's the case, we should call that out here.
-> > > > often the pin isn't even connected to a gpio in our control.
-> > > > (i.e. it's a trigger signal from some other device.)
-> > > >  
-> > > So just setting the GPIO pin as input should do the trick.  
-> >
-> > Probably the best plan if you actually care about people writing some
-> > trigger up to it that is otherwise invisible to the system.
-> >  
-> > >  
-> > > > > +
-> > > > > +  renesas-rzg2l,adc-channels:
-> > > > > +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> > > > > +    description: Input channels available on platform
-> > > > > +    uniqueItems: true
-> > > > > +    minItems: 1
-> > > > > +    maxItems: 8
-> > > > > +    items:
-> > > > > +      enum: [0, 1, 2, 3, 4, 5, 6, 7]  
-> > > >
-> > > > Is this a function of different devices (should have different compatibles)
-> > > > or of what is wired up.  If it's what is wired up, then how do you know which  
-> > > Its channels which are wired, for example if channels 0-5 are wired up
-> > > the board dts would include the property "renesas-rzg2l,adc-channels =
-> > > /bits/ 8 <0 1 2 3 4 5>;"
-> > >  
-> > > > subset of channels are connected?  We have the generic adc channel binding
-> > > > in iio/adc/adc.yaml for the case where we only want to expose those channels
-> > > > that are wired up.  It uses a node per channel.
-> > > >  
-> > > Agreed will do that and drop the custom "renesas-rzg2l,adc-channels"  
-> >
-> > Great,
-> >
-> > Jonathan
-> >  
-> > >
-> > > Cheers,
-> > > Prabhakar  
-> > > > > +
-> > > > > +  "#io-channel-cells":
-> > > > > +    const: 1
-> > > > > +
-> > > > > +required:
-> > > > > +  - compatible
-> > > > > +  - reg
-> > > > > +  - interrupts
-> > > > > +  - clocks
-> > > > > +  - clock-names
-> > > > > +  - power-domains
-> > > > > +  - resets
-> > > > > +  - reset-names
-> > > > > +  - renesas-rzg2l,adc-channels
-> > > > > +  - "#io-channel-cells"
-> > > > > +
-> > > > > +allOf:
-> > > > > +  - if:
-> > > > > +      properties:
-> > > > > +        renesas-rzg2l,adc-trigger-mode:
-> > > > > +          const: 1
-> > > > > +    then:
-> > > > > +      required:
-> > > > > +        - gpios
-> > > > > +
-> > > > > +additionalProperties: false
-> > > > > +
-> > > > > +examples:
-> > > > > +  - |
-> > > > > +    #include <dt-bindings/clock/r9a07g044-cpg.h>
-> > > > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > > > +
-> > > > > +    adc: adc@10059000 {
-> > > > > +      compatible = "renesas,r9a07g044-adc", "renesas,rzg2l-adc";
-> > > > > +      reg = <0x10059000 0x400>;
-> > > > > +      interrupts = <GIC_SPI 347 IRQ_TYPE_EDGE_RISING>;
-> > > > > +      clocks = <&cpg CPG_MOD R9A07G044_ADC_ADCLK>,
-> > > > > +               <&cpg CPG_MOD R9A07G044_ADC_PCLK>;
-> > > > > +      clock-names = "adclk", "pclk";
-> > > > > +      power-domains = <&cpg>;
-> > > > > +      resets = <&cpg R9A07G044_ADC_PRESETN>,
-> > > > > +               <&cpg R9A07G044_ADC_ADRST_N>;
-> > > > > +      reset-names = "presetn", "adrst-n";
-> > > > > +      #io-channel-cells = <1>;
-> > > > > +      renesas-rzg2l,adc-trigger-mode = /bits/ 8 <0>;
-> > > > > +      renesas-rzg2l,adc-channels = /bits/ 8 <0 1 2 3 4 5 6>;
-> > > > > +    };  
-> > > >  
-> >  
-
+>  arch/x86/hyperv/hv_init.c       | 101 +++-----------------
+>  arch/x86/include/asm/mshyperv.h |   4 -
+>  arch/x86/kernel/cpu/mshyperv.c  |  20 ----
+>  drivers/hv/hv_common.c          | 205 ++++++++++++++++++++++++++++++++++++++++
+>  include/asm-generic/mshyperv.h  |  10 ++
+>  5 files changed, 226 insertions(+), 114 deletions(-)
+> 
+> -- 
+> 1.8.3.1
+> 
