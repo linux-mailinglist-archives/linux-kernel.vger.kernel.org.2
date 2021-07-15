@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693263CA7C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9973CA7C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241642AbhGOS4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:56:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
+        id S239160AbhGOS4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:56:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239983AbhGOSu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:50:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0611F613DC;
-        Thu, 15 Jul 2021 18:48:03 +0000 (UTC)
+        id S240066AbhGOSvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:51:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D34613D6;
+        Thu, 15 Jul 2021 18:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374884;
-        bh=FpXv05j5ov1KxBl3Y58dYnCzDu2V3IJY+Ifx2h/hag4=;
+        s=korg; t=1626374886;
+        bh=4wq+6xr6u201ec9VCBKH650shM95NMLWgbAR6Iwvqsg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zAVeNBBAiluoJBED38hNZpft0kxJ5t5PWl//mVuEKnaLD6KjbCIEm+Kds4GfHS3ca
-         CMYkazBW3/4mPrQq/xtd0mYRJR8Uuj/Aqlj5v7tpG8+fegTxqIwNn1iCJPMCA9sNJv
-         j1AvTa2DwlnBqwOX+GhNm3A8dYFbh9LcJqjyfrPY=
+        b=pVlWVgm68kPNGP3LvHrJ0aKZztHVfw4wRWByU3li16dNNwCXOckF0ofmJ9Gs86/m8
+         KX0SU/C+1ptI8s3mnWBseQB4FaYVQgSznPnzSb7UafRGz5BITvWnXsyuOHhgbfZpsu
+         STiq8rxZVL2r2TnkYGzXKJ9T0ZC9Q+zGmR0n4sdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wesley Chalmers <Wesley.Chalmers@amd.com>,
-        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 068/215] drm/amd/display: Fix off-by-one error in DML
-Date:   Thu, 15 Jul 2021 20:37:20 +0200
-Message-Id: <20210715182611.391703267@linuxfoundation.org>
+Subject: [PATCH 5.10 069/215] net: phy: realtek: add delay to fix RXC generation issue
+Date:   Thu, 15 Jul 2021 20:37:21 +0200
+Message-Id: <20210715182611.595460325@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -43,64 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Chalmers <Wesley.Chalmers@amd.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-[ Upstream commit e4e3678260e9734f6f41b4325aac0b171833a618 ]
+[ Upstream commit 6813cc8cfdaf401476e1a007cec8ae338cefa573 ]
 
-[WHY]
-For DCN30 and later, there is no data in DML arrays indexed by state at
-index num_states.
+PHY will delay about 11.5ms to generate RXC clock when switching from
+power down to normal operation. Read/write registers would also cause RXC
+become unstable and stop for a while during this process. Realtek engineer
+suggests 15ms or more delay can workaround this issue.
 
-Signed-off-by: Wesley Chalmers <Wesley.Chalmers@amd.com>
-Reviewed-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
-Acked-by: Stylon Wang <stylon.wang@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../amd/display/dc/dml/dcn30/display_mode_vba_30.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/phy/realtek.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-index d66e89283c48..2663f1b31842 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
-@@ -2053,7 +2053,7 @@ static void DISPCLKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerforman
- 			v->DISPCLKWithoutRamping,
- 			v->DISPCLKDPPCLKVCOSpeed);
- 	v->MaxDispclkRoundedToDFSGranularity = RoundToDFSGranularityDown(
--			v->soc.clock_limits[mode_lib->soc.num_states].dispclk_mhz,
-+			v->soc.clock_limits[mode_lib->soc.num_states - 1].dispclk_mhz,
- 			v->DISPCLKDPPCLKVCOSpeed);
- 	if (v->DISPCLKWithoutRampingRoundedToDFSGranularity
- 			> v->MaxDispclkRoundedToDFSGranularity) {
-@@ -3958,20 +3958,20 @@ void dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
- 			for (k = 0; k <= v->NumberOfActivePlanes - 1; k++) {
- 				v->PlaneRequiredDISPCLKWithoutODMCombine = v->PixelClock[k] * (1.0 + v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0)
- 						* (1.0 + v->DISPCLKRampingMargin / 100.0);
--				if ((v->PlaneRequiredDISPCLKWithoutODMCombine >= v->MaxDispclk[i] && v->MaxDispclk[i] == v->MaxDispclk[mode_lib->soc.num_states]
--						&& v->MaxDppclk[i] == v->MaxDppclk[mode_lib->soc.num_states])) {
-+				if ((v->PlaneRequiredDISPCLKWithoutODMCombine >= v->MaxDispclk[i] && v->MaxDispclk[i] == v->MaxDispclk[mode_lib->soc.num_states - 1]
-+						&& v->MaxDppclk[i] == v->MaxDppclk[mode_lib->soc.num_states - 1])) {
- 					v->PlaneRequiredDISPCLKWithoutODMCombine = v->PixelClock[k] * (1 + v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0);
- 				}
- 				v->PlaneRequiredDISPCLKWithODMCombine2To1 = v->PixelClock[k] / 2 * (1 + v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0)
- 						* (1 + v->DISPCLKRampingMargin / 100.0);
--				if ((v->PlaneRequiredDISPCLKWithODMCombine2To1 >= v->MaxDispclk[i] && v->MaxDispclk[i] == v->MaxDispclk[mode_lib->soc.num_states]
--						&& v->MaxDppclk[i] == v->MaxDppclk[mode_lib->soc.num_states])) {
-+				if ((v->PlaneRequiredDISPCLKWithODMCombine2To1 >= v->MaxDispclk[i] && v->MaxDispclk[i] == v->MaxDispclk[mode_lib->soc.num_states - 1]
-+						&& v->MaxDppclk[i] == v->MaxDppclk[mode_lib->soc.num_states - 1])) {
- 					v->PlaneRequiredDISPCLKWithODMCombine2To1 = v->PixelClock[k] / 2 * (1 + v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0);
- 				}
- 				v->PlaneRequiredDISPCLKWithODMCombine4To1 = v->PixelClock[k] / 4 * (1 + v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0)
- 						* (1 + v->DISPCLKRampingMargin / 100.0);
--				if ((v->PlaneRequiredDISPCLKWithODMCombine4To1 >= v->MaxDispclk[i] && v->MaxDispclk[i] == v->MaxDispclk[mode_lib->soc.num_states]
--						&& v->MaxDppclk[i] == v->MaxDppclk[mode_lib->soc.num_states])) {
-+				if ((v->PlaneRequiredDISPCLKWithODMCombine4To1 >= v->MaxDispclk[i] && v->MaxDispclk[i] == v->MaxDispclk[mode_lib->soc.num_states - 1]
-+						&& v->MaxDppclk[i] == v->MaxDppclk[mode_lib->soc.num_states - 1])) {
- 					v->PlaneRequiredDISPCLKWithODMCombine4To1 = v->PixelClock[k] / 4 * (1 + v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0);
- 				}
+diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+index 575580d3ffe0..b4879306bb8a 100644
+--- a/drivers/net/phy/realtek.c
++++ b/drivers/net/phy/realtek.c
+@@ -246,6 +246,19 @@ static int rtl8211f_config_init(struct phy_device *phydev)
+ 	return 0;
+ }
  
++static int rtl821x_resume(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = genphy_resume(phydev);
++	if (ret < 0)
++		return ret;
++
++	msleep(20);
++
++	return 0;
++}
++
+ static int rtl8211e_config_init(struct phy_device *phydev)
+ {
+ 	int ret = 0, oldpage;
+@@ -624,7 +637,7 @@ static struct phy_driver realtek_drvs[] = {
+ 		.ack_interrupt	= &rtl8211f_ack_interrupt,
+ 		.config_intr	= &rtl8211f_config_intr,
+ 		.suspend	= genphy_suspend,
+-		.resume		= genphy_resume,
++		.resume		= rtl821x_resume,
+ 		.read_page	= rtl821x_read_page,
+ 		.write_page	= rtl821x_write_page,
+ 	}, {
 -- 
 2.30.2
 
