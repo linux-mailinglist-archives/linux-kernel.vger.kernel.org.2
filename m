@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B013CA61E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468543CA83E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237794AbhGOSqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:46:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46496 "EHLO mail.kernel.org"
+        id S243035AbhGOTAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231620AbhGOSpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:45:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 173DF61396;
-        Thu, 15 Jul 2021 18:42:47 +0000 (UTC)
+        id S239672AbhGOSx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:53:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3C84613D8;
+        Thu, 15 Jul 2021 18:50:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374568;
-        bh=vSV+KP7kK+8dQ477OOy/G5Ve/6OIMh37u26Cm3/UnEU=;
+        s=korg; t=1626375032;
+        bh=3Fs+gAv7AGiLCzxSOVAnIumXX4vXQB1F0+AeoQ2SAyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FjqaqZ1CRi4lFVcpb72OzP+on+bb6vujs6XcR7ZA6p8/IE/4ujI45QTybxOMNYA8V
-         F5/j7QzL/jI6E7yakjS5J2KGWMSHuRmH8JvTbXm6zkKk3ZQK1tgG2rxswOgZVFP0mn
-         /Yyd+l9N2WVTCyGCuQigNsJBNt/rQWQDKMFGI0SQ=
+        b=vOfEHWSOUpj1AUsZfV2zI8BksI+eUjwrE4sQirPdx7lfkjHHeT30wdl8Rz4sBGvek
+         4qNMSYrtcB+tyO6+RiwvvAVKjDAxBDecTdkV7OZAmV1UOEEqyxhDeRj6/CzhnVfWjg
+         7O7vq3NHSz2x+UQDGnb9diBJX+1wEDCzI5AksIlY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Shaul Triebitz <shaul.triebitz@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 027/122] virtio_net: Remove BUG() to avoid machine dead
-Date:   Thu, 15 Jul 2021 20:37:54 +0200
-Message-Id: <20210715182455.984281675@linuxfoundation.org>
+Subject: [PATCH 5.10 103/215] iwlwifi: mvm: fix error print when session protection ends
+Date:   Thu, 15 Jul 2021 20:37:55 +0200
+Message-Id: <20210715182617.544953488@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
-References: <20210715182448.393443551@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xianting Tian <xianting.tian@linux.alibaba.com>
+From: Shaul Triebitz <shaul.triebitz@intel.com>
 
-[ Upstream commit 85eb1389458d134bdb75dad502cc026c3753a619 ]
+[ Upstream commit 976ac0af7ba2c5424bc305b926c0807d96fdcc83 ]
 
-We should not directly BUG() when there is hdr error, it is
-better to output a print when such error happens. Currently,
-the caller of xmit_skb() already did it.
+When the session protection ends and the Driver is not
+associated or a beacon was not heard, the Driver
+prints "No beacons heard...".
+That's confusing for the case where not associated.
+Change the print when not associated to "Not associated...".
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Shaul Triebitz <shaul.triebitz@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210617100544.41a5a5a894fa.I9eabb76e7a3a7f4abbed8f2ef918f1df8e825726@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/time-event.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index d8ee001d8e8e..5cd55f950032 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1548,7 +1548,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
- 	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
- 				    virtio_is_little_endian(vi->vdev), false,
- 				    0))
--		BUG();
-+		return -EPROTO;
- 
- 	if (vi->mergeable_rx_bufs)
- 		hdr->num_buffers = 0;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c b/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
+index 3939eccd3d5a..394598b14a17 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
+@@ -345,6 +345,8 @@ static void iwl_mvm_te_handle_notif(struct iwl_mvm *mvm,
+ 			 * and know the dtim period.
+ 			 */
+ 			iwl_mvm_te_check_disconnect(mvm, te_data->vif,
++				!te_data->vif->bss_conf.assoc ?
++				"Not associated and the time event is over already..." :
+ 				"No beacon heard and the time event is over already...");
+ 			break;
+ 		default:
+@@ -843,6 +845,8 @@ void iwl_mvm_rx_session_protect_notif(struct iwl_mvm *mvm,
+ 			 * and know the dtim period.
+ 			 */
+ 			iwl_mvm_te_check_disconnect(mvm, vif,
++						    !vif->bss_conf.assoc ?
++						    "Not associated and the session protection is over already..." :
+ 						    "No beacon heard and the session protection is over already...");
+ 			spin_lock_bh(&mvm->time_event_lock);
+ 			iwl_mvm_te_clear_data(mvm, te_data);
 -- 
 2.30.2
 
