@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0803B3CA8A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4063CA67E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243347AbhGOTCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:02:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
+        id S239170AbhGOSsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:48:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241609AbhGOSyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CFE0613CC;
-        Thu, 15 Jul 2021 18:51:39 +0000 (UTC)
+        id S238502AbhGOSqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:46:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01AAC613CF;
+        Thu, 15 Jul 2021 18:43:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375099;
-        bh=MgamP868/Zj+DqI7rtnk4hFbHLVm/gY445+0wZNPZlE=;
+        s=korg; t=1626374640;
+        bh=5IiToUDRb38uhPgFxBttNfP2oB1OOQOdhLarlt4TAcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L83WaBE1fxFqp7f5n3GPnO4Z8owkNbSDhsfoO3zGVJoLZosv2R/vwE2exLiUJOALh
-         qXrATmQ5nT17dgxzt2aIvjft89pLm8qWbB99yjV/nHA3cgz/eaVjecgb7gIGlX6cqI
-         vBbUvc1aIVirYAnd8WuzNNFD92fQn+9x0JRDr7h0=
+        b=RMWSWjNYIusfjYX53cl8SXNN91QVbS978y7dBJ74XnMhaOrSW7AE1/oXN0CUDeKVa
+         F6xZFuGUGyBDghTmacvda8z2KF+bHqjzbHZtwVWPgpqPgx+fPWwCy76ppao0vNnpjb
+         OugQcC455+mNjJ080C2jo4ZUbHaF15PAZN1BM7cc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        nicholas.kazlauskas@amd.com, amd-gfx@lists.freedesktop.org,
-        alexander.deucher@amd.com, Roman.Li@amd.com, hersenxs.wu@amd.com,
-        danny.wang@amd.com,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: [PATCH 5.10 160/215] drm/amd/display: Reject non-zero src_y and src_x for video planes
-Date:   Thu, 15 Jul 2021 20:38:52 +0200
-Message-Id: <20210715182627.809638053@linuxfoundation.org>
+        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 086/122] mmc: sdhci: Fix warning message when accessing RPMB in HS400 mode
+Date:   Thu, 15 Jul 2021 20:38:53 +0200
+Message-Id: <20210715182513.720639330@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,72 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harry Wentland <harry.wentland@amd.com>
+From: Al Cooper <alcooperx@gmail.com>
 
-commit c6c6a712199ab355ce333fa5764a59506bb107c1 upstream.
+commit d0244847f9fc5e20df8b7483c8a4717fe0432d38 upstream.
 
-[Why]
-This hasn't been well tested and leads to complete system hangs on DCN1
-based systems, possibly others.
+When an eMMC device is being run in HS400 mode, any access to the
+RPMB device will cause the error message "mmc1: Invalid UHS-I mode
+selected". This happens as a result of tuning being disabled before
+RPMB access and then re-enabled after the RPMB access is complete.
+When tuning is re-enabled, the system has to switch from HS400
+to HS200 to do the tuning and then back to HS400. As part of
+sequence to switch from HS400 to HS200 the system is temporarily
+put into HS mode. When switching to HS mode, sdhci_get_preset_value()
+is called and does not have support for HS mode and prints the warning
+message and returns the preset for SDR12. The fix is to add support
+for MMC and SD HS modes to sdhci_get_preset_value().
 
-The system hang can be reproduced by gesturing the video on the YouTube
-Android app on ChromeOS into full screen.
+This can be reproduced on any system running eMMC in HS400 mode
+(not HS400ES) by using the "mmc" utility to run the following
+command: "mmc rpmb read-counter /dev/mmcblk0rpmb".
 
-[How]
-Reject atomic commits with non-zero drm_plane_state.src_x or src_y values.
-
-v2:
- - Add code comment describing the reason we're rejecting non-zero
-   src_x and src_y
- - Drop gerrit Change-Id
- - Add stable CC
- - Based on amd-staging-drm-next
-
-v3: removed trailing whitespace
-
-Signed-off-by: Harry Wentland <harry.wentland@amd.com>
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
 Cc: stable@vger.kernel.org
-Cc: nicholas.kazlauskas@amd.com
-Cc: amd-gfx@lists.freedesktop.org
-Cc: alexander.deucher@amd.com
-Cc: Roman.Li@amd.com
-Cc: hersenxs.wu@amd.com
-Cc: danny.wang@amd.com
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/20210624163045.33651-1-alcooperx@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/mmc/host/sdhci.c |    4 ++++
+ drivers/mmc/host/sdhci.h |    1 +
+ 2 files changed, 5 insertions(+)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -3702,6 +3702,23 @@ static int fill_dc_scaling_info(const st
- 	     scaling_info->src_rect.y != 0))
- 		return -EINVAL;
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -1511,6 +1511,10 @@ static u16 sdhci_get_preset_value(struct
+ 	u16 preset = 0;
  
-+	/*
-+	 * For reasons we don't (yet) fully understand a non-zero
-+	 * src_y coordinate into an NV12 buffer can cause a
-+	 * system hang. To avoid hangs (and maybe be overly cautious)
-+	 * let's reject both non-zero src_x and src_y.
-+	 *
-+	 * We currently know of only one use-case to reproduce a
-+	 * scenario with non-zero src_x and src_y for NV12, which
-+	 * is to gesture the YouTube Android app into full screen
-+	 * on ChromeOS.
-+	 */
-+	if (state->fb &&
-+	    state->fb->format->format == DRM_FORMAT_NV12 &&
-+	    (scaling_info->src_rect.x != 0 ||
-+	     scaling_info->src_rect.y != 0))
-+		return -EINVAL;
-+
- 	scaling_info->src_rect.width = state->src_w >> 16;
- 	if (scaling_info->src_rect.width == 0)
- 		return -EINVAL;
+ 	switch (host->timing) {
++	case MMC_TIMING_MMC_HS:
++	case MMC_TIMING_SD_HS:
++		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HIGH_SPEED);
++		break;
+ 	case MMC_TIMING_UHS_SDR12:
+ 		preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
+ 		break;
+--- a/drivers/mmc/host/sdhci.h
++++ b/drivers/mmc/host/sdhci.h
+@@ -261,6 +261,7 @@
+ 
+ /* 60-FB reserved */
+ 
++#define SDHCI_PRESET_FOR_HIGH_SPEED	0x64
+ #define SDHCI_PRESET_FOR_SDR12 0x66
+ #define SDHCI_PRESET_FOR_SDR25 0x68
+ #define SDHCI_PRESET_FOR_SDR50 0x6A
 
 
