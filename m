@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546D33CAAA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E64C3CAAB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244784AbhGOTPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:15:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38800 "EHLO mail.kernel.org"
+        id S242335AbhGOTPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239026AbhGOTBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243230AbhGOTBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:01:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FBC4613CA;
-        Thu, 15 Jul 2021 18:58:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 989E2613D0;
+        Thu, 15 Jul 2021 18:58:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375501;
-        bh=LEIu0K0lZXzyYQK/yABpqL+4X7tsqpZ7mBTFqukTQGY=;
+        s=korg; t=1626375504;
+        bh=7Qs1r0aFeYfdkTLkkZFBrLjt20yzUE/Pmdvn8MSeMxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GtBw4j7Q9KSmaOK35bHqgYDIXJXxb9MH3JSyVoddFq09Va92DgegYuIyp76yyOfim
-         5qfb422RnJZocAB51l6Ho31UM2v3iDTOFx/5xJWIJRqsZHn1NF8nZTkAu3Zv7JmbGd
-         14Hfkjic1XbyN9BzsFUy4RY/RRqOwOvhNyYGkBks=
+        b=wQQxbljLjx+y2aLU9kVFZvWiORlTxpV+vos08mkl7+qyBjsBCtq15//qKinBLjxZ8
+         zXP/RbRjyypIbOOGJwT0aUtt21yFKB0xHD7T+zgT3ckapr2miVVq5OpdGrYreKgiB/
+         le4pxtxomCgq9iOvBuU+rVrYZty8xDijY3w+GPSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Li <roman.li@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        stable@vger.kernel.org,
+        Vladimir Stempen <vladimir.stempen@amd.com>,
+        Wenjing Liu <Wenjing.Liu@amd.com>,
         Stylon Wang <stylon.wang@amd.com>,
         Daniel Wheeler <daniel.wheeler@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 071/242] drm/amd/display: Update scaling settings on modeset
-Date:   Thu, 15 Jul 2021 20:37:13 +0200
-Message-Id: <20210715182605.070249601@linuxfoundation.org>
+Subject: [PATCH 5.12 072/242] drm/amd/display: Release MST resources on switch from MST to SST
+Date:   Thu, 15 Jul 2021 20:37:14 +0200
+Message-Id: <20210715182605.689863923@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -43,42 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Li <roman.li@amd.com>
+From: Vladimir Stempen <vladimir.stempen@amd.com>
 
-[ Upstream commit c521fc316d12fb9ea7b7680e301d673bceda922e ]
+[ Upstream commit 3f8518b60c10aa96f3efa38a967a0b4eb9211ac0 ]
 
-[Why]
-We update scaling settings when scaling mode has been changed.
-However when changing mode from native resolution the scaling mode previously
-set gets ignored.
+[why]
+When OS overrides training link training parameters
+for MST device to SST mode, MST resources are not
+released and leak of the resource may result crash and
+incorrect MST discovery during following hot plugs.
 
-[How]
-Perform scaling settings update on modeset.
+[how]
+Retaining sink object to be reused by SST link and
+releasing MST  resources.
 
-Signed-off-by: Roman Li <roman.li@amd.com>
-Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
+Signed-off-by: Vladimir Stempen <vladimir.stempen@amd.com>
+Reviewed-by: Wenjing Liu <Wenjing.Liu@amd.com>
 Acked-by: Stylon Wang <stylon.wang@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 0858e0c7b7a1..74e74971df74 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8939,7 +8939,8 @@ skip_modeset:
- 	BUG_ON(dm_new_crtc_state->stream == NULL);
- 
- 	/* Scaling or underscan settings */
--	if (is_scaling_state_different(dm_old_conn_state, dm_new_conn_state))
-+	if (is_scaling_state_different(dm_old_conn_state, dm_new_conn_state) ||
-+				drm_atomic_crtc_needs_modeset(new_crtc_state))
- 		update_stream_scaling_settings(
- 			&new_crtc_state->mode, dm_new_conn_state, dm_new_crtc_state->stream);
- 
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+index b85f67341a9a..c957d7d055ba 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+@@ -1726,6 +1726,8 @@ static void set_dp_mst_mode(struct dc_link *link, bool mst_enable)
+ 		link->type = dc_connection_single;
+ 		link->local_sink = link->remote_sinks[0];
+ 		link->local_sink->sink_signal = SIGNAL_TYPE_DISPLAY_PORT;
++		dc_sink_retain(link->local_sink);
++		dm_helpers_dp_mst_stop_top_mgr(link->ctx, link);
+ 	} else if (mst_enable == true &&
+ 			link->type == dc_connection_single &&
+ 			link->remote_sinks[0] != NULL) {
 -- 
 2.30.2
 
