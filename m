@@ -2,170 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B503C98E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248CC3C98E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbhGOGsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 02:48:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27371 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231352AbhGOGsa (ORCPT
+        id S231465AbhGOGub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:50:31 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:15017 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhGOGua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 02:48:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626331537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mwi10TZc1sOVU5XYi2wL7hupe8YHyAn6IrGpWJ2vsRw=;
-        b=ZooD0VdhX+sKkrYdtuDT0cZXtzGO4Wq7mu8FkILqaeRpVthkBk5Q2YBVw5PD65axfcDDbk
-        wY6TApcC2n+YoO6it+KO+HtRsvYwBTbwK5c/vYefe0rtEzIosGRRnobrbg2dp3ZpZwzr9o
-        iIvGPjQPAZff4eYe6N+Am9YJSUip78Q=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-zSaansEWO4mrXfN2xw_SNg-1; Thu, 15 Jul 2021 02:45:36 -0400
-X-MC-Unique: zSaansEWO4mrXfN2xw_SNg-1
-Received: by mail-pg1-f200.google.com with SMTP id 29-20020a63105d0000b029022c245c3492so3630542pgq.17
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:45:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Mwi10TZc1sOVU5XYi2wL7hupe8YHyAn6IrGpWJ2vsRw=;
-        b=DFSKlZezkHzSENvxY4vVP/nX93XGX6ZKJbRlF/2E6UdWkV+gHqm5iC3dl4UHtbkkd7
-         8Qgm7cAFsHfY2loyZL5NR/cPsj1mrUYNdZNmTSdnS9REwZxlhJiHmn1131UcUw215Xk+
-         r8KGzN+Ues1bcuRsA2uQElBjRc7mZnpLQ3FMk7KghqvDvsxChSf13QCiZ6Mm4oPl7a8+
-         N+2L+W0Lw+zhqanDyk4KDx2rPdaWDq0rezBicXRTYJ5oWHxJ8Ph36Kv19qRGh/jySPIA
-         L8SgJeUEtClpfb8Jbo2EqyY4KRbOr0j8ijSiqFUzyI11KQDeGJ/7Yh3O7iNtFI/vk0/+
-         n3QA==
-X-Gm-Message-State: AOAM530LVaBLNjbhmnfwBfsUiwyg4UQuoCP1cKLp7wa/yxw1qGvo858i
-        ynUxDkEGM7SpnLHxVaaxwgwso/uhJO4a9HQAAsoKupsPZbGTiF5F7eZTFKbe7pfE9/udjrJ09ci
-        YRurQx7VJ7agBJdlBmpr2wnsY
-X-Received: by 2002:a17:90a:a798:: with SMTP id f24mr2785300pjq.8.1626331535202;
-        Wed, 14 Jul 2021 23:45:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwfqyK19LEtsygJL/KLKR1mr/sWPJaJdZwDH6P4bSe1nJu+W1HJ8zXJWxL5yx1E1hZaadCZbg==
-X-Received: by 2002:a17:90a:a798:: with SMTP id f24mr2785283pjq.8.1626331534920;
-        Wed, 14 Jul 2021 23:45:34 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id i12sm4144911pjj.9.2021.07.14.23.45.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 23:45:34 -0700 (PDT)
-Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Juri Lelli <jlelli@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        He Zhe <zhe.he@windriver.com>
-References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
- <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
- <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
- <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
- <4b53e2be-c38e-7509-dfcf-94f5bf5dcc10@redhat.com>
- <52348289-5d4d-f4a4-6fe3-f0c24cc6d9f9@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <987e69e1-21d7-625d-4e45-bc40857a526c@redhat.com>
-Date:   Thu, 15 Jul 2021 14:45:14 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Thu, 15 Jul 2021 02:50:30 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQPww6r2rzbcqn;
+        Thu, 15 Jul 2021 14:44:16 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 14:47:34 +0800
+Received: from [10.67.102.248] (10.67.102.248) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Jul 2021 14:47:34 +0800
+Subject: Re: [PATCH] perf probe: Fix add event failed when 32-bit perf running
+ in 64-bit kernel
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
+        <fche@redhat.com>, <ravi.bangoria@linux.ibm.com>,
+        <yao.jin@linux.intel.com>, <srikar@linux.vnet.ibm.com>,
+        <Jianlin.Lv@arm.com>, <lihuafei1@huawei.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210714065432.188061-1-yangjihong1@huawei.com>
+ <20210714173553.944cef13897dfe1bea7b8d78@kernel.org>
+ <9cb859df-f2ef-732b-756e-c8d2acefe85c@huawei.com>
+ <20210715135821.c58ca2ff97b0c1db449db0b4@kernel.org>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <03aadc60-d43e-0b4b-822e-39818d9203ef@huawei.com>
+Date:   Thu, 15 Jul 2021 14:47:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <52348289-5d4d-f4a4-6fe3-f0c24cc6d9f9@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210715135821.c58ca2ff97b0c1db449db0b4@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.248]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm000003.china.huawei.com (7.185.36.128)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Hiramatsu,
 
-在 2021/7/15 下午1:58, Paolo Bonzini 写道:
-> On 15/07/21 06:14, Jason Wang wrote:
->>> This obviously does not fly with PREEMPT_RT.  If eventfd_signal is
->>> preempted and an unrelated thread calls eventfd_signal, the result is
->>> a spurious WARN.  To avoid this, protect the percpu variable with a
->>> local_lock.
+On 2021/7/15 12:58, Masami Hiramatsu wrote:
+> On Thu, 15 Jul 2021 09:20:01 +0800
+> Yang Jihong <yangjihong1@huawei.com> wrote:
+> 
+>> Hello Hiramatsu,
 >>
->> But local_lock only disable migration not preemption.
->
-> On mainline PREEMPT_RT, local_lock is an array of per-CPU spinlocks. 
-> When two eventfd_signals run on the same CPU and one is preempted, the 
-> spinlocks avoid that the second sees eventfd_wake_count > 0.
->
-> Thanks,
->
-> Paolo
-
-
-Right, I see.
-
-Thanks
-
-
->
->> Or anything I missed here?
+>> On 2021/7/14 16:35, Masami Hiramatsu wrote:
+>>> Hi Yang,
+>>>
+>>> On Wed, 14 Jul 2021 14:54:32 +0800
+>>> Yang Jihong <yangjihong1@huawei.com> wrote:
+>>>
+>>>> The "address" member  of "struct probe_trace_point" uses long data type.
+>>>> If kernel is 64-bit and perf program is 32-bit, size of "address" variable is
+>>>> 32 bits. As a result, upper 32 bits of address read from kernel are truncated,
+>>>> An error occurs during address comparison in kprobe_warn_out_range function.
+>>>
+>>> Good catch!
+>>> I didn't imagine that such a use case. But that is important because perf
+>>> probe can be used for cross-arch probe definition too.
+>>>
+>>>>
+>>>> Before:
+>>>>
+>>>>     # perf probe -a schedule
+>>>>     schedule is out of .text, skip it.
+>>>>       Error: Failed to add events.
+>>>>
+>>>> Solution:
+>>>>     Change data type of "address" variable to u64 and change corresponding
+>>>> address printing and value assignment.
+>>>
+>>> OK, as far as I can see, the other parts of the perf also uses u64 for
+>>> "address" storing variables. (e.g. symbols, maps etc.)
+>>>
+>>>>
+>>>> After:
+>>>>
+>>>>     # perf.new.new probe -a schedule
+>>>>     Added new event:
+>>>>       probe:schedule       (on schedule)
+>>>>
+>>>>     You can now use it in all perf tools, such as:
+>>>>
+>>>>             perf record -e probe:schedule -aR sleep 1
+>>>>
+>>>>     # perf probe -l
+>>>>       probe:schedule       (on schedule)
+>>>
+>>> I think you missed one thing here.
+>>> Usually, this shows the filename and line number of schedule().
+>> Yes,  I tried the following diff and now it can show the filename (as is
+>> function entry, relative line number is 0), thank you very much :)
 >>
->> Thanks
+>> The test result in my environment is as follows:
 >>
+>> # perf probe -a schedule
+>> Added new event:
+>>     probe:schedule       (on schedule)
 >>
->>>
->>> Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
->>> Fixes: b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
->>> Cc: stable@vger.kernel.org
->>> Cc: He Zhe <zhe.he@windriver.com>
->>> Cc: Jens Axboe <axboe@kernel.dk>
->>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
->>>
->>> diff --git a/fs/eventfd.c b/fs/eventfd.c
->>> index e265b6dd4f34..7d27b6e080ea 100644
->>> --- a/fs/eventfd.c
->>> +++ b/fs/eventfd.c
->>> @@ -12,6 +12,7 @@
->>>  #include <linux/fs.h>
->>>  #include <linux/sched/signal.h>
->>>  #include <linux/kernel.h>
->>> +#include <linux/local_lock.h>
->>>  #include <linux/slab.h>
->>>  #include <linux/list.h>
->>>  #include <linux/spinlock.h>
->>> @@ -25,6 +26,7 @@
->>>  #include <linux/idr.h>
->>>  #include <linux/uio.h>
->>>
->>> +static local_lock_t eventfd_wake_lock = 
->>> INIT_LOCAL_LOCK(eventfd_wake_lock);
->>>  DEFINE_PER_CPU(int, eventfd_wake_count);
->>>
->>>  static DEFINE_IDA(eventfd_ida);
->>> @@ -71,8 +73,11 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, 
->>> __u64 n)
->>>       * it returns true, the eventfd_signal() call should be 
->>> deferred to a
->>>       * safe context.
->>>       */
->>> -    if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
->>> +    local_lock(&eventfd_wake_lock);
->>> +    if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count))) {
->>> +        local_unlock(&eventfd_wake_lock);
->>>          return 0;
->>> +    }
->>>
->>>      spin_lock_irqsave(&ctx->wqh.lock, flags);
->>>      this_cpu_inc(eventfd_wake_count);
->>> @@ -83,6 +88,7 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, 
->>> __u64 n)
->>>          wake_up_locked_poll(&ctx->wqh, EPOLLIN);
->>>      this_cpu_dec(eventfd_wake_count);
->>>      spin_unlock_irqrestore(&ctx->wqh.lock, flags);
->>> +    local_unlock(&eventfd_wake_lock);
->>>
->>>      return n;
->>>  }
->>>
+>> You can now use it in all perf tools, such as:
 >>
->
+>>           perf record -e probe:schedule -aR sleep 1
+>>
+>> # perf probe -l schedule -k vmlinux.debug
+>>     probe:schedule       (on schedule@kernel/sched/core.c)
+>>
+> 
+> OK, good!
+> 
+>>
+>> Can I put the following diff together and submit a v2 patch?
+> 
+> Yes, please include this fix in your patch, because it is what your patch
+> has to do :)
+> 
+OK，I have submitted the v2 patch:
+https://lore.kernel.org/patchwork/patch/1460154/
 
+Thanks very much for your patient review.:)
+
+Jihong
+> Thank you!
+> 
+>>>
+>>> Could you try below diff?
+>>>
+>>> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+>>> index 7d2ba8419b0c..609ca1671501 100644
+>>> --- a/tools/perf/util/dwarf-aux.c
+>>> +++ b/tools/perf/util/dwarf-aux.c
+>>> @@ -113,14 +113,14 @@ static Dwarf_Line *cu_getsrc_die(Dwarf_Die *cu_die, Dwarf_Addr addr)
+>>>     *
+>>>     * Find a line number and file name for @addr in @cu_die.
+>>>     */
+>>> -int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
+>>> -		    const char **fname, int *lineno)
+>>> +int cu_find_lineinfo(Dwarf_Die *cu_die, Dwarf_Addr addr,
+>>> +		     const char **fname, int *lineno)
+>>>    {
+>>>    	Dwarf_Line *line;
+>>>    	Dwarf_Die die_mem;
+>>>    	Dwarf_Addr faddr;
+>>>    
+>>> -	if (die_find_realfunc(cu_die, (Dwarf_Addr)addr, &die_mem)
+>>> +	if (die_find_realfunc(cu_die, addr, &die_mem)
+>>>    	    && die_entrypc(&die_mem, &faddr) == 0 &&
+>>>    	    faddr == addr) {
+>>>    		*fname = dwarf_decl_file(&die_mem);
+>>> @@ -128,7 +128,7 @@ int cu_find_lineinfo(Dwarf_Die *cu_die, unsigned long addr,
+>>>    		goto out;
+>>>    	}
+>>>    
+>>> -	line = cu_getsrc_die(cu_die, (Dwarf_Addr)addr);
+>>> +	line = cu_getsrc_die(cu_die, addr);
+>>>    	if (line && dwarf_lineno(line, lineno) == 0) {
+>>>    		*fname = dwarf_linesrc(line, NULL, NULL);
+>>>    		if (!*fname)
+>>> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+>>> index cb99646843a9..7ee0fa19b5c4 100644
+>>> --- a/tools/perf/util/dwarf-aux.h
+>>> +++ b/tools/perf/util/dwarf-aux.h
+>>> @@ -19,7 +19,7 @@ const char *cu_find_realpath(Dwarf_Die *cu_die, const char *fname);
+>>>    const char *cu_get_comp_dir(Dwarf_Die *cu_die);
+>>>    
+>>>    /* Get a line number and file name for given address */
+>>> -int cu_find_lineinfo(Dwarf_Die *cudie, unsigned long addr,
+>>> +int cu_find_lineinfo(Dwarf_Die *cudie, Dwarf_Addr addr,
+>>>    		     const char **fname, int *lineno);
+>>>    
+>>>    /* Walk on functions at given address */
+>>> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+>>> index 8ba01bbdf05c..50d861a80f57 100644
+>>> --- a/tools/perf/util/probe-finder.c
+>>> +++ b/tools/perf/util/probe-finder.c
+>>> @@ -1727,7 +1727,7 @@ int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
+>>>    	}
+>>>    
+>>>    	/* Find a corresponding line (filename and lineno) */
+>>> -	cu_find_lineinfo(&cudie, addr, &fname, &lineno);
+>>> +	cu_find_lineinfo(&cudie, (Dwarf_Addr)addr, &fname, &lineno);
+>>>    	/* Don't care whether it failed or not */
+>>>    
+>>>    	/* Find a corresponding function (name, baseline and baseaddr) */
+>>> @@ -1828,8 +1828,7 @@ static int line_range_add_line(const char *src, unsigned int lineno,
+>>>    }
+>>>    
+>>>    static int line_range_walk_cb(const char *fname, int lineno,
+>>> -			      Dwarf_Addr addr __maybe_unused,
+>>> -			      void *data)
+>>> +			      Dwarf_Addr addr, void *data)
+>>>    {
+>>>    	struct line_finder *lf = data;
+>>>    	const char *__fname;
+>>>
+>>>
+> 
+> 
