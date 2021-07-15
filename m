@@ -2,154 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AEE3C9FF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20973CA000
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235656AbhGONr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:47:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38590 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229832AbhGONry (ORCPT
+        id S237396AbhGONuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229832AbhGONuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:47:54 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FDXQrx194288;
-        Thu, 15 Jul 2021 09:45:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=89j+iXcqJQ66/ABNZWU6Ibb4jC9YJkVQfMgrDl98lJ4=;
- b=Pqu58iqGJ47geeZrjofKqwA9sTXEs4pfngRetgNn9Dm/9ag/FV1HcN+5TROIqw8NLZjx
- tQ2L2ApbhayLQYxG6sG1KhABpfei2pKbGlLA5K/sUGMuzVTAvFRigAdXRr0dbJ36LKO3
- Ki5+XKASKp4W3cV9EbccJ7s+QbLaa/A84WCxq8lAAZwg0Jk+CxhjaTPePEIsIY17d6a8
- pmntEBBjjYPrCa+bQeR6E2GgtObd+M1cScd1aRdvU714fh2lV0YwMHJsf0V5Wjs84qVD
- exLaFiFDoPkscex6raglTvYf3sZ8c8S8C1S1FISw6H92ZeTsNzxvC1xShP3yLrKW+o1W Hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39tmn0b56a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 09:45:00 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16FDXQO9194371;
-        Thu, 15 Jul 2021 09:44:59 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39tmn0b543-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 09:44:59 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16FDi4NR002850;
-        Thu, 15 Jul 2021 13:44:57 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 39q2thaa3h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 13:44:57 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16FDistP35455436
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Jul 2021 13:44:54 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E54EA4068;
-        Thu, 15 Jul 2021 13:44:54 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 089E0A4054;
-        Thu, 15 Jul 2021 13:44:53 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.60.220])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Thu, 15 Jul 2021 13:44:52 +0000 (GMT)
-Date:   Thu, 15 Jul 2021 15:44:51 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-Message-ID: <20210715154451.3f0c264e.pasic@linux.ibm.com>
-In-Reply-To: <20210707154156.297139-1-akrowiak@linux.ibm.com>
-References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 15 Jul 2021 09:50:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4E7C06175F;
+        Thu, 15 Jul 2021 06:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=S6KcoUIpvrQVi4fHiaoEy/q8bKqLt5r6wwB0LH6OQ30=; b=qIoHgMkZGS55ZNZ53wOSE+skQC
+        D8FpuTVGMgh0TlAxlf+mx+aYylStnfYfFkp0wHjqJV63zzAKMcmDh5INBcD0bjZ0Wy3YnhrUUVIud
+        a+nVTamRqymx60nkQwB293VrSUPUoKFkDlcuxWOgHppbF03xfDbeH7JUrzaEC2u5xU4w/XbtPTKKJ
+        swOWp4g8mthXg+DEWrHIt4xlaGwWsEen42MaZVgNBocTD5yziQNsJB3C+8CKLok5I1z7BXPvb3wJ6
+        VVxkl3C2dPvviZWvQGpVl4l3zAUD0tKdTzX29SfEoZcnbH6dQ5PUbWLefPNlZtT++WtZfPbBSzQKw
+        BR+GmYRw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m41gw-003OYa-Il; Thu, 15 Jul 2021 13:46:34 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] Make PMD_ORDER generically available
+Date:   Thu, 15 Jul 2021 14:46:09 +0100
+Message-Id: <20210715134612.809280-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9XL9JnXJnnQAa3FUpx6ldqBRlfMQDaTV
-X-Proofpoint-ORIG-GUID: EZa8fsu2dd3DU8lDXcRg7hg3g_eKVCB2
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-15_07:2021-07-14,2021-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- clxscore=1015 adultscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107150097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  7 Jul 2021 11:41:56 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+These three architectures each define PMD_ORDER to mean "the order of
+an allocation for a PMD table", but logically PMD_ORDER should be the
+order of a PMD allocation, ie (PMD_SHIFT - PAGE_SHIFT) as DAX defines it.
 
-First sorry for being this late with having a more serious look at the
-code.
+Could each architecture maintainer please apply the appropriate patch
+to their respective trees?
 
+Matthew Wilcox (Oracle) (3):
+  arm: Rename PMD_ORDER to PMD_TABLE_ORDER
+  mips: Rename PMD_ORDER to PMD_TABLE_ORDER
+  parisc: Rename PMD_ORDER to PMD_TABLE_ORDER
 
-> @@ -270,6 +270,9 @@ static struct ap_queue_status vfio_ap_irq_enable(struct vfio_ap_queue *q,
->   * We take the matrix_dev lock to ensure serialization on queues and
->   * mediated device access.
->   *
-> + * Note: This function must be called with a read lock held on
-> + *	 vcpu->kvm->arch.crypto.pqap_hook_rwsem.
-> + *
+ arch/arm/kernel/head.S             | 34 +++++++++++++++---------------
+ arch/mips/include/asm/pgalloc.h    |  2 +-
+ arch/mips/include/asm/pgtable-32.h |  2 +-
+ arch/mips/include/asm/pgtable-64.h | 18 ++++++++--------
+ arch/mips/kernel/asm-offsets.c     |  2 +-
+ arch/parisc/include/asm/pgalloc.h  |  6 +++---
+ arch/parisc/include/asm/pgtable.h  |  4 ++--
+ arch/parisc/mm/init.c              |  4 ++--
+ 8 files changed, 36 insertions(+), 36 deletions(-)
 
+-- 
+2.30.2
 
-That is a fine synchronization for the pqap_hook, but I don't think it
-is sufficient for everything.
-
-
->   * Return 0 if we could handle the request inside KVM.
->   * otherwise, returns -EOPNOTSUPP to let QEMU handle the fault.
->   */
-> @@ -287,22 +290,12 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->  		return -EOPNOTSUPP;
-> 
->  	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
-> -	mutex_lock(&matrix_dev->lock);
-
-Here you drop a matrix_dev->lock critical section. And then
-you do all the interesting stuff. E.g.
-q = vfio_ap_get_queue(matrix_mdev, apqn);
-and
-vfio_ap_irq_enable(q, status & 0x07, vcpu->run->s.regs.gprs[2]);.
-Since in vfio_ap_get_queue() we do the check if the queue belongs
-to the given guest, and examine the matrix (apm, aqm) I suppose
-that needs to be done holding a lock that protects the matrix,
-and to my best knowledge this is still matrix_dev->lock. It would
-probably make sense to convert matrix_dev->lock into an rw_semaphore,
-or to introduce a some new rwlock which protects less state in the
-future, but right now AFAICT it is still matrix_dev->lock.
-
-So I don't think this patch should pass review.
-
-Regards,
-Halil
-
-> 
->  	if (!vcpu->kvm->arch.crypto.pqap_hook)
->  		goto out_unlock;
->  	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
->  				   struct ap_matrix_mdev, pqap_hook);
-> 
-> -	/*
-> -	 * If the KVM pointer is in the process of being set, wait until the
-> -	 * process has completed.
-> -	 */
-> -	wait_event_cmd(matrix_mdev->wait_for_kvm,
-> -		       !matrix_mdev->kvm_busy,
-> -		       mutex_unlock(&matrix_dev->lock),
-> -		       mutex_lock(&matrix_dev->lock));
-> -
->  	/* If the there is no guest using the mdev, there is nothing to do */
->  	if (!matrix_mdev->kvm)
->  		goto out_unlock;
