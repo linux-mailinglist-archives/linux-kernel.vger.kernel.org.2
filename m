@@ -2,32 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FBF3C9660
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235E13C9662
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhGODTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:19:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:46052 "EHLO foss.arm.com"
+        id S234246AbhGODT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:19:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:46074 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231854AbhGODTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:19:21 -0400
+        id S234086AbhGODTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:19:24 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E00B21042;
-        Wed, 14 Jul 2021 20:16:28 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA20D11D4;
+        Wed, 14 Jul 2021 20:16:31 -0700 (PDT)
 Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C43593F7D8;
-        Wed, 14 Jul 2021 20:16:25 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 68A823F7D8;
+        Wed, 14 Jul 2021 20:16:29 -0700 (PDT)
 From:   Jia He <justin.he@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christoph Hellwig <hch@infradead.org>, nd@arm.com,
-        Jia He <justin.he@arm.com>, Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Chen Lin <chen.lin5@zte.com.cn>, linux-usb@vger.kernel.org
-Subject: [PATCH RFC 10/13] usb: gadget: simplify the printing with '%pD' specifier
-Date:   Thu, 15 Jul 2021 11:15:30 +0800
-Message-Id: <20210715031533.9553-11-justin.he@arm.com>
+        Jia He <justin.he@arm.com>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org
+Subject: [PATCH RFC 11/13] md/bitmap: simplify the printing with '%pD' specifier
+Date:   Thu, 15 Jul 2021 11:15:31 +0800
+Message-Id: <20210715031533.9553-12-justin.he@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210715031533.9553-1-justin.he@arm.com>
 References: <20210715031533.9553-1-justin.he@arm.com>
@@ -36,7 +34,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 After the behavior of '%pD' is changed to print the full path of file,
-the log printing in fsg_common_create_lun() can be simplified.
+the log printing can be simplified.
 
 Given the space with proper length would be allocated in vprintk_store(),
 it is worthy of dropping kmalloc()/kfree() to avoid additional space
@@ -44,63 +42,42 @@ allocation. The error case is well handled in d_path_unsafe(), the error
 string would be copied in '%pD' buffer, no need to additionally handle
 IS_ERR().
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Chen Lin <chen.lin5@zte.com.cn>
-Cc: linux-usb@vger.kernel.org
+Cc: Song Liu <song@kernel.org>
+Cc: linux-raid@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Jia He <justin.he@arm.com>
 ---
- drivers/usb/gadget/function/f_mass_storage.c | 28 ++++++++------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
+ drivers/md/md-bitmap.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
-index 4a4703634a2a..04d4e8a0f6fd 100644
---- a/drivers/usb/gadget/function/f_mass_storage.c
-+++ b/drivers/usb/gadget/function/f_mass_storage.c
-@@ -2738,7 +2738,6 @@ int fsg_common_create_lun(struct fsg_common *common, struct fsg_lun_config *cfg,
- 			  const char **name_pfx)
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index e29c6298ef5c..a82f1c2ef83c 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -862,21 +862,12 @@ static void md_bitmap_file_unmap(struct bitmap_storage *store)
+  */
+ static void md_bitmap_file_kick(struct bitmap *bitmap)
  {
- 	struct fsg_lun *lun;
--	char *pathbuf, *p;
- 	int rc = -ENOMEM;
+-	char *path, *ptr = NULL;
+-
+ 	if (!test_and_set_bit(BITMAP_STALE, &bitmap->flags)) {
+ 		md_bitmap_update_sb(bitmap);
  
- 	if (id >= ARRAY_SIZE(common->luns))
-@@ -2790,22 +2789,17 @@ int fsg_common_create_lun(struct fsg_common *common, struct fsg_lun_config *cfg,
- 			goto error_lun;
- 	}
- 
--	pathbuf = kmalloc(PATH_MAX, GFP_KERNEL);
--	p = "(no medium)";
--	if (fsg_lun_is_open(lun)) {
--		p = "(error)";
--		if (pathbuf) {
--			p = file_path(lun->filp, pathbuf, PATH_MAX);
--			if (IS_ERR(p))
--				p = "(error)";
--		}
--	}
--	pr_info("LUN: %s%s%sfile: %s\n",
--	      lun->removable ? "removable " : "",
--	      lun->ro ? "read only " : "",
--	      lun->cdrom ? "CD-ROM " : "",
--	      p);
--	kfree(pathbuf);
-+	if (fsg_lun_is_open(lun))
-+		pr_info("LUN: %s%s%sfile: %pD\n",
-+			lun->removable ? "removable " : "",
-+			lun->ro ? "read only " : "",
-+			lun->cdrom ? "CD-ROM " : "",
-+			lun->filp);
-+	else
-+		pr_info("LUN: %s%s%sfile: (no medium)\n",
-+			lun->removable ? "removable " : "",
-+			lun->ro ? "read only " : "",
-+			lun->cdrom ? "CD-ROM " : "");
- 
- 	return 0;
- 
+ 		if (bitmap->storage.file) {
+-			path = kmalloc(PAGE_SIZE, GFP_KERNEL);
+-			if (path)
+-				ptr = file_path(bitmap->storage.file,
+-					     path, PAGE_SIZE);
+-
+-			pr_warn("%s: kicking failed bitmap file %s from array!\n",
+-				bmname(bitmap), IS_ERR(ptr) ? "" : ptr);
+-
+-			kfree(path);
++			pr_warn("%s: kicking failed bitmap file %pD from array!\n",
++				bmname(bitmap), bitmap->storage.file);
+ 		} else
+ 			pr_warn("%s: disabling internal bitmap due to errors\n",
+ 				bmname(bitmap));
 -- 
 2.17.1
 
