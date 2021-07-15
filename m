@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5A03CAD26
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2CE3CAC4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344516AbhGOTyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344210AbhGOTZZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:25:25 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538B8C08EA3C
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:06:52 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id qb4so10994582ejc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uqvGsJK5Zcuxyijq6bYQkFswgt3gMFWId21swertgS0=;
-        b=GnDQiC/frMfCzr26Rp5EJ50FhygKMKaL/9juNBqQ+Hy7v1PhfxDdwxySS0qT2yx5Di
-         /GQQ0Fx0k8c8JsFgPgVFR6QOS21RQtFtUX+bgw96iqmdIwnD4C/uUljPFOYTNv1wz+wl
-         PRWwdFcHgVSuyyhlmk20eieNTe2b2RSSa6tncYx1O0RSXef6B3htdoTxI1JQBycdvxeL
-         xB94G66D6vpE4THo9Sev/88rKsHveH2zCcLX6u04+9A/O3aAtl5uQdyNAiGGJAGGGNqd
-         XDPn7lCQsOMU1Ouv3MM93Har6BEECgWxK1INaH9IuQ25L4Jf9WhUpYYDd00pWxYO2Ouh
-         9zEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uqvGsJK5Zcuxyijq6bYQkFswgt3gMFWId21swertgS0=;
-        b=gYbyg77C92s72dnLQOAJQ9DuUtR1qcMJ7dSJf9AgsQxKg3ZHMr1IThTVNHBXAZes0L
-         cT/w7Zhqmj2B/PIwbgQNjbmkCqdfVh8Wiys+9kBXLNB59zZevHEoUuMGr+LdErmQf6zv
-         /djfLthwkDx1JExJevEk1cgMyPG4bWQ3Gn4j/2D83/ujf5uIEhwPB0vxSMPmXQpTQjH9
-         xM6zURRplTxCC/+kxMEVPdHq2h33ZK2k2itjOLnxnpNbXKTujl65OO2GJOaeqEGbBlXn
-         CQ6svP1QErq7mD27Y+iV0QnnyX3jWqwuZ5lOnLDln5HSPJr28qAeaVXkOynAc4uxom7x
-         HA6A==
-X-Gm-Message-State: AOAM533Z4wJkjDz/QJ5HP2Gvy/2KcVhLY83wvm1syab8TS1eHygONh9k
-        O6/OBVKI7Kc+nixO1KaTKv3js+jZhN6SAJF+w0JGCA==
-X-Google-Smtp-Source: ABdhPJwAJtZ056pN3g1I+ukwRrssYAGm4I6BGigJPe34BUO8xjUJ/FyHC7YvTHztWo1Kk1u17Vd4nKVZ58mHFmDU168=
-X-Received: by 2002:a17:906:31d4:: with SMTP id f20mr6897385ejf.383.1626376010882;
- Thu, 15 Jul 2021 12:06:50 -0700 (PDT)
+        id S244027AbhGOTcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:32:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243936AbhGOTKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:10:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A25A613CC;
+        Thu, 15 Jul 2021 19:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626376037;
+        bh=Cp8Xo+M1Hv5LVvgaQlisb6BnnD3o1fyiu8cNcRc/rs8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qYfPIA4imxrbMHV4D9Mm/6TI+eaBxbox0eBQg0R3gmFU+ce/f7ICQjv5PNpYHq/54
+         szbQAqpeNUnWoDDh/BQLX5yJUgxRDDRn8LHhoS6eWZlwXsGL9gXWT5xt2k0tgPhfXG
+         zeTf/MrySkQYIQ4KeidGrqq+2MrqHzsh713tA2KjkLOo1TZpUzayp8o85hE4swtZQj
+         QNrA3UQqKXiXRaeyiiuAUc9/nFBiu++1gmsER27WkSCXxx8l3xfAApZMw5jDThaSak
+         QLhOGfVSaac1iXERtY78DsIGXbHYoL1c34ciTjZdu0KDOh5LoLOPTE0qwb+828SO6U
+         OPe+baJxgihwA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8C9BC403F2; Thu, 15 Jul 2021 16:07:14 -0300 (-03)
+Date:   Thu, 15 Jul 2021 16:07:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 01/20] perf nsinfo: fix refcounting
+Message-ID: <YPCHYiZexSnyTnYg@kernel.org>
+References: <cover.1626343282.git.rickyman7@gmail.com>
+ <55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com>
+ <YPCGONcQx5SxEKdY@kernel.org>
 MIME-Version: 1.0
-References: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
- <343394260f599d940cacc37f1dcc0309239ae220.1626371112.git.zhansayabagdaulet@gmail.com>
- <YPB7rBlU1SinK6FR@casper.infradead.org> <CA+CK2bCPMmbr+=h4evTkbJoEFQu_th_NOe0Gp11hU7xz3fLZ8A@mail.gmail.com>
- <YPB+tT0AcOB4UZQ5@casper.infradead.org> <CA+CK2bBqFr+_jxr2KU4DWv7GmOztfP8Lc+dKjy=YeUDvotyoBQ@mail.gmail.com>
-In-Reply-To: <CA+CK2bBqFr+_jxr2KU4DWv7GmOztfP8Lc+dKjy=YeUDvotyoBQ@mail.gmail.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 15 Jul 2021 15:06:15 -0400
-Message-ID: <CA+CK2bD8b9S7PZ8TS+vWTCwBY1h_51wQ5PrvCNNkGKO4r6E2cw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: KSM: fix ksm_run data type
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPCGONcQx5SxEKdY@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > /sys/kernel/mm/ksm/run
-> > >
-> > > run: write 0 to disable ksm, read 0 while ksm is disabled.
-> > >
-> > > - write 1 to run ksm, read 1 while ksm is running.
-> > > - write 2 to disable ksm and unmerge all its pages.
-> >
-> > The document is out of date then as it does not mention 'offline'.
->
-> The offline mode cannot be set externally.
->
-> In run_store()
->    if (flags > KSM_RUN_UNMERGE)
->       return -EINVAL;
+Em Thu, Jul 15, 2021 at 04:02:16PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Thu, Jul 15, 2021 at 06:07:06PM +0200, Riccardo Mancini escreveu:
+> > ASan reports a memory leak of nsinfo during the execution of the perf
+> > test "31: Lookup mmap thread".
+> > The leak is caused by a refcounted variable being replaced without
+> > dropping the refcount.
+> > 
+> > This patch makes sure that the refcnt of nsinfo is decreased whenever
+> > a refcounted variable is replaced with a new value.
+> 
+> So, there are multiple fixes in just one patch, I'll split it into
+> three, no need to resend.
+> 
+> I'll try and check if finding Fixes: for the three is easy, that way
+> stable@vger.kernel.org will figure out which of the supported releases
+> need each of them.
 
-However, I see that KSM_RUN_OFFLINE is visible via run_show(), so yes
-doc should be updated. And, yes it becomes a bitfield from the user
-perspective.
+The first patch becomes:
 
->
-> >
-> > Also, why does the call to kstrtouint() specify base 10?  If it is a
-> > bitmap, then permitting 0x [1] is more natural.  I would expect to see
-> > base 0 there.
->
-> Users can only write 0, 1, or 2, it is not a bitmap from the user's
-> perspective as the user cannot write: '3' . But, I think it is
-> somewhat weird that ksm_run is used as a bitmap internally with
-> KSM_RUN_OFFLINE = 4.
->
-> Imo, KSM_RUN_OFFLINE should be placed in a separate boolean from "ksm_run".
->
-> >
-> > [1] or even 0b, although I see that _parse_integer_fixup_radix does not
-> > support the 0b notation.
+commit b36bbdefec297ee5b6e278904360ad14fa3b09de
+Author: Riccardo Mancini <rickyman7@gmail.com>
+Date:   Thu Jul 15 18:07:06 2021 +0200
+
+    perf inject: Fix dso->nsinfo refcounting
+    
+    ASan reports a memory leak of nsinfo during the execution of the perf
+    test "31: Lookup mmap thread".
+    
+    The leak is caused by a refcounted variable being replaced without
+    dropping the refcount.
+    
+    This patch makes sure that the refcnt of nsinfo is decreased when a
+    refcounted variable is replaced with a new value.
+    
+    Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+    Fixes: 27c9c3424fc217da ("perf inject: Add --buildid-all option")
+    Cc: Ian Rogers <irogers@google.com>
+    Cc: Jiri Olsa <jolsa@redhat.com>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Link: http://lore.kernel.org/lkml/55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com
+    [ Split from a larger patch ]
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 5d6f583e2cd35be0..ffd2b25039e36e1d 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -361,9 +361,10 @@ static struct dso *findnew_dso(int pid, int tid, const char *filename,
+ 		dso = machine__findnew_dso_id(machine, filename, id);
+ 	}
+ 
+-	if (dso)
++	if (dso) {
++		nsinfo__put(dso->nsinfo);
+ 		dso->nsinfo = nsi;
+-	else
++	} else
+ 		nsinfo__put(nsi);
+ 
+ 	thread__put(thread);
