@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA5B3CA78E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A053CA793
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240689AbhGOSz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53048 "EHLO mail.kernel.org"
+        id S240934AbhGOSzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239252AbhGOSuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:50:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71985613F3;
-        Thu, 15 Jul 2021 18:47:45 +0000 (UTC)
+        id S234548AbhGOSuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:50:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B791F613F6;
+        Thu, 15 Jul 2021 18:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374865;
-        bh=jH8NKxFTKwNu/qUdPjPesAKZszR0sQ/EmNDNJP5FCcs=;
+        s=korg; t=1626374868;
+        bh=tDh2Cp3vkwg7dQBXk2Kji+t3Rds+JbYMkspX8Brzr7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BqOcpFQ0H3xPGeVK8S+wFY9+jMNW38C8e2aX0/p64FZ8fINmGKUZbB2yCe2Y9ZzZZ
-         VAmEVM7UgHyeOY9rMd147rqWnNapdqslg7hhzjWqGrC691QAktiiYgKBeaUnIf2zWC
-         HOvA2RfEzzzJrjwez9rvwVbIzLYeKPWYiQqvhZE4=
+        b=t7sb3mBo7aAifDg3B8UIJATOMtSQO51z5PLn1W2Fttn5wasmj0BI/JZeXHNanp7sN
+         fepEtNp1v+IlBGmM961rzSr6+NDg5hFBKWPJtnP/wghrc1I7E5b6lRdU+5q+4cajJP
+         bk9PF28/0wYUSAbAFaOcmDal4Mbw3yHIpGbtmG3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 024/215] drm/scheduler: Fix hang when sched_entity released
-Date:   Thu, 15 Jul 2021 20:36:36 +0200
-Message-Id: <20210715182603.127125120@linuxfoundation.org>
+Subject: [PATCH 5.10 025/215] drm/sched: Avoid data corruptions
+Date:   Thu, 15 Jul 2021 20:36:37 +0200
+Message-Id: <20210715182603.343779948@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -43,87 +43,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 
-[ Upstream commit c61cdbdbffc169dc7f1e6fe94dfffaf574fe672a ]
+[ Upstream commit 0b10ab80695d61422337ede6ff496552d8ace99d ]
 
-Problem: If scheduler is already stopped by the time sched_entity
-is released and entity's job_queue not empty I encountred
-a hang in drm_sched_entity_flush. This is because drm_sched_entity_is_idle
-never becomes false.
-
-Fix: In drm_sched_fini detach all sched_entities from the
-scheduler's run queues. This will satisfy drm_sched_entity_is_idle.
-Also wakeup all those processes stuck in sched_entity flushing
-as the scheduler main thread which wakes them up is stopped by now.
-
-v2:
-Reverse order of drm_sched_rq_remove_entity and marking
-s_entity as stopped to prevent reinserion back to rq due
-to race.
-
-v3:
-Drop drm_sched_rq_remove_entity, only modify entity->stopped
-and check for it in drm_sched_entity_is_idle
+Wait for all dependencies of a job  to complete before
+killing it to avoid data corruptions.
 
 Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 Reviewed-by: Christian König <christian.koenig@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210512142648.666476-14-andrey.grodzovsky@amd.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20210519141407.88444-1-andrey.grodzovsky@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/scheduler/sched_entity.c |  3 ++-
- drivers/gpu/drm/scheduler/sched_main.c   | 24 ++++++++++++++++++++++++
- 2 files changed, 26 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/scheduler/sched_entity.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
-index 146380118962..2006cc057f99 100644
+index 2006cc057f99..3f7f761df4cd 100644
 --- a/drivers/gpu/drm/scheduler/sched_entity.c
 +++ b/drivers/gpu/drm/scheduler/sched_entity.c
-@@ -113,7 +113,8 @@ static bool drm_sched_entity_is_idle(struct drm_sched_entity *entity)
- 	rmb(); /* for list_empty to work without lock */
- 
- 	if (list_empty(&entity->list) ||
--	    spsc_queue_count(&entity->job_queue) == 0)
-+	    spsc_queue_count(&entity->job_queue) == 0 ||
-+	    entity->stopped)
- 		return true;
- 
- 	return false;
-diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
-index 7111e0f527b0..b6c2757c3d83 100644
---- a/drivers/gpu/drm/scheduler/sched_main.c
-+++ b/drivers/gpu/drm/scheduler/sched_main.c
-@@ -887,9 +887,33 @@ EXPORT_SYMBOL(drm_sched_init);
-  */
- void drm_sched_fini(struct drm_gpu_scheduler *sched)
+@@ -219,11 +219,16 @@ static void drm_sched_entity_kill_jobs_cb(struct dma_fence *f,
+ static void drm_sched_entity_kill_jobs(struct drm_sched_entity *entity)
  {
-+	struct drm_sched_entity *s_entity;
-+	int i;
-+
- 	if (sched->thread)
- 		kthread_stop(sched->thread);
+ 	struct drm_sched_job *job;
++	struct dma_fence *f;
+ 	int r;
  
-+	for (i = DRM_SCHED_PRIORITY_COUNT - 1; i >= DRM_SCHED_PRIORITY_MIN; i--) {
-+		struct drm_sched_rq *rq = &sched->sched_rq[i];
+ 	while ((job = to_drm_sched_job(spsc_queue_pop(&entity->job_queue)))) {
+ 		struct drm_sched_fence *s_fence = job->s_fence;
+ 
++		/* Wait for all dependencies to avoid data corruptions */
++		while ((f = job->sched->ops->dependency(job, entity)))
++			dma_fence_wait(f, false);
 +
-+		if (!rq)
-+			continue;
-+
-+		spin_lock(&rq->lock);
-+		list_for_each_entry(s_entity, &rq->entities, list)
-+			/*
-+			 * Prevents reinsertion and marks job_queue as idle,
-+			 * it will removed from rq in drm_sched_entity_fini
-+			 * eventually
-+			 */
-+			s_entity->stopped = true;
-+		spin_unlock(&rq->lock);
-+
-+	}
-+
-+	/* Wakeup everyone stuck in drm_sched_entity_flush for this scheduler */
-+	wake_up_all(&sched->job_scheduled);
-+
- 	/* Confirm no work left behind accessing device structures */
- 	cancel_delayed_work_sync(&sched->work_tdr);
+ 		drm_sched_fence_scheduled(s_fence);
+ 		dma_fence_set_error(&s_fence->finished, -ESRCH);
  
 -- 
 2.30.2
