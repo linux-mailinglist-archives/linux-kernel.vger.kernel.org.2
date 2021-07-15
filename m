@@ -2,208 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843693CAEDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA25B3CAEE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhGOWES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 18:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231876AbhGOWEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:04:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3780660FE7;
-        Thu, 15 Jul 2021 22:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626386481;
-        bh=EO40IYT9v1nClf3prfyuJT+UTB+r8LgL48MhF/4fssg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eNtxQy0yK0wxjrhikZjLEuchIkxicTL5XK5smE0JWADnB9mLTbXkIuWSVpk2xxXur
-         nFjgm4p0i7KDm3PPzXWESR0708JMhln9ZQXjyn90ei1eVjiCf4Rn4S5uk4NcvlCVij
-         ZZlQh8O0NJEA9vwOWZg6sAvHJx/9z53MmzKhPKEykiMyQzFVRO5dO4HGPWuA2u54CW
-         WMshcTeOOvu5RD0Tpf81Bi3fvIpk5crPmmPtpXEe/btBfQvshXhQQHZNtXJLhbI3n8
-         8XKk5LdaSkL7DCKhGGlCGLGdiN6NaVQQBUzv1twHtP+yad7U/uCZYb6rIHOtVGF+dA
-         SBOypKQ2uOFYg==
-Date:   Thu, 15 Jul 2021 15:01:20 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 105/138] iomap: Convert iomap_add_to_ioend to take a
- folio
-Message-ID: <20210715220120.GP22357@magnolia>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-106-willy@infradead.org>
+        id S231860AbhGOWEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231736AbhGOWEb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 18:04:31 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21116C061764
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 15:01:38 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id y4so6849574pfi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 15:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9jvEc/h/THBeTUkwPAoRSgqYhPmWM3TSUH2ndN0LRm8=;
+        b=rwIKgnVQb/lhYzggOkvchhxuONYzKssGf9H99HCKM5VwPfQcCyTjDypbxAHMiqjIaR
+         TLjC2hDTINMJDxfyoOgBZwe58jCmiiju7Fbk3PdIKg5RKqU5K85i5GDNPyxx6aOi9uih
+         bawTV2dwRQ4S0brAex48X2epI7iCvjKbcNBdZyLCQsog/dA0SZDDBMNhQVJUTbY95lHB
+         71Pcc7schfd9er9IutSMfXZjuiblOE7/ZpyWo1V2uVElZzpqq8gpujPY2jPB7USQJTVv
+         xo64pQN6e/UTV4EzY2AYHHsj18yiml6GevIFWW9Id9f7y4urBKkOmkmfd9EwiOPFf1gL
+         VfkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9jvEc/h/THBeTUkwPAoRSgqYhPmWM3TSUH2ndN0LRm8=;
+        b=WFkoqxwGj8ILPjQwU+65IdBDrpmuy+AnW5earB7rizkDhWhESOUtOEKVFHq+ClAYdb
+         1s8chLEEk3Tid6dLrGwzQRSs9IhubJXVbjRMn3//mlzxi8QwjccNAjBx06XzfvbMSfe4
+         4DBb8iBbkCubH0hHTQmSXKz/2tnfUMJ7LsjbBPW0xkkIIsLyhK2J4v5PdOyNTu0QD2ay
+         X6zRQxAR8WEZ4CMNZaV7fWTn+n38/zJEuLeeOdx41dNw/Mxjpv7Ri7NQLat4UUM6Uhlf
+         S7jDNsqUTk1FCwKoXQ10325/wumNgEN1G8u1BKDUUPYy2UtvHv3bkFJtA54PoHdKjqHu
+         RMYw==
+X-Gm-Message-State: AOAM5315nNYe+jEBWwXamchTGsT3gLo5buOW+75rIH0J0vfq66AscmVJ
+        XqRRB5KvgIBIynUZbILfLzMtzQYqhMLp6Q==
+X-Google-Smtp-Source: ABdhPJzAKUiKYrVRt+O0swD9fmSDNiqt4JwMSVJBx9f2RIAc2POXqS8BXzD7wqEcF4PklBBImUFUfg==
+X-Received: by 2002:a62:1d86:0:b029:32a:311a:9595 with SMTP id d128-20020a621d860000b029032a311a9595mr6841892pfd.74.1626386497357;
+        Thu, 15 Jul 2021 15:01:37 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id r9sm9731898pjf.52.2021.07.15.15.01.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 15:01:36 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 22:01:33 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 07/40] x86/sev: Split the physmap when
+ adding the page in RMP table
+Message-ID: <YPCwPd2OzbBPs9DH@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-8-brijesh.singh@amd.com>
+ <YO9kP1v0TAFXISHD@google.com>
+ <d486a008-8340-66b0-9667-11c8a50974e4@amd.com>
+ <YPB1n0+G+0EoyEvE@google.com>
+ <41f83ddf-a8a5-daf3-dc77-15fc164f77c6@amd.com>
+ <YPCA0A+Z3RKfdsa3@google.com>
+ <8da808d6-162f-bbaf-fa15-683f8636694f@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-106-willy@infradead.org>
+In-Reply-To: <8da808d6-162f-bbaf-fa15-683f8636694f@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:36:31AM +0100, Matthew Wilcox (Oracle) wrote:
-> We still iterate one block at a time, but now we call compound_head()
-> less often.  Rename file_offset to pos to fit the rest of the file.
+On Thu, Jul 15, 2021, Brijesh Singh wrote:
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/iomap/buffered-io.c | 66 +++++++++++++++++++-----------------------
->  1 file changed, 30 insertions(+), 36 deletions(-)
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index ac33f19325ab..8e767aec8d07 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -1252,36 +1252,29 @@ iomap_can_add_to_ioend(struct iomap_writepage_ctx *wpc, loff_t offset,
->   * first, otherwise finish off the current ioend and start another.
->   */
->  static void
-> -iomap_add_to_ioend(struct inode *inode, loff_t offset, struct page *page,
-> +iomap_add_to_ioend(struct inode *inode, loff_t pos, struct folio *folio,
->  		struct iomap_page *iop, struct iomap_writepage_ctx *wpc,
->  		struct writeback_control *wbc, struct list_head *iolist)
->  {
-> -	sector_t sector = iomap_sector(&wpc->iomap, offset);
-> +	sector_t sector = iomap_sector(&wpc->iomap, pos);
->  	unsigned len = i_blocksize(inode);
-> -	unsigned poff = offset & (PAGE_SIZE - 1);
-> -	bool merged, same_page = false;
-> +	size_t poff = offset_in_folio(folio, pos);
->  
-> -	if (!wpc->ioend || !iomap_can_add_to_ioend(wpc, offset, sector)) {
-> +	if (!wpc->ioend || !iomap_can_add_to_ioend(wpc, pos, sector)) {
->  		if (wpc->ioend)
->  			list_add(&wpc->ioend->io_list, iolist);
-> -		wpc->ioend = iomap_alloc_ioend(inode, wpc, offset, sector, wbc);
-> +		wpc->ioend = iomap_alloc_ioend(inode, wpc, pos, sector, wbc);
->  	}
->  
-> -	merged = __bio_try_merge_page(wpc->ioend->io_bio, page, len, poff,
-> -			&same_page);
->  	if (iop)
->  		atomic_add(len, &iop->write_bytes_pending);
-> -
-> -	if (!merged) {
-> -		if (bio_full(wpc->ioend->io_bio, len)) {
-> -			wpc->ioend->io_bio =
-> -				iomap_chain_bio(wpc->ioend->io_bio);
-> -		}
-> -		bio_add_page(wpc->ioend->io_bio, page, len, poff);
-> +	if (!bio_add_folio(wpc->ioend->io_bio, folio, len, poff)) {
-> +		wpc->ioend->io_bio = iomap_chain_bio(wpc->ioend->io_bio);
-> +		bio_add_folio(wpc->ioend->io_bio, folio, len, poff);
-
-The paranoiac in me wonders if we ought to have some sort of error
-checking here just in case we encounter double failures?
-
->  	}
->  
->  	wpc->ioend->io_size += len;
-> -	wbc_account_cgroup_owner(wbc, page, len);
-> +	wbc_account_cgroup_owner(wbc, &folio->page, len);
->  }
->  
->  /*
-> @@ -1309,40 +1302,41 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
->  	struct iomap_page *iop = to_iomap_page(folio);
->  	struct iomap_ioend *ioend, *next;
->  	unsigned len = i_blocksize(inode);
-> -	u64 file_offset; /* file offset of page */
-> +	unsigned nblocks = i_blocks_per_folio(inode, folio);
-> +	loff_t pos = folio_pos(folio);
->  	int error = 0, count = 0, i;
->  	LIST_HEAD(submit_list);
->  
-> -	WARN_ON_ONCE(i_blocks_per_page(inode, page) > 1 && !iop);
-> +	WARN_ON_ONCE(nblocks > 1 && !iop);
->  	WARN_ON_ONCE(iop && atomic_read(&iop->write_bytes_pending) != 0);
->  
->  	/*
-> -	 * Walk through the page to find areas to write back. If we run off the
-> -	 * end of the current map or find the current map invalid, grab a new
-> -	 * one.
-> +	 * Walk through the folio to find areas to write back. If we
-> +	 * run off the end of the current map or find the current map
-> +	 * invalid, grab a new one.
->  	 */
-> -	for (i = 0, file_offset = page_offset(page);
-> -	     i < (PAGE_SIZE >> inode->i_blkbits) && file_offset < end_offset;
-> -	     i++, file_offset += len) {
-> +	for (i = 0; i < nblocks; i++, pos += len) {
-> +		if (pos >= end_offset)
-> +			break;
-
-Any particular reason this isn't:
-
-	for (i = 0; i < nblocks && pos < end_offset; i++, pos += len) {
-
-?
-
-Everything from here on out looks decent to me.
-
---D
-
->  		if (iop && !test_bit(i, iop->uptodate))
->  			continue;
->  
-> -		error = wpc->ops->map_blocks(wpc, inode, file_offset);
-> +		error = wpc->ops->map_blocks(wpc, inode, pos);
->  		if (error)
->  			break;
->  		if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
->  			continue;
->  		if (wpc->iomap.type == IOMAP_HOLE)
->  			continue;
-> -		iomap_add_to_ioend(inode, file_offset, page, iop, wpc, wbc,
-> +		iomap_add_to_ioend(inode, pos, folio, iop, wpc, wbc,
->  				 &submit_list);
->  		count++;
->  	}
->  
->  	WARN_ON_ONCE(!wpc->ioend && !list_empty(&submit_list));
-> -	WARN_ON_ONCE(!PageLocked(page));
-> -	WARN_ON_ONCE(PageWriteback(page));
-> -	WARN_ON_ONCE(PageDirty(page));
-> +	WARN_ON_ONCE(!folio_test_locked(folio));
-> +	WARN_ON_ONCE(folio_test_writeback(folio));
-> +	WARN_ON_ONCE(folio_test_dirty(folio));
->  
->  	/*
->  	 * We cannot cancel the ioend directly here on error.  We may have
-> @@ -1358,16 +1352,16 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
->  		 * now.
->  		 */
->  		if (wpc->ops->discard_page)
-> -			wpc->ops->discard_page(page, file_offset);
-> +			wpc->ops->discard_page(&folio->page, pos);
->  		if (!count) {
-> -			ClearPageUptodate(page);
-> -			unlock_page(page);
-> +			folio_clear_uptodate(folio);
-> +			folio_unlock(folio);
->  			goto done;
->  		}
->  	}
->  
-> -	set_page_writeback(page);
-> -	unlock_page(page);
-> +	folio_start_writeback(folio);
-> +	folio_unlock(folio);
->  
->  	/*
->  	 * Preserve the original error if there was one, otherwise catch
-> @@ -1388,9 +1382,9 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
->  	 * with a partial page truncate on a sub-page block sized filesystem.
->  	 */
->  	if (!count)
-> -		end_page_writeback(page);
-> +		folio_end_writeback(folio);
->  done:
-> -	mapping_set_error(page->mapping, error);
-> +	mapping_set_error(folio->mapping, error);
->  	return error;
->  }
->  
-> -- 
-> 2.30.2
+> On 7/15/21 1:39 PM, Sean Christopherson wrote:
+> > On Thu, Jul 15, 2021, Brijesh Singh wrote:
+> > > The memfd_secrets uses the set_direct_map_{invalid,default}_noflush() and it
+> > > is designed to remove/add the present bit in the direct map. We can't use
+> > > them, because in our case the page may get accessed by the KVM (e.g
+> > > kvm_guest_write, kvm_guest_map etc).
+> > 
+> > But KVM should never access a guest private page, i.e. the direct map should
+> > always be restored to PRESENT before KVM attempts to access the page.
+> > 
 > 
+> Yes, KVM should *never* access the guest private pages. So, we could
+> potentially enhance the RMPUPDATE() to check for the assigned and act
+> accordingly.
+> 
+> Are you thinking something along the line of this:
+> 
+> int rmpupdate(struct page *page, struct rmpupdate *val)
+> {
+> 	...
+> 	
+> 	/*
+> 	 * If page is getting assigned in the RMP entry then unmap
+> 	 * it from the direct map before its added in the RMP table.
+> 	 */
+> 	if (val.assigned)
+> 		set_direct_map_invalid_noflush(page_to_virt(page), 1);
+> 
+> 	...
+> 
+> 	/*
+> 	 * If the page is getting unassigned then restore the mapping
+> 	 * in the direct map after its removed from the RMP table.
+> 	 */
+> 	if (!val.assigned)
+> 		set_direct_map_default_noflush(page_to_virt(page), 1);
+> 	
+> 	...
+> }
+
+Yep.
+
+However, looking at the KVM usage, rmpupdate() appears to be broken.  When
+handling a page state change, the guest can specify a 2mb page.  In that case,
+rmpupdate() will be called once for a 2mb page, but this flow assumes a single
+4kb page.  The current code works because set_memory_4k() will cause the entire
+2mb page to be shattered, but it's technically wrong and switching to the above
+would cause problems.
