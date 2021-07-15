@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273ED3CA7F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA4D3CA5D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242242AbhGOS5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:57:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
+        id S231653AbhGOSos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237422AbhGOSva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:51:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D14C2613F2;
-        Thu, 15 Jul 2021 18:48:34 +0000 (UTC)
+        id S234083AbhGOSoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82B39613CA;
+        Thu, 15 Jul 2021 18:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374915;
-        bh=DLMSh4j0AnmTMlzgxM/VboZ7+8wm4ULFHQ39d2I+ppE=;
+        s=korg; t=1626374505;
+        bh=N0yqi/fE7VKWJ21/uelkUPX4mEQZlqAA9NU03kqqLWU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQPgKPPQt7NRCeXpehgSzTI3Azgj4YxeMKHerftPNhkHREue6KysNhbMU+fBcgZti
-         IeOLcSarjRIYH2k03blQ0HaFVOuTeZbTU8aMtoISXBPXDN+Jsdp8SXCzNuIhkJO0CU
-         1wRBtYJ/59GMnUxncgvEg2Hx1ba4Nx7VoQ9JxZgU=
+        b=JZnL1oQeHLR8fpE0OUpiogBxxPrwl/96A2T6uNh2ppQ/F2Cd4hdBOUlJ/Nt7O/tKD
+         dmOEDyXz8xu8nZg+jR6/F5TDknfbGcWJs/Gpspa3OpmY13qRVkTu0PLnb1VqXdX5bu
+         TATnSb4aQQXzmFaK6oMEvtD06aPlQ4Epr2V0k13w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Aric Cyr <Aric.Cyr@amd.com>, Stylon Wang <stylon.wang@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 080/215] wl1251: Fix possible buffer overflow in wl1251_cmd_scan
-Date:   Thu, 15 Jul 2021 20:37:32 +0200
-Message-Id: <20210715182613.621273883@linuxfoundation.org>
+Subject: [PATCH 5.4 006/122] drm/amd/display: fix use_max_lb flag for 420 pixel formats
+Date:   Thu, 15 Jul 2021 20:37:33 +0200
+Message-Id: <20210715182449.976688432@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Gibson <leegib@gmail.com>
+From: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
 
-[ Upstream commit d10a87a3535cce2b890897914f5d0d83df669c63 ]
+[ Upstream commit 8809a7a4afe90ad9ffb42f72154d27e7c47551ae ]
 
-Function wl1251_cmd_scan calls memcpy without checking the length.
-Harden by checking the length is within the maximum allowed size.
+Right now the flag simply selects memory config 0 when flag is true
+however 420 modes benefit more from memory config 3.
 
-Signed-off-by: Lee Gibson <leegib@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210428115508.25624-1-leegib@gmail.com
+Signed-off-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
+Acked-by: Stylon Wang <stylon.wang@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ti/wl1251/cmd.c | 9 ++++++---
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c | 9 ++++++---
  1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
-index 9547aea01b0f..ea0215246c5c 100644
---- a/drivers/net/wireless/ti/wl1251/cmd.c
-+++ b/drivers/net/wireless/ti/wl1251/cmd.c
-@@ -466,9 +466,12 @@ int wl1251_cmd_scan(struct wl1251 *wl, u8 *ssid, size_t ssid_len,
- 		cmd->channels[i].channel = channels[i]->hw_value;
- 	}
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
+index d67e0abeee93..11a89d873384 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
+@@ -484,10 +484,13 @@ static enum lb_memory_config dpp1_dscl_find_lb_memory_config(struct dcn10_dpp *d
+ 	int vtaps_c = scl_data->taps.v_taps_c;
+ 	int ceil_vratio = dc_fixpt_ceil(scl_data->ratios.vert);
+ 	int ceil_vratio_c = dc_fixpt_ceil(scl_data->ratios.vert_c);
+-	enum lb_memory_config mem_cfg = LB_MEMORY_CONFIG_0;
  
--	cmd->params.ssid_len = ssid_len;
--	if (ssid)
--		memcpy(cmd->params.ssid, ssid, ssid_len);
-+	if (ssid) {
-+		int len = clamp_val(ssid_len, 0, IEEE80211_MAX_SSID_LEN);
-+
-+		cmd->params.ssid_len = len;
-+		memcpy(cmd->params.ssid, ssid, len);
+-	if (dpp->base.ctx->dc->debug.use_max_lb)
+-		return mem_cfg;
++	if (dpp->base.ctx->dc->debug.use_max_lb) {
++		if (scl_data->format == PIXEL_FORMAT_420BPP8
++				|| scl_data->format == PIXEL_FORMAT_420BPP10)
++			return LB_MEMORY_CONFIG_3;
++		return LB_MEMORY_CONFIG_0;
 +	}
  
- 	ret = wl1251_cmd_send(wl, CMD_SCAN, cmd, sizeof(*cmd));
- 	if (ret < 0) {
+ 	dpp->base.caps->dscl_calc_lb_num_partitions(
+ 			scl_data, LB_MEMORY_CONFIG_1, &num_part_y, &num_part_c);
 -- 
 2.30.2
 
