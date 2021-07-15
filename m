@@ -2,90 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF55F3C9CF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA1D3C9CF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241513AbhGOKky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
+        id S241526AbhGOKll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239274AbhGOKkx (ORCPT
+        with ESMTP id S234408AbhGOKlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:40:53 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375D3C06175F;
-        Thu, 15 Jul 2021 03:37:59 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id y4so5699232pgl.10;
-        Thu, 15 Jul 2021 03:37:59 -0700 (PDT)
+        Thu, 15 Jul 2021 06:41:39 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1375C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:38:45 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id g19so8245955ybe.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:38:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=ntQ1APPK8FylP7HkBMgBjaeIri+5h5z88dbUY111u7w=;
-        b=uPdvDNnvsGmOyRZ0zjAGTdsRDuLGGqDIuDnbC6y/8wYxadMbj5Dww+UOJeJdpIZftn
-         8PjNFRYtwdrgm7SLnvqDsZrfT4PkWn5EXBoDfTeBkLHiks62g6XKjeJ6nL+p1CxXX0ha
-         K7Rp9XOCsKDFuZwN0HnxRIZyS+oCHNkSnLM4t8b8WabDnxmiC+LyomL1XkomOVvRRb/5
-         M+xkUYj/KQop5yRg4mwSw7HEJd3A7nBvILaRzL2+sBokRwqMfZIlB/urM+chDM5vOJAY
-         fTAZhhhwYxIp8CAr9+qMaDjX/kudoOMlLZaKZewLT1UyC9JtDXQZeHJoVGvCqISQQ+i3
-         BWKg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XFYcji550HYtqpGml52HF9Ker4jPqPp7oBMbaMj4XAw=;
+        b=Q5c/Ai4GgArz4t67eHsHrrkbmuwf2BtOsrIrY95J4QgKeP+4J+aPiw3TdTuERQXh7a
+         DXN7QD6MbjQ9Yogq+LCTo8ePKlu95ChrQSPQ3IE9qk0LtTkdSAKtGiE737u7gMm6/yVk
+         LfeQlg0eTEmjOTLf7UO+ZPQStqdAtKv06w3WxKzqp/CoGLVz+sgtDPWaA4RpZprwplYT
+         rhcfrbZBHloYZ87sJ2rPGIN4+AXKWFhfZche+6WJVkZqrIdZKOGGn829WoebmhL0l4rc
+         Du5wIm32cNEbaltkeFkfh7TI79sptxwxDY9w5H73uF3TFjh62KMDKWIyqtNiFkt6C3Ru
+         hcwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=ntQ1APPK8FylP7HkBMgBjaeIri+5h5z88dbUY111u7w=;
-        b=FRN8/iMbceKhuUCgeFFn3wr4I0ID8/SqJ7Z+8+HnjEm1OwSseVouTSf7AK/zb7OAGt
-         o9D75K/TVeQjgff9iDzxJ1ZF6nuC+xpfwNCM9dslHxBQeFdox2olmnhtRhIPxrpfP3TX
-         QUeEEt1oCcsRTrIZ4hArdDvDsnV05ptc07ka+LbOSwq9kuFmwlwyOR6fSgrd7OX24ji3
-         8J5XOELhZByzpV1D+aYrts8W1a24CzmYP3QMDutNKoaB+ZsUA0YNMyUgwS73Lp18Lxoa
-         4nrmBU7WgQOEV1GGMiAqoCGCrnfYCUDM75poADeEeXGEJicNCHWkwLaH/sOg8w7wOYQw
-         rlgg==
-X-Gm-Message-State: AOAM531l5I05mF6m13+1vwq6vXxqpIbSHqi3YsbqwkS/0mKs9FcCwVwj
-        lY/K7vojqPKjhLv21e2cTcxLSgR42jo=
-X-Google-Smtp-Source: ABdhPJzFuC2zr0nJxXz8s4fLNjSe1chatHzhno70VIcf4npN+7SdiSbekePhgTDM232EYGd0izrY/g==
-X-Received: by 2002:a62:ea1a:0:b029:329:a95a:fab with SMTP id t26-20020a62ea1a0000b0290329a95a0fabmr3948860pfh.31.1626345478421;
-        Thu, 15 Jul 2021 03:37:58 -0700 (PDT)
-Received: from [10.162.0.26] ([45.135.186.83])
-        by smtp.gmail.com with ESMTPSA id l188sm1011131pgl.93.2021.07.15.03.37.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 03:37:57 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] scsi: lpfc: possible ABBA deadlock
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <652256c8-6fce-a506-76a9-e1502a5ff82e@gmail.com>
-Date:   Thu, 15 Jul 2021 18:37:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XFYcji550HYtqpGml52HF9Ker4jPqPp7oBMbaMj4XAw=;
+        b=svzsPl1sAijGCHOOFtmTPJJbWo6Mzwv7cPL07iHVGf6phHsj7wLeMgxx/TaZhGOHPW
+         zrvLcG/pddqKGqWWk70WBSgnqa2QpQ7uma8YQt88Hc9ynXwp/wAxN1EMWldVMsniyAqy
+         hmg1z74Pp10WW6rH/1cM3Yi0uqEBcajVhFCjMCX1/iRP4s6lHxXb34+1LI2eByT9Yfbf
+         pFqO2xJUTF/DuIicUI3M4fyBkDFu0lO5Uz+tCN2Pd40AxIz/M6x6980+j7SynrDWaZZl
+         HFUXRbSEdbIA8VIVboTwvev0LXf1PL5ashWVFJXtH8L4rd/+0MIYUjkiW7bS4Fza3FxF
+         2Ong==
+X-Gm-Message-State: AOAM532Oz+rcI7rDv56W3Pzx6VA2XB1LY/dy4nMPm335V0nr/g3rW1X1
+        hyQsOqXNvd7drOomdXtv4/ILTDD+GNvSCPd+tzDAdQ==
+X-Google-Smtp-Source: ABdhPJxBcQOKHD07R2/OtEh3a6KqCV3jUpBAJwH1FAEBUxgXE4903UF437AA8l/ko3y/fwGkCoVYbS7DitCwwPHe8zE=
+X-Received: by 2002:a25:41c7:: with SMTP id o190mr4468817yba.256.1626345525162;
+ Thu, 15 Jul 2021 03:38:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
+ <bf326953-495f-db01-e554-42f4421d237a@huawei.com> <CAC_iWjLypqTGMxw_1ng1H8r5Yiv83G3yxUW8T1863XzFM-ShpA@mail.gmail.com>
+In-Reply-To: <CAC_iWjLypqTGMxw_1ng1H8r5Yiv83G3yxUW8T1863XzFM-ShpA@mail.gmail.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Thu, 15 Jul 2021 13:38:07 +0300
+Message-ID: <CAC_iWjLfsvr_Z2te=ABfEAecAOkQBiu22QZ8GhorA4MYnt4Uxg@mail.gmail.com>
+Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
+ page_pool packets
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 15 Jul 2021 at 13:00, Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> On Thu, 15 Jul 2021 at 07:01, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >
+> > On 2021/7/9 14:29, Ilias Apalodimas wrote:
+> > > As Alexander points out, when we are trying to recycle a cloned/expanded
+> > > SKB we might trigger a race.  The recycling code relies on the
+> > > pp_recycle bit to trigger,  which we carry over to cloned SKBs.
+> > > If that cloned SKB gets expanded or if we get references to the frags,
+> > > call skbb_release_data() and overwrite skb->head, we are creating separate
+> > > instances accessing the same page frags.  Since the skb_release_data()
+> > > will first try to recycle the frags,  there's a potential race between
+> > > the original and cloned SKB, since both will have the pp_recycle bit set.
+> > >
+> > > Fix this by explicitly those SKBs not recyclable.
+> > > The atomic_sub_return effectively limits us to a single release case,
+> > > and when we are calling skb_release_data we are also releasing the
+> > > option to perform the recycling, or releasing the pages from the page pool.
+> > >
+> > > Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
+> > > Reported-by: Alexander Duyck <alexanderduyck@fb.com>
+> > > Suggested-by: Alexander Duyck <alexanderduyck@fb.com>
+> > > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> > > ---
+> > > Changes since v1:
+> > > - Set the recycle bit to 0 during skb_release_data instead of the
+> > >   individual fucntions triggering the issue, in order to catch all
+> > >   cases
+> > >  net/core/skbuff.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > > index 12aabcda6db2..f91f09a824be 100644
+> > > --- a/net/core/skbuff.c
+> > > +++ b/net/core/skbuff.c
+> > > @@ -663,7 +663,7 @@ static void skb_release_data(struct sk_buff *skb)
+> > >       if (skb->cloned &&
+> > >           atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
+> > >                             &shinfo->dataref))
+> > > -             return;
+> > > +             goto exit;
+> >
+> > Is it possible this patch may break the head frag page for the original skb,
+> > supposing it's head frag page is from the page pool and below change clears
+> > the pp_recycle for original skb, causing a page leaking for the page pool?
+> >
+>
+> So this would leak eventually dma mapping if the skb is cloned (and
+> the dataref is now +1) and we are freeing the original skb first?
+>
 
-I find there is a possible ABBA deadlock in the lpfc driver in Linux 5.10:
+Apologies for the noise, my description was not complete.
+The case you are thinking is clone an SKB and then expand the original?
 
-In lpfc_nvmet_unsol_fcp_issue_abort():
-3502:     spin_lock_irqsave(&ctxp->ctxlock, flags);
-3504: spin_lock(&phba->sli4_hba.abts_nvmet_buf_list_lock);
-
-In lpfc_sli4_nvmet_xri_aborted():
-1787: spin_lock(&phba->sli4_hba.abts_nvmet_buf_list_lock);
-1794:     spin_lock(&ctxp->ctxlock);
-
-When lpfc_nvmet_unsol_fcp_issue_abort() and 
-lpfc_sli4_nvmet_xri_aborted() are concurrently executed, the deadlock 
-can occur.
-
-I am not quite sure whether this possible deadlock is real and how to 
-fix it if it is real.
-Any feedback would be appreciated, thanks :)
+thanks
+/Ilias
 
 
-Best wishes,
-Jia-Ju Bai
+> > >
+> > >       skb_zcopy_clear(skb, true);
+> > >
+> > > @@ -674,6 +674,8 @@ static void skb_release_data(struct sk_buff *skb)
+> > >               kfree_skb_list(shinfo->frag_list);
+> > >
+> > >       skb_free_head(skb);
+> > > +exit:
+> > > +     skb->pp_recycle = 0;
+> > >  }
+> > >
+> > >  /*
+> > >
