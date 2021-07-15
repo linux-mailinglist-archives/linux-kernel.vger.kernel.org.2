@@ -2,166 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3CA3CABE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0763CA8E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245651AbhGOTYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45648 "EHLO mail.kernel.org"
+        id S242473AbhGOTDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:03:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242520AbhGOTHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:07:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A61B613D6;
-        Thu, 15 Jul 2021 19:03:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375804;
-        bh=FMOqtWgbbmv0cWFZ5fXm/IuPiM7DSxYPeD36z7/IRaY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bbmqnlQmdJUQ5DiRUG7ilyFz+hD+D9RYntv2SW5jNaaMy5mL/jj/KhhK+UqfNILoP
-         Nt17fpkviv08ODveScOPI0BaArLEtawgDEklMPbIDx8+sOPEHS5eFIgjw5IgZoFlPC
-         tYDkrwSQKmp6Ne16HPpWmCFmmslonmcVfSOT6/hg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+9d90dad32dd9727ed084@syzkaller.appspotmail.com,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 5.12 242/242] f2fs: fix to avoid racing on fsync_entry_slab by multi filesystem instances
-Date:   Thu, 15 Jul 2021 20:40:04 +0200
-Message-Id: <20210715182635.467745499@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S241889AbhGOSyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:54:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8178613C4;
+        Thu, 15 Jul 2021 18:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626375106;
+        bh=szkVf8VkFhpsu4g2RfO3cWKYx15qXcEHUrQf1gZVuSc=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=I+KseXXFVkAI6iRsrO6p00SQfeIODEVfHNgDKPpFMo+QRwTe9a/5QrQqX0YxKJbN5
+         ClN+5l6BaxqIU+tOZNTqZooTsvzsq4kjb0kwCtgKGA5YJ6scea/Ym1TpSZXqvNNmsk
+         6WDXGY+xm0Y+t1Ve4mYle3PuG/XOQKVkCCrKh/b35FMJaTIHRU/MgFoZpTq5VA4BxT
+         tATYrpkbLttt+k1VNJa/wBHsuFfy2M81d+1cMnkzI/jRCOmqpJiQcVOulSHi+Aswqv
+         LPcNqJAreoNsoBIsguGwdIXv2PtYAgRx0gB8zePArT/g0dmsPO+YIVOFZU1EwDZFxY
+         7Qgq1GHeshA5A==
+Date:   Thu, 15 Jul 2021 20:51:43 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+cc:     jic23@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: intel-ish-hid: use async resume function
+In-Reply-To: <20210613032507.7474-1-xiang.ye@intel.com>
+Message-ID: <nycvar.YFH.7.76.2107152051340.8253@cbobk.fhfr.pm>
+References: <20210613032507.7474-1-xiang.ye@intel.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+On Sun, 13 Jun 2021, Ye Xiang wrote:
 
-commit cad83c968c2ebe97905f900326988ed37146c347 upstream.
+> ISH IPC driver uses asynchronous workqueue to do resume now, but there is
+> a potential timing issue: when child devices resume before bus driver, it
+> will cause child devices resume failed and cannot be recovered until
+> reboot. The current implementation in this case do wait for IPC to resume
+> but fail to accommodate for a case when there is no ISH reboot and soft
+> resume is taking time. This issue is apparent on Tiger Lake platform with
+> 5.11.13 kernel when doing suspend to idle then resume(s0ix) test. To
+> resolve this issue, we change ISHTP HID client to use asynchronous resume
+> callback too. In the asynchronous resume callback, it waits for the ISHTP
+> resume done event, and then notify ISHTP HID client link ready.
+> 
+> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
 
-As syzbot reported, there is an use-after-free issue during f2fs recovery:
+Applied, thank you.
 
-Use-after-free write at 0xffff88823bc16040 (in kfence-#10):
- kmem_cache_destroy+0x1f/0x120 mm/slab_common.c:486
- f2fs_recover_fsync_data+0x75b0/0x8380 fs/f2fs/recovery.c:869
- f2fs_fill_super+0x9393/0xa420 fs/f2fs/super.c:3945
- mount_bdev+0x26c/0x3a0 fs/super.c:1367
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x86/0x270 fs/super.c:1497
- do_new_mount fs/namespace.c:2905 [inline]
- path_mount+0x196f/0x2be0 fs/namespace.c:3235
- do_mount fs/namespace.c:3248 [inline]
- __do_sys_mount fs/namespace.c:3456 [inline]
- __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3433
- do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The root cause is multi f2fs filesystem instances can race on accessing
-global fsync_entry_slab pointer, result in use-after-free issue of slab
-cache, fixes to init/destroy this slab cache only once during module
-init/destroy procedure to avoid this issue.
-
-Reported-by: syzbot+9d90dad32dd9727ed084@syzkaller.appspotmail.com
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/f2fs/f2fs.h     |    2 ++
- fs/f2fs/recovery.c |   23 ++++++++++++++---------
- fs/f2fs/super.c    |    8 +++++++-
- 3 files changed, 23 insertions(+), 10 deletions(-)
-
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3560,6 +3560,8 @@ void f2fs_destroy_garbage_collection_cac
-  */
- int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only);
- bool f2fs_space_for_roll_forward(struct f2fs_sb_info *sbi);
-+int __init f2fs_create_recovery_cache(void);
-+void f2fs_destroy_recovery_cache(void);
- 
- /*
-  * debug.c
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -787,13 +787,6 @@ int f2fs_recover_fsync_data(struct f2fs_
- 	quota_enabled = f2fs_enable_quota_files(sbi, s_flags & SB_RDONLY);
- #endif
- 
--	fsync_entry_slab = f2fs_kmem_cache_create("f2fs_fsync_inode_entry",
--			sizeof(struct fsync_inode_entry));
--	if (!fsync_entry_slab) {
--		err = -ENOMEM;
--		goto out;
--	}
--
- 	INIT_LIST_HEAD(&inode_list);
- 	INIT_LIST_HEAD(&tmp_inode_list);
- 	INIT_LIST_HEAD(&dir_list);
-@@ -866,8 +859,6 @@ skip:
- 		}
- 	}
- 
--	kmem_cache_destroy(fsync_entry_slab);
--out:
- #ifdef CONFIG_QUOTA
- 	/* Turn quotas off */
- 	if (quota_enabled)
-@@ -877,3 +868,17 @@ out:
- 
- 	return ret ? ret: err;
- }
-+
-+int __init f2fs_create_recovery_cache(void)
-+{
-+	fsync_entry_slab = f2fs_kmem_cache_create("f2fs_fsync_inode_entry",
-+					sizeof(struct fsync_inode_entry));
-+	if (!fsync_entry_slab)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
-+void f2fs_destroy_recovery_cache(void)
-+{
-+	kmem_cache_destroy(fsync_entry_slab);
-+}
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4187,9 +4187,12 @@ static int __init init_f2fs_fs(void)
- 	err = f2fs_create_checkpoint_caches();
- 	if (err)
- 		goto free_segment_manager_caches;
--	err = f2fs_create_extent_cache();
-+	err = f2fs_create_recovery_cache();
- 	if (err)
- 		goto free_checkpoint_caches;
-+	err = f2fs_create_extent_cache();
-+	if (err)
-+		goto free_recovery_cache;
- 	err = f2fs_create_garbage_collection_cache();
- 	if (err)
- 		goto free_extent_cache;
-@@ -4238,6 +4241,8 @@ free_garbage_collection_cache:
- 	f2fs_destroy_garbage_collection_cache();
- free_extent_cache:
- 	f2fs_destroy_extent_cache();
-+free_recovery_cache:
-+	f2fs_destroy_recovery_cache();
- free_checkpoint_caches:
- 	f2fs_destroy_checkpoint_caches();
- free_segment_manager_caches:
-@@ -4263,6 +4268,7 @@ static void __exit exit_f2fs_fs(void)
- 	f2fs_exit_sysfs();
- 	f2fs_destroy_garbage_collection_cache();
- 	f2fs_destroy_extent_cache();
-+	f2fs_destroy_recovery_cache();
- 	f2fs_destroy_checkpoint_caches();
- 	f2fs_destroy_segment_manager_caches();
- 	f2fs_destroy_node_manager_caches();
-
+-- 
+Jiri Kosina
+SUSE Labs
 
