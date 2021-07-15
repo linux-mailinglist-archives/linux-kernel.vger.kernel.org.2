@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A883CABA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6113CA8F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243556AbhGOTV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:21:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
+        id S243502AbhGOTE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231739AbhGOTFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D0B6613E4;
-        Thu, 15 Jul 2021 19:02:06 +0000 (UTC)
+        id S239301AbhGOSzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D43E7610C7;
+        Thu, 15 Jul 2021 18:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375727;
-        bh=0sOnFi+karhKZZw+utkVlYFUSfkWjQ00NaCNBYgkLaU=;
+        s=korg; t=1626375137;
+        bh=Db9BWr13IIhpMoNlTyg48YEuC4w/VdnvUhnVfdi8Q8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zeY8kVSUjno8AUJA5MHOVE0S8HlusrJ0u+mUBAZ1bR8qaLykbB9whZf90RUHEf2Oq
-         BMwx1yaHE2KyTdlb2Ctda7S/tdzdEe7cRtNGmupOCuxwh8dyThG7yQotmrQbJGHJdz
-         CGrjWMzyiUSDoyTOV9sJaYcjn+vDmZqtEgb8k3ck=
+        b=veqORtke8VIcP59pKpyeBhTuI9RGv5IUOJnDUOmiPn+recZFaa67BNWwXq3XiQP5a
+         tlZYkivj75uzIfSxhorhIJO52PsuyePRgcSAMjEnifvt/htnpVsLIlheR63JO/3EUL
+         V+iWelM4p6CeMCSgAM0Np3qcnfkcDcnTisxTrtUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Haren Myneni <haren@linux.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.12 158/242] powerpc/mm: Fix lockup on kernel exec fault
+Subject: [PATCH 5.10 148/215] powerpc/powernv/vas: Release reference to tgid during window close
 Date:   Thu, 15 Jul 2021 20:38:40 +0200
-Message-Id: <20210715182620.978044435@linuxfoundation.org>
+Message-Id: <20210715182625.796429330@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Haren Myneni <haren@linux.ibm.com>
 
-commit cd5d5e602f502895e47e18cd46804d6d7014e65c upstream.
+commit 91cdbb955aa94ee0841af4685be40937345d29b8 upstream.
 
-The powerpc kernel is not prepared to handle exec faults from kernel.
-Especially, the function is_exec_fault() will return 'false' when an
-exec fault is taken by kernel, because the check is based on reading
-current->thread.regs->trap which contains the trap from user.
+The kernel handles the NX fault by updating CSB or sending
+signal to process. In multithread applications, children can
+open VAS windows and can exit without closing them. But the
+parent can continue to send NX requests with these windows. To
+prevent pid reuse, reference will be taken on pid and tgid
+when the window is opened and release them during window close.
 
-For instance, when provoking a LKDTM EXEC_USERSPACE test,
-current->thread.regs->trap is set to SYSCALL trap (0xc00), and
-the fault taken by the kernel is not seen as an exec fault by
-set_access_flags_filter().
+The current code is not releasing the tgid reference which can
+cause pid leak and this patch fixes the issue.
 
-Commit d7df2443cd5f ("powerpc/mm: Fix spurious segfaults on radix
-with autonuma") made it clear and handled it properly. But later on
-commit d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute
-faults") removed that handling, introducing test based on error_code.
-And here is the problem, because on the 603 all upper bits of SRR1
-get cleared when the TLB instruction miss handler bails out to ISI.
-
-Until commit cbd7e6ca0210 ("powerpc/fault: Avoid heavy
-search_exception_tables() verification"), an exec fault from kernel
-at a userspace address was indirectly caught by the lack of entry for
-that address in the exception tables. But after that commit the
-kernel mainly relies on KUAP or on core mm handling to catch wrong
-user accesses. Here the access is not wrong, so mm handles it.
-It is a minor fault because PAGE_EXEC is not set,
-set_access_flags_filter() should set PAGE_EXEC and voila.
-But as is_exec_fault() returns false as explained in the beginning,
-set_access_flags_filter() bails out without setting PAGE_EXEC flag,
-which leads to a forever minor exec fault.
-
-As the kernel is not prepared to handle such exec faults, the thing to
-do is to fire in bad_kernel_fault() for any exec fault taken by the
-kernel, as it was prior to commit d3ca587404b3.
-
-Fixes: d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute faults")
-Cc: stable@vger.kernel.org # v4.14+
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
+Fixes: db1c08a740635 ("powerpc/vas: Take reference to PID and mm for user space windows")
+Cc: stable@vger.kernel.org # 5.8+
+Reported-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Haren Myneni <haren@linux.ibm.com>
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/024bb05105050f704743a0083fe3548702be5706.1625138205.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/r/6020fc4d444864fe20f7dcdc5edfe53e67480a1c.camel@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/mm/fault.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/powerpc/platforms/powernv/vas-window.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/arch/powerpc/mm/fault.c
-+++ b/arch/powerpc/mm/fault.c
-@@ -199,9 +199,7 @@ static bool bad_kernel_fault(struct pt_r
- {
- 	int is_exec = TRAP(regs) == 0x400;
- 
--	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
--	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
--				      DSISR_PROTFAULT))) {
-+	if (is_exec) {
- 		pr_crit_ratelimited("kernel tried to execute %s page (%lx) - exploit attempt? (uid: %d)\n",
- 				    address >= TASK_SIZE ? "exec-protected" : "user",
- 				    address,
+--- a/arch/powerpc/platforms/powernv/vas-window.c
++++ b/arch/powerpc/platforms/powernv/vas-window.c
+@@ -1093,9 +1093,9 @@ struct vas_window *vas_tx_win_open(int v
+ 		/*
+ 		 * Process closes window during exit. In the case of
+ 		 * multithread application, the child thread can open
+-		 * window and can exit without closing it. Expects parent
+-		 * thread to use and close the window. So do not need
+-		 * to take pid reference for parent thread.
++		 * window and can exit without closing it. so takes tgid
++		 * reference until window closed to make sure tgid is not
++		 * reused.
+ 		 */
+ 		txwin->tgid = find_get_pid(task_tgid_vnr(current));
+ 		/*
+@@ -1339,8 +1339,9 @@ int vas_win_close(struct vas_window *win
+ 	/* if send window, drop reference to matching receive window */
+ 	if (window->tx_win) {
+ 		if (window->user_win) {
+-			/* Drop references to pid and mm */
++			/* Drop references to pid. tgid and mm */
+ 			put_pid(window->pid);
++			put_pid(window->tgid);
+ 			if (window->mm) {
+ 				mm_context_remove_vas_window(window->mm);
+ 				mmdrop(window->mm);
 
 
