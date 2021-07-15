@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778383CAAE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F5A3CAA69
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241942AbhGOTPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242284AbhGOTBv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:01:51 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FF8C0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:58:14 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id c17so10941058ejk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fYKgvYLgvtSQW10Pkkm7+cl/2v+kKNbnHVNtsf/foy4=;
-        b=I1P8lxvHTr2xXP69nPZ/+7IW0uj06lsFuq2VivGUARKQjT/5ggKxzGM/n1ztJmatLe
-         TivTuUjTr0xe94W6KYF0CnsoTjtYoNL3fhEORVO+D+sr1IcKbUeKmdOXZtn7JjWlq2lC
-         ndCldBAAjucaHQaVBIzY8bnHI15b61gOPyrQBBhncKqmMeCwI1E+z6z35j/8Ch6o1yHr
-         TQpeoAET9IMB86aBuFqGpt6K+m2BMNet9rvWt2Vzpk6dvEfeFR98AJ2l2qlRE7kmFb2v
-         1oIBGWdwQpP0w8BVr1FVuGhlDBxr52MIK+pj93nepBC0y4FXPK4MWKHfeKBZpIlbgx2l
-         zpsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fYKgvYLgvtSQW10Pkkm7+cl/2v+kKNbnHVNtsf/foy4=;
-        b=J7eDwomrJiFWwlbl+dMdFX34nU3kdoggUVJ4z12M3f8sCOHqAHDW6nNLPQOfPelYVS
-         BKgAstNYTibfG3SdF8pKNYFZ0s8C8IlaclW6+WkuH5f11gFaJwZb2D+lt25uljgcK8nj
-         FoNEzos/2oKAeKnQRA8SWZGTJP0qQs3nRNlqdj6jE3tnNEt2ppVecdN9ZYiN/IGKWcPz
-         DI0S5bkINDdgdDD74kC8ZDOyVujaa9r7Yp7ag0DSPdgDYXsAwMQedWUTDNGwKk5NeMI7
-         3kyvUOsJ76HlbnwIjH+lWTCSVS3gv2EOQVdJBXnMFwZ/uyX9+TteUdrYBJkKzm0pYdBp
-         yAGg==
-X-Gm-Message-State: AOAM530BuaBoEbEu5CFfVjHhI9l26+OIkf2aX5GnFJJsX3Ra/ZwrFE/E
-        YsmCXBkF9wYyUvtU7HY00xAXdXKLlTO3VCoLJSsOKw==
-X-Google-Smtp-Source: ABdhPJyJb8MbkcAOF0uAQweRXiBLqmMU0tzuj8g4DHd1+KDxsnz3qffsAdA3JfM/2GRyO1QcVkQx647Qmhs6PVl7pvs=
-X-Received: by 2002:a17:906:8558:: with SMTP id h24mr7138820ejy.519.1626375493122;
- Thu, 15 Jul 2021 11:58:13 -0700 (PDT)
+        id S242635AbhGOTNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:13:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241698AbhGOTBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:01:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CCD9601FE;
+        Thu, 15 Jul 2021 18:57:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626375468;
+        bh=n4MF6jOHP2VdTsWK9s1BcSjD+lLbgvgytoGh4+vxdbY=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=T2O0bKwTVtoL/1jwGvtWtjH/wpowPLcZP2nLojPLSvFSmV1WT6qR001lXhrDXxyUV
+         xn7vKjwmdb94cNokWwmlxffXgJg2NBKReapvPpwOB4pYpMjldWxyCaZXNPmr5L9xOR
+         lPScqjApl1Ger8Z2VhARNBfcVQ5znjm50MKDJ71fc/eeZ+XkezcmtPoCJJpTrkpirN
+         RhOJgm4CJakm4v8LRhkaCSmx17mkgWJ7Y9E+kpf3hjs8q/LtSrx19MaP3XAfD+DCzM
+         1W+j+l9ib8uO6TESHbjgPkm0eozMZ5cqAdg0Z3R4EpNGCMhz6sg2VXuxxm8aGVtWQ8
+         w+STLMoD5wOiQ==
+Date:   Thu, 15 Jul 2021 20:57:44 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+cc:     Maxim Mikityanskiy <maxtram95@gmail.com>,
+        linux-leds@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        Oliver Neukum <oneukum@suse.de>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] HID: hid-input: Add offhook and ring LEDs for
+ headsets
+In-Reply-To: <CAO-hwJJxJqgW6CGPmvL41teh6vgWfSg55qoXWL3TjQx+mvsbHg@mail.gmail.com>
+Message-ID: <nycvar.YFH.7.76.2107152057230.8253@cbobk.fhfr.pm>
+References: <20210703220202.5637-1-maxtram95@gmail.com> <20210703220202.5637-2-maxtram95@gmail.com> <CAO-hwJJxJqgW6CGPmvL41teh6vgWfSg55qoXWL3TjQx+mvsbHg@mail.gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
- <343394260f599d940cacc37f1dcc0309239ae220.1626371112.git.zhansayabagdaulet@gmail.com>
- <YPB7rBlU1SinK6FR@casper.infradead.org> <CA+CK2bCPMmbr+=h4evTkbJoEFQu_th_NOe0Gp11hU7xz3fLZ8A@mail.gmail.com>
- <YPB+tT0AcOB4UZQ5@casper.infradead.org>
-In-Reply-To: <YPB+tT0AcOB4UZQ5@casper.infradead.org>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 15 Jul 2021 14:57:37 -0400
-Message-ID: <CA+CK2bBqFr+_jxr2KU4DWv7GmOztfP8Lc+dKjy=YeUDvotyoBQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: KSM: fix ksm_run data type
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 2:30 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Jul 15, 2021 at 02:21:21PM -0400, Pavel Tatashin wrote:
-> > On Thu, Jul 15, 2021 at 2:18 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Fri, Jul 16, 2021 at 12:01:01AM +0600, Zhansaya Bagdauletkyzy wrote:
-> > > > +++ b/mm/ksm.c
-> > > > @@ -289,7 +289,7 @@ static int ksm_nr_node_ids = 1;
-> > > >  #define KSM_RUN_MERGE        1
-> > > >  #define KSM_RUN_UNMERGE      2
-> > > >  #define KSM_RUN_OFFLINE      4
-> > > > -static unsigned long ksm_run = KSM_RUN_STOP;
-> > > > +static unsigned int ksm_run = KSM_RUN_STOP;
-> > >
-> > > Should this be an enum instead?
+On Tue, 6 Jul 2021, Benjamin Tissoires wrote:
+
+> > A lot of USBHID headsets available on the market have LEDs that indicate
+> > ringing and off-hook states when used with VoIP applications. This
+> > commit exposes these LEDs via the standard sysfs interface.
 > >
-> > I think "unsigned int" is OK here, as it is exposed as uint to users:
-> > Documentation/ABI/testing/sysfs-kernel-mm-ksm
+> > Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+> > ---
+> >  drivers/hid/hid-input.c                | 2 ++
+> >  drivers/input/input-leds.c             | 2 ++
+> >  include/uapi/linux/input-event-codes.h | 2 ++
+> >  3 files changed, 6 insertions(+)
 > >
-> > /sys/kernel/mm/ksm/run
+> > diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> > index 4286a51f7f16..44b8243f9924 100644
+> > --- a/drivers/hid/hid-input.c
+> > +++ b/drivers/hid/hid-input.c
+> > @@ -798,6 +798,8 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+> >                 case 0x4b:  map_led (LED_MISC);     break;    /*   "Generic Indicator"        */
+> >                 case 0x19:  map_led (LED_MAIL);     break;    /*   "Message Waiting"          */
+> >                 case 0x4d:  map_led (LED_CHARGING); break;    /*   "External Power Connected" */
+> > +               case 0x17:  map_led (LED_OFFHOOK);  break;    /*   "Off-Hook"                 */
+> > +               case 0x18:  map_led (LED_RING);     break;    /*   "Ring"                     */
 > >
-> > run: write 0 to disable ksm, read 0 while ksm is disabled.
+> >                 default: goto ignore;
+> >                 }
+> > diff --git a/drivers/input/input-leds.c b/drivers/input/input-leds.c
+> > index 0b11990ade46..bc6e25b9af25 100644
+> > --- a/drivers/input/input-leds.c
+> > +++ b/drivers/input/input-leds.c
+> > @@ -33,6 +33,8 @@ static const struct {
+> >         [LED_MISC]      = { "misc" },
+> >         [LED_MAIL]      = { "mail" },
+> >         [LED_CHARGING]  = { "charging" },
+> > +       [LED_OFFHOOK]   = { "offhook" },
+> 
+> I am pretty sure this also needs to be reviewed by the led folks.
+> Adding them in Cc.
+
+Can we please get Ack from the LED maintainers? Thanks.
+
+> 
+> Cheers,
+> Benjamin
+> 
+> > +       [LED_RING]      = { "ring" },
+> >  };
 > >
-> > - write 1 to run ksm, read 1 while ksm is running.
-> > - write 2 to disable ksm and unmerge all its pages.
->
-> The document is out of date then as it does not mention 'offline'.
+> >  struct input_led {
+> > diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
+> > index 225ec87d4f22..dd785a5b5076 100644
+> > --- a/include/uapi/linux/input-event-codes.h
+> > +++ b/include/uapi/linux/input-event-codes.h
+> > @@ -925,6 +925,8 @@
+> >  #define LED_MISC               0x08
+> >  #define LED_MAIL               0x09
+> >  #define LED_CHARGING           0x0a
+> > +#define LED_OFFHOOK            0x0b
+> > +#define LED_RING               0x0c
+> >  #define LED_MAX                        0x0f
+> >  #define LED_CNT                        (LED_MAX+1)
+> >
+> > --
+> > 2.32.0
+> >
+> 
 
-The offline mode cannot be set externally.
+-- 
+Jiri Kosina
+SUSE Labs
 
-In run_store()
-   if (flags > KSM_RUN_UNMERGE)
-      return -EINVAL;
-
->
-> Also, why does the call to kstrtouint() specify base 10?  If it is a
-> bitmap, then permitting 0x [1] is more natural.  I would expect to see
-> base 0 there.
-
-Users can only write 0, 1, or 2, it is not a bitmap from the user's
-perspective as the user cannot write: '3' . But, I think it is
-somewhat weird that ksm_run is used as a bitmap internally with
-KSM_RUN_OFFLINE = 4.
-
-Imo, KSM_RUN_OFFLINE should be placed in a separate boolean from "ksm_run".
-
->
-> [1] or even 0b, although I see that _parse_integer_fixup_radix does not
-> support the 0b notation.
