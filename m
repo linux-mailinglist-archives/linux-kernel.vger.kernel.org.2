@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958713CA189
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622FB3CA190
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238997AbhGOPgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
+        id S239079AbhGOPjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 11:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238977AbhGOPgi (ORCPT
+        with ESMTP id S238977AbhGOPja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:36:38 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BBEC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:33:45 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so6649321pju.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:33:45 -0700 (PDT)
+        Thu, 15 Jul 2021 11:39:30 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47FCC061760;
+        Thu, 15 Jul 2021 08:36:35 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id q4so9415453ljp.13;
+        Thu, 15 Jul 2021 08:36:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XqUYb9cn2ckCdyFD/js6NwcqwhuMxknz5Gt0P6Fa+nI=;
-        b=DdzOhQifr3b8MJGVqCjHFlZGIXN6LF/+2DiAVy+WIRe+brvhw6ve1VMiE6wEb5KKed
-         4ZciHRg1lxpB9MgJg/6uB2X9sZyfS5zHWR/AYtpjisWDtCyuEsT+38m3+dJPWTonJwsh
-         bgR1xnw1e/e7DOXC1TNw9FQl3W50vkbcHBOr4yc15SE6086TSpGwdYB/FEGDMqJJSmjS
-         pnCMIxE4K1UurOratL8Gpyox5XmGePPjA6cLGTsHdBo+2qRmnehOJnQzOLn6bnMOoyN+
-         OuVlN87zS+N9OyjP9esvkefeXcpaDCnaCVFYBp2lXEg4DwCElaspfkjjtc8noeguwUds
-         3mWA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DYS+BayRuU8Fs2QSDK+ROjJHNwqWsJ/l7sPEVXB3gQ0=;
+        b=WGB8jy40SjrJgQrhjnlB8ggM/f/tXPGR6wnZpNIMnt7ZNrYz8VraZOvUBxba4UWVot
+         0xbxMdnq33m0fhY+TJ3c3rNlvuLLk9b5h8k3mGDzXkj4s23PKtn98KixUnR3JZydkfdl
+         t6rMasxdeDjztQGP3E2kujCmNsa6dcv5vKHv8rNYx17GLhFh5p9m3pb5JxrK4EYLDR87
+         dGcUD4NPiZCqZf8WfIKyNAlMB72r5LHFI2t3wm8rGhUTWx7TUbNoWDqaqD1JkYXMU7+n
+         8KDWqGjSkHBMxq+/mMi9kzRRDQvYE2ga4AkEb05590J88zESz+eDuwQoiXCeBW+UCH48
+         LZmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XqUYb9cn2ckCdyFD/js6NwcqwhuMxknz5Gt0P6Fa+nI=;
-        b=o8uSx3AchGGW+hq5gtQXhjqsNPqoAtjPwJs1ovLr5Awp+RBYaZi5rngysWdbKwg0e2
-         AYkaKpkZDv+uzymBzfWqcHl58f3Wrchqng9yNpopjQoLpKFcjuXdC7TFx9u5j7xPtIhV
-         F8XdWPQkctSg/uTRpRf81x2g7yP8tl8cWoEOwS11NiXaXuMI4crCTr1NESwkvNhKi9+N
-         k6g/NG9GuM8zGs7cpiSdznEX6S7o0lLe/1YE5cxC8wWwHz8dJUQWDG6AC2CfA/M6lDb5
-         QLi1w1o/fad5IhJ8PFBCnY4E85vCQjGV4Eyd41gnKDEcT2atRHhNrepWL/FfG4rXscl3
-         FY4w==
-X-Gm-Message-State: AOAM533mBdwXaWxnGTWlGMZTYwv45enlctL282c4fXMnlp18u+0gOoIQ
-        Zp7njV4Ya+Srh2FfoE9x2uQSZQ==
-X-Google-Smtp-Source: ABdhPJxr1lIoz4YNwU6ZeX8GSViY8AdSGILxEwakSZo+7pag0EclqNZRM9oFqnsA67Uyg1okRq/bnQ==
-X-Received: by 2002:a17:90a:6708:: with SMTP id n8mr5077917pjj.32.1626363224492;
-        Thu, 15 Jul 2021 08:33:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j16sm7359754pfi.165.2021.07.15.08.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 08:33:43 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 15:33:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     "Chatre, Reinette" <reinette.chatre@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] x86/sgx: Track phase and type of SGX EPC pages
-Message-ID: <YPBVVGetUyN8TqKS@google.com>
-References: <20210708181423.1312359-1-tony.luck@intel.com>
- <20210708181423.1312359-2-tony.luck@intel.com>
- <93845f78-120d-7522-bd3e-fe042380d29e@intel.com>
- <31668f36583844cbbae0b10a594193d6@intel.com>
- <00114991-9075-84f4-797d-f0f953d34660@intel.com>
- <YO9uZKLYCIBc1HsH@google.com>
- <c0fa2e9e65da4f58893386279ce914c1@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DYS+BayRuU8Fs2QSDK+ROjJHNwqWsJ/l7sPEVXB3gQ0=;
+        b=my7b8oAKaDalEbtF/w1JSSV4EofPItVwAdjpMtMn8YR1Xi+TN0xhBFhDbNmcKYSx0T
+         0RnAuNeqpUw0nThJgsbHZV9cxHai5FR9M70AhIr/vdo2JTzf+dXcHqhSnRaRwAywxWAH
+         U98GqzC54qOJCZR9W958mpMkgVCMdTxFzqDh+Vz/xrVRXIPG28QIzX7InlyoMiO2zCpT
+         kcvf8yerJtzcPwmV99ykZ6jHYtLDRKELQfRvX/YoKrZkIOsKXHXAIJEOnrweOT+hIFzI
+         ilvF0l1IWFNUFN2iOqPFXeM3vSnAeqS6t6qhfr2l9qJXo4T2ppAG+RhEYiond9pW/drq
+         Zufw==
+X-Gm-Message-State: AOAM530LAKPOmVLoc1jWZJ7NnFUxSP0xLo6528KNPgdvhk8bDgc2sS/4
+        t7LzQb2E0r0EVAqYqHvCVk1AalF1FHA=
+X-Google-Smtp-Source: ABdhPJwSQ7bGsFCDaY2a9vzgN6jb+tOqQ+1Omrqc/hNFv6/2KiyvvsPzv8rt7TaCnq8+0Hpb9Me15w==
+X-Received: by 2002:a2e:9d7:: with SMTP id 206mr4624308ljj.499.1626363393765;
+        Thu, 15 Jul 2021 08:36:33 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.googlemail.com with ESMTPSA id s5sm689535ljg.63.2021.07.15.08.36.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 08:36:32 -0700 (PDT)
+Subject: Re: [PATCH v3 02/12] dt-bindings: phy: tegra20-usb-phy: Document
+ properties needed for OTG mode
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210704225433.32029-1-digetx@gmail.com>
+ <20210704225433.32029-3-digetx@gmail.com>
+ <20210712154139.GB1980362@robh.at.kernel.org>
+ <8fe56e89-9e1e-f5e2-5a47-242b5b3d085a@gmail.com>
+ <20210714231000.GB3697673@robh.at.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <73e1e3a2-c2dd-364b-7829-84e66b114909@gmail.com>
+Date:   Thu, 15 Jul 2021 18:36:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0fa2e9e65da4f58893386279ce914c1@intel.com>
+In-Reply-To: <20210714231000.GB3697673@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021, Luck, Tony wrote:
-> > I've no objection to tracking the type for SGX2, my argument in the context of
-> > #MC support is that there should be no need to track the type.  Either the #MC
-> > is recoverable or it isn't, and the enclave is toast regardless of what type of
-> > page hit the #MC.
+15.07.2021 02:10, Rob Herring пишет:
+> On Tue, Jul 13, 2021 at 02:33:11AM +0300, Dmitry Osipenko wrote:
+>> 12.07.2021 18:41, Rob Herring пишет:
+>>>> +  nvidia,pmc:
+>>>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>>>> +    description:
+>>>> +      Phandle to Power Management controller.
+>>>> +
+>>> Add a cell to this for the PHY reg offset and then get rid of the index:
+>>>
+>>>> +  nvidia,phy-instance:
+>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>>> +    minimum: 0
+>>>> +    maximum: 2
+>>>> +    description: Unique hardware ID.
+>>
+>> The instance ID belongs to the USB h/w and not to PMC. It may look like
+>> I added the ID just to get offsets within PMC, but it's not like that.
+>> The Tegra documentation explicitly assigns unique IDs to the USB
+>> controllers and PHYs. Hence this ID should be the property of the PHY
+>> hardware, IMO.
 > 
-> I'll separate the "phase" from the "type".
+> It looks like the use is calculating register offsets in a PMC register. 
+> That's quite common and including that with the phandle is the preferred 
+> way to describe it.
 > 
-> Here phase is used for the life-cycle of EPC pages:
-> 
-> DIRTY -> FREE -> IN-USE -> DIRTY
+> Lots of docs have UART1, UART2, UART3, etc. module numbering. We don't 
+> copy that into DT.
 
-Not that it affects anything, but that's not quite true.  In hardware, pages are
-either FREE or IN-USE, there is no concept of DIRTY.  DIRTY is the kernel's
-arbitrary description of a page that has not been sanitized and so is considered
-to be in an unknown state, i.e. the kernel doesn't know if it's FREE or IN-USE.
-
-Once a page is sanitized (during boot), its state is known and the page is never
-put back on the so called dirty list, i.e. the software flow is:
-
-  DIRTY -> FREE -> IN-USE -> FREE
-
-> Errors can be reported by memory controller page scrubbers for pages that are
-> not "IN-USE" ... and the recovery action is just to make sure that they are
-> never allocated.
->
-> When a page is IN-USE ... it has a "type". I currently only have a way to
-> inject errors into SGX_PAGE_TYPE_REG pages. That means initial recovery code
-> is going to focus on those since that is all I can test. But I'll try not to
-> special case them as far as possible.
-
-Inability to test expected behavior doesn't mean we shouldn't implement towards
-the expected behavior, i.e. someone somewhere must know how SECS and VA pages
-behave in response to a memory error.
+Alright. Judging by downstream code, we will need to use that ID only
+for PMC offsets.
