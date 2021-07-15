@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF6B3CA64B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27A53CA882
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238544AbhGOSrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:47:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47278 "EHLO mail.kernel.org"
+        id S242016AbhGOTBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:01:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237961AbhGOSqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:46:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BB51613D0;
-        Thu, 15 Jul 2021 18:43:18 +0000 (UTC)
+        id S240342AbhGOSx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:53:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BCF6613CC;
+        Thu, 15 Jul 2021 18:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374598;
-        bh=E2/m5cM8J69TE9N7Y8y44WbVkguPRAXBsQegEdrshX4=;
+        s=korg; t=1626375062;
+        bh=ntoSeY1may51ety/atua3izw2+UANxCK4CoOIwGTNRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ka/RqhCN+sGNuydwmDYa2rGp6MneKnuOt9779ZRz+AGIugwC/93zXGMe7ROmDByJO
-         gOGUSXKhxGnb9O1jv55JRzCpZkUX298fiDe7IdhCT3voqtA9HtXmdDRfhlrUxk2OVo
-         fWtQx6TaXqse3VAukOQGimpT0/fnDBipJA8Dftjk=
+        b=0Uf8J9jJpxQ9ICepmaznyxkVeTiDaXFhHrvTca+S2jySp04WuAbhlvZ/NJOZXWI0J
+         4I8RQjYcMkFxP49+GN8MJL86bqZXY19CNeHC9E+ONGHT1Nzo4A01pZW/V8O+suHj6w
+         WU8coyBWNFaOAPfp8STAxOp9JapkfcdO0ILo7HPc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miao-chen Chou <mcchou@chromium.org>,
-        Yu Liu <yudiliu@google.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 065/122] Bluetooth: Fix the HCI to MGMT status conversion table
-Date:   Thu, 15 Jul 2021 20:38:32 +0200
-Message-Id: <20210715182506.757540596@linuxfoundation.org>
+        Yejune Deng <yejune.deng@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Hanjun Guo <guohanjun@huawei.com>
+Subject: [PATCH 5.10 141/215] io_uring: simplify io_remove_personalities()
+Date:   Thu, 15 Jul 2021 20:38:33 +0200
+Message-Id: <20210715182624.489114043@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
-References: <20210715182448.393443551@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Liu <yudiliu@google.com>
+From: Yejune Deng <yejune.deng@gmail.com>
 
-[ Upstream commit 4ef36a52b0e47c80bbfd69c0cce61c7ae9f541ed ]
+commit 0bead8cd39b9c9c7c4e902018ccf129107ac50ef upstream.
 
-0x2B, 0x31 and 0x33 are reserved for future use but were not present in
-the HCI to MGMT conversion table, this caused the conversion to be
-incorrect for the HCI status code greater than 0x2A.
+The function io_remove_personalities() is very similar to
+io_unregister_personality(),so implement io_remove_personalities()
+calling io_unregister_personality().
 
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-Signed-off-by: Yu Liu <yudiliu@google.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/mgmt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/io_uring.c |   28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index db525321da1f..0ae5d3cab4dc 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -219,12 +219,15 @@ static u8 mgmt_status_table[] = {
- 	MGMT_STATUS_TIMEOUT,		/* Instant Passed */
- 	MGMT_STATUS_NOT_SUPPORTED,	/* Pairing Not Supported */
- 	MGMT_STATUS_FAILED,		/* Transaction Collision */
-+	MGMT_STATUS_FAILED,		/* Reserved for future use */
- 	MGMT_STATUS_INVALID_PARAMS,	/* Unacceptable Parameter */
- 	MGMT_STATUS_REJECTED,		/* QoS Rejected */
- 	MGMT_STATUS_NOT_SUPPORTED,	/* Classification Not Supported */
- 	MGMT_STATUS_REJECTED,		/* Insufficient Security */
- 	MGMT_STATUS_INVALID_PARAMS,	/* Parameter Out Of Range */
-+	MGMT_STATUS_FAILED,		/* Reserved for future use */
- 	MGMT_STATUS_BUSY,		/* Role Switch Pending */
-+	MGMT_STATUS_FAILED,		/* Reserved for future use */
- 	MGMT_STATUS_FAILED,		/* Slot Violation */
- 	MGMT_STATUS_FAILED,		/* Role Switch Failed */
- 	MGMT_STATUS_INVALID_PARAMS,	/* EIR Too Large */
--- 
-2.30.2
-
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -8505,9 +8505,8 @@ static int io_uring_fasync(int fd, struc
+ 	return fasync_helper(fd, file, on, &ctx->cq_fasync);
+ }
+ 
+-static int io_remove_personalities(int id, void *p, void *data)
++static int io_unregister_personality(struct io_ring_ctx *ctx, unsigned id)
+ {
+-	struct io_ring_ctx *ctx = data;
+ 	struct io_identity *iod;
+ 
+ 	iod = idr_remove(&ctx->personality_idr, id);
+@@ -8515,7 +8514,17 @@ static int io_remove_personalities(int i
+ 		put_cred(iod->creds);
+ 		if (refcount_dec_and_test(&iod->count))
+ 			kfree(iod);
++		return 0;
+ 	}
++
++	return -EINVAL;
++}
++
++static int io_remove_personalities(int id, void *p, void *data)
++{
++	struct io_ring_ctx *ctx = data;
++
++	io_unregister_personality(ctx, id);
+ 	return 0;
+ }
+ 
+@@ -9606,21 +9615,6 @@ static int io_register_personality(struc
+ 	return ret;
+ }
+ 
+-static int io_unregister_personality(struct io_ring_ctx *ctx, unsigned id)
+-{
+-	struct io_identity *iod;
+-
+-	iod = idr_remove(&ctx->personality_idr, id);
+-	if (iod) {
+-		put_cred(iod->creds);
+-		if (refcount_dec_and_test(&iod->count))
+-			kfree(iod);
+-		return 0;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
+ 				    unsigned int nr_args)
+ {
 
 
