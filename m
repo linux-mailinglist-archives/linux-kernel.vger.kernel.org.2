@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092B83CAC14
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D143CAC0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343629AbhGOT3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:29:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46402 "EHLO mail.kernel.org"
+        id S244495AbhGOT27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:28:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243231AbhGOTJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:09:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E0D5613D7;
-        Thu, 15 Jul 2021 19:05:20 +0000 (UTC)
+        id S243285AbhGOTJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4224B6140F;
+        Thu, 15 Jul 2021 19:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375921;
-        bh=6NQfrjTCwGu0yI8QS3j8OxGNtiY/MRKl+J+5wzAbrTY=;
+        s=korg; t=1626375925;
+        bh=BLKhPJn70wKsp1Y9XlgYKucJA7iNKkDdhIwj+zGU1UQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2FieDg1vXIex628MO3W7n0BceyjFLU/oi/r9n/SBKYliX+gplXpYiPIpo1F96zIRg
-         lxTHhQB0BkKxP8TI7sQyugcGrEwBbGmOF91bv3yuBd4s5BGlCXekJq/Fd/jDFNqPl1
-         EJUrc+SyjapsRxZ3MiiMJje5/CJPzIOJ+l33lWpY=
+        b=uQpS30VIRXk7zPD56K70fodUM63Wtqp0Ro1fwOwjCzKq4XBjXSpaXFXizl/2m1u+4
+         IadCc0UKQThH8sktyp1epsQxduA6Ha52rCMEiq+uH9Zw4QnDC0PZfUjP6Slx4+oTtC
+         ojEeT5LroiGj0B5BmGMNG3Yo8u9ZzDu9TP1J81KE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 050/266] net: stmmac: the XPCS obscures a potential "PHY not found" error
-Date:   Thu, 15 Jul 2021 20:36:45 +0200
-Message-Id: <20210715182623.009946906@linuxfoundation.org>
+Subject: [PATCH 5.13 052/266] drm/tegra: hub: Fix YUV support
+Date:   Thu, 15 Jul 2021 20:36:47 +0200
+Message-Id: <20210715182623.378511582@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -40,99 +39,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Thierry Reding <treding@nvidia.com>
 
-[ Upstream commit 4751d2aa321f2828d8c5d2f7ce4ed18a01e47f46 ]
+[ Upstream commit e16efff4e5f490ce34a8c60d9ae7297dca5eb616 ]
 
-stmmac_mdio_register() has logic to search for PHYs on the MDIO bus and
-assign them IRQ lines, as well as to set priv->plat->phy_addr.
+The driver currently exposes several YUV formats but fails to properly
+program all the registers needed to display such formats. Add the right
+programming sequences so that overlay windows can be used to accelerate
+color format conversions in multimedia playback use-cases.
 
-If no PHY is found, the "found" variable remains set to 0 and the
-function errors out.
-
-After the introduction of commit f213bbe8a9d6 ("net: stmmac: Integrate
-it with DesignWare XPCS"), the "found" variable was immediately reused
-for searching for a PCS on the same MDIO bus.
-
-This can result in 2 types of potential problems (none of them seems to
-be seen on the only Intel system that sets has_xpcs = true, otherwise it
-would have been reported):
-
-1. If a PCS is found but a PHY is not, then the code happily exits with
-   no error. One might say "yes, but this is not possible, because
-   of_mdiobus_register will probe a PHY for all MDIO addresses,
-   including for the XPCS, so if an XPCS exists, then a PHY certainly
-   exists too". Well, that is not true, see intel_mgbe_common_data():
-
-	/* Ensure mdio bus scan skips intel serdes and pcs-xpcs */
-	plat->mdio_bus_data->phy_mask = 1 << INTEL_MGBE_ADHOC_ADDR;
-	plat->mdio_bus_data->phy_mask |= 1 << INTEL_MGBE_XPCS_ADDR;
-
-2. A PHY is found but an MDIO device with the XPCS PHY ID isn't, and in
-   that case, the error message will be "No PHY found". Confusing.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Link: https://lore.kernel.org/r/20210527155959.3270478-1-olteanv@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_mdio.c | 21 +++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/tegra/dc.c    |  2 +-
+ drivers/gpu/drm/tegra/dc.h    |  7 +++++
+ drivers/gpu/drm/tegra/hub.c   | 52 +++++++++++++++++++++++++++++++----
+ drivers/gpu/drm/tegra/plane.c | 23 ++++++++++++++--
+ drivers/gpu/drm/tegra/plane.h |  3 +-
+ 5 files changed, 78 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-index b750074f8f9c..e293bf1ce9f3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-@@ -503,6 +503,12 @@ int stmmac_mdio_register(struct net_device *ndev)
- 		found = 1;
+diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+index f9120dc24682..c5ea88a686d1 100644
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -348,7 +348,7 @@ static void tegra_dc_setup_window(struct tegra_plane *plane,
+ 	 * For YUV planar modes, the number of bytes per pixel takes into
+ 	 * account only the luma component and therefore is 1.
+ 	 */
+-	yuv = tegra_plane_format_is_yuv(window->format, &planar);
++	yuv = tegra_plane_format_is_yuv(window->format, &planar, NULL);
+ 	if (!yuv)
+ 		bpp = window->bits_per_pixel / 8;
+ 	else
+diff --git a/drivers/gpu/drm/tegra/dc.h b/drivers/gpu/drm/tegra/dc.h
+index 29f19c3c6149..455c3fdef8dc 100644
+--- a/drivers/gpu/drm/tegra/dc.h
++++ b/drivers/gpu/drm/tegra/dc.h
+@@ -696,6 +696,9 @@ int tegra_dc_rgb_exit(struct tegra_dc *dc);
+ 
+ #define DC_WINBUF_START_ADDR_HI			0x80d
+ 
++#define DC_WINBUF_START_ADDR_HI_U		0x80f
++#define DC_WINBUF_START_ADDR_HI_V		0x811
++
+ #define DC_WINBUF_CDE_CONTROL			0x82f
+ #define  ENABLE_SURFACE (1 << 0)
+ 
+@@ -720,6 +723,10 @@ int tegra_dc_rgb_exit(struct tegra_dc *dc);
+ #define DC_WIN_PLANAR_STORAGE			0x709
+ #define PITCH(x) (((x) >> 6) & 0x1fff)
+ 
++#define DC_WIN_PLANAR_STORAGE_UV		0x70a
++#define  PITCH_U(x) ((((x) >> 6) & 0x1fff) <<  0)
++#define  PITCH_V(x) ((((x) >> 6) & 0x1fff) << 16)
++
+ #define DC_WIN_SET_PARAMS			0x70d
+ #define  CLAMP_BEFORE_BLEND (1 << 15)
+ #define  DEGAMMA_NONE (0 << 13)
+diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
+index bfae8a02f55b..94e1ccfb6235 100644
+--- a/drivers/gpu/drm/tegra/hub.c
++++ b/drivers/gpu/drm/tegra/hub.c
+@@ -454,7 +454,9 @@ static void tegra_shared_plane_atomic_update(struct drm_plane *plane,
+ 	unsigned int zpos = new_state->normalized_zpos;
+ 	struct drm_framebuffer *fb = new_state->fb;
+ 	struct tegra_plane *p = to_tegra_plane(plane);
+-	dma_addr_t base;
++	dma_addr_t base, addr_flag = 0;
++	unsigned int bpc;
++	bool yuv, planar;
+ 	u32 value;
+ 	int err;
+ 
+@@ -473,6 +475,8 @@ static void tegra_shared_plane_atomic_update(struct drm_plane *plane,
+ 		return;
  	}
  
-+	if (!found && !mdio_node) {
-+		dev_warn(dev, "No PHY found\n");
-+		err = -ENODEV;
-+		goto no_phy_found;
++	yuv = tegra_plane_format_is_yuv(tegra_plane_state->format, &planar, &bpc);
++
+ 	tegra_dc_assign_shared_plane(dc, p);
+ 
+ 	tegra_plane_writel(p, VCOUNTER, DC_WIN_CORE_ACT_CONTROL);
+@@ -501,8 +505,6 @@ static void tegra_shared_plane_atomic_update(struct drm_plane *plane,
+ 	/* disable compression */
+ 	tegra_plane_writel(p, 0, DC_WINBUF_CDE_CONTROL);
+ 
+-	base = tegra_plane_state->iova[0] + fb->offsets[0];
+-
+ #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+ 	/*
+ 	 * Physical address bit 39 in Tegra194 is used as a switch for special
+@@ -510,9 +512,12 @@ static void tegra_shared_plane_atomic_update(struct drm_plane *plane,
+ 	 * dGPU sector layout.
+ 	 */
+ 	if (tegra_plane_state->tiling.sector_layout == TEGRA_BO_SECTOR_LAYOUT_GPU)
+-		base |= BIT_ULL(39);
++		addr_flag = BIT_ULL(39);
+ #endif
+ 
++	base = tegra_plane_state->iova[0] + fb->offsets[0];
++	base |= addr_flag;
++
+ 	tegra_plane_writel(p, tegra_plane_state->format, DC_WIN_COLOR_DEPTH);
+ 	tegra_plane_writel(p, 0, DC_WIN_PRECOMP_WGRP_PARAMS);
+ 
+@@ -535,7 +540,44 @@ static void tegra_shared_plane_atomic_update(struct drm_plane *plane,
+ 	value = PITCH(fb->pitches[0]);
+ 	tegra_plane_writel(p, value, DC_WIN_PLANAR_STORAGE);
+ 
+-	value = CLAMP_BEFORE_BLEND | DEGAMMA_SRGB | INPUT_RANGE_FULL;
++	if (yuv && planar) {
++		base = tegra_plane_state->iova[1] + fb->offsets[1];
++		base |= addr_flag;
++
++		tegra_plane_writel(p, upper_32_bits(base), DC_WINBUF_START_ADDR_HI_U);
++		tegra_plane_writel(p, lower_32_bits(base), DC_WINBUF_START_ADDR_U);
++
++		base = tegra_plane_state->iova[2] + fb->offsets[2];
++		base |= addr_flag;
++
++		tegra_plane_writel(p, upper_32_bits(base), DC_WINBUF_START_ADDR_HI_V);
++		tegra_plane_writel(p, lower_32_bits(base), DC_WINBUF_START_ADDR_V);
++
++		value = PITCH_U(fb->pitches[2]) | PITCH_V(fb->pitches[2]);
++		tegra_plane_writel(p, value, DC_WIN_PLANAR_STORAGE_UV);
++	} else {
++		tegra_plane_writel(p, 0, DC_WINBUF_START_ADDR_U);
++		tegra_plane_writel(p, 0, DC_WINBUF_START_ADDR_HI_U);
++		tegra_plane_writel(p, 0, DC_WINBUF_START_ADDR_V);
++		tegra_plane_writel(p, 0, DC_WINBUF_START_ADDR_HI_V);
++		tegra_plane_writel(p, 0, DC_WIN_PLANAR_STORAGE_UV);
 +	}
 +
- 	/* Try to probe the XPCS by scanning all addresses. */
- 	if (priv->hw->xpcs) {
- 		struct mdio_xpcs_args *xpcs = &priv->hw->xpcs_args;
-@@ -511,6 +517,7 @@ int stmmac_mdio_register(struct net_device *ndev)
++	value = CLAMP_BEFORE_BLEND | INPUT_RANGE_FULL;
++
++	if (yuv) {
++		if (bpc < 12)
++			value |= DEGAMMA_YUV8_10;
++		else
++			value |= DEGAMMA_YUV12;
++
++		/* XXX parameterize */
++		value |= COLOR_SPACE_YUV_2020;
++	} else {
++		if (!tegra_plane_format_is_indexed(tegra_plane_state->format))
++			value |= DEGAMMA_SRGB;
++	}
++
+ 	tegra_plane_writel(p, value, DC_WIN_SET_PARAMS);
  
- 		xpcs->bus = new_bus;
+ 	value = OFFSET_X(new_state->src_y >> 16) |
+diff --git a/drivers/gpu/drm/tegra/plane.c b/drivers/gpu/drm/tegra/plane.c
+index 2e11b4b1f702..2e65b4075ce6 100644
+--- a/drivers/gpu/drm/tegra/plane.c
++++ b/drivers/gpu/drm/tegra/plane.c
+@@ -375,7 +375,20 @@ int tegra_plane_format(u32 fourcc, u32 *format, u32 *swap)
+ 	return 0;
+ }
  
-+		found = 0;
- 		for (addr = 0; addr < max_addr; addr++) {
- 			xpcs->addr = addr;
+-bool tegra_plane_format_is_yuv(unsigned int format, bool *planar)
++bool tegra_plane_format_is_indexed(unsigned int format)
++{
++	switch (format) {
++	case WIN_COLOR_DEPTH_P1:
++	case WIN_COLOR_DEPTH_P2:
++	case WIN_COLOR_DEPTH_P4:
++	case WIN_COLOR_DEPTH_P8:
++		return true;
++	}
++
++	return false;
++}
++
++bool tegra_plane_format_is_yuv(unsigned int format, bool *planar, unsigned int *bpc)
+ {
+ 	switch (format) {
+ 	case WIN_COLOR_DEPTH_YCbCr422:
+@@ -383,6 +396,9 @@ bool tegra_plane_format_is_yuv(unsigned int format, bool *planar)
+ 		if (planar)
+ 			*planar = false;
  
-@@ -520,13 +527,12 @@ int stmmac_mdio_register(struct net_device *ndev)
- 				break;
- 			}
- 		}
--	}
++		if (bpc)
++			*bpc = 8;
++
+ 		return true;
  
--	if (!found && !mdio_node) {
--		dev_warn(dev, "No PHY found\n");
--		mdiobus_unregister(new_bus);
--		mdiobus_free(new_bus);
--		return -ENODEV;
-+		if (!found && !mdio_node) {
-+			dev_warn(dev, "No XPCS found\n");
-+			err = -ENODEV;
-+			goto no_xpcs_found;
-+		}
+ 	case WIN_COLOR_DEPTH_YCbCr420P:
+@@ -396,6 +412,9 @@ bool tegra_plane_format_is_yuv(unsigned int format, bool *planar)
+ 		if (planar)
+ 			*planar = true;
+ 
++		if (bpc)
++			*bpc = 8;
++
+ 		return true;
  	}
  
- bus_register_done:
-@@ -534,6 +540,9 @@ bus_register_done:
+@@ -421,7 +440,7 @@ static bool __drm_format_has_alpha(u32 format)
+ static int tegra_plane_format_get_alpha(unsigned int opaque,
+ 					unsigned int *alpha)
+ {
+-	if (tegra_plane_format_is_yuv(opaque, NULL)) {
++	if (tegra_plane_format_is_yuv(opaque, NULL, NULL)) {
+ 		*alpha = opaque;
+ 		return 0;
+ 	}
+diff --git a/drivers/gpu/drm/tegra/plane.h b/drivers/gpu/drm/tegra/plane.h
+index c691dd79b27b..1785c1559c0c 100644
+--- a/drivers/gpu/drm/tegra/plane.h
++++ b/drivers/gpu/drm/tegra/plane.h
+@@ -74,7 +74,8 @@ int tegra_plane_state_add(struct tegra_plane *plane,
+ 			  struct drm_plane_state *state);
  
- 	return 0;
+ int tegra_plane_format(u32 fourcc, u32 *format, u32 *swap);
+-bool tegra_plane_format_is_yuv(unsigned int format, bool *planar);
++bool tegra_plane_format_is_indexed(unsigned int format);
++bool tegra_plane_format_is_yuv(unsigned int format, bool *planar, unsigned int *bpc);
+ int tegra_plane_setup_legacy_state(struct tegra_plane *tegra,
+ 				   struct tegra_plane_state *state);
  
-+no_xpcs_found:
-+no_phy_found:
-+	mdiobus_unregister(new_bus);
- bus_register_fail:
- 	mdiobus_free(new_bus);
- 	return err;
 -- 
 2.30.2
 
