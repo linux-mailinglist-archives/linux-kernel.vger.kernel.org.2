@@ -2,162 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718823C9E0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879A73C9E0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhGOL7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:59:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:51656 "EHLO foss.arm.com"
+        id S230427AbhGOL7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:59:31 -0400
+Received: from mga17.intel.com ([192.55.52.151]:25240 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230513AbhGOL7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:59:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E8D131B;
-        Thu, 15 Jul 2021 04:56:15 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D1AF13F694;
-        Thu, 15 Jul 2021 04:56:14 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        id S229500AbhGOL7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 07:59:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="190903231"
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="190903231"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 04:56:37 -0700
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="495403405"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.30.133]) ([10.255.30.133])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 04:56:34 -0700
+Subject: Re: [PATCH v3 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: [PATCH] sched/fair: Update nohz.next_balance for newly NOHZ-idle CPUs
-In-Reply-To: <CAKfTPtCKJEgm=hXkKz0pHDE2d3Bz+6wp1kkNB+P+OpzWcR1+wg@mail.gmail.com>
-References: <20210714113928.2795632-1-valentin.schneider@arm.com> <CAKfTPtCKJEgm=hXkKz0pHDE2d3Bz+6wp1kkNB+P+OpzWcR1+wg@mail.gmail.com>
-Date:   Thu, 15 Jul 2021 12:56:10 +0100
-Message-ID: <87lf67n63p.mognet@arm.com>
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210618225755.662725-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <64bf7394-ff82-86f7-7a52-ed12508276ac@intel.com>
+Date:   Thu, 15 Jul 2021 19:56:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210618225755.662725-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+On 6/19/2021 6:57 AM, Kuppuswamy Sathyanarayanan wrote:
+> Add CPU feature detection for Trusted Domain Extensions support. TDX
+> feature adds capabilities to keep guest register state and memory
+> isolated from hypervisor.
+> 
+> For TDX guest platforms, executing CPUID(eax=0x21, ecx=0) will return
+> following values in EAX, EBX, ECX and EDX.
+> 
+> EAX:  Maximum sub-leaf number:  0
+> EBX/EDX/ECX:  Vendor string:
+> 
+> EBX =  "Inte"
+> EDX =  "lTDX"
+> ECX =  "    "
+> 
+> So when above condition is true, set X86_FEATURE_TDX_GUEST feature cap
+> bit.
+> 
 
-Thanks for taking a look.
+...
 
-On 15/07/21 09:42, Vincent Guittot wrote:
-> On Wed, 14 Jul 2021 at 13:39, Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
->>
->> Consider a system with some NOHZ-idle CPUs, such that
->>
->>   nohz.idle_cpus_mask = S
->>   nohz.next_balance = T
->>
->> When a new CPU k goes NOHZ idle (nohz_balance_enter_idle()), we end up
->> with:
->>
->>   nohz.idle_cpus_mask = S \U {k}
->>   nohz.next_balance = T
->>
->> Note that the nohz.next_balance hasn't changed - it won't be updated until
->> a NOHZ balance is triggered. This is problematic if the newly NOHZ idle CPU
->> has an earlier rq.next_balance than the other NOHZ idle CPUs, IOW if:
->>
->>   cpu_rq(k).next_balance < nohz.next_balance
->>
->> In such scenarios, the existing nohz.next_balance will prevent any NOHZ
->> balance from happening, which itself will prevent nohz.next_balance from
->> being updated to this new cpu_rq(k).next_balance. Unnecessary load balance
->> delays of over 12ms caused by this were observed on an arm64 RB5 board.
->
-> How many CPUs has the arm64 RB5 ?
-
-That's an 8 CPU DynamIQ system - 4 littles, 3 bigs and one "huge". That
-should give us a regular balance_interval of 8ms, but our tests have picked
-up CPUs staying idle for >20ms when they really have stuff to pull. In this
-case balance_interval increases are involved.
-
->> @@ -10351,6 +10354,13 @@ static void nohz_balancer_kick(struct rq *rq)
->>  unlock:
->>         rcu_read_unlock();
->>  out:
->> +       /*
->> +        * Some CPUs have recently gone into NOHZ idle; kick a balance to
->> +        * collate the proper next balance interval.
->> +        */
->> +       if (!cpumask_subset(nohz.idle_cpus_mask, nohz.last_balance_mask))
->
-> I don't really like having to manipulate a cpumask just to trigger an
-> ILB and force the update of nohz.next_balance. Could we use something
-> similar to nohz.has_blocked and introduce a nohz.force_update.
-> manipulating cpumask will even be more complex if we start to have a
-> per node idle_cpus_mask like proposed here:
-> https://lore.kernel.org/lkml/20210701055323.2199175-1-npiggin@gmail.com/
->
-> Also
->
->
-> Something like below is simpler
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 44e44c235f1f..91c314f58982 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10657,6 +10657,9 @@ static void nohz_newidle_balance(struct rq *this_rq)
->         if (this_rq->avg_idle < sysctl_sched_migration_cost)
->                 return;
->
-> +       if (time_before(this_rq->next_balance, READ_ONCE(nohz.next_balance))
-> +               WRITE_ONCE(nohz.need_update, 1);
+> +static inline bool cpuid_has_tdx_guest(void)
+> +{
+> +	u32 eax, sig[3];
 > +
+> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID)
+> +		return false;
+> +
+> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[1], &sig[2]);
 
-I think we have to do this unconditionally, as we can observe the old
-nohz.next_balance while a NOHZ balance is ongoing (which will update
-nohz.next_balance without taking into account this newly idle CPU).
+As change log describes, EBX + EDX + ECX is "IntelTDX    ", not EBX + 
+ECX + EDX. So it should be
 
+	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
 
->         /* Don't need to update blocked load of idle CPUs*/
->         if (!READ_ONCE(nohz.has_blocked) ||
->             time_before(jiffies, READ_ONCE(nohz.next_blocked)))
->
->
-> Then we have to test nohz.need_update in nohz_balancer_kick()
->
+Please also correct early_cpuid_has_tdx_guest()
 
-But then, when can we safely clear this new nohz.need_update? We can't do
-it unconditionally in nohz_idle_balance() as this could race with a new CPU
-going NOHZ idle.
+> +
+> +	return !memcmp("IntelTDX    ", sig, 12);
+> +}
+> +
+> +void __init tdx_early_init(void)
+> +{
+> +	if (!cpuid_has_tdx_guest())
+> +		return;
+> +
+> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+> +
+> +	pr_info("Guest initialized\n");
+> +}
+> 
 
-Perhaps instead we could have a single nohz.needs_update_mask, the CPU is
-set in nohz_newidle_balance(), cleared when iterated over in
-_nohz_idle_balance(), and nohz_balancer_kick() can trigger an
-e.g. NOHZ_UPDATE_KICK if this new cpumask is non-empty.
-
->> +               flags |= NOHZ_STATS_KICK;
->
-> people complain that an update of blocked load is time consuming so we
-> should not kick this update unnecessarily.
-> We should introduce a new bit like NOHZ_NEXT_KICK that will only go
-> through idle cpus and update nohz.next_balance
->
-
-That sounds reasonable.
-
->> +
->>         if (flags)
->>                 kick_ilb(flags);
->>  }
->> @@ -10487,6 +10497,7 @@ static bool update_nohz_stats(struct rq *rq)
->>  static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->>                                enum cpu_idle_type idle)
->>  {
->> +       struct cpumask *cpus = this_cpu_cpumask_var_ptr(nohz_balance_mask);
->>         /* Earliest time when we have to do rebalance again */
->>         unsigned long now = jiffies;
->>         unsigned long next_balance = now + 60*HZ;
->> @@ -10518,7 +10529,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->>          * Start with the next CPU after this_cpu so we will end with this_cpu and let a
->>          * chance for other idle cpu to pull load.
->>          */
->> -       for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1) {
->> +       cpumask_copy(cpus, nohz.idle_cpus_mask);
->
-> we are not sure to go through all idle cpus and ilb can abort
->
-
-Right, this is missing something to re-kick an update, but I think we can
-get rid of that entirely...
