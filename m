@@ -2,111 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EAB3CA201
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4269C3CA204
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhGOQNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhGOQNG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:13:06 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF82C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:10:12 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id e11so4184655oii.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:10:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6c3zyMYOnu8f5V0VEW0ba+C0gb8GX+p+9qHajQ6vagk=;
-        b=ky2omVb78fdTIgHSoV6mfHrwbcyGxVRmdbWzk6MLrtzpjB+9YIZzxHelwVAd3LKV+Q
-         UFfn8+ds8zYXDUtMiGqgx84L44tIlAoRVa+N5bFrVFkWHb75GKPrhJ4j8FuZ7lfPnKOH
-         +pg0qcn15QrD/RSLV4aTO1lDeB0xnh/5ly3iKrn/mRauK97lweuJU1NKYaygj+qSpn4P
-         nFMMlBRguz6x3SapXagwLr4hg4RS+OFC0uGStRO3oCLY6ybHJ2Hlk04guFvmj7UDN1av
-         bhMM5oKTtP47NEZGDVj5rgKq+9RbecBcmQMnTknECHpOxLIagKTGkInBHvzAIK1G6Kow
-         QbKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6c3zyMYOnu8f5V0VEW0ba+C0gb8GX+p+9qHajQ6vagk=;
-        b=PnPJgptLSBORD+ESAGZeN+V1ygQ/6ApjdI+cbJvN95+8dFri7AkqQfV8y99pciGveE
-         ngTvjM4n6+2mV5D8cOyaQL7u/nUzQb6y4C4NwJjl1psT5wrOr6og9y+iebl0mhAyxyXc
-         Drwtw4aUfr7QPuzFcXAkynbgE7qyADHhFvb3bFX9BNiXJODj+CMNgeobBRGG1sAupPuD
-         2dJshBAvzZbuh99giYfafD3o8kIkLAe/dNfXt+KMgVo9sFiS+vHHLGcUcVnr7zhZl0zu
-         JX0JgAD6pNJBBBP8sjiqJjPobf0LOnVFPgHekv6cnjsvl+cQbQJx2T6UAF8ORnI59dkN
-         NcCg==
-X-Gm-Message-State: AOAM530vfFO1sVPasj3zPv3yQ3lI9bXbIudF2uthKx+5oStYuKaGS2dX
-        AScte7Sfo6Dt0O9OXb8+Xl3i04jZL8zEmN3LDp4=
-X-Google-Smtp-Source: ABdhPJzEq72ZaeVqWHRV9xBl988kk8YBBxczyWyRPiiSGDCmqJSum/5U8fkHz6YIoJumevbUrAXhI5T4FOdLnqOhd9c=
-X-Received: by 2002:aca:ac15:: with SMTP id v21mr8249953oie.5.1626365411814;
- Thu, 15 Jul 2021 09:10:11 -0700 (PDT)
+        id S229790AbhGOQOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:14:08 -0400
+Received: from mail-bn8nam08on2123.outbound.protection.outlook.com ([40.107.100.123]:49568
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229516AbhGOQOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 12:14:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QUdg5MtUehNkdWKO/4R6p1PhScWEK+oD+jFa0VT5b5NzqQ03fvew26pAi6pIeq+5FYItaU3tmDBWxyhbPCF6xbE6ziBgHr5azU1/TlpEEKsl29z0OopcadBcyzh/vXiStN6poHVHshOTTl5IJAAYf3Otv0pPt++HddFVw/uPlbGCmjOe18/8xjKpVDPbnxdfdZFvGbShwCpHs2zD6elrd675s1kfOA2XoLKACXvaLl3fXFy7Hv94E92zISow3KDm7jARji5CRMH1MhroMRK/47krG3+KP8zdwa/fxb4OvWQCyJQPflYaBKcFHgBDUlmVdC+C1yUzf6mH6iVMNN1+Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r+gERb1rI1vVCDfgcls/bdODMTqJ8io0gTsoyrGl7Os=;
+ b=GRpsb91GfX1ZzNohRWYRZ1SUWoWx7XF25On24RxNWeYHnLeaD0CzDS4zrrD8lgP4w6M2Xpbebn39ewoIf2yeCB2QC45GrvUiok6jGGdBqDX/hGRJCnAdhnLKK+mjtv2Rikp+Ubaih6l91Z7qZmQlGW5d9vovLVL38YhCtJcqnk3Bet0ZevjK9NeJZFfDJCK3ymGNa0LPjrwxA8kJr5HDOdXUCL6CShSoywu1Vb/wt5ZDc7DgqCBQzqCQ+AqZE7faGvHevY+e16xiE/i4NT9mrZhZsTvv1QeuQ2sjpiJdF3GPFwhVBbJysX6QGdCS1fC8leY3dimlD9ctuNVj9gIuag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r+gERb1rI1vVCDfgcls/bdODMTqJ8io0gTsoyrGl7Os=;
+ b=hEUgEWlo0BJKbXm1d6h7DR54ArHcXHSlmEmtOmgrrm/IS1WkSBR4Q8ptggoVfd7xSbNEiHD/8XRIGGRdbWNr0tNbbghCUB+T29iNHMH3NlAhL23A3tANWrPEq1eF3gwe33T6rV1HrquCQ6vElAxhg1/jf1uzRIKIaxwPUIgUR+s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from DM6PR21MB1340.namprd21.prod.outlook.com (2603:10b6:5:175::19)
+ by DM5PR2101MB1029.namprd21.prod.outlook.com (2603:10b6:4:9e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.8; Thu, 15 Jul
+ 2021 16:11:11 +0000
+Received: from DM6PR21MB1340.namprd21.prod.outlook.com
+ ([fe80::7840:718a:c75:9760]) by DM6PR21MB1340.namprd21.prod.outlook.com
+ ([fe80::7840:718a:c75:9760%8]) with mapi id 15.20.4352.012; Thu, 15 Jul 2021
+ 16:11:11 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     linux-hyperv@vger.kernel.org
+Cc:     haiyangz@microsoft.com, kys@microsoft.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH hyperv-fixes] Drivers: hv: vmbus: Fix duplicate CPU assignments within a device
+Date:   Thu, 15 Jul 2021 09:10:42 -0700
+Message-Id: <1626365442-28869-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MWHPR22CA0007.namprd22.prod.outlook.com
+ (2603:10b6:300:ef::17) To DM6PR21MB1340.namprd21.prod.outlook.com
+ (2603:10b6:5:175::19)
 MIME-Version: 1.0
-References: <20210714080652.113381-1-liviu@dudau.co.uk>
-In-Reply-To: <20210714080652.113381-1-liviu@dudau.co.uk>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 15 Jul 2021 12:10:01 -0400
-Message-ID: <CADnq5_OA-em2jM-vmwaM7xxycOS-18EPC0r_myb7REy9b4h_vA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Fix 10bit 4K display on CIK GPUs
-To:     Liviu Dudau <liviu@dudau.co.uk>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Mario Kleiner <mario.kleiner.de@gmail.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (13.77.154.182) by MWHPR22CA0007.namprd22.prod.outlook.com (2603:10b6:300:ef::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 16:11:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 87d7bd80-4c2c-4cd3-e67d-08d947ab2959
+X-MS-TrafficTypeDiagnostic: DM5PR2101MB1029:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR2101MB10290398890A76C43C6850EFAC129@DM5PR2101MB1029.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0xjrtoV9OV7VuSdal20sO48uXbKMFEhDbhaEfMLqbFtXtRgemPkYYVeS6EAoVInCWvmy1lLmhKHB78l4+tzbEn94FUqFEwx8WzUAaVwtwXNQs2wjPDGnbVD3wLkzvuRUPoSmFuDYZcOpXcs7ctmNBG8GxGI0Q988BUsyw6+c4tmhyhVocEuSZk3KbX9ifYjlGHEfhU8ldjVOx31iUZbhyr3WCyVn6qxnOQqH6pwVFUzsr9DUV6h4uW5gsMku1jyC3Oy59d3wpyi5JjFuwIubm4EAEvECKIhY4Ja5RGSP128z/J9CueGM28XEE1xZG2meP0J27ajjcJF8MqteIIDNg4+LQ2J3OypGByoDlh4fjVIGmgrLYwLqHqrJ3oJ0BqrrhLW4CQFraIemkKuuKwhd7ZPrh7dQiqHB8Xn0/GaJSTEM6NCMfgMC7xDOg5cJdGhu1qA5LFCdI77ZtXbXRpe9mSwIEMQJ8CQNeINPjj97OYx1+kwhdTlb2fkoosUNFHnJmpJZuIvnm/+bIzU1E9Q44aYS8aspqT0cbB2flWJ+bPtS2ReWVs4zNFkTKTnQIY0ZyDmWwmJKQQFfxvBSQq127I4Uzp8GaX/CHJ6ek92W5outaQ609CB6Y0QI3GaCxBrWU5oFTo99szDGKhWfK6XaMW836WJc4dM/sb2OewopG48ebW2yf6rqSAtzWGb300UVWQkcE/1Rhv4J/RPKxT5Lmw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1340.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(478600001)(82950400001)(316002)(10290500003)(82960400001)(36756003)(83380400001)(6916009)(8676002)(5660300002)(26005)(186003)(38350700002)(7846003)(6506007)(38100700002)(8936002)(450100002)(52116002)(4326008)(66946007)(6486002)(2616005)(66476007)(66556008)(6512007)(2906002)(956004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CXL2lAGcddE53MrkY8R79RWjKySR+RxufiWWo9qQh0fpbYe3n/gbQstrIlhB?=
+ =?us-ascii?Q?5ADA3Aqx1G7KDlOXZS60ZvmQsAT0KNRJw8relr2cRJ4lJpLCV98EqzigWf5t?=
+ =?us-ascii?Q?2AuqLJBx1VyWMMZPP2d5oDHS2H7I38NnrhDefcTz5QuR6p4IysgAysKrRI43?=
+ =?us-ascii?Q?e5GDWBVntXj+ZKLA2q0+E/udQNiin/4RATQs1jCJheQUDv2IKUJzilk+IXF3?=
+ =?us-ascii?Q?9m0zFWq219Kd37hSKHNdBKl8p/ZieK9mFXBqHP7B4DqRCXkeHEym7uiX7fOC?=
+ =?us-ascii?Q?/VvjuQtcqCWJqmZNd+gnVlNUIBzCSsKSDVxhC99FBVOlRpsrZrnMChiD6u5p?=
+ =?us-ascii?Q?SWgeWEUrQd3G6jnuTuDZcEyrbS5eK0Lk6CRJaBJcQS9YMIJA5mWxaUKoCEiD?=
+ =?us-ascii?Q?cef9ly/3bMTIkNcly0TYkkMRrNX487ek9OJHThJrlJc/L9FWzHy194Ui2qXJ?=
+ =?us-ascii?Q?OzHJwLAahLujH7Uvn41mTCj7FmNZEOTGOAwSQ7sAJGIG9kpIU/Mmx1Q/NLzW?=
+ =?us-ascii?Q?gUvByd8OsM6RdNfMDe4xsT+srK5CJ9NGKdPNfyYIZYE0d9QB7CQ3lq4tWMly?=
+ =?us-ascii?Q?4vvFmof3ZY93qG1MSbY8igjccRY3nrHTD6pJldD3eMcE7o53piVLNoJtFHLW?=
+ =?us-ascii?Q?M+xw7IRsT02YFfuwPF+3TJxJWFW4eVYGAT13BVlIkfnI1ym2oDeOJP6VYweR?=
+ =?us-ascii?Q?1eRmhnvBb0N//A/tpk/2vPhcpH6x3OJuwFE++rvpaZduf8bZ1rv71i+p2t4u?=
+ =?us-ascii?Q?RRYA63hkY17DuXcnGvpNo57nNbpKzjZQPdXo8IeHCLrf3PCB2QMGuuGtAdvZ?=
+ =?us-ascii?Q?P+rQ6s2jY/B0mz3XRMXj5yGA8seWmO8lx4dzSAfgMwvwQH26uTtCRAUKzH+9?=
+ =?us-ascii?Q?e8LVTdMkQWys3c2Eo5YJ0qxj1N18YyE21k/GEV2LuMgkAsEU7HCKEnmfjF1Z?=
+ =?us-ascii?Q?gIvjQRrlB3KYy8mXyI2ChQ4wh/rR6jNkrdzQ6vdi/aKhLyVAb4OKwx/X4V9C?=
+ =?us-ascii?Q?IRoTVdVnEAWotx4dWaV/8ax/+4pbkTfD5NddPfRB0bsXvAkCHXY7iV2W0yFa?=
+ =?us-ascii?Q?wuqDZdmbLjw+Ht7B1emLWZy+0+CbaSC8wVMdMEkCr+6OssB9P4PAKclVJeko?=
+ =?us-ascii?Q?cELvWn562W/5BcZMO8cG/3bVUjg3RSuqBbTgWECx9NtEsZ11yEqa7zQTjFJw?=
+ =?us-ascii?Q?VrWmjZKwbwSz535nXsd5nDGqf6FeooUzREhMkluTEXqacseME0aIVGI6na7o?=
+ =?us-ascii?Q?xh/6xmlkNW50aChrIpunNST7mcvbjkAo1zMr5CvyR31944g87p+1U/kBFdOL?=
+ =?us-ascii?Q?fkJg3I6wY8JNJZjcsJnhBS8c?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87d7bd80-4c2c-4cd3-e67d-08d947ab2959
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1340.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 16:11:11.3878
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ax+LREacQ3LGG7OVcwvMd3N1LJy8r/hrg6v/nbt7c3h/33LoOmCe6CCp0W5PRBDKzEgQ3Rsa5pqViMrMKfjd0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR2101MB1029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 4:15 AM Liviu Dudau <liviu@dudau.co.uk> wrote:
->
-> Commit 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at
-> 30bpp for DCE-11.0.") doesn't seems to have fixed 10bit 4K rendering over
-> DisplayPort for CIK GPUs. On my machine with a HAWAII GPU I get a broken
-> image that looks like it has an effective resolution of 1920x1080 but
-> scaled up in an irregular way. Reverting the commit or applying this
-> patch fixes the problem on v5.14-rc1.
->
-> Fixes: 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at 30bpp for DCE-11.0.")
-> Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
+The vmbus module uses a rotational algorithm to assign target CPUs to
+device's channels. Depends on the timing of different device's channel
+offers, different channels of a device may be assigned to the same CPU.
 
-Harry or Mario any ideas?  Maybe we need finer grained DCE version
-checking?  I don't remember all of the caveats of this stuff.  DCE11
-and older is getting to be pretty old at this point.  I can just apply
-this if you don't have any insights.
+For example on a VM with 2 CPUs, if the NIC A and B's channels offered
+in the following order, the NIC A will have both channels on CPU0, and
+NIC B will have both channels on CPU1 -- see below. This kind of
+assignments cause RSS spreading loads among different channels ends up
+on the same CPU.
 
-Alex
+Timing of channel offers:
+NIC A channel 0
+NIC B channel 0
+NIC A channel 1
+NIC B channel 1
 
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> index a6a67244a322e..1596f6b7fed7c 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-> @@ -1062,7 +1062,7 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
->          * so use only 30 bpp on DCE_VERSION_11_0. Testing with DCE 11.2 and 8.3
->          * did not show such problems, so this seems to be the exception.
->          */
-> -       if (plane_state->ctx->dce_version != DCE_VERSION_11_0)
-> +       if (plane_state->ctx->dce_version > DCE_VERSION_11_0)
->                 pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_36BPP;
->         else
->                 pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_30BPP;
-> --
-> 2.32.0
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+VMBUS ID 14: Class_ID = {f8615163-df3e-46c5-913f-f2d2f965ed0e} - Synthetic network adapter
+        Device_ID = {cab064cd-1f31-47d5-a8b4-9d57e320cccd}
+        Sysfs path: /sys/bus/vmbus/devices/cab064cd-1f31-47d5-a8b4-9d57e320cccd
+        Rel_ID=14, target_cpu=0
+        Rel_ID=17, target_cpu=0
+
+VMBUS ID 16: Class_ID = {f8615163-df3e-46c5-913f-f2d2f965ed0e} - Synthetic network adapter
+        Device_ID = {244225ca-743e-4020-a17d-d7baa13d6cea}
+        Sysfs path: /sys/bus/vmbus/devices/244225ca-743e-4020-a17d-d7baa13d6cea
+        Rel_ID=16, target_cpu=1
+        Rel_ID=18, target_cpu=1
+
+
+Update the vmbus' CPU assignment algorithm to avoid duplicate CPU
+assignments within a device.
+
+The new algorithm iterates 2 * #NUMA_Node + 1 times. In the first
+round of checking all NUMA nodes, it tries to find previously unassigned
+CPUs by this and other devices. If not available, it clears the
+allocated CPU mask.
+In the second round, it tries to find unassigned CPUs by the same
+device.
+In the last iteration, it assigns the channel to the first available CPU.
+This is not normally expected, because during device probe, we limit the
+number of channels of a device to be <= number of online CPUs.
+
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+
+---
+ drivers/hv/channel_mgmt.c | 95 ++++++++++++++++++++++++++-------------
+ 1 file changed, 65 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+index caf6d0c4bc1b..fbddc4954f57 100644
+--- a/drivers/hv/channel_mgmt.c
++++ b/drivers/hv/channel_mgmt.c
+@@ -605,6 +605,17 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
+ 	 */
+ 	mutex_lock(&vmbus_connection.channel_mutex);
+ 
++	list_for_each_entry(channel, &vmbus_connection.chn_list, listentry) {
++		if (guid_equal(&channel->offermsg.offer.if_type,
++			       &newchannel->offermsg.offer.if_type) &&
++		    guid_equal(&channel->offermsg.offer.if_instance,
++			       &newchannel->offermsg.offer.if_instance)) {
++			fnew = false;
++			newchannel->primary_channel = channel;
++			break;
++		}
++	}
++
+ 	init_vp_index(newchannel);
+ 
+ 	/* Remember the channels that should be cleaned up upon suspend. */
+@@ -617,16 +628,6 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
+ 	 */
+ 	atomic_dec(&vmbus_connection.offer_in_progress);
+ 
+-	list_for_each_entry(channel, &vmbus_connection.chn_list, listentry) {
+-		if (guid_equal(&channel->offermsg.offer.if_type,
+-			       &newchannel->offermsg.offer.if_type) &&
+-		    guid_equal(&channel->offermsg.offer.if_instance,
+-			       &newchannel->offermsg.offer.if_instance)) {
+-			fnew = false;
+-			break;
+-		}
+-	}
+-
+ 	if (fnew) {
+ 		list_add_tail(&newchannel->listentry,
+ 			      &vmbus_connection.chn_list);
+@@ -647,7 +648,6 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
+ 		/*
+ 		 * Process the sub-channel.
+ 		 */
+-		newchannel->primary_channel = channel;
+ 		list_add_tail(&newchannel->sc_list, &channel->sc_list);
+ 	}
+ 
+@@ -683,6 +683,29 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
+ 	queue_work(wq, &newchannel->add_channel_work);
+ }
+ 
++/*
++ * Clear CPUs used by other channels of the same device.
++ * It's should only be called by init_vp_index().
++ */
++static bool hv_clear_usedcpu(struct cpumask *cmask, struct vmbus_channel *chn)
++{
++	struct vmbus_channel *primary = chn->primary_channel;
++	struct vmbus_channel *sc;
++
++	lockdep_assert_held(&vmbus_connection.channel_mutex);
++
++	if (!primary)
++		return !cpumask_empty(cmask);
++
++	cpumask_clear_cpu(primary->target_cpu, cmask);
++
++	list_for_each_entry(sc, &primary->sc_list, sc_list)
++		if (sc != chn)
++			cpumask_clear_cpu(sc->target_cpu, cmask);
++
++	return !cpumask_empty(cmask);
++}
++
+ /*
+  * We use this state to statically distribute the channel interrupt load.
+  */
+@@ -705,7 +728,7 @@ static void init_vp_index(struct vmbus_channel *channel)
+ 	cpumask_var_t available_mask;
+ 	struct cpumask *alloced_mask;
+ 	u32 target_cpu;
+-	int numa_node;
++	int numa_node, i;
+ 
+ 	if ((vmbus_proto_version == VERSION_WS2008) ||
+ 	    (vmbus_proto_version == VERSION_WIN7) || (!perf_chn) ||
+@@ -724,29 +747,41 @@ static void init_vp_index(struct vmbus_channel *channel)
+ 		return;
+ 	}
+ 
+-	while (true) {
+-		numa_node = next_numa_node_id++;
+-		if (numa_node == nr_node_ids) {
+-			next_numa_node_id = 0;
+-			continue;
++	for (i = 1; i <= nr_node_ids * 2 + 1; i++) {
++		while (true) {
++			numa_node = next_numa_node_id++;
++			if (numa_node == nr_node_ids) {
++				next_numa_node_id = 0;
++				continue;
++			}
++			if (cpumask_empty(cpumask_of_node(numa_node)))
++				continue;
++			break;
+ 		}
+-		if (cpumask_empty(cpumask_of_node(numa_node)))
+-			continue;
+-		break;
+-	}
+-	alloced_mask = &hv_context.hv_numa_map[numa_node];
++		alloced_mask = &hv_context.hv_numa_map[numa_node];
++
++		if (cpumask_weight(alloced_mask) ==
++		    cpumask_weight(cpumask_of_node(numa_node))) {
++			/*
++			 * We have cycled through all the CPUs in the node;
++			 * reset the alloced map.
++			 */
++			cpumask_clear(alloced_mask);
++		}
++
++		cpumask_xor(available_mask, alloced_mask,
++			    cpumask_of_node(numa_node));
++
++		/* Try to avoid duplicate cpus within a device */
++		if (channel->offermsg.offer.sub_channel_index >=
++		    num_online_cpus() ||
++		    i > nr_node_ids * 2 ||
++		    hv_clear_usedcpu(available_mask, channel))
++			break;
+ 
+-	if (cpumask_weight(alloced_mask) ==
+-	    cpumask_weight(cpumask_of_node(numa_node))) {
+-		/*
+-		 * We have cycled through all the CPUs in the node;
+-		 * reset the alloced map.
+-		 */
+ 		cpumask_clear(alloced_mask);
+ 	}
+ 
+-	cpumask_xor(available_mask, alloced_mask, cpumask_of_node(numa_node));
+-
+ 	target_cpu = cpumask_first(available_mask);
+ 	cpumask_set_cpu(target_cpu, alloced_mask);
+ 
+-- 
+2.25.1
+
