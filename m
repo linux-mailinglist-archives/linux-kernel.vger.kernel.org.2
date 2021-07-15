@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B88B3CACB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50DE3CACC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344993AbhGOTmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:42:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50542 "EHLO mail.kernel.org"
+        id S1344876AbhGOToj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:44:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244738AbhGOTPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:15:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51430613D3;
-        Thu, 15 Jul 2021 19:11:13 +0000 (UTC)
+        id S244828AbhGOTPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:15:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D5DE61412;
+        Thu, 15 Jul 2021 19:11:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376273;
-        bh=PdvUE2xi/A75WZ8XqDzq1pCdWAVrTkQelS2Jm0MQPto=;
+        s=korg; t=1626376288;
+        bh=eKX49emukDMwE44pP/xuqP89fE1fH4GYou94kjiKakc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MMgC7MZdu6TKu889acLm0pAyaG+2hHEyFXj/HPWG6S0L01jnt2Q6HxSWXKQ6+62iD
-         l8Eb1EnCXZDWZoEQStdAa7Cck1IeLxNkSpOcAfE9KkuHgLp1cQnqCePpKavdM9xowO
-         ArIeBkSQ9vA4ADkAlPpXPE+Ib3yjqBrW+OdIW9i0=
+        b=jhad0xc2jlIcHPl95wVQ1UgRA/sQD6Ks5BAVpotvlp42sXg0EGRcHTy1boE4/cqCQ
+         0TWtYSWozNIP8C8AxLE2QrirGroBmwmx0KZT37m548vfvROxuRhmrt3MrDQ/qO+DHZ
+         D91UeZ6harnRKiQ7xMSOVbWF6e5Nkb60MKE4C2ts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        stable@vger.kernel.org, Hilda Wu <hildawu@realtek.com>,
         Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 164/266] Bluetooth: L2CAP: Fix invalid access on ECRED Connection response
-Date:   Thu, 15 Jul 2021 20:38:39 +0200
-Message-Id: <20210715182641.546700355@linuxfoundation.org>
+Subject: [PATCH 5.13 165/266] Bluetooth: btusb: Add support USB ALT 3 for WBS
+Date:   Thu, 15 Jul 2021 20:38:40 +0200
+Message-Id: <20210715182641.680914783@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,42 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Hilda Wu <hildawu@realtek.com>
 
-[ Upstream commit de895b43932cb47e69480540be7eca289af24f23 ]
+[ Upstream commit e848dbd364aca44c9d23c04bef964fab79e2b34f ]
 
-The use of l2cap_chan_del is not safe under a loop using
-list_for_each_entry.
+Because mSBC frames do not need to be aligned to the SCO packet
+boundary. Using USB ALT 3 let HCI payload >= 60 bytes, let mSBC
+data satisfy 60 Bytes avoid payload unaligned situation and fixed
+some headset no voise issue.
 
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+USB Alt 3 supported also need HFP support transparent MTU in 72 Bytes.
+
+Signed-off-by: Hilda Wu <hildawu@realtek.com>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/l2cap_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/bluetooth/btusb.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index 9b6e57204f51..9908aa53a682 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -6066,7 +6066,7 @@ static inline int l2cap_ecred_conn_rsp(struct l2cap_conn *conn,
- 	struct l2cap_ecred_conn_rsp *rsp = (void *) data;
- 	struct hci_conn *hcon = conn->hcon;
- 	u16 mtu, mps, credits, result;
--	struct l2cap_chan *chan;
-+	struct l2cap_chan *chan, *tmp;
- 	int err = 0, sec_level;
- 	int i = 0;
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 90872099d9c3..4c18a85a1070 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -1751,6 +1751,13 @@ static void btusb_work(struct work_struct *work)
+ 			 * which work with WBS at all.
+ 			 */
+ 			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
++			/* Because mSBC frames do not need to be aligned to the
++			 * SCO packet boundary. If support the Alt 3, use the
++			 * Alt 3 for HCI payload >= 60 Bytes let air packet
++			 * data satisfy 60 bytes.
++			 */
++			if (new_alts == 1 && btusb_find_altsetting(data, 3))
++				new_alts = 3;
+ 		}
  
-@@ -6085,7 +6085,7 @@ static inline int l2cap_ecred_conn_rsp(struct l2cap_conn *conn,
- 
- 	cmd_len -= sizeof(*rsp);
- 
--	list_for_each_entry(chan, &conn->chan_l, list) {
-+	list_for_each_entry_safe(chan, tmp, &conn->chan_l, list) {
- 		u16 dcid;
- 
- 		if (chan->ident != cmd->ident ||
+ 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
 -- 
 2.30.2
 
