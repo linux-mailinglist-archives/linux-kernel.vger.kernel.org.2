@@ -2,155 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540753C9DA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2323C9DA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241884AbhGOLVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:21:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39950 "EHLO
+        id S241897AbhGOLWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:22:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51313 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240366AbhGOLVg (ORCPT
+        by vger.kernel.org with ESMTP id S240366AbhGOLWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:21:36 -0400
+        Thu, 15 Jul 2021 07:22:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626347923;
+        s=mimecast20190719; t=1626347963;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ALRhOVcBk05in4fNQsx40YRimWBCLQdxg6jZkws4So0=;
-        b=J8VT69JaGAsVznw78VTuCJO8GaaoMauUVDgmjxPRF2C7rbx5fW2EkGlih628Ty+0xQzTZB
-        pJoi2XKliPSqYHt1oZyO81XjGwjQeIIyNM6rRhBGA/W8ib7vFleO/D+mtMhsZxe7aRINRq
-        hHoKTH8GxYNUgAzCkRKbIqv3B1Belio=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-337-j-3-GxuYNSCT1ngrbO9ZCg-1; Thu, 15 Jul 2021 07:18:41 -0400
-X-MC-Unique: j-3-GxuYNSCT1ngrbO9ZCg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57E221084F4B;
-        Thu, 15 Jul 2021 11:18:40 +0000 (UTC)
-Received: from localhost (ovpn-12-61.pek2.redhat.com [10.72.12.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3C8DC19C45;
-        Thu, 15 Jul 2021 11:18:35 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] genirq/affinity: add helper of irq_affinity_calc_sets
-Date:   Thu, 15 Jul 2021 19:18:27 +0800
-Message-Id: <20210715111827.569756-1-ming.lei@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FDEwnHomsUjrAd8IIiBDO6SVng8PAzpjFB7DzaKPf7k=;
+        b=BEMREBrQw0IamWk8usUTr0DIQx5QyiuQzIUNW/swv8E+q0p3+f4UYHETWGunLNBeRtCYT9
+        NymE+d9zrxn0smmJM2T50C9iapUhFRfdh5mnRNY1O5AvKeT8WLDeTbuqCaj0jdCzeO/sOf
+        eRX3vF9jIf4ROLMh4gaCPbkZvZi/nLc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-230-4thiCPDpNOqBIaPuFHdXLQ-1; Thu, 15 Jul 2021 07:19:22 -0400
+X-MC-Unique: 4thiCPDpNOqBIaPuFHdXLQ-1
+Received: by mail-wr1-f70.google.com with SMTP id g9-20020adff3c90000b0290140a25efc6dso3192545wrp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 04:19:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FDEwnHomsUjrAd8IIiBDO6SVng8PAzpjFB7DzaKPf7k=;
+        b=hBdzOigARMl1Gf0usEy4IrDLkg+9de12yklS3f455fp4LmTtScAPeU2hXT9kb9f/AY
+         WCP/jPf1RMErmPppdj2/H6YCWl78voQO11DKSwkd6moo4tsat9Ut6Fh66xiM5rendQ8F
+         B133vXX7qePcGYwCW+6EEbI9HsXLQcAAgl90DdKpk0En3V9Y54L070s/I2G2q6bI3Mbg
+         ZCqSAh2V/tAgV6DGmn6WP6bcQLUExNRXlgAF/Brq5OyCwUZCFxVGNne31J5Xg2mXSQdq
+         MieX52G+wAKFHdo31YNlyHslDrQGzkFrLJ+ASNjbfNvp606IJj2/IBctXzuUEQ06uGaj
+         c3zA==
+X-Gm-Message-State: AOAM530XcA0TT7VXfBlWkYAer/tTufteT3a1/TdZ2JNsgRJKS6DaTcLv
+        RFgzxr46lEEHGeYjuJsG+PH+A18rww0Q0Nl8dvLceDVjtSI9UOcnkru6Rj/wSi6bf1HQjEw5ipO
+        rrneEmcQY8AidewEZxKL5jZDA
+X-Received: by 2002:a7b:c147:: with SMTP id z7mr4019756wmi.110.1626347961372;
+        Thu, 15 Jul 2021 04:19:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxBt5tiWczHm64NNwg+8VM1qJ0OsxcPd0Pd0QrHRAt+g+CBldC7DcvCR7rucK1UFnX/7nlPA==
+X-Received: by 2002:a7b:c147:: with SMTP id z7mr4019744wmi.110.1626347961153;
+        Thu, 15 Jul 2021 04:19:21 -0700 (PDT)
+Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.gmail.com with ESMTPSA id d8sm6315639wra.41.2021.07.15.04.19.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 04:19:20 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86/cpuid: Expose the true number of available ASIDs
+To:     Like Xu <like.xu.linux@gmail.com>, Joerg Roedel <joro@8bytes.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210715104505.96220-1-likexu@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3d2ad944-9e0c-dea7-f0e4-4e55072ccf99@redhat.com>
+Date:   Thu, 15 Jul 2021 13:19:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210715104505.96220-1-likexu@tencent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When driver requests to allocate irq affinity managed vectors,
-pci_alloc_irq_vectors_affinity() may fallback to single vector
-allocation. In this situation, we don't need to call
-irq_create_affinity_masks for calling into ->calc_sets() for
-avoiding potential memory leak, so add the helper for this purpose.
+On 15/07/21 12:45, Like Xu wrote:
+> The original fixed number "8" was first introduced 11 years ago. Time has
+> passed and now let KVM report the true number of address space identifiers
+> (ASIDs) that are supported by the processor returned in Fn8000_000A_EBX.
+> 
+> It helps user-space to make better decisions about guest values.
+>
+> -		entry->ebx = 8; /* Lets support 8 ASIDs in case we add proper
+> -				   ASID emulation to nested SVM */
 
-Fixes: c66d4bd110a1 ("genirq/affinity: Add new callback for (re)calculating interrupt sets")
-Reported-by: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-pci@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- drivers/pci/msi.c         |  3 ++-
- include/linux/interrupt.h |  7 +++++++
- kernel/irq/affinity.c     | 29 ++++++++++++++++++-----------
- 3 files changed, 27 insertions(+), 12 deletions(-)
+Why, since we don't have ASID emulation yet anyway?
 
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index 9232255c8515..3d6db20d1b2b 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -1224,7 +1224,8 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
- 			 * for the single interrupt case.
- 			 */
- 			if (affd)
--				irq_create_affinity_masks(1, affd);
-+				WARN_ON_ONCE(irq_affinity_calc_sets(1, affd));
-+
- 			pci_intx(dev, 1);
- 			return 1;
- 		}
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 2ed65b01c961..c7ff84d60465 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -340,6 +340,7 @@ irq_create_affinity_masks(unsigned int nvec, struct irq_affinity *affd);
- 
- unsigned int irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
- 				       const struct irq_affinity *affd);
-+int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd);
- 
- #else /* CONFIG_SMP */
- 
-@@ -391,6 +392,12 @@ irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
- 	return maxvec;
- }
- 
-+static inline int irq_affinity_calc_sets(unsigned int affvecs,
-+					 struct irq_affinity *affd)
-+{
-+	return 0;
-+}
-+
- #endif /* CONFIG_SMP */
- 
- /*
-diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
-index 4d89ad4fae3b..735f697d7d15 100644
---- a/kernel/irq/affinity.c
-+++ b/kernel/irq/affinity.c
-@@ -405,6 +405,23 @@ static void default_calc_sets(struct irq_affinity *affd, unsigned int affvecs)
- 	affd->set_size[0] = affvecs;
- }
- 
-+int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd)
-+{
-+	/*
-+	 * Simple invocations do not provide a calc_sets() callback. Install
-+	 * the generic one.
-+	 */
-+	if (!affd->calc_sets)
-+		affd->calc_sets = default_calc_sets;
-+
-+	/* Recalculate the sets */
-+	affd->calc_sets(affd, affvecs);
-+
-+	if (affd->nr_sets > IRQ_AFFINITY_MAX_SETS)
-+		return -ERANGE;
-+	return 0;
-+}
-+
- /**
-  * irq_create_affinity_masks - Create affinity masks for multiqueue spreading
-  * @nvecs:	The total number of vectors
-@@ -429,17 +446,7 @@ irq_create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
- 	else
- 		affvecs = 0;
- 
--	/*
--	 * Simple invocations do not provide a calc_sets() callback. Install
--	 * the generic one.
--	 */
--	if (!affd->calc_sets)
--		affd->calc_sets = default_calc_sets;
--
--	/* Recalculate the sets */
--	affd->calc_sets(affd, affvecs);
--
--	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
-+	if (WARN_ON_ONCE(irq_affinity_calc_sets(affvecs, affd)))
- 		return NULL;
- 
- 	/* Nothing to assign? */
--- 
-2.31.1
+Paolo
 
