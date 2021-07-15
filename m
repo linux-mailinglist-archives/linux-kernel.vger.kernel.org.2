@@ -2,104 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CC33C9CC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89173C9CC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241418AbhGOKhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:37:15 -0400
-Received: from mga06.intel.com ([134.134.136.31]:16970 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231670AbhGOKhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:37:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="271634220"
-X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
-   d="scan'208";a="271634220"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 03:34:21 -0700
-X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
-   d="scan'208";a="452373614"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 03:34:17 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m3yh0-00DhHX-P0; Thu, 15 Jul 2021 13:34:10 +0300
-Date:   Thu, 15 Jul 2021 13:34:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com
-Subject: Re: [PATCH v7 1/5] d_path: fix Kernel doc validator complaints
-Message-ID: <YPAPIsGkom68R1WR@smile.fi.intel.com>
-References: <20210715011407.7449-1-justin.he@arm.com>
- <20210715011407.7449-2-justin.he@arm.com>
+        id S241443AbhGOKhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241433AbhGOKha (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 06:37:30 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D515C061762;
+        Thu, 15 Jul 2021 03:34:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=a6pMukHAQ7xrk69NfRuJ5+OsqyBQF6NV8veupMmJlGU=; b=wPWKd1GsdKfHdXaysXDu5GxXYe
+        WJX2TFa/PjMRCqy8kV7JlW2upP86f0yADODrOoanZSTGQE9X/NFaTR6nVefyghtLmFKN1dOUDMfKs
+        UOEPasSTidKiMv2LHsGEM9mKgwLBG0uX0+eTFyxK9fkuf0/uM8tACfWWCjTc2TGruSizTjd4dOGPf
+        AalfDfXK9/MAXXADvEdLAdicPW6f0A1IsuzpYL6VzWAYhTRmF3/VDTpEzJ4kNyKVwII4y+/TTnA0i
+        ooHTy5OMOvkJ/x5Xna2Ayi+nwXpMaCOMxQRZQ/FQnT5pM81tZ/NpfqYzXu7Goep605dMpQE9adCA2
+        uiQHFoNQ==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <mperttunen@nvidia.com>)
+        id 1m3yhF-0004sT-To; Thu, 15 Jul 2021 13:34:32 +0300
+From:   Mikko Perttunen <mperttunen@nvidia.com>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     ykaukab@suse.de, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Subject: [PATCH v2] misc: sram: Only map reserved areas in Tegra SYSRAM
+Date:   Thu, 15 Jul 2021 13:34:23 +0300
+Message-Id: <20210715103423.1811101-1-mperttunen@nvidia.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715011407.7449-2-justin.he@arm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: mperttunen@nvidia.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 09:14:03AM +0800, Jia He wrote:
-> Kernel doc validator complains:
->   Function parameter or member 'p' not described in 'prepend_name'
->   Excess function parameter 'buffer' description in 'prepend_name'
+On Tegra186 and later, a portion of the SYSRAM may be reserved for use
+by TZ. Non-TZ memory accesses to this portion, including speculative
+accesses, trigger SErrors that bring down the system. This does also
+happen in practice occasionally (due to speculative accesses).
 
-Yup!
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To fix the issue, add a flag to the SRAM driver to only map the
+device tree-specified reserved areas depending on a flag set
+based on the compatibility string. This would not affect non-Tegra
+systems that rely on the entire thing being memory mapped.
 
-> Fixes: ad08ae586586 ("d_path: introduce struct prepend_buffer")
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->  fs/d_path.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/d_path.c b/fs/d_path.c
-> index 23a53f7b5c71..4eb31f86ca88 100644
-> --- a/fs/d_path.c
-> +++ b/fs/d_path.c
-> @@ -33,9 +33,8 @@ static void prepend(struct prepend_buffer *p, const char *str, int namelen)
->  
->  /**
->   * prepend_name - prepend a pathname in front of current buffer pointer
-> - * @buffer: buffer pointer
-> - * @buflen: allocated length of the buffer
-> - * @name:   name string and length qstr structure
-> + * @p: prepend buffer which contains buffer pointer and allocated length
-> + * @name: name string and length qstr structure
->   *
->   * With RCU path tracing, it may race with d_move(). Use READ_ONCE() to
->   * make sure that either the old or the new name pointer and length are
-> @@ -108,8 +107,7 @@ static int __prepend_path(const struct dentry *dentry, const struct mount *mnt,
->   * prepend_path - Prepend path string to a buffer
->   * @path: the dentry/vfsmount to report
->   * @root: root vfsmnt/dentry
-> - * @buffer: pointer to the end of the buffer
-> - * @buflen: pointer to buffer length
-> + * @p: prepend buffer which contains buffer pointer and allocated length
->   *
->   * The function will first try to write out the pathname without taking any
->   * lock other than the RCU read lock to make sure that dentries won't go away.
-> -- 
-> 2.17.1
-> 
+If 64K pages are being used, we cannot exactly map the 4K regions
+that are placed in SYSRAM - ioremap code instead aligns to closest
+64K pages. However, since in practice the non-accessible memory area
+is 64K aligned, these mappings do not overlap with the non-accessible
+memory area and things work out.
 
+Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+---
+v2:
+* Removed default config, instead use a null config if not specified
+* Add comma at end of field initializer
+* Add __iomem specifier to temporary variable
+---
+ drivers/misc/sram.c | 103 +++++++++++++++++++++++++++++++-------------
+ drivers/misc/sram.h |   9 ++++
+ 2 files changed, 82 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/misc/sram.c b/drivers/misc/sram.c
+index 93638ae2753a..4c26b19f5154 100644
+--- a/drivers/misc/sram.c
++++ b/drivers/misc/sram.c
+@@ -97,7 +97,24 @@ static int sram_add_partition(struct sram_dev *sram, struct sram_reserve *block,
+ 	struct sram_partition *part = &sram->partition[sram->partitions];
+ 
+ 	mutex_init(&part->lock);
+-	part->base = sram->virt_base + block->start;
++
++	if (sram->config && sram->config->map_only_reserved) {
++		void __iomem *virt_base;
++
++		if (sram->no_memory_wc)
++			virt_base = devm_ioremap_resource(sram->dev, &block->res);
++		else
++			virt_base = devm_ioremap_resource_wc(sram->dev, &block->res);
++
++		if (IS_ERR(virt_base)) {
++			dev_err(sram->dev, "could not map SRAM at %pr\n", &block->res);
++			return PTR_ERR(virt_base);
++		}
++
++		part->base = virt_base;
++	} else {
++		part->base = sram->virt_base + block->start;
++	}
+ 
+ 	if (block->pool) {
+ 		ret = sram_add_pool(sram, block, start, part);
+@@ -198,6 +215,7 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
+ 
+ 		block->start = child_res.start - res->start;
+ 		block->size = resource_size(&child_res);
++		block->res = child_res;
+ 		list_add_tail(&block->list, &reserve_list);
+ 
+ 		if (of_find_property(child, "export", NULL))
+@@ -295,15 +313,17 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
+ 		 */
+ 		cur_size = block->start - cur_start;
+ 
+-		dev_dbg(sram->dev, "adding chunk 0x%lx-0x%lx\n",
+-			cur_start, cur_start + cur_size);
++		if (sram->pool) {
++			dev_dbg(sram->dev, "adding chunk 0x%lx-0x%lx\n",
++				cur_start, cur_start + cur_size);
+ 
+-		ret = gen_pool_add_virt(sram->pool,
+-				(unsigned long)sram->virt_base + cur_start,
+-				res->start + cur_start, cur_size, -1);
+-		if (ret < 0) {
+-			sram_free_partitions(sram);
+-			goto err_chunks;
++			ret = gen_pool_add_virt(sram->pool,
++					(unsigned long)sram->virt_base + cur_start,
++					res->start + cur_start, cur_size, -1);
++			if (ret < 0) {
++				sram_free_partitions(sram);
++				goto err_chunks;
++			}
+ 		}
+ 
+ 		/* next allocation after this reserved block */
+@@ -331,40 +351,63 @@ static int atmel_securam_wait(void)
+ 					10000, 500000);
+ }
+ 
++static const struct sram_config atmel_securam_config = {
++	.init = atmel_securam_wait,
++};
++
++/*
++ * SYSRAM contains areas that are not accessible by the
++ * kernel, such as the first 256K that is reserved for TZ.
++ * Accesses to those areas (including speculative accesses)
++ * trigger SErrors. As such we must map only the areas of
++ * SYSRAM specified in the device tree.
++ */
++static const struct sram_config tegra_sysram_config = {
++	.map_only_reserved = true,
++};
++
+ static const struct of_device_id sram_dt_ids[] = {
+ 	{ .compatible = "mmio-sram" },
+-	{ .compatible = "atmel,sama5d2-securam", .data = atmel_securam_wait },
++	{ .compatible = "atmel,sama5d2-securam", .data = &atmel_securam_config },
++	{ .compatible = "nvidia,tegra186-sysram", .data = &tegra_sysram_config },
++	{ .compatible = "nvidia,tegra194-sysram", .data = &tegra_sysram_config },
+ 	{}
+ };
+ 
+ static int sram_probe(struct platform_device *pdev)
+ {
++	const struct sram_config *config;
+ 	struct sram_dev *sram;
+ 	int ret;
+ 	struct resource *res;
+-	int (*init_func)(void);
++
++	config = of_device_get_match_data(&pdev->dev);
+ 
+ 	sram = devm_kzalloc(&pdev->dev, sizeof(*sram), GFP_KERNEL);
+ 	if (!sram)
+ 		return -ENOMEM;
+ 
+ 	sram->dev = &pdev->dev;
++	sram->no_memory_wc = of_property_read_bool(pdev->dev.of_node, "no-memory-wc");
++	sram->config = config;
++
++	if (!config || !config->map_only_reserved) {
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++		if (sram->no_memory_wc)
++			sram->virt_base = devm_ioremap_resource(&pdev->dev, res);
++		else
++			sram->virt_base = devm_ioremap_resource_wc(&pdev->dev, res);
++		if (IS_ERR(sram->virt_base)) {
++			dev_err(&pdev->dev, "could not map SRAM registers\n");
++			return PTR_ERR(sram->virt_base);
++		}
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (of_property_read_bool(pdev->dev.of_node, "no-memory-wc"))
+-		sram->virt_base = devm_ioremap_resource(&pdev->dev, res);
+-	else
+-		sram->virt_base = devm_ioremap_resource_wc(&pdev->dev, res);
+-	if (IS_ERR(sram->virt_base)) {
+-		dev_err(&pdev->dev, "could not map SRAM registers\n");
+-		return PTR_ERR(sram->virt_base);
++		sram->pool = devm_gen_pool_create(sram->dev, ilog2(SRAM_GRANULARITY),
++						  NUMA_NO_NODE, NULL);
++		if (IS_ERR(sram->pool))
++			return PTR_ERR(sram->pool);
+ 	}
+ 
+-	sram->pool = devm_gen_pool_create(sram->dev, ilog2(SRAM_GRANULARITY),
+-					  NUMA_NO_NODE, NULL);
+-	if (IS_ERR(sram->pool))
+-		return PTR_ERR(sram->pool);
+-
+ 	sram->clk = devm_clk_get(sram->dev, NULL);
+ 	if (IS_ERR(sram->clk))
+ 		sram->clk = NULL;
+@@ -378,15 +421,15 @@ static int sram_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, sram);
+ 
+-	init_func = of_device_get_match_data(&pdev->dev);
+-	if (init_func) {
+-		ret = init_func();
++	if (config && config->init) {
++		ret = config->init();
+ 		if (ret)
+ 			goto err_free_partitions;
+ 	}
+ 
+-	dev_dbg(sram->dev, "SRAM pool: %zu KiB @ 0x%p\n",
+-		gen_pool_size(sram->pool) / 1024, sram->virt_base);
++	if (sram->pool)
++		dev_dbg(sram->dev, "SRAM pool: %zu KiB @ 0x%p\n",
++			gen_pool_size(sram->pool) / 1024, sram->virt_base);
+ 
+ 	return 0;
+ 
+@@ -405,7 +448,7 @@ static int sram_remove(struct platform_device *pdev)
+ 
+ 	sram_free_partitions(sram);
+ 
+-	if (gen_pool_avail(sram->pool) < gen_pool_size(sram->pool))
++	if (sram->pool && gen_pool_avail(sram->pool) < gen_pool_size(sram->pool))
+ 		dev_err(sram->dev, "removed while SRAM allocated\n");
+ 
+ 	if (sram->clk)
+diff --git a/drivers/misc/sram.h b/drivers/misc/sram.h
+index 9c1d21ff7347..d2058d8c8f1d 100644
+--- a/drivers/misc/sram.h
++++ b/drivers/misc/sram.h
+@@ -5,6 +5,11 @@
+ #ifndef __SRAM_H
+ #define __SRAM_H
+ 
++struct sram_config {
++	int (*init)(void);
++	bool map_only_reserved;
++};
++
+ struct sram_partition {
+ 	void __iomem *base;
+ 
+@@ -15,8 +20,11 @@ struct sram_partition {
+ };
+ 
+ struct sram_dev {
++	const struct sram_config *config;
++
+ 	struct device *dev;
+ 	void __iomem *virt_base;
++	bool no_memory_wc;
+ 
+ 	struct gen_pool *pool;
+ 	struct clk *clk;
+@@ -29,6 +37,7 @@ struct sram_reserve {
+ 	struct list_head list;
+ 	u32 start;
+ 	u32 size;
++	struct resource res;
+ 	bool export;
+ 	bool pool;
+ 	bool protect_exec;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.1
 
