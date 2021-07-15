@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C613CA823
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEAE3CA5CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240878AbhGOS6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:58:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52350 "EHLO mail.kernel.org"
+        id S229554AbhGOSof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239588AbhGOSwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:52:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3FC3613E0;
-        Thu, 15 Jul 2021 18:49:16 +0000 (UTC)
+        id S231909AbhGOSo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFAC761396;
+        Thu, 15 Jul 2021 18:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374957;
-        bh=3vY8jkLEb5T5wUhD3hW2OPPBQIV5VgHI3/oaBlcpP+M=;
+        s=korg; t=1626374493;
+        bh=NKRBa+ZnalVf/of+MHcxQ4XWS/mH2Exv8L+GNaH1lEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jZMVvwlTtexTbCAszcky9gv5Ub5yIVJ5ifnEj1GURy5LXHOocjmwMqaspMmhUSQ3T
-         4n26cch7bdOVQGNSOmHMwqX3RLK6nAAHBGJamYgnxTJCDWZA3eVSh4/7yCcZxFbxqc
-         uAumrpc/KwYMV4de9B5HWreSa48XrfAw5ZGZDNZk=
+        b=Cl3jOgQ73uedA7AfBiMfFxa5jVrxPQ8pswurOs4/TKo9CLPpT89Eh/xZkN4tyum1s
+         jf7zyVsvTmBw+8lXectymRnsVZyQRyqDH7R8irClHZ2nsXVtn3cUJSVCEHjEKN7p1L
+         00aw3J4Zn4/WkrSJ4Sbd2VMoprNnjE2TJyBmwYXA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huang Pei <huangpei@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Amit Klein <aksecurity@gmail.com>,
+        Willy Tarreau <w@1wt.eu>, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 096/215] MIPS: add PMD table accounting into MIPSpmd_alloc_one
-Date:   Thu, 15 Jul 2021 20:37:48 +0200
-Message-Id: <20210715182616.287897032@linuxfoundation.org>
+Subject: [PATCH 5.4 022/122] ipv6: use prandom_u32() for ID generation
+Date:   Thu, 15 Jul 2021 20:37:49 +0200
+Message-Id: <20210715182454.911704666@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Pei <huangpei@loongson.cn>
+From: Willy Tarreau <w@1wt.eu>
 
-[ Upstream commit ed914d48b6a1040d1039d371b56273d422c0081e ]
+[ Upstream commit 62f20e068ccc50d6ab66fdb72ba90da2b9418c99 ]
 
-This fixes Page Table accounting bug.
+This is a complement to commit aa6dd211e4b1 ("inet: use bigger hash
+table for IP ID generation"), but focusing on some specific aspects
+of IPv6.
 
-MIPS is the ONLY arch just defining __HAVE_ARCH_PMD_ALLOC_ONE alone.
-Since commit b2b29d6d011944 (mm: account PMD tables like PTE tables),
-"pmd_free" in asm-generic with PMD table accounting and "pmd_alloc_one"
-in MIPS without PMD table accounting causes PageTable accounting number
-negative, which read by global_zone_page_state(), always returns 0.
+Contary to IPv4, IPv6 only uses packet IDs with fragments, and with a
+minimum MTU of 1280, it's much less easy to force a remote peer to
+produce many fragments to explore its ID sequence. In addition packet
+IDs are 32-bit in IPv6, which further complicates their analysis. On
+the other hand, it is often easier to choose among plenty of possible
+source addresses and partially work around the bigger hash table the
+commit above permits, which leaves IPv6 partially exposed to some
+possibilities of remote analysis at the risk of weakening some
+protocols like DNS if some IDs can be predicted with a good enough
+probability.
 
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Given the wide range of permitted IDs, the risk of collision is extremely
+low so there's no need to rely on the positive increment algorithm that
+is shared with the IPv4 code via ip_idents_reserve(). We have a fast
+PRNG, so let's simply call prandom_u32() and be done with it.
+
+Performance measurements at 10 Gbps couldn't show any difference with
+the previous code, even when using a single core, because due to the
+large fragments, we're limited to only ~930 kpps at 10 Gbps and the cost
+of the random generation is completely offset by other operations and by
+the network transfer time. In addition, this change removes the need to
+update a shared entry in the idents table so it may even end up being
+slightly faster on large scale systems where this matters.
+
+The risk of at least one collision here is about 1/80 million among
+10 IDs, 1/850k among 100 IDs, and still only 1/8.5k among 1000 IDs,
+which remains very low compared to IPv4 where all IDs are reused
+every 4 to 80ms on a 10 Gbps flow depending on packet sizes.
+
+Reported-by: Amit Klein <aksecurity@gmail.com>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210529110746.6796-1-w@1wt.eu
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/pgalloc.h | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ net/ipv6/output_core.c | 28 +++++-----------------------
+ 1 file changed, 5 insertions(+), 23 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index 8b18424b3120..d0cf997b4ba8 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -59,11 +59,15 @@ do {							\
- 
- static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+diff --git a/net/ipv6/output_core.c b/net/ipv6/output_core.c
+index af36acc1a644..2880dc7d9a49 100644
+--- a/net/ipv6/output_core.c
++++ b/net/ipv6/output_core.c
+@@ -15,29 +15,11 @@ static u32 __ipv6_select_ident(struct net *net,
+ 			       const struct in6_addr *dst,
+ 			       const struct in6_addr *src)
  {
--	pmd_t *pmd;
-+	pmd_t *pmd = NULL;
-+	struct page *pg;
+-	const struct {
+-		struct in6_addr dst;
+-		struct in6_addr src;
+-	} __aligned(SIPHASH_ALIGNMENT) combined = {
+-		.dst = *dst,
+-		.src = *src,
+-	};
+-	u32 hash, id;
+-
+-	/* Note the following code is not safe, but this is okay. */
+-	if (unlikely(siphash_key_is_zero(&net->ipv4.ip_id_key)))
+-		get_random_bytes(&net->ipv4.ip_id_key,
+-				 sizeof(net->ipv4.ip_id_key));
+-
+-	hash = siphash(&combined, sizeof(combined), &net->ipv4.ip_id_key);
+-
+-	/* Treat id of 0 as unset and if we get 0 back from ip_idents_reserve,
+-	 * set the hight order instead thus minimizing possible future
+-	 * collisions.
+-	 */
+-	id = ip_idents_reserve(hash, 1);
+-	if (unlikely(!id))
+-		id = 1 << 31;
++	u32 id;
++
++	do {
++		id = prandom_u32();
++	} while (!id);
  
--	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
--	if (pmd)
-+	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
-+	if (pg) {
-+		pgtable_pmd_page_ctor(pg);
-+		pmd = (pmd_t *)page_address(pg);
- 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
-+	}
- 	return pmd;
+ 	return id;
  }
- 
 -- 
 2.30.2
 
