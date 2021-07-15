@@ -2,190 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E613C9628
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8687A3C962D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhGODMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:12:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:45866 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232770AbhGODMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:12:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1203AD6E;
-        Wed, 14 Jul 2021 20:09:15 -0700 (PDT)
-Received: from [10.163.66.71] (unknown [10.163.66.71])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 859693F7D8;
-        Wed, 14 Jul 2021 20:09:11 -0700 (PDT)
-Subject: Re: [PATCH 5/5] coresight: trbe: Prohibit tracing while handling an
- IRQ
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        al.grant@arm.com, leo.yan@linaro.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, peterz@infradead.org, Tamas.Zsoldos@arm.com,
-        will@kernel.org
-References: <20210712113830.2803257-1-suzuki.poulose@arm.com>
- <20210712113830.2803257-6-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <1837b3ae-cc0b-d4ba-7d26-1debdc60c016@arm.com>
-Date:   Thu, 15 Jul 2021 08:39:59 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233023AbhGODPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232770AbhGODP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:15:29 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2826EC06175F;
+        Wed, 14 Jul 2021 20:12:37 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id 201so3809905qkj.13;
+        Wed, 14 Jul 2021 20:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kkhJrswLVJIO+8urmoZXW8/LV2xKjgqG2cY2ReRL5Zk=;
+        b=eIWB4b60S73qiC3CgsCMpqYfHr6pNogtYRAuZju49k0T9riqTz+li2mocTb88F9e/v
+         ILQ7hxeuX/+AFxd22YEJhdA6l+Gs/YxvPGeH0+ghgtZrZblCpUHBiZaeZ+ogSmpbT94e
+         U1Wls5XdxtAqsSotDn3j5hmh7mpOH9+jVy3nsVk+N5lwuYcnn/GtuswpB7nwqcSsIFRz
+         BKwmX75NLaKgRyQm83378OzF/NZeijs7LsUi3wMrqAvrsemsXvmAi2QzjCpbWAM5ol+h
+         9RTnhzq/Sa7xvUGdo0BOl+NTse4MUf1cvIed4kn+pCltu0//nZzxvqLUZ2+M1M7HtMA/
+         Nutw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kkhJrswLVJIO+8urmoZXW8/LV2xKjgqG2cY2ReRL5Zk=;
+        b=KZvtXyAAdBCOWgKZnfwwR/ygG+8MAyC4vHtrp67gJgkM4Tme86CyJYKNbgKYGof+M9
+         nNO6iI84WaRyvI/8tSLfmS+aVfQvhpS/+q6TrXLr/0L4sdNb1HaDGwve8EcRU9YdxrON
+         SEJj/Cwvq5sqLGAmRWx6oKmdhUQr9ue4qnDTBMT85dr4wPfwLBV6MWiRsLT2Xlz/YVFx
+         dpL/u3SuMjxCP5doIh295LqGyte1wAblWmeAuXsMgAS9RygalFZcF0PV7D4eR7j+2SCU
+         44DUSbXX7Sn/e1PTcYYt3kqwg6DPh4BiikITwjXY6OFNvCAb16flyx4Ag/9lKRKn2gnR
+         jRyA==
+X-Gm-Message-State: AOAM530dheY7aGupm9gcHkVKIGSb3NXj4Md+QDuEDahSvfLFPKHboJ01
+        OT2xrlnv+c78bBFDvDO38+c=
+X-Google-Smtp-Source: ABdhPJwzH+tvJbShzIsSkSiCJS4NZk84h0yCal8j7/cvhofx6ZK4CMOfKx2XFJ6+NyrEEkaWX3SGEw==
+X-Received: by 2002:a05:620a:4007:: with SMTP id h7mr1541085qko.76.1626318756321;
+        Wed, 14 Jul 2021 20:12:36 -0700 (PDT)
+Received: from shaak.. (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id t125sm1932847qkf.41.2021.07.14.20.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 20:12:35 -0700 (PDT)
+From:   Liam Beguin <liambeguin@gmail.com>
+To:     liambeguin@gmail.com, peda@axentia.se, jic23@kernel.org,
+        lars@metafoo.de, pmeerw@pmeerw.net
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: [PATCH v5 00/10] iio: afe: add temperature rescaling support
+Date:   Wed, 14 Jul 2021 23:12:05 -0400
+Message-Id: <20210715031215.1534938-1-liambeguin@gmail.com>
+X-Mailer: git-send-email 2.30.1.489.g328c10930387
 MIME-Version: 1.0
-In-Reply-To: <20210712113830.2803257-6-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A small nit. Paragraphs in the commit message do not seem to be aligned
-properly to a maximum 75 characters width.
+From: Liam Beguin <lvb@xiphos.com>
 
-On 7/12/21 5:08 PM, Suzuki K Poulose wrote:
-> When the TRBE generates an IRQ, we stop the TRBE, collect the trace
-> and then reprogram the TRBE with the updated buffer pointers in case
-> of a spurious IRQ. We might also leave the TRBE disabled, on an
-> overflow interrupt, without touching the ETE. This means the
-> the ETE is only disabled when the event is disabled later (via irq_work).
-> This is incorrect, as the ETE trace is still ON without actually being
-> captured and may be routed to the ATB.
+Add temperature rescaling support to the IIO Analog Front End driver.
 
-I had an assumption that when the TRBE is stopped, ETE would also stop
-implicitly given that the trace packets are not being accepted anymore.
-But if that assumption does not always hold true, then yes trace must
-be stopped upon a TRBE IRQ.
+This series includes minor bug fixes and adds support for RTD temperature
+sensors as well as temperature transducers.
 
-> 
-> So, we move the CPU into trace prohibited state (for all exception
-> levels) upon entering the IRQ handler. The state is restored before
-> enabling the TRBE back. Otherwise the trace remains prohibited.
-> Since, the ETM/ETE driver controls the TRFCR_EL1 per session,
-> (from commit "coresight: etm4x: Use Trace Filtering controls dynamically")
+At first I tried to use iio_convert_raw_to_processed() to get more
+precision out of processed values but ran into issues when one of my
+ADCs didn't provide a scale. I tried to address this in the first two
+patches.
 
-commit SHA ID ?
+When adding offset support to iio-rescale, I also noticed that
+iio_read_channel_processed() assumes that the offset is always an
+integer which I tried to address in the third patch without breaking
+valid implicit truncations.
 
-> the tracing can be restored/enabled back when the event is rescheduled
-> in.
+As was suggested by Jonathan [1], I started implementing Kunit tests for
+some of these cases[2]. It's pretty far from being ready but it still
+helped test things faster this time around!
 
-Makes sense.
+I'll send another series with the tests once I've cleaned it up and
+figured out how to avoid copying part of the driver...
 
-> 
-> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 43 ++++++++++++++++++--
->  1 file changed, 40 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index c0c264264427..e4d88e0de2a8 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -83,6 +83,31 @@ struct trbe_drvdata {
->  	struct platform_device *pdev;
->  };
->  
-> +static inline void write_trfcr(u64 val)
-> +{
-> +	write_sysreg_s(val, SYS_TRFCR_EL1);
-> +	isb();
-> +}
-> +
+[1] https://patchwork.kernel.org/project/linux-iio/patch/20210701010034.303088-5-liambeguin@gmail.com/#24290449
+[2] https://git.sr.ht/~liambeguin/Linux/commit/iio-rescale-test/v1
 
-There is another instance of write_trfcr() in coresight-etm4x-core.c and
-some other writes into SYS_TRFCR_EL1 elsewhere. write_trfcr() should be
-factored out and moved to a common place.
+Changes since v4:
+- only use gcd() when necessary in overflow mitigation
+- fix INT_PLUS_{MICRO,NANO} support
+- apply Reviewed-by
+- fix temperature-transducer bindings
 
-> +/*
-> + * Prohibit the CPU tracing at all ELs, in preparation to collect
-> + * the trace buffer.
-> + *
-> + * Returns the original value of the trfcr for restoring later.
-> + */
-> +static u64 cpu_prohibit_tracing(void)
-> +{
-> +	u64 trfcr = read_sysreg_s(SYS_TRFCR_EL1);
-> +
-> +	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
-> +	return trfcr;
-> +}
+Changes since v3:
+- drop unnecessary fallthrough statements
+- drop redundant local variables in some calculations
+- fix s64 divisions on 32bit platforms by using do_div
+- add comment describing iio-rescaler offset calculation
+- drop unnecessary MAINTAINERS entry
 
-This also should be factored out along with etm4x_prohibit_trace()
-usage and moved to a common header instead.
+Changes since v2:
+- don't break implicit offset truncations
+- make a best effort to get a valid value for fractional types
+- drop return value change in iio_convert_raw_to_processed_unlocked()
+- don't rely on processed value for offset calculation
+- add INT_PLUS_{MICRO,NANO} support in iio-rescale
+- revert generic implementation in favor of temperature-sense-rtd and
+  temperature-transducer
+- add separate section to MAINTAINERS file
 
-> +
-> +static void cpu_restore_tracing(u64 trfcr)
-> +{
-> +	write_trfcr(trfcr);
-> +}
-> +
->  static int trbe_alloc_node(struct perf_event *event)
->  {
->  	if (event->cpu == -1)
-> @@ -681,7 +706,7 @@ static int arm_trbe_disable(struct coresight_device *csdev)
->  	return 0;
->  }
->  
-> -static void trbe_handle_spurious(struct perf_output_handle *handle)
-> +static void trbe_handle_spurious(struct perf_output_handle *handle, u64 trfcr)
->  {
->  	struct trbe_buf *buf = etm_perf_sink_config(handle);
->  
-> @@ -691,6 +716,7 @@ static void trbe_handle_spurious(struct perf_output_handle *handle)
->  		trbe_drain_and_disable_local();
->  		return;
->  	}
+Changes since v1:
+- rebase on latest iio `testing` branch
+- also apply consumer scale on integer channel scale types
+- don't break implicit truncation in processed channel offset
+  calculation
+- drop temperature AFE flavors in favor of a simpler generic
+  implementation
 
-A small comment here would be great because this will be the only
-IRQ handler path, where it actually restores the tracing back.
+Thanks for your time
 
-> +	cpu_restore_tracing(trfcr);
->  	trbe_enable_hw(buf);
->  }
->  
-> @@ -760,7 +786,18 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->  	struct perf_output_handle **handle_ptr = dev;
->  	struct perf_output_handle *handle = *handle_ptr;
->  	enum trbe_fault_action act;
-> -	u64 status;
-> +	u64 status, trfcr;
-> +
-> +	/*
-> +	 * Prohibit the tracing, while we process this. We turn
-> +	 * things back right, if we get to enabling the TRBE
-> +	 * back again. Otherwise, the tracing still remains
-> +	 * prohibited, until the perf event state changes
-> +	 * or another event is scheduled. This ensures that
-> +	 * the trace is not generated when it cannot be
-> +	 * captured.
-> +	 */
+Liam Beguin (10):
+  iio: inkern: apply consumer scale on IIO_VAL_INT cases
+  iio: inkern: apply consumer scale when no channel scale is available
+  iio: inkern: make a best effort on offset calculation
+  iio: afe: rescale: reduce risk of integer overflow
+  iio: afe: rescale: add INT_PLUS_{MICRO,NANO} support
+  iio: afe: rescale: add offset support
+  iio: afe: rescale: add RTD temperature sensor support
+  iio: afe: rescale: add temperature transducers
+  dt-bindings: iio: afe: add bindings for temperature-sense-rtd
+  dt-bindings: iio: afe: add bindings for temperature transducers
 
-Right.
+ .../iio/afe/temperature-sense-rtd.yaml        | 101 ++++++++++
+ .../iio/afe/temperature-transducer.yaml       | 114 +++++++++++
+ drivers/iio/afe/iio-rescale.c                 | 183 +++++++++++++++++-
+ drivers/iio/inkern.c                          |  40 +++-
+ 4 files changed, 426 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
 
-But a small nit though. Please keep the comments here formatted and
-aligned with the existing ones.
+Range-diff against v4:
+ -:  ------------ >  1:  42a7a1047edc iio: inkern: apply consumer scale on IIO_VAL_INT cases
+ -:  ------------ >  2:  a1cd89fdad11 iio: inkern: apply consumer scale when no channel scale is available
+ -:  ------------ >  3:  ed0721fb6bd1 iio: inkern: make a best effort on offset calculation
+ 1:  e23e6cb26b92 !  4:  7b3e374eb7ad iio: afe: rescale: reduce risk of integer overflow
+    @@ Commit message
+     
+         Reduce the risk of integer overflow by doing the scale calculation with
+         64bit integers and looking for a Greatest Common Divider for both parts
+    -    of the fractional value.
+    +    of the fractional value when required.
+     
+         Signed-off-by: Liam Beguin <lvb@xiphos.com>
+     
+    @@ drivers/iio/afe/iio-rescale.c: static int rescale_read_raw(struct iio_dev *indio
+     -			*val2 *= rescale->denominator;
+     +			tmp = (s64)*val * rescale->numerator;
+     +			tmp2 = (s64)*val2 * rescale->denominator;
+    -+			factor = gcd(tmp, tmp2);
+    -+			do_div(tmp, factor);
+    ++			if (check_mul_overflow(*val, rescale->numerator, (s32 *)&tmp) ||
+    ++			check_mul_overflow(*val2, rescale->denominator, (s32 *)&tmp2)) {
+    ++				factor = gcd(tmp, tmp2);
+    ++				do_div(tmp, factor);
+    ++				do_div(tmp2, factor);
+    ++			}
+     +			*val = tmp;
+    -+			do_div(tmp2, factor);
+     +			*val2 = tmp2;
+      			return ret;
+      		case IIO_VAL_INT:
+ 2:  28203b672942 !  5:  1d334090e974 iio: afe: rescale: add INT_PLUS_{MICRO,NANO} support
+    @@ Metadata
+      ## Commit message ##
+         iio: afe: rescale: add INT_PLUS_{MICRO,NANO} support
+     
+    -    Add IIO_VAL_INT_PLUS_{NANO,MICRO} scaling support.
+    -    Scale the integer part and the decimal parts individually and keep the
+    -    original scaling type.
+    +    Some ADCs use IIO_VAL_INT_PLUS_{NANO,MICRO} scale types.
+    +    Add support for these to allow using the iio-rescaler with them.
+     
+         Signed-off-by: Liam Beguin <lvb@xiphos.com>
+     
+    @@ drivers/iio/afe/iio-rescale.c: static int rescale_read_raw(struct iio_dev *indio
+      			*val = tmp;
+      			return ret;
+     +		case IIO_VAL_INT_PLUS_NANO:
+    ++			tmp = ((s64)*val * 1000000000LL + *val2) * rescale->numerator;
+    ++			do_div(tmp, rescale->denominator);
+    ++
+    ++			*val = div_s64(tmp, 1000000000LL);
+    ++			*val2 = tmp - *val * 1000000000LL;
+    ++			return ret;
+     +		case IIO_VAL_INT_PLUS_MICRO:
+    -+			tmp = (s64)*val * rescale->numerator;
+    -+			*val = div_s64(tmp, rescale->denominator);
+    -+			tmp = (s64)*val2 * rescale->numerator;
+    -+			*val2 = div_s64(tmp, rescale->denominator);
+    ++			tmp = ((s64)*val * 1000000LL + *val2) * rescale->numerator;
+    ++			do_div(tmp, rescale->denominator);
+    ++
+    ++			*val = div_s64(tmp, 1000000LL);
+    ++			*val2 = tmp - *val * 1000000LL;
+     +			return ret;
+      		default:
+     +			dev_err(&indio_dev->dev, "unsupported type %d\n", ret);
+ 3:  a6c944ae0f99 =  6:  61873203c140 iio: afe: rescale: add offset support
+ 4:  cc5eb96512d5 =  7:  4e6117b9c663 iio: afe: rescale: add RTD temperature sensor support
+ 5:  d8aa257aad35 =  8:  bc647d45e293 iio: afe: rescale: add temperature transducers
+ 6:  f038d6a08ea2 !  9:  570b418eed85 dt-bindings: iio: afe: add bindings for temperature-sense-rtd
+    @@ Commit message
+         voltage across an RTD resistor such as a PT1000.
+     
+         Signed-off-by: Liam Beguin <lvb@xiphos.com>
+    +    Reviewed-by: Rob Herring <robh@kernel.org>
+     
+      ## Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml (new) ##
+     @@
+ 7:  1db42cb25254 ! 10:  3c44ea89754e dt-bindings: iio: afe: add bindings for temperature transducers
+    @@ Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml (new)
+     +
+     +  sense-offset-millicelsius:
+     +    description: |
+    -+      Temperature offset. The default is <0>.
+    ++      Temperature offset.
+     +      This offset is commonly used to convert from Kelvins to degrees Celsius.
+     +      In that case, sense-offset-millicelsius would be set to <(-273150)>.
+    ++    default: 0
+     +
+     +  sense-resistor-ohms:
+     +    description: |
+    -+      The sense resistor. Defaults to <1>.
+    -+      Set sense-resistor-ohms to <1> when using a temperature to voltage
+    -+      transducer.
+    ++      The sense resistor.
+    ++      By default sense-resistor-ohms cancels out the resistor making the
+    ++      circuit behave like a temperature transducer.
+    ++    default: 1
+     +
+     +  alpha-ppm-per-celsius:
+     +    description: |
+    @@ Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml (new)
+     +      datasheet.
+     +
+     +additionalProperties: false
+    ++
+     +required:
+     +  - compatible
+     +  - io-channels
 
-> +	trfcr = cpu_prohibit_tracing();
->  
->  	/*
->  	 * Ensure the trace is visible to the CPUs and
-> @@ -791,7 +828,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->  		trbe_handle_overflow(handle);
->  		break;
->  	case TRBE_FAULT_ACT_SPURIOUS:
-> -		trbe_handle_spurious(handle);
-> +		trbe_handle_spurious(handle, trfcr);
->  		break;
->  	case TRBE_FAULT_ACT_FATAL:
->  		trbe_stop_and_truncate_event(handle);
-> 
+base-commit: 6cbb3aa0f9d5d23221df787cf36f74d3866fdb78
+-- 
+2.30.1.489.g328c10930387
 
-But stopping the trace (even though from a sink IRQ handler) is a source
-device action. Should not this be done via a new coresight_ops_source
-callback instead ?
