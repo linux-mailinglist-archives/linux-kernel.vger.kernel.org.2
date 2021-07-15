@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5673F3CA9D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE6D3CAAA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243654AbhGOTJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:09:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
+        id S244832AbhGOTPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:15:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242326AbhGOS7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:59:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 167FE613F5;
-        Thu, 15 Jul 2021 18:56:30 +0000 (UTC)
+        id S235298AbhGOTBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:01:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E85D6613D8;
+        Thu, 15 Jul 2021 18:58:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375391;
-        bh=lBjcw4sOunxgl3Hqp9I4bME8z73756FTDxGKXLgCxdw=;
+        s=korg; t=1626375513;
+        bh=n4e4i6b7pu+S+LOQhnplVOflen9SPRukJwk4NQNpG+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xz7j2Zbq9fyJAsk4Fv3fWaAA5OWffaSTNSLNxREjqtCyVLQXJpOFk4FYzdEX41iDO
-         wJ/2KvpbQ5hMUYQRSyPzCmN/mrc5Qdest4xLJHXOISqDoryhI40u+Ooq30zf2y0LBz
-         rGPIwAhCLS/ijfFoz72thQksvvI6xT4TKSxVSyqg=
+        b=fSRGmnxEnZJK/64nCZdOjHZACb2YMufUQ3KrVN9q44A1ExlwpO6TWvp/xh+oW3nZV
+         bKDYPRJXXtwDlTo1bW0Z016L4cfmN8DLOMp7KscE5mO+Cek0BwZWn++r/L1sIk3ePM
+         qa1tnTZtzwByncHJ3F6641OQDnS3hwL8vXiQMhos=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 065/242] net: mscc: ocelot: check return value after calling platform_get_resource()
-Date:   Thu, 15 Jul 2021 20:37:07 +0200
-Message-Id: <20210715182603.977559478@linuxfoundation.org>
+Subject: [PATCH 5.12 066/242] net: bcmgenet: check return value after calling platform_get_resource()
+Date:   Thu, 15 Jul 2021 20:37:08 +0200
+Message-Id: <20210715182604.169441736@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -43,35 +43,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit f1fe19c2cb3fdc92a614cf330ced1613f8f1a681 ]
+[ Upstream commit 74325bf0104573c6dfce42837139aeef3f34be76 ]
 
 It will cause null-ptr-deref if platform_get_resource() returns NULL,
 we need check the return value.
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/ocelot/seville_vsc9953.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/broadcom/genet/bcmmii.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/dsa/ocelot/seville_vsc9953.c b/drivers/net/dsa/ocelot/seville_vsc9953.c
-index 84f93a874d50..deae923c8b7a 100644
---- a/drivers/net/dsa/ocelot/seville_vsc9953.c
-+++ b/drivers/net/dsa/ocelot/seville_vsc9953.c
-@@ -1206,6 +1206,11 @@ static int seville_probe(struct platform_device *pdev)
- 	felix->info = &seville_info_vsc9953;
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
+index 5335244e4577..89d16c587bb7 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
+@@ -423,6 +423,10 @@ static int bcmgenet_mii_register(struct bcmgenet_priv *priv)
+ 	int id, ret;
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		err = -EINVAL;
+ 	pres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!pres) {
 +		dev_err(&pdev->dev, "Invalid resource\n");
-+		goto err_alloc_felix;
++		return -EINVAL;
 +	}
- 	felix->switch_base = res->start;
+ 	memset(&res, 0, sizeof(res));
+ 	memset(&ppd, 0, sizeof(ppd));
  
- 	ds = kzalloc(sizeof(struct dsa_switch), GFP_KERNEL);
 -- 
 2.30.2
 
