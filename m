@@ -2,149 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5733CA503
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90873CA4FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237416AbhGOSN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:13:28 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:59026 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237256AbhGOSN1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:13:27 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:32868)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m45oe-0027Qn-3X; Thu, 15 Jul 2021 12:10:32 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:56964 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m45od-00CSsZ-3J; Thu, 15 Jul 2021 12:10:31 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
-        <m11rat9f85.fsf@fess.ebiederm.org>
-        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
-        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
-Date:   Thu, 15 Jul 2021 13:09:45 -0500
-In-Reply-To: <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> (Eric W. Biederman's
-        message of "Fri, 30 Apr 2021 17:49:45 -0500")
-Message-ID: <87a6mnzbx2.fsf_-_@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S237343AbhGOSNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:13:16 -0400
+Received: from mail-bn8nam11on2087.outbound.protection.outlook.com ([40.107.236.87]:34881
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236414AbhGOSNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:13:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dRYFihqJoy/CGSFLLa1IzsNICf/KPyBCb+m4NkQDMklwM7RNobaUxHgQYrasiiC3Y3pUih+khvJQLCjl4xNp/Ztcfu2JdYHlVzx0vc9l/oSgKoSPl9Rsl7/1qrBRvgmwCVco/EfDXTmY6TVeVOLvvAUSM6gOxxXLc7xcHhpXY5V/7rjaIlNfr3QOwZNl2DYTPrtxeIh6ZuYGuz/9MCz/tFiFN8cyLj+CVWjANJEXb3IgJbqEtw3ccHLA6KPYPCOlQEsrcAziBvRuaWax352QzsiCVO+v6hRYvUBozYQ4h/F0vRoiEgUzefNWCBfwnWORWiBvnYwr2axu/z9Usta2rQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OdV9/Met8lHIcm+Zl2HRL3vFwfRrjLb5puIrorbPmqc=;
+ b=fNwwl2eVJf8jIzmrUWrBuGPyORETYwWN5O00Gd2ECx1RrFGlbySON4pN2ME6s7PfKKqbgHEN4GQ5k5ETMka3QfFMG1eJDlGWmey9axWPDn9FLyScbNX7kY4JwuEwBXwHn+gEoOYIwFrRDUH5YZ2C2YsjMd3SnG/b7fpRj6XREt2+ohUiKc9LL/kD9qN+7NNlmPJhPVSr1jLQcQBfPn6iiSGyBZXeE/WVAZaXtx1XGIClaX87uYp4nmcM7a7auloWGlZ16HqQkXgtUjM8mRbaU+i0hRof5e3KBfTI5PU54vb8ndHAleFCqY4aF4tYS8EJw51ad8W8zdW2mW3/OwnKLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OdV9/Met8lHIcm+Zl2HRL3vFwfRrjLb5puIrorbPmqc=;
+ b=mGOgVo95XeKe6ASXrFrwc+IqOiRsi4bv0WV8Cg0YOnjCX0QdxuacoVbfP+ooiSFyjAFmm54k4kOVdNRSLx9cA86AG3+uIe8+zDZp159zKnpgBQ+2WJ5KbOvyvNZ2uJbaLec1Z06Mem7l5WGyJEfLgAhVaWGhZJsDgt5w/hFojZE=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by CO6PR12MB5492.namprd12.prod.outlook.com (2603:10b6:5:35d::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22; Thu, 15 Jul
+ 2021 18:10:19 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::39db:7a51:9e0d:9b19]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::39db:7a51:9e0d:9b19%5]) with mapi id 15.20.4331.023; Thu, 15 Jul 2021
+ 18:10:19 +0000
+Subject: Re: [PATCH 1/2] drm: add crtc background color property
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        David Airlie <airlied@linux.ie>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Cyr, Aric" <Aric.Cyr@amd.com>,
+        Sebastian Wick <sebastian@sebastianwick.net>,
+        Vitaly Prosyak <vitaly.prosyak@amd.com>
+References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
+ <20210707084557.22443-2-raphael.gallais-pou@foss.st.com>
+ <20210709110459.79ca406a@eldfell>
+ <3c8331cf-fded-b6e6-3e25-666634f4b87a@foss.st.com>
+ <20210712110310.540df27d@eldfell>
+ <f8e7db99-a4e4-c4d7-5d6a-67950184701c@amd.com>
+ <20210713105214.5730c959@eldfell>
+ <70c8467c-560d-517d-63a0-97763803b06d@amd.com>
+ <20210714103518.578e70aa@eldfell>
+ <7682e4c6-a040-a2b6-915d-b99ad3ddd53e@amd.com>
+ <20210715123431.48770751@eldfell>
+From:   Harry Wentland <harry.wentland@amd.com>
+Message-ID: <5a9cc3ee-340e-1fad-9124-82bd68d49bb2@amd.com>
+Date:   Thu, 15 Jul 2021 14:10:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210715123431.48770751@eldfell>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR01CA0012.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::20)
+ To CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m45od-00CSsZ-3J;;;mid=<87a6mnzbx2.fsf_-_@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19QOntclRPIA/u9ynQgdmZ9S2p6E+o6EFA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=8.0 tests=ALL_TRUSTED,BAYES_05,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels autolearn=disabled
-        version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
-        *      [score: 0.0415]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 428 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.6 (0.9%), b_tie_ro: 2.5 (0.6%), parse: 0.71
-        (0.2%), extract_message_metadata: 2.6 (0.6%), get_uri_detail_list:
-        1.07 (0.3%), tests_pri_-1000: 2.6 (0.6%), tests_pri_-950: 1.03 (0.2%),
-        tests_pri_-900: 0.83 (0.2%), tests_pri_-90: 88 (20.6%), check_bayes:
-        87 (20.2%), b_tokenize: 7 (1.6%), b_tok_get_all: 7 (1.7%),
-        b_comp_prob: 1.62 (0.4%), b_tok_touch_all: 68 (15.9%), b_finish: 0.82
-        (0.2%), tests_pri_0: 312 (72.9%), check_dkim_signature: 0.40 (0.1%),
-        check_dkim_adsp: 4.6 (1.1%), poll_dns_idle: 1.21 (0.3%), tests_pri_10:
-        2.9 (0.7%), tests_pri_500: 8 (1.8%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 0/6] Final si_trapno bits
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.50.3] (198.200.67.154) by YQBPR01CA0012.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 18:10:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eec9a8a0-559f-4503-27c4-08d947bbce11
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5492:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO6PR12MB54929F16FF6AEA6CA3E0CE3B8C129@CO6PR12MB5492.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ynclyp7b0YdWo55NLVDNQysRKQWGpiWFsYgLKt7AsCdFuqH71beN1W6xcG6HKPHqHhmoto886YU9KteyE1+Ofsg104qMzVaaQzWvu6tdfMaMoGKMCw7WFbuKo+u7adgNDkD8N5UnSQpORU0wWSVk2QHYzvYPL1BFmXAfRCMYp3eTCVaPD1CFMq7o/s/aWrLk5pwAh//UjDY1rTTTaa0Bt+XBrg7E/3NVIVnekUFAoCKW0Wv1NnYHFv0GkyWLXfCNSgvF+CHzQRV+vBn+HJC8gf629eEufAIIkny8TseVZTHSvTK8Xc5FqxS0rkf/EUT4oKbYcdrW2hoxgujQKmZEBHuYK7hclnUHPCPmckmq54Q2zeY/0ycVOJFWZEyCToH7kDSiE+/Ck4JcMm1pL9nMLQtDui6kWiJuXHIRyD37/jH/iEgN9Vl22pr+RqK2tQBUilJkvCQXEnwqxsgcyiMkt1HFkKiMpbTBjZQrAp7br1FscNtsnJqOtpEWc5j9NFw32Q8goNag+KceDR3bs+eT6N6cJiY0SaFIzIz6YBYh/AcaaksM9DcFMr23neQ/h5J9lhT0We3sDr/bkIUAVjsUguWsAyfX1WC7fHTzYj6HsDv7fVcBXckjK3CCO+RvMrbx+IkuHjrH0ARHJ7L56FXqDxKWrdKLyC6/HMdW67W2q2TtadIAupnpfVRCm5rhr61kSzgv1WT4hjHfvhGOsmGuLRhv/R3HJ4gM/6QDqEvDAFSN9DpC4Kx1iEG7QRwLdDdk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(16576012)(8676002)(86362001)(7416002)(6666004)(2906002)(8936002)(31686004)(66556008)(66476007)(66946007)(5660300002)(6486002)(316002)(83380400001)(53546011)(4326008)(26005)(6916009)(186003)(2616005)(54906003)(44832011)(478600001)(956004)(31696002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?vTxkjKWyIbaBvmEbi8vaSnw4AsrMJ0pJzn4iQe+6nMF4hSwe6cF6JoJa?=
+ =?Windows-1252?Q?OzTNv/GDV6Cl93BbYXIEvueKcnwOrDm1eUsVi5wsCHLkBxdMewh4uAq0?=
+ =?Windows-1252?Q?770kFyF8GZws62A0bnwrHVWFx6oP9p3BsMrZS+9tBRyo5HdGsv+Qwsnp?=
+ =?Windows-1252?Q?skJnfkk4qvkEqaVuG1dmLSIQCUwACgrAgP2stQZbA1W9cm0yrW/vbd+8?=
+ =?Windows-1252?Q?h0RdfYxcHiwWJtoYaqQ4ZZQ60faowlvayMgafx6doqduLPhGTgxn+7Im?=
+ =?Windows-1252?Q?aVydwlYJP/aU6AbHpk9aMyk4J5e3jvUW6F+CLFWFBCb8QzeQ9KmruOB2?=
+ =?Windows-1252?Q?7/JQ+f0s5t0F0RHvmx65Z2GcduShu4jeNOWAau74eEVsG6sCM16mMOrY?=
+ =?Windows-1252?Q?/xrYfuBut6IvA2EMGvs070osiTOR6Rk7C7PXk843TywFN7HCIn32pET9?=
+ =?Windows-1252?Q?p+HS9UFAg2jPbtafg7NKu4uK3Oi3ZBfRJ5XDX3zv0rETW5feVuloaLvN?=
+ =?Windows-1252?Q?0b9bWTvpdMv8yFIOcExaY1pK8yns7t8G5YlVxTQEH1tWuvZ8uh/6/5YD?=
+ =?Windows-1252?Q?fZFl2OLjkcGvfZMzVoyNnuUs/vKs9VH+493zHtFdwHiL6h+N4XTNUI/Z?=
+ =?Windows-1252?Q?U5hMD7T0cFaT5uROyfthF4GSL51OWM+SAqJyNxZjmUdpsEx+bJ294pJC?=
+ =?Windows-1252?Q?kgsjQs9YdMtgzyvgcnV1kulJVbx3t4z9TLGPqbLD8ngmQA0xsXsl5IL8?=
+ =?Windows-1252?Q?n3Go1IRVGoCT0S5hhzmKHeYtt48CY1GyeNVqiN+eZIFa8byLmycjU2ji?=
+ =?Windows-1252?Q?XaCUy//16QVy0FFwbHk3FDCMK20kziQFw0OexUm3Nt88hBoPIL0dAfzR?=
+ =?Windows-1252?Q?Dko3q7jrG0eqXpq7rb/Y0C+0GmBdcqry8aol+6GxV+j1yxjjrXqQTI3b?=
+ =?Windows-1252?Q?i7M7maPErYkpTodbEX+LsGdGGQleHgzvlsmGgwVQ7+1pxBFgsUus6s2n?=
+ =?Windows-1252?Q?s92LQrCKcT0PdbC0KgdpZQhWgg3/IsUOTqK3iV7+sFyTsxxzGhDyzFjN?=
+ =?Windows-1252?Q?mv+A3fmiwEn16ZwEGuqywdGvR05gXWu1io3CE1pe7Xf7UAxsZexiy3Qh?=
+ =?Windows-1252?Q?traz7H3KYEngoP6e4XzVIBMYgo+fTk83rmaRNnG1lXuUbIwK5aiulzFs?=
+ =?Windows-1252?Q?OGntjRYuodzJEIffmFOkiAAol5GNqApAahNA7cM2JHrwQZ/Vr1C8R9Pz?=
+ =?Windows-1252?Q?KNzle+o8utco/AV4ArkGkVzqM/UkX3AvRcq9+6/KUR+cLax9eCDdmWHZ?=
+ =?Windows-1252?Q?jcvDHNxfXGtn85FYlZW743RdbOvgmzuqpCL6Wyd77TQRTDabPzDJCreu?=
+ =?Windows-1252?Q?BJVfijbs2GfGgT3U0c/5WCzaHqZWY2ok8XstioaoaLM+/vIWEW2IRnu/?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eec9a8a0-559f-4503-27c4-08d947bbce11
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 18:10:19.4583
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aqmqvYU4/6nYfksjI6JfDvxYRxQ3M3HeuMC5LFQbJ1lMQg/qyUJjgME0ojD4+7MWRFhx9y00pyiLWA88CLVIjQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5492
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-As a part of a fix for the ABI of the newly added SIGTRAP TRAP_PERF a
-si_trapno was reduced to an ordinary extention of the _sigfault case
-of struct siginfo.
 
-When Linus saw the complete set of changes come in as a fix he requested
-that the set of changes be trimmed down to just what was necessary to
-fix the SIGTRAP TRAP_PERF ABI.
+On 2021-07-15 5:34 a.m., Pekka Paalanen wrote:
+> On Wed, 14 Jul 2021 12:13:58 -0400
+> Harry Wentland <harry.wentland@amd.com> wrote:
+> 
+>> On 2021-07-14 3:35 a.m., Pekka Paalanen wrote:
+>>> On Tue, 13 Jul 2021 09:54:35 -0400
+>>> Harry Wentland <harry.wentland@amd.com> wrote:
+>>>   
+>>>> On 2021-07-13 3:52 a.m., Pekka Paalanen wrote:  
+>>>>> On Mon, 12 Jul 2021 12:15:59 -0400
+>>>>> Harry Wentland <harry.wentland@amd.com> wrote:
+>>>>>     
+>>>>>> On 2021-07-12 4:03 a.m., Pekka Paalanen wrote:    
+>>>>>>> On Fri, 9 Jul 2021 18:23:26 +0200
+>>>>>>> Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com> wrote:
+>>>>>>>       
+>>>>>>>> On 7/9/21 10:04 AM, Pekka Paalanen wrote:      
+>>>>>>>>> On Wed, 7 Jul 2021 08:48:47 +0000
+>>>>>>>>> Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com> wrote:
+>>>>>>>>>        
+>>>>>>>>>> Some display controllers can be programmed to present non-black colors
+>>>>>>>>>> for pixels not covered by any plane (or pixels covered by the
+>>>>>>>>>> transparent regions of higher planes).  Compositors that want a UI with
+>>>>>>>>>> a solid color background can potentially save memory bandwidth by
+>>>>>>>>>> setting the CRTC background property and using smaller planes to display
+>>>>>>>>>> the rest of the content.
+>>>>>>>>>>
+>>>>>>>>>> To avoid confusion between different ways of encoding RGB data, we
+>>>>>>>>>> define a standard 64-bit format that should be used for this property's
+>>>>>>>>>> value.  Helper functions and macros are provided to generate and dissect
+>>>>>>>>>> values in this standard format with varying component precision values.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+>>>>>>>>>> Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+>>>>>>>>>> ---
+>>>>>>>>>>   drivers/gpu/drm/drm_atomic_state_helper.c |  1 +
+>>>>>>>>>>   drivers/gpu/drm/drm_atomic_uapi.c         |  4 +++
+>>>>>>>>>>   drivers/gpu/drm/drm_blend.c               | 34 +++++++++++++++++++++--
+>>>>>>>>>>   drivers/gpu/drm/drm_mode_config.c         |  6 ++++
+>>>>>>>>>>   include/drm/drm_blend.h                   |  1 +
+>>>>>>>>>>   include/drm/drm_crtc.h                    | 12 ++++++++
+>>>>>>>>>>   include/drm/drm_mode_config.h             |  5 ++++
+>>>>>>>>>>   include/uapi/drm/drm_mode.h               | 28 +++++++++++++++++++
+>>>>>>>>>>   8 files changed, 89 insertions(+), 2 deletions(-)    
+>>>>>
+>>>>> ...
+>>>>>     
+>>>>>>>>> The question about full vs. limited range seems unnecessary to me, as
+>>>>>>>>> the background color will be used as-is in the blending stage, so
+>>>>>>>>> userspace can just program the correct value that fits the pipeline it
+>>>>>>>>> is setting up.
+>>>>>>>>>
+>>>>>>>>> One more question is, as HDR exists, could we need background colors
+>>>>>>>>> with component values greater than 1.0?        
+>>>>>>>>
+>>>>>>>> AR4H color format should cover that case, isn't it ?      
+>>>>>>>
+>>>>>>> Yes, but with the inconvenience I mentioned.
+>>>>>>>
+>>>>>>> This is a genuine question though, would anyone actually need
+>>>>>>> background color values > 1.0. I don't know of any case yet where it
+>>>>>>> would be required. It would imply that plane blending happens in a
+>>>>>>> color space where >1.0 values are meaningful. I'm not even sure if any
+>>>>>>> hardware supporting that exists.
+>>>>>>>
+>>>>>>> Maybe it would be best to assume that only [0.0, 1.0] pixel value range
+>>>>>>> is useful, and mention in the commit message that if someone really
+>>>>>>> needs values outside of that, they should create another background
+>>>>>>> color property. Then, you can pick a simple unsigned integer pixel
+>>>>>>> format, too. (I didn't see any 16 bit-per-channel formats like that in
+>>>>>>> drm_fourcc.h though.)
+>>>>>>>       
+>>>>>>
+>>>>>> I don't think we should artificially limit this to [0.0, 1.0]. As you
+>>>>>> mentioned above when talking about full vs limited, the userspace
+>>>>>> understands what's the correct value that fits the pipeline. If that
+>>>>>> pipeline is FP16 with > 1.0 values then it would make sense that the
+>>>>>> background color can be > 1.0.    
+>>>>>
+>>>>> Ok. The standard FP32 format then for ease of use and guaranteed enough
+>>>>> range and precision for far into the future?
+>>>>>     
+>>>>
+>>>> I don't have a strong preference for FP16 vs FP32. My understanding is
+>>>> that FP16 is enough to represent linearly encoded data in a way that
+>>>> looks smooth to humans.
+>>>>
+>>>> scRGB uses FP16 with linear encoding in a range of [-0.5, 7.4999].
+>>>>  
+>>>>> Or do you want to keep it in 64 bits total, so the UABI can pack
+>>>>> everything into a u64 instead of needing to create a blob?
+>>>>>
+>>>>> I don't mind as long as it's clearly documented what it is and how it
+>>>>> works, and it carries enough precision.
+>>>>>
+>>>>> But FP16 with its 10 bits of precision might be too little for integer
+>>>>> 12-16 bpc pipelines and sinks?  
+>>>
+>>> The 10 bits worries me still.
+>>>
+>>> If you have a pipeline that works in [0.0, 1.0] range only, then FP16
+>>> limits precision to 10 bits (in the upper half of the range?).
+>>>   
+>>>>>
+>>>>> If the values can go beyond [0.0, 1.0] range, then does the blending
+>>>>> hardware and the degamma/ctm/gamma coming afterwards cope with them, or
+>>>>> do they get clamped anyway?
+>>>>>     
+>>>>
+>>>> That probably depends on the HW and how it's configured. AMD HW can handle
+>>>> values above and below [0.0, 1.0].  
+>>>
+>>> Right, so how would userspace know what will happen?
+>>>
+>>> Or do we need to specify that while values outside that unit range are
+>>> expressable, it is hardware-specific on how they will behave, so
+>>> generic userspace should not attempt to use values outside of the unit
+>>> range?
+>>>
+>>> I guess this caveat should be documented for everything, not just for
+>>> background color? LUT inputs and outputs, CTM input and output ranges,
+>>> FB formats...
+>>>   
+>>
+>> I'm not sure we should artificially limit the interface at this point, or
+>> document hypotheticals. At this point I don't even know whether going beyond
+>> [0.0, 1.0] would be a challenge for any HW that supports floating point
+>> formats.
+> 
+> Exactly, we don't know. Yet we have to document how background color
+> works. If background color can express values outside of [0.0, 1.0],
+> the documentation must say something about it.
+> 
+> If there is no way to know, then documentation must say you don't know
+> (or that it is hardware-specific, which to generic userspace is the
+> same thing).
+> 
+> If userspace does not know what happens, then obviously it will avoid
+> using values it does not know what happens with.
+> 
+> For example, let's say that blending can produce values outside of
+> [0.0, 1.0]. The next step in the pipeline is DEGAMMA, which is a 1D
+> LUT. How do you sample a 1D LUT with input values beyond [0.0, 1.0]? Do
+> you clamp them to the unit range? Does the clamping still happen even
+> when the LUT is in pass-through mode?
+> 
+> And in general, how big or how negative values will actually go through
+> the pipeline?
+> 
+> Of course the background color property should not document everything
+> above, but it must say something, like "The handling of values outside
+> of [0.0, 1.0] depends on the capabilities of the hardware blending
+> engine." That makes the handling unknown to generic userspace, but
+> userspace drivers could make use of it.
+> 
+> The important bit is to understand that the background color values may
+> sometimes (when?) not reach the sink unmodified even if userspace has
+> configured the KMS pipeline to not modify them.
+> 
+> I would expect that values in [0.0, 1.0] have no problem passing
+> through the KMS pipeline unharmed, and there are obvious expectations
+> about how a LUT or a CTM processes them. But as soon as values outside
+> of that range are possible, a whole slew of questions arises. The
+> documentation must not be silent, it must set expectations like "it's
+> hardware specific" if that's what it is.
+> 
 
-I had intended to get the rest of the changes into the merge window for
-v5.14 but I dropped the ball.
+Agreed. I think ultimately we don't know because we haven't gotten to
+use-cases like that.
 
-I have made the changes to stop using __ARCH_SI_TRAPNO be per
-architecture so they are easier to review.  In doing so I found one
-place on alpha where I used send_sig_fault instead of
-send_sig_fault_trapno(... si_trapno = 0).  That would not have changed
-the userspace behavior but it did make the kernel code less clear.
+I'm fine with documentation stating "The handling of values outside
+of [0.0, 1.0] depends on the capabilities of the hardware blending
+engine." or "Handling of values outside [0.0, 1.0] is currently
+undefined."
 
-My rule in these patches is everywhere that siginfo layout calls
-for SIL_FAULT_TRAPNO the code uses either force_sig_fault_trapno
-or send_sig_fault_trapno.
+Harry
 
-And of course I have rebased and compile tested Marco's compile time
-assert patches.
-
-Eric
-
-
-Eric W. Biederman (3):
-      signal/sparc: si_trapno is only used with SIGILL ILL_ILLTRP
-      signal/alpha: si_trapno is only used with SIGFPE and SIGTRAP TRAP_UNK
-      signal: Remove the generic __ARCH_SI_TRAPNO support
-
-Marco Elver (3):
-      sparc64: Add compile-time asserts for siginfo_t offsets
-      arm: Add compile-time asserts for siginfo_t offsets
-      arm64: Add compile-time asserts for siginfo_t offsets
-
- arch/alpha/include/uapi/asm/siginfo.h |  2 --
- arch/alpha/kernel/osf_sys.c           |  2 +-
- arch/alpha/kernel/signal.c            |  4 +--
- arch/alpha/kernel/traps.c             | 26 +++++++++---------
- arch/alpha/mm/fault.c                 |  4 +--
- arch/arm/kernel/signal.c              | 37 +++++++++++++++++++++++++
- arch/arm64/kernel/signal.c            | 37 +++++++++++++++++++++++++
- arch/arm64/kernel/signal32.c          | 37 +++++++++++++++++++++++++
- arch/mips/include/uapi/asm/siginfo.h  |  2 --
- arch/sparc/include/uapi/asm/siginfo.h |  3 --
- arch/sparc/kernel/process_64.c        |  2 +-
- arch/sparc/kernel/signal32.c          | 35 +++++++++++++++++++++++
- arch/sparc/kernel/signal_64.c         | 34 +++++++++++++++++++++++
- arch/sparc/kernel/sys_sparc_32.c      |  2 +-
- arch/sparc/kernel/sys_sparc_64.c      |  2 +-
- arch/sparc/kernel/traps_32.c          | 22 +++++++--------
- arch/sparc/kernel/traps_64.c          | 44 +++++++++++++----------------
- arch/sparc/kernel/unaligned_32.c      |  2 +-
- arch/sparc/mm/fault_32.c              |  2 +-
- arch/sparc/mm/fault_64.c              |  2 +-
- include/linux/sched/signal.h          | 11 ++------
- kernel/signal.c                       | 52 ++++++++++++++++++++++++++---------
- 22 files changed, 276 insertions(+), 88 deletions(-)
+> 
+> Thanks,
+> pq
+> 
 
