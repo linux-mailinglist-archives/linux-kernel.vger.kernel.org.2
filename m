@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54853CAB5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCD83CA8DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245275AbhGOTTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39758 "EHLO mail.kernel.org"
+        id S241328AbhGOTDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:03:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240608AbhGOTEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37A2C613F5;
-        Thu, 15 Jul 2021 19:00:56 +0000 (UTC)
+        id S242263AbhGOSy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:54:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08E6D610C7;
+        Thu, 15 Jul 2021 18:52:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375656;
-        bh=pTQ+NakHpAF9fF1GZfft8UgM0pu0m5bVmwOfu9zlOCM=;
+        s=korg; t=1626375125;
+        bh=P3nul/DVQE1yucoSl3ntix5TE48M+uyV2iDO53DBZQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LSiceCCya+3aS4+BKhobD6UfMYFrwRFpZlpGq3dEg3Fq2H2HQJ2Yv90/PimuBkmB+
-         BSXlde4lEzyZGzkUgddEL6tUwTNjtG7UigNO+Tv5q8/cRL2ZK3QiQHImDQt7J+5xze
-         HqcRj/mmQ2utTS/f+/L/w2xr5Pyi+vT6jAzWGVJs=
+        b=G6Xr/VMV+g0+CGbtuovGdBY6wk45TSzzp8czDkmH4miULBW9FemXJMCXTk6YF7u17
+         o+EVshl4k2il98xwG9l/jiJh47S820N8bf2UZQo860s1+/oPQaMVRd91nFULZHNzlB
+         BhEza/Upub6t47yZr1ffkrUz0dJfC2lThcvU6da8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>, nouveau@lists.freedesktop.org
-Subject: [PATCH 5.12 180/242] drm/nouveau: Dont set allow_fb_modifiers explicitly
+        stable@vger.kernel.org,
+        Timo Sigurdsson <public_timo.s@silentcreek.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 170/215] ata: ahci_sunxi: Disable DIPM
 Date:   Thu, 15 Jul 2021 20:39:02 +0200
-Message-Id: <20210715182624.964000017@linuxfoundation.org>
+Message-Id: <20210715182629.611367855@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Timo Sigurdsson <public_timo.s@silentcreek.de>
 
-commit cee93c028288b9af02919f3bd8593ba61d1e610d upstream.
+commit f6bca4d91b2ea052e917cca3f9d866b5cc1d500a upstream.
 
-Since
+DIPM is unsupported or broken on sunxi. Trying to enable the power
+management policy med_power_with_dipm on an Allwinner A20 SoC based board
+leads to immediate I/O errors and the attached SATA disk disappears from
+the /dev filesystem. A reset (power cycle) is required to make the SATA
+controller or disk work again. The A10 and A20 SoC data sheets and manuals
+don't mention DIPM at all [1], so it's fair to assume that it's simply not
+supported. But even if it was, it should be considered broken and best be
+disabled in the ahci_sunxi driver.
 
-commit 890880ddfdbe256083170866e49c87618b706ac7
-Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Fri Jan 4 09:56:10 2019 +0100
+[1] https://github.com/allwinner-zh/documents/tree/master/
 
-    drm: Auto-set allow_fb_modifiers when given modifiers at plane init
-
-this is done automatically as part of plane init, if drivers set the
-modifier list correctly. Which is the case here.
-
-Note that this fixes an inconsistency: We've set the cap everywhere,
-but only nv50+ supports modifiers. Hence cc stable, but not further
-back then the patch from Paul.
-
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Cc: stable@vger.kernel.org # v5.1 +
-Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: nouveau@lists.freedesktop.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-6-daniel.vetter@ffwll.ch
+Fixes: c5754b5220f0 ("ARM: sunxi: Add support for Allwinner SUNXi SoCs sata to ahci_platform")
+Cc: stable@vger.kernel.org
+Signed-off-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+Tested-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+Link: https://lore.kernel.org/r/20210614072539.3307-1-public_timo.s@silentcreek.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/nouveau/nouveau_display.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/ata/ahci_sunxi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/nouveau/nouveau_display.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_display.c
-@@ -700,7 +700,6 @@ nouveau_display_create(struct drm_device
+--- a/drivers/ata/ahci_sunxi.c
++++ b/drivers/ata/ahci_sunxi.c
+@@ -200,7 +200,7 @@ static void ahci_sunxi_start_engine(stru
+ }
  
- 	dev->mode_config.preferred_depth = 24;
- 	dev->mode_config.prefer_shadow = 1;
--	dev->mode_config.allow_fb_modifiers = true;
- 
- 	if (drm->client.device.info.chipset < 0x11)
- 		dev->mode_config.async_page_flip = false;
+ static const struct ata_port_info ahci_sunxi_port_info = {
+-	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ,
++	.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NCQ | ATA_FLAG_NO_DIPM,
+ 	.pio_mask	= ATA_PIO4,
+ 	.udma_mask	= ATA_UDMA6,
+ 	.port_ops	= &ahci_platform_ops,
 
 
