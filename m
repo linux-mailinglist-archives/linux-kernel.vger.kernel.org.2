@@ -2,272 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C144A3CA29D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098A43CA29E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233463AbhGOQpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbhGOQpO (ORCPT
+        id S233502AbhGOQp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:45:57 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:37666 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232742AbhGOQp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:45:14 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA9BC06175F;
-        Thu, 15 Jul 2021 09:42:19 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id f17so8636301wrt.6;
-        Thu, 15 Jul 2021 09:42:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=UjnH7JFTdfMTc0/hWrQFgZ71PCIq4Fc621eK7BI7/00=;
-        b=eCVo/eNkepVwO96hm0mx42fBP1HO0hFxfMFyJtZcHi+qU7BhmZbJELj4HjEt7WdlTs
-         8MoWmigDQxOq4cwWFvlmfVw/1Ms1NsdFtZLIks68p7BmdJ5hV5S+gw6m6THGcNobt0Dp
-         QP32Svv2O1JsoJGwuGaLYgsGah2TePjWHbwiOYz1TDFyiop2DtIHpIDbyLaYNbSAPq6X
-         sVx1PkigH2a2r6000I7YB5+sMY062FXjBussghiB7cGRwhHtJFCSqQywS7ikzpNmoJ3a
-         RjkyLcFpN55zMiL1Mhv024lAqUFdphy1bhBZG2O/MrdAIzTNKNYBHjUoFge2jmH580/b
-         nNkw==
+        Thu, 15 Jul 2021 12:45:56 -0400
+Received: by mail-lf1-f43.google.com with SMTP id b26so11013675lfo.4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 09:43:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=UjnH7JFTdfMTc0/hWrQFgZ71PCIq4Fc621eK7BI7/00=;
-        b=THf75vUhA6VqKvJhCTMkF6jUZBIS8EzAzU6U3qw+TSvH/RZEnIrkYUcuEotVOJbafy
-         vLlNSaKbLCVaMuhaZHeUkgdwigqZ3ehm3IfF2skLPHU76Qlo0bUpVVTFWWzcXZDNLE2B
-         0OHRTAgs0wbdZedyjkUx0WIhu4br7HVOFxfwPN6tOlykXpfbD36AlHdfXvJ+qTEdCe6O
-         cJnbI1qOnJ+K0KpLEnF9UniRl2SmDGlhMbxcKNNV1IuZetEQ+6zPni0Fc/AHsSqqVGmC
-         mXAnRQO308qr7e3ALf7trFSYTMKa+JuHgKfcmQOfdP3A+9YwdCjSu7lRMA7H5vSDY3eo
-         wUzA==
-X-Gm-Message-State: AOAM531mqfpFy1zzcm/qdtM+xPqeZSWqr1pKN2mHMqvBCx8K0r9Lf69b
-        FocMQTsIlswcp8LL5O5MP+0=
-X-Google-Smtp-Source: ABdhPJxPm/5IJKkHB+pTEWRRjDBELQ80aPXQfTG/P2W2rt66uxjWdqPh4rOII0Eu3lpuYRUHjxZWBw==
-X-Received: by 2002:a5d:5271:: with SMTP id l17mr6641712wrc.239.1626367338270;
-        Thu, 15 Jul 2021 09:42:18 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.gmail.com with ESMTPSA id n2sm6924870wrx.40.2021.07.15.09.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 09:42:17 -0700 (PDT)
-Message-ID: <b758e519c0fe1336ce01d741b2340734faac7af2.camel@gmail.com>
-Subject: Re: [RFC PATCH 03/10] perf workqueue: add threadpool start and stop
- functions
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Date:   Thu, 15 Jul 2021 18:42:16 +0200
-In-Reply-To: <YO7/n4YAy/R08Wss@kernel.org>
-References: <cover.1626177381.git.rickyman7@gmail.com>
-         <118c988358322b9daf69aeb98ff8986748b0dad2.1626177381.git.rickyman7@gmail.com>
-         <YO7/n4YAy/R08Wss@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o0LG8VpqZSNIb8OFmmUa+XlaugtG0sYfQ1H76uCWCu8=;
+        b=VTFHx/WUe69CjFEgfoT3Rv4SJ1KBtZpacihBg7evQluslqZISIlTV+uZkozujigMSE
+         LdbrYpiZ16L5BCezzbczKCru/PcMJhWbr4MoiujLwO0BbN6w3h+hULOZb2bKn9lessyD
+         7R+rYBt3QFqjWwH3Cgqd2kIuDQPjH5w2sd7ejO0xBgX+0lS2+75wKvxbfUYnxqoKQBXo
+         sjdgp1ZXf1tX4q8UV5vM3IwcYy7HyddDRVjYq//OXFbotmHnjMCHxT8U4aBNOqM0DXTC
+         BbTTip2RKTqEQfVCoj62HZgEiZ4JnbIo3pFEuGsK7Oxunsp5mYqS070e8BxKfzVM6EB4
+         MGVw==
+X-Gm-Message-State: AOAM531GVwXUng4Ccetv7wXDKMMpI8Ac1oafH3epcMMhS0AaPLGEkXWb
+        qg9rvRKvZlGAqMehXL+OrUGOwYNT5buURHnFDzd4lR94
+X-Google-Smtp-Source: ABdhPJx6JntxzzycFp9ytICVmP508k+HP4hjE6kblc11AIGmSMf9hfGRnr9pGDGqudrQu/ppk7DHXURB8cWtyFzGQgg=
+X-Received: by 2002:a19:8c09:: with SMTP id o9mr4211739lfd.152.1626367381325;
+ Thu, 15 Jul 2021 09:43:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210715000206.025df9d2@rorschach.local.home>
+In-Reply-To: <20210715000206.025df9d2@rorschach.local.home>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 15 Jul 2021 09:42:49 -0700
+Message-ID: <CAM9d7chv7FvL-EoYOxOkBwRz6jvJEX5Oe1c3GkSyxSPEKPPq3w@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Do no reference char * as a string in histograms
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+Hi Steve,
 
-On Wed, 2021-07-14 at 12:15 -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Jul 13, 2021 at 02:11:14PM +0200, Riccardo Mancini escreveu:
-> > This patch adds the start and stop functions, alongside the thread
-> > function.
-> > Each thread will run until a stop signal is received.
-> > Furthermore, start and stop are added to the test.
-> > 
-> > Thread management is based on the prototype from Alexey:
-> > https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
-> > 
-> > Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-<SNIP>
-> >  
-> >  static int __threadpool__teardown(struct threadpool_struct *pool)
-> >  {
-> > +       int ret;
-> > +
-> > +       ret = stop_threadpool(pool);
-> 
->         int ret = stop_threadpool(pool);
+On Wed, Jul 14, 2021 at 9:02 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+>
+> The histogram logic was allowing events with char * pointers to be used as
+> normal strings. But it was easy to crash the kernel with:
+>
+>  # echo 'hist:keys=filename' > events/syscalls/sys_enter_openat/trigger
+>
+> And open some files, and boom!
+>
+>  BUG: unable to handle page fault for address: 00007f2ced0c3280
+>  #PF: supervisor read access in kernel mode
+>  #PF: error_code(0x0000) - not-present page
+>  PGD 1173fa067 P4D 1173fa067 PUD 1171b6067 PMD 1171dd067 PTE 0
+>  Oops: 0000 [#1] PREEMPT SMP
+>  CPU: 6 PID: 1810 Comm: cat Not tainted 5.13.0-rc5-test+ #61
+>  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
+> v03.03 07/14/2016
+>  RIP: 0010:strlen+0x0/0x20
+>  Code: f6 82 80 2a 0b a9 20 74 11 0f b6 50 01 48 83 c0 01 f6 82 80 2a 0b
+> a9 20 75 ef c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 <80> 3f 00 74
+> 10 48 89 f8 48 83 c0 01 80 38 00 75 f7 48 29 f8 c3
+>
+>  RSP: 0018:ffffbdbf81567b50 EFLAGS: 00010246
+>  RAX: 0000000000000003 RBX: ffff93815cdb3800 RCX: ffff9382401a22d0
+>  RDX: 0000000000000100 RSI: 0000000000000000 RDI: 00007f2ced0c3280
+>  RBP: 0000000000000100 R08: ffff9382409ff074 R09: ffffbdbf81567c98
+>  R10: ffff9382409ff074 R11: 0000000000000000 R12: ffff9382409ff074
+>  R13: 0000000000000001 R14: ffff93815a744f00 R15: 00007f2ced0c3280
+>  FS:  00007f2ced0f8580(0000) GS:ffff93825a800000(0000)
+> knlGS:0000000000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 00007f2ced0c3280 CR3: 0000000107069005 CR4: 00000000001706e0
+>  Call Trace:
+>   event_hist_trigger+0x463/0x5f0
+>   ? find_held_lock+0x32/0x90
+>   ? sched_clock_cpu+0xe/0xd0
+>   ? lock_release+0x155/0x440
+>   ? kernel_init_free_pages+0x6d/0x90
+>   ? preempt_count_sub+0x9b/0xd0
+>   ? kernel_init_free_pages+0x6d/0x90
+>   ? get_page_from_freelist+0x12c4/0x1680
+>   ? __rb_reserve_next+0xe5/0x460
+>   ? ring_buffer_lock_reserve+0x12a/0x3f0
+>   event_triggers_call+0x52/0xe0
+>   ftrace_syscall_enter+0x264/0x2c0
+>   syscall_trace_enter.constprop.0+0x1ee/0x210
+>   do_syscall_64+0x1c/0x80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Where it triggered a fault on strlen(key) where key was the filename.
+>
+> The reason is that filename is a char * to user space, and the histogram
+> code just blindly dereferenced it, with obvious bad results.
+>
+> I originally tried to use strncpy_from_user/kernel_nofault() but found
+> that there's other places that its dereferenced and not worth the effort.
+>
+> Just do not allow "char *" to act like strings.
 
-ok
+It'd lose convenience and expressiveness but it's hard to argue if
+it crashes the kernel.  So,
 
-> 
-> > +       TEST_ASSERT_VAL("threadpool start failure", ret == 0);
-> > +       TEST_ASSERT_VAL("stopped threadpool is ready",
-> > +                       !threadpool_is_ready(pool));
-> > +
-> >         destroy_threadpool(pool);
-> >  
-> >         return 0;
-> > diff --git a/tools/perf/util/workqueue/threadpool.c
-> > b/tools/perf/util/workqueue/threadpool.c
-> > index 70c67569f956a3e2..f4635ff782b9388e 100644
-> > --- a/tools/perf/util/workqueue/threadpool.c
-> > +++ b/tools/perf/util/workqueue/threadpool.c
-> > @@ -4,12 +4,23 @@
-> >  #include <unistd.h>
-> >  #include <errno.h>
-> >  #include <string.h>
-> > +#include <pthread.h>
-> > +#include <signal.h>
-> > +#include <syscall.h>
-> >  #include "debug.h"
-> >  #include "asm/bug.h"
-> >  #include "threadpool.h"
-> >  
-> > +#ifndef HAVE_GETTID
-> > +static inline pid_t gettid(void)
-> > +{
-> > +       return (pid_t)syscall(__NR_gettid);
-> > +}
-> > +#endif
-> 
-> Isn't this defined elsewhere? Yeah, when we decide to move it to
-> tools/lib/workqueue/ we'll need it, but for now, reduce patch size.
-
-No, it's just statically defined in tools/perf/jvmti/jvmti_agent.c.
-I saw there is a libc_compat.h header in tools/include/tools, I could put this
-definition there, and remove the one from jvmti_agent.c.
-
-<SNIP>
-> > +/**
-> > + * wait_thread - receive ack from thread
-> > + *
-> > + * NB: call only from main thread!
-> > + */
-> > +static int wait_thread(struct thread_struct *thread)
-> > +{
-> > +       int res;
-> > +       enum thread_msg msg = THREAD_MSG__UNDEFINED;
-> > +
-> > +       res = read(thread->pipes.from[0], &msg, sizeof(msg));
-> 
->         int res = read(thread->pipes.from[0], &msg, sizeof(msg));
-
-ok
-
-<SNIP>
-> > +/**
-> > + * threadpool_thread - function running on thread
-> > + *
-> > + * This function waits for a signal from main thread to start executing
-> > + * a task.
-> > + * On completion, it will go back to sleep, waiting for another signal.
-> > + * Signals are delivered through pipes.
-> > + */
-> > +static void *threadpool_thread(void *args)
-> 
->    threadpool_function()
-> 
->  ETOMANY 'thread' in a name.
-
-Agreed :)
-
-<SNIP>
-
-> > +/**
-> > + * start_threadpool - start all threads in the pool.
-> > + *
-> > + * The function blocks until all threads are up and running.
-> > + */
-> > +int start_threadpool(struct threadpool_struct *pool)
-> 
-> int threadpool__start(struct threadpool *pool)
-
-ok
-
-> 
-> > +{
-> > +       int err;
-> > +
-> > +       if (pool->status != THREADPOOL_STATUS__STOPPED) {
-> > +               pr_err("threadpool: starting not stopped pool\n");
-> > +               return -1;
-> > +       }
-> > +
-> > +       err = __start_threadpool(pool);
-> > +       pool->status = err ? THREADPOOL_STATUS__ERROR :
-> > THREADPOOL_STATUS__READY;
-> > +       return err;
-> > +}
-> > +
-> > +/**
-> > + * stop_threadpool - stop all threads in the pool.
-> > + *
-> > + * This function blocks waiting for ack from all threads.
-> > + */
-> > +int stop_threadpool(struct threadpool_struct *pool)
-> 
-> int threadpool__stop(struct threadpool *pool)
-
-ok
-
-> 
-> > +{
-> > +       int t, ret, err = 0;
-> > +
-> > +       if (pool->status != THREADPOOL_STATUS__READY) {
-> > +               pr_err("threadpool: stopping not ready pool\n");
-> > +               return -1;
-> > +       }
-> > +
-> > +       for (t = 0; t < pool->nr_threads; t++) {
-> > +               ret = terminate_thread(&pool->threads[t]);
-> > +               if (ret && !err)
-> > +                       err = -1;
-> > +       }
-> > +
-> > +       pool->status = err ? THREADPOOL_STATUS__ERROR :
-> > THREADPOOL_STATUS__STOPPED;
-> > +
-> > +       return err;
-> > +}
-> > +
-> > +/**
-> > + * threadpool_is_ready - check if the threads are running
-> > + */
-> > +bool threadpool_is_ready(struct threadpool_struct *pool)
-> 
-> bool threadpool__is_ready(struct threadpool *pool)
-
-ok
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
 Thanks,
-Riccardo
-
-> 
-> > +{
-> > +       return pool->status == THREADPOOL_STATUS__READY;
-> > +}
-> > diff --git a/tools/perf/util/workqueue/threadpool.h
-> > b/tools/perf/util/workqueue/threadpool.h
-> > index 2b9388c768a0b588..b62cad2b2c5dd331 100644
-> > --- a/tools/perf/util/workqueue/threadpool.h
-> > +++ b/tools/perf/util/workqueue/threadpool.h
-> > @@ -14,6 +14,11 @@ struct task_struct {
-> >  extern struct threadpool_struct *create_threadpool(int n_threads);
-> >  extern void destroy_threadpool(struct threadpool_struct *pool);
-> >  
-> > +extern int start_threadpool(struct threadpool_struct *pool);
-> > +extern int stop_threadpool(struct threadpool_struct *pool);
-> > +
-> >  extern int threadpool_size(struct threadpool_struct *pool);
-> >  
-> > +extern bool threadpool_is_ready(struct threadpool_struct *pool);
-> > +
-> >  #endif /* __WORKQUEUE_THREADPOOL_H */
-> > -- 
-> > 2.31.1
-> > 
-> 
+Namhyung
 
 
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 79e577cbce4c4 ("tracing: Support string type key properly")
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace_events_hist.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index 0207aeed31e6..16a9dfc9fffc 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -1689,7 +1689,9 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>         if (WARN_ON_ONCE(!field))
+>                 goto out;
+>
+> -       if (is_string_field(field)) {
+> +       /* Pointers to strings are just pointers and dangerous to dereference */
+> +       if (is_string_field(field) &&
+> +           (field->filter_type != FILTER_PTR_STRING)) {
+>                 flags |= HIST_FIELD_FL_STRING;
+>
+>                 hist_field->size = MAX_FILTER_STR_VAL;
+> @@ -4495,8 +4497,6 @@ static inline void add_to_key(char *compound_key, void *key,
+>                 field = key_field->field;
+>                 if (field->filter_type == FILTER_DYN_STRING)
+>                         size = *(u32 *)(rec + field->offset) >> 16;
+> -               else if (field->filter_type == FILTER_PTR_STRING)
+> -                       size = strlen(key);
+>                 else if (field->filter_type == FILTER_STATIC_STRING)
+>                         size = field->size;
+>
+> --
+> 2.31.1
+>
