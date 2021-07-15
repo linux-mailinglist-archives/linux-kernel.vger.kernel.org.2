@@ -2,141 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5663CAD41
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821EE3CAD4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344887AbhGOT4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
+        id S245352AbhGOT4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346365AbhGOTvT (ORCPT
+        with ESMTP id S1346607AbhGOTvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:51:19 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A58FC05BD36
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:18:21 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id h4so7525391pgp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:18:21 -0700 (PDT)
+        Thu, 15 Jul 2021 15:51:33 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B818BC014B1E
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:20:06 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id qb4so11060871ejc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 12:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=elaxZZafDjVLiuc49owUeZ0204o65amFxOUC2qpgTKs=;
-        b=Q5HupHoPS4LdRZjI9aLLpJl+EXOusDVJvjG4Iz0vi484LYzH9bZJ+UVYAPgxON53tD
-         3HUhZR3sPDonrp6Rx9HVRmHE8bwdJDYe3XLJrkaVZXuJgNA1I9br3fWYQH0NR8D1K4Bh
-         wpY5QEoNAb+x/8n9tWtUWQ3oLRqyDIIHHMOiw2yPQ7Z+1WXGx+r3bT61UMlsD+Gt9KvD
-         wSosGIOovnI5kM/c/4ZOB1p0adgb7KpSr/rm6WtHEv8nbN2mbwno03HSeDBR3602UD+d
-         /PViOtSgang4WUW2+i6djc478rpbuJrqWD+lJ9Dy+1oTIcTKK+8C3zjn8Ias8jxuPdd5
-         sHkQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ihOfb0tc3xVL5q8N3onToRfW8DW3UJeYLmddd1YjXNw=;
+        b=TNgFfAfMluhQ3/TAFnzR108JbZSD2t2Cg2OhHV+y5IzE4VZgg1atgOSY+17DQV4w2c
+         au925Ps4U0kh4odD9rUI8rvZ8i8ZVpvl5YuAvvi1UdsMvzHYryfDULnip10C99VCRPlP
+         Z3Bd9lXqcSyqY11k16uH3Pyu5BSAfZ2ylIIIzQD7lxNYjEI6xTXO2Uoriff7B5obchay
+         /uynkrtBj0a+NGRdJDqlyJRt4vgm8Stvy/RUVvzDwA6SaqTpF9rlpqCL/iJM5AAMfPws
+         vK/Jz0snmMnTjnh6Q/EQhTW9IdDcJdk3Ezysmcrxz+8s5cfzdi1W0iY7vB6RrgSUeVlG
+         Kb1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=elaxZZafDjVLiuc49owUeZ0204o65amFxOUC2qpgTKs=;
-        b=H0AqlsZYj16qx4BXKOkuPOv/u1nyKS+UINIOMg9Ed3ZvdTsG9WD/P70Ku9jIB+d9aq
-         e7YdKSrbUwslfckHqQvneLRxeHmtB47Af/HLStLNyCsvuoHp0F3tCRBnubzsKPRxJAAY
-         YMvrzFGTDWe3ALNdGyWIbyYU108YJX6HGU+AXpqw7BEYV8Q67b226I7Lp4YX1oH/F2xF
-         sTJpAxWk6fBO3ll6SPcnDoAvBtwmm5JpSBCW/vLRvsxawzcCnZIgLKcjbGCBB6d2DqHg
-         X/YFaBaeaan745h23TQ1VV4wUaWB+Vgwch+nSXNmwtvTgLOtAmics9ODrFU/Vo/uTxUe
-         CIKw==
-X-Gm-Message-State: AOAM531bpDj7uDiJ5fMV2WXVAjwa3Z7CW8VlEYHdg4LBkwUTyh1phq7+
-        HQxS3kJy8Mxnzb2xO0Egv06OZg==
-X-Google-Smtp-Source: ABdhPJxs5P265vYYEPGZ8x+HkOKGVsrc3wav0sXpzToNYrqG5Ockpl2xyO49rMlEI8CkyKvDo3JDEA==
-X-Received: by 2002:a05:6a00:d5f:b029:32c:7264:2f65 with SMTP id n31-20020a056a000d5fb029032c72642f65mr6181751pfv.40.1626376700235;
-        Thu, 15 Jul 2021 12:18:20 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i12sm6029283pjj.9.2021.07.15.12.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 12:18:19 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 19:18:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 06/40] x86/sev: Add helper functions for
- RMPUPDATE and PSMASH instruction
-Message-ID: <YPCJ95ABlMjxnDWX@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-7-brijesh.singh@amd.com>
- <CAMkAt6quzRMiEJ=iYDocRvpaYuNcV5vm=swbowK+KG=j7FjyKA@mail.gmail.com>
- <8ab309cd-8465-d543-55c8-5f6529fe74fd@intel.com>
- <YPCE5D6h7V0iZiX/@google.com>
- <a00bb4f7-ab06-5773-8c8b-3540c75b257a@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ihOfb0tc3xVL5q8N3onToRfW8DW3UJeYLmddd1YjXNw=;
+        b=OIcdxmJkygOBszrBnsdiaTxd7NO3dDhofP3ghe19V+Hmbc0P2KWXWfcGUbWa3fwaQH
+         n+gF+nf/N4Tx0wB6Td9SR6DVf0yf9KxzaWkMVs4GOHAT+ogpuYk3pHJKg2yjzbKrUt6W
+         GUDMHok0+NeBjoaeRby9q0wbh/GAsQY45HGfde//xg54cXCP1b6h/SXVZK8IoCprFvk0
+         Rkj/N0uLbEZgrF6BEQW12Mm/EunfTgFMpuRPSTYBZqEHh1T3829Wvb6kxtir+deAH8dv
+         lygpuppw1E/GgLElPOnjOhj7fPcGq1cga7t1OE0vPz9U1AJxjRsyEW5FkumcQfS9rGHq
+         K36Q==
+X-Gm-Message-State: AOAM531Og+4uoGWJLZkby3kyxKRhaMl+RK2Su2y4eTH5Q+tVmCiZUMVE
+        WVP8VPehwCaEK1Onm8GZasgECDURVxhwVmNjalc=
+X-Google-Smtp-Source: ABdhPJzFJhZDB3GiTntdV5Ju70ZAArFbxHINZyOxXMcxKyzPXkyoe3NFdbQONOO97TDXsNpV1EreDhU1j7OBkscM1O0=
+X-Received: by 2002:a17:906:4a8d:: with SMTP id x13mr7186041eju.349.1626376805330;
+ Thu, 15 Jul 2021 12:20:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a00bb4f7-ab06-5773-8c8b-3540c75b257a@intel.com>
+References: <20210714080652.113381-1-liviu@dudau.co.uk> <CADnq5_OA-em2jM-vmwaM7xxycOS-18EPC0r_myb7REy9b4h_vA@mail.gmail.com>
+In-Reply-To: <CADnq5_OA-em2jM-vmwaM7xxycOS-18EPC0r_myb7REy9b4h_vA@mail.gmail.com>
+From:   Mario Kleiner <mario.kleiner.de@gmail.com>
+Date:   Thu, 15 Jul 2021 21:19:53 +0200
+Message-ID: <CAEsyxyhurQ2vm=xwaRMqT8z+PJ2R60hYXt6kL8HnaB4zwbee3Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix 10bit 4K display on CIK GPUs
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Liviu Dudau <liviu@dudau.co.uk>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021, Dave Hansen wrote:
-> On 7/15/21 11:56 AM, Sean Christopherson wrote:
-> >>>> +       /* Retry if another processor is modifying the RMP entry. */
-> >>>> +       do {
-> >>>> +               /* Binutils version 2.36 supports the PSMASH mnemonic. */
-> >>>> +               asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
-> >>>> +                             : "=a"(ret)
-> >>>> +                             : "a"(spa)
-> >>>> +                             : "memory", "cc");
-> >>>> +       } while (ret == FAIL_INUSE);
-> >>> Should there be some retry limit here for safety? Or do we know that
-> >>> we'll never be stuck in this loop? Ditto for the loop in rmpupdate.
-> >> It's probably fine to just leave this.  While you could *theoretically*
-> >> lose this race forever, it's unlikely to happen in practice.  If it
-> >> does, you'll get an easy-to-understand softlockup backtrace which should
-> >> point here pretty quickly.
-> > But should failure here even be tolerated?  The TDX cases spin on flows that are
-> > _not_ due to (direct) contenion, e.g. a pending interrupt while flushing the
-> > cache or lack of randomness when generating a key.  In this case, there are two
-> > CPUs racing to modify the RMP entry, which implies that the final state of the
-> > RMP entry is not deterministic.
-> 
-> I was envisioning that two different CPUs could try to smash two
-> *different* 4k physical pages, but collide since they share
-> a 2M page.
-> 
-> But, in patch 33, this is called via:
-> 
-> > +		write_lock(&kvm->mmu_lock);
-> > +
-> > +		switch (op) {
-> > +		case SNP_PAGE_STATE_SHARED:
-> > +			rc = snp_make_page_shared(vcpu, gpa, pfn, level);
-> ...
-> 
-> Which should make collisions impossible.  Did I miss another call-site?
+On Thu, Jul 15, 2021 at 6:10 PM Alex Deucher <alexdeucher@gmail.com> wrote:
+>
+> On Wed, Jul 14, 2021 at 4:15 AM Liviu Dudau <liviu@dudau.co.uk> wrote:
+> >
+> > Commit 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at
+> > 30bpp for DCE-11.0.") doesn't seems to have fixed 10bit 4K rendering over
+> > DisplayPort for CIK GPUs. On my machine with a HAWAII GPU I get a broken
+> > image that looks like it has an effective resolution of 1920x1080 but
+> > scaled up in an irregular way. Reverting the commit or applying this
+> > patch fixes the problem on v5.14-rc1.
+> >
+> > Fixes: 72a7cf0aec0c ("drm/amd/display: Keep linebuffer pixel depth at 30bpp for DCE-11.0.")
+> > Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
+>
+> Harry or Mario any ideas?  Maybe we need finer grained DCE version
+> checking?  I don't remember all of the caveats of this stuff.  DCE11
+> and older is getting to be pretty old at this point.  I can just apply
+> this if you don't have any insights.
+>
+> Alex
+>
 
-Ya, there's more, e.g. sev_snp_write_page_begin() and snp_handle_rmp_page_fault(),
-both of which run without holding mmu_lock.  The PSMASH operation isn't too
-concerning, but the associated RMPUDATE is most definitely a concern, e.g. if two
-vCPUs are trying to access different variants of a page.  It's ok if KVM's
-"response" in such a situation does weird things to the guest, but one of the
-two operations should "win", which I don't think is guaranteed if multiple RMP
-violations are racing.
+Hi Alex
 
-I'll circle back to this patch after I've gone through the KVM MMU changes.
+I'd be fine with applying this. As my original commit says, photometer
+measurements showed that increasing the line buffer depth was only
+needed for my DCN-1 RavenRidge, not for my DCE-11.2 Polaris11 or a
+DCE-8.3 cik, so this should probably not cause harm to the increased
+precision modes.
+
+Note that given the hardware and USB-C/DP-HDMI adapters i have, I only
+tested this on a 2560x1440@144 Hz DP monitor with DCN-1, DCE-11.2, and
+a 2560x1440@100 Hz HDMI monitor iirc with DCN-1, DCE-8.3, and i think
+on a 2880x1800@60 Hz MBP Retina eDP panel with DCE-11.2. These are the
+highest resolution/framerate monitors I have atm.I don't have access
+to any 4k monitors, so maybe the problem is somehow specific to such
+high resolutions? Maybe somewhere else in the code something would
+need to be adapted? Lacking actual hw docs, my coding here is by
+pattern matching against existing DC code, guessing and testing on my
+limited hw samples.
+
+Acked-by: Mario Kleiner <mario.kleiner.de@gmail.com>
+
+-mario
+
+> > ---
+> >  drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+> > index a6a67244a322e..1596f6b7fed7c 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+> > +++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+> > @@ -1062,7 +1062,7 @@ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+> >          * so use only 30 bpp on DCE_VERSION_11_0. Testing with DCE 11.2 and 8.3
+> >          * did not show such problems, so this seems to be the exception.
+> >          */
+> > -       if (plane_state->ctx->dce_version != DCE_VERSION_11_0)
+> > +       if (plane_state->ctx->dce_version > DCE_VERSION_11_0)
+> >                 pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_36BPP;
+> >         else
+> >                 pipe_ctx->plane_res.scl_data.lb_params.depth = LB_PIXEL_DEPTH_30BPP;
+> > --
+> > 2.32.0
+> >
+> > _______________________________________________
+> > amd-gfx mailing list
+> > amd-gfx@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
