@@ -2,201 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829AA3CADB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B603CADC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236045AbhGOUSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:18:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242943AbhGOUSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:18:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A72A613C4;
-        Thu, 15 Jul 2021 20:15:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626380110;
-        bh=Zp6r+KKce1IAM9OCmrlQzhCa/foaXmbrdVJoieCFVVI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EvgPd0v7+LgkbdRdR8KCuil+lB177MJpFdy3gruYN7XupQ8HIaoQO+B2/SPvAjVQ0
-         kpcVX/r6Y4XoGW4tca2ET730bpz1ca/Nvhu43DcmCex5fPfn0kOMuR786cf9OCBrQ7
-         Y/el5cmtDPLOto0raljwyMYqUq0X9Z4xyCsaCBki570cOUC5yFhrO72RMQnnMvehxo
-         keO1tWcAym5clREMrTiTEVbwONFIjE3cCIzYXnJ5iEcUWb5bKpwvWVGlz/wqsLFeEJ
-         ImsVexSivL9YRg6FEGJycqsHQbiPd67GzkGsBKKfDTNf/L7AYADC2JAZHhFdkdxHUu
-         ec22abOgK3L7g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BFCD6403F2; Thu, 15 Jul 2021 17:15:07 -0300 (-03)
-Date:   Thu, 15 Jul 2021 17:15:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 09/20] perf report: free generated help strings for sort
- option
-Message-ID: <YPCXSxlMBMOCJu5J@kernel.org>
-References: <cover.1626343282.git.rickyman7@gmail.com>
- <a38b13f02812a8a6759200b9063c6191337f44d4.1626343282.git.rickyman7@gmail.com>
+        id S242682AbhGOUVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:21:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33664 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244476AbhGOUS5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 16:18:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626380163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8MXCY9EtHu8l00OeGEX9KSWIeSxJZ91wjW9WQpZLBho=;
+        b=C3swhgjXGtkiR+bvTqDo8b8pWCLqSxPCi0R49QXG5yM+PZCfPi+h3GQx8e2raHEu9Grmjs
+        rniO3U89LHlAX4G2sRz+pw54vZJVWtsSnW2B8XqMTVkdpxYFrNlegC6qniXG1aTpIKQ4o9
+        +AChKYofxIeLi1QfeigJg1Ns/Asjnmo=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-rCIPxT3VPlKTXlItnBpTvQ-1; Thu, 15 Jul 2021 16:16:02 -0400
+X-MC-Unique: rCIPxT3VPlKTXlItnBpTvQ-1
+Received: by mail-qt1-f198.google.com with SMTP id t6-20020ac80dc60000b029024e988e8277so4899691qti.23
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:16:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8MXCY9EtHu8l00OeGEX9KSWIeSxJZ91wjW9WQpZLBho=;
+        b=TQesIiXtzt70cxVm6Kfw4XBeQYQ4tMy8y7iF136eJLBVrypM1mNM3b5Nb0vI7WmbiV
+         2lTO1UMUBkbjz0go3m47GekZfwh7VdIv8jIQrz/61/q1RCAUt1+mW77eAgF7QStnMoyN
+         HvPg2ejUslUi9g+6Gr16NehuJrV92rcn27n9SmRJIQL9OBYPwI47h35m2p0+WHD19YUe
+         ZrJ4PmQknwiT+8uxrJUDE66U95hWr/pSn0Fv1ikXoDyUdXIxtQprp5wNsOnDhMpGnDkM
+         S3eoxDUKMOpLVJK86qVw8Mtlwf5kv4C7IW5PaJt6CAwd9mQLzA8vLOAPXdO99SvQ6Xzk
+         1SmA==
+X-Gm-Message-State: AOAM530kLI0fyJB6m9Es/WS2tivt4+GFly7Nn6aVGUufErmqC51wDzat
+        3g9xMbaHtQEAotoRg3aOtm3BJESL3P8TD+x3XmMPe0ksBX6YDsyB4GSPukll5P/mHMTaurfPxyY
+        lHI5wd+oZ9ECdO3kDUjQkH4JLA0uyFmAJ+Qcn61HuxF5wdxNvhhU+PSO6B5LDtEAvff8gcIBi6g
+        ==
+X-Received: by 2002:a0c:a997:: with SMTP id a23mr6444410qvb.48.1626380161875;
+        Thu, 15 Jul 2021 13:16:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnkScJAMZERLCDilAOd1Xvi8Q1pdCfHfDvLaxpg8/u7+h0sfEcZ0u5r/v/g1/qT6Q3G9NlSQ==
+X-Received: by 2002:a0c:a997:: with SMTP id a23mr6444371qvb.48.1626380161571;
+        Thu, 15 Jul 2021 13:16:01 -0700 (PDT)
+Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id x15sm2931686qkm.66.2021.07.15.13.16.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 13:16:01 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Alistair Popple <apopple@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>, peterx@redhat.com,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>,
+        Hugh Dickins <hughd@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: [PATCH v5 11/26] shmem/userfaultfd: Allow wr-protect none pte for file-backed mem
+Date:   Thu, 15 Jul 2021 16:15:58 -0400
+Message-Id: <20210715201558.211445-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210715201422.211004-1-peterx@redhat.com>
+References: <20210715201422.211004-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a38b13f02812a8a6759200b9063c6191337f44d4.1626343282.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 15, 2021 at 06:07:14PM +0200, Riccardo Mancini escreveu:
-> ASan reports the memory leak of the strings allocated by sort_help when
-> running perf report.
-> 
-> This patch changes the returned pointer to char* (instead of const char*),
-> saves it in a temporary variable, and finally deallocates it at function
-> exit.
+File-backed memory differs from anonymous memory in that even if the pte is
+missing, the data could still resides either in the file or in page/swap cache.
+So when wr-protect a pte, we need to consider none ptes too.
 
-Fixes: 702fb9b415e7c99b ("perf report: Show all sort keys in help output")
+We do that by installing the uffd-wp special swap pte as a marker.  So when
+there's a future write to the pte, the fault handler will go the special path
+to first fault-in the page as read-only, then report to userfaultfd server with
+the wr-protect message.
 
-Thanks, applied.
+On the other hand, when unprotecting a page, it's also possible that the pte
+got unmapped but replaced by the special uffd-wp marker.  Then we'll need to be
+able to recover from a uffd-wp special swap pte into a none pte, so that the
+next access to the page will fault in correctly as usual when trigger the fault
+handler next time, rather than sending a uffd-wp message.
 
-- Arnaldo
+Special care needs to be taken throughout the change_protection_range()
+process.  Since now we allow user to wr-protect a none pte, we need to be able
+to pre-populate the page table entries if we see !anonymous && MM_CP_UFFD_WP
+requests, otherwise change_protection_range() will always skip when the pgtable
+entry does not exist.
 
+Note that this patch only covers the small pages (pte level) but not covering
+any of the transparent huge pages yet.  But this will be a base for thps too.
+
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ mm/mprotect.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index 4b743394afbe..8ec85b276975 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -29,6 +29,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/mm_inline.h>
+ #include <linux/pgtable.h>
++#include <linux/userfaultfd_k.h>
+ #include <asm/cacheflush.h>
+ #include <asm/mmu_context.h>
+ #include <asm/tlbflush.h>
+@@ -186,6 +187,32 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+ 				set_pte_at(vma->vm_mm, addr, pte, newpte);
+ 				pages++;
+ 			}
++		} else if (unlikely(is_swap_special_pte(oldpte))) {
++			if (uffd_wp_resolve && !vma_is_anonymous(vma) &&
++			    pte_swp_uffd_wp_special(oldpte)) {
++				/*
++				 * This is uffd-wp special pte and we'd like to
++				 * unprotect it.  What we need to do is simply
++				 * recover the pte into a none pte; the next
++				 * page fault will fault in the page.
++				 */
++				pte_clear(vma->vm_mm, addr, pte);
++				pages++;
++			}
++		} else {
++			/* It must be an none page, or what else?.. */
++			WARN_ON_ONCE(!pte_none(oldpte));
++			if (unlikely(uffd_wp && !vma_is_anonymous(vma))) {
++				/*
++				 * For file-backed mem, we need to be able to
++				 * wr-protect even for a none pte!  Because
++				 * even if the pte is null, the page/swap cache
++				 * could exist.
++				 */
++				set_pte_at(vma->vm_mm, addr, pte,
++					   pte_swp_mkuffd_wp_special(vma));
++				pages++;
++			}
+ 		}
+ 	} while (pte++, addr += PAGE_SIZE, addr != end);
+ 	arch_leave_lazy_mmu_mode();
+@@ -219,6 +246,25 @@ static inline int pmd_none_or_clear_bad_unless_trans_huge(pmd_t *pmd)
+ 	return 0;
+ }
  
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/builtin-report.c | 33 ++++++++++++++++++++++-----------
->  tools/perf/util/sort.c      |  2 +-
->  tools/perf/util/sort.h      |  2 +-
->  3 files changed, 24 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> index 6386af6a2612367c..dc0364f671b97d26 100644
-> --- a/tools/perf/builtin-report.c
-> +++ b/tools/perf/builtin-report.c
-> @@ -1175,6 +1175,8 @@ int cmd_report(int argc, const char **argv)
->  		.annotation_opts	 = annotation__default_options,
->  		.skip_empty		 = true,
->  	};
-> +	char *sort_order_help = sort_help("sort by key(s):");
-> +	char *field_order_help = sort_help("output field(s): overhead period sample ");
->  	const struct option options[] = {
->  	OPT_STRING('i', "input", &input_name, "file",
->  		    "input file name"),
-> @@ -1209,9 +1211,9 @@ int cmd_report(int argc, const char **argv)
->  	OPT_BOOLEAN(0, "header-only", &report.header_only,
->  		    "Show only data header."),
->  	OPT_STRING('s', "sort", &sort_order, "key[,key2...]",
-> -		   sort_help("sort by key(s):")),
-> +		   sort_order_help),
->  	OPT_STRING('F', "fields", &field_order, "key[,keys...]",
-> -		   sort_help("output field(s): overhead period sample ")),
-> +		   field_order_help),
->  	OPT_BOOLEAN(0, "show-cpu-utilization", &symbol_conf.show_cpu_utilization,
->  		    "Show sample percentage for different cpu modes"),
->  	OPT_BOOLEAN_FLAG(0, "showcpuutilization", &symbol_conf.show_cpu_utilization,
-> @@ -1344,11 +1346,11 @@ int cmd_report(int argc, const char **argv)
->  	char sort_tmp[128];
->  
->  	if (ret < 0)
-> -		return ret;
-> +		goto exit;
->  
->  	ret = perf_config(report__config, &report);
->  	if (ret)
-> -		return ret;
-> +		goto exit;
->  
->  	argc = parse_options(argc, argv, options, report_usage, 0);
->  	if (argc) {
-> @@ -1362,8 +1364,10 @@ int cmd_report(int argc, const char **argv)
->  		report.symbol_filter_str = argv[0];
->  	}
->  
-> -	if (annotate_check_args(&report.annotation_opts) < 0)
-> -		return -EINVAL;
-> +	if (annotate_check_args(&report.annotation_opts) < 0) {
-> +		ret = -EINVAL;
-> +		goto exit;
-> +	}
->  
->  	if (report.mmaps_mode)
->  		report.tasks_mode = true;
-> @@ -1377,12 +1381,14 @@ int cmd_report(int argc, const char **argv)
->  	if (symbol_conf.vmlinux_name &&
->  	    access(symbol_conf.vmlinux_name, R_OK)) {
->  		pr_err("Invalid file: %s\n", symbol_conf.vmlinux_name);
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto exit;
->  	}
->  	if (symbol_conf.kallsyms_name &&
->  	    access(symbol_conf.kallsyms_name, R_OK)) {
->  		pr_err("Invalid file: %s\n", symbol_conf.kallsyms_name);
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto exit;
->  	}
->  
->  	if (report.inverted_callchain)
-> @@ -1406,12 +1412,14 @@ int cmd_report(int argc, const char **argv)
->  
->  repeat:
->  	session = perf_session__new(&data, false, &report.tool);
-> -	if (IS_ERR(session))
-> -		return PTR_ERR(session);
-> +	if (IS_ERR(session)) {
-> +		ret = PTR_ERR(session);
-> +		goto exit;
-> +	}
->  
->  	ret = evswitch__init(&report.evswitch, session->evlist, stderr);
->  	if (ret)
-> -		return ret;
-> +		goto exit;
->  
->  	if (zstd_init(&(session->zstd_data), 0) < 0)
->  		pr_warning("Decompression initialization failed. Reported data may be incomplete.\n");
-> @@ -1646,5 +1654,8 @@ int cmd_report(int argc, const char **argv)
->  
->  	zstd_fini(&(session->zstd_data));
->  	perf_session__delete(session);
-> +exit:
-> +	free(sort_order_help);
-> +	free(field_order_help);
->  	return ret;
->  }
-> diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-> index 88ce47f2547e3558..568a88c001c6cb5a 100644
-> --- a/tools/perf/util/sort.c
-> +++ b/tools/perf/util/sort.c
-> @@ -3370,7 +3370,7 @@ static void add_hpp_sort_string(struct strbuf *sb, struct hpp_dimension *s, int
->  		add_key(sb, s[i].name, llen);
->  }
->  
-> -const char *sort_help(const char *prefix)
-> +char *sort_help(const char *prefix)
->  {
->  	struct strbuf sb;
->  	char *s;
-> diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
-> index 87a092645aa72e41..b67c469aba79587f 100644
-> --- a/tools/perf/util/sort.h
-> +++ b/tools/perf/util/sort.h
-> @@ -302,7 +302,7 @@ void reset_output_field(void);
->  void sort__setup_elide(FILE *fp);
->  void perf_hpp__set_elide(int idx, bool elide);
->  
-> -const char *sort_help(const char *prefix);
-> +char *sort_help(const char *prefix);
->  
->  int report_parse_ignore_callees_opt(const struct option *opt, const char *arg, int unset);
->  
-> -- 
-> 2.31.1
-> 
-
++/*
++ * File-backed vma allows uffd wr-protect upon none ptes, because even if pte
++ * is missing, page/swap cache could exist.  When that happens, the wr-protect
++ * information will be stored in the page table entries with the marker (e.g.,
++ * PTE_SWP_UFFD_WP_SPECIAL).  Prepare for that by always populating the page
++ * tables to pte level, so that we'll install the markers in change_pte_range()
++ * where necessary.
++ *
++ * Note that we only need to do this in pmd level, because if pmd does not
++ * exist, it means the whole range covered by the pmd entry (of a pud) does not
++ * contain any valid data but all zeros.  Then nothing to wr-protect.
++ */
++#define  change_protection_prepare(vma, pmd, addr, cp_flags)		\
++	do {								\
++		if (unlikely((cp_flags & MM_CP_UFFD_WP) && pmd_none(*pmd) && \
++			     !vma_is_anonymous(vma)))			\
++			WARN_ON_ONCE(pte_alloc(vma->vm_mm, pmd));	\
++	} while (0)
++
+ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
+ 		pud_t *pud, unsigned long addr, unsigned long end,
+ 		pgprot_t newprot, unsigned long cp_flags)
+@@ -237,6 +283,8 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
+ 
+ 		next = pmd_addr_end(addr, end);
+ 
++		change_protection_prepare(vma, pmd, addr, cp_flags);
++
+ 		/*
+ 		 * Automatic NUMA balancing walks the tables with mmap_lock
+ 		 * held for read. It's possible a parallel update to occur
 -- 
+2.31.1
 
-- Arnaldo
