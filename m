@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9D03CAA91
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8924E3CA9DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244074AbhGOTOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:14:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37174 "EHLO mail.kernel.org"
+        id S244011AbhGOTKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:10:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242668AbhGOS7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A039601FE;
-        Thu, 15 Jul 2021 18:56:56 +0000 (UTC)
+        id S242701AbhGOS7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:59:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF4C610C7;
+        Thu, 15 Jul 2021 18:56:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375417;
-        bh=6Pe3Em6kE4JJlEwA3HTV1164fS7XY/99EINE0V7ZPww=;
+        s=korg; t=1626375419;
+        bh=KZaRLMtRE0FWoJ0aN/q7uQVN7VWE0e1ynuofh4g/AEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dzgrHjStwqRte7+O+q3ca+6K4oaaYTPm/wr56FP7E7hcZ2KC2rY03W233RQem/qdp
-         WSxuJTtQJzIf+WOUfIrembK/Px0qGwiSi3SF5KJe0Ak0y0AhRje76xM2Ekb63kIbs3
-         5ofqW17DoRjJmPKsaz/aTvilLlt8bGnwgdgYctN0=
+        b=RVnIU08qL/B74nKqc7tVZq7SptYCHXikDStjnSa+W8XDqg2suLf+9l+OAUzrxgm/2
+         QzGNkrroxw6j+aAEtRVGtOakMQZPNuiWRSMIb2Vv8mTQ16FJgiOKeSazCUPQLdSJpQ
+         DMvm1wO1qQLLapn/Rced3a/BQFCIUEqSNWZQO8RY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 079/242] drm/amdkfd: use allowed domain for vmbo validation
-Date:   Thu, 15 Jul 2021 20:37:21 +0200
-Message-Id: <20210715182606.879659667@linuxfoundation.org>
+Subject: [PATCH 5.12 080/242] fjes: check return value after calling platform_get_resource()
+Date:   Thu, 15 Jul 2021 20:37:22 +0200
+Message-Id: <20210715182607.074549182@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -42,79 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nirmoy Das <nirmoy.das@amd.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit bc05716d4fdd065013633602c5960a2bf1511b9c ]
+[ Upstream commit f18c11812c949553d2b2481ecaa274dd51bed1e7 ]
 
-Fixes handling when page tables are in system memory.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-v3: remove struct amdgpu_vm_parser.
-v2: remove unwanted variable.
-    change amdgpu_amdkfd_validate instead of amdgpu_amdkfd_bo_validate.
-
-Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  | 21 ++++---------------
- 1 file changed, 4 insertions(+), 17 deletions(-)
+ drivers/net/fjes/fjes_main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-index ac0a432a9bf7..3c3f05d1f4da 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-@@ -49,12 +49,6 @@ static struct {
- 	spinlock_t mem_limit_lock;
- } kfd_mem_limit;
+diff --git a/drivers/net/fjes/fjes_main.c b/drivers/net/fjes/fjes_main.c
+index 466622664424..e449d9466122 100644
+--- a/drivers/net/fjes/fjes_main.c
++++ b/drivers/net/fjes/fjes_main.c
+@@ -1262,6 +1262,10 @@ static int fjes_probe(struct platform_device *plat_dev)
+ 	adapter->interrupt_watch_enable = false;
  
--/* Struct used for amdgpu_amdkfd_bo_validate */
--struct amdgpu_vm_parser {
--	uint32_t        domain;
--	bool            wait;
--};
--
- static const char * const domain_bit_to_string[] = {
- 		"CPU",
- 		"GTT",
-@@ -337,11 +331,9 @@ validate_fail:
- 	return ret;
- }
- 
--static int amdgpu_amdkfd_validate(void *param, struct amdgpu_bo *bo)
-+static int amdgpu_amdkfd_validate_vm_bo(void *_unused, struct amdgpu_bo *bo)
- {
--	struct amdgpu_vm_parser *p = param;
--
--	return amdgpu_amdkfd_bo_validate(bo, p->domain, p->wait);
-+	return amdgpu_amdkfd_bo_validate(bo, bo->allowed_domains, false);
- }
- 
- /* vm_validate_pt_pd_bos - Validate page table and directory BOs
-@@ -355,20 +347,15 @@ static int vm_validate_pt_pd_bos(struct amdgpu_vm *vm)
- {
- 	struct amdgpu_bo *pd = vm->root.base.bo;
- 	struct amdgpu_device *adev = amdgpu_ttm_adev(pd->tbo.bdev);
--	struct amdgpu_vm_parser param;
- 	int ret;
- 
--	param.domain = AMDGPU_GEM_DOMAIN_VRAM;
--	param.wait = false;
--
--	ret = amdgpu_vm_validate_pt_bos(adev, vm, amdgpu_amdkfd_validate,
--					&param);
-+	ret = amdgpu_vm_validate_pt_bos(adev, vm, amdgpu_amdkfd_validate_vm_bo, NULL);
- 	if (ret) {
- 		pr_err("failed to validate PT BOs\n");
- 		return ret;
- 	}
- 
--	ret = amdgpu_amdkfd_validate(&param, pd);
-+	ret = amdgpu_amdkfd_validate_vm_bo(NULL, pd);
- 	if (ret) {
- 		pr_err("failed to validate PD\n");
- 		return ret;
+ 	res = platform_get_resource(plat_dev, IORESOURCE_MEM, 0);
++	if (!res) {
++		err = -EINVAL;
++		goto err_free_control_wq;
++	}
+ 	hw->hw_res.start = res->start;
+ 	hw->hw_res.size = resource_size(res);
+ 	hw->hw_res.irq = platform_get_irq(plat_dev, 0);
 -- 
 2.30.2
 
