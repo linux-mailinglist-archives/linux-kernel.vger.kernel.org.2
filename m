@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB7F3CA8D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893A03CAB59
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238569AbhGOTDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:03:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59176 "EHLO mail.kernel.org"
+        id S245233AbhGOTT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242212AbhGOSy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A80B8613C4;
-        Thu, 15 Jul 2021 18:52:02 +0000 (UTC)
+        id S234996AbhGOTEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E110C613F7;
+        Thu, 15 Jul 2021 19:00:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375123;
-        bh=ABPESi/tvCvsDdS+Q26E3nZ0CcXREcFW90/hodmz2z0=;
+        s=korg; t=1626375654;
+        bh=jSKqkZ+UU4PmhEyzCaosrPO3qLRJWJGjTNDb4ZWQLdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TwjE8jSWtHAB/HfoQTccCDNSjNFFrs5lbIUGPtylMD6nD9Hl51nwIWihA9NEsqTKK
-         VS06c9N/NbFT8eCM8BdEQI839QR/n6FiwGJ/tPD7+BeRd73ZaamkrTt6vI/vHScS0r
-         kQEnnGe1JQKXp6+NBB4ZfbJbPGKfCEHqyoLw+Ccc=
+        b=1XEGRvK8Wgd0xkYcU4miEWro2hm2+jppMbsJ7Tp1R8m1LtZnbo+F/RYLp4U8cKdtL
+         GHVFclo1q35lXrYyPvM0Hf2/gEgSjsn7CteReGwCjuLmEp4Pn5opm8pTTWhvYPUvQh
+         U+bURhYGvPwESSt5NE0G3S7jtwtRvzrPGqrIAVnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Loehle <cloehle@hyperstone.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 169/215] mmc: core: Allow UHS-I voltage switch for SDSC cards if supported
+        stable@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Brian Starkey <brian.starkey@arm.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH 5.12 179/242] drm/arm/malidp: Always list modifiers
 Date:   Thu, 15 Jul 2021 20:39:01 +0200
-Message-Id: <20210715182629.456022986@linuxfoundation.org>
+Message-Id: <20210715182624.784336851@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Löhle <CLoehle@hyperstone.com>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit 09247e110b2efce3a104e57e887c373e0a57a412 upstream.
+commit 26c3e7fd5a3499e408915dadae5d5360790aae9a upstream.
 
-While initializing an UHS-I SD card, the mmc core first tries to switch to
-1.8V I/O voltage, before it continues to change the settings for the bus
-speed mode.
+Even when all we support is linear, make that explicit. Otherwise the
+uapi is rather confusing.
 
-However, the current behaviour in the mmc core is inconsistent and doesn't
-conform to the SD spec. More precisely, an SD card that supports UHS-I must
-set both the SD_OCR_CCS bit and the SD_OCR_S18R bit in the OCR register
-response. When switching to 1.8V I/O the mmc core correctly checks both of
-the bits, but only the SD_OCR_S18R bit when changing the settings for bus
-speed mode.
-
-Rather than actually fixing the code to confirm to the SD spec, let's
-deliberately deviate from it by requiring only the SD_OCR_S18R bit for both
-parts. This enables us to support UHS-I for SDSC cards (outside spec),
-which is actually being supported by some existing SDSC cards. Moreover,
-this fixes the inconsistent behaviour.
-
-Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-Link: https://lore.kernel.org/r/CWXP265MB26803AE79E0AD5ED083BF2A6C4529@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+Acked-by: Liviu Dudau <liviu.dudau@arm.com>
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 Cc: stable@vger.kernel.org
-[Ulf: Rewrote commit message and comments to clarify the changes]
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
+Cc: Liviu Dudau <liviu.dudau@arm.com>
+Cc: Brian Starkey <brian.starkey@arm.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-2-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/core/sd.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/arm/malidp_planes.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -847,11 +847,13 @@ try_again:
- 		return err;
+--- a/drivers/gpu/drm/arm/malidp_planes.c
++++ b/drivers/gpu/drm/arm/malidp_planes.c
+@@ -922,6 +922,11 @@ static const struct drm_plane_helper_fun
+ 	.atomic_disable = malidp_de_plane_disable,
+ };
  
- 	/*
--	 * In case CCS and S18A in the response is set, start Signal Voltage
--	 * Switch procedure. SPI mode doesn't support CMD11.
-+	 * In case the S18A bit is set in the response, let's start the signal
-+	 * voltage switch procedure. SPI mode doesn't support CMD11.
-+	 * Note that, according to the spec, the S18A bit is not valid unless
-+	 * the CCS bit is set as well. We deliberately deviate from the spec in
-+	 * regards to this, which allows UHS-I to be supported for SDSC cards.
- 	 */
--	if (!mmc_host_is_spi(host) && rocr &&
--	   ((*rocr & 0x41000000) == 0x41000000)) {
-+	if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
- 		err = mmc_set_uhs_voltage(host, pocr);
- 		if (err == -EAGAIN) {
- 			retries--;
++static const uint64_t linear_only_modifiers[] = {
++	DRM_FORMAT_MOD_LINEAR,
++	DRM_FORMAT_MOD_INVALID
++};
++
+ int malidp_de_planes_init(struct drm_device *drm)
+ {
+ 	struct malidp_drm *malidp = drm->dev_private;
+@@ -985,8 +990,8 @@ int malidp_de_planes_init(struct drm_dev
+ 		 */
+ 		ret = drm_universal_plane_init(drm, &plane->base, crtcs,
+ 				&malidp_de_plane_funcs, formats, n,
+-				(id == DE_SMART) ? NULL : modifiers, plane_type,
+-				NULL);
++				(id == DE_SMART) ? linear_only_modifiers : modifiers,
++				plane_type, NULL);
+ 
+ 		if (ret < 0)
+ 			goto cleanup;
 
 
