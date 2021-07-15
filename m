@@ -2,316 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98243C9FF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0AEE3C9FF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234968AbhGONph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:45:37 -0400
-Received: from mail-bn8nam12on2086.outbound.protection.outlook.com ([40.107.237.86]:2657
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231854AbhGONpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:45:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FKTVjO0RefRdgXSE/rrHRYB/iPv1P5afaPr7Oy3Pg8jzNRfHDfBfT4qwnMKRjVLZFeLaQ7mGbyikT7ebMXtGiGCQg31Q7bu8Yoc3TpMbvpQTj5vIhiIiZ+MeNTvu/dEHGRpKmovRdFZ7Qu6BLAkEDSJoSFExtSWQg5JELBveI99PHLnGNOQROmnMilpNPds+ONDdquzFrXVkR6gtrl8+v3vTkyhoMtB+3HJ1skL9en31D3uiE2JkSNXEgmyXEokobFUf33jfZFb6PwAnuyWBgyRSZ8NHAaj+nIqq4hVLWgFwHaitKAbpjOHcARtKogFMpJ0WIbBZ1aORmbsrte6+0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p5mLd+BB0waimYb5/L+uimUn9geNsdDU3VnD12PIv9g=;
- b=PlraZy2nb5cffrMLu7kPCDHLuJGekpElrq69Sl9U0rJEo/xSXKPeCDv4xYLiY1KTcqd6yR9st9Pt0TSZ2RxrCNkqsodHdFEfbEmaxno08mV/fI7IpvF5a5onoJHpjxmpoSl+TFiNzghRb5h9XGB9x9/TNLinPSzsaA5aYWNmyTXFizgEa65OisUhVcdVYppYU2qUSJyGMEpXreOTBOFpGSE5luOfgqqGSlKEMX07j5slIfgo4Je7fXW3S+fUUJgfZczgO7788iy1P+uHDrQWrNAQBraFvkmbslMjyB5htBtoqE0mHmkkTy1/u0Pr2405Ndb78w7XpYM/4NUnZ0Yqzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p5mLd+BB0waimYb5/L+uimUn9geNsdDU3VnD12PIv9g=;
- b=rUo0ogx9rkTwdrcaPWW1lOydwVgAuS3WoN5zDb3C2G1qP77BY6r29pCzBiG6WCLUnK8kE2t3w7bv0HbLKhoaTsv8t96SykTdsfcMPxb29OdrRvUO4pfcZKLPP8zAWTWTvZ57lKt8x6Kl/kPuPZV3LYf3BCzlfJbO/DvFnXjJtd8=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM4PR12MB5309.namprd12.prod.outlook.com (2603:10b6:5:39d::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Thu, 15 Jul
- 2021 13:42:40 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::73:2581:970b:3208]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::73:2581:970b:3208%3]) with mapi id 15.20.4331.024; Thu, 15 Jul 2021
- 13:42:40 +0000
-Subject: Re: [PATCH Part2 RFC v4 01/40] KVM: SVM: Add support to handle AP
- reset MSR protocol
-To:     Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-2-brijesh.singh@amd.com> <YO9GWVsZmfXJ4BRl@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <e634061d-78f4-dcb2-b7e5-ebcb25585765@amd.com>
-Date:   Thu, 15 Jul 2021 08:42:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YO9GWVsZmfXJ4BRl@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR13CA0171.namprd13.prod.outlook.com
- (2603:10b6:806:28::26) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        id S235656AbhGONr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:47:56 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38590 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229832AbhGONry (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 09:47:54 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FDXQrx194288;
+        Thu, 15 Jul 2021 09:45:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=89j+iXcqJQ66/ABNZWU6Ibb4jC9YJkVQfMgrDl98lJ4=;
+ b=Pqu58iqGJ47geeZrjofKqwA9sTXEs4pfngRetgNn9Dm/9ag/FV1HcN+5TROIqw8NLZjx
+ tQ2L2ApbhayLQYxG6sG1KhABpfei2pKbGlLA5K/sUGMuzVTAvFRigAdXRr0dbJ36LKO3
+ Ki5+XKASKp4W3cV9EbccJ7s+QbLaa/A84WCxq8lAAZwg0Jk+CxhjaTPePEIsIY17d6a8
+ pmntEBBjjYPrCa+bQeR6E2GgtObd+M1cScd1aRdvU714fh2lV0YwMHJsf0V5Wjs84qVD
+ exLaFiFDoPkscex6raglTvYf3sZ8c8S8C1S1FISw6H92ZeTsNzxvC1xShP3yLrKW+o1W Hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39tmn0b56a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 09:45:00 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16FDXQO9194371;
+        Thu, 15 Jul 2021 09:44:59 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39tmn0b543-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 09:44:59 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16FDi4NR002850;
+        Thu, 15 Jul 2021 13:44:57 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 39q2thaa3h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 13:44:57 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16FDistP35455436
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Jul 2021 13:44:54 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E54EA4068;
+        Thu, 15 Jul 2021 13:44:54 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 089E0A4054;
+        Thu, 15 Jul 2021 13:44:53 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.60.220])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 15 Jul 2021 13:44:52 +0000 (GMT)
+Date:   Thu, 15 Jul 2021 15:44:51 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: Re: [PATCH] s390/vfio-ap: do not open code locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+Message-ID: <20210715154451.3f0c264e.pasic@linux.ibm.com>
+In-Reply-To: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+References: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.241] (165.204.77.1) by SA9PR13CA0171.namprd13.prod.outlook.com (2603:10b6:806:28::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.10 via Frontend Transport; Thu, 15 Jul 2021 13:42:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c5af97b6-20ff-4468-809b-08d9479669b4
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5309:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM4PR12MB5309D3F0DE0FC3E878335DBAEC129@DM4PR12MB5309.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HPaHJ9N5mpZXuLpOtsHvE1Sct+jYWW/T6JzTpkDXJKfcL8QScmZ6cQMbsMXVaAT85q9hpc/bWlZC65LrVFMavfkBK1DeuR8RSNtSkge6IqLnfNlkhxt5Q+ahVfGcUQrvvhCb3+gayaZc4ApnoJHe8MEjHFdPaQn0WRRQC50XLQu/bUawYn1OZDO1nehm6TsqslQaNOPmdJTcVUJhiHj+VjVkj5JweWWMJ/uymmWd+0fJW38WZQmnYCk0xma4/hpD7W3F6TGUTtKnRIHo4zW1gwr1J+pSk+5aN+qq0fA6IzGA/myN9kUy9dCWOgjuoiTJmFnvaz+N/sZXD9r66pv+L8hvhxeOGAr0ArT0KF6v+KBSR0eV2D9lWRHYzkkECsDQApazAeqNZuPoEU/Jbw1KmApiLmZnjLLW7v9ze0GkhqjxElzR89E92j/piKFMq0GEyJGMxR9GztA8LJbmTJH3vpchGhVqJgHnDUOvXCV37U3ghFTadFhAz7kLO3Luc4E+WtzrmFEYiJBWBF/03+rjabIuJoK5K6we10Y9gnLIK53FtuOLYSq0f4rpFQx12cFZRam6I1I+G+9YkCBFoOH7pzIQo6X5hwrIzPRgzSG2Tle/9dzyaIzXkLxnf/JSCtRuajiAGoG8OqXmo/egmkHdC1ckdhSlQKT3pW6qrg4nxKiyufG9CiEZS5rCVfbhCKUExogHdahV2rOTcu68DdZNtYLn+OmJeKouJQFk2uv9Q8kbJW3Y3SKfAT4T9OTsxadb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(396003)(39860400002)(376002)(54906003)(36756003)(956004)(110136005)(66476007)(66556008)(83380400001)(7406005)(7416002)(2906002)(2616005)(86362001)(6636002)(53546011)(26005)(186003)(38100700002)(16576012)(5660300002)(316002)(6486002)(8936002)(8676002)(478600001)(31686004)(4326008)(66946007)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WkRwNG52S081V1g0V2lseG5kOXB6N0hkUWU1ejNoSE5zcnZUTFpPY1czUXJG?=
- =?utf-8?B?ZFBDQlFXY1ZFSDYvaVB6ZzZudUJpdHhHUk5FRG9qaU5mbmN2bk9rOXNCSFAz?=
- =?utf-8?B?SzZldnJVNm5mVVdmdHNlZlVvbGZIS1VzdHUxbWx1MWpkUnZta2J5VUFrZFNV?=
- =?utf-8?B?RGUybzBTaHFDZ1M1Q3ZGaUlIRnNuTVFTZ0U4cDAwOFdHQzUvTXE2MDVWZ0Ez?=
- =?utf-8?B?RWFzTFo1QnpWWDN3RVN6Wkl3L2xacVZYRDRjQkNCZjhOK3QxZnYxNDdiRU5y?=
- =?utf-8?B?dmY1ZlFNU01IbU4rbjhxakg1MmRZWElVeDJoQ3pYaTd3RnFvVjlhQ2JoQW4r?=
- =?utf-8?B?ZXpmMFJScG1qNi8rRTRTZVluRGRVbldjekd0Z2VCS3Z0Q2VCc2pQek1XQ2U4?=
- =?utf-8?B?UDBSUStYUjdMK01NZkUrYzVQU2N2VUZxMDdVa0dKWWlTWEszRUpOU3VIa3Vn?=
- =?utf-8?B?Rnp2SXZqbXg3YTdDTlVRcmRkZUxjRnQ5YWNDVUxVNWdwZzZHd1NRNGIzaDhw?=
- =?utf-8?B?SGJyVFEvTStiaDRhWE42cEdaTzZ2ZWIwV2NaMUZWNWVBQktLcHFWRnlZV3pU?=
- =?utf-8?B?clB4YkRNOFRiUWo5MjJIWjduNU02SjBoMTZSOUlVd2pzcTM1U2VCcEJpSmRI?=
- =?utf-8?B?UzFJQWNHNDk4ZXludnI0bGNad2E4ZmQ3VDZvem1vSUc1czl0VG81YzliK1JS?=
- =?utf-8?B?WFdTcTFTS3JnclovME5IaVBxMUdiSU14YlRUV1paRUgzVzY2dklMM05FK1ND?=
- =?utf-8?B?RkllZThMVWtBZTg0K2VvSnJZenpqTzlaNG95cm1jK3VkVExCcElwYlRiYVRa?=
- =?utf-8?B?ZnVudmxuL2pKa1hmemxhWnVmWmo3NGQyZmtkbTBWelFPc0ErUyszVnJBVlhh?=
- =?utf-8?B?dkZDUlc2QXdPL1lyTTJzaFVDUHNQaWc0TDV1MnROYmhmKzNqWTFNTnJWNWFm?=
- =?utf-8?B?dXJyanNTQVl1WFg1UG9TQ2tDNVg5VDhmcmNNR3krOTR3VW1ubTMwYmJMSjZw?=
- =?utf-8?B?OFpYTUhsUXZWQVFrUmwzeGFleFg1Z3BMaDJaSU1kRFg1Sy9XTDBZb0I1Z0s3?=
- =?utf-8?B?K1Z1MUVZaXYxZkoxR2U3dmNXcENYMHI3WlVxditiWDh4cVJUUWpJdU5uSVR2?=
- =?utf-8?B?THVHNUNia1JSZFNUK0xrdE1FYUZBR01NT2ZGVWk4NU0vWWhXRDdMWlJnZFhD?=
- =?utf-8?B?MkJrZFFoZTRXZ3hJM2xVUU1rbmtDL0dEYVFNc1BWUytaZ3UraSsvaVBpSXN5?=
- =?utf-8?B?NlVHbC9kR25BekljcS9CYlZNSzRCVW9LdTE2eTB6YlkvMXEwVjRWdDZSNDhV?=
- =?utf-8?B?dkF1dm1UdjhsbUc1c2NXZElVT0dQam1vZHNtYm43S1FDSGR4KzBKVFU1SkJw?=
- =?utf-8?B?NG1NR0MvOUU5cFRaVGFnVHExVHlHYjgwVWhVV1MxcjB5ZnMwKzBveWNsOW8r?=
- =?utf-8?B?MTU1R0JzZnNXZFl3a1RqT29zUElsTW1CMTdweGFNblhmQTFwa25OMHdyVGs1?=
- =?utf-8?B?T29ndVN1OW9NNXBVbTdJUXVabmVPdHNuSHd4UlRja3hwSFhUemFBeERiSlRo?=
- =?utf-8?B?UGJJSXpPalJVNDVqTE9MUG5DOVhsTlNFWVlBeVV5cFI1cXFBMlQ5RHlIb08y?=
- =?utf-8?B?N2oydVV2djR3WEpBUmxIKzF3Ty9aQ1l3QlI2ZFAzMkxscmlTeWFyaHF2dWdj?=
- =?utf-8?B?Y2tlREZFdTkrYURRa29iYXNZdHZ5MURoaFNFR3BlRXdqaWRjZzRLdHkwMlZh?=
- =?utf-8?Q?2/Cr5k1+kaBvfCNcmCPN2PbTxysvTHdXdgeMrJ/?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5af97b6-20ff-4468-809b-08d9479669b4
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 13:42:39.9713
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nYQj3Got3kO5XoQqTWN4aJVI3E6do+GGwvKI6zMnVSZO+vUpOkAICKlMf01SLAbyh4HFzlz8v4sqMX7Miq9o4Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5309
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9XL9JnXJnnQAa3FUpx6ldqBRlfMQDaTV
+X-Proofpoint-ORIG-GUID: EZa8fsu2dd3DU8lDXcRg7hg3g_eKVCB2
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-15_07:2021-07-14,2021-07-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ clxscore=1015 adultscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107150097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/21 3:17 PM, Sean Christopherson wrote:
-> On Wed, Jul 07, 2021, Brijesh Singh wrote:
->> From: Tom Lendacky <thomas.lendacky@amd.com>
->>
->> Add support for AP Reset Hold being invoked using the GHCB MSR protocol,
->> available in version 2 of the GHCB specification.
-> 
-> Please provide a brief overview of the protocol, and why it's needed.  I assume
-> it's to allow AP wakeup without a shared GHCB?
+On Wed,  7 Jul 2021 11:41:56 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Right, mainly the ability to be able to issue an AP reset hold from a mode
-that would not be able to access the GHCB as a shared page, e.g. 32-bit
-mode without paging enabled where reads/writes are always encrypted for an
-SEV guest.
+First sorry for being this late with having a more serious look at the
+code.
 
-> 
->> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
->> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
->> ---
-> 
-> ...
-> 
->>  static u8 sev_enc_bit;
->>  static DECLARE_RWSEM(sev_deactivate_lock);
->>  static DEFINE_MUTEX(sev_bitmap_lock);
->> @@ -2199,6 +2203,9 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
->>  
->>  void sev_es_unmap_ghcb(struct vcpu_svm *svm)
->>  {
->> +	/* Clear any indication that the vCPU is in a type of AP Reset Hold */
->> +	svm->ap_reset_hold_type = AP_RESET_HOLD_NONE;
->> +
->>  	if (!svm->ghcb)
->>  		return;
->>  
->> @@ -2404,6 +2411,22 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
->>  				  GHCB_MSR_INFO_POS);
->>  		break;
->>  	}
->> +	case GHCB_MSR_AP_RESET_HOLD_REQ:
->> +		svm->ap_reset_hold_type = AP_RESET_HOLD_MSR_PROTO;
->> +		ret = kvm_emulate_ap_reset_hold(&svm->vcpu);
-> 
-> The hold type feels like it should be a param to kvm_emulate_ap_reset_hold().
 
-I suppose it could be, but then the type would have to be tracked in the
-kvm_vcpu_arch struct instead of the vcpu_svm struct, so I opted for the
-latter. Maybe a helper function, sev_ap_reset_hold(), that sets the type
-and then calls kvm_emulate_ap_reset_hold(), but I'm not seeing a big need
-for it.
+> @@ -270,6 +270,9 @@ static struct ap_queue_status vfio_ap_irq_enable(struct vfio_ap_queue *q,
+>   * We take the matrix_dev lock to ensure serialization on queues and
+>   * mediated device access.
+>   *
+> + * Note: This function must be called with a read lock held on
+> + *	 vcpu->kvm->arch.crypto.pqap_hook_rwsem.
+> + *
+
+
+That is a fine synchronization for the pqap_hook, but I don't think it
+is sufficient for everything.
+
+
+>   * Return 0 if we could handle the request inside KVM.
+>   * otherwise, returns -EOPNOTSUPP to let QEMU handle the fault.
+>   */
+> @@ -287,22 +290,12 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+>  		return -EOPNOTSUPP;
+> 
+>  	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
+> -	mutex_lock(&matrix_dev->lock);
+
+Here you drop a matrix_dev->lock critical section. And then
+you do all the interesting stuff. E.g.
+q = vfio_ap_get_queue(matrix_mdev, apqn);
+and
+vfio_ap_irq_enable(q, status & 0x07, vcpu->run->s.regs.gprs[2]);.
+Since in vfio_ap_get_queue() we do the check if the queue belongs
+to the given guest, and examine the matrix (apm, aqm) I suppose
+that needs to be done holding a lock that protects the matrix,
+and to my best knowledge this is still matrix_dev->lock. It would
+probably make sense to convert matrix_dev->lock into an rw_semaphore,
+or to introduce a some new rwlock which protects less state in the
+future, but right now AFAICT it is still matrix_dev->lock.
+
+So I don't think this patch should pass review.
+
+Regards,
+Halil
 
 > 
->> +
->> +		/*
->> +		 * Preset the result to a non-SIPI return and then only set
->> +		 * the result to non-zero when delivering a SIPI.
->> +		 */
->> +		set_ghcb_msr_bits(svm, 0,
->> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
->> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
->> +
->> +		set_ghcb_msr_bits(svm, GHCB_MSR_AP_RESET_HOLD_RESP,
->> +				  GHCB_MSR_INFO_MASK,
->> +				  GHCB_MSR_INFO_POS);
+>  	if (!vcpu->kvm->arch.crypto.pqap_hook)
+>  		goto out_unlock;
+>  	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
+>  				   struct ap_matrix_mdev, pqap_hook);
 > 
-> It looks like all uses set an arbitrary value and then the response.  I think
-> folding the response into the helper would improve both readability and robustness.
-
-Joerg pulled this patch out and submitted it as part of a small, three
-patch series, so it might be best to address this in general in the
-SEV-SNP patches or as a follow-on series specifically for this re-work.
-
-> I also suspect the helper needs to do WRITE_ONCE() to guarantee the guest sees
-> what it's supposed to see, though memory ordering is not my strong suit.
-
-This is writing to the VMCB that is then used to set the value of the
-guest MSR. I don't see anything done in general for writes to the VMCB, so
-I wouldn't think this should be any different.
-
-> 
-> Might even be able to squeeze in a build-time assertion.
-> 
-> Also, do the guest-provided contents actually need to be preserved?  That seems
-> somewhat odd.
-
-Hmmm... not sure I see where the guest contents are being preserved.
-
-> 
-> E.g. can it be
-> 
-> static void set_ghcb_msr_response(struct vcpu_svm *svm, u64 response, u64 value,
-> 				  u64 mask, unsigned int pos)
-> {
-> 	u64 val = (response << GHCB_MSR_INFO_POS) | (val << pos);
-> 
-> 	WRITE_ONCE(svm->vmcb->control.ghcb_gpa |= (value & mask) << pos;
-> }
-> 
-> and
-> 
-> 		set_ghcb_msr_response(svm, GHCB_MSR_AP_RESET_HOLD_RESP,
-> 				      GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
-> 				      GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
-> 
->> +		break;
->>  	case GHCB_MSR_TERM_REQ: {
->>  		u64 reason_set, reason_code;
->>  
->> @@ -2491,6 +2514,7 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
->>  		ret = svm_invoke_exit_handler(vcpu, SVM_EXIT_IRET);
->>  		break;
->>  	case SVM_VMGEXIT_AP_HLT_LOOP:
->> +		svm->ap_reset_hold_type = AP_RESET_HOLD_NAE_EVENT;
->>  		ret = kvm_emulate_ap_reset_hold(vcpu);
->>  		break;
->>  	case SVM_VMGEXIT_AP_JUMP_TABLE: {
->> @@ -2628,13 +2652,29 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
->>  		return;
->>  	}
->>  
->> -	/*
->> -	 * Subsequent SIPI: Return from an AP Reset Hold VMGEXIT, where
->> -	 * the guest will set the CS and RIP. Set SW_EXIT_INFO_2 to a
->> -	 * non-zero value.
->> -	 */
->> -	if (!svm->ghcb)
->> -		return;
->> +	/* Subsequent SIPI */
->> +	switch (svm->ap_reset_hold_type) {
->> +	case AP_RESET_HOLD_NAE_EVENT:
->> +		/*
->> +		 * Return from an AP Reset Hold VMGEXIT, where the guest will
->> +		 * set the CS and RIP. Set SW_EXIT_INFO_2 to a non-zero value.
->> +		 */
->> +		ghcb_set_sw_exit_info_2(svm->ghcb, 1);
->> +		break;
->> +	case AP_RESET_HOLD_MSR_PROTO:
->> +		/*
->> +		 * Return from an AP Reset Hold VMGEXIT, where the guest will
->> +		 * set the CS and RIP. Set GHCB data field to a non-zero value.
->> +		 */
->> +		set_ghcb_msr_bits(svm, 1,
->> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
->> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
->>  
->> -	ghcb_set_sw_exit_info_2(svm->ghcb, 1);
->> +		set_ghcb_msr_bits(svm, GHCB_MSR_AP_RESET_HOLD_RESP,
->> +				  GHCB_MSR_INFO_MASK,
->> +				  GHCB_MSR_INFO_POS);
->> +		break;
->> +	default:
->> +		break;
->> +	}
->>  }
->> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
->> index 0b89aee51b74..ad12ca26b2d8 100644
->> --- a/arch/x86/kvm/svm/svm.h
->> +++ b/arch/x86/kvm/svm/svm.h
->> @@ -174,6 +174,7 @@ struct vcpu_svm {
->>  	struct ghcb *ghcb;
->>  	struct kvm_host_map ghcb_map;
->>  	bool received_first_sipi;
->> +	unsigned int ap_reset_hold_type;
-> 
-> Can't this be a u8?
-
-Yes, it could be, maybe even an enum and let the compiler decide on the size.
-
-Thanks,
-Tom
-
-> 
->>  
->>  	/* SEV-ES scratch area support */
->>  	void *ghcb_sa;
->> -- 
->> 2.17.1
->>
+> -	/*
+> -	 * If the KVM pointer is in the process of being set, wait until the
+> -	 * process has completed.
+> -	 */
+> -	wait_event_cmd(matrix_mdev->wait_for_kvm,
+> -		       !matrix_mdev->kvm_busy,
+> -		       mutex_unlock(&matrix_dev->lock),
+> -		       mutex_lock(&matrix_dev->lock));
+> -
+>  	/* If the there is no guest using the mdev, there is nothing to do */
+>  	if (!matrix_mdev->kvm)
+>  		goto out_unlock;
