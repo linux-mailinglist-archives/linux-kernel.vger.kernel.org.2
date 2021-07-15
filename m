@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5633CAB7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B463CA929
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243339AbhGOTUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:20:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
+        id S242740AbhGOTFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:05:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242657AbhGOTFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F8CE613D4;
-        Thu, 15 Jul 2021 19:01:29 +0000 (UTC)
+        id S241240AbhGOSze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE6B5613CF;
+        Thu, 15 Jul 2021 18:52:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375689;
-        bh=jWZGCnsAY9L7zigkpJsKBGOJiuu91rRo/tR1JLcJN4U=;
+        s=korg; t=1626375160;
+        bh=Zyse1W4/NOhaulWxxXeZ1NpcQ0SdVWN3GZYNdIpzm1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wba65wKEidl+eBZEIIRvG6KoXYm3GyzjywAML95g0aHG97M8J0cmvadrI/uANip6+
-         iodeMIeWDj5jQuLUp+Lik9xk/PfmqnmuG6EhcmOgFJ7v30fi4tLuQC0mbXUbX83jGE
-         UQKzpOkUqRhA3gzGVOOynboBgyXB74CRqsxg0l+s=
+        b=0qGIiVENCGbfuCNUqzOrKZtBrnHDtz1nu8sPDKao2RAAg0UPgzyUv9lDHkRhyEloH
+         lszs7F+7XHvN33WFTJyOjUFyBVRoaxIkZvjij/fI6Lf6YMa9mpOy8js3WGHeiwxJZy
+         zZClPGVF5baDxHdl+yqd+r3HBMz0ouTjIJtbOxmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.12 193/242] ASoC: tegra: Set driver_name=tegra for all machine drivers
-Date:   Thu, 15 Jul 2021 20:39:15 +0200
-Message-Id: <20210715182627.196711882@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 5.10 184/215] nvmem: core: add a missing of_node_put
+Date:   Thu, 15 Jul 2021 20:39:16 +0200
+Message-Id: <20210715182631.808344889@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,131 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit f6eb84fa596abf28959fc7e0b626f925eb1196c7 upstream.
+commit 63879e2964bceee2aa5bbe8b99ea58bba28bb64f upstream.
 
-The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
-Tegra UCMs don't match by the path/name.
+'for_each_child_of_node' performs an of_node_get on each iteration, so a
+return from the middle of the loop requires an of_node_put.
 
-All Tegra machine drivers are specifying the card's name, but it has no
-effect if model name is specified in the device-tree since it overrides
-the card's name. We need to set the driver_name to "tegra" in order to
-get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
-path has a form of driver_name/card_name.
-
-The old lookup paths that are based on driver module name continue to
-work as before. Note that UCM matching never worked for Tegra ASoC drivers
-if they were compiled as built-in, this is fixed by supporting the new
-naming scheme.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20210529154649.25936-2-digetx@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210611102321.11509-1-srinivas.kandagatla@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/soc/tegra/tegra_alc5632.c  |    1 +
- sound/soc/tegra/tegra_max98090.c |    1 +
- sound/soc/tegra/tegra_rt5640.c   |    1 +
- sound/soc/tegra/tegra_rt5677.c   |    1 +
- sound/soc/tegra/tegra_sgtl5000.c |    1 +
- sound/soc/tegra/tegra_wm8753.c   |    1 +
- sound/soc/tegra/tegra_wm8903.c   |    1 +
- sound/soc/tegra/tegra_wm9712.c   |    1 +
- sound/soc/tegra/trimslice.c      |    1 +
- 9 files changed, 9 insertions(+)
+ drivers/nvmem/core.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -139,6 +139,7 @@ static struct snd_soc_dai_link tegra_alc
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -549,15 +549,17 @@ static int nvmem_add_cells_from_of(struc
+ 			continue;
+ 		if (len < 2 * sizeof(u32)) {
+ 			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
++			of_node_put(child);
+ 			return -EINVAL;
+ 		}
  
- static struct snd_soc_card snd_soc_tegra_alc5632 = {
- 	.name = "tegra-alc5632",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_alc5632_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_max98090.c
-+++ b/sound/soc/tegra/tegra_max98090.c
-@@ -182,6 +182,7 @@ static struct snd_soc_dai_link tegra_max
+ 		cell = kzalloc(sizeof(*cell), GFP_KERNEL);
+-		if (!cell)
++		if (!cell) {
++			of_node_put(child);
+ 			return -ENOMEM;
++		}
  
- static struct snd_soc_card snd_soc_tegra_max98090 = {
- 	.name = "tegra-max98090",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_max98090_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_rt5640.c
-+++ b/sound/soc/tegra/tegra_rt5640.c
-@@ -132,6 +132,7 @@ static struct snd_soc_dai_link tegra_rt5
+ 		cell->nvmem = nvmem;
+-		cell->np = of_node_get(child);
+ 		cell->offset = be32_to_cpup(addr++);
+ 		cell->bytes = be32_to_cpup(addr);
+ 		cell->name = kasprintf(GFP_KERNEL, "%pOFn", child);
+@@ -578,11 +580,12 @@ static int nvmem_add_cells_from_of(struc
+ 				cell->name, nvmem->stride);
+ 			/* Cells already added will be freed later. */
+ 			kfree_const(cell->name);
+-			of_node_put(cell->np);
+ 			kfree(cell);
++			of_node_put(child);
+ 			return -EINVAL;
+ 		}
  
- static struct snd_soc_card snd_soc_tegra_rt5640 = {
- 	.name = "tegra-rt5640",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_rt5640_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_rt5677.c
-+++ b/sound/soc/tegra/tegra_rt5677.c
-@@ -175,6 +175,7 @@ static struct snd_soc_dai_link tegra_rt5
++		cell->np = of_node_get(child);
+ 		nvmem_cell_add(cell);
+ 	}
  
- static struct snd_soc_card snd_soc_tegra_rt5677 = {
- 	.name = "tegra-rt5677",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_rt5677_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_sgtl5000.c
-+++ b/sound/soc/tegra/tegra_sgtl5000.c
-@@ -97,6 +97,7 @@ static struct snd_soc_dai_link tegra_sgt
- 
- static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
- 	.name = "tegra-sgtl5000",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_sgtl5000_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm8753.c
-+++ b/sound/soc/tegra/tegra_wm8753.c
-@@ -101,6 +101,7 @@ static struct snd_soc_dai_link tegra_wm8
- 
- static struct snd_soc_card snd_soc_tegra_wm8753 = {
- 	.name = "tegra-wm8753",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8753_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -235,6 +235,7 @@ static struct snd_soc_dai_link tegra_wm8
- 
- static struct snd_soc_card snd_soc_tegra_wm8903 = {
- 	.name = "tegra-wm8903",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8903_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/tegra_wm9712.c
-+++ b/sound/soc/tegra/tegra_wm9712.c
-@@ -54,6 +54,7 @@ static struct snd_soc_dai_link tegra_wm9
- 
- static struct snd_soc_card snd_soc_tegra_wm9712 = {
- 	.name = "tegra-wm9712",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm9712_dai,
- 	.num_links = 1,
---- a/sound/soc/tegra/trimslice.c
-+++ b/sound/soc/tegra/trimslice.c
-@@ -94,6 +94,7 @@ static struct snd_soc_dai_link trimslice
- 
- static struct snd_soc_card snd_soc_trimslice = {
- 	.name = "tegra-trimslice",
-+	.driver_name = "tegra",
- 	.owner = THIS_MODULE,
- 	.dai_link = &trimslice_tlv320aic23_dai,
- 	.num_links = 1,
 
 
