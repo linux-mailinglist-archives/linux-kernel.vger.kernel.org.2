@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D73D3C9A25
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C876B3C9A27
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbhGOILS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 04:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhGOILR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 04:11:17 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3494C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 01:08:23 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id p186so5415514iod.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 01:08:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eAHsLlc57ZvN1lUjUQzrqKpVj/v8UeaYCY1iMesKsSU=;
-        b=fLcg9nzMVsedI3cgplQqCEOfJFfcEdjAzVfTGDGklkvWnBk9WhXTpJTu2OfqBcqp3n
-         2zP/GLgLbWd3n1DIEQU0kb4TuB5aHzQjhlXRgdXQ7hgNZeyb9EejDKncshDwktONukQX
-         /5wKfzIh/v5iHvytIi03GPgFZWxE0yIH5mns9TlEWtKH54G2x4/xcHzhG4/ONaC4RprW
-         idiWQuezvPagZGs+IWA3rVZJR1GBgTP06aXNilqnuenOujq1d6T+ih3bqxO5BsvoRw5i
-         QCLp0UWqLQIA5lhJKAaX3VfhRr1YDNyTanA4Ya4jlXXNcdM9hTgIWg6BC6YShJZQRuR7
-         lByQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eAHsLlc57ZvN1lUjUQzrqKpVj/v8UeaYCY1iMesKsSU=;
-        b=g0mcGMniFx7s2YhmvgFeOSdmON1B0F41jyYrQLuJ/+F3ZtaFnFTl8DwHgtUcl8Fnsq
-         DO9KbAH85dFnRu1mI0riwRzQr/yMfL8fSpHC7RGmOdd16my0uJaF+OWiQRgCAyUJVjjF
-         mj1kHKXiXfQY2lN178mEgDXEZIJKX+Se34Z5i9n92tFU+/n8wG7JGZLeCy8wy6/44dEK
-         Hr8G8c4DwUJt0xw32wvHi25IQonakRk+9GDNyVMHczceJ6/sQWoEZEHQW/Thb+zUWqRu
-         njlUthY5Bi9MD7GN4mMuhi9FEof6ZupQEML1rFgz9YezmAeVhb9jwFgWAn1evwGmCskO
-         j1Og==
-X-Gm-Message-State: AOAM531/dYOulrxT9FqHJn5oreWi2Kv3FMz9d74Yvad6tI/d1DtsC97O
-        NJtjPfUDDsCC0mOR4WVJG0zVOGTzZnXCKTTGFJg=
-X-Google-Smtp-Source: ABdhPJzrMWEBioe9KYUTARgzUCYon0lQvfl7RSPuu2tUgqbj4Ix/B2PfQIUX8O5hyoWfgZptxcqHiCIuQW9LAkkYJDI=
-X-Received: by 2002:a6b:f81a:: with SMTP id o26mr2249307ioh.56.1626336503190;
- Thu, 15 Jul 2021 01:08:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210714091934.3124170-1-yangyingliang@huawei.com>
-In-Reply-To: <20210714091934.3124170-1-yangyingliang@huawei.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Thu, 15 Jul 2021 16:08:12 +0800
-Message-ID: <CAJhGHyA+8p7mHR4o2VoAFTxKKtAC4Aeq1cwtszaVj-OS63KUgA@mail.gmail.com>
-Subject: Re: [PATCH v3] workqueue: fix UAF in pwq_unbound_release_workfn()
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Xu Qiang <xuqiang36@huawei.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236872AbhGOIL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 04:11:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:48562 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229810AbhGOIL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 04:11:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AB91D6E;
+        Thu, 15 Jul 2021 01:08:35 -0700 (PDT)
+Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BD9163F774;
+        Thu, 15 Jul 2021 01:08:32 -0700 (PDT)
+From:   Jia He <justin.he@arm.com>
+To:     Ariel Elior <aelior@marvell.com>, GR-everest-linux-l2@marvell.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org, nd@arm.com,
+        Jia He <justin.he@arm.com>
+Subject: [PATCH] qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()
+Date:   Thu, 15 Jul 2021 16:08:21 +0800
+Message-Id: <20210715080822.14575-1-justin.he@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 5:16 PM Yang Yingliang <yangyingliang@huawei.com> wrote:
+Liajian reported a bug_on hit on a ThunderX2 arm64 server with FastLinQ
+QL41000 ethernet controller:
+ BUG: scheduling while atomic: kworker/0:4/531/0x00000200
+  [qed_probe:488()]hw prepare failed
+  kernel BUG at mm/vmalloc.c:2355!
+  Internal error: Oops - BUG: 0 [#1] SMP
+  CPU: 0 PID: 531 Comm: kworker/0:4 Tainted: G W 5.4.0-77-generic #86-Ubuntu
+  pstate: 00400009 (nzcv daif +PAN -UAO)
+ Call trace:
+  vunmap+0x4c/0x50
+  iounmap+0x48/0x58
+  qed_free_pci+0x60/0x80 [qed]
+  qed_probe+0x35c/0x688 [qed]
+  __qede_probe+0x88/0x5c8 [qede]
+  qede_probe+0x60/0xe0 [qede]
+  local_pci_probe+0x48/0xa0
+  work_for_cpu_fn+0x24/0x38
+  process_one_work+0x1d0/0x468
+  worker_thread+0x238/0x4e0
+  kthread+0xf0/0x118
+  ret_from_fork+0x10/0x18
 
->
-> Fixes: 2d5f0764b526 ("workqueue: split apply_workqueue_attrs() into 3 stages")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Suggested-by: Lai Jiangshan <jiangshanlai@gmail.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
-> v3:
->   drop the v2 and v1 changes, add check pwq in pwq_unbound_release_workfn()
-> v2:
->   also use free_wqattrs_ctx() in workqueue_apply_unbound_cpumask()
-> ---
->  kernel/workqueue.c | 20 +++++++++++++-------
->  1 file changed, 13 insertions(+), 7 deletions(-)
->
+In this case, qed_hw_prepare() returns error due to hw/fw error, but in
+theory work queue should be in process context instead of interrupt.
 
-I'm fine with the code.
+The root cause might be the unpaired spin_{un}lock_bh() in
+_qed_mcp_cmd_and_union(), which causes botton half is disabled incorrectly.
 
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Reported-by: Lijian Zhang <Lijian.Zhang@arm.com>
+Signed-off-by: Jia He <justin.he@arm.com>
+---
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-Hello, Pavel
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_mcp.c b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+index 4387292c37e2..79d879a5d663 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_mcp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+@@ -474,14 +474,18 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
+ 
+ 		spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 
+-		if (!qed_mcp_has_pending_cmd(p_hwfn))
++		if (!qed_mcp_has_pending_cmd(p_hwfn)) {
++			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 			break;
++		}
+ 
+ 		rc = qed_mcp_update_pending_cmd(p_hwfn, p_ptt);
+-		if (!rc)
++		if (!rc) {
++			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 			break;
+-		else if (rc != -EAGAIN)
++		} else if (rc != -EAGAIN) {
+ 			goto err;
++		}
+ 
+ 		spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 
+@@ -498,6 +502,8 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
+ 		return -EAGAIN;
+ 	}
+ 
++	spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
++
+ 	/* Send the mailbox command */
+ 	qed_mcp_reread_offsets(p_hwfn, p_ptt);
+ 	seq_num = ++p_hwfn->mcp_info->drv_mb_seq;
+@@ -524,14 +530,18 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
+ 
+ 		spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 
+-		if (p_cmd_elem->b_is_completed)
++		if (p_cmd_elem->b_is_completed) {
++			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 			break;
++		}
+ 
+ 		rc = qed_mcp_update_pending_cmd(p_hwfn, p_ptt);
+-		if (!rc)
++		if (!rc) {
++			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 			break;
+-		else if (rc != -EAGAIN)
++		} else if (rc != -EAGAIN) {
+ 			goto err;
++		}
+ 
+ 		spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 	} while (++cnt < max_retries);
+@@ -554,6 +564,7 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
+ 		return -EAGAIN;
+ 	}
+ 
++	spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 	qed_mcp_cmd_del_elem(p_hwfn, p_cmd_elem);
+ 	spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 
+-- 
+2.17.1
 
-Could you have a test again, please?
-
-Thanks,
-Lai
-
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 50142fc08902..f148eacda55a 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -3676,15 +3676,21 @@ static void pwq_unbound_release_workfn(struct work_struct *work)
->                                                   unbound_release_work);
->         struct workqueue_struct *wq = pwq->wq;
->         struct worker_pool *pool = pwq->pool;
-> -       bool is_last;
-> +       bool is_last = false;
->
-> -       if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
-> -               return;
-> +       /*
-> +        * when @pwq is not linked, it doesn't hold any reference to the
-> +        * @wq, and @wq is invalid to access.
-> +        */
-> +       if (!list_empty(&pwq->pwqs_node)) {
-> +               if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
-> +                       return;
->
-> -       mutex_lock(&wq->mutex);
-> -       list_del_rcu(&pwq->pwqs_node);
-> -       is_last = list_empty(&wq->pwqs);
-> -       mutex_unlock(&wq->mutex);
-> +               mutex_lock(&wq->mutex);
-> +               list_del_rcu(&pwq->pwqs_node);
-> +               is_last = list_empty(&wq->pwqs);
-> +               mutex_unlock(&wq->mutex);
-> +       }
->
->         mutex_lock(&wq_pool_mutex);
->         put_unbound_pool(pool);
-> --
-> 2.25.1
->
