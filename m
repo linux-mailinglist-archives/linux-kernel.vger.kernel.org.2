@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F9D3C9D69
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747123C9D74
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240998AbhGOLGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:06:38 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15019 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbhGOLGh (ORCPT
+        id S241590AbhGOLJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232114AbhGOLJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:06:37 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQWcS658kzbc5f;
-        Thu, 15 Jul 2021 19:00:24 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 19:03:42 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 19:03:42 +0800
-Subject: Re: [PATCH -next v2] drm/bochs: Fix missing pci_disable_device() on
- error in bochs_pci_probe()
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <virtualization@lists.linux-foundation.org>
-CC:     <airlied@linux.ie>, <kraxel@redhat.com>
-References: <20210715020551.1030812-1-yangyingliang@huawei.com>
- <49771e7d-666a-bac3-2cd7-23008a95ad8e@suse.de>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <22ff114a-9810-37f4-43c2-22ce55d6482f@huawei.com>
-Date:   Thu, 15 Jul 2021 19:03:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <49771e7d-666a-bac3-2cd7-23008a95ad8e@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        Thu, 15 Jul 2021 07:09:57 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFF0C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 04:07:04 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id v14so3047857plg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 04:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=a1hReqe6SAPG8cLciVBzs6tSIWDwg7+KCHr7wVxfoQY=;
+        b=oqgcIS3Nx7Nt1JyIGeCEZeJfM5uEAJsIp8FJnbmqybuHQPrMzgaM5brHb/kIb1dV8e
+         Xa0HeOIEvaY8Q5SbB3HTIzPuMNNobjBykpuoRpT0WGO6JtjtDLqHE/6quh1nptQu6MDx
+         fEhXeJq9Tj471tthFrVddVbCG9MJSspey94heIRjOES74Es5vN5TC/lhlyDAAxBJ+ASO
+         xFIKXo387zjnrgm9YvvVWe8gnpY7WStjjgFFqOYJscGpKxLX2+vasOQZqjktOILCrse8
+         MNeF/ksXL54GBD7MNKArnkml/XHrCXU9XI5nFl1A0c7MVY+pe5W7sxtTeky19OEerhg9
+         IjqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=a1hReqe6SAPG8cLciVBzs6tSIWDwg7+KCHr7wVxfoQY=;
+        b=Rcq0gRxh1gEwLGHjimH4ypFNJSP46q1SC68v2+1g1OmIqWJ905pOP7GP/KkwFClXdv
+         4E/jVSyWtLc6KjJ7qWOLbC+0sxfUPjAYm2phuuduaBr1SSlmBbfuLM08om/e5Z2gnnx9
+         vfLUdrOqYVFSUhnM9gokkGTk0MpVpbI5ATmqn2sWskcvllbyYkChtWyG7jywFn7PsBzu
+         UWSsulFMJ2St6//4Z0XerUqlVNaPX6aGh2d/trXlvLLWh/CbAjjXbCHQTA0cyXyihUsX
+         NL4vlqazDGdZ6NuEK8FfiyEy8MXnoc9g3iESgqR5VZXJDV4SjEuBNSBM8y+Gg/4MowXP
+         cQtg==
+X-Gm-Message-State: AOAM530s1FcL96XsXPpiHVCAf3NVzRtrWgofCns6Hf4QHuen+WqBg5gW
+        TceQGriGyQW1M0dq8unotdY=
+X-Google-Smtp-Source: ABdhPJwe4wUSNEI+YxPgt7JodhhP/NdunKLIaqLxtDZ6NYm0csn2HwNi9jF1NxDsnfWxStDd1nQd8g==
+X-Received: by 2002:a17:90a:f198:: with SMTP id bv24mr3734009pjb.171.1626347222378;
+        Thu, 15 Jul 2021 04:07:02 -0700 (PDT)
+Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id u16sm7051068pgh.53.2021.07.15.04.06.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Jul 2021 04:07:02 -0700 (PDT)
+From:   Zhenguo Zhao <zhenguo6858@gmail.com>
+To:     zhenguo6858@gmail.com, keescook@chromium.org, anton@enomsg.org,
+        ccross@android.com, tony.luck@intel.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] pstore/zone: Remove redundant check for total size
+Date:   Thu, 15 Jul 2021 19:05:36 +0800
+Message-Id: <1626347136-19740-1-git-send-email-zhenguo6858@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 
-On 2021/7/15 17:30, Thomas Zimmermann wrote:
-> Hi,
->
-> for the change
->
->
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->
->
-> but there are some style issues AFAICS.
-OK, need I resend it with the style changes and your ack ?
->
-> Am 15.07.21 um 04:05 schrieb Yang Yingliang:
->> Replace pci_enable_device() with pcim_enable_device(),
->> pci_disable_device() will be called in release automatically.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->
-> S-o-b line goes first
->
->> ---
->> v2:
->>    use pcim_enable_device()
->
-> This changelog should rather be located between the commit description 
-> and the first S-o-b line.
->
-> Best regards
-> Thomas
->
->> ---
->>   drivers/gpu/drm/tiny/bochs.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/tiny/bochs.c b/drivers/gpu/drm/tiny/bochs.c
->> index a2cfecfa8556..73415fa9ae0f 100644
->> --- a/drivers/gpu/drm/tiny/bochs.c
->> +++ b/drivers/gpu/drm/tiny/bochs.c
->> @@ -648,7 +648,7 @@ static int bochs_pci_probe(struct pci_dev *pdev, 
->> const struct pci_device_id *ent
->>       if (IS_ERR(dev))
->>           return PTR_ERR(dev);
->>   -    ret = pci_enable_device(pdev);
->> +    ret = pcim_enable_device(pdev);
->>       if (ret)
->>           goto err_free_dev;
->>
->
+The macro check_size contains size check for total size.
+
+Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+---
+ fs/pstore/zone.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
+index 7c8f8fe..93a770c 100644
+--- a/fs/pstore/zone.c
++++ b/fs/pstore/zone.c
+@@ -1295,10 +1295,6 @@ int register_pstore_zone(struct pstore_zone_info *info)
+ 	int err = -EINVAL;
+ 	struct psz_context *cxt = &pstore_zone_cxt;
+ 
+-	if (info->total_size < 4096) {
+-		pr_warn("total_size must be >= 4096\n");
+-		return -EINVAL;
+-	}
+ 	if (info->total_size > SZ_128M) {
+ 		pr_warn("capping size to 128MiB\n");
+ 		info->total_size = SZ_128M;
+-- 
+1.9.1
+
