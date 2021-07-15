@@ -2,223 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C313C98BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3734E3C98C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 08:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240186AbhGOGYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 02:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhGOGYh (ORCPT
+        id S234505AbhGOG1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 02:27:08 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:16163 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231149AbhGOG1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 02:24:37 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91070C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:21:44 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id f30so1322138lfv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 23:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eDnZkWk4wGXBAneUQ2pO6M6fPGzr2/erew54duA0y+g=;
-        b=FQeFZgGIC5DZPxcbpv+PigdW3L94WikM7o2HBJFUZLcGIvndO8tCWrqIim+CESB1uQ
-         XlBda0IORHzSfIvirbM4bYZ+GL0v+pc94axE72Cq8CZgI765dpj+XaJQgCsf4riK2vmu
-         9E5P+YVkM5GKGUn6nFfoojCn6v47o5K8qI9Fc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eDnZkWk4wGXBAneUQ2pO6M6fPGzr2/erew54duA0y+g=;
-        b=KORmlPFBBfQvy0dZCQ53WOqzWZVnvtX5tMrSaNqEC57O8TCV+1b5wZm780MBPl1MXu
-         mDXWK4/WzbDIKUfVod12XjLjRw6JHmQwlRS4fOp6hxSqwh4qow0CAwxuUhXdnuHJTSIv
-         iWY4uZSSNGcZkdJajGvDKXori29g/BWUdjGaGFgZax0tuoKDNHM3nAfBLVqdrog1C1hI
-         jrI9IwIRXbwtkltcFGbxn7QmzBW3H3gOStRGHCz6P4Z0gA2iqA1Cc/LPx1EyT3YY3Nh1
-         mSIu3PmCmTmc0EJQuPhsHtYYmckeaimSwCCASnVJ/R+Yz6P3V39BTUDcCuz6TsZsonih
-         em2A==
-X-Gm-Message-State: AOAM5332dtOanTfBAn6DTfN0IClHYkDjUbDLFwuaZO/s9oyc28Q7jJYf
-        3LAYzFQmA0zb2kZaicSUVoBLL5TOAMrhxP9Plf93Yg==
-X-Google-Smtp-Source: ABdhPJzgSd49Fp4x/b7JoIZ4W4zF8u2EyzMr1QKyp1dccSFuXtyCO+7c2sDP+12iNgZW1LhYzoFhxQLddT1EKSUMVrM=
-X-Received: by 2002:a19:858b:: with SMTP id h133mr2083722lfd.656.1626330102820;
- Wed, 14 Jul 2021 23:21:42 -0700 (PDT)
+        Thu, 15 Jul 2021 02:27:07 -0400
+X-UUID: 0a5205d548114b71bf449392ac64c6d6-20210715
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=FdJEfNIhRevGn/F/LNRstNPMVmwpSKWT+XSRG+RptUo=;
+        b=XwcGYvS5eBEW2tM7yKQuXk4RNV6DmpPFDWGENSlPuFnEwQSJXNoRyAOCwMMeYXtRYceq1lpEl36aLbSJSBpnvnuru//JIBbV0w3pt04fCU3tTl5FdEgEkWfDHVNhEtI7E0bEIe2vTgoOK97xYsA1o1YhDZiXATIDr8zLsEFJvy8=;
+X-UUID: 0a5205d548114b71bf449392ac64c6d6-20210715
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 149916070; Thu, 15 Jul 2021 14:24:11 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ MTKMBS33N2.mediatek.inc (172.27.4.76) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 15 Jul 2021 14:24:08 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Thu, 15 Jul 2021 14:24:07 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <guangming.cao@mediatek.com>
+CC:     <Brian.Starkey@arm.com>, <benjamin.gaignard@linaro.org>,
+        <christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+        <john.stultz@linaro.org>, <labbott@redhat.com>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <lmark@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <sumit.semwal@linaro.org>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: [PATCH] dma-heap: Let dma heap use dma_map_attrs to map & unmap iova
+Date:   Thu, 15 Jul 2021 14:24:05 +0800
+Message-ID: <20210715062405.98932-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210708101421.9101-1-guangming.cao@mediatek.com>
+References: <20210708101421.9101-1-guangming.cao@mediatek.com>
 MIME-Version: 1.0
-References: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com> <1626316157-24935-3-git-send-email-kewei.xu@mediatek.com>
-In-Reply-To: <1626316157-24935-3-git-send-email-kewei.xu@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 15 Jul 2021 14:21:31 +0800
-Message-ID: <CAGXv+5HjVaiaC5DhETNCV880aKjgfwxuVq9Rd=VhVrRNjDPOOQ@mail.gmail.com>
-Subject: Re: [PATCH 2/8] i2c: mediatek: Dump i2c/dma register when a timeout occurs
-To:     Kewei Xu <kewei.xu@mediatek.com>
-Cc:     wsa@the-dreams.de, Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        leilk.liu@mediatek.com, qii.wang@mediatek.com,
-        qiangming.xia@mediatek.com, ot_daolong.zhu@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: D20BB1BADB131EDFEA63427CEE31F7C3446A8B841868204EDF379FDAF8A9A92E2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+RnJvbTogR3VhbmdtaW5nIENhbyA8R3VhbmdtaW5nLkNhb0BtZWRpYXRlay5jb20+DQoNCk9uIFRo
+dSwgMjAyMS0wNy0wOCBhdCAxODoxNCArMDgwMCwgZ3VhbmdtaW5nLmNhb0BtZWRpYXRlay5jb20g
+d3JvdGU6DQoNCkhpIFN1bWl0LCBDaHJpc3RpYW4sIE1hdHRoaWFzLA0KDQpnZW50bGUgcGluZyBm
+b3IgdGhpcyBwYXRjaCA6KQ0KDQpCUnMhDQpHdWFuZ21pbmcNCg0KPiBGcm9tOiBHdWFuZ21pbmcg
+Q2FvIDxHdWFuZ21pbmcuQ2FvQG1lZGlhdGVrLmNvbT4NCj4gDQo+IEZvciBkbWEtaGVhcCB1c2Vy
+cywgdGhleSBjYW4ndCBieXBhc3MgY2FjaGUgc3luYyB3aGVuIG1hcC91bm1hcCBpb3ZhDQo+IHdp
+dGggZG1hIGhlYXAuIEJ1dCB0aGV5IGNhbiBkbyBpdCBieSBhZGRpbmcgRE1BX0FUVFJfU0tJUF9D
+UFVfU1lOQw0KPiBpbnRvIGRtYV9hbGxvY19hdHRycy4NCj4gDQo+IFRvIGtlZXAgYWxpZ25tZW50
+LCBhdCBkbWFfaGVhcCBzaWRlLCBhbHNvIHVzZQ0KPiBkbWFfYnVmX2F0dGFjaG1lbnQuZG1hX21h
+cF9hdHRycyB0byBkbyBpb3ZhIG1hcCAmIHVubWFwLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogR3Vh
+bmdtaW5nIENhbyA8R3VhbmdtaW5nLkNhb0BtZWRpYXRlay5jb20+DQo+IC0tLQ0KPiAgZHJpdmVy
+cy9kbWEtYnVmL2hlYXBzL2NtYV9oZWFwLmMgICAgfCA2ICsrKystLQ0KPiAgZHJpdmVycy9kbWEt
+YnVmL2hlYXBzL3N5c3RlbV9oZWFwLmMgfCA2ICsrKystLQ0KPiAgMiBmaWxlcyBjaGFuZ2VkLCA4
+IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9kbWEtYnVmL2hlYXBzL2NtYV9oZWFwLmMgYi9kcml2ZXJzL2RtYS0NCj4gYnVmL2hlYXBzL2Nt
+YV9oZWFwLmMNCj4gaW5kZXggMGMwNWI3OTg3MGY5Li4yYzlmZWIzYmZjM2UgMTAwNjQ0DQo+IC0t
+LSBhL2RyaXZlcnMvZG1hLWJ1Zi9oZWFwcy9jbWFfaGVhcC5jDQo+ICsrKyBiL2RyaXZlcnMvZG1h
+LWJ1Zi9oZWFwcy9jbWFfaGVhcC5jDQo+IEBAIC05OSw5ICs5OSwxMCBAQCBzdGF0aWMgc3RydWN0
+IHNnX3RhYmxlDQo+ICpjbWFfaGVhcF9tYXBfZG1hX2J1ZihzdHJ1Y3QgZG1hX2J1Zl9hdHRhY2ht
+ZW50ICphdHRhY2htZQ0KPiAgew0KPiAgCXN0cnVjdCBkbWFfaGVhcF9hdHRhY2htZW50ICphID0g
+YXR0YWNobWVudC0+cHJpdjsNCj4gIAlzdHJ1Y3Qgc2dfdGFibGUgKnRhYmxlID0gJmEtPnRhYmxl
+Ow0KPiArCWludCBhdHRycyA9IGF0dGFjaG1lbnQtPmRtYV9tYXBfYXR0cnM7DQo+ICAJaW50IHJl
+dDsNCj4gIA0KPiAtCXJldCA9IGRtYV9tYXBfc2d0YWJsZShhdHRhY2htZW50LT5kZXYsIHRhYmxl
+LCBkaXJlY3Rpb24sIDApOw0KPiArCXJldCA9IGRtYV9tYXBfc2d0YWJsZShhdHRhY2htZW50LT5k
+ZXYsIHRhYmxlLCBkaXJlY3Rpb24sDQo+IGF0dHJzKTsNCj4gIAlpZiAocmV0KQ0KPiAgCQlyZXR1
+cm4gRVJSX1BUUigtRU5PTUVNKTsNCj4gIAlhLT5tYXBwZWQgPSB0cnVlOw0KPiBAQCAtMTEzLDkg
+KzExNCwxMCBAQCBzdGF0aWMgdm9pZCBjbWFfaGVhcF91bm1hcF9kbWFfYnVmKHN0cnVjdA0KPiBk
+bWFfYnVmX2F0dGFjaG1lbnQgKmF0dGFjaG1lbnQsDQo+ICAJCQkJICAgZW51bSBkbWFfZGF0YV9k
+aXJlY3Rpb24gZGlyZWN0aW9uKQ0KPiAgew0KPiAgCXN0cnVjdCBkbWFfaGVhcF9hdHRhY2htZW50
+ICphID0gYXR0YWNobWVudC0+cHJpdjsNCj4gKwlpbnQgYXR0cnMgPSBhdHRhY2htZW50LT5kbWFf
+bWFwX2F0dHJzOw0KPiAgDQo+ICAJYS0+bWFwcGVkID0gZmFsc2U7DQo+IC0JZG1hX3VubWFwX3Nn
+dGFibGUoYXR0YWNobWVudC0+ZGV2LCB0YWJsZSwgZGlyZWN0aW9uLCAwKTsNCj4gKwlkbWFfdW5t
+YXBfc2d0YWJsZShhdHRhY2htZW50LT5kZXYsIHRhYmxlLCBkaXJlY3Rpb24sIGF0dHJzKTsNCj4g
+IH0NCj4gIA0KPiAgc3RhdGljIGludCBjbWFfaGVhcF9kbWFfYnVmX2JlZ2luX2NwdV9hY2Nlc3Mo
+c3RydWN0IGRtYV9idWYgKmRtYWJ1ZiwNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZG1hLWJ1Zi9o
+ZWFwcy9zeXN0ZW1faGVhcC5jIGIvZHJpdmVycy9kbWEtDQo+IGJ1Zi9oZWFwcy9zeXN0ZW1faGVh
+cC5jDQo+IGluZGV4IDIzYTdlNzRlZjk2Ni4uZmM3YjFlMDI5ODhlIDEwMDY0NA0KPiAtLS0gYS9k
+cml2ZXJzL2RtYS1idWYvaGVhcHMvc3lzdGVtX2hlYXAuYw0KPiArKysgYi9kcml2ZXJzL2RtYS1i
+dWYvaGVhcHMvc3lzdGVtX2hlYXAuYw0KPiBAQCAtMTMwLDkgKzEzMCwxMCBAQCBzdGF0aWMgc3Ry
+dWN0IHNnX3RhYmxlDQo+ICpzeXN0ZW1faGVhcF9tYXBfZG1hX2J1ZihzdHJ1Y3QgZG1hX2J1Zl9h
+dHRhY2htZW50ICphdHRhYw0KPiAgew0KPiAgCXN0cnVjdCBkbWFfaGVhcF9hdHRhY2htZW50ICph
+ID0gYXR0YWNobWVudC0+cHJpdjsNCj4gIAlzdHJ1Y3Qgc2dfdGFibGUgKnRhYmxlID0gYS0+dGFi
+bGU7DQo+ICsJaW50IGF0dHJzID0gYXR0YWNobWVudC0+ZG1hX21hcF9hdHRyczsNCj4gIAlpbnQg
+cmV0Ow0KPiAgDQo+IC0JcmV0ID0gZG1hX21hcF9zZ3RhYmxlKGF0dGFjaG1lbnQtPmRldiwgdGFi
+bGUsIGRpcmVjdGlvbiwgMCk7DQo+ICsJcmV0ID0gZG1hX21hcF9zZ3RhYmxlKGF0dGFjaG1lbnQt
+PmRldiwgdGFibGUsIGRpcmVjdGlvbiwNCj4gYXR0cnMpOw0KPiAgCWlmIChyZXQpDQo+ICAJCXJl
+dHVybiBFUlJfUFRSKHJldCk7DQo+ICANCj4gQEAgLTE0NSw5ICsxNDYsMTAgQEAgc3RhdGljIHZv
+aWQgc3lzdGVtX2hlYXBfdW5tYXBfZG1hX2J1ZihzdHJ1Y3QNCj4gZG1hX2J1Zl9hdHRhY2htZW50
+ICphdHRhY2htZW50LA0KPiAgCQkJCSAgICAgIGVudW0gZG1hX2RhdGFfZGlyZWN0aW9uDQo+IGRp
+cmVjdGlvbikNCj4gIHsNCj4gIAlzdHJ1Y3QgZG1hX2hlYXBfYXR0YWNobWVudCAqYSA9IGF0dGFj
+aG1lbnQtPnByaXY7DQo+ICsJaW50IGF0dHJzID0gYXR0YWNobWVudC0+ZG1hX21hcF9hdHRyczsN
+Cj4gIA0KPiAgCWEtPm1hcHBlZCA9IGZhbHNlOw0KPiAtCWRtYV91bm1hcF9zZ3RhYmxlKGF0dGFj
+aG1lbnQtPmRldiwgdGFibGUsIGRpcmVjdGlvbiwgMCk7DQo+ICsJZG1hX3VubWFwX3NndGFibGUo
+YXR0YWNobWVudC0+ZGV2LCB0YWJsZSwgZGlyZWN0aW9uLCBhdHRycyk7DQo+ICB9DQo+ICANCj4g
+IHN0YXRpYyBpbnQgc3lzdGVtX2hlYXBfZG1hX2J1Zl9iZWdpbl9jcHVfYWNjZXNzKHN0cnVjdCBk
+bWFfYnVmDQo+ICpkbWFidWYsDQo+IC0tIA0KPiAyLjE3LjENCj4g
 
-On Thu, Jul 15, 2021 at 10:31 AM Kewei Xu <kewei.xu@mediatek.com> wrote:
->
-> When a timeout error occurs in i2c transter, it is usually related
-> to the i2c/dma IP hardware configuration. Therefore, the purpose of
-> this patch is to dump the key register values of i2c/dma when a
-> timeout occurs in i2c for debugging.
->
-> Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
-> ---
->  drivers/i2c/busses/i2c-mt65xx.c | 95 ++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 94 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-> index 5ddfa4e..64acd96 100644
-> --- a/drivers/i2c/busses/i2c-mt65xx.c
-> +++ b/drivers/i2c/busses/i2c-mt65xx.c
-> @@ -125,6 +125,7 @@ enum I2C_REGS_OFFSET {
->         OFFSET_HS,
->         OFFSET_SOFTRESET,
->         OFFSET_DCM_EN,
-> +       OFFSET_MULTI_DMA,
->         OFFSET_PATH_DIR,
->         OFFSET_DEBUGSTAT,
->         OFFSET_DEBUGCTRL,
-> @@ -192,6 +193,7 @@ enum I2C_REGS_OFFSET {
->         [OFFSET_TRANSFER_LEN_AUX] = 0x44,
->         [OFFSET_CLOCK_DIV] = 0x48,
->         [OFFSET_SOFTRESET] = 0x50,
-> +       [OFFSET_MULTI_DMA] = 0x84,
-
-On the datasheets I have, MULTI_DMA is 0x8c, while 0x84 is CHANNEL_SEC on
-MT8192, and not defined on MT8183 nor MT8195.
-
->         [OFFSET_SCL_MIS_COMP_POINT] = 0x90,
->         [OFFSET_DEBUGSTAT] = 0xe0,
->         [OFFSET_DEBUGCTRL] = 0xe8,
-> @@ -828,6 +830,96 @@ static int mtk_i2c_set_speed(struct mtk_i2c *i2c, unsigned int parent_clk)
->         return 0;
->  }
->
-> +static void i2c_dump_register(struct mtk_i2c *i2c)
-> +{
-> +       dev_err(i2c->dev, "SLAVE_ADDR[0x%x]: 0x%x, INTR_MASK[0x%x]: 0x%x\n",
-> +               OFFSET_SLAVE_ADDR,
-> +               (mtk_i2c_readw(i2c, OFFSET_SLAVE_ADDR)),
-
-Drop the extra outer parentheses. Same goes for all the other invocations.
-
-> +               OFFSET_INTR_MASK,
-> +               (mtk_i2c_readw(i2c, OFFSET_INTR_MASK)));
-> +       dev_err(i2c->dev, "INTR_STAT[0x%x]: 0x%x, CONTROL[0x%x]: 0x%x\n",
-> +               OFFSET_INTR_STAT,
-> +               (mtk_i2c_readw(i2c, OFFSET_INTR_STAT)),
-> +               OFFSET_CONTROL,
-> +               (mtk_i2c_readw(i2c, OFFSET_CONTROL)));
-> +       dev_err(i2c->dev, "TRANSFER_LEN[0x%x]: 0x%x, TRANSAC_LEN[0x%x]: 0x%x\n",
-> +               OFFSET_TRANSFER_LEN,
-> +               (mtk_i2c_readw(i2c, OFFSET_TRANSFER_LEN)),
-> +               OFFSET_TRANSAC_LEN,
-> +               (mtk_i2c_readw(i2c, OFFSET_TRANSAC_LEN)));
-> +       dev_err(i2c->dev, "DELAY_LEN[0x%x]: 0x%x, HTIMING[0x%x]: 0x%x\n",
-> +               OFFSET_DELAY_LEN,
-> +               (mtk_i2c_readw(i2c, OFFSET_DELAY_LEN)),
-> +               OFFSET_TIMING,
-> +               (mtk_i2c_readw(i2c, OFFSET_TIMING)));
-> +       dev_err(i2c->dev, "OFFSET_START[0x%x]: 0x%x\n",
-> +               OFFSET_START,
-> +               mtk_i2c_readw(i2c, OFFSET_START));
-> +       dev_err(i2c->dev, "OFFSET_EXT_CONF[0x%x]: 0x%x\n",
-> +               OFFSET_EXT_CONF,
-> +               mtk_i2c_readw(i2c, OFFSET_EXT_CONF));
-> +       dev_err(i2c->dev, "OFFSET_HS[0x%x]: 0x%x\n",
-> +               OFFSET_HS,
-> +               mtk_i2c_readw(i2c, OFFSET_HS));
-> +       dev_err(i2c->dev, "OFFSET_IO_CONFIG[0x%x]: 0x%x\n",
-> +               OFFSET_IO_CONFIG,
-> +               mtk_i2c_readw(i2c, OFFSET_IO_CONFIG));
-> +       dev_err(i2c->dev, "OFFSET_FIFO_ADDR_CLR[0x%x]: 0x%x\n",
-> +               OFFSET_FIFO_ADDR_CLR,
-> +               mtk_i2c_readw(i2c, OFFSET_FIFO_ADDR_CLR));
-> +       dev_err(i2c->dev, "TRANSFER_LEN_AUX[0x%x]: 0x%x\n",
-> +               OFFSET_TRANSFER_LEN_AUX,
-> +               mtk_i2c_readw(i2c, OFFSET_TRANSFER_LEN_AUX));
-> +       dev_err(i2c->dev, "CLOCK_DIV[0x%x]: 0x%x\n",
-> +               OFFSET_CLOCK_DIV,
-> +               mtk_i2c_readw(i2c, OFFSET_CLOCK_DIV));
-> +       dev_err(i2c->dev, "FIFO_STAT[0x%x]: 0x%x, FIFO_THRESH[0x%x]: 0x%x\n",
-> +               OFFSET_FIFO_STAT,
-> +               mtk_i2c_readw(i2c, OFFSET_FIFO_STAT),
-> +               OFFSET_FIFO_THRESH,
-> +               mtk_i2c_readw(i2c, OFFSET_FIFO_THRESH));
-> +       dev_err(i2c->dev, "DCM_EN[0x%x] 0x%x\n",
-> +               OFFSET_DCM_EN,
-> +               mtk_i2c_readw(i2c, OFFSET_DCM_EN));
-> +       dev_err(i2c->dev, "DEBUGSTAT[0x%x]: 0x%x, DEBUGCTRL[0x%x]: 0x%x\n",
-
-Nit: Why do some have two registers per line, and some only have one?
-
-ChenYu
-
-
-> +               OFFSET_DEBUGSTAT,
-> +               (mtk_i2c_readw(i2c, OFFSET_DEBUGSTAT)),
-> +               OFFSET_DEBUGCTRL,
-> +               (mtk_i2c_readw(i2c, OFFSET_DEBUGCTRL)));
-> +
-> +       if (i2c->dev_comp->regs == mt_i2c_regs_v2) {
-> +               dev_err(i2c->dev, "OFFSET_LTIMING[0x%x]: 0x%x\n",
-> +                       OFFSET_LTIMING,
-> +                       mtk_i2c_readw(i2c, OFFSET_LTIMING));
-> +               dev_err(i2c->dev, "MULTI_DMA[0x%x]: 0x%x\n",
-> +                       OFFSET_MULTI_DMA,
-> +                       (mtk_i2c_readw(i2c, OFFSET_MULTI_DMA)));
-> +       }
-> +
-> +       dev_err(i2c->dev, "OFFSET_INT_FLAG = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_INT_FLAG));
-> +       dev_err(i2c->dev, "OFFSET_INT_EN = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_INT_EN));
-> +       dev_err(i2c->dev, "OFFSET_EN = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_EN));
-> +       dev_err(i2c->dev, "OFFSET_RST = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_RST));
-> +       dev_err(i2c->dev, "OFFSET_CON = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_CON));
-> +       dev_err(i2c->dev, "OFFSET_TX_MEM_ADDR = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_TX_MEM_ADDR));
-> +       dev_err(i2c->dev, "OFFSET_RX_MEM_ADDR = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_RX_MEM_ADDR));
-> +       dev_err(i2c->dev, "OFFSET_TX_LEN = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_TX_LEN));
-> +       dev_err(i2c->dev, "OFFSET_RX_LEN = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_RX_LEN));
-> +       dev_err(i2c->dev, "OFFSET_TX_4G_MODE = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_TX_4G_MODE));
-> +       dev_err(i2c->dev, "OFFSET_RX_4G_MODE = 0x%x\n",
-> +               readl(i2c->pdmabase + OFFSET_RX_4G_MODE));
-> +}
-> +
->  static int mtk_i2c_do_transfer(struct mtk_i2c *i2c, struct i2c_msg *msgs,
->                                int num, int left_num)
->  {
-> @@ -1034,7 +1126,8 @@ static int mtk_i2c_do_transfer(struct mtk_i2c *i2c, struct i2c_msg *msgs,
->         }
->
->         if (ret == 0) {
-> -               dev_dbg(i2c->dev, "addr: %x, transfer timeout\n", msgs->addr);
-> +               dev_err(i2c->dev, "addr: %x, transfer timeout\n", msgs->addr);
-> +               i2c_dump_register(i2c);
->                 mtk_i2c_init_hw(i2c);
->                 return -ETIMEDOUT;
->         }
-> --
-> 1.9.1
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
