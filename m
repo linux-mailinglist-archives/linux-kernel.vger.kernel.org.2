@@ -2,192 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740E83CAD2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714653CAD31
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345559AbhGOTyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:54:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42388 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245474AbhGOTg7 (ORCPT
+        id S1345655AbhGOTzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:55:04 -0400
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:42701 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245710AbhGOThA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:36:59 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1626377644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zgaJtSBLF4nBRlm25z1Xt7502dBDKcFRJ4X31C1mM5s=;
-        b=eJkvKqnKfND+7+60SM5Qw8K6Xoqcv9BwQ4nVMkXEv7ae17tWLl2wWFanTP7CRNIbNicAwc
-        PTlUygsGHpNl9hgGFJyucA0oqSmESSaKTC5l4wdH5GMKbLalJ6fNzZtlpTEpmmSOIrbmlf
-        7tsLBAIRi20+oftAiCD8mefbEZqeiwQ4HtHSpzRcbrh/OFkyDwfBgU6uu6LtuLPDh1Hmxf
-        WrGa8ql+IGzEyT3a9AYwnTbC3Umjs2MVLLlPzdqceAo/OYXxt0e79JNjayxwdpG3G/i8pZ
-        d5PKDuS+LuonKCllr/YtDTdOncrsKbZfMFnM8SrzdOB/rANcCBbqrhRoCNTJAA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1626377644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zgaJtSBLF4nBRlm25z1Xt7502dBDKcFRJ4X31C1mM5s=;
-        b=27dl5hFdon8v+HG4rLKWf+PTckeEUKpkPpvaoTnRd7OeAmbRWxYsEyq5rzstjvfaMyKACB
-        nizmuswaVih2/NAQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH printk v4 6/6] printk: syslog: close window between wait and read
-Date:   Thu, 15 Jul 2021 21:39:59 +0206
-Message-Id: <20210715193359.25946-7-john.ogness@linutronix.de>
-In-Reply-To: <20210715193359.25946-1-john.ogness@linutronix.de>
-References: <20210715193359.25946-1-john.ogness@linutronix.de>
+        Thu, 15 Jul 2021 15:37:00 -0400
+Received: by mail-pg1-f178.google.com with SMTP id d12so7558831pgd.9;
+        Thu, 15 Jul 2021 12:34:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zjxwp6orKMql7+9u1ifo9qLb9KJtenjBrmxBwEY+JMw=;
+        b=qzgljO+BucRWGpUbkorz9naxtIIG7mcTJIWhS++L8v1rLh3qgak74ij2Z3LQENdejR
+         Ss4MEr/QVzgPkd/+YnihrwnS7SbwfQtUl4uAIQMhQ5wJ4zOFsPRI2R4RByylcFUNLGUD
+         g+DGbw9d+oAT3kMprSf1UNmvpU/MCeb6VR+O5aj68K4GlcI4LZLFH3qnH1OBSDEJOOvj
+         /suAnpQrzpgH47eWkJLlvvHq/IjnwChWyjJy6mSajutX3nEoo/s1CN5cuua+mtXgruRc
+         z6PHo36TOxABnKVBdy/eg0VJI+DPt44+d5r19K7gRmu94MGdU106JH+9H94aolf5p7Rn
+         hgvQ==
+X-Gm-Message-State: AOAM5324Kvyc/ctwU3I8qrZE7IFUM77uG8PPc0E8D/49qskHnp+OS/Of
+        Zzfp+5U5aUGH52a3rrJKZdo=
+X-Google-Smtp-Source: ABdhPJxY8NxgGVaQ84TXeW3HbjKH0JflzassnRhJ3CpoBi9BrNalbqNRIerP4lMAdXnIKdgPMPl8Rw==
+X-Received: by 2002:a63:100e:: with SMTP id f14mr6213805pgl.95.1626377646832;
+        Thu, 15 Jul 2021 12:34:06 -0700 (PDT)
+Received: from garbanzo ([191.96.120.37])
+        by smtp.gmail.com with ESMTPSA id l6sm7542802pff.74.2021.07.15.12.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 12:34:05 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 12:34:03 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, jack@suse.cz, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] block: add error handling for *add_disk*()
+Message-ID: <20210715193403.qn6nlb27uf2daf65@garbanzo>
+References: <20210715045531.420201-1-mcgrof@kernel.org>
+ <YO/iVNCSTWy5EmoP@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YO/iVNCSTWy5EmoP@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syslog's SYSLOG_ACTION_READ is supposed to block until the next
-syslog record can be read, and then it should read that record.
-However, because @syslog_lock is not held between waking up and
-reading the record, another reader could read the record first,
-thus causing SYSLOG_ACTION_READ to return with a value of 0, never
-having read _anything_.
+On Thu, Jul 15, 2021 at 08:23:00AM +0100, Christoph Hellwig wrote:
+> On Wed, Jul 14, 2021 at 09:55:25PM -0700, Luis Chamberlain wrote:
+> > Although I've dropped driver conversion at this point I've
+> > converted all drivers over, but that series is about 80
+> > patches... and so should be dealt with after this basic core
+> > work is reviewed and merged.
+> 
+> I think we need at least a few sample conversions to show how
+> you intend this to be used.
 
-By holding @syslog_lock between waking up and reading, it can be
-guaranteed that SYSLOG_ACTION_READ blocks until it successfully
-reads a syslog record (or a real error occurs).
+I'll send a few out, but I'll send them as separate groups. There
+are 5 groups of further changes as part of the driver conversion:
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- kernel/printk/printk.c | 55 +++++++++++++++++++++++++++---------------
- 1 file changed, 36 insertions(+), 19 deletions(-)
+  1) trivial changes: requires a blk_cleanup_disk() on error added
+  2) Fix uses of GENHD_FL_UP
+  3) Fix uses of GENHD_FL_UP for del_gendisk() with a block helper
+  4) make probe on blk_request_module() return an error, so to
+     take advantage of the add_disk() on probe calls. Drivers which
+     benefit:
+     - ataflop
+     - brd
+     - floppy
+     - loop
+     - scsi/sd
+  5) Once all drivers are converted, add __must_check() to add_disk()
+     and friends
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 99160d0dafd6..d11612687323 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -1480,12 +1480,14 @@ static u64 find_first_fitting_seq(u64 start_seq, u64 max_seq, size_t size,
- 	return seq;
- }
- 
-+/* The caller is responsible for making sure @size is greater than 0. */
- static int syslog_print(char __user *buf, int size)
- {
- 	struct printk_info info;
- 	struct printk_record r;
- 	char *text;
- 	int len = 0;
-+	u64 seq;
- 
- 	text = kmalloc(CONSOLE_LOG_MAX, GFP_KERNEL);
- 	if (!text)
-@@ -1493,15 +1495,35 @@ static int syslog_print(char __user *buf, int size)
- 
- 	prb_rec_init_rd(&r, &info, text, CONSOLE_LOG_MAX);
- 
--	while (size > 0) {
-+	mutex_lock(&syslog_lock);
-+
-+	/*
-+	 * Wait for the @syslog_seq record to be available. @syslog_seq may
-+	 * change while waiting.
-+	 */
-+	do {
-+		seq = syslog_seq;
-+
-+		mutex_unlock(&syslog_lock);
-+		len = wait_event_interruptible(log_wait, prb_read_valid(prb, seq, NULL));
-+		mutex_lock(&syslog_lock);
-+
-+		if (len)
-+			goto out;
-+	} while (syslog_seq != seq);
-+
-+	/*
-+	 * Copy records that fit into the buffer. The above cycle makes sure
-+	 * that the first record is always available.
-+	 */
-+	do {
- 		size_t n;
- 		size_t skip;
-+		int err;
- 
--		mutex_lock(&syslog_lock);
--		if (!prb_read_valid(prb, syslog_seq, &r)) {
--			mutex_unlock(&syslog_lock);
-+		if (!prb_read_valid(prb, syslog_seq, &r))
- 			break;
--		}
-+
- 		if (r.info->seq != syslog_seq) {
- 			/* message is gone, move to next valid one */
- 			syslog_seq = r.info->seq;
-@@ -1528,12 +1550,15 @@ static int syslog_print(char __user *buf, int size)
- 			syslog_partial += n;
- 		} else
- 			n = 0;
--		mutex_unlock(&syslog_lock);
- 
- 		if (!n)
- 			break;
- 
--		if (copy_to_user(buf, text + skip, n)) {
-+		mutex_unlock(&syslog_lock);
-+		err = copy_to_user(buf, text + skip, n);
-+		mutex_lock(&syslog_lock);
-+
-+		if (err) {
- 			if (!len)
- 				len = -EFAULT;
- 			break;
-@@ -1542,8 +1567,9 @@ static int syslog_print(char __user *buf, int size)
- 		len += n;
- 		size -= n;
- 		buf += n;
--	}
--
-+	} while (size);
-+out:
-+	mutex_unlock(&syslog_lock);
- 	kfree(text);
- 	return len;
- }
-@@ -1614,7 +1640,6 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 	bool clear = false;
- 	static int saved_console_loglevel = LOGLEVEL_DEFAULT;
- 	int error;
--	u64 seq;
- 
- 	error = check_syslog_permissions(type, source);
- 	if (error)
-@@ -1632,15 +1657,6 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 			return 0;
- 		if (!access_ok(buf, len))
- 			return -EFAULT;
--
--		/* Get a consistent copy of @syslog_seq. */
--		mutex_lock(&syslog_lock);
--		seq = syslog_seq;
--		mutex_unlock(&syslog_lock);
--
--		error = wait_event_interruptible(log_wait, prb_read_valid(prb, seq, NULL));
--		if (error)
--			return error;
- 		error = syslog_print(buf, len);
- 		break;
- 	/* Read/clear last kernel messages */
-@@ -1707,6 +1723,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 		} else {
- 			bool time = syslog_partial ? syslog_time : printk_time;
- 			unsigned int line_count;
-+			u64 seq;
- 
- 			prb_for_each_info(syslog_seq, prb, seq, &info,
- 					  &line_count) {
--- 
-2.20.1
+There are so many patches I think it makes sense to only post a few
+for each group, except maybe the 4th group, that requires probe
+change to go in one full sweep. I've only build tested what fits
+in my architecture so far, waiting on 0-day complaints reports to
+fix the rest. So only the first first group will go as PATCH form
+for now.
 
+  Luis
