@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BF73CABA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20BF3CA94B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243401AbhGOTVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:21:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
+        id S242397AbhGOTGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:06:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241875AbhGOTFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15275613C0;
-        Thu, 15 Jul 2021 19:01:49 +0000 (UTC)
+        id S231997AbhGOS4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:56:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B37AC613D7;
+        Thu, 15 Jul 2021 18:53:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375710;
-        bh=bQ6o2NIi3EfTjmaHCOFG+RzRJtr0dJpoXEu17KBfHcQ=;
+        s=korg; t=1626375193;
+        bh=oDj4QzskaiCbEtmnzszlg04IE4Xh1gAq207OnqONIEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QDA5UzqWziPYV8WvF3UcdvYg4cZjKmprNG1u/Sc11e2a3xjTE1J6dziTmOPvAtfvj
-         yVMhP7iv4H/1Mm7eDH6Nd/hm/Up0kxa0R1jeCCtYNaOmbbvCwPmvR3V9HPpHG8nZVS
-         /1kyB5W3/uDDKJNIUP6KOcC9arXY/Eio3my6HiGQ=
+        b=u7itaj3HXwZ42i8NcvSeFJBww/pptc9/wOmbHsEevAitWYwTnY5S+IX3gXobfuzRu
+         tzkqRULsybaynxSdZ8nX3DmxmFxT1AtJ1bwlVS3spXb0JlGsrqVaGTLvdQ9mrHFAzJ
+         PsV/+2T1R0+2H/I6Qi9ytNU11nVdBBYPi1lAhfxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 5.12 201/242] power: supply: ab8500: Fix an old bug
-Date:   Thu, 15 Jul 2021 20:39:23 +0200
-Message-Id: <20210715182628.646907276@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH 5.10 192/215] ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe
+Date:   Thu, 15 Jul 2021 20:39:24 +0200
+Message-Id: <20210715182633.088187912@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-commit f1c74a6c07e76fcb31a4bcc1f437c4361a2674ce upstream.
+commit 9272e5d0028d45a3b45b58c9255e6e0df53f7ad9 upstream.
 
-Trying to get the AB8500 charging driver working I ran into a bit
-of bitrot: we haven't used the driver for a while so errors in
-refactorings won't be noticed.
+In the out_err_bus_register error branch of tpci200_pci_probe,
+tpci200->info->cfg_regs is freed by tpci200_uninstall()->
+tpci200_unregister()->pci_iounmap(..,tpci200->info->cfg_regs)
+in the first time.
 
-This one is pretty self evident: use argument to the macro or we
-end up with a random pointer to something else.
+But later, iounmap() is called to free tpci200->info->cfg_regs
+again.
 
-Cc: stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Marcus Cooper <codekipper@gmail.com>
-Fixes: 297d716f6260 ("power_supply: Change ownership from driver to core")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+My patch sets tpci200->info->cfg_regs to NULL after tpci200_uninstall()
+to avoid the double free.
+
+Fixes: cea2f7cdff2af ("Staging: ipack/bridges/tpci200: Use the TPCI200 in big endian mode")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Link: https://lore.kernel.org/r/20210524093205.8333-1-lyl2019@mail.ustc.edu.cn
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/mfd/abx500/ux500_chargalg.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ipack/carriers/tpci200.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/include/linux/mfd/abx500/ux500_chargalg.h
-+++ b/include/linux/mfd/abx500/ux500_chargalg.h
-@@ -15,7 +15,7 @@
-  * - POWER_SUPPLY_TYPE_USB,
-  * because only them store as drv_data pointer to struct ux500_charger.
-  */
--#define psy_to_ux500_charger(x) power_supply_get_drvdata(psy)
-+#define psy_to_ux500_charger(x) power_supply_get_drvdata(x)
+--- a/drivers/ipack/carriers/tpci200.c
++++ b/drivers/ipack/carriers/tpci200.c
+@@ -596,8 +596,11 @@ static int tpci200_pci_probe(struct pci_
  
- /* Forward declaration */
- struct ux500_charger;
+ out_err_bus_register:
+ 	tpci200_uninstall(tpci200);
++	/* tpci200->info->cfg_regs is unmapped in tpci200_uninstall */
++	tpci200->info->cfg_regs = NULL;
+ out_err_install:
+-	iounmap(tpci200->info->cfg_regs);
++	if (tpci200->info->cfg_regs)
++		iounmap(tpci200->info->cfg_regs);
+ out_err_ioremap:
+ 	pci_release_region(pdev, TPCI200_CFG_MEM_BAR);
+ out_err_pci_request:
 
 
