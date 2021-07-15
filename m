@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28EE3CA988
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3A43CABEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241937AbhGOTHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:07:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
+        id S1343563AbhGOTYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241252AbhGOS5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:57:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8351613E5;
-        Thu, 15 Jul 2021 18:54:06 +0000 (UTC)
+        id S242077AbhGOTHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:07:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31AAA613FD;
+        Thu, 15 Jul 2021 19:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375247;
-        bh=rr5LzAO3DQl7AErU8Q6JXC0obSTqPA+8Xc7/kY8zDhg=;
+        s=korg; t=1626375815;
+        bh=/78tR4B/mEjVOyODfMvQ/9lxrCVMkbU4yif0dtaFrJU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=muf9i8OnhdJHqoTuevXfAmiTX2DJf63kwPMsqiMhk61dq4Gqe5cZULgVUjAgvud/I
-         JZc6E5++zKTzkEfMCyrIJTH/FUbst+9LjJSpqJRVJeNznZE7LM76nIhJ7tdVRYkPDo
-         xxY8N3835y/qzdqQVq3/H46TTjn4zdTPzvRMefto=
+        b=avMMRVr5apSf+Qx1sARKbRtGwd9OhXIQdci5qIrU38Kc7C89YRdNHRKpFlS2c8EPA
+         X7oJBkjStD7QZqaFV5rX7VkMFAkq1o/FQUbbPMSsMnkOiyafKasdU2JtGgIDClqTIx
+         aqPMBOHkktcN4fJ1xB4VmOROKFFcHrwk6MrfLiAA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.10 200/215] PCI: aardvark: Implement workaround for the readback value of VEND_ID
-Date:   Thu, 15 Jul 2021 20:39:32 +0200
-Message-Id: <20210715182634.506919851@linuxfoundation.org>
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Paul Burton <paulburton@google.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.12 211/242] tracing: Resize tgid_map to pid_max, not PID_MAX_DEFAULT
+Date:   Thu, 15 Jul 2021 20:39:33 +0200
+Message-Id: <20210715182630.360785408@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +41,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Paul Burton <paulburton@google.com>
 
-commit 7f71a409fe3d9358da07c77f15bb5b7960f12253 upstream.
+commit 4030a6e6a6a4a42ff8c18414c9e0c93e24cc70b8 upstream.
 
-Marvell Armada 3700 Functional Errata, Guidelines, and Restrictions
-document describes in erratum 4.1 PCIe value of vendor ID (Ref #: 243):
+Currently tgid_map is sized at PID_MAX_DEFAULT entries, which means that
+on systems where pid_max is configured higher than PID_MAX_DEFAULT the
+ftrace record-tgid option doesn't work so well. Any tasks with PIDs
+higher than PID_MAX_DEFAULT are simply not recorded in tgid_map, and
+don't show up in the saved_tgids file.
 
-    The readback value of VEND_ID (RD0070000h [15:0]) is 1B4Bh, while it
-    should read 11ABh.
+In particular since systemd v243 & above configure pid_max to its
+highest possible 1<<22 value by default on 64 bit systems this renders
+the record-tgids option of little use.
 
-    The firmware can write the correct value, 11ABh, through VEND_ID
-    (RD0076044h [15:0]).
+Increase the size of tgid_map to the configured pid_max instead,
+allowing it to cover the full range of PIDs up to the maximum value of
+PID_MAX_LIMIT if the system is configured that way.
 
-Implement this workaround in aardvark driver for both PCI vendor id and PCI
-subsystem vendor id.
+On 64 bit systems with pid_max == PID_MAX_LIMIT this will increase the
+size of tgid_map from 256KiB to 16MiB. Whilst this 64x increase in
+memory overhead sounds significant 64 bit systems are presumably best
+placed to accommodate it, and since tgid_map is only allocated when the
+record-tgid option is actually used presumably the user would rather it
+spends sufficient memory to actually record the tgids they expect.
 
-This change affects and fixes PCI vendor id of emulated PCIe root bridge.
-After this change emulated PCIe root bridge has correct vendor id.
+The size of tgid_map could also increase for CONFIG_BASE_SMALL=y
+configurations, but these seem unlikely to be systems upon which people
+are both configuring a large pid_max and running ftrace with record-tgid
+anyway.
 
-Link: https://lore.kernel.org/r/20210624222621.4776-5-pali@kernel.org
-Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org
+Of note is that we only allocate tgid_map once, the first time that the
+record-tgid option is enabled. Therefore its size is only set once, to
+the value of pid_max at the time the record-tgid option is first
+enabled. If a user increases pid_max after that point, the saved_tgids
+file will not contain entries for any tasks with pids beyond the earlier
+value of pid_max.
+
+Link: https://lkml.kernel.org/r/20210701172407.889626-2-paulburton@google.com
+
+Fixes: d914ba37d714 ("tracing: Add support for recording tgid of tasks")
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Joel Fernandes <joelaf@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Paul Burton <paulburton@google.com>
+[ Fixed comment coding style ]
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/pci-aardvark.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ kernel/trace/trace.c |   63 ++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 16 deletions(-)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -124,6 +124,7 @@
- #define     LTSSM_MASK				0x3f
- #define     LTSSM_L0				0x10
- #define     RC_BAR_CONFIG			0x300
-+#define VENDOR_ID_REG				(LMI_BASE_ADDR + 0x44)
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2184,8 +2184,15 @@ void tracing_reset_all_online_cpus(void)
+ 	}
+ }
  
- /* PCIe core controller registers */
- #define CTRL_CORE_BASE_ADDR			0x18000
-@@ -385,6 +386,16 @@ static void advk_pcie_setup_hw(struct ad
- 	reg |= (IS_RC_MSK << IS_RC_SHIFT);
- 	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
++/*
++ * The tgid_map array maps from pid to tgid; i.e. the value stored at index i
++ * is the tgid last observed corresponding to pid=i.
++ */
+ static int *tgid_map;
  
-+	/*
-+	 * Replace incorrect PCI vendor id value 0x1b4b by correct value 0x11ab.
-+	 * VENDOR_ID_REG contains vendor id in low 16 bits and subsystem vendor
-+	 * id in high 16 bits. Updating this register changes readback value of
-+	 * read-only vendor id bits in PCIE_CORE_DEV_ID_REG register. Workaround
-+	 * for erratum 4.1: "The value of device and vendor ID is incorrect".
-+	 */
-+	reg = (PCI_VENDOR_ID_MARVELL << 16) | PCI_VENDOR_ID_MARVELL;
-+	advk_writel(pcie, reg, VENDOR_ID_REG);
++/* The maximum valid index into tgid_map. */
++static size_t tgid_map_max;
 +
- 	/* Set Advanced Error Capabilities and Control PF0 register */
- 	reg = PCIE_CORE_ERR_CAPCTL_ECRC_CHK_TX |
- 		PCIE_CORE_ERR_CAPCTL_ECRC_CHK_TX_EN |
+ #define SAVED_CMDLINES_DEFAULT 128
+ #define NO_CMDLINE_MAP UINT_MAX
+ static arch_spinlock_t trace_cmdline_lock = __ARCH_SPIN_LOCK_UNLOCKED;
+@@ -2458,24 +2465,41 @@ void trace_find_cmdline(int pid, char co
+ 	preempt_enable();
+ }
+ 
++static int *trace_find_tgid_ptr(int pid)
++{
++	/*
++	 * Pairs with the smp_store_release in set_tracer_flag() to ensure that
++	 * if we observe a non-NULL tgid_map then we also observe the correct
++	 * tgid_map_max.
++	 */
++	int *map = smp_load_acquire(&tgid_map);
++
++	if (unlikely(!map || pid > tgid_map_max))
++		return NULL;
++
++	return &map[pid];
++}
++
+ int trace_find_tgid(int pid)
+ {
+-	if (unlikely(!tgid_map || !pid || pid > PID_MAX_DEFAULT))
+-		return 0;
++	int *ptr = trace_find_tgid_ptr(pid);
+ 
+-	return tgid_map[pid];
++	return ptr ? *ptr : 0;
+ }
+ 
+ static int trace_save_tgid(struct task_struct *tsk)
+ {
++	int *ptr;
++
+ 	/* treat recording of idle task as a success */
+ 	if (!tsk->pid)
+ 		return 1;
+ 
+-	if (unlikely(!tgid_map || tsk->pid > PID_MAX_DEFAULT))
++	ptr = trace_find_tgid_ptr(tsk->pid);
++	if (!ptr)
+ 		return 0;
+ 
+-	tgid_map[tsk->pid] = tsk->tgid;
++	*ptr = tsk->tgid;
+ 	return 1;
+ }
+ 
+@@ -4915,6 +4939,8 @@ int trace_keep_overwrite(struct tracer *
+ 
+ int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
+ {
++	int *map;
++
+ 	if ((mask == TRACE_ITER_RECORD_TGID) ||
+ 	    (mask == TRACE_ITER_RECORD_CMD))
+ 		lockdep_assert_held(&event_mutex);
+@@ -4937,10 +4963,19 @@ int set_tracer_flag(struct trace_array *
+ 		trace_event_enable_cmd_record(enabled);
+ 
+ 	if (mask == TRACE_ITER_RECORD_TGID) {
+-		if (!tgid_map)
+-			tgid_map = kvcalloc(PID_MAX_DEFAULT + 1,
+-					   sizeof(*tgid_map),
+-					   GFP_KERNEL);
++		if (!tgid_map) {
++			tgid_map_max = pid_max;
++			map = kvcalloc(tgid_map_max + 1, sizeof(*tgid_map),
++				       GFP_KERNEL);
++
++			/*
++			 * Pairs with smp_load_acquire() in
++			 * trace_find_tgid_ptr() to ensure that if it observes
++			 * the tgid_map we just allocated then it also observes
++			 * the corresponding tgid_map_max value.
++			 */
++			smp_store_release(&tgid_map, map);
++		}
+ 		if (!tgid_map) {
+ 			tr->trace_flags &= ~TRACE_ITER_RECORD_TGID;
+ 			return -ENOMEM;
+@@ -5354,18 +5389,14 @@ static void *saved_tgids_next(struct seq
+ {
+ 	int pid = ++(*pos);
+ 
+-	if (pid > PID_MAX_DEFAULT)
+-		return NULL;
+-
+-	return &tgid_map[pid];
++	return trace_find_tgid_ptr(pid);
+ }
+ 
+ static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
+ {
+-	if (!tgid_map || *pos > PID_MAX_DEFAULT)
+-		return NULL;
++	int pid = *pos;
+ 
+-	return &tgid_map[*pos];
++	return trace_find_tgid_ptr(pid);
+ }
+ 
+ static void saved_tgids_stop(struct seq_file *m, void *v)
 
 
