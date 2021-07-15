@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6F03CA7FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D5D3CA81B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241657AbhGOS5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:57:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54984 "EHLO mail.kernel.org"
+        id S242152AbhGOS6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235956AbhGOSvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:51:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B6C0613C4;
-        Thu, 15 Jul 2021 18:48:46 +0000 (UTC)
+        id S238823AbhGOSwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:52:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21B2E613DB;
+        Thu, 15 Jul 2021 18:49:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374926;
-        bh=Cw2ARdHoUyronOO5hDgZF3fHmbP47LLSQ6y+NnXGX74=;
+        s=korg; t=1626374952;
+        bh=pAh9sS9KTHjr0pvKpZxLQ/hvbf6Z1ptRKk+fyiUulUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PSqCLoCxk2enTeMhPtbEbS7FvG12V7r80NAdF3If5k8DWIf/rYOEJQGY//ZV3qbP7
-         z8PwJRru2ACgBUz27qFF/X/1aRFbfGe9xPp+fDWWKkAecfujNfoPaWCaxIdp40jRP9
-         UOhLDHieFBT4G+r6XnLZj4Nfm0l9xbTg9TxEgfjI=
+        b=ebr3WefdCffb07R2AFHEC/LtwFBnZ9gMZcIspeu1hUPpjfeBLq7qr/K2Ea8YH+OBI
+         mixeQWMel0yyTGnsjSSZdpaa2jTAfGZmE3fKtSVBh3wlWRyTiwJbnowzPctoE8ZnRQ
+         ZKr1R4E9h+gRsQetcHj1AColbTelvVF+VvSg7vLY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 058/215] virtio_net: Remove BUG() to avoid machine dead
-Date:   Thu, 15 Jul 2021 20:37:10 +0200
-Message-Id: <20210715182609.713978013@linuxfoundation.org>
+Subject: [PATCH 5.10 059/215] net: mscc: ocelot: check return value after calling platform_get_resource()
+Date:   Thu, 15 Jul 2021 20:37:11 +0200
+Message-Id: <20210715182609.888585912@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -42,35 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xianting Tian <xianting.tian@linux.alibaba.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 85eb1389458d134bdb75dad502cc026c3753a619 ]
+[ Upstream commit f1fe19c2cb3fdc92a614cf330ced1613f8f1a681 ]
 
-We should not directly BUG() when there is hdr error, it is
-better to output a print when such error happens. Currently,
-the caller of xmit_skb() already did it.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/ocelot/seville_vsc9953.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index e2c6c5675ec6..91e0e6254a01 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1563,7 +1563,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
- 	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
- 				    virtio_is_little_endian(vi->vdev), false,
- 				    0))
--		BUG();
-+		return -EPROTO;
+diff --git a/drivers/net/dsa/ocelot/seville_vsc9953.c b/drivers/net/dsa/ocelot/seville_vsc9953.c
+index ebbaf6817ec8..7026523f886c 100644
+--- a/drivers/net/dsa/ocelot/seville_vsc9953.c
++++ b/drivers/net/dsa/ocelot/seville_vsc9953.c
+@@ -1214,6 +1214,11 @@ static int seville_probe(struct platform_device *pdev)
+ 	felix->info = &seville_info_vsc9953;
  
- 	if (vi->mergeable_rx_bufs)
- 		hdr->num_buffers = 0;
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		err = -EINVAL;
++		dev_err(&pdev->dev, "Invalid resource\n");
++		goto err_alloc_felix;
++	}
+ 	felix->switch_base = res->start;
+ 
+ 	ds = kzalloc(sizeof(struct dsa_switch), GFP_KERNEL);
 -- 
 2.30.2
 
