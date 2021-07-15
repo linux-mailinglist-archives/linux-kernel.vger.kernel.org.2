@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A6A3CA8F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D9E3CAB53
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242478AbhGOTEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58428 "EHLO mail.kernel.org"
+        id S245072AbhGOTTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241568AbhGOSy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AAFE613CA;
-        Thu, 15 Jul 2021 18:51:34 +0000 (UTC)
+        id S243669AbhGOTEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19153613D1;
+        Thu, 15 Jul 2021 19:00:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375095;
-        bh=Ry6vRimaxT1PY/pQesSq6oEjfin/Mo0V5go0WQ8VCIo=;
+        s=korg; t=1626375626;
+        bh=OTxsgqVgi1Gufn4LEmptwvp+ZGtUdUp4cG7hu4xj9Pk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SHYIOc+v03cWLQGgBzEO5VeMODDCIUTEVeMO41xVqo4l5vezr3a57F/8b+jB9V0jD
-         XDgLC48xQwZZkW0nCVl51qcXWlOooapYWOwu/INlbuRYZ+07uM935zY2NLQ2iPkmv2
-         yvi9Ei7AJiKb4QfHQXN5oA2h6iMhyogFYtRomwwk=
+        b=iyC1IaDpTQ8lfBuFm3VzH7hdunMo+1/E8nTZ3QikW6UYTbFsFDjH8ydkbsGUW8RRt
+         Ccj+dQ5Sl8yWMZ2t7kf4urKr+uzdelrCW2uSY1MhYaYfaLfZtsVW/04Xsta5B3Fjlj
+         9OOxoNHtMmEoE49op4rRpSZ3Bj/hqc+RvC9YEs7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>
-Subject: [PATCH 5.10 158/215] drm/amd/display: fix incorrrect valid irq check
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH 5.12 168/242] drm/vc4: txp: Properly set the possible_crtcs mask
 Date:   Thu, 15 Jul 2021 20:38:50 +0200
-Message-Id: <20210715182627.450313154@linuxfoundation.org>
+Message-Id: <20210715182622.835172841@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guchun Chen <guchun.chen@amd.com>
+From: Maxime Ripard <maxime@cerno.tech>
 
-commit e38ca7e422791a4d1c01e56dbf7f9982db0ed365 upstream.
+commit bf6de8e61509f3c957d7f75f017b18d40a18a950 upstream.
 
-valid DAL irq should be < DAL_IRQ_SOURCES_NUMBER.
+The current code does a binary OR on the possible_crtcs variable of the
+TXP encoder, while we want to set it to that value instead.
 
-Signed-off-by: Guchun Chen <guchun.chen@amd.com>
-Reviewed-and-tested-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Cc: <stable@vger.kernel.org> # v5.9+
+Fixes: 39fcb2808376 ("drm/vc4: txp: Turn the TXP into a CRTC of its own")
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210507150515.257424-2-maxime@cerno.tech
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/dc/irq_types.h |    2 +-
+ drivers/gpu/drm/vc4/vc4_txp.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/dc/irq_types.h
-+++ b/drivers/gpu/drm/amd/display/dc/irq_types.h
-@@ -163,7 +163,7 @@ enum irq_type
- };
+--- a/drivers/gpu/drm/vc4/vc4_txp.c
++++ b/drivers/gpu/drm/vc4/vc4_txp.c
+@@ -507,7 +507,7 @@ static int vc4_txp_bind(struct device *d
+ 		return ret;
  
- #define DAL_VALID_IRQ_SRC_NUM(src) \
--	((src) <= DAL_IRQ_SOURCES_NUMBER && (src) > DC_IRQ_SOURCE_INVALID)
-+	((src) < DAL_IRQ_SOURCES_NUMBER && (src) > DC_IRQ_SOURCE_INVALID)
+ 	encoder = &txp->connector.encoder;
+-	encoder->possible_crtcs |= drm_crtc_mask(crtc);
++	encoder->possible_crtcs = drm_crtc_mask(crtc);
  
- /* Number of Page Flip IRQ Sources. */
- #define DAL_PFLIP_IRQ_SRC_NUM \
+ 	ret = devm_request_irq(dev, irq, vc4_txp_interrupt, 0,
+ 			       dev_name(dev), txp);
 
 
