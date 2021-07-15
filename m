@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AC93CAB57
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DF53CA8F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245169AbhGOTTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39662 "EHLO mail.kernel.org"
+        id S242618AbhGOTEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:04:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239531AbhGOTEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2705D61411;
-        Thu, 15 Jul 2021 19:00:42 +0000 (UTC)
+        id S242068AbhGOSyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:54:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7A5610C7;
+        Thu, 15 Jul 2021 18:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375642;
-        bh=EGz4e5SLuBHfeNsdavJb+QjlZ8PNnhysJZHoaxwkzak=;
+        s=korg; t=1626375113;
+        bh=omh3opMHp52rSy7yk5V4DoLDVmYcF/ZiJEWB0V6NH18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tqL7l6TxA6o13SX/ZigeZGVdvdJFeazHc/NXuBxz4H4mGIn9BreglHpD5r0qpyUND
-         5YLnZhQcMjOda4TV0UY0qsVTcZDWith7rXRQcvRbTMtjE9airuZoAo+/xlfVKnRvcO
-         roV/TmIfVzI4EsAD0uSgPs8Z/f+zMOm11HFOwnKU=
+        b=XLTzu3kvqtipuhNX2CmZ/AgfhYAE/2LZQ2u7Kql/TgDH5eIEGGzCAnkgSu9KMDquq
+         u+g8+XJzBhS1L2+/OLNPiOC3+Yt/RwTPnhq0WEnrc1VY+hSPyD+Ke1puwDZhhIZMK7
+         pTP4NmU6s96LMq8eLu9OUTmy1COgIKcZEGnrai3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        nicholas.kazlauskas@amd.com, amd-gfx@lists.freedesktop.org,
-        alexander.deucher@amd.com, Roman.Li@amd.com, hersenxs.wu@amd.com,
-        danny.wang@amd.com,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: [PATCH 5.12 175/242] drm/amd/display: Reject non-zero src_y and src_x for video planes
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.10 165/215] drm/i915/display: Do not zero past infoframes.vsc
 Date:   Thu, 15 Jul 2021 20:38:57 +0200
-Message-Id: <20210715182624.027757405@linuxfoundation.org>
+Message-Id: <20210715182628.739667703@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,72 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harry Wentland <harry.wentland@amd.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit c6c6a712199ab355ce333fa5764a59506bb107c1 upstream.
+commit 07b72960d2b4a087ff2445e286159e69742069cc upstream.
 
-[Why]
-This hasn't been well tested and leads to complete system hangs on DCN1
-based systems, possibly others.
+intel_dp_vsc_sdp_unpack() was using a memset() size (36, struct dp_sdp)
+larger than the destination (24, struct drm_dp_vsc_sdp), clobbering
+fields in struct intel_crtc_state after infoframes.vsc. Use the actual
+target size for the memset().
 
-The system hang can be reproduced by gesturing the video on the YouTube
-Android app on ChromeOS into full screen.
-
-[How]
-Reject atomic commits with non-zero drm_plane_state.src_x or src_y values.
-
-v2:
- - Add code comment describing the reason we're rejecting non-zero
-   src_x and src_y
- - Drop gerrit Change-Id
- - Add stable CC
- - Based on amd-staging-drm-next
-
-v3: removed trailing whitespace
-
-Signed-off-by: Harry Wentland <harry.wentland@amd.com>
+Fixes: 1b404b7dbb10 ("drm/i915/dp: Read out DP SDPs")
 Cc: stable@vger.kernel.org
-Cc: nicholas.kazlauskas@amd.com
-Cc: amd-gfx@lists.freedesktop.org
-Cc: alexander.deucher@amd.com
-Cc: Roman.Li@amd.com
-Cc: hersenxs.wu@amd.com
-Cc: danny.wang@amd.com
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: José Roberto de Souza <jose.souza@intel.com>
+Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210617213301.1824728-1-keescook@chromium.org
+(cherry picked from commit c88e2647c5bb45d04dc4302018ebe6ebbf331823)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/gpu/drm/i915/display/intel_dp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -3884,6 +3884,23 @@ static int fill_dc_scaling_info(const st
- 	     scaling_info->src_rect.y != 0))
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -5080,7 +5080,7 @@ static int intel_dp_vsc_sdp_unpack(struc
+ 	if (size < sizeof(struct dp_sdp))
  		return -EINVAL;
  
-+	/*
-+	 * For reasons we don't (yet) fully understand a non-zero
-+	 * src_y coordinate into an NV12 buffer can cause a
-+	 * system hang. To avoid hangs (and maybe be overly cautious)
-+	 * let's reject both non-zero src_x and src_y.
-+	 *
-+	 * We currently know of only one use-case to reproduce a
-+	 * scenario with non-zero src_x and src_y for NV12, which
-+	 * is to gesture the YouTube Android app into full screen
-+	 * on ChromeOS.
-+	 */
-+	if (state->fb &&
-+	    state->fb->format->format == DRM_FORMAT_NV12 &&
-+	    (scaling_info->src_rect.x != 0 ||
-+	     scaling_info->src_rect.y != 0))
-+		return -EINVAL;
-+
- 	scaling_info->src_rect.width = state->src_w >> 16;
- 	if (scaling_info->src_rect.width == 0)
+-	memset(vsc, 0, size);
++	memset(vsc, 0, sizeof(*vsc));
+ 
+ 	if (sdp->sdp_header.HB0 != 0)
  		return -EINVAL;
 
 
