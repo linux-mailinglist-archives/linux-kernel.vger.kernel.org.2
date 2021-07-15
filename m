@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775A23CA8E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48D13CAB1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242393AbhGOTDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:03:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58132 "EHLO mail.kernel.org"
+        id S243102AbhGOTRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:17:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240968AbhGOSxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:53:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE489613E5;
-        Thu, 15 Jul 2021 18:50:47 +0000 (UTC)
+        id S243067AbhGOTER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25780613DC;
+        Thu, 15 Jul 2021 18:59:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375048;
-        bh=HYDQetBH2oz2Z5rQyLku+S2/4LCgy/wuLlApelNN6dQ=;
+        s=korg; t=1626375581;
+        bh=0XRFg5hIq6dpQhf6aGNiDBR8wtXCngnhyGCW3ADbjSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iUKK+RrojUmH2l/0r+y+rM6m2Xl86VKRUI+yjD3TnEkmNhbWFL2CkuYCXcBN2/tmy
-         yZfu6oKwam36j21Ey3b4NtHaBnuJZHa5uSAMmVlb/d51O9KR9y59TodRjH5MSu22WG
-         4hE4frr5h/gICGvVRXTWZPaSivxVQOD2VVl8NBXk=
+        b=fHcXc28pMgQqUJlJuZ1HOdAjRYqyZdHzj/OQ3DZASPlkCWlwBhhu82YA0NJUnDO5Q
+         rKQYhwxO05spB7ESR3ZfSfO8icjZNz1ix/PRyPetX+CZXj+STJIY39IVyGF67NDb10
+         KuflQlmr4qMLRh9TGGQ7mQlHlBlXi6Xi/pJX8fI8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, William Wu <william.wu@rock-chips.com>,
-        Cameron Nemo <cnemo@tutanota.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH 5.10 136/215] arm64: dts: rockchip: add rk3328 dwc3 usb controller node
-Date:   Thu, 15 Jul 2021 20:38:28 +0200
-Message-Id: <20210715182623.598957915@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com,
+        Rustam Kovhaev <rkovhaev@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 147/242] bpf: Fix false positive kmemleak report in bpf_ringbuf_area_alloc()
+Date:   Thu, 15 Jul 2021 20:38:29 +0200
+Message-Id: <20210715182619.085854190@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +44,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cameron Nemo <cnemo@tutanota.com>
+From: Rustam Kovhaev <rkovhaev@gmail.com>
 
-commit 44dd5e2106dc2fd01697b539085818d1d1c58df0 upstream.
+[ Upstream commit ccff81e1d028bbbf8573d3364a87542386c707bf ]
 
-RK3328 SoCs have one USB 3.0 OTG controller which uses DWC_USB3
-core's general architecture. It can act as static xHCI host
-controller, static device controller, USB 3.0/2.0 OTG basing
-on ID of USB3.0 PHY.
+kmemleak scans struct page, but it does not scan the page content. If we
+allocate some memory with kmalloc(), then allocate page with alloc_page(),
+and if we put kmalloc pointer somewhere inside that page, kmemleak will
+report kmalloc pointer as a false positive.
 
-Signed-off-by: William Wu <william.wu@rock-chips.com>
-Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://lore.kernel.org/r/20210209192350.7130-7-jbx6244@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+We can instruct kmemleak to scan the memory area by calling kmemleak_alloc()
+and kmemleak_free(), but part of struct bpf_ringbuf is mmaped to user space,
+and if struct bpf_ringbuf changes we would have to revisit and review size
+argument in kmemleak_alloc(), because we do not want kmemleak to scan the
+user space memory. Let's simplify things and use kmemleak_not_leak() here.
 
+For posterity, also adding additional prior analysis from Andrii:
+
+  I think either kmemleak or syzbot are misreporting this. I've added a
+  bunch of printks around all allocations performed by BPF ringbuf. [...]
+  On repro side I get these two warnings:
+
+  [vmuser@archvm bpf]$ sudo ./repro
+  BUG: memory leak
+  unreferenced object 0xffff88810d538c00 (size 64):
+    comm "repro", pid 2140, jiffies 4294692933 (age 14.540s)
+    hex dump (first 32 bytes):
+      00 af 19 04 00 ea ff ff c0 ae 19 04 00 ea ff ff  ................
+      80 ae 19 04 00 ea ff ff c0 29 2e 04 00 ea ff ff  .........)......
+    backtrace:
+      [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
+      [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
+      [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
+      [<00000000f601d565>] do_syscall_64+0x2d/0x40
+      [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+  BUG: memory leak
+  unreferenced object 0xffff88810d538c80 (size 64):
+    comm "repro", pid 2143, jiffies 4294699025 (age 8.448s)
+    hex dump (first 32 bytes):
+      80 aa 19 04 00 ea ff ff 00 ab 19 04 00 ea ff ff  ................
+      c0 ab 19 04 00 ea ff ff 80 44 28 04 00 ea ff ff  .........D(.....
+    backtrace:
+      [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
+      [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
+      [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
+      [<00000000f601d565>] do_syscall_64+0x2d/0x40
+      [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+  Note that both reported leaks (ffff88810d538c80 and ffff88810d538c00)
+  correspond to pages array bpf_ringbuf is allocating and tracking properly
+  internally. Note also that syzbot repro doesn't close FD of created BPF
+  ringbufs, and even when ./repro itself exits with error, there are still
+  two forked processes hanging around in my system. So clearly ringbuf maps
+  are alive at that point. So reporting any memory leak looks weird at that
+  point, because that memory is being used by active referenced BPF ringbuf.
+
+  It's also a question why repro doesn't clean up its forks. But if I do a
+  `pkill repro`, I do see that all the allocated memory is /properly/ cleaned
+  up [and the] "leaks" are deallocated properly.
+
+  BTW, if I add close() right after bpf() syscall in syzbot repro, I see that
+  everything is immediately deallocated, like designed. And no memory leak
+  is reported. So I don't think the problem is anywhere in bpf_ringbuf code,
+  rather in the leak detection and/or repro itself.
+
+Reported-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+[ Daniel: also included analysis from Andrii to the commit log ]
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com
+Link: https://lore.kernel.org/lkml/YNTAqiE7CWJhOK2M@nuc10
+Link: https://lore.kernel.org/lkml/20210615101515.GC26027@arm.com
+Link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
+Link: https://lore.kernel.org/bpf/20210626181156.1873604-1-rkovhaev@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3328.dtsi |   19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ kernel/bpf/ringbuf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -984,6 +984,25 @@
- 		status = "disabled";
- 	};
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index 84b3b35fc0d0..9e0c10c6892a 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -8,6 +8,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/wait.h>
+ #include <linux/poll.h>
++#include <linux/kmemleak.h>
+ #include <uapi/linux/btf.h>
  
-+	usbdrd3: usb@ff600000 {
-+		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
-+		reg = <0x0 0xff600000 0x0 0x100000>;
-+		interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru SCLK_USB3OTG_REF>, <&cru SCLK_USB3OTG_SUSPEND>,
-+			 <&cru ACLK_USB3OTG>;
-+		clock-names = "ref_clk", "suspend_clk",
-+			      "bus_clk";
-+		dr_mode = "otg";
-+		phy_type = "utmi_wide";
-+		snps,dis-del-phy-power-chg-quirk;
-+		snps,dis_enblslpm_quirk;
-+		snps,dis-tx-ipgap-linecheck-quirk;
-+		snps,dis-u2-freeclk-exists-quirk;
-+		snps,dis_u2_susphy_quirk;
-+		snps,dis_u3_susphy_quirk;
-+		status = "disabled";
-+	};
-+
- 	gic: interrupt-controller@ff811000 {
- 		compatible = "arm,gic-400";
- 		#interrupt-cells = <3>;
+ #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
+@@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
+ 	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
+ 		  VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
+ 	if (rb) {
++		kmemleak_not_leak(pages);
+ 		rb->pages = pages;
+ 		rb->nr_pages = nr_pages;
+ 		return rb;
+-- 
+2.30.2
+
 
 
