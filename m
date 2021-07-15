@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D093CA8EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE523CAB97
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243689AbhGOTEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59882 "EHLO mail.kernel.org"
+        id S245032AbhGOTU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:20:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240890AbhGOSzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49D97610C7;
-        Thu, 15 Jul 2021 18:52:35 +0000 (UTC)
+        id S241545AbhGOTFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC26613CF;
+        Thu, 15 Jul 2021 19:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375155;
-        bh=bQ6o2NIi3EfTjmaHCOFG+RzRJtr0dJpoXEu17KBfHcQ=;
+        s=korg; t=1626375687;
+        bh=V4JGcCcIve5zm2wBydiLP5y0SxYpXcftaSdlt/R27uI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aUjQ9BUtVm3+QdCfDzVi4wsg6NqV4DrhEoekwjgXaXb+WNXMQomPEq28Ny/nIP8GP
-         /SktuF9TCsH2IoGIhdGMzPtgkCyiJep1ikgAj3g+LDa9F2Y1zCVP8g8m0o1gLYcdGn
-         swwgXnaeLl0g5j2eh2sWsRnGCpiS/RZ6LinUjN/E=
+        b=zH7d2ID+1u211w/FQ+MTcAcnLc49jyyaZa3/iiLSw0yn/iEk2MVB9V35YNi4kpG0o
+         8IuIJPCsZL1ASalDv/emVn8MeNcx+8L9f6syTKB0EbS0EOHgT6LAu9ySVP4gxvK9Ev
+         TbQc5jIV/8VS5yNDpbsoZRxwhELi6f2eR/C+tskw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 5.10 182/215] power: supply: ab8500: Fix an old bug
+        stable@vger.kernel.org, Russ Weight <russell.h.weight@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH 5.12 192/242] fpga: stratix10-soc: Add missing fpga_mgr_free() call
 Date:   Thu, 15 Jul 2021 20:39:14 +0200
-Message-Id: <20210715182631.491366860@linuxfoundation.org>
+Message-Id: <20210715182626.997307609@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Russ Weight <russell.h.weight@intel.com>
 
-commit f1c74a6c07e76fcb31a4bcc1f437c4361a2674ce upstream.
+commit d9ec9daa20eb8de1efe6abae78c9835ec8ed86f9 upstream.
 
-Trying to get the AB8500 charging driver working I ran into a bit
-of bitrot: we haven't used the driver for a while so errors in
-refactorings won't be noticed.
+The stratix10-soc driver uses fpga_mgr_create() function and is therefore
+responsible to call fpga_mgr_free() to release the class driver resources.
+Add a missing call to fpga_mgr_free in the s10_remove() function.
 
-This one is pretty self evident: use argument to the macro or we
-end up with a random pointer to something else.
-
-Cc: stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Marcus Cooper <codekipper@gmail.com>
-Fixes: 297d716f6260 ("power_supply: Change ownership from driver to core")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Fixes: e7eef1d7633a ("fpga: add intel stratix10 soc fpga manager driver")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210614170909.232415-3-mdf@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/mfd/abx500/ux500_chargalg.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/mfd/abx500/ux500_chargalg.h
-+++ b/include/linux/mfd/abx500/ux500_chargalg.h
-@@ -15,7 +15,7 @@
-  * - POWER_SUPPLY_TYPE_USB,
-  * because only them store as drv_data pointer to struct ux500_charger.
-  */
--#define psy_to_ux500_charger(x) power_supply_get_drvdata(psy)
-+#define psy_to_ux500_charger(x) power_supply_get_drvdata(x)
+---
+ drivers/fpga/stratix10-soc.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/fpga/stratix10-soc.c
++++ b/drivers/fpga/stratix10-soc.c
+@@ -454,6 +454,7 @@ static int s10_remove(struct platform_de
+ 	struct s10_priv *priv = mgr->priv;
  
- /* Forward declaration */
- struct ux500_charger;
+ 	fpga_mgr_unregister(mgr);
++	fpga_mgr_free(mgr);
+ 	stratix10_svc_free_channel(priv->chan);
+ 
+ 	return 0;
 
 
