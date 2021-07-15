@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705093CAED1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD8E3CAED5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbhGOV6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:58:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229776AbhGOV6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:58:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A836260240;
-        Thu, 15 Jul 2021 21:55:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626386111;
-        bh=IZhXG0pFZmYaSBld/7CAwZc8B7u7L40FuYffUY/p3/c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W3DFgeuTWh5VVOoNJ0gbXPTbjBbFT/EgbckCbMmG8A+gngFuTlO0l2+0gBjrmOs77
-         q5nBihgxs2PiXv2qpSoCEg+GtXnsXMUtzyp7sRBrgm/MGceXZ5P0ova+s5NY+SOrXd
-         herhQ/ELYwITCcyT7XTabXrmTQIpYULgs3KXhumjLFjJPIkzwr94t/rxleAEshmt/R
-         749cFi2H7R4ku2B5KGpUzhtRpy0rGSA5aRQIfbqCoBs95X0MPtrZ5bIVCxs50uJM+0
-         kBJ+K5ZMF1QNRA0zMjKMPf6uTPlDb1QBa+xetSgUrhMdhov9AjBIJKubIUyVFCdR8x
-         NCp0l/GTTpiSw==
-Date:   Thu, 15 Jul 2021 14:55:11 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 104/138] iomap: Convert iomap_write_end_inline to
- take a folio
-Message-ID: <20210715215511.GO22357@magnolia>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-105-willy@infradead.org>
+        id S231285AbhGOWCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhGOWCx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 18:02:53 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4F4C06175F;
+        Thu, 15 Jul 2021 14:59:59 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id jx7-20020a17090b46c7b02901757deaf2c8so5245516pjb.0;
+        Thu, 15 Jul 2021 14:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LgRikEli+/avgIwH+NnboKsPZ+6R8HRC38xPaFWuCr8=;
+        b=kZh3vAl+f0WgVsJMzR3pTx+dCgm5ZY0V7NIvxKOo/9+zAFrZcWDKt/YKDLZk2L9aHH
+         pCiWTIazb6gHurbAMF6fSru/NgMUcXH6BK917dDzZo6kzw1/C9z5+VHUK9kzOvZxiYSc
+         I08vnMj3cOjvYKwPCLhbWOsdSbPMSGBFXLLPeCvUxSUV7xnH6EFmjcQLiIzXf0g5/FVL
+         PvKMSwLRFtibMtBLb23jY6v6D7srwOkN2DplfomTa00AKLOZaBoZNN9UnBS2wjuWJPS/
+         ANZwqMEhNb90TMsM4F7qjwku1EMusD9LUDXPm9lgQWlM+S2Zj9sWFt20hiSD1diR3mET
+         L5NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LgRikEli+/avgIwH+NnboKsPZ+6R8HRC38xPaFWuCr8=;
+        b=YDU5MiAcTZeGxxueHxvjbxJ8zeN64r8cal20Yx4x9Hp18FazSPVWih5ku0FESd1Nxx
+         Trvq6HepBl5LexG8NfIfrJHMbEpmcf9tjPZiYXAjA+V8FYz7B7Kc7dzmsI9sUfshg9uc
+         38aUll52CEPVbBqC1OkaoWi79Pw9IfgRqBL9U0njxKkE4H0HIAEAgXescizlZ11ijw/z
+         DCrjQsVueBSgI3yPpZBdVsHmvJuCBCuVeZ9l5vl+9zakrpmk5/uhh6LDZ3ScoKuLEsul
+         PWZGm01bnEW0kzWwTqNfePQMPK2/0BKHNLO0UaLxYkCVVm+83aoGtNROc6xFNZTvuwoR
+         LI2Q==
+X-Gm-Message-State: AOAM531V5oxRhaeGm6r8GGV9/7gVTScbqgd/icRfLPGvUYVmomwr1+W5
+        pYLcULio6/OdQNz2BoR8A724/cp+6s+dGA==
+X-Google-Smtp-Source: ABdhPJw3Ur/laHKM7WbDvH73mC0otoELe44/BziYWh8+aatVmT6XIxwugf3d2DQnNM38Cv7kH/jBWA==
+X-Received: by 2002:a17:90a:74c5:: with SMTP id p5mr6184164pjl.117.1626386398106;
+        Thu, 15 Jul 2021 14:59:58 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id f5sm7647886pfn.134.2021.07.15.14.59.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 14:59:57 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/122] 5.4.133-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210715182448.393443551@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <8dbe6ac8-a655-22ad-8af4-2323c3ea9379@gmail.com>
+Date:   Thu, 15 Jul 2021 14:59:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-105-willy@infradead.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:36:30AM +0100, Matthew Wilcox (Oracle) wrote:
-> Inline data only occupies a single page, but using a folio means that
-> we don't need to call compound_head() in PageUptodate().
+On 7/15/21 11:37 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.133 release.
+> There are 122 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-/me isn't the expert on inlinedata, but this looks reasonable to me...
-
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> ---
->  fs/iomap/buffered-io.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index c616ef1feb21..ac33f19325ab 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -662,18 +662,18 @@ static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
->  	return copied;
->  }
->  
-> -static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
-> +static size_t iomap_write_end_inline(struct inode *inode, struct folio *folio,
->  		struct iomap *iomap, loff_t pos, size_t copied)
->  {
->  	void *addr;
->  
-> -	WARN_ON_ONCE(!PageUptodate(page));
-> +	WARN_ON_ONCE(!folio_test_uptodate(folio));
->  	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
->  
-> -	flush_dcache_page(page);
-> -	addr = kmap_atomic(page);
-> +	flush_dcache_folio(folio);
-> +	addr = kmap_local_folio(folio, 0);
->  	memcpy(iomap->inline_data + pos, addr + pos, copied);
-> -	kunmap_atomic(addr);
-> +	kunmap_local(addr);
->  
->  	mark_inode_dirty(inode);
->  	return copied;
-> @@ -690,7 +690,7 @@ static size_t iomap_write_end(struct inode *inode, loff_t pos, size_t len,
->  	size_t ret;
->  
->  	if (srcmap->type == IOMAP_INLINE) {
-> -		ret = iomap_write_end_inline(inode, page, iomap, pos, copied);
-> +		ret = iomap_write_end_inline(inode, folio, iomap, pos, copied);
->  	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
->  		ret = block_write_end(NULL, inode->i_mapping, pos, len, copied,
->  				page, NULL);
-> -- 
-> 2.30.2
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.133-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
 > 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
