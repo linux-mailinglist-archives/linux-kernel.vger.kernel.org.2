@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330113C9E28
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871463C9E2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbhGOMEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 08:04:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232003AbhGOMEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 08:04:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 386DD611AD;
-        Thu, 15 Jul 2021 12:01:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626350497;
-        bh=bvioZ2SUemkybSffe93+DiVDPw02jQlhXZRvrQVmXE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LzVt2L2+QbfBOtyG9/41D+3Iqb66JILbJJDS0h3sGdRRUhoRd/5iZbb4i0a0WKvCd
-         O0lU79n4DRs7uLTVHFMSNXzqk7sNsgEwcXsu1QaQdkaizYFff+Y3ze7uHECpCAMbD3
-         TH8B7suedWu9aHiE7T9vV1PEjHCiWM50ZTkWdYw4=
-Date:   Thu, 15 Jul 2021 14:01:32 +0200
-From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-To:     Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Cc:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: Re: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and
- driver data cross-references
-Message-ID: <YPAjnCXOBK5CFfHu@kroah.com>
-References: <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com>
- <20210702184957.4479-1-andrew_gabbasov@mentor.com>
- <20210702184957.4479-2-andrew_gabbasov@mentor.com>
- <YOKvz2WzYuV0PaXD@kroah.com>
- <000001d77187$e9782dd0$bc688970$@mentor.com>
- <YOLiDSs/9+RzMKqE@kroah.com>
- <000001d7766a$a755ada0$f60108e0$@mentor.com>
- <20210711155130.16305-1-andrew_gabbasov@mentor.com>
- <YOsXQfWvIPXUydFv@kroah.com>
- <000001d77674$0fd59b20$2f80d160$@mentor.com>
+        id S232186AbhGOMFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 08:05:07 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:55998
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232003AbhGOMFG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 08:05:06 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9CE604057E;
+        Thu, 15 Jul 2021 12:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626350530;
+        bh=eLZW1fDEYy3o3BzwoAbd7HnBiJwGnZCewM6cIAUrDkQ=;
+        h=To:Cc:From:Subject:Message-ID:Date:MIME-Version:Content-Type;
+        b=LK/mkR/XWswD5xktMcKiF+M0Ts8qYjSryqqeSKK6Yebc4XU1RMG2ZaxWjsBLfdkfl
+         APLyrU007ZJQLRwj77d86a1cI1WjYAoOx/C15W166FFYNFcMu4bvdtNzpdDX/Tkvrv
+         QXhYHn85xjMCE9yDQ/at5n+DMWDMshreFF96Z8YOmv/a7SeEHFVfQ1MdTvUI2KmxqT
+         zfOFZrote6kf/nqf3n7t6QVafUe/Mj3UFHmXaxT/qLQrnorASC1ioIMLZP/5BOG2sX
+         vx+4mQawrYAZSQtbCQYSL+tTGu6pwsogA9bKhJ14ix1zF/UZi046DPjepIwYxKvj4T
+         88QdMaynRGVfA==
+To:     Michael Holzheu <holzheu@linux.vnet.ibm.com>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        linux-s390@vger.kernel.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: Range checking on r1 in function reg_set_seen in
+ arch/s390/net/bpf_jit_comp.c
+Message-ID: <845025d4-11b9-b16d-1dd6-1e0bd66b0e20@canonical.com>
+Date:   Thu, 15 Jul 2021 13:02:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000001d77674$0fd59b20$2f80d160$@mentor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 07:44:41PM +0300, Andrew Gabbasov wrote:
-> Hello Greg,
-> 
-> > -----Original Message-----
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Sent: Sunday, July 11, 2021 7:07 PM
-> > To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
-> > Cc: Macpaul Lin <macpaul.lin@mediatek.com>; Eugeniu Rosca <erosca@de.adit-jv.com>; linux-usb@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; stable@vger.kernel.org; Felipe Balbi <balbi@kernel.org>; Eugeniu Rosca
-> > <roscaeugeniu@gmail.com>; Eddie Hung <eddie.hung@mediatek.com>
-> > Subject: Re: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
-> > 
-> > On Sun, Jul 11, 2021 at 10:51:30AM -0500, Andrew Gabbasov wrote:
-> > > commit ecfbd7b9054bddb12cea07fda41bb3a79a7b0149 upstream.
-> > >
-> 
-> [ skipped ]
-> 
-> > > Fixes: 4b187fceec3c ("usb: gadget: FunctionFS: add devices management code")
-> > > Fixes: 3262ad824307 ("usb: gadget: f_fs: Stop ffs_closed NULL pointer dereference")
-> > > Fixes: cdafb6d8b8da ("usb: gadget: f_fs: Fix use-after-free in ffs_free_inst")
-> > > Reported-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-> > > Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> > > Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> > > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> > > Link: https://lore.kernel.org/r/20210603171507.22514-1-andrew_gabbasov@mentor.com
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > [agabbasov: Backported to earlier mount API, resolved context conflicts]
-> > > ---
-> > >  drivers/usb/gadget/function/f_fs.c | 67 ++++++++++++++----------------
-> > >  1 file changed, 32 insertions(+), 35 deletions(-)
-> > 
-> > I also need a 4.19 version of this commit, as you do not want to upgrade
-> > to a newer kernel and regress.  Can you also provide that?
-> 
-> If I correctly understand, this particular file has a very minor difference
-> between 4.14 and 4.19. So, this same patch for 4.14 can be just applied / cherry-picked
-> cleanly on top of latest stable 4.19.
+Hi
 
-Now queued up, thanks.
+Static analysis with cppcheck picked up an interesting issue with the
+following inline helper function in arch/s390/net/bpf_jit_comp.c :
 
-greg k-h
+static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
+{
+        u32 r1 = reg2hex[b1];
+
+        if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
+                jit->seen_reg[r1] = 1;
+}
+
+Although I believe r1 is always within range, the range check on r1 is
+being performed before the more cache/memory expensive lookup on
+jit->seen_reg[r1].  I can't see why the range change is being performed
+after the access of jit->seen_reg[r1]. The following seems more correct:
+
+	if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
+                jit->seen_reg[r1] = 1;
+
+..since the check on r1 are less expensive than !jit->seen_reg[r1] and
+also the range check ensures the array access is not out of bounds. I
+was just wondering if I'm missing something deeper to why the order is
+the way it is.
+
+Colin
+
+
