@@ -2,151 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED293CA8FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A0C3CA936
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243663AbhGOTEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240737AbhGOSz0 (ORCPT
+        id S237920AbhGOTFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:05:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241908AbhGOS4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:26 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3073EC0613DD
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:52:29 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id k27so9567476edk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kJ88EjazyOKPw/49phuHykQKOMgzYSZ8ZZOI0xPupOA=;
-        b=TOXldOxGUxbSo2Y5aluU+bBZho1QOn4ViWhGvsTvkwOnOd3OTPacRrtP628JIxi/Ur
-         Blxfr1UtgwHrUplNfxCDja5NMYKjeXLV+WAIUQW+onPO+q1/h+ODzbwS2cnJ+oMUgzxT
-         F7H8WUS+CAvYJOCAEAARQf31WkkkyZ24/I7q9OQ9DHW3dtNp91xmirxHmE3VHYYm6N4G
-         RvAl4nEV1+b7jf3E+x1XXvmLHbM++Zzm4If/0+wSWTwdJtfPp7f6uZl+8D+UKLL5vax6
-         8y4/HpAyj5aTzK8wlyXGfQP3coJgLSz9BPt1JzXIp3gr+uzrXIRQA/MACmIHi/2KEiRj
-         RQew==
+        Thu, 15 Jul 2021 14:56:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626375188;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yg+McKtY+ffqfI/EBeh9njvAeqTf7g8vxO6g9PiL1aI=;
+        b=LMYjCpP1VvV+HFCUEurW9AAOLcrzBmPhtN2vbZfbQeHS99G+NkbvhYIDMc06tzfeTU/CSq
+        8o2UCq8vArhWxlWjZlSgb0WmcXPT7LeCgRrqrTSZSafWFaduq12Xw9BhWVgeLG0onvlg2Q
+        9wm12w6O4cKlAuzXLRqK/X187piwJb0=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-hWdZ9XsQOTi1OY_6Xf3Ojg-1; Thu, 15 Jul 2021 14:53:07 -0400
+X-MC-Unique: hWdZ9XsQOTi1OY_6Xf3Ojg-1
+Received: by mail-qt1-f198.google.com with SMTP id e7-20020ac84e470000b029025ca4fbcc12so4470831qtw.18
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:53:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kJ88EjazyOKPw/49phuHykQKOMgzYSZ8ZZOI0xPupOA=;
-        b=Wok/+bORp5b4RdyVXLcIgy7ARfxoArj1AMIoX/tODtTXDGxDhpzSOr8hMC9emSlgbN
-         bOsEXsG3hvFQYufNbf1nK51yqeQDz8i7GZjrTFljWixcmbeznyoX0SET2ZNjH/Gsico3
-         JMDn/uGSqNOfNQSJ9TCYc7ikGTEKgsmCCHQO7c6KrUX5t2WJgOc8NI7O+jNiXgHLfZ3x
-         wlOTNWEDaW7CqsTxjsylYIZv4c7/h1nUKVJAB0QH9sspC8KHMsKjdkyJz3ODIaCfH2jt
-         0XPP64GijTIH46yPiocr3M/S+g8MUVPUtfUX9nNbFQzJf4qG1i9tABqZvJUVXHVjIKD/
-         ajpg==
-X-Gm-Message-State: AOAM533zsCfb0sIaQlQ57u9qF1D0mI5CNbdf7RntnSxXdkp16PgxL2xK
-        zTrKS5a7PnLKjEEt6iM0nyo=
-X-Google-Smtp-Source: ABdhPJwz5DNX/pwKUKpOT+z7ukbh36kASOqq0eJbQN6rGL5y4AUrUQzvymupVco4qtxicU3arYTALw==
-X-Received: by 2002:a05:6402:198:: with SMTP id r24mr9101473edv.93.1626375147731;
-        Thu, 15 Jul 2021 11:52:27 -0700 (PDT)
-Received: from localhost.localdomain ([176.30.111.253])
-        by smtp.gmail.com with ESMTPSA id d19sm2803519eds.54.2021.07.15.11.52.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yg+McKtY+ffqfI/EBeh9njvAeqTf7g8vxO6g9PiL1aI=;
+        b=p9U2XxtkkYn7KkedzgNTjR8YXn7y/4Bhj4s8x7/Wa2n8yxO8oL0s2g7yBokO9hUcly
+         dUgY8sjLjh3U2b6RJ01lev6f34TaNh+2X1neILxs47MZCTqfFMb7Etx/EUnxl0uHr+by
+         2PloI++5winWiaVb9cuIWqj9qTOZfQaSz1y0eCyDl9igzrrY+icUR4HkxchjtpT7c6I8
+         DuysBtR/DJKB0TB108ngHslo3B/wTPkcB2cLjnYc2/v+8zyAHtCuqiVK0uK5j8ZuxHqA
+         J73jF5i3zHAG/5Jlya68Vcdf12AGuOCOpgsimy3NkFpluWhX22i8awRvPmq4XKNbONGI
+         4kFg==
+X-Gm-Message-State: AOAM5317cVeyyWSMcNqPVNutXNghMteKOZXBlxKl7kTUxygDT4AhwiU6
+        NsvgQMGM731tuRmN6O5Y3hMKujEuMdIDZ06X24kUOoNM2qgdw9HsNXHsodNT6Xcm3KGA4bDrc+X
+        nQ5s7P98REwYpDI0WVvrgEHiH
+X-Received: by 2002:a37:d52:: with SMTP id 79mr5514260qkn.227.1626375186745;
+        Thu, 15 Jul 2021 11:53:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFn/kyYeNabdBvl7tuz6UF6JuSS6vuXIR6kxmTX6+CQPqQIBUCrdxm4EVuDL2y71/qvenx1g==
+X-Received: by 2002:a37:d52:: with SMTP id 79mr5514242qkn.227.1626375186571;
+        Thu, 15 Jul 2021 11:53:06 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id d11sm2312768qtx.37.2021.07.15.11.53.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 11:52:27 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 21:52:19 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Xu Qiang <xuqiang36@huawei.com>
-Subject: Re: [PATCH v3] workqueue: fix UAF in pwq_unbound_release_workfn()
-Message-ID: <20210715215219.061a2f25@gmail.com>
-In-Reply-To: <CAJhGHyA+8p7mHR4o2VoAFTxKKtAC4Aeq1cwtszaVj-OS63KUgA@mail.gmail.com>
-References: <20210714091934.3124170-1-yangyingliang@huawei.com>
-        <CAJhGHyA+8p7mHR4o2VoAFTxKKtAC4Aeq1cwtszaVj-OS63KUgA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Thu, 15 Jul 2021 11:53:06 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 14:53:04 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [RFC PATCH] mm/hugetlb: __unmap_hugepage_range() can be static
+Message-ID: <YPCEEHEAA9ifubts@t490s>
+References: <20210714222450.48840-1-peterx@redhat.com>
+ <20210715170524.GA48547@78ef4ef0cd6c>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210715170524.GA48547@78ef4ef0cd6c>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Jul 2021 16:08:12 +0800
-Lai Jiangshan <jiangshanlai@gmail.com> wrote:
-
-> On Wed, Jul 14, 2021 at 5:16 PM Yang Yingliang
-> <yangyingliang@huawei.com> wrote:
+On Fri, Jul 16, 2021 at 01:05:24AM +0800, kernel test robot wrote:
+> mm/hugetlb.c:4334:6: warning: symbol '__unmap_hugepage_range' was not declared. Should it be static?
 > 
-> >
-> > Fixes: 2d5f0764b526 ("workqueue: split apply_workqueue_attrs() into
-> > 3 stages") Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Suggested-by: Lai Jiangshan <jiangshanlai@gmail.com>
-> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> > ---
-> > v3:
-> >   drop the v2 and v1 changes, add check pwq in
-> > pwq_unbound_release_workfn() v2:
-> >   also use free_wqattrs_ctx() in workqueue_apply_unbound_cpumask()
-> > ---
-> >  kernel/workqueue.c | 20 +++++++++++++-------
-> >  1 file changed, 13 insertions(+), 7 deletions(-)
-> >
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> ---
+>  hugetlb.c |    6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> I'm fine with the code.
-> 
-> Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-> 
-> Hello, Pavel
-> 
-> Could you have a test again, please?
-> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 924553aa8f789ad..4bdd637b0c29a95 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -4331,9 +4331,9 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+>  	return ret;
+>  }
+>  
+> -void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+> -			    unsigned long start, unsigned long end,
+> -			    struct page *ref_page)
+> +static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+> +				   unsigned long start, unsigned long end,
+> +				   struct page *ref_page)
+>  {
+>  	struct mm_struct *mm = vma->vm_mm;
+>  	unsigned long address;
 
-Hi, Lai!
+Will squash this change into the patch.  Thanks.
 
-Sorry for late response.
-
-Yes, I have started local syzkaller instance just now, so I will share
-the results tomorrow. 
-
-
-> Thanks,
-> Lai
-> 
-> > diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> > index 50142fc08902..f148eacda55a 100644
-> > --- a/kernel/workqueue.c
-> > +++ b/kernel/workqueue.c
-> > @@ -3676,15 +3676,21 @@ static void
-> > pwq_unbound_release_workfn(struct work_struct *work)
-> > unbound_release_work); struct workqueue_struct *wq = pwq->wq;
-> >         struct worker_pool *pool = pwq->pool;
-> > -       bool is_last;
-> > +       bool is_last = false;
-> >
-> > -       if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
-> > -               return;
-> > +       /*
-> > +        * when @pwq is not linked, it doesn't hold any reference
-> > to the
-> > +        * @wq, and @wq is invalid to access.
-> > +        */
-> > +       if (!list_empty(&pwq->pwqs_node)) {
-> > +               if (WARN_ON_ONCE(!(wq->flags & WQ_UNBOUND)))
-> > +                       return;
-> >
-> > -       mutex_lock(&wq->mutex);
-> > -       list_del_rcu(&pwq->pwqs_node);
-> > -       is_last = list_empty(&wq->pwqs);
-> > -       mutex_unlock(&wq->mutex);
-> > +               mutex_lock(&wq->mutex);
-> > +               list_del_rcu(&pwq->pwqs_node);
-> > +               is_last = list_empty(&wq->pwqs);
-> > +               mutex_unlock(&wq->mutex);
-> > +       }
-> >
-> >         mutex_lock(&wq_pool_mutex);
-> >         put_unbound_pool(pool);
-> > --
-> > 2.25.1
-> >
-
-
-With regards,
-Pavel Skripkin
+-- 
+Peter Xu
 
