@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2382D3CAD76
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBBB3CAD7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344133AbhGOUCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:02:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343898AbhGOUB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:01:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 515376128C;
-        Thu, 15 Jul 2021 19:58:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626379114;
-        bh=aoi7XZmj8no9CT6naQ+6mLUyIcUgFcxd+SEJ6DJAbLE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ktltr2plr2AcUOIFrFolI662QOgpsL8cQfZEudO6S8qo1NIVGBJ/73KyMPbD1Mtg0
-         X1rOuLUEzxTZUbJiUoyXunQzuEIroOwLXOoIXMPggk1uCJ7FV+ZTE2BDYW04zE32NS
-         cmcsqD7y3haN1E/EGMGRw8td7EF7/Y4psiPOkvD0vceHR9SF2JLS6T1oRjg/tzHHDz
-         +XmNhmWLEKzke/bkkMasakRR4M9GQtiy+KaYsgI9J7+M0uqLLztTN5GHjM0gyesCT6
-         Fyrk4GFpj9Q8S+ZJPAzRlo9/cXgEZ5Nm0lHmgP9+S58ePvYRXLpJs1iU69oWjLDWCK
-         7/ydRTDcWemvQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DA96E403F2; Thu, 15 Jul 2021 16:58:31 -0300 (-03)
-Date:   Thu, 15 Jul 2021 16:58:31 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 05/20] perf test: event_update: fix memory leak of unit
-Message-ID: <YPCTZy/11b+amxBg@kernel.org>
-References: <cover.1626343282.git.rickyman7@gmail.com>
- <1fbc8158663fb0d4d5392e36bae564f6ad60be3c.1626343282.git.rickyman7@gmail.com>
+        id S242779AbhGOUDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:03:41 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:42906 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243897AbhGOUDV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 16:03:21 -0400
+Received: by mail-io1-f71.google.com with SMTP id v21-20020a5d90550000b0290439ea50822eso4406719ioq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:00:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ubhdISJb5EaJQpZfKVhtUqGoI9Mz/JTjLbwTPkd4q7k=;
+        b=q5uneQ8xx3Zby932XbMCgTcTCeeAqIIgwmVdptWvje149AtHFxNj0lBGcHMAeDHJcG
+         TkcErKizwMvTJdx0h+AkfV1oZWRWtsxxTBHewRxRiPgl8RB6Q2h9n9MGSCpUhXGoxz3B
+         CbzB5yzkryaj7jyKr/M+pMKh3yuTLtErItlfnCUr8MWeX0u2rajzd7hkVeijZwWq+r0W
+         fjXTi+FRwsZV4TQeGZDeQVqjqrIo22KFbje2qvD3pY756uMzchSVZ00ITaZLRU/vA10k
+         m5aJw7+B0lt8S3BJrEYi8RyHdNi+2qTBwIjVfWtpADNSs4EenzNg7PvuH8lia/QEDH0X
+         aynA==
+X-Gm-Message-State: AOAM533YTF6LwtdsfZvPUPSdWjgkzs7k6e4LWq3WrM89XR90/o/wlcay
+        L2mRUyCsFTgJ5ui4P7WOuopU0cnxDPSUAU/06Hr28hqRF9hd
+X-Google-Smtp-Source: ABdhPJwAoePgxihGzWFAyucDPF5L+getVP+WShbvuZpMC9VrJFZwsF+1gldAXTSn4eZx2vAvCeE13Uiy+Trl5hSLWfkDKSDReW7X
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1fbc8158663fb0d4d5392e36bae564f6ad60be3c.1626343282.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+X-Received: by 2002:a02:11c6:: with SMTP id 189mr5557529jaf.20.1626379227372;
+ Thu, 15 Jul 2021 13:00:27 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 13:00:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001e294505c72eec63@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in munlock_vma_pages_range
+From:   syzbot <syzbot+2e3ee45ea14cd0b81f26@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 15, 2021 at 06:07:10PM +0200, Riccardo Mancini escreveu:
-> ASan reports a memory leak while running the perf test
-> "49: Synthesize attr update" caused by a string being duplicated but
-> never freed.
-> 
-> This patch adds the missing free().
-> 
-> Note that evsel->unit is not deallocated together with evsel since it
-> is supposed to be a constant string.
+Hello,
 
-Thanks, applied and added the Fixes tag, which I'm doing to all the
-patches in the series.
+syzbot found the following issue on:
 
-- Arnaldo
+HEAD commit:    98f7fdced2e0 Merge tag 'irq-urgent-2021-07-11' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13576e9c300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da2203b984f4af9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=2e3ee45ea14cd0b81f26
+compiler:       Debian clang version 11.0.1-2
 
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/tests/event_update.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/event_update.c b/tools/perf/tests/event_update.c
-> index 932ab0740d11ced6..44a50527f9d95170 100644
-> --- a/tools/perf/tests/event_update.c
-> +++ b/tools/perf/tests/event_update.c
-> @@ -88,6 +88,7 @@ int test__event_update(struct test *test __maybe_unused, int subtest __maybe_unu
->  	struct evsel *evsel;
->  	struct event_name tmp;
->  	struct evlist *evlist = evlist__new_default();
-> +	char *unit = strdup("KRAVA");
->  
->  	TEST_ASSERT_VAL("failed to get evlist", evlist);
->  
-> @@ -98,7 +99,7 @@ int test__event_update(struct test *test __maybe_unused, int subtest __maybe_unu
->  
->  	perf_evlist__id_add(&evlist->core, &evsel->core, 0, 0, 123);
->  
-> -	evsel->unit = strdup("KRAVA");
-> +	evsel->unit = unit;
->  
->  	TEST_ASSERT_VAL("failed to synthesize attr update unit",
->  			!perf_event__synthesize_event_update_unit(NULL, evsel, process_event_unit));
-> @@ -118,6 +119,7 @@ int test__event_update(struct test *test __maybe_unused, int subtest __maybe_unu
->  	TEST_ASSERT_VAL("failed to synthesize attr update cpus",
->  			!perf_event__synthesize_event_update_cpus(&tmp.tool, evsel, process_event_cpus));
->  
-> +	free(unit);
->  	evlist__delete(evlist);
->  	return 0;
->  }
-> -- 
-> 2.31.1
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2e3ee45ea14cd0b81f26@syzkaller.appspotmail.com
 
-- Arnaldo
+BUG: sleeping function called from invalid context at mm/mlock.c:482
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 14373, name: syz-executor.5
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 1 PID: 14373 Comm: syz-executor.5 Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
+ ___might_sleep+0x4e5/0x6b0 kernel/sched/core.c:9154
+ munlock_vma_pages_range+0xa80/0xf60 mm/mlock.c:482
+ mlock_fixup+0x40f/0x580 mm/mlock.c:552
+ apply_mlockall_flags mm/mlock.c:768 [inline]
+ __do_sys_munlockall+0x1ef/0x310 mm/mlock.c:810
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f448bc37188 EFLAGS: 00000246 ORIG_RAX: 0000000000000098
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffe7eb2d2ef R14: 00007f448bc37300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
