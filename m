@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9A83CAA4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C033CAA8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242959AbhGOTMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:12:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38160 "EHLO mail.kernel.org"
+        id S240599AbhGOTNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:13:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242135AbhGOTAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:00:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6972E613D0;
-        Thu, 15 Jul 2021 18:57:38 +0000 (UTC)
+        id S235462AbhGOTBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:01:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A83613DD;
+        Thu, 15 Jul 2021 18:58:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375458;
-        bh=oaC2icxJ1FzLUjUeegnixedcm9xmDZEyvww90mFno2k=;
+        s=korg; t=1626375484;
+        bh=X0w02puo77F68+8le7QE3kDrHw1VQlrHjRjPb7+KKDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jwcp0s6vw4oZarxvsU0KV9xCGLJyFYr2yRYyl/tgy0u1lih5e1XMYqo6JdUfj+xd8
-         jMNY+lAsmvC4BUJ6baIJKDZ9BKGCLZsOZ8OlrQjq0Vh5USYlQKCS4xadOs197wXmdz
-         aZBXL58gcUflOUl+DaBW33X10aWOEpeuCAORNBR4=
+        b=NiMgOuJr/02usWLt81xBn9dHC4bGQAFdf+oKFYvTz3FL3kzJ9htxZPp59tNLY603Y
+         67/+/6Aj8YtQDi7CtYpWVGfwupCB1wLKbKP1qIN7L5p+IY7DilgCiHCxarjW6rOwfd
+         3fzZhi+eb4702rPvPiX9HVC68MllsdPyusBpPs7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Nikola Cornij <nikola.cornij@amd.com>,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 069/242] net: moxa: Use devm_platform_get_and_ioremap_resource()
-Date:   Thu, 15 Jul 2021 20:37:11 +0200
-Message-Id: <20210715182604.693120995@linuxfoundation.org>
+Subject: [PATCH 5.12 070/242] drm/amd/display: Fix DCN 3.01 DSCCLK validation
+Date:   Thu, 15 Jul 2021 20:37:12 +0200
+Message-Id: <20210715182604.892517554@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,41 +43,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Nikola Cornij <nikola.cornij@amd.com>
 
-[ Upstream commit 35cba15a504bf4f585bb9d78f47b22b28a1a06b2 ]
+[ Upstream commit 346cf627fb27c0fea63a041cedbaa4f31784e504 ]
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code and avoid a null-ptr-deref by checking 'res' in it.
+[why]
+DSCCLK validation is not necessary because DSCCLK is derrived from
+DISPCLK, therefore if DISPCLK validation passes, DSCCLK is valid, too.
+Doing DSCLK validation in addition to DISPCLK leads to modes being
+wrongly rejected when DSCCLK was incorrectly set outside of DML.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[how]
+Remove DSCCLK validation because it's implicitly validated under DISPCLK
+
+Signed-off-by: Nikola Cornij <nikola.cornij@amd.com>
+Reviewed-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+Acked-by: Stylon Wang <stylon.wang@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/moxa/moxart_ether.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ .../dc/dml/dcn30/display_mode_vba_30.c        | 64 ++++++-------------
+ 1 file changed, 21 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/net/ethernet/moxa/moxart_ether.c b/drivers/net/ethernet/moxa/moxart_ether.c
-index 49fd843c4c8a..a4380c45f668 100644
---- a/drivers/net/ethernet/moxa/moxart_ether.c
-+++ b/drivers/net/ethernet/moxa/moxart_ether.c
-@@ -481,14 +481,13 @@ static int moxart_mac_probe(struct platform_device *pdev)
- 	priv->ndev = ndev;
- 	priv->pdev = pdev;
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
+index bc07082c1357..da93694ec7cf 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
+@@ -64,6 +64,7 @@ typedef struct {
+ #define BPP_INVALID 0
+ #define BPP_BLENDED_PIPE 0xffffffff
+ #define DCN30_MAX_DSC_IMAGE_WIDTH 5184
++#define DCN30_MAX_FMT_420_BUFFER_WIDTH 4096
  
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	ndev->base_addr = res->start;
--	priv->base = devm_ioremap_resource(p_dev, res);
-+	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(priv->base)) {
- 		dev_err(p_dev, "devm_ioremap_resource failed\n");
- 		ret = PTR_ERR(priv->base);
- 		goto init_fail;
+ static void DisplayPipeConfiguration(struct display_mode_lib *mode_lib);
+ static void DISPCLKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerformanceCalculation(
+@@ -3987,19 +3988,30 @@ void dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
+ 				} else if (v->PlaneRequiredDISPCLKWithoutODMCombine > v->MaxDispclkRoundedDownToDFSGranularity) {
+ 					v->ODMCombineEnablePerState[i][k] = dm_odm_combine_mode_2to1;
+ 					v->PlaneRequiredDISPCLK = v->PlaneRequiredDISPCLKWithODMCombine2To1;
+-				} else if (v->DSCEnabled[k] && (v->HActive[k] > DCN30_MAX_DSC_IMAGE_WIDTH)) {
+-					v->ODMCombineEnablePerState[i][k] = dm_odm_combine_mode_2to1;
+-					v->PlaneRequiredDISPCLK = v->PlaneRequiredDISPCLKWithODMCombine2To1;
+ 				} else {
+ 					v->ODMCombineEnablePerState[i][k] = dm_odm_combine_mode_disabled;
+ 					v->PlaneRequiredDISPCLK = v->PlaneRequiredDISPCLKWithoutODMCombine;
+-					/*420 format workaround*/
+-					if (v->HActive[k] > 4096 && v->OutputFormat[k] == dm_420) {
++				}
++				if (v->DSCEnabled[k] && v->HActive[k] > DCN30_MAX_DSC_IMAGE_WIDTH
++						&& v->ODMCombineEnablePerState[i][k] != dm_odm_combine_mode_4to1) {
++					if (v->HActive[k] / 2 > DCN30_MAX_DSC_IMAGE_WIDTH) {
++						v->ODMCombineEnablePerState[i][k] = dm_odm_combine_mode_4to1;
++						v->PlaneRequiredDISPCLK = v->PlaneRequiredDISPCLKWithODMCombine4To1;
++					} else {
++						v->ODMCombineEnablePerState[i][k] = dm_odm_combine_mode_2to1;
++						v->PlaneRequiredDISPCLK = v->PlaneRequiredDISPCLKWithODMCombine2To1;
++					}
++				}
++				if (v->OutputFormat[k] == dm_420 && v->HActive[k] > DCN30_MAX_FMT_420_BUFFER_WIDTH
++						&& v->ODMCombineEnablePerState[i][k] != dm_odm_combine_mode_4to1) {
++					if (v->HActive[k] / 2 > DCN30_MAX_FMT_420_BUFFER_WIDTH) {
++						v->ODMCombineEnablePerState[i][k] = dm_odm_combine_mode_4to1;
++						v->PlaneRequiredDISPCLK = v->PlaneRequiredDISPCLKWithODMCombine4To1;
++					} else {
+ 						v->ODMCombineEnablePerState[i][k] = dm_odm_combine_mode_2to1;
+ 						v->PlaneRequiredDISPCLK = v->PlaneRequiredDISPCLKWithODMCombine2To1;
+ 					}
+ 				}
+-
+ 				if (v->ODMCombineEnablePerState[i][k] == dm_odm_combine_mode_4to1) {
+ 					v->MPCCombine[i][j][k] = false;
+ 					v->NoOfDPP[i][j][k] = 4;
+@@ -4281,42 +4293,8 @@ void dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
+ 		}
  	}
-+	ndev->base_addr = res->start;
  
- 	spin_lock_init(&priv->txlock);
- 
+-	for (i = 0; i < v->soc.num_states; i++) {
+-		v->DSCCLKRequiredMoreThanSupported[i] = false;
+-		for (k = 0; k <= v->NumberOfActivePlanes - 1; k++) {
+-			if (v->BlendingAndTiming[k] == k) {
+-				if (v->Output[k] == dm_dp || v->Output[k] == dm_edp) {
+-					if (v->OutputFormat[k] == dm_420) {
+-						v->DSCFormatFactor = 2;
+-					} else if (v->OutputFormat[k] == dm_444) {
+-						v->DSCFormatFactor = 1;
+-					} else if (v->OutputFormat[k] == dm_n422) {
+-						v->DSCFormatFactor = 2;
+-					} else {
+-						v->DSCFormatFactor = 1;
+-					}
+-					if (v->RequiresDSC[i][k] == true) {
+-						if (v->ODMCombineEnablePerState[i][k] == dm_odm_combine_mode_4to1) {
+-							if (v->PixelClockBackEnd[k] / 12.0 / v->DSCFormatFactor
+-									> (1.0 - v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0) * v->MaxDSCCLK[i]) {
+-								v->DSCCLKRequiredMoreThanSupported[i] = true;
+-							}
+-						} else if (v->ODMCombineEnablePerState[i][k] == dm_odm_combine_mode_2to1) {
+-							if (v->PixelClockBackEnd[k] / 6.0 / v->DSCFormatFactor
+-									> (1.0 - v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0) * v->MaxDSCCLK[i]) {
+-								v->DSCCLKRequiredMoreThanSupported[i] = true;
+-							}
+-						} else {
+-							if (v->PixelClockBackEnd[k] / 3.0 / v->DSCFormatFactor
+-									> (1.0 - v->DISPCLKDPPCLKDSCCLKDownSpreading / 100.0) * v->MaxDSCCLK[i]) {
+-								v->DSCCLKRequiredMoreThanSupported[i] = true;
+-							}
+-						}
+-					}
+-				}
+-			}
+-		}
+-	}
++	/* Skip dscclk validation: as long as dispclk is supported, dscclk is also implicitly supported */
++
+ 	for (i = 0; i < v->soc.num_states; i++) {
+ 		v->NotEnoughDSCUnits[i] = false;
+ 		v->TotalDSCUnitsRequired = 0.0;
+@@ -5319,7 +5297,7 @@ void dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
+ 		for (j = 0; j < 2; j++) {
+ 			if (v->ScaleRatioAndTapsSupport == 1 && v->SourceFormatPixelAndScanSupport == 1 && v->ViewportSizeSupport[i][j] == 1
+ 					&& v->DIOSupport[i] == 1 && v->ODMCombine4To1SupportCheckOK[i] == 1
+-					&& v->NotEnoughDSCUnits[i] == 0 && v->DSCCLKRequiredMoreThanSupported[i] == 0
++					&& v->NotEnoughDSCUnits[i] == 0
+ 					&& v->DTBCLKRequiredMoreThanSupported[i] == 0
+ 					&& v->ROBSupport[i][j] == 1 && v->DISPCLK_DPPCLK_Support[i][j] == 1 && v->TotalAvailablePipesSupport[i][j] == 1
+ 					&& EnoughWritebackUnits == 1 && WritebackModeSupport == 1
 -- 
 2.30.2
 
