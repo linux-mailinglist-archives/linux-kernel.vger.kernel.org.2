@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938103CA6CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08383CA6D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239103AbhGOSuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:50:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50098 "EHLO mail.kernel.org"
+        id S233467AbhGOSuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:50:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238897AbhGOSry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:47:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33580613D2;
-        Thu, 15 Jul 2021 18:45:00 +0000 (UTC)
+        id S231909AbhGOSsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:48:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4053613DC;
+        Thu, 15 Jul 2021 18:45:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374700;
-        bh=LSLT1XLobsp7Ag5hdiSVQhRhRsAB9zdQBrJKly2LBAQ=;
+        s=korg; t=1626374717;
+        bh=rRgGUBtC8e5iWP6z2UuSrbfBofkMNhqD5H2aRwgKGOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=deZ5GcDLzs7uoRclh3keBWGuG3sPcv541wqKROYvNInzF6hliLZ2x6V+d/xjKmRtM
-         Bz5/QLPMsE1CG6o4JuCeVr0R6e3lH9FehN138oTiS57PdQ1QdiM9bq/ZxlOHu2KvdJ
-         rm5651kmkfwuLM70ACrfnh9XWRCV1F2cpyH4m2Y4=
+        b=e5hvPNOK+3C7DDzS51GpdNAFGnPyMY19nuEhRVduP5KvHxXH2PIueuNlnmV+I0qm6
+         q7QnRtu+M5YvMs/UcTud6gt/LFIALRWdIjqXlAUYKg5W9Y46+HrVNBGwIxuxIfL1bN
+         H6BHx+SCU95MOA5WrwlRCfq7woIESXOuuaB6iA3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH 5.4 074/122] perf bench: Fix 2 memory sanitizer warnings
-Date:   Thu, 15 Jul 2021 20:38:41 +0200
-Message-Id: <20210715182509.449639236@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 075/122] powerpc/mm: Fix lockup on kernel exec fault
+Date:   Thu, 15 Jul 2021 20:38:42 +0200
+Message-Id: <20210715182509.668484209@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -46,52 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit d2c73501a767514b6c85c7feff9457a165d51057 upstream.
+commit cd5d5e602f502895e47e18cd46804d6d7014e65c upstream.
 
-Memory sanitizer warns if a write is performed where the memory being
-read for the write is uninitialized. Avoid this warning by initializing
-the memory.
+The powerpc kernel is not prepared to handle exec faults from kernel.
+Especially, the function is_exec_fault() will return 'false' when an
+exec fault is taken by kernel, because the check is based on reading
+current->thread.regs->trap which contains the trap from user.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20200912053725.1405857-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Anders Roxell <anders.roxell@linaro.org>
+For instance, when provoking a LKDTM EXEC_USERSPACE test,
+current->thread.regs->trap is set to SYSCALL trap (0xc00), and
+the fault taken by the kernel is not seen as an exec fault by
+set_access_flags_filter().
+
+Commit d7df2443cd5f ("powerpc/mm: Fix spurious segfaults on radix
+with autonuma") made it clear and handled it properly. But later on
+commit d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute
+faults") removed that handling, introducing test based on error_code.
+And here is the problem, because on the 603 all upper bits of SRR1
+get cleared when the TLB instruction miss handler bails out to ISI.
+
+Until commit cbd7e6ca0210 ("powerpc/fault: Avoid heavy
+search_exception_tables() verification"), an exec fault from kernel
+at a userspace address was indirectly caught by the lack of entry for
+that address in the exception tables. But after that commit the
+kernel mainly relies on KUAP or on core mm handling to catch wrong
+user accesses. Here the access is not wrong, so mm handles it.
+It is a minor fault because PAGE_EXEC is not set,
+set_access_flags_filter() should set PAGE_EXEC and voila.
+But as is_exec_fault() returns false as explained in the beginning,
+set_access_flags_filter() bails out without setting PAGE_EXEC flag,
+which leads to a forever minor exec fault.
+
+As the kernel is not prepared to handle such exec faults, the thing to
+do is to fire in bad_kernel_fault() for any exec fault taken by the
+kernel, as it was prior to commit d3ca587404b3.
+
+Fixes: d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute faults")
+Cc: stable@vger.kernel.org # v4.14+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/024bb05105050f704743a0083fe3548702be5706.1625138205.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/bench/sched-messaging.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/mm/fault.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/tools/perf/bench/sched-messaging.c
-+++ b/tools/perf/bench/sched-messaging.c
-@@ -66,11 +66,10 @@ static void fdpair(int fds[2])
- /* Block until we're ready to go */
- static void ready(int ready_out, int wakefd)
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -204,9 +204,7 @@ static bool bad_kernel_fault(struct pt_r
  {
--	char dummy;
- 	struct pollfd pollfd = { .fd = wakefd, .events = POLLIN };
+ 	int is_exec = TRAP(regs) == 0x400;
  
- 	/* Tell them we're ready. */
--	if (write(ready_out, &dummy, 1) != 1)
-+	if (write(ready_out, "R", 1) != 1)
- 		err(EXIT_FAILURE, "CLIENT: ready write");
- 
- 	/* Wait for "GO" signal */
-@@ -85,6 +84,7 @@ static void *sender(struct sender_contex
- 	unsigned int i, j;
- 
- 	ready(ctx->ready_out, ctx->wakefd);
-+	memset(data, 'S', sizeof(data));
- 
- 	/* Now pump to every receiver. */
- 	for (i = 0; i < nr_loops; i++) {
+-	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
+-	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
+-				      DSISR_PROTFAULT))) {
++	if (is_exec) {
+ 		pr_crit_ratelimited("kernel tried to execute %s page (%lx) - exploit attempt? (uid: %d)\n",
+ 				    address >= TASK_SIZE ? "exec-protected" : "user",
+ 				    address,
 
 
