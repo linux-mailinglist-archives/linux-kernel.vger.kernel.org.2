@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02F03C9A3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEBE3C9A3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240175AbhGOIN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 04:13:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38676 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231655AbhGOIN6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 04:13:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626336664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tsyq0RE9WU7Ypp4Gm+eQdmDLZ+QGqhUmGOqrJ08ECV8=;
-        b=M+28B+pJ/e5neDifuIqaPObyFlnnOtarb49Ad9fUrEp+rzfVxnH/FiMyKjvIr7VB0YcNhK
-        0L5/ZNom2zTm1mKcYrrXY6dL+X3VUdeEU5BEe09z5oZfsDAtyVJ4hjPwzWBHtqjIDzSvee
-        Wg73z191aHAsnRka8Dg7LcA9oJvfdPg=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-224-zuJ-uiFoORqSkQg8BORR7A-1; Thu, 15 Jul 2021 04:11:03 -0400
-X-MC-Unique: zuJ-uiFoORqSkQg8BORR7A-1
-Received: by mail-pl1-f198.google.com with SMTP id e12-20020a170902784cb02901298fdd4067so1176565pln.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 01:11:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=tsyq0RE9WU7Ypp4Gm+eQdmDLZ+QGqhUmGOqrJ08ECV8=;
-        b=ry5riK0iNR0OJxsai0Y4jANSsDtnptIW0zJuCz2KoybZ73/7YMnenXYynyr8X+1r/2
-         YEhc2kPIsJ6lSsgkwwZGZdsUPTdBjQfCYB/KupMQk4+D/WU3pIWxABFyxPZGjxzLeEEE
-         7APqOPClDg4DVy87iTTqOIRV+V+MqaCwd8tp9J/FHYACpva8mWudOM67k3YY7hjoHhbu
-         UmVMO6y/mKDs4C4OmZH0yVdzG1ZcgHOXDEldTglQe3idsmgE3yldVL3WE1f/xA1AMICA
-         mD4m9MyFSnnbhwmaVmi96Xb1PWDHaOLiHUxekxP7nQZl5MSo2fPiGstv97TVl84J3q/H
-         ZrIg==
-X-Gm-Message-State: AOAM533PNzj1s47VCtdbuBhyoAcPop9nShEYE0VMrKjL07CkwhiYkthM
-        SoLEEA5eBqFhC0/QXWG7/yAvqPOFRgoD+YMNudPn76fK3uybUDfmaw0AXBICxTOb6ZUc2W/hTX2
-        SFWYY49LGXoCCofaNHwnQy7qINEK9MQbyiIhyT/+LQasTlbupMbQt+YoPUQ4wYGk/wJ84L//24m
-        Ip
-X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr3275862pjb.52.1626336662422;
-        Thu, 15 Jul 2021 01:11:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgdRSlGSxamOhLsopmlpgUvS49WuoZJFtfu/4SL+rwM+O8AzT3DsZTC193gTbNFSIv6SvnpA==
-X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr3275838pjb.52.1626336662106;
-        Thu, 15 Jul 2021 01:11:02 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x68sm5470497pfb.115.2021.07.15.01.10.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 01:11:01 -0700 (PDT)
-Subject: Re: [PATCH 4/4] vdpa: Add documentation for vdpa_alloc_device() macro
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        dan.carpenter@oracle.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210715080026.242-1-xieyongji@bytedance.com>
- <20210715080026.242-4-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <30a9222e-30fc-8dfb-312e-05367785ff6a@redhat.com>
-Date:   Thu, 15 Jul 2021 16:10:54 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S240193AbhGOIOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 04:14:05 -0400
+Received: from 8bytes.org ([81.169.241.247]:38570 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240498AbhGOIOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 04:14:03 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 97DB02C7; Thu, 15 Jul 2021 10:11:09 +0200 (CEST)
+Date:   Thu, 15 Jul 2021 10:11:08 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: [git pull] IOMMU Fixes for Linux v5.14-rc1
+Message-ID: <YO/tnD+7RA32yO1F@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <20210715080026.242-4-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="HSEOSdXA7rPfQ8+y"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-ÔÚ 2021/7/15 ÏÂÎç4:00, Xie Yongji Ð´µÀ:
-> The return value of vdpa_alloc_device() macro is not very
-> clear, so that most of callers did the wrong check. Let's
-> add some comments to better document it.
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+--HSEOSdXA7rPfQ8+y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hi Linus,
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-> ---
->   include/linux/vdpa.h | 11 +++++++++++
->   1 file changed, 11 insertions(+)
->
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index 3357ac98878d..8cfe49d201dd 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -277,6 +277,17 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->   					const struct vdpa_config_ops *config,
->   					size_t size, const char *name);
->   
-> +/**
-> + * vdpa_alloc_device - allocate and initilaize a vDPA device
-> + *
-> + * @dev_struct: the type of the parent structure
-> + * @member: the name of struct vdpa_device within the @dev_struct
-> + * @parent: the parent device
-> + * @config: the bus operations that is supported by this device
-> + * @name: name of the vdpa device
-> + *
-> + * Return allocated data structure or ERR_PTR upon error
-> + */
->   #define vdpa_alloc_device(dev_struct, member, parent, config, name)   \
->   			  container_of(__vdpa_alloc_device( \
->   				       parent, config, \
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.14-rc1
+
+for you to fetch changes up to 4a5c155a5ab372516a1a5ddd29473f8f696feb79:
+
+  MAINTAINERS: Add Suravee Suthikulpanit as Reviewer for AMD IOMMU (AMD-Vi) (2021-07-15 09:00:16 +0200)
+
+----------------------------------------------------------------
+IOMMU Fixes for Linux v5.14-rc1
+
+Including:
+
+	- Revert a patch which caused boot failures with QCOM IOMMU
+
+	- Two fixes for Intel VT-d context table handling
+
+	- Physical address decoding fix for Rockchip IOMMU
+
+	- Add a reviewer for AMD IOMMU
+
+----------------------------------------------------------------
+Benjamin Gaignard (1):
+      iommu/rockchip: Fix physical address decoding
+
+Lu Baolu (1):
+      iommu/vt-d: Fix clearing real DMA device's scalable-mode context entries
+
+Marek Szyprowski (1):
+      iommu/qcom: Revert "iommu/arm: Cleanup resources in case of probe error path"
+
+Sanjay Kumar (1):
+      iommu/vt-d: Global devTLB flush when present context entry changed
+
+Suravee Suthikulpanit (1):
+      MAINTAINERS: Add Suravee Suthikulpanit as Reviewer for AMD IOMMU (AMD-Vi)
+
+ MAINTAINERS                             |  1 +
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c | 13 ++-----------
+ drivers/iommu/intel/iommu.c             | 34 ++++++++++++++++++++++-----------
+ drivers/iommu/rockchip-iommu.c          |  6 ++++--
+ 4 files changed, 30 insertions(+), 24 deletions(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
+
+--HSEOSdXA7rPfQ8+y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmDv7ZwACgkQK/BELZcB
+GuP1wg//RVNooucIetYWJ9+/NMIKL8T94ItDABC/S8xJsE1ageX8F45udjdyP5Ig
+Jp/V6EQRO9+zvjv5puzWT9ZXjVgHrIU7V4sP4FzKHzv6QQfn2sXFZQVkWFNn/ybP
+gbs1Ea2b014g/XS5XVmpx9Dti3h0IOWIg6yHl/oINgUa9St5+9w9fvg8w6LBwH8v
+DMJfKbyurdMekHl1cwDm7wXN9cup2q5xraywyUt33ei4QK0vI/RixkLdzkezNVHC
+UG9knFWQ83jGlU6ZhouY4528oNN8Yt2+dMB0P4UGg3oD6DHw/SEwHHw/V71dFisn
+UxBi+N9V52XQyX7LTEPz8/uz2/VWICeaOn9TYYARZxUVMopADr3ST3OK54oVWSy0
+7FuuepXw3ujbxcgnvBKUEmvIjBD+I+sXmSQy91vwgZCBCWgxa1Ki63bIB/CQDqri
+Avj1H+6mBuCgjnl5Or2PdkmSwf+BnZ/jP1krBsTPtD1ZrWPdjbBaEr2kt/oBtzu7
+HMwp9AcRQnXMYW1XuOE8CSUfAuE+8f9SvB60nFSN5h2Jx50y3ackrIkdFggubyHx
+34uPKvd1nufgt4SiRGnaoIFABM4LEd6ksWuGK1SzaFfNm8EgcovU62xhK0MJo1gH
+ryvoOBXmOVEzmSEQ3zJ3iHzrOXy8AZSIzZqvcceEGtQegOaBhQg=
+=F2tX
+-----END PGP SIGNATURE-----
+
+--HSEOSdXA7rPfQ8+y--
