@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF4A3CA818
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AC63CA5BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242065AbhGOS6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55394 "EHLO mail.kernel.org"
+        id S231327AbhGOSoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240344AbhGOSwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:52:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8F4613D8;
-        Thu, 15 Jul 2021 18:49:07 +0000 (UTC)
+        id S231941AbhGOSoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22CA7613CF;
+        Thu, 15 Jul 2021 18:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374947;
-        bh=ywqNzcJWC1iCcLtLuxp5/Cii7zk7uyXau/bWP/zwWdU=;
+        s=korg; t=1626374481;
+        bh=+n/x3X3syMB0NwAeBa2LIF0LSLn5ym67R9S5/kr0OG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c1oWUB71tlCTwR/iYZZduhU4IbKOXZOgdgwpl2gAj3SBYtH59UQdGGZoCN71VMSfF
-         eUyDZ5HxGPuO5IUrxl2wWCO57o61CfiG2XtL2ABDgjyIqAZU3cTHXF7pgM+itYmtS9
-         vhe8yqVyyDX3cDQo/P/QcYf5lJRGkEM9zIaZnu54=
+        b=ON877WVZ7qN2DYZi9LZexB+CTkJNuokTSL+tH6qsGK4oOONiiqu/s+lQQP/dAPZam
+         9eKb8pMSlHfLCYY8VsNpFmg9o4frCtmrmTWvaiwUdux9VsrxnjOmSsZ/Y8tiX/BSBn
+         pvznAJwsbNq7oHyjF2xmQZHIm/O00lJHFQTWXfLQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Dave Switzer <david.switzer@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 093/215] drm/amdkfd: Walk through list with dqm lock hold
+Subject: [PATCH 5.4 018/122] igb: handle vlan types with checker enabled
 Date:   Thu, 15 Jul 2021 20:37:45 +0200
-Message-Id: <20210715182615.810289566@linuxfoundation.org>
+Message-Id: <20210715182454.272470353@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xinhui pan <xinhui.pan@amd.com>
+From: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-[ Upstream commit 56f221b6389e7ab99c30bbf01c71998ae92fc584 ]
+[ Upstream commit c7cbfb028b95360403d579c47aaaeef1ff140964 ]
 
-To avoid any list corruption.
+The sparse build (C=2) finds some issues with how the driver
+dealt with the (very difficult) hardware that in some generations
+uses little-endian, and in others uses big endian, for the VLAN
+field. The code as written picks __le16 as a type and for some
+hardware revisions we override it to __be16 as done in this
+patch. This impacted the VF driver as well so fix it there too.
 
-Signed-off-by: xinhui pan <xinhui.pan@amd.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Also change the vlan_tci assignment to override the sparse
+warning without changing functionality.
+
+Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Tested-by: Dave Switzer <david.switzer@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/amdkfd/kfd_device_queue_manager.c | 22 ++++++++++---------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/intel/igb/igb_main.c | 5 +++--
+ drivers/net/ethernet/intel/igbvf/netdev.c | 4 ++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-index ffb3d37881a8..352a32dc609b 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-@@ -1712,7 +1712,7 @@ static int process_termination_cpsch(struct device_queue_manager *dqm,
- 		struct qcm_process_device *qpd)
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 7a4e2b014dd6..c37f0590b3a4 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -2651,7 +2651,8 @@ static int igb_parse_cls_flower(struct igb_adapter *adapter,
+ 			}
+ 
+ 			input->filter.match_flags |= IGB_FILTER_FLAG_VLAN_TCI;
+-			input->filter.vlan_tci = match.key->vlan_priority;
++			input->filter.vlan_tci =
++				(__force __be16)match.key->vlan_priority;
+ 		}
+ 	}
+ 
+@@ -8255,7 +8256,7 @@ static void igb_process_skb_fields(struct igb_ring *rx_ring,
+ 
+ 		if (igb_test_staterr(rx_desc, E1000_RXDEXT_STATERR_LB) &&
+ 		    test_bit(IGB_RING_FLAG_RX_LB_VLAN_BSWAP, &rx_ring->flags))
+-			vid = be16_to_cpu(rx_desc->wb.upper.vlan);
++			vid = be16_to_cpu((__force __be16)rx_desc->wb.upper.vlan);
+ 		else
+ 			vid = le16_to_cpu(rx_desc->wb.upper.vlan);
+ 
+diff --git a/drivers/net/ethernet/intel/igbvf/netdev.c b/drivers/net/ethernet/intel/igbvf/netdev.c
+index 0f2b68f4bb0f..77cb2ab7dab4 100644
+--- a/drivers/net/ethernet/intel/igbvf/netdev.c
++++ b/drivers/net/ethernet/intel/igbvf/netdev.c
+@@ -83,14 +83,14 @@ static int igbvf_desc_unused(struct igbvf_ring *ring)
+ static void igbvf_receive_skb(struct igbvf_adapter *adapter,
+ 			      struct net_device *netdev,
+ 			      struct sk_buff *skb,
+-			      u32 status, u16 vlan)
++			      u32 status, __le16 vlan)
  {
- 	int retval;
--	struct queue *q, *next;
-+	struct queue *q;
- 	struct kernel_queue *kq, *kq_next;
- 	struct mqd_manager *mqd_mgr;
- 	struct device_process_node *cur, *next_dpn;
-@@ -1769,24 +1769,26 @@ static int process_termination_cpsch(struct device_queue_manager *dqm,
- 		qpd->reset_wavefronts = false;
- 	}
+ 	u16 vid;
  
--	dqm_unlock(dqm);
--
--	/* Outside the DQM lock because under the DQM lock we can't do
--	 * reclaim or take other locks that others hold while reclaiming.
--	 */
--	if (found)
--		kfd_dec_compute_active(dqm->dev);
--
- 	/* Lastly, free mqd resources.
- 	 * Do free_mqd() after dqm_unlock to avoid circular locking.
- 	 */
--	list_for_each_entry_safe(q, next, &qpd->queues_list, list) {
-+	while (!list_empty(&qpd->queues_list)) {
-+		q = list_first_entry(&qpd->queues_list, struct queue, list);
- 		mqd_mgr = dqm->mqd_mgrs[get_mqd_type_from_queue_type(
- 				q->properties.type)];
- 		list_del(&q->list);
- 		qpd->queue_count--;
-+		dqm_unlock(dqm);
- 		mqd_mgr->free_mqd(mqd_mgr, q->mqd, q->mqd_mem_obj);
-+		dqm_lock(dqm);
- 	}
-+	dqm_unlock(dqm);
-+
-+	/* Outside the DQM lock because under the DQM lock we can't do
-+	 * reclaim or take other locks that others hold while reclaiming.
-+	 */
-+	if (found)
-+		kfd_dec_compute_active(dqm->dev);
- 
- 	return retval;
- }
+ 	if (status & E1000_RXD_STAT_VP) {
+ 		if ((adapter->flags & IGBVF_FLAG_RX_LB_VLAN_BSWAP) &&
+ 		    (status & E1000_RXDEXT_STATERR_LB))
+-			vid = be16_to_cpu(vlan) & E1000_RXD_SPC_VLAN_MASK;
++			vid = be16_to_cpu((__force __be16)vlan) & E1000_RXD_SPC_VLAN_MASK;
+ 		else
+ 			vid = le16_to_cpu(vlan) & E1000_RXD_SPC_VLAN_MASK;
+ 		if (test_bit(vid, adapter->active_vlans))
 -- 
 2.30.2
 
