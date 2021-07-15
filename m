@@ -2,222 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B653CAE69
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461853CAE6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhGOVTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:19:12 -0400
-Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:65294 "EHLO
-        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229978AbhGOVTL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:19:11 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-        id e12a8b70-e5b1-11eb-ba24-005056bd6ce9;
-        Fri, 16 Jul 2021 00:16:15 +0300 (EEST)
-Date:   Fri, 16 Jul 2021 00:16:11 +0300
-From:   andy@surfacebook.localdomain
-To:     "ashiduka@fujitsu.com" <ashiduka@fujitsu.com>
-Cc:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "erosca@de.adit-jv.com" <erosca@de.adit-jv.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "wsa+renesas@sang-engineering.com" <wsa+renesas@sang-engineering.com>,
-        "yoshihiro.shimoda.uh@renesas.com" <yoshihiro.shimoda.uh@renesas.com>,
-        "uli+renesas@fpond.eu" <uli+renesas@fpond.eu>,
-        "george_davis@mentor.com" <george_davis@mentor.com>,
-        "andrew_gabbasov@mentor.com" <andrew_gabbasov@mentor.com>,
-        "jiada_wang@mentor.com" <jiada_wang@mentor.com>,
-        "yuichi.kusakabe@denso-ten.com" <yuichi.kusakabe@denso-ten.com>,
-        "yasano@jp.adit-jv.com" <yasano@jp.adit-jv.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jslaby@suse.com" <jslaby@suse.com>,
-        "yohhei.fukui@denso-ten.com" <yohhei.fukui@denso-ten.com>,
-        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
-        "torii.ken1@fujitsu.com" <torii.ken1@fujitsu.com>
-Subject: Re: [PATCH] serial: sh-sci: Support custom speed setting
-Message-ID: <YPClm+OPLVhlhgdm@surfacebook.localdomain>
-References: <20200129161955.30562-1-erosca@de.adit-jv.com>
- <CAMuHMdWV0kkKq6sKOHsdz+FFGNHphzq_q7rvmYAL=U4fH2H3wQ@mail.gmail.com>
- <20200210205735.GB1347752@kroah.com>
- <OSBPR01MB29496E76BE5FD0C5BC56D0F0C1FD0@OSBPR01MB2949.jpnprd01.prod.outlook.com>
- <CAMuHMdXYPG8t=vBn6c2B=8TwbWJfFCjW8peDLgHBwW_AxpH5Hw@mail.gmail.com>
- <OSBPR01MB50612C6EF774733B3496AECADFFD0@OSBPR01MB5061.jpnprd01.prod.outlook.com>
- <OSBPR01MB506141BA2FDD08FE11FC4DEBDFCB0@OSBPR01MB5061.jpnprd01.prod.outlook.com>
+        id S230197AbhGOVT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 17:19:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhGOVTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:19:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5214613C1;
+        Thu, 15 Jul 2021 21:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626383788;
+        bh=CnrIyDI+hMYkodapZe7ZAAirBYSm1eZwp2RO6e4FtiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qqW34Wx6L0x70i/9t+HwbrXUmhdDwCl9RALBzLL2ZGbLGEGmjcanDHEs5jugWDn36
+         trB17qqEA4Lwppxf4fBNfzoTdcwCGcvvMG4VOQ4QaLwFxWke8Y8TyxA2/YA9lZ162l
+         V9y+9gL11x3wd0Bx3hSitYGhGMzBYc4jjWhJPfxuCLby/sZXrc1Wq4rXCaASjdSEbU
+         v7Sr63trssEHbeUH9xYkJ/5kObZKUCqKYX14Mvuj3Bl+viUj67Kovx9CIHRcawX+i8
+         EfsfMBEIL8WXT7Yo7A8KcwiKJ0li151K4BNbvm/Dj/jIQYUPSlgmdOc9cFlIXjrbcs
+         CbCnDDQlqGG/w==
+Date:   Thu, 15 Jul 2021 14:16:28 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 093/138] iomap: Convert iomap_page_create to take a
+ folio
+Message-ID: <20210715211628.GF22357@magnolia>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-94-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <OSBPR01MB506141BA2FDD08FE11FC4DEBDFCB0@OSBPR01MB5061.jpnprd01.prod.outlook.com>
+In-Reply-To: <20210715033704.692967-94-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Mar 30, 2020 at 07:43:09AM +0000, ashiduka@fujitsu.com kirjoitti:
-> Dear Greg, Geert,
+On Thu, Jul 15, 2021 at 04:36:19AM +0100, Matthew Wilcox (Oracle) wrote:
+> This function already assumed it was being passed a head page, so
+> just formalise that.
 > 
-> > Right.
-> > Adding "#include <sys/ioctl.h>" to Greg's sample code causes a
-> > compilation error.
-> <snip>
-> > Is it normal to declare ioctl() without "#include <sys/ioctl.h>" ?
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  fs/iomap/buffered-io.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
 > 
-> I would be happy if you could give me some comments.
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index cd5c2f24cb7e..c15a0ac52a32 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -42,11 +42,10 @@ static inline struct iomap_page *to_iomap_page(struct folio *folio)
+>  static struct bio_set iomap_ioend_bioset;
+>  
+>  static struct iomap_page *
+> -iomap_page_create(struct inode *inode, struct page *page)
+> +iomap_page_create(struct inode *inode, struct folio *folio)
+>  {
+> -	struct folio *folio = page_folio(page);
+>  	struct iomap_page *iop = to_iomap_page(folio);
+> -	unsigned int nr_blocks = i_blocks_per_page(inode, page);
+> +	unsigned int nr_blocks = i_blocks_per_folio(inode, folio);
+>  
+>  	if (iop || nr_blocks <= 1)
+>  		return iop;
+> @@ -54,9 +53,9 @@ iomap_page_create(struct inode *inode, struct page *page)
+>  	iop = kzalloc(struct_size(iop, uptodate, BITS_TO_LONGS(nr_blocks)),
+>  			GFP_NOFS | __GFP_NOFAIL);
+>  	spin_lock_init(&iop->uptodate_lock);
+> -	if (PageUptodate(page))
+> +	if (folio_test_uptodate(folio))
+>  		bitmap_fill(iop->uptodate, nr_blocks);
+> -	attach_page_private(page, iop);
+> +	folio_attach_private(folio, iop);
+>  	return iop;
+>  }
+>  
+> @@ -235,7 +234,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+>  {
+>  	struct iomap_readpage_ctx *ctx = data;
+>  	struct page *page = ctx->cur_page;
+> -	struct iomap_page *iop = iomap_page_create(inode, page);
+> +	struct folio *folio = page_folio(page);
+> +	struct iomap_page *iop = iomap_page_create(inode, folio);
+>  	bool same_page = false, is_contig = false;
+>  	loff_t orig_pos = pos;
+>  	unsigned poff, plen;
+> @@ -547,7 +547,8 @@ static int
+>  __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+>  		struct page *page, struct iomap *srcmap)
+>  {
+> -	struct iomap_page *iop = iomap_page_create(inode, page);
+> +	struct folio *folio = page_folio(page);
+> +	struct iomap_page *iop = iomap_page_create(inode, folio);
+>  	loff_t block_size = i_blocksize(inode);
+>  	loff_t block_start = round_down(pos, block_size);
+>  	loff_t block_end = round_up(pos + len, block_size);
+> @@ -955,6 +956,7 @@ iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
+>  		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct page *page = data;
+> +	struct folio *folio = page_folio(page);
+>  	int ret;
+>  
+>  	if (iomap->flags & IOMAP_F_BUFFER_HEAD) {
+> @@ -964,7 +966,7 @@ iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
+>  		block_commit_write(page, 0, length);
+>  	} else {
+>  		WARN_ON_ONCE(!PageUptodate(page));
+> -		iomap_page_create(inode, page);
+> +		iomap_page_create(inode, folio);
+>  		set_page_dirty(page);
+>  	}
+>  
+> -- 
+> 2.30.2
 > 
-> > http://www.panix.com/~grante/arbitrary-baud.c
-> 
-> We think this sample code is no good.
-> Should I work on glibc changes instead of kernel fixes?
-
-Side note: I hope introducing spd_cust hack hadn't made upstream.
-
-To the point. Use BOTHER as in code excerpt. Yes, there is a problematic parts
-with the headers regarding to this feature. But you may look how others solve
-it.
-
-https://github.com/npat-efault/picocom/blob/master/termios2.txt
-
-> > Subject: RE: [PATCH] serial: sh-sci: Support custom speed setting
-> > 
-> > Dear Greg, Geert,
-> > 
-> > > I guess you mean the forward declaration of ioctrl()?
-> > > No, they should include <sys/ioctl.h> instead.
-> > 
-> > Right.
-> > Adding "#include <sys/ioctl.h>" to Greg's sample code causes a
-> > compilation error.
-> > 
-> > > > I saw the code above, I thought I wouldn't write such code
-> > normally.
-> > > Why not?
-> > 
-> > Is it normal to declare ioctl() without "#include <sys/ioctl.h>" ?
-> > 
-> > Thanks & Best Regards,
-> > Yuusuke Ashiduka <ashiduka@fujitsu.com>
-> > Embedded System Development Dept. Embedded System Development Div.
-> > FUJITSU COMPUTER TECHNOLOGIES Ltd.
-> > 
-> > > -----Original Message-----
-> > > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > Sent: Thursday, March 12, 2020 6:03 PM
-> > > To: Torii, Kenichi/鳥居 健一 <torii.ken1@fujitsu.com>
-> > > Cc: gregkh@linuxfoundation.org; erosca@de.adit-jv.com;
-> > > linux-serial@vger.kernel.org;
-> > linux-renesas-soc@vger.kernel.org;
-> > > wsa+renesas@sang-engineering.com;
-> > > yoshihiro.shimoda.uh@renesas.com; uli+renesas@fpond.eu;
-> > > george_davis@mentor.com; andrew_gabbasov@mentor.com;
-> > > jiada_wang@mentor.com; yuichi.kusakabe@denso-ten.com;
-> > > yasano@jp.adit-jv.com; linux-kernel@vger.kernel.org;
-> > > jslaby@suse.com; yohhei.fukui@denso-ten.com; Ashizuka, Yuusuke/
-> > > 芦塚 雄介 <ashiduka@fujitsu.com>; magnus.damm@gmail.com
-> > > Subject: Re: [PATCH] serial: sh-sci: Support custom speed setting
-> > >
-> > > Hi Torii-san,
-> > >
-> > > On Thu, Mar 12, 2020 at 6:10 AM torii.ken1@fujitsu.com
-> > > <torii.ken1@fujitsu.com> wrote:
-> > > > On Tue, 11 Feb 2020 05:57:35 +0900,
-> > > > Greg Kroah-Hartman wrote:
-> > > > > On Thu, Jan 30, 2020 at 01:32:50PM +0100, Geert Uytterhoeven
-> > > wrote:
-> > > > > > On Wed, Jan 29, 2020 at 5:20 PM Eugeniu Rosca
-> > > <erosca@de.adit-jv.com> wrote:
-> > > > > > > From: Torii Kenichi <torii.ken1@jp.fujitsu.com>
-> > > > > > >
-> > > > > > > This patch is necessary to use BT module and XM module
-> > with
-> > > DENSO TEN
-> > > > > > > development board.
-> > > > > > >
-> > > > > > > This patch supports ASYNC_SPD_CUST flag by
-> > ioctl(TIOCSSERIAL),
-> > > enables
-> > > > > > > custom speed setting with setserial(1).
-> > > > > > >
-> > > > > > > The custom speed is calculated from uartclk and
-> > > custom_divisor.
-> > > > > > > If custom_divisor is zero, custom speed setting is invalid.
-> > > > > > >
-> > > > > > > Signed-off-by: Torii Kenichi <torii.ken1@jp.fujitsu.com>
-> > > > > > > [erosca: rebase against v5.5]
-> > > > > > > Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> > > > > >
-> > > > > > Thanks for your patch!
-> > > > > >
-> > > > > > While this seems to work fine[*], I have a few
-> > > comments/questions:
-> > > > > >   1. This feature seems to be deprecated:
-> > > > > >
-> > > > > >          sh-sci e6e68000.serial: setserial sets custom speed
-> > > on
-> > > > > > ttySC1. This is deprecated.
-> > > > > >
-> > > > > >   2. As the wanted speed is specified as a divider, the
-> > resulting
-> > > speed
-> > > > > >      may be off, cfr. the example for 57600 below.
-> > > > > >      Note that the SCIF device has multiple clock inputs,
-> > and
-> > > can do
-> > > > > >      57600 perfectly if the right crystal has been fitted.
-> > > > > >
-> > > > > >  3. What to do with "[PATCH/RFC] serial: sh-sci: Update
-> > uartclk
-> > > based
-> > > > > >      on selected clock"
-> > > (https://patchwork.kernel.org/patch/11103703/)?
-> > > > > >      Combined with this, things become pretty complicated
-> > and
-> > > > > >      unpredictable, as uartclk now always reflect the
-> > frequency
-> > > of the
-> > > > > >      last used base clock, which was the optimal one for the
-> > > previously
-> > > > > >      used speed....
-> > > > > >
-> > > > > > I think it would be easier if we just had an API to specify
-> > > a raw speed.
-> > > > > > Perhaps that already exists?
-> > > > >
-> > > > > Yes, see:
-> > > > >       http://www.panix.com/~grante/arbitrary-baud.c
-> > > >
-> > > > I saw the code above, I thought I wouldn't write such code
-> > normally.
-> > > >
-> > > > >#include <linux/termios.h>
-> > > > >
-> > > > >int ioctl(int d, int request, ...);
-> > > >
-> > > > Do application programmers have to accept this bad code?
-> > >
-> > > I guess you mean the forward declaration of ioctrl()?
-> > > No, they should include <sys/ioctl.h> instead.
-> > >
-> > > Gr{oetje,eeting}s,
-> > >
-> > >                         Geert
-> > >
-> > > --
-> > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 --
-> > > geert@linux-m68k.org
-> > >
-> > > In personal conversations with technical people, I call myself
-> > a
-> > > hacker. But
-> > > when I'm talking to journalists I just say "programmer" or
-> > something
-> > > like that.
-> > >                                 -- Linus Torvalds
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
