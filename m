@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82CA3CAC32
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7641C3CAC34
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345230AbhGOTaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:30:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
+        id S1345269AbhGOTa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:30:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243131AbhGOTJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:09:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0EAD6127C;
-        Thu, 15 Jul 2021 19:05:01 +0000 (UTC)
+        id S243190AbhGOTJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:09:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 450A461370;
+        Thu, 15 Jul 2021 19:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375902;
-        bh=9PUz2JEzNqP8FPrrAIuHzZWbBfeElfuJOzxMMKfDIaU=;
+        s=korg; t=1626375911;
+        bh=qwDOPYoWnDfuwo7d96yAIbMByB5OAY5HzokkWBqgC+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UZAT+m+XZf9TtscxQLSfdxlNpqSi5qixDZPLOXCTOi9QRnCFeH0zhn6nvLSmTv0l4
-         wYMmp+Ji66X9Y7o95QnXp/t5hhv6o+aHXJdW+skun8noCfOR7ErtRcaYsFqwX+QDw7
-         PXeJ0VyYuVoYjjQ0XdwgXJeqWJJHnNBR193j4J0w=
+        b=NClZlovNV8kvw6Qn1czodIskzaS67R2KXWq86wMPg4YUOOZJVKXKkPGcC09IyI/Ff
+         00wEI8JF4mbqLdUbiKZZqUz9MaTP1F3Ymdwxd9rWlZ6CWEdDDKUOtKloeD4MWUtU33
+         ZpiV1+6sXP14RYWbiYHmnOmiS+bKWqBWd669A7MM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Huy Nguyen <huyn@nvidia.com>,
+        Raed Salem <raeds@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 043/266] clk: renesas: r8a77995: Add ZA2 clock
-Date:   Thu, 15 Jul 2021 20:36:38 +0200
-Message-Id: <20210715182621.901916299@linuxfoundation.org>
+Subject: [PATCH 5.13 046/266] net/mlx5e: IPsec/rep_tc: Fix rep_tc_update_skb drops IPsec packet
+Date:   Thu, 15 Jul 2021 20:36:41 +0200
+Message-Id: <20210715182622.344961549@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -41,36 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Huy Nguyen <huyn@nvidia.com>
 
-[ Upstream commit 790c06cc5df263cdaff748670cc65958c81b0951 ]
+[ Upstream commit c07274ab1ab2c38fb128e32643c22c89cb319384 ]
 
-R-Car D3 ZA2 clock is from PLL0D3 or S0,
-and it can be controlled by ZA2CKCR.
-It is needed for R-Car Sound, but is not used so far.
-Using default settings is very enough at this point.
-This patch adds it by DEF_FIXED().
+rep_tc copy REG_C1 to REG_B. IPsec crypto utilizes the whole REG_B
+register with BIT31 as IPsec marker. rep_tc_update_skb drops
+IPsec because it thought REG_B contains bad value.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87pmxclrmy.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+In previous patch, BIT 31 of REG_C1 is reserved for IPsec.
+Skip the rep_tc_update_skb if BIT31 of REG_B is set.
+
+Signed-off-by: Huy Nguyen <huyn@nvidia.com>
+Signed-off-by: Raed Salem <raeds@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/renesas/r8a77995-cpg-mssr.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/renesas/r8a77995-cpg-mssr.c b/drivers/clk/renesas/r8a77995-cpg-mssr.c
-index 9cfd00cf4e69..81c0bc1e78af 100644
---- a/drivers/clk/renesas/r8a77995-cpg-mssr.c
-+++ b/drivers/clk/renesas/r8a77995-cpg-mssr.c
-@@ -75,6 +75,7 @@ static const struct cpg_core_clk r8a77995_core_clks[] __initconst = {
- 	DEF_RATE(".oco",       CLK_OCO,            8 * 1000 * 1000),
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+index f90894eea9e0..5346271974f5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -1310,7 +1310,8 @@ static void mlx5e_handle_rx_cqe_rep(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ 	if (rep->vlan && skb_vlan_tag_present(skb))
+ 		skb_vlan_pop(skb);
  
- 	/* Core Clock Outputs */
-+	DEF_FIXED("za2",       R8A77995_CLK_ZA2,   CLK_PLL0D3,     2, 1),
- 	DEF_FIXED("z2",        R8A77995_CLK_Z2,    CLK_PLL0D3,     1, 1),
- 	DEF_FIXED("ztr",       R8A77995_CLK_ZTR,   CLK_PLL1,       6, 1),
- 	DEF_FIXED("zt",        R8A77995_CLK_ZT,    CLK_PLL1,       4, 1),
+-	if (!mlx5e_rep_tc_update_skb(cqe, skb, &tc_priv)) {
++	if (unlikely(!mlx5_ipsec_is_rx_flow(cqe) &&
++		     !mlx5e_rep_tc_update_skb(cqe, skb, &tc_priv))) {
+ 		dev_kfree_skb_any(skb);
+ 		goto free_wqe;
+ 	}
+@@ -1367,7 +1368,8 @@ static void mlx5e_handle_rx_cqe_mpwrq_rep(struct mlx5e_rq *rq, struct mlx5_cqe64
+ 
+ 	mlx5e_complete_rx_cqe(rq, cqe, cqe_bcnt, skb);
+ 
+-	if (!mlx5e_rep_tc_update_skb(cqe, skb, &tc_priv)) {
++	if (unlikely(!mlx5_ipsec_is_rx_flow(cqe) &&
++		     !mlx5e_rep_tc_update_skb(cqe, skb, &tc_priv))) {
+ 		dev_kfree_skb_any(skb);
+ 		goto mpwrq_cqe_out;
+ 	}
 -- 
 2.30.2
 
