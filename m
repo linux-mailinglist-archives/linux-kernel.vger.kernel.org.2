@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD0B3CACBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA193CAC98
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239546AbhGOTn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:43:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50954 "EHLO mail.kernel.org"
+        id S1344008AbhGOTjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:39:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244604AbhGOTO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244598AbhGOTO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:14:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD42B613F3;
-        Thu, 15 Jul 2021 19:10:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 399D861400;
+        Thu, 15 Jul 2021 19:10:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376234;
-        bh=Db9BWr13IIhpMoNlTyg48YEuC4w/VdnvUhnVfdi8Q8U=;
+        s=korg; t=1626376236;
+        bh=u7pUWoNeu5lKcDgsOJt2XkyhoBWXBLAJbKCk+G1929A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qEKJIUa0lPbjysPaWYcdPbNJICWyJETgpI9KoybOa4de9isWGmWcKMM+o9rQM8u3h
-         1htXhmbclzMGq6k5HOodaiI9jdGBv+aaq1BvBBGFqy6mQBQevjd5j7mk+g4lyt92eX
-         HGqC502PVjZ17mfwV/JkM3EROc1PvEiooPjkP4T8=
+        b=fyLiUnCdsIFNCPHU6pVSg9bo4T08494LEhOXM6nNaTUWZOTztFG5cyBiz4zSd3hcA
+         VqolsxOWqw0i7HGR83kfsdJyBBCPOzWWUEgpPx4QUqWS/9F4c8LbOcxS5HxVXeKD7A
+         Yc1OPJ1hN7L3/G0RMi0cBCIZNO15Fxbpz9teKx1Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.13 184/266] powerpc/powernv/vas: Release reference to tgid during window close
-Date:   Thu, 15 Jul 2021 20:38:59 +0200
-Message-Id: <20210715182643.896511000@linuxfoundation.org>
+        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.13 185/266] drm/amdgpu: add new dimgrey cavefish DID
+Date:   Thu, 15 Jul 2021 20:39:00 +0200
+Message-Id: <20210715182644.012582491@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -40,58 +39,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haren Myneni <haren@linux.ibm.com>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-commit 91cdbb955aa94ee0841af4685be40937345d29b8 upstream.
+commit 06ac9b6c736ac9da600b1782d7ac6d6e746286c4 upstream.
 
-The kernel handles the NX fault by updating CSB or sending
-signal to process. In multithread applications, children can
-open VAS windows and can exit without closing them. But the
-parent can continue to send NX requests with these windows. To
-prevent pid reuse, reference will be taken on pid and tgid
-when the window is opened and release them during window close.
+Add new PCI device id.
 
-The current code is not releasing the tgid reference which can
-cause pid leak and this patch fixes the issue.
-
-Fixes: db1c08a740635 ("powerpc/vas: Take reference to PID and mm for user space windows")
-Cc: stable@vger.kernel.org # 5.8+
-Reported-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Haren Myneni <haren@linux.ibm.com>
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/6020fc4d444864fe20f7dcdc5edfe53e67480a1c.camel@linux.ibm.com
+Reviewed-by: Guchun Chen <guchun.chen@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/powernv/vas-window.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/platforms/powernv/vas-window.c
-+++ b/arch/powerpc/platforms/powernv/vas-window.c
-@@ -1093,9 +1093,9 @@ struct vas_window *vas_tx_win_open(int v
- 		/*
- 		 * Process closes window during exit. In the case of
- 		 * multithread application, the child thread can open
--		 * window and can exit without closing it. Expects parent
--		 * thread to use and close the window. So do not need
--		 * to take pid reference for parent thread.
-+		 * window and can exit without closing it. so takes tgid
-+		 * reference until window closed to make sure tgid is not
-+		 * reused.
- 		 */
- 		txwin->tgid = find_get_pid(task_tgid_vnr(current));
- 		/*
-@@ -1339,8 +1339,9 @@ int vas_win_close(struct vas_window *win
- 	/* if send window, drop reference to matching receive window */
- 	if (window->tx_win) {
- 		if (window->user_win) {
--			/* Drop references to pid and mm */
-+			/* Drop references to pid. tgid and mm */
- 			put_pid(window->pid);
-+			put_pid(window->tgid);
- 			if (window->mm) {
- 				mm_context_remove_vas_window(window->mm);
- 				mmdrop(window->mm);
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -1179,6 +1179,7 @@ static const struct pci_device_id pciidl
+ 	{0x1002, 0x73E0, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
+ 	{0x1002, 0x73E1, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
+ 	{0x1002, 0x73E2, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
++	{0x1002, 0x73E3, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
+ 	{0x1002, 0x73FF, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_DIMGREY_CAVEFISH},
+ 
+ 	/* Aldebaran */
 
 
