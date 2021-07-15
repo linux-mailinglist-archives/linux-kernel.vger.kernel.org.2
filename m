@@ -2,124 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAF23CA10C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C13063CA114
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 17:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238185AbhGOPC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 11:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232108AbhGOPC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:02:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0380A613C4;
-        Thu, 15 Jul 2021 14:59:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626361175;
-        bh=WMxp2mwdoS59oGTgmTOoatfl2kEPCVJQHmcJAPofolE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZBmp0De0rFI6Db5Ijr5HTiY9MlYZE8GbKeXRy88vvId1Pka3/KFbWGhadfkefsaxw
-         TUuP0TpgkJr8bAZxOetm379o/n+g3Sh+ku01hioD6KxzgbFKX0Kz8tp6SHmJy3E2M1
-         MPRM+eZ1eULpOUZq6U+JVgAm0I0vEt0jkp4e4xaz9UMaxsYyz0MdpGVAyq2JjE4KKy
-         de5F19VOZsA+iNxYIJGqWSUZMjIlEaqMFp37/sZ3NX1pnvkw3aljXz865NXG7JLHr2
-         I5G2WDPhsZwl89eKztyo3cjFLdl1MN1hC0f52w6+LdyFXlr9mnVcAzlg5eEL6hv1Am
-         mmpnIop7GB5Xg==
-Received: by mail-ed1-f47.google.com with SMTP id l1so8505142edr.11;
-        Thu, 15 Jul 2021 07:59:34 -0700 (PDT)
-X-Gm-Message-State: AOAM532IjvjdFAu2OU0wXbd34GqDHagGc9gf4+7H3suNJT9G88UR6ZkV
-        uvEraTh/tMpeET26JsQwYySQIe67iHilNhCFHw==
-X-Google-Smtp-Source: ABdhPJxVlRe46NOy1Ube4hjuFH34iW+65Ma8iQickH4l8U2hHk9BLGF4gQPCHr6bzZ9JPx4mTaQ83Em5YixfhRrxDE8=
-X-Received: by 2002:aa7:cb19:: with SMTP id s25mr7688335edt.194.1626361173534;
- Thu, 15 Jul 2021 07:59:33 -0700 (PDT)
+        id S232536AbhGOPFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 11:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229937AbhGOPFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 11:05:53 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF609C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:02:58 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id l1so8522820edr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 08:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yluq3beMV5fv9/Nk87EzEa1ZxTYd3mzcMJaKDO7x4Vg=;
+        b=tmIomh/MEK5Au1dRya+387VrIb++sWNgScG7/F2JXr+zc9TZILAd+oJqCU7TlojXFw
+         y/IlFFftKD5HYw2kc2WQMAm7hl1zAc6lhGw3jclsj1gJPxa3x0rOFr/RoueciggSV2W+
+         vN7agWZDf6nMMO6BNLUmUx25LXWlNugY/uPU5PXQNM6ER2VRbVKxDXvyOpB117l5PTw9
+         w2hN2cgwohw9pEV3k7kzV5gLEMLrzTbKmvb3y2CFWYiPDELw/c80UluYZhH3YgKtsyKU
+         YSjeDhngy+rvMbT87ErftTQp3/b9gRTcpLyckw01D/NxOxXwCJ/VgCxHZvfmb8O0qvCW
+         1EPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yluq3beMV5fv9/Nk87EzEa1ZxTYd3mzcMJaKDO7x4Vg=;
+        b=gsHUQ86W6B5uNc888dkyQ1aA2Bay4n7jd6xzRXVGOE4ofeP6VY0fG2Zu+MyxW+KiCu
+         PJ32BUxUhvzmQz2hE+Ciy2YBFrYFL9C5yLSm51ztSiFS6V+VpDELQ0D8cOaBjvzMekZc
+         qVFyE5dvv1p23eidfValVGFeWjgdSJMql1qyLiW8moih3dcmgPmt2saJ63KX/F/8GhEy
+         DDHL1+rVANiBHDxQJ5cafXaTSWFaG/71fUrVQiYbYW3LcwBGRpHSDaPcQ90U1RnDg+G7
+         t/nG/4xwqSKBlqpkLDlyyHWs4ZT6LlACi7gW0eIon5TAa4BbSOW+1GGak2wOXA7wqIQl
+         LmBQ==
+X-Gm-Message-State: AOAM532x8vl+42r/Xx738OcJGNlhpYzxxYsdqKXiFoosi1FPt5OIVQiw
+        L/hQD7b4j6mQevl+DP1vAkUIPQ==
+X-Google-Smtp-Source: ABdhPJxPZoQhKVPrlfkBexsehYqwhichiPmzBkfipmfJwsofsg05PAyw7/fAr4FoIvAgJdvqn2HXUQ==
+X-Received: by 2002:a05:6402:4cb:: with SMTP id n11mr7624597edw.292.1626361377200;
+        Thu, 15 Jul 2021 08:02:57 -0700 (PDT)
+Received: from Iliass-MBP (ppp-94-66-243-35.home.otenet.gr. [94.66.243.35])
+        by smtp.gmail.com with ESMTPSA id m26sm462685edf.4.2021.07.15.08.02.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 08:02:56 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 18:02:53 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
+ page_pool packets
+Message-ID: <YPBOHcx/sCEz/+wn@Iliass-MBP>
+References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
+ <bf326953-495f-db01-e554-42f4421d237a@huawei.com>
+ <CAKgT0UemhFPHo9krmQfm=yNTSjwpBwVkoFtLEEQ-qLVh=-BeHg@mail.gmail.com>
+ <YPBKFXWdDytvPmoN@Iliass-MBP>
+ <CAKgT0UfOr7U-8T+Hr9NVPL7EMYaTzbx7w1-hUthjD9bXUFsqMw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com> <20210715141802.880911-4-daniel.baluta@oss.nxp.com>
-In-Reply-To: <20210715141802.880911-4-daniel.baluta@oss.nxp.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 15 Jul 2021 08:59:21 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+r0Tw46=iW8etyR9H=V7M+sE=dguqsEMm3R4B=Xg=qSA@mail.gmail.com>
-Message-ID: <CAL_Jsq+r0Tw46=iW8etyR9H=V7M+sE=dguqsEMm3R4B=Xg=qSA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] dt-bindings: dsp: fsl: Document newly introduced fsl,properties
-To:     Daniel Baluta <daniel.baluta@oss.nxp.com>
-Cc:     Linux-ALSA <alsa-devel@alsa-project.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        kai.vehmanen@linux.intel.com, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Daniel Baluta <daniel.baluta@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UfOr7U-8T+Hr9NVPL7EMYaTzbx7w1-hUthjD9bXUFsqMw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 8:18 AM Daniel Baluta <daniel.baluta@oss.nxp.com> wrote:
->
-> From: Daniel Baluta <daniel.baluta@nxp.com>
->
-> Document firmware-name, tplg-name and machine-drv-name properties.
+On Thu, Jul 15, 2021 at 07:57:57AM -0700, Alexander Duyck wrote:
+> On Thu, Jul 15, 2021 at 7:45 AM Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> >
+> > > > >           atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
+> >
+> > [...]
+> >
+> > > > >                             &shinfo->dataref))
+> > > > > -             return;
+> > > > > +             goto exit;
+> > > >
+> > > > Is it possible this patch may break the head frag page for the original skb,
+> > > > supposing it's head frag page is from the page pool and below change clears
+> > > > the pp_recycle for original skb, causing a page leaking for the page pool?
+> > >
+> > > I don't see how. The assumption here is that when atomic_sub_return
+> > > gets down to 0 we will still have an skb with skb->pp_recycle set and
+> > > it will flow down and encounter skb_free_head below. All we are doing
+> > > is skipping those steps and clearing skb->pp_recycle for all but the
+> > > last buffer and the last one to free it will trigger the recycling.
+> >
+> > I think the assumption here is that
+> > 1. We clone an skb
+> > 2. The original skb goes into pskb_expand_head()
+> > 3. skb_release_data() will be called for the original skb
+> >
+> > But with the dataref bumped, we'll skip the recycling for it but we'll also
+> > skip recycling or unmapping the current head (which is a page_pool mapped
+> > buffer)
+> 
+> Right, but in that case it is the clone that is left holding the
+> original head and the skb->pp_recycle flag is set on the clone as it
+> was copied from the original when we cloned it. 
 
-That's obvious from the diff.
+Ah yes, that's what I missed
 
-Why do you need these?
+> What we have
+> essentially done is transferred the responsibility for freeing it from
+> the original to the clone.
+> 
+> If you think about it the result is the same as if step 2 was to go
+> into kfree_skb. We would still be calling skb_release_data and the
+> dataref would be decremented without the original freeing the page. We
+> have to wait until all the clones are freed and dataref reaches 0
+> before the head can be recycled.
 
->
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 20 +++++++++++++++++++
->  1 file changed, 20 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> index 7afc9f2be13a..8095aa178e7c 100644
-> --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> @@ -60,6 +60,22 @@ properties:
->        used by DSP (see bindings/reserved-memory/reserved-memory.txt)
->      maxItems: 1
->
-> +  firmware-name:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description:
-> +      If present, name of the file within the firmware search path containing
-> +      the DSP firmware loaded by SOF at DSP boot time.
-> +
-> +  tplg-name:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description:
-> +      Should contain the audio topology file name loaded by SOF driver.
+Yep sounds correct
 
-Is this some format the DSP requires? Why do we need a separate file?
-This is defined by the board or user config?
-
-> +
-> +  machine-drv-name:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description:
-> +      Contains the ASoC machine driver name used by SOF to handle DSP audio scenario.
-
-Umm, no.
-
-> +
->  required:
->    - compatible
->    - reg
-> @@ -69,6 +85,8 @@ required:
->    - mboxes
->    - mbox-names
->    - memory-region
-> +  - tplg-name
-> +  - machine-drv-name
->
->  additionalProperties: false
->
-> @@ -90,4 +108,6 @@ examples:
->          mbox-names = "txdb0", "txdb1", "rxdb0", "rxdb1";
->          mboxes = <&lsio_mu13 2 0>, <&lsio_mu13 2 1>, <&lsio_mu13 3 0>, <&lsio_mu13 3 1>;
->          memory-region = <&dsp_reserved>;
-> +        tplg-name = "sof-imx8-wm8960.tplg";
-> +        machine-drv-name = "asoc-simple-card";
->      };
-> --
-> 2.27.0
->
+Thanks
+/Ilias
