@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E03C3C9E24
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330113C9E28
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 14:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhGOME1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 08:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbhGOME0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 08:04:26 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCC9C06175F;
-        Thu, 15 Jul 2021 05:01:32 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id l7so7418329wrv.7;
-        Thu, 15 Jul 2021 05:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mRyUbi5VIG0vSzwP6HRl5JUNRctmMQF6hywTD8MaKnk=;
-        b=c6fyB3JHulWmVHAqhAC6vTlBPw63h7m6J2q1ExoWibiCxPd5nymMk0GA5WsqW7/lsE
-         JwmV8WmeycHG8OVg3fa7j9XbmzzzSWsv1uWfDvg+m8LZ9hKGH+ovCsRRnH4lIEIab9Fs
-         +vunMCgB/ZOFu2z1x5MEy16qjHBGys6tqfIFY2QzFc/jWkXDXJH7aKncZX772WvKaZZY
-         HXfdksESSXlCl9Nlsx8a+QNZknx/YRMHubkNqCWMvxIsgHBBOOLqv5C8hp7MHs/suMbN
-         Bua3WsbGQ1Ooi2teXKUuS+e4EwEE3Et2iJ8ppgcd+bf4GUyWz44sPd0yxR1NaXqsKIXG
-         tBhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mRyUbi5VIG0vSzwP6HRl5JUNRctmMQF6hywTD8MaKnk=;
-        b=ZM/pR+TNc15thTpCe9nEvDZTPmg3zcJ4B9Hpl/2pvuMCI7oAmYyM/dY35LHlmMaG4x
-         eSx9r1SrPz/zcSlFxAK0iDlDyj2lUunrhuKhQGlcGEHSazY7SsxWBwx/91LAvkrZninq
-         ttgQHXiyjYYewY/UOAgp/hQv5jDjFlmCMUUEhdX+7wDd7l102dDf7VreLhLqtR7IP9ta
-         wEPuhV9OB6kSKILk2tPa0DFyxykr+nU0lUTHjnEKZdW/HCYHA1GAp1nDYzWBE13FYinn
-         askrvwdAR8NfNU9oZkfZrdJV8JeQu77uXU4h5mO7xChmxQQiw4pzY+7IO+iwX1DTHh8K
-         6Tmg==
-X-Gm-Message-State: AOAM532Gph6+tPidqzCBAZzFUrizHW64OQCKr+WvfCoOZvjBFEUZdoB/
-        KUu+5i0L80A9AdmXFVukNWPGChMpIeU=
-X-Google-Smtp-Source: ABdhPJxqFT1UDc9OUVGfgmurEWV1hpJN8VbhQsnBgxhli0jKDqGiTp5mVQsnB7lS//DPr1QcNtFJLw==
-X-Received: by 2002:a5d:4c50:: with SMTP id n16mr5095363wrt.249.1626350491061;
-        Thu, 15 Jul 2021 05:01:31 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id l15sm6483617wrv.87.2021.07.15.05.01.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 05:01:30 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 15:01:29 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: dsa: mv88e6xxx: NET_DSA_MV88E6XXX_PTP should
- depend on NET_DSA_MV88E6XXX
-Message-ID: <20210715120129.comqj4lqiwcusj7q@skbuf>
-References: <0f880ee706a5478c7d8835a8f7aa15d3c0d916e3.1626256421.git.geert+renesas@glider.be>
+        id S232151AbhGOMEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 08:04:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232003AbhGOMEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 08:04:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 386DD611AD;
+        Thu, 15 Jul 2021 12:01:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626350497;
+        bh=bvioZ2SUemkybSffe93+DiVDPw02jQlhXZRvrQVmXE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LzVt2L2+QbfBOtyG9/41D+3Iqb66JILbJJDS0h3sGdRRUhoRd/5iZbb4i0a0WKvCd
+         O0lU79n4DRs7uLTVHFMSNXzqk7sNsgEwcXsu1QaQdkaizYFff+Y3ze7uHECpCAMbD3
+         TH8B7suedWu9aHiE7T9vV1PEjHCiWM50ZTkWdYw4=
+Date:   Thu, 15 Jul 2021 14:01:32 +0200
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Cc:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: Re: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and
+ driver data cross-references
+Message-ID: <YPAjnCXOBK5CFfHu@kroah.com>
+References: <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com>
+ <20210702184957.4479-1-andrew_gabbasov@mentor.com>
+ <20210702184957.4479-2-andrew_gabbasov@mentor.com>
+ <YOKvz2WzYuV0PaXD@kroah.com>
+ <000001d77187$e9782dd0$bc688970$@mentor.com>
+ <YOLiDSs/9+RzMKqE@kroah.com>
+ <000001d7766a$a755ada0$f60108e0$@mentor.com>
+ <20210711155130.16305-1-andrew_gabbasov@mentor.com>
+ <YOsXQfWvIPXUydFv@kroah.com>
+ <000001d77674$0fd59b20$2f80d160$@mentor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0f880ee706a5478c7d8835a8f7aa15d3c0d916e3.1626256421.git.geert+renesas@glider.be>
+In-Reply-To: <000001d77674$0fd59b20$2f80d160$@mentor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 11:58:12AM +0200, Geert Uytterhoeven wrote:
-> Making global2 support mandatory removed the Kconfig symbol
-> NET_DSA_MV88E6XXX_GLOBAL2.  This symbol also served as an intermediate
-> symbol to make NET_DSA_MV88E6XXX_PTP depend on NET_DSA_MV88E6XXX.  With
-> the symbol removed, the user is always asked about PTP support for
-> Marvell 88E6xxx switches, even if the latter support is not enabled.
+On Sun, Jul 11, 2021 at 07:44:41PM +0300, Andrew Gabbasov wrote:
+> Hello Greg,
 > 
-> Fix this by reinstating the dependency.
+> > -----Original Message-----
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Sent: Sunday, July 11, 2021 7:07 PM
+> > To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
+> > Cc: Macpaul Lin <macpaul.lin@mediatek.com>; Eugeniu Rosca <erosca@de.adit-jv.com>; linux-usb@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; stable@vger.kernel.org; Felipe Balbi <balbi@kernel.org>; Eugeniu Rosca
+> > <roscaeugeniu@gmail.com>; Eddie Hung <eddie.hung@mediatek.com>
+> > Subject: Re: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
+> > 
+> > On Sun, Jul 11, 2021 at 10:51:30AM -0500, Andrew Gabbasov wrote:
+> > > commit ecfbd7b9054bddb12cea07fda41bb3a79a7b0149 upstream.
+> > >
 > 
-> Fixes: 63368a7416df144b ("net: dsa: mv88e6xxx: Make global2 support mandatory")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> ---
+> [ skipped ]
+> 
+> > > Fixes: 4b187fceec3c ("usb: gadget: FunctionFS: add devices management code")
+> > > Fixes: 3262ad824307 ("usb: gadget: f_fs: Stop ffs_closed NULL pointer dereference")
+> > > Fixes: cdafb6d8b8da ("usb: gadget: f_fs: Fix use-after-free in ffs_free_inst")
+> > > Reported-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
+> > > Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > > Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+> > > Link: https://lore.kernel.org/r/20210603171507.22514-1-andrew_gabbasov@mentor.com
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > [agabbasov: Backported to earlier mount API, resolved context conflicts]
+> > > ---
+> > >  drivers/usb/gadget/function/f_fs.c | 67 ++++++++++++++----------------
+> > >  1 file changed, 32 insertions(+), 35 deletions(-)
+> > 
+> > I also need a 4.19 version of this commit, as you do not want to upgrade
+> > to a newer kernel and regress.  Can you also provide that?
+> 
+> If I correctly understand, this particular file has a very minor difference
+> between 4.14 and 4.19. So, this same patch for 4.14 can be just applied / cherry-picked
+> cleanly on top of latest stable 4.19.
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Now queued up, thanks.
+
+greg k-h
