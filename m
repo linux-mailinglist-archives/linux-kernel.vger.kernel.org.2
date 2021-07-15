@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12703CA6E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6831F3CA6DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237602AbhGOSvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:51:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
+        id S234651AbhGOSu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239563AbhGOSsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:48:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5004F61158;
-        Thu, 15 Jul 2021 18:45:21 +0000 (UTC)
+        id S237964AbhGOSsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:48:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F478613CF;
+        Thu, 15 Jul 2021 18:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374721;
-        bh=eWt/Pgp9ZAHzb7tz++3SmyziJHNnYt8Y3CLGHrP1eRs=;
+        s=korg; t=1626374724;
+        bh=lbj5tQP/91AutpptD6Bz2B8dJjJb3WEZaJd7sEjtdSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wf79cRd7ELBGLDwRFmcoFid774AYgqg+aL3IKKKjhE0ihiB47z0kU+AO4Y8ccJ6jr
-         mpKvIgas87GGbuYtZ4yfzqg9UYqlmGAFF6D8/8ESvsA3AGjihagTarmF97ZC9pwEH2
-         St2RYZw9jFwD0Wh1YN/ktlCfzvOIqLtAR+mgUF5o=
+        b=q7YaXfNBi5rpPfsXUesMepzsyBN+z2la7uMz0TJKJnclYK+T1U2OCZRiEfTssqMzu
+         kPMXG89erwqzPOB7e+AXks/ItueslAikrE7Lp53rE79dF8P3oLDcnx4dYaeF+cZHxJ
+         mIjULdBn6lbZSTj/CzWHeeYxFUlB1aijcCx35mk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Joseph Greathouse <Joseph.Greathouse@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>
-Subject: [PATCH 5.4 077/122] drm/amdgpu: Update NV SIMD-per-CU to 2
-Date:   Thu, 15 Jul 2021 20:38:44 +0200
-Message-Id: <20210715182510.551071873@linuxfoundation.org>
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 078/122] drm/radeon: Add the missed drm_gem_object_put() in radeon_user_framebuffer_create()
+Date:   Thu, 15 Jul 2021 20:38:45 +0200
+Message-Id: <20210715182511.015024377@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -41,38 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joseph Greathouse <Joseph.Greathouse@amd.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-commit aa6158112645aae514982ad8d56df64428fcf203 upstream.
+commit 9ba85914c36c8fed9bf3e8b69c0782908c1247b7 upstream.
 
-Navi series GPUs have 2 SIMDs per CU (and then 2 CUs per WGP).
-The NV enum headers incorrectly listed this as 4, which later meant
-we were incorrectly reporting the number of SIMDs in the HSA
-topology. This could cause problems down the line for user-space
-applications that want to launch a fixed amount of work to each
-SIMD.
+radeon_user_framebuffer_create() misses to call drm_gem_object_put() in
+an error path. Add the missed function call to fix it.
 
-Signed-off-by: Joseph Greathouse <Joseph.Greathouse@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/include/navi10_enum.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/radeon/radeon_display.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/include/navi10_enum.h
-+++ b/drivers/gpu/drm/amd/include/navi10_enum.h
-@@ -430,7 +430,7 @@ ARRAY_2D_DEPTH
-  */
+--- a/drivers/gpu/drm/radeon/radeon_display.c
++++ b/drivers/gpu/drm/radeon/radeon_display.c
+@@ -1333,6 +1333,7 @@ radeon_user_framebuffer_create(struct dr
+ 	/* Handle is imported dma-buf, so cannot be migrated to VRAM for scanout */
+ 	if (obj->import_attach) {
+ 		DRM_DEBUG_KMS("Cannot create framebuffer from imported dma_buf\n");
++		drm_gem_object_put(obj);
+ 		return ERR_PTR(-EINVAL);
+ 	}
  
- typedef enum ENUM_NUM_SIMD_PER_CU {
--NUM_SIMD_PER_CU                          = 0x00000004,
-+NUM_SIMD_PER_CU                          = 0x00000002,
- } ENUM_NUM_SIMD_PER_CU;
- 
- /*
 
 
