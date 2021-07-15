@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F3E3CA5F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9E23CA5F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235982AbhGOSpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:45:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45574 "EHLO mail.kernel.org"
+        id S236596AbhGOSpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:45:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236328AbhGOSpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:45:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E869B613CC;
-        Thu, 15 Jul 2021 18:42:09 +0000 (UTC)
+        id S236538AbhGOSpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:45:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44CEA61396;
+        Thu, 15 Jul 2021 18:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374530;
-        bh=ufUr61OH30M4Hxk7SL0COsncKi5k41MsTd6RCQQpcUc=;
+        s=korg; t=1626374532;
+        bh=2i22KCHVi/5HW7v/5PYOSKt8E72zDw5l4Ce16zyEpSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kyO3X0AdHRWq++eqQDsJAl8MGVrX1zch0SS09OIR9eceqNfoSJhJ3i8x4VDaQtJ1H
-         D++r4vDkQugtfdlyO3nL3Ju42JmWSz3bzxPDFGcwHPz38vFie5P+EVA/0WadnZHnqy
-         rSlRN1ACb9aZnqR21YAAcPf6sNUy4mViAEN3Q95s=
+        b=IR6Ejp+fkWOgBg+AHnTdWK12LgRwHZDiLL+ABAzo+ZMI4hW6gwJmo7wGO0jpEJfkR
+         EPBiL5aIaTVc/GgolYyHnxRHcCvmplcGBzulKxCcxoKjnY88hMQAneI6W6QLZXhLNE
+         oyHvERlikiaPYUbKtwo8DYZE34MSccXjTpD5czz8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        Mark Yacoub <markyacoub@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Tobias Brunner <tobias@strongswan.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 039/122] drm/amd/display: Verify Gamma & Degamma LUT sizes in amdgpu_dm_atomic_check
-Date:   Thu, 15 Jul 2021 20:38:06 +0200
-Message-Id: <20210715182458.820614428@linuxfoundation.org>
+Subject: [PATCH 5.4 040/122] xfrm: Fix error reporting in xfrm_state_construct.
+Date:   Thu, 15 Jul 2021 20:38:07 +0200
+Message-Id: <20210715182459.106158485@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -41,115 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Yacoub <markyacoub@chromium.org>
+From: Steffen Klassert <steffen.klassert@secunet.com>
 
-[ Upstream commit 03fc4cf45d30533d54f0f4ebc02aacfa12f52ce2 ]
+[ Upstream commit 6fd06963fa74197103cdbb4b494763127b3f2f34 ]
 
-For each CRTC state, check the size of Gamma and Degamma LUTs  so
-unexpected and larger sizes wouldn't slip through.
+When memory allocation for XFRMA_ENCAP or XFRMA_COADDR fails,
+the error will not be reported because the -ENOMEM assignment
+to the err variable is overwritten before. Fix this by moving
+these two in front of the function so that memory allocation
+failures will be reported.
 
-TEST: IGT:kms_color::pipe-invalid-gamma-lut-sizes
-
-v2: fix assignments in if clauses, Mark's email.
-
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reported-by: Tobias Brunner <tobias@strongswan.org>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  4 ++
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |  1 +
- .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 41 ++++++++++++++++---
- 3 files changed, 40 insertions(+), 6 deletions(-)
+ net/xfrm/xfrm_user.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index fca466d4806b..11da904fcb7e 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -7407,6 +7407,10 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 		    old_crtc_state->vrr_enabled == new_crtc_state->vrr_enabled)
- 			continue;
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index fbb7d9d06478..0cee2d3c6e45 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -580,6 +580,20 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
  
-+		ret = amdgpu_dm_verify_lut_sizes(new_crtc_state);
-+		if (ret)
-+			goto fail;
-+
- 		if (!new_crtc_state->enable)
- 			continue;
+ 	copy_from_user_state(x, p);
  
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-index c8c525a2b505..54163c970e7a 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-@@ -387,6 +387,7 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
- #define MAX_COLOR_LEGACY_LUT_ENTRIES 256
- 
- void amdgpu_dm_init_color_mod(void);
-+int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state);
- int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc);
- int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
- 				      struct dc_plane_state *dc_plane_state);
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-index 2233d293a707..6acc460a3e98 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-@@ -277,6 +277,37 @@ static int __set_input_tf(struct dc_transfer_func *func,
- 	return res ? 0 : -ENOMEM;
- }
- 
-+/**
-+ * Verifies that the Degamma and Gamma LUTs attached to the |crtc_state| are of
-+ * the expected size.
-+ * Returns 0 on success.
-+ */
-+int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state)
-+{
-+	const struct drm_color_lut *lut = NULL;
-+	uint32_t size = 0;
-+
-+	lut = __extract_blob_lut(crtc_state->degamma_lut, &size);
-+	if (lut && size != MAX_COLOR_LUT_ENTRIES) {
-+		DRM_DEBUG_DRIVER(
-+			"Invalid Degamma LUT size. Should be %u but got %u.\n",
-+			MAX_COLOR_LUT_ENTRIES, size);
-+		return -EINVAL;
++	if (attrs[XFRMA_ENCAP]) {
++		x->encap = kmemdup(nla_data(attrs[XFRMA_ENCAP]),
++				   sizeof(*x->encap), GFP_KERNEL);
++		if (x->encap == NULL)
++			goto error;
 +	}
 +
-+	lut = __extract_blob_lut(crtc_state->gamma_lut, &size);
-+	if (lut && size != MAX_COLOR_LUT_ENTRIES &&
-+	    size != MAX_COLOR_LEGACY_LUT_ENTRIES) {
-+		DRM_DEBUG_DRIVER(
-+			"Invalid Gamma LUT size. Should be %u (or %u for legacy) but got %u.\n",
-+			MAX_COLOR_LUT_ENTRIES, MAX_COLOR_LEGACY_LUT_ENTRIES,
-+			size);
-+		return -EINVAL;
++	if (attrs[XFRMA_COADDR]) {
++		x->coaddr = kmemdup(nla_data(attrs[XFRMA_COADDR]),
++				    sizeof(*x->coaddr), GFP_KERNEL);
++		if (x->coaddr == NULL)
++			goto error;
 +	}
 +
-+	return 0;
-+}
-+
- /**
-  * amdgpu_dm_update_crtc_color_mgmt: Maps DRM color management to DC stream.
-  * @crtc: amdgpu_dm crtc state
-@@ -311,14 +342,12 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
- 	bool is_legacy;
- 	int r;
+ 	if (attrs[XFRMA_SA_EXTRA_FLAGS])
+ 		x->props.extra_flags = nla_get_u32(attrs[XFRMA_SA_EXTRA_FLAGS]);
  
--	degamma_lut = __extract_blob_lut(crtc->base.degamma_lut, &degamma_size);
--	if (degamma_lut && degamma_size != MAX_COLOR_LUT_ENTRIES)
--		return -EINVAL;
-+	r = amdgpu_dm_verify_lut_sizes(&crtc->base);
-+	if (r)
-+		return r;
+@@ -600,23 +614,9 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
+ 				   attrs[XFRMA_ALG_COMP])))
+ 		goto error;
  
-+	degamma_lut = __extract_blob_lut(crtc->base.degamma_lut, &degamma_size);
- 	regamma_lut = __extract_blob_lut(crtc->base.gamma_lut, &regamma_size);
--	if (regamma_lut && regamma_size != MAX_COLOR_LUT_ENTRIES &&
--	    regamma_size != MAX_COLOR_LEGACY_LUT_ENTRIES)
--		return -EINVAL;
+-	if (attrs[XFRMA_ENCAP]) {
+-		x->encap = kmemdup(nla_data(attrs[XFRMA_ENCAP]),
+-				   sizeof(*x->encap), GFP_KERNEL);
+-		if (x->encap == NULL)
+-			goto error;
+-	}
+-
+ 	if (attrs[XFRMA_TFCPAD])
+ 		x->tfcpad = nla_get_u32(attrs[XFRMA_TFCPAD]);
  
- 	has_degamma =
- 		degamma_lut && !__is_lut_linear(degamma_lut, degamma_size);
+-	if (attrs[XFRMA_COADDR]) {
+-		x->coaddr = kmemdup(nla_data(attrs[XFRMA_COADDR]),
+-				    sizeof(*x->coaddr), GFP_KERNEL);
+-		if (x->coaddr == NULL)
+-			goto error;
+-	}
+-
+ 	xfrm_mark_get(attrs, &x->mark);
+ 
+ 	xfrm_smark_init(attrs, &x->props.smark);
 -- 
 2.30.2
 
