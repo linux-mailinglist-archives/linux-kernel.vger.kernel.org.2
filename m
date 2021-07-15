@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06023CA9D8
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4953CA9D6
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243818AbhGOTKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:10:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34984 "EHLO mail.kernel.org"
+        id S243737AbhGOTKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:10:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242361AbhGOS7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:59:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CDD9613F3;
-        Thu, 15 Jul 2021 18:56:24 +0000 (UTC)
+        id S242336AbhGOS7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:59:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 739CB613F1;
+        Thu, 15 Jul 2021 18:56:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375384;
-        bh=NIpmSb6xWrkUDhVx5Xar84NSlhZVImOx3vM9UEWBHus=;
+        s=korg; t=1626375386;
+        bh=C7Rzfp8K1bV0ynqw4Sn0i4znooGYpddfWTaz+sNZ0c0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hqQdAYsSTN6OX32LR8JHOzkSAxCtTZZrjwP/A7ChB0g2OV4rBA/0Ke3vaEvf1Hdqg
-         6RDSxdoOUkuhxqE8HPjBn6BGsrpUtENVZk1ovI1CJCuTa7w1O2YxZFgWQLIYqYatSd
-         vlpPF/lTUnI5+HpCsFRacg+yweRnGqOBDaF1Px8w=
+        b=MAd7ihCuo7bQM+wo6dYD9Lib8ivWGOcfYVaEviH+HVsT1RAxwxRsHRvLzeEG4N4rK
+         XVu/YPjVBbj8y7NphgMn0RqI+JlOxPiDyExFwFpldrIigT1PR5TvO0n9KOpinsrG46
+         8cXUt76XI0CKAga4cl/Tw2Gv4ZKcs7k/jqQlvXbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liwei Song <liwei.song@windriver.com>,
+        stable@vger.kernel.org,
+        Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 062/242] ice: set the value of global config lock timeout longer
-Date:   Thu, 15 Jul 2021 20:37:04 +0200
-Message-Id: <20210715182603.415034685@linuxfoundation.org>
+Subject: [PATCH 5.12 063/242] ice: fix clang warning regarding deadcode.DeadStores
+Date:   Thu, 15 Jul 2021 20:37:05 +0200
+Message-Id: <20210715182603.648679967@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,42 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liwei Song <liwei.song@windriver.com>
+From: Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>
 
-[ Upstream commit fb3612840d4f587a0af9511a11d7989d1fa48206 ]
+[ Upstream commit 7e94090ae13e1ae5fe8bd3a9cd08136260bb7039 ]
 
-It may need hold Global Config Lock a longer time when download DDP
-package file, extend the timeout value to 5000ms to ensure that
-download can be finished before other AQ command got time to run,
-this will fix the issue below when probe the device, 5000ms is a test
-value that work with both Backplane and BreakoutCable NVM image:
+clang generates deadcode.DeadStores warnings when a variable
+is used to read a value, but then that value isn't used later
+in the code. Fix this warning.
 
-ice 0000:f4:00.0: VSI 12 failed lan queue config, error ICE_ERR_CFG
-ice 0000:f4:00.0: Failed to delete VSI 12 in FW - error: ICE_ERR_AQ_TIMEOUT
-ice 0000:f4:00.0: probe failed due to setup PF switch: -12
-ice: probe of 0000:f4:00.0 failed with error -12
-
-Signed-off-by: Liwei Song <liwei.song@windriver.com>
+Signed-off-by: Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_type.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/ice_ethtool.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_type.h b/drivers/net/ethernet/intel/ice/ice_type.h
-index 266036b7a49a..8a90c47e337d 100644
---- a/drivers/net/ethernet/intel/ice/ice_type.h
-+++ b/drivers/net/ethernet/intel/ice/ice_type.h
-@@ -63,7 +63,7 @@ enum ice_aq_res_ids {
- /* FW update timeout definitions are in milliseconds */
- #define ICE_NVM_TIMEOUT			180000
- #define ICE_CHANGE_LOCK_TIMEOUT		1000
--#define ICE_GLOBAL_CFG_LOCK_TIMEOUT	3000
-+#define ICE_GLOBAL_CFG_LOCK_TIMEOUT	5000
+diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+index f80fff97d8dc..0d136708f960 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
++++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+@@ -3492,13 +3492,9 @@ static int
+ ice_get_rc_coalesce(struct ethtool_coalesce *ec, enum ice_container_type c_type,
+ 		    struct ice_ring_container *rc)
+ {
+-	struct ice_pf *pf;
+-
+ 	if (!rc->ring)
+ 		return -EINVAL;
  
- enum ice_aq_res_access_type {
- 	ICE_RES_READ = 1,
+-	pf = rc->ring->vsi->back;
+-
+ 	switch (c_type) {
+ 	case ICE_RX_CONTAINER:
+ 		ec->use_adaptive_rx_coalesce = ITR_IS_DYNAMIC(rc->itr_setting);
+@@ -3510,7 +3506,7 @@ ice_get_rc_coalesce(struct ethtool_coalesce *ec, enum ice_container_type c_type,
+ 		ec->tx_coalesce_usecs = rc->itr_setting & ~ICE_ITR_DYNAMIC;
+ 		break;
+ 	default:
+-		dev_dbg(ice_pf_to_dev(pf), "Invalid c_type %d\n", c_type);
++		dev_dbg(ice_pf_to_dev(rc->ring->vsi->back), "Invalid c_type %d\n", c_type);
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 2.30.2
 
