@@ -2,182 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734B83CA27D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA573CA27E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 18:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhGOQgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 12:36:49 -0400
-Received: from mail-io1-f47.google.com ([209.85.166.47]:38590 "EHLO
-        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhGOQgs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:36:48 -0400
-Received: by mail-io1-f47.google.com with SMTP id k11so7186664ioa.5;
-        Thu, 15 Jul 2021 09:33:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y6bIe4Hr1YorCPfBGvzQ6LpfYt1mUHZ0WYD1UKQ11fI=;
-        b=OddwE8C60Dd27dV54u5M1RJKaYtymzqwYRMPD7bgAmQK3SvIsfXUT0kLiTsNxKbbAg
-         /relrKhwAdeHMhsjM9K4Qez5v2C8zYtmoNqKx/1bL4d2i96mPMqbp5f4gTeFxST3yxbA
-         Taah/w/JX4gfngi144B3kbQLe5O9fprZexAwerFIJccVrRTwwnT3cnFf6KOAItJTFOLz
-         AuypePdbGeZKh/2KwvPjMb3a/WbKMZQYNde9Gn9+mNgbbFt/Epi84aBWJ8AiBkogmdC4
-         SJ7ySCEkxlL2x15q7+igCDHhHqabaEzNhYx72p/yuj03WauJ9/815Dzpj71D30AXR4F6
-         vA2A==
-X-Gm-Message-State: AOAM532DenXw5O5ru+DseSs52MoJ8Rg9Dyx766eS3XIOp0tk+4vf0V0e
-        xww+yW8xIrZoDH/G10xpgA==
-X-Google-Smtp-Source: ABdhPJwjABnFg4T6xJSJ0P5H8lKstHXlXYapvPvsNoHN3wsp0lAAJVLxEKy3tFw/NsOsULzmDiFcUg==
-X-Received: by 2002:a5d:8d16:: with SMTP id p22mr3786404ioj.90.1626366834397;
-        Thu, 15 Jul 2021 09:33:54 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id f16sm3263591ilc.53.2021.07.15.09.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 09:33:53 -0700 (PDT)
-Received: (nullmailer pid 1202003 invoked by uid 1000);
-        Thu, 15 Jul 2021 16:33:50 -0000
-Date:   Thu, 15 Jul 2021 10:33:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] dt-bindings: iio: adc: ad7949: add per channel
- reference
-Message-ID: <20210715163350.GA1196436@robh.at.kernel.org>
-References: <20210713043425.3321230-1-liambeguin@gmail.com>
- <20210713043425.3321230-5-liambeguin@gmail.com>
+        id S232328AbhGOQiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 12:38:01 -0400
+Received: from mout.gmx.net ([212.227.15.19]:36251 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhGOQiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 12:38:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626366895;
+        bh=0rCBB4H8yg/587byMlWKoP4F0LPv5m4VKTfSbWL2BRA=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=fN4mv488FYiQ7f7G9Zbj1H9mdRFBJmSMO2Xw3XAMNIC38tdkQbfLdu3GX0SEQPIO4
+         4pB378/ledJQp4mXnbW56DgLDmzAW9F0YEJRTTRB6JRzlVWxwf99kk3kixKLtSFLP9
+         TCmBZAQi2sRwHw5EdsbTsBvucQKBjh60vSxJ5Pc0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.92]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MVvPD-1lewgd3vu9-00RsbB; Thu, 15
+ Jul 2021 18:34:55 +0200
+Message-ID: <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Thu, 15 Jul 2021 18:34:54 +0200
+In-Reply-To: <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+         <878s2fnv79.ffs@nanos.tec.linutronix.de>
+         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713043425.3321230-5-liambeguin@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:thNGfQWrlK1YTuf74PByvJz/hVt8VBxzF5Z5O+sFtV478WeaAlw
+ QzORenQAFpGCMyCUmbz4oWABSzdpZn+jkwd0jIiGI/1hGDCe9cJNgQ5S3CnZ4piTDkWUUXn
+ XUTcjPwRibkzL2XoJkhczaqMnK1MsdckskPC5tus5TPdbcLIaOt1clrG5y5/qr6XkJYX322
+ YVouPiRUlZpfHn3TCiBtQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/FFbwzNcMjM=:Uge66fiTgTRsUokmP/Ziun
+ uiVVL2af9DVgy+2lv+MnmnCwweOm1V3vX1AkLJBJ5Sja9hHkJCytMnONo0ujd2Hzyvqfqou/1
+ +nA6HjIQwkJTzHIuAkNxyPA2dah9Rfwit/2Q44NYo2ezkGCRUepgG7kdWsk3JvbTevoObkfrm
+ tqXc9mVv7eQpp9YBfXFXv518cxvYPPNmMfVeylsp9ZO9sxkov2xs8ENaRuDwuqAmUTrTL42i1
+ Ioc4QbRP0BlV29FZKSDmkJyTyJ3CqSeQswMGm8ZiFHmWwjCMhWQr3ZwW98vbtQbr5dVea9Jm8
+ N0s4i5BdkCBhJb39yNejcVH64DqhOAKQQ9ORIIu0mbKgVDW4kMIagb8/JMADccV9a9fjrAAka
+ 0bA+Ya+mZTq1vpRBjhuJwbkVCQcUPvsjKrpkKRQBsglg9pTOVvjXUpGJmudiTNUA776vMMV0F
+ 3XL+gkrjz2qC8qMFNoqldeMeZEJWG8wFUpWlOH6VVPUcHaFt3DcY/TycD0hEzjg8OR/7tJyrE
+ eq1wfQluQGXrNoNCLEo8UyPp4JFcL477UTgnVASHcHyYAsG6JMPh96NnZuxZX5hwS+qNvuCJy
+ 4jMelSEEc6f7JAGxyL7kksT93tMCUjBDerjXb/Vrcd5+c5T4Bho7NdrMdTehn1jDnsflG1OV0
+ EXQZ3zPYpNq6etOMPRclVmxslmqcseTWWHsvtLsZmZLkkRKnPh/t6dvc8+ci209Wx3ka2S8Jh
+ UJgiyAYl+sVVApgLH4AFU6/8lRNesZRk6Dj6J5UAhlvCWpHHBVafpmxacEIrp66VdrEVFewmP
+ o4gCk9bU9pOjbkEYFNyv+Wm4ZB2zlelrbAj8K2ZkT1wfyUYHZbppH8xkcQTj3F9/ToISCswFx
+ I/2K33wmQRU5lu9qYWVBC8MVZ7QqG6m+YFdXs5ijgUBXnwOp3dv+u6TBBd71DEMVybHj9OAI3
+ O21UBbk8qkRH2GQ4hghnCbon85KqQz3PdhNsOrX0p+eWhRhy3SLNeqw8Q7bYfYKRzpjEYUlfA
+ D/ErMqQbZ/tKM4xrTP38xst7H1LwgFMb8zN2S2fACpIhoaAiAjuOuKo9oWTldyJm3QrtUliZC
+ ikVWL/Avq8CVHxhmO+uO8Q8GeAYPDOUbwds
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 12:34:25AM -0400, Liam Beguin wrote:
-> From: Liam Beguin <lvb@xiphos.com>
-> 
-> Add bindings documentation describing per channel reference voltage
-> selection.
-> This adds the adi,internal-ref-mv property, and child nodes for each
-> channel. This is required to properly configure the ADC sample request
-> based on which reference source should be used for the calculation.
-> 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> ---
->  .../bindings/iio/adc/adi,ad7949.yaml          | 71 +++++++++++++++++--
->  1 file changed, 67 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-> index 9b56bd4d5510..18abba3b0b4d 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-> @@ -26,19 +26,65 @@ properties:
->    reg:
->      maxItems: 1
->  
-> +  vrefin-supply:
-> +    description:
-> +      Buffered ADC reference voltage supply.
-> +
->    vref-supply:
->      description:
-> -      ADC reference voltage supply
-> +      Unbuffered ADC reference voltage supply.
->  
->    spi-max-frequency: true
->  
-> -  "#io-channel-cells":
-> +  '#io-channel-cells':
->      const: 1
->  
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +
+Greetings crickets,
 
-extra blank line.
+Methinks he problem is the hole these patches opened only for RT.
 
->  required:
->    - compatible
->    - reg
-> -  - vref-supply
-> +
-> +patternProperties:
-> +  '^channel@([0-7])$':
-> +    type: object
-> +    description: |
-> +      Represents the external channels which are connected to the ADC.
-> +
-> +    properties:
-> +      reg:
-> +        description: |
-> +          The channel number.
-> +          Up to 4 channels, numbered from 0 to 3 for adi,ad7682.
-> +          Up to 8 channels, numbered from 0 to 7 for adi,ad7689 and adi,ad7949.
-> +        items:
-> +          minimum: 0
-> +          maximum: 7
-> +
-> +      adi,internal-ref-mv:
+static void put_cpu_partial(struct kmem_cache *s, struct page *page,
+int drain)
+{
+#ifdef CONFIG_SLUB_CPU_PARTIAL
+	struct page *oldpage;
+	int pages;
+	int pobjects;
 
-Use standard unit suffix name. Then you can drop the type $ref.
+	slub_get_cpu_ptr(s->cpu_slab);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-> +        description: |
-> +          Internal reference voltage selection in millivolts.
-> +
-> +          If no internal reference is specified, the channel will default to the
-> +          external reference defined by vrefin-supply (or vref-supply).
-> +          vrefin-supply will take precedence over vref-supply if both are defined.
-> +
-> +          If no supplies are defined, the reference selection will default to
-> +          4096mV internal reference.
-> +
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [2500, 4096]
-> +        default: 4096
-> +
-> +    required:
-> +      - reg
-> +
-> +    additionalProperties: false
->  
->  additionalProperties: false
->  
-> @@ -49,9 +95,26 @@ examples:
->          #size-cells = <0>;
->  
->          adc@0 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
->              compatible = "adi,ad7949";
->              reg = <0>;
-> -            vref-supply = <&vdd_supply>;
-> +            vrefin-supply = <&vdd_supply>;
-> +
-> +            channel@0 {
-> +                adi,internal-ref-mv = <4096>;
-> +                reg = <0>;
-> +            };
-> +
-> +            channel@1 {
-> +                adi,internal-ref-mv = <2500>;
-> +                reg = <1>;
-> +            };
-> +
-> +            channel@2 {
-> +                reg = <2>;
-> +            };
->          };
->      };
->  ...
-> -- 
-> 2.30.1.489.g328c10930387
-> 
-> 
+That is an assertion that the stuff under it is preempt safe for RT and
+ONLY RT.  My box says the RT portion of that assertion is horse pookey.
+What it does is let kmem_cache_free()/kfree() blast straight through
+___slab_alloc() critical sections, swapping out ->partial underneath
+it.  Sprinkling percpu fingerprint power about, I saw lots of
+___slab_alloc() preempts put_cpu_partial().. and vice versa.  I don't
+think it's a coincidence that ___slab_alloc() and __unfreeze_partials()
+both explode trying to access page->freelist.  You've seen the former,
+here's one of the later.
+
+crash> bt -sx
+PID: 18761  TASK: ffff88812fff0000  CPU: 0   COMMAND: "hackbench"
+ #0 [ffff88818f8ff980] machine_kexec+0x14f at ffffffff81051c8f
+ #1 [ffff88818f8ff9c8] __crash_kexec+0xd2 at ffffffff8111ef72
+ #2 [ffff88818f8ffa88] crash_kexec+0x30 at ffffffff8111fd10
+ #3 [ffff88818f8ffa98] oops_end+0xd3 at ffffffff810267e3
+ #4 [ffff88818f8ffab8] exc_general_protection+0x195 at ffffffff8179fdb5
+ #5 [ffff88818f8ffb50] asm_exc_general_protection+0x1e at ffffffff81800a0e
+    [exception RIP: __unfreeze_partials+156]
+    RIP: ffffffff81248bac  RSP: ffff88818f8ffc00  RFLAGS: 00010202
+    RAX: 0000000000200002  RBX: 0000000000200002  RCX: 000000017fffffff
+    RDX: 00000001ffffffff  RSI: 0000000000000202  RDI: ffff888100040b80
+    RBP: ffff88818f8ffca0   R8: ffff88818f9cba30   R9: 0000000000000001
+    R10: ffff88818f8ffcc0  R11: 0000000000000000  R12: ffff888100043700
+    R13: ffff888100040b80  R14: 00000001ffffffff  R15: ffffea00046c0808
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+ #6 [ffff88818f8ffcb8] put_cpu_partial+0x8e at ffffffff81248ece
+ #7 [ffff88818f8ffcd8] consume_skb+0x2b at ffffffff815eddeb
+ #8 [ffff88818f8ffce8] unix_stream_read_generic+0x788 at ffffffff8170b238
+ #9 [ffff88818f8ffdc0] unix_stream_recvmsg+0x43 at ffffffff8170b433
+#10 [ffff88818f8ffdf8] sock_read_iter+0x104 at ffffffff815dd554
+#11 [ffff88818f8ffe68] new_sync_read+0x16a at ffffffff812674fa
+#12 [ffff88818f8ffee8] vfs_read+0x1ae at ffffffff81269c8e
+#13 [ffff88818f8fff00] ksys_read+0x40 at ffffffff8126a070
+#14 [ffff88818f8fff38] do_syscall_64+0x37 at ffffffff8179f5e7
+#15 [ffff88818f8fff50] entry_SYSCALL_64_after_hwframe+0x44 at ffffffff8180=
+007c
+    RIP: 00007fbda4438f2e  RSP: 00007fff3bf9d798  RFLAGS: 00000246
+    RAX: ffffffffffffffda  RBX: 00007fff3bf9e7a0  RCX: 00007fbda4438f2e
+    RDX: 0000000000001000  RSI: 00007fff3bf9d7a0  RDI: 0000000000000007
+    RBP: 00007fff3bf9e800   R8: 00007fff3bf9e6e0   R9: 00007fbda4641010
+    R10: 00007fbda4428028  R11: 0000000000000246  R12: 0000000000001000
+crash> dis __unfreeze_partials+156
+0xffffffff81248bac <__unfreeze_partials+156>:   lock cmpxchg16b 0x20(%r15)
+crash> gdb list *__unfreeze_partials+156
+0xffffffff81248bac is in __unfreeze_partials (mm/slub.c:475).
+470             if (!disable_irqs)
+471                     lockdep_assert_irqs_disabled();
+472     #if defined(CONFIG_HAVE_CMPXCHG_DOUBLE) && \
+473         defined(CONFIG_HAVE_ALIGNED_STRUCT_PAGE)
+474             if (s->flags & __CMPXCHG_DOUBLE) {
+475                     if (cmpxchg_double(&page->freelist, &page->counter=
+s,
+476                                        freelist_old, counters_old,
+477                                        freelist_new, counters_new))
+478                             return true;
+479             } else
+crash> kmem ffffea00046c0808
+      PAGE        PHYSICAL      MAPPING       INDEX CNT FLAGS
+ffffea00104b3000 412cc0000                0        c  2 8000000000003000 r=
+eserved,private
+crash
+
+Regarding $subject, Lockdep thinks my hole plugging skills suck rocks
+(shrug, I've given it plentiful cause) but that's ok, I sometimes think
+the same of its bug reporting skills :)
+
+[    2.459456] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+[    2.459456] WARNING: possible recursive locking detected
+[    2.459457] 5.14.0.g79e92006-tip-rt #83 Tainted: G            E
+[    2.459458] --------------------------------------------
+[    2.459458] rcuc/7/56 is trying to acquire lock:
+[    2.459459] ffff88840edf01c0 (&(&c->lock)->lock){+.+.}-{0:0}, at: kfree=
++0x280/0x670
+[    2.459466]
+               but task is already holding lock:
+[    2.459466] ffff88840edf4d60 (&(&c->lock)->lock){+.+.}-{0:0}, at: __sla=
+b_free+0x4d6/0x600
+[    2.459469]
+
+live kernel snooping....
+
+crash> ps | grep UN
+crash> bt -sx 56
+PID: 56     TASK: ffff888100c19a40  CPU: 7   COMMAND: "rcuc/7"
+ #0 [ffff888100c63e40] __schedule+0x2eb at ffffffff818969fb
+ #1 [ffff888100c63ec8] schedule+0x3b at ffffffff8189723b
+ #2 [ffff888100c63ee0] smpboot_thread_fn+0x18c at ffffffff810a90dc
+ #3 [ffff888100c63f18] kthread+0x1af at ffffffff810a27bf
+ #4 [ffff888100c63f50] ret_from_fork+0x1f at ffffffff81001cbf
+crash> task_struct ffff888100c19a40 | grep __state
+  __state =3D 1,
+crash> gdb list *__slab_free+0x4d6
+0xffffffff812923c6 is in __slab_free (mm/slub.c:2568).
+2563                                    /*
+2564                                     * partial array is full. Move the=
+ existing
+2565                                     * set to the per node partial lis=
+t.
+2566                                     */
+2567                                    local_lock(&s->cpu_slab->lock);
+2568                                    unfreeze_partials(s);
+2569                                    local_unlock(&s->cpu_slab->lock);
+2570                                    oldpage =3D NULL;
+2571                                    pobjects =3D 0;
+2572                                    pages =3D 0;
+crash> gdb list *kfree+0x280
+0xffffffff81292770 is in kfree (mm/slub.c:3442).
+3437                     * __slab_free() as that wouldn't use the cpu free=
+list at all.
+3438                     */
+3439                    void **freelist;
+3440
+3441                    local_lock(&s->cpu_slab->lock);
+3442                    c =3D this_cpu_ptr(s->cpu_slab);
+3443                    if (unlikely(page !=3D c->page)) {
+3444                            local_unlock(&s->cpu_slab->lock);
+3445                            goto redo;
+3446                    }
+crash>
+
+Check, those are what's in the stacktrace below... but the allegedly
+deadlocked for real task is very much alive, as is the rest of box.
+
+               other info that might help us debug this:
+[    2.459470]  Possible unsafe locking scenario:
+
+[    2.459470]        CPU0
+[    2.459470]        ----
+[    2.459471]   lock(&(&c->lock)->lock);
+[    2.459471]   lock(&(&c->lock)->lock);
+[    2.459472]
+                *** DEADLOCK ***
+
+[    2.459472]  May be due to missing lock nesting notation
+
+[    2.459472] 6 locks held by rcuc/7/56:
+[    2.459473]  #0: ffff88840edd9820 ((softirq_ctrl.lock).lock){+.+.}-{2:2=
+}, at: __local_bh_disable_ip+0xc3/0x190
+[    2.459479]  #1: ffffffff82382b80 (rcu_read_lock){....}-{1:2}, at: rt_s=
+pin_lock+0x5/0xd0
+[    2.459484]  #2: ffffffff82382b80 (rcu_read_lock){....}-{1:2}, at: __lo=
+cal_bh_disable_ip+0xa0/0x190
+[    2.459487]  #3: ffffffff82382ac0 (rcu_callback){....}-{0:0}, at: rcu_d=
+o_batch+0x195/0x520
+[    2.459490]  #4: ffff88840edf4d60 (&(&c->lock)->lock){+.+.}-{0:0}, at: =
+__slab_free+0x4d6/0x600
+[    2.459493]  #5: ffffffff82382b80 (rcu_read_lock){....}-{1:2}, at: rt_s=
+pin_lock+0x5/0xd0
+[    2.459496]
+               stack backtrace:
+[    2.459497] CPU: 7 PID: 56 Comm: rcuc/7 Tainted: G            E     5.1=
+4.0.g79e92006-tip-rt #83
+[    2.459498] Hardware name: MEDION MS-7848/MS-7848, BIOS M7848W08.20C 09=
+/23/2013
+[    2.459499] Call Trace:
+[    2.459501]  dump_stack_lvl+0x44/0x57
+[    2.459504]  __lock_acquire+0xb7f/0x1ab0
+[    2.459508]  lock_acquire+0x2a6/0x340
+[    2.459510]  ? kfree+0x280/0x670
+[    2.459513]  ? __free_slab+0xa4/0x1b0
+[    2.459515]  rt_spin_lock+0x2a/0xd0
+[    2.459516]  ? kfree+0x280/0x670                   somewhere in the mul=
+tiverse lies a dead rcuc/7
+[    2.459518]  kfree+0x280/0x670                 <=3D=3D local_lock(&s->c=
+pu_slab->lock); #2
+[    2.459521]  __free_slab+0xa4/0x1b0            =3D=3D> kfree(page_objcg=
+s(page))
+[    2.459523]  __unfreeze_partials+0x1d8/0x330   =3D=3D> discard_slab(s, =
+page);
+[    2.459526]  ? _raw_spin_unlock_irqrestore+0x30/0x80
+[    2.459530]  ? __slab_free+0x4de/0x600
+[    2.459532]  __slab_free+0x4de/0x600           <=3D=3D local_lock(&s->c=
+pu_slab->lock); #1
+[    2.459534]  ? find_held_lock+0x2d/0x90
+[    2.459536]  ? kmem_cache_free+0x276/0x630
+[    2.459539]  ? rcu_do_batch+0x1c3/0x520
+[    2.459540]  ? kmem_cache_free+0x364/0x630
+[    2.459542]  kmem_cache_free+0x364/0x630
+[    2.459544]  ? rcu_do_batch+0x195/0x520
+[    2.459546]  rcu_do_batch+0x1c3/0x520
+[    2.459547]  ? rcu_do_batch+0x195/0x520
+[    2.459550]  ? rcu_cpu_kthread+0x7e/0x4b0
+[    2.459552]  ? rcu_cpu_kthread+0x57/0x4b0
+[    2.459553]  rcu_core+0x2c3/0x590
+[    2.459555]  ? rcu_cpu_kthread+0x78/0x4b0
+[    2.459557]  ? rcu_cpu_kthread+0x7e/0x4b0
+[    2.459558]  ? rcu_cpu_kthread+0x57/0x4b0
+[    2.459560]  rcu_cpu_kthread+0xc2/0x4b0
+[    2.459562]  ? smpboot_thread_fn+0x23/0x300
+[    2.459565]  smpboot_thread_fn+0x249/0x300
+[    2.459567]  ? smpboot_register_percpu_thread+0xe0/0xe0
+[    2.459569]  kthread+0x1af/0x1d0
+[    2.459571]  ? set_kthread_struct+0x40/0x40
+[    2.459574]  ret_from_fork+0x1f/0x30
+
