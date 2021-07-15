@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5085F3CAB60
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B693CA8DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245492AbhGOTTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39760 "EHLO mail.kernel.org"
+        id S241425AbhGOTDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:03:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241460AbhGOTEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:04:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86CC761409;
-        Thu, 15 Jul 2021 19:00:58 +0000 (UTC)
+        id S242312AbhGOSzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CEF3613CC;
+        Thu, 15 Jul 2021 18:52:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375659;
-        bh=WL4coB8igxkVHU+RhTg9k6iV3QdIlvvea6iAsOYIlDk=;
+        s=korg; t=1626375127;
+        bh=VaSw8eXxJwYqDAsNRRTpRkjq+fkc9jcRrS0A8LIPC8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ok6ImwqSEhzmmuA39YGo0lFRyBK+CkJ3yS7SO0qfG2kZcDGzLSid/7I8W7nWAkDsK
-         54mUHGezp3CA/W2gpSE7c8nNhVQviru9tJTe2o0HboAVMBmPbKHCXG122nKLTCSkky
-         Y1W6rf80dplXKDpXe5f0heaoIHUziEH08ZHRBa08=
+        b=EZrgEfLB3+JBBLdkruBeMMd3IaOu1wmPCS0Nhl6v9gRtMRk9mQORqZSudYwKWkhqh
+         6JOwafpLrgqBYwmUHbDySid24PaawE3Qd/maFi1j8ts5ano73KY8+mrLw8+5wCPljw
+         MjAnX01yYOi3CzLZDZhWDoOB7tha2t78p9DFybZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Simon Ser <contact@emersion.fr>
-Subject: [PATCH 5.12 181/242] drm/ingenic: Switch IPU plane to type OVERLAY
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        ZhuRui <zhurui3@huawei.com>, Zhenyu Ye <yezhenyu2@huawei.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.10 171/215] arm64: tlb: fix the TTL value of tlb_get_level
 Date:   Thu, 15 Jul 2021 20:39:03 +0200
-Message-Id: <20210715182625.173409561@linuxfoundation.org>
+Message-Id: <20210715182629.786403180@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,83 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Zhenyu Ye <yezhenyu2@huawei.com>
 
-commit 68b433fe6937cfa3f8975d18643d5956254edd6a upstream.
+commit 52218fcd61cb42bde0d301db4acb3ffdf3463cc7 upstream.
 
-It should have been an OVERLAY from the beginning. The documentation
-stipulates that there should be an unique PRIMARY plane per CRTC.
+The TTL field indicates the level of page table walk holding the *leaf*
+entry for the address being invalidated. But currently, the TTL field
+may be set to an incorrent value in the following stack:
 
-Fixes: fc1acf317b01 ("drm/ingenic: Add support for the IPU")
-Cc: <stable@vger.kernel.org> # 5.8+
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Acked-by: Simon Ser <contact@emersion.fr>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210329175046.214629-2-paul@crapouillou.net
+pte_free_tlb
+    __pte_free_tlb
+        tlb_remove_table
+            tlb_table_invalidate
+                tlb_flush_mmu_tlbonly
+                    tlb_flush
+
+In this case, we just want to flush a PTE page, but the tlb->cleared_pmds
+is set and we get tlb_level = 2 in the tlb_get_level() function. This may
+cause some unexpected problems.
+
+This patch set the TTL field to 0 if tlb->freed_tables is set. The
+tlb->freed_tables indicates page table pages are freed, not the leaf
+entry.
+
+Cc: <stable@vger.kernel.org> # 5.9.x
+Fixes: c4ab2cbc1d87 ("arm64: tlb: Set the TTL field in flush_tlb_range")
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Reported-by: ZhuRui <zhurui3@huawei.com>
+Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
+Link: https://lore.kernel.org/r/b80ead47-1f88-3a00-18e1-cacc22f54cc4@huawei.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c |   11 +++++------
- drivers/gpu/drm/ingenic/ingenic-ipu.c     |    2 +-
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ arch/arm64/include/asm/tlb.h |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -413,7 +413,7 @@ static void ingenic_drm_plane_enable(str
- 	unsigned int en_bit;
- 
- 	if (priv->soc_info->has_osd) {
--		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
-+		if (plane != &priv->f0)
- 			en_bit = JZ_LCD_OSDC_F1EN;
- 		else
- 			en_bit = JZ_LCD_OSDC_F0EN;
-@@ -428,7 +428,7 @@ void ingenic_drm_plane_disable(struct de
- 	unsigned int en_bit;
- 
- 	if (priv->soc_info->has_osd) {
--		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
-+		if (plane != &priv->f0)
- 			en_bit = JZ_LCD_OSDC_F1EN;
- 		else
- 			en_bit = JZ_LCD_OSDC_F0EN;
-@@ -455,8 +455,7 @@ void ingenic_drm_plane_config(struct dev
- 
- 	ingenic_drm_plane_enable(priv, plane);
- 
--	if (priv->soc_info->has_osd &&
--	    plane->type == DRM_PLANE_TYPE_PRIMARY) {
-+	if (priv->soc_info->has_osd && plane != &priv->f0) {
- 		switch (fourcc) {
- 		case DRM_FORMAT_XRGB1555:
- 			ctrl |= JZ_LCD_OSDCTRL_RGB555;
-@@ -504,7 +503,7 @@ void ingenic_drm_plane_config(struct dev
- 	}
- 
- 	if (priv->soc_info->has_osd) {
--		if (plane->type == DRM_PLANE_TYPE_PRIMARY) {
-+		if (plane != &priv->f0) {
- 			xy_reg = JZ_REG_LCD_XYP1;
- 			size_reg = JZ_REG_LCD_SIZE1;
- 		} else {
-@@ -554,7 +553,7 @@ static void ingenic_drm_plane_atomic_upd
- 		height = state->src_h >> 16;
- 		cpp = state->fb->format->cpp[0];
- 
--		if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
-+		if (!priv->soc_info->has_osd || plane == &priv->f0)
- 			hwdesc = &priv->dma_hwdescs->hwdesc_f0;
- 		else
- 			hwdesc = &priv->dma_hwdescs->hwdesc_f1;
---- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-@@ -760,7 +760,7 @@ static int ingenic_ipu_bind(struct devic
- 
- 	err = drm_universal_plane_init(drm, plane, 1, &ingenic_ipu_plane_funcs,
- 				       soc_info->formats, soc_info->num_formats,
--				       NULL, DRM_PLANE_TYPE_PRIMARY, NULL);
-+				       NULL, DRM_PLANE_TYPE_OVERLAY, NULL);
- 	if (err) {
- 		dev_err(dev, "Failed to init plane: %i\n", err);
- 		return err;
+--- a/arch/arm64/include/asm/tlb.h
++++ b/arch/arm64/include/asm/tlb.h
+@@ -28,6 +28,10 @@ static void tlb_flush(struct mmu_gather
+  */
+ static inline int tlb_get_level(struct mmu_gather *tlb)
+ {
++	/* The TTL field is only valid for the leaf entry. */
++	if (tlb->freed_tables)
++		return 0;
++
+ 	if (tlb->cleared_ptes && !(tlb->cleared_pmds ||
+ 				   tlb->cleared_puds ||
+ 				   tlb->cleared_p4ds))
 
 
