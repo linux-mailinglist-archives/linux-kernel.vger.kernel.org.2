@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC1E3CAA98
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AF83CA9EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244439AbhGOTOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:14:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34266 "EHLO mail.kernel.org"
+        id S242645AbhGOTLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:11:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241087AbhGOS6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:58:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FF47613E5;
-        Thu, 15 Jul 2021 18:55:54 +0000 (UTC)
+        id S242332AbhGOS7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:59:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 809D8613E7;
+        Thu, 15 Jul 2021 18:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375354;
-        bh=vndnttYoHsnm8GQI8rEdEV7PDDJB8KqOPwOmFM5vV2k=;
+        s=korg; t=1626375380;
+        bh=XvGNq4npWBQakz2OUliDSnF0sJ9yN0gUsA5zRBHOPIk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rolBMTiDdiKuJsOnw0G9xl0P02+JNLha56tv7mx67W3M+qS5IogWZy08ufl25FNq+
-         pPO3MXl7VF5Nk195pxiBsYJHA6svtrjV9kVkRq6NalYPsJrIEBsl5QCtWBEM1XFG2z
-         +f3fOph/bPQLSY5IZ75m9PmFG3iJMg9dQpx1eX6o=
+        b=nOOyMbcQoYCMLRtHmfRK4iTBmw/fx+C/3wWeCx3npsNqNHSOCPis7HHtGZ2z7acCH
+         kuStzB90ORk5LVnIDy8RnVHAH7KAtCHjHbZdFfRqBgCr/m7VpmJGT4RQlsZCgXKQBF
+         V6dSPDiPng5JzHwj81Oz5RdOac6whNogPTBlrAhQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 024/242] pinctrl: equilibrium: Add missing MODULE_DEVICE_TABLE
-Date:   Thu, 15 Jul 2021 20:36:26 +0200
-Message-Id: <20210715182556.053771489@linuxfoundation.org>
+Subject: [PATCH 5.12 025/242] drm/scheduler: Fix hang when sched_entity released
+Date:   Thu, 15 Jul 2021 20:36:27 +0200
+Message-Id: <20210715182556.235583290@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -41,35 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bixuan Cui <cuibixuan@huawei.com>
+From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 
-[ Upstream commit d7f444499d6faf9a6ae3b27ec094109528d2b9a7 ]
+[ Upstream commit c61cdbdbffc169dc7f1e6fe94dfffaf574fe672a ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Problem: If scheduler is already stopped by the time sched_entity
+is released and entity's job_queue not empty I encountred
+a hang in drm_sched_entity_flush. This is because drm_sched_entity_is_idle
+never becomes false.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-Link: https://lore.kernel.org/r/20210508031502.53637-1-cuibixuan@huawei.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fix: In drm_sched_fini detach all sched_entities from the
+scheduler's run queues. This will satisfy drm_sched_entity_is_idle.
+Also wakeup all those processes stuck in sched_entity flushing
+as the scheduler main thread which wakes them up is stopped by now.
+
+v2:
+Reverse order of drm_sched_rq_remove_entity and marking
+s_entity as stopped to prevent reinserion back to rq due
+to race.
+
+v3:
+Drop drm_sched_rq_remove_entity, only modify entity->stopped
+and check for it in drm_sched_entity_is_idle
+
+Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210512142648.666476-14-andrey.grodzovsky@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-equilibrium.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/scheduler/sched_entity.c |  3 ++-
+ drivers/gpu/drm/scheduler/sched_main.c   | 24 ++++++++++++++++++++++++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-equilibrium.c b/drivers/pinctrl/pinctrl-equilibrium.c
-index 067271b7d35a..ac1c47f542c1 100644
---- a/drivers/pinctrl/pinctrl-equilibrium.c
-+++ b/drivers/pinctrl/pinctrl-equilibrium.c
-@@ -929,6 +929,7 @@ static const struct of_device_id eqbr_pinctrl_dt_match[] = {
- 	{ .compatible = "intel,lgm-io" },
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, eqbr_pinctrl_dt_match);
+diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
+index c1ac3e4003c6..72c39608236b 100644
+--- a/drivers/gpu/drm/scheduler/sched_entity.c
++++ b/drivers/gpu/drm/scheduler/sched_entity.c
+@@ -116,7 +116,8 @@ static bool drm_sched_entity_is_idle(struct drm_sched_entity *entity)
+ 	rmb(); /* for list_empty to work without lock */
  
- static struct platform_driver eqbr_pinctrl_driver = {
- 	.probe	= eqbr_pinctrl_probe,
+ 	if (list_empty(&entity->list) ||
+-	    spsc_queue_count(&entity->job_queue) == 0)
++	    spsc_queue_count(&entity->job_queue) == 0 ||
++	    entity->stopped)
+ 		return true;
+ 
+ 	return false;
+diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+index 92637b70c9bf..16244e9669b9 100644
+--- a/drivers/gpu/drm/scheduler/sched_main.c
++++ b/drivers/gpu/drm/scheduler/sched_main.c
+@@ -896,9 +896,33 @@ EXPORT_SYMBOL(drm_sched_init);
+  */
+ void drm_sched_fini(struct drm_gpu_scheduler *sched)
+ {
++	struct drm_sched_entity *s_entity;
++	int i;
++
+ 	if (sched->thread)
+ 		kthread_stop(sched->thread);
+ 
++	for (i = DRM_SCHED_PRIORITY_COUNT - 1; i >= DRM_SCHED_PRIORITY_MIN; i--) {
++		struct drm_sched_rq *rq = &sched->sched_rq[i];
++
++		if (!rq)
++			continue;
++
++		spin_lock(&rq->lock);
++		list_for_each_entry(s_entity, &rq->entities, list)
++			/*
++			 * Prevents reinsertion and marks job_queue as idle,
++			 * it will removed from rq in drm_sched_entity_fini
++			 * eventually
++			 */
++			s_entity->stopped = true;
++		spin_unlock(&rq->lock);
++
++	}
++
++	/* Wakeup everyone stuck in drm_sched_entity_flush for this scheduler */
++	wake_up_all(&sched->job_scheduled);
++
+ 	/* Confirm no work left behind accessing device structures */
+ 	cancel_delayed_work_sync(&sched->work_tdr);
+ 
 -- 
 2.30.2
 
