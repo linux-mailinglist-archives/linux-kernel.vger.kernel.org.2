@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804EE3C95A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BA73C95AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhGOBhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236097AbhGOBhU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:37:20 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5E3C06175F;
-        Wed, 14 Jul 2021 18:34:28 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id u14so6322173ljh.0;
-        Wed, 14 Jul 2021 18:34:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pb22RAfWzq7JxZLbG1m1A+H9CpWAIKjVTut9DdUOIY8=;
-        b=hkyuUB2kacfrmpKtNqQF7oQXLP5fmOHWQYCsGfMMV5M9h72XD6xttv1sdrPJ/sePDg
-         Aj4wD55gs1xyQjoZvdU9JhKATnbgQXUJWMcEvgBOqexcLDDWV8NQCe/tqbXGSkAzuzti
-         DnyHKdpzGr+/W5Bn+sI2lHSpovJ8tPLFAPnLh/2+4xWqZ3AiqBz5GCnLA+j24M5FeEcv
-         EIqIIvdY/3JY69sZTKev3j2lKiwo9j+VKXD/ZdLR1hLM2+2eCMIxldBSIJhxUc5nI04N
-         NuSsbJ5I7KElJyshruv5yDhyWcz8+gfYpna6ddQKX4dtkz9hGY1BuS96FmU/3lrbuCoc
-         tsAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pb22RAfWzq7JxZLbG1m1A+H9CpWAIKjVTut9DdUOIY8=;
-        b=ZERlOVUZ/p/KK+6I3NJG9jIM6ZUL6OEpk3en0OC3nlVTYS7izvhXzgUuIjdYA4xN2A
-         ntthoSA/Ipc73bf8A2BJh8FSrWgXSB1l2v4e38zBRincoEHQL77upS8Pl8S413smucgB
-         3snyjh8J9GdYH+I/Y+2suDs+Af0dJlJMCsiXE0015sbMKHXKrZ/NsFPHI7iQfS2sB7mV
-         LKqIKjA2QXCsKmzyxatroHj2bflnj3j24jaEg1GWNNNcr2ezyM5UT2SC7hEB/+cP42kb
-         qTB4BpPQ2e6LvvJMSzShQC9S0QOMOuk+UcT+WzPQxuA2y1N2XtbC+pfR3WPwmjrSfSjo
-         U2nA==
-X-Gm-Message-State: AOAM530rmIEJw38VHBsFwnZdmKONfVqlUYiuQN4ehgmd+ZI+xhuy2DVY
-        qq7ZLRrvntShkCD1HjBYRiL7lQtYJEAWFLIw7UA=
-X-Google-Smtp-Source: ABdhPJySgo+9pbgquBVTVQrADnr50Rguamatr984+8e4JTixCml3fpTvBpZJBoEcwxrJTEExVCpPkgkRqDifaJLCGUo=
-X-Received: by 2002:a2e:3214:: with SMTP id y20mr684735ljy.486.1626312866512;
- Wed, 14 Jul 2021 18:34:26 -0700 (PDT)
+        id S231196AbhGOBny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 21:43:54 -0400
+Received: from ozlabs.org ([203.11.71.1]:44975 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229909AbhGOBnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 21:43:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GQHBw1WjSz9sWc;
+        Thu, 15 Jul 2021 11:40:56 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626313258;
+        bh=qbRNE2Yd6kIDTyLmX7JYPO1kxz0WQw+vLfzxj5bZm5k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GbRvV6zd5qhF4QPHTt2dSM0ow3GPFvLLCxbgu/4y/ewXU5Eer6Rn9iCZOkZn5yVcn
+         WkvCz7thCu358KmoXUwsfMZMUyAH2eXI0vIMBHF78A6gJIQns/FavEgrvyoX3gsila
+         8FkM00Hh9xgnLJdwIEJkMAq7dzqIZb6aHsoptR6gm9ZXOGBPAv0xqHD/PJLQp2PpYX
+         j6QXQE+OrRPl5VjWpZbSSZqaIU6xIYalILoSsr4GJvmBl+4a9+4XBZCNuuhk747v2X
+         mMqmc/38wZNdlJKydPJ8CV/KG/EwfcJJztWZDGEzbfnmmE1C54C/zdjKnZAbaWfnWJ
+         2ul1s8FFFtq2Q==
+Date:   Thu, 15 Jul 2021 11:40:55 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the dmaengine tree with the
+ dmaengine-fixes tree
+Message-ID: <20210715114055.4eba03e2@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210714101815.164322-1-hefengqing@huawei.com> <CAPhsuW51b0Cd7VV6ub2APze4EMbMJ+Y=scLAEyhJ4SvG=D0kyQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW51b0Cd7VV6ub2APze4EMbMJ+Y=scLAEyhJ4SvG=D0kyQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 14 Jul 2021 18:34:15 -0700
-Message-ID: <CAADnVQKQP=UsifdhSiFqkydG1BFDY7uCLsOPT-0u9e3P8yVbKw@mail.gmail.com>
-Subject: Re: [bpf-next, v2] bpf: verifier: Fix potential memleak and UAF in
- bpf verifier
-To:     Song Liu <song@kernel.org>
-Cc:     He Fengqing <hefengqing@huawei.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/=ajLp77sR2aMnkThZYOBMD9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 5:54 PM Song Liu <song@kernel.org> wrote:
-> > -       return 0;
-> > +       return;
-> No need to say return here.
->
-> >  }
-> >
-> >  static void adjust_subprog_starts(struct bpf_verifier_env *env, u32 off, u32 len)
-> > @@ -11492,6 +11490,14 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
-> >                                             const struct bpf_insn *patch, u32 len)
-> >  {
-> >         struct bpf_prog *new_prog;
-> > +       struct bpf_insn_aux_data *new_data = NULL;
-> > +
-> > +       if (len > 1) {
-> > +               new_data = vzalloc(array_size(env->prog->len + len - 1,
-> > +                                             sizeof(struct bpf_insn_aux_data)));
-> > +               if (!new_data)
-> > +                       return NULL;
+--Sig_/=ajLp77sR2aMnkThZYOBMD9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I removed the redundant 'return' that Song pointed out and the
-redundant 'if' above.
-And applied to bpf-next.
-Though it's a fix, I think it's ok to go via bpf-next, since even
-syzbot didn't find it.
+Hi all,
+
+Today's linux-next merge of the dmaengine tree got a conflict in:
+
+  drivers/dma/idxd/submit.c
+
+between commit:
+
+  da435aedb00a ("dmaengine: idxd: fix array index when int_handles are bein=
+g used")
+
+from the dmaengine-fixes tree and commit:
+
+  6cfd9e62e329 ("dmaengine: idxd: assign MSIX vectors to each WQ rather tha=
+n roundrobin")
+
+from the dmaengine tree.
+
+I fixed it up (I just used the latter) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=ajLp77sR2aMnkThZYOBMD9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDvkicACgkQAVBC80lX
+0GwjKQgAnXZdTEwsbaxoQ7raA6wzk3SKaSNia8POTNTaTRtQLUHUn6gHi9OQOdtW
+HdI0/3X9+0kJSC8hgFg6TcZCCCmpl1BZ65DIL9P6kXK8OYaAzfMCCxSCsxjGusZs
+tkZy7Gzvi4KRDAbIOkmIXbJwAeiNXrSDKTSqgke0myvMzDo17PitQhX0DIccDGks
+QKY/gZKGkar7k6dRC1DNTsiFO8g2yiXh4BQw5HVkmV3KR1t4bmaniUXtoxWBV/zQ
+6LEv3i52YagoiE3U4qEghoh2czhXTjmhcwd70CDgIBYqjekEYl3tuCflyaFTGU5f
+/E7jzuyswILwDlXRl/5TFrkaWby1Dg==
+=o6tq
+-----END PGP SIGNATURE-----
+
+--Sig_/=ajLp77sR2aMnkThZYOBMD9--
