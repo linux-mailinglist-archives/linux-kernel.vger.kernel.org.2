@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F763CA02A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705093CA02E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237636AbhGOOBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:01:18 -0400
-Received: from mga05.intel.com ([192.55.52.43]:20638 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhGOOBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:01:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="296191419"
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="296191419"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 06:58:24 -0700
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="494592190"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 06:58:23 -0700
-Date:   Thu, 15 Jul 2021 06:57:57 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>
-Subject: Re: [RFC v2] /dev/iommu uAPI proposal
-Message-ID: <20210715135757.GC590891@otc-nc-03>
-References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
- <7ea349f8-8c53-e240-fe80-382954ba7f28@huawei.com>
- <BN9PR11MB5433A9B792441CAF21A183A38C129@BN9PR11MB5433.namprd11.prod.outlook.com>
- <a8edb2c1-9c9c-6204-072c-4f1604b7dace@huawei.com>
- <BN9PR11MB54336D6A8CAE31F951770A428C129@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210715124813.GC543781@nvidia.com>
+        id S238245AbhGOOBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:01:21 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44394
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229637AbhGOOBU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:01:20 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 69DFA408AD;
+        Thu, 15 Jul 2021 13:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626357506;
+        bh=Cl2Z4fkPQ4YWZ9DFZjI76elK6rvIDL5Xxs/GYAwsJ5c=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=c+f5DW3fRovP4PppXJ+3G7D63Ukw1ThI+F0iU3Tf10NiIJsAdYH3khUy3HBmzF+Qh
+         YfTyiwyAqg8CCEd9IL19IrC4QnQ2/ruTR/SvbupN5zCiThC+wBPHbIgXlul6aSjh28
+         1Y8u9chciqu2vZZWEAUdKFaL0qAXqyh0olA/bf2GzFqe5JCP2MJkXivuE6WdAd1+cM
+         KnUnkJGJSRpNgZ06BcDpY3rqVcCn4uGPkThKZwnOZH9c7HTIcJOtawCL/n6u/yQkIc
+         MaTyYGmCmtJ90q8oe2bRGefJRebg6ntmfkTYsGhvWtwxRpAowKNSCAW/vDVTT7IVbA
+         OmsbL2Aahppfg==
+From:   Colin King <colin.king@canonical.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Doug Thompson <dougthompson@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-edac@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/edac: add missing macro arguments and missing macro edac_pci_remove_sysfs
+Date:   Thu, 15 Jul 2021 14:58:26 +0100
+Message-Id: <20210715135826.26241-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715124813.GC543781@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 09:48:13AM -0300, Jason Gunthorpe wrote:
-> On Thu, Jul 15, 2021 at 06:49:54AM +0000, Tian, Kevin wrote:
-> 
-> > No. You are right on this case. I don't think there is a way to 
-> > differentiate one mdev from the other if they come from the
-> > same parent and attached by the same guest process. In this
-> > case the fault could be reported on either mdev (e.g. the first
-> > matching one) to get it fixed in the guest.
-> 
-> If the IOMMU can't distinguish the two mdevs they are not isolated
-> and would have to share a group. Since group sharing is not supported
-> today this seems like a non-issue
+From: Colin Ian King <colin.king@canonical.com>
 
-Does this mean we have to prevent 2 mdev's from same pdev being assigned to
-the same guest? 
+The macros edac_pci_handle_pe and edac_pci_handle_npe are missing their
+arguments and don't match the function prototypes they replace. Also
+macro edac_pci_remove_sysfs is missing. Fix this by adding in the missing
+arguments and missing macro.
+
+Fixes: d4c1465b7de9 ("drivers/edac: fix edac_pci sysfs")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/edac/edac_module.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/edac/edac_module.h b/drivers/edac/edac_module.h
+index aa1f91688eb8..ed194ba2c207 100644
+--- a/drivers/edac/edac_module.h
++++ b/drivers/edac/edac_module.h
+@@ -123,8 +123,9 @@ extern void edac_pci_handle_npe(struct edac_pci_ctl_info *pci,
+ #define edac_sysfs_pci_teardown()
+ #define edac_pci_get_check_errors()
+ #define edac_pci_get_poll_msec()
+-#define edac_pci_handle_pe()
+-#define edac_pci_handle_npe()
++#define edac_pci_remove_sysfs(pci)
++#define edac_pci_handle_pe(pci, msg)
++#define edac_pci_handle_npe(pci, msg)
+ #endif				/* CONFIG_PCI */
+ 
+ #endif				/* __EDAC_MODULE_H__ */
+-- 
+2.31.1
+
