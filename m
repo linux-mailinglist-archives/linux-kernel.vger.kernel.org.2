@@ -2,71 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E0F3CAFBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8840C3CAFC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhGOXt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 19:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
+        id S232546AbhGOXvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 19:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbhGOXt5 (ORCPT
+        with ESMTP id S232427AbhGOXvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 19:49:57 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A801C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:47:02 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id l18so8539375iow.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:47:02 -0700 (PDT)
+        Thu, 15 Jul 2021 19:51:19 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2F5C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:48:24 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id m83so7213002pfd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:48:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hagqR0rIEofPLGA0i4if5oDt7BNWphhYllufZmpy6Wg=;
-        b=ik6ORfHl60Ja+N/arCXf4ZaNnLb4zb1i/c2izCQ8Ep3z83IRpKfkccNluJcGVWjEfV
-         3J3Wj4eObC/gV3rLZEhgqtKysCBIBfNkB4HkRAeNf2cr9xM828RQvTA0xRh6k2hCc5cX
-         wmDpHglzTPto0HrmoRqCPqQtYcy/0kqLgaXvfUhfc3l3RpJJfKoTw3z43HddlHXb4ICw
-         zNCYtdOU6DNT8jfIuy1ApG5L8rL5GztbBPeqNAcz+lCpf8SaxlCcyi6wp7x49jiGPXe0
-         SMY1447gH2pTlsTHTBXPGnwDYy/Vhiyn2Cr3wdCwein2egBBZnpcpVgw3qrS3LU+/xvY
-         jlLg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5OQMDn6Hx/yHVRBDOLcOoarZgTpJ6ou0lJ0Voq0OG4M=;
+        b=Xerp+3Ma+7CKr4/78JI541G8uYD8//jwvClMOF/fOO7QmiQm8HAEUnu6NpDbBLMH1q
+         bZGV9qTn+NrOGGYaOzCjTB7B/aPpvd5It43hKuUVskOmztUVNBp7D+395FsS2sQvlrxq
+         xVAo8FpFCDhowTVg4hGaiMCdbGyqn6qUNM0miSvgPCaSI49UBGL5vj48ibmF6+Rb17X0
+         w7C8AuBB8wkZlc1aeNQ5K9KigBlX9jYvbv1ccsercnerPpuW03IdweX4DvdjBnQR82bX
+         e0jajjskDBGjMsxL7Fj/B+zCTGGj135zbVxs9kViMAV8ZYC/Kcwbxlf9wsPPlckGHHm4
+         ds+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hagqR0rIEofPLGA0i4if5oDt7BNWphhYllufZmpy6Wg=;
-        b=K8o5v7Lw+sqqMW9jqesytbZQtlnSzGArF0cBmO1Xkq5VR6+GdKnRheIus7rxox5O+W
-         DyCEa87YPl5//gfaAn4L4+bnTCfMue6zEQ/MUr1BSNUHj3UXGxAC0rBbgha9lkxXT6CM
-         ou1kP9oiZbi2mYFx4hFvhDnIrifw94mWBUTmDzehr/tmrBM2SuGxnXXtDdKN/3Zqf0FV
-         4EKr5VR9yHj1808K1QrUx9HizMwJjddOu3InUl54ce6d+56PsE6MIuhOfsr48PH/aOTd
-         Ubu9j9/JLkwfGmyHfVQq10xUCd6i3UnubORDutcN3qrt3j0NUUq/FR1jB8/gdZ7CVPbo
-         yXHA==
-X-Gm-Message-State: AOAM530oepGAEZ8I/RqT/Cmtqsf+5wFcVJJ/XIkcm/YvNmes0n0AhXil
-        Ba81S3oxYvuWS3KSAJhySfzYzSj+pFLVLusepNA=
-X-Google-Smtp-Source: ABdhPJwQ5JwGnub0fM/nEAdXvOzAL0Z6QL54NBLcvmxp4ASM5kc/RE2E/KPLyylDGZpS2wj8FasqoTUoJUAf0+fETnA=
-X-Received: by 2002:a05:6638:240c:: with SMTP id z12mr6177770jat.41.1626392821872;
- Thu, 15 Jul 2021 16:47:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5OQMDn6Hx/yHVRBDOLcOoarZgTpJ6ou0lJ0Voq0OG4M=;
+        b=j+8g77sJxMyFPMUr3cI/9M0CqEuXOG8SWHjiM0actgb6tk7mkpoRmZQ1Qn4SvO1d3G
+         mbm6QT/YXXrGvv/xei9Vhp7qFYxi7Jlamv2w9y6fPH17L56tqVvMQvZDqU5rfT3xjfLF
+         HHUszHJr29Ca0Sf54MhHvX3dInhDmONPcQwSc6p/POyrztRmOH2yoYRFpuVVokHSyexF
+         mMrkDmSVSf6r4KTM9opgUMB/KAzohovR/Tpt8datSXguDoJM0hHO21mkE7mc9CttPWNg
+         HknDP5s/btUcZreV7sKCz4l4bR4NVA/H1HmKfBKZhSimCap7EOj3MC3/OoR0zo+MlzXv
+         VmYw==
+X-Gm-Message-State: AOAM530Pz0S38/bpgrnRO1ii2hFcB64nYAMKxnyW6r2+Wunp82B6foRw
+        hEK2z1As894Sam9yzhzljeyVHg==
+X-Google-Smtp-Source: ABdhPJzB/aLwcMzRnzgFsmskaKhCj/u4SogoqFPq9x0TyUcwapKqqebbwl1vM0o7pXaHZ6NJDfrs4g==
+X-Received: by 2002:a63:4e5d:: with SMTP id o29mr275121pgl.379.1626392903572;
+        Thu, 15 Jul 2021 16:48:23 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id o184sm8719553pga.18.2021.07.15.16.48.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 16:48:22 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 23:48:19 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 15/40] crypto: ccp: Handle the legacy TMR
+ allocation when SNP is enabled
+Message-ID: <YPDJQ0uumar8j22y@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-16-brijesh.singh@amd.com>
 MIME-Version: 1.0
-References: <20210616141548.39787-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210616141548.39787-1-andriy.shevchenko@linux.intel.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Jul 2021 01:46:50 +0200
-Message-ID: <CANiq72=TTH3EezpHUepjq3dPouV5V=Say_whcaHf5RnP4b7V6w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] auxdisplay: ks0108: Switch to use module_parport_driver()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707183616.5620-16-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 4:15 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Switch to use module_parport_driver() to reduce boilerplate code.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> The behavior and requirement for the SEV-legacy command is altered when
+> the SNP firmware is in the INIT state. See SEV-SNP firmware specification
+> for more details.
+> 
+> When SNP is INIT state, all the SEV-legacy commands that cause the
+> firmware to write memory must be in the firmware state. The TMR memory
 
-Thanks, queued (without the newline unrelated change at the bottom).
+It'd be helpful to spell out Trusted Memory Region, I hadn't seen that
+term before and for some reason my brain immediately thought "xAPIC register!".
 
-Cheers,
-Miguel
+> is allocated by the host but updated by the firmware, so, it must be
+> in the firmware state.  Additionally, the TMR memory must be a 2MB aligned
+> instead of the 1MB, and the TMR length need to be 2MB instead of 1MB.
+> The helper __snp_{alloc,free}_firmware_pages() can be used for allocating
+> and freeing the memory used by the firmware.
+
+None of this actually states what the patch does, e.g. it's not clear whether
+all allocations are being converted to 2mb or just the SNP.  Looks like it's
+just SNP.  Something like this?
+
+  Allocate the Trusted Memory Region (TMR) as a 2mb sized/aligned region when
+  SNP is enabled to satisfy new requirements for SNP.  Continue allocating a
+  1mb region for !SNP configuration.
+
+> While at it, provide API that can be used by others to allocate a page
+> that can be used by the firmware. The immediate user for this API will
+> be the KVM driver. The KVM driver to need to allocate a firmware context
+> page during the guest creation. The context page need to be updated
+> by the firmware. See the SEV-SNP specification for further details.
+
+...
+
+> @@ -1153,8 +1269,10 @@ static void sev_firmware_shutdown(struct sev_device *sev)
+>  		/* The TMR area was encrypted, flush it from the cache */
+>  		wbinvd_on_all_cpus();
+>  
+> -		free_pages((unsigned long)sev_es_tmr,
+> -			   get_order(SEV_ES_TMR_SIZE));
+> +
+> +		__snp_free_firmware_pages(virt_to_page(sev_es_tmr),
+> +					  get_order(sev_es_tmr_size),
+> +					  false);
+>  		sev_es_tmr = NULL;
+>  	}
+>  
+> @@ -1204,16 +1322,6 @@ void sev_pci_init(void)
+>  	    sev_update_firmware(sev->dev) == 0)
+>  		sev_get_api_version();
+>  
+> -	/* Obtain the TMR memory area for SEV-ES use */
+> -	tmr_page = alloc_pages(GFP_KERNEL, get_order(SEV_ES_TMR_SIZE));
+> -	if (tmr_page) {
+> -		sev_es_tmr = page_address(tmr_page);
+> -	} else {
+> -		sev_es_tmr = NULL;
+> -		dev_warn(sev->dev,
+> -			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
+> -	}
+> -
+>  	/*
+>  	 * If boot CPU supports the SNP, then first attempt to initialize
+>  	 * the SNP firmware.
+> @@ -1229,6 +1337,16 @@ void sev_pci_init(void)
+>  		}
+>  	}
+>  
+> +	/* Obtain the TMR memory area for SEV-ES use */
+> +	tmr_page = __snp_alloc_firmware_pages(GFP_KERNEL, get_order(sev_es_tmr_size), false);
+> +	if (tmr_page) {
+> +		sev_es_tmr = page_address(tmr_page);
+> +	} else {
+> +		sev_es_tmr = NULL;
+> +		dev_warn(sev->dev,
+> +			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
+> +	}
+
+I think your patch ordering got a bit wonky.  AFAICT, the chunk that added
+sev_snp_init() and friends in the previous patch 14 should have landed above
+the TMR allocation, i.e. the code movement here should be unnecessary.
+
+>  	/* Initialize the platform */
+>  	rc = sev_platform_init(&error);
+>  	if (rc && (error == SEV_RET_SECURE_DATA_INVALID)) {
+
+...
+
+> @@ -961,6 +965,13 @@ static inline int snp_guest_dbg_decrypt(struct sev_data_snp_dbg *data, int *erro
+>  	return -ENODEV;
+>  }
+>  
+> +static inline void *snp_alloc_firmware_page(gfp_t mask)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static inline void snp_free_firmware_page(void *addr) { }
+
+Hmm, I think we should probably bite the bullet and #ifdef and/or stub out large
+swaths of svm/sev.c before adding SNP support.  sev.c is getting quite massive,
+and we're accumulating more and more stubs outside of KVM because its SEV code
+is compiled unconditionally.
