@@ -2,84 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5E13C9BE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55043C9BDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237596AbhGOJd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235535AbhGOJd5 (ORCPT
+        id S235919AbhGOJdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:33:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49726 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235370AbhGOJde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:33:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00F1C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DRcIyxFcl6MKVSp1vGQOZm+0rU30xHMbGqCZfHDqkWU=; b=Iajpz4wDEfai2rqc90gZaq46e+
-        lebuvdF40UhnLcY4Z8Px6oGJ8Sj1DqR+hPLo1fUys6P0DzQo4qGPB7+y+Chw21mWGsoceCgft3cn4
-        SzZoZznCWSdwyU2j/qIeb8/MYwGd3txTeWmOmQegh2VfWHIbsRUYkVFFwen92Is8BLAJvxl7xJcJU
-        2Pe119Gk/9+N3cHkYKdyCB/tT8H0UAFBYsEykcRSAJ/s4lkiPmTVKTBgrh6h41DiGdG1bEIveHQ9t
-        JKw1kVQPd8NHVrb4TqZrVr/GgMlZ0Y2CUHClBiRxAGaKjts2G5iV7ifnMbrPQ52kjMWrLwbSadRhw
-        /Q7V5xIA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m3xe4-003Bxp-BC; Thu, 15 Jul 2021 09:27:25 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2B8309867B3; Thu, 15 Jul 2021 11:27:03 +0200 (CEST)
-Date:   Thu, 15 Jul 2021 11:27:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 03/50] sched: Prepare for RT sleeping spin/rwlocks
-Message-ID: <20210715092703.GI2725@worktop.programming.kicks-ass.net>
-References: <20210713151054.700719949@linutronix.de>
- <20210713160746.207208684@linutronix.de>
- <87r1g0mqir.mognet@arm.com>
+        Thu, 15 Jul 2021 05:33:34 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1272A2292A;
+        Thu, 15 Jul 2021 09:30:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626341440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nJ/9Gr3eoqAJctk2n0YKskrK9wmCBCiTnG1XoGzapDI=;
+        b=mM6TvzD+WxjROMOi/gWqrn7PSiPCDpLD6WFrsvluzyQRIdSW5GdZnzQNDsXahukZSgNZVl
+        kxFRryMdyn6YEoKww+M/YVZZVZSXtELAQx/t5aEgE4wtUdQ4A05yTpjchHzvP3KUTFB3i4
+        UBviofXBgCZ66eXH7JxGD88RPtfE7g0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626341440;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nJ/9Gr3eoqAJctk2n0YKskrK9wmCBCiTnG1XoGzapDI=;
+        b=9n4RAZIl1JRu0f5W7QK7mpSfUC0/LJ7Rj6J5FOqSeOobNUdqOlmG1ET6mISiFvOME+JjCm
+        G8CJrusBP8iRvxAw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D7EC613AB6;
+        Thu, 15 Jul 2021 09:30:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id cp57Mz8A8GDcBgAAGKfGzw
+        (envelope-from <tzimmermann@suse.de>); Thu, 15 Jul 2021 09:30:39 +0000
+Subject: Re: [PATCH -next v2] drm/bochs: Fix missing pci_disable_device() on
+ error in bochs_pci_probe()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org
+Cc:     airlied@linux.ie, kraxel@redhat.com
+References: <20210715020551.1030812-1-yangyingliang@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <49771e7d-666a-bac3-2cd7-23008a95ad8e@suse.de>
+Date:   Thu, 15 Jul 2021 11:30:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1g0mqir.mognet@arm.com>
+In-Reply-To: <20210715020551.1030812-1-yangyingliang@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ABSJuNRvgtVRizXpSLt8b9avW36PfrpRS"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 12:20:28AM +0100, Valentin Schneider wrote:
-> Hi,
-> 
-> On 13/07/21 17:10, Thomas Gleixner wrote:
-> > From: Thomas Gleixner <tglx@linutronix.de>
-> >
-> > Waiting for spinlocks and rwlocks on non RT enabled kernels is task::state
-> > preserving. Any wakeup which matches the state is valid.
-> >
-> > RT enabled kernels substitutes them with 'sleeping' spinlocks. This creates
-> > an issue vs. task::state.
-> >
-> > In order to block on the lock the task has to overwrite task::state and a
-> > consecutive wakeup issued by the unlocker sets the state back to
-> > TASK_RUNNING. As a consequence the task loses the state which was set
-> > before the lock acquire and also any regular wakeup targeted at the task
-> > while it is blocked on the lock.
-> >
-> 
-> I'm not sure I get this for spinlocks - p->__state != TASK_RUNNING means
-> task is stopped (or about to be), IMO that doesn't go with spinning. I was
-> thinking perhaps ptrace could be an issue, but I don't have a clear picture
-> on that either. What am I missing?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ABSJuNRvgtVRizXpSLt8b9avW36PfrpRS
+Content-Type: multipart/mixed; boundary="HFvtUBen1oNeXSkMyBE7tGhl5aQoTXbSv";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org
+Cc: airlied@linux.ie, kraxel@redhat.com
+Message-ID: <49771e7d-666a-bac3-2cd7-23008a95ad8e@suse.de>
+Subject: Re: [PATCH -next v2] drm/bochs: Fix missing pci_disable_device() on
+ error in bochs_pci_probe()
+References: <20210715020551.1030812-1-yangyingliang@huawei.com>
+In-Reply-To: <20210715020551.1030812-1-yangyingliang@huawei.com>
 
-spinlocks will become rtmutex. They're going to clobber __state by
-virtue of a nested block.
+--HFvtUBen1oNeXSkMyBE7tGhl5aQoTXbSv
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+for the change
+
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+
+but there are some style issues AFAICS.
+
+Am 15.07.21 um 04:05 schrieb Yang Yingliang:
+> Replace pci_enable_device() with pcim_enable_device(),
+> pci_disable_device() will be called in release automatically.
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+
+S-o-b line goes first
+
+> ---
+> v2:
+>    use pcim_enable_device()
+
+This changelog should rather be located between the commit description=20
+and the first S-o-b line.
+
+Best regards
+Thomas
+
+> ---
+>   drivers/gpu/drm/tiny/bochs.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/tiny/bochs.c b/drivers/gpu/drm/tiny/bochs.=
+c
+> index a2cfecfa8556..73415fa9ae0f 100644
+> --- a/drivers/gpu/drm/tiny/bochs.c
+> +++ b/drivers/gpu/drm/tiny/bochs.c
+> @@ -648,7 +648,7 @@ static int bochs_pci_probe(struct pci_dev *pdev, co=
+nst struct pci_device_id *ent
+>   	if (IS_ERR(dev))
+>   		return PTR_ERR(dev);
+>  =20
+> -	ret =3D pci_enable_device(pdev);
+> +	ret =3D pcim_enable_device(pdev);
+>   	if (ret)
+>   		goto err_free_dev;
+>  =20
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--HFvtUBen1oNeXSkMyBE7tGhl5aQoTXbSv--
+
+--ABSJuNRvgtVRizXpSLt8b9avW36PfrpRS
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmDwAD8FAwAAAAAACgkQlh/E3EQov+By
+NRAAiUrdLMyeq9mv4+Lh9MLnJbPei3guqnKqDae5PhaAELNBNS1kxK9CBkoXXa5rfFGx4PeBowCF
+KB5fcMs9Px8a3zj9cNbt2DBAa0pJ9aQP49C8iVJulvrheK8aCOnxv0mF0KFtieZZB1UmGHon9zRf
+FfpqsipdPHsmUvkDnsI/zlDbfiSG2SnOog64OsRhJFUhVaHs9Nkpv0rvKdzr+Y3BhNWnYk+wCJqp
+ftYah5H63xFFt2SZ1oY4FGh0RqaarA1p191k5AArg9W5fFnS37dN/K8C97nbcQTWfk7JzqnZAjiv
+MFSc+S6Bh0wHV9r0eOXZeyvAHSrg2glkXx8U5fGNpGU8WJdJZGoT8ag32iPpMLsn+uQR+RaoTh2W
+yPe6A6QICOOzS9b8KWccfloAPPKN6YWK52gw2i6qO99UflkDaOkYbDl2aIcmOVl8wHc2mU+UI1OD
+vegZ7Soc1Ixp8DDhJj/2KIjz1+N9nQECY5KNqM8H/1vkZE53pS/VdWkAtK41fHtMG4jP6cDMwze1
+34p+OH/BmjTLwaSatoZGgcsqJpwse7BnzF1Mhtr7FJ43IXmbO+68nxVsuEeTWsJrFSKQgYyXBmsl
+1ZV2CWHa7/KmyMPhDWBDEYqsv6oNiY2T3ESmtlkjgWGIapzby7nhJFE00n03hYhE6Umrb2g0SoJR
+4nM=
+=+QTY
+-----END PGP SIGNATURE-----
+
+--ABSJuNRvgtVRizXpSLt8b9avW36PfrpRS--
