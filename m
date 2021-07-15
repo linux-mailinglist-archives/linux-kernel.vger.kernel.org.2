@@ -2,138 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C569A3C964D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58FA3C964E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 05:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhGODRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 23:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhGODRd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:17:33 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B25C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:14:39 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id b12so3806649pfv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 20:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=abyDHR0XRwSMrhA06McE4t3PEmRieAURZX1e2KLvRB4=;
-        b=GpJrAxJZnwq6fPqj8j+JHs+SBdIKLopRRZJAb5ZcmyHLusiVn99YhZBxYgVboYwU9u
-         US0lZR9SBIKwKCWkN3F/BhKpLSaRyOW5gW7jy5fz4a8kOLH40jTC6NlJTTJeWLJhA11v
-         8JGETmCMlhSucSeLzyOxmakWCODX48tCeF9PgB9wnvm0nbpWl5kHDhV0hA6RVr1Jg4Uo
-         uqmqEkc77BVC9ZQcww9O/bFKW92oWMJ8+DQBjPdL851Qu3I8eBLOkiKhqUXKQ+E7t7cz
-         lmkhegsbt6bIAehkd8FtcU4/1NvoDbz+ESe3D54NCuYvJI8dTErWVITaDvqR05rsf7BN
-         WBmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=abyDHR0XRwSMrhA06McE4t3PEmRieAURZX1e2KLvRB4=;
-        b=WzADKEEguRhPfEp/RG4kC9MNIsRkDXlahNxPyfZ5EWCOyT/t+5SEx7Jho/XiHmsXsq
-         u6GNS3mTGIJmP4U2/fuTtN4W2CjZWj9b5oRSsTpr2p0rs3JDWaO7G/9VZsZN0GOTSkKt
-         M1KdPwuJNZPEapZR08HNB6gL6TfeKptl/Iw7/Bip0J3IDs9gTH6ajZ7/XCSbhq1PHmpZ
-         pAWCYeM9pXdeh6kNz9RFScCdsOraRMJ4GYTLoxfVTkRO2Nua0A44/2pZKpR9g2/aSavA
-         2tamju1f6uj+K9RgTEvkF6F0RcG+wRygTOCQukcbaCs6nin+huWk1v9CFDxAzJ14Pur5
-         56Ow==
-X-Gm-Message-State: AOAM530+bHuggLBN4MBVh8SRUMtLyl3iG997ExJIt4JC3CDc8DfUBbnF
-        cmn6EZNw9oWDSQrV6cAvOFfhrlrbdOCzWYutG05s5w==
-X-Google-Smtp-Source: ABdhPJzOV/c1LX6O04F3PPyi2lFcjnNcqYqiySbWv2hUD0oiEItNo7TlW6+E2Zb4oR9B+ECHbIgo9Bnly2g2+ovg/vs=
-X-Received: by 2002:a65:63ce:: with SMTP id n14mr1740199pgv.273.1626318879171;
- Wed, 14 Jul 2021 20:14:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210710002441.167759-1-mike.kravetz@oracle.com>
- <20210710002441.167759-4-mike.kravetz@oracle.com> <CAMZfGtWvGZZ1VaPzZbEro7nYCHS6tGCL5kYm3ArSQ5b5E0-o5g@mail.gmail.com>
- <6c38223b-83f4-ef7d-68d7-27c0f6ae6359@oracle.com>
-In-Reply-To: <6c38223b-83f4-ef7d-68d7-27c0f6ae6359@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 15 Jul 2021 11:14:03 +0800
-Message-ID: <CAMZfGtWjZAJfPdow2VgNL9T9jYdLLgekKnnQVtKyzaEwC4FfJQ@mail.gmail.com>
-Subject: Re: [External] [PATCH 3/3] hugetlb: before freeing hugetlb page set
- dtor to appropriate value
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S232636AbhGODSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 23:18:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:45928 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230495AbhGODSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:18:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFCFFD6E;
+        Wed, 14 Jul 2021 20:15:57 -0700 (PDT)
+Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 164813F7D8;
+        Wed, 14 Jul 2021 20:15:55 -0700 (PDT)
+From:   Jia He <justin.he@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
+        Jia He <justin.he@arm.com>
+Subject: [PATCH RFC 00/13] Simplify the print format string with new '%pD'
+Date:   Thu, 15 Jul 2021 11:15:20 +0800
+Message-Id: <20210715031533.9553-1-justin.he@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 1:39 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 7/14/21 3:57 AM, Muchun Song wrote:
-> > On Sat, Jul 10, 2021 at 8:25 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >> +       /*
-> >> +        * Very subtle
-> >> +        *
-> >> +        * For non-gigantic pages set the destructor to the normal compound
-> >> +        * page dtor.  This is needed in case someone takes an additional
-> >> +        * temporary ref to the page, and freeing is delayed until they drop
-> >> +        * their reference.
-> >> +        *
-> >> +        * For gigantic pages set the destructor to the null dtor.  This
-> >> +        * destructor will never be called.  Before freeing the gigantic
-> >> +        * page destroy_compound_gigantic_page will turn the compound page
-> >> +        * into a simple group of pages.  After this the destructor does not
-> >> +        * apply.
-> >> +        *
-> >> +        * This handles the case where more than one ref is held when and
-> >> +        * after update_and_free_page is called.
-> >> +        */
-> >>         set_page_refcounted(page);
-> >> -       set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> >> +       if (hstate_is_gigantic(h))
-> >> +               set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> >> +       else
-> >> +               set_compound_page_dtor(page, COMPOUND_PAGE_DTOR);
-> >
-> > Hi Mike,
-> >
-> > The race is really subtle. But we also should remove the WARN from
-> > free_contig_range, right? Because the refcount of the head page of
-> > the gigantic page can be greater than one, but free_contig_range has
-> > the following warning.
-> >
-> > WARN(count != 0, "%lu pages are still in use!\n", count);
-> >
->
-> I did hit that warning in my testing and thought about removing it.
-> However, I decided to keep it because non-hugetlb code also makes use of
-> alloc_contig_range/free_contig_range and it might be useful in those
-> cases.
->
-> My 'guess' is that the warning was added not because of temporary ref
-> count increases but rather to point out any code that forgot to drop a
-> reference.
+This is the followup work after changing the behavior of '%pD' to
+print the full path of file.
 
-Got it. At least this patch looks good to me. So
+Background
+==========
+Linus suggested printing the full path of file instead of printing
+the components as '%pd'.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+This series is based on my patch series of making '%pD' print the full
+path of file [1], which is stable now.
 
->
-> BTW - It is not just the 'head' page which could trigger this warning, but
-> any 'tail' page as well.  That is because we do not call free_contig_range
-> with a compound page, but rather a group of pages all with ref count of
-> at least one.
+[1]: https://lkml.org/lkml/2021/7/14/1519
 
-Right.
+Test
+====
+I only tested it with basic compilation and booting. All the changed
+codes are compiled and built successfully on Arm64. Therefore set it as
+RFC.
 
->
-> I'm happy to remove the warning if people do not think it is generally
-> useful.
+Patch details
+=============
+Patches 01 to 06 with minor changes are easy for review. They are to
+remove the hard coding and the postfix number of previous '%pD'. This
+should be removed after the '%pD' behavior is changed.
 
-For me, I suggest removing it. If someone has any ideas, please
-let us know.
+Patches 07 to 13 are changed to simplify the printing helpers.
 
-> --
-> Mike Kravetz
+Jia He (13):
+  s390/hmcdrv: remove the redundant directory path in format string
+  afs: Remove the number postfix of '%pD' in format string
+  fs: Remove the number postfix of '%pD' in format string
+  NFS: Remove the number postfix of '%pD' in format string
+  NFSD: Remove the number postfix of '%pD' in format string
+  ovl: remove the number postfix of '%pD' in format string
+  iomap: simplify iomap_swapfile_fail() with '%pD' specifier
+  fs/coredump: simplify the printing with '%pD' and '%pd' specifier
+  mm/filemap: simplify the printing with '%pD' specifier
+  usb: gadget: simplify the printing with '%pD' specifier
+  md/bitmap: simplify the printing with '%pD' specifier
+  mm: simplify the printing with '%pd' specifier
+  ext4: simplify the printing with '%pD' specifier
+
+ drivers/md/md-bitmap.c                       | 13 ++-------
+ drivers/s390/char/hmcdrv_dev.c               | 10 +++----
+ drivers/usb/gadget/function/f_mass_storage.c | 28 ++++++++------------
+ fs/afs/mntpt.c                               |  2 +-
+ fs/coredump.c                                | 26 +++---------------
+ fs/exec.c                                    |  2 +-
+ fs/ext4/super.c                              | 12 +++------
+ fs/ioctl.c                                   |  2 +-
+ fs/iomap/direct-io.c                         |  2 +-
+ fs/iomap/swapfile.c                          |  8 +-----
+ fs/nfs/dir.c                                 | 12 ++++-----
+ fs/nfs/direct.c                              |  4 +--
+ fs/nfs/file.c                                | 26 +++++++++---------
+ fs/nfs/nfs4file.c                            |  2 +-
+ fs/nfs/write.c                               |  2 +-
+ fs/nfsd/nfs4state.c                          |  2 +-
+ fs/overlayfs/file.c                          |  2 +-
+ fs/read_write.c                              |  2 +-
+ fs/splice.c                                  |  2 +-
+ mm/filemap.c                                 |  7 +----
+ mm/memory.c                                  | 16 +++++------
+ 21 files changed, 65 insertions(+), 117 deletions(-)
+
+-- 
+2.17.1
+
