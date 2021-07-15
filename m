@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD37D3CAF74
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C203CAF76
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhGOWzC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Jul 2021 18:55:02 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:33071 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhGOWzB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:55:01 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 7C2E51C0002;
-        Thu, 15 Jul 2021 22:52:06 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 00:52:05 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Clark Wang <xiaoning.wang@nxp.com>
-Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
-        vitor.soares@synopsys.com, boris.brezillon@bootlin.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] i3c: master: svc: fix atomic issue
-Message-ID: <20210716005205.5e218d47@xps13>
-In-Reply-To: <20210715082413.3042149-3-xiaoning.wang@nxp.com>
-References: <20210715082413.3042149-1-xiaoning.wang@nxp.com>
-        <20210715082413.3042149-3-xiaoning.wang@nxp.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230383AbhGOW6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:58:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229624AbhGOW6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 18:58:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4976E613AF;
+        Thu, 15 Jul 2021 22:55:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626389740;
+        bh=P9uyzQH7V/Vu5iTQd3DZbraQ8Ej5+Fm7bfjvma3F+c4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n2jY8kpWCk9OuIFpx7Sbt4ugXyih8DxDDZo9X87C+6a6klH0p3PEjKLEhlpNsihmv
+         dIVA1Sx5t2FNXUM5+lTvl+3ZqN48p7pvqjA0EsBTnRytiZ6qbfW+8KCW81SijAsRrY
+         riWkplRp/TzC32evC0K1O7aaDw2BL2B792GvYA/VhmhJP+CxtQqNtLsq5VhOxji6gr
+         E12NqYxl1ujJN1J+M/RJOQaOhexuFlBWuVfIpEiYxPUqgsXH9I4KSMTUjQph9xZTJD
+         ppzOrtguGGUm96LDyB0+E4zoJgNCzQgPw9GF1eC35VuySBJfCyMkcMZ8ktdO6osWUM
+         LYtqCC0m/qhJw==
+Date:   Thu, 15 Jul 2021 15:55:39 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 098/138] iomap: Use folio offsets instead of page
+ offsets
+Message-ID: <20210715225539.GX22357@magnolia>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-99-willy@infradead.org>
+ <20210715212657.GI22357@magnolia>
+ <YPC7ILHEYv1JKKJW@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPC7ILHEYv1JKKJW@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Clark,
-
-Clark Wang <xiaoning.wang@nxp.com> wrote on Thu, 15 Jul 2021 16:24:11
-+0800:
-
-> do_daa_locked() function is in a spin lock environment, use
-> readl_poll_timeout_atomic() to replace the origin
-> readl_poll_timeout().
+On Thu, Jul 15, 2021 at 11:48:00PM +0100, Matthew Wilcox wrote:
+> On Thu, Jul 15, 2021 at 02:26:57PM -0700, Darrick J. Wong wrote:
+> > > +	size_t poff = offset_in_folio(folio, *pos);
+> > > +	size_t plen = min_t(loff_t, folio_size(folio) - poff, length);
+> > 
+> > I'm confused about 'size_t poff' here vs. 'unsigned end' later -- why do
+> > we need a 64-bit quantity for poff?  I suppose some day we might want to
+> > have folios larger than 4GB or so, but so far we don't need that large
+> > of a byte offset within a page/folio, right?
+> > 
+> > Or are you merely moving the codebase towards using size_t for all byte
+> > offsets?
 > 
-> Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
-> ---
->  drivers/i3c/master/svc-i3c-master.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Both.  'end' isn't a byte count -- it's a block count.
 > 
-> diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
-> index c25a372f6820..9d80435638ea 100644
-> --- a/drivers/i3c/master/svc-i3c-master.c
-> +++ b/drivers/i3c/master/svc-i3c-master.c
-> @@ -656,7 +656,7 @@ static int svc_i3c_master_readb(struct svc_i3c_master *master, u8 *dst,
->  	u32 reg;
->  
->  	for (i = 0; i < len; i++) {
-> -		ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
-> +		ret = readl_poll_timeout_atomic(master->regs + SVC_I3C_MSTATUS, reg,
->  					 SVC_I3C_MSTATUS_RXPEND(reg), 0, 1000);
+> > >  	if (orig_pos <= isize && orig_pos + length > isize) {
+> > > -		unsigned end = offset_in_page(isize - 1) >> block_bits;
+> > > +		unsigned end = offset_in_folio(folio, isize - 1) >> block_bits;
+> 
+> That right shift makes it not-a-byte-count.
+> 
+> I don't especially want to do all the work needed to support folios >2GB,
+> but I do like using size_t to represent a byte count.
 
-You forgot to align the parameters of the function here and below.
+DOH.  Yes, I just noticed that.
 
-Otherwise,
+TBH I doubt anyone's really going to care about 4GB folios anyway.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
->  		if (ret)
->  			return ret;
-> @@ -687,7 +687,7 @@ static int svc_i3c_master_do_daa_locked(struct svc_i3c_master *master,
->  		 * Either one slave will send its ID, or the assignment process
->  		 * is done.
->  		 */
-> -		ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
-> +		ret = readl_poll_timeout_atomic(master->regs + SVC_I3C_MSTATUS, reg,
->  					 SVC_I3C_MSTATUS_RXPEND(reg) |
->  					 SVC_I3C_MSTATUS_MCTRLDONE(reg),
->  					 1, 1000);
-> @@ -744,7 +744,7 @@ static int svc_i3c_master_do_daa_locked(struct svc_i3c_master *master,
->  		}
->  
->  		/* Wait for the slave to be ready to receive its address */
-> -		ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
-> +		ret = readl_poll_timeout_atomic(master->regs + SVC_I3C_MSTATUS, reg,
->  					 SVC_I3C_MSTATUS_MCTRLDONE(reg) &&
->  					 SVC_I3C_MSTATUS_STATE_DAA(reg) &&
->  					 SVC_I3C_MSTATUS_BETWEEN(reg),
-
-
-
-
-Thanks,
-Miquèl
+--D
