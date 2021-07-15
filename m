@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679EA3CA7F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F97E3CA5D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241362AbhGOS5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:57:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53796 "EHLO mail.kernel.org"
+        id S235167AbhGOSov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231964AbhGOSvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:51:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3980D613F0;
-        Thu, 15 Jul 2021 18:48:37 +0000 (UTC)
+        id S234548AbhGOSol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9BF3613D0;
+        Thu, 15 Jul 2021 18:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374917;
-        bh=6rF2GL9WIIQWkZO/BED3ShKt4VEZx8DQg4Uu0Zr1E20=;
+        s=korg; t=1626374507;
+        bh=010x7vKbI2pvOTPycUOPxyKTSv6WaO3IorHBzGXHO/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m7/nF5YqNAe4d4Ebu83e95bnDoxMIEl87JaUjEPXpks7QnW9VdqwMEBIvkquwyQDf
-         +F3CmWweqzAqP2Yaxxqa4AAhqzjsRw9p7/psZYahrISITaDq7CsmcUTc5aPqO91I59
-         gC6vNFkrlUz6Ws7Bk2QYN6QJELPO43ri4ih9SJ3s=
+        b=Rv1D9irGhpMOdeFpboB9exCWZjnqSm45aOg2b9/9Y01Zjzdu122C3RUTMLwdh8r40
+         tgEe3tKdlcci2+zGw3TvJJIRUaEELzetNwi3e1k+JdHfF24P9EN922iRGel6wLWP3c
+         yrTBT3ggc1DzjRXsd67o5XXBZD39vXmFzok0mF9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Bibo Mao <maobibo@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 081/215] cw1200: add missing MODULE_DEVICE_TABLE
-Date:   Thu, 15 Jul 2021 20:37:33 +0200
-Message-Id: <20210715182613.792561239@linuxfoundation.org>
+Subject: [PATCH 5.4 007/122] hugetlb: clear huge pte during flush function on mips platform
+Date:   Thu, 15 Jul 2021 20:37:34 +0200
+Message-Id: <20210715182450.162533095@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Bibo Mao <maobibo@loongson.cn>
 
-[ Upstream commit dd778f89225cd258e8f0fed2b7256124982c8bb5 ]
+[ Upstream commit 33ae8f801ad8bec48e886d368739feb2816478f2 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+If multiple threads are accessing the same huge page at the same
+time, hugetlb_cow will be called if one thread write the COW huge
+page. And function huge_ptep_clear_flush is called to notify other
+threads to clear the huge pte tlb entry. The other threads clear
+the huge pte tlb entry and reload it from page table, the reload
+huge pte entry may be old.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1620788714-14300-1-git-send-email-zou_wei@huawei.com
+This patch fixes this issue on mips platform, and it clears huge
+pte entry before notifying other threads to flush current huge
+page entry, it is similar with other architectures.
+
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/st/cw1200/cw1200_sdio.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/include/asm/hugetlb.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/st/cw1200/cw1200_sdio.c b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-index b65ec14136c7..4c30b5772ce0 100644
---- a/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-+++ b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-@@ -53,6 +53,7 @@ static const struct sdio_device_id cw1200_sdio_ids[] = {
- 	{ SDIO_DEVICE(SDIO_VENDOR_ID_STE, SDIO_DEVICE_ID_STE_CW1200) },
- 	{ /* end: all zeroes */			},
- };
-+MODULE_DEVICE_TABLE(sdio, cw1200_sdio_ids);
+diff --git a/arch/mips/include/asm/hugetlb.h b/arch/mips/include/asm/hugetlb.h
+index 425bb6fc3bda..bf1bf8c7c332 100644
+--- a/arch/mips/include/asm/hugetlb.h
++++ b/arch/mips/include/asm/hugetlb.h
+@@ -53,7 +53,13 @@ static inline pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
+ static inline void huge_ptep_clear_flush(struct vm_area_struct *vma,
+ 					 unsigned long addr, pte_t *ptep)
+ {
+-	flush_tlb_page(vma, addr & huge_page_mask(hstate_vma(vma)));
++	/*
++	 * clear the huge pte entry firstly, so that the other smp threads will
++	 * not get old pte entry after finishing flush_tlb_page and before
++	 * setting new huge pte entry
++	 */
++	huge_ptep_get_and_clear(vma->vm_mm, addr, ptep);
++	flush_tlb_page(vma, addr);
+ }
  
- /* hwbus_ops implemetation */
- 
+ #define __HAVE_ARCH_HUGE_PTE_NONE
 -- 
 2.30.2
 
