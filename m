@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B783CAB66
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305703CA8DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245722AbhGOTUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:20:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38918 "EHLO mail.kernel.org"
+        id S242305AbhGOTDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:03:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242147AbhGOTFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EF4061410;
-        Thu, 15 Jul 2021 19:01:05 +0000 (UTC)
+        id S242402AbhGOSzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78D6C613C4;
+        Thu, 15 Jul 2021 18:52:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375666;
-        bh=IRsGpvDEnLkZB5pmpCU3pQWTY0mzb8GmeLn91RKR1EU=;
+        s=korg; t=1626375135;
+        bh=V4JGcCcIve5zm2wBydiLP5y0SxYpXcftaSdlt/R27uI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iXHQCk2wlrKh6kn8++/Xyc71O4siogeklZ+/4JTzXwq4LGYNU6a9CYSwJiynVaqKF
-         gRUSP8W8GGaYmC22z9IXCD0ecaNhTzP9dnTKbyafu+Yw1a0eADBDhXuKPDRDQlmaT9
-         HNfy1JqcvVm/LIXsC9hDw9FUlwzKhb7EhO4+8ctI=
+        b=jZ7mAkxPFzGG6RTLkkniRC2CXDSAT1XJFDuzfGrN0b9tPemqDheLefb5gr5f3kK1L
+         8mZAMBENUb3bgB1V72Eifa6ZUhHOZpcb/WEEYiHGyOIRCu1m//smyW6Y/HRNvb4aM0
+         CS7RK760Y8WoDrx7c2JeYw0VR1knTtuaskUH5oKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.12 184/242] mmc: sdhci: Fix warning message when accessing RPMB in HS400 mode
+        stable@vger.kernel.org, Russ Weight <russell.h.weight@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH 5.10 174/215] fpga: stratix10-soc: Add missing fpga_mgr_free() call
 Date:   Thu, 15 Jul 2021 20:39:06 +0200
-Message-Id: <20210715182625.737490739@linuxfoundation.org>
+Message-Id: <20210715182630.263640117@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Cooper <alcooperx@gmail.com>
+From: Russ Weight <russell.h.weight@intel.com>
 
-commit d0244847f9fc5e20df8b7483c8a4717fe0432d38 upstream.
+commit d9ec9daa20eb8de1efe6abae78c9835ec8ed86f9 upstream.
 
-When an eMMC device is being run in HS400 mode, any access to the
-RPMB device will cause the error message "mmc1: Invalid UHS-I mode
-selected". This happens as a result of tuning being disabled before
-RPMB access and then re-enabled after the RPMB access is complete.
-When tuning is re-enabled, the system has to switch from HS400
-to HS200 to do the tuning and then back to HS400. As part of
-sequence to switch from HS400 to HS200 the system is temporarily
-put into HS mode. When switching to HS mode, sdhci_get_preset_value()
-is called and does not have support for HS mode and prints the warning
-message and returns the preset for SDR12. The fix is to add support
-for MMC and SD HS modes to sdhci_get_preset_value().
+The stratix10-soc driver uses fpga_mgr_create() function and is therefore
+responsible to call fpga_mgr_free() to release the class driver resources.
+Add a missing call to fpga_mgr_free in the s10_remove() function.
 
-This can be reproduced on any system running eMMC in HS400 mode
-(not HS400ES) by using the "mmc" utility to run the following
-command: "mmc rpmb read-counter /dev/mmcblk0rpmb".
-
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210624163045.33651-1-alcooperx@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Fixes: e7eef1d7633a ("fpga: add intel stratix10 soc fpga manager driver")
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210614170909.232415-3-mdf@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/sdhci.c |    4 ++++
- drivers/mmc/host/sdhci.h |    1 +
- 2 files changed, 5 insertions(+)
+ drivers/fpga/stratix10-soc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -1812,6 +1812,10 @@ static u16 sdhci_get_preset_value(struct
- 	u16 preset = 0;
+--- a/drivers/fpga/stratix10-soc.c
++++ b/drivers/fpga/stratix10-soc.c
+@@ -454,6 +454,7 @@ static int s10_remove(struct platform_de
+ 	struct s10_priv *priv = mgr->priv;
  
- 	switch (host->timing) {
-+	case MMC_TIMING_MMC_HS:
-+	case MMC_TIMING_SD_HS:
-+		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HIGH_SPEED);
-+		break;
- 	case MMC_TIMING_UHS_SDR12:
- 		preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
- 		break;
---- a/drivers/mmc/host/sdhci.h
-+++ b/drivers/mmc/host/sdhci.h
-@@ -253,6 +253,7 @@
+ 	fpga_mgr_unregister(mgr);
++	fpga_mgr_free(mgr);
+ 	stratix10_svc_free_channel(priv->chan);
  
- /* 60-FB reserved */
- 
-+#define SDHCI_PRESET_FOR_HIGH_SPEED	0x64
- #define SDHCI_PRESET_FOR_SDR12 0x66
- #define SDHCI_PRESET_FOR_SDR25 0x68
- #define SDHCI_PRESET_FOR_SDR50 0x6A
+ 	return 0;
 
 
