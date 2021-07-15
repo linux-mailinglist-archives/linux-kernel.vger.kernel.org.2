@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3496F3CAB40
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0213CAB3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241161AbhGOTSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:18:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
+        id S244792AbhGOTSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:18:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242677AbhGOTC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242600AbhGOTC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:02:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16D60613EB;
-        Thu, 15 Jul 2021 18:59:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8DB613E0;
+        Thu, 15 Jul 2021 18:59:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375548;
-        bh=LEb2Bs3wCYJs84G3awPLv8h4ima8q0QSZGPBFsyY92E=;
+        s=korg; t=1626375550;
+        bh=e3dKGtKDjP2RJubC27CF+muWmmyyf6t8niXEfy2LrOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JRN+W6yW3IwjGbXS0GJDY8k1G3o2xKDEgnjkBe0K2eURMQgc4rf76ZCQKexHEvy0B
-         D8k8+tF3JBqs8Dl0JbMOdI8VRTEdrvru9tVwACX5ZQoRPK9El55+ILdLkgH1A1SxWG
-         5ucCHIGXXKR1BASM2Bv8Q2aO20mc24IgUcDouulQ=
+        b=jcdE2uQZLN9yoS8C5VITnDzx4dnFEWLBTNPBNdCyk9x3a9xont8KeBke5KGufjLqY
+         Z+BcBmUWUb5Iz0XVxfrNU6yI7kOQMuopYaa5cu+ztHVPbC1tSJyYT477MvNo0R62eV
+         FJfOKtD0Jqkpynu1I5WFqEDiSf01+wR4EHxMJPd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gerd Rausch <gerd.rausch@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, "mark-yw.chen" <mark-yw.chen@mediatek.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 134/242] RDMA/cma: Fix rdma_resolve_route() memory leak
-Date:   Thu, 15 Jul 2021 20:38:16 +0200
-Message-Id: <20210715182616.602078122@linuxfoundation.org>
+Subject: [PATCH 5.12 135/242] Bluetooth: btusb: Fixed too many in-token issue for Mediatek Chip.
+Date:   Thu, 15 Jul 2021 20:38:17 +0200
+Message-Id: <20210715182616.782295134@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -40,39 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+From: mark-yw.chen <mark-yw.chen@mediatek.com>
 
-[ Upstream commit 74f160ead74bfe5f2b38afb4fcf86189f9ff40c9 ]
+[ Upstream commit 8454ed9ff9647e31e061fb5eb2e39ce79bc5e960 ]
 
-Fix a memory leak when "mda_resolve_route() is called more than once on
-the same "rdma_cm_id".
+This patch reduce in-token during download patch procedure.
+Don't submit urb for polling event before sending hci command.
 
-This is possible if cma_query_handler() triggers the
-RDMA_CM_EVENT_ROUTE_ERROR flow which puts the state machine back and
-allows rdma_resolve_route() to be called again.
-
-Link: https://lore.kernel.org/r/f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/bluetooth/btusb.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index bb46f794f324..8d94a6bfcac1 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2793,7 +2793,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv,
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index ddc7b86725cd..b3ba5a9dc5fc 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3377,11 +3377,6 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	struct btmtk_wmt_hdr *hdr;
+ 	int err;
  
- 	cma_init_resolve_route_work(work, id_priv);
+-	/* Submit control IN URB on demand to process the WMT event */
+-	err = btusb_mtk_submit_wmt_recv_urb(hdev);
+-	if (err < 0)
+-		return err;
+-
+ 	/* Send the WMT command and wait until the WMT event returns */
+ 	hlen = sizeof(*hdr) + wmt_params->dlen;
+ 	if (hlen > 255)
+@@ -3407,6 +3402,11 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 		goto err_free_wc;
+ 	}
  
--	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
-+	if (!route->path_rec)
-+		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
- 	if (!route->path_rec) {
- 		ret = -ENOMEM;
- 		goto err1;
++	/* Submit control IN URB on demand to process the WMT event */
++	err = btusb_mtk_submit_wmt_recv_urb(hdev);
++	if (err < 0)
++		return err;
++
+ 	/* The vendor specific WMT commands are all answered by a vendor
+ 	 * specific event and will have the Command Status or Command
+ 	 * Complete as with usual HCI command flow control.
 -- 
 2.30.2
 
