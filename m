@@ -2,131 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9103C97FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 07:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12FE3C982F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 07:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238811AbhGOFER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 01:04:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21176 "EHLO
+        id S239456AbhGOFUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 01:20:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31371 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238953AbhGOFEK (ORCPT
+        by vger.kernel.org with ESMTP id S238195AbhGOFUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 01:04:10 -0400
+        Thu, 15 Jul 2021 01:20:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626325277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=mimecast20190719; t=1626326261;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WtjoUKLcgmL3bnw/gxqCJv6EYfcYaY0E3bn8JDpe3PI=;
-        b=NRHwQ0mfc+N910GwrP2+5WyQPvU2t5lzubt6aOZSL5Ifo9QIYZw+Y70g8fS7B/odNKMhL+
-        YgHnyPxgSnJiLx3r6rtfTgNcxoK+HHU5xfmijkaGRsIynHXh546pJVcCTptqOACMHpORfz
-        +q58YkukocLMtw/XtdJdEwWOSq4ksI8=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-G5qJp7RiN7abnJGnC_95fw-1; Thu, 15 Jul 2021 01:01:14 -0400
-X-MC-Unique: G5qJp7RiN7abnJGnC_95fw-1
-Received: by mail-pj1-f69.google.com with SMTP id f7-20020a17090a6547b0290173de25d141so5086831pjs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 22:01:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=WtjoUKLcgmL3bnw/gxqCJv6EYfcYaY0E3bn8JDpe3PI=;
-        b=M0F83+XFExnAl/PIhrLG6TTJYvgpW8f9g4qq5B8ULtyNCbV22/QdZoYBYBgcJ+60cQ
-         C74CsE0nP4ARna7Xy47Z8VB251cyKGI0KvrWz49FfiiyZfJQroOmm2VRLec0IfVCBZpl
-         EBwyPsbSY/LhM2YbTo8hk4gXlOIYMs6fLTxHduob66atiHY/lk4JA1cgxUYe6NNdMJes
-         2A3flUI0TLxTHD9fQduC2cC3C77EbdYqJIUXTkQMdWqe0RxvfEPcJwVGjQFrP87SnPHz
-         BsAbGWS3waZGUpcuVQYERskksuhZTpbrTc3KCjnGb4nvxImL62MOB30vlE0muWwXUGni
-         i7JA==
-X-Gm-Message-State: AOAM532peURdsxbuZTh8VKEqob//UUBAIWRdYRdLNblN8IYdJ91WZ/hF
-        b2/BrOMcSecwLn+Up27rAPafTnIlF2FVFPUFkzSo67Jshfrt8mOVGIHqytpDH2W1KqHNXjbjO2I
-        X8CN0yBbfebNMd/15V9bHThZzGzXbeU8DI/0zFY2mcuLx+uPOLB5GXPT4nbDQc6+1oGpU4NQo0M
-        J+
-X-Received: by 2002:a63:1e5c:: with SMTP id p28mr2391202pgm.3.1626325272934;
-        Wed, 14 Jul 2021 22:01:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwkpF4TSDI5DZm/B2bv9bWVuNXDKhmhRtseurS2rxggrCDnmBokVeS6bdawuICnE0MaFRu/xw==
-X-Received: by 2002:a63:1e5c:: with SMTP id p28mr2391148pgm.3.1626325272634;
-        Wed, 14 Jul 2021 22:01:12 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id o20sm5070990pgv.80.2021.07.14.22.01.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 22:01:12 -0700 (PDT)
-Subject: Re: [PATCH v9 16/17] vduse: Introduce VDUSE - vDPA Device in
- Userspace
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        He Zhe <zhe.he@windriver.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210713084656.232-1-xieyongji@bytedance.com>
- <20210713084656.232-17-xieyongji@bytedance.com>
- <26116714-f485-eeab-4939-71c4c10c30de@redhat.com>
- <CACycT3uh+wUeDM1H7JiCJTMeCVCBngURGKeXD-h+meekNNwiQw@mail.gmail.com>
- <ec3e2729-3490-851f-ed4b-6dee9c04831c@redhat.com>
- <CACycT3vTyR=+6xOJyXCu_bGAKcz4Fx3bA25WfdBjhxJ6MOvLzw@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <5d756360-b540-2faf-6e52-e7e6e863ca0b@redhat.com>
-Date:   Thu, 15 Jul 2021 13:00:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        bh=nrxR9YJIRDun9r5WDjFAvm6/X83B6W+94/3z0nnD2QQ=;
+        b=DjfYac4cDuJZX18mI8egD7DEXzWsVkg5ybc/lM9sR3k7sJcireGIC/uR6mwKLCxwjK6FV7
+        kgzsK3RRN5PZV5TuPJyoX51b9kpAKU6H/E+8sVH9xNleCVeni2MP7y8vBpmvbOY63UvxjV
+        3ijC/SHMnWzAP2eivMItcLc+hwjS3Us=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-541-HZsmSFz7P76Jwfa3DWQxIw-1; Thu, 15 Jul 2021 01:17:39 -0400
+X-MC-Unique: HZsmSFz7P76Jwfa3DWQxIw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EAA30802E61;
+        Thu, 15 Jul 2021 05:17:37 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D528A60854;
+        Thu, 15 Jul 2021 05:17:34 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH 00/12] mm/debug_vm_pgtable: Enhancements
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, shan.gavin@gmail.com,
+        chuhu@redhat.com
+References: <20210706061748.161258-1-gshan@redhat.com>
+ <42a26202-10f7-e744-3fc5-c9e5a7445193@arm.com>
+ <a8539200-35ac-2478-c763-e13c95556b25@redhat.com>
+ <30a938df-f5c8-910c-8ddc-52a2d2a0a11e@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <b354e006-ade2-f7e2-3523-4e50b45676db@redhat.com>
+Date:   Thu, 15 Jul 2021 15:17:53 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <CACycT3vTyR=+6xOJyXCu_bGAKcz4Fx3bA25WfdBjhxJ6MOvLzw@mail.gmail.com>
+In-Reply-To: <30a938df-f5c8-910c-8ddc-52a2d2a0a11e@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Anshuman,
 
-在 2021/7/15 下午12:03, Yongji Xie 写道:
->> Which ioctl can be used for this?
+On 7/14/21 3:26 PM, Anshuman Khandual wrote:
+> On 7/13/21 6:50 AM, Gavin Shan wrote:
+>> On 7/12/21 2:14 PM, Anshuman Khandual wrote:
+>>> Though I have not jumped into the details for all individual
+>>> patches here but still have some high level questions below.
+>>>
+>>> On 7/6/21 11:47 AM, Gavin Shan wrote:
+>>>> There are couple of issues with current implementations and this series
+>>>> tries to resolve the issues:
+>>>>
+>>>>     (a) All needed information are scattered in variables, passed to various
+>>>>         test functions. The code is organized in pretty much relaxed fashion.
+>>> All these variables are first prepared in debug_vm_pgtable(), before
+>>> getting passed into respective individual test functions. Also these
+>>> test functions receive only the required number of variables not all.
+>>> Adding a structure that captures all test parameters at once before
+>>> passing them down will be unnecessary. I am still wondering what will
+>>> be the real benefit of this large code churn ?
+>>>
 >>
-> I mean we can introduce a new ioctl for that in the future.
-
-
-Ok, I see.
-
-
->
->>>> I wonder if it's better to do something similar to ccw:
->>>>
->>>> 1) requires the userspace to update the status bit in the response
->>>> 2) update the dev->status to the status in the response if no timeout
->>>>
->>>> Then userspace could then set NEEDS_RESET if necessary.
->>>>
->>> But NEEDS_RESET does not only happen in this case.
->> Yes, so you need an ioctl for userspace to update the device status
->> (NEEDS_RESET) probably.
+>> Thanks for your review. There are couple of reasons to have "struct vm_pgtable_debug".
 >>
-> Yes, but I'd like to do that after the initial version is merged since
-> NEEDS_RESET is not supported now.
+>> (1) With the struct, the old and new implementation can coexist. In this way,
+>>      the patches in this series can be stacked up easily.
+> 
+> Makes sense.
+> 
+>> (2) I think passing single struct to individual test functions improves the
+>>      code readability. Besides, it also makes the empty stubs simplified.
+> 
+> Empty stub simplified - reduced argument set in the empty stubs ?
+> 
 
+Yes.
 
-Right.
+>> (3) The code can be extended easily if we need in future.
+> 
+> Agreed.
+> 
+>>
+>>>>
+>>>>     (b) The page isn't allocated from buddy during page table entry modifying
+>>>>         tests. The page can be invalid, conflicting to the implementations
+>>>>         of set_{pud, pmd, pte}_at() on ARM64. The target page is accessed
+>>>>         so that the iCache can be flushed when execution permission is given
+>>>>         on ARM64. Besides, the target page can be unmapped and access to
+>>>>         it causes kernel crash.
+>>>
+>>> Using 'start_kernel' based method for struct page usage, enabled this
+>>> test to run on platforms which might not have enough memory required
+>>> for various individual test functions. This method is not a problem for
+>>> tests that just need an aligned pfn (which creates a page table entry)
+>>> not a real struct page.
+>>>
+>>> But not allocating and owning the struct page might be problematic for
+>>> tests that expect a real struct page and transform its state via set_
+>>> {pud, pmd, pte}_at() functions as reported here.
+>>>
+>>
+>> Yeah, I totally agree. The series follows what you explained: Except the
+>> test cases where set_{pud, pmd, pte}_at() is used, the allocated page
+>> is used. For other test cases, 'start_kernel' based PFN is used as before.
+>>
+>>>>
+>>>> "struct vm_pgtable_debug" is introduced to address issue (a). For issue
+>>>> (b), the used page is allocated from buddy in page table entry modifying
+>>>> tests. The corresponding tets will be skipped if we fail to allocate the
+>>>> (huge) page. For other test cases, the original page around to kernel
+>>>> symbol (@start_kernel) is still used.
+>>>
+>>> For all basic pfn requiring tests, existing 'start_kernel' based method
+>>> should continue but allocate a struct page for other tests which change
+>>> the passed struct page. Skipping the tests when allocation fails is the
+>>> right thing to do.
+>>>
+>>
+>> Yes, it's exactly what this series does. Hope you can jump into the details
+>> when you get a chance :)
+> 
+> I have already started looking into the series. But still wondering if
+> the huge page memory allocation change and the arm64 specific page fix
+> should be completed first, before getting into the new structure based
+> arguments (in a separate series). Although the end result would still
+> remain the same, the transition there would be better I guess. Do you
+> see any challenges in achieving that ?
+> 
 
-Thanks
+Thanks for your time to review in details. As I can understand, the reason
+to have the fix for easy backporting to stable-kernel and I didn't do that
+because of couple of facts: (1) The changes included in this series only
+affects only one source file, so backporting the whole series isn't hard.
+(2) There will be more redundant code if we include the fix before switching
+to "struct vm_pgtable_debug". It's unnecessary.
 
+So lets keep the patch layout we had if you agree. Actually, the issues are
+found during the testing with RHEL downstream kernel. Once it's settled down,
+I will backport the whole series to RHEL downstream kernel.
 
->
+Thanks,
+Gavin
 
