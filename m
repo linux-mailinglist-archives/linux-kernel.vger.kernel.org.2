@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FF93CA985
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F9C3CABBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243020AbhGOTHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:07:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33728 "EHLO mail.kernel.org"
+        id S244136AbhGOTXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:23:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239976AbhGOS4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:56:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4295F613D9;
-        Thu, 15 Jul 2021 18:53:57 +0000 (UTC)
+        id S242159AbhGOTGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:06:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 368936127C;
+        Thu, 15 Jul 2021 19:03:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375237;
-        bh=sVhJ9Ua9XktMFt+Jrg29u7/0hwbuCGE/h+8ziQOROd8=;
+        s=korg; t=1626375780;
+        bh=2wcLH/MjR6vnjHJ+bCuMtovL+XwRk6NvzTwRJB2jEXI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nD+Yj6kO13zhtb7uRrjx5o4pDcCVv2iBm8VCowe3yArdQS/YqrnIR8etHB8A52k2U
-         UmNBvF1RObmIzjUACR26oFxqtfiVdv/j91DKZOFqSd0dG783g2vqbAxqTpxkv08jrv
-         PBcvK364RV2ENGLwiUXjhodK9ecvszX6Qtq7hkBw=
+        b=hNXSrVcyZxHnI5b3Llj9hzxashOSkY2td+LNELrkblL8znqIRaX234OuF4trO3GLP
+         phcJ3xyXsTgbYtpBjuY8N0ddBTF74VwaTqs8PT4XQCOvwu0TXrmTGkcsczO1pAGAxj
+         j6pCqumqA8axjWB/81ph0MRxSkMiVgkw/I81HleM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 196/215] dm writecache: flush origin device when writing and cache is full
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ferry Toth <ftoth@exalondelft.nl>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH 5.12 206/242] extcon: intel-mrfld: Sync hardware and software state on init
 Date:   Thu, 15 Jul 2021 20:39:28 +0200
-Message-Id: <20210715182633.802741131@linuxfoundation.org>
+Message-Id: <20210715182629.540959036@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Ferry Toth <ftoth@exalondelft.nl>
 
-commit ee55b92a7391bf871939330f662651b54be51b73 upstream.
+commit ecb5bdff901139850fb3ca3ae2d0cccac045bc52 upstream.
 
-Commit d53f1fafec9d086f1c5166436abefdaef30e0363 ("dm writecache: do
-direct write if the cache is full") changed dm-writecache, so that it
-writes directly to the origin device if the cache is full.
-Unfortunately, it doesn't forward flush requests to the origin device,
-so that there is a bug where flushes are being ignored.
+extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
+DRD to detect a change in the switch position. This change initializes the
+status at probe time.
 
-Fix this by adding missing flush forwarding.
-
-For PMEM mode, we fix this bug by disabling direct writes to the origin
-device, because it performs better.
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Fixes: d53f1fafec9d ("dm writecache: do direct write if the cache is full")
-Cc: stable@vger.kernel.org # v5.7+
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-writecache.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/extcon/extcon-intel-mrfld.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -1297,8 +1297,12 @@ static int writecache_map(struct dm_targ
- 			writecache_flush(wc);
- 			if (writecache_has_error(wc))
- 				goto unlock_error;
-+			if (unlikely(wc->cleaner))
-+				goto unlock_remap_origin;
- 			goto unlock_submit;
- 		} else {
-+			if (dm_bio_get_target_bio_nr(bio))
-+				goto unlock_remap_origin;
- 			writecache_offload_bio(wc, bio);
- 			goto unlock_return;
- 		}
-@@ -1377,7 +1381,7 @@ read_next_block:
- 			}
- 			e = writecache_pop_from_freelist(wc, (sector_t)-1);
- 			if (unlikely(!e)) {
--				if (!found_entry) {
-+				if (!WC_MODE_PMEM(wc) && !found_entry) {
- direct_write:
- 					e = writecache_find_entry(wc, bio->bi_iter.bi_sector, WFE_RETURN_FOLLOWING);
- 					if (e) {
-@@ -2483,7 +2487,7 @@ overflow:
- 		goto bad;
- 	}
+--- a/drivers/extcon/extcon-intel-mrfld.c
++++ b/drivers/extcon/extcon-intel-mrfld.c
+@@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct pla
+ 	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
+ 	struct regmap *regmap = pmic->regmap;
+ 	struct mrfld_extcon_data *data;
++	unsigned int status;
+ 	unsigned int id;
+ 	int irq, ret;
  
--	ti->num_flush_bios = 1;
-+	ti->num_flush_bios = WC_MODE_PMEM(wc) ? 1 : 2;
- 	ti->flush_supported = true;
- 	ti->num_discard_bios = 1;
+@@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct pla
+ 	/* Get initial state */
+ 	mrfld_extcon_role_detect(data);
+ 
++	/*
++	 * Cached status value is used for cable detection, see comments
++	 * in mrfld_extcon_cable_detect(), we need to sync cached value
++	 * with a real state of the hardware.
++	 */
++	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
++	data->status = status;
++
+ 	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
+ 	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
  
 
 
