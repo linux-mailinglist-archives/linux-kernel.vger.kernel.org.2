@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245093CA8AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D52B3CA682
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241699AbhGOTCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:02:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58972 "EHLO mail.kernel.org"
+        id S239470AbhGOSsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:48:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241825AbhGOSyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B82610C7;
-        Thu, 15 Jul 2021 18:51:43 +0000 (UTC)
+        id S237791AbhGOSq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:46:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B88B613D6;
+        Thu, 15 Jul 2021 18:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375104;
-        bh=a6833TJ0mkZ/v03O42FFwRWBA1BZaCeWzqtkI87+qAQ=;
+        s=korg; t=1626374645;
+        bh=KGXHF1xbr0Aylxb/eeKc3uUdt4Hmi9xZWmf7GSbYj50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=of6mRMrry/NJnVUrLCPJw3DfWQXuy+bAtplL+BpU73oOEZPA7fl5BMruxkZ3Y28MJ
-         iez/D7JpjMUBj6lWg5qJT3Jx2uvyFZEFWPLu05Pv4Q75vcrXrUKfBxu+N53w2gsjro
-         w+/ShdkNTTDbquljO8b39yRvN47f8+P00yefWmpE=
+        b=gEugFtCc1t9JwFxTHRM344ZjzorgIITsqov2Tius8SQ2UEvjgL7zYHztqS2Gs9sIv
+         k8inCdwIXbnJZ2KxJ3giw5H/X7/DxS4k6Z5Yi8/W/dZDP6X6gsTni9nn6wYUZZVKVR
+         ycHUosDRHzkhmSxzVdr1RVtbfF1D6IvP8aUSmvvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 5.10 162/215] drm/msm/mdp4: Fix modifier support enabling
-Date:   Thu, 15 Jul 2021 20:38:54 +0200
-Message-Id: <20210715182628.172527262@linuxfoundation.org>
+        stable@vger.kernel.org, Christian Loehle <cloehle@hyperstone.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 088/122] mmc: core: Allow UHS-I voltage switch for SDSC cards if supported
+Date:   Thu, 15 Jul 2021 20:38:55 +0200
+Message-Id: <20210715182514.041284951@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,67 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Christian Löhle <CLoehle@hyperstone.com>
 
-commit 35cbb8c91e9cf310277d3dfb4d046df8edf2df33 upstream.
+commit 09247e110b2efce3a104e57e887c373e0a57a412 upstream.
 
-Setting the cap without the modifier list is very confusing to
-userspace. Fix that by listing the ones we support explicitly.
+While initializing an UHS-I SD card, the mmc core first tries to switch to
+1.8V I/O voltage, before it continues to change the settings for the bus
+speed mode.
 
-Stable backport so that userspace can rely on this working in a
-reasonable way, i.e. that the cap set implies IN_FORMATS is available.
+However, the current behaviour in the mmc core is inconsistent and doesn't
+conform to the SD spec. More precisely, an SD card that supports UHS-I must
+set both the SD_OCR_CCS bit and the SD_OCR_S18R bit in the OCR register
+response. When switching to 1.8V I/O the mmc core correctly checks both of
+the bits, but only the SD_OCR_S18R bit when changing the settings for bus
+speed mode.
 
-Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
+Rather than actually fixing the code to confirm to the SD spec, let's
+deliberately deviate from it by requiring only the SD_OCR_S18R bit for both
+parts. This enables us to support UHS-I for SDSC cards (outside spec),
+which is actually being supported by some existing SDSC cards. Moreover,
+this fixes the inconsistent behaviour.
+
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+Link: https://lore.kernel.org/r/CWXP265MB26803AE79E0AD5ED083BF2A6C4529@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
 Cc: stable@vger.kernel.org
-Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc: Rob Clark <robdclark@chromium.org>
-Cc: Jordan Crouse <jordan@cosmicpenguin.net>
-Cc: Emil Velikov <emil.velikov@collabora.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-5-daniel.vetter@ffwll.ch
+[Ulf: Rewrote commit message and comments to clarify the changes]
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c   |    2 --
- drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c |    8 +++++++-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/mmc/core/sd.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-@@ -88,8 +88,6 @@ static int mdp4_hw_init(struct msm_kms *
- 	if (mdp4_kms->rev > 1)
- 		mdp4_write(mdp4_kms, REG_MDP4_RESET_STATUS, 1);
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -793,11 +793,13 @@ try_again:
+ 		return err;
  
--	dev->mode_config.allow_fb_modifiers = true;
--
- out:
- 	pm_runtime_put_sync(dev->dev);
- 
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c
-@@ -347,6 +347,12 @@ enum mdp4_pipe mdp4_plane_pipe(struct dr
- 	return mdp4_plane->pipe;
- }
- 
-+static const uint64_t supported_format_modifiers[] = {
-+	DRM_FORMAT_MOD_SAMSUNG_64_32_TILE,
-+	DRM_FORMAT_MOD_LINEAR,
-+	DRM_FORMAT_MOD_INVALID
-+};
-+
- /* initialize plane */
- struct drm_plane *mdp4_plane_init(struct drm_device *dev,
- 		enum mdp4_pipe pipe_id, bool private_plane)
-@@ -375,7 +381,7 @@ struct drm_plane *mdp4_plane_init(struct
- 	type = private_plane ? DRM_PLANE_TYPE_PRIMARY : DRM_PLANE_TYPE_OVERLAY;
- 	ret = drm_universal_plane_init(dev, plane, 0xff, &mdp4_plane_funcs,
- 				 mdp4_plane->formats, mdp4_plane->nformats,
--				 NULL, type, NULL);
-+				 supported_format_modifiers, type, NULL);
- 	if (ret)
- 		goto fail;
- 
+ 	/*
+-	 * In case CCS and S18A in the response is set, start Signal Voltage
+-	 * Switch procedure. SPI mode doesn't support CMD11.
++	 * In case the S18A bit is set in the response, let's start the signal
++	 * voltage switch procedure. SPI mode doesn't support CMD11.
++	 * Note that, according to the spec, the S18A bit is not valid unless
++	 * the CCS bit is set as well. We deliberately deviate from the spec in
++	 * regards to this, which allows UHS-I to be supported for SDSC cards.
+ 	 */
+-	if (!mmc_host_is_spi(host) && rocr &&
+-	   ((*rocr & 0x41000000) == 0x41000000)) {
++	if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
+ 		err = mmc_set_uhs_voltage(host, pocr);
+ 		if (err == -EAGAIN) {
+ 			retries--;
 
 
