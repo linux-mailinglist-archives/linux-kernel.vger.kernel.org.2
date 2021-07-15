@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DF53CA8F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6643CAB5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242618AbhGOTEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59092 "EHLO mail.kernel.org"
+        id S245371AbhGOTTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:19:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242068AbhGOSyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7A5610C7;
-        Thu, 15 Jul 2021 18:51:52 +0000 (UTC)
+        id S240737AbhGOTEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A8D1601FE;
+        Thu, 15 Jul 2021 19:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375113;
-        bh=omh3opMHp52rSy7yk5V4DoLDVmYcF/ZiJEWB0V6NH18=;
+        s=korg; t=1626375645;
+        bh=NE56XfDYBzeQRAQsBT8J3evwNYFGUI9IN8n1ZYPDVDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XLTzu3kvqtipuhNX2CmZ/AgfhYAE/2LZQ2u7Kql/TgDH5eIEGGzCAnkgSu9KMDquq
-         u+g8+XJzBhS1L2+/OLNPiOC3+Yt/RwTPnhq0WEnrc1VY+hSPyD+Ke1puwDZhhIZMK7
-         pTP4NmU6s96LMq8eLu9OUTmy1COgIKcZEGnrai3Q=
+        b=SIUpxo19xqeYSm8pycs3l8u/NLwhfo6uIR9Gbf5D6nYzrS4KkvnffA47jjv+x7da2
+         PslT9lcCi8+FzOTd3+kswnswVHsOIjLdkCegvvgGQy6uN+nPSfGitvv37DCm/XG+TP
+         wfIVK3wm5werrPpFCLrVtDCesmcWc1peU2We9EQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.10 165/215] drm/i915/display: Do not zero past infoframes.vsc
-Date:   Thu, 15 Jul 2021 20:38:57 +0200
-Message-Id: <20210715182628.739667703@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH 5.12 176/242] drm/ingenic: Fix pixclock rate for 24-bit serial panels
+Date:   Thu, 15 Jul 2021 20:38:58 +0200
+Message-Id: <20210715182624.203982376@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 07b72960d2b4a087ff2445e286159e69742069cc upstream.
+commit 60a6b73dd821e98fe958b2a83393ccd724b306b1 upstream.
 
-intel_dp_vsc_sdp_unpack() was using a memset() size (36, struct dp_sdp)
-larger than the destination (24, struct drm_dp_vsc_sdp), clobbering
-fields in struct intel_crtc_state after infoframes.vsc. Use the actual
-target size for the memset().
+When using a 24-bit panel on a 8-bit serial bus, the pixel clock
+requested by the panel has to be multiplied by 3, since the subpixels
+are shifted sequentially.
 
-Fixes: 1b404b7dbb10 ("drm/i915/dp: Read out DP SDPs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: José Roberto de Souza <jose.souza@intel.com>
-Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210617213301.1824728-1-keescook@chromium.org
-(cherry picked from commit c88e2647c5bb45d04dc4302018ebe6ebbf331823)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+The code (in ingenic_drm_encoder_atomic_check) already computed
+crtc_state->adjusted_mode->crtc_clock accordingly, but clk_set_rate()
+used crtc_state->adjusted_mode->clock instead.
+
+Fixes: 28ab7d35b6e0 ("drm/ingenic: Properly compute timings when using a 3x8-bit panel")
+Cc: stable@vger.kernel.org # v5.10
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com>	# CI20/jz4780 (HDMI) and Alpha400/jz4730 (LCD)
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210323144008.166248-1-paul@crapouillou.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/display/intel_dp.c |    2 +-
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -5080,7 +5080,7 @@ static int intel_dp_vsc_sdp_unpack(struc
- 	if (size < sizeof(struct dp_sdp))
- 		return -EINVAL;
- 
--	memset(vsc, 0, size);
-+	memset(vsc, 0, sizeof(*vsc));
- 
- 	if (sdp->sdp_header.HB0 != 0)
- 		return -EINVAL;
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -341,7 +341,7 @@ static void ingenic_drm_crtc_atomic_flus
+ 	if (priv->update_clk_rate) {
+ 		mutex_lock(&priv->clk_mutex);
+ 		clk_set_rate(priv->pix_clk,
+-			     crtc_state->adjusted_mode.clock * 1000);
++			     crtc_state->adjusted_mode.crtc_clock * 1000);
+ 		priv->update_clk_rate = false;
+ 		mutex_unlock(&priv->clk_mutex);
+ 	}
 
 
