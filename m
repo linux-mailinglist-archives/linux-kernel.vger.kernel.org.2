@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA31B3CA9D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEED3CAA94
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243603AbhGOTJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35768 "EHLO mail.kernel.org"
+        id S244205AbhGOTOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:14:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242219AbhGOS7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:59:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A68B1613E3;
-        Thu, 15 Jul 2021 18:56:12 +0000 (UTC)
+        id S242295AbhGOS7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:59:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC8EA613E6;
+        Thu, 15 Jul 2021 18:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375373;
-        bh=WHEJ/5JxED6vPS2TrQq+1VbRsCAJrlhyTw5epqGEJ6w=;
+        s=korg; t=1626375375;
+        bh=C7djTTCjYd0cKj88eqwliCRjLiPRX/To8ipnMZj28IM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=az7i/yS+1+MNUvR+khbqafJ6xWeOrHoabi+eTM1iqKfyjBgwBsi7sy4akQr5LakML
-         3hpbAh7+/qDHfsk8/JkobMfB+Jgl1gZ3nd5YmL3oQt9iVOAEAxXsL6Wu3sG4D6gWGD
-         HdJjUWMaSRXFuX8gqyhILI8G3FCz4Ke0JWh29/ZU=
+        b=FzCfiunId9pTQTw3Aj1mddao+CNbF7cat8+DRkXEyPNQlMqTWBozEQtYN073asgr4
+         TEQHJZcAnLOG27dZR9Fhh0Ph5w1SE4reoGsii4Rz0DNAReooBJ1o3CwT0b93o7EWgY
+         OyrIdP4XSkuAXAX4caalYzplhToBMU/B+x/paohs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
         Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 058/242] dm: Fix dm_accept_partial_bio() relative to zone management commands
-Date:   Thu, 15 Jul 2021 20:37:00 +0200
-Message-Id: <20210715182602.649204741@linuxfoundation.org>
+Subject: [PATCH 5.12 059/242] block: introduce BIO_ZONE_WRITE_LOCKED bio flag
+Date:   Thu, 15 Jul 2021 20:37:01 +0200
+Message-Id: <20210715182602.873658509@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
 References: <20210715182551.731989182@linuxfoundation.org>
@@ -42,52 +46,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Damien Le Moal <damien.lemoal@wdc.com>
 
-[ Upstream commit 6842d264aa5205da338b6dcc6acfa2a6732558f1 ]
+[ Upstream commit 9ffbbb435d8f566a0924ce4b5dc7fc1bceb6dbf8 ]
 
-Fix dm_accept_partial_bio() to actually check that zone management
-commands are not passed as explained in the function documentation
-comment. Also, since a zone append operation cannot be split, add
-REQ_OP_ZONE_APPEND as a forbidden command.
+Introduce the BIO flag BIO_ZONE_WRITE_LOCKED to indicate that a BIO owns
+the write lock of the zone it is targeting. This is the counterpart of
+the struct request flag RQF_ZONE_WRITE_LOCKED.
 
-White lines are added around the group of BUG_ON() calls to make the
-code more legible.
+This new BIO flag is reserved for now for zone write locking control
+for device mapper targets exposing a zoned block device. Since in this
+case, the lock flag must not be propagated to the struct request that
+will be used to process the BIO, a BIO private flag is used rather than
+changing the RQF_ZONE_WRITE_LOCKED request flag into a common REQ_XXX
+flag that could be used for both BIO and request. This avoids conflicts
+down the stack with the block IO scheduler zone write locking
+(in mq-deadline).
 
 Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Acked-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ include/linux/blk_types.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 3f3be9408afa..05747d2736a7 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -1239,8 +1239,8 @@ static int dm_dax_zero_page_range(struct dax_device *dax_dev, pgoff_t pgoff,
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index db026b6ec15a..e5cf12f102a2 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -304,6 +304,7 @@ enum {
+ 	BIO_CGROUP_ACCT,	/* has been accounted to a cgroup */
+ 	BIO_TRACKED,		/* set if bio goes through the rq_qos path */
+ 	BIO_REMAPPED,
++	BIO_ZONE_WRITE_LOCKED,	/* Owns a zoned device zone write lock */
+ 	BIO_FLAG_LAST
+ };
  
- /*
-  * A target may call dm_accept_partial_bio only from the map routine.  It is
-- * allowed for all bio types except REQ_PREFLUSH, REQ_OP_ZONE_RESET,
-- * REQ_OP_ZONE_OPEN, REQ_OP_ZONE_CLOSE and REQ_OP_ZONE_FINISH.
-+ * allowed for all bio types except REQ_PREFLUSH, REQ_OP_ZONE_* zone management
-+ * operations and REQ_OP_ZONE_APPEND (zone append writes).
-  *
-  * dm_accept_partial_bio informs the dm that the target only wants to process
-  * additional n_sectors sectors of the bio and the rest of the data should be
-@@ -1270,9 +1270,13 @@ void dm_accept_partial_bio(struct bio *bio, unsigned n_sectors)
- {
- 	struct dm_target_io *tio = container_of(bio, struct dm_target_io, clone);
- 	unsigned bi_size = bio->bi_iter.bi_size >> SECTOR_SHIFT;
-+
- 	BUG_ON(bio->bi_opf & REQ_PREFLUSH);
-+	BUG_ON(op_is_zone_mgmt(bio_op(bio)));
-+	BUG_ON(bio_op(bio) == REQ_OP_ZONE_APPEND);
- 	BUG_ON(bi_size > *tio->len_ptr);
- 	BUG_ON(n_sectors > bi_size);
-+
- 	*tio->len_ptr -= bi_size - n_sectors;
- 	bio->bi_iter.bi_size = n_sectors << SECTOR_SHIFT;
- }
 -- 
 2.30.2
 
