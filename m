@@ -2,71 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C233CAEEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938983CAEF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 00:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhGOWJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 18:09:45 -0400
-Received: from mail-pj1-f51.google.com ([209.85.216.51]:39464 "EHLO
-        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhGOWJn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:09:43 -0400
-Received: by mail-pj1-f51.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so7495358pju.4;
-        Thu, 15 Jul 2021 15:06:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R6F+susvN5sjUJ3zQkT+ICC7UqFu5SaK3lj12wZr4/0=;
-        b=ZwCneMwbj0JO9x7iOUD9weXnHjdvJ1JryMnTL4rQoqSndLneFutoiK1/bRNQGEx8h8
-         MHT+CsQwt2oE9+VIHGG6MMQPGqDpTMQG2lP6BB+5WQxBcPujd9rzNYkfrEWdMYq3e9Xk
-         fTXec5hSRvV1Z5SRbgvhnT89NkN4Bb4g57PUtIpJYBzJYFPpnh28eZOe5AZv/GXSHwpz
-         i3AfoPkGWBGgDG6SdMoyGcFO/sRSg/Q2MbHu9y4PU7yOnUNtUixG8hkbAF8q169c+maP
-         Lp+inf+N+vH4SGpF7XcU7vtskdfuMpPse00gSccPOL9xpu8T2XZbV/yCTLzNhr4JdImp
-         MmlA==
-X-Gm-Message-State: AOAM531/fa5xDwNUsy8KpxUAx3Q/EtuVyIc1bOlr7e3dzhc3FfoIC2QK
-        eFrzN7YXVzrEivBfaUT3clg=
-X-Google-Smtp-Source: ABdhPJyAswla2aaWzBgfxN1RCTmTjsX0BIv5XRpXRfo5GXFJQkNYA0AgYLtvOnNpGa4lxcQIGAlRZQ==
-X-Received: by 2002:a17:90b:1294:: with SMTP id fw20mr12313031pjb.100.1626386808202;
-        Thu, 15 Jul 2021 15:06:48 -0700 (PDT)
-Received: from garbanzo ([191.96.120.37])
-        by smtp.gmail.com with ESMTPSA id y5sm7445783pfn.87.2021.07.15.15.06.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 15:06:46 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 15:06:44 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] intersil: remove obsolete prism54 wireless driver
-Message-ID: <20210715220644.2d2xfututdoimszm@garbanzo>
-References: <20210713054025.32006-1-lukas.bulwahn@gmail.com>
+        id S231967AbhGOWLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 18:11:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230314AbhGOWLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 18:11:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BC8461289;
+        Thu, 15 Jul 2021 22:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626386920;
+        bh=ALJUHE+C9LUrPDDnGfrCa1mLT5eVC712CTidE2c7xI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jroFG37bLH/2wJqwRblZtf2WXYIWF117yiK7yRaLE41bLF4snqJz4UH3r+2gVsVnr
+         Hiemg0cRc2p6dmcBJNr+mtjHRKZKyqXdl8OlpsCFt9pNa8ZJGa4PWCfkXx5jik/2u9
+         8kkj0ebwqvIm5cB/ANkIUVbEvUpT/nt6YgDBuPPfe+cN5fdyTr6II681gGetcK2f59
+         mHOBROuy9zFgyYsQ9DYU4xLpYpKQlpi/A+Dhf7HPuQVSUMz01zfNiojtnK+X6DX3fn
+         GUXJXDb0u4ANWkp3ZPkAniQxLYJ9SWbZgzlZlEgpdelfigthrLEunNtHYGHxpphS7I
+         sSkdKx0e/oHjQ==
+Date:   Thu, 15 Jul 2021 15:08:40 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 124/138] fs: Convert vfs_dedupe_file_range_compare to
+ folios
+Message-ID: <20210715220840.GS22357@magnolia>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-125-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210713054025.32006-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210715033704.692967-125-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 07:40:25AM +0200, Lukas Bulwahn wrote:
-> Commit 1d89cae1b47d ("MAINTAINERS: mark prism54 obsolete") indicated the
-> prism54 driver as obsolete in July 2010.
-> 
-> Now, after being exposed for ten years to refactoring, general tree-wide
-> changes and various janitor clean-up, it is really time to delete the
-> driver for good.
-> 
-> This was discovered as part of a checkpatch evaluation, investigating all
-> reports of checkpatch's WARNING:OBSOLETE check.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+On Thu, Jul 15, 2021 at 04:36:50AM +0100, Matthew Wilcox (Oracle) wrote:
+> We still only operate on a single page of data at a time due to using
+> kmap().  A more complex implementation would work on each page in a folio,
+> but it's not clear that such a complex implementation would be worthwhile.
+
+Does this break up a compound folio into smaller pages?
+
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
+>  fs/remap_range.c | 116 ++++++++++++++++++++++-------------------------
+>  1 file changed, 55 insertions(+), 61 deletions(-)
+> 
+> diff --git a/fs/remap_range.c b/fs/remap_range.c
+> index e4a5fdd7ad7b..886e6ed2c6c2 100644
+> --- a/fs/remap_range.c
+> +++ b/fs/remap_range.c
+> @@ -158,41 +158,41 @@ static int generic_remap_check_len(struct inode *inode_in,
+>  }
+>  
+>  /* Read a page's worth of file data into the page cache. */
+> -static struct page *vfs_dedupe_get_page(struct inode *inode, loff_t offset)
+> +static struct folio *vfs_dedupe_get_folio(struct inode *inode, loff_t pos)
+>  {
+> -	struct page *page;
+> +	struct folio *folio;
+>  
+> -	page = read_mapping_page(inode->i_mapping, offset >> PAGE_SHIFT, NULL);
+> -	if (IS_ERR(page))
+> -		return page;
+> -	if (!PageUptodate(page)) {
+> -		put_page(page);
+> +	folio = read_mapping_folio(inode->i_mapping, pos >> PAGE_SHIFT, NULL);
+> +	if (IS_ERR(folio))
+> +		return folio;
+> +	if (!folio_test_uptodate(folio)) {
+> +		folio_put(folio);
+>  		return ERR_PTR(-EIO);
+>  	}
+> -	return page;
+> +	return folio;
+>  }
+>  
+>  /*
+> - * Lock two pages, ensuring that we lock in offset order if the pages are from
+> - * the same file.
+> + * Lock two folios, ensuring that we lock in offset order if the folios
+> + * are from the same file.
+>   */
+> -static void vfs_lock_two_pages(struct page *page1, struct page *page2)
+> +static void vfs_lock_two_folios(struct folio *folio1, struct folio *folio2)
+>  {
+>  	/* Always lock in order of increasing index. */
+> -	if (page1->index > page2->index)
+> -		swap(page1, page2);
+> +	if (folio1->index > folio2->index)
+> +		swap(folio1, folio2);
+>  
+> -	lock_page(page1);
+> -	if (page1 != page2)
+> -		lock_page(page2);
+> +	folio_lock(folio1);
+> +	if (folio1 != folio2)
+> +		folio_lock(folio2);
+>  }
+>  
+> -/* Unlock two pages, being careful not to unlock the same page twice. */
+> -static void vfs_unlock_two_pages(struct page *page1, struct page *page2)
+> +/* Unlock two folios, being careful not to unlock the same folio twice. */
+> +static void vfs_unlock_two_folios(struct folio *folio1, struct folio *folio2)
+>  {
+> -	unlock_page(page1);
+> -	if (page1 != page2)
+> -		unlock_page(page2);
+> +	folio_unlock(folio1);
+> +	if (folio1 != folio2)
+> +		folio_unlock(folio2);
 
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+This could result in a lot of folio lock cycling.  Do you think it's
+worth the effort to minimize this by keeping the folio locked if the
+next page is going to be from the same one?
 
-  Luis
+--D
+
+>  }
+>  
+>  /*
+> @@ -200,77 +200,71 @@ static void vfs_unlock_two_pages(struct page *page1, struct page *page2)
+>   * Caller must have locked both inodes to prevent write races.
+>   */
+>  static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
+> -					 struct inode *dest, loff_t destoff,
+> +					 struct inode *dest, loff_t dstoff,
+>  					 loff_t len, bool *is_same)
+>  {
+> -	loff_t src_poff;
+> -	loff_t dest_poff;
+> -	void *src_addr;
+> -	void *dest_addr;
+> -	struct page *src_page;
+> -	struct page *dest_page;
+> -	loff_t cmp_len;
+> -	bool same;
+> -	int error;
+> -
+> -	error = -EINVAL;
+> -	same = true;
+> +	bool same = true;
+> +	int error = -EINVAL;
+> +
+>  	while (len) {
+> -		src_poff = srcoff & (PAGE_SIZE - 1);
+> -		dest_poff = destoff & (PAGE_SIZE - 1);
+> -		cmp_len = min(PAGE_SIZE - src_poff,
+> -			      PAGE_SIZE - dest_poff);
+> +		struct folio *src_folio, *dst_folio;
+> +		void *src_addr, *dst_addr;
+> +		loff_t cmp_len = min(PAGE_SIZE - offset_in_page(srcoff),
+> +				     PAGE_SIZE - offset_in_page(dstoff));
+> +
+>  		cmp_len = min(cmp_len, len);
+>  		if (cmp_len <= 0)
+>  			goto out_error;
+>  
+> -		src_page = vfs_dedupe_get_page(src, srcoff);
+> -		if (IS_ERR(src_page)) {
+> -			error = PTR_ERR(src_page);
+> +		src_folio = vfs_dedupe_get_folio(src, srcoff);
+> +		if (IS_ERR(src_folio)) {
+> +			error = PTR_ERR(src_folio);
+>  			goto out_error;
+>  		}
+> -		dest_page = vfs_dedupe_get_page(dest, destoff);
+> -		if (IS_ERR(dest_page)) {
+> -			error = PTR_ERR(dest_page);
+> -			put_page(src_page);
+> +		dst_folio = vfs_dedupe_get_folio(dest, dstoff);
+> +		if (IS_ERR(dst_folio)) {
+> +			error = PTR_ERR(dst_folio);
+> +			folio_put(src_folio);
+>  			goto out_error;
+>  		}
+>  
+> -		vfs_lock_two_pages(src_page, dest_page);
+> +		vfs_lock_two_folios(src_folio, dst_folio);
+>  
+>  		/*
+> -		 * Now that we've locked both pages, make sure they're still
+> +		 * Now that we've locked both folios, make sure they're still
+>  		 * mapped to the file data we're interested in.  If not,
+>  		 * someone is invalidating pages on us and we lose.
+>  		 */
+> -		if (!PageUptodate(src_page) || !PageUptodate(dest_page) ||
+> -		    src_page->mapping != src->i_mapping ||
+> -		    dest_page->mapping != dest->i_mapping) {
+> +		if (!folio_test_uptodate(src_folio) || !folio_test_uptodate(dst_folio) ||
+> +		    src_folio->mapping != src->i_mapping ||
+> +		    dst_folio->mapping != dest->i_mapping) {
+>  			same = false;
+>  			goto unlock;
+>  		}
+>  
+> -		src_addr = kmap_atomic(src_page);
+> -		dest_addr = kmap_atomic(dest_page);
+> +		src_addr = kmap_local_folio(src_folio,
+> +					offset_in_folio(src_folio, srcoff));
+> +		dst_addr = kmap_local_folio(dst_folio,
+> +					offset_in_folio(dst_folio, dstoff));
+>  
+> -		flush_dcache_page(src_page);
+> -		flush_dcache_page(dest_page);
+> +		flush_dcache_folio(src_folio);
+> +		flush_dcache_folio(dst_folio);
+>  
+> -		if (memcmp(src_addr + src_poff, dest_addr + dest_poff, cmp_len))
+> +		if (memcmp(src_addr, dst_addr, cmp_len))
+>  			same = false;
+>  
+> -		kunmap_atomic(dest_addr);
+> -		kunmap_atomic(src_addr);
+> +		kunmap_local(dst_addr);
+> +		kunmap_local(src_addr);
+>  unlock:
+> -		vfs_unlock_two_pages(src_page, dest_page);
+> -		put_page(dest_page);
+> -		put_page(src_page);
+> +		vfs_unlock_two_folios(src_folio, dst_folio);
+> +		folio_put(dst_folio);
+> +		folio_put(src_folio);
+>  
+>  		if (!same)
+>  			break;
+>  
+>  		srcoff += cmp_len;
+> -		destoff += cmp_len;
+> +		dstoff += cmp_len;
+>  		len -= cmp_len;
+>  	}
+>  
+> -- 
+> 2.30.2
+> 
