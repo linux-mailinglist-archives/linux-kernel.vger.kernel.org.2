@@ -2,90 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8663C9CB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889D93C9CB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240314AbhGOKfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:35:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:50760 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231670AbhGOKfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:35:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 607D21042;
-        Thu, 15 Jul 2021 03:32:53 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E13A03F694;
-        Thu, 15 Jul 2021 03:32:51 -0700 (PDT)
-Subject: Re: [PATCH v2] drm/of: free the iterator object on failure
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Pavel Machek <pavel@denx.de>
-References: <20210712155758.48286-1-steven.price@arm.com>
- <20210714143300.20632-1-steven.price@arm.com>
- <YO8CODO4TRP+qr9H@pendragon.ideasonboard.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <f723a5e0-5b9a-c807-f51d-9acc57058a80@arm.com>
-Date:   Thu, 15 Jul 2021 11:32:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YO8CODO4TRP+qr9H@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S241413AbhGOKgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:36:16 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42728 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231670AbhGOKgP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 06:36:15 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id AC5441FE0E;
+        Thu, 15 Jul 2021 10:33:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626345201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eyovRM0UMtQZ4Oa4yMcIsUCbGJmgAfI2MIXkdQ11pOo=;
+        b=aXfGJxvbTSic4fnSh0xk2t6YUJtIcem0rdoljN+eYD84oaQMcXBjUZBw8VdP6vCgees1XZ
+        sXPDmtYdnAB3PkMiEHLZ4n7veUDJy9hMD0uAadVVq7bsESrMTuBpjk8lApvN+0JQWb8Geo
+        AaLNe0kFxLpFttvt2MiVei4QSmVfNdw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626345201;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eyovRM0UMtQZ4Oa4yMcIsUCbGJmgAfI2MIXkdQ11pOo=;
+        b=5hKJdtek9TPXmcnN3HC6h+m/YrOsTr5zRYqYQUDUuRpxhBMd3Hs4kGItsrZ43PFeoe48GZ
+        KuROtMdIDYr/9bDQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 9BA66A3B9A;
+        Thu, 15 Jul 2021 10:33:21 +0000 (UTC)
+Date:   Thu, 15 Jul 2021 12:33:21 +0200
+Message-ID: <s5ho8b3x3wu.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        "linux-kernel@vger.kernel.org >> linux-kernel" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] ALSA: sb16: possible ABBA deadlock in snd_sb_csp_stop() and snd_sb_csp_load()
+In-Reply-To: <7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com>
+References: <7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2021 16:26, Laurent Pinchart wrote:
-> Hi Steven,
+On Thu, 15 Jul 2021 12:20:36 +0200,
+Jia-Ju Bai wrote:
 > 
-> Thank you for the patch.
+> Hello,
 > 
-> On Wed, Jul 14, 2021 at 03:33:00PM +0100, Steven Price wrote:
->> When bailing out due to the sanity check the iterator value needs to be
->> freed because the early return prevents for_each_child_of_node() from
->> doing the dereference itself.
->>
->> Fixes: 6529007522de ("drm: of: Add drm_of_lvds_get_dual_link_pixel_order")
->> Signed-off-by: Steven Price <steven.price@arm.com>
+> I find there is a possible ABBA deadlock in the SB16 driver in Linux 5.10:
 > 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-Thanks! Applied to drm-misc-next.
-
-Steve
-
->> ---
->>  drivers/gpu/drm/drm_of.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> v2: Fixes now refers to the original commit as suggested by Laurent, rather
->> than 4ee48cc5586b ("drm: of: Fix double-free bug") which only fixed part of
->> the problem. Note that 4ee48cc5586b is a dependency for this patch to
->> cleanly apply.
->>
->> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
->> index 197c57477344..997b8827fed2 100644
->> --- a/drivers/gpu/drm/drm_of.c
->> +++ b/drivers/gpu/drm/drm_of.c
->> @@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
->>  		 * configurations by passing the endpoints explicitly to
->>  		 * drm_of_lvds_get_dual_link_pixel_order().
->>  		 */
->> -		if (!current_pt || pixels_type != current_pt)
->> +		if (!current_pt || pixels_type != current_pt) {
->> +			of_node_put(endpoint);
->>  			return -EINVAL;
->> +		}
->>  	}
->>  
->>  	return pixels_type;
+> In snd_sb_csp_stop():
+> 876:     spin_lock_irqsave(&p->chip->mixer_lock, flags);
+> 882:     spin_lock(&p->chip->reg_lock);
 > 
+> In snd_sb_csp_load():
+> 614:     spin_lock_irqsave(&p->chip->reg_lock, flags);
+> 653:     spin_lock(&p->chip->mixer_lock);
+> 
+> When snd_sb_csp_stop() and snd_sb_csp_load() are concurrently
+> executed, the deadlock can occur.
+> 
+> I check the code and find a possible case of such concurrent execution:
+> 
+> #CPU1:
+> snd_sb16_playback_close
+>   snd_sb16_csp_playback_close (csp->ops.csp_stop(csp))
+>     snd_sb_csp_stop
+> 
+> #CPU2:
+> snd_sb_csp_ioctl
+>   snd_sb_csp_riff_load
+>     snd_sb_csp_load_user
+>       snd_sb_csp_load
+> 
+> I am not quite sure whether this possible deadlock is real and how to
+> fix it if it is real.
+> Any feedback would be appreciated, thanks
 
+The impact must be quite low, as both functions run in different
+state (running or stopped), so those are basically exclusive.
+And, above all, there is no VM supporting this chip, hence it's only
+for the real hardware and it's about very old ISA boards that maybe
+only less than handful people in the world can run now.
+
+About the fix: just split the locks in snb_sb_csp_stop() (also
+snd_sb_csp_start()) like below should suffice.
+
+
+thanks,
+
+Takashi
+
+--- a/sound/isa/sb/sb16_csp.c
++++ b/sound/isa/sb/sb16_csp.c
+@@ -816,6 +816,7 @@ static int snd_sb_csp_start(struct snd_sb_csp * p, int sample_width, int channel
+ 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
++	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+ 
+ 	spin_lock(&p->chip->reg_lock);
+ 	set_mode_register(p->chip, 0xc0);	/* c0 = STOP */
+@@ -855,6 +856,7 @@ static int snd_sb_csp_start(struct snd_sb_csp * p, int sample_width, int channel
+ 	spin_unlock(&p->chip->reg_lock);
+ 
+ 	/* restore PCM volume */
++	spin_lock_irqsave(&p->chip->mixer_lock, flags);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
+ 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+@@ -880,6 +882,7 @@ static int snd_sb_csp_stop(struct snd_sb_csp * p)
+ 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
++	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+ 
+ 	spin_lock(&p->chip->reg_lock);
+ 	if (p->running & SNDRV_SB_CSP_ST_QSOUND) {
+@@ -894,6 +897,7 @@ static int snd_sb_csp_stop(struct snd_sb_csp * p)
+ 	spin_unlock(&p->chip->reg_lock);
+ 
+ 	/* restore PCM volume */
++	spin_lock_irqsave(&p->chip->mixer_lock, flags);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
+ 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
