@@ -2,114 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CD73C997D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B315F3C9987
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 09:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240288AbhGOHUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 03:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        id S240304AbhGOHWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 03:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbhGOHT7 (ORCPT
+        with ESMTP id S231718AbhGOHWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:19:59 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBD6C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 00:17:06 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3vcE-00052b-0e; Thu, 15 Jul 2021 09:17:02 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3vcD-0007wJ-Cc; Thu, 15 Jul 2021 09:17:01 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m3vcD-0006U3-BJ; Thu, 15 Jul 2021 09:17:01 +0200
-Date:   Thu, 15 Jul 2021 09:16:58 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.13 024/108] ARM: dts: imx25-pinfunc: Fix gpio
- function name for pads GPIO_[A-F]
-Message-ID: <20210715071658.mwcve4wghdoalspk@pengutronix.de>
-References: <20210714193800.52097-1-sashal@kernel.org>
- <20210714193800.52097-24-sashal@kernel.org>
- <20210714203550.zlbvfh6rfnah6iir@pengutronix.de>
- <YO9QKRUOT0Kg0jZ9@sashalap>
+        Thu, 15 Jul 2021 03:22:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C24EC06175F;
+        Thu, 15 Jul 2021 00:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nmWxpA1sCjqxwnvgA3+hGJUbUWfCQNUSURcBD/p+N14=; b=AVWv5ghoR5f4WSYT3U7YMorrvt
+        wwe3fegYbQdGbhgWe03oz6C/36QL+6uH8BO0nTkOXsqdbkKX3z8E9zxcZ4tASoBzzukz22LugTva4
+        GJG+Ilb9qPr8ckbp9R81OuNYGLgeXjHCZjjQ4bddUWXZ5qILfHoAtf2z9FQSJFu8Hqn5hlcV1M7OM
+        7oa0+Pou/K/DnlNbLhEOfP6YSkd3u68K2Jjwox3S4llQkBtYgVXxeA+D8LOxDLGRpfwGexIJehfH6
+        wLtX4az4dWbeQr6lCXUXzfAIpgyNHGfnkumwmPVZyl/E5z49iZnTiZMz7LaJQnvU8KLhvjt8m3QBP
+        kH8EzDaA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m3vcB-0035gL-OX; Thu, 15 Jul 2021 07:17:10 +0000
+Date:   Thu, 15 Jul 2021 08:16:59 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
+        osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] block: move disk announce work from
+ register_disk() to a helper
+Message-ID: <YO/g69V42uqtbeJ5@infradead.org>
+References: <20210715045531.420201-1-mcgrof@kernel.org>
+ <20210715045531.420201-3-mcgrof@kernel.org>
+ <YO/eRW4VL1UFlNS5@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yqkwbe5xcciyc3ar"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YO9QKRUOT0Kg0jZ9@sashalap>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <YO/eRW4VL1UFlNS5@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 15, 2021 at 08:05:41AM +0100, Christoph Hellwig wrote:
+> On Wed, Jul 14, 2021 at 09:55:27PM -0700, Luis Chamberlain wrote:
+> > This moves quite a bit of code which does one thing into a helper.
+> > We currently do not check for errors but we may decide that might
+> > be desirable later.
+> > 
+> > This also makes the code easier to read.
+> > 
+> > This change has no functional changes.
+> 
+> On it's own I don't really see the point of moving two function
+> calls and a comment into a separate helper, but I'll see where this
+> series goes..
 
---yqkwbe5xcciyc3ar
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jul 14, 2021 at 04:59:21PM -0400, Sasha Levin wrote:
-> On Wed, Jul 14, 2021 at 10:35:50PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Wed, Jul 14, 2021 at 03:36:36PM -0400, Sasha Levin wrote:
-> > > From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > >=20
-> > > [ Upstream commit e0cdd26af8eb9001689a4cde4f72c61c1c4b06be ]
-> > >=20
-> > > The pinfunc definitions used GPIO_A as function instead of GPIO_1_0 as
-> > > done for all the other pins with GPIO functionality. Fix for consiste=
-ncy.
-> > >=20
-> > > There are no mainline users that needs adaption.
-> > >=20
-> > > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > > Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> >=20
-> > I'm not convinced it's a good idea to take this patch for stable.
-> > in-tree users are unaffected and the only effect this can have on
-> > out-of-tree users is to break them. So the gain of having this is not
-> > positive.
-> >=20
-> > Am I missing something?
->=20
-> Hm, if those definitions don't have an in-tree users, why are they still
-> around to begin with?
-
-It's hardware description and out-of-tree dts might make use of it. Even
-if no in-tree user benefits, it's IMO better to have this included, but
-I admit you could judge differently here.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---yqkwbe5xcciyc3ar
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDv4OcACgkQwfwUeK3K
-7An2Fgf/ddo/to5QAC9EOSvn7Cfd5AFD82Soed00daFgBCoCP3tGH3gbYVV3kzh3
-ChYWoYMQCN1e6GZ8qYIC3vNm0iSuJSbrosMcIqJnowjOwitM8eTyykGLSXlqrArI
-qOnQMgqc1pEma07mjoJDaMTEWSHssncYLcbAEe+I+ygXDrcb4r/ApV6+Ag3502iW
-kA7YEJRZPaGCzN2+pCtoYF3ZyCC7zytQewW0gWV5eSKvwFlEks6UunzY7koQGfGL
-XTjKypKN5u/dqgmk+RSFYNYMZTv2Sr01skvf1V5RkIpTs/UsQSopZPCMJbIHgZH+
-Th37WM7QEP+1Qg7qKZA7lDtHdGujXg==
-=moso
------END PGP SIGNATURE-----
-
---yqkwbe5xcciyc3ar--
+Looking at the whole context I still can't see a good reason for
+this helper.
