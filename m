@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211D13CA44F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107913CA457
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 19:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhGOR2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 13:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235712AbhGOR2r (ORCPT
+        id S230026AbhGORaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 13:30:19 -0400
+Received: from mail-io1-f46.google.com ([209.85.166.46]:40643 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhGORaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 13:28:47 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEC7C0613E4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 10:25:53 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id w194so7533506oie.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 10:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
-        b=A07qw47jpyx7/pJf1ZS9aQv4pD7PiHBZWlsl9UoiurRqqc+7ZndQI51YdaaD0nkecu
-         Qd4i+G02coH8O2I/r6ZupOF8oYSIAoIwVq4zkuCtuhDJYsbynWGQdegcG7aq+QxGg/bp
-         poyp2DbaibSeABlojQr/pIAqMWExNaHg4RIE+IQzBlXdCiQq16Yp/UqkBXwITYu4DgIP
-         XTs1gXkC7Br62pPmJXs/2nF+jRhXCAs3iAxTxuy51YthTghMWE/kONdSGZKCG8sWM+Ev
-         WU1ATEDaIH5W63c7UQCvZTdM21+mq9I9FOl7BCTb650pCRFEJMZ521zklByg85zlNwmj
-         7b/w==
+        Thu, 15 Jul 2021 13:30:17 -0400
+Received: by mail-io1-f46.google.com with SMTP id l5so7391627iok.7;
+        Thu, 15 Jul 2021 10:27:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
-        b=I0qUwwE1kJaQr4QMgXTKQbTj0sYDdMejNg0K8OlpGyP3BzZQ3GjTJVHPDcYtyjonBd
-         uIo1uNqsQG8igxdQXX7SmHxLJN9DoA58NLnWCFW5Z3v5P0hmqZGAskQc+IVfsu0rbnRt
-         Xh50lhS9SRQRM1yogphQYCzN/7jZKaZJocQVqetm4lR5no9XirzuwQxKB0ujWwe7lrZs
-         NgWU30ijYBUuJJyxNat7eUsCqQ24m5wOVAXSa0/RVFTYvv/n5JKSrOIEhc1CF3jax5iz
-         PF5fPsd3fcz+1gZjILN+hqAFpqMyT/gJbQzWtiB72Yquc5Dfg14ggi8sGrwPR7RDDw8X
-         njHQ==
-X-Gm-Message-State: AOAM532R/Hw55RxsHoXKS0wHUmo1KSseBNS4erM5U6zEjWSM+hJeguIl
-        /PXPFwn1JMyf/JstLTvLQpjc83rdoU5in8meoN7md8Gu8tE=
-X-Google-Smtp-Source: ABdhPJyZMrq1Z7I3pjjmyAtUHW3ABh0oEghTe77F5dAxRk/llsByjQhtZ30eIUOoh7sIooPsLTy5+nPJ1BCNgIavtsM=
-X-Received: by 2002:a17:90b:d8f:: with SMTP id bg15mr10963237pjb.152.1626369941880;
- Thu, 15 Jul 2021 10:25:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DohR+1i8O/Ca9VBCwrtBoD9xd67cOkMh3anA0GO0rf4=;
+        b=tC/npXTmrN2pGZOkO4nl25jwdH7D5Vf0rFwg5DuO82tspat3/zYVmJYdHIr2I5TnYl
+         fLV6ltsvcFCRbuwlYpz1Q98zIgchLZzK8rQSjVTgPN51ODH1e5LLrD2PiP6yzFF9bUfG
+         BCPd3DjOtumquuAT+UP9GOvMHkuE52ODKV8Ot5b8+m/Suk2vGQvikkY75fBy1IaDITM7
+         3hM2KfxUfHS7YiGKFX/qv+Oz93+GhswqP7CihT6TBPW0NjPdJwS2bh3e0bIzaYHVCd8E
+         YHf6TBHdvpsECpSNIZxIPCOrlnsghyUyZZ6EC9+uRHZaZAvDBpPAr9Z3hToD5NpWt9/z
+         au5g==
+X-Gm-Message-State: AOAM531QzRsGMEK3YafL/KanDK+o5mQh6Y511Gvo/bK/XUE+2QuzUMWN
+        kNuHH04UGutR4XfpqGyN0g==
+X-Google-Smtp-Source: ABdhPJxpacVeR1g0h3tK5DpkkdcGYkmcfxQhiQGPGBMSNVCRM/zVFgZ5cUX0sm4Ft4KA2M1Tr599wQ==
+X-Received: by 2002:a05:6638:41a7:: with SMTP id az39mr5058581jab.52.1626370044144;
+        Thu, 15 Jul 2021 10:27:24 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id r1sm2803809ilt.37.2021.07.15.10.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 10:27:23 -0700 (PDT)
+Received: (nullmailer pid 1284108 invoked by uid 1000);
+        Thu, 15 Jul 2021 17:27:20 -0000
+Date:   Thu, 15 Jul 2021 11:27:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Taniya Das <tdas@codeaurora.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/7] dt-bindings: clock: qcom: Update license for GCC
+ SC7280
+Message-ID: <20210715172720.GA1284055@robh.at.kernel.org>
+References: <1626189143-12957-1-git-send-email-tdas@codeaurora.org>
+ <1626189143-12957-2-git-send-email-tdas@codeaurora.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:fc85:0:0:0:0 with HTTP; Thu, 15 Jul 2021 10:25:41
- -0700 (PDT)
-Reply-To: faty.muhamad@gmail.com
-From:   Ms Fatima Muhammad <general.infofederalreserve@gmail.com>
-Date:   Thu, 15 Jul 2021 17:25:41 +0000
-Message-ID: <CAJzJz_Dwu6rUxmnqq1QV9qD4hugxutFJZuENGUwx7RamXm5txA@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626189143-12957-2-git-send-email-tdas@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+On Tue, 13 Jul 2021 20:42:17 +0530, Taniya Das wrote:
+> Update BSD license for GCC clock ids.
+> 
+> Fixes: 87a3d523b38c ("dt-bindings: clock: Add SC7280 GCC clock binding")
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> ---
+>  include/dt-bindings/clock/qcom,gcc-sc7280.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-My name is Ms.Fatima Muhammad., Please forgive me for stressing you
-with my predicaments and I sorry to approach you through this media
-because is serves the fastest means of  my communication right now,
-
-I came across your Email from my personal search and I decided to
-contact you believing you will be honest to fulfill my business
-proposal which I believe that will be a very good opportunity for both
-of us. Please it is my pleasure to contact you today for a business
-partnership investments projects worth $4.6 million USD which I intend
-to establish in your country..
-
-Pls If this business proposal offends your moral and ethic values do
-accept my apology. therefore kindly contact me immediately if you are
-interested for more details.
-
-Thank you for your wiliness to help me
-Yours Sincerely Fatima Muhammad
+Acked-by: Rob Herring <robh@kernel.org>
