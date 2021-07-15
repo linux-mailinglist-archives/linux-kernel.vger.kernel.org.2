@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80513CA8DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFF53CAB68
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242212AbhGOTDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:03:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59262 "EHLO mail.kernel.org"
+        id S241167AbhGOTUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:20:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242383AbhGOSzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EB40613CA;
-        Thu, 15 Jul 2021 18:52:11 +0000 (UTC)
+        id S241945AbhGOTFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31C326140E;
+        Thu, 15 Jul 2021 19:01:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375132;
-        bh=c9EGxwS9gjmZCWVO88d9ScpV/GD7O5F8EUpe4LvpiQ4=;
+        s=korg; t=1626375663;
+        bh=ycKDcYRU63u++MEQW5GMUFIHAdewgNEfveiRYcO5XWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iyuiTOsR+GuDwpaQIdcTkljO2+I3SmDZdKw3iNKBRlLCEDyGTGqK3QpoT9TheR1wb
-         Y1gIiPL6cpsvbdHK/RdulBfSNZU5/c2Sf6xP6+PPEDsxYIJPu8VuT9vzHeNbBFhOP3
-         gT6IhGTWV7MmOux+JAa7XwbQZQ1LtT3DBED+pISg=
+        b=NcST4rcnUASwVuGkfZOkOV/K7kxtVjZirmwymaK5/FwXT2ahfFk7kcG7MjOBPQMox
+         h2ZTC+vJFjZUdFsmrVP7mT5+ExiA0Bl3UJmzlOIsQxDS/AWrCW4A/Wezk3cYbSiGsl
+         puzO6qU/YyDQ9SfJpJZUBDFHHIQgh5VUL21KQpTA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Roman Stratiienko <r.stratiienko@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 5.10 173/215] clocksource/arm_arch_timer: Improve Allwinner A64 timer workaround
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.12 183/242] mmc: sdhci-acpi: Disable write protect detection on Toshiba Encore 2 WT8-B
 Date:   Thu, 15 Jul 2021 20:39:05 +0200
-Message-Id: <20210715182630.103365088@linuxfoundation.org>
+Message-Id: <20210715182625.545157496@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Holland <samuel@sholland.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 8b33dfe0ba1c84c1aab2456590b38195837f1e6e upstream.
+commit 94ee6782e045645abd9180ab9369b01293d862bd upstream.
 
-Bad counter reads are experienced sometimes when bit 10 or greater rolls
-over. Originally, testing showed that at least 10 lower bits would be
-set to the same value during these bad reads. However, some users still
-reported time skips.
+On the Toshiba Encore 2 WT8-B the  microSD slot always reports the card
+being write-protected even though microSD cards do not have a write-protect
+switch at all.
 
-Wider testing revealed that on some chips, occasionally only the lowest
-9 bits would read as the anomalous value. During these reads (which
-still happen only when bit 10), bit 9 would read as the correct value.
+Add a new DMI_QUIRK_SD_NO_WRITE_PROTECT quirk entry to sdhci-acpi.c's
+DMI quirk table for this.
 
-Reduce the mask by one bit to cover these cases as well.
-
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20210503092157.5689-1-hdegoede@redhat.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Cc: stable@vger.kernel.org
-Fixes: c950ca8c35ee ("clocksource/drivers/arch_timer: Workaround for Allwinner A64 timer instability")
-Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210515021439.55316-1-samuel@sholland.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clocksource/arm_arch_timer.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-acpi.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -352,7 +352,7 @@ static u64 notrace arm64_858921_read_cnt
- 	do {								\
- 		_val = read_sysreg(reg);				\
- 		_retries--;						\
--	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
-+	} while (((_val + 1) & GENMASK(8, 0)) <= 1 && _retries);	\
- 									\
- 	WARN_ON_ONCE(!_retries);					\
- 	_val;								\
+--- a/drivers/mmc/host/sdhci-acpi.c
++++ b/drivers/mmc/host/sdhci-acpi.c
+@@ -820,6 +820,17 @@ static const struct dmi_system_id sdhci_
+ 		},
+ 		.driver_data = (void *)DMI_QUIRK_SD_NO_WRITE_PROTECT,
+ 	},
++	{
++		/*
++		 * The Toshiba WT8-B's microSD slot always reports the card being
++		 * write-protected.
++		 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "TOSHIBA ENCORE 2 WT8-B"),
++		},
++		.driver_data = (void *)DMI_QUIRK_SD_NO_WRITE_PROTECT,
++	},
+ 	{} /* Terminating entry */
+ };
+ 
 
 
