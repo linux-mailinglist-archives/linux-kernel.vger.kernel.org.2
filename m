@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C083CAB47
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775A23CA8E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhGOTSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:18:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38158 "EHLO mail.kernel.org"
+        id S242393AbhGOTDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:03:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242400AbhGOTDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:03:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6D2B613D7;
-        Thu, 15 Jul 2021 18:59:38 +0000 (UTC)
+        id S240968AbhGOSxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:53:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE489613E5;
+        Thu, 15 Jul 2021 18:50:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375579;
-        bh=qkBu6LtwSHW6e9gJ6y7H1ZaKH79w7EKUPovML+t5HBQ=;
+        s=korg; t=1626375048;
+        bh=HYDQetBH2oz2Z5rQyLku+S2/4LCgy/wuLlApelNN6dQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lkuBn3fGf2zFK3zEHgRDuE2jHSrJd5LyAmNaWo6vtEHwrMYagSCgcO9V15aEdOqSk
-         tUzfpfP6lG7v8vetacGXifuZX8D0r6paZqYKBY2MVNfDMl+RD/IM47rhpSsGfPwsiS
-         X/3WzHju2KgJ3xUvlvDuRtwzy6amSBlM269cwBxI=
+        b=iUKK+RrojUmH2l/0r+y+rM6m2Xl86VKRUI+yjD3TnEkmNhbWFL2CkuYCXcBN2/tmy
+         yZfu6oKwam36j21Ey3b4NtHaBnuJZHa5uSAMmVlb/d51O9KR9y59TodRjH5MSu22WG
+         4hE4frr5h/gICGvVRXTWZPaSivxVQOD2VVl8NBXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 146/242] sched/fair: Ensure _sum and _avg values stay consistent
+        stable@vger.kernel.org, William Wu <william.wu@rock-chips.com>,
+        Cameron Nemo <cnemo@tutanota.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH 5.10 136/215] arm64: dts: rockchip: add rk3328 dwc3 usb controller node
 Date:   Thu, 15 Jul 2021 20:38:28 +0200
-Message-Id: <20210715182618.902752060@linuxfoundation.org>
+Message-Id: <20210715182623.598957915@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,64 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+From: Cameron Nemo <cnemo@tutanota.com>
 
-[ Upstream commit 1c35b07e6d3986474e5635be566e7bc79d97c64d ]
+commit 44dd5e2106dc2fd01697b539085818d1d1c58df0 upstream.
 
-The _sum and _avg values are in general sync together with the PELT
-divider. They are however not always completely in perfect sync,
-resulting in situations where _sum gets to zero while _avg stays
-positive. Such situations are undesirable.
+RK3328 SoCs have one USB 3.0 OTG controller which uses DWC_USB3
+core's general architecture. It can act as static xHCI host
+controller, static device controller, USB 3.0/2.0 OTG basing
+on ID of USB3.0 PHY.
 
-This comes from the fact that PELT will increase period_contrib, also
-increasing the PELT divider, without updating _sum and _avg values to
-stay in perfect sync where (_sum == _avg * divider). However, such PELT
-change will never lower _sum, making it impossible to end up in a
-situation where _sum is zero and _avg is not.
+Signed-off-by: William Wu <william.wu@rock-chips.com>
+Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://lore.kernel.org/r/20210209192350.7130-7-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Therefore, we need to ensure that when subtracting load outside PELT,
-that when _sum is zero, _avg is also set to zero. This occurs when
-(_sum < _avg * divider), and the subtracted (_avg * divider) is bigger
-or equal to the current _sum, while the subtracted _avg is smaller than
-the current _avg.
-
-Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Link: https://lore.kernel.org/r/20210624111815.57937-1-odin@uged.al
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 20ac5dff9a0c..572f312cc803 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3665,15 +3665,15 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -984,6 +984,25 @@
+ 		status = "disabled";
+ 	};
  
- 		r = removed_load;
- 		sub_positive(&sa->load_avg, r);
--		sub_positive(&sa->load_sum, r * divider);
-+		sa->load_sum = sa->load_avg * divider;
- 
- 		r = removed_util;
- 		sub_positive(&sa->util_avg, r);
--		sub_positive(&sa->util_sum, r * divider);
-+		sa->util_sum = sa->util_avg * divider;
- 
- 		r = removed_runnable;
- 		sub_positive(&sa->runnable_avg, r);
--		sub_positive(&sa->runnable_sum, r * divider);
-+		sa->runnable_sum = sa->runnable_avg * divider;
- 
- 		/*
- 		 * removed_runnable is the unweighted version of removed_load so we
--- 
-2.30.2
-
++	usbdrd3: usb@ff600000 {
++		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
++		reg = <0x0 0xff600000 0x0 0x100000>;
++		interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru SCLK_USB3OTG_REF>, <&cru SCLK_USB3OTG_SUSPEND>,
++			 <&cru ACLK_USB3OTG>;
++		clock-names = "ref_clk", "suspend_clk",
++			      "bus_clk";
++		dr_mode = "otg";
++		phy_type = "utmi_wide";
++		snps,dis-del-phy-power-chg-quirk;
++		snps,dis_enblslpm_quirk;
++		snps,dis-tx-ipgap-linecheck-quirk;
++		snps,dis-u2-freeclk-exists-quirk;
++		snps,dis_u2_susphy_quirk;
++		snps,dis_u3_susphy_quirk;
++		status = "disabled";
++	};
++
+ 	gic: interrupt-controller@ff811000 {
+ 		compatible = "arm,gic-400";
+ 		#interrupt-cells = <3>;
 
 
