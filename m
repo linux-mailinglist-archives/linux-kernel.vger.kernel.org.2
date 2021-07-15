@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D63B3CA828
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE803CA5C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238268AbhGOS6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55646 "EHLO mail.kernel.org"
+        id S232539AbhGOSo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:44:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238650AbhGOSwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:52:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7187B613DF;
-        Thu, 15 Jul 2021 18:49:14 +0000 (UTC)
+        id S229937AbhGOSoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:44:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A69861396;
+        Thu, 15 Jul 2021 18:41:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374954;
-        bh=c7U7K21MSxuI/vvEFYnXwHORNGAgLho1Vrngve241q8=;
+        s=korg; t=1626374488;
+        bh=HDfHPYQwwpyTICElBbarl1+e5AjEczXziSteyeJ7H24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hFRvgVfpQJHe7t/lVpz8G8ZMvtrYYUjfnJLInQ/PQm2GMgr4thKAAjMlbzcPWbBXR
-         MCntG/QYoqq+brtTURODyRbuWz/i8xw7KmQBhDTu50gFO8ib/U1JYoGzbkSGf/+FEm
-         3zMMr1fh2hCsI4fJH41VIU0BxARFVrrKSTjo3rak=
+        b=Mg0iTrJQoXNR9vLu1Mw0c6NojZRJXN0awkB0b0goQZ34ZkfdmOpaLMmK0j2yk2V/f
+         Nhe7+tAlhhOCoHnN2CYeDSO9lwt8c6Jjp/d9ygzVmxe5Xu5kEWb7V2XxeULuJcLXID
+         Hc8tpWQ+Mx5KwhJ9zQwR2rnYGoiNr5/nSG1yHatw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pascal Terjan <pterjan@google.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 095/215] rtl8xxxu: Fix device info for RTL8192EU devices
+Subject: [PATCH 5.4 020/122] clk: renesas: r8a77995: Add ZA2 clock
 Date:   Thu, 15 Jul 2021 20:37:47 +0200
-Message-Id: <20210715182616.125979707@linuxfoundation.org>
+Message-Id: <20210715182454.528032720@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,145 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pascal Terjan <pterjan@google.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit c240b044edefa3c3af4014a4030e017dd95b59a1 ]
+[ Upstream commit 790c06cc5df263cdaff748670cc65958c81b0951 ]
 
-Based on 2001:3319 and 2357:0109 which I used to test the fix and
-0bda:818b and 2357:0108 for which I found efuse dumps online.
+R-Car D3 ZA2 clock is from PLL0D3 or S0,
+and it can be controlled by ZA2CKCR.
+It is needed for R-Car Sound, but is not used so far.
+Using default settings is very enough at this point.
+This patch adds it by DEF_FIXED().
 
-== 2357:0109 ==
-=== Before ===
-Vendor: Realtek
-Product: \x03802.11n NI
-Serial:
-=== After ===
-Vendor: Realtek
-Product: 802.11n NIC
-Serial not available.
-
-== 2001:3319 ==
-=== Before ===
-Vendor: Realtek
-Product: Wireless N
-Serial: no USB Adap
-=== After ===
-Vendor: Realtek
-Product: Wireless N Nano USB Adapter
-Serial not available.
-
-Signed-off-by: Pascal Terjan <pterjan@google.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210424172959.1559890-1-pterjan@google.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87pmxclrmy.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  | 11 +---
- .../realtek/rtl8xxxu/rtl8xxxu_8192e.c         | 59 +++++++++++++++++--
- 2 files changed, 56 insertions(+), 14 deletions(-)
+ drivers/clk/renesas/r8a77995-cpg-mssr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-index d6d1be4169e5..acb6b0cd3667 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-@@ -853,15 +853,10 @@ struct rtl8192eu_efuse {
- 	u8 usb_optional_function;
- 	u8 res9[2];
- 	u8 mac_addr[ETH_ALEN];		/* 0xd7 */
--	u8 res10[2];
--	u8 vendor_name[7];
--	u8 res11[2];
--	u8 device_name[0x0b];		/* 0xe8 */
--	u8 res12[2];
--	u8 serial[0x0b];		/* 0xf5 */
--	u8 res13[0x30];
-+	u8 device_info[80];
-+	u8 res11[3];
- 	u8 unknown[0x0d];		/* 0x130 */
--	u8 res14[0xc3];
-+	u8 res12[0xc3];
- };
+diff --git a/drivers/clk/renesas/r8a77995-cpg-mssr.c b/drivers/clk/renesas/r8a77995-cpg-mssr.c
+index 962bb337f2e7..315f0d4bc420 100644
+--- a/drivers/clk/renesas/r8a77995-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a77995-cpg-mssr.c
+@@ -75,6 +75,7 @@ static const struct cpg_core_clk r8a77995_core_clks[] __initconst = {
+ 	DEF_RATE(".oco",       CLK_OCO,            8 * 1000 * 1000),
  
- struct rtl8xxxu_reg8val {
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-index 9f1f93d04145..199e7e031d7d 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-@@ -554,9 +554,43 @@ rtl8192e_set_tx_power(struct rtl8xxxu_priv *priv, int channel, bool ht40)
- 	}
- }
- 
-+static void rtl8192eu_log_next_device_info(struct rtl8xxxu_priv *priv,
-+					   char *record_name,
-+					   char *device_info,
-+					   unsigned int *record_offset)
-+{
-+	char *record = device_info + *record_offset;
-+
-+	/* A record is [ total length | 0x03 | value ] */
-+	unsigned char l = record[0];
-+
-+	/*
-+	 * The whole device info section seems to be 80 characters, make sure
-+	 * we don't read further.
-+	 */
-+	if (*record_offset + l > 80) {
-+		dev_warn(&priv->udev->dev,
-+			 "invalid record length %d while parsing \"%s\" at offset %u.\n",
-+			 l, record_name, *record_offset);
-+		return;
-+	}
-+
-+	if (l >= 2) {
-+		char value[80];
-+
-+		memcpy(value, &record[2], l - 2);
-+		value[l - 2] = '\0';
-+		dev_info(&priv->udev->dev, "%s: %s\n", record_name, value);
-+		*record_offset = *record_offset + l;
-+	} else {
-+		dev_info(&priv->udev->dev, "%s not available.\n", record_name);
-+	}
-+}
-+
- static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
- {
- 	struct rtl8192eu_efuse *efuse = &priv->efuse_wifi.efuse8192eu;
-+	unsigned int record_offset;
- 	int i;
- 
- 	if (efuse->rtl_id != cpu_to_le16(0x8129))
-@@ -604,12 +638,25 @@ static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
- 	priv->has_xtalk = 1;
- 	priv->xtalk = priv->efuse_wifi.efuse8192eu.xtal_k & 0x3f;
- 
--	dev_info(&priv->udev->dev, "Vendor: %.7s\n", efuse->vendor_name);
--	dev_info(&priv->udev->dev, "Product: %.11s\n", efuse->device_name);
--	if (memchr_inv(efuse->serial, 0xff, 11))
--		dev_info(&priv->udev->dev, "Serial: %.11s\n", efuse->serial);
--	else
--		dev_info(&priv->udev->dev, "Serial not available.\n");
-+	/*
-+	 * device_info section seems to be laid out as records
-+	 * [ total length | 0x03 | value ] so:
-+	 * - vendor length + 2
-+	 * - 0x03
-+	 * - vendor string (not null terminated)
-+	 * - product length + 2
-+	 * - 0x03
-+	 * - product string (not null terminated)
-+	 * Then there is one or 2 0x00 on all the 4 devices I own or found
-+	 * dumped online.
-+	 * As previous version of the code handled an optional serial
-+	 * string, I now assume there may be a third record if the
-+	 * length is not 0.
-+	 */
-+	record_offset = 0;
-+	rtl8192eu_log_next_device_info(priv, "Vendor", efuse->device_info, &record_offset);
-+	rtl8192eu_log_next_device_info(priv, "Product", efuse->device_info, &record_offset);
-+	rtl8192eu_log_next_device_info(priv, "Serial", efuse->device_info, &record_offset);
- 
- 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_EFUSE) {
- 		unsigned char *raw = priv->efuse_wifi.raw;
+ 	/* Core Clock Outputs */
++	DEF_FIXED("za2",       R8A77995_CLK_ZA2,   CLK_PLL0D3,     2, 1),
+ 	DEF_FIXED("z2",        R8A77995_CLK_Z2,    CLK_PLL0D3,     1, 1),
+ 	DEF_FIXED("ztr",       R8A77995_CLK_ZTR,   CLK_PLL1,       6, 1),
+ 	DEF_FIXED("zt",        R8A77995_CLK_ZT,    CLK_PLL1,       4, 1),
 -- 
 2.30.2
 
