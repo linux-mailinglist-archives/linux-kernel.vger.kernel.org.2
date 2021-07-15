@@ -2,68 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ED93CA0D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F773CA0DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 16:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236484AbhGOOoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 10:44:37 -0400
-Received: from mga18.intel.com ([134.134.136.126]:9884 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231210AbhGOOog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 10:44:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="197823011"
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="197823011"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 07:41:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
-   d="scan'208";a="495468444"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 15 Jul 2021 07:41:30 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 71C05262; Thu, 15 Jul 2021 17:41:55 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 1/1] auxdisplay: charlcd: Drop unneeded initializers and switch to C99 style
-Date:   Thu, 15 Jul 2021 17:41:52 +0300
-Message-Id: <20210715144152.83582-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S237209AbhGOOo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 10:44:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50401 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236981AbhGOOo6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:44:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626360125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7pcIJmX3PG+chVFQ1t6vFLhpa+n9TBg5nXXIlj2PiO4=;
+        b=TTYHjyzNHTSNT5b/iIy81G9dw7b+S5rt88g5rMt9Obg71HmeY6L/UgWO8vRdnaollNaPaB
+        ZCylUKMERnaRHa6+BaqXeufDKNP9HdqHTxW6/uS13wyAjZ6KO95lqiAbuwOdSEqtjrnrJ/
+        2oSfNOudOPPAHe/J/TfGu94eCyusIXE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-TU3V0QtzOpi7WKDdyzvztA-1; Thu, 15 Jul 2021 10:42:01 -0400
+X-MC-Unique: TU3V0QtzOpi7WKDdyzvztA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B94EA1023F4B;
+        Thu, 15 Jul 2021 14:42:00 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6909960C9F;
+        Thu, 15 Jul 2021 14:42:00 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes for Linux 5.14-rc2
+Date:   Thu, 15 Jul 2021 10:41:59 -0400
+Message-Id: <20210715144159.1132260-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For structure initializers the fields are 0 (or NULL) by default, so
-there is no need to fill them explicitly. Besides that, much easier
-to read when initializers use C99 style. Hence, convert to C99 style
-as well.
+Linus,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: completely rewrote patch (Willy)
- drivers/auxdisplay/charlcd.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+The following changes since commit b8917b4ae44d1b945f6fba3d8ee6777edb44633b:
 
-diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
-index 24fd6f369ebe..304accde365c 100644
---- a/drivers/auxdisplay/charlcd.c
-+++ b/drivers/auxdisplay/charlcd.c
-@@ -637,9 +637,7 @@ static int panel_notify_sys(struct notifier_block *this, unsigned long code,
- }
- 
- static struct notifier_block panel_notifier = {
--	panel_notify_sys,
--	NULL,
--	0
-+	.notifier_call = panel_notify_sys,
- };
- 
- int charlcd_register(struct charlcd *lcd)
--- 
-2.30.2
+  Merge tag 'kvmarm-5.14' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD (2021-06-25 11:24:24 -0400)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to d951b2210c1ad2dc08345bb8d97e5a172a15261e:
+
+  KVM: selftests: smm_test: Test SMM enter from L2 (2021-07-15 10:19:44 -0400)
+
+----------------------------------------------------------------
+* Allow again loading KVM on 32-bit non-PAE builds
+
+* Fixes for host SMIs on AMD
+
+* Fixes for guest SMIs on AMD
+
+* Fixes for selftests on s390 and ARM
+
+* Fix memory leak
+
+* Enforce no-instrumentation area on vmentry when hardware
+  breakpoints are in use.
+
+----------------------------------------------------------------
+Christian Borntraeger (2):
+      KVM: selftests: introduce P44V64 for z196 and EC12
+      KVM: selftests: do not require 64GB in set_memory_region_test
+
+Kefeng Wang (1):
+      KVM: mmio: Fix use-after-free Read in kvm_vm_ioctl_unregister_coalesced_mmio
+
+Lai Jiangshan (1):
+      KVM: X86: Disable hardware breakpoints unconditionally before kvm_x86->run()
+
+Like Xu (1):
+      KVM: x86/pmu: Clear anythread deprecated bit when 0xa leaf is unsupported on the SVM
+
+Marc Zyngier (1):
+      KVM: selftests: x86: Address missing vm_install_exception_handler conversions
+
+Maxim Levitsky (3):
+      KVM: SVM: #SMI interception must not skip the instruction
+      KVM: SVM: remove INIT intercept handler
+      KVM: SVM: add module param to control the #SMI interception
+
+Paolo Bonzini (1):
+      Merge tag 'kvm-s390-master-5.14-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux into HEAD
+
+Pavel Skripkin (1):
+      kvm: debugfs: fix memory leak in kvm_create_vm_debugfs
+
+Ricardo Koller (1):
+      KVM: selftests: Address extra memslot parameters in vm_vaddr_alloc
+
+Sean Christopherson (7):
+      Revert "KVM: x86: WARN and reject loading KVM if NX is supported but not enabled"
+      KVM: x86: Use guest MAXPHYADDR from CPUID.0x8000_0008 iff TDP is enabled
+      KVM: x86: Use kernel's x86_phys_bits to handle reduced MAXPHYADDR
+      KVM: x86/mmu: Do not apply HPA (memory encryption) mask to GPAs
+      KVM: SVM: Revert clearing of C-bit on GPA in #NPF handler
+      KVM: SVM: Return -EFAULT if copy_to_user() for SEV mig packet header fails
+      KVM: SVM: Fix sev_pin_memory() error checks in SEV migration utilities
+
+Vitaly Kuznetsov (6):
+      KVM: nSVM: Check the value written to MSR_VM_HSAVE_PA
+      KVM: nSVM: Check that VM_HSAVE_PA MSR was set before VMRUN
+      KVM: nSVM: Introduce svm_copy_vmrun_state()
+      KVM: nSVM: Fix L1 state corruption upon return from SMM
+      KVM: nSVM: Restore nested control upon leaving SMM
+      KVM: selftests: smm_test: Test SMM enter from L2
+
+Yu Zhang (1):
+      KVM: VMX: Remove vmx_msr_index from vmx.h
+
+ arch/x86/kvm/cpuid.c                                 | 30 +++++++++--
+ arch/x86/kvm/mmu/mmu.c                               |  2 +
+ arch/x86/kvm/mmu/paging.h                            | 14 +++++
+ arch/x86/kvm/mmu/paging_tmpl.h                       |  4 +-
+ arch/x86/kvm/mmu/spte.h                              |  6 ---
+ arch/x86/kvm/svm/nested.c                            | 53 +++++++++++-------
+ arch/x86/kvm/svm/sev.c                               | 14 ++---
+ arch/x86/kvm/svm/svm.c                               | 77 ++++++++++++++++++++++++---
+ arch/x86/kvm/svm/svm.h                               |  5 ++
+ arch/x86/kvm/vmx/vmx.h                               |  2 -
+ arch/x86/kvm/x86.c                                   |  8 +--
+ tools/testing/selftests/kvm/include/kvm_util.h       |  3 +-
+ tools/testing/selftests/kvm/lib/aarch64/processor.c  |  2 +-
+ tools/testing/selftests/kvm/lib/guest_modes.c        | 16 ++++++
+ tools/testing/selftests/kvm/lib/kvm_util.c           |  5 ++
+ tools/testing/selftests/kvm/set_memory_region_test.c |  3 +-
+ tools/testing/selftests/kvm/x86_64/hyperv_features.c |  2 +-
+ tools/testing/selftests/kvm/x86_64/mmu_role_test.c   |  2 +-
+ tools/testing/selftests/kvm/x86_64/smm_test.c        | 70 +++++++++++++++++++++---
+ virt/kvm/coalesced_mmio.c                            |  2 +-
+ virt/kvm/kvm_main.c                                  |  2 +-
+ 21 files changed, 258 insertions(+), 64 deletions(-)
 
