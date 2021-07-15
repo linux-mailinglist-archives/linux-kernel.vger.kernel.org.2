@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406883CAB82
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DEA3CA91A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244901AbhGOTU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39756 "EHLO mail.kernel.org"
+        id S241922AbhGOTFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:05:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242663AbhGOTFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:05:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 339E56127C;
-        Thu, 15 Jul 2021 19:01:36 +0000 (UTC)
+        id S241428AbhGOSzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:55:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8BA6613CA;
+        Thu, 15 Jul 2021 18:52:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375696;
-        bh=s5hHcSw2lwzQd6yShPQcB+bG5BiV+Y/+hfnpVyQMXp4=;
+        s=korg; t=1626375167;
+        bh=sxeWXK9/YKizUNdUotgqt9AIZTxWnYMASNYAdk3TRhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aOcj8GIAxsmvjrschsl28LK2x9QGHovOA1atw25Jbs1IxjgmiMvZOX9ng3PtJZIjM
-         yWiaI6U3VfbMK8yTIrCrT11GTob+6NbNjRzvvNyGoE/g/o2KZwnbf7Ryc4FjpuQeJY
-         71FRAM2gbbuXBxVziDhJk/lNMZpamW2fQzkzWg0Q=
+        b=oBsOsOuW2XmQ1/VxAusUds/XobxwGh3Ucz58zzYH4uvdR+mVQ8VGdDb+uovXFRh4N
+         zqpYcjaBV9VOwXoillv8+HFkfjSEB+HM8yFvwBIp3iVfTlvJ8i2VYf1AtKMjj1Hgdg
+         TIQ/20B0Q3Dr3SB9CIiMg2B6Bit1xYmAnpOMv3yM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.12 196/242] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.10 186/215] selftests/lkdtm: Fix expected text for CR4 pinning
 Date:   Thu, 15 Jul 2021 20:39:18 +0200
-Message-Id: <20210715182627.722513643@linuxfoundation.org>
+Message-Id: <20210715182632.130526073@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-References: <20210715182551.731989182@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+References: <20210715182558.381078833@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,62 +38,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Kees Cook <keescook@chromium.org>
 
-commit fca41af18e10318e4de090db47d9fa7169e1bf2f upstream.
+commit c2eb472bbe25b3f360990f23b293b3fbadfa4bc0 upstream.
 
-fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
-which violates clang's CFI checking because fw_cfg_showrev()'s second
-parameter is 'struct attribute', whereas the ->show() member of 'struct
-kobj_structure' expects the second parameter to be of type 'struct
-kobj_attribute'.
+The error text for CR4 pinning changed. Update the test to match.
 
-$ cat /sys/firmware/qemu_fw_cfg/rev
-3
-
-$ dmesg | grep "CFI failure"
-[   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
-
-Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
-this would have been caught automatically by the incompatible pointer
-types compiler warning. Update fw_cfg_showrev() accordingly.
-
-Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1299
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Philippe Mathieu-Daudé <philmd@redhat.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: a13b9d0b9721 ("x86/cpu: Use pinning mask for CR4 bits needing to be 0")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210211194258.4137998-1-nathan@kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210623203936.3151093-3-keescook@chromium.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/firmware/qemu_fw_cfg.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ tools/testing/selftests/lkdtm/tests.txt |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/firmware/qemu_fw_cfg.c
-+++ b/drivers/firmware/qemu_fw_cfg.c
-@@ -299,15 +299,13 @@ static int fw_cfg_do_platform_probe(stru
- 	return 0;
- }
- 
--static ssize_t fw_cfg_showrev(struct kobject *k, struct attribute *a, char *buf)
-+static ssize_t fw_cfg_showrev(struct kobject *k, struct kobj_attribute *a,
-+			      char *buf)
- {
- 	return sprintf(buf, "%u\n", fw_cfg_rev);
- }
- 
--static const struct {
--	struct attribute attr;
--	ssize_t (*show)(struct kobject *k, struct attribute *a, char *buf);
--} fw_cfg_rev_attr = {
-+static const struct kobj_attribute fw_cfg_rev_attr = {
- 	.attr = { .name = "rev", .mode = S_IRUSR },
- 	.show = fw_cfg_showrev,
- };
+--- a/tools/testing/selftests/lkdtm/tests.txt
++++ b/tools/testing/selftests/lkdtm/tests.txt
+@@ -11,7 +11,7 @@ CORRUPT_LIST_ADD list_add corruption
+ CORRUPT_LIST_DEL list_del corruption
+ STACK_GUARD_PAGE_LEADING
+ STACK_GUARD_PAGE_TRAILING
+-UNSET_SMEP CR4 bits went missing
++UNSET_SMEP pinned CR4 bits changed:
+ DOUBLE_FAULT
+ CORRUPT_PAC
+ UNALIGNED_LOAD_STORE_WRITE
 
 
