@@ -2,129 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FEF3CAEB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408E53CAEB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 23:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhGOVoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 17:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbhGOVoC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231587AbhGOVoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 15 Jul 2021 17:44:02 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F665C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:41:08 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id e203-20020a4a55d40000b029025f4693434bso1912354oob.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 14:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pMBQraJZ8ntzei2ZnzEdJIwNKS8v1nqFRnGgzFn5jLg=;
-        b=Hl40AXoN0MfB1Bmre9spKLSxvGC/k7hlLhxzwR9IA3WoVhMtQNf4cLfIWIH2iYUbd5
-         dD6qfSPyJeUCC9XnR1PSloBrqGbgczUNFL/1BXAlQbF4WJIfMU3UwG8LsZ5zFTIkPFfK
-         7q9YjzQmWJQv/MfIaUhjPqaQMe/eElohbLFljVbNm1TabV/PUZL6hkxjCm5KNoFockTT
-         ws/dd6mox8ffJVCZyfNeAXC1y+LTxBP1sFiMSiGxSvo6iolVbsJ9llN2XjuUxYfYh5Yl
-         GW0XFautBsPZKYA8zUQ0yR0ZFZbGPH+99feIPSJPqQUGy3WNgsTlSgz8onTjMi+7gfg/
-         iu6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pMBQraJZ8ntzei2ZnzEdJIwNKS8v1nqFRnGgzFn5jLg=;
-        b=IoqnElI0CyZtl/e68zx24twRi193jrx0Am6hvlvmaN9T+f21AjbZWUhkOqdjnU5YTs
-         UWcLKJ5785y9b1rVDZSOQsIkA5dAX98/luRu/b7Fr0douCMN0b0YJHCyzIMT5MyTfxxf
-         V0aMRGrmBIDOYyz69WfTVenMeEYOmCMZDXvYnCNmRqbMS2WD9SIeS6Y5RIRnlE98rc9C
-         2+0PQoLRFRNtc9GVYRcUxihbOTZEIZRGyt6iw0JfnC8vYNgrG6vz59mZdBfiakYtdREe
-         0+lEi5YWDhBnDA0zKgUM+y21Sx4CRMiGrKBiooey/YM8SWC11S5meA93FmX4R8dfqqmq
-         49wg==
-X-Gm-Message-State: AOAM532CMw+8q9J0naevj2duJmvWHKawTzCg+WR68TSICzqo8o1QGOOj
-        IFtIDZddZryvEQzk8Y3UOu5rgeXP/otK2ixBb2DQbg==
-X-Google-Smtp-Source: ABdhPJw6wtdsZHT8j9lcIYWdhOvddAbbFMURjjuBNKz43pm8WcexZKYIUi1HkW4yKK35LxewMG5TUUYL5390DLDVOL4=
-X-Received: by 2002:a4a:18c2:: with SMTP id 185mr5085275ooo.6.1626385267576;
- Thu, 15 Jul 2021 14:41:07 -0700 (PDT)
+Received: from mail.kernel.org ([198.145.29.99]:43374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230500AbhGOVoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:44:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E15A9613C4;
+        Thu, 15 Jul 2021 21:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626385267;
+        bh=boeoRdAwNjY3dPChiEWxtb28FAMFJvybc2RVJmTuJ+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OJqjvZ4qBb7X9gAyHeWJ58uumLKgqEEE7n0okAC0XG1em4DEqagD3RG7V7jUtyylG
+         ZTr2gF11LZeIjK2bYO1sdgEz8aEYHG9S3/ahbXJUB/9PTlaNYL7kncOpQBQr3ssGzV
+         zbVfus+wHhYi0w7loKcaPkIuL3wId/szIqvVaZxpCOxrpxNDEak9HR0gVOuPsV52EK
+         5k6Umk3h7mLoKT+WlEb2hi15BSRDy1nptxF8o56xuDIbiTcFvMzRd0JFPaWhkDNjAU
+         78DCO7gxENzzHiDVpr+OXHlq7hWJ5xxueMecA+oqBmqNGAg8T/ySuBuIXFu+k/2b+H
+         htcpJsmXXgE/A==
+Date:   Thu, 15 Jul 2021 14:41:06 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 101/138] iomap: Convert iomap_page_mkwrite to use a
+ folio
+Message-ID: <20210715214106.GL22357@magnolia>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-102-willy@infradead.org>
 MIME-Version: 1.0
-References: <20210715182613.933608881@linuxfoundation.org>
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Thu, 15 Jul 2021 16:40:55 -0500
-Message-ID: <CAEUSe7-HX=WrpXfcfnBUAjvEMGvraWv5hXwSgXqfUM4X1KarFg@mail.gmail.com>
-Subject: Re: [PATCH 5.13 000/266] 5.13.3-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        linux- stable <stable@vger.kernel.org>, svens@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715033704.692967-102-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Thu, Jul 15, 2021 at 04:36:27AM +0100, Matthew Wilcox (Oracle) wrote:
+> If we write to any page in a folio, we have to mark the entire
+> folio as dirty, and potentially COW the entire folio, because it'll
+> all get written back as one unit.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/iomap/buffered-io.c | 42 +++++++++++++++++++++---------------------
+>  1 file changed, 21 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 7c702d6c2f64..a3fe0d36c739 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -951,23 +951,23 @@ iomap_truncate_page(struct inode *inode, loff_t pos, bool *did_zero,
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_truncate_page);
+>  
+> -static loff_t
+> -iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
+> -		void *data, struct iomap *iomap, struct iomap *srcmap)
+> +static loff_t iomap_folio_mkwrite_actor(struct inode *inode, loff_t pos,
+> +		loff_t length, void *data, struct iomap *iomap,
+> +		struct iomap *srcmap)
+>  {
+> -	struct page *page = data;
+> -	struct folio *folio = page_folio(page);
+> +	struct folio *folio = data;
+>  	int ret;
+>  
+>  	if (iomap->flags & IOMAP_F_BUFFER_HEAD) {
+> -		ret = __block_write_begin_int(page, pos, length, NULL, iomap);
+> +		ret = __block_write_begin_int(&folio->page, pos, length, NULL,
+> +						iomap);
+>  		if (ret)
+>  			return ret;
+> -		block_commit_write(page, 0, length);
+> +		block_commit_write(&folio->page, 0, length);
+>  	} else {
+> -		WARN_ON_ONCE(!PageUptodate(page));
+> +		WARN_ON_ONCE(!folio_test_uptodate(folio));
+>  		iomap_page_create(inode, folio);
+> -		set_page_dirty(page);
+> +		folio_mark_dirty(folio);
+>  	}
+>  
+>  	return length;
+> @@ -975,33 +975,33 @@ iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
+>  
+>  vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf, const struct iomap_ops *ops)
+>  {
+> -	struct page *page = vmf->page;
+> +	struct folio *folio = page_folio(vmf->page);
 
-On Thu, 15 Jul 2021 at 14:09, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.13.3 release.
-> There are 266 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.13.3-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.13.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+If before the page fault the folio was a compound 2M page, will the
+memory manager will have split it into 4k pages before passing it to us?
 
-Build regressions have been found on this release candidate (and on 5.12-rc=
-).
+That's a roundabout way of asking if we should expect folio_mkwrite at
+some point. ;)
 
-## Regressions (compared to v5.13.2)
-* s390, build
-  - clang-10-allnoconfig
-  - clang-10-defconfig
-  - clang-10-tinyconfig
-  - clang-11-allnoconfig
-  - clang-11-defconfig
-  - clang-11-tinyconfig
-  - clang-12-allnoconfig
-  - clang-12-defconfig
-  - clang-12-tinyconfig
-  - gcc-8-allnoconfig
-  - gcc-8-defconfig
-  - gcc-8-tinyconfig
-  - gcc-9-allnoconfig
-  - gcc-9-defconfig
-  - gcc-9-tinyconfig
-  - gcc-10-allnoconfig
-  - gcc-10-defconfig
-  - gcc-10-tinyconfig
+The conversion looks pretty straightforward though.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-[...]
-> Sven Schnelle <svens@linux.ibm.com>
->     s390/signal: switch to using vdso for sigreturn and syscall restart
-[...]
+--D
 
-Our bisections pointed to this commit. Reverting it made the build pass aga=
-in.
 
-Greetings!
-
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
+>  	struct inode *inode = file_inode(vmf->vma->vm_file);
+> -	unsigned long length;
+> -	loff_t offset;
+> +	size_t length;
+> +	loff_t pos;
+>  	ssize_t ret;
+>  
+> -	lock_page(page);
+> -	ret = page_mkwrite_check_truncate(page, inode);
+> +	folio_lock(folio);
+> +	ret = folio_mkwrite_check_truncate(folio, inode);
+>  	if (ret < 0)
+>  		goto out_unlock;
+>  	length = ret;
+>  
+> -	offset = page_offset(page);
+> +	pos = folio_pos(folio);
+>  	while (length > 0) {
+> -		ret = iomap_apply(inode, offset, length,
+> -				IOMAP_WRITE | IOMAP_FAULT, ops, page,
+> -				iomap_page_mkwrite_actor);
+> +		ret = iomap_apply(inode, pos, length,
+> +				IOMAP_WRITE | IOMAP_FAULT, ops, folio,
+> +				iomap_folio_mkwrite_actor);
+>  		if (unlikely(ret <= 0))
+>  			goto out_unlock;
+> -		offset += ret;
+> +		pos += ret;
+>  		length -= ret;
+>  	}
+>  
+> -	wait_for_stable_page(page);
+> +	folio_wait_stable(folio);
+>  	return VM_FAULT_LOCKED;
+>  out_unlock:
+> -	unlock_page(page);
+> +	folio_unlock(folio);
+>  	return block_page_mkwrite_return(ret);
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_page_mkwrite);
+> -- 
+> 2.30.2
+> 
