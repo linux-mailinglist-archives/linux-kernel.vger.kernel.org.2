@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AE23CA7EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6F03CA7FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240678AbhGOS5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:57:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54446 "EHLO mail.kernel.org"
+        id S241657AbhGOS5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231933AbhGOSvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:51:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7482613DF;
-        Thu, 15 Jul 2021 18:48:20 +0000 (UTC)
+        id S235956AbhGOSvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:51:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B6C0613C4;
+        Thu, 15 Jul 2021 18:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374901;
-        bh=+EjrSCLm7Socqe+OOWOjIGaOHL39kZtz9vJx6xZ1JIc=;
+        s=korg; t=1626374926;
+        bh=Cw2ARdHoUyronOO5hDgZF3fHmbP47LLSQ6y+NnXGX74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gqgwTljVbQjAGk/yl/1FFzEoISz6jK9adjNOBOI7dmy5iIQ1b5Pv+tLhaQBuSZ5CK
-         8suO0b0zmIievY2ZOxj26F6GDMjVX8XlvWlSURJapifxbx69ywTlNImtMSgq0milDH
-         N8vz/wYJjDMyNZ44OGw4GjmRyL4Fz40yUkfo59Rg=
+        b=PSqCLoCxk2enTeMhPtbEbS7FvG12V7r80NAdF3If5k8DWIf/rYOEJQGY//ZV3qbP7
+         z8PwJRru2ACgBUz27qFF/X/1aRFbfGe9xPp+fDWWKkAecfujNfoPaWCaxIdp40jRP9
+         UOhLDHieFBT4G+r6XnLZj4Nfm0l9xbTg9TxEgfjI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 057/215] ice: fix clang warning regarding deadcode.DeadStores
-Date:   Thu, 15 Jul 2021 20:37:09 +0200
-Message-Id: <20210715182609.520475877@linuxfoundation.org>
+Subject: [PATCH 5.10 058/215] virtio_net: Remove BUG() to avoid machine dead
+Date:   Thu, 15 Jul 2021 20:37:10 +0200
+Message-Id: <20210715182609.713978013@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -42,49 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>
+From: Xianting Tian <xianting.tian@linux.alibaba.com>
 
-[ Upstream commit 7e94090ae13e1ae5fe8bd3a9cd08136260bb7039 ]
+[ Upstream commit 85eb1389458d134bdb75dad502cc026c3753a619 ]
 
-clang generates deadcode.DeadStores warnings when a variable
-is used to read a value, but then that value isn't used later
-in the code. Fix this warning.
+We should not directly BUG() when there is hdr error, it is
+better to output a print when such error happens. Currently,
+the caller of xmit_skb() already did it.
 
-Signed-off-by: Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_ethtool.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/net/virtio_net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-index a7975afecf70..14eba9bc174d 100644
---- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-@@ -3492,13 +3492,9 @@ static int
- ice_get_rc_coalesce(struct ethtool_coalesce *ec, enum ice_container_type c_type,
- 		    struct ice_ring_container *rc)
- {
--	struct ice_pf *pf;
--
- 	if (!rc->ring)
- 		return -EINVAL;
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index e2c6c5675ec6..91e0e6254a01 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1563,7 +1563,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+ 	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+ 				    virtio_is_little_endian(vi->vdev), false,
+ 				    0))
+-		BUG();
++		return -EPROTO;
  
--	pf = rc->ring->vsi->back;
--
- 	switch (c_type) {
- 	case ICE_RX_CONTAINER:
- 		ec->use_adaptive_rx_coalesce = ITR_IS_DYNAMIC(rc->itr_setting);
-@@ -3510,7 +3506,7 @@ ice_get_rc_coalesce(struct ethtool_coalesce *ec, enum ice_container_type c_type,
- 		ec->tx_coalesce_usecs = rc->itr_setting & ~ICE_ITR_DYNAMIC;
- 		break;
- 	default:
--		dev_dbg(ice_pf_to_dev(pf), "Invalid c_type %d\n", c_type);
-+		dev_dbg(ice_pf_to_dev(rc->ring->vsi->back), "Invalid c_type %d\n", c_type);
- 		return -EINVAL;
- 	}
- 
+ 	if (vi->mergeable_rx_bufs)
+ 		hdr->num_buffers = 0;
 -- 
 2.30.2
 
