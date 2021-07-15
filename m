@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC4B3C955A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 02:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866AA3C9561
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 02:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbhGOA5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 20:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231489AbhGOA5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 20:57:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28472613E4;
-        Thu, 15 Jul 2021 00:54:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626310483;
-        bh=iNDdn2Bhz2BPFuibfV+Kr5WrIjdthEM5WI5vHxIra9k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GOtpeYz//32i2od1ATEzmeoCBrPaFj51xgOW0U3QgJ1o3F/UOwVw37YWe1CXXR6f3
-         4sDbCfq0vavYNcjrSEsYjmochntkpgd+G/45lKJ1e1ySC+LxNz03jhB84S4TR+Z4Dg
-         S/AKpNICoAudirR5v+X0rlVEmkpnO8rWpqAc4Ul8L47FLYtTQn1OuzXMQKoKsGoChr
-         TwQAXDzAl9xm2xTtl+ZnOOBZ/tUxDtS2OoKzHAugSRVDEQp8KcYvz0tBh8O/dYLU0Y
-         iMhNh41urzoQLRksTqZUEPuxFZgEBr3NSbusOjKk8bgTRlmCOLQzWRcNbagyC13trl
-         voy+RzD/f2gnw==
-Received: by mail-lf1-f49.google.com with SMTP id b26so6796137lfo.4;
-        Wed, 14 Jul 2021 17:54:43 -0700 (PDT)
-X-Gm-Message-State: AOAM532fzt8hxjUr510Eoqn3MUmpS2/oYWY28Jfr2GMOmgc4oI/qu5EO
-        U/oYzDdZiJr7Fq2byOMXfWBB0LQ1bxOtHewgyqQ=
-X-Google-Smtp-Source: ABdhPJxijOtCtWRS8cpcM/0j/6AfnASZclT1TE0Gnm69XQSgSA4IPJIdX0YPfwji2VuN4aFddlf3s0uwecafXQmERqk=
-X-Received: by 2002:ac2:4438:: with SMTP id w24mr540364lfl.281.1626310481426;
- Wed, 14 Jul 2021 17:54:41 -0700 (PDT)
+        id S231576AbhGOA7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 20:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231407AbhGOA7X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 20:59:23 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D6EC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 17:56:30 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id f9so5406831wrq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Jul 2021 17:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=gSBGqDMM3Jz7qv5xcKdOnajx3PDMhN4qp53yDYdoaRU=;
+        b=TZTYDeobReI0lDgoPR6N8gFO8LN1w4DsdXGUhDLn1nrJzQf+Xs0tP0mW0cLjRVIM+G
+         G90WjIGjw12EZiffyjbsbkl186cn8MzGRF6nbrGbScN78/O5Spu7AWkA6w6AQplLRcrA
+         l+FSln1FteHsKdHKBjJZZf9TCcXPDmDARD0FKHAOCVXKhEEf3Xq0R7Wrw9+yAKghlIhd
+         af7FAPq5NPYqnLsTqsws7qTZ60EkSO5FrF2uXWQ/6F2JVbv7Hir8BGDkw2tysLmq/1/4
+         K1SVZPIytbtXqlbFBjK2cgBMiF4fuqPxYbPw6TbjbKPcVmpw2tdvci7BCay9hs2VNnq7
+         CfCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=gSBGqDMM3Jz7qv5xcKdOnajx3PDMhN4qp53yDYdoaRU=;
+        b=KcxI7LheYyHAQVyxZ3hcKozWzg0LT4zdCoLhRTbJr2Kwge+DirhQST3VIbq2gnWryL
+         i3aLte6qFBU8tNEFHgSVrO3+agZX7LASd3wfffQsfALTWznWHEJ5ZdRQiDqCvyak5mIm
+         h4AATZM4xUP3vYo7Y4TD2C3k2AhJx6FW3S5Cjh1lWrBM44g7GzLvqV2lUaLQxcIGL8cZ
+         SaBzd24FX3I8PREOOXaf3Yf3SseFc5EVfPCEfT24XCkjDiHfHH6YshdB3Rj3fVtwAhsH
+         eK5UfQAX7tzovjqGvx4Ync4yn9LGti+IjE197ik6XaD/JD3HPoZrM80qZNvY3xZJS53y
+         MMtw==
+X-Gm-Message-State: AOAM530yRXB+RYPftlt+inBoJrBWdQT6A3NxtPNUSSinjxtZN579iUCS
+        xiXW5SrVK8RqXodwpmT8GejE9uuLCGM=
+X-Google-Smtp-Source: ABdhPJz8WKBFCdSljGyrcHfmuKAd2NQ/pQWZ3gjNWrVIIw8NUt4dycZyqTTRwc3+UQYiTpG9tzZoZg==
+X-Received: by 2002:adf:a183:: with SMTP id u3mr897426wru.175.1626310589080;
+        Wed, 14 Jul 2021 17:56:29 -0700 (PDT)
+Received: from pc ([196.235.28.219])
+        by smtp.gmail.com with ESMTPSA id p2sm3352888wmg.6.2021.07.14.17.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jul 2021 17:56:28 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 01:56:25 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] sound: usb: line6: free allocated urbs on failure
+Message-ID: <20210715005625.GA1997259@pc>
 MIME-Version: 1.0
-References: <20210714101815.164322-1-hefengqing@huawei.com>
-In-Reply-To: <20210714101815.164322-1-hefengqing@huawei.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 14 Jul 2021 17:54:30 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW51b0Cd7VV6ub2APze4EMbMJ+Y=scLAEyhJ4SvG=D0kyQ@mail.gmail.com>
-Message-ID: <CAPhsuW51b0Cd7VV6ub2APze4EMbMJ+Y=scLAEyhJ4SvG=D0kyQ@mail.gmail.com>
-Subject: Re: [bpf-next, v2] bpf: verifier: Fix potential memleak and UAF in
- bpf verifier
-To:     He Fengqing <hefengqing@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 2:33 AM He Fengqing <hefengqing@huawei.com> wrote:
->
-> In bpf_patch_insn_data(), we first use the bpf_patch_insn_single() to
-> insert new instructions, then use adjust_insn_aux_data() to adjust
-> insn_aux_data. If the old env->prog have no enough room for new inserted
-> instructions, we use bpf_prog_realloc to construct new_prog and free the
-> old env->prog.
->
-> There have two errors here. First, if adjust_insn_aux_data() return
-> ENOMEM, we should free the new_prog. Second, if adjust_insn_aux_data()
-> return ENOMEM, bpf_patch_insn_data() will return NULL, and env->prog has
-> been freed in bpf_prog_realloc, but we will use it in bpf_check().
->
-> So in this patch, we make the adjust_insn_aux_data() never fails. In
-> bpf_patch_insn_data(), we first pre-malloc memory for the new
-> insn_aux_data, then call bpf_patch_insn_single() to insert new
-> instructions, at last call adjust_insn_aux_data() to adjust
-> insn_aux_data.
->
-> Fixes: 8041902dae52 ("bpf: adjust insn_aux_data when patching insns")
->
-> Signed-off-by: He Fengqing <hefengqing@huawei.com>
+Free allocated urbs on failure in order to prevent memory leaks.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ sound/usb/line6/capture.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-with one nitpick below.
+diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
+index 970c9bdce0b2..345b75ede5d5 100644
+--- a/sound/usb/line6/capture.c
++++ b/sound/usb/line6/capture.c
+@@ -258,6 +258,7 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+ {
+ 	struct usb_line6 *line6 = line6pcm->line6;
+ 	int i;
++	int ret;
+ 
+ 	line6pcm->in.urbs = kcalloc(line6->iso_buffers, sizeof(struct urb *),
+ 				    GFP_KERNEL);
+@@ -272,8 +273,10 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+ 		urb = line6pcm->in.urbs[i] =
+ 		    usb_alloc_urb(LINE6_ISO_PACKETS, GFP_KERNEL);
+ 
+-		if (urb == NULL)
+-			return -ENOMEM;
++		if (urb == NULL) {
++			ret = -ENOMEM;
++			goto enomem;
++		}
+ 
+ 		urb->dev = line6->usbdev;
+ 		urb->pipe =
+@@ -286,9 +289,20 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+ 		urb->interval = LINE6_ISO_INTERVAL;
+ 		urb->error_count = 0;
+ 		urb->complete = audio_in_callback;
+-		if (usb_urb_ep_type_check(urb))
+-			return -EINVAL;
++		if (usb_urb_ep_type_check(urb)) {
++			ret = -EINVAL;
++			goto einval;
++		}
+ 	}
+ 
+ 	return 0;
++
++enomem:
++	i--;
++
++einval:
++	while (i >= 0)
++		usb_free_urb(line6pcm->in.urbs[i--]);
++
++	return ret;
+ }
+-- 
+2.25.1
 
->
->   v1->v2:
->     pre-malloc memory for new insn_aux_data first, then
->     adjust_insn_aux_data() will never fails.
-> ---
->  kernel/bpf/verifier.c | 30 +++++++++++++++++++-----------
->  1 file changed, 19 insertions(+), 11 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index be38bb930bf1..07cf791510f1 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11425,10 +11425,11 @@ static void convert_pseudo_ld_imm64(struct bpf_verifier_env *env)
->   * insni[off, off + cnt).  Adjust corresponding insn_aux_data by copying
->   * [0, off) and [off, end) to new locations, so the patched range stays zero
->   */
-> -static int adjust_insn_aux_data(struct bpf_verifier_env *env,
-> -                               struct bpf_prog *new_prog, u32 off, u32 cnt)
-> +static void adjust_insn_aux_data(struct bpf_verifier_env *env,
-> +                                struct bpf_insn_aux_data *new_data,
-> +                                struct bpf_prog *new_prog, u32 off, u32 cnt)
->  {
-> -       struct bpf_insn_aux_data *new_data, *old_data = env->insn_aux_data;
-> +       struct bpf_insn_aux_data *old_data = env->insn_aux_data;
->         struct bpf_insn *insn = new_prog->insnsi;
->         u32 old_seen = old_data[off].seen;
->         u32 prog_len;
-> @@ -11441,12 +11442,9 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
->         old_data[off].zext_dst = insn_has_def32(env, insn + off + cnt - 1);
->
->         if (cnt == 1)
-> -               return 0;
-> +               return;
->         prog_len = new_prog->len;
-> -       new_data = vzalloc(array_size(prog_len,
-> -                                     sizeof(struct bpf_insn_aux_data)));
-> -       if (!new_data)
-> -               return -ENOMEM;
-> +
->         memcpy(new_data, old_data, sizeof(struct bpf_insn_aux_data) * off);
->         memcpy(new_data + off + cnt - 1, old_data + off,
->                sizeof(struct bpf_insn_aux_data) * (prog_len - off - cnt + 1));
-> @@ -11457,7 +11455,7 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
->         }
->         env->insn_aux_data = new_data;
->         vfree(old_data);
-> -       return 0;
-> +       return;
-No need to say return here.
-
->  }
->
->  static void adjust_subprog_starts(struct bpf_verifier_env *env, u32 off, u32 len)
-> @@ -11492,6 +11490,14 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
->                                             const struct bpf_insn *patch, u32 len)
->  {
->         struct bpf_prog *new_prog;
-> +       struct bpf_insn_aux_data *new_data = NULL;
-> +
-> +       if (len > 1) {
-> +               new_data = vzalloc(array_size(env->prog->len + len - 1,
-> +                                             sizeof(struct bpf_insn_aux_data)));
-> +               if (!new_data)
-> +                       return NULL;
-> +       }
->
->         new_prog = bpf_patch_insn_single(env->prog, off, patch, len);
->         if (IS_ERR(new_prog)) {
-> @@ -11499,10 +11505,12 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
->                         verbose(env,
->                                 "insn %d cannot be patched due to 16-bit range\n",
->                                 env->insn_aux_data[off].orig_idx);
-> +               if (new_data)
-> +                       vfree(new_data);
-> +
->                 return NULL;
->         }
-> -       if (adjust_insn_aux_data(env, new_prog, off, len))
-> -               return NULL;
-> +       adjust_insn_aux_data(env, new_data, new_prog, off, len);
->         adjust_subprog_starts(env, off, len);
->         adjust_poke_descs(new_prog, off, len);
->         return new_prog;
-> --
-> 2.25.1
->
