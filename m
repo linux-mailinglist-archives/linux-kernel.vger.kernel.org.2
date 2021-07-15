@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D39B3C9F15
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A32B3C9F1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 15:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235623AbhGONHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 09:07:36 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45775 "EHLO mout.gmx.net"
+        id S236359AbhGONJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 09:09:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbhGONHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 09:07:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626354271;
-        bh=3XKnCVe17/cL/PJQD7dAeEz7KGEt/61iS/itcmUBvTw=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=AehGIjIFryTdfYB6UGcGPOqsSWwkRDhvA9wnNHEX9IOamuDhN9gc7QCCvMHE3Zd3s
-         Dz/OxXYKsuqzGYVqn7kCXssY9XIOI4bOtkOcm6uG8weCe6muMWB/EBU2o2A4hilAkj
-         VgNjkq/IwYAWMFVoXPWu8vU1sIZCpm47eGQqPuno=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [87.130.101.138] ([87.130.101.138]) by web-mail.gmx.net
- (3c-app-gmx-bap31.server.lan [172.19.172.101]) (via HTTP); Thu, 15 Jul 2021
- 15:04:31 +0200
+        id S229624AbhGONJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 09:09:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 352EB613C4;
+        Thu, 15 Jul 2021 13:06:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626354419;
+        bh=6f93Qyz7TatzFLNNdICtO24cj/QiivXwnorMniZD5aY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C3womNCwGX7T38B94tLBNHsU1T59lcB4G6b7HKOzl/Ez1LnN3wALJxcA170pkA9cL
+         5su5kqtDMRdbQ6SuPxUAiX+ATshJK43FywTfruioFYUAI+6ewiKWrKS0/A6xV4bMl6
+         nN3L7EMJVYUhNu4rVVjkuDfRlOLYGnxtZf3xC0W4=
+Date:   Thu, 15 Jul 2021 15:06:57 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Holger Kiehl <Holger.Kiehl@dwd.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+Message-ID: <YPAy8ZTyzS3nCbZk@kroah.com>
+References: <20210712060912.995381202@linuxfoundation.org>
+ <68b6051-09c-9dc8-4b52-c4e766fee5@praktifix.dwd.de>
+ <YO56HTE3k95JLeje@kroah.com>
+ <50fb4713-6b5d-b5e0-786a-6ece57896d2f@praktifix.dwd.de>
+ <df63b875-f140-606a-862a-73b102345cd@praktifix.dwd.de>
+ <YO7nHhW2t4wEiI9G@kroah.com>
+ <CA+G9fYuhbE6sY3ykoiyqZqYSG=+V0r3z0TiaVL8LptbXWw=duQ@mail.gmail.com>
+ <CA+G9fYtWkOLVVKB0xYfAXWS57G1C2xV-Zbtp5i4dAJDJqwLQhg@mail.gmail.com>
+ <YO70LLnTE6LxcBnt@kroah.com>
+ <20210715122758.GB31920@quack2.suse.cz>
 MIME-Version: 1.0
-Message-ID: <trinity-0dbbc59b-1e7d-4f58-8611-adb281a82477-1626354270982@3c-app-gmx-bap31>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Aw: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware
- process the layer 4 checksum
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 15 Jul 2021 15:04:31 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210715114908.ripblpevmdujkf2m@skbuf>
-References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
- <20210714191723.31294-3-LinoSanfilippo@gmx.de>
- <20210714194812.stay3oqyw3ogshhj@skbuf> <YO9F2LhTizvr1l11@lunn.ch>
- <20210715065455.7nu7zgle2haa6wku@skbuf>
- <trinity-84a570e8-7b5f-44f7-b10c-169d4307d653-1626347772540@3c-app-gmx-bap31>
- <20210715114908.ripblpevmdujkf2m@skbuf>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:BSfJAEMGWpjmadghZep1FdQXRxpw04ktpiPXQm4UEOWb2hn8UaCaD6/RHVTWWsP9vxrgu
- 6KOGEfPGPo7MRxTIC+sfYhjtkA9IEFAVzHKA06WD9cicrV55JhssXal3b7xvyu/MUSyd+ITHCZiO
- EB+xYMQLNp6CKwx7r9A57F5RYfiCoaZQETxVKzLC81uM93bUUUMxRh1aVKGvEX+F/WSMZil7dg3J
- 4OXOXly6RXBdsXD+9RvwjnL2tjWxLJC/dovEuIrMP0PFeWj1EhdkybWPBJQvNKF0jhjA5CFSkqsA
- dg=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3Ad/TgTgTrE=:KMdnEyIsLgBVyIkXwHnnZQ
- bykJuNOiF6M8cmKG49845vHTRtMeIbThHhNNfLNDnjlMj3Eei6r8scvlGZaC8EPAfBLuE3ht/
- PzEuOX4giqxS+zc4hL6YYP8XAzf2EzBgIy0vpNZaoNE0foMzYvdwtas1FTFDfVnbv0F1G9bCP
- /HtdoOsJ0H3U8VghjPrPOkBGvzllW1ii59I95Lmrs1nztOM50NVbJmYW0cnfKfZQa840x1zjH
- P0omxUqhT72A9sw6yRMAcx0YazzUIl6p0ZgWV/YmW/NUr3aYl3kE/uk450ZRkjJQavc9bSc4g
- hsv8nVQ3ozNTvNCh9bILkd8kE8FgoxVi8T8atnUIVLmcjNdY0SpI8qSR9pWr+jYgA/GaKrSEf
- gVE3vEGhqU40FJwxXMG101qR1j1xETsuSb7Zx30rzBJdQ0bgeULqdknrHYIYbILeRQrgtB22a
- TMHVrACpewIYGaTfAxYurxGc204JddUOWzq6yzoXD1VCESeG17Ty++wGrQBLnOBX7UfRIuUSe
- 1c4HZ/bWNAKkuAFmIqwZGZmGZWcVe6N9QTaDJaRrKU7YPZ7fU9ZUB+xl+xmdZTky5d9FaOYNg
- +is3FIp7XOMnFiUEdBdZ0y2cYFuEiGctEcDaJn9LQLViK2G00B8bgolG7tbxmBlGlow9utteJ
- 4iBrGjGACCXtgnypUGmPJKqIBZmf5AjID8jY0HRzlC4QsxwYHsw25VflS1h8cGfPmU7GW/8tq
- TmwSuk0jN7QRPSFf4pj9UOPYwwYlvooFV0M4KkGCaQMNSdn4M3ZfWwtYa3Gn++TweR+NWlF+F
- x7jqYzpSHmI80LLv7/GW9WHUVZDWzTO6qcyw/X/+6MN8MEbnAA=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715122758.GB31920@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 15, 2021 at 02:27:58PM +0200, Jan Kara wrote:
+> On Wed 14-07-21 16:26:52, Greg Kroah-Hartman wrote:
+> > On Wed, Jul 14, 2021 at 07:29:26PM +0530, Naresh Kamboju wrote:
+> > > On Wed, 14 Jul 2021 at 19:22, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > >
+> > > > On Wed, 14 Jul 2021 at 19:01, Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > 
+> > > <trim>
+> > > 
+> > > > My two cents,
+> > > > While running ssuite long running stress testing we have noticed deadlock.
+> > > >
+> > > > > So if you drop that, all works well?  I'll go drop that from the queues
+> > > > > now.
+> > > >
+> > > > Let me drop that patch and test it again.
+> > > >
+> > > > Crash log,
+> > > >
+> > > > [ 1957.278399] ============================================
+> > > > [ 1957.283717] WARNING: possible recursive locking detected
+> > > > [ 1957.289031] 5.13.2-rc1 #1 Not tainted
+> > > > [ 1957.292703] --------------------------------------------
+> > > > [ 1957.298016] kworker/u8:7/236 is trying to acquire lock:
+> > > > [ 1957.303241] ffff8cc203f92c38 (&bfqd->lock){-.-.}-{2:2}, at:
+> > > > bfq_finish_requeue_request+0x55/0x500 [bfq]
+> > > > [ 1957.312643]
+> > > > [ 1957.312643] but task is already holding lock:
+> > > > [ 1957.318467] ffff8cc203f92c38 (&bfqd->lock){-.-.}-{2:2}, at:
+> > > > bfq_insert_requests+0x81/0x1750 [bfq]
+> > > > [ 1957.327334]
+> > > > [ 1957.327334] other info that might help us debug this:
+> > > > [ 1957.333852]  Possible unsafe locking scenario:
+> > > > [ 1957.333852]
+> > > > [ 1957.339762]        CPU0
+> > > > [ 1957.342206]        ----
+> > > > [ 1957.344651]   lock(&bfqd->lock);
+> > > > [ 1957.347873]   lock(&bfqd->lock);
+> > > > [ 1957.351097]
+> > > > [ 1957.351097]  *** DEADLOCK ***
+> > > > [ 1957.351097]
+> > > 
+> > > Also noticed on stable-rc 5.12.17-rc1.
+> > 
+> > I dropped the same patch from there as well already, thanks.
+> 
+> OK, when you dropped this patch, please also drop upstream commit
+> fd2ef39cc9a6b ("blk: Fix lock inversion between ioc lock and bfqd lock").
 
+That commit did not end up in the tree either, so all should be good.
 
-> Gesendet: Donnerstag, 15. Juli 2021 um 13:49 Uhr
-> Von: "Vladimir Oltean" <olteanv@gmail.com>
-> An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
-> Cc: "Andrew Lunn" <andrew@lunn.ch>, woojung.huh@microchip.com, UNGLinuxD=
-river@microchip.com, vivien.didelot@gmail.com, f.fainelli@gmail.com, davem=
-@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger=
-.kernel.org
-> Betreff: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware proces=
-s the layer 4 checksum
->
-> On Thu, Jul 15, 2021 at 01:16:12PM +0200, Lino Sanfilippo wrote:
-> > Sure, I will test this solution. But I think NETIF_F_FRAGLIST should a=
-lso be
-> > cleared in this case, right?
->
-> Hmm, interesting question. I think only hns3 makes meaningful use of
-> NETIF_F_FRAGLIST, right? I'm looking at hns3_fill_skb_to_desc().
-> Other drivers seem to set it for ridiculous reasons - looking at commit
-> 66aa0678efc2 ("ibmveth: Support to enable LSO/CSO for Trunk VEA.") -
-> they set NETIF_F_FRAGLIST and then linearize the skb chain anyway. The
-> claimed 4x throughput benefit probably has to do with less skbs
-> traversing the stack? I don't know.
->
-> Anyway, it is hard to imagine all the things that could go wrong with
-> chains of IP fragments on a DSA interface, precisely because I have so
-> few examples to look at. I would say, header taggers are probably fine,
-> tail taggers not so much, so apply the same treatment as for NETIF_F_SG?
->
+thanks,
 
-Please note that skb_put() asserts that the SKB is linearized. So I think =
-we
-should rather clear both NETIF_F_FRAGLIST and NETIF_F_SG unconditionally s=
-ince also
-header taggers use some form of skb_put() dont they?
-
-
-
-
-
-
+greg k-h
