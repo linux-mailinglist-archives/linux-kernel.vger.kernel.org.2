@@ -2,98 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477A83C9C32
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C993C9C40
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240485AbhGOJyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:54:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20162 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232473AbhGOJyb (ORCPT
+        id S240703AbhGOJ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231668AbhGOJ6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:54:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626342697;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dR8uPancX/qqeTPCBjElsarS+8BXPFXgvmywV29J+tI=;
-        b=BdakbEAJ8MAATnMejq7Zt0BjtVcr8Iv9C39kjg0ImXGkxIFHI7RoG65aHMVo/B8Ge88wiY
-        WqjiYprr5v8lgNVE+4824+D/VcOEZkIpphC/DYiIdHdU2Rm82iRTTIIgfeMa7TK3DnSU5e
-        LathBIvoWoPchxx66K84cgiq8xByToU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-51R01BeJOKetsMC0hx08YA-1; Thu, 15 Jul 2021 05:51:36 -0400
-X-MC-Unique: 51R01BeJOKetsMC0hx08YA-1
-Received: by mail-wr1-f71.google.com with SMTP id m4-20020adffa040000b02901404c442853so3066601wrr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:51:36 -0700 (PDT)
+        Thu, 15 Jul 2021 05:58:51 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8FDC06175F;
+        Thu, 15 Jul 2021 02:55:58 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id c1so867136pfc.13;
+        Thu, 15 Jul 2021 02:55:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3VcnGkjDZFa8z0H/fggAeDFo4mkozyR5aRNl6timG9I=;
+        b=oISZ+O/WWt543Ed43W2IohbTV1yUPNp0CtZrrUtxpvBVEAY2TdOMTHRZIeF/9e0C1D
+         fMHbiwlZj/ODS1ryPMEQUBz1Vo/aNMhxtxTEXre+3cRT4SJHShZz82k7h5rTEhL9gl3t
+         EIqo8n98FgGELG3121jKgii+RXAxAb+9SfWHmdiY+QCWH8HpSIDz5Ww3FlgL1Q9jzeih
+         3FmFY1p1DPtFgq16EO+FchS6R0GeZ6a1igY6z2Cu14+X7ri+OHr/fVEL8RJMyrT85A4k
+         9YoVcvUbTLgmzJGEf5Fj0cv/h6C1H1gjOgjzk2UCZ1u/D1LlTpFzWTw0AGf+6fINeal4
+         9yEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dR8uPancX/qqeTPCBjElsarS+8BXPFXgvmywV29J+tI=;
-        b=emK+NooPYIcOkmDgoTr36t9ep+5Xoj/w2uE+LcP/Li3Rn1OcrCC5edWX6Bn6FmXEhk
-         gnDth4BI2Of7dmBqXwYp57+Acy4DqWlEs6B+oZCrzemK7AHPXnZiTqEInuOlrT1hAHx/
-         0cScduuZEBK7NlycEEtH6fCQY6eYKm5QdfafFyJR6vQ2pixcl71nlDD0oLmzcOaVKXXB
-         mrWABK0CIrml2cA9EtM4hWB2OkrMxbSV+YzgeF3nlRvSIXEAalrfxxiuBSFYCVOHCN8v
-         CUmH+vEvWu4tNyUoeU305GmjzyOuqFD7yzHeJcztPzBYZNnC2KCbqo7o55XXJON+lRTF
-         pYNA==
-X-Gm-Message-State: AOAM532OIGRx4i4ts9LcR1m85eerEJZXTlCVXZGut5QbJ+1UFJYtbbjV
-        ec2b+j/hBKPmQt5x1jtZh9wxURhHOrPNugvQs3BBcOplKw1zynt/200qqb7R0b2W59k9R6O5xhg
-        BtG8S/oFwm3QI9X06iYBifo5J
-X-Received: by 2002:a1c:493:: with SMTP id 141mr3682735wme.172.1626342695232;
-        Thu, 15 Jul 2021 02:51:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxHnBTQd8EBvDvE+fh/H5JOd3n98Hv/0MLO3UGlbOtPJQDckheenHBNWf8+fW1YAIvzkbM/w==
-X-Received: by 2002:a1c:493:: with SMTP id 141mr3682713wme.172.1626342695002;
-        Thu, 15 Jul 2021 02:51:35 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id b9sm7137793wrh.81.2021.07.15.02.51.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 02:51:34 -0700 (PDT)
-Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
-To:     He Zhe <zhe.he@windriver.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Juri Lelli <jlelli@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
- <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
- <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
- <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
- <a56ddd50-2cd1-f16e-5180-5232c449fbd0@redhat.com>
- <ab85cd9e-f389-0641-8084-cdfbc5c91e0b@windriver.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b73f8986-9071-6fbb-5c6a-d7892ba2302b@redhat.com>
-Date:   Thu, 15 Jul 2021 11:51:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=3VcnGkjDZFa8z0H/fggAeDFo4mkozyR5aRNl6timG9I=;
+        b=Qt3XxaEcKRbmneYtWcBWTRxlm1ykQBbDzLgJo/ZwO9dTRMc4M15hAZHlGaPF4UoDx6
+         xReMgfA3PxQLufDfYK4qlhXl/75Nj4mwCHgKxJlSQp7cpPFLmTkOZt72EroQxFeukIhB
+         ttXeEavzbXXWxB+5BIT1jzp0mHnYtnoleOMdm8M8GqcE7+dkwgpyAB6TGD+AnpgozlGg
+         JLBz1DCgJlOsnmsmwzivSe1HdXupCKi1muaE0IU9UHHJe8U4RlHiaU5+4Wm8j7oO2I5A
+         +hinMJy/pebWdKZ9jfaTlW3O7HpsbqXoxbcM8FTG6GuE8OsZTImDvLRFdbxvFqjl25WD
+         yfHw==
+X-Gm-Message-State: AOAM533/eZcEUREfcZCbazqvnrZTWfId/1X0acVALJvBRNVf6z0qdiEd
+        3Y7neVNLz3qL8XIBoOii4UE=
+X-Google-Smtp-Source: ABdhPJxuLPDHjlUiZJPc4bl93iXRU5GbhIn2tKLDR2FHP9F2zEeWq1LWqYuEdiDoDXUJttfcv/80Ew==
+X-Received: by 2002:a63:5345:: with SMTP id t5mr3750092pgl.167.1626342958050;
+        Thu, 15 Jul 2021 02:55:58 -0700 (PDT)
+Received: from pek-lpggp6.wrs.com (unknown-105-123.windriver.com. [147.11.105.123])
+        by smtp.gmail.com with ESMTPSA id p3sm6561290pgi.20.2021.07.15.02.55.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 15 Jul 2021 02:55:57 -0700 (PDT)
+From:   Kevin Hao <haokexin@gmail.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] cpufreq: schedutil: Use kobject release() method to free sugov_tunables
+Date:   Thu, 15 Jul 2021 17:53:37 +0800
+Message-Id: <20210715095337.19453-1-haokexin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <ab85cd9e-f389-0641-8084-cdfbc5c91e0b@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/21 10:44, He Zhe wrote:
-> It was to increase the recursion depth to 2 so that vhost_worker and
-> kvm_vcpu_ioctl syscall could work in parallel
+The struct sugov_tunables is protected by the kobject, so we can't free
+it directly. Otherwise we would get a call trace like this:
+  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
+  WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
+  Modules linked in:
+  CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
+  Hardware name: Marvell OcteonTX CN96XX board (DT)
+  pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+  pc : debug_print_object+0xb8/0x100
+  lr : debug_print_object+0xb8/0x100
+  sp : ffff80001ecaf910
+  x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
+  x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
+  x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
+  x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
+  x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
+  x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
+  x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
+  x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
+  x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
+  x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
+  Call trace:
+   debug_print_object+0xb8/0x100
+   __debug_check_no_obj_freed+0x1c0/0x230
+   debug_check_no_obj_freed+0x20/0x88
+   slab_free_freelist_hook+0x154/0x1c8
+   kfree+0x114/0x5d0
+   sugov_exit+0xbc/0xc0
+   cpufreq_exit_governor+0x44/0x90
+   cpufreq_set_policy+0x268/0x4a8
+   store_scaling_governor+0xe0/0x128
+   store+0xc0/0xf0
+   sysfs_kf_write+0x54/0x80
+   kernfs_fop_write_iter+0x128/0x1c0
+   new_sync_write+0xf0/0x190
+   vfs_write+0x2d4/0x478
+   ksys_write+0x74/0x100
+   __arm64_sys_write+0x24/0x30
+   invoke_syscall.constprop.0+0x54/0xe0
+   do_el0_svc+0x64/0x158
+   el0_svc+0x2c/0xb0
+   el0t_64_sync_handler+0xb0/0xb8
+   el0t_64_sync+0x198/0x19c
+  irq event stamp: 5518
+  hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
+  hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
+  softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
+  softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
 
-The count is per-CPU, so parallel operations cannot cause it to become 
-2.  Your patch might fix calls from ioeventfd to vhost_worker to another 
-eventfd, but not *parallel* operation of KVM and vhost (except on 
-PREEMPT_RT).
+So add a release() method for sugov_tunables_ktype to release the
+sugov_tunables safely.
 
-You should identify the exact callstack that caused the warning for 
-vDUSE, and document that one in the commit message, so that reviewers 
-can understand the issue.
+Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+---
+ kernel/sched/cpufreq_schedutil.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-Paolo
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 57124614363d..ac171496da4b 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -537,9 +537,17 @@ static struct attribute *sugov_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(sugov);
+ 
++static void sugov_tunables_free(struct kobject *kobj)
++{
++	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
++
++	kfree(to_sugov_tunables(attr_set));
++}
++
+ static struct kobj_type sugov_tunables_ktype = {
+ 	.default_groups = sugov_groups,
+ 	.sysfs_ops = &governor_sysfs_ops,
++	.release = &sugov_tunables_free,
+ };
+ 
+ /********************** cpufreq governor interface *********************/
+@@ -639,14 +647,6 @@ static struct sugov_tunables *sugov_tunables_alloc(struct sugov_policy *sg_polic
+ 	return tunables;
+ }
+ 
+-static void sugov_tunables_free(struct sugov_tunables *tunables)
+-{
+-	if (!have_governor_per_policy())
+-		global_tunables = NULL;
+-
+-	kfree(tunables);
+-}
+-
+ static int sugov_init(struct cpufreq_policy *policy)
+ {
+ 	struct sugov_policy *sg_policy;
+@@ -707,7 +707,8 @@ static int sugov_init(struct cpufreq_policy *policy)
+ fail:
+ 	kobject_put(&tunables->attr_set.kobj);
+ 	policy->governor_data = NULL;
+-	sugov_tunables_free(tunables);
++	if (!have_governor_per_policy())
++		global_tunables = NULL;
+ 
+ stop_kthread:
+ 	sugov_kthread_stop(sg_policy);
+@@ -733,8 +734,8 @@ static void sugov_exit(struct cpufreq_policy *policy)
+ 
+ 	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
+ 	policy->governor_data = NULL;
+-	if (!count)
+-		sugov_tunables_free(tunables);
++	if (!count && !have_governor_per_policy())
++		global_tunables = NULL;
+ 
+ 	mutex_unlock(&global_tunables_lock);
+ 
+-- 
+2.31.1
 
