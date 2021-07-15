@@ -2,123 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48CE3C9BF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F253C9BF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237137AbhGOJiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhGOJiN (ORCPT
+        id S238370AbhGOJi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:38:26 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:59676 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237538AbhGOJiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:38:13 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7B2C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:35:21 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id j199so4644457pfd.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 02:35:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QXkiqMT/glRYwyHPQoyx3aDo7nh/1KZKgmUiqtcAPDY=;
-        b=MzDY4nkv0QsPl3RRx5bPYDTbkke6SLjvc2oe/RSnFjWPoG5T8dKKOpymsgn9qnMEo5
-         sHqxBMigOcqDJef4hC+9JXoGQOaC8weUX9BDwb4LL9Bd7P0Krz13fdt/z7yzOy3r9d5S
-         rG3d/tO8xgT4XztexfXgIp3IDYBeGN9W+twCbHxAaE97054zyI195LlstTaa9miNyIXM
-         ZtVHwqJ28F/LP7I/1SsMcG0zjwTSwJpQ0xkHBDByyigddb4j1A3R2obUCxlnJQF5ykQN
-         Ztp7XfV6waqivs0muPAXuxlF2/iTY49SqqzHdAHr2xrNm0uZ88d8P0soxXfEf0udttiW
-         YxVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QXkiqMT/glRYwyHPQoyx3aDo7nh/1KZKgmUiqtcAPDY=;
-        b=MTnginf1HgDp5MTZabb2oFEHFmw7U/3DsIDojs7SCaqIWQLldj94vlSw2we0+Eb9hE
-         Luw92Adbmw1RVoZ3dd36aCe2CL0+ntA+hoebGfUReko1+gszIjGWAM53IM/MeKPkKeTY
-         VahoIITn3rMf7TPI1Nt7Ohwd20gR7gtbt//H9T49vfHPtzGbFo6+1h8Q844ig5/6cEHb
-         ny/3clzNFc0VVdE4a2ARYiV0NfJUt8sDj58J+oCj2a8brcArkvMmtLxLxuGT5F5IUQzG
-         Aqjq7tcmPxnNCvU7FvHUXebDqKgIpzuY0RkAqk3ikWWEenHVfnINlU+MykgjZm3lBoeC
-         HDdA==
-X-Gm-Message-State: AOAM532puRFOV6dboIvB3tEuChVXWU3ZMySN0buV63x0egUge4DL2xk+
-        QQpTlpjwyGJ0+71AQECgLAfH+EdsEc1xxTqu2l+PB2cKlhY5bQ==
-X-Google-Smtp-Source: ABdhPJy2uQJqyr3RFS9AkYE3fVuTqbnURkqwNQ1RLEW+9aA5TH6NCB5ZJZS9dFUK64ivUOQm56b4e/NNJvAz5zqRy3A=
-X-Received: by 2002:a05:6a00:1508:b029:332:3aab:d842 with SMTP id
- q8-20020a056a001508b02903323aabd842mr3528446pfu.59.1626341720657; Thu, 15 Jul
- 2021 02:35:20 -0700 (PDT)
+        Thu, 15 Jul 2021 05:38:23 -0400
+X-UUID: a3d5b12ba3924c20960dbea0bef5e2e5-20210715
+X-UUID: a3d5b12ba3924c20960dbea0bef5e2e5-20210715
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <hui.liu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 688587474; Thu, 15 Jul 2021 17:35:28 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 15 Jul 2021 17:35:26 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 15 Jul 2021 17:35:25 +0800
+From:   Hui Liu <hui.liu@mediatek.com>
+To:     <robh+dt@kernel.org>, <jic23@kernel.org>, <knaack.h@gmx.de>,
+        <lars@metafoo.de>, <pmeerw@pmeerw.net>
+CC:     <srv_heupstream@mediatek.com>, <hui.liu@mediatek.com>,
+        <zhiyong.tao@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <yingjoe.chen@mediatek.com>, <seiya.wang@mediatek.com>,
+        <matthias.bgg@gmail.com>, <s.hauer@pengutronix.de>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH 0/1] AUXADC: Mediatek auxadc driver
+Date:   Thu, 15 Jul 2021 17:35:22 +0800
+Message-ID: <20210715093523.29844-1-hui.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20210712124052.26491-1-david@redhat.com> <20210712124052.26491-2-david@redhat.com>
-In-Reply-To: <20210712124052.26491-2-david@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 15 Jul 2021 17:34:44 +0800
-Message-ID: <CAMZfGtVtUZphhNiKEZ2Xj7gTbkG0YaV5oxPRy-Kiw+J_NO9=ag@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] mm/memory_hotplug: use "unsigned long" for PFN in zone_for_pfn_range()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-acpi@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jia He <justin.he@arm.com>, Joe Perches <joe@perches.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Rich Felker <dalias@libc.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 8:42 PM David Hildenbrand <david@redhat.com> wrote:
->
-> Checkpatch complained on a follow-up patch that we are using "unsigned"
-> here, which defaults to "unsigned int" and checkpatch is correct.
->
-> Use "unsigned long" instead, just as we do in other places when handling
-> PFNs. This can bite us once we have physical addresses in the range of
-> multiple TB.
->
-> Fixes: e5e689302633 ("mm, memory_hotplug: display allowed zones in the preferred ordering")
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+This series includes one patch:
+1.Add mutex_destroy when probe fail and remove device.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Hui Liu (1):
+  iio: mtk-auxadc: add mutex_destroy
+
+ drivers/iio/adc/mt6577_auxadc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--
+2.18.0
+
+
