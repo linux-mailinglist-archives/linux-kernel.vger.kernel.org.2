@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA963CA8FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109CF3CAB9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241803AbhGOTFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:05:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59840 "EHLO mail.kernel.org"
+        id S243955AbhGOTVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:21:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241819AbhGOSzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:55:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF721613D8;
-        Thu, 15 Jul 2021 18:52:53 +0000 (UTC)
+        id S241820AbhGOTFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:05:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D00C613DC;
+        Thu, 15 Jul 2021 19:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375174;
-        bh=EjWV6Zy+VWuv5XJpAE9Di1/rWJ7BMDp9LT34EJC8Xa8=;
+        s=korg; t=1626375705;
+        bh=LzPTVCKk5pTrMWa6qyP+fACmjrQbtz4UR69fbiu+ICk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PPzPE+IxqPyKAAzp/DZGBzVqgcvWX3Gpd7p9QC9ckNgu3x/WxSGZW4Kzl+Aa3O6lD
-         sEZ83/NKgJvZR3eYdHdeCUY83ZXZGFBoNL230tUBa85Zel5u92J2IXrDGBCPsls3tD
-         SZYFik26txfy3lWYfI7r7xETjSqIdfmctR9bjjus=
+        b=g9kvkhfWyKwYNlFohKIzGsPGK2mPN/51IrnbI+mYrM+DL1GI4vumM205PZkuqgYXc
+         Gw/UmZ6oaiDBC/k+JNGfmlpmNi/0broBVvrQu6woFljMWc1yIIY526taxyR7+0Ucvy
+         pGBUAx1Wlidh+qfPEf1RVMJ2fk8xJbs+VgTj5gQk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 189/215] rq-qos: fix missed wake-ups in rq_qos_throttle try two
+        stable@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 5.12 199/242] thermal/drivers/int340x/processor_thermal: Fix tcc setting
 Date:   Thu, 15 Jul 2021 20:39:21 +0200
-Message-Id: <20210715182632.616737642@linuxfoundation.org>
+Message-Id: <20210715182628.257866003@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,98 +41,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-commit 11c7aa0ddea8611007768d3e6b58d45dc60a19e1 upstream.
+commit fe6a6de6692e7f7159c1ff42b07ecd737df712b4 upstream.
 
-Commit 545fbd0775ba ("rq-qos: fix missed wake-ups in rq_qos_throttle")
-tried to fix a problem that a process could be sleeping in rq_qos_wait()
-without anyone to wake it up. However the fix is not complete and the
-following can still happen:
+The following fixes are done for tcc sysfs interface:
+- TCC is 6 bits only from bit 29-24
+- TCC of 0 is valid
+- When BIT(31) is set, this register is read only
+- Check for invalid tcc value
+- Error for negative values
 
-CPU1 (waiter1)		CPU2 (waiter2)		CPU3 (waker)
-rq_qos_wait()		rq_qos_wait()
-  acquire_inflight_cb() -> fails
-			  acquire_inflight_cb() -> fails
-
-						completes IOs, inflight
-						  decreased
-  prepare_to_wait_exclusive()
-			  prepare_to_wait_exclusive()
-  has_sleeper = !wq_has_single_sleeper() -> true as there are two sleepers
-			  has_sleeper = !wq_has_single_sleeper() -> true
-  io_schedule()		  io_schedule()
-
-Deadlock as now there's nobody to wakeup the two waiters. The logic
-automatically blocking when there are already sleepers is really subtle
-and the only way to make it work reliably is that we check whether there
-are some waiters in the queue when adding ourselves there. That way, we
-are guaranteed that at least the first process to enter the wait queue
-will recheck the waiting condition before going to sleep and thus
-guarantee forward progress.
-
-Fixes: 545fbd0775ba ("rq-qos: fix missed wake-ups in rq_qos_throttle")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20210607112613.25344-1-jack@suse.cz
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: fdf4f2fb8e899 ("drivers: thermal: processor_thermal_device: Export sysfs interface for TCC offset")
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: stable@vger.kernel.org
+Acked-by: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210628215803.75038-1-srinivas.pandruvada@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-rq-qos.c   |    4 ++--
- include/linux/wait.h |    2 +-
- kernel/sched/wait.c  |    9 +++++++--
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ drivers/thermal/intel/int340x_thermal/processor_thermal_device.c |   20 ++++++----
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
---- a/block/blk-rq-qos.c
-+++ b/block/blk-rq-qos.c
-@@ -266,8 +266,8 @@ void rq_qos_wait(struct rq_wait *rqw, vo
- 	if (!has_sleeper && acquire_inflight_cb(rqw, private_data))
- 		return;
+--- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
++++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
+@@ -100,24 +100,27 @@ static ssize_t tcc_offset_degree_celsius
+ 	if (err)
+ 		return err;
  
--	prepare_to_wait_exclusive(&rqw->wait, &data.wq, TASK_UNINTERRUPTIBLE);
--	has_sleeper = !wq_has_single_sleeper(&rqw->wait);
-+	has_sleeper = !prepare_to_wait_exclusive(&rqw->wait, &data.wq,
-+						 TASK_UNINTERRUPTIBLE);
- 	do {
- 		/* The memory barrier in set_task_state saves us here. */
- 		if (data.got_token)
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -1126,7 +1126,7 @@ do {										\
-  * Waitqueues which are removed from the waitqueue_head at wakeup time
-  */
- void prepare_to_wait(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
--void prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
-+bool prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
- long prepare_to_wait_event(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state);
- void finish_wait(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
- long wait_woken(struct wait_queue_entry *wq_entry, unsigned mode, long timeout);
---- a/kernel/sched/wait.c
-+++ b/kernel/sched/wait.c
-@@ -249,17 +249,22 @@ prepare_to_wait(struct wait_queue_head *
+-	val = (val >> 24) & 0xff;
++	val = (val >> 24) & 0x3f;
+ 	return sprintf(buf, "%d\n", (int)val);
  }
- EXPORT_SYMBOL(prepare_to_wait);
  
--void
-+/* Returns true if we are the first waiter in the queue, false otherwise. */
-+bool
- prepare_to_wait_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry, int state)
+-static int tcc_offset_update(int tcc)
++static int tcc_offset_update(unsigned int tcc)
  {
- 	unsigned long flags;
-+	bool was_empty = false;
+ 	u64 val;
+ 	int err;
  
- 	wq_entry->flags |= WQ_FLAG_EXCLUSIVE;
- 	spin_lock_irqsave(&wq_head->lock, flags);
--	if (list_empty(&wq_entry->entry))
-+	if (list_empty(&wq_entry->entry)) {
-+		was_empty = list_empty(&wq_head->head);
- 		__add_wait_queue_entry_tail(wq_head, wq_entry);
-+	}
- 	set_current_state(state);
- 	spin_unlock_irqrestore(&wq_head->lock, flags);
-+	return was_empty;
+-	if (!tcc)
++	if (tcc > 63)
+ 		return -EINVAL;
+ 
+ 	err = rdmsrl_safe(MSR_IA32_TEMPERATURE_TARGET, &val);
+ 	if (err)
+ 		return err;
+ 
+-	val &= ~GENMASK_ULL(31, 24);
+-	val |= (tcc & 0xff) << 24;
++	if (val & BIT(31))
++		return -EPERM;
++
++	val &= ~GENMASK_ULL(29, 24);
++	val |= (tcc & 0x3f) << 24;
+ 
+ 	err = wrmsrl_safe(MSR_IA32_TEMPERATURE_TARGET, val);
+ 	if (err)
+@@ -126,14 +129,15 @@ static int tcc_offset_update(int tcc)
+ 	return 0;
  }
- EXPORT_SYMBOL(prepare_to_wait_exclusive);
  
+-static int tcc_offset_save;
++static unsigned int tcc_offset_save;
+ 
+ static ssize_t tcc_offset_degree_celsius_store(struct device *dev,
+ 				struct device_attribute *attr, const char *buf,
+ 				size_t count)
+ {
++	unsigned int tcc;
+ 	u64 val;
+-	int tcc, err;
++	int err;
+ 
+ 	err = rdmsrl_safe(MSR_PLATFORM_INFO, &val);
+ 	if (err)
+@@ -142,7 +146,7 @@ static ssize_t tcc_offset_degree_celsius
+ 	if (!(val & BIT(30)))
+ 		return -EACCES;
+ 
+-	if (kstrtoint(buf, 0, &tcc))
++	if (kstrtouint(buf, 0, &tcc))
+ 		return -EINVAL;
+ 
+ 	err = tcc_offset_update(tcc);
 
 
