@@ -2,257 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C6E3C9C1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5703C9C1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 11:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239534AbhGOJvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 05:51:44 -0400
-Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:36730 "EHLO
-        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231177AbhGOJvn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:51:43 -0400
-Received: from pps.filterd (m0127841.ppops.net [127.0.0.1])
-        by mx0b-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16F9hn4k017686;
-        Thu, 15 Jul 2021 02:48:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version;
- s=proofpoint20171006; bh=qR9qCxxwC5CNB3KL5+uqj1GGlBAIpS+l0KXqqdm4NqI=;
- b=MgWtQhwOvYzui2m4E1Sih00cc7UWf8JOkaoKNB+96JdOQ28UkgCEX0VoKFrd0WYvJExz
- S7eWbGaAKN93hG+9SkLC4zCS7wt+FpDRH8hjFYumkpkex1jU4bPhzOwdy6OE9FCn/T/J
- sFsw9IlnAbfFY/ybqp2Kxrf+rLL4k3Qax1ZMnT0OkFzRCUQPobh9B26b7ffwsuO2xG+g
- KueDdoyr9Gk/sUbPXJ19rv1HMXeU3uUsvvAstLtepHP1tSw5ME4qQ2RvNqI8yVdAqbO6
- 6zKd/wKdA7FuzVrlw95eASYVdyaMMe6LaLawh7ISanBlYA7wDbl/sDTU1OMa6XH2B1Y4 RA== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170])
-        by mx0b-002c1b01.pphosted.com with ESMTP id 39spmwu7hb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Jul 2021 02:48:31 -0700
+        id S239233AbhGOJvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 05:51:31 -0400
+Received: from mail-eopbgr40090.outbound.protection.outlook.com ([40.107.4.90]:28172
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231177AbhGOJva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 05:51:30 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JYTqb7gdp79uBoFlXDHLda3VG8f0rgmfDXAllJX3fUcdkcqtIJDQq44ghimR4HU6DjriWG1sHrA+qbRJpQGxPnmmWylQjErUykWIW779IwXYtz05H/WgottN8GRRT2oG180JzKHs7+oTpkU0zH8qUIK6/1AwG9HEiSZKcGGWzrA9YoRu0YEysoV7c+SRzaq/5WULneyTK0IklIKtO6TXWANAA4hkZ3YUQGBXKT1uv7mKzEvSxO3ZpjHWGVhQzNayEg6slLODVoHFWl/5XMzBQXFmV2hg5nEvMidQcPcm31Igk0bR54njoMpL8aXzVbNQTT6SJ/JeZoikJr96vHZKKw==
+ b=D7eGxNX8FcOg9XUWSSAf/WZPMjsPA/bX4z9ch4Xvw0VVzjUpY2PO8SAh/zNnqXYJGav9YKoLkXF4eWokl1MNxAHRwVRT2vyKfmH41ueRCN+/pi/qmd17mQlv5o8qASdSGd9DSlfjcElO4mEz3mO5kJoGgMMj/UvxzrOIn4GybtWujqQY9BjRncff0XpGCcNVvtW7yN5bpGx23GHqhhO7gsikOnklktoWvC1VJ0ISO3bo5FdyWfwwMg5Qf80kqoILz5BBPFaIH8PD2ZkT2JFrsSWlSdfH2LPnchLU6Q66XdfORUm3sH2fpoD7nd8IjdxBg+M+BZ0s3ZzYRSlnGq31KA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qR9qCxxwC5CNB3KL5+uqj1GGlBAIpS+l0KXqqdm4NqI=;
- b=JG/ALHS9lGRSiY2TKhI2T+0WBJ+D9yNEnJ99+k/lri34L57k8zDtTjgUsUysgVAnwWVMrDSe7HRzkHCqOLqkPzq8hZRKXF7GUArY8vnUAHQaAWWagZpvefzIlYcEvGTSQslb7hJ7M24DwoE55409W1lFy+xN/cUKhPdE0y2HdIgl6Gq+/EJu8nm2I4DtPqoscxNv79RFJ6/QxRGSt4ulZ7zlCiUS12DhIXgAC5WOSIHnPif87nXVC5jvDEde9W+Kxe7DNBQPykjNkYiN2n4ESZvM1I/X3N/bGr4KQMcK1YNBume8g6YtPpdbKHsOgD+9/implFXtKxWnGoaLa+7Qhg==
+ bh=M08VAaeCzczv81MV++q3tpTXvayzGimmYoAdps76PvI=;
+ b=D/ZblZj+8NDJXjt8gz5RwEY2A9BZFTNulGbjQgCILYVf2VWaAKkr7UEcvQknqwoXJcGYKNgRijFBkHegT9TLBYC3oU2AbKkTvbIl+pFwaweP1Jp8CxoqdUnMQYTtPiWuonvUYBFVzWhsUA32VdGhfeonuaxtRAD3/Y1Cbq67TKsh2D3TVcPvpy2Y+qquYxLzmL5ZF/0QHWZg/2kxIQV/OfyrMVWUdSIAcHqExmUXQscgWdEDn4dmCVh47IXJkPyGlLWsIH/BCwrLopAQ5X2dRru5350LoBV9ntVa1EDOUlYNtLwCkpAQYCTqVDleNhB/+XzIpOziW75YU/Pc++cIqQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
- dkim=pass header.d=nutanix.com; arc=none
-Received: from DM6PR02MB5578.namprd02.prod.outlook.com (2603:10b6:5:79::13) by
- DM6PR02MB6379.namprd02.prod.outlook.com (2603:10b6:5:1d4::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4331.21; Thu, 15 Jul 2021 09:48:30 +0000
-Received: from DM6PR02MB5578.namprd02.prod.outlook.com
- ([fe80::159:22bc:800a:52b8]) by DM6PR02MB5578.namprd02.prod.outlook.com
- ([fe80::159:22bc:800a:52b8%6]) with mapi id 15.20.4308.027; Thu, 15 Jul 2021
- 09:48:30 +0000
-From:   Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "chinwen.chang@mediatek.com" <chinwen.chang@mediatek.com>,
-        "linmiaohe@huawei.com" <linmiaohe@huawei.com>,
-        "jannh@google.com" <jannh@google.com>,
-        "apopple@nvidia.com" <apopple@nvidia.com>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "adobriyan@gmail.com" <adobriyan@gmail.com>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <flosch@nutanix.com>,
-        "Carl Waldspurger [C]" <carl.waldspurger@nutanix.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [RFC PATCH 1/1] pagemap: report swap location for shared pages
-Thread-Topic: [RFC PATCH 1/1] pagemap: report swap location for shared pages
-Thread-Index: AQHXeMRl21VMVRbyvE6e8ETg8oYttqtCo1EAgAEoR4A=
-Date:   Thu, 15 Jul 2021 09:48:30 +0000
-Message-ID: <D41075C7-B9FF-4C95-8613-5ECE75E8C3EE@nutanix.com>
-References: <20210714152426.216217-1-tiberiu.georgescu@nutanix.com>
- <20210714152426.216217-2-tiberiu.georgescu@nutanix.com>
- <YO8L5PTdAs+vPeIx@t490s>
-In-Reply-To: <YO8L5PTdAs+vPeIx@t490s>
-Accept-Language: en-GB, en-US
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M08VAaeCzczv81MV++q3tpTXvayzGimmYoAdps76PvI=;
+ b=hk/MHXSmbm+h8iS0E5tCl2LxQJgQGHGTvRCMdxGUJGdYSDoNdSOxbvJ8kRJv/zmOavD+AtR19XgO6JDPm2+TYU+sRhKZpSkI+JDLq/nhaBlk4ZBravRpNjYudhRJdvbZWC4y0BfHf0LJS0orA/DMOQY7nsLzT8V7p4FpiAUutN8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB7PR02MB4219.eurprd02.prod.outlook.com (2603:10a6:10:47::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Thu, 15 Jul
+ 2021 09:48:35 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::14ca:a41:2218:3578]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::14ca:a41:2218:3578%6]) with mapi id 15.20.4308.026; Thu, 15 Jul 2021
+ 09:48:35 +0000
+Subject: Re: [PATCH v5 05/10] iio: afe: rescale: add INT_PLUS_{MICRO,NANO}
+ support
+To:     Liam Beguin <liambeguin@gmail.com>, jic23@kernel.org,
+        lars@metafoo.de, pmeerw@pmeerw.net
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+References: <20210715031215.1534938-1-liambeguin@gmail.com>
+ <20210715031215.1534938-6-liambeguin@gmail.com>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <8417f698-eef2-3311-625a-1ceb17d3e5b2@axentia.se>
+Date:   Thu, 15 Jul 2021 11:48:31 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210715031215.1534938-6-liambeguin@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nutanix.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e58d864f-7fec-454d-19f1-08d94775b3bc
-x-ms-traffictypediagnostic: DM6PR02MB6379:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR02MB63792C304F9078EFD6C936EDE6129@DM6PR02MB6379.namprd02.prod.outlook.com>
-x-proofpoint-crosstenant: true
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iz2/I2eYT9BRZcmnqW8B1fe7DuHHvDF0L95LrbXNC4/yFHmYQamAZTLLYWD2FIJyYv+dN6Jzfqh/fc4Ynx8Agz2uQXEvL19GlXtuIpKoKXAbN3S8P6oUnj902latioF4BIeMFztlzk+d7++ddfIhYIeCwGPfdll59REaQYVlFu1MmKvyuyb0BFeXhMxb1uiUrBnfvv8MBXxN/oIyVmcWjuSWOdFGjY3PSsWFz/7svI4zHBgdAm8STrg+KxWOcHfBnG4/LgXyHNCe/hEo+F44jgmBZgD7yAMNTLcbz04JfXWMq3JIMq5ePW7n4sONdBDbsgoIyHOWuqxsH+Aehbaes2dyjYBHqaxYxhFX2j7dkIp1B+EXewC4KnYvZcbRNGbnq+6EnrSTHLYOCrUvxJeiyaRjBHQwA1YAvv3tTAJBT0gABL6iZANZQJhHtOra/XFjZbbFNPEpismBGs5OB9s1u9KQo61lKSiNiovs3vc49If45C93unLnX4NbRAECk3j6tIt5inpte/D4poRuppzzDw+DfHbcx85Q31m30VwADV6v26gSui6ZL3anH1pQyGPTTXKtNgrtJNnIlKSeqyeFIr0HiXsbLuLGc49VkiQ8ShtyI9OMfBIB8paZpHhtgrMA98LwfKOJYMmi9sRsVYZUN26bpd63jH1Bx+jDfwRANfTLddyFz3MjhdS/fjBd1c0wXbJfl2bKZPp5TMHUkxwI4IWBYwJCIXxyPp3zpUOl+4ws6rY22CbZNW1v80hThem7ubKNT4X3Mv6C4A//nwZdgjs715uyPXZImCcJQCCjRPJPh51OilozeMEeqW2oPt5/
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB5578.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(39860400002)(136003)(366004)(376002)(478600001)(36756003)(66476007)(66446008)(64756008)(66556008)(2616005)(4326008)(186003)(6506007)(53546011)(38100700002)(122000001)(86362001)(6512007)(6916009)(5660300002)(2906002)(71200400001)(91956017)(76116006)(33656002)(6486002)(7416002)(66946007)(8676002)(44832011)(8936002)(316002)(54906003)(38070700004)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xGmbsM+9gSI1anXURexzSOsczEkLSgR4caA37YS+tt/C89XHrPFVvBxCllnF?=
- =?us-ascii?Q?Jk0cMEDKh/UB1bP5wx4AbKX7F7kb+YKzsK1LOQ/XLpdMnL9fyOHW25NynKQi?=
- =?us-ascii?Q?Et8utBt7fVIiWuQvFzSqBF4bpnfgi5pj2wYcTHO1gWSiSr+wken8WgZc4tpY?=
- =?us-ascii?Q?h/tKGL2L3RedmwvLWvPvTsD22gTOBRBf9w12PVqQUpIJtu7EeSDQdXtbDGsP?=
- =?us-ascii?Q?7Q8HgNPEOLFqbjXCXH6GyuxDvQ/RF/EFh34JDvzLLaXwgT8k5pkUWph2IDrc?=
- =?us-ascii?Q?Dv2AqeRZEMcvQlGa20EPhNUVPsEKxKuq3xooGCsl/BMoEkYuvcALHOLChELO?=
- =?us-ascii?Q?aszjjkLER9yTVBYh9CMe1QknG7dI0fx5V3eOKTPGpsvIP7ewik973jbB/Fkk?=
- =?us-ascii?Q?fH+XzMu5pTLUKJpVa7GH8tW5Y+vJrxN3bK98cvGtRUYrgDPz7B4Oz7YajXvz?=
- =?us-ascii?Q?2VvCVDDTouTfVqBbgKp8FAsUDdShURVoAOXnnNDhRyxejt01qrX+gN8xtwxB?=
- =?us-ascii?Q?OmiKt2v1nNQOdS20eytfq76HIMTAP7rN27pNwLqTyubU5k5fVjWJBkBxpPPH?=
- =?us-ascii?Q?bKeCDoShGgyoCyn+5IqMCrVYMraY8GjbXoulXodDp9nSfsZZW8n4JycC5nX6?=
- =?us-ascii?Q?Qmsm58+tvOw5/qGDQCkk9Q/zInM5LQXrnS+a+Hv25EDtORDyaWLyuPgv90Dc?=
- =?us-ascii?Q?90m5vSjk5y4SAJ2I9Tfvht+/EIWP2NxbB3eU7LsbeaIF9BHZW2eQHSh0ldzu?=
- =?us-ascii?Q?DLNdpgXUAPTlQwx0fTSZHRoMopeOcvFh9TRbyCfvbZ1u81yHSqvKlsYu0IXp?=
- =?us-ascii?Q?diGAMKFlFuZf7mUymdkNGiBqtzz18LBFXIRACzQ92y466NR6yLY8VGlPNA4f?=
- =?us-ascii?Q?W0RsTFvFAsqMZgNXnbTodG54QRolOdpAexSWz0OrOwkiBDn9Dq5kfmVZpMym?=
- =?us-ascii?Q?KNTeBFJ0uMD15djvgt4pBRcSTABP45lSiGmMQ76zsSzOJ+060sCikjiSGQi6?=
- =?us-ascii?Q?kcIcho0R2oOmsoLELLh5X+YoSc1A4gvmanMMTy+NGF37vEbQisrgDqI9mxGd?=
- =?us-ascii?Q?N5uEsAYL1vtcyB+lUqA9MfGuRF+vpC0nez+YyRLM9ksHYuuXAY3+idX8czu5?=
- =?us-ascii?Q?VJYMLqRRAvQBUmafrSYsxNzddni1ZspzyFJFznQbtXUC8iboMr7ef/lpcH0z?=
- =?us-ascii?Q?OXnwQ+qmz5G2eZEpCCf4IsS2pGLTNFOY5jxL419ghZN/OvfWfm1hf3e+a+cJ?=
- =?us-ascii?Q?b2XZ4k2HNa9agjDdmkMK73xIApiREE9eShAKTgCOEuXnrlG4hMkDBSDEcKah?=
- =?us-ascii?Q?gtXRwJ5G2AbuuK6WwilnmvmwgA3VyLkXYEflIWa+EnNx4T60/vBY67eSW2cV?=
- =?us-ascii?Q?G8ucyvBMQWtAiEFAUPfz8WZOPMDd?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3BF6AED871150C4CB5679C66A4A3776F@namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: HE1PR05CA0180.eurprd05.prod.outlook.com
+ (2603:10a6:3:f8::28) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
 MIME-Version: 1.0
-X-OriginatorOrg: nutanix.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.13.3] (85.229.94.233) by HE1PR05CA0180.eurprd05.prod.outlook.com (2603:10a6:3:f8::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 09:48:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d5b13584-6e77-4e10-07c9-08d94775b664
+X-MS-TrafficTypeDiagnostic: DB7PR02MB4219:
+X-Microsoft-Antispam-PRVS: <DB7PR02MB4219D3D33AEC5E2E44487C23BC129@DB7PR02MB4219.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +dx1MsDVis7XvFRkZuAqTemvv5wksX9IykBmLYZTRxA9KQ9oxziO5RFuqyD6W3VKua/oQgn8MYGnM7c+w8akM6v2eqLRolxrvDSt8GEfbCkIaGXGM5rVGwT+n+mvethaCGq0S7FUlwzvmWpmLJBFjEC1/jJWHzJbuVCa1G1oPIO6p/HMa1Fdp/sHrox3ltDIyeElghc//o2DFBlUhkeWc5EY/YNVC1u/tWFxsPXBh/CFCQI8s+k+pEEgOTtjwY7GFbM2RqPazkIaPITUXNRVUn9qBDEkKtGnz4jAcAbKQLTfvmAKKzacLKvt3pcZFQiVaw0tQD3OFbKcKou7bSKkgQpYd6/PQPVIkuzEIRyYNCO5bMCntL4eqpzF9ysJHh4BKR4Ot6Ek8yI7e0YSYh7lU6FdjlS905jENjQm9LSjIk0xZTVIHwRSHQmoBBdZkwr1QbC9l1on5klb0lQcQe1+hp82Uj86HABu3/8OyqcKLF4rwBTn86B9egXk75xTGnSTfPq3ZqoIc0TiGUIQOjoL1YGFd/2rKroz9vSPW2EdpJp6qnQFEDilsVO9+EZtTU+8jgvkeSYMMOxoqe/tGVJORQrfX3Hpzodlu2o7W3gw7SgZX2DQF+kfIOHi8nZuqUhkd7Q9ffx5eG4W70pK9jtvm236eP9MXON5U9ZE0QqouVKumt8qj2twssc+5iYBvcEMgd57nncYBF1Q+moT89ZVijVJzfwcVprBBe3DZWwXv28=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39830400003)(396003)(346002)(366004)(136003)(86362001)(6486002)(53546011)(38100700002)(26005)(186003)(2906002)(478600001)(36756003)(31686004)(5660300002)(956004)(8676002)(16576012)(2616005)(316002)(6666004)(36916002)(66946007)(66556008)(66476007)(4326008)(8936002)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ajBNaUN3cytYWHFnSWt0OHRaaFpJM1FzSG0vdGFKN3dBUUFrNE9wbllRQTRi?=
+ =?utf-8?B?TFMydVg5TXFkT3p2b2lqK3VqVUR2NVp1aVVHL0VIN1BzanZ6aldHNDE1ZkRS?=
+ =?utf-8?B?U1hIRWxkbFVVWHN5MS9kdzh0L1dVNFIzWk41Qm56K29FbVQvTGd3UHh1a0ZI?=
+ =?utf-8?B?a2JnRWhMY216WXRsU2oyOWl3RmVvZ2o4eThNUGVBd3lkcTNxbndMeStJTGhL?=
+ =?utf-8?B?bW5HRlE4aUxDcHZieDhkWDRTL1FlaTExakpiTW5ZcVg1QkM3QUtEN0xkQitR?=
+ =?utf-8?B?cmpMOHd5TVhzdWlLNk5lbEJuUnl1a1BCUlNsMTdQMVhLZFA4UWFkeU42eUdr?=
+ =?utf-8?B?eEp0ZFJBcUVrYlBTUFIrYmRheEJoMWtEamhXN3RMd0pMZEpibFBVc1pQako0?=
+ =?utf-8?B?WlUyS2VPZ2xrR0NkT1YxR24zdHI3MVpsVDdVSTNCQ3VlTjRNd3crMC9PazFO?=
+ =?utf-8?B?alNDeFRNV01CTW5LUDNuMHdVNEVLZk5rSkdVYjlpSXdvTjBOS1doVU1nVTht?=
+ =?utf-8?B?V21mQlRyYzJPcm13RmVqM29XZ1BlYmQxM28wYnVtN0ZwQWo0c0FobEJXZ3FJ?=
+ =?utf-8?B?RnRhVHVlbUcxNW80alc0OGUyUHc4clpiQ0ErUXR1QUQya2ZiSWhsNXhHSndB?=
+ =?utf-8?B?VlR3OHVFaGhKNGpJaHFNNzc4MWZrQUZidnJLamthb21jNlhLTmw4YW5hWUFz?=
+ =?utf-8?B?VHJsTkJ0QkZmVlRDSDJ0V1BVWHpaWFdkM2pxWmtZcFZCNHcyYjZWQjJ0ODlw?=
+ =?utf-8?B?Sjk5VnhVdzBQU2U5alNiQktnM2J5NzZGemhoVytOSjNTZTZnTk8xOStCblVN?=
+ =?utf-8?B?UGJ2emtYNDRhaHFneEVvS1JKVi9Ja3lvTlZPeXJUM0xGc3J1dGZUTGNDaW9V?=
+ =?utf-8?B?YWQyQTVOa2k3d0Q4ZE90OExxYmdJSEpEVGdRbFpzMkV4cHFFd2Z1SjdRYVVD?=
+ =?utf-8?B?Wm8zSWNTT1ladWl1ck9wUDlqa3BRREQzU3BVZVBrdnFJaXNPYlRlcmdlSnhR?=
+ =?utf-8?B?N3V1bEF5UGJrWk92aStMYk5PSGNLVVRKclkrMDNJeTdrcTNTNnJqT0xWaHNW?=
+ =?utf-8?B?NmUyWjBmYkZZTjY0OVRZOTRrZENKUlFEWngveDBIWG1Oa2MxOEJSOExUanV4?=
+ =?utf-8?B?WkVHaG9SVGVwclNLQS9lUjZadFhTelhha0RDc1ZicWoxUEJXdm85VytZUVEz?=
+ =?utf-8?B?WVM0MjcwaXFJZlJNckdzQzNNZUVWajhlZ1ViK2VuNFZ4U1cyTFVsWHhlOGZV?=
+ =?utf-8?B?anM5OHpJRmZHMHVWV2NhNERsL0ZvN1JFNVk0WWhXaXlhM3ZWU3pFZG1mam1O?=
+ =?utf-8?B?Rlg2UkZpUjRCdVYxQTRocnBiVWREdy8wV0FOc3QvOFg5R1JqcDNaMmxtaU15?=
+ =?utf-8?B?b0UzUXlmOUpQeFI1Tm9zYkF3UnZsYkt6NTRoK0cyWXZTMnpYWGl6WUtqbStz?=
+ =?utf-8?B?ZldHNHdnaTY4OE84UHhWTklWUVF3Q0NxaFUvdzlXNnVDYk95ZDFwNWpWRjA0?=
+ =?utf-8?B?RG91Nkd5ZHhNc0dBUXFkYThaaStPWGFVUXRUYjBrOXpUeFg2UzBmUjVNWDVR?=
+ =?utf-8?B?SFdEaWpXbHFuaG1MTzdkNEZSU1U1VWpMY3g4RnkrdjErdEVBSUpta3lHTy9w?=
+ =?utf-8?B?WFl3UGFYQStOM3FaMzg4MElxbW5XRW5wNE1kNUY2ZlRhMTJDbTNsU1RuZGQx?=
+ =?utf-8?B?a0ZnalFEOTg0cW1leWNQaTFBOGJ0aVJWNXFXVlk0T2pWM0RMVllyN2g5VjBr?=
+ =?utf-8?Q?51P4AiMA6O80lyUS1WxJa1UhXXxb7LLInWUzpWF?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5b13584-6e77-4e10-07c9-08d94775b664
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR02MB5578.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e58d864f-7fec-454d-19f1-08d94775b3bc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2021 09:48:30.1250
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 09:48:34.9308
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9unIgEOA6lN2Sy9UUUMsIbeBfSkJ128P18cMlkSqWqO6ZkwO09IxmvEx7Fk4zVVurrIvbjl8O6ldPPSGqYPl9C77I3fUVrTA5aRERwQZMW0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6379
-X-Proofpoint-GUID: gZtAo8I8tiuILA0ySyo5BoJHwsBLYEni
-X-Proofpoint-ORIG-GUID: gZtAo8I8tiuILA0ySyo5BoJHwsBLYEni
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-15_07:2021-07-14,2021-07-15 signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a0e33rraajZMAhyIHncWTwdW15ng5jncEXNAWgMWYUMmOCOSF6IZVYwvEqB1q6KD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB4219
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> On 14 Jul 2021, at 17:08, Peter Xu <peterx@redhat.com> wrote:
->=20
-> On Wed, Jul 14, 2021 at 03:24:26PM +0000, Tiberiu Georgescu wrote:
->>=20
->> static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
->> 		struct vm_area_struct *vma, unsigned long addr, pte_t pte)
->> {
->> 	u64 frame =3D 0, flags =3D 0;
->> 	struct page *page =3D NULL;
->>=20
->> +	if (vma->vm_flags & VM_SOFTDIRTY)
->> +		flags |=3D PM_SOFT_DIRTY;
->> +
->> 	if (pte_present(pte)) {
->> 		if (pm->show_pfn)
->> 			frame =3D pte_pfn(pte);
->> @@ -1374,13 +1387,22 @@ static pagemap_entry_t pte_to_pagemap_entry(stru=
-ct pagemapread *pm,
->> 			flags |=3D PM_SOFT_DIRTY;
->> 		if (pte_uffd_wp(pte))
->> 			flags |=3D PM_UFFD_WP;
->> -	} else if (is_swap_pte(pte)) {
->> +	} else if (is_swap_pte(pte) || shmem_file(vma->vm_file)) {
->> 		swp_entry_t entry;
->> -		if (pte_swp_soft_dirty(pte))
->> -			flags |=3D PM_SOFT_DIRTY;
->> -		if (pte_swp_uffd_wp(pte))
->> -			flags |=3D PM_UFFD_WP;
->> -		entry =3D pte_to_swp_entry(pte);
->> +		if (is_swap_pte(pte)) {
->> +			entry =3D pte_to_swp_entry(pte);
->> +			if (pte_swp_soft_dirty(pte))
->> +				flags |=3D PM_SOFT_DIRTY;
->> +			if (pte_swp_uffd_wp(pte))
->> +				flags |=3D PM_UFFD_WP;
->> +		} else {
->> +			void *xa_entry =3D get_xa_entry_at_vma_addr(vma, addr);
->> +
->> +			if (xa_is_value(xa_entry))
->> +				entry =3D radix_to_swp_entry(xa_entry);
->> +			else
->> +				goto out;
->> +		}
->> 		if (pm->show_pfn)
->> 			frame =3D swp_type(entry) |
->> 				(swp_offset(entry) << MAX_SWAPFILES_SHIFT);
->> @@ -1393,9 +1415,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct=
- pagemapread *pm,
->> 		flags |=3D PM_FILE;
->> 	if (page && page_mapcount(page) =3D=3D 1)
->> 		flags |=3D PM_MMAP_EXCLUSIVE;
->> -	if (vma->vm_flags & VM_SOFTDIRTY)
->> -		flags |=3D PM_SOFT_DIRTY;
->=20
-> IMHO moving this to the entry will only work for the initial iteration, h=
-owever
-> it won't really help anything, as soft-dirty should always be used in pai=
-r with
-> clear_refs written with value "4" first otherwise all pages will be marke=
-d
-> soft-dirty then the pagemap data is meaningless.
->=20
-> After the "write 4" op VM_SOFTDIRTY will be cleared and I expect the test=
- case
-> to see all zeros again even with the patch.
+On 2021-07-15 05:12, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> Some ADCs use IIO_VAL_INT_PLUS_{NANO,MICRO} scale types.
+> Add support for these to allow using the iio-rescaler with them.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+>  drivers/iio/afe/iio-rescale.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+> index 4c3cfd4d5181..a2b220b5ba86 100644
+> --- a/drivers/iio/afe/iio-rescale.c
+> +++ b/drivers/iio/afe/iio-rescale.c
+> @@ -92,7 +92,22 @@ static int rescale_read_raw(struct iio_dev *indio_dev,
+>  			do_div(tmp, 1000000000LL);
+>  			*val = tmp;
+>  			return ret;
+> +		case IIO_VAL_INT_PLUS_NANO:
+> +			tmp = ((s64)*val * 1000000000LL + *val2) * rescale->numerator;
+> +			do_div(tmp, rescale->denominator);
+> +
+> +			*val = div_s64(tmp, 1000000000LL);
+> +			*val2 = tmp - *val * 1000000000LL;
+> +			return ret;
 
-Indeed, the SOFT_DIRTY bit gets cleared and does not get set when we dirty =
-the
-page and swap it out again. However, the pagemap entries are not completely=
-=20
-zeroed out. The patch mostly deals with adding the swap frame offset on the=
-=20
-pagemap entries of swappable, non-syncable pages, even if they are MAP_SHAR=
-ED.
+This is too simplistic and prone to overflow. We need something like this
+(untested)
 
-Example output post-patch, after writing 4 to clear_refs and dirtying the p=
-ages:
-       =20
-        $ dd if=3D/proc/$PID/pagemap ibs=3D8 skip=3D$(($VADDR / $PAGESIZE))=
- count=3D256 | hexdump -C
-        00000000  80 13 01 00 00 00 00 40  a0 13 01 00 00 00 00 40  |......=
-.@.......@|
-        ...........more swapped-out entries............
-        000005e0  e0 2a 01 00 00 00 00 40  00 2b 01 00 00 00 00 40  |.*....=
-.@.+.....@|
-        000005f0  20 2b 01 00 00 00 00 40  40 2b 01 00 00 00 00 40  | +....=
-.@@+.....@|
-        00000600  72 6c 1d 00 00 00 80 a1  c1 34 12 00 00 00 80 a1  |rl....=
-...4......|
-        ...........more in-memory entries............
-        000007f0  3c 21 18 00 00 00 80 a1  69 ec 17 00 00 00 80 a1  |<!....=
-..i.......|
+	tmp = (s64)*val * rescale->numerator;
+	rem = do_div(tmp, rescale->denominator);
+	*val = tmp;
+	tmp = ((s64)rem * 1000000000LL + (s64)*val2) * rescale->numerator;
+	do_div(tmp, rescale->denominator);
+	*val2 = tmp;
 
-You may find the pre-patch example output on the RFC cover letter, for refe=
-rence:
-https://lkml.org/lkml/2021/7/14/594
+Still not very safe with numerator and denominator both "large", but much
+better. And then we need normalizing the fraction part after the above, of
+course.
 
-> I think one way to fix this is to do something similar to uffd-wp: we lea=
-ve a
-> marker in pte showing that this is soft-dirtied pte even if swapped out.
-> However we don't have a mechanism for that yet in current linux, and the
-> uffd-wp series is the first one trying to introduce something like that.
+And, of course, I'm not sure what *val == -1 and *val2 == 500000000 really
+means. Is that -1.5 or -0.5? The above may very well need adjusting for
+negative values...
 
-I am taking a look at the uffd-wp patch today. Hope it gets upstreamed soon=
-, so I can
-adapt one of the mechanisms in there to keep track of the SOFT_DIRTY bit on=
- the
-PTE after swap.
+Cheers,
+Peter
 
-Kind regards,
-Tibi=
+> +		case IIO_VAL_INT_PLUS_MICRO:
+> +			tmp = ((s64)*val * 1000000LL + *val2) * rescale->numerator;
+> +			do_div(tmp, rescale->denominator);
+> +
+> +			*val = div_s64(tmp, 1000000LL);
+> +			*val2 = tmp - *val * 1000000LL;
+> +			return ret;
+>  		default:
+> +			dev_err(&indio_dev->dev, "unsupported type %d\n", ret);
+>  			return -EOPNOTSUPP;
+>  		}
+>  	default:
+> 
