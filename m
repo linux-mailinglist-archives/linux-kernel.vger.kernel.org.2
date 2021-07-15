@@ -2,121 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BAF3C9564
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC4B3C955A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 02:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhGOBD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:03:29 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:26478 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbhGOBD2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:03:28 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210715010034epoutp02389f3e62a4687b3b5a7278477507bbd0~R0RZNmY8n2763727637epoutp02f
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 01:00:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210715010034epoutp02389f3e62a4687b3b5a7278477507bbd0~R0RZNmY8n2763727637epoutp02f
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1626310834;
-        bh=eCkJLbUlCesVIBnOdS/rl+lgILw2qdsiEpfkvsU1IE0=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=oXTSrDPeK0K0mUvygu+AqCSQiB7vYUYlHVE1DViv3mHfReX5fgqNfkdxaCyFn5N4W
-         aJMft7gfEGVqHfCY8RbsJOTN120We35/u2+Uf0/aQ4PNCwkhzuO/vtKzl37XafCdyX
-         19bpStZJHiIoMhTRx27a5/v5s5GHfYnZrMgsyieA=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210715010028epcas1p4ae5355431a3e6298c5d1e7699780a1f1~R0RT6tSqI3143131431epcas1p4E;
-        Thu, 15 Jul 2021 01:00:28 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4GQGJC6HHqz4x9Q1; Thu, 15 Jul
-        2021 01:00:27 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        91.3B.10119.AA88FE06; Thu, 15 Jul 2021 10:00:26 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210715010024epcas1p20a9780de11ed702ed0b3ba0e2b494196~R0RPy_XIA0392403924epcas1p2p;
-        Thu, 15 Jul 2021 01:00:24 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210715010024epsmtrp2cfdebfcd92702d5189fa206d9bb79f0e~R0RPyEkoI1856318563epsmtrp2D;
-        Thu, 15 Jul 2021 01:00:24 +0000 (GMT)
-X-AuditID: b6c32a38-97bff70000002787-64-60ef88aa1858
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7D.9A.08394.7A88FE06; Thu, 15 Jul 2021 10:00:23 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.101.104]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210715010023epsmtip10d87091771e5156225961f908a898a4c~R0RPjTWPo0149901499epsmtip1T;
-        Thu, 15 Jul 2021 01:00:23 +0000 (GMT)
-From:   JeongHyeon Lee <jhs2.lee@samsung.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        JeongHyeon Lee <jhs2.lee@samsung.com>
-Subject: [PATCH] mm/vmscan: Removed useless space for intent
-Date:   Thu, 15 Jul 2021 09:54:23 +0900
-Message-Id: <1626310463-31705-1-git-send-email-jhs2.lee@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBKsWRmVeSWpSXmKPExsWy7bCmvu6qjvcJBh9ajS3mrF/DZnHp/h1W
-        i8u75rBZ3Fvzn9WBxWPTp0nsHidm/Gbx6NuyitHj8ya5AJaoHJuM1MSU1CKF1Lzk/JTMvHRb
-        Je/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoJVKCmWJOaVAoYDE4mIlfTubovzSklSF
-        jPziElul1IKUnAJDgwK94sTc4tK8dL3k/FwrQwMDI1OgyoScjGnzF7MWbGSu2PGuj7mB8RZT
-        FyMnh4SAicTqRT8ZQWwhgR2MErd/xXYxcgHZnxglrjU+ZoFwvjFKPH71FsjhAOu4OD8NIr6X
-        UaLrwE0miO4vjBJnpiaC2GwC2hK3Wzaxg9giArISU/+eZwGxmQViJeb+62IGsYUFbCQubb/I
-        CmKzCKhKrDp3jA1kPq+Ai8TTlgCI4+Qkbp7rZAbZJSEwmV3i2vUfjBAJF4l1k+azQtjCEq+O
-        b2GHsKUkPr/bywbR0M0ocf/8azaIxARGid4eJogH7CXeX7IAMZkFNCXW79KHqFCU2Pl7LiPE
-        mXwS7772sEJU80p0tAlBlChJrPh3jQXClpDYcLibDaLEQ+LK2zRIIMRKfF11n2kCo+wshPkL
-        GBlXMYqlFhTnpqcWGxaYIEfQJkZwEtKy2ME49+0HvUOMTByMhxglOJiVRHiXGr1NEOJNSays
-        Si3Kjy8qzUktPsRoCgyticxSosn5wDSYVxJvaGpkbGxsYWJmbmZqrCTOu5PtUIKQQHpiSWp2
-        ampBahFMHxMHp1QDU49qnN75rmOPnQR/f8gQL+HNeeC11Lrv7ukHbPYTDE8YOJ+o9fA4db76
-        zYd5JSs9ZukmH5t01k98i9sL1zKlqoLP4YvfTLcwUZ+et7BFZ9q85eZms5v7a6SrPu9NaHU8
-        pTk/xUYuJmKJcHUDE3t+lNfrxy6pmacvuxlkiuYdzp1otyuw0p3Nq4pF/Oq0rc2FN/ctPFc/
-        Q7wiYOn5my9zvJTUzq1NSzwmbh8UlzSTb2X0q0j/RZ0s20WjHCK6fznuefqW95We5T23Q2e4
-        l1TPibXhrjw/eWJB9sIN30LnP47L6z+4fJXU2zXC6aur35346t/PMflQy26HtVM0e1gl0w72
-        NV9v016WY/LiRnmnEktxRqKhFnNRcSIA95VWJ8sDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBJMWRmVeSWpSXmKPExsWy7bCSnO7yjvcJBkemWFjMWb+GzeLS/Tus
-        Fpd3zWGzuLfmP6sDi8emT5PYPU7M+M3i0bdlFaPH501yASxRXDYpqTmZZalF+nYJXBnT5i9m
-        LdjIXLHjXR9zA+Mtpi5GDg4JAROJi/PTuhi5OIQEdjNKrPv7lbmLkRMoLiGxYdNadogaYYnD
-        h4shaj4xSvTNX8EOUsMmoC1xu2UTmC0iICsx9e95FhCbWSBeYuvi/WwgtrCAjcSl7RdZQWwW
-        AVWJVeeOsYHM5BVwkXjaEgCxSk7i5rlO5gmMPAsYGVYxSqYWFOem5xYbFhjmpZbrFSfmFpfm
-        pesl5+duYgQHhpbmDsbtqz7oHWJk4mA8xCjBwawkwrvU6G2CEG9KYmVValF+fFFpTmrxIUZp
-        DhYlcd4LXSfjhQTSE0tSs1NTC1KLYLJMHJxSDUzuTpl2Yc+XHL7kcKX6UszdmUcbduVFXJ7N
-        lfpvq3VBWcZpD8OQafr9J+6daTwuOXX/+9UL/abyfL3xQFJrt+38o34aeVnpzAYHv04pmh75
-        70j7bJtzl3NCbiza/YlLx2YTu6eNTJ+bSYrAHoOUtAweIXUeP+XsbuUDzTKPXEV42tK49FvX
-        lPKeSC/qOSrze9Id588r12+ITXqT/3bVd03Znpq8xf8O9dzucT6eMTfh89dNV3ds+MIm4OR3
-        k336PfNpwU/+sjfsOL0x6VrO5I6pwQdbisU7XdI0Fl/Jeml39Bz/g+jw2YHPD9zUY9mw/qPB
-        cuVE4Vi3JbZs8ZO1pV6vlwtP/HzvpefM1Yd2bAhUYinOSDTUYi4qTgQA9TwCZXsCAAA=
-X-CMS-MailID: 20210715010024epcas1p20a9780de11ed702ed0b3ba0e2b494196
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210715010024epcas1p20a9780de11ed702ed0b3ba0e2b494196
-References: <CGME20210715010024epcas1p20a9780de11ed702ed0b3ba0e2b494196@epcas1p2.samsung.com>
+        id S235345AbhGOA5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 20:57:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231489AbhGOA5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 20:57:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28472613E4;
+        Thu, 15 Jul 2021 00:54:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626310483;
+        bh=iNDdn2Bhz2BPFuibfV+Kr5WrIjdthEM5WI5vHxIra9k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GOtpeYz//32i2od1ATEzmeoCBrPaFj51xgOW0U3QgJ1o3F/UOwVw37YWe1CXXR6f3
+         4sDbCfq0vavYNcjrSEsYjmochntkpgd+G/45lKJ1e1ySC+LxNz03jhB84S4TR+Z4Dg
+         S/AKpNICoAudirR5v+X0rlVEmkpnO8rWpqAc4Ul8L47FLYtTQn1OuzXMQKoKsGoChr
+         TwQAXDzAl9xm2xTtl+ZnOOBZ/tUxDtS2OoKzHAugSRVDEQp8KcYvz0tBh8O/dYLU0Y
+         iMhNh41urzoQLRksTqZUEPuxFZgEBr3NSbusOjKk8bgTRlmCOLQzWRcNbagyC13trl
+         voy+RzD/f2gnw==
+Received: by mail-lf1-f49.google.com with SMTP id b26so6796137lfo.4;
+        Wed, 14 Jul 2021 17:54:43 -0700 (PDT)
+X-Gm-Message-State: AOAM532fzt8hxjUr510Eoqn3MUmpS2/oYWY28Jfr2GMOmgc4oI/qu5EO
+        U/oYzDdZiJr7Fq2byOMXfWBB0LQ1bxOtHewgyqQ=
+X-Google-Smtp-Source: ABdhPJxijOtCtWRS8cpcM/0j/6AfnASZclT1TE0Gnm69XQSgSA4IPJIdX0YPfwji2VuN4aFddlf3s0uwecafXQmERqk=
+X-Received: by 2002:ac2:4438:: with SMTP id w24mr540364lfl.281.1626310481426;
+ Wed, 14 Jul 2021 17:54:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210714101815.164322-1-hefengqing@huawei.com>
+In-Reply-To: <20210714101815.164322-1-hefengqing@huawei.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 14 Jul 2021 17:54:30 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW51b0Cd7VV6ub2APze4EMbMJ+Y=scLAEyhJ4SvG=D0kyQ@mail.gmail.com>
+Message-ID: <CAPhsuW51b0Cd7VV6ub2APze4EMbMJ+Y=scLAEyhJ4SvG=D0kyQ@mail.gmail.com>
+Subject: Re: [bpf-next, v2] bpf: verifier: Fix potential memleak and UAF in
+ bpf verifier
+To:     He Fengqing <hefengqing@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: JeongHyeon Lee <jhs2.lee@samsung.com>
----
- mm/vmscan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Jul 14, 2021 at 2:33 AM He Fengqing <hefengqing@huawei.com> wrote:
+>
+> In bpf_patch_insn_data(), we first use the bpf_patch_insn_single() to
+> insert new instructions, then use adjust_insn_aux_data() to adjust
+> insn_aux_data. If the old env->prog have no enough room for new inserted
+> instructions, we use bpf_prog_realloc to construct new_prog and free the
+> old env->prog.
+>
+> There have two errors here. First, if adjust_insn_aux_data() return
+> ENOMEM, we should free the new_prog. Second, if adjust_insn_aux_data()
+> return ENOMEM, bpf_patch_insn_data() will return NULL, and env->prog has
+> been freed in bpf_prog_realloc, but we will use it in bpf_check().
+>
+> So in this patch, we make the adjust_insn_aux_data() never fails. In
+> bpf_patch_insn_data(), we first pre-malloc memory for the new
+> insn_aux_data, then call bpf_patch_insn_single() to insert new
+> instructions, at last call adjust_insn_aux_data() to adjust
+> insn_aux_data.
+>
+> Fixes: 8041902dae52 ("bpf: adjust insn_aux_data when patching insns")
+>
+> Signed-off-by: He Fengqing <hefengqing@huawei.com>
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 4620df6..89768ef 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4318,7 +4318,7 @@ static int __init kswapd_init(void)
- 
- 	swap_setup();
- 	for_each_node_state(nid, N_MEMORY)
-- 		kswapd_run(nid);
-+		kswapd_run(nid);
- 	return 0;
- }
- 
--- 
-2.7.4
+Acked-by: Song Liu <songliubraving@fb.com>
 
+with one nitpick below.
+
+>
+>   v1->v2:
+>     pre-malloc memory for new insn_aux_data first, then
+>     adjust_insn_aux_data() will never fails.
+> ---
+>  kernel/bpf/verifier.c | 30 +++++++++++++++++++-----------
+>  1 file changed, 19 insertions(+), 11 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index be38bb930bf1..07cf791510f1 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -11425,10 +11425,11 @@ static void convert_pseudo_ld_imm64(struct bpf_verifier_env *env)
+>   * insni[off, off + cnt).  Adjust corresponding insn_aux_data by copying
+>   * [0, off) and [off, end) to new locations, so the patched range stays zero
+>   */
+> -static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+> -                               struct bpf_prog *new_prog, u32 off, u32 cnt)
+> +static void adjust_insn_aux_data(struct bpf_verifier_env *env,
+> +                                struct bpf_insn_aux_data *new_data,
+> +                                struct bpf_prog *new_prog, u32 off, u32 cnt)
+>  {
+> -       struct bpf_insn_aux_data *new_data, *old_data = env->insn_aux_data;
+> +       struct bpf_insn_aux_data *old_data = env->insn_aux_data;
+>         struct bpf_insn *insn = new_prog->insnsi;
+>         u32 old_seen = old_data[off].seen;
+>         u32 prog_len;
+> @@ -11441,12 +11442,9 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+>         old_data[off].zext_dst = insn_has_def32(env, insn + off + cnt - 1);
+>
+>         if (cnt == 1)
+> -               return 0;
+> +               return;
+>         prog_len = new_prog->len;
+> -       new_data = vzalloc(array_size(prog_len,
+> -                                     sizeof(struct bpf_insn_aux_data)));
+> -       if (!new_data)
+> -               return -ENOMEM;
+> +
+>         memcpy(new_data, old_data, sizeof(struct bpf_insn_aux_data) * off);
+>         memcpy(new_data + off + cnt - 1, old_data + off,
+>                sizeof(struct bpf_insn_aux_data) * (prog_len - off - cnt + 1));
+> @@ -11457,7 +11455,7 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+>         }
+>         env->insn_aux_data = new_data;
+>         vfree(old_data);
+> -       return 0;
+> +       return;
+No need to say return here.
+
+>  }
+>
+>  static void adjust_subprog_starts(struct bpf_verifier_env *env, u32 off, u32 len)
+> @@ -11492,6 +11490,14 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+>                                             const struct bpf_insn *patch, u32 len)
+>  {
+>         struct bpf_prog *new_prog;
+> +       struct bpf_insn_aux_data *new_data = NULL;
+> +
+> +       if (len > 1) {
+> +               new_data = vzalloc(array_size(env->prog->len + len - 1,
+> +                                             sizeof(struct bpf_insn_aux_data)));
+> +               if (!new_data)
+> +                       return NULL;
+> +       }
+>
+>         new_prog = bpf_patch_insn_single(env->prog, off, patch, len);
+>         if (IS_ERR(new_prog)) {
+> @@ -11499,10 +11505,12 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+>                         verbose(env,
+>                                 "insn %d cannot be patched due to 16-bit range\n",
+>                                 env->insn_aux_data[off].orig_idx);
+> +               if (new_data)
+> +                       vfree(new_data);
+> +
+>                 return NULL;
+>         }
+> -       if (adjust_insn_aux_data(env, new_prog, off, len))
+> -               return NULL;
+> +       adjust_insn_aux_data(env, new_data, new_prog, off, len);
+>         adjust_subprog_starts(env, off, len);
+>         adjust_poke_descs(new_prog, off, len);
+>         return new_prog;
+> --
+> 2.25.1
+>
