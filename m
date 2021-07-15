@@ -2,163 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503D03C9DB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7643C9DBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 13:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241940AbhGOL0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 07:26:23 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11280 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241917AbhGOL0U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 07:26:20 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GQX0V0S2Dz1CJYh;
-        Thu, 15 Jul 2021 19:17:46 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 19:23:25 +0800
-Received: from huawei.com (10.67.174.153) by dggpeml500018.china.huawei.com
- (7.185.36.186) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 15 Jul
- 2021 19:23:24 +0800
-From:   Zhang Qiao <zhangqiao22@huawei.com>
-To:     <zhangqiao22@huawei.com>
-CC:     <juri.lelli@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <peterz@infradead.org>, <pjt@google.com>,
-        <vincent.guittot@linaro.org>, <daniel.m.jordan@oracle.co>
-Subject: [PATCH -next v2] sched: Dec cfs_bandwith_used in destroy_cfs_bandwidth()
-Date:   Thu, 15 Jul 2021 19:24:33 +0800
-Message-ID: <20210715112433.32419-1-zhangqiao22@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
-In-Reply-To: <20210706083820.41358-1-zhangqiao22@huawei.com>
-References: <20210706083820.41358-1-zhangqiao22@huawei.com>
+        id S241953AbhGOLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 07:31:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:51400 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241774AbhGOLbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 07:31:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BF8831B;
+        Thu, 15 Jul 2021 04:28:10 -0700 (PDT)
+Received: from bogus (unknown [10.57.79.213])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2ED903F694;
+        Thu, 15 Jul 2021 04:28:09 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 12:27:10 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 03/13] mailbox: pcc: Refactor all PCC channel information
+ into a structure
+Message-ID: <20210715112710.55ylycforkessxju@bogus>
+References: <20210708180851.2311192-1-sudeep.holla@arm.com>
+ <20210708180851.2311192-4-sudeep.holla@arm.com>
+ <20210714165434.GC6592@e120937-lin>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.153]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500018.china.huawei.com (7.185.36.186)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714165434.GC6592@e120937-lin>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cfs_bandwith_uesd is a static_key to control cfs bandwidth
-feature. When adding a cfs_bandwidth group, we need increase
-the key, and decrease it when removing. But currently when we
-remove a cfs_bandwidth group, we don't decrease the key and
-this switch will always be on even if there is no cfs bandwidth
-group in the system.
+On Wed, Jul 14, 2021 at 05:54:34PM +0100, Cristian Marussi wrote:
+> On Thu, Jul 08, 2021 at 07:08:41PM +0100, Sudeep Holla wrote:
+> > Currently all the PCC channel specific information are stored/maintained
+> > in global individual arrays for each of those information. It is not
+> > scalable and not clean if we have to stash more channel specific
+> > information. Couple of reasons to stash more information are to extend
+> > the support to Type 3/4 PCCT subspace and also to avoid accessing the
+> > PCCT table entries themselves each time we need the information.
+> > 
+> > This patch moves all those PCC channel specific information into a
+> > separate structure pcc_chan_info.
+> > 
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> 
+> Hi Sudeep,
+> 
+> >  drivers/mailbox/pcc.c | 106 +++++++++++++++++++++---------------------
+> >  1 file changed, 53 insertions(+), 53 deletions(-)
+> > 
+> > diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
+> > index 23391e224a68..c5f481a615b0 100644
+> > --- a/drivers/mailbox/pcc.c
+> > +++ b/drivers/mailbox/pcc.c
+> > @@ -64,12 +64,20 @@
+> >  
+> >  static struct mbox_chan *pcc_mbox_channels;
+> >  
+> > -/* Array of cached virtual address for doorbell registers */
+> > -static void __iomem **pcc_doorbell_vaddr;
+> > -/* Array of cached virtual address for doorbell ack registers */
+> > -static void __iomem **pcc_doorbell_ack_vaddr;
+> > -/* Array of doorbell interrupts */
+> > -static int *pcc_doorbell_irq;
+> > +/**
+> > + * struct pcc_chan_info - PCC channel specific information
+> > + *
+> > + * @db_vaddr: cached virtual address for doorbell register
+> > + * @db_ack_vaddr: cached virtual address for doorbell ack register
+> > + * @db_irq: doorbell interrupt
+> > + */
+> > +struct pcc_chan_info {
+> > +	void __iomem *db_vaddr;
+> > +	void __iomem *db_ack_vaddr;
+> > +	int db_irq;
+> > +};
+>
+> Given that this db_irq represents the optional completion interrupt that is
+> used platform-->OSPM to signal command completions and/or notifications/
+> delayed_responses and it is mentioned indeed in ACPI 6.4 as "Platform
+> Interrupt" and also referred in this driver as such somewherelse, is it not
+> misleading to call it then here "doorbell interrupt" since the "doorbell" in
+> this context is usually the interrupt that goes the other way around
+> OSPM-->Platform and is indeed handled by a different set of dedicated Doorbell
+> registers ? (that are indeed called Doorbell throughout this driver down below
+> ...but I understand this was the nomenclature used also before in this driver)
+>
 
-Fix the problem as two steps:
-1.Rename cfs_bandwidth_usage_{dec, inc}() to
-cfs_bandwidth_usage_{dec,inc}_cpuslocked() and its caller need to
-hold the hotplug lock.
-2.Add cfs_bandwidth_usage_{dec,inc}() and its caller don't need
-to hold the hotplug lock. And when removing a cfs bandwidth group,
-we decrease cfs_bandwith_used() by calling cfs_bandwidth_usage_dec().
+Exactly, I share your thoughts and I completely agree. I didn't want to change
+it in this patch as that would mix 2 different change and makes it hard to
+review. I assume you might have already seen the 8/13 which renames this
+before we add more such registers in later patches.
 
-Fixes: 56f570e512ee ("sched: use jump labels to reduce overhead when bandwidth control is inactive")
-Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
----
-Changes since v1:
- - Add suffix _cpuslocked to cfs_bandwidth_usage_{dec,inc}.
- - Use static_key_slow_{dec,inc}_cpuslocked() in origin
- cfs_bandwidth_usage_{dec,inc}().
----
- kernel/sched/core.c  |  4 ++--
- kernel/sched/fair.c  | 20 ++++++++++++++++++--
- kernel/sched/sched.h |  3 +++
- 3 files changed, 23 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index b726ea4ac341..76f661f3f12b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9854,7 +9854,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
- 	 * before making related changes, and on->off must occur afterwards
- 	 */
- 	if (runtime_enabled && !runtime_was_enabled)
--		cfs_bandwidth_usage_inc();
-+		cfs_bandwidth_usage_inc_cpuslocked();
- 	raw_spin_lock_irq(&cfs_b->lock);
- 	cfs_b->period = ns_to_ktime(period);
- 	cfs_b->quota = quota;
-@@ -9882,7 +9882,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
- 		rq_unlock_irq(rq, &rf);
- 	}
- 	if (runtime_was_enabled && !runtime_enabled)
--		cfs_bandwidth_usage_dec();
-+		cfs_bandwidth_usage_dec_cpuslocked();
- out_unlock:
- 	mutex_unlock(&cfs_constraints_mutex);
- 	put_online_cpus();
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 44e44c235f1f..e6d66a62c960 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4613,21 +4613,34 @@ static inline bool cfs_bandwidth_used(void)
- 	return static_key_false(&__cfs_bandwidth_used);
- }
- 
--void cfs_bandwidth_usage_inc(void)
-+void cfs_bandwidth_usage_inc_cpuslocked(void)
- {
- 	static_key_slow_inc_cpuslocked(&__cfs_bandwidth_used);
- }
- 
--void cfs_bandwidth_usage_dec(void)
-+void cfs_bandwidth_usage_dec_cpuslocked(void)
- {
- 	static_key_slow_dec_cpuslocked(&__cfs_bandwidth_used);
- }
-+
-+void cfs_bandwidth_usage_inc(void)
-+{
-+	static_key_slow_inc(&__cfs_bandwidth_used);
-+}
-+
-+void cfs_bandwidth_usage_dec(void)
-+{
-+	static_key_slow_dec(&__cfs_bandwidth_used);
-+}
- #else /* CONFIG_JUMP_LABEL */
- static bool cfs_bandwidth_used(void)
- {
- 	return true;
- }
- 
-+void cfs_bandwidth_usage_inc_cpuslocked(void) {}
-+void cfs_bandwidth_usage_dec_cpuslocked(void) {}
-+
- void cfs_bandwidth_usage_inc(void) {}
- void cfs_bandwidth_usage_dec(void) {}
- #endif /* CONFIG_JUMP_LABEL */
-@@ -5345,6 +5358,9 @@ static void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
- 	if (!cfs_b->throttled_cfs_rq.next)
- 		return;
- 
-+	if (cfs_b->quota != RUNTIME_INF)
-+		cfs_bandwidth_usage_dec();
-+
- 	hrtimer_cancel(&cfs_b->period_timer);
- 	hrtimer_cancel(&cfs_b->slack_timer);
- }
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 0fa583db5c4a..4baba3473b0b 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2693,6 +2693,9 @@ extern void init_dl_rq(struct dl_rq *dl_rq);
- extern void cfs_bandwidth_usage_inc(void);
- extern void cfs_bandwidth_usage_dec(void);
- 
-+extern void cfs_bandwidth_usage_inc_cpuslocked(void);
-+extern void cfs_bandwidth_usage_dec_cpuslocked(void);
-+
- #ifdef CONFIG_NO_HZ_COMMON
- #define NOHZ_BALANCE_KICK_BIT	0
- #define NOHZ_STATS_KICK_BIT	1
--- 
-2.18.0.huawei.25
-
+--
+Regards,
+Sudeep
