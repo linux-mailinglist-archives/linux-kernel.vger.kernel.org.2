@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E054B3CA79A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D683CA72F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241285AbhGOSze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:55:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53796 "EHLO mail.kernel.org"
+        id S240201AbhGOSwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:52:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231909AbhGOSuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:50:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EE09613F1;
-        Thu, 15 Jul 2021 18:47:49 +0000 (UTC)
+        id S240220AbhGOStW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:49:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8DAA613E7;
+        Thu, 15 Jul 2021 18:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374870;
-        bh=3/5VTQ67dGpVPJEXLyxieGsl4R+yGH3Nmn7z9lut5mA=;
+        s=korg; t=1626374789;
+        bh=jO5Fj70J6WChwvRJpFbt2jPnAaDfe3lQtKl/fuYcpQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oeoo2RO04J4qkYhf7bGetPWLrdraWxYGhRz6VWxGwaRzsT2/ZjeIeN5wRdGd5BZHd
-         IT/v/ssXboc13Mj1njamNHVGcVbGYGxmZALjXbuY3YLnwRHlCUyMAtfG6h3IFdR8ep
-         nwoC2alBEzu9sKDBJQv80BZlQxP0rUTzpASiNzO0=
+        b=Ub0lWyuIZyQKKbOgNxxYVQUwo8H+x3bIW9WBO73Hh2IX5oNLM6TByo+L/dkV8iucP
+         WEXCehTFmM2Ik0DWT0NrabgrP3CVIj10y3JOXEDddDtHG+g5U5paZ8nRWVq0EFDiWJ
+         mygyH1aSYpiQOR8hv46rAnsVc/BEsVFEWIOpn4Cw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arturo Giusti <koredump@protonmail.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 026/215] udf: Fix NULL pointer dereference in udf_symlink function
-Date:   Thu, 15 Jul 2021 20:36:38 +0200
-Message-Id: <20210715182603.564128238@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 027/215] drm/vc4: Fix clock source for VEC PixelValve on BCM2711
+Date:   Thu, 15 Jul 2021 20:36:39 +0200
+Message-Id: <20210715182603.747555360@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
 References: <20210715182558.381078833@linuxfoundation.org>
@@ -39,41 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arturo Giusti <koredump@protonmail.com>
+From: Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
 
-[ Upstream commit fa236c2b2d4436d9f19ee4e5d5924e90ffd7bb43 ]
+[ Upstream commit fc7a8abcee2225d6279ff785d33e24d70c738c6e ]
 
-In function udf_symlink, epos.bh is assigned with the value returned
-by udf_tgetblk. The function udf_tgetblk is defined in udf/misc.c
-and returns the value of sb_getblk function that could be NULL.
-Then, epos.bh is used without any check, causing a possible
-NULL pointer dereference when sb_getblk fails.
+On the BCM2711 (Raspberry Pi 4), the VEC is actually connected to
+output 2 of pixelvalve3.
 
-This fix adds a check to validate the value of epos.bh.
+NOTE: This contradicts the Broadcom docs, but has been empirically
+tested and confirmed by Raspberry Pi firmware devs.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=213083
-Signed-off-by: Arturo Giusti <koredump@protonmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210520150344.273900-2-maxime@cerno.tech
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/udf/namei.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/vc4/vc4_crtc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/udf/namei.c b/fs/udf/namei.c
-index e169d8fe35b5..f4a72ff8cf95 100644
---- a/fs/udf/namei.c
-+++ b/fs/udf/namei.c
-@@ -932,6 +932,10 @@ static int udf_symlink(struct inode *dir, struct dentry *dentry,
- 				iinfo->i_location.partitionReferenceNum,
- 				0);
- 		epos.bh = udf_tgetblk(sb, block);
-+		if (unlikely(!epos.bh)) {
-+			err = -ENOMEM;
-+			goto out_no_entry;
-+		}
- 		lock_buffer(epos.bh);
- 		memset(epos.bh->b_data, 0x00, bsize);
- 		set_buffer_uptodate(epos.bh);
+diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+index 1d2416d466a3..7062d0e6fe76 100644
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -1001,7 +1001,7 @@ static const struct vc4_pv_data bcm2711_pv3_data = {
+ 	.fifo_depth = 64,
+ 	.pixels_per_clock = 1,
+ 	.encoder_types = {
+-		[0] = VC4_ENCODER_TYPE_VEC,
++		[PV_CONTROL_CLK_SELECT_VEC] = VC4_ENCODER_TYPE_VEC,
+ 	},
+ };
+ 
 -- 
 2.30.2
 
