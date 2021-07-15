@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D56B3CABD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FC73CA9B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343852AbhGOTYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:24:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46430 "EHLO mail.kernel.org"
+        id S242078AbhGOTIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:08:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242458AbhGOTHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 15:07:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDE65613D8;
-        Thu, 15 Jul 2021 19:03:53 +0000 (UTC)
+        id S238211AbhGOS5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:57:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB58613D6;
+        Thu, 15 Jul 2021 18:54:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375834;
-        bh=0TEEtHfReXo4F18sk6Sba1Yo0FUOojEbgub7tLSmUa8=;
+        s=korg; t=1626375292;
+        bh=y5INbB7BhKNTobXp8zKDbun0s0xvNKCmJ4x0sSzC/yY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O5dGDQ36b2cz5I9iewaORD4o1rVG+YnUeebcgDMO+DroYJO0TI99ap5C66SbiHkWg
-         6qEiJmdx3af4nQf7J5XfYXYCumgm4Re7LqEq6oQ20Wtj/Vo2r6hd7HU3Cdw+0Gdmgv
-         CxzN3ghzDw1xGFOpnQPd4KM1qkDcF3Ax1iczKrq8=
+        b=o1BZcp6yfGUR87Cz6sJJFNPLg6WEZbbU6YiGx9VjbvxM3YAZo7RX6qTbLB3wPmijG
+         hzMDuZASbzRzHU2texpRghUuyAr6vub/3i3+EvmLFSdwkWVG1AG1yHmMGjgWyF6ywP
+         UizWQ+QIZkMhWG/dIcz4Wa/LGQQ8VLEWebvBPhbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
-        Aric Cyr <Aric.Cyr@amd.com>, Stylon Wang <stylon.wang@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 014/266] drm/amd/display: fix use_max_lb flag for 420 pixel formats
+        stable@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Liu Ying <victor.liu@nxp.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 007/242] drm/bridge: nwl-dsi: Force a full modeset when crtc_state->active is changed to be true
 Date:   Thu, 15 Jul 2021 20:36:09 +0200
-Message-Id: <20210715182616.372200439@linuxfoundation.org>
+Message-Id: <20210715182553.064354803@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
-References: <20210715182613.933608881@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +49,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+From: Liu Ying <victor.liu@nxp.com>
 
-[ Upstream commit 8809a7a4afe90ad9ffb42f72154d27e7c47551ae ]
+[ Upstream commit 3afb2a28fa2404d11cce1956a003f2aaca4da421 ]
 
-Right now the flag simply selects memory config 0 when flag is true
-however 420 modes benefit more from memory config 3.
+This patch replaces ->mode_fixup() with ->atomic_check() so that
+a full modeset can be requested from there when crtc_state->active
+is changed to be true(which implies only connector's DPMS is brought
+out of "Off" status, though not necessarily).  Bridge functions are
+added or changed to accommodate the ->atomic_check() callback.  That
+full modeset is needed by the up-coming patch which gets MIPI DSI
+controller and PHY ready in ->mode_set(), because it makes sure
+->mode_set() and ->atomic_disable() are called in pairs.
 
-Signed-off-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
-Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
-Acked-by: Stylon Wang <stylon.wang@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: Andrzej Hajda <a.hajda@samsung.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Robert Foss <robert.foss@linaro.org>
+Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc: Jonas Karlman <jonas@kwiboo.se>
+Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Guido Günther <agx@sigxcpu.org>
+Cc: Robert Chiras <robert.chiras@nxp.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1619170003-4817-2-git-send-email-victor.liu@nxp.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/bridge/nwl-dsi.c | 61 ++++++++++++++++++++------------
+ 1 file changed, 39 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
-index efa86d5c6847..98ab4b776924 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
-@@ -496,10 +496,13 @@ static enum lb_memory_config dpp1_dscl_find_lb_memory_config(struct dcn10_dpp *d
- 	int vtaps_c = scl_data->taps.v_taps_c;
- 	int ceil_vratio = dc_fixpt_ceil(scl_data->ratios.vert);
- 	int ceil_vratio_c = dc_fixpt_ceil(scl_data->ratios.vert_c);
--	enum lb_memory_config mem_cfg = LB_MEMORY_CONFIG_0;
+diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
+index 66b67402f1ac..c65ca860712d 100644
+--- a/drivers/gpu/drm/bridge/nwl-dsi.c
++++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+@@ -21,6 +21,7 @@
+ #include <linux/sys_soc.h>
+ #include <linux/time64.h>
  
--	if (dpp->base.ctx->dc->debug.use_max_lb)
--		return mem_cfg;
-+	if (dpp->base.ctx->dc->debug.use_max_lb) {
-+		if (scl_data->format == PIXEL_FORMAT_420BPP8
-+				|| scl_data->format == PIXEL_FORMAT_420BPP10)
-+			return LB_MEMORY_CONFIG_3;
-+		return LB_MEMORY_CONFIG_0;
-+	}
++#include <drm/drm_atomic_state_helper.h>
+ #include <drm/drm_bridge.h>
+ #include <drm/drm_mipi_dsi.h>
+ #include <drm/drm_of.h>
+@@ -742,7 +743,9 @@ static int nwl_dsi_disable(struct nwl_dsi *dsi)
+ 	return 0;
+ }
  
- 	dpp->base.caps->dscl_calc_lb_num_partitions(
- 			scl_data, LB_MEMORY_CONFIG_1, &num_part_y, &num_part_c);
+-static void nwl_dsi_bridge_disable(struct drm_bridge *bridge)
++static void
++nwl_dsi_bridge_atomic_disable(struct drm_bridge *bridge,
++			      struct drm_bridge_state *old_bridge_state)
+ {
+ 	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
+ 	int ret;
+@@ -803,17 +806,6 @@ static int nwl_dsi_get_dphy_params(struct nwl_dsi *dsi,
+ 	return 0;
+ }
+ 
+-static bool nwl_dsi_bridge_mode_fixup(struct drm_bridge *bridge,
+-				      const struct drm_display_mode *mode,
+-				      struct drm_display_mode *adjusted_mode)
+-{
+-	/* At least LCDIF + NWL needs active high sync */
+-	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
+-	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
+-
+-	return true;
+-}
+-
+ static enum drm_mode_status
+ nwl_dsi_bridge_mode_valid(struct drm_bridge *bridge,
+ 			  const struct drm_display_info *info,
+@@ -831,6 +823,24 @@ nwl_dsi_bridge_mode_valid(struct drm_bridge *bridge,
+ 	return MODE_OK;
+ }
+ 
++static int nwl_dsi_bridge_atomic_check(struct drm_bridge *bridge,
++				       struct drm_bridge_state *bridge_state,
++				       struct drm_crtc_state *crtc_state,
++				       struct drm_connector_state *conn_state)
++{
++	struct drm_display_mode *adjusted_mode = &crtc_state->adjusted_mode;
++
++	/* At least LCDIF + NWL needs active high sync */
++	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
++	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
++
++	/* Do a full modeset if crtc_state->active is changed to be true. */
++	if (crtc_state->active_changed && crtc_state->active)
++		crtc_state->mode_changed = true;
++
++	return 0;
++}
++
+ static void
+ nwl_dsi_bridge_mode_set(struct drm_bridge *bridge,
+ 			const struct drm_display_mode *mode,
+@@ -862,7 +872,9 @@ nwl_dsi_bridge_mode_set(struct drm_bridge *bridge,
+ 	drm_mode_debug_printmodeline(adjusted_mode);
+ }
+ 
+-static void nwl_dsi_bridge_pre_enable(struct drm_bridge *bridge)
++static void
++nwl_dsi_bridge_atomic_pre_enable(struct drm_bridge *bridge,
++				 struct drm_bridge_state *old_bridge_state)
+ {
+ 	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
+ 	int ret;
+@@ -897,7 +909,9 @@ static void nwl_dsi_bridge_pre_enable(struct drm_bridge *bridge)
+ 	}
+ }
+ 
+-static void nwl_dsi_bridge_enable(struct drm_bridge *bridge)
++static void
++nwl_dsi_bridge_atomic_enable(struct drm_bridge *bridge,
++			     struct drm_bridge_state *old_bridge_state)
+ {
+ 	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
+ 	int ret;
+@@ -942,14 +956,17 @@ static void nwl_dsi_bridge_detach(struct drm_bridge *bridge)
+ }
+ 
+ static const struct drm_bridge_funcs nwl_dsi_bridge_funcs = {
+-	.pre_enable = nwl_dsi_bridge_pre_enable,
+-	.enable     = nwl_dsi_bridge_enable,
+-	.disable    = nwl_dsi_bridge_disable,
+-	.mode_fixup = nwl_dsi_bridge_mode_fixup,
+-	.mode_set   = nwl_dsi_bridge_mode_set,
+-	.mode_valid = nwl_dsi_bridge_mode_valid,
+-	.attach	    = nwl_dsi_bridge_attach,
+-	.detach	    = nwl_dsi_bridge_detach,
++	.atomic_duplicate_state	= drm_atomic_helper_bridge_duplicate_state,
++	.atomic_destroy_state	= drm_atomic_helper_bridge_destroy_state,
++	.atomic_reset		= drm_atomic_helper_bridge_reset,
++	.atomic_check		= nwl_dsi_bridge_atomic_check,
++	.atomic_pre_enable	= nwl_dsi_bridge_atomic_pre_enable,
++	.atomic_enable		= nwl_dsi_bridge_atomic_enable,
++	.atomic_disable		= nwl_dsi_bridge_atomic_disable,
++	.mode_set		= nwl_dsi_bridge_mode_set,
++	.mode_valid		= nwl_dsi_bridge_mode_valid,
++	.attach			= nwl_dsi_bridge_attach,
++	.detach			= nwl_dsi_bridge_detach,
+ };
+ 
+ static int nwl_dsi_parse_dt(struct nwl_dsi *dsi)
 -- 
 2.30.2
 
