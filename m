@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6499D3CA703
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769803CA6F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240080AbhGOSvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:51:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50488 "EHLO mail.kernel.org"
+        id S238447AbhGOSvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:51:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239153AbhGOSsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:48:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B98E613D7;
-        Thu, 15 Jul 2021 18:45:35 +0000 (UTC)
+        id S239647AbhGOSsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:48:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98F5E61396;
+        Thu, 15 Jul 2021 18:45:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626374735;
-        bh=GmKKiOyw77r0CD+Z7TsMw8WnLS9v1jPTTdYpMxr1rCE=;
+        s=korg; t=1626374738;
+        bh=Am8VHbEhpIaV4zBB6uKcUpM1v6CCZEVqBhj5BtzQ4dY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dq5IziUcxJCf/oRvppxPzBIszRzZkYdvbFwPAEskUBOzioFHLmg6Wfens6hSS1gY9
-         ZTdRm2OA0F4JLV96lx9HQVCuOWwPYaK+v3nU2O0cVzeQf88crsPzCQFj4XVJt+s4Cr
-         3oJ/wY7a7PuOVbkp3mT+5bONFQH/e+ul8bWezF/s=
+        b=PyvtkXMIkbvb78sfRToPGYCQvVgzQxQ3rcPI1mWszkn1Dx4SKkumQsaJBSApNi+9J
+         L6KAHtwUd5WYqoovgez8qIDEujkY3WIiiP6EO9BP8uqKh3OwVLATKtnycGCzR0t9To
+         QkdnTFmoVlm/Q0WEUkL29HYtVn3I/etMT67Hq+mA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Drung <bdrung@posteo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 119/122] media: uvcvideo: Fix pixel format change for Elgato Cam Link 4K
-Date:   Thu, 15 Jul 2021 20:39:26 +0200
-Message-Id: <20210715182522.889447877@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.4 120/122] pinctrl: mcp23s08: Fix missing unlock on error in mcp23s08_irq()
+Date:   Thu, 15 Jul 2021 20:39:27 +0200
+Message-Id: <20210715182523.107257630@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
 References: <20210715182448.393443551@linuxfoundation.org>
@@ -40,122 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Drung <bdrung@posteo.de>
+From: Zou Wei <zou_wei@huawei.com>
 
-commit 4c6e0976295add7f0ed94d276c04a3d6f1ea8f83 upstream.
+commit 884af72c90016cfccd5717439c86b48702cbf184 upstream.
 
-The Elgato Cam Link 4K HDMI video capture card reports to support three
-different pixel formats, where the first format depends on the connected
-HDMI device.
+Add the missing unlock before return from function mcp23s08_irq()
+in the error handling case.
 
-```
-$ v4l2-ctl -d /dev/video0 --list-formats-ext
-ioctl: VIDIOC_ENUM_FMT
-	Type: Video Capture
+v1-->v2:
+   remove the "return IRQ_HANDLED" line
 
-	[0]: 'NV12' (Y/CbCr 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-	[1]: 'NV12' (Y/CbCr 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-	[2]: 'YU12' (Planar YUV 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-```
-
-Changing the pixel format to anything besides the first pixel format
-does not work:
-
-```
-$ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
-Format Video Capture:
-	Width/Height      : 3840/2160
-	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
-	Field             : None
-	Bytes per Line    : 3840
-	Size Image        : 12441600
-	Colorspace        : sRGB
-	Transfer Function : Rec. 709
-	YCbCr/HSV Encoding: Rec. 709
-	Quantization      : Default (maps to Limited Range)
-	Flags             :
-```
-
-User space applications like VLC might show an error message on the
-terminal in that case:
-
-```
-libv4l2: error set_fmt gave us a different result than try_fmt!
-```
-
-Depending on the error handling of the user space applications, they
-might display a distorted video, because they use the wrong pixel format
-for decoding the stream.
-
-The Elgato Cam Link 4K responds to the USB video probe
-VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
-second byte contains bFormatIndex (instead of being the second byte of
-bmHint). The first byte is always zero. The third byte is always 1.
-
-The firmware bug was reported to Elgato on 2020-12-01 and it was
-forwarded by the support team to the developers as feature request.
-There is no firmware update available since then. The latest firmware
-for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
-
-Therefore correct the malformed data structure for this device. The
-change was successfully tested with VLC, OBS, and Chromium using
-different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
-1920x1080), and frame rates (29.970 and 59.940 fps).
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Benjamin Drung <bdrung@posteo.de>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 897120d41e7a ("pinctrl: mcp23s08: fix race condition in irq handler")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Link: https://lore.kernel.org/r/1623134048-56051-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/uvc/uvc_video.c |   27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/pinctrl/pinctrl-mcp23s08.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -124,10 +124,37 @@ int uvc_query_ctrl(struct uvc_device *de
- static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
- 	struct uvc_streaming_control *ctrl)
- {
-+	static const struct usb_device_id elgato_cam_link_4k = {
-+		USB_DEVICE(0x0fd9, 0x0066)
-+	};
- 	struct uvc_format *format = NULL;
- 	struct uvc_frame *frame = NULL;
- 	unsigned int i;
+--- a/drivers/pinctrl/pinctrl-mcp23s08.c
++++ b/drivers/pinctrl/pinctrl-mcp23s08.c
+@@ -461,7 +461,7 @@ static irqreturn_t mcp23s08_irq(int irq,
  
-+	/*
-+	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
-+	 * contains bFormatIndex (instead of being the second byte of bmHint).
-+	 * The first byte is always zero. The third byte is always 1.
-+	 *
-+	 * The UVC 1.5 class specification defines the first five bits in the
-+	 * bmHint bitfield. The remaining bits are reserved and should be zero.
-+	 * Therefore a valid bmHint will be less than 32.
-+	 *
-+	 * Latest Elgato Cam Link 4K firmware as of 2021-03-23 needs this fix.
-+	 * MCU: 20.02.19, FPGA: 67
-+	 */
-+	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) &&
-+	    ctrl->bmHint > 255) {
-+		u8 corrected_format_index = ctrl->bmHint >> 8;
-+
-+		/* uvc_dbg(stream->dev, VIDEO,
-+			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: %u} to {bmHint: 0x%04x, bFormatIndex: %u}\n",
-+			ctrl->bmHint, ctrl->bFormatIndex,
-+			1, corrected_format_index); */
-+		ctrl->bmHint = 1;
-+		ctrl->bFormatIndex = corrected_format_index;
-+	}
-+
- 	for (i = 0; i < stream->nformats; ++i) {
- 		if (stream->format[i].index == ctrl->bFormatIndex) {
- 			format = &stream->format[i];
+ 	if (intf == 0) {
+ 		/* There is no interrupt pending */
+-		return IRQ_HANDLED;
++		goto unlock;
+ 	}
+ 
+ 	if (mcp_read(mcp, MCP_INTCAP, &intcap))
 
 
