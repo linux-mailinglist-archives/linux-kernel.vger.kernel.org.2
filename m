@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8363D3CAC9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B55A3CAC9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344211AbhGOTkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:40:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50994 "EHLO mail.kernel.org"
+        id S1344668AbhGOTkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:40:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244270AbhGOTOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244277AbhGOTOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Jul 2021 15:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCFDA613CC;
-        Thu, 15 Jul 2021 19:10:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FC7A613E5;
+        Thu, 15 Jul 2021 19:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626376206;
-        bh=tMnwuOqsKetrJOZHCxfof29wQdNfyrd0hr/fLSioJSQ=;
+        s=korg; t=1626376208;
+        bh=lvvCD7LTgbBk2JIxI9izZinDD1lKzbLj21Xxw1OsM/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=auzPxpK6R20XQimSN/1Zm01YbtAs9nFYiSBcWxSKKzBKM9O0eXRgZYEFvyUhPz8Gn
-         MMSIxKy5tJ0T6zjqKMBQFGtXZ/Md+QV5NpO13fV0FOFPUc7/hX91By6/8o4kgAdA6G
-         I3I/Mb7UYdbHls0/bPsdTujk6W+HAj7DmYm02Aw8=
+        b=0VSE1n6LxX/UgoWcw5acIwp8z6qymz2BJZkvo/29YwQcnZXoOHMp2OZ+vrEv7hTuH
+         IrRUnx4tqhcfkIYp0lvBZItsTceaSd31yVGmWHycrYpQI/7V9ryqEPBVLwgEa3+ah+
+         Vl8BW3i3Q0RF6RtEa4WE6xS+VORCjUW8tFNzipxc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ilja Van Sprundel <ivansprundel@ioactive.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, zhanglianjie <zhanglianjie@uniontech.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 173/266] sctp: add size validation when walking chunks
-Date:   Thu, 15 Jul 2021 20:38:48 +0200
-Message-Id: <20210715182642.690271838@linuxfoundation.org>
+Subject: [PATCH 5.13 174/266] MIPS: loongsoon64: Reserve memory below starting pfn to prevent Oops
+Date:   Thu, 15 Jul 2021 20:38:49 +0200
+Message-Id: <20210715182642.808286801@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210715182613.933608881@linuxfoundation.org>
 References: <20210715182613.933608881@linuxfoundation.org>
@@ -42,40 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+From: zhanglianjie <zhanglianjie@uniontech.com>
 
-[ Upstream commit 50619dbf8db77e98d821d615af4f634d08e22698 ]
+[ Upstream commit 6817c944430d00f71ccaa9c99ff5b0096aeb7873 ]
 
-The first chunk in a packet is ensured to be present at the beginning of
-sctp_rcv(), as a packet needs to have at least 1 chunk. But the second
-one, may not be completely available and ch->length can be over
-uninitialized memory.
+The cause of the problem is as follows:
+1. when cat /sys/devices/system/memory/memory0/valid_zones,
+   test_pages_in_a_zone() will be called.
+2. test_pages_in_a_zone() finds the zone according to stat_pfn = 0.
+   The smallest pfn of the numa node in the mips architecture is 128,
+   and the page corresponding to the previous 0~127 pfn is not
+   initialized (page->flags is 0xFFFFFFFF)
+3. The nid and zonenum obtained using page_zone(pfn_to_page(0)) are out
+   of bounds in the corresponding array,
+   &NODE_DATA(page_to_nid(page))->node_zones[page_zonenum(page)],
+   access to the out-of-bounds zone member variables appear abnormal,
+   resulting in Oops.
+Therefore, it is necessary to keep the page between 0 and the minimum
+pfn to prevent Oops from appearing.
 
-Fix here is by only trying to walk on the next chunk if there is enough to
-hold at least the header, and then proceed with the ch->length validation
-that is already there.
-
-Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/input.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/loongson64/numa.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/sctp/input.c b/net/sctp/input.c
-index 8924e2e142c8..f72bff93745c 100644
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -1247,7 +1247,7 @@ static struct sctp_association *__sctp_rcv_walk_lookup(struct net *net,
- 
- 		ch = (struct sctp_chunkhdr *)ch_end;
- 		chunk_num++;
--	} while (ch_end < skb_tail_pointer(skb));
-+	} while (ch_end + sizeof(*ch) < skb_tail_pointer(skb));
- 
- 	return asoc;
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index fa9b4a487a47..e8e3e48c5333 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -129,6 +129,9 @@ static void __init node_mem_init(unsigned int node)
+ 		if (node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT))
+ 			memblock_reserve((node_addrspace_offset | 0xfe000000),
+ 					 32 << 20);
++
++		/* Reserve pfn range 0~node[0]->node_start_pfn */
++		memblock_reserve(0, PAGE_SIZE * start_pfn);
+ 	}
  }
+ 
 -- 
 2.30.2
 
