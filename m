@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0753C958F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EE03C9593
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 03:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbhGOBZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Jul 2021 21:25:45 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:47213 "EHLO ozlabs.org"
+        id S234782AbhGOB2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Jul 2021 21:28:21 -0400
+Received: from mga18.intel.com ([134.134.136.126]:37682 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230087AbhGOBZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:25:44 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GQGp20xr2z9sWc;
-        Thu, 15 Jul 2021 11:22:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626312171;
-        bh=S8dYEGRyMbsUwrAfkSHdZxUQGu4j3Eb0WLbICS0H75Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VAMj0pbNxBO5XarmNnP37VuKb/jm2PDpOKeeJw5K1jh4m43tiuupJqSfRbAiP9nOd
-         sw3UifeftxszgL0Tft1uv9TJD/q/zC4pCzFMnQBMwDu9HBTvFOfzKfLe9qfgqcDkuR
-         NoytsRB6WuXhU70MUMt6r41WXsFEiwS0T7iTYz6DK7/hKjPmZeSbYlk9QK/G0PWJY/
-         m5GXfFUjPVfD02q2Jz78OJYRsEa4VA5PmbGPpwDWlaO/xqCDl09qKDHQfWKemtc5Dq
-         2UiIHTQb1CvUf+6kO2mkEBp1HKSYYhwF6D529k0BM4F3enIDdDMybbBoFi7uVFWjb1
-         Rhidy9sgHBCPQ==
-Date:   Thu, 15 Jul 2021 11:22:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: linux-next: manual merge of the workqueues tree with Linus' tree
-Message-ID: <20210715112249.3893674b@canb.auug.org.au>
+        id S231186AbhGOB2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Jul 2021 21:28:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="197721681"
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="197721681"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2021 18:25:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,240,1620716400"; 
+   d="scan'208";a="466322019"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by fmsmga008.fm.intel.com with ESMTP; 14 Jul 2021 18:25:23 -0700
+Cc:     baolu.lu@linux.intel.com, joro@8bytes.org, isaacm@codeaurora.org,
+        pratikp@codeaurora.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 00/15] Optimizing iommu_[map/unmap] performance
+To:     Georgi Djakov <djakov@kernel.org>,
+        Georgi Djakov <quic_c_gdjako@quicinc.com>, will@kernel.org,
+        robin.murphy@arm.com
+References: <1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com>
+ <e6c8993e-353e-6a05-9b6d-9a49de471cb6@kernel.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <4d466ea9-2c1a-2e19-af5b-0434441ee7cb@linux.intel.com>
+Date:   Thu, 15 Jul 2021 09:23:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WtMV7HyEwKj80K7ymvafE01";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <e6c8993e-353e-6a05-9b6d-9a49de471cb6@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WtMV7HyEwKj80K7ymvafE01
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 7/14/21 10:24 PM, Georgi Djakov wrote:
+> On 16.06.21 16:38, Georgi Djakov wrote:
+>> When unmapping a buffer from an IOMMU domain, the IOMMU framework unmaps
+>> the buffer at a granule of the largest page size that is supported by
+>> the IOMMU hardware and fits within the buffer. For every block that
+>> is unmapped, the IOMMU framework will call into the IOMMU driver, and
+>> then the io-pgtable framework to walk the page tables to find the entry
+>> that corresponds to the IOVA, and then unmaps the entry.
+>>
+>> This can be suboptimal in scenarios where a buffer or a piece of a
+>> buffer can be split into several contiguous page blocks of the same size.
+>> For example, consider an IOMMU that supports 4 KB page blocks, 2 MB page
+>> blocks, and 1 GB page blocks, and a buffer that is 4 MB in size is being
+>> unmapped at IOVA 0. The current call-flow will result in 4 indirect 
+>> calls,
+>> and 2 page table walks, to unmap 2 entries that are next to each other in
+>> the page-tables, when both entries could have been unmapped in one shot
+>> by clearing both page table entries in the same call.
+>>
+>> The same optimization is applicable to mapping buffers as well, so
+>> these patches implement a set of callbacks called unmap_pages and
+>> map_pages to the io-pgtable code and IOMMU drivers which unmaps or maps
+>> an IOVA range that consists of a number of pages of the same
+>> page size that is supported by the IOMMU hardware, and allows for
+>> manipulating multiple page table entries in the same set of indirect
+>> calls. The reason for introducing these callbacks is to give other IOMMU
+>> drivers/io-pgtable formats time to change to using the new callbacks, so
+>> that the transition to using this approach can be done piecemeal.
+> 
+> Hi Will,
+> 
+> Did you get a chance to look at this patchset? Most patches are already
+> acked/reviewed and all still applies clean on rc1.
 
-Hi all,
+I also have the ops->[un]map_pages implementation for the Intel IOMMU
+driver. I will post them once the iommu/core part get applied.
 
-Today's linux-next merge of the workqueues tree got a conflict in:
-
-  include/linux/fs_context.h
-
-between commit:
-
-  d1d488d81370 ("fs: add vfs_parse_fs_param_source() helper")
-
-from Linus' tree and commit:
-
-  7f5ba4806d3c ("cgroup1: fix leaked context root causing sporadic NULL der=
-ef in LTP")
-
-from the workqueues tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/fs_context.h
-index e2bc16300c82,5b44b0195a28..000000000000
---- a/include/linux/fs_context.h
-+++ b/include/linux/fs_context.h
-@@@ -139,8 -139,7 +139,9 @@@ extern int vfs_parse_fs_string(struct f
-  extern int generic_parse_monolithic(struct fs_context *fc, void *data);
-  extern int vfs_get_tree(struct fs_context *fc);
-  extern void put_fs_context(struct fs_context *fc);
- +extern int vfs_parse_fs_param_source(struct fs_context *fc,
- +				     struct fs_parameter *param);
-+ extern void fc_drop_locked(struct fs_context *fc);
- =20
-  /*
-   * sget() wrappers to be called from the ->get_tree() op.
-
---Sig_/WtMV7HyEwKj80K7ymvafE01
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDvjekACgkQAVBC80lX
-0GwOswf+MxjIFnL+cXRKTqcbopGhNRrtQYiwoH/3ldfzBQMBvh1e08sXF+IhYfOm
-Rf9KNB2KZzJS0ATf0RU3jwx0jBgn6QUM9st6Srymnn2Rmf5j28g6t3pm1WVh5PiJ
-JXFcNyOvTkWapl+oKCyscptxbmhJClGDBVbvpshaknSqFWdcBDNtvbsJnSwKiZ3P
-LGhn/e0qO58JLHs3IJlM4OhysYCFrsMoEbCjwUrNnur12RWRR0YNhWUBeEJHCW7X
-o5QoU7KaKWS1TARXRufFFRFOlZnNs+cjsS/gVCmawvxCoRUWliwFEfldvE0uHHU8
-sSACp4h1RofUj67UXQxn8dFLicLYew==
-=yH6A
------END PGP SIGNATURE-----
-
---Sig_/WtMV7HyEwKj80K7ymvafE01--
+Best regards,
+baolu
