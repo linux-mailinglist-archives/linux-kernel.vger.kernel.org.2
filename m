@@ -2,110 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C433C9AE2
+	by mail.lfdr.de (Postfix) with ESMTP id 507BB3C9AE3
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 10:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240682AbhGOIzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 04:55:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47460 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231860AbhGOIzc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 04:55:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626339159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kjJcHjl6F1c9c06u+Cty1wPbq2wMQMTR8ijLpEU91MA=;
-        b=Nq95QimBBNLhmhgDDgJyZYb/VOu6QB3pb9wlYfBmJ2kOiIfh+C1hVFhVq2iBmqp6SP+mJj
-        M2ZKmI52vDxEAw57t4zcaHpaUv+1eY2QvBf66oZbFJqWln+/KsG/+Gf6KWpbjkABRKJcBj
-        7sQ0n+736f4BWinxYfpOPQsT9kqLAGQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-C4hDjIvgO9-ZQXnPbsCa3w-1; Thu, 15 Jul 2021 04:52:36 -0400
-X-MC-Unique: C4hDjIvgO9-ZQXnPbsCa3w-1
-Received: by mail-wr1-f69.google.com with SMTP id h11-20020adffa8b0000b029013a357d7bdcso2981825wrr.18
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 01:52:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=kjJcHjl6F1c9c06u+Cty1wPbq2wMQMTR8ijLpEU91MA=;
-        b=W+NmtgNb6Wd0Te1cMLnJ1v/jtvfMTPHvV/vuizUZ8euB6LkLPkuarLjPgJ7TDIOuqL
-         jCmI4LekdNt7OpN9vJ3dMs09F4NWWxvE4TyBRCOwPSI4LtzMJUH37/872XjXgV5OyStq
-         LUTpewJsPY+AwhqN8MocAm/AjfQnrTSPZAvWpV/zun473o2dVvNAlgfgSW6rpZt0qWWo
-         ELcRav/J/CcRpPK2Kr3z+dCrE8SaZgqgcCkJQ7Ftc7Tb/b8sAENfs6veJ0bN4odd9ghS
-         eODPhqi4J/XMQINK2TVweeXvK0FcRyDvEIx4L2fu5uq8gBrNxBhFxpVXQUXHDzWA8THv
-         i33w==
-X-Gm-Message-State: AOAM5321FwkZxGb8rtwb5cgVWZEKaZY5VcLuBq2FAdU/LfDIb3d4tNXj
-        yM/TxoxPp8HNTMy/+g1B5R6pC3Hov9BCSVgcOwnrrTAby5GF8jkU5QBtP3RtVPjC+XC2bcGdANu
-        o9QEo7WjhA0gImy1VCI51qzAD
-X-Received: by 2002:a05:600c:4657:: with SMTP id n23mr1532695wmo.28.1626339154916;
-        Thu, 15 Jul 2021 01:52:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwG04gNyhAovDkzb27Ic90ObKsP032kjSM4Ta6rsdLHYz3DjpiTPfAKMPYYw2KwDBRjER7OUQ==
-X-Received: by 2002:a05:600c:4657:: with SMTP id n23mr1532680wmo.28.1626339154774;
-        Thu, 15 Jul 2021 01:52:34 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23bb3.dip0.t-ipconnect.de. [79.242.59.179])
-        by smtp.gmail.com with ESMTPSA id d14sm5579705wrs.49.2021.07.15.01.52.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 01:52:34 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] KVM: s390: Topology expose TOPOLOGY facility
-To:     Pierre Morel <pmorel@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
-        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com
-References: <1626276343-22805-1-git-send-email-pmorel@linux.ibm.com>
- <1626276343-22805-3-git-send-email-pmorel@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <3a7836ad-f748-296e-cd1a-a10cbc570474@redhat.com>
-Date:   Thu, 15 Jul 2021 10:52:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S240790AbhGOIzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 04:55:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:49200 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240731AbhGOIzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 04:55:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FE966D;
+        Thu, 15 Jul 2021 01:52:45 -0700 (PDT)
+Received: from [10.57.33.248] (unknown [10.57.33.248])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A7A213F774;
+        Thu, 15 Jul 2021 01:52:43 -0700 (PDT)
+Subject: Re: [PATCH 5/5] coresight: trbe: Prohibit tracing while handling an
+ IRQ
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        al.grant@arm.com, leo.yan@linaro.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, peterz@infradead.org, Tamas.Zsoldos@arm.com,
+        will@kernel.org
+References: <20210712113830.2803257-1-suzuki.poulose@arm.com>
+ <20210712113830.2803257-6-suzuki.poulose@arm.com>
+ <1837b3ae-cc0b-d4ba-7d26-1debdc60c016@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <5b5b20cd-0b2e-e911-5df7-da502d9230b6@arm.com>
+Date:   Thu, 15 Jul 2021 09:52:42 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1626276343-22805-3-git-send-email-pmorel@linux.ibm.com>
+In-Reply-To: <1837b3ae-cc0b-d4ba-7d26-1debdc60c016@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.21 17:25, Pierre Morel wrote:
-> We add the KVM extension KVM_CAP_S390_CPU_TOPOLOGY, this will
-> allow the userland hypervisor to handle the interception of the
-> PTF (Perform topology Function) instruction.
+On 15/07/2021 04:09, Anshuman Khandual wrote:
+> A small nit. Paragraphs in the commit message do not seem to be aligned
+> properly to a maximum 75 characters width.
+> 
+> On 7/12/21 5:08 PM, Suzuki K Poulose wrote:
+>> When the TRBE generates an IRQ, we stop the TRBE, collect the trace
+>> and then reprogram the TRBE with the updated buffer pointers in case
+>> of a spurious IRQ. We might also leave the TRBE disabled, on an
+>> overflow interrupt, without touching the ETE. This means the
+>> the ETE is only disabled when the event is disabled later (via irq_work).
+>> This is incorrect, as the ETE trace is still ON without actually being
+>> captured and may be routed to the ATB.
+> 
+> I had an assumption that when the TRBE is stopped, ETE would also stop
+> implicitly given that the trace packets are not being accepted anymore.
+> But if that assumption does not always hold true, then yes trace must
+> be stopped upon a TRBE IRQ.
 
-Ehm, no you don't add any new capability. Or my eyes are too tired to 
-spot it :)
+No, the ETE never stops, until it is stopped. The ETE doesn't care who
+is the consumer of the trace. Be it TRBE or ATB or any other sink.
 
 > 
-> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-> ---
->   arch/s390/tools/gen_facilities.c | 1 +
->   1 file changed, 1 insertion(+)
+>>
+>> So, we move the CPU into trace prohibited state (for all exception
+>> levels) upon entering the IRQ handler. The state is restored before
+>> enabling the TRBE back. Otherwise the trace remains prohibited.
+>> Since, the ETM/ETE driver controls the TRFCR_EL1 per session,
+>> (from commit "coresight: etm4x: Use Trace Filtering controls dynamically")
 > 
-> diff --git a/arch/s390/tools/gen_facilities.c b/arch/s390/tools/gen_facilities.c
-> index 606324e56e4e..2c260eb22bae 100644
-> --- a/arch/s390/tools/gen_facilities.c
-> +++ b/arch/s390/tools/gen_facilities.c
-> @@ -112,6 +112,7 @@ static struct facility_def facility_defs[] = {
->   
->   		.name = "FACILITIES_KVM_CPUMODEL",
->   		.bits = (int[]){
-> +			11, /* configuration topology facility */
->   			12, /* AP Query Configuration Information */
->   			15, /* AP Facilities Test */
->   			156, /* etoken facility */
+> commit SHA ID ?
 > 
 
+The patch is in this series, not committed yet.
 
--- 
-Thanks,
+>> the tracing can be restored/enabled back when the event is rescheduled
+>> in.
+> 
+> Makes sense.
+> 
+>>
+>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-trbe.c | 43 ++++++++++++++++++--
+>>   1 file changed, 40 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>> index c0c264264427..e4d88e0de2a8 100644
+>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -83,6 +83,31 @@ struct trbe_drvdata {
+>>   	struct platform_device *pdev;
+>>   };
+>>   
+>> +static inline void write_trfcr(u64 val)
+>> +{
+>> +	write_sysreg_s(val, SYS_TRFCR_EL1);
+>> +	isb();
+>> +}
+>> +
+> 
+> There is another instance of write_trfcr() in coresight-etm4x-core.c and
+> some other writes into SYS_TRFCR_EL1 elsewhere. write_trfcr() should be
+> factored out and moved to a common place.
 
-David / dhildenb
+Agreed, but I couldn't find a right candidate for this. Welcome
+to suggestions. May be we could add something like:
+
+asm/self-hosted.h
+
+> 
+>> +/*
+>> + * Prohibit the CPU tracing at all ELs, in preparation to collect
+>> + * the trace buffer.
+>> + *
+>> + * Returns the original value of the trfcr for restoring later.
+>> + */
+>> +static u64 cpu_prohibit_tracing(void)
+>> +{
+>> +	u64 trfcr = read_sysreg_s(SYS_TRFCR_EL1);
+>> +
+>> +	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
+>> +	return trfcr;
+>> +}
+> 
+> This also should be factored out along with etm4x_prohibit_trace()
+> usage and moved to a common header instead.
+> 
+>> +
+>> +static void cpu_restore_tracing(u64 trfcr)
+>> +{
+>> +	write_trfcr(trfcr);
+>> +}
+>> +
+>>   static int trbe_alloc_node(struct perf_event *event)
+>>   {
+>>   	if (event->cpu == -1)
+>> @@ -681,7 +706,7 @@ static int arm_trbe_disable(struct coresight_device *csdev)
+>>   	return 0;
+>>   }
+>>   
+>> -static void trbe_handle_spurious(struct perf_output_handle *handle)
+>> +static void trbe_handle_spurious(struct perf_output_handle *handle, u64 trfcr)
+>>   {
+>>   	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>>   
+>> @@ -691,6 +716,7 @@ static void trbe_handle_spurious(struct perf_output_handle *handle)
+>>   		trbe_drain_and_disable_local();
+>>   		return;
+>>   	}
+> 
+> A small comment here would be great because this will be the only
+> IRQ handler path, where it actually restores the tracing back.
+
+Agreed
+
+> 
+>> +	cpu_restore_tracing(trfcr);
+>>   	trbe_enable_hw(buf);
+>>   }
+>>   
+>> @@ -760,7 +786,18 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>>   	struct perf_output_handle **handle_ptr = dev;
+>>   	struct perf_output_handle *handle = *handle_ptr;
+>>   	enum trbe_fault_action act;
+>> -	u64 status;
+>> +	u64 status, trfcr;
+>> +
+>> +	/*
+>> +	 * Prohibit the tracing, while we process this. We turn
+>> +	 * things back right, if we get to enabling the TRBE
+>> +	 * back again. Otherwise, the tracing still remains
+>> +	 * prohibited, until the perf event state changes
+>> +	 * or another event is scheduled. This ensures that
+>> +	 * the trace is not generated when it cannot be
+>> +	 * captured.
+>> +	 */
+> 
+> Right.
+> 
+> But a small nit though. Please keep the comments here formatted and
+> aligned with the existing ones.
+> 
+
+ok
+
+>> +	trfcr = cpu_prohibit_tracing();
+>>   
+>>   	/*
+>>   	 * Ensure the trace is visible to the CPUs and
+>> @@ -791,7 +828,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>>   		trbe_handle_overflow(handle);
+>>   		break;
+>>   	case TRBE_FAULT_ACT_SPURIOUS:
+>> -		trbe_handle_spurious(handle);
+>> +		trbe_handle_spurious(handle, trfcr);
+>>   		break;
+>>   	case TRBE_FAULT_ACT_FATAL:
+>>   		trbe_stop_and_truncate_event(handle);
+>>
+> 
+> But stopping the trace (even though from a sink IRQ handler) is a source
+> device action. Should not this be done via a new coresight_ops_source
+> callback instead ?
+
+It is a valid point. But that has limitations.
+Here is the list:
+
+   * Stopping the source is a heavy hammer, especially if we
+     are about to continue the trace soon. (e.g, spurious
+     interrupt and possibly soon for FILL events with reworking
+     the flags)
+
+   * Stopping the source, via source_ops() is doing things
+     under the driving mode of the session, perf vs sysfs.
+     We only support perf though, but if there is another
+     user.
+
+   * This is agnostic to the mode (as above), the TRBE driver
+     doesn't need to be taught, how to find the path and
+     stop the current session for the given mode.
+
+   * If the tracing is enabled in kernel mode, the ETE still
+     generates the trace until we trigger the longer route
+     for disabling, which is not nice.
+
+Suzuki
+
+
+
+
 
