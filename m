@@ -2,190 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8840C3CAFC7
+	by mail.lfdr.de (Postfix) with ESMTP id D15163CAFC8
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 01:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbhGOXvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 19:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232427AbhGOXvT (ORCPT
+        id S232585AbhGOXvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 19:51:42 -0400
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:46956 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232063AbhGOXvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 19:51:19 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2F5C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:48:24 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id m83so7213002pfd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 16:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5OQMDn6Hx/yHVRBDOLcOoarZgTpJ6ou0lJ0Voq0OG4M=;
-        b=Xerp+3Ma+7CKr4/78JI541G8uYD8//jwvClMOF/fOO7QmiQm8HAEUnu6NpDbBLMH1q
-         bZGV9qTn+NrOGGYaOzCjTB7B/aPpvd5It43hKuUVskOmztUVNBp7D+395FsS2sQvlrxq
-         xVAo8FpFCDhowTVg4hGaiMCdbGyqn6qUNM0miSvgPCaSI49UBGL5vj48ibmF6+Rb17X0
-         w7C8AuBB8wkZlc1aeNQ5K9KigBlX9jYvbv1ccsercnerPpuW03IdweX4DvdjBnQR82bX
-         e0jajjskDBGjMsxL7Fj/B+zCTGGj135zbVxs9kViMAV8ZYC/Kcwbxlf9wsPPlckGHHm4
-         ds+Q==
+        Thu, 15 Jul 2021 19:51:41 -0400
+Received: by mail-lf1-f47.google.com with SMTP id x25so12885796lfu.13;
+        Thu, 15 Jul 2021 16:48:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5OQMDn6Hx/yHVRBDOLcOoarZgTpJ6ou0lJ0Voq0OG4M=;
-        b=j+8g77sJxMyFPMUr3cI/9M0CqEuXOG8SWHjiM0actgb6tk7mkpoRmZQ1Qn4SvO1d3G
-         mbm6QT/YXXrGvv/xei9Vhp7qFYxi7Jlamv2w9y6fPH17L56tqVvMQvZDqU5rfT3xjfLF
-         HHUszHJr29Ca0Sf54MhHvX3dInhDmONPcQwSc6p/POyrztRmOH2yoYRFpuVVokHSyexF
-         mMrkDmSVSf6r4KTM9opgUMB/KAzohovR/Tpt8datSXguDoJM0hHO21mkE7mc9CttPWNg
-         HknDP5s/btUcZreV7sKCz4l4bR4NVA/H1HmKfBKZhSimCap7EOj3MC3/OoR0zo+MlzXv
-         VmYw==
-X-Gm-Message-State: AOAM530Pz0S38/bpgrnRO1ii2hFcB64nYAMKxnyW6r2+Wunp82B6foRw
-        hEK2z1As894Sam9yzhzljeyVHg==
-X-Google-Smtp-Source: ABdhPJzB/aLwcMzRnzgFsmskaKhCj/u4SogoqFPq9x0TyUcwapKqqebbwl1vM0o7pXaHZ6NJDfrs4g==
-X-Received: by 2002:a63:4e5d:: with SMTP id o29mr275121pgl.379.1626392903572;
-        Thu, 15 Jul 2021 16:48:23 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id o184sm8719553pga.18.2021.07.15.16.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 16:48:22 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 23:48:19 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 15/40] crypto: ccp: Handle the legacy TMR
- allocation when SNP is enabled
-Message-ID: <YPDJQ0uumar8j22y@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-16-brijesh.singh@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XPTsKumlAARjlPirfMjxooUJNBnyyCY0ijQsxeU3HLI=;
+        b=KEBvtiQb3NTcNAjLHvz5KmJXHiX3ga7Knf7jI+HuDP7KjiZfLcn/+bXP2wpeuCF0yJ
+         gy9TJoUN+JzFyxge/GzgYE3BYXxc1+0XYQlREgIJV7QDsEhc39NiBNT7Lm8sMC8OM7tK
+         3cikuzTGUOfmHjE+KeQLgBQnGr7+KH5dmGPQy7+UDLF6FrptWwfCVXRpEHG78+x5iBoo
+         nHJeWdo5oYk243QvVCkRJdJD0hmSj4Dm3tFIGuBK7zhuwIBRlTmPY1F76Ng3otQaXFD5
+         Q0RXYli0k+OCqdjXkhpLXjPNAtqwSRTFAe4ZV7dp2fzpe2/oP8NBtPYO1JTKkuxymHUa
+         cFdg==
+X-Gm-Message-State: AOAM530D3E4g0bwpHmknMd6OdIkPx0bt9DTgVCaGl8Wza7AGN/iBnySY
+        ne2e/JKc7idBjZlmK0SPpGgpVuYSqR0hN1M541Y=
+X-Google-Smtp-Source: ABdhPJw9ozxvAk4aI42aBe1fpJYqnJCNScSfW2z5/0s++UZrrONZX/Hoo0HxuHrxQ2hMD2zvrKjgx3pCIb1SI41NsL8=
+X-Received: by 2002:a05:6512:3125:: with SMTP id p5mr5138762lfd.635.1626392925908;
+ Thu, 15 Jul 2021 16:48:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-16-brijesh.singh@amd.com>
+References: <cover.1626177381.git.rickyman7@gmail.com> <118c988358322b9daf69aeb98ff8986748b0dad2.1626177381.git.rickyman7@gmail.com>
+In-Reply-To: <118c988358322b9daf69aeb98ff8986748b0dad2.1626177381.git.rickyman7@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 15 Jul 2021 16:48:34 -0700
+Message-ID: <CAM9d7chvRswKLmRvW5rd4GApqngN8QeG+nPmVy4zxz_YR0MMxw@mail.gmail.com>
+Subject: Re: [RFC PATCH 03/10] perf workqueue: add threadpool start and stop functions
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> The behavior and requirement for the SEV-legacy command is altered when
-> the SNP firmware is in the INIT state. See SEV-SNP firmware specification
-> for more details.
-> 
-> When SNP is INIT state, all the SEV-legacy commands that cause the
-> firmware to write memory must be in the firmware state. The TMR memory
-
-It'd be helpful to spell out Trusted Memory Region, I hadn't seen that
-term before and for some reason my brain immediately thought "xAPIC register!".
-
-> is allocated by the host but updated by the firmware, so, it must be
-> in the firmware state.  Additionally, the TMR memory must be a 2MB aligned
-> instead of the 1MB, and the TMR length need to be 2MB instead of 1MB.
-> The helper __snp_{alloc,free}_firmware_pages() can be used for allocating
-> and freeing the memory used by the firmware.
-
-None of this actually states what the patch does, e.g. it's not clear whether
-all allocations are being converted to 2mb or just the SNP.  Looks like it's
-just SNP.  Something like this?
-
-  Allocate the Trusted Memory Region (TMR) as a 2mb sized/aligned region when
-  SNP is enabled to satisfy new requirements for SNP.  Continue allocating a
-  1mb region for !SNP configuration.
-
-> While at it, provide API that can be used by others to allocate a page
-> that can be used by the firmware. The immediate user for this API will
-> be the KVM driver. The KVM driver to need to allocate a firmware context
-> page during the guest creation. The context page need to be updated
-> by the firmware. See the SEV-SNP specification for further details.
-
-...
-
-> @@ -1153,8 +1269,10 @@ static void sev_firmware_shutdown(struct sev_device *sev)
->  		/* The TMR area was encrypted, flush it from the cache */
->  		wbinvd_on_all_cpus();
->  
-> -		free_pages((unsigned long)sev_es_tmr,
-> -			   get_order(SEV_ES_TMR_SIZE));
+On Tue, Jul 13, 2021 at 5:11 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+>
+> This patch adds the start and stop functions, alongside the thread
+> function.
+> Each thread will run until a stop signal is received.
+> Furthermore, start and stop are added to the test.
+>
+> Thread management is based on the prototype from Alexey:
+> https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+>
+> Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/tests/workqueue.c           |  13 ++
+>  tools/perf/util/workqueue/threadpool.c | 238 +++++++++++++++++++++++++
+>  tools/perf/util/workqueue/threadpool.h |   5 +
+>  3 files changed, 256 insertions(+)
+>
+> diff --git a/tools/perf/tests/workqueue.c b/tools/perf/tests/workqueue.c
+> index 1bd4d78c13eb3b14..be377e9897bab4e9 100644
+> --- a/tools/perf/tests/workqueue.c
+> +++ b/tools/perf/tests/workqueue.c
+> @@ -10,16 +10,29 @@ struct threadpool_test_args_t {
+>
+>  static int __threadpool__prepare(struct threadpool_struct **pool, int pool_size)
+>  {
+> +       int ret;
 > +
-> +		__snp_free_firmware_pages(virt_to_page(sev_es_tmr),
-> +					  get_order(sev_es_tmr_size),
-> +					  false);
->  		sev_es_tmr = NULL;
->  	}
->  
-> @@ -1204,16 +1322,6 @@ void sev_pci_init(void)
->  	    sev_update_firmware(sev->dev) == 0)
->  		sev_get_api_version();
->  
-> -	/* Obtain the TMR memory area for SEV-ES use */
-> -	tmr_page = alloc_pages(GFP_KERNEL, get_order(SEV_ES_TMR_SIZE));
-> -	if (tmr_page) {
-> -		sev_es_tmr = page_address(tmr_page);
-> -	} else {
-> -		sev_es_tmr = NULL;
-> -		dev_warn(sev->dev,
-> -			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
-> -	}
-> -
->  	/*
->  	 * If boot CPU supports the SNP, then first attempt to initialize
->  	 * the SNP firmware.
-> @@ -1229,6 +1337,16 @@ void sev_pci_init(void)
->  		}
->  	}
->  
-> +	/* Obtain the TMR memory area for SEV-ES use */
-> +	tmr_page = __snp_alloc_firmware_pages(GFP_KERNEL, get_order(sev_es_tmr_size), false);
-> +	if (tmr_page) {
-> +		sev_es_tmr = page_address(tmr_page);
-> +	} else {
-> +		sev_es_tmr = NULL;
-> +		dev_warn(sev->dev,
-> +			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
-> +	}
-
-I think your patch ordering got a bit wonky.  AFAICT, the chunk that added
-sev_snp_init() and friends in the previous patch 14 should have landed above
-the TMR allocation, i.e. the code movement here should be unnecessary.
-
->  	/* Initialize the platform */
->  	rc = sev_platform_init(&error);
->  	if (rc && (error == SEV_RET_SECURE_DATA_INVALID)) {
-
-...
-
-> @@ -961,6 +965,13 @@ static inline int snp_guest_dbg_decrypt(struct sev_data_snp_dbg *data, int *erro
->  	return -ENODEV;
+>         *pool = create_threadpool(pool_size);
+>         TEST_ASSERT_VAL("threadpool creation failure", *pool != NULL);
+>         TEST_ASSERT_VAL("threadpool size is wrong",
+>                         threadpool_size(*pool) == pool_size);
+>
+> +       ret = start_threadpool(*pool);
+> +       TEST_ASSERT_VAL("threadpool start failure", ret == 0);
+> +       TEST_ASSERT_VAL("threadpool is not ready", threadpool_is_ready(*pool));
+> +
+>         return 0;
 >  }
->  
-> +static inline void *snp_alloc_firmware_page(gfp_t mask)
+>
+>  static int __threadpool__teardown(struct threadpool_struct *pool)
+>  {
+> +       int ret;
+> +
+> +       ret = stop_threadpool(pool);
+> +       TEST_ASSERT_VAL("threadpool start failure", ret == 0);
+
+s/start/stop/
+
+> +       TEST_ASSERT_VAL("stopped threadpool is ready",
+> +                       !threadpool_is_ready(pool));
+> +
+>         destroy_threadpool(pool);
+>
+>         return 0;
+> diff --git a/tools/perf/util/workqueue/threadpool.c b/tools/perf/util/workqueue/threadpool.c
+> index 70c67569f956a3e2..f4635ff782b9388e 100644
+> --- a/tools/perf/util/workqueue/threadpool.c
+> +++ b/tools/perf/util/workqueue/threadpool.c
+[SNIP]
+> +/**
+> + * wait_thread - receive ack from thread
+> + *
+> + * NB: call only from main thread!
+> + */
+> +static int wait_thread(struct thread_struct *thread)
 > +{
-> +	return NULL;
+> +       int res;
+> +       enum thread_msg msg = THREAD_MSG__UNDEFINED;
+> +
+> +       res = read(thread->pipes.from[0], &msg, sizeof(msg));
+> +       if (res < 0) {
+
+Maybe it needs to handle -EINTR.
+
+
+> +               pr_err("threadpool: failed to recv msg from tid=%d: %s\n",
+> +                      thread->tid, strerror(errno));
+> +               return -1;
+> +       }
+> +       if (msg != THREAD_MSG__ACK) {
+> +               pr_err("threadpool: received unexpected msg from tid=%d: %s\n",
+> +                      thread->tid, thread_msg_tags[msg]);
+> +               return -1;
+> +       }
+> +
+> +       pr_debug2("threadpool: received ack from tid=%d\n", thread->tid);
+> +
+> +       return 0;
 > +}
 > +
-> +static inline void snp_free_firmware_page(void *addr) { }
+> +/**
+> + * terminate_thread - send stop signal to thread and wait for ack
+> + *
+> + * NB: call only from main thread!
+> + */
+> +static int terminate_thread(struct thread_struct *thread)
+> +{
+> +       int res;
+> +       enum thread_msg msg = THREAD_MSG__STOP;
+> +
+> +       res = write(thread->pipes.to[1], &msg, sizeof(msg));
+> +       if (res < 0) {
+> +               pr_err("threadpool: error sending stop msg to tid=%d: %s\n",
+> +                       thread->tid, strerror(errno));
+> +               return res;
+> +       }
+> +
+> +       res = wait_thread(thread);
+> +
+> +       return res;
+> +}
+> +
+> +/**
+> + * threadpool_thread - function running on thread
+> + *
+> + * This function waits for a signal from main thread to start executing
+> + * a task.
+> + * On completion, it will go back to sleep, waiting for another signal.
+> + * Signals are delivered through pipes.
+> + */
+> +static void *threadpool_thread(void *args)
+> +{
+> +       struct thread_struct *thread = (struct thread_struct *) args;
+> +       enum thread_msg msg;
+> +       int err;
+> +
+> +       thread->tid = gettid();
+> +
+> +       pr_debug2("threadpool[%d]: started\n", thread->tid);
+> +
+> +       for (;;) {
+> +               msg = THREAD_MSG__ACK;
+> +               err = write(thread->pipes.from[1], &msg, sizeof(msg));
+> +               if (err == -1) {
+> +                       pr_err("threadpool[%d]: failed to send ack: %s\n",
+> +                               thread->tid, strerror(errno));
+> +                       break;
+> +               }
+> +
+> +               msg = THREAD_MSG__UNDEFINED;
+> +               err = read(thread->pipes.to[0], &msg, sizeof(msg));
+> +               if (err < 0) {
+> +                       pr_err("threadpool[%d]: error receiving msg: %s\n",
+> +                               thread->tid, strerror(errno));
+> +                       break;
+> +               }
+> +
+> +               if (msg != THREAD_MSG__WAKE && msg != THREAD_MSG__STOP) {
+> +                       pr_err("threadpool[%d]: received unexpected msg: %s\n",
+> +                               thread->tid, thread_msg_tags[msg]);
+> +                       break;
+> +               }
+> +
+> +               if (msg == THREAD_MSG__STOP)
+> +                       break;
+> +       }
+> +
+> +       pr_debug2("threadpool[%d]: exit\n", thread->tid);
+> +
+> +       msg = THREAD_MSG__ACK;
+> +       err = write(thread->pipes.from[1], &msg, sizeof(msg));
+> +       if (err == -1) {
+> +               pr_err("threadpool[%d]: failed to send ack: %s\n",
+> +                       thread->tid, strerror(errno));
+> +               return NULL;
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+>  /**
+>   * create_threadpool - create a fixed threadpool with @n_threads threads
+>   */
+> @@ -173,3 +306,108 @@ int threadpool_size(struct threadpool_struct *pool)
+>  {
+>         return pool->nr_threads;
+>  }
+> +
+> +/**
+> + * __start_threadpool - start all threads in the pool.
+> + *
+> + * This function does not change @pool->status.
+> + */
+> +static int __start_threadpool(struct threadpool_struct *pool)
+> +{
+> +       int t, tt, ret = 0, nr_threads = pool->nr_threads;
+> +       sigset_t full, mask;
+> +       pthread_t handle;
+> +       pthread_attr_t attrs;
+> +
+> +       sigfillset(&full);
+> +       if (sigprocmask(SIG_SETMASK, &full, &mask)) {
+> +               pr_err("Failed to block signals on threads start: %s\n",
+> +                       strerror(errno));
+> +               return -1;
+> +       }
+> +
+> +       pthread_attr_init(&attrs);
+> +       pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_DETACHED);
+> +
+> +       for (t = 0; t < nr_threads; t++) {
+> +               struct thread_struct *thread = &pool->threads[t];
+> +
+> +               if (pthread_create(&handle, &attrs, threadpool_thread, thread)) {
+> +                       for (tt = 1; tt < t; tt++)
+> +                               terminate_thread(thread);
+> +                       pr_err("Failed to start threads: %s\n", strerror(errno));
+> +                       ret = -1;
+> +                       goto out_free_attr;
+> +               }
+> +
+> +               if (wait_thread(thread)) {
+> +                       for (tt = 1; tt <= t; tt++)
+> +                               terminate_thread(thread);
+> +                       ret = -1;
+> +                       goto out_free_attr;
+> +               }
+> +       }
 
-Hmm, I think we should probably bite the bullet and #ifdef and/or stub out large
-swaths of svm/sev.c before adding SNP support.  sev.c is getting quite massive,
-and we're accumulating more and more stubs outside of KVM because its SEV code
-is compiled unconditionally.
+Isn't it better doing this way?
+
+for (t = 0; t < nr_threads; t++) {
+    pthread_create(t)
+}
+
+for (t = 0; t < nr_threads; t++) {
+    wait_thread(t)
+}
+
+Thanks,
+Namhyung
+
+
+> +
+> +out_free_attr:
+> +       pthread_attr_destroy(&attrs);
+> +
+> +       if (sigprocmask(SIG_SETMASK, &mask, NULL)) {
+> +               pr_err("Failed to unblock signals on threads start: %s\n",
+> +                       strerror(errno));
+> +               ret = -1;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
