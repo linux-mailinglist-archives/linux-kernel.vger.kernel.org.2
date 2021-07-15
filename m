@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBC13CADCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8DE3CADD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhGOU0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:26:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhGOU0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:26:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF5D0613D3;
-        Thu, 15 Jul 2021 20:23:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626380598;
-        bh=NAA3pvCu1mpUmxXH7m15oH4LrJfZEDDX9RdjpZ4Ql6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J6ZWywj6Y87TtNVIvsZqXPqCIjkQXrtmVJfXJNWPNb04arBOYMHZa7C2Ub9RBniyY
-         eS3DdAnuBaaiSf+8Z0rt3SYlv13mHnuxLN2zLCXrsBLJmVsF/9Mbm4e6Wp6IRKptIq
-         ay4h1KB1X0/IKVw5Lyfry/vTbZnUyC+n9XCP9vaA1uzsrjJh0lPS8fQ+MeNed/ro3d
-         GHkXawmIFM4ORVHHJQAJcMMzwU7LeKZ1rh8OCksowQ2iF08oQrU+af83P1/8bdMkKG
-         ydpYnaf9JBhqTmAtqekFTWi9H/mh1Ba5qYFzRz7/OaKh0mwbec4iYA6FIfXmvBU9Rk
-         LXWHSU2LAoaDQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 55306403F2; Thu, 15 Jul 2021 17:23:15 -0300 (-03)
-Date:   Thu, 15 Jul 2021 17:23:15 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Milian Wolff <milian.wolff@kdab.com>,
-        Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 12/20] perf script: release zstd data
-Message-ID: <YPCZMzf/X8xlOws3@kernel.org>
-References: <cover.1626343282.git.rickyman7@gmail.com>
- <39388e8cc2f85ca219ea18697a17b7bd8f74b693.1626343282.git.rickyman7@gmail.com>
+        id S230527AbhGOU0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:26:41 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:38744 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhGOU0j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 16:26:39 -0400
+Received: by mail-pl1-f169.google.com with SMTP id u3so4026661plf.5;
+        Thu, 15 Jul 2021 13:23:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ixur1kT6q2L39lVn6OXUbS7dWhX7OKvKjb1djFVXLmc=;
+        b=rsqdmI7Y2OoYqmxcLgbs1K11qAkf9BxE8/mpb65/QkE10buXZTn//bUTHfcbf2Idf9
+         3NkiV5aalCOIXFHrEweQew991BNOlJR6eS4hhZ/658CaS7bf5p9LLB8TtIF8NpJlRGD3
+         zGjJbcVPsBfBcc7pDH6OGtHEzi5g45NJ1pvhhxtNGcDhOD0wI/+fFgZIGXP4085KUHRz
+         PZq7AaJrVrzF23H8ePiJwla83A0HQLX4CVNaGX0cDRYhJmZLg2oJ/akRG0LXXhUvudf/
+         qxBPFPD78iw+zJ/WR+hr/ZypfBKNKewSH/qD1E3QWfJabHULQieHzesZREtL6u/JbNWV
+         yvKA==
+X-Gm-Message-State: AOAM532J/9EC3CTDjaITOGFWlwZFij64lfnB71ogCmctnn8fhdTyOM5d
+        jcrJceE63aW7KBBOcbUJqnE=
+X-Google-Smtp-Source: ABdhPJyg73vFIMetSBkcyM1cDMEWkfv/DLcDLDknB2DXnCtqkI7Tc+ojychHcFd5eOqao23TcWph9A==
+X-Received: by 2002:a17:90a:8c8f:: with SMTP id b15mr5819724pjo.201.1626380625125;
+        Thu, 15 Jul 2021 13:23:45 -0700 (PDT)
+Received: from localhost ([191.96.120.37])
+        by smtp.gmail.com with ESMTPSA id mu9sm8471367pjb.26.2021.07.15.13.23.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 13:23:44 -0700 (PDT)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk
+Cc:     hare@suse.de, bvanassche@acm.org, ming.lei@redhat.com,
+        hch@infradead.org, jack@suse.cz, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [RFC 0/6] block: enhance use of GENHD_FL_UP
+Date:   Thu, 15 Jul 2021 13:23:35 -0700
+Message-Id: <20210715202341.2016612-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39388e8cc2f85ca219ea18697a17b7bd8f74b693.1626343282.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 15, 2021 at 06:07:17PM +0200, Riccardo Mancini escreveu:
-> ASan reports several memory leak while running the perf test
-> "82: Use vfs_getname probe to get syscall args filenames".
-> One of the leaks is caused by zstd data not being released on exit in
-> perf-script.
-> 
-> This patch adds the missing zstd_fini.
+This is the second group of patches which I'd like some review on as
+part of the *add_disk*() error handling conversion. While converting
+drivers to add error handling, I noticed some were using the flag
+GENHD_FL_UP to see if a block device is ready, or for bringing a
+device down, so to call del_gendisk() safely. This first group of
+patches just address the few areas where the flag is used directly.
 
-Fixes: b13b04d9382113f7 ("perf script: Initialize zstd_data")
+Direct use of the flag GENHD_FL_UP is useful but incorrect as we can
+add the flag in a gendisk left half built. Instead, add a flag to
+actually represent the desired goal.
 
-Thanks, applied.
+The next group will deal with the use of the flag for del_gendisk().
 
-- Arnaldo
+Luis Chamberlain (6):
+  genhd: update docs for GENHD_FL_UP
+  block: add flag for add_disk() completion notation
+  md: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED on is_mddev_broken()
+  mmc/core/block: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED
+  nvme: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED
+  fs/block_dev: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED
 
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/builtin-script.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index 8c03a9862872d495..bae0e5b72c0e6050 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -4143,6 +4143,7 @@ int cmd_script(int argc, const char **argv)
->  		zfree(&script.ptime_range);
->  	}
->  
-> +	zstd_fini(&(session->zstd_data));
->  	evlist__free_stats(session->evlist);
->  	perf_session__delete(session);
->  
-> -- 
-> 2.31.1
-> 
+ block/genhd.c                 |  8 ++++++++
+ drivers/md/md.h               |  2 +-
+ drivers/mmc/core/block.c      |  2 +-
+ drivers/nvme/host/core.c      |  4 ++--
+ drivers/nvme/host/multipath.c |  2 +-
+ fs/block_dev.c                |  5 +++--
+ include/linux/genhd.h         | 13 +++++++++++--
+ 7 files changed, 27 insertions(+), 9 deletions(-)
 
 -- 
+2.27.0
 
-- Arnaldo
