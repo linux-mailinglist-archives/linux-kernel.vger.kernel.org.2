@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AEC3CA839
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D653CA60B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242610AbhGOS7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:59:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56124 "EHLO mail.kernel.org"
+        id S237685AbhGOSp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:45:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240608AbhGOSw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:52:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27F31610C7;
-        Thu, 15 Jul 2021 18:50:01 +0000 (UTC)
+        id S236341AbhGOSpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 14:45:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8EF6613CF;
+        Thu, 15 Jul 2021 18:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375001;
-        bh=ueVVH8DOKHN69iucCynZ6oA8TK3YdrjL8DUN+XRL22c=;
+        s=korg; t=1626374544;
+        bh=Q1+V9yFNkYHvAYCbI2xaMJHtEndL/sHqN+QbrmAMWVw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vhxwo+FbPGjbqU9B4sy39E95psLza5q7NW6rUiG0w1zF1vU0xgF1DC8M+0+J9RST8
-         WWyfghbNfLo9NXBIKPtAGa0afU54vkBr95mmpm5j4iOnwhGun0sbJ6wrsNWFVkpIOz
-         OJlJ6drxhTmkXuk/P3Jbhv5OCyQMkMXR0MgkNGQw=
+        b=GJbB83TXhQNAqfB66C8uKnFXqntMLwdq3lvpvHUaCr1gZK3NVlI/lLi5wikXtSezK
+         4QcLtS6Jyon+iDBcjuZdEI64KWQdjW4hxlXytcz0R6tNRC7m+awWt7w8KPgR1QnAdl
+         jj3BZi+NxOIQ5DUQ0oID88UgXT24ySu3927Zql3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kiran K <kiran.k@intel.com>,
-        Lokendra Singh <lokendra.singh@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
+        Kurt Manucredo <fuzzybritches0@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Edward Cree <ecree.xilinx@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 118/215] Bluetooth: Fix alt settings for incoming SCO with transparent coding format
-Date:   Thu, 15 Jul 2021 20:38:10 +0200
-Message-Id: <20210715182620.395537382@linuxfoundation.org>
+Subject: [PATCH 5.4 044/122] bpf: Fix up register-based shifts in interpreter to silence KUBSAN
+Date:   Thu, 15 Jul 2021 20:38:11 +0200
+Message-Id: <20210715182459.878121482@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+References: <20210715182448.393443551@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,143 +46,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kiran K <kiran.k@intel.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit 06d213d8a89a6f55b708422c3dda2b22add10748 ]
+[ Upstream commit 28131e9d933339a92f78e7ab6429f4aaaa07061c ]
 
-For incoming SCO connection with transparent coding format, alt setting
-of CVSD is getting applied instead of Transparent.
+syzbot reported a shift-out-of-bounds that KUBSAN observed in the
+interpreter:
 
-Before fix:
-< HCI Command: Accept Synchron.. (0x01|0x0029) plen 21  #2196 [hci0] 321.342548
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Transmit bandwidth: 8000
-        Receive bandwidth: 8000
-        Max latency: 13
-        Setting: 0x0003
-          Input Coding: Linear
-          Input Data Format: 1's complement
-          Input Sample Size: 8-bit
-          # of bits padding at MSB: 0
-          Air Coding Format: Transparent Data
-        Retransmission effort: Optimize for link quality (0x02)
-        Packet type: 0x003f
-          HV1 may be used
-          HV2 may be used
-          HV3 may be used
-          EV3 may be used
-          EV4 may be used
-          EV5 may be used
-> HCI Event: Command Status (0x0f) plen 4               #2197 [hci0] 321.343585
-      Accept Synchronous Connection Request (0x01|0x0029) ncmd 1
-        Status: Success (0x00)
-> HCI Event: Synchronous Connect Comp.. (0x2c) plen 17  #2198 [hci0] 321.351666
-        Status: Success (0x00)
-        Handle: 257
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Link type: eSCO (0x02)
-        Transmission interval: 0x0c
-        Retransmission window: 0x04
-        RX packet length: 60
-        TX packet length: 60
-        Air mode: Transparent (0x03)
-........
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2336 [hci0] 321.383655
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2337 [hci0] 321.389558
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2338 [hci0] 321.393615
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2339 [hci0] 321.393618
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2340 [hci0] 321.393618
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2341 [hci0] 321.397070
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2342 [hci0] 321.403622
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2343 [hci0] 321.403625
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2344 [hci0] 321.403625
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2345 [hci0] 321.403625
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2346 [hci0] 321.404569
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2347 [hci0] 321.412091
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2348 [hci0] 321.413626
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2349 [hci0] 321.413630
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2350 [hci0] 321.413630
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2351 [hci0] 321.419674
+  [...]
+  UBSAN: shift-out-of-bounds in kernel/bpf/core.c:1420:2
+  shift exponent 255 is too large for 64-bit type 'long long unsigned int'
+  CPU: 1 PID: 11097 Comm: syz-executor.4 Not tainted 5.12.0-rc2-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  Call Trace:
+   __dump_stack lib/dump_stack.c:79 [inline]
+   dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+   ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+   __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+   ___bpf_prog_run.cold+0x19/0x56c kernel/bpf/core.c:1420
+   __bpf_prog_run32+0x8f/0xd0 kernel/bpf/core.c:1735
+   bpf_dispatcher_nop_func include/linux/bpf.h:644 [inline]
+   bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
+   bpf_prog_run_clear_cb include/linux/filter.h:755 [inline]
+   run_filter+0x1a1/0x470 net/packet/af_packet.c:2031
+   packet_rcv+0x313/0x13e0 net/packet/af_packet.c:2104
+   dev_queue_xmit_nit+0x7c2/0xa90 net/core/dev.c:2387
+   xmit_one net/core/dev.c:3588 [inline]
+   dev_hard_start_xmit+0xad/0x920 net/core/dev.c:3609
+   __dev_queue_xmit+0x2121/0x2e00 net/core/dev.c:4182
+   __bpf_tx_skb net/core/filter.c:2116 [inline]
+   __bpf_redirect_no_mac net/core/filter.c:2141 [inline]
+   __bpf_redirect+0x548/0xc80 net/core/filter.c:2164
+   ____bpf_clone_redirect net/core/filter.c:2448 [inline]
+   bpf_clone_redirect+0x2ae/0x420 net/core/filter.c:2420
+   ___bpf_prog_run+0x34e1/0x77d0 kernel/bpf/core.c:1523
+   __bpf_prog_run512+0x99/0xe0 kernel/bpf/core.c:1737
+   bpf_dispatcher_nop_func include/linux/bpf.h:644 [inline]
+   bpf_test_run+0x3ed/0xc50 net/bpf/test_run.c:50
+   bpf_prog_test_run_skb+0xabc/0x1c50 net/bpf/test_run.c:582
+   bpf_prog_test_run kernel/bpf/syscall.c:3127 [inline]
+   __do_sys_bpf+0x1ea9/0x4f00 kernel/bpf/syscall.c:4406
+   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+  [...]
 
-After fix:
+Generally speaking, KUBSAN reports from the kernel should be fixed.
+However, in case of BPF, this particular report caused concerns since
+the large shift is not wrong from BPF point of view, just undefined.
+In the verifier, K-based shifts that are >= {64,32} (depending on the
+bitwidth of the instruction) are already rejected. The register-based
+cases were not given their content might not be known at verification
+time. Ideas such as verifier instruction rewrite with an additional
+AND instruction for the source register were brought up, but regularly
+rejected due to the additional runtime overhead they incur.
 
-< HCI Command: Accept Synchronou.. (0x01|0x0029) plen 21  #309 [hci0] 49.439693
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Transmit bandwidth: 8000
-        Receive bandwidth: 8000
-        Max latency: 13
-        Setting: 0x0003
-          Input Coding: Linear
-          Input Data Format: 1's complement
-          Input Sample Size: 8-bit
-          # of bits padding at MSB: 0
-          Air Coding Format: Transparent Data
-        Retransmission effort: Optimize for link quality (0x02)
-        Packet type: 0x003f
-          HV1 may be used
-          HV2 may be used
-          HV3 may be used
-          EV3 may be used
-          EV4 may be used
-          EV5 may be used
-> HCI Event: Command Status (0x0f) plen 4                 #310 [hci0] 49.440308
-      Accept Synchronous Connection Request (0x01|0x0029) ncmd 1
-        Status: Success (0x00)
-> HCI Event: Synchronous Connect Complete (0x2c) plen 17  #311 [hci0] 49.449308
-        Status: Success (0x00)
-        Handle: 257
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Link type: eSCO (0x02)
-        Transmission interval: 0x0c
-        Retransmission window: 0x04
-        RX packet length: 60
-        TX packet length: 60
-        Air mode: Transparent (0x03)
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #312 [hci0] 49.450421
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #313 [hci0] 49.457927
-> HCI Event: Max Slots Change (0x1b) plen 3               #314 [hci0] 49.460345
-        Handle: 256
-        Max slots: 5
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #315 [hci0] 49.465453
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #316 [hci0] 49.470502
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #317 [hci0] 49.470519
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #318 [hci0] 49.472996
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #319 [hci0] 49.480412
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #320 [hci0] 49.480492
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #321 [hci0] 49.487989
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #322 [hci0] 49.490303
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #323 [hci0] 49.495496
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #324 [hci0] 49.500304
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #325 [hci0] 49.500311
+As Edward Cree rightly put it:
 
-Signed-off-by: Kiran K <kiran.k@intel.com>
-Signed-off-by: Lokendra Singh <lokendra.singh@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+  Shifts by more than insn bitness are legal in the BPF ISA; they are
+  implementation-defined behaviour [of the underlying architecture],
+  rather than UB, and have been made legal for performance reasons.
+  Each of the JIT backends compiles the BPF shift operations to machine
+  instructions which produce implementation-defined results in such a
+  case; the resulting contents of the register may be arbitrary but
+  program behaviour as a whole remains defined.
+
+  Guard checks in the fast path (i.e. affecting JITted code) will thus
+  not be accepted.
+
+  The case of division by zero is not truly analogous here, as division
+  instructions on many of the JIT-targeted architectures will raise a
+  machine exception / fault on division by zero, whereas (to the best
+  of my knowledge) none will do so on an out-of-bounds shift.
+
+Given the KUBSAN report only affects the BPF interpreter, but not JITs,
+one solution is to add the ANDs with 63 or 31 into ___bpf_prog_run().
+That would make the shifts defined, and thus shuts up KUBSAN, and the
+compiler would optimize out the AND on any CPU that interprets the shift
+amounts modulo the width anyway (e.g., confirmed from disassembly that
+on x86-64 and arm64 the generated interpreter code is the same before
+and after this fix).
+
+The BPF interpreter is slow path, and most likely compiled out anyway
+as distros select BPF_JIT_ALWAYS_ON to avoid speculative execution of
+BPF instructions by the interpreter. Given the main argument was to
+avoid sacrificing performance, the fact that the AND is optimized away
+from compiler for mainstream archs helps as well as a solution moving
+forward. Also add a comment on LSH/RSH/ARSH translation for JIT authors
+to provide guidance when they see the ___bpf_prog_run() interpreter
+code and use it as a model for a new JIT backend.
+
+Reported-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+Reported-by: Kurt Manucredo <fuzzybritches0@gmail.com>
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+Co-developed-by: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+Cc: Edward Cree <ecree.xilinx@gmail.com>
+Link: https://lore.kernel.org/bpf/0000000000008f912605bd30d5d7@google.com
+Link: https://lore.kernel.org/bpf/bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/bpf/core.c | 61 +++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 43 insertions(+), 18 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index d62ac4b73709..e59ae24a8f17 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4360,12 +4360,12 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 56bc96f5ad20..323913ba13b3 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1321,29 +1321,54 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+ select_insn:
+ 	goto *jumptable[insn->code];
  
- 	bt_dev_dbg(hdev, "SCO connected with air mode: %02x", ev->air_mode);
- 
--	switch (conn->setting & SCO_AIRMODE_MASK) {
--	case SCO_AIRMODE_CVSD:
-+	switch (ev->air_mode) {
-+	case 0x02:
- 		if (hdev->notify)
- 			hdev->notify(hdev, HCI_NOTIFY_ENABLE_SCO_CVSD);
- 		break;
--	case SCO_AIRMODE_TRANSP:
-+	case 0x03:
- 		if (hdev->notify)
- 			hdev->notify(hdev, HCI_NOTIFY_ENABLE_SCO_TRANSP);
- 		break;
+-	/* ALU */
+-#define ALU(OPCODE, OP)			\
+-	ALU64_##OPCODE##_X:		\
+-		DST = DST OP SRC;	\
+-		CONT;			\
+-	ALU_##OPCODE##_X:		\
+-		DST = (u32) DST OP (u32) SRC;	\
+-		CONT;			\
+-	ALU64_##OPCODE##_K:		\
+-		DST = DST OP IMM;		\
+-		CONT;			\
+-	ALU_##OPCODE##_K:		\
+-		DST = (u32) DST OP (u32) IMM;	\
++	/* Explicitly mask the register-based shift amounts with 63 or 31
++	 * to avoid undefined behavior. Normally this won't affect the
++	 * generated code, for example, in case of native 64 bit archs such
++	 * as x86-64 or arm64, the compiler is optimizing the AND away for
++	 * the interpreter. In case of JITs, each of the JIT backends compiles
++	 * the BPF shift operations to machine instructions which produce
++	 * implementation-defined results in such a case; the resulting
++	 * contents of the register may be arbitrary, but program behaviour
++	 * as a whole remains defined. In other words, in case of JIT backends,
++	 * the AND must /not/ be added to the emitted LSH/RSH/ARSH translation.
++	 */
++	/* ALU (shifts) */
++#define SHT(OPCODE, OP)					\
++	ALU64_##OPCODE##_X:				\
++		DST = DST OP (SRC & 63);		\
++		CONT;					\
++	ALU_##OPCODE##_X:				\
++		DST = (u32) DST OP ((u32) SRC & 31);	\
++		CONT;					\
++	ALU64_##OPCODE##_K:				\
++		DST = DST OP IMM;			\
++		CONT;					\
++	ALU_##OPCODE##_K:				\
++		DST = (u32) DST OP (u32) IMM;		\
++		CONT;
++	/* ALU (rest) */
++#define ALU(OPCODE, OP)					\
++	ALU64_##OPCODE##_X:				\
++		DST = DST OP SRC;			\
++		CONT;					\
++	ALU_##OPCODE##_X:				\
++		DST = (u32) DST OP (u32) SRC;		\
++		CONT;					\
++	ALU64_##OPCODE##_K:				\
++		DST = DST OP IMM;			\
++		CONT;					\
++	ALU_##OPCODE##_K:				\
++		DST = (u32) DST OP (u32) IMM;		\
+ 		CONT;
+-
+ 	ALU(ADD,  +)
+ 	ALU(SUB,  -)
+ 	ALU(AND,  &)
+ 	ALU(OR,   |)
+-	ALU(LSH, <<)
+-	ALU(RSH, >>)
+ 	ALU(XOR,  ^)
+ 	ALU(MUL,  *)
++	SHT(LSH, <<)
++	SHT(RSH, >>)
++#undef SHT
+ #undef ALU
+ 	ALU_NEG:
+ 		DST = (u32) -DST;
+@@ -1368,13 +1393,13 @@ select_insn:
+ 		insn++;
+ 		CONT;
+ 	ALU_ARSH_X:
+-		DST = (u64) (u32) (((s32) DST) >> SRC);
++		DST = (u64) (u32) (((s32) DST) >> (SRC & 31));
+ 		CONT;
+ 	ALU_ARSH_K:
+ 		DST = (u64) (u32) (((s32) DST) >> IMM);
+ 		CONT;
+ 	ALU64_ARSH_X:
+-		(*(s64 *) &DST) >>= SRC;
++		(*(s64 *) &DST) >>= (SRC & 63);
+ 		CONT;
+ 	ALU64_ARSH_K:
+ 		(*(s64 *) &DST) >>= IMM;
 -- 
 2.30.2
 
