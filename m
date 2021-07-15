@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C823CADB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808343CADB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 22:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245224AbhGOUTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 16:19:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37400 "EHLO
+        id S245664AbhGOUT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 16:19:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45316 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245176AbhGOUTS (ORCPT
+        by vger.kernel.org with ESMTP id S239629AbhGOUTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 16:19:18 -0400
+        Thu, 15 Jul 2021 16:19:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626380183;
+        s=mimecast20190719; t=1626380188;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SAmjiglASlkj6C13Cutnvz5k0d0w8IXdZ7Qyh6+DwYY=;
-        b=hQL3LSR0e37OwLjv7oocHd4vHLgFB3zYEXDkbzU7fbCfFlVtHc/p+1iyKguXMGkD6myjIs
-        fstWcH3do+Z3zXzgvh9doxF+jQg8qLJCWeH+NpdbwnZj4EYwKklDI4/y/qeJwUHXhsCI40
-        /f/5a07hopVaq7DckrfgFgtGdA3TRvk=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-389-jDSupMwZMyur6X1TLAsrXQ-1; Thu, 15 Jul 2021 16:16:22 -0400
-X-MC-Unique: jDSupMwZMyur6X1TLAsrXQ-1
-Received: by mail-qk1-f198.google.com with SMTP id q6-20020a05620a05a6b02903b8bd8b612eso4092393qkq.19
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:16:22 -0700 (PDT)
+        bh=J821CEDH1gjfs0CBrZTj21MlvfuuPmBJQg+S3giuJZs=;
+        b=O4xf2LK+kdqBMJ6+NdfSIKto0o2XVLTj2cabUO2laRGmrEtEyf1wCy5IlgTIGUplFSuJ5q
+        L5iEqnv8gzyiDo0extnMXEd+9KAYpkUZjwLlS/57uucM3Q+IRE4D+a/wQms2TqmmL7pxhX
+        aAObc+5t7AgokvUp6RF/NM67SkKci3A=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-otd4gUyHOZCn7QdQygD49A-1; Thu, 15 Jul 2021 16:16:27 -0400
+X-MC-Unique: otd4gUyHOZCn7QdQygD49A-1
+Received: by mail-qv1-f72.google.com with SMTP id kj25-20020a0562145299b02902fbda5d4988so1640239qvb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 13:16:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SAmjiglASlkj6C13Cutnvz5k0d0w8IXdZ7Qyh6+DwYY=;
-        b=r/y4Lf2EefwwEcl0kYnEI8QN932Amv79EaQeQbSwqDKDJC+emW9LdBEhhrZBe6k2SU
-         +/Xlh+fgP0H6JhLSyYfm9+QzPfgdbHGRjeSd4SXV53YIXRlfBCr3W1SFdfkHSqmvRfr6
-         jgQYSY+eorjQaebtuELp4HQaDHB+i8kipWlBasnr9VY4zboHDrQSmRt3rdzpjSjjkPzQ
-         rFVqvNrG3ZuWsR0EIxwBNuQWkUxl71qAFH+X0yxaJSp17pklx66/ICduRQeOakhioswc
-         podeLqoOXOsjYbr2EMDQVUNcuOTXl8USNkRou608fg+TwUWw6/KXcGKzQrc40GZsx26e
-         UpYw==
-X-Gm-Message-State: AOAM533uGpHdJ7y/RmT5S+KB6nOiQUgndcccZFzgpy0+bgT4UrzOHdya
-        1ofKTJE58lmRXnnko8QpBo6WZtGB3WFJ2SHn2qS+Or/asNDIy6HAVYv1huLFReIC6ls84gtkkl/
-        aJaeQ1Z8GaI11HjnxcTYu+xAboouHBSi9iS6XCRr3LxqnsplDziL7qEhxGmfFeq/Ra5uQiHWD4g
+        bh=J821CEDH1gjfs0CBrZTj21MlvfuuPmBJQg+S3giuJZs=;
+        b=ZIuYianEpoQIZZnVZKkOBkxk+0dCl6CDz96wcwRW/i9R5wsNnvhRYa5/kiHJtho7/M
+         6RTqU6w3Y5ZkVJEGRjYL1XIP9yfZNKMjtJtebXIgIYYRHxezJyoY5TH8RCsN3Lf5c552
+         DGTKFz4BaZ3pBIK8RokZk9bHHALmmVLr5fJdX7mBCwEM55zHbvWMT7xNKjbDWYKNaxjY
+         VDEc5DhoTC6pAjGN629dN/NBB0IxwKgL3pCQ57MDL07KB7vtpE3HZSjE7TyP94/ZoWtl
+         4Znse/xesdOTG/6LWYt95Ma0SZD86NQdRD8mu4qGH+g+iUGZIkvtNTX7Th+gowAqm1NU
+         WZow==
+X-Gm-Message-State: AOAM531UQPwjs/MSTtKzitM5THR1y5VkOgcaVMvw6Mw1OYrxrGGcaApq
+        2EZq52+sWn2OJtAIA0jUUWM04N8auxE9Mt1TRhTXTJLT/eU3pIj4nY53NwiCa1uLiER6yJ0nWmQ
+        XArB8LaSCor57plSOfi1vd+cjChuJ2AXliYvzNT2qBK/fU89jyDlrEd5P8pC3DGPhBxvjlSL1WA
         ==
-X-Received: by 2002:a05:620a:1581:: with SMTP id d1mr5621672qkk.327.1626380182088;
-        Thu, 15 Jul 2021 13:16:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+STah4KcKuvlzg9i197/e/L8C5x8jj3hDXyaJxIMFWefnLu+xgSMUTIS74eTgb1IlTUGlEQ==
-X-Received: by 2002:a05:620a:1581:: with SMTP id d1mr5621633qkk.327.1626380181806;
-        Thu, 15 Jul 2021 13:16:21 -0700 (PDT)
+X-Received: by 2002:ac8:7a98:: with SMTP id x24mr5652702qtr.42.1626380186500;
+        Thu, 15 Jul 2021 13:16:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqx/JKx983VIK40kL+tOEfKDUFx+QG/B/b/7cM+8atn/7wXP3AG7MvbKd5YDYnZ2YGLzaxaQ==
+X-Received: by 2002:ac8:7a98:: with SMTP id x24mr5652668qtr.42.1626380186235;
+        Thu, 15 Jul 2021 13:16:26 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id 2sm1473664qka.68.2021.07.15.13.16.20
+        by smtp.gmail.com with ESMTPSA id d2sm2385704qto.91.2021.07.15.13.16.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 13:16:21 -0700 (PDT)
+        Thu, 15 Jul 2021 13:16:25 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Axel Rasmussen <axelrasmussen@google.com>,
@@ -69,9 +69,9 @@ Cc:     Axel Rasmussen <axelrasmussen@google.com>,
         Hugh Dickins <hughd@google.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH v5 16/26] mm/hugetlb: Introduce huge pte version of uffd-wp helpers
-Date:   Thu, 15 Jul 2021 16:16:18 -0400
-Message-Id: <20210715201618.211711-1-peterx@redhat.com>
+Subject: [PATCH v5 17/26] hugetlb/userfaultfd: Hook page faults for uffd write protection
+Date:   Thu, 15 Jul 2021 16:16:22 -0400
+Message-Id: <20210715201622.211762-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210715201422.211004-1-peterx@redhat.com>
 References: <20210715201422.211004-1-peterx@redhat.com>
@@ -81,43 +81,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-They will be used in the follow up patches to either check/set/clear uffd-wp
-bit of a huge pte.
+Hook up hugetlbfs_fault() with the capability to handle userfaultfd-wp faults.
 
-So far it reuses all the small pte helpers.  Archs can overwrite these versions
-when necessary (with __HAVE_ARCH_HUGE_PTE_UFFD_WP* macros) in the future.
+We do this slightly earlier than hugetlb_cow() so that we can avoid taking some
+extra locks that we definitely don't need.
 
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/asm-generic/hugetlb.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ mm/hugetlb.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/include/asm-generic/hugetlb.h b/include/asm-generic/hugetlb.h
-index 8e1e6244a89d..c45b9deb41ff 100644
---- a/include/asm-generic/hugetlb.h
-+++ b/include/asm-generic/hugetlb.h
-@@ -32,6 +32,21 @@ static inline pte_t huge_pte_modify(pte_t pte, pgprot_t newprot)
- 	return pte_modify(pte, newprot);
- }
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 4bdd637b0c29..d34636085eaf 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5059,6 +5059,25 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	if (unlikely(!pte_same(entry, huge_ptep_get(ptep))))
+ 		goto out_ptl;
  
-+static inline pte_t huge_pte_mkuffd_wp(pte_t pte)
-+{
-+	return pte_mkuffd_wp(pte);
-+}
++	/* Handle userfault-wp first, before trying to lock more pages */
++	if (userfaultfd_wp(vma) && huge_pte_uffd_wp(huge_ptep_get(ptep)) &&
++	    (flags & FAULT_FLAG_WRITE) && !huge_pte_write(entry)) {
++		struct vm_fault vmf = {
++			.vma = vma,
++			.address = haddr,
++			.flags = flags,
++		};
 +
-+static inline pte_t huge_pte_clear_uffd_wp(pte_t pte)
-+{
-+	return pte_clear_uffd_wp(pte);
-+}
++		spin_unlock(ptl);
++		if (pagecache_page) {
++			unlock_page(pagecache_page);
++			put_page(pagecache_page);
++		}
++		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
++		i_mmap_unlock_read(mapping);
++		return handle_userfault(&vmf, VM_UFFD_WP);
++	}
 +
-+static inline int huge_pte_uffd_wp(pte_t pte)
-+{
-+	return pte_uffd_wp(pte);
-+}
-+
- #ifndef __HAVE_ARCH_HUGE_PTE_CLEAR
- static inline void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
- 		    pte_t *ptep, unsigned long sz)
+ 	/*
+ 	 * hugetlb_cow() requires page locks of pte_page(entry) and
+ 	 * pagecache_page, so here we need take the former one
 -- 
 2.31.1
 
