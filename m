@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CF53C9CB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DD03C9CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 12:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241382AbhGOKfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 06:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        id S241390AbhGOKfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 06:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241374AbhGOKfT (ORCPT
+        with ESMTP id S241386AbhGOKf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:35:19 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9B6C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:32:26 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id w13so3397324wmc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:32:26 -0700 (PDT)
+        Thu, 15 Jul 2021 06:35:29 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E000C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:32:36 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id d2so7177034wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 03:32:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yErtTWgcO6FK0iGfpzstg3ohtWyGpJF37AOcLp6i0rU=;
-        b=E3h11f88UUXXnGCXjPiHxeLqM1eLAL34bmABWBW3eR4vCSamRe50aBxoNDXPDTXClz
-         3stoYZgpeJzJ4ZNKea+jrOzDRDhXHuth/SD0jb5u8zbMPlj1mEsMWJ7/DQ9qJe/MM6sY
-         ppqrkU7yEaJ04hGr2gXlKJj+YqhBOXp1ivpFQ2dUe/Xbf3f8hqxupCOIdJQn9X/eYh/L
-         OCwVZU685IULo0bNHfpGhnx8/Kl7ip4u8NMXw/XEXarquwuIakxzzyl6QbAnZyS3sPAU
-         tOr7OHGRQUox5FFrfR18+V67aPaY2Q8wxdIRJR/vZl2wY6Q3StaAf0kLOVXwS97R4Sqs
-         DMmg==
+        bh=ogUkZMQle5D8vhGQlPdaF0V6lQAGwCn5kpEitnw6uQ4=;
+        b=uoDFQHz4jKqL3MXptxfoHCEFo6Iis748rmY1c9AJFi0X4+K6J2VE+0YnAgCsOzLho9
+         8uvBoMifRA3MEUGcWtEG6MAlyxXP+vbGS9p8xV/VzY88Zi34OU0cyRzfGaqxhLnFa615
+         bJmql9PlFqA3J0YHL3an83BVG7pzmDYEx6hSfhqolTtgDkfueK1/SkxMQV6qPps0Xgp/
+         geKuho/Wxrg8nNZaUZA69iobd+6oWQWaWezGc2vSF6SiMC9FRKcmAmttMfVG3AhY6d80
+         TCHuazurFfwSviWSYDZlBnbtpSyxAwjcK6qphppcOnfQFzTG0govCqUSgLxLSaMiNHBW
+         sENw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=yErtTWgcO6FK0iGfpzstg3ohtWyGpJF37AOcLp6i0rU=;
-        b=HIXPj/tqZ4gpa+wDfblQoij0httbOo0iiLYkWAr+aQAF6qNH0fL01tdJU/TGhHG+U3
-         h63/gMKt3+ba8y3fXI+8ruuZvah4mA/AlRkTFH7PhMEdtZjpbYXARmow/l+VQ1q9A7G7
-         dLQVZNTAp9TKbhg6+gN89OjDZqo/tek62+vISWY2wt6tO7DUg45/c+RbVkBKJvtnZqyd
-         emRxNzp2mHNfSmt0+/cP+W5pKSvxOv4ZrNSGb48DEePJPmIvbKT7mKmYef3HxosBgeq6
-         xpFgFa/gE+WpDebnUcd2/kMtV1iwyENMZBR1I6y5z5xxZbTA1HtQam3ECG8552k7raG4
-         +jCQ==
-X-Gm-Message-State: AOAM533XBV5LVAggQYkIXkboxUGGkJKVus8Mq7kPpbNLjYjQWRS0USLH
-        LSn86dcJegaI9C90/O2p1avEFXCMA08p6w==
-X-Google-Smtp-Source: ABdhPJyLJnG8rhsApFP959gtYhzUIb21xHkuZxXHeM6/w3dCR+i1WWHgNlCr5cYEBBkk2uF7+TbbKA==
-X-Received: by 2002:a7b:c84d:: with SMTP id c13mr9961444wml.30.1626345144763;
-        Thu, 15 Jul 2021 03:32:24 -0700 (PDT)
+        bh=ogUkZMQle5D8vhGQlPdaF0V6lQAGwCn5kpEitnw6uQ4=;
+        b=XMRuxgprbFt+T102FEsrZB9XlYXfJf9pK0jTSzH7S/N1uK8di6wN/ffFylfayMCBch
+         3heRVBJA1uWwbZyzOqfYAluARUbckE31VN/wAPGCEFaTC4UiuZbb8hqHij1cgC55vSSz
+         JOtamTCrP8i1O63EjOa0VS3mRIMXx18Odzz3gos6hMhcyqa7ue/dvVgFJWWyW/Ernjp2
+         Bv4sMeF3y6VMUyQS31lauARHS2EgLLi2yveNeCBgNJ/dl24SBqpdlnDgdc8SAxdM1LMK
+         YV8BcU+XUhx710Z5DHayXFwjeCcH1SamWgyVhdwNPHiydzBFWaMsivkl6oxvn3S8pSnS
+         7HpA==
+X-Gm-Message-State: AOAM530EjJqfpfa0ANn3WyACDZzAPZwTZi1PEdLIP7Jx+82LJmcIRYs/
+        Koz+80sgYaJ4E1Hq3fEir1iPtB+uJrVwVw==
+X-Google-Smtp-Source: ABdhPJxYME0Lv0oK8f5bk3/BtLMmAIb0vMrNxC2DwBMe5yMoa0qhcVSiuNlBu2Jgf1Z+gsiJRI7ptg==
+X-Received: by 2002:a5d:5043:: with SMTP id h3mr4611038wrt.333.1626345154649;
+        Thu, 15 Jul 2021 03:32:34 -0700 (PDT)
 Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id r9sm4319671wmq.25.2021.07.15.03.32.23
+        by smtp.googlemail.com with ESMTPSA id p2sm4507732wmg.6.2021.07.15.03.32.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 03:32:24 -0700 (PDT)
-Subject: Re: [PATCH v2 09/16] ASoC: qcom: audioreach: add q6apm-dai support
+        Thu, 15 Jul 2021 03:32:34 -0700 (PDT)
+Subject: Re: [PATCH v2 12/16] ASoC: qcom: audioreach: add q6prm support
 To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
 Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
         bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.de,
         plai@codeaurora.org, linux-kernel@vger.kernel.org
 References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
- <20210714153039.28373-10-srinivas.kandagatla@linaro.org>
- <9b669a36-f9e4-bd90-7b02-e55fe5b99814@linux.intel.com>
+ <20210714153039.28373-13-srinivas.kandagatla@linaro.org>
+ <65c935b8-fb36-8da7-9a27-1ecd6559c41b@linux.intel.com>
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <90aafeb0-57dd-a309-e08f-a4ff31ad0853@linaro.org>
-Date:   Thu, 15 Jul 2021 11:32:23 +0100
+Message-ID: <50357647-7478-3848-74c4-1de50851d5d0@linaro.org>
+Date:   Thu, 15 Jul 2021 11:32:33 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <9b669a36-f9e4-bd90-7b02-e55fe5b99814@linux.intel.com>
+In-Reply-To: <65c935b8-fb36-8da7-9a27-1ecd6559c41b@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,200 +74,149 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 14/07/2021 17:59, Pierre-Louis Bossart wrote:
+On 14/07/2021 18:09, Pierre-Louis Bossart wrote:
 > 
 > 
->> +static void event_handler(uint32_t opcode, uint32_t token,
->> +			  uint32_t *payload, void *priv)
+> 
+>> +static int q6prm_send_cmd_sync(struct q6prm *prm, struct gpr_pkt *pkt,
+>> +			uint32_t rsp_opcode)
 >> +{
->> +	struct q6apm_dai_rtd *prtd = priv;
->> +	struct snd_pcm_substream *substream = prtd->substream;
+>> +	gpr_device_t *gdev = prm->gdev;
+>> +	struct gpr_hdr *hdr = &pkt->hdr;
+>> +	int rc;
 >> +
->> +	switch (opcode) {
->> +	case APM_CLIENT_EVENT_CMD_EOS_DONE:
->> +		prtd->state = Q6APM_STREAM_STOPPED;
->> +		break;
->> +	case APM_CLIENT_EVENT_DATA_WRITE_DONE: {
->> +		prtd->pcm_irq_pos += prtd->pcm_count;
->> +		snd_pcm_period_elapsed(substream);
-> 
-> A comment on the relationship between data writes and periods would be nice. It looks like the code assumes the period and data transfers are identical, but periods can be chosen by applications, can't they?
-
-Yes, pcm_count is set to period size, so we get ack for each period.
-
-
-> 
->> +		if (prtd->state == Q6APM_STREAM_RUNNING) {
->> +			q6apm_write_async(prtd->graph,
->> +					   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
->> +		}
+>> +	mutex_lock(&prm->lock);
+>> +	prm->result.opcode = 0;
+>> +	prm->result.status = 0;
 >> +
->> +		break;
->> +		}
->> +	case APM_CLIENT_EVENT_DATA_READ_DONE:
->> +		prtd->pcm_irq_pos += prtd->pcm_count;
->> +		snd_pcm_period_elapsed(substream);
->> +		if (prtd->state == Q6APM_STREAM_RUNNING)
->> +			q6apm_read(prtd->graph);
+>> +	rc = gpr_send_pkt(prm->gdev, pkt);
+>> +	if (rc < 0)
+>> +		goto err;
 >> +
->> +		break;
->> +	default:
->> +		break;
+>> +	if (rsp_opcode)
+>> +		rc = wait_event_timeout(prm->wait,
+>> +					(prm->result.opcode == hdr->opcode) ||
+>> +					(prm->result.opcode == rsp_opcode),
+>> +					5 * HZ);
+>> +	else
+>> +		rc = wait_event_timeout(prm->wait,
+>> +					(prm->result.opcode == hdr->opcode),
+>> +					5 * HZ);
+>> +
+>> +	if (!rc) {
+>> +		dev_err(&gdev->dev, "CMD timeout for [%x] opcode\n",
+>> +			hdr->opcode);
+>> +		rc = -ETIMEDOUT;
+>> +	} else if (prm->result.status > 0) {
+>> +		dev_err(&gdev->dev, "DSP returned error[%x] %x\n", hdr->opcode,
+>> +			prm->result.status);
+>> +		rc = -EINVAL;
+>> +	} else {
+>> +		dev_err(&gdev->dev, "DSP returned [%x]\n",
+>> +			prm->result.status);
+>> +		rc = 0;
 >> +	}
+>> +
+>> +err:
+>> +	mutex_unlock(&prm->lock);
+>> +	return rc;
 >> +}
 > 
->> +static int q6apm_dai_trigger(struct snd_soc_component *component,
->> +			     struct snd_pcm_substream *substream, int cmd)
->> +{
->> +	struct snd_pcm_runtime *runtime = substream->runtime;
->> +	struct q6apm_dai_rtd *prtd = runtime->private_data;
->> +	int ret = 0;
->> +
->> +	switch (cmd) {
->> +	case SNDRV_PCM_TRIGGER_START:
->> +	case SNDRV_PCM_TRIGGER_RESUME:
->> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->> +			ret = q6apm_write_async(prtd->graph, prtd->pcm_count, 0, 0, NO_TIMESTAMP);
->> +		break;
->> +	case SNDRV_PCM_TRIGGER_STOP:
->> +		prtd->state = Q6APM_STREAM_STOPPED;
->> +		//ret = q6apm_cmd_nowait(prtd->graph, CMD_EOS);
->> +		break;
->> +	case SNDRV_PCM_TRIGGER_SUSPEND:
->> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->> +		//ret = q6apm_cmd_nowait(prtd->graph, CMD_PAUSE);
-> 
-> these // comments are odd, with a clear imbalance between suspend/resume and pause_push/pause_release...
-> is this intentional or a left-over from an experiment?
+> In patch7 you had more or less the same code. can a helper be used?
 
-Yes, I forgot to clean this up before sending out.
+Its possible, will abstract this out in audioreach.c.
+
 
 > 
->> +		break;
->> +	default:
->> +		ret = -EINVAL;
->> +		break;
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +static int q6apm_dai_open(struct snd_soc_component *component,
->> +			  struct snd_pcm_substream *substream)
+> +int audioreach_graph_send_cmd_sync(struct q6apm_graph *graph,
+> +				   struct gpr_pkt *pkt, uint32_t rsp_opcode)
+> +{
+> +
+> +	struct device *dev = graph->dev;
+> +	struct gpr_hdr *hdr = &pkt->hdr;
+> +	int rc;
+> +
+> +	mutex_lock(&graph->cmd_lock);
+> +	graph->result.opcode = 0;
+> +	graph->result.status = 0;
+> +
+> +	rc = gpr_send_port_pkt(graph->port, pkt);
+> +	if (rc < 0)
+> +		goto err;
+> +
+> +	if (rsp_opcode)
+> +		rc = wait_event_timeout(graph->cmd_wait,
+> +					(graph->result.opcode == hdr->opcode) ||
+> +					(graph->result.opcode == rsp_opcode),
+> +					5 * HZ);
+> +	else
+> +		rc = wait_event_timeout(graph->cmd_wait,
+> +					(graph->result.opcode == hdr->opcode),
+> +					5 * HZ);
+> +
+> +	if (!rc) {
+> +		dev_err(dev, "CMD timeout for [%x] opcode\n", hdr->opcode);
+> +		rc = -ETIMEDOUT;
+> +	} else if (graph->result.status > 0) {
+> +		dev_err(dev, "DSP returned error[%x] %x\n", hdr->opcode,
+> +			graph->result.status);
+> +		rc = -EINVAL;
+> +	} else {
+> +		dev_err(dev, "DSP returned [%x]\n", graph->result.status);
+> +		rc = 0;
+> +	}
+> +
+> +err:
+> +	mutex_unlock(&graph->cmd_lock);
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(audioreach_graph_send_cmd_sync);
+> 
+> 
+>> +static int q6prm_set_hw_core_req(struct device *dev, uint32_t hw_block_id,   bool enable)
 >> +{
->> +	struct snd_pcm_runtime *runtime = substream->runtime;
->> +	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
->> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_prtd, 0);
->> +	struct q6apm_dai_rtd *prtd;
->> +	struct q6apm_dai_data *pdata;
->> +	struct device *dev = component->dev;
->> +	int ret;
->> +	int graph_id;
+>> +	struct prm_cmd_request_hw_core *req;
+>> +	struct apm_module_param_data *param_data;
+>> +	struct gpr_pkt *pkt;
+>> +	struct q6prm *prm = dev_get_drvdata(dev);
+>> +	gpr_device_t *gdev  = prm->gdev;
+>> +	void *p;
+>> +	int rc = 0;
+>> +	uint32_t opcode, rsp_opcode;
 >> +
->> +	graph_id = cpu_dai->driver->id;
->> +
->> +	pdata = snd_soc_component_get_drvdata(component);
->> +	if (!pdata) {
->> +		dev_err(component->dev, "Drv data not found ..\n");
->> +		return -EINVAL;
+>> +	if (enable) {
+>> +		opcode = PRM_CMD_REQUEST_HW_RSC;
+>> +		rsp_opcode = PRM_CMD_RSP_REQUEST_HW_RSC;
+>> +	} else {
+>> +		opcode = PRM_CMD_RELEASE_HW_RSC;
+>> +		rsp_opcode = PRM_CMD_RSP_RELEASE_HW_RSC;
 >> +	}
 >> +
->> +	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
->> +	if (prtd == NULL)
+>> +	p = audioreach_alloc_cmd_pkt(sizeof(*req), opcode, 0, gdev->svc.id,
+>> +				     GPR_PRM_MODULE_IID);
+>> +	if (IS_ERR(p))
 >> +		return -ENOMEM;
 >> +
->> +	prtd->substream = substream;
+>> +	pkt = p;
+>> +	req = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
 >> +
->> +	prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler,
->> +				       prtd, graph_id);
->> +	if (IS_ERR(prtd->graph)) {
->> +		pr_info("%s: Could not allocate memory\n", __func__);
->> +		ret = PTR_ERR(prtd->graph);
->> +		kfree(prtd);
->> +		return ret;
->> +	}
+>> +	param_data = &req->param_data;
 >> +
->> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->> +		runtime->hw = q6apm_dai_hardware_playback;
->> +	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
->> +		runtime->hw = q6apm_dai_hardware_capture;
+>> +	param_data->module_instance_id = GPR_PRM_MODULE_IID;
+>> +	param_data->error_code = 0;
+>> +	param_data->param_id = PARAM_ID_RSC_HW_CORE;
+>> +	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
 >> +
->> +	/* Ensure that buffer size is a multiple of period size */
->> +	ret = snd_pcm_hw_constraint_integer(runtime,
->> +					    SNDRV_PCM_HW_PARAM_PERIODS);
->> +	if (ret < 0)
->> +		dev_err(dev, "snd_pcm_hw_constraint_integer failed\n");
+>> +	req->hw_clk_id = hw_block_id;
 >> +
->> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->> +		ret = snd_pcm_hw_constraint_minmax(runtime,
->> +			SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
->> +			BUFFER_BYTES_MIN, BUFFER_BYTES_MAX);
->> +		if (ret < 0) {
->> +			dev_err(dev, "constraint for buffer bytes min max ret = %d\n",
->> +									ret);
->> +		}
->> +	}
+>> +	q6prm_send_cmd_sync(prm, pkt, rsp_opcode);
 >> +
->> +	ret = snd_pcm_hw_constraint_step(runtime, 0,
->> +					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
->> +	if (ret < 0) {
->> +		dev_err(dev, "constraint for period bytes step ret = %d\n",
->> +								ret);
->> +	}
->> +	ret = snd_pcm_hw_constraint_step(runtime, 0,
->> +					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
->> +	if (ret < 0) {
->> +		dev_err(dev, "constraint for buffer bytes step ret = %d\n",
->> +								ret);
->> +	}
+>> +	kfree(pkt);
+>> +
+>> +	return rc;
 > 
-> dev_err() used but no return code sent?
+> rc is not assigned, should this not trap the result of sending a command?
+My bad! will fix such instances.
 
-Ack.
-
-> 
->> +
->> +	runtime->private_data = prtd;
->> +	runtime->dma_bytes = BUFFER_BYTES_MAX;
->> +	if (pdata->sid < 0)
->> +		prtd->phys = substream->dma_buffer.addr;
->> +	else
->> +		prtd->phys = substream->dma_buffer.addr | (pdata->sid << 32);
->> +
->> +	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
->> +
->> +	return 0;
->> +}
-> 
->> +static int q6apm_dai_hw_params(struct snd_soc_component *component,
->> +			       struct snd_pcm_substream *substream,
->> +			       struct snd_pcm_hw_params *params)
->> +{
->> +	struct snd_pcm_runtime *runtime = substream->runtime;
->> +	struct q6apm_dai_rtd *prtd = runtime->private_data;
->> +
->> +	prtd->pcm_size = params_buffer_bytes(params);
->> +	prtd->periods = params_periods(params);
->> +
->> +	switch (params_format(params)) {
->> +	case SNDRV_PCM_FORMAT_S16_LE:
->> +		prtd->bits_per_sample = 16;
->> +		break;
->> +	case SNDRV_PCM_FORMAT_S24_LE:
->> +		prtd->bits_per_sample = 24;
->> +		break;
-> 
-> default:
->      return -EINVAL
-> ?
-Ack, will do that in next spin.
 
 --srini
-> 
->> +	}
->> +
->> +	return 0;
->> +}
->> +
-> 
