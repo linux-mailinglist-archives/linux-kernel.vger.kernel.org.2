@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E998A3CA8EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB933CAB21
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 21:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243428AbhGOTEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 15:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57842 "EHLO mail.kernel.org"
+        id S244417AbhGOTRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 15:17:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240599AbhGOSyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:54:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDCB9613D0;
-        Thu, 15 Jul 2021 18:51:06 +0000 (UTC)
+        id S243369AbhGOTEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 15:04:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34ECC613FE;
+        Thu, 15 Jul 2021 19:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626375067;
-        bh=PolS+7aZnFZs1pDZxZ9Fgg0SpLVGAqOvR8aCwenTItE=;
+        s=korg; t=1626375600;
+        bh=p4UoKnK//5jgto48d8wuORtdCGB0SzO6Zsdb0CdF16A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V6JcmSufoRXvTOGmMSPsWrPuwa2VE+XtEACvx/JAs2BGOyj1RP8mfcZDMQ7f0bOeX
-         AaM5zsEijjJvUU0WsLooN8CW52mVCg4BklRtXWZLpCHiSbnLLbbdEss9BIteYVcN4C
-         pvXUVfrHQMo5dQSvhLnFJok31EmbtxyuKadSvMRk=
+        b=qa9m4TY0tbBcAomjWEczHOrLRIKQxh/TTQOLV7POqRbo09JJyo8qkq4CSEylAI0qc
+         TJO8znbvGw8ld0YSM/ia/fLBU/l/lTWLq/71qMrd1IhRjIRzpSyLBdYXM3emxYYECW
+         0OA2yvZdkhHLjD/qRrcxNklrYkziGwqhqibl05Es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        yangerkun <yangerkun@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Hanjun Guo <guohanjun@huawei.com>
-Subject: [PATCH 5.10 143/215] io_uring: convert io_buffer_idr to XArray
-Date:   Thu, 15 Jul 2021 20:38:35 +0200
-Message-Id: <20210715182624.875109621@linuxfoundation.org>
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.12 154/242] PCI: tegra194: Fix host initialization during resume
+Date:   Thu, 15 Jul 2021 20:38:36 +0200
+Message-Id: <20210715182620.324770673@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+References: <20210715182551.731989182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,133 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Vidya Sagar <vidyas@nvidia.com>
 
-commit 9e15c3a0ced5a61f320b989072c24983cb1620c1 upstream.
+commit c4bf1f25c6c187864681d5ad4dd1fa92f62d5d32 upstream.
 
-Like we did for the personality idr, convert the IO buffer idr to use
-XArray. This avoids a use-after-free on removal of entries, since idr
-doesn't like doing so from inside an iterator, and it nicely reduces
-the amount of code we need to support this feature.
+Commit 275e88b06a27 ("PCI: tegra: Fix host link initialization") broke
+host initialization during resume as it misses out calling the API
+dw_pcie_setup_rc() which is required for host and MSI initialization.
 
-Fixes: 5a2e745d4d43 ("io_uring: buffer registration infrastructure")
-Cc: stable@vger.kernel.org
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: yangerkun <yangerkun@huawei.com>
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+Link: https://lore.kernel.org/r/20210504172157.29712-1-vidyas@nvidia.com
+Fixes: 275e88b06a27 ("PCI: tegra: Fix host link initialization")
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/io_uring.c |   43 +++++++++++++++----------------------------
- 1 file changed, 15 insertions(+), 28 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -344,7 +344,7 @@ struct io_ring_ctx {
- 	struct socket		*ring_sock;
- #endif
- 
--	struct idr		io_buffer_idr;
-+	struct xarray		io_buffers;
- 
- 	struct xarray		personalities;
- 	u32			pers_next;
-@@ -1212,7 +1212,7 @@ static struct io_ring_ctx *io_ring_ctx_a
- 	INIT_LIST_HEAD(&ctx->cq_overflow_list);
- 	init_completion(&ctx->ref_comp);
- 	init_completion(&ctx->sq_thread_comp);
--	idr_init(&ctx->io_buffer_idr);
-+	xa_init_flags(&ctx->io_buffers, XA_FLAGS_ALLOC1);
- 	xa_init_flags(&ctx->personalities, XA_FLAGS_ALLOC1);
- 	mutex_init(&ctx->uring_lock);
- 	init_waitqueue_head(&ctx->wait);
-@@ -2990,7 +2990,7 @@ static struct io_buffer *io_buffer_selec
- 
- 	lockdep_assert_held(&req->ctx->uring_lock);
- 
--	head = idr_find(&req->ctx->io_buffer_idr, bgid);
-+	head = xa_load(&req->ctx->io_buffers, bgid);
- 	if (head) {
- 		if (!list_empty(&head->list)) {
- 			kbuf = list_last_entry(&head->list, struct io_buffer,
-@@ -2998,7 +2998,7 @@ static struct io_buffer *io_buffer_selec
- 			list_del(&kbuf->list);
- 		} else {
- 			kbuf = head;
--			idr_remove(&req->ctx->io_buffer_idr, bgid);
-+			xa_erase(&req->ctx->io_buffers, bgid);
- 		}
- 		if (*len > kbuf->len)
- 			*len = kbuf->len;
-@@ -3960,7 +3960,7 @@ static int __io_remove_buffers(struct io
+---
+ drivers/pci/controller/dwc/pcie-tegra194.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -2214,6 +2214,8 @@ static int tegra_pcie_dw_resume_noirq(st
+ 		goto fail_host_init;
  	}
- 	i++;
- 	kfree(buf);
--	idr_remove(&ctx->io_buffer_idr, bgid);
-+	xa_erase(&ctx->io_buffers, bgid);
  
- 	return i;
- }
-@@ -3978,7 +3978,7 @@ static int io_remove_buffers(struct io_k
- 	lockdep_assert_held(&ctx->uring_lock);
- 
- 	ret = -ENOENT;
--	head = idr_find(&ctx->io_buffer_idr, p->bgid);
-+	head = xa_load(&ctx->io_buffers, p->bgid);
- 	if (head)
- 		ret = __io_remove_buffers(ctx, head, p->bgid, p->nbufs);
- 	if (ret < 0)
-@@ -4069,21 +4069,14 @@ static int io_provide_buffers(struct io_
- 
- 	lockdep_assert_held(&ctx->uring_lock);
- 
--	list = head = idr_find(&ctx->io_buffer_idr, p->bgid);
-+	list = head = xa_load(&ctx->io_buffers, p->bgid);
- 
- 	ret = io_add_buffers(p, &head);
--	if (ret < 0)
--		goto out;
--
--	if (!list) {
--		ret = idr_alloc(&ctx->io_buffer_idr, head, p->bgid, p->bgid + 1,
--					GFP_KERNEL);
--		if (ret < 0) {
-+	if (ret >= 0 && !list) {
-+		ret = xa_insert(&ctx->io_buffers, p->bgid, head, GFP_KERNEL);
-+		if (ret < 0)
- 			__io_remove_buffers(ctx, head, p->bgid, -1U);
--			goto out;
--		}
- 	}
--out:
- 	if (ret < 0)
- 		req_set_fail_links(req);
- 
-@@ -8411,19 +8404,13 @@ static int io_eventfd_unregister(struct
- 	return -ENXIO;
- }
- 
--static int __io_destroy_buffers(int id, void *p, void *data)
--{
--	struct io_ring_ctx *ctx = data;
--	struct io_buffer *buf = p;
--
--	__io_remove_buffers(ctx, buf, id, -1U);
--	return 0;
--}
--
- static void io_destroy_buffers(struct io_ring_ctx *ctx)
- {
--	idr_for_each(&ctx->io_buffer_idr, __io_destroy_buffers, ctx);
--	idr_destroy(&ctx->io_buffer_idr);
-+	struct io_buffer *buf;
-+	unsigned long index;
++	dw_pcie_setup_rc(&pcie->pci.pp);
 +
-+	xa_for_each(&ctx->io_buffers, index, buf)
-+		__io_remove_buffers(ctx, buf, index, -1U);
- }
- 
- static void io_ring_ctx_free(struct io_ring_ctx *ctx)
+ 	ret = tegra_pcie_dw_start_link(&pcie->pci);
+ 	if (ret < 0)
+ 		goto fail_host_init;
 
 
