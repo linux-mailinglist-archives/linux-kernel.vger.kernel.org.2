@@ -2,105 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DE93CA4E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467313CA4F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Jul 2021 20:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhGOSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 14:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
+        id S237232AbhGOSF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 14:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237067AbhGOSEB (ORCPT
+        with ESMTP id S232014AbhGOSFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:04:01 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B616DC061762
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:07 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id u25so10101341ljj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 11:01:07 -0700 (PDT)
+        Thu, 15 Jul 2021 14:05:55 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B676C06175F;
+        Thu, 15 Jul 2021 11:03:01 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id 109so2450552uar.10;
+        Thu, 15 Jul 2021 11:03:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2d9p90AIyYXuZyz8N1X+igPtEqtQ6xFMtj7iBan61/4=;
-        b=DG7GKyt4XSoEmdsNZbS2IReKQaI3T7Q+Co+VBceo4tACNkMJfUaeYqnuxt3bN1fnXj
-         GZohmTB12gTVjMurUepDi5ro5Qu1uQkqXHiScBoCVS8xWKdXNmPdoae4v7aN1/NHiowV
-         MJtcwIVJ4dbdleqfXwxAca/OZnHXfp/C5T/OgyikiLs6H1Zr7Jsbo8IxT8msrdozjb+c
-         fByH4YGIejRqn7Tb4gXsisqfZUNMxQcqxxisbxt7TbEzdZLYBySk0X6+X3YixXgSSHQE
-         Iq69f7+cLBQqJ8yvzByhikPJjkCC01ycMNR5WreQuy3LH4+RK/nwLv0RYh8QXdoP0MX6
-         UTRQ==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=e4lnR83fHStKz8gagpSU/N35+IdwX9t/08rZw/hyq5w=;
+        b=DvYn3MIhCDH7pPtqBwYO1vERZZ/DS2cYqvvCSwhrYWE61W4Sd/t0w0T6z2m8RKO+3R
+         /BHJAZhs/B/jAbIo3cfR7q+p/CDS/67YHMZlZZcMiFAj2ZdrS6drx41zlqCQfd/ceRrL
+         b0a0gNtYAVFcx3NzRosv4xfaxfHG0E5OLk9xkMCVo5IV0GNXZx8/bsZQ3M0ZIaF2AeUO
+         z6QEghLYm2XPqp2IMsaqEpWXw4sKQTwMFRswodK0ZCu5ahwhnsqL65VMGyz2LURK88ek
+         77Vw9EmVMZUgcx3EbnBHr7l6ncVLvEs6HmfAZWzAI0foFBUqmHURKR5lFe0yunjCQaSq
+         06Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2d9p90AIyYXuZyz8N1X+igPtEqtQ6xFMtj7iBan61/4=;
-        b=NtkGS0D0/4eR6QW/vDGxSV08uHxq+6k+hsAR+1aQmFHJJHfgDcNl+aQHN/16qycF4M
-         hBE1RkukaWFT6zME+LDoTE3KjP99DJrchE1GgQJjBM4UWcOw/+VmCsLNd+pHVf55pPbe
-         hdLaYFgkajAq1YQ0k9PQSsgpSn6m4RPjnfAbtGUlzwPDKJkxXsMAgUpas091o8Ebu+sC
-         Dux2yWtr+ULlEgtJ2w9MLTgROEzx/8FOyo1fCw5d/x23Bhpj/g6LhCMadoQMS/ZmBoQA
-         FsvnWYX4TXUBoVdcEyC5Jl2bdFneSpZD/UWXTMulW6Vrqi3ukGEuwNdfyEfCneuUBPQu
-         g6cg==
-X-Gm-Message-State: AOAM532Tuiqf6VwNenVtZBTdzLsKEgMHoYpia8kRqDF9yuJMWpdPIiQe
-        zLDEGwaQV2JZvpX9f6vbb24=
-X-Google-Smtp-Source: ABdhPJz/T4eD4gvnZIxPn+tGbMZHDPbGOCEpm5Q+cGIfzkZX/+OASMlP53bWa1D5JtfFgWhs6RYlJg==
-X-Received: by 2002:a2e:a712:: with SMTP id s18mr5245619lje.161.1626372066140;
-        Thu, 15 Jul 2021 11:01:06 -0700 (PDT)
-Received: from asus ([37.151.208.206])
-        by smtp.gmail.com with ESMTPSA id r3sm497511lfc.280.2021.07.15.11.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 11:01:05 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 00:01:03 +0600
-From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     tyhicks@linux.microsoft.com, pasha.tatashin@soleen.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mm: KSM: fix data type
-Message-ID: <3610f5373bb12ea04e025bafbf8350f75c0dbf4b.1626371112.git.zhansayabagdaulet@gmail.com>
-References: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=e4lnR83fHStKz8gagpSU/N35+IdwX9t/08rZw/hyq5w=;
+        b=aPtpfV0uKbcOeuZ0euqJO9v48lgMpxwHhJFXAbtQLIck/5ZJHzxuSBKxQFBrcY4CYi
+         ZK4KidOHVaXPHX6vx8NO74FgvpOMNzDQ4l36ybVrERUBAeHTA/wWS9TFYnZbxUoxb3fK
+         4i1g9hIrXU9uueZ5LSJ3oql6tq9m7GDFj0oAWSzOqXEeYfEl+diYcDwmDKpFm2JCOas3
+         uOGW5RW8u8rxkuYKtg8gw1Cd/ICGOwayk6Dx9PfcbAylCLriZhNGL/6cHJh4OH7hpP7f
+         th30LYxL/GSVukDf2BmdNS69gimbNzLqHbtNCtkPMsGDI8q9rGQSNGMfRryrEM0NaZ9I
+         p+Ow==
+X-Gm-Message-State: AOAM530lj8VJ8ZUo4lXpwA4ydyegxv0euMYLz8+Vy/8u2+pX+GJL0Mv1
+        EL/Y2P9VXZ8L9rfNVuoh0zuGcTcZ5nSPcj1OV8lv9dpAP3B8oA==
+X-Google-Smtp-Source: ABdhPJwfC6HLLYe5EGD638Ry2LqztquNfcdYOoNa890sSo0t726e/beDIQZvwbYvaJROpa4feR8dqDmKgSH6mzijeSU=
+X-Received: by 2002:ab0:4101:: with SMTP id j1mr8826206uad.13.1626372179487;
+ Thu, 15 Jul 2021 11:02:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1626371112.git.zhansayabagdaulet@gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Thu, 15 Jul 2021 12:02:33 -0600
+Message-ID: <CAJfuBxwZbrAuzvfHRxLHhh8a9nva7fR4ZiLc7NECspVZ0gx2ow@mail.gmail.com>
+Subject: subordinate trees ? we have %G-space, we should add %K-space
+To:     git@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ksm_stable_node_chains_prune_millisecs is declared as int, but in
-stable__node_chains_prune_millisecs_store(), it can store values up to
-UINT_MAX. Change the variable type to unsigned int.
+hi git people,
 
-Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
----
- mm/ksm.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+managing .configs, over time, and across work-trees, is an ongoing burden.
+I wonder if/how git could help.
 
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 057d0c245bf4..2e4bd7662e52 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -259,7 +259,7 @@ static unsigned long ksm_stable_node_chains;
- static unsigned long ksm_stable_node_dups;
- 
- /* Delay in pruning stale stable_node_dups in the stable_node_chains */
--static int ksm_stable_node_chains_prune_millisecs = 2000;
-+static unsigned int ksm_stable_node_chains_prune_millisecs = 2000;
- 
- /* Maximum number of page slots sharing a stable node */
- static int ksm_max_page_sharing = 256;
-@@ -3105,11 +3105,11 @@ stable_node_chains_prune_millisecs_store(struct kobject *kobj,
- 					 struct kobj_attribute *attr,
- 					 const char *buf, size_t count)
- {
--	unsigned long msecs;
-+	unsigned int msecs;
- 	int err;
- 
--	err = kstrtoul(buf, 10, &msecs);
--	if (err || msecs > UINT_MAX)
-+	err = kstrtouint(buf, 10, &msecs);
-+	if (err)
- 		return -EINVAL;
- 
- 	ksm_stable_node_chains_prune_millisecs = msecs;
--- 
-2.25.1
+I imagine a subordinate/secondary tree,
+which basically has only 1 tracked file ( .config ) in it.
+Auto-commit on .config ( perhaps as 1st step of make ) would mean no
+changes are missed
 
+A tertiary tree could hold all of ./builds/*
+or really any set of files that are ignored by the primary tree's
+.gitignore file
+its purpose would be to track build products; all *.o etc
+its kind-of a superset of what might be found in your .ccache,
+(it also includes *.cmd.o etc, and all other intermediate outputs)
+but it is attributable to a TooChainCompilationTransferFn(.config, HEAD)
+
+Since HEAD already has a sha*, we just need one for .config,
+the secondary tree keeps that for us.
+
+the tertiary tree doesnt REALLY need to keep *all* the build products,
+it just needs to keep track of them (just the sha*, since they are
+reproducible),
+but every commit (to either source, or to .config) should result in 1 or more
+build products changing.  It might be useful for QA purposes to predict and
+verify what products should change.
+
+Autocommit here means that make *anything* has known inputs,
+so if results are useful/reportable, they have known inputs (no -dirty)
+
+Also, it might be handy to be able to diff any 2 objdumps/readelfs of foo.o,
+which would be easier with a cryptographically known DB
+
+
+Heres how I think it could get leveraged for linux itself
+
+We have %G space, expressed in the kernel name:
+  5.14.0-rc1-lm1-00003-g4a7356173ef9-dirty
+
+Lets add %K space, to extend that:
+  5.14.0-rc1-lm1-00003-g4a7356173ef9-dirty-k6173ef96173
+
+now posit a kverstr("%D-%G-%K") producing the 2nd name above.
+    %T - tag :  "5.14.0-rc1"
+    %L - localversion : "-lm1"
+    %C - count : "00003", %C{5} default
+    %G - HEAD-sha : "-g4a7356173ef9-dirty"
+    %K - sha(.config) : "-k6c173efc961c", obviously 'c' is taken.
+    %D - desc : "%T-%L-%C"
+
+%L is seductive, but ultimately a nuisance; mine above is a
+super-imaginitive "-localmod-1" abbreviation.
+
+In contrast, %K would give:
+
+- updates every time the .config is tweaked.
+
+- each arch make defconfig yields single %Kval
+  or a few (1 per salt-val)
+
+- normalization done by make oldconfig narrows %K-space
+  some %Kvals are "impossible" (aka: hand altered or fuzzed .configs)
+
+- many .configs will get "well-known" %Kvals
+  bots will report probs with %Gs against specific %Ks
+
+- all well-known configs: defconfig, allmodconfig, etc...
+  get unique %Ks, maybe become well-known
+  esp as %K{5} which is short enough to recognize
+  %Ks could be annotated
+  %Ks change slowly as **/KBuild.* composition changes
+  traceable to commits in %G
+
+With (imagined) Git extensions:
+
+1. subordinate trees, in same src/work-dir:
+
+a configs subtree would have only .config file checked in, and
+probably should auto-commit on changes.
+
+ls ./.gitinclude.*
+
+These actively define inclusions of files in the named subtree, rather
+than ignores.  They dont see files that are not explicitly ignored by
+primary tree.
+
+so ./.gitinclude.1.configs:
+# with
+.config
+
+could always, actively, track and commit changes to .config,
+`history|grep config | tail -n5`, automatically added to commit-log,
+would help (a little) explain why.  A string serialization of the
+CONFIG_* changes, would completely characterize the .config diff, and
+
+and ./.gitinclude.3.builds
+# with
+./builds/
+
+captures all build product files written under ./builds/* into a
+single subordinate tree.  This tree can only contain files ignored by
+.gitignore (ie the primary/source tree)
+
+obviously this will include all of ./**/*.o, which is essentially
+a %G+%K versioned (and clean) ccache result set.
+
+./builds/{*}   # distinct build-product (%G+%K dependent) sub-trees
+
+./builds/foo # foo
+./builds/bar
+
+not really sure how the 2ndary tree (.config tracker) should play with
+worktrees,
+or even with multiple ./builds/ subdirs, each with a .config
+those subdirs are our %K-space-explored,
+ie those configs which we have at least tried
+
+make randconfig is a rather low-quality way to expand the tested %K-space
+but with %K handled a bit better, we could at least track how much of
+the space gets tested this way.
+
+ok, now Im meandering.
