@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D673CBB34
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678233CBB40
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhGPRdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:33:05 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:40508 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhGPRdE (ORCPT
+        id S231461AbhGPRgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 13:36:39 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:43572 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhGPRgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:33:04 -0400
-Received: by mail-ot1-f47.google.com with SMTP id v32-20020a0568300920b02904b90fde9029so10618233ott.7;
-        Fri, 16 Jul 2021 10:30:08 -0700 (PDT)
+        Fri, 16 Jul 2021 13:36:33 -0400
+Received: by mail-io1-f52.google.com with SMTP id k16so11478327ios.10;
+        Fri, 16 Jul 2021 10:33:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dCnllYXMUCczcBIwb3YxN8Rr6MFU7yF3+xfqgmoa1hY=;
-        b=VQlg6aRaqM4WtFbm9ZeOUE5qF5Wd72eCFtlqY0CrPO9GGVBOqeYtz3KPVk4sr9zPHC
-         T8ir/NlvgoI+/jlZHrT7AvogqvVs9EE75JN48pEmoXIZWP71AC/htWtNt58y2jkzeOUT
-         h6gd+HrEZkGUZE8NekZEJjfEsEDCdJKGipliVcaq4W/Q8tayW8SvtdVNFiNRtlvnuiSU
-         6B+aHH3+TUA8KNDfnueltNR7eVY8cciie24RZdj+LjnDybbNzaPoI0sTMupV5LeCjU2g
-         pqs0V3V74uUb1bcXVVfejrbD5ptylBwMTe2CWXwb6XDMK+f6EOxQGsDDBa44+tf+mG2v
-         gn/A==
-X-Gm-Message-State: AOAM531b9Gm/2ll7rgqNjVyVgwfgnCD2hx0yvulcSyXb9QcDQISR7qxQ
-        ulZz9nczN7fnu7WNRkadNKzdigIf16ozAb1xJQ31Fvc4
-X-Google-Smtp-Source: ABdhPJxHpb3jOPDUJQ8YVA5GsTkwTtnlDQwZVqqTSdxENBEo8fSOQ5nl3mfdE7fs396K4M87oBejAU7/uMUIKImhJb4=
-X-Received: by 2002:a05:6830:9a:: with SMTP id a26mr1888401oto.260.1626456608012;
- Fri, 16 Jul 2021 10:30:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bBjy0/9KrCFc43pikW3DapYBnLJRP7OXLZVYWY+cmRw=;
+        b=S3J6w5viE6zDh0lQnxATT8w7C0pRFcI61r6J5UXZbNnlNEr5rkzcIn/NFWPfD7eTgU
+         zjssBGhRpnrcRtR3JR+WK59ahDQTMm/juU5PVZ7CpvgnsEJE9KW3nhTOHKqtY8h5YFkr
+         A6VPHmdJ+JXmSJtVnUvBr/aBqumLMqizfRM3YtgYUJx6mdqG8qWHSOfv0E/cRceLhMoN
+         ygEdlw44+9C6lBvXrhYzTOzzIfLbNGABQ+Hjei/T3jTx2pcVtJjBW27GjCh1FTnGKnQ+
+         v1OYlF5/p44WjTJBkM0xnSy9sjnmr01Pz1aA05FClnD39jAcNQv5hiskXflkDi4OAjxr
+         ehpQ==
+X-Gm-Message-State: AOAM5315WNST4ikd7ilwtZj1hNuANItgjT8Vem3vtlDTrQtntZ71osZz
+        CD8OgJlu2nGiLRkJ0JouEw==
+X-Google-Smtp-Source: ABdhPJzCbDOWUkZnVdfikQrZKWQIRQPpnK2e+P3EobkMzcpWA9doURsO3jNZdUmZuJQDbGWnD2EtQw==
+X-Received: by 2002:a02:a797:: with SMTP id e23mr9901120jaj.121.1626456817576;
+        Fri, 16 Jul 2021 10:33:37 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id i14sm4765382ilu.71.2021.07.16.10.33.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 10:33:36 -0700 (PDT)
+Received: (nullmailer pid 3641673 invoked by uid 1000);
+        Fri, 16 Jul 2021 17:33:33 -0000
+Date:   Fri, 16 Jul 2021 11:33:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        ot_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, Krzysztof Wilczyski <kw@linux.com>,
+        Ryan-JH.Yu@mediatek.com
+Subject: Re: [PATCH v3 1/2] dt-bindings: PCI: mediatek-gen3: Add property to
+ disable dvfsrc voltage request
+Message-ID: <20210716173333.GA3632722@robh.at.kernel.org>
+References: <20210630024934.18903-1-jianjun.wang@mediatek.com>
+ <20210630024934.18903-2-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-References: <ad9c50c54887bde41ae5de782248231c06a527c0.1626262835.git.rrichter@amd.com>
-In-Reply-To: <ad9c50c54887bde41ae5de782248231c06a527c0.1626262835.git.rrichter@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 16 Jul 2021 19:29:57 +0200
-Message-ID: <CAJZ5v0hczSLj56g0ho=DkS4FaMtKSutUsBmqEr080z43ueEGAA@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: Kconfig: Fix table override from built-in initrd
-To:     Robert Richter <rrichter@amd.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630024934.18903-2-jianjun.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 11:26 AM Robert Richter <rrichter@amd.com> wrote:
->
-> During a rework of initramfs code the INITRAMFS_COMPRESSION config
-> option was removed in commit 65e00e04e5ae. A leftover as a dependency
-> broke the config option ACPI_TABLE_OVERRIDE_VIA_ BUILTIN_INITRD that
-> is used to enable the overriding of ACPI tables from built-in initrd.
-> Fixing the dependency.
->
-> Fixes: 65e00e04e5ae ("initramfs: refactor the initramfs build rules")
-> Signed-off-by: Robert Richter <rrichter@amd.com>
+On Wed, Jun 30, 2021 at 10:49:33AM +0800, Jianjun Wang wrote:
+> Add property to disable dvfsrc voltage request, if this property
+> is presented, we assume that the requested voltage is always
+> higher enough to keep the PCIe controller active.
+> 
+> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
 > ---
->  drivers/acpi/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> index 9d872ea477a6..8f9940f40baa 100644
-> --- a/drivers/acpi/Kconfig
-> +++ b/drivers/acpi/Kconfig
-> @@ -370,7 +370,7 @@ config ACPI_TABLE_UPGRADE
->  config ACPI_TABLE_OVERRIDE_VIA_BUILTIN_INITRD
->         bool "Override ACPI tables from built-in initrd"
->         depends on ACPI_TABLE_UPGRADE
-> -       depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION=""
-> +       depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION_NONE
->         help
->           This option provides functionality to override arbitrary ACPI tables
->           from built-in uncompressed initrd.
-> --
+>  .../devicetree/bindings/pci/mediatek-pcie-gen3.yaml       | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> index e7b1f9892da4..3e26c032cea9 100644
+> --- a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> @@ -96,6 +96,12 @@ properties:
+>    phys:
+>      maxItems: 1
+>  
+> +  disable-dvfsrc-vlt-req:
+> +    description: Disable dvfsrc voltage request, if this property is presented,
+> +      we assume that the requested voltage is always higher enough to keep
+> +      the PCIe controller active.
+> +    type: boolean
 
-Applied as 5.14-rc material, thanks!
+What determines setting this property? Can it be implied by the 
+compatible (which should be SoC specific).
+
+Is this property specific to PCIe controller? 
+
+Wouldn't the request be harmless to make the voltage request even if not 
+needed?
+
+I think this probably should be addressed in a common way as part of 
+other QoS, devfreq, etc. requirements for devices.
+
+Rob
