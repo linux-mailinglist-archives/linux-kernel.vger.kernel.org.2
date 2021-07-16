@@ -2,83 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896093CBBFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E461B3CBBF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhGPSov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:44:51 -0400
-Received: from mga17.intel.com ([192.55.52.151]:56665 "EHLO mga17.intel.com"
+        id S232069AbhGPSnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:43:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232214AbhGPSop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:44:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10047"; a="191144883"
-X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
-   d="scan'208";a="191144883"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 11:41:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
-   d="scan'208";a="460843499"
-Received: from otcpl-manager.jf.intel.com (HELO localhost.localdomain) ([10.54.39.234])
-  by orsmga008.jf.intel.com with ESMTP; 16 Jul 2021 11:41:49 -0700
-From:   Gayatri Kammela <gayatri.kammela@intel.com>
-To:     platform-driver-x86@vger.kernel.org
-Cc:     mgross@linux.intel.com, hdegoede@redhat.com,
-        irenic.rajneesh@gmail.com, andriy.shevchenko@linux.intel.com,
-        vicamo.yang@canonical.com, srinivas.pandruvada@intel.com,
-        david.e.box@intel.com, linux-kernel@vger.kernel.org,
-        tamar.mashiah@intel.com, gregkh@linuxfoundation.org,
-        rajatja@google.com, Shyam-sundar.S-k@amd.com,
-        Alexander.Deucher@amd.com, mlimonci@amd.com,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v5 5/5] platform/x86/intel: pmc/core: Add GBE Package C10 fix for Alder Lake PCH
-Date:   Fri, 16 Jul 2021 11:38:37 -0700
-Message-Id: <a03f97c108811c1ad966df78778832c19a6d2a17.1626459866.git.gayatri.kammela@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1626459866.git.gayatri.kammela@intel.com>
-References: <cover.1626459866.git.gayatri.kammela@intel.com>
+        id S231266AbhGPSm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:42:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7365D613F3;
+        Fri, 16 Jul 2021 18:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626460804;
+        bh=yxkP2+8maL2P5u+42r8Svn1uXNu5o9H/w9R8jCsekik=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=jzV6+ebPZnZco9brJzopkwyWjVMnbw6OVKt0nglm4GcKVOWkhi/34e16uCj5JL1rH
+         1pa8ToUyeX0uEdd0/JrtyNl7yHRNYhAe+hZu/Xxig2CLwWw8o85K7MXcwyeHU55BxW
+         Ab4u+eBlV0eH7V8ru61Y8Gx0IwzavRCxb8OwdMQ+T7+OprGk6b5uKbjKeC4vzRP2Dd
+         99w1eWk1fuvQbf6qNmDF7nr0qnptuDHqsjMJIVauEPnoMaJq0sOuwSbmrOGS/owras
+         Aexcbl6N+U+ve8aD8uI/m0I2wGhdy7BFJgmciLhnweyE9E7hlrfCK6lAojVmJwamtF
+         XKXj+htbzC2zg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 64960609CD;
+        Fri, 16 Jul 2021 18:40:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] netdevsim: Add multi-queue support
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162646080440.26435.12261408359950246582.git-patchwork-notify@kernel.org>
+Date:   Fri, 16 Jul 2021 18:40:04 +0000
+References: <20210716015246.7729-1-yepeilin.cs@gmail.com>
+In-Reply-To: <20210716015246.7729-1-yepeilin.cs@gmail.com>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, cong.wang@bytedance.com,
+        peilin.ye@bytedance.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "David E. Box" <david.e.box@linux.intel.com>
+Hello:
 
-Alder PCH uses the same Gigabit Ethernet (GBE) device as Tiger Lake PCH
-which cannot achieve PC10 without ignoring the PMC GBE LTR. Add this
-work around for Alder Lake PCH as well.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: You-Sheng Yang <vicamo.yang@canonical.com>
-Acked-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
- drivers/platform/x86/intel/pmc/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Thu, 15 Jul 2021 18:52:45 -0700 you wrote:
+> From: Peilin Ye <peilin.ye@bytedance.com>
+> 
+> Currently netdevsim only supports a single queue per port, which is
+> insufficient for testing multi-queue TC schedulers e.g. sch_mq.  Extend
+> the current sysfs interface so that users can create ports with multiple
+> queues:
+> 
+> [...]
 
-diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
-index e645ede591d8..7c4bf7d22fd5 100644
---- a/drivers/platform/x86/intel/pmc/core.c
-+++ b/drivers/platform/x86/intel/pmc/core.c
-@@ -1983,10 +1983,10 @@ static int pmc_core_probe(struct platform_device *pdev)
- 		pmc_core_get_tgl_lpm_reqs(pdev);
- 
- 	/*
--	 * On TGL, due to a hardware limitation, the GBE LTR blocks PC10 when
--	 * a cable is attached. Tell the PMC to ignore it.
-+	 * On TGL and ADL, due to a hardware limitation, the GBE LTR blocks PC10
-+	 * when a cable is attached. Tell the PMC to ignore it.
- 	 */
--	if (pmcdev->map == &tgl_reg_map) {
-+	if (pmcdev->map == &tgl_reg_map || pmcdev->map == &adl_reg_map) {
- 		dev_dbg(&pdev->dev, "ignoring GBE LTR\n");
- 		pmc_core_send_ltr_ignore(pmcdev, 3);
- 	}
--- 
-2.25.1
+Here is the summary with links:
+  - [net-next] netdevsim: Add multi-queue support
+    https://git.kernel.org/netdev/net-next/c/d4861fc6be58
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
