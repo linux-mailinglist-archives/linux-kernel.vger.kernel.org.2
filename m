@@ -2,160 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37293CB0D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 04:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2511B3CB0DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 04:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbhGPCsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 22:48:45 -0400
-Received: from mail-dm6nam11on2134.outbound.protection.outlook.com ([40.107.223.134]:33633
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232046AbhGPCsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 22:48:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cK9nz4iiOuX6fko3H2noYkrL3f/mWfAay82/Akt5OfL2OVxHc1ZmZWUSbwHYgtqBN8PYkjShwu413+qPuk2vZ0wRjSNMTgi/A95OmeJPsCKmJ6Y88OiBzFX2vlh23qHodwSyOaj46PCQBLi3/bSaAo8ND8bSJPm9lWFJ58ikX7q8URMnArP81BrTi/Xn+qBTOVHISwBsT9yqe3kbsJY+PgxSp5A5QMljfvGzF3U95i4b/DnVcRWbs+8/ADVCccNqNV+CokfWBZQWexmLaQaamtFSxu/MNj8QoKPlJg48CSp6ruBtb43TWy+1zgYPuXIBwl4I0RizVYE0wTkDlK3YJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FSBN5zyXG8bvzKPP2qBKvzjOakKNO6rTUrC7dLdyLQc=;
- b=ByolbqHmyg5k7wLN9/cZ3WFM2sqjsELdgpUdhrC3HCJEJSyUYyCt4xpmcUB45MUq/LHFhGH5Y/RkhwxaQ4KyAEGu+tot68ukxamPmK6VTWfGYiU+ckJFVQkIbjzVCg93JI6G6FzkQU5yzZLJbDsaG+ZwGexOSEi9+8cX5qPTjWmSubex/zfhyN4OSTBbFdNRxu4ByU8AkQSzeKdTmr0D1NzlQnGUkzlANP32M54RiPg0IQc6fvGajoLSU717i0AYB7NWgrb/sKdYk0f/gDw23X6PhdeIxTmGigeXPWyGFAxmSPAkUQFTddaNL8ywAbip523f1L/LDNem7irjB75k5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FSBN5zyXG8bvzKPP2qBKvzjOakKNO6rTUrC7dLdyLQc=;
- b=bh+kBLy4YyPW8FWup8Omdq4c2X65Owf8rFFmgURthEK6dm2sSNkZTb9fWNMa16dMFoX+QnYERhAkSeixDTZ2LrKcXfX5JmSbR8wfiLTsSZ85XQUaRUGAevAlV0RVuO4++rFvT+9eqpl+7+jeZDlAKg+0g9Gka6vpljpV2M1ixNI=
-Authentication-Results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
- MWHPR0101MB3039.prod.exchangelabs.com (2603:10b6:301:31::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4219.22; Fri, 16 Jul 2021 02:45:44 +0000
-Received: from MW2PR0102MB3482.prod.exchangelabs.com
- ([fe80::452a:24fb:12cb:9d7e]) by MW2PR0102MB3482.prod.exchangelabs.com
- ([fe80::452a:24fb:12cb:9d7e%5]) with mapi id 15.20.4331.026; Fri, 16 Jul 2021
- 02:45:44 +0000
-Subject: Re: [PATCH v5 3/3] bindings: ipmi: Add binding for SSIF BMC driver
-To:     Rob Herring <robh@kernel.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Corey Minyard <minyard@acm.org>, Wolfram Sang <wsa@kernel.org>,
-        linux-i2c@vger.kernel.org,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
-        linux-aspeed@lists.ozlabs.org, devicetree@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        linux-arm-kernel@lists.infradead.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        Andrew Jeffery <andrew@aj.id.au>
-References: <20210714033833.11640-1-quan@os.amperecomputing.com>
- <20210714033833.11640-4-quan@os.amperecomputing.com>
- <20210715174339.GA1309142@robh.at.kernel.org>
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-Message-ID: <c2deac6c-54e0-c73b-161c-163acc975211@os.amperecomputing.com>
-Date:   Fri, 16 Jul 2021 09:45:32 +0700
+        id S233324AbhGPCuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 22:50:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55798 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232046AbhGPCuK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 22:50:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626403635;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+RAtuj+0C2J7KjfmSEk0StvYjljoVaQeF+ao+6KxF+I=;
+        b=igL9kvCQgXTmwBcfdekfRsaLtxUjzoGxXrZEvuxaVgxjjxVdlI/Lozh52Jv1QZV15c2WcV
+        DfhyehUg98VeFqmKrxslUq0E5ExUzj+WLZHu++2knf8KoKQjOoEL17F/uVKg6ku4w3RCc+
+        GOUhaVJWuu/+BdLkXvIUfnBWwDxr7wk=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-CNDsi5rBNUGNXCe5U4-b1Q-1; Thu, 15 Jul 2021 22:47:14 -0400
+X-MC-Unique: CNDsi5rBNUGNXCe5U4-b1Q-1
+Received: by mail-pj1-f70.google.com with SMTP id jx12-20020a17090b46ccb029017365ced08eso1412354pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 19:47:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=+RAtuj+0C2J7KjfmSEk0StvYjljoVaQeF+ao+6KxF+I=;
+        b=fdjFMsg8zfUfRvTkrjzWrx4+CaDfdS3xDy81H5HC3N06AV1ET6HTzsFSxYm97bTE1R
+         1KqdU/YhAHxfjPLeA+ASmit23dmZzvM1ChFbgWn4e405Jhii0HUJ8DTMN8A1+jbfKdRP
+         +NPA8wytS5WpUfhjSW+cI8xittZGdcLi33MjgMs7j0uI1OPq3j8n361tCP/0zSTXNJfK
+         cvejGx9rY5ZU3877W2YGYuO6hYvZO58Im7oONq/jEecgADtX27y34JTB42lr3iu1uUmf
+         7LLUGEjxHwPDYunhKRTR28Cm84bg4Py9PF2659JuhCUfUMqkkTSsQ/2lN682O3CleyBN
+         Ub9Q==
+X-Gm-Message-State: AOAM533vl5DIqczHsD5lDHN0qBASeecab33e34R2Daf9ZE+YKyCg19yr
+        b7j/ZLFgp+o1tiZT1eFPizLGQDxjMWWdatSgyoKVCgepWGuaziN4YoKF+sLakxUVF4jIzeC+0oi
+        dsfsaYkdgq0Xzgmu6A8Q53UuN
+X-Received: by 2002:a17:90b:128a:: with SMTP id fw10mr7559313pjb.116.1626403633264;
+        Thu, 15 Jul 2021 19:47:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKmfMfhmkj9dt+bZtzzgukWhdut8BUpkXriOBq4CJvi3bl9iJSLSIe+9HgvOMD/AmeMt/gpQ==
+X-Received: by 2002:a17:90b:128a:: with SMTP id fw10mr7559291pjb.116.1626403632990;
+        Thu, 15 Jul 2021 19:47:12 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id i1sm10373047pjs.31.2021.07.15.19.47.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 19:47:12 -0700 (PDT)
+Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
+To:     He Zhe <zhe.he@windriver.com>, Paolo Bonzini <pbonzini@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Juri Lelli <jlelli@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Xie Yongji <xieyongji@bytedance.com>
+References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
+ <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
+ <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
+ <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+ <a56ddd50-2cd1-f16e-5180-5232c449fbd0@redhat.com>
+ <ab85cd9e-f389-0641-8084-cdfbc5c91e0b@windriver.com>
+ <b73f8986-9071-6fbb-5c6a-d7892ba2302b@redhat.com>
+ <e20c3d90-db24-7722-3f89-adadb83a9bf7@windriver.com>
+ <c05b358b-1e96-c002-085c-b25e416e7be5@redhat.com>
+ <97704aa6-46eb-2462-a4d9-2bf93144a5ac@redhat.com>
+ <ad686185-37d6-63c7-b222-49356be16d1a@windriver.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <f5f08425-e396-8e39-1c23-9aeb98bfe451@redhat.com>
+Date:   Fri, 16 Jul 2021 10:46:49 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210715174339.GA1309142@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HK2PR03CA0057.apcprd03.prod.outlook.com
- (2603:1096:202:17::27) To MW2PR0102MB3482.prod.exchangelabs.com
- (2603:10b6:302:c::32)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2402:800:623c:a5ad:439:3cf4:ddb0:478f] (2402:800:623c:a5ad:439:3cf4:ddb0:478f) by HK2PR03CA0057.apcprd03.prod.outlook.com (2603:1096:202:17::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.10 via Frontend Transport; Fri, 16 Jul 2021 02:45:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6b1331d4-4bf4-4496-796f-08d94803ce65
-X-MS-TrafficTypeDiagnostic: MWHPR0101MB3039:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR0101MB30395720F023ABE167785574F2119@MWHPR0101MB3039.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DAKOAOd8TqcCn2w1neEwXGXLLnqSxb503kvqX54WZLAcAjxPS4kpoqUr0eok3thi0FN77zcbXJZtUZRjcr/QaMlR41vRTxTCdzqto+ZYCfi7JD3WXWCw/0KFUn0MVJEivxr7Xk1KROlLuIAeNYtuNIWW9D0Yegu5UD3GI2AKWRmGXa6+WvTuwYX5wITe9MBPnauJRpjzNGld9GhNzmzX4u+IthzDckEsuVsq1SLvCLPYw0uXJQtKbxwWakUxGWvD7Q9RvhUA/xrJ+ie8oK38hiAkeNvUgnXFSt3quQEs5PLGgkmQU+gZ4GTbMDYS7aF63P+LS3BWuzvsVEHQQSEtKv7DGBwSJqxGgKECGvxnA4Be1FmUUpFx6iUFJKiWCdMHJ6iUnx0sW8D/wgYELjPBJgx8qyaTsP9MjKJcXLGJk9b4bRPHqwROwiIKh2XczBixK9dkLmrI+XRGxOPckOvmbqQlDHdGkhoULITnUt/PodNhDnjvIrwDLPkKqi9CyXGQJmqX3ndfdGZZ3PEeho0rTx8rU6l9T3jvjXBsxSNnyQepy+nwKOnbcKmf+ZR3ar2wg6WhMAO3wt2QKq1ZiewqDntqoWDYLB/TBez816LsTCKfeQ9NSUGzLwuig6Tqx1rSzOVwL+yfSD/ZV3CwAAc6KUiqsoypCu0rtZ8wIhp5b4JYGVdFvfE+Ag7pxGWB0N6GzyBkJRwcrOGrYPKYsG4ceXqDI6fL5ZcdI6YGrbIY004=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(366004)(396003)(136003)(376002)(8936002)(8676002)(7416002)(6486002)(2906002)(4744005)(38100700002)(4326008)(83380400001)(31686004)(2616005)(54906003)(6916009)(66556008)(6666004)(66476007)(5660300002)(186003)(478600001)(66946007)(31696002)(52116002)(86362001)(316002)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T2tvT1lKVVV3VU8vb1ZxRmZNSnJOenBVN1NoalU1d0RIazdQdkdtaDNjN2x0?=
- =?utf-8?B?N3VmelpYaVRSOWx6dzBqOXB1ekl2RFVSLzlMaWM2MHJLOTRuRWlHV1l4L1lE?=
- =?utf-8?B?SnVGZEx2MW45bHRkZFFJUXFUYzN4eUs0MWkrTHBHZEpCaXN4ajhtNy9VWXRU?=
- =?utf-8?B?Y1J0UG1nTDl1WkFMTnBvSG1EY28yMXoycmV4U1p3R0Q4b3hIYzJ5cUU4ampl?=
- =?utf-8?B?SFl6bHFYc0ErVkxUOFF3RytTQit5TTZ3ZWdDam1vYTBmclAzVERLRmZGcU9m?=
- =?utf-8?B?Mmx3Z3VKSVVORnZLNEhJRGR0VUs5Z21YSVZMVkRXZVhDZExnMmhXV0RXNWJm?=
- =?utf-8?B?U0EvYWJsMjhKWDh0S21XL28rck5DY3RicDZCdE45UFg5d2pObnpMcWk0NUVp?=
- =?utf-8?B?UkNQRkQyNmJjemZ1Z1E1OW80dGt2L2pHTjJ4bW8wamVJbnRHbjZNcCtML3hJ?=
- =?utf-8?B?bll0SXZkOG41VGlBY1ovZW9YKzJGOUV0dUxxaU50c2lxQ0hna2lrNkZabHNI?=
- =?utf-8?B?WEhWVitzUHZHY1diZHN6YmxrYXYrUHBadS9nNEZ2dGFMbHlpYmRxVHRHYmhZ?=
- =?utf-8?B?QnQ2Zjl0am44K3l0R1gwd0N2QkhaRXhKdnlucGFTNVVjcmdKaGlhWVFTNjY1?=
- =?utf-8?B?Vmt1UG54bFNvZS9BRlNIMkZYQVpuMFg1OE1Cb1hnK3lVRUpDeUJLdEJqcU82?=
- =?utf-8?B?eEg2aE9XVGYxUHFYSmttbVIwdzl1OFNLUkF4MVhJdzM1UGI0OE1MQnRzbHda?=
- =?utf-8?B?VFVvVXZIVXkyeGtoOWt2MzRjUEMwS1JsREY4cENrSWtyUWEwR3FaalFqQ2Ez?=
- =?utf-8?B?RGJHVHBHN0tZamxPcmdLTGNmaVY1YjAwZVdxZ1F1clkrRnJpdE43QTI4ZTZT?=
- =?utf-8?B?Y3dVcDNEaEJjYTZyZjlza2F6a0NROTRNeVd0SUV6N0oxT2p6WlIxV1JSQWgv?=
- =?utf-8?B?RExpdS90aHpmK255eWEzOHhOc0NSQ1VROWE0aUZTTUlSQ2h3dzd1YXNCQ3hD?=
- =?utf-8?B?OEw3N3JiTHdoaDVDR1VzT2VIUmQyMlZGZml1ZEF4Uy9zSGZlNzRnTUtmVDFE?=
- =?utf-8?B?bVVLYnJVNnF6R3dFeVZsZ3ZZbTE2Y0xRRG5MamMxV1piTmlMMVdFUVhEaFFH?=
- =?utf-8?B?NzNHa09kNWY2MHloM3VSRFBEd3MzamdPaVRRcG1aYk43WXBpeGNIRWI1MnVH?=
- =?utf-8?B?TDNZRHNVTk9VTk12VkJldEJTT2FnK0lRWUNETTEwc0F5M1FzeGxYeUFJc0d6?=
- =?utf-8?B?cThuREVqVENYL2Z5OFI5bm9Dd0hJUXNNUkprQkdXdUR1TlZ5YXZHKzh5T250?=
- =?utf-8?B?Q0FoQVRxTVR6TVVYTnQxYkE0VHk4TTVoRjYrR3JhR2JlaHRXMSt4aFpra3FN?=
- =?utf-8?B?NG5jdnRjSUdhQVRXbEprUWdrOHV4Z3M5RkFHRGhnNGxZWDFSVzRYZ1lkSXYy?=
- =?utf-8?B?UVg0Y1IzNk55elQ1SVgzSVJQNkdqMHpuM25vMjFyRnpNYWtFNjZwWnJXVTFP?=
- =?utf-8?B?dFJldW9NVUpBWTZ2c2xVWjNEYXU4c3NKb0diVjY5dlhmNEQrbzVTMVA4eTdv?=
- =?utf-8?B?WkovaTBKQm1Ka20wZnFCTG9mNkV5YTFCQjJUaGNGb2Q5NkY5VWtyNTJEWEtP?=
- =?utf-8?B?T2JqK25PM0FtSUJCb1U1UmFtUVB6U0gvMDJzcnBoT2dicEMzOGhlOGJmcE5V?=
- =?utf-8?B?M203VVFNUkZlWGpvcjhqZTN6SU53WmFTRTJnaHBUVkhnTUVQb1J5WTFjMFJJ?=
- =?utf-8?B?ZkoyeUpSaWU2cG8rcWU1M0pBaktYWGpFZU90ditYazBqaVVndUhMcFN1Z2p2?=
- =?utf-8?B?b3J6MEZ4RWJhTnZ2ZVdQNGZrWk11S0FUeXRvOEwyYk5yKys3QjRYemNUTUlO?=
- =?utf-8?Q?w2psbj+KwxJXV?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b1331d4-4bf4-4496-796f-08d94803ce65
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 02:45:44.1900
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9fXDXuidQLOumshBN5ieQjkEX/fjc3d94jKh5MsyFIn1r1/+63VdK12svfpe5NlJv0R4qQbRaMa0fuq994HI/iNpWpuQIPfNJ/w5UkbYvFg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0101MB3039
+In-Reply-To: <ad686185-37d6-63c7-b222-49356be16d1a@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/2021 00:43, Rob Herring wrote:
-> On Wed, 14 Jul 2021 10:38:33 +0700, Quan Nguyen wrote:
->> Add device tree binding document for the SSIF BMC driver.
->>
->> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
->> ---
->> v5:
->>    + None
->>
->> v4:
->>    + Fix warning with dt_binding_check [Rob]
->>    + Change aspeed-ssif-bmc.yaml to ssif-bmc.yaml [Quan]
->>
->> v3:
->>    + Switched to use DT schema format [Rob]
->>
->> v2:
->>    + None
->>
->>   .../devicetree/bindings/ipmi/ssif-bmc.yaml    | 38 +++++++++++++++++++
->>   1 file changed, 38 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/ipmi/ssif-bmc.yaml
->>
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
 
-Thanks Rob.
+在 2021/7/16 上午10:43, He Zhe 写道:
+>
+> On 7/16/21 10:26 AM, Jason Wang wrote:
+>> 在 2021/7/15 下午7:05, Paolo Bonzini 写道:
+>>> On 15/07/21 12:10, He Zhe wrote:
+>>>> The following was provided in this thread. The commit log contains the call traces that I met and fixed back to Apr. 2020.
+>>>>
+>>>> https://lore.kernel.org/lkml/20210618084412.18257-1-zhe.he@windriver.com/
+>>>> 001: WARNING: CPU: 1 PID: 1503 at fs/eventfd.c:73 eventfd_signal+0x85/0xa0
+>>>> ---- snip ----
+>>>> 001: Call Trace:
+>>>> 001:  vhost_signal+0x15e/0x1b0 [vhost]
+>>>> 001:  vhost_add_used_and_signal_n+0x2b/0x40 [vhost]
+>>>> 001:  handle_rx+0xb9/0x900 [vhost_net]
+>>>> 001:  handle_rx_net+0x15/0x20 [vhost_net]
+>>>> 001:  vhost_worker+0xbe/0x120 [vhost]
+>>>> 001:  kthread+0x106/0x140
+>>>> 001:  ? log_used.part.0+0x20/0x20 [vhost]
+>>>> 001:  ? kthread_park+0x90/0x90
+>>>> 001:  ret_from_fork+0x35/0x40
+>>> This call trace is not of a reentrant call; there is only one call to eventfd_signal.  It does fit the symptoms that Daniel reported for PREEMPT_RT though.
+>>>
+>>>> https://lore.kernel.org/lkml/beac2025-2e11-8ed0-61e2-9f6e633482e8@redhat.com/
+>>> This one is about PREEMPT_RT, so it would be fixed by local_lock.
+>>>
+>>> There _may_ be two bugs, so let's start by fixing this one.  Once this one is fixed, we will examine the call stacks of any further reports, and diagnose whether the second bug (if it exists) is related to vDUSE, PREEMPT_RT or neeither.
+>>
+>> For VDUSE we may still need the patch since it tries to relay notifications (eventfds) which means the recursion of the eventfd signal.
+>>
+>> But looking at the comment in the eventfd_signal() which say we should check with eventfd_signal_count() and delay the signal into a safe context (e.g workqueue etc).
+> The main concern when adding eventfd count at the very beginning is "Deadlock or stack overflow" in the inline comment. If we can avoid deadlock and one depth of nest is acceptable, I think it's safe to set the max count to 2.
+
+
+That's my understanding as well.
+
+
+>
+> The author of the eventfd count kind of also agrees with this.
+> https://lore.kernel.org/lkml/3b4aa4cb-0e76-89c2-c48a-cf24e1a36bc2@kernel.dk/
+
+
+Ok.
+
+Thanks
+
+
+>
+> Thanks,
+> Zhe
+>
+>> Thanks
+>>
+>>
+>>> Paolo
+>>>
+
