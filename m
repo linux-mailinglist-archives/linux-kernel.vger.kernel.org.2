@@ -2,72 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F150B3CB91F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7C93CB922
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240641AbhGPO4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:56:08 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:36439 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240460AbhGPO4A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:56:00 -0400
-Received: by mail-wr1-f41.google.com with SMTP id v5so12447466wrt.3;
-        Fri, 16 Jul 2021 07:53:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m4dmYl9QWacuMWa0aGR6yEQBM9o4/Gc+nSoCDp3XJ0s=;
-        b=TT8q7YrPw4EOO3cyX0LM5I4kOZBkUyCQXU3Q47kdx/3Zgj8EpqcxLzxWU/1qWDU7bL
-         RAhG0W26jlYM0BhDZ52izBrCe9ksx0l5YzXD43aAM+AwDqu/XIg5U3lW2Z5N51M6aF2m
-         cfjvjiHILZsAp4mzktm4Q6GYZ5b4eOTQfbpmfdLOKNPvMysF8qe6VSApmggorg6ybFCe
-         Q1uB4OUJmlf79cFNiutvfBAfwIw0EdC8nAF1EBjmo0ehUvafnyglmFAhT3yNeQpNAlnE
-         knVYT0lh0b+n25bggODmQuEty1sySo59fTm8MRjzNGIIGBveb3j7y2+vajO5ESOEjybZ
-         9hDw==
-X-Gm-Message-State: AOAM530lDrvb0vTBt28DFP6Tav+sgjR7W4noE2nlPBFTcFQ0TLJM5VHm
-        aeeLwlIV/hWkpEBY/va2x1w=
-X-Google-Smtp-Source: ABdhPJyw3LNbc2pOV7APqPDvCjy98KRCkDeASged/89nMMY3/b0sNFmAuTENYwNUC4pA5f4jMlENrA==
-X-Received: by 2002:adf:a148:: with SMTP id r8mr12438753wrr.415.1626447183978;
-        Fri, 16 Jul 2021 07:53:03 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id p7sm5910314wmq.5.2021.07.16.07.53.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 07:53:03 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 14:53:01 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Ani Sinha <ani@anisinha.ca>
-Cc:     linux-kernel@vger.kernel.org, anirban.sinha@nokia.com,
-        mikelley@microsoft.com, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v2] x86/hyperv: add comment describing
- TSC_INVARIANT_CONTROL MSR setting bit 0
-Message-ID: <20210716145301.xsho5zb7cqkgb3zc@liuwe-devbox-debian-v2>
-References: <20210716133245.3272672-1-ani@anisinha.ca>
+        id S240691AbhGPO4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:56:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240636AbhGPO4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 10:56:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5B27613F5;
+        Fri, 16 Jul 2021 14:53:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626447206;
+        bh=fAr0rmGViYqlwVkfpLAmvCG23vFxE1LwgWrueNzxFNs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oybHhD2owJBr+DDJQLwAwtMaXo8xUHDu7BRMlVo2RwggCG9+DVo9OTD3GzU0iqYfq
+         GH20Yi0G2Acbkj3YJkneWWdTTdbJ3n5Or/xtpnbqd1aHj+HtIvoW9grZVV9TT0Orvv
+         MCYSCYoTmq7plz1xraJqSAcSUi6VsbkN7IiDspFKkynHAaj7lIYQJ1lucXjaocNT/1
+         0hQxs8GpkQW9QsO7ee+Nrx3niVYwjeHaUloS8N9ls7tBqrfuF7r+FaorWP7JHeqXGv
+         Gyuc10aSeWrLMY+Y4WbtbDLHyWbM4HQEX4htI7vHCenO75JsBP4MaKBrz+RwQOCOxM
+         m5ZTJJ4mtKz8w==
+Date:   Fri, 16 Jul 2021 15:53:21 +0100
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     catalin.marinas@arm.com, maz@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: [GIT PULL] arm64 fixes for -rc2
+Message-ID: <20210716145320.GB3161@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210716133245.3272672-1-ani@anisinha.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 07:02:45PM +0530, Ani Sinha wrote:
-> Commit dce7cd62754b5 ("x86/hyperv: Allow guests to enable InvariantTSC")
-> added the support for HV_X64_MSR_TSC_INVARIANT_CONTROL. Setting bit 0
-> of this synthetic MSR will allow hyper-v guests to report invariant TSC
-> CPU feature through CPUID. This comment adds this explanation to the code
-> and mentions where the Intel's generic platform init code reads this
-> feature bit from CPUID. The comment will help developers understand how
-> the two parts of the initialization (hyperV specific and non-hyperV
-> specific generic hw init) are related.
-> 
-> Signed-off-by: Ani Sinha <ani@anisinha.ca>
+Hi Linus,
 
-Applied to hyperv-next. Thanks.
+Please pull these arm64 fixes for -rc2. The bulk of the diffstat consists
+of changes to our uaccess routines so that they fall back to bytewise
+copying prior to reporting complete failure when the initial (multi-byte)
+access faults. However, the most disappointing change here is that we've
+had to bump ARCH_DMA_MINALIGN back to 128 bytes thanks to Qualcomm's "Kryo"
+CPU, which ended up in the MSM8996 mobile SoC. Still, at least we're now
+aware of this design and one of the hardware designers confirmed the
+L2 cacheline size for us.
+
+Cheers,
+
+Will
+
+--->8
+
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to e6f85cbeb23bd74b8966cf1f15bf7d01399ff625:
+
+  arm64: entry: fix KCOV suppression (2021-07-15 17:37:55 +0100)
+
+----------------------------------------------------------------
+arm64 fixes for -rc2
+
+- Fix instrumentation annotations for entry code
+
+- Ensure kernel MTE state is restored correctly on resume from suspend
+
+- Fix MTE fault from new strlen() routine
+
+- Fallback to byte-wise accesses on initial uaccess fault
+
+- Bump Clang requirement for BTI
+
+- Revert ARCH_DMA_MINALIGN back to 128 bytes (shakes fist at Qualcomm)
+
+----------------------------------------------------------------
+Carlos Bilbao (1):
+      arm64: Add missing header <asm/smp.h> in two files
+
+Mark Rutland (4):
+      arm64: fix strlen() with CONFIG_KASAN_HW_TAGS
+      arm64: mte: fix restoration of GCR_EL1 from suspend
+      arm64: entry: add missing noinstr
+      arm64: entry: fix KCOV suppression
+
+Nathan Chancellor (1):
+      arm64: Restrict ARM64_BTI_KERNEL to clang 12.0.0 and newer
+
+Robin Murphy (1):
+      arm64: Avoid premature usercopy failure
+
+Will Deacon (1):
+      Revert "arm64: cache: Lower ARCH_DMA_MINALIGN to 64 (L1_CACHE_BYTES)"
+
+ arch/arm64/Kconfig                |  3 ++-
+ arch/arm64/include/asm/cache.h    |  2 +-
+ arch/arm64/include/asm/smp_plat.h |  1 +
+ arch/arm64/kernel/Makefile        |  2 +-
+ arch/arm64/kernel/cpufeature.c    |  1 +
+ arch/arm64/kernel/entry-common.c  |  2 +-
+ arch/arm64/kernel/mte.c           | 15 ++-------------
+ arch/arm64/lib/copy_from_user.S   | 13 ++++++++++---
+ arch/arm64/lib/copy_in_user.S     | 21 ++++++++++++++-------
+ arch/arm64/lib/copy_to_user.S     | 14 +++++++++++---
+ arch/arm64/lib/strlen.S           | 10 ++++++++++
+ 11 files changed, 54 insertions(+), 30 deletions(-)
