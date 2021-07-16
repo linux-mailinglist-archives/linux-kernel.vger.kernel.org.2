@@ -2,161 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959A73CB92A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3A03CB93C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240737AbhGPO5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:57:07 -0400
-Received: from mail-bn7nam10on2061.outbound.protection.outlook.com ([40.107.92.61]:58368
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240459AbhGPO5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:57:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=byiNHzjnIxqzR12z5weUI/uUFhz227sOIcG2bwhE00bpiqueZPvw2vtuYNyCo18SXCSTRCQPi7VSM/KirroWYPNeuxbcuESv1PkoSVUByaBmGFPbR4mQJ5w/qhk75McxIXxfbK88uRRa7On1YmQXiyryZHbHLaQgfw1DksYvQEqX9zEh6tYYRd4rjqFPh25YLsU1y1L4YAmNfQa06h+msqvoODslUjrT3w8x3ea+twdvN8/OyUqaNGSqRt8loDKAd5tTLwOyUKe67FXLX+NctCphcg3LD1nDoh44osfCZytdy/im9r0bjPfPK2n1//RQ7KZ9ZM9kKGgi5u8pChZO3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YMhlOygYfN2Vg4FZdMnIR6V/W83TTPkeBZCmN301FvY=;
- b=jowwzVuaE7mMgJH8eMuSy3j7MMVrhe89XvnPty7K1uGn/P/UrtUhewYRXwtvHpOHLHU8Yne65BBKia8ETqpPZq4w4+ZA3Vp0BKmI4S6bHvDyQmnMwrblz6lfhce4Yd7bzbxhfYDdFUWURjjNmkZCjVeIF+9Qwpk2bPxpKfobXtaC7g1ZiJXsFFE8tPp5/uNvNLDjY4myZ9wBcWM8YRGgdNCrPdyBJS4zWjW7j9dV3Wbr+YXEWMmOtQOvw5AEPXACIs+uwGHNg1OnbcGcF980/xp9UKSqQ1jdQc79BhotE8juu3luAsbm6IkvyM7QnZ2xqdf7Sty0jPmOI7chbDnUJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YMhlOygYfN2Vg4FZdMnIR6V/W83TTPkeBZCmN301FvY=;
- b=iI6xUC1/0lNq+etDO4BjoMpjxGpSwrlAYpy1QtgIQ41uzmaMF5Um3KcHNHJQCG17fSBFwoOj1EsZz9/9cSJhP1gVqNH8QbNguVYChziObihByymgDMVoNexZK6jQlnwHFFFRPduwokaVG5JOxnTUjq64kwL2xKCs1urKzc43CWg=
-Received: from DM6PR11CA0045.namprd11.prod.outlook.com (2603:10b6:5:14c::22)
- by MN2PR12MB3134.namprd12.prod.outlook.com (2603:10b6:208:c5::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Fri, 16 Jul
- 2021 14:54:04 +0000
-Received: from DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:14c::4) by DM6PR11CA0045.outlook.office365.com
- (2603:10b6:5:14c::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Fri, 16 Jul 2021 14:54:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT053.mail.protection.outlook.com (10.13.173.74) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 14:54:04 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
- 2021 09:54:03 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
- 2021 07:54:03 -0700
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 16 Jul 2021 09:53:54 -0500
-From:   Vijendar Mukunda <vijendar.mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-        "Vijendar Mukunda" <vijendar.mukunda@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        "Ravulapati Vishnu vardhan rao" <Vishnuvardhanrao.Ravulapati@amd.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 12/12] ASoC: amd: enable vangogh acp5x driver build
-Date:   Fri, 16 Jul 2021 20:38:09 +0530
-Message-ID: <20210716150809.21450-13-vijendar.mukunda@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210716150809.21450-1-vijendar.mukunda@amd.com>
-References: <20210716150809.21450-1-vijendar.mukunda@amd.com>
+        id S240502AbhGPPFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232861AbhGPPFT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:05:19 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BFBC06175F;
+        Fri, 16 Jul 2021 08:02:23 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so9020180pju.4;
+        Fri, 16 Jul 2021 08:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RTNfCanVuMDv0YAtWhLerL5+C1xCvNyWoo4wS8Mr6Vg=;
+        b=pKnKwYi5pbyE2W300C0RlHhuZNTN9q9ktdzWRkJgr6WVu6Lz1+t26bWlJYkGbT6Ch9
+         kZyAV/6fZnT7qfrSk2SvB32a1pQoghzWmjzCLoT0bl5EQh6SzDU82JMblpLFrHEGlOOQ
+         SfHcErZUZIJUXZX7sMFS/1qV3s76NVuuFPUv5No3/gF3kGXTtzN5j5vB/gUIclZbYvnX
+         Cb9JZEJ00UvCjjZtmk2V5drh3eY/yskl5uPsy3s/Kx4dlVOurQg2NObX+KOO8ad4GGzE
+         ZsiZ5vcVK06K7vxT6YasC2DiCxpQO0HelnbDmnkmOSMJ1afYT7TOmstiFAdKn2MsYHtU
+         cteQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RTNfCanVuMDv0YAtWhLerL5+C1xCvNyWoo4wS8Mr6Vg=;
+        b=Jw6Z0hpHu+Ef/0eX6H739lWf/LjF0Wy6iaXffwVFolqmYCpAwT0dPIAUdqPMTQmOw2
+         lAjOUYH7+RmYaaG4YkC7+CrCyLxFYrA/qUc2wOJOxWeonXGO6AmXQvtTVnG45M2Wfqig
+         8nCY6TiPo43SqqYDTg8LH9rtC7ekX/kQ6YQ7k3ZPRVWiUxF29lSAzxvV/ZcDVg/gGgL9
+         haysEzB2rBx9W9g3q3ie1B4L4jbl41Hr5JhTsM25Oh4ku3r92GMkitPQ7mZYhtIZlrWb
+         OAkGpF+5GtPXmVQSpw59aL8jz/6OWD8GXvGA3WYOhVsJdwvSxs39oN59zWjmPqVRcbyP
+         fMCQ==
+X-Gm-Message-State: AOAM531XlJrYgsOelyEluEKMn0B3iKqVCawDECXOzZMzdlxqfKLypSnD
+        91I27JaeDzjaQ9f3Zf0MyWXpfYjx7lw8ziJ/nBg=
+X-Google-Smtp-Source: ABdhPJygsInJnjOo8WP0Unvb4e9uyiKrSXrWbxdoqKurRtdOovAcviK9LB48+kktk/kAC/p4kP0j4ZSldVjPeud+qGI=
+X-Received: by 2002:a17:902:b198:b029:11b:2246:e374 with SMTP id
+ s24-20020a170902b198b029011b2246e374mr8161599plr.17.1626447742450; Fri, 16
+ Jul 2021 08:02:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 14c98721-b657-421c-1b28-08d948698e32
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3134:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB313481FC673FA1DD949D57B797119@MN2PR12MB3134.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kAqUDmSn4iPz+p21/0Q4Q1cQ0ocG/0Avhfqrm17yYFE59WurUtZg6AaaZSNF8npitUe2x6CZAbqfh1R7p/1uR1YSrEgaOiByVz/yv/3Sy23tgPR8wjXk3rzp8oMvI/KqoeIFG8tsvxMp63EgRYUZV6zcAhiDMg69U/Ds3z6X7cSwvu3ylzyPxidYWA7J6DfVVFavrJdlAuL9pvzStHV9NmhPZ2mIO1YPNul8sihhCGbezhKpqjGBZ/Xh3hnczwQTJMOYpuwJro4UXR527O7eAPJRUlDhEkR6FduC/oSWdpyClwFY3Y1nLbvsPXxj3PmsltajSucKtSAwpPh2KdyXOSMxI6I8b2uJcOQnWhJznmHyDjwzCfW67AgiiPMELOYqsNpZ3o5WRjeqzt3lelhQg3ZCgHRoRiVD16SdQOnKr3m4elnyKjYoKZKXPeg7jAf8uWeEcqhLUHaKXWsgbNvR99VfShSgN2jtfrEBBwudKtS2I/MaNmSN2+KLtthCi4qRrdIW19uYIDblydCm1zlv8TyNkB+nJD2VUCOLH58rFLUzf85tRAAm/KYNaJtiIqKZued0dL2tgxrF//OqgGr2dshBkOHzTfwvKYTl6HcUZJkQGDMPahXy8P52ziAvehuxV07fGfAZuxjygx/SE96vSH8K6V0kBUDRp2kRo4dYHzrMEvuWZs33Hqgv2wmPOgvDl1h5bM8n0WH6ygmTEr1UZZnHgudqDbA6irgPBGt8L+nY1Sbkyolm2/pYTotzPR4gaUw7P9quyMe7ofGr57GwazeTfT1IB4Ljs25SxDC92P8=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(136003)(46966006)(36840700001)(336012)(110136005)(54906003)(2616005)(2906002)(44832011)(426003)(316002)(8936002)(4326008)(70206006)(5660300002)(1076003)(6666004)(186003)(70586007)(8676002)(26005)(7696005)(82740400003)(82310400003)(86362001)(356005)(36756003)(81166007)(478600001)(36860700001)(47076005)(42413003)(32563001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 14:54:04.3010
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14c98721-b657-421c-1b28-08d948698e32
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3134
+References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
+ <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
+ <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org> <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
+ <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com> <ac8ac10e-aa43-93a1-d36e-6304643375ae@oth-regensburg.de>
+In-Reply-To: <ac8ac10e-aa43-93a1-d36e-6304643375ae@oth-regensburg.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 16 Jul 2021 18:01:42 +0300
+Message-ID: <CAHp75VcLicxAz5BjP+Lp2yHxEGiKcT9OUZbPeRUgZVcYLdY0FA@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
+To:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vangogh ACP5x drivers can be built by selecting necessary
-kernel config option.
-The patch enables build support of the same.
+On Fri, Jul 16, 2021 at 4:07 PM Ralf Ramsauer
+<ralf.ramsauer@oth-regensburg.de> wrote:
+> On 14/07/2021 15:35, Andy Shevchenko wrote:
+> > On Wed, Jul 14, 2021 at 3:56 PM Ralf Ramsauer
+> > <ralf.ramsauer@oth-regensburg.de> wrote:
+> >> On 14/07/2021 08:54, Jiri Slaby wrote:
+> >>> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
+> >
+> >>> Hmm, have you checked the commit which introduced the whitelist?
+> >>>
+> >>>     Nevertheless, this needs to handled with care: while many 8250 de=
+vices
+> >>>     actually claim to support MSI(-X) interrupts it should not be
+> >>> enabled be
+> >>>     default. I had at least one device in my hands with broken MSI
+> >>>     implementation.
+> >>>
+> >>>     So better introduce a whitelist with devices that are known to su=
+pport
+> >>>     MSI(-X) interrupts. I tested all devices mentioned in the patch.
+> >>>
+> >>>
+> >>> You should have at least CCed the author for an input.
+> >>
+> >> Yep, back then I was testing three different 8250 pci cards. All of th=
+em
+> >> claimed to support MSI, while one really worked with MSI, the one that=
+ I
+> >> whitelisted. So I thought it would be better to use legacy IRQs as lon=
+g
+> >> as no one tested a specific card to work with MSI.
+> >
+> > Can you shed a light eventually what those cards are?
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
-v1 -> v2: remove extra line in Make file
----
- sound/soc/amd/Kconfig          |  9 +++++++++
- sound/soc/amd/Makefile         |  1 +
- sound/soc/amd/vangogh/Makefile | 11 +++++++++++
- 3 files changed, 21 insertions(+)
- create mode 100644 sound/soc/amd/vangogh/Makefile
+> So I found a no-name el-cheapo card that has some issues with MSI:
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index ba5a85bf7412..cc48d4e5b080 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -52,3 +52,12 @@ config SND_SOC_AMD_RENOIR_MACH
- 	depends on SND_SOC_AMD_RENOIR
- 	help
- 	 This option enables machine driver for DMIC
-+
-+config SND_SOC_AMD_ACP5x
-+	tristate "AMD Audio Coprocessor-v5.x I2S support"
-+	depends on X86 && PCI
-+	help
-+	 This option enables ACP v5.x support on AMD platform
-+
-+	 By enabling this flag build will trigger for ACP PCI driver,
-+	 ACP DMA drvier, CPU DAI driver.
-diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
-index e6df2f72a2a1..07150d26f315 100644
---- a/sound/soc/amd/Makefile
-+++ b/sound/soc/amd/Makefile
-@@ -10,3 +10,4 @@ obj-$(CONFIG_SND_SOC_AMD_CZ_RT5645_MACH) += snd-soc-acp-rt5645-mach.o
- obj-$(CONFIG_SND_SOC_AMD_ACP3x) += raven/
- obj-$(CONFIG_SND_SOC_AMD_RV_RT5682_MACH) += snd-soc-acp-rt5682-mach.o
- obj-$(CONFIG_SND_SOC_AMD_RENOIR) += renoir/
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += vangogh/
-diff --git a/sound/soc/amd/vangogh/Makefile b/sound/soc/amd/vangogh/Makefile
-new file mode 100644
-index 000000000000..ae2cda804e2f
---- /dev/null
-+++ b/sound/soc/amd/vangogh/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+# Vangogh platform Support
-+snd-pci-acp5x-objs	:= pci-acp5x.o
-+snd-acp5x-i2s-objs	:= acp5x-i2s.o
-+snd-acp5x-pcm-dma-objs	:= acp5x-pcm-dma.o
-+snd-soc-acp5x-mach-objs := acp5x-nu8821-cs35l41.o
-+
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-pci-acp5x.o
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x)	+= snd-acp5x-i2s.o
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-acp5x-pcm-dma.o
-+obj-$(CONFIG_SND_SOC_AMD_VANGOGH_MACH)   += snd-soc-acp5x-mach.o
--- 
-2.17.1
+Win Chip Head (WCH)
 
+> 18:00.0 Serial controller: Device 1c00:3253 (rev 10) (prog-if 05 [16850])
+>
+> The card comes with two serial lines. It comes perfectly up, if I enable
+> it to use MSI in the whitelist:
+>
+> serial 0000:18:00.0: Using MSI(-X) interrupts
+> serial 0000:18:00.0: Setup PCI port: port 40c0, irq 104, type 0
+> 0000:18:00.0: ttyS6 at I/O 0x40c0 (irq =3D 104, base_baud =3D 115200) is =
+a
+> XR16850
+> serial 0000:18:00.0: Setup PCI port: port 40c8, irq 104, type 0
+> 0000:18:00.0: ttyS7 at I/O 0x40c8 (irq =3D 104, base_baud =3D 115200) is =
+a
+> XR16850
+>
+> After loading 8250_pci, lspci -vvs 18:0.0 tells:
+>
+>         Capabilities: [68] MSI: Enable+ Count=3D1/32 Maskable+ 64bit+
+>                 Address: 00000000fee000b8  Data: 0000
+>                 Masking: ffffffff  Pending: 00000000
+>
+> Looks good so far. Now let's echo to the device.
+>
+> $ echo asdf > /dev/ttyS6
+>
+> -- stuck. The echoing process stucks at close():
+>
+> write(1, "asdf\n", 5)                   =3D 5
+> close(1
+>
+> Stuck in the sense of: the echo is still killable, no crashes. The same
+> happens if I try to access the device with stty. So something is odd
+> here. However, the Netmos cards that I whitelisted do a great job.
+
+Can you share somehow the `lspci -vvv -xx -nk; lspci -t` with and
+without MSI enabled? (I want to understand what is going on with it)
+
+> So I can't tell if I was just unlucky to grab a card that has issues
+> with MSI, and this is an exception rather than the rule=E2=80=A6
+
+--=20
+With Best Regards,
+Andy Shevchenko
