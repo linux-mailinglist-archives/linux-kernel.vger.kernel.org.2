@@ -2,218 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8373CBD79
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC673CBD80
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhGPUHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhGPUHB (ORCPT
+        id S232746AbhGPULS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:11:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44055 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230172AbhGPULP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:07:01 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1557C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:04:05 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id 23so9921506qke.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:04:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FEpYFedqACRZmPFNQmlaIVFTd/2gXqRNrTujmTN6xkU=;
-        b=iImctWEKlRJwh5hGFXOJkYN0zM/8bw9rdTP5Cgt7kvZcJMQBLKmOe8ZBZ+KiagBA6L
-         +oKibWYwH+JR6ZufSSMMM60wVz2oguX0Zxq8hF3/k7dKhzgwUME52Gt74ybTD2lR14C8
-         m7sWfgHQyAt3Cn1nyaGmk5vfOBL83Uyv/jglcTeMzaNdMr2Y/4LeNHHqifQRrE67TAx/
-         udu4dofh1d4LBM9/eSKjdvuO5I9lXqgK3+um9FITDAbRnpj/XB1xDMrrsdwKBZ69dA8p
-         0mAehq346RqfIu0skNA2PBogtth6tX7Zr+sy1hEzg2c05LJao5GcZ/E1XJlF98Y3c5HF
-         psiQ==
+        Fri, 16 Jul 2021 16:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626466099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Da3jrWfUyIbwMDM6l84hMp2rVe+fWjtYvte2/A1hNbI=;
+        b=bS2NzdLUhkSK8oiL167ZoMmCXNJIk84wccwJ4Q9f5OWcu3h9BymiH8Y2LQLjq1vk4rEYts
+        JTrM/H3LI0yXszSklG4OMHcuwU7YjWpWGm3FuLQFzrsVg17u2WhVeGk8jBKsdLBRU9NN4W
+        UdkYMHXAUjZpQ6PWtv07KRjfy97cMcQ=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-n86jPxbZNGmUJ4YERWKmlQ-1; Fri, 16 Jul 2021 16:08:18 -0400
+X-MC-Unique: n86jPxbZNGmUJ4YERWKmlQ-1
+Received: by mail-qt1-f197.google.com with SMTP id 100-20020aed206d0000b029024ea3acef5bso7034610qta.12
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:08:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FEpYFedqACRZmPFNQmlaIVFTd/2gXqRNrTujmTN6xkU=;
-        b=QLbtMOYtYBPJ6PLfjcKMxtl3ZwWpl3PZKlIP70ehI/02MWLxAa7v6SPH+W2r/OKhw0
-         g3Z03U+Nfh1gp/VCLHD4jbvz6x3ZZsb+eq5uPWcNBc3VFI94BM5uAyLo/2pe7Ag05JCy
-         OfhMqOw9j7rc49dgL6O6EtgfHWznRdnwyHyzX9LwZo0+ByLdNxjpZvHFR5NU5qYm8l+e
-         ExKp4une0Y3BSJuZ2utKxQqE5fWb6L8uu44pNb7w31xP4g9y8IF/KGm1RXO0u6+Jlh00
-         ewkYUaebsv8Y89lWSAIW8NtFQOA+eDkK5Pn9VC5r4cLlXdP2vz0Sd1DMrur2JAb59bwL
-         sr8w==
-X-Gm-Message-State: AOAM5301ueOzAMkNHslQ8uyck5pLo/UsEF+W0DL39BlN5yY983IwNgTV
-        /LNZGWNrsDm2cgQ1eiDUg6U=
-X-Google-Smtp-Source: ABdhPJzYz1xfsuNc9T853Xd2I2DQ4MSnWE+iLU7YzSTSD07sR/+4zl/Z5fFTD6QFNN90As2ShTHKcQ==
-X-Received: by 2002:ae9:ed4e:: with SMTP id c75mr11472641qkg.124.1626465844200;
-        Fri, 16 Jul 2021 13:04:04 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id u11sm4375180qkk.72.2021.07.16.13.04.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 13:04:03 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 13:04:02 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-        "sbrivio@redhat.com" <sbrivio@redhat.com>,
-        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        tangchengchang <tangchengchang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-Subject: Re: [PATCH v7 2/4] topology: use bin_attribute to break the size
- limitation of cpumap ABI
-Message-ID: <YPHmMu4OWPHwQXtT@yury-ThinkPad>
-References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
- <20210715115856.11304-3-song.bao.hua@hisilicon.com>
- <a74b62ef71be4348889bfc8c620e7b77@hisilicon.com>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Da3jrWfUyIbwMDM6l84hMp2rVe+fWjtYvte2/A1hNbI=;
+        b=maNbrOuGRGJJ0MgOl4zww8PPP6L1aTp9r0JT/mFOxeZlp1gnozo5x2cDl1QHAW1dYO
+         xDVqVBI+ICgKZ9sQteZu2dThnaAAPySkhVTMj4GCFJlP+BcfNKWPLiRvJIwo/H9yE+e9
+         v9NJcaWSZ9F7zn+ryYRgluIYVy2wC7gzu2Wo+Jm0+5q8t3gfvWYycvksuPATf806/Rww
+         L3439ra/PabHnLFzzMjkMgIYiL5pdn/4+cI2r+vNmczVmPSLOoztEhY5NOoo0cYWSYs0
+         BqzwuF8W3Qc0t4ITgJBfUH3eVI2lqUjTNe58BKA3QefWSBw6t00rCDMGYBpV++xjEZiw
+         Kkpw==
+X-Gm-Message-State: AOAM533TDKw/o488cddgE6dHZnD7v7xWMjYQsf2z84I5wwK0EFeu9MLm
+        J4M79QLu44yxEc9xtdyt2fmiT/kHTVbi0fT8RGF5zbC893U5jUYsukfWwb6dQ3Wi3w1s4pn9tu4
+        6PYupN0DfjvvweGlzCmbeEw09
+X-Received: by 2002:ac8:754a:: with SMTP id b10mr10913335qtr.355.1626466097619;
+        Fri, 16 Jul 2021 13:08:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJykJ0U6myLbIhbbKztUvaqmwgo8TjVazgJUJVB6Hy+oBjOANp/dqImPNP9CRmEIOK5etA0rUg==
+X-Received: by 2002:ac8:754a:: with SMTP id b10mr10913314qtr.355.1626466097426;
+        Fri, 16 Jul 2021 13:08:17 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id h7sm3533020qtq.79.2021.07.16.13.08.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 13:08:16 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
+ partition root
+To:     Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+References: <20210621184924.27493-1-longman@redhat.com>
+ <20210621184924.27493-3-longman@redhat.com>
+ <YNcHOe3o//pIiByh@mtj.duckdns.org>
+ <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
+ <YONGk3iw/zrNzwLK@mtj.duckdns.org>
+ <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
+ <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
+Message-ID: <8c44b659-3fe4-b14f-fac1-cbd5b23010c3@redhat.com>
+Date:   Fri, 16 Jul 2021 16:08:15 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a74b62ef71be4348889bfc8c620e7b77@hisilicon.com>
+In-Reply-To: <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 08:49:58AM +0000, Song Bao Hua (Barry Song) wrote:
-> Hi Yury,
-> Not sure if I have totally got your idea. But please see if the below
-> is closer to what you prefer.
-> 
-> I haven't really tested it. But this approach can somehow solve the
-> problem you mentioned(malloc/free and printing is done 1000times for
-> a 1MB buffer which is read 1K each time).
-> 
-> Bitmap provides some API to alloc and return print_buf:
-> 
-> +ssize_t bitmap_get_print_buf(bool list, char **buf, const unsigned long *maskp,
-> +               int nmaskbits)
-> +{
-> +       const char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> +       ssize_t size;
-> +
-> +       size = snprintf(NULL, 0, fmt, nmaskbits, maskp);
-> +       *buf = kmalloc_track_caller(size + 1, GFP_KERNEL);
-> +       scnprintf(*buf, size + 1, fmt, nmaskbits, maskp);
-> +
-> +       return size + 1;
-> +}
-> +
-> +static inline ssize_t
-> +cpumap_get_print_buf(bool list, char **buf, const struct cpumask *mask)
-> +{
-> +       return bitmap_get_print_buf(list, buf, cpumask_bits(mask),
-> +                       nr_cpu_ids);
-> +}
-> +
-> +struct bitmap_print_buf
-> +{
-> +       char *buf;
-> +       ssize_t size;
-> +};
-> +
-> 
-> In bin_attribute, move to get and save the buffer while sysfs entry is
-> read at the first time and free it when file arrives EOF:
-> 
->  #define define_id_show_func(name)                                      \
->  static ssize_t name##_show(struct device *dev,                         \
->                            struct device_attribute *attr, char *buf)    \
-> @@ -27,9 +53,27 @@ static ssize_t name##_read(struct file *file, struct kobject *kobj,          \
->                                   loff_t off, size_t count)                     \
->  {                                                                              \
->         struct device *dev = kobj_to_dev(kobj);                                 \
-> -                                                                               \
-> -       return cpumap_print_to_buf(false, buf, topology_##mask(dev->id),        \
-> -                                  off, count);                                 \
-> +       struct bitmap_print_buf *bmb = dev_get_drvdata(dev);                    \
-> +       if (!bmb) {                                                             \
-> +               bmb = devm_kzalloc(dev, sizeof(*bmb), GFP_KERNEL);              \
-> +               if (!bmb)                                                       \
-> +                       return -ENOMEM;                                         \
-> +               dev_set_drvdata(dev, bmb);                                      \
-> +       }                                                                       \
-> +       /* for the 1st time, getting the printed buffer */                \
-> +       if (!bmb->buf)                                                           \
-> +               bmb->size = cpumap_get_print_buf(false, &bmb->buf,       \
-> +                                    topology_##mask(dev->id));                 \
-> +       /* when we arrive EOF, free the printed buffer */                       \
-> +       if (off >= bmb->size) {                                                 \
-> +               kfree(bmb->buf);  bmb->buf = NULL;                                   \
-> +               return 0;                                                       \
-> +       }                                                                       \
-> +       /* while a large printed buffer is read many times, we reuse         \
-> +        * the buffer we get at the 1st time                                    \
-> +        */                                                                     \
-> +       strncpy(buf, bmb->buf + off, count);                                    \
-> +       return min(count,  bmb->size - off);                                    \
->  }                                                                              \
->                                                                                 \
-> This means a huge change in drivers though I am not sure Greg is
-> a fan of this approach. Anyway, "1000 times" is not a real case.
-> Typically we will arrive EOF after one time.
-
-Not a real case in your driver doesn't mean not a real case at all.
-You're adding your code to the very basic core layer, and so you'd
-consider all possible scenarios, not only your particular one. 
-
-On the other hand, if you add your function(s) at drivers/base/node.c
-and explain that O(nbits**2) 'is not a real case' in _this_ driver -
-I think it will be acceptable. Maybe this is your choice...
- 
-> Thanks
-> Barry
-
-> Not sure if I have totally got your idea. But please see if the below
-> is closer to what you prefer.
+On 7/16/21 2:59 PM, Waiman Long wrote:
+> On 7/16/21 2:44 PM, Waiman Long wrote:
+>> On 7/5/21 1:51 PM, Tejun Heo wrote:
+>>> Hello, Waiman.
+>>>
+>>> On Mon, Jun 28, 2021 at 09:06:50AM -0400, Waiman Long wrote:
+>>>> The main reason for doing this is because normal cpuset control 
+>>>> file actions
+>>>> are under the direct control of the cpuset code. So it is up to us 
+>>>> to decide
+>>>> whether to grant it or deny it. Hotplug, on the other hand, is not 
+>>>> under the
+>>>> control of cpuset code. It can't deny a hotplug operation. This is 
+>>>> the main
+>>>> reason why the partition root error state was added in the first 
+>>>> place.
+>>> I have a difficult time convincing myself that this difference 
+>>> justifies the
+>>> behavior difference and it keeps bothering me that there is a state 
+>>> which
+>>> can be reached through one path but rejected by the other. I'll 
+>>> continue
+>>> below.
+>>>
+>>>> Normally, users can set cpuset.cpus to whatever value they want 
+>>>> even though
+>>>> they are not actually granted. However, turning on partition root 
+>>>> is under
+>>>> more strict control. You can't turn on partition root if the CPUs 
+>>>> requested
+>>>> cannot actually be granted. The problem with setting the state to just
+>>>> partition error is that users may not be aware that the partition 
+>>>> creation
+>>>> operation fails.  We can't assume all users will do the proper error
+>>>> checking. I would rather let them know the operation fails rather than
+>>>> relying on them doing the proper check afterward.
+>>>>
+>>>> Yes, I agree that it is a different philosophy than the original 
+>>>> cpuset
+>>>> code, but I thought one reason of doing cgroup v2 is to simplify the
+>>>> interface and make it a bit more erorr-proof. Since partition root 
+>>>> creation
+>>>> is a relatively rare operation, we can afford to make it more 
+>>>> strict than
+>>>> the other operations.
+>>> So, IMO, one of the reasons why cgroup1 interface was such a mess was
+>>> because each piece of interaction was designed ad-hoc without regard 
+>>> to the
+>>> overall consistency. One person feels a particular way of 
+>>> interacting with
+>>> the interface is "correct" and does it that way and another person does
+>>> another part in a different way. In the end, we ended up with a messy
+>>> patchwork.
+>>>
+>>> One problematic aspect of cpuset in cgroup1 was the handling of failure
+>>> modes, which was caused by the same exact approach - we wanted the 
+>>> interface
+>>> to reject invalid configurations outright even though we didn't have 
+>>> the
+>>> ability to prevent those configurations from occurring through other 
+>>> paths,
+>>> which makes the failure mode more subtle by further obscuring them.
+>>>
+>>> I think a better approach would be having a clear signal and 
+>>> mechanism to
+>>> watch the state and explicitly requiring users to verify and monitor 
+>>> the
+>>> state transitions.
+>>
+>> Sorry for the late reply as I was busy with other works.
+>>
+>> I agree with you on principle. However, the reason why there are more 
+>> restrictions on enabling partition is because I want to avoid forcing 
+>> the users to always read back cpuset.partition.type to see if the 
+>> operation succeeds instead of just getting an error from the 
+>> operation. The former approach is more error prone. If you don't want 
+>> changes in existing behavior, I can relax the checking and allow them 
+>> to become an invalid partition if an illegal operation happens.
+>>
+>> Also there is now another cpuset patch to extend cpu isolation to 
+>> cgroup v1 [1]. I think it is better suit to the cgroup v2 partition 
+>> scheme, but cgroup v1 is still quite heavily out there.
+>>
+>> Please let me know what you want me to do and I will send out a v3 
+>> version. 
 >
-> I haven't really tested it. But this approach can somehow solve the
-> problem you mentioned(malloc/free and printing is done 1000times for
-> a 1MB buffer which is read 1K each time).
-> 
-> Bitmap provides some API to alloc and return print_buf:
+> Note that the current cpuset partition implementation have implemented 
+> some restrictions on when a partition can be enabled. However, I 
+> missed some corner cases in the original implementation that allow 
+> certain cpuset operations to make a partition invalid. I tried to plug 
+> those holes in this patchset. However, if maintaining backward 
+> compatibility is more important, I can leave those holes and update 
+> the documentation to make sure that people check cpuset.partition.type 
+> to confirm if their operation succeeds. 
 
-I'm not too familar to the topology things, and in fact never exposed
-anything thru the sysfs.
+I just realize that partition root set the CPU_EXCLUSIVE bit. So changes 
+to cpuset.cpus that break exclusivity rule is not allowed anyway. This 
+patchset is just adding additional checks so that cpuset.cpus changes 
+that break the partition root rules will not be allowed. I can remove 
+those additional checks for this patchset and allow cpuset.cpus changes 
+that break the partition root rules to make it invalid instead. However, 
+I still want invalid changes to cpuset.partition.type to be disallowed.
 
-From general knowledge, it's better to allocate memory for the string
-on file creation to avoid situation when kernel has no memory to allocate
-it when user tries to read.
+Cheers,
+Longman
 
-So from my perspective, the most straightforward solution would be:
-
-register(cpumask)
-{
-        size_t max_size = cpumap_max_string_size(list, cpumask)
-        void *buf = kmalloc(max_size, ...);
-
-        sysfs_create_file(..., buf)
-}
-
-unregister()
-{
-        kfree(buf);
-}
-
-show()
-{
-        snprintf(buf, max_size, "*pbl", cpumask);
-}
-
-This would require to add bitmap_max_string_size(list, bitmap, nbits),
-but it's O(1), and I think, others will find it helpful.
-
-Again, I'm not professional with sysfs, and fully admit that it might
-be wrong.
