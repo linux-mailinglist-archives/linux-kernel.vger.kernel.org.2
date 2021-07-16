@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123F23CB75E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2877E3CB760
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238543AbhGPMfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232810AbhGPMf3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:35:29 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8863C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:32:33 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id z9so8493884qkg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=j7wyr87naGUB33F8SqSus6GkWkTKgZNtY7A5hvhaL+A=;
-        b=kDx2GhblhGsC/wRLzIPRKzDOU2wVegoOAtRYCIXhdXyxTGNj6FgaxY7Rsq9ccjHiam
-         ioxkVeImYKgm8+HGT4BIEo4+PTrjrkmTq1QuFGvmIekRuEXJazonbgNjZxsafZWxq2HW
-         w+USLe+s6nP5P3/4vIPc9fnN/m3ySPNo0hijpBggKORaV7RdCnKfy5FFaX1Znragp4NT
-         qGSdssoBhiPJKzNtg9Ln3XFYg73bE7GzdedDz/iYfeExKFxIOT7qL5h8+2StpPnB+Mle
-         7t1NUzYLWqB97Qql7pvjJ6fcbl1/pFPoHu53h+MC6C+77R3Otew6fSIMwmWBlFe3mFDb
-         JlFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=j7wyr87naGUB33F8SqSus6GkWkTKgZNtY7A5hvhaL+A=;
-        b=c3C+QmgnBdtQhRfrKHjuFGqn0c4rxZ4U9VM+U9ZUcjJqsdPKHU0uDVRKrOtgE1x/Bq
-         SR36SjMCT6df9qEEAcfLqxsCRUKUDtgdAS8II0qfFLg2Qe8G3dNRzj+S6xKGNLWYIamz
-         lbcMoHhKaCfqh1KpBptORm6osr77k1UytMt3k6CbjJgrjOXEyI71uNZ3zHcsI0Lno5AS
-         Pv4z1eApFOV89EuXKQMpXdQWHh/wSuFdOZnYHQT319PBlwI/09HK0FvpUL6e9bELBpVg
-         Wz+6jmZCUAAS0uhtEXhjP4nNUecjLBEjhdNTvgK8HC/i2C+DoRWxMjI3pBdXMLvJiNtg
-         ZzEA==
-X-Gm-Message-State: AOAM5300+XQVZH/W00HeGymt1PSS1VoSKnz6qJFQxFRk984HNOxCUb70
-        +N2wf6pF9ATVNIF70t8LULeqyrSr9bA23LGNhmg=
-X-Google-Smtp-Source: ABdhPJyAyZPoJweQhfKavzFbRXsoGPCWQxkmGOpfdk488anxP9392s8rInl4xdoJ5vklNs+nu1Jkye2hhVtzsJpgvQU=
-X-Received: by 2002:a37:468b:: with SMTP id t133mr9711694qka.244.1626438752892;
- Fri, 16 Jul 2021 05:32:32 -0700 (PDT)
+        id S239107AbhGPMgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:36:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232787AbhGPMgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 08:36:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F06BA611C1;
+        Fri, 16 Jul 2021 12:33:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626438827;
+        bh=gz2n8iniBPCEVDw34i7UdhmpqPYyoxr5WKn1hgeXFFI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PT8Nnh/Q5uUVfmZSwbxyOTgjQJDUkDrj3YtaOT7f4irINzwamnauYE5Wn+qQZRqAx
+         0SLgs/LQ6vOlYsk4l+jB4/iSsIZA86rIlUuhwg85gSzPXrG0ktaXmq1CSOFHXcave3
+         TWiOZ/P+y2veOD8PgmH2+G2ou9bfKeTTgtE4gnBycqLD1OtpGJmA2yJBUcZmdu0BEM
+         GnYuYUKR1sXiSUHx3D3A+GSbYZ1YeCSsAfs4MmNxMLL+eMR9XeYwGzqZkC8Jd1XzJa
+         Y3ZODwAUicNao5kCaU62Da1qax9fvq1wbvlhqGcQGEmrJeS0bpZb19WteO/vrBxTf+
+         6Psvbf81oKReA==
+Subject: Re: [PATCH V5 1/1] misc: NOC Probe Counters
+To:     Arnd Bergmann <arnd@arndb.de>, pandith.n@intel.com
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        furong.zhou@intel.com, mgross@linux.intel.com,
+        mallikarjunappa.sangannavar@intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        lakshmi.bai.raja.subramanian@intel.com,
+        Linux PM list <linux-pm@vger.kernel.org>
+References: <20210713065347.21554-1-pandith.n@intel.com>
+ <CAK8P3a1ZYzHQTPDQP+kQH1-x6DmA70H8bJ+kE_iE4NbTs8w3vw@mail.gmail.com>
+From:   Georgi Djakov <djakov@kernel.org>
+Message-ID: <483da98c-b2fe-87e3-0f68-0de5b4184136@kernel.org>
+Date:   Fri, 16 Jul 2021 15:33:41 +0300
 MIME-Version: 1.0
-Received: by 2002:ac8:5c42:0:0:0:0:0 with HTTP; Fri, 16 Jul 2021 05:32:32
- -0700 (PDT)
-Reply-To: rose.william.rw1442@gmail.com
-From:   Leo Smith <comeonessotina@gmail.com>
-Date:   Fri, 16 Jul 2021 00:32:32 -1200
-Message-ID: <CAN1DmZHb1WQQPgfnes+g=VLBcuz+CUq8EJ55mxpgfD5vBSgDyQ@mail.gmail.com>
-Subject: ATM CARD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAK8P3a1ZYzHQTPDQP+kQH1-x6DmA70H8bJ+kE_iE4NbTs8w3vw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Estimado amigo,
+Hi Pandith,
 
-Buen d=C3=ADa mi querido amigo, =C2=BFc=C3=B3mo est=C3=A1s?
-El tiempo mas largo. Me complace informarle sobre mi =C3=A9xito en la
-transferencia de esos fondos de herencia con la cooperaci=C3=B3n de un nuev=
-o
-socio de Argentina. Actualmente estoy en INDIA para proyectos de
-inversi=C3=B3n con mi propia parte de la suma total. Mientras tanto, no
-olvid=C3=A9 sus esfuerzos e =C2=A0intentos anteriores de ayudarme a transfe=
-rir
-esos fondos de herencia a pesar de que de alguna manera nos fallaron.
-Ahora comun=C3=ADquese con mi secretaria en LOME Togo, =C3=81frica occident=
-al,
-su nombre es MRS ROSE WILLIAM =C2=A0en su direcci=C3=B3n de correo electr=
-=C3=B3nico
-(rose.william.rw1442@gmail.com) =C2=A0p=C3=ADdale que le env=C3=ADe el tota=
-l de
-($500,000), quinientos mil d=C3=B3lares estadounidenses que Me qued=C3=A9 p=
-ara
-su compensaci=C3=B3n por todos los esfuerzos e intentos anteriores de
-ayudarme en la transacci=C3=B3n. Apreci=C3=A9 mucho sus esfuerzos en ese
-momento. As=C3=AD que si=C3=A9ntase libre de contactar a mi secretaria MRS =
-ROSE
-WILLIAM e indicarle d=C3=B3nde enviarle la TARJETA ATM de la =C2=A0suma tot=
-al
-($500,000.00). Por favor, av=C3=ADseme de inmediato que lo recibe =C2=A0par=
-a que
-podamos compartir la alegr=C3=ADa despu=C3=A9s de todo el sufrimiento en es=
-e
-momento. En este momento, estoy muy ocupado aqu=C3=AD debido a los
-proyectos de inversi=C3=B3n que estoy teniendo con mi nuevo socio en la
-mano, finalmente recuerde que le envi=C3=A9 instrucciones a mi secretaria
-en su nombre para recibir esa TARJETA ATM de ($ 500,000.00) as=C3=AD que
-sienta libre de ponerse en contacto con MRS ROSE WILLIAM, ella le
-enviar=C3=A1 el monto sin demora.
+On 13.07.21 10:22, Arnd Bergmann wrote:
+> On Tue, Jul 13, 2021 at 8:54 AM <pandith.n@intel.com> wrote:
+>>
+>> From: Pandith N <pandith.n@intel.com>
+>>
+>> Add support for Network on Chip(NOC) counters. Enable features to configure
+>> and capture NOC probe counters, needed for DDR bandwidth measurement. NOC
+>> driver is specific to Intel Keem Bay SOC. NOC hardware counters are used
+>> for DDR statistics profiling, it is not related to timers.
+>> Interface details are provided in include/uapi/linux/noc_uapi.h
+>>
+>> Signed-off-by: Pandith N <pandith.n@intel.com>
+>> Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> 
+> I'm missing some explanation here regarding why this is not part of
+> drivers/interconnect/.
+> 
+> I assume you have discussed this with Georgi Djakov before, but if not, then
+> please do. From a very high-level perspective, I would have guessed that this
+> would be part of the interconnect framework, with any user facing setup being
+> either derived from the DT, or exposed through debugfs.
+
+Thank you for the patch! We already have several drivers that support
+some NXP and Qualcomm Network-On-Chip hardware, that is also based on
+FlexNoC. I suspect that they also may support counters, but nobody
+added that support yet. So maybe it makes sense to have this in
+drivers/interconnect/.
+
+I am wondering what is the plan for this. Who will be using the info
+from this counters - is it some driver or tool? Who and how will use
+the statistics? We already have some debugfs interface that shows the
+current bandwidth thats being requested by users on the several ports.
+Maybe we could add also information about measured bandwidth? Before
+doing a detailed review on the patch, i would like to learn more about
+how this and is there any specific reason for choosing ioctl interface
+for this? Thanks!
+
+> 
+> (full quote below for Georgi, no further comments there)
+
+Thank you Arnd!
+
+BR,
+Georgi
 
 
 
-Atentamente,
-
-Sr. Leo Smith.
