@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3253CB732
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C123CB73A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237131AbhGPMOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:14:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:38236 "EHLO foss.arm.com"
+        id S232672AbhGPMPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:15:23 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21005 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232024AbhGPMOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:14:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03A52D6E;
-        Fri, 16 Jul 2021 05:11:43 -0700 (PDT)
-Received: from [10.57.36.240] (unknown [10.57.36.240])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7A2A3F774;
-        Fri, 16 Jul 2021 05:11:39 -0700 (PDT)
-Subject: Re: [PATCH v1 14/16] x86/amd_gart: return error code from
- gart_map_sg()
-To:     Christoph Hellwig <hch@lst.de>,
-        Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20210715164544.6827-1-logang@deltatee.com>
- <20210715164544.6827-15-logang@deltatee.com> <20210716063241.GC13345@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <98c09e65-35d0-dde5-75fc-e3d99864d078@arm.com>
-Date:   Fri, 16 Jul 2021 13:11:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238234AbhGPMPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 08:15:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="197908713"
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="197908713"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 05:12:20 -0700
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="631056040"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 05:12:18 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1m4MhP-00EDdj-Lk; Fri, 16 Jul 2021 15:12:11 +0300
+Date:   Fri, 16 Jul 2021 15:12:11 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <nick.desaulniers@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: drivers/media/v4l2-core/v4l2-ioctl.c:303:28: warning: taking
+ address of packed member 'pixelformat' of class or structure
+ 'v4l2_pix_format_mplane' may result in an unaligned pointer value
+Message-ID: <YPF3m01nYlt3On7V@smile.fi.intel.com>
+References: <202107150148.RpWnKapX-lkp@intel.com>
+ <CAHp75Vfu1rhUV+SOq2ikFWd2G6x9j3BT6OLPhPcf8VZE5Umeqw@mail.gmail.com>
+ <20210716114105.GF3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210716063241.GC13345@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716114105.GF3@paasikivi.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-16 07:32, Christoph Hellwig wrote:
-> On Thu, Jul 15, 2021 at 10:45:42AM -0600, Logan Gunthorpe wrote:
->> @@ -458,7 +460,7 @@ static int gart_map_sg(struct device *dev, struct scatterlist *sg, int nents,
->>   	iommu_full(dev, pages << PAGE_SHIFT, dir);
->>   	for_each_sg(sg, s, nents, i)
->>   		s->dma_address = DMA_MAPPING_ERROR;
->> -	return 0;
->> +	return ret;
+On Fri, Jul 16, 2021 at 02:41:05PM +0300, Sakari Ailus wrote:
+> On Wed, Jul 14, 2021 at 10:45:26PM +0300, Andy Shevchenko wrote:
+> > > >> drivers/media/v4l2-core/v4l2-ioctl.c:347:37: warning: taking address of packed member 'pixelformat' of class or structure 'v4l2_sdr_format' may result in an unaligned pointer value [-Waddress-of-packed-member]
+> > 
+> > Why is it packed in the first place? Is it used on unaligned addresses
+> > in other structures? But even so, why should it matter?
 > 
-> While we're at it - setting the ->dma_address to DMA_MAPPING_ERROR is
-> not part of the ->map_sg calling convention.  Might be worth to fix
-> up while we're at it.
+> It's packed since we wanted to avoid having holes in the structs. There are
+> other ways to do that but it's ABI dependent and is prone to human errors,
+> too.
 
-Especially since it's not even zeroing dma_length, which at least is a 
-documented indicator of validity (even if it's not strictly defined for 
-failure cases either).
+What holes can you think about in the above mention structure?
 
-Robin.
+In case if you are going to extend it you will need anyway changes somewhere
+else as well.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
