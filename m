@@ -2,127 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAA03CB1FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7B13CB201
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhGPFoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 01:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234254AbhGPFoW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 01:44:22 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2E6C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 22:41:28 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id o201so7966463pfd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 22:41:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4myuWkA9xB+cjc0XD5MczNyScf1c1ZlV8jj86wi9jI0=;
-        b=Cc+oIpxiJq7lvKQ9o7sx7yagPWlMIilCxXgJd8Tfhj8hVMEdbOtsRW7iocFBmrbAcH
-         tENgsXAfC3+uzB1p9mu4EKmU+sWiNeFrFozzzMiK2dq9rJx5BjEpx+I/DDzq9N0V4F9Y
-         lvpczMYU9kmxQdtAJcw73T/LmUMexjNIGaLwI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4myuWkA9xB+cjc0XD5MczNyScf1c1ZlV8jj86wi9jI0=;
-        b=qL8fCixzLJ39irTPc3+CCqQIUqWH3i92Jgm7nBjswvm9lCQUidIQkEvt0IPS5t0Br4
-         ZhNXKuRiI1kOmlczdbKnOC5dJ2wezWI6n4lTKYpzbX4LZSguowIbJhUBmpYsUzcTx3oB
-         pUiMQ78N5CZX64pLvHWyCiM3nCSD006yHUXnPSr6zGlLMFTudxgm/BItsktgNdkMNqKq
-         EPCsKg44L73Xe+QuUITEl6C6P8BKXhw6vM/qXOrP/7F00R++Hj3FFDHuOAPDmAsEmWUg
-         0NahmltVNbY31qvihJUiK+iTPn6KQ2jpS/1/lG0lgpDVUenm6JsItanaX4Cn/TsTGZyB
-         bCqg==
-X-Gm-Message-State: AOAM531prWrU+vs47nx7T2vaMJraxEGRgwCKGjvxLP4icxWIGEHZ0U8b
-        uHo7a431GJtPmH6uQeubXnBnKA==
-X-Google-Smtp-Source: ABdhPJxUByLMN1y1QO9dDiTq4b2c5IDX5aUojwQ0pcUb0FGmZU5XQKCcL6+wGtnezmgPbtz6oSPBHg==
-X-Received: by 2002:a63:d014:: with SMTP id z20mr8179873pgf.203.1626414087462;
-        Thu, 15 Jul 2021 22:41:27 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:d1af:356e:50a6:75e8])
-        by smtp.gmail.com with ESMTPSA id o25sm9664412pgd.21.2021.07.15.22.41.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 22:41:26 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [RFC PATCH] rcu: call kvm_check_and_clear_guest_paused unconditionally
-Date:   Fri, 16 Jul 2021 14:41:13 +0900
-Message-Id: <20210716054113.1244529-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+        id S234204AbhGPFpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 01:45:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230024AbhGPFpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 01:45:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6654F613DF;
+        Fri, 16 Jul 2021 05:42:15 +0000 (UTC)
+Date:   Fri, 16 Jul 2021 11:12:11 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        quic_jhugo@quicinc.com, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v1 1/2] bus: mhi: core: Read serial number during
+ pre-powerup phase
+Message-ID: <20210716054211.GC3323@workstation>
+References: <1626395276-24171-1-git-send-email-bbhatt@codeaurora.org>
+ <1626395276-24171-2-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626395276-24171-2-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not call kvm_check_and_clear_guest_paused() only from the
-stall branch (which requires an active grace period in the
-first place), but instead handle PVCLOCK_GUEST_STOPPED as
-early as possible.
+On Thu, Jul 15, 2021 at 05:27:55PM -0700, Bhaumik Bhatt wrote:
+> In some cases, device may boot straight to the mission mode
+> execution environment and skip the PBL transition or firmware
+> load procedure. Serial number and OEM PK hash values would remain
+> unpopulated in those scenarios. Move the reads for those to the
+> power up preparation phase such that controllers always have them
+> populated.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-pvclock_touch_watchdogs() touches various watchdogs, which
-have different timeouts, so the earlier we handle stopped
-VCPU the better (lockup watchdog does the same).
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 677ee3d8671b..5dd6ea2ead0c 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -657,6 +657,13 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	unsigned long js;
- 	struct rcu_node *rnp;
- 
-+	/*
-+	 * If a virtual machine is stopped by the host it can look to
-+	 * the watchdog like an RCU stall. Check to see if the host
-+	 * stopped the vm.
-+	 */
-+	kvm_check_and_clear_guest_paused();
-+
- 	lockdep_assert_irqs_disabled();
- 	if ((rcu_stall_is_suppressed() && !READ_ONCE(rcu_kick_kthreads)) ||
- 	    !rcu_gp_in_progress())
-@@ -699,14 +706,6 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
- 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
- 
--		/*
--		 * If a virtual machine is stopped by the host it can look to
--		 * the watchdog like an RCU stall. Check to see if the host
--		 * stopped the vm.
--		 */
--		if (kvm_check_and_clear_guest_paused())
--			return;
--
- 		/* We haven't checked in, so go dump stack. */
- 		print_cpu_stall(gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
-@@ -717,14 +716,6 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
- 		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
- 
--		/*
--		 * If a virtual machine is stopped by the host it can look to
--		 * the watchdog like an RCU stall. Check to see if the host
--		 * stopped the vm.
--		 */
--		if (kvm_check_and_clear_guest_paused())
--			return;
--
- 		/* They had a few time units to dump stack, so complain. */
- 		print_other_cpu_stall(gs2, gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
--- 
-2.32.0.402.g57bb445576-goog
+Thanks,
+Mani
 
+> ---
+>  drivers/bus/mhi/core/boot.c | 17 +----------------
+>  drivers/bus/mhi/core/init.c | 17 ++++++++++++++++-
+>  2 files changed, 17 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+> index 8100cf5..213307ab 100644
+> --- a/drivers/bus/mhi/core/boot.c
+> +++ b/drivers/bus/mhi/core/boot.c
+> @@ -394,28 +394,13 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>  	void *buf;
+>  	dma_addr_t dma_addr;
+>  	size_t size;
+> -	int i, ret;
+> +	int ret;
+>  
+>  	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
+>  		dev_err(dev, "Device MHI is not in valid state\n");
+>  		return;
+>  	}
+>  
+> -	/* save hardware info from BHI */
+> -	ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_SERIALNU,
+> -			   &mhi_cntrl->serial_number);
+> -	if (ret)
+> -		dev_err(dev, "Could not capture serial number via BHI\n");
+> -
+> -	for (i = 0; i < ARRAY_SIZE(mhi_cntrl->oem_pk_hash); i++) {
+> -		ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_OEMPKHASH(i),
+> -				   &mhi_cntrl->oem_pk_hash[i]);
+> -		if (ret) {
+> -			dev_err(dev, "Could not capture OEM PK HASH via BHI\n");
+> -			break;
+> -		}
+> -	}
+> -
+>  	/* wait for ready on pass through or any other execution environment */
+>  	if (mhi_cntrl->ee != MHI_EE_EDL && mhi_cntrl->ee != MHI_EE_PBL)
+>  		goto fw_load_ready_state;
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index aeb1e3c..8b4336e 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -1065,7 +1065,7 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+>  {
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>  	u32 bhi_off, bhie_off;
+> -	int ret;
+> +	int i, ret;
+>  
+>  	mutex_lock(&mhi_cntrl->pm_mutex);
+>  
+> @@ -1124,6 +1124,21 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+>  
+>  	mutex_unlock(&mhi_cntrl->pm_mutex);
+>  
+> +	/* save hardware info from BHI */
+> +	ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_SERIALNU,
+> +			   &mhi_cntrl->serial_number);
+> +	if (ret)
+> +		dev_err(dev, "Could not capture serial number via BHI\n");
+> +
+> +	for (i = 0; i < ARRAY_SIZE(mhi_cntrl->oem_pk_hash); i++) {
+> +		ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_OEMPKHASH(i),
+> +				   &mhi_cntrl->oem_pk_hash[i]);
+> +		if (ret) {
+> +			dev_err(dev, "Could not capture OEM PK HASH via BHI\n");
+> +			break;
+> +		}
+> +	}
+> +
+>  	return 0;
+>  
+>  error_reg_offset:
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
