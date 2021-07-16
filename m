@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157523CB551
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29023CB561
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbhGPJiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:38:52 -0400
-Received: from verein.lst.de ([213.95.11.211]:42582 "EHLO verein.lst.de"
+        id S231513AbhGPJld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:41:33 -0400
+Received: from out0.migadu.com ([94.23.1.103]:11810 "EHLO out0.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhGPJiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:38:50 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2D76067373; Fri, 16 Jul 2021 11:35:52 +0200 (CEST)
-Date:   Fri, 16 Jul 2021 11:35:51 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Roman Skakun <rm.skakun@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
-        Andrii Anisov <andrii_anisov@epam.com>,
-        Roman Skakun <Roman_Skakun@epam.com>
-Subject: Re: [PATCH v2] dma-mapping: use vmalloc_to_page for vmalloc
- addresses
-Message-ID: <20210716093551.GA17981@lst.de>
-References: <20210715170011.GA17324@lst.de> <20210716083934.154992-1-rm.skakun@gmail.com>
+        id S231490AbhGPJlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 05:41:32 -0400
+Subject: Re: [PATCH RFC 11/13] md/bitmap: simplify the printing with '%pD'
+ specifier
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1626428315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J72JuxSngQZaWzLOzv0G6shaAgUYqNCFE3FGN5rN/CA=;
+        b=s8hzU4tfUWh2GYAeE7FV7fKMd1sAMZnLK7zdzZPUhIS8fbXsrs8yXnbiHI/iwZQza76ZbG
+        NLwMklJwUU71mgxv3gJcKxp5Au+Qw9rOLPgKrjOi7Zw4Jh/1k2jEncdE8KFQ5MAsi9mVCB
+        LFjpnbkCstySATn20/qEyidi2pSTdTE=
+To:     Jia He <justin.he@arm.com>, linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
+        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org
+References: <20210715031533.9553-1-justin.he@arm.com>
+ <20210715031533.9553-12-justin.he@arm.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Message-ID: <51d24b1a-7146-bacd-87ee-4be487c455d8@linux.dev>
+Date:   Fri, 16 Jul 2021 17:38:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716083934.154992-1-rm.skakun@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210715031533.9553-12-justin.he@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: guoqing.jiang@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Technically this looks good.  But given that exposing a helper
-that does either vmalloc_to_page or virt_to_page is one of the
-never ending MM discussions I don't want to get into that discussion
-and just keep it local in the DMA code.
 
-Are you fine with me applying this version?
 
----
-From 40ac971eab89330d6153e7721e88acd2d98833f9 Mon Sep 17 00:00:00 2001
-From: Roman Skakun <Roman_Skakun@epam.com>
-Date: Fri, 16 Jul 2021 11:39:34 +0300
-Subject: dma-mapping: handle vmalloc addresses in
- dma_common_{mmap,get_sgtable}
+On 7/15/21 11:15 AM, Jia He wrote:
+> After the behavior of '%pD' is changed to print the full path of file,
+> the log printing can be simplified.
+>
+> Given the space with proper length would be allocated in vprintk_store(),
+> it is worthy of dropping kmalloc()/kfree() to avoid additional space
+> allocation. The error case is well handled in d_path_unsafe(), the error
+> string would be copied in '%pD' buffer, no need to additionally handle
+> IS_ERR().
+>
+> Cc: Song Liu <song@kernel.org>
+> Cc: linux-raid@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>   drivers/md/md-bitmap.c | 13 ++-----------
+>   1 file changed, 2 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+> index e29c6298ef5c..a82f1c2ef83c 100644
+> --- a/drivers/md/md-bitmap.c
+> +++ b/drivers/md/md-bitmap.c
+> @@ -862,21 +862,12 @@ static void md_bitmap_file_unmap(struct bitmap_storage *store)
+>    */
+>   static void md_bitmap_file_kick(struct bitmap *bitmap)
+>   {
+> -	char *path, *ptr = NULL;
+> -
+>   	if (!test_and_set_bit(BITMAP_STALE, &bitmap->flags)) {
+>   		md_bitmap_update_sb(bitmap);
+>   
+>   		if (bitmap->storage.file) {
+> -			path = kmalloc(PAGE_SIZE, GFP_KERNEL);
+> -			if (path)
+> -				ptr = file_path(bitmap->storage.file,
+> -					     path, PAGE_SIZE);
+> -
+> -			pr_warn("%s: kicking failed bitmap file %s from array!\n",
+> -				bmname(bitmap), IS_ERR(ptr) ? "" : ptr);
+> -
+> -			kfree(path);
+> +			pr_warn("%s: kicking failed bitmap file %pD from array!\n",
+> +				bmname(bitmap), bitmap->storage.file);
+>   		} else
+>   			pr_warn("%s: disabling internal bitmap due to errors\n",
+>   				bmname(bitmap));
 
-xen-swiotlb can use vmalloc backed addresses for dma coherent allocations
-and uses the common helpers.  Properly handle them to unbreak Xen on
-ARM platforms.
+Looks good,  Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 
-Fixes: 1b65c4e5a9af ("swiotlb-xen: use xen_alloc/free_coherent_pages")
-Signed-off-by: Roman Skakun <roman_skakun@epam.com>
-Reviewed-by: Andrii Anisov <andrii_anisov@epam.com>
-[hch: split the patch, renamed the helpers]
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- kernel/dma/ops_helpers.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-index 910ae69cae77..af4a6ef48ce0 100644
---- a/kernel/dma/ops_helpers.c
-+++ b/kernel/dma/ops_helpers.c
-@@ -5,6 +5,13 @@
-  */
- #include <linux/dma-map-ops.h>
- 
-+static struct page *dma_common_vaddr_to_page(void *cpu_addr)
-+{
-+	if (is_vmalloc_addr(cpu_addr))
-+		return vmalloc_to_page(cpu_addr);
-+	return virt_to_page(cpu_addr);
-+}
-+
- /*
-  * Create scatter-list for the already allocated DMA buffer.
-  */
-@@ -12,7 +19,7 @@ int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
- 		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
- 		 unsigned long attrs)
- {
--	struct page *page = virt_to_page(cpu_addr);
-+	struct page *page = dma_common_vaddr_to_page(cpu_addr);
- 	int ret;
- 
- 	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
-@@ -32,6 +39,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
- 	unsigned long user_count = vma_pages(vma);
- 	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
- 	unsigned long off = vma->vm_pgoff;
-+	struct page *page = dma_common_vaddr_to_page(cpu_addr);
- 	int ret = -ENXIO;
- 
- 	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
-@@ -43,7 +51,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
- 		return -ENXIO;
- 
- 	return remap_pfn_range(vma, vma->vm_start,
--			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
-+			page_to_pfn(page) + vma->vm_pgoff,
- 			user_count << PAGE_SHIFT, vma->vm_page_prot);
- #else
- 	return -ENXIO;
--- 
-2.30.2
-
+Thanks,
+Guoqing
