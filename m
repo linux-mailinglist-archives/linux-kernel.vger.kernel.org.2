@@ -2,171 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC453CB8CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B6A3CB8D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240428AbhGPOlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S240412AbhGPOnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233122AbhGPOlW (ORCPT
+        with ESMTP id S232988AbhGPOnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:41:22 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E765C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 07:38:26 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id go30so15477809ejc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 07:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=S0B53JupZUVPWGl7zblvxhsUkB9aj6fgTRefNriF+/4=;
-        b=SxMqSoRKZ8gc05sAqETI4IBGEZOBRWQoITWwRZF0U21M7uk3+Dh1Y2ji1S61lNcx4Y
-         ko4jWUdnJMs6HBfNu+qFtEdX7Kk45VGH2HmRSrc2jmdozsfIRZ5WzYN1hQeIhRpEc0E+
-         krJAO0f5CFjk5ZpGEruR5tIVprDTfQSpWRQAOnLDztBhKWc/ldaio6g5p8Euwmoezb+W
-         6Z5zUkOHK+6i4pgP5rHW6D8WePnPESckZb1OzWU5PZVfT6Ne2fWh4QBZXWfkHc8l6qxY
-         kxfyl9k2AzcWr2KgVXV9zSr+BPs/UDGT80ZzwMM5Nf0r9EYYHq32ZWWw2Pmoyyk0OKSo
-         MZlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=S0B53JupZUVPWGl7zblvxhsUkB9aj6fgTRefNriF+/4=;
-        b=nqEo3L9jRagQzi0Ev38DvoIUSTq4AkoD197wAOiI3/mE1ISM0ZUIVwpGu60U0APdtg
-         QmXFrOvPRsloBLVPMrjfP8i7Rjv2tyx8x/0qj7LnVReGx4PN8B9uWNsSQJV2Nw5E+/Hg
-         2yrnA5DSyRX7svxOE0xEuL00TLoqr+L1k1GLf3EWm3K+bntKDztMGVxZy11dcFSPc7LM
-         SQ3e1l6Y5ixCGFgnpLXqgwKiQo+vUbzT+PR5n8NLof8zpPa2qh4qAB3mboygTgk+ZHa/
-         x3GFuqDqxPeA+0E7617JNRUNGNnoWcW+cpMM3FieXX4WHVEpQEweTxd9105of1Gb4HO4
-         XzfA==
-X-Gm-Message-State: AOAM531yEPNgc9qubrn/V7XyFKZO80UrE2JxwGxcJsvamQiCgXEDYX4c
-        y+I7RL/QRiovs8zcznLcT50=
-X-Google-Smtp-Source: ABdhPJzHWhk4OGAY9VB5XvEayJo7+xnGatII5PblBHVM5Ct5Boa4X0sDWJBp1ho0yzAf4FgKeKqn1w==
-X-Received: by 2002:a17:906:9b8d:: with SMTP id dd13mr12205091ejc.480.1626446304224;
-        Fri, 16 Jul 2021 07:38:24 -0700 (PDT)
-Received: from localhost.localdomain ([5.176.51.215])
-        by smtp.gmail.com with ESMTPSA id kf3sm1745600ejc.118.2021.07.16.07.38.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 07:38:23 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 17:38:19 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in profile_init
-Message-ID: <20210716173819.07aa5afd@gmail.com>
-In-Reply-To: <000000000000610af005c714c1d1@google.com>
-References: <000000000000610af005c714c1d1@google.com>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Fri, 16 Jul 2021 10:43:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7331DC06175F;
+        Fri, 16 Jul 2021 07:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=c8jX0REmjBZCchTqC4Xq5jjNHuYwCeErWhz0NbpdxAQ=; b=IoTC5Vo7aYRhVIRxdXh9bDggvG
+        uQv3v9/1bJ8qce7fpEFGYLbRY13+9i7X1E8MO1HR7NMIjuKTkJNBRBRkSl5r/Rgt3xZij1dhnfYy8
+        NYSNl9tU5PNC1zu7HwmE8enU8Z8NU00CEyy4xsM5gOjwDklTmjsfE1IseZ7ku8LCXvH146iS5M6oG
+        v0U/sEirveG4T3gQVcMM0y1e5UmBwn/xfcmB2J0R4Q1RMcpcgt0Rc5qDQfWSQGkTn53ReObNTG4Uq
+        rDDgqMuFaoWhUQaAcrEN2NsHJ5SG+Sj3Gn1Chq49e7zf5SZbIw5azCABXgn1Wyq6lDQgIQemFy3UW
+        BXwGfbMw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m4OzI-004YJs-T4; Fri, 16 Jul 2021 14:39:02 +0000
+Date:   Fri, 16 Jul 2021 15:38:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Chao Yu <chao@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: Re: [PATCH 1/2] iomap: support tail packing inline read
+Message-ID: <YPGZ+GE/Bb0zNhzD@casper.infradead.org>
+References: <20210716050724.225041-1-hsiangkao@linux.alibaba.com>
+ <20210716050724.225041-2-hsiangkao@linux.alibaba.com>
+ <YPFPDS5ktWJEUKTo@infradead.org>
+ <YPGN97vWokqkWSZn@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/g74i.zzQeycjOyjMhJiMNv1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPGN97vWokqkWSZn@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/g74i.zzQeycjOyjMhJiMNv1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Wed, 14 Jul 2021 05:47:21 -0700
-syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com> wrote:
-
-> Hello,
+On Fri, Jul 16, 2021 at 02:47:35PM +0100, Matthew Wilcox wrote:
+> I think it looks something like this ...
 > 
-> syzbot found the following issue on:
+> @@ -211,23 +211,18 @@ struct iomap_readpage_ctx {
+>  };
 > 
-> HEAD commit:    3dbdb38e Merge branch 'for-5.14' of
-> git://git.kernel.org/p.. git tree:       upstream
-> console output:
-> https://syzkaller.appspot.com/x/log.txt?x=11342328300000 kernel
-> config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-> dashboard link:
-> https://syzkaller.appspot.com/bug?extid=e68c89a9510c159d9684 syz
-> repro:
-> https://syzkaller.appspot.com/x/repro.syz?x=149a96d2300000 C
-> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114e5bc4300000
+>  static void iomap_read_inline_data(struct inode *inode, struct folio *folio,
+> -               struct iomap *iomap)
+> +               struct iomap *iomap, loff_t pos, size_t size)
+>  {
+> -       size_t size = i_size_read(inode);
+>         void *addr;
+> +       size_t offset = offset_in_folio(folio, pos);
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the
-> commit: Reported-by:
-> syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+> -       if (folio_test_uptodate(folio))
+> -               return;
+> +       BUG_ON(size != i_size_read(inode) - pos);
 > 
+> -       BUG_ON(folio->index);
+> -       BUG_ON(folio_multi(folio));
+> -       BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> -
+> -       addr = kmap_local_folio(folio, 0);
+> +       addr = kmap_local_folio(folio, offset);
+>         memcpy(addr, iomap->inline_data, size);
+>         memset(addr + size, 0, PAGE_SIZE - size);
+>         kunmap_local(addr);
+> -       folio_mark_uptodate(folio);
+> +       iomap_set_range_uptodate(folio, to_iomap_page(folio), pos, size);
 
-With clamp() call suggested by Tetsuo
-
-#syz test
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-
-
-
-With regards,
-Pavel Skripkin
-
---MP_/g74i.zzQeycjOyjMhJiMNv1
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-profiling-fix-shift-out-of-bounds.patch
-
-From 6dadb86239173d28b1d36e974e000d39b088177e Mon Sep 17 00:00:00 2001
-From: Pavel Skripkin <paskripkin@gmail.com>
-Date: Fri, 16 Jul 2021 17:27:44 +0300
-Subject: [PATCH] profiling: fix shift-out-of-bounds
-
-/* ... */
-
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- kernel/profile.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/profile.c b/kernel/profile.c
-index c2ebddb5e974..c905931e3c3b 100644
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -42,6 +42,7 @@ struct profile_hit {
- 
- static atomic_t *prof_buffer;
- static unsigned long prof_len, prof_shift;
-+#define MAX_PROF_SHIFT		(sizeof(prof_shift) * 8)
- 
- int prof_on __read_mostly;
- EXPORT_SYMBOL_GPL(prof_on);
-@@ -67,7 +68,7 @@ int profile_setup(char *str)
- 		if (str[strlen(sleepstr)] == ',')
- 			str += strlen(sleepstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
-+			prof_shift = clamp(par, 0, (int) MAX_PROF_SHIFT - 1);
- 		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
- 			prof_shift);
- #else
-@@ -78,7 +79,7 @@ int profile_setup(char *str)
- 		if (str[strlen(schedstr)] == ',')
- 			str += strlen(schedstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
-+			prof_shift = clamp(par, 0, (int) MAX_PROF_SHIFT - 1);
- 		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
- 			prof_shift);
- 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
-@@ -86,11 +87,11 @@ int profile_setup(char *str)
- 		if (str[strlen(kvmstr)] == ',')
- 			str += strlen(kvmstr) + 1;
- 		if (get_option(&str, &par))
--			prof_shift = par;
-+			prof_shift = clamp(par, 0, (int) MAX_PROF_SHIFT - 1);
- 		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
- 			prof_shift);
- 	} else if (get_option(&str, &par)) {
--		prof_shift = par;
-+		prof_shift = clamp(par, 0, (int) MAX_PROF_SHIFT - 1);
- 		prof_on = CPU_PROFILING;
- 		pr_info("kernel profiling enabled (shift: %ld)\n",
- 			prof_shift);
--- 
-2.32.0
-
-
---MP_/g74i.zzQeycjOyjMhJiMNv1--
+That should be s/size/PAGE_SIZE - offset/
+(because this has just zeroed all the bytes in the page after end-of-file)
