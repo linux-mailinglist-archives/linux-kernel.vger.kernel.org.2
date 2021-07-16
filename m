@@ -2,153 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC4A3CB966
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD033CB969
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240801AbhGPPJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:09:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240662AbhGPPJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:09:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94E0E613CF;
-        Fri, 16 Jul 2021 15:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626448007;
-        bh=JzWPW35335QIwmM3xBK4Cw2sjgXHcx4/lh7YkVBiYxQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=NoFIpHbfGl2knocCnlE5XBaMliHj15VAx5uOkGdww3jszoiFDHIhFMV4TIb9wQ7rT
-         qJ2LrtMk1L+75j3wKzo0u3n8xjVOVz/c23fhf9dhY0usXaFoPkCl0AV2m5U26F71OR
-         cg5QOpd47dZUlglCXhzEC+mJJIWbuO4QS/hstStC4dn7vSsI7/jpfBqGyV3Wvl5wMh
-         67Jm5g+vHGSMdgZZS5UlLJ7fUwpI3vCiXdFTmos/dFlKoEENYTF0GtTzAOL0mZrPgE
-         pTpt2C8rSl98l+8jLO2CBUz78/tmN3tsHZ8EVfPrBqLKtosIqXfw0h/qi46R7ma925
-         lsIYmb8llgnIg==
-Date:   Fri, 16 Jul 2021 10:06:46 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Prasad Malisetty <pmaliset@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
-Subject: Re: [PATCH v4 4/4] PCIe: qcom: Add support to control pipe clk src
-Message-ID: <20210716150646.GA2098485@bjorn-Precision-5520>
+        id S240823AbhGPPKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:10:02 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:48378 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240468AbhGPPKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:10:00 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D5AEA3F0;
+        Fri, 16 Jul 2021 17:07:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626448024;
+        bh=q6/4EKGBbkeghNfrc4ihOYsWk1AdSe654MqNSqL0QqE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NZmYYMpJ8AHJm+nIe7PrpyyYTeTMcRGQH/eSdfLFK1BRJV7zGB0A5vg9THrV6trnh
+         tmStm1vG6Mu7Z9eeG3cp5nFMedWi9WEdN+938CVJHKNe/6B+P+1mHi6R3iDMwH3z3Q
+         lZ1/7LqhGgdWjT7/52zBP7rLT5zCW3iOmqfXQFNQ=
+Date:   Fri, 16 Jul 2021 18:07:01 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dennis Rachui <drachui@de.adit-jv.com>
+Cc:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
+Message-ID: <YPGgldecdIHMjCuq@pendragon.ideasonboard.com>
+References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
+ <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
+ <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
+ <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
+ <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
+ <YPAUoQ8KmmAE3fWD@oden.dyn.berto.se>
+ <YPAeirL/qtmNYx99@pendragon.ideasonboard.com>
+ <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1626443927-32028-5-git-send-email-pmaliset@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Run this:
+Hi Dennis,
 
-  $ git log --oneline drivers/pci/controller/dwc/pcie-qcom.c
-
-and make your subject match the style and structure (in particular,
-s/PCIe/PCI/).  In this case, maybe something like this?
-
-  PCI: qcom: Switch sc7280 gcc_pcie_1_pipe_clk_src after PHY init
-
-On Fri, Jul 16, 2021 at 07:28:47PM +0530, Prasad Malisetty wrote:
-> This is a new requirement for sc7280 SoC.
-> To enable gdsc gcc_pcie_1_pipe_clk_src should be TCXO.
-> after PHY initialization gcc_pcie_1_pipe_clk_src needs
-> to switch from TCXO to gcc_pcie_1_pipe_clk.
-
-This says what *needs* to happen, but it doesn't actually say what
-this patch *does*.  I think it's something like:
-
-  On the sc7280 SoC, the clock source for pcie_1_pipe must be the TCXO
-  while gdsc is enabled.  But after the PHY is initialized, the clock
-  source must be switched to gcc_pcie_1_pipe_clk.
-
-  On sc7280, switch gcc_pcie_1_pipe_clk_src from TCXO to
-  gcc_pcie_1_pipe_clk after the PHY has been initialized.
-
-Nits: Rewrap to fill 75 columns or so.  Add blank lines between
-paragraphs.  Start sentences with capital letter.
-
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+On Fri, Jul 16, 2021 at 04:09:21PM +0200, Dennis Rachui wrote:
+> > On Thu, Jul 15, 2021 at 12:57:37PM +0200, Niklas Söderlund wrote:
+> > > On 2021-07-14 21:40:51 +0300, Laurent Pinchart wrote:
+> > > > On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
+> > > > > On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
+> > > > > > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
+> > > > > > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
+> > > > > > > > Verify that streaming is not active before setting the pad format.
+> > > > > > > > 
+> > > > > > > > According to the VIDIOC documentation [1] changes to the 
+> > > > > > > > active format of a media pad via the VIDIOC_SUBDEV_S_FMT 
+> > > > > > > > ioctl are applied to the underlying hardware.
+> > > > > > > > In rcar-csi2 a format change only applies to hardware, when 
+> > > > > > > > the pipeline is started. While the device is not in use, it 
+> > > > > > > > is therefore okay to update the format.
+> > > > > > > > 
+> > > > > > > > However, when the pipeline is active, this leads to a format 
+> > > > > > > > mismatch between driver and device.
+> > > > > > > > Other applications can query the format with 
+> > > > > > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported a 
+> > > > > > > > format that does not fit the current stream.
+> > > > > > > > 
+> > > > > > > > This commit prevents format update while streaming is active 
+> > > > > > > > and returns -EBUSY to user space, as suggested by [1].
+> > > > > > > > 
+> > > > > > > > [1] 
+> > > > > > > > Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rs
+> > > > > > > > t
+> > > > > > > 
+> > > > > > > I like that this is addressed, but I wonder is this not 
+> > > > > > > something that should be fixed in the V4L2 core and not in drivers?
+> > > > > > 
+> > > > > > Some drivers may support format changes during streaming (that's 
+> > > > > > allowed by the V4L2 API, I'm not sure if it's used anywhere 
+> > > > > > though). While I'd favour not duplicating the same logic in 
+> > > > > > different (and differently
+> > > > > > buggy) ways in drivers, I'm not sure how this could be 
+> > > > > > implemented in a sane way in the V4L2 core in its current state.
+> > > > > 
+> > > > > I understand it's possible from some devices to support to format 
+> > > > > changes during streaming, but as you point out it's the exception 
+> > > > > and not the rule, if used at all.
+> > > > > 
+> > > > > So my point is if we start to enforce this in drivers we are 
+> > > > > headed down a road where this will be messier to clean up. Would 
+> > > > > it not make more sens to default the V4L2 core to disallow format 
+> > > > > changes while streaming and add a new flag to V4L2_SUBDEV_CAP_ to 
+> > > > > signal that the subdevice supports format changes while streaming?
+> > > > > 
+> > > > > We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a 
+> > > > > subdevice only supports read-only operations so I think it would 
+> > > > > not be too hard to move this functionality into the core?
+> > > > 
+> > > > Yes, that's something we could try. The subdev core will then need 
+> > > > to track the streaming state, which may require wrapping the 
+> > > > .s_stream() call. Locking should then also likely be handled by the 
+> > > > core. Probably nothing impossible, but quite a bit of work. Any 
+> > > > volunteer ? :-)
+> > > 
+> > > We already track the stream count in struct media_entity and it's 
+> > > incremented/decremented under the media device lock by
+> > > media_pipeline_start() and media_pipeline_stop(). So I don't think 
+> > > it's such a hard feature to add.
+> > > 
+> > > The large task IMHO is to figure out if we have any subdevice in tree 
+> > > that allows format changes while streaming and that would need to set 
+> > > this new V4L2_SUBDEV_CAP_ flag.
+> >
+> > Many subdevs allow format changes during streaming. The question is
+> > whether any of them do so knowingly, or if they're all buggy :-) I'd
+> > be surprised if there > were more than a couple of drivers that
+> > actually support this correctly.
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 8a7a300..9e0e4ab 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
->  	struct regulator_bulk_data supplies[2];
->  	struct reset_control *pci_reset;
->  	struct clk *pipe_clk;
-> +	struct clk *gcc_pcie_1_pipe_clk_src;
-> +	struct clk *phy_pipe_clk;
-> +	struct clk *ref_clk_src;
->  };
->  
->  union qcom_pcie_resources {
-> @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
->  	if (ret < 0)
->  		return ret;
->  
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-> +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-> +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-> +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
-> +
-> +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-> +		if (IS_ERR(res->phy_pipe_clk))
-> +			return PTR_ERR(res->phy_pipe_clk);
-> +
-> +		res->ref_clk_src = devm_clk_get(dev, "ref");
-> +		if (IS_ERR(res->ref_clk_src))
-> +			return PTR_ERR(res->ref_clk_src);
+> From my perspective, the current stream_count from struct media_entity
+> would not be sufficient. References should be counted per struct media_pad.
+> Otherwise, devices that allow multiple parallel streams would block user
+> space from updating media-pads that are not part of an active media-pipeline.
+> E.g. in rcar-csi2 this could effect a source pad connected to currently
+> unused VIN device.
 
-Not clear why ref_clk_src is here, since it's not used anywhere.  If
-it's not necessary here, drop it and add it in a future patch that
-uses it.
+We're working on moving the information to pads, see "[PATCH v7 06/27]
+media: entity: Move the pipeline from entity to pads"
+(https://lore.kernel.org/linux-media/20210524104408.599645-7-tomi.valkeinen@ideasonboard.com/).
+Does this address your concern ?
 
-> +	}
-> +
->  	res->pipe_clk = devm_clk_get(dev, "pipe");
->  	return PTR_ERR_OR_ZERO(res->pipe_clk);
->  }
-> @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
->  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->  {
->  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct device *dev = pci->dev;
-> +
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
+> > > > > > > > Note: after creation of this commit, it was noticed that 
+> > > > > > > > Steve Longerbeam has a very similar solution in his fork.
+> > > > > > > > 
+> > > > > > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
+> > > > > > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
+> > > > > > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
+> > > > > > > > ---
+> > > > > > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 ++++++++++++++++++++-
+> > > > > > > >  1 file changed, 20 insertions(+), 1 deletion(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c 
+> > > > > > > > b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > index e28eff0..98152e1 100644
+> > > > > > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct 
+> > > > > > > > v4l2_subdev *sd,  {
+> > > > > > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
+> > > > > > > >  	struct v4l2_mbus_framefmt *framefmt;
+> > > > > > > > +	int ret = 0;
+> > > > > > > > +
+> > > > > > > > +	mutex_lock(&priv->lock);
+> > > > > > > >  
+> > > > > > > >  	if (!rcsi2_code_to_fmt(format->format.code))
+> > > > > > > >  		format->format.code = rcar_csi2_formats[0].code;
+> > > > > > > >  
+> > > > > > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+> > > > > > > > +
+> > > > > > > > +		/*
+> > > > > > > > +		 * Do not apply changes to active format while streaming.
+> > > > > > > > +		 *
+> > > > > > > > +		 * Since video streams could be forwarded from sink pad to any
+> > > > > > > > +		 * source pad (depending on CSI-2 channel routing), all
+> > > > > > > > +		 * media pads are effected by this rule.
+> > > > > > > > +		 */
+> > > > > > > > +		if (priv->stream_count > 0) {
+> > > > > > > > +			ret = -EBUSY;
+> > > > > > > > +			goto out;
+> > > > > > > > +		}
+> > > > > > > > +
+> > > > > > > >  		priv->mf = format->format;
+> > > > > > > >  	} else {
+> > > > > > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
+> > > > > > > >  		*framefmt = format->format;
+> > > > > > > >  	}
+> > > > > > > >  
+> > > > > > > > -	return 0;
+> > > > > > > > +out:
+> > > > > > > > +	mutex_unlock(&priv->lock);
+> > > > > > > > +
+> > > > > > > > +	return ret;
+> > > > > > > >  }
+> > > > > > > >  
+> > > > > > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
 
-Using of_device_is_compatible() follows existing style in the driver,
-which is good.  But I'm not sure that's good style in general because
-it's a little repetitious and wasteful.
+-- 
+Regards,
 
-qcom_pcie_probe() already calls of_device_get_match_data(), which does
-basically the same thing as of_device_is_compatible(), so I think we
-could take better advantage of that by augmenting struct qcom_pcie_ops
-with these device-specific details.
-
-Some drivers that use this strategy:
-
-  drivers/pci/controller/cadence/pci-j721e.c
-  drivers/pci/controller/dwc/pci-imx6.c
-  drivers/pci/controller/dwc/pci-layerscape.c
-  drivers/pci/controller/dwc/pci-layerscape-ep.c
-  drivers/pci/controller/dwc/pcie-tegra194.c
-  drivers/pci/controller/pci-ftpci100.c
-  drivers/pci/controller/pcie-brcmstb.c
-  drivers/pci/controller/pcie-mediatek.c
-
-> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
->  
->  	return clk_prepare_enable(res->pipe_clk);
->  }
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Laurent Pinchart
