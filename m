@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB6E3CBEB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C953CBEBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236840AbhGPVsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 17:48:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235482AbhGPVsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 17:48:20 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FFA36109E;
-        Fri, 16 Jul 2021 21:45:24 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 17:45:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] tracing: Do not reference char * as a string in
- histograms
-Message-ID: <20210716174517.033472e4@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236266AbhGPVwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 17:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235198AbhGPVwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 17:52:13 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47840C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:49:17 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so11432499otl.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:49:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=GQDiZqD2pdLaFLvt6YO5hNfdrLCG8I79aRHQBk9fUg8=;
+        b=A1voHxkPWVXJ574pJpTR3a+8/EmLeYnM6Vnn+05dnKzAXUHI0NNt/AmTnpGtPl9DpI
+         y3D+IC2/VJ2Xbp2y2Kp9lms2SVOWSCfXVGx7zDVcTzmdVn8N2dyV1gSZSvRB1XcfthF+
+         BVHvXjKEIr/6DUBT73WFwVXNgTkJEx2XlsnNU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=GQDiZqD2pdLaFLvt6YO5hNfdrLCG8I79aRHQBk9fUg8=;
+        b=kSjcsZKJD684sjQlG0WUURWNGFT/yID4mrr55kOFaZb1XiShHIa65bqritAgMm9Jpk
+         XL+1nEbm2fBCNptlK64VhZonRG9sUshAmu+nwRnO5JKrIqUHY58dazZKSufp2MGc0YIs
+         X6fsgbP1eDpgCYWBbditmlfrUye7c15yRvaxgU337xeaybreqbp+w8mDcrqNaSURJkZL
+         Sqm1dGt+JAECJQw9NypwG17073dJiMRE/HQj0p61+/DQ1zTQF1EeVtpnwiYOs+yrqIfi
+         oez8Kgv3xFn43QhGn8mo5e/eSiVWxcG9GHH4Us/r98oh88kPVebR0Vcdnv9mijzlAfS7
+         rJEg==
+X-Gm-Message-State: AOAM530K2KOqAhJAFnl7UkSdVjfFk8Z3r/ZYje96hiea9fqA1EcZubW7
+        veNLAa3HWSZ7d/kQYwZwlj7oPXgU9omI5A/30hVbiA==
+X-Google-Smtp-Source: ABdhPJwlEwvL0WjNbQUy+fXj6ZREuGVXfD0zE/qGrqA2YbvgWdQaHCOUy4fpVloWIh9CgMJba4/mUUCebsPCHWXxZ+Y=
+X-Received: by 2002:a9d:650e:: with SMTP id i14mr9744534otl.233.1626472156558;
+ Fri, 16 Jul 2021 14:49:16 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 16 Jul 2021 23:49:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YPHxfHPC/faq/y+J@yoga>
+References: <1626429658-18961-1-git-send-email-rnayak@codeaurora.org>
+ <1626429658-18961-3-git-send-email-rnayak@codeaurora.org> <YPHpsO5LlQRQxj9y@yoga>
+ <CAE-0n53CHD8c7C4ETWRgzmZmFSCcBw46wSs4pKbYMRjA_tD3yg@mail.gmail.com> <YPHxfHPC/faq/y+J@yoga>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 16 Jul 2021 23:49:16 +0200
+Message-ID: <CAE-0n50qx80cMFPJ1x9rc+EMR1L+j2CUMyDjWAbnE9mPHjf-TQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] arm64: dts: sc7180: Add required-opps for i2c
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>, ulf.hansson@linaro.org,
+        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, rojay@codeaurora.org,
+        stephan@gerhold.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Quoting Bjorn Andersson (2021-07-16 13:52:12)
+> On Fri 16 Jul 15:21 CDT 2021, Stephen Boyd wrote:
+>
+> > Quoting Bjorn Andersson (2021-07-16 13:18:56)
+> > > On Fri 16 Jul 05:00 CDT 2021, Rajendra Nayak wrote:
+> > >
+> > > > qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
+> > > > Though qup-i2c does not support DVFS, it still needs to vote for a
+> > > > performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
+> > > > requirement.
+> > > >
+> > >
+> > > Sounds good, but...
+> > >
+> > > > Use 'required-opps' to pass this information from
+> > > > device tree, and also add the power-domains property to specify
+> > > > the CX power-domain.
+> > > >
+> > >
+> > > ..is the required-opps really needed with my rpmhpd patch in place?
+> > >
+> >
+> > Yes? Because rpmhpd_opp_low_svs is not the lowest performance state for
+> > CX.
+>
+> On e.g. sm8250 the first available non-zero corner presented in cmd-db
+> is low_svs.
 
-tracing: Fix the histogram logic from possibly crashing the kernel
+Indeed. On sc7180 it's not the first non-zero corner. I suppose
+retention for CX isn't actually used when the SoC is awake so your
+rpmhpd patch is putting in a vote for something that doesn't do anything
+at runtime for CX? I imagine that rpmh only sets the aggregate corner to
+retention when the whole SoC is suspended/sleeping, otherwise things
+wouldn't go very well. Similarly, min_svs may be VDD minimization? If
+so, those first two states are basically states that shouldn't be used
+at runtime, almost like sleep states.
 
-Working on the histogram code, I found that if you dereference a char
-pointer in a trace event that happens to point to user space, it can crash
-the kernel, as it does no checks of that pointer. I have code coming that
-will do this better, so just remove this ability to treat character
-pointers in trace events as stings in the histogram.
-
-This does not have the controversial __assign_str_len() patch.
-
-
-Please pull the latest trace-v5.14-5 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.14-5
-
-Tag SHA1: da4cba2556dcb19abbc7f4d2fe67d71bdd04d757
-Head SHA1: 704adfb5a9978462cd861f170201ae2b5e3d3a80
-
-
-Steven Rostedt (VMware) (1):
-      tracing: Do not reference char * as a string in histograms
-
-----
- kernel/trace/trace_events_hist.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
----------------------------
-commit 704adfb5a9978462cd861f170201ae2b5e3d3a80
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Thu Jul 15 00:02:06 2021 -0400
-
-    tracing: Do not reference char * as a string in histograms
-    
-    The histogram logic was allowing events with char * pointers to be used as
-    normal strings. But it was easy to crash the kernel with:
-    
-     # echo 'hist:keys=filename' > events/syscalls/sys_enter_openat/trigger
-    
-    And open some files, and boom!
-    
-     BUG: unable to handle page fault for address: 00007f2ced0c3280
-     #PF: supervisor read access in kernel mode
-     #PF: error_code(0x0000) - not-present page
-     PGD 1173fa067 P4D 1173fa067 PUD 1171b6067 PMD 1171dd067 PTE 0
-     Oops: 0000 [#1] PREEMPT SMP
-     CPU: 6 PID: 1810 Comm: cat Not tainted 5.13.0-rc5-test+ #61
-     Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
-    v03.03 07/14/2016
-     RIP: 0010:strlen+0x0/0x20
-     Code: f6 82 80 2a 0b a9 20 74 11 0f b6 50 01 48 83 c0 01 f6 82 80 2a 0b
-    a9 20 75 ef c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 <80> 3f 00 74
-    10 48 89 f8 48 83 c0 01 80 38 00 75 f7 48 29 f8 c3
-    
-     RSP: 0018:ffffbdbf81567b50 EFLAGS: 00010246
-     RAX: 0000000000000003 RBX: ffff93815cdb3800 RCX: ffff9382401a22d0
-     RDX: 0000000000000100 RSI: 0000000000000000 RDI: 00007f2ced0c3280
-     RBP: 0000000000000100 R08: ffff9382409ff074 R09: ffffbdbf81567c98
-     R10: ffff9382409ff074 R11: 0000000000000000 R12: ffff9382409ff074
-     R13: 0000000000000001 R14: ffff93815a744f00 R15: 00007f2ced0c3280
-     FS:  00007f2ced0f8580(0000) GS:ffff93825a800000(0000)
-    knlGS:0000000000000000
-     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-     CR2: 00007f2ced0c3280 CR3: 0000000107069005 CR4: 00000000001706e0
-     Call Trace:
-      event_hist_trigger+0x463/0x5f0
-      ? find_held_lock+0x32/0x90
-      ? sched_clock_cpu+0xe/0xd0
-      ? lock_release+0x155/0x440
-      ? kernel_init_free_pages+0x6d/0x90
-      ? preempt_count_sub+0x9b/0xd0
-      ? kernel_init_free_pages+0x6d/0x90
-      ? get_page_from_freelist+0x12c4/0x1680
-      ? __rb_reserve_next+0xe5/0x460
-      ? ring_buffer_lock_reserve+0x12a/0x3f0
-      event_triggers_call+0x52/0xe0
-      ftrace_syscall_enter+0x264/0x2c0
-      syscall_trace_enter.constprop.0+0x1ee/0x210
-      do_syscall_64+0x1c/0x80
-      entry_SYSCALL_64_after_hwframe+0x44/0xae
-    
-    Where it triggered a fault on strlen(key) where key was the filename.
-    
-    The reason is that filename is a char * to user space, and the histogram
-    code just blindly dereferenced it, with obvious bad results.
-    
-    I originally tried to use strncpy_from_user/kernel_nofault() but found
-    that there's other places that its dereferenced and not worth the effort.
-    
-    Just do not allow "char *" to act like strings.
-    
-    Link: https://lkml.kernel.org/r/20210715000206.025df9d2@rorschach.local.home
-    
-    Cc: Ingo Molnar <mingo@kernel.org>
-    Cc: Andrew Morton <akpm@linux-foundation.org>
-    Cc: Masami Hiramatsu <mhiramat@kernel.org>
-    Cc: Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-    Cc: stable@vger.kernel.org
-    Acked-by: Namhyung Kim <namhyung@kernel.org>
-    Acked-by: Tom Zanussi <zanussi@kernel.org>
-    Fixes: 79e577cbce4c4 ("tracing: Support string type key properly")
-    Fixes: 5967bd5c4239 ("tracing: Let filter_assign_type() detect FILTER_PTR_STRING")
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 0207aeed31e6..16a9dfc9fffc 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -1689,7 +1689,9 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
- 	if (WARN_ON_ONCE(!field))
- 		goto out;
- 
--	if (is_string_field(field)) {
-+	/* Pointers to strings are just pointers and dangerous to dereference */
-+	if (is_string_field(field) &&
-+	    (field->filter_type != FILTER_PTR_STRING)) {
- 		flags |= HIST_FIELD_FL_STRING;
- 
- 		hist_field->size = MAX_FILTER_STR_VAL;
-@@ -4495,8 +4497,6 @@ static inline void add_to_key(char *compound_key, void *key,
- 		field = key_field->field;
- 		if (field->filter_type == FILTER_DYN_STRING)
- 			size = *(u32 *)(rec + field->offset) >> 16;
--		else if (field->filter_type == FILTER_PTR_STRING)
--			size = strlen(key);
- 		else if (field->filter_type == FILTER_STATIC_STRING)
- 			size = field->size;
- 
+>
+> And if this (which?) clock requires a higher corner than the lowest
+> possible in order to tick at this "lowest" frequency, I'm certainly
+> interested in some more details.
+>
