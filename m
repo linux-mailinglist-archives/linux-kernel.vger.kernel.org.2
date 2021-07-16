@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940163CB123
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C1C3CB125
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233790AbhGPDdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 23:33:01 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:47949 "EHLO ozlabs.org"
+        id S233836AbhGPDfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 23:35:11 -0400
+Received: from mga14.intel.com ([192.55.52.115]:33669 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231230AbhGPDc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 23:32:58 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GQxZK5b1Qz9sWc;
-        Fri, 16 Jul 2021 13:30:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626406202;
-        bh=PYbqnxbNuWiTD13swbLkCAMMOY+K9iEPoVYjYdy/zpI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nVwK5AnnzvhAEMSTxyJiZqKd5koiWg7t5/Y5zvtvV5lagCTIjH/oW0Bp7AYQosJco
-         86gXgUX7uEhgGxgG+UGDwGQok1xKqFSSv5CcgBC8KO0Snvaxd/AIXbiH1ahMhcZn3w
-         82aTEOqYrdqTNAl+DSoM+pa5+6Dbxo61yEIC6ZJkbrQtxXO+ns6O5axvo4Lve597xF
-         O+169CLnr/+eGIWLkXcNhZLeY8gM2jY2tgtHoNUCgjnn9q+iJmGbr99J4bRbp3+i3Z
-         mowg6/f8gTob+9pF0AL83x03zLT/2QKeDWPJkra8KJunlPw09DX5wV1ihQbXJArbc7
-         OQ9546h2+qOdQ==
-Date:   Fri, 16 Jul 2021 13:29:58 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Lars Poeschel <poeschel@lemonage.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the auxdisplay tree
-Message-ID: <20210716132958.51240693@canb.auug.org.au>
+        id S233612AbhGPDfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 23:35:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="210479838"
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="210479838"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 20:32:14 -0700
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="495779552"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 20:32:10 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        dan.j.williams@intel.com, david@redhat.com, osalvador@suse.de,
+        weixugc@google.com, Michal Hocko <mhocko@suse.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+Subject: Re: [PATCH -V10 0/9] Migrate Pages in lieu of discard
+References: <20210715055145.195411-1-ying.huang@intel.com>
+        <20210715123836.ad76b0a2e29c0bbd3cd67767@linux-foundation.org>
+Date:   Fri, 16 Jul 2021 11:32:09 +0800
+In-Reply-To: <20210715123836.ad76b0a2e29c0bbd3cd67767@linux-foundation.org>
+        (Andrew Morton's message of "Thu, 15 Jul 2021 12:38:36 -0700")
+Message-ID: <87k0lrndc6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gmru+J3Ir=KTAO/QuILnPcj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gmru+J3Ir=KTAO/QuILnPcj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Andrew Morton <akpm@linux-foundation.org> writes:
 
-Hi all,
+> On Thu, 15 Jul 2021 13:51:36 +0800 Huang Ying <ying.huang@intel.com> wrote:
+>
+> The [0/n] description talks a lot about PMEM, but the patches
+> themselves are all about NUMA nodes.  I assume that what ties this
+> together is that the PMEM tends to be organized as a NUMA node on its
+> own, and that by enabling migrate-to-remote-node-during-reclaim, we get
+> this PMEM behaviour as a desired side-effect?
+>
+> IOW, perhaps this [0/n] description could explain the linkage between
+> PMEM and NUMA nodes more explicitly.
 
-In commit
+Hi, Andrew,
 
-  cff03367b6f8 ("auxdisplay: hd44780: Fix oops on module unloading")
+I have added some words in the [0/9] description to link PMEM and NUMA
+nodes.  The updated description is as below.  Can you take a look at it?
 
-Fixes tag
+Best Regards,
+Huang, Ying
 
-  Fixes: 718e05ed92e ("auxdisplay: Introduce hd44780_common.[ch]")
+--------------------------8<-----------------------------------
 
-has these problem(s):
+We're starting to see systems with more and more kinds of memory such
+as Intel's implementation of persistent memory.
 
-  - SHA1 should be at least 12 digits long
+Let's say you have a system with some DRAM and some persistent memory.
+Today, once DRAM fills up, reclaim will start and some of the DRAM
+contents will be thrown out.  Allocations will, at some point, start
+falling over to the slower persistent memory.
 
-Probably not worth rebasing to fix, but can ve avoided in the future
-by setting core.abbrev to 12 (or more) or (for git v2.11 or later)
-just making sure it is not set (or set to "auto").
+That has two nasty properties.  First, the newer allocations can end
+up in the slower persistent memory.  Second, reclaimed data in DRAM
+are just discarded even if there are gobs of space in persistent
+memory that could be used.
 
---=20
-Cheers,
-Stephen Rothwell
+This patchset implements a solution to these problems.  At the end of
+the reclaim process in shrink_page_list() just before the last page
+refcount is dropped, the page is migrated to persistent memory instead
+of being dropped.
 
---Sig_/gmru+J3Ir=KTAO/QuILnPcj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+While I've talked about a DRAM/PMEM pairing, this approach would
+function in any environment where memory tiers exist.
 
------BEGIN PGP SIGNATURE-----
+This is not perfect.  It "strands" pages in slower memory and never
+brings them back to fast DRAM.  Huang Ying has follow-on work which
+repurposes autonuma to promote hot pages back to DRAM.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDw/TYACgkQAVBC80lX
-0GxpLQgAnb8l63V1M9AmBs3vfREWTxnw/HmwYLLKmeDBvgN3Ipt75jmb7eXVCvhY
-h8lwItqLG7zBw0SsauW5k11jwvvxfyLxLMo4++XjnDjzXMiPy76/1rDE+qisxm2C
-OfXas4k/7KBgxTlbbBSjgjB340Df81g3FiiIhhfZHY9f5ZQR3ikPs2D+dwO3rQV9
-UqaUfSnwgGtmtbDo68M5S/SNx/VwCeI4mxCAI9hYt2IhrhPGYBLsAVKweedTfiZV
-Pnu5rnv44Q4t9JyirjbCArYKnqUnlVNxANS6e+woiY3Il0Sq86kOJEW+NLHDjoJk
-f64IeqUQoOpho5NmWvkL9VP2pFUyvg==
-=XvzA
------END PGP SIGNATURE-----
+This is also all based on an upstream mechanism that allows
+persistent memory to be onlined and used as if it were volatile:
 
---Sig_/gmru+J3Ir=KTAO/QuILnPcj--
+	http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
+
+With that, the DRAM and PMEM in each socket will be represented as 2
+separate NUMA nodes, with the CPUs sit in the DRAM node.  So the
+general inter-NUMA demotion mechanism introduced in the patchset can
+migrate the cold DRAM pages to the PMEM node.
+
+We have tested the patchset with the postgresql and pgbench.  On a
+2-socket server machine with DRAM and PMEM, the kernel with the
+patchset can improve the score of pgbench up to 22.1% compared with
+that of the DRAM only + disk case.  This comes from the reduced disk
+read throughput (which reduces up to 70.8%).
+
+== Open Issues ==
+
+ * Memory policies and cpusets that, for instance, restrict allocations
+   to DRAM can be demoted to PMEM whenever they opt in to this
+   new mechanism.  A cgroup-level API to opt-in or opt-out of
+   these migrations will likely be required as a follow-on.
+ * Could be more aggressive about where anon LRU scanning occurs
+   since it no longer necessarily involves I/O.  get_scan_count()
+   for instance says: "If we have no swap space, do not bother
+   scanning anon pages"
