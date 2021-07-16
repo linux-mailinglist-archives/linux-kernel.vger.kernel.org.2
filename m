@@ -2,265 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65353CB793
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7EE3CB796
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239682AbhGPM6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:58:43 -0400
-Received: from mail-mw2nam10on2058.outbound.protection.outlook.com ([40.107.94.58]:44195
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232804AbhGPM6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:58:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mYKJLsyno1dde62rtvq4SWMS6SLshjx/8xlHMzR3ELJyytvLja2OZ1gAPOFA8tz07UR6Xgf3bLCf2/Kp2vlqlabZ+9m6k1hp7H56bBNY6LmbEcnhPFD2WKDHSp//tj1NRd+do3IdtyUTVdsWdnu+dWURHThVRId/9z15Q6W8uKTm4F7tG/c2MrbXQTpK7EaYZ77qslv/ubiARpyTmf7Bb+CS2WhTBZBdO0GdP/8EscjHyWCvn/Q3+XD+OY0zSPHj5mFfyGdSLvieOxkZ1K26szYsMvncAmNwl2zcpJh9Xy3e3as/+Kn8Fq7O//hkPmzX4UZ9GRuy/oZrFnleZxycMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4BG+Lxu0G0wP2C2Vz1nthm/cvWAv6jOnqOX5czl/i1o=;
- b=h9sFcTKungtRvsn1x3pWjIABFBJ0TWLEi13rpDR33bx4OpaF59Y2gWQ2XoO58D6EaUXdpo3iXHPOMs2OyBYVBJYm0nPlty7muNT65nlu1pxByvC7dH//N1i3/h9t9j0afvgd12uhraA61NVnD9vW1xV9FWk2+U9MFktFnAtj7QNFI0LndD+6KXWMsVyPEaIkPKkQ/IgM6ZIoEN/2LIxWgos7tOPU3jBj+dHQf0OML9zcCbkXyuME4vZBELaOSxC46asR3W0hkOlcGdvuRNf2fPqeHU/yPitRlGAeTx0Sad0CHpS1I+LdL5uB5TYO1kXMYqNUtTM6tdEPIL02Tx99Ag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4BG+Lxu0G0wP2C2Vz1nthm/cvWAv6jOnqOX5czl/i1o=;
- b=Sf0vLpF18/sUvmhjraKCqGOy+WH/aUgGMMfv+HFyi/fuakEfrZl/GpneZ+APQq6MEl0B7PZmBMS749hug5Z3cGL+RgDoPR8ai7BRif//gNFl/urkUVtVRBddKTWm0s1qzXIWeBSSNJ2CSjaf6THr+BdixhRPMueR4Oa5leG3d8Q=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB2640.namprd12.prod.outlook.com (2603:10b6:805:6c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Fri, 16 Jul
- 2021 12:55:43 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4331.024; Fri, 16 Jul 2021
- 12:55:43 +0000
-Cc:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 15/40] crypto: ccp: Handle the legacy TMR
- allocation when SNP is enabled
-To:     Sean Christopherson <seanjc@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-16-brijesh.singh@amd.com> <YPDJQ0uumar8j22y@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <dfa4ccb5-f85e-6294-6a80-9e4aa6d93c1e@amd.com>
-Date:   Fri, 16 Jul 2021 07:55:40 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <YPDJQ0uumar8j22y@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: SN4PR0801CA0020.namprd08.prod.outlook.com
- (2603:10b6:803:29::30) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S239777AbhGPM6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239704AbhGPM6v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 08:58:51 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AD8C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:55:55 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id u13so15814112lfs.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:55:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7YVe12K3kAf74Lw6w7FM9BISBfQ+xdkVlpPe2xtnZxw=;
+        b=S1/f9dxk1+qzNpT4FBDWITbM6Bgtq5eX45j8wxtciNfUAcIAlC1LzMee1hh0QkZ0HY
+         lg+mFnaoj2vPn6A8SZR+yhktxiJ770BndjMgvWPgp2bjQDPDLKG7wc5ZgxKBf6/OoOB8
+         MwrpPg4hSlzZp0AdZGujKVaYhlCIkkA23YJabdnHyafUisZIxmQhpcTlK7s4GqSN7vDu
+         v0ZIav43+PieP8CTwmsV1uh8ZK+Tw6wObkgvCEoxiR2Ko17xbGGEdqkwAh8OfvS/+QMM
+         QS/BlBO10sHKcfRLUWuvikVte6UouWZydyHvyLNMH4rjhNwyFsM/fw9GUf8aR2RX7lqs
+         MIkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7YVe12K3kAf74Lw6w7FM9BISBfQ+xdkVlpPe2xtnZxw=;
+        b=YFR/ntvluytNgQjWNYUgzpnMjJ+J64PxgXuHkLvGJraM1pI/U0Rf9vxVMLdGL58hXb
+         q08A1Rd+tYFdtcObxBm4A6m/ID38TKcgfdr/kavGpdoBesh/l9P10NCCcJSrSBlnC2nc
+         FN2OHFZp9Nsy93elM/j288EjAMzqtpq3cc6dCdfpj5N7ct00JBxiSEAW2F8LzjPQzKfw
+         B3OYYo4fRURVrGCMf6SP94L7XuCpvi7PuiJwE3rRl+vv2UcK2oUuLTh6TzSg4pq9SaiV
+         BDAuUuFLtW54PfcwjcMUkTi3ni9zuvEbZ86yn7vpy6bPdnhg0D/K8RRd/9oFm43NCN+a
+         /98w==
+X-Gm-Message-State: AOAM530Tz+IKfT+fUHSY9v81X9wnL8KNy4m3y8GGbrgwGFVddepCswUn
+        W/TgU1AkFdyz/1DrPFmC1r9Rs/RWJGOB3lRKYESIkQ==
+X-Google-Smtp-Source: ABdhPJx+HIGg3Y9xkRL86NYygrweddq6ORDe7x5BfHspoT3DPnWcPBwHfdoy5Z5CHNMssXXoldgyVbAxDgfFUDKaPxA=
+X-Received: by 2002:ac2:4d86:: with SMTP id g6mr7369704lfe.549.1626440153821;
+ Fri, 16 Jul 2021 05:55:53 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0801CA0020.namprd08.prod.outlook.com (2603:10b6:803:29::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 12:55:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8b117778-c9c1-4c2d-3656-08d948590584
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2640:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2640DF66D426B46D0BE34D57E5119@SN6PR12MB2640.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /aR+b1BdDbiYARNZyZXmdjdrN5p/DD2dMGw+con4y5Y2FZ1CIGaZl0L34B6P5u2QNKav/y8AdONWLLC3anJSaBJ/LcSXsLb3i9H/pyJk7pj3F3w3hSt15h1nibdBzTpVlNLQ8zS6nE+tNJNSz7IT01t4VxTvnSmnYGtOMizy9L7QszusAS7ohG3RepouMQA8n/CIOsudFRZEiPn5xnj8+Mf39UfuBsveaPs6gJG/bJgJmDjB9zlDLKx+NY08bztOsexRVemNLdybXoMcN6tRSubxGLAUQVMIiFcmFaMT09vg569nWJbTfvQiAtc1+YDTD1fesCK3DUgkGzkKpJJysDCMBWYMt6YSOUotEnooqjUBGtK9en5WvDM+oRbqjlrP0gcUfgimN4Jp3wfo6/t3A0k18ZrYVNaZejEBXWvLl1ekY4Nd1oKvl85NhasgMmu/trjiL6OBlIF7OoUGUG6jJOrEdEWz5HTGhtCF13QsXj1r07pJzG0WvDlo/GpDkfW1/23Qvf90VmGY9nKClKGXi0m/37SMNfT+K160NqC2Odmcao3mvlkQLwwxCaxEQnNXuOzQYGxbnWK01aqMKnUGSgNPI4kO9S1VXV76W8A5/wzbmpp2WOCw+z8nrzczIcBYVgEYwuaO+5Fy8PBMhAzmYih4rT7oL9eQVzjCET7o1bznDAQALsM6k4ebKHlPyPOFSRD+PHd9cUY4PIjegi2duN9xmiZdbhZDnEBkkPEUec83c4JsAO0E/dz04NpFWnG31vMf3JwvuVYlo//8wXh72Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(366004)(346002)(6486002)(6506007)(53546011)(66946007)(38350700002)(8676002)(66476007)(66556008)(52116002)(38100700002)(478600001)(36756003)(31686004)(956004)(4326008)(6916009)(86362001)(54906003)(2616005)(186003)(44832011)(83380400001)(8936002)(6512007)(2906002)(7406005)(7416002)(5660300002)(316002)(26005)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cjluak84cmkvaFB4Zm1URTVMWHdsdU5vSmlvL01lRDZlcGhFdlVFVy9IVzk1?=
- =?utf-8?B?dHMzeDZTRUdnaU9zbVZVVGRnRkFZOXc5cHd6Tk5GZTZTazdPWE1EQ1Q1Yitp?=
- =?utf-8?B?enRnVEw4bFNiMUU4MFhPV1ovbnZjdUc5ZzR2NUU4d2hVWjFJWkIveVZGSEVs?=
- =?utf-8?B?M1BodTZ4UDZEZmNFQWxWTVhPYVlQVGtibWw2OFNFU0tXVFFZN0swM0tWWFhO?=
- =?utf-8?B?TWZkZlp0dG1QazNyeS9hWGhNS0lLSUlhcXI2cUNLUXpJa2hndDA0MzBFNzRW?=
- =?utf-8?B?N2N6MGpLQXV0OFgrc2lPN0txNmVXN2dPbVBWQ1h3NzMzb2V2cWVSeGhRQ2dZ?=
- =?utf-8?B?NTZtaGdVZ2ZpcnVlU3pnMCtDaDNqRm1ZN3V5d1doWWhKV2dEQUJwOWNrMDdt?=
- =?utf-8?B?di8wZDRwMFNWd0I5ZnJ2aGtmMnI0cmhTYUlwNlduSS9jTE9wMmZKRDg0NVJT?=
- =?utf-8?B?Q2xPN3p6TmV3a0ZXeFpVODV5dGt1bzZ0Ym5VK1dWUGREazVYbDMzRk00SDVj?=
- =?utf-8?B?eTcyTEt0UTdobUhqNjBSN0MrblRCczJMd1JwSEFiRzVkNEFXcGtyMlRJTUhn?=
- =?utf-8?B?WmsvY1cyTWJSMDhMZXJxa0F3WlRGWlhoR3FocUpqNm9Sd1FoTDFxSTZPK0w3?=
- =?utf-8?B?eVYyZ212UGxhTmMrTEsvYWF4VU9aYUhVQXRBUTBHM011MFhvWGlPQ1BWZnZl?=
- =?utf-8?B?Rm10M2p2TWZ5RENBdFZQUDh3M2E2ZkdvbTlPZ1ZnOWNlM2tHQkRWWTVhMWFM?=
- =?utf-8?B?YkVJS2xnSGYxTldUaE9mdnVzQVo3TEllOUpLQjR4Y2M5WldaUks2aGZEcnVz?=
- =?utf-8?B?Ri96QjJMM3pIa2M4aEdKQXcxVGF3TlhzOE5mVmo4QlZTQVBhMVhUeEdodFRN?=
- =?utf-8?B?S3FQUkxHZGh4Ynh0WDh3aUxML3lIMEdCa3hhV0pxMEpBQUtUQzBsMkhMQUpX?=
- =?utf-8?B?NitiazY4T2xLN1poQ3UxVk9rM1RRait2SHFoTm9GYmdINE1JOGsxeFQ1Qk00?=
- =?utf-8?B?UENKRm5mT0xZTzArL0daVjd5aWduYm5UM1J4SmhoWjhFazlCVGdPcUtUeWIx?=
- =?utf-8?B?VDZldGNOOGtZcWs0eTVIc3FpUDQ4ck5CUEVyeDRvRjY5SkhNMXF0OHRjc3RC?=
- =?utf-8?B?YXdyMjE2TmVjaUZCUUxFbmFFcURGUGhpdWJHQjhIbGxldEZPV2hXcXplOHZ5?=
- =?utf-8?B?VkZVOS9zV1FyanlMMUdqb3hPbXhndXBWRHJkSncyTUoybkd6TEMzeCtmdWVv?=
- =?utf-8?B?T0tCK1pxY2dLTHZNb0JuV3EvQjVjbHl4ajdlRzJ3QzluaFNpdXlObEJabzlx?=
- =?utf-8?B?SkdmTlZ2SStVN1E5SFovVGI2K0ZWR0FLL2JzWTZNNVByRVVpZHhISnVpcnhq?=
- =?utf-8?B?alUvMzV2eGw0UWV2eVR2T3Vma04rUUxDRUN2ams5Mzc3VFlCbEFZUmU5dWs2?=
- =?utf-8?B?N2pUU3lrMHdxeVBLNGRiNE1ZTGZWeFhrZ1JaSEJEOUFjcDI2RmdzZ21hZkFF?=
- =?utf-8?B?YkxvT3FxYUZzTnN4dEFleDVRdXZZSHBvRk80aTdSQnFhWWRRZWJGdC9Ea1Jz?=
- =?utf-8?B?ZUtZZUNubXdCL1lrNHVQTEZ5QnZCY2lNUWlpbU91L3FDcHBpNkJYcEJ1K1VX?=
- =?utf-8?B?cHBtMTFaanAyT0pVNDkzZ1RvdnhNMno3ZEk2N1BqcVpOVDNmdnJDYktJWjZy?=
- =?utf-8?B?b3pGSEhWd1VNeDcwNjR4N3krbEY0bUFzcm1nUk01dWIybVVSK1NZMjZ2TVlU?=
- =?utf-8?Q?B6/UbNWW0vDrCw7J4WkJ0ZLoFGZKkZl+Gncncqs?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b117778-c9c1-4c2d-3656-08d948590584
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 12:55:43.3614
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GcnMAHVtBM4EP7CmHMf11NHrg78ad6I604+QgPQfiaKclwGpcE4WLx0NsiMIj4OvsO34AnmNY8takHzdMvQOtQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2640
+References: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com>
+ <919bd022-075e-98a7-cefb-89b5dee80ae8@virtuozzo.com> <CALvZod5Kxrj3T99CEd8=OaoW8CwKtHOVhno58_nNOqjR2y=x6Q@mail.gmail.com>
+ <3a60b936-b618-6cef-532a-97bbdb957fb1@virtuozzo.com>
+In-Reply-To: <3a60b936-b618-6cef-532a-97bbdb957fb1@virtuozzo.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 16 Jul 2021 05:55:42 -0700
+Message-ID: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] memcg accounting from OpenVZ
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Tejun Heo <tj@kernel.org>, Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/15/21 6:48 PM, Sean Christopherson wrote:
-> On Wed, Jul 07, 2021, Brijesh Singh wrote:
->> The behavior and requirement for the SEV-legacy command is altered when
->> the SNP firmware is in the INIT state. See SEV-SNP firmware specification
->> for more details.
->>
->> When SNP is INIT state, all the SEV-legacy commands that cause the
->> firmware to write memory must be in the firmware state. The TMR memory
-> It'd be helpful to spell out Trusted Memory Region, I hadn't seen that
-> term before and for some reason my brain immediately thought "xAPIC register!".
-
-Noted.
-
-
+On Thu, Jul 15, 2021 at 9:11 PM Vasily Averin <vvs@virtuozzo.com> wrote:
 >
->> is allocated by the host but updated by the firmware, so, it must be
->> in the firmware state.  Additionally, the TMR memory must be a 2MB aligned
->> instead of the 1MB, and the TMR length need to be 2MB instead of 1MB.
->> The helper __snp_{alloc,free}_firmware_pages() can be used for allocating
->> and freeing the memory used by the firmware.
-> None of this actually states what the patch does, e.g. it's not clear whether
-> all allocations are being converted to 2mb or just the SNP.  Looks like it's
-> just SNP.  Something like this?
+> On 7/15/21 8:11 PM, Shakeel Butt wrote:
+> > On Tue, Apr 27, 2021 at 11:51 PM Vasily Averin <vvs@virtuozzo.com> wrote:
+> >>
+> >> OpenVZ uses memory accounting 20+ years since v2.2.x linux kernels.
+> >> Initially we used our own accounting subsystem, then partially committed
+> >> it to upstream, and a few years ago switched to cgroups v1.
+> >> Now we're rebasing again, revising our old patches and trying to push
+> >> them upstream.
+> >>
+> >> We try to protect the host system from any misuse of kernel memory
+> >> allocation triggered by untrusted users inside the containers.
+> >>
+> >> Patch-set is addressed mostly to cgroups maintainers and cgroups@ mailing
+> >> list, though I would be very grateful for any comments from maintainersi
+> >> of affected subsystems or other people added in cc:
+> >>
+> >> Compared to the upstream, we additionally account the following kernel objects:
+> >> - network devices and its Tx/Rx queues
+> >> - ipv4/v6 addresses and routing-related objects
+> >> - inet_bind_bucket cache objects
+> >> - VLAN group arrays
+> >> - ipv6/sit: ip_tunnel_prl
+> >> - scm_fp_list objects used by SCM_RIGHTS messages of Unix sockets
+> >> - nsproxy and namespace objects itself
+> >> - IPC objects: semaphores, message queues and share memory segments
+> >> - mounts
+> >> - pollfd and select bits arrays
+> >> - signals and posix timers
+> >> - file lock
+> >> - fasync_struct used by the file lease code and driver's fasync queues
+> >> - tty objects
+> >> - per-mm LDT
+> >>
+> >> We have an incorrect/incomplete/obsoleted accounting for few other kernel
+> >> objects: sk_filter, af_packets, netlink and xt_counters for iptables.
+> >> They require rework and probably will be dropped at all.
+> >>
+> >> Also we're going to add an accounting for nft, however it is not ready yet.
+> >>
+> >> We have not tested performance on upstream, however, our performance team
+> >> compares our current RHEL7-based production kernel and reports that
+> >> they are at least not worse as the according original RHEL7 kernel.
+> >
+> > Hi Vasily,
+> >
+> > What's the status of this series? I see a couple patches did get
+> > acked/reviewed. Can you please re-send the series with updated ack
+> > tags?
 >
->   Allocate the Trusted Memory Region (TMR) as a 2mb sized/aligned region when
->   SNP is enabled to satisfy new requirements for SNP.  Continue allocating a
->   1mb region for !SNP configuration.
+> Technically my patches does not have any NAKs. Practically they are still them merged.
+> I've expected Michal will push it, but he advised me to push subsystem maintainers.
+> I've asked Tejun to pick up the whole patch set and I'm waiting for his feedback right now.
 >
-Only the TMR allocation is converted to use the 2mb when SNP is enabled.
-
-
->> While at it, provide API that can be used by others to allocate a page
->> that can be used by the firmware. The immediate user for this API will
->> be the KVM driver. The KVM driver to need to allocate a firmware context
->> page during the guest creation. The context page need to be updated
->> by the firmware. See the SEV-SNP specification for further details.
-> ...
+> I can resend patch set once again, with collected approval and with rebase to v5.14-rc1.
+> However I do not understand how it helps to push them if patches should be processed through
+> subsystem maintainers. As far as I understand I'll need to split this patch set into
+> per-subsystem pieces and sent them to corresponded maintainers.
 >
->> @@ -1153,8 +1269,10 @@ static void sev_firmware_shutdown(struct sev_device *sev)
->>  		/* The TMR area was encrypted, flush it from the cache */
->>  		wbinvd_on_all_cpus();
->>  
->> -		free_pages((unsigned long)sev_es_tmr,
->> -			   get_order(SEV_ES_TMR_SIZE));
->> +
->> +		__snp_free_firmware_pages(virt_to_page(sev_es_tmr),
->> +					  get_order(sev_es_tmr_size),
->> +					  false);
->>  		sev_es_tmr = NULL;
->>  	}
->>  
->> @@ -1204,16 +1322,6 @@ void sev_pci_init(void)
->>  	    sev_update_firmware(sev->dev) == 0)
->>  		sev_get_api_version();
->>  
->> -	/* Obtain the TMR memory area for SEV-ES use */
->> -	tmr_page = alloc_pages(GFP_KERNEL, get_order(SEV_ES_TMR_SIZE));
->> -	if (tmr_page) {
->> -		sev_es_tmr = page_address(tmr_page);
->> -	} else {
->> -		sev_es_tmr = NULL;
->> -		dev_warn(sev->dev,
->> -			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
->> -	}
->> -
->>  	/*
->>  	 * If boot CPU supports the SNP, then first attempt to initialize
->>  	 * the SNP firmware.
->> @@ -1229,6 +1337,16 @@ void sev_pci_init(void)
->>  		}
->>  	}
->>  
->> +	/* Obtain the TMR memory area for SEV-ES use */
->> +	tmr_page = __snp_alloc_firmware_pages(GFP_KERNEL, get_order(sev_es_tmr_size), false);
->> +	if (tmr_page) {
->> +		sev_es_tmr = page_address(tmr_page);
->> +	} else {
->> +		sev_es_tmr = NULL;
->> +		dev_warn(sev->dev,
->> +			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
->> +	}
-> I think your patch ordering got a bit wonky.  AFAICT, the chunk that added
-> sev_snp_init() and friends in the previous patch 14 should have landed above
-> the TMR allocation, i.e. the code movement here should be unnecessary.
 
-I was debating about it whether to include all the SNP supports in one
-patch or divide it up. If I had included all legacy support new
-requirement in the same patch which adds the SNP then it will be a big
-patch. I had feeling that others may ask me to split it. So my approach is:
-
-* In the first patch adds SNP support only
-
-* Improve the legacy SEV/ES for the requirement when SNP is enabled.
-Once SNP is enabled,  there are two new requirement for the legacy
-SEV/ES guests
-
-  1) TMR must be 2mb
-
-  2) The buffer given to the firmware for the write must be in the
-firmware state.
-
-I also divided both of the new requirement in separate patches so that
-its easy to review.
-
-
->
->>  	/* Initialize the platform */
->>  	rc = sev_platform_init(&error);
->>  	if (rc && (error == SEV_RET_SECURE_DATA_INVALID)) {
-> ...
->
->> @@ -961,6 +965,13 @@ static inline int snp_guest_dbg_decrypt(struct sev_data_snp_dbg *data, int *erro
->>  	return -ENODEV;
->>  }
->>  
->> +static inline void *snp_alloc_firmware_page(gfp_t mask)
->> +{
->> +	return NULL;
->> +}
->> +
->> +static inline void snp_free_firmware_page(void *addr) { }
-> Hmm, I think we should probably bite the bullet and #ifdef and/or stub out large
-> swaths of svm/sev.c before adding SNP support.  sev.c is getting quite massive,
-> and we're accumulating more and more stubs outside of KVM because its SEV code
-> is compiled unconditionally.
+Usually these kinds of patches (adding memcg accounting) go through mm
+tree but if there are no dependencies between the patches and a
+consensus that each subsystem maintainer picks the corresponding patch
+then that is fine too.
