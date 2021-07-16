@@ -2,162 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A337A3CB73C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123F23CB75E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238968AbhGPMP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:15:58 -0400
-Received: from mail-dm6nam10on2053.outbound.protection.outlook.com ([40.107.93.53]:22305
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232667AbhGPMP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:15:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IQj26NLWMml1HAf/rY0XFozCdPrfZacBONuHdOXajNpqoeiD4vDD1dLdFTqfzs4eYEMzJRsaJ4AWoz3k+theN4Oq31hTm7/NUWL0jDHzai0ptVyB/oM8fvPvekNpp1cEjCUgJh633JufdrenD4kHHGpI9AQHKFPeiCUQK02YjfLqHQ3eMVfr0XEy+mGV2QqoTIqyarWsEy/Q2vNc19XpeBJOzR39gXFJsbn4yqCemzf3itw7QlSiOiWFp28mx8ao0DjJvgQ+QbkDiGMuroML6WEWVPJ4ndUnRIGOV1KYjS5nAIaYnVLnH5UTIYKxyMI+Bgfs2nlUPUib5uex8lBHOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/37BxLM1lJhqQptDhmGzO1FQuWPqqTduxYBkwiDlBC0=;
- b=d85B4knnq2QPdhNFnpnZzjCwjuXS6KddjB5/yGokReKwzdV+GYVd77OPvlc/g2MpuihuUOYkhxcHWdQywGgeuCz8qBABtjhfkrxHi3LyycqQ3WKKShpNAWx2/gvkLL4OYIKd13yTbIDUPFN+BkrM/4YI60zzzmfSj3mPq1hdKT8xFmsmS/BurelY67LdJ43c3zTy4F7Utk/kn35Q6FH4phbEVkQ+A+g+OjL4v9YpBtGEPQ1+06ITjT7jZOvwBnAFBznHbk+7fRhN9N7k4V3GZ6xafNAbXoEZ+K48DRjsbGMiqYu2T0HG6CStcJ+v+rsbDvPFx3Q7eLmLCpFqqT7QUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/37BxLM1lJhqQptDhmGzO1FQuWPqqTduxYBkwiDlBC0=;
- b=NaDX8oUXwjbpjHzTghflQRrTYXKySB//2ED6u9TFWZLZ/9LjaePeJhLlDAth/IhN2cON8A9PM5DlyI56G2yabc5dhY9pleA77V4aQamBSCU1XQJthzGx7jxCgtXRAt0Gbah2ksC+WqB/8oOKFnaD1G5J961ITxVcR3soF5CA1Tg=
-Received: from CO2PR18CA0043.namprd18.prod.outlook.com (2603:10b6:104:2::11)
- by BN6PR12MB1217.namprd12.prod.outlook.com (2603:10b6:404:20::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Fri, 16 Jul
- 2021 12:13:00 +0000
-Received: from CO1NAM11FT056.eop-nam11.prod.protection.outlook.com
- (2603:10b6:104:2:cafe::e0) by CO2PR18CA0043.outlook.office365.com
- (2603:10b6:104:2::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Fri, 16 Jul 2021 12:13:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT056.mail.protection.outlook.com (10.13.175.107) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 12:13:00 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
- 2021 07:12:59 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
- 2021 07:12:58 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 16 Jul 2021 07:12:48 -0500
-From:   Vijendar Mukunda <vijendar.mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Alexander.Deucher@amd.com>, <nartemiev@google.com>,
-        <Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-        <amistry@google.com>, Vijendar Mukunda <vijendar.mukunda@amd.com>,
-        "Vijendar Mukunda" <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Kuninori Morimoto" <kuninori.morimoto.gx@renesas.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] ASoC: amd: reverse stop sequence for stoneyridge platform
-Date:   Fri, 16 Jul 2021 18:00:13 +0530
-Message-ID: <20210716123015.15697-2-vijendar.mukunda@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210716123015.15697-1-vijendar.mukunda@amd.com>
-References: <20210716123015.15697-1-vijendar.mukunda@amd.com>
+        id S238543AbhGPMfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232810AbhGPMf3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 08:35:29 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8863C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:32:33 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id z9so8493884qkg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=j7wyr87naGUB33F8SqSus6GkWkTKgZNtY7A5hvhaL+A=;
+        b=kDx2GhblhGsC/wRLzIPRKzDOU2wVegoOAtRYCIXhdXyxTGNj6FgaxY7Rsq9ccjHiam
+         ioxkVeImYKgm8+HGT4BIEo4+PTrjrkmTq1QuFGvmIekRuEXJazonbgNjZxsafZWxq2HW
+         w+USLe+s6nP5P3/4vIPc9fnN/m3ySPNo0hijpBggKORaV7RdCnKfy5FFaX1Znragp4NT
+         qGSdssoBhiPJKzNtg9Ln3XFYg73bE7GzdedDz/iYfeExKFxIOT7qL5h8+2StpPnB+Mle
+         7t1NUzYLWqB97Qql7pvjJ6fcbl1/pFPoHu53h+MC6C+77R3Otew6fSIMwmWBlFe3mFDb
+         JlFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=j7wyr87naGUB33F8SqSus6GkWkTKgZNtY7A5hvhaL+A=;
+        b=c3C+QmgnBdtQhRfrKHjuFGqn0c4rxZ4U9VM+U9ZUcjJqsdPKHU0uDVRKrOtgE1x/Bq
+         SR36SjMCT6df9qEEAcfLqxsCRUKUDtgdAS8II0qfFLg2Qe8G3dNRzj+S6xKGNLWYIamz
+         lbcMoHhKaCfqh1KpBptORm6osr77k1UytMt3k6CbjJgrjOXEyI71uNZ3zHcsI0Lno5AS
+         Pv4z1eApFOV89EuXKQMpXdQWHh/wSuFdOZnYHQT319PBlwI/09HK0FvpUL6e9bELBpVg
+         Wz+6jmZCUAAS0uhtEXhjP4nNUecjLBEjhdNTvgK8HC/i2C+DoRWxMjI3pBdXMLvJiNtg
+         ZzEA==
+X-Gm-Message-State: AOAM5300+XQVZH/W00HeGymt1PSS1VoSKnz6qJFQxFRk984HNOxCUb70
+        +N2wf6pF9ATVNIF70t8LULeqyrSr9bA23LGNhmg=
+X-Google-Smtp-Source: ABdhPJyAyZPoJweQhfKavzFbRXsoGPCWQxkmGOpfdk488anxP9392s8rInl4xdoJ5vklNs+nu1Jkye2hhVtzsJpgvQU=
+X-Received: by 2002:a37:468b:: with SMTP id t133mr9711694qka.244.1626438752892;
+ Fri, 16 Jul 2021 05:32:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 596177fa-1e8c-45c3-cb46-08d948530de6
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1217:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB12170AFED7590D1A2ECA4DDB97119@BN6PR12MB1217.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:741;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0suPSnrbCLrXladIvfloKTBm2LY1S+SXe+f5CGzceg6eMXjNkKKq+81BnLMeJbpPXHXE5OaQVp7Ph3F4ky+npHiAab2+7z2HHfeiZn+3F85Q0KMzSziRaunx5p4gcexEjIu4Q6BtIVagJ3xdL79rI7U40U3TcgaHOlsSHwTiqFohg4kUpPgna0fEbkTfRCFWWHadZm8pOiNhYVc4fvA1Lk3t+jGRYubqL77fFzwCPAVu9QD4dxUB77EUlH5oG9UeY6B9aEeB1KqMWhti4hNTSsPNokSXRqSJIHRzY/XgK0r7VWit1Mca02ydcme9JiuN7/Ycu4AyidzghwTjPlDLlB8JwTSSxy5wAD8bVsfvANArTk56GMFYtu8KjVNhlwHUmuxEy8zs4dz/NLiGE5lX7HYWhNQe1VjlTBqABb5puPCdL8oXyA2BWl1L36iKxbpZY4VzHn5bnyDfLRcj50+fdnl6iCSbS4x/yGxdpCDgj45KLJ4weChsGrIwDfZEorGfCv7GNLX+SkYX/z4P4+2loHGWSzne2EBGj8lUC65Txeqw70X8c+DQJrKL0H2MiB6PNgrcj3ONRC8xrmd3h+BxtwknGVZ9W9dMnlEJ4AKhkVvkWWdfCwKO8Wbay4sSt9EVS9khOoC/kUpn4nJENaq3FXbV/hF0lC6oPUDE2rYltScPEmTaz/fjekBcuSnqoquudjuZCbfrk5aTtLyyzd4nu5QiwGD6JX15GAJWFqVmGZI=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(136003)(46966006)(36840700001)(478600001)(36756003)(36860700001)(82310400003)(426003)(316002)(4326008)(7696005)(2616005)(186003)(26005)(336012)(86362001)(5660300002)(110136005)(356005)(6666004)(82740400003)(70586007)(54906003)(8676002)(47076005)(2906002)(1076003)(81166007)(7416002)(44832011)(8936002)(70206006)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 12:13:00.0711
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 596177fa-1e8c-45c3-cb46-08d948530de6
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT056.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1217
+Received: by 2002:ac8:5c42:0:0:0:0:0 with HTTP; Fri, 16 Jul 2021 05:32:32
+ -0700 (PDT)
+Reply-To: rose.william.rw1442@gmail.com
+From:   Leo Smith <comeonessotina@gmail.com>
+Date:   Fri, 16 Jul 2021 00:32:32 -1200
+Message-ID: <CAN1DmZHb1WQQPgfnes+g=VLBcuz+CUq8EJ55mxpgfD5vBSgDyQ@mail.gmail.com>
+Subject: ATM CARD
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For Stoneyridge platform, it is required to invoke DMA driver stop
-first rather than invoking DWC I2S controller stop.
+Estimado amigo,
 
-Enable dai_link structure stop_dma_fist flag to reverse the stop
-sequence.
+Buen d=C3=ADa mi querido amigo, =C2=BFc=C3=B3mo est=C3=A1s?
+El tiempo mas largo. Me complace informarle sobre mi =C3=A9xito en la
+transferencia de esos fondos de herencia con la cooperaci=C3=B3n de un nuev=
+o
+socio de Argentina. Actualmente estoy en INDIA para proyectos de
+inversi=C3=B3n con mi propia parte de la suma total. Mientras tanto, no
+olvid=C3=A9 sus esfuerzos e =C2=A0intentos anteriores de ayudarme a transfe=
+rir
+esos fondos de herencia a pesar de que de alguna manera nos fallaron.
+Ahora comun=C3=ADquese con mi secretaria en LOME Togo, =C3=81frica occident=
+al,
+su nombre es MRS ROSE WILLIAM =C2=A0en su direcci=C3=B3n de correo electr=
+=C3=B3nico
+(rose.william.rw1442@gmail.com) =C2=A0p=C3=ADdale que le env=C3=ADe el tota=
+l de
+($500,000), quinientos mil d=C3=B3lares estadounidenses que Me qued=C3=A9 p=
+ara
+su compensaci=C3=B3n por todos los esfuerzos e intentos anteriores de
+ayudarme en la transacci=C3=B3n. Apreci=C3=A9 mucho sus esfuerzos en ese
+momento. As=C3=AD que si=C3=A9ntase libre de contactar a mi secretaria MRS =
+ROSE
+WILLIAM e indicarle d=C3=B3nde enviarle la TARJETA ATM de la =C2=A0suma tot=
+al
+($500,000.00). Por favor, av=C3=ADseme de inmediato que lo recibe =C2=A0par=
+a que
+podamos compartir la alegr=C3=ADa despu=C3=A9s de todo el sufrimiento en es=
+e
+momento. En este momento, estoy muy ocupado aqu=C3=AD debido a los
+proyectos de inversi=C3=B3n que estoy teniendo con mi nuevo socio en la
+mano, finalmente recuerde que le envi=C3=A9 instrucciones a mi secretaria
+en su nombre para recibir esa TARJETA ATM de ($ 500,000.00) as=C3=AD que
+sienta libre de ponerse en contacto con MRS ROSE WILLIAM, ella le
+enviar=C3=A1 el monto sin demora.
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/acp-da7219-max98357a.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 84e3906abd4f..9449fb40a956 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -576,6 +576,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] = {
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.init = cz_rt5682_init,
- 		.dpcm_playback = 1,
-+		.stop_dma_first = 1,
- 		.ops = &cz_rt5682_play_ops,
- 		SND_SOC_DAILINK_REG(designware1, rt5682, platform),
- 	},
-@@ -585,6 +586,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.dpcm_capture = 1,
-+		.stop_dma_first = 1,
- 		.ops = &cz_rt5682_cap_ops,
- 		SND_SOC_DAILINK_REG(designware2, rt5682, platform),
- 	},
-@@ -594,6 +596,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.dpcm_playback = 1,
-+		.stop_dma_first = 1,
- 		.ops = &cz_rt5682_max_play_ops,
- 		SND_SOC_DAILINK_REG(designware3, mx, platform),
- 	},
-@@ -604,6 +607,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.dpcm_capture = 1,
-+		.stop_dma_first = 1,
- 		.ops = &cz_rt5682_dmic0_cap_ops,
- 		SND_SOC_DAILINK_REG(designware3, adau, platform),
- 	},
-@@ -614,6 +618,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.dpcm_capture = 1,
-+		.stop_dma_first = 1,
- 		.ops = &cz_rt5682_dmic1_cap_ops,
- 		SND_SOC_DAILINK_REG(designware2, adau, platform),
- 	},
--- 
-2.17.1
 
+Atentamente,
+
+Sr. Leo Smith.
