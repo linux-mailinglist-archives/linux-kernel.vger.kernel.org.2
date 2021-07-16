@@ -2,137 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420893CBE19
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9FB3CBE05
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234777AbhGPU7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:59:52 -0400
-Received: from esa1.mentor.iphmx.com ([68.232.129.153]:45067 "EHLO
-        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhGPU7u (ORCPT
+        id S234054AbhGPUxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230415AbhGPUxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:59:50 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Jul 2021 16:59:50 EDT
-IronPort-SDR: p3F3OMqqi/FBn1jzJiFVk2JgtZwDn1DypYFtHclox8DXjFterUO17vuVm8HRARDf9bOB5+wXRg
- 4P745SiUd+aZnuwE6uCznra4darlLi4crivDqHAA36Dh1mnGPeuAgOCh1QEQqkJhD5uchTNzVY
- f+vX+gyXrZb0hoHiXaxpV9eVTzds5KeoyFgC9/gwptXeq7ik78Yn10OJt64BpD3/PDmOxQr0o5
- +qiswytS+hMalJuFYEwOlJXKK1Fq2o5Ml3s7hkM06/kHLwfA/u6epteQv/eZ+svZbAnQ8/lc0V
- ku4chJwHk7im6cgiW1PF6s1G
-X-IronPort-AV: E=Sophos;i="5.84,245,1620720000"; 
-   d="scan'208";a="66063730"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
-  by esa1.mentor.iphmx.com with ESMTP; 16 Jul 2021 12:49:49 -0800
-IronPort-SDR: 0LTvEaGOpdPEEWRO6+30U5xaO2Sm4vp//3nOGRfD7A4rotBp9QK2ds7YuSLHQpbBflUPM7gJri
- YE+KevlY04a9vga5SFFby77GL9INzEzaGcm6APCnrX+SmjthJhRteGpYcIw7/hn/9zejxsLull
- mI8eD7blGpaZzUGCYxf63FYtPXyZ+yjwQiwo74Q6dDGgCTop31fOan+VoeBeIcUFhxrU/rjxGw
- PHqUjUA/dEQOgIAM+0BofCGSDHb80UeHuCNhC8iJxzmEVtFg3CatH+ueN5/gyabA2DLq/fYr4F
- uJk=
-From:   "George G. Davis" <george_davis@mentor.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        "George G. Davis" <george_davis@mentor.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "open list:HYPERBUS SUPPORT" <linux-mtd@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     "George G. Davis" <davis.george@siemens.com>
-Subject: [PATCH] mtd: hyperbus: rpc-if: fix bug in rpcif_hb_remove
-Date:   Fri, 16 Jul 2021 16:49:35 -0400
-Message-ID: <20210716204935.25859-1-george_davis@mentor.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 16 Jul 2021 16:53:10 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EC8C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:50:13 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id ck17so5224960qvb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=eP+vdjS8P2oSI7HEDS+oh3O0Y+BLb63u8Xg1Z86gM8g=;
+        b=OyZEvDSzk2JzXO1WlOoiW9zJM0/OC3IPYXIxFo7A1ItTKDB7ZkYWs6Z0LNEDzV0wP7
+         an2p0lafJ7R9/5GOEoUxx5Wv0KlatzZ9CYV3rmS+L/a/zpw1jlBEggj25yOGpnVt0+oh
+         EvepArkPWyoYKLYU+SlIEbaEji7vbAdaUXBCLxfQyr0487znAEYX9qEmGTmYQz/UqSJr
+         LOAgxeypTy0xCyTrlf6kvHmbzA4hMxzYGl6WmAlFO0Oeiwq98cSF6VBK3Un4xq0mq6M1
+         LCY57MDqkIqbLVf1IieX34spfe6AD4tfqsIO3oafpmk3Uq/qh78j7mSFT5yKpyORO8Mi
+         u02A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=eP+vdjS8P2oSI7HEDS+oh3O0Y+BLb63u8Xg1Z86gM8g=;
+        b=onAB/V62tVpOxgPCdmKOCxbHuneEw5faZafHrP0weHUIfXGOHHLJAsbaJMh7JLOyzh
+         zr8yr3QuMlGc9td9WELMPqstdk3q/Cn2RDog71YyW5Z7EG+QlquSIlmCB9sCwSvlk9vs
+         qjNgq/DLk9p0KNTC0Qx3SDml4hnSw6N8YtadOT96Lp/8tLbUM+VKltTkYr8K27LNdv25
+         cFLNNeA5IpDpNztShDUnbc4IBRjsRUDXPN0fzLxEdIOsDAEAyWb4jIi8osT+j1s9R9Rs
+         zQP9HlyPTBQeSgqSSld9tx69h/ab7gLEI8YZJ1LuB6Fn5++7kTPAss8xj5/Ezu68OhRY
+         hMkQ==
+X-Gm-Message-State: AOAM532IMVI2ZRySFD+saewpwlWlJP6zk+8PYVLP9lCgX9RVEc+XW5ex
+        wWAhWH75pUwa2zVDnJnTNxiSLA==
+X-Google-Smtp-Source: ABdhPJxrik1zpDcx7wkwM7ODO9toNtzWr4VKncewI3Idid0KpMjorJgVg1Yumldacapk6mpiT/b5vw==
+X-Received: by 2002:a0c:d845:: with SMTP id i5mr12130743qvj.32.1626468612726;
+        Fri, 16 Jul 2021 13:50:12 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id c16sm3591087qtv.32.2021.07.16.13.50.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 13:50:12 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 13:50:10 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+cc:     akpm@linux-foundation.org, tyhicks@linux.microsoft.com,
+        pasha.tatashin@soleen.com, willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: KSM: fix data types
+In-Reply-To: <20210716055800.GA255851@asus>
+Message-ID: <181bd7fd-dcb6-3dea-305c-5764603d7d45@google.com>
+References: <20210716055800.GA255851@asus>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SVR-ORW-MBX-07.mgc.mentorg.com (147.34.90.207) To
- svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "George G. Davis" <davis.george@siemens.com>
+On Fri, 16 Jul 2021, Zhansaya Bagdauletkyzy wrote:
 
-The following KASAN BUG is observed when testing the rpc-if driver on
-rcar-gen3:
+> Change data types of ksm_run and ksm_stable_node_chains_prune_millisecs
+> as there were a few discrepancies between the types and actual values
+> that were stored:
+> 1) ksm_run is declared as unsigned long but in run_store(), it is
+> converted to unsigned int. Change its type to unsigned int.
 
-root@rcar-gen3:~# modprobe -r rpc-if
-[  101.930146] ==================================================================
-[  101.937408] BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x518/0x25d0
-[  101.944240] Read of size 8 at addr ffff0004c5be2750 by task modprobe/664
-[  101.950959]
-[  101.952466] CPU: 2 PID: 664 Comm: modprobe Not tainted 5.14.0-rc1-00342-g1a1464d7aa31 #1
-[  101.960578] Hardware name: Renesas H3ULCB board based on r8a77951 (DT)
-[  101.967120] Call trace:
-[  101.969580]  dump_backtrace+0x0/0x2c0
-[  101.973275]  show_stack+0x1c/0x30
-[  101.976616]  dump_stack_lvl+0x9c/0xd8
-[  101.980301]  print_address_description.constprop.0+0x74/0x2b8
-[  101.986071]  kasan_report+0x1f4/0x26c
-[  101.989757]  __asan_load8+0x98/0xd4
-[  101.993266]  __lock_acquire+0x518/0x25d0
-[  101.997215]  lock_acquire.part.0+0x18c/0x360
-[  102.001506]  lock_acquire+0x74/0x90
-[  102.005013]  _raw_spin_lock_irq+0x98/0x130
-[  102.009131]  __pm_runtime_disable+0x30/0x210
-[  102.013427]  rpcif_hb_remove+0x5c/0x70 [rpc_if]
-[  102.018001]  platform_remove+0x40/0x80
-[  102.021771]  __device_release_driver+0x234/0x350
-[  102.026412]  driver_detach+0x158/0x20c
-[  102.030179]  bus_remove_driver+0xa0/0x140
-[  102.034212]  driver_unregister+0x48/0x80
-[  102.038153]  platform_driver_unregister+0x18/0x24
-[  102.042879]  rpcif_platform_driver_exit+0x1c/0x34 [rpc_if]
-[  102.048400]  __arm64_sys_delete_module+0x210/0x310
-[  102.053212]  invoke_syscall+0x60/0x190
-[  102.056986]  el0_svc_common+0x12c/0x144
-[  102.060844]  do_el0_svc+0x88/0xac
-[  102.064181]  el0_svc+0x24/0x3c
-[  102.067257]  el0t_64_sync_handler+0x1a8/0x1b0
-[  102.071634]  el0t_64_sync+0x198/0x19c
-[  102.075315]
-[  102.076815] Allocated by task 628:
-[  102.080781]
-[  102.082280] Last potentially related work creation:
-[  102.087524]
-[  102.089022] The buggy address belongs to the object at ffff0004c5be2000
-[  102.089022]  which belongs to the cache kmalloc-2k of size 2048
-[  102.101555] The buggy address is located 1872 bytes inside of
-[  102.101555]  2048-byte region [ffff0004c5be2000, ffff0004c5be2800)
-[  102.113486] The buggy address belongs to the page:
-[  102.118409]
-[  102.119908] Memory state around the buggy address:
-[  102.124711]  ffff0004c5be2600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  102.131947]  ffff0004c5be2680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  102.139181] >ffff0004c5be2700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  102.146412]                                                  ^
-[  102.152257]  ffff0004c5be2780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  102.159491]  ffff0004c5be2800: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  102.166723] ==================================================================
+NAK to that part.
 
-The above bug is caused by use of the wrong pointer in the
-rpcif_disable_rpm() call. Fix the bug by using the correct pointer.
+Compiling with CONFIG_MEMORY_HOTREMOVE=y would show why.
 
-Fixes: e806241e03b7 ("mtd: hyperbus: add Renesas RPC-IF driver")
-Signed-off-by: George G. Davis <davis.george@siemens.com>
----
- drivers/mtd/hyperbus/rpc-if.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Search for where ksm_run is used: in one place there's
+	wait_on_bit(&ksm_run, ilog2(KSM_RUN_OFFLINE), TASK_UNINTERRUPTIBLE);
+and wait_on_bit() operates on unsigned long *word.
 
-diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
-index ecb050ba95cd..2806024b50ac 100644
---- a/drivers/mtd/hyperbus/rpc-if.c
-+++ b/drivers/mtd/hyperbus/rpc-if.c
-@@ -150,9 +150,9 @@ static int rpcif_hb_remove(struct platform_device *pdev)
- {
- 	struct rpcif_hyperbus *hyperbus = platform_get_drvdata(pdev);
- 	int error = hyperbus_unregister_device(&hyperbus->hbdev);
--	struct rpcif *rpc = dev_get_drvdata(pdev->dev.parent);
- 
--	rpcif_disable_rpm(rpc);
-+	rpcif_disable_rpm(&hyperbus->rpc);
-+
- 	return error;
- }
- 
--- 
-2.17.1
+Before that wait while offlining, yes, ksm_run used to be an unsigned int.
 
+But there's nothing to be fixed by changing it to unsigned int now.
+Save four bytes?  Better look elsewhere if you want to save four bytes.
+
+> 2) ksm_stable_node_chains_prune_millisecs is declared as int, but in
+> stable__node_chains_prune_millisecs_store(), it can store values up to
+> UINT_MAX. Change its type to unsigned int.
+
+Ack to that part.
+
+> 
+> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+> ---
+> v1 -> v2:
+> - merge two patches into one
+
+Sorry, that didn't work out so well.
+
+Hugh
+
+> 
+>  mm/ksm.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/ksm.c b/mm/ksm.c
+> index 3fa9bc8a67cf..2e4bd7662e52 100644
+> --- a/mm/ksm.c
+> +++ b/mm/ksm.c
+> @@ -259,7 +259,7 @@ static unsigned long ksm_stable_node_chains;
+>  static unsigned long ksm_stable_node_dups;
+>  
+>  /* Delay in pruning stale stable_node_dups in the stable_node_chains */
+> -static int ksm_stable_node_chains_prune_millisecs = 2000;
+> +static unsigned int ksm_stable_node_chains_prune_millisecs = 2000;
+>  
+>  /* Maximum number of page slots sharing a stable node */
+>  static int ksm_max_page_sharing = 256;
+> @@ -289,7 +289,7 @@ static int ksm_nr_node_ids = 1;
+>  #define KSM_RUN_MERGE	1
+>  #define KSM_RUN_UNMERGE	2
+>  #define KSM_RUN_OFFLINE	4
+> -static unsigned long ksm_run = KSM_RUN_STOP;
+> +static unsigned int ksm_run = KSM_RUN_STOP;
+>  static void wait_while_offlining(void);
+>  
+>  static DECLARE_WAIT_QUEUE_HEAD(ksm_thread_wait);
+> @@ -2874,7 +2874,7 @@ KSM_ATTR(pages_to_scan);
+>  static ssize_t run_show(struct kobject *kobj, struct kobj_attribute *attr,
+>  			char *buf)
+>  {
+> -	return sysfs_emit(buf, "%lu\n", ksm_run);
+> +	return sysfs_emit(buf, "%u\n", ksm_run);
+>  }
+>  
+>  static ssize_t run_store(struct kobject *kobj, struct kobj_attribute *attr,
+> @@ -3105,11 +3105,11 @@ stable_node_chains_prune_millisecs_store(struct kobject *kobj,
+>  					 struct kobj_attribute *attr,
+>  					 const char *buf, size_t count)
+>  {
+> -	unsigned long msecs;
+> +	unsigned int msecs;
+>  	int err;
+>  
+> -	err = kstrtoul(buf, 10, &msecs);
+> -	if (err || msecs > UINT_MAX)
+> +	err = kstrtouint(buf, 10, &msecs);
+> +	if (err)
+>  		return -EINVAL;
+>  
+>  	ksm_stable_node_chains_prune_millisecs = msecs;
+> -- 
+> 2.25.1
