@@ -2,140 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8553CB5CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115643CB5D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236999AbhGPKQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
+        id S237446AbhGPKRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235965AbhGPKQK (ORCPT
+        with ESMTP id S235965AbhGPKRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:16:10 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19FEC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:13:15 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m4KqA-0001KF-3V; Fri, 16 Jul 2021 12:13:06 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m4Kq5-0000E2-I2; Fri, 16 Jul 2021 12:13:01 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m4Kq5-0000Wa-GI; Fri, 16 Jul 2021 12:13:01 +0200
-Date:   Fri, 16 Jul 2021 12:13:01 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: Re: [v9 2/2] pwm: Add Aspeed ast2600 PWM support
-Message-ID: <20210716101301.l563tdwt5xuq5iq6@pengutronix.de>
-References: <20210709065217.6153-1-billy_tsai@aspeedtech.com>
- <20210709065217.6153-3-billy_tsai@aspeedtech.com>
- <20210715150533.vppkw5oiomkxmfrn@pengutronix.de>
- <BD5B012C-B377-45E2-B04E-61D12B086670@aspeedtech.com>
- <20210716070943.ayxkz2irkwhgincz@pengutronix.de>
- <DD5590B4-11BC-411B-95BF-03AC26C078E4@aspeedtech.com>
+        Fri, 16 Jul 2021 06:17:20 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E82C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:14:25 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id c16so7243642ybl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:14:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iuGIeqokxksveNDV8VeICX98RmyrNiDBw8DitAGWHLg=;
+        b=CRb+ROcYUseCzx1ggWJ4DRbmNH6qFprgQKZKyen8mr3mM8NO86kkvrltKnBN8AurhQ
+         T+PQ3lbhzkSa1ovSD/3ptd/0lXtbmjqq7tqe3vcNNCMhJbjMEltG6hCsXuAGwXWCuUUV
+         M8CIc/5scR/h0Vy6fOv2XP3BEXMIjYaMH0zLUfrAP5cirPjE/bxIiSnkPpY/mZ/TgCqd
+         LgO77fUMDU2sIuw70aF64ytZib0Ko0/cl0YDWT7jMChslHRLzBL+dwONug8CJ6DESikQ
+         WNsZWrpRLq3y4sWBHUWsjUe00SljcWCmqlYy7OcylPKOZJ0S3lvYutiSrrXHlGlU9Kp5
+         JHZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iuGIeqokxksveNDV8VeICX98RmyrNiDBw8DitAGWHLg=;
+        b=qvYlNcj3dwk2MtPB+OTjv/Xnew8W2s1TMFGN89wC5arahGpYTABrQCR5kSRhU+2eKE
+         v8Qk228IJlXpswXXhln0CBGI63JDnQoGQwXiCHvWa5mEhe1shUkmvOCZquxfkKnB/aIy
+         QrJNYC4ugI4b3sWEmiZeg2EGW66hCLFOE3nFaJXiAON/aw2Vm5YkfrAnQbci/MCvTHAq
+         EqFIQr4sPYIJHE99EdyOs2NP3zYJS/1PIMP5Fr1dI7W4RX7qOaqL9CF2oukZcY9pIMX3
+         /W13D968EWwb3ChSnLgBfKnlVkz4ZZtf79XYDzZWIJTftTedLqMyxCMc/Gh8i98XQl1x
+         TFBA==
+X-Gm-Message-State: AOAM5320pOH8jSIB4sZ8o5nRykPVG3JHmrR41we/XSzGFH5V+CLSYL3s
+        yp12s19UpPWnjUKeMLpUkWGDLMBg+wcHU/jWxMw=
+X-Google-Smtp-Source: ABdhPJzo88Lq7bhSroU1MJ9N1q8Wpi6VmrVvjFHrQ8OHEVTbVLlrajUJjP1mKn6mHCAsk/4Qh9gzSpSKtI6I70lOq0g=
+X-Received: by 2002:a5b:504:: with SMTP id o4mr11904798ybp.332.1626430464415;
+ Fri, 16 Jul 2021 03:14:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="o6m277jeq5onsbp7"
-Content-Disposition: inline
-In-Reply-To: <DD5590B4-11BC-411B-95BF-03AC26C078E4@aspeedtech.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210702014319.1265766-1-bmeng.cn@gmail.com> <20210702014319.1265766-2-bmeng.cn@gmail.com>
+ <CAMuHMdWpJ194jEnXiUhs5dfC-33rGUm7pE9aMHUTYoMCUdFxZA@mail.gmail.com>
+In-Reply-To: <CAMuHMdWpJ194jEnXiUhs5dfC-33rGUm7pE9aMHUTYoMCUdFxZA@mail.gmail.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Fri, 16 Jul 2021 18:14:13 +0800
+Message-ID: <CAEUhbmXrSJ2dkXYvoZXTZ+3gV3h9OBx3u0hOitwLvMDKa2A4DA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] riscv: dts: microchip: Add ethernet0 to the aliases node
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Lewis Hanly <lewis.hanly@microchip.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Bin Meng <bin.meng@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Geert,
 
---o6m277jeq5onsbp7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jul 16, 2021 at 5:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Bing,
+>
+> On Fri, Jul 2, 2021 at 3:44 AM Bin Meng <bmeng.cn@gmail.com> wrote:
+> > From: Bin Meng <bin.meng@windriver.com>
+> >
+> > U-Boot expects this alias to be in place in order to fix up the mac
+> > address of the ethernet node.
+> >
+> > Note on the Icicle Kit board, currently only emac1 is enabled so it
+> > becomes the 'ethernet0'.
+> >
+> > Signed-off-by: Bin Meng <bin.meng@windriver.com>
+>
+> Thanks for your patch!
 
-Hello Billy,
+Thanks for the review!
 
-On Fri, Jul 16, 2021 at 09:22:22AM +0000, Billy Tsai wrote:
-> On 2021/7/16, 3:10 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutronix.=
-de> wrote:
->=20
->     On Fri, Jul 16, 2021 at 01:48:20AM +0000, Billy Tsai wrote:
->     >> On 2021/7/15, 11:06 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@peng=
-utronix.de>> wrote:
->     >>     > Another is: The PWM doesn't support duty_cycle 0, on such a =
-request the
->     >>     > PWM is disabled which results in a constant inactive level.
->     >>=20
->     >>     > (This is correct, is it? Or does it yield a constant 0 level=
-?)
->     >>=20
->     >> Our pwm can support duty_cycle 0 by unset CLK_ENABLE.
->=20
->     > This has a slightly different semantic though. Some consumer might
->     > expect that the following sequence:
->=20
->     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10000, .enabl=
-ed =3D true })
->     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 0, .enabled =
-=3D true })
->     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10000, .enabl=
-ed =3D true })
->=20
->     > results in the output being low for an integer multiple of 10 =B5s.=
- This
->     > isn't given with setting CLK_ENABLE to zero, is it? (I didn't reche=
-ck,
->     > if the PWM doesn't complete periods on reconfiguration this doesn't
->     > matter much though.)
-> Thanks for the explanation.
-> Our hardware actually can only support duty from 1/256 to 256/256.
-> For this situation I can do possible solution:
-> We can though change polarity to meet this requirement. Inverse the pin a=
-nd use
-> duty_cycle 100.=20
-> But I think this is not a good solution for this problem right?
+>
+> > --- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+> > +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+> > @@ -9,6 +9,10 @@ / {
+> >         model = "Microchip MPFS Icicle Kit";
+> >         compatible = "microchip,mpfs-icicle-kit";
+> >
+> > +       aliases {
+> > +               ethernet0 = &emac1;
+> > +       };
+> > +
+> >         chosen {
+> >         };
+>
+> This should be added to the board DTS (microchip-mpfs-icicle-kit.dts)
+> instead.
 
-If this doesn't result in more glitches that would be fine for me.
-(Assuming it is documented good enough in the code to be
-understandable.)
+I was wondering the same thing before doing this, but when I checked
+all other DTS in arch/riscv/boot I found the aliases node is put in
+the SoC dtsi file instead of the board on so I think that's the
+convention.
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---o6m277jeq5onsbp7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDxW6kACgkQwfwUeK3K
-7AnuOQf/cdtxnx5ap7eAcXsCJxd1wMM4sHbrRR3Kx2nE9MwAuU44x7P3khR9XSzv
-3S2xsnfWdrdxNQY/DOAfuSuCTgZ92BwzHt22OV8tPACYJOKgatgJtupBIBge0Bmh
-16uJgAJa8UYl5xYgXwWumLgKR7btLaZRGTg63nyvXfYYyQPo4n5Hej7fE+o2cjBE
-jpDMoOQCu4dYgaBZXqhhLZDMv7jtfeHeHn71lggEr5PB+xhNBMRKXIcQFqODAnIQ
-U6u0zGwi696702Zh5iavfwOCTO+NfMUmNBKqNoYn9pDmcclvXh84PDCHHKIj9KII
-ZlB10IqeSbWdPwhTSWbzqrtcafFLuQ==
-=Nk6o
------END PGP SIGNATURE-----
-
---o6m277jeq5onsbp7--
+Regards,
+Bin
