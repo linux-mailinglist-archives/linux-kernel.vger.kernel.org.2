@@ -2,172 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453F03CB78A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EDA3CB788
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239582AbhGPM4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239459AbhGPM4u (ORCPT
+        id S234357AbhGPM4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:56:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51147 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232757AbhGPM4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:56:50 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A147CC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:53:54 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id x19so5138281ljc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qIXbeXJh4xnnEzuHiviZSGnyTwYzRolVv7/vAGelNEs=;
-        b=q2rZp/6nSgaheqyIunCgxYXSuuGtsUM9Kxe6YSWEUSVa8m4HR9M550GEna0DbKCld4
-         NFPhETlg88j3zKUvUNJDQOTs9OOrvzJ0Yw31Ft7lIDvZh46LIN8B/QDdymrB+R9kngdn
-         iSMvIHQIPlRnh7vjcM0rRipTcoWTZJwTCricYH6j1WyYW9QfHw6qR35NAiyKmfiJbU4p
-         B+YdqUrrl5oWJQr//Rlq8MFhObpPHhitazQ7PMXwAAYBHlTNyhcDe0mdAwmfbrYyviTv
-         +msCwjHytPxKeR4FGfbgaX4epcky1MgE3ET35AyE9x2OEs1ysmWcNyKsAKwWIHDeX0Sl
-         9qFg==
+        Fri, 16 Jul 2021 08:56:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626440028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZPTvg/IdQ5a8q1Cw2aONE7wqYd41qCqeyO8lI1tAOio=;
+        b=Aki8yLEkr7NTZkRBvMqCtGIL05++in5lb1I9bWKic0jM6QOechHWiICFwzrAyJXqzqrJq9
+        NcNprWTqF2AS2uieRGlfdb4Jx8jevZqac6O8+MgZa48o5/chWMYBhV8SxJ3RpCrvL6I6W4
+        XK9xiWHIjA3jAYzZk1srFgwOJVOkUyw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549-fFSt400nMzmEUDWFFMy0rA-1; Fri, 16 Jul 2021 08:53:45 -0400
+X-MC-Unique: fFSt400nMzmEUDWFFMy0rA-1
+Received: by mail-wr1-f72.google.com with SMTP id k3-20020a5d52430000b0290138092aea94so4794006wrc.20
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:53:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qIXbeXJh4xnnEzuHiviZSGnyTwYzRolVv7/vAGelNEs=;
-        b=Kl4BdJM0aSbc28G3uMofElhHsNE1msDnj7A+ACcFWf7D/7+P6BAUZJ1FL83ossFoda
-         McIVu+913AkFh5NN/6HFfxmnxYohjIE1mzAI2CRx90fi09q7UZBSqX7ounWZqTI4/oS/
-         AluPfvkuqdtRk7Duh/3UcAneRlnowEKYPLl50D3Jj3Rxcp2jqryubqx4KCtn7GlYZfaN
-         XCyw8ItTkuOQcAmUo7BD45EpmLSiV3/ufDpUqN6Zq/88ZSlNgm+znqtVB/0mhwl7f8N/
-         TszItU+YaQLJ9yi4OmaMqyPMy5ahTT+L9HUQefLoYJaFTnzQpAF23y12lUnYbAjN1J+R
-         P5zw==
-X-Gm-Message-State: AOAM530rTRr5qzESnKISf3AQnLMO7P29EeWxiAleaYD/QW2PCGcLF+l3
-        05S354a8BXNd0XypJ53r9aA/zeFWvciYMppP04wJ+0mpDcX22dNRkMA2ZA==
-X-Google-Smtp-Source: ABdhPJz6XvfF9zHYInIIdr4DqTpU+AALXgxYTbgQHJoS1YdKtGx6AiJE1OQvdOZmYfk51pX27uPsiE/B8leffF7w82w=
-X-Received: by 2002:a2e:b8cc:: with SMTP id s12mr9033565ljp.66.1626440032739;
- Fri, 16 Jul 2021 05:53:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ZPTvg/IdQ5a8q1Cw2aONE7wqYd41qCqeyO8lI1tAOio=;
+        b=NIgopcLZ1KaHCEOYSJL2rpw4DaYbVa2287WROoh+GMG/IJme/mlUPnGqThA1nS/XbD
+         ny2SwLKSEQ5McaxSAkcavAq8QhXNCC1QWrzrpkp7pZ4Vrqc09bcrzSlNnv0gtFLowRLE
+         65sODkEK/RqWVcSYXPpIFlxWiHg1v1rcs3IQRGIm1uoanIS13tgVVzQH6X84S1+F5vwl
+         aahwTONQWeC+qEwrUxLrbXW2jUamNlJsX5OiDPF8MzGv8Immg8gQ9b7L/X1fT5g0iqOk
+         R0tKYuw8XsAZU/nxfrHN+pEI0r8bij0ZLUWep59XuiUfFqs/V5AHfkT8I+CqlHH41IDc
+         DLYA==
+X-Gm-Message-State: AOAM531n2aTelmpaoQeboBvF70/V3kJ50OPkis7w9yxwSJa+18gZqjkx
+        Qy7+KjW7XktjFyHqRLMgdLDTtTEYo0f3j0OrxjtzRzqEw6lhBQNt29SnMzoX14iXgFe4e4V5S/n
+        KTyCzYRQ+TBXU57irOXGj0h+Mrw0nb2OGgGl5R22/kjwoiMWciR3K3o8sP/1R6izKWXheeqJH
+X-Received: by 2002:a5d:428d:: with SMTP id k13mr12290466wrq.269.1626440023983;
+        Fri, 16 Jul 2021 05:53:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6BW5q2g15VlrWMWnSGVnKtR76dMaQz5P9c1z3WEUts29V8IRrZ432wuNnnmC9NNxuPsb/EQ==
+X-Received: by 2002:a5d:428d:: with SMTP id k13mr12290445wrq.269.1626440023790;
+        Fri, 16 Jul 2021 05:53:43 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c621f.dip0.t-ipconnect.de. [91.12.98.31])
+        by smtp.gmail.com with ESMTPSA id z16sm9867946wrh.58.2021.07.16.05.53.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 05:53:42 -0700 (PDT)
+Subject: Re: [PATCH] virtio-balloon: Use virtio_find_vqs() helper
+To:     tianxianting <xianting.tian@linux.alibaba.com>,
+        Xianting Tian <xianting_tian@126.com>, mst@redhat.com,
+        jasowang@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <1626190724-7942-1-git-send-email-xianting_tian@126.com>
+ <bbe52a89-c7ea-c155-6226-0397f223cd80@linux.alibaba.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <95d7f688-79fc-05dc-87ca-da46e0179f0e@redhat.com>
+Date:   Fri, 16 Jul 2021 14:53:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210715170011.GA17324@lst.de> <20210716083934.154992-1-rm.skakun@gmail.com>
- <20210716093551.GA17981@lst.de>
-In-Reply-To: <20210716093551.GA17981@lst.de>
-From:   Roman Skakun <rm.skakun@gmail.com>
-Date:   Fri, 16 Jul 2021 15:53:41 +0300
-Message-ID: <CADu_u-OYA+Z_y-DBLxyUYGhmLVMtLggmZ_SnRiEtw9EGrO4oGg@mail.gmail.com>
-Subject: Re: [PATCH v2] dma-mapping: use vmalloc_to_page for vmalloc addresses
-To:     Christoph Hellwig <hch@lst.de>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
-        Andrii Anisov <andrii_anisov@epam.com>,
-        Roman Skakun <Roman_Skakun@epam.com>,
-        Roman Skakun <rm.skakun@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <bbe52a89-c7ea-c155-6226-0397f223cd80@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Technically this looks good.  But given that exposing a helper
-> that does either vmalloc_to_page or virt_to_page is one of the
-> never ending MM discussions I don't want to get into that discussion
-> and just keep it local in the DMA code.
->
-> Are you fine with me applying this version?
+On 16.07.21 14:46, tianxianting wrote:
+> Do you interest in this patch? just little improvment:)
 
-Looks good to me, thanks!
-But, Stefano asked me about using created helper in the
-xen_swiotlb_free_coherent()
-and I created a patch according to this mention.
+I am, especially when I'm cc'ed and aware of it ;)
 
-We can merge this patch and create a new one for
-xen_swiotlb_free_coherent() later.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-=D0=BF=D1=82, 16 =D0=B8=D1=8E=D0=BB. 2021 =D0=B3. =D0=B2 12:35, Christoph H=
-ellwig <hch@lst.de>:
->
-> Technically this looks good.  But given that exposing a helper
-> that does either vmalloc_to_page or virt_to_page is one of the
-> never ending MM discussions I don't want to get into that discussion
-> and just keep it local in the DMA code.
->
-> Are you fine with me applying this version?
->
-> ---
-> From 40ac971eab89330d6153e7721e88acd2d98833f9 Mon Sep 17 00:00:00 2001
-> From: Roman Skakun <Roman_Skakun@epam.com>
-> Date: Fri, 16 Jul 2021 11:39:34 +0300
-> Subject: dma-mapping: handle vmalloc addresses in
->  dma_common_{mmap,get_sgtable}
->
-> xen-swiotlb can use vmalloc backed addresses for dma coherent allocations
-> and uses the common helpers.  Properly handle them to unbreak Xen on
-> ARM platforms.
->
-> Fixes: 1b65c4e5a9af ("swiotlb-xen: use xen_alloc/free_coherent_pages")
-> Signed-off-by: Roman Skakun <roman_skakun@epam.com>
-> Reviewed-by: Andrii Anisov <andrii_anisov@epam.com>
-> [hch: split the patch, renamed the helpers]
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  kernel/dma/ops_helpers.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-> index 910ae69cae77..af4a6ef48ce0 100644
-> --- a/kernel/dma/ops_helpers.c
-> +++ b/kernel/dma/ops_helpers.c
-> @@ -5,6 +5,13 @@
->   */
->  #include <linux/dma-map-ops.h>
->
-> +static struct page *dma_common_vaddr_to_page(void *cpu_addr)
-> +{
-> +       if (is_vmalloc_addr(cpu_addr))
-> +               return vmalloc_to_page(cpu_addr);
-> +       return virt_to_page(cpu_addr);
-> +}
-> +
->  /*
->   * Create scatter-list for the already allocated DMA buffer.
->   */
-> @@ -12,7 +19,7 @@ int dma_common_get_sgtable(struct device *dev, struct s=
-g_table *sgt,
->                  void *cpu_addr, dma_addr_t dma_addr, size_t size,
->                  unsigned long attrs)
->  {
-> -       struct page *page =3D virt_to_page(cpu_addr);
-> +       struct page *page =3D dma_common_vaddr_to_page(cpu_addr);
->         int ret;
->
->         ret =3D sg_alloc_table(sgt, 1, GFP_KERNEL);
-> @@ -32,6 +39,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_=
-struct *vma,
->         unsigned long user_count =3D vma_pages(vma);
->         unsigned long count =3D PAGE_ALIGN(size) >> PAGE_SHIFT;
->         unsigned long off =3D vma->vm_pgoff;
-> +       struct page *page =3D dma_common_vaddr_to_page(cpu_addr);
->         int ret =3D -ENXIO;
->
->         vma->vm_page_prot =3D dma_pgprot(dev, vma->vm_page_prot, attrs);
-> @@ -43,7 +51,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_=
-struct *vma,
->                 return -ENXIO;
->
->         return remap_pfn_range(vma, vma->vm_start,
-> -                       page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgo=
-ff,
-> +                       page_to_pfn(page) + vma->vm_pgoff,
->                         user_count << PAGE_SHIFT, vma->vm_page_prot);
->  #else
->         return -ENXIO;
-> --
-> 2.30.2
->
+One nit below
+
+> 
+> ÔÚ 2021/7/13 ÏÂÎç11:38, Xianting Tian Ð´µÀ:
+>> From: Xianting Tian <xianting.tian@linux.alibaba.com>
+>>
+>> Use the helper virtio_find_vqs().
+>>
+>> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>> ---
+>>    drivers/virtio/virtio_balloon.c | 4 ++--
+>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+>> index 510e931..18e0bf3 100644
+>> --- a/drivers/virtio/virtio_balloon.c
+>> +++ b/drivers/virtio/virtio_balloon.c
+>> @@ -531,8 +531,8 @@ static int init_vqs(struct virtio_balloon *vb)
+>>    		callbacks[VIRTIO_BALLOON_VQ_REPORTING] = balloon_ack;
+>>    	}
+>>    
+>> -	err = vb->vdev->config->find_vqs(vb->vdev, VIRTIO_BALLOON_VQ_MAX,
+>> -					 vqs, callbacks, names, NULL, NULL);
+>> +	err = virtio_find_vqs(vb->vdev, VIRTIO_BALLOON_VQ_MAX, vqs,
+>> +				callbacks, names, NULL);
+				^
+we tend to indent this such that it is aligned with the line above (see 
+the old code), unless the code becomes unreadable
 
 
---=20
-Best Regards, Roman.
+-- 
+Thanks,
+
+David / dhildenb
+
