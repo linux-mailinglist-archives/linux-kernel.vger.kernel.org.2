@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B079E3CBC9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C1D3CBCA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhGPTek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbhGPTei (ORCPT
+        id S232880AbhGPTfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:35:20 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:55331 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231715AbhGPTfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:34:38 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAD6C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 12:31:42 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id t4-20020a05683014c4b02904cd671b911bso2932769otq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 12:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=/XzjQ3hrT1h6mwJfiVdsgdMHQh30ZOTfHqhe4pDPAFc=;
-        b=Z6K1RaVI1ceFMzC3AvNoZAO+R2p/p6Ol+5P6/qyYUGWKuVBe20+XeDO5Qnhae3Ll3E
-         jvep7E0deaHxTY37gGGEPNQTZwlJBY3AL3rzot/zzhpGXe90sOKfybg4z34EO8fTzxKx
-         2GPnei4KDxACl8dt1yCV8ev2UNDGvZ2pZ73Fg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=/XzjQ3hrT1h6mwJfiVdsgdMHQh30ZOTfHqhe4pDPAFc=;
-        b=SPPV8ABZHtniMgldcod8IaHG06taXsnlKRF+4y/B9xhtGu4M0Cr05Eewmmxfzqm8bQ
-         EGaN8ySvIPCkW8CWedrRO0UazsCYw1VBjvknKlx7VMH8axjeli2ieifxM+hT9Pa33Uhz
-         axdBuzlCBGCCCuUiUkjeVnkhx6NgfF7pYHgm17ZppdCbGXSo43iNHtw5m6fUSaq/qUvp
-         ehD/O3etOy1TCBGuc2+ub862hZNuWpC53qs/mjy+M1cd2H3GtnJtIXqIXg30u29x1hzN
-         PLJ1cECEdB1kKo/+el140Qe95B04SkJcRBZmmqjJ5UO0OEhNbpqSJfIgLuY0PoWL3amG
-         fteA==
-X-Gm-Message-State: AOAM531HRVNgoww2Hkwzvs/V2qQVOzu+6M8NIv+fzSkoUl0W7aoEbWAi
-        9GD/gbfMnSF4m5qV327wMyAx9QMqbg8fGpHiG9/HrA==
-X-Google-Smtp-Source: ABdhPJzQwM5RPFiII+LtE0CwZjRVpF8zxHa5i+kGr1DzmTt77SNBsgiIRAwe0LeNJBUpuSEMP64BgD4Ps/ZjjhoJ2M0=
-X-Received: by 2002:a9d:650e:: with SMTP id i14mr9386454otl.233.1626463902381;
- Fri, 16 Jul 2021 12:31:42 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 16 Jul 2021 21:31:42 +0200
+        Fri, 16 Jul 2021 15:35:14 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id C2C163200909;
+        Fri, 16 Jul 2021 15:32:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 16 Jul 2021 15:32:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=OLLt4rGNVAu8jJhkBVYgJExcmT2
+        QBI1XXhNObcl8su8=; b=aa13BIQOss1hQCY4wLFOX9npRr8DztT8k7zUW8jnzJX
+        /nMGPwX/NC+hVgEfj3+oWpcqmtWnc4H5Rt9WVacErNJZDUVwiKoCuYX3MitUxwNp
+        vTPBOBN/w3RCYeWJEb9UF/O5RqXNZNIeHNuj/NU6PNY0uNIC7wxh+obYOj0eXJ5F
+        1IRZ9IfJhIyJCJIKvPUuDD1e0ar9qgtviO44wdLAhbTIaLpvHlZu66OAvp4T8+67
+        j/qr5PGO7t4QjmhssldkMjO+bHovwVCM+0/Nbc4ZhRGdlUl/off6dckMeiLBbkXX
+        X39HOx2e/3WuiP9ebig3KHtha6tnrD2crG2/v+C3cdg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=OLLt4r
+        GNVAu8jJhkBVYgJExcmT2QBI1XXhNObcl8su8=; b=KtCsouRi3ZCJ2vsx5ExiVt
+        n4+8AtWRFzE17vS8Azbz6ehAN8Xd+tefa236GnjNgB7X7zJErd4mHWupzAlt2spy
+        2srO0ov+IUyyzF6qmtw4m5qHSdyaBmVe32VruXxd+4tWXgKzGK61Uta4UW/YeRAQ
+        jVYS4S+yrku679q3gYDdKGSmashVaomJcYMcSyFJpOHqmW7pzZd4WdSv8OFaemiF
+        odv65p75tAqX6kz30+EaAbLvjocHtyNyEsTcow8glL4+HPgL2CY+iFWUjTXE3y/Q
+        8WvsCPe7xxY3cR5d+fJZdSN07BAPOHRAP7LZidHn/qQee5F9NCuM55XpDFNcv4Gg
+        ==
+X-ME-Sender: <xms:wN7xYIWqIVT9JRvodBdW2Cr21_eNYvgHyhiyaGsmCC0kvTDLzqdOFw>
+    <xme:wN7xYMk0G-J-x2Q_PuECiSEgfoRyNR1CX3YEJVdwsswUI0p3giACH-KhKYLFdorjy
+    6TCwBfHkvEWxRVINw>
+X-ME-Received: <xmr:wN7xYMZnrqVPFLz7SUyB63sfQYkESxK6VbVkP98cTa6OY1XfkMu8NeE2uRrCr-asAd8Ip2lRt0fsdA5qNNQHqjZZl-ftaFuyDSBc4s4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefgdduvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjohesthdtredttddtvdenucfhrhhomhepofgrrhhk
+    ucfirhgvvghruceomhhgrhgvvghrsegrnhhimhgrlhgtrhgvvghkrdgtohhmqeenucggtf
+    frrghtthgvrhhnpedujeelgeejleegleevkeekvdevudfhteeuiedtleehtdduleelvdei
+    fffhvdehtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhhgrhgvvghrsegrnhhimhgrlhgt
+    rhgvvghkrdgtohhm
+X-ME-Proxy: <xmx:wN7xYHV_6d87NS_7y4Mt2jrr4MLAmu4Vo3wlgKD5eUub5oAfqkuZvQ>
+    <xmx:wN7xYCknDlFPw0WWMsy5YFTRf9Jqn5MZBeWFeWj0K0flK7JWlwYxHw>
+    <xmx:wN7xYMce6GI0j_9yBxh3yNVO8XJyzIK-qNBg8euZZUiW0OEJE6ukeg>
+    <xmx:wd7xYJvmbwZ9tKdp_-FUWFwdv78ILaccBI93cYvQ59QFfxf56KPnig>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 16 Jul 2021 15:32:16 -0400 (EDT)
+Received: by blue.animalcreek.com (Postfix, from userid 1000)
+        id 4050B1360093; Fri, 16 Jul 2021 12:32:15 -0700 (MST)
+Date:   Fri, 16 Jul 2021 12:32:15 -0700
+From:   Mark Greer <mgreer@animalcreek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Mark Greer <mgreer@animalcreek.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-nfc@lists.01.org
+Subject: Re: [linux-nfc] Re: [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof
+ Kozlowski as maintainer
+Message-ID: <20210716193215.GA597092@animalcreek.com>
+References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
+ <961dc9c5-0eb0-586c-5e70-b21ca2f8e6f3@linaro.org>
+ <d498c949-3b1e-edaa-81ed-60573cfb6ee9@canonical.com>
+ <20210512164952.GA222094@animalcreek.com>
+ <df2ec154-79fa-af7b-d337-913ed4a0692e@canonical.com>
+ <20210715183413.GB525255@animalcreek.com>
+ <d996605f-020c-95c9-6ab4-cfb101cb3802@canonical.com>
+ <20210716171513.GB590407@animalcreek.com>
+ <CA+Eumj7SPFXOMUGRxZqjG-0Jq_1EnWwh9Ny-a=+QsN8tfrrCwg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1626443927-32028-3-git-send-email-pmaliset@codeaurora.org>
-References: <1626443927-32028-1-git-send-email-pmaliset@codeaurora.org> <1626443927-32028-3-git-send-email-pmaliset@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 16 Jul 2021 21:31:41 +0200
-Message-ID: <CAE-0n506Phfr=HBYgg+KDHaDAN7+GqmJSeviv7mpY=x973yd5A@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
-To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+Eumj7SPFXOMUGRxZqjG-0Jq_1EnWwh9Ny-a=+QsN8tfrrCwg@mail.gmail.com>
+Organization: Animal Creek Technologies, Inc.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Prasad Malisetty (2021-07-16 06:58:45)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index a8c274a..06baf88 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -15,6 +15,7 @@
->  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
->  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->  #include <dt-bindings/thermal/thermal.h>
-> +#include <dt-bindings/gpio/gpio.h>
->
->  / {
->         interrupt-parent = <&intc>;
-> @@ -546,6 +547,118 @@
->                         #power-domain-cells = <1>;
+On Fri, Jul 16, 2021 at 08:17:31PM +0200, Krzysztof Kozlowski wrote:
+> On Fri, 16 Jul 2021 at 19:15, Mark Greer <mgreer@animalcreek.com> wrote:
+> > > I am happy to move entire development to github and keep kernel.org only
+> > > for releases till some distro packages notice the change. If Github,
+> > > then your linux-nfc looks indeed nicer.
+> >
+> > Okay, lets do that.  I'm the owner so I can give permissions to whoever
+> > needs them (e.g., you :).
+> 
+> Then please assign some to the account "krzk" on Github. Thanks!
 
-Is this the gpucc node? At address 3d90000? Please sort the nodes based
-on their address, so this would be 1c08000 which comes before gpucc and
-some others in this file.
-
->                 };
->
-> +               pcie1: pci@1c08000 {
-> +                       compatible = "qcom,pcie-sc7280", "qcom,pcie-sm8250", "snps,dw-pcie";
-> +                       reg = <0 0x01c08000 0 0x3000>,
-> +                             <0 0x40000000 0 0xf1d>,
-> +                             <0 0x40000f20 0 0xa8>,
-> +                             <0 0x40001000 0 0x1000>,
-> +                             <0 0x40100000 0 0x100000>;
-> +
+Done.
