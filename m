@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE39C3CBABF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12F13CBAC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhGPQyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:54:06 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:56661 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhGPQyF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:54:05 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 46A79C0004;
-        Fri, 16 Jul 2021 16:51:09 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 18:51:08 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH resend] Input: adc-keys - drop bogus __refdata annotation
-Message-ID: <YPG4/N9nVuPvEuqq@piout.net>
-References: <7091e8213602be64826fd689a7337246d218f3b1.1626255421.git.geert+renesas@glider.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7091e8213602be64826fd689a7337246d218f3b1.1626255421.git.geert+renesas@glider.be>
+        id S229794AbhGPQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:59:58 -0400
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:50830 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229534AbhGPQ7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:59:53 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it ([79.54.92.92])
+        by smtp-33.iol.local with ESMTPA
+        id 4R8tmKNNmS6GM4R8xmO7ae; Fri, 16 Jul 2021 18:56:57 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1626454617; bh=ybTEgBqSGSk7CgeQhAXjaoIWf5L8GRxV3Eiz04dFePA=;
+        h=From;
+        b=L1hdgjdkCzi4AZ4tqpEYU/SIrwWUqcFGNcmrGfyG3i9PdNdRg5yfS107Y9DEV9o2r
+         x0PAUxVfKaBAymp74IWa/Odu6YU0scMVdnEIC0TUTJa/X7ehXERTnkJrzMxiz1WbWS
+         3qI+sSW6w++i1jMPPdx/Gi0H1U9E+Q8cHqAxF9vl4SGG3tVLCeu4l1GFe9TVUDRu+c
+         cA2Avkf3yrfF72+EgFDoE/iYMG4TKXLlcRZogu224vhiy/Wf2CcPLi92WP4KWMHvRT
+         lOmst9q5j5yiu+KXF3JGNT1dHWadKIeEtVQyEtJGAM4e3I4/4ezXTVOFrvby/1IOiy
+         kzaTXz23rY9tQ==
+X-CNFS-Analysis: v=2.4 cv=AcF0o1bG c=1 sm=1 tr=0 ts=60f1ba59 cx=a_exe
+ a=eKwsI+FXzXP/Nc4oRbpalQ==:117 a=eKwsI+FXzXP/Nc4oRbpalQ==:17
+ a=X8-5zgEFGoXRYfRO6I8A:9
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Gianluca Falavigna <gianluca.falavigna@inwind.it>,
+        Dario Binacchi <dariobin@libero.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 0/4] can: c_can: cache frames to operate as a true FIFO
+Date:   Fri, 16 Jul 2021 18:56:19 +0200
+Message-Id: <20210716165623.19677-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfKoMV/+nZGBCPIXBiH3gvl6PDXsLIr3ajj3MP7Mrxti8SWfQlE/FXiPXzaPo3/kHl2XKpq4Gy1ZfkK7F1OP7Wfm9TETNnU1dtw+U56kgbTbcL3g2u1YN
+ ItnFnJG5lXNPyTBo5oQjLpt8tnjq6mhufAss2yoNaPmKrVAtfctBfjD9K8bcHaPuIbTno4uZ7yEMG5qM11K8HnS2uZ9Zznj24eiqdFGnrjossx9TLZHD8rXn
+ WqwBU0qj0Qgc/pYUEGXcwKC+7X4a7IFeLWFEDTKYsrRfxpu0J2ZXP2OLHUe0uoPzdjaEoEcLYVaK9++zzZ7uITaasq3TLg0Dx9A/+wKGPglXg0wgSTBx93Ip
+ TbJwP3CLOglfqqRKZX4SS1F9qv1dgXWRegMU9ushtN8ak25ZxowLyDyL1lw+1IZ7JTxFiKGNwVLltzThps8M4kcbRo/CE709AN47nfGG/uGck6aSvMs8YL5z
+ /iSdnjJBGmZfRSwzrpPrjuC6gFzuONJZ/GqaXDpR4bsh5Sq/vFh2cJrGFnV4d3AMISoIQPrXf9SyUEysN7vfuicBdQfxy9qEu189yzoHcFe7Hw5jAnCSTNBn
+ 2vWuR3PONPUzXxponzlS/cbfE/qLrLoi1GqjXsYXAYmsEg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2021 11:38:33+0200, Geert Uytterhoeven wrote:
-> As the ADC ladder input driver does not have any code or data located in
-> initmem, there is no need to annotate the adc_keys_driver structure with
-> __refdata.  Drop the annotation, to avoid suppressing future section
-> warnings.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-I must admit I can't remember why I used that annotation...
+Performance tests of the c_can driver led to the patch that gives the
+series its name. I also added two patches not really related to the topic
+of the series.
 
-> ---
->  drivers/input/keyboard/adc-keys.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/keyboard/adc-keys.c b/drivers/input/keyboard/adc-keys.c
-> index 6d5be48d1b3d7988..bf72ab8df817756f 100644
-> --- a/drivers/input/keyboard/adc-keys.c
-> +++ b/drivers/input/keyboard/adc-keys.c
-> @@ -193,7 +193,7 @@ static const struct of_device_id adc_keys_of_match[] = {
->  MODULE_DEVICE_TABLE(of, adc_keys_of_match);
->  #endif
->  
-> -static struct platform_driver __refdata adc_keys_driver = {
-> +static struct platform_driver adc_keys_driver = {
->  	.driver = {
->  		.name = "adc_keys",
->  		.of_match_table = of_match_ptr(adc_keys_of_match),
-> -- 
-> 2.25.1
-> 
+
+Dario Binacchi (4):
+  can: c_can: remove struct c_can_priv::priv field
+  can: c_can: exit c_can_do_tx() early if no frames have been sent
+  can: c_can: support tx ring algorithm
+  can: c_can: cache frames to operate as a true FIFO
+
+ drivers/net/can/c_can/c_can.h          |  26 ++++++-
+ drivers/net/can/c_can/c_can_main.c     | 100 +++++++++++++++++++------
+ drivers/net/can/c_can/c_can_platform.c |   1 -
+ 3 files changed, 101 insertions(+), 26 deletions(-)
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.17.1
+
