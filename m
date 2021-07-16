@@ -2,113 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A4B3CBFB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 01:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44393CBFCE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 01:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238526AbhGPX2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 19:28:19 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51490 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238357AbhGPX2N (ORCPT
+        id S238211AbhGPXgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 19:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhGPXgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 19:28:13 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16GNPGSp034143;
-        Fri, 16 Jul 2021 18:25:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626477916;
-        bh=KMh+xYCKp3lz1lbhSc7teWZOSWSvK8XcAT3a/rlmcMQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=nMMozQfClJmhB90YB5EBQsK50YFCcivMBggqJgVXgIeXpU09d6B1BZv06GvDsX67z
-         fXsAAy9DmUjb6K4Gg2urDAIPpWBpYEm2HygNE04Wx1Wj6fJUQeyfF4BpUMfCUK3Tjy
-         UAAEd/aIKEwtsmZwu/B7w9Y8IND0C6OKsou/DCkA=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16GNPGYJ069159
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Jul 2021 18:25:16 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
- Jul 2021 18:25:15 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 16 Jul 2021 18:25:16 -0500
-Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16GNP5S9105596;
-        Fri, 16 Jul 2021 18:25:13 -0500
-From:   Apurva Nandan <a-nandan@ti.com>
-To:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Apurva Nandan <a-nandan@ti.com>, Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v2 2/2] spi: cadence-quadspi: Fix check condition for DTR ops
-Date:   Fri, 16 Jul 2021 23:25:03 +0000
-Message-ID: <20210716232504.182-3-a-nandan@ti.com>
-X-Mailer: git-send-email 2.31.1.windows.1
-In-Reply-To: <20210716232504.182-1-a-nandan@ti.com>
-References: <20210716232504.182-1-a-nandan@ti.com>
+        Fri, 16 Jul 2021 19:36:45 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9644FC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 16:33:48 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so11649324otl.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 16:33:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p4sJXPq51knQRXxfT1Fmba0meWahSlo3pLoib5wqgPM=;
+        b=XvjJnvEXW1hM1N8JQPVoI2NHYjOctl0J68IDS9lGsydmUOnoTmFyJkGSSvL6HHFMJY
+         T+3SmBIRcXxcc3fiVzzIn8MrysN19gt60URfcRYO8/Q+3aXhGVLQPsfZmk/abBH1jGXI
+         5pC5h4rpUz1B2wIDMe3rsweXiXxO2fnz86YriAmY5IPLPqxPswYf6NGMDomxDE6VoEhB
+         xIY98kP8U9rZC5P699W06KTtqoLB2Wvc6Ei6tGZQOBrzEr1yAo8yDXSqxVlE/TVAGMGI
+         JiXY/jFj56J+H/C35xYnzf8TLiU/cChv9ACa6l91zc6e1tv5A7WCPe2bkfyxdp7KaJU8
+         2yzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p4sJXPq51knQRXxfT1Fmba0meWahSlo3pLoib5wqgPM=;
+        b=ADiqaQrTnL61k8kWSHU7DJM/YXn1XZvR6/MDrRqCc1MU1rV4eLz43ozBQua6GB3kl4
+         V+7oCSwiysVESOKf/2TTbrAgCaMO2ceb1z+cL5m3bPaoTTU90dPX5by3RrPWXETqfPWY
+         zKwK0Z+o6BEzuLULrtMfhRCPFjaOAQQO4WJ8Erkqo1q41WFiR2E4lnJ4mYkSOeJOMPpI
+         ZRWz7xSy6zTny0q+J7rdT32lVwFi4Rb4F78fPbDzShblDRwkc0V1dHBDfUQQff6Osqja
+         x6MznF4i5F/2WTpgLQrIs8kihtiCcvuii2Z1ZnCmto4A1xp88eoTC+EEGAdkA23l8zwx
+         XtIg==
+X-Gm-Message-State: AOAM531qvfZ7vwSAVRO4ZWLb5F9EwRqkfjGcrIm+c/plS9fbOgLaOioK
+        RJAH4xbsacJSJH4IRhuetsLiuzfu5xld2g3fxcEtvQ==
+X-Google-Smtp-Source: ABdhPJx8yOzbofIVDQTUnc+VNQJDvUAiVMIP+aWbMOFNH240uSnZ2wHaWt1+3bffRyEcm5kyO/gJeTb2hWnLCake18E=
+X-Received: by 2002:a9d:63c6:: with SMTP id e6mr9800065otl.295.1626478427511;
+ Fri, 16 Jul 2021 16:33:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1626425406-18582-1-git-send-email-weijiang.yang@intel.com> <1626425406-18582-5-git-send-email-weijiang.yang@intel.com>
+In-Reply-To: <1626425406-18582-5-git-send-email-weijiang.yang@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 16 Jul 2021 16:33:36 -0700
+Message-ID: <CALMp9eQR1u_iXWEg+EEtL0_4mVC_T4d_3QqWy-8a4gncN7CmHQ@mail.gmail.com>
+Subject: Re: [PATCH v6 04/12] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_DEPTH for
+ guest Arch LBR
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, like.xu.linux@gmail.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-buswidth and dtr fields in spi_mem_op are only valid when the
-corresponding spi_mem_op phase has a non-zero length. For example,
-SPI NAND core doesn't set buswidth when using SPI_MEM_OP_NO_ADDR
-phase.
+On Fri, Jul 16, 2021 at 1:36 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+>
+> From: Like Xu <like.xu@linux.intel.com>
+>
+> The number of Arch LBR entries available is determined by the value
+> in host MSR_ARCH_LBR_DEPTH.DEPTH. The supported LBR depth values are
+> enumerated in CPUID.(EAX=01CH, ECX=0):EAX[7:0]. For each bit "n" set
+> in this field, the MSR_ARCH_LBR_DEPTH.DEPTH value of "8*(n+1)" is
+> supported.
+>
+> On a guest write to MSR_ARCH_LBR_DEPTH, all LBR entries are reset to 0.
+> KVM writes guest requested value to the native ARCH_LBR_DEPTH MSR
+> (this is safe because the two values will be the same) when the Arch LBR
+> records MSRs are pass-through to the guest.
+>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
 
-Fix the dtr checks in set_protocol() and suppports_mem_op() to
-ignore empty spi_mem_op phases, as checking for dtr field in
-empty phase will result in false negatives.
+It might be worth noting that KVM_SET_MSRS cannot be used to emulate a
+wrmsr instruction in the guest, but maybe that's already implicit.
 
-Signed-off-by: Apurva Nandan <a-nandan@ti.com>
----
- drivers/spi/spi-cadence-quadspi.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index a2de23516553..1cec1c179a94 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -325,7 +325,15 @@ static int cqspi_set_protocol(struct cqspi_flash_pdata *f_pdata,
- 	f_pdata->inst_width = CQSPI_INST_TYPE_SINGLE;
- 	f_pdata->addr_width = CQSPI_INST_TYPE_SINGLE;
- 	f_pdata->data_width = CQSPI_INST_TYPE_SINGLE;
--	f_pdata->dtr = op->data.dtr && op->cmd.dtr && op->addr.dtr;
-+
-+	/*
-+	 * For an op to be DTR, cmd phase along with every other non-empty
-+	 * phase should have dtr field set to 1. If an op phase has zero
-+	 * nbytes, ignore its dtr field; otherwise, check its dtr field.
-+	 */
-+	f_pdata->dtr = op->cmd.dtr &&
-+		       (!op->addr.nbytes || op->addr.dtr) &&
-+		       (!op->data.nbytes || op->data.dtr);
- 
- 	switch (op->data.buswidth) {
- 	case 0:
-@@ -1228,8 +1236,15 @@ static bool cqspi_supports_mem_op(struct spi_mem *mem,
- {
- 	bool all_true, all_false;
- 
--	all_true = op->cmd.dtr && op->addr.dtr && op->dummy.dtr &&
--		   op->data.dtr;
-+	/*
-+	 * op->dummy.dtr is required for converting nbytes into ncycles.
-+	 * Also, don't check the dtr field of the op phase having zero nbytes.
-+	 */
-+	all_true = op->cmd.dtr &&
-+		   (!op->addr.nbytes || op->addr.dtr) &&
-+		   (!op->dummy.nbytes || op->dummy.dtr) &&
-+		   (!op->data.nbytes || op->data.dtr);
-+
- 	all_false = !op->cmd.dtr && !op->addr.dtr && !op->dummy.dtr &&
- 		    !op->data.dtr;
- 
--- 
-2.17.1
-
+Reviewed-by: Jim Mattson <jmattson@google.com>
