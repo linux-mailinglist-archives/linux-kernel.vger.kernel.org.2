@@ -2,154 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B9A3CBC0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499F63CBC17
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhGPSuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230018AbhGPSuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:50:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D1CD613FD;
-        Fri, 16 Jul 2021 18:47:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626461226;
-        bh=UEtfPyp/Usfco2Tor+/jAbTAAnZolOhcKHgVFrMM0LQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yfa/lKlemkuNKMvim6cWTVXgNfG7VBUt98eeMBRC1S6JWrjexvTRh18HOBynRFNv+
-         gOImaLa4vaNq9mtYvjef5vZXlcZ1rps1SPVAEfn69WL9ysWevX7q+0QeeSo79fLwCd
-         DxK8zsfzGTvjZ/G4tjaKg5etR2MGRQQ0FjmUqCx+xSk9Vvyfmf8nq8SpXk+PWjTCA7
-         8JBrZ564m7/yjrSOfFQXb+JZwwx4ppGPprk3Yc4b12W31f/BxxMgzSNX2llXpQkQpO
-         uVAxvKSLCyLEGqiwClJ9Q2x/gPL2obWx1Wr0wyY1HuJuHjSalmEAbQJVrdlEEsu3Jh
-         dVOByFTpZJ2Bw==
-Date:   Fri, 16 Jul 2021 11:47:02 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [GIT PULL] fallthrough fixes for Clang for 5.14-rc2
-Message-ID: <YPHUJsiaOuqzW0Od@archlinux-ax161>
-References: <20210714200523.GA10606@embeddedor>
- <CAHk-=wjQeeUiv+P_4cZfCy-hY13yGqCGS-scKGhuJ-SAzz2doA@mail.gmail.com>
+        id S232181AbhGPSup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232427AbhGPSuY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:50:24 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6971C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:47:28 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso7577280pjp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H+pBQszJfRlqDFcT5AL34vP285QtEH3o1QexaECMHjE=;
+        b=C6DA69bqkyuEEQ3/+YCbmMXwlUQEL2xr8/dCAS92UBXzQIfwSujEmvMblQ9zZkfwFq
+         y7i7pqMBykFqqMxhPBauRADJsOdFnqoOQqSeLwUgsH+7oLrF6GH35rs0ff7KBGgCrFjl
+         +0RLeSt0GDAIMuIfhSscxggApj0IYW+zFOUbgFlEOTBMgU80KSryDUrLcPEMeXPm24BG
+         hDz/KrYY9D5MstmykN0+L429aMS7EEh5mDNBBCywkkaOVN2edvjWANrWwXmxSlk/MEfq
+         CefVoLCI64YKzU6182BkczRnBclrvgrIRnhrA8A+4ZWjJd7qCNZnDlRA/qD6AWzsjE7T
+         c5pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H+pBQszJfRlqDFcT5AL34vP285QtEH3o1QexaECMHjE=;
+        b=X8cpM0voP4D7iWpE+EF33UdLHZ0zyHjb8sfX0/zrEXcKJfF6gh5/UfwYeEpeZknNUF
+         lmGJAqAtbcs7LGtMCqwVjFeozJlVxbD9j/69ul2viaFbJMwHYgiyZaESO0AXdHsXTgTg
+         G5+blI6MvgdQ/Hk16YVuCCn3WDXFhmjDdpC7s6XHb+woIMsOSwRCQE27oZfMrsQZsu3x
+         srq+r42nN9+31Mtjf3o8HICnRhR4wuXG85a/eMkjSiKHEq7DjK0sQXfkrprS1xzHy4rE
+         qAPOo3EUSHPTGAPuSdcUBTGpN52cYp2+SZTPROElR+4qeMIuzr+VJVeTnI4B//weI3iI
+         Zdyw==
+X-Gm-Message-State: AOAM532ZY6tHz3kxoEoWpHODglUk8LFB4GHeuKrIDls82H22HRbsgNQ8
+        eCzNKvRf+lZCy4ADMxZucx98/Q==
+X-Google-Smtp-Source: ABdhPJx25sqmHQRngk6kCUpj+FKylcaajEufZWTIO2wsCzdPzzfsFBsP1+lrBSYS0cTw9qfYsGQECg==
+X-Received: by 2002:a17:90a:fd93:: with SMTP id cx19mr16879210pjb.65.1626461248258;
+        Fri, 16 Jul 2021 11:47:28 -0700 (PDT)
+Received: from localhost.localdomain (23-118-52-46.lightspeed.sntcca.sbcglobal.net. [23.118.52.46])
+        by smtp.gmail.com with ESMTPSA id q125sm3170240pga.87.2021.07.16.11.47.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 11:47:27 -0700 (PDT)
+From:   Peter Oskolkov <posk@posk.io>
+X-Google-Original-From: Peter Oskolkov <posk@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrei Vagin <avagin@google.com>,
+        Jim Newsome <jnewsome@torproject.org>,
+        Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: [RFC PATCH 0/4 v0.3] sched/UMCG
+Date:   Fri, 16 Jul 2021 11:47:15 -0700
+Message-Id: <20210716184719.269033-1-posk@google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjQeeUiv+P_4cZfCy-hY13yGqCGS-scKGhuJ-SAzz2doA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 06:04:15PM -0700, Linus Torvalds wrote:
-> On Wed, Jul 14, 2021 at 1:03 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/Wimplicit-fallthrough-clang-5.14-rc2
-> 
-> Grr.
-> 
-> I merged this, but when I actually tested it on my clang build, it
-> turns out that the clang "-Wimplicit-fallthrough" flag is unbelievable
-> garbage.
-> 
-> I get
-> 
->    warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
-> 
-> and the stupid warning doesn't even say WHERE THE PROBLEM HAPPENS.
-> 
-> No file name, no line numbers. Just this pointless garbage warning.
-> 
-> Honestly, how does a compiler even do something that broken? Am I
-> supposed to use my sixth sense to guide me in finding the warning?
-> 
-> I like the concept of the fallthrough warning, but it looks like the
-> clang implementation of it is so unbelievably broken that it's getting
-> disabled again.
-> 
-> Yeah, I can
-> 
->  (a) build the kernel without any parallelism
-> 
->  (b) use ">&" to get both output and errors into the same file
-> 
->  (c) see that it says
-> 
->     CC      kernel/sched/core.o
->   warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
->   1 warning generated.
-> 
-> and now I see at least which _file_ it is that causes that warning.
-> 
-> I can then use my incredible powers of deduction (it's almost like a
-> sixth sense, but helped by the fact that there's only one single
-> "fallthrough" statement in that file) to figure out that it's
-> triggered by this code:
-> 
->                 case cpuset:
->                         if (IS_ENABLED(CONFIG_CPUSETS)) {
->                                 cpuset_cpus_allowed_fallback(p);
->                                 state = possible;
->                                 break;
->                         }
->                         fallthrough;
->                 case possible:
-> 
-> and it all makes it clear that the clang warning is just incredibly
-> broken garbage not only in that lack of filename and line number, but
-> just in general.
+This is another attempt at implementing UMCG, based on
+discussion in https://lore.kernel.org/patchwork/cover/1433967/ and
+https://lore.kernel.org/lkml/20210708194638.128950-1-posk@google.com/
 
-I commented this on the LLVM bug tracker but I will copy and paste it
-here for posterity:
+Most of the "why" is covered here (some details are obsolete):
+https://lore.kernel.org/patchwork/cover/1433967/#1632328
 
-"It is actually the fact that
+At a high level, UMCG servers/workers provide the foundation
+for an M:N threading library, as described in the link above.
 
-case 1:
-    if (something || !IS_ENABLED(CONFIG_SOMETHING))
-        return blah;
-    fallthrough;
-case 2:
+Joel Fernandes has also once mentioned that he had a use case
+for a wake+bring-the-wakee-to-the-current-CPU operation,
+so this is now also supported via UMCG_WF_CURRENT_CPU flag
+(patch 3).
 
-looks like
+Patch 1: add WF_CURRENT_CPU and tweak ttwu - same as last time
+Patch 2: add X86_64 helpers to work atomically with userspace values
+Patch 3: add helpers to work with single-linked lists in userspace
+Patch 4: implement UMCG kernel-side
 
-case 1:
-    return blah;
-    fallthrough;
-case 2:
+In this version of the patchset I used only userspace/TLS
+data, as suggested by Peter Zijlstra. With the exception
+of one issue (see patch 3 commit message) everything seems
+to be working great.
 
-For example: https://godbolt.org/z/GdPeMbdo8
+This TLS-only approach makes the userspace code a bit more
+involved, so I'm not posting libumcg/selftests with this
+patchset to focus on the kernel side only.
 
-int foo(int a) {
-    switch (a) {
-    case 0:
-        if (0)
-            return 0;
-        __attribute__((__fallthrough__)); // no warning
-    case 1:
-        if (1)
-            return 1;
-        __attribute__((__fallthrough__)); // warning
-    case 2:
-        return 3;
-    default:
-        return 4;
-    }
-}
+v0.2->v0.3 chages:
+- split patch 2 into two paches: atomic ops and llist ops
+- rework atomic ops in patch 2 to avoid "stac/clac nonsense"
+- make llist kernel-side operations constant time (no indefinite
+  spinning)
+- make task wakeup work without spinning/retries
 
-I am not really sure how to resolve that within checkFallThroughIntoBlock() or
-fillReachableBlocks() but given that this is something specific to the kernel,
-we could introduce -Wimplicit-fallthrough-unreachable then disable it within
-the kernel.
+I'm not aware of any issues with this patchset other than
+what's mentioned below. In short, it seems that "SMP basics":
+block/wake detection, worker "scheduling" by servers, etc.
+all work.
 
-The file location not showing up was fixed by commit 1b4800c26259
-("[clang][parser] Set source ranges for GNU-style attributes"). The
-differential revision mentions this issue specifically."
+TODO:
+  - combine cmpxchg_user_32/64 functions into a macro in patch 2
+  - implement timeout handling
+  - imlement worker preemption
+  - more testing
+  - manpages, docs, and similar
+  - attach libumbc and selftest patches
 
-Hopefully that would be an adequate solution, otherwise someone with more clang
-internal will have to take a look.
+Peter Oskolkov (4):
+  sched: add WF_CURRENT_CPU and externise ttwu
+  sched/umcg: RFC: add userspace atomic helpers
+  sched/umcg: RFC: add userspace sll helpers
+  sched/umcg: RFC: implement UMCG syscalls
 
-Cheers,
-Nathan
+ arch/x86/entry/syscalls/syscall_64.tbl |   2 +
+ include/linux/sched.h                  |   6 +
+ include/linux/syscalls.h               |   4 +
+ include/uapi/asm-generic/unistd.h      |   8 +-
+ include/uapi/linux/umcg.h              | 259 +++++++++++++
+ init/Kconfig                           |  10 +
+ kernel/exit.c                          |   7 +
+ kernel/sched/Makefile                  |   1 +
+ kernel/sched/core.c                    |  20 +-
+ kernel/sched/fair.c                    |   4 +
+ kernel/sched/sched.h                   |  15 +-
+ kernel/sched/umcg.c                    | 485 +++++++++++++++++++++++++
+ kernel/sched/umcg.h                    | 298 +++++++++++++++
+ kernel/sys_ni.c                        |   4 +
+ 14 files changed, 1112 insertions(+), 11 deletions(-)
+ create mode 100644 include/uapi/linux/umcg.h
+ create mode 100644 kernel/sched/umcg.c
+ create mode 100644 kernel/sched/umcg.h
+
+--
+2.25.1
+
