@@ -2,108 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0A73CBC25
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15713CBC2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhGPTB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:01:29 -0400
-Received: from mail-il1-f179.google.com ([209.85.166.179]:33650 "EHLO
-        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhGPTB2 (ORCPT
+        id S232240AbhGPTCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:02:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36828 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231335AbhGPTCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:01:28 -0400
-Received: by mail-il1-f179.google.com with SMTP id z1so9255372ils.0;
-        Fri, 16 Jul 2021 11:58:33 -0700 (PDT)
+        Fri, 16 Jul 2021 15:02:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626461988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t3eOYXdWOcxLwyJeyCXZFcz5Qu68cSCzVAnpdB+6mag=;
+        b=f7dhxgU2+3RRUlmbcK8zgD4ZrOTrxj1+IZyHNsVO8I/wlH2LgvfRzc5ms8+V3CvCQSvU/7
+        Zy+2vpanOs6TMGXCsCWRn6CpkRPjBSJ1Ur/9YIYj57H2ayqUWJFrpg91XcKBMg0AgFMEQi
+        amPejuYRr15nm3kGl7fKyuojAGdAN94=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-o9o9uPxuPVmGn9LIWjQ3LQ-1; Fri, 16 Jul 2021 14:59:46 -0400
+X-MC-Unique: o9o9uPxuPVmGn9LIWjQ3LQ-1
+Received: by mail-qt1-f200.google.com with SMTP id w3-20020ac80ec30000b029024e8c2383c1so6923638qti.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:59:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=JaHBZHQkUG9nkOZjub36ylaekqJrFIALCWzr0fx4JWc=;
-        b=sKSgu+Ok5qYStzj+ksn9SITOS500BZ8hkxzcSAkw8QVGc/PZ/XHsOz7T/Io9dwP2o8
-         IcAPKJDVQpcXWLDdQcj3fWsQblVmVRyRb0CHZoZi+nzQbixPWnz7YhhcyI1VbI6TYpEk
-         a2J13qGNTCrV2LTdoD3zkgchsn7mijlhBc0uTjKfw7bx65+pLA0JADV0m/kBmUJaq6yB
-         Svy0RnulXGZxgizkJ/RUz4MqRkOiUU6HzjBsOlCMa17JBzltAA+NvItvD8u0LG35hEuW
-         mZvpEBx6gt0LLmdb1SgPv2uzpNTIrHD4N4IpCKaBTq5VL9YgoZD40NTayzxmozZ0qSLk
-         8MXA==
-X-Gm-Message-State: AOAM532Iyzd52VLTrIz6QNFjGfO5V87MH9Rg9RDw482PEyJMgfj6yJ1/
-        Fh/GqQPIZ9awSWA99nzMACOQajBQKg==
-X-Google-Smtp-Source: ABdhPJxcCfSiJYlaSJg7zp99bZboAlcPkcE0opIjiH4rYWrGZsAPR7Zx1/1wpHwJcYdNAneih3pasA==
-X-Received: by 2002:a05:6e02:1d0f:: with SMTP id i15mr6859976ila.199.1626461913286;
-        Fri, 16 Jul 2021 11:58:33 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id t8sm5467464iog.21.2021.07.16.11.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 11:58:32 -0700 (PDT)
-Received: (nullmailer pid 3772587 invoked by uid 1000);
-        Fri, 16 Jul 2021 18:58:30 -0000
-Date:   Fri, 16 Jul 2021 12:58:30 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [GIT PULL] Devicetree fixes for v5.14, take 1
-Message-ID: <20210716185830.GA3769653@robh.at.kernel.org>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=t3eOYXdWOcxLwyJeyCXZFcz5Qu68cSCzVAnpdB+6mag=;
+        b=XeyFTYOVDtB+KuUrt2QOtfQMDtLpC7oMGrGSKzWk7ukRtH8MtUoxnJvQAoUKItzMZ+
+         PyFHt/ecR3FfqzyvW1WMPGq45CB5tFqkdiwBXUW7EzxZ3ce6GCGlgp/oaXKPlXupFJYZ
+         YtNAcs+fJcmmF3abPZlzMKzM7Ck/MLKYbcp4tRcKwXrvZCHZhImQt/2CJ8hhZZlgtBbI
+         sUSkSDEWE57aiFEZGME4eyqwajvlQ61f3kt7ixOe9sa8T7hONvtth+Pcy9MoEyMkJV+9
+         M0bU/0jzaKuIw8WOOsmxZEVaUxhnTRIfYFbXQX6oFOJ0lNCz4WtZ5BVEN3y9Vofpw4+8
+         9txw==
+X-Gm-Message-State: AOAM531GEJfvWvutsTmA9bHGnL0i3LYQV+u+6YJzqHENYcczbOQhWSmx
+        HNRGdmZOm+HiNTP2lw+kG+a+Kq6+ag8OTqBmfTV+jomS2ruRp2lCeD6dk7GdJaOKvXR7ofsxRhq
+        Mymvc+MCYUXx0Iy/BDjypm+6F
+X-Received: by 2002:ae9:f106:: with SMTP id k6mr11116139qkg.274.1626461986576;
+        Fri, 16 Jul 2021 11:59:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWrEaDUK2aTHtHoRv6qDWayp0aBiec8jDx0iHrZK+d3fUrWhn8/UAlWoUjPwPpD0PA7q7H3g==
+X-Received: by 2002:ae9:f106:: with SMTP id k6mr11116115qkg.274.1626461986393;
+        Fri, 16 Jul 2021 11:59:46 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id j7sm4290785qkd.21.2021.07.16.11.59.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 11:59:45 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
+ partition root
+To:     Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+References: <20210621184924.27493-1-longman@redhat.com>
+ <20210621184924.27493-3-longman@redhat.com>
+ <YNcHOe3o//pIiByh@mtj.duckdns.org>
+ <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
+ <YONGk3iw/zrNzwLK@mtj.duckdns.org>
+ <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
+Message-ID: <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
+Date:   Fri, 16 Jul 2021 14:59:44 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 7/16/21 2:44 PM, Waiman Long wrote:
+> On 7/5/21 1:51 PM, Tejun Heo wrote:
+>> Hello, Waiman.
+>>
+>> On Mon, Jun 28, 2021 at 09:06:50AM -0400, Waiman Long wrote:
+>>> The main reason for doing this is because normal cpuset control file 
+>>> actions
+>>> are under the direct control of the cpuset code. So it is up to us 
+>>> to decide
+>>> whether to grant it or deny it. Hotplug, on the other hand, is not 
+>>> under the
+>>> control of cpuset code. It can't deny a hotplug operation. This is 
+>>> the main
+>>> reason why the partition root error state was added in the first place.
+>> I have a difficult time convincing myself that this difference 
+>> justifies the
+>> behavior difference and it keeps bothering me that there is a state 
+>> which
+>> can be reached through one path but rejected by the other. I'll continue
+>> below.
+>>
+>>> Normally, users can set cpuset.cpus to whatever value they want even 
+>>> though
+>>> they are not actually granted. However, turning on partition root is 
+>>> under
+>>> more strict control. You can't turn on partition root if the CPUs 
+>>> requested
+>>> cannot actually be granted. The problem with setting the state to just
+>>> partition error is that users may not be aware that the partition 
+>>> creation
+>>> operation fails.  We can't assume all users will do the proper error
+>>> checking. I would rather let them know the operation fails rather than
+>>> relying on them doing the proper check afterward.
+>>>
+>>> Yes, I agree that it is a different philosophy than the original cpuset
+>>> code, but I thought one reason of doing cgroup v2 is to simplify the
+>>> interface and make it a bit more erorr-proof. Since partition root 
+>>> creation
+>>> is a relatively rare operation, we can afford to make it more strict 
+>>> than
+>>> the other operations.
+>> So, IMO, one of the reasons why cgroup1 interface was such a mess was
+>> because each piece of interaction was designed ad-hoc without regard 
+>> to the
+>> overall consistency. One person feels a particular way of interacting 
+>> with
+>> the interface is "correct" and does it that way and another person does
+>> another part in a different way. In the end, we ended up with a messy
+>> patchwork.
+>>
+>> One problematic aspect of cpuset in cgroup1 was the handling of failure
+>> modes, which was caused by the same exact approach - we wanted the 
+>> interface
+>> to reject invalid configurations outright even though we didn't have the
+>> ability to prevent those configurations from occurring through other 
+>> paths,
+>> which makes the failure mode more subtle by further obscuring them.
+>>
+>> I think a better approach would be having a clear signal and 
+>> mechanism to
+>> watch the state and explicitly requiring users to verify and monitor the
+>> state transitions.
+>
+> Sorry for the late reply as I was busy with other works.
+>
+> I agree with you on principle. However, the reason why there are more 
+> restrictions on enabling partition is because I want to avoid forcing 
+> the users to always read back cpuset.partition.type to see if the 
+> operation succeeds instead of just getting an error from the 
+> operation. The former approach is more error prone. If you don't want 
+> changes in existing behavior, I can relax the checking and allow them 
+> to become an invalid partition if an illegal operation happens.
+>
+> Also there is now another cpuset patch to extend cpu isolation to 
+> cgroup v1 [1]. I think it is better suit to the cgroup v2 partition 
+> scheme, but cgroup v1 is still quite heavily out there.
+>
+> Please let me know what you want me to do and I will send out a v3 
+> version. 
 
-Please pull a couple of DT fixes for 5.14.
+Note that the current cpuset partition implementation have implemented 
+some restrictions on when a partition can be enabled. However, I missed 
+some corner cases in the original implementation that allow certain 
+cpuset operations to make a partition invalid. I tried to plug those 
+holes in this patchset. However, if maintaining backward compatibility 
+is more important, I can leave those holes and update the documentation 
+to make sure that people check cpuset.partition.type to confirm if their 
+operation succeeds.
 
-Rob
+Cheers,
+Longman
 
-
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.14-1
-
-for you to fetch changes up to 50d8d7e19c4398da74d028f367754e73547b078b:
-
-  dt-bindings: display: renesas,du: Make resets optional on R-Car H1 (2021-07-16 12:03:27 -0600)
-
-----------------------------------------------------------------
-Devicetree fixes for v5.14, take 1:
-
-- Drop 'resets' as required on renesas,du
-
-- Moving of fixed string patterns for 'properties' instead of
-  'patternProperties'
-
-- Drop more redundant minItems/maxItems that we merged in the merge
-  window
-
-- Indentation warning fix for sja1105
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      dt-bindings: display: renesas,du: Make resets optional on R-Car H1
-
-Rob Herring (2):
-      dt-bindings: More dropping redundant minItems/maxItems
-      dt-bindings: Move fixed string 'patternProperties' to 'properties'
-
-Thierry Reding (1):
-      dt-bindings: net: dsa: sja1105: Fix indentation warnings
-
- .../bindings/clock/brcm,iproc-clocks.yaml          |  1 -
- .../devicetree/bindings/display/renesas,du.yaml    |  1 -
- .../devicetree/bindings/hwmon/adt7475.yaml         | 22 ++++-----
- .../devicetree/bindings/iommu/rockchip,iommu.yaml  |  2 -
- .../bindings/memory-controllers/arm,pl353-smc.yaml |  1 -
- .../devicetree/bindings/mtd/brcm,brcmnand.yaml     |  8 ----
- .../devicetree/bindings/net/dsa/nxp,sja1105.yaml   |  4 +-
- .../devicetree/bindings/phy/ti,phy-j721e-wiz.yaml  | 56 +++++++++++-----------
- .../devicetree/bindings/regulator/mps,mpq7920.yaml |  6 +--
- .../bindings/regulator/nxp,pf8x00-regulator.yaml   |  3 +-
- .../devicetree/bindings/rtc/faraday,ftrtc010.yaml  |  1 -
- .../devicetree/bindings/spi/spi-controller.yaml    | 32 ++++++-------
- .../devicetree/bindings/usb/nxp,isp1760.yaml       |  2 -
- 13 files changed, 62 insertions(+), 77 deletions(-)
