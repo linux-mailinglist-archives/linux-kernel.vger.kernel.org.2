@@ -2,214 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2AF3CB1DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7193CB1DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234126AbhGPFR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 01:17:27 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51833 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234068AbhGPFRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 01:17:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626412466; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=2PoXPzW7yXjsJ+4bkTg6l8/HF+OOEW6Uf7kuyQWFRvs=; b=SMMfHFtrM3OVxHFZHYJ41PvyU6JnhJA+Rn7OcJng24Act6cqERrBWjdNl+Al517eZkIRsvAi
- W04W/0c2hSKuD1W2+l19Z3w4S2qakndlTugcOAl06qHTDz13bkJVfnn99AJ5nI80MWAm8Fo2
- Y6beMThDfx6iCkG8VIjlqHNSVys=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60f115a1d0100c7cf9b177d5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Jul 2021 05:14:09
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 31B25C43217; Fri, 16 Jul 2021 05:14:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3215CC433F1;
-        Fri, 16 Jul 2021 05:14:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3215CC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
-        viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v3 2/2] arm64: dts: sc7180: Add required-opps for i2c
-Date:   Fri, 16 Jul 2021 10:43:45 +0530
-Message-Id: <1626412425-30715-3-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626412425-30715-1-git-send-email-rnayak@codeaurora.org>
-References: <1626412425-30715-1-git-send-email-rnayak@codeaurora.org>
+        id S234144AbhGPFSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 01:18:12 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34680 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231961AbhGPFSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 01:18:11 -0400
+X-UUID: c90715cfd530412f86cab2922eaad03e-20210716
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=P1PqkGczpPcvXL+IzAZftPYToRlDDBZD9w87wJ0kAHw=;
+        b=mQcCrsGRKaRiO8i5EZBuSWghx+bwTW1gU9lB38AR5ZwellxEGTHP04HMxE6Us5DZ791LgpxH0zwNzR8UmKKWXQvJwzxtYxGL3m5gsEfLAaAyW/ktCKrW6LPuug6OTxtiv6z8lBJLbnIVCw0p7S2e5OKZxMdtvjfA21Kkf53Kg6U=;
+X-UUID: c90715cfd530412f86cab2922eaad03e-20210716
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1858786546; Fri, 16 Jul 2021 13:15:12 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 16 Jul 2021 13:15:11 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 16 Jul 2021 13:15:11 +0800
+Message-ID: <1626412511.16906.0.camel@mtksdaap41>
+Subject: Re: [PATCH] drm/mediatek: dpi: fix NULL dereference in
+ mtk_dpi_bridge_atomic_check
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Frank Wunderlich <linux@fw-web.de>
+CC:     <linux-mediatek@lists.infradead.org>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Jitao Shi" <jitao.shi@mediatek.com>,
+        Rex-BC Chen <rex-bc.chen@mediatek.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Fri, 16 Jul 2021 13:15:11 +0800
+In-Reply-To: <20210712080736.116435-1-linux@fw-web.de>
+References: <20210712080736.116435-1-linux@fw-web.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
-Though qup-i2c does not support DVFS, it still needs to vote for a
-performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
-requirement.
-
-Use 'required-opps' to pass this information from
-device tree, and also add the power-domains property to specify
-the CX power-domain.
-
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index a5d58eb..cd30185 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -785,8 +785,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi0: spi@880000 {
-@@ -837,8 +839,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi1: spi@884000 {
-@@ -889,8 +893,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart2: serial@888000 {
-@@ -923,8 +929,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi3: spi@88c000 {
-@@ -975,8 +983,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart4: serial@890000 {
-@@ -1009,8 +1019,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi5: spi@894000 {
-@@ -1074,8 +1086,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi6: spi@a80000 {
-@@ -1126,8 +1140,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart7: serial@a84000 {
-@@ -1160,8 +1176,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi8: spi@a88000 {
-@@ -1212,8 +1230,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart9: serial@a8c000 {
-@@ -1246,8 +1266,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi10: spi@a90000 {
-@@ -1298,8 +1320,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi11: spi@a94000 {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+SGksIEZyYW5rOg0KDQpPbiBNb24sIDIwMjEtMDctMTIgYXQgMTA6MDcgKzAyMDAsIEZyYW5rIFd1
+bmRlcmxpY2ggd3JvdGU6DQo+IEZyb206IEZyYW5rIFd1bmRlcmxpY2ggPGZyYW5rLXdAcHVibGlj
+LWZpbGVzLmRlPg0KPiANCj4gYnJpZGdlLT5kcml2ZXJfcHJpdmF0ZSBpcyBub3Qgc2V0IChOVUxM
+KSBzbyB1c2UgYnJpZGdlX3RvX2RwaShicmlkZ2UpDQo+IGxpa2UgaXQncyBkb25lIGluIGJyaWRn
+ZV9hdG9taWNfZ2V0X291dHB1dF9idXNfZm10cw0KDQpSZXZpZXdlZC1ieTogQ0sgSHUgPGNrLmh1
+QG1lZGlhdGVrLmNvbT4NCg0KPiANCj4gRml4ZXM6IGVjODc0N2M1MjQzNCAoImRybS9tZWRpYXRl
+azogZHBpOiBBZGQgYnVzIGZvcm1hdCBuZWdvdGlhdGlvbiIpDQo+IFNpZ25lZC1vZmYtYnk6IEZy
+YW5rIFd1bmRlcmxpY2ggPGZyYW5rLXdAcHVibGljLWZpbGVzLmRlPg0KPiAtLS0NCj4gIGRyaXZl
+cnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHBpLmMgfCAyICstDQo+ICAxIGZpbGUgY2hhbmdlZCwg
+MSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RwaS5jIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
+a19kcGkuYw0KPiBpbmRleCBiY2VkNTU1NjQ4YjAuLmEyZWNhMWY2Njk4NCAxMDA2NDQNCj4gLS0t
+IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcGkuYw0KPiArKysgYi9kcml2ZXJzL2dw
+dS9kcm0vbWVkaWF0ZWsvbXRrX2RwaS5jDQo+IEBAIC02MDUsNyArNjA1LDcgQEAgc3RhdGljIGlu
+dCBtdGtfZHBpX2JyaWRnZV9hdG9taWNfY2hlY2soc3RydWN0IGRybV9icmlkZ2UgKmJyaWRnZSwN
+Cj4gIAkJCQkgICAgICAgc3RydWN0IGRybV9jcnRjX3N0YXRlICpjcnRjX3N0YXRlLA0KPiAgCQkJ
+CSAgICAgICBzdHJ1Y3QgZHJtX2Nvbm5lY3Rvcl9zdGF0ZSAqY29ubl9zdGF0ZSkNCj4gIHsNCj4g
+LQlzdHJ1Y3QgbXRrX2RwaSAqZHBpID0gYnJpZGdlLT5kcml2ZXJfcHJpdmF0ZTsNCj4gKwlzdHJ1
+Y3QgbXRrX2RwaSAqZHBpID0gYnJpZGdlX3RvX2RwaShicmlkZ2UpOw0KPiAgCXVuc2lnbmVkIGlu
+dCBvdXRfYnVzX2Zvcm1hdDsNCj4gIA0KPiAgCW91dF9idXNfZm9ybWF0ID0gYnJpZGdlX3N0YXRl
+LT5vdXRwdXRfYnVzX2NmZy5mb3JtYXQ7DQoNCg==
 
