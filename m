@@ -2,125 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DD33CB0FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363E83CB100
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbhGPDOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 23:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
+        id S233675AbhGPDP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 23:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhGPDOk (ORCPT
+        with ESMTP id S233647AbhGPDPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 23:14:40 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B0FC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 20:11:45 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id s18so12027962ljg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 20:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=student-cerritos-edu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=glNO2PUmrGtJw3esP1XUx4uN57NDYiuLSGwdyXUkipw=;
-        b=hh9SfkPisqM15nqfeIuNKMDsj5Pe/TsIt1Hkh40281lbxLTocGDeYetMMssApWx9yD
-         uLPjDW5vGWIsokh4oKNxNiSCFgCnPoJ4Uay6dkXHLoAfLdfZQ9xJlWiVPWOOnKDlWuC4
-         R9F3/I8jFKgar0j3uEGxHxI7iIJ3lc8BD8J+1uRsiSpi+TySAwKsUULLz5YAIG8OMZDf
-         smqAbxCxFSvkZ5tde/SBHyce1lFKWYb6X1Bl/mryLwzLZ6t4Q8vVZZ0KxUjYrewlCYBA
-         ExHGxh+HWTSh+Nrl0jMq5RTzZgGV/2LWMKtbqOiXhvoGuMj9BXp+o2uZjt1W/rC0nEN1
-         QeQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=glNO2PUmrGtJw3esP1XUx4uN57NDYiuLSGwdyXUkipw=;
-        b=PSLyvdbpGb/8fY0EttlQPCslJxUKPKX+qG0e4nnM1D5c/FT5eY1nZtx3SBNuHfVF8d
-         DT93ih4fjQzNpnepTBaA5bnrmgYs/C98bvXxYfO9DGdyQgsYgnXY++FmSCrcEMcpWIrn
-         RGWK4dsBKpMZ+JX533sRdAtO+1bicgEntcPFEeK9HYhhEbzYgV3TTGBg6jL2TK8gEXsM
-         yv60YbhnGSn7I0zJRO++nKa3lsdGP4M6MCQreLqNc4+B8AvQva711/irG4L7qNM0MJtn
-         ksYm/u23j2bxxVMe6tkJNyZrqLjDKDHTRTBqbYWypa4LRy2GqY5drFhXRHk5DObQ/Aqd
-         +HBw==
-X-Gm-Message-State: AOAM532SKQgNmPPpFQZFDCeHJXhSNxM4Alx5UCqCYVpbZ0OXT14FZXcN
-        DhpVYtps47zkfbAcTb9gTQLJqcnh2NJctcbmQzU0TA==
-X-Google-Smtp-Source: ABdhPJwiP8nX+D79pxC0iYGGE0OZRvV8iPrVowFtXe9t5wq+lcSJOgNBNzeJBHccjqH2Ywc6hx2DJtikAjubIm7Iv7Q=
-X-Received: by 2002:a2e:81c4:: with SMTP id s4mr6927918ljg.251.1626405103352;
- Thu, 15 Jul 2021 20:11:43 -0700 (PDT)
+        Thu, 15 Jul 2021 23:15:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E25AC06175F;
+        Thu, 15 Jul 2021 20:12:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TRDya8wHWkJxj5dWxTTzT73+dIkTaai0safBwEJTM+0=; b=MwzLcqHYbmp3Z0BhM8fXff+86l
+        k2Lkime2zcBMJsOr6pG++QI9XGFLoWMwdot/nq5BMizLvsKhnhG2J2LrkWjI/4ouZ6pCkg1FD5A6a
+        wpUv/moDpYyoRAB5EIoKy1zZhc07/0qXFDwTYEF01LlF7dbGOY2DTNgLuV5cBNnb738mxNUncogxY
+        uqMjDCavSPsUSKbva4hdobjPZpXKbTTWPMZoSiE71V6c3T/mly+Y8ujoGM8gOhWq67dvuLeVm470W
+        9PzxCxuX5ofo6UMb10Xh0R95dHa7FnDT6K5tiFBhi60MGwdcknp8Ag9RgjFGm+BE/xZwZ3DE8MY6r
+        suGyIuFw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m4EGN-0045sr-7Q; Fri, 16 Jul 2021 03:11:53 +0000
+Date:   Fri, 16 Jul 2021 04:11:43 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 102/138] iomap: Convert iomap_write_begin and
+ iomap_write_end to folios
+Message-ID: <YPD476gr7MWsaAyr@casper.infradead.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-103-willy@infradead.org>
+ <20210715215105.GM22357@magnolia>
 MIME-Version: 1.0
-References: <9b5902665dcc4c0fca7546987303e348d8657f59.1626383424.git.apark0006@student.cerritos.edu>
- <202107161046.heIVRW8r-lkp@intel.com>
-In-Reply-To: <202107161046.heIVRW8r-lkp@intel.com>
-From:   Amy Parker <apark0006@student.cerritos.edu>
-Date:   Thu, 15 Jul 2021 20:11:32 -0700
-Message-ID: <CAPOgqxHndN+3J-C7+38vLedhN2bhAasW9JRxf-rvt7gvVhD1rQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] swap led_brightness from enum to typedef
-To:     kernel test robot <lkp@intel.com>
-Cc:     pavel@ucw.cz, kbuild-all@lists.01.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715215105.GM22357@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ah - I see there was an issue with header files not being properly updated.
+On Thu, Jul 15, 2021 at 02:51:05PM -0700, Darrick J. Wong wrote:
+> On Thu, Jul 15, 2021 at 04:36:28AM +0100, Matthew Wilcox (Oracle) wrote:
+> > +static int iomap_write_begin(struct inode *inode, loff_t pos, size_t len,
+> > +		unsigned flags, struct folio **foliop, struct iomap *iomap,
+> > +		struct iomap *srcmap)
+> >  {
+> >  	const struct iomap_page_ops *page_ops = iomap->page_ops;
+> > +	struct folio *folio;
+> >  	struct page *page;
+> > +	unsigned fgp = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE | FGP_NOFS;
+> >  	int status = 0;
+> >  
+> >  	BUG_ON(pos + len > iomap->offset + iomap->length);
+> > @@ -604,30 +605,31 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+> >  			return status;
+> >  	}
+> >  
+> > -	page = grab_cache_page_write_begin(inode->i_mapping, pos >> PAGE_SHIFT,
+> > -			AOP_FLAG_NOFS);
+> > -	if (!page) {
+> > +	folio = __filemap_get_folio(inode->i_mapping, pos >> PAGE_SHIFT, fgp,
+> 
+> Ah, ok, so we're moving the file_get_pages flags up to iomap now.
 
-Check back for another patch resolving this.
+Right, saves us having a folio equivalent of
+grab_cache_page_write_begin().  And lets us get rid of AOP_FLAG_NOFS
+eventually (although that really should be obsoleted by scoped
+allocations, but one windmill at a time).
 
+> > +	struct page *page = folio_file_page(folio, pos / PAGE_SIZE);
+> 
+> pos >> PAGE_SHIFT ?
 
-On Thu, Jul 15, 2021 at 7:15 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Amy,
->
-> Thank you for the patch! Perhaps something to improve:
->
-> [auto build test WARNING on linus/master]
-> [also build test WARNING on v5.14-rc1 next-20210715]
-> [cannot apply to pavel-linux-leds/for-next wireless-drivers-next/master wireless-drivers/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Amy-Parker/leds-change-led_brightness-definition-from-enum-to-typedef/20210716-052140
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git dd9c7df94c1b23feacd54112f33ad95d93f64533
-> config: m68k-buildonly-randconfig-r006-20210715 (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/b14a971f1045205d49d9d001f33d33afdd8208f9
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Amy-Parker/leds-change-led_brightness-definition-from-enum-to-typedef/20210716-052140
->         git checkout b14a971f1045205d49d9d001f33d33afdd8208f9
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash drivers/md/bcache/ drivers/media/v4l2-core/
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
->    In file included from drivers/media/v4l2-core/v4l2-flash-led-class.c:15:
-> >> include/media/v4l2-flash-led-class.h:18:1: warning: useless type name in empty declaration
->       18 | led_brightness;
->          | ^~~~~~~~~~~~~~
->
->
-> vim +18 include/media/v4l2-flash-led-class.h
->
->     14
->     15  struct led_classdev_flash;
->     16  struct led_classdev;
->     17  struct v4l2_flash;
->   > 18  led_brightness;
->     19
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+mmm.  We're inconsistent:
 
+willy@pepe:~/kernel/folio$ git grep '/ PAGE_SIZE' mm/ fs/ |wc
+     92     720    6475
+willy@pepe:~/kernel/folio$ git grep '>> PAGE_SHIFT' mm/ fs/ |wc
+    635    4582   39394
 
+That said, there's a clear preference.  It's just that we had a bug the
+other day where somebody shifted by PAGE_SHIFT in the wrong direction ...
+But again, this is your code, so I'll change to the shift.
 
--- 
-Amy Iris Parker
-Please refer to me using she/her pronouns.
-CIS Major
-Dual Enrollment with WHS co2025
