@@ -2,76 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B693CB544
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BF13CB557
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233671AbhGPJcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:32:55 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6943 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbhGPJcx (ORCPT
+        id S234188AbhGPJkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:40:33 -0400
+Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:22594
+        "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229833AbhGPJkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:32:53 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GR5TS5d4yz7vVS;
-        Fri, 16 Jul 2021 17:26:20 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Jul 2021 17:29:53 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 16 Jul
- 2021 17:29:52 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <sudipm.mukherjee@gmail.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <davem@davemloft.net>, <sashal@kernel.org>
-Subject: [PATCH 5.4] net: moxa: Use devm_platform_get_and_ioremap_resource()
-Date:   Fri, 16 Jul 2021 17:32:45 +0800
-Message-ID: <20210716093245.315536-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 16 Jul 2021 05:40:31 -0400
+X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Jul 2021 05:40:26 EDT
+X-SMTP-MATCH: 0
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ASxB18qHuKXxEEb4ipLqE0seALOsnbusQ8z?=
+ =?us-ascii?q?AXPiFKJSC9F/byqynAppsmPHPP5gr5OktBpTnwAsi9qBrnnPYejLX5W43SPj?=
+ =?us-ascii?q?UO01HYT72Kg7GSpAHIKmnT8fNcyLclU4UWMqyXMbGit7ee3OBvKadF/OW6?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AQBwA6UPFg/y2ELHlQCoEJCYFQAoF?=
+ =?us-ascii?q?0ggKEbkaQEwEBAQEBAQaBQIpphW+LCIF8CwEBAQEBAQEBAUoEAQGEVIJ+ASU?=
+ =?us-ascii?q?0CQ4CBBUBAQEFAQEBAQEGAwGBDoV1QwEMAYYeVigNAhgOAkkWAYVlJadngTI?=
+ =?us-ascii?q?aAmWKQ4EQKgGHCIJohCEcfYEQgUgDgjh1hBeDRIJkBIJ4GQYBAXMaARM4NCA?=
+ =?us-ascii?q?RKhYPERgWNzCRBSaCewFGihlbnQyDLp5kF4NMkgMDFpBflgiCHJ1ihxCCFE0?=
+ =?us-ascii?q?uCoMlTxmdCTdnAgYKAQEDCYJyhyInBoIYAQE?=
+X-IPAS-Result: =?us-ascii?q?A2AQBwA6UPFg/y2ELHlQCoEJCYFQAoF0ggKEbkaQEwEBA?=
+ =?us-ascii?q?QEBAQaBQIpphW+LCIF8CwEBAQEBAQEBAUoEAQGEVIJ+ASU0CQ4CBBUBAQEFA?=
+ =?us-ascii?q?QEBAQEGAwGBDoV1QwEMAYYeVigNAhgOAkkWAYVlJadngTIaAmWKQ4EQKgGHC?=
+ =?us-ascii?q?IJohCEcfYEQgUgDgjh1hBeDRIJkBIJ4GQYBAXMaARM4NCARKhYPERgWNzCRB?=
+ =?us-ascii?q?SaCewFGihlbnQyDLp5kF4NMkgMDFpBflgiCHJ1ihxCCFE0uCoMlTxmdCTdnA?=
+ =?us-ascii?q?gYKAQEDCYJyhyInBoIYAQE?=
+X-IronPort-AV: E=Sophos;i="5.84,244,1620662400"; 
+   d="scan'208";a="329873529"
+Received: from unknown (HELO web.messagingengine.com) ([121.44.132.45])
+  by icp-osb-irony-out9.iinet.net.au with ESMTP; 16 Jul 2021 17:28:13 +0800
+Subject: [PATCH v8 0/5] kernfs: proposed locking and concurrency improvement
+From:   Ian Kent <raven@themaw.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Eric Sandeen <sandeen@sandeen.net>, Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 16 Jul 2021 17:28:13 +0800
+Message-ID: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 35cba15a504bf4f585bb9d78f47b22b28a1a06b2 ]
+There have been a few instances of contention on the kernfs_mutex during
+path walks, a case on very large IBM systems seen by myself, a report by
+Brice Goglin and followed up by Fox Chen, and I've since seen a couple
+of other reports by CoreOS users.
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code and avoid a null-ptr-deref by checking 'res' in it.
+The common thread is a large number of kernfs path walks leading to
+slowness of path walks due to kernfs_mutex contention.
 
-[yyl: since devm_platform_get_and_ioremap_resource() is introduced
-      in linux-5.7, so just check the return value after calling
-      platform_get_resource()]
+The problem being that changes to the VFS over some time have increased
+it's concurrency capabilities to an extent that kernfs's use of a mutex
+is no longer appropriate. There's also an issue of walks for non-existent
+paths causing contention if there are quite a few of them which is a less
+common problem.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This patch series is relatively straight forward.
+
+All it does is add the ability to take advantage of VFS negative dentry
+caching to avoid needless dentry alloc/free cycles for lookups of paths
+that don't exit and change the kernfs_mutex to a read/write semaphore.
+
+The patch that tried to stay in VFS rcu-walk mode during path walks has
+been dropped for two reasons. First, it doesn't actually give very much
+improvement and, second, if there's a place where mistakes could go
+unnoticed it would be in that path. This makes the patch series simpler
+to review and reduces the likelihood of problems going unnoticed and
+popping up later.
+
+Changes since v7:
+- remove extra tab in helper kernfs_dir_changed.
+- fix thinko adding an unnecessary kernfs_inc_rev() in kernfs_rename_ns().
+
+Changes since v6:
+- ensure negative dentry as rename target gets invalidated.
+- don't bother checking if node is a directory in revision helpers.
+- don't use dget_parent(), just use dentry d_lock to ensure parent
+  is stable.
+- fix kernfs_iop_getattr() and kernfs_iop_permission() locking.
+- drop add kernfs_need_inode_refresh() patch, it can't be used.
+
+Changes since v5:
+- change kernfs_dir_changed() comparison.
+- move negative dentry out from under kernfs node lock in revalidate.
+- only set d_time for negative dentries.
+- add patch to move d_splice_alias() out from under kernfs node lock
+  in lookup.
+
+Changes since v4:
+- fixed kernfs_active() naming.
+- added back kernfs_node revision patch to use for negative dentry
+  validation.
+- minor updates to patch descriptions.
+
+Changes since v3:
+- remove unneeded indirection when referencing the super block.
+- check if inode attribute update is actually needed.
+
+Changes since v2:
+- actually fix the inode attribute update locking.
+- drop the patch that tried to stay in rcu-walk mode.
+- drop the use a revision to identify if a directory has changed patch.
+
+Changes since v1:
+- fix locking in .permission() and .gated() by re-factoring the
+  attribute handling code.
 ---
- drivers/net/ethernet/moxa/moxart_ether.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/moxa/moxart_ether.c b/drivers/net/ethernet/moxa/moxart_ether.c
-index f70bb81e1ed65..caf7051302725 100644
---- a/drivers/net/ethernet/moxa/moxart_ether.c
-+++ b/drivers/net/ethernet/moxa/moxart_ether.c
-@@ -481,6 +481,10 @@ static int moxart_mac_probe(struct platform_device *pdev)
- 	priv->pdev = pdev;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		ret = -EINVAL;
-+		goto init_fail;
-+	}
- 	ndev->base_addr = res->start;
- 	priv->base = devm_ioremap_resource(p_dev, res);
- 	if (IS_ERR(priv->base)) {
--- 
-2.25.1
+Ian Kent (5):
+      kernfs: add a revision to identify directory node changes
+      kernfs: use VFS negative dentry caching
+      kernfs: switch kernfs to use an rwsem
+      kernfs: use i_lock to protect concurrent inode updates
+      kernfs: dont call d_splice_alias() under kernfs node lock
+
+
+ fs/kernfs/dir.c             | 151 ++++++++++++++++++++----------------
+ fs/kernfs/file.c            |   4 +-
+ fs/kernfs/inode.c           |  26 ++++---
+ fs/kernfs/kernfs-internal.h |   5 +-
+ fs/kernfs/mount.c           |  12 +--
+ fs/kernfs/symlink.c         |   4 +-
+ include/linux/kernfs.h      |   2 +-
+ 7 files changed, 112 insertions(+), 92 deletions(-)
+
+--
+Ian
 
