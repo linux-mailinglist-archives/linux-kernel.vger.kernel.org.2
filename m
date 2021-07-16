@@ -2,154 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932A63CBF99
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 01:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9D33CBF9B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 01:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237891AbhGPXKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 19:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237305AbhGPXKX (ORCPT
+        id S237550AbhGPXMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 19:12:44 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:49537 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231293AbhGPXMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 19:10:23 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F82CC06175F;
-        Fri, 16 Jul 2021 16:07:28 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id t9so11450890pgn.4;
-        Fri, 16 Jul 2021 16:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=P6K+M5gqphiIlNgiFVLzyTugz5hPofZVAtQFiBp7d9s=;
-        b=ullVU331i6gIy4bDcdWB3Z/mYU0uuO8Zz4+zTPF4DwwlLYBpWuoLo8phBHSXV0zQ7I
-         SnHGjhyqsblUks+TDqDyRg4ZJkN2L9qsQLpMeWKT7t2h8zLaPWdo1UYACdUf3Xt6tIwd
-         xB4cZZL3MNrmfbw7bGVtnvkjs5Vu7ZmfUO4pZ8XbSiiJeBdR3nAAJ+Su2ue+vfNRElSD
-         5PG0YGgodlVwx9uT7QnwAZcpoSzxV7h1nEUvVATn3P0i1EsFusZbwh3n3m8MC2cgND5M
-         fw4uP+kNHZBoBmDmHLFdtj6j4Wj3usLgezpO6JfVgH0i+0WPB26yOjAL/vNUUtDFWces
-         mi6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P6K+M5gqphiIlNgiFVLzyTugz5hPofZVAtQFiBp7d9s=;
-        b=DCAmJcFxMsNX9bzvKg58M7Zek3nOEPQgb4VI+Hfv9IuM/7oKAZns1p/3eSRq5iU+E7
-         qkvRI8NwZhLcAoWGt8jRPko1nc+QIGaNFq9KHBT5Im5F1YVZVrjd+npsz/Vv/P7HBwrx
-         dwMszhxWW6EUWmGj4ESwYdgEqMTvc6hRSbAcuZ+dMWBzuNoNoigBbLcG2qkAGkGp5vJc
-         bPmBTIJmEzpAgKEhy0K8E3jCAt2NrPK0R+2q5z+LwgUYohJuoVMbn8wAIqklMeMfRjuW
-         7X6U1/TkohH6VgREq+YGpL1RyVx1d35MEdeYRbxaHBaNBuvIBMjsoSNxno1gAM8AdJE1
-         s2OA==
-X-Gm-Message-State: AOAM530a2QseeSPzAIcrfprp0WGS7S8gUm7KMD0irA/3M5mtUJUxwY7F
-        T070NeV5Wbl1oaEkTKji72R8RAUlmiwROeDr
-X-Google-Smtp-Source: ABdhPJw9dJ72rSe9XLZ950WY6ydjbUXyufvsG1vehWYDSoNNiFiTRd6IP+Ld9+E2/C3EdBToTL1ZlA==
-X-Received: by 2002:a63:d811:: with SMTP id b17mr12203456pgh.286.1626476847524;
-        Fri, 16 Jul 2021 16:07:27 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id x9sm11224635pfd.100.2021.07.16.16.07.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 16:07:27 -0700 (PDT)
-Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
- <YPGvIzZUI+QxP1js@mtj.duckdns.org>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <9d8b584a-738b-a0a8-ea8c-e617c2f79408@gmail.com>
-Date:   Sat, 17 Jul 2021 07:07:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 16 Jul 2021 19:12:42 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 6B8F53200940;
+        Fri, 16 Jul 2021 19:09:46 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 16 Jul 2021 19:09:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=pLA6ljGCHmS4nzSzhKkQ7EBOtuCU9nTxikkq8KQJL
+        +k=; b=bbWSUkkPu11wL919+4j2qyK7TFP8iJ3w3QTtECklvt7tzB54hYxbp61IH
+        ULmdWxee1sE03ozyFPC/H2pAwVESmHMJWEjG/JYAwlZ1oM58LFGQ9g9KUlqKvtXZ
+        fSjBJ+yvxgGOgNPXDyJVrJlI9o8u0ZhzWmpA12hM7Dg/dvu4GF0HIwCEdmkXR/en
+        Z7K8l266BxC2WnKNdWiaWB2vJCrz6oNjqCzZKy33ABhzBiRCM/DTjFFAe32O0eRz
+        Ucuf/okhjuY/SF6MCVoGVdmy7bytrhanhMZOeVnU3Y8Yg+u1WlZzUWwJx08zJeHY
+        t/HYqbCFooNPCGpvX3FH/yh+Wyljw==
+X-ME-Sender: <xms:uRHyYJ6la8VonaN_xaxzcMjy6qmFf1CRZ7v0hbO-EnVusiYs5EUGGQ>
+    <xme:uRHyYG6UP78YEQrI82tWsA1kSbSx1sM_V3tqB3P50nAuHY97D4_O9MLrhymD6UZ58
+    Pb97mZPZc2aopBfVVM>
+X-ME-Received: <xmr:uRHyYAdfNb5DFJnGv8UmE_OAUw6WF7UCo4VWUroMe3SykSHo84lJREd0E2gHl4nl8Ceyrw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeggdduvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhuffvkfgjfhfogggtgfesthhqre
+    dtredtshenucfhrhhomhepnfhukhgvucflohhnvghsuceolhhukhgvsehljhhonhgvshdr
+    uggvvheqnecuggftrfgrthhtvghrnhepkeevffeiheeuleegleetveelhedutefhhfegff
+    etvedtfefgleelgeetleekgfeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:uRHyYCIsceFDqS4AJQq0l9av9dmcuO4iyaeMsY52l5it7hQv2MwzrA>
+    <xmx:uRHyYNIachKVqbDo1OFXLVZokn5q_UXGDfrHtxxUD3qXnuXha6qhKw>
+    <xmx:uRHyYLyzLLVux3VtKn4CbavBLJ3SfwZttUt7swl8NNIQEchD7w4JtQ>
+    <xmx:uhHyYLiDjCscWLNtblRIQ_6LhZAwgTGz07mBWaX9MsdhAJs4CfrqUA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 16 Jul 2021 19:09:37 -0400 (EDT)
+Date:   Sat, 17 Jul 2021 11:09:19 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH 2/3] asus-wmi: Add dgpu disable method
+To:     =?iso-8859-2?q?Barnab=E1s_P=F5cze?= <pobrn@protonmail.com>
+Cc:     hdegoede@redhat.com, corentin.chary@gmail.com,
+        mgross@linux.intel.com, jdelvare@suse.com, linux@roeck-us.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <JN1DWQ.EEHJJGGRQTP72@ljones.dev>
+In-Reply-To: <knw744OJB1AYrrFpo77N1Eei0JZC3SjKzg6SMoMhOsEchAiE8-klOIPTyFCAUSiVeTopPNqgFSefQJ2av6Gs_cS4TuIRXVQcHUxvw8YvSl0=@protonmail.com>
+References: <20210704222148.880848-1-luke@ljones.dev>
+        <20210704222148.880848-3-luke@ljones.dev>
+        <knw744OJB1AYrrFpo77N1Eei0JZC3SjKzg6SMoMhOsEchAiE8-klOIPTyFCAUSiVeTopPNqgFSefQJ2av6Gs_cS4TuIRXVQcHUxvw8YvSl0=@protonmail.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-In-Reply-To: <YPGvIzZUI+QxP1js@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thank you for the insightful feedback.
+
+On Mon, Jul 5 2021 at 00:47:31 +0000, Barnab=E1s P=F5cze=20
+<pobrn@protonmail.com> wrote:
+> Hi
+>=20
+> I have added a couple comments inline.
+>=20
+>=20
+> 2021. j=FAlius 5., h=E9tf=F5 0:21 keltez=E9ssel, Luke D. Jones =EDrta:
+>=20
+>>  In Windows the ASUS Armory Crate progrm can enable or disable the
+>                                         ^
+> "program"
+>=20
+My "a" key is a little hard to press sometimes :(
+
+>=20
+>>  dGPU via a WMI call. This functions much the same as various Linux
+>>  methods in software where the dGPU is removed from the device tree.
+>>=20
+>>  However the WMI call saves the state of dGPU enabled or not and this
+>=20
+> I think "[...] the WMI call saves whether the dGPU is enabled or not,=20
+> and [...]"
+> might be better.
+> Or "[...] the WMI call saves the state of the dGPU (enabled or not)=20
+> and [...]".
+>=20
+I've used the second option, thanks for pointing this out.
+
+>=20
+>>  then changes the dGPU visibility in Linux with no way for Linux
+>>  users to re-enable it. We expose the WMI method so users can see
+>>  and change the dGPU ACPI state.
+>>=20
+>>  Signed-off-by: Luke D. Jones <luke@ljones.dev>
+>>  ---
+>>   drivers/platform/x86/asus-wmi.c            | 98=20
+>> ++++++++++++++++++++++
+>>   include/linux/platform_data/x86/asus-wmi.h |  3 +
+>>   2 files changed, 101 insertions(+)
+>>=20
+>>  diff --git a/drivers/platform/x86/asus-wmi.c=20
+>> b/drivers/platform/x86/asus-wmi.c
+>>  index 2468076d6cd8..8dc3f7ed021f 100644
+>>  --- a/drivers/platform/x86/asus-wmi.c
+>>  +++ b/drivers/platform/x86/asus-wmi.c
+>>  @@ -210,6 +210,9 @@ struct asus_wmi {
+>>   	u8 fan_boost_mode_mask;
+>>   	u8 fan_boost_mode;
+>>=20
+>>  +	bool dgpu_disable_available;
+>>  +	u8 dgpu_disable_mode;
+>>  +
+>>   	bool throttle_thermal_policy_available;
+>>   	u8 throttle_thermal_policy_mode;
+>>=20
+>>  @@ -427,6 +430,93 @@ static void=20
+>> lid_flip_tablet_mode_get_state(struct asus_wmi *asus)
+>>   	}
+>>   }
+>>=20
+>>  +/* dGPU=20
+>> ********************************************************************/
+>>  +static int dgpu_disable_check_present(struct asus_wmi *asus)
+>>  +{
+>>  +	u32 result;
+>>  +	int err;
+>>  +
+>>  +	asus->dgpu_disable_available =3D false;
+>>  +
+>>  +	err =3D asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_DGPU, &result);
+>>  +	if (err) {
+>>  +		if (err =3D=3D -ENODEV)
+>>  +			return 0;
+>>  +		return err;
+>>  +	}
+>>  +
+>>  +	if (result & ASUS_WMI_DSTS_PRESENCE_BIT)
+>>  +		asus->dgpu_disable_available =3D true;
+>>  +		asus->dgpu_disable_mode =3D result & ASUS_WMI_DSTS_STATUS_BIT;
+>>  +
+>=20
+> Aren't braces missing here?
+>=20
+Yep. Fixed.
+
+>=20
+>>  +	return 0;
+>>  +}
+>>  +
+>>  +static int dgpu_disable_write(struct asus_wmi *asus)
+>>  +{
+>>  +	int err;
+>>  +	u8 value;
+>>  +	u32 retval;
+>>  +
+>>  +	value =3D asus->dgpu_disable_mode;
+>>  +
+>>  +	err =3D asus_wmi_set_devstate(ASUS_WMI_DEVID_DGPU, value, &retval);
+>>  +
+>>  +	sysfs_notify(&asus->platform_device->dev.kobj, NULL,
+>>  +			"dgpu_disable");
+>=20
+> A similar line with the exact same length in patch 3/3 is not broken=20
+> in two.
+> And shouldn't the notification be sent if the operation succeeded?
+>=20
+Fixed. I moved the sysfs_notify down below the error returns.
+>=20
+>>  +
+>>  +	if (err) {
+>>  +		pr_warn("Failed to set dgpu disable: %d\n", err);
+>>  +		return err;
+>>  +	}
+>>  +
+>>  +	if (retval > 1 || retval < 0) {
+>>  +		pr_warn("Failed to set dgpu disable (retval): 0x%x\n",
+>>  +			retval);
+>>  +		return -EIO;
+>>  +	}
+>>  +
+>>  +	return 0;
+>>  +}
+>>  +
+>>  +static ssize_t dgpu_disable_show(struct device *dev,
+>>  +				   struct device_attribute *attr, char *buf)
+>>  +{
+>>  +	struct asus_wmi *asus =3D dev_get_drvdata(dev);
+>>  +	u8 mode =3D asus->dgpu_disable_mode;
+>>  +
+>>  +	return scnprintf(buf, PAGE_SIZE, "%d\n", mode);
+>=20
+> You could use `sysfs_emit()`.
+>=20
+Thanks. Many things like this I'm actually unaware of. Most of these=20
+patches are done by reading existing code.
+
+>=20
+>>  +}
+>>  +
+>>  +static ssize_t dgpu_disable_store(struct device *dev,
+>>  +				    struct device_attribute *attr,
+>>  +				    const char *buf, size_t count)
+>>  +{
+>>  +	int result;
+>>  +	u8 disable;
+>>  +	struct asus_wmi *asus =3D dev_get_drvdata(dev);
+>>  +
+>>  +	result =3D kstrtou8(buf, 10, &disable);
+>=20
+> You could use `kstrtobool()`. I think that would be better since it=20
+> accepts
+> 'y', 'n', etc. in addition to 0 and 1.
+>=20
+Thanks! Wasn't aware of that. And since the setting for all 3 patches=20
+can only ever be 0/1 I've changed to use a bool instead of u8
+
+>=20
+>>  +	if (result < 0)
+>>  +		return result;
+>>  +
+>>  +	if (disable > 1 || disable < 0)
+>>  +		return -EINVAL;
+>>  +
+>>  +	asus->dgpu_disable_mode =3D disable;
+>>  +	/*
+>>  +	 * The ACPI call used does not save the mode unless the call is=20
+>> run twice.
+>>  +	 * Once to disable, then once to check status and save - this is=20
+>> two code
+>>  +	 * paths in the method in the ACPI dumps.
+>>  +	*/
+>>  +	dgpu_disable_write(asus);
+>>  +	dgpu_disable_write(asus);
+>=20
+> Is there any reason the potential error codes are not returned?
+>=20
+No I've fixed now. Guess I missed it.
+
+>=20
+>>  +
+>>  +	return count;
+>>  +}
+>>  +
+>>  +static DEVICE_ATTR_RW(dgpu_disable);
+>>  +
+>>   /* Battery=20
+>> ********************************************************************/
+>>=20
+>>   /* The battery maximum charging percentage */
+>>  @@ -2412,6 +2502,7 @@ static struct attribute=20
+>> *platform_attributes[] =3D {
+>>   	&dev_attr_camera.attr,
+>>   	&dev_attr_cardr.attr,
+>>   	&dev_attr_touchpad.attr,
+>>  +	&dev_attr_dgpu_disable.attr,
+>>   	&dev_attr_lid_resume.attr,
+>>   	&dev_attr_als_enable.attr,
+>>   	&dev_attr_fan_boost_mode.attr,
+>>  @@ -2438,6 +2529,8 @@ static umode_t asus_sysfs_is_visible(struct=20
+>> kobject *kobj,
+>>   		devid =3D ASUS_WMI_DEVID_LID_RESUME;
+>>   	else if (attr =3D=3D &dev_attr_als_enable.attr)
+>>   		devid =3D ASUS_WMI_DEVID_ALS_ENABLE;
+>>  +	else if (attr =3D=3D &dev_attr_dgpu_disable.attr)
+>>  +		ok =3D asus->dgpu_disable_available;
+>>   	else if (attr =3D=3D &dev_attr_fan_boost_mode.attr)
+>>   		ok =3D asus->fan_boost_mode_available;
+>>   	else if (attr =3D=3D &dev_attr_throttle_thermal_policy.attr)
+>>  @@ -2699,6 +2792,10 @@ static int asus_wmi_add(struct=20
+>> platform_device *pdev)
+>>   	if (err)
+>>   		goto fail_platform;
+>>=20
+>>  +	err =3D dgpu_disable_check_present(asus);
+>>  +	if (err)
+>>  +		goto fail_dgpu_disable;
+>>  +
+>=20
+> Should this really be considered a "fatal" error?
+>=20
+I was modelling this on fail_fan_boost_mode and=20
+fail_throttle_thermal_policy since a laptop can't have both of those=20
+which indicates that a failed one is fine, it seemed appropriate to=20
+follow the same behaviour here
+
+>=20
+>>   	err =3D fan_boost_mode_check_present(asus);
+>>   	if (err)
+>>   		goto fail_fan_boost_mode;
+>>  @@ -2799,6 +2896,7 @@ static int asus_wmi_add(struct=20
+>> platform_device *pdev)
+>>   fail_sysfs:
+>>   fail_throttle_thermal_policy:
+>>   fail_fan_boost_mode:
+>>  +fail_dgpu_disable:
+>>   fail_platform:
+>>   fail_panel_od:
+>>   	kfree(asus);
+>>  diff --git a/include/linux/platform_data/x86/asus-wmi.h=20
+>> b/include/linux/platform_data/x86/asus-wmi.h
+>>  index 428aea701c7b..a528f9d0e4b7 100644
+>>  --- a/include/linux/platform_data/x86/asus-wmi.h
+>>  +++ b/include/linux/platform_data/x86/asus-wmi.h
+>>  @@ -90,6 +90,9 @@
+>>   /* Keyboard dock */
+>>   #define ASUS_WMI_DEVID_KBD_DOCK		0x00120063
+>>=20
+>>  +/* dgpu on/off */
+>>  +#define ASUS_WMI_DEVID_DGPU		0x00090020
+>>  +
+>>   /* DSTS masks */
+>>   #define ASUS_WMI_DSTS_STATUS_BIT	0x00000001
+>>   #define ASUS_WMI_DSTS_UNKNOWN_BIT	0x00000002
+>>  --
+>>  2.31.1
+>=20
+>=20
+> Regards,
+> Barnab=E1s P=F5cze
+
+Many thanks for your feedback again.
+Luke.
 
 
-Tejun Heo wrote on 2021/7/17 0:09:
-> Hello,
-> 
-> On Fri, Jul 16, 2021 at 02:22:49PM +0800, brookxu wrote:
->> diff --git a/block/blk-merge.c b/block/blk-merge.c
->> index a11b3b5..86ff943 100644
->> --- a/block/blk-merge.c
->> +++ b/block/blk-merge.c
->> @@ -348,6 +348,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
->>  		trace_block_split(split, (*bio)->bi_iter.bi_sector);
->>  		submit_bio_noacct(*bio);
->>  		*bio = split;
->> +
->> +		blk_throtl_recharge_bio(*bio);
-> 
-> I don't think we're holding the queue lock here.
-
-sorry, some kind of synchronization mechanism is really needed here. But the use of queue_lock
-here may be unsafe, since it is difficult for us to control the lock on the split path.
-
->>  	}
->>  }
->>  
->> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
->> index b1b22d8..1967438 100644
->> --- a/block/blk-throttle.c
->> +++ b/block/blk-throttle.c
->> @@ -2176,6 +2176,40 @@ static inline void throtl_update_latency_buckets(struct throtl_data *td)
->>  }
->>  #endif
->>  
->> +void blk_throtl_recharge_bio(struct bio *bio)
->> +{
->> +	bool rw = bio_data_dir(bio);
->> +	struct blkcg_gq *blkg = bio->bi_blkg;
->> +	struct throtl_grp *tg = blkg_to_tg(blkg);
->> +	u32 iops_limit = tg_iops_limit(tg, rw);
->> +
->> +	if (iops_limit == UINT_MAX)
->> +		return;
->> +
->> +	/*
->> +	 * If previous slice expired, start a new one otherwise renew/extend
->> +	 * existing slice to make sure it is at least throtl_slice interval
->> +	 * long since now. New slice is started only for empty throttle group.
->> +	 * If there is queued bio, that means there should be an active
->> +	 * slice and it should be extended instead.
->> +	 */
->> +	if (throtl_slice_used(tg, rw) && !(tg->service_queue.nr_queued[rw]))
->> +		throtl_start_new_slice(tg, rw);
->> +	else {
->> +		if (time_before(tg->slice_end[rw],
->> +		    jiffies + tg->td->throtl_slice))
->> +			throtl_extend_slice(tg, rw,
->> +				jiffies + tg->td->throtl_slice);
->> +	}
->> +
->> +	/* Recharge the bio to the group, as some BIOs will be further split
->> +	 * after passing through the throttle, causing the actual IOPS to
->> +	 * be greater than the expected value.
->> +	 */
->> +	tg->last_io_disp[rw]++;
->> +	tg->io_disp[rw]++;
->> +}
-> 
-> But blk-throtl expects queue lock to be held.
-> 
-> How about doing something simpler? Just estimate how many bios a given bio
-> is gonna be and charge it outright? The calculation will be duplicated
-> between the split path but that seems like the path of least resistance
-> here.
-
-I have tried this method, the code redundancy is indeed a bit high, it may not be
-very convenient for code maintenance. In addition to this problem, since we add
-a large value at a time, the fluctuation of IOPS will be relatively large. Since
-blk_throtl_recharge_bio() does not need to participate in the maintenance of the
-state machine, we only need to protect some fields of tg, so can we add a new
-spin_lock to tg instead of queue_lock to solve the synchronization problem ? Just
-a idea, Thanks.
-
-> Thanks.
-> 
