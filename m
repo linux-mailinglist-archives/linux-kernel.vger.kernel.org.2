@@ -2,147 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B573CB3B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4383CB3B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236985AbhGPIC7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Jul 2021 04:02:59 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:60603 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236777AbhGPIC4 (ORCPT
+        id S237000AbhGPIET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:04:19 -0400
+Received: from mailout2.secunet.com ([62.96.220.49]:36926 "EHLO
+        mailout2.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231966AbhGPIEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:02:56 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 23726C0007;
-        Fri, 16 Jul 2021 07:59:59 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 09:59:58 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Clark Wang <xiaoning.wang@nxp.com>
-Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 5/5] i3c: master: svc: add runtime pm support
-Message-ID: <20210716095958.4e27d574@xps13>
-In-Reply-To: <20210716073723.3490180-6-xiaoning.wang@nxp.com>
-References: <20210716073723.3490180-1-xiaoning.wang@nxp.com>
-        <20210716073723.3490180-6-xiaoning.wang@nxp.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 16 Jul 2021 04:04:16 -0400
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout2.secunet.com (Postfix) with ESMTP id 1501B800056;
+        Fri, 16 Jul 2021 10:01:21 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 10:01:20 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 16 Jul
+ 2021 10:01:20 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 228D33180299; Fri, 16 Jul 2021 10:01:20 +0200 (CEST)
+Date:   Fri, 16 Jul 2021 10:01:19 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <0x7f454c46@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dima@arista.com>
+Subject: Re: [PATCH] xfrm/compat: Fix general protection fault in
+ xfrm_user_rcv_msg_compat()
+Message-ID: <20210716080119.GC3684238@gauss3.secunet.de>
+References: <20210712134002.34048-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210712134002.34048-1-yuehaibing@huawei.com>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Clark,
+On Mon, Jul 12, 2021 at 09:40:02PM +0800, YueHaibing wrote:
+> In xfrm_user_rcv_msg_compat() if maxtype is not zero and less than
+> XFRMA_MAX, nlmsg_parse_deprecated() do not initialize attrs array fully.
+> xfrm_xlate32() will access uninit 'attrs[i]' while iterating all attrs
+> array.
+> 
+> KASAN: probably user-memory-access in range [0x0000000041b58ab0-0x0000000041b58ab7]
+> CPU: 0 PID: 15799 Comm: syz-executor.2 Tainted: G        W         5.14.0-rc1-syzkaller #0
+> RIP: 0010:nla_type include/net/netlink.h:1130 [inline]
+> RIP: 0010:xfrm_xlate32_attr net/xfrm/xfrm_compat.c:410 [inline]
+> RIP: 0010:xfrm_xlate32 net/xfrm/xfrm_compat.c:532 [inline]
+> RIP: 0010:xfrm_user_rcv_msg_compat+0x5e5/0x1070 net/xfrm/xfrm_compat.c:577
+> [...]
+> Call Trace:
+>  xfrm_user_rcv_msg+0x556/0x8b0 net/xfrm/xfrm_user.c:2774
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+>  xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2824
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+>  netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+>  sock_sendmsg_nosec net/socket.c:702 [inline]
+> 
+> Fixes: 5106f4a8acff ("xfrm/compat: Add 32=>64-bit messages translator")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  net/xfrm/xfrm_compat.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/xfrm/xfrm_compat.c b/net/xfrm/xfrm_compat.c
+> index a20aec9d7393..4738660cadea 100644
+> --- a/net/xfrm/xfrm_compat.c
+> +++ b/net/xfrm/xfrm_compat.c
+> @@ -559,8 +559,8 @@ static struct nlmsghdr *xfrm_user_rcv_msg_compat(const struct nlmsghdr *h32,
+>  	    (h32->nlmsg_flags & NLM_F_DUMP))
+>  		return NULL;
+>  
+> -	err = nlmsg_parse_deprecated(h32, compat_msg_min[type], attrs,
+> -			maxtype ? : XFRMA_MAX, policy ? : compat_policy, extack);
+> +	err = nlmsg_parse_deprecated(h32, compat_msg_min[type], attrs, XFRMA_MAX,
+> +				     policy ? : compat_policy, extack);
 
+This removes the only usage of maxtype in that function. If we don't
+need it, we should remove maxtype from the function parameters.
 
-> @@ -1431,7 +1502,7 @@ static int svc_i3c_master_probe(struct platform_device *pdev)
->  					 GFP_KERNEL);
->  	if (!master->ibi.slots) {
->  		ret = -ENOMEM;
-> -		goto err_disable_sclk;
-> +		goto rpm_disable;
->  	}
->  
->  	platform_set_drvdata(pdev, master);
-> @@ -1442,18 +1513,17 @@ static int svc_i3c_master_probe(struct platform_device *pdev)
->  	ret = i3c_master_register(&master->base, &pdev->dev,
->  				  &svc_i3c_master_ops, false);
->  	if (ret)
-> -		goto err_disable_sclk;
-> +		goto rpm_disable;
->  
-> -	return 0;
-> -
-> -err_disable_sclk:
-> -	clk_disable_unprepare(master->sclk);
-> +	pm_runtime_mark_last_busy(&pdev->dev);
-> +	pm_runtime_put_autosuspend(&pdev->dev);
->  
-> -err_disable_fclk:
-> -	clk_disable_unprepare(master->fclk);
-> +	return 0;
->  
-> -err_disable_pclk:
-> -	clk_disable_unprepare(master->pclk);
-
-It's not clear to me why you drop the disable_*clk labels to move them
-back in place? I would rather prefer to keep a clean error path.
-
-> +rpm_disable:
-> +	pm_runtime_dont_use_autosuspend(&pdev->dev);
-> +	pm_runtime_put_sync(&pdev->dev);
-> +	pm_runtime_disable(&pdev->dev);
->  
->  	return ret;
->  }
-> @@ -1467,13 +1537,57 @@ static int svc_i3c_master_remove(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> +	pm_runtime_dont_use_autosuspend(&pdev->dev);
-> +	pm_runtime_disable(&pdev->dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused svc_i3c_runtime_suspend(struct device *dev)
-> +{
-> +	struct svc_i3c_master *master = dev_get_drvdata(dev);
-> +
->  	clk_disable_unprepare(master->pclk);
->  	clk_disable_unprepare(master->fclk);
->  	clk_disable_unprepare(master->sclk);
-> +	pinctrl_pm_select_sleep_state(dev);
->  
->  	return 0;
->  }
->  
-> +static int __maybe_unused svc_i3c_runtime_resume(struct device *dev)
-> +{
-> +	struct svc_i3c_master *master = dev_get_drvdata(dev);
-> +	int ret = 0;
-> +
-> +	pinctrl_pm_select_default_state(dev);
-> +	ret = clk_prepare_enable(master->pclk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = clk_prepare_enable(master->fclk);
-> +	if (ret) {
-> +		clk_disable_unprepare(master->pclk);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(master->sclk);
-> +	if (ret) {
-> +		clk_disable_unprepare(master->pclk);
-> +		clk_disable_unprepare(master->fclk);
-> +		return ret;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct dev_pm_ops svc_i3c_pm_ops = {
-> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-> +				      pm_runtime_force_resume)
-> +	SET_RUNTIME_PM_OPS(svc_i3c_runtime_suspend,
-> +			   svc_i3c_runtime_resume, NULL)
-> +};
-> +
->  static const struct of_device_id svc_i3c_master_of_match_tbl[] = {
->  	{ .compatible = "silvaco,i3c-master" },
->  	{ /* sentinel */ },
-> @@ -1485,6 +1599,7 @@ static struct platform_driver svc_i3c_master = {
->  	.driver = {
->  		.name = "silvaco-i3c-master",
->  		.of_match_table = svc_i3c_master_of_match_tbl,
-> +		.pm = &svc_i3c_pm_ops,
->  	},
->  };
->  module_platform_driver(svc_i3c_master);
-
-Thanks,
-Miquèl
+But looking closer at this, it seems that xfrm_xlate32() should
+only iterate up to maxtype if set. Dimitry, any opinion on that?
