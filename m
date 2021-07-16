@@ -2,92 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15763CBABE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE39C3CBABF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhGPQxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:53:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229462AbhGPQxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:53:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2377B613E8;
-        Fri, 16 Jul 2021 16:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626454215;
-        bh=fR1eM/k0XR7Gjhkw/+2oWO8IaDRE53G+CK69zJwzPmU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L9xhBcOnRgZA5EVe5cuHX1nLFC/iRx55ZmhUjTRsUURldVwYETJaETU8/sdZpm0Dc
-         HuTNbtPmwHNvLU/RaeOGhU50wkb4pzLOD9eP0CgvL1Ky1+zOMh27PzLtRw0WJa049n
-         L93kAOJryx5HoULBcauUTuVhZUkGRZWoH5sio+TC108R98ACfrZeplIHVbE0m1ICEJ
-         TN4VsWmRvVE/p4Tcy2fH7GRKX7XjicmTKi/ZOLOyp+XfJZGGEr0f9JidLaLhcccvRT
-         +bzZwXUtmrEb9Wi/QlwBBFllgC1DDS8qKxsrtR6tBF2b6h+0Byc2FVw9L4jZGlLU+0
-         9ruczedy1v6nQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8A601403F2; Fri, 16 Jul 2021 13:50:12 -0300 (-03)
-Date:   Fri, 16 Jul 2021 13:50:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 19/20] perf test: bpf: free obj_buf
-Message-ID: <YPG4xEmVVZetIem9@kernel.org>
-References: <cover.1626343282.git.rickyman7@gmail.com>
- <60f3ca935fe6672e7e866276ce6264c9e26e4c87.1626343282.git.rickyman7@gmail.com>
+        id S230048AbhGPQyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:54:06 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:56661 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230059AbhGPQyF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:54:05 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 46A79C0004;
+        Fri, 16 Jul 2021 16:51:09 +0000 (UTC)
+Date:   Fri, 16 Jul 2021 18:51:08 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH resend] Input: adc-keys - drop bogus __refdata annotation
+Message-ID: <YPG4/N9nVuPvEuqq@piout.net>
+References: <7091e8213602be64826fd689a7337246d218f3b1.1626255421.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <60f3ca935fe6672e7e866276ce6264c9e26e4c87.1626343282.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <7091e8213602be64826fd689a7337246d218f3b1.1626255421.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 15, 2021 at 06:07:24PM +0200, Riccardo Mancini escreveu:
-> ASan reports some memory leaks when running the perf test
-> "42: BPF filter".
-> The first of these leaks is caused by obj_buf never being deallocated in
-> __test__bpf.
+On 14/07/2021 11:38:33+0200, Geert Uytterhoeven wrote:
+> As the ADC ladder input driver does not have any code or data located in
+> initmem, there is no need to annotate the adc_keys_driver structure with
+> __refdata.  Drop the annotation, to avoid suppressing future section
+> warnings.
 > 
-> This patch adds the missing free.
-> 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+I must admit I can't remember why I used that annotation...
+
 > ---
->  tools/perf/tests/bpf.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/input/keyboard/adc-keys.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-> index 33bda9c265423547..2cda4a6297e07967 100644
-> --- a/tools/perf/tests/bpf.c
-> +++ b/tools/perf/tests/bpf.c
-> @@ -276,6 +276,7 @@ static int __test__bpf(int idx)
->  	}
+> diff --git a/drivers/input/keyboard/adc-keys.c b/drivers/input/keyboard/adc-keys.c
+> index 6d5be48d1b3d7988..bf72ab8df817756f 100644
+> --- a/drivers/input/keyboard/adc-keys.c
+> +++ b/drivers/input/keyboard/adc-keys.c
+> @@ -193,7 +193,7 @@ static const struct of_device_id adc_keys_of_match[] = {
+>  MODULE_DEVICE_TABLE(of, adc_keys_of_match);
+>  #endif
 >  
->  out:
-> +	free(obj_buf);
->  	bpf__clear();
->  	return ret;
->  }
+> -static struct platform_driver __refdata adc_keys_driver = {
+> +static struct platform_driver adc_keys_driver = {
+>  	.driver = {
+>  		.name = "adc_keys",
+>  		.of_match_table = of_match_ptr(adc_keys_of_match),
 > -- 
+> 2.25.1
+> 
 
-I followed the advice and added the stdlib.h include, elsewhere we're
-getting included via some other include by luck.
-
-- Arnaldo
-
-  66     6.97 ubuntu:18.04-x-m68k           : FAIL gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)
-    tests/bpf.c: In function '__test__bpf':
-    tests/bpf.c:279:2: error: implicit declaration of function 'free' [-Werror=implicit-function-declaration]
-      free(obj_buf);
-      ^~~~
-    tests/bpf.c:279:2: error: incompatible implicit declaration of built-in function 'free' [-Werror]
-    tests/bpf.c:279:2: note: include '<stdlib.h>' or provide a declaration of 'free'
-    cc1: all warnings being treated as errors
-    /git/perf-5.14.0-rc1/tools/build/Makefile.build:139: recipe for target 'tests' failed
-    make[3]: *** [tests] Error 2
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
