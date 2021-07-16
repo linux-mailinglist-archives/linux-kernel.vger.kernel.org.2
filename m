@@ -2,113 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DA53CB415
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CE63CB427
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237387AbhGPI1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:27:04 -0400
-Received: from gofer.mess.org ([88.97.38.141]:34181 "EHLO gofer.mess.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231851AbhGPI1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:27:02 -0400
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 0894EC65B9; Fri, 16 Jul 2021 09:24:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1626423846; bh=k4GV0GyL3ss27o/H8GNejAFIH+XbYUndAcIjCC5L3s4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P3O4/mlSQPw+CSbX13SWksOS8UAwp1Lh+QLjaMXCjvYFKitLQQSNAqSO20WtJHPPe
-         aiydCsjegm81mLgM84FLrRBk/hnymcloU1EUeRcRs+4s9fC3xB/x9sZuPk+JITlR1f
-         J82igZN51I+16tN0UtumrXDfkbn9cAcU4bVqVgwS5N4KGz+uUDTJYRbhDIB8wfwOB6
-         DvnP4ABtNJ2ST682LTafKe4pQEMhtufXC831QFu3RwfHKc2/7aLYw4kOSl8PEqBE0U
-         nzXZl42EpJRk7ZBW6FW/JJgu3z/UjKuWDR7VrehEP90Lco3uEqNTF9AJo1aSx/ozf2
-         WF3YnLyyzpzzA==
-Date:   Fri, 16 Jul 2021 09:24:05 +0100
-From:   Sean Young <sean@mess.org>
-To:     Viktor Prutyanov <viktor.prutyanov@phystech.edu>
-Cc:     mchehab@kernel.org, robh+dt@kernel.org, khilman@baylibre.com,
-        narmstrong@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, rockosov@gmail.com
-Subject: Re: [PATCH v5 2/2] media: rc: introduce Meson IR TX driver
-Message-ID: <20210716082405.GA30719@gofer.mess.org>
-References: <20210714212706.24945-1-viktor.prutyanov@phystech.edu>
- <20210714212706.24945-3-viktor.prutyanov@phystech.edu>
- <20210715214001.GA25809@gofer.mess.org>
- <20210716013652.248bce6f@192.168.1.3>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716013652.248bce6f@192.168.1.3>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S237634AbhGPI1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:27:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29638 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237504AbhGPI1i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 04:27:38 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16G82sot034778;
+        Fri, 16 Jul 2021 04:24:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=8Of+ionZ0K44S7zzH2G1wGenaNNg9cYQDtiQ0dQz6+E=;
+ b=BMc79y1KhhQKUFZbOrAhtcEP61wGvhCcKpBh3YItmYniaHy7RinkekOStAMhwPcVbV8g
+ tA8KdxQW6CmdQCUDo7HXnXeBDvsxeO1Bxcn4vmR46+BPBqB7+8Ctzlwih1eoet+d/O4e
+ U7lnzCYwkCmnuQ2N7TeXEVQB0tNbOBoSC9rb2wWdVRh2ThxQaLFsKo3f4ZcKX5kegGXy
+ lsJ/BZHBXKo8Vpdp79tRxovqbQ5nmEvbTtQHpKKZhzPMbI6YKxeWxAqOAKu0r38O+7Ex
+ 7l5jIUCj1b6+Lwrw1Hy8lrhsFTfLuxB+ksipWyRyg3640fKq4qgCXYb8/oO8DK9d7iju gA== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39tw3vn83n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Jul 2021 04:24:15 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16G8EkKq007904;
+        Fri, 16 Jul 2021 08:24:13 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 39s3p78tv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Jul 2021 08:24:13 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16G8OAou20840890
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Jul 2021 08:24:10 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 167C84C04A;
+        Fri, 16 Jul 2021 08:24:10 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2C04E4C04E;
+        Fri, 16 Jul 2021 08:24:09 +0000 (GMT)
+Received: from sig-9-145-73-130.uk.ibm.com (unknown [9.145.73.130])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Jul 2021 08:24:09 +0000 (GMT)
+Message-ID: <352f2a35d62399fce1dca0ce1158974ecda3904c.camel@linux.ibm.com>
+Subject: Re: [PATCH v1 10/16] s390/pci: return error code from
+ s390_dma_map_sg()
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Date:   Fri, 16 Jul 2021 10:24:08 +0200
+In-Reply-To: <20210715164544.6827-11-logang@deltatee.com>
+References: <20210715164544.6827-1-logang@deltatee.com>
+         <20210715164544.6827-11-logang@deltatee.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Au675VXZyfEIxm3kG5FUCjrWY9DzzlcG
+X-Proofpoint-ORIG-GUID: Au675VXZyfEIxm3kG5FUCjrWY9DzzlcG
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-16_02:2021-07-16,2021-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 mlxscore=0 spamscore=0 clxscore=1011 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107160048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viktor,
-
-On Fri, Jul 16, 2021 at 01:36:52AM +0300, Viktor Prutyanov wrote:
-> Hi Sean,
+On Thu, 2021-07-15 at 10:45 -0600, Logan Gunthorpe wrote:
+> From: Martin Oliveira <martin.oliveira@eideticom.com>
 > 
-> On Thu, 15 Jul 2021 22:40:01 +0100
-> Sean Young <sean@mess.org> wrote:
+> The .map_sg() op now expects an error code instead of zero on failure.
 > 
-> > On Thu, Jul 15, 2021 at 12:27:06AM +0300, Viktor Prutyanov wrote:
- > > +	meson_irtx_fill_buf(ir, tx_buf, buf, len);
-> > > +	dev_dbg(ir->dev, "TX buffer filled, length = %u\n", len);
-> > > +
-> > > +	spin_lock_irqsave(&ir->lock, flags);
-> > > +	meson_irtx_update_buf(ir, tx_buf, len, 0);
-> > > +	reinit_completion(&ir->completion);
-> > > +	meson_irtx_send_buffer(ir);
-> > > +	spin_unlock_irqrestore(&ir->lock, flags);
-> > > +
-> > > +	ret = wait_for_completion_interruptible(&ir->completion);
-> > > +	dev_dbg(ir->dev, "TX %s\n", ret ? "interrupted" :
-> > > "completed");  
-> > 
-> > Here two things can happen. One is, the process received a signal
-> > (e.g. ^C). The other is that the hardware didn't issue any interrupts
-> > due some problem somewhere. In the latter case, we only escape this
-> > wait_for_completion_interruptable() when the user gets fed up and
-> > presses ^C or something like that.
-> > 
-> > > +
-> > > +	spin_lock_irqsave(&ir->lock, flags);
-> > > +	kfree(ir->buf);
-> > > +	meson_irtx_update_buf(ir, NULL, 0, 0);
-> > > +	spin_unlock_irqrestore(&ir->lock, flags);  
-> > 
-> > Now it is possible that the buffer gets cleared before that IR was
-> > sent, if the signal was received early enough. This means not all the
-> > Tx was completed.
-> > 
-> > > +
-> > > +	return len;  
-> > 
-> > Yet, we always return success.
-> > 
-> > In case no interrupts were generated we should return an error in a
-> > timely manner, so the wait_for_completion() needs the timeout. You
-> > can use the fact that the IR is never longer IR_MAX_DURATION (half a
-> > second currently). Not sure what the returned error should be, maybe
-> > -ETIMEDOUT?
+> So propagate the error from __s390_dma_map_sg() up.
 > 
-> As for me, ETIMEDOUT is OK.
-> > 
-> > The problem with the interruptable wait is that a process can receive
-> > a signal at any time, and now when this happens your IR gets
-> > truncated. I don't think this is what you want.
+> Signed-off-by: Martin Oliveira <martin.oliveira@eideticom.com>
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> ---
+>  arch/s390/pci/pci_dma.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 > 
-> Should I replace wait_for_completion_interruptible by
-> wait_for_completion_timeout in order to wait in uninterruptible way?
+> diff --git a/arch/s390/pci/pci_dma.c b/arch/s390/pci/pci_dma.c
+> index ebc9a49523aa..c78b02012764 100644
+> --- a/arch/s390/pci/pci_dma.c
+> +++ b/arch/s390/pci/pci_dma.c
+> @@ -487,7 +487,7 @@ static int s390_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>  	unsigned int max = dma_get_max_seg_size(dev);
+>  	unsigned int size = s->offset + s->length;
+>  	unsigned int offset = s->offset;
+> -	int count = 0, i;
+> +	int count = 0, i, ret;
+>  
+>  	for (i = 1; i < nr_elements; i++) {
+>  		s = sg_next(s);
+> @@ -497,8 +497,9 @@ static int s390_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>  
+>  		if (s->offset || (size & ~PAGE_MASK) ||
+>  		    size + s->length > max) {
+> -			if (__s390_dma_map_sg(dev, start, size,
+> -					      &dma->dma_address, dir))
+> +			ret = __s390_dma_map_sg(dev, start, size,
+> +						&dma->dma_address, dir);
+> +			if (ret)
+>  				goto unmap;
+>  
+>  			dma->dma_address += offset;
+> @@ -511,7 +512,8 @@ static int s390_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>  		}
+>  		size += s->length;
+>  	}
+> -	if (__s390_dma_map_sg(dev, start, size, &dma->dma_address, dir))
+> +	ret = __s390_dma_map_sg(dev, start, size, &dma->dma_address, dir);
+> +	if (ret)
+>  		goto unmap;
+>  
+>  	dma->dma_address += offset;
+> @@ -523,7 +525,7 @@ static int s390_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>  		s390_dma_unmap_pages(dev, sg_dma_address(s), sg_dma_len(s),
+>  				     dir, attrs);
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static void s390_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
 
-Yes, the process can receive a signal if the terminal is resized
-(SIGWINCH) or if the process is backgrounded and then foregrounded with
-^Z and fg (SIGCONT). If this happens during tx then the tx might be
-incomplete.
+So the error codes we return are -ENOMEM if allocating a DMA
+translation entry fails and -EINVAL if the DMA translation table hasn't
+been initialized or the caller tries to map 0 sized memory. Are these
+error codes that you would expect? If yes then this change looks good
+to me.
 
-Thanks,
+Acked-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
-Sean
