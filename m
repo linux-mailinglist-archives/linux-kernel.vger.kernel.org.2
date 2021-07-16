@@ -2,192 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF18A3CBC68
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DFC3CBC99
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhGPT0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:26:46 -0400
-Received: from mail-bn8nam11on2077.outbound.protection.outlook.com ([40.107.236.77]:15456
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229611AbhGPT0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:26:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g62Ef1du4cJD4L/YvOe2jHccK6ZtO7rrqlGlAGxfOkasw9xtIuHLOPZV3jD10QGA3akl20o9gfnJzgqOJVpSoOaohvto5R3XVEhPxAiYjpMzLV24QmgiHrEXHxm2UYzi4BoCv7culMwiBr0OERGyicg8FTPp4UjKEHYGdzfyVbXLGsgY2+FDMepzCT0omMBVgmkfJ7z39OTWe+na+xc3TD+WVljkD02UHW12UvgS9kuU/m8DbGVz4weXJ3P1yhluIPskci7I/sADnyyQU8vSJCYTEUGGpfPi71hIXI24YM/Sq6/jJ2yeDnWDJqkLKDn+U8OchfP9I+uORrBmqVoJ+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qZZ7qMTJPcKFiSumq+cOQoJU63h9sSiG3FP2IOisto8=;
- b=cn0/4mY5zUyA+Q6rqNNiWNpWPpJ8Ib0ZxwfiYXgRN5Cm71BT4H3FXWjAVnLfxwcZGnQIikK5u7k/ipu0cbqNLT6OqypV60Fm0mWsgu5KIOkA0xziwUl1lDan80cA25JnsMvzJ9+Ei88rvre6GFjOnPAlNrvdwdglzZbRhxf519qYiB4xEAMnqCZjz7rOYno9lwpd1bJDIMwDwLUCJcSzrRR5ETpOb4AKhhdobsmN7I+gkbgLisLRX5PPM1KFXhRfscVVQqKvb/6Fy4uvmhwzcwvUSX7w45kpisrt9YnoJp7BomRe6HqW5VoCo1yOu3ELYcpiUoz1t9rs2NJ/P7E1sw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qZZ7qMTJPcKFiSumq+cOQoJU63h9sSiG3FP2IOisto8=;
- b=LzE1jXKyCv6MohmLRcTUYIvaCPlCXk8KtjFdsBmgFPys/6Bn4eNKEp0fqsVHheEF0zfg8dtylJyL1FBTxrjBi3oWU/+mdjY6AFFM6m0qtfCqJbw/BD2c9NFa62gfWge2sYqckRFOO2C03upzYnVk53ybkUcsWkz1S/yNsWA0D60=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MW2PR12MB4665.namprd12.prod.outlook.com
- (2603:10b6:302:2::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Fri, 16 Jul
- 2021 19:23:46 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4331.026; Fri, 16 Jul
- 2021 19:23:45 +0000
-Subject: Re: [PATCH V2 12/12] ASoC: amd: enable vangogh acp5x driver build
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
-        Alexander.Deucher@amd.com, Sunil-kumar.Dommati@amd.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210716150809.21450-1-vijendar.mukunda@amd.com>
- <20210716150809.21450-13-vijendar.mukunda@amd.com>
- <87h7guduto.fsf@collabora.com>
-From:   "Mukunda,Vijendar" <Vijendar.Mukunda@amd.com>
-Message-ID: <ccb08af8-f349-7460-8ad5-0cfa0fdad4b1@amd.com>
-Date:   Sat, 17 Jul 2021 09:12:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <87h7guduto.fsf@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG3P274CA0007.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::19)
- To MWHPR1201MB2557.namprd12.prod.outlook.com (2603:10b6:300:e4::23)
+        id S232876AbhGPTec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232661AbhGPTea (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 15:34:30 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431DAC061762
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 12:31:34 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id t9so10940540pgn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 12:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/hHZcYMza7NE4Psi5qcc23pedu+uGbkYbTmPoTjnedM=;
+        b=BN12JV2QP6xeOYm+P7hOWRg91H97OO5pAZkKmHIYIuBIsE6PXqOVX7aRlVHXE+qBaj
+         jJsjE1orHInfKykBM3svTQcefVtGB158y9NKaAtpTnV2FoHRr0MElSWAxuo65Dyp+b5T
+         VSYqHWDHjILxcboknF11CscuZbazyHg4SrSNNazKexI2pjjaz7dlJLS9L3JomRvDK4DZ
+         4NChiXc+J8PrnRle1d+qfVMEaxEBnB08RcOA/+rXxoNxfQyOBCpaxai418Ls7VTz1/hZ
+         yrp4XyPno2exnVEcQ4oP8W1q6dCyvwk7MDe+/6l2RkOTxbT5ZO/dKqe4MwDga+yEqmdl
+         /P1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/hHZcYMza7NE4Psi5qcc23pedu+uGbkYbTmPoTjnedM=;
+        b=q5ZGwHjLgYTZLsmMDyGPpwLHXVIho0wVOxJT0Vq9Eaw34p3/tD1ptx4pEV5qFRHHsP
+         iS9fNQJ7FkjE2ociBzMtokB83aJ9n0f1ZaSf1XDUhSsCZ8NMKsNyP59LYgDSmKyarQ+w
+         nnvmnrjTosUwL9Fwo/k7awwQV71EhhebB8yW4t1YVwjivOrSFTsh3U+rnkilhzbicZap
+         XHU5IBrpn7JNnQnv0kgpMnZETL5XOfgaB1VZuFQNiVAkgZ4WaCBnkKhXQmXCAMKxvEt3
+         629T1bXNK7S6tKovtyNc4nMjHWh2alaB+RG0s8jR3YBfNcKXb4EeLJYdgoY6myFadrYC
+         cVZg==
+X-Gm-Message-State: AOAM5332lu2Ea/JxYs30MdC+Esygn4j7t7trtgS7S+SjQnh//2Y2kh3V
+        7o5b4ledwYV263JVPlCMvpP2qxFA/3v1Dg==
+X-Google-Smtp-Source: ABdhPJw/Tl6imvxSRs9HdGQZlRO+Ko27yJBuT5jRtOwEVQDmy165qXol9Cy0ASigSmkGWdJ7jWp16w==
+X-Received: by 2002:a65:450d:: with SMTP id n13mr11562222pgq.13.1626463893304;
+        Fri, 16 Jul 2021 12:31:33 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v7sm3142968pjk.37.2021.07.16.12.31.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 12:31:32 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 19:31:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 21/40] KVM: SVM: Add initial SEV-SNP support
+Message-ID: <YPHekXKC/XhWYlZE@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-22-brijesh.singh@amd.com>
+ <YPHJOmUOR65QY+YY@google.com>
+ <ae47ae6b-16b1-f282-38d5-429d813243a8@amd.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.129.9.28] (165.204.159.251) by SG3P274CA0007.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 19:23:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d7b5242f-4b65-41df-df10-08d9488f3ae8
-X-MS-TrafficTypeDiagnostic: MW2PR12MB4665:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW2PR12MB466527A7E7E4C360E12D191197119@MW2PR12MB4665.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UZ4kCrl33AAZILYz931o0UkvdozfVqnz1qBvWuZIYmZM5PzuEz5XKwccqGAK0HMwdbklOTW/P7zbeo1EeMEd0l6J7BSeOYHslffZ9VRB0JbMmszL0qD7s5zYTqRJ9DgzIA0lUVTRdje9XCPSKR7ZHjkbXfcegnVCLk+PsgPKB+z4rgQ0iP2sh4rEMfQ2F1mOrB9diV3fwwvup+iWEoVQABktxs+oKwe1tupHqtzVakqtFw20CO7TKBFq5ESmXo2ZWlHKwr+ZIs6P96D54gwEdGb2gn4cRj0N/6+A51UZlge5SaLcU8dzI2i2czZjs+9QFDYWdOt7jGwcTBm0yzg6Xnj2VrH6XUP3wRqlNod7k4hFVFHvbredGUsB05Sq9LEhNDBCAUf0H0GwVRkXwOIpy2nwlrOsFEkO3y+uC7sABIjsoOisnuRp3gVUxAq2B+YjZq44RZoQ/F4/W9iy0lRKi5gObxQA1a20oX/PAHuZfkCpBYhmjXrRD/DTPjLGWIWkhCXQGA+sJcydtG9QvCpDDHvaXvVinqqFCuFdLLkI+8P++hpJqHMf/ad6Rzl8ZAFUcCnZf3c4wXpD8LpWvbBjuvz7ssT+wcGgUfcbdu0uddk7bh/iYlbHlLcycnbyqhtL8TIc8sxAKxMcsBfFp0yOKXuoJT0Cj10ym5/y9YT1UZgDG0wjgqDqTaoNhpbLtds6gF1wNQeGxvQJWfJaHs9biB/moZK+dbA0l6ZxZaNfAUR+zye6iVHTtOxI04va5VGZdWgGhn6/zNsq+xFcX8BEZium5g4U4EtlXMB42H1aFgw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(39860400002)(346002)(136003)(66946007)(26005)(6666004)(66476007)(186003)(316002)(16576012)(86362001)(54906003)(6916009)(31696002)(2906002)(66556008)(53546011)(5660300002)(36756003)(31686004)(4326008)(8936002)(956004)(2616005)(478600001)(38100700002)(6486002)(8676002)(42413003)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NGdRYUpYV3RZaUFodmZXaWw5VU4yS2dPY0sweXZERmN6aDVjSVJzNWIrTFhr?=
- =?utf-8?B?dUxCbmxFVFhKQ0QxWFAyVU1lZWlkT1doN29xVFVSenZsMmc5Zmd6RTJJSmtP?=
- =?utf-8?B?MHBZd3FWMDlhdUdpQjZ4enYwU1BHT0pZbmcyN1hpN3c0U3lXN3RVWGhwRGRh?=
- =?utf-8?B?STdVSXlSZEpubzVYMXJPbTJna3p0OWlKVnVGMU05NVpoSDJxUjZQYmxXa3pB?=
- =?utf-8?B?T3A2eTBrK3EzUm4xV0c2cVNuYTB3ZFJOTTNFb24ydGFwSDg2NXJBdEVqY2kx?=
- =?utf-8?B?TEJvdHRiaTFxdzh0UlZIM2ZldXV4dW5zV1pzMllmbWJwYW1WZWIrOFg2a2NC?=
- =?utf-8?B?Yk9iVWJXei9lditUazVtLzh0NkR2S1VNTVBDTGJiQWV4QURkMFU2SGVOUmVo?=
- =?utf-8?B?azBwcU1RRjVBdU5HSENQeGttb0ZVVUFoZkFvVEFuWHpaOHVOODlpVC9LUzdq?=
- =?utf-8?B?NnY1M3NkYlQyaURTa0swanM3cnBpUENpbmJjWWlmNEJkM0REbnNHNVQvbDBw?=
- =?utf-8?B?VWQwQWZXQ2hnaHRFSldRM2drUGhMTFZORzVTVmc5QkJMTVJlelVBOS9JV3V4?=
- =?utf-8?B?QUk0WnVRdmdsYXhzNTBxakt0dnMwbGQ3OThFT0tPQmRHY1gxNHpBbWNkZXhi?=
- =?utf-8?B?YytPY2RsTWovZHlZdld1QkM0VWlxdStCYkd5aGlUQnNOY3FaY3FGd2xISzlp?=
- =?utf-8?B?UmNHNXM2eUhpRHcyQ2hzbDhDYUFLQUM0M3hKdGU3amQvQ3BhYjdRaUpJRGhJ?=
- =?utf-8?B?bWFPTHliTDFYSHB2ZVAreXNWdThCUFBGZFlOR0dPdy80bHRDd2poa0t6UDJv?=
- =?utf-8?B?ODVsM0IrbnEveC90MDFYSHU1OG44Q1VzNDJVaUh4U3QreUdtbGpIZzN3YlF0?=
- =?utf-8?B?bmI3SU5MUmRvenViU1NwQmtROVlwYWZwclk2dzdPb3NFQUxsRVppRUJwOGht?=
- =?utf-8?B?NUUvclFhRXlnMUUzOXRGK3IzaWswMFFnSlBrVTB0aGxId1RsMFMrRy81SlhU?=
- =?utf-8?B?SzhjTDM1eCtwRzh6bksvaUoxR1kwaXRGUHhwcHlIdkozOUxPREc5RzhaOVpZ?=
- =?utf-8?B?aEhrQlpONnFGbG51ZThZNE1yWjFqK0JsMjEwREgweStHQkt4OUVGQUo0QXdP?=
- =?utf-8?B?cWFtZnJ6L3A2ckFWOWdvWmV0OWxNZTBRU1Y4Y2ExYjVIK3g1WVRXaXhMTEpm?=
- =?utf-8?B?R0t6clQzOTg1UmJWa2RjbUVOT1ZFUFVORkx0S1FNWTRnbU03ZWs3VWwybEZs?=
- =?utf-8?B?c05tVWg0bW8xRXRuczdWd0IreWFDWFhXZmYydEs5WCtSZVNmSVNuRVlzTE9E?=
- =?utf-8?B?R3R5MjNVQjhnWEZ0b2FNWFhROUh5VXNsNC9GMkVwa0JJQWFsRE1PWU9sOTBI?=
- =?utf-8?B?N3hpNkhhbS9GRlFxTGoxRndwdGIvOWdVODdIRUt4Rmk1MmhqRnNWMDNTSEpT?=
- =?utf-8?B?QS9Iblh0VXZBQk1UeG9LcmRaZG9HelU5YU05TlplWnNkeFozT1pYU2VGdXkv?=
- =?utf-8?B?MW0wRkNSNVU3VnJ3OFJJbFNYZ3ZmUWF0akpsL1FRVldsZkRYOFA2VkR3Rmht?=
- =?utf-8?B?aWFjYjl0b05OaFUwZXdaMDRDNHJvT2x6a05zSkFlbkpCanQxcnY3RGVxS1Az?=
- =?utf-8?B?ZVpPYjFBd1cwWFpKWVB6MFQzK2pPSktLVFVyRmxlSUFyNHdpaEwyMmxsRTE5?=
- =?utf-8?B?a1dLZEhnQWdMNkZzNUdrYzBPSWFWOEd6VUZGU0txT01sZFMyaHFrT1hxbDNq?=
- =?utf-8?Q?nFgo5Rb2u4BZsYRpY8zEXm2PBcSmjxXPOBhaFi5?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7b5242f-4b65-41df-df10-08d9488f3ae8
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 19:23:45.8677
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VUj0Y6wAoXsfUSdZqKZ2aJqpzz5NRh11NFCujwigPu1/kTuW8w0a8dPmRVnQnyA1jB2y/i15u7fhMurjwrl3Pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB4665
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae47ae6b-16b1-f282-38d5-429d813243a8@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 16, 2021, Brijesh Singh wrote:
+> 
+> On 7/16/21 1:00 PM, Sean Christopherson wrote:
+> > On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> >> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> >> index 411ed72f63af..abca2b9dee83 100644
+> >> --- a/arch/x86/kvm/svm/sev.c
+> >> +++ b/arch/x86/kvm/svm/sev.c
+> >> @@ -52,9 +52,14 @@ module_param_named(sev, sev_enabled, bool, 0444);
+> >>  /* enable/disable SEV-ES support */
+> >>  static bool sev_es_enabled = true;
+> >>  module_param_named(sev_es, sev_es_enabled, bool, 0444);
+> >> +
+> >> +/* enable/disable SEV-SNP support */
+> >> +static bool sev_snp_enabled = true;
+> > Is it safe to incrementally introduce SNP support?  Or should the module param
+> > be hidden until all support is in place?  E.g. what will happen when KVM allows
+> > userspace to create SNP guests but doesn't yet have the RMP management added?
+> 
+> The SNP support depends on the RMP management. At least the patch
+> ordering in this series adds the RMP management first then updates
+> drivers to use the RMP specific APIs.
 
+Yep, got that.
 
-On 7/16/21 11:06 PM, Gabriel Krisman Bertazi wrote:
+> If RMP is not initialized due to someone not picking the commits in the
+> order, then SNP guest creation will fail.
+
+That's not what I was asking.  My question is if KVM will break/fail if someone
+runs a KVM build with SNP enabled halfway through the series.  E.g. if I make a
+KVM build at patch 22, "KVM: SVM: Add KVM_SNP_INIT command", what will happen if
+I attempt to launch an SNP guest?  Obviously it won't fully succeed, but will KVM
+fail gracefully and do all the proper cleanup?  Repeat the question for all patches
+between this one and the final patch of the series.
+
+SNP simply not working is ok, but if KVM explodes or does weird things without
+"full" SNP support, then at minimum the module param should be off by default
+until it's safe to enable.  E.g. for the TDP MMU, I believe the approach was to
+put all the machinery in place but not actually let userspace flip on the module
+param until the full implementation was ready.  Bisecting and testing the
+individual commits is a bit painful because it requires modifying KVM code, but
+on the plus side unrelated bisects won't stumble into a half-baked state.
+
+> >> +module_param_named(sev_snp, sev_snp_enabled, bool, 0444);
+> >>  #else
+> >>  #define sev_enabled false
+> >>  #define sev_es_enabled false
+> >> +#define sev_snp_enabled  false
+> >>  #endif /* CONFIG_KVM_AMD_SEV */
+> >>  
+> >>  #define AP_RESET_HOLD_NONE		0
+> >> @@ -1825,6 +1830,7 @@ void __init sev_hardware_setup(void)
+> >>  {
+> >>  #ifdef CONFIG_KVM_AMD_SEV
+> >>  	unsigned int eax, ebx, ecx, edx, sev_asid_count, sev_es_asid_count;
+> >> +	bool sev_snp_supported = false;
+> >>  	bool sev_es_supported = false;
+> >>  	bool sev_supported = false;
+> >>  
+> >> @@ -1888,9 +1894,21 @@ void __init sev_hardware_setup(void)
+> >>  	pr_info("SEV-ES supported: %u ASIDs\n", sev_es_asid_count);
+> >>  	sev_es_supported = true;
+> >>  
+> >> +	/* SEV-SNP support requested? */
+> >> +	if (!sev_snp_enabled)
+> >> +		goto out;
+> >> +
+> >> +	/* Is SEV-SNP enabled? */
+> >> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> > Random question, why use cpu_feature_enabled?  Did something change in cpufeatures
+> > that prevents using boot_cpu_has() here?
 > 
-> Hi,
 > 
-> Vijendar Mukunda <vijendar.mukunda@amd.com> writes:
->> Vangogh ACP5x drivers can be built by selecting necessary
->> kernel config option.
->> The patch enables build support of the same.
->>
->> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
->> ---
->> v1 -> v2: remove extra line in Make file
->> ---
->>  sound/soc/amd/Kconfig          |  9 +++++++++
->>  sound/soc/amd/Makefile         |  1 +
->>  sound/soc/amd/vangogh/Makefile | 11 +++++++++++
->>  3 files changed, 21 insertions(+)
->>  create mode 100644 sound/soc/amd/vangogh/Makefile
->>
->> diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
->> index ba5a85bf7412..cc48d4e5b080 100644
->> --- a/sound/soc/amd/Kconfig
->> +++ b/sound/soc/amd/Kconfig
->> @@ -52,3 +52,12 @@ config SND_SOC_AMD_RENOIR_MACH
->>  	depends on SND_SOC_AMD_RENOIR
->>  	help
->>  	 This option enables machine driver for DMIC
->> +
->> +config SND_SOC_AMD_ACP5x
->> +	tristate "AMD Audio Coprocessor-v5.x I2S support"
->> +	depends on X86 && PCI
->> +	help
->> +	 This option enables ACP v5.x support on AMD platform
->> +
->> +	 By enabling this flag build will trigger for ACP PCI driver,
->> +	 ACP DMA drvier, CPU DAI driver.
->> diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
->> index e6df2f72a2a1..07150d26f315 100644
->> --- a/sound/soc/amd/Makefile
->> +++ b/sound/soc/amd/Makefile
->> @@ -10,3 +10,4 @@ obj-$(CONFIG_SND_SOC_AMD_CZ_RT5645_MACH) += snd-soc-acp-rt5645-mach.o
->>  obj-$(CONFIG_SND_SOC_AMD_ACP3x) += raven/
->>  obj-$(CONFIG_SND_SOC_AMD_RV_RT5682_MACH) += snd-soc-acp-rt5682-mach.o
->>  obj-$(CONFIG_SND_SOC_AMD_RENOIR) += renoir/
->> +obj-$(CONFIG_SND_SOC_AMD_ACP5x) += vangogh/
->> diff --git a/sound/soc/amd/vangogh/Makefile b/sound/soc/amd/vangogh/Makefile
->> new file mode 100644
->> index 000000000000..ae2cda804e2f
->> --- /dev/null
->> +++ b/sound/soc/amd/vangogh/Makefile
->> @@ -0,0 +1,11 @@
->> +# SPDX-License-Identifier: GPL-2.0+
->> +# Vangogh platform Support
->> +snd-pci-acp5x-objs	:= pci-acp5x.o
->> +snd-acp5x-i2s-objs	:= acp5x-i2s.o
->> +snd-acp5x-pcm-dma-objs	:= acp5x-pcm-dma.o
->> +snd-soc-acp5x-mach-objs := acp5x-nu8821-cs35l41.o
->> +
->> +obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-pci-acp5x.o
->> +obj-$(CONFIG_SND_SOC_AMD_ACP5x)	+= snd-acp5x-i2s.o
->> +obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-acp5x-pcm-dma.o
->> +obj-$(CONFIG_SND_SOC_AMD_VANGOGH_MACH)   += snd-soc-acp5x-mach.o
+> During the boot the kernel initialize the RMP table. If RMP table
+> initialization fail, then X86_FEATURE_SEV_SNP is cleared. In that case,
+> the cpu_feature_enabled() should return false. The idea is,
+> cpu_feature_enabled() will be set only when the RMP table is
+> successfully initialized and SYSCFG.SNP is set.
+
+Ya, got that, but again not what I was asking :-)  Why use cpu_feature_enabled()
+instead of boot_cpu_has()?  As a random developer, I would fully expect that
+boot_cpu_has(X86_FEATURE_SEV_SNP) is true iff SNP is fully enabled by the kernel.
+
+> >> +		goto out;
+> >> +
+> >> +	pr_info("SEV-SNP supported: %u ASIDs\n", min_sev_asid - 1);
+> > Use sev_es_asid_count instead of manually recomputing the same; the latter
+> > obfuscates the fact that ES and SNP share the same ASID pool.
+> >
+> > Even better would be to report ES+SNP together, otherwise the user could easily
+> > interpret ES and SNP having separate ASID pools.  And IMO the gotos for SNP are
+> > overkill, e.g.
+> >
+> > 	sev_es_supported = true;
+> > 	sev_snp_supported = sev_snp_enabled &&
+> > 			    cpu_feature_enabled(X86_FEATURE_SEV_SNP);
+> >
+> > 	pr_info("SEV-ES %ssupported: %u ASIDs\n",
+> > 		sev_snp_supported ? "and SEV-SNP " : "", sev_es_asid_count);
+> >
+> >> +static inline bool sev_snp_guest(struct kvm *kvm)
+> >> +{
+> >> +#ifdef CONFIG_KVM_AMD_SEV
+> >> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> >> +
+> >> +	return sev_es_guest(kvm) && sev->snp_active;
+> > Can't this be reduced to:
+> >
+> > 	return to_kvm_svm(kvm)->sev_info.snp_active;
+> >
+> > KVM should never set snp_active without also setting es_active.
 > 
-> Looks like CONFIG_SND_SOC_AMD_VANGOGH_MACH is not selected by another
-> symbol and also not configurable in kconfig.
 > 
-> Is it missing a kconfig entry?
-> 
-whoops had the wrong tree checked out. will resend the patch series
+> The approach here is similar to SEV/ES. IIRC, it was done mainly to
+> avoid adding dead code when CONFIG_KVM_AMD_SEV is disabled.
+
+But this is already in an #ifdef, checking sev_es_guest() is pointless.
