@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492C53CB4F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AAA3CB4F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238727AbhGPJBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:01:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:60833 "EHLO mga11.intel.com"
+        id S238855AbhGPJEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:04:43 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11753 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237916AbhGPJBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:01:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="207677290"
+        id S239728AbhGPJEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 05:04:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="190382236"
 X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="207677290"
+   d="scan'208";a="190382236"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 01:58:34 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 02:01:40 -0700
 X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="495984926"
+   d="scan'208";a="495985905"
 Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.28.42]) ([10.255.28.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 01:58:32 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 02:01:38 -0700
 Subject: Re: [PATCH v2 6/7] soc: mediatek: mmsys: Add reset controller support
 References: <202107150857.sniQJ86e-lkp@intel.com>
 In-Reply-To: <202107150857.sniQJ86e-lkp@intel.com>
@@ -32,8 +32,8 @@ Cc:     chunkuang.hu@kernel.org, hsinyi@chromium.org, kernel@collabora.com,
         kbuild-all@lists.01.org
 From:   kernel test robot <rong.a.chen@intel.com>
 X-Forwarded-Message-Id: <202107150857.sniQJ86e-lkp@intel.com>
-Message-ID: <5bfd55a2-04d1-769e-83a7-a03365fdd3b8@intel.com>
-Date:   Fri, 16 Jul 2021 16:58:29 +0800
+Message-ID: <baf4a35e-8025-460c-85b6-214ad23d7b89@intel.com>
+Date:   Fri, 16 Jul 2021 17:01:36 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
@@ -60,8 +60,6 @@ url:
 https://github.com/0day-ci/linux/commits/Enric-Balletbo-i-Serra/Add-support-to-the-mmsys-driver-to-be-a-reset-controller/20210714-181318
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git 
 for-next
-:::::: branch date: 14 hours ago
-:::::: commit date: 14 hours ago
 compiler: riscv64-linux-gcc (GCC) 9.3.0
 
 If you fix the issue, kindly add following tag as appropriate
