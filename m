@@ -2,61 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE293CB052
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 03:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580403CB058
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 03:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhGPBQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 21:16:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232955AbhGPBQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 21:16:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A906A613DA;
-        Fri, 16 Jul 2021 01:13:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626397994;
-        bh=Yh9NAAkkbQXEI9GYDizGJncAlUS/svmbFXP2sp5d9Zo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=gQlrFFZI7JVdrZzRXIWrE0JlWLUKoS18nryBfTiT+0RMci61QcPEJ1gG1oX1XGMKz
-         wZHkzn3igimeBzHSC0JvKK5WSTOxezJtN3IS0kD3shYAp9xWJgb5r2Rd/82gwnFi82
-         YasRyLYMGLoNj7PDhj44dEtNmwyat92XX5bHpC1x4zMgQfPurHObj3GO/01td8DooJ
-         pU82+4Q9f7Z8NT/LQdsjBz1u/k4YPvgMo+35tAqG0cyLXLHjW9rRGTEJarUkfVKiU8
-         HCkuVWQEWkM0NpzIx/TOgNbEYOfLYEzLdmP+iP688UgHmJQIB7JeVYm0SV80ei23i1
-         5ZnrOwrKy5a4A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A164D609CD;
-        Fri, 16 Jul 2021 01:13:14 +0000 (UTC)
-Subject: Re: [GIT PULL] pwm: Fixes for v5.14-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210714074326.89692-1-thierry.reding@gmail.com>
-References: <20210714074326.89692-1-thierry.reding@gmail.com>
-X-PR-Tracked-List-Id: <linux-pwm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210714074326.89692-1-thierry.reding@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.14-rc2
-X-PR-Tracked-Commit-Id: f4a8e31ed84ec646c158824f423cb22d1f362bbf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7612872866e2cbfc7ac6c071f35720c70b767ed3
-Message-Id: <162639799465.22633.15512969245285609361.pr-tracker-bot@kernel.org>
-Date:   Fri, 16 Jul 2021 01:13:14 +0000
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S232834AbhGPBUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 21:20:02 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7020 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhGPBT7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 21:19:59 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQtVM0LC2zXdsl;
+        Fri, 16 Jul 2021 09:11:23 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 09:17:03 +0800
+Received: from [10.174.179.0] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 16 Jul
+ 2021 09:17:02 +0800
+Subject: Re: [PATCH] pinctrl: single: Fix error return code in
+ pcs_parse_bits_in_pinctrl_entry()
+To:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Manjunathappa Prakash <prakash.pm@ti.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210715064206.3193-1-thunder.leizhen@huawei.com>
+ <55d02087-e2c7-9a0c-e20e-ff6f106703a3@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <ab9e3a1a-551c-92e5-06cc-45b1081243e3@huawei.com>
+Date:   Fri, 16 Jul 2021 09:17:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <55d02087-e2c7-9a0c-e20e-ff6f106703a3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 14 Jul 2021 09:43:26 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.14-rc2
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7612872866e2cbfc7ac6c071f35720c70b767ed3
+On 2021/7/15 19:49, weiyongjun (A) wrote:
+>> Fix to return -ENOTSUPP instead of 0 when PCS_HAS_PINCONF is true, which
+>> is the same as that returned in pcs_parse_pinconf().
+>>
+>> In addition, I found the value of pcs->flags is not overwritten in
+>> pcs_parse_bits_in_pinctrl_entry() and its subfunctions, so moving this
+>> check to the beginning of the function eliminates unnecessary rollback
+>> operations.
+>>
+>> Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>   drivers/pinctrl/pinctrl-single.c | 21 ++++++++-------------
+>>   1 file changed, 8 insertions(+), 13 deletions(-)
+>>
+>>
+>>       npins_in_row = pcs->width / pcs->bits_per_pin;
+>>         vals = devm_kzalloc(pcs->dev,
+>> @@ -1212,29 +1217,19 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
+>>           goto free_pins;
+>>       }
+>>   -    gsel = pinctrl_generic_add_group(pcs->pctl, np->name, pins, found, pcs);
+>> -    if (gsel < 0) {
+>> -        res = gsel;
+>> +    res = pinctrl_generic_add_group(pcs->pctl, np->name, pins, found, pcs);
+>> +    if (res < 0)
+>>           goto free_function;
+>> -    }
+> 
+> 
+> This change cause 'gsel' not set.
 
-Thank you!
+The local variable 'gsel' is no longer needed. I have deleted it.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> 
+> Do not mix this cleanup with bugfix.
+
+Yes, it might be clearer.
+
+> 
+> 
+> 
+> .
+> 
