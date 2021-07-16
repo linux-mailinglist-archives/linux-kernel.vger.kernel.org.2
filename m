@@ -2,141 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07943CB14C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 06:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B773CB155
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 06:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhGPEHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 00:07:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44656 "EHLO mail.kernel.org"
+        id S231139AbhGPEOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 00:14:32 -0400
+Received: from relay.sw.ru ([185.231.240.75]:46390 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhGPEHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 00:07:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4736115B;
-        Fri, 16 Jul 2021 04:04:18 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 09:34:14 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Richard Laing <richard.laing@alliedtelesis.co.nz>
-Subject: Re: linux-next: manual merge of the mhi tree with the net-next tree
-Message-ID: <20210716040414.GB19827@workstation>
-References: <20210716133738.0d163701@canb.auug.org.au>
- <20210716034622.GA19827@workstation>
+        id S229507AbhGPEOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 00:14:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=4tMOph3Bxi9udxmJFQ6rB4I9o9MwgEFr9xoM3JkuMMM=; b=TclMo+FG6IiTHW3iI
+        y5XkPGcOAnwG+6vGIm6EGYu9ih1eM9I0n9G/1OsVuux+y8i10E3hFVuscHyTdep+EYezfPiZ+AzUM
+        7bsrhJgLX1ur3g64SlF6TGv2TMdJLGkf9fJcEkutEb9x90KQ5VOTUfrsbmErTen9awR2BAPACEzCc
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m4FC9-0049Gz-Gs; Fri, 16 Jul 2021 07:11:25 +0300
+Subject: Re: [PATCH v4 00/16] memcg accounting from OpenVZ
+To:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>
+Cc:     Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Serge Hallyn <serge@hallyn.com>, Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com>
+ <919bd022-075e-98a7-cefb-89b5dee80ae8@virtuozzo.com>
+ <CALvZod5Kxrj3T99CEd8=OaoW8CwKtHOVhno58_nNOqjR2y=x6Q@mail.gmail.com>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <3a60b936-b618-6cef-532a-97bbdb957fb1@virtuozzo.com>
+Date:   Fri, 16 Jul 2021 07:11:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716034622.GA19827@workstation>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CALvZod5Kxrj3T99CEd8=OaoW8CwKtHOVhno58_nNOqjR2y=x6Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 09:16:22AM +0530, Manivannan Sadhasivam wrote:
-> Hi Stephen,
+On 7/15/21 8:11 PM, Shakeel Butt wrote:
+> On Tue, Apr 27, 2021 at 11:51 PM Vasily Averin <vvs@virtuozzo.com> wrote:
+>>
+>> OpenVZ uses memory accounting 20+ years since v2.2.x linux kernels.
+>> Initially we used our own accounting subsystem, then partially committed
+>> it to upstream, and a few years ago switched to cgroups v1.
+>> Now we're rebasing again, revising our old patches and trying to push
+>> them upstream.
+>>
+>> We try to protect the host system from any misuse of kernel memory
+>> allocation triggered by untrusted users inside the containers.
+>>
+>> Patch-set is addressed mostly to cgroups maintainers and cgroups@ mailing
+>> list, though I would be very grateful for any comments from maintainersi
+>> of affected subsystems or other people added in cc:
+>>
+>> Compared to the upstream, we additionally account the following kernel objects:
+>> - network devices and its Tx/Rx queues
+>> - ipv4/v6 addresses and routing-related objects
+>> - inet_bind_bucket cache objects
+>> - VLAN group arrays
+>> - ipv6/sit: ip_tunnel_prl
+>> - scm_fp_list objects used by SCM_RIGHTS messages of Unix sockets
+>> - nsproxy and namespace objects itself
+>> - IPC objects: semaphores, message queues and share memory segments
+>> - mounts
+>> - pollfd and select bits arrays
+>> - signals and posix timers
+>> - file lock
+>> - fasync_struct used by the file lease code and driver's fasync queues
+>> - tty objects
+>> - per-mm LDT
+>>
+>> We have an incorrect/incomplete/obsoleted accounting for few other kernel
+>> objects: sk_filter, af_packets, netlink and xt_counters for iptables.
+>> They require rework and probably will be dropped at all.
+>>
+>> Also we're going to add an accounting for nft, however it is not ready yet.
+>>
+>> We have not tested performance on upstream, however, our performance team
+>> compares our current RHEL7-based production kernel and reports that
+>> they are at least not worse as the according original RHEL7 kernel.
 > 
-> On Fri, Jul 16, 2021 at 01:37:38PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Today's linux-next merge of the mhi tree got a conflict in:
-> > 
-> >   drivers/bus/mhi/pci_generic.c
-> > 
-> > between commit:
-> > 
-> >   5c2c85315948 ("bus: mhi: pci-generic: configurable network interface MRU")
-> > 
+> Hi Vasily,
 > 
-> Ah, this one was never submitted to "linux-arm-msm" mailing list nor to
-> me. I'm surprised that networking maintainers merged this patch without
-> getting an Ack from me as it touches MHI bus :/
-> 
-> > from the net-next tree and commit:
-> > 
-> >   156ffb7fb7eb ("bus: mhi: pci_generic: Apply no-op for wake using sideband wake boolean")
-> > 
-> > from the mhi tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> > 
-> 
-> This change should've been taken via immutable branch between mhi-next
-> and net-next or via mhi tree. Because, we have more changes coming in for
-> pci-generic driver in MHI tree.
-> 
-> Dave, since this patch is in your tree, what do you suggest?
-> 
+> What's the status of this series? I see a couple patches did get
+> acked/reviewed. Can you please re-send the series with updated ack
+> tags?
 
-Btw, I do have a comment about the patch. So it shouldn't be merged as
-it is.
+Technically my patches does not have any NAKs. Practically they are still them merged.
+I've expected Michal will push it, but he advised me to push subsystem maintainers.
+I've asked Tejun to pick up the whole patch set and I'm waiting for his feedback right now.
 
-Thanks,
-Mani
+I can resend patch set once again, with collected approval and with rebase to v5.14-rc1.
+However I do not understand how it helps to push them if patches should be processed through
+subsystem maintainers. As far as I understand I'll need to split this patch set into
+per-subsystem pieces and sent them to corresponded maintainers.
 
-> Thanks,
-> Mani
-> 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
-> > 
-> > diff --cc drivers/bus/mhi/pci_generic.c
-> > index 19413daa0917,8bc6149249e3..000000000000
-> > --- a/drivers/bus/mhi/pci_generic.c
-> > +++ b/drivers/bus/mhi/pci_generic.c
-> > @@@ -32,7 -32,8 +32,9 @@@
-> >    * @edl: emergency download mode firmware path (if any)
-> >    * @bar_num: PCI base address register to use for MHI MMIO register space
-> >    * @dma_data_width: DMA transfer word size (32 or 64 bits)
-> >  + * @mru_default: default MRU size for MBIM network packets
-> > +  * @sideband_wake: Devices using dedicated sideband GPIO for wakeup instead
-> > +  *		   of inband wake support (such as sdx24)
-> >    */
-> >   struct mhi_pci_dev_info {
-> >   	const struct mhi_controller_config *config;
-> > @@@ -41,7 -42,7 +43,8 @@@
-> >   	const char *edl;
-> >   	unsigned int bar_num;
-> >   	unsigned int dma_data_width;
-> >  +	unsigned int mru_default;
-> > + 	bool sideband_wake;
-> >   };
-> >   
-> >   #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
-> > @@@ -254,7 -256,7 +258,8 @@@ static const struct mhi_pci_dev_info mh
-> >   	.config = &modem_qcom_v1_mhiv_config,
-> >   	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> >   	.dma_data_width = 32,
-> >  +	.mru_default = 32768
-> > + 	.sideband_wake = false,
-> >   };
-> >   
-> >   static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
-> > @@@ -643,11 -686,13 +689,14 @@@ static int mhi_pci_probe(struct pci_de
-> >   	mhi_cntrl->status_cb = mhi_pci_status_cb;
-> >   	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
-> >   	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
-> > - 	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
-> > - 	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
-> > - 	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
-> >  +	mhi_cntrl->mru = info->mru_default;
-> >   
-> > + 	if (info->sideband_wake) {
-> > + 		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
-> > + 		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
-> > + 		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
-> > + 	}
-> > + 
-> >   	err = mhi_pci_claim(mhi_cntrl, info->bar_num, DMA_BIT_MASK(info->dma_data_width));
-> >   	if (err)
-> >   		return err;
-> 
-> 
+Thank you,
+	Vasily Averin.
