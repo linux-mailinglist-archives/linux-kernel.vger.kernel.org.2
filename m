@@ -2,222 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CE53CBDF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501E63CBDF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhGPUsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S234416AbhGPUsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbhGPUsF (ORCPT
+        with ESMTP id S230415AbhGPUsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:48:05 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684DDC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:45:10 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id d12so11103925pgd.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:45:10 -0700 (PDT)
+        Fri, 16 Jul 2021 16:48:46 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64150C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:45:51 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id q6-20020a05620a05a6b02903b8bd8b612eso6667378qkq.19
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:45:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SVoSEdDgsOF278SEiT4bkNSj8tfCkbEPe6QxJ6ZAsEQ=;
-        b=t0vWasvz4oRzr+vYOWmdOoybGtIq6QFmUpca0QK8qN5g5wnlInrCHGZJsw5tap+hKN
-         12DomogOX59eHsUvDjxO0DSEf3pwET8LnmSFGbH5gx8mS7+qfVXQjEBg3FIPaWFgkZvi
-         WF0x+VvAmN+bUcCRxDXyl6rQGDbMC+7MfzzRGPTZFpqcs32O5+y6MuZKMdub4UJhFjbN
-         vqMhgYV5KJkJR7P0KVFbUa6njAcMVNSCw0SvO+QFdlXCp313bcGXTSEEfKZ1f++zMlEs
-         uY4l38PFa9zQzDTqw9puylWL7kHZLhH2SbEVAfd+KqRElAe9V0lA5o4j0Za07HLyYPrA
-         nhcA==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6xOtLIYGyLB17xvo4gQCXAgOrNxU3pti+/trSkcx+rg=;
+        b=WCi9oN7bpF4MQZ7OHx/eGQ/9jKMyZye3MUnVEtKtWnCo/EpfbBmeGXUd5eOyoNKMQj
+         DYN5lmCu3/q8AdyK4rm7xIFJcOwG+uyPzxxf69EKkkn7+wWUfdbLm3lkBE03uNtB4e2i
+         gbGuIfiB+qK3e2UfmtsoDBc5ppYrNbm/0PA5qpXL799rAjdUPYvTspivZ75PoXOKcnbf
+         VTgAh6DQVlbrP9REEfb9LMbEb2ldntWwb/08ms1Jc0Z7UoiByS6CflUFpBk4fpTsto2a
+         QO8C6/3uWmiVU/eY2+ZDG2WQqA0Ty9aZNBAwrbv4CicgH29y1rrkpAE2wq6HgZG5nDya
+         QS9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SVoSEdDgsOF278SEiT4bkNSj8tfCkbEPe6QxJ6ZAsEQ=;
-        b=Z58z8BivtiqmGUmroMYtid8BtiK6XBAmD/BVoz4cq7TzqkvFJnilZUMYBn6flke/5U
-         GlMpOQZBlSiX8H/adxkbNR1qTxB07DaR/Ff9+JprJqWuugV+vOiTPwRZdUNEH+wJOOZt
-         YP9y/7qlAYSszLKoqgX6ent46xST5um4JkwdB2+QHIs1XUju5RQMf7ncKxk0DJxzEb4X
-         r3ksGWb6pwdDsU8SNlBu4vrNTOzvkEjMCf/jxlVina7xfpu3/Y5K42/YOpYZKPtK7IMK
-         9nLouh82JhuYZDralKBUi2l5UHopo7eKB0oGp9CAegIhA2FDU9Rq0dZ/IuyNoMqXcjA3
-         SQkQ==
-X-Gm-Message-State: AOAM533zBY7cjU+Hvxmtdke0FyWuva03m9mIYt2fY2CnCqfnfDDQ68td
-        vdS2pyxlPQsa7HLM9w0LEw+AmA==
-X-Google-Smtp-Source: ABdhPJxzXJMG7eNIWPnMlJihm93mr2tqoo2Emw3tCX3VwhK0jUTw4X6463ZC5w3P8nf6F+MZ58aggQ==
-X-Received: by 2002:a65:6416:: with SMTP id a22mr11788587pgv.433.1626468309671;
-        Fri, 16 Jul 2021 13:45:09 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d129sm11452261pfd.218.2021.07.16.13.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 13:45:09 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 20:45:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 32/40] KVM: SVM: Add support to handle GHCB
- GPA register VMGEXIT
-Message-ID: <YPHv0eCCOZQKne0O@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-33-brijesh.singh@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-33-brijesh.singh@amd.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6xOtLIYGyLB17xvo4gQCXAgOrNxU3pti+/trSkcx+rg=;
+        b=DKIrUrIeHuRhFR7tvAo1MflAYZwlbbTHqeySf93YTuDN7yzZQRDvmRlhZJND2BTZXk
+         Jx8lOTZP2defqPuKCVx4N700/F3U6H4uVOnGepIOBErUzGM9sLldGXEssJe5A6EGl+0S
+         ccHFWZlCij8nDwAEUhaSZS0oidyFyJBioflV18mnYo1YUfTgwdXyZfpTTHVSdGQGdWGA
+         ROXeTi9cCU16Ig62gRdknu1kRK2clfUsFVvAg7wV6rCUl/BUEMfunLs0ZAjnAucjVbeI
+         QGXA0J8j3fGIec+GKnZUtOrhDch0q44xPRsREosxyRrpJzTTHNkbiYbF/DV5cAWazEWi
+         OYIA==
+X-Gm-Message-State: AOAM530JBg+1/UXh1nu6Wdo78VugQwaMudc/mDFN9FVf7A8gv9zdc54g
+        2UahRrxtEp0Ll+cXOY+e1/ZIjYHkv3BHxfo0KDs=
+X-Google-Smtp-Source: ABdhPJyG16Hp8cGkS8QEH32N9py2egU8HtddEjT0D8YHW7CIh0lajVFGsDMafb0g2+mcgnivV/NSMpsXj58yfyc6/xg=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:1ce:e9d9:963c:dd36])
+ (user=samitolvanen job=sendgmr) by 2002:ad4:4949:: with SMTP id
+ o9mr12208799qvy.56.1626468350421; Fri, 16 Jul 2021 13:45:50 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 13:45:45 -0700
+Message-Id: <20210716204545.3536354-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+Subject: [PATCH] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> SEV-SNP guests are required to perform a GHCB GPA registration (see
-> section 2.5.2 in GHCB specification). Before using a GHCB GPA for a vCPU
+With CONFIG_LTO_CLANG, we currently link modules into native
+code just before modpost, which means with TRIM_UNUSED_KSYMS
+enabled, we still look at the LLVM bitcode in the .o files when
+generating the list of used symbols. As the bitcode doesn't
+yet have calls to compiler intrinsics and llvm-nm doesn't see
+function references that only exist in function-level inline
+assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
+work with LTO.
 
-It's section 2.3.2 in version 2.0 of the spec.
+This change moves module LTO linking to happen earlier, and
+thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
+entirely, allowing us to also drop the whitelist from
+gen_autoksyms.sh.
 
-> the first time, a guest must register the vCPU GHCB GPA. If hypervisor
-> can work with the guest requested GPA then it must respond back with the
-> same GPA otherwise return -1.
->
-> On VMEXIT, Verify that GHCB GPA matches with the registered value. If a
-> mismatch is detected then abort the guest.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/include/asm/sev-common.h |  2 ++
->  arch/x86/kvm/svm/sev.c            | 25 +++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.h            |  7 +++++++
->  3 files changed, 34 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-> index 466baa9cd0f5..6990d5a9d73c 100644
-> --- a/arch/x86/include/asm/sev-common.h
-> +++ b/arch/x86/include/asm/sev-common.h
-> @@ -60,8 +60,10 @@
->  	GHCB_MSR_GPA_REG_REQ)
->  
->  #define GHCB_MSR_GPA_REG_RESP		0x013
-> +#define GHCB_MSR_GPA_REG_ERROR		GENMASK_ULL(51, 0)
->  #define GHCB_MSR_GPA_REG_RESP_VAL(v)	((v) >> GHCB_MSR_GPA_REG_VALUE_POS)
->  
-> +
->  /* SNP Page State Change */
->  #define GHCB_MSR_PSC_REQ		0x014
->  #define SNP_PAGE_STATE_PRIVATE		1
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index fd2d00ad80b7..3af5d1ad41bf 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2922,6 +2922,25 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
->  				GHCB_MSR_INFO_MASK, GHCB_MSR_INFO_POS);
->  		break;
->  	}
-> +	case GHCB_MSR_GPA_REG_REQ: {
+Link: https://github.com/ClangBuiltLinux/linux/issues/1369
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+ scripts/Makefile.build    | 25 ++++++++++++++++++++++++-
+ scripts/Makefile.lib      |  7 +++++++
+ scripts/Makefile.modfinal | 21 ++-------------------
+ scripts/Makefile.modpost  | 22 +++-------------------
+ scripts/gen_autoksyms.sh  | 12 ------------
+ 5 files changed, 36 insertions(+), 51 deletions(-)
 
-Shouldn't KVM also support "Get preferred GHCB GPA", at least to the point where
-it responds with "No preferred GPA".  AFAICT, this series doesn't cover that,
-i.e. KVM will kill a guest that requests the VMM's preferred GPA.
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 10b2f2380d6f..80e0fa810870 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -202,6 +202,7 @@ sub_cmd_record_mcount =					\
+ 	if [ $(@) != "scripts/mod/empty.o" ]; then	\
+ 		$(objtree)/scripts/recordmcount $(RECORDMCOUNT_FLAGS) "$(@)";	\
+ 	fi;
++/
+ recordmcount_source := $(srctree)/scripts/recordmcount.c \
+ 		    $(srctree)/scripts/recordmcount.h
+ else
+@@ -271,12 +272,34 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
+ 
++ifdef CONFIG_LTO_CLANG
++# Module .o files may contain LLVM bitcode, compile them into native code
++# before ELF processing
++quiet_cmd_cc_lto_link_modules = LTO [M] $@
++cmd_cc_lto_link_modules =						\
++	$(LD) $(ld_flags) -r -o $@					\
++		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
++			echo -T $(@:.lto.o=.o.symversions))		\
++		--whole-archive $^
++
++ifdef CONFIG_STACK_VALIDATION
++# objtool was skipped for LLVM bitcode, run it now that we have compiled
++# modules into native code
++cmd_cc_lto_link_modules += ;						\
++	$(objtree)/tools/objtool/objtool $(objtool_args)		\
++		$(@:.ko=$(mod-prelink-ext).o)
++endif
++
++$(obj)/%.lto.o: $(obj)/%.o
++	$(call if_changed,cc_lto_link_modules)
++endif
++
+ cmd_mod = { \
+ 	echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
+ 	$(undefined_syms) echo; \
+ 	} > $@
+ 
+-$(obj)/%.mod: $(obj)/%.o FORCE
++$(obj)/%.mod: $(obj)/%$(mod-prelink-ext).o FORCE
+ 	$(call if_changed,mod)
+ 
+ quiet_cmd_cc_lst_c = MKLST   $@
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 10950559b223..ee985366dddf 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -225,6 +225,13 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
+ 		 $(addprefix -I,$(DTC_INCLUDE))                          \
+ 		 -undef -D__DTS__
+ 
++ifeq ($(CONFIG_LTO_CLANG),y)
++# With CONFIG_LTO_CLANG, .o files in modules might be LLVM bitcode, so we
++# need to run # LTO to compile them into native code (.lto.o) before further
++# processing.
++mod-prelink-ext := .lto
++endif
++
+ # Objtool arguments are also needed for modfinal with LTO, so we define
+ # then here to avoid duplication.
+ objtool_args =								\
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 5e9b8057fb24..ff805777431c 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -9,7 +9,7 @@ __modfinal:
+ include include/config/auto.conf
+ include $(srctree)/scripts/Kbuild.include
+ 
+-# for c_flags and objtool_args
++# for c_flags and mod-prelink-ext
+ include $(srctree)/scripts/Makefile.lib
+ 
+ # find all modules listed in modules.order
+@@ -30,23 +30,6 @@ quiet_cmd_cc_o_c = CC [M]  $@
+ 
+ ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
+ 
+-ifdef CONFIG_LTO_CLANG
+-# With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
+-# avoid a second slow LTO link
+-prelink-ext := .lto
+-
+-# ELF processing was skipped earlier because we didn't have native code,
+-# so let's now process the prelinked binary before we link the module.
+-
+-ifdef CONFIG_STACK_VALIDATION
+-cmd_ld_ko_o +=								\
+-	$(objtree)/tools/objtool/objtool $(objtool_args)		\
+-		$(@:.ko=$(prelink-ext).o);
+-
+-endif # CONFIG_STACK_VALIDATION
+-
+-endif # CONFIG_LTO_CLANG
+-
+ quiet_cmd_ld_ko_o = LD [M]  $@
+       cmd_ld_ko_o +=							\
+ 	$(LD) -r $(KBUILD_LDFLAGS)					\
+@@ -72,7 +55,7 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+ 
+ 
+ # Re-generate module BTFs if either module's .ko or vmlinux changed
+-$(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
++$(modules): %.ko: %$(mod-prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
+ 	+$(call if_changed_except,ld_ko_o,vmlinux)
+ ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+ 	+$(if $(newer-prereqs),$(call cmd,btf_ko))
+diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+index c383ba33d837..eef56d629799 100644
+--- a/scripts/Makefile.modpost
++++ b/scripts/Makefile.modpost
+@@ -41,7 +41,7 @@ __modpost:
+ include include/config/auto.conf
+ include $(srctree)/scripts/Kbuild.include
+ 
+-# for ld_flags
++# for mod-prelink-ext
+ include $(srctree)/scripts/Makefile.lib
+ 
+ MODPOST = scripts/mod/modpost								\
+@@ -118,22 +118,6 @@ $(input-symdump):
+ 	@echo >&2 '         Modules may not have dependencies or modversions.'
+ 	@echo >&2 '         You may get many unresolved symbol warnings.'
+ 
+-ifdef CONFIG_LTO_CLANG
+-# With CONFIG_LTO_CLANG, .o files might be LLVM bitcode, so we need to run
+-# LTO to compile them into native code before running modpost
+-prelink-ext := .lto
+-
+-quiet_cmd_cc_lto_link_modules = LTO [M] $@
+-cmd_cc_lto_link_modules =						\
+-	$(LD) $(ld_flags) -r -o $@					\
+-		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
+-			echo -T $(@:.lto.o=.o.symversions))		\
+-		--whole-archive $^
+-
+-%.lto.o: %.o
+-	$(call if_changed,cc_lto_link_modules)
+-endif
+-
+ modules := $(sort $(shell cat $(MODORDER)))
+ 
+ # KBUILD_MODPOST_WARN can be set to avoid error out in case of undefined symbols
+@@ -144,9 +128,9 @@ endif
+ # Read out modules.order to pass in modpost.
+ # Otherwise, allmodconfig would fail with "Argument list too long".
+ quiet_cmd_modpost = MODPOST $@
+-      cmd_modpost = sed 's/\.ko$$/$(prelink-ext)\.o/' $< | $(MODPOST) -T -
++      cmd_modpost = sed 's/\.ko$$/$(mod-prelink-ext)\.o/' $< | $(MODPOST) -T -
+ 
+-$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(prelink-ext).o) FORCE
++$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(mod-prelink-ext).o) FORCE
+ 	$(call if_changed,modpost)
+ 
+ targets += $(output-symdump)
+diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
+index da320151e7c3..6ed0d225c8b1 100755
+--- a/scripts/gen_autoksyms.sh
++++ b/scripts/gen_autoksyms.sh
+@@ -26,18 +26,6 @@ if [ -n "$CONFIG_MODVERSIONS" ]; then
+ 	needed_symbols="$needed_symbols module_layout"
+ fi
+ 
+-# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
+-# when the .mod files are generated, which means they don't yet contain
+-# references to certain symbols that will be present in the final binaries.
+-if [ -n "$CONFIG_LTO_CLANG" ]; then
+-	# intrinsic functions
+-	needed_symbols="$needed_symbols memcpy memmove memset"
+-	# ftrace
+-	needed_symbols="$needed_symbols _mcount"
+-	# stack protector symbols
+-	needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
+-fi
+-
+ ksym_wl=
+ if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
+ 	# Use 'eval' to expand the whitelist path and check if it is relative
+-- 
+2.32.0.402.g57bb445576-goog
 
-> +		kvm_pfn_t pfn;
-> +		u64 gfn;
-> +
-> +		gfn = get_ghcb_msr_bits(svm, GHCB_MSR_GPA_REG_GFN_MASK,
-> +					GHCB_MSR_GPA_REG_VALUE_POS);
-
-This is confusing, the MASK/POS reference both GPA and GFN.
-
-> +
-> +		pfn = kvm_vcpu_gfn_to_pfn(vcpu, gfn);
-> +		if (is_error_noslot_pfn(pfn))
-
-Checking the mapped PFN at this time isn't wrong, but it's also not complete,
-e.g. nothing prevents userspace from changing the gpa->hva mapping after the
-initial registration.  Not that that's likely to happen (or not break the guest),
-but my point is that random checks on the backing PFN really have no meaning in
-KVM unless KVM can guarantee that the PFN is stable for the duration of its use.
-
-And conversely, the GHCB doesn't require the GHCB to be shared until the first
-use.  E.g. arguably KVM should fully check the usability of the GPA, but the
-GHCB spec disallows that.  And I honestly can't see why SNP is special with
-respect to the GHCB.  ES guests will explode just as badly if the GPA points at
-garbage.
-
-I guess I'm not against the check, but it feels extremely arbitrary.
-
-> +			gfn = GHCB_MSR_GPA_REG_ERROR;
-> +		else
-> +			svm->ghcb_registered_gpa = gfn_to_gpa(gfn);
-> +
-> +		set_ghcb_msr_bits(svm, gfn, GHCB_MSR_GPA_REG_GFN_MASK,
-> +				  GHCB_MSR_GPA_REG_VALUE_POS);
-> +		set_ghcb_msr_bits(svm, GHCB_MSR_GPA_REG_RESP, GHCB_MSR_INFO_MASK,
-> +				  GHCB_MSR_INFO_POS);
-> +		break;
-> +	}
->  	case GHCB_MSR_TERM_REQ: {
->  		u64 reason_set, reason_code;
->  
-> @@ -2970,6 +2989,12 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
->  		return -EINVAL;
->  	}
->  
-> +	/* SEV-SNP guest requires that the GHCB GPA must be registered */
-> +	if (sev_snp_guest(svm->vcpu.kvm) && !ghcb_gpa_is_registered(svm, ghcb_gpa)) {
-> +		vcpu_unimpl(&svm->vcpu, "vmgexit: GHCB GPA [%#llx] is not registered.\n", ghcb_gpa);
-
-I saw this a few other place.  vcpu_unimpl() is not the right API.  KVM supports
-the guest request, the problem is that the GHCB spec _requires_ KVM to terminate
-the guest in this case.
-
-> +		return -EINVAL;
-> +	}
-> +
->  	svm->ghcb = svm->ghcb_map.hva;
->  	ghcb = svm->ghcb_map.hva;
->  
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 32abcbd774d0..af4cce39b30f 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -185,6 +185,8 @@ struct vcpu_svm {
->  	bool ghcb_sa_free;
->  
->  	bool guest_state_loaded;
-> +
-> +	u64 ghcb_registered_gpa;
->  };
->  
->  struct svm_cpu_data {
-> @@ -245,6 +247,11 @@ static inline bool sev_snp_guest(struct kvm *kvm)
->  #endif
->  }
->  
-> +static inline bool ghcb_gpa_is_registered(struct vcpu_svm *svm, u64 val)
-> +{
-> +	return svm->ghcb_registered_gpa == val;
-> +}
-> +
->  static inline void vmcb_mark_all_dirty(struct vmcb *vmcb)
->  {
->  	vmcb->control.clean = 0;
-> -- 
-> 2.17.1
-> 
