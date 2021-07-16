@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB013CB55F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE393CB54C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235558AbhGPJlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:41:01 -0400
-Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:22642
-        "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234645AbhGPJkw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:40:52 -0400
-X-SMTP-MATCH: 0
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3At7TAma1IrZHKw7M8QUCgYgqjBJkkLtp133?=
- =?us-ascii?q?Aq2lEZdPU1SKylfqWV98jzuiWftN98YhwdcLO7WZVoI0myyXcd2+B4AV7IZm?=
- =?us-ascii?q?fbUQWTQL2LbePZsl7d866XzJ8l6U9KGJIOauEZBzNB/L7HCI7RKadG/DEEmJ?=
- =?us-ascii?q?rY49s3Th9WPGRXgyQJ1XYcNjqm?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AZBwA6UPFg/y2ELHlaHgEBCxIMQAm?=
- =?us-ascii?q?BRQsCg3ZshAJGkBMBAQEBAQEGjCmFb1+KKYF8CwEBAQEBAQEBAUoEAQGEVAK?=
- =?us-ascii?q?CfAElNAkOAgQVAQEBBQEBAQEBBgMBgQ6FdUMBDAGFdQYjBFIQGA0CGA4CAkc?=
- =?us-ascii?q?QBgEShVMlp2d/MxoCZYpDgRAqAYcIgmiDeiccfYEQgRUzA4EFgiiHW4JkBIM?=
- =?us-ascii?q?YgQ4mWoFAlQwBRooZW50Mgy6eZBeVTwOQdS2VW6cOghRNLgqDJFAZjjgXjjo?=
- =?us-ascii?q?3LzgCBgoBAQMJgnKHIi2CGAEB?=
-X-IPAS-Result: =?us-ascii?q?A2AZBwA6UPFg/y2ELHlaHgEBCxIMQAmBRQsCg3ZshAJGk?=
- =?us-ascii?q?BMBAQEBAQEGjCmFb1+KKYF8CwEBAQEBAQEBAUoEAQGEVAKCfAElNAkOAgQVA?=
- =?us-ascii?q?QEBBQEBAQEBBgMBgQ6FdUMBDAGFdQYjBFIQGA0CGA4CAkcQBgEShVMlp2d/M?=
- =?us-ascii?q?xoCZYpDgRAqAYcIgmiDeiccfYEQgRUzA4EFgiiHW4JkBIMYgQ4mWoFAlQwBR?=
- =?us-ascii?q?ooZW50Mgy6eZBeVTwOQdS2VW6cOghRNLgqDJFAZjjgXjjo3LzgCBgoBAQMJg?=
- =?us-ascii?q?nKHIi2CGAEB?=
-X-IronPort-AV: E=Sophos;i="5.84,244,1620662400"; 
-   d="scan'208";a="329873615"
-Received: from unknown (HELO web.messagingengine.com) ([121.44.132.45])
-  by icp-osb-irony-out9.iinet.net.au with ESMTP; 16 Jul 2021 17:28:40 +0800
-Subject: [PATCH v8 5/5] kernfs: dont call d_splice_alias() under kernfs node
- lock
-From:   Ian Kent <raven@themaw.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Eric Sandeen <sandeen@sandeen.net>, Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 16 Jul 2021 17:28:40 +0800
-Message-ID: <162642772000.63632.10672683419693513226.stgit@web.messagingengine.com>
-In-Reply-To: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
-References: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
-User-Agent: StGit/0.23
+        id S233786AbhGPJf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:35:29 -0400
+Received: from mga12.intel.com ([192.55.52.136]:13721 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232617AbhGPJfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 05:35:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="190385471"
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="190385471"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 02:32:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="573616163"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 16 Jul 2021 02:32:15 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 16 Jul 2021 12:32:14 +0300
+Date:   Fri, 16 Jul 2021 12:32:14 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     laurentiu.tudor@nxp.com
+Cc:     andriy.shevchenko@linux.intel.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jon@solid-run.com
+Subject: Re: [RFC PATCH] software node: balance refcount for managed sw nodes
+Message-ID: <YPFSHiHZzjwJD2PI@kuha.fi.intel.com>
+References: <20210716081711.7638-1-laurentiu.tudor@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716081711.7638-1-laurentiu.tudor@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The call to d_splice_alias() in kernfs_iop_lookup() doesn't depend on
-any kernfs node so there's no reason to hold the kernfs node lock when
-calling it.
+Fri, Jul 16, 2021 at 11:17:11AM +0300, laurentiu.tudor@nxp.com kirjoitti:
+> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> 
+> software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
+> software nodes, thus leading to underflow errors. Balance the refcount by
+> bumping it in the device_create_managed_software_node() function.
+> 
+> The error [1] was encountered after adding a .shutdown() op to our
+> fsl-mc-bus driver.
+> 
+> [1]
+> pc : refcount_warn_saturate+0xf8/0x150
+> lr : refcount_warn_saturate+0xf8/0x150
+> sp : ffff80001009b920
+> x29: ffff80001009b920 x28: ffff1a2420318000 x27: 0000000000000000
+> x26: ffffccac15e7a038 x25: 0000000000000008 x24: ffffccac168e0030
+> x23: ffff1a2428a82000 x22: 0000000000080000 x21: ffff1a24287b5000
+> x20: 0000000000000001 x19: ffff1a24261f4400 x18: ffffffffffffffff
+> x17: 6f72645f726f7272 x16: 0000000000000000 x15: ffff80009009b607
+> x14: 0000000000000000 x13: ffffccac16602670 x12: 0000000000000a17
+> x11: 000000000000035d x10: ffffccac16602670 x9 : ffffccac16602670
+> x8 : 00000000ffffefff x7 : ffffccac1665a670 x6 : ffffccac1665a670
+> x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+> x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff1a2420318000
+> Call trace:
+>  refcount_warn_saturate+0xf8/0x150
+>  kobject_put+0x10c/0x120
+>  software_node_notify+0xd8/0x140
+>  device_platform_notify+0x4c/0xb4
+>  device_del+0x188/0x424
+>  fsl_mc_device_remove+0x2c/0x4c
+>  rebofind sp.c__fsl_mc_device_remove+0x14/0x2c
+>  device_for_each_child+0x5c/0xac
+>  dprc_remove+0x9c/0xc0
+>  fsl_mc_driver_remove+0x28/0x64
+>  __device_release_driver+0x188/0x22c
+>  device_release_driver+0x30/0x50
+>  bus_remove_device+0x128/0x134
+>  device_del+0x16c/0x424
+>  fsl_mc_bus_remove+0x8c/0x114
+>  fsl_mc_bus_shutdown+0x14/0x20
+>  platform_shutdown+0x28/0x40
+>  device_shutdown+0x15c/0x330
+>  __do_sys_reboot+0x218/0x2a0
+>  __arm64_sys_reboot+0x28/0x34
+>  invoke_syscall+0x48/0x114
+>  el0_svc_common+0x40/0xdc
+>  do_el0_svc+0x2c/0x94
+>  el0_svc+0x2c/0x54
+>  el0t_64_sync_handler+0xa8/0x12c
+>  el0t_64_sync+0x198/0x19c
+> ---[ end trace 32eb1c71c7d86821 ]---
+> 
+> Reported-by: Jon Nettleton <jon@solid-run.com>
+> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> ---
+>  drivers/base/swnode.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index d1f1a8240120..907616ca487f 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -1113,6 +1113,8 @@ int device_create_managed_software_node(struct device *dev,
+>  	to_swnode(fwnode)->managed = true;
+>  	set_secondary_fwnode(dev, fwnode);
+>  
+> +	kobject_get(&to_swnode(fwnode)->kobj);
+> +
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(device_create_managed_software_node);
 
-Signed-off-by: Ian Kent <raven@themaw.net>
-Reviewed-by: Miklos Szeredi <mszeredi@redhat.com>
----
- fs/kernfs/dir.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+We can't increment the refcount uncoditionally like that. Would this
+work instead:
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 4994723d6cf7..ba581429bf7b 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -1100,7 +1100,6 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
- 					struct dentry *dentry,
- 					unsigned int flags)
- {
--	struct dentry *ret;
- 	struct kernfs_node *parent = dir->i_private;
- 	struct kernfs_node *kn;
- 	struct inode *inode = NULL;
-@@ -1120,11 +1119,10 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
- 	/* Needed only for negative dentry validation */
- 	if (!inode)
- 		kernfs_set_rev(parent, dentry);
--	/* instantiate and hash (possibly negative) dentry */
--	ret = d_splice_alias(inode, dentry);
- 	up_read(&kernfs_rwsem);
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index d1f1a82401207..bdb50a06c82ae 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -1113,6 +1113,9 @@ int device_create_managed_software_node(struct device *dev,
+        to_swnode(fwnode)->managed = true;
+        set_secondary_fwnode(dev, fwnode);
  
--	return ret;
-+	/* instantiate and hash (possibly negative) dentry */
-+	return d_splice_alias(inode, dentry);
++       if (device_is_registered(dev))
++               software_node_notify(dev, KOBJ_ADD);
++
+        return 0;
  }
- 
- static int kernfs_iop_mkdir(struct user_namespace *mnt_userns,
+ EXPORT_SYMBOL_GPL(device_create_managed_software_node);
 
+thanks,
 
+-- 
+heikki
