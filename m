@@ -2,162 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591E73CBDF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CE53CBDF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbhGPUrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:47:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39741 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234125AbhGPUrp (ORCPT
+        id S234457AbhGPUsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234125AbhGPUsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:47:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626468290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2hOSl7T8uaeeFLE5+UEIkT2Ky1iFxWg4XaCDh/v6oAM=;
-        b=VDWvAgdFo74wH50CoRs7JZLx3kQkowsQbBebZ+mQ5848rPMBcBRD1CKV5hERB5ChirGyS5
-        8jhLKwmQ0Ya2UgRkYdE1C8Ul8zHngLHRSYeGsd35xriIaOBQPVk9JY3zB2IzdmQQQOPXdm
-        jq1L+7wYo5eVKYngGAKCxLcT3DtikNE=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-qLX-Xx0IM_Svjy02oGyA8A-1; Fri, 16 Jul 2021 16:44:48 -0400
-X-MC-Unique: qLX-Xx0IM_Svjy02oGyA8A-1
-Received: by mail-qt1-f199.google.com with SMTP id d9-20020ac84e290000b0290256a44e9034so7006450qtw.22
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:44:48 -0700 (PDT)
+        Fri, 16 Jul 2021 16:48:05 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684DDC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:45:10 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id d12so11103925pgd.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SVoSEdDgsOF278SEiT4bkNSj8tfCkbEPe6QxJ6ZAsEQ=;
+        b=t0vWasvz4oRzr+vYOWmdOoybGtIq6QFmUpca0QK8qN5g5wnlInrCHGZJsw5tap+hKN
+         12DomogOX59eHsUvDjxO0DSEf3pwET8LnmSFGbH5gx8mS7+qfVXQjEBg3FIPaWFgkZvi
+         WF0x+VvAmN+bUcCRxDXyl6rQGDbMC+7MfzzRGPTZFpqcs32O5+y6MuZKMdub4UJhFjbN
+         vqMhgYV5KJkJR7P0KVFbUa6njAcMVNSCw0SvO+QFdlXCp313bcGXTSEEfKZ1f++zMlEs
+         uY4l38PFa9zQzDTqw9puylWL7kHZLhH2SbEVAfd+KqRElAe9V0lA5o4j0Za07HLyYPrA
+         nhcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2hOSl7T8uaeeFLE5+UEIkT2Ky1iFxWg4XaCDh/v6oAM=;
-        b=faRYlbczB+DoB1wBhHLDC6WTFluzpkZ2JiojTg7ik8AyTrgLuDbYrVKkbFYB0YEoAy
-         Xnn7BsLW+KcQkxe+16Rbt5kpjmyo5kna9AVbWteA+jtlosCI34AVYPBKwOt3pMJoNnxc
-         +PUfYYsVheU7rA33E60dNxE2Hj1bIwVz6tTMxjiJKSrxrMMYekSS5mVTQlK0Q4R53sVY
-         WgR3tfI0O3n+t7iqgOHfICPJGMANchH7s0rUPiuEJco+OJkkgBp6K7i9bNHY9mz+U/9r
-         6uZpZKrEIqDhCXojdEvqOey3ryAKKnldZL+nFhhRJq4B5b5HTzjYy/mPrQBLYJIq/dW3
-         WgVg==
-X-Gm-Message-State: AOAM533ID8EvefPWhFV7ZI91dMseLFMV/UymomcG4jdkcHA4WK9GqK9S
-        3DcRXzxagVOmxsR7vZ+94i1ZyxYzNhLtWHeLrquQ0taUToMX5mjejjcVHLhNy6y94bpIV1ab0VP
-        mTXSL7suBtv/COvbwhwPyTZSl
-X-Received: by 2002:a0c:cdc6:: with SMTP id a6mr12055703qvn.15.1626468288353;
-        Fri, 16 Jul 2021 13:44:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJySk4FYXysPvZ8XbnmBZ1swg1qoJWhXD2QzxodwEZF9W9BDb8u8S6hPtBgK6GGEILviRId/pg==
-X-Received: by 2002:a0c:cdc6:: with SMTP id a6mr12055691qvn.15.1626468288230;
-        Fri, 16 Jul 2021 13:44:48 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id a19sm3479074qtb.54.2021.07.16.13.44.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 13:44:47 -0700 (PDT)
-Subject: Re: [PATCH v5 2/3] spi: spi-altera-dfl: support n5010 feature
- revision
-To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
-        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Brown <broonie@kernel.org>
-Cc:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-References: <20210716135441.3235863-1-martin@geanix.com>
- <20210716135441.3235863-3-martin@geanix.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <be04e83e-bdf7-3a5c-ff34-a7cbf91f6ba2@redhat.com>
-Date:   Fri, 16 Jul 2021 13:44:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SVoSEdDgsOF278SEiT4bkNSj8tfCkbEPe6QxJ6ZAsEQ=;
+        b=Z58z8BivtiqmGUmroMYtid8BtiK6XBAmD/BVoz4cq7TzqkvFJnilZUMYBn6flke/5U
+         GlMpOQZBlSiX8H/adxkbNR1qTxB07DaR/Ff9+JprJqWuugV+vOiTPwRZdUNEH+wJOOZt
+         YP9y/7qlAYSszLKoqgX6ent46xST5um4JkwdB2+QHIs1XUju5RQMf7ncKxk0DJxzEb4X
+         r3ksGWb6pwdDsU8SNlBu4vrNTOzvkEjMCf/jxlVina7xfpu3/Y5K42/YOpYZKPtK7IMK
+         9nLouh82JhuYZDralKBUi2l5UHopo7eKB0oGp9CAegIhA2FDU9Rq0dZ/IuyNoMqXcjA3
+         SQkQ==
+X-Gm-Message-State: AOAM533zBY7cjU+Hvxmtdke0FyWuva03m9mIYt2fY2CnCqfnfDDQ68td
+        vdS2pyxlPQsa7HLM9w0LEw+AmA==
+X-Google-Smtp-Source: ABdhPJxzXJMG7eNIWPnMlJihm93mr2tqoo2Emw3tCX3VwhK0jUTw4X6463ZC5w3P8nf6F+MZ58aggQ==
+X-Received: by 2002:a65:6416:: with SMTP id a22mr11788587pgv.433.1626468309671;
+        Fri, 16 Jul 2021 13:45:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id d129sm11452261pfd.218.2021.07.16.13.45.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 13:45:09 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 20:45:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 32/40] KVM: SVM: Add support to handle GHCB
+ GPA register VMGEXIT
+Message-ID: <YPHv0eCCOZQKne0O@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-33-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210716135441.3235863-3-martin@geanix.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707183616.5620-33-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> SEV-SNP guests are required to perform a GHCB GPA registration (see
+> section 2.5.2 in GHCB specification). Before using a GHCB GPA for a vCPU
 
-On 7/16/21 6:54 AM, Martin Hundebøll wrote:
-> From: Martin Hundebøll <mhu@silicom.dk>
+It's section 2.3.2 in version 2.0 of the spec.
+
+> the first time, a guest must register the vCPU GHCB GPA. If hypervisor
+> can work with the guest requested GPA then it must respond back with the
+> same GPA otherwise return -1.
 >
-> The Max10 BMC on the Silicom n5010 PAC is slightly different than the
-> existing BMCs, so use a dedicated feature revision detect it.
->
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-> Reviewed-by: Moritz Fischer <mdf@kernel.org>
+> On VMEXIT, Verify that GHCB GPA matches with the registered value. If a
+> mismatch is detected then abort the guest.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 > ---
->
-> Changes since v4:
->   * Moved spi board_info structure from global/static scope
->     to function/stack scope
->
-> Changes since v3:
->   * Changed "BMC's" to "BMCs"
->   * Added Moritz' Reviewed-by
->
-> Changes since v2:
->   * None
->
-> Changes since v1:
->   * use feature revision from struct dfl_device instead of reading it
->     from io-mem
->
->   drivers/spi/spi-altera-dfl.c | 21 ++++++++++++---------
->   1 file changed, 12 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/spi/spi-altera-dfl.c b/drivers/spi/spi-altera-dfl.c
-> index 39a3e1a032e0..44fc9ee13fc7 100644
-> --- a/drivers/spi/spi-altera-dfl.c
-> +++ b/drivers/spi/spi-altera-dfl.c
-> @@ -104,13 +104,6 @@ static const struct regmap_config indirect_regbus_cfg = {
->   	.reg_read = indirect_bus_reg_read,
->   };
->   
-> -static struct spi_board_info m10_bmc_info = {
-> -	.modalias = "m10-d5005",
-> -	.max_speed_hz = 12500000,
-> -	.bus_num = 0,
-> -	.chip_select = 0,
-> -};
-> -
->   static void config_spi_master(void __iomem *base, struct spi_master *master)
->   {
->   	u64 v;
-> @@ -130,6 +123,7 @@ static void config_spi_master(void __iomem *base, struct spi_master *master)
->   
->   static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
->   {
-> +	struct spi_board_info board_info = { 0 };
->   	struct device *dev = &dfl_dev->dev;
->   	struct spi_master *master;
->   	struct altera_spi *hw;
-> @@ -170,9 +164,18 @@ static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
->   		goto exit;
->   	}
->   
-> -	if (!spi_new_device(master,  &m10_bmc_info)) {
-> +	if (dfl_dev->revision == FME_FEATURE_REV_MAX10_SPI_N5010)
-> +		strscpy(board_info.modalias, "m10-n5010", SPI_NAME_SIZE);
-> +	else
-> +		strscpy(board_info.modalias, "m10-d5005", SPI_NAME_SIZE);
+>  arch/x86/include/asm/sev-common.h |  2 ++
+>  arch/x86/kvm/svm/sev.c            | 25 +++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.h            |  7 +++++++
+>  3 files changed, 34 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index 466baa9cd0f5..6990d5a9d73c 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -60,8 +60,10 @@
+>  	GHCB_MSR_GPA_REG_REQ)
+>  
+>  #define GHCB_MSR_GPA_REG_RESP		0x013
+> +#define GHCB_MSR_GPA_REG_ERROR		GENMASK_ULL(51, 0)
+>  #define GHCB_MSR_GPA_REG_RESP_VAL(v)	((v) >> GHCB_MSR_GPA_REG_VALUE_POS)
+>  
 > +
-> +	board_info.max_speed_hz = 12500000;
-> +	board_info.bus_num = 0;
-> +	board_info.chip_select = 0;
+>  /* SNP Page State Change */
+>  #define GHCB_MSR_PSC_REQ		0x014
+>  #define SNP_PAGE_STATE_PRIVATE		1
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index fd2d00ad80b7..3af5d1ad41bf 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -2922,6 +2922,25 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+>  				GHCB_MSR_INFO_MASK, GHCB_MSR_INFO_POS);
+>  		break;
+>  	}
+> +	case GHCB_MSR_GPA_REG_REQ: {
+
+Shouldn't KVM also support "Get preferred GHCB GPA", at least to the point where
+it responds with "No preferred GPA".  AFAICT, this series doesn't cover that,
+i.e. KVM will kill a guest that requests the VMM's preferred GPA.
+
+> +		kvm_pfn_t pfn;
+> +		u64 gfn;
 > +
-> +	if (!spi_new_device(master, &board_info)) {
->   		dev_err(dev, "%s failed to create SPI device: %s\n",
-> -			__func__, m10_bmc_info.modalias);
-> +			__func__, board_info.modalias);
->   	}
->   
+> +		gfn = get_ghcb_msr_bits(svm, GHCB_MSR_GPA_REG_GFN_MASK,
+> +					GHCB_MSR_GPA_REG_VALUE_POS);
 
-Looks good to me.
+This is confusing, the MASK/POS reference both GPA and GFN.
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+> +
+> +		pfn = kvm_vcpu_gfn_to_pfn(vcpu, gfn);
+> +		if (is_error_noslot_pfn(pfn))
 
->   	return 0;
+Checking the mapped PFN at this time isn't wrong, but it's also not complete,
+e.g. nothing prevents userspace from changing the gpa->hva mapping after the
+initial registration.  Not that that's likely to happen (or not break the guest),
+but my point is that random checks on the backing PFN really have no meaning in
+KVM unless KVM can guarantee that the PFN is stable for the duration of its use.
 
+And conversely, the GHCB doesn't require the GHCB to be shared until the first
+use.  E.g. arguably KVM should fully check the usability of the GPA, but the
+GHCB spec disallows that.  And I honestly can't see why SNP is special with
+respect to the GHCB.  ES guests will explode just as badly if the GPA points at
+garbage.
+
+I guess I'm not against the check, but it feels extremely arbitrary.
+
+> +			gfn = GHCB_MSR_GPA_REG_ERROR;
+> +		else
+> +			svm->ghcb_registered_gpa = gfn_to_gpa(gfn);
+> +
+> +		set_ghcb_msr_bits(svm, gfn, GHCB_MSR_GPA_REG_GFN_MASK,
+> +				  GHCB_MSR_GPA_REG_VALUE_POS);
+> +		set_ghcb_msr_bits(svm, GHCB_MSR_GPA_REG_RESP, GHCB_MSR_INFO_MASK,
+> +				  GHCB_MSR_INFO_POS);
+> +		break;
+> +	}
+>  	case GHCB_MSR_TERM_REQ: {
+>  		u64 reason_set, reason_code;
+>  
+> @@ -2970,6 +2989,12 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
+>  		return -EINVAL;
+>  	}
+>  
+> +	/* SEV-SNP guest requires that the GHCB GPA must be registered */
+> +	if (sev_snp_guest(svm->vcpu.kvm) && !ghcb_gpa_is_registered(svm, ghcb_gpa)) {
+> +		vcpu_unimpl(&svm->vcpu, "vmgexit: GHCB GPA [%#llx] is not registered.\n", ghcb_gpa);
+
+I saw this a few other place.  vcpu_unimpl() is not the right API.  KVM supports
+the guest request, the problem is that the GHCB spec _requires_ KVM to terminate
+the guest in this case.
+
+> +		return -EINVAL;
+> +	}
+> +
+>  	svm->ghcb = svm->ghcb_map.hva;
+>  	ghcb = svm->ghcb_map.hva;
+>  
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 32abcbd774d0..af4cce39b30f 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -185,6 +185,8 @@ struct vcpu_svm {
+>  	bool ghcb_sa_free;
+>  
+>  	bool guest_state_loaded;
+> +
+> +	u64 ghcb_registered_gpa;
+>  };
+>  
+>  struct svm_cpu_data {
+> @@ -245,6 +247,11 @@ static inline bool sev_snp_guest(struct kvm *kvm)
+>  #endif
+>  }
+>  
+> +static inline bool ghcb_gpa_is_registered(struct vcpu_svm *svm, u64 val)
+> +{
+> +	return svm->ghcb_registered_gpa == val;
+> +}
+> +
+>  static inline void vmcb_mark_all_dirty(struct vmcb *vmcb)
+>  {
+>  	vmcb->control.clean = 0;
+> -- 
+> 2.17.1
+> 
