@@ -2,286 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699E83CBF8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 01:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DA43CBF92
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 01:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237561AbhGPXGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 19:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbhGPXGF (ORCPT
+        id S232719AbhGPXKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 19:10:04 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:52151 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231630AbhGPXKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 19:06:05 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91F5C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 16:03:09 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id g22so12502558iom.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 16:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=9jrSo/8w4ZCyJI243w1I54Is0297tr4Ud/P9+xiX6eE=;
-        b=SsH/xAX97+mE4HIlPmRWMrsSaKYL7CnI25zlXncZ/Joe8TDagLltXlI/nbzs0EdBK+
-         /69OsEZ1gUKkf1Pe32AKN2h/7gp9LZ7YaYIVno84Hc7uiPgsPjvidrMKyi6LcfJ4lB4h
-         6g1XEouAuZ0Tb5xhxjXyflZKISIow2oNJUHPE=
+        Fri, 16 Jul 2021 19:10:02 -0400
+Received: by mail-io1-f69.google.com with SMTP id x21-20020a5d99150000b02904e00bb129f0so7035466iol.18
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 16:07:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=9jrSo/8w4ZCyJI243w1I54Is0297tr4Ud/P9+xiX6eE=;
-        b=JULvs43zlt76qAFP+CKTXEBGOpcU6tpkzCqBPWFU0Wd8igOJUR4MSGNAMNbc0evd4N
-         sP8iEKDzuNkeCrjrRKYq/E8bL2k/ZKxPa5c+ZZtfBOqCgx50J+UGsNoNb5VQ06yZ39WL
-         JyLPAVcKjGNyecyeIuWy/W2H0HeJ6N3fhFHORy0LPKrQtYPZuPj4SwjafmHvqzJ0uqYc
-         kSD1ey26WI7/C91I/F0Mj1YAHI/gZkAkZjrORz22ONrauGv/8DvU8UdqWk63QctUzUNV
-         A2WtiSs3IU1Wfsgb1VGnaUB4OYHG5Lt/SonpejNFPjCZWLcocustxoyDjOmtJB0OYBmQ
-         6ljA==
-X-Gm-Message-State: AOAM531I6G0+i/6XHdc3HlXjs2dj/hG1uaLqjx+owPoRmh26/rL3ovEo
-        FrQw8upXo/1EtyQCwRLtIIFp99g+cToSKQ==
-X-Google-Smtp-Source: ABdhPJz/uXbJmFOka0AfPkhR3l74/AAI6WqOujq8+f6egYKl60jtIhEYlQSd1pnv1uM+qSvDFVtgxw==
-X-Received: by 2002:a6b:db18:: with SMTP id t24mr9340306ioc.163.1626476588913;
-        Fri, 16 Jul 2021 16:03:08 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id j13sm1209421ila.38.2021.07.16.16.03.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 16:03:08 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] KUnit update for Linux 5.14-rc2
-Message-ID: <9d9ebe39-8860-4d1a-2489-e6a1a1f0cbbb@linuxfoundation.org>
-Date:   Fri, 16 Jul 2021 17:03:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=qaMOIh2upbMs9hOM1Tz4AOxQSYOvrsMlI718rr6A6Is=;
+        b=JCgPmtO01BNkkvJgXvJkfpThI6QRx23mUaH/e4tRCXFCXPicX/oMaIurcDzZ7zs06l
+         /aJo2L+OhnnAbE+/GWxncH8NU5FnILZTM0QAkhF1DpxfdOPMYAtUSTO1tW+k633Pg722
+         GGqFcun8zeuiiixgNE/tez5kKIpgoJ6Bk5/xZ4Q6o2neRdCdy6TEg0ULTelKaUq8RYM6
+         Rddx2v2bNsLZuEm4LzMGwy62RnaBMDot6OmizbEbx0iLQLZYyGPL8kNQljecBgpQOPvh
+         tKjhBfcq2pcGQTTL4WXOhALE73zMExh1tmhXTv7GWeUmTmqJZs5VDuVSzssF3Cwile2H
+         YWpg==
+X-Gm-Message-State: AOAM5332qGjGt5Ok63NQH8Z//2Bypi874j7OQDNyHSnajjCORg534tgt
+        bQd/KGwJmA8NTnKn3NDN6FtLc8Ok0VUcgHErtYJvDsajjjOk
+X-Google-Smtp-Source: ABdhPJxsZhI0CdLIY+rzWPN0HYQv81ux+PuPu2AjkvxwV5y7JgLfQU6oiuU1IVzcs8ebcrTDjOTOzG9MGTpliCM3OpXNwjB3HeBm
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------1A7C8D7B520404FE15E7C549"
-Content-Language: en-US
+X-Received: by 2002:a92:d943:: with SMTP id l3mr8182316ilq.37.1626476826637;
+ Fri, 16 Jul 2021 16:07:06 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 16:07:06 -0700
+In-Reply-To: <00000000000055e16405b0fc1a90@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007cbbcd05c745a560@google.com>
+Subject: Re: [syzbot] WARNING in sta_info_alloc
+From:   syzbot <syzbot+45d7c243c006f39dc55a@syzkaller.appspotmail.com>
+To:     a@unstable.cc, anand.jain@oracle.com,
+        b.a.t.m.a.n@lists.open-mesh.org, catalin.marinas@arm.com,
+        clm@fb.com, davem@davemloft.net, dsterba@suse.com,
+        johannes@sipsolutions.net, josef@toxicpanda.com, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
+        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com,
+        will.deacon@arm.com, will@kernel.org, zlim.lnx@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------1A7C8D7B520404FE15E7C549
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+syzbot suspects this issue was fixed by commit:
 
-Hi Linus,
+commit 282ab3ff16120ec670fe3330e85f8ebf13092f21
+Author: David Sterba <dsterba@suse.com>
+Date:   Mon Oct 14 12:38:33 2019 +0000
 
-Please pull the following KUnit fixes update for Linux 5,14-rc2
+    btrfs: reduce compressed_bio members' types
 
-This KUnit fixes update for Linux 5.14-rc2 consists of fixes to kunit
-tool and documentation:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d5f6f2300000
+start commit:   7f75285ca572 Merge tag 'for-5.12/dm-fixes-3' of git://git...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b5591c832f889fd9
+dashboard link: https://syzkaller.appspot.com/bug?extid=45d7c243c006f39dc55a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164f385ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1427af9ad00000
 
--- asserts on older python versions.
--- fixes to misleading error messages when TAP header format is
-    incorrect or when file is missing.
--- fixes documentation dropping obsolete information about uml_abort
-    coverage.
--- removing unnecessary annotations
+If the result looks correct, please mark the issue as fixed by replying with:
 
-diff is attached.
+#syz fix: btrfs: reduce compressed_bio members' types
 
-Thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-
-   Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-fixes-5.14-rc2
-
-for you to fetch changes up to df4b0807ca1a62822342d404b863eff933d15762:
-
-   kunit: tool: Assert the version requirement (2021-07-12 14:02:32 -0600)
-
-----------------------------------------------------------------
-linux-kselftest-kunit-fixes-5.14-rc2
-
-This KUnit fixes update for Linux 5.14-rc2 consists of fixes to kunit
-tool and documentation:
-
--- asserts on older python versions.
--- fixes to misleading error messages when TAP header format is
-    incorrect or when file is missing.
--- fixes documentation dropping obsolete information about uml_abort
-    coverage.
--- removing unnecessary annotations
-
-----------------------------------------------------------------
-Daniel Latypov (2):
-       Documentation: kunit: drop obsolete note about uml_abort for coverage
-       kunit: tool: remove unnecessary "annotations" import
-
-Rae Moar (1):
-       kunit: tool: Fix error messages for cases of no tests and wrong TAP header
-
-SeongJae Park (1):
-       kunit: tool: Assert the version requirement
-
-  Documentation/dev-tools/kunit/running_tips.rst           | 14 +-------------
-  tools/testing/kunit/kunit.py                             |  2 ++
-  tools/testing/kunit/kunit_kernel.py                      |  6 ++----
-  tools/testing/kunit/kunit_parser.py                      |  6 ++++--
-  tools/testing/kunit/kunit_tool_test.py                   | 16 +++++++++++++---
-  ...og => test_is_test_passed-no_tests_run_no_header.log} |  0
-  .../test_is_test_passed-no_tests_run_with_header.log     |  2 ++
-  7 files changed, 24 insertions(+), 22 deletions(-)
-  rename tools/testing/kunit/test_data/{test_is_test_passed-no_tests_run.log => test_is_test_passed-no_tests_run_no_header.log} (100%)
-  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-----------------------------------------------------------------
-
---------------1A7C8D7B520404FE15E7C549
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-kunit-fixes-5.14-rc2.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-kunit-fixes-5.14-rc2.diff"
-
-diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
-index 7d99386cf94a..d1626d548fa5 100644
---- a/Documentation/dev-tools/kunit/running_tips.rst
-+++ b/Documentation/dev-tools/kunit/running_tips.rst
-@@ -86,19 +86,7 @@ Generating code coverage reports under UML
- .. note::
- 	TODO(brendanhiggins@google.com): There are various issues with UML and
- 	versions of gcc 7 and up. You're likely to run into missing ``.gcda``
--	files or compile errors. We know one `faulty GCC commit
--	<https://github.com/gcc-mirror/gcc/commit/8c9434c2f9358b8b8bad2c1990edf10a21645f9d>`_
--	but not how we'd go about getting this fixed. The compile errors still
--	need some investigation.
--
--.. note::
--	TODO(brendanhiggins@google.com): for recent versions of Linux
--	(5.10-5.12, maybe earlier), there's a bug with gcov counters not being
--	flushed in UML. This translates to very low (<1%) reported coverage. This is
--	related to the above issue and can be worked around by replacing the
--	one call to ``uml_abort()`` (it's in ``os_dump_core()``) with a plain
--	``exit()``.
--
-+	files or compile errors.
- 
- This is different from the "normal" way of getting coverage information that is
- documented in Documentation/dev-tools/gcov.rst.
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index be8d8d4a4e08..6276ce0c0196 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -12,6 +12,8 @@ import sys
- import os
- import time
- 
-+assert sys.version_info >= (3, 7), "Python version is too old"
-+
- from collections import namedtuple
- from enum import Enum, auto
- 
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 90bc007f1f93..2c6f916ccbaf 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -6,15 +6,13 @@
- # Author: Felix Guo <felixguoxiuping@gmail.com>
- # Author: Brendan Higgins <brendanhiggins@google.com>
- 
--from __future__ import annotations
- import importlib.util
- import logging
- import subprocess
- import os
- import shutil
- import signal
--from typing import Iterator
--from typing import Optional
-+from typing import Iterator, Optional, Tuple
- 
- from contextlib import ExitStack
- 
-@@ -208,7 +206,7 @@ def get_source_tree_ops(arch: str, cross_compile: Optional[str]) -> LinuxSourceT
- 		raise ConfigError(arch + ' is not a valid arch')
- 
- def get_source_tree_ops_from_qemu_config(config_path: str,
--					 cross_compile: Optional[str]) -> tuple[
-+					 cross_compile: Optional[str]) -> Tuple[
- 							 str, LinuxSourceTreeOperations]:
- 	# The module name/path has very little to do with where the actual file
- 	# exists (I learned this through experimentation and could not find it
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index c3c524b79db8..b88db3f51dc5 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -338,9 +338,11 @@ def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
- def parse_test_result(lines: LineStream) -> TestResult:
- 	consume_non_diagnostic(lines)
- 	if not lines or not parse_tap_header(lines):
--		return TestResult(TestStatus.NO_TESTS, [], lines)
-+		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
- 	expected_test_suite_num = parse_test_plan(lines)
--	if not expected_test_suite_num:
-+	if expected_test_suite_num == 0:
-+		return TestResult(TestStatus.NO_TESTS, [], lines)
-+	elif expected_test_suite_num is None:
- 		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
- 	test_suites = []
- 	for i in range(1, expected_test_suite_num + 1):
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index bdae0e5f6197..75045aa0f8a1 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -157,8 +157,18 @@ class KUnitParserTest(unittest.TestCase):
- 			kunit_parser.TestStatus.FAILURE,
- 			result.status)
- 
-+	def test_no_header(self):
-+		empty_log = test_data_path('test_is_test_passed-no_tests_run_no_header.log')
-+		with open(empty_log) as file:
-+			result = kunit_parser.parse_run_tests(
-+				kunit_parser.extract_tap_lines(file.readlines()))
-+		self.assertEqual(0, len(result.suites))
-+		self.assertEqual(
-+			kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
-+			result.status)
-+
- 	def test_no_tests(self):
--		empty_log = test_data_path('test_is_test_passed-no_tests_run.log')
-+		empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
- 		with open(empty_log) as file:
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(file.readlines()))
-@@ -173,7 +183,7 @@ class KUnitParserTest(unittest.TestCase):
- 		with open(crash_log) as file:
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(file.readlines()))
--		print_mock.assert_any_call(StrContains('no tests run!'))
-+		print_mock.assert_any_call(StrContains('could not parse test results!'))
- 		print_mock.stop()
- 		file.close()
- 
-@@ -309,7 +319,7 @@ class KUnitJsonTest(unittest.TestCase):
- 			result["sub_groups"][1]["test_cases"][0])
- 
- 	def test_no_tests_json(self):
--		result = self._json_for('test_is_test_passed-no_tests_run.log')
-+		result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
- 		self.assertEqual(0, len(result['sub_groups']))
- 
- class StrContains(str):
-diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-similarity index 100%
-rename from tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log
-rename to tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-new file mode 100644
-index 000000000000..5f48ee659d40
---- /dev/null
-+++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-@@ -0,0 +1,2 @@
-+TAP version 14
-+1..0
-
---------------1A7C8D7B520404FE15E7C549--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
