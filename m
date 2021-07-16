@@ -2,97 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30C43CB337
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F2B3CB33D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235816AbhGPH2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 03:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbhGPH2T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 03:28:19 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D30C06175F;
-        Fri, 16 Jul 2021 00:25:24 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id v5so10935933wrt.3;
-        Fri, 16 Jul 2021 00:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nU2U7Or3rdEtCmOqoYCrwSKKbz4Jehrqvr6IaJKZgTs=;
-        b=n6XHovRF0pwJ+4nfLx85sK/DNh8l2vFVpyJorWRYdwDSDW//Brd2EktUnHyKlo4kyE
-         CfVJQ3qT3lLCiegT6qFmrG5ugjQ2KKg85vtpaX8Q4TfgMqsqa3y1H/uL+TsG7ioT8FF5
-         0jcMXx2DCwY3K9ye5f29eReq5rc3YUl4M+wZgvn4DVW6vJLvjKrS4RgoLbynmg093FJi
-         xcsdLpAwrH47URotsOss9dFiOKmKQnnBtEZxS9xZurPlurjNysR4dmucwQKISjnl+p5j
-         5DrYaJmDJ1CD3+6pO7nNHDIWzygmzTveOKEZ2LOrqduPF28bm42eysZwSqx4CUXu73we
-         Tl5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nU2U7Or3rdEtCmOqoYCrwSKKbz4Jehrqvr6IaJKZgTs=;
-        b=Bjd3J8Oj7QpYr1GbN5YZ/LaEaAgBS4wbjBLgW1Fq+G3Ci4ZlZeL1EjGrPRpAuiFSGV
-         CxIG+pfnSY72UylE0JvuwRUCo3zY9746RRTpp6t9ScyZm3f0tl7LKfhg+riDBKKpuM1U
-         LNRnvLyugajMtP47tfThs9PjB1m/hk74KRuJyZR/ql37I+R/QXWnBmJ5fv4ENiD7TM0u
-         ITh65SE8dlmmpwj3bNyj/dG0tpVbX694z4gl32LbFIqTfg77K46rFn4dp6LY6RDFJU2g
-         43qKjcM1/gWjd679SWQ1n5ajW46V/yYqR4VAUqQ6n4jqsesebLMCAehCw6tJmV9zXF8n
-         Q7vA==
-X-Gm-Message-State: AOAM53367dHWfZpXp/t5sh8UTfYP0bcc8xhYmGmYV0VSXJvN1TT1pqtu
-        3QKIQcFxOzVTEeeX3nqKIe4l7+O9xys=
-X-Google-Smtp-Source: ABdhPJxqU2miLwcEmR2R813KcskUW1hFKadA/xanznNK9rVmYmiWsWLV+4zuHPJ/Lqgoe38bflpcDQ==
-X-Received: by 2002:a05:6000:18c8:: with SMTP id w8mr10446991wrq.90.1626420322679;
-        Fri, 16 Jul 2021 00:25:22 -0700 (PDT)
-Received: from debian64.daheim (p5b0d74ab.dip0.t-ipconnect.de. [91.13.116.171])
-        by smtp.gmail.com with ESMTPSA id v2sm8870981wro.48.2021.07.16.00.25.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 00:25:22 -0700 (PDT)
-Received: from localhost.daheim ([127.0.0.1])
-        by debian64.daheim with esmtp (Exim 4.94.2)
-        (envelope-from <chunkeey@gmail.com>)
-        id 1m4IDV-0002B0-Sf; Fri, 16 Jul 2021 09:25:01 +0200
-Subject: Re: [PATCH] intersil: remove obsolete prism54 wireless driver
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210713054025.32006-1-lukas.bulwahn@gmail.com>
- <20210715220644.2d2xfututdoimszm@garbanzo>
-From:   Christian Lamparter <chunkeey@gmail.com>
-Message-ID: <6f490ee6-4879-cac5-d351-112f21c6b23f@gmail.com>
-Date:   Fri, 16 Jul 2021 09:25:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235987AbhGPHbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 03:31:12 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51396 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235808AbhGPHbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 03:31:11 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1m4IGO-0004rw-KJ; Fri, 16 Jul 2021 15:28:00 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1m4IGF-0001z9-SW; Fri, 16 Jul 2021 15:27:51 +0800
+Date:   Fri, 16 Jul 2021 15:27:51 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     clabbe.montjoie@gmail.com, davem@davemloft.net, mripard@kernel.org,
+        wens@csie.org, jernej.skrabec@gmail.com, colin.king@canonical.com,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: sun8i-ss - Use kfree_sensitive
+Message-ID: <20210716072751.GA7595@gondor.apana.org.au>
+References: <20210701132200.31583-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
-In-Reply-To: <20210715220644.2d2xfututdoimszm@garbanzo>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210701132200.31583-1-wangborong@cdjrlc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/2021 00:06, Luis Chamberlain wrote:
-> On Tue, Jul 13, 2021 at 07:40:25AM +0200, Lukas Bulwahn wrote:
->> Commit 1d89cae1b47d ("MAINTAINERS: mark prism54 obsolete") indicated the
->> prism54 driver as obsolete in July 2010.
->>
->> Now, after being exposed for ten years to refactoring, general tree-wide
->> changes and various janitor clean-up, it is really time to delete the
->> driver for good.
->>
->> This was discovered as part of a checkpatch evaluation, investigating all
->> reports of checkpatch's WARNING:OBSOLETE check.
->>
->> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->> ---
+On Thu, Jul 01, 2021 at 09:22:00PM +0800, Jason Wang wrote:
+> The kfree_sensitive is a kernel API to clear sensitive information
+> that should not be leaked to other future users of the same memory
+> objects and free the memory. Its function is the same as the
+> combination of memzero_explicit and kfree. Thus, we can replace the
+> combination APIs with the single kfree_sensitive API.
+> 
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
 
-noted. Farewell.
+I don't know what happened but this patch didn't make it into
+patchwork.  Could you please check and resubmit?
 
-Cheers
-Christian
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
