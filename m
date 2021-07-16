@@ -2,123 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4803CBB2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F030A3CBB2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbhGPRbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:31:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhGPRbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:31:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5618A613FD;
-        Fri, 16 Jul 2021 17:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626456490;
-        bh=M2I/HaAF2t1p5V1162lM9GPJnRQ8sAYIEYzt6UQRuCk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YkTCoKJskYPAl/8zlMwaMwS6RNFF9yDvv+86+qGODMKWfo2za1Avl8EJgQKP/+Dlc
-         n8TYlFvLo8VUku33Vk82jfOel01Ba3d/l6sWEZZo6U/W6cQwykE3PG4iNT1P2QTcTK
-         1SqFivZHNhkKP2mrEXk8YJjT7FyfHsMhBbZEVqQE=
-Date:   Fri, 16 Jul 2021 19:28:06 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Long Li <longli@microsoft.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [Patch v3 2/3] Drivers: hv: add Azure Blob driver
-Message-ID: <YPHBpo1n/COMegcE@kroah.com>
-References: <1626230722-1971-1-git-send-email-longli@linuxonhyperv.com>
- <1626230722-1971-3-git-send-email-longli@linuxonhyperv.com>
- <MWHPR21MB15937DF3FB30DDA65EF58EE1D7119@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S231344AbhGPRb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 13:31:59 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:46733 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhGPRb6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 13:31:58 -0400
+Received: by mail-oi1-f181.google.com with SMTP id t25so11682056oiw.13;
+        Fri, 16 Jul 2021 10:29:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B6mBSGEQ2PUgYALYpaho9euhH7yHslY6CwXaUaYLnKQ=;
+        b=iLBDOrZDGSAFheUcs25D2QA/YEMekSjdhQiJpbhGX7PD86aZvJLqeR+ZLgayOZ3yHD
+         YWZzcJXDly2PSb8xEoMb7/qQCyHId06iEjvWWgRTwZ+lbVGTNB9G8sWqfyRUvsALtVcw
+         0R4y5VJOJHJyXxre9CNFT7eRSuyQ6ACSYxPmb0IseoIg9fObXEUcqJ8Q73SOy552rZNR
+         MUeT3TfuHlNrXwQuq/RvIZ3gkNIHxo+BWIhjXS9HRBSuQDjPKWE9KdmS90Z+hmkymjN1
+         IyKf7BK8uodLnygmeOQwGFBZw9fdnaSRISRrPsYk00DOq1j8uDYMlPIlK/OwqVIVIhDK
+         bktQ==
+X-Gm-Message-State: AOAM533fRtcFsbPmS69ZbprU50ASY4+mEpRp16dzPFArB/aifWrgTKAn
+        Bk/2vk5LEfaCpyVGzWVNY3bSfxUf2frZRytxNt0=
+X-Google-Smtp-Source: ABdhPJwSbkfOdjeei8TwHmwUrgoW1akU7sF/SvpcPNEtQH6hwggXdya/fzJBDHqzePBcQVXwN8amUixZpVSoYtHmX+I=
+X-Received: by 2002:aca:4f57:: with SMTP id d84mr8863695oib.71.1626456541912;
+ Fri, 16 Jul 2021 10:29:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15937DF3FB30DDA65EF58EE1D7119@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210715141651.82325-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210715141651.82325-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Jul 2021 19:28:51 +0200
+Message-ID: <CAJZ5v0h=70mAb5y_bfJ1tS8nhoBU+KFwkZ_t5g49UA=4EMFcFw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] ACPI: configfs: Use sysfs_emit() in "show" functions
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 03:56:14PM +0000, Michael Kelley wrote:
-> > +static int az_blob_remove(struct hv_device *dev)
-> > +{
-> > +	az_blob_dev.removing = true;
-> > +	/*
-> > +	 * RCU lock guarantees that any future calls to az_blob_fop_open()
-> > +	 * can not use device resources while the inode reference of
-> > +	 * /dev/azure_blob is being held for that open, and device file is
-> > +	 * being removed from /dev.
-> > +	 */
-> > +	synchronize_rcu();
-> 
-> I don't think this works as you have described.  While it will ensure that
-> any in-progress RCU read-side critical sections have completed (i.e.,
-> in az_blob_fop_open() ), it does not prevent new read-side critical sections
-> from being started.  So as soon as synchronize_rcu() is finished, another
-> thread could find and open the device, and be executing in
-> az_blob_fop_open().
-> 
-> But it's not clear to me that this (and the rcu_read_locks in az_blob_fop_open)
-> are really needed anyway.  If az_blob_remove_device() is called while one or more
-> threads have it open, I think that's OK.  Or is there a scenario that I'm missing?
+On Thu, Jul 15, 2021 at 4:16 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The sysfs_emit() function was introduced to make it less ambiguous
+> which function is preferred when writing to the output buffer in
+> a "show" callback [1].
+>
+> Convert the GPIO library sysfs interface from sprintf() to sysfs_emit()
+> accordingly, as the latter is aware of the PAGE_SIZE buffer and correctly
+> returns the number of bytes written into the buffer.
+>
+> No functional change intended.
+>
+> [1] Documentation/filesystems/sysfs.rst
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/acpi/acpi_configfs.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/acpi/acpi_configfs.c b/drivers/acpi/acpi_configfs.c
+> index 76b83b181356..6e6ef8a1f447 100644
+> --- a/drivers/acpi/acpi_configfs.c
+> +++ b/drivers/acpi/acpi_configfs.c
+> @@ -103,7 +103,7 @@ static ssize_t acpi_table_signature_show(struct config_item *cfg, char *str)
+>         if (!h)
+>                 return -EINVAL;
+>
+> -       return sprintf(str, "%.*s\n", ACPI_NAMESEG_SIZE, h->signature);
+> +       return sysfs_emit(str, "%.*s\n", ACPI_NAMESEG_SIZE, h->signature);
+>  }
+>
+>  static ssize_t acpi_table_length_show(struct config_item *cfg, char *str)
+> @@ -113,7 +113,7 @@ static ssize_t acpi_table_length_show(struct config_item *cfg, char *str)
+>         if (!h)
+>                 return -EINVAL;
+>
+> -       return sprintf(str, "%d\n", h->length);
+> +       return sysfs_emit(str, "%d\n", h->length);
+>  }
+>
+>  static ssize_t acpi_table_revision_show(struct config_item *cfg, char *str)
+> @@ -123,7 +123,7 @@ static ssize_t acpi_table_revision_show(struct config_item *cfg, char *str)
+>         if (!h)
+>                 return -EINVAL;
+>
+> -       return sprintf(str, "%d\n", h->revision);
+> +       return sysfs_emit(str, "%d\n", h->revision);
+>  }
+>
+>  static ssize_t acpi_table_oem_id_show(struct config_item *cfg, char *str)
+> @@ -133,7 +133,7 @@ static ssize_t acpi_table_oem_id_show(struct config_item *cfg, char *str)
+>         if (!h)
+>                 return -EINVAL;
+>
+> -       return sprintf(str, "%.*s\n", ACPI_OEM_ID_SIZE, h->oem_id);
+> +       return sysfs_emit(str, "%.*s\n", ACPI_OEM_ID_SIZE, h->oem_id);
+>  }
+>
+>  static ssize_t acpi_table_oem_table_id_show(struct config_item *cfg, char *str)
+> @@ -143,7 +143,7 @@ static ssize_t acpi_table_oem_table_id_show(struct config_item *cfg, char *str)
+>         if (!h)
+>                 return -EINVAL;
+>
+> -       return sprintf(str, "%.*s\n", ACPI_OEM_TABLE_ID_SIZE, h->oem_table_id);
+> +       return sysfs_emit(str, "%.*s\n", ACPI_OEM_TABLE_ID_SIZE, h->oem_table_id);
+>  }
+>
+>  static ssize_t acpi_table_oem_revision_show(struct config_item *cfg, char *str)
+> @@ -153,7 +153,7 @@ static ssize_t acpi_table_oem_revision_show(struct config_item *cfg, char *str)
+>         if (!h)
+>                 return -EINVAL;
+>
+> -       return sprintf(str, "%d\n", h->oem_revision);
+> +       return sysfs_emit(str, "%d\n", h->oem_revision);
+>  }
+>
+>  static ssize_t acpi_table_asl_compiler_id_show(struct config_item *cfg,
+> @@ -164,7 +164,7 @@ static ssize_t acpi_table_asl_compiler_id_show(struct config_item *cfg,
+>         if (!h)
+>                 return -EINVAL;
+>
+> -       return sprintf(str, "%.*s\n", ACPI_NAMESEG_SIZE, h->asl_compiler_id);
+> +       return sysfs_emit(str, "%.*s\n", ACPI_NAMESEG_SIZE, h->asl_compiler_id);
+>  }
+>
+>  static ssize_t acpi_table_asl_compiler_revision_show(struct config_item *cfg,
+> @@ -175,7 +175,7 @@ static ssize_t acpi_table_asl_compiler_revision_show(struct config_item *cfg,
+>         if (!h)
+>                 return -EINVAL;
+>
+> -       return sprintf(str, "%d\n", h->asl_compiler_revision);
+> +       return sysfs_emit(str, "%d\n", h->asl_compiler_revision);
+>  }
+>
+>  CONFIGFS_ATTR_RO(acpi_table_, signature);
+> --
 
-This should not be different from any other tiny character device, why
-the mess with RCU at all?
-
-> > +	az_blob_info("removing device\n");
-> > +	az_blob_remove_device();
-> > +
-> > +	/*
-> > +	 * At this point, it's not possible to open more files.
-> > +	 * Wait for all the opened files to be released.
-> > +	 */
-> > +	wait_event(az_blob_dev.file_wait, list_empty(&az_blob_dev.file_list));
-> 
-> As mentioned in my most recent comments on the previous version of the
-> code, I'm concerned about waiting for all open files to be released in the case
-> of a VMbus rescind.  We definitely have to wait for all VSP operations to
-> complete, but that's different from waiting for the files to be closed.  The former
-> depends on Hyper-V being well-behaved and will presumably happen quickly
-> in the case of a rescind.  But the latter depends entirely on user space code
-> that is out of the kernel's control.  The user space process could hang around
-> for hours or days with the file still open, which would block this function
-> from completing, and hence block the global work queue.
-> 
-> Thinking about this, the core issue may be that having a single static
-> instance of az_blob_device is problematic if we allow the device to be
-> removed (either explicitly with an unbind, or implicitly with a VMbus
-> rescind) and then re-added.  Perhaps what needs to happen is that
-> the removed device is allowed to continue to exist as long as user
-> space processes have an open file handle, but they can't perform
-> any operations because the "removing" flag is set (and stays set).
-> If the device is re-added, then a new instance of az_blob_device
-> should be created, and whether or not the old instance is still
-> hanging around is irrelevant.
-
-You should never have a single static copy of the device, that was going
-to be my first review comment once this all actually got to a place that
-made sense to review (which it is not even there yet.)  When you do
-that, then you have these crazy race issues you speak of.  Use the misc
-api correctly and you will not have any of these problems, why people
-try to make it harder is beyond me...
-
-thanks,
-
-greg k-h
+Applied along with the [2/2[ as 5.15 material, thanks!
