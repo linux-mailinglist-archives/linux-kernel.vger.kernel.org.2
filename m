@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E4A3CB9E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B913CB9E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240852AbhGPPfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:35:55 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:58598 "EHLO vps0.lunn.ch"
+        id S240928AbhGPPf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:35:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:40190 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240282AbhGPPfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:35:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=CGZsktWNeZSP9brVnhmnumOVvSpPdBAXCv4lSMGQFv4=; b=KDq8NTcR/64IPQfgHMHGx8OrHD
-        PNyK6GiKo91ZMVNnntywFZG0QY/Lodr5w7nLMsFGrpQAnUZiyupr5iPpE183n16ThEiW298hbqzcC
-        AJjNi30BG7gEfdXUxvVZfmc1aa8+DJB033ckQYU3xAI2dz05S/s0FNuoiDZXpVAVuVXI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m4PpF-00DdAs-N5; Fri, 16 Jul 2021 17:32:29 +0200
-Date:   Fri, 16 Jul 2021 17:32:29 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     ericwouds@gmail.com
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Eric Woudstra <37153012+ericwoud@users.noreply.github.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
-Message-ID: <YPGmjd1ODFQ+ZIE2@lunn.ch>
-References: <20210716152213.4213-1-ericwouds@gmail.com>
+        id S240845AbhGPPfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:35:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74B81D6E;
+        Fri, 16 Jul 2021 08:32:59 -0700 (PDT)
+Received: from [10.57.36.240] (unknown [10.57.36.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A607E3F774;
+        Fri, 16 Jul 2021 08:32:56 -0700 (PDT)
+Subject: Re: [PATCH v4 0/3] Apple M1 DART IOMMU driver
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Sven Peter <sven@svenpeter.dev>, Will Deacon <will@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        iommu@lists.linux-foundation.org, Alexander Graf <graf@amazon.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>, r.czerwinski@pengutronix.de,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+References: <20210627143405.77298-1-sven@svenpeter.dev>
+ <7261df01-34a9-4e53-37cd-ae1aa15b1fb4@arm.com>
+ <YPEmA0rdXHiGtHSx@infradead.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <0d20bd6b-d0a1-019c-6398-b12f83f4fdf7@arm.com>
+Date:   Fri, 16 Jul 2021 16:32:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716152213.4213-1-ericwouds@gmail.com>
+In-Reply-To: <YPEmA0rdXHiGtHSx@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 05:22:11PM +0200, ericwouds@gmail.com wrote:
-> From: Eric Woudstra <37153012+ericwoud@users.noreply.github.com>
+On 2021-07-16 07:24, Christoph Hellwig wrote:
+> On Wed, Jul 14, 2021 at 07:19:50PM +0100, Robin Murphy wrote:
+>> Even at the DMA API level you could hide *some* of it (at the cost of
+>> effectively only having 1/4 of the usable address space), but there are
+>> still cases like where v4l2 has a hard requirement that a page-aligned
+>> scatterlist can be mapped into a contiguous region of DMA addresses.
 > 
-> According to reference guides mt7530 (mt7620) and mt7531:
-> 
-> NOTE: When IVL is reset, MAC[47:0] and FID[2:0] will be used to 
-> read/write the address table. When IVL is set, MAC[47:0] and CVID[11:0] 
-> will be used to read/write the address table.
-> 
-> Since the function only fills in CVID and no FID, we need to set the
-> IVL bit. The existing code does not set it.
-> 
-> This is a fix for the issue I dropped here earlier:
-> 
-> http://lists.infradead.org/pipermail/linux-mediatek/2021-June/025697.html
-> 
-> With this patch, it is now possible to delete the 'self' fdb entry
-> manually. However, wifi roaming still has the same issue, the entry
-> does not get deleted automatically. Wifi roaming also needs a fix
-> somewhere else to function correctly in combination with vlan.
-> 
-> Signed-off-by: Eric Woudstra <37153012+ericwoud@users.noreply.github.com>
+> Where does v4l2 make that broken assumption?  Plenty of dma mapping
+> implementations including dma-direct do not support that.
 
-Hi Eric
+See vb2_dc_get_contiguous_size() and its callers. I still remember 
+spending an entire work day on writing one email at the culmination of 
+this discussion:
 
-We need a real email address in the Signed-off-by, and the noreply bit
-makes me think this will not work.
+https://lore.kernel.org/linux-iommu/56409B6D.5090903@arm.com/
 
-      Andrew
+809eac54cdd6 was framed as an efficiency improvement because it 
+technically was one (and something I had wanted to implement anyway), 
+but it was also very much to save myself from any further email debates 
+or customer calls about "regressing" code ported from 32-bit platforms...
+
+Robin.
