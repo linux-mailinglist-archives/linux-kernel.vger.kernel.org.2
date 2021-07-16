@@ -2,122 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7593CB141
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07943CB14C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 06:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbhGPD6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 23:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhGPD6x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 23:58:53 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC99C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 20:55:58 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id t9so8714916pgn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 20:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=TmHoAr7TsgUjxWUVvVNVWLfhdEBCaePz7sPswNQdCDk=;
-        b=ItvV6SEEqBRLfd7hPX9WTdcx+4rcJuda3PnZ6PVB1XQAY2T1BPxQNw3NVaV6aLRuk7
-         gOFW+nSfplfwDe/w4pELEiBDrjafsXH6g/YwCbA4R5gt173lCN77SBqi96E8MS8Brw6P
-         +3UkVyUXTaSlpUenPwo5GpbvwiPr38GyZaSDPt0hyJ+Zs599usrZQL5YQYMEL7XGEcKF
-         lSWhd1IoSgwvT0rxo+hfotPI5kinZ5l15iVnJ7cFAVJVhdG0Vyc4XoZVdtwx9yT7A6Xc
-         MIzn7pIDKioFC0sOo2F+A2WLULY/70uCKA9ucHOUWeLNd+koxunvtg8vUwnengI27ZCp
-         MTAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TmHoAr7TsgUjxWUVvVNVWLfhdEBCaePz7sPswNQdCDk=;
-        b=rHADhM5EXgvv7kYWnLe5ME/r/po2ElMuobTwEZ6lbCFQPG6M9cEM/FxgtHggO3+gUJ
-         4+3+Oq0dHb5WdRAWiGj/mXKoteWytBXTAE50lrDLSPZLrNKvjR6s6RPXQ2iMxuqq6Umh
-         kHp1hLFr1fyBb4/l+LC9GeVy/5HcO4YAh96/mtU0tX9HW6ubc9z/9blg/6m0IB6RFg99
-         uyo4AiGDwrI6G1NenahDPjDv5CD683Arv7pCeaumaddDKlkweYalPRAWzIbWUufv8pZS
-         i6Fma3rUvOHoFT8WxiCUVNwF1pHtxHPq7hNikXDdZV9B1K0qNeE8NXSRTjejoua/eOpk
-         u0Dg==
-X-Gm-Message-State: AOAM532ryJAlGMCkmE4ClWCnPAQfHskynSnlz/AOegm05dGp0kgP/yh+
-        RalqOHBLXPpjXeCBN3Zpyqk=
-X-Google-Smtp-Source: ABdhPJyv/00aUO0IqYE7dWIEvqFWUwyXeWMHhhDmsF3qqjQB9sGJqU0EE7TafV7Plb3sHWzhMTDEtQ==
-X-Received: by 2002:a65:6441:: with SMTP id s1mr7659977pgv.214.1626407757633;
-        Thu, 15 Jul 2021 20:55:57 -0700 (PDT)
-Received: from localhost.localdomain (1-171-2-23.dynamic-ip.hinet.net. [1.171.2.23])
-        by smtp.gmail.com with ESMTPSA id y7sm8572048pfy.153.2021.07.15.20.55.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Jul 2021 20:55:56 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     broonie@kernel.org
-Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        axel.lin@ingics.com, ChiYuan Huang <cy_huang@richtek.com>
-Subject: [PATCH] regulator: rtq6752: fix reg reset behavior
-Date:   Fri, 16 Jul 2021 11:55:46 +0800
-Message-Id: <1626407746-23156-1-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S230294AbhGPEHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 00:07:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhGPEHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 00:07:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4736115B;
+        Fri, 16 Jul 2021 04:04:18 +0000 (UTC)
+Date:   Fri, 16 Jul 2021 09:34:14 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Richard Laing <richard.laing@alliedtelesis.co.nz>
+Subject: Re: linux-next: manual merge of the mhi tree with the net-next tree
+Message-ID: <20210716040414.GB19827@workstation>
+References: <20210716133738.0d163701@canb.auug.org.au>
+ <20210716034622.GA19827@workstation>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716034622.GA19827@workstation>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Fri, Jul 16, 2021 at 09:16:22AM +0530, Manivannan Sadhasivam wrote:
+> Hi Stephen,
+> 
+> On Fri, Jul 16, 2021 at 01:37:38PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Today's linux-next merge of the mhi tree got a conflict in:
+> > 
+> >   drivers/bus/mhi/pci_generic.c
+> > 
+> > between commit:
+> > 
+> >   5c2c85315948 ("bus: mhi: pci-generic: configurable network interface MRU")
+> > 
+> 
+> Ah, this one was never submitted to "linux-arm-msm" mailing list nor to
+> me. I'm surprised that networking maintainers merged this patch without
+> getting an Ack from me as it touches MHI bus :/
+> 
+> > from the net-next tree and commit:
+> > 
+> >   156ffb7fb7eb ("bus: mhi: pci_generic: Apply no-op for wake using sideband wake boolean")
+> > 
+> > from the mhi tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> > 
+> 
+> This change should've been taken via immutable branch between mhi-next
+> and net-next or via mhi tree. Because, we have more changes coming in for
+> pci-generic driver in MHI tree.
+> 
+> Dave, since this patch is in your tree, what do you suggest?
+> 
 
-Reg will be reset in below two conditions.
-1. 'Enable' pin from H to L.
-2. Both PAVDD and NAVDD are all disabled.
+Btw, I do have a comment about the patch. So it shouldn't be merged as
+it is.
 
-And 'Enable' pin also control i2c communication capability.
+Thanks,
+Mani
 
-This patch is to Seperate the if condition in enable/disable callback for
-reg cache manipulation.
-
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
-Hi,
-Normally, during testing, I consider only 'enable' will cause reg to be reset.
-But after consulting our RD, this reset behavior not just 'Enable' H to L,
-both powers are disabled, also.
-
-This patch is used to fix this.
----
- drivers/regulator/rtq6752-regulator.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/regulator/rtq6752-regulator.c b/drivers/regulator/rtq6752-regulator.c
-index 72a72aa..609d3fc 100644
---- a/drivers/regulator/rtq6752-regulator.c
-+++ b/drivers/regulator/rtq6752-regulator.c
-@@ -54,12 +54,14 @@ static int rtq6752_set_vdd_enable(struct regulator_dev *rdev)
- 	int rid = rdev_get_id(rdev), ret;
- 
- 	mutex_lock(&priv->lock);
--	if (!priv->enable_flag && priv->enable_gpio) {
-+	if (priv->enable_gpio) {
- 		gpiod_set_value(priv->enable_gpio, 1);
- 
- 		usleep_range(RTQ6752_I2CRDY_TIMEUS,
- 			     RTQ6752_I2CRDY_TIMEUS + 100);
-+	}
- 
-+	if (!priv->enable_flag) {
- 		regcache_cache_only(priv->regmap, false);
- 		ret = regcache_sync(priv->regmap);
- 		if (ret) {
-@@ -86,12 +88,14 @@ static int rtq6752_set_vdd_disable(struct regulator_dev *rdev)
- 	mutex_lock(&priv->lock);
- 	priv->enable_flag &= ~BIT(rid);
- 
--	if (!priv->enable_flag && priv->enable_gpio) {
-+	if (!priv->enable_flag) {
- 		regcache_cache_only(priv->regmap, true);
- 		regcache_mark_dirty(priv->regmap);
-+	}
- 
-+	if (priv->enable_gpio)
- 		gpiod_set_value(priv->enable_gpio, 0);
--	}
-+
- 	mutex_unlock(&priv->lock);
- 
- 	return 0;
--- 
-2.7.4
-
+> Thanks,
+> Mani
+> 
+> > -- 
+> > Cheers,
+> > Stephen Rothwell
+> > 
+> > diff --cc drivers/bus/mhi/pci_generic.c
+> > index 19413daa0917,8bc6149249e3..000000000000
+> > --- a/drivers/bus/mhi/pci_generic.c
+> > +++ b/drivers/bus/mhi/pci_generic.c
+> > @@@ -32,7 -32,8 +32,9 @@@
+> >    * @edl: emergency download mode firmware path (if any)
+> >    * @bar_num: PCI base address register to use for MHI MMIO register space
+> >    * @dma_data_width: DMA transfer word size (32 or 64 bits)
+> >  + * @mru_default: default MRU size for MBIM network packets
+> > +  * @sideband_wake: Devices using dedicated sideband GPIO for wakeup instead
+> > +  *		   of inband wake support (such as sdx24)
+> >    */
+> >   struct mhi_pci_dev_info {
+> >   	const struct mhi_controller_config *config;
+> > @@@ -41,7 -42,7 +43,8 @@@
+> >   	const char *edl;
+> >   	unsigned int bar_num;
+> >   	unsigned int dma_data_width;
+> >  +	unsigned int mru_default;
+> > + 	bool sideband_wake;
+> >   };
+> >   
+> >   #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
+> > @@@ -254,7 -256,7 +258,8 @@@ static const struct mhi_pci_dev_info mh
+> >   	.config = &modem_qcom_v1_mhiv_config,
+> >   	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+> >   	.dma_data_width = 32,
+> >  +	.mru_default = 32768
+> > + 	.sideband_wake = false,
+> >   };
+> >   
+> >   static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
+> > @@@ -643,11 -686,13 +689,14 @@@ static int mhi_pci_probe(struct pci_de
+> >   	mhi_cntrl->status_cb = mhi_pci_status_cb;
+> >   	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
+> >   	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
+> > - 	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
+> > - 	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
+> > - 	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
+> >  +	mhi_cntrl->mru = info->mru_default;
+> >   
+> > + 	if (info->sideband_wake) {
+> > + 		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
+> > + 		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
+> > + 		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
+> > + 	}
+> > + 
+> >   	err = mhi_pci_claim(mhi_cntrl, info->bar_num, DMA_BIT_MASK(info->dma_data_width));
+> >   	if (err)
+> >   		return err;
+> 
+> 
