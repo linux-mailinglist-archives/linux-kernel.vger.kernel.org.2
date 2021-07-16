@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4383CB3B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669033CB3B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237000AbhGPIET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:04:19 -0400
-Received: from mailout2.secunet.com ([62.96.220.49]:36926 "EHLO
-        mailout2.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231966AbhGPIEQ (ORCPT
+        id S237062AbhGPIEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231966AbhGPIEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:04:16 -0400
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout2.secunet.com (Postfix) with ESMTP id 1501B800056;
-        Fri, 16 Jul 2021 10:01:21 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Jul 2021 10:01:20 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 16 Jul
- 2021 10:01:20 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 228D33180299; Fri, 16 Jul 2021 10:01:20 +0200 (CEST)
-Date:   Fri, 16 Jul 2021 10:01:19 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <0x7f454c46@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dima@arista.com>
-Subject: Re: [PATCH] xfrm/compat: Fix general protection fault in
- xfrm_user_rcv_msg_compat()
-Message-ID: <20210716080119.GC3684238@gauss3.secunet.de>
-References: <20210712134002.34048-1-yuehaibing@huawei.com>
+        Fri, 16 Jul 2021 04:04:39 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A53C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:01:43 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id f9so10989823wrq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LUaz+GS+zWVJuYW5ehQ4jb5HK9aKHSWwbmew2idPbho=;
+        b=BdKqQCvS1OZI1vnkUrwlg4+sNF0QtP/eBkkTMJNrbUlOeR1AMZ/1jtPieURz1HdQgY
+         MT6t23A4KqEcoQa5KfWeUftq62YBempq2JLzGwTZ3BtQPm8kLBLi9PCSM+T8bxmMhkPs
+         6nb27IPNkgSmOIkt+fE551YPX+wb1LUVxtaS7JVNApwDsps+phm7aOa6ao2k/P+Ioxwg
+         W5ollUOsIqxevwZdbCZ6C/cIVy61dUXDgYzp5DepRBVVMj5agXuUHz3DV6Pc5UkUIUEq
+         E+Wp8mVRbk1FlvNxfgslrQrINbm6tGGOCLz9cMRKS0LNYQJ8bD/wcA2n5NuOg8izzuCW
+         H+LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LUaz+GS+zWVJuYW5ehQ4jb5HK9aKHSWwbmew2idPbho=;
+        b=A8EwXM5h2WklbJlwXPenWmyQytNdqJrgsU1LGb01zySIKABzgdx5IhZJJgO6pl9/rH
+         gsp5JyIcv9YEECY1s0xCXUa9ZgO7CZxxDp/xmHwlVxeaLvQ68JC5URDPNGL9GP0McGG6
+         cj5cOD6NydaCPioPx/8j8W3j/LbCg0VccX2VYykenPPlJxErIQSVrJY4Y7gCr1M90hyK
+         BKFH6qICM8dQTzthX0UrlyZLi+VjJuN/ql7DvhBxUd+ARNgGGyboz5N+SbcagcMM/wdJ
+         kL93VNx/HH5VS34v+hZDTL2KS95g2PPwjo2t51XKSrRJ22LDa1P9AkSGpLqyugtQW+b4
+         AK+Q==
+X-Gm-Message-State: AOAM531TTpLf8Xs4BiMfjc1zT4Q8MVdYl9cymZkviOQZJVUNLVFudRaz
+        izWYqLdtCFZsE75rAxsCF9ND2w==
+X-Google-Smtp-Source: ABdhPJxgSztBl+UjqzA//sgn6rC1JoTWkDQJvQSko/gR9NvTImxNOZC5SsC4kGfenn2tEITuemeOLA==
+X-Received: by 2002:adf:a2c3:: with SMTP id t3mr10448145wra.223.1626422502459;
+        Fri, 16 Jul 2021 01:01:42 -0700 (PDT)
+Received: from google.com ([31.124.24.141])
+        by smtp.gmail.com with ESMTPSA id a207sm12292962wme.27.2021.07.16.01.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 01:01:41 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 09:01:40 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Fei Shao <fshao@chromium.org>
+Cc:     Gene Chen <gene_chen@richtek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] mfd: mt6360: Sort regulator resources
+Message-ID: <YPE85IQ72QOhf3DK@google.com>
+References: <20210629094339.874120-1-fshao@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210712134002.34048-1-yuehaibing@huawei.com>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210629094339.874120-1-fshao@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 09:40:02PM +0800, YueHaibing wrote:
-> In xfrm_user_rcv_msg_compat() if maxtype is not zero and less than
-> XFRMA_MAX, nlmsg_parse_deprecated() do not initialize attrs array fully.
-> xfrm_xlate32() will access uninit 'attrs[i]' while iterating all attrs
-> array.
+On Tue, 29 Jun 2021, Fei Shao wrote:
+
+> Reorder the regulator resources.
 > 
-> KASAN: probably user-memory-access in range [0x0000000041b58ab0-0x0000000041b58ab7]
-> CPU: 0 PID: 15799 Comm: syz-executor.2 Tainted: G        W         5.14.0-rc1-syzkaller #0
-> RIP: 0010:nla_type include/net/netlink.h:1130 [inline]
-> RIP: 0010:xfrm_xlate32_attr net/xfrm/xfrm_compat.c:410 [inline]
-> RIP: 0010:xfrm_xlate32 net/xfrm/xfrm_compat.c:532 [inline]
-> RIP: 0010:xfrm_user_rcv_msg_compat+0x5e5/0x1070 net/xfrm/xfrm_compat.c:577
-> [...]
-> Call Trace:
->  xfrm_user_rcv_msg+0x556/0x8b0 net/xfrm/xfrm_user.c:2774
->  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
->  xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2824
->  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
->  netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
->  sock_sendmsg_nosec net/socket.c:702 [inline]
-> 
-> Fixes: 5106f4a8acff ("xfrm/compat: Add 32=>64-bit messages translator")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Fixes: 4ee06e10dd26 ("mfd: mt6360: Combine mt6360 pmic/ldo resources
+> into mt6360 regulator resources")
+
+I removed the Fixes tag, as it doesn't fix any bugs.
+
+> Signed-off-by: Fei Shao <fshao@chromium.org>
 > ---
->  net/xfrm/xfrm_compat.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/net/xfrm/xfrm_compat.c b/net/xfrm/xfrm_compat.c
-> index a20aec9d7393..4738660cadea 100644
-> --- a/net/xfrm/xfrm_compat.c
-> +++ b/net/xfrm/xfrm_compat.c
-> @@ -559,8 +559,8 @@ static struct nlmsghdr *xfrm_user_rcv_msg_compat(const struct nlmsghdr *h32,
->  	    (h32->nlmsg_flags & NLM_F_DUMP))
->  		return NULL;
->  
-> -	err = nlmsg_parse_deprecated(h32, compat_msg_min[type], attrs,
-> -			maxtype ? : XFRMA_MAX, policy ? : compat_policy, extack);
-> +	err = nlmsg_parse_deprecated(h32, compat_msg_min[type], attrs, XFRMA_MAX,
-> +				     policy ? : compat_policy, extack);
+>  drivers/mfd/mt6360-core.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-This removes the only usage of maxtype in that function. If we don't
-need it, we should remove maxtype from the function parameters.
+Applied, thanks.
 
-But looking closer at this, it seems that xfrm_xlate32() should
-only iterate up to maxtype if set. Dimitry, any opinion on that?
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
