@@ -2,111 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966AF3CBE9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182403CBEA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235924AbhGPVb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 17:31:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54453 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235208AbhGPVb5 (ORCPT
+        id S235911AbhGPVmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 17:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235022AbhGPVl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 17:31:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626470942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YABHDSw9b5sWUS8tb4/mSbwzJgD3Ug0F6zV+ryBO8W8=;
-        b=aRZr4WzqthHBGhZOykWgSaKdGrcUXbkDtWJciTiH0bjIxrT/1mUazWs3C8FFf3KWfx0gNs
-        FXwXSusJqO9kvWpEdasZZFVdeBNhWxXbkvZzPla0P/FyL+JrNgfq2en3eokoTaKdf0LY4Y
-        Mv8LphHvvLbHs6bj76TFFBlCU4Je5qQ=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-SrD3uSzoOYaWWMvFPJ9lcQ-1; Fri, 16 Jul 2021 17:29:00 -0400
-X-MC-Unique: SrD3uSzoOYaWWMvFPJ9lcQ-1
-Received: by mail-qt1-f198.google.com with SMTP id a12-20020ac8108c0000b029023c90fba3dcso7133077qtj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
+        Fri, 16 Jul 2021 17:41:57 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EA0C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:39:01 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id a132so1734819oib.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=DJUmmGWanKO2Kc2lJb4r4AqUuRlfqVFicUMQJabxH2I=;
+        b=a1b4VUlP+SBehYC2KNr0RA6XHEdwYZC1UJSJvAOlMXI7z0YSB4aoNbwrJ8tsoeMxk9
+         o5ewozJwZnIiB8JBJ8u28V1C9QtxUi/7k4H0191/LZSRrNMelmnf0UuQRLnhDmoBQzMH
+         pZ91UofbIJBzcU3z1U19CnAqABufK2a85QUvQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YABHDSw9b5sWUS8tb4/mSbwzJgD3Ug0F6zV+ryBO8W8=;
-        b=libgxPZ8DVmStqzRRYcOK3plzUQGHT09ioJlQofdSvuiMD7kjrPpQFKpiRDK/kpl93
-         ZxggxOU2JKkR0pfgIGyeqJnxeK8E6hW4+9qZVWYE4AqU44jo/+SGH0C9Nym4iEmaV7Mt
-         uaFmYqT+IR9t9+b6R9ZcUr9qMNRej87ITX0wR+EQv+kA05e7ckaquBLL5Krk3eUibQLw
-         uZFTtWXfNYXnrHhwryy9rxQTazcRqwnjWwm7JBSDpZyfnAgPTsMM4LFsql2EiWZF3Ogx
-         ced1r+/38BsOK/UgQq/SDaxu2IUiug4E3Y4DgrcY3CWJWP0p5UqVq8JyFFEB3VtJkIrO
-         7yxw==
-X-Gm-Message-State: AOAM533cntcW+CknyGYmYRhOeK93n9jm6++4Hcy8A3w5sbbHsNoqfPzc
-        fugRiRrJE02yAbFEM9SKlfTFNoJQCX1m8+DH/8Ztpos1FP+u2MqaS52UfV+DIq8susBhQCP1u/0
-        cmDc1cEzEH/sJoOLfRIbU3VDc
-X-Received: by 2002:ac8:6ec1:: with SMTP id f1mr11059659qtv.294.1626470940409;
-        Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/rGIlMZXPU7T3qfOnTizDJI9I0dX2kqwDbKljo69VftMGZBefLuWX+uvFXWRvzofzBsFBCg==
-X-Received: by 2002:ac8:6ec1:: with SMTP id f1mr11059637qtv.294.1626470940260;
-        Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id p3sm3716072qti.31.2021.07.16.14.28.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 14:28:59 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
- partition root
-To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210621184924.27493-1-longman@redhat.com>
- <20210621184924.27493-3-longman@redhat.com>
- <YNcHOe3o//pIiByh@mtj.duckdns.org>
- <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
- <YONGk3iw/zrNzwLK@mtj.duckdns.org>
- <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
- <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
- <8c44b659-3fe4-b14f-fac1-cbd5b23010c3@redhat.com>
- <YPHwG61qGDa3h6Wg@mtj.duckdns.org>
- <e8c538a8-bf5c-b04c-1b21-ac22cd158dd1@redhat.com>
- <YPH3sF56gK71CxXY@mtj.duckdns.org>
-Message-ID: <4a804edc-17ec-d8fa-d8c1-273252ba0ee4@redhat.com>
-Date:   Fri, 16 Jul 2021 17:28:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=DJUmmGWanKO2Kc2lJb4r4AqUuRlfqVFicUMQJabxH2I=;
+        b=cuGHFAOs10T7OfZFyoMdDmFQaYFuS6vygVfgvdTAXKN55j3IsqL40EojEdpWBqk/fT
+         FKQ+PYM/aFkfYZL3Fdi7SHaLxKj0V6Xn+Mt/I2145FqIXTn2cz3iY3dzVAIUoxSzgVbV
+         f177MyH59ra2cGUALJUjoPXTn2xKbI6Qil/9+XocYXL96xrrFgDZy6BSGfP8/JPcW00J
+         ooZmx/SaMn66tR9Hl07ZPP5JNclfm2x/mQr4aSuCHqjfk1HAwroydnAWFKignJf1vTwf
+         U1VQUnYQ9+0RoznKpD/actcIkEMyg0E8YAMZtuXBKRs2eicexTnlDStGLrCcwYqn2nLh
+         rbXA==
+X-Gm-Message-State: AOAM5336PIo+mDYcOgknYuF2aHFr6QBybBf371l+DCQ0YppmiQ8z++tc
+        ax3gPsoTyizTj6E1XS3DhOCxWITsr/RDLBV6L61BrA==
+X-Google-Smtp-Source: ABdhPJy8ESmm35FiG9eVwSCULP7aZWRcaoghukrt/IjV6yztctNN60HxaKtQcXbjRTHOeOA0F3YBmvgit6bjbVs2wCM=
+X-Received: by 2002:a05:6808:a83:: with SMTP id q3mr13795158oij.125.1626471540770;
+ Fri, 16 Jul 2021 14:39:00 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 16 Jul 2021 23:39:00 +0200
 MIME-Version: 1.0
-In-Reply-To: <YPH3sF56gK71CxXY@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+In-Reply-To: <YPHsu+QLWRYpYRCz@yoga>
+References: <1626443927-32028-1-git-send-email-pmaliset@codeaurora.org>
+ <1626443927-32028-5-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n538LKQpeY_NKQF-VM3nHVxEE0B_pN4aN=sQ8iQzK+Yyxw@mail.gmail.com> <YPHsu+QLWRYpYRCz@yoga>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 16 Jul 2021 23:39:00 +0200
+Message-ID: <CAE-0n53k9Pn0LMe2xiNN_iTsv-z_rrGSthJVHeLdafDhPuBK=A@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] PCIe: qcom: Add support to control pipe clk src
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/21 5:18 PM, Tejun Heo wrote:
-> Hello,
+Quoting Bjorn Andersson (2021-07-16 13:31:55)
+> On Fri 16 Jul 14:37 CDT 2021, Stephen Boyd wrote:
 >
-> On Fri, Jul 16, 2021 at 05:12:17PM -0400, Waiman Long wrote:
->> Are you suggesting that we add a cpuset.cpus.events file that allows
->> processes to be notified if an event (e.g. hotplug) that changes a partition
->> root to invalid partition happens or when explicit change to a partition
->> root fails? Will that be enough to satisfy your requirement?
-> Yeah, something like that or make the current state file generate events on
-> state transitions.
+> > Quoting Prasad Malisetty (2021-07-16 06:58:47)
+> > > This is a new requirement for sc7280 SoC.
+> > > To enable gdsc gcc_pcie_1_pipe_clk_src should be TCXO.
+> >
+> > Why? Can you add that detail here? Presumably it's something like the
+> > GDSC needs a running clk to send a reset through the flops or something
+> > like that.
+> >
+>
+> Which presumably means that we need to "park" gcc_pcie_N_pipe_clk_src
+> whenever the PHY pipe is paused due to a suspend or runtime suspend.
+>
+> I find this part of the commit message to primarily describing the next
+> patch (that is yet to be posted).
 
+Ah I see. So there will be another patch to do the park and unpark over
+suspend/resume?
 
-Sure. I will change the patch to make cpuset.cpus.partition generates 
-event when its state change. Thanks for the suggestion. It definitely 
-makes it better.
+>
+> > > after PHY initialization gcc_pcie_1_pipe_clk_src needs
+> > > to switch from TCXO to gcc_pcie_1_pipe_clk.
+> > >
+> > > Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> > > ---
+> > >  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
+> > >  1 file changed, 22 insertions(+)
+> > >
+> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > index 8a7a300..9e0e4ab 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
+> > >         if (ret < 0)
+> > >                 return ret;
+> > >
+> > > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+> > > +               res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+> > > +               if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+> > > +                       return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+> > > +
+> > > +               res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+> > > +               if (IS_ERR(res->phy_pipe_clk))
+> > > +                       return PTR_ERR(res->phy_pipe_clk);
+> > > +
+> > > +               res->ref_clk_src = devm_clk_get(dev, "ref");
+> > > +               if (IS_ERR(res->ref_clk_src))
+> > > +                       return PTR_ERR(res->ref_clk_src);
+> > > +       }
+> > > +
+> > >         res->pipe_clk = devm_clk_get(dev, "pipe");
+> > >         return PTR_ERR_OR_ZERO(res->pipe_clk);
+> > >  }
+> > > @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
+> > >  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+> > >  {
+> > >         struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+> > > +       struct dw_pcie *pci = pcie->pci;
+> > > +       struct device *dev = pci->dev;
+> > > +
+> > > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
+> > > +               clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
+> >
+> > Is anything wrong if we call clk_set_parent() here when this driver is
+> > running on previous SoCs where the parent is assigned via DT?
+>
+> We don't assign the parent on previous platforms, we apparently just
+> rely on the reset value (afaict).
 
-Cheers,
-Longman
+Oh sheesh. I thought that was being done already. It looks like at least
+on sdm845 that there is only one parent for this clk so we don't need to
+call clk_set_parent to set it there.
 
+>
+> So I think it makes sense for all platforms to explicitly mux
+> pipe_clk_src to phy::pipe_clk, one the PHY is up and running.
+
+Sure, except some platforms don't have a mux?
+
+>
+> But I was under the impression that we have the BRANCH_HALT_SKIP on the
+> pipe_clk because there was some sort of feedback loop to the PHY's
+> calibration... What this patch indicates is that we should park
+> pipe_clk_src onto XO at boot time, then after the PHY starts ticking we
+> should enable and reparent the clk_src - at which point I don't see why
+> we need the HALT_SKIP.
+
+I recall that qcom folks kept saying they needed to enable the
+pipe_clk_src clk branch in GCC before enabling the phy. So they required
+the halt skip flag so that the clk_prepare_enable() call would
+effectively set the enable bit in GCC and move on without caring. Then
+they could enable the upstream clk source in the phy without having to
+stop halfway through to enable the branch in GCC. The whole design here
+is pretty insane.
+
+In fact, I think we discussed this whole topic in late 2019[1] and we
+concluded that we could just slam the clk on forever and deal with the
+clk_set_parent() when the clk became a mux+gate instead of a pure gate.
+
+>
+> > Also, shouldn't we make sure the parent is XO at driver probe time so
+> > that powering on the GDSC works properly?
+> >
+> > It all feels like a kludge though given that the GDSC is the one that
+> > requires the clock to be running at XO and we're working around that in
+> > the pcie driver instead of sticking that logic into the GDSC. What do we
+> > do if the GDSC is already enabled out of boot instead of being the power
+> > on reset (POR) configuration?
+> >
+>
+> What happens if we boot the device out of NVME...
+
+I guess it's fine? The GDSC will be on and the parent clk will already
+be set so things are a no-op.
+
+>
+>
+> PS. Are we certain that it's the PCIe driver and not the PHY that should
+> do this dance? I really would like to see the continuation of this patch
+> to see the full picture...
+>
+
+[1] https://lore.kernel.org/linux-clk/eba920f5-f5a2-53d5-2227-529b5ea99d32@codeaurora.org/
