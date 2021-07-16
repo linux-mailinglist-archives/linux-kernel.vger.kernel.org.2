@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75593CBBEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADC03CBBE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhGPSka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:40:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46396 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229462AbhGPSk3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:40:29 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GIbH6D165233;
-        Fri, 16 Jul 2021 14:37:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=7tyfq1wQ5MtvqKTDdde+7cQd7ahohQH+0eK0ivktzt0=;
- b=P0ov+RaF4asrEqtHx+LK0kSQyB/lbsxOt58Kdh2hVBjuMbsmRotj/P18JpbNelc5LveS
- g7p/OqMeb95a7fktLD0ihJWVNe7vf7l9pR18agcq6UK/5p8arD/v8imiIGEWC6wekZqI
- 0gm9brMh1o6ZM/fOJHVNrWhgyKnCKRyEOllPKnRIa6BbSI3US8HF5+3zicaV+fqk7qZ0
- lazCNhL2QHNoLggcY1+Glkn4VAzFOgNrKGi9SIufVRqY0RfbWw4Xa6CoN8/MYeeabTD8
- iz8ozczwzpl9iZayfszj9uHB7HvLHRuodxchjKBtez8hbm5UsljfDDgC0/JSvFGiQhuY gw== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39udw6jn23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Jul 2021 14:37:28 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16GIGlcf024783;
-        Fri, 16 Jul 2021 18:34:41 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma04dal.us.ibm.com with ESMTP id 39q36fqbhw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Jul 2021 18:34:41 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16GIYf4s53543206
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Jul 2021 18:34:41 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 14440AE05F;
-        Fri, 16 Jul 2021 18:34:41 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D514AE063;
-        Fri, 16 Jul 2021 18:34:39 +0000 (GMT)
-Received: from v0005c16 (unknown [9.211.92.96])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Jul 2021 18:34:39 +0000 (GMT)
-Message-ID: <81a40f8690d297ebfb6697dbea63279bcf2f24fa.camel@linux.ibm.com>
-Subject: Re: [PATCH 1/2] spi: fsi: Reduce max transfer size to 8 bytes
-From:   Eddie James <eajames@linux.ibm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     devicetree@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        robh+dt@kernel.org
-Date:   Fri, 16 Jul 2021 13:34:38 -0500
-In-Reply-To: <20210716171936.GB4137@sirena.org.uk>
-References: <20210716133915.14697-1-eajames@linux.ibm.com>
-         <20210716133915.14697-2-eajames@linux.ibm.com>
-         <20210716171936.GB4137@sirena.org.uk>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
+        id S231218AbhGPSkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:40:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229462AbhGPSkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:40:03 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B13606115B;
+        Fri, 16 Jul 2021 18:37:07 +0000 (UTC)
+Date:   Fri, 16 Jul 2021 14:37:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [GIT PULL] tracing: histogram fix and take 2 on the
+ __string_len() marcros
+Message-ID: <20210716143705.56001390@oasis.local.home>
+In-Reply-To: <CAHk-=wiWdG6jqKhdU62b06-DtESVxHVK8MA23iV+6fB5hnGEAw@mail.gmail.com>
+References: <20210715215753.4a314e97@rorschach.local.home>
+        <CAHk-=wiWdG6jqKhdU62b06-DtESVxHVK8MA23iV+6fB5hnGEAw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 13Nj9UHN-n_4bSFB_bWzSidggUk0HrnQ
-X-Proofpoint-ORIG-GUID: 13Nj9UHN-n_4bSFB_bWzSidggUk0HrnQ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-16_06:2021-07-16,2021-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=904
- spamscore=0 priorityscore=1501 suspectscore=0 clxscore=1015 malwarescore=0
- bulkscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107160113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-16 at 18:19 +0100, Mark Brown wrote:
-> On Fri, Jul 16, 2021 at 08:39:14AM -0500, Eddie James wrote:
-> > Security changes have forced the SPI controllers to be limited to
-> > 8 byte reads. Refactor the sequencing to just handle 8 bytes at a
-> > time.
+On Fri, 16 Jul 2021 11:11:38 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Security changes in the SPI controller - in the device microcode. I can
-reword the commit if you like.
-
-Thanks,
-Eddie
-
+> On Thu, Jul 15, 2021 at 6:57 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > tracing: One fix in the histogram code and another take at the __string_len() macro  
 > 
-> Which security changes where - somewhere else in Linux?
+> What part of "strncpy()" is garbage did I not make clear?
 
+So how do you want this implemented?
+
+#define __assign_str_len(dst, src, len)					\
+	do {								\
+		strscpy(__get_str(dst), (src) ? (const char *)(src) : "(null)", len); \
+		__get_str(dst)[len] = '\0';				\
+	} while(0)
+
+I could even do:
+
+#define __assign_str_len(dst, src, len)					\
+	do {								\
+		if (!src && len > 6)					\
+			len = 6;					\
+		memcpy(__get_str(dst), (src) ? (const char *)(src) : "(null)", len); \
+		__get_str(dst)[len] = '\0';				\
+	} while(0)
+
+Which would work just as well, although I had to account if len is
+greater than "(null)". Which should never happen, but I have it there,
+because I copied the code from the __string() version which uses
+strlen() and that would break if a null is passed in (which in rare
+cases happen). But it would actually be a bug to use __string_len() in
+a place that can take a NULL, unless len was zero.
+
+Not sure how the above is any different than using strncpy().
+
+Again, src is a string without a '\0'. What I don't understand is how
+strscpy() is any better than strncpy() in this situation?
+
+As I replied to you last time, the dst is created by allocating 'len +
+1' on the ring buffer, and len is to be no greater than the number of
+characters in src.
+
+The only purpose to use this is to either truncate a string, or to pass
+in a string that was read from a memory location that does not have a
+terminating '\0' in it, but you know the length of the string. If you
+have a normal string, simply use the __string() which uses strlen() to
+calculate the required space.
+
+It's basically this:
+
+	dst = malloc(len + 1);
+	memcpy(dst, src, len);
+	dst[len] = '\0';
+
+"strncpy() is garbage" does not compute to me in the above usage.
+
+-- Steve
