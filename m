@@ -2,204 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6FC3CB6D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA80C3CB6E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235047AbhGPLpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:45:40 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:5404 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232262AbhGPLpX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 07:45:23 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GBaJ23003923;
-        Fri, 16 Jul 2021 07:42:28 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 39tw63j92x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Jul 2021 07:42:27 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 16GBgQCH054713
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Jul 2021 07:42:26 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Fri, 16 Jul 2021 07:42:26 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Fri, 16 Jul 2021 07:42:25 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Fri, 16 Jul 2021 07:42:25 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.134])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 16GBgLLS006350;
-        Fri, 16 Jul 2021 07:42:23 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jic23@kernel.org>, <devicetree@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v6 2/2] dt-bindings: iio: frequency: add adrf6780 doc
-Date:   Fri, 16 Jul 2021 14:42:10 +0300
-Message-ID: <20210716114210.141560-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210716114210.141560-1-antoniu.miclaus@analog.com>
-References: <20210716114210.141560-1-antoniu.miclaus@analog.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: PqknkWKJQQQAcuZ5cqm_do9hiQt0VW2v
-X-Proofpoint-ORIG-GUID: PqknkWKJQQQAcuZ5cqm_do9hiQt0VW2v
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-16_04:2021-07-16,2021-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- impostorscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 phishscore=0 priorityscore=1501 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107160070
+        id S235330AbhGPLrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 07:47:05 -0400
+Received: from mga04.intel.com ([192.55.52.120]:40164 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232983AbhGPLrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 07:47:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="208902305"
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="208902305"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 04:44:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="467107138"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
+  by fmsmga008.fm.intel.com with ESMTP; 16 Jul 2021 04:43:59 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V4 0/2] driver core: Add ability to delete device links of unregistered devices
+Date:   Fri, 16 Jul 2021 14:44:06 +0300
+Message-Id: <20210716114408.17320-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for the ADRF6780 Upconverter.
+Hi
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-no changes in v6
- .../bindings/iio/frequency/adi,adrf6780.yaml  | 119 ++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+There is an issue with the SCSI UFS driver when the optional
+BOOT well-known LUN fails to probe, which is not a fatal error.
+The issue is that the device and its "managed" device link do not
+then get deleted.  The device because the device link has a
+reference to it.  The device link because it can only be deleted
+by device_del(), but device_add() was never called, so device_del()
+never will be either.
 
-diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-new file mode 100644
-index 000000000000..65cb3bee4aca
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-@@ -0,0 +1,119 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/frequency/adi,adrf6780.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ADRF6780 Microwave Upconverter
-+
-+maintainers:
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+description: |
-+   Wideband, microwave upconverter optimized for point to point microwave
-+   radio designs operating in the 5.9 GHz to 23.6 GHz frequency range.
-+
-+   https://www.analog.com/en/products/adrf6780.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,adrf6780
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 1000000
-+
-+  clocks:
-+    description:
-+      Definition of the external clock.
-+    minItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: lo_in
-+
-+  clock-output-names:
-+    maxItems: 1
-+
-+  adi,vga-buff-en:
-+    description:
-+      VGA Buffer Enable.
-+    type: boolean
-+
-+  adi,lo-buff-en:
-+    description:
-+      LO Buffer Enable.
-+    type: boolean
-+
-+  adi,if-mode-en:
-+    description:
-+      IF Mode Enable.
-+    type: boolean
-+
-+  adi,iq-mode-en:
-+    description:
-+      IQ Mode Enable.
-+    type: boolean
-+
-+  adi,lo-x2-en:
-+    description:
-+      LO x2 Enable.
-+    type: boolean
-+
-+  adi,lo-ppf-en:
-+    description:
-+      LO x1 Enable.
-+    type: boolean
-+
-+  adi,lo-en:
-+    description:
-+      LO Enable.
-+    type: boolean
-+
-+  adi,uc-bias-en:
-+    description:
-+      UC Bias Enable.
-+    type: boolean
-+
-+  adi,lo-sideband:
-+    description:
-+      Switch to the Other LO Sideband.
-+    type: boolean
-+
-+  adi,vdet-out-en:
-+    description:
-+      VDET Output Select Enable.
-+    type: boolean
-+
-+  '#clock-cells':
-+    const: 0
-+
-+dependencies:
-+  adi,lo-x2-en: [ "adi,lo-en" ]
-+  adi,lo-ppf-en: [ "adi,lo-en" ]
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      adrf6780@0 {
-+        compatible = "adi,adrf6780";
-+        reg = <0>;
-+        spi-max-frequency = <1000000>;
-+        clocks = <&adrf6780_lo>;
-+        clock-names = "lo_in";
-+      };
-+    };
-+...
--- 
-2.32.0
+Since V2, these patches fix the issue by amending device link removal to
+accept removal of a link with an unregistered consumer device, as suggested
+by Rafael.
 
+
+Changes in V4:
+    driver core: Prevent warning when removing a device link from unregistered consumer
+	Add stable tag and Rafael's Reviewed-by
+
+    driver core: Add ability to delete device links of unregistered devices
+	Amend comment "discover an error" -> "discovering an error"
+	Merge with next patch
+
+    scsi: ufshcd: Fix device links when BOOT WLUN fails to probe
+	Merge with previous patch
+	Add Rafael's Reviewed-by
+
+
+Changes in V3:
+
+    driver core: Prevent warning when removing a device link from unregistered consumer
+	New patch split from "driver core: Add ability to delete device
+	links of unregistered devices" except first chunk from that patch
+	dropped as unnecessary
+
+    driver core: Add ability to delete device links of unregistered devices
+	Move warning fix to separate patch.
+
+
+Changes in V2:
+
+    Take approach suggested by Rafael
+
+
+Adrian Hunter (2):
+      driver core: Prevent warning when removing a device link from unregistered consumer
+      scsi: ufshcd: Fix device links when BOOT WLUN fails to probe
+
+ drivers/base/core.c       |  8 ++++++--
+ drivers/scsi/ufs/ufshcd.c | 23 +++++++++++++++++++++--
+ 2 files changed, 27 insertions(+), 4 deletions(-)
+
+
+Regards
+Adrian
