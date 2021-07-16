@@ -2,194 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1C03CB7C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3860A3CB7CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239843AbhGPNTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:19:54 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:41851 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbhGPNTv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:19:51 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 432A3C000B;
-        Fri, 16 Jul 2021 13:16:51 +0000 (UTC)
-Subject: Re: [GIT PULL] RISC-V Patches for the 5.14 Merge Window, Part 1
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <mhng-90f1c895-95b6-4480-937d-ee859a4542c3@palmerdabbelt-glaptop>
- <cb401208-8774-9653-e780-6e9d4d3a41c0@ghiti.fr>
- <20210716205758.05620241@xhacker>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <2f29eb6d-493f-9fd6-2215-ec7bca480b32@ghiti.fr>
-Date:   Fri, 16 Jul 2021 15:16:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239822AbhGPNWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:22:50 -0400
+Received: from mga11.intel.com ([192.55.52.93]:12143 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232804AbhGPNWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 09:22:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="207704388"
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="207704388"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 06:19:52 -0700
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="494935556"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 06:19:49 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m4Nkk-00EEoF-L8; Fri, 16 Jul 2021 16:19:42 +0300
+Date:   Fri, 16 Jul 2021 16:19:42 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>
+Subject: Re: [PATCH v1 2/3] clk: fractional-divider: Introduce NO_PRESCALER
+ flag
+Message-ID: <YPGHbvaCv/x/JlgH@smile.fi.intel.com>
+References: <20210715120752.29174-1-andriy.shevchenko@linux.intel.com>
+ <20210715120752.29174-2-andriy.shevchenko@linux.intel.com>
+ <7941107fda10f075395870528f0e52d42e502d92.camel@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20210716205758.05620241@xhacker>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7941107fda10f075395870528f0e52d42e502d92.camel@nxp.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jisheng,
+On Fri, Jul 16, 2021 at 10:43:57AM +0800, Liu Ying wrote:
+> On Thu, 2021-07-15 at 15:07 +0300, Andy Shevchenko wrote:
+> > The newly introduced flag, when set, makes the flow to skip
+> > the assumption that the caller will use an additional 2^scale
+> > prescaler to get the desired clock rate.
+> 
+> Now, I start to be aware of the reason why the "left shifting" is
+> needed but still not 100% sure that details are all right. IIUC, you
+> are considering a potential HW prescaler here, while I thought the HW
+> model is just a fractional divider(M/N) and the driver is fully
+> agnostic to the potential HW prescaler.
 
-Le 16/07/2021 à 14:57, Jisheng Zhang a écrit :
-> On Thu, 15 Jul 2021 09:11:14 +0200
-> Alex Ghiti <alex@ghiti.fr> wrote:
-> 
->> Hi Palmer,
->>
->> Le 11/07/2021 à 20:45, Palmer Dabbelt a écrit :
->>> On Fri, 09 Jul 2021 12:58:10 PDT (-0700), alex@ghiti.fr wrote:
->>>>
->>>>
->>>> Le 9/07/2021 à 16:53, Palmer Dabbelt a écrit :
->>>>> The following changes since commit
->>>>> 8a4102a0cf07cc76a18f373f6b49485258cc6af4:
->>>>>
->>>>>     riscv: mm: Fix W+X mappings at boot (2021-06-01 21:15:09 -0700)
->>>>>
->>>>> are available in the Git repository at:
->>>>>
->>>>>     git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git
->>>>> tags/riscv-for-linus-5.14-mw0
->>>>>
->>>>> for you to fetch changes up to 1958e5aef5098e28b7d6e6a2972649901ebecace:
->>>>>
->>>>>     riscv: xip: Fix duplicate included asm/pgtable.h (2021-07-06
->>>>> 16:17:40 -0700)
->>>>>
->>>>> ----------------------------------------------------------------
->>>>> RISC-V Patches for the 5.14 Merge Window, Part 1
->>>>>
->>>>> In addition to We have a handful of new features for 5.14:
->>>>>
->>>>> * Support for transparent huge pages.
->>>>> * Support for generic PCI resources mapping.
->>>>> * Support for the mem= kernel parameter.
->>>>> * Support for KFENCE.
->>>>> * A handful of fixes to avoid W+X mappings in the kernel.
->>>>> * Support for VMAP_STACK based overflow detection.
->>>>> * An optimized copy_{to,from}_user.
->>>>> ----------------------------------------------------------------
->>>>> There are some Kconfig merge conflicts.  They should be pretty
->>>>> straight-forward, but we do have a symbol out of order -- I thought I
->>>>> had a
->>>>> script to check for that, but I guess it doesn't work.  I just sent
->>>>> out a patch
->>>>> to fix it up.
->>>>>
->>>>> diff --cc arch/riscv/Kconfig
->>>>> index 3590eb76000e,469a70bd8da6..d36f3c5029fd
->>>>> --- a/arch/riscv/Kconfig
->>>>> +++ b/arch/riscv/Kconfig
->>>>> @@@ -60,12 -61,11 +61,12 @@@ config RISC
->>>>>           select GENERIC_TIME_VSYSCALL if MMU && 64BIT
->>>>>           select HANDLE_DOMAIN_IRQ
->>>>>           select HAVE_ARCH_AUDITSYSCALL
->>>>> -       select HAVE_ARCH_JUMP_LABEL
->>>>> -       select HAVE_ARCH_JUMP_LABEL_RELATIVE
->>>>> +       select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
->>>>> +       select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
->>>>>           select HAVE_ARCH_KASAN if MMU && 64BIT
->>>>>           select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
->>>>>    +      select HAVE_ARCH_KFENCE if MMU && 64BIT
->>>>> -       select HAVE_ARCH_KGDB
->>>>> +       select HAVE_ARCH_KGDB if !XIP_KERNEL
->>>>>           select HAVE_ARCH_KGDB_QXFER_PKT
->>>>>           select HAVE_ARCH_MMAP_RND_BITS if MMU
->>>>>           select HAVE_ARCH_SECCOMP_FILTER
->>>>> @@@ -81,11 -80,9 +82,14 @@@
->>>>>           select HAVE_GCC_PLUGINS
->>>>>           select HAVE_GENERIC_VDSO if MMU && 64BIT
->>>>>           select HAVE_IRQ_TIME_ACCOUNTING
->>>>>    +      select HAVE_KPROBES
->>>>>    +      select HAVE_KPROBES_ON_FTRACE
->>>>>    +      select HAVE_KRETPROBES
->>>>> +       select HAVE_KPROBES if !XIP_KERNEL
->>>>> +       select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
->>>>> +       select HAVE_KRETPROBES if !XIP_KERNEL
->>>>>    +      select HAVE_MOVE_PMD
->>>>>    +      select HAVE_MOVE_PUD
->>>>>           select HAVE_PCI
->>>>>           select HAVE_PERF_EVENTS
->>>>>           select HAVE_PERF_REGS
->>>>> @@@ -108,7 -104,7 +112,8 @@@
->>>>>           select SYSCTL_EXCEPTION_TRACE
->>>>>           select THREAD_INFO_IN_TASK
->>>>>           select UACCESS_MEMCPY if !MMU
->>>>>    +      select HAVE_ARCH_TRANSPARENT_HUGEPAGE if 64BIT && MMU
->>>>> +       select ZONE_DMA32 if 64BIT
->>>>>
->>>>>     config ARCH_MMAP_RND_BITS_MIN
->>>>>           default 18 if 64BIT
->>>>> ----------------------------------------------------------------
->>>>> Akira Tsukamoto (1):
->>>>>         riscv: __asm_copy_to-from_user: Optimize unaligned memory
->>>>> access and pipeline stall
->>>>>
->>>>> Alexandre Ghiti (6):
->>>>>         riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED
->>>>>         riscv: Simplify xip and !xip kernel address conversion macros
->>>>
->>>> @Palmer: As said in the thread of this patchset multiple times, those 2
->>>> patches should not be merged as it assumes that the base DRAM address is
->>>> always 0x8000_0000 for all rv64 platforms: I don't think it is true,
->>>> is it?
->>>
->>> Sorry, I remember saying something about that but must have missed the
->>> resposeses.  Do you have a pointer to the discussion?  If this break
->>> stuff I'm happy to revert it, which can be done post-rc1.  I just need
->>> to see what's actually broken first, because IIUC this was de-facto how
->>> things worked already.
->>>    
->>
->> Really sorry about my response delay.
->>
->> The thing is that removing CONFIG_PHYS_RAM_BASE_FIXED defines
->> CONFIG_PHYS_RAM_BASE to 0x8000_0000 for all rv64 chips, but I believe
->> this is implementation specific: for now, this base address was passed
->> into the device tree, and here it makes this value static.
->>
->> This issue with my patch was originally pointed by Jisheng, Geert and Arnd.
->>
->> If this is not a problem and you have a pointer to a document that
->> specifies this, I would be very happy to have the link :)
->>
->> Thanks and again sorry about my response delay,
->>
-> 
-> Hi Alex,
-> 
-> Since the PR has been merged into linux-5.14-rc1, directly reverting seems
-> not a good idea. IMHO, it's better to send patch(es) against current 5.14-rc1
-> tree. what do you think?
-> 
-> Thanks
+It's not AFAICS. Otherwise we will get saturated values which is much worse
+then shifted left frequency. Anyway, this driver appeared first for the hardware
+that has it for all users, so currently the assumption stays.
 
-I have a patchset that fixes this problem cleanly, I have to check but I 
-think it depends on an another larger patchset that cleans the code a 
-lot, I'll see if I can extract only this part and submit it as a fix.
+...
 
-I take a look and get back ASAP!
-
-Thanks,
-
-Alex
-
+> >  	scale = fls_long(*parent_rate / rate - 1);
+> > -	if (scale > fd->nwidth)
+> > +	if (scale > fd->nwidth && !(fd->flags & CLK_FRAC_DIVIDER_NO_PRESCALER))
+> >  		rate <<= scale - fd->nwidth;
 > 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+> First of all, check the CLK_FRAC_DIVIDER_NO_PRESCALER flag for the
+> entire above snippet of code?
+
+OK.
+
+> Second and more important, it seems that it would be good to decouple
+> the prescaler knowledge from this fractional divider clk driver so as
+> to make it simple(Output rate = (m / n) * parent_rate).  This way, the
+> CLK_FRAC_DIVIDER_NO_PRESCALER flag is not even needed at the first
+> place, which means rational_best_approximation() just _directly_
+> offer best_{numerator,denominator} for all cases.
+
+Feel free to submit a patch, just give a good test to avoid breakage of almost
+all users of this driver.
+
+> Further more, is it
+> possilbe for rational_best_approximation() to make sure there is no
+> risk of overflow for best_{numerator,denominator}, since
+> max_{numerator,denominator} are already handed over to
+> rational_best_approximation()?
+
+How? It can not be satisfied for all possible inputs.
+
+> Overflowed/unreasonable
+> best_{numerator,denominator} don't sound like the "best" offered value.
+
+I don't follow here. If you got saturated values it means that your input is
+not convergent. In practice it means that we will supply quite a bad value to
+the caller.
+
+> If that's impossible, then audit best_{numerator,denominator} after
+> calling rational_best_approximation()?
+
+And? I do not understand what you will do if you get the values of m and n
+as m = 1, n = 2^nlim - 1.
+
+> Make sense?
+
+Not really. I probably miss your point, sorry.
+
+So, I will submit v2 with addressed first comment and LKP noticed compiler
+error.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
