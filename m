@@ -2,88 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B633CB7B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588AE3CB7B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239854AbhGPNHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239791AbhGPNHJ (ORCPT
+        id S239653AbhGPNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:10:16 -0400
+Received: from mta02.hs-regensburg.de ([194.95.104.12]:55476 "EHLO
+        mta02.hs-regensburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238380AbhGPNKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:07:09 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD346C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 06:04:14 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id dj21so12984265edb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 06:04:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3EFuCzIh+SeYBpu5UbN36zCvdsMMMavFs1jTakKetLg=;
-        b=ZBXdVovlUDWINuH3DenX3yyikHJDRDr2XC5in3PvcE/lwDz61zADYJvdyMUF81uMM6
-         XXbcSnjd4cAuovnUKeTRhuLnTGBeV+3C1LcTnX7G2y5kQhmoAQxNnywDdbAL1NXKhVEV
-         tcn92roRGng/i79mMnA5uSiT8iQ3UWR6q2CRSTj59A7OzhhwVdyrLXrFPuP2i+EzUap2
-         vtsh+A9s1FWLrzYzpRAlaof+1YGrboe85JIclqPon69R9psy5WHKQ89b8FvEk2AR9t7a
-         28OTWr6cxiUP23tLSHX9hSN/nEQnGoAkGRQWRp4uL2NyqmsNEEdEGC1Y/MQBFrt1Rb+l
-         rRSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3EFuCzIh+SeYBpu5UbN36zCvdsMMMavFs1jTakKetLg=;
-        b=B7jMBDQd7vthtV1IWsFTXGrorftz6CrOFFZowhqIZ6kZgl+iU0gtnpLLpCymq04ywx
-         vH5S+2bV7+2F034h98jU7cCZeirYULCI/dPn/4aFtu1/sOW8LMcAtvqWwG27Qsjt7OC9
-         IxdQF2z+FJAwE6eG8l5oZ2nN3EkzgN0SAsuf/Hvhn0EiRU890hKuQb0l+ByyIvNqyySl
-         rql7pNbWrU/88ykiapebg/RgcKca1hPaD19O5jZNXHTIBX1jvSTI85XG9qlbYFYuU2jv
-         lDduQ4IJ/0fNnEihp0+PwgxGtsJDvgdTGQHScxmVlTuanp+9klj7F58XLWuHBwYhV8gs
-         Iw+A==
-X-Gm-Message-State: AOAM5338IUEiwU7nXjuKPVKva8rszXLP6Q7MIaUEE1fNeKyrnDXHJbxa
-        P95qrBNI+vii+ZzrN+X3GRlmfCrvOYc4OBc/LbEhOA==
-X-Google-Smtp-Source: ABdhPJwF2Vd4OfydUmikO1TlQyiVvg2oS4gN+IeEt5NyFgOSmf6VbmP1pv5jgrwgpt/3hNuw0iZgnsBVM/vCmRXOk+w=
-X-Received: by 2002:aa7:d2ca:: with SMTP id k10mr15018511edr.379.1626440653392;
- Fri, 16 Jul 2021 06:04:13 -0700 (PDT)
+        Fri, 16 Jul 2021 09:10:13 -0400
+Received: from E16S03.hs-regensburg.de (e16s03.hs-regensburg.de [IPv6:2001:638:a01:8013::93])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client CN "E16S03", Issuer "E16S03" (not verified))
+        by mta02.hs-regensburg.de (Postfix) with ESMTPS id 4GRBNN6NC5zy2y;
+        Fri, 16 Jul 2021 15:07:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oth-regensburg.de;
+        s=mta01-20160622; t=1626440836;
+        bh=ouFmdmxN9fdZ0nW/HOuNa4kwdbEZ+5X3c22BP5HazTQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To:From;
+        b=Yy5exus8dhK9N7VsMhq5VzrOcLNW5cQSVfVjHjfrcajRKkOZ1odLg4kjUadpabMHl
+         nNM70AW5X9OwFFm/Nvq6ZtEZmd8ev1BvdrmvzvNrX0vAws1xwb2QgzEj60r+dBydGf
+         lDxj1zweK9QTDT7yWP2pDIgH8zmzIpm+Mpg7DxRg9U1wINo933Tf13PeZnvLbQk6Em
+         e09HV9tHgRCAYEhRdRLPXsuf2op9W8UPJmGa2jfI+jgMBEEcc68Gnj3tggFHq5C+v4
+         oRnZmLGgfjB3rbgcQGrjs+pZfhTwXoKgwsc/Kqc5kTG7GBVOtu/h4ObmcDmAH/esvc
+         snyJCoSynmXxQ==
+Received: from [IPv6:2001:638:a01:8061:5c51:6883:5436:5db]
+ (2001:638:a01:8013::138) by E16S03.hs-regensburg.de (2001:638:a01:8013::93)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 16 Jul
+ 2021 15:07:16 +0200
+Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
+ <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
+ <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
+ <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
+ <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com>
+From:   Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
+Message-ID: <ac8ac10e-aa43-93a1-d36e-6304643375ae@oth-regensburg.de>
+Date:   Fri, 16 Jul 2021 15:07:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <YO3txvw87MjKfdpq@localhost.localdomain> <YO8ioz4sHwcUAkdt@localhost.localdomain>
- <CADYN=9+ZO1XHu2YZYy7s+6_qAh1obi2wk+d4A3vKmxtkoNvQLg@mail.gmail.com> <YPFa/tIF38eTJt1B@localhost.localdomain>
-In-Reply-To: <YPFa/tIF38eTJt1B@localhost.localdomain>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Fri, 16 Jul 2021 15:04:01 +0200
-Message-ID: <CADYN=9LVpCYc48sY63372EyfA9sepKj=LmwfOwyLqo=V45Uq=Q@mail.gmail.com>
-Subject: Re: [PATCH v2] Decouple build from userspace headers
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>, hch@infradead.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [2001:638:a01:8013::138]
+X-ClientProxiedBy: E16S02.hs-regensburg.de (2001:638:a01:8013::92) To
+ E16S03.hs-regensburg.de (2001:638:a01:8013::93)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 at 12:10, Alexey Dobriyan <adobriyan@gmail.com> wrote:
->
-> On Fri, Jul 16, 2021 at 11:03:41AM +0200, Anders Roxell wrote:
-> > On Wed, 14 Jul 2021 at 19:45, Alexey Dobriyan <adobriyan@gmail.com> wrote:
-> > >
->
-> > In file included from
-> > /home/anders/src/kernel/testing/crypto/aegis128-neon-inner.c:7:
-> > /home/anders/src/kernel/testing/arch/arm64/include/asm/neon-intrinsics.h:33:10:
-> > fatal error: arm_neon.h: No such file or directory
-> >    33 | #include <arm_neon.h>
-> >       |          ^~~~~~~~~~~~
->
-> > If I revert this patch I can build it.
->
-> Please, see followup fixes or grab new -mm.
-> https://lore.kernel.org/lkml/YO8ioz4sHwcUAkdt@localhost.localdomain/
 
-I tried to apply that patch but I got the same build error.
 
-Cheers,
-Anders
+On 14/07/2021 15:35, Andy Shevchenko wrote:
+> On Wed, Jul 14, 2021 at 3:56 PM Ralf Ramsauer
+> <ralf.ramsauer@oth-regensburg.de> wrote:
+>> On 14/07/2021 08:54, Jiri Slaby wrote:
+>>> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
+> 
+>>> Hmm, have you checked the commit which introduced the whitelist?
+>>>
+>>>     Nevertheless, this needs to handled with care: while many 8250 devices
+>>>     actually claim to support MSI(-X) interrupts it should not be
+>>> enabled be
+>>>     default. I had at least one device in my hands with broken MSI
+>>>     implementation.
+>>>
+>>>     So better introduce a whitelist with devices that are known to support
+>>>     MSI(-X) interrupts. I tested all devices mentioned in the patch.
+>>>
+>>>
+>>> You should have at least CCed the author for an input.
+>>
+>> Yep, back then I was testing three different 8250 pci cards. All of them
+>> claimed to support MSI, while one really worked with MSI, the one that I
+>> whitelisted. So I thought it would be better to use legacy IRQs as long
+>> as no one tested a specific card to work with MSI.
+> 
+> Can you shed a light eventually what those cards are?
+
+So I found a no-name el-cheapo card that has some issues with MSI:
+
+18:00.0 Serial controller: Device 1c00:3253 (rev 10) (prog-if 05 [16850])
+
+The card comes with two serial lines. It comes perfectly up, if I enable
+it to use MSI in the whitelist:
+
+serial 0000:18:00.0: Using MSI(-X) interrupts
+serial 0000:18:00.0: Setup PCI port: port 40c0, irq 104, type 0
+0000:18:00.0: ttyS6 at I/O 0x40c0 (irq = 104, base_baud = 115200) is a
+XR16850
+serial 0000:18:00.0: Setup PCI port: port 40c8, irq 104, type 0
+0000:18:00.0: ttyS7 at I/O 0x40c8 (irq = 104, base_baud = 115200) is a
+XR16850
+
+After loading 8250_pci, lspci -vvs 18:0.0 tells:
+
+	Capabilities: [68] MSI: Enable+ Count=1/32 Maskable+ 64bit+
+		Address: 00000000fee000b8  Data: 0000
+		Masking: ffffffff  Pending: 00000000
+
+Looks good so far. Now let's echo to the device.
+
+$ echo asdf > /dev/ttyS6
+
+-- stuck. The echoing process stucks at close():
+
+write(1, "asdf\n", 5)                   = 5
+close(1
+
+Stuck in the sense of: the echo is still killable, no crashes. The same
+happens if I try to access the device with stty. So something is odd
+here. However, the Netmos cards that I whitelisted do a great job.
+
+So I can't tell if I was just unlucky to grab a card that has issues
+with MSI, and this is an exception rather than the rule…
+
+HTH,
+  Ralf
+
+
+> 
+>> Don't do that… And don't convert it to a blacklist. A blacklist will
+>> break users until they report that something doesn't work.
+> 
+> White list is not okay either. MSI in general is a right thing to do.
+> preventing users from MSI is asking for the performance degradation
+> and IRQ resource conflicts (in case the IRQ line is shared).
+> 
+> Besides that, shouldn't it be rather the specific field in private (to
+> 8250_pci) structure than constantly growing list?
+> 
