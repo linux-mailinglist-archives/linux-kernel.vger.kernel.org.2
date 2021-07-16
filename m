@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11823CB1AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 06:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D603CB1B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 06:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhGPErC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 00:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        id S233774AbhGPEwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 00:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232179AbhGPErA (ORCPT
+        with ESMTP id S229822AbhGPEwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 00:47:00 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60C4C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 21:44:05 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id b12so4696911plh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 21:44:05 -0700 (PDT)
+        Fri, 16 Jul 2021 00:52:47 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2145AC06175F;
+        Thu, 15 Jul 2021 21:49:53 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id c16so6090989ybl.9;
+        Thu, 15 Jul 2021 21:49:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=student-cerritos-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Rvc+otqutfe9C4JM7KCaWpHHSFeG08UexFPe6shvLKo=;
-        b=cRoQNjgBbMt0oAMvfK6kpgm4x5e+rMoipDAjfIVxdUVh1141X8iDJ4HDk5gM9Hzfr4
-         7gVaBt/FjuzpUtY+qhLSdnGW1TYJMUl/MLtBMTB4DU6R547+vqVRzsXZ6LuSWR1rV8s9
-         bOGU1jZiw2r0RIQnqZEVIZCi0l6K3Sjta/osLLLyf5y79IC93XNTUQA3S1Bva7gMzFv2
-         0t8eRgNaOcWpnkl9a8bt7VfovsE9zYz61IMPDZzEYIjDDWyy8mi4erLW0r/pojcXDS/6
-         4CwomX9WkKyd4H/Iy4jN49dzM24TWhA4llzd7gm/PYOIaH6XMMOd9eKJN8G0G/P/kMOO
-         37gg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PkyEPk/4wB7JABAl75ww38Y0BngqhgSDP8waOBjAM9g=;
+        b=eZpw18yXkJC5JJZpR7mX8LlyMfjOiOARt0UIrVJdb+X0sJWYxATl71Z5qkolyBRZyu
+         qfCkOmkEzwOEh7NXDXJh81aJKMADCuvKZrJpPEdLAdLACbc7NfmZ9za2LqcbbdNIOHvv
+         zjh2Huotb4PLkQQQjj9UZqJZ4r9uhXl8cHsSYAWTy8iLP73pyfQgyzphPQ5/HjIUM89p
+         WrrZi+e4VGyvIzWv3W2bpl8KNo3xK9P9zVKg1gVHUbPOJNltCd7KwOa8FlMwOuW8uhUr
+         jF6N5hHxUMqhfp2Rk/4cyxqo+G5qlumllEVNTnH+/50EVDw28nCTbMLSuWYWPgRb6PPG
+         A5vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Rvc+otqutfe9C4JM7KCaWpHHSFeG08UexFPe6shvLKo=;
-        b=LrSQpjooqi0IwrDnkAk72oyDjoZ7WEJIpbcTRX7CDSnjgyU1O9/jw6tWhd77G4f+X3
-         SXgdwijJ+HtQACrAPYd3pflpdAWc3nqkU6AZlTxXWovrZgvdIjq2AmKyPrBV6ukpihFw
-         Yh4mYeEiUHfZUQRAZqQDGYG3slGJM9eendgK+nWnvZj2K/YpWX6jFnxmRZCjuzMzhU5P
-         odkjKG2Ctq/fBYpVjveLgEre2RQrvT5vdoLhhFF6RHTANbDw3ZwXuhdoVJ2+E9q4Lui9
-         dhpNjKWv2BMXCL3I4yaLAssDYkMaGD+HfYVuFeWQ+HDQe0JOaVS5ZnKviOI/W2IRS11T
-         fhSw==
-X-Gm-Message-State: AOAM533KbfxEmANK4BKlYCI86lkYZF4aZ9go8X6YP3N1ZNCnVjHEuTb6
-        VoXQDMAht9eRLwbIdh3vxDPYEzwesHWxvw==
-X-Google-Smtp-Source: ABdhPJwesiDkXjrxMN7Q28Tb2WSDFRyaqlUWcyAAuVhT9hTzWICQg7ye/YsmDRhd55aX7Iwm5eH1MA==
-X-Received: by 2002:a17:902:bd82:b029:129:2e87:9946 with SMTP id q2-20020a170902bd82b02901292e879946mr6217787pls.53.1626410645219;
-        Thu, 15 Jul 2021 21:44:05 -0700 (PDT)
-Received: from localhost.localdomain ([47.145.96.82])
-        by smtp.gmail.com with ESMTPSA id h9sm484583pjk.56.2021.07.15.21.44.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 21:44:04 -0700 (PDT)
-From:   Amy Parker <apark0006@student.cerritos.edu>
-To:     pavel@ucw.cz
-Cc:     Amy Parker <apark0006@student.cerritos.edu>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] v4l2-flash-led-class.h: use typedef over enum
-Date:   Thu, 15 Jul 2021 21:43:24 -0700
-Message-Id: <20210716044324.523057-1-apark0006@student.cerritos.edu>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PkyEPk/4wB7JABAl75ww38Y0BngqhgSDP8waOBjAM9g=;
+        b=IFbJNEkyFl0oLYY4PlxqD3B0H8qKrAp4f1ES5pHNdx6uWAfC/687ckueM5EVMA7G25
+         5XxrT/gj7KBKmancpoWQ52kYiwROW38Z2vxGHxdfLQ4pdhxtq3Vsee9EHamgDfKqdH4Z
+         CIUPiSzR8v2EjoLfMxrOupA/0wBelTg/1VJq51/P0ihLNKa8G5hGAjZqvfe+qNBQP276
+         BXhZTFSQSv5OMiuJHZUZVPEtkCYje/MJPw17CdM/lqunEgh/PslUcw0iQ4gMdOSk3KVe
+         XnqWcjR0IkCalHzjNkMdsP/bVsH029cWWz7iC7MTRjbYuxWwRw8xSDgWlM9C/6JoeS9m
+         0PNw==
+X-Gm-Message-State: AOAM5336dLzsqfX2mQEpkFfJbBS5radxhxJVrMUR/HnrdlT0FK9hKzTR
+        jn2DMjKLFGCigH0RSxo6mjFftihivrPSGsYHhQc=
+X-Google-Smtp-Source: ABdhPJzdWbSDPWr4RvQEq7NkKlhLkXhqjCu2LPtLjSY0MS5Lf84i7tkBSrkt7A7bY7Yyp0rz40Qq1Avu6tIhlE56Yv0=
+X-Received: by 2002:a25:b203:: with SMTP id i3mr10217027ybj.260.1626410992260;
+ Thu, 15 Jul 2021 21:49:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1626180159-112996-1-git-send-email-chengshuyi@linux.alibaba.com>
+In-Reply-To: <1626180159-112996-1-git-send-email-chengshuyi@linux.alibaba.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 15 Jul 2021 21:49:41 -0700
+Message-ID: <CAEf4BzaDMeZ5+v4enTA6m3OJrQsNXY9G8e9uchhaeQmauTTiiQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/3] Add btf_custom_path in bpf_obj_open_opts
+To:     Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depends on: https://marc.info/?l=linux-kernel&m=162638395216296
+On Tue, Jul 13, 2021 at 5:43 AM Shuyi Cheng
+<chengshuyi@linux.alibaba.com> wrote:
+>
+> This patch set adds the ability to point to a custom BTF for the
+> purposes of BPF CO-RE relocations. This is useful for using BPF CO-RE
+> on old kernels that don't yet natively support kernel (vmlinux) BTF
+> and thus libbpf needs application's help in locating kernel BTF
+> generated separately from the kernel itself. This was already possible
+> to do through bpf_object__load's attribute struct, but that makes it
+> inconvenient to use with BPF skeleton, which only allows to specify
+> bpf_object_open_opts during the open step. Thus, add the ability to
+> override vmlinux BTF at open time.
+>
+> Patch #1 adds libbpf changes.
+> Patch #2 fixes pre-existing memory leak detected during the code review.
+> Patch #3 switches existing selftests to using open_opts for custom BTF.
+>
 
-When the above mentioned patch set was generated, it accidentally
-changed another reference point of led_brightness in
-include/media/v4l2-flash-led-class. This patch corrects this,
-convering the enum to a u8.
+LGTM with some minor things I'll adjust while applying (which I'll
+point out in respective patches). So no need to re-send anything.
+Thanks.
 
-Signed-off-by: Amy Parker <apark0006@student.cerritos.edu>
----
- include/media/v4l2-flash-led-class.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/media/v4l2-flash-led-class.h b/include/media/v4l2-flash-led-class.h
-index 1705064b278a..d6e589851979 100644
---- a/include/media/v4l2-flash-led-class.h
-+++ b/include/media/v4l2-flash-led-class.h
-@@ -15,7 +15,7 @@
- struct led_classdev_flash;
- struct led_classdev;
- struct v4l2_flash;
--led_brightness;
-+typedef u8 led_brightness;
- 
- /**
-  * struct v4l2_flash_ctrl_data - flash control initialization data, filled
--- 
-2.31.1
-
+> Changelog:
+> ----------
+>
+> v3: https://lore.kernel.org/bpf/CAEf4BzY2cdT44bfbMus=gei27ViqGE1BtGo6XrErSsOCnqtVJg@mail.gmail.com/T/#m877eed1d4cf0a1d3352d3f3d6c5ff158be45c542
+> v3->v4:
+> --- Follow Andrii's suggestion to modify cover letter description.
+> --- Delete function bpf_object__load_override_btf.
+> --- Follow Dan's suggestion to add fixes tag and modify commit msg to patch #2.
+> --- Add pathch #3 to switch existing selftests to using open_opts.
+>
+> v2: https://lore.kernel.org/bpf/CAEf4Bza_ua+tjxdhyy4nZ8Boeo+scipWmr_1xM1pC6N5wyuhAA@mail.gmail.com/T/#mf9cf86ae0ffa96180ac29e4fd12697eb70eccd0f
+> v2->v3:
+> --- Load the BTF specified by btf_custom_path to btf_vmlinux_override
+>     instead of btf_bmlinux.
+> --- Fix the memory leak that may be introduced by the second version
+>     of the patch.
+> --- Add a new patch to fix the possible memory leak caused by
+>     obj->kconfig.
+>
+> v1: https://lore.kernel.org/bpf/CAEf4BzaGjEC4t1OefDo11pj2-HfNy0BLhs_G2UREjRNTmb2u=A@mail.gmail.com/t/#m4d9f7c6761fbd2b436b5dfe491cd864b70225804
+> v1->v2:
+> -- Change custom_btf_path to btf_custom_path.
+> -- If the length of btf_custom_path of bpf_obj_open_opts is too long,
+>    return ERR_PTR(-ENAMETOOLONG).
+> -- Add `custom BTF is in addition to vmlinux BTF`
+>    with btf_custom_path field.
+>
+> Shuyi Cheng (3):
+>   libbpf: Introduce 'btf_custom_path' to 'bpf_obj_open_opts'
+>   libbpf: Fix the possible memory leak on error
+>   selftests/bpf: switches existing selftests to using open_opts for custom BTF
+>
+>  tools/lib/bpf/libbpf.c                             | 42 +++++++++++++++++-----
+>  tools/lib/bpf/libbpf.h                             |  9 ++++-
+>  .../selftests/bpf/prog_tests/core_autosize.c       | 22 ++++++------
+>  .../testing/selftests/bpf/prog_tests/core_reloc.c  | 28 +++++++--------
+>  4 files changed, 66 insertions(+), 35 deletions(-)
+>
+> --
+> 1.8.3.1
+>
