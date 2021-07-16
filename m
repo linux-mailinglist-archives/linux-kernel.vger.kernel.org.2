@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80D43CB3A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066723CB3AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236873AbhGPH6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 03:58:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231482AbhGPH6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 03:58:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 113FE613D0;
-        Fri, 16 Jul 2021 07:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626422113;
-        bh=NyskiDTy4SkfS11AN+jSm67E0nVKaGjdDDkssGi0kRI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mB70bavcw3i38LIAdo74ezd3NJMxkyHg48y05ue0rR2T4yQ1cgTKCP3Hr7OYwq2HT
-         AT9JEhmBmupuhNy/uTGKwjCr8F/9XxzLgrop7qcmeaPsWQgEHiQ/1SyVnSfHnCQfPF
-         iwDriM5XCPXEaKbitTt1gbW4ARBiDbFjOwLf//j4iQFkKtpqcwCeVkMZ53PnLOwfuo
-         T0X8/j5/sFKrTKBL4sob5ktXJZvErjJJJY/MNGuG8GcqU1I2J53RHl1R3xaBBHzlon
-         3xIGYlPouCr28+757v1vwQheFNFsiIWcEHuXWIZxKii+vSVZnO8rGB4Twp1PmmwvH8
-         GMoszaqAOmrIw==
-Received: from johan by xi with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1m4IgL-0005tp-Kw; Fri, 16 Jul 2021 09:54:50 +0200
-Date:   Fri, 16 Jul 2021 09:54:49 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com,
-        Antti Palosaari <crope@iki.fi>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 5.13 252/266] media: rtl28xxu: fix zero-length control
- request
-Message-ID: <YPE7Se31LQnaikuy@hovoldconsulting.com>
-References: <20210715182613.933608881@linuxfoundation.org>
- <20210715182652.248759867@linuxfoundation.org>
+        id S237171AbhGPH7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 03:59:25 -0400
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:45704 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237025AbhGPH7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 03:59:07 -0400
+Received: by mail-vk1-f178.google.com with SMTP id t5so1887818vkm.12;
+        Fri, 16 Jul 2021 00:56:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GfIcMH/HAQMHZKZh3T0F/Q8s2vTdDmlb0JJKxnVxJ30=;
+        b=I3ghQnkamdUTYoaorfPn/N7lzZuMSkfnN61x/bUHHrJiFvtz9XjZrvAvQPRNXCBGcu
+         mrjh+psGZds0G+e/yXKm76ugaFG88nAwdE6ACEFw0yog8BwAZpjEsBQ7BZwzR6C6b01I
+         Rwl8zy0ehRRAB3xzF/TTc9lGi7Ph6RigbP3B9xY1YbbNgpEH6LtMZsCPd6hvRI3GTtPB
+         mYuoDirwKhndqQI/2qkmV9xXrt4CtwevM9X99jXIFnFZDFll2G0wLOxu1C8fnNEEgunP
+         W0iEElVy42Nx5BACOuG3ZH/ZV2QsQ6m7SYeBZpqn88AU8bqrYen4CXqUrq+BeZVqopTu
+         NJrA==
+X-Gm-Message-State: AOAM533raV4JF96pEfkPVPJq8QqndzQNW1uPDNlGxr3NIQMpZlcZEG+D
+        jgvPjqXJ/UuvU0cUs+u9MvNHFYxR/pw+IxJyH3E=
+X-Google-Smtp-Source: ABdhPJyoJIo6URHdxvsz+sHVGfhZRbJ1dj7VYB/Hfsm76MYvTf4rTTSJkzEDwPnudg0LkZAYVI9T1p+1kF4oGPYrJ30=
+X-Received: by 2002:ac5:cd9b:: with SMTP id i27mr9886840vka.1.1626422170814;
+ Fri, 16 Jul 2021 00:56:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715182652.248759867@linuxfoundation.org>
+References: <20210715182123.23372-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210715182123.23372-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210715182123.23372-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 16 Jul 2021 09:55:59 +0200
+Message-ID: <CAMuHMdVdnXbzROzgDAX83mp8v1K6+nUB9tQAT7iGW2Ey8xfS_g@mail.gmail.com>
+Subject: Re: [PATCH 5/6] clk: renesas: r9a07g044-cpg: Add clock and reset
+ entries for CANFD
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 08:40:07PM +0200, Greg Kroah-Hartman wrote:
-> From: Johan Hovold <johan@kernel.org>
-> 
-> commit 25d5ce3a606a1eb23a9265d615a92a876ff9cb5f upstream.
-> 
-> The direction of the pipe argument must match the request-type direction
-> bit or control requests may fail depending on the host-controller-driver
-> implementation.
-> 
-> Control transfers without a data stage are treated as OUT requests by
-> the USB stack and should be using usb_sndctrlpipe(). Failing to do so
-> will now trigger a warning.
-> 
-> Fix the zero-length i2c-read request used for type detection by
-> attempting to read a single byte instead.
-> 
-> Reported-by: syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com
-> Fixes: d0f232e823af ("[media] rtl28xxu: add heuristic to detect chip type")
-> Cc: stable@vger.kernel.org      # 4.0
-> Cc: Antti Palosaari <crope@iki.fi>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Thu, Jul 15, 2021 at 8:21 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add clock and reset entries for CANFD in CPG driver.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Please drop this patch from all stable trees. 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v5.15.
 
-This patch causes a regression and a second version was sent almost two
-months ago, but I'm not getting any response whatsoever from the media
-maintainers. 
+Gr{oetje,eeting}s,
 
-I resent the correct fix and a revert of this one almost a month ago and
-the cover letter includes some further details:
+                        Geert
 
-	https://lore.kernel.org/r/20210623084521.7105-1-johan@kernel.org
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-But this still hasn't been fixed in linux-next.
-
-> ---
->  drivers/media/usb/dvb-usb-v2/rtl28xxu.c |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> --- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-> +++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-> @@ -612,8 +612,9 @@ static int rtl28xxu_read_config(struct d
->  static int rtl28xxu_identify_state(struct dvb_usb_device *d, const char **name)
->  {
->  	struct rtl28xxu_dev *dev = d_to_priv(d);
-> +	u8 buf[1];
->  	int ret;
-> -	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 0, NULL};
-> +	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 1, buf};
->  
->  	dev_dbg(&d->intf->dev, "\n");
->  
-> 
-> 
-
-Johan
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
