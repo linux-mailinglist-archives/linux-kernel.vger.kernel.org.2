@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DF73CBAA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3984D3CBA9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbhGPQmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:42:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49976 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229462AbhGPQmF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626453549;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfFDg9q6aorg0RQSfedZUmEwab8tw9m3yBJRoyB2sWQ=;
-        b=h7PPjKdrJgYgIXWo+1RnLqidGV9wpUO0UqhRZz3nXDdbrJ93M0icJ02CGK9Ttt/dsG6rjr
-        qlCYLdzPaYoc+cy2wLEIPiwbEoX2izxc/unx1PU/axMx13PZh9jWKMv9d3U7ja/nAT10Nl
-        s99gL+wcJyhnepZk1RT1khUo+zXROTs=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-431-4_6b6AXQO02Lfe6E29Ikcw-1; Fri, 16 Jul 2021 12:39:06 -0400
-X-MC-Unique: 4_6b6AXQO02Lfe6E29Ikcw-1
-Received: by mail-wr1-f69.google.com with SMTP id i12-20020adffc0c0000b0290140ab4d8389so5069668wrr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:39:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=bfFDg9q6aorg0RQSfedZUmEwab8tw9m3yBJRoyB2sWQ=;
-        b=ZAnQBBqywYxpdo8xkU8yAbUAKrBvK0tAfoTnbIsLFvKQjSuC8riqKNRV8CAVPB1z4X
-         cMqrapF5V4g1I93x3iUayDGsYtYm+FsLhDKHBLX9c9UvPpgFIUIZwnQ3oANt9g2i3+Vu
-         TDvgEaS3wVW9+zmUGV1Od7dzh/nS0isSLTDrLWiFmxEUs7mAxRSDPzj5+WH8uCuDcVy5
-         6pecExvTuwZL8OE9uMbK+f7w8KRRhGnG6jY43+TTC2ASP/wxWmmwpes1n+DWfMbIGpFc
-         AGlJqdZFrSPgiQqraaiJ6T8FXtqv+gLnqeL3D0RSvGU9d+b1paKvEC8gMlEA/eAG+cyw
-         onhA==
-X-Gm-Message-State: AOAM532g7VsTk9prhsY0aESVTUbAMPtVCuqEgvRr5iIWCHJJZg9vf6WV
-        aQNJto8HLkKP4FpqDzCkPJgdEiZdvijq6+a7oBiWCmZPXjDWUrggjgdWUxGuHbw85uqgd3jrBzw
-        ObptotKTqpoQRBHnK/inr9v/J
-X-Received: by 2002:a1c:9d16:: with SMTP id g22mr11555739wme.152.1626453519010;
-        Fri, 16 Jul 2021 09:38:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz9ueXaD17QbsLneBcu5Hsmm2YlNP9Iq3SyEf3ZOmNOxARnIwKF329PUqOcbOS2aNMk4L2NYg==
-X-Received: by 2002:a1c:9d16:: with SMTP id g22mr11555730wme.152.1626453518848;
-        Fri, 16 Jul 2021 09:38:38 -0700 (PDT)
-Received: from [192.168.1.37] (140.red-81-33-92.dynamicip.rima-tde.net. [81.33.92.140])
-        by smtp.gmail.com with ESMTPSA id d67sm11434212wmd.9.2021.07.16.09.38.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 09:38:38 -0700 (PDT)
-Message-ID: <95fb6503b1513cff1df54a043d9e3df530ddd63a.camel@redhat.com>
-Subject: Re: [PATCH] timers: Fix get_next_timer_interrupt() with no timers
- pending
-From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     He Zhe <zhe.he@windriver.com>, anna-maria@linutronix.de,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-Date:   Fri, 16 Jul 2021 18:38:37 +0200
-In-Reply-To: <20210710005243.GA23956@lothringen>
-References: <20200723151641.12236-1-frederic@kernel.org>
-         <dfbf752e-91db-b128-76a8-98fde4c5d480@windriver.com>
-         <20210708153620.GA6716@lothringen>
-         <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
-         <20210709084303.GA17239@lothringen>
-         <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
-         <f520c8b87f56fcda0158853c5127f0488918503e.camel@redhat.com>
-         <4409fa71931446d9cabd849431ee0098c9b31292.camel@redhat.com>
-         <20210710005243.GA23956@lothringen>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229975AbhGPQlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:41:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:14458 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229462AbhGPQlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:41:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="274584105"
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="274584105"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 09:38:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="656445438"
+Received: from srpawnik.iind.intel.com ([10.223.107.57])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Jul 2021 09:38:14 -0700
+From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+To:     rui.zhang@intel.com, srinivas.pandruvada@linux.intel.com,
+        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     sumeet.r.pawnikar@intel.com
+Subject: [PATCH] thermal: int340x: Use IMOK independently
+Date:   Fri, 16 Jul 2021 22:09:46 +0530
+Message-Id: <20210716163946.3142-1-sumeet.r.pawnikar@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-07-10 at 02:52 +0200, Frederic Weisbecker wrote:
-> I guess later we can turn this .timers_pending into
-> .timers_count and that would spare us the costly call to
-> __next_timer_interrupt() up to the last level after the last
-> timer is dequeued.
+Some chrome platform requires IMOK method in coreboot. But these platforms
+don't use GDDV data vault in coreboot. As per current code flow, to enable
+and use IMOK only, we need to have GDDV support as well in coreboot. This
+patch removes the dependency for IMOK from GDDV to enable and use IMOK
+independently.
 
-I've been looking into this. AFAIU there is no limit to the number of timers
-one might enqueue, so there is no fool proof way of selecting .timers_count's
-size. That said, 'struct timer_list' size is 40 bytes (as per pahole), so in
-order to overflow an u32 .timers_count you'd need to allocate ~160GB in 'struct
-timer_list' which I think is safe to assume will never happen.
+Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+---
+ .../intel/int340x_thermal/int3400_thermal.c        | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-Also, I measured the costy call to __next_timer_interrupt() it's slightly less
-than 1us on my test machine. Not a that big in the grand scheme of things, but
-it's in the irq exit code path, so I think it's worth the extra complexity in
-the timer code.
-
-Any thoughs?
-
+diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+index 823354a1a91a..19926beeb3b7 100644
+--- a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
++++ b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+@@ -108,9 +108,12 @@ static struct attribute *imok_attr[] = {
+ 	NULL
+ };
+ 
++static const struct attribute_group imok_attribute_group = {
++	.attrs = imok_attr,
++};
++
+ static const struct attribute_group data_attribute_group = {
+ 	.bin_attrs = data_attributes,
+-	.attrs = imok_attr,
+ };
+ 
+ static ssize_t available_uuids_show(struct device *dev,
+@@ -522,6 +525,12 @@ static int int3400_thermal_probe(struct platform_device *pdev)
+ 	if (result)
+ 		goto free_rel_misc;
+ 
++	if (acpi_has_method(priv->adev->handle, "IMOK")) {
++		result = sysfs_create_group(&pdev->dev.kobj, &imok_attribute_group);
++		if (result)
++			goto free_imok;
++	}
++
+ 	if (priv->data_vault) {
+ 		result = sysfs_create_group(&pdev->dev.kobj,
+ 					    &data_attribute_group);
+@@ -545,6 +554,8 @@ static int int3400_thermal_probe(struct platform_device *pdev)
+ 	}
+ free_uuid:
+ 	sysfs_remove_group(&pdev->dev.kobj, &uuid_attribute_group);
++free_imok:
++	sysfs_remove_group(&pdev->dev.kobj, &imok_attribute_group);
+ free_rel_misc:
+ 	if (!priv->rel_misc_dev_res)
+ 		acpi_thermal_rel_misc_device_remove(priv->adev->handle);
+@@ -573,6 +584,7 @@ static int int3400_thermal_remove(struct platform_device *pdev)
+ 	if (priv->data_vault)
+ 		sysfs_remove_group(&pdev->dev.kobj, &data_attribute_group);
+ 	sysfs_remove_group(&pdev->dev.kobj, &uuid_attribute_group);
++	sysfs_remove_group(&pdev->dev.kobj, &imok_attribute_group);
+ 	thermal_zone_device_unregister(priv->thermal);
+ 	kfree(priv->data_vault);
+ 	kfree(priv->trts);
 -- 
-Nicolás Sáenz
+2.17.1
 
