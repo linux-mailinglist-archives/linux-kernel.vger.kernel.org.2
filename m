@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3953CB676
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7946C3CB679
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239579AbhGPLAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:00:03 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:55927 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhGPLAC (ORCPT
+        id S239672AbhGPLAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 07:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231937AbhGPLAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 07:00:02 -0400
-Received: by mail-io1-f70.google.com with SMTP id i13-20020a5d88cd0000b02904e5ab8bdc6cso5752965iol.22
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:57:08 -0700 (PDT)
+        Fri, 16 Jul 2021 07:00:34 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DA4C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:57:39 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso7922564wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:57:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XKfdywkweNu6uAoYJAmHaJ4+OWe5ozT0lTBOuOqLOpk=;
+        b=T7pf4GIN3ivs7j02IxO84YPTxsw8V9EprKQUh/Y4IwBAHSAfUKLWU/NqEk95tiWbZY
+         OnimKdU4CDwbdDGbAqORSddxkGQYpAWuQyKACSKb2rpKfL7E0pPR8rlPdgZdGlERsRZE
+         XYqYhEVLOzpjDgKm/gixOU4gipZrMY+hnUvTUEov8gnEAMh2mILYynTkEblFYu5Kl0nf
+         2wsQwIJdfHDXPjVssNNi4mwP2616m8EutLwRE9gcXnJQnIspvMy5N2g5hSDKam8SWGD4
+         Wv+EJACq+7QoAHgUrCjNFp6Fw1GZ+altBl5rGqTsV6wE8qfYqWypyhXuXKZ0YpJX7kHJ
+         VpXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=nozPs/V48VMIkx5cQQACEBpxEU2di5c6d9qVAx+/xvw=;
-        b=KIzcHrxvX3jpPBF0FYrphMSGWcozbSsA5AcBDvIdeX1bz7rnnlS7PriROSVT9FCI9o
-         q7fVx/xupakdDEBW7GEYbKn1gVXAyT0UjM9xFD0QSIrEkxx+rn2QlxZH/pVcaSdnI1ez
-         bejUnta2PpwNriW1ApACs/f8M4lXwA90Ny0c3ARMExYGRaGTmJ7wg71UUVy2WCmISXIe
-         +rOW6BmpSYbcc4WEeYxHQbVDdZ64fXEFqQHs2NVQCdTl+AbI9wHkfxBkRy0FFVNoQDX7
-         u6DBvC/3Nk3CtMfAhXFEzbqy34YSvgF7fmziok+kcnIJpfbpPZl/Ushcwvac4aeMxwHp
-         hAIQ==
-X-Gm-Message-State: AOAM5333by3S4zMRefshw3SYt4JoP0rZ81+KcM7rsY1XVX40xaUhKl1W
-        L+WWLsmaK/umzbdGArRTQ3/QQaY2XeRyRKFPMUsy70u6gh2a
-X-Google-Smtp-Source: ABdhPJyTy0iXWl8RJXyIzfZpi59tIQJEQ45cIod4s8+6N8E93vF+M6CIgoFTe7HDDMF458Qyqqsy8CbTGhxOG9DJY2R6GnjDw9h5
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XKfdywkweNu6uAoYJAmHaJ4+OWe5ozT0lTBOuOqLOpk=;
+        b=dYPECuE/cGJrZ8Fwu6LvQPyHt9P86j1YleqEfdX3YWqZUH33jGVm1a1lQ+h0Nqxc8c
+         bPrSaamXirR/g58o8Rr7/AFVuIdEWamMz6jbtSZJq+B4YP5aZgqzyqvjx1b71V+RC+cn
+         i9YUyr7l5gZFWuWd9TSdpgBJQ0BgDovCrZVn86ST67S4AfjRCj30ijp1AoTptEjJn9B0
+         dVbRD9z4aNKkoY8Iqf/D4vndOnruvdfUQbWC3mMBWcOC6Jo0ZrF3AJCIydm+vo9SrhaG
+         bsueboVgxJ0WzKPQcaWr4BLhaaZqc2gFTqv1VWt97t0/3tGpNrxkxqEO0C1WFpL1kURU
+         uR7g==
+X-Gm-Message-State: AOAM533J8S5CNVwj2yeJPeHro15uLUSEu1vrhHhRf7rYZEB43+XAr/Ut
+        JRcnDig5txkeeVUrBg2YJa9Txw==
+X-Google-Smtp-Source: ABdhPJzxkpMf6KBdAjhUrcl5RQIJVBosDs5BsQjMLHASK4sk5AjML/Nk4ijSXXVHgkiYsa2EzOD6rA==
+X-Received: by 2002:a05:600c:4ed3:: with SMTP id g19mr9562287wmq.145.1626433057920;
+        Fri, 16 Jul 2021 03:57:37 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id h130sm464544wmh.1.2021.07.16.03.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 03:57:37 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] ASoC: codecs: wcd938x: setup irq during component bind
+Date:   Fri, 16 Jul 2021 11:57:35 +0100
+Message-Id: <20210716105735.6073-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:2a05:: with SMTP id r5mr5739495ile.69.1626433027959;
- Fri, 16 Jul 2021 03:57:07 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 03:57:07 -0700
-In-Reply-To: <632ddc1b-b664-3e60-90be-03bdf556aa49@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e1f38205c73b72cc@google.com>
-Subject: Re: [syzbot] INFO: task hung in io_sq_thread_park (2)
-From:   syzbot <syzbot+ac957324022b7132accf@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+SoundWire registers are only accessable after sdw components are succesfully
+binded. Setup irqs at that point instead of doing at probe.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in io_uring_cancel_generic
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/wcd938x.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-ctx ffff8880467ee000 submitted 1, dismantled 0, crefs 0, inflight 1, fallbacks 0, poll1 0, poll2 0, tw 0, hash 0, cs 0, issued 1 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 18216 at fs/io_uring.c:9142 io_dump fs/io_uring.c:9142 [inline]
-WARNING: CPU: 0 PID: 18216 at fs/io_uring.c:9142 io_uring_cancel_generic+0x608/0xea0 fs/io_uring.c:9198
-Modules linked in:
-CPU: 0 PID: 18216 Comm: iou-sqp-18211 Not tainted 5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_dump fs/io_uring.c:9142 [inline]
-RIP: 0010:io_uring_cancel_generic+0x608/0xea0 fs/io_uring.c:9198
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 d5 02 00 00 48 8b 44 24 10 48 8b a8 98 00 00 00 48 39 6c 24 08 0f 85 02 03 00 00 e8 f8 97 92 ff <0f> 0b e9 af fe ff ff e8 ec 97 92 ff 48 8b 74 24 20 b9 08 00 00 00
-RSP: 0018:ffffc9000afefc40 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802a09d4c0 RCX: 0000000000000000
-RDX: ffff88802a09d4c0 RSI: ffffffff81e2f0b8 RDI: ffff8880467ee510
-RBP: ffff8880462fb788 R08: 0000000000000081 R09: 0000000000000000
-R10: ffffffff815d066e R11: 0000000000000000 R12: ffff8880462fa458
-R13: ffffc9000afefd40 R14: 0000000000000001 R15: 0000000000000000
-FS:  00007f9295c2d700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1c3f1a3000 CR3: 0000000018755000 CR4: 0000000000350ee0
-Call Trace:
- io_sq_thread+0xaac/0x1250 fs/io_uring.c:6932
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 18216 Comm: iou-sqp-18211 Not tainted 5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- panic+0x306/0x73d kernel/panic.c:232
- __warn.cold+0x35/0x44 kernel/panic.c:606
- report_bug+0x1bd/0x210 lib/bug.c:199
- handle_bug+0x3c/0x60 arch/x86/kernel/traps.c:239
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:259
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:566
-RIP: 0010:io_dump fs/io_uring.c:9142 [inline]
-RIP: 0010:io_uring_cancel_generic+0x608/0xea0 fs/io_uring.c:9198
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 d5 02 00 00 48 8b 44 24 10 48 8b a8 98 00 00 00 48 39 6c 24 08 0f 85 02 03 00 00 e8 f8 97 92 ff <0f> 0b e9 af fe ff ff e8 ec 97 92 ff 48 8b 74 24 20 b9 08 00 00 00
-RSP: 0018:ffffc9000afefc40 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802a09d4c0 RCX: 0000000000000000
-RDX: ffff88802a09d4c0 RSI: ffffffff81e2f0b8 RDI: ffff8880467ee510
-RBP: ffff8880462fb788 R08: 0000000000000081 R09: 0000000000000000
-R10: ffffffff815d066e R11: 0000000000000000 R12: ffff8880462fa458
-R13: ffffc9000afefd40 R14: 0000000000000001 R15: 0000000000000000
- io_sq_thread+0xaac/0x1250 fs/io_uring.c:6932
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
-Tested on:
-
-commit:         81fee56e io_uring: add syz debug info
-git tree:       https://github.com/isilence/linux.git syztest_sqpoll_hang
-console output: https://syzkaller.appspot.com/x/log.txt?x=12bb485c300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cfe2c0e42bc9993d
-dashboard link: https://syzkaller.appspot.com/bug?extid=ac957324022b7132accf
-compiler:       
+diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
+index e32810902383..e5795cd964f7 100644
+--- a/sound/soc/codecs/wcd938x.c
++++ b/sound/soc/codecs/wcd938x.c
+@@ -3314,13 +3314,6 @@ static int wcd938x_soc_codec_probe(struct snd_soc_component *component)
+ 			     (WCD938X_DIGITAL_INTR_LEVEL_0 + i), 0);
+ 	}
+ 
+-	ret = wcd938x_irq_init(wcd938x, component->dev);
+-	if (ret) {
+-		dev_err(component->dev, "%s: IRQ init failed: %d\n",
+-			__func__, ret);
+-		return ret;
+-	}
+-
+ 	wcd938x->hphr_pdm_wd_int = regmap_irq_get_virq(wcd938x->irq_chip,
+ 						       WCD938X_IRQ_HPHR_PDM_WD_INT);
+ 	wcd938x->hphl_pdm_wd_int = regmap_irq_get_virq(wcd938x->irq_chip,
+@@ -3550,7 +3543,6 @@ static int wcd938x_bind(struct device *dev)
+ 	}
+ 	wcd938x->sdw_priv[AIF1_PB] = dev_get_drvdata(wcd938x->rxdev);
+ 	wcd938x->sdw_priv[AIF1_PB]->wcd938x = wcd938x;
+-	wcd938x->sdw_priv[AIF1_PB]->slave_irq = wcd938x->virq;
+ 
+ 	wcd938x->txdev = wcd938x_sdw_device_get(wcd938x->txnode);
+ 	if (!wcd938x->txdev) {
+@@ -3559,7 +3551,6 @@ static int wcd938x_bind(struct device *dev)
+ 	}
+ 	wcd938x->sdw_priv[AIF1_CAP] = dev_get_drvdata(wcd938x->txdev);
+ 	wcd938x->sdw_priv[AIF1_CAP]->wcd938x = wcd938x;
+-	wcd938x->sdw_priv[AIF1_CAP]->slave_irq = wcd938x->virq;
+ 	wcd938x->tx_sdw_dev = dev_to_sdw_dev(wcd938x->txdev);
+ 	if (!wcd938x->tx_sdw_dev) {
+ 		dev_err(dev, "could not get txslave with matching of dev\n");
+@@ -3592,6 +3583,15 @@ static int wcd938x_bind(struct device *dev)
+ 		return PTR_ERR(wcd938x->regmap);
+ 	}
+ 
++	ret = wcd938x_irq_init(wcd938x, dev);
++	if (ret) {
++		dev_err(dev, "%s: IRQ init failed: %d\n", __func__, ret);
++		return ret;
++	}
++
++	wcd938x->sdw_priv[AIF1_PB]->slave_irq = wcd938x->virq;
++	wcd938x->sdw_priv[AIF1_CAP]->slave_irq = wcd938x->virq;
++
+ 	ret = wcd938x_set_micbias_data(wcd938x);
+ 	if (ret < 0) {
+ 		dev_err(dev, "%s: bad micbias pdata\n", __func__);
+-- 
+2.21.0
 
