@@ -2,225 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9383CBF0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050C63CBF12
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237149AbhGPWO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 18:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
+        id S237409AbhGPWPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 18:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236646AbhGPWO0 (ORCPT
+        with ESMTP id S236646AbhGPWO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 18:14:26 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA43C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:11:30 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id v32-20020a0568300920b02904b90fde9029so11401510ott.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:11:30 -0700 (PDT)
+        Fri, 16 Jul 2021 18:14:59 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96F3C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:12:02 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id t25so12608480oiw.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:12:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GsypGQCg9S/GisxcDVlWXCBawzzEOc/grzW2bvmRMAg=;
-        b=gVx/ZHrIC70vmVOCXTr5TS+1Jruf64sqkyxZ3UrGgiV9XuXtxC2XqLJ7mJExhp4mM0
-         KBQbw8boqaMx05zqTEMZhJ9kHBIa+UbhgxjdD9lfnx26rqskUupU666RDLet7noW+R1t
-         aurTICKChGvUPOXRPGC/Rn2T3wlWxwz49jWSAgSiM4hBTew/zOtn0SFMeuoVm9x3Z9xg
-         mRRG+s4KML/diC5yfsyM0KPHWbspq9A3dPbTW6ZcB1dlLiA/guSR/TXIBXZZHhG8A+ja
-         bSQ0fcPF9WhxPjmtXlaJEB5SZz+ZEV1haGrLR8OuDqGqMjgnyUKndrCyt/iQgwoV1qYQ
-         diEA==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uhc96iDfUismyOsdoxs7/ERFXZzsM2MwVzkn+Ev/tXE=;
+        b=iK9mLkNC2bmrCqXsxiHy+mjJxxav4jcOkbCCUMqpHaT41aqOPnkjS+uetYobt6kPUr
+         IOI7ZItZlhxi4TbH/6x+v+QpdJ2VUy8XkwpzoAlJuwPHM4/EkoNM8+1c5qJ+2MISEw0e
+         rIjKzKls2emvH3yzYxxMcEsKDwj1QsoZVcV6i+T7nlh93JfREk/iqMGrAphwS8CW9bsr
+         zMIBOq6vFYlx1fKlHtTGyVAS1ZKvq99liBJ/xGthOkWAGNzIwQqT1hT8X+8Da7ZHF71b
+         TcedbQI1GMXfp8tMI748Bk3d9q9by726OWS1l7D/gGsRar5Un23QPXHtT9LrhaW8C4V4
+         445A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GsypGQCg9S/GisxcDVlWXCBawzzEOc/grzW2bvmRMAg=;
-        b=YztdwEBWHfpaOqe/rFamXxuxDMqlOUELtpAXpKuxL8XRLTWU3NEqNgsIfCbGFF4xhX
-         6ULO6mLAWQpHzD0ToXinedpVMNr9LRsvzbeb80wxw0ywPEu45pYuNdvqBKtv1vwnMiuQ
-         FEfKyTrqOdjNTbUknOFas3Imvj47f7u1ARZIf2DK/A9XdGSuWh0oODYNcJzW4wgk+SoI
-         Iw5nB0OD72Ihp9BBeLn90yVc1pxZZtj/Ws5AnLycu0ba2tCKjhtbfW7ABQDd0oSZOzr8
-         F0NuqlO9oSrTczGrRoTih0TVBO5WUtIpYSpkpCbZt28NsmQ9nvp12tywEpXriDBy4dxj
-         4w2g==
-X-Gm-Message-State: AOAM53160IW6Zwy+LJFZeZz4dtk0lEog8imsim3TI1S2T5sRoiBnJv63
-        HSdLCDkgjOvPdpG4k66bsiZ9Yg==
-X-Google-Smtp-Source: ABdhPJwBsE83jLbN160zVaPWxMbMbgpOEWRAqn74ZxPAZqv8WZM743HqtDM41JWWiSUBuY6Bb+j3ng==
-X-Received: by 2002:a9d:4f09:: with SMTP id d9mr9585414otl.265.1626473489414;
-        Fri, 16 Jul 2021 15:11:29 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b10sm2365497oiy.4.2021.07.16.15.11.28
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=uhc96iDfUismyOsdoxs7/ERFXZzsM2MwVzkn+Ev/tXE=;
+        b=PXxG0pe15Xd7J8Eksg4sVDqxyAn0CDq/BLdGbzjzSrKf2nSGhsa+hrSFRqnjRN2UkQ
+         rGernKsuKe/KF/ez68IRDAKTnHtbm5EgvqOF3oFxJq8NQg2GvOQ43LX82Y105/4aXrhm
+         T3HCwOp/4PQkGG8JXekTnlhTCmYhqIp0MQBKLkeMdGqXqfzavQ2gpC/V+hEQerkT7Ri2
+         rJcAHsVRFnSob9wwktWLFbAKSnk15TA3kQkNP3lnfLp0TvzBrBwUwdY+gLi7qpzNXPsE
+         NNJfmuFWHdELMPfE8/pGhvC5QNpzHR/LtMsYgKBmMuoxCUqesuLyr0Hi7L0ncW/OVj0q
+         V1GA==
+X-Gm-Message-State: AOAM532JTK9e7gw9WsL1yAcIa+nXVxXGkYFqEBYMn2THLfxARsW1Y7xc
+        Ushrm4GwFQPHeJXwdZWO6pM=
+X-Google-Smtp-Source: ABdhPJx3MiZKE723dnDc+TEhStH47VXkFrYTUKVnEyISKuZMRA0D7uP0yGFef0fYyG3nh5JqMEwFtA==
+X-Received: by 2002:a05:6808:3d1:: with SMTP id o17mr13467715oie.27.1626473522173;
+        Fri, 16 Jul 2021 15:12:02 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d14sm1109159oiw.42.2021.07.16.15.12.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 15:11:28 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 17:11:26 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bhelgaas@google.com, lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
-Subject: Re: [PATCH v4 4/4] PCIe: qcom: Add support to control pipe clk src
-Message-ID: <YPIEDhIEPo+Gwibq@yoga>
-References: <1626443927-32028-1-git-send-email-pmaliset@codeaurora.org>
- <1626443927-32028-5-git-send-email-pmaliset@codeaurora.org>
- <CAE-0n538LKQpeY_NKQF-VM3nHVxEE0B_pN4aN=sQ8iQzK+Yyxw@mail.gmail.com>
- <YPHsu+QLWRYpYRCz@yoga>
- <CAE-0n53k9Pn0LMe2xiNN_iTsv-z_rrGSthJVHeLdafDhPuBK=A@mail.gmail.com>
+        Fri, 16 Jul 2021 15:12:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] powerpc/chrp: Revert "Move PHB discovery" and "Make hydra_init() static"
+Date:   Fri, 16 Jul 2021 15:11:59 -0700
+Message-Id: <20210716221159.3587039-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n53k9Pn0LMe2xiNN_iTsv-z_rrGSthJVHeLdafDhPuBK=A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Jul 16:39 CDT 2021, Stephen Boyd wrote:
+This patch reverts commit 407d418f2fd4 ("powerpc/chrp: Move PHB
+discovery") and commit 9634afa67bfd ("powerpc/chrp: Make hydra_init()
+static").
 
-> Quoting Bjorn Andersson (2021-07-16 13:31:55)
-> > On Fri 16 Jul 14:37 CDT 2021, Stephen Boyd wrote:
-> >
-> > > Quoting Prasad Malisetty (2021-07-16 06:58:47)
-> > > > This is a new requirement for sc7280 SoC.
-> > > > To enable gdsc gcc_pcie_1_pipe_clk_src should be TCXO.
-> > >
-> > > Why? Can you add that detail here? Presumably it's something like the
-> > > GDSC needs a running clk to send a reset through the flops or something
-> > > like that.
-> > >
-> >
-> > Which presumably means that we need to "park" gcc_pcie_N_pipe_clk_src
-> > whenever the PHY pipe is paused due to a suspend or runtime suspend.
-> >
-> > I find this part of the commit message to primarily describing the next
-> > patch (that is yet to be posted).
-> 
-> Ah I see. So there will be another patch to do the park and unpark over
-> suspend/resume?
-> 
+Running the upstream kernel on Qemu's brand new "pegasos2" emulation
+results in a variety of backtraces such as
 
-That's my understanding.
+Kernel attempted to write user page (a1) - exploit attempt? (uid: 0)
+------------[ cut here ]------------
+Bug: Write fault blocked by KUAP!
+WARNING: CPU: 0 PID: 0 at arch/powerpc/mm/fault.c:230 do_page_fault+0x4f4/0x920
+CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.2 #40
+NIP:  c0021824 LR: c0021824 CTR: 00000000
+REGS: c1085d50 TRAP: 0700   Not tainted  (5.13.2)
+MSR:  00021032 <ME,IR,DR,RI>  CR: 24042254  XER: 00000000
 
-> >
-> > > > after PHY initialization gcc_pcie_1_pipe_clk_src needs
-> > > > to switch from TCXO to gcc_pcie_1_pipe_clk.
-> > > >
-> > > > Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> > > > ---
-> > > >  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
-> > > >  1 file changed, 22 insertions(+)
-> > > >
-> > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > index 8a7a300..9e0e4ab 100644
-> > > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
-> > > >         if (ret < 0)
-> > > >                 return ret;
-> > > >
-> > > > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-> > > > +               res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-> > > > +               if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-> > > > +                       return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
-> > > > +
-> > > > +               res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-> > > > +               if (IS_ERR(res->phy_pipe_clk))
-> > > > +                       return PTR_ERR(res->phy_pipe_clk);
-> > > > +
-> > > > +               res->ref_clk_src = devm_clk_get(dev, "ref");
-> > > > +               if (IS_ERR(res->ref_clk_src))
-> > > > +                       return PTR_ERR(res->ref_clk_src);
-> > > > +       }
-> > > > +
-> > > >         res->pipe_clk = devm_clk_get(dev, "pipe");
-> > > >         return PTR_ERR_OR_ZERO(res->pipe_clk);
-> > > >  }
-> > > > @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
-> > > >  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
-> > > >  {
-> > > >         struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-> > > > +       struct dw_pcie *pci = pcie->pci;
-> > > > +       struct device *dev = pci->dev;
-> > > > +
-> > > > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
-> > > > +               clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
-> > >
-> > > Is anything wrong if we call clk_set_parent() here when this driver is
-> > > running on previous SoCs where the parent is assigned via DT?
-> >
-> > We don't assign the parent on previous platforms, we apparently just
-> > rely on the reset value (afaict).
-> 
-> Oh sheesh. I thought that was being done already. It looks like at least
-> on sdm845 that there is only one parent for this clk so we don't need to
-> call clk_set_parent to set it there.
-> 
+GPR00: c0021824 c1085e10 c0f8c520 00000021 3fffefff c1085c60 c1085c58 00000000
+GPR08: 00001032 00000000 00000000 c0ffb3ec 44042254 00000000 00000000 00000004
+GPR16: 00000000 ffffffff 000000c4 000000d0 0188c6e0 01006000 00000001 40b14000
+GPR24: c0ec000c 00000300 02000000 00000000 42000000 000000a1 00000000 c1085e60
+NIP [c0021824] do_page_fault+0x4f4/0x920
+LR [c0021824] do_page_fault+0x4f4/0x920
+Call Trace:
+[c1085e10] [c0021824] do_page_fault+0x4f4/0x920 (unreliable)
+[c1085e50] [c0004254] DataAccess_virt+0xd4/0xe4
 
-I'll have to check the documentation on that...
+and the system fails to boot. Bisect points to commit 407d418f2fd4
+("powerpc/chrp: Move PHB discovery"). Reverting this patch together with
+commit 9634afa67bfd ("powerpc/chrp: Make hydra_init() static") fixes
+the problem.
 
-> >
-> > So I think it makes sense for all platforms to explicitly mux
-> > pipe_clk_src to phy::pipe_clk, one the PHY is up and running.
-> 
-> Sure, except some platforms don't have a mux?
-> 
-> >
-> > But I was under the impression that we have the BRANCH_HALT_SKIP on the
-> > pipe_clk because there was some sort of feedback loop to the PHY's
-> > calibration... What this patch indicates is that we should park
-> > pipe_clk_src onto XO at boot time, then after the PHY starts ticking we
-> > should enable and reparent the clk_src - at which point I don't see why
-> > we need the HALT_SKIP.
-> 
-> I recall that qcom folks kept saying they needed to enable the
-> pipe_clk_src clk branch in GCC before enabling the phy. So they required
-> the halt skip flag so that the clk_prepare_enable() call would
-> effectively set the enable bit in GCC and move on without caring. Then
-> they could enable the upstream clk source in the phy without having to
-> stop halfway through to enable the branch in GCC. The whole design here
-> is pretty insane.
-> 
-> In fact, I think we discussed this whole topic in late 2019[1] and we
-> concluded that we could just slam the clk on forever and deal with the
-> clk_set_parent() when the clk became a mux+gate instead of a pure gate.
-> 
+Cc: Oliver O'Halloran <oohall@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Fixes: 407d418f2fd4 ("powerpc/chrp: Move PHB discovery")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ arch/powerpc/include/asm/hydra.h    |  2 ++
+ arch/powerpc/platforms/chrp/pci.c   | 11 ++---------
+ arch/powerpc/platforms/chrp/setup.c | 12 +++++++++++-
+ 3 files changed, 15 insertions(+), 10 deletions(-)
 
-That's exactly what I asked Prasad about, because per the description
-and content of this patch the parent pipe_clk_src will remain XO until
-the PHY is initialized. So either the PHY no longer need gcc in the loop
-to calibrate the pipe clock or it used to, but no longer does.
+diff --git a/arch/powerpc/include/asm/hydra.h b/arch/powerpc/include/asm/hydra.h
+index d024447283a0..ae02eb53d6ef 100644
+--- a/arch/powerpc/include/asm/hydra.h
++++ b/arch/powerpc/include/asm/hydra.h
+@@ -94,6 +94,8 @@ extern volatile struct Hydra __iomem *Hydra;
+ #define HYDRA_INT_EXT7		18	/* Power Off Request */
+ #define HYDRA_INT_SPARE		19
+ 
++extern int hydra_init(void);
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* _ASMPPC_HYDRA_H */
+diff --git a/arch/powerpc/platforms/chrp/pci.c b/arch/powerpc/platforms/chrp/pci.c
+index 76e6256cb0a7..b2c2bf35b76c 100644
+--- a/arch/powerpc/platforms/chrp/pci.c
++++ b/arch/powerpc/platforms/chrp/pci.c
+@@ -131,7 +131,8 @@ static struct pci_ops rtas_pci_ops =
+ 
+ volatile struct Hydra __iomem *Hydra = NULL;
+ 
+-static int __init hydra_init(void)
++int __init
++hydra_init(void)
+ {
+ 	struct device_node *np;
+ 	struct resource r;
+@@ -313,14 +314,6 @@ chrp_find_bridges(void)
+ 		}
+ 	}
+ 	of_node_put(root);
+-
+-	/*
+-	 *  "Temporary" fixes for PCI devices.
+-	 *  -- Geert
+-	 */
+-	hydra_init();		/* Mac I/O */
+-
+-	pci_create_OF_bus_map();
+ }
+ 
+ /* SL82C105 IDE Control/Status Register */
+diff --git a/arch/powerpc/platforms/chrp/setup.c b/arch/powerpc/platforms/chrp/setup.c
+index 3cfc382841e5..c45435aa5e36 100644
+--- a/arch/powerpc/platforms/chrp/setup.c
++++ b/arch/powerpc/platforms/chrp/setup.c
+@@ -334,11 +334,22 @@ static void __init chrp_setup_arch(void)
+ 	/* On pegasos, enable the L2 cache if not already done by OF */
+ 	pegasos_set_l2cr();
+ 
++	/* Lookup PCI host bridges */
++	chrp_find_bridges();
++
++	/*
++	 *  Temporary fixes for PCI devices.
++	 *  -- Geert
++	 */
++	hydra_init();		/* Mac I/O */
++
+ 	/*
+ 	 *  Fix the Super I/O configuration
+ 	 */
+ 	sio_init();
+ 
++	pci_create_OF_bus_map();
++
+ 	/*
+ 	 * Print the banner, then scroll down so boot progress
+ 	 * can be printed.  -- Cort
+@@ -571,7 +582,6 @@ define_machine(chrp) {
+ 	.name			= "CHRP",
+ 	.probe			= chrp_probe,
+ 	.setup_arch		= chrp_setup_arch,
+-	.discover_phbs		= chrp_find_bridges,
+ 	.init			= chrp_init2,
+ 	.show_cpuinfo		= chrp_show_cpuinfo,
+ 	.init_IRQ		= chrp_init_IRQ,
+-- 
+2.25.1
 
-
-Thanks for the link, we definitely should clean that up, but I think at
-this point it might be worth waiting a little bit longer to see what
-actually going to happen in the suspend/resume (system and runtime)
-paths...
-
-> >
-> > > Also, shouldn't we make sure the parent is XO at driver probe time so
-> > > that powering on the GDSC works properly?
-> > >
-> > > It all feels like a kludge though given that the GDSC is the one that
-> > > requires the clock to be running at XO and we're working around that in
-> > > the pcie driver instead of sticking that logic into the GDSC. What do we
-> > > do if the GDSC is already enabled out of boot instead of being the power
-> > > on reset (POR) configuration?
-> > >
-> >
-> > What happens if we boot the device out of NVME...
-> 
-> I guess it's fine? The GDSC will be on and the parent clk will already
-> be set so things are a no-op.
-> 
-
-Yes, if the pipe_clk_src is parked nicely in late initcall, so that when the
-pd late init cuts the GDSC things will end up in a clean state.
-
-Regards,
-Bjorn
-
-> >
-> >
-> > PS. Are we certain that it's the PCIe driver and not the PHY that should
-> > do this dance? I really would like to see the continuation of this patch
-> > to see the full picture...
-> >
-> 
-> [1] https://lore.kernel.org/linux-clk/eba920f5-f5a2-53d5-2227-529b5ea99d32@codeaurora.org/
