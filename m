@@ -2,91 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363E83CB100
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06B43CB109
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233675AbhGPDP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 23:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233647AbhGPDPY (ORCPT
+        id S233735AbhGPDRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 23:17:42 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:38834 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhGPDRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 23:15:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E25AC06175F;
-        Thu, 15 Jul 2021 20:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TRDya8wHWkJxj5dWxTTzT73+dIkTaai0safBwEJTM+0=; b=MwzLcqHYbmp3Z0BhM8fXff+86l
-        k2Lkime2zcBMJsOr6pG++QI9XGFLoWMwdot/nq5BMizLvsKhnhG2J2LrkWjI/4ouZ6pCkg1FD5A6a
-        wpUv/moDpYyoRAB5EIoKy1zZhc07/0qXFDwTYEF01LlF7dbGOY2DTNgLuV5cBNnb738mxNUncogxY
-        uqMjDCavSPsUSKbva4hdobjPZpXKbTTWPMZoSiE71V6c3T/mly+Y8ujoGM8gOhWq67dvuLeVm470W
-        9PzxCxuX5ofo6UMb10Xh0R95dHa7FnDT6K5tiFBhi60MGwdcknp8Ag9RgjFGm+BE/xZwZ3DE8MY6r
-        suGyIuFw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m4EGN-0045sr-7Q; Fri, 16 Jul 2021 03:11:53 +0000
-Date:   Fri, 16 Jul 2021 04:11:43 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 102/138] iomap: Convert iomap_write_begin and
- iomap_write_end to folios
-Message-ID: <YPD476gr7MWsaAyr@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-103-willy@infradead.org>
- <20210715215105.GM22357@magnolia>
+        Thu, 15 Jul 2021 23:17:41 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 16G2vwLi090942;
+        Fri, 16 Jul 2021 10:57:58 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul
+ 2021 11:14:07 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <lee.jones@linaro.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <thierry.reding@gmail.com>,
+        <u.kleine-koenig@pengutronix.de>, <p.zabel@pengutronix.de>,
+        <billy_tsai@aspeedtech.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [v10 0/2] Support pwm driver for aspeed ast26xx
+Date:   Fri, 16 Jul 2021 11:14:10 +0800
+Message-ID: <20210716031412.19258-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715215105.GM22357@magnolia>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.149]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 16G2vwLi090942
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 02:51:05PM -0700, Darrick J. Wong wrote:
-> On Thu, Jul 15, 2021 at 04:36:28AM +0100, Matthew Wilcox (Oracle) wrote:
-> > +static int iomap_write_begin(struct inode *inode, loff_t pos, size_t len,
-> > +		unsigned flags, struct folio **foliop, struct iomap *iomap,
-> > +		struct iomap *srcmap)
-> >  {
-> >  	const struct iomap_page_ops *page_ops = iomap->page_ops;
-> > +	struct folio *folio;
-> >  	struct page *page;
-> > +	unsigned fgp = FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE | FGP_NOFS;
-> >  	int status = 0;
-> >  
-> >  	BUG_ON(pos + len > iomap->offset + iomap->length);
-> > @@ -604,30 +605,31 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
-> >  			return status;
-> >  	}
-> >  
-> > -	page = grab_cache_page_write_begin(inode->i_mapping, pos >> PAGE_SHIFT,
-> > -			AOP_FLAG_NOFS);
-> > -	if (!page) {
-> > +	folio = __filemap_get_folio(inode->i_mapping, pos >> PAGE_SHIFT, fgp,
-> 
-> Ah, ok, so we're moving the file_get_pages flags up to iomap now.
+The legacy driver of aspeed pwm is binding with tach controller and it
+doesn't follow the pwm framworks usage. In addition, the pwm register
+usage of the 6th generation of ast26xx has drastic change. So these
+patch serials add the new aspeed pwm driver to fix up the problem above.
 
-Right, saves us having a folio equivalent of
-grab_cache_page_write_begin().  And lets us get rid of AOP_FLAG_NOFS
-eventually (although that really should be obsoleted by scoped
-allocations, but one windmill at a time).
+Change since v9:
+- dt-bindings:
+  - Change the naming of tach subnode channel setting property to
+  aspeed,tach-ch.
+- pwm-aspeed-ast2600.c
+  - Fix the naming of some parameters.
+  - Capitalise error messages.
+  - Handling potentially mult overflow when .apply
 
-> > +	struct page *page = folio_file_page(folio, pos / PAGE_SIZE);
-> 
-> pos >> PAGE_SHIFT ?
+Change since v8:
+- pwm-aspeed-ast2600.c
+  - Replace "* _BITULL(div_h)" to "<< div_h"
+  - Fix duty_cycle precision problem.
+  - Add the comment about the formula of duty_cycle.
 
-mmm.  We're inconsistent:
+Change since v7:
+- pwm-aspeed-g6.c
+  - Rename the driver: pwm-aspeed-g6.c -> pwm-aspeed-ast2600.c.
+  - Macro remove "_CH" part of the register name.
+  - Unroll the aspeed_pwm_get_period and remove it.
+  - Simplify the formula to get duty_pt
+  - Reduce the number of writing register. Organize all the fields and
+    write them at once.
 
-willy@pepe:~/kernel/folio$ git grep '/ PAGE_SIZE' mm/ fs/ |wc
-     92     720    6475
-willy@pepe:~/kernel/folio$ git grep '>> PAGE_SHIFT' mm/ fs/ |wc
-    635    4582   39394
+Change since v6:
+- dt-bindings:
+  - Add blank line between each DT property.
+  - Change the sub-node name from fan to tach-ch.
+- pwm-aspeed-g6.c
+  - Merge aspeed_pwm_set_period and aspeed_pwm_set_duty into .apply.
+  - Convert the factor type to u64 when calculating the period value.
+  - Using ROUND_UP strategy to calculate div_h for finer resolution.
 
-That said, there's a clear preference.  It's just that we had a bug the
-other day where somebody shifted by PAGE_SHIFT in the wrong direction ...
-But again, this is your code, so I'll change to the shift.
+Change since v5:
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - Move the divide at the end of the calculation.
+  - Unified the prefix of the function name.
+  - Use div64_u64 to calculate the divider of frequency.
+
+Change since v4:
+- dt_binding:
+  - pwm/tach yaml: Replace child-node with additionalProperties
+  - pwm-tach yaml: Replace child-node with patternProperties
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - The bit definitions contained the name of the register.
+  - Remove single caller function and fold it to the caller.
+  - Avoid to divide by the result of a division.
+  - Remove unnecessary condition in .apply().
+  - Use goto for error handling
+
+Changes since v3:
+- Add the dt_binding for aspeed,ast2600-tach.
+- Describe the pwm/tach as child-node of pwm-tach mfd.
+- Complete the properties of pwm node.
+
+Changes since v2:
+- Remove the tach node, #address-cells and #size-cells from pwm-tach.yaml
+- Add clocks and reset properties to pwm-tach.yaml
+- Kconfig/Makfile sorted alphabetically
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - Add more hardware descriptions at top of the driver.
+  - Remove unused api request and free
+  - Move the initialize settings of all pwm channel to probe.
+  - Change the method of getting the approximate period.
+  - Read the hardware register values to fill the state for .get_state()
+
+Changes since v1:
+- Fix the dt_binding_check fail suggested by Rob Herring
+- Add depends to PWM_ASPEED_G6 configure suggested by Uwe Kleine-Konig
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - Fix license header
+  - Use bitfiled.h macro to define register fields
+  - Implement .remove device function
+  - Implement .get_state pwm api
+
+Billy Tsai (2):
+  dt-bindings: Add bindings for aspeed pwm-tach.
+  pwm: Add Aspeed ast2600 PWM support
+
+ .../bindings/hwmon/aspeed,ast2600-tach.yaml   |  68 ++++
+ .../bindings/mfd/aspeed,ast2600-pwm-tach.yaml |  76 +++++
+ .../bindings/pwm/aspeed,ast2600-pwm.yaml      |  64 ++++
+ drivers/pwm/Kconfig                           |  10 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-aspeed-ast2600.c              | 322 ++++++++++++++++++
+ 6 files changed, 541 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+ create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-aspeed-ast2600.c
+
+-- 
+2.25.1
 
