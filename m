@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2473CB3C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFCC3CB3CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237239AbhGPILD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:11:03 -0400
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:46698 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236794AbhGPIK6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:10:58 -0400
-Received: by mail-vs1-f46.google.com with SMTP id e9so4510395vsk.13;
-        Fri, 16 Jul 2021 01:08:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=giyrf2o1FzAiMPZMB+cuWH7FudholsSRDLHqp9OQQrc=;
-        b=memBF8z/xVZ2yaFzAYxf8aquIVqzDJib+ig6ALJlM650ZIoq+aiyM2EIU//uG8xoQq
-         flzIAmrggD6QF3AHPqE8kC/whBHtams6l+Zo20CGdcD+jMfE/2yctZ8KQU6cv6lEz7GF
-         HT68oq8oQAKX+z2TMg5L/EBh77jQEfnYtWdFzA92xme8ROp1oR9RwVRJ4bOt2DJM9NRo
-         zl9QcM0x3i9r0DUrk+d27n8/5w/na+p9Mi0qBC4Dqr+ZAzqtP3BFVqYaoznPSCeVv+vW
-         /m1V/vv0poOynSVB98zexsUtxAD6BROQMtETz8IN2sZVbCxaJYFY+AeGCPwh6h9zb/up
-         QANQ==
-X-Gm-Message-State: AOAM532jNCd5B3LJB54Q4w9ydMD5z831nmrG9IHWlfko4yk2q1aZbM+Q
-        TLtUgbHXPSezEWdHiwAivDMqOv7/oL2TA7WOsRM=
-X-Google-Smtp-Source: ABdhPJyY6lB02joEzt/sNsOSQ95M/LFaERQ9kl8xif6voyXa1qRk8okeVP7gZaEFemB5tiHfFh8Yu6uAyJ75Ov78aZU=
-X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr11085935vsf.40.1626422882441;
- Fri, 16 Jul 2021 01:08:02 -0700 (PDT)
+        id S237278AbhGPIL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:11:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:35814 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236794AbhGPIL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 04:11:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16FEE31B;
+        Fri, 16 Jul 2021 01:09:03 -0700 (PDT)
+Received: from [10.57.33.181] (unknown [10.57.33.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 546333F7D8;
+        Fri, 16 Jul 2021 01:09:01 -0700 (PDT)
+Subject: Re: [RFC 07/10] arm64/mm: Detect and enable FEAT_LPA2
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, mark.rutland@arm.com, will@kernel.org,
+        catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        steven.price@arm.com
+References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
+ <1626229291-6569-8-git-send-email-anshuman.khandual@arm.com>
+ <18c42dd0-b6db-d118-dad0-cac0bf6ab2ce@arm.com>
+ <8adefac5-c677-1fca-20dd-bba8543f8d59@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <429105f9-e967-492e-1d1f-5bb913ef6854@arm.com>
+Date:   Fri, 16 Jul 2021 09:08:57 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210715182123.23372-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210715182123.23372-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210715182123.23372-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 16 Jul 2021 10:07:51 +0200
-Message-ID: <CAMuHMdV3JkV5D5_PsngoLiLPA_B1VBvRKsCz7j2tXKYVE_Bx9A@mail.gmail.com>
-Subject: Re: [PATCH 3/6] dt-bindings: clk: r9a07g044-cpg: Add entry for
- P0_DIV2 core clock
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8adefac5-c677-1fca-20dd-bba8543f8d59@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On 16/07/2021 08:06, Anshuman Khandual wrote:
+> 
+> On 7/14/21 1:51 PM, Suzuki K Poulose wrote:
+>> On 14/07/2021 03:21, Anshuman Khandual wrote:
+>>> Detect FEAT_LPA2 implementation early enough during boot when requested via
+>>> CONFIG_ARM64_PA_BITS_52_LPA2 and remember in a variable arm64_lpa2_enabled.
+>>> This variable could then be used to turn on TCR_EL1.TCR_DS effecting the 52
+>>> bits PA range or fall back to default 48 bits PA range if FEAT_LPA2 feature
+>>> was requested but found not to be implemented.
+>>>
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>>    arch/arm64/include/asm/memory.h |  1 +
+>>>    arch/arm64/kernel/head.S        | 15 +++++++++++++++
+>>>    arch/arm64/mm/mmu.c             |  3 +++
+>>>    arch/arm64/mm/proc.S            |  9 +++++++++
+>>>    4 files changed, 28 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+>>> index 824a365..d0ca002 100644
+>>> --- a/arch/arm64/include/asm/memory.h
+>>> +++ b/arch/arm64/include/asm/memory.h
+>>> @@ -178,6 +178,7 @@
+>>>    #include <asm/bug.h>
+>>>      extern u64            vabits_actual;
+>>> +extern u64            arm64_lpa2_enabled;
+>>>      extern s64            memstart_addr;
+>>>    /* PHYS_OFFSET - the physical address of the start of memory. */
+>>> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+>>> index 6444147..9cf79ea 100644
+>>> --- a/arch/arm64/kernel/head.S
+>>> +++ b/arch/arm64/kernel/head.S
+>>> @@ -94,6 +94,21 @@ SYM_CODE_START(primary_entry)
+>>>        adrp    x23, __PHYS_OFFSET
+>>>        and    x23, x23, MIN_KIMG_ALIGN - 1    // KASLR offset, defaults to 0
+>>>        bl    set_cpu_boot_mode_flag
+>>> +
+>>> +#ifdef CONFIG_ARM64_PA_BITS_52_LPA2
+>>> +    mrs     x10, ID_AA64MMFR0_EL1
+>>> +    ubfx    x10, x10, #ID_AA64MMFR0_TGRAN_SHIFT, 4
+>>> +    cmp     x10, #ID_AA64MMFR0_TGRAN_LPA2
+>>> +    b.ne    1f
+>>
+>> For the sake of forward compatibility, this should be "b.lt"
+> Right, I guess we could assume that the feature will be present from the
+> current ID_AA64MMFR0_TGRAN_LPA2 values onward in the future. But should
+> not this also be capped at ID_AA64MMFR0_TGRAN_SUPPORTED_MAX as the upper
+> limit is different for 4K and 16K page sizes.
 
-Thanks for your patch!
+Absolutely.
 
-On Thu, Jul 15, 2021 at 8:21 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add P0_DIV2 core clock required for CANFD module. CANFD core clock is
-> sourced from P0_DIV2 referenced from HW manual Rev.0.50.
+Cheers
+Suzuki
 
-OK.
+> 
 
-> Also add R9A07G044_LAST_CORE_CLK entry to avoid changes in
-> r9a07g044-cpg.c file.
-
-I'm not so fond of adding this.  Unlike the other definitions, it is
-not really part of the bindings, but merely a convenience definition
-for the driver.  Furthermore it has to change when a new definition
-is ever added.
-
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
->  include/dt-bindings/clock/r9a07g044-cpg.h | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/include/dt-bindings/clock/r9a07g044-cpg.h b/include/dt-bindings/clock/r9a07g044-cpg.h
-> index 0728ad07ff7a..2fd20db0b2f4 100644
-> --- a/include/dt-bindings/clock/r9a07g044-cpg.h
-> +++ b/include/dt-bindings/clock/r9a07g044-cpg.h
-> @@ -30,6 +30,8 @@
->  #define R9A07G044_CLK_P2               19
->  #define R9A07G044_CLK_AT               20
->  #define R9A07G044_OSCCLK               21
-> +#define R9A07G044_CLK_P0_DIV2          22
-> +#define R9A07G044_LAST_CORE_CLK                23
-
-Third issue: off-by-one error, it should be 22 ;-)
-
->
->  /* R9A07G044 Module Clocks */
->  #define R9A07G044_CA55_SCLK            0
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
