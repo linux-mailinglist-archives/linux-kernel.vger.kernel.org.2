@@ -2,92 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EB53CB7B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F277D3CB7BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239808AbhGPNNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:13:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238560AbhGPNNf (ORCPT
+        id S239791AbhGPNQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232804AbhGPNQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:13:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626441040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mfHUY15Uy1dIWD5x+FWk01V2UPIrzIHLqJFcxENTfHs=;
-        b=LiA8O86DiMjg39p5DtkOfM5NdZZWeUnsxjsn86/9FSP53rMMu3H0+roFUy1RXc37aaIMJp
-        OvmyOlfwcnKe/DCIZ47qVtvZ7jyo7ud+6NDg7InPq/MgA4FZHed6XfsJIwDAdM7wTv33qi
-        NJBKMdThfwdpzotsdv8f3s/1o5mNWj8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-5JFyxzB7MvKxcG8nwc8OWg-1; Fri, 16 Jul 2021 09:10:38 -0400
-X-MC-Unique: 5JFyxzB7MvKxcG8nwc8OWg-1
-Received: by mail-wm1-f70.google.com with SMTP id p9-20020a7bcc890000b02902190142995dso2353062wma.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 06:10:38 -0700 (PDT)
+        Fri, 16 Jul 2021 09:16:44 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D896FC06175F;
+        Fri, 16 Jul 2021 06:13:48 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso8173712wmh.4;
+        Fri, 16 Jul 2021 06:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=VAMJ51F8HlGQzrW0Yo0XZ6ITZDcYdf9bAUDHhhTszoA=;
+        b=QrQNm6P2zW7Ac4xHgPKL/3+hN/58J6MDvS15iqDTiCpEQd6a3o0J2T/zO3EtQQeRrT
+         jgMmT0xesI3DMy1Q1kirEudmh2I+T2rUo4xQ883CU5geG6UA7EP7vFE9bZv1f9AxVRLn
+         sfh9WOXEPrW3+0EAJrok7a7PHWMBkwQLKxVHwkd+POZQs3TmcesG7FpTC0qlHeTSUYoC
+         SrkMr8r8J25pA3I0c9bJOxmNsY3GTVJ65Jf9cldwiJ3ND5VhHa2AL4XGVysfewQFO4kn
+         Str4gyE9aem0O0ke4HnUakfJKvCzAu7XG/MANwtcqos37xtqUxBOfh3pwO+MAtMgSB0Z
+         CNYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=mfHUY15Uy1dIWD5x+FWk01V2UPIrzIHLqJFcxENTfHs=;
-        b=pI5vBvmG5080wDTH8i4zOpwQv06wkJ9uinz2RToQhEA5jpjzdBjwzXoAEw9f5COASv
-         rfOoQxZ9ufIOOW7C67KCiUxn9EUHxedbwlm74V2ZkHKMfQxxkWk9OtyKwv5hgPRXHsTd
-         bE08+Bs+n3TwucT3G6txz+JcYmAW8waYXSrdc5m43dMUpMpU3frYGGqFCEnZF+Bx5K0G
-         l0BDxmhIVaY6tD4xqCT4GopQcecLziV7bhivkALdJOBHMf33Y5UtIIyaVN5B24H8RTIJ
-         nNaRDGNT0sc+MndWaJ+x8PFbTAeo0MlrGgTlmcdhH/E2315BPFfRiOZXImPHsChhMP5f
-         SDyw==
-X-Gm-Message-State: AOAM533EXGtM2KZEBJDleabTfqmloh1XTeq5lK5t5MkGkCnRWCZ8ydut
-        cTqnpXnZY2SM7VcTM8xWEjQjBhy7JdZB/MaSpD3PbI5PJXBcziocMNqSdOQd+YuyO1LshS+9yfS
-        kJECBoQ3HwZP25ZyO1KSIWQ7F9gxEA5JV/4+TVjlp9reFDAKCbz+fZpCZgOApme1bqhalLYJl
-X-Received: by 2002:a5d:5286:: with SMTP id c6mr12176236wrv.75.1626441037758;
-        Fri, 16 Jul 2021 06:10:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyQow3phVBvU1Ndrlr2yK7XIXEgJZXo6n2/PrXt/Z+O6qejNxABtVTM2Ro0p1O0JTSxEdpmTA==
-X-Received: by 2002:a5d:5286:: with SMTP id c6mr12176214wrv.75.1626441037529;
-        Fri, 16 Jul 2021 06:10:37 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c621f.dip0.t-ipconnect.de. [91.12.98.31])
-        by smtp.gmail.com with ESMTPSA id m18sm7776641wmq.45.2021.07.16.06.10.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 06:10:37 -0700 (PDT)
-Subject: Re: [PATCH] virtio-balloon: Use virtio_find_vqs() helper
-From:   David Hildenbrand <david@redhat.com>
-To:     tianxianting <xianting.tian@linux.alibaba.com>,
-        Xianting Tian <xianting_tian@126.com>, mst@redhat.com,
-        jasowang@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <1626190724-7942-1-git-send-email-xianting_tian@126.com>
- <bbe52a89-c7ea-c155-6226-0397f223cd80@linux.alibaba.com>
- <95d7f688-79fc-05dc-87ca-da46e0179f0e@redhat.com>
-Organization: Red Hat
-Message-ID: <58096b5a-8acb-a88f-c2c6-cd6e3201407f@redhat.com>
-Date:   Fri, 16 Jul 2021 15:10:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=VAMJ51F8HlGQzrW0Yo0XZ6ITZDcYdf9bAUDHhhTszoA=;
+        b=fJ978i1GVfCJHtZIR5zleGkgzTDB/am6+qE9zST7LPEPjWvK+JPB8kUiqbKKVln2/7
+         vPT/BWRm21rgtXjdN0JKaBx6L00rXHCjVpQlrf+7XJ3MZk9j4093Xx4mwHoXKXB8nGKt
+         QZf49RlsND1/zVUKuV0xBcyacT803Mi7coZPQYKGoR2NqQzvn+0E7JBa2MY7ZYriEIVG
+         do8hpAEUVy7lVZCzI98v1bGS6EZxziziW44uNZ6YDRKXvBV10j0m5ULyYIMc5HmZrPMq
+         RRBmvPGdZNqy0jfVJQ8DgEQfx2eCJgEGlwD4s+mW6Lj92E0zxrU4N422hLBNEJdQYQUG
+         Y+kQ==
+X-Gm-Message-State: AOAM531m952pCir0jI4AhY0nJGnc5NC9krg8/C494pkIkYr2Ujcym8lv
+        cBmlAIhKI77xa1zVcWi3Ljo=
+X-Google-Smtp-Source: ABdhPJxJb0FShbubxv23BuhBGt4gdETj8G4jqoPSy6hyuYvUAMxvHVvTEO5iC/zNh2hfxOXZM3rsIw==
+X-Received: by 2002:a1c:f613:: with SMTP id w19mr17012077wmc.136.1626441227169;
+        Fri, 16 Jul 2021 06:13:47 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
+        by smtp.gmail.com with ESMTPSA id c12sm11308759wrr.90.2021.07.16.06.13.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 06:13:40 -0700 (PDT)
+Message-ID: <b8ec4f29889914e49fac73af59466e8acdf1e49f.camel@gmail.com>
+Subject: Re: [PATCH 02/20] perf env: fix sibling_dies memory leak
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Date:   Fri, 16 Jul 2021 15:13:37 +0200
+In-Reply-To: <YPCRR8jv47kHG/xC@kernel.org>
+References: <cover.1626343282.git.rickyman7@gmail.com>
+         <2140d0b57656e4eb9021ca9772250c24c032924b.1626343282.git.rickyman7@gmail.com>
+         <YPCRR8jv47kHG/xC@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <95d7f688-79fc-05dc-87ca-da46e0179f0e@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.07.21 14:53, David Hildenbrand wrote:
-> On 16.07.21 14:46, tianxianting wrote:
->> Do you interest in this patch? just little improvment:)
-> 
-> I am, especially when I'm cc'ed and aware of it ;)
-> 
+Hi Arnaldo,
 
-Sorry, just found it in my gmail spam folder ... WTH. Why does the 
-original one get filtered but not your ping ...
+thanks for reviewing this patchset and, more importantly, for manually adding
+all Fixes: tags. I'm so sorry for that.
 
--- 
+On Thu, 2021-07-15 at 16:49 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jul 15, 2021 at 06:07:07PM +0200, Riccardo Mancini escreveu:
+> > ASan reports a memory leak in perf_env while running the perf test
+> > "41: Session topology", caused by sibling_dies not being freed.
+> > 
+> > This patch adds the required free.
+>  
+> > Fixes: acae8b36cded0ee6 ("perf header: Add die information in CPU topology")
+> 
+> So, I CC the author of the patch and its committer, using this shell
+> script:
+> 
+>   $ cat ~/bin/fixes
+>   #!/bin/bash
+>   
+>   cset=$1
+>   if [ $# -eq 0 ] ; then
+>         read cset
+>   fi
+>   git show --pretty=fuller $cset | grep '^\(Author\|Commit\): ' | sed -r
+> 's/.*: +/Cc: /g' | grep -v "Arnaldo Carvalho de Melo" | sort -u
+>   echo Fixes: `git one $cset`
+>   $
+>   $ grep one -B1 ~/.gitconfig
+>   [alias]
+>         one = show -s --pretty='format:%h (\"%s\")'
+>   $
+>   $ fixes acae8b36cded0ee6
+>   Cc: Kan Liang <kan.liang@linux.intel.com>
+>   Fixes: acae8b36cded0ee6 ("perf header: Add die information in CPU topology")
+>   $
+> 
+> Normally I copy the cset SHA and, in vim, select it and run !fixes, i.e.
+> 
+> :'<,'>!fixes
+
+Thanks! I've added this nice script to my PATH. :)
+
 Thanks,
+Riccardo
 
-David / dhildenb
+> 
+> Thanks, applied.
+> 
+> - Arnaldo
+> 
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > ---
+> >  tools/perf/util/env.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+> > index ebc5e9ad35db21d1..6c765946ef6f591c 100644
+> > --- a/tools/perf/util/env.c
+> > +++ b/tools/perf/util/env.c
+> > @@ -186,6 +186,7 @@ void perf_env__exit(struct perf_env *env)
+> >         zfree(&env->cpuid);
+> >         zfree(&env->cmdline);
+> >         zfree(&env->cmdline_argv);
+> > +       zfree(&env->sibling_dies);
+> >         zfree(&env->sibling_cores);
+> >         zfree(&env->sibling_threads);
+> >         zfree(&env->pmu_mappings);
+> > -- 
+> > 2.31.1
+> > 
+> 
+
 
