@@ -2,143 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE673CBA5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3D93CBA5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbhGPQMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:12:00 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:52968 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhGPQL6 (ORCPT
+        id S229843AbhGPQMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229735AbhGPQMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:11:58 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m4QOb-00BwDX-PT; Fri, 16 Jul 2021 10:09:01 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:59932 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m4QOZ-00DJJg-2j; Fri, 16 Jul 2021 10:09:01 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
-        <m11rat9f85.fsf@fess.ebiederm.org>
-        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
-        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <87a6mnzbx2.fsf_-_@disp2133>
-        <YPFybJQ7eviet341@elver.google.com>
-Date:   Fri, 16 Jul 2021 11:08:52 -0500
-In-Reply-To: <YPFybJQ7eviet341@elver.google.com> (Marco Elver's message of
-        "Fri, 16 Jul 2021 13:50:04 +0200")
-Message-ID: <87tukuw8a3.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 16 Jul 2021 12:12:08 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB9BC061760;
+        Fri, 16 Jul 2021 09:09:12 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 70so7046400pgh.2;
+        Fri, 16 Jul 2021 09:09:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DZ7+7XgWM6hQZ0UFtx/++E9LOP3fUxSddmlsFwD/FAU=;
+        b=LcFKQKWZBfnq7ztPttKD1EbLu0EBOsYfhH+Xea8T15YwjWbDADhRGBr18+d6n61OVu
+         z7n5JLWPOGWy5CNStdZkiMoKjYfnMG2YTd2JNbg2iWu4a2ZBc2YIsiIuGy6jdls+3s9W
+         302dsxPjS2wQQXj29r8Jgv95+YcOpGD0QfErsc8+ssZlMky0D3o0sKhgWdYQB4xi9T04
+         wJZs7qxVFBwT2kRkPtKJFfEMKyf7wnmeQbdmaDUEAY5bOUJ0qAvGf9vvFfxzT61EVjQ4
+         6g/XIQGoDJ9V/v3YONni7BR71ImbpC4eEBzddwe3PxiP215sH627dkBSOAP/6V8ER7zz
+         5xHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=DZ7+7XgWM6hQZ0UFtx/++E9LOP3fUxSddmlsFwD/FAU=;
+        b=jw/lFpw940wdxKAo7Ly6iktKlYj53DJNg/5hQL+byyXZle0RkXpoCTGCuYTN6noxm1
+         9ty+601F/bc6dgBfJusCkwxv40urIHq05/mmnnoGIOyBgnGv6kFRyQvcPE627gX9eQ1f
+         +OZVdO5UTmnFaKcIQqjZ3wkESREjXuKGcFABtS6cGIZPy5D3489kVp9MGQWzoD4IFQGT
+         4NtvYBDEFWJyMduSROhONsFWr4J8yufY6G5TlHIkGFLUh/spUXljrLEaojVKgPsk2WEa
+         QzWnkQqVFmTQthC9h9hWedRrv8osc6aEBcXLc0rylzWWCJVjS5UwfqQ4VF2UNkqO50dl
+         VNwQ==
+X-Gm-Message-State: AOAM532qPAqhEWdk6PIQpNI+HKGKhh9Ecw+38tfBfyB5NR2LPuhqB575
+        kbuAxa9ikJqdgtNGX1xDrqA=
+X-Google-Smtp-Source: ABdhPJyUbgcvONO40UW44ifs4qnB+E15RG/K0Ok5QmVXbx9Mo0xGOBdXsBisFJj5+L0FDrUQesQeqg==
+X-Received: by 2002:a65:6909:: with SMTP id s9mr4398634pgq.321.1626451752040;
+        Fri, 16 Jul 2021 09:09:12 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:37b9])
+        by smtp.gmail.com with ESMTPSA id u7sm11831012pgl.30.2021.07.16.09.09.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 09:09:11 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 16 Jul 2021 06:09:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
+Message-ID: <YPGvIzZUI+QxP1js@mtj.duckdns.org>
+References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m4QOZ-00DJJg-2j;;;mid=<87tukuw8a3.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+jrqvcI+IK382ie8tjYdZOnNBk1i6LALk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=8.0 tests=ALL_TRUSTED,BAYES_05,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
-        *      [score: 0.0243]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 406 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 10 (2.4%), b_tie_ro: 8 (2.0%), parse: 0.85 (0.2%),
-         extract_message_metadata: 3.1 (0.8%), get_uri_detail_list: 1.46
-        (0.4%), tests_pri_-1000: 3.9 (1.0%), tests_pri_-950: 1.16 (0.3%),
-        tests_pri_-900: 0.96 (0.2%), tests_pri_-90: 97 (24.0%), check_bayes:
-        96 (23.6%), b_tokenize: 7 (1.8%), b_tok_get_all: 8 (1.9%),
-        b_comp_prob: 2.3 (0.6%), b_tok_touch_all: 76 (18.6%), b_finish: 0.77
-        (0.2%), tests_pri_0: 271 (66.8%), check_dkim_signature: 0.50 (0.1%),
-        check_dkim_adsp: 2.7 (0.7%), poll_dns_idle: 0.87 (0.2%), tests_pri_10:
-        2.3 (0.6%), tests_pri_500: 8 (2.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 0/6] Final si_trapno bits
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
+Hello,
 
-> On Thu, Jul 15, 2021 at 01:09PM -0500, Eric W. Biederman wrote:
->> As a part of a fix for the ABI of the newly added SIGTRAP TRAP_PERF a
->> si_trapno was reduced to an ordinary extention of the _sigfault case
->> of struct siginfo.
->> 
->> When Linus saw the complete set of changes come in as a fix he requested
->> that the set of changes be trimmed down to just what was necessary to
->> fix the SIGTRAP TRAP_PERF ABI.
->> 
->> I had intended to get the rest of the changes into the merge window for
->> v5.14 but I dropped the ball.
->> 
->> I have made the changes to stop using __ARCH_SI_TRAPNO be per
->> architecture so they are easier to review.  In doing so I found one
->> place on alpha where I used send_sig_fault instead of
->> send_sig_fault_trapno(... si_trapno = 0).  That would not have changed
->> the userspace behavior but it did make the kernel code less clear.
->> 
->> My rule in these patches is everywhere that siginfo layout calls
->> for SIL_FAULT_TRAPNO the code uses either force_sig_fault_trapno
->> or send_sig_fault_trapno.
->> 
->> And of course I have rebased and compile tested Marco's compile time
->> assert patches.
->> 
->> Eric
->> 
->> 
->> Eric W. Biederman (3):
->>       signal/sparc: si_trapno is only used with SIGILL ILL_ILLTRP
->>       signal/alpha: si_trapno is only used with SIGFPE and SIGTRAP TRAP_UNK
->>       signal: Remove the generic __ARCH_SI_TRAPNO support
->> 
->> Marco Elver (3):
->>       sparc64: Add compile-time asserts for siginfo_t offsets
->>       arm: Add compile-time asserts for siginfo_t offsets
->>       arm64: Add compile-time asserts for siginfo_t offsets
->
-> Nice, thanks for the respin. If I diffed it right, I see this is almost
-> (modulo what you mentioned above) equivalent to:
->   https://lore.kernel.org/linux-api/m1tuni8ano.fsf_-_@fess.ebiederm.org/
-> + what's already in mainline. It's only missing:
->
-> 	signal: Verify the alignment and size of siginfo_t
-> 	signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
->
-> Would this be appropriate for this series, or rather separately, or
-> dropped completely?
+On Fri, Jul 16, 2021 at 02:22:49PM +0800, brookxu wrote:
+> diff --git a/block/blk-merge.c b/block/blk-merge.c
+> index a11b3b5..86ff943 100644
+> --- a/block/blk-merge.c
+> +++ b/block/blk-merge.c
+> @@ -348,6 +348,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
+>  		trace_block_split(split, (*bio)->bi_iter.bi_sector);
+>  		submit_bio_noacct(*bio);
+>  		*bio = split;
+> +
+> +		blk_throtl_recharge_bio(*bio);
 
-Appropriate I just overlooked them.
+I don't think we're holding the queue lock here.
 
-Eric
+>  	}
+>  }
+>  
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index b1b22d8..1967438 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -2176,6 +2176,40 @@ static inline void throtl_update_latency_buckets(struct throtl_data *td)
+>  }
+>  #endif
+>  
+> +void blk_throtl_recharge_bio(struct bio *bio)
+> +{
+> +	bool rw = bio_data_dir(bio);
+> +	struct blkcg_gq *blkg = bio->bi_blkg;
+> +	struct throtl_grp *tg = blkg_to_tg(blkg);
+> +	u32 iops_limit = tg_iops_limit(tg, rw);
+> +
+> +	if (iops_limit == UINT_MAX)
+> +		return;
+> +
+> +	/*
+> +	 * If previous slice expired, start a new one otherwise renew/extend
+> +	 * existing slice to make sure it is at least throtl_slice interval
+> +	 * long since now. New slice is started only for empty throttle group.
+> +	 * If there is queued bio, that means there should be an active
+> +	 * slice and it should be extended instead.
+> +	 */
+> +	if (throtl_slice_used(tg, rw) && !(tg->service_queue.nr_queued[rw]))
+> +		throtl_start_new_slice(tg, rw);
+> +	else {
+> +		if (time_before(tg->slice_end[rw],
+> +		    jiffies + tg->td->throtl_slice))
+> +			throtl_extend_slice(tg, rw,
+> +				jiffies + tg->td->throtl_slice);
+> +	}
+> +
+> +	/* Recharge the bio to the group, as some BIOs will be further split
+> +	 * after passing through the throttle, causing the actual IOPS to
+> +	 * be greater than the expected value.
+> +	 */
+> +	tg->last_io_disp[rw]++;
+> +	tg->io_disp[rw]++;
+> +}
 
+But blk-throtl expects queue lock to be held.
+
+How about doing something simpler? Just estimate how many bios a given bio
+is gonna be and charge it outright? The calculation will be duplicated
+between the split path but that seems like the path of least resistance
+here.
+
+Thanks.
+
+-- 
+tejun
