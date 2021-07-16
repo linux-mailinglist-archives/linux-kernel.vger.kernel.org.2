@@ -2,153 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432BA3CB8C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC453CB8CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239894AbhGPOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:39:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:39644 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232988AbhGPOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:39:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85233D6E;
-        Fri, 16 Jul 2021 07:36:24 -0700 (PDT)
-Received: from [10.163.67.71] (unknown [10.163.67.71])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0809D3F774;
-        Fri, 16 Jul 2021 07:36:20 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [RFC 06/10] arm64/mm: Add FEAT_LPA2 specific encoding
-To:     Steven Price <steven.price@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, suzuki.poulose@arm.com,
-        mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
-        maz@kernel.org, james.morse@arm.com
-References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
- <1626229291-6569-7-git-send-email-anshuman.khandual@arm.com>
- <9f0d9925-3694-3fae-0d09-00adbecd1878@arm.com>
- <b471b41b-de6d-3b56-2595-30586b0a47b3@arm.com>
- <f3e04afd-d3cb-b26b-621d-bd0bac7bd783@arm.com>
-Message-ID: <416867c1-f2aa-bd17-c8a3-9e7d8ceb015b@arm.com>
-Date:   Fri, 16 Jul 2021 20:07:08 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240428AbhGPOlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233122AbhGPOlW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 10:41:22 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E765C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 07:38:26 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id go30so15477809ejc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 07:38:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=S0B53JupZUVPWGl7zblvxhsUkB9aj6fgTRefNriF+/4=;
+        b=SxMqSoRKZ8gc05sAqETI4IBGEZOBRWQoITWwRZF0U21M7uk3+Dh1Y2ji1S61lNcx4Y
+         ko4jWUdnJMs6HBfNu+qFtEdX7Kk45VGH2HmRSrc2jmdozsfIRZ5WzYN1hQeIhRpEc0E+
+         krJAO0f5CFjk5ZpGEruR5tIVprDTfQSpWRQAOnLDztBhKWc/ldaio6g5p8Euwmoezb+W
+         6Z5zUkOHK+6i4pgP5rHW6D8WePnPESckZb1OzWU5PZVfT6Ne2fWh4QBZXWfkHc8l6qxY
+         kxfyl9k2AzcWr2KgVXV9zSr+BPs/UDGT80ZzwMM5Nf0r9EYYHq32ZWWw2Pmoyyk0OKSo
+         MZlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=S0B53JupZUVPWGl7zblvxhsUkB9aj6fgTRefNriF+/4=;
+        b=nqEo3L9jRagQzi0Ev38DvoIUSTq4AkoD197wAOiI3/mE1ISM0ZUIVwpGu60U0APdtg
+         QmXFrOvPRsloBLVPMrjfP8i7Rjv2tyx8x/0qj7LnVReGx4PN8B9uWNsSQJV2Nw5E+/Hg
+         2yrnA5DSyRX7svxOE0xEuL00TLoqr+L1k1GLf3EWm3K+bntKDztMGVxZy11dcFSPc7LM
+         SQ3e1l6Y5ixCGFgnpLXqgwKiQo+vUbzT+PR5n8NLof8zpPa2qh4qAB3mboygTgk+ZHa/
+         x3GFuqDqxPeA+0E7617JNRUNGNnoWcW+cpMM3FieXX4WHVEpQEweTxd9105of1Gb4HO4
+         XzfA==
+X-Gm-Message-State: AOAM531yEPNgc9qubrn/V7XyFKZO80UrE2JxwGxcJsvamQiCgXEDYX4c
+        y+I7RL/QRiovs8zcznLcT50=
+X-Google-Smtp-Source: ABdhPJzHWhk4OGAY9VB5XvEayJo7+xnGatII5PblBHVM5Ct5Boa4X0sDWJBp1ho0yzAf4FgKeKqn1w==
+X-Received: by 2002:a17:906:9b8d:: with SMTP id dd13mr12205091ejc.480.1626446304224;
+        Fri, 16 Jul 2021 07:38:24 -0700 (PDT)
+Received: from localhost.localdomain ([5.176.51.215])
+        by smtp.gmail.com with ESMTPSA id kf3sm1745600ejc.118.2021.07.16.07.38.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 07:38:23 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 17:38:19 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in profile_init
+Message-ID: <20210716173819.07aa5afd@gmail.com>
+In-Reply-To: <000000000000610af005c714c1d1@google.com>
+References: <000000000000610af005c714c1d1@google.com>
+X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <f3e04afd-d3cb-b26b-621d-bd0bac7bd783@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="MP_/g74i.zzQeycjOyjMhJiMNv1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/21 3:32 PM, Steven Price wrote:
-> On 16/07/2021 08:20, Anshuman Khandual wrote:
->>
->>
->> On 7/14/21 9:08 PM, Steven Price wrote:
->>> On 14/07/2021 03:21, Anshuman Khandual wrote:
->>>> FEAT_LPA2 requires different PTE representation formats for both 4K and 16K
->>>> page size config. This adds FEAT_LPA2 specific new PTE encodings as per ARM
->>>> ARM (0487G.A) which updates [pte|phys]_to_[phys|pte](). The updated helpers
->>>> would be used when FEAT_LPA2 gets enabled via CONFIG_ARM64_PA_BITS_52 on 4K
->>>> and 16K page size. Although TTBR encoding and phys_to_ttbr() helper remains
->>>> the same as FEAT_LPA for FEAT_LPA2 as well. It updates 'phys_to_pte' helper
->>>> to accept a temporary variable and changes impacted call sites.
->>>>
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> ---
->>>>  arch/arm64/include/asm/assembler.h     | 23 +++++++++++++++++++----
->>>>  arch/arm64/include/asm/pgtable-hwdef.h |  4 ++++
->>>>  arch/arm64/include/asm/pgtable.h       |  4 ++++
->>>>  arch/arm64/kernel/head.S               | 25 +++++++++++++------------
->>>>  4 files changed, 40 insertions(+), 16 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
->>>> index fedc202..0492543 100644
->>>> --- a/arch/arm64/include/asm/assembler.h
->>>> +++ b/arch/arm64/include/asm/assembler.h
->>>> @@ -606,7 +606,7 @@ alternative_endif
->>>>  #endif
->>>>  	.endm
->>>>  
->>>> -	.macro	phys_to_pte, pte, phys
->>>> +	.macro	phys_to_pte, pte, phys, tmp
->>>>  #ifdef CONFIG_ARM64_PA_BITS_52_LPA
->>>>  	/*
->>>>  	 * We assume \phys is 64K aligned and this is guaranteed by only
->>>> @@ -614,6 +614,17 @@ alternative_endif
->>>>  	 */
->>>>  	orr	\pte, \phys, \phys, lsr #36
->>>>  	and	\pte, \pte, #PTE_ADDR_MASK
->>>> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
->>>> +	orr	\pte, \phys, \phys, lsr #42
->>>> +
->>>> +	/*
->>>> +	 * The 'tmp' is being used here to just prepare
->>>> +	 * and hold PTE_ADDR_MASK which cannot be passed
->>>> +	 * to the subsequent 'and' instruction.
->>>> +	 */
->>>> +	mov	\tmp, #PTE_ADDR_LOW
->>>> +	orr	\tmp, \tmp, #PTE_ADDR_HIGH
->>>> +	and	\pte, \pte, \tmp
->>> Rather than adding an extra temporary register (and the fallout of
->>> various other macros needing an extra register), this can be done with
->>> two AND instructions:
->>
->> I would really like to get rid of the 'tmp' variable here as
->> well but did not figure out any method of accomplishing it.
->>
->>>
->>> 	/* PTE_ADDR_MASK cannot be encoded as an immediate, so
->>>          * mask off all but two bits, followed by masking the
->>>          * extra two bits
->>>          */
->>> 	and	\pte, \pte, #PTE_ADDR_MASK | (3 << 10)
->>> 	and	\pte, \pte, #~(3 << 10)
->>
->> Did this change as suggested
->>
->> --- a/arch/arm64/include/asm/assembler.h
->> +++ b/arch/arm64/include/asm/assembler.h
->> @@ -626,9 +626,8 @@ alternative_endif
->>          * and hold PTE_ADDR_MASK which cannot be passed
->>          * to the subsequent 'and' instruction.
->>          */
->> -       mov     \tmp, #PTE_ADDR_LOW
->> -       orr     \tmp, \tmp, #PTE_ADDR_HIGH
->> -       and     \pte, \pte, \tmp
->> +       and     \pte, \pte, #PTE_ADDR_MASK | (0x3 << 10)
->> +       and     \pte, \pte, #~(0x3 << 10)
->>  
->>  .Lskip_lpa2\@:
->>         mov     \pte, \phys
->>
->>
->> but still fails to build (tested on 16K)
->>
->> arch/arm64/kernel/head.S: Assembler messages:
->> arch/arm64/kernel/head.S:377: Error: immediate out of range at operand 3 -- `and x6,x6,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
->> arch/arm64/kernel/head.S:390: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
->> arch/arm64/kernel/head.S:390: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
->> arch/arm64/kernel/head.S:404: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
->> arch/arm64/kernel/head.S:404: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
->>
-> 
-> Ah, I'd only tested this for 4k. 16k would require a different set of masks.
-> 
-> So the bits we need to cover are those from just below PAGE_SHIFT to the
-> top of PTE_ADDR_HIGH (bit 10). So we can compute the mask for both 4k
+--MP_/g74i.zzQeycjOyjMhJiMNv1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Okay.
+On Wed, 14 Jul 2021 05:47:21 -0700
+syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com> wrote:
 
-> and 16k with GENMASK(PAGE_SHIFT-1, 10):
+> Hello,
 > 
-> 	and	\pte, \pte, #PTE_ADDR_MASK | GENMASK(PAGE_SHIFT - 1, 10)
-> 	and	\pte, \pte, #~GENMASK(PAGE_SHIFT - 1, 10)
+> syzbot found the following issue on:
 > 
-> This compiles (for both 4k and 16k) and the assembly looks correct, but
-> I've not done any other testing.
+> HEAD commit:    3dbdb38e Merge branch 'for-5.14' of
+> git://git.kernel.org/p.. git tree:       upstream
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=11342328300000 kernel
+> config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=e68c89a9510c159d9684 syz
+> repro:
+> https://syzkaller.appspot.com/x/repro.syz?x=149a96d2300000 C
+> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114e5bc4300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the
+> commit: Reported-by:
+> syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+> 
 
-Yeah it works, will do the change.
+With clamp() call suggested by Tetsuo
+
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+
+
+
+With regards,
+Pavel Skripkin
+
+--MP_/g74i.zzQeycjOyjMhJiMNv1
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0001-profiling-fix-shift-out-of-bounds.patch
+
+From 6dadb86239173d28b1d36e974e000d39b088177e Mon Sep 17 00:00:00 2001
+From: Pavel Skripkin <paskripkin@gmail.com>
+Date: Fri, 16 Jul 2021 17:27:44 +0300
+Subject: [PATCH] profiling: fix shift-out-of-bounds
+
+/* ... */
+
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ kernel/profile.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/profile.c b/kernel/profile.c
+index c2ebddb5e974..c905931e3c3b 100644
+--- a/kernel/profile.c
++++ b/kernel/profile.c
+@@ -42,6 +42,7 @@ struct profile_hit {
+ 
+ static atomic_t *prof_buffer;
+ static unsigned long prof_len, prof_shift;
++#define MAX_PROF_SHIFT		(sizeof(prof_shift) * 8)
+ 
+ int prof_on __read_mostly;
+ EXPORT_SYMBOL_GPL(prof_on);
+@@ -67,7 +68,7 @@ int profile_setup(char *str)
+ 		if (str[strlen(sleepstr)] == ',')
+ 			str += strlen(sleepstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
++			prof_shift = clamp(par, 0, (int) MAX_PROF_SHIFT - 1);
+ 		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
+ 			prof_shift);
+ #else
+@@ -78,7 +79,7 @@ int profile_setup(char *str)
+ 		if (str[strlen(schedstr)] == ',')
+ 			str += strlen(schedstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
++			prof_shift = clamp(par, 0, (int) MAX_PROF_SHIFT - 1);
+ 		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
+ 			prof_shift);
+ 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
+@@ -86,11 +87,11 @@ int profile_setup(char *str)
+ 		if (str[strlen(kvmstr)] == ',')
+ 			str += strlen(kvmstr) + 1;
+ 		if (get_option(&str, &par))
+-			prof_shift = par;
++			prof_shift = clamp(par, 0, (int) MAX_PROF_SHIFT - 1);
+ 		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
+ 			prof_shift);
+ 	} else if (get_option(&str, &par)) {
+-		prof_shift = par;
++		prof_shift = clamp(par, 0, (int) MAX_PROF_SHIFT - 1);
+ 		prof_on = CPU_PROFILING;
+ 		pr_info("kernel profiling enabled (shift: %ld)\n",
+ 			prof_shift);
+-- 
+2.32.0
+
+
+--MP_/g74i.zzQeycjOyjMhJiMNv1--
