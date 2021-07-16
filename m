@@ -2,77 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E9F3CBA97
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951D33CBA99
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhGPQhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:37:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229462AbhGPQhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:37:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 874DF613CF;
-        Fri, 16 Jul 2021 16:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626453259;
-        bh=4nBTyZyJngRe55CU3IagbmHB+MF75H0iqAAq05mV6C8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AIx1xU9prVw/X9JWCwDj1szGKyIgRTI8wAeW+GPU4GzV10VCDvt0JXGwfv6TVXFIA
-         Gv2G+yjFMC1xO4PAMJGbb1o41q5jrKWCuIj/nlttuLPd5fBJWUa3fyIBLUg1SH9b4D
-         aS4wh5rOadXU8gi7sX395ZVH4gXJLB6uo7fGFOfN2xxts3gBRjBjqdL6JEJ0c8fbFB
-         vJNJf1iThBVO9I7lh0jML8F/LfFyC9VPrrDUcTtKFCKiBZJk1ND0oE78A/IGDYM5xE
-         8dbiUDoJljPIvLbDBrxKpbAQAUNppwN41KO73g/kQFVZvnExcB8Gr/JiVoUYRCwqPI
-         /GufzInlxy+Vg==
-Date:   Fri, 16 Jul 2021 09:34:18 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 097/138] iomap: Pass the iomap_page into
- iomap_set_range_uptodate
-Message-ID: <20210716163418.GZ22357@magnolia>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-98-willy@infradead.org>
- <20210715212105.GH22357@magnolia>
- <YPD7NQvXMhR1D6jU@casper.infradead.org>
+        id S229810AbhGPQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:39:07 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:42941 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhGPQjF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:39:05 -0400
+Received: by mail-io1-f71.google.com with SMTP id v21-20020a5d90550000b0290439ea50822eso6389801ioq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:36:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=CyrLkzoEFYHeaOEbhQdss1e5QObnmG8SnAK1ZSoRFlg=;
+        b=KNKT5gPiqNtnM9/g3zM3ZHeLdGFSVbk4e11YFxTHxTXe8EZRwSwNWwv/F8ngV6E52S
+         Xe1QgJidIUUdMeXHV6DX0JlFq0HdqqnUZL9pPw5uYrttaxTXoT3kCpgLipoPCJ4oFYeA
+         2f/xWTlQA7tFhctlM0GgYgnTBpLoM8befNc97U53R24gVK+l/2RBMns0y5kKVxgAAgKd
+         wDE9P2wZOHZ1UyfhQSao3oC9tjt3p3WavjpWXo727IJf4DQFZu7iIIc3MnZI4Qg8G13p
+         OTS7gY+TjzawduogC7E3zcMraAG0FJxalO50ReiYQHArd9OeL5Wc50u+yc2n4vueXw1B
+         OlQg==
+X-Gm-Message-State: AOAM533Re6Ya4x43qLXcHcPYIDHKPHn71y+ktkmTa0vsVUty22kcO1uh
+        jJ3T0qiEqwp6Mew37skpmGwDa5W6SnjxObSZsHN2NOLCxcjy
+X-Google-Smtp-Source: ABdhPJxdHIIfKDqO2vB4D/gAWY06xyYIYV70agpLPHOtTVt4fyUpyBjVxyxMPHSqWAPYvDcyMpaHdxjc/1IZni9S0t9Bb3CBGeQf
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPD7NQvXMhR1D6jU@casper.infradead.org>
+X-Received: by 2002:a5d:9b9a:: with SMTP id r26mr8100565iom.34.1626453369987;
+ Fri, 16 Jul 2021 09:36:09 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 09:36:09 -0700
+In-Reply-To: <20210716173819.07aa5afd@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005ca71605c7402faf@google.com>
+Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in profile_init
+From:   syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, paskripkin@gmail.com,
+        penguin-kernel@I-love.SAKURA.ne.jp, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 04:21:25AM +0100, Matthew Wilcox wrote:
-> On Thu, Jul 15, 2021 at 02:21:05PM -0700, Darrick J. Wong wrote:
-> > On Thu, Jul 15, 2021 at 04:36:23AM +0100, Matthew Wilcox (Oracle) wrote:
-> > > All but one caller already has the iomap_page, and we can avoid getting
-> > > it again.
-> > > 
-> > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > 
-> > Took me a while to distinguish iomap_iop_set_range_uptodate and
-> > iomap_set_range_uptodate, but yes, this looks pretty simple.
-> 
-> Not my favourite naming, but it's a preexisting condition ;-)
-> 
-> Honestly I'd like to rename iomap to blkmap or something.
-> And iomap_page is now hilariously badly named.  But that's kind
-> of tangential to everything else here.
+Hello,
 
-I guess we only use 'blkmap' in a few places in the kernel, and nobody's
-going to confuse us with UFS.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Hmm, what kind of new name?
+Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
 
-struct iomap_buffer_head *ibh;	/* NO */
-struct iomap_folio_state *ifs;
-struct iomap_state *is;		/* shorter, but what is 'state'? */
-struct iomap_blkmap *ibm;	/* lolz */
+Tested on:
 
-I think iomap_blkmap sounds fine, since we're probably going to end up
-exporting it (and therefore need a clear namespace) as soon as one of
-the filesystems that uses page->private to stash per-page info wants to
-use iomap for buffered io.
+commit:         d936eb23 Revert "Makefile: Enable -Wimplicit-fallthrou..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7d53336580099d6
+dashboard link: https://syzkaller.appspot.com/bug?extid=e68c89a9510c159d9684
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=108cb7d2300000
 
---D
+Note: testing is done by a robot and is best-effort only.
