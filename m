@@ -2,189 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4603CB5A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A398A3CB5B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236476AbhGPKGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
+        id S237273AbhGPKIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbhGPKGm (ORCPT
+        with ESMTP id S236579AbhGPKIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:06:42 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB91C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:03:47 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 68993B379D9;
-        Fri, 16 Jul 2021 12:03:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626429825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SAjMBxEFbTM9QnXfWtqziwaXlTYwnx8l4JQwX90X8Hw=;
-        b=VQ6/tmdQ6sgW7HAYv1Owa2kDon3HEiJ1nm7z6EL/2e561VoTHJrk79XinzisfYBhJyfV1u
-        h6F0kw2lNu57bU+fc2O2Ur3su2ZamVj7zKizdOVMkwgt72Nbk0AUwX2QlYJfjuzcPfLdsb
-        DXped+S2mMkDz8G6Hkn7LM3EsxRXWuc=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        David Jeffery <djeffery@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: New warning in nvme_setup_discard
-Date:   Fri, 16 Jul 2021 12:03:43 +0200
-Message-ID: <2455133.St5lIfLNcX@natalenko.name>
-In-Reply-To: <YPFSUfG+fMITAH01@T590>
-References: <4729812.CpyZKHjjVO@natalenko.name> <81322754.HEIg0oD171@natalenko.name> <YPFSUfG+fMITAH01@T590>
+        Fri, 16 Jul 2021 06:08:44 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6D8C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:05:49 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id f17so11431824wrt.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MCp/pg+XuWbTvMrNcAeNDWuWAPF6IPK9geF9Qe+H510=;
+        b=hAZqa8UOO4TXGs/6z/CGk67n27e/Y/5EuFmH48DrwxhBe52aZGQuzi3R/wIjOY2SU+
+         15AHQtjhc/TcuXKCYZ20EDfDYOJhLSaJi6mO2nugyCs/A1tpCAGQlLCnhpN8A7/FyN7B
+         gfkTgsh4jmeg/Sg0x9XgFvjKJlNk0VZAUAoI0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MCp/pg+XuWbTvMrNcAeNDWuWAPF6IPK9geF9Qe+H510=;
+        b=eA0wrU5r8AGW/VPDTjfSd+X9DiE1JmGSCxPRX0JeL4hL08KasnJZ2JNR/ryovnmXOS
+         B2PPPOMwCv7gmbI3ztRT+ijxXzAs3IkCqfXCtX7Q83ZK6k1VWeXOMtqsgziudU2QcgJI
+         deG/3mWbRo8QaG+G3LoRVKai3FhdonCzgdLHwiPs6m1PPH5diUVZM3w1dABuR4FWUPOV
+         4RHKzjjzsj/8IGvSjzvJMSpeG1yxE0ZH51KYAWqeBsI7jz+AyM0bjA2vEIea2YJCPMfa
+         rBPyokcE+O2dJgZmqNsxB9utXza9cenQ+0vmc40j5CaQ3wHztiuBDP3bZ3dSNU8rxDd2
+         hOmQ==
+X-Gm-Message-State: AOAM533OIPLu0KziZzreXs7VcqOZaGCGSVisenQtNr6ySdPJ4k2K/8Yz
+        u044Mb1KultXLNriJ2JEPkbE2w==
+X-Google-Smtp-Source: ABdhPJxbdmshTMgk1hQGw8995IwNopd77Ta6sR0JguOOX0cnRDgL6pKDXV+sDGoXUamE+KXaABHP9w==
+X-Received: by 2002:a05:6000:180b:: with SMTP id m11mr11367626wrh.6.1626429948500;
+        Fri, 16 Jul 2021 03:05:48 -0700 (PDT)
+Received: from antares.. (c.b.2.6.f.3.0.0.d.9.9.9.a.0.6.5.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:560a:999d:3f:62bc])
+        by smtp.gmail.com with ESMTPSA id l14sm9130706wrs.22.2021.07.16.03.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 03:05:48 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] bpf: fix OOB read when printing XDP link fdinfo
+Date:   Fri, 16 Jul 2021 11:04:52 +0100
+Message-Id: <20210716100452.113652-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+We got the following UBSAN report on one of our testing machines:
 
-On p=C3=A1tek 16. =C4=8Dervence 2021 11:33:05 CEST Ming Lei wrote:
-> Can you test the following patch?
+    ================================================================================
+    UBSAN: array-index-out-of-bounds in kernel/bpf/syscall.c:2389:24
+    index 6 is out of range for type 'char *[6]'
+    CPU: 43 PID: 930921 Comm: systemd-coredum Tainted: G           O      5.10.48-cloudflare-kasan-2021.7.0 #1
+    Hardware name: <snip>
+    Call Trace:
+     dump_stack+0x7d/0xa3
+     ubsan_epilogue+0x5/0x40
+     __ubsan_handle_out_of_bounds.cold+0x43/0x48
+     ? seq_printf+0x17d/0x250
+     bpf_link_show_fdinfo+0x329/0x380
+     ? bpf_map_value_size+0xe0/0xe0
+     ? put_files_struct+0x20/0x2d0
+     ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+     seq_show+0x3f7/0x540
+     seq_read_iter+0x3f8/0x1040
+     seq_read+0x329/0x500
+     ? seq_read_iter+0x1040/0x1040
+     ? __fsnotify_parent+0x80/0x820
+     ? __fsnotify_update_child_dentry_flags+0x380/0x380
+     vfs_read+0x123/0x460
+     ksys_read+0xed/0x1c0
+     ? __x64_sys_pwrite64+0x1f0/0x1f0
+     do_syscall_64+0x33/0x40
+     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    <snip>
+    ================================================================================
+    ================================================================================
+    UBSAN: object-size-mismatch in kernel/bpf/syscall.c:2384:2
 
-Sure, building it at the moment, and will give it a try. Also please see my=
-=20
-comments and questions below.
+From the report, we can infer that some array access in bpf_link_show_fdinfo at index 6
+is out of bounds. The obvious candidate is bpf_link_type_strs[BPF_LINK_TYPE_XDP] with
+BPF_LINK_TYPE_XDP == 6. It turns out that BPF_LINK_TYPE_XDP is missing from bpf_types.h
+and therefore doesn't have an entry in bpf_link_type_strs:
 
->=20
-> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> index 727955918563..673a634eadd9 100644
-> --- a/block/bfq-iosched.c
-> +++ b/block/bfq-iosched.c
-> @@ -2361,6 +2361,9 @@ static int bfq_request_merge(struct request_queue *=
-q,
-> struct request **req, __rq =3D bfq_find_rq_fmerge(bfqd, bio, q);
->  	if (__rq && elv_bio_merge_ok(__rq, bio)) {
->  		*req =3D __rq;
-> +
-> +		if (blk_discard_mergable(__rq))
-> +			return ELEVATOR_DISCARD_MERGE;
->  		return ELEVATOR_FRONT_MERGE;
->  	}
->=20
-> diff --git a/block/blk-merge.c b/block/blk-merge.c
-> index a11b3b53717e..f8707ff7e2fc 100644
-> --- a/block/blk-merge.c
-> +++ b/block/blk-merge.c
-> @@ -705,22 +705,6 @@ static void blk_account_io_merge_request(struct requ=
-est
-> *req) }
->  }
->=20
-> -/*
-> - * Two cases of handling DISCARD merge:
-> - * If max_discard_segments > 1, the driver takes every bio
-> - * as a range and send them to controller together. The ranges
-> - * needn't to be contiguous.
-> - * Otherwise, the bios/requests will be handled as same as
-> - * others which should be contiguous.
-> - */
-> -static inline bool blk_discard_mergable(struct request *req)
-> -{
-> -	if (req_op(req) =3D=3D REQ_OP_DISCARD &&
-> -	    queue_max_discard_segments(req->q) > 1)
-> -		return true;
-> -	return false;
-> -}
-> -
->  static enum elv_merge blk_try_req_merge(struct request *req,
->  					struct request *next)
->  {
-> diff --git a/block/elevator.c b/block/elevator.c
-> index 52ada14cfe45..a5fe2615ec0f 100644
-> --- a/block/elevator.c
-> +++ b/block/elevator.c
-> @@ -336,6 +336,9 @@ enum elv_merge elv_merge(struct request_queue *q, str=
-uct
-> request **req, __rq =3D elv_rqhash_find(q, bio->bi_iter.bi_sector);
->  	if (__rq && elv_bio_merge_ok(__rq, bio)) {
->  		*req =3D __rq;
-> +
-> +		if (blk_discard_mergable(__rq))
-> +			return ELEVATOR_DISCARD_MERGE;
->  		return ELEVATOR_BACK_MERGE;
->  	}
->=20
-> diff --git a/block/mq-deadline-main.c b/block/mq-deadline-main.c
-> index 6f612e6dc82b..294be0c0db65 100644
-> --- a/block/mq-deadline-main.c
-> +++ b/block/mq-deadline-main.c
+    pos:	0
+    flags:	02000000
+    mnt_id:	13
+    link_type:	(null)
+    link_id:	4
+    prog_tag:	bcf7977d3b93787c
+    prog_id:	4
+    ifindex:	1
 
-I had to adjust this against v5.13 because there's no mq-deadline-main.c, o=
-nly=20
-mq-deadline.c (due to Bart series, I assume). I hope this is fine as the pa=
-tch=20
-applies cleanly.
+Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ include/linux/bpf_types.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-> @@ -677,6 +677,8 @@ static int dd_request_merge(struct request_queue *q,
-> struct request **rq,
->=20
->  		if (elv_bio_merge_ok(__rq, bio)) {
->  			*rq =3D __rq;
-> +			if (blk_discard_mergable(__rq))
-> +				return ELEVATOR_DISCARD_MERGE;
->  			return ELEVATOR_FRONT_MERGE;
->  		}
->  	}
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index 3177181c4326..87f00292fd7a 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -1521,6 +1521,22 @@ static inline int
-> queue_limit_discard_alignment(struct queue_limits *lim, sector return
-> offset << SECTOR_SHIFT;
->  }
->=20
-> +/*
-> + * Two cases of handling DISCARD merge:
-> + * If max_discard_segments > 1, the driver takes every bio
-> + * as a range and send them to controller together. The ranges
-> + * needn't to be contiguous.
-> + * Otherwise, the bios/requests will be handled as same as
-> + * others which should be contiguous.
-> + */
-> +static inline bool blk_discard_mergable(struct request *req)
-> +{
-> +	if (req_op(req) =3D=3D REQ_OP_DISCARD &&
-> +	    queue_max_discard_segments(req->q) > 1)
-> +		return true;
-> +	return false;
-> +}
-> +
->  static inline int bdev_discard_alignment(struct block_device *bdev)
->  {
->  	struct request_queue *q =3D bdev_get_queue(bdev);
-
-Do I understand correctly that this will be something like:
-
-=46ixes: 2705dfb209 ("block: fix discard request merge")
-
-?
-
-Because as the bisection progresses, I've bumped into this commit only.=20
-Without it the issue is not reproducible, at least so far.
-
-Thanks!
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index a9db1eae6796..be95f2722ad9 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -135,3 +135,4 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+ #ifdef CONFIG_NET
+ BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
+ #endif
++BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
+-- 
+2.30.2
 
