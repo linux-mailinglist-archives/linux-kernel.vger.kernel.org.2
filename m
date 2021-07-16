@@ -2,163 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D563CB456
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C243CB459
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237622AbhGPIeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
+        id S237771AbhGPIep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237240AbhGPIeA (ORCPT
+        with ESMTP id S237055AbhGPIeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:34:00 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFF7C06175F;
-        Fri, 16 Jul 2021 01:31:05 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id g5so13558733ybu.10;
-        Fri, 16 Jul 2021 01:31:05 -0700 (PDT)
+        Fri, 16 Jul 2021 04:34:44 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6AAC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:31:49 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id c16so6844761ybl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:31:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QjjQyZufxkvm/4FnY8ErggVvo5phblypQQ5y56lc8Bc=;
-        b=cuq0WO3alXyDsSlh+srE/yCTOOd9pcBEDQYDlbjHgwC1Zk8dPwyQUJHW8/fpSOYVHI
-         v2sEWgIKW5zwm9QhMYzzaWG6ogzooKcywroRAeceJuG+RVVFxOmQGuA61/yrblFOw0M9
-         /ujre2xc3WOQu2FdzbDrtkzHk9mVvcIfxAceBO3jJo8hU6trZWD4RuE2szX6Le3gYeOj
-         ug3UkegE9rmGkFGUdtnXL7dmsmCs7S6R56J9mfK6ECwhUb3D4NNtRa0bxtoEJ+gOMjFj
-         T0+uigcuZ2gMFAB+FVfN0ipfh4/TrUCa4JTONqXa3mNsmaRAwlTwMtVn58B5MGigcrsR
-         vp4g==
+        bh=HGtdpt91do0UAzKVjzqqDE3AvD/lqY8Xht/fEpMQnq0=;
+        b=P16oRGarQytiFqfhZJBl+ZUQro/UDrWvRJMIJRxWNLceCagZTA596fayFSMH/AnHGj
+         QTlAYO4VpCZMbgfGKnEwFHjpTZAVt+Xmp1kCh4ViFplkfDuIsrS1mZtuIz4bCJMufi1H
+         nA5HcY2XlZU4IZn/GXXQ6r19L0OFWRmf4/jvnbHMBVM+mItS1AXlb5NI3mckzFpSWs88
+         Ny3/J22+ib9UC4j5kLZNJvK/1M65jsTU+sm600K4LfhmJY2GQcU8MObLT2ZDg/ry2c+D
+         uLUTtLHogxXDhFn44cs9MsQAZ9G3d9mZ61UTsFnXP8JOIJRUwbyphx6Q67iaOFKMzrkc
+         7UOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QjjQyZufxkvm/4FnY8ErggVvo5phblypQQ5y56lc8Bc=;
-        b=mkX03HP43xRexKgMtvBRUbqH5qATXe89nMTrJD+ve51FUttAFkMAwXEC831+qp4We5
-         1XsDkcgi6cxUb8bWSb3d6reOe7v29mYFkQKlBF5sw0qOHCL+YGVC4g6VQONTxVROOtke
-         Qs/5RnYtdEtT5onZsEj5G8fgcCrMW0ZgDXUxJsGTEu1u7T8VCqpa6ARM35ELhnBsTess
-         76Dk2LBGtGFRAbz+aEGDDnYBK7q1ooP/EC2aGBDw8byK7asR5n7qcQAEiKWEWlUl20or
-         JOfaWzjk7gjxlAIFh8cziHjYXQS2avQElsTd4YTW8hSCALekcUvgt+GOfZZRlwQ5FOGw
-         c8vQ==
-X-Gm-Message-State: AOAM5327Y5U48RjXJROEeWYHNH+ee2OeI/edP+tixmht06nP5iFL1u1q
-        5KycUvkInMuIKwHLCDQoYkitwyUrMcdH1qwxfuB+XakG6UVnkw==
-X-Google-Smtp-Source: ABdhPJxlQJksjPJyV51FNmVvfIOljU/i4uBmy//eqWN9Jxqs5lH3GejT/0DmpS9seYOkVZrG7fbQLHEqCT5UAGgTjKA=
-X-Received: by 2002:a5b:94d:: with SMTP id x13mr10472941ybq.47.1626424264964;
- Fri, 16 Jul 2021 01:31:04 -0700 (PDT)
+        bh=HGtdpt91do0UAzKVjzqqDE3AvD/lqY8Xht/fEpMQnq0=;
+        b=hnUNvTM9k9bUWkJlWB0ytnv++m4hukiw8RREMWyhh3wMTXnuovO1pzXiirMmBq8BP+
+         rFWXWePSc7/X0QpsBWHEj6QwdKf0m3OLA3orR2tAi4EZFkd/enYcQPxh5oc2YDg8wu7k
+         5FOrSMl2XwkwajhoABOvOtmUZv4J/d2L4yBIflpnv/Qhermyz7pq+sJkMQjzXPNektpD
+         7GcGum1Fnn89Qi+gnhY1eJBrReuPBLb6Nb+3j8l5kP7uFKdjePrsR74Go81X/Ryfs20Z
+         t9DezweBvznc2UqYn+uPp6hLbizp18GrwzT1ybRpUmey1RTQh8uJJy68Sf0gJVWf0bqv
+         TrpQ==
+X-Gm-Message-State: AOAM531TaMC607YBAJE1SC3cQGwVwktcnAbhBwBfIuMdW3j8noYPggiY
+        CakbHMJ07VKTevv/g9XVq58EfUekM8ZLlLMgfA6vNA==
+X-Google-Smtp-Source: ABdhPJzkTD6LkoXc/pFhqTkKNykHf2PVZO0AP5IDnDLnq5zEgkGOvdFHuwv0PEs9Ri9z730K1Gh6OWBhrBE68LPcXMk=
+X-Received: by 2002:a25:487:: with SMTP id 129mr11566148ybe.0.1626424309121;
+ Fri, 16 Jul 2021 01:31:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210715182123.23372-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210715182123.23372-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdU7zKFL_qio3vdTUgxPkQjxOW6K1TjPzDQja8ioYXYZNQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdU7zKFL_qio3vdTUgxPkQjxOW6K1TjPzDQja8ioYXYZNQ@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 16 Jul 2021 09:30:39 +0100
-Message-ID: <CA+V-a8sLM_rnYps1Wnb=sh5cOGxLz02p9ewmkceK7CQXO1Yk6w@mail.gmail.com>
-Subject: Re: [PATCH 1/6] dt-bindings: net: can: renesas,rcar-canfd: Document
- RZ/G2L SoC
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+References: <2a8eb285-3b71-199c-1bf4-39fb47fac77e@nvidia.com> <1625130054-22947-1-git-send-email-akhilrajeev@nvidia.com>
+In-Reply-To: <1625130054-22947-1-git-send-email-akhilrajeev@nvidia.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 16 Jul 2021 10:31:38 +0200
+Message-ID: <CAMpxmJWZm_N3yPKa2+32PNOyCUuSbjqWiDBSO3WHjKekZj8Fzg@mail.gmail.com>
+Subject: Re: [PATCH v5] gpio: tegra186: Add ACPI support
+To:     Akhil R <akhilrajeev@nvidia.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        kyarlagadda@nvidia.com, Laxman Dewangan <ldewangan@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>, mperttunen@nvidia.com,
+        smangipudi@nvidia.com, Thierry Reding <thierry.reding@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-Thank you for the review.
-
-On Fri, Jul 16, 2021 at 8:38 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Thu, Jul 1, 2021 at 11:01 AM Akhil R <akhilrajeev@nvidia.com> wrote:
 >
-> Hi Prabhakar,
+> Add ACPI module ID to probe the driver from the ACPI based bootloader
+> firmware.
 >
-> On Thu, Jul 15, 2021 at 8:21 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add CANFD binding documentation for Renesas RZ/G2L SoC.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+> v5 changes:
+>         * Updated ioremap_resource check as per Jon's comments.
 >
-> Thanks for your patch!
+>  drivers/gpio/gpio-tegra186.c | 30 ++++++++++++++++++++++++------
+>  1 file changed, 24 insertions(+), 6 deletions(-)
 >
-> > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
+> index 1bd9e44..8a64dcb 100644
+> --- a/drivers/gpio/gpio-tegra186.c
+> +++ b/drivers/gpio/gpio-tegra186.c
+> @@ -620,15 +620,21 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
+>         if (!gpio)
+>                 return -ENOMEM;
 >
-> > @@ -78,6 +79,38 @@ patternProperties:
-> >        node.  Each child node supports the "status" property only, which
-> >        is used to enable/disable the respective channel.
-> >
-> > +if:
-> > +  properties:
-> > +    compatible:
-> > +      contains:
-> > +        enum:
-> > +          - renesas,rzg2l-canfd
-> > +then:
-> > +  properties:
-> > +    interrupts:
-> > +      items:
-> > +        - description: CAN global error interrupt
-> > +        - description: CAN receive FIFO interrupt
-> > +        - description: CAN0 error interrupt
-> > +        - description: CAN0 transmit interrupt
-> > +        - description: CAN0 transmit/receive FIFO receive completion interrupt
-> > +        - description: CAN1 error interrupt
-> > +        - description: CAN1 transmit interrupt
-> > +        - description: CAN1 transmit/receive FIFO receive completion interrupt
+> -       gpio->soc = of_device_get_match_data(&pdev->dev);
+> +       gpio->soc = device_get_match_data(&pdev->dev);
 >
-> Does it make sense to add interrupt-names?
+>         gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
+> -       if (IS_ERR(gpio->secure))
+> -               return PTR_ERR(gpio->secure);
+> +       if (IS_ERR(gpio->secure)) {
+> +               gpio->secure = devm_platform_ioremap_resource(pdev, 0);
+> +               if (IS_ERR(gpio->secure))
+> +                       return PTR_ERR(gpio->secure);
+> +       }
 >
-Agreed will drop this and add interrupt-names instead. Also I will
-update the driver to pick up the interrupts based on names.
-
-> > +
-> > +    resets:
-> > +      maxItems: 2
+>         gpio->base = devm_platform_ioremap_resource_byname(pdev, "gpio");
+> -       if (IS_ERR(gpio->base))
+> -               return PTR_ERR(gpio->base);
+> +       if (IS_ERR(gpio->base)) {
+> +               gpio->base = devm_platform_ioremap_resource(pdev, 1);
+> +               if (IS_ERR(gpio->base))
+> +                       return PTR_ERR(gpio->base);
+> +       }
 >
-> Same here, for reset-names?
-> Or a list of descriptions, so we know which reset serves what purpose.
+>         err = platform_irq_count(pdev);
+>         if (err < 0)
+> @@ -690,11 +696,13 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
 >
-OK I'll  add the reset-names.
-
-Cheers,
-Prabhakar
-
-> > +
-> > +else:
-> > +  properties:
-> > +    interrupts:
-> > +      items:
-> > +        - description: Channel interrupt
-> > +        - description: Global interrupt
-> > +
-> > +    resets:
-> > +      maxItems: 1
-> > +
-> >  required:
-> >    - compatible
-> >    - reg
+>         gpio->gpio.names = (const char * const *)names;
 >
-> The rest looks good to me.
+> +#if defined(CONFIG_OF_GPIO)
+>         gpio->gpio.of_node = pdev->dev.of_node;
+>         gpio->gpio.of_gpio_n_cells = 2;
+>         gpio->gpio.of_xlate = tegra186_gpio_of_xlate;
+> +#endif /* CONFIG_OF_GPIO */
 >
-> Gr{oetje,eeting}s,
+> -       gpio->intc.name = pdev->dev.of_node->name;
+> +       gpio->intc.name = dev_name(&pdev->dev);
+>         gpio->intc.irq_ack = tegra186_irq_ack;
+>         gpio->intc.irq_mask = tegra186_irq_mask;
+>         gpio->intc.irq_unmask = tegra186_irq_unmask;
+> @@ -918,10 +926,20 @@ static const struct of_device_id tegra186_gpio_of_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, tegra186_gpio_of_match);
 >
->                         Geert
->
+> +static const struct acpi_device_id  tegra186_gpio_acpi_match[] = {
+> +       { .id = "NVDA0108", .driver_data = (kernel_ulong_t)&tegra186_main_soc },
+> +       { .id = "NVDA0208", .driver_data = (kernel_ulong_t)&tegra186_aon_soc },
+> +       { .id = "NVDA0308", .driver_data = (kernel_ulong_t)&tegra194_main_soc },
+> +       { .id = "NVDA0408", .driver_data = (kernel_ulong_t)&tegra194_aon_soc },
+> +       {}
+> +};
+> +MODULE_DEVICE_TABLE(acpi, tegra186_gpio_acpi_match);
+> +
+>  static struct platform_driver tegra186_gpio_driver = {
+>         .driver = {
+>                 .name = "tegra186-gpio",
+>                 .of_match_table = tegra186_gpio_of_match,
+> +               .acpi_match_table = tegra186_gpio_acpi_match,
+>         },
+>         .probe = tegra186_gpio_probe,
+>         .remove = tegra186_gpio_remove,
 > --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 2.7.4
 >
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+
+Can you rebase it on top of v5.14-rc1 and resend?
+
+Bart
