@@ -2,113 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720603CB7E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35D83CB7F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240045AbhGPNhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:37:24 -0400
-Received: from mga18.intel.com ([134.134.136.126]:56332 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239996AbhGPNhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:37:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="197993394"
-X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
-   d="scan'208";a="197993394"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 06:34:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
-   d="scan'208";a="429191754"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Jul 2021 06:34:23 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4C00A2CB; Fri, 16 Jul 2021 16:34:51 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Liu Ying <victor.liu@nxp.com>
-Subject: [PATCH v2 3/3] clk: fractional-divider: Document the arithmetics used behind the code
-Date:   Fri, 16 Jul 2021 16:34:48 +0300
-Message-Id: <20210716133448.24890-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210716133448.24890-1-andriy.shevchenko@linux.intel.com>
-References: <20210716133448.24890-1-andriy.shevchenko@linux.intel.com>
+        id S233056AbhGPNjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232808AbhGPNjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 09:39:48 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1C4C06175F;
+        Fri, 16 Jul 2021 06:36:53 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id a23-20020a05600c2257b0290236ec98bebaso3430681wmm.1;
+        Fri, 16 Jul 2021 06:36:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=bh1fbgJJAMRpo0ekrWYMDCML1c7hFhd4x7I0H+rROSA=;
+        b=XieeVH9m6fo2f4pksEiZjb/iyejbJOlbaprxVWUXjDlm8PCZjXfopGJiD6eHzvSxEk
+         jG5rEosltYX5q9aM33EEYIsnfENP38wh0648zAfPlHSHX0zmkqrbuJ7gKYWX+5qOYKBS
+         f+t/cB2c7r1s38mnayITXdqy+c8nb9cSK8PdGTi7+azbGZQ2wyxHf1CA0TigNDinfnEj
+         qpEnHZ3wDOqchZA+gdFkjutkV7Ke43RH5h4XnJaK/Mop4/JWe8CE1vf6GLFBak7SeuZr
+         +X8kGTgu/DAbcwN2JmgYVDCRxJoWpEvDDoKASJutDp25z4DXIOAWcOrLRfGiAwzmorb9
+         ONig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=bh1fbgJJAMRpo0ekrWYMDCML1c7hFhd4x7I0H+rROSA=;
+        b=WYi37/B6nD8eVT7sSUjo3fzs828ObEVKWp0GwXosLM6T3pkNOXqajviqgiUpCCxkmH
+         JiqiTPQT5n3hJNJsk9wM8dcp38pQa8Z+UT0LbLn+5r4VwBb7XmRZ4o8WIjBCgxaXlrMz
+         CkFi/pH2e6X9Mu1+7/Aw9pc49iwpWPQfY1g/CRvmZzjF3d8W1cTp9qzgEefHbMof4e4n
+         zv4GVCe52NZJLrdJEXhkbbkKpfqzez7ajxAiao0x0zaq70s//fFoiWg/Uj1LcZKUdvWl
+         xIyWqoZJ+NSUKRQ398eMkdEahsqcsdUj02ELZZUpJ3coMpbeCLV0rf94vmRVBr1Qo1Qw
+         eOPA==
+X-Gm-Message-State: AOAM530zjFa8LdBl1/1YzODNeVRviJJLQacdIueasTWVPrmuzhFjxRNZ
+        FjqxM5zBtpxlGD9Vt23RqFc=
+X-Google-Smtp-Source: ABdhPJzShu+P0l9GZrJEM3xUNj9X7LLIMhLllB9nymJUuteMScFsOqN05ZkU0YGFUSgRSLd+t6NQVQ==
+X-Received: by 2002:a05:600c:4ed3:: with SMTP id g19mr10349248wmq.145.1626442611548;
+        Fri, 16 Jul 2021 06:36:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
+        by smtp.gmail.com with ESMTPSA id m6sm13142854wrw.9.2021.07.16.06.36.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 06:36:50 -0700 (PDT)
+Message-ID: <b7aa58d750f5919f30877fe2f9878698f3cddbc4.camel@gmail.com>
+Subject: Re: [RFC PATCH 01/10] perf workqueue: threadpool creation and
+ destruction
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Date:   Fri, 16 Jul 2021 15:36:49 +0200
+In-Reply-To: <CAM9d7chhjRhif=1+Sjjwrc2p+mLN+Lv4LY8dFZZpk5z5VG-+Pw@mail.gmail.com>
+References: <cover.1626177381.git.rickyman7@gmail.com>
+         <46f9e291af3d87c212d279717d56eeab4cbfde68.1626177381.git.rickyman7@gmail.com>
+         <YO7xpFg0F5Fv/7sI@kernel.org>
+         <CAM9d7chhjRhif=1+Sjjwrc2p+mLN+Lv4LY8dFZZpk5z5VG-+Pw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that some code lines raise the question why they are needed
-and how they are participated in the calculus of the resulting values.
+Hi Namhyung,
+thanks for the review.
 
-Document this in a form of the top comment in the module file.
+On Thu, 2021-07-15 at 16:29 -0700, Namhyung Kim wrote:
+> Hi Riccardo and Arnaldo,
+> 
+> On Wed, Jul 14, 2021 at 7:16 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> > 
+> > Em Tue, Jul 13, 2021 at 02:11:12PM +0200, Riccardo Mancini escreveu:
+> > > The workqueue library is made up by two components:
+> > >  - threadpool: handles the lifetime of the threads
+> > >  - workqueue: handles work distribution among the threads
+> > > 
+> > > This first patch introduces the threadpool, starting from its creation
+> > > and destruction functions.
+> > > Thread management is based on the prototype from Alexey:
+> > > https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+> > > 
+> > > Each thread in the threadpool executes the same function (aka task)
+> > > with a different argument tidx.
+> > > Threads use a pair of pipes to communicate with the main process.
+> > > The threadpool is static (all threads will be spawned at the same time).
+> > > Future work could include making it resizable and adding affinity support
+> > > (as in Alexey prototype).
+> > > 
+> > > Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> > > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > > ---
+> > >  tools/perf/util/Build                  |   1 +
+> > >  tools/perf/util/workqueue/Build        |   1 +
+> > >  tools/perf/util/workqueue/threadpool.c | 175 +++++++++++++++++++++++++
+> > >  tools/perf/util/workqueue/threadpool.h |  19 +++
+> > >  4 files changed, 196 insertions(+)
+> > >  create mode 100644 tools/perf/util/workqueue/Build
+> > >  create mode 100644 tools/perf/util/workqueue/threadpool.c
+> > >  create mode 100644 tools/perf/util/workqueue/threadpool.h
+<SNIP>
+> > > +
+> > > +struct threadpool_struct {
+> > 
+> > Can this be just 'struct threadpool'? I think its descriptive enough:
+> > 
+> > > +     int                     nr_threads;     /* number of threads in the
+> > > pool */
+> > > +     struct thread_struct    *threads;       /* array of threads in the
+> > > pool */
+> > > +     struct task_struct      *current_task;  /* current executing
+> > > function */
+> 
+> Does this mean it can only have a single function to run?
 
-Reported-by: Liu Ying <victor.liu@nxp.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: renamed variables in formulas to follow the code, added floor()
- drivers/clk/clk-fractional-divider.c | 34 +++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+Yes.
 
-diff --git a/drivers/clk/clk-fractional-divider.c b/drivers/clk/clk-fractional-divider.c
-index 5f4b6a8aef67..7f7f688f8de5 100644
---- a/drivers/clk/clk-fractional-divider.c
-+++ b/drivers/clk/clk-fractional-divider.c
-@@ -3,8 +3,38 @@
-  * Copyright (C) 2014 Intel Corporation
-  *
-  * Adjustable fractional divider clock implementation.
-- * Output rate = (m / n) * parent_rate.
-  * Uses rational best approximation algorithm.
-+ *
-+ * Output is calculated as
-+ *
-+ *	rate = (m / n) * parent_rate				(1)
-+ *
-+ * This is useful when on die we have a prescaler block which asks for
-+ * m (numerator) and n (denominator) values to be provided to satisfy
-+ * the (1) as much as possible.
-+ *
-+ * Since m and n have the limitation by a range, e.g.
-+ *
-+ *	n >= 1, n < N_width, where N_width = 2^nwidth		(2)
-+ *
-+ * for some cases the output may be saturated. Hence, from (1) and (2),
-+ * assuming the worst case when m = 1, the inequality
-+ *
-+ *	floor(log2(parent_rate / rate)) <= nwidth		(3)
-+ *
-+ * may be derived. Thus, in cases when
-+ *
-+ *	(parent_rate / rate) >> N_width				(4)
-+ *
-+ * we scale up the rate by 2^scale, where
-+ *
-+ *	scale = floor(log2(parent_rate / rate)) - nwidth	(5)
-+ *
-+ * and assume that the IP, that needs m and n, has also its own
-+ * prescaler, which is capable to divide by 2^scale. In this way
-+ * we get the denominator to satisfy the desired range (2) and
-+ * at the same time much much better result of m and n than simple
-+ * saturated values.
-  */
- 
- #include <linux/clk-provider.h>
-@@ -81,6 +111,8 @@ void clk_fractional_divider_general_approximation(struct clk_hw *hw,
- 	 * Get rate closer to *parent_rate to guarantee there is no overflow
- 	 * for m and n. In the result it will be the nearest rate left shifted
- 	 * by (scale - fd->nwidth) bits.
-+	 *
-+	 * For the detailed explanation see the top comment in this file.
- 	 */
- 	if (!(fd->flags & CLK_FRAC_DIVIDER_NO_PRESCALER)) {
- 		unsigned long scale = fls_long(*parent_rate / rate - 1);
--- 
-2.30.2
+> Why do we need it?
+
+My idea is to separate the workqueue from the actual implementation of the
+threads. This way, when the function executing on the threadpool ends, the
+threads are kept alive to execute new work. 
+By adding this additional layer of abstraction, we can achieve more flexibility.
+For example, the use-case I have in mind is to recycle the same threadpool for
+both Alexey's threaded trace and the workqueue.
+I don't think this could be easily achieved with just the workqueue since the
+perf-record threads are not just a task that needs to be executed by they have
+specific affinities to be respected.
+
+What are your thoughts?
+
+> 
+> 
+> > > +     enum threadpool_status  status;         /* current status of the
+> > > pool */
+> > > +};
+> > > +
+> > > +struct thread_struct {
+> > > +     int                             idx;    /* idx of thread in pool-
+> > > >threads */
+> > > +     pid_t                           tid;    /* tid of thread */
+> > > +     struct threadpool_struct        *pool;  /* parent threadpool */
+> > > +     struct {
+> > > +             int from[2];                    /* messages from thread
+> > > (acks) */
+> > > +             int to[2];                      /* messages to thread
+> > > (commands) */
+> 
+> It can be confusing if you think from the main thread.
+> Maybe 'ack' and 'cmd' would be better.
+
+Agreed.
+
+> 
+> 
+> > > +     } pipes;
+> > > +};
+> > 
+> > This one, since we have already a 'struct thread' in tools/perf, to
+> > represent a PERF_RECORD_FORK, perhaps we can call it 'struct
+> > threadpool_entry'?
+> 
+> I think we can even use 'worker' instead of 'thread' but it requires
+> huge renaming and conflicts so I won't insist on it strongly.  :)
+
+Also, worker internally conflicts with the workqueue's worker, which runs on a
+(threadpool-)thread.
+Another name I had in mind is pool_thread to prevent having too many 'thread' in
+the name, but it might be confusing.
+I think threadpool_entry is fine.
+
+I have another question.
+In general, when should I use zfree instead of free?
+
+Thanks,
+Riccardo
+
+> 
+> Thanks,
+> Namhyung
+
 
