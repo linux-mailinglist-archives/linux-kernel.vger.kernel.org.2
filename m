@@ -2,154 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C243CB459
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E113CB45E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237771AbhGPIep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
+        id S237921AbhGPIgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237055AbhGPIeo (ORCPT
+        with ESMTP id S237055AbhGPIgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:34:44 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6AAC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:31:49 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id c16so6844761ybl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:31:49 -0700 (PDT)
+        Fri, 16 Jul 2021 04:36:09 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287B6C06175F;
+        Fri, 16 Jul 2021 01:33:15 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id g5so13567143ybu.10;
+        Fri, 16 Jul 2021 01:33:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HGtdpt91do0UAzKVjzqqDE3AvD/lqY8Xht/fEpMQnq0=;
-        b=P16oRGarQytiFqfhZJBl+ZUQro/UDrWvRJMIJRxWNLceCagZTA596fayFSMH/AnHGj
-         QTlAYO4VpCZMbgfGKnEwFHjpTZAVt+Xmp1kCh4ViFplkfDuIsrS1mZtuIz4bCJMufi1H
-         nA5HcY2XlZU4IZn/GXXQ6r19L0OFWRmf4/jvnbHMBVM+mItS1AXlb5NI3mckzFpSWs88
-         Ny3/J22+ib9UC4j5kLZNJvK/1M65jsTU+sm600K4LfhmJY2GQcU8MObLT2ZDg/ry2c+D
-         uLUTtLHogxXDhFn44cs9MsQAZ9G3d9mZ61UTsFnXP8JOIJRUwbyphx6Q67iaOFKMzrkc
-         7UOA==
+        bh=/ff+YehTziKFzYJPNZTmNGwqrJDQ7taVpMo22hrLQTM=;
+        b=fJJE3al6ENVbGCPr84bxxK73tb+QFEtQBTr8WjAiGgx1soyasDZuavfSHFV8k2USZJ
+         oH15lp0HnclcufuUab76el9kobyVbC2vAWMZRxRyEScGPx27YPI78/9w8jz3gib6Ru7t
+         D2ZThF//EqvCRwtQTEFbNs6gvNEVUP/z/cXb+39U0f3RcrFeVa8iDfNAhbXzWT1BtPzM
+         GxGzimR3OLemsPfvI74ehnxPp4JxjNkDYzj155y/zgx9BG6SWy6+/xNURwJkFVlu99Xm
+         bj8y/iFt4HTjqAxQnDUb2SQBBIAI0R+LGb8CiXeNj064hLl6al/RuAZ3XFizFcbgZtD6
+         1C6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HGtdpt91do0UAzKVjzqqDE3AvD/lqY8Xht/fEpMQnq0=;
-        b=hnUNvTM9k9bUWkJlWB0ytnv++m4hukiw8RREMWyhh3wMTXnuovO1pzXiirMmBq8BP+
-         rFWXWePSc7/X0QpsBWHEj6QwdKf0m3OLA3orR2tAi4EZFkd/enYcQPxh5oc2YDg8wu7k
-         5FOrSMl2XwkwajhoABOvOtmUZv4J/d2L4yBIflpnv/Qhermyz7pq+sJkMQjzXPNektpD
-         7GcGum1Fnn89Qi+gnhY1eJBrReuPBLb6Nb+3j8l5kP7uFKdjePrsR74Go81X/Ryfs20Z
-         t9DezweBvznc2UqYn+uPp6hLbizp18GrwzT1ybRpUmey1RTQh8uJJy68Sf0gJVWf0bqv
-         TrpQ==
-X-Gm-Message-State: AOAM531TaMC607YBAJE1SC3cQGwVwktcnAbhBwBfIuMdW3j8noYPggiY
-        CakbHMJ07VKTevv/g9XVq58EfUekM8ZLlLMgfA6vNA==
-X-Google-Smtp-Source: ABdhPJzkTD6LkoXc/pFhqTkKNykHf2PVZO0AP5IDnDLnq5zEgkGOvdFHuwv0PEs9Ri9z730K1Gh6OWBhrBE68LPcXMk=
-X-Received: by 2002:a25:487:: with SMTP id 129mr11566148ybe.0.1626424309121;
- Fri, 16 Jul 2021 01:31:49 -0700 (PDT)
+        bh=/ff+YehTziKFzYJPNZTmNGwqrJDQ7taVpMo22hrLQTM=;
+        b=DM1073jSbBaVN4ntKPXC7FdFNnAzNtnYOXPtZ+RPa5CpZvEavwbNoRc8z4cDM2R+xc
+         zzykUvnGAkrLZJnE8rhJgdLTP+sEw6coXiu4cNFRvibcy6btFhhQzYqtV4AJmSSzIFcr
+         AOO3HUDD4+f7OgtkGcoNF25eT+KGBwAAzj3Sv/yPWAan5/eZbjHozYaEHNrA6rQEI6TI
+         gFwrneg+uGYUx+K7I6uRADP9xMB6NU248e0bW1SYK+7aK/ykbXsivcajVHErl7uWCq7h
+         anPaZSlDskIm+RrhZm5CeaH3C9b6dftjxT3Kczke11+Fifb6XlqClwf1fKZTz9y5SF3K
+         rnCA==
+X-Gm-Message-State: AOAM532zxSTIm0xswoN/G7ufAElTH0q7tnC0cxqc8E0bbxBfiy0t6PS5
+        ZT/XU14OXsCj4MmXUOnC+Us4MiirmfHd/7Pa0Ok=
+X-Google-Smtp-Source: ABdhPJyrob7shQ8fsxArMpyWE8C80LM02fpQHs2T6NT87HRMygJqZOtA+ZFbLbJU/yq46BokUQ7v5NpX6VvESFTMtcE=
+X-Received: by 2002:a25:b9d0:: with SMTP id y16mr11360302ybj.62.1626424394240;
+ Fri, 16 Jul 2021 01:33:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <2a8eb285-3b71-199c-1bf4-39fb47fac77e@nvidia.com> <1625130054-22947-1-git-send-email-akhilrajeev@nvidia.com>
-In-Reply-To: <1625130054-22947-1-git-send-email-akhilrajeev@nvidia.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 16 Jul 2021 10:31:38 +0200
-Message-ID: <CAMpxmJWZm_N3yPKa2+32PNOyCUuSbjqWiDBSO3WHjKekZj8Fzg@mail.gmail.com>
-Subject: Re: [PATCH v5] gpio: tegra186: Add ACPI support
-To:     Akhil R <akhilrajeev@nvidia.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        kyarlagadda@nvidia.com, Laxman Dewangan <ldewangan@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>, mperttunen@nvidia.com,
-        smangipudi@nvidia.com, Thierry Reding <thierry.reding@gmail.com>
+References: <20210715182123.23372-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210715182123.23372-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXB-kEU7QVuMH1SNrwg+VPbHeOVQS3rjhcgQRFwoMsgdA@mail.gmail.com>
+In-Reply-To: <CAMuHMdXB-kEU7QVuMH1SNrwg+VPbHeOVQS3rjhcgQRFwoMsgdA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 16 Jul 2021 09:32:48 +0100
+Message-ID: <CA+V-a8tgF6nDKHnEG429cj=+YDNvP0jF0Wz+r2sO-FU_f7dJUg@mail.gmail.com>
+Subject: Re: [PATCH 2/6] can: rcar_canfd: Add support for RZ/G2L family
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 11:01 AM Akhil R <akhilrajeev@nvidia.com> wrote:
+Hi Geert,
+
+On Fri, Jul 16, 2021 at 8:47 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Add ACPI module ID to probe the driver from the ACPI based bootloader
-> firmware.
+> Hi Prabhakar,
 >
-> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
-> v5 changes:
->         * Updated ioremap_resource check as per Jon's comments.
+> On Thu, Jul 15, 2021 at 8:21 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > CANFD block on RZ/G2L SoC is almost identical to one found on
+> > R-Car Gen3 SoC's.
+> >
+> > On RZ/G2L SoC interrupt sources for each channel are split into
+> > different sources, irq handlers for the same are added.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 >
->  drivers/gpio/gpio-tegra186.c | 30 ++++++++++++++++++++++++------
->  1 file changed, 24 insertions(+), 6 deletions(-)
+> Thanks for your patch!
 >
-> diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
-> index 1bd9e44..8a64dcb 100644
-> --- a/drivers/gpio/gpio-tegra186.c
-> +++ b/drivers/gpio/gpio-tegra186.c
-> @@ -620,15 +620,21 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
->         if (!gpio)
->                 return -ENOMEM;
+> > --- a/drivers/net/can/rcar/rcar_canfd.c
+> > +++ b/drivers/net/can/rcar/rcar_canfd.c
+> > @@ -1070,6 +1077,56 @@ static void rcar_canfd_tx_done(struct net_device *ndev)
+> >         can_led_event(ndev, CAN_LED_EVENT_TX);
+> >  }
+> >
+> > +static irqreturn_t rcar_canfd_global_err_interrupt(int irq, void *dev_id)
+> > +{
 >
-> -       gpio->soc = of_device_get_match_data(&pdev->dev);
-> +       gpio->soc = device_get_match_data(&pdev->dev);
+> > +static irqreturn_t rcar_canfd_global_recieve_fifo_interrupt(int irq, void *dev_id)
+> > +{
 >
->         gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
-> -       if (IS_ERR(gpio->secure))
-> -               return PTR_ERR(gpio->secure);
-> +       if (IS_ERR(gpio->secure)) {
-> +               gpio->secure = devm_platform_ioremap_resource(pdev, 0);
-> +               if (IS_ERR(gpio->secure))
-> +                       return PTR_ERR(gpio->secure);
-> +       }
+> >  static irqreturn_t rcar_canfd_global_interrupt(int irq, void *dev_id)
+> >  {
+> >         struct rcar_canfd_global *gpriv = dev_id;
+> > @@ -1139,6 +1196,56 @@ static void rcar_canfd_state_change(struct net_device *ndev,
+> >         }
+> >  }
+> >
+> > +static irqreturn_t rcar_canfd_channel_tx_interrupt(int irq, void *dev_id)
+> > +{
 >
->         gpio->base = devm_platform_ioremap_resource_byname(pdev, "gpio");
-> -       if (IS_ERR(gpio->base))
-> -               return PTR_ERR(gpio->base);
-> +       if (IS_ERR(gpio->base)) {
-> +               gpio->base = devm_platform_ioremap_resource(pdev, 1);
-> +               if (IS_ERR(gpio->base))
-> +                       return PTR_ERR(gpio->base);
-> +       }
+> > +static irqreturn_t rcar_canfd_channel_err_interrupt(int irq, void *dev_id)
+> > +{
 >
->         err = platform_irq_count(pdev);
->         if (err < 0)
-> @@ -690,11 +696,13 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
+> It looks like the new split interrupt handlers duplicate code from
+> the existing unified interrupt handlers.  Perhaps the latter can be
+> made to call the former instead?
 >
->         gpio->gpio.names = (const char * const *)names;
+Agreed.
+
+Cheers,
+Prabhakar
+
+> Gr{oetje,eeting}s,
 >
-> +#if defined(CONFIG_OF_GPIO)
->         gpio->gpio.of_node = pdev->dev.of_node;
->         gpio->gpio.of_gpio_n_cells = 2;
->         gpio->gpio.of_xlate = tegra186_gpio_of_xlate;
-> +#endif /* CONFIG_OF_GPIO */
+>                         Geert
 >
-> -       gpio->intc.name = pdev->dev.of_node->name;
-> +       gpio->intc.name = dev_name(&pdev->dev);
->         gpio->intc.irq_ack = tegra186_irq_ack;
->         gpio->intc.irq_mask = tegra186_irq_mask;
->         gpio->intc.irq_unmask = tegra186_irq_unmask;
-> @@ -918,10 +926,20 @@ static const struct of_device_id tegra186_gpio_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, tegra186_gpio_of_match);
->
-> +static const struct acpi_device_id  tegra186_gpio_acpi_match[] = {
-> +       { .id = "NVDA0108", .driver_data = (kernel_ulong_t)&tegra186_main_soc },
-> +       { .id = "NVDA0208", .driver_data = (kernel_ulong_t)&tegra186_aon_soc },
-> +       { .id = "NVDA0308", .driver_data = (kernel_ulong_t)&tegra194_main_soc },
-> +       { .id = "NVDA0408", .driver_data = (kernel_ulong_t)&tegra194_aon_soc },
-> +       {}
-> +};
-> +MODULE_DEVICE_TABLE(acpi, tegra186_gpio_acpi_match);
-> +
->  static struct platform_driver tegra186_gpio_driver = {
->         .driver = {
->                 .name = "tegra186-gpio",
->                 .of_match_table = tegra186_gpio_of_match,
-> +               .acpi_match_table = tegra186_gpio_acpi_match,
->         },
->         .probe = tegra186_gpio_probe,
->         .remove = tegra186_gpio_remove,
 > --
-> 2.7.4
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 >
-
-Can you rebase it on top of v5.14-rc1 and resend?
-
-Bart
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
