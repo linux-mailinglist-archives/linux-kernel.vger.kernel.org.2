@@ -2,219 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FB53CB0C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 04:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEDA3CB0C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 04:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbhGPCZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 22:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47438 "EHLO
+        id S233283AbhGPC0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 22:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbhGPCZg (ORCPT
+        with ESMTP id S233135AbhGPC0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 22:25:36 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E3CC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 19:22:41 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id a16so12368046ybt.8
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 19:22:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HcGnhbgGNOyTIUDh5SucoyI65bVLgGCSLNQx1HGY7GY=;
-        b=otqrJJIZByY9gd3geezqoyVsJMv/IvEZq8Js39EoGePHL4zZ2cHE9ToRjHVGUp2gWm
-         tqiSpB8972dgJzF7QarpCka/+6FD5zesTleAYoRAA29Y2QFhoP34DSoV4phccxSMc/yS
-         ft9iGcScr8JDLaWJ9IRN2Jas2jYL9zeTfNe4U9g1oiu5Zbrfam4POkGrBmg9Yn1tBPqZ
-         E2pZcl6yP9vUX+ePV2kZDYXe0FBja8b/0Fs9ft42CanAjWLdvlI74TqkEFjeBLMZsPjn
-         hh8k/ydAil66c/7sS0SV8kWBAtS7XPYCfo1OZPRToxqjHJfIJdAci5KdsngjzkpZOghZ
-         wugA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HcGnhbgGNOyTIUDh5SucoyI65bVLgGCSLNQx1HGY7GY=;
-        b=K96osVPe6uE9zqQl2Q8MFcLMvny/xdLY0hAxK4cPlBRkoQPcV4smtMDhhu+YYOcTLD
-         JWZulIxRjIj3Jyzcs0yaC7COSSbRcXsGDgmOeKScOIhaikvhEWIAHkqK4H33yZUhlX6N
-         pzGhdO/55j69o+QDfezVzZr386IQmwX4M/6eCkpcW7I9Sag7C1HOBTGLs78TFPKs+L2J
-         ZbPcUMXQ/o85hNZL1dX60jBud69+JmXe6w8igDpcCb62GzdAqC1A1goQcnX7i4qy14Ke
-         4+cz0h0ZQjwDs5ibtSHZSPTz5mTZSmCTR5QNOjXecy8K77rhDUeKUsXzUEFMu9D42g5w
-         5r9g==
-X-Gm-Message-State: AOAM532s+l46m1NlxIPtzqdVXDAhTxIo2HXpf65i3OFhU+8C1ijtaHa4
-        sfN1U38WLiQrGF9f19QBqs2rAaYrU94m6M2JrjU=
-X-Google-Smtp-Source: ABdhPJzsAioQ40CSJOi/XmSMDlA7Q5z9hpj1SgegYHELGXmn9X9rYg94iYbey9lKIOAoc5PngRWhjVNRR7dujx8REwg=
-X-Received: by 2002:a25:b701:: with SMTP id t1mr9236770ybj.517.1626402160698;
- Thu, 15 Jul 2021 19:22:40 -0700 (PDT)
+        Thu, 15 Jul 2021 22:26:36 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88831C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 19:23:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Lnk9JSiNco+fvpMtgugwGUPHQQd7tGUSorOWrIOEXkY=; b=w8ioiaqfhhDici1jpNd+no0a4h
+        rxWKw48oHbyYk9b5hyv3HQqL7ULbPV/+RhnWOK2n1W20iQKG0dB2q9KTh0KNNicbrQIU08aEZEhpH
+        Hxo+NWvA243pVij1lSP5Hzb1qUk7uL5UtaTons2jCTP+mFrFk7bjFz9O67U04URtKVt7+ngUPH/+V
+        qr/6BTDqn2qRI0gqG/MCrNLDKQ6x8acucTzNzsCo+Fjeh2dZ5V84a0YFpGSqAirCcmfXXE5LGL7cP
+        KFHW7/n9n3CjgJAtQJueLq5TWtD3f6FQO7z9Y9fCtWwWJvR+WrMbisX8E0cHqTyUZqjkKGHUtVLgE
+        5acAdboA==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m4DVs-002uGU-P7; Fri, 16 Jul 2021 02:23:40 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        openrisc@lists.librecores.org
+Subject: [PATCH] openrisc: rename or32 code & comments to or1k
+Date:   Thu, 15 Jul 2021 19:23:38 -0700
+Message-Id: <20210716022338.19342-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <mhng-423e8bdb-977e-4b99-a1bb-b8c530664a51@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-423e8bdb-977e-4b99-a1bb-b8c530664a51@palmerdabbelt-glaptop>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Fri, 16 Jul 2021 10:22:28 +0800
-Message-ID: <CAEUhbmX6QD+ncgUS8g5yQMm0A5aPAAHcmsfBty6eWupeut+SSA@mail.gmail.com>
-Subject: Re: [GIT PULL] RISC-V Patches for the 5.14 Merge Window, Part 1
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+From Documentation/openrisc/todo.rst, rename "or32" in the
+source code to "or1k" since this is the name that has been
+settled on.
 
-On Fri, Jul 9, 2021 at 10:54 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> The following changes since commit 8a4102a0cf07cc76a18f373f6b49485258cc6af4:
->
->   riscv: mm: Fix W+X mappings at boot (2021-06-01 21:15:09 -0700)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-mw0
->
-> for you to fetch changes up to 1958e5aef5098e28b7d6e6a2972649901ebecace:
->
->   riscv: xip: Fix duplicate included asm/pgtable.h (2021-07-06 16:17:40 -0700)
->
-> ----------------------------------------------------------------
-> RISC-V Patches for the 5.14 Merge Window, Part 1
->
-> In addition to We have a handful of new features for 5.14:
->
-> * Support for transparent huge pages.
-> * Support for generic PCI resources mapping.
-> * Support for the mem= kernel parameter.
-> * Support for KFENCE.
-> * A handful of fixes to avoid W+X mappings in the kernel.
-> * Support for VMAP_STACK based overflow detection.
-> * An optimized copy_{to,from}_user.
-> ----------------------------------------------------------------
-> There are some Kconfig merge conflicts.  They should be pretty
-> straight-forward, but we do have a symbol out of order -- I thought I had a
-> script to check for that, but I guess it doesn't work.  I just sent out a patch
-> to fix it up.
->
-> diff --cc arch/riscv/Kconfig
-> index 3590eb76000e,469a70bd8da6..d36f3c5029fd
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@@ -60,12 -61,11 +61,12 @@@ config RISC
->         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
->         select HANDLE_DOMAIN_IRQ
->         select HAVE_ARCH_AUDITSYSCALL
-> -       select HAVE_ARCH_JUMP_LABEL
-> -       select HAVE_ARCH_JUMP_LABEL_RELATIVE
-> +       select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
-> +       select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
->         select HAVE_ARCH_KASAN if MMU && 64BIT
->         select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
->  +      select HAVE_ARCH_KFENCE if MMU && 64BIT
-> -       select HAVE_ARCH_KGDB
-> +       select HAVE_ARCH_KGDB if !XIP_KERNEL
->         select HAVE_ARCH_KGDB_QXFER_PKT
->         select HAVE_ARCH_MMAP_RND_BITS if MMU
->         select HAVE_ARCH_SECCOMP_FILTER
-> @@@ -81,11 -80,9 +82,14 @@@
->         select HAVE_GCC_PLUGINS
->         select HAVE_GENERIC_VDSO if MMU && 64BIT
->         select HAVE_IRQ_TIME_ACCOUNTING
->  +      select HAVE_KPROBES
->  +      select HAVE_KPROBES_ON_FTRACE
->  +      select HAVE_KRETPROBES
-> +       select HAVE_KPROBES if !XIP_KERNEL
-> +       select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
-> +       select HAVE_KRETPROBES if !XIP_KERNEL
->  +      select HAVE_MOVE_PMD
->  +      select HAVE_MOVE_PUD
->         select HAVE_PCI
->         select HAVE_PERF_EVENTS
->         select HAVE_PERF_REGS
-> @@@ -108,7 -104,7 +112,8 @@@
->         select SYSCTL_EXCEPTION_TRACE
->         select THREAD_INFO_IN_TASK
->         select UACCESS_MEMCPY if !MMU
->  +      select HAVE_ARCH_TRANSPARENT_HUGEPAGE if 64BIT && MMU
-> +       select ZONE_DMA32 if 64BIT
->
->   config ARCH_MMAP_RND_BITS_MIN
->         default 18 if 64BIT
-> ----------------------------------------------------------------
-> Akira Tsukamoto (1):
->       riscv: __asm_copy_to-from_user: Optimize unaligned memory access and pipeline stall
->
-> Alexandre Ghiti (6):
->       riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED
->       riscv: Simplify xip and !xip kernel address conversion macros
->       riscv: Introduce set_kernel_memory helper
->       riscv: Map the kernel with correct permissions the first time
->       riscv: Introduce structure that group all variables regarding kernel mapping
->       riscv: Fix PTDUMP output now BPF region moved back to module region
->
-> Bixuan Cui (1):
->       riscv: fix build error when CONFIG_SMP is disabled
->
-> Christoph Hellwig (1):
->       riscv: pass the mm_struct to __sbi_tlb_flush_range
->
-> Guo Ren (3):
->       riscv: Use global mappings for kernel pages
->       riscv: Cleanup unused functions
->       riscv: add ASID-based tlbflushing methods
->
-> Jeff Xie (1):
->       riscv: ptrace: add argn syntax
->
-> Jiapeng Chong (1):
->       riscv: xip: Fix duplicate included asm/pgtable.h
->
-> Jisheng Zhang (7):
->       riscv: mremap speedup - enable HAVE_MOVE_PUD and HAVE_MOVE_PMD
->       riscv: mm: Remove setup_zero_page()
->       riscv: Optimize switch_mm by passing "cpu" to flush_icache_deferred()
->       riscv: Turn has_fpu into a static key if FPU=y
->       riscv: kprobes: Remove redundant kprobe_step_ctx
->       riscv: Add __init section marker to some functions again
->       riscv: mm: init: Consolidate vars, functions
->
-> Kefeng Wang (5):
->       riscv: Move setup_bootmem into paging_init
->       riscv: mm: Drop redundant _sdata and _edata declaration
->       riscv: mm: Use better bitmap_zalloc()
->       riscv: Only initialize swiotlb when necessary
->       riscv: Add mem kernel parameter support
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: openrisc@lists.librecores.org
+---
+ arch/openrisc/include/asm/pgtable.h     |    6 +++---
+ arch/openrisc/include/asm/thread_info.h |    2 +-
+ arch/openrisc/kernel/entry.S            |    4 ++--
+ arch/openrisc/kernel/head.S             |    6 +++---
+ arch/openrisc/kernel/setup.c            |    4 ++--
+ arch/openrisc/lib/Makefile              |    2 +-
+ arch/openrisc/mm/fault.c                |    2 +-
+ 7 files changed, 13 insertions(+), 13 deletions(-)
 
-This patch should not be merged as it mixed two things into one patch,
-as discussed here:
-http://lists.infradead.org/pipermail/linux-riscv/2021-July/007486.html
-
-You remained silent on my "ping", sigh ...
-
->
-> Liu Shixin (1):
->       riscv: Enable KFENCE for riscv64
->
-> Nanyong Sun (5):
->       riscv: mm: add _PAGE_LEAF macro
->       riscv: mm: make pmd_bad() check leaf condition
->       riscv: mm: add param stride for __sbi_tlb_flush_range
->       riscv: mm: add THP support on 64-bit
->       riscv: mm: fix build errors caused by mk_pmd()
->
-> Palmer Dabbelt (2):
->       RISC-V: Use asm-generic for {in,out}{bwlq}
->       Merge branch 'riscv-wx-mappings' into for-next
->
-> Randy Dunlap (1):
->       riscv: TRANSPARENT_HUGEPAGE: depends on MMU
->
-> Stanislaw Kardach (1):
->       riscv: enable generic PCI resource mapping
->
-> Tong Tiangen (1):
->       riscv: add VMAP_STACK overflow detection
->
-> Vitaly Wool (1):
->       riscv: fix typo in init.c
-
-Regards,
-Bin
+--- linux-next-20210715.orig/arch/openrisc/include/asm/pgtable.h
++++ linux-next-20210715/arch/openrisc/include/asm/pgtable.h
+@@ -12,7 +12,7 @@
+  * et al.
+  */
+ 
+-/* or32 pgtable.h - macros and functions to manipulate page tables
++/* or1k pgtable.h - macros and functions to manipulate page tables
+  *
+  * Based on:
+  * include/asm-cris/pgtable.h
+@@ -29,14 +29,14 @@
+ 
+ /*
+  * The Linux memory management assumes a three-level page table setup. On
+- * or32, we use that, but "fold" the mid level into the top-level page
++ * or1k, we use that, but "fold" the mid level into the top-level page
+  * table. Since the MMU TLB is software loaded through an interrupt, it
+  * supports any page table structure, so we could have used a three-level
+  * setup, but for the amounts of memory we normally use, a two-level is
+  * probably more efficient.
+  *
+  * This file contains the functions and defines necessary to modify and use
+- * the or32 page table tree.
++ * the or1k page table tree.
+  */
+ 
+ extern void paging_init(void);
+--- linux-next-20210715.orig/arch/openrisc/include/asm/thread_info.h
++++ linux-next-20210715/arch/openrisc/include/asm/thread_info.h
+@@ -25,7 +25,7 @@
+ 
+ /* THREAD_SIZE is the size of the task_struct/kernel_stack combo.
+  * normally, the stack is found by doing something like p + THREAD_SIZE
+- * in or32, a page is 8192 bytes, which seems like a sane size
++ * in or1k, a page is 8192 bytes, which seems like a sane size
+  */
+ 
+ #define THREAD_SIZE_ORDER 0
+--- linux-next-20210715.orig/arch/openrisc/lib/Makefile
++++ linux-next-20210715/arch/openrisc/lib/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ #
+-# Makefile for or32 specific library files..
++# Makefile for or1k specific library files..
+ #
+ 
+ obj-y	:= delay.o string.o memset.o memcpy.o
+--- linux-next-20210715.orig/arch/openrisc/mm/fault.c
++++ linux-next-20210715/arch/openrisc/mm/fault.c
+@@ -28,7 +28,7 @@ unsigned long pte_misses;	/* updated by
+ unsigned long pte_errors;	/* updated by do_page_fault() */
+ 
+ /* __PHX__ :: - check the vmalloc_fault in do_page_fault()
+- *            - also look into include/asm-or32/mmu_context.h
++ *            - also look into include/asm/mmu_context.h
+  */
+ volatile pgd_t *current_pgd[NR_CPUS];
+ 
+--- linux-next-20210715.orig/arch/openrisc/kernel/entry.S
++++ linux-next-20210715/arch/openrisc/kernel/entry.S
+@@ -326,7 +326,7 @@ EXCEPTION_ENTRY(_data_page_fault_handler
+ 1:	l.ori   r6,r0,0x0                  // !write access
+ 2:
+ 
+-	/* call fault.c handler in or32/mm/fault.c */
++	/* call fault.c handler in openrisc/mm/fault.c */
+ 	l.jal   do_page_fault
+ 	 l.nop
+ 	l.j     _ret_from_exception
+@@ -348,7 +348,7 @@ EXCEPTION_ENTRY(_insn_page_fault_handler
+ 	/* r4 set be EXCEPTION_HANDLE */   // effective address of fault
+ 	l.ori	r6,r0,0x0		   // !write access
+ 
+-	/* call fault.c handler in or32/mm/fault.c */
++	/* call fault.c handler in openrisc/mm/fault.c */
+ 	l.jal   do_page_fault
+ 	 l.nop
+ 	l.j     _ret_from_exception
+--- linux-next-20210715.orig/arch/openrisc/kernel/head.S
++++ linux-next-20210715/arch/openrisc/kernel/head.S
+@@ -599,7 +599,7 @@ flush_tlb:
+ 	l.jal	_flush_tlb
+ 	 l.nop
+ 
+-/* The MMU needs to be enabled before or32_early_setup is called */
++/* The MMU needs to be enabled before or1k_early_setup is called */
+ 
+ enable_mmu:
+ 	/*
+@@ -641,9 +641,9 @@ enable_mmu:
+ 	/* magic number mismatch, set fdt pointer to null */
+ 	l.or	r25,r0,r0
+ _fdt_found:
+-	/* pass fdt pointer to or32_early_setup in r3 */
++	/* pass fdt pointer to or1k_early_setup in r3 */
+ 	l.or	r3,r0,r25
+-	LOAD_SYMBOL_2_GPR(r24, or32_early_setup)
++	LOAD_SYMBOL_2_GPR(r24, or1k_early_setup)
+ 	l.jalr r24
+ 	 l.nop
+ 
+--- linux-next-20210715.orig/arch/openrisc/kernel/setup.c
++++ linux-next-20210715/arch/openrisc/kernel/setup.c
+@@ -209,7 +209,7 @@ void __init setup_cpuinfo(void)
+ }
+ 
+ /**
+- * or32_early_setup
++ * or1k_early_setup
+  *
+  * Handles the pointer to the device tree that this kernel is to use
+  * for establishing the available platform devices.
+@@ -217,7 +217,7 @@ void __init setup_cpuinfo(void)
+  * Falls back on built-in device tree in case null pointer is passed.
+  */
+ 
+-void __init or32_early_setup(void *fdt)
++void __init or1k_early_setup(void *fdt)
+ {
+ 	if (fdt)
+ 		pr_info("FDT at %p\n", fdt);
