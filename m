@@ -2,129 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4193CB611
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880883CB615
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238612AbhGPKaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:30:25 -0400
-Received: from mga06.intel.com ([134.134.136.31]:52739 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230287AbhGPKaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:30:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="271824770"
-X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="271824770"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 03:27:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="656364900"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Jul 2021 03:27:26 -0700
-Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
- Performance of GL9763E
-To:     Renius Chen <reniuschengl@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
-References: <20210705090050.15077-1-reniuschengl@gmail.com>
- <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com>
- <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
- <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
- <CAJU4x8srB7skGFVcj1SPrzEZSnVkwKiW3OPN0GQxvgtRG7GAAQ@mail.gmail.com>
- <CAPDyKFq0yHxX7wb4XGeiMiSGGiOf8RKJ5ahhFQ+_vodqnyPV9Q@mail.gmail.com>
- <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com>
- <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
- <CAJU4x8t+aOqq82EJMUNDpWiE3GPeyZkjFhy=AkmctcDE3mx6fA@mail.gmail.com>
- <CAPDyKFoSOk+4pmW60uGzKaYw3XOXshx+NSNqF_po=VLkK1-7Qw@mail.gmail.com>
- <CAJU4x8sMJSOnfBwDq7tVygRGFRw-SyrM1z8GBsF_Mur64-Y3_g@mail.gmail.com>
- <CAJU4x8uCAQoozeAqa6icVba61uo_eP+NtOxgnLzsXh6g2HeQdA@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <02c26834-f16e-e1c7-9ea9-36414d1c4403@intel.com>
-Date:   Fri, 16 Jul 2021 13:27:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S238865AbhGPKb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:31:57 -0400
+Received: from mail-eopbgr60089.outbound.protection.outlook.com ([40.107.6.89]:22652
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230287AbhGPKbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 06:31:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CwH4ycLDNp+iFoefoUBPADKhX0JAb04o+RSldspzsPXLJc0DDrMU/2ivMXgObTnP90J+GNLzZNfIY/i9OiYeLdbQkf+db6IE8jycYnSpHT3ULgWauDeAEz0deTc7BdOVlbx2yjY50ugVZHsYp7drU7pRmrAiOcQWdA/JFPmc4wpnpFYzp0zdMEEfCxafVGS+ulfxU3yFORvvikegJgBiWFbpcazmreElD1XwA9hfxFuu/bQ7NWNzeCL5VGR4oaWDfTcaCdg4Z6c2qot3jesbPBB3HzMuWgibV/JDsPbtSAQZlmcNnU8RDpp33S13Yd/V0lMAfmrcG0mmxCURk3NZ1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sO+sLmsngCElUBJQP+5ttJXwX2VDRTGjszRK4k69Ts8=;
+ b=KZjJ9zqNVqEA6Axy4uHkqTC1gaironNK3PbT6JGmuLxCkVwBFJIlBtYEr5DjVFnTKdshDVMH5WQiMvvg4AVSpo9ebLX0ufnLI3g00RflObeMQH5QMmSFNN0gwEK4pnx6Pr5OkJAy4vd791GAwhC9Xn5nVTUFd6mOL51MOS59JNR47lVTQh3dzDSkYMhFH2LNL6V2F9hPeL9pnPqSjDnj6wPF9LOgk5FgYSU0Bn8IvGWiY1Q45gJ7VjCRoSwH+duaZOSgyAju+FBdqtRhkXZLg/5yWrZpMk5fOLIAmAShQ4DAtvwBchfdks89carUstaNLYYPDSXbrFvQjfoo9EoKVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sO+sLmsngCElUBJQP+5ttJXwX2VDRTGjszRK4k69Ts8=;
+ b=HBO4pd1VmXrvA6lPj+DrdKrexlWwIOLj0j6nfSQprKCrjrORsC9WBu/R/Mlbo0d1g3Ntf2R+6Idg8l82Rse/BJL++Tmn2VTDDijN+waAekrA7DFQSi/4AAf/1rmkBbpazrexozR01JorrUOnpwuzcstsbYNiUHUwNMOf+/2E3kY=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB6PR0402MB2725.eurprd04.prod.outlook.com (2603:10a6:4:95::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Fri, 16 Jul
+ 2021 10:28:54 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9c70:fd2f:f676:4802]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9c70:fd2f:f676:4802%9]) with mapi id 15.20.4331.021; Fri, 16 Jul 2021
+ 10:28:54 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, bruno.thomsen@gmail.com
+Cc:     linux-imx@nxp.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH V1 0/3] dt-bindings: net: fec: convert fsl,*fec bindings to yaml
+Date:   Fri, 16 Jul 2021 18:29:08 +0800
+Message-Id: <20210716102911.23694-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SGBP274CA0008.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::20)
+ To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-In-Reply-To: <CAJU4x8uCAQoozeAqa6icVba61uo_eP+NtOxgnLzsXh6g2HeQdA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SGBP274CA0008.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Fri, 16 Jul 2021 10:28:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b18b8b56-eedd-4b54-db6a-08d9484482a8
+X-MS-TrafficTypeDiagnostic: DB6PR0402MB2725:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0402MB272568FFEE1F7FA556745322E6119@DB6PR0402MB2725.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GCqrXfS5Ks2KlNEfB+Q6oQB7HerSTFQiKXwQx8nZNVWulQHhONjeEtT3tHfnCD4Z6fVuXXOy8dysoDcGBkvNWmRCebczQSld89/ba40KWLMjSbuM0vMJGP48yDWaI6VXXaDW2eZHm2KuQng+BXD0L4zPtrlyPtRVADWd8iZUpW46GhtUflOxo+EuHbI7VFZw5EtCj7G7uqsU4c0ZoNZlcgvyMTsHcvehbGkhcOCV/xY3lkvRlRrWuMXUADHR2xidDuT2UKBGG3W8/TbUuT+ZcrZ1KUg276kRPgEVkfkRVpRYLdwIOSuV7BA8NrMrU+de1X+N1M/400SNJESpqxVYX5RvjmgT4zzrVY58k+BRFjjY7NErq8oY2KINNfTjJJiwQ62QmJ2C860ueDHmncU66BQe4mb4jEgvdPRcmhZTSxjLwHaedZTQVNo0o1Np9T1MogNCKQ3cnAli6qO7pNR9KzmzbUevErk9H/ynMidIfTIFglnAJYDIVsCEevdKqa6q6kb/256QrYPMk2YbOSnvn1GU593kQK7vqY1cgHCo3fmgGmqWZVBxPMiFuqZQqW4eEK76AcHhmw53xRuoLyo35fLruPLsOA73UGj/hVCgC+yB1qpdzOT//84n+FpEXh89DEFXbfrtxl6zoFSbPdKGXjzwnORnPjOCDCnqK2AY4GCjjupFON1fRXjpixQl8ZvTggBXiiHNPpNd69Q2RCMeWw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(396003)(376002)(39860400002)(316002)(83380400001)(478600001)(5660300002)(86362001)(66476007)(1076003)(66556008)(52116002)(36756003)(66946007)(2906002)(4326008)(26005)(6506007)(956004)(2616005)(6486002)(8936002)(6666004)(7416002)(186003)(8676002)(38350700002)(6512007)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MpHQZTullTnWSLD1YqfVGwup9FdpazIs41wxn3UEIH9H+oGVV4zu+HVbSX19?=
+ =?us-ascii?Q?FNt599pyC8wyRRFExeyXeFtDJcipWuAhasiB+RHUjkWdUBrgl+DS5PcQ7xdn?=
+ =?us-ascii?Q?OdGh8F1gbk7Rwn9YBZLK27PS28WJJi0SwK8ghvwaq0HkgCbU150KfX0S4Mth?=
+ =?us-ascii?Q?hK7EzAYgYJ8wvjZdZIppRDZ3feG48gd3XrWhaL+dISshHQtDxPasQQADmckH?=
+ =?us-ascii?Q?hox90f05Spsfng+vrjqRSQkZsAz6dhMcTpCgAyeIv7bLIDH2lfjIG6JzL1Yy?=
+ =?us-ascii?Q?BV4qnPr04YHKQCMG7m6Xz5ytuqPSw//lImbejDjlHEmUzaaVQzkUJukkRGHo?=
+ =?us-ascii?Q?PPwHS+Dfm0IwbiaEhPcZ9Mbh0dQ5S0UEVPBiyb2zvkbl7EF589Pj3UAbUTf3?=
+ =?us-ascii?Q?vwO/Bjp4mMr6VQev6lcsmLNMWGbMccIVMq6KcpbWkHXPBXqJyICOqw7D0NF8?=
+ =?us-ascii?Q?1SR7cCBYDTEMm5wmE0PmFO3aocxTWL/Nm+Rb9zIoJ/Uh059LgiJLZBUdMVxP?=
+ =?us-ascii?Q?7bdrXPL/3XE26xYadJofJBkhWXUYUVBgCQZVXtPqcNwOoG/YwVaV4LEcqhmf?=
+ =?us-ascii?Q?1PRv0/4n+f82Lww63sr/k3oUOf6zFGKrRGWTjcAp2+Cx0uRokfqwh0cwgUe3?=
+ =?us-ascii?Q?nYhf+YKPo/YN55UsOhg/mtH6PbHc3aiRE6k2N3G+tdGfeQ/e2H1EW4KXBVos?=
+ =?us-ascii?Q?E+WVcWupRvyhBl0Kb+/gDTIgp7vU9+T2DR0wM+vCRJpm+OWa6optlx2wAqZh?=
+ =?us-ascii?Q?Ex3tKzlgayRpmKlDZD4xZ/ASW/EIVCbpH/famHR9QONEk7FRbnbuSIynPKyl?=
+ =?us-ascii?Q?n57PDjqXrF8nO9LcaN/JpSxY51IZFvHOhObugmlXy4iLCuyAbTNWKg4HXQQ2?=
+ =?us-ascii?Q?pUViQbphQITkX6kquMN9DuM5jSFanrP04iq5c1oVaHrypz9LSG/RKOeo7WOr?=
+ =?us-ascii?Q?1xe7zMs0t3DHl9wUXKHtshSuQrIdDXvyTNUi4LPUJrqVc305U6qTaWdaPu7G?=
+ =?us-ascii?Q?USiNNhsR85/xyeZmhJQF9RvWjCTjmTWMd64vL0iO1ckyyJJOwHwDn3uEfDky?=
+ =?us-ascii?Q?GR6P2fNPS5I8hcVAwuNj/PgG2a3MT0og+vMC0KwnonUU4OOa7EO2nKnA7dAl?=
+ =?us-ascii?Q?K3YlsRSzeTwRQSM2k4cMGkDUEz32lzsJKvUggQ/YbbWgWGx2+Pnd4IwbWtPA?=
+ =?us-ascii?Q?pWszdAZfUBpjbMJEi8Xxm07wGOD0sOFm6ngLXVRfEnQu59o2g3bboDpsiwI5?=
+ =?us-ascii?Q?Rmw40T9Vi+puRrXirWNxrybyD2n28ohHhIdfTaJpp3ehVic4dM2ysY41hOmB?=
+ =?us-ascii?Q?d3f6DmzroaHlmVXpwStdgKgv?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b18b8b56-eedd-4b54-db6a-08d9484482a8
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 10:28:53.9643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MnGfXsJxeQhKWjC3DTlL3my6PnJJcvOf4xkfljDATnxRkdTaEkT932dtoSiaAlNjCw2o+srb2FAV0LkjKGdqFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2725
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/21 5:15 am, Renius Chen wrote:
-> Hi Adrain,
-> 
-> What do you think of this patch?
-> Or do you have any ideas or suggestions about the modification for
-> Ulf's comments?
+This patch set intends to convert fec binding into scheme, and fixes
+when do dtbs_check on ARCH arm.
 
-Perhaps try to define your power management requirements in terms of
-latencies instead of request size, and then take the issue to the
-power management mailing list and power management maintainers for
-suggestions.  You will probably need to point out why runtime PM doesn't
-met your requirements.
+One notice is that there are below logs for some dts when do dtbs_check:
+	ethernet@2188000: More than one condition true in oneOf schema:
+We found that fec node in these dts all have "interrupts-extended"
+property, and schema default is:
+         'oneOf': [{'required': ['interrupts']},
+                   {'required': ['interrupts-extended']}],
+so we don't know if it is a common issue or need be fixed in specific
+bindings.
 
-> 
-> Thank you.
-> 
-> 
-> Best regards,
-> 
-> Renius
-> 
-> Renius Chen <reniuschengl@gmail.com> 於 2021年7月7日 週三 下午9:49寫道：
->>
->> Ulf Hansson <ulf.hansson@linaro.org> 於 2021年7月7日 週三 下午8:16寫道：
->>>
->>> [...]
->>>
->>>>
->>>> Thanks, I understand what you mean.
->>>>
->>>> I simply searched for the keyword "MMC_READ_MULTIPLE_BLOCK" in the
->>>> drivers/mmc/host folder, and found that in some SD/MMC host controller
->>>> driver codes such as alcor.c, cavium.c, ...etc, there are also
->>>> behaviors for monitoring the request in their driver. What's the
->>>> difference between theirs and ours?
->>>
->>> Those checks are there to allow the HWs to be supported properly.
->>>
->>>>
->>>> And if the code that monitors the requstes does not belong the driver,
->>>> where should I implement the code and how to add some functions only
->>>> for GL9763e in that place, in your opinion?
->>>
->>> Honestly, I am not sure what suits your use case best.
->>>
->>> So far we have used runtime PM with a default auto suspend timeout, in
->>> combination with dev PM Qos. In other words, run as fast as possible
->>> to complete the requests in the queue then go back to idle and enter a
->>> low power state. Clearly, that seems not to be sufficient for your use
->>> case, sorry.
->>>
->> Yes, the runtime PM, auto suspend, and PM Qos are all about the
->> suspend/resume behaviors of the system or related to power states such
->> as D0/D3 of the device. But these are totally different from the ASPM
->> L0s/L1 for link states. Entering/exiting the ASPM is pure hardware
->> behavior on the link layer and is not handled by any codes in
->> drivers/mmc/core or drivers/mmc/host. We'd like to try to modify the
->> patch by your opinions, but we are also confused about what or where
->> suits our use case best. So we wonder how to start the modification
->> and may need some suggestions to deal with the work, sorry.
->>
->> Thank you.
->>
->>
->> Best regards,
->>
->> Renius
->>
->>
->>> Kind regards
->>> Uffe
+Joakim Zhang (3):
+  dt-bindings: net: fec: convert fsl,*fec bindings to yaml
+  ARM: dts: imx35: correct node name for FEC
+  ARM: dts: imx7-mba7: remove un-used "phy-reset-delay" property
+
+ .../devicetree/bindings/net/fsl,fec.yaml      | 213 ++++++++++++++++++
+ .../devicetree/bindings/net/fsl-fec.txt       |  95 --------
+ arch/arm/boot/dts/imx35.dtsi                  |   2 +-
+ arch/arm/boot/dts/imx7-mba7.dtsi              |   1 -
+ arch/arm/boot/dts/imx7d-mba7.dts              |   1 -
+ 5 files changed, 214 insertions(+), 98 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/fsl,fec.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/fsl-fec.txt
+
+-- 
+2.17.1
 
