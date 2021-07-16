@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A603CBAEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9EC3CBAF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhGPRIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230339AbhGPRIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:08:12 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E36FC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:05:16 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id g8so7608199qtj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W6SIeoBg1DkcyvgcoeydZ8AAdyJegtyOitc9kq3PmT0=;
-        b=CaXBg+yk3wFm1JTg0C9WRIG2RdSEML5UqjjEAikj3TkPl2AatwXckVhLnhWruM/VZ5
-         WgL98ZT8bFugKwk6WN4JUWcHd21m1sq1xfvbRyp/Qt7xA9y1Qf2TGrfqCEBqQI/xXBQe
-         XSavzr5uObBuRqwFH2OaXdpZSZiv95tyxPSGOL1reOmRbZdUi3umHt/SnpCw5FutLOj6
-         506fiqLIw/l//jmdCy0dsXGeL8V0XAyrppmInW3Atv6izgyhrqkWxTKeU/5+bPOTPAJY
-         mAqblM8G60tnOpFZqUtiEfB2AgvKCYSD1w/eF2lu2M7bZYZU2UvwuVryOm8c/fZfza4D
-         /OLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W6SIeoBg1DkcyvgcoeydZ8AAdyJegtyOitc9kq3PmT0=;
-        b=VLkAkrttnIoBcaopxcoIj1rbChLsD9L/6H607dgmFpGptSVGk2V2mFRJUxcgQYQyMr
-         pTLNErgDKVLLU9xpGBTRgimVLDBxuMEy4s3zK8OelxfdT4QlR7xD7Vdrhsw966Tw93EM
-         +piEb0XHpHuNSBVUhjsMtkrawHvRy2YU4lw0HTFX11H5spl0uMObaaLJx2jmeHos9q5W
-         kw0nrOGvaETeElIx8SseQsjrV75/vtLNB2b6hSLHmALqa3c74SIfBSJIMIahAKOHapem
-         VrPvhaxupphsBJ83YK6vSsiD/rGFBYJcAkKStTn1GCqzsqh2HqvTSLXCSMR4jPanlnwo
-         JrtQ==
-X-Gm-Message-State: AOAM530SPbUfO3nutYIoxQpKmvDKPlgRmizQC4wCfO7P4I/s41t2xPzA
-        O2yHH6yQJ+w27uAkeL7j3qw=
-X-Google-Smtp-Source: ABdhPJwkRKtyIqmIS3oubkpiLCGicN/r2iSdVyY2utlk1Z/F96zhbEreIksU3R0coTvnF4fnDlOjJQ==
-X-Received: by 2002:a05:622a:2d1:: with SMTP id a17mr2833375qtx.338.1626455115410;
-        Fri, 16 Jul 2021 10:05:15 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id s3sm3381657qtn.4.2021.07.16.10.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 10:05:15 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 10:05:13 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 2/2] bitmap: introduce for_each_set_bitrange
-Message-ID: <YPG8SdsbQ+sxjk0w@yury-ThinkPad>
-References: <20210709034519.2859777-1-yury.norov@gmail.com>
- <20210709034519.2859777-3-yury.norov@gmail.com>
- <20210709095950.6a451ccb@oasis.local.home>
- <YPBZPbCgJPjV2qPW@yury-ThinkPad>
- <YPGNw4nRXsdaTHi4@alley>
+        id S230191AbhGPRNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 13:13:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229462AbhGPRN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 13:13:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65634613F3;
+        Fri, 16 Jul 2021 17:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626455429;
+        bh=8tHBLJthmsy9VAY9wET51UFI2vK1cDPaeKFdnxf+KQ8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TKqja2jhf2NveJ1m8iL1vGtkzUbLFo4447UQpEycH71r8XFBJO92bmthODR4bUxbh
+         MPEOV2wR/xBIT/XayKT1MOej3JBKZE3N8qx5ypKLoejI/fTAE8N+9hO1tDSavBu4xf
+         zl6oGefdOci1zl/pTOYIA7iBbCXJ27w+wUJrTCA2cgCcKhltnwU/7foKlZHLDHLJz6
+         Wa2NgwkO1oI9ZTeaEkVfw2Bw1fslhHTbA3LHPg7Bv1/6Ml+UfBckfEVb4bu6ic5hsV
+         qHHc1QMoxW/WHCPI9pvwCh3xCzD1q+o09lFeMxyn8e77wMJRX+1eD/jRhoQGWlhBRu
+         MUqm27NoTDZTA==
+Received: by mail-ot1-f43.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so10581329otl.3;
+        Fri, 16 Jul 2021 10:10:29 -0700 (PDT)
+X-Gm-Message-State: AOAM532hFM3x14wtRkB4Bj+haKdoa9+ogxdpfcecs+DRmVXRMtsBJeq/
+        MCkAh+SBLH+JRUVZPwZuQBQevJC/KR3Njy3SvCQ=
+X-Google-Smtp-Source: ABdhPJzK8g33FWS/D8tDBDN8b/qXCd761VTHU3ScZMFxb5JZNRoOk/YawpY4018uRjfdhsjILOh3xWImfXKVrfnG2as=
+X-Received: by 2002:a05:6830:3494:: with SMTP id c20mr2516657otu.108.1626455428797;
+ Fri, 16 Jul 2021 10:10:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPGNw4nRXsdaTHi4@alley>
+References: <YNwu7LmZaImyoOer@zn.tnic>
+In-Reply-To: <YNwu7LmZaImyoOer@zn.tnic>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 16 Jul 2021 19:10:17 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE--H53wu_X=GpgeJmWs7vjpnkUnG_fc+59GaNDF+sYEw@mail.gmail.com>
+Message-ID: <CAMj1kXE--H53wu_X=GpgeJmWs7vjpnkUnG_fc+59GaNDF+sYEw@mail.gmail.com>
+Subject: Re: [RFC PATCH] efi/mokvar: Reserve the table only if it is in boot
+ services data
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Lenny Szubowicz <lszubowi@redhat.com>, Gary Lin <glin@suse.com>,
+        =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 03:46:43PM +0200, Petr Mladek wrote:
-> On Thu 2021-07-15 08:50:21, Yury Norov wrote:
-> > On Fri, Jul 09, 2021 at 09:59:50AM -0400, Steven Rostedt wrote:
-> > > On Thu,  8 Jul 2021 20:45:19 -0700
-> > > Yury Norov <yury.norov@gmail.com> wrote:
-> > > 
-> > > > bitmap_list_string() is very ineffective when printing bitmaps with long
-> > > > ranges of set bits because it calls find_next_bit for each bit. We can do
-> > > > better by detecting ranges of set bits.
-> > > > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> > > > index 87acf66f0e4c..1ee54dace71e 100644
-> > > > --- a/lib/vsprintf.c
-> > > > +++ b/lib/vsprintf.c
-> > > >  
-> > > > -			buf = number(buf, end, rtop, default_dec_spec);
-> > > > -		}
-> > > > +	if (buf > start)
-> > > > +		buf--;
-> > > 
-> > > If the above is to undo the last comma, please put back the first logic.
-> > 
-> > You're asking me to move part of the logic inside the loop which generally
-> > should be avoided. Is there any particular reason to do this?
-> 
-> vsprintf() should write what is needed and keep the rest of the given
-> buffer intact. There is even a test for this in the test_printf module.
-> 
-> I think that test_printf does not complain here because only a single
-> character is used and it is later replaced by the trailing '\0'.
-> 
-> By other words, undoing the last comma does not cause visible problems
-> in the end. But from vsprintf() point of view, it is a hack that does
-> not trigger the warning only by chance. And it is better to avoid it.
-> 
-> Best Regards,
-> Petr
+On Wed, 30 Jun 2021 at 10:44, Borislav Petkov <bp@alien8.de> wrote:
+>
+> Hi guys,
+>
+> so below is what we've been staring at recently, please doublecheck me
+> whether I'm even making sense here.
+>
+> Thx!
+>
+> ---
+> From: Borislav Petkov <bp@suse.de>
+>
+> One of the SUSE QA tests triggered:
+>
+>   localhost kernel: efi: Failed to lookup EFI memory descriptor for 0x000000003dcf8000
+>
+> which comes from x86's version of efi_arch_mem_reserve() trying to
+> reserve a memory region. Usually, that function expects
+> EFI_BOOT_SERVICES_DATA memory descriptors but the above case is for the
+> MOKvar table which is allocated in the EFI shim as runtime services.
+>
+> That lead to a fix changing the allocation of that table to boot services.
+>
+> However, that fix broke booting SEV guests with that shim leading to
+> this kernel fix
+>
+>   8d651ee9c71b ("x86/ioremap: Map EFI-reserved memory as encrypted for SEV")
+>
+> which extended the ioremap hint to map reserved EFI boot services as
+> decrypted too.
+>
+> However, all that wasn't needed, IMO, because that error message in
+> efi_arch_mem_reserve() was innocuous in this case - if the MOKvar table
+> is not in boot services, then it doesn't need to be reserved in the
+> first place because it is, well, in runtime services which *should* be
+> reserved anyway.
+>
+> So do that reservation for the MOKvar table only if it is allocated
+> in boot services data. I couldn't find any requirement about where
+> that table should be allocated in, unlike the ESRT which allocation is
+> mandated to be done in boot services data by the UEFI spec.
+>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-Ah, OK. Thanks Petr.
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+Would you like me to queue this as a fix?
+
+> ---
+>  drivers/firmware/efi/mokvar-table.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/firmware/efi/mokvar-table.c b/drivers/firmware/efi/mokvar-table.c
+> index d8bc01340686..38722d2009e2 100644
+> --- a/drivers/firmware/efi/mokvar-table.c
+> +++ b/drivers/firmware/efi/mokvar-table.c
+> @@ -180,7 +180,10 @@ void __init efi_mokvar_table_init(void)
+>                 pr_err("EFI MOKvar config table is not valid\n");
+>                 return;
+>         }
+> -       efi_mem_reserve(efi.mokvar_table, map_size_needed);
+> +
+> +       if (md.type == EFI_BOOT_SERVICES_DATA)
+> +               efi_mem_reserve(efi.mokvar_table, map_size_needed);
+> +
+>         efi_mokvar_table_size = map_size_needed;
+>  }
+>
+> --
+> 2.29.2
+>
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
