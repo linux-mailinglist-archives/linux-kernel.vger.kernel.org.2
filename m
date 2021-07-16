@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EEA3CB9AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866B43CB9B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240877AbhGPPZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240251AbhGPPZT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:25:19 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CABDC06175F;
-        Fri, 16 Jul 2021 08:22:24 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id t2so13049665edd.13;
-        Fri, 16 Jul 2021 08:22:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N8bkFF5p3b8ynQNRAkxev5NHQlLvryoP4qlYhGqFBjc=;
-        b=YYBLC0FKuFQE+AMrZG+egLBpSZ3nXAtpNpXYXUYdi8IpU528hZGQcV7zIn1nKWoh+3
-         ECyIhmFYi64mRz+5ITsg1Kq1G4JwxpP/2qxmSwtzbSPTD4WY1ofx6g823TNKblAgbtKD
-         Vm3Np+TXmneBi2ovKHlAs3v1iSr6ESk4Y2u3I2DtafYU1AXM+teTsF/yQ975MYxNs1bf
-         5eHl72YV5JLHoNuCDW7JQqGN/ZESv3loLUE3Ftd5FgAkf47WQis+YzCBoXzeF6TBbva8
-         dtnyDMq1L/yUKka8DECO/5KJ3qyjO/q7LnogwycDjmLkyMkQ0fwTmgdW7355cCVEu+PY
-         TB4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N8bkFF5p3b8ynQNRAkxev5NHQlLvryoP4qlYhGqFBjc=;
-        b=mdGdYAD0RPVltanxVI01vU2H3vXbsN0uMwO4xx5PJJSF08UR8QrhXubWIdL3gm9Mbz
-         gSOIuOTa5mdh6tmLsa45LebLdnbnUPhklQuE7/aS/mNwJ8wYqolG65d1DpFb7aLvxZKe
-         IIExsjraQEVFkH/alO3ZhKKbsW6r/LEUPG8CvRdt2s80HPZXpIX+XhXkckN0vkkCo1f9
-         3sK3IAKGUr04+sm07uiC8WBZAMOTKfgDxt9r2kPLdz2+2SXgmoxwwDb+F2/ihdpIb/Hm
-         G4w86i5BPoJg5vDiJKsz6t4Dq5ySQxalBrIN1Z2jPcdktPFyuxmJZ6jnKsbU1mmYXCyV
-         eI3Q==
-X-Gm-Message-State: AOAM53217LIrfE7GMs6yBvsvIg5+sEkN2SVWB148cYB6rfNOfegHJIsu
-        8zU0DP8F9ntd8yoFDLQoEq0=
-X-Google-Smtp-Source: ABdhPJxwoY9sX8skN/GsQiNXCI54N8UYo1l0znh40dUm/vmIQlVyUttGmaINiqSWefaAYlOdseJ/wA==
-X-Received: by 2002:a05:6402:b8f:: with SMTP id cf15mr15279163edb.286.1626448943269;
-        Fri, 16 Jul 2021 08:22:23 -0700 (PDT)
-Received: from BLUE.mydomain.example (83-87-52-217.cable.dynamic.v4.ziggo.nl. [83.87.52.217])
-        by smtp.googlemail.com with ESMTPSA id i11sm3876648edu.97.2021.07.16.08.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 08:22:22 -0700 (PDT)
-From:   ericwouds@gmail.com
-To:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Eric Woudstra <37153012+ericwoud@users.noreply.github.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
-Date:   Fri, 16 Jul 2021 17:22:11 +0200
-Message-Id: <20210716152213.4213-1-ericwouds@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S240821AbhGPP1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:27:01 -0400
+Received: from mail-mw2nam10on2073.outbound.protection.outlook.com ([40.107.94.73]:11265
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237326AbhGPP1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:27:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BjD8W6H8GvwBsZ8F/RNMfV50de1ATFgYK3a7fQJwoWGRMk+MhMt57xNVO6AfGYTlqxJk4+1aD/+NznVRzr205pRmnbaLJAkiKuFAxF4FTh9HBB2z/E+CXQhElapuTS+MUgz6aH3Y45OimEAvEQ1dlaptxIJRC10cXGu2nMK3VQwceBTFzXWKWD9h7/bYbksii7MQFzWpoxdK55hEUXONB6Wk9m5zKpxGHho7S6KJiChPvplLOJyLmV259Sx07j5ejhYDufAkbrqTD4sb9ZnNo8y6h0vSh6AaAiOTBHcXikiO5IrA8djX0ESmX4NdybAr/fy4pOB/8F/ghrnFj1JdvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/OYhtCdwjD4BxxNQoR4UOpZa6IIt/N5JxQFmld4CmCE=;
+ b=AFJnkNhlYX8KqhhSZcFUm0iEThvpwJjzzaZMIRng0aOM7Afy/wBiCq+hWDgG/lEd9KvQ4OSldeQY2qAaoicgfGFTAoqAcUrU3AlRbE2cB1paYf+ATfJcD6/tHlrUNktWaqPdRLhmxVIGL57o4AUQ1Y/MBtjMqUEn76CFYP5ppTR6Ropr2ZQKn348fKuGXeBogfHyqqswd092m1nupzNkoRO4f4Bzv9MbX6JbioKLo8S9z9VY9zXzvzNluLdamCgCWCLEcMbLtdve80PbcBkRCJG/QAAa2f0yKDxDifeyAHWU4/P+VLLc33yJnSFL8PV9WT7k0XZ0u9oIoEbEUZZKqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/OYhtCdwjD4BxxNQoR4UOpZa6IIt/N5JxQFmld4CmCE=;
+ b=b4JCizk2Is/lFuCe8QRBrvatZlJEYHqysPyuvr27JLU8mI3Yi2FQgCL1UPNP+FZfrYz7jkKdI1fiCVNTY/eIJVc1kx3GYlDU4s+m7a29bQI41IZD8xzMT9kDLodAEDAlngDQEXb6yLinyOpUwbV4VueALJ+vFFuG57zGSpYc8UbtcFP5oAqk4QONG3mXf1JM/SBZ5SH96ybnCSh+AaEzpUhll4BdfoiOttC04+1ftWXK90Et8+OQ3mUgW1D6K4KIIDtrKvVNc+l0lD9Pl2Ar6Wu9Y1trpkv0QjIdd8Iw0FeJpNdtGNN0OO5hIt+R3pe7MviyfTgCq8wnVt3hWDmuvw==
+Received: from BN6PR17CA0012.namprd17.prod.outlook.com (2603:10b6:404:65::22)
+ by MN2PR12MB2990.namprd12.prod.outlook.com (2603:10b6:208:cc::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.24; Fri, 16 Jul
+ 2021 15:24:04 +0000
+Received: from BN8NAM11FT035.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:65:cafe::84) by BN6PR17CA0012.outlook.office365.com
+ (2603:10b6:404:65::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Fri, 16 Jul 2021 15:24:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT035.mail.protection.outlook.com (10.13.177.116) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 15:24:03 +0000
+Received: from [10.20.22.246] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul
+ 2021 15:24:01 +0000
+Subject: Re: [PATCH v11 0/8] PCI: Add support for ACPI _RST reset method
+To:     Bjorn Helgaas <bhelgaas@google.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kw@linux.com>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Sinan Kaya <okaya@kernel.org>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+References: <20210715213100.11539-1-sdonthineni@nvidia.com>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <ab901d2c-7f4d-f8b0-20d6-98c96a1eb9fa@nvidia.com>
+Date:   Fri, 16 Jul 2021 10:23:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210715213100.11539-1-sdonthineni@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1abff9fc-4653-4e9b-9577-08d9486dbeff
+X-MS-TrafficTypeDiagnostic: MN2PR12MB2990:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB29907C0D4C40256DC5CEF9FBC7119@MN2PR12MB2990.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PpUYSeam2S+8Ch38yngAV04LTVwtXJfMohg5JQqtJXrFkmalfTlz3v/DAg7P99mzP3xoqaQiMzzYtRnO6I62xahN1NulqVyp2QsY6dnZuJH2Ashl81ePwBsCkon62ij4ATzA8sCQCe2kN9hJX3w/zRNOqPf7feCeG2iOLtoWVRn2LliDAoeSexBnwKaNZwISLjVCgsgU7zaE9Oo/hYW4Ex1YEwAGqHjJ3/VzssS+ljhEc+/PWWfL7p2JccTQInl4tQM8Ku4l+RltQ4VnQ9S2HlP+tkCAuVanDzNnyBT3Y2tJmnlpBoDy1FOa7ua6yfqlOn9WJvmhdBhPUWG8CUB2eq4zMyumAwLk71s1Y6+dFD32DcOim9gkRe8EciuqTI8eGqpfFz9HZA7nVqaYUR84bOZzt5u7Sc5zfnHWsLvXO/vNjK46oacEjR+7b4rs5ZQ39UXPLVAAYn3gKptAEfva25B02NNEPE6J/THaukFRxwzRdglXJ8HxKpMxYbWTuU+v8BQDxTUHJFHqSoInHUIS105zZ7yo9PpYACRzNbwmtJjQXCNSybucLozrk1aYa0+szb1US44Wd/0BNnJzVAH+dvHTjEWraS+CRGi6YsudAduLBaXWpGhtO5H2uNVj4MhORr3jVx3S/R9BMmH98IoWoV1VQkNv/CGHm7f1egl0Y1Im+X5n8h7RvJLh/WcRTqq6vthyXZo4iDAr0Kr3KnjV/5iHUvlEvinmUZhkRGX913jyKxiH3gNVyNvDg1zvsy6BZjOB7BzUDeoIL2IEnPwezQ==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39860400002)(136003)(46966006)(36840700001)(36906005)(316002)(16576012)(86362001)(70586007)(336012)(2616005)(4326008)(8936002)(34020700004)(8676002)(426003)(2906002)(70206006)(54906003)(47076005)(26005)(82310400003)(6916009)(356005)(31686004)(36756003)(5660300002)(7636003)(82740400003)(31696002)(478600001)(16526019)(186003)(36860700001)(558084003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 15:24:03.9663
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1abff9fc-4653-4e9b-9577-08d9486dbeff
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT035.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB2990
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Woudstra <37153012+ericwoud@users.noreply.github.com>
+Hi Bjorn/Alex,
 
-According to reference guides mt7530 (mt7620) and mt7531:
+I've posted v11 with the incorrect subject in 0/8, please use v12 patch series for review.
 
-NOTE: When IVL is reset, MAC[47:0] and FID[2:0] will be used to 
-read/write the address table. When IVL is set, MAC[47:0] and CVID[11:0] 
-will be used to read/write the address table.
-
-Since the function only fills in CVID and no FID, we need to set the
-IVL bit. The existing code does not set it.
-
-This is a fix for the issue I dropped here earlier:
-
-http://lists.infradead.org/pipermail/linux-mediatek/2021-June/025697.html
-
-With this patch, it is now possible to delete the 'self' fdb entry
-manually. However, wifi roaming still has the same issue, the entry
-does not get deleted automatically. Wifi roaming also needs a fix
-somewhere else to function correctly in combination with vlan.
-
-Signed-off-by: Eric Woudstra <37153012+ericwoud@users.noreply.github.com>
----
- drivers/net/dsa/mt7530.c | 1 +
- drivers/net/dsa/mt7530.h | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 93136f7e6..9e4df35f9 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -366,6 +366,7 @@ mt7530_fdb_write(struct mt7530_priv *priv, u16 vid,
- 	int i;
- 
- 	reg[1] |= vid & CVID_MASK;
-+	reg[1] |= ATA2_IVL;
- 	reg[2] |= (aging & AGE_TIMER_MASK) << AGE_TIMER;
- 	reg[2] |= (port_mask & PORT_MAP_MASK) << PORT_MAP;
- 	/* STATIC_ENT indicate that entry is static wouldn't
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index 334d610a5..b19b389ff 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -79,6 +79,7 @@ enum mt753x_bpdu_port_fw {
- #define  STATIC_EMP			0
- #define  STATIC_ENT			3
- #define MT7530_ATA2			0x78
-+#define  ATA2_IVL			BIT(15)
- 
- /* Register for address table write data */
- #define MT7530_ATWD			0x7c
--- 
-2.25.1
+Thanks,
+Shanker Donthineni
 
