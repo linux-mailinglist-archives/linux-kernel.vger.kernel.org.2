@@ -2,89 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19133CB2F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECAE3CB2F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235506AbhGPHI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 03:08:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:35150 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235173AbhGPHIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 03:08:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18AC731B;
-        Fri, 16 Jul 2021 00:05:31 -0700 (PDT)
-Received: from [10.163.67.71] (unknown [10.163.67.71])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 350B63F7D8;
-        Fri, 16 Jul 2021 00:05:27 -0700 (PDT)
-Subject: Re: [RFC 07/10] arm64/mm: Detect and enable FEAT_LPA2
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, mark.rutland@arm.com, will@kernel.org,
-        catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        steven.price@arm.com
-References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
- <1626229291-6569-8-git-send-email-anshuman.khandual@arm.com>
- <18c42dd0-b6db-d118-dad0-cac0bf6ab2ce@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <8adefac5-c677-1fca-20dd-bba8543f8d59@arm.com>
-Date:   Fri, 16 Jul 2021 12:36:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235579AbhGPHM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 03:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231728AbhGPHMz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 03:12:55 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C085C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 00:10:00 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m4Hyp-0005Ie-Qt; Fri, 16 Jul 2021 09:09:51 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m4Hyj-0000Av-Nv; Fri, 16 Jul 2021 09:09:45 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m4Hyj-0000CV-Mi; Fri, 16 Jul 2021 09:09:45 +0200
+Date:   Fri, 16 Jul 2021 09:09:43 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v9 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210716070943.ayxkz2irkwhgincz@pengutronix.de>
+References: <20210709065217.6153-1-billy_tsai@aspeedtech.com>
+ <20210709065217.6153-3-billy_tsai@aspeedtech.com>
+ <20210715150533.vppkw5oiomkxmfrn@pengutronix.de>
+ <BD5B012C-B377-45E2-B04E-61D12B086670@aspeedtech.com>
 MIME-Version: 1.0
-In-Reply-To: <18c42dd0-b6db-d118-dad0-cac0bf6ab2ce@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2f4lehdpjydeehv6"
+Content-Disposition: inline
+In-Reply-To: <BD5B012C-B377-45E2-B04E-61D12B086670@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/14/21 1:51 PM, Suzuki K Poulose wrote:
-> On 14/07/2021 03:21, Anshuman Khandual wrote:
->> Detect FEAT_LPA2 implementation early enough during boot when requested via
->> CONFIG_ARM64_PA_BITS_52_LPA2 and remember in a variable arm64_lpa2_enabled.
->> This variable could then be used to turn on TCR_EL1.TCR_DS effecting the 52
->> bits PA range or fall back to default 48 bits PA range if FEAT_LPA2 feature
->> was requested but found not to be implemented.
->>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   arch/arm64/include/asm/memory.h |  1 +
->>   arch/arm64/kernel/head.S        | 15 +++++++++++++++
->>   arch/arm64/mm/mmu.c             |  3 +++
->>   arch/arm64/mm/proc.S            |  9 +++++++++
->>   4 files changed, 28 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
->> index 824a365..d0ca002 100644
->> --- a/arch/arm64/include/asm/memory.h
->> +++ b/arch/arm64/include/asm/memory.h
->> @@ -178,6 +178,7 @@
->>   #include <asm/bug.h>
->>     extern u64            vabits_actual;
->> +extern u64            arm64_lpa2_enabled;
->>     extern s64            memstart_addr;
->>   /* PHYS_OFFSET - the physical address of the start of memory. */
->> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
->> index 6444147..9cf79ea 100644
->> --- a/arch/arm64/kernel/head.S
->> +++ b/arch/arm64/kernel/head.S
->> @@ -94,6 +94,21 @@ SYM_CODE_START(primary_entry)
->>       adrp    x23, __PHYS_OFFSET
->>       and    x23, x23, MIN_KIMG_ALIGN - 1    // KASLR offset, defaults to 0
->>       bl    set_cpu_boot_mode_flag
->> +
->> +#ifdef CONFIG_ARM64_PA_BITS_52_LPA2
->> +    mrs     x10, ID_AA64MMFR0_EL1
->> +    ubfx    x10, x10, #ID_AA64MMFR0_TGRAN_SHIFT, 4
->> +    cmp     x10, #ID_AA64MMFR0_TGRAN_LPA2
->> +    b.ne    1f
-> 
-> For the sake of forward compatibility, this should be "b.lt"
-Right, I guess we could assume that the feature will be present from the
-current ID_AA64MMFR0_TGRAN_LPA2 values onward in the future. But should
-not this also be capped at ID_AA64MMFR0_TGRAN_SUPPORTED_MAX as the upper
-limit is different for 4K and 16K page sizes.
+--2f4lehdpjydeehv6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Billy,
+
+On Fri, Jul 16, 2021 at 01:48:20AM +0000, Billy Tsai wrote:
+> On 2021/7/15, 11:06 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutronix=
+=2Ede>> wrote:
+>     > Another is: The PWM doesn't support duty_cycle 0, on such a request=
+ the
+>     > PWM is disabled which results in a constant inactive level.
+>=20
+>     > (This is correct, is it? Or does it yield a constant 0 level?)
+>=20
+> Our pwm can support duty_cycle 0 by unset CLK_ENABLE.
+
+This has a slightly different semantic though. Some consumer might
+expect that the following sequence:
+
+	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10000, .enabled =3D =
+true })
+	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 0, .enabled =3D true=
+ })
+	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10000, .enabled =3D =
+true })
+
+results in the output being low for an integer multiple of 10 =B5s. This
+isn't given with setting CLK_ENABLE to zero, is it? (I didn't recheck,
+if the PWM doesn't complete periods on reconfiguration this doesn't
+matter much though.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--2f4lehdpjydeehv6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDxMLQACgkQwfwUeK3K
+7AmSUgf+KelGjfPXAW5sfbfcgNm/W3eNleFAUKPGThM4qsl47Gw8QytStuxO8Gsu
+POxq+PE8GfmzMNBWUqlIQnuadgbmLFQhOa2AY2E8xEeENDtZfAsiH8S18TvupZlF
+S/kxrlhoZ5zjpq+TkjVO0YIzK82a43quBj+WDAginCyqSKI/IE0HQdqScIdJFz6x
+3bk23sSfI3EB91+dyFESGUVQ+5X9LVkeV+R8Wk1ytLh3hnUSN5X3nzSYECcH5qGr
+AMpjrqivGCGuIE6BBxPP2ZRP5b4iVFGTKm26cJ4uxIlEas2ZQndr3XKbRREjATuG
+C1vvl77dngONECSQqM5M6NyjVwzMGQ==
+=w9wF
+-----END PGP SIGNATURE-----
+
+--2f4lehdpjydeehv6--
