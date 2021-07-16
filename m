@@ -2,153 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19333CB32A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0EC3CB2EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236116AbhGPHU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 03:20:29 -0400
-Received: from mga02.intel.com ([134.134.136.20]:24185 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235208AbhGPHUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 03:20:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="197873784"
-X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="197873784"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 00:17:27 -0700
-X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="495953167"
-Received: from arthur-vostro-3668.sh.intel.com ([10.239.13.1])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 00:17:22 -0700
-From:   Zeng Guang <guang.zeng@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Robert Hu <robert.hu@intel.com>, Gao Chao <chao.gao@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>
-Subject: [PATCH 0/6] IPI virtualization support for VM
-Date:   Fri, 16 Jul 2021 14:52:49 +0800
-Message-Id: <20210716065249.14812-1-guang.zeng@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S234986AbhGPHFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 03:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235173AbhGPHFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 03:05:33 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4A1C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 00:02:37 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id x17so11566660edd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 00:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ob+65EC7EGHk7ZpDwd2fjysmCAANNiwOFYwvnrx8W6A=;
+        b=WpUScbBh4ND6IRyPfMqPuzTj7+TZmXY/9OtflZD5oeF8YGH3wY0LBc1zTchljv7HGt
+         eC7oICPrBirfEObqC7S/yhLtt/3NhAParkUbv73w1a3xCeetjLS29n23WFgEmGEe7gWa
+         YHCPMQm5N9sCs3f5xRximY96BxorpuvQwxQIBlaIKiChPpNTFq9m8NOnrd0/epKliPKS
+         F3yiKzIwdNKJS46YvfwjJSJBFJaQftvIpOy6n5s+GZi3ySSVXMFnCcIQfjDNtvxKzvUp
+         SSUk/pcUKNtg3hnq/1b6TSbtc/N3nkoNuttw9RcRFhag8cbpFb/Hq1H6t02Tia2uLTG+
+         6vDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ob+65EC7EGHk7ZpDwd2fjysmCAANNiwOFYwvnrx8W6A=;
+        b=nGKs1Y8c0pfMU53m4/f50ORDDsBtJNA9e/pmv0Zu003FVxZEN5E4c29pdTTHzaSRgC
+         jMcRxXv0YnRzjTMHhI1sS0t73rmVaMHf5GDA9R3U/2h41wt+WTPskxeHm+E8hdBR8mt9
+         doi7wyheX32dEOkVcAc5ywND7AJZZSFhJ4Eh1krx/v53tfHvROAMzL8XS2lbmdVUYfFA
+         Y+IZzQSo/Lye9jaFNmovaAfZbYxTraEGkfYaXrBKms4kSPPrYLiDGTcXy+ThA7DRdRRV
+         bPpDC88l0j+1NGBEAekuIS+FEGGGDJyuS4d0/gMVhzaUPK2gpIxCyQjq6fGk4jutDAmf
+         kPbA==
+X-Gm-Message-State: AOAM530br6SdVjf25PyW4xztucVv8+7JNQBszpXmpQX8BZQnbO0Of2g/
+        2/wT/sDjf143fSrvAo3CZ6ugxQ==
+X-Google-Smtp-Source: ABdhPJyzW0B43oVFsiUQcTsX/rB6papLgwlPeuY72zWdC+yBJkwa9qN2rwwIZF+dgutQh7+CAJuLGA==
+X-Received: by 2002:a05:6402:d2:: with SMTP id i18mr12528374edu.17.1626418956198;
+        Fri, 16 Jul 2021 00:02:36 -0700 (PDT)
+Received: from localhost.localdomain (ppp-94-66-243-35.home.otenet.gr. [94.66.243.35])
+        by smtp.gmail.com with ESMTPSA id cq22sm3313698edb.77.2021.07.16.00.02.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 00:02:35 -0700 (PDT)
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     netdev@vger.kernel.org
+Cc:     linyunsheng@huawei.com,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1 v3] skbuff: Fix a potential race while recycling page_pool packets
+Date:   Fri, 16 Jul 2021 10:02:18 +0300
+Message-Id: <20210716070222.106422-1-ilias.apalodimas@linaro.org>
+X-Mailer: git-send-email 2.32.0.rc0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current IPI process in guest VM will virtualize the writing to interrupt
-command register(ICR) of the local APIC which will cause VM-exit anyway
-on source vCPU. Frequent VM-exit could induce much overhead accumulated
-if running IPI intensive task.
+As Alexander points out, when we are trying to recycle a cloned/expanded
+SKB we might trigger a race.  The recycling code relies on the
+pp_recycle bit to trigger,  which we carry over to cloned SKBs.
+If that cloned SKB gets expanded or if we get references to the frags,
+call skb_release_data() and overwrite skb->head, we are creating separate
+instances accessing the same page frags.  Since the skb_release_data()
+will first try to recycle the frags,  there's a potential race between
+the original and cloned SKB, since both will have the pp_recycle bit set.
 
-IPI virtualization as a new VT-x feature targets to eliminate VM-exits
-when issuing IPI on source vCPU. It introduces a new VM-execution
-control - "IPI virtualization"(bit4) in the tertiary processor-based
-VM-exection controls and a new data structure - "PID-pointer table
-address" and "Last PID-pointer index" referenced by the VMCS. When "IPI
-virtualization" is enabled, processor emulateds following kind of writes
-to APIC registers that would send IPIs, moreover without causing VM-exits.
-- Memory-mapped ICR writes
-- MSR-mapped ICR writes
-- SENDUIPI execution
+Fix this by explicitly those SKBs not recyclable.
+The atomic_sub_return effectively limits us to a single release case,
+and when we are calling skb_release_data we are also releasing the
+option to perform the recycling, or releasing the pages from the page pool.
 
-This patch series implement IPI virtualization support in KVM.
+Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
+Reported-by: Alexander Duyck <alexanderduyck@fb.com>
+Suggested-by: Alexander Duyck <alexanderduyck@fb.com>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+---
+Changes since v1:
+- Set the recycle bit to 0 during skb_release_data instead of the
+  individual fucntions triggering the issue, in order to catch all
+  cases
+Changes since v2:
+- Add a comment explaining why we need to reset the recycling bit
+ net/core/skbuff.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Patches 1-4 add tertiary processor-based VM-execution support
-framework. 
-
-Patch 5 implement interrupt dispatch support in x2APIC mode with
-APIC-write VM exit. In previous platform, no CPU would produce
-APIC-write VM exit with exit qulification 300H when the "virtual x2APIC
-mode" VM-execution control was 1.
-
-Patch 6 implement IPI virtualization related function including
-feature enabling through tertiary processor-based VM-execution in
-various scenario of VMCS configuration, PID table setup in vCPU creation
-and vCPU block consideration.     
-
-Document for IPI virtualization is now available at the latest "Intel
-Architecture Instruction Set Extensions Programming Reference".
-
-Document Link:
-https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
-
-We did experiment to measure average time sending IPI from source vCPU
-to the target vCPU completing the IPI handling by kvm unittest w/ and
-w/o IPI virtualization. When IPI virtualizatin enabled, it will reduce
-22.21% and 15.98% cycles comsuming in xAPIC mode and x2APIC mode
-respectly.
-
-KMV unittest:vmexit/ipi, 2 vCPU, AP runs without halt to ensure no VM
-exit impact on target vCPU. 
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 12aabcda6db2..8ec5c1136692 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -663,7 +663,7 @@ static void skb_release_data(struct sk_buff *skb)
+ 	if (skb->cloned &&
+ 	    atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
+ 			      &shinfo->dataref))
+-		return;
++		goto exit;
  
-		Cycles of IPI 				
-		xAPIC mode		x2APIC mode	
-	test	w/o IPIv  w/ IPIv	w/o IPIv  w/ IPIv
-	1	6106	  4816		4265	  3768
-	2	6244	  4656		4404	  3546
-	3	6165	  4658		4233	  3474
-	4	5992	  4710		4363	  3430
-	5	6083	  4741		4215	  3551
-	6	6238	  4904		4304	  3547
-	7	6164	  4617		4263	  3709
-	8	5984	  4763		4518	  3779
-	9	5931	  4712		4645	  3667
-	10	5955	  4530		4332	  3724
-	11	5897	  4673		4283	  3569
-	12	6140	  4794		4178	  3598
-	13	6183	  4728		4363	  3628
-	14	5991	  4994		4509	  3842
-	15	5866	  4665		4520	  3739
-	16	6032	  4654		4229	  3701
-	17	6050	  4653		4185	  3726
-	18	6004	  4792		4319	  3746
-	19	5961	  4626		4196	  3392
-	20	6194	  4576		4433	  3760
-					
-Average cycles	6059	  4713.1	4337.85	  3644.8
-%Reduction		  -22.21%		  -15.98%
-
-Gao Chao (1):
-  KVM: VMX: enable IPI virtualization
-
-Robert Hoo (4):
-  x86/feat_ctl: Add new VMX feature, Tertiary VM-Execution control
-  KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to support 64-bit
-    variation
-  KVM: VMX: Detect Tertiary VM-Execution control when setup VMCS config
-  KVM: VMX: dump_vmcs() reports tertiary_exec_control field as well
-
-Zeng Guang (1):
-  KVM: x86: Support interrupt dispatch in x2APIC mode with APIC-write VM
-    exit
-
- arch/x86/include/asm/msr-index.h   |   1 +
- arch/x86/include/asm/vmx.h         |  11 +++
- arch/x86/include/asm/vmxfeatures.h |   5 +-
- arch/x86/kernel/cpu/feat_ctl.c     |   9 +++
- arch/x86/kvm/lapic.c               |   9 ++-
- arch/x86/kvm/vmx/capabilities.h    |   8 ++
- arch/x86/kvm/vmx/evmcs.c           |   2 +
- arch/x86/kvm/vmx/evmcs.h           |   1 +
- arch/x86/kvm/vmx/posted_intr.c     |  22 ++++--
- arch/x86/kvm/vmx/vmcs.h            |   1 +
- arch/x86/kvm/vmx/vmx.c             | 123 +++++++++++++++++++++++++++--
- arch/x86/kvm/vmx/vmx.h             |  30 ++++---
- 12 files changed, 198 insertions(+), 24 deletions(-)
-
+ 	skb_zcopy_clear(skb, true);
+ 
+@@ -674,6 +674,17 @@ static void skb_release_data(struct sk_buff *skb)
+ 		kfree_skb_list(shinfo->frag_list);
+ 
+ 	skb_free_head(skb);
++exit:
++	/* When we clone an SKB we copy the reycling bit. The pp_recycle
++	 * bit is only set on the head though, so in order to avoid races
++	 * while trying to recycle fragments on __skb_frag_unref() we need
++	 * to make one SKB responsible for triggering the recycle path.
++	 * So disable the recycling bit if an SKB is cloned and we have
++	 * additional references to to the fragmented part of the SKB.
++	 * Eventually the last SKB will have the recycling bit set and it's
++	 * dataref set to 0, which will trigger the recycling
++	 */
++	skb->pp_recycle = 0;
+ }
+ 
+ /*
 -- 
-2.17.1
+2.32.0.rc0
 
