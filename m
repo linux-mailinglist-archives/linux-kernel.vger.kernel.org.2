@@ -2,165 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D469A3CB26C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 08:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F5E3CB26D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 08:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234834AbhGPGZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 02:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
+        id S234875AbhGPG0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 02:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbhGPGZs (ORCPT
+        with ESMTP id S234737AbhGPG0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 02:25:48 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F34C06175F;
-        Thu, 15 Jul 2021 23:22:53 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id s18so8970728pgg.8;
-        Thu, 15 Jul 2021 23:22:53 -0700 (PDT)
+        Fri, 16 Jul 2021 02:26:07 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B98C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 23:23:13 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id o201so8050977pfd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 23:23:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qBZgZ1rhUXrPQtQ1RtY6PTOQRojpxXbKtuLlXE/iYow=;
-        b=A/AiFzqwhhU2cqITL0fNNzFEVtilgMAATbE5B4mhB06UhLd8ASAZbVW+cCA5x+njML
-         mCrfkD7e0dh6+yS5L/ixigSwXXPXCuldq6rRWO74AJ5gB1o26IYkBRWe682enIAeJ46S
-         7+LKvk7nouKC8MXNXbtKyqg8oej/p0TetmNNllY21dpbT6qttnJ9mMjmyUYu57vG/qFH
-         ro7Ul8bza2FdizqbcY7jc1BOVIK6gznJCZ/SFD3VtjIaYlHBFAJqy/WcdF5TqDOCJ1TP
-         +8oGL4ZPGdUzH2NS79oIkap3bZVUJK9PZaaqfBN1nk51EtZG/9Vn2b5IYXzYBfkmXpsQ
-         FWfA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7xzgmBAMTKaWW+fbNYQ+L7b6kv6KG0i0qA+QcZiCEoI=;
+        b=I3orhdAUR1175eZURxhfyAJ7CqobfiowaeAbvpi0ScsDi7od82tNTkpOsIEb5vuXc8
+         uiJP08+iZjRudNpKVDVpC6LkhFZYlyh5DTRaP4y4/vl108u3qC4+z29trzopkkDxL6kS
+         H3ruEBFeLwf7uY82Ofn/VXwN99zQQCXxhQiuk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qBZgZ1rhUXrPQtQ1RtY6PTOQRojpxXbKtuLlXE/iYow=;
-        b=Sldo1+jfcmQlcEFAPEMo7AERZOJy0iTm+bjGoyjkqpnrCKwTeSgeOOQEeEoG5xG1oG
-         T9vWpkP5yXFGyAgY26QQK5FuHutCThu6LreqQVHzyd+pLw3VYCMGC4E26oXOjSiPsCKe
-         9bT2+Uqk1sSBbzhRcUeBJ4izZC7MGY+UwnhgCWoA5d5/SsMPoC/J3SDSG9LeIW0FuMIQ
-         tQsSXiWKPlBnW4yODUFqSlAVTc9sVtQ8b9pX1VCNVWPZgP6ysXzlXw3x8T/NiCBH1+g2
-         WQCoJNH7jbcrUNjsAwkif56EexQBw44Yoo43uGbyIu31ORdhpWolJW448G+0hbYWzM/s
-         rIeA==
-X-Gm-Message-State: AOAM5304ch44rMHEz88bGDSn+/qftZgVH+YHTVC6lxPOz3DEt4UH6ANe
-        YQhj5VO3rsUiOrBHgWomCL8=
-X-Google-Smtp-Source: ABdhPJxKgk5DwsG81U+8j+wkhdCUBpmerUHKGMitNohYAg2bY1jSm7C7OIW4U94qdFckfe+tZT2whQ==
-X-Received: by 2002:a62:e90b:0:b029:30e:4530:8dca with SMTP id j11-20020a62e90b0000b029030e45308dcamr8801669pfh.17.1626416572760;
-        Thu, 15 Jul 2021 23:22:52 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id s24sm6740794pfg.186.2021.07.15.23.22.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Jul 2021 23:22:52 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     axboe@kernel.dk, tj@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7xzgmBAMTKaWW+fbNYQ+L7b6kv6KG0i0qA+QcZiCEoI=;
+        b=rFy+rY79Ix+pCfM3KVqPDXzdmDTKFZtbZNKC01L2RtFDBXJYZQ9UfYAc7+/NHMm3Hi
+         HjzsECHc9MXNqyhHqvWIobpoCHNZIIJxApeONAk7HbwWk2ge1OZNoPR1HqpnPqWzdG0u
+         uH32grbQ4DUpKV3yZcZIxxH0CVXL4Bz/QhWRO1qylAvBh1OjU1UMqq0At0gixtDenAzT
+         EWeQKmwuY1RW3QW0hexQCAIQi6vyrcpUzb/TBe+daBF6WJA4ZnteuTK3TwEIJ1BIvldz
+         7ZCycFLbtaqjn62y1oYsz5UX5r6wZINkdPCMOBICPgteplvKXYGsOSz8qt9JnJ0PtcEu
+         W6qw==
+X-Gm-Message-State: AOAM530COnAXgeL+7Slz8Kl+ZREJ1NfxdT8YhKQVCQaRjeFZzjEM+Mgb
+        ujPou/jgwY4wLeD5qoKrPUHcpg==
+X-Google-Smtp-Source: ABdhPJxlm5rRKo8YGCJc75HnetKVDPUTsWuJ7zBzLBP/3F472XDqMZCaxZFCoFMsG8oYEG/Wr6Zg4g==
+X-Received: by 2002:a63:1d41:: with SMTP id d1mr8403424pgm.199.1626416592834;
+        Thu, 15 Jul 2021 23:23:12 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:d1af:356e:50a6:75e8])
+        by smtp.gmail.com with ESMTPSA id bj15sm7295551pjb.6.2021.07.15.23.23.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 23:23:12 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 15:23:07 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
-Date:   Fri, 16 Jul 2021 14:22:49 +0800
-Message-Id: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+Subject: Re: [RFC PATCH] rcu: call kvm_check_and_clear_guest_paused
+ unconditionally
+Message-ID: <YPEly3zNxNUjuc5i@google.com>
+References: <20210716054113.1244529-1-senozhatsky@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716054113.1244529-1-senozhatsky@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On (21/07/16 14:41), Sergey Senozhatsky wrote:
+> @@ -657,6 +657,13 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  	unsigned long js;
+>  	struct rcu_node *rnp;
+>  
+> +	/*
+> +	 * If a virtual machine is stopped by the host it can look to
+> +	 * the watchdog like an RCU stall. Check to see if the host
+> +	 * stopped the vm.
+> +	 */
+> +	kvm_check_and_clear_guest_paused();
+> +
+>  	lockdep_assert_irqs_disabled();
+>  	if ((rcu_stall_is_suppressed() && !READ_ONCE(rcu_kick_kthreads)) ||
+>  	    !rcu_gp_in_progress())
+> @@ -699,14 +706,6 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+>  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+>  
+> -		/*
+> -		 * If a virtual machine is stopped by the host it can look to
+> -		 * the watchdog like an RCU stall. Check to see if the host
+> -		 * stopped the vm.
+> -		 */
+> -		if (kvm_check_and_clear_guest_paused())
+> -			return;
+> -
+>  		/* We haven't checked in, so go dump stack. */
+>  		print_cpu_stall(gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+> @@ -717,14 +716,6 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+>  		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+>  
+> -		/*
+> -		 * If a virtual machine is stopped by the host it can look to
+> -		 * the watchdog like an RCU stall. Check to see if the host
+> -		 * stopped the vm.
+> -		 */
+> -		if (kvm_check_and_clear_guest_paused())
+> -			return;
+> -
+>  		/* They had a few time units to dump stack, so complain. */
+>  		print_other_cpu_stall(gs2, gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
 
-After patch 54efd50 (block: make generic_make_request handle
-arbitrarily sized bios), the IO through io-throttle may be larger,
-and these IOs may be further split into more small IOs. However,
-IOPS throttle does not seem to be aware of this change, which
-makes the calculation of IOPS of large IOs incomplete, resulting
-in disk-side IOPS that does not meet expectations. Maybe we should
-fix this problem.
+This patch depends on
+https://lore.kernel.org/lkml/20210716053405.1243239-1-senozhatsky@chromium.org/
 
-We can reproduce it by set max_sectors_kb of disk to 128, set
-blkio.write_iops_throttle to 100, run a dd instance inside blkio
-and use iostat to watch IOPS:
+If that x86/kvm patch lands, then we need to handle
+PVCLOCK_GUEST_STOPPED in watchdogs.
 
-dd if=/dev/zero of=/dev/sdb bs=1M count=1000 oflag=direct
 
-As a result, without this change the average IOPS is 1995, with
-this change the IOPS is 98.
-
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- block/blk-merge.c    |  2 ++
- block/blk-throttle.c | 34 ++++++++++++++++++++++++++++++++++
- block/blk.h          |  2 ++
- 3 files changed, 38 insertions(+)
-
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index a11b3b5..86ff943 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -348,6 +348,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
- 		trace_block_split(split, (*bio)->bi_iter.bi_sector);
- 		submit_bio_noacct(*bio);
- 		*bio = split;
-+
-+		blk_throtl_recharge_bio(*bio);
- 	}
- }
- 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index b1b22d8..1967438 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -2176,6 +2176,40 @@ static inline void throtl_update_latency_buckets(struct throtl_data *td)
- }
- #endif
- 
-+void blk_throtl_recharge_bio(struct bio *bio)
-+{
-+	bool rw = bio_data_dir(bio);
-+	struct blkcg_gq *blkg = bio->bi_blkg;
-+	struct throtl_grp *tg = blkg_to_tg(blkg);
-+	u32 iops_limit = tg_iops_limit(tg, rw);
-+
-+	if (iops_limit == UINT_MAX)
-+		return;
-+
-+	/*
-+	 * If previous slice expired, start a new one otherwise renew/extend
-+	 * existing slice to make sure it is at least throtl_slice interval
-+	 * long since now. New slice is started only for empty throttle group.
-+	 * If there is queued bio, that means there should be an active
-+	 * slice and it should be extended instead.
-+	 */
-+	if (throtl_slice_used(tg, rw) && !(tg->service_queue.nr_queued[rw]))
-+		throtl_start_new_slice(tg, rw);
-+	else {
-+		if (time_before(tg->slice_end[rw],
-+		    jiffies + tg->td->throtl_slice))
-+			throtl_extend_slice(tg, rw,
-+				jiffies + tg->td->throtl_slice);
-+	}
-+
-+	/* Recharge the bio to the group, as some BIOs will be further split
-+	 * after passing through the throttle, causing the actual IOPS to
-+	 * be greater than the expected value.
-+	 */
-+	tg->last_io_disp[rw]++;
-+	tg->io_disp[rw]++;
-+}
-+
- bool blk_throtl_bio(struct bio *bio)
- {
- 	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
-diff --git a/block/blk.h b/block/blk.h
-index 4b885c0..067634a 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -293,12 +293,14 @@ struct io_cq *ioc_create_icq(struct io_context *ioc, struct request_queue *q,
- extern int blk_throtl_init(struct request_queue *q);
- extern void blk_throtl_exit(struct request_queue *q);
- extern void blk_throtl_register_queue(struct request_queue *q);
-+extern void blk_throtl_recharge_bio(struct bio *bio);
- bool blk_throtl_bio(struct bio *bio);
- #else /* CONFIG_BLK_DEV_THROTTLING */
- static inline int blk_throtl_init(struct request_queue *q) { return 0; }
- static inline void blk_throtl_exit(struct request_queue *q) { }
- static inline void blk_throtl_register_queue(struct request_queue *q) { }
- static inline bool blk_throtl_bio(struct bio *bio) { return false; }
-+static inline void blk_throtl_recharge_bio(struct bio *bio) { }
- #endif /* CONFIG_BLK_DEV_THROTTLING */
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
- extern ssize_t blk_throtl_sample_time_show(struct request_queue *q, char *page);
--- 
-1.8.3.1
-
+In theory, this patch opens a small race window, if the VCPU gets preempted
+after kvm_check_and_clear_guest_paused() (external interrupt, etc.)
+But it's hard to tell how likely the problem is.
