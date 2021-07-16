@@ -2,167 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E823CB81B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BCB3CB81A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239914AbhGPN5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:57:18 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:56618 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232808AbhGPN5N (ORCPT
+        id S233006AbhGPN5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232808AbhGPN46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:57:13 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GDkDaM003258;
-        Fri, 16 Jul 2021 13:54:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=xyQGQXWg3ryKc3l1ElmquUUkERdWJ+TsvqjXrlLJg1A=;
- b=ami9pwUiRg4jHkKAR3WmkoFelyLfR0zbP1PNIkyLNF4O8rffP+ykAfhTgCWOFG2AGeV9
- A7GUQe1yv8PGgl0Hq9NJr3Th4/9Szbw9PinYyhvvyXqaCv5PIRdDZCs0vE0xDEEADprt
- wok4XKlTpS7KaG3w69iPtqk6nb7WTV/V4QYqMju3TNWREMzus8UxAUAFF2Q221VgD0aF
- CWtAV1o/l8UXeqxIzW2MBbRk7q6S7dNsCiWBOd4UJPcyUAcgzN012yJf3QiKmAfEUV7I
- GpyCiIA0MoqDC3oiQcMltyZDsvQiG2JhUylwjSIAJ5jW2fa/13g43zk7A4lhtCzmqmDp mQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=xyQGQXWg3ryKc3l1ElmquUUkERdWJ+TsvqjXrlLJg1A=;
- b=ejduQOVEDdmuhmePhAVZ+fE4/7ZFMBfx75ZuOCQYnv0ZIw7gxopE0lKTsajnC7AFI4wd
- g7im/U4G1ixkGAKpU7HKxvQt1fJ8RtWLcK1CIuqBFFoINbb628FTea1sRUCQPr3k6IfC
- jk51c7M3I/NW8nIpzq1f4S9wd8OtOe/3XB4GZSfWe6KN7UlME2n0fgr+ZvshmFF9ePY7
- rP3Wc4DQXTzUfeJPTSHpT7MuIPQYVh9yTDkNyLWuObyzaaZ639KxwTnKkLicxAO1duMp
- yAuXERIb8NP5K7k/4FB0tHlyjlXfOfXAS7a7d1VXgtc3R34gq7pPoMIglWe+uW+zzXIW XQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39tw349e8q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Jul 2021 13:54:03 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16GDoCO4146177;
-        Fri, 16 Jul 2021 13:54:02 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by userp3030.oracle.com with ESMTP id 39twp36ugt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Jul 2021 13:54:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aRiA5bojkI71e9EFvbVzwl3pvqrn6pGWLYrSXe4h/iyxgvAU/tHjfbSZ6TSpR2LG+0rdWHVMwIrDw0JDW5wuskm4J94xWjWAROBd1z8ssagv+RwPrdZkQGFzW4A692Xww7vjuHsiVb/mBzuDtcS3TskcRnGCJp0dvGcKCyia6sLzEpb1sncgROMexCiCoQNJmO6z4Za1DIpIpe6KtWcH6V9vbWfFP+/16B8tR5H9vg22mP/i21Gq+up0CtIzMVr8/TvNVWcpWvIHCegUrG8o1cZw9ejDCl8Xr+UyHUju0TZqz77bDGoZ3tdo5rq8MrvkQClCRAuYdnddtJW+IvNZ3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xyQGQXWg3ryKc3l1ElmquUUkERdWJ+TsvqjXrlLJg1A=;
- b=LSsVwz57h61+mg+egqesc8KTbe3WT3cTN7IVLV6eMwudDYjHLOYoytqtwzX5vLawdSb0GeYRdC1a78MYldlu1T3xb1bO+VSlIIAwONEWJIcJ0WlmRh3A291OMM9RpmZgw0a/haAKXXXQzpNSYfSCdcVrYOH83+uKRUN3VHTnElyJVC2YqSs7k+shgsf+2VDCL1r+OFQlxmMginjD+ToguAMuXfopH2wtshfn/2+YDd+y2ICADob1oWZyBs4LprrBbQhNcEJTAKQmplkaWF7l7++VkRUpGY8DPb/eyVvgc2TN3t9kGZVa+FwDaXBFz6Z7xxD2tDLFgh2gv/BHD6h3Ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 16 Jul 2021 09:56:58 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01455C06175F;
+        Fri, 16 Jul 2021 06:54:02 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id j34so5882926wms.5;
+        Fri, 16 Jul 2021 06:54:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xyQGQXWg3ryKc3l1ElmquUUkERdWJ+TsvqjXrlLJg1A=;
- b=Z/QPrwA6+DQlWEPOTEainTlIuaXPhaoROuHBAcwz9AD5gB77sqJI9wGqifIJOz9mMKUwK7X95to+9mKAoiAYRsqkreRaFThTUGmsHOyosWnSiFGZwhmRrGWLRfEQnz9nQAgMM/AO7IeOoD6TQiz8OB7ZR53vv3rITkGnXQpeEQQ=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com (2603:10b6:a03:8c::27)
- by BYAPR10MB3333.namprd10.prod.outlook.com (2603:10b6:a03:14e::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Fri, 16 Jul
- 2021 13:53:58 +0000
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::9478:368e:93b4:6b48]) by BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::9478:368e:93b4:6b48%4]) with mapi id 15.20.4331.026; Fri, 16 Jul 2021
- 13:53:58 +0000
-Date:   Fri, 16 Jul 2021 09:53:53 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Zhang Qiao <zhangqiao22@huawei.com>
-Cc:     juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, pjt@google.com,
-        vincent.guittot@linaro.org
-Subject: Re: [PATCH -next v3] sched: Dec cfs_bandwidth_used in
- destroy_cfs_bandwidth()
-Message-ID: <20210716135353.zcuth5cqzuuajc3u@oracle.com>
-References: <20210706083820.41358-1-zhangqiao22@huawei.com>
- <20210716022756.193817-1-zhangqiao22@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716022756.193817-1-zhangqiao22@huawei.com>
-X-ClientProxiedBy: BL1PR13CA0348.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::23) To BYAPR10MB2966.namprd10.prod.outlook.com
- (2603:10b6:a03:8c::27)
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=btgN7tUSP/yLaAouyGCSHQGvOMd/ZnNWc68W+rcJ3YQ=;
+        b=JOCzVv4MLgKKHP4v6mJ5+ORzX855S7Sh94alQwCx3tzzoyu+aUY8jA9BgFTtGkxKhk
+         JfTUd1oFUWE6xIR+1nMeWiEB7Wl8G909k4FAbBq3ZnmJGfmPM2KBC1J0FYCEVwmH9dLZ
+         MsVa4fj8arUIy5Sm8jc7oPt0BR9NLz1T/58SC9FRAdKOsX5dKyd/tHIKe3sLYbnfbY7u
+         UMoMYwJ7/Dpenuq6FujRuEG4R4VXkR1mhq8+xqDArHG4XV8QvGT/yyPcItbd3kWlyeva
+         0PupMqEkgw4JOCtO+ut7Udzz5aVW+XEpMnzEJ4f7KcYTdIjOHNdbfrEj7Pgi4wxzh6X2
+         TbRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=btgN7tUSP/yLaAouyGCSHQGvOMd/ZnNWc68W+rcJ3YQ=;
+        b=c5w+nf43ee8hOvibFMyZSp780hTsuae3SYpKeiiPwLvSY/xAj7lyDipylsIH1968ak
+         cuVar8F61CS6OX1uYWdGz6rsWJCI1NwU4zXDvpWzKJNIUUJavqQI5NAQTfzAGZQsltMj
+         pXAA9v+3wbw1Xr9MUnlGhjgQRRLgqFdoZy4thp9KJHLEqLZvEEEbebPqB0eQC+l5wcdG
+         e259NDpJD0yINfjlKfNgF9IDZbV03wbflM17zUKiwDtk4IGbdulJwTAtezjhNSO23Qgb
+         oTwVXmf8Kme7dE2ZjUKXzT20zCg/s1EVpzphWQ8/1kzllTzH/m+kfXdGobpzo4lw3/JA
+         +1jA==
+X-Gm-Message-State: AOAM531tZQx8sIon3gCw/n+EdonCExy5mH1gMWZlySJIQG3Y49ZOnXsz
+        Ar/M379Odp493exSWRQ/w2XxCDU/RDeUFe2hq3nXjA==
+X-Google-Smtp-Source: ABdhPJwM1rTbOTCZhGtN9CeCQDbcumwffAnfw17P9wpcEJZN3DHDIGzwEuSGiwBrognwIlFC6U3r7g==
+X-Received: by 2002:a1c:8083:: with SMTP id b125mr10833257wmd.132.1626443641356;
+        Fri, 16 Jul 2021 06:54:01 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
+        by smtp.gmail.com with ESMTPSA id q72sm2475284wme.14.2021.07.16.06.53.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 06:53:59 -0700 (PDT)
+Message-ID: <5866e3456645659423030339f71f3461659ffe2d.camel@gmail.com>
+Subject: Re: [RFC PATCH 03/10] perf workqueue: add threadpool start and stop
+ functions
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Date:   Fri, 16 Jul 2021 15:53:58 +0200
+In-Reply-To: <CAM9d7chvRswKLmRvW5rd4GApqngN8QeG+nPmVy4zxz_YR0MMxw@mail.gmail.com>
+References: <cover.1626177381.git.rickyman7@gmail.com>
+         <118c988358322b9daf69aeb98ff8986748b0dad2.1626177381.git.rickyman7@gmail.com>
+         <CAM9d7chvRswKLmRvW5rd4GApqngN8QeG+nPmVy4zxz_YR0MMxw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from oracle.com (98.229.125.203) by BL1PR13CA0348.namprd13.prod.outlook.com (2603:10b6:208:2c6::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.13 via Frontend Transport; Fri, 16 Jul 2021 13:53:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1a574903-770a-4622-c9ae-08d9486128b0
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3333:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB33332E94CA9807B4F0486456D9119@BYAPR10MB3333.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GL9dPwZ9VJsqXv5thz6f0pyeddqfXkEtNEd4un2Deg8W9hKTakD5hh00Oo1hIPWXet9XW2MqNiLCDHHnafyPv3x/Sr76ZNyUNkGstHTIGvVvOB/mJ9RrV9T9YSUnW8xq1jTawCd1X1AaNAOmyWFP4BNM/kTS3+JQP3fGaZI8al1jvyaAI1KNyKF+jA+lkB1g7O4dnvfK6dVnTL09sAre6OeFc00RD8j1z7yrQ6LT01CgGD2gaaIVRSxPPzMXWObVlldjCnN/jL5icz9kQ/MXVES65lK9h/b2fI6Xn+DoK69O1d4nwKf0HxKFyipZRciNDq64RuGDA/N7ffBbg/jgQPZw5y2ic4dZMUFvRM3j4SO0HOS8AZxzIF4yp/TFhROoujR5yJrTENW3wyuhQbCghP49wDIQPrmAh+6E5xY++vGlos0PFtGHI+f5gpaHGmvwuBqprDdxXt9lSHW9wOqxRonMAIRd2DlY8MGHzGTjUi8OEc74CRq9gKQkY2B3Wlr69nNKl6Stmqg7zPUXg0ADkWW4wxSAzX8VE3mok98QmvpI4udaY+fheeZqbhj40sjAPDebCHSba8ol4Bc0YK3DyZXIifMRn8x1Fz3ztrD2b7G7k4ZfeaKwVkhdDsJ4MVj4IWat7Y6SjSzq+gMCbIAvQILHTldJobAUI0dumBTdzkDmh4ovW78fA+Zuw8IVcM+2
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2966.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(39860400002)(376002)(346002)(2906002)(2616005)(186003)(1076003)(4744005)(26005)(55016002)(6666004)(38350700002)(956004)(83380400001)(38100700002)(316002)(8936002)(478600001)(4326008)(36756003)(86362001)(8676002)(66946007)(66476007)(8886007)(5660300002)(52116002)(7696005)(66556008)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dRoT92MH+kgzMos9bSMByK7KA7zwWDHfHBKy4fcHrfbndhZsYCkHC+P4l+lz?=
- =?us-ascii?Q?0E2yid3UiTmHmkmDsXS+igw4y9O2/S1BlkHOHGKJ+wbfku3DZam95OqJz1/b?=
- =?us-ascii?Q?qhg0B9TJqRoKzmMKe2RetK867WIzRRcW2/fKYFTWHxE2oEAHPwCMqRmgnV63?=
- =?us-ascii?Q?RpjinX3kU20hhEE/DyfvA4X1ib8WkFx1WUQ65x0XdQypBlYbUov3HVdeMXlx?=
- =?us-ascii?Q?JY1bAtpat0gYf6ZfehoUXH3VkkwU221O+Sz45oZlFtdAACn5MrG3vBWHs9dD?=
- =?us-ascii?Q?LpFFIZisazTyOwCtHs0IDWLoamwftavgS9AAG/73BZcnu22FmN41/BmkUCnh?=
- =?us-ascii?Q?YtNcg9vYfGQ1sgAae5CAcL/axa036ffbH/hqRdI4aqJW1Xq/IX0423QuP17E?=
- =?us-ascii?Q?uo148PaRtbTcsDRg8L7kYj0uu2uxTvNdnfAshxCggEL/7y3eLjRAWQ1Aq+fh?=
- =?us-ascii?Q?XEIabd0vXhkldxJ7gQWndVZVd4aquXT2RZBOfHU7mJcSxOX4IzMfFKf3dMkA?=
- =?us-ascii?Q?eDlYG4oLIepsLTVoaEhr0iTNVfdQn1HTfZRkfkLSBkn8O87rwGFq16DjvhUM?=
- =?us-ascii?Q?lUAd4ONko/0mehCV6OlZEr823KCfcCSq4o7iDkWWyocG94Vi4gQ9cwR2JLUg?=
- =?us-ascii?Q?hxHXe5W04ZIcAOIP+3HTghIqr8Dn9JjZ+aXxjB4i5ceH3NgnjV9d1GyTqIn/?=
- =?us-ascii?Q?/FLgMOJBFOUxLRjyswYQCOyrFfsxVq9J8Ggi2RGEn3uVPFFkokNHES0IUcmO?=
- =?us-ascii?Q?czOnxj/1iyb1QqnN3iZ089eqIxuCvBttkp47CPOSLie+igyJyvoiiL5rE7mk?=
- =?us-ascii?Q?MoeLK/h6lYmfTGGlADWmecEPxiF14/y/iaF02hNEveeMO9NvmQO5aS6QPygv?=
- =?us-ascii?Q?xuyB0FOjmF2B4oZgYVefZXFAHEG0QRI1vpS4gnnr9sEGQsPWNqTfkXGDPZL5?=
- =?us-ascii?Q?ZrLiYC6TbjX7SznvtRKtfUg24s8A1dTifxWlL2U5yyHHqqX3x8RvGMi9kqVF?=
- =?us-ascii?Q?5f3jcCMjBFQJNl4G/7sQs9xhvPldDReh3H4Mk7NvDqjw4Fe2plk/CYLkpsRP?=
- =?us-ascii?Q?R3dh29I1n4Zivagu3zQwW1XMAMWsbr46zA2Z7JmTKFqLjWhl6K7ktQix+0j5?=
- =?us-ascii?Q?LnFpsPygWXqIgTxyKbwoEiBqhEknn3kXFeRcoRAqCthw4OVp7BDnSjFmiz6x?=
- =?us-ascii?Q?58q7qviLHPwebjDbfeuk0F8ClTvF6x19iVax0YGLsZLM9CIkPAX4PAqWCAlZ?=
- =?us-ascii?Q?K450G3aawlO80lIdILweZhZysw6oEJu3BhAvEkA70Y8GG4UPFcVRqnxHDWKQ?=
- =?us-ascii?Q?VIDQDIf+puSVVlIqeZMgoVd7?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a574903-770a-4622-c9ae-08d9486128b0
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2966.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 13:53:58.5745
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6sMZPrXwYGe1aCO24IBfNJGolBjT0NV7thwo5ku8SLWEaqAQRMc5GCXlhJR1ADZJ7mGtHbzm5zY7sV5OLJSh0Y7AzvkGSeC5SZgWBsmDutY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3333
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10046 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107160084
-X-Proofpoint-GUID: c6a2RcOKH9cvVN9x_e1VuWbLCF1F8Qtd
-X-Proofpoint-ORIG-GUID: c6a2RcOKH9cvVN9x_e1VuWbLCF1F8Qtd
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 10:27:56AM +0800, Zhang Qiao wrote:
-> cfs_bandwidth_used is a static_key to control cfs bandwidth
-> feature. When adding a cfs_bandwidth group, we need increase
-> the key, and decrease it when removing. But currently when we
-> remove a cfs bandwidth group, we don't decrease the key and
-> this switch will always be on even if there is no cfs bandwidth
-> group in the system.
-> 
-> Fix the problem as two steps:
-> 1.Rename cfs_bandwidth_usage_{dec, inc}() to
-> cfs_bandwidth_usage_{dec,inc}_cpuslocked() and its caller need to
-> hold the hotplug lock.
-> 2.Add cfs_bandwidth_usage_dec() and its caller don't need
-> to hold the hotplug lock. And when removing a cfs bandwidth group,
-> we decrease cfs_bandwidth_used by calling cfs_bandwidth_usage_dec().
-> 
-> Fixes: 56f570e512ee ("sched: use jump labels to reduce overhead when bandwidth control is inactive")
-> Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+Hi Namhyung,
 
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+On Thu, 2021-07-15 at 16:48 -0700, Namhyung Kim wrote:
+> On Tue, Jul 13, 2021 at 5:11 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> > 
+> > This patch adds the start and stop functions, alongside the thread
+> > function.
+> > Each thread will run until a stop signal is received.
+> > Furthermore, start and stop are added to the test.
+> > 
+> > Thread management is based on the prototype from Alexey:
+> > https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+> > 
+> > Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > ---
+> >  tools/perf/tests/workqueue.c           |  13 ++
+> >  tools/perf/util/workqueue/threadpool.c | 238 +++++++++++++++++++++++++
+> >  tools/perf/util/workqueue/threadpool.h |   5 +
+> >  3 files changed, 256 insertions(+)
+> > 
+> > diff --git a/tools/perf/tests/workqueue.c b/tools/perf/tests/workqueue.c
+> > index 1bd4d78c13eb3b14..be377e9897bab4e9 100644
+> > --- a/tools/perf/tests/workqueue.c
+> > +++ b/tools/perf/tests/workqueue.c
+> > @@ -10,16 +10,29 @@ struct threadpool_test_args_t {
+> > 
+> >  static int __threadpool__prepare(struct threadpool_struct **pool, int
+> > pool_size)
+> >  {
+> > +       int ret;
+> > +
+> >         *pool = create_threadpool(pool_size);
+> >         TEST_ASSERT_VAL("threadpool creation failure", *pool != NULL);
+> >         TEST_ASSERT_VAL("threadpool size is wrong",
+> >                         threadpool_size(*pool) == pool_size);
+> > 
+> > +       ret = start_threadpool(*pool);
+> > +       TEST_ASSERT_VAL("threadpool start failure", ret == 0);
+> > +       TEST_ASSERT_VAL("threadpool is not ready",
+> > threadpool_is_ready(*pool));
+> > +
+> >         return 0;
+> >  }
+> > 
+> >  static int __threadpool__teardown(struct threadpool_struct *pool)
+> >  {
+> > +       int ret;
+> > +
+> > +       ret = stop_threadpool(pool);
+> > +       TEST_ASSERT_VAL("threadpool start failure", ret == 0);
+> 
+> s/start/stop/
+Thanks.
+> 
+> > +       TEST_ASSERT_VAL("stopped threadpool is ready",
+> > +                       !threadpool_is_ready(pool));
+> > +
+> >         destroy_threadpool(pool);
+> > 
+> >         return 0;
+> > diff --git a/tools/perf/util/workqueue/threadpool.c
+> > b/tools/perf/util/workqueue/threadpool.c
+> > index 70c67569f956a3e2..f4635ff782b9388e 100644
+> > --- a/tools/perf/util/workqueue/threadpool.c
+> > +++ b/tools/perf/util/workqueue/threadpool.c
+> [SNIP]
+> > +/**
+> > + * wait_thread - receive ack from thread
+> > + *
+> > + * NB: call only from main thread!
+> > + */
+> > +static int wait_thread(struct thread_struct *thread)
+> > +{
+> > +       int res;
+> > +       enum thread_msg msg = THREAD_MSG__UNDEFINED;
+> > +
+> > +       res = read(thread->pipes.from[0], &msg, sizeof(msg));
+> > +       if (res < 0) {
+> 
+> Maybe it needs to handle -EINTR.
+
+Its behaviour should be retry, right?
+Since these reads are used multiple times in the code, maybe I'm better off
+writing a wrapper function handling also EINTR.
+
+> 
+> > +               pr_err("threadpool: failed to recv msg from tid=%d: %s\n",
+> > +                      thread->tid, strerror(errno));
+> > +               return -1;
+> > +       }
+> > +       if (msg != THREAD_MSG__ACK) {
+> > +               pr_err("threadpool: received unexpected msg from tid=%d:
+> > %s\n",
+> > +                      thread->tid, thread_msg_tags[msg]);
+> > +               return -1;
+> > +       }
+> > +
+> > +       pr_debug2("threadpool: received ack from tid=%d\n", thread->tid);
+> > +
+> > +       return 0;
+> > +}
+> > 
+<SNIP>
+> > +static int __start_threadpool(struct threadpool_struct *pool)
+> > +{
+> > +       int t, tt, ret = 0, nr_threads = pool->nr_threads;
+> > +       sigset_t full, mask;
+> > +       pthread_t handle;
+> > +       pthread_attr_t attrs;
+> > +
+> > +       sigfillset(&full);
+> > +       if (sigprocmask(SIG_SETMASK, &full, &mask)) {
+> > +               pr_err("Failed to block signals on threads start: %s\n",
+> > +                       strerror(errno));
+> > +               return -1;
+> > +       }
+> > +
+> > +       pthread_attr_init(&attrs);
+> > +       pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_DETACHED);
+> > +
+> > +       for (t = 0; t < nr_threads; t++) {
+> > +               struct thread_struct *thread = &pool->threads[t];
+> > +
+> > +               if (pthread_create(&handle, &attrs, threadpool_thread,
+> > thread)) {
+> > +                       for (tt = 1; tt < t; tt++)
+> > +                               terminate_thread(thread);
+> > +                       pr_err("Failed to start threads: %s\n",
+> > strerror(errno));
+> > +                       ret = -1;
+> > +                       goto out_free_attr;
+> > +               }
+> > +
+> > +               if (wait_thread(thread)) {
+> > +                       for (tt = 1; tt <= t; tt++)
+> > +                               terminate_thread(thread);
+> > +                       ret = -1;
+> > +                       goto out_free_attr;
+> > +               }
+> > +       }
+> 
+> Isn't it better doing this way?
+> 
+> for (t = 0; t < nr_threads; t++) {
+>     pthread_create(t)
+> }
+> 
+> for (t = 0; t < nr_threads; t++) {
+>     wait_thread(t)
+> }
+
+I wondered the same thing, but I saw that it was done like that also in Alexey
+patch, so I kept it like so.
+To me, it also looks like it should be not a problem doing as you suggest. It
+should also be more efficient.
+
+Thanks,
+Riccardo
+
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> > +
+> > +out_free_attr:
+> > +       pthread_attr_destroy(&attrs);
+> > +
+> > +       if (sigprocmask(SIG_SETMASK, &mask, NULL)) {
+> > +               pr_err("Failed to unblock signals on threads start: %s\n",
+> > +                       strerror(errno));
+> > +               ret = -1;
+> > +       }
+> > +
+> > +       return ret;
+> > +}
+> > +
+
+
