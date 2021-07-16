@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACA23CB63D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EBE3CB63B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238809AbhGPKr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:47:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:14255 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238724AbhGPKrY (ORCPT
+        id S239354AbhGPKrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239048AbhGPKrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:47:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626432270; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=fRfzqitEiF6pl1t4p+k88/o5RHLLygqMeNZ3f4gZTbw=; b=gCnlyxbgee29vYMVW50cE6prK1Siql+xHgXb9Ebv45iiFwTaIWSVDmf63ZxuRTNf8F3m251/
- yspSSMY/bLuxZjObTlojRKA2KbD1i4x0pjWitweZ28wgDfsL/qBc1fDSA9nmyJKd79u3QZx3
- 5egUBsqZZ+fcsEGtxL2bWVajbZI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60f162fc4815712f3ac18cfb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Jul 2021 10:44:12
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CBDEBC4323A; Fri, 16 Jul 2021 10:44:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.159.253])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D607FC433D3;
-        Fri, 16 Jul 2021 10:44:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D607FC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH V4,0/3] mm: compaction: proactive compaction trigger by
- user
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     vbabka@suse.cz, corbet@lwn.net, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com, osalvador@suse.de,
-        rientjes@google.com, mchehab+huawei@kernel.org,
-        lokeshgidra@google.com, andrew.a.klychkov@gmail.com,
-        xi.fengfei@h3c.com, nigupta@nvidia.com,
-        dave.hansen@linux.intel.com, famzheng@amazon.com,
-        mateusznosek0@gmail.com, oleksandr@redhat.com, sh_def@163.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
-References: <cover.1624028025.git.charante@codeaurora.org>
- <c0150787-5f85-29ac-9666-05fabedabb1e@codeaurora.org>
- <20210715212744.1a43012c21711bafd25e5b68@linux-foundation.org>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <f24af677-1005-b14c-4bbe-f41feefe172b@codeaurora.org>
-Date:   Fri, 16 Jul 2021 16:14:01 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 16 Jul 2021 06:47:21 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD41C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:44:26 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id r135so14166351ybc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:44:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IIriuGowBPy7qDKgpwPUUzsyIgcUFjUWwSaWGUdPlRs=;
+        b=s/iUgXb4UO+chmBCFLeAVPjAsV8WsMp6nDOtGR97ef3etMAMawPMeQJePULkSBlbWh
+         wjr56lv3rH89btMb/qbyT7TuLdrkNfqo5TBl9WzpKj5wOlM8zUlxLzv1dhpUez8eSdrY
+         URxX/EB3hfGHYk8G8Jx01Z2f6IwIQTAcuR5zl1QDsQnPTb0eZzpDg1cdMC2UJ9Do7FUv
+         O6clbI6ow3Tv8Umqc/Ogh2iMhCkFrcChxX0KUaAJcgV/WEJm3axFlUh0rGk2hntvejtn
+         Vkm42pI7lQOwV1Rw6HQsYcyCZu4k6E1Va/M927k29lNZVLxfjkvoFkduuypIG9V4a+pm
+         ihSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IIriuGowBPy7qDKgpwPUUzsyIgcUFjUWwSaWGUdPlRs=;
+        b=oDlgMbnWvVygKlOaVvE2Qn7q/ew5J/WN9c6/QxENcFOGuhqoTB/Mkr0FlbXmhawcFb
+         9Ny3IWHrSFdTXBhV2d+GYFKzgUp0eXY7/sdX874JQbbazYvR7Cc1+PVKYS1mRmULfgc5
+         EQuit1c5wqdH0vuxhq61WXnFZ3bnVPlyFNKHiu+Y1ViYTU+DJxIbcgiN6fRIQwl17ZfT
+         zNRGeH7VZrzshxtpUHe1XkM/cHZp7ui7+Sv3LABtvzvKqQlr+8kJeRdtihwHFG3PCwb5
+         /D6jhUsIZtb4WIc0Srb+fkJd5lj7m+szUgbtrT+4FqP7jwkYshhVYFzTxvOQsjX+r7Bo
+         3Ovw==
+X-Gm-Message-State: AOAM532UMINKAKEFJwlkB682VMRkmmu24J+w2dDnqZRDN82qGDmpxpXd
+        6gBIjBPJ9F527bV4+ggv0VFcmutuIQUd3Wgdq1M=
+X-Google-Smtp-Source: ABdhPJz0QsImGYXUjHaO+CmXOBVEwHbwvki7a8VkWRjf2qT4XONPJ2+IN/IqZakrLXbOe3e58uz/4Se8gJa2ZtQqz/U=
+X-Received: by 2002:a25:be09:: with SMTP id h9mr12035043ybk.239.1626432265636;
+ Fri, 16 Jul 2021 03:44:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210715212744.1a43012c21711bafd25e5b68@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210712174849.2202287-1-ben.dooks@codethink.co.uk>
+In-Reply-To: <20210712174849.2202287-1-ben.dooks@codethink.co.uk>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Fri, 16 Jul 2021 18:44:14 +0800
+Message-ID: <CAEUhbmWmrEuwdy8OPhF1p1Sb7779QiWkx-Ca1OG5VQ38dxChLw@mail.gmail.com>
+Subject: Re: [PATCH] riscv: add correct as-options for assembly in modules
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-kernel@lists.codethink.co.uk,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Andrew for the reply!!
+On Tue, Jul 13, 2021 at 2:28 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> When trying to load modules built for riscv which include assembly
 
-On 7/16/2021 9:57 AM, Andrew Morton wrote:
-> On Sat, 3 Jul 2021 15:52:10 +0530 Charan Teja Kalla <charante@codeaurora.org> wrote:
-> 
->> A gentle ping to have your valuable comments.
-> 
-> Can we please have a resend?
-> 
-> The series has two fixes against the current code.  Please separate
-> that work out from the new feature.  So a 2-patch series to fix the bugs
-> followed by a single patch to add your new feature.
+nits: RISC-V
 
-https://lore.kernel.org/patchwork/patch/1448789/ -- Can go as a separate
-bug fix.
+> the kernel loader errors with "unexpected relocation type 'R_RISCV_ALIGN'"
+> due to R_RISCV_ALIGN relocations being generated by the assembler.
+>
+> In commit 7a8e7da42250138 ("RISC-V: Fixes to module loading")
+> the fix for gcc adds -mno-relax to the command line when building
+> C files. However this was never applied to assembly flags, and gcc
+> does no pass -mno-relax to gas when presented with a .S file.
 
-https://lore.kernel.org/patchwork/patch/1448793/ -- is the second bug
-fix which is tightly coupled with the feature of explicitly waking of
-kcompactd on the event of change in compaction proactiveness, when it is
-sleeping with MAX_SCHEDULE_TIMEOUT.
+does not pass
 
-So, will make the changes with 1 patch bug fix and 2nd patch feature
-where the second bug fix also clubbed.
+FYI
 
-I hope this is fine.
-> 
-> 
+The GCC bug was fixed recently via:
+https://github.com/gcc-mirror/gcc/commit/3b0a7d624e64eeb81e4d5e8c62c46d86ef521857
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+>
+> The fix (other than making gcc always pass -mno-relax to gas) is
+> to add -Wa,-mno-relax to gcc to make sure the as is invoked with
+> the right options.
+>
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> ---
+>  arch/riscv/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+
+Otherwise,
+Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
