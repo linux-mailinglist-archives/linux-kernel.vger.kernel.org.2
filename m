@@ -2,179 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15713CBC2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C5B3CBC2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhGPTCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:02:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36828 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231335AbhGPTCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:02:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626461988;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3eOYXdWOcxLwyJeyCXZFcz5Qu68cSCzVAnpdB+6mag=;
-        b=f7dhxgU2+3RRUlmbcK8zgD4ZrOTrxj1+IZyHNsVO8I/wlH2LgvfRzc5ms8+V3CvCQSvU/7
-        Zy+2vpanOs6TMGXCsCWRn6CpkRPjBSJ1Ur/9YIYj57H2ayqUWJFrpg91XcKBMg0AgFMEQi
-        amPejuYRr15nm3kGl7fKyuojAGdAN94=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-o9o9uPxuPVmGn9LIWjQ3LQ-1; Fri, 16 Jul 2021 14:59:46 -0400
-X-MC-Unique: o9o9uPxuPVmGn9LIWjQ3LQ-1
-Received: by mail-qt1-f200.google.com with SMTP id w3-20020ac80ec30000b029024e8c2383c1so6923638qti.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:59:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=t3eOYXdWOcxLwyJeyCXZFcz5Qu68cSCzVAnpdB+6mag=;
-        b=XeyFTYOVDtB+KuUrt2QOtfQMDtLpC7oMGrGSKzWk7ukRtH8MtUoxnJvQAoUKItzMZ+
-         PyFHt/ecR3FfqzyvW1WMPGq45CB5tFqkdiwBXUW7EzxZ3ce6GCGlgp/oaXKPlXupFJYZ
-         YtNAcs+fJcmmF3abPZlzMKzM7Ck/MLKYbcp4tRcKwXrvZCHZhImQt/2CJ8hhZZlgtBbI
-         sUSkSDEWE57aiFEZGME4eyqwajvlQ61f3kt7ixOe9sa8T7hONvtth+Pcy9MoEyMkJV+9
-         M0bU/0jzaKuIw8WOOsmxZEVaUxhnTRIfYFbXQX6oFOJ0lNCz4WtZ5BVEN3y9Vofpw4+8
-         9txw==
-X-Gm-Message-State: AOAM531GEJfvWvutsTmA9bHGnL0i3LYQV+u+6YJzqHENYcczbOQhWSmx
-        HNRGdmZOm+HiNTP2lw+kG+a+Kq6+ag8OTqBmfTV+jomS2ruRp2lCeD6dk7GdJaOKvXR7ofsxRhq
-        Mymvc+MCYUXx0Iy/BDjypm+6F
-X-Received: by 2002:ae9:f106:: with SMTP id k6mr11116139qkg.274.1626461986576;
-        Fri, 16 Jul 2021 11:59:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyWrEaDUK2aTHtHoRv6qDWayp0aBiec8jDx0iHrZK+d3fUrWhn8/UAlWoUjPwPpD0PA7q7H3g==
-X-Received: by 2002:ae9:f106:: with SMTP id k6mr11116115qkg.274.1626461986393;
-        Fri, 16 Jul 2021 11:59:46 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id j7sm4290785qkd.21.2021.07.16.11.59.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 11:59:45 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
- partition root
-To:     Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210621184924.27493-1-longman@redhat.com>
- <20210621184924.27493-3-longman@redhat.com>
- <YNcHOe3o//pIiByh@mtj.duckdns.org>
- <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
- <YONGk3iw/zrNzwLK@mtj.duckdns.org>
- <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
-Message-ID: <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
-Date:   Fri, 16 Jul 2021 14:59:44 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232421AbhGPTDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:03:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:3997 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232048AbhGPTDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 15:03:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10047"; a="190455776"
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="190455776"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 12:00:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="497124607"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Jul 2021 12:00:36 -0700
+Received: from [10.209.0.112] (kliang2-MOBL.ccr.corp.intel.com [10.209.0.112])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id EFC7858073D;
+        Fri, 16 Jul 2021 12:00:33 -0700 (PDT)
+Subject: Re: [PATCH V8 00/18] KVM: x86/pmu: Add *basic* support to enable
+ guest PEBS via DS
+To:     Jim Mattson <jmattson@google.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     peterz@infradead.org, pbonzini@redhat.com, bp@alien8.de,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        joro@8bytes.org, ak@linux.intel.com, wei.w.wang@intel.com,
+        eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com
+References: <20210716085325.10300-1-lingshan.zhu@intel.com>
+ <CALMp9eSz6RPN=spjN6zdD5iQY2ZZDwM2bHJ2R4qWijOt1A_6aw@mail.gmail.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <b6568241-02e3-faf6-7507-c7ad1c4db281@linux.intel.com>
+Date:   Fri, 16 Jul 2021 15:00:32 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
+In-Reply-To: <CALMp9eSz6RPN=spjN6zdD5iQY2ZZDwM2bHJ2R4qWijOt1A_6aw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/21 2:44 PM, Waiman Long wrote:
-> On 7/5/21 1:51 PM, Tejun Heo wrote:
->> Hello, Waiman.
->>
->> On Mon, Jun 28, 2021 at 09:06:50AM -0400, Waiman Long wrote:
->>> The main reason for doing this is because normal cpuset control file 
->>> actions
->>> are under the direct control of the cpuset code. So it is up to us 
->>> to decide
->>> whether to grant it or deny it. Hotplug, on the other hand, is not 
->>> under the
->>> control of cpuset code. It can't deny a hotplug operation. This is 
->>> the main
->>> reason why the partition root error state was added in the first place.
->> I have a difficult time convincing myself that this difference 
->> justifies the
->> behavior difference and it keeps bothering me that there is a state 
->> which
->> can be reached through one path but rejected by the other. I'll continue
->> below.
->>
->>> Normally, users can set cpuset.cpus to whatever value they want even 
->>> though
->>> they are not actually granted. However, turning on partition root is 
->>> under
->>> more strict control. You can't turn on partition root if the CPUs 
->>> requested
->>> cannot actually be granted. The problem with setting the state to just
->>> partition error is that users may not be aware that the partition 
->>> creation
->>> operation fails.  We can't assume all users will do the proper error
->>> checking. I would rather let them know the operation fails rather than
->>> relying on them doing the proper check afterward.
->>>
->>> Yes, I agree that it is a different philosophy than the original cpuset
->>> code, but I thought one reason of doing cgroup v2 is to simplify the
->>> interface and make it a bit more erorr-proof. Since partition root 
->>> creation
->>> is a relatively rare operation, we can afford to make it more strict 
->>> than
->>> the other operations.
->> So, IMO, one of the reasons why cgroup1 interface was such a mess was
->> because each piece of interaction was designed ad-hoc without regard 
->> to the
->> overall consistency. One person feels a particular way of interacting 
->> with
->> the interface is "correct" and does it that way and another person does
->> another part in a different way. In the end, we ended up with a messy
->> patchwork.
->>
->> One problematic aspect of cpuset in cgroup1 was the handling of failure
->> modes, which was caused by the same exact approach - we wanted the 
->> interface
->> to reject invalid configurations outright even though we didn't have the
->> ability to prevent those configurations from occurring through other 
->> paths,
->> which makes the failure mode more subtle by further obscuring them.
->>
->> I think a better approach would be having a clear signal and 
->> mechanism to
->> watch the state and explicitly requiring users to verify and monitor the
->> state transitions.
->
-> Sorry for the late reply as I was busy with other works.
->
-> I agree with you on principle. However, the reason why there are more 
-> restrictions on enabling partition is because I want to avoid forcing 
-> the users to always read back cpuset.partition.type to see if the 
-> operation succeeds instead of just getting an error from the 
-> operation. The former approach is more error prone. If you don't want 
-> changes in existing behavior, I can relax the checking and allow them 
-> to become an invalid partition if an illegal operation happens.
->
-> Also there is now another cpuset patch to extend cpu isolation to 
-> cgroup v1 [1]. I think it is better suit to the cgroup v2 partition 
-> scheme, but cgroup v1 is still quite heavily out there.
->
-> Please let me know what you want me to do and I will send out a v3 
-> version. 
 
-Note that the current cpuset partition implementation have implemented 
-some restrictions on when a partition can be enabled. However, I missed 
-some corner cases in the original implementation that allow certain 
-cpuset operations to make a partition invalid. I tried to plug those 
-holes in this patchset. However, if maintaining backward compatibility 
-is more important, I can leave those holes and update the documentation 
-to make sure that people check cpuset.partition.type to confirm if their 
-operation succeeds.
 
-Cheers,
-Longman
+On 7/16/2021 1:02 PM, Jim Mattson wrote:
+> On Fri, Jul 16, 2021 at 1:54 AM Zhu Lingshan <lingshan.zhu@intel.com> wrote:
+>>
+>> The guest Precise Event Based Sampling (PEBS) feature can provide an
+>> architectural state of the instruction executed after the guest instruction
+>> that exactly caused the event. It needs new hardware facility only available
+>> on Intel Ice Lake Server platforms. This patch set enables the basic PEBS
+>> feature for KVM guests on ICX.
+>>
+>> We can use PEBS feature on the Linux guest like native:
+>>
+>>     # echo 0 > /proc/sys/kernel/watchdog (on the host)
+>>     # perf record -e instructions:ppp ./br_instr a
+>>     # perf record -c 100000 -e instructions:pp ./br_instr a
+>>
+>> To emulate guest PEBS facility for the above perf usages,
+>> we need to implement 2 code paths:
+>>
+>> 1) Fast path
+>>
+>> This is when the host assigned physical PMC has an identical index as the
+>> virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+>> This path is used in most common use cases.
+>>
+>> 2) Slow path
+>>
+>> This is when the host assigned physical PMC has a different index from the
+>> virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0) In this case,
+>> KVM needs to rewrite the PEBS records to change the applicable counter indexes
+>> to the virtual PMC indexes, which would otherwise contain the physical counter
+>> index written by PEBS facility, and switch the counter reset values to the
+>> offset corresponding to the physical counter indexes in the DS data structure.
+>>
+>> The previous version [0] enables both fast path and slow path, which seems
+>> a bit more complex as the first step. In this patchset, we want to start with
+>> the fast path to get the basic guest PEBS enabled while keeping the slow path
+>> disabled. More focused discussion on the slow path [1] is planned to be put to
+>> another patchset in the next step.
+>>
+>> Compared to later versions in subsequent steps, the functionality to support
+>> host-guest PEBS both enabled and the functionality to emulate guest PEBS when
+>> the counter is cross-mapped are missing in this patch set
+>> (neither of these are typical scenarios).
+> 
+> I'm not sure exactly what scenarios you're ruling out here. In our
+> environment, we always have to be able to support host-level
+> profiling, whether or not the guest is using the PMU (for PEBS or
+> anything else). Hence, for our *basic* vPMU offering, we only expose
+> two general purpose counters to the guest, so that we can keep two
+> general purpose counters for the host. In this scenario, I would
+> expect cross-mapped counters to be common. Are we going to be able to
+> use this implementation?
+> 
 
+Let's say we have 4 GP counters in HW.
+Do you mean that the host owns 2 GP counters (counter 0 & 1) and the 
+guest own the other 2 GP counters (counter 2 & 3) in your envirinment?
+We did a similar implementation in V1, but the proposal has been denied.
+https://lore.kernel.org/kvm/20200306135317.GD12561@hirez.programming.kicks-ass.net/
+
+For the current proposal, both guest and host can see all 4 GP counters. 
+The counters are shared.
+The guest cannot know the availability of the counters. It may requires 
+a counter (e.g., counter 0) which may has been used by the host. Host 
+may provides another counter (e.g., counter 1) to the guest. This is the 
+case described in the slow path. For this case, we have to modify the 
+guest PEBS record. Because the counter index in the PEBS record is 1, 
+while the guest perf driver expects 0.
+
+If counter 0 is available, guests can use counter 0. That's the fast 
+path. I think the fast path should be more common even both host and 
+guest are profiling. Because except for some specific events, we may 
+move the host event to the counters which are not required by guest if 
+we have enough resources.
+
+Thanks,
+Kan
