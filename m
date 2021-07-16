@@ -2,152 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9538D3CBE3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B463CBE45
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234967AbhGPVPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 17:15:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24145 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230084AbhGPVPQ (ORCPT
+        id S234815AbhGPVRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 17:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234645AbhGPVRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 17:15:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626469940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rtZkPkL5ifGn/qh+FLZXpXfgaKHtHcJkyP1xEcuftv4=;
-        b=KkW+SA8tFpNkmU5hsmDl/JYC2RyWOByOFDxb1g2Iyz5nAUd+9RVJNkCmLz7I68H9ON2dAC
-        Fpwax3bLaPcLuZiSfJ7FrB/lQKrg8YdqMBXYF8uOEC8oSpGm57NbUs7ZT9/os/ABug5FnR
-        pxRZvYSEY16nc4Nm8rYvOmrpxmPT9js=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-322-TA52KyN7PpqXWmRJ6Iu12g-1; Fri, 16 Jul 2021 17:12:19 -0400
-X-MC-Unique: TA52KyN7PpqXWmRJ6Iu12g-1
-Received: by mail-qv1-f69.google.com with SMTP id c5-20020a0562141465b02902e2f9404330so7589148qvy.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:12:19 -0700 (PDT)
+        Fri, 16 Jul 2021 17:17:17 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2669DC061762
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:14:22 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id h4so11183309pgp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:14:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wHhC/u+Tz+YyCWTdNKVYJX34gL1qM4KNQ1J0r6VozT0=;
+        b=AGRyq/qLXmbKze3lJ72pJN2QN/c76K/csTSS8PXICwMCVK/EaEAzMwZxA3o3PZ1Qtt
+         gC0Bhr5bbahQFHLe/HTA6RMZAOcKRBBJeVVUC+uHdTDfBmW/V36F3wEFvo67Bt9rc8r3
+         5HwAsQBrgzKeb91PrTNi048jDDwGveiQTTWtvGKvulqf0D3cOo9WsQCK1BD78rEMgTGJ
+         cOfgcmwQiKsnj/PXZm6smL5sk3hlLIxtkYPebjodPnBHLoBG5088hMqzEaq2LfRwsuAq
+         bP919qg9TSZR+H2/ajzxyrUq9XVZ59DW4JTE/NKIYZ8LNzjsMBfzte6WfHhE0oFyV2rN
+         E0Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rtZkPkL5ifGn/qh+FLZXpXfgaKHtHcJkyP1xEcuftv4=;
-        b=Iu8XKp9zPyJmqToFOUN6wY8n1nRHjoxUNQo1endS13WZCPMXbWa9Jq4Wikt6YjD7MH
-         r6rW4IX/1lBtLNoSyGtbpYANmfVvG9V4v+TDPyxF6ok85W4q+u97mwH7Lyo5LhQnzKX8
-         PhtN3JsnYUlQRRapvo3gTc69lmuWeV2IaUVQkZLM0GkyGDWXJ2I8jnr+v7Qt1EYvdl4h
-         zAxj2rHwc14n6wndPd7HgzebJmOnL1ybRA1QTbIbX2iR1+ZdrLu14OglPHb47S0WZfbB
-         jFGSqGmsvMbX14sG3Un7IoixLXIEQEQiQDqt+3Kj1JBpYp/17Fy5GC3Ovv/ZZDqVY9HO
-         xzHQ==
-X-Gm-Message-State: AOAM533cGWEI9ApWM4a6ocY4dWTaBjaWaVhIasqnbFzewbeQPdBodzY7
-        CM8o5odJH8jVclNsaWqChSd1uSxU7VYHFSMk8Cwh6WZXQxrHuJLKYQBoqhCcVkKCOrKan13v4zD
-        5+PJCN4CNbYiRdw/mugd50UTY
-X-Received: by 2002:ae9:e511:: with SMTP id w17mr11949834qkf.306.1626469939102;
-        Fri, 16 Jul 2021 14:12:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9mVFlRQajFH1fN2NUgEKxwR2UFx9GsK1tedNLIEIZuzRTR9mkQNQGf6W+FM+nKWayRyhUCA==
-X-Received: by 2002:ae9:e511:: with SMTP id w17mr11949813qkf.306.1626469938928;
-        Fri, 16 Jul 2021 14:12:18 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id r187sm4315358qkb.129.2021.07.16.14.12.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 14:12:18 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
- partition root
-To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wHhC/u+Tz+YyCWTdNKVYJX34gL1qM4KNQ1J0r6VozT0=;
+        b=p8ttbMdRQlkAHjg0oH5uXb5qNIeEMCrk1XNamEZyql0LD+OouFXroO3m/OCXGmILRk
+         p98elCNsCpMziSlzgPP39c/is7z7YO6FY2YdvgH85qSAygJBwOg3AlvN+aTGE710Qcfi
+         Nd1UIa+Bu3uA86UEQAbasQthrg6aJjXa++SDjFLFx5QJlkazaPlIvaBB5Ti2ZaCiUM7R
+         KDBAsoaFWqnDB5qAWj1TCBhCfWhEpjUjFq1qhCL/C4O52RrIg2wyP9tnIc1NNFYV8wA4
+         VYXCkAt7alm/SRgJsGlfxg2m6ito58H+j4FLB6ct0q84VfGH19qhU1ul9KPQ5bbMxqmB
+         dmsA==
+X-Gm-Message-State: AOAM532BccTKj6c9V8Z1vWaHpcXBZWxeRu9ce7qfE4v4VRo9Z+hBxKIw
+        BjFefzaUSE0ZI+2EwZylDEFPlQ==
+X-Google-Smtp-Source: ABdhPJyy/03uRnhTJ2SiPB6qPk6MqOkswkGZYvq9jxHBfG5mcW0dG3s0jOK6gCGZRtU3oAwINdQ+HQ==
+X-Received: by 2002:aa7:90cd:0:b029:333:baa9:87b7 with SMTP id k13-20020aa790cd0000b0290333baa987b7mr7471263pfk.23.1626470061392;
+        Fri, 16 Jul 2021 14:14:21 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b1sm12659509pjn.11.2021.07.16.14.14.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 14:14:20 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 21:14:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210621184924.27493-1-longman@redhat.com>
- <20210621184924.27493-3-longman@redhat.com>
- <YNcHOe3o//pIiByh@mtj.duckdns.org>
- <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
- <YONGk3iw/zrNzwLK@mtj.duckdns.org>
- <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
- <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
- <8c44b659-3fe4-b14f-fac1-cbd5b23010c3@redhat.com>
- <YPHwG61qGDa3h6Wg@mtj.duckdns.org>
-Message-ID: <e8c538a8-bf5c-b04c-1b21-ac22cd158dd1@redhat.com>
-Date:   Fri, 16 Jul 2021 17:12:17 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 34/40] KVM: SVM: Add support to handle Page
+ State Change VMGEXIT
+Message-ID: <YPH2qRkkG6m0FT2X@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-35-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YPHwG61qGDa3h6Wg@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707183616.5620-35-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/21 4:46 PM, Tejun Heo wrote:
-> Hello, Waiman.
->
-> On Fri, Jul 16, 2021 at 04:08:15PM -0400, Waiman Long wrote:
->>>> I agree with you on principle. However, the reason why there are
->>>> more restrictions on enabling partition is because I want to avoid
->>>> forcing the users to always read back cpuset.partition.type to see
->>>> if the operation succeeds instead of just getting an error from the
->>>> operation. The former approach is more error prone. If you don't
->>>> want changes in existing behavior, I can relax the checking and
->>>> allow them to become an invalid partition if an illegal operation
->>>> happens.
->>>>
->>>> Also there is now another cpuset patch to extend cpu isolation to
->>>> cgroup v1 [1]. I think it is better suit to the cgroup v2 partition
->>>> scheme, but cgroup v1 is still quite heavily out there.
->>>>
->>>> Please let me know what you want me to do and I will send out a v3
->>>> version.
->>> Note that the current cpuset partition implementation have implemented
->>> some restrictions on when a partition can be enabled. However, I missed
->>> some corner cases in the original implementation that allow certain
->>> cpuset operations to make a partition invalid. I tried to plug those
->>> holes in this patchset. However, if maintaining backward compatibility
->>> is more important, I can leave those holes and update the documentation
->>> to make sure that people check cpuset.partition.type to confirm if their
->>> operation succeeds.
->> I just realize that partition root set the CPU_EXCLUSIVE bit. So changes to
->> cpuset.cpus that break exclusivity rule is not allowed anyway. This patchset
->> is just adding additional checks so that cpuset.cpus changes that break the
->> partition root rules will not be allowed. I can remove those additional
->> checks for this patchset and allow cpuset.cpus changes that break the
->> partition root rules to make it invalid instead. However, I still want
->> invalid changes to cpuset.partition.type to be disallowed.
-> So, I get the instinct to disallow these operations and it'd make sense if
-> the conditions aren't reachable otherwise. However, I'm afraid what users
-> eventually get is false sense of security rather than any actual guarantee.
->
-> Inconsistencies like this cause actual usability hazards - e.g. imagine a
-> system config script whic sets up exclusive cpuset and let's say that the
-> use case is fine with degraded operation when the target cores are offline
-> (e.g. energy save mode w/ only low power cores online). Let's say this
-> script runs in late stages during boot and has been reliable. However, at
-> some point, there are changes in boot sequence and now there's low but
-> non-trivial chance that the system would already be in low power state when
-> the script runs. Now the script will fail sporadically and the whole thing
-> would be pretty awkward to debug.
->
-> I'd much prefer to have an explicit interface to confirm the eventual state
-> and a way to monitor state transitions (without polling). An invalid state
-> is an inherent part of cpuset configuration. I'd much rather have that
-> really explicit in the interface even if that means a bit of extra work at
-> configuration time.
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> +static unsigned long snp_handle_psc(struct vcpu_svm *svm, struct ghcb *ghcb)
+> +{
+> +	struct kvm_vcpu *vcpu = &svm->vcpu;
+> +	int level, op, rc = PSC_UNDEF_ERR;
+> +	struct snp_psc_desc *info;
+> +	struct psc_entry *entry;
+> +	gpa_t gpa;
+> +
+> +	if (!sev_snp_guest(vcpu->kvm))
+> +		goto out;
+> +
+> +	if (!setup_vmgexit_scratch(svm, true, sizeof(ghcb->save.sw_scratch))) {
+> +		pr_err("vmgexit: scratch area is not setup.\n");
+> +		rc = PSC_INVALID_HDR;
+> +		goto out;
+> +	}
+> +
+> +	info = (struct snp_psc_desc *)svm->ghcb_sa;
+> +	entry = &info->entries[info->hdr.cur_entry];
 
-Are you suggesting that we add a cpuset.cpus.events file that allows 
-processes to be notified if an event (e.g. hotplug) that changes a 
-partition root to invalid partition happens or when explicit change to a 
-partition root fails? Will that be enough to satisfy your requirement?
+Grabbing "entry" here is unnecessary and confusing.
 
-Cheers,
-Longman
+> +
+> +	if ((info->hdr.cur_entry >= VMGEXIT_PSC_MAX_ENTRY) ||
+> +	    (info->hdr.end_entry >= VMGEXIT_PSC_MAX_ENTRY) ||
+> +	    (info->hdr.cur_entry > info->hdr.end_entry)) {
 
+There's a TOCTOU bug here if the guest uses the GHCB instead of a scratch area.
+If the guest uses the scratch area, then KVM makes a full copy into kernel memory.
+But if the guest uses the GHCB, then KVM maps the GHCB into kernel address space
+but doesn't make a full copy, i.e. the guest can modify the data while it's being
+processed by KVM.
+
+IIRC, Peter and I discussed the sketchiness of the GHCB mapping offline a few
+times, but determined that there were no existing SEV-ES bugs because the guest
+could only submarine its own emulation request.  But here, it could coerce KVM
+into running off the end of a buffer.
+
+I think you can get away with capturing cur_entry/end_entry locally, though
+copying the GHCB would be more robust.  That would also make the code a bit
+prettier, e.g.
+
+	cur = info->hdr.cur_entry;
+	end = info->hdr.end_entry;
+
+> +		rc = PSC_INVALID_ENTRY;
+> +		goto out;
+> +	}
+> +
+> +	while (info->hdr.cur_entry <= info->hdr.end_entry) {
+
+Make this a for loop?
+
+	for ( ; cur_entry < end_entry; cur_entry++)
+
+> +		entry = &info->entries[info->hdr.cur_entry];
+
+Does this need array_index_nospec() treatment?
+
+> +		gpa = gfn_to_gpa(entry->gfn);
+> +		level = RMP_TO_X86_PG_LEVEL(entry->pagesize);
+> +		op = entry->operation;
+> +
+> +		if (!IS_ALIGNED(gpa, page_level_size(level))) {
+> +			rc = PSC_INVALID_ENTRY;
+> +			goto out;
+> +		}
+> +
+> +		rc = __snp_handle_psc(vcpu, op, gpa, level);
+> +		if (rc)
+> +			goto out;
+> +
+> +		info->hdr.cur_entry++;
+> +	}
+> +
+> +out:
+
+And for the copy case:
+
+	info->hdr.cur_entry = cur;
+
+> +	return rc ? map_to_psc_vmgexit_code(rc) : 0;
+> +}
