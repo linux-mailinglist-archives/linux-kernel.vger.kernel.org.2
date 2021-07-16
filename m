@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EE23CBF5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF6A3CBF5F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238437AbhGPWkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 18:40:03 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:56006 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237753AbhGPWjr (ORCPT
+        id S238234AbhGPWkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 18:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236673AbhGPWke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 18:39:47 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 16 Jul 2021 15:36:45 -0700
-Received: from htb-1n-eng-dhcp122.eng.vmware.com (unknown [10.20.114.3])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 62A2B208C3;
-        Fri, 16 Jul 2021 15:36:50 -0700 (PDT)
-Received: by htb-1n-eng-dhcp122.eng.vmware.com (Postfix, from userid 0)
-        id 5EB47AA043; Fri, 16 Jul 2021 15:36:50 -0700 (PDT)
-From:   Ronak Doshi <doshir@vmware.com>
-To:     <netdev@vger.kernel.org>
-CC:     Ronak Doshi <doshir@vmware.com>,
-        "maintainer:VMWARE VMXNET3 ETHERNET DRIVER" <pv-drivers@vmware.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 7/7] vmxnet3: update to version 6
-Date:   Fri, 16 Jul 2021 15:36:26 -0700
-Message-ID: <20210716223626.18928-8-doshir@vmware.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210716223626.18928-1-doshir@vmware.com>
-References: <20210716223626.18928-1-doshir@vmware.com>
+        Fri, 16 Jul 2021 18:40:34 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FB4C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:37:38 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id y38so17334144ybi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AajCcLGQreUgC8barCBgEJa8ujUXbuUEsJRU4Qb14aU=;
+        b=Sv5vIvLuksdalgYv854cCR5xM6eJew5RcXNKQwFwgbqF1Ehmn5Kd7tVcMxeIPJnyrn
+         8SorwLdMZd6pb/iZ6PeIMTUjMHWlP3ppT+vVYF+NXORQcXt8QY9zWk0zwGMsabUoW4HJ
+         Y7fp8Etw3VJnZC+FTTI9MKjiGJgfKkVyaxJHhiOsnEf8UxoH0oexUy01NRW68E8jX7i+
+         fDPyI2wBDoZKHQYShfZgLCQvq18xsWJRQuF8UqYsRC50XJ+CWFZV2KGU6Cl/KPC+2xiu
+         fqw1l4JEeiGNRM76GYBP33Z861L+X7AcJdTxu94y1fXkVY4lscem/DaBIi6cz9VZrOME
+         0Hpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AajCcLGQreUgC8barCBgEJa8ujUXbuUEsJRU4Qb14aU=;
+        b=icm3dQn99JBMMnfkf24mOggKqLY3XesK09S8DNpRJ84Wt9MqpmCBmQfkHjblDm2CZj
+         fseZmaeOGkwyqGDk2EDPFbBamgqyq2hl243qlGL8yonw9MYUjtDrTQU0AcpBzulb6iv+
+         EpNvBaPResvu2h62yKZPtHZZzS146Yj5Jh6piahNJZGdg8WiFhOk2yXwvoHDY8wc2SIi
+         j4s5Z0VirH0rFLBQ61WAJYd6pSSZQEcI+N5Yb4o+DqSNrjZs/TmkgjPM2V1my/+F1rIr
+         poBeXB4HJG8L6KiozvmQ5QBWzR/JlpGgRbYgcf1wW3EFqj4GmQUp4eHnc/AY2fEIQbWQ
+         +UaQ==
+X-Gm-Message-State: AOAM530oAYu7xCt3R94nnFJS1Esc2T8olESdTIZZwTA5ABiMrbm+NXFW
+        FPMOjDIbUeyhOFEbjtDikb9diepopc8BnpOtGZ0=
+X-Google-Smtp-Source: ABdhPJwjmjTOyEafGU8JB1kr3VsLd5fMQRUpWIGYYsUyYB6b9iMnoU2I+2ryII51GLlG2/dqEdRE4j3pJN2OUpl7THQ=
+X-Received: by 2002:a25:2c01:: with SMTP id s1mr17155432ybs.387.1626475057553;
+ Fri, 16 Jul 2021 15:37:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: doshir@vmware.com does not
- designate permitted sender hosts)
+References: <20210712174849.2202287-1-ben.dooks@codethink.co.uk>
+ <CAEUhbmWmrEuwdy8OPhF1p1Sb7779QiWkx-Ca1OG5VQ38dxChLw@mail.gmail.com> <36a5d9d8-67be-e128-2798-5bf1989ce06d@codethink.co.uk>
+In-Reply-To: <36a5d9d8-67be-e128-2798-5bf1989ce06d@codethink.co.uk>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Sat, 17 Jul 2021 06:37:25 +0800
+Message-ID: <CAEUhbmVMc+rNs3ghu0pE_4+W8SzEgZ-ykeNDjriqPPZ6Zxhv+Q@mail.gmail.com>
+Subject: Re: [PATCH] riscv: add correct as-options for assembly in modules
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-kernel@lists.codethink.co.uk,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With all vmxnet3 version 6 changes incorporated in the vmxnet3 driver,
-the driver can configure emulation to run at vmxnet3 version 6, provided
-the emulation advertises support for version 6.
+On Fri, Jul 16, 2021 at 11:33 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> On 16/07/2021 11:44, Bin Meng wrote:
+> > On Tue, Jul 13, 2021 at 2:28 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+> >>
+> >> When trying to load modules built for riscv which include assembly
+> >
+> > nits: RISC-V
+> >
+> >> the kernel loader errors with "unexpected relocation type 'R_RISCV_ALIGN'"
+> >> due to R_RISCV_ALIGN relocations being generated by the assembler.
+> >>
+> >> In commit 7a8e7da42250138 ("RISC-V: Fixes to module loading")
+> >> the fix for gcc adds -mno-relax to the command line when building
+> >> C files. However this was never applied to assembly flags, and gcc
+> >> does no pass -mno-relax to gas when presented with a .S file.
+> >
+> > does not pass
+>
+> I'll see if I can make this simpler. Should this get done for a v2?
+>
 
-Signed-off-by: Ronak Doshi <doshir@vmware.com>
-Acked-by: Guolin Yang <gyang@vmware.com>
----
- drivers/net/vmxnet3/vmxnet3_drv.c | 12 +++++++++++-
- drivers/net/vmxnet3/vmxnet3_int.h |  4 ++--
- 2 files changed, 13 insertions(+), 3 deletions(-)
+Yes, please send v2.
 
-diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
-index 9f52f9c254f4..e3c6b7e3bfdd 100644
---- a/drivers/net/vmxnet3/vmxnet3_drv.c
-+++ b/drivers/net/vmxnet3/vmxnet3_drv.c
-@@ -3480,7 +3480,17 @@ vmxnet3_probe_device(struct pci_dev *pdev,
- 		goto err_alloc_pci;
- 
- 	ver = VMXNET3_READ_BAR1_REG(adapter, VMXNET3_REG_VRRS);
--	if (ver & (1 << VMXNET3_REV_4)) {
-+	if (ver & (1 << VMXNET3_REV_6)) {
-+		VMXNET3_WRITE_BAR1_REG(adapter,
-+				       VMXNET3_REG_VRRS,
-+				       1 << VMXNET3_REV_6);
-+		adapter->version = VMXNET3_REV_6 + 1;
-+	} else if (ver & (1 << VMXNET3_REV_5)) {
-+		VMXNET3_WRITE_BAR1_REG(adapter,
-+				       VMXNET3_REG_VRRS,
-+				       1 << VMXNET3_REV_5);
-+		adapter->version = VMXNET3_REV_5 + 1;
-+	} else if (ver & (1 << VMXNET3_REV_4)) {
- 		VMXNET3_WRITE_BAR1_REG(adapter,
- 				       VMXNET3_REG_VRRS,
- 				       1 << VMXNET3_REV_4);
-diff --git a/drivers/net/vmxnet3/vmxnet3_int.h b/drivers/net/vmxnet3/vmxnet3_int.h
-index 8675209070ea..7027ff483fa5 100644
---- a/drivers/net/vmxnet3/vmxnet3_int.h
-+++ b/drivers/net/vmxnet3/vmxnet3_int.h
-@@ -69,12 +69,12 @@
- /*
-  * Version numbers
-  */
--#define VMXNET3_DRIVER_VERSION_STRING   "1.5.0.0-k"
-+#define VMXNET3_DRIVER_VERSION_STRING   "1.6.0.0-k"
- 
- /* Each byte of this 32-bit integer encodes a version number in
-  * VMXNET3_DRIVER_VERSION_STRING.
-  */
--#define VMXNET3_DRIVER_VERSION_NUM      0x01050000
-+#define VMXNET3_DRIVER_VERSION_NUM      0x01060000
- 
- #if defined(CONFIG_PCI_MSI)
- 	/* RSS only makes sense if MSI-X is supported. */
--- 
-2.11.0
+> > FYI
+> >
+> > The GCC bug was fixed recently via:
+> > https://github.com/gcc-mirror/gcc/commit/3b0a7d624e64eeb81e4d5e8c62c46d86ef521857
+>
+> thanks, I think it still useful to fix this in the kernel.
+>
+> >>
+> >> The fix (other than making gcc always pass -mno-relax to gas) is
+> >> to add -Wa,-mno-relax to gcc to make sure the as is invoked with
+> >> the right options.
+> >>
+> >> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> >> ---
+> >>   arch/riscv/Makefile | 1 +
+> >>   1 file changed, 1 insertion(+)
+> >>
+> >
+> > Otherwise,
+> > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
 
+Regards,
+Bin
