@@ -2,166 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E0D3CB0C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 04:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616083CB0CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 04:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233291AbhGPC3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 22:29:49 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11285 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233257AbhGPC3p (ORCPT
+        id S233356AbhGPCdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 22:33:35 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6941 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233114AbhGPCde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 22:29:45 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GQw2s3xq4z1CJtB;
-        Fri, 16 Jul 2021 10:21:09 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+        Thu, 15 Jul 2021 22:33:34 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQw9b2HJ9z7vNh;
+        Fri, 16 Jul 2021 10:26:59 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Jul 2021 10:26:49 +0800
-Received: from huawei.com (10.67.174.153) by dggpeml500018.china.huawei.com
- (7.185.36.186) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 16 Jul
- 2021 10:26:49 +0800
-From:   Zhang Qiao <zhangqiao22@huawei.com>
-To:     <daniel.m.jordan@oracle.com>
-CC:     <juri.lelli@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <peterz@infradead.org>, <pjt@google.com>,
-        <vincent.guittot@linaro.org>, <zhangqiao22@huawei.com>
-Subject: [PATCH -next v3] sched: Dec cfs_bandwidth_used in destroy_cfs_bandwidth()
-Date:   Fri, 16 Jul 2021 10:27:56 +0800
-Message-ID: <20210716022756.193817-1-zhangqiao22@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
-In-Reply-To: <20210706083820.41358-1-zhangqiao22@huawei.com>
-References: <20210706083820.41358-1-zhangqiao22@huawei.com>
+ 15.1.2176.2; Fri, 16 Jul 2021 10:30:34 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 16 Jul
+ 2021 10:30:33 +0800
+Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
+ page_pool packets
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+CC:     Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "Matteo Croce" <mcroce@microsoft.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
+ <bf326953-495f-db01-e554-42f4421d237a@huawei.com>
+ <CAKgT0UemhFPHo9krmQfm=yNTSjwpBwVkoFtLEEQ-qLVh=-BeHg@mail.gmail.com>
+ <YPBKFXWdDytvPmoN@Iliass-MBP>
+ <CAKgT0UfOr7U-8T+Hr9NVPL7EMYaTzbx7w1-hUthjD9bXUFsqMw@mail.gmail.com>
+ <YPBOHcx/sCEz/+wn@Iliass-MBP>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <57b08af5-8be2-56c7-981c-27ab7187fbdf@huawei.com>
+Date:   Fri, 16 Jul 2021 10:30:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.153]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500018.china.huawei.com (7.185.36.186)
+In-Reply-To: <YPBOHcx/sCEz/+wn@Iliass-MBP>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cfs_bandwidth_used is a static_key to control cfs bandwidth
-feature. When adding a cfs_bandwidth group, we need increase
-the key, and decrease it when removing. But currently when we
-remove a cfs bandwidth group, we don't decrease the key and
-this switch will always be on even if there is no cfs bandwidth
-group in the system.
+On 2021/7/15 23:02, Ilias Apalodimas wrote:
+> On Thu, Jul 15, 2021 at 07:57:57AM -0700, Alexander Duyck wrote:
+>> On Thu, Jul 15, 2021 at 7:45 AM Ilias Apalodimas
+>> <ilias.apalodimas@linaro.org> wrote:
+>>>
+>>>>>>           atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
+>>>
+>>> [...]
+>>>
+>>>>>>                             &shinfo->dataref))
+>>>>>> -             return;
+>>>>>> +             goto exit;
+>>>>>
+>>>>> Is it possible this patch may break the head frag page for the original skb,
+>>>>> supposing it's head frag page is from the page pool and below change clears
+>>>>> the pp_recycle for original skb, causing a page leaking for the page pool?
+>>>>
+>>>> I don't see how. The assumption here is that when atomic_sub_return
+>>>> gets down to 0 we will still have an skb with skb->pp_recycle set and
+>>>> it will flow down and encounter skb_free_head below. All we are doing
+>>>> is skipping those steps and clearing skb->pp_recycle for all but the
+>>>> last buffer and the last one to free it will trigger the recycling.
+>>>
+>>> I think the assumption here is that
+>>> 1. We clone an skb
+>>> 2. The original skb goes into pskb_expand_head()
+>>> 3. skb_release_data() will be called for the original skb
+>>>
+>>> But with the dataref bumped, we'll skip the recycling for it but we'll also
+>>> skip recycling or unmapping the current head (which is a page_pool mapped
+>>> buffer)
+>>
+>> Right, but in that case it is the clone that is left holding the
+>> original head and the skb->pp_recycle flag is set on the clone as it
+>> was copied from the original when we cloned it. 
+> 
+> Ah yes, that's what I missed
+> 
+>> What we have
+>> essentially done is transferred the responsibility for freeing it from
+>> the original to the clone.
+>>
+>> If you think about it the result is the same as if step 2 was to go
+>> into kfree_skb. We would still be calling skb_release_data and the
+>> dataref would be decremented without the original freeing the page. We
+>> have to wait until all the clones are freed and dataref reaches 0
+>> before the head can be recycled.
+> 
+> Yep sounds correct
 
-Fix the problem as two steps:
-1.Rename cfs_bandwidth_usage_{dec, inc}() to
-cfs_bandwidth_usage_{dec,inc}_cpuslocked() and its caller need to
-hold the hotplug lock.
-2.Add cfs_bandwidth_usage_dec() and its caller don't need
-to hold the hotplug lock. And when removing a cfs bandwidth group,
-we decrease cfs_bandwidth_used by calling cfs_bandwidth_usage_dec().
+Ok, I suppose the fraglist skb is handled similar as the regular skb, right?
 
-Fixes: 56f570e512ee ("sched: use jump labels to reduce overhead when bandwidth control is inactive")
-Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
----
-Changes since v2:
- - Remove cfs_bandwidth_usage_inc()
- - Make cfs_bandwidth_usage_dec() static
+Also, this patch might need respinning as the state of this patch is "Changes
+Requested" in patchwork.
 
-Changes since v1:
- - Add suffix _cpuslocked to cfs_bandwidth_usage_{dec,inc}.
- - Use static_key_slow_{dec,inc}_cpuslocked() in origin
- cfs_bandwidth_usage_{dec,inc}().
----
- kernel/sched/core.c  |  4 ++--
- kernel/sched/fair.c  | 18 ++++++++++++++----
- kernel/sched/sched.h |  4 ++--
- 3 files changed, 18 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 014ce8b385c7..d407aab4ea38 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9865,7 +9865,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
- 	 * before making related changes, and on->off must occur afterwards
- 	 */
- 	if (runtime_enabled && !runtime_was_enabled)
--		cfs_bandwidth_usage_inc();
-+		cfs_bandwidth_usage_inc_cpuslocked();
- 	raw_spin_lock_irq(&cfs_b->lock);
- 	cfs_b->period = ns_to_ktime(period);
- 	cfs_b->quota = quota;
-@@ -9893,7 +9893,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
- 		rq_unlock_irq(rq, &rf);
- 	}
- 	if (runtime_was_enabled && !runtime_enabled)
--		cfs_bandwidth_usage_dec();
-+		cfs_bandwidth_usage_dec_cpuslocked();
- out_unlock:
- 	mutex_unlock(&cfs_constraints_mutex);
- 	put_online_cpus();
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 44e44c235f1f..03a1e98cbe96 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4613,23 +4613,30 @@ static inline bool cfs_bandwidth_used(void)
- 	return static_key_false(&__cfs_bandwidth_used);
- }
- 
--void cfs_bandwidth_usage_inc(void)
-+void cfs_bandwidth_usage_inc_cpuslocked(void)
- {
- 	static_key_slow_inc_cpuslocked(&__cfs_bandwidth_used);
- }
- 
--void cfs_bandwidth_usage_dec(void)
-+void cfs_bandwidth_usage_dec_cpuslocked(void)
- {
- 	static_key_slow_dec_cpuslocked(&__cfs_bandwidth_used);
- }
-+
-+static void cfs_bandwidth_usage_dec(void)
-+{
-+	static_key_slow_dec(&__cfs_bandwidth_used);
-+}
- #else /* CONFIG_JUMP_LABEL */
- static bool cfs_bandwidth_used(void)
- {
- 	return true;
- }
- 
--void cfs_bandwidth_usage_inc(void) {}
--void cfs_bandwidth_usage_dec(void) {}
-+void cfs_bandwidth_usage_inc_cpuslocked(void) {}
-+void cfs_bandwidth_usage_dec_cpuslocked(void) {}
-+
-+static void cfs_bandwidth_usage_dec(void) {}
- #endif /* CONFIG_JUMP_LABEL */
- 
- /*
-@@ -5345,6 +5352,9 @@ static void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
- 	if (!cfs_b->throttled_cfs_rq.next)
- 		return;
- 
-+	if (cfs_b->quota != RUNTIME_INF)
-+		cfs_bandwidth_usage_dec();
-+
- 	hrtimer_cancel(&cfs_b->period_timer);
- 	hrtimer_cancel(&cfs_b->slack_timer);
- }
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 0fa583db5c4a..6b2f58a99fa2 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2690,8 +2690,8 @@ extern void init_cfs_rq(struct cfs_rq *cfs_rq);
- extern void init_rt_rq(struct rt_rq *rt_rq);
- extern void init_dl_rq(struct dl_rq *dl_rq);
- 
--extern void cfs_bandwidth_usage_inc(void);
--extern void cfs_bandwidth_usage_dec(void);
-+extern void cfs_bandwidth_usage_inc_cpuslocked(void);
-+extern void cfs_bandwidth_usage_dec_cpuslocked(void);
- 
- #ifdef CONFIG_NO_HZ_COMMON
- #define NOHZ_BALANCE_KICK_BIT	0
--- 
-2.18.0.huawei.25
-
+> 
+> Thanks
+> /Ilias
+> .
+> 
