@@ -2,65 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB473CB6AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273853CB6AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhGPLZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbhGPLYI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 07:24:08 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047F6C06175F;
-        Fri, 16 Jul 2021 04:21:09 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id go30so14597749ejc.8;
-        Fri, 16 Jul 2021 04:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wnHGNPq7bMhUlKL335UJdlgKd8zJCtv0oGlTguK7nSw=;
-        b=cA+tbdv6F7XpqDl72o2wewPUN2YiMDzKu256U/duWC4wjwBxlh2yOtznprANBHl1QS
-         uKEzgaXyEQmOPmx3KgxfFf+QYrHNHuxLSJf2fYm8kePBRLC6YpDHVeWZ6RNOJW58EBZL
-         eIotZLxZq6Z+KvVsqtMv24HIxV+SQ5tVXdBTpLX74mwmWQ/gEdK+ub6z8+e8T5DJ5kx8
-         S5Xqe9bT0cizXx4IaC/S1f4cfRFGlAHyQbXb+UbY11v1Ofs9Y36VENXxYr6HJwoduf7B
-         pGi3uwnFvUIphlwprsoDEmaPltdv9VrCfSJWM9H6E3UqAQA7a3WAYmw0s99gnL0qAaEE
-         b1KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wnHGNPq7bMhUlKL335UJdlgKd8zJCtv0oGlTguK7nSw=;
-        b=DCchwOV0jcnFuzSZqXfMhyu3DJszSU4Q6a/gLLwTghh0/Vs4VHtXPyQnFPxaapJr91
-         Xczyf02uLILsp1EEU09rKhZmN9+tRhlyaZkxX2OePnuuakNHqedg1qEO7tQokNIE2Tgn
-         A+f6q+6Mp+6mN2jYI1KV1IUG4944POMXiTFcT/imWCMwfN4e6l5ncGIxwJNiU/hOXIsF
-         qmmwkHVNv8Qa//uF3PHb8nPK80Ixk0/iQ0zDgMzzr6SBVW1IPC2Fr+rBlUHOO6y7REwv
-         oCAW9/9m6rgsj97EjWsDlHcf9e50r2isLA8iuNyuYW3dSTkg/08IAFpuu1R4KNerjB2Q
-         /1YA==
-X-Gm-Message-State: AOAM530xcLbntF82RrPywsc8/h7GumbRG5jXS5Pw8FeG+Iu9YazR2TUE
-        B+S6EtdA/bdEJl93xh5GwlI=
-X-Google-Smtp-Source: ABdhPJxm01I0Bga4NzRXxvT8TcIGohd/Bb35pB7mXtQapA7n39qnFvgbiVz27xTomBMRUPYTDyrL0A==
-X-Received: by 2002:a17:906:af0e:: with SMTP id lx14mr11377132ejb.54.1626434467052;
-        Fri, 16 Jul 2021 04:21:07 -0700 (PDT)
-Received: from localhost.localdomain ([5.176.51.215])
-        by smtp.gmail.com with ESMTPSA id a25sm3590064edr.21.2021.07.16.04.21.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 04:21:06 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 14:20:57 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     syzbot <syzbot+deb25600c2fd79ffd367@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: Re: [syzbot] INFO: task hung in ext4_put_super
-Message-ID: <20210716142057.0f1f6045@gmail.com>
-In-Reply-To: <000000000000f36f9505c73ae373@google.com>
-References: <0000000000006f809f05c284e0f1@google.com>
-        <000000000000f36f9505c73ae373@google.com>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        id S232286AbhGPL0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 07:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232222AbhGPL0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 07:26:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AC86023B;
+        Fri, 16 Jul 2021 11:22:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626434533;
+        bh=ymtVNzxVfN5KdOU5IVgRxYIYYFfih2gnBtxs8vuCWsU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LqySXf0xk+WtUBkYRn+1USXOUzZswQn16313q7bEOl9g16Nvj44nSVne1gIzInUIL
+         e+3B5+dlV9dxOc/HDmTHoYszcErOm9gGBoMYNjdgbtrSoN6GbqbD+ZRAvlu3AqKCQj
+         rM1yxRR+EP6Sc3+7kPirVxruYEEjBp/PWXfi6PY3Tlwu+kmTJbmPe9oYih5mK1+At0
+         /07dDgiWv8qlbDokoBlSXhsCnJuLUcz7wgsY1wjvvBV/Tc7KMLZG6Nf2v6ckkUiIEp
+         DOofZNWoxwQPuyCFbWGPaPIBGyMsBEab+PzThNBEsd43jTy0sUu6f166sHUAiimLH4
+         bczQLX2Qm4CBg==
+Date:   Fri, 16 Jul 2021 13:22:08 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Manivannan Sadhasivam <mani@kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v5 4/8] dt-bindings: PCI: kirin: Drop PHY properties
+Message-ID: <20210716132208.3cd8f404@coco.lan>
+In-Reply-To: <20210714022849.GA1330659@robh.at.kernel.org>
+References: <cover.1626157454.git.mchehab+huawei@kernel.org>
+        <a04c9c92187ceaee0fd4b8d4721e2a3275d97518.1626157454.git.mchehab+huawei@kernel.org>
+        <20210714022849.GA1330659@robh.at.kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -68,41 +47,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 03:17:09 -0700
-syzbot <syzbot+deb25600c2fd79ffd367@syzkaller.appspotmail.com> wrote:
+Em Tue, 13 Jul 2021 20:28:49 -0600
+Rob Herring <robh@kernel.org> escreveu:
 
-> syzbot suspects this issue was fixed by commit:
+> On Tue, Jul 13, 2021 at 08:28:37AM +0200, Mauro Carvalho Chehab wrote:
+> > There are several properties there that belong to the PHY
+> > interface. Drop them, as a new binding file will describe
+> > the PHY properties for Kirin 960.  
 > 
-> commit 618f003199c6188e01472b03cdbba227f1dc5f24
-> Author: Pavel Skripkin <paskripkin@gmail.com>
-> Date:   Fri Apr 30 18:50:46 2021 +0000
-> 
->     ext4: fix memory leak in ext4_fill_super
-> 
-> bisection log:
-> https://syzkaller.appspot.com/x/bisect.txt?x=17ebaa22300000 start
-> commit:   2f7b98d1e55c Merge tag 'drm-fixes-2021-04-16' of
-> git://ano.. git tree:       upstream kernel config:
-> https://syzkaller.appspot.com/x/.config?x=398c4d0fe6f66e68 dashboard
-> link: https://syzkaller.appspot.com/bug?extid=deb25600c2fd79ffd367
-> syz repro:
-> https://syzkaller.appspot.com/x/repro.syz?x=170d645ad00000 C
-> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a03a2ed00000
-> 
-> If the result looks correct, please mark the issue as fixed by
-> replying with:
-> 
-> #syz fix: ext4: fix memory leak in ext4_fill_super
-> 
-> For information about bisection process see:
-> https://goo.gl/tpsmEJ#bisection
+> Folks are okay with an incompatible change on hikey960?
 
+Accepting an incompatible change here seems the right thing to do.
 
-This looks correct. I've tested this patch a long time ago, but forgot
-to mark it as fixed.
+Another possibility would be to create a "pcie-kirin-with-phy" driver
+that would be identical to the existing one, except for the absence
+of a PHY and using a different compatible string.
 
-#syz fix: ext4: fix memory leak in ext4_fill_super
+-
 
+Long answer:
+
+There aren't many alternatives here, if we want to split the PHY out of
+the driver, as you requested.
+
+I've been scratching my head in order to find a way that would keep
+the Hikey960 a separate PHY driver, with a proper DT schema, but
+capable of also parse the original DT schema.
+
+See, making the phy driver parse the PCIE-based OF-node data is 
+trivial (I have already a patch doing that), but it will require at
+least some DT schema additions, in order to add a pcie_phy node[1]:
+
+<snip>
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+index e0eca598af1f..6aaa2f966d74 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1001,6 +1001,11 @@ spi3: spi@ff3b3000 {
+                        status = "disabled";
+                };
  
-With regards,
-Pavel Skripkin
++               pcie_phy: pcie-phy@f3f2000 {
++                       compatible = "hisilicon,hi960-pcie-phy";
++                       #phy-cells = <0>;
++               };
++
+                pcie@f4000000 {
+                        compatible = "hisilicon,kirin960-pcie";
+                        reg = <0x0 0xf4000000 0x0 0x1000>,
+@@ -1012,6 +1017,7 @@ pcie@f4000000 {
+                        #address-cells = <3>;
+                        #size-cells = <2>;
+                        device_type = "pci";
++                       phys = <&pcie_phy>;
+                        ranges = <0x02000000 0x0 0x00000000
+                                  0x0 0xf6000000
+                                  0x0 0x02000000>;
+</snip>
+
+[1] or, alternatively, the pcie-kirin driver would need to dynamically
+    populate DT with the above, as some ACPI drivers do when the
+    firmware is broken.
+
+Without a PHY representation at the DT schema, the PHY driver won't 
+be recognized by pcie-kirin.
+
+See, even if the pcie-kirin driver would be changed to register
+the PHY without DT, with:
+
+	phy = devm_of_phy_get(dev, NULL, "hi3660_pcie_phy");
+
+The phy_get() implementation will internally ignore a non-DT PHY,
+as internally, it uses of_property_match_string() if the caller driver
+has of_node:
+
+	struct phy *phy_get(struct device *dev, const char *string)
+	{
+		int index = 0;
+		struct phy *phy;
+		struct device_link *link;
+
+		if (dev->of_node) {
+			if (string)
+				index = of_property_match_string(dev->of_node, "phy-names",
+					string);
+			else
+				index = 0;
+			phy = _of_phy_get(dev->of_node, index);
+		} else {
+			if (string == NULL) {
+				dev_WARN(dev, "missing string\n");
+				return ERR_PTR(-EINVAL);
+			}
+			phy = phy_find(dev, string);
+		}
+
+Thanks,
+Mauro
