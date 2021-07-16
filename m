@@ -2,142 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2860E3CB634
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5F23CB638
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239396AbhGPKly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237344AbhGPKlw (ORCPT
+        id S239055AbhGPKpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:45:09 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:60995
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S237344AbhGPKpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:41:52 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BFAC06175F;
-        Fri, 16 Jul 2021 03:38:56 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso5527927wmj.4;
-        Fri, 16 Jul 2021 03:38:56 -0700 (PDT)
+        Fri, 16 Jul 2021 06:45:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Vfnva+CLWBxItHixfHavnOZBnCrt1HBiZw1cBtbkz2s=;
-        b=ru1A8jLDjJrwsYpIBqSkzZQgke+mxhILocRIiWQyxyZ9auQOom8L4VOvc+01dsYIpz
-         bNamCHd5ynDo9G4iqRSVvYHXgMmTmfF5LwN6CdISfey4DfBFicEdiw8itKP2bEUhFrZJ
-         kf6bqAg7ZHORYFtr9Q4S7YmTw7p7IA48TcrxlGYWJi1643iQJln5MhitzJL+JK4SR6Rs
-         b1KGWTMyfvnpJdZlt3sy/XOFi1IuosBDTnF0gdOd/wVh10KQi3gSaA0QDilRWBRHPdFL
-         xLJlAEHcqYWuPmSrpiQEVuO8bHHsPY6nRy1ViOhxkvDMxoGE1qCFmkKoxShbAHo7ebwL
-         nDZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vfnva+CLWBxItHixfHavnOZBnCrt1HBiZw1cBtbkz2s=;
-        b=VpRwM5i4GeYbA3mU6PiOHUWudQe3oHyvK1Q0kqGODW7DyRvNTt2Kauvmr4ITuNTS2o
-         Kxgw3vxNdI3VMieqieyk35/hlSCDf49H5GrTBJPQbzTZyndpHZqqgDLHSZ1sU1za5enD
-         cs/f+O2YpAYj6bJ/aylfusV7hR9OvLjFgDJgKIuMtLpshqMwOC+nkBF1OBpSsNKD+wFU
-         2V3mEE98xSX6g0zt0uhK869b7REleb1pmBrbdRuV6r51jNuA1s4qZ/JR0G89IRgcAKJF
-         fT1hIDglpg4P9sa1U6hDqYMbqdt1hww53ABGiVKNxFXBUwmc2n2vbmtpLxMHgqWpUsIA
-         eCHA==
-X-Gm-Message-State: AOAM533VseQR38R1hMwQpHelo0WQBYeDZ/Wck0lGEHkd/PIm5YcUyqcY
-        Ql1HASOWj07GzU8aD5v7yCQ=
-X-Google-Smtp-Source: ABdhPJxv1Ukq3h0u9bFz9k5w34AJS6DO/v3AyJ123ocr0SexUhF8cQWaNQeaAI+YKUNo9R+9bxHClg==
-X-Received: by 2002:a7b:cd15:: with SMTP id f21mr10015077wmj.148.1626431935079;
-        Fri, 16 Jul 2021 03:38:55 -0700 (PDT)
-Received: from [192.168.8.197] ([185.69.144.177])
-        by smtp.gmail.com with ESMTPSA id x9sm9774116wrm.82.2021.07.16.03.38.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 03:38:54 -0700 (PDT)
-Subject: Re: [syzbot] INFO: task hung in io_sq_thread_park (2)
-To:     syzbot <syzbot+ac957324022b7132accf@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-References: <000000000000494b5f05c73277cd@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <632ddc1b-b664-3e60-90be-03bdf556aa49@gmail.com>
-Date:   Fri, 16 Jul 2021 11:38:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <000000000000494b5f05c73277cd@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=w5xXaDBOfVSI80cqGOxUol6Qepjcs1Dts3X92bpb+2w=; b=O
+        mrzHJyX9PLJKjMmUPnKju2lLoHQnRyq6BioyNjE8T5Iny1ZfZUsLdvrBH81v3+vT
+        3cEC4fPDctEUN5T8nzjaus0UO5c/cbu7RQQ+gXZuQcevnpnkaDSH27oBDrDJawC+
+        goDDtVsCSPIsv2HLQEqUmAnhU/CYNDVlPvI4kfm0Qw=
+Received: from localhost.localdomain (unknown [10.162.86.133])
+        by app2 (Coremail) with SMTP id XQUFCgCnriZoYvFgqS7QBA--.26894S3;
+        Fri, 16 Jul 2021 18:41:45 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] drm/i915/gvt: Convert from atomic_t to refcount_t on intel_vgpu_ppgtt_spt->refcount
+Date:   Fri, 16 Jul 2021 18:41:38 +0800
+Message-Id: <1626432098-27626-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgCnriZoYvFgqS7QBA--.26894S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF48Wr15Zr1xWr17Wrg_yoW8tFy5pF
+        4YvF9rAFs5Aa4IqrW7Aa48ZF1fJ3WfZa4rGrWkK3ZIqr9rt3W5t39YvFW5JryUXrZrJr1a
+        9r1UWrWakasrWaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
+        0xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/21 1:14 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> WARNING in io_uring_cancel_generic
+refcount_t type and corresponding API can protect refcounters from
+accidental underflow and overflow and further use-after-free situations
 
-attempt to get stats #2
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ drivers/gpu/drm/i915/gvt/gtt.c | 11 ++++++-----
+ drivers/gpu/drm/i915/gvt/gtt.h |  3 ++-
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-#syz test: https://github.com/isilence/linux.git syztest_sqpoll_hang 
-
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 25279 at fs/io_uring.c:9122 io_dump fs/io_uring.c:9117 [inline]
-> WARNING: CPU: 1 PID: 25279 at fs/io_uring.c:9122 io_uring_cancel_generic+0x5fb/0xe50 fs/io_uring.c:9195
-> Modules linked in:
-> CPU: 1 PID: 25279 Comm: iou-sqp-25271 Tainted: G        W         5.14.0-rc1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:io_dump fs/io_uring.c:9122 [inline]
-> RIP: 0010:io_uring_cancel_generic+0x5fb/0xe50 fs/io_uring.c:9195
-> Code: 08 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 9e 06 00 00 48 8b 85 10 08 00 00 48 89 44 24 40 <0f> 0b 48 8b 44 24 10 48 05 98 00 00 00 48 89 c2 48 89 44 24 08 48
-> RSP: 0018:ffffc9000ab87c50 EFLAGS: 00010246
-> RAX: ffff88803ddb7800 RBX: ffff888049f73880 RCX: 0000000000000000
-> RDX: 1ffff110093ee812 RSI: ffffffff81e2ebed RDI: ffff888049f74090
-> RBP: ffff888049f73880 R08: 0000000000000000 R09: 0000000000000000
-> R10: ffffffff81e2ebc5 R11: 0000000000000001 R12: ffffc9000ab87d40
-> R13: ffff88803ddb7858 R14: 0000000000000001 R15: 0000000000000000
-> FS:  00007fb893f40700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f68dd0c6080 CR3: 000000002b457000 CR4: 0000000000350ef0
-> Call Trace:
->  io_sq_thread+0xaac/0x1250 fs/io_uring.c:6930
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 1 PID: 25279 Comm: iou-sqp-25271 Tainted: G        W         5.14.0-rc1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
->  panic+0x306/0x73d kernel/panic.c:232
->  __warn.cold+0x35/0x44 kernel/panic.c:606
->  report_bug+0x1bd/0x210 lib/bug.c:199
->  handle_bug+0x3c/0x60 arch/x86/kernel/traps.c:239
->  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:259
->  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:566
-> RIP: 0010:io_dump fs/io_uring.c:9122 [inline]
-> RIP: 0010:io_uring_cancel_generic+0x5fb/0xe50 fs/io_uring.c:9195
-> Code: 08 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 9e 06 00 00 48 8b 85 10 08 00 00 48 89 44 24 40 <0f> 0b 48 8b 44 24 10 48 05 98 00 00 00 48 89 c2 48 89 44 24 08 48
-> RSP: 0018:ffffc9000ab87c50 EFLAGS: 00010246
-> RAX: ffff88803ddb7800 RBX: ffff888049f73880 RCX: 0000000000000000
-> RDX: 1ffff110093ee812 RSI: ffffffff81e2ebed RDI: ffff888049f74090
-> RBP: ffff888049f73880 R08: 0000000000000000 R09: 0000000000000000
-> R10: ffffffff81e2ebc5 R11: 0000000000000001 R12: ffffc9000ab87d40
-> R13: ffff88803ddb7858 R14: 0000000000000001 R15: 0000000000000000
->  io_sq_thread+0xaac/0x1250 fs/io_uring.c:6930
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
-> 
-> 
-> Tested on:
-> 
-> commit:         d55b8f3c io_uring: add syz debug info
-> git tree:       https://github.com/isilence/linux.git syztest_sqpoll_hang
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16f6cb80300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=cfe2c0e42bc9993d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ac957324022b7132accf
-> compiler:       
-> 
-
+diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
+index cc2c05e18206..62f3daff5a36 100644
+--- a/drivers/gpu/drm/i915/gvt/gtt.c
++++ b/drivers/gpu/drm/i915/gvt/gtt.c
+@@ -841,7 +841,7 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt(
+ 	}
+ 
+ 	spt->vgpu = vgpu;
+-	atomic_set(&spt->refcount, 1);
++	refcount_set(&spt->refcount, 1);
+ 	INIT_LIST_HEAD(&spt->post_shadow_list);
+ 
+ 	/*
+@@ -927,18 +927,19 @@ static struct intel_vgpu_ppgtt_spt *ppgtt_alloc_spt_gfn(
+ 
+ static inline void ppgtt_get_spt(struct intel_vgpu_ppgtt_spt *spt)
+ {
+-	int v = atomic_read(&spt->refcount);
++	int v = refcount_read(&spt->refcount);
+ 
+ 	trace_spt_refcount(spt->vgpu->id, "inc", spt, v, (v + 1));
+-	atomic_inc(&spt->refcount);
++	refcount_inc(&spt->refcount);
+ }
+ 
+ static inline int ppgtt_put_spt(struct intel_vgpu_ppgtt_spt *spt)
+ {
+-	int v = atomic_read(&spt->refcount);
++	int v = refcount_read(&spt->refcount);
+ 
+ 	trace_spt_refcount(spt->vgpu->id, "dec", spt, v, (v - 1));
+-	return atomic_dec_return(&spt->refcount);
++	refcount_dec(&spt->refcount);
++	return refcount_read(&spt->refcount);
+ }
+ 
+ static int ppgtt_invalidate_spt(struct intel_vgpu_ppgtt_spt *spt);
+diff --git a/drivers/gpu/drm/i915/gvt/gtt.h b/drivers/gpu/drm/i915/gvt/gtt.h
+index 3bf45672ef98..944c2d0739df 100644
+--- a/drivers/gpu/drm/i915/gvt/gtt.h
++++ b/drivers/gpu/drm/i915/gvt/gtt.h
+@@ -38,6 +38,7 @@
+ #include <linux/kref.h>
+ #include <linux/mutex.h>
+ #include <linux/radix-tree.h>
++#include <linux/refcount.h>
+ 
+ #include "gt/intel_gtt.h"
+ 
+@@ -243,7 +244,7 @@ struct intel_vgpu_oos_page {
+ 
+ /* Represent a vgpu shadow page table. */
+ struct intel_vgpu_ppgtt_spt {
+-	atomic_t refcount;
++	refcount_t refcount;
+ 	struct intel_vgpu *vgpu;
+ 
+ 	struct {
 -- 
-Pavel Begunkov
+2.7.4
+
