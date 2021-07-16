@@ -2,86 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDB53CB885
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D167E3CB89F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240358AbhGPOOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:14:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59598 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbhGPOOj (ORCPT
+        id S240253AbhGPOVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:21:21 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:56742 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232808AbhGPOVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:14:39 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 823B322B46;
-        Fri, 16 Jul 2021 14:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626444703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=qZY0smo+O+Xk7iA7lzz8gDAiURl0BK1XyowcQM/UtiM=;
-        b=pQrhWDGDTiKDN16Qi3oehirpj9LgoFxfnXwRY7PRrj0cvkB0j4RZuTGc4B0nvWgxlmSycv
-        Q4ebQ9v7hlyQ6ITOEoqZ03ykRsa8ObzGJCIPcq0ZUi74yp3u+GjQ3Qp7pR/LVjS/o0VBA9
-        5xGKgK4884qqjIXAjAkte0KWilAKr6c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626444703;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=qZY0smo+O+Xk7iA7lzz8gDAiURl0BK1XyowcQM/UtiM=;
-        b=+YIPDQXHu0MZ2KzJWvt8YxlCNRVlfw1WDOkQCBvPoXKzwmVPiEWfR6n43SDzdloLBBSRI8
-        YFNTP/JJuwHgcXDA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 2558C13AF6;
-        Fri, 16 Jul 2021 14:11:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 5GVRBp+T8WCMTwAAGKfGzw
-        (envelope-from <iivanov@suse.de>); Fri, 16 Jul 2021 14:11:43 +0000
-From:   "Ivan T. Ivanov" <iivanov@suse.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Fri, 16 Jul 2021 10:21:16 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UfzqysG_1626445099;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UfzqysG_1626445099)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 16 Jul 2021 22:18:20 +0800
+Subject: Re: [PATCH] virtio-balloon: Use virtio_find_vqs() helper
+To:     David Hildenbrand <david@redhat.com>,
+        Xianting Tian <xianting_tian@126.com>, mst@redhat.com,
+        jasowang@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] net: phy: leds: Trigger leds only if PHY speed is known
-Date:   Fri, 16 Jul 2021 17:11:42 +0300
-Message-Id: <20210716141142.12710-1-iivanov@suse.de>
-X-Mailer: git-send-email 2.32.0
+References: <1626190724-7942-1-git-send-email-xianting_tian@126.com>
+ <bbe52a89-c7ea-c155-6226-0397f223cd80@linux.alibaba.com>
+ <95d7f688-79fc-05dc-87ca-da46e0179f0e@redhat.com>
+ <58096b5a-8acb-a88f-c2c6-cd6e3201407f@redhat.com>
+From:   tianxianting <xianting.tian@linux.alibaba.com>
+Message-ID: <ab9ecc82-c3f6-6f34-1cdf-9605d0b285a8@linux.alibaba.com>
+Date:   Fri, 16 Jul 2021 22:18:19 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <58096b5a-8acb-a88f-c2c6-cd6e3201407f@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This prevents "No phy led trigger registered for speed(-1)"
-alert message which is coused by phy_led_trigger_chage_speed()
-being called during attaching phy to net_device where phy device
-speed could be still unknown.
+you really were in the ¡°to¡± list of my original email£º£©
 
-Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
----
- drivers/net/phy/phy_led_triggers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/phy/phy_led_triggers.c b/drivers/net/phy/phy_led_triggers.c
-index f550576eb9da..4d6497c45ae4 100644
---- a/drivers/net/phy/phy_led_triggers.c
-+++ b/drivers/net/phy/phy_led_triggers.c
-@@ -33,7 +33,7 @@ void phy_led_trigger_change_speed(struct phy_device *phy)
- 	if (!phy->link)
- 		return phy_led_trigger_no_link(phy);
- 
--	if (phy->speed == 0)
-+	if (phy->speed == 0 || phy->speed == SPEED_UNKNOWN)
- 		return;
- 
- 	plt = phy_speed_to_led_trigger(phy, phy->speed);
--- 
-2.32.0
-
+ÔÚ 2021/7/16 ÏÂÎç9:10, David Hildenbrand Ð´µÀ:
+> On 16.07.21 14:53, David Hildenbrand wrote:
+>> On 16.07.21 14:46, tianxianting wrote:
+>>> Do you interest in this patch? just little improvment:)
+>>
+>> I am, especially when I'm cc'ed and aware of it ;)
+>>
+>
+> Sorry, just found it in my gmail spam folder ... WTH. Why does the 
+> original one get filtered but not your ping ...
+>
