@@ -2,185 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4341F3CBA68
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F023CBA74
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhGPQSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhGPQSp (ORCPT
+        id S229924AbhGPQVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:21:09 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:57206 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhGPQVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:18:45 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32358C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:15:50 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id o3-20020a17090a6783b0290173ce472b8aso9142087pjj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=m2G2S0hTEjLHYuCAAFhFmoR9GFCJjaKUds8niu/vBnY=;
-        b=rKbQVfed4Y0SdijlmppKCylEMkjxapr03LBMQ2QhrF4iKLG/I7VL3Qr6tArY+S5v6u
-         J1GsJHLXmnMQ9JWhaC89Dj8MEV3oqrdXV6elC3O9o5t0sMxKVNsCCN0EzgHyjE+enzM7
-         EI4E9euoqdKoZU8fkpsuIAzrw4VLxQq144KOT1mxwAN6tNeAoXt3vRaN+L1wU0KIUdYZ
-         ym7oxZekhmsBmfqVIhHGAKHZxRKB38f+M9lErgqo5OdbGRzkSZWVvBOLpm/6bN4kzuWR
-         lrDl4sVBl5Gx7e9TsY7IWx0wJc/QaTagUIPjVKGWxL5B4bhk/MY6QPLZ09J63dAbo9vH
-         qrOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=m2G2S0hTEjLHYuCAAFhFmoR9GFCJjaKUds8niu/vBnY=;
-        b=reLLbtwpTSUVFbWIWrpk8veyUero0lD16XViRmSGWt6tU8RhwnQOde4/98XGI3B6Du
-         ZVcfOzHNAy+yB5RvTsZAb3XQb2JKB97XeXQC1DpdwLIDkwSgbLY78a1NVHVq4WF5jIY+
-         vKqvadCAKSbYxTebEZPYBBHaCLfQBkzRp1g830rQniVnVUU5eUcBMSdbzzYV7bcbSopR
-         cIJCxiorUEv62kHujh2o/4LTfvsX5KJBFCT6LTRE/SiBaOK/Ut+6f1cYzXIsGSoLgt4L
-         ke5QEL4KO2mPRBNXp+9JOAKeZC4606UR++Fvmz3+81+x48PkxGLSQLmYsIDrsU7F962z
-         yfRg==
-X-Gm-Message-State: AOAM531aL+i7B+eAPUj3ahtTpTaxDmUKsZhHArnhVp9uTEXWQVUHHWAW
-        KqpgjMdYF69eFC+L2vymSRv4BQ==
-X-Google-Smtp-Source: ABdhPJySgePBV3G8Y7CguuxTBwCOCo8r2eWuRxQshnyL+R+DP82ZxEGq/X7efikhdPnSySELbTcR9w==
-X-Received: by 2002:a17:902:ea09:b029:12b:1dc0:ac74 with SMTP id s9-20020a170902ea09b029012b1dc0ac74mr8430870plg.82.1626452149535;
-        Fri, 16 Jul 2021 09:15:49 -0700 (PDT)
-Received: from anisinha-lenovo ([115.96.136.242])
-        by smtp.googlemail.com with ESMTPSA id s7sm8560556pjr.11.2021.07.16.09.15.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 09:15:49 -0700 (PDT)
-From:   Ani Sinha <ani@anisinha.ca>
-X-Google-Original-From: Ani Sinha <anisinha@anisinha.ca>
-Date:   Fri, 16 Jul 2021 21:45:43 +0530 (IST)
-X-X-Sender: anisinha@anisinha-lenovo
-To:     Ani Sinha <ani@anisinha.ca>
-cc:     linux-kernel@vger.kernel.org, anirban.sinha@nokia.com,
-        mikelley@microsoft.com, Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH v3] checkpatch: add a rule to check general block comment
- style
-In-Reply-To: <20210714063422.2164699-1-ani@anisinha.ca>
-Message-ID: <alpine.DEB.2.22.394.2107162145100.3277407@anisinha-lenovo>
-References: <20210714063422.2164699-1-ani@anisinha.ca>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 16 Jul 2021 12:21:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=BnhY0izzSFVDQcuht2cro6XvHSIBnnpJHK/4w8E4yWs=; b=lHiHBr9UmxsphzyuJXXrFvFkXJ
+        nHnU2Aad+t4uXkXpqnoYYQXL8s0VDrTpcUrSa7MBf3lHNc8SwA72FIyA0EFnNsLaMjuY1HyVFc4eY
+        86UCMlrgVGkMX16Elm46rVT3dMTeEwZNCX1a+CjIpwSiCKZgO96vmX56LfZWgzS5j7bcdiascYBT7
+        QpZUtkyACvD3Bob5Y0jFlifJMDasY0nH1O+2FuN7wP4IsecNoMeLFw+7g7lmwXVQFM8ujekY7qsib
+        a39261ZQjmb8njie60hE0kfk/jWrRkVOwj7hryYFQZ5ncmwJY+tyhtISQB4927wPhvb2n8G328kwr
+        zFWziVNw==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1m4QXJ-0003ky-3C; Fri, 16 Jul 2021 10:18:01 -0600
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>
+References: <20210715164544.6827-1-logang@deltatee.com>
+ <20210715164544.6827-17-logang@deltatee.com> <20210716063332.GD13345@lst.de>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <82c0f8d8-9050-dcf7-d68d-93691878a6dd@deltatee.com>
+Date:   Fri, 16 Jul 2021 10:17:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210716063332.GD13345@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: martin.oliveira@eideticom.com, sbates@raithlin.com, robin.murphy@arm.com, m.szyprowski@samsung.com, xen-devel@lists.xenproject.org, linux-parisc@vger.kernel.org, iommu@lists.linux-foundation.org, sparclinux@vger.kernel.org, linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org, linux-ia64@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH v1 16/16] dma-mapping: Disallow .map_sg operations from
+ returning zero on error
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkpatch maintainers, any comments?
 
-On Wed, 14 Jul 2021, Ani Sinha wrote:
 
-> The preferred style for long (multi-line) comments is:
->
-> .. code-block:: c
->
-> 	/*
-> 	 * This is the preferred style for multi-line
-> 	 * comments in the Linux kernel source code.
-> 	 * Please use it consistently.
-> 	 *
-> 	 * Description:  A column of asterisks on the left side,
-> 	 * with beginning and ending almost-blank lines.
-> 	 */
->
-> It seems rule in checkpatch.pl is missing to ensure this for
-> non-networking related changes. This patch adds this rule.
->
-> Tested with
-> $ cat drivers/net/t.c
->     /* foo */
->
->     /*
->      * foo
->      */
->
->     /* foo
->      */
->
->     /* foo
->      * bar */
->
-> $ ./scripts/checkpatch.pl -f drivers/net/t.c
-> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-> line #1: FILE: drivers/net/t.c:1:
-> +    /* foo */
->
-> WARNING: networking block comments don't use an empty /* line, use /* Comment...
-> line #4: FILE: drivers/net/t.c:4:
-> +    /*
-> +     * foo
->
-> WARNING: Block comments use a trailing */ on a separate line
-> line #11: FILE: drivers/net/t.c:11:
-> +     * bar */
->
-> total: 0 errors, 3 warnings, 0 checks, 11 lines checked
->
->
-> For a non-networking related code we see the following when run for
-> the same file:
->
-> $ ./scripts/checkpatch.pl -f arch/x86/kernel/t.c
-> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-> line #1: FILE: arch/x86/kernel/t.c:1:
-> +    /* foo */
->
-> WARNING: Block comments use a leading /* on a separate line
-> line #7: FILE: arch/x86/kernel/t.c:7:
-> +    /* foo
->
-> WARNING: Block comments use a leading /* on a separate line
-> line #10: FILE: arch/x86/kernel/t.c:10:
-> +    /* foo
->
-> WARNING: Block comments use a trailing */ on a separate line
-> line #11: FILE: arch/x86/kernel/t.c:11:
-> +     * bar */
->
-> total: 0 errors, 4 warnings, 11 lines checked
->
-> In the second case, there is no warning on line 4 and in the first
-> case, there is no warning on line 10.
->
-> Signed-off-by: Ani Sinha <ani@anisinha.ca>
-> ---
->  scripts/checkpatch.pl | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> Changelog:
-> v1: initial patch
-> v2: commit log updated to reflect the output from checkpatch.pl
->     when run against the same file both in networking and
->     non-networking case. This helps in comparing results apples to
->     apples.
-> v3: line numbers got lost in the commit log as git eliminated all lines
->     starting with '#'. Fixed it by prefixing with word 'line'. The work
->     'line' does not however appear in the checkpatch.pl output.
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 23697a6b1eaa..5f047b762aa1 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3833,6 +3833,14 @@ sub process {
->  			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
->  		}
->
-> +# Block comments use /* on a line of its own
-> +		if (!($realfile =~ m@^(drivers/net/|net/)@) &&
-> +		    $rawline !~ m@^\+.*/\*.*\*/[ \t)}]*$@ &&	#inline /*...*/
-> +		    $rawline =~ m@^\+.*/\*\*?+[ \t]*[^ \t]@) { # /* or /** non-blank
-> +		    WARN("BLOCK_COMMENT_STYLE",
-> +			 "Block comments use a leading /* on a separate line\n" . $herecurr);
-> +		}
-> +
->  # Block comments use * on subsequent lines
->  		if ($prevline =~ /$;[ \t]*$/ &&			#ends in comment
->  		    $prevrawline =~ /^\+.*?\/\*/ &&		#starting /*
-> --
-> 2.25.1
->
->
+On 2021-07-16 12:33 a.m., Christoph Hellwig wrote:
+> On Thu, Jul 15, 2021 at 10:45:44AM -0600, Logan Gunthorpe wrote:
+>> @@ -194,6 +194,8 @@ static int __dma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
+>>  	else
+>>  		ents = ops->map_sg(dev, sg, nents, dir, attrs);
+>>  
+>> +	WARN_ON_ONCE(ents == 0);
+> 
+> Turns this into a negative error code while we're at it, just to keep
+> the callers sane?
+> 
+
+Sure thing. All the feedback makes sense, we'll fix it up and send a v2
+in due course.
+
+Thanks,
+
+Logan
