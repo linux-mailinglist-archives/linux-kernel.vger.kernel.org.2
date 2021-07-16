@@ -2,143 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEB03CBC67
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EB03CBC6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhGPT0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:26:32 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:45615 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhGPT0a (ORCPT
+        id S232817AbhGPT1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:27:51 -0400
+Received: from mail-il1-f176.google.com ([209.85.166.176]:46848 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhGPT1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:26:30 -0400
-Received: by mail-io1-f44.google.com with SMTP id z17so5250178iog.12;
-        Fri, 16 Jul 2021 12:23:35 -0700 (PDT)
+        Fri, 16 Jul 2021 15:27:50 -0400
+Received: by mail-il1-f176.google.com with SMTP id y6so9261610ilj.13;
+        Fri, 16 Jul 2021 12:24:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=OTm0XNX7QR5VUzRmbpcpXSsIdm4bg2gxSberXyeMlDY=;
-        b=JgiS+lWD8MI9RwLtSua/9EiCOVEFOKur65z1au7nUizNy0KrHuOYijdW0bF5cjZH4W
-         q5uQ0cn1cSajfrCa5Od2xobM1TBf5LS/4etT1ErpLb+MoIXujci0WFiwh6SKCsCZMtvn
-         ljO6YqXRmz6CJ8sFH2BYm3I3gEe2eKG3IbJRnwHTg9kSFum81GwUVp5ir4V1MP/9uVfg
-         H6JRSkselxhzOA+ZmHGZzx++bRw0hMgDopkTMMeE1hAbhh/Y70Q5sAORAgVcxQ5orYiY
-         kJgJE2tlVGNFyxByWF5sU8cdidcZfUbRRQkZhbH1Gd8DuqLJuiEVHnVW1EaI0fnwvc3S
-         odfQ==
-X-Gm-Message-State: AOAM530IaG1K5TTdDC4HedsY4j9+7Gtl8A0IB0PCumd482F31KSGm/5P
-        edSMBSBgZ+w0FLNyQhshBsYVTJhwtg==
-X-Google-Smtp-Source: ABdhPJwlbfmHUlKyAdFI2WF99x6bo3uSrZtFXktEDmiy470ONdrguyOumSHkDJY8EfGv1U5BVF/SGw==
-X-Received: by 2002:a05:6602:26d2:: with SMTP id g18mr8485399ioo.194.1626463415034;
-        Fri, 16 Jul 2021 12:23:35 -0700 (PDT)
+        bh=fM1A08CWgTV1bBfD5qE67VlFwSFQpiAw2opTe5zweRQ=;
+        b=kH2stglUMG0ubXImNfZrBAQhlNVne0/NUu9pf7J6bje3hmizpklImeEF1yCNUSr7XI
+         wqJ/O0IHyJ68PZ9Xx7BLDJs7zxlkJurqPrv1RPQWeJEqx6FMv/MGR/XiT1ZbHZV06cvX
+         BGhm9bT6Jv1YP1vA7orJ/2g1lcIta4qfMTR0FJ10FsY/FRIt/d307LPdbMOGZK6E8+tI
+         QQPPzJTsoxgnxhdlUnWdY91I2U6eitVY64acivkzfcHbfJEiPCQT9bdG9qk510Z6oqWL
+         /8jP3y/4ncesowqLpHgNU5a01zAuQOVIqCqU1crC5Biqzt1TmWcQPvJBPRmZHIG3GKuo
+         fupw==
+X-Gm-Message-State: AOAM533jHYhzw3tIfA7frJCWIfNQXtFIY1Z2B96pzTWvtUZKt5uwJVry
+        /hPB6vNeO3z96e/j6KbMkA==
+X-Google-Smtp-Source: ABdhPJzJsHWjmOLw//W3RlaIHVWLgA05B7QlnJgNCmRGCRL8qwvXsBAroLMQ1HnLflSk2Jiu4STpkg==
+X-Received: by 2002:a92:de0a:: with SMTP id x10mr7526223ilm.215.1626463493993;
+        Fri, 16 Jul 2021 12:24:53 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u13sm5433182iot.29.2021.07.16.12.23.32
+        by smtp.gmail.com with ESMTPSA id a9sm807689ila.23.2021.07.16.12.24.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 12:23:34 -0700 (PDT)
-Received: (nullmailer pid 3836563 invoked by uid 1000);
-        Fri, 16 Jul 2021 19:23:31 -0000
-Date:   Fri, 16 Jul 2021 13:23:31 -0600
+        Fri, 16 Jul 2021 12:24:53 -0700 (PDT)
+Received: (nullmailer pid 3838811 invoked by uid 1000);
+        Fri, 16 Jul 2021 19:24:50 -0000
+Date:   Fri, 16 Jul 2021 13:24:50 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 5/6] media: dt-bindings: mt9p031: Convert bindings to
- yaml
-Message-ID: <20210716192331.GA3831920@robh.at.kernel.org>
-References: <20210714133849.1041619-1-s.riedmueller@phytec.de>
- <20210714133849.1041619-6-s.riedmueller@phytec.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-mips@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        linux-leds@vger.kernel.org, Marek Behun <marek.behun@nic.cz>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 18/19] dt-bindings: auxdisplay: ht16k33: Document LED
+ subnode
+Message-ID: <20210716192450.GA3838756@robh.at.kernel.org>
+References: <20210714151130.2531831-1-geert@linux-m68k.org>
+ <20210714151130.2531831-19-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210714133849.1041619-6-s.riedmueller@phytec.de>
+In-Reply-To: <20210714151130.2531831-19-geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 03:38:48PM +0200, Stefan Riedmueller wrote:
-> Convert mt9p031 sensor bindings to yaml schema. Also update the
-> MAINTAINERS entry.
+On Wed, 14 Jul 2021 17:11:29 +0200, Geert Uytterhoeven wrote:
+> Extend the Holtek HT16K33 LED controller Device Tree bindings with an
+> LED subnode, conforming to the standard LED bindings.
 > 
-> Although input-clock-frequency and pixel-clock-frequency have not been
-> definded as endpoint propierties in the textual bindings, the sensor
-> does parse them from the endpoint. Thus move these properties to the
-> endpoint in the new yaml bindings.
+> This allows the user to exert more control, like specifying LED color,
+> function, and/or trigger, to extend LED functionality beyond a simple
+> display backlight.
 > 
-> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
->  .../bindings/media/i2c/aptina,mt9p031.yaml    | 92 +++++++++++++++++++
->  .../devicetree/bindings/media/i2c/mt9p031.txt | 40 --------
->  MAINTAINERS                                   |  1 +
->  3 files changed, 93 insertions(+), 40 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
->  delete mode 100644 Documentation/devicetree/bindings/media/i2c/mt9p031.txt
+> v3:
+>   - New.
+> ---
+>  .../bindings/auxdisplay/holtek,ht16k33.yaml           | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-> new file mode 100644
-> index 000000000000..1531ecd1ed95
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-> @@ -0,0 +1,92 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/aptina,mt9p031.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Aptina 1/2.5-Inch 5Mp CMOS Digital Image Sensor
-> +
-> +maintainers:
-> +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> +
-> +description: |
-> +  The Aptina MT9P031 is a 1/2.5-inch CMOS active pixel digital image sensor
-> +  with an active array size of 2592H x 1944V. It is programmable through a
-> +  simple two-wire serial interface.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - aptina,mt9p031
-> +      - aptina,mt9p031m
-> +
-> +  reg:
-> +    description: I2C device address
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: Chip reset GPIO
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/$defs/port-base
-> +    additionalProperties: false
-> +
-> +    properties:
-> +      endpoint:
-> +        $ref: /schemas/media/video-interfaces.yaml#
-> +        unevaluatedProperties: false
-> +
-> +        properties:
-> +          input-clock-frequency:
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            minimum: 6000000
-> +            maximum: 96000000
-> +            description: Input clock frequency
-> +
-> +          pixel-clock-frequency:
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            maximum: 96000000
-> +            description: Target pixel clock frequency
-> +
-> +          bus-type:
-> +            const: 5
-> +
-> +          bus-width:
-> +            const: 12
 
-If there's only 1 possible setting for both of these, why do they need 
-to be in DT?
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
