@@ -2,107 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459923CB75A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A003CB73B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238665AbhGPM2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237729AbhGPM2p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:28:45 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B96EC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:25:50 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so9638181otq.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mvista-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jXHUmaf0y4/dZXXr0fZDyHacF0cZd0H8h+cDQdqOEEI=;
-        b=uKODhxEVzy9dSJXhy+XN5tiHq9sMkKG1iBbWcWLaum2oTIcqLPxErKusLW0eBHNdHo
-         4PFs9E0S8/w514nndILWNOHjOfSkV+GYH13S2tB2Kwb5L/iqP7QgLrrCvpHZ0FCPDqUD
-         qbe0LNORN+x5XFtt2QSb7VScrt+IW8Og8lZZDhDvGIe5kV4eoDjdQ59Zrpf0b1o08PSY
-         y41gTB/MsAWAsKz5zW2Cs2laPSDiNfC+SkZa5lJjZcG2XegAu7y3fTW9M+XRHX6lYYBI
-         wsdgbjq1im34CzGKj0qwWl+HLURAZfF3ATZujlS+50LwCYoXo3MvNsGybp+Y6fP4uSOe
-         iUjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jXHUmaf0y4/dZXXr0fZDyHacF0cZd0H8h+cDQdqOEEI=;
-        b=p59aWCV/eXQO95e26VDS/FJH1Sknk87dXlETmA8AYD/sK3iNsvK7n9b/EOKMcCbpbT
-         dtmLYiA9t2Axh1esa86Yd6Fi/56UXoKoZOZHUYX//pVYatR7JV/5zhaXbw5ZJvGf2G/g
-         StzW8XkusKEix904XzcZoDWrgk0/NaXqXq/IlXQf2a1OmzOP+E2yWPFSVT3vrl+zJsRW
-         Ezfo3ws5A43o7WsCsBxqwt22oLZYyOD0kWIrUpmWqCP+kaH2sMzmmc8kEmXBNpK4rtK3
-         /pPmUAVy/3KGc/JdR9AApRZRl9MpuqkyYoFYRtCQ85xI93Hl9DkQIVMsA7BwxyKPtqf+
-         45xg==
-X-Gm-Message-State: AOAM5325k1emgbc2qQQ3c41UoBqdcacV93vSLyUqZqoPbvIKfbE4fxZ3
-        TPcQX8jPD0T/P88HAreptXPCLg==
-X-Google-Smtp-Source: ABdhPJz2/+owQkmQWuaI4LwLrBXqPA0Kkm19a8FSPQnyrS1wTBuTRzbuACHavWO/MnXehGrvO6Hg8w==
-X-Received: by 2002:a9d:7a8e:: with SMTP id l14mr7790897otn.304.1626438349886;
-        Fri, 16 Jul 2021 05:25:49 -0700 (PDT)
-Received: from minyard.net ([2001:470:b8f6:1b:8515:1333:671e:f6ae])
-        by smtp.gmail.com with ESMTPSA id y28sm1825305oti.80.2021.07.16.05.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 05:25:49 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 07:25:47 -0500
-From:   Corey Minyard <cminyard@mvista.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     minyard@acm.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] oom_kill: oom_score_adj broken for processes with small
- memory usage
-Message-ID: <20210716122547.GI3431@minyard.net>
-Reply-To: cminyard@mvista.com
-References: <20210701125430.836308-1-minyard@acm.org>
- <YPEW3H+W/uiRYIfn@dhcp22.suse.cz>
+        id S238859AbhGPMPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:15:37 -0400
+Received: from mail-mw2nam08on2055.outbound.protection.outlook.com ([40.107.101.55]:18657
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232223AbhGPMPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 08:15:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fPuJ5Sh2Mi0zhekzaQd/4H45DZmVYQxY1AFLB+MGlaJmeS6jJO0yAwouzYxFr9KEy3i4jaeUAmajAyAexMAEVfb5gk27QqtEx3QZcO9dTx0oSjRJR4C7pdVNpnfrB4Guj+lVDQRO8KwrdelokiLVI9D/dvf2iCzhxD1eH5mfA+9WI6Ul9CtdBzV1/nsyr+fKOOuUc3SC4wa862ifdouyGRNt5A79q9jfDpKF9y3WQ7WwMRxL58HfgTomzlACha47l/0t7Qz4Srf8/rNqR96ab34FRMtAn6GoVUoxCoCA+fNzub4ALS08V+QYn0hz5llulTtmQWDx6Q/dTwdqxzkNkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e45xSRnjwqdlPmwQN/T+aBqP+lPZCLkGt89nZwAhdp0=;
+ b=OhRMRACJ+O7yuIOGFy77KOJkz7HPIa+AuN1xvJnplPE+7VjrMPrc2K/mhG9vG54fMImKCxtng9/F31QjAuY1CLjj2XkXnGdD4BkkgqqEKB1WQYaHpRLl9HJbjRzBHA9wyzTvWIxk69rEB3vxdYkP8CGBDUu+dL6oPQvXVbDqy87wdlpRIEY/Q9j0JQZB22D/GulTiVQfoHrZJljWBUSmd0PZEgHMemyBqwusvTZwfZ/vBdZAGjzeq0R6rKn23kjqRSzMO0vtDR9nFpb/UdWOvlpEzBZM/IGULdbbFYXeKh4uRfyHkqLMQdxGDn+BXUDT8ZVXj2TNaqTkaf1RNarMug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e45xSRnjwqdlPmwQN/T+aBqP+lPZCLkGt89nZwAhdp0=;
+ b=COv3AnqD4RW1QIM2ArEl3Fox2zne21gx6wLECp+0Mguqof9KyarNFs5XsC20lGgn7e7QTnEnzaiiFm+9lVIfD+t60xSIZ/yoFR2Ok5ZilYJBARnJBEZAADnJGxBOtla1sUbXfc+i60krSFd7TFEIYMHduDDBgXg/a35RaAZb8+M=
+Received: from MWHPR11CA0025.namprd11.prod.outlook.com (2603:10b6:300:115::11)
+ by BN8PR12MB3140.namprd12.prod.outlook.com (2603:10b6:408:67::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Fri, 16 Jul
+ 2021 12:12:39 +0000
+Received: from CO1NAM11FT003.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:115:cafe::82) by MWHPR11CA0025.outlook.office365.com
+ (2603:10b6:300:115::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Fri, 16 Jul 2021 12:12:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT003.mail.protection.outlook.com (10.13.175.93) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 12:12:38 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
+ 2021 07:12:36 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
+ 2021 07:12:36 -0500
+Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Fri, 16 Jul 2021 07:12:26 -0500
+From:   Vijendar Mukunda <vijendar.mukunda@amd.com>
+To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <Alexander.Deucher@amd.com>, <nartemiev@google.com>,
+        <Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
+        <amistry@google.com>, Vijendar Mukunda <vijendar.mukunda@amd.com>,
+        "Vijendar Mukunda" <Vijendar.Mukunda@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] ASoC: soc-pcm: add a flag to reverse the stop sequence
+Date:   Fri, 16 Jul 2021 18:00:12 +0530
+Message-ID: <20210716123015.15697-1-vijendar.mukunda@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPEW3H+W/uiRYIfn@dhcp22.suse.cz>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cac498e5-c32b-4b2b-1aa5-08d9485300ef
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3140:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB3140176AC5EF77ED3E39ED9697119@BN8PR12MB3140.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ExGm4RHfj6936NIWkHR9UXaFrHyx0hzz/mtJ+leC+Ya+b+qj2NwxfwT3ygSEDb23I1Jmw7vPzbXdsWB7W04O0sg8+u29rQ1SVUTlXY1rMER75oanHfDpKW1X6tezi/zgUimgSy6KLs5+RbZ5yqijl/ImzNdxz4DGqWYOJqJaCi8IP8iyovOBF0q4czjyWJiMR4iOrZjZv7SuECKu7fG5G6P3ajYugBDyrZK3HP3KKex92ib5F+AxiHtoYd0I1KIidNtIOgA5UqNps8GVDmrAESXSyau7cdN4YADoq2ZthamUOM4dp/CyvWyia4lXI0wZKMKcHO0i098H2CS3ge+92UNQ2ILMOmUzmsDQebg5d4iXTlS/VsOuF1Y0GeIMkSzkg5K8MXhlPp/gM1Jiwo55DPHNLcvlqGjkNetyGzGM+QWjsT9+VK1HHpjT5pkt5XpEW8ckzkZfXGnfWcaPr7Re4qC/NMb1BKMpr2kHV6zlBCpF/Bx4cqyb//pM6/PKxvFpg7AvWfMDW8gX6H3DzC2cB0ZHZdGcUMU+Feq6QQpJgcyhBHAMYma74SrAF2ZuVX/wJEzbaogvO5DDUS3NV5aZup9foRpKSOs858axIJBH6wg2bnXn4mgFyjVHUdzEbhH5345uVH8s7XwTwFgsP7rHG+2wt+TM3BF8leh1YWnpEqMp1TvjMaXHQdO1SVTMj6kJTNna2++7CH1cL8Zyc9Icr+DndntL9BGDaqZbNEGBnY4=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(136003)(376002)(46966006)(36840700001)(2906002)(356005)(86362001)(8676002)(316002)(6666004)(5660300002)(82740400003)(70586007)(70206006)(7416002)(110136005)(26005)(54906003)(1076003)(7696005)(426003)(478600001)(36860700001)(4326008)(81166007)(47076005)(186003)(336012)(2616005)(8936002)(36756003)(44832011)(83380400001)(82310400003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 12:12:38.3112
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cac498e5-c32b-4b2b-1aa5-08d9485300ef
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT003.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 07:19:24AM +0200, Michal Hocko wrote:
-> On Thu 01-07-21 07:54:30, minyard@acm.org wrote:
-> > From: Corey Minyard <cminyard@mvista.com>
-> > 
-> > If you have a process with less than 1000 totalpages, the calculation:
-> > 
-> >   adj = (long)p->signal->oom_score_adj;
-> >   ...
-> >   adj *= totalpages / 1000;
-> > 
-> > will always result in adj being zero no matter what oom_score_adj is,
-> > which could result in the wrong process being picked for killing.
-> > 
-> > Fix by adding 1000 to totalpages before dividing.
-> 
-> Yes, this is a known limitation of the oom_score_adj and its scale.
-> Is this a practical problem to be solved though? I mean 0-1000 pages is
-> not really that much different from imprecision at a larger scale where
-> tasks are effectively considered equal.
+On stream stop, currently CPU DAI stop sequence invoked first
+followed by DMA. For Few platforms, it is required to stop the
+DMA first before stopping CPU DAI.
 
-Known limitation?  Is this documented?  I couldn't find anything that
-said "oom_score_adj doesn't work at all with programs with <1000 pages
-besides setting the value to -1000".
+Introduced new flag in dai_link structure for reordering stop sequence.
+Based on flag check, ASoC core will re-order the stop sequence.
 
-> 
-> I have to say I do not really like the proposed workaround. It doesn't
-> really solve the problem yet it adds another special case.
+Fixes: 4378f1fbe92405 ("ASoC: soc-pcm: Use different sequence for start/stop trigger")
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+ include/sound/soc.h |  6 ++++++
+ sound/soc/soc-pcm.c | 22 ++++++++++++++++------
+ 2 files changed, 22 insertions(+), 6 deletions(-)
 
-The problem is that if you have a small program, there is no way to
-set it's priority besides completely disablling the OOM killer for
-it.
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 675849d07284..8e6dd8a257c5 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -712,6 +712,12 @@ struct snd_soc_dai_link {
+ 	/* Do not create a PCM for this DAI link (Backend link) */
+ 	unsigned int ignore:1;
+ 
++	/* This flag will reorder stop sequence. By enabling this flag
++	 * DMA controller stop sequence will be invoked first followed by
++	 * CPU DAI driver stop sequence
++	 */
++	unsigned int stop_dma_first:1;
++
+ #ifdef CONFIG_SND_SOC_TOPOLOGY
+ 	struct snd_soc_dobj dobj; /* For topology */
+ #endif
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 46513bb97904..d1c570ca21ea 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1015,6 +1015,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 
+ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	int ret = -EINVAL, _ret = 0;
+ 	int rollback = 0;
+ 
+@@ -1055,14 +1056,23 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
+-		if (ret < 0)
+-			break;
++		if (rtd->dai_link->stop_dma_first) {
++			ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
++			if (ret < 0)
++				break;
+ 
+-		ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
+-		if (ret < 0)
+-			break;
++			ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
++			if (ret < 0)
++				break;
++		} else {
++			ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
++			if (ret < 0)
++				break;
+ 
++			ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
++			if (ret < 0)
++				break;
++		}
+ 		ret = snd_soc_link_trigger(substream, cmd, rollback);
+ 		break;
+ 	}
+-- 
+2.17.1
 
-I don't understand the special case comment.  How is this adding a
-special case?  This patch removes a special case.  Small programs
-working different than big programs is a special case.  Making them all
-work the same is removing an element of surprise from someone expecting
-things to work as documented.
-
--corey
