@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF6A3CBF5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770573CBF65
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238234AbhGPWkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 18:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236673AbhGPWke (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 18:40:34 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FB4C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:37:38 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id y38so17334144ybi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AajCcLGQreUgC8barCBgEJa8ujUXbuUEsJRU4Qb14aU=;
-        b=Sv5vIvLuksdalgYv854cCR5xM6eJew5RcXNKQwFwgbqF1Ehmn5Kd7tVcMxeIPJnyrn
-         8SorwLdMZd6pb/iZ6PeIMTUjMHWlP3ppT+vVYF+NXORQcXt8QY9zWk0zwGMsabUoW4HJ
-         Y7fp8Etw3VJnZC+FTTI9MKjiGJgfKkVyaxJHhiOsnEf8UxoH0oexUy01NRW68E8jX7i+
-         fDPyI2wBDoZKHQYShfZgLCQvq18xsWJRQuF8UqYsRC50XJ+CWFZV2KGU6Cl/KPC+2xiu
-         fqw1l4JEeiGNRM76GYBP33Z861L+X7AcJdTxu94y1fXkVY4lscem/DaBIi6cz9VZrOME
-         0Hpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AajCcLGQreUgC8barCBgEJa8ujUXbuUEsJRU4Qb14aU=;
-        b=icm3dQn99JBMMnfkf24mOggKqLY3XesK09S8DNpRJ84Wt9MqpmCBmQfkHjblDm2CZj
-         fseZmaeOGkwyqGDk2EDPFbBamgqyq2hl243qlGL8yonw9MYUjtDrTQU0AcpBzulb6iv+
-         EpNvBaPResvu2h62yKZPtHZZzS146Yj5Jh6piahNJZGdg8WiFhOk2yXwvoHDY8wc2SIi
-         j4s5Z0VirH0rFLBQ61WAJYd6pSSZQEcI+N5Yb4o+DqSNrjZs/TmkgjPM2V1my/+F1rIr
-         poBeXB4HJG8L6KiozvmQ5QBWzR/JlpGgRbYgcf1wW3EFqj4GmQUp4eHnc/AY2fEIQbWQ
-         +UaQ==
-X-Gm-Message-State: AOAM530oAYu7xCt3R94nnFJS1Esc2T8olESdTIZZwTA5ABiMrbm+NXFW
-        FPMOjDIbUeyhOFEbjtDikb9diepopc8BnpOtGZ0=
-X-Google-Smtp-Source: ABdhPJwjmjTOyEafGU8JB1kr3VsLd5fMQRUpWIGYYsUyYB6b9iMnoU2I+2ryII51GLlG2/dqEdRE4j3pJN2OUpl7THQ=
-X-Received: by 2002:a25:2c01:: with SMTP id s1mr17155432ybs.387.1626475057553;
- Fri, 16 Jul 2021 15:37:37 -0700 (PDT)
+        id S236924AbhGPWrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 18:47:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230227AbhGPWrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 18:47:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66878613DF;
+        Fri, 16 Jul 2021 22:44:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626475465;
+        bh=+OtcNEH2sKfz8tajetndVWNnt7tYpjOCK9SU/b98tao=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jRzcMCH/WjUxv97dnBAZ4X0kYnhoD5Npnt4MhsENvjeJ/2rxDWwAfIXfVLHbTbPWZ
+         5uNPIkKUus4JNKc6TT95RCjeDZchP8866bfmZgVOI0T2b0+hLdofOqZueCtShss9iI
+         zpbe80RFG6Qra0fsMtbYySfMHljnM4qA2jYpybJreCEVZZ7VcCsQjxnW0XzQn/iFC2
+         BiK+oGb3JGbnWaSBbpeUj/ShEpviMpbSbkF3/UqYQj5ndZGUqB0ChgNYDUgwnRZAMT
+         oAYSw8JBHFkTodLmyTNjhNn9LTyDvog8N0zByBQRW1Iqlza+9TCExHkH8/OrfdivY4
+         01azUqG4Wm1Ww==
+Date:   Fri, 16 Jul 2021 15:44:21 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] smpboot: remove inline from __always_inline'd
+ function idle_init
+Message-ID: <YPILxbDHCC2EN/3u@archlinux-ax161>
+References: <20210715164018.62712-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20210712174849.2202287-1-ben.dooks@codethink.co.uk>
- <CAEUhbmWmrEuwdy8OPhF1p1Sb7779QiWkx-Ca1OG5VQ38dxChLw@mail.gmail.com> <36a5d9d8-67be-e128-2798-5bf1989ce06d@codethink.co.uk>
-In-Reply-To: <36a5d9d8-67be-e128-2798-5bf1989ce06d@codethink.co.uk>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Sat, 17 Jul 2021 06:37:25 +0800
-Message-ID: <CAEUhbmVMc+rNs3ghu0pE_4+W8SzEgZ-ykeNDjriqPPZ6Zxhv+Q@mail.gmail.com>
-Subject: Re: [PATCH] riscv: add correct as-options for assembly in modules
-To:     Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     linux-kernel@lists.codethink.co.uk,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715164018.62712-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 11:33 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
->
-> On 16/07/2021 11:44, Bin Meng wrote:
-> > On Tue, Jul 13, 2021 at 2:28 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
-> >>
-> >> When trying to load modules built for riscv which include assembly
-> >
-> > nits: RISC-V
-> >
-> >> the kernel loader errors with "unexpected relocation type 'R_RISCV_ALIGN'"
-> >> due to R_RISCV_ALIGN relocations being generated by the assembler.
-> >>
-> >> In commit 7a8e7da42250138 ("RISC-V: Fixes to module loading")
-> >> the fix for gcc adds -mno-relax to the command line when building
-> >> C files. However this was never applied to assembly flags, and gcc
-> >> does no pass -mno-relax to gas when presented with a .S file.
-> >
-> > does not pass
->
-> I'll see if I can make this simpler. Should this get done for a v2?
->
+On Thu, Jul 15, 2021 at 05:40:18PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Declaring a idle_init as inline when it is __always_inline is redundant
+> so this can be removed. Also swap the order of __always_inline and void
+> to match the more usual coding style.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Yes, please send v2.
+This resolves a clang warning that I see:
 
-> > FYI
-> >
-> > The GCC bug was fixed recently via:
-> > https://github.com/gcc-mirror/gcc/commit/3b0a7d624e64eeb81e4d5e8c62c46d86ef521857
->
-> thanks, I think it still useful to fix this in the kernel.
->
-> >>
-> >> The fix (other than making gcc always pass -mno-relax to gas) is
-> >> to add -Wa,-mno-relax to gcc to make sure the as is invoked with
-> >> the right options.
-> >>
-> >> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-> >> ---
-> >>   arch/riscv/Makefile | 1 +
-> >>   1 file changed, 1 insertion(+)
-> >>
-> >
-> > Otherwise,
-> > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+kernel/smpboot.c:50:20: error: duplicate 'inline' declaration specifier [-Werror,-Wduplicate-decl-specifier]
+static inline void __always_inline idle_init(unsigned int cpu)
+                   ^
+./include/linux/compiler_attributes.h:65:41: note: expanded from macro '__always_inline'
+#define __always_inline                 inline __attribute__((__always_inline__))
+                                        ^
+./include/linux/compiler_types.h:149:16: note: expanded from macro 'inline'
+#define inline inline __gnu_inline __inline_maybe_unused notrace
+               ^
+1 error generated.
 
-Regards,
-Bin
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+> ---
+>  kernel/smpboot.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+> index 21b7953f8242..cf6acab78538 100644
+> --- a/kernel/smpboot.c
+> +++ b/kernel/smpboot.c
+> @@ -47,7 +47,7 @@ void __init idle_thread_set_boot_cpu(void)
+>   *
+>   * Creates the thread if it does not exist.
+>   */
+> -static inline void __always_inline idle_init(unsigned int cpu)
+> +static __always_inline void idle_init(unsigned int cpu)
+>  {
+>  	struct task_struct *tsk = per_cpu(idle_threads, cpu);
+>  
+> -- 
+> 2.31.1
+> 
