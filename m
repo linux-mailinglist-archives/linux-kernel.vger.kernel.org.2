@@ -2,178 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21873CBB26
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A343CBB28
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhGPRaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:30:30 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:36449 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhGPRa2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:30:28 -0400
-Received: by mail-oi1-f182.google.com with SMTP id u15so11733102oiw.3;
-        Fri, 16 Jul 2021 10:27:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CeaYmmqy0BTpl+jDq91lfBNwbCyDsDM5K5yy/bAjZb8=;
-        b=FAPztlYFw1562P/9FCUHLVWBXjnHzhaV8eEK6EWsn2viuRPrgFrQIf0tkbeubJwyRy
-         oIqHCSy5/JDmDRuxK6Z3ShFAc/5v9bzZprxqBwWnfiz62VDq/BMzqOz7uvAjttuMQBKk
-         P2nzdNgLwVmbeiYXlLxpy+WenZbUHyKhUoKWsXvLsKZxoAAh1Q8Cl88lT45eYoC20SJf
-         TyG8CvsNniMvNFIW/rja5r4Ea+OLgoWTFMWLDvFq8Xyk7G027h2Y5v9PHMzu3Sch6nEu
-         xsc090SRo/Ypa6+kwTyKCrmgqjxz/O2dOqYRo9Fq+L0kVo8g+VnYdVzbFkKy2tQDBlB/
-         T6+Q==
-X-Gm-Message-State: AOAM532o9RjR1o3JWspNbqsvu9pO38AUDTdXfUop9qvK3RkI+BrYQ+Xr
-        L7WjhNZqruBDfu2z0rFDmsFgVHkwOr2B5NV5kcE=
-X-Google-Smtp-Source: ABdhPJwREseWLWurDmxtUAjhpSaJUD5vYvIYiRBtvUwiqgC0pgq77pnXlc+lgYa79H2Ecw7YYi0BHyoK3SF9OmCUYpY=
-X-Received: by 2002:a05:6808:10d0:: with SMTP id s16mr8300574ois.69.1626456451648;
- Fri, 16 Jul 2021 10:27:31 -0700 (PDT)
+        id S231231AbhGPRai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 13:30:38 -0400
+Received: from mga11.intel.com ([192.55.52.93]:31673 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229803AbhGPRah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 13:30:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10047"; a="207740154"
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="207740154"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 10:27:41 -0700
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="431281124"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 10:27:40 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1m4Rcc-00EK4B-1t; Fri, 16 Jul 2021 20:27:34 +0300
+Date:   Fri, 16 Jul 2021 20:27:34 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
+Message-ID: <YPHBhpfk8RoEuQx2@smile.fi.intel.com>
+References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
+ <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
+ <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
+ <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
+ <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com>
+ <ac8ac10e-aa43-93a1-d36e-6304643375ae@oth-regensburg.de>
+ <CAHp75VcLicxAz5BjP+Lp2yHxEGiKcT9OUZbPeRUgZVcYLdY0FA@mail.gmail.com>
+ <599a37bd-3cb4-1e4b-d5f8-936c4daae71f@oth-regensburg.de>
 MIME-Version: 1.0
-References: <20210712182121.2936794-1-andy.shevchenko@gmail.com> <d542bc45-6e52-dc12-69bf-76fa6dcaaf5e@gmail.com>
-In-Reply-To: <d542bc45-6e52-dc12-69bf-76fa6dcaaf5e@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 16 Jul 2021 19:27:20 +0200
-Message-ID: <CAJZ5v0jR5T2+EHXz_RqzMDxb0i9pDhQTDZomWe3po91A7Bb-xg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ACPI: utils: Fix reference counting in for_each_acpi_dev_match()
-To:     Daniel Scally <djrscally@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <599a37bd-3cb4-1e4b-d5f8-936c4daae71f@oth-regensburg.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 12:32 AM Daniel Scally <djrscally@gmail.com> wrote:
->
-> Hi Andy - thanks for fixing this
->
-> On 12/07/2021 19:21, Andy Shevchenko wrote:
-> > Currently it's possible to iterate over the dangling pointer in case the device
-> > suddenly disappears. This may happen becase callers put it at the end of a loop.
-> >
-> > Instead, let's move that call inside acpi_dev_get_next_match_dev().
-> >
-> > Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
-> > Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_dev() and helper macro")
-> > Fixes: edbd1bc4951e ("efi/dev-path-parser: Switch to use for_each_acpi_dev_match()")
-> > Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->
-> Reviewed-by: Daniel Scally <djrscally@gmail.com>
+On Fri, Jul 16, 2021 at 05:27:36PM +0200, Ralf Ramsauer wrote:
+> On 16/07/2021 17:01, Andy Shevchenko wrote:
+> > On Fri, Jul 16, 2021 at 4:07 PM Ralf Ramsauer
+> > <ralf.ramsauer@oth-regensburg.de> wrote:
+> >> On 14/07/2021 15:35, Andy Shevchenko wrote:
+> >>> On Wed, Jul 14, 2021 at 3:56 PM Ralf Ramsauer
+> >>> <ralf.ramsauer@oth-regensburg.de> wrote:
+> >>>> On 14/07/2021 08:54, Jiri Slaby wrote:
+> >>>>> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
+> >>>
+> >>>>> Hmm, have you checked the commit which introduced the whitelist?
+> >>>>>
+> >>>>>     Nevertheless, this needs to handled with care: while many 8250 devices
+> >>>>>     actually claim to support MSI(-X) interrupts it should not be
+> >>>>> enabled be
+> >>>>>     default. I had at least one device in my hands with broken MSI
+> >>>>>     implementation.
+> >>>>>
+> >>>>>     So better introduce a whitelist with devices that are known to support
+> >>>>>     MSI(-X) interrupts. I tested all devices mentioned in the patch.
+> >>>>>
+> >>>>>
+> >>>>> You should have at least CCed the author for an input.
+> >>>>
+> >>>> Yep, back then I was testing three different 8250 pci cards. All of them
+> >>>> claimed to support MSI, while one really worked with MSI, the one that I
+> >>>> whitelisted. So I thought it would be better to use legacy IRQs as long
+> >>>> as no one tested a specific card to work with MSI.
+> >>>
+> >>> Can you shed a light eventually what those cards are?
+> > 
+> >> So I found a no-name el-cheapo card that has some issues with MSI:
+> > 
+> > Win Chip Head (WCH)
+> > 
+> >> 18:00.0 Serial controller: Device 1c00:3253 (rev 10) (prog-if 05 [16850])
 
-Applied as 5.14-rc material, thanks!
+Thank you!
 
-> > ---
-> > v2:
-> > - rebased on top of v5.14-rc1 and hence added fix for EFI code
-> > - added kernel documentation update to point out that
-> >   acpi_dev_get_next_match_dev() drops a reference on the given
-> >   ACPI device (Rafael)
-> >
-> >  drivers/acpi/utils.c                       | 7 +++----
-> >  drivers/firmware/efi/dev-path-parser.c     | 1 -
-> >  drivers/media/pci/intel/ipu3/cio2-bridge.c | 6 ++----
-> >  include/acpi/acpi_bus.h                    | 5 -----
-> >  4 files changed, 5 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-> > index e7ddd281afff..d5cedffeeff9 100644
-> > --- a/drivers/acpi/utils.c
-> > +++ b/drivers/acpi/utils.c
-> > @@ -860,11 +860,9 @@ EXPORT_SYMBOL(acpi_dev_present);
-> >   * Return the next match of ACPI device if another matching device was present
-> >   * at the moment of invocation, or NULL otherwise.
-> >   *
-> > - * FIXME: The function does not tolerate the sudden disappearance of @adev, e.g.
-> > - * in the case of a hotplug event. That said, the caller should ensure that
-> > - * this will never happen.
-> > - *
-> >   * The caller is responsible for invoking acpi_dev_put() on the returned device.
-> > + * On the other hand the function invokes  acpi_dev_put() on the given @adev
-> > + * assuming that its reference counter had been increased beforehand.
-> >   *
-> >   * See additional information in acpi_dev_present() as well.
-> >   */
-> > @@ -880,6 +878,7 @@ acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const cha
-> >       match.hrv = hrv;
-> >
-> >       dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
-> > +     acpi_dev_put(adev);
-> >       return dev ? to_acpi_device(dev) : NULL;
-> >  }
-> >  EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
-> > diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
-> > index 10d4457417a4..eb9c65f97841 100644
-> > --- a/drivers/firmware/efi/dev-path-parser.c
-> > +++ b/drivers/firmware/efi/dev-path-parser.c
-> > @@ -34,7 +34,6 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
-> >                       break;
-> >               if (!adev->pnp.unique_id && node->acpi.uid == 0)
-> >                       break;
-> > -             acpi_dev_put(adev);
-> >       }
-> >       if (!adev)
-> >               return -ENODEV;
-> > diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-> > index 4657e99df033..59a36f922675 100644
-> > --- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
-> > +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-> > @@ -173,10 +173,8 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
-> >       int ret;
-> >
-> >       for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
-> > -             if (!adev->status.enabled) {
-> > -                     acpi_dev_put(adev);
-> > +             if (!adev->status.enabled)
-> >                       continue;
-> > -             }
-> >
-> >               if (bridge->n_sensors >= CIO2_NUM_PORTS) {
-> >                       acpi_dev_put(adev);
-> > @@ -185,7 +183,6 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
-> >               }
-> >
-> >               sensor = &bridge->sensors[bridge->n_sensors];
-> > -             sensor->adev = adev;
-> >               strscpy(sensor->name, cfg->hid, sizeof(sensor->name));
-> >
-> >               ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
-> > @@ -215,6 +212,7 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
-> >                       goto err_free_swnodes;
-> >               }
-> >
-> > +             sensor->adev = acpi_dev_get(adev);
-> >               adev->fwnode.secondary = fwnode;
-> >
-> >               dev_info(&cio2->dev, "Found supported sensor %s\n",
-> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> > index 1ae993fee4a5..b9d434a93632 100644
-> > --- a/include/acpi/acpi_bus.h
-> > +++ b/include/acpi/acpi_bus.h
-> > @@ -707,11 +707,6 @@ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
-> >   * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
-> >   *
-> >   * The caller is responsible for invoking acpi_dev_put() on the returned device.
-> > - *
-> > - * FIXME: Due to above requirement there is a window that may invalidate @adev
-> > - * and next iteration will use a dangling pointer, e.g. in the case of a
-> > - * hotplug event. That said, the caller should ensure that this will never
-> > - * happen.
-> >   */
-> >  #define for_each_acpi_dev_match(adev, hid, uid, hrv)                 \
-> >       for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);        \
+One more thing, ist it possible to see entire PCI configuration space (w/ or
+w/o MSI, I don't think it matters)? Something like
+
+	`lspci -nk -vvv -xxx -s 18:0`
+
+to run.
+
+(I believe there are a lot of 0xff bytes)
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
