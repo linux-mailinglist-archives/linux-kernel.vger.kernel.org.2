@@ -2,103 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6F43CB70D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FA03CB712
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237960AbhGPL63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:58:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36597 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232088AbhGPL60 (ORCPT
+        id S235127AbhGPMCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232024AbhGPMCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 07:58:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626436531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P7vOCrL7ymn5lzl6wGJsSLq/fO1ofEKKbNjmiQHOWvk=;
-        b=Da6eLilYR+8fVHyI2hfsDhGC3FT7urboZzInrKJKTpp5tUinqw379c8bElV1zYRNKGcr3p
-        fBMQBNqVimSl2g4aklaF519f9pSvwFdtdn2AZ6HoHW6rkTWgjaDnvuyn6wrXTmSnzD+MSI
-        K3aBkR4KIQE7AknEycPmPlQ+1vpPQK4=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-LgLw8uQDM0Kthc736c6rbQ-1; Fri, 16 Jul 2021 07:55:30 -0400
-X-MC-Unique: LgLw8uQDM0Kthc736c6rbQ-1
-Received: by mail-wm1-f72.google.com with SMTP id z127-20020a1c7e850000b02901e46e4d52c0so2296416wmc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:55:30 -0700 (PDT)
+        Fri, 16 Jul 2021 08:02:17 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0D5C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:59:21 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id hd33so14726658ejc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:59:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ej8SIWz0OcpHLm8FmiDOFRnXSxDgeO5zMJ7XUup1PTA=;
+        b=dfqGx9usURFRxmqVqxyLBm/eTT11z1zmysBYuvI2fPcO3oJNytOjlmT3q9kd0SgbLg
+         rkPthDhjDmDIe8lwRt4UH8dEspSHH1h5ImneawABkNCFTka3dQuzg80yEY0mi2nzDnz8
+         dyBIEmnBQPKeRBkXdIkpEL00GfxDTFBDY/K+hauar833HEcXWnLJBJ+p6xugfYnaQL52
+         Rf4qX/tH2K6hk4lfuaseMS6Mpqbc6UCP6smUu9zDJerdFKhMRj/mbT5gKlinHaUGy92M
+         IU6wPVC7WQoOp0N/mNeaRp0S/VY0p2DEl9OrkijP+aTfvbehqYwTDet6nCxEonmTHu+L
+         1q+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P7vOCrL7ymn5lzl6wGJsSLq/fO1ofEKKbNjmiQHOWvk=;
-        b=M9hzyRzZKbTlrZHCMPy+auuO6KduYXhQA0x79rlMVycQiXcYV1/Ys6nRgRDVBBE8sU
-         fm/ZbIcr3/yzvgpuw829PeQDP+YL0GY7ap97Lp4Em4sUICMLdFYAr5o0Lh48XmuMAaUC
-         JEn+uCb7m9vm4aqy5gORl+reBPMsjvqD1Q7/SnBHRIOBEfXXnI3YHyVzcIqyfGj62/zB
-         8JP/sGiIjKXpbVDYYx9f3e1JHMI3OpIlDBrdTdpkf8iwrfKSiDtI5eEvkc/Dpzuqo5Ey
-         +a8j1VOtpeWlbVLCmoBt3aSmGpdxyvy0LoJZ1NAWMcuhPS1K1W34tRFMSQvbq7tnieFg
-         kuQg==
-X-Gm-Message-State: AOAM530kAUtN0FtHKmghnPkKqy0pWl+Zt3BGtFAn0Mu7FZVIlD82K3M6
-        xvYCJr8XpyEU8VfNTbcpCX0/mZbppIYOwGwb1NMQudBDmXglNieYiQvYA3fWiO6pL/uAAUhiiD5
-        J8QYkg5J2tKG8VCFukdGFhzQe
-X-Received: by 2002:a5d:5609:: with SMTP id l9mr11956965wrv.123.1626436529155;
-        Fri, 16 Jul 2021 04:55:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwllltGZrc4GVOYhpZ2e16qs3ywz/mJ7myRuixUkila1t/EUl17a2fW1CG3hgNxEx2yvxj+JA==
-X-Received: by 2002:a5d:5609:: with SMTP id l9mr11956934wrv.123.1626436528864;
-        Fri, 16 Jul 2021 04:55:28 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j16sm9583935wrw.62.2021.07.16.04.55.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 04:55:28 -0700 (PDT)
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Juri Lelli <jlelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        He Zhe <zhe.he@windriver.com>
-References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
- <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
- <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
- <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
- <20210715102249.2205-1-hdanton@sina.com>
- <20210716020611.2288-1-hdanton@sina.com>
- <20210716075539.2376-1-hdanton@sina.com>
- <20210716093725.2438-1-hdanton@sina.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
-Message-ID: <a2f3f9ac-dac2-eadc-269e-91652d78ebd3@redhat.com>
-Date:   Fri, 16 Jul 2021 13:55:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ej8SIWz0OcpHLm8FmiDOFRnXSxDgeO5zMJ7XUup1PTA=;
+        b=gL4/ECTPifX5zGXIE3FimR+94nd51GxaQDenGi3EkUa0/YcggFWz11nq7fMChSP3Lm
+         EYAJyHgb9sYO+nMPef1HqSK3uhg+4wjijQ3D/Cw6fG9WRp8mT3Pmvi/A9Ce62FjJ5krb
+         WyBSfW/zdiFXVSQERECDi3peNH6YmyR+b4Ec6drcSLVyfJvs80AHjuddobzLZ7TjQnGp
+         Sw1s/SfynjvSYLoN32l9069QJLXD1XVEH5/Mt5PtWJb/5xj9MU9hY7bkfeRNZ2tloQ00
+         X3h8dGXvMwLkFeJwZo3nQ0J+uL1V2DWoNjG6+FxfMk5o+l2f54HQKhEpGZbRRgJvj8xG
+         4O8A==
+X-Gm-Message-State: AOAM531AihDQThmPMpuHYJSVMWriHE8qL5l/DBlM+urWNImUMw6dTKZP
+        p8uYz0a1cVR3zcVz/94pLBmrxckDB0QU7doR0VidtA==
+X-Google-Smtp-Source: ABdhPJwe5+sGzXE2oIhdfGmYLeuGYRlUa22gDBfVDoLPQfgK3srGhZeHfY5T56Jk405Rm4iZGds6saOLiY2+B3N4HkQ=
+X-Received: by 2002:a17:906:cec1:: with SMTP id si1mr11414424ejb.18.1626436759846;
+ Fri, 16 Jul 2021 04:59:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210716093725.2438-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210715182558.381078833@linuxfoundation.org>
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 16 Jul 2021 17:29:08 +0530
+Message-ID: <CA+G9fYtW156WOWbUH37XaPWMmv7wthZcoUG7JSrob1TU5LYSqw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/215] 5.10.51-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/21 11:37, Hillf Danton wrote:
-> On Fri, 16 Jul 2021 09:59:15 +0200 Paolo Bonzini wrote:
->> * the warning only occurs if preemption occurs during the
->> spin_lock_irqsave critical section (and therefore it can only occur in
->> PREEMPT_RT kernels)
-> 
-> With that lock held, no waitqueue entry can be added on to the WQ - IOW no
-> wakeup will go stray.
-> 
->> * the warning causes an early return 0 that messes up the VM's networking
-> 
-> Is the messup due to the zero or wakeup?
+On Fri, 16 Jul 2021 at 00:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.51 release.
+> There are 215 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.51-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-It's caused by the missing wakeup, i.e. eventfd_signal not really 
-signaling anything.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Paolo
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.10.51-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: 36558b9a3bb700ca62ec3ac2f06e6fbec57a35d2
+* git describe: v5.10.50-216-g36558b9a3bb7
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.50-216-g36558b9a3bb7
+
+## No regressions (compared to v5.10.49-594-g3e2628c73ba0)
+
+## No fixes (compared to v5.10.49-594-g3e2628c73ba0)
+
+## Test result summary
+ total: 79086, pass: 65714, fail: 1691, skip: 10507, xfail: 1174,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
