@@ -2,256 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BCB3CB81A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E123CB821
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbhGPN5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhGPN46 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:56:58 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01455C06175F;
-        Fri, 16 Jul 2021 06:54:02 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id j34so5882926wms.5;
-        Fri, 16 Jul 2021 06:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=btgN7tUSP/yLaAouyGCSHQGvOMd/ZnNWc68W+rcJ3YQ=;
-        b=JOCzVv4MLgKKHP4v6mJ5+ORzX855S7Sh94alQwCx3tzzoyu+aUY8jA9BgFTtGkxKhk
-         JfTUd1oFUWE6xIR+1nMeWiEB7Wl8G909k4FAbBq3ZnmJGfmPM2KBC1J0FYCEVwmH9dLZ
-         MsVa4fj8arUIy5Sm8jc7oPt0BR9NLz1T/58SC9FRAdKOsX5dKyd/tHIKe3sLYbnfbY7u
-         UMoMYwJ7/Dpenuq6FujRuEG4R4VXkR1mhq8+xqDArHG4XV8QvGT/yyPcItbd3kWlyeva
-         0PupMqEkgw4JOCtO+ut7Udzz5aVW+XEpMnzEJ4f7KcYTdIjOHNdbfrEj7Pgi4wxzh6X2
-         TbRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=btgN7tUSP/yLaAouyGCSHQGvOMd/ZnNWc68W+rcJ3YQ=;
-        b=c5w+nf43ee8hOvibFMyZSp780hTsuae3SYpKeiiPwLvSY/xAj7lyDipylsIH1968ak
-         cuVar8F61CS6OX1uYWdGz6rsWJCI1NwU4zXDvpWzKJNIUUJavqQI5NAQTfzAGZQsltMj
-         pXAA9v+3wbw1Xr9MUnlGhjgQRRLgqFdoZy4thp9KJHLEqLZvEEEbebPqB0eQC+l5wcdG
-         e259NDpJD0yINfjlKfNgF9IDZbV03wbflM17zUKiwDtk4IGbdulJwTAtezjhNSO23Qgb
-         oTwVXmf8Kme7dE2ZjUKXzT20zCg/s1EVpzphWQ8/1kzllTzH/m+kfXdGobpzo4lw3/JA
-         +1jA==
-X-Gm-Message-State: AOAM531tZQx8sIon3gCw/n+EdonCExy5mH1gMWZlySJIQG3Y49ZOnXsz
-        Ar/M379Odp493exSWRQ/w2XxCDU/RDeUFe2hq3nXjA==
-X-Google-Smtp-Source: ABdhPJwM1rTbOTCZhGtN9CeCQDbcumwffAnfw17P9wpcEJZN3DHDIGzwEuSGiwBrognwIlFC6U3r7g==
-X-Received: by 2002:a1c:8083:: with SMTP id b125mr10833257wmd.132.1626443641356;
-        Fri, 16 Jul 2021 06:54:01 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.gmail.com with ESMTPSA id q72sm2475284wme.14.2021.07.16.06.53.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 06:53:59 -0700 (PDT)
-Message-ID: <5866e3456645659423030339f71f3461659ffe2d.camel@gmail.com>
-Subject: Re: [RFC PATCH 03/10] perf workqueue: add threadpool start and stop
- functions
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Date:   Fri, 16 Jul 2021 15:53:58 +0200
-In-Reply-To: <CAM9d7chvRswKLmRvW5rd4GApqngN8QeG+nPmVy4zxz_YR0MMxw@mail.gmail.com>
-References: <cover.1626177381.git.rickyman7@gmail.com>
-         <118c988358322b9daf69aeb98ff8986748b0dad2.1626177381.git.rickyman7@gmail.com>
-         <CAM9d7chvRswKLmRvW5rd4GApqngN8QeG+nPmVy4zxz_YR0MMxw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        id S240013AbhGPN5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:57:53 -0400
+Received: from first.geanix.com ([116.203.34.67]:35038 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232088AbhGPN5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 09:57:52 -0400
+Received: from zen.. (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id 982994C7135;
+        Fri, 16 Jul 2021 13:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1626443694; bh=Em7PjSoXenIt5zoQnSrFagVO2cjkXgWtRzWVFLohT04=;
+        h=From:To:Cc:Subject:Date;
+        b=cxjcHJVTVzaI3TWfDG2Xdvr4hYzCnl82pIjxLw+PYsRY0ZZaNWNXnSTBDXBaNC2YL
+         /F1lhd0fCp6Az5Z2BvvpbUsQo4grxWy4BCqMibs5aKP0D2RWYJGAI+d5Aa5v0B6TdA
+         +Jj9NyBACG1sv2q2LAW25io1jg4MZz8kEiKaExXuIwi9g/LO3h8JyILqMhWX0hOsxO
+         DevSsNp/0cWBmEvzfhPSmx8UBSHz5OrikgkShqsJYIRMZg/GYiPQ1dG5g0Zvkjjy7X
+         cE7lhyheq9TH/Zzr3H10cmS3hrFPtOZOSCR/GgFEGcx7Xzz9V/z3EhLJyN3N6/bhQ8
+         lFLQppRTK6NqQ==
+From:   =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
+To:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mark Brown <broonie@kernel.org>
+Cc:     =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: [PATCH v5 0/3] fpga/spi/hwmon: Initial support for Silicom N5010 PAC
+Date:   Fri, 16 Jul 2021 15:54:38 +0200
+Message-Id: <20210716135441.3235863-1-martin@geanix.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Namhyung,
+From: Martin Hundebøll <mhu@silicom.dk>
 
-On Thu, 2021-07-15 at 16:48 -0700, Namhyung Kim wrote:
-> On Tue, Jul 13, 2021 at 5:11 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
-> > 
-> > This patch adds the start and stop functions, alongside the thread
-> > function.
-> > Each thread will run until a stop signal is received.
-> > Furthermore, start and stop are added to the test.
-> > 
-> > Thread management is based on the prototype from Alexey:
-> > https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
-> > 
-> > Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> > ---
-> >  tools/perf/tests/workqueue.c           |  13 ++
-> >  tools/perf/util/workqueue/threadpool.c | 238 +++++++++++++++++++++++++
-> >  tools/perf/util/workqueue/threadpool.h |   5 +
-> >  3 files changed, 256 insertions(+)
-> > 
-> > diff --git a/tools/perf/tests/workqueue.c b/tools/perf/tests/workqueue.c
-> > index 1bd4d78c13eb3b14..be377e9897bab4e9 100644
-> > --- a/tools/perf/tests/workqueue.c
-> > +++ b/tools/perf/tests/workqueue.c
-> > @@ -10,16 +10,29 @@ struct threadpool_test_args_t {
-> > 
-> >  static int __threadpool__prepare(struct threadpool_struct **pool, int
-> > pool_size)
-> >  {
-> > +       int ret;
-> > +
-> >         *pool = create_threadpool(pool_size);
-> >         TEST_ASSERT_VAL("threadpool creation failure", *pool != NULL);
-> >         TEST_ASSERT_VAL("threadpool size is wrong",
-> >                         threadpool_size(*pool) == pool_size);
-> > 
-> > +       ret = start_threadpool(*pool);
-> > +       TEST_ASSERT_VAL("threadpool start failure", ret == 0);
-> > +       TEST_ASSERT_VAL("threadpool is not ready",
-> > threadpool_is_ready(*pool));
-> > +
-> >         return 0;
-> >  }
-> > 
-> >  static int __threadpool__teardown(struct threadpool_struct *pool)
-> >  {
-> > +       int ret;
-> > +
-> > +       ret = stop_threadpool(pool);
-> > +       TEST_ASSERT_VAL("threadpool start failure", ret == 0);
-> 
-> s/start/stop/
-Thanks.
-> 
-> > +       TEST_ASSERT_VAL("stopped threadpool is ready",
-> > +                       !threadpool_is_ready(pool));
-> > +
-> >         destroy_threadpool(pool);
-> > 
-> >         return 0;
-> > diff --git a/tools/perf/util/workqueue/threadpool.c
-> > b/tools/perf/util/workqueue/threadpool.c
-> > index 70c67569f956a3e2..f4635ff782b9388e 100644
-> > --- a/tools/perf/util/workqueue/threadpool.c
-> > +++ b/tools/perf/util/workqueue/threadpool.c
-> [SNIP]
-> > +/**
-> > + * wait_thread - receive ack from thread
-> > + *
-> > + * NB: call only from main thread!
-> > + */
-> > +static int wait_thread(struct thread_struct *thread)
-> > +{
-> > +       int res;
-> > +       enum thread_msg msg = THREAD_MSG__UNDEFINED;
-> > +
-> > +       res = read(thread->pipes.from[0], &msg, sizeof(msg));
-> > +       if (res < 0) {
-> 
-> Maybe it needs to handle -EINTR.
+This is an initial set of patches for the Silciom N5010 programmable
+accelerated card adding support for reading out sensors.
 
-Its behaviour should be retry, right?
-Since these reads are used multiple times in the code, maybe I'm better off
-writing a wrapper function handling also EINTR.
+Based on v5.14-rc1
 
-> 
-> > +               pr_err("threadpool: failed to recv msg from tid=%d: %s\n",
-> > +                      thread->tid, strerror(errno));
-> > +               return -1;
-> > +       }
-> > +       if (msg != THREAD_MSG__ACK) {
-> > +               pr_err("threadpool: received unexpected msg from tid=%d:
-> > %s\n",
-> > +                      thread->tid, thread_msg_tags[msg]);
-> > +               return -1;
-> > +       }
-> > +
-> > +       pr_debug2("threadpool: received ack from tid=%d\n", thread->tid);
-> > +
-> > +       return 0;
-> > +}
-> > 
-<SNIP>
-> > +static int __start_threadpool(struct threadpool_struct *pool)
-> > +{
-> > +       int t, tt, ret = 0, nr_threads = pool->nr_threads;
-> > +       sigset_t full, mask;
-> > +       pthread_t handle;
-> > +       pthread_attr_t attrs;
-> > +
-> > +       sigfillset(&full);
-> > +       if (sigprocmask(SIG_SETMASK, &full, &mask)) {
-> > +               pr_err("Failed to block signals on threads start: %s\n",
-> > +                       strerror(errno));
-> > +               return -1;
-> > +       }
-> > +
-> > +       pthread_attr_init(&attrs);
-> > +       pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_DETACHED);
-> > +
-> > +       for (t = 0; t < nr_threads; t++) {
-> > +               struct thread_struct *thread = &pool->threads[t];
-> > +
-> > +               if (pthread_create(&handle, &attrs, threadpool_thread,
-> > thread)) {
-> > +                       for (tt = 1; tt < t; tt++)
-> > +                               terminate_thread(thread);
-> > +                       pr_err("Failed to start threads: %s\n",
-> > strerror(errno));
-> > +                       ret = -1;
-> > +                       goto out_free_attr;
-> > +               }
-> > +
-> > +               if (wait_thread(thread)) {
-> > +                       for (tt = 1; tt <= t; tt++)
-> > +                               terminate_thread(thread);
-> > +                       ret = -1;
-> > +                       goto out_free_attr;
-> > +               }
-> > +       }
-> 
-> Isn't it better doing this way?
-> 
-> for (t = 0; t < nr_threads; t++) {
->     pthread_create(t)
-> }
-> 
-> for (t = 0; t < nr_threads; t++) {
->     wait_thread(t)
-> }
+Changes since v4:
+ * Removed the mfd patch that has been applied by Lee
+ * Renamed 'rev' to 'revision' in patch 1/3 as per Tom's suggestion
+ * Moved spi board_info structure in patch 2/3 from global/static scope
+   to function/stack scope
 
-I wondered the same thing, but I saw that it was done like that also in Alexey
-patch, so I kept it like so.
-To me, it also looks like it should be not a problem doing as you suggest. It
-should also be more efficient.
+Changes since v3:
+ * Added Hao's Acked-by to patch 1/4
+ * Added Matthew's Acked-by to patch 1/4
+ * Changed "BMC's" to "BMCs" in patch 2/4
+ * Added Moritz' Reviewed-by to patch 2/4
+ * Added Matthew's Reviewed-by to patch 3/4
+ * Added Lee's Acked-for-MFD-by to patch 3/4
 
-Thanks,
-Riccardo
+Changes since v2:
+ * Removed patch 1/5 from v2 already in fpga/for-next
+ * Reworded commit message in patch 1/4 as per Hao's suggestion
+ * Added Yilun's Reviewed-by to patch 3/4 and 4/4
+ * Added Moritz' Acked-by to patch 3/4
+ * Added Moritz' Reviewed-by to patch 4/4
+ * Added Guenter's Reviewed-by to patch 4/4
 
-> 
-> Thanks,
-> Namhyung
-> 
-> 
-> > +
-> > +out_free_attr:
-> > +       pthread_attr_destroy(&attrs);
-> > +
-> > +       if (sigprocmask(SIG_SETMASK, &mask, NULL)) {
-> > +               pr_err("Failed to unblock signals on threads start: %s\n",
-> > +                       strerror(errno));
-> > +               ret = -1;
-> > +       }
-> > +
-> > +       return ret;
-> > +}
-> > +
+Changes since v1:
+ * Commit message in patch 1 is updated with card description
+ * Added Hao's Acked-by to patch 1
+ * Patch 2 is replaced with a new patch to carry feature revision info
+   in struct dfl_device
+ * Patch 3 is updated to use feature revision from struct dfl_device
+ * Patch 4 from v0 is split into separate patches for hwmon and mfd
 
+Martin Hundebøll (3):
+  fpga: dfl: expose feature revision from struct dfl_device
+  spi: spi-altera-dfl: support n5010 feature revision
+  hwmon: intel-m10-bmc-hwmon: add n5010 sensors
+
+ drivers/fpga/dfl.c                  |  27 ++++---
+ drivers/fpga/dfl.h                  |   1 +
+ drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
+ drivers/spi/spi-altera-dfl.c        |  21 ++---
+ include/linux/dfl.h                 |   1 +
+ 5 files changed, 147 insertions(+), 19 deletions(-)
+
+-- 
+2.31.0
 
