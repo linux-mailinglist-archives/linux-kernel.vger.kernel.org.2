@@ -2,109 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094DA3CB631
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2860E3CB634
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239369AbhGPKlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
+        id S239396AbhGPKly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237344AbhGPKlh (ORCPT
+        with ESMTP id S237344AbhGPKlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:41:37 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72EEC06175F;
-        Fri, 16 Jul 2021 03:38:41 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id h4so9544860pgp.5;
-        Fri, 16 Jul 2021 03:38:41 -0700 (PDT)
+        Fri, 16 Jul 2021 06:41:52 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BFAC06175F;
+        Fri, 16 Jul 2021 03:38:56 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso5527927wmj.4;
+        Fri, 16 Jul 2021 03:38:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=w3d3QBhIUG9rULiQkPjmvB3VFugYPgFTgKGsQs/0OIs=;
-        b=edMHLZZ9Joy3kORNlbb3fA7Oip6TpGrlESLPRoP4j3s+sAQLT1SlBoA6nDewPTbeVZ
-         adOYB6al4mrObEuWESAJ8eKqdNEMX2eOcU/YxWBmqhLKf3xbN45sNRIeZKrAtBqyiz9f
-         nX3dORJt+ID97uW4aq30eSU7zpLvGnWqQQDutpcN7gU5/m6ZvhDGcnZwvjjaNnqkhHWH
-         TaAulTOhfwFITR/T+aDhl6mwTAAaYhoKE8723LObUi/eM/LbPvenJ3bIctfUxk92bowR
-         BJ6DACx3dWU2weZVjdGuyk0HaB1noOWHalBTdjC8xkh7RLFCqkc388tyQMAjAHw2k4PS
-         KfJw==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Vfnva+CLWBxItHixfHavnOZBnCrt1HBiZw1cBtbkz2s=;
+        b=ru1A8jLDjJrwsYpIBqSkzZQgke+mxhILocRIiWQyxyZ9auQOom8L4VOvc+01dsYIpz
+         bNamCHd5ynDo9G4iqRSVvYHXgMmTmfF5LwN6CdISfey4DfBFicEdiw8itKP2bEUhFrZJ
+         kf6bqAg7ZHORYFtr9Q4S7YmTw7p7IA48TcrxlGYWJi1643iQJln5MhitzJL+JK4SR6Rs
+         b1KGWTMyfvnpJdZlt3sy/XOFi1IuosBDTnF0gdOd/wVh10KQi3gSaA0QDilRWBRHPdFL
+         xLJlAEHcqYWuPmSrpiQEVuO8bHHsPY6nRy1ViOhxkvDMxoGE1qCFmkKoxShbAHo7ebwL
+         nDZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=w3d3QBhIUG9rULiQkPjmvB3VFugYPgFTgKGsQs/0OIs=;
-        b=OLVm83A9+OQsMCEHdXVkBmJIBLJLQQeqDFdJVxkJwrPk9ic8T8fdKk6GhfDIpyB0g+
-         dQKnWABHzh33RyBdsFi3vGd7CmLHqGYL7KsUSCm7B1gJ8+Cui09vDRH3bBgZPyaAjPN7
-         i14lzqiPU2WEKtADmEIXNPLJJzwsy0+dKQ1iJ3Qq2XRLLe3/q33jIoOqy3Ccb4tq6ug8
-         3GtYHbp4SELIk7gf+tfkwdkdEbTJvRFMmigiQLaGEPfVkYeasC5Jipt1EfpwTFj9wGsK
-         E4T6JIYyKDEXfMldqozymZkeZGOqnc7TZc9FZL9NHxTTzLai30Jt62TyhjfBZQloLHdk
-         NeZg==
-X-Gm-Message-State: AOAM532A9xsgA9eRBXbkLU5Xs6pdUfPFqiY93VcRAnebjydoLO6dkbIy
-        iZ5q3hyHeKVnra+6CVkMzIM=
-X-Google-Smtp-Source: ABdhPJzRs9l6a/USkfsyP9AF6K5QWyN3b48FxjpiD1pQ49VAVuin34TLdB+q2UIjut4p6GMWd5n0vw==
-X-Received: by 2002:aa7:97bd:0:b029:32c:56cc:8fa9 with SMTP id d29-20020aa797bd0000b029032c56cc8fa9mr9677013pfq.65.1626431921511;
-        Fri, 16 Jul 2021 03:38:41 -0700 (PDT)
-Received: from archl-c2lm.. ([103.51.72.31])
-        by smtp.gmail.com with ESMTPSA id d29sm10070111pfq.193.2021.07.16.03.38.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 03:38:41 -0700 (PDT)
-From:   Anand Moon <linux.amoon@gmail.com>
-To:     linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Anand Moon <linux.amoon@gmail.com>,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>,
-        devicetree@vger.kernel.org
-Subject: [PATCHv2 4/4] phy: amlogic: meson8b-usb2: don't log an error on -EPROBE_DEFER
-Date:   Fri, 16 Jul 2021 10:36:36 +0000
-Message-Id: <20210716103651.1455-5-linux.amoon@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210716103651.1455-1-linux.amoon@gmail.com>
-References: <20210716103651.1455-1-linux.amoon@gmail.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Vfnva+CLWBxItHixfHavnOZBnCrt1HBiZw1cBtbkz2s=;
+        b=VpRwM5i4GeYbA3mU6PiOHUWudQe3oHyvK1Q0kqGODW7DyRvNTt2Kauvmr4ITuNTS2o
+         Kxgw3vxNdI3VMieqieyk35/hlSCDf49H5GrTBJPQbzTZyndpHZqqgDLHSZ1sU1za5enD
+         cs/f+O2YpAYj6bJ/aylfusV7hR9OvLjFgDJgKIuMtLpshqMwOC+nkBF1OBpSsNKD+wFU
+         2V3mEE98xSX6g0zt0uhK869b7REleb1pmBrbdRuV6r51jNuA1s4qZ/JR0G89IRgcAKJF
+         fT1hIDglpg4P9sa1U6hDqYMbqdt1hww53ABGiVKNxFXBUwmc2n2vbmtpLxMHgqWpUsIA
+         eCHA==
+X-Gm-Message-State: AOAM533VseQR38R1hMwQpHelo0WQBYeDZ/Wck0lGEHkd/PIm5YcUyqcY
+        Ql1HASOWj07GzU8aD5v7yCQ=
+X-Google-Smtp-Source: ABdhPJxv1Ukq3h0u9bFz9k5w34AJS6DO/v3AyJ123ocr0SexUhF8cQWaNQeaAI+YKUNo9R+9bxHClg==
+X-Received: by 2002:a7b:cd15:: with SMTP id f21mr10015077wmj.148.1626431935079;
+        Fri, 16 Jul 2021 03:38:55 -0700 (PDT)
+Received: from [192.168.8.197] ([185.69.144.177])
+        by smtp.gmail.com with ESMTPSA id x9sm9774116wrm.82.2021.07.16.03.38.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 03:38:54 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in io_sq_thread_park (2)
+To:     syzbot <syzbot+ac957324022b7132accf@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+References: <000000000000494b5f05c73277cd@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <632ddc1b-b664-3e60-90be-03bdf556aa49@gmail.com>
+Date:   Fri, 16 Jul 2021 11:38:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <000000000000494b5f05c73277cd@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_phy_create can return -EPROBE_DEFER if the phy-supply is not ready
-yet. Silence this warning as the driver framework will re-attempt
-registering the PHY. Use dev_err_probe() for phy resources to indicate
-the deferral reason when waiting for the resource to come up.
+On 7/16/21 1:14 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> WARNING in io_uring_cancel_generic
 
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
----
-None:
----
- drivers/phy/amlogic/phy-meson8b-usb2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+attempt to get stats #2
 
-diff --git a/drivers/phy/amlogic/phy-meson8b-usb2.c b/drivers/phy/amlogic/phy-meson8b-usb2.c
-index 2aad45c55494..cf10bed40528 100644
---- a/drivers/phy/amlogic/phy-meson8b-usb2.c
-+++ b/drivers/phy/amlogic/phy-meson8b-usb2.c
-@@ -277,8 +277,8 @@ static int phy_meson8b_usb2_probe(struct platform_device *pdev)
- 
- 	phy = devm_phy_create(&pdev->dev, NULL, &phy_meson8b_usb2_ops);
- 	if (IS_ERR(phy)) {
--		dev_err(&pdev->dev, "failed to create PHY\n");
--		return PTR_ERR(phy);
-+		return dev_err_probe(&pdev->dev, PTR_ERR(phy),
-+				     "failed to create PHY\n");
- 	}
- 
- 	phy_set_drvdata(phy, priv);
+#syz test: https://github.com/isilence/linux.git syztest_sqpoll_hang 
+
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 25279 at fs/io_uring.c:9122 io_dump fs/io_uring.c:9117 [inline]
+> WARNING: CPU: 1 PID: 25279 at fs/io_uring.c:9122 io_uring_cancel_generic+0x5fb/0xe50 fs/io_uring.c:9195
+> Modules linked in:
+> CPU: 1 PID: 25279 Comm: iou-sqp-25271 Tainted: G        W         5.14.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:io_dump fs/io_uring.c:9122 [inline]
+> RIP: 0010:io_uring_cancel_generic+0x5fb/0xe50 fs/io_uring.c:9195
+> Code: 08 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 9e 06 00 00 48 8b 85 10 08 00 00 48 89 44 24 40 <0f> 0b 48 8b 44 24 10 48 05 98 00 00 00 48 89 c2 48 89 44 24 08 48
+> RSP: 0018:ffffc9000ab87c50 EFLAGS: 00010246
+> RAX: ffff88803ddb7800 RBX: ffff888049f73880 RCX: 0000000000000000
+> RDX: 1ffff110093ee812 RSI: ffffffff81e2ebed RDI: ffff888049f74090
+> RBP: ffff888049f73880 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff81e2ebc5 R11: 0000000000000001 R12: ffffc9000ab87d40
+> R13: ffff88803ddb7858 R14: 0000000000000001 R15: 0000000000000000
+> FS:  00007fb893f40700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f68dd0c6080 CR3: 000000002b457000 CR4: 0000000000350ef0
+> Call Trace:
+>  io_sq_thread+0xaac/0x1250 fs/io_uring.c:6930
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 25279 Comm: iou-sqp-25271 Tainted: G        W         5.14.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+>  panic+0x306/0x73d kernel/panic.c:232
+>  __warn.cold+0x35/0x44 kernel/panic.c:606
+>  report_bug+0x1bd/0x210 lib/bug.c:199
+>  handle_bug+0x3c/0x60 arch/x86/kernel/traps.c:239
+>  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:259
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:566
+> RIP: 0010:io_dump fs/io_uring.c:9122 [inline]
+> RIP: 0010:io_uring_cancel_generic+0x5fb/0xe50 fs/io_uring.c:9195
+> Code: 08 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 9e 06 00 00 48 8b 85 10 08 00 00 48 89 44 24 40 <0f> 0b 48 8b 44 24 10 48 05 98 00 00 00 48 89 c2 48 89 44 24 08 48
+> RSP: 0018:ffffc9000ab87c50 EFLAGS: 00010246
+> RAX: ffff88803ddb7800 RBX: ffff888049f73880 RCX: 0000000000000000
+> RDX: 1ffff110093ee812 RSI: ffffffff81e2ebed RDI: ffff888049f74090
+> RBP: ffff888049f73880 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff81e2ebc5 R11: 0000000000000001 R12: ffffc9000ab87d40
+> R13: ffff88803ddb7858 R14: 0000000000000001 R15: 0000000000000000
+>  io_sq_thread+0xaac/0x1250 fs/io_uring.c:6930
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+> 
+> 
+> Tested on:
+> 
+> commit:         d55b8f3c io_uring: add syz debug info
+> git tree:       https://github.com/isilence/linux.git syztest_sqpoll_hang
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16f6cb80300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=cfe2c0e42bc9993d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ac957324022b7132accf
+> compiler:       
+> 
+
 -- 
-2.32.0
-
+Pavel Begunkov
