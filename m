@@ -2,69 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268973CB8C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432BA3CB8C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhGPOjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239786AbhGPOjf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:39:35 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB285C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 07:36:40 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id u1so12409213wrs.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 07:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lSrntPs33U9KYjlOA5x/UB/5uz8HBWUx1srTQBrRRDk=;
-        b=JQ6EpYV4sVXf0xU0xVttdVmimQ8XNbM7zu0d/NZv7SwDQyaYyHlqM52nbwYwAbZN1q
-         jhBeOyoqw8zz+mB3I114c/h/F4cMgsWy4TVJDF7g6P3Cx2iDBz9lJSJDnvlfQGKxPYXn
-         x3U5vbYVRVUqa5r0KlasfTR51vG281vqlszjwggVNd8Kv5IuwX5ydjaTPTtnvD4/3SDr
-         MzsNBRNITRD9G42pw7ZYBz4yuMlg9ff0HqC9Aru1i+U97XIeFN4kNp2LVnzGNzQYQxpd
-         UwCxnr9qGwn0iEpk0rfoqbMeW+qd2DpRNsykzmJrX0qjKR2YYNd3QIzczp3xgjujP3Q5
-         xfZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lSrntPs33U9KYjlOA5x/UB/5uz8HBWUx1srTQBrRRDk=;
-        b=hUIkU2mTaQzGCqRUlY0x99Xcy9sjai2lRW9vYfv4HYZiY9qvlgH7hynjth4jDsj2mx
-         ADgfmPq7p+U/RAEp6kc53+DPx/4PzVbB/ZciTS7P9OZcakCobpn+My955PQAZl9UHE+/
-         rY7ljqW7KQcmERMMTZKvpvXI214WqmTI29KWLT/Q2IQ5e6BViFiDxqqAKbi04d1QbtLF
-         LCbjsYZ1Rocm6/BhIfyJC6IZa8yzJYTJLtmCgvp9rFMuNrrpmQQh/kDYsXApmldzhANO
-         ojEsNa57PmtpaZyu6oq/wWMqqL015OLeywsJ6z2eQB2cKS1oMAxIodEd9xdangoHoHzQ
-         JnJw==
-X-Gm-Message-State: AOAM5324KWcaTZblXxmmCaD2gGUlNVEloaOqcua80zObBLFJwTFVklq1
-        SQm7a+rogoVCxRgvZjIy87mIRg==
-X-Google-Smtp-Source: ABdhPJwEphdp6WbHNMv8MC2I1/d2SY2hsl0QXgkpJb4B22fS6giMmCxobUVPPqKMJlOUTSCnpmp6jw==
-X-Received: by 2002:a5d:4e43:: with SMTP id r3mr12802940wrt.132.1626446199282;
-        Fri, 16 Jul 2021 07:36:39 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id l39sm7283238wms.1.2021.07.16.07.36.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 07:36:38 -0700 (PDT)
-Subject: Re: [PATCH] xfrm/compat: Fix general protection fault in
- xfrm_user_rcv_msg_compat()
-To:     Steffen Klassert <steffen.klassert@secunet.com>,
-        YueHaibing <yuehaibing@huawei.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net, kuba@kernel.org,
-        0x7f454c46@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210712134002.34048-1-yuehaibing@huawei.com>
- <20210716080119.GC3684238@gauss3.secunet.de>
-From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <7d6604a1-02ee-d69d-0efe-d75d152f9b46@arista.com>
-Date:   Fri, 16 Jul 2021 15:36:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239894AbhGPOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:39:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:39644 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232988AbhGPOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 10:39:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85233D6E;
+        Fri, 16 Jul 2021 07:36:24 -0700 (PDT)
+Received: from [10.163.67.71] (unknown [10.163.67.71])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0809D3F774;
+        Fri, 16 Jul 2021 07:36:20 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [RFC 06/10] arm64/mm: Add FEAT_LPA2 specific encoding
+To:     Steven Price <steven.price@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, suzuki.poulose@arm.com,
+        mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        maz@kernel.org, james.morse@arm.com
+References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
+ <1626229291-6569-7-git-send-email-anshuman.khandual@arm.com>
+ <9f0d9925-3694-3fae-0d09-00adbecd1878@arm.com>
+ <b471b41b-de6d-3b56-2595-30586b0a47b3@arm.com>
+ <f3e04afd-d3cb-b26b-621d-bd0bac7bd783@arm.com>
+Message-ID: <416867c1-f2aa-bd17-c8a3-9e7d8ceb015b@arm.com>
+Date:   Fri, 16 Jul 2021 20:07:08 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210716080119.GC3684238@gauss3.secunet.de>
+In-Reply-To: <f3e04afd-d3cb-b26b-621d-bd0bac7bd783@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,62 +43,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/21 9:01 AM, Steffen Klassert wrote:
-> On Mon, Jul 12, 2021 at 09:40:02PM +0800, YueHaibing wrote:
->> In xfrm_user_rcv_msg_compat() if maxtype is not zero and less than
->> XFRMA_MAX, nlmsg_parse_deprecated() do not initialize attrs array fully.
->> xfrm_xlate32() will access uninit 'attrs[i]' while iterating all attrs
->> array.
+On 7/16/21 3:32 PM, Steven Price wrote:
+> On 16/07/2021 08:20, Anshuman Khandual wrote:
 >>
->> KASAN: probably user-memory-access in range [0x0000000041b58ab0-0x0000000041b58ab7]
->> CPU: 0 PID: 15799 Comm: syz-executor.2 Tainted: G        W         5.14.0-rc1-syzkaller #0
->> RIP: 0010:nla_type include/net/netlink.h:1130 [inline]
->> RIP: 0010:xfrm_xlate32_attr net/xfrm/xfrm_compat.c:410 [inline]
->> RIP: 0010:xfrm_xlate32 net/xfrm/xfrm_compat.c:532 [inline]
->> RIP: 0010:xfrm_user_rcv_msg_compat+0x5e5/0x1070 net/xfrm/xfrm_compat.c:577
->> [...]
->> Call Trace:
->>  xfrm_user_rcv_msg+0x556/0x8b0 net/xfrm/xfrm_user.c:2774
->>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
->>  xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2824
->>  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
->>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
->>  netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
->>  sock_sendmsg_nosec net/socket.c:702 [inline]
 >>
->> Fixes: 5106f4a8acff ("xfrm/compat: Add 32=>64-bit messages translator")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>  net/xfrm/xfrm_compat.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> On 7/14/21 9:08 PM, Steven Price wrote:
+>>> On 14/07/2021 03:21, Anshuman Khandual wrote:
+>>>> FEAT_LPA2 requires different PTE representation formats for both 4K and 16K
+>>>> page size config. This adds FEAT_LPA2 specific new PTE encodings as per ARM
+>>>> ARM (0487G.A) which updates [pte|phys]_to_[phys|pte](). The updated helpers
+>>>> would be used when FEAT_LPA2 gets enabled via CONFIG_ARM64_PA_BITS_52 on 4K
+>>>> and 16K page size. Although TTBR encoding and phys_to_ttbr() helper remains
+>>>> the same as FEAT_LPA for FEAT_LPA2 as well. It updates 'phys_to_pte' helper
+>>>> to accept a temporary variable and changes impacted call sites.
+>>>>
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> ---
+>>>>  arch/arm64/include/asm/assembler.h     | 23 +++++++++++++++++++----
+>>>>  arch/arm64/include/asm/pgtable-hwdef.h |  4 ++++
+>>>>  arch/arm64/include/asm/pgtable.h       |  4 ++++
+>>>>  arch/arm64/kernel/head.S               | 25 +++++++++++++------------
+>>>>  4 files changed, 40 insertions(+), 16 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+>>>> index fedc202..0492543 100644
+>>>> --- a/arch/arm64/include/asm/assembler.h
+>>>> +++ b/arch/arm64/include/asm/assembler.h
+>>>> @@ -606,7 +606,7 @@ alternative_endif
+>>>>  #endif
+>>>>  	.endm
+>>>>  
+>>>> -	.macro	phys_to_pte, pte, phys
+>>>> +	.macro	phys_to_pte, pte, phys, tmp
+>>>>  #ifdef CONFIG_ARM64_PA_BITS_52_LPA
+>>>>  	/*
+>>>>  	 * We assume \phys is 64K aligned and this is guaranteed by only
+>>>> @@ -614,6 +614,17 @@ alternative_endif
+>>>>  	 */
+>>>>  	orr	\pte, \phys, \phys, lsr #36
+>>>>  	and	\pte, \pte, #PTE_ADDR_MASK
+>>>> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
+>>>> +	orr	\pte, \phys, \phys, lsr #42
+>>>> +
+>>>> +	/*
+>>>> +	 * The 'tmp' is being used here to just prepare
+>>>> +	 * and hold PTE_ADDR_MASK which cannot be passed
+>>>> +	 * to the subsequent 'and' instruction.
+>>>> +	 */
+>>>> +	mov	\tmp, #PTE_ADDR_LOW
+>>>> +	orr	\tmp, \tmp, #PTE_ADDR_HIGH
+>>>> +	and	\pte, \pte, \tmp
+>>> Rather than adding an extra temporary register (and the fallout of
+>>> various other macros needing an extra register), this can be done with
+>>> two AND instructions:
 >>
->> diff --git a/net/xfrm/xfrm_compat.c b/net/xfrm/xfrm_compat.c
->> index a20aec9d7393..4738660cadea 100644
->> --- a/net/xfrm/xfrm_compat.c
->> +++ b/net/xfrm/xfrm_compat.c
->> @@ -559,8 +559,8 @@ static struct nlmsghdr *xfrm_user_rcv_msg_compat(const struct nlmsghdr *h32,
->>  	    (h32->nlmsg_flags & NLM_F_DUMP))
->>  		return NULL;
+>> I would really like to get rid of the 'tmp' variable here as
+>> well but did not figure out any method of accomplishing it.
+>>
+>>>
+>>> 	/* PTE_ADDR_MASK cannot be encoded as an immediate, so
+>>>          * mask off all but two bits, followed by masking the
+>>>          * extra two bits
+>>>          */
+>>> 	and	\pte, \pte, #PTE_ADDR_MASK | (3 << 10)
+>>> 	and	\pte, \pte, #~(3 << 10)
+>>
+>> Did this change as suggested
+>>
+>> --- a/arch/arm64/include/asm/assembler.h
+>> +++ b/arch/arm64/include/asm/assembler.h
+>> @@ -626,9 +626,8 @@ alternative_endif
+>>          * and hold PTE_ADDR_MASK which cannot be passed
+>>          * to the subsequent 'and' instruction.
+>>          */
+>> -       mov     \tmp, #PTE_ADDR_LOW
+>> -       orr     \tmp, \tmp, #PTE_ADDR_HIGH
+>> -       and     \pte, \pte, \tmp
+>> +       and     \pte, \pte, #PTE_ADDR_MASK | (0x3 << 10)
+>> +       and     \pte, \pte, #~(0x3 << 10)
 >>  
->> -	err = nlmsg_parse_deprecated(h32, compat_msg_min[type], attrs,
->> -			maxtype ? : XFRMA_MAX, policy ? : compat_policy, extack);
->> +	err = nlmsg_parse_deprecated(h32, compat_msg_min[type], attrs, XFRMA_MAX,
->> +				     policy ? : compat_policy, extack);
+>>  .Lskip_lpa2\@:
+>>         mov     \pte, \phys
+>>
+>>
+>> but still fails to build (tested on 16K)
+>>
+>> arch/arm64/kernel/head.S: Assembler messages:
+>> arch/arm64/kernel/head.S:377: Error: immediate out of range at operand 3 -- `and x6,x6,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+>> arch/arm64/kernel/head.S:390: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+>> arch/arm64/kernel/head.S:390: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+>> arch/arm64/kernel/head.S:404: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+>> arch/arm64/kernel/head.S:404: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+>>
 > 
-> This removes the only usage of maxtype in that function. If we don't
-> need it, we should remove maxtype from the function parameters.
+> Ah, I'd only tested this for 4k. 16k would require a different set of masks.
 > 
-> But looking closer at this, it seems that xfrm_xlate32() should
-> only iterate up to maxtype if set. Dimitry, any opinion on that?
+> So the bits we need to cover are those from just below PAGE_SHIFT to the
+> top of PTE_ADDR_HIGH (bit 10). So we can compute the mask for both 4k
+
+Okay.
+
+> and 16k with GENMASK(PAGE_SHIFT-1, 10):
 > 
+> 	and	\pte, \pte, #PTE_ADDR_MASK | GENMASK(PAGE_SHIFT - 1, 10)
+> 	and	\pte, \pte, #~GENMASK(PAGE_SHIFT - 1, 10)
+> 
+> This compiles (for both 4k and 16k) and the assembly looks correct, but
+> I've not done any other testing.
 
-Thanks for Cc. Yeah, I agree, it should pass maxtype to xfrm_xlate32().
-More than that, it is XFRM_MSG_NEWSPDINFO, which have different possible
-attributes: XFRMA_SPD_MAX vs XFRMA_MAX, so attribute translator
-xfrm_xlate32_attr() should be corrected to translate these.
-
-Let me fix this, thanks for the report!
-I'll also add a selftest for this to xfrm selftest.
-
-Thanks,
-          Dmitry
+Yeah it works, will do the change.
