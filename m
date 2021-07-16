@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2877E3CB760
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D353CB766
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239107AbhGPMgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:36:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41260 "EHLO mail.kernel.org"
+        id S239287AbhGPMhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:37:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232787AbhGPMgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:36:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F06BA611C1;
-        Fri, 16 Jul 2021 12:33:44 +0000 (UTC)
+        id S237493AbhGPMhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 08:37:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 257A8613EB;
+        Fri, 16 Jul 2021 12:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626438827;
-        bh=gz2n8iniBPCEVDw34i7UdhmpqPYyoxr5WKn1hgeXFFI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=PT8Nnh/Q5uUVfmZSwbxyOTgjQJDUkDrj3YtaOT7f4irINzwamnauYE5Wn+qQZRqAx
-         0SLgs/LQ6vOlYsk4l+jB4/iSsIZA86rIlUuhwg85gSzPXrG0ktaXmq1CSOFHXcave3
-         TWiOZ/P+y2veOD8PgmH2+G2ou9bfKeTTgtE4gnBycqLD1OtpGJmA2yJBUcZmdu0BEM
-         GnYuYUKR1sXiSUHx3D3A+GSbYZ1YeCSsAfs4MmNxMLL+eMR9XeYwGzqZkC8Jd1XzJa
-         Y3ZODwAUicNao5kCaU62Da1qax9fvq1wbvlhqGcQGEmrJeS0bpZb19WteO/vrBxTf+
-         6Psvbf81oKReA==
-Subject: Re: [PATCH V5 1/1] misc: NOC Probe Counters
-To:     Arnd Bergmann <arnd@arndb.de>, pandith.n@intel.com
-Cc:     gregkh <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        furong.zhou@intel.com, mgross@linux.intel.com,
-        mallikarjunappa.sangannavar@intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        lakshmi.bai.raja.subramanian@intel.com,
-        Linux PM list <linux-pm@vger.kernel.org>
-References: <20210713065347.21554-1-pandith.n@intel.com>
- <CAK8P3a1ZYzHQTPDQP+kQH1-x6DmA70H8bJ+kE_iE4NbTs8w3vw@mail.gmail.com>
-From:   Georgi Djakov <djakov@kernel.org>
-Message-ID: <483da98c-b2fe-87e3-0f68-0de5b4184136@kernel.org>
-Date:   Fri, 16 Jul 2021 15:33:41 +0300
+        s=k20201202; t=1626438897;
+        bh=8oSShhkIfW1t+XoSC5QjALfMGrJlfUvBnSJjgbK3dUU=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=RE3E3apIjL37m9puTMaJRWXtg4wvv5pQJ++HzsRrfvFc+6K0xhirXwfr5FY4SfyXf
+         SNS1FmBCSlhtE+WirH3Aw2XTU9LRvm/ag+nCT9PyJMJpGiCDQWtQqnTpZtGMf3vUp0
+         R40buGaI6IsqJVqMuORqUXuX5jJQB6FTASMBykv6W3N+vsfOmiBCsThBW/uOVW69cH
+         iYORXYgJLPIKU5SljBe4j0WoquY3opRecUWHabQXjHKC7ErA7H99CdCDXmGpIyuURk
+         mseoqjDkYJcW2gCPtSyVPjOVSQeXsYHiD/etqkSKO6HK6kZWWSUYDCSczdL+XLOFUG
+         qHjxwqonSKfgw==
+Received: by mail-ot1-f41.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so9698360otl.3;
+        Fri, 16 Jul 2021 05:34:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533gM2KWHv0GG8zHz3NGtCR2LaI/k8/zA4Np1gWztJj84r62ncyJ
+        SaCRBb9v3ZFkCeLPmk2eeU4Gu1jxKaKXWkvFcG0=
+X-Google-Smtp-Source: ABdhPJyjt4E+0BOmUYSSQ6pS521inDb618V4rGsb+1/LSSqH+21otdkyBWisA+zwqcCWMMK8TvRofOxu9ckWzJ8oWzo=
+X-Received: by 2002:a9d:3644:: with SMTP id w62mr8212190otb.205.1626438896478;
+ Fri, 16 Jul 2021 05:34:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1ZYzHQTPDQP+kQH1-x6DmA70H8bJ+kE_iE4NbTs8w3vw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ac9:4443:0:0:0:0:0 with HTTP; Fri, 16 Jul 2021 05:34:55
+ -0700 (PDT)
+In-Reply-To: <69f734b3-7e1a-6c9c-d2cc-4debf6c418ca@samba.org>
+References: <CGME20210716000346epcas1p4fecf8bdde87dd76457b739fc3c1812a3@epcas1p4.samsung.com>
+ <20210715235356.3191-1-namjae.jeon@samsung.com> <69f734b3-7e1a-6c9c-d2cc-4debf6c418ca@samba.org>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Fri, 16 Jul 2021 21:34:55 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd_L5owJE7yyHL5aR5-F5oPke-sh=HGGinPDGUCgVa4V7w@mail.gmail.com>
+Message-ID: <CAKYAXd_L5owJE7yyHL5aR5-F5oPke-sh=HGGinPDGUCgVa4V7w@mail.gmail.com>
+Subject: Re: [Linux-cifsd-devel] [PATCH v6 00/13] ksmbd: introduce new SMB3
+ kernel server
+To:     Stefan Metzmacher <metze@samba.org>
+Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        linux-cifsd-devel@lists.sourceforge.net, aurelien.aptel@gmail.com,
+        sandeen@sandeen.net, willy@infradead.org, hch@infradead.org,
+        senozhatsky@chromium.org, christian@brauner.io,
+        viro@zeniv.linux.org.uk, ronniesahlberg@gmail.com, hch@lst.de,
+        dan.carpenter@oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pandith,
+2021-07-16 17:35 GMT+09:00, Stefan Metzmacher via Linux-cifsd-devel
+<linux-cifsd-devel@lists.sourceforge.net>:
+>
+> Hi Namjae,
+Hi Metze,
 
-On 13.07.21 10:22, Arnd Bergmann wrote:
-> On Tue, Jul 13, 2021 at 8:54 AM <pandith.n@intel.com> wrote:
->>
->> From: Pandith N <pandith.n@intel.com>
->>
->> Add support for Network on Chip(NOC) counters. Enable features to configure
->> and capture NOC probe counters, needed for DDR bandwidth measurement. NOC
->> driver is specific to Intel Keem Bay SOC. NOC hardware counters are used
->> for DDR statistics profiling, it is not related to timers.
->> Interface details are provided in include/uapi/linux/noc_uapi.h
->>
->> Signed-off-by: Pandith N <pandith.n@intel.com>
->> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> 
-> I'm missing some explanation here regarding why this is not part of
-> drivers/interconnect/.
-> 
-> I assume you have discussed this with Georgi Djakov before, but if not, then
-> please do. From a very high-level perspective, I would have guessed that this
-> would be part of the interconnect framework, with any user facing setup being
-> either derived from the DT, or exposed through debugfs.
-
-Thank you for the patch! We already have several drivers that support
-some NXP and Qualcomm Network-On-Chip hardware, that is also based on
-FlexNoC. I suspect that they also may support counters, but nobody
-added that support yet. So maybe it makes sense to have this in
-drivers/interconnect/.
-
-I am wondering what is the plan for this. Who will be using the info
-from this counters - is it some driver or tool? Who and how will use
-the statistics? We already have some debugfs interface that shows the
-current bandwidth thats being requested by users on the several ports.
-Maybe we could add also information about measured bandwidth? Before
-doing a detailed review on the patch, i would like to learn more about
-how this and is there any specific reason for choosing ioctl interface
-for this? Thanks!
-
-> 
-> (full quote below for Georgi, no further comments there)
-
-Thank you Arnd!
-
-BR,
-Georgi
-
-
-
+>
+>> Mailing list and repositories
+>> =============================
+>>  - linux-cifsd-devel@lists.sourceforge.net
+>
+> Wasn't the latest idea to use linux-cifs@vger.kernel.org?
+Okay, I will add it on next spin.
+>
+>>  - https://github.com/smfrench/smb3-kernel/tree/cifsd-for-next
+>
+> I think you should also include https://git.samba.org/?p=ksmbd.git;a=summary
+> here.
+Okay.
+>
+>>  - https://github.com/cifsd-team/ksmbd (out-of-tree)
+>>  - https://github.com/cifsd-team/ksmbd-tools
+>
+> I would be great to have an actual branch with the posted patches,
+> I didn't found any in the above repos.
+>
+> I would make it easier to have a look at the whole set.
+Okay, Will add it in next spin also.
+>
+> Thanks!
+Thanks for your review!
+> metze
+>
+>
+> _______________________________________________
+> Linux-cifsd-devel mailing list
+> Linux-cifsd-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-cifsd-devel
+>
