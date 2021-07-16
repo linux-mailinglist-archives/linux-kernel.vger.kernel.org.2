@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B3B3CB53F
+	by mail.lfdr.de (Postfix) with ESMTP id 085C63CB53E
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhGPJ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:26:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43392 "EHLO mail.kernel.org"
+        id S233494AbhGPJ0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:26:53 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:64833 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232486AbhGPJ0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:26:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2022613D4;
-        Fri, 16 Jul 2021 09:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626427437;
-        bh=SSF2J5AJFadv8lcFZJGE8EsRfI4LjO0tmzEj5iYkobI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NGMn551XD5tSKGn21pbkfq41wRs5x9vdcTeIj802PSKFGPQUA+V++I9JFpHZ0js36
-         qxoiOZ7z0B9dlW6yYMu7yE5QoygNKMJimPHc5woHTP3V8BiVevxX+uLo9KkpjSW5+0
-         xfW/sj3qlY0cQQxYoeNNQ8pW+3DrzxFBN4rJyY+6R32f01OlQ9ef1uJD7aaDd+tmLu
-         rRjji/y8V+FNPkmE+98jtykil3eiJNJvmADoHkCkS35GF1xiLgGrxVGb2spwFbk43G
-         vUKt7OwnUYr279kRvh7IxrNq3ZyRL9HlmZESnY2ZrzdgY5xVcKK/QnkY3TGZlbrjLW
-         nyO6gY2CXni/Q==
-Date:   Fri, 16 Jul 2021 14:53:50 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mailbox: qcom-ipcc: Enable loading QCOM_IPCC as a module
-Message-ID: <20210716092350.GG3323@workstation>
-References: <20210716074946.4093-1-amit.pundir@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716074946.4093-1-amit.pundir@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S231354AbhGPJ0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 05:26:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1626427437; x=1657963437;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=fl/EXT2tNjsgdTiy3OICqnEHZekrSV4EfOt/zoVrF98=;
+  b=YNrsxQNKVfpejlOmOj8gs6yjMXBDvL4oUg47kOrJpPS03y12pulMPV9l
+   RmmYEhaUFC0vvKKLu+0zMbT28zoZcWv8jflnHp840wPPGnncTVoU/QG3N
+   q2gUhc9j/hGXPgDmktmvKWY4UhpshBzJzyuTFD3ccIxjYFoty8CwJb6fJ
+   WL3ntSzZO3B7TFFsgyChewqyGl9wf7mHBsjJZwZ8N+AwLBwy44850hxGi
+   RIrZJdYpKSEvDOuBRw/mEOxKNyqnvqXUe5ahMbGAFL3TpYwOTATJXu1rc
+   Nh0ADHAnPh6JaqRBDCtPyCTUJwv8umpKGl6OHlgp+xi8uzzfCErT7aajL
+   w==;
+X-IronPort-AV: E=Sophos;i="5.84,244,1620684000"; 
+   d="scan'208";a="18490951"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 16 Jul 2021 11:23:55 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Fri, 16 Jul 2021 11:23:55 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Fri, 16 Jul 2021 11:23:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1626427435; x=1657963435;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=fl/EXT2tNjsgdTiy3OICqnEHZekrSV4EfOt/zoVrF98=;
+  b=JsSC5jPRA0Y9yV5q9jxyt0l9hXRjXEIhEyPnj2ax00Pu/yHOMOZbhfvF
+   NizivZai7M6wTyQfc7Qu1RKptVAJi2ZW6C0vm8vNaVhHtgSmTuct41YWE
+   i2dC0XG82sD4BGqqZedVJs1Xoq+jfBbFzmCukYgneraMSOuP/2K7BvdNb
+   vJsbeQ4W7tCZ5iBhgTw+CxwwtJl19+Uc4yK3U2Ok4KW2VC4c70fGatlMQ
+   E0cEAVaGzlucUXLinI3LLRbiAQXOXg9h31Z6mGB0dOllgzVZYfGzDgNun
+   UDcmzFdgJf2+vocnch474G73NZLr2K3mFwnVEgGZCWBOsW3zrVrCCXQkC
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.84,244,1620684000"; 
+   d="scan'208";a="18490950"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 16 Jul 2021 11:23:55 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 29A91280070;
+        Fri, 16 Jul 2021 11:23:55 +0200 (CEST)
+Message-ID: <b98a99330e250b51d09c904c9e274ae461118238.camel@ew.tq-group.com>
+Subject: Re: [PATCH v2 0/7] TQMx86: TQMx110EB and TQMxE40x MFD/GPIO support
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 16 Jul 2021 11:23:53 +0200
+In-Reply-To: <YPFPT+5z5J43kBzL@google.com>
+References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
+         <YPFPT+5z5J43kBzL@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 01:19:46PM +0530, Amit Pundir wrote:
-> This patch enables the qcom_ipcc driver to be loaded as a
-> module. IPCC is fairly core to system, so as such it should
-> never be unloaded. It registers as a mailbox + irq controller
-> and the irq controller drivers in kernel are not supposed to
-> be unloaded as they don't have the visibility over the clients
-> consuming the irqs. Hence adding supress_bind_attrs to disable
-> bind/unbind via sysfs.
+On Fri, 2021-07-16 at 10:20 +0100, Lee Jones wrote:
+> On Fri, 02 Jul 2021, Matthias Schiffer wrote:
 > 
-> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> ---
->  drivers/mailbox/Kconfig     | 2 +-
->  drivers/mailbox/qcom-ipcc.c | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
+> > Updated patch series:
+> > 
+> > - A number of new patches (more hardware support and a few fixes)
+> > - Patches 1-3 have gained Fixes tags
+> > - Patch 2 depends on 1, so maybe we can push the GPIO patch through the
+> >   MFD tree to keep them together?
+> > - The change in patch 7 was somewhat controversial. I've added a
+> >   warning, but it is the last patch of the series, so it doesn't affect
+> >   the rest of the series if it is rejected.
+> > 
+> > 
+> > Matthias Schiffer (7):
+> >   gpio: tqmx86: really make IRQ optional
+> >   mfd: tqmx86: clear GPIO IRQ resource when no IRQ is set
+> >   mfd: tqmx86: remove incorrect TQMx90UC board ID
+> >   mfd: tqmx86: fix typo in "platform"
+> >   mfd: tqmx86: add support for TQMx110EB and TQMxE40x
+> >   mfd: tqmx86: add support for TQ-Systems DMI IDs
+> >   mfd: tqmx86: assume 24MHz LPC clock for unknown boards
+> > 
+> >  drivers/gpio/gpio-tqmx86.c |  6 ++---
+> >  drivers/mfd/tqmx86.c       | 48 ++++++++++++++++++++++++++++++--------
+> >  2 files changed, 41 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-> index b4b780ea2ac8..c9fc06c7e685 100644
-> --- a/drivers/mailbox/Kconfig
-> +++ b/drivers/mailbox/Kconfig
-> @@ -264,7 +264,7 @@ config SPRD_MBOX
->  	  you want to build the Spreatrum mailbox controller driver.
->  
->  config QCOM_IPCC
-> -	bool "Qualcomm Technologies, Inc. IPCC driver"
-> +	tristate "Qualcomm Technologies, Inc. IPCC driver"
->  	depends on ARCH_QCOM || COMPILE_TEST
->  	help
->  	  Qualcomm Technologies, Inc. Inter-Processor Communication Controller
-> diff --git a/drivers/mailbox/qcom-ipcc.c b/drivers/mailbox/qcom-ipcc.c
-> index 584700cd1585..f1d4f4679b17 100644
-> --- a/drivers/mailbox/qcom-ipcc.c
-> +++ b/drivers/mailbox/qcom-ipcc.c
-> @@ -277,6 +277,7 @@ static struct platform_driver qcom_ipcc_driver = {
->  	.driver = {
->  		.name = "qcom-ipcc",
->  		.of_match_table = qcom_ipcc_of_match,
-> +		.suppress_bind_attrs = true,
->  	},
->  };
->  
-> -- 
-> 2.25.1
+> Patches look good.
 > 
+> Could you please collect up Andrew's acks, remove the suggested Fixes:
+> lines and resubmit please?
+
+Are you referring to the Fixes: line in "[PATCH v2 3/7] mfd: tqmx86:
+remove incorrect TQMx90UC board ID"?
+
+> 
+> I'll quickly apply them once resent (probably Monday - if you get them
+> out today).
+> 
+
+Thanks, I'll try to get it done today.
+
