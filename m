@@ -2,138 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F413CBEF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B8D3CBEFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237628AbhGPWGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 18:06:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22378 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237111AbhGPWGj (ORCPT
+        id S237430AbhGPWIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 18:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230318AbhGPWIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 18:06:39 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GLahfY054129;
-        Fri, 16 Jul 2021 18:03:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Dar/qzeXVLlj4sPzqVyzEDrvQNCwdGWIFsIMhA+myRY=;
- b=MPPwGFUeeyq0Jcd5j9FVMPFBpg2oAvq87RTf7IbNYzoNHEfzl3LDN4wKxu5AgTWrQN0x
- ZqVShMeoiyoCNK3nMYDD34scBSJD6F2+pC4a5Ux+loqU0xszSSltRITnU8B0lgXVXz4k
- yZQV/Mg/geNOv9tfVQvLw9tQIZQtB5gS7MY6M9loKZzhV9IEea3TeQrQ7V0SOhYEyGNe
- ofQGtH2XpzIkB2/p4uMUuDB7sgvlCJEAuX2mdAJ4TFXZVIIFxxXwe+JuYA4WR6k+uwW0
- XWGldKLGzaKoHEJeQOfg9u8I1dXYVepeRioAXPWYXWLCC9SZhhxY5SUO168k7GbKDLOz 4g== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39tw4q1qq4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Jul 2021 18:03:39 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16GLw2Xp014417;
-        Fri, 16 Jul 2021 22:03:39 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03dal.us.ibm.com with ESMTP id 39rkgyca71-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Jul 2021 22:03:38 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16GM3bp331326704
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Jul 2021 22:03:37 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B886CC605A;
-        Fri, 16 Jul 2021 22:03:37 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 764E7C6055;
-        Fri, 16 Jul 2021 22:03:37 +0000 (GMT)
-Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.92.96])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Jul 2021 22:03:37 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-leds@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, pavel@ucw.cz,
-        Eddie James <eajames@linux.ibm.com>
-Subject: [PATCH v2 7/7] leds: pca955x: Switch to i2c probe_new
-Date:   Fri, 16 Jul 2021 17:03:31 -0500
-Message-Id: <20210716220331.49303-8-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210716220331.49303-1-eajames@linux.ibm.com>
-References: <20210716220331.49303-1-eajames@linux.ibm.com>
+        Fri, 16 Jul 2021 18:08:51 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7507C06175F;
+        Fri, 16 Jul 2021 15:05:54 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id g19so17171070ybe.11;
+        Fri, 16 Jul 2021 15:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5LsAbpTyGpoMSPy6kuRB4pyfS/wxP9D1ajlZsdQwkJ8=;
+        b=qqxNjdpW1LCG1+QjMqzatt42SvMUj+/is8XU7Fmr8H1GvmhPKNgeLeht2ozSeVXx2Y
+         BB1Yd0mFrqNH6kY6dz4cSvmwE4g8a10n1h9b9hlJyPJnIV8ArwVKx0QWApfj3Q8b5KLG
+         v+8a22vJY2TBF0XMitibR0gY6+Ni+tXRCRLafoiXpHKz8C8qQlDSeJA3ZXmI9iCuuIoG
+         QR8xp5cE13WudGGYnzdnjEI9gGS582C0I375ui2Q4N2vFqwb4/S5iPJG+l8KIosPG8Xl
+         8PAgNJW5RgHcDfZxkxu+HGxci3ILC2huZWHJUAEpOMRzCqU5tahv/kTHY09kIUcGylAm
+         6SaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5LsAbpTyGpoMSPy6kuRB4pyfS/wxP9D1ajlZsdQwkJ8=;
+        b=h9VwPXckTESDTkv6pEZ1aVmzPqh82Hy6XeXsHbRrY/GUPbbfZGVlxDkU0Y7ACGHzvs
+         X6W/BjALQK08Mtu7aBUdwlc3PsUImVWk41QYI7EmLJiiYwbbyzedcAgnpCNYQpoPRa59
+         MKdQxsGl38ipvrjsmmjQHfvFn8caT0tzYtAjNg1752UY1TIeYueDUGQxMrz9W3+wUPHR
+         m8AHdhV2fqQ2Y4IdqKHdFYqgxDkSlv9+YiAZvqiCrz0iXb2UJkcKFWIgh6+hldcIbN3x
+         pa7pIYCUv0OylGvECOv6dmyt30EkNpNKLb98HnijGUoQTe+5S4nloz/01Ppmu6tG9pqk
+         KpaQ==
+X-Gm-Message-State: AOAM533uMJ4G6nJODgTZT/XPtcE2zNTgQTuv4eX0hSJ9Agq1FXfBE9+7
+        oB2kl2g/1K5H6ygQA9Hx6ixG25bxTAulhUwIkqo=
+X-Google-Smtp-Source: ABdhPJwhAOJXYVol/4VpHOTxMz4Yo+C1dwcXuHEXp2ODMP+aX7JvlnVRMZxUy65rHCvmQ96LCWAZSVAsDE5KZGq4r8k=
+X-Received: by 2002:a25:b203:: with SMTP id i3mr15658989ybj.260.1626473154041;
+ Fri, 16 Jul 2021 15:05:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: uU0o8tTZXt1Ap1ZldDvnPg7_9rsuAgtV
-X-Proofpoint-GUID: uU0o8tTZXt1Ap1ZldDvnPg7_9rsuAgtV
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-16_10:2021-07-16,2021-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- lowpriorityscore=0 spamscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=999 clxscore=1015 impostorscore=0 mlxscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107160136
+References: <1626471813-17736-1-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1626471813-17736-1-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 16 Jul 2021 15:05:43 -0700
+Message-ID: <CAEf4BzZ_2arevAp_qwetCvdMk-gigvPo7tKsb7d0xF-xnezL_w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: clarify/fix unaligned data issues for
+ btf typed dump
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The deprecated i2c probe functionality doesn't work with OF
-compatible strings, as it only checks for the i2c device id. Switch
-to the new way of probing and grab the match data to select the
-chip type.
+On Fri, Jul 16, 2021 at 2:44 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> If data is packed, data structures can store it outside of usual
+> boundaries.  For example a 4-byte int can be stored on a unaligned
+> boundary in a case like this:
+>
+> struct s {
+>         char f1;
+>         int f2;
+> } __attribute((packed));
+>
+> ...the int is stored at an offset of one byte.  Some platforms have
+> problems dereferencing data that is not aligned with its size, and
+> code exists to handle most cases of this for BTF typed data display.
+> However pointer display was missed, and a simple macro to test if
+> "data_is_unaligned(data, data_sz)" would help clarify this code.
+>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  tools/lib/bpf/btf_dump.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 929cf93..9dfe9c1 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -1654,6 +1654,8 @@ static int btf_dump_base_type_check_zero(struct btf_dump *d,
+>         return 0;
+>  }
+>
+> +#define data_is_unaligned(data, data_sz)       (((uintptr_t)data) % data_sz)
+> +
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- drivers/leds/leds-pca955x.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+there is no need for macro, please use static function. And
+ptr_is_aligned() is probably a better form:
 
-diff --git a/drivers/leds/leds-pca955x.c b/drivers/leds/leds-pca955x.c
-index a6aa4b9abde8..a6b5699aeae4 100644
---- a/drivers/leds/leds-pca955x.c
-+++ b/drivers/leds/leds-pca955x.c
-@@ -479,8 +479,7 @@ static const struct of_device_id of_pca955x_match[] = {
- };
- MODULE_DEVICE_TABLE(of, of_pca955x_match);
- 
--static int pca955x_probe(struct i2c_client *client,
--			 const struct i2c_device_id *id)
-+static int pca955x_probe(struct i2c_client *client)
- {
- 	struct pca955x *pca955x;
- 	struct pca955x_led *pca955x_led;
-@@ -494,8 +493,24 @@ static int pca955x_probe(struct i2c_client *client,
- 	bool set_default_label = false;
- 	bool keep_pwm = false;
- 	char default_label[8];
-+	enum pca955x_type chip_type;
-+	const void *md = device_get_match_data(&client->dev);
- 
--	chip = &pca955x_chipdefs[id->driver_data];
-+	if (md) {
-+		chip_type = (enum pca955x_type)md;
-+	} else {
-+		const struct i2c_device_id *id = i2c_match_id(pca955x_id,
-+							      client);
-+
-+		if (id) {
-+			chip_type = (enum pca955x_type)id->driver_data;
-+		} else {
-+			dev_err(&client->dev, "unknown chip\n");
-+			return -ENODEV;
-+		}
-+	}
-+
-+	chip = &pca955x_chipdefs[chip_type];
- 	adapter = client->adapter;
- 	pdata = dev_get_platdata(&client->dev);
- 	if (!pdata) {
-@@ -670,7 +685,7 @@ static struct i2c_driver pca955x_driver = {
- 		.name	= "leds-pca955x",
- 		.of_match_table = of_pca955x_match,
- 	},
--	.probe	= pca955x_probe,
-+	.probe_new = pca955x_probe,
- 	.id_table = pca955x_id,
- };
- 
--- 
-2.27.0
+if (!ptr_is_aligned(data, sz)) {
+    /* handle uncommon case */
+}
 
+ptr_is_aligned() can be probably reused more readily in some other places later.
+
+>  static int btf_dump_int_data(struct btf_dump *d,
+>                              const struct btf_type *t,
+>                              __u32 type_id,
+> @@ -1672,7 +1674,7 @@ static int btf_dump_int_data(struct btf_dump *d,
+>         /* handle packed int data - accesses of integers not aligned on
+>          * int boundaries can cause problems on some platforms.
+>          */
+> -       if (((uintptr_t)data) % sz)
+> +       if (data_is_unaligned(data, sz))
+>                 return btf_dump_bitfield_data(d, t, data, 0, 0);
+>
+>         switch (sz) {
+> @@ -1739,7 +1741,7 @@ static int btf_dump_float_data(struct btf_dump *d,
+>         int sz = t->size;
+>
+>         /* handle unaligned data; copy to local union */
+> -       if (((uintptr_t)data) % sz) {
+> +       if (data_is_unaligned(data, sz)) {
+>                 memcpy(&fl, data, sz);
+>                 flp = &fl;
+>         }
+> @@ -1897,7 +1899,10 @@ static int btf_dump_ptr_data(struct btf_dump *d,
+>                               __u32 id,
+>                               const void *data)
+>  {
+> -       btf_dump_type_values(d, "%p", *(void **)data);
+> +       void *ptrval;
+
+sizeof(void *) could be 4 on the host system and 8 in BTF. If you want
+to preserve the speed, I'd do something like:
+
+if (ptr_is_aligned(data, sizeof(void *)) && sizeof(void *) == d->ptr_sz) {
+    btf_dump_type_values(d, "%p", *(void **)data);
+} else {
+    /* fetch pointer value as unaligned integer */
+    if (d->ptr_sz == 4)
+        printf("0x%x")
+    else
+        printf("0x%llx")
+}
+
+Maybe there is some cleaner way. But that should work, no?
+
+> +
+> +       memcpy(&ptrval, data, d->ptr_sz);
+> +       btf_dump_type_values(d, "%p", ptrval);
+>         return 0;
+>  }
+>
+> @@ -1910,7 +1915,7 @@ static int btf_dump_get_enum_value(struct btf_dump *d,
+>         int sz = t->size;
+>
+>         /* handle unaligned enum value */
+> -       if (((uintptr_t)data) % sz) {
+> +       if (data_is_unaligned(data, sz)) {
+>                 *value = (__s64)btf_dump_bitfield_get_data(d, t, data, 0, 0);
+>                 return 0;
+>         }
+> --
+> 1.8.3.1
+>
