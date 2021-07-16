@@ -2,111 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5113CB802
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AAF3CB80C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240028AbhGPNnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        id S239904AbhGPNtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbhGPNnN (ORCPT
+        with ESMTP id S232808AbhGPNtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:43:13 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61D5C06175F;
-        Fri, 16 Jul 2021 06:40:18 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id s23so10968358oij.0;
-        Fri, 16 Jul 2021 06:40:18 -0700 (PDT)
+        Fri, 16 Jul 2021 09:49:42 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5100DC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 06:46:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aqCY19jEVOzitR5f1hOTd+qW/pWsIpStMp1k5yIewx8=;
-        b=osgGfoJBPGNdPwWrsmE1GMbLbKpQ/LVRq+W5NXg/Hu+xyskpghgPDd6arWb2SzLy5Y
-         dPxMBYjOYlPZZTRuK0iKiFHHgowjcUtsSFxydq99onk1IPCfydJR5Bey98DVJHSJtxeP
-         X667y1ymHHd41ftTTzqjzA4Imn+OBFHabdkEU4VtXw+1/V1eeoYL8r8P65V8ieksCWug
-         3+YFBvFrLguo6Ho5xpzMB1WUX4NpZfoW+KaDnEtgpKoS9RKtTyIRc1ppMYTpWJgpTl2X
-         E+4MMpW0lLH0xNVSzQXpMKPzk+0puAaZywGKgkpSfyrQfi34VaLFvUhJRqjBf3Gc48Ng
-         0tfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aqCY19jEVOzitR5f1hOTd+qW/pWsIpStMp1k5yIewx8=;
-        b=tQBl2EAQFVA1TxNcKx6xNyjhRp88m+xhsH25K7rwLYMU1uVVhLnTydF3yJAG8kNxJX
-         ktFDvPfAZomdNTLU3XWlRE+PNoiW2Ou9vXcf2LM3BT2QXG/EF+VMxezSodPCxpUFdC08
-         i6FKu4j9kJmj61GaCZhCaiNEe+WMFeqKuGODHfeAWzt/od3tIK1n1vzRm13E6BYRmhrZ
-         Y6yX0Z6cgfP55CAHHkwymLpXXgl+6gMtrWOBSJN6dIn+HpB8t1yoaaWeYTD+GpQmN/fW
-         SZi8EbMqXPNTZGNm8pC2H7ip50rZExiT1cbAy7HM9rqYqyaL9AxAfWchmsBwj+QMpElQ
-         z+MQ==
-X-Gm-Message-State: AOAM531K9WwGuBzeYgeGP8tVr0+RC5MJfl+EQkmx3KQh+2RfzSryZCv/
-        0SbxHySAKHoi6SsKztjd3BSc9IC8gkc=
-X-Google-Smtp-Source: ABdhPJx0RmWoBIDXp1X5zxoHXYfyLzOXhNC32Rq2dzRr1rMv7pCanhK8Ml4X5tX6Ocg1tTkd8AZrKw==
-X-Received: by 2002:a05:6808:490:: with SMTP id z16mr11984275oid.89.1626442817868;
-        Fri, 16 Jul 2021 06:40:17 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s24sm798603ooq.37.2021.07.16.06.40.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 06:40:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 5.12 000/242] 5.12.18-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210715182551.731989182@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <dcc3c82c-a026-99c8-0342-b231665ec301@roeck-us.net>
-Date:   Fri, 16 Jul 2021 06:40:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=DrCLK/4eBi4ZxgR6NEDW1PSuL6as/r9RmNxVMB2EvpU=; b=BDp/iEXi3SmVX
+        DcXRxdG4IPwZ23TxUSYOJVUlvzbUQQB+W/U7IfS7ho09G4NfsNe91qsiPSUYSIY2
+        +1JnlVG3TXGKZA0LajdOmkdm/nV3e1OHTn8yDXqJUT5/61HHOI64nYWTwF/EBmZL
+        0HenlSAnM9wFDZsMVeOg5Ic7ThRWWo=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCnr2PBjfFg+MF7AA--.645S2;
+        Fri, 16 Jul 2021 21:46:41 +0800 (CST)
+Date:   Fri, 16 Jul 2021 21:40:51 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] riscv: stacktrace: Fix NULL pointer dereference
+Message-ID: <20210716214051.32eea3a8@xhacker>
 MIME-Version: 1.0
-In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygCnr2PBjfFg+MF7AA--.645S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxury3Cw4kGw1kJFWrWrW8Xrb_yoW5Kw15pr
+        13Jr17Cr48Jr4xtw1xAr15Zry5Jrn8Z3W3JrnrAr15AF15Ww1UXr18tay7Wr1qyryDXa47
+        twn8tw4vqw4DJw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
+        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
+        WrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
+        6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUgg_TUUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 11:36 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.18 release.
-> There are 242 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> Anything received after that time might be too late.
-> 
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Building s390:defconfig ... failed
---------------
-Error log:
-/bin/sh: arch/s390/kernel/vdso64/gen_vdso_offsets.sh: Permission denied
-/bin/sh: arch/s390/kernel/vdso32/gen_vdso_offsets.sh: Permission denied
-...
+When CONFIG_FRAME_POINTER=y, calling dump_stack() can always trigger
+NULL pointer dereference panic similar as below:
 
-Original commit:
+[    0.396060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5+ #47
+[    0.396692] Hardware name: riscv-virtio,qemu (DT)
+[    0.397176] Call Trace:
+[    0.398191] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000960
+[    0.399487] Oops [#1]
+[    0.399739] Modules linked in:
+[    0.400135] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5+ #47
+[    0.400570] Hardware name: riscv-virtio,qemu (DT)
+[    0.400926] epc : walk_stackframe+0xc4/0xdc
+[    0.401291]  ra : dump_backtrace+0x30/0x38
+[    0.401630] epc : ffffffff80004922 ra : ffffffff8000496a sp : ffffffe000f3bd00
+[    0.402115]  gp : ffffffff80cfdcb8 tp : ffffffe000f30000 t0 : ffffffff80d0b0cf
+[    0.402602]  t1 : ffffffff80d0b0c0 t2 : 0000000000000000 s0 : ffffffe000f3bd60
+[    0.403071]  s1 : ffffffff808bc2e8 a0 : 0000000000001000 a1 : 0000000000000000
+[    0.403448]  a2 : ffffffff803d7088 a3 : ffffffff808bc2e8 a4 : 6131725dbc24d400
+[    0.403820]  a5 : 0000000000001000 a6 : 0000000000000002 a7 : ffffffffffffffff
+[    0.404226]  s2 : 0000000000000000 s3 : 0000000000000000 s4 : 0000000000000000
+[    0.404634]  s5 : ffffffff803d7088 s6 : ffffffff808bc2e8 s7 : ffffffff80630650
+[    0.405085]  s8 : ffffffff80912a80 s9 : 0000000000000008 s10: ffffffff804000fc
+[    0.405388]  s11: 0000000000000000 t3 : 0000000000000043 t4 : ffffffffffffffff
+[    0.405616]  t5 : 000000000000003d t6 : ffffffe000f3baa8
+[    0.405793] status: 0000000000000100 badaddr: 0000000000000960 cause: 000000000000000d
+[    0.406135] [<ffffffff80004922>] walk_stackframe+0xc4/0xdc
+[    0.407032] [<ffffffff8000496a>] dump_backtrace+0x30/0x38
+[    0.407797] [<ffffffff803d7100>] show_stack+0x40/0x4c
+[    0.408234] [<ffffffff803d9e5c>] dump_stack+0x90/0xb6
+[    0.409019] [<ffffffff8040423e>] ptdump_init+0x20/0xc4
+[    0.409681] [<ffffffff800015b6>] do_one_initcall+0x4c/0x226
+[    0.410110] [<ffffffff80401094>] kernel_init_freeable+0x1f4/0x258
+[    0.410562] [<ffffffff803dba88>] kernel_init+0x22/0x148
+[    0.410959] [<ffffffff800029e2>] ret_from_exception+0x0/0x14
+[    0.412241] ---[ end trace b2ab92c901b96251 ]---
+[    0.413099] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-diff --git a/arch/s390/kernel/vdso32/gen_vdso_offsets.sh b/arch/s390/kernel/vdso32/gen_vdso_offsets.sh
-new file mode 100755
-               ^^^^^^
-index 000000000000..9c4f951e227d
---- /dev/null
-+++ b/arch/s390/kernel/vdso32/gen_vdso_offsets.sh
+The reason is the task is NULL when we finally call walk_stackframe()
+the NULL is passed from __dump_stack():
 
-This commit:
+|static void __dump_stack(void)
+|{
+|        dump_stack_print_info(KERN_DEFAULT);
+|        show_stack(NULL, NULL, KERN_DEFAULT);
+|}
 
-diff --git a/arch/s390/kernel/vdso32/gen_vdso_offsets.sh b/arch/s390/kernel/vdso32/gen_vdso_offsets.sh
-new file mode 100644
-               ^^^^^^
-index 000000000000..9c4f951e227d
---- /dev/null
-+++ b/arch/s390/kernel/vdso32/gen_vdso_offsets.sh
+Fix this issue by checking "task == NULL" case in walk_stackframe().
 
-Same with v5.13.y.
+Fixes: eac2f3059e02 ("riscv: stacktrace: fix the riscv stacktrace when CONFIG_FRAME_POINTER enabled"
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/kernel/stacktrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Guenter
+diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+index bde85fc53357..7bc8af75933a 100644
+--- a/arch/riscv/kernel/stacktrace.c
++++ b/arch/riscv/kernel/stacktrace.c
+@@ -27,7 +27,7 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+ 		fp = frame_pointer(regs);
+ 		sp = user_stack_pointer(regs);
+ 		pc = instruction_pointer(regs);
+-	} else if (task == current) {
++	} else if (task == NULL || task == current) {
+ 		fp = (unsigned long)__builtin_frame_address(1);
+ 		sp = (unsigned long)__builtin_frame_address(0);
+ 		pc = (unsigned long)__builtin_return_address(0);
+-- 
+2.32.0
+
+
