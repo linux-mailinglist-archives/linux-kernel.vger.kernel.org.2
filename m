@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F683CB3FF
+	by mail.lfdr.de (Postfix) with ESMTP id D37293CB400
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238055AbhGPITj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
+        id S238081AbhGPITn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237628AbhGPITH (ORCPT
+        with ESMTP id S237698AbhGPITJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:19:07 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70152C061762;
-        Fri, 16 Jul 2021 01:16:11 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id a10so3918781qvj.11;
-        Fri, 16 Jul 2021 01:16:11 -0700 (PDT)
+        Fri, 16 Jul 2021 04:19:09 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D468C061766;
+        Fri, 16 Jul 2021 01:16:15 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id s6so7900469qkc.8;
+        Fri, 16 Jul 2021 01:16:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fq1ZoPC42eMqWQGbnrLrlL4Ve1LVuhTF5O3t1T5h2G8=;
-        b=r7Nf5x/E0+XqclWkpdUZPglTk3epxXxFuND8QgEicAY22VDx1zQJP4yR9w0PQvwKhH
-         8URlH8oDciPvngFO7O11uJzt3bcPiMzyi6jm1+/G1vVj2oMG/H293Ok3XFtPlSwq3UqT
-         6nqKeAxknYkpZAl8xTHV7J+NteruM5E5e3dDpNZb8YY6QmrF83k92fqPuCqxlr1S0hbw
-         cBNU7vlyu6OWbpZm5burUWhHtaaxudf9/P7R5IZ9hqN7UspvbBtoivT4mBosJWDqU2QS
-         nc4qyCjf6Id2p4YE7PVGPD+7skUSCvre00AB8mvFD+fle9TeFo0MxzqUaKXtpV6NVdBJ
-         36OQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/2jiGDnWXkTXohF7OUnjZxSSSmDhP/kYSJ73gZCayKU=;
+        b=kN7nyr8UeFjxRGj/YyhBjyohlpa9Ee5N3TLZTX0RKAxPpeT4ZypSrEYAJQfMycBeAA
+         Pl1CGBQE5cKfnmw4brXhx0G5y3gDUlWHKGJXpGKjPuwJS9E+0EYwSHJJmtmaaur3tGse
+         WV89OOGRt+HwfiHy6EAHWSlQ52/5bZx3szU+25y/nPKqOFhG+lrC+zCBQt8HMBgfSODr
+         zaCZz8v+imPYvoUywN7u24h1yqPf2abOvOuXbnQVvUdnIaSwsGJdOTfjC+3zpzpfycPz
+         xn4teoQm9WrQ77H34dyonDiai/ksx7SzgGSHWPdGGPK1LTtdDUW8cfFirNJZYfvbE730
+         PORA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=fq1ZoPC42eMqWQGbnrLrlL4Ve1LVuhTF5O3t1T5h2G8=;
-        b=EqU8u9FAI0FfZrh8aXuXIR0Xz6hPhNX3l5Txjhc212FrArMeNf24EfMBsQ7/uyLwgi
-         1M5fKbasbjG/cSSuj7WvYlNPPI8hGAlQJVpgknMrVPzRh5bn23cv5+FaigsLTcCjD/+W
-         EEjFVrisjVNl4r4qmDdISTFv9YOTfjZQ3GJoJIBDg7SEd3avZLSVu6iUEzrb3vroP1/D
-         LXyx9VTKvR514J+DNn28FGaBG8qbwQUQkcdhrgRq9zsiZdG2aSt6+vJfj2HBIgyoDgtg
-         m8cvZ+8kQ8Qyw0Trr4/6gNX0dQix7aj1J8dZ3jJZu5DIfGC3WGQe3K9T/rZgYIBCoUwp
-         u2aQ==
-X-Gm-Message-State: AOAM532I/cKNsJsP6wyKGbGSsQ2ChMUOlssM0vXocQy79sXoWEGXYM4E
-        23PrMPstTB7sxe6G+oduPF4=
-X-Google-Smtp-Source: ABdhPJxbt6rl7E9lRHf5HEiKYGhXYWzpsuZsNeLB26I+EmGRGtqR3fpY38ODq0WtpyNqbYjslEO1EA==
-X-Received: by 2002:a05:6214:129:: with SMTP id w9mr9166236qvs.13.1626423370624;
-        Fri, 16 Jul 2021 01:16:10 -0700 (PDT)
+         :references:mime-version:content-transfer-encoding;
+        bh=/2jiGDnWXkTXohF7OUnjZxSSSmDhP/kYSJ73gZCayKU=;
+        b=no52swmseiCRV1cwQAsu0anmlvVL02VPaJxRhxkvIMyZd/6wWYWhD38JxszCwl2H3q
+         IheA/jGVHngrQGHZQNf/57GyamNq70vtOstYTjbozGvndswuXsr7a+UwiwvLeWp43MYk
+         J33uiOK5NV6k7z6lJ7p0VDT2WANw4ih2bwM/EqKVHbOjzG8TKbWqIKU2R4IaU1OVB4ne
+         9Z632KZ+YprTWU1fVVu4nnZXK5OKwTDoNw+QuJIeJryYaIuURVmOp3/Ad74XypDrSljW
+         1lTiXP4krApKFVGj+rGkvHrB9knRhLaD+ezcExaBghnW01uZjn02j9Hc9dc/uFPi4QVD
+         I1wA==
+X-Gm-Message-State: AOAM533leyinfi1AApmRev2qTRmx+vteiz83G2dzy6a/a8oaoPELIKV0
+        Ko7Zst0S4U07HOI030pC9gY=
+X-Google-Smtp-Source: ABdhPJx0IateBCmKvNbY6kRNFbZ4xKjRjhAQHyCk4wYzjg4riepM3wW4HNmpc2X1weBqjX5dCLJNUA==
+X-Received: by 2002:a05:620a:1193:: with SMTP id b19mr6764860qkk.439.1626423373785;
+        Fri, 16 Jul 2021 01:16:13 -0700 (PDT)
 Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id c22sm2868464qtd.42.2021.07.16.01.16.09
+        by smtp.gmail.com with ESMTPSA id c22sm2868464qtd.42.2021.07.16.01.16.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 01:16:10 -0700 (PDT)
+        Fri, 16 Jul 2021 01:16:13 -0700 (PDT)
 From:   SeongJae Park <sj38.park@gmail.com>
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
@@ -64,272 +65,620 @@ Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
         vbabka@suse.cz, vdavydov.dev@gmail.com, zgf574564920@gmail.com,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v34 09/13] mm/damon/dbgfs: Support multiple contexts
-Date:   Fri, 16 Jul 2021 08:14:45 +0000
-Message-Id: <20210716081449.22187-10-sj38.park@gmail.com>
+Subject: [PATCH v34 10/13] Documentation: Add documents for DAMON
+Date:   Fri, 16 Jul 2021 08:14:46 +0000
+Message-Id: <20210716081449.22187-11-sj38.park@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210716081449.22187-1-sj38.park@gmail.com>
 References: <20210716081449.22187-1-sj38.park@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-In some use cases, users would want to run multiple monitoring context.
-For example, if a user wants a high precision monitoring and dedicating
-multiple CPUs for the job is ok, because DAMON creates one monitoring
-thread per one context, the user can split the monitoring target regions
-into multiple small regions and create one context for each region.  Or,
-someone might want to simultaneously monitor different address spaces,
-e.g., both virtual address space and physical address space.
-
-The DAMON's API allows such usage, but 'damon-dbgfs' does not.
-Therefore, only kernel space DAMON users can do multiple contexts
-monitoring.
-
-This commit allows the user space DAMON users to use multiple contexts
-monitoring by introducing two new 'damon-dbgfs' debugfs files,
-'mk_context' and 'rm_context'.  Users can create a new monitoring
-context by writing the desired name of the new context to 'mk_context'.
-Then, a new directory with the name and having the files for setting of
-the context ('attrs', 'target_ids' and 'record') will be created under
-the debugfs directory.  Writing the name of the context to remove to
-'rm_context' will remove the related context and directory.
+This commit adds documents for DAMON under
+`Documentation/admin-guide/mm/damon/` and `Documentation/vm/damon/`.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 Reviewed-by: Fernand Sieber <sieberf@amazon.com>
+Reviewed-by: Markus Boehme <markubo@amazon.de>
 ---
- mm/damon/dbgfs.c | 195 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 193 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/mm/damon/index.rst |  15 ++
+ Documentation/admin-guide/mm/damon/start.rst | 114 +++++++++++++
+ Documentation/admin-guide/mm/damon/usage.rst | 112 +++++++++++++
+ Documentation/admin-guide/mm/index.rst       |   1 +
+ Documentation/vm/damon/api.rst               |  20 +++
+ Documentation/vm/damon/design.rst            | 166 +++++++++++++++++++
+ Documentation/vm/damon/faq.rst               |  51 ++++++
+ Documentation/vm/damon/index.rst             |  30 ++++
+ Documentation/vm/index.rst                   |   1 +
+ 9 files changed, 510 insertions(+)
+ create mode 100644 Documentation/admin-guide/mm/damon/index.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/start.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/usage.rst
+ create mode 100644 Documentation/vm/damon/api.rst
+ create mode 100644 Documentation/vm/damon/design.rst
+ create mode 100644 Documentation/vm/damon/faq.rst
+ create mode 100644 Documentation/vm/damon/index.rst
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index bd9bc6ede40e..cd2cc0a9c52a 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -18,6 +18,7 @@
- static struct damon_ctx **dbgfs_ctxs;
- static int dbgfs_nr_ctxs;
- static struct dentry **dbgfs_dirs;
-+static DEFINE_MUTEX(damon_dbgfs_lock);
+diff --git a/Documentation/admin-guide/mm/damon/index.rst b/Documentation/admin-guide/mm/damon/index.rst
+new file mode 100644
+index 000000000000..8c5dde3a5754
+--- /dev/null
++++ b/Documentation/admin-guide/mm/damon/index.rst
+@@ -0,0 +1,15 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++========================
++Monitoring Data Accesses
++========================
++
++:doc:`DAMON </vm/damon/index>` allows light-weight data access monitoring.
++Using DAMON, users can analyze the memory access patterns of their systems and
++optimize those.
++
++.. toctree::
++   :maxdepth: 2
++
++   start
++   usage
+diff --git a/Documentation/admin-guide/mm/damon/start.rst b/Documentation/admin-guide/mm/damon/start.rst
+new file mode 100644
+index 000000000000..d5eb89a8fc38
+--- /dev/null
++++ b/Documentation/admin-guide/mm/damon/start.rst
+@@ -0,0 +1,114 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===============
++Getting Started
++===============
++
++This document briefly describes how you can use DAMON by demonstrating its
++default user space tool.  Please note that this document describes only a part
++of its features for brevity.  Please refer to :doc:`usage` for more details.
++
++
++TL; DR
++======
++
++Follow the commands below to monitor and visualize the memory access pattern of
++your workload. ::
++
++    # # build the kernel with CONFIG_DAMON_*=y, install it, and reboot
++    # mount -t debugfs none /sys/kernel/debug/
++    # git clone https://github.com/awslabs/damo
++    # ./damo/damo record $(pidof <your workload>)
++    # ./damo/damo report heat --plot_ascii
++
++The final command draws the access heatmap of ``<your workload>``.  The heatmap
++shows which memory region (x-axis) is accessed when (y-axis) and how frequently
++(number; the higher the more accesses have been observed). ::
++
++    111111111111111111111111111111111111111111111111111111110000
++    111121111111111111111111111111211111111111111111111111110000
++    000000000000000000000000000000000000000000000000001555552000
++    000000000000000000000000000000000000000000000222223555552000
++    000000000000000000000000000000000000000011111677775000000000
++    000000000000000000000000000000000000000488888000000000000000
++    000000000000000000000000000000000177888400000000000000000000
++    000000000000000000000000000046666522222100000000000000000000
++    000000000000000000000014444344444300000000000000000000000000
++    000000000000000002222245555510000000000000000000000000000000
++    # access_frequency:  0  1  2  3  4  5  6  7  8  9
++    # x-axis: space (140286319947776-140286426374096: 101.496 MiB)
++    # y-axis: time (605442256436361-605479951866441: 37.695430s)
++    # resolution: 60x10 (1.692 MiB and 3.770s for each character)
++
++
++Prerequisites
++=============
++
++Kernel
++------
++
++You should first ensure your system is running on a kernel built with
++``CONFIG_DAMON_*=y``.
++
++
++User Space Tool
++---------------
++
++For the demonstration, we will use the default user space tool for DAMON,
++called DAMON Operator (DAMO).  It is available at
++https://github.com/awslabs/damo.  The examples below assume that ``damo`` is on
++your ``$PATH``.  It's not mandatory, though.
++
++Because DAMO is using the debugfs interface (refer to :doc:`usage` for the
++detail) of DAMON, you should ensure debugfs is mounted.  Mount it manually as
++below::
++
++    # mount -t debugfs none /sys/kernel/debug/
++
++or append the following line to your ``/etc/fstab`` file so that your system
++can automatically mount debugfs upon booting::
++
++    debugfs /sys/kernel/debug debugfs defaults 0 0
++
++
++Recording Data Access Patterns
++==============================
++
++The commands below record the memory access patterns of a program and save the
++monitoring results to a file. ::
++
++    $ git clone https://github.com/sjp38/masim
++    $ cd masim; make; ./masim ./configs/zigzag.cfg &
++    $ sudo damo record -o damon.data $(pidof masim)
++
++The first two lines of the commands download an artificial memory access
++generator program and run it in the background.  The generator will repeatedly
++access two 100 MiB sized memory regions one by one.  You can substitute this
++with your real workload.  The last line asks ``damo`` to record the access
++pattern in the ``damon.data`` file.
++
++
++Visualizing Recorded Patterns
++=============================
++
++The following three commands visualize the recorded access patterns and save
++the results as separate image files. ::
++
++    $ damo report heats --heatmap access_pattern_heatmap.png
++    $ damo report wss --range 0 101 1 --plot wss_dist.png
++    $ damo report wss --range 0 101 1 --sortby time --plot wss_chron_change.png
++
++- ``access_pattern_heatmap.png`` will visualize the data access pattern in a
++  heatmap, showing which memory region (y-axis) got accessed when (x-axis)
++  and how frequently (color).
++- ``wss_dist.png`` will show the distribution of the working set size.
++- ``wss_chron_change.png`` will show how the working set size has
++  chronologically changed.
++
++You can view the visualizations of this example workload at [1]_.
++Visualizations of other realistic workloads are available at [2]_ [3]_ [4]_.
++
++.. [1] https://damonitor.github.io/doc/html/v17/admin-guide/mm/damon/start.html#visualizing-recorded-patterns
++.. [2] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.1.png.html
++.. [3] https://damonitor.github.io/test/result/visual/latest/rec.wss_sz.png.html
++.. [4] https://damonitor.github.io/test/result/visual/latest/rec.wss_time.png.html
+diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
+new file mode 100644
+index 000000000000..a72cda374aba
+--- /dev/null
++++ b/Documentation/admin-guide/mm/damon/usage.rst
+@@ -0,0 +1,112 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===============
++Detailed Usages
++===============
++
++DAMON provides below three interfaces for different users.
++
++- *DAMON user space tool.*
++  This is for privileged people such as system administrators who want a
++  just-working human-friendly interface.  Using this, users can use the DAMON’s
++  major features in a human-friendly way.  It may not be highly tuned for
++  special cases, though.  It supports only virtual address spaces monitoring.
++- *debugfs interface.*
++  This is for privileged user space programmers who want more optimized use of
++  DAMON.  Using this, users can use DAMON’s major features by reading
++  from and writing to special debugfs files.  Therefore, you can write and use
++  your personalized DAMON debugfs wrapper programs that reads/writes the
++  debugfs files instead of you.  The DAMON user space tool is also a reference
++  implementation of such programs.  It supports only virtual address spaces
++  monitoring.
++- *Kernel Space Programming Interface.*
++  This is for kernel space programmers.  Using this, users can utilize every
++  feature of DAMON most flexibly and efficiently by writing kernel space
++  DAMON application programs for you.  You can even extend DAMON for various
++  address spaces.
++
++Nevertheless, you could write your own user space tool using the debugfs
++interface.  A reference implementation is available at
++https://github.com/awslabs/damo.  If you are a kernel programmer, you could
++refer to :doc:`/vm/damon/api` for the kernel space programming interface.  For
++the reason, this document describes only the debugfs interface
++
++debugfs Interface
++=================
++
++DAMON exports three files, ``attrs``, ``target_ids``, and ``monitor_on`` under
++its debugfs directory, ``<debugfs>/damon/``.
++
++
++Attributes
++----------
++
++Users can get and set the ``sampling interval``, ``aggregation interval``,
++``regions update interval``, and min/max number of monitoring target regions by
++reading from and writing to the ``attrs`` file.  To know about the monitoring
++attributes in detail, please refer to the :doc:`/vm/damon/design`.  For
++example, below commands set those values to 5 ms, 100 ms, 1,000 ms, 10 and
++1000, and then check it again::
++
++    # cd <debugfs>/damon
++    # echo 5000 100000 1000000 10 1000 > attrs
++    # cat attrs
++    5000 100000 1000000 10 1000
++
++
++Target IDs
++----------
++
++Some types of address spaces supports multiple monitoring target.  For example,
++the virtual memory address spaces monitoring can have multiple processes as the
++monitoring targets.  Users can set the targets by writing relevant id values of
++the targets to, and get the ids of the current targets by reading from the
++``target_ids`` file.  In case of the virtual address spaces monitoring, the
++values should be pids of the monitoring target processes.  For example, below
++commands set processes having pids 42 and 4242 as the monitoring targets and
++check it again::
++
++    # cd <debugfs>/damon
++    # echo 42 4242 > target_ids
++    # cat target_ids
++    42 4242
++
++Note that setting the target ids doesn't start the monitoring.
++
++
++Turning On/Off
++--------------
++
++Setting the files as described above doesn't incur effect unless you explicitly
++start the monitoring.  You can start, stop, and check the current status of the
++monitoring by writing to and reading from the ``monitor_on`` file.  Writing
++``on`` to the file starts the monitoring of the targets with the attributes.
++Writing ``off`` to the file stops those.  DAMON also stops if every target
++process is terminated.  Below example commands turn on, off, and check the
++status of DAMON::
++
++    # cd <debugfs>/damon
++    # echo on > monitor_on
++    # echo off > monitor_on
++    # cat monitor_on
++    off
++
++Please note that you cannot write to the above-mentioned debugfs files while
++the monitoring is turned on.  If you write to the files while DAMON is running,
++an error code such as ``-EBUSY`` will be returned.
++
++
++Tracepoint for Monitoring Results
++=================================
++
++DAMON provides the monitoring results via a tracepoint,
++``damon:damon_aggregated``.  While the monitoring is turned on, you could
++record the tracepoint events and show results using tracepoint supporting tools
++like ``perf``.  For example::
++
++    # echo on > monitor_on
++    # perf record -e damon:damon_aggregated &
++    # sleep 5
++    # kill 9 $(pidof perf)
++    # echo off > monitor_on
++    # perf script
+diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
+index 4b14d8b50e9e..cbd19d5e625f 100644
+--- a/Documentation/admin-guide/mm/index.rst
++++ b/Documentation/admin-guide/mm/index.rst
+@@ -27,6 +27,7 @@ the Linux memory management.
  
- /*
-  * Returns non-empty string on success, negative error code otherwise.
-@@ -326,6 +327,186 @@ static struct damon_ctx *dbgfs_new_ctx(void)
- 	return ctx;
- }
- 
-+static void dbgfs_destroy_ctx(struct damon_ctx *ctx)
-+{
-+	damon_destroy_ctx(ctx);
-+}
+    concepts
+    cma_debugfs
++   damon/index
+    hugetlbpage
+    idle_page_tracking
+    ksm
+diff --git a/Documentation/vm/damon/api.rst b/Documentation/vm/damon/api.rst
+new file mode 100644
+index 000000000000..08f34df45523
+--- /dev/null
++++ b/Documentation/vm/damon/api.rst
+@@ -0,0 +1,20 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+/*
-+ * Make a context of @name and create a debugfs directory for it.
-+ *
-+ * This function should be called while holding damon_dbgfs_lock.
-+ *
-+ * Returns 0 on success, negative error code otherwise.
-+ */
-+static int dbgfs_mk_context(char *name)
-+{
-+	struct dentry *root, **new_dirs, *new_dir;
-+	struct damon_ctx **new_ctxs, *new_ctx;
++=============
++API Reference
++=============
 +
-+	if (damon_nr_running_ctxs())
-+		return -EBUSY;
++Kernel space programs can use every feature of DAMON using below APIs.  All you
++need to do is including ``damon.h``, which is located in ``include/linux/`` of
++the source tree.
 +
-+	new_ctxs = krealloc(dbgfs_ctxs, sizeof(*dbgfs_ctxs) *
-+			(dbgfs_nr_ctxs + 1), GFP_KERNEL);
-+	if (!new_ctxs)
-+		return -ENOMEM;
-+	dbgfs_ctxs = new_ctxs;
++Structures
++==========
 +
-+	new_dirs = krealloc(dbgfs_dirs, sizeof(*dbgfs_dirs) *
-+			(dbgfs_nr_ctxs + 1), GFP_KERNEL);
-+	if (!new_dirs)
-+		return -ENOMEM;
-+	dbgfs_dirs = new_dirs;
++.. kernel-doc:: include/linux/damon.h
 +
-+	root = dbgfs_dirs[0];
-+	if (!root)
-+		return -ENOENT;
 +
-+	new_dir = debugfs_create_dir(name, root);
-+	dbgfs_dirs[dbgfs_nr_ctxs] = new_dir;
++Functions
++=========
 +
-+	new_ctx = dbgfs_new_ctx();
-+	if (!new_ctx) {
-+		debugfs_remove(new_dir);
-+		dbgfs_dirs[dbgfs_nr_ctxs] = NULL;
-+		return -ENOMEM;
-+	}
++.. kernel-doc:: mm/damon/core.c
+diff --git a/Documentation/vm/damon/design.rst b/Documentation/vm/damon/design.rst
+new file mode 100644
+index 000000000000..b05159c295f4
+--- /dev/null
++++ b/Documentation/vm/damon/design.rst
+@@ -0,0 +1,166 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+	dbgfs_ctxs[dbgfs_nr_ctxs] = new_ctx;
-+	dbgfs_fill_ctx_dir(dbgfs_dirs[dbgfs_nr_ctxs],
-+			dbgfs_ctxs[dbgfs_nr_ctxs]);
-+	dbgfs_nr_ctxs++;
++======
++Design
++======
 +
-+	return 0;
-+}
++Configurable Layers
++===================
 +
-+static ssize_t dbgfs_mk_context_write(struct file *file,
-+		const char __user *buf, size_t count, loff_t *ppos)
-+{
-+	char *kbuf;
-+	char *ctx_name;
-+	ssize_t ret = count;
-+	int err;
++DAMON provides data access monitoring functionality while making the accuracy
++and the overhead controllable.  The fundamental access monitorings require
++primitives that dependent on and optimized for the target address space.  On
++the other hand, the accuracy and overhead tradeoff mechanism, which is the core
++of DAMON, is in the pure logic space.  DAMON separates the two parts in
++different layers and defines its interface to allow various low level
++primitives implementations configurable with the core logic.
 +
-+	kbuf = user_input_str(buf, count, ppos);
-+	if (IS_ERR(kbuf))
-+		return PTR_ERR(kbuf);
-+	ctx_name = kmalloc(count + 1, GFP_KERNEL);
-+	if (!ctx_name) {
-+		kfree(kbuf);
-+		return -ENOMEM;
-+	}
++Due to this separated design and the configurable interface, users can extend
++DAMON for any address space by configuring the core logics with appropriate low
++level primitive implementations.  If appropriate one is not provided, users can
++implement the primitives on their own.
 +
-+	/* Trim white space */
-+	if (sscanf(kbuf, "%s", ctx_name) != 1) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
++For example, physical memory, virtual memory, swap space, those for specific
++processes, NUMA nodes, files, and backing memory devices would be supportable.
++Also, if some architectures or devices support special optimized access check
++primitives, those will be easily configurable.
 +
-+	mutex_lock(&damon_dbgfs_lock);
-+	err = dbgfs_mk_context(ctx_name);
-+	if (err)
-+		ret = err;
-+	mutex_unlock(&damon_dbgfs_lock);
 +
-+out:
-+	kfree(kbuf);
-+	kfree(ctx_name);
-+	return ret;
-+}
++Reference Implementations of Address Space Specific Primitives
++==============================================================
 +
-+/*
-+ * Remove a context of @name and its debugfs directory.
-+ *
-+ * This function should be called while holding damon_dbgfs_lock.
-+ *
-+ * Return 0 on success, negative error code otherwise.
-+ */
-+static int dbgfs_rm_context(char *name)
-+{
-+	struct dentry *root, *dir, **new_dirs;
-+	struct damon_ctx **new_ctxs;
-+	int i, j;
++The low level primitives for the fundamental access monitoring are defined in
++two parts:
 +
-+	if (damon_nr_running_ctxs())
-+		return -EBUSY;
++1. Identification of the monitoring target address range for the address space.
++2. Access check of specific address range in the target space.
 +
-+	root = dbgfs_dirs[0];
-+	if (!root)
-+		return -ENOENT;
++DAMON currently provides the implementation of the primitives for only the
++virtual address spaces. Below two subsections describe how it works.
 +
-+	dir = debugfs_lookup(name, root);
-+	if (!dir)
-+		return -ENOENT;
 +
-+	new_dirs = kmalloc_array(dbgfs_nr_ctxs - 1, sizeof(*dbgfs_dirs),
-+			GFP_KERNEL);
-+	if (!new_dirs)
-+		return -ENOMEM;
++VMA-based Target Address Range Construction
++-------------------------------------------
 +
-+	new_ctxs = kmalloc_array(dbgfs_nr_ctxs - 1, sizeof(*dbgfs_ctxs),
-+			GFP_KERNEL);
-+	if (!new_ctxs) {
-+		kfree(new_dirs);
-+		return -ENOMEM;
-+	}
++Only small parts in the super-huge virtual address space of the processes are
++mapped to the physical memory and accessed.  Thus, tracking the unmapped
++address regions is just wasteful.  However, because DAMON can deal with some
++level of noise using the adaptive regions adjustment mechanism, tracking every
++mapping is not strictly required but could even incur a high overhead in some
++cases.  That said, too huge unmapped areas inside the monitoring target should
++be removed to not take the time for the adaptive mechanism.
 +
-+	for (i = 0, j = 0; i < dbgfs_nr_ctxs; i++) {
-+		if (dbgfs_dirs[i] == dir) {
-+			debugfs_remove(dbgfs_dirs[i]);
-+			dbgfs_destroy_ctx(dbgfs_ctxs[i]);
-+			continue;
-+		}
-+		new_dirs[j] = dbgfs_dirs[i];
-+		new_ctxs[j++] = dbgfs_ctxs[i];
-+	}
++For the reason, this implementation converts the complex mappings to three
++distinct regions that cover every mapped area of the address space.  The two
++gaps between the three regions are the two biggest unmapped areas in the given
++address space.  The two biggest unmapped areas would be the gap between the
++heap and the uppermost mmap()-ed region, and the gap between the lowermost
++mmap()-ed region and the stack in most of the cases.  Because these gaps are
++exceptionally huge in usual address spaces, excluding these will be sufficient
++to make a reasonable trade-off.  Below shows this in detail::
 +
-+	kfree(dbgfs_dirs);
-+	kfree(dbgfs_ctxs);
++    <heap>
++    <BIG UNMAPPED REGION 1>
++    <uppermost mmap()-ed region>
++    (small mmap()-ed regions and munmap()-ed regions)
++    <lowermost mmap()-ed region>
++    <BIG UNMAPPED REGION 2>
++    <stack>
 +
-+	dbgfs_dirs = new_dirs;
-+	dbgfs_ctxs = new_ctxs;
-+	dbgfs_nr_ctxs--;
 +
-+	return 0;
-+}
++PTE Accessed-bit Based Access Check
++-----------------------------------
 +
-+static ssize_t dbgfs_rm_context_write(struct file *file,
-+		const char __user *buf, size_t count, loff_t *ppos)
-+{
-+	char *kbuf;
-+	ssize_t ret = count;
-+	int err;
-+	char *ctx_name;
++The implementation for the virtual address space uses PTE Accessed-bit for
++basic access checks.  It finds the relevant PTE Accessed bit from the address
++by walking the page table for the target task of the address.  In this way, the
++implementation finds and clears the bit for next sampling target address and
++checks whether the bit set again after one sampling period.  This could disturb
++other kernel subsystems using the Accessed bits, namely Idle page tracking and
++the reclaim logic.  To avoid such disturbances, DAMON makes it mutually
++exclusive with Idle page tracking and uses ``PG_idle`` and ``PG_young`` page
++flags to solve the conflict with the reclaim logic, as Idle page tracking does.
 +
-+	kbuf = user_input_str(buf, count, ppos);
-+	if (IS_ERR(kbuf))
-+		return PTR_ERR(kbuf);
-+	ctx_name = kmalloc(count + 1, GFP_KERNEL);
-+	if (!ctx_name) {
-+		kfree(kbuf);
-+		return -ENOMEM;
-+	}
 +
-+	/* Trim white space */
-+	if (sscanf(kbuf, "%s", ctx_name) != 1) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
++Address Space Independent Core Mechanisms
++=========================================
 +
-+	mutex_lock(&damon_dbgfs_lock);
-+	err = dbgfs_rm_context(ctx_name);
-+	if (err)
-+		ret = err;
-+	mutex_unlock(&damon_dbgfs_lock);
++Below four sections describe each of the DAMON core mechanisms and the five
++monitoring attributes, ``sampling interval``, ``aggregation interval``,
++``regions update interval``, ``minimum number of regions``, and ``maximum
++number of regions``.
 +
-+out:
-+	kfree(kbuf);
-+	kfree(ctx_name);
-+	return ret;
-+}
 +
- static ssize_t dbgfs_monitor_on_read(struct file *file,
- 		char __user *buf, size_t count, loff_t *ppos)
- {
-@@ -368,6 +549,14 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
- 	return ret;
- }
- 
-+static const struct file_operations mk_contexts_fops = {
-+	.write = dbgfs_mk_context_write,
-+};
++Access Frequency Monitoring
++---------------------------
 +
-+static const struct file_operations rm_contexts_fops = {
-+	.write = dbgfs_rm_context_write,
-+};
++The output of DAMON says what pages are how frequently accessed for a given
++duration.  The resolution of the access frequency is controlled by setting
++``sampling interval`` and ``aggregation interval``.  In detail, DAMON checks
++access to each page per ``sampling interval`` and aggregates the results.  In
++other words, counts the number of the accesses to each page.  After each
++``aggregation interval`` passes, DAMON calls callback functions that previously
++registered by users so that users can read the aggregated results and then
++clears the results.  This can be described in below simple pseudo-code::
 +
- static const struct file_operations monitor_on_fops = {
- 	.read = dbgfs_monitor_on_read,
- 	.write = dbgfs_monitor_on_write,
-@@ -376,8 +565,10 @@ static const struct file_operations monitor_on_fops = {
- static int __init __damon_dbgfs_init(void)
- {
- 	struct dentry *dbgfs_root;
--	const char * const file_names[] = {"monitor_on"};
--	const struct file_operations *fops[] = {&monitor_on_fops};
-+	const char * const file_names[] = {"mk_contexts", "rm_contexts",
-+		"monitor_on"};
-+	const struct file_operations *fops[] = {&mk_contexts_fops,
-+		&rm_contexts_fops, &monitor_on_fops};
- 	int i;
- 
- 	dbgfs_root = debugfs_create_dir("damon", NULL);
++    while monitoring_on:
++        for page in monitoring_target:
++            if accessed(page):
++                nr_accesses[page] += 1
++        if time() % aggregation_interval == 0:
++            for callback in user_registered_callbacks:
++                callback(monitoring_target, nr_accesses)
++            for page in monitoring_target:
++                nr_accesses[page] = 0
++        sleep(sampling interval)
++
++The monitoring overhead of this mechanism will arbitrarily increase as the
++size of the target workload grows.
++
++
++Region Based Sampling
++---------------------
++
++To avoid the unbounded increase of the overhead, DAMON groups adjacent pages
++that assumed to have the same access frequencies into a region.  As long as the
++assumption (pages in a region have the same access frequencies) is kept, only
++one page in the region is required to be checked.  Thus, for each ``sampling
++interval``, DAMON randomly picks one page in each region, waits for one
++``sampling interval``, checks whether the page is accessed meanwhile, and
++increases the access frequency of the region if so.  Therefore, the monitoring
++overhead is controllable by setting the number of regions.  DAMON allows users
++to set the minimum and the maximum number of regions for the trade-off.
++
++This scheme, however, cannot preserve the quality of the output if the
++assumption is not guaranteed.
++
++
++Adaptive Regions Adjustment
++---------------------------
++
++Even somehow the initial monitoring target regions are well constructed to
++fulfill the assumption (pages in same region have similar access frequencies),
++the data access pattern can be dynamically changed.  This will result in low
++monitoring quality.  To keep the assumption as much as possible, DAMON
++adaptively merges and splits each region based on their access frequency.
++
++For each ``aggregation interval``, it compares the access frequencies of
++adjacent regions and merges those if the frequency difference is small.  Then,
++after it reports and clears the aggregated access frequency of each region, it
++splits each region into two or three regions if the total number of regions
++will not exceed the user-specified maximum number of regions after the split.
++
++In this way, DAMON provides its best-effort quality and minimal overhead while
++keeping the bounds users set for their trade-off.
++
++
++Dynamic Target Space Updates Handling
++-------------------------------------
++
++The monitoring target address range could dynamically changed.  For example,
++virtual memory could be dynamically mapped and unmapped.  Physical memory could
++be hot-plugged.
++
++As the changes could be quite frequent in some cases, DAMON checks the dynamic
++memory mapping changes and applies it to the abstracted target area only for
++each of a user-specified time interval (``regions update interval``).
+diff --git a/Documentation/vm/damon/faq.rst b/Documentation/vm/damon/faq.rst
+new file mode 100644
+index 000000000000..cb3d8b585a8b
+--- /dev/null
++++ b/Documentation/vm/damon/faq.rst
+@@ -0,0 +1,51 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++==========================
++Frequently Asked Questions
++==========================
++
++Why a new subsystem, instead of extending perf or other user space tools?
++=========================================================================
++
++First, because it needs to be lightweight as much as possible so that it can be
++used online, any unnecessary overhead such as kernel - user space context
++switching cost should be avoided.  Second, DAMON aims to be used by other
++programs including the kernel.  Therefore, having a dependency on specific
++tools like perf is not desirable.  These are the two biggest reasons why DAMON
++is implemented in the kernel space.
++
++
++Can 'idle pages tracking' or 'perf mem' substitute DAMON?
++=========================================================
++
++Idle page tracking is a low level primitive for access check of the physical
++address space.  'perf mem' is similar, though it can use sampling to minimize
++the overhead.  On the other hand, DAMON is a higher-level framework for the
++monitoring of various address spaces.  It is focused on memory management
++optimization and provides sophisticated accuracy/overhead handling mechanisms.
++Therefore, 'idle pages tracking' and 'perf mem' could provide a subset of
++DAMON's output, but cannot substitute DAMON.
++
++
++Does DAMON support virtual memory only?
++=======================================
++
++No.  The core of the DAMON is address space independent.  The address space
++specific low level primitive parts including monitoring target regions
++constructions and actual access checks can be implemented and configured on the
++DAMON core by the users.  In this way, DAMON users can monitor any address
++space with any access check technique.
++
++Nonetheless, DAMON provides vma tracking and PTE Accessed bit check based
++implementations of the address space dependent functions for the virtual memory
++by default, for a reference and convenient use.  In near future, we will
++provide those for physical memory address space.
++
++
++Can I simply monitor page granularity?
++======================================
++
++Yes.  You can do so by setting the ``min_nr_regions`` attribute higher than the
++working set size divided by the page size.  Because the monitoring target
++regions size is forced to be ``>=page size``, the region split will make no
++effect.
+diff --git a/Documentation/vm/damon/index.rst b/Documentation/vm/damon/index.rst
+new file mode 100644
+index 000000000000..a2858baf3bf1
+--- /dev/null
++++ b/Documentation/vm/damon/index.rst
+@@ -0,0 +1,30 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++==========================
++DAMON: Data Access MONitor
++==========================
++
++DAMON is a data access monitoring framework subsystem for the Linux kernel.
++The core mechanisms of DAMON (refer to :doc:`design` for the detail) make it
++
++ - *accurate* (the monitoring output is useful enough for DRAM level memory
++   management; It might not appropriate for CPU Cache levels, though),
++ - *light-weight* (the monitoring overhead is low enough to be applied online),
++   and
++ - *scalable* (the upper-bound of the overhead is in constant range regardless
++   of the size of target workloads).
++
++Using this framework, therefore, the kernel's memory management mechanisms can
++make advanced decisions.  Experimental memory management optimization works
++that incurring high data accesses monitoring overhead could implemented again.
++In user space, meanwhile, users who have some special workloads can write
++personalized applications for better understanding and optimizations of their
++workloads and systems.
++
++.. toctree::
++   :maxdepth: 2
++
++   faq
++   design
++   api
++   plans
+diff --git a/Documentation/vm/index.rst b/Documentation/vm/index.rst
+index eff5fbd492d0..b51f0d8992f8 100644
+--- a/Documentation/vm/index.rst
++++ b/Documentation/vm/index.rst
+@@ -32,6 +32,7 @@ descriptions of data structures and algorithms.
+    arch_pgtable_helpers
+    balance
+    cleancache
++   damon/index
+    free_page_reporting
+    frontswap
+    highmem
 -- 
 2.17.1
 
