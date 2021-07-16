@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C778C3CBC83
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EA23CBC87
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhGPTaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:30:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232172AbhGPTaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:30:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 68E03613FE;
-        Fri, 16 Jul 2021 19:27:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626463644;
-        bh=6NgBJ/YZayNdXv9tJZpoBnBfM1/BhfDN/v9X3Ga7sbs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=rFlA4wEYi6M69Yl+AP2GgCDkDmQa8rqx6hxz5umbqNynP6KNi6lBI+ZkfaFStUO0N
-         Pb5l1SlebNueFH1jc7JVqFfGPyiG+LKVDgYRsnsb8It65NsyCWDHm1loT9wBGWQWj7
-         XHCgf1jymvLtgvSkzulvr6uVqvXr5mLTLVFSETFsSn3k9oA+68mwR1MpAqfqBvMBtW
-         YKZxqP++7WJ3OBavQOKsm9iB1MTRhkI1yegLjIA/68deEMcnP/egAGT9DJbz83zvhe
-         zosVpXLN3saGPa1PvxBnzEZKCYsKARy5laAkGDNyJM8EA0FqA61YAmohtE/85RbVsT
-         sGqSvP8uUbInQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5B3B5609DA;
-        Fri, 16 Jul 2021 19:27:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232923AbhGPTaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232172AbhGPTau (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 15:30:50 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0179C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 12:27:54 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 42-20020a9d012d0000b02904b98d90c82cso10972930otu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 12:27:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=WvfR1EWSjDcJ24IvuaATgTh4IU7RndSDBvf6tZ6dESk=;
+        b=ZGYrMn2K0Zen2/chitsaSiJybVqzxLtV7eGnqeJEXBnSeiFR4Eoowli7W6TIDTjT66
+         px1T2IThviECAxK3vJhbUqdEwZPgaFL4sVn43I6UeG9M4ILbA3leE+/BFILEKqjaXdH9
+         Gb+9juv4u4OUVaWRtRpyeCOYSh7WA9v88d8C8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=WvfR1EWSjDcJ24IvuaATgTh4IU7RndSDBvf6tZ6dESk=;
+        b=I5X5bp2iRGD76oHpFYZXNDP1gy566VaVzzG20qKylBKQxCy/tdW9KXmhgOpfGm0Eg0
+         e/Nx9mmdQi2lT5kJ/hkHWGOFjhC9GhT92sH6BGQFiaqpT9HndMQPHAVpKz7yzvBY6U4I
+         vUOWX4MJXw8Rv7Hij6c1E7WSfwtGZAAmoFB0Ve1UanhteBmhk7Go2krzVIkKm4YsLBv9
+         rDcacTNQaiJzgh5zg12QUYIEdZDe0nqDG1m9IYgDBIPo5lbYbYgPBWAK3DxmwDWr+nzq
+         uNVEOQ+dqzs8FN0yR8dzBooFG50lAssUYpWZjwxbN7JaGnH0h3mCodarUA+ixVp9+4d4
+         14Ww==
+X-Gm-Message-State: AOAM533JqrYNcr1KfIyMOS4SWbSBJgfv/HtI1XPdIRt751SaIUEii/VL
+        T/6rS6oMS5XgvJ5+1nu8egJOhO/FMJy8tS9GDpXJPw==
+X-Google-Smtp-Source: ABdhPJybePdTQVheSU7I4BGrZN5KWLlkqMofOQCp3PADsNt5bK8OYflJN4jUdORZRMfwv2tvQMtdZYqRafi3L6wNdqA=
+X-Received: by 2002:a9d:8c7:: with SMTP id 65mr9472592otf.25.1626463674176;
+ Fri, 16 Jul 2021 12:27:54 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 16 Jul 2021 21:27:53 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] bpf: add ambient BPF runtime context stored in
- current
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162646364436.14878.13764135374807267506.git-patchwork-notify@kernel.org>
-Date:   Fri, 16 Jul 2021 19:27:24 +0000
-References: <20210712230615.3525979-1-andrii@kernel.org>
-In-Reply-To: <20210712230615.3525979-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, yhs@fb.com
+In-Reply-To: <1626443927-32028-2-git-send-email-pmaliset@codeaurora.org>
+References: <1626443927-32028-1-git-send-email-pmaliset@codeaurora.org> <1626443927-32028-2-git-send-email-pmaliset@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 16 Jul 2021 21:27:53 +0200
+Message-ID: <CAE-0n51g66F7A7Kuz+GQwnYfEX_BXKQR7YD=4PhJAEGkBu6AsQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: pci: qcom: Document PCIe bindings for SC720
+To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Quoting Prasad Malisetty (2021-07-16 06:58:44)
+> Document the PCIe DT bindings for SC7280 SoC.The PCIe IP is similar
+> to the one used on SM8250. Add the compatible for SC7280.
+>
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-On Mon, 12 Jul 2021 16:06:15 -0700 you wrote:
-> b910eaaaa4b8 ("bpf: Fix NULL pointer dereference in bpf_get_local_storage()
-> helper") fixed the problem with cgroup-local storage use in BPF by
-> pre-allocating per-CPU array of 8 cgroup storage pointers to accommodate
-> possible BPF program preemptions and nested executions.
-> 
-> While this seems to work good in practice, it introduces new and unnecessary
-> failure mode in which not all BPF programs might be executed if we fail to
-> find an unused slot for cgroup storage, however unlikely it is. It might also
-> not be so unlikely when/if we allow sleepable cgroup BPF programs in the
-> future.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2,bpf-next] bpf: add ambient BPF runtime context stored in current
-    https://git.kernel.org/bpf/bpf-next/c/c7603cfa04e7
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Any chance this file can be converted to YAML?
