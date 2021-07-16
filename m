@@ -2,139 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0673CBE14
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCCD3CBE23
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhGPU5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:57:31 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:8462 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230415AbhGPU5a (ORCPT
+        id S234369AbhGPVHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 17:07:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51153 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232896AbhGPVG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:57:30 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GKfGVM011753;
-        Fri, 16 Jul 2021 16:54:31 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 39tw63kv3e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Jul 2021 16:54:31 -0400
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 16GKsTNl048128
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Jul 2021 16:54:29 -0400
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Fri, 16 Jul 2021 13:54:28 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Fri, 16 Jul 2021 13:54:27 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 16GKsNDT003387;
-        Fri, 16 Jul 2021 16:54:25 -0400
-From:   <alexandru.tachici@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <broonie@kernel.org>
-CC:     <nuno.sa@analog.com>, <bootc@bootc.net>, <swarren@wwwdotorg.org>,
-        <bcm-kernel-feedback-list@broadcom.com>, <rjui@broadcom.com>,
-        <f.fainelli@gmail.com>, <nsaenz@kernel.org>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [PATCH 1/1] spi: spi-bcm2835: Fix deadlock
-Date:   Sat, 17 Jul 2021 00:02:45 +0300
-Message-ID: <20210716210245.13240-2-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210716210245.13240-1-alexandru.tachici@analog.com>
-References: <20210716210245.13240-1-alexandru.tachici@analog.com>
+        Fri, 16 Jul 2021 17:06:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626469442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=g49/KyQBA3eOY1MbjSChZGxyqJEiIAVE2IDAbe+zWxU=;
+        b=AoonXhXJSmk0u9O3p7s59o5mVxCydsUZ8hJYgpL+8jVFfJYhLlbnhfI5sx/Pe+s+JTGhgc
+        E/2V06WPQ7alZPyWNVV6LlL7DDWI9j8zVTGPk2TCdD0vtLwaZW0h2HzGNSjZsy/R3D9kKg
+        iinWfGA/rP4Y/6huX+9Pz39eNki/N00=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-YiEPTyHiN8W-0bgFWdGPLQ-1; Fri, 16 Jul 2021 17:03:47 -0400
+X-MC-Unique: YiEPTyHiN8W-0bgFWdGPLQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37C021804877;
+        Fri, 16 Jul 2021 21:03:46 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-116-107.rdu2.redhat.com [10.10.116.107])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F9CB60C05;
+        Fri, 16 Jul 2021 21:03:42 +0000 (UTC)
+From:   Nico Pache <npache@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     rppt@kernel.org, akpm@linux-foundation.org, npache@redhat.com,
+        aquini@redhat.com
+Subject: [PATCH] Fix 'zone_id' may be used uninitialized in this function warning
+Date:   Fri, 16 Jul 2021 17:03:36 -0400
+Message-Id: <20210716210336.1114114-1-npache@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: jOCQ3VaieD2Z6CMh00k2QwwuZfjBWmjl
-X-Proofpoint-ORIG-GUID: jOCQ3VaieD2Z6CMh00k2QwwuZfjBWmjl
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-16_09:2021-07-16,2021-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- impostorscore=0 mlxlogscore=841 spamscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 phishscore=0 priorityscore=1501 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107160131
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+When compiling with -Werror, cc1 will warn that
+'zone_id' may be used uninitialized in this function warning.
 
-The bcm2835_spi_transfer_one function can create a deadlock
-if it is called while another thread already has the
-CCF lock.
+Initialize the zone_id as 0.
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
-Fixes: f8043872e796 ("spi: add driver for BCM2835")
+Its safe to assume that if the code reaches this point it has at least
+one numa node with memory, so no need for an assertion before
+init_unavilable_range.
+
+Fixes: 122e093c1734 ("mm/page_alloc: fix memory map initialization for descending nodes")
+Signed-off-by: Nico Pache <npache@redhat.com>
 ---
- drivers/spi/spi-bcm2835.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ mm/page_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-index 5f8771fe1a31..775c0bf2f923 100644
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -83,6 +83,7 @@ MODULE_PARM_DESC(polling_limit_us,
-  * struct bcm2835_spi - BCM2835 SPI controller
-  * @regs: base address of register map
-  * @clk: core clock, divided to calculate serial clock
-+ * @clk_hz: core clock cached speed
-  * @irq: interrupt, signals TX FIFO empty or RX FIFO ¾ full
-  * @tfr: SPI transfer currently processed
-  * @ctlr: SPI controller reverse lookup
-@@ -116,6 +117,7 @@ MODULE_PARM_DESC(polling_limit_us,
- struct bcm2835_spi {
- 	void __iomem *regs;
- 	struct clk *clk;
-+	unsigned long clk_hz;
- 	int irq;
- 	struct spi_transfer *tfr;
- 	struct spi_controller *ctlr;
-@@ -1045,19 +1047,18 @@ static int bcm2835_spi_transfer_one(struct spi_controller *ctlr,
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3e97e68aef7a..3f3116f52fd8 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6719,7 +6719,7 @@ static void __init memmap_init(void)
  {
- 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
- 	struct bcm2835_spidev *slv = spi_get_ctldata(spi);
--	unsigned long spi_hz, clk_hz, cdiv;
-+	unsigned long spi_hz, cdiv;
- 	unsigned long hz_per_byte, byte_limit;
- 	u32 cs = slv->prepare_cs;
+ 	unsigned long start_pfn, end_pfn;
+ 	unsigned long hole_pfn = 0;
+-	int i, j, zone_id, nid;
++	int i, j, zone_id = 0, nid;
  
- 	/* set clock */
- 	spi_hz = tfr->speed_hz;
--	clk_hz = clk_get_rate(bs->clk);
- 
--	if (spi_hz >= clk_hz / 2) {
-+	if (spi_hz >= bs->clk_hz / 2) {
- 		cdiv = 2; /* clk_hz/2 is the fastest we can go */
- 	} else if (spi_hz) {
- 		/* CDIV must be a multiple of two */
--		cdiv = DIV_ROUND_UP(clk_hz, spi_hz);
-+		cdiv = DIV_ROUND_UP(bs->clk_hz, spi_hz);
- 		cdiv += (cdiv % 2);
- 
- 		if (cdiv >= 65536)
-@@ -1065,7 +1066,7 @@ static int bcm2835_spi_transfer_one(struct spi_controller *ctlr,
- 	} else {
- 		cdiv = 0; /* 0 is the slowest we can go */
- 	}
--	tfr->effective_speed_hz = cdiv ? (clk_hz / cdiv) : (clk_hz / 65536);
-+	tfr->effective_speed_hz = cdiv ? (bs->clk_hz / cdiv) : (bs->clk_hz / 65536);
- 	bcm2835_wr(bs, BCM2835_SPI_CLK, cdiv);
- 
- 	/* handle all the 3-wire mode */
-@@ -1354,6 +1355,7 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
- 		return bs->irq ? bs->irq : -ENODEV;
- 
- 	clk_prepare_enable(bs->clk);
-+	bs->clk_hz = clk_get_rate(bs->clk);
- 
- 	err = bcm2835_dma_init(ctlr, &pdev->dev, bs);
- 	if (err)
+ 	for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
+ 		struct pglist_data *node = NODE_DATA(nid);
 -- 
-2.25.1
+2.31.1
 
