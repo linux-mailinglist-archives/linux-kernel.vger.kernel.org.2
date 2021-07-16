@@ -2,143 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D353CBE2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3922D3CBE33
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhGPVJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 17:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
+        id S235110AbhGPVKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 17:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhGPVJy (ORCPT
+        with ESMTP id S234967AbhGPVKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 17:09:54 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D64C06175F;
-        Fri, 16 Jul 2021 14:06:58 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id k4so13498844wrc.8;
-        Fri, 16 Jul 2021 14:06:58 -0700 (PDT)
+        Fri, 16 Jul 2021 17:10:16 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0ABC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:07:20 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso11219334otu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:07:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4pKHQr/tbhIkbF86KWS5quyjtsLNIoQ9B8exVpj2LvE=;
-        b=imAamG32La2GeVnoJxdszWNMiUMaWujFLyvTENQHuWfTNRlb3SNnTdV2TWYAG1R2Iq
-         m9X19q9TnKhGwiwjEH98ZQhJwckwrBhte8sRCGV17eJZMnpW2fdtMFrGUfeeoNSaTayd
-         LNvkDS8mdvqtmEc5tJlf6wcLsvtMo1o4qYUjrh0PBKA5tzm6OrBhawxNiYgPW1gs0IPp
-         vj0V9sc6Zjwq1IuJt4g70TdNSfiurt7XfQniw376QSwYntbenJpbGWiNTYwMWZno0VHp
-         U6ArIOb7fhN+HtK0VjCI9PwBEWg2Hu987FF2a1GTl/wrOzQFCcEHcnvoCNdPYPcXTVIO
-         2RsQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+KcxcljLGJIVJWS815GhZ8vwrKBLUZUCoehT4sKIick=;
+        b=QnfCOaF+t/airvvWleBWMXi4bMAV8F8C07l/T21uynV4up468L9W/0CdIOvo/1Ioa+
+         3Nq3QpfIdmG2aHxBU8+fchqhDTbq+QALYfwICHMMLDq2xDVmXKwD2p5A/zt1kpKgmcLR
+         3Rv9fl+CacqOqDy2bfRXC48IE+KHTvF2Fj0pDj4L+e0wif8olOH6OiHxTXNaS8IWhovm
+         srV6dFZmOAYSg23tqf7uOHyQWF/y5bZHWcW5dAlsRVqGgeI9zQQ+hdvMnRzy0XFHm7Yi
+         6uxumbS1rmq6jAdLTjZNdyULanX8BhvaeBdyZAj9dvJmJ+rB2bclMcsrAM+PV93H3FT1
+         /Ekg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4pKHQr/tbhIkbF86KWS5quyjtsLNIoQ9B8exVpj2LvE=;
-        b=sEc0JAVv9k1BBbTGcd55Ydv9iFS3lq7jg8spQAR07IDjo1UhtPxVZ2Mz1BnF4tKREM
-         LJOc+CHa2ll7V9fMBiiSNW0/1NrLhWOo1qLdZXokhMCrQzNJ161sHX1uNcOPCB0kYOrK
-         1et14W8bTZxNqvtm6FvojmidtDmpesXpnPP5CgVb0kURsaR1pZDH57S/hwYoiyWL61nK
-         SvLE2ExwBJeCmVKK95t+Sb3DPEOfutH5cftcrFHQZ0KI9zCXgMhr/VPSn6fmHgXrRr9/
-         TA6ZnkRHMilanZgLFqO5ls/FKrtTUuy7D35tEdZS2hQKA71ZxctsH8EBcqnhn8dOtfiF
-         nKPQ==
-X-Gm-Message-State: AOAM530K4mDPjiY7f9rHRgPXDdnCBxxBQzAT/SzrnyjJlnpoBtrwV9Pt
-        6EOk4AZkPD9qhDp7nARzP8I=
-X-Google-Smtp-Source: ABdhPJzjA0OaqPdB0BisEA9NQVoLMSvfu5B0rWbk6wjlzGlw9RLplrT5VwiaLaYOwPhAHtcCdcseAQ==
-X-Received: by 2002:adf:a287:: with SMTP id s7mr14497864wra.120.1626469617176;
-        Fri, 16 Jul 2021 14:06:57 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id d8sm11514867wrv.20.2021.07.16.14.06.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 14:06:56 -0700 (PDT)
-Date:   Sat, 17 Jul 2021 00:06:55 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     ericwouds@gmail.com
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        DENG Qingfang <dqfext@gmail.com>,
-        Frank Wunderlich <frank-w@public-files.de>
-Subject: Re: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
-Message-ID: <20210716210655.i5hxcwau5tdq4zhb@skbuf>
-References: <20210716153641.4678-1-ericwouds@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+KcxcljLGJIVJWS815GhZ8vwrKBLUZUCoehT4sKIick=;
+        b=nJ/nyW9DOuM/jKXz5rQLRjg/wXHscvebY+MMzVLTSDeqoyQabSdAUhMgYHOdvjcGt0
+         D0k+cw9FpaYfWFHBELUzn2umtJ3aMANd6FGhjlGGmMLOTqIkU/YNGrPbgWqw6NNpyTp+
+         CaR6PTnKihL5INMwNCAXuSosJqOzsfQFMMQVOGSq0boN/sZLqg+mFzQfyHFwHKtHTydH
+         EyTl9Cw7x+3SlsHzKNmInchFrrKLRb8cf2FUsKtwhmK7MblAUnCMumqc144tS/JYFTBy
+         HEfLi2jQ4h778D+S64/+y1yRLlRPoIHqGJR3+zhPmgNAxBnh9zL6K5PrbFT0O4UQVOu7
+         cRNQ==
+X-Gm-Message-State: AOAM5324nAPaSw+K1g93JttGUaPGtzUaYFjEnS4An+rygIIQqMTv3yDR
+        iryL3RtcbQyYT/GGmVMtyQ8OANihZp/eZJy5io1BGg==
+X-Google-Smtp-Source: ABdhPJxZhcCMqABPArOjR6KxEAGcwcKS907SlOyiKyyWtfF7hMD1MQl52qvcSETXu2JFjm9Jid+Nc49wBRQrisucJHY=
+X-Received: by 2002:a9d:550e:: with SMTP id l14mr9890451oth.241.1626469639196;
+ Fri, 16 Jul 2021 14:07:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716153641.4678-1-ericwouds@gmail.com>
+References: <20210716085325.10300-1-lingshan.zhu@intel.com>
+ <CALMp9eSz6RPN=spjN6zdD5iQY2ZZDwM2bHJ2R4qWijOt1A_6aw@mail.gmail.com> <b6568241-02e3-faf6-7507-c7ad1c4db281@linux.intel.com>
+In-Reply-To: <b6568241-02e3-faf6-7507-c7ad1c4db281@linux.intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 16 Jul 2021 14:07:08 -0700
+Message-ID: <CALMp9eT48THXwEG23Kb0-QExyA8qZAtkXxrxc+6+pdvtvVVN0A@mail.gmail.com>
+Subject: Re: [PATCH V8 00/18] KVM: x86/pmu: Add *basic* support to enable
+ guest PEBS via DS
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Zhu Lingshan <lingshan.zhu@intel.com>, peterz@infradead.org,
+        pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, joro@8bytes.org,
+        ak@linux.intel.com, wei.w.wang@intel.com, eranian@google.com,
+        liuxiangdong5@huawei.com, linux-kernel@vger.kernel.org,
+        x86@kernel.org, kvm@vger.kernel.org, like.xu.linux@gmail.com,
+        boris.ostrvsky@oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 05:36:39PM +0200, ericwouds@gmail.com wrote:
-> From: Eric Woudstra <ericwouds@gmail.com>
+On Fri, Jul 16, 2021 at 12:00 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
 >
-> According to reference guides mt7530 (mt7620) and mt7531:
 >
-> NOTE: When IVL is reset, MAC[47:0] and FID[2:0] will be used to
-> read/write the address table. When IVL is set, MAC[47:0] and CVID[11:0]
-> will be used to read/write the address table.
 >
-> Since the function only fills in CVID and no FID, we need to set the
-> IVL bit. The existing code does not set it.
+> On 7/16/2021 1:02 PM, Jim Mattson wrote:
+> > On Fri, Jul 16, 2021 at 1:54 AM Zhu Lingshan <lingshan.zhu@intel.com> wrote:
+> >>
+> >> The guest Precise Event Based Sampling (PEBS) feature can provide an
+> >> architectural state of the instruction executed after the guest instruction
+> >> that exactly caused the event. It needs new hardware facility only available
+> >> on Intel Ice Lake Server platforms. This patch set enables the basic PEBS
+> >> feature for KVM guests on ICX.
+> >>
+> >> We can use PEBS feature on the Linux guest like native:
+> >>
+> >>     # echo 0 > /proc/sys/kernel/watchdog (on the host)
+> >>     # perf record -e instructions:ppp ./br_instr a
+> >>     # perf record -c 100000 -e instructions:pp ./br_instr a
+> >>
+> >> To emulate guest PEBS facility for the above perf usages,
+> >> we need to implement 2 code paths:
+> >>
+> >> 1) Fast path
+> >>
+> >> This is when the host assigned physical PMC has an identical index as the
+> >> virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+> >> This path is used in most common use cases.
+> >>
+> >> 2) Slow path
+> >>
+> >> This is when the host assigned physical PMC has a different index from the
+> >> virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0) In this case,
+> >> KVM needs to rewrite the PEBS records to change the applicable counter indexes
+> >> to the virtual PMC indexes, which would otherwise contain the physical counter
+> >> index written by PEBS facility, and switch the counter reset values to the
+> >> offset corresponding to the physical counter indexes in the DS data structure.
+> >>
+> >> The previous version [0] enables both fast path and slow path, which seems
+> >> a bit more complex as the first step. In this patchset, we want to start with
+> >> the fast path to get the basic guest PEBS enabled while keeping the slow path
+> >> disabled. More focused discussion on the slow path [1] is planned to be put to
+> >> another patchset in the next step.
+> >>
+> >> Compared to later versions in subsequent steps, the functionality to support
+> >> host-guest PEBS both enabled and the functionality to emulate guest PEBS when
+> >> the counter is cross-mapped are missing in this patch set
+> >> (neither of these are typical scenarios).
+> >
+> > I'm not sure exactly what scenarios you're ruling out here. In our
+> > environment, we always have to be able to support host-level
+> > profiling, whether or not the guest is using the PMU (for PEBS or
+> > anything else). Hence, for our *basic* vPMU offering, we only expose
+> > two general purpose counters to the guest, so that we can keep two
+> > general purpose counters for the host. In this scenario, I would
+> > expect cross-mapped counters to be common. Are we going to be able to
+> > use this implementation?
+> >
 >
-> This is a fix for the issue I dropped here earlier:
->
-> http://lists.infradead.org/pipermail/linux-mediatek/2021-June/025697.html
->
-> With this patch, it is now possible to delete the 'self' fdb entry
-> manually. However, wifi roaming still has the same issue, the entry
-> does not get deleted automatically. Wifi roaming also needs a fix
-> somewhere else to function correctly in combination with vlan.
->
-> Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
-> ---
->  drivers/net/dsa/mt7530.c | 1 +
->  drivers/net/dsa/mt7530.h | 1 +
->  2 files changed, 2 insertions(+)
->
-> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-> index 93136f7e6..9e4df35f9 100644
-> --- a/drivers/net/dsa/mt7530.c
-> +++ b/drivers/net/dsa/mt7530.c
-> @@ -366,6 +366,7 @@ mt7530_fdb_write(struct mt7530_priv *priv, u16 vid,
->  	int i;
->
->  	reg[1] |= vid & CVID_MASK;
-> +	reg[1] |= ATA2_IVL;
->  	reg[2] |= (aging & AGE_TIMER_MASK) << AGE_TIMER;
->  	reg[2] |= (port_mask & PORT_MAP_MASK) << PORT_MAP;
->  	/* STATIC_ENT indicate that entry is static wouldn't
-> diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-> index 334d610a5..b19b389ff 100644
-> --- a/drivers/net/dsa/mt7530.h
-> +++ b/drivers/net/dsa/mt7530.h
-> @@ -79,6 +79,7 @@ enum mt753x_bpdu_port_fw {
->  #define  STATIC_EMP			0
->  #define  STATIC_ENT			3
->  #define MT7530_ATA2			0x78
-> +#define  ATA2_IVL			BIT(15)
->
->  /* Register for address table write data */
->  #define MT7530_ATWD			0x7c
-> --
-> 2.25.1
->
+> Let's say we have 4 GP counters in HW.
+> Do you mean that the host owns 2 GP counters (counter 0 & 1) and the
+> guest own the other 2 GP counters (counter 2 & 3) in your envirinment?
+> We did a similar implementation in V1, but the proposal has been denied.
+> https://lore.kernel.org/kvm/20200306135317.GD12561@hirez.programming.kicks-ass.net/
 
-Can VLAN-unaware FDB entries still be manipulated successfully after
-this patch, since it changes 'fid 0' to be interpreted as 'vid 0'?
+It's the other way around. AFAIK, there is no architectural way to
+specify that only counters 2 and 3 are available, so we have to give
+the guest counters 0 and 1.
 
-What is your problem with roaming exactly? Have you tried to disable
-hardware address learning on the CPU port and set
-ds->assisted_learning_on_cpu_port = true for mt7530?
+> For the current proposal, both guest and host can see all 4 GP counters.
+> The counters are shared.
 
-Please note that since kernel v5.14, raw 'self' entries can no longer be
-managed directly using 'bridge fdb', you need to use 'master static' and
-go through the bridge:
-https://www.kernel.org/doc/html/latest/networking/dsa/configuration.html#forwarding-database-fdb-management
-You will need to update your 'bridgefdbd' program, if it proves to be at
-all necessary to achieve what you want.
+I don't understand how that can work. If the host programs two
+counters, how can you give the guest four counters?
+
+> The guest cannot know the availability of the counters. It may requires
+> a counter (e.g., counter 0) which may has been used by the host. Host
+> may provides another counter (e.g., counter 1) to the guest. This is the
+> case described in the slow path. For this case, we have to modify the
+> guest PEBS record. Because the counter index in the PEBS record is 1,
+> while the guest perf driver expects 0.
+
+If we reserve counters 0 and 1 for the guest, this is not a problem
+(assuming we tell the guest it only has two counters). If we don't
+statically partition the counters, I don't see how you can ensure that
+the guest behaves as architected. For example, what do you do when the
+guest programs four counters and the host programs two?
+
+> If counter 0 is available, guests can use counter 0. That's the fast
+> path. I think the fast path should be more common even both host and
+> guest are profiling. Because except for some specific events, we may
+> move the host event to the counters which are not required by guest if
+> we have enough resources.
+
+And if you don't have enough resources?
