@@ -2,78 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52DC3CB57F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69A43CB581
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbhGPJ5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:57:02 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:12000 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230360AbhGPJ5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:57:00 -0400
-X-UUID: 55162037efd240dcbc606e145f7512df-20210716
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=phqCD4LJR0pNpBe3FK03xbs4bsxYpn9hSfS9hoyXs+k=;
-        b=YTvmwYpHJUgH8Gjq3kCIA2uZD3b3ML+6Wwyu2kyXUAXulPxEZWEMPOXTKN2XIMBgFfQxMGfwgiLdE3Lu1hWEB7T5fxkZHjOIgBIi7Is4eVPMA1Y/6kgNr/zWftzXvfUqV4aNhPgV7AAjf4H+qLDRHhCjPj8K13mIfBFKpYLkxYk=;
-X-UUID: 55162037efd240dcbc606e145f7512df-20210716
-Received: from mtkmrs31.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <kewei.xu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1896142837; Fri, 16 Jul 2021 17:54:00 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N1.mediatek.inc
- (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul
- 2021 17:53:57 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 16 Jul 2021 17:53:57 +0800
-Message-ID: <1626429237.29703.16.camel@mhfsdcap03>
-Subject: Re: [PATCH 8/8] i2c: mediatek: modify bus speed calculation formula
-From:   Kewei Xu <kewei.xu@mediatek.com>
-To:     Tzung-Bi Shih <tzungbi@google.com>
-CC:     <wsa@the-dreams.de>, <matthias.bgg@gmail.com>,
-        <robh+dt@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>,
-        <ot_daolong.zhu@mediatek.com>
-Date:   Fri, 16 Jul 2021 17:53:57 +0800
-In-Reply-To: <CA+Px+wWNcSkxvsEoUrgBN73+jhq8qjFJodYjQnY1zW2d0a5yRA@mail.gmail.com>
-References: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com>
-         <1626316157-24935-9-git-send-email-kewei.xu@mediatek.com>
-         <CA+Px+wWNcSkxvsEoUrgBN73+jhq8qjFJodYjQnY1zW2d0a5yRA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S235751AbhGPJ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:59:32 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16010 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234095AbhGPJ7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 05:59:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="210519879"
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="210519879"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 02:56:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="573620581"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 16 Jul 2021 02:56:32 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 16 Jul 2021 12:56:31 +0300
+Date:   Fri, 16 Jul 2021 12:56:31 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     saravanak@google.com, grandmaster@al2klimov.de,
+        gregkh@linuxfoundation.org, rjw@rjwysocki.net, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2] usb: typec: tipd: Don't block probing of consumer of
+ "connector" nodes
+Message-ID: <YPFXz2yqDsGA1xK5@kuha.fi.intel.com>
+References: <20210714061807.5737-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 6F46C422B3AC89BA8EF99B33069B7310E2E578E2D00ADFD2BE96F0D5623221F82000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714061807.5737-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA3LTE1IGF0IDE1OjA5ICswODAwLCBUenVuZy1CaSBTaGloIHdyb3RlOg0K
-PiBPbiBUaHUsIEp1bCAxNSwgMjAyMSBhdCAxMDozMiBBTSBLZXdlaSBYdSA8a2V3ZWkueHVAbWVk
-aWF0ZWsuY29tPiB3cm90ZToNCj4gPiBXaGVuIGNsb2NrLWRpdiBpcyAwIG9yIGdyZWF0ZXIgdGhh
-biAxLCB0aGUgYnVzIHNwZWVkDQo+ID4gY2FsY3VsYXRlZCBieSB0aGUgb2xkIHNwZWVkIGNhbGN1
-bGF0aW9uIGZvcm11bGEgd2lsbCBiZQ0KPiA+IGxhcmdlciB0aGFuIHRoZSB0YXJnZXQgc3BlZWQu
-IFNvIHdlIHVwZGF0ZSB0aGUgZm9ybXVsYS4NCj4gVGhlIHBhdGNoIHNvdW5kcyBsaWtlIGEgZml4
-IHVwLiAgTmVlZCBhICJGaXhlcyIgdGFnLg0KPiANCj4gPiAgICAgICAgIGZvciAoY2xrX2RpdiA9
-IDE7IGNsa19kaXYgPD0gbWF4X2Nsa19kaXY7IGNsa19kaXYrKykgew0KPiA+ICAgICAgICAgICAg
-ICAgICBjbGtfc3JjID0gcGFyZW50X2NsayAvIGNsa19kaXY7DQo+ID4gKyAgICAgICAgICAgICAg
-IGkyYy0+YWNfdGltaW5nLmludGVyX2Nsa19kaXYgPSBjbGtfZGl2IC0gMTsNCj4gVXNpbmcgdGhl
-IHdheSB0byBwYXNzIHRoZSBwYXJhbWV0ZXIgImludGVyX2Nsa19kaXYiIHRvDQo+IG10a19pMmNf
-Y2FsY3VsYXRlX3NwZWVkKCkgbG9va3MgbGlrZSBhIGhhY2suICBpbnRlcl9jbGtfZGl2IGlzIHNl
-dA0KPiBhZ2FpblsxXSBuZXh0IHRvIHRoZSBmb3IgbG9vcC4NCj4gDQo+IFsxXTogaHR0cHM6Ly9l
-bGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjUuMTQtcmMxL3NvdXJjZS9kcml2ZXJzL2kyYy9idXNz
-ZXMvaTJjLW10NjV4eC5jI0w4MzENCj4gDQo+IA0KPiANCj4gSSBoYXZlIG5vIGRvbWFpbiBrbm93
-bGVkZ2Ugb2Ygd2hhdC9ob3cgdGhlIHBhdGNoIGZpeGVzLiAgQnV0IGlmIHRoaXMNCj4gaXMgYSBz
-dGFuZGFsb25lIGZpeHVwIHBhdGNoLCBzdWdnZXN0IHNlcGFyYXRpbmcgdG8gYW4gaW5kZXBlbmRl
-bnQNCj4gcGF0Y2guDQoNCkhpIFR6dW5nLUJpLA0KDQoxLiBUaGlzIFBhdGNoIGlzIG5vdCBmb3Ig
-Zml4aW5nIHByZXZpb3VzIGNvbW1pdCxpdCBpcyBqdXN0IGZvciB0aGUgYmFkDQpzcGVlZCBmb3Jt
-dWxhLg0KDQoyLiBJIHdpbGwgZml4IHRoaXMgcHJvYmxlbSBhY2NvcmRpbmcgdG8geW91ciBzdWdn
-ZXN0aW9uIGluIHRoZSBuZXh0DQpwYXRjaC4NCg0KVGhhbmtzDQpLZXdlaQ0K
+Wed, Jul 14, 2021 at 08:18:07AM +0200, Martin Kepplinger kirjoitti:
+> Similar as with tcpm this patch lets fw_devlink know not to wait on the
+> fwnode to be populated as a struct device.
+> 
+> Without this patch, USB functionality can be broken on some previously
+> supported boards.
+> 
+> Fixes: 28ec344bb891 ("usb: typec: tcpm: Don't block probing of consumers of "connector" nodes")
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+> 
+> revision history
+> ----------------
+> v2: (thank you Saravana)
+> * add a code-comment why the call is needed.
+> 
+> v1:
+> https://lore.kernel.org/linux-usb/20210713073946.102501-1-martin.kepplinger@puri.sm/
+> 
+> 
+> 
+>  drivers/usb/typec/tipd/core.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index 938219bc1b4b..21b3ae25c76d 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -629,6 +629,15 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	if (!fwnode)
+>  		return -ENODEV;
+>  
+> +	/*
+> +	 * This fwnode has a "compatible" property, but is never populated as a
+> +	 * struct device. Instead we simply parse it to read the properties.
+> +	 * This breaks fw_devlink=on. To maintain backward compatibility
+> +	 * with existing DT files, we work around this by deleting any
+> +	 * fwnode_links to/from this fwnode.
+> +	 */
+> +	fw_devlink_purge_absent_suppliers(fwnode);
+> +
+>  	tps->role_sw = fwnode_usb_role_switch_get(fwnode);
+>  	if (IS_ERR(tps->role_sw)) {
+>  		ret = PTR_ERR(tps->role_sw);
+> -- 
+> 2.30.2
+
+-- 
+heikki
