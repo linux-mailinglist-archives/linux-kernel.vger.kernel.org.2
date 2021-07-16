@@ -2,169 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859EB3CBE50
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0433CBE54
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbhGPVVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 17:21:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234405AbhGPVVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 17:21:03 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E69D613CC;
-        Fri, 16 Jul 2021 21:18:07 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 17:18:05 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] tracing: histogram fix and take 2 on the
- __string_len() marcros
-Message-ID: <20210716171805.55aed9de@oasis.local.home>
-In-Reply-To: <CAHk-=wjWosrcv2=6m-=YgXRKev=5cnCg-1EhqDpbRXT5z6eQmg@mail.gmail.com>
-References: <20210715215753.4a314e97@rorschach.local.home>
-        <CAHk-=wiWdG6jqKhdU62b06-DtESVxHVK8MA23iV+6fB5hnGEAw@mail.gmail.com>
-        <20210716143705.56001390@oasis.local.home>
-        <CAHk-=wjWosrcv2=6m-=YgXRKev=5cnCg-1EhqDpbRXT5z6eQmg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235561AbhGPVVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 17:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233454AbhGPVVl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 17:21:41 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFFEC06175F;
+        Fri, 16 Jul 2021 14:18:46 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id u14so11169461pga.11;
+        Fri, 16 Jul 2021 14:18:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ATw9tZdhYF/626TCmJT2xXOkMuRTkYsc1yKjcQyVFP0=;
+        b=IypbT7+Y0NaY7r9Dz97O68Ntezw/INbqU4XXy8HH/13CPcy3JWupvvny1EdiU3s5qO
+         FZghZX/FF33NOXDSqw9xOVT5LrWy+YP1ewjsl0FSO8Y8quMKMO0KHnMcZ190oPP7vEoH
+         E10fYtWDnV1+jt6RpDepRL9GRku98ELwqAYWrpOzugyFLn5qd7PiE4DAIWROZWa9G8cJ
+         0kgj18ee0JcqJv/OlEu3eD6cPTuWgodRad+mgW7a7LYA0mluYalnPz2fK0b9hC8b/9EA
+         S1VcjFT+P1+Zhq947Ax0zHHnXemfiCIu/j7G7ZZU4FBXoS3tq49QCnDs537UxFpynhYk
+         di+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ATw9tZdhYF/626TCmJT2xXOkMuRTkYsc1yKjcQyVFP0=;
+        b=JTRhYh+JKp1E/OM96JAgg70Mlj63qRT7Ik/XRabARjGQV1nI/F5/nmMNcP93W99oOX
+         AUV07Rh7LbcKwhXPJYNG38r6oDWLW5sPbzr1T/I0Pql3Xk9aMfUgor2H8K5ukgJJhhK/
+         HhagzCofZr4Gqy1hDHhHKuTLY/232zUewmnbQvMb3Fd9uFVi4qt+NaGRM8bhglMDl3Bl
+         zxZbjpyrq6YMTpXLoiz+IDb5rYh3QmxyNxu3coi+N3zXzUgLo1N9OLpbgiHqcO8MocWc
+         77deH48i+aMBDSr7b2eN+oy72dJ7IgWWAYZt9Zi7GUb78SNpHQOEv2H/hZBndsa4ZMNM
+         NL+w==
+X-Gm-Message-State: AOAM533dyWPN/x6Uar2/I4iE5KNr83DNBb5wm8iM6IQBkvWd5LF/ZDIN
+        1XmE5SxuuLS8dL+jIslZGo0=
+X-Google-Smtp-Source: ABdhPJxBJnGBmALISX7yiIhHV0cYBl6F4OU7VPtCLDSod3PkmvDILpAJcLCFb/6x/qGi8vkrdj148Q==
+X-Received: by 2002:a63:170a:: with SMTP id x10mr11539130pgl.305.1626470325782;
+        Fri, 16 Jul 2021 14:18:45 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:37b9])
+        by smtp.gmail.com with ESMTPSA id j21sm8994763pjz.26.2021.07.16.14.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 14:18:45 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 16 Jul 2021 11:18:40 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
+ partition root
+Message-ID: <YPH3sF56gK71CxXY@mtj.duckdns.org>
+References: <20210621184924.27493-1-longman@redhat.com>
+ <20210621184924.27493-3-longman@redhat.com>
+ <YNcHOe3o//pIiByh@mtj.duckdns.org>
+ <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
+ <YONGk3iw/zrNzwLK@mtj.duckdns.org>
+ <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
+ <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
+ <8c44b659-3fe4-b14f-fac1-cbd5b23010c3@redhat.com>
+ <YPHwG61qGDa3h6Wg@mtj.duckdns.org>
+ <e8c538a8-bf5c-b04c-1b21-ac22cd158dd1@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e8c538a8-bf5c-b04c-1b21-ac22cd158dd1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 11:45:57 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Hello,
 
-> On Fri, Jul 16, 2021 at 11:37 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> >
-> > So how do you want this implemented?
-> >
-> > #define __assign_str_len(dst, src, len)                                 \
-> >         do {                                                            \
-> >                 strscpy(__get_str(dst), (src) ? (const char *)(src) : "(null)", len); \
-> >                 __get_str(dst)[len] = '\0';
-> 
-> What? That "__get_str(dst)[len] = '\0';" is pointless and wrong.
+On Fri, Jul 16, 2021 at 05:12:17PM -0400, Waiman Long wrote:
+> Are you suggesting that we add a cpuset.cpus.events file that allows
+> processes to be notified if an event (e.g. hotplug) that changes a partition
+> root to invalid partition happens or when explicit change to a partition
+> root fails? Will that be enough to satisfy your requirement?
 
-I wrote up explanations to all this, and when I finally went to show an
-example of where this would be used, I found a major bug, that
-questions whether this is needed or not.
+Yeah, something like that or make the current state file generate events on
+state transitions.
 
-Chuck, WTH!
+Thanks.
 
-This feature was going to be used by Chuck, because he said he had strings
-that had to be saved that did not have terminating nul bytes.
-
-For example, he has:
-
-fs/nfsd/trace.h:
-
-> DECLARE_EVENT_CLASS(nfsd_clid_class,
-> 	TP_PROTO(const struct nfsd_net *nn,
-> 		 unsigned int namelen,
-> 		 const unsigned char *namedata),
-> 	TP_ARGS(nn, namelen, namedata),
-
-Above, namedata supposedly has no terminating '\0' byte,
-and namelen is the number of characters in namedata.
-
-> 	TP_STRUCT__entry(
-> 		__field(unsigned long long, boot_time)
-> 		__field(unsigned int, namelen)
-> 		__dynamic_array(unsigned char,  name, namelen)
-
-__dynamic_array() allocates __entry->name on the ring buffer of namelen
-bytes.
-
-Where my patch would add instead:
-
-		__string(name, namelen)
-
-Which would allocate __entry->name on the ring buffer with "namelen" + 1
-bytes.
-
-
-> 	),
-> 	TP_fast_assign(
-> 		__entry->boot_time = nn->boot_time;
-> 		__entry->namelen = namelen;
-> 		memcpy(__get_dynamic_array(name), namedata, namelen);
-
-The above is basically the open coded version of my __assign_str_len(),
-where we could use.
-
-		__assign_str_len(name, namedata, namelen);
-
-instead.
-
-> 	),
-> 	TP_printk("boot_time=%16llx nfs4_clientid=%.*s",
-> 		__entry->boot_time, __entry->namelen, __get_str(name))
-> )
-
-
-With my helpers, Chuck would no longer need this "%.*s", and pass in
-__entry->namelen, because, the __assign_str_len() would have added the
-'\0' terminating byte,  and "%s" would be sufficient.
-
-But this isn't the example I original used. The example I was going to
-use questions Chuck's use case, and was this:
-
-> TRACE_EVENT(nfsd_dirent,
-> 	TP_PROTO(struct svc_fh *fhp,
-> 		 u64 ino,
-> 		 const char *name,
-> 		 int namlen),
-> 	TP_ARGS(fhp, ino, name, namlen),
-> 	TP_STRUCT__entry(
-> 		__field(u32, fh_hash)
-> 		__field(u64, ino)
-> 		__field(int, len)
-> 		__dynamic_array(unsigned char, name, namlen)
-> 	),
-> 	TP_fast_assign(
-> 		__entry->fh_hash = fhp ? knfsd_fh_hash(&fhp->fh_handle) : 0;
-> 		__entry->ino = ino;
-> 		__entry->len = namlen;
-> 		memcpy(__get_str(name), name, namlen);
-
-Everything up to here is the same as above, but then there's ...
-
-> 		__assign_str(name, name);
-
-WTH! Chuck, do you know the above expands to:
-
-	strcpy(__get_str(name), (name) ? (const char *)(name) : "(null)");
-
-If "name" does not have a terminating '\0' byte, this would crash hard.
-
-Even if it did have that byte, the __dynamic_array() above only
-allocated "namelen" bytes, and that did not include the terminating
-byte, which means you are guaranteed to overflow.
-
-It may not have crashed for you if name is nul terminated, because the
-ring buffer rounds up to 4 byte alignment,  and you may have had some
-extra bytes to use at the end of the event allocation.
-
-But this makes me question if name is really not terminated, and is
-this patch actually necessary.
-
-> 	),
-> 	TP_printk("fh_hash=0x%08x ino=%llu name=%.*s",
-> 		__entry->fh_hash, __entry->ino,
-> 		__entry->len, __get_str(name))
-> )
-
-I'm dropping this patch for now, and will send another pull request
-with just the histogram bug fix.
-
-Thanks,
-
--- Steve
+-- 
+tejun
