@@ -2,151 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8803CB97D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778FB3CB97F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240496AbhGPPRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236793AbhGPPRb (ORCPT
+        id S240624AbhGPPRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:17:50 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:10473 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236793AbhGPPRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:17:31 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98050C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 08:14:36 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 22so16482790lfy.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 08:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E5lvtqvNHgwnprByXaUchwc7++4x2TnzEwQL9H4ZASQ=;
-        b=hObCBLU8vhQ3DhnNnjvSg7B3axm6THGsz2MeMxUiAGIg67loWCPw5KdkdNiJoeFYcr
-         +KjxiGoOq8ss/mdCvb2FtkcRcYrj2/5V/c83RcHvpX7Z/qSEMdwiTHjd8XN2IJxlK4hi
-         360mtiZaSfUXs+NL4QtafyL1LHLHJLkaLiyRSc4+QhMvRPc00Cj/0VIsgcFkIs9XRQz4
-         Vou1+tl8dfKZPa3XHoi2G546FRTN5/HZ2eEV1stlWHsMD2lZ0UyWHrW4DuiPCxpTtLao
-         xWUfE7VZcfhw1OBuLhqP7XTWVpx7aMFbOK+y0IQB4cgZv0/kQKuhbuOWHUjXZ7b1oMiQ
-         tZrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E5lvtqvNHgwnprByXaUchwc7++4x2TnzEwQL9H4ZASQ=;
-        b=F+p4SosXRm9z/2qbmz0PIAkXZLXD1S6/tlzaKekuMAjlhXR95qfQ51if5E7fvXaxNh
-         O2buDXm8hizOBGXLg8nFgipqHjzAUrY2FAlwSuHcvnq9QrCD3Jz6BF9ovhRboE45jD/B
-         rmanQ0C6FzJMX6n+pj69YeeDSK0xeFEaZ0Nws+3LtNQ7t5CYaXU31sa131c8PmJO4MAe
-         cr04qtN+kTtHvKxC9yOsIs3tZ9E9HMFeTayfdLH0oKWPhG9n+hfADh+R/Ck+Trg4T1CE
-         LgR1WhultNk1OSVsvbzhfxhs+7ltl0+ZKV1txW6w03juDR8SCnF5SmjHSufubfK/urm0
-         mthg==
-X-Gm-Message-State: AOAM533l+N0/XLzqSnz0GMkjjDIpyAZuM5XwCKg81VVblhhXbjcbnICT
-        EMTyLuLXaLuXTxiE5ho+32Ryb3sovRnt5x10gOOybA==
-X-Google-Smtp-Source: ABdhPJyFcWPJKSYK9E51fJOsh1nWZad+he4FUY35nVwim6R2qrnt9JpgRiZJLC0QyXSYAf+f4gdjKImMNi+q0HZ7Cik=
-X-Received: by 2002:a19:ae0f:: with SMTP id f15mr8179914lfc.117.1626448474507;
- Fri, 16 Jul 2021 08:14:34 -0700 (PDT)
+        Fri, 16 Jul 2021 11:17:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1626448492; x=1657984492;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=H6boYkWlhsAu7WXG/TxMXn1WD1kzgkb9Xlb2J+3zAzU=;
+  b=z1ay9NV19yLCySoMdcCLmqfTLc1zIIcFO2TNMk7g3xxU+O9fX3GbEFpY
+   CXbmRtFyoWmnhtdlH4188oAfpW8iIZz717QhRglAhbrQq1VGg1jVniX7T
+   9AD/b4IBT5j0UY9CRs4Yb3QEdDfCCIOsWNYsCvGLlwAcIR5AMwkbSoS1W
+   AWb+dyiFn9ETre9pJBC1YmXAdSdHDgCK4OJ8Y6GAd+rDfMNISufzydj2K
+   +AgBx+6sY/tyd/KbsZA52bNPDw7cs5Tc9LQ3Rvh7jc1z7EcgS9LZ8UhYp
+   8y1opLTb2cNJOtJEmAzVKU9in9qwdhABhYwfMHgGX63VUhV2n/O6j4p+J
+   A==;
+IronPort-SDR: KoG+8DEWeY54Mve1Jcm9DfuNV71usBzReH8ZF10KcQWsUQ6yU8U94XNV0Yjqzy0hW78x02mJhX
+ ql/RX/HYN1LKaE4W/RSQNPh2o+TUvuGs2iCGLGenbXjhp3rZW2kIZflUqo8Z+hgD8AgcWwHgKl
+ rgF5ljd3FjpAPoRV8Nk+i6iFYDzyBf5scuJSbkweYOXIgtQB8185VcIdfeEuVjAs2OApVmGcti
+ vnUpWFV8CpTgAJCNOgMwyqghcw1GH5WStMpxFt/AsAgDTMUbBucCnP8iT8aig7Qz+82m+S6m5z
+ lQetqvmuyccDOnl2I/8xXtY4
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="122322340"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Jul 2021 08:14:51 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 08:14:51 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 16 Jul 2021 08:14:48 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <claudiu.beznea@microchip.com>, <eugen.hristev@microchip.com>,
+        <codrin.ciubotariu@microchip.com>, <emil.velikov@collabora.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: [PATCH 1/2] ARM: configs: at91: sama5: Use make savedefconfig and clean leftovers
+Date:   Fri, 16 Jul 2021 18:14:46 +0300
+Message-ID: <20210716151447.833967-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210714013948.270662-1-shakeelb@google.com> <CGME20210716150353eucas1p2c9ad1d1021ee584de587e5ec10b8467b@eucas1p2.samsung.com>
- <20210714013948.270662-2-shakeelb@google.com> <78005c4c-9233-7bc8-d50e-e3fe11f30b5d@samsung.com>
-In-Reply-To: <78005c4c-9233-7bc8-d50e-e3fe11f30b5d@samsung.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 16 Jul 2021 08:14:23 -0700
-Message-ID: <CALvZod5SONQ6=ewesLhMSampu=sxbA3iDS3f+rsHkEUY5G2Cyg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] memcg: infrastructure to flush memcg stats
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek
+Even since the addition CONFIG_VIDEO_HANTRO was set to n because
+it did not respect the dependency chain. It doesn't respect it now
+either, remove it.
 
-On Fri, Jul 16, 2021 at 8:03 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> Hi,
->
-> On 14.07.2021 03:39, Shakeel Butt wrote:
-> > At the moment memcg stats are read in four contexts:
-> >
-> > 1. memcg stat user interfaces
-> > 2. dirty throttling
-> > 3. page fault
-> > 4. memory reclaim
-> >
-> > Currently the kernel flushes the stats for first two cases. Flushing the
-> > stats for remaining two casese may have performance impact. Always
-> > flushing the memcg stats on the page fault code path may negatively
-> > impacts the performance of the applications. In addition flushing in the
-> > memory reclaim code path, though treated as slowpath, can become the
-> > source of contention for the global lock taken for stat flushing because
-> > when system or memcg is under memory pressure, many tasks may enter the
-> > reclaim path.
-> >
-> > This patch uses following mechanisms to solve these challenges:
-> >
-> > 1. Periodically flush the stats from root memcg every 2 seconds. This
-> > will time limit the out of sync stats.
-> >
-> > 2. Asynchronously flush the stats after fixed number of stat updates.
-> > In the worst case the stat can be out of sync by O(nr_cpus * BATCH) for
-> > 2 seconds.
-> >
-> > 3. For avoiding thundering herd to flush the stats particularly from the
-> > memory reclaim context, introduce memcg local spinlock and let only one
-> > flusher active at a time. This could have been done through
-> > cgroup_rstat_lock lock but that lock is used by other subsystem and for
-> > userspace reading memcg stats. So, it is better to keep flushers
-> > introduced by this patch decoupled from cgroup_rstat_lock.
-> >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
->
-> This patch landed in today's linux-next (next-20210716) as commit
-> 42265e014ac7 ("memcg: infrastructure to flush memcg stats"). On my test
-> system's I found that it triggers a kernel BUG on all ARM64 boards:
->
->   BUG: sleeping function called from invalid context at
-> kernel/cgroup/rstat.c:200
->   in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 7, name:
-> kworker/u8:0
->   3 locks held by kworker/u8:0/7:
->    #0: ffff00004000c938 ((wq_completion)events_unbound){+.+.}-{0:0}, at:
-> process_one_work+0x200/0x718
->    #1: ffff80001334bdd0 ((stats_flush_dwork).work){+.+.}-{0:0}, at:
-> process_one_work+0x200/0x718
->    #2: ffff8000124f6d40 (stats_flush_lock){+.+.}-{2:2}, at:
-> mem_cgroup_flush_stats+0x20/0x48
->   CPU: 2 PID: 7 Comm: kworker/u8:0 Tainted: G        W 5.14.0-rc1+ #3713
->   Hardware name: Raspberry Pi 4 Model B (DT)
->   Workqueue: events_unbound flush_memcg_stats_dwork
->   Call trace:
->    dump_backtrace+0x0/0x1d0
->    show_stack+0x14/0x20
->    dump_stack_lvl+0x88/0xb0
->    dump_stack+0x14/0x2c
->    ___might_sleep+0x1dc/0x200
->    __might_sleep+0x4c/0x88
->    cgroup_rstat_flush+0x2c/0x58
->    mem_cgroup_flush_stats+0x34/0x48
->    flush_memcg_stats_dwork+0xc/0x38
->    process_one_work+0x2a8/0x718
->    worker_thread+0x48/0x460
->    kthread+0x12c/0x160
->    ret_from_fork+0x10/0x18
->
-> This can be also reproduced with QEmu. Please let me know if I can help
-> fixing this issue.
->
+Fixes: a0e6830c95b7 ("ARM: configs: at91: sama5: enable the Hantro G1 engine")
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ arch/arm/configs/sama5_defconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks for the report. The issue can be fixed by changing
-cgroup_rstat_flush() to cgroup_rstat_flush_irqsafe() in
-mem_cgroup_flush_stats(). I will send out the updated patch in a
-couple of hours after a bit more testing.
+diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
+index 17db3b3e2dd3..1ccf84091dd7 100644
+--- a/arch/arm/configs/sama5_defconfig
++++ b/arch/arm/configs/sama5_defconfig
+@@ -207,7 +207,6 @@ CONFIG_AT_HDMAC=y
+ CONFIG_AT_XDMAC=y
+ CONFIG_STAGING=y
+ CONFIG_STAGING_MEDIA=y
+-CONFIG_VIDEO_HANTRO=m
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_IIO=y
+ CONFIG_AT91_ADC=y
+-- 
+2.25.1
+
