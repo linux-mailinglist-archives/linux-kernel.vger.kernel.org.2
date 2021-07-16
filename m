@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DE13CB539
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B3B3CB53F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbhGPJ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:26:21 -0400
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:43838 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232644AbhGPJ0U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:26:20 -0400
-Received: by mail-vs1-f46.google.com with SMTP id a66so4598303vsd.10
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 02:23:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1OqoN0B06XByOpA3tvQ9e3EVDa9GANnN7IQYUpgh/g8=;
-        b=HdEjWzERd5IYnLD+eRqCCuPJoOlt7zBaVXpbta6Inr9zIWoZI8NneG4jMhIa7rf5fT
-         MOI95rcDD+wqCRbmGurD2Koy3BA/nHjD5rjcmWT+AhFyYjWRJDGR+ErQo30ilnUuENYm
-         9Gahrb/7RIKGatTQZyxCcXoWMQmMmWm9QCwRAttcNGmkZYc0MoEKfnC12XqeN8ihwIFD
-         fRq+hPwAeIcZV/oBXxS7DbilYXs4r82crP0XRMw/6tRxfowyL04jZ8qeRtM+1Sz858C6
-         U7dvuKDMnYNAwUTxjJLlnTxESYUqBD0AHW+e78UfFTG8dxmUfPU5nQ24w/HwuDuoyfAf
-         nq0w==
-X-Gm-Message-State: AOAM5323KXjN8Ie+HYuQXKq8fLIQypdI2OUHMzgDoBsF9mGUw8sJfiML
-        OGgLfrz8F7s1yFiGq2t3JRzl1avPqenWr1Y0A54=
-X-Google-Smtp-Source: ABdhPJyZz8xamPCaCgF5o9kpuaoOkG86/tNUETDuZikOJ1wKaZ5/cu6TX3V11ted7nXi6hg4j9uW3JfatNByxpjFu0M=
-X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr11247074vsf.40.1626427405168;
- Fri, 16 Jul 2021 02:23:25 -0700 (PDT)
+        id S233614AbhGPJ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:26:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232486AbhGPJ0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 05:26:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2022613D4;
+        Fri, 16 Jul 2021 09:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626427437;
+        bh=SSF2J5AJFadv8lcFZJGE8EsRfI4LjO0tmzEj5iYkobI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NGMn551XD5tSKGn21pbkfq41wRs5x9vdcTeIj802PSKFGPQUA+V++I9JFpHZ0js36
+         qxoiOZ7z0B9dlW6yYMu7yE5QoygNKMJimPHc5woHTP3V8BiVevxX+uLo9KkpjSW5+0
+         xfW/sj3qlY0cQQxYoeNNQ8pW+3DrzxFBN4rJyY+6R32f01OlQ9ef1uJD7aaDd+tmLu
+         rRjji/y8V+FNPkmE+98jtykil3eiJNJvmADoHkCkS35GF1xiLgGrxVGb2spwFbk43G
+         vUKt7OwnUYr279kRvh7IxrNq3ZyRL9HlmZESnY2ZrzdgY5xVcKK/QnkY3TGZlbrjLW
+         nyO6gY2CXni/Q==
+Date:   Fri, 16 Jul 2021 14:53:50 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mailbox: qcom-ipcc: Enable loading QCOM_IPCC as a module
+Message-ID: <20210716092350.GG3323@workstation>
+References: <20210716074946.4093-1-amit.pundir@linaro.org>
 MIME-Version: 1.0
-References: <20210702014319.1265766-1-bmeng.cn@gmail.com> <20210702014319.1265766-2-bmeng.cn@gmail.com>
-In-Reply-To: <20210702014319.1265766-2-bmeng.cn@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 16 Jul 2021 11:23:14 +0200
-Message-ID: <CAMuHMdWpJ194jEnXiUhs5dfC-33rGUm7pE9aMHUTYoMCUdFxZA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] riscv: dts: microchip: Add ethernet0 to the aliases node
-To:     Bin Meng <bmeng.cn@gmail.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Lewis Hanly <lewis.hanly@microchip.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Bin Meng <bin.meng@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716074946.4093-1-amit.pundir@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bing,
+On Fri, Jul 16, 2021 at 01:19:46PM +0530, Amit Pundir wrote:
+> This patch enables the qcom_ipcc driver to be loaded as a
+> module. IPCC is fairly core to system, so as such it should
+> never be unloaded. It registers as a mailbox + irq controller
+> and the irq controller drivers in kernel are not supposed to
+> be unloaded as they don't have the visibility over the clients
+> consuming the irqs. Hence adding supress_bind_attrs to disable
+> bind/unbind via sysfs.
+> 
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 
-On Fri, Jul 2, 2021 at 3:44 AM Bin Meng <bmeng.cn@gmail.com> wrote:
-> From: Bin Meng <bin.meng@windriver.com>
->
-> U-Boot expects this alias to be in place in order to fix up the mac
-> address of the ethernet node.
->
-> Note on the Icicle Kit board, currently only emac1 is enabled so it
-> becomes the 'ethernet0'.
->
-> Signed-off-by: Bin Meng <bin.meng@windriver.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Thanks for your patch!
+Thanks,
+Mani
 
-> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> @@ -9,6 +9,10 @@ / {
->         model = "Microchip MPFS Icicle Kit";
->         compatible = "microchip,mpfs-icicle-kit";
->
-> +       aliases {
-> +               ethernet0 = &emac1;
-> +       };
-> +
->         chosen {
->         };
-
-This should be added to the board DTS (microchip-mpfs-icicle-kit.dts)
-instead.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>  drivers/mailbox/Kconfig     | 2 +-
+>  drivers/mailbox/qcom-ipcc.c | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+> index b4b780ea2ac8..c9fc06c7e685 100644
+> --- a/drivers/mailbox/Kconfig
+> +++ b/drivers/mailbox/Kconfig
+> @@ -264,7 +264,7 @@ config SPRD_MBOX
+>  	  you want to build the Spreatrum mailbox controller driver.
+>  
+>  config QCOM_IPCC
+> -	bool "Qualcomm Technologies, Inc. IPCC driver"
+> +	tristate "Qualcomm Technologies, Inc. IPCC driver"
+>  	depends on ARCH_QCOM || COMPILE_TEST
+>  	help
+>  	  Qualcomm Technologies, Inc. Inter-Processor Communication Controller
+> diff --git a/drivers/mailbox/qcom-ipcc.c b/drivers/mailbox/qcom-ipcc.c
+> index 584700cd1585..f1d4f4679b17 100644
+> --- a/drivers/mailbox/qcom-ipcc.c
+> +++ b/drivers/mailbox/qcom-ipcc.c
+> @@ -277,6 +277,7 @@ static struct platform_driver qcom_ipcc_driver = {
+>  	.driver = {
+>  		.name = "qcom-ipcc",
+>  		.of_match_table = qcom_ipcc_of_match,
+> +		.suppress_bind_attrs = true,
+>  	},
+>  };
+>  
+> -- 
+> 2.25.1
+> 
