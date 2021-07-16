@@ -2,175 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B8D3CBEFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9383CBF0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237430AbhGPWIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 18:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
+        id S237149AbhGPWO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 18:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhGPWIv (ORCPT
+        with ESMTP id S236646AbhGPWO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 18:08:51 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7507C06175F;
-        Fri, 16 Jul 2021 15:05:54 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id g19so17171070ybe.11;
-        Fri, 16 Jul 2021 15:05:54 -0700 (PDT)
+        Fri, 16 Jul 2021 18:14:26 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA43C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:11:30 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id v32-20020a0568300920b02904b90fde9029so11401510ott.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:11:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5LsAbpTyGpoMSPy6kuRB4pyfS/wxP9D1ajlZsdQwkJ8=;
-        b=qqxNjdpW1LCG1+QjMqzatt42SvMUj+/is8XU7Fmr8H1GvmhPKNgeLeht2ozSeVXx2Y
-         BB1Yd0mFrqNH6kY6dz4cSvmwE4g8a10n1h9b9hlJyPJnIV8ArwVKx0QWApfj3Q8b5KLG
-         v+8a22vJY2TBF0XMitibR0gY6+Ni+tXRCRLafoiXpHKz8C8qQlDSeJA3ZXmI9iCuuIoG
-         QR8xp5cE13WudGGYnzdnjEI9gGS582C0I375ui2Q4N2vFqwb4/S5iPJG+l8KIosPG8Xl
-         8PAgNJW5RgHcDfZxkxu+HGxci3ILC2huZWHJUAEpOMRzCqU5tahv/kTHY09kIUcGylAm
-         6SaA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GsypGQCg9S/GisxcDVlWXCBawzzEOc/grzW2bvmRMAg=;
+        b=gVx/ZHrIC70vmVOCXTr5TS+1Jruf64sqkyxZ3UrGgiV9XuXtxC2XqLJ7mJExhp4mM0
+         KBQbw8boqaMx05zqTEMZhJ9kHBIa+UbhgxjdD9lfnx26rqskUupU666RDLet7noW+R1t
+         aurTICKChGvUPOXRPGC/Rn2T3wlWxwz49jWSAgSiM4hBTew/zOtn0SFMeuoVm9x3Z9xg
+         mRRG+s4KML/diC5yfsyM0KPHWbspq9A3dPbTW6ZcB1dlLiA/guSR/TXIBXZZHhG8A+ja
+         bSQ0fcPF9WhxPjmtXlaJEB5SZz+ZEV1haGrLR8OuDqGqMjgnyUKndrCyt/iQgwoV1qYQ
+         diEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5LsAbpTyGpoMSPy6kuRB4pyfS/wxP9D1ajlZsdQwkJ8=;
-        b=h9VwPXckTESDTkv6pEZ1aVmzPqh82Hy6XeXsHbRrY/GUPbbfZGVlxDkU0Y7ACGHzvs
-         X6W/BjALQK08Mtu7aBUdwlc3PsUImVWk41QYI7EmLJiiYwbbyzedcAgnpCNYQpoPRa59
-         MKdQxsGl38ipvrjsmmjQHfvFn8caT0tzYtAjNg1752UY1TIeYueDUGQxMrz9W3+wUPHR
-         m8AHdhV2fqQ2Y4IdqKHdFYqgxDkSlv9+YiAZvqiCrz0iXb2UJkcKFWIgh6+hldcIbN3x
-         pa7pIYCUv0OylGvECOv6dmyt30EkNpNKLb98HnijGUoQTe+5S4nloz/01Ppmu6tG9pqk
-         KpaQ==
-X-Gm-Message-State: AOAM533uMJ4G6nJODgTZT/XPtcE2zNTgQTuv4eX0hSJ9Agq1FXfBE9+7
-        oB2kl2g/1K5H6ygQA9Hx6ixG25bxTAulhUwIkqo=
-X-Google-Smtp-Source: ABdhPJwhAOJXYVol/4VpHOTxMz4Yo+C1dwcXuHEXp2ODMP+aX7JvlnVRMZxUy65rHCvmQ96LCWAZSVAsDE5KZGq4r8k=
-X-Received: by 2002:a25:b203:: with SMTP id i3mr15658989ybj.260.1626473154041;
- Fri, 16 Jul 2021 15:05:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GsypGQCg9S/GisxcDVlWXCBawzzEOc/grzW2bvmRMAg=;
+        b=YztdwEBWHfpaOqe/rFamXxuxDMqlOUELtpAXpKuxL8XRLTWU3NEqNgsIfCbGFF4xhX
+         6ULO6mLAWQpHzD0ToXinedpVMNr9LRsvzbeb80wxw0ywPEu45pYuNdvqBKtv1vwnMiuQ
+         FEfKyTrqOdjNTbUknOFas3Imvj47f7u1ARZIf2DK/A9XdGSuWh0oODYNcJzW4wgk+SoI
+         Iw5nB0OD72Ihp9BBeLn90yVc1pxZZtj/Ws5AnLycu0ba2tCKjhtbfW7ABQDd0oSZOzr8
+         F0NuqlO9oSrTczGrRoTih0TVBO5WUtIpYSpkpCbZt28NsmQ9nvp12tywEpXriDBy4dxj
+         4w2g==
+X-Gm-Message-State: AOAM53160IW6Zwy+LJFZeZz4dtk0lEog8imsim3TI1S2T5sRoiBnJv63
+        HSdLCDkgjOvPdpG4k66bsiZ9Yg==
+X-Google-Smtp-Source: ABdhPJwBsE83jLbN160zVaPWxMbMbgpOEWRAqn74ZxPAZqv8WZM743HqtDM41JWWiSUBuY6Bb+j3ng==
+X-Received: by 2002:a9d:4f09:: with SMTP id d9mr9585414otl.265.1626473489414;
+        Fri, 16 Jul 2021 15:11:29 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id b10sm2365497oiy.4.2021.07.16.15.11.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 15:11:28 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 17:11:26 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org
+Subject: Re: [PATCH v4 4/4] PCIe: qcom: Add support to control pipe clk src
+Message-ID: <YPIEDhIEPo+Gwibq@yoga>
+References: <1626443927-32028-1-git-send-email-pmaliset@codeaurora.org>
+ <1626443927-32028-5-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n538LKQpeY_NKQF-VM3nHVxEE0B_pN4aN=sQ8iQzK+Yyxw@mail.gmail.com>
+ <YPHsu+QLWRYpYRCz@yoga>
+ <CAE-0n53k9Pn0LMe2xiNN_iTsv-z_rrGSthJVHeLdafDhPuBK=A@mail.gmail.com>
 MIME-Version: 1.0
-References: <1626471813-17736-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1626471813-17736-1-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 16 Jul 2021 15:05:43 -0700
-Message-ID: <CAEf4BzZ_2arevAp_qwetCvdMk-gigvPo7tKsb7d0xF-xnezL_w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: clarify/fix unaligned data issues for
- btf typed dump
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n53k9Pn0LMe2xiNN_iTsv-z_rrGSthJVHeLdafDhPuBK=A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 2:44 PM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> If data is packed, data structures can store it outside of usual
-> boundaries.  For example a 4-byte int can be stored on a unaligned
-> boundary in a case like this:
->
-> struct s {
->         char f1;
->         int f2;
-> } __attribute((packed));
->
-> ...the int is stored at an offset of one byte.  Some platforms have
-> problems dereferencing data that is not aligned with its size, and
-> code exists to handle most cases of this for BTF typed data display.
-> However pointer display was missed, and a simple macro to test if
-> "data_is_unaligned(data, data_sz)" would help clarify this code.
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  tools/lib/bpf/btf_dump.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 929cf93..9dfe9c1 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -1654,6 +1654,8 @@ static int btf_dump_base_type_check_zero(struct btf_dump *d,
->         return 0;
->  }
->
-> +#define data_is_unaligned(data, data_sz)       (((uintptr_t)data) % data_sz)
-> +
+On Fri 16 Jul 16:39 CDT 2021, Stephen Boyd wrote:
 
-there is no need for macro, please use static function. And
-ptr_is_aligned() is probably a better form:
+> Quoting Bjorn Andersson (2021-07-16 13:31:55)
+> > On Fri 16 Jul 14:37 CDT 2021, Stephen Boyd wrote:
+> >
+> > > Quoting Prasad Malisetty (2021-07-16 06:58:47)
+> > > > This is a new requirement for sc7280 SoC.
+> > > > To enable gdsc gcc_pcie_1_pipe_clk_src should be TCXO.
+> > >
+> > > Why? Can you add that detail here? Presumably it's something like the
+> > > GDSC needs a running clk to send a reset through the flops or something
+> > > like that.
+> > >
+> >
+> > Which presumably means that we need to "park" gcc_pcie_N_pipe_clk_src
+> > whenever the PHY pipe is paused due to a suspend or runtime suspend.
+> >
+> > I find this part of the commit message to primarily describing the next
+> > patch (that is yet to be posted).
+> 
+> Ah I see. So there will be another patch to do the park and unpark over
+> suspend/resume?
+> 
 
-if (!ptr_is_aligned(data, sz)) {
-    /* handle uncommon case */
-}
+That's my understanding.
 
-ptr_is_aligned() can be probably reused more readily in some other places later.
+> >
+> > > > after PHY initialization gcc_pcie_1_pipe_clk_src needs
+> > > > to switch from TCXO to gcc_pcie_1_pipe_clk.
+> > > >
+> > > > Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> > > > ---
+> > > >  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
+> > > >  1 file changed, 22 insertions(+)
+> > > >
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > index 8a7a300..9e0e4ab 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > > @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
+> > > >         if (ret < 0)
+> > > >                 return ret;
+> > > >
+> > > > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+> > > > +               res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+> > > > +               if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+> > > > +                       return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+> > > > +
+> > > > +               res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+> > > > +               if (IS_ERR(res->phy_pipe_clk))
+> > > > +                       return PTR_ERR(res->phy_pipe_clk);
+> > > > +
+> > > > +               res->ref_clk_src = devm_clk_get(dev, "ref");
+> > > > +               if (IS_ERR(res->ref_clk_src))
+> > > > +                       return PTR_ERR(res->ref_clk_src);
+> > > > +       }
+> > > > +
+> > > >         res->pipe_clk = devm_clk_get(dev, "pipe");
+> > > >         return PTR_ERR_OR_ZERO(res->pipe_clk);
+> > > >  }
+> > > > @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
+> > > >  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+> > > >  {
+> > > >         struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+> > > > +       struct dw_pcie *pci = pcie->pci;
+> > > > +       struct device *dev = pci->dev;
+> > > > +
+> > > > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
+> > > > +               clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
+> > >
+> > > Is anything wrong if we call clk_set_parent() here when this driver is
+> > > running on previous SoCs where the parent is assigned via DT?
+> >
+> > We don't assign the parent on previous platforms, we apparently just
+> > rely on the reset value (afaict).
+> 
+> Oh sheesh. I thought that was being done already. It looks like at least
+> on sdm845 that there is only one parent for this clk so we don't need to
+> call clk_set_parent to set it there.
+> 
 
->  static int btf_dump_int_data(struct btf_dump *d,
->                              const struct btf_type *t,
->                              __u32 type_id,
-> @@ -1672,7 +1674,7 @@ static int btf_dump_int_data(struct btf_dump *d,
->         /* handle packed int data - accesses of integers not aligned on
->          * int boundaries can cause problems on some platforms.
->          */
-> -       if (((uintptr_t)data) % sz)
-> +       if (data_is_unaligned(data, sz))
->                 return btf_dump_bitfield_data(d, t, data, 0, 0);
->
->         switch (sz) {
-> @@ -1739,7 +1741,7 @@ static int btf_dump_float_data(struct btf_dump *d,
->         int sz = t->size;
->
->         /* handle unaligned data; copy to local union */
-> -       if (((uintptr_t)data) % sz) {
-> +       if (data_is_unaligned(data, sz)) {
->                 memcpy(&fl, data, sz);
->                 flp = &fl;
->         }
-> @@ -1897,7 +1899,10 @@ static int btf_dump_ptr_data(struct btf_dump *d,
->                               __u32 id,
->                               const void *data)
->  {
-> -       btf_dump_type_values(d, "%p", *(void **)data);
-> +       void *ptrval;
+I'll have to check the documentation on that...
 
-sizeof(void *) could be 4 on the host system and 8 in BTF. If you want
-to preserve the speed, I'd do something like:
+> >
+> > So I think it makes sense for all platforms to explicitly mux
+> > pipe_clk_src to phy::pipe_clk, one the PHY is up and running.
+> 
+> Sure, except some platforms don't have a mux?
+> 
+> >
+> > But I was under the impression that we have the BRANCH_HALT_SKIP on the
+> > pipe_clk because there was some sort of feedback loop to the PHY's
+> > calibration... What this patch indicates is that we should park
+> > pipe_clk_src onto XO at boot time, then after the PHY starts ticking we
+> > should enable and reparent the clk_src - at which point I don't see why
+> > we need the HALT_SKIP.
+> 
+> I recall that qcom folks kept saying they needed to enable the
+> pipe_clk_src clk branch in GCC before enabling the phy. So they required
+> the halt skip flag so that the clk_prepare_enable() call would
+> effectively set the enable bit in GCC and move on without caring. Then
+> they could enable the upstream clk source in the phy without having to
+> stop halfway through to enable the branch in GCC. The whole design here
+> is pretty insane.
+> 
+> In fact, I think we discussed this whole topic in late 2019[1] and we
+> concluded that we could just slam the clk on forever and deal with the
+> clk_set_parent() when the clk became a mux+gate instead of a pure gate.
+> 
 
-if (ptr_is_aligned(data, sizeof(void *)) && sizeof(void *) == d->ptr_sz) {
-    btf_dump_type_values(d, "%p", *(void **)data);
-} else {
-    /* fetch pointer value as unaligned integer */
-    if (d->ptr_sz == 4)
-        printf("0x%x")
-    else
-        printf("0x%llx")
-}
+That's exactly what I asked Prasad about, because per the description
+and content of this patch the parent pipe_clk_src will remain XO until
+the PHY is initialized. So either the PHY no longer need gcc in the loop
+to calibrate the pipe clock or it used to, but no longer does.
 
-Maybe there is some cleaner way. But that should work, no?
 
-> +
-> +       memcpy(&ptrval, data, d->ptr_sz);
-> +       btf_dump_type_values(d, "%p", ptrval);
->         return 0;
->  }
->
-> @@ -1910,7 +1915,7 @@ static int btf_dump_get_enum_value(struct btf_dump *d,
->         int sz = t->size;
->
->         /* handle unaligned enum value */
-> -       if (((uintptr_t)data) % sz) {
-> +       if (data_is_unaligned(data, sz)) {
->                 *value = (__s64)btf_dump_bitfield_get_data(d, t, data, 0, 0);
->                 return 0;
->         }
-> --
-> 1.8.3.1
->
+Thanks for the link, we definitely should clean that up, but I think at
+this point it might be worth waiting a little bit longer to see what
+actually going to happen in the suspend/resume (system and runtime)
+paths...
+
+> >
+> > > Also, shouldn't we make sure the parent is XO at driver probe time so
+> > > that powering on the GDSC works properly?
+> > >
+> > > It all feels like a kludge though given that the GDSC is the one that
+> > > requires the clock to be running at XO and we're working around that in
+> > > the pcie driver instead of sticking that logic into the GDSC. What do we
+> > > do if the GDSC is already enabled out of boot instead of being the power
+> > > on reset (POR) configuration?
+> > >
+> >
+> > What happens if we boot the device out of NVME...
+> 
+> I guess it's fine? The GDSC will be on and the parent clk will already
+> be set so things are a no-op.
+> 
+
+Yes, if the pipe_clk_src is parked nicely in late initcall, so that when the
+pd late init cuts the GDSC things will end up in a clean state.
+
+Regards,
+Bjorn
+
+> >
+> >
+> > PS. Are we certain that it's the PCIe driver and not the PHY that should
+> > do this dance? I really would like to see the continuation of this patch
+> > to see the full picture...
+> >
+> 
+> [1] https://lore.kernel.org/linux-clk/eba920f5-f5a2-53d5-2227-529b5ea99d32@codeaurora.org/
