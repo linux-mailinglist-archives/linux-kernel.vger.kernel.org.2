@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8A13CBAE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E703CBAE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhGPRGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhGPRGG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:06:06 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4CEC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:03:10 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id a132so808325oib.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l5+sbnoetmWZo2JNdEqLWaey1bVFrcYQ13fx9gWuL+4=;
-        b=hzZyj0MCkTQEI714kBick4I22s4vTbHAm0FVKUrPd9kWwJaGfZjIiELv12bqvZq1f/
-         JyD9ZsuD7RVFB15M5VPOX4S3TrL4oO+aIXXEnpNxp7p2HOaZ9krO50+PN8n+t6IZY6XY
-         TkDXHGsWIE2/DpP41ZryBix+V+K11vBkpE+OVxl1VOcmbWVttNQgy5rMZtDlaQkb2fQ+
-         3XltIf1JG3/2aOstZtJRm2aGtcGkp4yDkF3HvSIneFTzHKj6VLtkjftx4clrYx+5JSeU
-         Q7vE3+v+uyjJl3hGoa3jOEL+uOEfyike6aJrHLRCaD7pbm5Qd4u7MVIEWmonDyZa2Wg4
-         qeGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l5+sbnoetmWZo2JNdEqLWaey1bVFrcYQ13fx9gWuL+4=;
-        b=iBDt20D59QXrqCRFCj1XOYxoINSiqFSrc99XWvE5zF3NOJmxcunVZKRr6N8S5QlEdw
-         aspD2FVj8xQhAMRjrKDqS0Nj8fAZQwrMuw82wlUBWh2XuOykpMDca4ECuL7HFFTo7Guu
-         z8cxMExPeksPHdEslGzUiU5RQt2ZB1gcZjYPpAdwo/LJ47ctQTGIRCUpHFtvpnVJ2bhQ
-         8YC5KvI4mxPj37LHdu/0fw02KMi8m9XbqAQdmRXeSxMu9YqC7ImJZf+Iu0RfroFDX/4Z
-         xK1ndLFBkedNTTIZMSq26WfphiO9FFfXsDGCDkeYSB7sFYFPE9y8LXMP01hdkJBohqTO
-         RpEA==
-X-Gm-Message-State: AOAM531A+FKQxg84rIjxIuRs+sj0VUOp1ULC3JGGyVz7LeKKNXlhs/kz
-        hO54MsoJMdrRSKuMgsfZ43FFcbYbYV6j7Wf8yBSqiA==
-X-Google-Smtp-Source: ABdhPJz2dddfX2tS4rHdQ9DqMKSJlrede30CF/SfUWxVe6cF+VvFPNN4iqgNsuQfgJ/t5rL3oSzeJcyqJk9P/RFjuOs=
-X-Received: by 2002:aca:1e07:: with SMTP id m7mr8420800oic.28.1626454989592;
- Fri, 16 Jul 2021 10:03:09 -0700 (PDT)
+        id S230314AbhGPRHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 13:07:39 -0400
+Received: from mout.gmx.net ([212.227.15.19]:44465 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230189AbhGPRHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 13:07:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626455042;
+        bh=LrJqnGLr+yAUvufNYQHvar5369au8NY8/oDzo4u3xto=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=K+y98mCjTJ8KAgzUqyhQ5AQ+jQhVg0sjlNVDSVP92/+eYGfksmUWgRTY9c5a5MdVJ
+         S+qUSEp9vxQ7HsTnmi9+6tiYbuTMbk0ZnnekPzKPt7XZwI1Du0stZ4gktmfAuBqAgJ
+         W5plVohP2+fl5fI1sSTxuF0HbChnTTL2i+eLnb7Q=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MybGh-1lCAcJ2iDN-00yypb; Fri, 16 Jul 2021 19:04:02 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Vineet Gupta <vgupta@synopsys.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "dean.yang_cp" <yangdianqing@yulong.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARC: unwind: Use struct_size helper instead of open-coded arithmetic
+Date:   Fri, 16 Jul 2021 19:03:44 +0200
+Message-Id: <20210716170344.9150-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210716085325.10300-1-lingshan.zhu@intel.com>
-In-Reply-To: <20210716085325.10300-1-lingshan.zhu@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 16 Jul 2021 10:02:58 -0700
-Message-ID: <CALMp9eSz6RPN=spjN6zdD5iQY2ZZDwM2bHJ2R4qWijOt1A_6aw@mail.gmail.com>
-Subject: Re: [PATCH V8 00/18] KVM: x86/pmu: Add *basic* support to enable
- guest PEBS via DS
-To:     Zhu Lingshan <lingshan.zhu@intel.com>
-Cc:     peterz@infradead.org, pbonzini@redhat.com, bp@alien8.de,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        joro@8bytes.org, kan.liang@linux.intel.com, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5SAJCQgoPecLOvlAQgDwaVANDA8DxUuLHfyrrkaNw0SbTdjcubb
+ +3mVWWXnnrtaFn7YSpUqf7imH3OMpztog3bq8Qy2lKTgdiSIV36wx9kxNZzrF/WEpZCwRem
+ eVgdflOQ30ghuVax+8LcnoW3M8I4JnPvkIEJO0p8Z3mI2/tM0cKFcrNmBiC7F2zbFOmIPDW
+ q6lobTxcgJROUUt2IFdPw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SC8PvHkTL40=:C/LEBcfPB3naggULrZzMY6
+ tB4o6Aar3L6Ue9SkGXhHHsLoiY4vCT3+sGmeEhldXnTcpBhlG5EmwQWitHimb8lHk7EMuwTJj
+ EftnhQ4gxUY9ztuLrr9N9leasXYQkvwmZs1sn5l73j8OFaa126xTansgurv4IxaKa0ujzyoae
+ 8nVtg8j8fmOCrs9dRXsAmUumDZOhucRRw04m3rFhJm4B4xm5xWsn2VB5LeFzN6OHOHlNlzlNV
+ nFLKQgOGLBO+S5SKqr0t3rtP3oKfGwjwd1+lflesx5HY1yikHTWriibs2jU2/FJXK7j/R31xy
+ 5vB4+jZ5Mqig5Ah9Mfz10yP0updphb3KvYk3Ydhs3Y8/6ASvAUxsb/vt1dU9h7eHknFAzNmVO
+ oMvYvCQd2kQmUp+5eJnRuf2aHnQ+CtBQP8TtvEB7cyjaa6cWYxwsnWYpKThTglVGWs+lpQMy7
+ ATTa6mEY6+p/+2XSzTWW1S7m44RKTb/BOmiHh5VeKOV6XOya2UIkb5NC2roZwMs0NVx/tFHfV
+ gOd46lp7X/cfgxd2FBn2tMiHlHLzESp9z0AoYhuWKwOIDxoRmRdDmHc5kN7kmGtULfWiJMpws
+ cskp4iPIiHCEK8T/x8nhhVm46ev5EnZxgWzcg0w1illfnjTAJFoGqUtq+DyLdw2Q8pIFlWNmz
+ Vu9mX9ncFOE55wEcomOy2XlPqP+xQ4XNz6bjUePMRJJYOgljTmIddFJEGtT8nrtqx+46oF0tp
+ 2gIFXvkhWryCTUDCOv3F4XO6MiE9R98+G6IjaAeej0UYwaSw9bb+2rLfMGXn5fCBqkactuTXC
+ eIeomvR/QeH2S1TN6nNUNuEoU3AWNDFCsIku59GePnb9Q6LsuLHL8StMfKbw4lPYZ5PaTq1D6
+ OiJl0tgfm9l4aUq9MI7b6r9KHZgiQHsGtO5gwrHn6/4tFFcf87H7YLzTy3ReOIBYUo0SuXp+J
+ y0bGSGFG1fXFhDfBjWI+jH+RVODIg5DnRiBjglBzNNIcWoSrV8eNzKgwXUrgvfr421eFhSTp4
+ NEazAMD1rli2aYGltK66FBjcu1jKjFNz2IB2AC9Sb5AbGzssJ54HIgUpC7V1M1WmVPYTSXIT3
+ po0P4lz9oTG4v8NNnmgdY0G53IlweTgfS4w
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 1:54 AM Zhu Lingshan <lingshan.zhu@intel.com> wrote:
->
-> The guest Precise Event Based Sampling (PEBS) feature can provide an
-> architectural state of the instruction executed after the guest instruction
-> that exactly caused the event. It needs new hardware facility only available
-> on Intel Ice Lake Server platforms. This patch set enables the basic PEBS
-> feature for KVM guests on ICX.
->
-> We can use PEBS feature on the Linux guest like native:
->
->    # echo 0 > /proc/sys/kernel/watchdog (on the host)
->    # perf record -e instructions:ppp ./br_instr a
->    # perf record -c 100000 -e instructions:pp ./br_instr a
->
-> To emulate guest PEBS facility for the above perf usages,
-> we need to implement 2 code paths:
->
-> 1) Fast path
->
-> This is when the host assigned physical PMC has an identical index as the
-> virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
-> This path is used in most common use cases.
->
-> 2) Slow path
->
-> This is when the host assigned physical PMC has a different index from the
-> virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0) In this case,
-> KVM needs to rewrite the PEBS records to change the applicable counter indexes
-> to the virtual PMC indexes, which would otherwise contain the physical counter
-> index written by PEBS facility, and switch the counter reset values to the
-> offset corresponding to the physical counter indexes in the DS data structure.
->
-> The previous version [0] enables both fast path and slow path, which seems
-> a bit more complex as the first step. In this patchset, we want to start with
-> the fast path to get the basic guest PEBS enabled while keeping the slow path
-> disabled. More focused discussion on the slow path [1] is planned to be put to
-> another patchset in the next step.
->
-> Compared to later versions in subsequent steps, the functionality to support
-> host-guest PEBS both enabled and the functionality to emulate guest PEBS when
-> the counter is cross-mapped are missing in this patch set
-> (neither of these are typical scenarios).
+Dynamic size calculations (especially multiplication) should not be
+performed in memory allocator function arguments due to the risk of them
+overflowing. This could lead to values wrapping around and a smaller
+allocation being made than the caller was expecting. Using those
+allocations could lead to linear overflows of heap memory and other
+misbehaviors.
 
-I'm not sure exactly what scenarios you're ruling out here. In our
-environment, we always have to be able to support host-level
-profiling, whether or not the guest is using the PMU (for PEBS or
-anything else). Hence, for our *basic* vPMU offering, we only expose
-two general purpose counters to the guest, so that we can keep two
-general purpose counters for the host. In this scenario, I would
-expect cross-mapped counters to be common. Are we going to be able to
-use this implementation?
+To avoid this scenario, use the struct_size helper.
+
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ arch/arc/kernel/unwind.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arc/kernel/unwind.c b/arch/arc/kernel/unwind.c
+index 47bab67f8649..af18052b86a7 100644
+=2D-- a/arch/arc/kernel/unwind.c
++++ b/arch/arc/kernel/unwind.c
+@@ -13,6 +13,7 @@
+ #include <linux/sched.h>
+ #include <linux/module.h>
+ #include <linux/memblock.h>
++#include <linux/overflow.h>
+ #include <linux/sort.h>
+ #include <linux/slab.h>
+ #include <linux/stop_machine.h>
+@@ -312,9 +313,7 @@ static void init_unwind_hdr(struct unwind_table *table=
+,
+ 	if (tableSize || !n)
+ 		goto ret_err;
+
+-	hdrSize =3D 4 + sizeof(unsigned long) + sizeof(unsigned int)
+-	    + 2 * n * sizeof(unsigned long);
+-
++	hdrSize =3D struct_size(header, table, n);
+ 	header =3D alloc(hdrSize);
+ 	if (!header)
+ 		goto ret_err;
+=2D-
+2.25.1
+
