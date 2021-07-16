@@ -2,141 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7F93CB9F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B73F3CB9FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241075AbhGPPiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57496 "EHLO
+        id S240842AbhGPPkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241021AbhGPPiG (ORCPT
+        with ESMTP id S234039AbhGPPkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:38:06 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD6BC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 08:35:11 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id my10so6589277pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 08:35:11 -0700 (PDT)
+        Fri, 16 Jul 2021 11:40:00 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F85C061762;
+        Fri, 16 Jul 2021 08:37:04 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id ga14so15774136ejc.6;
+        Fri, 16 Jul 2021 08:37:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0cTnZy2I4CZKY1bHPxJLKssBACveTIPG9X+4FMx1/uQ=;
-        b=afSs59INL/oaaVSpQPeRtiIcJrpZwqHHpaDKcKMQGA6aWrOaBsFQgpUgROlc1OHvsr
-         R8+DUt0nxbzW92N5jyf1GQnF/hr52cuxKwcH10Pr8I7RED3k1ryiX7DXdXuaA7APN6m4
-         XWPOS5SwXn7SL7HD5a2j5vD6dOKAEQY9m1vnGiABnDA5fHtdH2zr8Y5fdOgg0bb0iuku
-         DojBvVx1otGchwtODy/S4//wZ2V3ziB+XpzqgAvJEq/hlGIebWzzQh0E5JJgub29thOP
-         YmvVF0HsEbccSVc12R6sAKoXRNAtlV+kh3t3D5Xb8MzS29UsDlX4R1djNaCtt7Rgc/uW
-         jh4Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ki2zBfnx3wTm6ja5X0xz1vQES5mUBp96RRpteIatjzg=;
+        b=vQQq7D2u8FY3LLbHq3YwlnkcjjL1Lk/MMZ41mUIW99c/wETgAeygsAaEw7ifE69C4m
+         yTbde2kxkr/SXaS7HBqt1heZ892uTqcWzU/l6TINtLIdY7A/+15O2iiDPHHyBt1bcg8M
+         2cE2y32Ay9DaBhbizhOL51qqSIxJLpLdKnRTzUxXknA2yHUWC8drceG33lZuapMyjlfL
+         cWUmH0VVU/WBPLgM3jb7APdaH/LRZOattgkyMLM08SCNUQDAGC0z15kBJZ+mMsYACJuw
+         DlKMptd0IHu5iEa2a4hOsEj86OPXodlMOLLwOm/m+YvKeLgjrWCK3SsUjJzRFBIPQRVr
+         MCMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0cTnZy2I4CZKY1bHPxJLKssBACveTIPG9X+4FMx1/uQ=;
-        b=ql+x97kJmuEKF2Rc7l30NArupuSeq2esXEXIIYycqWSlHdH/KZDDilLYvoJJmTiTsb
-         JgxRYaH/XRttAkq0pzFW1I4M9sUmR5xh6mFrSC792wDUm33pscnTKDbA+8hp/zGotOi4
-         qeFnTHmTu7R2N9TBWTHlnN2P+hYeaMMNewliGCKJ9Diak4XHgHtprLLIGFlh+pwmJHgC
-         GSWHPPD/Elr3/swAuWjigNlVksghUcuLC0S0JRKnKi13G3LPTw3JEM8DOYaSDhVhZTGP
-         q7VJaYbS+ESacQlUJNaQRGYK89Vpl8mqMbvtCbSutXLsZCBuNILAhh1x7UcBwSw4Vel2
-         OMaA==
-X-Gm-Message-State: AOAM532lLVcHQLe0eovHHE11/EtIfAdyPYZ0nlM6/78acW7kDEXVvUfx
-        WiRS9ICllqcXinyJUwTXSfdcx/F4+w0CZg==
-X-Google-Smtp-Source: ABdhPJzO0czTiC4lrspMK8pptIQ8UcgEuTYWN2rX0ygskl7xaEBTKiH2YjQzLJUVfWfhZQnvHsTqCA==
-X-Received: by 2002:a17:902:ed82:b029:ef:48c8:128e with SMTP id e2-20020a170902ed82b02900ef48c8128emr8350696plj.72.1626449710421;
-        Fri, 16 Jul 2021 08:35:10 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j21sm8548916pjz.26.2021.07.16.08.35.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ki2zBfnx3wTm6ja5X0xz1vQES5mUBp96RRpteIatjzg=;
+        b=SWmhWHL4GFiK+oZQJ9bLxEeC41BVL4N060MTaKMQBKEYd/ELAaxzvWK4NZVfTGxoMT
+         aT4UvVEU7ET2GW7ajryM7GllH4/bZs5i7Uraqs4OfDsCoAq6Ict1JGsUwJ+XwkAdGwfu
+         wysaXjgbDjPiRdMCcvEwSMKqaXV2kh5zxQItU4TSuq8VMsZZ0aaSO3TtsetmbGeuxg7B
+         eCr+SB/3eVVWcuoqr8RGE79no+IZ3MJyZdy1cSlxGc0a58uw7vfRMBrJP5XDg+dC3Dd5
+         4NPH9GhSEgWeF66IC9oVx7Qhco9cBO8vXrwmYEuvR96kI94YQMY5JGgPsfmFsqgeapJV
+         SUWw==
+X-Gm-Message-State: AOAM533lb5q/i0Rkz+EERWaw9MUPlREXKqxXWoNA7n9ofLjSPr8bJvl3
+        mE2TVj36ljb/gIig9TiwY0Q=
+X-Google-Smtp-Source: ABdhPJzrSkE/YKYvdOFRzAd/CUykoOGwPhF2xo9Ms8bUpMhwmjUaf/lpnzZTc9/LikUI2+IrBZv4Vw==
+X-Received: by 2002:a17:906:fb12:: with SMTP id lz18mr12657259ejb.324.1626449823335;
+        Fri, 16 Jul 2021 08:37:03 -0700 (PDT)
+Received: from BLUE.mydomain.example (83-87-52-217.cable.dynamic.v4.ziggo.nl. [83.87.52.217])
+        by smtp.googlemail.com with ESMTPSA id n14sm3913973edo.23.2021.07.16.08.37.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 08:35:09 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 15:35:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 15/40] crypto: ccp: Handle the legacy TMR
- allocation when SNP is enabled
-Message-ID: <YPGnKfDvmgzHCwbI@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-16-brijesh.singh@amd.com>
- <YPDJQ0uumar8j22y@google.com>
- <dfa4ccb5-f85e-6294-6a80-9e4aa6d93c1e@amd.com>
+        Fri, 16 Jul 2021 08:37:02 -0700 (PDT)
+From:   ericwouds@gmail.com
+To:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Eric Woudstra <ericwouds@gmail.com>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
+Date:   Fri, 16 Jul 2021 17:36:39 +0200
+Message-Id: <20210716153641.4678-1-ericwouds@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dfa4ccb5-f85e-6294-6a80-9e4aa6d93c1e@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021, Brijesh Singh wrote:
-> 
-> On 7/15/21 6:48 PM, Sean Christopherson wrote:
-> > On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> >> @@ -1204,16 +1322,6 @@ void sev_pci_init(void)
-> >>  	    sev_update_firmware(sev->dev) == 0)
-> >>  		sev_get_api_version();
-> >>  
-> >> -	/* Obtain the TMR memory area for SEV-ES use */
-> >> -	tmr_page = alloc_pages(GFP_KERNEL, get_order(SEV_ES_TMR_SIZE));
-> >> -	if (tmr_page) {
-> >> -		sev_es_tmr = page_address(tmr_page);
-> >> -	} else {
-> >> -		sev_es_tmr = NULL;
-> >> -		dev_warn(sev->dev,
-> >> -			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
-> >> -	}
-> >> -
-> >>  	/*
-> >>  	 * If boot CPU supports the SNP, then first attempt to initialize
-> >>  	 * the SNP firmware.
-> >> @@ -1229,6 +1337,16 @@ void sev_pci_init(void)
-> >>  		}
-> >>  	}
-> >>  
-> >> +	/* Obtain the TMR memory area for SEV-ES use */
-> >> +	tmr_page = __snp_alloc_firmware_pages(GFP_KERNEL, get_order(sev_es_tmr_size), false);
-> >> +	if (tmr_page) {
-> >> +		sev_es_tmr = page_address(tmr_page);
-> >> +	} else {
-> >> +		sev_es_tmr = NULL;
-> >> +		dev_warn(sev->dev,
-> >> +			 "SEV: TMR allocation failed, SEV-ES support unavailable\n");
-> >> +	}
-> > I think your patch ordering got a bit wonky.  AFAICT, the chunk that added
-> > sev_snp_init() and friends in the previous patch 14 should have landed above
-> > the TMR allocation, i.e. the code movement here should be unnecessary.
-> 
-> I was debating about it whether to include all the SNP supports in one
-> patch or divide it up. If I had included all legacy support new
-> requirement in the same patch which adds the SNP then it will be a big
-> patch. I had feeling that others may ask me to split it.
+From: Eric Woudstra <ericwouds@gmail.com>
 
-It wasn't comment on the patch organization, rather that the code added in patch 14
-appears to have landed in the wrong location within the code.  The above diff shows
-that the TMR allocation is being moved around the SNP initialization code that was
-added in patch 14 (the immediately prior patch).  Presumably the required order
-doesn't magically change just because the TMR is now being allocated as a 2mb blob,
-so either the code movement is unnecessary churn or the original location was wrong.
-In either case, landing the SNP initialization code above the TMR allocation in
-patch 14 would eliminate the above code movement.
+According to reference guides mt7530 (mt7620) and mt7531:
+
+NOTE: When IVL is reset, MAC[47:0] and FID[2:0] will be used to 
+read/write the address table. When IVL is set, MAC[47:0] and CVID[11:0] 
+will be used to read/write the address table.
+
+Since the function only fills in CVID and no FID, we need to set the
+IVL bit. The existing code does not set it.
+
+This is a fix for the issue I dropped here earlier:
+
+http://lists.infradead.org/pipermail/linux-mediatek/2021-June/025697.html
+
+With this patch, it is now possible to delete the 'self' fdb entry
+manually. However, wifi roaming still has the same issue, the entry
+does not get deleted automatically. Wifi roaming also needs a fix
+somewhere else to function correctly in combination with vlan.
+
+Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
+---
+ drivers/net/dsa/mt7530.c | 1 +
+ drivers/net/dsa/mt7530.h | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 93136f7e6..9e4df35f9 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -366,6 +366,7 @@ mt7530_fdb_write(struct mt7530_priv *priv, u16 vid,
+ 	int i;
+ 
+ 	reg[1] |= vid & CVID_MASK;
++	reg[1] |= ATA2_IVL;
+ 	reg[2] |= (aging & AGE_TIMER_MASK) << AGE_TIMER;
+ 	reg[2] |= (port_mask & PORT_MAP_MASK) << PORT_MAP;
+ 	/* STATIC_ENT indicate that entry is static wouldn't
+diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
+index 334d610a5..b19b389ff 100644
+--- a/drivers/net/dsa/mt7530.h
++++ b/drivers/net/dsa/mt7530.h
+@@ -79,6 +79,7 @@ enum mt753x_bpdu_port_fw {
+ #define  STATIC_EMP			0
+ #define  STATIC_ENT			3
+ #define MT7530_ATA2			0x78
++#define  ATA2_IVL			BIT(15)
+ 
+ /* Register for address table write data */
+ #define MT7530_ATWD			0x7c
+-- 
+2.25.1
+
