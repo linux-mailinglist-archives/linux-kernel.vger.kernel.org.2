@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7EE3CB796
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D783CB797
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239777AbhGPM6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239704AbhGPM6v (ORCPT
+        id S239609AbhGPM7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:59:23 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:55430 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239816AbhGPM7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:58:51 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AD8C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:55:55 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id u13so15814112lfs.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7YVe12K3kAf74Lw6w7FM9BISBfQ+xdkVlpPe2xtnZxw=;
-        b=S1/f9dxk1+qzNpT4FBDWITbM6Bgtq5eX45j8wxtciNfUAcIAlC1LzMee1hh0QkZ0HY
-         lg+mFnaoj2vPn6A8SZR+yhktxiJ770BndjMgvWPgp2bjQDPDLKG7wc5ZgxKBf6/OoOB8
-         MwrpPg4hSlzZp0AdZGujKVaYhlCIkkA23YJabdnHyafUisZIxmQhpcTlK7s4GqSN7vDu
-         v0ZIav43+PieP8CTwmsV1uh8ZK+Tw6wObkgvCEoxiR2Ko17xbGGEdqkwAh8OfvS/+QMM
-         QS/BlBO10sHKcfRLUWuvikVte6UouWZydyHvyLNMH4rjhNwyFsM/fw9GUf8aR2RX7lqs
-         MIkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7YVe12K3kAf74Lw6w7FM9BISBfQ+xdkVlpPe2xtnZxw=;
-        b=YFR/ntvluytNgQjWNYUgzpnMjJ+J64PxgXuHkLvGJraM1pI/U0Rf9vxVMLdGL58hXb
-         q08A1Rd+tYFdtcObxBm4A6m/ID38TKcgfdr/kavGpdoBesh/l9P10NCCcJSrSBlnC2nc
-         FN2OHFZp9Nsy93elM/j288EjAMzqtpq3cc6dCdfpj5N7ct00JBxiSEAW2F8LzjPQzKfw
-         B3OYYo4fRURVrGCMf6SP94L7XuCpvi7PuiJwE3rRl+vv2UcK2oUuLTh6TzSg4pq9SaiV
-         BDAuUuFLtW54PfcwjcMUkTi3ni9zuvEbZ86yn7vpy6bPdnhg0D/K8RRd/9oFm43NCN+a
-         /98w==
-X-Gm-Message-State: AOAM530Tz+IKfT+fUHSY9v81X9wnL8KNy4m3y8GGbrgwGFVddepCswUn
-        W/TgU1AkFdyz/1DrPFmC1r9Rs/RWJGOB3lRKYESIkQ==
-X-Google-Smtp-Source: ABdhPJx+HIGg3Y9xkRL86NYygrweddq6ORDe7x5BfHspoT3DPnWcPBwHfdoy5Z5CHNMssXXoldgyVbAxDgfFUDKaPxA=
-X-Received: by 2002:ac2:4d86:: with SMTP id g6mr7369704lfe.549.1626440153821;
- Fri, 16 Jul 2021 05:55:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com>
- <919bd022-075e-98a7-cefb-89b5dee80ae8@virtuozzo.com> <CALvZod5Kxrj3T99CEd8=OaoW8CwKtHOVhno58_nNOqjR2y=x6Q@mail.gmail.com>
- <3a60b936-b618-6cef-532a-97bbdb957fb1@virtuozzo.com>
-In-Reply-To: <3a60b936-b618-6cef-532a-97bbdb957fb1@virtuozzo.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 16 Jul 2021 05:55:42 -0700
-Message-ID: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
-Subject: Re: [PATCH v4 00/16] memcg accounting from OpenVZ
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Tejun Heo <tj@kernel.org>, Cgroups <cgroups@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Fri, 16 Jul 2021 08:59:21 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 2D03BB37ED7;
+        Fri, 16 Jul 2021 14:56:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1626440184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sdNG86x5tAHY5kRYAKVl3QeUKKUSEoSK6HtMC+ianxA=;
+        b=rXsqa7AbS+FmuQaz9U6i68cIAiWgJZosBiV+kq0TDBFydFZOE6o1IdwhEKGKjRnoJgMk+o
+        gOly5ZBAR5BYA1SaK+xANX34NDhuxQPowQ8Gnc46GAtoNTHELTir/MH+Cx3uhfAp3Noj3b
+        VopDjLK2JsofkDMHxoeK4mZ8+RGdh50=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: New warning in nvme_setup_discard
+Date:   Fri, 16 Jul 2021 14:56:22 +0200
+Message-ID: <1687461.6WkTYu5mUM@natalenko.name>
+In-Reply-To: <YPFicCW90Jse4oms@T590>
+References: <4729812.CpyZKHjjVO@natalenko.name> <2455133.St5lIfLNcX@natalenko.name> <YPFicCW90Jse4oms@T590>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 9:11 PM Vasily Averin <vvs@virtuozzo.com> wrote:
->
-> On 7/15/21 8:11 PM, Shakeel Butt wrote:
-> > On Tue, Apr 27, 2021 at 11:51 PM Vasily Averin <vvs@virtuozzo.com> wrote:
-> >>
-> >> OpenVZ uses memory accounting 20+ years since v2.2.x linux kernels.
-> >> Initially we used our own accounting subsystem, then partially committed
-> >> it to upstream, and a few years ago switched to cgroups v1.
-> >> Now we're rebasing again, revising our old patches and trying to push
-> >> them upstream.
-> >>
-> >> We try to protect the host system from any misuse of kernel memory
-> >> allocation triggered by untrusted users inside the containers.
-> >>
-> >> Patch-set is addressed mostly to cgroups maintainers and cgroups@ mailing
-> >> list, though I would be very grateful for any comments from maintainersi
-> >> of affected subsystems or other people added in cc:
-> >>
-> >> Compared to the upstream, we additionally account the following kernel objects:
-> >> - network devices and its Tx/Rx queues
-> >> - ipv4/v6 addresses and routing-related objects
-> >> - inet_bind_bucket cache objects
-> >> - VLAN group arrays
-> >> - ipv6/sit: ip_tunnel_prl
-> >> - scm_fp_list objects used by SCM_RIGHTS messages of Unix sockets
-> >> - nsproxy and namespace objects itself
-> >> - IPC objects: semaphores, message queues and share memory segments
-> >> - mounts
-> >> - pollfd and select bits arrays
-> >> - signals and posix timers
-> >> - file lock
-> >> - fasync_struct used by the file lease code and driver's fasync queues
-> >> - tty objects
-> >> - per-mm LDT
-> >>
-> >> We have an incorrect/incomplete/obsoleted accounting for few other kernel
-> >> objects: sk_filter, af_packets, netlink and xt_counters for iptables.
-> >> They require rework and probably will be dropped at all.
-> >>
-> >> Also we're going to add an accounting for nft, however it is not ready yet.
-> >>
-> >> We have not tested performance on upstream, however, our performance team
-> >> compares our current RHEL7-based production kernel and reports that
-> >> they are at least not worse as the according original RHEL7 kernel.
-> >
-> > Hi Vasily,
-> >
-> > What's the status of this series? I see a couple patches did get
-> > acked/reviewed. Can you please re-send the series with updated ack
-> > tags?
->
-> Technically my patches does not have any NAKs. Practically they are still them merged.
-> I've expected Michal will push it, but he advised me to push subsystem maintainers.
-> I've asked Tejun to pick up the whole patch set and I'm waiting for his feedback right now.
->
-> I can resend patch set once again, with collected approval and with rebase to v5.14-rc1.
-> However I do not understand how it helps to push them if patches should be processed through
-> subsystem maintainers. As far as I understand I'll need to split this patch set into
-> per-subsystem pieces and sent them to corresponded maintainers.
->
+On p=C3=A1tek 16. =C4=8Dervence 2021 12:41:52 CEST Ming Lei wrote:
+> > Do I understand correctly that this will be something like:
+> >=20
+> > Fixes: 2705dfb209 ("block: fix discard request merge")
+> >=20
+> > ?
+> >=20
+> > Because as the bisection progresses, I've bumped into this commit only.
+> > Without it the issue is not reproducible, at least so far.
+>=20
+> It could be.
+>=20
+> So can you just test v5.14-rc1?
 
-Usually these kinds of patches (adding memcg accounting) go through mm
-tree but if there are no dependencies between the patches and a
-consensus that each subsystem maintainer picks the corresponding patch
-then that is fine too.
+Doing it right now, but I've got another issue. Why BFQ is not listed here:
+
+```
+/sys/class/block/nvme0n1/queue/scheduler:[mq-deadline] kyber none
+/sys/class/block/nvme1n1/queue/scheduler:[mq-deadline] kyber none
+```
+
+?
+
+It is a built-in, FWIW:
+
+```
+$ modinfo bfq
+name:           bfq
+filename:       (builtin)
+description:    MQ Budget Fair Queueing I/O Scheduler
+license:        GPL
+file:           block/bfq
+author:         Paolo Valente
+alias:          bfq-iosched
+```
+
+So far the issue is not reproducible with your patch + 5.13.2 as well as 5.=
+14-
+rc1 (but I don't have BFQ either with v5.14-rc1).
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
+
