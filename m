@@ -2,114 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4A33CBB78
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0C53CBB76
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbhGPSA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhGPSAY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:00:24 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32254C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:57:29 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id g5so16121249ybu.10
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:57:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tQW3GGc/1Va1cw3Bpau5ZzEZ6iztReFZLNyywqfViAs=;
-        b=qkIpcDi1geFjKktjDaAp51kJDJviDb35yb5ScOgyz6eSvgZuroCOM6dUpRPh8xQEeq
-         CCMsdN1Wp2vM0FajpRCOte8J/rAmVJtCkL2Dvhebq+Q4KMSIryqkppgz/w3UujN6+i6n
-         1GMMLT8Nm7sFFbgIXslTnDwwhktX8trtzbLxRTUQc1dtHrvKQRo2EiuAquCgX1wvBO7Y
-         EH5JkzplO1XELeHghHWcZLgwINaxoxjtAN0oZlD7xJl2QOno5Ji9EHad5Lhmd3/ovfJG
-         borYWL0kmhsUinq8z5h1vl0deKAq58dv+W4CGZoMZUN/0Y6uR7qqNx0riYLblc+QrIEj
-         3y2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tQW3GGc/1Va1cw3Bpau5ZzEZ6iztReFZLNyywqfViAs=;
-        b=puaKdjM+SfAjwBQnTQBFXzMvUGZ+tnDfKTkpGpPgyBHzYoEPGFfNxrB1D+Kk8/HWAo
-         /fkkvdLFzCUGO9aDTEmmMGK/Pb5/E0PXhw0T8inhPDPSdqSlBkCvT3ocxwZH7nLorzIZ
-         10rOcK9nCbJbTccGxrzendH3Yz0Uk+zDyQmL1NcCgYiztDkGbL5M1E9AAv6g9iTO8nTW
-         cQ9bbEjTCiV8BiGPPGKgvEIq7QKcogcBLo/qcQaKvAat8NDNWacu2EIvGh1pdeTs76D7
-         NivLwwiMcnTvBl8XZeiCQAELi/j/YP1Y/0soSuI3setUwXNhOkRprFejdNlr/XM+yP6K
-         O5oA==
-X-Gm-Message-State: AOAM533ZqULWBNdKyaRAjly68loR1OORwQfPxQcOjYhoWebl6jT3LSgW
-        qzSjN9RQ6wBzNj8AizPF8oPCj3ciZJsCEq5jvds++g==
-X-Google-Smtp-Source: ABdhPJx3191ATZV8iavJsUcIabdLHawOx50YUWGy62AQyjAgNiWXOFVLNNeLefA69Tj63fceB9/Y4TSbdBL5TsHZF3Q=
-X-Received: by 2002:a25:4047:: with SMTP id n68mr15190555yba.96.1626458248262;
- Fri, 16 Jul 2021 10:57:28 -0700 (PDT)
+        id S231246AbhGPSAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:00:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229611AbhGPSAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:00:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E10B613E3;
+        Fri, 16 Jul 2021 17:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626458242;
+        bh=LWyG8MpHh8BFo0s7Ah/H6RgQJyhhlYoOTByzoF32aYY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0XXT3d6slwl1d45kjk41yiutQIG2klAHxDijOl21jKKckOBf7ReItRB8rI9C1ozmW
+         OgmC8cMVrgGucYsTfRqW9rEp7aG5F1buq5RmWwN8ZwPoqnvdSHnI2kU1pytFEtx1EC
+         TxCGDZ1qCwS0u1bXElTFniICKL/O8n5nXo6WmJjg=
+Date:   Fri, 16 Jul 2021 19:57:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.4 031/122] net: moxa: Use
+ devm_platform_get_and_ioremap_resource()
+Message-ID: <YPHIgCnX52+Dwap8@kroah.com>
+References: <20210715182448.393443551@linuxfoundation.org>
+ <20210715182456.876823976@linuxfoundation.org>
+ <CADVatmNj+HSarEpuYdKsZaNyrOgyXfJw7u9LJxa2RSBf8iXnHQ@mail.gmail.com>
+ <f1410523-2498-9a71-4918-d14bfde40792@huawei.com>
 MIME-Version: 1.0
-References: <20210710064511.1288232-1-willmcvicker@google.com>
-In-Reply-To: <20210710064511.1288232-1-willmcvicker@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 16 Jul 2021 10:56:41 -0700
-Message-ID: <CAGETcx_XZDWNQ2OLEs0XMnq3m1WFJ8mD0LAXFTpYBXPLPUCAxA@mail.gmail.com>
-Subject: Re: [PATCH] drm/mipi: set fwnode when a mipi_dsi_device registers itself
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1410523-2498-9a71-4918-d14bfde40792@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi William,
+On Fri, Jul 16, 2021 at 09:37:10AM +0800, Yang Yingliang wrote:
+> Hi,
+> 
+> On 2021/7/16 5:26, Sudip Mukherjee wrote:
+> > Hi Greg,
+> > 
+> > On Thu, Jul 15, 2021 at 7:44 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > > From: Yang Yingliang <yangyingliang@huawei.com>
+> > > 
+> > > [ Upstream commit 35cba15a504bf4f585bb9d78f47b22b28a1a06b2 ]
+> > arm moxart_defconfig build fails with the error:
+> > drivers/net/ethernet/moxa/moxart_ether.c:483:22: error: implicit
+> > declaration of function 'devm_platform_get_and_ioremap_resource'; did
+> > you mean 'devm_platform_ioremap_resource'?
+> > [-Werror=implicit-function-declaration]
+> 
+> devm_platform_get_and_ioremap_resource() is introduced in v5.7-rc1, I can
+> send a patch for stable-5.4.
 
-Thanks for catching this.
+If you want to, not a big deal.  I've dropped this patch now, thanks.
 
-On Fri, Jul 9, 2021 at 11:45 PM Will McVicker <willmcvicker@google.com> wrote:
->
-> This is needed for fw_devlink to work properly with MIPI DSI devices.
-> Without setting the device's fwnode, the sync state framework isn't able
-> to properly track device links between the MIPI DSI device and its
-> suppliers which may result in its supplier probing before the mipi
-> device.
-
-I think it'd be more accurate if the commit text is something like:
-
-drm/mipi: set fwnode when a mipi_dsi_device is registered
-
-This allows the fw_devlink feature to work across mipi_dsi bus devices too. This
-feature avoid unnecessary probe deferrals of mipi_dsi devices, defers
-consumers of
-mipi_dsi devices till the mipi_dsi devices probe, and allows mipi_dsi drivers to
-implement sync_state() callbacks.
-
-Reviewed-by: Saravana Kannan <saravanak@google.com>
-
-Thanks,
-Saravana
-
->
-> Suggested-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
-> ---
->  drivers/gpu/drm/drm_mipi_dsi.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-> index 5dd475e82995..469d56cf2a50 100644
-> --- a/drivers/gpu/drm/drm_mipi_dsi.c
-> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
-> @@ -222,6 +222,7 @@ mipi_dsi_device_register_full(struct mipi_dsi_host *host,
->         }
->
->         dsi->dev.of_node = info->node;
-> +       dsi->dev.fwnode = of_fwnode_handle(info->node);
->         dsi->channel = info->channel;
->         strlcpy(dsi->name, info->type, sizeof(dsi->name));
->
-> --
-> 2.32.0.93.g670b81a890-goog
->
+greg k-h
