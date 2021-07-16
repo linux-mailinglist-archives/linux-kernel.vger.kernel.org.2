@@ -2,125 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57EA3CB6E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F197C3CB6E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236353AbhGPLrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:47:08 -0400
-Received: from mga04.intel.com ([192.55.52.120]:40164 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234803AbhGPLrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 07:47:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="208902317"
-X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="208902317"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 04:44:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="467107154"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
-  by fmsmga008.fm.intel.com with ESMTP; 16 Jul 2021 04:44:06 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 2/2] scsi: ufshcd: Fix device links when BOOT WLUN fails to probe
-Date:   Fri, 16 Jul 2021 14:44:08 +0300
-Message-Id: <20210716114408.17320-3-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210716114408.17320-1-adrian.hunter@intel.com>
-References: <20210716114408.17320-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S232800AbhGPLuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 07:50:11 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:46090 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232088AbhGPLuK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 07:50:10 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 16 Jul 2021 04:47:15 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Jul 2021 04:47:13 -0700
+X-QCInternal: smtphost
+Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Jul 2021 17:16:17 +0530
+Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
+        id A7EC950E5; Fri, 16 Jul 2021 17:16:16 +0530 (IST)
+From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Subject: [PATCH V4] mmc: sdhci-msm: Update the software timeout value for sdhc
+Date:   Fri, 16 Jul 2021 17:16:14 +0530
+Message-Id: <1626435974-14462-1-git-send-email-sbhanu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Managed device links are deleted by device_del(). However it is possible to
-add a device link to a consumer before device_add(), and then discovering
-an error prevents the device from being used. In that case normally
-references to the device would be dropped and the device would be deleted.
-However the device link holds a reference to the device, so the device link
-and device remain indefinitely (unless the supplier is deleted).
+Whenever SDHC run at clock rate 50MHZ or below, the hardware data
+timeout value will be 21.47secs, which is approx. 22secs and we have
+a current software timeout value as 10secs. We have to set software
+timeout value more than the hardware data timeout value to avioid seeing
+the below register dumps.
 
-For UFSHCD, if a LUN fails to probe (e.g. absent BOOT WLUN), the device
-will not have been registered but can still have a device link holding a
-reference to the device. The unwanted device link will prevent runtime
-suspend indefinitely.
+[  332.953670] mmc2: Timeout waiting for hardware interrupt.
+[  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
+[  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
+[  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
+[  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
+[  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
+[  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
+[  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
+[  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
+[  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
+[  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+[  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
+[  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
+[  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
+[  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+[  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
+[  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
+0x0000000ffffff218
+[  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
+-----------
+[  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
+0x6000642c | DLL cfg2: 0x0020a000
+[  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
+0x00000000 | DDR cfg: 0x80040873
+[  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
+0xf88218a8 Vndr func3: 0x02626040
+[  333.102371] mmc2: sdhci: ============================================
 
-Amend device link removal to accept removal of a link with an unregistered
-consumer device (suggested by Rafael), and fix UFSHCD by explicitly
-deleting the device link when SCSI destroys the SCSI device.
+So, set software timeout value more than hardware timeout value.
 
-Fixes: b294ff3e34490 ("scsi: ufs: core: Enable power management for wlun")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- drivers/base/core.c       |  2 ++
- drivers/scsi/ufs/ufshcd.c | 23 +++++++++++++++++++++--
- 2 files changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 2de8f7d8cf54..983e895d4ced 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -887,6 +887,8 @@ static void device_link_put_kref(struct device_link *link)
- {
- 	if (link->flags & DL_FLAG_STATELESS)
- 		kref_put(&link->kref, __device_link_del);
-+	else if (!device_is_registered(link->consumer))
-+		__device_link_del(&link->kref);
- 	else
- 		WARN(1, "Unable to drop a managed device link reference\n");
- }
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 708b3b62fc4d..9864a8ee0263 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5020,15 +5020,34 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
- static void ufshcd_slave_destroy(struct scsi_device *sdev)
- {
- 	struct ufs_hba *hba;
-+	unsigned long flags;
- 
- 	hba = shost_priv(sdev->host);
- 	/* Drop the reference as it won't be needed anymore */
- 	if (ufshcd_scsi_to_upiu_lun(sdev->lun) == UFS_UPIU_UFS_DEVICE_WLUN) {
--		unsigned long flags;
--
- 		spin_lock_irqsave(hba->host->host_lock, flags);
- 		hba->sdev_ufs_device = NULL;
- 		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	} else if (hba->sdev_ufs_device) {
-+		struct device *supplier = NULL;
-+
-+		/* Ensure UFS Device WLUN exists and does not disappear */
-+		spin_lock_irqsave(hba->host->host_lock, flags);
-+		if (hba->sdev_ufs_device) {
-+			supplier = &hba->sdev_ufs_device->sdev_gendev;
-+			get_device(supplier);
-+		}
-+		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+
-+		if (supplier) {
-+			/*
-+			 * If a LUN fails to probe (e.g. absent BOOT WLUN), the
-+			 * device will not have been registered but can still
-+			 * have a device link holding a reference to the device.
-+			 */
-+			device_link_remove(&sdev->sdev_gendev, supplier);
-+			put_device(supplier);
-+		}
- 	}
+Changes since V3:
+	- Addressed minor comments from Adrain Hunter and retained his
+	  Acked-by Signed-off.
+
+Changes since V2:
+	- Updated 22 with 22LL to avoid compiler warning as
+	  suggested by Adrian Hunter.
+	- Added a check to update software data timeout value if its value
+	  is less than the calculated hardware data timeout value as suggested
+	  by Veerabhadrarao Badiganti.
+Changes since V1:
+	- Moved software data timeout update part to qcom specific file
+	  as suggested by Veerabhadrarao Badiganti.
+---
+ drivers/mmc/host/sdhci-msm.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index e44b7a6..290a14c 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -2089,6 +2089,23 @@ static void sdhci_msm_cqe_disable(struct mmc_host *mmc, bool recovery)
+ 	sdhci_cqe_disable(mmc, recovery);
  }
  
++static void sdhci_msm_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
++{
++	u32 count, start = 15;
++
++	__sdhci_set_timeout(host, cmd);
++	count = sdhci_readb(host, SDHCI_TIMEOUT_CONTROL);
++	/*
++	 * Update software timeout value if its value is less than hardware data
++	 * timeout value. Qcom SoC hardware data timeout value was calculated
++	 * using 4 * MCLK * 2^(count + 13). where MCLK = 1 / host->clock.
++	 */
++	if (cmd && cmd->data && host->clock > 400000 &&
++	    host->clock <= 50000000 &&
++	    ((1 << (count + start)) > (10 * host->clock)))
++		host->data_timeout = 22LL * NSEC_PER_SEC;
++}
++
+ static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
+ 	.enable		= sdhci_msm_cqe_enable,
+ 	.disable	= sdhci_msm_cqe_disable,
+@@ -2438,6 +2455,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
+ 	.irq	= sdhci_msm_cqe_irq,
+ 	.dump_vendor_regs = sdhci_msm_dump_vendor_regs,
+ 	.set_power = sdhci_set_power_noreg,
++	.set_timeout = sdhci_msm_set_timeout,
+ };
+ 
+ static const struct sdhci_pltfm_data sdhci_msm_pdata = {
 -- 
-2.17.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
