@@ -2,63 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FEB3CB03C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 03:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FF13CB03F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 03:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbhGPBDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 21:03:31 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11321 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbhGPBD3 (ORCPT
+        id S231176AbhGPBHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 21:07:14 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11429 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhGPBHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 21:03:29 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GQt8f67j3z7tTX;
-        Fri, 16 Jul 2021 08:56:02 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+        Thu, 15 Jul 2021 21:07:13 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQtGH3Hmnzcdjr;
+        Fri, 16 Jul 2021 09:00:55 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 16 Jul 2021 09:00:33 +0800
-Received: from huawei.com (10.174.179.206) by dggema753-chm.china.huawei.com
- (10.1.198.195) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
- Jul 2021 09:00:32 +0800
-From:   Bin Wang <wangbin224@huawei.com>
-To:     <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <naoya.horiguchi@nec.com>,
-        <wangbin224@huawei.com>, <wuxu.wu@huawei.com>
-Subject: Re: Re: [PATCH] mm/hwpoison: dissolve error hugepages of file mapping
-Date:   Fri, 16 Jul 2021 09:00:28 +0800
-Message-ID: <20210716010028.1720-1-wangbin224@huawei.com>
-X-Mailer: git-send-email 2.29.2.windows.3
-In-Reply-To: <YPBSwEdagjXjx2jO@casper.infradead.org>
-References: <YPBSwEdagjXjx2jO@casper.infradead.org>
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 09:04:04 +0800
+Received: from [10.174.179.0] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 16 Jul
+ 2021 09:04:03 +0800
+Subject: Re: [PATCH] pinctrl: single: Fix error return code in
+ pcs_parse_bits_in_pinctrl_entry()
+To:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Manjunathappa Prakash <prakash.pm@ti.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210715064206.3193-1-thunder.leizhen@huawei.com>
+ <55d02087-e2c7-9a0c-e20e-ff6f106703a3@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <bb27626a-fb4f-9974-35bd-64453e0f29a7@huawei.com>
+Date:   Fri, 16 Jul 2021 09:04:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.206]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema753-chm.china.huawei.com (10.1.198.195)
+In-Reply-To: <55d02087-e2c7-9a0c-e20e-ff6f106703a3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
 
-On Thu, 15 Jul 2021 at 16:22:40 +0100, Matthew Wilcox wrote:
-> How is that safe?  If you're going to dissolve the huge page, you
-> need to figure out which subpage needs to have the HWPoison flag set.
 
-Thanks for your review. The p that we pass to the __page_handle_poison()
-is the error subpage. And we will move the HWPoison flag to subpage in
-the dissolve_free_huge_page():
+On 2021/7/15 19:49, weiyongjun (A) wrote:
+>> Fix to return -ENOTSUPP instead of 0 when PCS_HAS_PINCONF is true, which
+>> is the same as that returned in pcs_parse_pinconf().
+>>
+>> In addition, I found the value of pcs->flags is not overwritten in
+>> pcs_parse_bits_in_pinctrl_entry() and its subfunctions, so moving this
+>> check to the beginning of the function eliminates unnecessary rollback
+>> operations.
+>>
+>> Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>   drivers/pinctrl/pinctrl-single.c | 21 ++++++++-------------
+>>   1 file changed, 8 insertions(+), 13 deletions(-)
+>>
+>>
+>>       npins_in_row = pcs->width / pcs->bits_per_pin;
+>>         vals = devm_kzalloc(pcs->dev,
+>> @@ -1212,29 +1217,19 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
+>>           goto free_pins;
+>>       }
+>>   -    gsel = pinctrl_generic_add_group(pcs->pctl, np->name, pins, found, pcs);
+>> -    if (gsel < 0) {
+>> -        res = gsel;
+>> +    res = pinctrl_generic_add_group(pcs->pctl, np->name, pins, found, pcs);
+>> +    if (res < 0)
+>>           goto free_function;
+>> -    }
+> 
+> 
+> This change cause 'gsel' not set.
+> 
+> Do not mix this cleanup with bugfix.
 
-if (PageHWPoison(head) && page != head) {
-	SetPageHWPoison(page);
-	ClearPageHWPoison(head);
-}
+gsel已经不需要了，已经被我删掉了
 
-Thanks,
-Bin Wang
+> 
+> 
+> 
+> .
+> 
