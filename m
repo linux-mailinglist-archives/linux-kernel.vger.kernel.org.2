@@ -2,133 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4DA3CB53B
+	by mail.lfdr.de (Postfix) with ESMTP id 30DE13CB539
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbhGPJ0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:26:33 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:24881 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232644AbhGPJ0c (ORCPT
+        id S232908AbhGPJ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:26:21 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:43838 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232644AbhGPJ0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:26:32 -0400
-X-UUID: 37a12d0bd6a1455f933c25f7df2eea8e-20210716
-X-UUID: 37a12d0bd6a1455f933c25f7df2eea8e-20210716
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1538404821; Fri, 16 Jul 2021 17:23:34 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 16 Jul 2021 17:23:26 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 16 Jul 2021 17:23:26 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-CC:     Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH v2] PM: runtime: enable wake irq after runtime_suspend hook called
-Date:   Fri, 16 Jul 2021 17:23:01 +0800
-Message-ID: <1626427381-30131-1-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+        Fri, 16 Jul 2021 05:26:20 -0400
+Received: by mail-vs1-f46.google.com with SMTP id a66so4598303vsd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 02:23:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1OqoN0B06XByOpA3tvQ9e3EVDa9GANnN7IQYUpgh/g8=;
+        b=HdEjWzERd5IYnLD+eRqCCuPJoOlt7zBaVXpbta6Inr9zIWoZI8NneG4jMhIa7rf5fT
+         MOI95rcDD+wqCRbmGurD2Koy3BA/nHjD5rjcmWT+AhFyYjWRJDGR+ErQo30ilnUuENYm
+         9Gahrb/7RIKGatTQZyxCcXoWMQmMmWm9QCwRAttcNGmkZYc0MoEKfnC12XqeN8ihwIFD
+         fRq+hPwAeIcZV/oBXxS7DbilYXs4r82crP0XRMw/6tRxfowyL04jZ8qeRtM+1Sz858C6
+         U7dvuKDMnYNAwUTxjJLlnTxESYUqBD0AHW+e78UfFTG8dxmUfPU5nQ24w/HwuDuoyfAf
+         nq0w==
+X-Gm-Message-State: AOAM5323KXjN8Ie+HYuQXKq8fLIQypdI2OUHMzgDoBsF9mGUw8sJfiML
+        OGgLfrz8F7s1yFiGq2t3JRzl1avPqenWr1Y0A54=
+X-Google-Smtp-Source: ABdhPJyZz8xamPCaCgF5o9kpuaoOkG86/tNUETDuZikOJ1wKaZ5/cu6TX3V11ted7nXi6hg4j9uW3JfatNByxpjFu0M=
+X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr11247074vsf.40.1626427405168;
+ Fri, 16 Jul 2021 02:23:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 98801C3A6DA5502926890C972FFD7F58BDD0757917DD0C1D5AE2E3442D4A068A2000:8
-X-MTK:  N
+References: <20210702014319.1265766-1-bmeng.cn@gmail.com> <20210702014319.1265766-2-bmeng.cn@gmail.com>
+In-Reply-To: <20210702014319.1265766-2-bmeng.cn@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 16 Jul 2021 11:23:14 +0200
+Message-ID: <CAMuHMdWpJ194jEnXiUhs5dfC-33rGUm7pE9aMHUTYoMCUdFxZA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] riscv: dts: microchip: Add ethernet0 to the aliases node
+To:     Bin Meng <bmeng.cn@gmail.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Lewis Hanly <lewis.hanly@microchip.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Bin Meng <bin.meng@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the dedicated wake-irq is level trigger, and it uses the
-consumer's sleep status as the wakeup source, that means if the
-consumer is not in sleep state, the wake-irq will be triggered
-when enable it; For this case, need enable the wake-irq after
-invoking the consumer's runtime_suspend() which make the consumer
-enter sleep state.
+Hi Bing,
 
-e.g.
-Assume the wake-irq is a low level trigger type, and the wakeup
-signal comes from the sleep status of consumer.
-The wakeup signal is low level at running time (0), and becomes
-high level when the consumer enters sleep state (runtime_suspend
-(1) is called), a wakeup event at (2) make the consumer exit sleep
-state, then the wakeup signal also becomes low level.
+On Fri, Jul 2, 2021 at 3:44 AM Bin Meng <bmeng.cn@gmail.com> wrote:
+> From: Bin Meng <bin.meng@windriver.com>
+>
+> U-Boot expects this alias to be in place in order to fix up the mac
+> address of the ethernet node.
+>
+> Note on the Icicle Kit board, currently only emac1 is enabled so it
+> becomes the 'ethernet0'.
+>
+> Signed-off-by: Bin Meng <bin.meng@windriver.com>
 
-                ------------------
-               |           ^     ^|
-----------------           |     | --------------
- |<---(0)--->|<--(1)--|   (3)   (2)    (4)
+Thanks for your patch!
 
-if enable the wake-irq before calling runtime_suspend during (0),
-an interrupt will arise, it causes resume immediately;
-it works if enable wake-irq ( e.g. at (3) or (4)) after calling
-runtime_suspend.
+> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+> @@ -9,6 +9,10 @@ / {
+>         model = "Microchip MPFS Icicle Kit";
+>         compatible = "microchip,mpfs-icicle-kit";
+>
+> +       aliases {
+> +               ethernet0 = &emac1;
+> +       };
+> +
+>         chosen {
+>         };
 
-In this example, can't fix it by using falling edge trigger without
-this patch, the issue will happen as below steps:
-1. use another wakeup source to wake up the suspended system;
-2. the consumer's resume() will be called, and exits sleep state;
-3. the consumer's wakeup signal will fall into low level, due to
-   currently the wakeup irq is disabled, the wake-irq is pending;
-4. the consumer tries to enter runtime suspend, but there is a
-   pending wakeup irq, so will resume again, this will repeat
-   endlessly.
+This should be added to the board DTS (microchip-mpfs-icicle-kit.dts)
+instead.
 
-This patch seems no side effect on edge trigger wake-irq that works
-before.
+Gr{oetje,eeting}s,
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v2: add more commit message
+                        Geert
 
-  I use the falling edge trigger interrupt suggested by Ikjoon [1], it
-works well at firstly when only use this related wakeup source, but
-encounter issues if use other wakeup sources to wakeup platform as
-described in commit message.
-  Send out the patch again for further discussion.
-
-[1]: https://patchwork.kernel.org/patch/12190407
-
----
- drivers/base/power/runtime.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-index 8a66eaf731e4..90a91b2b1364 100644
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -639,12 +639,12 @@ static int rpm_suspend(struct device *dev, int rpmflags)
- 	__update_runtime_status(dev, RPM_SUSPENDING);
- 
- 	callback = RPM_GET_CALLBACK(dev, runtime_suspend);
--
--	dev_pm_enable_wake_irq_check(dev, true);
- 	retval = rpm_callback(callback, dev);
- 	if (retval)
- 		goto fail;
- 
-+	dev_pm_enable_wake_irq_check(dev, true);
-+
-  no_callback:
- 	__update_runtime_status(dev, RPM_SUSPENDED);
- 	pm_runtime_deactivate_timer(dev);
-@@ -690,7 +690,6 @@ static int rpm_suspend(struct device *dev, int rpmflags)
- 	return retval;
- 
-  fail:
--	dev_pm_disable_wake_irq_check(dev);
- 	__update_runtime_status(dev, RPM_ACTIVE);
- 	dev->power.deferred_resume = false;
- 	wake_up_all(&dev->power.wait_queue);
 -- 
-2.18.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
