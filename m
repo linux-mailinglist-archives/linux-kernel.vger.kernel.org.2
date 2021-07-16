@@ -2,132 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE913CBB01
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9DF3CBB09
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhGPRTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbhGPRTG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:19:06 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F017BC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:16:07 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id a17-20020a4ad5d10000b0290263c143bcb2so1174216oot.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jWbVndvTFPt8BOcGSAnZdQeZBgwQ39VLXMDadBgw6kk=;
-        b=kycsT8OTIWrycyqND/lL5jUMQFDjltZ92oujogdg2Ndlkp+0StM8kAIg7tLjtQfeG1
-         YtQp0RLCivg5nlV/zFSc1mTULVPHjZTq7Ex+9U/i2yTDKpEG7bpkN+bJ8s8tT1JaBqwM
-         y2TLzY9HoTp/Uz4id24PK7R/mXY9Jq6r81ZebQ+l6yf4sVQAbW1lEdfkLQRpnnjyDDmt
-         bgikzUbY3QcdoaR5eMFhAPwFnx5Vw+ejdfPoUKSNgoBP0WsPICAy2cHDBYAdl8Ac/wYr
-         kP06C8cTP2tL3t0qMqlAqnL33Dxo7e9FDTC/AFaZehjspePkLl7z/2H0fI4s4//TTHjd
-         wV8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jWbVndvTFPt8BOcGSAnZdQeZBgwQ39VLXMDadBgw6kk=;
-        b=jvR5VNKFnnmlYtAwSqJh5qSk3YuDxqaHA9tS5eEAFPj/0CxkHfqw/ABYBwc8U8FEwp
-         0TswdWXNolTbPPIEKArunNzBSSuNHOKEuxO1Rq2c3n8/artxJ9Ksc2Gwab6cDfo0sG4g
-         E2RZWx8VzSP2AT/O67CMztGrEomSvFX/2979+n80I9BslTKsZppllSTuYIxiiOfcW38W
-         Z4bisteWWh/VqVJugWUH4InCOeBf9G8ZVYPGu9gWG2dXZoxzcNPy+LvQtak/9QwnydZR
-         W0R+OS8r0JMoe7UdYzknrXvi1AaEIG7KMZOVrIVKZoR27jh8QFdvXFPSZs94TILkkpYW
-         cRJQ==
-X-Gm-Message-State: AOAM5300Wbq6CX0YDcXsb02ox/u7HPDeUG+3kZg10/DNSlRqiaoXCyKp
-        kaaNwwXQvbYQKV23t71Sbqg/YGnCG5PjvttZPscMtQ==
-X-Google-Smtp-Source: ABdhPJx9gk24ziK+bUUPctrm/fDAn5x21MphrWbNdm5y/1f6NtI1GUnsZkQdW2dgVWs4fHcFQbpBeYfuinN/+cxYnXU=
-X-Received: by 2002:a4a:956f:: with SMTP id n44mr8396820ooi.54.1626455767094;
- Fri, 16 Jul 2021 10:16:07 -0700 (PDT)
+        id S230339AbhGPRWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 13:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229611AbhGPRWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 13:22:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 006786115A;
+        Fri, 16 Jul 2021 17:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626455978;
+        bh=+YpgeVl8kNOpkcg3zWxfdpfu5sUBR5DtgOZLtCe1KRY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QnQ6UbJmJg+lt8/7+N7cMghPA4UajH/Vbg3qSays2/rc98e2PQ53Ff1UUI3sBCSGx
+         ADX37Hjr5LAknzQD9O2J1ddhV934Xwce9o6rz68mOTcKM7srohJteB8Tsr22PgLqb6
+         ZVuUG6ZKBVAODkBTcJJ2nTmMia44dFweeN3vC74VqR/NhVMxyjqZcmYxSwmquE1tva
+         KaPrPJvg8U44Sth/9+209aRaPeUGj/B3KQSjeQrHPeD+hSjJrihunv3d0RzoDEVstU
+         +5E68tKkFGOLIYjzRB8qIFQwzRPUx7wENcuIWDyj4LMFFpJ17QXfEQ8S9vGWDLPZ4l
+         2K03UEhsITTGA==
+Date:   Fri, 16 Jul 2021 18:19:36 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        openbmc@lists.ozlabs.org, joel@jms.id.au
+Subject: Re: [PATCH 1/2] spi: fsi: Reduce max transfer size to 8 bytes
+Message-ID: <20210716171936.GB4137@sirena.org.uk>
+References: <20210716133915.14697-1-eajames@linux.ibm.com>
+ <20210716133915.14697-2-eajames@linux.ibm.com>
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
- <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <87a6mnzbx2.fsf_-_@disp2133>
- <YPFybJQ7eviet341@elver.google.com> <87tukuw8a3.fsf@disp2133>
-In-Reply-To: <87tukuw8a3.fsf@disp2133>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 16 Jul 2021 19:15:55 +0200
-Message-ID: <CANpmjNMAxk5--iAmL3fL8XpPuDDFdufu1T=r0USnO+6Rn-A95A@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Final si_trapno bits
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
+Content-Disposition: inline
+In-Reply-To: <20210716133915.14697-2-eajames@linux.ibm.com>
+X-Cookie: do {
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 at 18:09, Eric W. Biederman <ebiederm@xmission.com> wrote:
-> Marco Elver <elver@google.com> writes:
-> > On Thu, Jul 15, 2021 at 01:09PM -0500, Eric W. Biederman wrote:
-> >> As a part of a fix for the ABI of the newly added SIGTRAP TRAP_PERF a
-> >> si_trapno was reduced to an ordinary extention of the _sigfault case
-> >> of struct siginfo.
-> >>
-> >> When Linus saw the complete set of changes come in as a fix he requested
-> >> that the set of changes be trimmed down to just what was necessary to
-> >> fix the SIGTRAP TRAP_PERF ABI.
-> >>
-> >> I had intended to get the rest of the changes into the merge window for
-> >> v5.14 but I dropped the ball.
-> >>
-> >> I have made the changes to stop using __ARCH_SI_TRAPNO be per
-> >> architecture so they are easier to review.  In doing so I found one
-> >> place on alpha where I used send_sig_fault instead of
-> >> send_sig_fault_trapno(... si_trapno = 0).  That would not have changed
-> >> the userspace behavior but it did make the kernel code less clear.
-> >>
-> >> My rule in these patches is everywhere that siginfo layout calls
-> >> for SIL_FAULT_TRAPNO the code uses either force_sig_fault_trapno
-> >> or send_sig_fault_trapno.
-> >>
-> >> And of course I have rebased and compile tested Marco's compile time
-> >> assert patches.
-> >>
-> >> Eric
-> >>
-> >>
-> >> Eric W. Biederman (3):
-> >>       signal/sparc: si_trapno is only used with SIGILL ILL_ILLTRP
-> >>       signal/alpha: si_trapno is only used with SIGFPE and SIGTRAP TRAP_UNK
-> >>       signal: Remove the generic __ARCH_SI_TRAPNO support
-> >>
-> >> Marco Elver (3):
-> >>       sparc64: Add compile-time asserts for siginfo_t offsets
-> >>       arm: Add compile-time asserts for siginfo_t offsets
-> >>       arm64: Add compile-time asserts for siginfo_t offsets
-> >
-> > Nice, thanks for the respin. If I diffed it right, I see this is almost
-> > (modulo what you mentioned above) equivalent to:
-> >   https://lore.kernel.org/linux-api/m1tuni8ano.fsf_-_@fess.ebiederm.org/
-> > + what's already in mainline. It's only missing:
-> >
-> >       signal: Verify the alignment and size of siginfo_t
-> >       signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
-> >
-> > Would this be appropriate for this series, or rather separately, or
-> > dropped completely?
->
-> Appropriate I just overlooked them.
 
-Full series with the 2 patches just sent looks good to me.
+--TakKZr9L6Hm6aLOc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
--- Marco
+On Fri, Jul 16, 2021 at 08:39:14AM -0500, Eddie James wrote:
+> Security changes have forced the SPI controllers to be limited to
+> 8 byte reads. Refactor the sequencing to just handle 8 bytes at a
+> time.
+
+Which security changes where - somewhere else in Linux?
+
+--TakKZr9L6Hm6aLOc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDxv6cACgkQJNaLcl1U
+h9CX5gf/ZGL0S2R8LTjv19bHHY3qmjDxNZSgznVmQxQtQuo444TlpJcK/zHW+uDT
+yFigB3LpxINXizUgBU16bR5P4JnwISufdE/qKxKhKZsbSQnu3PgsKyVuM1Ih3157
+Qq6YATY0HF6UtqUa1O/EgnLOKsIZN4DCvg9YWF0Os2moWvol8nEYtPl/n43oDecn
+KeSSI7np9OEhA7RGRfZLcgMF67OWqune5U0nqLEPln4jiUTibMBci5Pf7f5KO8SO
+pBDt8HBvL0UJ1AXCMcgeRDjjR/hhYChgurh9alnHc+NtogOeyK4pl/V0j9d+rHs4
+LfKsz5VbX+qiaxEnue2Pdu/5hP6fDA==
+=6cCz
+-----END PGP SIGNATURE-----
+
+--TakKZr9L6Hm6aLOc--
