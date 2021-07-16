@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183A33CBBE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4490C3CBBE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhGPSed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:34:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51118 "EHLO mail.kernel.org"
+        id S231990AbhGPSgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:36:51 -0400
+Received: from ms.lwn.net ([45.79.88.28]:43372 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhGPSe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:34:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 362B4613EE;
-        Fri, 16 Jul 2021 18:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626460294;
-        bh=ub2x6wlhuTK6D3r3/YbLRI32086jnWnfond4dVYaPLo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ptnJ0WnOcuasYt9tAQrPgglhARHMCVqW14ATko70BLtT6Qvq4WMgqHvdic+rwXxsc
-         IwP3hNIpESpljw8pwY13v6UPI98q4DTHUfyKlGt/a60qWM09jjQMrTDxJK/hn9ZsVb
-         kZH0HaRuLCN6i8mpL8qrRjamer6nnNAyd7BuCW2SBvSYswyCLUqj7KeuW9W6Cu4oqi
-         Ixp1hC2s8iX0Mk/PTwYn7otViHkVgSTTMJqdB0f3Ao8XUzDkv8rBC/jP3YeD1nRkmM
-         7Tn8Z327evJ0Xpgy+VXusqThWXE1SelJJ+slumZF3lib3LkjPFUTvu9xts/qF+tAQU
-         VaCjXSMDbJSnA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Apurva Nandan <a-nandan@ti.com>, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: (subset) [PATCH 0/2] spi: cadence-quadspi: Fix DTR op checks and timeout in SPI NAND write operations
-Date:   Fri, 16 Jul 2021 19:31:30 +0100
-Message-Id: <162646021665.47820.5826789747346391444.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210713125743.1540-1-a-nandan@ti.com>
-References: <20210713125743.1540-1-a-nandan@ti.com>
+        id S229462AbhGPSgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:36:50 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id AB8D14A2;
+        Fri, 16 Jul 2021 18:33:54 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net AB8D14A2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1626460434; bh=IOhvh6s7TBzb4YTWnj3YYWT8WSg5gjl2lvgZ2N5ehl4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fUL2Yx/YDe/7uF32i1McO29I4co2rP06ugCGpzaXwHaoKbMbhDV/h1niL3iWwDiol
+         RtxhD1yU4IZr4xj0a1rt4b6QYOv9a05uq1zNLqi0twnKbvYaUTxUhFQJPzihtPA/63
+         1WWd9XdHZ+jDU5+e+IUjDom6zoCDF/E213i887f2mhzmxFpPv+8oWHSuKhZaFk1/3z
+         YA0JJ+qZF4ibhKBlhORq7DKKUTqkhQTNj3vMITIkSqsCoTGyKeUxL6xmqhEsBydHTv
+         OoC5mXM50IOmFwEyd0WuTIVsqcvyaklEXWBy4f+DkI4wA88KrjckMEo80bhRZUaLg6
+         xUUEmIQKxP3OQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
+Subject: [GIT PULL] Documentation fixes for 5.14
+Date:   Fri, 16 Jul 2021 12:33:54 -0600
+Message-ID: <87fsweds6l.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 12:57:40 +0000, Apurva Nandan wrote:
-> This series proposes fixes for cadence-quadspi controller for the
-> following issues with SPI NAND flashes:
-> 
-> - Due to auto-HW polling without address phase, the cadence-quadspi
->   controller timeouts when performing any write operation on SPI NAND
->   flash.
-> 
-> [...]
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-Applied to
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+are available in the Git repository at:
 
-Thanks!
+  git://git.lwn.net/linux.git tags/docs-5.14-2
 
-[1/2] spi: cadence-quadspi: Disable Auto-HW polling
-      commit: 9cb2ff11171264d10be7ea9e31d9ee5d49ba84a5
+for you to fetch changes up to 530c4374e21ae750c5fa5aa67b36a97635ddb379:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+  docs/zh_CN: add a missing space character (2021-07-15 06:33:44 -0600)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+----------------------------------------------------------------
+A handful of fixes in and around documentation.  Some funky quotes in
+LICENSES/dual/CC-BY-4.0 were giving spdxcheck.py grief; that has been
+fixed on both ends.  Also a couple of features updates and one docs
+build fix.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+----------------------------------------------------------------
+Hu Haowen (1):
+      docs/zh_CN: add a missing space character
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Ingo Molnar (2):
+      Documentation/features: Update the ARCH_HAS_TICK_BROADCAST entry
+      Documentation/features: Add THREAD_INFO_IN_TASK feature matrix
 
-Thanks,
-Mark
+Nishanth Menon (2):
+      scripts/spdxcheck.py: Strictly read license files in utf-8
+      LICENSES/dual/CC-BY-4.0: Git rid of "smart quotes"
+
+ .../core/thread-info-in-task/arch-support.txt      | 32 ++++++++++++++++++++++
+ .../time/arch-tick-broadcast/arch-support.txt      |  2 +-
+ .../translations/zh_CN/process/2.Process.rst       |  4 +--
+ LICENSES/dual/CC-BY-4.0                            |  2 +-
+ scripts/spdxcheck.py                               |  2 +-
+ 5 files changed, 37 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/features/core/thread-info-in-task/arch-support.txt
