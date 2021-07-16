@@ -2,237 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2553A3CBE02
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 420893CBE19
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbhGPUty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:49:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232888AbhGPUtw (ORCPT
+        id S234777AbhGPU7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:59:52 -0400
+Received: from esa1.mentor.iphmx.com ([68.232.129.153]:45067 "EHLO
+        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230415AbhGPU7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:49:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626468416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y//emM5RtevFVuv02pvQEtLcPSNBoyUazVRqH8qhJrg=;
-        b=JIGPzBStEUzIsIAT7q+65zdNEzZQRL10MHn+SMKp4mQcR6PGC1lJwqSB53xH6RE91bptRh
-        zs44b8BTQ7TdzbttKGd+hnPDYwGO6gpcA7oA/QxTqBF24GHRme6kuqSgLAsjzaB+IPNsEg
-        kVqXUqzE0bKCYQf7o7tuKXucE1/0/X4=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-oS4p7B8iMVGh0J1DMxP7zQ-1; Fri, 16 Jul 2021 16:46:55 -0400
-X-MC-Unique: oS4p7B8iMVGh0J1DMxP7zQ-1
-Received: by mail-qv1-f69.google.com with SMTP id y35-20020a0cb8a30000b0290270c2da88e8so7535581qvf.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:46:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Y//emM5RtevFVuv02pvQEtLcPSNBoyUazVRqH8qhJrg=;
-        b=exN15ZVpreKsOwfKcUN+4rZw0V2mAdKQjtweqMHxY63eS22moWM+0fNaIzoeCX/KaN
-         PGttOq8QZnk1R6GDEPf2U5Pw+pbJXKviF2qvSNvHUoDZ2moS+HmFueNTFbm0CM0yl9Lg
-         LzQHR0vmCyG0Rsnd8+xIK1JvFZ1zVuqYws3tTzhAdaWWziXcqLDrPc+qiIyhhcLHFeW5
-         BMf7N7iOacLQXs715QcdrHefa2IKSETkhhRr4+AglnVpa9RmmrttQZExOIRroyu0rcZa
-         UGZ0iirXA7seXK/4bnKYqeG0+50fibb3ps+l+QtAslExcXv8TYsCz9++aYH0sxQGnPGo
-         Lj6Q==
-X-Gm-Message-State: AOAM533Znoz/PAJhbDnHW7n9hLx9gQeESKMHryKb5Y9pZj3MrGrfxfKH
-        CgqSS3g1sq+ns+aDUCHTATsSwhVkz89gy8Rd7QoV3yt21Hmecm5N2UiOqHzn2YtdAn9rYfpPPGE
-        FUQ9mWK4EHgUg6LVGYXp28AKn
-X-Received: by 2002:a37:411:: with SMTP id 17mr11848152qke.225.1626468415471;
-        Fri, 16 Jul 2021 13:46:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxwaeuIafGpIFBrSp6F2jqOQPtMysFqiFmqK2xpgV89hJlVXNri8ZgeOTcNwPS7r3jsl2qkvw==
-X-Received: by 2002:a37:411:: with SMTP id 17mr11848137qke.225.1626468415270;
-        Fri, 16 Jul 2021 13:46:55 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k6sm3609100qtg.78.2021.07.16.13.46.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 13:46:54 -0700 (PDT)
-Subject: Re: [PATCH v5 1/3] fpga: dfl: expose feature revision from struct
- dfl_device
-To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
-        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Brown <broonie@kernel.org>
-Cc:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>
-References: <20210716135441.3235863-1-martin@geanix.com>
- <20210716135441.3235863-2-martin@geanix.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <ec0f22f3-c7e5-baaf-c60c-77ecc4cb9e86@redhat.com>
-Date:   Fri, 16 Jul 2021 13:46:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 16 Jul 2021 16:59:50 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Jul 2021 16:59:50 EDT
+IronPort-SDR: p3F3OMqqi/FBn1jzJiFVk2JgtZwDn1DypYFtHclox8DXjFterUO17vuVm8HRARDf9bOB5+wXRg
+ 4P745SiUd+aZnuwE6uCznra4darlLi4crivDqHAA36Dh1mnGPeuAgOCh1QEQqkJhD5uchTNzVY
+ f+vX+gyXrZb0hoHiXaxpV9eVTzds5KeoyFgC9/gwptXeq7ik78Yn10OJt64BpD3/PDmOxQr0o5
+ +qiswytS+hMalJuFYEwOlJXKK1Fq2o5Ml3s7hkM06/kHLwfA/u6epteQv/eZ+svZbAnQ8/lc0V
+ ku4chJwHk7im6cgiW1PF6s1G
+X-IronPort-AV: E=Sophos;i="5.84,245,1620720000"; 
+   d="scan'208";a="66063730"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa1.mentor.iphmx.com with ESMTP; 16 Jul 2021 12:49:49 -0800
+IronPort-SDR: 0LTvEaGOpdPEEWRO6+30U5xaO2Sm4vp//3nOGRfD7A4rotBp9QK2ds7YuSLHQpbBflUPM7gJri
+ YE+KevlY04a9vga5SFFby77GL9INzEzaGcm6APCnrX+SmjthJhRteGpYcIw7/hn/9zejxsLull
+ mI8eD7blGpaZzUGCYxf63FYtPXyZ+yjwQiwo74Q6dDGgCTop31fOan+VoeBeIcUFhxrU/rjxGw
+ PHqUjUA/dEQOgIAM+0BofCGSDHb80UeHuCNhC8iJxzmEVtFg3CatH+ueN5/gyabA2DLq/fYr4F
+ uJk=
+From:   "George G. Davis" <george_davis@mentor.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        "George G. Davis" <george_davis@mentor.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        "open list:HYPERBUS SUPPORT" <linux-mtd@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     "George G. Davis" <davis.george@siemens.com>
+Subject: [PATCH] mtd: hyperbus: rpc-if: fix bug in rpcif_hb_remove
+Date:   Fri, 16 Jul 2021 16:49:35 -0400
+Message-ID: <20210716204935.25859-1-george_davis@mentor.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210716135441.3235863-2-martin@geanix.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-ClientProxiedBy: SVR-ORW-MBX-07.mgc.mentorg.com (147.34.90.207) To
+ svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "George G. Davis" <davis.george@siemens.com>
 
-On 7/16/21 6:54 AM, Martin Hundebøll wrote:
-> From: Martin Hundebøll <mhu@silicom.dk>
->
-> DFL device drivers have a common need for checking feature revision
-> information from the DFL header, as well as other common DFL information
-> like the already exposed feature id and type.
->
-> This patch exposes the feature revision information directly via the DFL
-> device data structure.
->
-> Since the DFL core code has already read the DFL header, this this patch
-> saves additional mmio reads from DFL device drivers too.
->
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-> Acked-by: Wu Hao <hao.wu@intel.com>
-> Acked-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> ---
->
-> Changes since v4:
->   * Renamed 'rev' to 'revision' as per Tom's suggestion
->
-> Changes since v3:
->   * Added Hao's Acked-by
->   * Added Matthew's Acked-by
->
-> Changes since v2:
->   * Reworded commit message as per Hao's suggestion
->
-> Changes since v1:
->   * This patch replaces the previous patch 2 and exposes the feature
->     revision through struct dfl_device instead of a helper reading from
->     io-mem
->
->   drivers/fpga/dfl.c  | 27 +++++++++++++++++----------
->   drivers/fpga/dfl.h  |  1 +
->   include/linux/dfl.h |  1 +
->   3 files changed, 19 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> index 511b20ff35a3..e73a70053906 100644
-> --- a/drivers/fpga/dfl.c
-> +++ b/drivers/fpga/dfl.c
-> @@ -381,6 +381,7 @@ dfl_dev_add(struct dfl_feature_platform_data *pdata,
->   
->   	ddev->type = feature_dev_id_type(pdev);
->   	ddev->feature_id = feature->id;
-> +	ddev->revision = feature->revision;
->   	ddev->cdev = pdata->dfl_cdev;
->   
->   	/* add mmio resource */
-> @@ -717,6 +718,7 @@ struct build_feature_devs_info {
->    */
->   struct dfl_feature_info {
->   	u16 fid;
-> +	u8 revision;
->   	struct resource mmio_res;
->   	void __iomem *ioaddr;
->   	struct list_head node;
-> @@ -796,6 +798,7 @@ static int build_info_commit_dev(struct build_feature_devs_info *binfo)
->   		/* save resource information for each feature */
->   		feature->dev = fdev;
->   		feature->id = finfo->fid;
-> +		feature->revision = finfo->revision;
->   
->   		/*
->   		 * the FIU header feature has some fundamental functions (sriov
-> @@ -910,19 +913,17 @@ static void build_info_free(struct build_feature_devs_info *binfo)
->   	devm_kfree(binfo->dev, binfo);
->   }
->   
-> -static inline u32 feature_size(void __iomem *start)
-> +static inline u32 feature_size(u64 value)
->   {
-> -	u64 v = readq(start + DFH);
-> -	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, v);
-> +	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, value);
->   	/* workaround for private features with invalid size, use 4K instead */
->   	return ofst ? ofst : 4096;
->   }
->   
-> -static u16 feature_id(void __iomem *start)
-> +static u16 feature_id(u64 value)
->   {
-> -	u64 v = readq(start + DFH);
-> -	u16 id = FIELD_GET(DFH_ID, v);
-> -	u8 type = FIELD_GET(DFH_TYPE, v);
-> +	u16 id = FIELD_GET(DFH_ID, value);
-> +	u8 type = FIELD_GET(DFH_TYPE, value);
->   
->   	if (type == DFH_TYPE_FIU)
->   		return FEATURE_ID_FIU_HEADER;
-> @@ -1021,10 +1022,15 @@ create_feature_instance(struct build_feature_devs_info *binfo,
->   	unsigned int irq_base, nr_irqs;
->   	struct dfl_feature_info *finfo;
->   	int ret;
-> +	u8 revision;
-> +	u64 v;
-> +
-> +	v = readq(binfo->ioaddr + ofst);
-> +	revision = FIELD_GET(DFH_REVISION, v);
->   
->   	/* read feature size and id if inputs are invalid */
-> -	size = size ? size : feature_size(binfo->ioaddr + ofst);
-> -	fid = fid ? fid : feature_id(binfo->ioaddr + ofst);
-> +	size = size ? size : feature_size(v);
-> +	fid = fid ? fid : feature_id(v);
->   
->   	if (binfo->len - ofst < size)
->   		return -EINVAL;
-> @@ -1038,6 +1044,7 @@ create_feature_instance(struct build_feature_devs_info *binfo,
->   		return -ENOMEM;
->   
->   	finfo->fid = fid;
-> +	finfo->revision = revision;
->   	finfo->mmio_res.start = binfo->start + ofst;
->   	finfo->mmio_res.end = finfo->mmio_res.start + size - 1;
->   	finfo->mmio_res.flags = IORESOURCE_MEM;
-> @@ -1166,7 +1173,7 @@ static int parse_feature_private(struct build_feature_devs_info *binfo,
->   {
->   	if (!is_feature_dev_detected(binfo)) {
->   		dev_err(binfo->dev, "the private feature 0x%x does not belong to any AFU.\n",
-> -			feature_id(binfo->ioaddr + ofst));
-> +			feature_id(readq(binfo->ioaddr + ofst)));
->   		return -EINVAL;
->   	}
->   
-> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> index 2b82c96ba56c..422157cfd742 100644
-> --- a/drivers/fpga/dfl.h
-> +++ b/drivers/fpga/dfl.h
-> @@ -243,6 +243,7 @@ struct dfl_feature_irq_ctx {
->   struct dfl_feature {
->   	struct platform_device *dev;
->   	u16 id;
-> +	u8 revision;
->   	int resource_index;
->   	void __iomem *ioaddr;
->   	struct dfl_feature_irq_ctx *irq_ctx;
-> diff --git a/include/linux/dfl.h b/include/linux/dfl.h
-> index 6cc10982351a..431636a0dc78 100644
-> --- a/include/linux/dfl.h
-> +++ b/include/linux/dfl.h
-> @@ -38,6 +38,7 @@ struct dfl_device {
->   	int id;
->   	u16 type;
->   	u16 feature_id;
-> +	u8 revision;
->   	struct resource mmio_res;
->   	int *irqs;
->   	unsigned int num_irqs;
+The following KASAN BUG is observed when testing the rpc-if driver on
+rcar-gen3:
 
-Looks good to me.
+root@rcar-gen3:~# modprobe -r rpc-if
+[  101.930146] ==================================================================
+[  101.937408] BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x518/0x25d0
+[  101.944240] Read of size 8 at addr ffff0004c5be2750 by task modprobe/664
+[  101.950959]
+[  101.952466] CPU: 2 PID: 664 Comm: modprobe Not tainted 5.14.0-rc1-00342-g1a1464d7aa31 #1
+[  101.960578] Hardware name: Renesas H3ULCB board based on r8a77951 (DT)
+[  101.967120] Call trace:
+[  101.969580]  dump_backtrace+0x0/0x2c0
+[  101.973275]  show_stack+0x1c/0x30
+[  101.976616]  dump_stack_lvl+0x9c/0xd8
+[  101.980301]  print_address_description.constprop.0+0x74/0x2b8
+[  101.986071]  kasan_report+0x1f4/0x26c
+[  101.989757]  __asan_load8+0x98/0xd4
+[  101.993266]  __lock_acquire+0x518/0x25d0
+[  101.997215]  lock_acquire.part.0+0x18c/0x360
+[  102.001506]  lock_acquire+0x74/0x90
+[  102.005013]  _raw_spin_lock_irq+0x98/0x130
+[  102.009131]  __pm_runtime_disable+0x30/0x210
+[  102.013427]  rpcif_hb_remove+0x5c/0x70 [rpc_if]
+[  102.018001]  platform_remove+0x40/0x80
+[  102.021771]  __device_release_driver+0x234/0x350
+[  102.026412]  driver_detach+0x158/0x20c
+[  102.030179]  bus_remove_driver+0xa0/0x140
+[  102.034212]  driver_unregister+0x48/0x80
+[  102.038153]  platform_driver_unregister+0x18/0x24
+[  102.042879]  rpcif_platform_driver_exit+0x1c/0x34 [rpc_if]
+[  102.048400]  __arm64_sys_delete_module+0x210/0x310
+[  102.053212]  invoke_syscall+0x60/0x190
+[  102.056986]  el0_svc_common+0x12c/0x144
+[  102.060844]  do_el0_svc+0x88/0xac
+[  102.064181]  el0_svc+0x24/0x3c
+[  102.067257]  el0t_64_sync_handler+0x1a8/0x1b0
+[  102.071634]  el0t_64_sync+0x198/0x19c
+[  102.075315]
+[  102.076815] Allocated by task 628:
+[  102.080781]
+[  102.082280] Last potentially related work creation:
+[  102.087524]
+[  102.089022] The buggy address belongs to the object at ffff0004c5be2000
+[  102.089022]  which belongs to the cache kmalloc-2k of size 2048
+[  102.101555] The buggy address is located 1872 bytes inside of
+[  102.101555]  2048-byte region [ffff0004c5be2000, ffff0004c5be2800)
+[  102.113486] The buggy address belongs to the page:
+[  102.118409]
+[  102.119908] Memory state around the buggy address:
+[  102.124711]  ffff0004c5be2600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.131947]  ffff0004c5be2680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.139181] >ffff0004c5be2700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.146412]                                                  ^
+[  102.152257]  ffff0004c5be2780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.159491]  ffff0004c5be2800: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  102.166723] ==================================================================
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+The above bug is caused by use of the wrong pointer in the
+rpcif_disable_rpm() call. Fix the bug by using the correct pointer.
+
+Fixes: e806241e03b7 ("mtd: hyperbus: add Renesas RPC-IF driver")
+Signed-off-by: George G. Davis <davis.george@siemens.com>
+---
+ drivers/mtd/hyperbus/rpc-if.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
+index ecb050ba95cd..2806024b50ac 100644
+--- a/drivers/mtd/hyperbus/rpc-if.c
++++ b/drivers/mtd/hyperbus/rpc-if.c
+@@ -150,9 +150,9 @@ static int rpcif_hb_remove(struct platform_device *pdev)
+ {
+ 	struct rpcif_hyperbus *hyperbus = platform_get_drvdata(pdev);
+ 	int error = hyperbus_unregister_device(&hyperbus->hbdev);
+-	struct rpcif *rpc = dev_get_drvdata(pdev->dev.parent);
+ 
+-	rpcif_disable_rpm(rpc);
++	rpcif_disable_rpm(&hyperbus->rpc);
++
+ 	return error;
+ }
+ 
+-- 
+2.17.1
 
