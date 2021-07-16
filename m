@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAC13CB8AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7B33CB8B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240126AbhGPOcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:32:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232988AbhGPOco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:32:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92222608FE;
-        Fri, 16 Jul 2021 14:29:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626445789;
-        bh=VPwtDfFzlw2mMjhZCIjf8rYJAIRLSJ0qqv+tfTiMLqQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=L+iju3E9TjfAX40sCXr1w6l/1yhGm39A5FS/30uSaeW+Lsq2rZnATy/faAaI4Kg8X
-         xAkgX1Y1p0mPS9uEfa/w7+9kHyEoJYSSOtJXGRdEZVF9UnUSkq18TmtGQAkrBEWvqg
-         86Vmyc2ZYHn99ZraEakry6E1C95TOLwCVv41apVGUg+0qq46jQL1haF7ewlajB6Mzx
-         HtOjG8VbLvrXkR9n9nZeoKW/LuqYXA0mbInPJj9uKB3xFoyOhkrv2+8i89jST2NyBX
-         P49d4jE8pbMzeA/lM2o0mIyKrxwXoeIXlfaQo9GEYTt40Juxw3CnF3AMiVom58ksud
-         4SF1jo27uR/2g==
-Date:   Fri, 16 Jul 2021 09:29:48 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Prasad Malisetty <pmaliset@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] Add DT bindings and DT nodes for PCIe and PHY in
- SC7280
-Message-ID: <20210716142948.GA2098168@bjorn-Precision-5520>
+        id S240303AbhGPOef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239803AbhGPOee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 10:34:34 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D40C06175F;
+        Fri, 16 Jul 2021 07:31:38 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id k4so12316996wrc.8;
+        Fri, 16 Jul 2021 07:31:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HfyxvApAZ/QZvHM+p5Z7vY05jWEPB2D5W608SFXmszc=;
+        b=BiNw4S/nNGbPkUa1crFEo2Y0/F8w8G9auWNhNskkQ7COnYo5wnECAN/07YJpoA15yp
+         y1j9atMh+9ZcfZvkqJHZZOVVfWp3KAck8GXvy2t4Cg8JgCV1qh9XHgPSMAAce6YDMMex
+         zdX5hA4MXqMe2/4AATppa3CQUBcLOfDByMDaXEOxz3LVoQ7oodrpxekThqZg1gfGXnVT
+         MwlYcN5MFT1Wix931dlrsHnYz1bSjLs5wnni+fYiOoBnStHh5zm16QQZqBeizLfQq9xh
+         BDPNNDT4b7isNLQ4nHiFOVmdSb3o6bE4XTxgspU+fsXx4J2tKfYpVM0NgMhxfU7avYK9
+         vsDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HfyxvApAZ/QZvHM+p5Z7vY05jWEPB2D5W608SFXmszc=;
+        b=VBfFuN9L8nAHgZTyhMsNNfRKtUBdrMkyAYTa0hxsND3JILMYhXxDfwvkaOn8mS45zM
+         02aYEiWIFZ2Q7XN4v3iAI+W+lK8MC5gX/wKyrLamxYgKQnFBUx2cYIUGsSpB+C+zgMCA
+         na2DI9w2pQI5yIR2jsLJis7RxezqhBSA+U9iz4N0v1n1LAYl8BYx5njt+rXvAGDmzCw+
+         fgsUwi/Ksgc6wfQBtU8r3BE5Bq8q+0FLE/ulWFNpLoH3hkdobxFobVVFwyOfgL5C+UIe
+         elWDQGwr0OFWL4eQfkEr+OX8Ditqtn+Q8zbll2kJzmnohwuDzUD19EbD3siUjnO0GyIm
+         ZYnA==
+X-Gm-Message-State: AOAM532d4A8STElkw1piAem1Uh11b9P1N279U+JPI0HscUzOihaXazJN
+        FKgc9qTKVCH3CWs9NI/8KETupMkoBxukmSb3DHI=
+X-Google-Smtp-Source: ABdhPJzNsznePTaYmquFe11N5cDdMdqdLLKPdxNodbRML7ppVKehpfYQUESzJxYsB3WikgGIRh1AkH3Y73mC/3yvNEY=
+X-Received: by 2002:a5d:6481:: with SMTP id o1mr13127552wri.164.1626445897440;
+ Fri, 16 Jul 2021 07:31:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626443927-32028-1-git-send-email-pmaliset@codeaurora.org>
+References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com>
+ <20210715141802.880911-2-daniel.baluta@oss.nxp.com> <20210715143906.GD4590@sirena.org.uk>
+In-Reply-To: <20210715143906.GD4590@sirena.org.uk>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Fri, 16 Jul 2021 17:31:25 +0300
+Message-ID: <CAEnQRZCdSLoaLVZ7-jtufgZCG6QshMwdfyJy_4oE6cXRbA5H8A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: SOF: Parse fw/tplg filename from DT
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc linux-pci]
+On Thu, Jul 15, 2021 at 5:39 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Jul 15, 2021 at 05:18:00PM +0300, Daniel Baluta wrote:
+>
+> > Introduce two DT properties in dsp node:
+> >       * fw-filename, optional property giving the firmware filename
+> >       (if this is missing fw filename is read from board description)
+> >       * tplg-filename, mandatory giving the topology filename.
+>
+> These sound entirely like operating system configuration which I'd
+> expect to be inferred from the machine identification.  What happens if
+> a system has multiple options for firmware files, or if the OS ships the
+> topology and firmware bundled up in a single image to avoid them getting
+> out of sync?  What's the benefit of putting them in the DT?
 
-On Fri, Jul 16, 2021 at 07:28:43PM +0530, Prasad Malisetty wrote:
-> Changes in v4 as suggested by Bjorn:
-> 
-> 	* Changed pipe clk mux name as gcc_pcie_1_pipe_clk_src.
-> 	* Changed pipe_ext_src as phy_pipe_clk.
-> 	* Updated commit message for [PATCH v4 4/4]. 
-> 		
-> 
-> Changes in v3:
-> 	* Changed pipe clock names in dt bindings as pipe_mux and phy_pipe.
-> 	* Moved reset and NVMe GPIO pin configs into board specific file.
-> 	* Updated pipe clk mux commit message.
-> 	
-> Changes in v2:
-> 	* Moved pcie pin control settings into IDP file.
-> 	* Replaced pipe_clk_src with pipe_clk_mux in pcie driver 
-> 	* Included pipe clk mux setting change set in this series
-> 
-> Prasad Malisetty (4):
->   dt-bindings: pci: qcom: Document PCIe bindings for SC720
->   arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
->   arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
->   PCIe: qcom: Add support to control pipe clk src
-> 
->  .../devicetree/bindings/pci/qcom,pcie.txt          |  17 +++
->  arch/arm64/boot/dts/qcom/sc7280-idp.dts            |  38 +++++++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi               | 125 +++++++++++++++++++++
->  drivers/pci/controller/dwc/pcie-qcom.c             |  22 ++++
+We thought that if a system has multiple options for firmware files
+we could use different Device Tree files. But indeed this doesn't scale.
 
-  $ ./scripts/get_maintainer.pl -f drivers/pci/controller/dwc/pcie-qcom.c
+It would be awkward to create a new dts just to change the firmware name.
 
-tells you that linux-pci should be included.  One reason that's
-important is because patchwork watches linux-pci for incoming patches,
-and I use patchwork as my to-do list.  
+Similarly for topology files. We might have:
+
+- different audio scenarios (e.g different audio pipeline with
+different components, e.g Post Processing Components, etc)
+- different hardware attached to a board (e.g i.MX8 can have a
+baseboard attached which brings in more codecs).
+
+I think the best way to specify the audio firmware is via the board
+description structure which is already
+used to provide a default value for firmware file name.
+
+Then for the topology used we could make that as a module parameter.
+
+For us it is important to be able to use different topologies without
+recompiling the kernel. So, far we just
+used a simbolic link to the default topology file and change the
+symbolic link to the desired topology and then reboot.
