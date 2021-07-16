@@ -2,85 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079ED3CBA85
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829B03CBA88
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhGPQ34 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Jul 2021 12:29:56 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:56096 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhGPQ3y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:29:54 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id C7A836169BB0;
-        Fri, 16 Jul 2021 18:26:57 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id r4aiC90VSn-V; Fri, 16 Jul 2021 18:26:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 4CE52616B593;
-        Fri, 16 Jul 2021 18:26:57 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iZzCNoafkg8f; Fri, 16 Jul 2021 18:26:57 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 1F0216169BB0;
-        Fri, 16 Jul 2021 18:26:57 +0200 (CEST)
-Date:   Fri, 16 Jul 2021 18:26:56 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Greg KH <greg@kroah.com>
-Cc:     Pintu Agarwal <pintu.ping@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
-Message-ID: <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
-In-Reply-To: <YPGojf7hX//Wn5su@kroah.com>
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com> <YPGojf7hX//Wn5su@kroah.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: How to get actual image size from MTD partition
-Thread-Index: EX+isZbzvbtTKORywh51Mf2FxgrK+w==
+        id S229943AbhGPQaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:30:24 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27626 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229581AbhGPQaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:30:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="210806014"
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="210806014"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 09:27:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="656442863"
+Received: from inlubt0177.iind.intel.com ([10.223.67.91])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Jul 2021 09:27:24 -0700
+From:   lakshmi.sowjanya.d@intel.com
+To:     linus.walleij@linaro.org
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com,
+        lakshmi.bai.raja.subramanian@intel.com, tamal.saha@intel.com,
+        lakshmi.sowjanya.d@intel.com
+Subject: [PATCH v3 0/2] Add pinctrl support for Intel Keem Bay SoC
+Date:   Fri, 16 Jul 2021 21:57:22 +0530
+Message-Id: <20210716162724.26047-1-lakshmi.sowjanya.d@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "Greg KH" <greg@kroah.com>
-> An: "Pintu Agarwal" <pintu.ping@gmail.com>
-> CC: "linux-kernel" <linux-kernel@vger.kernel.org>, "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-fsdevel"
-> <linux-fsdevel@vger.kernel.org>, "Phillip Lougher" <phillip@squashfs.org.uk>, "Sean Nyekjaer" <sean@geanix.com>,
-> "Kernelnewbies" <kernelnewbies@kernelnewbies.org>, "richard" <richard@nod.at>
-> Gesendet: Freitag, 16. Juli 2021 17:41:01
-> Betreff: Re: MTD: How to get actual image size from MTD partition
+From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 
-> On Fri, Jul 16, 2021 at 12:12:41PM +0530, Pintu Agarwal wrote:
->> Hi,
->> 
->> Our ARM32 Linux embedded system consists of these:
->> * Linux Kernel: 4.14
->> * Processor: Qualcomm Arm32 Cortex-A7
->> * Storage: NAND 512MB
->> * Platform: Simple busybox
->> * Filesystem: UBIFS, Squashfs
->> * Consists of nand raw partitions, squashfs ubi volumes.
->> 
->> My requirement:
->> To find the checksum of a real image in runtime which is flashed in an
->> MTD partition.
-> 
-> Try using the dm-verity module for ensuring that a block device really
-> is properly signed before mounting it.  That's what it was designed for
-> and is independent of the block device type.
+Hi,
 
-MTDs are not block devices. :-)
+This patch set enables the support for the integrated pin controller in
+the Intel Keem Bay SoC.
 
-Thanks,
-//richard
+Patch 1 holds the implementation of pinctrl driver.
+Patch 2 holds the relevant Device Tree bindings documentation and an
+entry in MAINTAINERS file
+
+High-Level Architecture:
+-----------------------
+
+                                   +----------------------------+
+     ------------------------------|MODE 0 -                    |
+      -----------------------------|MODE 1      PIN MUX         |
+       ----------------------------|...                         |
+        ---------------------------|...                         | PAD M
+         +-------------------------|MODE 7(GPIO)		---------
+         |                         |                            |    .
+         |                         |  +---------------------+   |    .
+         |                         |  |  GPIO_MODE (0-79)   |   |    .
+         |                         |  | INV|PU|PD|DIR|MODE  |   |    .
+         |                         |  +---------------------+   |    .
+         |                         |    PIN CONFIGURATION       |    .
+         |                         +----------------------------+    .
+         |                                                           .
+         |                         +----------------------------+    .
+         |        -----------------|MODE 0 -                    |    .
+         |         ----------------|MODE 1      PIN MUX         |    .
+         |          ---------------|...                         |
+         |            -------------|...                         | PAD N
+         |                +--------|MODE 7(GPIO)		---------
+         |                |        |                            |
+         |                |        |  +---------------------+   |
+         |                |        |  |  GPIO_MODE (0-79)   |   |
+         |                |        |  | INV|PU|PD|DIR|MODE  |   |
+         |                |        |  +---------------------+   |
+         |                |        |    PIN CONFIGURATION       |
+         |                |        +----------------------------+
+         |                |
+         |                |
+         |                |
+         |                |	   +------------------------------------+
+         |                |        |       GPIO PIN CONTROL		|
+         |                |        |					|
+         |                |        |    +-------------------------+	|
+         |                |        |    | GPIO_DATA_IN (0-2)      |	|
+         |                |        |    +-------------------------+	|
+     0   1..28   29  30  31  -------    +-------------------------+	|
+     |   |   |   |   |    |        |    | GPIO_DATA_OUT_HIGH (0-2)|	|
+     \   \   \   \   \    |        |    | GPIO_DATA_OUT_LOW (0-2) |	|
+      |   |   |   |   |   |        |    +-------------------------+	|
+      |   |   |   |   |   |        |					|
+      |   |   |   |   |   |	   +------------------------------------+
+      \   \   \   \   \   |
+       |   |   |   |   |  |              GPIO_INT_CFG (Bits)
+       |   |   |   |   |  |	+---|-------|--|------|--|----|--|---+
+      +-------------------+-+   |31   30     23    16  15 14-8 7 6-0 |
+      | GPIO_INT_CFG(0-7)   |	+---|-------|--|------^--|----|--|---+
+      +---------------------+   |En   Idx   |En| Idx  |En| Idx|En|Idx|
+        |   |    |  |		+---|-------|--|------|--|----|--|---+
+       0|  1|...6| 7|
+        |   |    |  |
+     +-------------------+
+     |                   |
+     |                   |
+     |                   |
+     |                   |
+     |  Interrupt        |
+     |  Control          |
+     |                   |
+     |                   |
+     |                   |
+     |                   |
+     +-------------------+
+
+Explored registering GPIOCHIP per 32 bits, from the IP there are
+registers
+for set/clear and read pins which falls under the category of per
+register
+handling 32 bits, but for other functionality like direction, config,
+interrupt mux, there is a need to have customised solution.
+
+Using gpiochip per 32 bits involves additional data structures, and
+it has an impact in the device tree for all the users of these
+PADs.
+
+Spinlock is not required for all the operations like set/get as there
+are separate for each. Configuring all the registers in a single driver
+is preferred as it is easy to debug.
+
+Please help to review this patch set.
+
+Thanks in advance,
+Sowjanya
+
+Changes from v2:
+ - Removed unused variable trig
+
+Changes from v1:
+ - Changed the boolean to true in yaml
+ - Removed spinlock for all the transactions except irq transactions
+ - Added standard ngpios instead of num-gpios
+ - Added gpiochip_generic_config() api
+ - Added check for IRQ_ENABLE and removed the check for the mask
+   IRQ_TYPE_SENSE_MASK
+
+Lakshmi Sowjanya D (2):
+  dt-bindings: pinctrl: Add bindings for Intel Keembay pinctrl driver
+  pinctrl: Add Intel Keem Bay pinctrl driver
+
+ .../pinctrl/intel,pinctrl-keembay.yaml        |  134 ++
+ MAINTAINERS                                   |    5 +
+ drivers/pinctrl/Kconfig                       |   19 +
+ drivers/pinctrl/Makefile                      |    1 +
+ drivers/pinctrl/pinctrl-keembay.c             | 1731 +++++++++++++++++
+ 5 files changed, 1890 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/intel,pinctrl-keembay.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-keembay.c
+
+-- 
+2.17.1
+
