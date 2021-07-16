@@ -2,147 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6E43CB409
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DA53CB415
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237499AbhGPIXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:23:30 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:55226 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236794AbhGPIXS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:23:18 -0400
-Received: by mail-il1-f200.google.com with SMTP id t12-20020a92c0cc0000b0290210d3ffca31so4875984ilf.21
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:20:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=NoP47C11oy09T6AEoTMg2yOrzw17CGIlWMAOu4IRbG4=;
-        b=azutiBjCz7Gq9qa1rPUVNsDDHaVkaI7BnKa2gIMn57iFCuuVyTdg0ZRrK8v5G/iexB
-         PUcMhGJOMQk4InQnlP8hKMrxwmNspePP0CZSNEAFgDUT3le4+PlBeV88OiBA25JNJAxM
-         on+QlLqPp64o3W9I68Kt0MAPKF2XpgImDprtVBg7ZrbfhNuWsqBaM59qt/qD46gph3kO
-         +oR6CFZsxEx9Sg2jMGq4909ahaFB9/+IO9wo4KUKKO430VA8yzzZsomHW6wqq9S2QeR2
-         YCDMN3bkrp0XwTr0+HZG4HRhuXxZ/d5y1K5tj0jzKTJz2m6WRbl7sJo9VdyfAy+DMbq4
-         H46A==
-X-Gm-Message-State: AOAM531Y5b62RxkaKfiJcKkr5GKpubrlOfBOXSHFMko0wyzai9w4NyAN
-        okggJYSl2V06SXCma/Vd/T563bvzvPZc+NBEIlgBs/hcTSCA
-X-Google-Smtp-Source: ABdhPJx6T5K8+FPUkB7w7RXnTjCNqXnbl6YHlJo1fMuaQ0+R31OuwCAZvUQDd6/L/XETf64RMbsvaAwU9L0sIVdV9wbzjPSsa9R9
+        id S237387AbhGPI1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:27:04 -0400
+Received: from gofer.mess.org ([88.97.38.141]:34181 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231851AbhGPI1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 04:27:02 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 0894EC65B9; Fri, 16 Jul 2021 09:24:05 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1626423846; bh=k4GV0GyL3ss27o/H8GNejAFIH+XbYUndAcIjCC5L3s4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P3O4/mlSQPw+CSbX13SWksOS8UAwp1Lh+QLjaMXCjvYFKitLQQSNAqSO20WtJHPPe
+         aiydCsjegm81mLgM84FLrRBk/hnymcloU1EUeRcRs+4s9fC3xB/x9sZuPk+JITlR1f
+         J82igZN51I+16tN0UtumrXDfkbn9cAcU4bVqVgwS5N4KGz+uUDTJYRbhDIB8wfwOB6
+         DvnP4ABtNJ2ST682LTafKe4pQEMhtufXC831QFu3RwfHKc2/7aLYw4kOSl8PEqBE0U
+         nzXZl42EpJRk7ZBW6FW/JJgu3z/UjKuWDR7VrehEP90Lco3uEqNTF9AJo1aSx/ozf2
+         WF3YnLyyzpzzA==
+Date:   Fri, 16 Jul 2021 09:24:05 +0100
+From:   Sean Young <sean@mess.org>
+To:     Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+Cc:     mchehab@kernel.org, robh+dt@kernel.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, rockosov@gmail.com
+Subject: Re: [PATCH v5 2/2] media: rc: introduce Meson IR TX driver
+Message-ID: <20210716082405.GA30719@gofer.mess.org>
+References: <20210714212706.24945-1-viktor.prutyanov@phystech.edu>
+ <20210714212706.24945-3-viktor.prutyanov@phystech.edu>
+ <20210715214001.GA25809@gofer.mess.org>
+ <20210716013652.248bce6f@192.168.1.3>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:348c:: with SMTP id t12mr7918776jal.1.1626423623704;
- Fri, 16 Jul 2021 01:20:23 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 01:20:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005866b005c7394288@google.com>
-Subject: [syzbot] BUG: unable to handle kernel paging request in ath9k_htc_rxep
-From:   syzbot <syzbot+dc6c749aec286992cea2@syzkaller.appspotmail.com>
-To:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716013652.248bce6f@192.168.1.3>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Viktor,
 
-syzbot found the following issue on:
+On Fri, Jul 16, 2021 at 01:36:52AM +0300, Viktor Prutyanov wrote:
+> Hi Sean,
+> 
+> On Thu, 15 Jul 2021 22:40:01 +0100
+> Sean Young <sean@mess.org> wrote:
+> 
+> > On Thu, Jul 15, 2021 at 12:27:06AM +0300, Viktor Prutyanov wrote:
+ > > +	meson_irtx_fill_buf(ir, tx_buf, buf, len);
+> > > +	dev_dbg(ir->dev, "TX buffer filled, length = %u\n", len);
+> > > +
+> > > +	spin_lock_irqsave(&ir->lock, flags);
+> > > +	meson_irtx_update_buf(ir, tx_buf, len, 0);
+> > > +	reinit_completion(&ir->completion);
+> > > +	meson_irtx_send_buffer(ir);
+> > > +	spin_unlock_irqrestore(&ir->lock, flags);
+> > > +
+> > > +	ret = wait_for_completion_interruptible(&ir->completion);
+> > > +	dev_dbg(ir->dev, "TX %s\n", ret ? "interrupted" :
+> > > "completed");  
+> > 
+> > Here two things can happen. One is, the process received a signal
+> > (e.g. ^C). The other is that the hardware didn't issue any interrupts
+> > due some problem somewhere. In the latter case, we only escape this
+> > wait_for_completion_interruptable() when the user gets fed up and
+> > presses ^C or something like that.
+> > 
+> > > +
+> > > +	spin_lock_irqsave(&ir->lock, flags);
+> > > +	kfree(ir->buf);
+> > > +	meson_irtx_update_buf(ir, NULL, 0, 0);
+> > > +	spin_unlock_irqrestore(&ir->lock, flags);  
+> > 
+> > Now it is possible that the buffer gets cleared before that IR was
+> > sent, if the signal was received early enough. This means not all the
+> > Tx was completed.
+> > 
+> > > +
+> > > +	return len;  
+> > 
+> > Yet, we always return success.
+> > 
+> > In case no interrupts were generated we should return an error in a
+> > timely manner, so the wait_for_completion() needs the timeout. You
+> > can use the fact that the IR is never longer IR_MAX_DURATION (half a
+> > second currently). Not sure what the returned error should be, maybe
+> > -ETIMEDOUT?
+> 
+> As for me, ETIMEDOUT is OK.
+> > 
+> > The problem with the interruptable wait is that a process can receive
+> > a signal at any time, and now when this happens your IR gets
+> > truncated. I don't think this is what you want.
+> 
+> Should I replace wait_for_completion_interruptible by
+> wait_for_completion_timeout in order to wait in uninterruptible way?
 
-HEAD commit:    97db1b081e12 dt-bindings: usb: dwc3: Update dwc3 TX fifo p..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=156217d2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=db8b503c237253ee
-dashboard link: https://syzkaller.appspot.com/bug?extid=dc6c749aec286992cea2
+Yes, the process can receive a signal if the terminal is resized
+(SIGWINCH) or if the process is backgrounded and then foregrounded with
+^Z and fg (SIGCONT). If this happens during tx then the tx might be
+incomplete.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Thanks,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dc6c749aec286992cea2@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: ffffffffffffffc8
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 7426067 P4D 7426067 PUD 7428067 PMD 0 
-Oops: 0000 [#1] SMP KASAN
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ath9k_htc_rxep+0xb5/0x210 drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:1135
-Code: 8b 43 38 48 8d 58 c8 49 39 c4 0f 84 ee 00 00 00 e8 f0 64 37 fe 48 89 d8 48 c1 e8 03 0f b6 04 28 84 c0 74 06 0f 8e 0a 01 00 00 <44> 0f b6 3b 31 ff 44 89 fe e8 fd 6b 37 fe 45 84 ff 75 a8 e8 c3 64
-RSP: 0018:ffffc900000079b8 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffffffffffffffc8 RCX: ffffc90005909000
-RDX: 0000000000040000 RSI: ffffffff830a0050 RDI: ffffc90000007928
-RBP: dffffc0000000000 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff52000000f25 R11: 0000000000000000 R12: ffff88813c17b678
-R13: ffff88813c17b240 R14: ffff88813c17b688 R15: ffff88814afef9a8
-FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffc8 CR3: 000000013ac0e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- ath9k_htc_rx_msg+0x2e4/0xb70 drivers/net/wireless/ath/ath9k/htc_hst.c:461
- ath9k_hif_usb_reg_in_cb+0x1ac/0x630 drivers/net/wireless/ath/ath9k/hif_usb.c:733
- __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1656
- usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1726
- dummy_timer+0x11f9/0x32b0 drivers/usb/gadget/udc/dummy_hcd.c:1987
- call_timer_fn+0x1a5/0x630 kernel/time/timer.c:1417
- expire_timers kernel/time/timer.c:1462 [inline]
- __run_timers.part.0+0x675/0xa10 kernel/time/timer.c:1731
- __run_timers kernel/time/timer.c:1712 [inline]
- run_timer_softirq+0x80/0x120 kernel/time/timer.c:1744
- __do_softirq+0x1b0/0x910 kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu+0x117/0x160 kernel/softirq.c:636
- irq_exit_rcu+0x5/0x10 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x6a/0x90 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
-RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:70 [inline]
-RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:132 [inline]
-RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:110 [inline]
-RIP: 0010:acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
-Code: 89 de e8 cd ed 80 fb 84 db 75 ac e8 94 e6 80 fb e8 5f f2 86 fb eb 0c e8 88 e6 80 fb 0f 00 2d 81 b0 88 00 e8 7c e6 80 fb fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 07 ef 80 fb 48 85 db
-RSP: 0018:ffffffff87407d60 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffffffff874523c0 RSI: ffffffff85c07ec4 RDI: ffffffff85c07eb1
-RBP: ffff8881053d7864 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81477148 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff8881053d7800 R14: ffff8881053d7864 R15: ffff88810c505804
- acpi_idle_enter+0x355/0x4f0 drivers/acpi/processor_idle.c:688
- cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
- cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
- call_cpuidle kernel/sched/idle.c:158 [inline]
- cpuidle_idle_call kernel/sched/idle.c:239 [inline]
- do_idle+0x3dd/0x580 kernel/sched/idle.c:306
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:403
- start_kernel+0x47a/0x49b init/main.c:1120
- secondary_startup_64_no_verify+0xb0/0xbb
-Modules linked in:
-CR2: ffffffffffffffc8
----[ end trace bce88d772af26b70 ]---
-RIP: 0010:ath9k_htc_rxep+0xb5/0x210 drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:1135
-Code: 8b 43 38 48 8d 58 c8 49 39 c4 0f 84 ee 00 00 00 e8 f0 64 37 fe 48 89 d8 48 c1 e8 03 0f b6 04 28 84 c0 74 06 0f 8e 0a 01 00 00 <44> 0f b6 3b 31 ff 44 89 fe e8 fd 6b 37 fe 45 84 ff 75 a8 e8 c3 64
-RSP: 0018:ffffc900000079b8 EFLAGS: 00010046
-
-RAX: 0000000000000000 RBX: ffffffffffffffc8 RCX: ffffc90005909000
-RDX: 0000000000040000 RSI: ffffffff830a0050 RDI: ffffc90000007928
-RBP: dffffc0000000000 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff52000000f25 R11: 0000000000000000 R12: ffff88813c17b678
-R13: ffff88813c17b240 R14: ffff88813c17b688 R15: ffff88814afef9a8
-FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffc8 CR3: 000000013ac0e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Sean
