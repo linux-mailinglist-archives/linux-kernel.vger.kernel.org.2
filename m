@@ -2,173 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200BE3CB4BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED393CB4D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238650AbhGPIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:55:11 -0400
-Received: from mail-am6eur05on2080.outbound.protection.outlook.com ([40.107.22.80]:30840
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237433AbhGPIzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:55:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B+SVFz23RyFV4Iy4HL/bQVGDxA2jcHjC/40TDFItglBEOw9DEJKDJ2tt2sYHm44jPQKWcusVZjtC+fFWSEptixlHI1mHtV3hnCn/4mty8PNbxwusCizT6eTPQj+IVTYBZA7cKhcfFxPw4vhTYy7tvP0N54af+xl/hquFtJLp74dg20/qvOPhrW9nyp4AZZR7QTj56i8Z+y5EoqsSKdIVsgnuL2FQwmzLNHN7P1oykgRqgFDzyrHZKVZDmGTPjqyuy2t8ory8q62siZ+42QJt62pxN5Bs32boMBUfIePCqhS8pl7rYNvxIvqx6+H4FseWNBxWFmlN9ECMHpsgkx4GCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M8iJASn+k+hE36e7mucUotmHPbltM93635xrofcgJXE=;
- b=kZMXe8dfVpJ8lzx2TIrcClmWyfZgNyEukZq36sV2LRxqksvW/e17a2ie68DVTulZmdmDyeKQGFkVAtYMucwaVwCl0wkrmjEP6oNAq+AgyEMXIefcIgFlzFVJIAv3SEPch+96hW2Iv2X7vxnq47SJ/XWXKm2G4uTi78EnOIZ9V8l0c3zFXvswmTqJ1iDi6uFc67NufsSoRextDgKZ4ssQyfrk63c4S3Hs6bXIfmh69r0kuOcODSRkqbtxNNyiU03c+sP6SrQ7eoFVjjZEvCRxE2Tl+yf/vDGpsKqNwSWf8GMn09xFaGRtw+vYUq5spL3vlTw/Lw7zr+iOkY70ZHETFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M8iJASn+k+hE36e7mucUotmHPbltM93635xrofcgJXE=;
- b=WCwxBOiDPctp4G8KVW8USvTanERZudNKhhxiuazAc6XOjz2ryLPj/HgmyWkBbfDEfAqfG9wJbJwweSUmETMQEvH1IXnG9XPqgUiZwT/RsdZchJGvrKUbkM5bfb5JXagnsjy58B+hl+h0pZYdWYZzXpLwMTSWzMv3eFWV403+1mI=
-Authentication-Results: bootlin.com; dkim=none (message not signed)
- header.d=none;bootlin.com; dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB5623.eurprd04.prod.outlook.com (2603:10a6:20b:a9::13)
- by AM7PR04MB7142.eurprd04.prod.outlook.com (2603:10a6:20b:113::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Fri, 16 Jul
- 2021 08:52:12 +0000
-Received: from AM6PR04MB5623.eurprd04.prod.outlook.com
- ([fe80::74f8:10b:8efd:b265]) by AM6PR04MB5623.eurprd04.prod.outlook.com
- ([fe80::74f8:10b:8efd:b265%5]) with mapi id 15.20.4308.027; Fri, 16 Jul 2021
- 08:52:12 +0000
-From:   Clark Wang <xiaoning.wang@nxp.com>
-To:     miquel.raynal@bootlin.com, conor.culhane@silvaco.com,
-        alexandre.belloni@bootlin.com
-Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xiaoning.wang@nxp.com
-Subject: [PATCH V3 2/5] i3c: master: svc: fix atomic issue
-Date:   Fri, 16 Jul 2021 16:53:14 +0800
-Message-Id: <20210716085317.3572224-3-xiaoning.wang@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210716085317.3572224-1-xiaoning.wang@nxp.com>
-References: <20210716085317.3572224-1-xiaoning.wang@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR04CA0158.apcprd04.prod.outlook.com (2603:1096:4::20)
- To AM6PR04MB5623.eurprd04.prod.outlook.com (2603:10a6:20b:a9::13)
+        id S239271AbhGPI5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:57:38 -0400
+Received: from mga07.intel.com ([134.134.136.100]:48008 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239106AbhGPI51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 04:57:27 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="274526369"
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="274526369"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 01:54:32 -0700
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="495983971"
+Received: from vmm_a4_icx.sh.intel.com (HELO localhost.localdomain) ([10.239.53.245])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 01:54:28 -0700
+From:   Zhu Lingshan <lingshan.zhu@intel.com>
+To:     peterz@infradead.org, pbonzini@redhat.com
+Cc:     bp@alien8.de, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        kan.liang@linux.intel.com, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com,
+        Like Xu <like.xu@linux.intel.com>,
+        Luwei Kang <luwei.kang@intel.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: [PATCH V8 08/18] KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
+Date:   Fri, 16 Jul 2021 16:53:15 +0800
+Message-Id: <20210716085325.10300-9-lingshan.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210716085325.10300-1-lingshan.zhu@intel.com>
+References: <20210716085325.10300-1-lingshan.zhu@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR04CA0158.apcprd04.prod.outlook.com (2603:1096:4::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 08:52:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f812006c-92a5-4901-3d5a-08d94836ff3e
-X-MS-TrafficTypeDiagnostic: AM7PR04MB7142:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB7142D03522F6847377AC5B81F3119@AM7PR04MB7142.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R7rChvOnNm7R4I33kOPSf+E5OkdHW0a/d1CEcV60S8Q9VEhzuacUtf6lmjj4fui5MBva1IZGRkJyyS2WCztWybqUeFtniUO0M7B6oD1YbuyPL+579ff8bbzf3voEhLMCMe1Kcj6sX0k5DRHQmJzEwiKPcQSKEywUeElN4gHtEG8tE4+JE8c5g49O0+kh9vEXnPE7AbUJEpYgqk0oqtfbyIexssB15eW7gEsFcsQ8dq72Wqza/emgPon9KNb7GYNCoCDVH4w5hTZ/myTry79GvB6lkXQRsMkRLhH3Ye5i62H4nTUmjzWz9HGWjKIQFLxWh/y0xSeK4i6efbe4lev19wQg+MYzuJ9l4dU3D+20OOKxJhF6CRxPGivQk/zJerZwEOlPBi63qm7NDGNWbrWH6r6l8PEW+dCktERL1EA4XQLh/hk4O7HDHliYfzyUXt4oxympn2bmmrW1u0WQGGBDUgQlwwQ1RmCHk0vbdxdDlYpj+HyttL8dASw612H6QnpGOx4fNb49SACgLeUGKfCTxdbD5UJw/+eDL71NUaAdFrw+jba4QuJWFhzioWj9+Hw7w/M214/nvM0F2j3cBN+0R6pRb4ACk2Zb0Ri020HKvLcdhtbdDrYyM2vhFC6VBlsU7oP5QGKn6f0tVvAey12NduTuxGNzwnBsKvOUKWJKMtgyK23cRA5z3kHD8o8YiSHTLFh3dQnQIqAA3f/fEOsCaA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5623.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39850400004)(136003)(366004)(376002)(36756003)(478600001)(5660300002)(8936002)(316002)(66556008)(66476007)(8676002)(4326008)(86362001)(6512007)(1076003)(66946007)(26005)(2616005)(956004)(6506007)(52116002)(2906002)(6486002)(6666004)(186003)(83380400001)(38350700002)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iH7SRjtUtiQ9RiwhJoQfeylX+bEInCQSesoJ0kunokdcuWFKnsnRsCXGtkyo?=
- =?us-ascii?Q?A/HFe1mdoAzd125dAHlljGtGIUkZUpMePZhSKMi7dR3J6G3gE63jvQVp825F?=
- =?us-ascii?Q?mFen7RJiHS/dKp+/prZGRV4K28RnNPOYIAXkxLwwAEBt/ZZwZ4CQiNYiAJCd?=
- =?us-ascii?Q?YIjoJXK5KNrJDs+sX9nvL1x4PX4NyFlrZoBoiko4a+LN9hrSucJ6+qxd5VOr?=
- =?us-ascii?Q?Gt0WzV3vUpd3IPnZuyExTWC/g5Y2elMZz6S+uMKgOzUQGIF0bsdQ/HvK+0S1?=
- =?us-ascii?Q?066iy1mFhREpyfP1nsDha2frLXNgReK4m0WEyEFhqOXZWWlUD5sN6nFL69BU?=
- =?us-ascii?Q?0PJb5WpD8QNKE32yjzAErns2EtwZnRhwLpFdLBx7/qk1efwDtYJOxviwzbWL?=
- =?us-ascii?Q?C4U3NQHCylkXigx3/TG7YYRPfb8nqCknvXAji5K3xoJeaMxmjYDnKwF7S4J7?=
- =?us-ascii?Q?bwMzqg8JayFWR0uLXVPciQ1PX/331fTLpU4JqIFzm5YF7I9lvDw2H+BSfDVo?=
- =?us-ascii?Q?5Fujiz3bbLS6+w4Njpz/gO+BfvtI750l+WaMRx0mC/RL+xD/NxdKLTI6Bcbm?=
- =?us-ascii?Q?8Lc6MJ1zBpgFT54F492XLMB3ZjUfrgZK1sJ5OYc0by6qGB9MM/dfATo+AZKR?=
- =?us-ascii?Q?61GkVGdti0ORI8K1A8+aMEkSV4uLm7lDc/bNPZx06UB/omOtZB+5k7GLq1eJ?=
- =?us-ascii?Q?VyjFH4RXzumtFe+84Q0xut6sugiXzxavSDmhlKnr467iwIDiTsz/ouYuqEjQ?=
- =?us-ascii?Q?5l303Safp5QW31vlKUbHVCKHr5Uy2W1qZySD1vsGiuh4tHJGyr2CRxuEZXxw?=
- =?us-ascii?Q?f6KHtigxVlK3X8LVBlEXJ1EMY0TSplZY/xXQCPgJ8lSv39NDPXYpYX/oEQZN?=
- =?us-ascii?Q?6NN/Tv7oyLhlV6pqk01Saf9FqkKVHkae3V9YNcEQ5CfT7S6c29ylg6yq3QVG?=
- =?us-ascii?Q?WsYdIfZoXQ7tI038E1E8TpEICCjpPo/YaqL4vFKz7eglJq8f5pzr7IT1JG1i?=
- =?us-ascii?Q?i9wLLhHL69HgSiVYwYGNScEHUDVLi57Jlq7RrbV3mXAJSInhmiMa/x11k5cY?=
- =?us-ascii?Q?192ffCEfhgMzAo2ETAO/lRVUAbQYkVsgugkQj8t7G3jQMpJYfQkpf9d9dIDt?=
- =?us-ascii?Q?JpoJO7EhpAayC+1fxhILCSndFOhKjj44somvXpUkVFGuRkeuY+4SxxXTDPqn?=
- =?us-ascii?Q?cP22mGeZCAkbPklcBkoybv47LU8v0nqEEB8UFdQqzZsF5R7KrBMeQL0t5DqL?=
- =?us-ascii?Q?d8EXrd9KWDwmEwXHl2sqhPNG6sY/LKnmHHSKsUun70Fc0Y6i5HshytFot4WO?=
- =?us-ascii?Q?EKj/Nuw9ipC5oGP8f5pHVUhi?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f812006c-92a5-4901-3d5a-08d94836ff3e
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5623.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 08:52:10.0756
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: keboCUMzk3rHY1X6f9VkppmqgWpHG7NRlcmvbv/dAW4sgpLqv5ZFn+8Dk2EWJDKhX04uogLQPnpFHHWOaLU+uA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7142
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_daa_locked() function is in a spin lock environment, use
-readl_poll_timeout_atomic() to replace the origin
-readl_poll_timeout().
+From: Like Xu <like.xu@linux.intel.com>
 
-Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
-V2: align the parameters of the function.
-V3: no change.
----
- drivers/i3c/master/svc-i3c-master.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+If IA32_PERF_CAPABILITIES.PEBS_BASELINE [bit 14] is set, the
+IA32_PEBS_ENABLE MSR exists and all architecturally enumerated fixed
+and general-purpose counters have corresponding bits in IA32_PEBS_ENABLE
+that enable generation of PEBS records. The general-purpose counter bits
+start at bit IA32_PEBS_ENABLE[0], and the fixed counter bits start at
+bit IA32_PEBS_ENABLE[32].
 
-diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
-index c25a372f6820..47c02a60cf62 100644
---- a/drivers/i3c/master/svc-i3c-master.c
-+++ b/drivers/i3c/master/svc-i3c-master.c
-@@ -656,8 +656,10 @@ static int svc_i3c_master_readb(struct svc_i3c_master *master, u8 *dst,
- 	u32 reg;
+When guest PEBS is enabled, the IA32_PEBS_ENABLE MSR will be
+added to the perf_guest_switch_msr() and atomically switched during
+the VMX transitions just like CORE_PERF_GLOBAL_CTRL MSR.
+
+Based on whether the platform supports x86_pmu.pebs_vmx, it has also
+refactored the way to add more msrs to arr[] in intel_guest_get_msrs()
+for extensibility.
+
+Originally-by: Andi Kleen <ak@linux.intel.com>
+Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Co-developed-by: Luwei Kang <luwei.kang@intel.com>
+Signed-off-by: Luwei Kang <luwei.kang@intel.com>
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+---
+ arch/x86/events/intel/core.c     | 73 ++++++++++++++++++++++++--------
+ arch/x86/include/asm/kvm_host.h  |  3 ++
+ arch/x86/include/asm/msr-index.h |  6 +++
+ arch/x86/kvm/vmx/pmu_intel.c     | 31 ++++++++++++++
+ 4 files changed, 95 insertions(+), 18 deletions(-)
+
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index c97e00083d10..b39956aa6e37 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3896,33 +3896,70 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 	return 0;
+ }
  
- 	for (i = 0; i < len; i++) {
--		ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
--					 SVC_I3C_MSTATUS_RXPEND(reg), 0, 1000);
-+		ret = readl_poll_timeout_atomic(master->regs + SVC_I3C_MSTATUS,
-+						reg,
-+						SVC_I3C_MSTATUS_RXPEND(reg),
-+						0, 1000);
- 		if (ret)
- 			return ret;
++/*
++ * Currently, the only caller of this function is the atomic_switch_perf_msrs().
++ * The host perf conext helps to prepare the values of the real hardware for
++ * a set of msrs that need to be switched atomically in a vmx transaction.
++ *
++ * For example, the pseudocode needed to add a new msr should look like:
++ *
++ * arr[(*nr)++] = (struct perf_guest_switch_msr){
++ *	.msr = the hardware msr address,
++ *	.host = the value the hardware has when it doesn't run a guest,
++ *	.guest = the value the hardware has when it runs a guest,
++ * };
++ *
++ * These values have nothing to do with the emulated values the guest sees
++ * when it uses {RD,WR}MSR, which should be handled by the KVM context,
++ * specifically in the intel_pmu_{get,set}_msr().
++ */
+ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+ 	struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
+ 	u64 intel_ctrl = hybrid(cpuc->pmu, intel_ctrl);
++	u64 pebs_mask = cpuc->pebs_enabled & x86_pmu.pebs_capable;
  
-@@ -687,10 +689,11 @@ static int svc_i3c_master_do_daa_locked(struct svc_i3c_master *master,
- 		 * Either one slave will send its ID, or the assignment process
- 		 * is done.
- 		 */
--		ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
--					 SVC_I3C_MSTATUS_RXPEND(reg) |
--					 SVC_I3C_MSTATUS_MCTRLDONE(reg),
--					 1, 1000);
-+		ret = readl_poll_timeout_atomic(master->regs + SVC_I3C_MSTATUS,
-+						reg,
-+						SVC_I3C_MSTATUS_RXPEND(reg) |
-+						SVC_I3C_MSTATUS_MCTRLDONE(reg),
-+						1, 1000);
- 		if (ret)
- 			return ret;
+-	arr[0].msr = MSR_CORE_PERF_GLOBAL_CTRL;
+-	arr[0].host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
+-	arr[0].guest = intel_ctrl & ~cpuc->intel_ctrl_host_mask;
+-	arr[0].guest &= ~(cpuc->pebs_enabled & x86_pmu.pebs_capable);
+-	*nr = 1;
++	*nr = 0;
++	arr[(*nr)++] = (struct perf_guest_switch_msr){
++		.msr = MSR_CORE_PERF_GLOBAL_CTRL,
++		.host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask,
++		.guest = intel_ctrl & (~cpuc->intel_ctrl_host_mask | ~pebs_mask),
++	};
  
-@@ -744,11 +747,12 @@ static int svc_i3c_master_do_daa_locked(struct svc_i3c_master *master,
+-	if (x86_pmu.pebs && x86_pmu.pebs_no_isolation) {
+-		/*
+-		 * If PMU counter has PEBS enabled it is not enough to
+-		 * disable counter on a guest entry since PEBS memory
+-		 * write can overshoot guest entry and corrupt guest
+-		 * memory. Disabling PEBS solves the problem.
+-		 *
+-		 * Don't do this if the CPU already enforces it.
+-		 */
+-		arr[1].msr = MSR_IA32_PEBS_ENABLE;
+-		arr[1].host = cpuc->pebs_enabled;
+-		arr[1].guest = 0;
+-		*nr = 2;
++	if (!x86_pmu.pebs)
++		return arr;
++
++	/*
++	 * If PMU counter has PEBS enabled it is not enough to
++	 * disable counter on a guest entry since PEBS memory
++	 * write can overshoot guest entry and corrupt guest
++	 * memory. Disabling PEBS solves the problem.
++	 *
++	 * Don't do this if the CPU already enforces it.
++	 */
++	if (x86_pmu.pebs_no_isolation) {
++		arr[(*nr)++] = (struct perf_guest_switch_msr){
++			.msr = MSR_IA32_PEBS_ENABLE,
++			.host = cpuc->pebs_enabled,
++			.guest = 0,
++		};
++		return arr;
+ 	}
+ 
++	if (!x86_pmu.pebs_vmx)
++		return arr;
++
++	arr[*nr] = (struct perf_guest_switch_msr){
++		.msr = MSR_IA32_PEBS_ENABLE,
++		.host = cpuc->pebs_enabled & ~cpuc->intel_ctrl_guest_mask,
++		.guest = pebs_mask & ~cpuc->intel_ctrl_host_mask,
++	};
++
++	/* Set hw GLOBAL_CTRL bits for PEBS counter when it runs for guest */
++	arr[0].guest |= arr[*nr].guest;
++
++	++(*nr);
+ 	return arr;
+ }
+ 
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 172fabbcc11a..425e872ddf4f 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -505,6 +505,9 @@ struct kvm_pmu {
+ 	DECLARE_BITMAP(all_valid_pmc_idx, X86_PMC_IDX_MAX);
+ 	DECLARE_BITMAP(pmc_in_use, X86_PMC_IDX_MAX);
+ 
++	u64 pebs_enable;
++	u64 pebs_enable_mask;
++
+ 	/*
+ 	 * The gate to release perf_events not marked in
+ 	 * pmc_in_use only once in a vcpu time slice.
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index a7c413432b33..986b285b97f7 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -189,6 +189,12 @@
+ #define PERF_CAP_PT_IDX			16
+ 
+ #define MSR_PEBS_LD_LAT_THRESHOLD	0x000003f6
++#define PERF_CAP_PEBS_TRAP             BIT_ULL(6)
++#define PERF_CAP_ARCH_REG              BIT_ULL(7)
++#define PERF_CAP_PEBS_FORMAT           0xf00
++#define PERF_CAP_PEBS_BASELINE         BIT_ULL(14)
++#define PERF_CAP_PEBS_MASK	(PERF_CAP_PEBS_TRAP | PERF_CAP_ARCH_REG | \
++				 PERF_CAP_PEBS_FORMAT | PERF_CAP_PEBS_BASELINE)
+ 
+ #define MSR_IA32_RTIT_CTL		0x00000570
+ #define RTIT_CTL_TRACEEN		BIT(0)
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index ac7fe714e6c1..9938b485c31c 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -220,6 +220,9 @@ static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+ 	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+ 		ret = pmu->version > 1;
+ 		break;
++	case MSR_IA32_PEBS_ENABLE:
++		ret = vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT;
++		break;
+ 	default:
+ 		ret = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0) ||
+ 			get_gp_pmc(pmu, msr, MSR_P6_EVNTSEL0) ||
+@@ -367,6 +370,9 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+ 		msr_info->data = pmu->global_ovf_ctrl;
+ 		return 0;
++	case MSR_IA32_PEBS_ENABLE:
++		msr_info->data = pmu->pebs_enable;
++		return 0;
+ 	default:
+ 		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+ 		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+@@ -427,6 +433,14 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			return 0;
  		}
+ 		break;
++	case MSR_IA32_PEBS_ENABLE:
++		if (pmu->pebs_enable == data)
++			return 0;
++		if (!(data & pmu->pebs_enable_mask)) {
++			pmu->pebs_enable = data;
++			return 0;
++		}
++		break;
+ 	default:
+ 		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+ 		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+@@ -479,6 +493,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+ 	pmu->version = 0;
+ 	pmu->reserved_bits = 0xffffffff00200000ull;
+ 	pmu->fixed_ctr_ctrl_mask = ~0ull;
++	pmu->pebs_enable_mask = ~0ull;
  
- 		/* Wait for the slave to be ready to receive its address */
--		ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
--					 SVC_I3C_MSTATUS_MCTRLDONE(reg) &&
--					 SVC_I3C_MSTATUS_STATE_DAA(reg) &&
--					 SVC_I3C_MSTATUS_BETWEEN(reg),
--					 0, 1000);
-+		ret = readl_poll_timeout_atomic(master->regs + SVC_I3C_MSTATUS,
-+						reg,
-+						SVC_I3C_MSTATUS_MCTRLDONE(reg) &&
-+						SVC_I3C_MSTATUS_STATE_DAA(reg) &&
-+						SVC_I3C_MSTATUS_BETWEEN(reg),
-+						0, 1000);
- 		if (ret)
- 			return ret;
+ 	entry = kvm_find_cpuid_entry(vcpu, 0xa, 0);
+ 	if (!entry)
+@@ -545,6 +560,22 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
  
+ 	if (lbr_desc->records.nr)
+ 		bitmap_set(pmu->all_valid_pmc_idx, INTEL_PMC_IDX_FIXED_VLBR, 1);
++
++	if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) {
++		if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_BASELINE) {
++			pmu->pebs_enable_mask = ~pmu->global_ctrl;
++			pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
++			for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
++				pmu->fixed_ctr_ctrl_mask &=
++					~(1ULL << (INTEL_PMC_IDX_FIXED + i * 4));
++			}
++		} else {
++			pmu->pebs_enable_mask =
++				~((1ull << pmu->nr_arch_gp_counters) - 1);
++		}
++	} else {
++		vcpu->arch.perf_capabilities &= ~PERF_CAP_PEBS_MASK;
++	}
+ }
+ 
+ static void intel_pmu_init(struct kvm_vcpu *vcpu)
 -- 
-2.25.1
+2.27.0
 
