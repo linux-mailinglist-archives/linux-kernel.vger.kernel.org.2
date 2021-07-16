@@ -2,288 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF8B3CB450
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE99E3CB444
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238169AbhGPIbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:31:51 -0400
-Received: from mail-m121142.qiye.163.com ([115.236.121.142]:16416 "EHLO
-        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237069AbhGPIbc (ORCPT
+        id S237504AbhGPIax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236794AbhGPIav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:31:32 -0400
-X-Greylist: delayed 616 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Jul 2021 04:31:32 EDT
-DKIM-Signature: a=rsa-sha256;
-        b=aOPdwd1jD8z7DnrHrYYPWmp0Y6QFMe30ADAgb3I+UHGfFUMEDmZT9UYQurg2Bcu+wWgCC44c6I52TAseLL8FPM8V6r/UIoNjfGnZgiftZo8cKCIzcX28LqZdy3oL26Oq3CpnbLSurUDjhTG8Tp13ejIz+qmhvui3fSI4ECVNQbY=;
-        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
-        bh=WLbSxNPKxrOOhLBpC2RFhvhKHqQwJLWtvjlYyYI/Xh8=;
-        h=date:mime-version:subject:message-id:from;
-Received: from NJ-11133793.vivo.xyz (unknown [36.152.145.180])
-        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id B2FC08014E;
-        Fri, 16 Jul 2021 16:18:15 +0800 (CST)
-From:   Yang Huan <link@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Yang Huan <link@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     kernel@vivo.com, Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] mm/page_alloc: enable alloc bulk when page owner is on
-Date:   Fri, 16 Jul 2021 16:17:53 +0800
-Message-Id: <20210716081756.25419-1-link@vivo.com>
+        Fri, 16 Jul 2021 04:30:51 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A329C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:27:56 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id x6so4210835qvx.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F/YkxBfRDtBmkhP+2nUtCJKlfQdr5yzKh5I2Oej3mdw=;
+        b=fP7d4VtHE1Tvt1K+Ez2d2PHrWDHgocp+BgKISQ/mQs7CJH7VceDaKYYPXGfhKVWSJy
+         XQARSgA/u4viSBPA9r4HM5I/LrlpZtZLvNasgVturM2oGcSFcxGQOv6zr4WWaZqcNGAX
+         A27IaNR4lfJ8VWb+KpNpVIy3mAucW/o+TSwHJfUYH32XR4XgoGjDgaT1GSw5yShhsx9r
+         i/7k57ad4hIreMlkZJb+49rMOCz6YJPQqZYceRGFTL3k/uEPQbidT1oLKM2vTKMrJJOa
+         D5oXrUPJ3+fEPdxRpZPXdzJXVsshExyEheEKumgfUZWAEYwxlO05HfmZMQjElFfmSmgp
+         GSYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F/YkxBfRDtBmkhP+2nUtCJKlfQdr5yzKh5I2Oej3mdw=;
+        b=oBQWnnmANA3uhCzUmuR+LFk8qEIBr8QoClpCujgcSIMgdxKHBggFT/k6sGn5/z7Tl2
+         ZQH6Y+jWvCHVE47hhA8s8s22pOTH4fN4rtlj5Y6D+uE2M8/4Bzumm3ljSc/bz41E4TjX
+         n3KyjX08gCFSFZnmLa62I96+x6TJQBvMOGgDjEvSkF/82s6r8110EVDHvOfkDi3q4MAc
+         tliqFT9bN0kJIOk2xdw5sCy/NpnkOnQ16v2gb5j6esY7LNABdT1/m63+F3SbNAtRh+te
+         axMQItWxoHb/FwKYIHgCDXTak3aCCP8/3jnAzbaxQBXwHQjHC/sj4KI4X3Tcsp661NK3
+         w45Q==
+X-Gm-Message-State: AOAM533rhF7X+QxBQ3prkcaw0kr18TlueSvoAGjUzmFFSxCrVIR9BZTP
+        BJsQqFDBwAe8+xCpJ+ot1o8=
+X-Google-Smtp-Source: ABdhPJzkmMN2JnYjZU7i/Yb+iOp1euFVgbzEGzAmrgu368Yout2rNikTND3y+C+esr/hZxUDq41tBQ==
+X-Received: by 2002:a05:6214:20ac:: with SMTP id 12mr9076220qvd.7.1626424075237;
+        Fri, 16 Jul 2021 01:27:55 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:14c:482:92eb:ffdf:6b35:b94d:258])
+        by smtp.gmail.com with ESMTPSA id q199sm3603540qka.112.2021.07.16.01.27.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 01:27:54 -0700 (PDT)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        kernel test robot <lkp@intel.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/11] DDW + Indirect Mapping
+Date:   Fri, 16 Jul 2021 05:27:45 -0300
+Message-Id: <20210716082755.428187-1-leobras.c@gmail.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUMeGEhWGh9IGRoZGB9MGU
-        1OVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mio6EAw4LD9JMg8BFikUTksw
-        NU9PFDdVSlVKTUlNT0lIT0JNSEpOVTMWGhIXVRcSFRA7DRINFFUYFBZFWVdZEgtZQVlITVVKTklV
-        Sk9OVUpDS1lXWQgBWUFKS0xNSDcG
-X-HM-Tid: 0a7aae650d16b037kuuub2fc08014e
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Last alloc bulk version have a bug, when page_owner is on, system maybe
-crashed due to alloc bulk invoke prep_new_page in irq disabled context,
-and set_page_owner use page_flag(may GFP_KERNEL) to get memory and save
-stacktrace.
-We fix it by a circumvention plan -- bandon alloc bulk feature when
-page_owner is set.
-I think both alloc_bulk and page_owner is valuable, so, it's worth to
-find a way enable alloc bulk when page owner is on.
+So far it's assumed possible to map the guest RAM 1:1 to the bus, which
+works with a small number of devices. SRIOV changes it as the user can
+configure hundreds VFs and since phyp preallocates TCEs and does not
+allow IOMMU pages bigger than 64K, it has to limit the number of TCEs
+per a PE to limit waste of physical pages.
 
-The original bug as Zhang, Qiang reported
+As of today, if the assumed direct mapping is not possible, DDW creation
+is skipped and the default DMA window "ibm,dma-window" is used instead.
 
-  BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
-  in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-  .....
-  __dump_stack lib/dump_stack.c:79 [inline]
-  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
-  ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
-  prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
-  __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
-  alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2147
-  alloc_pages+0x238/0x2a0 mm/mempolicy.c:2270
-  stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
-  save_stack+0x15e/0x1e0 mm/page_owner.c:120
-  __set_page_owner+0x50/0x290 mm/page_owner.c:181
-  prep_new_page mm/page_alloc.c:2445 [inline]
-  __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
-  alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
-  vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
-  __vmalloc_area_node mm/vmalloc.c:2845 [inline]
-  __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
-  __vmalloc_node mm/vmalloc.c:2996 [inline]
-  vzalloc+0x67/0x80 mm/vmalloc.c:3066
+Using the DDW instead of the default DMA window may allow to expand the
+amount of memory that can be DMA-mapped, given the number of pages (TCEs)
+may stay the same (or increase) and the default DMA window offers only
+4k-pages while DDW may offer larger pages (4k, 64k, 16M ...).
 
-Actually, the problem is caused by set_page_owner alloc memory to save
-stack with GFP_KERNEL in local_riq disabled.
-So, we just can't assume that alloc flags should be same with new page,
-prep_new_page should prep/trace the page gfp, but shouldn't use the same
-gfp to get memory, let's depend on caller.
-Now, here is two gfp flags, alloc_gfp used to alloc memory, depend on
-caller, page_gfp is page's gfp, used to trace/prep itself.
-In most situation, alloc_gfp same is ok, in alloc_pages_bulk,
-use GFP_ATOMIC, due to irq is disabled.
+Patch #1 replaces hard-coded 4K page size with a variable containing the
+correct page size for the window.
 
-Notice: GFP_ATOMIC may cause alloc_bulk pages lost page owner stacktrace
-when memory get failed due to can't reclaim memory. But, Actually,
-we are in irq context, can't relcaim memory is true, use GFP_ATOMIC is
-appropriate.
+Patch #2 introduces iommu_table_in_use(), and replace manual bit-field
+checking where it's used. It will be used for aborting enable_ddw() if
+there is any current iommu allocation and we are trying single window
+indirect mapping.
 
-Now that we fixed bug, let's enabled alloc bulk when page_owner is on.
+Patch #3 introduces iommu_pseries_alloc_table() that will be helpful
+when indirect mapping needs to replace the iommu_table.
 
-Suggested-by: Wang Qing <wangqing@vivo.com>
-Signed-off-by: Yang Huan <link@vivo.com>
----
- include/linux/page_owner.h |  8 ++++----
- mm/compaction.c            |  2 +-
- mm/internal.h              |  2 +-
- mm/page_alloc.c            | 36 ++++++++++++------------------------
- mm/page_owner.c            |  6 +++---
- 5 files changed, 21 insertions(+), 33 deletions(-)
+Patch #4 adds helpers for adding DDWs in the list.
 
-diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
-index 719bfe5108c5..76669c272b4b 100644
---- a/include/linux/page_owner.h
-+++ b/include/linux/page_owner.h
-@@ -10,7 +10,7 @@ extern struct page_ext_operations page_owner_ops;
- 
- extern void __reset_page_owner(struct page *page, unsigned int order);
- extern void __set_page_owner(struct page *page,
--			unsigned int order, gfp_t gfp_mask);
-+			unsigned int order, gfp_t alloc_gfp, gfp_t page_gfp);
- extern void __split_page_owner(struct page *page, unsigned int nr);
- extern void __copy_page_owner(struct page *oldpage, struct page *newpage);
- extern void __set_page_owner_migrate_reason(struct page *page, int reason);
-@@ -25,10 +25,10 @@ static inline void reset_page_owner(struct page *page, unsigned int order)
- }
- 
- static inline void set_page_owner(struct page *page,
--			unsigned int order, gfp_t gfp_mask)
-+			unsigned int order, gfp_t alloc_gfp, gfp_t page_gfp)
- {
- 	if (static_branch_unlikely(&page_owner_inited))
--		__set_page_owner(page, order, gfp_mask);
-+		__set_page_owner(page, order, alloc_gfp, page_gfp);
- }
- 
- static inline void split_page_owner(struct page *page, unsigned int nr)
-@@ -56,7 +56,7 @@ static inline void reset_page_owner(struct page *page, unsigned int order)
- {
- }
- static inline void set_page_owner(struct page *page,
--			unsigned int order, gfp_t gfp_mask)
-+			unsigned int order, gfp_t alloc_gfp, gfp_t page_gfp)
- {
- }
- static inline void split_page_owner(struct page *page,
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 79aaf21058da..187869e21690 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -96,7 +96,7 @@ static void split_map_pages(struct list_head *list)
- 		order = page_private(page);
- 		nr_pages = 1 << order;
- 
--		post_alloc_hook(page, order, __GFP_MOVABLE);
-+		post_alloc_hook(page, order, __GFP_MOVABLE, __GFP_MOVABLE);
- 		if (order)
- 			split_page(page, order);
- 
-diff --git a/mm/internal.h b/mm/internal.h
-index cf3cb933eba3..7eaf18b1fa2f 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -200,7 +200,7 @@ extern void memblock_free_pages(struct page *page, unsigned long pfn,
- extern void __free_pages_core(struct page *page, unsigned int order);
- extern void prep_compound_page(struct page *page, unsigned int order);
- extern void post_alloc_hook(struct page *page, unsigned int order,
--					gfp_t gfp_flags);
-+					gfp_t alloc_gfp, gfp_t page_gfp);
- extern int user_min_free_kbytes;
- 
- extern void free_unref_page(struct page *page, unsigned int order);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 62dc229c1dd1..03bcb7f34fa6 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2384,7 +2384,7 @@ static bool check_new_pages(struct page *page, unsigned int order)
- }
- 
- inline void post_alloc_hook(struct page *page, unsigned int order,
--				gfp_t gfp_flags)
-+				gfp_t alloc_gfp, gfp_t page_gfp)
- {
- 	set_page_private(page, 0);
- 	set_page_refcounted(page);
-@@ -2405,25 +2405,25 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
- 	 * kept together to avoid discrepancies in behavior.
- 	 */
- 	if (kasan_has_integrated_init()) {
--		kasan_alloc_pages(page, order, gfp_flags);
-+		kasan_alloc_pages(page, order, page_gfp);
- 	} else {
--		bool init = !want_init_on_free() && want_init_on_alloc(gfp_flags);
-+		bool init = !want_init_on_free() && want_init_on_alloc(page_gfp);
- 
- 		kasan_unpoison_pages(page, order, init);
- 		if (init)
- 			kernel_init_free_pages(page, 1 << order,
--					       gfp_flags & __GFP_ZEROTAGS);
-+					       page_gfp & __GFP_ZEROTAGS);
- 	}
- 
--	set_page_owner(page, order, gfp_flags);
-+	set_page_owner(page, order, alloc_gfp, page_gfp);
- }
- 
--static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags,
--							unsigned int alloc_flags)
-+static void prep_new_page(struct page *page, unsigned int order, gfp_t alloc_gfp,
-+							gfp_t page_gfp, unsigned int alloc_flags)
- {
--	post_alloc_hook(page, order, gfp_flags);
-+	post_alloc_hook(page, order, alloc_gfp, page_gfp);
- 
--	if (order && (gfp_flags & __GFP_COMP))
-+	if (order && (page_gfp & __GFP_COMP))
- 		prep_compound_page(page, order);
- 
- 	/*
-@@ -4149,7 +4149,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
- 		page = rmqueue(ac->preferred_zoneref->zone, zone, order,
- 				gfp_mask, alloc_flags, ac->migratetype);
- 		if (page) {
--			prep_new_page(page, order, gfp_mask, alloc_flags);
-+			prep_new_page(page, order, gfp_mask, gfp_mask, alloc_flags);
- 
- 			/*
- 			 * If this is a high-order atomic allocation then check
-@@ -4369,7 +4369,7 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
- 
- 	/* Prep a captured page if available */
- 	if (page)
--		prep_new_page(page, order, gfp_mask, alloc_flags);
-+		prep_new_page(page, order, gfp_mask, gfp_mask, alloc_flags);
- 
- 	/* Try get a page from the freelist if available */
- 	if (!page)
-@@ -5226,18 +5226,6 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	if (nr_pages - nr_populated == 1)
- 		goto failed;
- 
--#ifdef CONFIG_PAGE_OWNER
--	/*
--	 * PAGE_OWNER may recurse into the allocator to allocate space to
--	 * save the stack with pagesets.lock held. Releasing/reacquiring
--	 * removes much of the performance benefit of bulk allocation so
--	 * force the caller to allocate one page at a time as it'll have
--	 * similar performance to added complexity to the bulk allocator.
--	 */
--	if (static_branch_unlikely(&page_owner_inited))
--		goto failed;
--#endif
--
- 	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
- 	gfp &= gfp_allowed_mask;
- 	alloc_gfp = gfp;
-@@ -5297,7 +5285,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		}
- 		nr_account++;
- 
--		prep_new_page(page, 0, gfp, 0);
-+		prep_new_page(page, 0, GFP_ATOMIC, gfp, 0);
- 		if (page_list)
- 			list_add(&page->lru, page_list);
- 		else
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 62402d22539b..3c7419b72c76 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -170,7 +170,7 @@ static inline void __set_page_owner_handle(struct page_ext *page_ext,
- }
- 
- noinline void __set_page_owner(struct page *page, unsigned int order,
--					gfp_t gfp_mask)
-+					gfp_t alloc_gfp, gfp_t page_gfp)
- {
- 	struct page_ext *page_ext = lookup_page_ext(page);
- 	depot_stack_handle_t handle;
-@@ -178,8 +178,8 @@ noinline void __set_page_owner(struct page *page, unsigned int order,
- 	if (unlikely(!page_ext))
- 		return;
- 
--	handle = save_stack(gfp_mask);
--	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
-+	handle = save_stack(alloc_gfp);
-+	__set_page_owner_handle(page_ext, handle, order, page_gfp);
- }
- 
- void __set_page_owner_migrate_reason(struct page *page, int reason)
+Patch #5 refactors enable_ddw() so it returns if direct mapping is
+possible, instead of DMA offset. It helps for next patches on
+indirect DMA mapping and also allows DMA windows starting at 0x00.
+
+Patch #6 bring new helper to simplify enable_ddw(), allowing
+some reorganization for introducing indirect mapping DDW.
+
+Patch #7 adds new helper _iommu_table_setparms() and use it in other
+*setparams*() to fill iommu_table. It will also be used for creating a
+new iommu_table for indirect mapping.
+
+Patch #8 updates remove_dma_window() to accept different property names,
+so we can introduce a new property for indirect mapping.
+
+Patch #9 extracts find_existing_ddw_windows() into
+find_existing_ddw_windows_named(), and calls it by it's property name.
+This will be useful when the property for indirect mapping is created,
+so we can search the device-tree for both properties.
+
+Patch #10:
+Instead of destroying the created DDW if it doesn't map the whole
+partition, make use of it instead of the default DMA window as it improves
+performance. Also, update the iommu_table and re-generate the pools.
+It introduces a new property name for DDW with indirect DMA mapping.
+
+Patch #11:
+Does some renaming of 'direct window' to 'dma window', given the DDW
+created can now be also used in indirect mapping if direct mapping is not
+available.
+
+All patches were tested into an LPAR with an virtio-net interface that
+allows default DMA window and DDW to coexist.
+
+Changes since v4:
+- Solve conflicts with new upstream versions
+- Avoid unecessary code moving by doing variable declaration before definition
+- Rename _iommu_table_setparms to iommu_table_setparms_common and changed base
+  parameter from unsigned long to void* in order to avoid unecessary casting.
+- Fix breaking case for existing direct-mapping.
+- Fix IORESOURCE_MEM bound issue
+- Move new tbl to pci->table_group->tables[1] instead of replacing [0]
+v4 Link: https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=241597&state=%2A&archive=both
+
+Changes since v3:
+- Fixed inverted free order at ddw_property_create()
+- Updated goto tag naming
+v3 Link: https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=240287&state=%2A&archive=both
+
+Changes since v2:
+- Some patches got removed from the series and sent by themselves,
+- New tbl created for DDW + indirect mapping reserves MMIO32 space,
+- Improved reserved area algorithm,
+- Improved commit messages,
+- Removed define for default DMA window prop name,
+- Avoided some unnecessary renaming,
+- Removed some unnecessary empty lines,
+- Changed some code moving to forward declarations.
+v2 Link: http://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=201210&state=%2A&archive=both
+
+
+Leonardo Bras (11):
+  powerpc/pseries/iommu: Replace hard-coded page shift
+  powerpc/kernel/iommu: Add new iommu_table_in_use() helper
+  powerpc/pseries/iommu: Add iommu_pseries_alloc_table() helper
+  powerpc/pseries/iommu: Add ddw_list_new_entry() helper
+  powerpc/pseries/iommu: Allow DDW windows starting at 0x00
+  powerpc/pseries/iommu: Add ddw_property_create() and refactor
+    enable_ddw()
+  powerpc/pseries/iommu: Reorganize iommu_table_setparms*() with new
+    helper
+  powerpc/pseries/iommu: Update remove_dma_window() to accept property
+    name
+  powerpc/pseries/iommu: Find existing DDW with given property name
+  powerpc/pseries/iommu: Make use of DDW for indirect mapping
+  powerpc/pseries/iommu: Rename "direct window" to "dma window"
+
+ arch/powerpc/include/asm/iommu.h       |   1 +
+ arch/powerpc/include/asm/tce.h         |   8 -
+ arch/powerpc/kernel/iommu.c            |  65 ++--
+ arch/powerpc/platforms/pseries/iommu.c | 481 +++++++++++++++----------
+ 4 files changed, 330 insertions(+), 225 deletions(-)
+
 -- 
 2.32.0
 
