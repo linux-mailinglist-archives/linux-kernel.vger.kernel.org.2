@@ -2,299 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3963CB083
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 03:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C043CB087
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 03:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhGPBkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 21:40:49 -0400
-Received: from mail-bn7nam10on2123.outbound.protection.outlook.com ([40.107.92.123]:62240
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230388AbhGPBkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 21:40:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WJE9r+yYvoCVnVZpdpKziYtV1Vr5mQXZMylLolNB6iUeaPx1mfDPUs5H4E7EB2HJyvCXYVFHh1YgC2/2yj8rpRxRl0Ty/jZ5Z5wdq7+imKjXk50JHm+pIx+T2LaEM6amKGkewo76tK5tWtk8hLR1/90FR/W8NfibrEOO9K+rUVHWhFyOmNjUI22vW1/QAqoA/Jqa2fN2dfCzzpI0tzPe6HbhqDdMCQqoP+DSJDHOx6toZuU/T94pWgzTNt2I2h7yfkAXAFWwfWVLbMGWf4/DLFEEMTWdXrUi46m/7++UPSryyT5/kcl9FXXGVmOAYAUY/7sT3I4K0PgslaIzeAZiQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PPka710Q6MYRSP7biJtP3y/uYPGtDqKxJb2VPOD4Yj4=;
- b=C7xg6LWXdZaUbGWBZkpN198uB1KEgy8Qz3nWx80cLnK50TpFgkWFo2DWcFceFTwVL4MTllflm+I3zZZCC7+7xtzcb/S2auCS1BXUqVGrKCzElK748wv7F8o6cEr4JpYIkaDbmb9U7JTF55T8zOvGX3CQ4eafZkR8u3PifRc5FSrNaGHEchOoZD9v4qE7JePXCbiENHLR+QwADQYJ1xmjg8aWJQadC6rpXSw3OsKD2pFnQsQkuge9fgJc5bkEXmK5Mwmvz81aE3FYzbTP8zizRZjRKjJFlgI8CwoqCrfyTK/Fa8079N/g2Ky0opFPJB2oU5rg1FbRFTNn380O5iBEKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PPka710Q6MYRSP7biJtP3y/uYPGtDqKxJb2VPOD4Yj4=;
- b=XCLrqIFw4fQpMhtC4FJ8K1shfWnKNsUAjz2l/tpbSO7XTq2exlhcXytWqIBNtRZBw9tLPaJC8IiAzjYwpLqj8AfSSYw4Iv7wLDfUNoRNfciX6uEsMLwzq4c75N0Kq8ZzjOMG3Gwq1pDGocTDXC9zDj9DBcCW0eCj/7KIrd33z7w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from DM6PR21MB1340.namprd21.prod.outlook.com (2603:10b6:5:175::19)
- by DM5PR21MB0748.namprd21.prod.outlook.com (2603:10b6:3:a3::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.8; Fri, 16 Jul
- 2021 01:37:46 +0000
-Received: from DM6PR21MB1340.namprd21.prod.outlook.com
- ([fe80::7840:718a:c75:9760]) by DM6PR21MB1340.namprd21.prod.outlook.com
- ([fe80::7840:718a:c75:9760%8]) with mapi id 15.20.4352.012; Fri, 16 Jul 2021
- 01:37:46 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     linux-hyperv@vger.kernel.org
-Cc:     haiyangz@microsoft.com, kys@microsoft.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2,hyperv-fixes] Drivers: hv: vmbus: Fix duplicate CPU assignments within a device
-Date:   Thu, 15 Jul 2021 18:37:38 -0700
-Message-Id: <1626399458-23990-1-git-send-email-haiyangz@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: MWHPR04CA0053.namprd04.prod.outlook.com
- (2603:10b6:300:6c::15) To DM6PR21MB1340.namprd21.prod.outlook.com
- (2603:10b6:5:175::19)
+        id S232909AbhGPBk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 21:40:58 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11430 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230480AbhGPBk4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 21:40:56 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GQv1D550kzcdK7;
+        Fri, 16 Jul 2021 09:34:40 +0800 (CST)
+Received: from dggpemm500015.china.huawei.com (7.185.36.181) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 09:37:59 +0800
+Received: from [10.174.179.224] (10.174.179.224) by
+ dggpemm500015.china.huawei.com (7.185.36.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 09:37:58 +0800
+Subject: Re: [PATCH] Bluetooth: fix use-after-free error in lock_sock_nested()
+From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+CC:     <cj.chengjian@huawei.com>, Wei Yongjun <weiyongjun1@huawei.com>,
+        <yuehaibing@huawei.com>, <huawei.libin@huawei.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+References: <20210714031733.1395549-1-bobo.shaobowang@huawei.com>
+ <CABBYNZL37yLgj1LP7r=rbEcsPXCPy1y55ar816eZXka2W=7-Aw@mail.gmail.com>
+ <a1c4ddcb-afbd-c0e4-2003-90590b10ea84@huawei.com>
+Message-ID: <32ffeb61-f8e8-2a62-e1a7-d5df9672267c@huawei.com>
+Date:   Fri, 16 Jul 2021 09:37:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Sender: LKML haiyangz <lkmlhyz@microsoft.com>
-X-MS-Exchange-MessageSentRepresentingType: 2
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (13.77.154.182) by MWHPR04CA0053.namprd04.prod.outlook.com (2603:10b6:300:6c::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 01:37:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 442696de-7fa1-4921-9da9-08d947fa501a
-X-MS-TrafficTypeDiagnostic: DM5PR21MB0748:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR21MB074858550074260A40A11C65AC119@DM5PR21MB0748.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YYSaPQgujms9HfAHdnYPnfZ7aP65E9UieeGOncLFMjZmpIED/yem2PowScgobWdWT/VN5IdE3gsbfqx0iEEhEtiNjP8zoR+OxRzws3ySsNTSo0GJtdpeL/4zAdNxzk/14qDSC7hZqMbTJFeaesaz4hR02ezwzmE4WlYLGczTnjTiWN/vHsBAKErFSsYS5F1BG7SoGqUuDIOdiRrPaJRgmX4kohtlJ0obuLSZT8Imkoc4SDLMSHU+h6YnOgk7UNAlQMQWxDrJS+UcpO/YQepp+OT1ajeiuHWYS2r6mXJGMWdVRIlck6XSyhC3G6NGLj9ttaDACzEy8KrIXxWuXyI9aHNcSqC2zNrEqrNxAa5zWSXhx4T4pTmSttFKSPNGh1bpTwHHyMByrZ5LWrunxxHhbVTj2iFkH6YmE/YSl3WprKabQltNDYuwdVWGSdQR0qzP5CUYHT0MvP9yxJQ9BHsCg+ju8jR1J7IBTShVJ/Rgl8RGuerWdBJ4atTi5cPEsvdw9SuvDwSBmSnuH+cMVUnpT8XQFF6y7Iry8gM1vEAu7QZfCcGpo0dzWR/V7LwJZb3sNkS+mABajB8hycm27Jxq9sUlKZpJA8ZrDaMMejzxzTv0QwZLX2PwxDojG4sbuGHOM2DF7z260f5zZ+rabFRH3RjYK21rJOj+AEZu2pOPmwEZxV1rNLKTyIYzTAYtnKaG/wgE5hN/tBsanfkDHCla4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1340.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(6512007)(2906002)(6506007)(5660300002)(2616005)(450100002)(83380400001)(26005)(186003)(956004)(478600001)(8936002)(8676002)(66946007)(38100700002)(7846003)(6666004)(36756003)(10290500003)(6486002)(38350700002)(82960400001)(82950400001)(52116002)(6916009)(66476007)(4326008)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KvCR4XdIoWIQEaj4zFmxQ8cMZpfUVT/lOP1b1Z7r1NgY9NGrVMlWL8Uk03hH?=
- =?us-ascii?Q?zssNupjBNZ3l0xDx3c6hLwoChfPR6GCyTdA4fqU3XBEsjyEnXRuvrvgh3wwj?=
- =?us-ascii?Q?3rFDEqgair/YB5xXIXtaQwgnUpkLilnQzuMsYMU4018EYCvEaSl5yFog1RXZ?=
- =?us-ascii?Q?VH20rq1+xn6P6MqvsvHfXixV4+2IqKbyIk/gWeysHPFhbB55DiQxUa8FTjcF?=
- =?us-ascii?Q?O8d/pxln4cCcnQ6F3AfDpOLijPlPffiqR2Zd6QyFmNKHcGqLOrd7d9Jo4rpY?=
- =?us-ascii?Q?vRIBuJPA+PQie9/uWH8Z10zXcBrsour7Saunx9XXR5JYvZfOZOl14RtPyw5r?=
- =?us-ascii?Q?XRimMJhpFB249kb0wYQJxI0NdR6lLeWhTvzaKRCBm/QTrRyh3MlVxEs+6Ar0?=
- =?us-ascii?Q?UdpYkFSnMhq5pQR0wSnX9euQfgRGghkrF5SeR2seISU7v/YrayVKwVZ53zmh?=
- =?us-ascii?Q?tjAbh5xAPIfDHCq3bGBjQN3LP2ladQ4m5dRNFW765pGWV0ODlKJKF/csay3L?=
- =?us-ascii?Q?jqGDiBPCU52JH1oxf/0/CaIz/+j/RRmlxvDmwpci1CvOxJ12ieGIKPCZFBQU?=
- =?us-ascii?Q?sl/94Q/uB7hOC3L+kummVjI54ieZWsLNdqvlR33GTlk7brn6YZVfWHPFpdT2?=
- =?us-ascii?Q?M9oDyM+5+nsccF/0JKzUKPgAlz+qWp+gViAiuq6WLRSRPKTZDl+ODooB7f2S?=
- =?us-ascii?Q?os60dg3jtmFZ02tl0lvYmJ5AtanM4Bswjp6jWcQftnNdjFOkCIkOiZEr9vSl?=
- =?us-ascii?Q?q9WDghoz61IfWECXri3UuMWe21tJvr7ruT05AaX3GNX+B+F09b6hR82Y1C6Y?=
- =?us-ascii?Q?6z1/DZB5oFa9+BoEC/oxRzQNVAiMYv8moC4ZurxPIFhTm8tvRGT/9494zLEG?=
- =?us-ascii?Q?NuRyn5o7/ttGbnYFSv/HZgOjsDmlSJ0eYdly1S8DyVMWspGCYz8odR6IKNG7?=
- =?us-ascii?Q?75st2g/RIDX0cY1qDWK6Qw/44sQW4cHTwmYWYPBg7iIN+eF7yEfEUpfLOEJm?=
- =?us-ascii?Q?bu3hupIoqxc27jjwdIkJeDT+ViXmKmf5JuzSDAym/kaASRlJrflJJ+L8nbT6?=
- =?us-ascii?Q?66eiwHq70s3+Sl1u7rsJUD7YUg4l0WI/0sGmAkzilEY2nu5RZZvxLKS/TId0?=
- =?us-ascii?Q?MKIx4N8G2TqpeZ6qHSHsgGUcoWPdCV906CHP/dDtct+B+IM/3K4lFuXv5HW4?=
- =?us-ascii?Q?38FWwxLdE/Dq9HY1bOqGUt/8yp/p2JCjUTAA0s/H7H0+Ktp5OCtQiTZNAvX5?=
- =?us-ascii?Q?RiDA/l3KBFWWJ2Xp+kvNB120jiyG0UPPxCqZPc/PN6+1EdBI7ccDJ44ZZgVl?=
- =?us-ascii?Q?XlYi+KKeIyANMdf2RMPTF2Ki?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 442696de-7fa1-4921-9da9-08d947fa501a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1340.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 01:37:46.5772
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dTxNdUh95C896wZDUUey5+IYVZLvssOdOqpbJUqqadzMKPLGD91dTcry9zHKSKJftqy61HO0f9yujMCGmjrsGg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR21MB0748
+In-Reply-To: <a1c4ddcb-afbd-c0e4-2003-90590b10ea84@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.224]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500015.china.huawei.com (7.185.36.181)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vmbus module uses a rotational algorithm to assign target CPUs to
-device's channels. Depends on the timing of different device's channel
-offers, different channels of a device may be assigned to the same CPU.
 
-For example on a VM with 2 CPUs, if NIC A and B's channels are offered
-in the following order, NIC A will have both channels on CPU0, and
-NIC B will have both channels on CPU1 -- see below. This kind of
-assignment causes RSS load that is spreading across different channels
-to end up on the same CPU.
+在 2021/7/15 12:57, Wangshaobo (bobo) 写道:
+>
+> 在 2021/7/15 5:50, Luiz Augusto von Dentz 写道:
+>> Hi,
+>>
+>> On Tue, Jul 13, 2021 at 8:20 PM Wang ShaoBo 
+>> <bobo.shaobowang@huawei.com> wrote:
+>>> use-after-free error in lock_sock_nested() is reported:
+>>>
+>>> [  179.140137][ T3731] 
+>>> =====================================================
+>>> [  179.142675][ T3731] BUG: KMSAN: use-after-free in 
+>>> lock_sock_nested+0x280/0x2c0
+>>> [  179.145494][ T3731] CPU: 4 PID: 3731 Comm: kworker/4:2 Not 
+>>> tainted 5.12.0-rc6+ #54
+>>> [  179.148432][ T3731] Hardware name: QEMU Standard PC (i440FX + 
+>>> PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+>>> [  179.151806][ T3731] Workqueue: events l2cap_chan_timeout
+>>> [  179.152730][ T3731] Call Trace:
+>>> [  179.153301][ T3731]  dump_stack+0x24c/0x2e0
+>>> [  179.154063][ T3731]  kmsan_report+0xfb/0x1e0
+>>> [  179.154855][ T3731]  __msan_warning+0x5c/0xa0
+>>> [  179.155579][ T3731]  lock_sock_nested+0x280/0x2c0
+>>> [  179.156436][ T3731]  ? kmsan_get_metadata+0x116/0x180
+>>> [  179.157257][ T3731]  l2cap_sock_teardown_cb+0xb8/0x890
+>>> [  179.158154][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
+>>> [  179.159141][ T3731]  ? kmsan_get_metadata+0x116/0x180
+>>> [  179.159994][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
+>>> [  179.160959][ T3731]  ? l2cap_sock_recv_cb+0x420/0x420
+>>> [  179.161834][ T3731]  l2cap_chan_del+0x3e1/0x1d50
+>>> [  179.162608][ T3731]  ? kmsan_get_metadata+0x116/0x180
+>>> [  179.163435][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
+>>> [  179.164406][ T3731]  l2cap_chan_close+0xeea/0x1050
+>>> [  179.165189][ T3731]  ? kmsan_internal_unpoison_shadow+0x42/0x70
+>>> [  179.166180][ T3731]  l2cap_chan_timeout+0x1da/0x590
+>>> [  179.167066][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
+>>> [  179.168023][ T3731]  ? l2cap_chan_create+0x560/0x560
+>>> [  179.168818][ T3731]  process_one_work+0x121d/0x1ff0
+>>> [  179.169598][ T3731]  worker_thread+0x121b/0x2370
+>>> [  179.170346][ T3731]  kthread+0x4ef/0x610
+>>> [  179.171010][ T3731]  ? process_one_work+0x1ff0/0x1ff0
+>>> [  179.171828][ T3731]  ? kthread_blkcg+0x110/0x110
+>>> [  179.172587][ T3731]  ret_from_fork+0x1f/0x30
+>>> [  179.173348][ T3731]
+>>> [  179.173752][ T3731] Uninit was created at:
+>>> [  179.174409][ T3731]  kmsan_internal_poison_shadow+0x5c/0xf0
+>>> [  179.175373][ T3731]  kmsan_slab_free+0x76/0xc0
+>>> [  179.176060][ T3731]  kfree+0x3a5/0x1180
+>>> [  179.176664][ T3731]  __sk_destruct+0x8af/0xb80
+>>> [  179.177375][ T3731]  __sk_free+0x812/0x8c0
+>>> [  179.178032][ T3731]  sk_free+0x97/0x130
+>>> [  179.178686][ T3731]  l2cap_sock_release+0x3d5/0x4d0
+>>> [  179.179457][ T3731]  sock_close+0x150/0x450
+>>> [  179.180117][ T3731]  __fput+0x6bd/0xf00
+>>> [  179.180787][ T3731]  ____fput+0x37/0x40
+>>> [  179.181481][ T3731]  task_work_run+0x140/0x280
+>>> [  179.182219][ T3731]  do_exit+0xe51/0x3e60
+>>> [  179.182930][ T3731]  do_group_exit+0x20e/0x450
+>>> [  179.183656][ T3731]  get_signal+0x2dfb/0x38f0
+>>> [  179.184344][ T3731]  arch_do_signal_or_restart+0xaa/0xe10
+>>> [  179.185266][ T3731]  exit_to_user_mode_prepare+0x2d2/0x560
+>>> [  179.186136][ T3731]  syscall_exit_to_user_mode+0x35/0x60
+>>> [  179.186984][ T3731]  do_syscall_64+0xc5/0x140
+>>> [  179.187681][ T3731] entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>> [  179.188604][ T3731] 
+>>> =====================================================
+>>>
+>>> In our case, there are two Thread A and B:
+>>>
+>>> Context: Thread A:              Context: Thread B:
+>>>
+>>> l2cap_chan_timeout()            __se_sys_shutdown()
+>>>    l2cap_chan_close()              l2cap_sock_shutdown()
+>>>      l2cap_chan_del()                l2cap_chan_close()
+>>>        l2cap_sock_teardown_cb() l2cap_sock_teardown_cb()
+>>>
+>>> Once l2cap_sock_teardown_cb() excuted, this sock will be marked as 
+>>> SOCK_ZAPPED,
+>>> and can be treated as killable in l2cap_sock_kill() if sock_orphan() 
+>>> has
+>>> excuted, at this time we close sock through sock_close() which end 
+>>> to call
+>>> l2cap_sock_kill() like Thread C:
+>>>
+>>> Context: Thread C:
+>>>
+>>> sock_close()
+>>>    l2cap_sock_release()
+>>>      sock_orphan()
+>>>      l2cap_sock_kill()  #free sock if refcnt is 1
+>>>
+>>> If C completed, Once A or B reaches l2cap_sock_teardown_cb() again,
+>>> use-after-free happened.
+>>>
+>>> We should set chan->data to NULL if sock is freed, for telling teardown
+>>> operation is not allowed in l2cap_sock_teardown_cb(), and also we 
+>>> should
+>>> avoid killing an already killed socket in l2cap_sock_close_cb().
+>>>
+>>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+>>> ---
+>>>   net/bluetooth/l2cap_sock.c | 14 ++++++++++++--
+>>>   1 file changed, 12 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+>>> index c99d65ef13b1..ddc6a692b237 100644
+>>> --- a/net/bluetooth/l2cap_sock.c
+>>> +++ b/net/bluetooth/l2cap_sock.c
+>>> @@ -1215,14 +1215,18 @@ static int l2cap_sock_recvmsg(struct socket 
+>>> *sock, struct msghdr *msg,
+>>>    */
+>>>   static void l2cap_sock_kill(struct sock *sk)
+>>>   {
+>>> +       struct l2cap_chan *chan;
+>>> +
+>>>          if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
+>>>                  return;
+>>>
+>>>          BT_DBG("sk %p state %s", sk, state_to_string(sk->sk_state));
+>>>
+>>>          /* Kill poor orphan */
+>>> -
+>>> -       l2cap_chan_put(l2cap_pi(sk)->chan);
+>>> +       chan = l2cap_pi(sk)->chan;
+>>> +       l2cap_chan_put(chan);
+>
+> There is a problem here, the above sentence `l2cap_chan_put(chan)` 
+> should put after
+>
+> following sentence.
+>
+>>> +       if (refcount_read(&sk->sk_refcnt) == 1)
+>>> +               chan->data = NULL;
+>> Instead of checking if it is the last reference here, wouldn't it be
+>> better to reset the chan->data to NULL on l2cap_sock_destruct?
+>
+> Hi,
+>
+> In my case it looks OK, this is the diff:
+>
+> diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+> index f1b1edd0b697..32ef3328ab49 100644
+> --- a/net/bluetooth/l2cap_sock.c
+> +++ b/net/bluetooth/l2cap_sock.c
+> @@ -1500,6 +1500,9 @@ static void l2cap_sock_close_cb(struct 
+> l2cap_chan *chan)
+>  {
+>         struct sock *sk = chan->data;
+>
+> +       if (!sk)
+> +               return;
+> +
+>         l2cap_sock_kill(sk);
+>  }
+>
+> @@ -1508,6 +1511,9 @@ static void l2cap_sock_teardown_cb(struct 
+> l2cap_chan *chan, int err)
+>         struct sock *sk = chan->data;
+>         struct sock *parent;
+>
+> +       if (!sk)
+> +               return;
+> +
+>         BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
+>
+>         /* This callback can be called both for server (BT_LISTEN)
+> @@ -1700,6 +1706,7 @@ static void l2cap_sock_destruct(struct sock *sk)
+>         BT_DBG("sk %p", sk);
+>
+>         if (l2cap_pi(sk)->chan)
+> +              l2cap_pi(sk)->chan->data = NULL;
+>                  l2cap_chan_put(l2cap_pi(sk)->chan);
+>
+> But if it has potential risk if l2cap_sock_destruct() can not be 
+> excuted in time ?
+>
+> sk_free():
+>
+>         if (refcount_dec_and_test(&sk->sk_wmem_alloc)) //is possible 
+> this condition false ?
+>
+>               __sk_free(sk)   -> ... l2cap_sock_destruct()
+>
+Dear Luiz,
 
-Timing of channel offers:
-NIC A channel 0
-NIC B channel 0
-NIC A channel 1
-NIC B channel 1
+Not only that, if l2cap_sock_kill() has put 'l2cap_pi(sk)->chan', how 
+does we avoid re-puting 'l2cap_pi(sk)->chan' if l2cap_sock_destruct() 
+work postponed? this will cause underflow of chan->refcount; this PATCH 
+4e1a720d0312 ("Bluetooth: avoid killing an already killed socket") also 
+may not work in any case because only sock_orphan() has excuted can this 
+sock be killed, but if sco_sock_release() excute first, for this sock 
+has been marked as SOCK_DEAD, this sock can never be killed. So should 
+we think put chan->data = NULL in xx_sock_kill() is a better choice ?
 
-VMBUS ID 14: Class_ID = {f8615163-df3e-46c5-913f-f2d2f965ed0e} - Synthetic network adapter
-        Device_ID = {cab064cd-1f31-47d5-a8b4-9d57e320cccd}
-        Sysfs path: /sys/bus/vmbus/devices/cab064cd-1f31-47d5-a8b4-9d57e320cccd
-        Rel_ID=14, target_cpu=0
-        Rel_ID=17, target_cpu=0
-
-VMBUS ID 16: Class_ID = {f8615163-df3e-46c5-913f-f2d2f965ed0e} - Synthetic network adapter
-        Device_ID = {244225ca-743e-4020-a17d-d7baa13d6cea}
-        Sysfs path: /sys/bus/vmbus/devices/244225ca-743e-4020-a17d-d7baa13d6cea
-        Rel_ID=16, target_cpu=1
-        Rel_ID=18, target_cpu=1
-
-Update the vmbus CPU assignment algorithm to avoid duplicate CPU
-assignments within a device.
-
-The new algorithm iterates num_online_cpus + 1 times.
-The existing rotational algorithm to find "next NUMA & CPU" is still here.
-But if the resulting CPU is already used by the same device, it will try
-the next CPU.
-In the last iteration, it assigns the channel to the next available CPU
-like the existing algorithm. This is not normally expected, because
-during device probe, we limit the number of channels of a device to
-be <= number of online CPUs.
-
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
----
- drivers/hv/channel_mgmt.c | 96 ++++++++++++++++++++++++++-------------
- 1 file changed, 64 insertions(+), 32 deletions(-)
-
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index caf6d0c4bc1b..8584914291e7 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -605,6 +605,17 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 	 */
- 	mutex_lock(&vmbus_connection.channel_mutex);
- 
-+	list_for_each_entry(channel, &vmbus_connection.chn_list, listentry) {
-+		if (guid_equal(&channel->offermsg.offer.if_type,
-+			       &newchannel->offermsg.offer.if_type) &&
-+		    guid_equal(&channel->offermsg.offer.if_instance,
-+			       &newchannel->offermsg.offer.if_instance)) {
-+			fnew = false;
-+			newchannel->primary_channel = channel;
-+			break;
-+		}
-+	}
-+
- 	init_vp_index(newchannel);
- 
- 	/* Remember the channels that should be cleaned up upon suspend. */
-@@ -617,16 +628,6 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 	 */
- 	atomic_dec(&vmbus_connection.offer_in_progress);
- 
--	list_for_each_entry(channel, &vmbus_connection.chn_list, listentry) {
--		if (guid_equal(&channel->offermsg.offer.if_type,
--			       &newchannel->offermsg.offer.if_type) &&
--		    guid_equal(&channel->offermsg.offer.if_instance,
--			       &newchannel->offermsg.offer.if_instance)) {
--			fnew = false;
--			break;
--		}
--	}
--
- 	if (fnew) {
- 		list_add_tail(&newchannel->listentry,
- 			      &vmbus_connection.chn_list);
-@@ -647,7 +648,6 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 		/*
- 		 * Process the sub-channel.
- 		 */
--		newchannel->primary_channel = channel;
- 		list_add_tail(&newchannel->sc_list, &channel->sc_list);
- 	}
- 
-@@ -683,6 +683,30 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 	queue_work(wq, &newchannel->add_channel_work);
- }
- 
-+/*
-+ * Check if CPUs used by other channels of the same device.
-+ * It's should only be called by init_vp_index().
-+ */
-+static bool hv_cpuself_used(u32 cpu, struct vmbus_channel *chn)
-+{
-+	struct vmbus_channel *primary = chn->primary_channel;
-+	struct vmbus_channel *sc;
-+
-+	lockdep_assert_held(&vmbus_connection.channel_mutex);
-+
-+	if (!primary)
-+		return false;
-+
-+	if (primary->target_cpu == cpu)
-+		return true;
-+
-+	list_for_each_entry(sc, &primary->sc_list, sc_list)
-+		if (sc != chn && sc->target_cpu == cpu)
-+			return true;
-+
-+	return false;
-+}
-+
- /*
-  * We use this state to statically distribute the channel interrupt load.
-  */
-@@ -702,6 +726,7 @@ static int next_numa_node_id;
- static void init_vp_index(struct vmbus_channel *channel)
- {
- 	bool perf_chn = hv_is_perf_channel(channel);
-+	u32 i, ncpu = num_online_cpus();
- 	cpumask_var_t available_mask;
- 	struct cpumask *alloced_mask;
- 	u32 target_cpu;
-@@ -724,31 +749,38 @@ static void init_vp_index(struct vmbus_channel *channel)
- 		return;
- 	}
- 
--	while (true) {
--		numa_node = next_numa_node_id++;
--		if (numa_node == nr_node_ids) {
--			next_numa_node_id = 0;
--			continue;
-+	for (i = 1; i <= ncpu + 1; i++) {
-+		while (true) {
-+			numa_node = next_numa_node_id++;
-+			if (numa_node == nr_node_ids) {
-+				next_numa_node_id = 0;
-+				continue;
-+			}
-+			if (cpumask_empty(cpumask_of_node(numa_node)))
-+				continue;
-+			break;
-+		}
-+		alloced_mask = &hv_context.hv_numa_map[numa_node];
-+
-+		if (cpumask_weight(alloced_mask) ==
-+		    cpumask_weight(cpumask_of_node(numa_node))) {
-+			/*
-+			 * We have cycled through all the CPUs in the node;
-+			 * reset the alloced map.
-+			 */
-+			cpumask_clear(alloced_mask);
- 		}
--		if (cpumask_empty(cpumask_of_node(numa_node)))
--			continue;
--		break;
--	}
--	alloced_mask = &hv_context.hv_numa_map[numa_node];
- 
--	if (cpumask_weight(alloced_mask) ==
--	    cpumask_weight(cpumask_of_node(numa_node))) {
--		/*
--		 * We have cycled through all the CPUs in the node;
--		 * reset the alloced map.
--		 */
--		cpumask_clear(alloced_mask);
--	}
-+		cpumask_xor(available_mask, alloced_mask,
-+			    cpumask_of_node(numa_node));
- 
--	cpumask_xor(available_mask, alloced_mask, cpumask_of_node(numa_node));
-+		target_cpu = cpumask_first(available_mask);
-+		cpumask_set_cpu(target_cpu, alloced_mask);
- 
--	target_cpu = cpumask_first(available_mask);
--	cpumask_set_cpu(target_cpu, alloced_mask);
-+		if (channel->offermsg.offer.sub_channel_index >= ncpu ||
-+		    i > ncpu || !hv_cpuself_used(target_cpu, channel))
-+			break;
-+	}
- 
- 	channel->target_cpu = target_cpu;
- 
--- 
-2.25.1
+- WangShaoBo
 
