@@ -2,184 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24943CB5D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8174E3CB5D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237734AbhGPKTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:19:24 -0400
-Received: from mail-eopbgr70049.outbound.protection.outlook.com ([40.107.7.49]:24201
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235965AbhGPKTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:19:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EZ+gsxbcYehAl4PTUXt9w8m6ZTxlzESVKC1l8QpugcdTMQj+mXeD6z3urzGXNTX7dOUITxqxO97BrOaT4qEzVNFH185tNwLpyPpuOMvLtCJLkoRGfri8PyHtGywsB85LNZZRdFAMQj1qaiYwGOcfjV+WXY/D90WntRSht2Duzu6SfO0lcWLrOIxoNMjK0IL0Jm1Sq1uOJuaA8+vdTwsUGMxsGNMFKZrKuaR8uudOG/DKNVTN2gpSBILB+W+2jmkM5yMNG8AvcwbW8HtRMEu8Embo3XINCHXrKOn9Q6fU4s4Zx20Fpb3EYpHkvrXBssiy/rgROnWaEHeFaik3hkKd/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JuavuJrErdDbqsc7GJdngifGQnY3g75uKAib2babR9g=;
- b=a04K7TK47creZqBozdrw+rlCgfaNFPO0QRh3JbLHf5h2TW2vSE251KuxDGR80n9aOg+WhAOHKM29ABqXiF1W+MDH6j9PYjuvgmnG5JcimSFPKIYHgLZISu2x2FW/YzGRuQODibd+PvV1048K0yLB0DN74IdEONjXJDOBIHcVhGaKAPI/zlsXUZane4Z/rwiEgMUZl9r9TvAgi1JrGCPloK/NiFBNb8yrXVI48uduCbPXrdlwPWebb+0BSi5zekTSSYAjvumkb9AKPy7uqAo0V9UGVqddarOr1lb/b1uIK2nvVwCH6RZZwx90QIK7/hRu2KGLZyZf0WOIFpY2k6PWpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JuavuJrErdDbqsc7GJdngifGQnY3g75uKAib2babR9g=;
- b=XFWk1T+akVLAklwSc7LGS2WNDE7l8GHY/rOxYVA7w+CoY4u0Zqqlo2cgBPEC+LKhM+hJQY4+vynNjXCrUPTASr00Zj39BLzvt3T8T6D9ijyNSTMxolc/88X3nBhOz+Y2ko0oCK0aK3PufaDAo4Equ0p1EYNle/NslHSo+4nKcKg=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
- by VI1PR04MB6990.eurprd04.prod.outlook.com (2603:10a6:803:138::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Fri, 16 Jul
- 2021 10:16:22 +0000
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::c424:7608:b9e8:f09f]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::c424:7608:b9e8:f09f%5]) with mapi id 15.20.4331.024; Fri, 16 Jul 2021
- 10:16:22 +0000
-From:   laurentiu.tudor@nxp.com
-To:     andriy.shevchenko@linux.intel.com, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jon@solid-run.com, Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Subject: [PATCH] software node: balance refcount for managed sw nodes
-Date:   Fri, 16 Jul 2021 13:16:02 +0300
-Message-Id: <20210716101602.1891-1-laurentiu.tudor@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR08CA0026.eurprd08.prod.outlook.com
- (2603:10a6:208:d2::39) To VI1PR0402MB3405.eurprd04.prod.outlook.com
- (2603:10a6:803:3::26)
+        id S238149AbhGPKTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:19:47 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:35269 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237766AbhGPKTo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 06:19:44 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 9C21A2B0140F;
+        Fri, 16 Jul 2021 06:16:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 16 Jul 2021 06:16:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        YW2/suS+1HSGe/4jjcov1KPyTjR8DcjKuJHmptP47Wk=; b=PUBSloNZ/bCZzIYj
+        OaaOssKJX7RHZlu8nzCUtMcFSWwwzIRUnaeQiJBYmSnqtGTqcMyaTme6oJ4toJ2L
+        X18tlA132vtdCP7RXPSlZkrQ1eGs9fSlqkqg4jsS4u1jO/g+nrAA9cBZL4lrb8ER
+        /Nw8QQed263fDvfyeusdhy1mZGZQaC7TlxbssEC6Fa0DTPTzewSnxhcjh5BXoEFF
+        M/YoIXBNA2MNTsGSaTbCAHIsbkz08ZWpW8wYyG8LaFb9KF3VRJmmXOYeBkjJZ/Gw
+        /0ZzEt1IOMWT3eFxayJe1sDBmQJayGnTOmcTQEmEiafnyWWXtEmfbCQ1MQluNW4L
+        h0X3CQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=YW2/suS+1HSGe/4jjcov1KPyTjR8DcjKuJHmptP47
+        Wk=; b=Xk/lMmHb5XFw62X88YmJ4Kgf5Y53HcInsylAg0gXRIEm+m9iWSy0ertNf
+        bJwH7zPuH97QM3M/2DxXHrDdsyg+2TS6kOVTffhE18dDDiX6GrZwAXNY3rIj3RP7
+        0poOHQaF3gHMaX0ZCX1/6TUmRuiMiAKxd57wA3ARASOklSTnuHuaiBxaSgrK1qL/
+        JC7qSsspXCSogxqsaQ44gtA/KFPHg9pNrgz+l+a2byO0+JGQ0asW35Lzo7/5dp19
+        IevSaFRUcd7+/shHL7rtmUxNaxVWzN1pdjw7W0Awz7vYtGJlUWXuMbZgTLLXzdd0
+        e61wdau0KazQnWxP+0WCMyIjPtE7Q==
+X-ME-Sender: <xms:jlzxYESC1fmVCvwOKhPmokY42iFq6kBVwbn5qppJhsx2VYNOVdvV8g>
+    <xme:jlzxYByrl4lOFQuRJo8piw7eq_T1_Qx2gC_RrT14QAS5AEDQyFSYGqPcFqrRIfF9C
+    QZBzcUpYjks>
+X-ME-Received: <xmr:jlzxYB1bf9ZJHwfOmnyhQzLVG_wnq6FBQQtuEjzOEVoAlRRdZNLcIW4Wu34a8r45Fg6hK6Lfxm6gxBs_g6UJsTpEvT9e>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefgddvgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
+    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
+    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnhesth
+    hhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:jlzxYIBFtSkyaRkdiPqT8PY2344XlnVNGuoeOMiT1jUboZkF66dC4w>
+    <xmx:jlzxYNhb4-ynM1tD1jPjmcVX9zmK3Jq1LsQ8meO-Sl_n97vUP9lHxg>
+    <xmx:jlzxYErHWJ1KjZp-aYce3dj_KxpjaCZWNwKCJiW_IXoS-Lfg6eV8CA>
+    <xmx:j1zxYIpAN_EcrqyKhK_-snAXraYzmF-zRkaB9rBItGVyoOkXruid-bMehTM>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 16 Jul 2021 06:16:41 -0400 (EDT)
+Message-ID: <a7386a9eba13176b4c6443b1677383a8121b9dc5.camel@themaw.net>
+Subject: Re: [PATCH v8 0/5] kernfs: proposed locking and concurrency
+ improvement
+From:   Ian Kent <raven@themaw.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Eric Sandeen <sandeen@sandeen.net>, Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 16 Jul 2021 18:16:38 +0800
+In-Reply-To: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
+References: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fsr-ub1864-101.ea.freescale.net (83.217.231.2) by AM0PR08CA0026.eurprd08.prod.outlook.com (2603:10a6:208:d2::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 10:16:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8fe2bf1c-5816-463f-db02-08d94842c2ff
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6990:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB6990F9816FE6DAECC7130334EC119@VI1PR04MB6990.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SHZ3EwxMHgpMgxFbtAbSCEBMVqX3Jy8gVAMNH8dWBaUi8lRw3yjE2+9JTmF9rIYNqaL/SSxEbX8flFBPaPDPZ3E52hdUyrcSVZUllwg/xr7CRcmTcDi5gzwd/qm5UF2EaVNl21vuC3dYJ+f4m63QZ00UTdSgLkgRtHnPIXESH2/6FWo+7sRvtgKXafI9Jlbq2AK/AFibdZbNO/jFeRsuyQcRbSHwtrZuIAgjkRhegjDSUp+fussmUgRAR+WZ4k221Kx0YD/LRezX5MCvNJvqsILJvYBIs3H+sVsPz+TyTPCP2XFXFkf/kYjpIYkzlCfEsttXWR+oXva8j/N5mCLx3HQQe2TCKj9aMnlS8hUaCJq8IbkF1vyuh2qmKv/4/oe4ElFzlx5+I9XjIuvh/nDSHUJ2K59OXyN5SxCTPzusiN7YFN7xA5g/jwlfKTSe7mfyZyRXZGxNYLZonvbz1udQxm1ERT8CGsrwQ7lQ0Y+ezPjd/Fn8clZg9fuDOQYwPqU+3bIjJxn06Yj2bjexmrQRJQTjxnbDy+jzh6gUVDh9iK9kVHbN+UJoDsLOKY1ZqXYoAq3hJn21SWGl9gV3WF/zaQ29sSSfQ7FLtWsMYeNmeLAiHos6XYXnkRm2o3IJc0dWshXJ8Vpnhv4lPGfUQRLFlcggfXrVamxR+5usI4c54Oz2WEZXsqzgfb3RU/n+fxXwk8YCXc6XOVQyQK/SpCL6IA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(366004)(376002)(396003)(52116002)(956004)(2616005)(8676002)(8936002)(26005)(5660300002)(1076003)(316002)(4326008)(186003)(6486002)(66556008)(6666004)(6512007)(66946007)(86362001)(2906002)(478600001)(6506007)(36756003)(38350700002)(66476007)(9686003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZbGr/Zg6UsF+aXnDbd6cvxi2on6LcPzKBYCBmbRNzURGd7OslcG0LM3sPgz3?=
- =?us-ascii?Q?BwkDyecF++nwfj4wlbjmTiuFaDhemV/rDoy9ZRAWfu8BPYzq9nwmgw/3WRm/?=
- =?us-ascii?Q?JitTNwpPgXkeBSl9gRQLyUvhze1S8cqoeb3F7n3GKIHTevfSvSx9z/N/FymI?=
- =?us-ascii?Q?2U21dTPyjeLC3swd/opWxTeiXHCLqvULc52mOIgZqmn142gC38mkN6Tk3jhh?=
- =?us-ascii?Q?xF/IabLoVQWND/hhOFKA4b53Mm5quUVVmO9PaaElAu++e3Cr8+G3gTQ0UyYb?=
- =?us-ascii?Q?UpCj08JQaimv3S08R4+BkSnpbl0GignMrTz4AL4b9+/fSjnYzno3dr7e/y5Y?=
- =?us-ascii?Q?WgFe0xDesZDSgdSffF37nW2t8wmS2/+3sOdQJSZL/eGWMw4ff9rMHdv+ffqT?=
- =?us-ascii?Q?nYaB82puS0WKZzBM2XFfPKNsc60782W4637pbTZhV/ROciP/NwSb+akynIb5?=
- =?us-ascii?Q?KNb2NyLhdzcHqDKWPyBj4AmFhYZDFEn7qwR+EZ5eGSH5W0rvC+e0qCEat0uT?=
- =?us-ascii?Q?87QtJb/uZTFFuC8MtyTUi3tghcJ0qKip0edxfxuSrqUPo7ZKsPYbWq8hP9Ad?=
- =?us-ascii?Q?rGrWCJc1EyLM9tp7WU/yU92kT/CWfaBE5mgOjUujqHh582TleaXT7j0ByXve?=
- =?us-ascii?Q?rWFbIanUwxzm8ftIzavumYfM3x8o4iRi1Mm3Bl9iNlIVUWF3eRnKOfZgHWXZ?=
- =?us-ascii?Q?hLT2P7ahRFPUgOu5955cZmqYmyr4GqNnJSE8gln1bzqgsT/8E6VaqDPytUiK?=
- =?us-ascii?Q?jA8a7q49D4xTlruq3GTSPX/DNljQnxJda2yR407MMFT/vpsgUFaz1YExmKHG?=
- =?us-ascii?Q?O3fl+6S68rSKzQLoECivemsrLobTW1KfSX7K/5pEcl5FoeZ49a12SP4RqCD5?=
- =?us-ascii?Q?uGqzT6h7hRCHL1CW8cCWzBQzcCsOr+e8rJQiIeXKJCLag386Mt179cbY2SLC?=
- =?us-ascii?Q?wNdM2HsF70HavRZ0lduxw2KyWapGDW5igR/rNrh4zoUxgs7ZaLfndo34QrWg?=
- =?us-ascii?Q?OLYUny/eE+tEDQGVbm3cBxH1pEi4yCT8dEwy1bJxdJnJJo3kA/KP3ihW1LOj?=
- =?us-ascii?Q?ojL2nDfDcPtrPkN2PuBJPozd7aZ6IzK15JJVRs9bE+jIQtxgsHGJbnRJGlZx?=
- =?us-ascii?Q?OC8Q1o2WW0GZDs3z7Yj1jGrJ2u4lU5F8MV4m+e1brpZiPiy5fa7Vo2x6Nrtz?=
- =?us-ascii?Q?PE2n37mvoEjcEb0te3VpH8jR4/fRC/jhCM9CRNb96NfkzoAP/I9rmXRaitvT?=
- =?us-ascii?Q?0OxKfnYqBU1iZiDpgeQh5BhZVmBf+m4j6cFw1yXyw//DbKeRKnpf2157W18Q?=
- =?us-ascii?Q?JWG6adD/P1hv8m14s/EM3BLg?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fe2bf1c-5816-463f-db02-08d94842c2ff
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 10:16:22.7744
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O62grZvq0m0C5gttjjUQ2IpFAUGwxC+dya/d6Rq4fnhAzHEekYvkj0ZrIh+hgAbET3X+7a9P5khOZQWKDKxkaw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6990
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Hi,
 
-software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
-software nodes, thus leading to underflow errors. Balance the refcount by
-bumping it in the device_create_managed_software_node() function.
+Here are benchmark test runs against patch set v8.
+There pretty much the same a the v7 results as they should be.
 
-The error [1] was encountered after adding a .shutdown() op to our
-fsl-mc-bus driver.
+1) Run with 40 distinct sysfs file paths on 80 cpu machine, perf graphs
+in base-files-cpu-80-perf.txt and patched-files-cpu-80-perf.txt.
 
-[1]
-pc : refcount_warn_saturate+0xf8/0x150
-lr : refcount_warn_saturate+0xf8/0x150
-sp : ffff80001009b920
-x29: ffff80001009b920 x28: ffff1a2420318000 x27: 0000000000000000
-x26: ffffccac15e7a038 x25: 0000000000000008 x24: ffffccac168e0030
-x23: ffff1a2428a82000 x22: 0000000000080000 x21: ffff1a24287b5000
-x20: 0000000000000001 x19: ffff1a24261f4400 x18: ffffffffffffffff
-x17: 6f72645f726f7272 x16: 0000000000000000 x15: ffff80009009b607
-x14: 0000000000000000 x13: ffffccac16602670 x12: 0000000000000a17
-x11: 000000000000035d x10: ffffccac16602670 x9 : ffffccac16602670
-x8 : 00000000ffffefff x7 : ffffccac1665a670 x6 : ffffccac1665a670
-x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff1a2420318000
-Call trace:
- refcount_warn_saturate+0xf8/0x150
- kobject_put+0x10c/0x120
- software_node_notify+0xd8/0x140
- device_platform_notify+0x4c/0xb4
- device_del+0x188/0x424
- fsl_mc_device_remove+0x2c/0x4c
- rebofind sp.c__fsl_mc_device_remove+0x14/0x2c
- device_for_each_child+0x5c/0xac
- dprc_remove+0x9c/0xc0
- fsl_mc_driver_remove+0x28/0x64
- __device_release_driver+0x188/0x22c
- device_release_driver+0x30/0x50
- bus_remove_device+0x128/0x134
- device_del+0x16c/0x424
- fsl_mc_bus_remove+0x8c/0x114
- fsl_mc_bus_shutdown+0x14/0x20
- platform_shutdown+0x28/0x40
- device_shutdown+0x15c/0x330
- __do_sys_reboot+0x218/0x2a0
- __arm64_sys_reboot+0x28/0x34
- invoke_syscall+0x48/0x114
- el0_svc_common+0x40/0xdc
- do_el0_svc+0x2c/0x94
- el0_svc+0x2c/0x54
- el0t_64_sync_handler+0xa8/0x12c
- el0t_64_sync+0x198/0x19c
----[ end trace 32eb1c71c7d86821 ]---
+Base (5.12.3, unpatched)
+------------------------
+single: total 43.610095ms per 4.361009us
+concur: total 4515.483148ms per 451.548315us  CPU 69
+concur: total 4518.304581ms per 451.830458us  CPU 17
+concur: total 4525.275675ms per 452.527567us  CPU 73
+concur: total 4531.404107ms per 453.140411us  CPU 77
+concur: total 4543.011580ms per 454.301158us  CPU 57
+concur: total 4547.066040ms per 454.706604us  CPU 45
+concur: total 4547.652917ms per 454.765292us  CPU 33
+concur: total 4550.700660ms per 455.070066us  CPU 5
+concur: total 4552.377974ms per 455.237797us  CPU 53
+concur: total 4557.183667ms per 455.718367us  CPU 15
+concur: total 4560.088854ms per 456.008885us  CPU 25
+concur: total 4561.096541ms per 456.109654us  CPU 49
+concur: total 4562.542284ms per 456.254228us  CPU 65
+concur: total 4567.247924ms per 456.724792us  CPU 29
+concur: total 4567.551375ms per 456.755137us  CPU 11
+concur: total 4576.361518ms per 457.636152us  CPU 35
+concur: total 4579.072483ms per 457.907248us  CPU 13
+concur: total 4580.456910ms per 458.045691us  CPU 21
+concur: total 4581.441238ms per 458.144124us  CPU 55
+concur: total 4582.808775ms per 458.280878us  CPU 37
+concur: total 4583.284351ms per 458.328435us  CPU 9
+concur: total 4583.644571ms per 458.364457us  CPU 3
+concur: total 4584.435959ms per 458.443596us  CPU 51
+concur: total 4588.450469ms per 458.845047us  CPU 61
+concur: total 4588.784765ms per 458.878476us  CPU 63
+concur: total 4603.455415ms per 460.345542us  CPU 27
+concur: total 4605.229148ms per 460.522915us  CPU 39
+concur: total 4605.412438ms per 460.541244us  CPU 71
+concur: total 4607.079973ms per 460.707997us  CPU 23
+concur: total 4608.041174ms per 460.804117us  CPU 79
+concur: total 4608.345038ms per 460.834504us  CPU 1
+concur: total 4616.631547ms per 461.663155us  CPU 19
+concur: total 4616.845962ms per 461.684596us  CPU 43
+concur: total 4617.521385ms per 461.752139us  CPU 59
+concur: total 4620.077938ms per 462.007794us  CPU 41
+concur: total 4620.766014ms per 462.076601us  CPU 47
+concur: total 4622.365869ms per 462.236587us  CPU 67
+concur: total 4622.546362ms per 462.254636us  CPU 31
+concur: total 4623.371457ms per 462.337146us  CPU 7
+concur: total 4673.657084ms per 467.365708us  CPU 75
+concur: total 4703.545988ms per 470.354599us  CPU 48
+concur: total 4704.692544ms per 470.469254us  CPU 56
+concur: total 4705.308174ms per 470.530817us  CPU 12
+concur: total 4708.179087ms per 470.817909us  CPU 52
+concur: total 4710.879479ms per 471.087948us  CPU 76
+concur: total 4712.478473ms per 471.247847us  CPU 16
+concur: total 4712.897185ms per 471.289718us  CPU 64
+concur: total 4713.066302ms per 471.306630us  CPU 32
+concur: total 4713.309041ms per 471.330904us  CPU 28
+concur: total 4713.775133ms per 471.377513us  CPU 8
+concur: total 4714.142315ms per 471.414232us  CPU 4
+concur: total 4714.408679ms per 471.440868us  CPU 0
+concur: total 4714.823031ms per 471.482303us  CPU 68
+concur: total 4715.911133ms per 471.591113us  CPU 72
+concur: total 4716.356891ms per 471.635689us  CPU 36
+concur: total 4717.148390ms per 471.714839us  CPU 74
+concur: total 4717.956787ms per 471.795679us  CPU 30
+concur: total 4718.550180ms per 471.855018us  CPU 62
+concur: total 4718.780680ms per 471.878068us  CPU 20
+concur: total 4718.804903ms per 471.880490us  CPU 14
+concur: total 4719.527173ms per 471.952717us  CPU 34
+concur: total 4719.610769ms per 471.961077us  CPU 44
+concur: total 4720.205242ms per 472.020524us  CPU 46
+concur: total 4720.442429ms per 472.044243us  CPU 60
+concur: total 4720.844723ms per 472.084472us  CPU 24
+concur: total 4720.885926ms per 472.088593us  CPU 40
+concur: total 4721.157172ms per 472.115717us  CPU 22
+concur: total 4721.325226ms per 472.132523us  CPU 42
+concur: total 4722.194975ms per 472.219497us  CPU 54
+concur: total 4722.198238ms per 472.219824us  CPU 38
+concur: total 4722.270686ms per 472.227069us  CPU 10
+concur: total 4722.520311ms per 472.252031us  CPU 70
+concur: total 4722.697182ms per 472.269718us  CPU 50
+concur: total 4722.814473ms per 472.281447us  CPU 2
+concur: total 4723.047319ms per 472.304732us  CPU 78
+concur: total 4723.211099ms per 472.321110us  CPU 58
+concur: total 4723.325139ms per 472.332514us  CPU 6
+concur: total 4723.517066ms per 472.351707us  CPU 66
+concur: total 4723.540041ms per 472.354004us  CPU 18
+concur: total 4723.532642ms per 472.353264us  CPU 26
+times: 10000 threads: 80 cpus: 80
 
-Reported-by: Jon Nettleton <jon@solid-run.com>
-Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
----
-Changes since RFC:
- - use software_node_notify(KOBJ_ADD) instead of directly bumping
-   refcount (Heikki)
+patched (5.12.3)
+----------------
+single: total 42.800654ms per 4.280065us
+concur: total 1497.315162ms per 149.731516us  CPU 40
+concur: total 1523.384944ms per 152.338494us  CPU 6
+concur: total 1527.974937ms per 152.797494us  CPU 41
+concur: total 1528.611772ms per 152.861177us  CPU 4
+concur: total 1530.640917ms per 153.064092us  CPU 2
+concur: total 1531.255960ms per 153.125596us  CPU 28
+concur: total 1531.502709ms per 153.150271us  CPU 22
+concur: total 1531.550394ms per 153.155039us  CPU 54
+concur: total 1531.951529ms per 153.195153us  CPU 60
+concur: total 1532.197299ms per 153.219730us  CPU 78
+concur: total 1532.279187ms per 153.227919us  CPU 48
+concur: total 1533.034026ms per 153.303403us  CPU 14
+concur: total 1533.558031ms per 153.355803us  CPU 32
+concur: total 1534.782403ms per 153.478240us  CPU 62
+concur: total 1534.997189ms per 153.499719us  CPU 56
+concur: total 1536.109295ms per 153.610929us  CPU 38
+concur: total 1536.214181ms per 153.621418us  CPU 18
+concur: total 1537.096808ms per 153.709681us  CPU 36
+concur: total 1537.612459ms per 153.761246us  CPU 42
+concur: total 1538.681882ms per 153.868188us  CPU 12
+concur: total 1538.912144ms per 153.891214us  CPU 20
+concur: total 1539.133370ms per 153.913337us  CPU 76
+concur: total 1539.732430ms per 153.973243us  CPU 8
+concur: total 1540.007044ms per 154.000704us  CPU 66
+concur: total 1540.497045ms per 154.049704us  CPU 44
+concur: total 1540.982660ms per 154.098266us  CPU 16
+concur: total 1541.037031ms per 154.103703us  CPU 26
+concur: total 1541.441290ms per 154.144129us  CPU 72
+concur: total 1541.445028ms per 154.144503us  CPU 34
+concur: total 1541.899099ms per 154.189910us  CPU 46
+concur: total 1542.395210ms per 154.239521us  CPU 74
+concur: total 1542.641833ms per 154.264183us  CPU 58
+concur: total 1543.768222ms per 154.376822us  CPU 1
+concur: total 1543.781564ms per 154.378156us  CPU 10
+concur: total 1545.325536ms per 154.532554us  CPU 64
+concur: total 1545.602875ms per 154.560287us  CPU 70
+concur: total 1545.628720ms per 154.562872us  CPU 30
+concur: total 1547.650530ms per 154.765053us  CPU 68
+concur: total 1547.925833ms per 154.792583us  CPU 52
+concur: total 1550.700993ms per 155.070099us  CPU 24
+concur: total 1551.551400ms per 155.155140us  CPU 55
+concur: total 1552.062602ms per 155.206260us  CPU 49
+concur: total 1552.084444ms per 155.208444us  CPU 33
+concur: total 1552.080191ms per 155.208019us  CPU 7
+concur: total 1552.108824ms per 155.210882us  CPU 35
+concur: total 1552.169043ms per 155.216904us  CPU 50
+concur: total 1552.246985ms per 155.224699us  CPU 17
+concur: total 1552.266063ms per 155.226606us  CPU 21
+concur: total 1552.322319ms per 155.232232us  CPU 23
+concur: total 1552.921723ms per 155.292172us  CPU 3
+concur: total 1553.085462ms per 155.308546us  CPU 45
+concur: total 1553.360574ms per 155.336057us  CPU 37
+concur: total 1553.736812ms per 155.373681us  CPU 69
+concur: total 1553.810163ms per 155.381016us  CPU 63
+concur: total 1554.245252ms per 155.424525us  CPU 75
+concur: total 1554.587717ms per 155.458772us  CPU 47
+concur: total 1554.811591ms per 155.481159us  CPU 9
+concur: total 1555.156676ms per 155.515668us  CPU 5
+concur: total 1555.240540ms per 155.524054us  CPU 27
+concur: total 1555.270924ms per 155.527092us  CPU 79
+concur: total 1555.502580ms per 155.550258us  CPU 57
+concur: total 1555.650301ms per 155.565030us  CPU 43
+concur: total 1555.684979ms per 155.568498us  CPU 77
+concur: total 1555.784989ms per 155.578499us  CPU 67
+concur: total 1555.892789ms per 155.589279us  CPU 15
+concur: total 1555.894896ms per 155.589490us  CPU 73
+concur: total 1556.029098ms per 155.602910us  CPU 29
+concur: total 1556.136688ms per 155.613669us  CPU 59
+concur: total 1556.184156ms per 155.618416us  CPU 61
+concur: total 1556.272459ms per 155.627246us  CPU 19
+concur: total 1556.316365ms per 155.631637us  CPU 39
+concur: total 1556.448166ms per 155.644817us  CPU 31
+concur: total 1556.494722ms per 155.649472us  CPU 25
+concur: total 1556.874991ms per 155.687499us  CPU 13
+concur: total 1556.964956ms per 155.696496us  CPU 65
+concur: total 1557.505884ms per 155.750588us  CPU 53
+concur: total 1557.670220ms per 155.767022us  CPU 71
+concur: total 1558.641962ms per 155.864196us  CPU 0
+concur: total 1559.141537ms per 155.914154us  CPU 51
+concur: total 1559.180879ms per 155.918088us  CPU 11
+times: 10000 threads: 80 cpus: 80
 
- drivers/base/swnode.c | 3 +++
- 1 file changed, 3 insertions(+)
+2) Run with a single sysfs file path on 80 cpu machine, perf graphs in
+base-missing-cpu-80-perf.txt and patched-missing-cpu-80-perf.txt.
 
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index d1f1a8240120..bdb50a06c82a 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -1113,6 +1113,9 @@ int device_create_managed_software_node(struct device *dev,
- 	to_swnode(fwnode)->managed = true;
- 	set_secondary_fwnode(dev, fwnode);
- 
-+	if (device_is_registered(dev))
-+		software_node_notify(dev, KOBJ_ADD);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(device_create_managed_software_node);
--- 
-2.17.1
+Base (5.12.3, unpatched)
+------------------------
+single: total 24.746542ms per 2.474654us
+concur: total 11642.525326ms per 1164.252533us  CPU 41
+concur: total 11753.266354ms per 1175.326635us  CPU 21
+concur: total 11882.784250ms per 1188.278425us  CPU 5
+concur: total 11897.657687ms per 1189.765769us  CPU 13
+concur: total 11915.176939ms per 1191.517694us  CPU 61
+concur: total 12032.739153ms per 1203.273915us  CPU 45
+concur: total 12095.349631ms per 1209.534963us  CPU 33
+concur: total 12147.225465ms per 1214.722546us  CPU 65
+concur: total 12236.584495ms per 1223.658449us  CPU 73
+concur: total 12273.499836ms per 1227.349984us  CPU 25
+concur: total 12327.559782ms per 1232.755978us  CPU 1
+concur: total 12339.221934ms per 1233.922193us  CPU 53
+concur: total 12592.935435ms per 1259.293543us  CPU 69
+concur: total 12751.932850ms per 1275.193285us  CPU 57
+concur: total 12789.601281ms per 1278.960128us  CPU 49
+concur: total 12800.329994ms per 1280.032999us  CPU 15
+concur: total 12899.047414ms per 1289.904741us  CPU 29
+concur: total 12950.772402ms per 1295.077240us  CPU 55
+concur: total 13031.263191ms per 1303.126319us  CPU 17
+concur: total 13077.573490ms per 1307.757349us  CPU 59
+concur: total 13086.450703ms per 1308.645070us  CPU 19
+concur: total 13112.144105ms per 1311.214410us  CPU 47
+concur: total 13167.152306ms per 1316.715231us  CPU 32
+concur: total 13203.910956ms per 1320.391096us  CPU 9
+concur: total 13230.538364ms per 1323.053836us  CPU 60
+concur: total 13232.286187ms per 1323.228619us  CPU 23
+concur: total 13244.948925ms per 1324.494893us  CPU 75
+concur: total 13260.586625ms per 1326.058663us  CPU 24
+concur: total 13279.711923ms per 1327.971192us  CPU 4
+concur: total 13290.308549ms per 1329.030855us  CPU 64
+concur: total 13297.234721ms per 1329.723472us  CPU 37
+concur: total 13297.585100ms per 1329.758510us  CPU 7
+concur: total 13300.929348ms per 1330.092935us  CPU 20
+concur: total 13311.528772ms per 1331.152877us  CPU 46
+concur: total 13315.521790ms per 1331.552179us  CPU 52
+concur: total 13331.269808ms per 1333.126981us  CPU 28
+concur: total 13333.563808ms per 1333.356381us  CPU 26
+concur: total 13334.923225ms per 1333.492323us  CPU 39
+concur: total 13340.811453ms per 1334.081145us  CPU 72
+concur: total 13346.192625ms per 1334.619263us  CPU 63
+concur: total 13349.415339ms per 1334.941534us  CPU 68
+concur: total 13352.414423ms per 1335.241442us  CPU 0
+concur: total 13354.401586ms per 1335.440159us  CPU 44
+concur: total 13356.828605ms per 1335.682861us  CPU 54
+concur: total 13358.754397ms per 1335.875440us  CPU 16
+concur: total 13362.014261ms per 1336.201426us  CPU 12
+concur: total 13364.189431ms per 1336.418943us  CPU 6
+concur: total 13364.252331ms per 1336.425233us  CPU 67
+concur: total 13365.159491ms per 1336.515949us  CPU 76
+concur: total 13369.198367ms per 1336.919837us  CPU 48
+concur: total 13369.574959ms per 1336.957496us  CPU 36
+concur: total 13377.299530ms per 1337.729953us  CPU 40
+concur: total 13377.717747ms per 1337.771775us  CPU 35
+concur: total 13377.886941ms per 1337.788694us  CPU 56
+concur: total 13382.748789ms per 1338.274879us  CPU 66
+concur: total 13384.125526ms per 1338.412553us  CPU 79
+concur: total 13384.216216ms per 1338.421622us  CPU 58
+concur: total 13388.371680ms per 1338.837168us  CPU 18
+concur: total 13393.289323ms per 1339.328932us  CPU 10
+concur: total 13394.423134ms per 1339.442313us  CPU 8
+concur: total 13394.537986ms per 1339.453799us  CPU 14
+concur: total 13396.152597ms per 1339.615260us  CPU 30
+concur: total 13397.312727ms per 1339.731273us  CPU 34
+concur: total 13397.555389ms per 1339.755539us  CPU 70
+concur: total 13398.055759ms per 1339.805576us  CPU 78
+concur: total 13399.219289ms per 1339.921929us  CPU 77
+concur: total 13401.160948ms per 1340.116095us  CPU 38
+concur: total 13401.177905ms per 1340.117790us  CPU 27
+concur: total 13401.652556ms per 1340.165256us  CPU 50
+concur: total 13403.311058ms per 1340.331106us  CPU 22
+concur: total 13406.279259ms per 1340.627926us  CPU 42
+concur: total 13406.714708ms per 1340.671471us  CPU 2
+concur: total 13409.186649ms per 1340.918665us  CPU 74
+concur: total 13409.591594ms per 1340.959159us  CPU 62
+concur: total 13410.246135ms per 1341.024613us  CPU 31
+concur: total 13412.007054ms per 1341.200705us  CPU 11
+concur: total 13412.140675ms per 1341.214068us  CPU 71
+concur: total 13412.737053ms per 1341.273705us  CPU 51
+concur: total 13413.214418ms per 1341.321442us  CPU 3
+concur: total 13414.303830ms per 1341.430383us  CPU 43
+times: 10000 threads: 80 cpus: 80
+
+patched (5.12.3)
+----------------
+single: total 23.208077ms per 2.320808us
+concur: total 1206.802099ms per 120.680210us  CPU 22
+concur: total 1208.930779ms per 120.893078us  CPU 8
+concur: total 1211.247205ms per 121.124721us  CPU 34
+concur: total 1212.998353ms per 121.299835us  CPU 62
+concur: total 1213.389780ms per 121.338978us  CPU 28
+concur: total 1215.414555ms per 121.541455us  CPU 48
+concur: total 1218.962627ms per 121.896263us  CPU 36
+concur: total 1219.112096ms per 121.911210us  CPU 74
+concur: total 1219.292732ms per 121.929273us  CPU 68
+concur: total 1219.454262ms per 121.945426us  CPU 2
+concur: total 1219.937964ms per 121.993796us  CPU 20
+concur: total 1221.773152ms per 122.177315us  CPU 42
+concur: total 1222.383925ms per 122.238393us  CPU 16
+concur: total 1222.753728ms per 122.275373us  CPU 14
+concur: total 1222.824826ms per 122.282483us  CPU 0
+concur: total 1224.441811ms per 122.444181us  CPU 56
+concur: total 1224.779489ms per 122.477949us  CPU 6
+concur: total 1224.973746ms per 122.497375us  CPU 40
+concur: total 1225.042053ms per 122.504205us  CPU 54
+concur: total 1225.513107ms per 122.551311us  CPU 4
+concur: total 1225.848993ms per 122.584899us  CPU 76
+concur: total 1226.191945ms per 122.619195us  CPU 32
+concur: total 1226.556633ms per 122.655663us  CPU 38
+concur: total 1226.642992ms per 122.664299us  CPU 60
+concur: total 1227.444816ms per 122.744482us  CPU 46
+concur: total 1227.981028ms per 122.798103us  CPU 18
+concur: total 1228.193518ms per 122.819352us  CPU 44
+concur: total 1228.550486ms per 122.855049us  CPU 26
+concur: total 1228.840427ms per 122.884043us  CPU 24
+concur: total 1229.017209ms per 122.901721us  CPU 78
+concur: total 1229.724519ms per 122.972452us  CPU 72
+concur: total 1229.878627ms per 122.987863us  CPU 12
+concur: total 1230.770167ms per 123.077017us  CPU 66
+concur: total 1231.876743ms per 123.187674us  CPU 58
+concur: total 1232.688921ms per 123.268892us  CPU 64
+concur: total 1233.311151ms per 123.331115us  CPU 52
+concur: total 1236.349393ms per 123.634939us  CPU 30
+concur: total 1240.084640ms per 124.008464us  CPU 70
+concur: total 1247.767398ms per 124.776740us  CPU 10
+concur: total 1248.471436ms per 124.847144us  CPU 50
+concur: total 1249.292940ms per 124.929294us  CPU 39
+concur: total 1295.617635ms per 129.561764us  CPU 23
+concur: total 1297.170489ms per 129.717049us  CPU 9
+concur: total 1297.964528ms per 129.796453us  CPU 63
+concur: total 1299.431947ms per 129.943195us  CPU 35
+concur: total 1299.701030ms per 129.970103us  CPU 49
+concur: total 1299.703983ms per 129.970398us  CPU 29
+concur: total 1300.535158ms per 130.053516us  CPU 3
+concur: total 1300.902632ms per 130.090263us  CPU 1
+concur: total 1301.034574ms per 130.103457us  CPU 5
+concur: total 1301.105484ms per 130.110548us  CPU 17
+concur: total 1301.141575ms per 130.114158us  CPU 75
+concur: total 1301.499277ms per 130.149928us  CPU 69
+concur: total 1301.970890ms per 130.197089us  CPU 41
+concur: total 1302.582629ms per 130.258263us  CPU 57
+concur: total 1302.751012ms per 130.275101us  CPU 43
+concur: total 1302.816857ms per 130.281686us  CPU 45
+concur: total 1302.909810ms per 130.290981us  CPU 15
+concur: total 1303.018114ms per 130.301811us  CPU 21
+concur: total 1303.023366ms per 130.302337us  CPU 7
+concur: total 1303.218080ms per 130.321808us  CPU 37
+concur: total 1303.578443ms per 130.357844us  CPU 27
+concur: total 1303.954501ms per 130.395450us  CPU 47
+concur: total 1304.038096ms per 130.403810us  CPU 55
+concur: total 1304.040952ms per 130.404095us  CPU 33
+concur: total 1304.156534ms per 130.415653us  CPU 77
+concur: total 1304.188698ms per 130.418870us  CPU 19
+concur: total 1304.792850ms per 130.479285us  CPU 67
+concur: total 1304.894882ms per 130.489488us  CPU 25
+concur: total 1304.996763ms per 130.499676us  CPU 61
+concur: total 1305.107675ms per 130.510768us  CPU 13
+concur: total 1305.370941ms per 130.537094us  CPU 73
+concur: total 1305.487118ms per 130.548712us  CPU 59
+concur: total 1305.654535ms per 130.565453us  CPU 65
+concur: total 1305.891900ms per 130.589190us  CPU 53
+concur: total 1306.513791ms per 130.651379us  CPU 31
+concur: total 1307.221019ms per 130.722102us  CPU 71
+concur: total 1309.522870ms per 130.952287us  CPU 11
+concur: total 1309.526910ms per 130.952691us  CPU 51
+concur: total 1316.416007ms per 131.641601us  CPU 79
+times: 10000 threads: 80 cpus: 80
+
+Ian
 
