@@ -2,178 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9680C3CBF29
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D55F3CBF2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 00:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237576AbhGPWUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 18:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
+        id S237766AbhGPWUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 18:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237481AbhGPWUr (ORCPT
+        with ESMTP id S237586AbhGPWUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 18:20:47 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E846CC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:17:50 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id t2so14464535edd.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:17:50 -0700 (PDT)
+        Fri, 16 Jul 2021 18:20:48 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E15AC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:17:52 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id h2so14891228edt.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 15:17:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0zmnEwB1TtIKAG1YOLLif2erRI6Bwj7HWT6BiJYO/Mc=;
-        b=gsLeM8r98ER7oZNdNs58cF9sKrIM//L7j2huZvBHLeRAdDT/qSs/jhl0hWL0Umt3eT
-         G+HWJ4fhLmT/rRPQg6PuEhs4kyDBZRkmcRrlXpRhWqBQqV9PN3s0wDU7A3kXw5X7DOkB
-         37XE5Sc2vrK6UR8oEn7/tiPMWmYureHYJcdfVbtgRebCABh3U3AUZ7pAEl8gpzG52zNA
-         RgGZ66fCaCwntvjcT6ETMY+fshyEbW07xuxpu5OdffTfM4ikIrvP2I8Luy322YbSDxJb
-         hKnDJpKQJOb5bazSbTI8DCXzoRHtrpMf6vJqpZOSvLJG4W1DvmSXt1PkMDILDGWG3svA
-         /29g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dm6ejJdRZDZlW/WyYTU8xmsjcdEmtRJOpLiC3zeIiIw=;
+        b=FAy2r80ZKuhx/oEbG8GQJGgjsdA8xD4521tzi//j53N2HFzgcbewEq8378tlfULuG2
+         /Y1SNhkg5i073oRr2H74aFCMMQ7eQQvDUV5gvNTcKnEXIu11sOrF7I8Fhzns3bIDXBac
+         565WxfqItqBoKO7rbPhkuKo+SVs64e0OFIiA/hP+xAmIiO5ucPO1wdMzJNVUYzyk8mnP
+         3QdFSOWQqK2zRL0Pru4kNRA7hSvg1qKa3E8GqrsO47RF/qxqXGO3dPPjX/jUMExJBaO3
+         l+mO0cFCoTU0awv2klx6QHFdq2QbgfKoZ+OQmWvia4f+6GllYatuqsVJGBcf18L6KPsW
+         Q7GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0zmnEwB1TtIKAG1YOLLif2erRI6Bwj7HWT6BiJYO/Mc=;
-        b=ZCnoSxPL1bHDnRMzSUns4UWZoL6Ay48spInxQIKf9L5xqnBdZOP5tLphgBkYJfWY6v
-         e9v0q0He8D3Mc1q5s3zHs22nQ6TRbkVT83zFaqNwaQxANOHoxK0I7k0zyWYn4o8U3Ujs
-         MQBe6d0oHUR04uRPP1s1MjvBtfHMuic0yjVAmWFp5yzz53vC9rPQkoKv6/s5/F3g7Ojw
-         +CYddzJkmeFPGnq5jwYwqtzwyrgcwNq9/J8TGDROkFt/IKMfnPcOKk9IDgk5xtH36CLi
-         ClAfmVqzRiHFpfCp4i+euTueHu3MiwfW4Tdq2dxhO6xJXaI7fcsHctdjKpra9Sx+iiJP
-         5bQw==
-X-Gm-Message-State: AOAM533TcsPtgXU9mYnYj/wSSLijoZdZ7LgwLF46ylUcwyOalGMbiqT/
-        0KCq9AyH1nMMYRUChW3rFJnaig==
-X-Google-Smtp-Source: ABdhPJz9jrPDOrGYB1Okan8upTdnPr+gsyBRyAaMiC1g7PU6vJsVBLk/JFGbErB4MBKjBJceTbz9DA==
-X-Received: by 2002:aa7:d809:: with SMTP id v9mr17822433edq.146.1626473869562;
-        Fri, 16 Jul 2021 15:17:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dm6ejJdRZDZlW/WyYTU8xmsjcdEmtRJOpLiC3zeIiIw=;
+        b=ojlY8/v3GV2KDSl+X+fAkUwhReZSja9x8JctHsZd3JEdwiRaboRhFrTypcaWu7IFp8
+         obiDo1vLuW6EDRsLnADe+aS2tK26R+mK73HgM1PeJuie/xcVIwEQGZGCe7G0sGMRRq1l
+         oELDGTr2/3frQwlUiMd2LgGfabKxxAaiWRt/r/uNQSuZfO3A60IGf3uaEKCsDeCSplvV
+         Wppy0mDNm3+QCSqzko2nHh/jVsE3rC/I3Qg/vr6Eg2y+62Bw6ztOTTkwdY7ppHY/HHdT
+         VHPwF5aJyJUVgVJ+tiVsspdfcdiy0zMGie3sQfw+omQ3crZomun33D5BxAUqXESFBf/y
+         iSUA==
+X-Gm-Message-State: AOAM532ILtOTGEOjwY7r18GT6H+CYrACI9Uw/WQlqN8BslQuykTvlEDX
+        PDQIVHZccKBDnmi5WR3I+EhAPg==
+X-Google-Smtp-Source: ABdhPJwpH0+MNHgerJ9Bnms1z6WdDO8V2eqxQq+GOk5dbXtaTHI9VcRbfawAfJ3Po/FR8jnTVJmm4w==
+X-Received: by 2002:aa7:d991:: with SMTP id u17mr17380344eds.240.1626473871216;
+        Fri, 16 Jul 2021 15:17:51 -0700 (PDT)
 Received: from localhost.localdomain (dh207-98-239.xnet.hr. [88.207.98.239])
-        by smtp.googlemail.com with ESMTPSA id f22sm4242634edr.16.2021.07.16.15.17.48
+        by smtp.googlemail.com with ESMTPSA id f22sm4242634edr.16.2021.07.16.15.17.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 15:17:49 -0700 (PDT)
+        Fri, 16 Jul 2021 15:17:50 -0700 (PDT)
 From:   Robert Marko <robert.marko@sartura.hr>
 To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
         robh+dt@kernel.org, linux-gpio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH 1/2] gpio: tn48m: Add support for Delta TN4810M CPLD
-Date:   Sat, 17 Jul 2021 00:17:43 +0200
-Message-Id: <20210716221744.5445-1-robert.marko@sartura.hr>
+Subject: [PATCH 2/2] dt-bindings: gpio: tn48m: document TN4810M support
+Date:   Sat, 17 Jul 2021 00:17:44 +0200
+Message-Id: <20210716221744.5445-2-robert.marko@sartura.hr>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210716221744.5445-1-robert.marko@sartura.hr>
+References: <20210716221744.5445-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delta TN4810M uses a similar CPLD GPIO expander
-like the TN48M, but it has pins for 48 SFP+ ports,
-making a total of 192 pins.
-It also provides the TX fault pins which the TN48M
-does not.
-
-Only TX disable pins like on the TN48M are output
-ones.
-
-Thankfully, regmap GPIO allows for the driver to be
-easily extended to support the TN4810M.
+Delta TN4810M expands the existing TN48M drivers, so lets
+document the new compatibles.
 
 Note that this patch depends on the following series:
 https://patchwork.ozlabs.org/project/linux-gpio/list/?series=247538
 
 Signed-off-by: Robert Marko <robert.marko@sartura.hr>
 ---
- drivers/gpio/gpio-tn48m.c | 56 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 52 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
-index b12a6b4bc4b3..e429e7ade941 100644
---- a/drivers/gpio/gpio-tn48m.c
-+++ b/drivers/gpio/gpio-tn48m.c
-@@ -19,6 +19,10 @@ enum tn48m_gpio_type {
- 	TN48M_SFP_TX_DISABLE = 1,
- 	TN48M_SFP_PRESENT,
- 	TN48M_SFP_LOS,
-+	TN4810M_SFP_TX_DISABLE,
-+	TN4810M_SFP_TX_FAULT,
-+	TN4810M_SFP_PRESENT,
-+	TN4810M_SFP_LOS,
- };
+diff --git a/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+index aca646aecb12..d729c5dbed65 100644
+--- a/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
++++ b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+@@ -24,6 +24,10 @@ properties:
+       - delta,tn48m-gpio-sfp-tx-disable
+       - delta,tn48m-gpio-sfp-present
+       - delta,tn48m-gpio-sfp-los
++      - delta,tn4810m-gpio-sfp-tx-disable
++      - delta,tn4810m-gpio-sfp-tx-fault
++      - delta,tn4810m-gpio-sfp-present
++      - delta,tn4810m-gpio-sfp-los
  
- static int tn48m_gpio_probe(struct platform_device *pdev)
-@@ -46,17 +50,36 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
- 
- 	config.regmap = regmap;
- 	config.parent = &pdev->dev;
--	config.ngpio = 4;
-+	config.ngpio_per_reg = 8;
- 
- 	switch (type) {
- 	case TN48M_SFP_TX_DISABLE:
- 		config.reg_set_base = base;
-+		config.ngpio = 4;
- 		break;
- 	case TN48M_SFP_PRESENT:
- 		config.reg_dat_base = base;
-+		config.ngpio = 4;
- 		break;
- 	case TN48M_SFP_LOS:
- 		config.reg_dat_base = base;
-+		config.ngpio = 4;
-+		break;
-+	case TN4810M_SFP_TX_DISABLE:
-+		config.reg_set_base = base;
-+		config.ngpio = 48;
-+		break;
-+	case TN4810M_SFP_TX_FAULT:
-+		config.reg_dat_base = base;
-+		config.ngpio = 48;
-+		break;
-+	case TN4810M_SFP_PRESENT:
-+		config.reg_dat_base = base;
-+		config.ngpio = 48;
-+		break;
-+	case TN4810M_SFP_LOS:
-+		config.reg_dat_base = base;
-+		config.ngpio = 48;
- 		break;
- 	default:
- 		dev_err(&pdev->dev, "unknown type %d\n", type);
-@@ -67,9 +90,34 @@ static int tn48m_gpio_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id tn48m_gpio_of_match[] = {
--	{ .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
--	{ .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
--	{ .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
-+	{
-+		.compatible = "delta,tn48m-gpio-sfp-tx-disable",
-+		.data = (void *)TN48M_SFP_TX_DISABLE
-+	},
-+	{
-+		.compatible = "delta,tn48m-gpio-sfp-present",
-+		.data = (void *)TN48M_SFP_PRESENT
-+	},
-+	{
-+		.compatible = "delta,tn48m-gpio-sfp-los",
-+		.data = (void *)TN48M_SFP_LOS
-+	},
-+	{
-+		.compatible = "delta,tn4810m-gpio-sfp-tx-disable",
-+		.data = (void *)TN4810M_SFP_TX_DISABLE
-+	},
-+	{
-+		.compatible = "delta,tn4810m-gpio-sfp-tx-fault",
-+		.data = (void *)TN4810M_SFP_TX_FAULT
-+	},
-+	{
-+		.compatible = "delta,tn4810m-gpio-sfp-present",
-+		.data = (void *)TN4810M_SFP_PRESENT
-+	},
-+	{
-+		.compatible = "delta,tn4810m-gpio-sfp-los",
-+		.data = (void *)TN4810M_SFP_LOS
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
+   reg:
+     maxItems: 1
 -- 
 2.31.1
 
