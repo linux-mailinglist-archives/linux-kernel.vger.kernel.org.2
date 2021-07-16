@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D803CB98E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C4B3CB997
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240711AbhGPPVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233094AbhGPPVi (ORCPT
+        id S240742AbhGPPWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:22:38 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9094 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240662AbhGPPWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:21:38 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E62C06175F;
-        Fri, 16 Jul 2021 08:18:42 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1m4Pbl-0004ys-49; Fri, 16 Jul 2021 17:18:33 +0200
-Date:   Fri, 16 Jul 2021 17:18:33 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
-        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
-        Blair Steven <blair.steven@alliedtelesis.co.nz>
-Subject: Re: [PATCH 2/3] net: netfilter: Add RFC-7597 Section 5.1 PSID support
-Message-ID: <20210716151833.GD9904@breakpoint.cc>
-References: <20210705103959.GG18022@breakpoint.cc>
- <20210716002742.31078-1-Cole.Dishington@alliedtelesis.co.nz>
- <20210716002742.31078-3-Cole.Dishington@alliedtelesis.co.nz>
+        Fri, 16 Jul 2021 11:22:25 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GFJ7lv044354;
+        Fri, 16 Jul 2021 11:19:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=0QVlcMY1gAfIISVAPvHh34Y1TfGpWj4HRFD2XYrOwRA=;
+ b=XiGclKh/s2TG9RrL+Ho2GcVydfo/EQwFye7efm3AGxDTP20BJV52i1XNI4aUrtmaLZVj
+ UqRXDCxB2/VkjViGUGHZ/S80fddbv7AXT+GAdJEJWJre+Q7Ug9ayx0mw8LHwFqz949pA
+ AZ2itmpRExDf8Z3e9rjA2uEwvEtvFY2AQSKtFmOxzJqLJuY/PMW1je55M+SbJ40UWbJJ
+ v4kFBrTWtDY2c42T/+y7K1F0pqvJI00VymjO3LMqBjriXRhn9tSQyEW47yjR7Q2wq841
+ JCGskb9MMorvxD6lNI6NSxdHj9waLTM6q2gDUCIK+rBWChKnPdNa9NbqYMUeqR6R/vcS XA== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39tw6bgduv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Jul 2021 11:19:07 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16GFHgtY017641;
+        Fri, 16 Jul 2021 15:18:58 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma05wdc.us.ibm.com with ESMTP id 39q36f71pr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Jul 2021 15:18:58 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16GFIvo831523160
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Jul 2021 15:18:57 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 16CE2C605D;
+        Fri, 16 Jul 2021 15:18:57 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 943FFC6057;
+        Fri, 16 Jul 2021 15:18:56 +0000 (GMT)
+Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.92.96])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Jul 2021 15:18:56 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-hwmon@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+        linux@roeck-us.net, jdelvare@suse.com, jk@ozlabs.org,
+        joel@jms.id.au, alistair@popple.id.au, openbmc@lists.ozlabs.org,
+        Eddie James <eajames@linux.ibm.com>
+Subject: [PATCH 0/3] OCC: fsi and hwmon: Set sequence number in submit interface
+Date:   Fri, 16 Jul 2021 10:18:47 -0500
+Message-Id: <20210716151850.28973-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716002742.31078-3-Cole.Dishington@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: uzbyxn0zbHVSz9zdEq9wLFhQ-OlU1hCK
+X-Proofpoint-ORIG-GUID: uzbyxn0zbHVSz9zdEq9wLFhQ-OlU1hCK
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-16_05:2021-07-16,2021-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 mlxlogscore=921 spamscore=0 adultscore=0 lowpriorityscore=0
+ phishscore=0 bulkscore=0 clxscore=1015 mlxscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107160092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
-> diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-> index 7de595ead06a..4a9448684504 100644
-> --- a/net/netfilter/nf_nat_core.c
-> +++ b/net/netfilter/nf_nat_core.c
-> @@ -195,13 +195,36 @@ static bool nf_nat_inet_in_range(const struct nf_conntrack_tuple *t,
->  static bool l4proto_in_range(const struct nf_conntrack_tuple *tuple,
->  			     enum nf_nat_manip_type maniptype,
->  			     const union nf_conntrack_man_proto *min,
-> -			     const union nf_conntrack_man_proto *max)
-> +			     const union nf_conntrack_man_proto *max,
-> +			     const union nf_conntrack_man_proto *base,
-> +			     bool is_psid)
->  {
->  	__be16 port;
-> +	u16 psid, psid_mask, offset_mask;
-> +
-> +	/* In this case we are in PSID mode, avoid checking all ranges by computing bitmasks */
-> +	if (is_psid) {
-> +		u16 power_j = ntohs(max->all) - ntohs(min->all) + 1;
-> +		u32 offset = ntohs(base->all);
-> +		u16 power_a;
-> +
-> +		if (offset == 0)
-> +			offset = 1 << 16;
-> +
-> +		power_a = (1 << 16) / offset;
+Conflicting sequence numbers have resulted in users of the OCC interface
+getting the wrong response. For example, both the hwmon driver and an
+application might send a transfer near the same time with the same sequence
+number, and then one or both will get an incorrect respnse, but cannot tell
+because the sequence number looks correct.
+Perform the sequence numbering in the submit interface to make sure each
+transfer has a unique sequence number. This also requires that the submit
+interface perform the checksum calculation for the command. Adjust the hwmon
+driver accordingly too.
 
-Since the dividie is only needed nat setup and not for each packet I
-think its ok.
+Eddie James (3):
+  fsi: occ: Force sequence numbering per OCC
+  hwmon: (occ) Remove sequence numbering and checksum calculation
+  fsi: occ: Add dynamic debug to dump command and response
 
-> +	if (range->flags & NF_NAT_RANGE_PSID) {
-> +		u16 base = ntohs(range->base_proto.all);
-> +		u16 min =  ntohs(range->min_proto.all);
-> +		u16 off = 0;
-> +
-> +		/* If offset=0, port range is in one contiguous block */
-> +		if (base)
-> +			off = prandom_u32() % (((1 << 16) / base) - 1);
+ drivers/fsi/fsi-occ.c      | 98 +++++++++++++++++++++++++++++++-------
+ drivers/hwmon/occ/common.c | 30 +++++-------
+ drivers/hwmon/occ/common.h |  3 +-
+ drivers/hwmon/occ/p8_i2c.c | 15 +++---
+ drivers/hwmon/occ/p9_sbe.c |  4 +-
+ 5 files changed, 105 insertions(+), 45 deletions(-)
 
-Bases 32769 > gives 0 for the modulo value, so perhaps compute that
-independently.
+-- 
+2.27.0
 
-You could reject > 32769 in the iptables checkentry target.
-
-Also, base of 21846 and above always give 0 result (% 1).
-
-I don't know psid well enough to give a recommendation here.
-
-If such inputs are nonsensical, just reject it when userspace asks for
-this and add a 
-
-if (WARN_ON_ONCE(base > bogus))
-	return NF_DROP;
-
-with s small coment explaining that xtables is supposed to not provide
-such value.
-
-Other than this I think its ok.
-
-I still dislike the 'bool is_psid' in the nat core, but I can't find
-a better solution.
