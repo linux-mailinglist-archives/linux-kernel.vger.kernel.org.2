@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EB03CBC6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DAB3CBC78
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbhGPT1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:27:51 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:46848 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhGPT1u (ORCPT
+        id S231624AbhGPT30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:29:26 -0400
+Received: from mail-io1-f48.google.com ([209.85.166.48]:35737 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhGPT3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:27:50 -0400
-Received: by mail-il1-f176.google.com with SMTP id y6so9261610ilj.13;
-        Fri, 16 Jul 2021 12:24:54 -0700 (PDT)
+        Fri, 16 Jul 2021 15:29:06 -0400
+Received: by mail-io1-f48.google.com with SMTP id d9so11845049ioo.2;
+        Fri, 16 Jul 2021 12:26:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=fM1A08CWgTV1bBfD5qE67VlFwSFQpiAw2opTe5zweRQ=;
-        b=kH2stglUMG0ubXImNfZrBAQhlNVne0/NUu9pf7J6bje3hmizpklImeEF1yCNUSr7XI
-         wqJ/O0IHyJ68PZ9Xx7BLDJs7zxlkJurqPrv1RPQWeJEqx6FMv/MGR/XiT1ZbHZV06cvX
-         BGhm9bT6Jv1YP1vA7orJ/2g1lcIta4qfMTR0FJ10FsY/FRIt/d307LPdbMOGZK6E8+tI
-         QQPPzJTsoxgnxhdlUnWdY91I2U6eitVY64acivkzfcHbfJEiPCQT9bdG9qk510Z6oqWL
-         /8jP3y/4ncesowqLpHgNU5a01zAuQOVIqCqU1crC5Biqzt1TmWcQPvJBPRmZHIG3GKuo
-         fupw==
-X-Gm-Message-State: AOAM533jHYhzw3tIfA7frJCWIfNQXtFIY1Z2B96pzTWvtUZKt5uwJVry
-        /hPB6vNeO3z96e/j6KbMkA==
-X-Google-Smtp-Source: ABdhPJzJsHWjmOLw//W3RlaIHVWLgA05B7QlnJgNCmRGCRL8qwvXsBAroLMQ1HnLflSk2Jiu4STpkg==
-X-Received: by 2002:a92:de0a:: with SMTP id x10mr7526223ilm.215.1626463493993;
-        Fri, 16 Jul 2021 12:24:53 -0700 (PDT)
+        bh=52z2fggFE76lV+jwVY4+h2N/nguFoK/TfvmA+Fnhx74=;
+        b=INHycpsPsWj7jv0B4V59pV8zgp2wDbST9iRkvpj+VuyaeIDNcGc4MnuURT6K4nlqM1
+         Xn8SHU8LDMlW5UoXFGMCBrDByFLNJpXyUImqOjLGx/cBtKeLkYdVkSs1U3LM6uHVeqNc
+         udny/EjRffmZ6r6BBVzC8RKLBXL4m87AyhR4++q8w7Vssi52paFzc0MFC/eijzytcnN4
+         l7QL98HDqBhgCg3KJl6PiqoP+3eE6PhsOr9biGOKcsjZpf/XeTt7lMhDCWmf6kFbIPf9
+         JakK5MchrYYwrEr2thTWv4VUf4muYUJK8udNSEBDhL3TD7xha8xeeLTmFN1GkAuQv7sA
+         B6GQ==
+X-Gm-Message-State: AOAM531fmx3rwrYz1/5nfULbWqAy49cV/dVTDZ/jq0R/HLLV22eYSEXv
+        yrixYmVMwCJ1CwKpjstoDg==
+X-Google-Smtp-Source: ABdhPJwGZt4ru1529eW1ltxLK83X/UjpNzWoifQBZeUek2y113cnYjYL98uZ5xoUS65eOMuYt/MuVg==
+X-Received: by 2002:a5d:80da:: with SMTP id h26mr8615946ior.206.1626463569790;
+        Fri, 16 Jul 2021 12:26:09 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id a9sm807689ila.23.2021.07.16.12.24.51
+        by smtp.gmail.com with ESMTPSA id r3sm5190223ilg.20.2021.07.16.12.26.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 12:24:53 -0700 (PDT)
-Received: (nullmailer pid 3838811 invoked by uid 1000);
-        Fri, 16 Jul 2021 19:24:50 -0000
-Date:   Fri, 16 Jul 2021 13:24:50 -0600
+        Fri, 16 Jul 2021 12:26:09 -0700 (PDT)
+Received: (nullmailer pid 3840951 invoked by uid 1000);
+        Fri, 16 Jul 2021 19:26:06 -0000
+Date:   Fri, 16 Jul 2021 13:26:06 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        linux-leds@vger.kernel.org, Marek Behun <marek.behun@nic.cz>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 18/19] dt-bindings: auxdisplay: ht16k33: Document LED
- subnode
-Message-ID: <20210716192450.GA3838756@robh.at.kernel.org>
-References: <20210714151130.2531831-1-geert@linux-m68k.org>
- <20210714151130.2531831-19-geert@linux-m68k.org>
+To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     shubhrajyoti.datta@xilinx.com, soren.brinkmann@xilinx.com,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, navam@xilinx.com,
+        peter.crosthwaite@xilinx.com, devicetree@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        michal.simek@xilinx.com
+Subject: Re: [PATCH v2] dt-bindings: serial: convert Cadence UART bindings to
+ YAML
+Message-ID: <20210716192606.GA3840890@robh.at.kernel.org>
+References: <20210715092252.225740-1-iwamatsu@nigauri.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210714151130.2531831-19-geert@linux-m68k.org>
+In-Reply-To: <20210715092252.225740-1-iwamatsu@nigauri.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 17:11:29 +0200, Geert Uytterhoeven wrote:
-> Extend the Holtek HT16K33 LED controller Device Tree bindings with an
-> LED subnode, conforming to the standard LED bindings.
+On Thu, 15 Jul 2021 18:22:52 +0900, Nobuhiro Iwamatsu wrote:
+> Convert serial for Cadence UART bindings documentation to YAML.
 > 
-> This allows the user to exert more control, like specifying LED color,
-> function, and/or trigger, to extend LED functionality beyond a simple
-> display backlight.
+> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
-> v3:
->   - New.
-> ---
->  .../bindings/auxdisplay/holtek,ht16k33.yaml           | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> v2:
+>   - Fix enum of compatible
+>   - Change from additionalProperties: false to unevaluatedProperties: false
+>   - Update compatible string in examples.
+> 
+>  .../devicetree/bindings/serial/cdns,uart.txt  | 27 --------
+>  .../devicetree/bindings/serial/cdns,uart.yaml | 66 +++++++++++++++++++
+>  2 files changed, 66 insertions(+), 27 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/serial/cdns,uart.txt
+>  create mode 100644 Documentation/devicetree/bindings/serial/cdns,uart.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
