@@ -2,188 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7FE3CB4B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69ED3CB4A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238552AbhGPIut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:50:49 -0400
-Received: from comms.puri.sm ([159.203.221.185]:45452 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229895AbhGPIur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:50:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id E961DDFBFB;
-        Fri, 16 Jul 2021 01:47:22 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yUenwAsEOUc3; Fri, 16 Jul 2021 01:47:21 -0700 (PDT)
-Message-ID: <e88d99abbdcbd6a1b2c27849f08721e79f237adc.camel@puri.sm>
-Subject: Re: [PATCH v6 2/3] media: imx: add a driver for i.MX8MQ mipi csi rx
- phy and controller
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     festevam@gmail.com, krzk@kernel.org, devicetree@vger.kernel.org,
-        kernel@pengutronix.de, kernel@puri.sm,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
-        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
-        shawnguo@kernel.org, slongerbeam@gmail.com
-Date:   Fri, 16 Jul 2021 10:47:14 +0200
-In-Reply-To: <YPCuFA+utjudv11H@pendragon.ideasonboard.com>
-References: <20210714111931.324485-1-martin.kepplinger@puri.sm>
-         <20210714111931.324485-3-martin.kepplinger@puri.sm>
-         <YO8r6pZAduu1ZMK4@pendragon.ideasonboard.com>
-         <ce71a71a358247eca3b72ddcddd703206c90f284.camel@puri.sm>
-         <YPCuFA+utjudv11H@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
-Content-Transfer-Encoding: 8bit
+        id S237988AbhGPIsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:48:12 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12216 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237254AbhGPIsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 04:48:10 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GR4RT3WT5z1CKT6;
+        Fri, 16 Jul 2021 16:39:33 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 16:45:13 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 16 Jul
+ 2021 16:45:13 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>
+CC:     <hannes@cmpxchg.org>, <tj@kernel.org>, <shakeelb@google.com>,
+        <akpm@linux-foundation.org>, <sfr@canb.auug.org.au>
+Subject: [PATCH -next] memcg: fix sleep in invalid context in cgroup_rstat_flush()
+Date:   Fri, 16 Jul 2021 16:48:05 +0800
+Message-ID: <20210716084805.273744-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, dem 16.07.2021 um 00:52 +0300 schrieb Laurent Pinchart:
-> Hi Martin,
-> 
-> On Thu, Jul 15, 2021 at 09:37:24AM +0200, Martin Kepplinger wrote:
-> > Am Mittwoch, dem 14.07.2021 um 21:24 +0300 schrieb Laurent
-> > Pinchart:
-> > > On Wed, Jul 14, 2021 at 01:19:30PM +0200, Martin Kepplinger
-> > > wrote:
-> > > > Add a driver to support the i.MX8MQ MIPI CSI receiver. The
-> > > > hardware side
-> > > > is based on
-> > > > https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/media/platform/imx8/mxc-mipi-csi2_yav.c?h=imx_5.4.70_2.3.0
-> > > > 
-> > > > It's built as part of VIDEO_IMX7_CSI because that's documented
-> > > > to support
-> > > > i.MX8M platforms. This driver adds i.MX8MQ support where
-> > > > currently only the
-> > > > i.MX8MM platform has been supported.
-> > > > 
-> > > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > > > ---
-> > > >  drivers/staging/media/imx/Makefile           |   1 +
-> > > >  drivers/staging/media/imx/imx8mq-mipi-csi2.c | 949
-> > > > +++++++++++++++++++
-> > > >  2 files changed, 950 insertions(+)
-> > > >  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-
-> > > > csi2.c
-> > > > 
-> > > > diff --git a/drivers/staging/media/imx/Makefile
-> > > > b/drivers/staging/media/imx/Makefile
-> > > > index 6ac33275cc97..19c2fc54d424 100644
-> > > > --- a/drivers/staging/media/imx/Makefile
-> > > > +++ b/drivers/staging/media/imx/Makefile
-> > > > @@ -16,3 +16,4 @@ obj-$(CONFIG_VIDEO_IMX_CSI) += imx6-mipi-
-> > > > csi2.o
-> 
-> [snip]
-> 
-> > > > +static int imx8mq_mipi_csi_calc_hs_settle(struct csi_state
-> > > > *state)
-> > > > +{
-> > > > +       u32 width = state-
-> > > > >format_mbus[MIPI_CSI2_PAD_SINK].width;
-> > > > +       u32 height = state-
-> > > > >format_mbus[MIPI_CSI2_PAD_SINK].height;
-> > > > +       s64 link_freq;
-> > > > +       u32 lane_rate;
-> > > > +
-> > > > +       /* Calculate the line rate from the pixel rate. */
-> > > > +       link_freq = v4l2_get_link_freq(state->src_sd-
-> > > > >ctrl_handler,
-> > > > +                                      state->csi2_fmt->width,
-> > > > +                                      state-
-> > > > >bus.num_data_lanes * 2);
-> > > > +       if (link_freq < 0) {
-> > > > +               dev_err(state->dev, "Unable to obtain link
-> > > > frequency: %d\n",
-> > > > +                       (int)link_freq);
-> > > > +               return link_freq;
-> > > > +       }
-> > > > +
-> > > > +       lane_rate = link_freq * 2;
-> > > > +       if (lane_rate < 80000000 || lane_rate > 1500000000) {
-> > > > +               dev_dbg(state->dev, "Out-of-bound lane rate
-> > > > %u\n", lane_rate);
-> > > > +               return -EINVAL;
-> > > > +       }
-> > > > +
-> > > > +       /*
-> > > > https://community.nxp.com/t5/i-MX-Processors/Explenation-for-HS-SETTLE-parameter-in-MIPI-CSI-D-PHY-registers/m-p/764275/highlight/true#M118744
-> > > >  */
-> > > > +       if (lane_rate < 250000000)
-> > > > +               state->hs_settle = 0xb;
-> > > > +       else if (lane_rate < 500000000)
-> > > > +               state->hs_settle = 0x8;
-> > > > +       else
-> > > > +               state->hs_settle = 0x6;
-> > > 
-> > > We could possibly compute this value based on the formula from
-> > > the table
-> > > in that page, but maybe that's overkill ? If you want to give it
-> > > a try,
-> > > it would be along those lines.
-> > > 
-> > >         /*
-> > >          * The D-PHY specification requires Ths-settle to be in
-> > > the range
-> > >          * 85ns + 6*UI to 140ns + 10*UI, with the unit interval
-> > > UI being half
-> > >          * the clock period.
-> > >          *
-> > >          * The Ths-settle value is expressed in the hardware as a
-> > > multiple of
-> > >          * the Esc clock period:
-> > >          *
-> > >          * Ths-settle = (PRG_RXHS_SETTLE + 1) * Tperiod of
-> > > RxClkInEsc
-> > >          *
-> > >          * Due to the one cycle inaccuracy introduced by
-> > > rounding, the
-> > >          * documentation recommends picking a value away from the
-> > > boundaries.
-> > >          * Let's pick the average.
-> > >          */
-> > >         esc_clk_rate = clk_get_rate(...);
-> > > 
-> > >         min_ths_settle = 85 + 6 * 1000000 / (lane_rate / 1000);
-> > >         max_ths_settle = 140 + 10 * 1000000 / (lane_rate / 1000);
-> > >         ths_settle = (min_ths_settle + max_ths_settle) / 2;
-> > > 
-> > >         state->hs_settle = ths_settle * esc_clk_rate / 1000000000
-> > > - 1;
-> > 
-> > I experimented a bit but would like to leave this as a task for
-> > later
-> > if that's ok. it's correct and simple now. also, using clks[i].clk
-> > based on the name string would feel better to submit seperately
-> > later.
-> 
-> That's OK with me, but I may then submit a patch on top fairly soon
-> :-)
-> Have you been able to test if this code works on your device ? The
-> main
-> reason why I think it's better is that it doesn't hardcode a specific
-> escape clock frequency assumption, so it should be able to
-> accommodate a
-> wider range of use cases. If we change it later, there's always a
-> risk
-> of regressions, while if we do this from the start, we'll figure out
-> quickly if it doesn't work in some cases.
-> 
+When start the kernel, I got this report:
 
-taking your code basically as-is doesn't yet work, but it helps a bit.
-tbh I don't even know how to correctly read that table / calculation:
-what is the exact relation of the calculated Ths_settle time inverval
-to the hs_settle register bits?
+[   13.787531][  T248] BUG: sleeping function called from invalid context at kernel/cgroup/rstat.c:200
+[   13.788799][  T248] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 248, name: kworker/u8:3
+[   13.789971][  T248] 3 locks held by kworker/u8:3/248:
+[   13.790638][  T248]  #0: ffff888100100138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x942/0x17d0
+[   13.792170][  T248]  #1: ffffc900018bfe00 (stats_flush_work){+.+.}-{0:0}, at: process_one_work+0x977/0x17d0
+[   13.793477][  T248]  #2: ffffffff8baccf78 (stats_flush_lock){+.+.}-{2:2}, at: mem_cgroup_flush_stats+0xd/0x50
+[   13.794815][  T248] Preemption disabled at:
+[   13.794821][  T248] [<0000000000000000>] 0x0
+[   13.795951][  T248] CPU: 2 PID: 248 Comm: kworker/u8:3 Tainted: G        W         5.14.0-rc1-next-20210716+ #342
+[   13.797287][  T248] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+[   13.798564][  T248] Workqueue: events_unbound flush_memcg_stats_work
+[   13.799400][  T248] Call Trace:
+[   13.799817][  T248]  dump_stack_lvl+0xcd/0x134
+[   13.800405][  T248]  ___might_sleep.cold.155+0x1f2/0x238
+[   13.801107][  T248]  cgroup_rstat_flush+0x1c/0x50
+[   13.801724][  T248]  mem_cgroup_flush_stats+0x39/0x50
+[   13.802131][  T248]  process_one_work+0xa6c/0x17d0
+[   13.802131][  T248]  ? pwq_dec_nr_in_flight+0x360/0x360
+[   13.802131][  T248]  ? do_raw_spin_lock+0x121/0x2d0
+[   13.802131][  T248]  worker_thread+0x8c/0xda0
+[   13.802131][  T248]  ? process_one_work+0x17d0/0x17d0
+[   13.802131][  T248]  kthread+0x3d5/0x4c0
+[   13.802131][  T248]  ? set_kthread_struct+0x130/0x130
+[   13.802131][  T248]  ret_from_fork+0x1f/0x30
 
-if the 2 of us can't quickly figure it out I can ask NXP via that
-community forum issue and I created
-https://source.puri.sm/Librem5/linux-next/-/issues/340 so I won't
-forget about it.
+To fix this, move stats_flush_lock into cgroup_rstat_flush() after might_sleep(),
+unlock stats_flush_lock before sleep in cgroup_rstat_flush_locked() and lock
+stats_flush_lock after wake up.
 
-thanks!
+Fixes: 42265e014ac7 ("memcg: infrastructure to flush memcg stats")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ kernel/cgroup/rstat.c | 7 +++++++
+ mm/memcontrol.c       | 5 -----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 7f0e58917432..d7ce96ba0105 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -5,6 +5,7 @@
+ 
+ static DEFINE_SPINLOCK(cgroup_rstat_lock);
+ static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
++static DEFINE_SPINLOCK(stats_flush_lock);
+ 
+ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
+ 
+@@ -175,8 +176,10 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+ 		if (may_sleep && (need_resched() ||
+ 				  spin_needbreak(&cgroup_rstat_lock))) {
+ 			spin_unlock_irq(&cgroup_rstat_lock);
++			spin_unlock(&stats_flush_lock);
+ 			if (!cond_resched())
+ 				cpu_relax();
++			spin_lock(&stats_flush_lock);
+ 			spin_lock_irq(&cgroup_rstat_lock);
+ 		}
+ 	}
+@@ -199,9 +202,13 @@ void cgroup_rstat_flush(struct cgroup *cgrp)
+ {
+ 	might_sleep();
+ 
++	if (!spin_trylock(&stats_flush_lock))
++		return;
++
+ 	spin_lock_irq(&cgroup_rstat_lock);
+ 	cgroup_rstat_flush_locked(cgrp, true);
+ 	spin_unlock_irq(&cgroup_rstat_lock);
++	spin_unlock(&stats_flush_lock);
+ }
+ 
+ /**
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 456f5310ea59..c6b0f5b41893 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -109,7 +109,6 @@ static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
+ static void flush_memcg_stats_work(struct work_struct *w);
+ static DECLARE_WORK(stats_flush_work, flush_memcg_stats_work);
+ static DEFINE_PER_CPU(unsigned int, stats_flush_threshold);
+-static DEFINE_SPINLOCK(stats_flush_lock);
+ 
+ #define THRESHOLDS_EVENTS_TARGET 128
+ #define SOFTLIMIT_EVENTS_TARGET 1024
+@@ -5355,11 +5354,7 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
+ 
+ void mem_cgroup_flush_stats(void)
+ {
+-	if (!spin_trylock(&stats_flush_lock))
+-		return;
+-
+ 	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+-	spin_unlock(&stats_flush_lock);
+ }
+ 
+ static void flush_memcg_stats_dwork(struct work_struct *w)
+-- 
+2.25.1
 
