@@ -2,69 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C113CB5D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA9E3CB5DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238270AbhGPKUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:20:06 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:49711 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238173AbhGPKUE (ORCPT
+        id S236625AbhGPKUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:20:44 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53240
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237155AbhGPKUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:20:04 -0400
-Received: by mail-io1-f72.google.com with SMTP id h7-20020a6bb7070000b0290525efa1b760so5698996iof.16
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:17:10 -0700 (PDT)
+        Fri, 16 Jul 2021 06:20:40 -0400
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 6731C4060A
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:17:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626430665;
+        bh=v3+RLYbM3UPfxivfaj+1siONUqDJMNX83wOE1RNePYc=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=GlkSSPWzUNoyDrViplUKXCVDWTZfrBFmcJu50Yn3jEaMwqqq88EmCG0MbuBYLT0z5
+         4kmIVQcBfnm9xCXAPV4SnJMehdvh+f5/TGSOoeEhWfadvLifvoE9pIkVWnagulglp/
+         ly6G471H0Md8I5Kvo87eh9LtQIT/TnJoJa9q6k9dDnGmP4yzHHolnXzJFAK1qQGNwN
+         Ba4xYbHJEAtgJLtWQhWbiRXw4CDFz92e5kwDgFbyRilY7ROCK6q9+VhspD5svIRjQU
+         MQKOGjydWLjsMnJ1KBOLi3T3gLBD2Hz4RxPQdw7CaA1wWSg/QQvu4n4Iwh2AW1U1/Q
+         uC1AMK5CsjDTw==
+Received: by mail-ej1-f72.google.com with SMTP id kf3-20020a17090776c3b0290536d9b62eb6so2013296ejc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:17:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=37NWRujtMEhr4Bm0IxX/U/zG+egBRbX0strpGbjTPV0=;
-        b=R5FO6HGlg1P9rEoZMb8Uyk+8vKP/MkRc81Ftt3NqG3PWyiHGtvdz8QfrT3QHlLBSyK
-         D558gK7PqkwKSxVLqe3OLGzT/yI0ryyDkc5IWxrqf2SHx0WDbi4tksSMvSH1fF8gq27a
-         NUYFXOS3idL/gKnjAogV7wLXKMHVcdKfcEaSoVRA27rCV92xCCNJFft4p2OA1HcmE5tI
-         BV9I6kopiSVV6lwQjvyNQVEY0jaj4ntQuoK9wcD28LMcGLalNWjT84JkjPTyyMsjhBtD
-         KU6ATSlZRkF13E+2TAbE/gnENhmjHZ0fkHlikTbU3AZeQbvjtpj1GEUVnJEM3ffxhVGt
-         +pyA==
-X-Gm-Message-State: AOAM531BjtqoxqzBBLx4qMCMCInq11Cz8WQhfIhCPMIo8jcrrkr7pnR8
-        /43fM9L/RzgGlCsrecpFRCAH3e7CiZ7HR68HQVOZb+89zbOt
-X-Google-Smtp-Source: ABdhPJw1VYps1jJXzEKdIMV9Nj/IQM5qpYhuzZIsWIwP0MaXaKqqCxCV1mrx/G7vATrqo5cuZ0wrHYLDW9s1OK/z7DNSECK5Xw50
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v3+RLYbM3UPfxivfaj+1siONUqDJMNX83wOE1RNePYc=;
+        b=YkbeUDazVwIZHTfn13I7xUSu4hFik/a/4dfwEda3PiN/bjy+CxzyH17Kc+NEZBb2iP
+         vfG1jpDDtWr2iL4+AdaKw9pCXKqFOducW7z7BeFaXZWOxgr7+Iv6s8hDonNZgIPzLkrY
+         ZSJX9W2O5nOHhswcn8+yYCMJSQOo39ifT3EMio9fHmk6pS6yK3DZr3W3ipBN/CjgKbgx
+         skRRHaT9scJQKDuLMCWfww5bfxvpnFDQYpwwoSMqngexBIWTxp3unvfcdZQYy3hlCvKK
+         +JTZLnvotdFCYtr3Ao6YXXXVDXYxlzzQveVGCb+2vcdNtZ9/YoMzhoK5GqjCiLhvcE8Z
+         H+Qg==
+X-Gm-Message-State: AOAM5331hyG9gp5jNiTk4X/OA4SD9fcZaBu5iu6FtWu2lBsgvHWBXdHX
+        Z/Y5MRlu67hFebu00TkwaF9lXJQwsQ4D3Fku2Lm/ToQJ7vKVa9ARwpTr+eLif06SBOeAh8hjwvH
+        pfhb71o2cFq5fUwY/Pz0MI4UXb0ysp1hiE+q0LrFjyw==
+X-Received: by 2002:a17:907:7293:: with SMTP id dt19mr11100665ejc.122.1626430665073;
+        Fri, 16 Jul 2021 03:17:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxUeBBiF5voCxRBD7gMBibouSTs+WUBhrrxC8+v1gk5Qx3l74DaTZtODayVE04rID9L9uuxhQ==
+X-Received: by 2002:a17:907:7293:: with SMTP id dt19mr11100652ejc.122.1626430664870;
+        Fri, 16 Jul 2021 03:17:44 -0700 (PDT)
+Received: from [192.168.3.211] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id w10sm2738433ejb.85.2021.07.16.03.17.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 03:17:44 -0700 (PDT)
+To:     Mark Greer <mgreer@animalcreek.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org
+References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
+ <961dc9c5-0eb0-586c-5e70-b21ca2f8e6f3@linaro.org>
+ <d498c949-3b1e-edaa-81ed-60573cfb6ee9@canonical.com>
+ <20210512164952.GA222094@animalcreek.com>
+ <df2ec154-79fa-af7b-d337-913ed4a0692e@canonical.com>
+ <20210715183413.GB525255@animalcreek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [linux-nfc] Re: [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof
+ Kozlowski as maintainer
+Message-ID: <d996605f-020c-95c9-6ab4-cfb101cb3802@canonical.com>
+Date:   Fri, 16 Jul 2021 12:17:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:6412:: with SMTP id y18mr6344072ilb.158.1626430629964;
- Fri, 16 Jul 2021 03:17:09 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 03:17:09 -0700
-In-Reply-To: <0000000000006f809f05c284e0f1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f36f9505c73ae373@google.com>
-Subject: Re: [syzbot] INFO: task hung in ext4_put_super
-From:   syzbot <syzbot+deb25600c2fd79ffd367@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, paskripkin@gmail.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210715183413.GB525255@animalcreek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On 15/07/2021 20:34, Mark Greer wrote:
+> On Fri, Jul 09, 2021 at 11:24:41AM +0200, Krzysztof Kozlowski wrote:
+>> On 12/05/2021 18:49, Mark Greer wrote:
+>>> On Wed, May 12, 2021 at 11:43:13AM -0400, Krzysztof Kozlowski wrote:
+>>>> On 12/05/2021 11:11, Daniel Lezcano wrote:
+>>>>> On 12/05/2021 16:43, Krzysztof Kozlowski wrote:
+>>>>>> The NFC subsystem is orphaned.  I am happy to spend some cycles to
+>>>>>> review the patches, send pull requests and in general keep the NFC
+>>>>>> subsystem running.
+>>>>>>
+>>>>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>>>>>
+>>>>>> ---
+>>>>>>
+>>>>>> I admit I don't have big experience in NFC part but this will be nice
+>>>>>> opportunity to learn something new. 
+>>>>>
+>>>>> NFC has been lost in the limbos since a while. Good to see someone
+>>>>> volunteering to take care of it.
+>>>>>
+>>>>> May I suggest to create a simple nfc reading program in the 'tools'
+>>>>> directory (could be a training exercise ;)
+>>>>>
+>>>>
+>>>> Noted, thanks. I also need to get a simple hardware dongle for this....
+>>>
+>>> Krzysztof, the NFC portion of the kernel has a counterpart in userspace
+>>> called neard.  I'm supposed to be maintaining it but I have next to no
+>>> time to do so.  If you have spare cycles, any help would be appreciated.
+>>>
+>>> Anyway, in neard, there are some simple test scripts (python2 - I/we need
+>>> to update to python3).  The current home of neard is:
+>>>
+>>> git://git.kernel.org/pub/scm/network/nfc/neard.git
+>>
+>> I guess none of us have problem of too much spare time :), so it took me
+>> a while before I looked at neard.
+>>
+>> With newer Gcc, neard did not even compile (which I am fixing now). I
+>> set up a fork:
+>> https://github.com/krzk/neard
+>> However I can give early disclaimer - playing with GLib userspace code
+>> is not something I am in long term interested. If this was written in
+>> Rust, would be different story. :)
+>>
+>> I also configured basic CI (or rather continuous building):
+>> https://github.com/krzk/neard/actions/runs/1014641944
+>>
+>> However I still do not have proper testing setup. No hardware. Would be
+>> nice if Samsung. ST, NXP or Intel could spare some development board
+>> with the NFC chip supported by kernel. Till then, I will try the NFC
+>> simulator and virtual NCI drivers.
+>>
+>> My next plan for neard is to extend the CI. There is no way I (or anyone
+>> else I believe) can keep good quality of releases without automated
+>> checks. I'll add some more distros, clang and later many some linters or
+>> cppcheck.
+> 
+> Hi Krzysztof, I see you've been busy.  Thanks for that.
+> 
+> FYI, I made a repo on github some time back but never announced it.  The
+> only reason I mention it is because the name/link looks more official:
+> 
+> 	https://github.com/linux-nfc/neard
+> 
+> Let see what happens with permssion on kernel.org and go from there.
 
-commit 618f003199c6188e01472b03cdbba227f1dc5f24
-Author: Pavel Skripkin <paskripkin@gmail.com>
-Date:   Fri Apr 30 18:50:46 2021 +0000
+For the kernel.org I think you need an account @kernel.org (which itself
+requires your key to be signed by someone), but I am not sure.
 
-    ext4: fix memory leak in ext4_fill_super
+I am happy to move entire development to github and keep kernel.org only
+for releases till some distro packages notice the change. If Github,
+then your linux-nfc looks indeed nicer.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17ebaa22300000
-start commit:   2f7b98d1e55c Merge tag 'drm-fixes-2021-04-16' of git://ano..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=398c4d0fe6f66e68
-dashboard link: https://syzkaller.appspot.com/bug?extid=deb25600c2fd79ffd367
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=170d645ad00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a03a2ed00000
+> Re: hardware - I don't have much reader hardware either.  I almost
+> exclusively use BeagleBone[Black] + RF Cape + trf7970atb.  I also have
+> a USB dongle with a pn533, FWIW. I do have a decent collection of NFC tags,
+> though.  I'll contact you privately to arrange to send some to you.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Thanks! I managed to do some testing with nfc-sim modules, although I am
+not sure how much is supported.
 
-#syz fix: ext4: fix memory leak in ext4_fill_super
+> For peer-to-peer testing, your smartphone probably has an NFC reader but
+> you'll have to play around to find the sweet spot where they put the
+> antenna (older phones were notoriously bad for NFC antenna design; newer
+> ones are generally better).
+> 
+> I will review your patch sets but the earliest I will get to them will
+> be Sunday.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+I just sent one more set :)
+
+
+Best regards,
+Krzysztof
