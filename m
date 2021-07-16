@@ -2,75 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC333CBB74
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4A33CBB78
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhGPR7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:59:38 -0400
-Received: from mail-io1-f41.google.com ([209.85.166.41]:36408 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhGPR7h (ORCPT
+        id S231485AbhGPSA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhGPSAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:59:37 -0400
-Received: by mail-io1-f41.google.com with SMTP id u7so11552148ion.3;
-        Fri, 16 Jul 2021 10:56:41 -0700 (PDT)
+        Fri, 16 Jul 2021 14:00:24 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32254C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:57:29 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id g5so16121249ybu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tQW3GGc/1Va1cw3Bpau5ZzEZ6iztReFZLNyywqfViAs=;
+        b=qkIpcDi1geFjKktjDaAp51kJDJviDb35yb5ScOgyz6eSvgZuroCOM6dUpRPh8xQEeq
+         CCMsdN1Wp2vM0FajpRCOte8J/rAmVJtCkL2Dvhebq+Q4KMSIryqkppgz/w3UujN6+i6n
+         1GMMLT8Nm7sFFbgIXslTnDwwhktX8trtzbLxRTUQc1dtHrvKQRo2EiuAquCgX1wvBO7Y
+         EH5JkzplO1XELeHghHWcZLgwINaxoxjtAN0oZlD7xJl2QOno5Ji9EHad5Lhmd3/ovfJG
+         borYWL0kmhsUinq8z5h1vl0deKAq58dv+W4CGZoMZUN/0Y6uR7qqNx0riYLblc+QrIEj
+         3y2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kzjyBdk5+GE+lOrmE+ZJKGUST/qKGtHK5D4OJgw36OM=;
-        b=pzJhJIz6xp58YqPXKC/gE08vSLBs9IG4tFaVDAx1P20x9gkBuxslo7LYNGqZeSPVyM
-         xxTHw0/5oT1aCmDT/ADpoxrKic1C/+2PMLaLSqiHx6UUTRoszH1/LlU+ZjehKRrHDGV2
-         1PgvOYkSlS1yCSF3Px+AqCKYs8VYV17dXrmvwI232GtRv/poLeL5BvexsNDEwI2soc1C
-         xV7Ay/VZ2J1cS0rm+Xfbzt3ik6dBO2LFFyS26MwtM2zk+TL6S2y2bWp4Yfjw2vnotiaE
-         PNWc4nSxrbe/JKkcz5O5yy1Z1cIgZgcyYLaoOgUtBoFClXxTdL5KC7sxinvmeiMpgvGt
-         jZGw==
-X-Gm-Message-State: AOAM531F2U6DrMQO3HRXzRnerWkE55WwKCOF2wqiBFl9XPNgk6TkoH55
-        kP+6L7o4KUKODfL1yK22fA==
-X-Google-Smtp-Source: ABdhPJwb98hD16OtNkCJhXnRWD9ELz1QV/5BYG2cg+o0CJ25J2YF0h0pA0OxISNIzfbnHx2Bn+EU0Q==
-X-Received: by 2002:a6b:b2d7:: with SMTP id b206mr8292605iof.155.1626458201175;
-        Fri, 16 Jul 2021 10:56:41 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r6sm5627844ioh.27.2021.07.16.10.56.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 10:56:40 -0700 (PDT)
-Received: (nullmailer pid 3677111 invoked by uid 1000);
-        Fri, 16 Jul 2021 17:56:37 -0000
-Date:   Fri, 16 Jul 2021 11:56:37 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        drinkcat@chromium.org, linux-arm-kernel@lists.infradead.org,
-        matthias.bgg@gmail.com, kernel@collabora.com,
-        chunkuang.hu@kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        hsinyi@chromium.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, eizan@chromium.org,
-        jitao.shi@mediatek.com
-Subject: Re: [PATCH v2 4/7] arm64: dts: mt8173: Add the mmsys reset bit to
- reset the dsi0
-Message-ID: <20210716175637.GA3677053@robh.at.kernel.org>
-References: <20210714101141.2089082-1-enric.balletbo@collabora.com>
- <20210714121116.v2.4.I7bd7d9a8da5e2894711b700a1127e6902a2b2f1d@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tQW3GGc/1Va1cw3Bpau5ZzEZ6iztReFZLNyywqfViAs=;
+        b=puaKdjM+SfAjwBQnTQBFXzMvUGZ+tnDfKTkpGpPgyBHzYoEPGFfNxrB1D+Kk8/HWAo
+         /fkkvdLFzCUGO9aDTEmmMGK/Pb5/E0PXhw0T8inhPDPSdqSlBkCvT3ocxwZH7nLorzIZ
+         10rOcK9nCbJbTccGxrzendH3Yz0Uk+zDyQmL1NcCgYiztDkGbL5M1E9AAv6g9iTO8nTW
+         cQ9bbEjTCiV8BiGPPGKgvEIq7QKcogcBLo/qcQaKvAat8NDNWacu2EIvGh1pdeTs76D7
+         NivLwwiMcnTvBl8XZeiCQAELi/j/YP1Y/0soSuI3setUwXNhOkRprFejdNlr/XM+yP6K
+         O5oA==
+X-Gm-Message-State: AOAM533ZqULWBNdKyaRAjly68loR1OORwQfPxQcOjYhoWebl6jT3LSgW
+        qzSjN9RQ6wBzNj8AizPF8oPCj3ciZJsCEq5jvds++g==
+X-Google-Smtp-Source: ABdhPJx3191ATZV8iavJsUcIabdLHawOx50YUWGy62AQyjAgNiWXOFVLNNeLefA69Tj63fceB9/Y4TSbdBL5TsHZF3Q=
+X-Received: by 2002:a25:4047:: with SMTP id n68mr15190555yba.96.1626458248262;
+ Fri, 16 Jul 2021 10:57:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714121116.v2.4.I7bd7d9a8da5e2894711b700a1127e6902a2b2f1d@changeid>
+References: <20210710064511.1288232-1-willmcvicker@google.com>
+In-Reply-To: <20210710064511.1288232-1-willmcvicker@google.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 16 Jul 2021 10:56:41 -0700
+Message-ID: <CAGETcx_XZDWNQ2OLEs0XMnq3m1WFJ8mD0LAXFTpYBXPLPUCAxA@mail.gmail.com>
+Subject: Re: [PATCH] drm/mipi: set fwnode when a mipi_dsi_device registers itself
+To:     Will McVicker <willmcvicker@google.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 12:11:38 +0200, Enric Balletbo i Serra wrote:
-> Reset the DSI hardware is needed to prevent different settings between
-> the bootloader and the kernel.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
-> 
-> (no changes since v1)
-> 
->  arch/arm64/boot/dts/mediatek/mt8173.dtsi  | 2 ++
->  include/dt-bindings/reset/mt8173-resets.h | 2 ++
->  2 files changed, 4 insertions(+)
-> 
+Hi William,
 
-Acked-by: Rob Herring <robh@kernel.org>
+Thanks for catching this.
+
+On Fri, Jul 9, 2021 at 11:45 PM Will McVicker <willmcvicker@google.com> wrote:
+>
+> This is needed for fw_devlink to work properly with MIPI DSI devices.
+> Without setting the device's fwnode, the sync state framework isn't able
+> to properly track device links between the MIPI DSI device and its
+> suppliers which may result in its supplier probing before the mipi
+> device.
+
+I think it'd be more accurate if the commit text is something like:
+
+drm/mipi: set fwnode when a mipi_dsi_device is registered
+
+This allows the fw_devlink feature to work across mipi_dsi bus devices too. This
+feature avoid unnecessary probe deferrals of mipi_dsi devices, defers
+consumers of
+mipi_dsi devices till the mipi_dsi devices probe, and allows mipi_dsi drivers to
+implement sync_state() callbacks.
+
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+
+Thanks,
+Saravana
+
+>
+> Suggested-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
+> ---
+>  drivers/gpu/drm/drm_mipi_dsi.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
+> index 5dd475e82995..469d56cf2a50 100644
+> --- a/drivers/gpu/drm/drm_mipi_dsi.c
+> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
+> @@ -222,6 +222,7 @@ mipi_dsi_device_register_full(struct mipi_dsi_host *host,
+>         }
+>
+>         dsi->dev.of_node = info->node;
+> +       dsi->dev.fwnode = of_fwnode_handle(info->node);
+>         dsi->channel = info->channel;
+>         strlcpy(dsi->name, info->type, sizeof(dsi->name));
+>
+> --
+> 2.32.0.93.g670b81a890-goog
+>
