@@ -2,71 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B093CB0B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 04:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BC53CB0B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 04:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbhGPCLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 22:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbhGPCLa (ORCPT
+        id S233057AbhGPCN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 22:13:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38524 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231441AbhGPCNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 22:11:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BACC06175F;
-        Thu, 15 Jul 2021 19:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yiRhxxbR+vQ5qbuTqU1Ha6uMzPQoPlac3XG7Lxx4jJs=; b=HZWgPg26qb9x9qP4jzQXNTg9K0
-        qCOQMuI4vrMemHNWvFsP0bYxE5T1XCaL+JQLI3Zyv07775Y6kfXjsQORpD8N+LnjqMF465xeT89l0
-        lTIEjas9Z/pKIKNBma771J0VJRIJDGR5A58jty6Ij7Z/PMjpduG5leUagrgexzja5NU4W1ehM+stw
-        G/PeW1RtFGrRLxWU6QxyVRNnPwQW8NyomGJDaxgioEUdL9CYzzKGGybBfuxCgEUAV7wq1dyMqm9mb
-        b30O7q6+5bVfNP5FzN2E5tuNyNvNusPi2bmJoiaCaOqjDTjGGK4QwhjisaydWM+Hg0FRmYjsbUeAa
-        22tEgBvg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m4DFa-0043I1-80; Fri, 16 Jul 2021 02:07:07 +0000
-Date:   Fri, 16 Jul 2021 03:06:50 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 106/138] iomap: Convert iomap_do_writepage to use a
- folio
-Message-ID: <YPDpunndhcBUeS+U@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-107-willy@infradead.org>
- <20210715220505.GQ22357@magnolia>
+        Thu, 15 Jul 2021 22:13:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626401460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8zdmS2M4AoTM5t3X/fMwAB/1VAR1KIWx0jJpvolmL7M=;
+        b=YxeIh2EA3ufzrGhB+7D9r4eSGNt9MqHoHOzDgiJ9w++5vqubwC8BFkSx8lAvTDRvnXyyMw
+        RipKQrTWtzZoOIO0iML/sgbE182BoDSTTa0P7um2sTuKKt8AVjoP6n2QfVul+zXaTb8zY0
+        /t+sT1ITHYGufG2clR3nWXj9NQPJVd0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-IsJbHE3hN3ypkj4lfJNgnw-1; Thu, 15 Jul 2021 22:10:59 -0400
+X-MC-Unique: IsJbHE3hN3ypkj4lfJNgnw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B44B18D6A2E;
+        Fri, 16 Jul 2021 02:10:57 +0000 (UTC)
+Received: from T590 (ovpn-13-153.pek2.redhat.com [10.72.13.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 48F2C60C13;
+        Fri, 16 Jul 2021 02:10:50 +0000 (UTC)
+Date:   Fri, 16 Jul 2021 10:10:46 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] genirq/affinity: add helper of irq_affinity_calc_sets
+Message-ID: <YPDqphXYXtkpcfch@T590>
+References: <20210715111827.569756-1-ming.lei@redhat.com>
+ <20210715142714.GA1957636@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210715220505.GQ22357@magnolia>
+In-Reply-To: <20210715142714.GA1957636@bjorn-Precision-5520>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 03:05:05PM -0700, Darrick J. Wong wrote:
-> On Thu, Jul 15, 2021 at 04:36:32AM +0100, Matthew Wilcox (Oracle) wrote:
-> > Writeback an entire folio at a time, and adjust some of the variables
-> > to have more familiar names.
-> > @@ -1398,16 +1397,15 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
-> >  static int
-> >  iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
+On Thu, Jul 15, 2021 at 09:27:14AM -0500, Bjorn Helgaas wrote:
+> On Thu, Jul 15, 2021 at 07:18:27PM +0800, Ming Lei wrote:
+> > When driver requests to allocate irq affinity managed vectors,
+> > pci_alloc_irq_vectors_affinity() may fallback to single vector
+> > allocation. In this situation, we don't need to call
+> > irq_create_affinity_masks for calling into ->calc_sets() for
+> > avoiding potential memory leak, so add the helper for this purpose.
+> > 
+> > Fixes: c66d4bd110a1 ("genirq/affinity: Add new callback for (re)calculating interrupt sets")
+> > Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> > Cc: linux-pci@vger.kernel.org
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >  drivers/pci/msi.c         |  3 ++-
+> >  include/linux/interrupt.h |  7 +++++++
+> >  kernel/irq/affinity.c     | 29 ++++++++++++++++++-----------
+> >  3 files changed, 27 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> > index 9232255c8515..3d6db20d1b2b 100644
+> > --- a/drivers/pci/msi.c
+> > +++ b/drivers/pci/msi.c
+> > @@ -1224,7 +1224,8 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
+> >  			 * for the single interrupt case.
+> >  			 */
+> >  			if (affd)
+> > -				irq_create_affinity_masks(1, affd);
+> > +				WARN_ON_ONCE(irq_affinity_calc_sets(1, affd));
 > 
-> I imagine at some point this will become iomap_do_writefolio and ther
-> will be some sort of write_cache_folios() call?  Or the equivalent
-> while(get_next_folio_to_wrote()) iomap_write_folio(); type loop?
+> Hmmm.  Not sure I like this yet:
+> 
+>   - I prefer required code to be on its own, not hidden inside a
+>     WARN() (personal preference, I know).
+> 
+>   - WARN() doesn't seem like the right thing here.  I think this
+>     generates a backtrace but the driver that called this has no
+>     indication.  Isn't the problem that a .calc_sets() method set
+>     "affd->nr_sets > IRQ_AFFINITY_MAX_SETS"?
 
-I hadn't quite got as far as planning out what to do next with a
-replacement for write_cache_pages().  At a minimum, that function is
-going to work on folios -- it does anyway; we don't tag tail pages in
-the xarray, so the tagged lookup done by write_cache_pages() only finds
-folios.  So everything we do with a page there is definitely looking at
-a folio.
+Yes. When the warning is triggered, memory corruption may have been caused,
+not sure if the indication is needed.
 
-I want to get a lot more filesystems converted to use folios before I
-undertake the write_cache_pages() interface overhaul (and I'll probably
-think of several things to do to it at the same time -- like working on
-a batch of pages all at once instead of calling one indirect function
-per folio).
+> 
+>     It looks like those methods are supplied by drivers
+>     (nvme_calc_irq_sets(), csio_calc_sets()) and it seems like they
+>     should find out about this somehow.
+
+Yeah. The WARN() here is just to report the bug earlier.
+
+
+Thanks, 
+Ming
+
