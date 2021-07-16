@@ -2,218 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46A23CBD76
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447E93CBD78
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhGPUFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233490AbhGPUFA (ORCPT
+        id S233669AbhGPUFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:05:33 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:45868 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229896AbhGPUFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:05:00 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F99DC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:02:04 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id c15so5835328pls.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=15+pAbK3BFL8YJdD4x+WorUOU6nduiGry4z4wlzYpfU=;
-        b=Cyr5L2zEBLE8/ksq+6DuvYBQHNzA3lUhBq5RN/lGQ7ITJN4E4KHqi2Y4Y/PDi8Cw+k
-         LgZxelkzxGtwQ3vX7j+9nHKvicMlGxo30mEZa0NgFtklTEFp7ycmu3tXFkTJL9F5MtXF
-         N4OgbjbtyXdHVpg10u1AizQXhjJ2v5nPnexpUXB5+iy2Rpy2sCCgV+MyGooJ3eBm9EhT
-         oL61J8ZYqq2wlTsQlQfCe2FKPAjYplnoKjF2SrbVUrgsy3mgtjpmVVJKDUXXHqIERDQR
-         LZUHmydAP5gskJZjZ1h+/m/940DfzWZ8IPiRW+BZa8iIdoeacgrO40FZ7vMRrGZneQe/
-         kTbg==
+        Fri, 16 Jul 2021 16:05:32 -0400
+Received: by mail-pj1-f42.google.com with SMTP id b8-20020a17090a4888b02901725eedd346so7707631pjh.4;
+        Fri, 16 Jul 2021 13:02:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=15+pAbK3BFL8YJdD4x+WorUOU6nduiGry4z4wlzYpfU=;
-        b=I/HyHw2sHIKomxsVJH8bhkClg0n1uPu7UzoKJ4DWTYTtaYEtOBbu4BpWqPszdE21ks
-         V4+XxW8wDSSy/jqglJleJrJh45skaxVWWvPRCrVtjn242/iDoFsjVNMsUPHIJas3K8d9
-         D0UC/cncmxChGj5XRelcZifuvMYga0bh34g4a9MAELkRJqSq9mU6Q0h/svHGtv4fXzFn
-         QSRAmKlwHj8gKQ0z2dKtuu2ggnyecb0KDxXhRrnVc+nBWxJZ6KwyL2rieKL15lKaiQB0
-         hx1beNq0uzMggy4AxhpLwkphYGu8vXz1tQpCWJlvc9M3qFgZuUWojQgJdhiwJwGojsO3
-         1MXA==
-X-Gm-Message-State: AOAM5310GF5H+nruZMEOOxaU2Uq0HrpRXl1MPrQGQM1jwSyUqQtHVp+P
-        0eoo+1O5EAkg4O3QwAxiP6viDg==
-X-Google-Smtp-Source: ABdhPJwWpPahXyFixmehdaGRHPqE/aN5FF1yBNsVgYBBc9MRSRQaMhtfBDhaq4PsI/PssYJfE2RCwQ==
-X-Received: by 2002:a17:902:bd02:b029:12b:1c90:eb65 with SMTP id p2-20020a170902bd02b029012b1c90eb65mr9012602pls.81.1626465723635;
-        Fri, 16 Jul 2021 13:02:03 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id mu9sm11224943pjb.26.2021.07.16.13.02.02
+        bh=DIO/p6fDXSOIZWjjd/3ZZaaDJCcqllKBKwCD2+daukg=;
+        b=QD2TcEtN7tIrex58WvptF+sESXRBgfKI56R5EkmQ70A/p0DTQ7LzG1zDH3ScsxZoGg
+         DwJeKb8nqUw007Bqzsq+Rd5z20kb6AmLQ8EkJeAv/y6lktxISpGRhhQv+MwBYXkcfPNC
+         c4b7Awvl5QJkfjLgmH34OW6lGxRLJPsi7FxML/WdBSi3KzlIU7ET7LrqIn+Z64fpf9+S
+         0EnwQQYkUhQiiIq2xtu/oeMQXZ1J0KDnErY3ZTHDZutbszBg9APsUF29RM7Geo6Mrgij
+         GbiuqIKYo9Hssb/Qq2Zzxh55LY71BVGeZaYVdV0sqAgd2tZbhuDVUGOBc8iqb636C7sj
+         urGw==
+X-Gm-Message-State: AOAM533ttyZTtXNzE9JAOHn7bgGYoULX6s/h6rtLncHJ4ZsLWv90qWcj
+        UM13TNc5eSjlgJYVpds6RL8=
+X-Google-Smtp-Source: ABdhPJwiKVyqQAieOh5gzUSTJZrIQbGqgGRMrC+DLIJrdGIiqpN5QO5TcEWbe+a49p03l6WOUeSx2g==
+X-Received: by 2002:a17:90b:1e46:: with SMTP id pi6mr1474687pjb.5.1626465756555;
+        Fri, 16 Jul 2021 13:02:36 -0700 (PDT)
+Received: from garbanzo ([191.96.120.37])
+        by smtp.gmail.com with ESMTPSA id j129sm11377948pfb.132.2021.07.16.13.02.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 13:02:03 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 20:01:59 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 24/40] KVM: SVM: Add
- KVM_SEV_SNP_LAUNCH_UPDATE command
-Message-ID: <YPHlt4VCm6b2MZMs@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-25-brijesh.singh@amd.com>
+        Fri, 16 Jul 2021 13:02:35 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 13:02:33 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     axboe@kernel.dk, bvanassche@acm.org, ming.lei@redhat.com,
+        hch@infradead.org, jack@suse.cz, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC 3/6] md: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED on
+ is_mddev_broken()
+Message-ID: <20210716200233.3xj33cc7rmgsmkb5@garbanzo>
+References: <20210715202341.2016612-1-mcgrof@kernel.org>
+ <20210715202341.2016612-4-mcgrof@kernel.org>
+ <2f8c1713-2fa2-b832-9c70-c41a87df12ee@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-25-brijesh.singh@amd.com>
+In-Reply-To: <2f8c1713-2fa2-b832-9c70-c41a87df12ee@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> +static int snp_launch_update(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +	unsigned long npages, vaddr, vaddr_end, i, next_vaddr;
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct sev_data_snp_launch_update data = {};
-> +	struct kvm_sev_snp_launch_update params;
-> +	int *error = &argp->error;
-> +	struct kvm_vcpu *vcpu;
-> +	struct page **inpages;
-> +	struct rmpupdate e;
-> +	int ret;
-> +
-> +	if (!sev_snp_guest(kvm))
-> +		return -ENOTTY;
-> +
-> +	if (!sev->snp_context)
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
-> +		return -EFAULT;
-> +
-> +	data.gctx_paddr = __psp_pa(sev->snp_context);
-> +
-> +	/* Lock the user memory. */
-> +	inpages = sev_pin_memory(kvm, params.uaddr, params.len, &npages, 1);
+On Fri, Jul 16, 2021 at 07:51:00AM +0200, Hannes Reinecke wrote:
+> On 7/15/21 10:23 PM, Luis Chamberlain wrote:
+> > The GENHD_FL_DISK_ADDED flag is what we really want, as the
+> > flag GENHD_FL_UP could be set on a semi-initialized device.
+> > 
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> >   drivers/md/md.h | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/md/md.h b/drivers/md/md.h
+> > index 832547cf038f..80561bca1f51 100644
+> > --- a/drivers/md/md.h
+> > +++ b/drivers/md/md.h
+> > @@ -766,7 +766,7 @@ static inline bool is_mddev_broken(struct md_rdev *rdev, const char *md_type)
+> >   {
+> >   	int flags = rdev->bdev->bd_disk->flags;
+> > -	if (!(flags & GENHD_FL_UP)) {
+> > +	if (!(flags & GENHD_FL_DISK_ADDED)) {
+> >   		if (!test_and_set_bit(MD_BROKEN, &rdev->mddev->flags))
+> >   			pr_warn("md: %s: %s array has a missing/failed member\n",
+> >   				mdname(rdev->mddev), md_type);
+> > 
+> Why again did you introduce the wrapper?
+> Shouldn't it be used here?
 
-params.uaddr needs to be checked for validity, e.g. proper alignment.
-sev_pin_memory() does some checks, but not all checks.
+Indeed, and that lets us remove the flag copy. Will fix. Thanks
+for the review.
 
-> +	if (!inpages)
-> +		return -ENOMEM;
-> +
-> +	vcpu = kvm_get_vcpu(kvm, 0);
-> +	vaddr = params.uaddr;
-> +	vaddr_end = vaddr + params.len;
-> +
-> +	for (i = 0; vaddr < vaddr_end; vaddr = next_vaddr, i++) {
-> +		unsigned long psize, pmask;
-> +		int level = PG_LEVEL_4K;
-> +		gpa_t gpa;
-> +
-> +		if (!hva_to_gpa(kvm, vaddr, &gpa)) {
-
-I'm having a bit of deja vu...  This flow needs to hold kvm->srcu to do a memslot
-lookup.
-
-That said, IMO having KVM do the hva->gpa is not a great ABI.  The memslots are
-completely arbitrary (from a certain point of view) and have no impact on the
-validity of the memory pinning or PSP command.  E.g. a memslot update while this
-code is in-flight would be all kinds of weird.
-
-In other words, make userspace provide both the hva (because it's sadly needed
-to pin memory) as well as the target gpa.  That prevents KVM from having to deal
-with memslot lookups and also means that userspace can issue the command before
-configuring the memslots (though I've no idea if that's actually feasible for
-any userspace VMM).
-
-> +			ret = -EINVAL;
-> +			goto e_unpin;
-> +		}
-> +
-> +		psize = page_level_size(level);
-> +		pmask = page_level_mask(level);
-
-Is there any hope of this path supporting 2mb/1gb pages in the not-too-distant
-future?  If not, then I vote to do away with the indirection and just hardcode
-4kg sizes in the flow.  I.e. if this works on 4kb chunks, make that obvious.
-
-> +		gpa = gpa & pmask;
-> +
-> +		/* Transition the page state to pre-guest */
-> +		memset(&e, 0, sizeof(e));
-> +		e.assigned = 1;
-> +		e.gpa = gpa;
-> +		e.asid = sev_get_asid(kvm);
-> +		e.immutable = true;
-> +		e.pagesize = X86_TO_RMP_PG_LEVEL(level);
-> +		ret = rmpupdate(inpages[i], &e);
-
-What happens if userspace pulls a stupid and assigns the same page to multiple
-SNP guests?  Does RMPUPDATE fail?  Can one RMPUPDATE overwrite another?
-
-> +		if (ret) {
-> +			ret = -EFAULT;
-> +			goto e_unpin;
-> +		}
-> +
-> +		data.address = __sme_page_pa(inpages[i]);
-> +		data.page_size = e.pagesize;
-> +		data.page_type = params.page_type;
-> +		data.vmpl3_perms = params.vmpl3_perms;
-> +		data.vmpl2_perms = params.vmpl2_perms;
-> +		data.vmpl1_perms = params.vmpl1_perms;
-> +		ret = __sev_issue_cmd(argp->sev_fd, SEV_CMD_SNP_LAUNCH_UPDATE, &data, error);
-> +		if (ret) {
-> +			snp_page_reclaim(inpages[i], e.pagesize);
-> +			goto e_unpin;
-> +		}
-> +
-> +		next_vaddr = (vaddr & pmask) + psize;
-> +	}
-> +
-> +e_unpin:
-> +	/* Content of memory is updated, mark pages dirty */
-> +	memset(&e, 0, sizeof(e));
-> +	for (i = 0; i < npages; i++) {
-> +		set_page_dirty_lock(inpages[i]);
-> +		mark_page_accessed(inpages[i]);
-> +
-> +		/*
-> +		 * If its an error, then update RMP entry to change page ownership
-> +		 * to the hypervisor.
-> +		 */
-> +		if (ret)
-> +			rmpupdate(inpages[i], &e);
-
-This feels wrong since it's purging _all_ RMP entries, not just those that were
-successfully modified.  And maybe add a RMP "reset" helper, e.g. why is zeroing
-the RMP entry the correct behavior?
-
-> +	}
-> +
-> +	/* Unlock the user pages */
-> +	sev_unpin_memory(kvm, inpages, npages);
-> +
-> +	return ret;
-> +}
-> +
+  Luis
 
