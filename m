@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D1D3CBBAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793303CBBB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhGPSLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:11:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230376AbhGPSLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:11:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAD336109E;
-        Fri, 16 Jul 2021 18:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626458898;
-        bh=AYwr3PnPcKYg0G7RuSIA9vLukMb6+DpEIPaFqzcAvQU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SECuFziSl4qES4p6XosLO21HVnF436uupy6Tx8CkaUZondgMnp/DkAkA/AR30+RCt
-         H0xYIW9wBojDCScXhX8bDp9v3TnmaKc/01hayBQzhHWoa2/rBRPwVXddZWmRib/OQm
-         MrQvtVsdgs6VwLMmZkveSyi27DdTf28VXYeO/YMg=
-Date:   Fri, 16 Jul 2021 20:08:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        linux- stable <stable@vger.kernel.org>, svens@linux.ibm.com
-Subject: Re: [PATCH 5.13 000/266] 5.13.3-rc1 review
-Message-ID: <YPHLEAE5XLR3r7dn@kroah.com>
-References: <20210715182613.933608881@linuxfoundation.org>
- <CAEUSe7-HX=WrpXfcfnBUAjvEMGvraWv5hXwSgXqfUM4X1KarFg@mail.gmail.com>
+        id S230354AbhGPSOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhGPSOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:14:53 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F6BC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:11:57 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id x25so17381736lfu.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:11:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QfMAALkWPughe4/LLQvt//KqLTsRhHD5Hg94xhkS5Hk=;
+        b=Ddcp1we6t+dbvxYqCpKXta+OovrGZ1CkaGEmkIpNy3kLmvgNOFFaVZxHOdz8+SfncN
+         bw9uifFIzvlG+GkAS+TTkIMWDioFWNCHPzFEgyISWz8cP7uE3CnnT2KOcAlkJ5+i+40q
+         i6LYSi2CIl4EO7OG9s6IWqo6M+dfUXA0zV6NY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QfMAALkWPughe4/LLQvt//KqLTsRhHD5Hg94xhkS5Hk=;
+        b=Ybmp7ur59Scrh8vgDLp0Rld5glhtrsLqz10nlpmdgestydF1UfX85ALOjg6vJyidTo
+         G+lx9LhblHy1kbv4XeaxreZ1wlydTESyXl4FAIM0Jghc1+hSEzQ2HZ8BTi3PEv8u93d2
+         oi/jKguErvRvZRs+U0WlE3ylSSIyTPpw/noKilgNRpzm1fC4AWZHd/07SuKaXje7IcY1
+         pXow5IB+iVrc8ND9J+GHTyDPbUQRVMQR73G9YL9baaQSW2Zcgf+NmPQSBKzekVBdNHOC
+         kelU1RTwxw3WDE0MP3phC6h6IhAKz8R/DZWTGTNjreGqtfHc+8V71PvF7lm87GKzvwsm
+         wIcQ==
+X-Gm-Message-State: AOAM532/6qPS1KdC2g8QW5kX2buFYIOhfoJ+LFHyujGAIj6JOUfD3QOr
+        +i5OL/Z1zKbRVtNap8870hI0IM0BUoDgYFEg
+X-Google-Smtp-Source: ABdhPJzmMss2nPG+MOrMlzUUu3/XXMlUN9QyJwerIRg/3BzEMDJOCvwG7awCeovi8SeLD4BA4fj33w==
+X-Received: by 2002:ac2:59db:: with SMTP id x27mr8611783lfn.547.1626459115721;
+        Fri, 16 Jul 2021 11:11:55 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id t9sm697980lfg.57.2021.07.16.11.11.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 11:11:55 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id y42so17446144lfa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:11:55 -0700 (PDT)
+X-Received: by 2002:ac2:4475:: with SMTP id y21mr8495462lfl.487.1626459114803;
+ Fri, 16 Jul 2021 11:11:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEUSe7-HX=WrpXfcfnBUAjvEMGvraWv5hXwSgXqfUM4X1KarFg@mail.gmail.com>
+References: <20210715215753.4a314e97@rorschach.local.home>
+In-Reply-To: <20210715215753.4a314e97@rorschach.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 16 Jul 2021 11:11:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiWdG6jqKhdU62b06-DtESVxHVK8MA23iV+6fB5hnGEAw@mail.gmail.com>
+Message-ID: <CAHk-=wiWdG6jqKhdU62b06-DtESVxHVK8MA23iV+6fB5hnGEAw@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: histogram fix and take 2 on the
+ __string_len() marcros
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:40:55PM -0500, Daniel Díaz wrote:
-> Hello!
-> 
-> On Thu, 15 Jul 2021 at 14:09, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > This is the start of the stable review cycle for the 5.13.3 release.
-> > There are 266 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.3-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Build regressions have been found on this release candidate (and on 5.12-rc).
-> 
-> ## Regressions (compared to v5.13.2)
-> * s390, build
->   - clang-10-allnoconfig
->   - clang-10-defconfig
->   - clang-10-tinyconfig
->   - clang-11-allnoconfig
->   - clang-11-defconfig
->   - clang-11-tinyconfig
->   - clang-12-allnoconfig
->   - clang-12-defconfig
->   - clang-12-tinyconfig
->   - gcc-8-allnoconfig
->   - gcc-8-defconfig
->   - gcc-8-tinyconfig
->   - gcc-9-allnoconfig
->   - gcc-9-defconfig
->   - gcc-9-tinyconfig
->   - gcc-10-allnoconfig
->   - gcc-10-defconfig
->   - gcc-10-tinyconfig
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> [...]
-> > Sven Schnelle <svens@linux.ibm.com>
-> >     s390/signal: switch to using vdso for sigreturn and syscall restart
-> [...]
-> 
-> Our bisections pointed to this commit. Reverting it made the build pass again.
-> 
+On Thu, Jul 15, 2021 at 6:57 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> tracing: One fix in the histogram code and another take at the __string_len() macro
 
-Now dropped, thanks.
+What part of "strncpy()" is garbage did I not make clear?
 
-greg k-h
+            Linus
