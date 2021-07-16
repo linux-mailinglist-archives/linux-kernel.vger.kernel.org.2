@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940A33CB709
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171713CB70C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235582AbhGPL52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
+        id S237155AbhGPL62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 07:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbhGPL51 (ORCPT
+        with ESMTP id S232262AbhGPL60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 07:57:27 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016EFC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:54:33 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id u126so1022234pfb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:54:32 -0700 (PDT)
+        Fri, 16 Jul 2021 07:58:26 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA66FC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:55:29 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 21so8744530pfp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:55:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=McLq8C0l/ty7XCMoCzUHlUD6T7P73PiH5/4RXUmovZI=;
-        b=TgjsfiSEZ6ps6RWzuquLwUjuG52UbMDGu8yxVEJ/p49SSC7j/4vU4aFSZXSDOl09HI
-         6kZ8rjjMb6JUOwfJKAQyl3nkzs89xJZbfGKYWGsUdJrGlACUOvHOTKoteAFN33tNippz
-         mMlJNfQqse+9g4eacSIApEx+JxMHICnA05YBLTQANnLCzP8oieOsGW7kbQt9U24tjQBV
-         zNNMTvX0yKvDfN/vUy+o6nQCT6ToeH2AC7HjS72kNLrcS4WRNDfKMe3BK2lQ0bcRvZ0i
-         wDbIUOIMDroCL84KNW/OQ+m0i/JJhVLZ47Yim4+SVMIemiK2Pp4wtX8iCXDZXEw9HyaS
-         Wk8g==
+        bh=CuuUNeyNTsN3K8aU0aDQEXK/4L9nlIa7+OtjGKcpunY=;
+        b=ilR7jMGSOT91epJRWKTSV4TWp91AUEqYfzdpHW14vYCWVY7/ySlHPQtpAKXc7SxrxE
+         fo+GBS8AWSCzdpguryr1SCtkPXTzC21tpulmcw6IlfhZeDx8H8SwhW6svC2p7634K41n
+         MJKrY4h6QXwnoXNixI5m+OCJ7ehTdb/lTTkoRlGhc+yiwOW6EC/3+yKkMlJHGyRmtYEX
+         gvj2NPisv39pJmBFfFsAi0SsSFNTCIwdctM88B/c8XyzDH6/EgbC8ScWL2Nv+05wiRuI
+         btk/ypvTaUplcsZM0PPu2pYqmFK8AAqp3+HMge0uiSO7hyLTRHq/2j0yi0Ugs56svB4r
+         vC9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=McLq8C0l/ty7XCMoCzUHlUD6T7P73PiH5/4RXUmovZI=;
-        b=K3G9NT6fOgm9MkC9wMPiS6DqhzzBO/SP/WrPmg0qqAQRW0xKah1EyVEMuYPwqrbpeP
-         qio6POc7PABtt/kmwTu1y5TU6pVyHLMdq6PXegW9qKf6xzns074hAIlnZKYuU6cNuZM1
-         5NvMYAcBEenfDuDhSllSYQ2b9sALgSa/sj1TXKAQQc5YK75zdrJwon1AqkfTySuBqK1A
-         y4AXJteAuq2oYB3wEtCNBLrMe5GKl+vrbD7fc/joB92nojBCKrx9IN0FD8l6KCQHpbtb
-         MChRxa/YxSYEwXSTWqJnvxdVwTlpZrQTLbjXfwXgMGjTDZ46RaDu3dA5AllncQQsPrRD
-         mfsg==
-X-Gm-Message-State: AOAM531Pj0KrNCK1F+CzUhdH+tsOSmwYg0too7q3bOyX0l6xPw55I7yo
-        yu8BEfUICnR22h2KuI+fUH81
-X-Google-Smtp-Source: ABdhPJy4RT8Y9XLct06JtdclYukX3QVoaUCu4qwyRZdQ1GyuAO0ogilVMJB6X746eErf+N9S1j4D+A==
-X-Received: by 2002:a62:bd15:0:b029:31c:a584:5f97 with SMTP id a21-20020a62bd150000b029031ca5845f97mr9904415pff.33.1626436472363;
-        Fri, 16 Jul 2021 04:54:32 -0700 (PDT)
+        bh=CuuUNeyNTsN3K8aU0aDQEXK/4L9nlIa7+OtjGKcpunY=;
+        b=fnKaKVEg88mriDY/s3fvdrfjThei7XXh4iAyF4MJp77yNSRVlK+rs7h4DvOp3R+EQa
+         O2r5frVazcRvWvG/THLyArTUT5PaZXIg9WS2t5NulMKG2yNA2OxRUuWOTyPiY33Grg1J
+         yg7RZeI4cIdnxFlD6vjVl3XqOtYRXEmhFiV5Yvm0mUg2grIC1O57WLayqA0mnJ6Erdr7
+         JVQRDjgUERyx4SKHUKTZuSx6mTa3bS3D4BMkRGviMFLII4PJGWqTdRjBDKv7617w5NW4
+         DL4RAlht5DzFQqmJwlVGj3TCW59hmMttqux6dwDQKvob8ipWxzpfPuvPdSxIn6vz92z9
+         c5Ww==
+X-Gm-Message-State: AOAM533eBsXSuQQacOSe6dnYrFZpPyBivQIpMvPoYm0S6ZQPuJmw8nae
+        kKYPQog90EjspwVrK+lscv5t
+X-Google-Smtp-Source: ABdhPJxOEFP1CXXrcrvX7fhCHB6g9I+micwaJNEQO6WrcnBhsuPwOmA3D0NePJv9GvQodmWAguj0TA==
+X-Received: by 2002:a05:6a00:1627:b029:333:323:2c04 with SMTP id e7-20020a056a001627b029033303232c04mr8802063pfc.78.1626436529253;
+        Fri, 16 Jul 2021 04:55:29 -0700 (PDT)
 Received: from workstation ([120.138.12.214])
-        by smtp.gmail.com with ESMTPSA id w186sm10367185pfw.106.2021.07.16.04.54.30
+        by smtp.gmail.com with ESMTPSA id n4sm10245611pff.51.2021.07.16.04.55.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Jul 2021 04:54:31 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 17:24:28 +0530
+        Fri, 16 Jul 2021 04:55:28 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 17:25:25 +0530
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
 Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
         jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
         loic.poulain@linaro.org
-Subject: Re: [PATCH] bus: mhi: core: Replace DMA allocation wrappers with
- original APIs
-Message-ID: <20210716115428.GJ3323@workstation>
-References: <1624392428-9328-1-git-send-email-bbhatt@codeaurora.org>
+Subject: Re: [PATCH v2] bus: mhi: core: Improve debug messages for power up
+Message-ID: <20210716115525.GK3323@workstation>
+References: <1620072038-36160-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1624392428-9328-1-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <1620072038-36160-1-git-send-email-bbhatt@codeaurora.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:07:08PM -0700, Bhaumik Bhatt wrote:
-> There is nothing special done within the mhi_alloc_coherent() and
-> the mhi_free_coherent() wrapper functions. They only directly
-> call the equivalent DMA allocation functions. Replace them with
-> the original function calls such that the implementation is clear
-> and direct.
+On Mon, May 03, 2021 at 01:00:38PM -0700, Bhaumik Bhatt wrote:
+> Improve error message to be more descriptive if a failure occurs
+> with an invalid power up execution environment. Additionally, add
+> a debug log to print the execution environment and MHI state
+> before a power up is attempted to confirm if the device is in an
+> expected state. This helps clarify reasons for power up failures
+> such as the device being found in a PBL or Emergency Download
+> Mode execution environment and the host expected a full power up
+> with Pass-Through and no image loading involved.
 > 
 > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
@@ -82,250 +84,33 @@ Thanks,
 Mani
 
 > ---
->  drivers/bus/mhi/core/boot.c     | 17 +++++++++--------
->  drivers/bus/mhi/core/init.c     | 32 ++++++++++++++++----------------
->  drivers/bus/mhi/core/internal.h | 20 --------------------
->  drivers/bus/mhi/core/main.c     |  6 +++---
->  4 files changed, 28 insertions(+), 47 deletions(-)
+> v2: Use power up instead of power on and update commit text with an example.
 > 
-> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-> index 8100cf5..0a97262 100644
-> --- a/drivers/bus/mhi/core/boot.c
-> +++ b/drivers/bus/mhi/core/boot.c
-> @@ -302,8 +302,8 @@ void mhi_free_bhie_table(struct mhi_controller *mhi_cntrl,
->  	struct mhi_buf *mhi_buf = image_info->mhi_buf;
+>  drivers/bus/mhi/core/pm.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index adf426c..f4a8b9a 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -1076,12 +1076,16 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
 >  
->  	for (i = 0; i < image_info->entries; i++, mhi_buf++)
-> -		mhi_free_coherent(mhi_cntrl, mhi_buf->len, mhi_buf->buf,
-> -				  mhi_buf->dma_addr);
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, mhi_buf->len,
-> +				  mhi_buf->buf, mhi_buf->dma_addr);
->  
->  	kfree(image_info->mhi_buf);
->  	kfree(image_info);
-> @@ -339,8 +339,8 @@ int mhi_alloc_bhie_table(struct mhi_controller *mhi_cntrl,
->  			vec_size = sizeof(struct bhi_vec_entry) * i;
->  
->  		mhi_buf->len = vec_size;
-> -		mhi_buf->buf = mhi_alloc_coherent(mhi_cntrl, vec_size,
-> -						  &mhi_buf->dma_addr,
-> +		mhi_buf->buf = dma_alloc_coherent(mhi_cntrl->cntrl_dev,
-> +						  vec_size, &mhi_buf->dma_addr,
->  						  GFP_KERNEL);
->  		if (!mhi_buf->buf)
->  			goto error_alloc_segment;
-> @@ -354,8 +354,8 @@ int mhi_alloc_bhie_table(struct mhi_controller *mhi_cntrl,
->  
->  error_alloc_segment:
->  	for (--i, --mhi_buf; i >= 0; i--, mhi_buf--)
-> -		mhi_free_coherent(mhi_cntrl, mhi_buf->len, mhi_buf->buf,
-> -				  mhi_buf->dma_addr);
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, mhi_buf->len,
-> +				  mhi_buf->buf, mhi_buf->dma_addr);
->  
->  error_alloc_mhi_buf:
->  	kfree(img_info);
-> @@ -442,7 +442,8 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->  	if (size > firmware->size)
->  		size = firmware->size;
->  
-> -	buf = mhi_alloc_coherent(mhi_cntrl, size, &dma_addr, GFP_KERNEL);
-> +	buf = dma_alloc_coherent(mhi_cntrl->cntrl_dev, size, &dma_addr,
-> +				 GFP_KERNEL);
->  	if (!buf) {
->  		release_firmware(firmware);
->  		goto error_fw_load;
-> @@ -451,7 +452,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->  	/* Download image using BHI */
->  	memcpy(buf, firmware->data, size);
->  	ret = mhi_fw_load_bhi(mhi_cntrl, dma_addr, size);
-> -	mhi_free_coherent(mhi_cntrl, size, buf, dma_addr);
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, size, buf, dma_addr);
->  
->  	/* Error or in EDL mode, we're done */
->  	if (ret) {
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 4446760..c7ba715 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -129,7 +129,7 @@ static int mhi_alloc_aligned_ring(struct mhi_controller *mhi_cntrl,
->  				  u64 len)
->  {
->  	ring->alloc_size = len + (len - 1);
-> -	ring->pre_aligned = mhi_alloc_coherent(mhi_cntrl, ring->alloc_size,
-> +	ring->pre_aligned = dma_alloc_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  					       &ring->dma_handle, GFP_KERNEL);
->  	if (!ring->pre_aligned)
->  		return -ENOMEM;
-> @@ -221,13 +221,13 @@ void mhi_deinit_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  	mhi_cmd = mhi_cntrl->mhi_cmd;
->  	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++) {
->  		ring = &mhi_cmd->ring;
-> -		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  				  ring->pre_aligned, ring->dma_handle);
->  		ring->base = NULL;
->  		ring->iommu_base = 0;
+>  	/* Confirm that the device is in valid exec env */
+>  	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
+> -		dev_err(dev, "Not a valid EE for power on\n");
+> +		dev_err(dev, "%s is not a valid EE for power on\n",
+> +			TO_MHI_EXEC_STR(current_ee));
+>  		ret = -EIO;
+>  		goto error_async_power_up;
 >  	}
 >  
-> -	mhi_free_coherent(mhi_cntrl,
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev,
->  			  sizeof(*mhi_ctxt->cmd_ctxt) * NR_OF_CMD_RINGS,
->  			  mhi_ctxt->cmd_ctxt, mhi_ctxt->cmd_ctxt_addr);
->  
-> @@ -237,17 +237,17 @@ void mhi_deinit_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  			continue;
->  
->  		ring = &mhi_event->ring;
-> -		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  				  ring->pre_aligned, ring->dma_handle);
->  		ring->base = NULL;
->  		ring->iommu_base = 0;
->  	}
->  
-> -	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->er_ctxt) *
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, sizeof(*mhi_ctxt->er_ctxt) *
->  			  mhi_cntrl->total_ev_rings, mhi_ctxt->er_ctxt,
->  			  mhi_ctxt->er_ctxt_addr);
->  
-> -	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->chan_ctxt) *
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, sizeof(*mhi_ctxt->chan_ctxt) *
->  			  mhi_cntrl->max_chan, mhi_ctxt->chan_ctxt,
->  			  mhi_ctxt->chan_ctxt_addr);
->  
-> @@ -275,7 +275,7 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  		return -ENOMEM;
->  
->  	/* Setup channel ctxt */
-> -	mhi_ctxt->chan_ctxt = mhi_alloc_coherent(mhi_cntrl,
-> +	mhi_ctxt->chan_ctxt = dma_alloc_coherent(mhi_cntrl->cntrl_dev,
->  						 sizeof(*mhi_ctxt->chan_ctxt) *
->  						 mhi_cntrl->max_chan,
->  						 &mhi_ctxt->chan_ctxt_addr,
-> @@ -307,7 +307,7 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  	}
->  
->  	/* Setup event context */
-> -	mhi_ctxt->er_ctxt = mhi_alloc_coherent(mhi_cntrl,
-> +	mhi_ctxt->er_ctxt = dma_alloc_coherent(mhi_cntrl->cntrl_dev,
->  					       sizeof(*mhi_ctxt->er_ctxt) *
->  					       mhi_cntrl->total_ev_rings,
->  					       &mhi_ctxt->er_ctxt_addr,
-> @@ -354,7 +354,7 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  
->  	/* Setup cmd context */
->  	ret = -ENOMEM;
-> -	mhi_ctxt->cmd_ctxt = mhi_alloc_coherent(mhi_cntrl,
-> +	mhi_ctxt->cmd_ctxt = dma_alloc_coherent(mhi_cntrl->cntrl_dev,
->  						sizeof(*mhi_ctxt->cmd_ctxt) *
->  						NR_OF_CMD_RINGS,
->  						&mhi_ctxt->cmd_ctxt_addr,
-> @@ -389,10 +389,10 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  	for (--i, --mhi_cmd; i >= 0; i--, mhi_cmd--) {
->  		struct mhi_ring *ring = &mhi_cmd->ring;
->  
-> -		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  				  ring->pre_aligned, ring->dma_handle);
->  	}
-> -	mhi_free_coherent(mhi_cntrl,
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev,
->  			  sizeof(*mhi_ctxt->cmd_ctxt) * NR_OF_CMD_RINGS,
->  			  mhi_ctxt->cmd_ctxt, mhi_ctxt->cmd_ctxt_addr);
->  	i = mhi_cntrl->total_ev_rings;
-> @@ -405,15 +405,15 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  		if (mhi_event->offload_ev)
->  			continue;
->  
-> -		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  				  ring->pre_aligned, ring->dma_handle);
->  	}
-> -	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->er_ctxt) *
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, sizeof(*mhi_ctxt->er_ctxt) *
->  			  mhi_cntrl->total_ev_rings, mhi_ctxt->er_ctxt,
->  			  mhi_ctxt->er_ctxt_addr);
->  
->  error_alloc_er_ctxt:
-> -	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->chan_ctxt) *
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, sizeof(*mhi_ctxt->chan_ctxt) *
->  			  mhi_cntrl->max_chan, mhi_ctxt->chan_ctxt,
->  			  mhi_ctxt->chan_ctxt_addr);
->  
-> @@ -567,7 +567,7 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
->  	if (!chan_ctxt->rbase) /* Already uninitialized */
->  		return;
->  
-> -	mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, tre_ring->alloc_size,
->  			  tre_ring->pre_aligned, tre_ring->dma_handle);
->  	vfree(buf_ring->base);
->  
-> @@ -610,7 +610,7 @@ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
->  	buf_ring->base = vzalloc(buf_ring->len);
->  
->  	if (!buf_ring->base) {
-> -		mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, tre_ring->alloc_size,
->  				  tre_ring->pre_aligned, tre_ring->dma_handle);
->  		return -ENOMEM;
->  	}
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 672052f..b5594fa 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -690,26 +690,6 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
->  void mhi_reset_chan(struct mhi_controller *mhi_cntrl,
->  		    struct mhi_chan *mhi_chan);
->  
-> -/* Memory allocation methods */
-> -static inline void *mhi_alloc_coherent(struct mhi_controller *mhi_cntrl,
-> -				       size_t size,
-> -				       dma_addr_t *dma_handle,
-> -				       gfp_t gfp)
-> -{
-> -	void *buf = dma_alloc_coherent(mhi_cntrl->cntrl_dev, size, dma_handle,
-> -				       gfp);
-> -
-> -	return buf;
-> -}
-> -
-> -static inline void mhi_free_coherent(struct mhi_controller *mhi_cntrl,
-> -				     size_t size,
-> -				     void *vaddr,
-> -				     dma_addr_t dma_handle)
-> -{
-> -	dma_free_coherent(mhi_cntrl->cntrl_dev, size, vaddr, dma_handle);
-> -}
-> -
->  /* Event processing methods */
->  void mhi_ctrl_ev_task(unsigned long data);
->  void mhi_ev_task(unsigned long data);
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 02c8c09..409c68bc 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -193,7 +193,7 @@ int mhi_map_single_no_bb(struct mhi_controller *mhi_cntrl,
->  int mhi_map_single_use_bb(struct mhi_controller *mhi_cntrl,
->  			  struct mhi_buf_info *buf_info)
->  {
-> -	void *buf = mhi_alloc_coherent(mhi_cntrl, buf_info->len,
-> +	void *buf = dma_alloc_coherent(mhi_cntrl->cntrl_dev, buf_info->len,
->  				       &buf_info->p_addr, GFP_ATOMIC);
->  
->  	if (!buf)
-> @@ -220,8 +220,8 @@ void mhi_unmap_single_use_bb(struct mhi_controller *mhi_cntrl,
->  	if (buf_info->dir == DMA_FROM_DEVICE)
->  		memcpy(buf_info->v_addr, buf_info->bb_addr, buf_info->len);
->  
-> -	mhi_free_coherent(mhi_cntrl, buf_info->len, buf_info->bb_addr,
-> -			  buf_info->p_addr);
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, buf_info->len,
-> +			  buf_info->bb_addr, buf_info->p_addr);
->  }
->  
->  static int get_nr_avail_ring_elements(struct mhi_controller *mhi_cntrl,
+>  	state = mhi_get_mhi_state(mhi_cntrl);
+> +	dev_dbg(dev, "Attempting power on with EE: %s, state: %s\n",
+> +		TO_MHI_EXEC_STR(current_ee), TO_MHI_STATE_STR(state));
+> +
+>  	if (state == MHI_STATE_SYS_ERR) {
+>  		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
+>  		ret = wait_event_timeout(mhi_cntrl->state_event,
 > -- 
 > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 > a Linux Foundation Collaborative Project
