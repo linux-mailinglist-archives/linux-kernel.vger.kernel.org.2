@@ -2,308 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BEE3CB12C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C063F3CB130
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 05:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233820AbhGPDo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 23:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S233908AbhGPDpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 23:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhGPDo0 (ORCPT
+        with ESMTP id S231230AbhGPDpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 23:44:26 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DD5C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 20:41:31 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id hd33so12924271ejc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 20:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=/um/AlCUBmByR0rvZO/k9T0+BbJn7ibDjUpgDUtFG/Y=;
-        b=WT95uDjSHd66/2F/vQbncNPUhmp7RAk4w7Pg7JWIQi9LcUhUMDxFaQATX1YFlom0FR
-         NX6WznzC2e/1J3puN8Id2OGSz4kHY/KcQ73VQSXluWGd5jBeEooc4RMrVbGm6S89prLx
-         CPhB3IiM5+zMO5mpHgHiDlJ4XXPTpDnu5LbwiNqFE/wjTXvMaH6lewLJ3UFr0/NKiqFT
-         OHkYlZcBaO1NDidHv4gSDQ30FLSZQLiBi5hYV4/3yI8De783IfRoZGFQDdJVxPJsQhkS
-         uUOt9s66HI+5d5NdZyBxn/mbkxqy1UvugOjL4y+6E8DHtPJ+Tqjk5ml1aqvtjkY1P/DP
-         k1Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=/um/AlCUBmByR0rvZO/k9T0+BbJn7ibDjUpgDUtFG/Y=;
-        b=j64I++Thkl/HQDYmhcHCj2XWMvAtmXzNyFrVj+RoXa9bNsllPK5NC9DUJT4IZ3zIyd
-         xBLYwArnEPc8psdmzn+pga6p4swSwJ3MREklFLOv3xkq5Y+qou4KgIUJKgC8UAlMiz5o
-         VxMc59KnOszp3imm66SX/j697q+JTZYTR22Vj3gaX4Yvw38rgUL4OVbLO0QXI7FJIrYZ
-         06vfQfzUlSnvgkWp3VDarg+5mEfsn+k2DuwM9Zom2Dtf6TJBe17OrSNZDfe8P45eM/+Z
-         kg5sUiYS4Ikxo+0yiUhjsLEAwkRkgpa20o7KJ0F1X1TL7eU1mYDPnSb03/6f8Twr/TfB
-         WQsg==
-X-Gm-Message-State: AOAM533fvQhS16RkMIaFdtMsglmHxcd3uH/sd/afy/RUqAXZ3OamNuy9
-        yhZEtra0/3aAyNCb7OUjt1ve6+edQCWeGYtxijM=
-X-Google-Smtp-Source: ABdhPJwk5tuPqvbQahNAOKuKuhwRUfUMnOomg0K2jyRPSqlfMPVIceOB1/9qz5PqFtf1rX9JZvhc8NK06/LHP74fTEA=
-X-Received: by 2002:a17:906:1487:: with SMTP id x7mr9255767ejc.456.1626406889804;
- Thu, 15 Jul 2021 20:41:29 -0700 (PDT)
+        Thu, 15 Jul 2021 23:45:18 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8293C06175F;
+        Thu, 15 Jul 2021 20:42:24 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GQxrZ28dkz9sX3;
+        Fri, 16 Jul 2021 13:42:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626406942;
+        bh=srvcUE0sX7HNjoJm4FGpd6Cconxnde2JnUpdddMfw1k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Tcwy78yRM534iYBSALkOYZEhryTdanGCqXY6KiUkPIR3L3Dm1Cb0GmLVXYwi53S3k
+         qvGZIauR3YqyzAtsVQDJx+dcgHlwNMLJ8CV2vUrQq4tI16p8z3mwD8ve5Nm/yG8KMq
+         MBjFfX6BO3C5izL30Br0Qa1aPVg6wraG9LKK9d8HVQlZwGKPzqGuT0NwopiWOiS+sf
+         hTRRB8Slghq3Zjz+gU9cTkWwuB1zflwjqsQ/oifXWOOlISF9+UIx8ALXH/QuA+It3/
+         rWgjJu0QlSEowa6Q5DX3BMIRNxlT32SSmr7mGRcpE2BrVIdb8SdAn93GJMUDTv51Dt
+         YfU1DheHl0rjw==
+Date:   Fri, 16 Jul 2021 13:42:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Richard Laing <richard.laing@alliedtelesis.co.nz>
+Subject: Re: linux-next: manual merge of the mhi tree with the net-next tree
+Message-ID: <20210716134221.726a81af@canb.auug.org.au>
+In-Reply-To: <20210716133738.0d163701@canb.auug.org.au>
+References: <20210716133738.0d163701@canb.auug.org.au>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 16 Jul 2021 13:41:18 +1000
-Message-ID: <CAPM=9tzb9KSspAtVkSH3pYN97hQ815MoOBTSiuHzUJnnb2fhRA@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.14-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/Qocc/fuL1PA3KbGR.fCF1lB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/Qocc/fuL1PA3KbGR.fCF1lB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Regular rc2 fixes though a bit more than usual at rc2 stage, people
-must have been testing early or else some fixes from last week got a
-bit laggy. There is one larger change in the amd fixes to amalgamate
-some power management code on the newer chips with the code from the
-older chips, it should only affects chips where support was introduced
-in rc1 and it should make future fixes easier to maintain probably a
-good idea to merge it now. Otherwise it's mostly fixes across the
-board.
+Hi all,
 
-Dave.
+On Fri, 16 Jul 2021 13:37:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> @@@ -254,7 -256,7 +258,8 @@@ static const struct mhi_pci_dev_info mh
+>   	.config =3D &modem_qcom_v1_mhiv_config,
+>   	.bar_num =3D MHI_PCI_DEFAULT_BAR_NUM,
+>   	.dma_data_width =3D 32,
+>  +	.mru_default =3D 32768
+> + 	.sideband_wake =3D false,
+>   };
 
-drm-fixes-2021-07-16:
-drm fixes for 5.14-rc2
+I added the missing ',' after the mru_default line above.
 
-dma-buf:
-- Fix fence leak in sync_file_merge() error code
+--=20
+Cheers,
+Stephen Rothwell
 
-drm/panel:
-- nt35510: Don't fail on DSI reads
+--Sig_/Qocc/fuL1PA3KbGR.fCF1lB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-fbdev:
-- Avoid use-after-free by not deleting current video mode
+-----BEGIN PGP SIGNATURE-----
 
-ttm:
-- Avoid NULL-ptr deref in ttm_range_man_fini()
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDxAB0ACgkQAVBC80lX
+0Gy3vwf+Ngdo0sBWbroifbrtfr1j3CiOjtEOxkKu/2I44X0n96mkhAieCMHZAKg5
+qG+HCgNPW7pamF4VR9ckcRND4r43kKEjtHMztJWkoSzpG6y0vJCrM1T5sQWKYmf+
++0QqqpJZZVLU6RfltvXD+Fn+lKz5sGQaF9HYCMp9KVZQmTcUrgiUo3qNeYqfVvWF
+gJ4YUajfiCi9NMyxTHT+a0SYS/BKDJEv0XVWnAx5AVibW7ocy7xKwINvt1JniH9k
+yqr6sMWx9i/g7sT1WCp5ruOxwesEiy8gAz0kX7+YSa/SkgAjVsd0LThAcc32Apa+
+tsekgL2hjkppWhKrdNhI9BnhfG6k5Q==
+=UsSI
+-----END PGP SIGNATURE-----
 
-vmwgfx:
-- Fix a merge commit
-
-qxl:
-- fix a TTM regression
-
-amdgpu:
-- SR-IOV fixes
-- RAS fixes
-- eDP fixes
-- SMU13 code unification to facilitate fixes in the future
-- Add new renoir DID
-- Yellow Carp fixes
-- Beige Goby fixes
-- Revert a bunch of TLB fixes that caused regressions
-- Revert an LTTPR display regression
-
-amdkfd
-- Fix VRAM access regression
-- SVM fixes
-
-i915:
-- Fix -EDEADLK handling regression
-- Drop the page table optimisation
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3=
-:
-
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-07-16
-
-for you to fetch changes up to 876d98e5511d8cfd12fc617a6717e7a8ea07be17:
-
-  Merge tag 'drm-intel-fixes-2021-07-15' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2021-07-16
-10:53:02 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.14-rc2
-
-dma-buf:
-- Fix fence leak in sync_file_merge() error code
-
-drm/panel:
-- nt35510: Don't fail on DSI reads
-
-fbdev:
-- Avoid use-after-free by not deleting current video mode
-
-ttm:
-- Avoid NULL-ptr deref in ttm_range_man_fini()
-
-vmwgfx:
-- Fix a merge commit
-
-qxl:
-- fix a TTM regression
-
-amdgpu:
-- SR-IOV fixes
-- RAS fixes
-- eDP fixes
-- SMU13 code unification to facilitate fixes in the future
-- Add new renoir DID
-- Yellow Carp fixes
-- Beige Goby fixes
-- Revert a bunch of TLB fixes that caused regressions
-- Revert an LTTPR display regression
-
-amdkfd
-- Fix VRAM access regression
-- SVM fixes
-
-i915:
-- Fix -EDEADLK handling regression
-- Drop the page table optimisation
-
-----------------------------------------------------------------
-Aaron Liu (1):
-      drm/amd/pm: Add waiting for response of mode-reset message for yellow=
- carp
-
-Chengming Gui (1):
-      drm/amd/pm: Fix BACO state setting for Beige_Goby
-
-Christian K=C3=B6nig (1):
-      drm/qxl: add NULL check for bo->resource
-
-Daniel Vetter (1):
-      Merge tag 'drm-misc-fixes-2021-07-13' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-
-Dave Airlie (3):
-      Merge tag 'amd-drm-fixes-5.14-2021-07-14' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-      Merge tag 'drm-misc-fixes-2021-07-15' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'drm-intel-fixes-2021-07-15' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-
-Dmytro Laktyushkin (1):
-      drm/amd/display: remove faulty assert
-
-Emily Deng (1):
-      drm/amdgpu: Correct the irq numbers for virtual crtc
-
-Emily.Deng (1):
-      drm/amdgpu: Restore msix after FLR
-
-Eric Huang (5):
-      Revert "drm/amdkfd: Add memory sync before TLB flush on unmap"
-      Revert "drm/amdgpu: Fix warning of Function parameter or member
-not described"
-      Revert "drm/amdkfd: Make TLB flush conditional on mapping"
-      Revert "drm/amdgpu: Add table_freed parameter to amdgpu_vm_bo_update"
-      Revert "drm/amdkfd: Add heavy-weight TLB flush after unmapping"
-
-Felix Kuehling (1):
-      drm/amdkfd: Allow CPU access for all VRAM BOs
-
-Jason Ekstrand (1):
-      dma-buf/sync_file: Don't leak fences on merge failure
-
-Jingwen Chen (1):
-      drm/amdgpu: SRIOV flr_work should take write_lock
-
-Jinzhou Su (1):
-      drm/amdgpu: add another Renoir DID
-
-Linus Walleij (1):
-      drm/panel: nt35510: Do not fail if DSI read fails
-
-Luben Tuikov (1):
-      drm/amdgpu: Return error if no RAS
-
-Matthew Auld (1):
-      drm/i915/gtt: drop the page table optimisation
-
-Nicholas Kazlauskas (1):
-      drm/amd/display: Fix updating infoframe for DCN3.1 eDP
-
-Philip Yang (1):
-      drm/amdkfd: handle fault counters on invalid address
-
-Thomas Zimmermann (1):
-      Merge remote-tracking branch 'drm-misc/drm-misc-next-fixes' into
-drm-misc-fixes
-
-Ville Syrj=C3=A4l=C3=A4 (1):
-      drm/i915/gt: Fix -EDEADLK handling regression
-
-Wesley Chalmers (1):
-      Revert "drm/amd/display: Always write repeater mode regardless of LTT=
-PR"
-
-Xiaomeng Hou (2):
-      drm/amd/pm: drop smu_v13_0_1.c|h files for yellow carp
-      drm/amd/display: update header file name
-
-Zack Rusin (2):
-      drm/vmwgfx: Fix implicit declaration error
-      drm/vmwgfx: Fix a bad merge in otable batch takedown
-
-Zhan Liu (1):
-      drm/amdgpu/display - only update eDP's backlight level when necessary
-
-Zhen Lei (1):
-      fbmem: Do not delete the mode that is still in use
-
-Zheyu Ma (1):
-      drm/ttm: add a check against null pointer dereference
-
- drivers/dma-buf/sync_file.c                        |  13 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h         |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |  22 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c             |   6 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |   1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c            |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c            |  18 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c            |  49 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h            |   6 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c             |  11 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h             |   2 +-
- drivers/gpu/drm/amd/amdgpu/dce_virtual.c           |   2 +-
- drivers/gpu/drm/amd/amdgpu/mxgpu_ai.c              |   4 +-
- drivers/gpu/drm/amd/amdgpu/mxgpu_nv.c              |   4 +-
- drivers/gpu/drm/amd/amdkfd/kfd_chardev.c           |  45 +-
- drivers/gpu/drm/amd/amdkfd/kfd_process.c           |   3 +-
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c               |  30 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |   2 +-
- .../drm/amd/display/dc/clk_mgr/dcn31/dcn31_smu.c   |   4 +-
- drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   |   8 +-
- drivers/gpu/drm/amd/display/dc/dcn31/dcn31_hwseq.c |   2 +-
- .../drm/amd/include/asic_reg/mp/mp_13_0_1_offset.h | 355 --------------
- .../amd/include/asic_reg/mp/mp_13_0_1_sh_mask.h    | 531 -----------------=
-----
- drivers/gpu/drm/amd/pm/inc/smu_v13_0.h             |   1 +
- drivers/gpu/drm/amd/pm/inc/smu_v13_0_1.h           |  57 ---
- drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c     |   1 +
- drivers/gpu/drm/amd/pm/swsmu/smu13/Makefile        |   2 +-
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c     |  24 +
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_1.c   | 311 ------------
- .../gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c   |  49 +-
- drivers/gpu/drm/i915/gt/gen8_ppgtt.c               |   5 +-
- drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c       |   2 +-
- drivers/gpu/drm/panel/panel-novatek-nt35510.c      |   4 +-
- drivers/gpu/drm/qxl/qxl_ttm.c                      |   2 +-
- drivers/gpu/drm/ttm/ttm_range_manager.c            |   3 +
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c                |   1 +
- drivers/gpu/drm/vmwgfx/vmwgfx_mob.c                |   1 -
- drivers/video/fbdev/core/fbmem.c                   |  12 +-
- 38 files changed, 202 insertions(+), 1395 deletions(-)
- delete mode 100644 drivers/gpu/drm/amd/include/asic_reg/mp/mp_13_0_1_offse=
-t.h
- delete mode 100644 drivers/gpu/drm/amd/include/asic_reg/mp/mp_13_0_1_sh_ma=
-sk.h
- delete mode 100644 drivers/gpu/drm/amd/pm/inc/smu_v13_0_1.h
- delete mode 100644 drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_1.c
+--Sig_/Qocc/fuL1PA3KbGR.fCF1lB--
