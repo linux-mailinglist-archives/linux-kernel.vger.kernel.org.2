@@ -2,113 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531A93CB8A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC313CB8A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240309AbhGPOVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39994 "EHLO
+        id S233103AbhGPO2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbhGPOVl (ORCPT
+        with ESMTP id S232958AbhGPO2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:21:41 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB2CC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 07:18:45 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id ca14so13234408edb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 07:18:44 -0700 (PDT)
+        Fri, 16 Jul 2021 10:28:40 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D71FC06175F;
+        Fri, 16 Jul 2021 07:25:44 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id r11so12310628wro.9;
+        Fri, 16 Jul 2021 07:25:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y2DHnDO22YqXsXeeLtUzFhSLKp3spjaHgmh9Z0w22wE=;
-        b=nAwHoNJCgNBJrjooT/pq6cKj5ezaLiTG6eQum1zK1S8Lfu/oQRbSuKhKt5Qr5CZ3wJ
-         PHq/044G7aRBnQdaNWKsNE/nGzPmYdKGfQJiFXy3b7KJ7RZOY/X7YX4tM+Cvb5wE5Vci
-         uYdpswvj5m9d7U1QWQckWXEGZzV21Z2PHz4Mk9FG3RE4d4M+EreyUm/xaPibV0My9RIr
-         efutkjdYQtzo8HMaKvdWcgesta+PxZy8+o9w968ejPuI+S/RdlmVgnC6p17YgpZdimYG
-         N5zCJHVvK0TIE0OZm/hk1MFtOGV4AFPf7MAo+knifId0NMp3EM0D2j9O9xgEUYSccLCS
-         cXxA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WVnjG/+uXUwA1TsIYDH7nvmxJ4xBCgnrB5THQ+2D+qg=;
+        b=nmniNX+atXPU7ho+t8GwMmFltwGS6Ihpv2UTWVKOtddmqzb7KVIOt0xTam4FS1XSMM
+         4coBRSmzO0gVWrjsCvLDeWpNbLD+COBo/f6MxkgpftEk8OiPodreZ1Svpt6lMpMFN84n
+         5ll8HRM+lvOZoZ4XfwXh51iPVNR/ygA3IkAR/NxaJ6qIZij3JaMoxGmw5iy4HNC0ViO9
+         NILUBLNTOywJ0uaak0kAhzmp99UOk10AvZ1ICAx5rxBvafEIvNVW9Ba+x3b15QRlsi1/
+         b+joNyvYxUdx+Gi0zanLEoY10tuefxGXb7vpCdTHBLIi+V0e7q+sLaH4Ul3N2wa8SZDQ
+         BimA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y2DHnDO22YqXsXeeLtUzFhSLKp3spjaHgmh9Z0w22wE=;
-        b=g8DKLRVxoHjwYebu8kLsWfegfCy1SyxKfULIuKVKt/0k6DvEfbcuqkzzauzE5J7vxA
-         LQ9JctIhVkL3hapq2/dyuYlOKSBhND2MLOmaiqVXh7KckgmfIgmEsczPaZnfjVcbkGZv
-         7sSNKTdMKCfxH0nyX/LtD6QYvktdxahfyQ0qiNz3jy5x4/Cev/Zg9EHZJHYXWZuxCyoT
-         EuiRe4UafHPmlL5QCxMpgCWn16ZWPaFvOlehAnutXQbbwFDj8YfvOOU94T7fgJYRh3lG
-         xQlksZK7mkxDoak2AlBDT5SN2rDpO2PdBzQF/H1hUzFNZEQ93BwhlkK9AW86wMdq7yX+
-         6KxA==
-X-Gm-Message-State: AOAM532WqQ186EUB3MwVc5euJ52vbjFKJTGikNVgyzT89vQNKT8SLLdI
-        OzELiS/E3Z/qGgaYqs4RuIc=
-X-Google-Smtp-Source: ABdhPJxAktE2IHu/2kusi+pGfUT4k9rc87m70DsVtpGiIrNA2FEc7+pl7kFxP7BMho0fzIb1D3VAMg==
-X-Received: by 2002:aa7:d84f:: with SMTP id f15mr9558676eds.216.1626445123594;
-        Fri, 16 Jul 2021 07:18:43 -0700 (PDT)
-Received: from localhost.localdomain ([5.176.51.215])
-        by smtp.gmail.com with ESMTPSA id a4sm385132ejr.101.2021.07.16.07.18.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 07:18:43 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 17:18:37 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in profile_init
-Message-ID: <20210716171837.69bcc1b6@gmail.com>
-In-Reply-To: <949a12a0-a0a6-0574-4e87-4ed196ff6d78@i-love.sakura.ne.jp>
-References: <000000000000610af005c714c1d1@google.com>
-        <20210716152440.368d4250@gmail.com>
-        <949a12a0-a0a6-0574-4e87-4ed196ff6d78@i-love.sakura.ne.jp>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WVnjG/+uXUwA1TsIYDH7nvmxJ4xBCgnrB5THQ+2D+qg=;
+        b=Zz298QfvpMxHJK5Dh69G6QmlIjVNMb6BRdCzP1HCrXmJwqf+HwMAjv72/q37T3yGIA
+         3SeLhO+YfXU4XsCFE69e0/yGtmXUc2yYQ5UfHH/O0VTbZKhJPi++f52tCyH0kAmB1tjZ
+         2h8t99Yr0GiLt3isJRxWnCEo2Ufe4msn28NvOxBQGioO3dTQ2W0FfMBosatFP0g/KV+E
+         R1cnseZmXJPWs0YGBn6NS84xCEm7UF3MsFz/IxWOQX6EgX0PAi38Ik/yuqbQQk+eB6Bl
+         mzfB1/QpGjsA8ERlUFQ3Xrp74Mw5l7pvV+NuNf2OP07eUsxqCowPTEgNhY+0UA5vdcHJ
+         +FEw==
+X-Gm-Message-State: AOAM531NmekTHaAYEDWtwTWZZXdZ2d/puHrrw+yWmlwhYHMS8/k7XgWV
+        Z6b/RIrz05r2X62+eEIM6/GeW7kzPzisjU3nM7A=
+X-Google-Smtp-Source: ABdhPJygEwGSx9s3w6+u2tEOsbZsFudYTpHorAQs8Gk+4jNB+JVE/ct8b5iIt+4v78W81rYNoXL/E0IMnrB342JNBR4=
+X-Received: by 2002:adf:ce83:: with SMTP id r3mr12829270wrn.204.1626445543092;
+ Fri, 16 Jul 2021 07:25:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210715141802.880911-1-daniel.baluta@oss.nxp.com>
+ <20210715141802.880911-4-daniel.baluta@oss.nxp.com> <CAL_Jsq+r0Tw46=iW8etyR9H=V7M+sE=dguqsEMm3R4B=Xg=qSA@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+r0Tw46=iW8etyR9H=V7M+sE=dguqsEMm3R4B=Xg=qSA@mail.gmail.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Fri, 16 Jul 2021 17:25:31 +0300
+Message-ID: <CAEnQRZCLMSKJfDVP0U4Wdy6+9ZfhRBschG5RyiPHWMcUpbut_w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] dt-bindings: dsp: fsl: Document newly introduced fsl,properties
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 23:10:25 +0900
-Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
+On Thu, Jul 15, 2021 at 5:59 PM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Thu, Jul 15, 2021 at 8:18 AM Daniel Baluta <daniel.baluta@oss.nxp.com> wrote:
+> >
+> > From: Daniel Baluta <daniel.baluta@nxp.com>
+> >
+> > Document firmware-name, tplg-name and machine-drv-name properties.
+>
+> That's obvious from the diff.
+>
+> Why do you need these?
+>
+> >
+> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > ---
+> >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 20 +++++++++++++++++++
+> >  1 file changed, 20 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > index 7afc9f2be13a..8095aa178e7c 100644
+> > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > @@ -60,6 +60,22 @@ properties:
+> >        used by DSP (see bindings/reserved-memory/reserved-memory.txt)
+> >      maxItems: 1
+> >
+> > +  firmware-name:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    description:
+> > +      If present, name of the file within the firmware search path containing
+> > +      the DSP firmware loaded by SOF at DSP boot time.
+> > +
+> > +  tplg-name:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    description:
+> > +      Should contain the audio topology file name loaded by SOF driver.
+>
+> Is this some format the DSP requires? Why do we need a separate file?
+> This is defined by the board or user config?
 
-> On 2021/07/16 21:24, Pavel Skripkin wrote:
-> > But this function can be called not only from sysfs and I can't
-> > understand will my patch break something or not. And, I think, error
-> > message is needed somewhere here to inform callers about wrong shift
-> > value.
-> > 
-> > 
-> > Thoughts?
-> 
-> Subsequent profiling_store() attempts will return -EEXIST if
-> profile_setup() once set prof_on to non-zero value. Therefore,
-> if you try to return -EINVAL when profile_setup() returns 0,
-> you need to make sure that prof_on is set to non-zero value
-> only if prof_shift is valid.
-> 
-> But, the userspace might not be aware of the value of MAX_PROF_SHIFT
-> because it is an architecture dependent value, and par might become
-> negative value because get_option() accepts negative value.
-> Therefore, it might be better to
-> 
-> +		par = clamp(par, 0, MAX_PROF_SHIFT - 1);
-> 
-> than
-> 
-> +		if (par < 0 || par >= MAX_PROF_SHIFT)
-> +			return 0;
-> 
-> .
-> 
+This is not specific to DSP but to ALSA (See ALSA topology [1]).
 
-Yes, this sounds much better, thank you. I will send reworked patch to
-syzbot. Do you mind if I add 
+We need the .tplg file in order to describe the support Audio scenario
+by our board.
 
-Suggested-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+This could be defined both by:
 
-tag to final patch?
+board:
+- e.g our CPU board can have a baseboard attached (so the audio
+scenario changes).
+user config:
+- e.g user wants to enable post processing or any audio component.
 
+I couldnt find a good way to specify this except via DTS. Intel folks
+derive this information from ACPI tables.
 
-
-With regards,
-Pavel Skripkin
+[1] https://www.alsa-project.org/wiki/ALSA_topology
