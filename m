@@ -2,116 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E583CB7A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453F03CB78A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239751AbhGPNCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
+        id S239582AbhGPM4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238357AbhGPNCj (ORCPT
+        with ESMTP id S239459AbhGPM4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:02:39 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DA009C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:59:43 -0700 (PDT)
+        Fri, 16 Jul 2021 08:56:50 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A147CC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:53:54 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id x19so5138281ljc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:53:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=gJp4uhng6XGVh1uI3SPMRc8jBI7zlJyUgu
-        K1yat+0f0=; b=ozyYhWN6GNm0z7GokalWRwG7MuILvu2vif8zkh6MgHQOnB1dql
-        l/1zhj9SIQ8sq2cAr0wmNfAOPhCXwWjMia+eA1A16PfkW4AVzrOnm8E0iLIvJfPC
-        PyUsiT6J6bUCRlxVSaLCRlGzUKo6Wf2usLIFhKWaRq/lJDvENHrt8zOZY=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3t2CwgvFg14l7AA--.1243S2;
-        Fri, 16 Jul 2021 20:59:28 +0800 (CST)
-Date:   Fri, 16 Jul 2021 20:53:32 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Tong Tiangen <tongtiangen@huawei.com>, <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
-Message-ID: <20210716205332.5856df78@xhacker>
-In-Reply-To: <87pmvjtumc.fsf@igel.home>
-References: <20210621032855.130650-1-tongtiangen@huawei.com>
-        <87pmvjtumc.fsf@igel.home>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qIXbeXJh4xnnEzuHiviZSGnyTwYzRolVv7/vAGelNEs=;
+        b=q2rZp/6nSgaheqyIunCgxYXSuuGtsUM9Kxe6YSWEUSVa8m4HR9M550GEna0DbKCld4
+         NFPhETlg88j3zKUvUNJDQOTs9OOrvzJ0Yw31Ft7lIDvZh46LIN8B/QDdymrB+R9kngdn
+         iSMvIHQIPlRnh7vjcM0rRipTcoWTZJwTCricYH6j1WyYW9QfHw6qR35NAiyKmfiJbU4p
+         B+YdqUrrl5oWJQr//Rlq8MFhObpPHhitazQ7PMXwAAYBHlTNyhcDe0mdAwmfbrYyviTv
+         +msCwjHytPxKeR4FGfbgaX4epcky1MgE3ET35AyE9x2OEs1ysmWcNyKsAKwWIHDeX0Sl
+         9qFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qIXbeXJh4xnnEzuHiviZSGnyTwYzRolVv7/vAGelNEs=;
+        b=Kl4BdJM0aSbc28G3uMofElhHsNE1msDnj7A+ACcFWf7D/7+P6BAUZJ1FL83ossFoda
+         McIVu+913AkFh5NN/6HFfxmnxYohjIE1mzAI2CRx90fi09q7UZBSqX7ounWZqTI4/oS/
+         AluPfvkuqdtRk7Duh/3UcAneRlnowEKYPLl50D3Jj3Rxcp2jqryubqx4KCtn7GlYZfaN
+         XCyw8ItTkuOQcAmUo7BD45EpmLSiV3/ufDpUqN6Zq/88ZSlNgm+znqtVB/0mhwl7f8N/
+         TszItU+YaQLJ9yi4OmaMqyPMy5ahTT+L9HUQefLoYJaFTnzQpAF23y12lUnYbAjN1J+R
+         P5zw==
+X-Gm-Message-State: AOAM530rTRr5qzESnKISf3AQnLMO7P29EeWxiAleaYD/QW2PCGcLF+l3
+        05S354a8BXNd0XypJ53r9aA/zeFWvciYMppP04wJ+0mpDcX22dNRkMA2ZA==
+X-Google-Smtp-Source: ABdhPJz6XvfF9zHYInIIdr4DqTpU+AALXgxYTbgQHJoS1YdKtGx6AiJE1OQvdOZmYfk51pX27uPsiE/B8leffF7w82w=
+X-Received: by 2002:a2e:b8cc:: with SMTP id s12mr9033565ljp.66.1626440032739;
+ Fri, 16 Jul 2021 05:53:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygA3t2CwgvFg14l7AA--.1243S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw1fAr4xXw4fZw15Jr47urg_yoW5Xw1fpr
-        yUXr1UCa10vr17Ar1rAr1rJr1UXry7Aa4UJr1xJr15CF1Uuw1kXrykJa1xGr1DZw1rAF17
-        Jr1DXws7Kr47Gw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
-        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8fwIDUUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+References: <20210715170011.GA17324@lst.de> <20210716083934.154992-1-rm.skakun@gmail.com>
+ <20210716093551.GA17981@lst.de>
+In-Reply-To: <20210716093551.GA17981@lst.de>
+From:   Roman Skakun <rm.skakun@gmail.com>
+Date:   Fri, 16 Jul 2021 15:53:41 +0300
+Message-ID: <CADu_u-OYA+Z_y-DBLxyUYGhmLVMtLggmZ_SnRiEtw9EGrO4oGg@mail.gmail.com>
+Subject: Re: [PATCH v2] dma-mapping: use vmalloc_to_page for vmalloc addresses
+To:     Christoph Hellwig <hch@lst.de>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
+        Andrii Anisov <andrii_anisov@epam.com>,
+        Roman Skakun <Roman_Skakun@epam.com>,
+        Roman Skakun <rm.skakun@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+> Technically this looks good.  But given that exposing a helper
+> that does either vmalloc_to_page or virt_to_page is one of the
+> never ending MM discussions I don't want to get into that discussion
+> and just keep it local in the DMA code.
+>
+> Are you fine with me applying this version?
 
-On Thu, 15 Jul 2021 18:22:19 +0200
-Andreas Schwab <schwab@linux-m68k.org> wrote:
+Looks good to me, thanks!
+But, Stefano asked me about using created helper in the
+xen_swiotlb_free_coherent()
+and I created a patch according to this mention.
 
-> On Jun 21 2021, Tong Tiangen wrote:
-> 
-> > This patch adds stack overflow detection to riscv, usable when
-> > CONFIG_VMAP_STACK=y.  
-> 
-> This breaks get_wchan:
+We can merge this patch and create a new one for
+xen_swiotlb_free_coherent() later.
 
-I can't reproduce the panic error. Mind to share your .config?
+=D0=BF=D1=82, 16 =D0=B8=D1=8E=D0=BB. 2021 =D0=B3. =D0=B2 12:35, Christoph H=
+ellwig <hch@lst.de>:
+>
+> Technically this looks good.  But given that exposing a helper
+> that does either vmalloc_to_page or virt_to_page is one of the
+> never ending MM discussions I don't want to get into that discussion
+> and just keep it local in the DMA code.
+>
+> Are you fine with me applying this version?
+>
+> ---
+> From 40ac971eab89330d6153e7721e88acd2d98833f9 Mon Sep 17 00:00:00 2001
+> From: Roman Skakun <Roman_Skakun@epam.com>
+> Date: Fri, 16 Jul 2021 11:39:34 +0300
+> Subject: dma-mapping: handle vmalloc addresses in
+>  dma_common_{mmap,get_sgtable}
+>
+> xen-swiotlb can use vmalloc backed addresses for dma coherent allocations
+> and uses the common helpers.  Properly handle them to unbreak Xen on
+> ARM platforms.
+>
+> Fixes: 1b65c4e5a9af ("swiotlb-xen: use xen_alloc/free_coherent_pages")
+> Signed-off-by: Roman Skakun <roman_skakun@epam.com>
+> Reviewed-by: Andrii Anisov <andrii_anisov@epam.com>
+> [hch: split the patch, renamed the helpers]
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  kernel/dma/ops_helpers.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
+> index 910ae69cae77..af4a6ef48ce0 100644
+> --- a/kernel/dma/ops_helpers.c
+> +++ b/kernel/dma/ops_helpers.c
+> @@ -5,6 +5,13 @@
+>   */
+>  #include <linux/dma-map-ops.h>
+>
+> +static struct page *dma_common_vaddr_to_page(void *cpu_addr)
+> +{
+> +       if (is_vmalloc_addr(cpu_addr))
+> +               return vmalloc_to_page(cpu_addr);
+> +       return virt_to_page(cpu_addr);
+> +}
+> +
+>  /*
+>   * Create scatter-list for the already allocated DMA buffer.
+>   */
+> @@ -12,7 +19,7 @@ int dma_common_get_sgtable(struct device *dev, struct s=
+g_table *sgt,
+>                  void *cpu_addr, dma_addr_t dma_addr, size_t size,
+>                  unsigned long attrs)
+>  {
+> -       struct page *page =3D virt_to_page(cpu_addr);
+> +       struct page *page =3D dma_common_vaddr_to_page(cpu_addr);
+>         int ret;
+>
+>         ret =3D sg_alloc_table(sgt, 1, GFP_KERNEL);
+> @@ -32,6 +39,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_=
+struct *vma,
+>         unsigned long user_count =3D vma_pages(vma);
+>         unsigned long count =3D PAGE_ALIGN(size) >> PAGE_SHIFT;
+>         unsigned long off =3D vma->vm_pgoff;
+> +       struct page *page =3D dma_common_vaddr_to_page(cpu_addr);
+>         int ret =3D -ENXIO;
+>
+>         vma->vm_page_prot =3D dma_pgprot(dev, vma->vm_page_prot, attrs);
+> @@ -43,7 +51,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_=
+struct *vma,
+>                 return -ENXIO;
+>
+>         return remap_pfn_range(vma, vma->vm_start,
+> -                       page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgo=
+ff,
+> +                       page_to_pfn(page) + vma->vm_pgoff,
+>                         user_count << PAGE_SHIFT, vma->vm_page_prot);
+>  #else
+>         return -ENXIO;
+> --
+> 2.30.2
+>
 
-Thanks in advance
 
-> 
-> [   65.609696] Unable to handle kernel paging request at virtual address ffffffd0003bbde8
-> [   65.610460] Oops [#1]
-> [   65.610626] Modules linked in: virtio_blk virtio_mmio rtc_goldfish btrfs blake2b_generic libcrc32c xor raid6_pq sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua efivarfs
-> [   65.611670] CPU: 2 PID: 1 Comm: systemd Not tainted 5.14.0-rc1-1.g34fe32a-default #1 openSUSE Tumbleweed (unreleased) c62f7109153e5a0897ee58ba52393ad99b070fd2
-> [   65.612334] Hardware name: riscv-virtio,qemu (DT)
-> [   65.613008] epc : get_wchan+0x5c/0x88
-> [   65.613334]  ra : get_wchan+0x42/0x88
-> [   65.613625] epc : ffffffff800048a4 ra : ffffffff8000488a sp : ffffffd00021bb90
-> [   65.614008]  gp : ffffffff817709f8 tp : ffffffe07fe91b80 t0 : 00000000000001f8
-> [   65.614411]  t1 : 0000000000020000 t2 : 0000000000000000 s0 : ffffffd00021bbd0
-> [   65.614818]  s1 : ffffffd0003bbdf0 a0 : 0000000000000001 a1 : 0000000000000002
-> [   65.615237]  a2 : ffffffff81618008 a3 : 0000000000000000 a4 : 0000000000000000
-> [   65.615637]  a5 : ffffffd0003bc000 a6 : 0000000000000002 a7 : ffffffe27d370000
-> [   65.616022]  s2 : ffffffd0003bbd90 s3 : ffffffff8071a81e s4 : 0000000000003fff
-> [   65.616407]  s5 : ffffffffffffc000 s6 : 0000000000000000 s7 : ffffffff81618008
-> [   65.616845]  s8 : 0000000000000001 s9 : 0000000180000040 s10: 0000000000000000
-> [   65.617248]  s11: 000000000000016b t3 : 000000ff00000000 t4 : 0c6aec92de5e3fd7
-> [   65.617672]  t5 : fff78f60608fcfff t6 : 0000000000000078
-> [   65.618088] status: 0000000000000120 badaddr: ffffffd0003bbde8 cause: 000000000000000d
-> [   65.618621] [<ffffffff800048a4>] get_wchan+0x5c/0x88
-> [   65.619008] [<ffffffff8022da88>] do_task_stat+0x7a2/0xa46
-> [   65.619325] [<ffffffff8022e87e>] proc_tgid_stat+0xe/0x16
-> [   65.619637] [<ffffffff80227dd6>] proc_single_show+0x46/0x96
-> [   65.619979] [<ffffffff801ccb1e>] seq_read_iter+0x190/0x31e
-> [   65.620341] [<ffffffff801ccd70>] seq_read+0xc4/0x104
-> [   65.620633] [<ffffffff801a6bfe>] vfs_read+0x6a/0x112
-> [   65.620922] [<ffffffff801a701c>] ksys_read+0x54/0xbe
-> [   65.621206] [<ffffffff801a7094>] sys_read+0xe/0x16
-> [   65.621474] [<ffffffff8000303e>] ret_from_syscall+0x0/0x2
-> [   65.622169] ---[ end trace f24856ed2b8789c5 ]---
-> [   65.622832] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> 
-> Andreas.
-> 
-
-
+--=20
+Best Regards, Roman.
