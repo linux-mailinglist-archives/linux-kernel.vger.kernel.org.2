@@ -2,112 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E2E3CBA2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB983CBA22
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241073AbhGPP5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:57:43 -0400
-Received: from mout.gmx.net ([212.227.17.21]:36113 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235486AbhGPP5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:57:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626450862;
-        bh=ksXNeWjE9mhpCKojHZGUGRXqHprFXeYao0Gn/NsBK8U=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=i9P02b+kqG0pOmEn2zEjkJQdcLNp67BynztKujypNcVILLZ3O6Crhk6ucIGnpUceP
-         6MWHCw7leFwTBh0eV7ndUEr9Dv2lLVKbYIDCAY8Id0T0tD7KHxjoN1hGrcNvjXlx61
-         jxw49BlW3t9wHw7ft6RIycbUr1m3eXnHuvxITeug=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1M7sDq-1m0aQ32sx0-005368; Fri, 16 Jul 2021 17:54:21 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Yan-Hsuan Chuang <tony0620emma@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Stanislaw Gruszka <sgruszka@redhat.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Pkshih <pkshih@realtek.com>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH v2] rtw88: Fix out-of-bounds write
-Date:   Fri, 16 Jul 2021 17:53:11 +0200
-Message-Id: <20210716155311.5570-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S240780AbhGPP4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233725AbhGPP4a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:56:30 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1885C06175F;
+        Fri, 16 Jul 2021 08:53:31 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id z11so11190393iow.0;
+        Fri, 16 Jul 2021 08:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=yShQ0w4qzLoVnuPkOVdukVpyIyk/pCo4eKwDcVHu++E=;
+        b=qUSqXqr/51Qsk99OqBkZ1bu50pzl443gJ88idV65QHwFQXDybGkypN5TfGy/Xjt+TF
+         SBIpZQdWLPm6SgZjqzzpxr/i9Ndcs+9v/AZlRS6UAHPYv+ny132MYHTKvqppqv1ZGjqj
+         LPqRT4IhdeHDwAmetkXvhy3xs2PY30ZwdyZECeeoFi5j/Z6A6i5xilImoZjzqkQQRuZF
+         GrmTSmI6II7RXQXzoPoSErEAr/3XgxkkBc495fy0rFxPGToiM2JpKB5ErBHSfZjXl4Q3
+         R2Rt0oc9uRqLW0zN7mvL3nSUnzfdsZSOZFWNrK+fHL/CrxvrDvRtgkJCuYTMYOC6N7fT
+         P/MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=yShQ0w4qzLoVnuPkOVdukVpyIyk/pCo4eKwDcVHu++E=;
+        b=XztJ10ZAvhZ+9MgXaqiso67JPGLDcFu+1UgDzBq7sIqGHH5ZOKHwIP5uTL2ip4kuK+
+         +DCHCB1JNXNqHSZ5TqVRw1Luh+JP5wRQW7ZkkOb1FURyz9gzgvLpZbbbqALrRjk06Xo9
+         phidc3elyAAvsaxfTLZn8+TR6oRma/TskDxJeb92wkBEl1dl/4Yi+PBj+3152hhOHFb3
+         Ghug2kjU5tOiaSoVv71t/L6dcgLd5lXu7W7PRx4R5raWYj3KTbjDNpLJAQH+RaGnT6CX
+         r4dKlvkG8MhG669qXPW85rABFLggwk/rHF6kFiQ7KqqLJC99jiTzwBu1HlNDXpCnoYFI
+         T/qA==
+X-Gm-Message-State: AOAM533MO1VZ9v+l9ONSc1MMXRnurw5TGbAqFDry/3P8zUDWQh/pYIa1
+        bbWrpiNxPQJhNIulKulHNRyFyOs9KKvXUIOib6E=
+X-Google-Smtp-Source: ABdhPJxXIP3px6bE903QFzXiDL8FsSzF8D/Z+LKnJqHfKwdULQ3dBLvztnF9spyN0ub8f+zFBc2br/Wp1e0jwWWkBpY=
+X-Received: by 2002:a6b:c90f:: with SMTP id z15mr7703884iof.183.1626450810983;
+ Fri, 16 Jul 2021 08:53:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IjyohTEALGQ+L7Bvo6QDJsF/6QSuDrYezBtLbESGF0csYR5NTV1
- NHKHPwx93NIqHuaFGJK6Xxmba5c+bblv656SSXc3jYDWfZFLcyab2HAzJWRCp7PJKTP9UkV
- BoN9LXhGadp2OgHbRROuyjQWMzZ6FMCar3G+PvQy4AZiAoV2kPxoQaC8whYpst2wHD8zzME
- gt0E/C9LBYM1vHXPh+LDg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JiOZJXCc/74=:eaIqEpLHflGIBNOan0ZdFj
- KEiyJRXY+KkmJfWFBEho7QEAYeq0e+lL1VMPwfidouDM5RYQPirB1Rg8srgbdWCyJ+nFPKWJv
- cVz871PMUU4NW4gTox5hKHvgJVqDMbORETcFOKeWRD7cTcbvEDxrAKnDqfChvQ5Z0+edjj1MG
- M3RhzAOIpouLAuG92pK/TS4IJNxPa1ScE7SumPPNfQOJXwi910yZVJswAQrm+aB8ZHSOWh/X+
- B+mJTy68igW99BfQmzCPYOzMqq6XUtWDT0mFDOCvA8xD31jU1lRaSTxut1R4zdaMLxAFc6CIu
- 9prVs2ya8CBLgPdYvnW4xwBo8HZYERDZEk3QpwzWWNdrw4ClwuV5VF9dJvVzi88EKnnbEh1ZX
- nXATaRUVMuoavJa7jLaYNyXCcWJij1nR7vfJBMo7otLqHsIW81bwksxoPyCHoHOjwJnWYMFKD
- kLkOwEH/mokutu3fWlxqgXM4SG0BpSQdKGvBiIG4v2S6qV3Q+cFQmmj5xyq7oBHy2MsqH9lws
- AAMbRNgfNUzEFPrpPc6Io82oZsRD+SRlCAtxADxBweMyjtlabSvmz8MtUgIN3xp2IjQB9dz9+
- Cbml35Yqh4e8cPvjYm9GanlZD3wEGQln5YdDX8FOmzz11bxmvueXrNDTf8uvmvAD2LmPVsWuX
- 5dEqwKeJebuNVRhB8voIvOJ/jQ7kWA/os+8U89J0o9rRe5c2AJWBOitNdWRBY67RQez57Bi0w
- GPxpG/yP52e7TOJm99LnJEuBoyrhqNQ3x6zl4XLlLMdUXudjIWEUxpAO4SOvt0+BZByk2y+Ll
- LdZjRA8U4tu4/bqQx0IkPVmPHWkmckeXbKaxwYBfajJYYI+yy6se621PuEx8lFi6iOE8sli0e
- IEaZILITreJux6HiLlPIdrYB7ABg//82xa7y7jQ6lBKcvV41Wrb2TiabQOViP5d3tIsyxmnyR
- Z8NwNu27xO5dTKIRfhVtWXIK9jxESuO09+EO8nKCYKz6aOUVwI+hj4pM9slW8aTxl80f1ysTK
- V0TGNuuRoSE8wjNqZnd80hlE1fB8bLNTB7wPg9Wde8z/giYFzfTU5GeYLGj3HYQMUpamTbRAE
- yd1SLkk3a3GDxYJJbnMtPCt+GEhdUHw4Ymp
+References: <20210716050724.225041-1-hsiangkao@linux.alibaba.com>
+ <20210716050724.225041-2-hsiangkao@linux.alibaba.com> <YPGDZYT9OxdgNYf2@casper.infradead.org>
+ <YPGQB3zT4Wp4Q38X@B-P7TQMD6M-0146.local> <YPGbNCdCNXIpNdqd@casper.infradead.org>
+ <YPGfqLcSiH3/z2RT@B-P7TQMD6M-0146.local>
+In-Reply-To: <YPGfqLcSiH3/z2RT@B-P7TQMD6M-0146.local>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Fri, 16 Jul 2021 17:53:19 +0200
+Message-ID: <CAHpGcMJzEiJUbD=7ZOdH7NF+gq9MuEi8=ym34ay7QAm5_91s7g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iomap: support tail packing inline read
+To:     Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chao Yu <chao@kernel.org>, Liu Bo <bo.liu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the rtw_pci_init_rx_ring function the "if (len > TRX_BD_IDX_MASK)"
-statement guarantees that len is less than or equal to GENMASK(11, 0) or
-in other words that len is less than or equal to 4095. However the
-rx_ring->buf has a size of RTK_MAX_RX_DESC_NUM (defined as 512). This
-way it is possible an out-of-bounds write in the for statement due to
-the i variable can exceed the rx_ring->buff size.
+Am Fr., 16. Juli 2021 um 17:03 Uhr schrieb Gao Xiang
+<hsiangkao@linux.alibaba.com>:
+> On Fri, Jul 16, 2021 at 03:44:04PM +0100, Matthew Wilcox wrote:
+> > On Fri, Jul 16, 2021 at 09:56:23PM +0800, Gao Xiang wrote:
+> > > Hi Matthew,
+> > >
+> > > On Fri, Jul 16, 2021 at 02:02:29PM +0100, Matthew Wilcox wrote:
+> > > > On Fri, Jul 16, 2021 at 01:07:23PM +0800, Gao Xiang wrote:
+> > > > > This tries to add tail packing inline read to iomap. Different from
+> > > > > the previous approach, it only marks the block range uptodate in the
+> > > > > page it covers.
+> > > >
+> > > > Why?  This path is called under two circumstances: readahead and readpage.
+> > > > In both cases, we're trying to bring the entire page uptodate.  The inline
+> > > > extent is always the tail of the file, so we may as well zero the part of
+> > > > the page past the end of file and mark the entire page uptodate instead
+> > > > and leaving the end of the page !uptodate.
+> > > >
+> > > > I see the case where, eg, we have the first 2048 bytes of the file
+> > > > out-of-inode and then 20 bytes in the inode.  So we'll create the iop
+> > > > for the head of the file, but then we may as well finish the entire
+> > > > PAGE_SIZE chunk as part of this iteration rather than update 2048-3071
+> > > > as being uptodate and leave the 3072-4095 block for a future iteration.
+> > >
+> > > Thanks for your comments. Hmm... If I understand the words above correctly,
+> > > what I'd like to do is to cover the inline extents (blocks) only
+> > > reported by iomap_begin() rather than handling other (maybe)
+> > > logical-not-strictly-relevant areas such as post-EOF (even pages
+> > > will be finally entirely uptodated), I think such zeroed area should
+> > > be handled by from the point of view of the extent itself
+> > >
+> > >          if (iomap_block_needs_zeroing(inode, iomap, pos)) {
+> > >                  zero_user(page, poff, plen);
+> > >                  iomap_set_range_uptodate(page, poff, plen);
+> > >                  goto done;
+> > >          }
+> >
+> > That does work.  But we already mapped the page to write to it, and
+> > we already have to zero to the end of the block.  Why not zero to
+> > the end of the page?  It saves an iteration around the loop, it saves
+> > a mapping of the page, and it saves a call to flush_dcache_page().
+>
+> I completely understand your concern, and that's also (sort of) why I
+> left iomap_read_inline_page() to make the old !pos behavior as before.
+>
+> Anyway, I could update Christoph's patch to behave like what you
+> suggested. Will do later since I'm now taking some rest...
 
-However, this overflow never happens due to the rtw_pci_init_rx_ring is
-only ever called with a fixed constant of RTK_MAX_RX_DESC_NUM. But it is
-better to be defensive in this case and add a new check to avoid
-overflows if this function is called in a future with a value greater
-than 512.
+Looking forward to that for some testing; Christoph's version was
+already looking pretty good.
 
-Cc: stable@vger.kernel.org
-Addresses-Coverity-ID: 1461515 ("Out-of-bounds write")
-Fixes: e3037485c68ec ("rtw88: new Realtek 802.11ac driver")
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Changelog v1 -> v2
-- Remove the macro ARRAY_SIZE from the for loop (Pkshih, Brian Norris).
-- Add a new check for the len variable (Pkshih, Brian Norris).
+This code is a bit brittle, hopefully less so with the recent iop
+fixes on iomap-for-next.
 
- drivers/net/wireless/realtek/rtw88/pci.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> > > The benefits I can think out are 1) it makes the logic understand
+> > > easier and no special cases just for tail-packing handling 2) it can
+> > > be then used for any inline extent cases (I mean e.g. in the middle of
+> > > the file) rather than just tail-packing inline blocks although currently
+> > > there is a BUG_ON to prevent this but it's easier to extend even further.
+> > > 3) it can be used as a part for later partial page uptodate logic in
+> > > order to match the legacy buffer_head logic (I remember something if my
+> > > memory is not broken about this...)
+> >
+> > Hopefully the legacy buffer_head logic will go away soon.
+>
+> Hmmm.. I partially agree on this (I agree buffer_head is a legacy stuff
+> but...), considering some big PAGE_SIZE like 64kb or bigger, partial
+> uptodate can save I/O for random file read pattern in general (not mmap
+> read, yes, also considering readahead, but I received some regression
+> due to I/O amplification like this when I was at the previous * 2 company).
 
-diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wirele=
-ss/realtek/rtw88/pci.c
-index e7d17ab8f113..53dc90276693 100644
-=2D-- a/drivers/net/wireless/realtek/rtw88/pci.c
-+++ b/drivers/net/wireless/realtek/rtw88/pci.c
-@@ -273,6 +273,11 @@ static int rtw_pci_init_rx_ring(struct rtw_dev *rtwde=
-v,
- 		return -EINVAL;
- 	}
-
-+	if (len > ARRAY_SIZE(rx_ring->buf)) {
-+		rtw_err(rtwdev, "len %d exceeds maximum RX ring buffer\n", len);
-+		return -EINVAL;
-+	}
-+
- 	head =3D dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
- 	if (!head) {
- 		rtw_err(rtwdev, "failed to allocate rx ring\n");
-=2D-
-2.25.1
-
+Thanks,
+Andreas
