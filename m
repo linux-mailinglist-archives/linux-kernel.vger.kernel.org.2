@@ -2,72 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370F73CB47C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65703CB487
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238157AbhGPIiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:38:12 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45654 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237805AbhGPIiE (ORCPT
+        id S238076AbhGPIjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237998AbhGPIjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:38:04 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 3C1D71C0B82; Fri, 16 Jul 2021 10:35:08 +0200 (CEST)
-Date:   Fri, 16 Jul 2021 10:35:07 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/215] 5.10.51-rc1 review
-Message-ID: <20210716083507.GA21955@duo.ucw.cz>
-References: <20210715182558.381078833@linuxfoundation.org>
+        Fri, 16 Jul 2021 04:39:11 -0400
+Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E26C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 01:36:14 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id B0AFA18F;
+        Fri, 16 Jul 2021 10:36:11 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1XaCM_XW938B; Fri, 16 Jul 2021 10:36:11 +0200 (CEST)
+Received: from begin (unknown [90.96.30.46])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id F103D164;
+        Fri, 16 Jul 2021 10:36:10 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.94.2)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1m4JK4-0001iR-TD; Fri, 16 Jul 2021 10:35:52 +0200
+Date:   Fri, 16 Jul 2021 10:35:47 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     array@sonata.ens-lyon.org, initializers@sonata.ens-lyon.org,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        speakup@linux-speakup.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] speakup: use C99 syntax for array initializers
+Message-ID: <20210716083547.sm5uzd2wsklb65f5@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Colin King <colin.king@canonical.com>, array@sonata.ens-lyon.org,
+        initializers@sonata.ens-lyon.org,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        speakup@linux-speakup.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210715163122.62220-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210715163122.62220-1-colin.king@canonical.com>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spamd-Bar: --
+Authentication-Results: hera.aquilenet.fr
+X-Rspamd-Server: hera
+X-Rspamd-Queue-Id: B0AFA18F
+X-Spamd-Result: default: False [-2.50 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         HAS_ORG_HEADER(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         BAYES_HAM(-3.00)[100.00%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Colin King, le jeu. 15 juil. 2021 17:31:22 +0100, a ecrit:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The older obsolete array initializer syntax is currently being used
+> for some of the array elements. Fix this by using the preferred C99
+> array initializers syntax.
+> 
+> Fixes: 5b5140bf5182 ("speakup: Separate out translations for bright colors names")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-Hi!
-
-> This is the start of the stable review cycle for the 5.10.51 release.
-> There are 215 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-
-CIP testing did not find any problems here:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---uAKRQypu60I7Lcqm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYPFEuwAKCRAw5/Bqldv6
-8qI+AJ0bvvTDIC3/6pH+mZnnmwRyYtbstgCgnuHji7TbD2QuvpuT04H1EzaBJyM=
-=w7bq
------END PGP SIGNATURE-----
-
---uAKRQypu60I7Lcqm--
+> ---
+>  drivers/accessibility/speakup/i18n.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/accessibility/speakup/i18n.c b/drivers/accessibility/speakup/i18n.c
+> index bc7b47d1876f..d62079b1661f 100644
+> --- a/drivers/accessibility/speakup/i18n.c
+> +++ b/drivers/accessibility/speakup/i18n.c
+> @@ -90,13 +90,13 @@ static char *speakup_default_msgs[MSG_LAST_INDEX] = {
+>  	[MSG_COLOR_YELLOW] = "yellow",
+>  	[MSG_COLOR_WHITE] = "white",
+>  	[MSG_COLOR_GREY] = "grey",
+> -	[MSG_COLOR_BRIGHTBLUE] "bright blue",
+> -	[MSG_COLOR_BRIGHTGREEN] "bright green",
+> -	[MSG_COLOR_BRIGHTCYAN] "bright cyan",
+> -	[MSG_COLOR_BRIGHTRED] "bright red",
+> -	[MSG_COLOR_BRIGHTMAGENTA] "bright magenta",
+> -	[MSG_COLOR_BRIGHTYELLOW] "bright yellow",
+> -	[MSG_COLOR_BRIGHTWHITE] "bright white",
+> +	[MSG_COLOR_BRIGHTBLUE] = "bright blue",
+> +	[MSG_COLOR_BRIGHTGREEN] = "bright green",
+> +	[MSG_COLOR_BRIGHTCYAN] = "bright cyan",
+> +	[MSG_COLOR_BRIGHTRED] = "bright red",
+> +	[MSG_COLOR_BRIGHTMAGENTA] = "bright magenta",
+> +	[MSG_COLOR_BRIGHTYELLOW] = "bright yellow",
+> +	[MSG_COLOR_BRIGHTWHITE] = "bright white",
+>  
+>  	/* Names of key states. */
+>  	[MSG_STATE_DOUBLE] = "double",
+> -- 
+> 2.31.1
+> 
