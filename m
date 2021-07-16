@@ -2,161 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3922D3CBE33
+	by mail.lfdr.de (Postfix) with ESMTP id 86B5E3CBE34
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235110AbhGPVKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 17:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
+        id S235247AbhGPVKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 17:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234967AbhGPVKQ (ORCPT
+        with ESMTP id S235000AbhGPVKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 17:10:16 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0ABC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:07:20 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso11219334otu.10
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:07:20 -0700 (PDT)
+        Fri, 16 Jul 2021 17:10:19 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE191C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:07:23 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id b26so18184210lfo.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 14:07:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=student-cerritos-edu.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+KcxcljLGJIVJWS815GhZ8vwrKBLUZUCoehT4sKIick=;
-        b=QnfCOaF+t/airvvWleBWMXi4bMAV8F8C07l/T21uynV4up468L9W/0CdIOvo/1Ioa+
-         3Nq3QpfIdmG2aHxBU8+fchqhDTbq+QALYfwICHMMLDq2xDVmXKwD2p5A/zt1kpKgmcLR
-         3Rv9fl+CacqOqDy2bfRXC48IE+KHTvF2Fj0pDj4L+e0wif8olOH6OiHxTXNaS8IWhovm
-         srV6dFZmOAYSg23tqf7uOHyQWF/y5bZHWcW5dAlsRVqGgeI9zQQ+hdvMnRzy0XFHm7Yi
-         6uxumbS1rmq6jAdLTjZNdyULanX8BhvaeBdyZAj9dvJmJ+rB2bclMcsrAM+PV93H3FT1
-         /Ekg==
+        bh=MJRyYFKAYqm+yn00rwUN5F6a5qxYgmMcqrOvk4nFoJE=;
+        b=p5VnCQ1BlOzM71cFTAmWY2uPgdTfj+8qALddAR1y+rcNkZ8CNlZG/sVRkejbfRr23b
+         q8uxDEloWrK0TKds3jotZ8up+Xze/CianPF3pPzhyShRZyjWuoBaWuc4CLYBkdkSdPLg
+         jcT+RvkBdwSQo1K/5WcTaRlzKnZIDW2mIgwbw9ypHZjkg4180p6FqTikPyXWfxzcNZtt
+         15xKWLTDN3yjwTFW2VoaNmfcC4rvqYmWVPCOnn4NrIqqMP9bl5/BYpr0z4KY9r2vlsWx
+         iHxATDNMg91ASOtMgPXlAoMt6gLXZvWPfVvxHOEiY62+NQYwCjVMmnQJM0+FDyzHs1tN
+         JqoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+KcxcljLGJIVJWS815GhZ8vwrKBLUZUCoehT4sKIick=;
-        b=nJ/nyW9DOuM/jKXz5rQLRjg/wXHscvebY+MMzVLTSDeqoyQabSdAUhMgYHOdvjcGt0
-         D0k+cw9FpaYfWFHBELUzn2umtJ3aMANd6FGhjlGGmMLOTqIkU/YNGrPbgWqw6NNpyTp+
-         CaR6PTnKihL5INMwNCAXuSosJqOzsfQFMMQVOGSq0boN/sZLqg+mFzQfyHFwHKtHTydH
-         EyTl9Cw7x+3SlsHzKNmInchFrrKLRb8cf2FUsKtwhmK7MblAUnCMumqc144tS/JYFTBy
-         HEfLi2jQ4h778D+S64/+y1yRLlRPoIHqGJR3+zhPmgNAxBnh9zL6K5PrbFT0O4UQVOu7
-         cRNQ==
-X-Gm-Message-State: AOAM5324nAPaSw+K1g93JttGUaPGtzUaYFjEnS4An+rygIIQqMTv3yDR
-        iryL3RtcbQyYT/GGmVMtyQ8OANihZp/eZJy5io1BGg==
-X-Google-Smtp-Source: ABdhPJxZhcCMqABPArOjR6KxEAGcwcKS907SlOyiKyyWtfF7hMD1MQl52qvcSETXu2JFjm9Jid+Nc49wBRQrisucJHY=
-X-Received: by 2002:a9d:550e:: with SMTP id l14mr9890451oth.241.1626469639196;
- Fri, 16 Jul 2021 14:07:19 -0700 (PDT)
+        bh=MJRyYFKAYqm+yn00rwUN5F6a5qxYgmMcqrOvk4nFoJE=;
+        b=HG5OKgQ1mzZxNEMB/H5FXWC5fci8T+NkdEqlqccJT989ntGmGMLUgrw4jrlRxHdyg/
+         mSR4LK0dnCPrc0mcaQ5FAKe8t3p2UxJ1OHmfCB+yyKaMWb0YNwXnOhubZrhS1Eeid92Y
+         qSeDdE2UXeBwFIeptD1UTX6ySd48epbTsWjVFVtBpraU4AeWY6KGZr2oof2vUm9lzofA
+         hHcu7Fnv3/zv7aVagnezU0KHLcu5S8cC0wvu0CeJexqsDI6QM/Zda6NzEG6F+Tx1X18U
+         aFkT9CtGjGrHOqXuRcCRBqU07dBRPiADlgEN1Z2x+X8Ujmj2nQEysgwUTr2bPpyDkHWd
+         Sbjw==
+X-Gm-Message-State: AOAM531/ruBWrRhdRhtjE10Sal49BIyum7Eb7a8/1H2Q7ncx9kzzAXk/
+        vvLmK1p7Gpyq1OayV8PrveRVkwZEQ372iqMnyCWctA==
+X-Google-Smtp-Source: ABdhPJxuXwqGVBRGv2ZKNeaVa1819dOjyCnM6l3twrix4lWUZnGEAKUhHJZpzmLyjQBSNFND3EbGe/dL3wZM2GhId9Q=
+X-Received: by 2002:ac2:44dc:: with SMTP id d28mr9092633lfm.618.1626469642042;
+ Fri, 16 Jul 2021 14:07:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210716085325.10300-1-lingshan.zhu@intel.com>
- <CALMp9eSz6RPN=spjN6zdD5iQY2ZZDwM2bHJ2R4qWijOt1A_6aw@mail.gmail.com> <b6568241-02e3-faf6-7507-c7ad1c4db281@linux.intel.com>
-In-Reply-To: <b6568241-02e3-faf6-7507-c7ad1c4db281@linux.intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 16 Jul 2021 14:07:08 -0700
-Message-ID: <CALMp9eT48THXwEG23Kb0-QExyA8qZAtkXxrxc+6+pdvtvVVN0A@mail.gmail.com>
-Subject: Re: [PATCH V8 00/18] KVM: x86/pmu: Add *basic* support to enable
- guest PEBS via DS
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Zhu Lingshan <lingshan.zhu@intel.com>, peterz@infradead.org,
-        pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, joro@8bytes.org,
-        ak@linux.intel.com, wei.w.wang@intel.com, eranian@google.com,
-        liuxiangdong5@huawei.com, linux-kernel@vger.kernel.org,
-        x86@kernel.org, kvm@vger.kernel.org, like.xu.linux@gmail.com,
-        boris.ostrvsky@oracle.com
+References: <9b5902665dcc4c0fca7546987303e348d8657f59.1626383424.git.apark0006@student.cerritos.edu>
+ <202107161046.heIVRW8r-lkp@intel.com> <CAPOgqxHndN+3J-C7+38vLedhN2bhAasW9JRxf-rvt7gvVhD1rQ@mail.gmail.com>
+In-Reply-To: <CAPOgqxHndN+3J-C7+38vLedhN2bhAasW9JRxf-rvt7gvVhD1rQ@mail.gmail.com>
+From:   Amy Parker <apark0006@student.cerritos.edu>
+Date:   Fri, 16 Jul 2021 14:07:10 -0700
+Message-ID: <CAPOgqxHzhLt91N902NmWaVRO2RkmewWj9rJCdCt5qOrAjai+OQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] swap led_brightness from enum to typedef
+To:     kernel test robot <lkp@intel.com>
+Cc:     pavel@ucw.cz, kbuild-all@lists.01.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 12:00 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
+On Thu, Jul 15, 2021 at 8:11 PM Amy Parker
+<apark0006@student.cerritos.edu> wrote:
+>
+> Ah - I see there was an issue with header files not being properly updated.
+>
+> Check back for another patch resolving this.
 >
 >
->
-> On 7/16/2021 1:02 PM, Jim Mattson wrote:
-> > On Fri, Jul 16, 2021 at 1:54 AM Zhu Lingshan <lingshan.zhu@intel.com> wrote:
-> >>
-> >> The guest Precise Event Based Sampling (PEBS) feature can provide an
-> >> architectural state of the instruction executed after the guest instruction
-> >> that exactly caused the event. It needs new hardware facility only available
-> >> on Intel Ice Lake Server platforms. This patch set enables the basic PEBS
-> >> feature for KVM guests on ICX.
-> >>
-> >> We can use PEBS feature on the Linux guest like native:
-> >>
-> >>     # echo 0 > /proc/sys/kernel/watchdog (on the host)
-> >>     # perf record -e instructions:ppp ./br_instr a
-> >>     # perf record -c 100000 -e instructions:pp ./br_instr a
-> >>
-> >> To emulate guest PEBS facility for the above perf usages,
-> >> we need to implement 2 code paths:
-> >>
-> >> 1) Fast path
-> >>
-> >> This is when the host assigned physical PMC has an identical index as the
-> >> virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
-> >> This path is used in most common use cases.
-> >>
-> >> 2) Slow path
-> >>
-> >> This is when the host assigned physical PMC has a different index from the
-> >> virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0) In this case,
-> >> KVM needs to rewrite the PEBS records to change the applicable counter indexes
-> >> to the virtual PMC indexes, which would otherwise contain the physical counter
-> >> index written by PEBS facility, and switch the counter reset values to the
-> >> offset corresponding to the physical counter indexes in the DS data structure.
-> >>
-> >> The previous version [0] enables both fast path and slow path, which seems
-> >> a bit more complex as the first step. In this patchset, we want to start with
-> >> the fast path to get the basic guest PEBS enabled while keeping the slow path
-> >> disabled. More focused discussion on the slow path [1] is planned to be put to
-> >> another patchset in the next step.
-> >>
-> >> Compared to later versions in subsequent steps, the functionality to support
-> >> host-guest PEBS both enabled and the functionality to emulate guest PEBS when
-> >> the counter is cross-mapped are missing in this patch set
-> >> (neither of these are typical scenarios).
+> On Thu, Jul 15, 2021 at 7:15 PM kernel test robot <lkp@intel.com> wrote:
 > >
-> > I'm not sure exactly what scenarios you're ruling out here. In our
-> > environment, we always have to be able to support host-level
-> > profiling, whether or not the guest is using the PMU (for PEBS or
-> > anything else). Hence, for our *basic* vPMU offering, we only expose
-> > two general purpose counters to the guest, so that we can keep two
-> > general purpose counters for the host. In this scenario, I would
-> > expect cross-mapped counters to be common. Are we going to be able to
-> > use this implementation?
+> > Hi Amy,
 > >
+> > Thank you for the patch! Perhaps something to improve:
+> >
+> > [auto build test WARNING on linus/master]
+> > [also build test WARNING on v5.14-rc1 next-20210715]
+> > [cannot apply to pavel-linux-leds/for-next wireless-drivers-next/master wireless-drivers/master]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Amy-Parker/leds-change-led_brightness-definition-from-enum-to-typedef/20210716-052140
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git dd9c7df94c1b23feacd54112f33ad95d93f64533
+> > config: m68k-buildonly-randconfig-r006-20210715 (attached as .config)
+> > compiler: m68k-linux-gcc (GCC) 10.3.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://github.com/0day-ci/linux/commit/b14a971f1045205d49d9d001f33d33afdd8208f9
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Amy-Parker/leds-change-led_brightness-definition-from-enum-to-typedef/20210716-052140
+> >         git checkout b14a971f1045205d49d9d001f33d33afdd8208f9
+> >         # save the attached .config to linux build tree
+> >         mkdir build_dir
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash drivers/md/bcache/ drivers/media/v4l2-core/
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> >    In file included from drivers/media/v4l2-core/v4l2-flash-led-class.c:15:
+> > >> include/media/v4l2-flash-led-class.h:18:1: warning: useless type name in empty declaration
+> >       18 | led_brightness;
+> >          | ^~~~~~~~~~~~~~
+> >
+> >
+> > vim +18 include/media/v4l2-flash-led-class.h
+> >
+> >     14
+> >     15  struct led_classdev_flash;
+> >     16  struct led_classdev;
+> >     17  struct v4l2_flash;
+> >   > 18  led_brightness;
+> >     19
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 >
-> Let's say we have 4 GP counters in HW.
-> Do you mean that the host owns 2 GP counters (counter 0 & 1) and the
-> guest own the other 2 GP counters (counter 2 & 3) in your envirinment?
-> We did a similar implementation in V1, but the proposal has been denied.
-> https://lore.kernel.org/kvm/20200306135317.GD12561@hirez.programming.kicks-ass.net/
+>
+>
+> --
+> Amy Iris Parker
+> Please refer to me using she/her pronouns.
+> CIS Major
+> Dual Enrollment with WHS co2025
 
-It's the other way around. AFAIK, there is no architectural way to
-specify that only counters 2 and 3 are available, so we have to give
-the guest counters 0 and 1.
-
-> For the current proposal, both guest and host can see all 4 GP counters.
-> The counters are shared.
-
-I don't understand how that can work. If the host programs two
-counters, how can you give the guest four counters?
-
-> The guest cannot know the availability of the counters. It may requires
-> a counter (e.g., counter 0) which may has been used by the host. Host
-> may provides another counter (e.g., counter 1) to the guest. This is the
-> case described in the slow path. For this case, we have to modify the
-> guest PEBS record. Because the counter index in the PEBS record is 1,
-> while the guest perf driver expects 0.
-
-If we reserve counters 0 and 1 for the guest, this is not a problem
-(assuming we tell the guest it only has two counters). If we don't
-statically partition the counters, I don't see how you can ensure that
-the guest behaves as architected. For example, what do you do when the
-guest programs four counters and the host programs two?
-
-> If counter 0 is available, guests can use counter 0. That's the fast
-> path. I think the fast path should be more common even both host and
-> guest are profiling. Because except for some specific events, we may
-> move the host event to the counters which are not required by guest if
-> we have enough resources.
-
-And if you don't have enough resources?
+Another patch was sent into the list to correct this error.
