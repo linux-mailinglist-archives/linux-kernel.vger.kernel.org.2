@@ -2,63 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AF93CBA79
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0753CBA82
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhGPQWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:22:11 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:54243 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhGPQWD (ORCPT
+        id S229626AbhGPQ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhGPQ3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:22:03 -0400
-Received: by mail-il1-f198.google.com with SMTP id j6-20020a926e060000b02901f2f7ba704aso5623068ilc.20
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:19:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=v+hIPKfq8b1qkJLuVkwXm4/bmuwjWY8bFn96h7dTncU=;
-        b=h/UZlvz3NzdtKPsvgGqef9YxGPf2QrBKpA7t+BfqbPiIUXaF1sqvWEjfFE1ONQ/eho
-         XdHntuduT78tnfuaIlvALT9s2ibDSbAzr3GLx5IHTMQQ1qKXuV43Hj9X/ZlXUFEklFm/
-         0cn+x5lSqRJaRvfsROlUtbvep0y5bZh2enf8IdC6pRoKK/HtzU6Dl5H9GkApKwuOqx+a
-         lbqm6oRX1YFvMJ2gs5FOmpvbA2CFvQyacjT4ZXSWS7WW9nRb/hA56I7GIczLwN/c0eqZ
-         E133pT3Ceaf+v4qGE06E/bOEBvXLpYcbcsJBLgZPE5EBWgGMVgq/TriB3HeVcTMI7svT
-         pwWQ==
-X-Gm-Message-State: AOAM531UA9wiat6VFaCpWY04FICIPmZkvVP8CLpW/rBenEykMuyViZQL
-        hoYuPoIprJ0HsTeyXWSdtH0CkpkM95mNRHoLC4K+ggp3suO2
-X-Google-Smtp-Source: ABdhPJylTEqDxWuIsTvrtSmKuLkDyG2tSWKvCuHjV/dWGy3InHB0iO0BWwgPa5j0Q7PlNyd9PlBPrMcsSSfvcJw1tVZehhAjKAUg
+        Fri, 16 Jul 2021 12:29:23 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85E9C06175F;
+        Fri, 16 Jul 2021 09:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=BT3u5ZofuAHSdxMpV3wWSwl12UFAwfImxEpiJ4fE1TA=; b=GQk1Il8kjV3MxLqeHnE9MC83DN
+        +ghHzeT3iaF+vLczDq/vP8Z6zFRERcHTzk7C5zs3PAlOh882QdgRMy1mECabqB/SLusuhdOBweUbv
+        GO+ZJLsV7GZu1Ybh7Pfoc6wl0L+FfEdU1S8wHL4zxkjCJ4tHgzwSIQhkcpEPR7P5nJotCZYStIk3y
+        YDXVGhxQCAThyZCluVNa4GMmU3J0TkXim59Zv+tUP9zXzxbZ4ARCbMv/WS/aNpoSZVTZpoFotcTdA
+        LG6Pd9JQadPRYeMCHp7ABYCy3G/N40AehA1EeFrfKwowxFaULIwz+hf5mnfUKBmciJKGoPDFFIAmR
+        lPGL9xLA==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m4QfM-004rAm-6x; Fri, 16 Jul 2021 16:26:20 +0000
+Subject: Re: [PATCH v6 3/3] power: supply: mt6360_charger: add MT6360 charger
+ support
+To:     Gene Chen <gene.chen.richtek@gmail.com>, sre@kernel.org,
+        matthias.bgg@gmail.com, matti.vaittinen@fi.rohmeurope.com
+Cc:     broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        inux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <20210716094353.140536-1-gene.chen.richtek@gmail.com>
+ <20210716094353.140536-4-gene.chen.richtek@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c636cac0-defe-7bed-8428-818a52040d1b@infradead.org>
+Date:   Fri, 16 Jul 2021 09:26:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:dc4f:: with SMTP id x15mr7064318ilq.64.1626452348840;
- Fri, 16 Jul 2021 09:19:08 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 09:19:08 -0700
-In-Reply-To: <20210716165526.20e3c1a9@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007f348105c73ff207@google.com>
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in profile_init
-From:   syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, paskripkin@gmail.com,
-        penguin-kernel@I-love.SAKURA.ne.jp, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210716094353.140536-4-gene.chen.richtek@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi--
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+On 7/16/21 2:43 AM, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
+> 
+> Add basic support for the battery charger for MT6360 PMIC
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>  drivers/power/supply/Kconfig          |  11 +
+>  drivers/power/supply/Makefile         |   1 +
+>  drivers/power/supply/mt6360_charger.c | 867 ++++++++++++++++++++++++++
+>  3 files changed, 879 insertions(+)
+>  create mode 100644 drivers/power/supply/mt6360_charger.c
+> 
+> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+> index 11f5368e810e..81f02f8d4377 100644
+> --- a/drivers/power/supply/Kconfig
+> +++ b/drivers/power/supply/Kconfig
+> @@ -577,6 +577,17 @@ config CHARGER_MP2629
+>  	  Battery charger. This driver provides Battery charger power management
+>  	  functions on the systems.
+>  
+> +config CHARGER_MT6360
+> +	tristate "Mediatek MT6360 Charger Driver"
+> +	depends on MFD_MT6360
+> +	depends on REGULATOR
+> +	select LINEAR_RANGES
+> +	help
+> +	  Say Y here to enable MT6360 Charger Part.
+> +	  The device supports High-Accuracy Voltage/Current Regulation,
+> +	  Average Input Current Regulation, Battery Tempature Sensing,
 
-Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+	                                            Temperature
 
-Tested on:
+> +	  Over-Temperature Protection, DPDM Detection for BC1.2
+> +
+>  config CHARGER_QCOM_SMBB
+>  	tristate "Qualcomm Switch-Mode Battery Charger and Boost"
+>  	depends on MFD_SPMI_PMIC || COMPILE_TEST
 
-commit:         d936eb23 Revert "Makefile: Enable -Wimplicit-fallthrou..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7d53336580099d6
-dashboard link: https://syzkaller.appspot.com/bug?extid=e68c89a9510c159d9684
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16750fe2300000
 
-Note: testing is done by a robot and is best-effort only.
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+
