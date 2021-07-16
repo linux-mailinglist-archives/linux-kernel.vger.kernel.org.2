@@ -2,162 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD8E3CB541
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D023CB548
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233375AbhGPJ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbhGPJ2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:28:16 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F119BC06175F;
-        Fri, 16 Jul 2021 02:25:19 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id u15so10186692oiw.3;
-        Fri, 16 Jul 2021 02:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M3L6N/isUtLMNrxa1XCwVdqbDJYk3wmwipYc7UHIg30=;
-        b=r4+zxL8Ly1S8l0ZTRBbHhjuykg+E/jFwukwFh3ZLskQKJmd22UtiHt9e8Vrc4B/r1E
-         StnSypkfyxFZx/dILMKWn0jGTvuzX5X/Vf8Np9xiQsE0TiMRPZFjQisx7QQXlZL9Duk/
-         KXwqG2D4cf5WMWD+8ks9BTvFkTqg0X34U5ZTbw8Pmmky5S+tRtvNJJKJN9+yatdb5s0i
-         4nnTnwrvJKghJ4z3ARRSdRv2gp5YKVngkA5lzcrK65yF6Zn1sl+8nT+i+0RdxoKKRRKQ
-         JCIK93oHSE7ncCgx6BlwZp09fjFbXlB8kcmD0zPR8fQOKuxkxHIZg0VXPvJKTCVY8TV+
-         9MDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M3L6N/isUtLMNrxa1XCwVdqbDJYk3wmwipYc7UHIg30=;
-        b=XoscfH+ptbr5QKOb/JwR4JDr/VM7Yu4Pp0qiEAk+TIfaYVjtKnQbwsF01JIw9cB7dU
-         YrKIeaotCRZiJPK+FQcswO2CF1nCN9sU0CFoo5UiKCQeyBEzIX7sTaPJmZfZb5SSudyq
-         a4BK4VtRu7x/sAGG7zGgKCsw4VeUASJ6QxRrqTQ0SV/9IrfAHD+p+hvN4jXSMhgou/47
-         z3s9Etw0GrdvVteds50YeOb3Z9rjYs/CpkIZC3vcIkRPligckX3c1Zo5S8V9jGz9g35j
-         GHSTcP23gFlDBPlN9WKPREGsnVwxkhwtLzEPpRYH9JBO522OQvr2WRJj8uPZc3QWYimA
-         Y/uA==
-X-Gm-Message-State: AOAM531v5+y2yLT5F4Q5coudE1Njy9YmtFU9TOT7jN5b6vR8RS+CrVHR
-        gighozRKBDIo+inkHl2oyFK7WpLNBPQeTSZ6ee4=
-X-Google-Smtp-Source: ABdhPJxHyb8ANuJhmrB3GrlnpY3IjWqx4f3k/5MpMwr2A8uB+jRVB/RRadAnxqsI07492YshjiCdsR22hzW+eMENJfA=
-X-Received: by 2002:aca:1017:: with SMTP id 23mr1121001oiq.141.1626427519435;
- Fri, 16 Jul 2021 02:25:19 -0700 (PDT)
+        id S233763AbhGPJdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:33:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:54216 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233786AbhGPJdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 05:33:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626427805; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=QfX1cy6BRq8atEmaeOQYNQ5ZME2FA2z59j0zFsixeDI=; b=NnZu2hw7JchNjluXKqJGgcIusEzYCrMh4N7UUVUhRRV+4/hcGfuvuOoJ+LV7dr9d8kiWhVjx
+ NL5oiNi9eKwDAy8iONORmJOR8iTt0jRhlo9au8MvqME7zisEwTq0nslfKdsp1mZzF2cjf2eQ
+ DK6roMF4RRpGkCTLnUtePLsFkMM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60f1519c4815712f3a982b47 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Jul 2021 09:30:04
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 18BCBC43460; Fri, 16 Jul 2021 09:30:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.50.2.235] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2947CC433D3;
+        Fri, 16 Jul 2021 09:29:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2947CC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v3 1/2] PM / Domains: Add support for 'required-opps' to
+ set default perf state
+To:     ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
+        viresh.kumar@linaro.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net
+References: <1626412425-30715-1-git-send-email-rnayak@codeaurora.org>
+ <1626412425-30715-2-git-send-email-rnayak@codeaurora.org>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <60c91d5b-21d3-fed8-853d-c89bc08160d2@codeaurora.org>
+Date:   Fri, 16 Jul 2021 14:59:57 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210716064808.14757-1-guang.zeng@intel.com>
-In-Reply-To: <20210716064808.14757-1-guang.zeng@intel.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Fri, 16 Jul 2021 17:25:08 +0800
-Message-ID: <CANRm+Cy=ncU-H7duei5q+CG+pm-kXvG8N8CiUQavQ3OEpDj9eg@mail.gmail.com>
-Subject: Re: [PATCH 0/5] IPI virtualization support for VM
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Robert Hu <robert.hu@intel.com>, Gao Chao <chao.gao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1626412425-30715-2-git-send-email-rnayak@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 at 15:14, Zeng Guang <guang.zeng@intel.com> wrote:
->
-> Current IPI process in guest VM will virtualize the writing to interrupt
-> command register(ICR) of the local APIC which will cause VM-exit anyway
-> on source vCPU. Frequent VM-exit could induce much overhead accumulated
-> if running IPI intensive task.
->
-> IPI virtualization as a new VT-x feature targets to eliminate VM-exits
-> when issuing IPI on source vCPU. It introduces a new VM-execution
-> control - "IPI virtualization"(bit4) in the tertiary processor-based
-> VM-exection controls and a new data structure - "PID-pointer table
-> address" and "Last PID-pointer index" referenced by the VMCS. When "IPI
-> virtualization" is enabled, processor emulateds following kind of writes
-> to APIC registers that would send IPIs, moreover without causing VM-exits.
-> - Memory-mapped ICR writes
-> - MSR-mapped ICR writes
-> - SENDUIPI execution
->
-> This patch series implement IPI virtualization support in KVM.
->
-> Patches 1-3 add tertiary processor-based VM-execution support
-> framework.
->
-> Patch 4 implement interrupt dispatch support in x2APIC mode with
-> APIC-write VM exit. In previous platform, no CPU would produce
-> APIC-write VM exit with exit qulification 300H when the "virtual x2APIC
-> mode" VM-execution control was 1.
->
-> Patch 5 implement IPI virtualization related function including
-> feature enabling through tertiary processor-based VM-execution in
-> various scenario of VMCS configuration, PID table setup in vCPU creation
-> and vCPU block consideration.
->
-> Document for IPI virtualization is now available at the latest "Intel
-> Architecture Instruction Set Extensions Programming Reference".
->
-> Document Link:
-> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
->
-> We did experiment to measure average time sending IPI from source vCPU
-> to the target vCPU completing the IPI handling by kvm unittest w/ and
-> w/o IPI virtualization. When IPI virtualizatin enabled, it will reduce
-> 22.21% and 15.98% cycles comsuming in xAPIC mode and x2APIC mode
-> respectly.
->
-> KMV unittest:vmexit/ipi, 2 vCPU, AP runs without halt to ensure no VM
-> exit impact on target vCPU.
->
->                 Cycles of IPI
->                 xAPIC mode              x2APIC mode
->         test    w/o IPIv  w/ IPIv       w/o IPIv  w/ IPIv
->         1       6106      4816          4265      3768
->         2       6244      4656          4404      3546
->         3       6165      4658          4233      3474
->         4       5992      4710          4363      3430
->         5       6083      4741          4215      3551
->         6       6238      4904          4304      3547
->         7       6164      4617          4263      3709
->         8       5984      4763          4518      3779
->         9       5931      4712          4645      3667
->         10      5955      4530          4332      3724
->         11      5897      4673          4283      3569
->         12      6140      4794          4178      3598
->         13      6183      4728          4363      3628
->         14      5991      4994          4509      3842
->         15      5866      4665          4520      3739
->         16      6032      4654          4229      3701
->         17      6050      4653          4185      3726
->         18      6004      4792          4319      3746
->         19      5961      4626          4196      3392
->         20      6194      4576          4433      3760
->
-> Average cycles  6059      4713.1        4337.85   3644.8
-> %Reduction                -22.21%                 -15.98%
 
-Commit a9ab13ff6e (KVM: X86: Improve latency for single target IPI
-fastpath) mentioned that the whole ipi fastpath feature reduces the
-latency from 4238 to 3293 around 22.3% on SKX server, why your IPIv
-hardware acceleration is worse than software emulation? In addition,
-please post the IPI microbenchmark score w/ and w/o the
-patchset.(https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com),
-I found that the hardware acceleration is not always outstanding.
-https://lore.kernel.org/kvm/CANRm+Cx597FNRUCyVz1D=B6Vs2GX3Sw57X7Muk+yMpi_hb+v1w@mail.gmail.com
+On 7/16/2021 10:43 AM, Rajendra Nayak wrote:
+> Some devics within power domains with performance states do not
+> support DVFS, but still need to vote on a default/static state
+> while they are active. They can express this using the 'required-opps'
+> property in device tree, which points to the phandle of the OPP
+> supported by the corresponding power-domains.
+> 
+> Add support to parse this information from DT and then set the
+> specified performance state during attach and drop it on detach.
+> Also drop/set as part of runtime suspend/resume callbacks.
+> 
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>   drivers/base/power/domain.c | 29 ++++++++++++++++++++++++++++-
+>   include/linux/pm_domain.h   |  1 +
+>   2 files changed, 29 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index a934c67..eef5507 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -917,6 +917,10 @@ static int genpd_runtime_suspend(struct device *dev)
+>   	if (irq_safe_dev_in_no_sleep_domain(dev, genpd))
+>   		return 0;
+>   
+> +	/* Drop the default performance state */
+> +	if (dev_gpd_data(dev)->default_pstate)
+> +		dev_pm_genpd_set_performance_state(dev, 0);
+> +
+>   	genpd_lock(genpd);
+>   	gpd_data->rpm_pstate = genpd_drop_performance_state(dev);
+>   	genpd_power_off(genpd, true, 0);
+> @@ -937,6 +941,7 @@ static int genpd_runtime_resume(struct device *dev)
+>   {
+>   	struct generic_pm_domain *genpd;
+>   	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
+> +	unsigned int default_pstate = gpd_data->default_pstate;
+>   	struct gpd_timing_data *td = &gpd_data->td;
+>   	bool runtime_pm = pm_runtime_enabled(dev);
+>   	ktime_t time_start;
+> @@ -968,6 +973,9 @@ static int genpd_runtime_resume(struct device *dev)
+>   	if (ret)
+>   		return ret;
+>   
+> +	/* Set the default performance state */
+> +	if (default_pstate)
+> +		dev_pm_genpd_set_performance_state(dev, default_pstate);
+>    out:
+>   	/* Measure resume latency. */
+>   	time_start = 0;
+> @@ -1000,6 +1008,8 @@ static int genpd_runtime_resume(struct device *dev)
+>   	genpd_stop_dev(genpd, dev);
+>   err_poweroff:
+>   	if (!pm_runtime_is_irq_safe(dev) || genpd_is_irq_safe(genpd)) {
+> +		if (default_pstate)
+> +			dev_pm_genpd_set_performance_state(dev, 0);
+>   		genpd_lock(genpd);
+>   		gpd_data->rpm_pstate = genpd_drop_performance_state(dev);
+>   		genpd_power_off(genpd, true, 0);
+> @@ -2598,6 +2608,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
+>   
+>   	dev_dbg(dev, "removing from PM domain %s\n", pd->name);
+>   
+> +	/* Drop the default performance state */
+> +	if (dev_gpd_data(dev)->default_pstate) {
+> +		dev_pm_genpd_set_performance_state(dev, 0);
+> +		dev_gpd_data(dev)->default_pstate = 0;
+> +	}
+> +
+>   	for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
+>   		ret = genpd_remove_device(pd, dev);
+>   		if (ret != -EAGAIN)
+> @@ -2635,9 +2651,10 @@ static void genpd_dev_pm_sync(struct device *dev)
+>   static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>   				 unsigned int index, bool power_on)
+>   {
+> +	struct device_node *np;
+>   	struct of_phandle_args pd_args;
+>   	struct generic_pm_domain *pd;
+> -	int ret;
+> +	int ret, pstate;
+>   
+>   	ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
+>   				"#power-domain-cells", index, &pd_args);
+> @@ -2678,6 +2695,16 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>   	if (ret)
+>   		genpd_remove_device(pd, dev);
+>   
+> +	/* Set the default performance state */
+> +	np = base_dev->of_node;
+> +	if (of_parse_phandle(np, "required-opps", index)) {
+> +		pstate = of_get_required_opp_performance_state(np, index);
+> +		if (pstate > 0) {
+> +			dev_pm_genpd_set_performance_state(dev, pstate);
+> +			dev_gpd_data(dev)->default_pstate = pstate;
+> +		}
+> +	}
 
-    Wanpeng
+I realized this needs better error handling after I sent it out,
+I'll fix and respin.
+
+> +
+>   	return ret ? -EPROBE_DEFER : 1;
+>   }
+>   
+> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> index 21a0577..67017c9 100644
+> --- a/include/linux/pm_domain.h
+> +++ b/include/linux/pm_domain.h
+> @@ -198,6 +198,7 @@ struct generic_pm_domain_data {
+>   	struct notifier_block *power_nb;
+>   	int cpu;
+>   	unsigned int performance_state;
+> +	unsigned int default_pstate;
+>   	unsigned int rpm_pstate;
+>   	ktime_t	next_wakeup;
+>   	void *data;
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
