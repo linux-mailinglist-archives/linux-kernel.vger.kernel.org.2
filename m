@@ -2,148 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECE63CB001
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 02:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA713CAFD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 02:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbhGPAID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Jul 2021 20:08:03 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:34116 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbhGPAHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Jul 2021 20:07:03 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210716000407epoutp044026ce65c7b5ee451e8637cf074674ee~SHJZuWNMM1788217882epoutp04I
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 00:04:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210716000407epoutp044026ce65c7b5ee451e8637cf074674ee~SHJZuWNMM1788217882epoutp04I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1626393847;
-        bh=CRJRQe3m2+3RRcMgVVGpE5MfBuHe9Flf/VO5Hi9RlAM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VnSK90ALngp2O//2vS1PUbwmqdLIPw9X5ct6Sk2EAIRjddz8iUtIq5cIjn6YC6oS8
-         biYzEPfB3h2u2lyVT/5J9hdlkAmoiIPbujuFkmun1hanZeYEX1zuOqRY9CyveopN5D
-         +gNzt4p1dSz/DfG+rmw/Ky4Cs9JtkR/ZK52HJbkw=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210716000401epcas1p38c7686900985a80bc48ccfb74ade607f~SHJT617xd2760827608epcas1p3a;
-        Fri, 16 Jul 2021 00:04:01 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4GQs0b2N7Sz4x9QB; Fri, 16 Jul
-        2021 00:03:59 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9A.0E.13454.FECC0F06; Fri, 16 Jul 2021 09:03:59 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210716000357epcas1p33ac820775b679f429872e936195a7fb1~SHJQNVV9F1532815328epcas1p3R;
-        Fri, 16 Jul 2021 00:03:57 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210716000357epsmtrp29960d5c33c728224287236faac681f3d~SHJQMXQHZ1353413534epsmtrp2v;
-        Fri, 16 Jul 2021 00:03:57 +0000 (GMT)
-X-AuditID: b6c32a39-16fff7000002348e-df-60f0ccefe7a7
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D1.0B.08394.DECC0F06; Fri, 16 Jul 2021 09:03:57 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.89.31.111]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210716000357epsmtip246e0e7460953f5ade0496f8cfac5f212~SHJP6Lw0d1854418544epsmtip2l;
-        Fri, 16 Jul 2021 00:03:57 +0000 (GMT)
-From:   Namjae Jeon <namjae.jeon@samsung.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org
-Cc:     linux-cifsd-devel@lists.sourceforge.net, aurelien.aptel@gmail.com,
-        senozhatsky@chromium.org, sandeen@sandeen.net, willy@infradead.org,
-        hch@infradead.org, viro@zeniv.linux.org.uk,
-        ronniesahlberg@gmail.com, dan.carpenter@oracle.com, hch@lst.de,
-        christian@brauner.io, smfrench@gmail.com, hyc.lee@gmail.com,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH v6 13/13] MAINTAINERS: add ksmbd kernel server
-Date:   Fri, 16 Jul 2021 08:53:56 +0900
-Message-Id: <20210715235356.3191-14-namjae.jeon@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210715235356.3191-1-namjae.jeon@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0xTZxjOd87p6QHXcSzKvsCGpQYzcRRaaP1EcBJwO9kwYtzVoPSEngCh
-        t/SUMQlsLFNmgIE6DYJyiUygmAWG1ZUCk4CGkRErzE00cWQIEeV+EZxQWEtx27/ne97nfd7L
-        91K4uIn0p9L1Zs6kZ7VS0pu43rVdFjrVO60Ovz3tg7rHnEL01eRWNLZSSqBfT13CkOXKLQz9
-        MTglRKOrdhz9vboIUFt7D4F+s18k0fPSL9G3xbMCdOJuCGr98RKJxke7SPTgdBWJHM5uAVp6
-        fpHcK2acFTM4cyGvj2Bayh8Kmav1IUxr9RzGtN7PI5kTNqeQmRl5QDDF1gbAWGv+wpi55kCm
-        eXgCS3zlsDY6jWM1nEnC6VMMmnR9aoz0/UPJcclKVbg8VL4L7ZRK9KyOi5HGJySGvpOudQ0n
-        lXzGajNdVCLL89KwPdEmQ6aZk6QZeHOMlDNqtEZ5uFHGszo+U58qSzHoouTh4QqlS6nWpi0/
-        7RAYH1OfW8qOgzzgEBYALwrSkbDy5IqgAFCUmLYB2LalAHi74CyAj0pspOexAOC1wXriZcLl
-        s5VrWEy3A1jet/vfjLmuhjUnkt4Bl62b3ZpN9BE4YBvD3RqcLsDhyGAv5g740nvg+NUzwI0J
-        Ohj2Dt9Z40V0NLzx5BrmKbYFXmnqwN3Yy8U/6lkAbiNI91Jw4Pg93COKh0N1haQH+8Kn3db1
-        0fzh3GT7Op8Ff+l5sW6aA5sqfxa6G4V0BCwaNbshTm+HjfYwjyIItixVrLWG06/CyWdFAo9a
-        BE/miz2SYFjc37VuGAALvpleL8rAjqIFwrOSEgDHlweIUyCw/L8K1QA0AD/OyOtSOV5uVP7/
-        u5rB2umG7LKB0olpWSfAKNAJIIVLN4kuKybUYpGGPZbNmQzJpkwtx3cCpWt3p3H/zSkG1+3r
-        zclypSIiIgJFqnaqlBHS10QtZKdaTKeyZi6D44yc6WUeRnn552HVhe+pk8a3vZmj8tn/0dvN
-        8+8O8ZjqLkpQ6L4OSDX4NUmO6TbUnrPk+tycIufmay39PW3z1FDod4dgQE3FG0fDhiXK85ao
-        npGHusIf1IT/66KmJ4tejTkOZonKCM3yibZ7y/Z+D1/k59JMjTD/qGLRWX7wp6oaS50hiqoS
-        lClX/kxq/X3fhS/S486znxgff3zGL0iHns3sm6p2+N788OxbdwrJCrneujs2u+y+5tPII0Wi
-        W7GtWTGq7JzaVeNhipwUxAYn2CUbtlqzqxpL7t2u7w+i42ZbbtQON39QlxFdcW4wqTt+x/7h
-        7kVJlCOz3rBx44H43G19RoUlUHW9wzQiJfg0Vh6Cm3j2H2r8jcZDBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDLMWRmVeSWpSXmKPExsWy7bCSvO7bMx8SDE4cVLA4/vovu0XjO2WL
-        1/+ms1icnrCIyWLl6qNMFtfuv2e3ePF/F7PFz//fGS327D3JYnF51xw2ix/T6y16+z6xWrRe
-        0bLYvXERm8WbF4fZLG5NnM9mcf7vcVaL3z/msDkIefyd+5HZY3bDRRaPnbPusntsXqHlsXvB
-        ZyaP3Tcb2Dxad/xl9/j49BaLR9+WVYweWxY/ZPL4vEnOY9OTt0wBPFFcNimpOZllqUX6dglc
-        GX9eHWAteM5RsXJmC2MD43n2LkZODgkBE4mlU+axdDFycQgJ7GaU+LdgFTNEQlri2IkzQDYH
-        kC0scfhwMUTNB0aJLTd3MoLE2QS0Jf5sEQUpFxGIl7jZcBtsDrPAHGaJnRuPMIIkhAXsJN5s
-        ngRmswioSpx5coEJxOYVsJHY/3IrE8QueYnVGw6A7eUEij8++Q2sXkjAWmL9mg0sExj5FjAy
-        rGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECI4QLc0djNtXfdA7xMjEwXiIUYKDWUmE
-        d6nR2wQh3pTEyqrUovz4otKc1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamFof
-        f8qKFL7/wu3i1uMPVq/6d2B/wHV/Sa95/ew/muc/OeitxJYj3Whnpa/9c0or24Xs2N1PLqfI
-        lfbEqaY/LVRfPP9leMXOVfc0Js/6ceezXeL+h2L1bXEfne9+zX0pbBFjvpx9Zem3dJnOh7He
-        E969MAidcuv0r9SrLst2loj9X3v2zkaTQ6fkFdOK9ToVterO6Tw9Hb2/Okr60pLjB3esX2lV
-        UnHMUkxI2XBySo1oZPEd55tB61KONd6tX2Zy8qNe7uy2jav8fAo2WcT/dHzu/OnPwfZ134Rc
-        OdO9182YsOWlQXFM+MwrgS5eJ+cvUrC48SF051uBX3MELZ9kTRKav0TU2uaLyfXGjUx5WVeU
-        WIozEg21mIuKEwGY/21X/wIAAA==
-X-CMS-MailID: 20210716000357epcas1p33ac820775b679f429872e936195a7fb1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210716000357epcas1p33ac820775b679f429872e936195a7fb1
-References: <20210715235356.3191-1-namjae.jeon@samsung.com>
-        <CGME20210716000357epcas1p33ac820775b679f429872e936195a7fb1@epcas1p3.samsung.com>
+        id S232145AbhGPAEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Jul 2021 20:04:46 -0400
+Received: from mail-dm6nam10on2054.outbound.protection.outlook.com ([40.107.93.54]:64865
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230519AbhGPAEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Jul 2021 20:04:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zp1vtDjXLL1zYnIcXmo2yzStmwBDGV0MMCknLlHGCNIOpAR8/OaRLidh5nIYwRuVhywESf/MTwM2+8vPbmzPANChfEKTxBy/j5yKHbQ6TId9W646Cay+6gH+zTAajz2S7mqXHLBe7Af1hxXRm7H6eTAjtJRQtzKOYGYjidjs+wtn3vYOQunAXpT+AFhVPcHUKUbr8tMx9AUgKM8ksNu6qgZBiKDvtAAUjctXQYef9DfiyhO1juzRqYaOG8My+RpCR9B9tdPxEnf7FaJuPFEPlMtPXL1Y7wYtpr7u+5Lz5LU/Pp/6q+QLxMbM3DvjKzf4bJGUHPythnwAIkwYJVuuqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+RgC3Jkn/tvAzG34GUla3Tb03NxghbFzOnPVQ1AFzg=;
+ b=mvT6/XtnJeUVNB3p2bsopWGn82XSkqwHvp2MG8h+A9o1xXUGjBJtjZOLzEMGVtA57OKsBX5yWLaj04vBS2VZU1/s0zGaHbFxM8VZMaio4VYwTzhngEr7whvJruezW8hrgD1C5GXlPqIuWDr3Bg1y50cam54+BSmr1rOVVmIUGy1uS7E9t15Tbf4tFzgtYM2R3agsmPi6zo1nW8Piyuz6PC7M69Wv1oYD4IyYbCOcFUWGyhjMHrVroS9RJe6S6A3LHqcBQmCKecmjcGSEH7INZFYXL3e/jZ945CcyyLhn1ON8X/AYDNW6HNfn+6NCLX4288PXzdmRdWmqMmfIuyv8dw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=cmpxchg.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+RgC3Jkn/tvAzG34GUla3Tb03NxghbFzOnPVQ1AFzg=;
+ b=KqMQFsX1niLkwlcuRyvwwjhJ6rTLQMBEhvLRH2NVkkvx0SdMPcCHHASExb8svZZlmSupXpoAD9/c5BVc0RTuwaO5yIu0nbtv96hxVVRaVKb7Q3TlUGLQkIwFN40YYb/jV8BW2uPO7gX+L1wHEnTVMEHp81zqMvinhEmQtfYOsA+0vhWrdouf7UR9sY6EZmcp2kF/Uda5ryM3wHdB3dnVbispneihGAi9oYz+bySTeX4K2trEsASmiFmKVRIK01zDv4F3NTUrJCP5CwSy8TY6tKi+vaBkbFCsEilMmv6OBNxrApk2Y02mB0/A7PDvLeRoVQwMxMbfXTfwuZQV3RTBxQ==
+Received: from BN9PR03CA0873.namprd03.prod.outlook.com (2603:10b6:408:13c::8)
+ by MN2PR12MB3261.namprd12.prod.outlook.com (2603:10b6:208:108::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Fri, 16 Jul
+ 2021 00:01:46 +0000
+Received: from BN8NAM11FT025.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:13c:cafe::29) by BN9PR03CA0873.outlook.office365.com
+ (2603:10b6:408:13c::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Fri, 16 Jul 2021 00:01:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; cmpxchg.org; dkim=none (message not signed)
+ header.d=none;cmpxchg.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT025.mail.protection.outlook.com (10.13.177.136) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 00:01:46 +0000
+Received: from [10.2.84.248] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul
+ 2021 00:01:45 +0000
+Subject: Re: [PATCH 1/5] mm/vmscan: put the redirtied MADV_FREE pages back to
+ anonymous LRU list
+To:     Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Michal Hocko <mhocko@suse.com>, Yu Zhao <yuzhao@google.com>,
+        <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <vbabka@suse.cz>, <axboe@kernel.dk>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <apopple@nvidia.com>, <minchan@kernel.org>,
+        <david@redhat.com>, <shli@fb.com>, <hillf.zj@alibaba-inc.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210710100329.49174-1-linmiaohe@huawei.com>
+ <20210710100329.49174-2-linmiaohe@huawei.com>
+ <YOvtmy9ggJA4KUIQ@dhcp22.suse.cz>
+ <9409189e-44f7-2608-68af-851629b6d453@huawei.com>
+ <YO1dGvcTLaRJplRQ@dhcp22.suse.cz>
+ <ec86d902-1da5-2f49-7324-a796d32ac979@huawei.com>
+ <YO2WUx0a5go71Vhm@casper.infradead.org>
+ <b17caa5f-f3db-9fb0-fe1f-45510ff902c8@huawei.com>
+ <YO7PJCm+1zFPZZPS@casper.infradead.org>
+ <b7bb60b6-986d-02c5-e58a-d249c0185092@nvidia.com>
+ <0634e9d6-9fcc-e65f-dc5e-bed13004b8fe@huawei.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <a20a937e-da73-0aea-0373-36f01b3a6425@nvidia.com>
+Date:   Thu, 15 Jul 2021 17:01:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <0634e9d6-9fcc-e65f-dc5e-bed13004b8fe@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5d293b68-55ce-43df-6167-08d947ece74a
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3261:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3261067D2155307C3D3D1290A8119@MN2PR12MB3261.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V05whQushzShOjWVV18cCxMgXrxV6ktc3B9gKqv/w0B4csuACvmus0kh1UYb/qpK5boXXnRyv7puFjUGuJJ0XR6GQij8hLzZxpsNwoPIiE6Sgb4PW25e40sJhzqKQLtOYooyqMNncRt+0bcYVdlbZQMGldHilg72S32e7ONKPY09fuek7LBkCOyYkL6FsJNY1lDLlwz6YBfwfsMFf6+fUZUw+WLKDtvMpN9viPHPLym7IlarHrDaQOHxMa4qrLNDTjTzZe9iPlLdp+6d+m+cf5BkG6wyIka84/+Lx9we0WShzc+sS30eA/Oiyts8Vvbe70fX0HLrs1MTVfNMobH3r2MCM00BXOYdjgzDXiVF4y1SfhEfRzRnzz/Ep4ZYsGeuMehzRAvCnuARgDpKyHWRAyjgq+HGF1kxHoERTuEtcXpToVScFtc0p+x6cWHD5GCsKVA3t0Y8bMbnatDnCeXRlfXEEbKb5Gc36qtElBNYRhsJGPJZejfGi/FF+MEIraJp1JnS4ipt+gYcAkWYGFkKETh5Dloue6/dPcYvKFYPVysaCRJyaIzkOT2ohfdB5nG+vVVpK6vbdNxUJa9A+MB96v/VlTIac81d2+qSzgt8sRGQfNB/PM5x8xrNBtnLWVhJRej95XvcRa3SuYd6KGSdbMlq/aq3+AK6BbwCoDqZ+SZ9o6h6sNzj/1ICQhRZkaGdwv0YNYLfNQyyUhQ1fPOLp2XPS/GuYIP5pCMhN2HvKIwtYSf9iq0M1PisUeknacIdszSr47rekSI6ycf0fxcZzA==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(39860400002)(46966006)(36840700001)(2906002)(16576012)(36906005)(5660300002)(16526019)(4326008)(34020700004)(7636003)(8676002)(53546011)(47076005)(36860700001)(316002)(82310400003)(356005)(36756003)(2616005)(70206006)(8936002)(7416002)(478600001)(110136005)(186003)(426003)(31686004)(31696002)(26005)(54906003)(86362001)(336012)(83380400001)(82740400003)(70586007)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 00:01:46.6112
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d293b68-55ce-43df-6167-08d947ece74a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT025.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3261
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself, Steve French, Sergey Senozhatsky and Hyunchul Lee
-as ksmbd maintainer.
+On 7/15/21 4:30 AM, Miaohe Lin wrote:
+...
+>>>> So, it seems lockless GUP can redirty the MADV_FREE page. But is it ok to just release
+>>>> a redirtied MADV_FREE pages? Because we hold the last reference here and the page will
+>>>> be freed anyway...
+>>>
+>>> I don't see how lockless GUP can redirty the page.  It can grab the
+>>> refcount, thus making the refcount here two.  Then the call to freeze
+>>> here fails and the page stays on the list.  But the lockless GUP checks
+>>> the page is still in the page table (and discovers it isn't, so releases
+>>> the reference count).  Am I missing a path that lets lockless GUP dirty
+>>> the page?
+>>>
+>>
+>> If a device driver pins some pages using gup, and the device then uses dma
+>> to write to those pages, then you could get there. That story is part of the
+>> reasoning that led to creating pin_user_pages(), which btw does not yet
+>> fully solve that case.
+> 
+> Many thanks for your explanation.
+> So the similar scenario that is clarified in the __remove_mapping() is possible:
 
-Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Hyunchul Lee <hyc.lee@gmail.com>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I probably should have added that the scenario I was describing is broken even
+before any patches that you might apply here. I was just trying to ensure that
+the complete list of scenarios was known.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5779f6cacff7..e01a01c3e37c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10102,6 +10102,15 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git
- F:	Documentation/dev-tools/kselftest*
- F:	tools/testing/selftests/
- 
-+KERNEL SMB3 SERVER (KSMBD)
-+M:	Namjae Jeon <namjae.jeon@samsung.com>
-+M:	Sergey Senozhatsky <senozhatsky@chromium.org>
-+M:	Steve French <sfrench@samba.org>
-+M:	Hyunchul Lee <hyc.lee@gmail.com>
-+L:	linux-cifs@vger.kernel.org
-+S:	Maintained
-+F:	fs/ksmbd/
-+
- KERNEL UNIT TESTING FRAMEWORK (KUnit)
- M:	Brendan Higgins <brendanhiggins@google.com>
- L:	linux-kselftest@vger.kernel.org
+
+
+thanks,
 -- 
-2.17.1
-
+John Hubbard
+NVIDIA
