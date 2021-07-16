@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A693CB7FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5113CB802
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240001AbhGPNma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:42:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1138 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237892AbhGPNm1 (ORCPT
+        id S240028AbhGPNnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232849AbhGPNnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:42:27 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GDcHU2158384;
-        Fri, 16 Jul 2021 09:39:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=VTlL4My+pptoWKVEdXz4DaxKF7QUggPsp0oku3RLeP4=;
- b=TiVFDWAvqiOy8LiBwl/3I3BuVlESrA1V3X53z9m6xnFVkw4cabjzCxJTEA2B2Az9vjC7
- QGQlxdGTJCwVu4hCvdzIKr/dEaVoEdV+v5tpYF9QkA8IcSpIN9S4m88ekIweTeifHl0f
- peNZAArClO0zmIoYKyWzU7v94kFo9MPYFHFxqraEnOM545BFXqD5sGrY9FKdu3YH+yIq
- dW7W2HuHQObf1/o2Dqbew7PWgGq9I2OmsRYtv69Q/2UObbTQ4RGsaFkqfo2UKjL8k8Pz
- ICgzrxL26XNUcAqB6p4U1jYB0eP8SyFp0pnol/bfdD7VNxToVMnPUt+nnVd7b3riA7Kr Qw== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39twha5kc2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Jul 2021 09:39:29 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16GDWdhq032171;
-        Fri, 16 Jul 2021 13:39:28 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02dal.us.ibm.com with ESMTP id 39qt3etdt6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Jul 2021 13:39:28 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16GDdRSA34865422
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Jul 2021 13:39:27 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1EF636E054;
-        Fri, 16 Jul 2021 13:39:27 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B584C6E05D;
-        Fri, 16 Jul 2021 13:39:26 +0000 (GMT)
-Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.92.96])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Jul 2021 13:39:26 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-spi@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, broonie@kernel.org, openbmc@lists.ozlabs.org,
-        joel@jms.id.au, Eddie James <eajames@linux.ibm.com>
-Subject: [PATCH 2/2] dt-bindings: fsi: Remove ibm,fsi2spi-restricted compatible
-Date:   Fri, 16 Jul 2021 08:39:15 -0500
-Message-Id: <20210716133915.14697-3-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210716133915.14697-1-eajames@linux.ibm.com>
-References: <20210716133915.14697-1-eajames@linux.ibm.com>
+        Fri, 16 Jul 2021 09:43:13 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61D5C06175F;
+        Fri, 16 Jul 2021 06:40:18 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id s23so10968358oij.0;
+        Fri, 16 Jul 2021 06:40:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aqCY19jEVOzitR5f1hOTd+qW/pWsIpStMp1k5yIewx8=;
+        b=osgGfoJBPGNdPwWrsmE1GMbLbKpQ/LVRq+W5NXg/Hu+xyskpghgPDd6arWb2SzLy5Y
+         dPxMBYjOYlPZZTRuK0iKiFHHgowjcUtsSFxydq99onk1IPCfydJR5Bey98DVJHSJtxeP
+         X667y1ymHHd41ftTTzqjzA4Imn+OBFHabdkEU4VtXw+1/V1eeoYL8r8P65V8ieksCWug
+         3+YFBvFrLguo6Ho5xpzMB1WUX4NpZfoW+KaDnEtgpKoS9RKtTyIRc1ppMYTpWJgpTl2X
+         E+4MMpW0lLH0xNVSzQXpMKPzk+0puAaZywGKgkpSfyrQfi34VaLFvUhJRqjBf3Gc48Ng
+         0tfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aqCY19jEVOzitR5f1hOTd+qW/pWsIpStMp1k5yIewx8=;
+        b=tQBl2EAQFVA1TxNcKx6xNyjhRp88m+xhsH25K7rwLYMU1uVVhLnTydF3yJAG8kNxJX
+         ktFDvPfAZomdNTLU3XWlRE+PNoiW2Ou9vXcf2LM3BT2QXG/EF+VMxezSodPCxpUFdC08
+         i6FKu4j9kJmj61GaCZhCaiNEe+WMFeqKuGODHfeAWzt/od3tIK1n1vzRm13E6BYRmhrZ
+         Y6yX0Z6cgfP55CAHHkwymLpXXgl+6gMtrWOBSJN6dIn+HpB8t1yoaaWeYTD+GpQmN/fW
+         SZi8EbMqXPNTZGNm8pC2H7ip50rZExiT1cbAy7HM9rqYqyaL9AxAfWchmsBwj+QMpElQ
+         z+MQ==
+X-Gm-Message-State: AOAM531K9WwGuBzeYgeGP8tVr0+RC5MJfl+EQkmx3KQh+2RfzSryZCv/
+        0SbxHySAKHoi6SsKztjd3BSc9IC8gkc=
+X-Google-Smtp-Source: ABdhPJx0RmWoBIDXp1X5zxoHXYfyLzOXhNC32Rq2dzRr1rMv7pCanhK8Ml4X5tX6Ocg1tTkd8AZrKw==
+X-Received: by 2002:a05:6808:490:: with SMTP id z16mr11984275oid.89.1626442817868;
+        Fri, 16 Jul 2021 06:40:17 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s24sm798603ooq.37.2021.07.16.06.40.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 06:40:17 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 5.12 000/242] 5.12.18-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210715182551.731989182@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <dcc3c82c-a026-99c8-0342-b231665ec301@roeck-us.net>
+Date:   Fri, 16 Jul 2021 06:40:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AYx1D1w_qxwQDD4AerFjeQdAtLjTboJz
-X-Proofpoint-GUID: AYx1D1w_qxwQDD4AerFjeQdAtLjTboJz
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-16_04:2021-07-16,2021-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- bulkscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 adultscore=0
- phishscore=0 suspectscore=0 malwarescore=0 mlxlogscore=895 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107160082
+In-Reply-To: <20210715182551.731989182@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove this compatible string from the FSI SPI controller
-documentation, since the security restrictions have been
-universally applied to the controllers.
+On 7/15/21 11:36 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.18 release.
+> There are 242 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
+> Anything received after that time might be too late.
+> 
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- Documentation/devicetree/bindings/fsi/ibm,fsi2spi.yaml | 1 -
- 1 file changed, 1 deletion(-)
+Building s390:defconfig ... failed
+--------------
+Error log:
+/bin/sh: arch/s390/kernel/vdso64/gen_vdso_offsets.sh: Permission denied
+/bin/sh: arch/s390/kernel/vdso32/gen_vdso_offsets.sh: Permission denied
+...
 
-diff --git a/Documentation/devicetree/bindings/fsi/ibm,fsi2spi.yaml b/Documentation/devicetree/bindings/fsi/ibm,fsi2spi.yaml
-index e425278653f5..e2ca0b000471 100644
---- a/Documentation/devicetree/bindings/fsi/ibm,fsi2spi.yaml
-+++ b/Documentation/devicetree/bindings/fsi/ibm,fsi2spi.yaml
-@@ -19,7 +19,6 @@ properties:
-   compatible:
-     enum:
-       - ibm,fsi2spi
--      - ibm,fsi2spi-restricted
- 
-   reg:
-     items:
--- 
-2.27.0
+Original commit:
 
+diff --git a/arch/s390/kernel/vdso32/gen_vdso_offsets.sh b/arch/s390/kernel/vdso32/gen_vdso_offsets.sh
+new file mode 100755
+               ^^^^^^
+index 000000000000..9c4f951e227d
+--- /dev/null
++++ b/arch/s390/kernel/vdso32/gen_vdso_offsets.sh
+
+This commit:
+
+diff --git a/arch/s390/kernel/vdso32/gen_vdso_offsets.sh b/arch/s390/kernel/vdso32/gen_vdso_offsets.sh
+new file mode 100644
+               ^^^^^^
+index 000000000000..9c4f951e227d
+--- /dev/null
++++ b/arch/s390/kernel/vdso32/gen_vdso_offsets.sh
+
+Same with v5.13.y.
+
+Guenter
