@@ -2,73 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7673CBBB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8233CBBBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhGPSRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:17:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229462AbhGPSRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:17:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 281BC613E8;
-        Fri, 16 Jul 2021 18:14:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626459293;
-        bh=SZfc+sdSOFegaE81x5f6nVJYG6futv/Q4DezfpI2gQI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CAtDKmW2Ro6DrYpi7RZvEA32h78w7LDuAV+vFugEo+pytrxARWXCSWrtESLc3pCAj
-         vAzlF58QhsO62egjJOqfZVaRK1VxvH0ywQGOjuaPr13arndDKijKn5eaywMM7kPpbA
-         cPGPBbu7rIxl/F4JUn0PaO1N3okn3ruGT9CmWrcA=
-Date:   Fri, 16 Jul 2021 20:14:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/215] 5.10.51-rc1 review
-Message-ID: <YPHMm+fjen2Nvxlj@kroah.com>
-References: <20210715182558.381078833@linuxfoundation.org>
- <53f95a72-996a-ace3-9d34-60f23f4813b3@roeck-us.net>
+        id S231773AbhGPSSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231624AbhGPSSC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:18:02 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1250FC061762
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:15:07 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id p36so9551797pfw.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wVN/iDIudUuTtvffNdHVJek4W2vj0jwmUlaVHOVcX6g=;
+        b=k5qWLNHzSnnWN0UAxjp03hvk7WlSuNe7oMs/qkUkZqoD+Gh+CjdDdFA5IriWV0hLXc
+         St1QHeoPM6fZ3bDQT70Et/jissBJZoORHIo/zH6SP5BK7LLS/HGEI5LUnlAn3Kx4P72B
+         CvCxJ7wDGFaawPhPzbVHO5mJ9ka40eSz+E3wwCB4hbNr+m38+X8VxlrKd3Z9QEe52f9z
+         y8lMZUeY3UOdsXfE7aCDTt47ep3SpBzp5pE4RgxW3jl76KgTaRDPdeQYBD7MArSGDC1a
+         tH4v2gktiah865XZOC00Z3Yk7yp+iyIFok/BsUV0/mfjqR0xGbA7YikRaIKzJsmi4jTX
+         u2uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wVN/iDIudUuTtvffNdHVJek4W2vj0jwmUlaVHOVcX6g=;
+        b=L4oPFNV1dcRNMoT7Q8y8YcgHmpstwaESTcgnkNGQhfdpDuamrSQlEA4FfVUD91Tk7U
+         +cS6HIDamAwtV4b9npJOUev5VlF77SVozczW5GaHcArtJA9RPRUSEF/hqNBvwt4nOr6t
+         uVZo9MGnSBW8/DWgWEKDPjlgnD//ydJRf+fsrWbS0B1FMRQs7ctbLAiIFZt9OPz3UoKm
+         RcDyBjXLjI/7UQV4K6ClgZlGROmuHA1ePug6ZvLBhN2HNEmBDCzds/9Svmcvrh9IZktY
+         CE/NBKJqLDVEGpwRgYOZMU9hGAsEcRVx/8XQke61V1oviMwC8rMvvIDDonLtqzksEaDi
+         yqsw==
+X-Gm-Message-State: AOAM530kCmX9fov6XGLqEYyBncDKhTrd7yeXSlDCHr1nVbR+r2iWj7Ti
+        +W4LNgR2Q1Kr7f0Ws2Pg7A2rRoCYoH5bZw==
+X-Google-Smtp-Source: ABdhPJwqkeRsF0AqS7WZlEi3YZgikjlqMKKoxNpFJjn1zdkxP4d6bPR7B7wmtTWFz4cDReGQ2fcWdA==
+X-Received: by 2002:a63:4302:: with SMTP id q2mr11128659pga.428.1626459306182;
+        Fri, 16 Jul 2021 11:15:06 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id k8sm2825228pfu.116.2021.07.16.11.15.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 11:15:05 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 18:15:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 28/40] KVM: X86: Introduce
+ kvm_mmu_map_tdp_page() for use by SEV
+Message-ID: <YPHMpep+AqGQg6sX@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-29-brijesh.singh@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <53f95a72-996a-ace3-9d34-60f23f4813b3@roeck-us.net>
+In-Reply-To: <20210707183616.5620-29-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 06:33:27AM -0700, Guenter Roeck wrote:
-> On 7/15/21 11:36 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.51 release.
-> > There are 215 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> > Anything received after that time might be too late.
-> > 
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> +int kvm_mmu_map_tdp_page(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code, int max_level)
+> +{
+> +	int r;
+> +
+> +	/*
+> +	 * Loop on the page fault path to handle the case where an mmu_notifier
+> +	 * invalidation triggers RET_PF_RETRY.  In the normal page fault path,
+> +	 * KVM needs to resume the guest in case the invalidation changed any
+> +	 * of the page fault properties, i.e. the gpa or error code.  For this
+> +	 * path, the gpa and error code are fixed by the caller, and the caller
+> +	 * expects failure if and only if the page fault can't be fixed.
+> +	 */
+> +	do {
+> +		r = direct_page_fault(vcpu, gpa, error_code, false, max_level, true);
+> +	} while (r == RET_PF_RETRY);
+> +
+> +	return r;
+
+This implementation is completely broken, which in turn means that the page state
+change code is not well tested.  The mess is likely masked to some extent because
+the call is bookendeda by calls to kvm_mmu_get_tdp_walk(), i.e. most of the time
+it's not called, and when it is called, the bugs are hidden by the second walk
+detecting that the mapping was not installed.
+
+  1. direct_page_fault() does not return a pfn, it returns the action that should
+     be taken by the caller.
+  2. The while() can be optimized to bail on no_slot PFNs.
+  3. mmu_topup_memory_caches() needs to be called here, otherwise @pfn will be
+     uninitialized.  The alternative would be to set @pfn when that fails in
+     direct_page_fault().
+  4. The 'int' return value is wrong, it needs to be kvm_pfn_t.
+
+A correct implementation can be found in the TDX series, the easiest thing would
+be to suck in those patches.
+
+https://lore.kernel.org/kvm/ceffc7ef0746c6064330ef5c30bc0bb5994a1928.1625186503.git.isaku.yamahata@intel.com/
+https://lore.kernel.org/kvm/a7e7602375e1f63b32eda19cb8011f11794ebe28.1625186503.git.isaku.yamahata@intel.com/
+
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_mmu_map_tdp_page);
+> +
+>  static void nonpaging_init_context(struct kvm_vcpu *vcpu,
+>  				   struct kvm_mmu *context)
+>  {
+> -- 
+> 2.17.1
 > 
-> 
-> Building ia64:defconfig ... failed
-> --------------
-> Error log:
-> <stdin>:1511:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-> mm/page_alloc.c:6270:20: error: conflicting types for 'memmap_init'; have 'void(void)'
->  6270 | void __init __weak memmap_init(void)
->       |                    ^~~~~~~~~~~
-> In file included from include/linux/pgtable.h:6,
->                  from include/linux/mm.h:33,
->                  from mm/page_alloc.c:19:
-> arch/ia64/include/asm/pgtable.h:523:17: note: previous declaration of 'memmap_init' with type 'void(long unsigned int,  int,  long unsigned int,  long unsigned int)'
->   523 |     extern void memmap_init (unsigned long size, int nid, unsigned long zone,
->       |                 ^~~~~~~~~~~
-
-Found the offending commit, now dropped.
-
-Will push out -rc2 for all trees now, what a mess...
-
-thanks,
-
-greg k-h
