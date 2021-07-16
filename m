@@ -2,238 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FA03CB712
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3053CB725
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235127AbhGPMCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbhGPMCR (ORCPT
+        id S232785AbhGPMLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:11:04 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:8610 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232647AbhGPMKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:02:17 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0D5C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:59:21 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id hd33so14726658ejc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ej8SIWz0OcpHLm8FmiDOFRnXSxDgeO5zMJ7XUup1PTA=;
-        b=dfqGx9usURFRxmqVqxyLBm/eTT11z1zmysBYuvI2fPcO3oJNytOjlmT3q9kd0SgbLg
-         rkPthDhjDmDIe8lwRt4UH8dEspSHH1h5ImneawABkNCFTka3dQuzg80yEY0mi2nzDnz8
-         dyBIEmnBQPKeRBkXdIkpEL00GfxDTFBDY/K+hauar833HEcXWnLJBJ+p6xugfYnaQL52
-         Rf4qX/tH2K6hk4lfuaseMS6Mpqbc6UCP6smUu9zDJerdFKhMRj/mbT5gKlinHaUGy92M
-         IU6wPVC7WQoOp0N/mNeaRp0S/VY0p2DEl9OrkijP+aTfvbehqYwTDet6nCxEonmTHu+L
-         1q+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ej8SIWz0OcpHLm8FmiDOFRnXSxDgeO5zMJ7XUup1PTA=;
-        b=gL4/ECTPifX5zGXIE3FimR+94nd51GxaQDenGi3EkUa0/YcggFWz11nq7fMChSP3Lm
-         EYAJyHgb9sYO+nMPef1HqSK3uhg+4wjijQ3D/Cw6fG9WRp8mT3Pmvi/A9Ce62FjJ5krb
-         WyBSfW/zdiFXVSQERECDi3peNH6YmyR+b4Ec6drcSLVyfJvs80AHjuddobzLZ7TjQnGp
-         Sw1s/SfynjvSYLoN32l9069QJLXD1XVEH5/Mt5PtWJb/5xj9MU9hY7bkfeRNZ2tloQ00
-         X3h8dGXvMwLkFeJwZo3nQ0J+uL1V2DWoNjG6+FxfMk5o+l2f54HQKhEpGZbRRgJvj8xG
-         4O8A==
-X-Gm-Message-State: AOAM531AihDQThmPMpuHYJSVMWriHE8qL5l/DBlM+urWNImUMw6dTKZP
-        p8uYz0a1cVR3zcVz/94pLBmrxckDB0QU7doR0VidtA==
-X-Google-Smtp-Source: ABdhPJwe5+sGzXE2oIhdfGmYLeuGYRlUa22gDBfVDoLPQfgK3srGhZeHfY5T56Jk405Rm4iZGds6saOLiY2+B3N4HkQ=
-X-Received: by 2002:a17:906:cec1:: with SMTP id si1mr11414424ejb.18.1626436759846;
- Fri, 16 Jul 2021 04:59:19 -0700 (PDT)
+        Fri, 16 Jul 2021 08:10:41 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GBwFLa010195;
+        Fri, 16 Jul 2021 14:07:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=/19kFGOX0gCiMy+N9zU3xMPZEdJW0d18XcCxTFhSctU=;
+ b=4bMwuuyuRChSFcKXgeqESyDi44cTrPmfz/0/CEIzQE6E8rrqS7XYFHpSSbfSfWvoxoX3
+ sZV9255LHyygmmioKTRjMiWUELti6L0OlTmglGeYuUVC1C9yJ2kNTNVv/kC16OEswadD
+ Xo7ZEZqVTX4s3E2SFEKlcbXZN2eevJHin0MQN8nXRcy/MHhCO9oz4uq1RCLJQ5WfayDu
+ lpmP00+y5eh/e07fi55KNDUd6qDv1zufYTItjuSa9WtFjrmWBVWTVDosb+804TEmISWS
+ egr8nSqRBJlDpB6WQ4u710x/iIekNt/ioFQMt1IXNPkj/Mezc2jQkbKBBxgRkgGzIlCF bA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39tw1kc06m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Jul 2021 14:07:33 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4899010002A;
+        Fri, 16 Jul 2021 14:07:32 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3423F226FCD;
+        Fri, 16 Jul 2021 14:07:32 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul 2021 14:07:31
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Subject: [PATCH 0/2] usb: typec: couple of fixes for stusb160x
+Date:   Fri, 16 Jul 2021 14:07:16 +0200
+Message-ID: <20210716120718.20398-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210715182558.381078833@linuxfoundation.org>
-In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 16 Jul 2021 17:29:08 +0530
-Message-ID: <CA+G9fYtW156WOWbUH37XaPWMmv7wthZcoUG7JSrob1TU5LYSqw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/215] 5.10.51-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-16_04:2021-07-16,2021-07-16 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 at 00:17, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.51 release.
-> There are 215 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.51-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+First patch fixes role switch when attached before probe.
+Second patch follows Martin's patch [1] as it is also applicable for
+stusb160x typec driver, in order to avoid the WARNING seen on
+stm32mp15xx-dkx boot:
+[    8.598414] typec port0: Fixing up cyclic dependency with 49000000.usb-otg
+[    8.604493] dwc2 49000000.usb-otg: supply vusb_d not found, using dummy regulator
+[    8.630642] ------------[ cut here ]------------
+[    8.649193] WARNING: CPU: 0 PID: 157 at drivers/base/core.c:1532 device_del+0x328/0x3ec
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+[1] https://lkml.org/lkml/2021/7/14/47
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Amelie Delaunay (2):
+  usb: typec: stusb160x: register role switch before interrupt
+    registration
+  usb: typec: stusb160x: Don't block probing of consumer of "connector"
+    nodes
 
-## Build
-* kernel: 5.10.51-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: 36558b9a3bb700ca62ec3ac2f06e6fbec57a35d2
-* git describe: v5.10.50-216-g36558b9a3bb7
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.50-216-g36558b9a3bb7
+ drivers/usb/typec/stusb160x.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-## No regressions (compared to v5.10.49-594-g3e2628c73ba0)
+-- 
+2.25.1
 
-## No fixes (compared to v5.10.49-594-g3e2628c73ba0)
-
-## Test result summary
- total: 79086, pass: 65714, fail: 1691, skip: 10507, xfail: 1174,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
