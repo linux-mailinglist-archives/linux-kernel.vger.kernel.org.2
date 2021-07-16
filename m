@@ -2,197 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B282A3CB1C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCE73CB1C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232708AbhGPFEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 01:04:31 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:29733 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhGPFEa (ORCPT
+        id S233990AbhGPFGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 01:06:23 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11324 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhGPFGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 01:04:30 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210716050134euoutp01bb5b94068bcbc3029e5e0fe71147046c~SLNGh3P3b1031610316euoutp01t
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:01:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210716050134euoutp01bb5b94068bcbc3029e5e0fe71147046c~SLNGh3P3b1031610316euoutp01t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1626411694;
-        bh=tlnKnhtiuN5X69bO+zZbqtZ5WXVcvvkwRcRObs1MPDY=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=iJ4j4jRPItwyKhnYGRLBU19LK0E3pyJsvJ4ld1V6eZnbp8+k+l3sQqst9hUXjOYrp
-         tyu2ebV9il0VM+ecWFWHXk/Jo9+2GVAU/Ybm2fRW4lUqT5ed+lzcY9queAj6EhxgTS
-         iYaKdmsQmRZUV4L79Pv6gG36kErtGZExgo2lZXmU=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210716050133eucas1p1a8635c11b814b4b831610b2febd77f93~SLNGJ9k7I2287522875eucas1p1H;
-        Fri, 16 Jul 2021 05:01:33 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 56.60.42068.DA211F06; Fri, 16
-        Jul 2021 06:01:33 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23~SLNFIrIWE0138901389eucas1p2x;
-        Fri, 16 Jul 2021 05:01:32 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210716050132eusmtrp1e7e85bfbdd812b3043d7b211ef2958c9~SLNFH_zkQ1937119371eusmtrp1k;
-        Fri, 16 Jul 2021 05:01:32 +0000 (GMT)
-X-AuditID: cbfec7f4-c89ff7000002a454-a0-60f112ad36d1
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 1F.14.20981.CA211F06; Fri, 16
-        Jul 2021 06:01:32 +0100 (BST)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210716050132eusmtip1e14cbdb21a1f293aacdd2cb276f51aed~SLNEnnoAG0836508365eusmtip1U;
-        Fri, 16 Jul 2021 05:01:32 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     linux-usb@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] usb: dwc2: Skip clock gating on Samsung SoCs
-Date:   Fri, 16 Jul 2021 07:01:27 +0200
-Message-Id: <20210716050127.4406-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRmVeSWpSXmKPExsWy7djPc7prhT4mGPxsMbDovWNisXHGelaL
-        +TeTLBp/7WW3OH9+A7vF5V1z2CxmnN/HZLFoWSuzxdojd9kdOD02repk85h3MtCjb8sqRo8t
-        +z8zenzeJBfAGsVlk5Kak1mWWqRvl8CVcXNeN1PBbpmK88v/MjcwzhfvYuTkkBAwkfjes465
-        i5GLQ0hgBaNET8sURpCEkMAXRonLn60g7M+MEk0TGWEa1u9dygjRsJxRYsbCDlYIB6jhwok5
-        LCBVbAKGEl1vu9hAbBGBBIkjm98zg9jMAjOZJLqmCoDYwgK2EuvXLGQHsVkEVCWWfz3JCmLz
-        CthIrPm0nQVim7zE6g0HwM6TEOjlkPi0dT07RMJF4ubSg1BFwhKvjm+BistInJ7cwwLR0Mwo
-        8fDcWnYIpwfon6YZUE9YS9w59wvoPA6gkzQl1u/Shwg7Srye18kKEpYQ4JO48VYQ4mg+iUnb
-        pjNDhHklOtqEIKrVJGYdXwe39uCFS8wQtofEzqWzoaEYK/Hi40+2CYxysxB2LWBkXMUonlpa
-        nJueWmyUl1quV5yYW1yal66XnJ+7iRGYGE7/O/5lB+PyVx/1DjEycTAeYpTgYFYS4V1q9DZB
-        iDclsbIqtSg/vqg0J7X4EKM0B4uSOG/SljXxQgLpiSWp2ampBalFMFkmDk6pBqZex78ikxW2
-        LRL8FXW32F8vmKMsjGvV57YvKwoSS7fs3HdGIX9e7zHfzsNdru8zJwUIyCSm8f5naH11fUm3
-        3Roxiy8CodZeXhdXHdaeved4aGYj/2YPrc2Xlqxesbp7bsefC/OUZ39inK77NnLrJ7c2y+Sc
-        By/uzNbe9/365QmGHIf0J7IXXnTRbN4no3vw6+OZmzLnr3lexhXrfjWmKmzLNEuFsu3yp+/U
-        7l59WrN8EdeHEoFdGv4euw7kCKj/U/q3Q+R51eQTJW2Z7j+PLPivsPeWBO8moYqMToY/m74V
-        XzU9ncvNtW6v0zrdfxba5xrC6l5tMygT8n7R68/W5vaR+QGD/fElPjrv/WwrS84osRRnJBpq
-        MRcVJwIAohL+33sDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrALMWRmVeSWpSXmKPExsVy+t/xu7prhD4mGLzt17DovWNisXHGelaL
-        +TeTLBp/7WW3OH9+A7vF5V1z2CxmnN/HZLFoWSuzxdojd9kdOD02repk85h3MtCjb8sqRo8t
-        +z8zenzeJBfAGqVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mW
-        WqRvl6CXcXNeN1PBbpmK88v/MjcwzhfvYuTkkBAwkVi/dyljFyMXh5DAUkaJx32L2CASMhIn
-        pzWwQtjCEn+udbFBFH1ilLh/4jMzSIJNwFCi620XWIOIQJLE9SenWUCKmAXmMkl8n/cLrFtY
-        wFZi/ZqF7CA2i4CqxPKvJ8HivAI2Ems+bWeB2CAvsXrDAeYJjDwLGBlWMYqklhbnpucWG+kV
-        J+YWl+al6yXn525iBAbltmM/t+xgXPnqo94hRiYOxkOMEhzMSiK8S43eJgjxpiRWVqUW5ccX
-        leakFh9iNAXaN5FZSjQ5HxgXeSXxhmYGpoYmZpYGppZmxkrivCZH1sQLCaQnlqRmp6YWpBbB
-        9DFxcEo1MM081CKdLaOoWvVpifqWjuOzONn1m98KSO65+OJmUFniQfHVz17P9tnSdu7dNs8f
-        EY/ubdbkmfpddYL+/JSPiivk3drUzcV3eJ9V+O9yao3fS+bmF7IfHh6e61m55v7fjbv/R7Zn
-        i+rdF7qdVcM9edexf+xyc7bwvoi2Xdjz/ed6v71XZnpcvufft2XaF5slDRutNlWtYEptmPQw
-        7a5t7pWtHao8Mj327toHJbUd/qq4VZl8eP98w9bJZom9ykbnb7/YytbR0uEktp/TPPlduKNv
-        4Ja8TJ67+jZeD5acPPqq4/jmS7lf5px9cm5JsEDd1SWPblQFfYiynntb44bn35nbuq6KfJ/w
-        yDjTl/PDTh8GJZbijERDLeai4kQAy8uLwtMCAAA=
-X-CMS-MailID: 20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23
-References: <CGME20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23@eucas1p2.samsung.com>
+        Fri, 16 Jul 2021 01:06:22 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GQzXs6yJcz7tbH;
+        Fri, 16 Jul 2021 12:58:53 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 13:03:24 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 13:03:23 +0800
+Subject: Re: [PATCH] once: Fix panic when module unload
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Hannes Frederic Sowa <hannes@stressinduktion.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Minmin chen <chenmingmin@huawei.com>
+References: <20210622022138.23048-1-wangkefeng.wang@huawei.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <e0f1b9c7-622f-4269-634e-20cc61e26b70@huawei.com>
+Date:   Fri, 16 Jul 2021 13:03:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210622022138.23048-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0112b7ce68ea ("usb: dwc2: Update dwc2_handle_usb_suspend_intr
-function.") changed the way the driver handles power down modes in a such
-way that it uses clock gating when no other power down mode is available.
+Hi all, kindly ping...
 
-This however doesn't work well on the DWC2 implementation used on the
-Samsung SoCs. When a clock gating is enabled, system hangs. It looks that
-the proper clock gating requires some additional glue code in the shared
-USB2 PHY and/or Samsung glue code for the DWC2. To restore driver
-operation on the Samsung SoCs simply skip enabling clock gating mode
-until one finds what is really needed to make it working reliably.
-
-Fixes: 0112b7ce68ea ("usb: dwc2: Update dwc2_handle_usb_suspend_intr function.")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
----
- drivers/usb/dwc2/core.h      | 4 ++++
- drivers/usb/dwc2/core_intr.c | 3 ++-
- drivers/usb/dwc2/hcd.c       | 6 ++++--
- drivers/usb/dwc2/params.c    | 1 +
- 4 files changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
-index ab6b815e0089..483de2bbfaab 100644
---- a/drivers/usb/dwc2/core.h
-+++ b/drivers/usb/dwc2/core.h
-@@ -383,6 +383,9 @@ enum dwc2_ep0_state {
-  *			0 - No (default)
-  *			1 - Partial power down
-  *			2 - Hibernation
-+ * @no_clock_gating:	Specifies whether to avoid clock gating feature.
-+ *			0 - No (use clock gating)
-+ *			1 - Yes (avoid it)
-  * @lpm:		Enable LPM support.
-  *			0 - No
-  *			1 - Yes
-@@ -480,6 +483,7 @@ struct dwc2_core_params {
- #define DWC2_POWER_DOWN_PARAM_NONE		0
- #define DWC2_POWER_DOWN_PARAM_PARTIAL		1
- #define DWC2_POWER_DOWN_PARAM_HIBERNATION	2
-+	bool no_clock_gating;
- 
- 	bool lpm;
- 	bool lpm_clock_gating;
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index a5ab03808da6..a5c52b237e72 100644
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -556,7 +556,8 @@ static void dwc2_handle_usb_suspend_intr(struct dwc2_hsotg *hsotg)
- 				 * If neither hibernation nor partial power down are supported,
- 				 * clock gating is used to save power.
- 				 */
--				dwc2_gadget_enter_clock_gating(hsotg);
-+				if (!hsotg->params.no_clock_gating)
-+					dwc2_gadget_enter_clock_gating(hsotg);
- 			}
- 
- 			/*
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 035d4911a3c3..2a7828971d05 100644
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -3338,7 +3338,8 @@ int dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex)
- 		 * If not hibernation nor partial power down are supported,
- 		 * clock gating is used to save power.
- 		 */
--		dwc2_host_enter_clock_gating(hsotg);
-+		if (!hsotg->params.no_clock_gating)
-+			dwc2_host_enter_clock_gating(hsotg);
- 		break;
- 	}
- 
-@@ -4402,7 +4403,8 @@ static int _dwc2_hcd_suspend(struct usb_hcd *hcd)
- 		 * If not hibernation nor partial power down are supported,
- 		 * clock gating is used to save power.
- 		 */
--		dwc2_host_enter_clock_gating(hsotg);
-+		if (!hsotg->params.no_clock_gating)
-+			dwc2_host_enter_clock_gating(hsotg);
- 
- 		/* After entering suspend, hardware is not accessible */
- 		clear_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 67c5eb140232..59e119345994 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -76,6 +76,7 @@ static void dwc2_set_s3c6400_params(struct dwc2_hsotg *hsotg)
- 	struct dwc2_core_params *p = &hsotg->params;
- 
- 	p->power_down = DWC2_POWER_DOWN_PARAM_NONE;
-+	p->no_clock_gating = true;
- 	p->phy_utmi_width = 8;
- }
- 
--- 
-2.17.1
-
+On 2021/6/22 10:21, Kefeng Wang wrote:
+> DO_ONCE
+> DEFINE_STATIC_KEY_TRUE(___once_key);
+> __do_once_done
+>    once_disable_jump(once_key);
+>      INIT_WORK(&w->work, once_deferred);
+>      struct once_work *w;
+>      w->key = key;
+>      schedule_work(&w->work);                     module unload
+>                                                     //*the key is destroy*
+> process_one_work
+>    once_deferred
+>      BUG_ON(!static_key_enabled(work->key));
+>         static_key_count((struct static_key *)x)    //*access key, crash*
+>
+> When module uses DO_ONCE mechanism, it could crash due to the above
+> concurrency problem, we could reproduce it with link[1].
+>
+> Fix it by add/put module refcount in the once work process.
+>
+> [1]
+> https://lore.kernel.org/netdev/eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com/
+>
+> Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Reported-by: Minmin chen <chenmingmin@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>   lib/once.c | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
+>
+> diff --git a/lib/once.c b/lib/once.c
+> index 8b7d6235217e..959f8db41ccf 100644
+> --- a/lib/once.c
+> +++ b/lib/once.c
+> @@ -3,10 +3,12 @@
+>   #include <linux/spinlock.h>
+>   #include <linux/once.h>
+>   #include <linux/random.h>
+> +#include <linux/module.h>
+>   
+>   struct once_work {
+>   	struct work_struct work;
+>   	struct static_key_true *key;
+> +	struct module *module;
+>   };
+>   
+>   static void once_deferred(struct work_struct *w)
+> @@ -16,11 +18,24 @@ static void once_deferred(struct work_struct *w)
+>   	work = container_of(w, struct once_work, work);
+>   	BUG_ON(!static_key_enabled(work->key));
+>   	static_branch_disable(work->key);
+> +	module_put(work->module);
+>   	kfree(work);
+>   }
+>   
+> +static struct module *find_module_by_key(struct static_key_true *key)
+> +{
+> +	struct module *mod;
+> +
+> +	preempt_disable();
+> +	mod = __module_address((unsigned long)key);
+> +	preempt_enable();
+> +
+> +	return mod;
+> +}
+> +
+>   static void once_disable_jump(struct static_key_true *key)
+>   {
+> +	struct module *mod = find_module_by_key(key);
+>   	struct once_work *w;
+>   
+>   	w = kmalloc(sizeof(*w), GFP_ATOMIC);
+> @@ -29,6 +44,8 @@ static void once_disable_jump(struct static_key_true *key)
+>   
+>   	INIT_WORK(&w->work, once_deferred);
+>   	w->key = key;
+> +	w->module = mod;
+> +	__module_get(mod);
+>   	schedule_work(&w->work);
+>   }
+>   
