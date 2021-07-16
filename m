@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3833CB831
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245C63CB836
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240257AbhGPN7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:59:25 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:36583 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232895AbhGPN7Y (ORCPT
+        id S239860AbhGPOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:00:24 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:34824 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232808AbhGPOAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:59:24 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UfzOB3Y_1626443784;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UfzOB3Y_1626443784)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 16 Jul 2021 21:56:25 +0800
-Date:   Fri, 16 Jul 2021 21:56:23 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chao Yu <chao@kernel.org>, Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-Subject: Re: [PATCH 1/2] iomap: support tail packing inline read
-Message-ID: <YPGQB3zT4Wp4Q38X@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>, Chao Yu <chao@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-References: <20210716050724.225041-1-hsiangkao@linux.alibaba.com>
- <20210716050724.225041-2-hsiangkao@linux.alibaba.com>
- <YPGDZYT9OxdgNYf2@casper.infradead.org>
+        Fri, 16 Jul 2021 10:00:23 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 015EE1F44120
+Received: by earth.universe (Postfix, from userid 1000)
+        id DEE833C0C97; Fri, 16 Jul 2021 15:57:25 +0200 (CEST)
+Date:   Fri, 16 Jul 2021 15:57:25 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Daisuke Nojiri <dnojiri@chromium.org>
+Cc:     vpalatin@chromium.org, Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v7 1/2] power: supply: PCHG: Peripheral device charger
+Message-ID: <20210716135725.d3fadbozpmigmzmp@earth.universe>
+References: <20210616185131.1792509-1-dnojiri@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4l6shjqowxm5ftve"
 Content-Disposition: inline
-In-Reply-To: <YPGDZYT9OxdgNYf2@casper.infradead.org>
+In-Reply-To: <20210616185131.1792509-1-dnojiri@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
 
-On Fri, Jul 16, 2021 at 02:02:29PM +0100, Matthew Wilcox wrote:
-> On Fri, Jul 16, 2021 at 01:07:23PM +0800, Gao Xiang wrote:
-> > This tries to add tail packing inline read to iomap. Different from
-> > the previous approach, it only marks the block range uptodate in the
-> > page it covers.
-> 
-> Why?  This path is called under two circumstances: readahead and readpage.
-> In both cases, we're trying to bring the entire page uptodate.  The inline
-> extent is always the tail of the file, so we may as well zero the part of
-> the page past the end of file and mark the entire page uptodate instead
-> and leaving the end of the page !uptodate.
-> 
-> I see the case where, eg, we have the first 2048 bytes of the file
-> out-of-inode and then 20 bytes in the inode.  So we'll create the iop
-> for the head of the file, but then we may as well finish the entire
-> PAGE_SIZE chunk as part of this iteration rather than update 2048-3071
-> as being uptodate and leave the 3072-4095 block for a future iteration.
+--4l6shjqowxm5ftve
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your comments. Hmm... If I understand the words above correctly,
-what I'd like to do is to cover the inline extents (blocks) only
-reported by iomap_begin() rather than handling other (maybe)
-logical-not-strictly-relevant areas such as post-EOF (even pages
-will be finally entirely uptodated), I think such zeroed area should
-be handled by from the point of view of the extent itself
+Hi,
 
-         if (iomap_block_needs_zeroing(inode, iomap, pos)) {
-                 zero_user(page, poff, plen);
-                 iomap_set_range_uptodate(page, poff, plen);
-                 goto done;
-         }
+On Wed, Jun 16, 2021 at 11:51:24AM -0700, Daisuke Nojiri wrote:
+> This patch adds a driver for PCHG (Peripheral CHarGer). PCHG is a
+> framework managing power supplies for peripheral devices.
+>=20
+> This driver creates a sysfs node for each peripheral charge port:
+>=20
+> 	/sys/class/power_supply/peripheral<n>
+>=20
+> where <n> is the index of a charge port.
+>=20
+> For example, when a stylus is connected to a NFC/WLC port, the node
+> returns:
+>=20
+> 	/sys/class/power_supply/peripheral0/
+> 		capacity=3D50
+> 		charge_type=3DStandard
+> 		scope=3DDevice
+> 		status=3DCharging
+> 		type=3DBattery
+>=20
+> Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
+> ---
+> [...]
+> +static enum power_supply_property cros_pchg_props[] =3D {
+> +	POWER_SUPPLY_PROP_STATUS,
+> +	POWER_SUPPLY_PROP_CHARGE_TYPE,
+> +	POWER_SUPPLY_PROP_CAPACITY,
+> +	POWER_SUPPLY_PROP_SCOPE,
+> +	/*
+> +	 * todo: Add the following.
+> +	 *
+> +	 * POWER_SUPPLY_PROP_TECHNOLOGY,
+> +	 * POWER_SUPPLY_PROP_ERROR,
+> +	 * POWER_SUPPLY_PROP_SERIAL_NUMBER,
+> +	 *
+> +	 * POWER_SUPPLY_PROP_ONLINE can't be used because it indicates the
+> +	 * system is powered by AC.
+> +	 */
+> +};
+> [...]
 
-The benefits I can think out are 1) it makes the logic understand
-easier and no special cases just for tail-packing handling 2) it can
-be then used for any inline extent cases (I mean e.g. in the middle of
-the file) rather than just tail-packing inline blocks although currently
-there is a BUG_ON to prevent this but it's easier to extend even further.
-3) it can be used as a part for later partial page uptodate logic in
-order to match the legacy buffer_head logic (I remember something if my
-memory is not broken about this...)
+Thanks, I queued the driver with the above TODO removed. Please
+track this downstream, the note is not useful in mainline kernel,
+since we do not have (AFAIK) the necessary documentation to add
+more features.
 
-Thanks,
-Gao Xiang
+-- Sebastian
 
+--4l6shjqowxm5ftve
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmDxkEUACgkQ2O7X88g7
++pog9g//edvWJfj8PO46DU32fE+gq4YtH/VZAfxFxxjUgRVU/tlFVwTrmqAgeH6G
+9z6m+1JpCiHoP2IUj1Y3+dlG29iKJ/nEwqX9E0VfvlbGFmWQuEej8pKMUlTfzNd7
+VsbaHZZlqDpvKV0GmXW12AMMvZfZ7fAUqkE+9ygXAuWF6SnQ2irCQZMt+QBnj1cJ
+feeb+DNS8VIG2ZBMSvJx2X3rZWM+1UQuXs3UFDYmS/TKotF+mFNCHt43I/+rrTm/
+vXOidPdiavklFtLcWv8Uh2XP2sWV0ZIszPhoMCDHt5eSMUuINvM/FGNUeXDxOYmy
+umKNoZ8Kl2agQj7ZKEMLWd1uLZX6ATJMScJfZamDiHFT45mJa8QAqQICJgezRVA4
+CYqDDNRhBDG2PYkHKNEMmaGyjhdsEm6vCD9LWYTCoDjqLtw7C98HLOimBZGqhLI+
+9wk8mUeg7SzktGqGKW4A5pZajXFmSgH+xw3AHeupGpylDCoriY+gEC0WaeydOFdj
+GoE3xKJ2ui8qqwfBZnNaFU+mNTEWpIzlL0oaQEAnZmgs90j2upQ9J8NYpdXc63PT
+m5Usr+hV0IqvWXv0waslaG/EY6i4smzncUIHMoFp7Kj+p0rFo2cIwe9nn9NE2XdD
+Zy5MNoDcNVFsnnnfE0jvZaTVkrQgEfQ0cdB/P3cywzu1FDmrgs4=
+=ksno
+-----END PGP SIGNATURE-----
+
+--4l6shjqowxm5ftve--
