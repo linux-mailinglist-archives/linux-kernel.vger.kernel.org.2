@@ -2,214 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9B33CB59D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5E63CB5A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238012AbhGPKFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:05:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:44750 "EHLO m43-7.mailgun.net"
+        id S238006AbhGPKFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:05:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:37230 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237586AbhGPKEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:04:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626429718; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=2PoXPzW7yXjsJ+4bkTg6l8/HF+OOEW6Uf7kuyQWFRvs=; b=E4QiT5HrXsi2Qq9bdX+DYwmAMcgjHF6ArINlZX453MIc7Q8AotSrla0tcCDcmfYOE4KTVRgt
- iaauOa6Bf4kN7xVwKSfUAJMg2es2yhFyd7eabora7kD2vofQvob71fhCkfNh7FxF7q/5/TU6
- Ro/p9n5SzRMRG572erEI407uu2U=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60f158f417c2b4047d747b67 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Jul 2021 10:01:24
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AD26DC43460; Fri, 16 Jul 2021 10:01:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA649C433D3;
-        Fri, 16 Jul 2021 10:01:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DA649C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
-        viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v4 2/2] arm64: dts: sc7180: Add required-opps for i2c
-Date:   Fri, 16 Jul 2021 15:30:58 +0530
-Message-Id: <1626429658-18961-3-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626429658-18961-1-git-send-email-rnayak@codeaurora.org>
-References: <1626429658-18961-1-git-send-email-rnayak@codeaurora.org>
+        id S234095AbhGPKFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 06:05:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC2F06D;
+        Fri, 16 Jul 2021 03:02:50 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 338CB3F7D8;
+        Fri, 16 Jul 2021 03:02:49 -0700 (PDT)
+Subject: Re: [RFC 06/10] arm64/mm: Add FEAT_LPA2 specific encoding
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, suzuki.poulose@arm.com,
+        mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
+        maz@kernel.org, james.morse@arm.com
+References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
+ <1626229291-6569-7-git-send-email-anshuman.khandual@arm.com>
+ <9f0d9925-3694-3fae-0d09-00adbecd1878@arm.com>
+ <b471b41b-de6d-3b56-2595-30586b0a47b3@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <f3e04afd-d3cb-b26b-621d-bd0bac7bd783@arm.com>
+Date:   Fri, 16 Jul 2021 11:02:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <b471b41b-de6d-3b56-2595-30586b0a47b3@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
-Though qup-i2c does not support DVFS, it still needs to vote for a
-performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
-requirement.
+On 16/07/2021 08:20, Anshuman Khandual wrote:
+> 
+> 
+> On 7/14/21 9:08 PM, Steven Price wrote:
+>> On 14/07/2021 03:21, Anshuman Khandual wrote:
+>>> FEAT_LPA2 requires different PTE representation formats for both 4K and 16K
+>>> page size config. This adds FEAT_LPA2 specific new PTE encodings as per ARM
+>>> ARM (0487G.A) which updates [pte|phys]_to_[phys|pte](). The updated helpers
+>>> would be used when FEAT_LPA2 gets enabled via CONFIG_ARM64_PA_BITS_52 on 4K
+>>> and 16K page size. Although TTBR encoding and phys_to_ttbr() helper remains
+>>> the same as FEAT_LPA for FEAT_LPA2 as well. It updates 'phys_to_pte' helper
+>>> to accept a temporary variable and changes impacted call sites.
+>>>
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>>  arch/arm64/include/asm/assembler.h     | 23 +++++++++++++++++++----
+>>>  arch/arm64/include/asm/pgtable-hwdef.h |  4 ++++
+>>>  arch/arm64/include/asm/pgtable.h       |  4 ++++
+>>>  arch/arm64/kernel/head.S               | 25 +++++++++++++------------
+>>>  4 files changed, 40 insertions(+), 16 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+>>> index fedc202..0492543 100644
+>>> --- a/arch/arm64/include/asm/assembler.h
+>>> +++ b/arch/arm64/include/asm/assembler.h
+>>> @@ -606,7 +606,7 @@ alternative_endif
+>>>  #endif
+>>>  	.endm
+>>>  
+>>> -	.macro	phys_to_pte, pte, phys
+>>> +	.macro	phys_to_pte, pte, phys, tmp
+>>>  #ifdef CONFIG_ARM64_PA_BITS_52_LPA
+>>>  	/*
+>>>  	 * We assume \phys is 64K aligned and this is guaranteed by only
+>>> @@ -614,6 +614,17 @@ alternative_endif
+>>>  	 */
+>>>  	orr	\pte, \phys, \phys, lsr #36
+>>>  	and	\pte, \pte, #PTE_ADDR_MASK
+>>> +#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
+>>> +	orr	\pte, \phys, \phys, lsr #42
+>>> +
+>>> +	/*
+>>> +	 * The 'tmp' is being used here to just prepare
+>>> +	 * and hold PTE_ADDR_MASK which cannot be passed
+>>> +	 * to the subsequent 'and' instruction.
+>>> +	 */
+>>> +	mov	\tmp, #PTE_ADDR_LOW
+>>> +	orr	\tmp, \tmp, #PTE_ADDR_HIGH
+>>> +	and	\pte, \pte, \tmp
+>> Rather than adding an extra temporary register (and the fallout of
+>> various other macros needing an extra register), this can be done with
+>> two AND instructions:
+> 
+> I would really like to get rid of the 'tmp' variable here as
+> well but did not figure out any method of accomplishing it.
+> 
+>>
+>> 	/* PTE_ADDR_MASK cannot be encoded as an immediate, so
+>>          * mask off all but two bits, followed by masking the
+>>          * extra two bits
+>>          */
+>> 	and	\pte, \pte, #PTE_ADDR_MASK | (3 << 10)
+>> 	and	\pte, \pte, #~(3 << 10)
+> 
+> Did this change as suggested
+> 
+> --- a/arch/arm64/include/asm/assembler.h
+> +++ b/arch/arm64/include/asm/assembler.h
+> @@ -626,9 +626,8 @@ alternative_endif
+>          * and hold PTE_ADDR_MASK which cannot be passed
+>          * to the subsequent 'and' instruction.
+>          */
+> -       mov     \tmp, #PTE_ADDR_LOW
+> -       orr     \tmp, \tmp, #PTE_ADDR_HIGH
+> -       and     \pte, \pte, \tmp
+> +       and     \pte, \pte, #PTE_ADDR_MASK | (0x3 << 10)
+> +       and     \pte, \pte, #~(0x3 << 10)
+>  
+>  .Lskip_lpa2\@:
+>         mov     \pte, \phys
+> 
+> 
+> but still fails to build (tested on 16K)
+> 
+> arch/arm64/kernel/head.S: Assembler messages:
+> arch/arm64/kernel/head.S:377: Error: immediate out of range at operand 3 -- `and x6,x6,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+> arch/arm64/kernel/head.S:390: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+> arch/arm64/kernel/head.S:390: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+> arch/arm64/kernel/head.S:404: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+> arch/arm64/kernel/head.S:404: Error: immediate out of range at operand 3 -- `and x12,x12,#((((1<<(50-14))-1)<<14)|(0x3<<8))|(0x3<<10)'
+> 
 
-Use 'required-opps' to pass this information from
-device tree, and also add the power-domains property to specify
-the CX power-domain.
+Ah, I'd only tested this for 4k. 16k would require a different set of masks.
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+So the bits we need to cover are those from just below PAGE_SHIFT to the
+top of PTE_ADDR_HIGH (bit 10). So we can compute the mask for both 4k
+and 16k with GENMASK(PAGE_SHIFT-1, 10):
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index a5d58eb..cd30185 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -785,8 +785,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi0: spi@880000 {
-@@ -837,8 +839,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi1: spi@884000 {
-@@ -889,8 +893,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart2: serial@888000 {
-@@ -923,8 +929,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi3: spi@88c000 {
-@@ -975,8 +983,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart4: serial@890000 {
-@@ -1009,8 +1019,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi5: spi@894000 {
-@@ -1074,8 +1086,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi6: spi@a80000 {
-@@ -1126,8 +1140,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart7: serial@a84000 {
-@@ -1160,8 +1176,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi8: spi@a88000 {
-@@ -1212,8 +1230,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			uart9: serial@a8c000 {
-@@ -1246,8 +1266,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi10: spi@a90000 {
-@@ -1298,8 +1320,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
- 				status = "disabled";
- 			};
- 
- 			spi11: spi@a94000 {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+	and	\pte, \pte, #PTE_ADDR_MASK | GENMASK(PAGE_SHIFT - 1, 10)
+	and	\pte, \pte, #~GENMASK(PAGE_SHIFT - 1, 10)
 
+This compiles (for both 4k and 16k) and the assembly looks correct, but
+I've not done any other testing.
+
+Steve
