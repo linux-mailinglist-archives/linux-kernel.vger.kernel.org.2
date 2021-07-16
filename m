@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E212F3CB7D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002563CB7C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239918AbhGPN26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:28:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47510 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239391AbhGPN25 (ORCPT
+        id S239898AbhGPNUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232804AbhGPNUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:28:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626441961;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iApEIi9Miq3UIE5s+yV3GBcv1kZmgG+1mZKk7FrnGGs=;
-        b=QAlO/7sGksdBWKAP9bDZ6i53T7VqfVWX4ZXwsekzfz7BiK/O71zx8jAKeYfkxbDIuOs5jr
-        1VmIC9eL5fZ7nglsRcYEz1YAFwfzFzbJXjMFKTo7usWyy+/CgKj6aj+e6tsb07ESzrJxz3
-        cr7ebiPMZ6Ocf/0gDkcJSkB2w2LYjHQ=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-vUCUhWssN_CmChbE3dIr5A-1; Fri, 16 Jul 2021 09:26:00 -0400
-X-MC-Unique: vUCUhWssN_CmChbE3dIr5A-1
-Received: by mail-ej1-f69.google.com with SMTP id r10-20020a170906350ab02904f12f4a8c69so3601664eja.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 06:26:00 -0700 (PDT)
+        Fri, 16 Jul 2021 09:20:04 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7DDC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 06:17:10 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id p67so10862320oig.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 06:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gS9kOJpcGK76eRo5Aofr06uYyb4BuGzYuKkE7nL44x8=;
+        b=GrYNadcR5amCn2iDHt4hMO2O2LQIQzTsyizX7WVUE9JxK3q7CCJNaimFjmWm10aBwj
+         WVSUXw/xBLVkWh7fNyh8PHc74VAYtjeMna7Dm0NdlClt8x0vFU7u7ydFA/lzjmQ3UYYt
+         BPotPlxKSql8X2+bKqRqVE9zlfM/wF7hX8O7BX/XyMxsGFrdAC2nNjCigRJBNXCq7agO
+         0ro8a/61pJCVPZNZ2IbpVNS8BN3KyHWJHjNu1YEGIlxDlv/hmHG/nh+ldkrjcCpmBhb5
+         ySMyCdQegMuFWjFljwohdZVvr5kngrY0h7nINLfiusJjvrg+2bz16C7SF5gHrWRKDpBA
+         UOFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=iApEIi9Miq3UIE5s+yV3GBcv1kZmgG+1mZKk7FrnGGs=;
-        b=gdVF5YTOBouCah3MOpjXIWXF2qxbitGdbTv79Ut2MIhjPnYmnyDO+n5bEjUbmLqeYA
-         SMm8H9tTiwrnGQ47PpSnlpb2bTR9hj7ZpMrith8uO2gj5UkEryeylpJdkhNsRw1b+j+Y
-         RiT5jNp+anpcYMUQe/qflF5ZPWh3sKGwNrrMaLxIcxNWksY2oTTdPhCKLOBAe8u1NbEM
-         qCHsPAFku6Ni5nbgHfhZMgT1PMAu1ZLtr3CryoUf+Ee7nWTBr/vyZbRkvfCfDjt/BbN4
-         8CGUOzrwN+6VRJ+o64WpKxPV35mz22u1yf519n2m3aLVS2TY8WSq9YX6ob8y02DxLxW0
-         8T9Q==
-X-Gm-Message-State: AOAM532PaNSgdAWPyNlMhNK0pj7fL3878itLvAbPZ0swkLGuogOs9zEC
-        mInaOkwIPw5/xramnJwSy3Gd5gkRtNn9n8Gb52AzKiNt/Vza+/Qucq8Gg9o4/tLebuPxNLemj8c
-        OQA21qoQgra7Tpwch9O4QA/Yq
-X-Received: by 2002:a17:906:c29a:: with SMTP id r26mr12015151ejz.235.1626441958095;
-        Fri, 16 Jul 2021 06:25:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzg3o5Zm+WMzmX54XnqqEa0ngeEy6qu5V2lI5nMEf7EnM6pgvBbaS1pcrK55BQ7W7da23k6A==
-X-Received: by 2002:a17:906:c29a:: with SMTP id r26mr12015103ejz.235.1626441957555;
-        Fri, 16 Jul 2021 06:25:57 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id dj16sm3781486edb.0.2021.07.16.06.25.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 06:25:57 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org
-Cc:     anirban.sinha@nokia.com, mikelley@microsoft.com,
-        Ani Sinha <ani@anisinha.ca>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH] x86/hyperv: add comment describing
- TSC_INVARIANT_CONTROL MSR setting bit 0
-In-Reply-To: <20210716063341.2865562-1-ani@anisinha.ca>
-References: <20210716063341.2865562-1-ani@anisinha.ca>
-Date:   Fri, 16 Jul 2021 15:25:55 +0200
-Message-ID: <8735se1jbw.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gS9kOJpcGK76eRo5Aofr06uYyb4BuGzYuKkE7nL44x8=;
+        b=FnhqRlx7vy5zSplzGjDcDRj4cckcWpxi6WtgC67ICIaa98AqjJX11Y9AU9c4awMnyC
+         Ux0EEib1UIV49r+VYeGpiUFGUjNsv0vlCyMyiT4WrJAuejlPwIofiv5nDpgzLc4K5SMK
+         g2TT/MJISZABTLwDKisvT+YffvWc7aSgm6dxCvt8IidERXHLK8OX2I7WoUBUgDqhyskJ
+         fGt+HX2rYBekWIatHlA8aubauu8HmFmyaRSRgPDBMqLgeJ01uzeV4ch+avghv7HzjLAH
+         6ZFQzFRolyBcAlEyAFtGe8g7zv6xnoanwsGUO4TBOOCUjO3hsgCIiN8VU0IYFrOUPSq0
+         GNTA==
+X-Gm-Message-State: AOAM531L4jFeqz/vPXTZtLCnLgq3tfbf3Bu7lqHBuV6UK0cmBUEaQrvj
+        Ff+1ryhFYnsgVinPcroqPPJS0w==
+X-Google-Smtp-Source: ABdhPJyCnbfm9K3k3TkPCw3E0oHuQpDTPd9rqx/ncyn2f8DYEnq9d+jlXtztU1J0SjkpBvc9pLN8Ig==
+X-Received: by 2002:a05:6808:68f:: with SMTP id k15mr12079068oig.58.1626441429627;
+        Fri, 16 Jul 2021 06:17:09 -0700 (PDT)
+Received: from ?IPv6:2607:fb90:e658:f352:6680:99ff:fe6f:cb54? ([2607:fb90:e658:f352:6680:99ff:fe6f:cb54])
+        by smtp.gmail.com with ESMTPSA id a7sm612997oti.47.2021.07.16.06.17.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 06:17:08 -0700 (PDT)
+Subject: Re: [PATCH] mtd: fix size in mtd_info_user to support 64-bit
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Cc:     richard@nod.at, vigneshr@ti.com, David.Woodhouse@intel.com,
+        Artem.Bityutskiy@nokia.com, ext-adrian.hunter@nokia.com,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linfeilong@huawei.com
+References: <20210708131359.21591-1-linmiaohe@huawei.com>
+ <20210716010224.44582046@xps13>
+ <95e3d455-ccb1-0e22-ee83-78dc6ad8aab1@huawei.com>
+ <20210716114808.246e92ba@xps13>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <f7f55c5e-f6b2-542c-66d2-20f4d88bf669@landley.net>
+Date:   Fri, 16 Jul 2021 08:34:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210716114808.246e92ba@xps13>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ani Sinha <ani@anisinha.ca> writes:
+On 7/16/21 4:48 AM, Miquel Raynal wrote:
+> Hi Miaohe,
+> 
+> Miaohe Lin <linmiaohe@huawei.com> wrote on Fri, 16 Jul 2021 09:42:19
+> +0800:
+> 
+>> On 2021/7/16 7:02, Miquel Raynal wrote:
+>> > Hi Miaohe,
+>> > 
+>> > Miaohe Lin <linmiaohe@huawei.com> wrote on Thu, 8 Jul 2021 21:13:59
+>> > +0800:
+>> >   
+>> >> From: Feilong Lin <linfeilong@huawei.com>
+>> >>
+>> >> The size in struct mtd_info_user is 32-bit, which will cause errors
+>> >> when obtaining the size of large-capacity MTD devices, such as TLC
+>> >> NAND FLASH-2048Gb.  
+>> > 
+>> > Besides the fact that such devices are far from being supported by the
+>> > Linux kernel, this change would basically break userspace, it cannot
+>> > enter as-is...
+>> >   
+>> 
+>> I see. Many thanks for your reply! We're working with these large-capacity
+>> MTD devices now, any suggestion to work around this?
+> 
+> The only way is to create a second UAPI.
 
-> Commit dce7cd62754b5 ("x86/hyperv: Allow guests to enable InvariantTSC")
-> added the support for HV_X64_MSR_TSC_INVARIANT_CONTROL. Setting bit 0
-> of this synthetic MSR will allow hyper-v guests to report invariant TSC
-> CPU feature through CPUID. This comment adds this explanation to the code
-> and mentions where the Intel's generic platform init code reads this
-> feature bit from CPUID. The comment will help developers understand how
-> the two parts of the initialization (hyperV specific and non-hyperV
-> specific generic hw init) are related.
->
-> Signed-off-by: Ani Sinha <ani@anisinha.ca>
-> ---
->  arch/x86/kernel/cpu/mshyperv.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index 715458b7729a..d2429748170d 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -368,6 +368,14 @@ static void __init ms_hyperv_init_platform(void)
->  	machine_ops.crash_shutdown = hv_machine_crash_shutdown;
->  #endif
->  	if (ms_hyperv.features & HV_ACCESS_TSC_INVARIANT) {
-> +		/*
-> +		 * Setting bit 0 of the synthetic MSR 0x40000118 enables
-> +		 * guests to report invariant TSC feature through CPUID
-> +		 * instruction, CPUID 0x800000007/EDX, bit 8. See code in
-> +		 * early_init_intel() where this bit is examined. The
-> +		 * setting of this MSR bit should happen before init_intel()
-> +		 * is called.
+Twelve years ago a patch was submitted to add a 64 bit MTD api:
 
-It should probably be emphasized, that write to 0x40000118
-updates/changes guest visible CPUIDs. This may not be clear as CPUIDs
-are generally considered 'static'. 
+  https://lwn.net/Articles/326418/
 
-> +		 */
->  		wrmsrl(HV_X64_MSR_TSC_INVARIANT_CONTROL, 0x1);
->  		setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
->  	}
+But for some reason they only merged 64 bit erase:
 
--- 
-Vitaly
+  https://github.com/torvalds/linux/commit/0dc54e9f33e2
 
+But NOT the rest of the 64 bit mtd API in the same patch. I've never understood why.
+
+Rob
