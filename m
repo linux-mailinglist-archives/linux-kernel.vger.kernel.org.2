@@ -2,57 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F2B3CB33D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D5D3CB343
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbhGPHbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 03:31:12 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51396 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235808AbhGPHbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 03:31:11 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1m4IGO-0004rw-KJ; Fri, 16 Jul 2021 15:28:00 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1m4IGF-0001z9-SW; Fri, 16 Jul 2021 15:27:51 +0800
-Date:   Fri, 16 Jul 2021 15:27:51 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Jason Wang <wangborong@cdjrlc.com>
-Cc:     clabbe.montjoie@gmail.com, davem@davemloft.net, mripard@kernel.org,
-        wens@csie.org, jernej.skrabec@gmail.com, colin.king@canonical.com,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: sun8i-ss - Use kfree_sensitive
-Message-ID: <20210716072751.GA7595@gondor.apana.org.au>
-References: <20210701132200.31583-1-wangborong@cdjrlc.com>
+        id S235866AbhGPHfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 03:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235208AbhGPHfT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 03:35:19 -0400
+X-Greylist: delayed 317 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 16 Jul 2021 00:32:24 PDT
+Received: from forward106o.mail.yandex.net (forward106o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::609])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D106EC06175F;
+        Fri, 16 Jul 2021 00:32:24 -0700 (PDT)
+Received: from iva5-76c5c16f2a53.qloud-c.yandex.net (iva5-76c5c16f2a53.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:7bae:0:640:76c5:c16f])
+        by forward106o.mail.yandex.net (Yandex) with ESMTP id 454C65062347;
+        Fri, 16 Jul 2021 10:27:05 +0300 (MSK)
+Received: from iva1-bc1861525829.qloud-c.yandex.net (iva1-bc1861525829.qloud-c.yandex.net [2a02:6b8:c0c:a0e:0:640:bc18:6152])
+        by iva5-76c5c16f2a53.qloud-c.yandex.net (mxback/Yandex) with ESMTP id YjDptLVuBB-R5H0RC3R;
+        Fri, 16 Jul 2021 10:27:05 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1626420425;
+        bh=ibwhoL1eSkERw80Wa+H3P1m75bC+Y/fdfK3KDFajLS8=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=c2Xm/eKFF5UgHEnny3tmw7nHfTULIfIVJijV7uecarWPoay+qBsL+ACX65M9lQ613
+         49RHsyzBPNT0PeRuhAFO0MVzOXY3NYTz+gOMln7au4Z6oxPBZiQt8Lb7hFAHJCZoJe
+         /2GqSvy51AIrTghdTe4ADpAYYlc37WBF/Qmrzoa8=
+Authentication-Results: iva5-76c5c16f2a53.qloud-c.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by iva1-bc1861525829.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id peBL5hNod9-R42qL6US;
+        Fri, 16 Jul 2021 10:27:04 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] KVM: x86: accept userspace interrupt only if no event is
+ injected
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org
+References: <20210714213846.854837-1-pbonzini@redhat.com>
+From:   stsp <stsp2@yandex.ru>
+Message-ID: <6f2305c0-77a8-42af-f5e9-2664119b6b2e@yandex.ru>
+Date:   Fri, 16 Jul 2021 10:27:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701132200.31583-1-wangborong@cdjrlc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210714213846.854837-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 09:22:00PM +0800, Jason Wang wrote:
-> The kfree_sensitive is a kernel API to clear sensitive information
-> that should not be leaked to other future users of the same memory
-> objects and free the memory. Its function is the same as the
-> combination of memzero_explicit and kfree. Thus, we can replace the
-> combination APIs with the single kfree_sensitive API.
-> 
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+
+15.07.2021 00:38, Paolo Bonzini пишет:
+> Once an exception has been injected, any side effects related to
+> the exception (such as setting CR2 or DR6) have been taked
+
+"taken"? Probably a typo.
+
+
+>   place.
+> Therefore, once KVM sets the VM-entry interruption information
+> field or the AMD EVENTINJ field, the next VM-entry must deliver that
+> exception.
+>
+> Pending interrupts are processed after injected exceptions, so
+> in theory it would not be a problem to use KVM_INTERRUPT when
+> an injected exception is present.  However, DOSBox
+
+dosemu2 to be precise.
+
+
+>   is using
+> run->ready_for_interrupt_injection to detect interrupt windows
+> and then using KVM_SET_SREGS/KVM_SET_REGS to inject the
+> interrupt manually.  For this to work, the interrupt window
+> must be delayed after the completion of the previous event
+> injection.
+>
+> Cc: stable@vger.kernel.org
+> Reported-by: Stas Sergeev <stsp2@yandex.ru>
+> Tested-by: Stas Sergeev <stsp2@yandex.ru>
+> Fixes: 71cc849b7093 ("KVM: x86: Fix split-irqchip vs interrupt injection window request")
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+>   arch/x86/kvm/x86.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index fe3aaf195292..7fbab29b3569 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4342,6 +4342,9 @@ static int kvm_vcpu_ioctl_set_lapic(struct kvm_vcpu *vcpu,
+>   
+>   static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
+>   {
+> +	if (kvm_event_needs_reinjection(vcpu))
+> +		return false;
+> +
 
-I don't know what happened but this patch didn't make it into
-patchwork.  Could you please check and resubmit?
+kvm_event_needs_reinjection() seems
+to miss exception.pending check.
+Don't we need it too?
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Also perhaps a comment would be good
+to have to avoid it from disappearing again,
+as obviously kvm devs tend to overlook
+the possibility of injecting interrupts by hands.
+
