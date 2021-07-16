@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE813CB980
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D803CB98E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240636AbhGPPRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:17:54 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:10473 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240625AbhGPPRu (ORCPT
+        id S240711AbhGPPVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233094AbhGPPVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:17:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1626448495; x=1657984495;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FFW5iecHUrXYQRMMjleWv1/yTI/kguN5QLIMkSIa2jI=;
-  b=q3Lf1luBBo355d5O9JqIKsSt/OSUu5DdX4ywRRWF6yfdOuc31qLFMgs9
-   BW5VaI2fNiPVFDj9M5d3bv9tDlyd9wmW+K9nOGjBkpvGGFCUBJc8zjaiB
-   n5zrCjlkT6fjTrf/WlNnVMl63dTapuopkL4hXjJcDhUcSWUSQ+4rPj2M0
-   nxlg7hLaEMIXWgHVFCyiP6HKtl3MsDBUuKesPpYOrMt0ErPRwCiz7vduR
-   zj9DcjpU+U13nBdIV/huGVQcPILi0U+RuAQydn0psNdO2A+yr/T2R6Llw
-   sXm9d5Pe5GlM/wJkX83NubJ3wVD1jHuVlGqmo0KUjriWc9nQZ8GX28Ea2
-   g==;
-IronPort-SDR: Z7DzCzq5S/n8Ey/vcIVCGY5FZxEbudgdHZN9XU3s/GlrPVYbOwf22x8KJmU+qdeLMpFTIwn1t6
- gcXb9LHlPziyfu1I57u3MUQ80AQ16863avdnH5lZQGmRF4ii5/te3bmkTPBByEq0aU0SsLRwiw
- uW2Gp6iU1HDxJIwdTIH09nEwizbrVBz8F2jGFQKFdMZEAwGZWl4bVKCij8IaZ+Jnz9UwafNpt2
- vPS6hw6U6ALtbOq6gkIihHk45NlugVRLtFanexlZ2eDpcEltxIA7YHmfhu3QJnb7rUJd3F3SJb
- iyCcvI4gV49wxhY+eDrFvT+X
-X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
-   d="scan'208";a="122322356"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Jul 2021 08:14:54 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Jul 2021 08:14:54 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Fri, 16 Jul 2021 08:14:51 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <claudiu.beznea@microchip.com>, <eugen.hristev@microchip.com>,
-        <codrin.ciubotariu@microchip.com>, <emil.velikov@collabora.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH 2/2] ARM: configs: at91: Enable crypto software implementations
-Date:   Fri, 16 Jul 2021 18:14:47 +0300
-Message-ID: <20210716151447.833967-2-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210716151447.833967-1-tudor.ambarus@microchip.com>
-References: <20210716151447.833967-1-tudor.ambarus@microchip.com>
+        Fri, 16 Jul 2021 11:21:38 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E62C06175F;
+        Fri, 16 Jul 2021 08:18:42 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1m4Pbl-0004ys-49; Fri, 16 Jul 2021 17:18:33 +0200
+Date:   Fri, 16 Jul 2021 17:18:33 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>
+Subject: Re: [PATCH 2/3] net: netfilter: Add RFC-7597 Section 5.1 PSID support
+Message-ID: <20210716151833.GD9904@breakpoint.cc>
+References: <20210705103959.GG18022@breakpoint.cc>
+ <20210716002742.31078-1-Cole.Dishington@alliedtelesis.co.nz>
+ <20210716002742.31078-3-Cole.Dishington@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716002742.31078-3-Cole.Dishington@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a good idea to enable at least the same amount of algs as
-the hardware IPs are supporting. Provide the posibility for the
-hw accelerated crypto alg to fallback to software implementation,
-in case they need it.
+Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
+> diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+> index 7de595ead06a..4a9448684504 100644
+> --- a/net/netfilter/nf_nat_core.c
+> +++ b/net/netfilter/nf_nat_core.c
+> @@ -195,13 +195,36 @@ static bool nf_nat_inet_in_range(const struct nf_conntrack_tuple *t,
+>  static bool l4proto_in_range(const struct nf_conntrack_tuple *tuple,
+>  			     enum nf_nat_manip_type maniptype,
+>  			     const union nf_conntrack_man_proto *min,
+> -			     const union nf_conntrack_man_proto *max)
+> +			     const union nf_conntrack_man_proto *max,
+> +			     const union nf_conntrack_man_proto *base,
+> +			     bool is_psid)
+>  {
+>  	__be16 port;
+> +	u16 psid, psid_mask, offset_mask;
+> +
+> +	/* In this case we are in PSID mode, avoid checking all ranges by computing bitmasks */
+> +	if (is_psid) {
+> +		u16 power_j = ntohs(max->all) - ntohs(min->all) + 1;
+> +		u32 offset = ntohs(base->all);
+> +		u16 power_a;
+> +
+> +		if (offset == 0)
+> +			offset = 1 << 16;
+> +
+> +		power_a = (1 << 16) / offset;
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- arch/arm/configs/at91_dt_defconfig | 8 +++++++-
- arch/arm/configs/sama5_defconfig   | 7 +++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+Since the dividie is only needed nat setup and not for each packet I
+think its ok.
 
-diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
-index 06c888a45eb3..d348ae0d5363 100644
---- a/arch/arm/configs/at91_dt_defconfig
-+++ b/arch/arm/configs/at91_dt_defconfig
-@@ -213,7 +213,13 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_CODEPAGE_850=y
- CONFIG_NLS_ISO8859_1=y
- CONFIG_NLS_UTF8=y
--CONFIG_CRYPTO_ECB=y
-+CONFIG_CRYPTO_CBC=y
-+CONFIG_CRYPTO_CFB=y
-+CONFIG_CRYPTO_OFB=y
-+CONFIG_CRYPTO_XTS=y
-+CONFIG_CRYPTO_SHA1=y
-+CONFIG_CRYPTO_SHA512=y
-+CONFIG_CRYPTO_DES=y
- CONFIG_CRYPTO_USER_API_HASH=m
- CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_DEV_ATMEL_AES=y
-diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-index 1ccf84091dd7..e170676eed66 100644
---- a/arch/arm/configs/sama5_defconfig
-+++ b/arch/arm/configs/sama5_defconfig
-@@ -230,6 +230,13 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_CODEPAGE_850=y
- CONFIG_NLS_ISO8859_1=y
- CONFIG_NLS_UTF8=y
-+CONFIG_CRYPTO_CBC=y
-+CONFIG_CRYPTO_CFB=y
-+CONFIG_CRYPTO_OFB=y
-+CONFIG_CRYPTO_XTS=y
-+CONFIG_CRYPTO_SHA1=y
-+CONFIG_CRYPTO_SHA512=y
-+CONFIG_CRYPTO_DES=y
- CONFIG_CRYPTO_USER_API_HASH=m
- CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_DEV_ATMEL_AES=y
--- 
-2.25.1
+> +	if (range->flags & NF_NAT_RANGE_PSID) {
+> +		u16 base = ntohs(range->base_proto.all);
+> +		u16 min =  ntohs(range->min_proto.all);
+> +		u16 off = 0;
+> +
+> +		/* If offset=0, port range is in one contiguous block */
+> +		if (base)
+> +			off = prandom_u32() % (((1 << 16) / base) - 1);
 
+Bases 32769 > gives 0 for the modulo value, so perhaps compute that
+independently.
+
+You could reject > 32769 in the iptables checkentry target.
+
+Also, base of 21846 and above always give 0 result (% 1).
+
+I don't know psid well enough to give a recommendation here.
+
+If such inputs are nonsensical, just reject it when userspace asks for
+this and add a 
+
+if (WARN_ON_ONCE(base > bogus))
+	return NF_DROP;
+
+with s small coment explaining that xtables is supposed to not provide
+such value.
+
+Other than this I think its ok.
+
+I still dislike the 'bool is_psid' in the nat core, but I can't find
+a better solution.
