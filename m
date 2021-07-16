@@ -2,163 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8B13CB9DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E4A3CB9E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240736AbhGPPcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:32:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54360 "EHLO mail.kernel.org"
+        id S240852AbhGPPfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:35:55 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:58598 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240361AbhGPPcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:32:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5133E613E3;
-        Fri, 16 Jul 2021 15:29:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626449395;
-        bh=gwbpEM2I/t3yULslsQrJ4ImN5wzlSWPQIZoIz0IW+1s=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=f4ofUif5kH18TRPd4Y5z3aE1G7LQpbotUnjc8VuGp2I0yUtnZmdrMkMmoSR88EIa+
-         93kwmtIAUZ+oxmpJDNFFwxMEHn0SbGInIDxf63X8rFRBR/PMU2qW79TzYbsdKUXP6E
-         TUlYwbBlP/kaK9xxZMt+hsAHUqpt7w2RQi8IUzGxo22CMlgSQ1xq/KON5g8oKnjDtG
-         K1m2MpWwWkYQGM59WC2at2zpyln+B+Pz1po9li/5AK7BX73kdWyYxj8uTBAb1OJoMe
-         bW9dDdfbJ+KUVFSQqbzf2kBoLOQu77gYyJ+5VtTHbUVbGYj6U6W33FpA43P3eumjUD
-         88TIOyOE730zQ==
-Date:   Fri, 16 Jul 2021 08:29:54 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Roman Skakun <rm.skakun@gmail.com>
-cc:     Christoph Hellwig <hch@lst.de>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
-        Andrii Anisov <andrii_anisov@epam.com>,
-        Roman Skakun <Roman_Skakun@epam.com>
-Subject: Re: [PATCH v2] dma-mapping: use vmalloc_to_page for vmalloc
- addresses
-In-Reply-To: <CADu_u-OYA+Z_y-DBLxyUYGhmLVMtLggmZ_SnRiEtw9EGrO4oGg@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2107160828430.3916@sstabellini-ThinkPad-T480s>
-References: <20210715170011.GA17324@lst.de> <20210716083934.154992-1-rm.skakun@gmail.com> <20210716093551.GA17981@lst.de> <CADu_u-OYA+Z_y-DBLxyUYGhmLVMtLggmZ_SnRiEtw9EGrO4oGg@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S240282AbhGPPfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:35:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=CGZsktWNeZSP9brVnhmnumOVvSpPdBAXCv4lSMGQFv4=; b=KDq8NTcR/64IPQfgHMHGx8OrHD
+        PNyK6GiKo91ZMVNnntywFZG0QY/Lodr5w7nLMsFGrpQAnUZiyupr5iPpE183n16ThEiW298hbqzcC
+        AJjNi30BG7gEfdXUxvVZfmc1aa8+DJB033ckQYU3xAI2dz05S/s0FNuoiDZXpVAVuVXI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m4PpF-00DdAs-N5; Fri, 16 Jul 2021 17:32:29 +0200
+Date:   Fri, 16 Jul 2021 17:32:29 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     ericwouds@gmail.com
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Eric Woudstra <37153012+ericwoud@users.noreply.github.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
+Message-ID: <YPGmjd1ODFQ+ZIE2@lunn.ch>
+References: <20210716152213.4213-1-ericwouds@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-2042327733-1626449395=:3916"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716152213.4213-1-ericwouds@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-2042327733-1626449395=:3916
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Fri, 16 Jul 2021, Roman Skakun wrote:
-> > Technically this looks good.  But given that exposing a helper
-> > that does either vmalloc_to_page or virt_to_page is one of the
-> > never ending MM discussions I don't want to get into that discussion
-> > and just keep it local in the DMA code.
-> >
-> > Are you fine with me applying this version?
+On Fri, Jul 16, 2021 at 05:22:11PM +0200, ericwouds@gmail.com wrote:
+> From: Eric Woudstra <37153012+ericwoud@users.noreply.github.com>
 > 
-> Looks good to me, thanks!
-> But, Stefano asked me about using created helper in the
-> xen_swiotlb_free_coherent()
-> and I created a patch according to this mention.
+> According to reference guides mt7530 (mt7620) and mt7531:
 > 
-> We can merge this patch and create a new one for
-> xen_swiotlb_free_coherent() later.
-
-Yeah, no worries, I didn't know that exposing dma_common_vaddr_to_page
-was problematic.
-
-This patch is fine by me.
-
-
-> пт, 16 июл. 2021 г. в 12:35, Christoph Hellwig <hch@lst.de>:
-> >
-> > Technically this looks good.  But given that exposing a helper
-> > that does either vmalloc_to_page or virt_to_page is one of the
-> > never ending MM discussions I don't want to get into that discussion
-> > and just keep it local in the DMA code.
-> >
-> > Are you fine with me applying this version?
-> >
-> > ---
-> > From 40ac971eab89330d6153e7721e88acd2d98833f9 Mon Sep 17 00:00:00 2001
-> > From: Roman Skakun <Roman_Skakun@epam.com>
-> > Date: Fri, 16 Jul 2021 11:39:34 +0300
-> > Subject: dma-mapping: handle vmalloc addresses in
-> >  dma_common_{mmap,get_sgtable}
-> >
-> > xen-swiotlb can use vmalloc backed addresses for dma coherent allocations
-> > and uses the common helpers.  Properly handle them to unbreak Xen on
-> > ARM platforms.
-> >
-> > Fixes: 1b65c4e5a9af ("swiotlb-xen: use xen_alloc/free_coherent_pages")
-> > Signed-off-by: Roman Skakun <roman_skakun@epam.com>
-> > Reviewed-by: Andrii Anisov <andrii_anisov@epam.com>
-> > [hch: split the patch, renamed the helpers]
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  kernel/dma/ops_helpers.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-> > index 910ae69cae77..af4a6ef48ce0 100644
-> > --- a/kernel/dma/ops_helpers.c
-> > +++ b/kernel/dma/ops_helpers.c
-> > @@ -5,6 +5,13 @@
-> >   */
-> >  #include <linux/dma-map-ops.h>
-> >
-> > +static struct page *dma_common_vaddr_to_page(void *cpu_addr)
-> > +{
-> > +       if (is_vmalloc_addr(cpu_addr))
-> > +               return vmalloc_to_page(cpu_addr);
-> > +       return virt_to_page(cpu_addr);
-> > +}
-> > +
-> >  /*
-> >   * Create scatter-list for the already allocated DMA buffer.
-> >   */
-> > @@ -12,7 +19,7 @@ int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
-> >                  void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> >                  unsigned long attrs)
-> >  {
-> > -       struct page *page = virt_to_page(cpu_addr);
-> > +       struct page *page = dma_common_vaddr_to_page(cpu_addr);
-> >         int ret;
-> >
-> >         ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
-> > @@ -32,6 +39,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
-> >         unsigned long user_count = vma_pages(vma);
-> >         unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
-> >         unsigned long off = vma->vm_pgoff;
-> > +       struct page *page = dma_common_vaddr_to_page(cpu_addr);
-> >         int ret = -ENXIO;
-> >
-> >         vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
-> > @@ -43,7 +51,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
-> >                 return -ENXIO;
-> >
-> >         return remap_pfn_range(vma, vma->vm_start,
-> > -                       page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
-> > +                       page_to_pfn(page) + vma->vm_pgoff,
-> >                         user_count << PAGE_SHIFT, vma->vm_page_prot);
-> >  #else
-> >         return -ENXIO;
-> > --
-> > 2.30.2
-> >
+> NOTE: When IVL is reset, MAC[47:0] and FID[2:0] will be used to 
+> read/write the address table. When IVL is set, MAC[47:0] and CVID[11:0] 
+> will be used to read/write the address table.
 > 
+> Since the function only fills in CVID and no FID, we need to set the
+> IVL bit. The existing code does not set it.
 > 
-> -- 
-> Best Regards, Roman.
+> This is a fix for the issue I dropped here earlier:
 > 
---8323329-2042327733-1626449395=:3916--
+> http://lists.infradead.org/pipermail/linux-mediatek/2021-June/025697.html
+> 
+> With this patch, it is now possible to delete the 'self' fdb entry
+> manually. However, wifi roaming still has the same issue, the entry
+> does not get deleted automatically. Wifi roaming also needs a fix
+> somewhere else to function correctly in combination with vlan.
+> 
+> Signed-off-by: Eric Woudstra <37153012+ericwoud@users.noreply.github.com>
+
+Hi Eric
+
+We need a real email address in the Signed-off-by, and the noreply bit
+makes me think this will not work.
+
+      Andrew
