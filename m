@@ -2,194 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50373CB757
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459923CB75A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234938AbhGPM1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
+        id S238665AbhGPM2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbhGPM1m (ORCPT
+        with ESMTP id S237729AbhGPM2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:27:42 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B176C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:24:46 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w14so12710542edc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:24:46 -0700 (PDT)
+        Fri, 16 Jul 2021 08:28:45 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B96EC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:25:50 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so9638181otq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:25:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0BMKCPL2w13f5WuMU0JgMEQHWXhkHxmWwCk8sPwLJLo=;
-        b=f+z0EStJ61uRmypKqDpI4LQoNgp/1jmED87SY+jDnoYajHg6vvm0mXoNK+peeSwtmT
-         gObMT4v4+c+v+XSiWb0v7Fvi5Hz5RwhKEBniq8P63z1vZSX4Y0u75RGO7If+ViOJDXao
-         4byGu49ixAoixeTWl/pP3L+EgytCHYhSBBerGyQ0V2t78hiEQisTlCBGnwwImLfLlVLJ
-         viHspfUd5o8v46N0pXQuvwEv4gFRgWZsJy4aXrJ/nYPBPNqYIx/Cx6jdzprqDqY9O1UH
-         gHkyBZ1Cdt2N0tAnNvmVE3Xd4cjXXJm89Civ3nfJO1KgLep5meUH3fqzo4ZXANW/DIrd
-         HIPw==
+        d=mvista-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jXHUmaf0y4/dZXXr0fZDyHacF0cZd0H8h+cDQdqOEEI=;
+        b=uKODhxEVzy9dSJXhy+XN5tiHq9sMkKG1iBbWcWLaum2oTIcqLPxErKusLW0eBHNdHo
+         4PFs9E0S8/w514nndILWNOHjOfSkV+GYH13S2tB2Kwb5L/iqP7QgLrrCvpHZ0FCPDqUD
+         qbe0LNORN+x5XFtt2QSb7VScrt+IW8Og8lZZDhDvGIe5kV4eoDjdQ59Zrpf0b1o08PSY
+         y41gTB/MsAWAsKz5zW2Cs2laPSDiNfC+SkZa5lJjZcG2XegAu7y3fTW9M+XRHX6lYYBI
+         wsdgbjq1im34CzGKj0qwWl+HLURAZfF3ATZujlS+50LwCYoXo3MvNsGybp+Y6fP4uSOe
+         iUjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0BMKCPL2w13f5WuMU0JgMEQHWXhkHxmWwCk8sPwLJLo=;
-        b=Yn+2GMVoU3iaOU/lSJyisMtnXqST8L2BU9d7BQ5tmVusPy8TVCLOB7wpz7IrYcfLVL
-         t+7R8agX5Ut2mlFU73gIfSqAA67MEp2t0GdSoati+R71n2lWVa8LmIzIqZDnM9gnx7Gl
-         nWkP0ziZMScXHBqQFUyxmuBcf4xIVVW0hlac5zBMBZE+snazM/SUJuf0+sWWGP2SEpNM
-         rROAB05NGY8pIbFg/eh4h/M+QgnPyIYdcO9vW2FBYdUGYfhkWLnRuAo3Ove1nWDqW29T
-         KUA+1QORHSFGiuOFbxSPga09s+atzO8xjfGHDjdSXVXdotLeMJ+6SsnMUAccdjRz9Kcs
-         08YQ==
-X-Gm-Message-State: AOAM5331RMnj40kv7biZ20xPjxm76Y4i1bvMQEmKddNAEVtXXPPx1g6K
-        V4jYAWUVXWUN4vugpvyWuyQ=
-X-Google-Smtp-Source: ABdhPJyRcx/pwhzlb2vzxL9dpc4XEadqNTuFNrhog0Dzlpx96CfewL7pPlW4pheoqqfV7nRv9A95DQ==
-X-Received: by 2002:aa7:cb9a:: with SMTP id r26mr14530421edt.78.1626438284859;
-        Fri, 16 Jul 2021 05:24:44 -0700 (PDT)
-Received: from localhost.localdomain ([5.176.51.215])
-        by smtp.gmail.com with ESMTPSA id m8sm3678649eds.10.2021.07.16.05.24.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jXHUmaf0y4/dZXXr0fZDyHacF0cZd0H8h+cDQdqOEEI=;
+        b=p59aWCV/eXQO95e26VDS/FJH1Sknk87dXlETmA8AYD/sK3iNsvK7n9b/EOKMcCbpbT
+         dtmLYiA9t2Axh1esa86Yd6Fi/56UXoKoZOZHUYX//pVYatR7JV/5zhaXbw5ZJvGf2G/g
+         StzW8XkusKEix904XzcZoDWrgk0/NaXqXq/IlXQf2a1OmzOP+E2yWPFSVT3vrl+zJsRW
+         Ezfo3ws5A43o7WsCsBxqwt22oLZYyOD0kWIrUpmWqCP+kaH2sMzmmc8kEmXBNpK4rtK3
+         /pPmUAVy/3KGc/JdR9AApRZRl9MpuqkyYoFYRtCQ85xI93Hl9DkQIVMsA7BwxyKPtqf+
+         45xg==
+X-Gm-Message-State: AOAM5325k1emgbc2qQQ3c41UoBqdcacV93vSLyUqZqoPbvIKfbE4fxZ3
+        TPcQX8jPD0T/P88HAreptXPCLg==
+X-Google-Smtp-Source: ABdhPJz2/+owQkmQWuaI4LwLrBXqPA0Kkm19a8FSPQnyrS1wTBuTRzbuACHavWO/MnXehGrvO6Hg8w==
+X-Received: by 2002:a9d:7a8e:: with SMTP id l14mr7790897otn.304.1626438349886;
+        Fri, 16 Jul 2021 05:25:49 -0700 (PDT)
+Received: from minyard.net ([2001:470:b8f6:1b:8515:1333:671e:f6ae])
+        by smtp.gmail.com with ESMTPSA id y28sm1825305oti.80.2021.07.16.05.25.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 05:24:44 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 15:24:40 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in profile_init
-Message-ID: <20210716152440.368d4250@gmail.com>
-In-Reply-To: <000000000000610af005c714c1d1@google.com>
-References: <000000000000610af005c714c1d1@google.com>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Fri, 16 Jul 2021 05:25:49 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 07:25:47 -0500
+From:   Corey Minyard <cminyard@mvista.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     minyard@acm.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] oom_kill: oom_score_adj broken for processes with small
+ memory usage
+Message-ID: <20210716122547.GI3431@minyard.net>
+Reply-To: cminyard@mvista.com
+References: <20210701125430.836308-1-minyard@acm.org>
+ <YPEW3H+W/uiRYIfn@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPEW3H+W/uiRYIfn@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Jul 2021 05:47:21 -0700
-syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com> wrote:
-
-> Hello,
+On Fri, Jul 16, 2021 at 07:19:24AM +0200, Michal Hocko wrote:
+> On Thu 01-07-21 07:54:30, minyard@acm.org wrote:
+> > From: Corey Minyard <cminyard@mvista.com>
+> > 
+> > If you have a process with less than 1000 totalpages, the calculation:
+> > 
+> >   adj = (long)p->signal->oom_score_adj;
+> >   ...
+> >   adj *= totalpages / 1000;
+> > 
+> > will always result in adj being zero no matter what oom_score_adj is,
+> > which could result in the wrong process being picked for killing.
+> > 
+> > Fix by adding 1000 to totalpages before dividing.
 > 
-> syzbot found the following issue on:
+> Yes, this is a known limitation of the oom_score_adj and its scale.
+> Is this a practical problem to be solved though? I mean 0-1000 pages is
+> not really that much different from imprecision at a larger scale where
+> tasks are effectively considered equal.
+
+Known limitation?  Is this documented?  I couldn't find anything that
+said "oom_score_adj doesn't work at all with programs with <1000 pages
+besides setting the value to -1000".
+
 > 
-> HEAD commit:    3dbdb38e Merge branch 'for-5.14' of
-> git://git.kernel.org/p.. git tree:       upstream
-> console output:
-> https://syzkaller.appspot.com/x/log.txt?x=11342328300000 kernel
-> config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-> dashboard link:
-> https://syzkaller.appspot.com/bug?extid=e68c89a9510c159d9684 syz
-> repro:
-> https://syzkaller.appspot.com/x/repro.syz?x=149a96d2300000 C
-> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114e5bc4300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the
-> commit: Reported-by:
-> syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
-> 
-> kernel profiling enabled (shift: 1000000)
-> ================================================================================
-> UBSAN: shift-out-of-bounds in kernel/profile.c:110:31
-> shift exponent 1000000 is too large for 64-bit type 'long int'
-> CPU: 0 PID: 8453 Comm: syz-executor969 Tainted: G        W
-> 5.13.0-syzkaller #0 Hardware name: Google Google Compute
-> Engine/Google Compute Engine, BIOS Google 01/01/2011 Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
->  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
->  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
->  profile_init+0xfc/0x110 kernel/profile.c:110
->  profiling_store+0x5e/0xd0 kernel/ksysfs.c:80
->  kobj_attr_store+0x50/0x80 lib/kobject.c:856
->  sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+> I have to say I do not really like the proposed workaround. It doesn't
+> really solve the problem yet it adds another special case.
 
+The problem is that if you have a small program, there is no way to
+set it's priority besides completely disablling the OOM killer for
+it.
 
-I believe, something like this should fix it:
+I don't understand the special case comment.  How is this adding a
+special case?  This patch removes a special case.  Small programs
+working different than big programs is a special case.  Making them all
+work the same is removing an element of surprise from someone expecting
+things to work as documented.
 
-
-diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
-index 35859da8bd4f..ca075d9f671a 100644
---- a/kernel/ksysfs.c
-+++ b/kernel/ksysfs.c
-@@ -76,7 +76,9 @@ static ssize_t profiling_store(struct kobject *kobj,
- 	 * has a ton of callers and is not const.  It is
- 	 * easiest to cast it away here.
- 	 */
--	profile_setup((char *)buf);
-+	ret = profile_setup((char *)buf);
-+	if (!ret)
-+		return -EINVAL;
- 	ret = profile_init();
- 	if (ret)
- 		return ret;
-diff --git a/kernel/profile.c b/kernel/profile.c
-index c2ebddb5e974..5c61677030f4 100644
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -42,6 +42,7 @@ struct profile_hit {
- 
- static atomic_t *prof_buffer;
- static unsigned long prof_len, prof_shift;
-+#define MAX_PROF_SHIFT			sizeof(prof_shift) * 8
- 
- int prof_on __read_mostly;
- EXPORT_SYMBOL_GPL(prof_on);
-@@ -66,8 +67,11 @@ int profile_setup(char *str)
- 		prof_on = SLEEP_PROFILING;
- 		if (str[strlen(sleepstr)] == ',')
- 			str += strlen(sleepstr) + 1;
--		if (get_option(&str, &par))
-+		if (get_option(&str, &par)) {
-+			if (par >= MAX_PROF_SHIFT)
-+				return 0;
- 			prof_shift = par;
-+		}
- 		pr_info("kernel sleep profiling enabled (shift: %ld)\n",
- 			prof_shift);
- #else
-@@ -77,19 +81,27 @@ int profile_setup(char *str)
- 		prof_on = SCHED_PROFILING;
- 		if (str[strlen(schedstr)] == ',')
- 			str += strlen(schedstr) + 1;
--		if (get_option(&str, &par))
-+		if (get_option(&str, &par)) {
-+			if (par >= MAX_PROF_SHIFT)
-+				return 0;
- 			prof_shift = par;
-+		}
- 		pr_info("kernel schedule profiling enabled (shift: %ld)\n",
- 			prof_shift);
- 	} else if (!strncmp(str, kvmstr, strlen(kvmstr))) {
- 		prof_on = KVM_PROFILING;
- 		if (str[strlen(kvmstr)] == ',')
- 			str += strlen(kvmstr) + 1;
--		if (get_option(&str, &par))
-+		if (get_option(&str, &par)) {
-+			if (par >= MAX_PROF_SHIFT)
-+				return 0;
- 			prof_shift = par;
-+		}
- 		pr_info("kernel KVM profiling enabled (shift: %ld)\n",
- 			prof_shift);
- 	} else if (get_option(&str, &par)) {
-+		if (par >= MAX_PROF_SHIFT)
-+			return 0;
- 		prof_shift = par;
- 		prof_on = CPU_PROFILING;
- 		pr_info("kernel profiling enabled (shift: %ld)\n",
-
- 
-
-But this function can be called not only from sysfs and I can't
-understand will my patch break something or not. And, I think, error
-message is needed somewhere here to inform callers about wrong shift
-value.
-
-
-Thoughts?
-
-
--- 
-With regards,
-Pavel Skripkin
+-corey
