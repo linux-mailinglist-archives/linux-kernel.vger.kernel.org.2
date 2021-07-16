@@ -2,77 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFA63CBAA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EE83CBAA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhGPQoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhGPQn4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:43:56 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAD4C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:41:00 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d15so7489372qte.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=s9HW2RMba62RaYUFy8rI3e2x4Ua8X2oJj4sli91s8Ow=;
-        b=Nt792LXzdbHe95jSTYavlTgOhJe29tpHPsYtg1Q5I8ZHf+YI6FgyukxyNhOh9N+xa4
-         G5+07FhUforqmw35BGiGgP/U9x+B5xngjZpNB/0AJo8k420BCvzwjB862XLrETBPFDlq
-         8I52kAdbv0ViryNh1iYFv/L+3b/jYCWa5z4qSdN+wVVVCPq1R+i08BrRbYxKuZZGybsv
-         ZWDG7oLb0RH1DqRmv6ciDKKRpMxI9pFPdYEFylF3TCtPW6Qf2kHQeW+wYwv+buqE7VzG
-         GPMTcpv2dqUWTTI6xb3fJrl2Wmg4jZlfWFRAgriIwp2+144Coa2x2zePpvvZwNkGjRMs
-         aCQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=s9HW2RMba62RaYUFy8rI3e2x4Ua8X2oJj4sli91s8Ow=;
-        b=odPPC6f7Yow2YhGZ5msD34e/0inkuY354UtMzBc+7Y8qvQJwUwCKEtqAk9hbaLVUf5
-         Fxpy+LxVAf+XLlh7rVJ3Uvy8Q7Y/16HZ/UnmvJ3NzJ1s4ojH4HbXLojIg7WaAmxMXYml
-         KSaDGlGXfGmujKjwzkXa1jv1WvgVZR63ziXnR5y0gpcdzU/XWS+vyjgOK3+2O6NxxROa
-         3Elu3ftlePoi3rBsrkZl6gJlBfy8xZBWe+5DRtjqDcECPPf2OSz2dUZG75ZatY6PIgLN
-         ck180Df6Bgrbdm80BxsqPf0pcNGTdw7CQ30Hu4JQ3NgGIdiUdaQyxmHKysn3+e0Z8rUZ
-         shzw==
-X-Gm-Message-State: AOAM533ajphhZ38s66mF8Gbvc+8BirJ3nmz2Hp0/Sj2Ct1OdUSZ4BXbP
-        dydclX/Tr715pb54HPZdyK5TcI2x6+I7lJ8xP1E=
-X-Google-Smtp-Source: ABdhPJzvi2ZNgvAR9USkMa6UhFt/lA45AM6eLlA0OHSp8CXPyOcN6+7CitHzxZWlSjVcBMkgD7nNNvdaepy7/PaIVZo=
-X-Received: by 2002:ac8:4e93:: with SMTP id 19mr10098481qtp.202.1626453660168;
- Fri, 16 Jul 2021 09:41:00 -0700 (PDT)
+        id S230168AbhGPQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:45:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhGPQpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:45:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20E71613EE;
+        Fri, 16 Jul 2021 16:42:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626453776;
+        bh=iyvboBbJB24fM/KsyAy5OW3yngHgd2gk9Z7P8CwT2uQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BqWFxgtf2F90LRIp3skiNIGRSj9fbCyS/B5EneSGMlCDMjZzXsA3K4x3sYhcZKduJ
+         0Y1Je2sxlFdrU7lgi2JhXQ61+2LPmn/B9Pi+k+iK57R+3qzlnDzyPbBW0K4it149Hi
+         xLOK7Bng3RL9dyJtTbKwMq0onxIFdHwuQZpW4+OyghyT+eT9dvPYV9qTMZyBfAOO1+
+         C27QrYhbrCiuxuJ3sa7PFS7iRwifeGGzGUDFFv+r2pYvlfWIoONcc2OraRS4l2QVW/
+         aheSxDUJ4Zwx58GZmR/p+mSKqNw2P2Stgy2F0/NQhyETJsz5v8VYoz2cYRAIfxvhWI
+         lbf2D/XbMnaTQ==
+Received: by mail-ed1-f49.google.com with SMTP id w14so13723920edc.8;
+        Fri, 16 Jul 2021 09:42:56 -0700 (PDT)
+X-Gm-Message-State: AOAM530BbHhTVyilZ9NrVJJ/GWtOlUfnGBR2m5pwik+RHL0s0+BB3HJ6
+        tV76lUDcYgKZM97OWtt79krVyutdEYh58FRN5A==
+X-Google-Smtp-Source: ABdhPJxTUG7dBNjzKlgl2NjPeLK61EE68JCSroh9Re1GaEepDQbfq2+PN9sWPI3SzPvcfAVEylqryt0r4BYXQEWqlYc=
+X-Received: by 2002:aa7:da06:: with SMTP id r6mr16153573eds.38.1626453774729;
+ Fri, 16 Jul 2021 09:42:54 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:622a:1048:0:0:0:0 with HTTP; Fri, 16 Jul 2021 09:40:59
- -0700 (PDT)
-Reply-To: gabrieledgal76@gmail.com
-From:   Gabriel Edgal <nkutiulama103@gmail.com>
-Date:   Fri, 16 Jul 2021 09:40:59 -0700
-Message-ID: <CAJvQRk7=yKiWLwoSGx+-uHxzrota1L8_6-vhBrEWJifMNeBrDQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+References: <1626418701-28467-1-git-send-email-yongqiang.niu@mediatek.com> <1626418701-28467-2-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1626418701-28467-2-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 17 Jul 2021 00:42:43 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8eoz=TaXxT8hbyyEWow2CO1bv9ceEHmY5J5oAwDTtrUg@mail.gmail.com>
+Message-ID: <CAAOTY_8eoz=TaXxT8hbyyEWow2CO1bv9ceEHmY5J5oAwDTtrUg@mail.gmail.com>
+Subject: Re: [PATCH v1] mailbox: cmdq: add instruction time-out interrupt support
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Estimado amigo.
+Hi, Yongqiang:
 
-Soy el se?or Gabriel Edgal, soy el auditor interno jefe del banco Btci, tengo
-un fondo abandonado $ 9.5 millones de d?lares para transferirle, que estamos
-voy a compartir 50:50. Solo ser?s el pariente m?s cercano de mi difunto
-cliente que lleva el mismo apellido que usted, el fondo fue depositado
-en nuestra
-banco hace tantos a?os por mi difunto cliente que muri? con todo su
-familia en un accidente automovil?stico en 2010. Quiero invitarte como
-extranjero
-socio para ser el pariente m?s cercano del cliente fallecido, de modo
-que podamos
-har? un reclamo sobre el fondo depositado y lo compartir? entre los dos
-nosotros 50:50 cada uno. Quiero que me responda de inmediato para
-obtener m?s detalles.
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=
+=8816=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=882:58=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> add time-out cycle setting to make sure time-out interrupt irq
+> will happened when instruction time-out for wait and poll
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/mailbox/mtk-cmdq-mailbox.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
+q-mailbox.c
+> index de4793e..9a76bcd 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -35,6 +35,7 @@
+>  #define CMDQ_THR_END_ADDR              0x24
+>  #define CMDQ_THR_WAIT_TOKEN            0x30
+>  #define CMDQ_THR_PRIORITY              0x40
+> +#define CMDQ_THR_INSTN_TIMEOUT_CYCLES  0x50
+>
+>  #define GCE_GCTL_VALUE                 0x48
+>
+> @@ -53,6 +54,15 @@
+>  #define CMDQ_JUMP_BY_OFFSET            0x10000000
+>  #define CMDQ_JUMP_BY_PA                        0x10000001
+>
+> +/*
+> + * instruction time-out
+> + * cycles to issue instruction time-out interrupt for wait and poll inst=
+ructions
+> + * GCE axi_clock 156MHz
+> + * 1 cycle =3D 6.41ns
+> + * instruction time out 2^22*2*6.41ns =3D 53ms
 
-Atentamente,
-Sr. Gabriel Edgal
+I think every client has different timeout value, so it's not a good
+idea to have a unique timeout value in mailbox controller. Client
+could use timer or something similar to detect timeout.
+
+Regards,
+Chun-Kuang.
+
+> + */
+> +#define CMDQ_INSTN_TIMEOUT_CYCLES      22
+> +
+>  struct cmdq_thread {
+>         struct mbox_chan        *chan;
+>         void __iomem            *base;
+> @@ -368,6 +378,7 @@ static int cmdq_mbox_send_data(struct mbox_chan *chan=
+, void *data)
+>                 writel((task->pa_base + pkt->cmd_buf_size) >> cmdq->shift=
+_pa,
+>                        thread->base + CMDQ_THR_END_ADDR);
+>
+> +               writel(CMDQ_INSTN_TIMEOUT_CYCLES, thread->base + CMDQ_THR=
+_INSTN_TIMEOUT_CYCLES);
+>                 writel(thread->priority, thread->base + CMDQ_THR_PRIORITY=
+);
+>                 writel(CMDQ_THR_IRQ_EN, thread->base + CMDQ_THR_IRQ_ENABL=
+E);
+>                 writel(CMDQ_THR_ENABLED, thread->base + CMDQ_THR_ENABLE_T=
+ASK);
+> --
+> 1.8.1.1.dirty
+>
