@@ -2,68 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24A83CB168
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 06:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0BF3CB19F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 06:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhGPEQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 00:16:05 -0400
-Received: from audible.transient.net ([24.143.126.66]:44780 "HELO
-        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229507AbhGPEQC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 00:16:02 -0400
-Received: (qmail 2606 invoked from network); 16 Jul 2021 04:13:06 -0000
-Received: from cucamonga.audible.transient.net (192.168.2.5)
-  by canarsie.audible.transient.net with QMQP; 16 Jul 2021 04:13:06 -0000
-Received: (nullmailer pid 854 invoked by uid 1000);
-        Fri, 16 Jul 2021 04:13:06 -0000
-Date:   Fri, 16 Jul 2021 04:13:06 +0000
-From:   Jamie Heilman <jamie@audible.transient.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH 5.10 187/593] ACPI: resources: Add checks for ACPI IRQ
- override
-Message-ID: <YPEHUkaUKZeqyqav@audible.transient.net>
-Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Hui Wang <hui.wang@canonical.com>
-References: <20210712060903.591188609@linuxfoundation.org>
- <YO/2oiphnFdacyIN@audible.transient.net>
- <YPAR0qVkTCTgCOJl@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPAR0qVkTCTgCOJl@kroah.com>
+        id S231219AbhGPEam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 00:30:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhGPEal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 00:30:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E97C613E7;
+        Fri, 16 Jul 2021 04:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1626409665;
+        bh=tFDxqE59akvzwWpsNI0XGlepos706KgR+S84geBuR5Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BIsdIYZBf/GIZ/OG58cLxRbzeAIkH1UYvYJAk8ynX6PqF4mPL1JeHGw7BzUD/QUcY
+         IslPB0HK0ufUaCZSodRP4RN0CUaVQdYInv3kcB8PsCmSp3+lqd/tTAABNRJ4khiNzn
+         u4Oe7KrmMPL4pXX2jRDYepqW7kOsxuQp0H86hJmE=
+Date:   Thu, 15 Jul 2021 21:27:44 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Charan Teja Kalla <charante@codeaurora.org>
+Cc:     vbabka@suse.cz, corbet@lwn.net, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com, osalvador@suse.de,
+        rientjes@google.com, mchehab+huawei@kernel.org,
+        lokeshgidra@google.com, andrew.a.klychkov@gmail.com,
+        xi.fengfei@h3c.com, nigupta@nvidia.com,
+        dave.hansen@linux.intel.com, famzheng@amazon.com,
+        mateusznosek0@gmail.com, oleksandr@redhat.com, sh_def@163.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
+Subject: Re: [PATCH V4,0/3] mm: compaction: proactive compaction trigger by
+ user
+Message-Id: <20210715212744.1a43012c21711bafd25e5b68@linux-foundation.org>
+In-Reply-To: <c0150787-5f85-29ac-9666-05fabedabb1e@codeaurora.org>
+References: <cover.1624028025.git.charante@codeaurora.org>
+        <c0150787-5f85-29ac-9666-05fabedabb1e@codeaurora.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman wrote:
-> On Thu, Jul 15, 2021 at 08:49:38AM +0000, Jamie Heilman wrote:
-> > Greg Kroah-Hartman wrote:
-> > > From: Hui Wang <hui.wang@canonical.com>
-> > > 
-> > > [ Upstream commit 0ec4e55e9f571f08970ed115ec0addc691eda613 ]
-> > > 
-> > > The laptop keyboard doesn't work on many MEDION notebooks, but the
-> > > keyboard works well under Windows and Unix.
-> > 
-> > This patch makes my EPIA VIA Esther system stop booting correctly.
-> > Reverting it returns things to normal operation.  The symptoms are
-> > pretty strange.  When the kernel hands off to init I get none of the
-> > usual output from userspace, but I still get the occasional message
-> > from the kernel as modules load.  Despite some processes continuing on
-> > in the background, I'm never able to ssh into the host, and it never
-> > displays a getty on serial console like it should.  Sending a break
-> > and a command key over serial doesn't work like it should either.
-> > I've found I was able to somewhat get a little bit of IO if I plugged
-> > in a keyboard or unplugged it, like just jiggling the handle of the
-> > usb hot plug routines was enough to get my system to reboot so I only
-> > had to resort to hard resets a few times.  At any rate, maybe this
-> > patch wasn't really ready for stable.
-> 
-> Do you also have the same problem with 5.14-rc1?
+On Sat, 3 Jul 2021 15:52:10 +0530 Charan Teja Kalla <charante@codeaurora.org> wrote:
 
-I'm afraid so.
+> A gentle ping to have your valuable comments.
 
--- 
-Jamie Heilman                     http://audible.transient.net/~jamie/
+Can we please have a resend?
+
+The series has two fixes against the current code.  Please separate
+that work out from the new feature.  So a 2-patch series to fix the bugs
+followed by a single patch to add your new feature.
+
+
