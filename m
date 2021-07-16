@@ -2,198 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD033CB969
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA043CB976
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240823AbhGPPKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:10:02 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:48378 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240468AbhGPPKA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:10:00 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D5AEA3F0;
-        Fri, 16 Jul 2021 17:07:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1626448024;
-        bh=q6/4EKGBbkeghNfrc4ihOYsWk1AdSe654MqNSqL0QqE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NZmYYMpJ8AHJm+nIe7PrpyyYTeTMcRGQH/eSdfLFK1BRJV7zGB0A5vg9THrV6trnh
-         tmStm1vG6Mu7Z9eeG3cp5nFMedWi9WEdN+938CVJHKNe/6B+P+1mHi6R3iDMwH3z3Q
-         lZ1/7LqhGgdWjT7/52zBP7rLT5zCW3iOmqfXQFNQ=
-Date:   Fri, 16 Jul 2021 18:07:01 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dennis Rachui <drachui@de.adit-jv.com>
-Cc:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
-Message-ID: <YPGgldecdIHMjCuq@pendragon.ideasonboard.com>
-References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
- <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
- <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
- <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
- <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
- <YPAUoQ8KmmAE3fWD@oden.dyn.berto.se>
- <YPAeirL/qtmNYx99@pendragon.ideasonboard.com>
- <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
+        id S240603AbhGPPMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:12:07 -0400
+Received: from mout.gmx.net ([212.227.17.22]:33033 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237211AbhGPPMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:12:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626448129;
+        bh=sL/vPV8V2S1SS05EJUeg1OhF8H9B92zX2u7/UMjHgtA=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=jEGepE8cAXXPL7zxhN3bHCLkmLrr1GS6FuSRDj815tx2FTXEdiT0aYrAbnYv1UXHi
+         py2XnPUBcglFYrJbbzpVpR7tbq9uPhSAPU2QA1Wdu3Fs2dQToJqHHOfXJYaHHlNBaa
+         HrQYGtn6PO2nsTgjmYFQTCf9GQBqh6HfdiKFhJAg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([83.52.228.41]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHG8m-1lrC3V2A4W-00DJQ3; Fri, 16
+ Jul 2021 17:08:49 +0200
+Date:   Fri, 16 Jul 2021 17:08:32 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Brian Norris <briannorris@chromium.org>,
+        Pkshih <pkshih@realtek.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Yan-Hsuan Chuang <tony0620emma@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislaw Gruszka <sgruszka@redhat.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] rtw88: Fix out-of-bounds write
+Message-ID: <20210716150832.GA3963@titan>
+References: <20210711141634.6133-1-len.baker@gmx.com>
+ <b0811e08c4a04d2093f3251c55c0edb8@realtek.com>
+ <CA+ASDXOC_dqhf84kP4LsbenJuqeDyKcNFj=EaemrvfJy1oZi_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
+In-Reply-To: <CA+ASDXOC_dqhf84kP4LsbenJuqeDyKcNFj=EaemrvfJy1oZi_Q@mail.gmail.com>
+X-Provags-ID: V03:K1:FL6qu4j5wqlHgHFdnywZE5ywx9Klh+8cxQfSpQdCnflRsOLnkAX
+ 3x79fIQXKzWX/TOArPhOuW5/Gnf+ftRR3644uA+H5oICVs+w0R4sdmxzASoHM5hOoP6OChs
+ ztiPnHIsI4oohN+AnhcqUVQz4l6mQmwFQXC0wC8tXfY66swuN3VLAcVarXeBvk5UCvpT91M
+ fIzFKkTXwr/bh4bWd6l1g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bUASaPtJOP4=:9HHIghxNT6h204deC0zip6
+ xmcF53QoWnFyNy0WQPKnTlZaSJ0Ga57bJMjEprvBNpEecxPoOu4NSthvGTZpA61gQK57CBMeD
+ u+b/wP6Heq1qTLzOQtMpkSQpUyvgqn6D3SxPWqa6ZMLhzwgLojll8OobLHs+WIV+kwpQhB2pR
+ gD6lPwORaR4lLVKkzT1FTIxM4juPJgW0eZRr7RvYuV/ep3ZzaWc28WvsURXqEMruAWR2cOgxp
+ dyQdUigcv0Pm/FjTGeoaQ1XX55YEJDuuL53LdOm+ftYSl9oPvuGWjfPrxuuLrlPLe5mQM0GZl
+ JeAKAIppHg2dpsJnnaDDgFnnb4ohUrv+5SedJAJbvfkvkpDi2Nantcqbw1Xnfp6DABWDuHbSI
+ 0s52TRqxg++sLyxymJSWDEMXiAYKv3/fS8j1G2/OD7VlqCaCojSaQSfTGQfe5IY/HDSf+LcH/
+ QbezTZ/Xh1WNfIYyHl1LNfsAjoF76iMK8kQBcpSKG/yAVcfnWmaBFSy1nE4Ts7iW1rNxXnivw
+ 9njSIxC0SK3/JzECvaTS2/ukDXXJw8M/Slu6uuyKOjkmK7q8KzaA2wqMChhuDz+nMAhs8mKlJ
+ 3NzmmZoB8sdiuh56J/1Rkmpz7lTq30PYMdaIykMr0GcwnVAJI3HX8YCilC+EKXqH3mB5eBf2M
+ 1oV9fUIbvmM0l580VV6b25Z/pHTi5TRQiBussjerobwiOLQO3ZSfXOBG7N3LE18ZaP6Mj+NWT
+ Rtxnci3cabTQJrp4Mh1Kocmvpbf32f2r8BYSuK3wB6s6p7fKfrfJKGv9K0nQTsezi2VNgSBj1
+ DllNHNFcRiCsBo+/4gq/YGY4zLiUo5InjNtCDsRGQC3x4Tp40S9v+0Bzb5wyd3NEe0tZQ+6s2
+ HS/rImag3Z3/rdyeR7J5//sx/g76Cz8nvvj8h5SP+2MS2AXuRqiD+NmEPxAZEHJNwwtVGFJ+C
+ 92Gzt0dvuYv+S2lR1pmqSNiaZM2SUZtMcivECVF9EpuSPcAbAAlzxmdsdMcD5hDdtO92dMfxO
+ EVGQhKVV/K/gIkEsl5ZFKCD2oo3fN0WK7oqAplHcoBJlK72/1WlbFIMZY2BoWejaJBjJ4/xm4
+ yOAE5BHmskQxDYLauKWUyTu3q82cAUoW755
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dennis,
+On Mon, Jul 12, 2021 at 11:38:43AM -0700, Brian Norris wrote:
+> On Sun, Jul 11, 2021 at 6:43 PM Pkshih <pkshih@realtek.com> wrote:
+> > > -----Original Message-----
+> > > From: Len Baker [mailto:len.baker@gmx.com]
+> > >
+> > > In the rtw_pci_init_rx_ring function the "if (len > TRX_BD_IDX_MASK)=
+"
+> > > statement guarantees that len is less than or equal to GENMASK(11, 0=
+) or
+> > > in other words that len is less than or equal to 4095. However the
+> > > rx_ring->buf has a size of RTK_MAX_RX_DESC_NUM (defined as 512). Thi=
+s
+> > > way it is possible an out-of-bounds write in the for statement due t=
+o
+> > > the i variable can exceed the rx_ring->buff size.
+> > >
+> > > Fix it using the ARRAY_SIZE macro.
+> > >
+> > > Cc: stable@vger.kernel.org
+> > > Addresses-Coverity-ID: 1461515 ("Out-of-bounds write")
+>
+> Coverity seems to be giving a false warning here. I presume it's
+> taking the |len| comparison as proof that |len| might be as large as
+> TRX_BD_IDX_MASK, but as noted below, that's not really true; the |len|
+> comparison is really just dead code.
 
-On Fri, Jul 16, 2021 at 04:09:21PM +0200, Dennis Rachui wrote:
-> > On Thu, Jul 15, 2021 at 12:57:37PM +0200, Niklas Söderlund wrote:
-> > > On 2021-07-14 21:40:51 +0300, Laurent Pinchart wrote:
-> > > > On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
-> > > > > On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
-> > > > > > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
-> > > > > > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
-> > > > > > > > Verify that streaming is not active before setting the pad format.
-> > > > > > > > 
-> > > > > > > > According to the VIDIOC documentation [1] changes to the 
-> > > > > > > > active format of a media pad via the VIDIOC_SUBDEV_S_FMT 
-> > > > > > > > ioctl are applied to the underlying hardware.
-> > > > > > > > In rcar-csi2 a format change only applies to hardware, when 
-> > > > > > > > the pipeline is started. While the device is not in use, it 
-> > > > > > > > is therefore okay to update the format.
-> > > > > > > > 
-> > > > > > > > However, when the pipeline is active, this leads to a format 
-> > > > > > > > mismatch between driver and device.
-> > > > > > > > Other applications can query the format with 
-> > > > > > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported a 
-> > > > > > > > format that does not fit the current stream.
-> > > > > > > > 
-> > > > > > > > This commit prevents format update while streaming is active 
-> > > > > > > > and returns -EBUSY to user space, as suggested by [1].
-> > > > > > > > 
-> > > > > > > > [1] 
-> > > > > > > > Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rs
-> > > > > > > > t
-> > > > > > > 
-> > > > > > > I like that this is addressed, but I wonder is this not 
-> > > > > > > something that should be fixed in the V4L2 core and not in drivers?
-> > > > > > 
-> > > > > > Some drivers may support format changes during streaming (that's 
-> > > > > > allowed by the V4L2 API, I'm not sure if it's used anywhere 
-> > > > > > though). While I'd favour not duplicating the same logic in 
-> > > > > > different (and differently
-> > > > > > buggy) ways in drivers, I'm not sure how this could be 
-> > > > > > implemented in a sane way in the V4L2 core in its current state.
-> > > > > 
-> > > > > I understand it's possible from some devices to support to format 
-> > > > > changes during streaming, but as you point out it's the exception 
-> > > > > and not the rule, if used at all.
-> > > > > 
-> > > > > So my point is if we start to enforce this in drivers we are 
-> > > > > headed down a road where this will be messier to clean up. Would 
-> > > > > it not make more sens to default the V4L2 core to disallow format 
-> > > > > changes while streaming and add a new flag to V4L2_SUBDEV_CAP_ to 
-> > > > > signal that the subdevice supports format changes while streaming?
-> > > > > 
-> > > > > We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a 
-> > > > > subdevice only supports read-only operations so I think it would 
-> > > > > not be too hard to move this functionality into the core?
-> > > > 
-> > > > Yes, that's something we could try. The subdev core will then need 
-> > > > to track the streaming state, which may require wrapping the 
-> > > > .s_stream() call. Locking should then also likely be handled by the 
-> > > > core. Probably nothing impossible, but quite a bit of work. Any 
-> > > > volunteer ? :-)
-> > > 
-> > > We already track the stream count in struct media_entity and it's 
-> > > incremented/decremented under the media device lock by
-> > > media_pipeline_start() and media_pipeline_stop(). So I don't think 
-> > > it's such a hard feature to add.
-> > > 
-> > > The large task IMHO is to figure out if we have any subdevice in tree 
-> > > that allows format changes while streaming and that would need to set 
-> > > this new V4L2_SUBDEV_CAP_ flag.
+I agree.
+
+> > > Fixes: e3037485c68ec ("rtw88: new Realtek 802.11ac driver")
+> > > Signed-off-by: Len Baker <len.baker@gmx.com>
+>
+> > To prevent the 'len' argument from exceeding the array size of rx_ring=
+->buff, I
+> > suggest to add another checking statement, like
 > >
-> > Many subdevs allow format changes during streaming. The question is
-> > whether any of them do so knowingly, or if they're all buggy :-) I'd
-> > be surprised if there > were more than a couple of drivers that
-> > actually support this correctly.
-> 
-> From my perspective, the current stream_count from struct media_entity
-> would not be sufficient. References should be counted per struct media_pad.
-> Otherwise, devices that allow multiple parallel streams would block user
-> space from updating media-pads that are not part of an active media-pipeline.
-> E.g. in rcar-csi2 this could effect a source pad connected to currently
-> unused VIN device.
+> >         if (len > ARRAY_SIZE(rx_ring->buf)) {
+> >                 rtw_err(rtwdev, "len %d exceeds maximum RX ring buffer=
+\n", len);
+> >                 return -EINVAL;
+> >         }
+>
+> That seems like a better idea, if we really need to patch anything.
 
-We're working on moving the information to pads, see "[PATCH v7 06/27]
-media: entity: Move the pipeline from entity to pads"
-(https://lore.kernel.org/linux-media/20210524104408.599645-7-tomi.valkeinen@ideasonboard.com/).
-Does this address your concern ?
+I think it is reasonable to protect any potencial overflow (for example, i=
+f
+this function is used in the future with a parameter greater than 512). It
+is better to be defensive in this case :)
 
-> > > > > > > > Note: after creation of this commit, it was noticed that 
-> > > > > > > > Steve Longerbeam has a very similar solution in his fork.
-> > > > > > > > 
-> > > > > > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
-> > > > > > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
-> > > > > > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
-> > > > > > > > ---
-> > > > > > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 ++++++++++++++++++++-
-> > > > > > > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c 
-> > > > > > > > b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > index e28eff0..98152e1 100644
-> > > > > > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct 
-> > > > > > > > v4l2_subdev *sd,  {
-> > > > > > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
-> > > > > > > >  	struct v4l2_mbus_framefmt *framefmt;
-> > > > > > > > +	int ret = 0;
-> > > > > > > > +
-> > > > > > > > +	mutex_lock(&priv->lock);
-> > > > > > > >  
-> > > > > > > >  	if (!rcsi2_code_to_fmt(format->format.code))
-> > > > > > > >  		format->format.code = rcar_csi2_formats[0].code;
-> > > > > > > >  
-> > > > > > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
-> > > > > > > > +
-> > > > > > > > +		/*
-> > > > > > > > +		 * Do not apply changes to active format while streaming.
-> > > > > > > > +		 *
-> > > > > > > > +		 * Since video streams could be forwarded from sink pad to any
-> > > > > > > > +		 * source pad (depending on CSI-2 channel routing), all
-> > > > > > > > +		 * media pads are effected by this rule.
-> > > > > > > > +		 */
-> > > > > > > > +		if (priv->stream_count > 0) {
-> > > > > > > > +			ret = -EBUSY;
-> > > > > > > > +			goto out;
-> > > > > > > > +		}
-> > > > > > > > +
-> > > > > > > >  		priv->mf = format->format;
-> > > > > > > >  	} else {
-> > > > > > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > > > > > > >  		*framefmt = format->format;
-> > > > > > > >  	}
-> > > > > > > >  
-> > > > > > > > -	return 0;
-> > > > > > > > +out:
-> > > > > > > > +	mutex_unlock(&priv->lock);
-> > > > > > > > +
-> > > > > > > > +	return ret;
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
+> > But, I wonder if this a false alarm because 'len' is equal to ARRAY_SI=
+ZE(rx_ring->buf)
+> > for now.
+>
+> Or to the point: rtw_pci_init_rx_ring() is only ever called with a
+> fixed constant -- RTK_MAX_RX_DESC_NUM (i.e., 512) -- so the alleged
+> overflow cannot happen.
+>
+> Brian
 
--- 
-Regards,
+I will send a v2 for review.
 
-Laurent Pinchart
+Thanks,
+Len
