@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0C53CBB76
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6FB3CBB7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhGPSAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:00:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229611AbhGPSAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:00:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E10B613E3;
-        Fri, 16 Jul 2021 17:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626458242;
-        bh=LWyG8MpHh8BFo0s7Ah/H6RgQJyhhlYoOTByzoF32aYY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0XXT3d6slwl1d45kjk41yiutQIG2klAHxDijOl21jKKckOBf7ReItRB8rI9C1ozmW
-         OgmC8cMVrgGucYsTfRqW9rEp7aG5F1buq5RmWwN8ZwPoqnvdSHnI2kU1pytFEtx1EC
-         TxCGDZ1qCwS0u1bXElTFniICKL/O8n5nXo6WmJjg=
-Date:   Fri, 16 Jul 2021 19:57:20 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.4 031/122] net: moxa: Use
- devm_platform_get_and_ioremap_resource()
-Message-ID: <YPHIgCnX52+Dwap8@kroah.com>
-References: <20210715182448.393443551@linuxfoundation.org>
- <20210715182456.876823976@linuxfoundation.org>
- <CADVatmNj+HSarEpuYdKsZaNyrOgyXfJw7u9LJxa2RSBf8iXnHQ@mail.gmail.com>
- <f1410523-2498-9a71-4918-d14bfde40792@huawei.com>
+        id S231626AbhGPSAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:00:44 -0400
+Received: from mail-il1-f174.google.com ([209.85.166.174]:33338 "EHLO
+        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231462AbhGPSAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:00:39 -0400
+Received: by mail-il1-f174.google.com with SMTP id z1so9087131ils.0;
+        Fri, 16 Jul 2021 10:57:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w8fuSGIRi3aXlEM3SVAucMj5af3dyv+P+T2En9XIJ/Q=;
+        b=R6NobiGckv8lef92q/PaJZEwUaX0VW/qhK/DjTIV2dUbUfiRO67RNJd34fJoN35LMh
+         kAE+TTkphtNpQMxgCXzlmdtqz2hPhNSVivGVCcd758FWCNfMT53sVHD6OYwKDPXVu75m
+         t4JODPbxkzHtHZhXPeoUA3CnBTwlodTCkR4LQK6ZKnDQv9fO1cWLuw+YIZxjX2flcT3e
+         YLJo4xdGYVWtCfex448qwy4ite+U3OgvnUaUCBiYCwYcDnIxlDRqP6mxvC67gQUJyoaJ
+         zFpRQuYth+QOXa/gmfhcVf05AS9i+dVk1/b4FF2MKYOx1yvZTqYcsdhWYcKxnbxSIfyL
+         4o+A==
+X-Gm-Message-State: AOAM531/LTbZAoL9mslB9WnLxzoW6hwH4hT5bcKBUmsRmbWc3vxGRfiH
+        yM2EmUYGnZO7HtpU20bkAg==
+X-Google-Smtp-Source: ABdhPJyQIdi20njTUKaiJxZnh7giOjOgLu/NhcLv5arRjHxmE92fv5pbzvwQDvh+bspS2OoNhKaUVA==
+X-Received: by 2002:a92:2805:: with SMTP id l5mr7276380ilf.242.1626458263554;
+        Fri, 16 Jul 2021 10:57:43 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id i3sm5220090ilr.56.2021.07.16.10.57.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 10:57:42 -0700 (PDT)
+Received: (nullmailer pid 3678871 invoked by uid 1000);
+        Fri, 16 Jul 2021 17:57:41 -0000
+Date:   Fri, 16 Jul 2021 11:57:41 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     hsinyi@chromium.org, drinkcat@chromium.org,
+        linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, eizan@chromium.org,
+        linux-mediatek@lists.infradead.org, jitao.shi@mediatek.com,
+        chunkuang.hu@kernel.org, devicetree@vger.kernel.org,
+        matthias.bgg@gmail.com, kernel@collabora.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 5/7] arm64: dts: mt8183: Add the mmsys reset bit to
+ reset the dsi0
+Message-ID: <20210716175741.GA3678812@robh.at.kernel.org>
+References: <20210714101141.2089082-1-enric.balletbo@collabora.com>
+ <20210714121116.v2.5.I933f1532d7a1b2910843a9644c86a7d94a4b44e1@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f1410523-2498-9a71-4918-d14bfde40792@huawei.com>
+In-Reply-To: <20210714121116.v2.5.I933f1532d7a1b2910843a9644c86a7d94a4b44e1@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 09:37:10AM +0800, Yang Yingliang wrote:
-> Hi,
+On Wed, 14 Jul 2021 12:11:39 +0200, Enric Balletbo i Serra wrote:
+> Reset the DSI hardware is needed to prevent different settings between
+> the bootloader and the kernel.
 > 
-> On 2021/7/16 5:26, Sudip Mukherjee wrote:
-> > Hi Greg,
-> > 
-> > On Thu, Jul 15, 2021 at 7:44 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > > From: Yang Yingliang <yangyingliang@huawei.com>
-> > > 
-> > > [ Upstream commit 35cba15a504bf4f585bb9d78f47b22b28a1a06b2 ]
-> > arm moxart_defconfig build fails with the error:
-> > drivers/net/ethernet/moxa/moxart_ether.c:483:22: error: implicit
-> > declaration of function 'devm_platform_get_and_ioremap_resource'; did
-> > you mean 'devm_platform_ioremap_resource'?
-> > [-Werror=implicit-function-declaration]
+> While here, also remove the undocumented and also not used
+> 'mediatek,syscon-dsi' property.
 > 
-> devm_platform_get_and_ioremap_resource() is introduced in v5.7-rc1, I can
-> send a patch for stable-5.4.
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+> 
+> (no changes since v1)
+> 
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi  | 3 ++-
+>  include/dt-bindings/reset/mt8183-resets.h | 3 +++
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+> 
 
-If you want to, not a big deal.  I've dropped this patch now, thanks.
-
-greg k-h
+Acked-by: Rob Herring <robh@kernel.org>
