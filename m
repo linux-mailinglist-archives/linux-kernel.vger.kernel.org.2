@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171713CB70C
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6F43CB70D
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237155AbhGPL62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbhGPL60 (ORCPT
+        id S237960AbhGPL63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 07:58:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36597 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232088AbhGPL60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Jul 2021 07:58:26 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA66FC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:55:29 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 21so8744530pfp.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CuuUNeyNTsN3K8aU0aDQEXK/4L9nlIa7+OtjGKcpunY=;
-        b=ilR7jMGSOT91epJRWKTSV4TWp91AUEqYfzdpHW14vYCWVY7/ySlHPQtpAKXc7SxrxE
-         fo+GBS8AWSCzdpguryr1SCtkPXTzC21tpulmcw6IlfhZeDx8H8SwhW6svC2p7634K41n
-         MJKrY4h6QXwnoXNixI5m+OCJ7ehTdb/lTTkoRlGhc+yiwOW6EC/3+yKkMlJHGyRmtYEX
-         gvj2NPisv39pJmBFfFsAi0SsSFNTCIwdctM88B/c8XyzDH6/EgbC8ScWL2Nv+05wiRuI
-         btk/ypvTaUplcsZM0PPu2pYqmFK8AAqp3+HMge0uiSO7hyLTRHq/2j0yi0Ugs56svB4r
-         vC9A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626436531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P7vOCrL7ymn5lzl6wGJsSLq/fO1ofEKKbNjmiQHOWvk=;
+        b=Da6eLilYR+8fVHyI2hfsDhGC3FT7urboZzInrKJKTpp5tUinqw379c8bElV1zYRNKGcr3p
+        fBMQBNqVimSl2g4aklaF519f9pSvwFdtdn2AZ6HoHW6rkTWgjaDnvuyn6wrXTmSnzD+MSI
+        K3aBkR4KIQE7AknEycPmPlQ+1vpPQK4=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-LgLw8uQDM0Kthc736c6rbQ-1; Fri, 16 Jul 2021 07:55:30 -0400
+X-MC-Unique: LgLw8uQDM0Kthc736c6rbQ-1
+Received: by mail-wm1-f72.google.com with SMTP id z127-20020a1c7e850000b02901e46e4d52c0so2296416wmc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:55:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CuuUNeyNTsN3K8aU0aDQEXK/4L9nlIa7+OtjGKcpunY=;
-        b=fnKaKVEg88mriDY/s3fvdrfjThei7XXh4iAyF4MJp77yNSRVlK+rs7h4DvOp3R+EQa
-         O2r5frVazcRvWvG/THLyArTUT5PaZXIg9WS2t5NulMKG2yNA2OxRUuWOTyPiY33Grg1J
-         yg7RZeI4cIdnxFlD6vjVl3XqOtYRXEmhFiV5Yvm0mUg2grIC1O57WLayqA0mnJ6Erdr7
-         JVQRDjgUERyx4SKHUKTZuSx6mTa3bS3D4BMkRGviMFLII4PJGWqTdRjBDKv7617w5NW4
-         DL4RAlht5DzFQqmJwlVGj3TCW59hmMttqux6dwDQKvob8ipWxzpfPuvPdSxIn6vz92z9
-         c5Ww==
-X-Gm-Message-State: AOAM533eBsXSuQQacOSe6dnYrFZpPyBivQIpMvPoYm0S6ZQPuJmw8nae
-        kKYPQog90EjspwVrK+lscv5t
-X-Google-Smtp-Source: ABdhPJxOEFP1CXXrcrvX7fhCHB6g9I+micwaJNEQO6WrcnBhsuPwOmA3D0NePJv9GvQodmWAguj0TA==
-X-Received: by 2002:a05:6a00:1627:b029:333:323:2c04 with SMTP id e7-20020a056a001627b029033303232c04mr8802063pfc.78.1626436529253;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P7vOCrL7ymn5lzl6wGJsSLq/fO1ofEKKbNjmiQHOWvk=;
+        b=M9hzyRzZKbTlrZHCMPy+auuO6KduYXhQA0x79rlMVycQiXcYV1/Ys6nRgRDVBBE8sU
+         fm/ZbIcr3/yzvgpuw829PeQDP+YL0GY7ap97Lp4Em4sUICMLdFYAr5o0Lh48XmuMAaUC
+         JEn+uCb7m9vm4aqy5gORl+reBPMsjvqD1Q7/SnBHRIOBEfXXnI3YHyVzcIqyfGj62/zB
+         8JP/sGiIjKXpbVDYYx9f3e1JHMI3OpIlDBrdTdpkf8iwrfKSiDtI5eEvkc/Dpzuqo5Ey
+         +a8j1VOtpeWlbVLCmoBt3aSmGpdxyvy0LoJZ1NAWMcuhPS1K1W34tRFMSQvbq7tnieFg
+         kuQg==
+X-Gm-Message-State: AOAM530kAUtN0FtHKmghnPkKqy0pWl+Zt3BGtFAn0Mu7FZVIlD82K3M6
+        xvYCJr8XpyEU8VfNTbcpCX0/mZbppIYOwGwb1NMQudBDmXglNieYiQvYA3fWiO6pL/uAAUhiiD5
+        J8QYkg5J2tKG8VCFukdGFhzQe
+X-Received: by 2002:a5d:5609:: with SMTP id l9mr11956965wrv.123.1626436529155;
         Fri, 16 Jul 2021 04:55:29 -0700 (PDT)
-Received: from workstation ([120.138.12.214])
-        by smtp.gmail.com with ESMTPSA id n4sm10245611pff.51.2021.07.16.04.55.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+X-Google-Smtp-Source: ABdhPJwllltGZrc4GVOYhpZ2e16qs3ywz/mJ7myRuixUkila1t/EUl17a2fW1CG3hgNxEx2yvxj+JA==
+X-Received: by 2002:a5d:5609:: with SMTP id l9mr11956934wrv.123.1626436528864;
         Fri, 16 Jul 2021 04:55:28 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 17:25:25 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v2] bus: mhi: core: Improve debug messages for power up
-Message-ID: <20210716115525.GK3323@workstation>
-References: <1620072038-36160-1-git-send-email-bbhatt@codeaurora.org>
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j16sm9583935wrw.62.2021.07.16.04.55.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 04:55:28 -0700 (PDT)
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Juri Lelli <jlelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        He Zhe <zhe.he@windriver.com>
+References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
+ <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
+ <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
+ <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+ <20210715102249.2205-1-hdanton@sina.com>
+ <20210716020611.2288-1-hdanton@sina.com>
+ <20210716075539.2376-1-hdanton@sina.com>
+ <20210716093725.2438-1-hdanton@sina.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
+Message-ID: <a2f3f9ac-dac2-eadc-269e-91652d78ebd3@redhat.com>
+Date:   Fri, 16 Jul 2021 13:55:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620072038-36160-1-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210716093725.2438-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 01:00:38PM -0700, Bhaumik Bhatt wrote:
-> Improve error message to be more descriptive if a failure occurs
-> with an invalid power up execution environment. Additionally, add
-> a debug log to print the execution environment and MHI state
-> before a power up is attempted to confirm if the device is in an
-> expected state. This helps clarify reasons for power up failures
-> such as the device being found in a PBL or Emergency Download
-> Mode execution environment and the host expected a full power up
-> with Pass-Through and no image loading involved.
+On 16/07/21 11:37, Hillf Danton wrote:
+> On Fri, 16 Jul 2021 09:59:15 +0200 Paolo Bonzini wrote:
+>> * the warning only occurs if preemption occurs during the
+>> spin_lock_irqsave critical section (and therefore it can only occur in
+>> PREEMPT_RT kernels)
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> With that lock held, no waitqueue entry can be added on to the WQ - IOW no
+> wakeup will go stray.
+> 
+>> * the warning causes an early return 0 that messes up the VM's networking
+> 
+> Is the messup due to the zero or wakeup?
 
-Applied to mhi-next!
+It's caused by the missing wakeup, i.e. eventfd_signal not really 
+signaling anything.
 
-Thanks,
-Mani
+Paolo
 
-> ---
-> v2: Use power up instead of power on and update commit text with an example.
-> 
->  drivers/bus/mhi/core/pm.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index adf426c..f4a8b9a 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -1076,12 +1076,16 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
->  
->  	/* Confirm that the device is in valid exec env */
->  	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
-> -		dev_err(dev, "Not a valid EE for power on\n");
-> +		dev_err(dev, "%s is not a valid EE for power on\n",
-> +			TO_MHI_EXEC_STR(current_ee));
->  		ret = -EIO;
->  		goto error_async_power_up;
->  	}
->  
->  	state = mhi_get_mhi_state(mhi_cntrl);
-> +	dev_dbg(dev, "Attempting power on with EE: %s, state: %s\n",
-> +		TO_MHI_EXEC_STR(current_ee), TO_MHI_STATE_STR(state));
-> +
->  	if (state == MHI_STATE_SYS_ERR) {
->  		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
->  		ret = wait_event_timeout(mhi_cntrl->state_event,
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
