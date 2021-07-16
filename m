@@ -2,166 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B513CBD85
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1C83CBD89
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhGPUMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbhGPUMU (ORCPT
+        id S233257AbhGPUNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:13:45 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13630 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229801AbhGPUNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:12:20 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11507C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:09:25 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id 21so9847083pfp.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:09:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u0pjydLx3JpIq5yJNJLk5yOarBlyB2y3K/MnxWl/QbY=;
-        b=tRRdNY3rQ2yUA7YeMApBzYCfnUynKEQYzvoTtYjwb2IBJVLcaoKSbZCuXzwKfbLgIX
-         3mOjdoSJvrwbCvlxE+R6ynUZ8a+LIWwU2oZTWgBVs/mrUK+kAaJfUKGka+5z8/A16wVh
-         N69/Dpl7u65YeklLR0Bc+1yAIWu03kY4J+PtnrcYHIcqhdTtyQZYx+FETaMOCCrt7U+R
-         OjY/9ddNv9f7g8ftMdX+5rvrLUO0jghv5NOSeTY8BB2zhozAgoimF+FcM/+tg4tHpqQP
-         lnXivfv7pZzaXtBHgF18og1DTdi07tWTmhCc5A0spZAsi/PZDiblLHE44TH25UmFZDv7
-         yvPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u0pjydLx3JpIq5yJNJLk5yOarBlyB2y3K/MnxWl/QbY=;
-        b=lFsRH17v3Ig/BWXIDUdeqLWz2qmTIYQeGffslDAxLYhBhDEfoNpMpjjgW5C7lM12ud
-         1RT0KlSw6lALF6DdVcLSjCJPe3ipL+86SqervWUu4GFBEt6Z6LXdjvAUvFT4D3Ex7Q03
-         c4kkCVPgi310zui0fhT9K9yX2quVfEDccf3KvvKC2dkYsmkfzK8o+XmkRYUDpKgmYk67
-         7VSzUFtWPk7ebEe5iUK9joEQ25tel6Pvx9h7U3Rg2jvDR2Uqqf0g0EaV5j/TMtoetPp3
-         +eierPYsRde4YfTdyvj7BC4lTDOU4IwnJ3JzmZ1z22GjsOp5Vw9KaOldHQ0UAHCmFaag
-         KllQ==
-X-Gm-Message-State: AOAM532Inl3CK4Qh85rad0UgEzfl6tx+Zs7lTDAvyZwqFUo9bbrmgl4J
-        mUfE0mQunYfgyaRNf5TCx84ggw==
-X-Google-Smtp-Source: ABdhPJzSgg5eq5sHlSLHBqoD6kbg2B5nZ06VkbmBOHa18iisBV4VO+wis26EV8cOjPTv2CzUmcGMeg==
-X-Received: by 2002:aa7:81c5:0:b029:2f7:d4e3:78e9 with SMTP id c5-20020aa781c50000b02902f7d4e378e9mr12481425pfn.31.1626466164277;
-        Fri, 16 Jul 2021 13:09:24 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 1sm11367598pfv.138.2021.07.16.13.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 13:09:23 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 20:09:19 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 25/40] KVM: SVM: Reclaim the guest pages
- when SEV-SNP VM terminates
-Message-ID: <YPHnb5pW9IoTcwWU@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-26-brijesh.singh@amd.com>
+        Fri, 16 Jul 2021 16:13:41 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GK9CTX027140
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:10:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=y7LpQF5Jy+LuLZQk4XIdiU7P3m7mkQN7iFw0B1cps5o=;
+ b=EhLfvyK2z5z0RbvrzqIbt5ZpEw4TVA+cnNZwIRFccQFldZqk8TfJ0V0HbwgO+eHV82DP
+ mm1PXmwz0C8sVKHRaErH4XumAjeg7vh3O+hBhMbwKEDMx5LaX+Qk7e7ZFZbl2K+9iB3R
+ NJuxf03tgHnMhJXIHgtp0KaiFhvq3l+A+MY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 39tw36p774-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:10:45 -0700
+Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Jul 2021 13:10:42 -0700
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id 3A42F97E3BFB; Fri, 16 Jul 2021 13:10:41 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, Jan Kara <jack@suse.cz>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Boyang Xue <bxue@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Murphy Zhou <jencce.kernel@gmail.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH] writeback, cgroup: remove wb from offline list before releasing refcnt
+Date:   Fri, 16 Jul 2021 13:10:39 -0700
+Message-ID: <20210716201039.3762203-1-guro@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-26-brijesh.singh@amd.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: UokYjrNRbXlv1r-BN9EU7W89xDDLbdPt
+X-Proofpoint-GUID: UokYjrNRbXlv1r-BN9EU7W89xDDLbdPt
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-16_09:2021-07-16,2021-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 adultscore=0 phishscore=0 suspectscore=0
+ bulkscore=0 mlxlogscore=665 clxscore=1011 priorityscore=1501 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107160127
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> The guest pages of the SEV-SNP VM maybe added as a private page in the
-> RMP entry (assigned bit is set). The guest private pages must be
-> transitioned to the hypervisor state before its freed.
+Boyang reported that the commit c22d70a162d3 ("writeback, cgroup:
+release dying cgwbs by switching attached inodes") causes the kernel
+to crash while running xfstests generic/256 on ext4 on aarch64 and
+ppc64le.
 
-Isn't this patch needed much earlier in the series, i.e. when the first RMPUPDATE
-usage goes in?
+  [ 4366.380974] run fstests generic/256 at 2021-07-12 05:41:40
+  [ 4368.337078] EXT4-fs (vda3): mounted filesystem with ordered data
+  mode. Opts: . Quota mode: none.
+  [ 4371.275986] Unable to handle kernel NULL pointer dereference at
+  virtual address 0000000000000000
+  [ 4371.278210] Mem abort info:
+  [ 4371.278880]   ESR =3D 0x96000005
+  [ 4371.279603]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+  [ 4371.280878]   SET =3D 0, FnV =3D 0
+  [ 4371.281621]   EA =3D 0, S1PTW =3D 0
+  [ 4371.282396]   FSC =3D 0x05: level 1 translation fault
+  [ 4371.283635] Data abort info:
+  [ 4371.284333]   ISV =3D 0, ISS =3D 0x00000005
+  [ 4371.285246]   CM =3D 0, WnR =3D 0
+  [ 4371.285975] user pgtable: 64k pages, 48-bit VAs, pgdp=3D00000000b050=
+2000
+  [ 4371.287640] [0000000000000000] pgd=3D0000000000000000,
+  p4d=3D0000000000000000, pud=3D0000000000000000
+  [ 4371.290016] Internal error: Oops: 96000005 [#1] SMP
+  [ 4371.291251] Modules linked in: dm_flakey dm_snapshot dm_bufio
+  dm_zero dm_mod loop tls rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver
+  nfs lockd grace fscache netfs rfkill sunrpc ext4 vfat fat mbcache jbd2
+  drm fuse xfs libcrc32c crct10dif_ce ghash_ce sha2_ce sha256_arm64
+  sha1_ce virtio_blk virtio_net net_failover virtio_console failover
+  virtio_mmio aes_neon_bs [last unloaded: scsi_debug]
+  [ 4371.300059] CPU: 0 PID: 408468 Comm: kworker/u8:5 Tainted: G
+         X --------- ---  5.14.0-0.rc1.15.bx.el9.aarch64 #1
+  [ 4371.303009] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/0=
+6/2015
+  [ 4371.304685] Workqueue: events_unbound cleanup_offline_cgwbs_workfn
+  [ 4371.306329] pstate: 004000c5 (nzcv daIF +PAN -UAO -TCO BTYPE=3D--)
+  [ 4371.307867] pc : cleanup_offline_cgwbs_workfn+0x320/0x394
+  [ 4371.309254] lr : cleanup_offline_cgwbs_workfn+0xe0/0x394
+  [ 4371.310597] sp : ffff80001554fd10
+  [ 4371.311443] x29: ffff80001554fd10 x28: 0000000000000000 x27: 0000000=
+000000001
+  [ 4371.313320] x26: 0000000000000000 x25: 00000000000000e0 x24: ffffd2a=
+2fbe671a8
+  [ 4371.315159] x23: ffff80001554fd88 x22: ffffd2a2fbe67198 x21: ffffd2a=
+2fc25a730
+  [ 4371.316945] x20: ffff210412bc3000 x19: ffff210412bc3280 x18: 0000000=
+000000000
+  [ 4371.318690] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000=
+000000000
+  [ 4371.320437] x14: 0000000000000000 x13: 0000000000000030 x12: 0000000=
+000000040
+  [ 4371.322444] x11: ffff210481572238 x10: ffff21048157223a x9 : ffffd2a=
+2fa276c60
+  [ 4371.324243] x8 : ffff210484106b60 x7 : 0000000000000000 x6 : 0000000=
+00007d18a
+  [ 4371.326049] x5 : ffff210416a86400 x4 : ffff210412bc0280 x3 : 0000000=
+000000000
+  [ 4371.327898] x2 : ffff80001554fd88 x1 : ffff210412bc0280 x0 : 0000000=
+000000003
+  [ 4371.329748] Call trace:
+  [ 4371.330372]  cleanup_offline_cgwbs_workfn+0x320/0x394
+  [ 4371.331694]  process_one_work+0x1f4/0x4b0
+  [ 4371.332767]  worker_thread+0x184/0x540
+  [ 4371.333732]  kthread+0x114/0x120
+  [ 4371.334535]  ret_from_fork+0x10/0x18
+  [ 4371.335440] Code: d63f0020 97f99963 17ffffa6 f8588263 (f9400061)
+  [ 4371.337174] ---[ end trace e250fe289272792a ]---
+  [ 4371.338365] Kernel panic - not syncing: Oops: Fatal exception
+  [ 4371.339884] SMP: stopping secondary CPUs
+  [ 4372.424137] SMP: failed to stop secondary CPUs 0-2
+  [ 4372.436894] Kernel Offset: 0x52a2e9fa0000 from 0xffff800010000000
+  [ 4372.438408] PHYS_OFFSET: 0xfff0defca0000000
+  [ 4372.439496] CPU features: 0x00200251,23200840
+  [ 4372.440603] Memory Limit: none
+  [ 4372.441374] ---[ end Kernel panic - not syncing: Oops: Fatal excepti=
+on ]---
 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/kvm/svm/sev.c | 39 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 1f0635ac9ff9..4468995dd209 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1940,6 +1940,45 @@ find_enc_region(struct kvm *kvm, struct kvm_enc_region *range)
->  static void __unregister_enc_region_locked(struct kvm *kvm,
->  					   struct enc_region *region)
->  {
-> +	struct rmpupdate val = {};
-> +	unsigned long i, pfn;
-> +	struct rmpentry *e;
-> +	int level, rc;
-> +
-> +	/*
-> +	 * The guest memory pages are assigned in the RMP table. Unassign it
-> +	 * before releasing the memory.
-> +	 */
-> +	if (sev_snp_guest(kvm)) {
-> +		for (i = 0; i < region->npages; i++) {
-> +			pfn = page_to_pfn(region->pages[i]);
-> +
-> +			if (need_resched())
-> +				schedule();
+The problem happens when cgwb_release_workfn() races with
+cleanup_offline_cgwbs_workfn(): wb_tryget() in
+cleanup_offline_cgwbs_workfn() can be called after percpu_ref_exit()
+is cgwb_release_workfn(), which is basically a use-after-free error.
 
-This can simply be "cond_resched();"
+Fix the problem by making removing the writeback structure from the
+offline list before releasing the percpu reference counter. It will
+guarantee that cleanup_offline_cgwbs_workfn() will not see and not
+access writeback structures which are about to be released.
 
-> +
-> +			e = snp_lookup_page_in_rmptable(region->pages[i], &level);
-> +			if (unlikely(!e))
-> +				continue;
-> +
-> +			/* If its not a guest assigned page then skip it. */
-> +			if (!rmpentry_assigned(e))
-> +				continue;
-> +
-> +			/* Is the page part of a 2MB RMP entry? */
-> +			if (level == PG_LEVEL_2M) {
-> +				val.pagesize = RMP_PG_SIZE_2M;
-> +				pfn &= ~(KVM_PAGES_PER_HPAGE(PG_LEVEL_2M) - 1);
-> +			} else {
-> +				val.pagesize = RMP_PG_SIZE_4K;
+Fixes: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching=
+ attached inodes")
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Reported-by: Boyang Xue <bxue@redhat.com>
+Suggested-by: Jan Kara <jack@suse.cz>
+Tested-by: Darrick J. Wong <djwong@kernel.org>
+---
+ mm/backing-dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This raises yet more questions (for me) as to the interaction between Page-Size
-and Hyperivsor-Owned flags in the RMP.  It also raises questions on the correctness
-of zeroing the RMP entry if KVM_SEV_SNP_LAUNCH_START (in the previous patch).
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 271f2ca862c8..f5561ea7d90a 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -398,12 +398,12 @@ static void cgwb_release_workfn(struct work_struct =
+*work)
+ 	blkcg_unpin_online(blkcg);
+=20
+ 	fprop_local_destroy_percpu(&wb->memcg_completions);
+-	percpu_ref_exit(&wb->refcnt);
+=20
+ 	spin_lock_irq(&cgwb_lock);
+ 	list_del(&wb->offline_node);
+ 	spin_unlock_irq(&cgwb_lock);
+=20
++	percpu_ref_exit(&wb->refcnt);
+ 	wb_exit(wb);
+ 	WARN_ON_ONCE(!list_empty(&wb->b_attached));
+ 	kfree_rcu(wb, rcu);
+--=20
+2.31.1
 
-> +			}
-> +
-> +			/* Transition the page to hypervisor owned. */
-> +			rc = rmpupdate(pfn_to_page(pfn), &val);
-> +			if (rc)
-> +				pr_err("Failed to release pfn 0x%lx ret=%d\n", pfn, rc);
-
-This is not robust, e.g. KVM will unpin the memory and release it back to the
-kernel with a stale RMP entry.  Shouldn't this be a WARN+leak situation?
-
-> +		}
-> +	}
-> +
->  	sev_unpin_memory(kvm, region->pages, region->npages);
->  	list_del(&region->list);
->  	kfree(region);
-> -- 
-> 2.17.1
-> 
