@@ -2,143 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D0A3CBDED
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591E73CBDF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhGPUrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhGPUrC (ORCPT
+        id S234259AbhGPUrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:47:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234125AbhGPUrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:47:02 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF39C06175F;
-        Fri, 16 Jul 2021 13:44:06 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id g5so16866798ybu.10;
-        Fri, 16 Jul 2021 13:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q2gswAbNH1obxNTNlaEj+a8poBJQn9ocu7cMCkTxcXc=;
-        b=VcxqbuO13iNjgtwhVwNvkefz+rQVovI+bp61MiQyK5nLd9PTReE5ZtM4/4nbgkXg+V
-         EBaMpztGPenFBXKKe28j4WVe3qKwSVJgFySmnFs7JVBrIvVCnaciHSOKC86Mutw0L0QB
-         h7BNu2w1TJlGdah3mZCvWg/pFKdvp1WxEqX3gUjTkzKp9PSaoaMgZ4JuPM1nlPs9SzRA
-         KwAcvRFJcIEIcWXtE1PlSfpJy29XvaXQFU0VHR2PhvMuNS3gdC03H7acFzXpGlPkWOVN
-         HIwW5lxM6RcaEOo0Lx4gSdIxNEAI2uRq1GN12YbjskJDNz40P1pGguq6EP/JbSaZxBHx
-         zhXQ==
+        Fri, 16 Jul 2021 16:47:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626468290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2hOSl7T8uaeeFLE5+UEIkT2Ky1iFxWg4XaCDh/v6oAM=;
+        b=VDWvAgdFo74wH50CoRs7JZLx3kQkowsQbBebZ+mQ5848rPMBcBRD1CKV5hERB5ChirGyS5
+        8jhLKwmQ0Ya2UgRkYdE1C8Ul8zHngLHRSYeGsd35xriIaOBQPVk9JY3zB2IzdmQQQOPXdm
+        jq1L+7wYo5eVKYngGAKCxLcT3DtikNE=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-qLX-Xx0IM_Svjy02oGyA8A-1; Fri, 16 Jul 2021 16:44:48 -0400
+X-MC-Unique: qLX-Xx0IM_Svjy02oGyA8A-1
+Received: by mail-qt1-f199.google.com with SMTP id d9-20020ac84e290000b0290256a44e9034so7006450qtw.22
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:44:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q2gswAbNH1obxNTNlaEj+a8poBJQn9ocu7cMCkTxcXc=;
-        b=RoE4BsKzy76tZX/HxzdGwkgfbHrE9znlkmpR9jJHGNQcDPlt/sUTeMp5hqM0CaD6yy
-         TujV9Fw1B1SpGEkqupCbnOwYduPvUXXCPruO8c0rMxq+m3m0DKGlGCsc4+n5/WC/B8oK
-         7+g2tytw/bVZla5heiKsHoImQFnh/UT2YJ9HA1RLvVXE7TuLdy9FCH0osZl8kT/otKAc
-         M6Dic+o65GwkVnTR3i3AYVADfhOr3PwKKLYw5zS7mcsmchRgaZxTbzNTTPhvjn4cFUqV
-         Lpy/TAzVNH1l/4970HUNYAcJ7/DaZis7dYaUos8OnXQmNvGpXQOXOPb2x6/SK2p6vh6B
-         j33Q==
-X-Gm-Message-State: AOAM531Y5haCr/mb5gN/EZqVGlqEjVX8JB2wI9zJ1hpEpymXzUkxNPFM
-        hfxy0RG3DUcMd/uxVrxVHI80G4OLzgdcNl4GqtI=
-X-Google-Smtp-Source: ABdhPJzq/D0ABJ7rYDRGP6M1PpYDxPBU31zy86XSOPqyhA+HidsNy4qgnJpA+U/0CN3H5WWhDKM40k1OyQUp+AHnzt0=
-X-Received: by 2002:a25:b203:: with SMTP id i3mr15248038ybj.260.1626468246223;
- Fri, 16 Jul 2021 13:44:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=2hOSl7T8uaeeFLE5+UEIkT2Ky1iFxWg4XaCDh/v6oAM=;
+        b=faRYlbczB+DoB1wBhHLDC6WTFluzpkZ2JiojTg7ik8AyTrgLuDbYrVKkbFYB0YEoAy
+         Xnn7BsLW+KcQkxe+16Rbt5kpjmyo5kna9AVbWteA+jtlosCI34AVYPBKwOt3pMJoNnxc
+         +PUfYYsVheU7rA33E60dNxE2Hj1bIwVz6tTMxjiJKSrxrMMYekSS5mVTQlK0Q4R53sVY
+         WgR3tfI0O3n+t7iqgOHfICPJGMANchH7s0rUPiuEJco+OJkkgBp6K7i9bNHY9mz+U/9r
+         6uZpZKrEIqDhCXojdEvqOey3ryAKKnldZL+nFhhRJq4B5b5HTzjYy/mPrQBLYJIq/dW3
+         WgVg==
+X-Gm-Message-State: AOAM533ID8EvefPWhFV7ZI91dMseLFMV/UymomcG4jdkcHA4WK9GqK9S
+        3DcRXzxagVOmxsR7vZ+94i1ZyxYzNhLtWHeLrquQ0taUToMX5mjejjcVHLhNy6y94bpIV1ab0VP
+        mTXSL7suBtv/COvbwhwPyTZSl
+X-Received: by 2002:a0c:cdc6:: with SMTP id a6mr12055703qvn.15.1626468288353;
+        Fri, 16 Jul 2021 13:44:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJySk4FYXysPvZ8XbnmBZ1swg1qoJWhXD2QzxodwEZF9W9BDb8u8S6hPtBgK6GGEILviRId/pg==
+X-Received: by 2002:a0c:cdc6:: with SMTP id a6mr12055691qvn.15.1626468288230;
+        Fri, 16 Jul 2021 13:44:48 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a19sm3479074qtb.54.2021.07.16.13.44.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 13:44:47 -0700 (PDT)
+Subject: Re: [PATCH v5 2/3] spi: spi-altera-dfl: support n5010 feature
+ revision
+To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
+        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mark Brown <broonie@kernel.org>
+Cc:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+References: <20210716135441.3235863-1-martin@geanix.com>
+ <20210716135441.3235863-3-martin@geanix.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <be04e83e-bdf7-3a5c-ff34-a7cbf91f6ba2@redhat.com>
+Date:   Fri, 16 Jul 2021 13:44:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210716100452.113652-1-lmb@cloudflare.com>
-In-Reply-To: <20210716100452.113652-1-lmb@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 16 Jul 2021 13:43:55 -0700
-Message-ID: <CAEf4BzauzWhNag0z31krN_MTZTGLynAJvkh_7P3yLQCx5XLTAg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix OOB read when printing XDP link fdinfo
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210716135441.3235863-3-martin@geanix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 3:05 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+
+On 7/16/21 6:54 AM, Martin Hundebøll wrote:
+> From: Martin Hundebøll <mhu@silicom.dk>
 >
-> We got the following UBSAN report on one of our testing machines:
+> The Max10 BMC on the Silicom n5010 PAC is slightly different than the
+> existing BMCs, so use a dedicated feature revision detect it.
 >
->     ================================================================================
->     UBSAN: array-index-out-of-bounds in kernel/bpf/syscall.c:2389:24
->     index 6 is out of range for type 'char *[6]'
->     CPU: 43 PID: 930921 Comm: systemd-coredum Tainted: G           O      5.10.48-cloudflare-kasan-2021.7.0 #1
->     Hardware name: <snip>
->     Call Trace:
->      dump_stack+0x7d/0xa3
->      ubsan_epilogue+0x5/0x40
->      __ubsan_handle_out_of_bounds.cold+0x43/0x48
->      ? seq_printf+0x17d/0x250
->      bpf_link_show_fdinfo+0x329/0x380
->      ? bpf_map_value_size+0xe0/0xe0
->      ? put_files_struct+0x20/0x2d0
->      ? __kasan_kmalloc.constprop.0+0xc2/0xd0
->      seq_show+0x3f7/0x540
->      seq_read_iter+0x3f8/0x1040
->      seq_read+0x329/0x500
->      ? seq_read_iter+0x1040/0x1040
->      ? __fsnotify_parent+0x80/0x820
->      ? __fsnotify_update_child_dentry_flags+0x380/0x380
->      vfs_read+0x123/0x460
->      ksys_read+0xed/0x1c0
->      ? __x64_sys_pwrite64+0x1f0/0x1f0
->      do_syscall_64+0x33/0x40
->      entry_SYSCALL_64_after_hwframe+0x44/0xa9
->     <snip>
->     ================================================================================
->     ================================================================================
->     UBSAN: object-size-mismatch in kernel/bpf/syscall.c:2384:2
->
-> From the report, we can infer that some array access in bpf_link_show_fdinfo at index 6
-> is out of bounds. The obvious candidate is bpf_link_type_strs[BPF_LINK_TYPE_XDP] with
-> BPF_LINK_TYPE_XDP == 6. It turns out that BPF_LINK_TYPE_XDP is missing from bpf_types.h
-> and therefore doesn't have an entry in bpf_link_type_strs:
->
->     pos:        0
->     flags:      02000000
->     mnt_id:     13
->     link_type:  (null)
->     link_id:    4
->     prog_tag:   bcf7977d3b93787c
->     prog_id:    4
->     ifindex:    1
->
-> Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> Reviewed-by: Moritz Fischer <mdf@kernel.org>
 > ---
-
-Well, oops. Thanks for the fix!
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-It would be great to have a compilation error for something like this.
-I wonder if we can do something to detect this going forward?
-
->  include/linux/bpf_types.h | 1 +
->  1 file changed, 1 insertion(+)
 >
-> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> index a9db1eae6796..be95f2722ad9 100644
-> --- a/include/linux/bpf_types.h
-> +++ b/include/linux/bpf_types.h
-> @@ -135,3 +135,4 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
->  #ifdef CONFIG_NET
->  BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
->  #endif
-> +BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
-> --
-> 2.30.2
+> Changes since v4:
+>   * Moved spi board_info structure from global/static scope
+>     to function/stack scope
 >
+> Changes since v3:
+>   * Changed "BMC's" to "BMCs"
+>   * Added Moritz' Reviewed-by
+>
+> Changes since v2:
+>   * None
+>
+> Changes since v1:
+>   * use feature revision from struct dfl_device instead of reading it
+>     from io-mem
+>
+>   drivers/spi/spi-altera-dfl.c | 21 ++++++++++++---------
+>   1 file changed, 12 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/spi/spi-altera-dfl.c b/drivers/spi/spi-altera-dfl.c
+> index 39a3e1a032e0..44fc9ee13fc7 100644
+> --- a/drivers/spi/spi-altera-dfl.c
+> +++ b/drivers/spi/spi-altera-dfl.c
+> @@ -104,13 +104,6 @@ static const struct regmap_config indirect_regbus_cfg = {
+>   	.reg_read = indirect_bus_reg_read,
+>   };
+>   
+> -static struct spi_board_info m10_bmc_info = {
+> -	.modalias = "m10-d5005",
+> -	.max_speed_hz = 12500000,
+> -	.bus_num = 0,
+> -	.chip_select = 0,
+> -};
+> -
+>   static void config_spi_master(void __iomem *base, struct spi_master *master)
+>   {
+>   	u64 v;
+> @@ -130,6 +123,7 @@ static void config_spi_master(void __iomem *base, struct spi_master *master)
+>   
+>   static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
+>   {
+> +	struct spi_board_info board_info = { 0 };
+>   	struct device *dev = &dfl_dev->dev;
+>   	struct spi_master *master;
+>   	struct altera_spi *hw;
+> @@ -170,9 +164,18 @@ static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
+>   		goto exit;
+>   	}
+>   
+> -	if (!spi_new_device(master,  &m10_bmc_info)) {
+> +	if (dfl_dev->revision == FME_FEATURE_REV_MAX10_SPI_N5010)
+> +		strscpy(board_info.modalias, "m10-n5010", SPI_NAME_SIZE);
+> +	else
+> +		strscpy(board_info.modalias, "m10-d5005", SPI_NAME_SIZE);
+> +
+> +	board_info.max_speed_hz = 12500000;
+> +	board_info.bus_num = 0;
+> +	board_info.chip_select = 0;
+> +
+> +	if (!spi_new_device(master, &board_info)) {
+>   		dev_err(dev, "%s failed to create SPI device: %s\n",
+> -			__func__, m10_bmc_info.modalias);
+> +			__func__, board_info.modalias);
+>   	}
+>   
+
+Looks good to me.
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+>   	return 0;
+
