@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96063CB57B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52DC3CB57F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235490AbhGPJzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:55:44 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51600 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbhGPJzk (ORCPT
+        id S235762AbhGPJ5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:57:02 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:12000 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230360AbhGPJ5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:55:40 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7E9641C0B82; Fri, 16 Jul 2021 11:52:44 +0200 (CEST)
-Date:   Fri, 16 Jul 2021 11:52:43 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Oscar Salvador <osalvador@suse.de>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hanjun Guo <guohanjun@huawei.com>
-Subject: Re: [PATCH 5.10 140/215] mm,hwpoison: return -EBUSY when migration
- fails
-Message-ID: <20210716095243.GA12505@amd>
-References: <20210715182558.381078833@linuxfoundation.org>
- <20210715182624.294004469@linuxfoundation.org>
+        Fri, 16 Jul 2021 05:57:00 -0400
+X-UUID: 55162037efd240dcbc606e145f7512df-20210716
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=phqCD4LJR0pNpBe3FK03xbs4bsxYpn9hSfS9hoyXs+k=;
+        b=YTvmwYpHJUgH8Gjq3kCIA2uZD3b3ML+6Wwyu2kyXUAXulPxEZWEMPOXTKN2XIMBgFfQxMGfwgiLdE3Lu1hWEB7T5fxkZHjOIgBIi7Is4eVPMA1Y/6kgNr/zWftzXvfUqV4aNhPgV7AAjf4H+qLDRHhCjPj8K13mIfBFKpYLkxYk=;
+X-UUID: 55162037efd240dcbc606e145f7512df-20210716
+Received: from mtkmrs31.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <kewei.xu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1896142837; Fri, 16 Jul 2021 17:54:00 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N1.mediatek.inc
+ (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul
+ 2021 17:53:57 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 16 Jul 2021 17:53:57 +0800
+Message-ID: <1626429237.29703.16.camel@mhfsdcap03>
+Subject: Re: [PATCH 8/8] i2c: mediatek: modify bus speed calculation formula
+From:   Kewei Xu <kewei.xu@mediatek.com>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+CC:     <wsa@the-dreams.de>, <matthias.bgg@gmail.com>,
+        <robh+dt@kernel.org>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>,
+        <ot_daolong.zhu@mediatek.com>
+Date:   Fri, 16 Jul 2021 17:53:57 +0800
+In-Reply-To: <CA+Px+wWNcSkxvsEoUrgBN73+jhq8qjFJodYjQnY1zW2d0a5yRA@mail.gmail.com>
+References: <1626316157-24935-1-git-send-email-kewei.xu@mediatek.com>
+         <1626316157-24935-9-git-send-email-kewei.xu@mediatek.com>
+         <CA+Px+wWNcSkxvsEoUrgBN73+jhq8qjFJodYjQnY1zW2d0a5yRA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
-Content-Disposition: inline
-In-Reply-To: <20210715182624.294004469@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-SNTS-SMTP: 6F46C422B3AC89BA8EF99B33069B7310E2E578E2D00ADFD2BE96F0D5623221F82000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gVGh1LCAyMDIxLTA3LTE1IGF0IDE1OjA5ICswODAwLCBUenVuZy1CaSBTaGloIHdyb3RlOg0K
+PiBPbiBUaHUsIEp1bCAxNSwgMjAyMSBhdCAxMDozMiBBTSBLZXdlaSBYdSA8a2V3ZWkueHVAbWVk
+aWF0ZWsuY29tPiB3cm90ZToNCj4gPiBXaGVuIGNsb2NrLWRpdiBpcyAwIG9yIGdyZWF0ZXIgdGhh
+biAxLCB0aGUgYnVzIHNwZWVkDQo+ID4gY2FsY3VsYXRlZCBieSB0aGUgb2xkIHNwZWVkIGNhbGN1
+bGF0aW9uIGZvcm11bGEgd2lsbCBiZQ0KPiA+IGxhcmdlciB0aGFuIHRoZSB0YXJnZXQgc3BlZWQu
+IFNvIHdlIHVwZGF0ZSB0aGUgZm9ybXVsYS4NCj4gVGhlIHBhdGNoIHNvdW5kcyBsaWtlIGEgZml4
+IHVwLiAgTmVlZCBhICJGaXhlcyIgdGFnLg0KPiANCj4gPiAgICAgICAgIGZvciAoY2xrX2RpdiA9
+IDE7IGNsa19kaXYgPD0gbWF4X2Nsa19kaXY7IGNsa19kaXYrKykgew0KPiA+ICAgICAgICAgICAg
+ICAgICBjbGtfc3JjID0gcGFyZW50X2NsayAvIGNsa19kaXY7DQo+ID4gKyAgICAgICAgICAgICAg
+IGkyYy0+YWNfdGltaW5nLmludGVyX2Nsa19kaXYgPSBjbGtfZGl2IC0gMTsNCj4gVXNpbmcgdGhl
+IHdheSB0byBwYXNzIHRoZSBwYXJhbWV0ZXIgImludGVyX2Nsa19kaXYiIHRvDQo+IG10a19pMmNf
+Y2FsY3VsYXRlX3NwZWVkKCkgbG9va3MgbGlrZSBhIGhhY2suICBpbnRlcl9jbGtfZGl2IGlzIHNl
+dA0KPiBhZ2FpblsxXSBuZXh0IHRvIHRoZSBmb3IgbG9vcC4NCj4gDQo+IFsxXTogaHR0cHM6Ly9l
+bGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjUuMTQtcmMxL3NvdXJjZS9kcml2ZXJzL2kyYy9idXNz
+ZXMvaTJjLW10NjV4eC5jI0w4MzENCj4gDQo+IA0KPiANCj4gSSBoYXZlIG5vIGRvbWFpbiBrbm93
+bGVkZ2Ugb2Ygd2hhdC9ob3cgdGhlIHBhdGNoIGZpeGVzLiAgQnV0IGlmIHRoaXMNCj4gaXMgYSBz
+dGFuZGFsb25lIGZpeHVwIHBhdGNoLCBzdWdnZXN0IHNlcGFyYXRpbmcgdG8gYW4gaW5kZXBlbmRl
+bnQNCj4gcGF0Y2guDQoNCkhpIFR6dW5nLUJpLA0KDQoxLiBUaGlzIFBhdGNoIGlzIG5vdCBmb3Ig
+Zml4aW5nIHByZXZpb3VzIGNvbW1pdCxpdCBpcyBqdXN0IGZvciB0aGUgYmFkDQpzcGVlZCBmb3Jt
+dWxhLg0KDQoyLiBJIHdpbGwgZml4IHRoaXMgcHJvYmxlbSBhY2NvcmRpbmcgdG8geW91ciBzdWdn
+ZXN0aW9uIGluIHRoZSBuZXh0DQpwYXRjaC4NCg0KVGhhbmtzDQpLZXdlaQ0K
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> From: Oscar Salvador <osalvador@suse.de>
->=20
-> commit 3f4b815a439adfb8f238335612c4b28bc10084d8
-
-Another format of marking upstream commits. How are this is number 8
-or so. I have scripts trying to parse this, and I don't believe I'm
-the only one.
-
-> Link: https://lkml.kernel.org/r/20201209092818.30417-1-osalvador@suse.de
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Cc: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-
-Could se simply place Upstream: <hash> tag here? That should
-discourage such "creativity"... plus it will make it clear who touched
-patch in mainline context and who in stable context.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---LZvS9be/3tNcYl/X
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmDxVusACgkQMOfwapXb+vL/ywCaA9AxmEi/0e539yr6i76sbWx0
-PTYAoJr3uwgDGvyh8EZtZtKkqxlbnvni
-=4+Fo
------END PGP SIGNATURE-----
-
---LZvS9be/3tNcYl/X--
