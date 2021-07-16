@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858E93CB3AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3783B3CB3AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 09:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237085AbhGPH73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 03:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237035AbhGPH7R (ORCPT
+        id S236847AbhGPICZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:02:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38445 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231454AbhGPICP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 03:59:17 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EB6C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 00:56:21 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id u1so11047723wrs.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 00:56:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=uVR/Jck5v49z+8mpV1Vad40sYJAyKAQCRBapDHKnLq0=;
-        b=b173FmM3z/kDXtJkwwpSOdu/0g6cpW7zpOvbLBco/CZeWD6AqepnPtzBG5gG4+c9Qq
-         7Qu0jnHuDXsn7aK/PyTqTx+kh/VdIahhyG/JjJtmllOMoH8P3CmptiIdCpyh1r5vELO6
-         W+D8QXvBv+5RigjXbKPMIbGHopL7HSUMSVFNb/dE4bevZ9kvndHTUzo05SIkwQyKBOlB
-         n8JEzsW5eVebvHJLz9ducXQnO0SMZHZUplG/Q0/+eLlmTl4ZWnWAP+j23t7SEKiS/8o0
-         JIFCYcljOpw++5nx/W6NaWMzqTHB+YPkCNttLeOoO+pl9NJ25Vkl0jwzkY0RL/ci12xo
-         w4ew==
+        Fri, 16 Jul 2021 04:02:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626422360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wCE1R54px7pHO31Ms6CYqYxxvSqJ9OGRkqgRs5U4lAw=;
+        b=Y/W56AUtv/HobZ/oOCvuy5vCKWRkMvhTvc/dfq1CR6FzGcr+OKTYGZMbd7vn11/YjTk1Lo
+        HU+hmwJFIy1J9jKdN2UtpjFXH0adPY/bGMsXoJ+0Xj2+BlhRq+yHXH8wRS87cKr3MSTjWd
+        YBMFA9wQDG4hCdcNu5Y80K5tkko1RoA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-xKUr3TRSOQWozbLiW0tatA-1; Fri, 16 Jul 2021 03:59:18 -0400
+X-MC-Unique: xKUr3TRSOQWozbLiW0tatA-1
+Received: by mail-wm1-f72.google.com with SMTP id v25-20020a1cf7190000b0290197a4be97b7so2847622wmh.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 00:59:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=uVR/Jck5v49z+8mpV1Vad40sYJAyKAQCRBapDHKnLq0=;
-        b=I7/PZovLjW7wEbU3PeACiXzDVIsUNfYJTs14GQzCMWDJjwvAhtTkX9Lq871MSQYCpx
-         6gIwzjgcmBvfiCAksZXbLcAibVKWeXdu1Il4UAPL6Z9AUN4ARAkzv86fQwjZJpiva0G6
-         YHXwSo6MoVresknrqK3pIklECnD64765i48xDMVlXHd+fgmzBMJZctlC1DfEVjKxwgRH
-         EsAWnbYNr2sTX2wphAlJ66jac9KIUaTx6uM/E3DVlxozSyGJr4o1E4f92twK6CG5QsNO
-         hjB6T+q8TiDevQwobBh1BSZj+UdE0G7Cl7ezQ0x762E8mhOHPgRz+dU+k7lBrHfwHrRU
-         pzCg==
-X-Gm-Message-State: AOAM532HDbgvRc1w1t8iM3wA0SjdLFDWTyqz2J38I9HevDcUTA4Q3c5/
-        /5DkNG75b+lMgpr5XKkpiLrfuQ==
-X-Google-Smtp-Source: ABdhPJzASykD3R2CXs24CTU0MqQNY5E8qoccE8Z0FhyLoh+efaGHiDUdNcuDK6UwFWGbWEMK/4M3bg==
-X-Received: by 2002:a5d:46cc:: with SMTP id g12mr10357001wrs.136.1626422179823;
-        Fri, 16 Jul 2021 00:56:19 -0700 (PDT)
-Received: from google.com ([31.124.24.141])
-        by smtp.gmail.com with ESMTPSA id l14sm8810302wrs.22.2021.07.16.00.56.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 00:56:19 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 08:56:17 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
-Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] mfd: intel-m10-bmc: add n5010 variant
-Message-ID: <YPE7oUflWYJt1IoD@google.com>
-References: <20210629121214.988036-1-martin@geanix.com>
- <20210629121214.988036-4-martin@geanix.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wCE1R54px7pHO31Ms6CYqYxxvSqJ9OGRkqgRs5U4lAw=;
+        b=fUO8AXv1ZJsJ5zQ1YnCxYWxcVSkVadqFezGRkqkn078imiZeZZgSua4vGg2ajlBgwK
+         ONKTYyyDJ9LHhyhp1WlrBsJn8QMIIP/3XlEpASpfkfRvEiCY6qgMbRqcPyEpz34HNBxd
+         sbvbC50dK+TQsyRQMfaHWqpnzPJbD+gUa8T4yIRzcwLHQr2/JkhbJzf6JYie+sWk/S2K
+         M5BJkZbxgTWGGLri++A501en8nSdLQzaCRJA8kEA3kq8Id/GNtbWos/+ysIL3n+plVmY
+         EZ4yUEQUxki2lzQLxv1bE11+BIJ1QGso889TNxRoRxK6nJ+m4K5blyYsoSD8wMVEYCRH
+         7aiQ==
+X-Gm-Message-State: AOAM532KNBsXKZOVbLNaSmDOTw1cyLZbXqfRD/FM98p0mhOFYSjLdoWR
+        sGXs4yKqS71d+VHonNuZL8DRS8/iET9ygpRYqxQ0wD2xzPxvkjvi24gr+0OGxSFWKjoOu2TWAQz
+        ixQauSXf41JAN1ajS+A9hQW+v
+X-Received: by 2002:adf:db85:: with SMTP id u5mr7309335wri.167.1626422357612;
+        Fri, 16 Jul 2021 00:59:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+RSign22VHGZ9AxdA/IXsttb6RUFVCR5OCRio31NpfiHCPu9//zmQKLt69ZGL0luxr5/GKA==
+X-Received: by 2002:adf:db85:: with SMTP id u5mr7309303wri.167.1626422357339;
+        Fri, 16 Jul 2021 00:59:17 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id r67sm10558378wma.6.2021.07.16.00.59.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 00:59:16 -0700 (PDT)
+Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Juri Lelli <jlelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        He Zhe <zhe.he@windriver.com>
+References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
+ <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
+ <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
+ <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+ <20210715102249.2205-1-hdanton@sina.com>
+ <20210716020611.2288-1-hdanton@sina.com>
+ <20210716075539.2376-1-hdanton@sina.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8759e324-418b-493a-adee-236738cc3a4f@redhat.com>
+Date:   Fri, 16 Jul 2021 09:59:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210629121214.988036-4-martin@geanix.com>
+In-Reply-To: <20210716075539.2376-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Jun 2021, Martin Hundebøll wrote:
-
-> From: Martin Hundebøll <mhu@silicom.dk>
+On 16/07/21 09:55, Hillf Danton wrote:
+> On Fri, 16 Jul 2021 08:54:58 +0200 Paolo Bonzini wrote:
+>> On 16/07/21 04:06, Hillf Danton wrote:
+>>>> With the patch:
+>>>> 	- no warn
+>>>> 	- continue using the VM normally...
+>>> Well with the patch applied, the VM works fine without the stuff protected
+>>> by the spin_lock_irqsave(), then without the patch why simply printing a
+>>> warning makes the VM dumb, given the warning is there actually also
+>>> preventing you from touching the lock.
+>>
+>> If the warning is triggered, eventfd_signal will not do the wakeup.
 > 
->  The m10-bmc is used on the Silicom N5010 PAC too, so add it to list of
->  m10bmc types.
-
-Please refrain from padding out the commit message in future.
-
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-> Acked-by: Moritz Fischer <mdf@kernel.org>
-> Reviewed-by: Xu Yilun <yilun.xu@intel.com>
-> ---
+> [I am assuming we are not talking about the deadlock in the comment.]
 > 
-> Changes since v2:
->  * Added Yilun's Reviewed-by
->  * Added Moritz' Acked-by
-> 
-> Changes since v1:
->  * Patch split out to separate mfd changes
-> 
->  drivers/mfd/intel-m10-bmc.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
+> No preemption occured without the warning printed.
+> Why will the wakeup behavior change without peemption?
 
-Applied, thanks.
+Sorry, I don't follow.  What I'm saying is that without the patch:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+* the warning only occurs if preemption occurs during the 
+spin_lock_irqsave critical section (and therefore it can only occur in 
+PREEMPT_RT kernels)
+
+* the warning causes an early return 0 that messes up the VM's networking
+
+Paolo
+
