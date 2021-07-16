@@ -2,91 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969803CBD90
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0CA3CBD9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbhGPUQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:16:06 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39720 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhGPUQF (ORCPT
+        id S233469AbhGPUVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhGPUVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:16:05 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1m4UCf-0006dK-96; Fri, 16 Jul 2021 22:12:57 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1m4UCe-000QgN-RO; Fri, 16 Jul 2021 22:12:56 +0200
-Subject: Re: [PATCH v2 bpf-nxt] Documentation/bpf: Add heading and example for
- extensions in filter.rst
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     "Roy, UjjaL" <royujjal@gmail.com>, Song Liu <song@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, BPF <bpf@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-References: <royujjal@gmail.com> <20210712173723.1597-1-royujjal@gmail.com>
- <60ee2dc76ac1c_196e22088d@john-XPS-13-9370.notmuch>
- <CAADnVQJ=DoRDcVkaXmY3EmNdLoO7gq1mkJOn5G=00wKH8qUtZQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <80579c8d-ecdb-4334-9912-c04f75f7a6d3@iogearbox.net>
-Date:   Fri, 16 Jul 2021 22:12:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 16 Jul 2021 16:21:30 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF2BC061762
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:18:32 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id y17so11017979pgf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7BfdE/UnNU5Cufvf6AxaiSfhYzH0BNSWGCMFhxKGx24=;
+        b=E/6CFLEks/63BAj+rvhYCFw8+j7smWigt7E6yUbBVKRWlRh4N7F8j6bfSFznq5Pexd
+         iEJCSF81FF07VW1In+vgw7fKVgU1GCERXQxf8aQZUNZbSALSG+CX2F+XKV7NUrUtAWJ7
+         ZfhTy9tv9CvIii44N6QwKBAajeafbJHnYCiBPRppBc7l6DZwSY9HDsTA6fAGWgC5XQl9
+         uHP0lCmDLTn/ZErBYw/dnr8p5AzKbvX/5t0q1qetAfHdGQm5eBeQuyiumdM3qN90KASo
+         4BWIk/iOoYKVnBz4sy81Zudtpai8KHzWDLeVVYFmFgedPtIMuywTSq6e+ol03K9nNUhB
+         oisQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7BfdE/UnNU5Cufvf6AxaiSfhYzH0BNSWGCMFhxKGx24=;
+        b=UvOS/1sEH5/zyJecbdAR1Y/dewNWZw9blDe0P7rkaTcjhgSLptKL5EcKs0/a/l4psl
+         chTDD2Xz4IQoc5trxMX2pibVzfpch6v1WmF+39BaoLLYF9w0z2lFiMIO9UoX85RlmiPh
+         +l1rVp+vagz+VAMD9ttnPrA7rV3OduO/njfdo2J5sBHy4vp/AGKdXPz58zg3tyXJSHzt
+         rtv68FZhO7ASD4ttw/lHxixhX5JAk1Ndj7z/JKNnOhVs1oRw3XIsEs00evj4izj5E9Eq
+         jc4gg26sqnH2UTxLBsiDKyJRp9l12sAX/gbya/A9iOTbQJtPSfyKVU4DFfqCOk1LfnC0
+         w3OA==
+X-Gm-Message-State: AOAM533ewi05ZnXd8CbpMntWuLzmm78JOMMc0rzeangHMd3te65gcmra
+        PvkKB8+/CmAojZ6IKAUJ+0wZsw==
+X-Google-Smtp-Source: ABdhPJxGmVxKHvgAi++bhPO4+E3+foVmkz5V2tqUg30o5TimNltdIyo4I4VHmzy377lREouP3naHHw==
+X-Received: by 2002:a63:770c:: with SMTP id s12mr7009862pgc.339.1626466711719;
+        Fri, 16 Jul 2021 13:18:31 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id k8sm3003625pfu.116.2021.07.16.13.18.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 13:18:31 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 20:18:27 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 26/40] KVM: SVM: Add
+ KVM_SEV_SNP_LAUNCH_FINISH command
+Message-ID: <YPHpk3RFSmE13ZXz@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-27-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJ=DoRDcVkaXmY3EmNdLoO7gq1mkJOn5G=00wKH8qUtZQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26234/Fri Jul 16 10:18:39 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707183616.5620-27-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/21 3:48 AM, Alexei Starovoitov wrote:
-> On Tue, Jul 13, 2021 at 5:20 PM John Fastabend <john.fastabend@gmail.com> wrote:
->>
->> Roy, UjjaL wrote:
->>> [1] https://www.kernel.org/doc/html/latest/bpf/
->>>
->>> Add new heading for extensions to make it more readable. Also, add one
->>> more example of filtering interface index for better understanding.
->>>
->>> Signed-off-by: Roy, UjjaL <royujjal@gmail.com>
->>> Acked-by: Song Liu <songliubraving@fb.com>
->>
->> Looks OK to me. I thought the original was readable without the header, but
->> if it helps someone seems easy enough to do.
->>
->> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> 
-> I cannot figure out how to apply this patch, because I see:
-> Applying: Documentation/bpf: Add heading and example for extensions in
-> filter.rst
-> fatal: empty ident name (for <>) not allowed
-> 
-> Any idea?
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> +        struct kvm_sev_snp_launch_finish {
+> +                __u64 id_block_uaddr;
+> +                __u64 id_auth_uaddr;
+> +                __u8 id_block_en;
+> +                __u8 auth_key_en;
+> +                __u8 host_data[32];
 
-Same happened on my side. Maybe not sent via git-send-email(1)? Anyway, I've
-applied manually meanwhile.
+Pad this one too?
+
+> +        };
+> +
+> +
+> +See SEV-SNP specification for further details on launch finish input parameters.
+
+...
+
+> +	data->gctx_paddr = __psp_pa(sev->snp_context);
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_SNP_LAUNCH_FINISH, data, &argp->error);
+
+Shouldn't KVM unwind everything it did if LAUNCH_FINISH fails?  And if that's
+not possible, take steps to make the VM unusable?
+
+> +
+> +	kfree(id_auth);
+> +
+> +e_free_id_block:
+> +	kfree(id_block);
+> +
+> +e_free:
+> +	kfree(data);
+> +
+> +	return ret;
+> +}
+> +
+
+...
+
+> @@ -2346,8 +2454,25 @@ void sev_free_vcpu(struct kvm_vcpu *vcpu)
+>  
+>  	if (vcpu->arch.guest_state_protected)
+>  		sev_flush_guest_memory(svm, svm->vmsa, PAGE_SIZE);
+> +
+> +	/*
+> +	 * If its an SNP guest, then VMSA was added in the RMP entry as a guest owned page.
+> +	 * Transition the page to hyperivosr state before releasing it back to the system.
+
+"hyperivosr" typo.  And please wrap at 80 chars.
+
+> +	 */
+> +	if (sev_snp_guest(vcpu->kvm)) {
+> +		struct rmpupdate e = {};
+> +		int rc;
+> +
+> +		rc = rmpupdate(virt_to_page(svm->vmsa), &e);
+
+So why does this not need to go through snp_page_reclaim()?
+
+> +		if (rc) {
+> +			pr_err("Failed to release SNP guest VMSA page (rc %d), leaking it\n", rc);
+
+Seems like a WARN would be simpler.  But the more I see the rmpupdate(..., {0})
+pattern, the more I believe that nuking an RMP entry needs a dedicated helper.
+
+> +			goto skip_vmsa_free;
+
