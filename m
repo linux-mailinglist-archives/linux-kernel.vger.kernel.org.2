@@ -2,182 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1C83CBD89
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969803CBD90
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhGPUNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:13:45 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13630 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229801AbhGPUNl (ORCPT
+        id S233581AbhGPUQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:16:06 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39720 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229896AbhGPUQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:13:41 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GK9CTX027140
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:10:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=y7LpQF5Jy+LuLZQk4XIdiU7P3m7mkQN7iFw0B1cps5o=;
- b=EhLfvyK2z5z0RbvrzqIbt5ZpEw4TVA+cnNZwIRFccQFldZqk8TfJ0V0HbwgO+eHV82DP
- mm1PXmwz0C8sVKHRaErH4XumAjeg7vh3O+hBhMbwKEDMx5LaX+Qk7e7ZFZbl2K+9iB3R
- NJuxf03tgHnMhJXIHgtp0KaiFhvq3l+A+MY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 39tw36p774-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:10:45 -0700
-Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Jul 2021 13:10:42 -0700
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 3A42F97E3BFB; Fri, 16 Jul 2021 13:10:41 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, Jan Kara <jack@suse.cz>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Boyang Xue <bxue@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Murphy Zhou <jencce.kernel@gmail.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH] writeback, cgroup: remove wb from offline list before releasing refcnt
-Date:   Fri, 16 Jul 2021 13:10:39 -0700
-Message-ID: <20210716201039.3762203-1-guro@fb.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 16 Jul 2021 16:16:05 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1m4UCf-0006dK-96; Fri, 16 Jul 2021 22:12:57 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1m4UCe-000QgN-RO; Fri, 16 Jul 2021 22:12:56 +0200
+Subject: Re: [PATCH v2 bpf-nxt] Documentation/bpf: Add heading and example for
+ extensions in filter.rst
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     "Roy, UjjaL" <royujjal@gmail.com>, Song Liu <song@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Networking <netdev@vger.kernel.org>, BPF <bpf@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+References: <royujjal@gmail.com> <20210712173723.1597-1-royujjal@gmail.com>
+ <60ee2dc76ac1c_196e22088d@john-XPS-13-9370.notmuch>
+ <CAADnVQJ=DoRDcVkaXmY3EmNdLoO7gq1mkJOn5G=00wKH8qUtZQ@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <80579c8d-ecdb-4334-9912-c04f75f7a6d3@iogearbox.net>
+Date:   Fri, 16 Jul 2021 22:12:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: UokYjrNRbXlv1r-BN9EU7W89xDDLbdPt
-X-Proofpoint-GUID: UokYjrNRbXlv1r-BN9EU7W89xDDLbdPt
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-16_09:2021-07-16,2021-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 adultscore=0 phishscore=0 suspectscore=0
- bulkscore=0 mlxlogscore=665 clxscore=1011 priorityscore=1501 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107160127
-X-FB-Internal: deliver
+In-Reply-To: <CAADnVQJ=DoRDcVkaXmY3EmNdLoO7gq1mkJOn5G=00wKH8qUtZQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26234/Fri Jul 16 10:18:39 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Boyang reported that the commit c22d70a162d3 ("writeback, cgroup:
-release dying cgwbs by switching attached inodes") causes the kernel
-to crash while running xfstests generic/256 on ext4 on aarch64 and
-ppc64le.
+On 7/16/21 3:48 AM, Alexei Starovoitov wrote:
+> On Tue, Jul 13, 2021 at 5:20 PM John Fastabend <john.fastabend@gmail.com> wrote:
+>>
+>> Roy, UjjaL wrote:
+>>> [1] https://www.kernel.org/doc/html/latest/bpf/
+>>>
+>>> Add new heading for extensions to make it more readable. Also, add one
+>>> more example of filtering interface index for better understanding.
+>>>
+>>> Signed-off-by: Roy, UjjaL <royujjal@gmail.com>
+>>> Acked-by: Song Liu <songliubraving@fb.com>
+>>
+>> Looks OK to me. I thought the original was readable without the header, but
+>> if it helps someone seems easy enough to do.
+>>
+>> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> 
+> I cannot figure out how to apply this patch, because I see:
+> Applying: Documentation/bpf: Add heading and example for extensions in
+> filter.rst
+> fatal: empty ident name (for <>) not allowed
+> 
+> Any idea?
 
-  [ 4366.380974] run fstests generic/256 at 2021-07-12 05:41:40
-  [ 4368.337078] EXT4-fs (vda3): mounted filesystem with ordered data
-  mode. Opts: . Quota mode: none.
-  [ 4371.275986] Unable to handle kernel NULL pointer dereference at
-  virtual address 0000000000000000
-  [ 4371.278210] Mem abort info:
-  [ 4371.278880]   ESR =3D 0x96000005
-  [ 4371.279603]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-  [ 4371.280878]   SET =3D 0, FnV =3D 0
-  [ 4371.281621]   EA =3D 0, S1PTW =3D 0
-  [ 4371.282396]   FSC =3D 0x05: level 1 translation fault
-  [ 4371.283635] Data abort info:
-  [ 4371.284333]   ISV =3D 0, ISS =3D 0x00000005
-  [ 4371.285246]   CM =3D 0, WnR =3D 0
-  [ 4371.285975] user pgtable: 64k pages, 48-bit VAs, pgdp=3D00000000b050=
-2000
-  [ 4371.287640] [0000000000000000] pgd=3D0000000000000000,
-  p4d=3D0000000000000000, pud=3D0000000000000000
-  [ 4371.290016] Internal error: Oops: 96000005 [#1] SMP
-  [ 4371.291251] Modules linked in: dm_flakey dm_snapshot dm_bufio
-  dm_zero dm_mod loop tls rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver
-  nfs lockd grace fscache netfs rfkill sunrpc ext4 vfat fat mbcache jbd2
-  drm fuse xfs libcrc32c crct10dif_ce ghash_ce sha2_ce sha256_arm64
-  sha1_ce virtio_blk virtio_net net_failover virtio_console failover
-  virtio_mmio aes_neon_bs [last unloaded: scsi_debug]
-  [ 4371.300059] CPU: 0 PID: 408468 Comm: kworker/u8:5 Tainted: G
-         X --------- ---  5.14.0-0.rc1.15.bx.el9.aarch64 #1
-  [ 4371.303009] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/0=
-6/2015
-  [ 4371.304685] Workqueue: events_unbound cleanup_offline_cgwbs_workfn
-  [ 4371.306329] pstate: 004000c5 (nzcv daIF +PAN -UAO -TCO BTYPE=3D--)
-  [ 4371.307867] pc : cleanup_offline_cgwbs_workfn+0x320/0x394
-  [ 4371.309254] lr : cleanup_offline_cgwbs_workfn+0xe0/0x394
-  [ 4371.310597] sp : ffff80001554fd10
-  [ 4371.311443] x29: ffff80001554fd10 x28: 0000000000000000 x27: 0000000=
-000000001
-  [ 4371.313320] x26: 0000000000000000 x25: 00000000000000e0 x24: ffffd2a=
-2fbe671a8
-  [ 4371.315159] x23: ffff80001554fd88 x22: ffffd2a2fbe67198 x21: ffffd2a=
-2fc25a730
-  [ 4371.316945] x20: ffff210412bc3000 x19: ffff210412bc3280 x18: 0000000=
-000000000
-  [ 4371.318690] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000=
-000000000
-  [ 4371.320437] x14: 0000000000000000 x13: 0000000000000030 x12: 0000000=
-000000040
-  [ 4371.322444] x11: ffff210481572238 x10: ffff21048157223a x9 : ffffd2a=
-2fa276c60
-  [ 4371.324243] x8 : ffff210484106b60 x7 : 0000000000000000 x6 : 0000000=
-00007d18a
-  [ 4371.326049] x5 : ffff210416a86400 x4 : ffff210412bc0280 x3 : 0000000=
-000000000
-  [ 4371.327898] x2 : ffff80001554fd88 x1 : ffff210412bc0280 x0 : 0000000=
-000000003
-  [ 4371.329748] Call trace:
-  [ 4371.330372]  cleanup_offline_cgwbs_workfn+0x320/0x394
-  [ 4371.331694]  process_one_work+0x1f4/0x4b0
-  [ 4371.332767]  worker_thread+0x184/0x540
-  [ 4371.333732]  kthread+0x114/0x120
-  [ 4371.334535]  ret_from_fork+0x10/0x18
-  [ 4371.335440] Code: d63f0020 97f99963 17ffffa6 f8588263 (f9400061)
-  [ 4371.337174] ---[ end trace e250fe289272792a ]---
-  [ 4371.338365] Kernel panic - not syncing: Oops: Fatal exception
-  [ 4371.339884] SMP: stopping secondary CPUs
-  [ 4372.424137] SMP: failed to stop secondary CPUs 0-2
-  [ 4372.436894] Kernel Offset: 0x52a2e9fa0000 from 0xffff800010000000
-  [ 4372.438408] PHYS_OFFSET: 0xfff0defca0000000
-  [ 4372.439496] CPU features: 0x00200251,23200840
-  [ 4372.440603] Memory Limit: none
-  [ 4372.441374] ---[ end Kernel panic - not syncing: Oops: Fatal excepti=
-on ]---
-
-The problem happens when cgwb_release_workfn() races with
-cleanup_offline_cgwbs_workfn(): wb_tryget() in
-cleanup_offline_cgwbs_workfn() can be called after percpu_ref_exit()
-is cgwb_release_workfn(), which is basically a use-after-free error.
-
-Fix the problem by making removing the writeback structure from the
-offline list before releasing the percpu reference counter. It will
-guarantee that cleanup_offline_cgwbs_workfn() will not see and not
-access writeback structures which are about to be released.
-
-Fixes: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching=
- attached inodes")
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Reported-by: Boyang Xue <bxue@redhat.com>
-Suggested-by: Jan Kara <jack@suse.cz>
-Tested-by: Darrick J. Wong <djwong@kernel.org>
----
- mm/backing-dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 271f2ca862c8..f5561ea7d90a 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -398,12 +398,12 @@ static void cgwb_release_workfn(struct work_struct =
-*work)
- 	blkcg_unpin_online(blkcg);
-=20
- 	fprop_local_destroy_percpu(&wb->memcg_completions);
--	percpu_ref_exit(&wb->refcnt);
-=20
- 	spin_lock_irq(&cgwb_lock);
- 	list_del(&wb->offline_node);
- 	spin_unlock_irq(&cgwb_lock);
-=20
-+	percpu_ref_exit(&wb->refcnt);
- 	wb_exit(wb);
- 	WARN_ON_ONCE(!list_empty(&wb->b_attached));
- 	kfree_rcu(wb, rcu);
---=20
-2.31.1
-
+Same happened on my side. Maybe not sent via git-send-email(1)? Anyway, I've
+applied manually meanwhile.
