@@ -2,142 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588AE3CB7B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C8A3CB7B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239653AbhGPNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 09:10:16 -0400
-Received: from mta02.hs-regensburg.de ([194.95.104.12]:55476 "EHLO
-        mta02.hs-regensburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238380AbhGPNKN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 09:10:13 -0400
-Received: from E16S03.hs-regensburg.de (e16s03.hs-regensburg.de [IPv6:2001:638:a01:8013::93])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client CN "E16S03", Issuer "E16S03" (not verified))
-        by mta02.hs-regensburg.de (Postfix) with ESMTPS id 4GRBNN6NC5zy2y;
-        Fri, 16 Jul 2021 15:07:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oth-regensburg.de;
-        s=mta01-20160622; t=1626440836;
-        bh=ouFmdmxN9fdZ0nW/HOuNa4kwdbEZ+5X3c22BP5HazTQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To:From;
-        b=Yy5exus8dhK9N7VsMhq5VzrOcLNW5cQSVfVjHjfrcajRKkOZ1odLg4kjUadpabMHl
-         nNM70AW5X9OwFFm/Nvq6ZtEZmd8ev1BvdrmvzvNrX0vAws1xwb2QgzEj60r+dBydGf
-         lDxj1zweK9QTDT7yWP2pDIgH8zmzIpm+Mpg7DxRg9U1wINo933Tf13PeZnvLbQk6Em
-         e09HV9tHgRCAYEhRdRLPXsuf2op9W8UPJmGa2jfI+jgMBEEcc68Gnj3tggFHq5C+v4
-         oRnZmLGgfjB3rbgcQGrjs+pZfhTwXoKgwsc/Kqc5kTG7GBVOtu/h4ObmcDmAH/esvc
-         snyJCoSynmXxQ==
-Received: from [IPv6:2001:638:a01:8061:5c51:6883:5436:5db]
- (2001:638:a01:8013::138) by E16S03.hs-regensburg.de (2001:638:a01:8013::93)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 16 Jul
- 2021 15:07:16 +0200
-Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
- <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
- <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
- <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
- <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com>
-From:   Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
-Message-ID: <ac8ac10e-aa43-93a1-d36e-6304643375ae@oth-regensburg.de>
-Date:   Fri, 16 Jul 2021 15:07:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239783AbhGPNNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 09:13:01 -0400
+Received: from mga07.intel.com ([134.134.136.100]:63157 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238560AbhGPNM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 09:12:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="274553797"
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="274553797"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 06:10:03 -0700
+X-IronPort-AV: E=Sophos;i="5.84,245,1620716400"; 
+   d="scan'208";a="413974663"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 06:09:59 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1m4NbE-00EEct-3X; Fri, 16 Jul 2021 16:09:52 +0300
+Date:   Fri, 16 Jul 2021 16:09:52 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, kbuild-all@lists.01.org,
+        Michael Turquette <mturquette@baylibre.com>
+Subject: Re: [PATCH v1 1/3] clk: fractional-divider: Export approximation
+ algo to the CCF users
+Message-ID: <YPGFIAiRijr1OMZ2@smile.fi.intel.com>
+References: <20210715120752.29174-1-andriy.shevchenko@linux.intel.com>
+ <202107152356.7gQSC0vc-lkp@intel.com>
+ <CAHp75VcxP6QSoATProqjqJ_kmjXr4FfjijohCyumrw_gmj904w@mail.gmail.com>
+ <9e1c1fde-fbbc-69d4-9273-192844037cd8@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [2001:638:a01:8013::138]
-X-ClientProxiedBy: E16S02.hs-regensburg.de (2001:638:a01:8013::92) To
- E16S03.hs-regensburg.de (2001:638:a01:8013::93)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e1c1fde-fbbc-69d4-9273-192844037cd8@arm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14/07/2021 15:35, Andy Shevchenko wrote:
-> On Wed, Jul 14, 2021 at 3:56 PM Ralf Ramsauer
-> <ralf.ramsauer@oth-regensburg.de> wrote:
->> On 14/07/2021 08:54, Jiri Slaby wrote:
->>> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
+On Thu, Jul 15, 2021 at 06:58:40PM +0100, Robin Murphy wrote:
+> On 2021-07-15 17:51, Andy Shevchenko wrote:
+> > On Thu, Jul 15, 2021 at 7:49 PM kernel test robot <lkp@intel.com> wrote:
+> > > I love your patch! Yet something to improve:
+> > 
+> > Definitely!
+> > 
+> > > All errors (new ones prefixed by >>):
+> > > 
+> > > > > drivers/clk/rockchip/clk.c:27:10: fatal error: clk-fractional-divider.h: No such file or directory
+> > >        27 | #include "clk-fractional-divider.h"
+> > >           |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >     compilation terminated.
+> > 
+> > Indeed. No idea how to compile-test this on x86.
+> > Let me see what I can do to avoid other issues.
 > 
->>> Hmm, have you checked the commit which introduced the whitelist?
->>>
->>>     Nevertheless, this needs to handled with care: while many 8250 devices
->>>     actually claim to support MSI(-X) interrupts it should not be
->>> enabled be
->>>     default. I had at least one device in my hands with broken MSI
->>>     implementation.
->>>
->>>     So better introduce a whitelist with devices that are known to support
->>>     MSI(-X) interrupts. I tested all devices mentioned in the patch.
->>>
->>>
->>> You should have at least CCed the author for an input.
->>
->> Yep, back then I was testing three different 8250 pci cards. All of them
->> claimed to support MSI, while one really worked with MSI, the one that I
->> whitelisted. So I thought it would be better to use legacy IRQs as long
->> as no one tested a specific card to work with MSI.
+> Ha, the individual SoC-specific parts have COMPILE_TEST support, but the
+> top-level COMMON_CLK_ROCKCHIP doesn't. That could probably be fixed.
 > 
-> Can you shed a light eventually what those cards are?
+> Otherwise, you can always grab a toolchain from [1] (if your distro doesn't
+> offer one already) and cross-compile - defconfig for arm64 or
+> multi_v7_defconfig for arm should cover it.
 
-So I found a no-name el-cheapo card that has some issues with MSI:
+With a hack patch I was able to compile-test.
 
-18:00.0 Serial controller: Device 1c00:3253 (rev 10) (prog-if 05 [16850])
-
-The card comes with two serial lines. It comes perfectly up, if I enable
-it to use MSI in the whitelist:
-
-serial 0000:18:00.0: Using MSI(-X) interrupts
-serial 0000:18:00.0: Setup PCI port: port 40c0, irq 104, type 0
-0000:18:00.0: ttyS6 at I/O 0x40c0 (irq = 104, base_baud = 115200) is a
-XR16850
-serial 0000:18:00.0: Setup PCI port: port 40c8, irq 104, type 0
-0000:18:00.0: ttyS7 at I/O 0x40c8 (irq = 104, base_baud = 115200) is a
-XR16850
-
-After loading 8250_pci, lspci -vvs 18:0.0 tells:
-
-	Capabilities: [68] MSI: Enable+ Count=1/32 Maskable+ 64bit+
-		Address: 00000000fee000b8  Data: 0000
-		Masking: ffffffff  Pending: 00000000
-
-Looks good so far. Now let's echo to the device.
-
-$ echo asdf > /dev/ttyS6
-
--- stuck. The echoing process stucks at close():
-
-write(1, "asdf\n", 5)                   = 5
-close(1
-
-Stuck in the sense of: the echo is still killable, no crashes. The same
-happens if I try to access the device with stty. So something is odd
-here. However, the Netmos cards that I whitelisted do a great job.
-
-So I can't tell if I was just unlucky to grab a card that has issues
-with MSI, and this is an exception rather than the rule…
-
-HTH,
-  Ralf
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> 
->> Don't do that… And don't convert it to a blacklist. A blacklist will
->> break users until they report that something doesn't work.
-> 
-> White list is not okay either. MSI in general is a right thing to do.
-> preventing users from MSI is asking for the performance degradation
-> and IRQ resource conflicts (in case the IRQ line is shared).
-> 
-> Besides that, shouldn't it be rather the specific field in private (to
-> 8250_pci) structure than constantly growing list?
-> 
