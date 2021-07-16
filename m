@@ -2,148 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3A03CB93C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466243CB944
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240502AbhGPPFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S240553AbhGPPFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbhGPPFT (ORCPT
+        with ESMTP id S237590AbhGPPFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:05:19 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BFBC06175F;
-        Fri, 16 Jul 2021 08:02:23 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so9020180pju.4;
-        Fri, 16 Jul 2021 08:02:23 -0700 (PDT)
+        Fri, 16 Jul 2021 11:05:42 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16467C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 08:02:46 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id f30so16544406lfj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 08:02:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RTNfCanVuMDv0YAtWhLerL5+C1xCvNyWoo4wS8Mr6Vg=;
-        b=pKnKwYi5pbyE2W300C0RlHhuZNTN9q9ktdzWRkJgr6WVu6Lz1+t26bWlJYkGbT6Ch9
-         kZyAV/6fZnT7qfrSk2SvB32a1pQoghzWmjzCLoT0bl5EQh6SzDU82JMblpLFrHEGlOOQ
-         SfHcErZUZIJUXZX7sMFS/1qV3s76NVuuFPUv5No3/gF3kGXTtzN5j5vB/gUIclZbYvnX
-         Cb9JZEJ00UvCjjZtmk2V5drh3eY/yskl5uPsy3s/Kx4dlVOurQg2NObX+KOO8ad4GGzE
-         ZsiZ5vcVK06K7vxT6YasC2DiCxpQO0HelnbDmnkmOSMJ1afYT7TOmstiFAdKn2MsYHtU
-         cteQ==
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=r+ugyUfc2QgnZo/+O3yrIrvQ0wPbe047sgVVtbVvgzA=;
+        b=yAh1f+2j2njOIaCfZcH7GMspqWkXGUa7iajPhVPwtkSpiEzXI1fL/k1QfxEMZk4Ncv
+         7NRGJF5T2dLyU1Z0MPpaRJpGNgoMsVKmxBrYIlWRki9cNMRL2MH1iVPoOp1mAUCo7DSZ
+         6ToSjtpcYcdstH2tuSfLhR+8mc090wtLQ3uvLpe3idA8z9yfBWLuWMjTxbR9qFXVdOUd
+         q+sKHEjnBl80NdLH6rqAVDnJGluWdhvgeRk1su02tQLWmi5feqg18LVy4SH7aNUncNEI
+         GKrp9fGMrjQzJNIb/ueRA8wxFSmdHYzrIb021kEQoHP+L9IfI2p+VQ5zQgOBhJhppJ5D
+         gdxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RTNfCanVuMDv0YAtWhLerL5+C1xCvNyWoo4wS8Mr6Vg=;
-        b=Jw6Z0hpHu+Ef/0eX6H739lWf/LjF0Wy6iaXffwVFolqmYCpAwT0dPIAUdqPMTQmOw2
-         lAjOUYH7+RmYaaG4YkC7+CrCyLxFYrA/qUc2wOJOxWeonXGO6AmXQvtTVnG45M2Wfqig
-         8nCY6TiPo43SqqYDTg8LH9rtC7ekX/kQ6YQ7k3ZPRVWiUxF29lSAzxvV/ZcDVg/gGgL9
-         haysEzB2rBx9W9g3q3ie1B4L4jbl41Hr5JhTsM25Oh4ku3r92GMkitPQ7mZYhtIZlrWb
-         OAkGpF+5GtPXmVQSpw59aL8jz/6OWD8GXvGA3WYOhVsJdwvSxs39oN59zWjmPqVRcbyP
-         fMCQ==
-X-Gm-Message-State: AOAM531XlJrYgsOelyEluEKMn0B3iKqVCawDECXOzZMzdlxqfKLypSnD
-        91I27JaeDzjaQ9f3Zf0MyWXpfYjx7lw8ziJ/nBg=
-X-Google-Smtp-Source: ABdhPJygsInJnjOo8WP0Unvb4e9uyiKrSXrWbxdoqKurRtdOovAcviK9LB48+kktk/kAC/p4kP0j4ZSldVjPeud+qGI=
-X-Received: by 2002:a17:902:b198:b029:11b:2246:e374 with SMTP id
- s24-20020a170902b198b029011b2246e374mr8161599plr.17.1626447742450; Fri, 16
- Jul 2021 08:02:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=r+ugyUfc2QgnZo/+O3yrIrvQ0wPbe047sgVVtbVvgzA=;
+        b=suJ8k86wqsJGeMnJERXin+VukImNWRmK+36BmHnxP8xThTiJlB4v4vwDHPRoTqpu4y
+         LQtaET7gRYjyx7QJv+Va/trrol6E8KWQcZYyAjpibn0P3P+W6StCn9v/6uSuyYCjxMa9
+         tTU2cdwjzg9Kv8oJ06FuPcmWxosGN34WIzr3/6f9oeqfZYy4pkOLOPmQbU3cs4mVUU0j
+         nQyOhLWf4DTzGx6XCKxJ0gJYOPs2WLD2k1eWYpmNrk4abY4cZjYy79Ps6JDFY5U+dA8U
+         OYkEa4MZSUrazmUlfWMwO3tHKEC+nF8Vx6PDuQiZ+7q3GAI7/19AEMbmTe/9MMPmeFm3
+         vUzQ==
+X-Gm-Message-State: AOAM531VP489VUEpbNRcowXddyvvzixNcD324znzTZWjUceFicrurVPI
+        8SxliDOHIJ8mvFx5AK8Fn2BJNQ==
+X-Google-Smtp-Source: ABdhPJz+/pc6/Y1brI3USB1i8gOJPKmDIxr6mV4OVHd7n/Ie7iKK3W+i603HFoG/g7AfFhPpyVQNFg==
+X-Received: by 2002:ac2:5684:: with SMTP id 4mr7995184lfr.386.1626447763155;
+        Fri, 16 Jul 2021 08:02:43 -0700 (PDT)
+Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
+        by smtp.gmail.com with ESMTPSA id y8sm667140lfe.226.2021.07.16.08.02.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 08:02:42 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 17:02:41 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Dennis Rachui <drachui@de.adit-jv.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
+Message-ID: <YPGfkcdnwqgozVEu@oden.dyn.berto.se>
+References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
+ <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
+ <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
+ <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
+ <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
+ <YPAUoQ8KmmAE3fWD@oden.dyn.berto.se>
+ <YPAeirL/qtmNYx99@pendragon.ideasonboard.com>
+ <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
 MIME-Version: 1.0
-References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
- <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
- <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org> <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
- <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com> <ac8ac10e-aa43-93a1-d36e-6304643375ae@oth-regensburg.de>
-In-Reply-To: <ac8ac10e-aa43-93a1-d36e-6304643375ae@oth-regensburg.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 16 Jul 2021 18:01:42 +0300
-Message-ID: <CAHp75VcLicxAz5BjP+Lp2yHxEGiKcT9OUZbPeRUgZVcYLdY0FA@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
-To:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 4:07 PM Ralf Ramsauer
-<ralf.ramsauer@oth-regensburg.de> wrote:
-> On 14/07/2021 15:35, Andy Shevchenko wrote:
-> > On Wed, Jul 14, 2021 at 3:56 PM Ralf Ramsauer
-> > <ralf.ramsauer@oth-regensburg.de> wrote:
-> >> On 14/07/2021 08:54, Jiri Slaby wrote:
-> >>> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
+Hi Dennis,
+
+On 2021-07-16 16:09:21 +0200, Dennis Rachui wrote:
+> Hi Laurent,
+> 
+> > On Thu, Jul 15, 2021 at 12:57:37PM +0200, Niklas Söderlund wrote:
+> > > On 2021-07-14 21:40:51 +0300, Laurent Pinchart wrote:
+> > > > On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
+> > > > > On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
+> > > > > > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
+> > > > > > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
+> > > > > > > > Verify that streaming is not active before setting the pad format.
+> > > > > > > > 
+> > > > > > > > According to the VIDIOC documentation [1] changes to the 
+> > > > > > > > active format of a media pad via the VIDIOC_SUBDEV_S_FMT 
+> > > > > > > > ioctl are applied to the underlying hardware.
+> > > > > > > > In rcar-csi2 a format change only applies to hardware, when 
+> > > > > > > > the pipeline is started. While the device is not in use, it 
+> > > > > > > > is therefore okay to update the format.
+> > > > > > > > 
+> > > > > > > > However, when the pipeline is active, this leads to a format 
+> > > > > > > > mismatch between driver and device.
+> > > > > > > > Other applications can query the format with 
+> > > > > > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported a 
+> > > > > > > > format that does not fit the current stream.
+> > > > > > > > 
+> > > > > > > > This commit prevents format update while streaming is active 
+> > > > > > > > and returns -EBUSY to user space, as suggested by [1].
+> > > > > > > > 
+> > > > > > > > [1] 
+> > > > > > > > Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rs
+> > > > > > > > t
+> > > > > > > 
+> > > > > > > I like that this is addressed, but I wonder is this not 
+> > > > > > > something that should be fixed in the V4L2 core and not in drivers?
+> > > > > > 
+> > > > > > Some drivers may support format changes during streaming (that's 
+> > > > > > allowed by the V4L2 API, I'm not sure if it's used anywhere 
+> > > > > > though). While I'd favour not duplicating the same logic in 
+> > > > > > different (and differently
+> > > > > > buggy) ways in drivers, I'm not sure how this could be 
+> > > > > > implemented in a sane way in the V4L2 core in its current state.
+> > > > > 
+> > > > > I understand it's possible from some devices to support to format 
+> > > > > changes during streaming, but as you point out it's the exception 
+> > > > > and not the rule, if used at all.
+> > > > > 
+> > > > > So my point is if we start to enforce this in drivers we are 
+> > > > > headed down a road where this will be messier to clean up. Would 
+> > > > > it not make more sens to default the V4L2 core to disallow format 
+> > > > > changes while streaming and add a new flag to V4L2_SUBDEV_CAP_ to 
+> > > > > signal that the subdevice supports format changes while streaming?
+> > > > > 
+> > > > > We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a 
+> > > > > subdevice only supports read-only operations so I think it would 
+> > > > > not be too hard to move this functionality into the core?
+> > > > 
+> > > > Yes, that's something we could try. The subdev core will then need 
+> > > > to track the streaming state, which may require wrapping the 
+> > > > .s_stream() call. Locking should then also likely be handled by the 
+> > > > core. Probably nothing impossible, but quite a bit of work. Any 
+> > > > volunteer ? :-)
+> > > 
+> > > We already track the stream count in struct media_entity and it's 
+> > > incremented/decremented under the media device lock by
+> > > media_pipeline_start() and media_pipeline_stop(). So I don't think 
+> > > it's such a hard feature to add.
+> > > 
+> > > The large task IMHO is to figure out if we have any subdevice in tree 
+> > > that allows format changes while streaming and that would need to set 
+> > > this new V4L2_SUBDEV_CAP_ flag.
 > >
-> >>> Hmm, have you checked the commit which introduced the whitelist?
-> >>>
-> >>>     Nevertheless, this needs to handled with care: while many 8250 de=
-vices
-> >>>     actually claim to support MSI(-X) interrupts it should not be
-> >>> enabled be
-> >>>     default. I had at least one device in my hands with broken MSI
-> >>>     implementation.
-> >>>
-> >>>     So better introduce a whitelist with devices that are known to su=
-pport
-> >>>     MSI(-X) interrupts. I tested all devices mentioned in the patch.
-> >>>
-> >>>
-> >>> You should have at least CCed the author for an input.
-> >>
-> >> Yep, back then I was testing three different 8250 pci cards. All of th=
-em
-> >> claimed to support MSI, while one really worked with MSI, the one that=
- I
-> >> whitelisted. So I thought it would be better to use legacy IRQs as lon=
-g
-> >> as no one tested a specific card to work with MSI.
-> >
-> > Can you shed a light eventually what those cards are?
+> > Many subdevs allow format changes during streaming. The question is whether any of them do so knowingly, or if they're all buggy :-) I'd be surprised if there > were more than a couple of drivers that actually support this correctly.
+> 
+> From my perspective, the current stream_count from struct media_entity
+> would not be sufficient. References should be counted per struct media_pad.
+> Otherwise, devices that allow multiple parallel streams would block user
+> space from updating media-pads that are not part of an active media-pipeline.
+> E.g. in rcar-csi2 this could effect a source pad connected to currently
+> unused VIN device.
 
-> So I found a no-name el-cheapo card that has some issues with MSI:
+I understand your reasoning, but with the current V4L2 design is this 
+really a concern? As s_stream() is not pad/stream aware it acts more or 
+less as a big start / stop button.
 
-Win Chip Head (WCH)
+When starting all enabled media links formats needs to be evaluated 
+(something we can't do yet with multiplexed streams..) and all 
+subdivides that are part of the media graph are started. We can not 
+enable or disable any media links while the pipeline is streaming so I'm 
+not sure configuring the format of pads not part of the active capture 
+is such a big concern, am I missing something?
 
-> 18:00.0 Serial controller: Device 1c00:3253 (rev 10) (prog-if 05 [16850])
->
-> The card comes with two serial lines. It comes perfectly up, if I enable
-> it to use MSI in the whitelist:
->
-> serial 0000:18:00.0: Using MSI(-X) interrupts
-> serial 0000:18:00.0: Setup PCI port: port 40c0, irq 104, type 0
-> 0000:18:00.0: ttyS6 at I/O 0x40c0 (irq =3D 104, base_baud =3D 115200) is =
-a
-> XR16850
-> serial 0000:18:00.0: Setup PCI port: port 40c8, irq 104, type 0
-> 0000:18:00.0: ttyS7 at I/O 0x40c8 (irq =3D 104, base_baud =3D 115200) is =
-a
-> XR16850
->
-> After loading 8250_pci, lspci -vvs 18:0.0 tells:
->
->         Capabilities: [68] MSI: Enable+ Count=3D1/32 Maskable+ 64bit+
->                 Address: 00000000fee000b8  Data: 0000
->                 Masking: ffffffff  Pending: 00000000
->
-> Looks good so far. Now let's echo to the device.
->
-> $ echo asdf > /dev/ttyS6
->
-> -- stuck. The echoing process stucks at close():
->
-> write(1, "asdf\n", 5)                   =3D 5
-> close(1
->
-> Stuck in the sense of: the echo is still killable, no crashes. The same
-> happens if I try to access the device with stty. So something is odd
-> here. However, the Netmos cards that I whitelisted do a great job.
+> 
+> > > > > > > > Note: after creation of this commit, it was noticed that 
+> > > > > > > > Steve Longerbeam has a very similar solution in his fork.
+> > > > > > > > 
+> > > > > > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car 
+> > > > > > > > MIPI CSI-2 receiver driver")
+> > > > > > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
+> > > > > > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
+> > > > > > > > ---
+> > > > > > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 
+> > > > > > > > ++++++++++++++++++++-
+> > > > > > > >  1 file changed, 20 insertions(+), 1 deletion(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c 
+> > > > > > > > b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > index e28eff0..98152e1 100644
+> > > > > > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct 
+> > > > > > > > v4l2_subdev *sd,  {
+> > > > > > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
+> > > > > > > >  	struct v4l2_mbus_framefmt *framefmt;
+> > > > > > > > +	int ret = 0;
+> > > > > > > > +
+> > > > > > > > +	mutex_lock(&priv->lock);
+> > > > > > > >  
+> > > > > > > >  	if (!rcsi2_code_to_fmt(format->format.code))
+> > > > > > > >  		format->format.code = rcar_csi2_formats[0].code;
+> > > > > > > >  
+> > > > > > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+> > > > > > > > +
+> > > > > > > > +		/*
+> > > > > > > > +		 * Do not apply changes to active format while streaming.
+> > > > > > > > +		 *
+> > > > > > > > +		 * Since video streams could be forwarded from sink pad to any
+> > > > > > > > +		 * source pad (depending on CSI-2 channel routing), all
+> > > > > > > > +		 * media pads are effected by this rule.
+> > > > > > > > +		 */
+> > > > > > > > +		if (priv->stream_count > 0) {
+> > > > > > > > +			ret = -EBUSY;
+> > > > > > > > +			goto out;
+> > > > > > > > +		}
+> > > > > > > > +
+> > > > > > > >  		priv->mf = format->format;
+> > > > > > > >  	} else {
+> > > > > > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
+> > > > > > > >  		*framefmt = format->format;
+> > > > > > > >  	}
+> > > > > > > >  
+> > > > > > > > -	return 0;
+> > > > > > > > +out:
+> > > > > > > > +	mutex_unlock(&priv->lock);
+> > > > > > > > +
+> > > > > > > > +	return ret;
+> > > > > > > >  }
+> > > > > > > >  
+> > > > > > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
+> 
+> --
+> 
+> Regards,
+> 
+> Dennis Rachui
+> 
 
-Can you share somehow the `lspci -vvv -xx -nk; lspci -t` with and
-without MSI enabled? (I want to understand what is going on with it)
-
-> So I can't tell if I was just unlucky to grab a card that has issues
-> with MSI, and this is an exception rather than the rule=E2=80=A6
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Regards,
+Niklas Söderlund
