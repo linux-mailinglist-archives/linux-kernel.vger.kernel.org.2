@@ -2,138 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB233CBA9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DF73CBAA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhGPQkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:40:12 -0400
-Received: from smtp-33.italiaonline.it ([213.209.10.33]:45197 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229462AbhGPQkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:40:10 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it ([79.54.92.92])
-        by smtp-33.iol.local with ESMTPA
-        id 4QpnmKGx8S6GM4QpsmO3AZ; Fri, 16 Jul 2021 18:37:13 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1626453433; bh=b1AOLJtPfVADgUal1s0AlJOIZO8zgx8Ko6/esPl3A8g=;
-        h=From;
-        b=anVN9WSxSaYI63mR+0y0sM1bgfiKoxU3qBaCO9+fZQ3foKdlmhZW3MiLpJvZp0EoF
-         ECrRIGkfvOyo9oalvB0UsNrH+898tudc2T6XfwrBDAUfN3vkD0auxhKes/Rln7z/vs
-         sC16S3WZEhvhP69Op1zduO//7c5aVyoAqxvq/Zty3yUfWO5yBl5N4APrl2gahYxwBu
-         cS5s0JssHaudjojFjiAdgEV3QfzzKTozMR9gYi964lNwwRlOZejGu6zlL2EI79rI09
-         9MOX2qPlrCJC6UuKVSPDyDh8QJUKXguJ3LaeUYgwQrNGQJEOBLNsFOWNi1kb9z/tSE
-         xzS1dlMmOp4TQ==
-X-CNFS-Analysis: v=2.4 cv=AcF0o1bG c=1 sm=1 tr=0 ts=60f1b5b9 cx=a_exe
- a=eKwsI+FXzXP/Nc4oRbpalQ==:117 a=eKwsI+FXzXP/Nc4oRbpalQ==:17 a=VwQbUJbxAAAA:8
- a=wSIzyl8AIrrWyGTfDxQA:9 a=AjGcO6oz07-iQ99wixmX:22
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-clk@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Gabriel Fernandez <gabriel.fernandez@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v3] clk: stm32f4: fix post divisor setup for I2S/SAI PLLs
-Date:   Fri, 16 Jul 2021 18:37:05 +0200
-Message-Id: <20210716163705.17604-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfJxbT8k/rZDUZkIZXuZWj34PEjbhLofZCmyd+fVDszIgxppuniAz5txJibFr+oZgoioUPgFeXqmmqBQYE6rd3je3s6ppBzhuZyl5erphtXEEdAYlbqx+
- eEca0JLZ5Cg5plMg1CBE2yBIZura+YuW4Kp1Do0LjCXMf10msyIuMlD43QIHR3AONAd6dqynYlcCigj/Dz92FzCGVj+Wja1PyiVFVpeVNj0nBqHgcWady+6L
- 2ZzN3XXTTG+cqionmQJJmCl/q4v9SohQVuYi1cyhKUtvW7RzP9jTE4QHSx/1oMNF9bTgBzDSdXPJWLs3jFu3fDW0K9BGLm42aOGtKECtfOv7Gb2fMiPA8vPB
- 97bDyAGua/h25E2WrNHTXdNKUAzLWNOFqUelE040aOS0ZY0yt7j1BdRfvQD17QIm+hmKWXQSdJLR39YbXaURvUvqwsgXW0x3omfHgvEJI5NfJe+9T2hLtMwU
- rLkWwmOn5KKUGVjwAorFISz9TRLRI/aNNQuIwjPjaiE5Y8GJQA2/RC+N5Uco55iXYpGDCBTgFiF7poYjExdaUWxHEdkJV6vh9hb9Gg/DNl8yWF7vg8n5P/NF
- DUA/nVnui3WrxtpDExGpIriB
+        id S230120AbhGPQmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:42:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49976 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229462AbhGPQmF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:42:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626453549;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bfFDg9q6aorg0RQSfedZUmEwab8tw9m3yBJRoyB2sWQ=;
+        b=h7PPjKdrJgYgIXWo+1RnLqidGV9wpUO0UqhRZz3nXDdbrJ93M0icJ02CGK9Ttt/dsG6rjr
+        qlCYLdzPaYoc+cy2wLEIPiwbEoX2izxc/unx1PU/axMx13PZh9jWKMv9d3U7ja/nAT10Nl
+        s99gL+wcJyhnepZk1RT1khUo+zXROTs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-4_6b6AXQO02Lfe6E29Ikcw-1; Fri, 16 Jul 2021 12:39:06 -0400
+X-MC-Unique: 4_6b6AXQO02Lfe6E29Ikcw-1
+Received: by mail-wr1-f69.google.com with SMTP id i12-20020adffc0c0000b0290140ab4d8389so5069668wrr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:39:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=bfFDg9q6aorg0RQSfedZUmEwab8tw9m3yBJRoyB2sWQ=;
+        b=ZAnQBBqywYxpdo8xkU8yAbUAKrBvK0tAfoTnbIsLFvKQjSuC8riqKNRV8CAVPB1z4X
+         cMqrapF5V4g1I93x3iUayDGsYtYm+FsLhDKHBLX9c9UvPpgFIUIZwnQ3oANt9g2i3+Vu
+         TDvgEaS3wVW9+zmUGV1Od7dzh/nS0isSLTDrLWiFmxEUs7mAxRSDPzj5+WH8uCuDcVy5
+         6pecExvTuwZL8OE9uMbK+f7w8KRRhGnG6jY43+TTC2ASP/wxWmmwpes1n+DWfMbIGpFc
+         AGlJqdZFrSPgiQqraaiJ6T8FXtqv+gLnqeL3D0RSvGU9d+b1paKvEC8gMlEA/eAG+cyw
+         onhA==
+X-Gm-Message-State: AOAM532g7VsTk9prhsY0aESVTUbAMPtVCuqEgvRr5iIWCHJJZg9vf6WV
+        aQNJto8HLkKP4FpqDzCkPJgdEiZdvijq6+a7oBiWCmZPXjDWUrggjgdWUxGuHbw85uqgd3jrBzw
+        ObptotKTqpoQRBHnK/inr9v/J
+X-Received: by 2002:a1c:9d16:: with SMTP id g22mr11555739wme.152.1626453519010;
+        Fri, 16 Jul 2021 09:38:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9ueXaD17QbsLneBcu5Hsmm2YlNP9Iq3SyEf3ZOmNOxARnIwKF329PUqOcbOS2aNMk4L2NYg==
+X-Received: by 2002:a1c:9d16:: with SMTP id g22mr11555730wme.152.1626453518848;
+        Fri, 16 Jul 2021 09:38:38 -0700 (PDT)
+Received: from [192.168.1.37] (140.red-81-33-92.dynamicip.rima-tde.net. [81.33.92.140])
+        by smtp.gmail.com with ESMTPSA id d67sm11434212wmd.9.2021.07.16.09.38.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 09:38:38 -0700 (PDT)
+Message-ID: <95fb6503b1513cff1df54a043d9e3df530ddd63a.camel@redhat.com>
+Subject: Re: [PATCH] timers: Fix get_next_timer_interrupt() with no timers
+ pending
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     He Zhe <zhe.he@windriver.com>, anna-maria@linutronix.de,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de
+Date:   Fri, 16 Jul 2021 18:38:37 +0200
+In-Reply-To: <20210710005243.GA23956@lothringen>
+References: <20200723151641.12236-1-frederic@kernel.org>
+         <dfbf752e-91db-b128-76a8-98fde4c5d480@windriver.com>
+         <20210708153620.GA6716@lothringen>
+         <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
+         <20210709084303.GA17239@lothringen>
+         <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
+         <f520c8b87f56fcda0158853c5127f0488918503e.camel@redhat.com>
+         <4409fa71931446d9cabd849431ee0098c9b31292.camel@redhat.com>
+         <20210710005243.GA23956@lothringen>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enabling the framebuffer leads to a system hang. Running, as a debug
-hack, the store_pan() function in drivers/video/fbdev/core/fbsysfs.c
-without taking the console_lock, allows to see the crash backtrace on
-the serial line.
+On Sat, 2021-07-10 at 02:52 +0200, Frederic Weisbecker wrote:
+> I guess later we can turn this .timers_pending into
+> .timers_count and that would spare us the costly call to
+> __next_timer_interrupt() up to the last level after the last
+> timer is dequeued.
 
-~ # echo 0 0 > /sys/class/graphics/fb0/pan
+I've been looking into this. AFAIU there is no limit to the number of timers
+one might enqueue, so there is no fool proof way of selecting .timers_count's
+size. That said, 'struct timer_list' size is 40 bytes (as per pahole), so in
+order to overflow an u32 .timers_count you'd need to allocate ~160GB in 'struct
+timer_list' which I think is safe to assume will never happen.
 
-[    9.719414] Unhandled exception: IPSR = 00000005 LR = fffffff1
-[    9.726937] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
-[    9.733008] Hardware name: STM32 (Device Tree Support)
-[    9.738296] PC is at clk_gate_is_enabled+0x0/0x28
-[    9.743426] LR is at stm32f4_pll_div_set_rate+0xf/0x38
-[    9.748857] pc : [<0011e4be>]    lr : [<0011f9e3>]    psr: 0100000b
-[    9.755373] sp : 00bc7be0  ip : 00000000  fp : 001f3ac4
-[    9.760812] r10: 002610d0  r9 : 01efe920  r8 : 00540560
-[    9.766269] r7 : 02e7ddb0  r6 : 0173eed8  r5 : 00000000  r4 : 004027c0
-[    9.773081] r3 : 0011e4bf  r2 : 02e7ddb0  r1 : 0173eed8  r0 : 1d3267b8
-[    9.779911] xPSR: 0100000b
-[    9.782719] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
-[    9.788791] Hardware name: STM32 (Device Tree Support)
-[    9.794120] [<0000afa1>] (unwind_backtrace) from [<0000a33f>] (show_stack+0xb/0xc)
-[    9.802421] [<0000a33f>] (show_stack) from [<0000a8df>] (__invalid_entry+0x4b/0x4c)
+Also, I measured the costy call to __next_timer_interrupt() it's slightly less
+than 1us on my test machine. Not a that big in the grand scheme of things, but
+it's in the irq exit code path, so I think it's worth the extra complexity in
+the timer code.
 
-The `pll_num' field in the post_div_data configuration contained a wrong
-value which also referenced an uninitialized hardware clock when
-clk_register_pll_div() was called.
+Any thoughs?
 
-Fixes: 517633ef630e ("clk: stm32f4: Add post divisor for I2S & SAI PLLs")
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
----
-I added Gabriel Fernandez's 'Reviewed-by' tag as requested by himself
-15 days ago at https://lore.kernel.org/patchwork/patch/1450964/.
-
-Changes in v3:
-- Add Gabriel Fernandez 'Reviewed-by' tag.
-
-Changes in v2:
-- Change  'u8 pll_num' from 'stm32f4_pll_post_div_data' structure into
-  'int pll_idx'.
-
- drivers/clk/clk-stm32f4.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
-index 18117ce5ff85..5c75e3d906c2 100644
---- a/drivers/clk/clk-stm32f4.c
-+++ b/drivers/clk/clk-stm32f4.c
-@@ -526,7 +526,7 @@ struct stm32f4_pll {
- 
- struct stm32f4_pll_post_div_data {
- 	int idx;
--	u8 pll_num;
-+	int pll_idx;
- 	const char *name;
- 	const char *parent;
- 	u8 flag;
-@@ -557,13 +557,13 @@ static const struct clk_div_table post_divr_table[] = {
- 
- #define MAX_POST_DIV 3
- static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DIV] = {
--	{ CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
-+	{ CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
- 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
- 
--	{ CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
-+	{ CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
- 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
- 
--	{ NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
-+	{ NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
- 		STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
- };
- 
-@@ -1774,7 +1774,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
- 				post_div->width,
- 				post_div->flag_div,
- 				post_div->div_table,
--				clks[post_div->pll_num],
-+				clks[post_div->pll_idx],
- 				&stm32f4_clk_lock);
- 
- 		if (post_div->idx != NO_IDX)
 -- 
-2.17.1
+Nicolás Sáenz
 
