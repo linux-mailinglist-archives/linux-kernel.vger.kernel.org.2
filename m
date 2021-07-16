@@ -2,69 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F723CBA34
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581C13CBA3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240938AbhGPQCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:02:35 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:39729 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235138AbhGPQCd (ORCPT
+        id S240955AbhGPQEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235138AbhGPQEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:02:33 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 58DD01C0005;
-        Fri, 16 Jul 2021 15:59:35 +0000 (UTC)
-Date:   Fri, 16 Jul 2021 17:59:34 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
-        claudiu.beznea@microchip.com, eugen.hristev@microchip.com,
-        codrin.ciubotariu@microchip.com, emil.velikov@collabora.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ARM: configs: at91: sama5: Use make savedefconfig
- and clean leftovers
-Message-ID: <YPGs5qGih6R9DFWG@piout.net>
-References: <20210716151447.833967-1-tudor.ambarus@microchip.com>
+        Fri, 16 Jul 2021 12:04:22 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2886C06175F;
+        Fri, 16 Jul 2021 09:01:26 -0700 (PDT)
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id BD14C805DF;
+        Fri, 16 Jul 2021 18:01:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1626451283;
+        bh=6i5JGXlL1V3GzRerBd5Yb5nT3I1ajEBH7myeU25jc8E=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NGQromh6ScHrW/4NMwJm/TNJla7SDk/N6ofjCi6q4i2x2Yj0OWt3YHxBunD6Trfua
+         8gdS4Kbq+IPjxT4i6oSdMn4b1LuVIhR1Kzumef9H8RGCLF/bHtkGAs+gEtbWPXf4OK
+         edeacIDNq4cgFJlAsU5nG/gAWwqfocQDNUXPIR9XJcuLMifDFQcqhTiqQQmvhx8LJV
+         vTN64zlJIw8HtQp5Mvdhhm25nVr+LIR7yK0Lk/ZkO80bZ5cRGFZK/lo/hcIzWLyOew
+         47sI4mnql4dalYah60E0c531rS4IMDvfq6LlkVfKShX/CtTxwZ9/InuossyPVoEm2p
+         5DgvZBZlvgmQw==
+Subject: Re: [PATCH v2 00/10] i2c: xiic: Add features, bug fixes.
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Raviteja Narayanam <raviteja.narayanam@xilinx.com>,
+        linux-i2c@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        git@xilinx.com, joe@perches.com
+References: <20210626102806.15402-1-raviteja.narayanam@xilinx.com>
+ <95162fd0-10e6-2bc6-4079-899ac26f66ce@xilinx.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <0c51785f-9763-aebc-a9ea-04337ad1accc@denx.de>
+Date:   Fri, 16 Jul 2021 18:01:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716151447.833967-1-tudor.ambarus@microchip.com>
+In-Reply-To: <95162fd0-10e6-2bc6-4079-899ac26f66ce@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/2021 18:14:46+0300, Tudor Ambarus wrote:
-> Even since the addition CONFIG_VIDEO_HANTRO was set to n because
-> it did not respect the dependency chain. It doesn't respect it now
-> either, remove it.
+On 6/28/21 9:23 AM, Michal Simek wrote:
 > 
-
-Shouldn't you rather ensure it is enabled so we get it for sama5d4?
-
-> Fixes: a0e6830c95b7 ("ARM: configs: at91: sama5: enable the Hantro G1 engine")
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  arch/arm/configs/sama5_defconfig | 1 -
->  1 file changed, 1 deletion(-)
 > 
-> diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-> index 17db3b3e2dd3..1ccf84091dd7 100644
-> --- a/arch/arm/configs/sama5_defconfig
-> +++ b/arch/arm/configs/sama5_defconfig
-> @@ -207,7 +207,6 @@ CONFIG_AT_HDMAC=y
->  CONFIG_AT_XDMAC=y
->  CONFIG_STAGING=y
->  CONFIG_STAGING_MEDIA=y
-> -CONFIG_VIDEO_HANTRO=m
->  # CONFIG_IOMMU_SUPPORT is not set
->  CONFIG_IIO=y
->  CONFIG_AT91_ADC=y
-> -- 
-> 2.25.1
+> On 6/26/21 12:27 PM, Raviteja Narayanam wrote:
+>> -Add 'standard mode' feature for reads > 255 bytes.
+>> -Add 'smbus block read' functionality.
+>> -Add 'xlnx,axi-iic-2.1' new IP version support.
+>> -Switch to 'AXI I2C standard mode' for i2c reads in affected IP versions.
+>> -Remove 'local_irq_save/restore' calls as discussed here: https://www.spinics.net/lists/linux-i2c/msg46483.html.
+>> -Some trivial fixes.
+>>
+>> Changes in v2:
+>> -Grouped the commits as fixes first and then features.
+>> -The first 4 commits fix the dynamic mode broken feature.
+>> -Corrected the indentation in coding style issues.
+>>
+>> Michal Simek (1):
+>>    i2c: xiic: Fix coding style issues
+>>
+>> Raviteja Narayanam (7):
+>>    i2c: xiic: Fix Tx Interrupt path for grouped messages
+>>    i2c: xiic: Add standard mode support for > 255 byte read transfers
+>>    i2c: xiic: Switch to Xiic standard mode for i2c-read
+>>    i2c: xiic: Remove interrupt enable/disable in Rx path
+>>    dt-bindings: i2c: xiic: Add 'xlnx,axi-iic-2.1' to compatible
+>>    i2c: xiic: Update compatible with new IP version
+>>    i2c: xiic: Add smbus_block_read functionality
+>>
+>> Shubhrajyoti Datta (2):
+>>    i2c: xiic: Return value of xiic_reinit
+>>    i2c: xiic: Fix the type check for xiic_wakeup
+>>
+>>   .../bindings/i2c/xlnx,xps-iic-2.00.a.yaml     |   4 +-
+>>   drivers/i2c/busses/i2c-xiic.c                 | 593 ++++++++++++++----
+>>   2 files changed, 487 insertions(+), 110 deletions(-)
+>>
 > 
+> Acked-by: Michal Simek <michal.simek@xilinx.com>
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I just tested this patchset on next-20210716 and the XIIC failures are 
+still present, see:
+
+xiic-i2c a0010000.i2c: mmio a0010000 irq 36
+xiic-i2c a0120000.i2c: mmio a0120000 irq 38
+atmel_mxt_ts 3-004a: supply vdda not found, using dummy regulator
+atmel_mxt_ts 3-004a: supply vdd not found, using dummy regulator
+
+xiic-i2c a0120000.i2c: Timeout waiting at Tx empty
+
+atmel_mxt_ts 3-004a: __mxt_read_reg: i2c transfer failed (-5)
+atmel_mxt_ts 3-004a: mxt_bootloader_read: i2c recv failed (-5)
+atmel_mxt_ts 3-004a: Trying alternate bootloader address
+atmel_mxt_ts 3-004a: mxt_bootloader_read: i2c recv failed (-5)
+atmel_mxt_ts: probe of 3-004a failed with error -5
