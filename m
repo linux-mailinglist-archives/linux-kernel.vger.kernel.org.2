@@ -2,150 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEBB3CBC02
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EB03CBC06
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbhGPSra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:47:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24671 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231715AbhGPSr1 (ORCPT
+        id S231989AbhGPStN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231918AbhGPStM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:47:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626461071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7RoDupO6M1bVRrm6W8ZOvDrptNGSB7yFCE/hhZqmCP0=;
-        b=RwDNRDvOsdUGbZ6Zfo4pFN7JYKQ6czviRweCPE2uYNRxkfI5K6AqHm8W35+yFcfpsNviIt
-        7TQSeSDxHobZC3LFq63k9mx20gMpQo6Z0PhzPYC1bt0/cw4GvF/aJ4PbKCXx1727mOw77V
-        MkHYfjVInL2WGvZyhwzKVksD5pIZ2IU=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-gzZJjaK0Npy1HR1O-s2x3w-1; Fri, 16 Jul 2021 14:44:30 -0400
-X-MC-Unique: gzZJjaK0Npy1HR1O-s2x3w-1
-Received: by mail-qk1-f200.google.com with SMTP id u9-20020a05620a0229b02903b8eff05707so2993640qkm.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:44:30 -0700 (PDT)
+        Fri, 16 Jul 2021 14:49:12 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8674C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:46:16 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id h4so14072968ljo.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:46:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZTghoLbCDRsPHlkRfT2BpYoQqjaMPL1wM1ryXor/pl8=;
+        b=Yo1YBV6yujkR2ygTqgd5q5YaFSVLTQIFEqJcPs/7a2NvLrNu4b9HsgEKc9l4Z/a7RX
+         MHhfB3JJX4pkfmb+eheeIr9JMh/cg5ONr2o3OpRj7HkBWfVJ5/C3VNBingxpl6lmoVKr
+         IRK1aaDAd7SQGcEIlO35zB/5FUHncTwx8qSSM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=7RoDupO6M1bVRrm6W8ZOvDrptNGSB7yFCE/hhZqmCP0=;
-        b=UPTQZG9/Q5msfA7S3LmyToJuwp5pyAak7rWYAUmqK3g6TeJane6tyHLPh8X0R9y0FA
-         ULGfN1rVRSmYYfqUxzKe2y7/8ZGb5EYHfOaNIx0DJoX2bQXt32DdZblmvIplZYcSaTvv
-         CjAGfS6w7JRJy6teH5MBC+rUoJi33F1Sw42FTI74v9aRtP1EXrlY0pvJrYoBodf2+rjH
-         8qsnSvyqwdU/WGIUrDkL9mXmAZtGiIOc0Jr+LoV4jd/Ge12rsV6lZwEWz0hOVicmRBx4
-         ljcEw10W7DL/7P3JJbo22lrmp2Fbc0wwuNFU83x0ZIkpJkbeESK/Yq9n7mKH9KKvEjnn
-         7mZA==
-X-Gm-Message-State: AOAM533vWOhqcCdYLBWjPS10gB0B8CteVIpHhF7Ty1siS0el5tCNKcgx
-        8rQHGkz3bi0EBYE1kOZbeSpzNzXSwzmaXVxq4WjTryp2F2CGOJgj4dLOrXv2rlE/iy25gvirLHu
-        ifDqSElNCNuJZm8Gi6jxZ+3l9
-X-Received: by 2002:a05:622a:170d:: with SMTP id h13mr10563990qtk.264.1626461070120;
-        Fri, 16 Jul 2021 11:44:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydn1Bq/Od/FhPPzfBC0XbXQPdklkUWDSUSQGqXvXC0USgTcignUQvoPYX4S8z7m7xo5sIAMg==
-X-Received: by 2002:a05:622a:170d:: with SMTP id h13mr10563965qtk.264.1626461069928;
-        Fri, 16 Jul 2021 11:44:29 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id a16sm4177617qkn.107.2021.07.16.11.44.28
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZTghoLbCDRsPHlkRfT2BpYoQqjaMPL1wM1ryXor/pl8=;
+        b=ZX4IaIBLXe7gxuhTUsB/wH+3ioBuy0GIr5dDb07LUjX18L4LJJ5aEm/oGt4KOp+/Sx
+         Glp6YNmBHDd3Bj93tK1kFTmqJGIOfMxwmcGtpjjyBgQibyOLdCD/7uDdX6GDC1FrQeQ0
+         b72glwzWY+Gn+fad1YGG09d+UzVBEg3WgFhaca8PTTafNoNowmxq5EQCTyjWXszh3FkX
+         Q3eltj4Rb7vaaKXZhxPQxH9jshzcnC1ZSxbQQSzy3+V4X/JZTwsV5A3QyNteDBFaq3Fp
+         H1RajgxBslnBI8zSz8LF229igHqAPn43AKdMO9ZlucTXJn51sCsG2YKgn2XPFARdiCAZ
+         kvFw==
+X-Gm-Message-State: AOAM533vFg9nH+5dBU4tckc4JxEn8kvxIpNZbsh7cDKJqhogYIXxmAGp
+        tpk4Q0oSwkjPm4DuLPHyvmmbh96m2Jx0h+Dk
+X-Google-Smtp-Source: ABdhPJwWqwFigHAjDSQrQG44fpUYtsEiFn5RW5iUKZ04TFym+oeG9Eoj8WvwCz4G6aBnFw56cY216Q==
+X-Received: by 2002:a2e:9582:: with SMTP id w2mr10176824ljh.49.1626461175077;
+        Fri, 16 Jul 2021 11:46:15 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id k11sm705110lfm.133.2021.07.16.11.46.13
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 11:44:29 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
- partition root
-To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210621184924.27493-1-longman@redhat.com>
- <20210621184924.27493-3-longman@redhat.com>
- <YNcHOe3o//pIiByh@mtj.duckdns.org>
- <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
- <YONGk3iw/zrNzwLK@mtj.duckdns.org>
-Message-ID: <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
-Date:   Fri, 16 Jul 2021 14:44:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 16 Jul 2021 11:46:14 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id g8so11740341lfh.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:46:13 -0700 (PDT)
+X-Received: by 2002:a05:6512:2347:: with SMTP id p7mr8834152lfu.253.1626461173698;
+ Fri, 16 Jul 2021 11:46:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YONGk3iw/zrNzwLK@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210715215753.4a314e97@rorschach.local.home> <CAHk-=wiWdG6jqKhdU62b06-DtESVxHVK8MA23iV+6fB5hnGEAw@mail.gmail.com>
+ <20210716143705.56001390@oasis.local.home>
+In-Reply-To: <20210716143705.56001390@oasis.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 16 Jul 2021 11:45:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjWosrcv2=6m-=YgXRKev=5cnCg-1EhqDpbRXT5z6eQmg@mail.gmail.com>
+Message-ID: <CAHk-=wjWosrcv2=6m-=YgXRKev=5cnCg-1EhqDpbRXT5z6eQmg@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: histogram fix and take 2 on the
+ __string_len() marcros
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 1:51 PM, Tejun Heo wrote:
-> Hello, Waiman.
+On Fri, Jul 16, 2021 at 11:37 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Mon, Jun 28, 2021 at 09:06:50AM -0400, Waiman Long wrote:
->> The main reason for doing this is because normal cpuset control file actions
->> are under the direct control of the cpuset code. So it is up to us to decide
->> whether to grant it or deny it. Hotplug, on the other hand, is not under the
->> control of cpuset code. It can't deny a hotplug operation. This is the main
->> reason why the partition root error state was added in the first place.
-> I have a difficult time convincing myself that this difference justifies the
-> behavior difference and it keeps bothering me that there is a state which
-> can be reached through one path but rejected by the other. I'll continue
-> below.
 >
->> Normally, users can set cpuset.cpus to whatever value they want even though
->> they are not actually granted. However, turning on partition root is under
->> more strict control. You can't turn on partition root if the CPUs requested
->> cannot actually be granted. The problem with setting the state to just
->> partition error is that users may not be aware that the partition creation
->> operation fails.  We can't assume all users will do the proper error
->> checking. I would rather let them know the operation fails rather than
->> relying on them doing the proper check afterward.
->>
->> Yes, I agree that it is a different philosophy than the original cpuset
->> code, but I thought one reason of doing cgroup v2 is to simplify the
->> interface and make it a bit more erorr-proof. Since partition root creation
->> is a relatively rare operation, we can afford to make it more strict than
->> the other operations.
-> So, IMO, one of the reasons why cgroup1 interface was such a mess was
-> because each piece of interaction was designed ad-hoc without regard to the
-> overall consistency. One person feels a particular way of interacting with
-> the interface is "correct" and does it that way and another person does
-> another part in a different way. In the end, we ended up with a messy
-> patchwork.
+> So how do you want this implemented?
 >
-> One problematic aspect of cpuset in cgroup1 was the handling of failure
-> modes, which was caused by the same exact approach - we wanted the interface
-> to reject invalid configurations outright even though we didn't have the
-> ability to prevent those configurations from occurring through other paths,
-> which makes the failure mode more subtle by further obscuring them.
->
-> I think a better approach would be having a clear signal and mechanism to
-> watch the state and explicitly requiring users to verify and monitor the
-> state transitions.
+> #define __assign_str_len(dst, src, len)                                 \
+>         do {                                                            \
+>                 strscpy(__get_str(dst), (src) ? (const char *)(src) : "(null)", len); \
+>                 __get_str(dst)[len] = '\0';
 
-Sorry for the late reply as I was busy with other works.
+What? That "__get_str(dst)[len] = '\0';" is pointless and wrong.
 
-I agree with you on principle. However, the reason why there are more 
-restrictions on enabling partition is because I want to avoid forcing 
-the users to always read back cpuset.partition.type to see if the 
-operation succeeds instead of just getting an error from the operation. 
-The former approach is more error prone. If you don't want changes in 
-existing behavior, I can relax the checking and allow them to become an 
-invalid partition if an illegal operation happens.
+That's the _point_. strscpy() does the whole NUL termination
+correctly, in ways that strncpy() never ever did.
 
-Also there is now another cpuset patch to extend cpu isolation to cgroup 
-v1 [1]. I think it is better suit to the cgroup v2 partition scheme, but 
-cgroup v1 is still quite heavily out there.
+But I also want to know what the actual _semantics_ of the source is.
+Your "memcpy()" example implies that the source is always a fixed-size
+thing. In that case, maybe that's the rigth thing to do, and you
+should just create a real function for it.
 
-Please let me know what you want me to do and I will send out a v3 version.
+So two choices:
 
-Thanks a lot!
-Longman
+ (a) either just plain strscpy() works (or, if you want NUL padding,
+use strscpy_pad()).
 
+ (b) you have very odd source/destination semantics, and it should be
+its own function that explains it.
+
+Note how in neither case is it ok to just make random inline code with
+no explanations for the odd crazy code. Make a function that actually
+describes what you want, documents it, and be done with it.
+
+strncpy() is garbage. It should never be used in new code.
+
+And random semantics that are undocumented and just implemented as a
+illegible mess in a header file is not ok either.
+
+                Linus
