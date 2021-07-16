@@ -2,130 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEFF3CB579
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96063CB57B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhGPJzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:55:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40740 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231386AbhGPJzN (ORCPT
+        id S235490AbhGPJzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:55:44 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51600 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231386AbhGPJzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 05:55:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626429136;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fb4R+JVoagpsb7WH3nwCiNnKAH31HT4aNCBqTWasD8c=;
-        b=QFPxxgzuUDD72Q5SSvalruNCTh6biu9CK3lvCCRhb+UrcfqW1Da3hqwW2woU/kuxZd1zGF
-        x7UswQHXHPwbYGjobXXynZ03E+OG7p8PUJeoGzAXrZMXVHjC5DTOUoudhCk5pAUBj8prP1
-        b8nFFk2kFcRtMPOP36HeFndl917I/C8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-STFjihbcMl6nWBWD-P0GHg-1; Fri, 16 Jul 2021 05:52:14 -0400
-X-MC-Unique: STFjihbcMl6nWBWD-P0GHg-1
-Received: by mail-wm1-f69.google.com with SMTP id p9-20020a7bcc890000b02902190142995dso2210856wma.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 02:52:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Fb4R+JVoagpsb7WH3nwCiNnKAH31HT4aNCBqTWasD8c=;
-        b=uLdQ7HKZtNvo3fsPJlkL/IZcW+DOtBvII9caPcM9nlhH+Dthhw26MLFZr/z2Qcx+Dt
-         X08oDnyRQxTGVLBGoj7J966mm4Gb7jDu32p/K0lyOjjX2oi37AIuV3GGdyyxxDYOvY07
-         EwHwGv4cyFZKzvASeNcPZcU9gkLFBny+PlXK1EX8T1TLypJuVCI7QxtxUntpri/WMtSl
-         3ebzP+qwQwaU80LXfbU9oCPFiFOah2h8vcyyYTKYYLvToHM/2XQwerx289BJ7FxstbUx
-         aKJLlhdC7COIAXCJsAjVYUxDq91a4LBOoNdTOvK/96LcLa0ipHrGmaqjJSOfKC7t5+DJ
-         jYSw==
-X-Gm-Message-State: AOAM531qBK4vXWIJJKEZk7kX4aH8nO4dBKc67tUxf+qtTCs9lWqPTG2+
-        4cLaK6iS5YXXWikt8JBeKjbHWz91KQUeIp9Fp6vy3XKeawfHqCYQX9VGK/e9DKw9JGunFHCWcWF
-        X4fIKKsxp9n/NeZGcEGMsvxjn
-X-Received: by 2002:a05:600c:4f96:: with SMTP id n22mr9487005wmq.137.1626429133665;
-        Fri, 16 Jul 2021 02:52:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4PzoAhnSdzpCYK7ODLnh30V49UUpOf9H5Ht+rIvB4Eqa05Jn7dZdV6hgU0Y5jzzVByP7LiQ==
-X-Received: by 2002:a05:600c:4f96:: with SMTP id n22mr9486968wmq.137.1626429133409;
-        Fri, 16 Jul 2021 02:52:13 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id c125sm12505903wme.36.2021.07.16.02.52.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 02:52:12 -0700 (PDT)
-To:     Zeng Guang <guang.zeng@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Robert Hu <robert.hu@intel.com>, Gao Chao <chao.gao@intel.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>
-References: <20210716064808.14757-1-guang.zeng@intel.com>
- <20210716064808.14757-7-guang.zeng@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 6/6] KVM: VMX: enable IPI virtualization
-Message-ID: <8aed2541-082d-d115-09ac-e7fcc05f96dc@redhat.com>
-Date:   Fri, 16 Jul 2021 11:52:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 16 Jul 2021 05:55:40 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7E9641C0B82; Fri, 16 Jul 2021 11:52:44 +0200 (CEST)
+Date:   Fri, 16 Jul 2021 11:52:43 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Oscar Salvador <osalvador@suse.de>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hanjun Guo <guohanjun@huawei.com>
+Subject: Re: [PATCH 5.10 140/215] mm,hwpoison: return -EBUSY when migration
+ fails
+Message-ID: <20210716095243.GA12505@amd>
+References: <20210715182558.381078833@linuxfoundation.org>
+ <20210715182624.294004469@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210716064808.14757-7-guang.zeng@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+Content-Disposition: inline
+In-Reply-To: <20210715182624.294004469@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/21 08:48, Zeng Guang wrote:
->  
-> +	if (!(_cpu_based_3rd_exec_control & TERTIARY_EXEC_IPI_VIRT))
-> +		enable_ipiv = 0;
-> +
->   	}
 
-Please move this to hardware_setup(), using a new function 
-cpu_has_vmx_ipiv() in vmx/capabilities.h.
+--LZvS9be/3tNcYl/X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  	if (_cpu_based_exec_control & CPU_BASED_ACTIVATE_TERTIARY_CONTROLS) {
-> -		u64 opt3 = 0;
-> +		u64 opt3 = enable_ipiv ? TERTIARY_EXEC_IPI_VIRT : 0;
->  		u64 min3 = 0;
+Hi!
 
-I like the idea of changing opt3, but it's different from how 
-setup_vmcs_config works for the other execution controls.  Let me think 
-if it makes sense to clean this up, and move the handling of other 
-module parameters from hardware_setup() to setup_vmcs_config().
+> From: Oscar Salvador <osalvador@suse.de>
+>=20
+> commit 3f4b815a439adfb8f238335612c4b28bc10084d8
 
-> +
-> +	if (vmx->ipiv_active)
-> +		install_pid(vmx);
+Another format of marking upstream commits. How are this is number 8
+or so. I have scripts trying to parse this, and I don't believe I'm
+the only one.
 
-This should be if (enable_ipiv) instead, I think.
+> Link: https://lkml.kernel.org/r/20201209092818.30417-1-osalvador@suse.de
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Cc: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 
-In fact, in all other places that are using vmx->ipiv_active, you can 
-actually replace it with enable_ipiv; they are all reached only with 
-kvm_vcpu_apicv_active(vcpu) == true.
+Could se simply place Upstream: <hash> tag here? That should
+discourage such "creativity"... plus it will make it clear who touched
+patch in mainline context and who in stable context.
 
-> +	if (!enable_apicv) {
-> +		enable_ipiv = 0;
-> +		vmcs_config.cpu_based_3rd_exec_ctrl &= ~TERTIARY_EXEC_IPI_VIRT;
-> +	}
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-The assignment to vmcs_config.cpu_based_3rd_exec_ctrl should not be 
-necessary; kvm_vcpu_apicv_active will always be false in that case and 
-IPI virtualization would never be enabled.
+--LZvS9be/3tNcYl/X
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Paolo
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
+iEYEARECAAYFAmDxVusACgkQMOfwapXb+vL/ywCaA9AxmEi/0e539yr6i76sbWx0
+PTYAoJr3uwgDGvyh8EZtZtKkqxlbnvni
+=4+Fo
+-----END PGP SIGNATURE-----
+
+--LZvS9be/3tNcYl/X--
