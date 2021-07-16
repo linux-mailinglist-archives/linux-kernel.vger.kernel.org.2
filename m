@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399533CBAE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82593CBADE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhGPRFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:05:07 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:13163 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhGPRFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:05:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626454931; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=mEEK8vn8jUWHmrafJI5v9opupcLU0cBJfG6/Je3wKtE=; b=hMq2xdY6QkvgV0KkbA9oRBGLZE0uVN0s1oPVfAnQKdHQU5zJJrI/mWO71SHVXNX8zfJWLyR1
- qUznx2+Xd0E/1jQTc95UHoKI1yzSdJQT8kTs+l9qTvI26Aw5jZNgNW7VuBm6XY+S8bUs0kaA
- f1nV4gJi3US3AXPhmkVzbQz5WTM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60f1bb611d1afe585ebda6f8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Jul 2021 17:01:21
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9E573C43460; Fri, 16 Jul 2021 17:01:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.79.43.230] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 81BA3C433F1;
-        Fri, 16 Jul 2021 17:01:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 81BA3C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-Subject: Re: [PATCH v2 3/3] soc: qcom: aoss: Add generic compatible
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210709174142.1274554-1-bjorn.andersson@linaro.org>
- <20210709174142.1274554-4-bjorn.andersson@linaro.org>
-From:   Sibi Sankar <sibis@codeaurora.org>
-Message-ID: <c3976c8d-c1ba-71b6-12ca-4de5649d9157@codeaurora.org>
-Date:   Fri, 16 Jul 2021 22:31:08 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230229AbhGPRET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 13:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhGPRER (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 13:04:17 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED82C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:01:22 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id x16so5611432plg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 10:01:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NmQnhTlbXOfRCbLf9y86Anaxj0U0hlxHDzqR53g42lw=;
+        b=m/uy5N0lDSdUUcEBsyohxPqG1FA3sC7JLvfidHa/D1BAOgIbSJpan54naFe4u/UBc5
+         HaKgGoIH0AaG36C9c8AdWbAyqN2RW1LfXZLQEMWVPbpgLe4buI07O1XovW2TBeaa1r/j
+         N+Y7ddaWUtRE8P+Fhr2N09VXZk/VlyFqaRkCeJnHhsEKvpsB6jFfJ/tRAUSdOlEBz264
+         Sn2R1yjvbhCwdKYGKLaZJ6TqmvxdFr5MLRwKpYyEby3wc3APffdwOcqDm+241Ql0polg
+         rAkvTMN5CvmDpuSpqfIFK/OLKDohaDI+an4dPU083cPjPpGyWy3aYwWuatd1PUuXDio2
+         dSVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NmQnhTlbXOfRCbLf9y86Anaxj0U0hlxHDzqR53g42lw=;
+        b=gAyqt+BbgIpJ1EtDJhpYiGVE541TIpn1+nu7S68B84AAvXox5MjtmezCUmUcZZPhfH
+         I274gKbTYqtHixwU08lPE8PswoX1ev4PwB/sQyeR3ZRbnqGQwdEUuhdhXcK3b197z5le
+         nrKE85RDlTJnsYlDaelUX7lu+QfW/5FNNtaz9GycQOV27eBRLgNEFtyo6ZfZUkgJASbf
+         WXR15Mds2xMh22YUEydD4cKb6t/MGqxndOJ5WfAaLv6cW5rk1eb3uWl/Kcw/41nRmD2V
+         cswECqmfvVRmaigLvo5JEdjlPYTvllOxoqNRpKiicdLRr8JSdlw0K3IMgvhdon5l4+2k
+         KQ9w==
+X-Gm-Message-State: AOAM531TcQew9Ozki9KfUVGO6PcRqb5OjYTq7wc7CZY5vvBwy3xlE0yn
+        BgQUPevoA5Bdw/G9fvTCqye9wQ==
+X-Google-Smtp-Source: ABdhPJwgnKcszg66mAGtsLOzmFzSVInsvHjsiqvW0a+0Z+ynIpjNPXpC70wcb8yyVlFKOqF0xXWQzg==
+X-Received: by 2002:a17:902:b90a:b029:12b:3338:1870 with SMTP id bf10-20020a170902b90ab029012b33381870mr8530661plb.73.1626454881971;
+        Fri, 16 Jul 2021 10:01:21 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n32sm10565381pfv.59.2021.07.16.10.01.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 10:01:21 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 17:01:17 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: nSVM: Rename nested_svm_vmloadsave() to
+ svm_copy_vmloadsave_state()
+Message-ID: <YPG7XVwkze/3YDaI@google.com>
+References: <20210716144104.465269-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210709174142.1274554-4-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716144104.465269-1-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 16, 2021, Vitaly Kuznetsov wrote:
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 3bd09c50c98b..8493592b63b4 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -722,7 +722,7 @@ void svm_copy_vmrun_state(struct vmcb_save_area *from_save,
+>  	to_save->cpl = 0;
+>  }
+>  
+> -void nested_svm_vmloadsave(struct vmcb *from_vmcb, struct vmcb *to_vmcb)
+> +void svm_copy_vmloadsave_state(struct vmcb *from_vmcb, struct vmcb *to_vmcb)
 
-On 7/9/21 11:11 PM, Bjorn Andersson wrote:
-> It seems we don't need platform specific implementation for the AOSS
-> QMP, so let's introduce a generic compatible to avoid having to update
-> the driver for each platform.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-Tested-by: Sibi Sankar <sibis@codeaurora.org>
-
-> ---
-> 
-> Changes since v1:
-> - None
-> 
->   drivers/soc/qcom/qcom_aoss.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> index 934fcc4d2b05..92a1af70a649 100644
-> --- a/drivers/soc/qcom/qcom_aoss.c
-> +++ b/drivers/soc/qcom/qcom_aoss.c
-> @@ -602,6 +602,7 @@ static const struct of_device_id qmp_dt_match[] = {
->   	{ .compatible = "qcom,sm8150-aoss-qmp", },
->   	{ .compatible = "qcom,sm8250-aoss-qmp", },
->   	{ .compatible = "qcom,sm8350-aoss-qmp", },
-> +	{ .compatible = "qcom,aoss-qmp", },
->   	{}
->   };
->   MODULE_DEVICE_TABLE(of, qmp_dt_match);
-> 
-
--- 
-Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc, is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+And swap the parameter order for both functions in a follow-up patch?  I.e. have
+the destination first to match memcpy().
