@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245C63CB836
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743093CB840
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 15:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239860AbhGPOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:00:24 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34824 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhGPOAX (ORCPT
+        id S240184AbhGPOCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:02:10 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22605 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232915AbhGPOCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:00:23 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 015EE1F44120
-Received: by earth.universe (Postfix, from userid 1000)
-        id DEE833C0C97; Fri, 16 Jul 2021 15:57:25 +0200 (CEST)
-Date:   Fri, 16 Jul 2021 15:57:25 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Daisuke Nojiri <dnojiri@chromium.org>
-Cc:     vpalatin@chromium.org, Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Utkarsh Patel <utkarsh.h.patel@intel.com>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v7 1/2] power: supply: PCHG: Peripheral device charger
-Message-ID: <20210716135725.d3fadbozpmigmzmp@earth.universe>
-References: <20210616185131.1792509-1-dnojiri@chromium.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4l6shjqowxm5ftve"
-Content-Disposition: inline
-In-Reply-To: <20210616185131.1792509-1-dnojiri@chromium.org>
+        Fri, 16 Jul 2021 10:02:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626443954; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=4OELohummFgsgQ1RQE8GgRV7LW3V8m2pafVToNQMbiY=; b=mxsDaHrJnwAi+v8FgdBI6Ik/1ORtgkWEb2HaDkz3ppXF0rYNgMFy1dhwep3Z02wWiBkk+vIJ
+ aSYWie/Evhgxn8Byve+TiS2g/SKFnx7zkTzKUqJ6GGozZvakcwWCXHMwV2xhrXDnGeUuPfae
+ olh2pYFE8kSuPsi2OAsU1dCizVA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60f190a617c2b4047dcb6ebb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Jul 2021 13:59:02
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A09E2C4338A; Fri, 16 Jul 2021 13:59:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4D6E9C433F1;
+        Fri, 16 Jul 2021 13:58:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4D6E9C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pmaliset@codeaurora.org
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, Prasad Malisetty <pmaliset@codeaurora.org>
+Subject: [PATCH v4 0/4] Add DT bindings and DT nodes for PCIe and PHY in SC7280
+Date:   Fri, 16 Jul 2021 19:28:43 +0530
+Message-Id: <1626443927-32028-1-git-send-email-pmaliset@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes in v4 as suggested by Bjorn:
 
---4l6shjqowxm5ftve
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	* Changed pipe clk mux name as gcc_pcie_1_pipe_clk_src.
+	* Changed pipe_ext_src as phy_pipe_clk.
+	* Updated commit message for [PATCH v4 4/4]. 
+		
 
-Hi,
+Changes in v3:
+	* Changed pipe clock names in dt bindings as pipe_mux and phy_pipe.
+	* Moved reset and NVMe GPIO pin configs into board specific file.
+	* Updated pipe clk mux commit message.
+	
+Changes in v2:
+	* Moved pcie pin control settings into IDP file.
+	* Replaced pipe_clk_src with pipe_clk_mux in pcie driver 
+	* Included pipe clk mux setting change set in this series
 
-On Wed, Jun 16, 2021 at 11:51:24AM -0700, Daisuke Nojiri wrote:
-> This patch adds a driver for PCHG (Peripheral CHarGer). PCHG is a
-> framework managing power supplies for peripheral devices.
->=20
-> This driver creates a sysfs node for each peripheral charge port:
->=20
-> 	/sys/class/power_supply/peripheral<n>
->=20
-> where <n> is the index of a charge port.
->=20
-> For example, when a stylus is connected to a NFC/WLC port, the node
-> returns:
->=20
-> 	/sys/class/power_supply/peripheral0/
-> 		capacity=3D50
-> 		charge_type=3DStandard
-> 		scope=3DDevice
-> 		status=3DCharging
-> 		type=3DBattery
->=20
-> Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
-> ---
-> [...]
-> +static enum power_supply_property cros_pchg_props[] =3D {
-> +	POWER_SUPPLY_PROP_STATUS,
-> +	POWER_SUPPLY_PROP_CHARGE_TYPE,
-> +	POWER_SUPPLY_PROP_CAPACITY,
-> +	POWER_SUPPLY_PROP_SCOPE,
-> +	/*
-> +	 * todo: Add the following.
-> +	 *
-> +	 * POWER_SUPPLY_PROP_TECHNOLOGY,
-> +	 * POWER_SUPPLY_PROP_ERROR,
-> +	 * POWER_SUPPLY_PROP_SERIAL_NUMBER,
-> +	 *
-> +	 * POWER_SUPPLY_PROP_ONLINE can't be used because it indicates the
-> +	 * system is powered by AC.
-> +	 */
-> +};
-> [...]
+Prasad Malisetty (4):
+  dt-bindings: pci: qcom: Document PCIe bindings for SC720
+  arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
+  arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
+  PCIe: qcom: Add support to control pipe clk src
 
-Thanks, I queued the driver with the above TODO removed. Please
-track this downstream, the note is not useful in mainline kernel,
-since we do not have (AFAIK) the necessary documentation to add
-more features.
+ .../devicetree/bindings/pci/qcom,pcie.txt          |  17 +++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |  38 +++++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 125 +++++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             |  22 ++++
+ 4 files changed, 202 insertions(+)
 
--- Sebastian
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
---4l6shjqowxm5ftve
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmDxkEUACgkQ2O7X88g7
-+pog9g//edvWJfj8PO46DU32fE+gq4YtH/VZAfxFxxjUgRVU/tlFVwTrmqAgeH6G
-9z6m+1JpCiHoP2IUj1Y3+dlG29iKJ/nEwqX9E0VfvlbGFmWQuEej8pKMUlTfzNd7
-VsbaHZZlqDpvKV0GmXW12AMMvZfZ7fAUqkE+9ygXAuWF6SnQ2irCQZMt+QBnj1cJ
-feeb+DNS8VIG2ZBMSvJx2X3rZWM+1UQuXs3UFDYmS/TKotF+mFNCHt43I/+rrTm/
-vXOidPdiavklFtLcWv8Uh2XP2sWV0ZIszPhoMCDHt5eSMUuINvM/FGNUeXDxOYmy
-umKNoZ8Kl2agQj7ZKEMLWd1uLZX6ATJMScJfZamDiHFT45mJa8QAqQICJgezRVA4
-CYqDDNRhBDG2PYkHKNEMmaGyjhdsEm6vCD9LWYTCoDjqLtw7C98HLOimBZGqhLI+
-9wk8mUeg7SzktGqGKW4A5pZajXFmSgH+xw3AHeupGpylDCoriY+gEC0WaeydOFdj
-GoE3xKJ2ui8qqwfBZnNaFU+mNTEWpIzlL0oaQEAnZmgs90j2upQ9J8NYpdXc63PT
-m5Usr+hV0IqvWXv0waslaG/EY6i4smzncUIHMoFp7Kj+p0rFo2cIwe9nn9NE2XdD
-Zy5MNoDcNVFsnnnfE0jvZaTVkrQgEfQ0cdB/P3cywzu1FDmrgs4=
-=ksno
------END PGP SIGNATURE-----
-
---4l6shjqowxm5ftve--
