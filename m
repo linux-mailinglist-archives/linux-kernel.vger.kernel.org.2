@@ -2,133 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CCA3CBE22
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 23:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AC23CBE12
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234896AbhGPVEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 17:04:01 -0400
-Received: from www62.your-server.de ([213.133.104.62]:33142 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232957AbhGPVD7 (ORCPT
+        id S234143AbhGPU52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:57:28 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:4776 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230415AbhGPU51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 17:03:59 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1m4Ux9-000Bh1-3i; Fri, 16 Jul 2021 23:00:59 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1m4Ux8-000Hma-RA; Fri, 16 Jul 2021 23:00:58 +0200
-Subject: Re: [PATCH bpf] bpf: fix OOB read when printing XDP link fdinfo
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210716100452.113652-1-lmb@cloudflare.com>
- <CAEf4BzauzWhNag0z31krN_MTZTGLynAJvkh_7P3yLQCx5XLTAg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7854fbef-8ea5-5396-6369-99eef1dcccaa@iogearbox.net>
-Date:   Fri, 16 Jul 2021 23:00:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 16 Jul 2021 16:57:27 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16GKeMbw010026;
+        Fri, 16 Jul 2021 16:54:28 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 39tw63kv3b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Jul 2021 16:54:28 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 16GKsQit026940
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Jul 2021 16:54:26 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Fri, 16 Jul 2021 16:54:26 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Fri, 16 Jul 2021 16:54:25 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Fri, 16 Jul 2021 16:54:25 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 16GKsNDS003387;
+        Fri, 16 Jul 2021 16:54:23 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <broonie@kernel.org>
+CC:     <nuno.sa@analog.com>, <bootc@bootc.net>, <swarren@wwwdotorg.org>,
+        <bcm-kernel-feedback-list@broadcom.com>, <rjui@broadcom.com>,
+        <f.fainelli@gmail.com>, <nsaenz@kernel.org>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH 0/1] spi: spi-bcm2835: Fix deadlock
+Date:   Sat, 17 Jul 2021 00:02:44 +0300
+Message-ID: <20210716210245.13240-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzauzWhNag0z31krN_MTZTGLynAJvkh_7P3yLQCx5XLTAg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26234/Fri Jul 16 10:18:39 2021)
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: jlKMay9owrbYfMeweS0lhRrhn6FYSULv
+X-Proofpoint-ORIG-GUID: jlKMay9owrbYfMeweS0lhRrhn6FYSULv
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-16_09:2021-07-16,2021-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ impostorscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1011 phishscore=0 priorityscore=1501 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107160131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/21 10:43 PM, Andrii Nakryiko wrote:
-> On Fri, Jul 16, 2021 at 3:05 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->>
->> We got the following UBSAN report on one of our testing machines:
->>
->>      ================================================================================
->>      UBSAN: array-index-out-of-bounds in kernel/bpf/syscall.c:2389:24
->>      index 6 is out of range for type 'char *[6]'
->>      CPU: 43 PID: 930921 Comm: systemd-coredum Tainted: G           O      5.10.48-cloudflare-kasan-2021.7.0 #1
->>      Hardware name: <snip>
->>      Call Trace:
->>       dump_stack+0x7d/0xa3
->>       ubsan_epilogue+0x5/0x40
->>       __ubsan_handle_out_of_bounds.cold+0x43/0x48
->>       ? seq_printf+0x17d/0x250
->>       bpf_link_show_fdinfo+0x329/0x380
->>       ? bpf_map_value_size+0xe0/0xe0
->>       ? put_files_struct+0x20/0x2d0
->>       ? __kasan_kmalloc.constprop.0+0xc2/0xd0
->>       seq_show+0x3f7/0x540
->>       seq_read_iter+0x3f8/0x1040
->>       seq_read+0x329/0x500
->>       ? seq_read_iter+0x1040/0x1040
->>       ? __fsnotify_parent+0x80/0x820
->>       ? __fsnotify_update_child_dentry_flags+0x380/0x380
->>       vfs_read+0x123/0x460
->>       ksys_read+0xed/0x1c0
->>       ? __x64_sys_pwrite64+0x1f0/0x1f0
->>       do_syscall_64+0x33/0x40
->>       entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>      <snip>
->>      ================================================================================
->>      ================================================================================
->>      UBSAN: object-size-mismatch in kernel/bpf/syscall.c:2384:2
->>
->>  From the report, we can infer that some array access in bpf_link_show_fdinfo at index 6
->> is out of bounds. The obvious candidate is bpf_link_type_strs[BPF_LINK_TYPE_XDP] with
->> BPF_LINK_TYPE_XDP == 6. It turns out that BPF_LINK_TYPE_XDP is missing from bpf_types.h
->> and therefore doesn't have an entry in bpf_link_type_strs:
->>
->>      pos:        0
->>      flags:      02000000
->>      mnt_id:     13
->>      link_type:  (null)
->>      link_id:    4
->>      prog_tag:   bcf7977d3b93787c
->>      prog_id:    4
->>      ifindex:    1
->>
->> Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
->> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
->> ---
-> 
-> Well, oops. Thanks for the fix!
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> It would be great to have a compilation error for something like this.
-> I wonder if we can do something to detect this going forward?
-> 
->>   include/linux/bpf_types.h | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
->> index a9db1eae6796..be95f2722ad9 100644
->> --- a/include/linux/bpf_types.h
->> +++ b/include/linux/bpf_types.h
->> @@ -135,3 +135,4 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
->>   #ifdef CONFIG_NET
->>   BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
->>   #endif
->> +BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Lorenz, does this compile when you don't have CONFIG_NET configured? I would assume
-this needs to go right below the netns one depending on CONFIG_NET.. at least the
-bpf_xdp_link_lops are in net/core/dev.c which is only built under CONFIG_NET.
+The bcm2835_spi_transfer_one function can create a deadlock
+if it is called while another thread already has the
+CCF lock.
 
-Thanks,
-Daniel
+This behavior was observed at boot and when trying to
+print the clk_summary debugfs. I had registered
+at the time multiple clocks of AD9545 through the CCF.
+Tested this using an RPi 4 connected to AD9545 through SPI.
+
+See upstream attempt here:
+https://lore.kernel.org/lkml/20210614070718.78041-3-alexandru.tachici@analog.com/T/
+
+This can happen to any other clock that needs to read
+the rate/phase from hardware using the SPI. Because
+when issuing a clk_get_rate/phase, the requesting thread
+already holds the CCF lock. If another thread, in this case
+the one that does the spi transfer tries the same, it will cause
+a deadlock. This happens by chance because not always
+every spi request gets deferred to a khthread.
+
+Alexandru Tachici (1):
+  spi: spi-bcm2835: Fix deadlock
+
+ drivers/spi/spi-bcm2835.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+--
+2.25.1
