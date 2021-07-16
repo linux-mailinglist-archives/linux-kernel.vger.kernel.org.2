@@ -2,87 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F5E3CB5C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8553CB5CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237522AbhGPKNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        id S236999AbhGPKQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237339AbhGPKNF (ORCPT
+        with ESMTP id S235965AbhGPKQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:13:05 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEA8C06175F;
-        Fri, 16 Jul 2021 03:10:09 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id w14so12224428edc.8;
-        Fri, 16 Jul 2021 03:10:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I9ZH6xY225ft4o01XlrzMLmvWLH2occkG4KNrsfQi6M=;
-        b=tC0JMTzTrulko5j72cWSlkfiJqM8a7ageHXvYhG3Uv6xUKwdlYvC0cJjzCdRwmT1Wz
-         GVd1JYL2BhKXi1HEfgZ54jOmSMkgCdMhzX+ops3cnOoSyx8WIr/kJT9ztLWuki1ge/mK
-         pRDQ4USJPnzULA2cCgk4K3Lz+1SfdmbydOR5ZNfER8hTkNwlKOS1ytGrEkNAWKnNUf5e
-         fvd19moc8UFUM4Kv+XKDC2Gvc5LMRcC0UFj0IxNr6CEb4x6ZkOAukzfOi+vX2oJ2goHv
-         Prg1mk8vBoHNtE+Db6VkOg6ddPiTKWbFS/RlWINgnq3wPptv6EKPyeHlGdm7U1NcoSZY
-         RpTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I9ZH6xY225ft4o01XlrzMLmvWLH2occkG4KNrsfQi6M=;
-        b=D4EDFO3jUN4TM+skBvZBMeCfE12MBcvz4m7TQrRADqAa+C5ubbvRezYmJVpHROAjse
-         LU/2+L3H6sj3sS1qJ+fc6eWDXalrOFBvQnCpX8BmN/g+D3vgBmq8hgixY5fHwl5tVq0s
-         duv9fgcB3KCHZFEb9/knDtfiRnf8x52SVIpvf2fOh4OnCiTOEPnJgGpN5XGjI49Gujbe
-         8ocFQ87dipnwFiJtWSVcItqUZNV/HZvd7GydUK3LSV98gZGVG5+xPHL1+Ve/smppIYsq
-         O3qx8NlZcGPyce/W6PK3HPEDT835jbOua3B2aebIYAFSPF1DPHD/zNjqPRICG3p4sU5z
-         IxyA==
-X-Gm-Message-State: AOAM532A6mGntew+oroISJDI37qif/PpsJ34I0nBH0cQ35DLlSjSIbuz
-        UbTFocLSDKH5+DdtpYzDrOC9Cam0BA==
-X-Google-Smtp-Source: ABdhPJyFgoeTwHNz7AcIUGS5494lDOaqMMKys9Mz1FQtTk4qbtMVe0JpTxrRTBYXtbfa+wzuIOJjxg==
-X-Received: by 2002:a05:6402:1849:: with SMTP id v9mr13211273edy.108.1626430208459;
-        Fri, 16 Jul 2021 03:10:08 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.253.48])
-        by smtp.gmail.com with ESMTPSA id e22sm3561811edu.35.2021.07.16.03.10.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 03:10:08 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 13:10:06 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>, hch@infradead.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v2] Decouple build from userspace headers
-Message-ID: <YPFa/tIF38eTJt1B@localhost.localdomain>
-References: <YO3txvw87MjKfdpq@localhost.localdomain>
- <YO8ioz4sHwcUAkdt@localhost.localdomain>
- <CADYN=9+ZO1XHu2YZYy7s+6_qAh1obi2wk+d4A3vKmxtkoNvQLg@mail.gmail.com>
+        Fri, 16 Jul 2021 06:16:10 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19FEC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:13:15 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m4KqA-0001KF-3V; Fri, 16 Jul 2021 12:13:06 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m4Kq5-0000E2-I2; Fri, 16 Jul 2021 12:13:01 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m4Kq5-0000Wa-GI; Fri, 16 Jul 2021 12:13:01 +0200
+Date:   Fri, 16 Jul 2021 12:13:01 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v9 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210716101301.l563tdwt5xuq5iq6@pengutronix.de>
+References: <20210709065217.6153-1-billy_tsai@aspeedtech.com>
+ <20210709065217.6153-3-billy_tsai@aspeedtech.com>
+ <20210715150533.vppkw5oiomkxmfrn@pengutronix.de>
+ <BD5B012C-B377-45E2-B04E-61D12B086670@aspeedtech.com>
+ <20210716070943.ayxkz2irkwhgincz@pengutronix.de>
+ <DD5590B4-11BC-411B-95BF-03AC26C078E4@aspeedtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="o6m277jeq5onsbp7"
 Content-Disposition: inline
-In-Reply-To: <CADYN=9+ZO1XHu2YZYy7s+6_qAh1obi2wk+d4A3vKmxtkoNvQLg@mail.gmail.com>
+In-Reply-To: <DD5590B4-11BC-411B-95BF-03AC26C078E4@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 11:03:41AM +0200, Anders Roxell wrote:
-> On Wed, 14 Jul 2021 at 19:45, Alexey Dobriyan <adobriyan@gmail.com> wrote:
-> >
 
-> In file included from
-> /home/anders/src/kernel/testing/crypto/aegis128-neon-inner.c:7:
-> /home/anders/src/kernel/testing/arch/arm64/include/asm/neon-intrinsics.h:33:10:
-> fatal error: arm_neon.h: No such file or directory
->    33 | #include <arm_neon.h>
->       |          ^~~~~~~~~~~~
+--o6m277jeq5onsbp7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> If I revert this patch I can build it.
+Hello Billy,
 
-Please, see followup fixes or grab new -mm.
-https://lore.kernel.org/lkml/YO8ioz4sHwcUAkdt@localhost.localdomain/
+On Fri, Jul 16, 2021 at 09:22:22AM +0000, Billy Tsai wrote:
+> On 2021/7/16, 3:10 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutronix.=
+de> wrote:
+>=20
+>     On Fri, Jul 16, 2021 at 01:48:20AM +0000, Billy Tsai wrote:
+>     >> On 2021/7/15, 11:06 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@peng=
+utronix.de>> wrote:
+>     >>     > Another is: The PWM doesn't support duty_cycle 0, on such a =
+request the
+>     >>     > PWM is disabled which results in a constant inactive level.
+>     >>=20
+>     >>     > (This is correct, is it? Or does it yield a constant 0 level=
+?)
+>     >>=20
+>     >> Our pwm can support duty_cycle 0 by unset CLK_ENABLE.
+>=20
+>     > This has a slightly different semantic though. Some consumer might
+>     > expect that the following sequence:
+>=20
+>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10000, .enabl=
+ed =3D true })
+>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 0, .enabled =
+=3D true })
+>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle =3D 10000, .enabl=
+ed =3D true })
+>=20
+>     > results in the output being low for an integer multiple of 10 =B5s.=
+ This
+>     > isn't given with setting CLK_ENABLE to zero, is it? (I didn't reche=
+ck,
+>     > if the PWM doesn't complete periods on reconfiguration this doesn't
+>     > matter much though.)
+> Thanks for the explanation.
+> Our hardware actually can only support duty from 1/256 to 256/256.
+> For this situation I can do possible solution:
+> We can though change polarity to meet this requirement. Inverse the pin a=
+nd use
+> duty_cycle 100.=20
+> But I think this is not a good solution for this problem right?
+
+If this doesn't result in more glitches that would be fine for me.
+(Assuming it is documented good enough in the code to be
+understandable.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--o6m277jeq5onsbp7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDxW6kACgkQwfwUeK3K
+7AnuOQf/cdtxnx5ap7eAcXsCJxd1wMM4sHbrRR3Kx2nE9MwAuU44x7P3khR9XSzv
+3S2xsnfWdrdxNQY/DOAfuSuCTgZ92BwzHt22OV8tPACYJOKgatgJtupBIBge0Bmh
+16uJgAJa8UYl5xYgXwWumLgKR7btLaZRGTg63nyvXfYYyQPo4n5Hej7fE+o2cjBE
+jpDMoOQCu4dYgaBZXqhhLZDMv7jtfeHeHn71lggEr5PB+xhNBMRKXIcQFqODAnIQ
+U6u0zGwi696702Zh5iavfwOCTO+NfMUmNBKqNoYn9pDmcclvXh84PDCHHKIj9KII
+ZlB10IqeSbWdPwhTSWbzqrtcafFLuQ==
+=Nk6o
+-----END PGP SIGNATURE-----
+
+--o6m277jeq5onsbp7--
