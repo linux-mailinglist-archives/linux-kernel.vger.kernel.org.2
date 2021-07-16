@@ -2,119 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08143CBB88
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39953CBB91
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 20:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhGPSDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 14:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhGPSD0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 14:03:26 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52239C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 11:00:31 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id D8FFC1F43CD4
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Vijendar Mukunda <vijendar.mukunda@amd.com>
-Cc:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>,
-        <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        "Ravulapati Vishnu vardhan rao" <Vishnuvardhanrao.Ravulapati@amd.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2 12/12] ASoC: amd: enable vangogh acp5x driver build
-References: <20210716150809.21450-1-vijendar.mukunda@amd.com>
-        <20210716150809.21450-13-vijendar.mukunda@amd.com>
-        <87h7guduto.fsf@collabora.com>
-Date:   Fri, 16 Jul 2021 14:00:26 -0400
-In-Reply-To: <87h7guduto.fsf@collabora.com> (Gabriel Krisman Bertazi's message
-        of "Fri, 16 Jul 2021 13:36:51 -0400")
-Message-ID: <87czridtqd.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S231787AbhGPSEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 14:04:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231397AbhGPSE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 14:04:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9049E613D3;
+        Fri, 16 Jul 2021 18:01:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626458493;
+        bh=E1EKMQQeWc+/Gvs/ODJCXt2BVLvvvGKp3Nl3lGt6ksA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pdBu7gov+7E0hdd9FChutuB1lRmeDNPYmM9h9iGmlfJAM6P+hkOGj05e6UIpCw0ow
+         Sirtni1i+BPzljAftTjELxHiZMKuFZZzzjuLh0xhn3sB3QsxybDRzsE4wcpQl7tRUy
+         CaRGEiPB9dcpfJfkomce7iE441Mct44A6zAF9zSQ=
+Date:   Fri, 16 Jul 2021 20:01:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.13 000/266] 5.13.3-rc1 review
+Message-ID: <YPHJcsohJ/yklDhj@kroah.com>
+References: <20210715182613.933608881@linuxfoundation.org>
+ <2eeb4711-8ad3-9d87-23b9-ba298cd462dc@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2eeb4711-8ad3-9d87-23b9-ba298cd462dc@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+On Fri, Jul 16, 2021 at 08:26:32AM -0700, Guenter Roeck wrote:
+> On 7/15/21 11:35 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.13.3 release.
+> > There are 266 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
+> > Anything received after that time might be too late.
+> > 
+> 
+> This one is a bit surprising.
+> 
+> Build reference: v5.13.2-267-g7e5885d
+> Compiler version: x86_64-linux-gcc (GCC) 11.1.0
+> 
+> Building i386:allyesconfig ... failed
+> --------------
+> Error log:
+> drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c: In function 'dcn20_update_clocks_update_dentist':
+> drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c:154:47: error: 'const struct stream_encoder_funcs' has no member named 'get_fifo_cal_average_level'
+> 
+> Turns out that CONFIG_DRM_AMD_DC_DCN is only enabled with allyesconfig
+> for ARCH=i386 but not for ARCH=x86_64, and get_fifo_cal_average_level
+> is indeed not a member of struct stream_encoder_funcs in v5.13.y-queue.
+> This strongly suggests that commit a39c5ab96adc ("drm/amd/display: Cover
+> edge-case when changing DISPCLK WDIVIDER") either needs to be dropped
+> from v5.13.y, or it needs to be backported (and tested) properly.
 
-> Hi,
->
-> Vijendar Mukunda <vijendar.mukunda@amd.com> writes:
->> Vangogh ACP5x drivers can be built by selecting necessary
->> kernel config option.
->> The patch enables build support of the same.
->>
->> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
->> ---
->> v1 -> v2: remove extra line in Make file
->> ---
->>  sound/soc/amd/Kconfig          |  9 +++++++++
->>  sound/soc/amd/Makefile         |  1 +
->>  sound/soc/amd/vangogh/Makefile | 11 +++++++++++
->>  3 files changed, 21 insertions(+)
->>  create mode 100644 sound/soc/amd/vangogh/Makefile
->>
->> diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
->> index ba5a85bf7412..cc48d4e5b080 100644
->> --- a/sound/soc/amd/Kconfig
->> +++ b/sound/soc/amd/Kconfig
->> @@ -52,3 +52,12 @@ config SND_SOC_AMD_RENOIR_MACH
->>  	depends on SND_SOC_AMD_RENOIR
->>  	help
->>  	 This option enables machine driver for DMIC
->> +
->> +config SND_SOC_AMD_ACP5x
->> +	tristate "AMD Audio Coprocessor-v5.x I2S support"
->> +	depends on X86 && PCI
->> +	help
->> +	 This option enables ACP v5.x support on AMD platform
->> +
->> +	 By enabling this flag build will trigger for ACP PCI driver,
->> +	 ACP DMA drvier, CPU DAI driver.
->> diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
->> index e6df2f72a2a1..07150d26f315 100644
->> --- a/sound/soc/amd/Makefile
->> +++ b/sound/soc/amd/Makefile
->> @@ -10,3 +10,4 @@ obj-$(CONFIG_SND_SOC_AMD_CZ_RT5645_MACH) += snd-soc-acp-rt5645-mach.o
->>  obj-$(CONFIG_SND_SOC_AMD_ACP3x) += raven/
->>  obj-$(CONFIG_SND_SOC_AMD_RV_RT5682_MACH) += snd-soc-acp-rt5682-mach.o
->>  obj-$(CONFIG_SND_SOC_AMD_RENOIR) += renoir/
->> +obj-$(CONFIG_SND_SOC_AMD_ACP5x) += vangogh/
->> diff --git a/sound/soc/amd/vangogh/Makefile b/sound/soc/amd/vangogh/Makefile
->> new file mode 100644
->> index 000000000000..ae2cda804e2f
->> --- /dev/null
->> +++ b/sound/soc/amd/vangogh/Makefile
->> @@ -0,0 +1,11 @@
->> +# SPDX-License-Identifier: GPL-2.0+
->> +# Vangogh platform Support
->> +snd-pci-acp5x-objs	:= pci-acp5x.o
->> +snd-acp5x-i2s-objs	:= acp5x-i2s.o
->> +snd-acp5x-pcm-dma-objs	:= acp5x-pcm-dma.o
->> +snd-soc-acp5x-mach-objs := acp5x-nu8821-cs35l41.o
+I've now dropped this, thanks.
 
-[snip]
-
->> +
->> +obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-pci-acp5x.o
->> +obj-$(CONFIG_SND_SOC_AMD_ACP5x)	+= snd-acp5x-i2s.o
->> +obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-acp5x-pcm-dma.o
->> +obj-$(CONFIG_SND_SOC_AMD_VANGOGH_MACH)   += snd-soc-acp5x-mach.o
->
-> Looks like CONFIG_SND_SOC_AMD_VANGOGH_MACH is not selected by another
-> symbol and also not configurable in kconfig.
->
-> Is it missing a kconfig entry?
-
-Actually, acp5x-nu8821-cs35l41.o can't be generated by my tree.  Which
-tree is this series based on?  Is there another series that's a
-prerequisite for this?
-
--- 
-Gabriel Krisman Bertazi
+greg k-h
