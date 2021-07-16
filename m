@@ -2,47 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B913CB9E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8A33CB9E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240928AbhGPPf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:35:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:40190 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240845AbhGPPfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:35:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74B81D6E;
-        Fri, 16 Jul 2021 08:32:59 -0700 (PDT)
-Received: from [10.57.36.240] (unknown [10.57.36.240])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A607E3F774;
-        Fri, 16 Jul 2021 08:32:56 -0700 (PDT)
-Subject: Re: [PATCH v4 0/3] Apple M1 DART IOMMU driver
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Sven Peter <sven@svenpeter.dev>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        iommu@lists.linux-foundation.org, Alexander Graf <graf@amazon.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>, r.czerwinski@pengutronix.de,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-References: <20210627143405.77298-1-sven@svenpeter.dev>
- <7261df01-34a9-4e53-37cd-ae1aa15b1fb4@arm.com>
- <YPEmA0rdXHiGtHSx@infradead.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <0d20bd6b-d0a1-019c-6398-b12f83f4fdf7@arm.com>
-Date:   Fri, 16 Jul 2021 16:32:50 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+        id S240953AbhGPPgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:36:09 -0400
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:46242 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240972AbhGPPgI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:36:08 -0400
+Received: from [167.98.27.226] (helo=[10.35.5.170])
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1m4Pps-0000Ha-Ke; Fri, 16 Jul 2021 16:33:08 +0100
+Subject: Re: [PATCH] riscv: add correct as-options for assembly in modules
+To:     Bin Meng <bmeng.cn@gmail.com>
+Cc:     linux-kernel@lists.codethink.co.uk,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <20210712174849.2202287-1-ben.dooks@codethink.co.uk>
+ <CAEUhbmWmrEuwdy8OPhF1p1Sb7779QiWkx-Ca1OG5VQ38dxChLw@mail.gmail.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <36a5d9d8-67be-e128-2798-5bf1989ce06d@codethink.co.uk>
+Date:   Fri, 16 Jul 2021 16:33:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YPEmA0rdXHiGtHSx@infradead.org>
+In-Reply-To: <CAEUhbmWmrEuwdy8OPhF1p1Sb7779QiWkx-Ca1OG5VQ38dxChLw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -50,25 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-16 07:24, Christoph Hellwig wrote:
-> On Wed, Jul 14, 2021 at 07:19:50PM +0100, Robin Murphy wrote:
->> Even at the DMA API level you could hide *some* of it (at the cost of
->> effectively only having 1/4 of the usable address space), but there are
->> still cases like where v4l2 has a hard requirement that a page-aligned
->> scatterlist can be mapped into a contiguous region of DMA addresses.
+On 16/07/2021 11:44, Bin Meng wrote:
+> On Tue, Jul 13, 2021 at 2:28 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>>
+>> When trying to load modules built for riscv which include assembly
 > 
-> Where does v4l2 make that broken assumption?  Plenty of dma mapping
-> implementations including dma-direct do not support that.
+> nits: RISC-V
+> 
+>> the kernel loader errors with "unexpected relocation type 'R_RISCV_ALIGN'"
+>> due to R_RISCV_ALIGN relocations being generated by the assembler.
+>>
+>> In commit 7a8e7da42250138 ("RISC-V: Fixes to module loading")
+>> the fix for gcc adds -mno-relax to the command line when building
+>> C files. However this was never applied to assembly flags, and gcc
+>> does no pass -mno-relax to gas when presented with a .S file.
+> 
+> does not pass
 
-See vb2_dc_get_contiguous_size() and its callers. I still remember 
-spending an entire work day on writing one email at the culmination of 
-this discussion:
+I'll see if I can make this simpler. Should this get done for a v2?
 
-https://lore.kernel.org/linux-iommu/56409B6D.5090903@arm.com/
+> FYI
+> 
+> The GCC bug was fixed recently via:
+> https://github.com/gcc-mirror/gcc/commit/3b0a7d624e64eeb81e4d5e8c62c46d86ef521857
 
-809eac54cdd6 was framed as an efficiency improvement because it 
-technically was one (and something I had wanted to implement anyway), 
-but it was also very much to save myself from any further email debates 
-or customer calls about "regressing" code ported from 32-bit platforms...
+thanks, I think it still useful to fix this in the kernel.
 
-Robin.
+>>
+>> The fix (other than making gcc always pass -mno-relax to gas) is
+>> to add -Wa,-mno-relax to gcc to make sure the as is invoked with
+>> the right options.
+>>
+>> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+>> ---
+>>   arch/riscv/Makefile | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+> 
+> Otherwise,
+> Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+> 
+
+
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
+
+https://www.codethink.co.uk/privacy.html
