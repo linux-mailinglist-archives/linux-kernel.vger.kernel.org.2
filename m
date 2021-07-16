@@ -2,236 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C4E3CBA0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51503CBA16
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240587AbhGPPsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233204AbhGPPsh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:48:37 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F340AC06175F;
-        Fri, 16 Jul 2021 08:45:41 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id v189so15548518ybg.3;
-        Fri, 16 Jul 2021 08:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TmGtfXcEfmcsiInayOUzlaiGBIdzTctRIERqciUlYfQ=;
-        b=UYcObK6xebXx84OK9OBDF+mSaXR0uEj7xkWvn/A2OdPkTN9rvA46hyJuUXmKajH2P2
-         uCPT5QmgXQmctAJZcYefcni/UK0ygJzUFdbNjDl4UDll7tyrJTyk7xBP4ZrgyWEeIk0p
-         Yc6IYrT1EQFmXyVLPMnO1IFdptb/9x9VqtQmHjMTjLRYdRiCJTKAWKXrPSx6TsJOVtmW
-         969cykFUf33yVYzxehT+9wtOeHqcb517N/Au/66SZfrl3lb+mmylkDqzlgCBpGoSUBuH
-         O06XzApUdzrwl/ahV7lO3IPw74A1qlXn8UYX63GbkyavCanuj0I5A/FfS0hyuSMQKFG/
-         +YOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TmGtfXcEfmcsiInayOUzlaiGBIdzTctRIERqciUlYfQ=;
-        b=ffqPJTDzG8feIgKjHdqjUsSOjGJ6/pv/iTv31p7qpNNqhxgv8mgYe2PgxQuHO/cFeR
-         c/iwdnUG8ZSwqfVzUc7Qrm4XiO80qKvV4uuxqiXIgAOONHzebwPVvg+18Qk3nu/zAeDg
-         vwmp+IPxTK8+H/SV4sho2+scbC2UZZr4kDzvHDFqYqbgGfBC0siFOqp4hMzM4N8Z7e2P
-         RInKkI+OtnbvMw7vB53CgyZppM1zHM/NEONahXJIMfteNtRsWB6cLhDoGMkzaPZDtP9o
-         G+mq3ZeC7Nb71HFeTKm/zLAJ5wxWTdAOA3Qo0LNqrBTFYGkXpg2Ng1LYZ1vm09azvPev
-         wLFA==
-X-Gm-Message-State: AOAM533rwMSw60X+HrHiEHQHI+KOQ8QcrpfVhnfZEMwqywMdGy0n4cHo
-        JMGi1y0piJB7Qu2f4YtOrAUewdRyVVureiQ4j7s=
-X-Google-Smtp-Source: ABdhPJzyn+hl0ew3lgHkxm3zSEBg9oc36NeD+Kvi8UXGU3WZM9dFhT2w2do1eHSIqBugU5+hKZR5C9DfxJAfOZ8aSxc=
-X-Received: by 2002:a5b:94d:: with SMTP id x13mr12700690ybq.47.1626450341186;
- Fri, 16 Jul 2021 08:45:41 -0700 (PDT)
+        id S240860AbhGPPui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:50:38 -0400
+Received: from mail-dm3nam07on2052.outbound.protection.outlook.com ([40.107.95.52]:57664
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235850AbhGPPue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 11:50:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BI254wTSNOXRAgOfU/j3ryKXIpcwN3Vw34uGqlSh3T+JvzjqrhGTBpH3gZ1XWk7MxR6TZ5jva/cdK7uDT5mIc/Y5rIUYvVl2naOtKkN22P4uO8PUnxkQIZHR2rrAEfbSlIWhUr+szsHw/NMYWxSZfgjgqATy15BxTi4QJ1BFLcpBvSa8QAo8Avv5RhNzfMyr0D9eP0OhI0nyYKBrTdRePrxGyO0L7Y/ObA/JJmbbKFLd4lbZnV32yoRbkm7051I+r/D2mrUaw1h4/IlUSExgqo1WtPHUySqjwns44FpiahIc27n1K4zo5WVzDFezpDdHAzhRhrVT3kEasdxX6XBtTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LP7/N7/2llYthBOYGn71j+iNoJOrxoNDxrRxS3q4EAY=;
+ b=SDs/xgc045teN85sFq2TuiUsngZqwld2YVFLMyQLvZfr7obO3aCJbxZOPwsJaUWwJSMnEhDhrdjnNfH74orK5kZXFbQgHo4mSNVvc3Ag2u9rcI0b3tiwlySy+Ak+CIKxppW4JMP5Ls5csnRo9cnm1sCp9x2t4H0t88IR6hKcYGDEwLo+Rfnn00zW1d3SlqmxKSksSzKNwKIJuW1eN7V043HIzEni/CkBJ3k35oPYp588hGbWYrIm3N6QA6K9wneQVhh+JOs2EVuk9rTQiBMuEsVVsvPfjSYut5HqJYlNoN7eJRRO6jgWmsycfriAQPPo4zkVYRXdQBHlpjy/SoKusg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LP7/N7/2llYthBOYGn71j+iNoJOrxoNDxrRxS3q4EAY=;
+ b=sd9enG/pScuFx0x3R6jM4KH80w6HmF31O4Txun2o/q7DOTOdEPSbeUO5pezEFTVFYGZewUXyH2WsF3eEG/HPmYS4jilaSZcijRi6cUOjgY2OjoPh4mbHb1Ar3IulyCBJSgpk0ixqx41pO7KV1K8sBmJkt+y7ccE6QKVfznv3830=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4432.namprd12.prod.outlook.com (2603:10b6:806:98::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Fri, 16 Jul
+ 2021 15:47:37 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4331.024; Fri, 16 Jul 2021
+ 15:47:37 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 15/40] crypto: ccp: Handle the legacy TMR
+ allocation when SNP is enabled
+To:     Sean Christopherson <seanjc@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-16-brijesh.singh@amd.com> <YPDJQ0uumar8j22y@google.com>
+ <dfa4ccb5-f85e-6294-6a80-9e4aa6d93c1e@amd.com> <YPGnKfDvmgzHCwbI@google.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <770a9480-a18b-473e-ba50-c9978ce64317@amd.com>
+Date:   Fri, 16 Jul 2021 10:47:32 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <YPGnKfDvmgzHCwbI@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: SA9PR10CA0013.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::18) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-References: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210703181937.510ec0fa@jic23-huawei> <CA+V-a8uzeepfd+8Wfd2n2EXeXQ9QJZhR+X8j29Y7DGNu8+aH+g@mail.gmail.com>
- <20210714133913.000075a6@Huawei.com> <CA+V-a8spDa5PiGzp6-4mHTEMfQYJ5NnQ44vwgdtu_sfVG5OO5Q@mail.gmail.com>
- <20210715140232.0000408c@Huawei.com>
-In-Reply-To: <20210715140232.0000408c@Huawei.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 16 Jul 2021 16:45:14 +0100
-Message-ID: <CA+V-a8s8MGg1k0-v_3iMi-uCq4JO=j2bUTeQQ4T1qwaYz2VrAw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add binding documentation for
- Renesas RZ/G2L A/D converter
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (165.204.77.11) by SA9PR10CA0013.namprd10.prod.outlook.com (2603:10b6:806:a7::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22 via Frontend Transport; Fri, 16 Jul 2021 15:47:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d4b73d79-ce1b-4169-5d65-08d94871092b
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4432:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB44325A064FADFA817F4DE338E5119@SA0PR12MB4432.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bXb9RjJ8vNMCDTekNUHjO9IwBoq4RBm6PevevQYuJPuoYqVnBebN/EcSuZJ7lnNjNXK8DRr7bG6gj//E+//zMf+kDPFxRKEjPjfbWwwVjJ0RKTcdGfADC2uI8YllEQrVv8YNAkrbYogtl+r22Aa7/Q3kn+ovcVcnStBbgwuimgHzflX/2YSkyQMkplRCj86OeacbgMlpxbWquvgbRALIt9iLOIhwSHvmjdlVK0hvKfodZqTfThT8hCnR/Urp6ty9aHFHsPwbKInma5ntHWCUBZfbR/faoC5FP5uAX4p/K1aLzfJ55H3x23BMMg+OW7oLuiyiVAXaHvN1TKl/Fhzu0Fk4NvVwhBn26qky3dS0tRymvyzJZfyZA2tObmdt6taiWH6nvV+V4tSUJjT8aFmOlF1Zi7Sx3qazB9d/tfbhmTXJscks34hTXXSDp7eWFZteD7ZuNxJB6vQ0KSCBh4yM7Ko7tjcIo2+KZ8BaE+x+PmuM8cFiqWjaRJlIPsvKckx2Q9/K1+9XUmzbQcT6Ff/UtbTZJMqk29TAzEgR/0vqPuVUdjIXprIE+2n2S+m9Hjaz6N4QW45+Ak+WV0XOd/WDoVCH1yARpmydgPBL9Zq3E/k+gV2ja1GRIHKrubqTB0pXX3eW0/mq47ewhlWJDuaMjFOmu+zF1YSQ452iWU3k0hYCr6W6sNz0cKycg0iP2hsO8so7msBPWAIcNMVcQPj7SS9wgXEbBmLT5Z8dA6SILZLRTV7yyxZXWjrnd4rv5Sl4krInl5Uv0LBbC+kj+OdTug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(366004)(39860400002)(4744005)(26005)(8936002)(8676002)(6486002)(86362001)(44832011)(38350700002)(4326008)(956004)(2906002)(6916009)(38100700002)(478600001)(2616005)(66946007)(83380400001)(31696002)(7416002)(66476007)(66556008)(5660300002)(186003)(6512007)(7406005)(52116002)(53546011)(54906003)(6666004)(6506007)(316002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WGM2NHNYOGtaV0RtS2lSZ01VaXNlaUFFNElqS1BpMHhndmZERERWZDc4NmJW?=
+ =?utf-8?B?NE9IajdESnk2b3I4VVRSVWhmc3lXcmp3WTlaMUZ6dG1WUDBZTmpYeFJxMWlC?=
+ =?utf-8?B?SWpnSVBpV3Fta0JpT0t4S01wTlNHcTlPYjhKbzhFVHJqZGhrUXlnV3pkSUdH?=
+ =?utf-8?B?TGtSd0hvcmJjc2d2bmlUdURGc0VtYmdWWWR2OEhGVnZiUDh3TnZJbFZnS3JV?=
+ =?utf-8?B?QUxaUENmOEZXY3E0VHdoL0FmbURIcVROQlJuRXUwTUphWFNsa1hsb2JNejQ3?=
+ =?utf-8?B?OHczZGpMTnhhTjZKMk5Fem1ZMmNvSFBjRCtZeU8rdUd5dEVvNDgrVk5HQmo4?=
+ =?utf-8?B?L0JvVUZ3RS96WC9TUkY3Q3YxcmJRRjA3cjhXcHJUTCtldlZJNVFSaFJ0T3Y0?=
+ =?utf-8?B?QmlqUTMrK2REZ0NxWmlJT0xCVStpTmliZ3I5dzI4VTB5ZHZlSjM2ckNkeVcv?=
+ =?utf-8?B?dDIwQVV3QkpYeEVST2xEeEt4QVl4cmxLUGdPNS93L3lzWkZBTUI2eldyOVJn?=
+ =?utf-8?B?VWplME0rclp0U3U4eEZJR04wYnNJcTlYSmNSbFVMaUNGQW1VNjFyaWJTNVBK?=
+ =?utf-8?B?dUdOeG1jQktOZkNhTnpyeXRnenh2Ti8rQm52OHYza2s3VWhwTXRHcDZ6TmRF?=
+ =?utf-8?B?bUNUZDBESUVod3Jnd1dVNTdTV2didzJuVmpWbFlQS1JDUU5KVDdxV1hVbHNS?=
+ =?utf-8?B?ZElUQXM1WFMyek9QQXBFbnpxb1hqTHV0WGhPU2I4QXJXOXpLOE9hUmh2em0x?=
+ =?utf-8?B?anA4M29yOFltQW9qWmZmSDh5blRRQ2lIRFc2MW1SMkRuYytvOVh1dnhiTmRQ?=
+ =?utf-8?B?Sy8yajBsU1pPR0tMWHRaemg2b2xZbCsyK1l6L3o5TVRnQjB6dEpTV2RUTDZZ?=
+ =?utf-8?B?SGNhNjhHbTRVSU9BV0pMYzYyQWNSVFBxVXhYRlh5cVdLOFFxMGxNNUl1WjJP?=
+ =?utf-8?B?eU85STVzYmJCbVp2ZWZFeENRbXFoNit1VmRXZGpFWXVYU0dBaHEwUTlKYjFF?=
+ =?utf-8?B?Mi9pNmlvNFdnVDAzbGxDcGtpZHhHdk9qTHlYN2wyL0tFY3lNamFVZ3NrcTJD?=
+ =?utf-8?B?NmEwRmhhZVRsWFZaYlRJcTdWZlVvOHdTOGtMNnUxS3p5akVKR3VsUVFHUUVB?=
+ =?utf-8?B?UlgwZHo4OGJ5eWtBcnJMWnlTcEVRN3Y2cjhFelEwbk9VeHlGVFNJUXBYcnRK?=
+ =?utf-8?B?K1EzNm0rU3ZzSmZCRldoYm54akg3dE1DUmxjalNVQStXUWx6ajlGQ0cxNVI5?=
+ =?utf-8?B?UW1ETDNITCtEUFZRbEl2eTFXZDRlQlZBd0hscDV3VHZ4eHpISXZxTzRUbktU?=
+ =?utf-8?B?endiSmxxSU5DYXpvRjNBZzJ2UXlQK0hhUEZCR2cvLzJnNmNqT2hxRzV4dnV1?=
+ =?utf-8?B?ekJ3S05JdCtqK2hCQ2k0enhpc0hYREwzY25OTDNaeXBjSGsrN3FPR1B6OUdw?=
+ =?utf-8?B?eHdkR2VPQWlEMHdJQmQrcXFCQTBZc1MzMGhrMS91bG1iWHRBajhCOFVyeWxh?=
+ =?utf-8?B?YmdOY3E0M0I1dnJaQTJDckx6SXVVQUZIL3ptek5wV1pLbkp2NGRFMEJRTDhm?=
+ =?utf-8?B?bEh0bnVnSDNDZTVEMGYydU16WnkrZzAzclA0MmhDMU5PaXNzSzZRU3c2VUVp?=
+ =?utf-8?B?eXZxdUkwbWtPTHYzbVh6Tk12aVZIMy9id1FBdnJKb1JMSnJBem5Lb0p0UzBW?=
+ =?utf-8?B?OGpZOXVLYzlEdU5Cb3hUNHdlWk9SRW5qeTBUYmdkcVFzYkl3dGtBOXQrMTk3?=
+ =?utf-8?Q?M1Zew6cqgG7GZ5a7x29S3MD4qi5Ca6KVrwr8ehF?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4b73d79-ce1b-4169-5d65-08d94871092b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 15:47:37.5115
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X29tdInjWE2PL9q97eeK+1RfAvaN0ISO7TTb81nsnez5RT1l5TDM49/XIwlyC5Gq7GJ27qOiuANG4VWd0X9iIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4432
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
 
-On Thu, Jul 15, 2021 at 2:02 PM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Wed, 14 Jul 2021 19:24:27 +0100
-> "Lad, Prabhakar" <prabhakar.csengg@gmail.com> wrote:
->
-> > Hi Jonathan,
-> >
-> > On Wed, Jul 14, 2021 at 1:39 PM Jonathan Cameron
-> > <Jonathan.Cameron@huawei.com> wrote:
-> > >
-> > > On Wed, 14 Jul 2021 10:11:49 +0100
-> > > "Lad, Prabhakar" <prabhakar.csengg@gmail.com> wrote:
-> > >
-> > > > Hi Jonathan,
-> > > >
-> > > > Thank you for the review.
-> > > >
-> > > > On Sat, Jul 3, 2021 at 6:17 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, 29 Jun 2021 23:03:27 +0100
-> > > > > Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > > >
-> > > > > > Add binding documentation for Renesas RZ/G2L A/D converter block.
-> > > > > >
-> > > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > > > Hi,
-> > > > >
-> > > > > See inline
-> > > > >
-> > > > > Jonathan
-> > > > >
-> > > > > > ---
-> > > > > >  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 121 ++++++++++++++++++
-> > > > > >  1 file changed, 121 insertions(+)
-> > > > > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > > > > >
-> > > > > > diff --git a/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..db935d6d59eb
-> > > > > > --- /dev/null
-> > > > > > +++ b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> > > > > > @@ -0,0 +1,121 @@
-> > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > > +%YAML 1.2
-> > > > > > +---
-> > > > > > +$id: http://devicetree.org/schemas/iio/adc/renesas,rzg2l-adc.yaml#
-> > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > > +
-> > > > > > +title: Renesas RZ/G2L ADC
-> > > > > > +
-> > > > > > +maintainers:
-> > > > > > +  - Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > > > +
-> > > > > > +description: |
-> > > > > > +  A/D Converter block is a successive approximation analog-to-digital converter
-> > > > > > +  with a 12-bit accuracy. Up to eight analog input channels can be selected.
-> > > > > > +  Conversions can be performed in single or repeat mode. Result of the ADC is
-> > > > > > +  stored in a 32-bit data register corresponding to each channel.
-> > > > > > +
-> > > > > > +properties:
-> > > > > > +  compatible:
-> > > > > > +    oneOf:
-> > > > > > +      - items:
-> > > > > > +          - enum:
-> > > > > > +              - renesas,r9a07g044-adc   # RZ/G2{L,LC}
-> > > > > > +          - const: renesas,rzg2l-adc
-> > > > > > +
-> > > > > > +  reg:
-> > > > > > +    maxItems: 1
-> > > > > > +
-> > > > > > +  interrupts:
-> > > > > > +    maxItems: 1
-> > > > > > +
-> > > > > > +  clocks:
-> > > > > > +    items:
-> > > > > > +      - description: converter clock
-> > > > > > +      - description: peripheral clock
-> > > > > > +
-> > > > > > +  clock-names:
-> > > > > > +    items:
-> > > > > > +      - const: adclk
-> > > > > > +      - const: pclk
-> > > > > > +
-> > > > > > +  power-domains:
-> > > > > > +    maxItems: 1
-> > > > > > +
-> > > > > > +  resets:
-> > > > > > +    maxItems: 2
-> > > > > > +
-> > > > > > +  reset-names:
-> > > > > > +    items:
-> > > > > > +      - const: presetn
-> > > > > > +      - const: adrst-n
-> > > > > > +
-> > > > > > +  renesas-rzg2l,adc-trigger-mode:
-> > > > > > +    $ref: /schemas/types.yaml#/definitions/uint8
-> > > > > > +    description: Trigger mode for A/D converter
-> > > > > > +    enum:
-> > > > > > +      - 0 # Software trigger mode (Defaults)
-> > > > > > +      - 1 # Asynchronous trigger using ADC_TRG trigger input pin
-> > > > > > +      - 2 # Synchronous trigger (Trigger from MTU3a/GPT)
-> > > > >
-> > > > > Is this a function of the board in some fashion?  If not it sounds like
-> > > > > something that should be in control of userspace.  Normally we'd
-> > > > > do that by having the driver register some iio_triggers and depending
-> > > > > on which one is selected do the equivalent of what you have here.
-> > > > >
-> > > > Agreed for Asynchronous and Synchronous triggers. WRT Software trigger
-> > > > should this be registered as a  iio_triggers too or read_raw()
-> > > > callback (with IIO_CHAN_INFO_RAW case)  should be treated as Software
-> > > > trigger?
-> > > >
-> > >
-> > > Normally we'd use an external trigger to provide the software trigger
-> > > (plus as you say sysfs reads will map to this functionality).
-> > >
-> > > Something like the sysfs trigger or the hrtimer one would get used, though
-> > > also fine to use the dataready trigger from a different device (if you want
-> > > approximately synced dta.
-> > >
-> > We can live with syfs reads for now for SW triggers. Coming back to HW
-> > triggers I responded too quickly!. I am now trying to implement a gpio
-> > based HW trigger i.e. to kick adc conversion start but I couldn't find
-> > any drivers doing that. I looked at iio-trig-interrupt.c which
-> > registers irq based triggers, so something similar needs to be
-> > implemented in the adc driver? If that is the case the gpio has to be
-> > passed via to DT and use gpio_to_irq to register the handler. Or is it
-> > that I am missing something here ?
->
-> Ok, I'm not really following the usecase for this. Is the thought that you'll
-> get lower latency / jitter triggering via a gpio rather than using a
-> bus write to the device (though on an integrated ADC I can't see why that would
-> be the case)?
->
-Sorry for the confusion. ADC_TRIG I was referring to automatically
-triggers  ADC conversion depending on the edges (whatever its is
-configured to). The external triggers can be handled by iio_trigger as
-you pointed out earlier!
+On 7/16/21 10:35 AM, Sean Christopherson wrote:
+> It wasn't comment on the patch organization, rather that the code added in patch 14
+> appears to have landed in the wrong location within the code.  The above diff shows
+> that the TMR allocation is being moved around the SNP initialization code that was
+> added in patch 14 (the immediately prior patch).  Presumably the required order
+> doesn't magically change just because the TMR is now being allocated as a 2mb blob,
+> so either the code movement is unnecessary churn or the original location was wrong.
+> In either case, landing the SNP initialization code above the TMR allocation in
+> patch 14 would eliminate the above code movement.
 
-> If so, then what is actually setting the gpio?  Something is ultimately
-> acting as the real trigger.  A common model would be an hrtimer trigger
-> for example.   If you then want to wire the driver up to capture on demand
-> using the gpio (to reduce latency) that's fine, but the gpio itself is
-> never a trigger in the sense of an IIO trigger (rather than a trigger
-> to the ADC itself).  In that case, have the trigger handler set the
-> the gpio and wait for data capture to finish.  Quite a few drivers
-> do this as some devices can only start sampling on an external pin being
-> set.  E.g. adc/ad7606.c
->
-> The iio-trig-interrupt is about using an external interrupt to trigger
-> a capture initialized by a register write or similar, it's not a direct
-> hardware capture signal.
->
-thanks for the explanation, I realized it now.
+Got it, I'll rearrange things in the previous patch to avoid this hunk.
 
-Cheers,
-Prabhakar
+thanks
+
+
