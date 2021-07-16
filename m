@@ -2,273 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501E63CBDF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB8D3CBDFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbhGPUsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        id S234465AbhGPUtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhGPUsq (ORCPT
+        with ESMTP id S232888AbhGPUtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:48:46 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64150C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:45:51 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id q6-20020a05620a05a6b02903b8bd8b612eso6667378qkq.19
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:45:51 -0700 (PDT)
+        Fri, 16 Jul 2021 16:49:21 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50F3C06175F;
+        Fri, 16 Jul 2021 13:46:25 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id g24so7120431pji.4;
+        Fri, 16 Jul 2021 13:46:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=6xOtLIYGyLB17xvo4gQCXAgOrNxU3pti+/trSkcx+rg=;
-        b=WCi9oN7bpF4MQZ7OHx/eGQ/9jKMyZye3MUnVEtKtWnCo/EpfbBmeGXUd5eOyoNKMQj
-         DYN5lmCu3/q8AdyK4rm7xIFJcOwG+uyPzxxf69EKkkn7+wWUfdbLm3lkBE03uNtB4e2i
-         gbGuIfiB+qK3e2UfmtsoDBc5ppYrNbm/0PA5qpXL799rAjdUPYvTspivZ75PoXOKcnbf
-         VTgAh6DQVlbrP9REEfb9LMbEb2ldntWwb/08ms1Jc0Z7UoiByS6CflUFpBk4fpTsto2a
-         QO8C6/3uWmiVU/eY2+ZDG2WQqA0Ty9aZNBAwrbv4CicgH29y1rrkpAE2wq6HgZG5nDya
-         QS9g==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CcNFha5vgUcweegT4k/uNLuzQ/cieMwjGwt7INh2sMw=;
+        b=V9jl6P3GvbA4iXwjdyXzx+zVSBWTXHMvy4BPlOaIhy+YXU3ZDZmyPD4P1Td8/rqdNS
+         rQ59CYIarn3bQoia//d6o/Tkjb4S6+l/svi7EJER6d4bpC1mhOnC5pQGYJSP5yIMgQgT
+         Dq5KlNB02W+b7KkfOMpo1CUrvEG9aEJ/AW1k+fI1SarpP1EBhVcTWDFIUtALtgsyaba/
+         LfY2bvDAYkkln8F2uMqNk4jgn2bu/ymfRLtJIvgAV7HSIObuOApR9tP23FAbRC7dEDhk
+         Irvae0p9FqA59iETjQxdva4lTiXKYDdwtco+YuYTQhvRYJj12/wOjWLcONpGEp1Xmr4o
+         SmhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=6xOtLIYGyLB17xvo4gQCXAgOrNxU3pti+/trSkcx+rg=;
-        b=DKIrUrIeHuRhFR7tvAo1MflAYZwlbbTHqeySf93YTuDN7yzZQRDvmRlhZJND2BTZXk
-         Jx8lOTZP2defqPuKCVx4N700/F3U6H4uVOnGepIOBErUzGM9sLldGXEssJe5A6EGl+0S
-         ccHFWZlCij8nDwAEUhaSZS0oidyFyJBioflV18mnYo1YUfTgwdXyZfpTTHVSdGQGdWGA
-         ROXeTi9cCU16Ig62gRdknu1kRK2clfUsFVvAg7wV6rCUl/BUEMfunLs0ZAjnAucjVbeI
-         QGXA0J8j3fGIec+GKnZUtOrhDch0q44xPRsREosxyRrpJzTTHNkbiYbF/DV5cAWazEWi
-         OYIA==
-X-Gm-Message-State: AOAM530JBg+1/UXh1nu6Wdo78VugQwaMudc/mDFN9FVf7A8gv9zdc54g
-        2UahRrxtEp0Ll+cXOY+e1/ZIjYHkv3BHxfo0KDs=
-X-Google-Smtp-Source: ABdhPJyG16Hp8cGkS8QEH32N9py2egU8HtddEjT0D8YHW7CIh0lajVFGsDMafb0g2+mcgnivV/NSMpsXj58yfyc6/xg=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:1ce:e9d9:963c:dd36])
- (user=samitolvanen job=sendgmr) by 2002:ad4:4949:: with SMTP id
- o9mr12208799qvy.56.1626468350421; Fri, 16 Jul 2021 13:45:50 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 13:45:45 -0700
-Message-Id: <20210716204545.3536354-1-samitolvanen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=CcNFha5vgUcweegT4k/uNLuzQ/cieMwjGwt7INh2sMw=;
+        b=rlDIFTKoN3ZQy9E1Z6JaXAdL+FrqxNNS5mj8/s0OWdCQIKGXNLcmpTJ4UwBJamzi3q
+         y4s7rXMXJCbCVpicXG3Z68+LxJEjFn11Yx399X0TZI+AndGmyN/n+rQ6PyOug5djEny6
+         HJnG3OgFSkQm0Gw72dQowwClf8h5hx72UJfnRf8OFF5rRQB48pHNK8kQ87FVZZknr25T
+         aVD1frpjWCRG9YAtdZDx3gEnYVahqjf0d1zSoBfdB6E/c48qyf+cIKxM+Ko8h3xHgkSq
+         qvda19qIiCSFfErWNEqdbbnE8x5JToZ6YJT2npG3UTsP7yBbr4hvQ3duXZvQLxmmm9/y
+         ulXQ==
+X-Gm-Message-State: AOAM5310rBnkX1NQc1tS4RzhyJaD6cTIHkpLC5j2RcfN+b7gQqpqtj6y
+        VmFK4BkTM2PF8yQvY2o8RIA=
+X-Google-Smtp-Source: ABdhPJwuWtcN5PnLoy/5DKbZzAkJs2cS5G2WdpWRPdgEHqOky8qfivMQmg/J+wov+yNH0/wmTew3Ng==
+X-Received: by 2002:a17:90a:d301:: with SMTP id p1mr16928955pju.220.1626468385096;
+        Fri, 16 Jul 2021 13:46:25 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:37b9])
+        by smtp.gmail.com with ESMTPSA id d1sm2179686pfj.24.2021.07.16.13.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 13:46:24 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 16 Jul 2021 10:46:19 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
+ partition root
+Message-ID: <YPHwG61qGDa3h6Wg@mtj.duckdns.org>
+References: <20210621184924.27493-1-longman@redhat.com>
+ <20210621184924.27493-3-longman@redhat.com>
+ <YNcHOe3o//pIiByh@mtj.duckdns.org>
+ <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
+ <YONGk3iw/zrNzwLK@mtj.duckdns.org>
+ <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
+ <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
+ <8c44b659-3fe4-b14f-fac1-cbd5b23010c3@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c44b659-3fe4-b14f-fac1-cbd5b23010c3@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_LTO_CLANG, we currently link modules into native
-code just before modpost, which means with TRIM_UNUSED_KSYMS
-enabled, we still look at the LLVM bitcode in the .o files when
-generating the list of used symbols. As the bitcode doesn't
-yet have calls to compiler intrinsics and llvm-nm doesn't see
-function references that only exist in function-level inline
-assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
-work with LTO.
+Hello, Waiman.
 
-This change moves module LTO linking to happen earlier, and
-thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
-entirely, allowing us to also drop the whitelist from
-gen_autoksyms.sh.
+On Fri, Jul 16, 2021 at 04:08:15PM -0400, Waiman Long wrote:
+> > > I agree with you on principle. However, the reason why there are
+> > > more restrictions on enabling partition is because I want to avoid
+> > > forcing the users to always read back cpuset.partition.type to see
+> > > if the operation succeeds instead of just getting an error from the
+> > > operation. The former approach is more error prone. If you don't
+> > > want changes in existing behavior, I can relax the checking and
+> > > allow them to become an invalid partition if an illegal operation
+> > > happens.
+> > > 
+> > > Also there is now another cpuset patch to extend cpu isolation to
+> > > cgroup v1 [1]. I think it is better suit to the cgroup v2 partition
+> > > scheme, but cgroup v1 is still quite heavily out there.
+> > > 
+> > > Please let me know what you want me to do and I will send out a v3
+> > > version.
+> > 
+> > Note that the current cpuset partition implementation have implemented
+> > some restrictions on when a partition can be enabled. However, I missed
+> > some corner cases in the original implementation that allow certain
+> > cpuset operations to make a partition invalid. I tried to plug those
+> > holes in this patchset. However, if maintaining backward compatibility
+> > is more important, I can leave those holes and update the documentation
+> > to make sure that people check cpuset.partition.type to confirm if their
+> > operation succeeds.
+> 
+> I just realize that partition root set the CPU_EXCLUSIVE bit. So changes to
+> cpuset.cpus that break exclusivity rule is not allowed anyway. This patchset
+> is just adding additional checks so that cpuset.cpus changes that break the
+> partition root rules will not be allowed. I can remove those additional
+> checks for this patchset and allow cpuset.cpus changes that break the
+> partition root rules to make it invalid instead. However, I still want
+> invalid changes to cpuset.partition.type to be disallowed.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1369
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
----
- scripts/Makefile.build    | 25 ++++++++++++++++++++++++-
- scripts/Makefile.lib      |  7 +++++++
- scripts/Makefile.modfinal | 21 ++-------------------
- scripts/Makefile.modpost  | 22 +++-------------------
- scripts/gen_autoksyms.sh  | 12 ------------
- 5 files changed, 36 insertions(+), 51 deletions(-)
+So, I get the instinct to disallow these operations and it'd make sense if
+the conditions aren't reachable otherwise. However, I'm afraid what users
+eventually get is false sense of security rather than any actual guarantee.
 
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 10b2f2380d6f..80e0fa810870 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -202,6 +202,7 @@ sub_cmd_record_mcount =					\
- 	if [ $(@) != "scripts/mod/empty.o" ]; then	\
- 		$(objtree)/scripts/recordmcount $(RECORDMCOUNT_FLAGS) "$(@)";	\
- 	fi;
-+/
- recordmcount_source := $(srctree)/scripts/recordmcount.c \
- 		    $(srctree)/scripts/recordmcount.h
- else
-@@ -271,12 +272,34 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
- 	$(call if_changed_rule,cc_o_c)
- 	$(call cmd,force_checksrc)
- 
-+ifdef CONFIG_LTO_CLANG
-+# Module .o files may contain LLVM bitcode, compile them into native code
-+# before ELF processing
-+quiet_cmd_cc_lto_link_modules = LTO [M] $@
-+cmd_cc_lto_link_modules =						\
-+	$(LD) $(ld_flags) -r -o $@					\
-+		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
-+			echo -T $(@:.lto.o=.o.symversions))		\
-+		--whole-archive $^
-+
-+ifdef CONFIG_STACK_VALIDATION
-+# objtool was skipped for LLVM bitcode, run it now that we have compiled
-+# modules into native code
-+cmd_cc_lto_link_modules += ;						\
-+	$(objtree)/tools/objtool/objtool $(objtool_args)		\
-+		$(@:.ko=$(mod-prelink-ext).o)
-+endif
-+
-+$(obj)/%.lto.o: $(obj)/%.o
-+	$(call if_changed,cc_lto_link_modules)
-+endif
-+
- cmd_mod = { \
- 	echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
- 	$(undefined_syms) echo; \
- 	} > $@
- 
--$(obj)/%.mod: $(obj)/%.o FORCE
-+$(obj)/%.mod: $(obj)/%$(mod-prelink-ext).o FORCE
- 	$(call if_changed,mod)
- 
- quiet_cmd_cc_lst_c = MKLST   $@
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 10950559b223..ee985366dddf 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -225,6 +225,13 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
- 		 $(addprefix -I,$(DTC_INCLUDE))                          \
- 		 -undef -D__DTS__
- 
-+ifeq ($(CONFIG_LTO_CLANG),y)
-+# With CONFIG_LTO_CLANG, .o files in modules might be LLVM bitcode, so we
-+# need to run # LTO to compile them into native code (.lto.o) before further
-+# processing.
-+mod-prelink-ext := .lto
-+endif
-+
- # Objtool arguments are also needed for modfinal with LTO, so we define
- # then here to avoid duplication.
- objtool_args =								\
-diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-index 5e9b8057fb24..ff805777431c 100644
---- a/scripts/Makefile.modfinal
-+++ b/scripts/Makefile.modfinal
-@@ -9,7 +9,7 @@ __modfinal:
- include include/config/auto.conf
- include $(srctree)/scripts/Kbuild.include
- 
--# for c_flags and objtool_args
-+# for c_flags and mod-prelink-ext
- include $(srctree)/scripts/Makefile.lib
- 
- # find all modules listed in modules.order
-@@ -30,23 +30,6 @@ quiet_cmd_cc_o_c = CC [M]  $@
- 
- ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
- 
--ifdef CONFIG_LTO_CLANG
--# With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
--# avoid a second slow LTO link
--prelink-ext := .lto
--
--# ELF processing was skipped earlier because we didn't have native code,
--# so let's now process the prelinked binary before we link the module.
--
--ifdef CONFIG_STACK_VALIDATION
--cmd_ld_ko_o +=								\
--	$(objtree)/tools/objtool/objtool $(objtool_args)		\
--		$(@:.ko=$(prelink-ext).o);
--
--endif # CONFIG_STACK_VALIDATION
--
--endif # CONFIG_LTO_CLANG
--
- quiet_cmd_ld_ko_o = LD [M]  $@
-       cmd_ld_ko_o +=							\
- 	$(LD) -r $(KBUILD_LDFLAGS)					\
-@@ -72,7 +55,7 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
- 
- 
- # Re-generate module BTFs if either module's .ko or vmlinux changed
--$(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
-+$(modules): %.ko: %$(mod-prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
- 	+$(call if_changed_except,ld_ko_o,vmlinux)
- ifdef CONFIG_DEBUG_INFO_BTF_MODULES
- 	+$(if $(newer-prereqs),$(call cmd,btf_ko))
-diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-index c383ba33d837..eef56d629799 100644
---- a/scripts/Makefile.modpost
-+++ b/scripts/Makefile.modpost
-@@ -41,7 +41,7 @@ __modpost:
- include include/config/auto.conf
- include $(srctree)/scripts/Kbuild.include
- 
--# for ld_flags
-+# for mod-prelink-ext
- include $(srctree)/scripts/Makefile.lib
- 
- MODPOST = scripts/mod/modpost								\
-@@ -118,22 +118,6 @@ $(input-symdump):
- 	@echo >&2 '         Modules may not have dependencies or modversions.'
- 	@echo >&2 '         You may get many unresolved symbol warnings.'
- 
--ifdef CONFIG_LTO_CLANG
--# With CONFIG_LTO_CLANG, .o files might be LLVM bitcode, so we need to run
--# LTO to compile them into native code before running modpost
--prelink-ext := .lto
--
--quiet_cmd_cc_lto_link_modules = LTO [M] $@
--cmd_cc_lto_link_modules =						\
--	$(LD) $(ld_flags) -r -o $@					\
--		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
--			echo -T $(@:.lto.o=.o.symversions))		\
--		--whole-archive $^
--
--%.lto.o: %.o
--	$(call if_changed,cc_lto_link_modules)
--endif
--
- modules := $(sort $(shell cat $(MODORDER)))
- 
- # KBUILD_MODPOST_WARN can be set to avoid error out in case of undefined symbols
-@@ -144,9 +128,9 @@ endif
- # Read out modules.order to pass in modpost.
- # Otherwise, allmodconfig would fail with "Argument list too long".
- quiet_cmd_modpost = MODPOST $@
--      cmd_modpost = sed 's/\.ko$$/$(prelink-ext)\.o/' $< | $(MODPOST) -T -
-+      cmd_modpost = sed 's/\.ko$$/$(mod-prelink-ext)\.o/' $< | $(MODPOST) -T -
- 
--$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(prelink-ext).o) FORCE
-+$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(mod-prelink-ext).o) FORCE
- 	$(call if_changed,modpost)
- 
- targets += $(output-symdump)
-diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
-index da320151e7c3..6ed0d225c8b1 100755
---- a/scripts/gen_autoksyms.sh
-+++ b/scripts/gen_autoksyms.sh
-@@ -26,18 +26,6 @@ if [ -n "$CONFIG_MODVERSIONS" ]; then
- 	needed_symbols="$needed_symbols module_layout"
- fi
- 
--# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
--# when the .mod files are generated, which means they don't yet contain
--# references to certain symbols that will be present in the final binaries.
--if [ -n "$CONFIG_LTO_CLANG" ]; then
--	# intrinsic functions
--	needed_symbols="$needed_symbols memcpy memmove memset"
--	# ftrace
--	needed_symbols="$needed_symbols _mcount"
--	# stack protector symbols
--	needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
--fi
--
- ksym_wl=
- if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
- 	# Use 'eval' to expand the whitelist path and check if it is relative
+Inconsistencies like this cause actual usability hazards - e.g. imagine a
+system config script whic sets up exclusive cpuset and let's say that the
+use case is fine with degraded operation when the target cores are offline
+(e.g. energy save mode w/ only low power cores online). Let's say this
+script runs in late stages during boot and has been reliable. However, at
+some point, there are changes in boot sequence and now there's low but
+non-trivial chance that the system would already be in low power state when
+the script runs. Now the script will fail sporadically and the whole thing
+would be pretty awkward to debug.
+
+I'd much prefer to have an explicit interface to confirm the eventual state
+and a way to monitor state transitions (without polling). An invalid state
+is an inherent part of cpuset configuration. I'd much rather have that
+really explicit in the interface even if that means a bit of extra work at
+configuration time.
+
+Thanks.
+
 -- 
-2.32.0.402.g57bb445576-goog
-
+tejun
