@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40B33CB602
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769D63CB5FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 12:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239202AbhGPK0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 06:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238940AbhGPK0f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 06:26:35 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988C7C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:23:40 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m83so8577129pfd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 03:23:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=O+aoi4mzR9R0iZuLemuHjtXgfA9womLoAerCtxXTQaU=;
-        b=EGvXh4cu9xHTBQMHWEdPcpq0Cehs0/omnlJ7DpLTRy4lJ44ulzrdc7Nk6Ng1rMSWCF
-         on1ymYszZTIM8tY2LL6bBOOvdANp+flT1o+DR0mo/1esxdpEll1K9tjgfnVCidwoumyR
-         UBy1cO9cYEGzMGNL15FYBzmsA9K1iIb/PGJmy38XQFZRA52RKVxwNm6u4DWKuR6uJSrd
-         2mHjCoJmKdM13gH+qPdJJz9xV6k4UyJhC6xMxFXwKFOmBOMEY49nrwL/daEURrsrbn4l
-         UJXsTjUl0kZ67KBVXHNZatfysQn7hG+yrBf0qZT99bB49bgr6nW9Rr/jrpwW1uW4n0+V
-         Holg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=O+aoi4mzR9R0iZuLemuHjtXgfA9womLoAerCtxXTQaU=;
-        b=Q2yeMlu+I9djxadD190xE4joY1jAkA2jr6mKgIVOwL6XotWLD3u0BlDJtTcy4Gk5Yp
-         VA5J6cyO3NGzI5+EcviDSnegVdUUfPVt0GnvlI/FxCsxXuv8Yl/h5lJgrDMgoEMl6YtX
-         NHFJf2o9npap5qalktb/9niI/Jk6FP3ZnE8R80YpjChrArRDoPbthkW/vZe3N4Ah38WN
-         nL1IitAHwwxNQrIU0RGOk88R0TeNKZvi77nNbV8orHkhwu3k3+w3pbeLeTw+jMNW2jOq
-         roa9WpzN87U3i+tpcM3S0pThPSojduSjl1sA8rdhY2cXol38bS2TURr5Wx2Lxv0RPcSo
-         NHWw==
-X-Gm-Message-State: AOAM532cep+w0IvXZimDuNFU2i+lGWIw1TSdx79dPkHkrrSkoH36OOK+
-        SKzdwGoF549a3gqsE9v2dzp+
-X-Google-Smtp-Source: ABdhPJxuw98GR5HK3YBPh9STuop2yfagNpyb+GFBdHn1W/rAoINiKBfEzL6gAM6RByS5JfWFM0Uw3g==
-X-Received: by 2002:a05:6a00:1a09:b029:32c:7b3a:837 with SMTP id g9-20020a056a001a09b029032c7b3a0837mr9616864pfv.36.1626431020225;
-        Fri, 16 Jul 2021 03:23:40 -0700 (PDT)
-Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id k19sm8137435pji.32.2021.07.16.03.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 03:23:39 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     mst@redhat.com, jasowang@redhat.com, dan.carpenter@oracle.com
-Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] vhost: Fix the calculation in vhost_overflow()
-Date:   Fri, 16 Jul 2021 18:22:39 +0800
-Message-Id: <20210716102239.96-2-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210716102239.96-1-xieyongji@bytedance.com>
-References: <20210716102239.96-1-xieyongji@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S238398AbhGPK0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 06:26:36 -0400
+Received: from comms.puri.sm ([159.203.221.185]:50878 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238196AbhGPK0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 06:26:22 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id C2715E0012;
+        Fri, 16 Jul 2021 03:23:12 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id KQ5PrDbyEW8m; Fri, 16 Jul 2021 03:23:11 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     laurent.pinchart@ideasonboard.com, shawnguo@kernel.org
+Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
+        kernel@pengutronix.de, kernel@puri.sm, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
+        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
+        slongerbeam@gmail.com,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH v7 0/3] media: imx: add support for imx8mq MIPI RX
+Date:   Fri, 16 Jul 2021 12:22:41 +0200
+Message-Id: <20210716102244.581182-1-martin.kepplinger@puri.sm>
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the incorrect calculation for integer overflow
-when the last address of iova range is 0xffffffff.
+hi,
 
-Fixes: ec33d031a14b ("vhost: detect 32 bit integer wrap around“)
-Reported-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
----
- drivers/vhost/vhost.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index b9e853e6094d..a9fd1b311d2f 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -738,7 +738,8 @@ static bool log_access_ok(void __user *log_base, u64 addr, unsigned long sz)
- static bool vhost_overflow(u64 uaddr, u64 size)
- {
- 	/* Make sure 64 bit math will not overflow. */
--	return uaddr > ULONG_MAX || size > ULONG_MAX || uaddr > ULONG_MAX - size;
-+	return uaddr > ULONG_MAX || size > ULONG_MAX ||
-+	       uaddr - 1 > ULONG_MAX - size;
- }
- 
- /* Caller should have vq mutex and device mutex. */
+It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
+I test it using libcamera. Thanks to Laurent who helped a lot. I'm happy for
+any feedback,
+
+                           martin
+
+revision history
+----------------
+v7: (thank you Laurent and Rob)
+* fix the binding example (include the reset driver)
+* use pm_runtime_resume_and_get()
+* fix some logic in init_cfg()
+* add some useful code comments and fix minor bits found by Laurent in v6
+
+v6: (thank you Laurent and Rob)
+* add reviewed-by tag to binding
+* statically allocate clk_bulk_data
+* fix how the hs_settle value is applied
+* remove s_power calls
+* remove the link_setup() callback implementation and make the link immutable
+* more cleanups according to Laurents' review from v5
+https://lore.kernel.org/linux-media/20210714111931.324485-1-martin.kepplinger@puri.sm/
+
+v5: (thank you Laurent)
+* fix reset usage by using the already supported reset controller driver
+* remove clko2 (totally unrelated clock / had been included by accident)
+* rename pxl clock to ui
+https://lore.kernel.org/linux-media/20210618095753.114557-1-martin.kepplinger@puri.sm/
+
+v4: (thank you Rob and Marco)
+* create fsl,mipi-phy-gpr custom dt property instead of confusing "phy"
+* add imx8mq-specific compatibile to imx8mq.dtsi for future use
+https://lore.kernel.org/linux-media/20210614121522.2944593-1-martin.kepplinger@puri.sm/
+
+v3: (thank you, Rob and Laurent)
+among minor other things according to v2 review, changes include:
+* better describe the clocks
+* rename DT property "phy-reset" to "reset" and "phy-gpr" to "phy"
+https://lore.kernel.org/linux-media/20210608104128.1616028-1-martin.kepplinger@puri.sm/T/#t
+
+v2: (thank you, Dan and Guido)
+among fixes according to v1 reviews, changes include:
+* remove status property from dt-bindings example
+* define a few bits in order to have less magic values
+* use "imx8mq_mipi_csi_" as local function prefix
+* read DT properties only during probe()
+* remove dead code (log_status)
+* add imx8mq_mipi_csi_release_icc()
+* fix imx8mq_mipi_csi_init_icc()
+https://lore.kernel.org/linux-media/20210531112326.90094-1-martin.kepplinger@puri.sm/
+
+v1:
+https://lore.kernel.org/linux-media/20210527075407.3180744-1-martin.kepplinger@puri.sm/T/#t
+
+Martin Kepplinger (3):
+  dt-bindings: media: document the nxp,imx8mq-mipi-csi2 receiver phy and
+    controller
+  media: imx: add a driver for i.MX8MQ mipi csi rx phy and controller
+  arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
+
+ .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 174 ++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 104 ++
+ drivers/staging/media/imx/Makefile            |   1 +
+ drivers/staging/media/imx/imx8mq-mipi-csi2.c  | 947 ++++++++++++++++++
+ 4 files changed, 1226 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+ create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
+
 -- 
-2.11.0
+2.30.2
 
