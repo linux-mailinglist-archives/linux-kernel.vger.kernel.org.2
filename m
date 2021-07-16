@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825153CB4F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492C53CB4F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 11:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239008AbhGPJAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 05:00:50 -0400
-Received: from mail-vs1-f52.google.com ([209.85.217.52]:44703 "EHLO
-        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239301AbhGPI73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:59:29 -0400
-Received: by mail-vs1-f52.google.com with SMTP id f4so4571480vsh.11;
-        Fri, 16 Jul 2021 01:56:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7tHhki3aphTw+T8sH9x98BuGFR0iW2Ee/zuAbvNRS7M=;
-        b=txdR+80+jda/XYaoG4jvUqDWRbhrXRJohcFZnwU294zf0Go7Pt2UrSeNVyubDvX0eu
-         AK2IdzEyIZoj0qnyy99eJm3RHz2XLO0sYM/BXpCJSdRZRTNICZDL9fkF3OHWkYYmdWAK
-         pvkWx51v9551ryyNtczDYMmNcLSGkXI6rfNUbfIWF8Lp+0eN4kjEocpMyz/u9gWtAH5v
-         59a0kdOoMuYob2LRhWc6I+/zPFKiud5TO9H9jb5wKL69DMhRKaVmDvRa4HGIy3l4XCNl
-         lVcynssYq96PHwWXz7/196faKnlc70xWMv9P+84URboSaSr3bIGvtiFbAVTJpvt+iyi4
-         fQ6Q==
-X-Gm-Message-State: AOAM532A4jUXrwJipby2eOR24pm+f+QhN7luGUUgS03RykxoehyruMUj
-        hwCFM3Aktd8SZjJ0EC8UTLXbyuyttQKSoLnMeWI=
-X-Google-Smtp-Source: ABdhPJzEW1+qMwqxtRATj9Y2pkaijw208kCbHNU65ponKqlood1qioSfjhb9EegcS3SsBrTT8JCYmAIgpF+zayfmhQE=
-X-Received: by 2002:a67:1542:: with SMTP id 63mr11596800vsv.40.1626425794458;
- Fri, 16 Jul 2021 01:56:34 -0700 (PDT)
+        id S238727AbhGPJBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 05:01:39 -0400
+Received: from mga11.intel.com ([192.55.52.93]:60833 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237916AbhGPJBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 05:01:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="207677290"
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="207677290"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 01:58:34 -0700
+X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
+   d="scan'208";a="495984926"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.28.42]) ([10.255.28.42])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 01:58:32 -0700
+Subject: Re: [PATCH v2 6/7] soc: mediatek: mmsys: Add reset controller support
+References: <202107150857.sniQJ86e-lkp@intel.com>
+In-Reply-To: <202107150857.sniQJ86e-lkp@intel.com>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     chunkuang.hu@kernel.org, hsinyi@chromium.org, kernel@collabora.com,
+        drinkcat@chromium.org, eizan@chromium.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        jitao.shi@mediatek.com, Philipp Zabel <p.zabel@pengutronix.de>,
+        kbuild-all@lists.01.org
+From:   kernel test robot <rong.a.chen@intel.com>
+X-Forwarded-Message-Id: <202107150857.sniQJ86e-lkp@intel.com>
+Message-ID: <5bfd55a2-04d1-769e-83a7-a03365fdd3b8@intel.com>
+Date:   Fri, 16 Jul 2021 16:58:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210715182123.23372-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210715182123.23372-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdV3JkV5D5_PsngoLiLPA_B1VBvRKsCz7j2tXKYVE_Bx9A@mail.gmail.com> <CA+V-a8v5m-F-n4E9HpwLe1C9gHWepTc0rCVk5oh5RCJ7oTXe2A@mail.gmail.com>
-In-Reply-To: <CA+V-a8v5m-F-n4E9HpwLe1C9gHWepTc0rCVk5oh5RCJ7oTXe2A@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 16 Jul 2021 10:56:23 +0200
-Message-ID: <CAMuHMdWBqLcCGWkP9JoALuiXT1m9a1rRwR8ExShUQmJ1HCikZA@mail.gmail.com>
-Subject: Re: [PATCH 3/6] dt-bindings: clk: r9a07g044-cpg: Add entry for
- P0_DIV2 core clock
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
 
-On Fri, Jul 16, 2021 at 10:45 AM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
-> On Fri, Jul 16, 2021 at 9:08 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Thu, Jul 15, 2021 at 8:21 PM Lad Prabhakar
-> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > Add P0_DIV2 core clock required for CANFD module. CANFD core clock is
-> > > sourced from P0_DIV2 referenced from HW manual Rev.0.50.
-> >
-> > OK.
-> >
-> > > Also add R9A07G044_LAST_CORE_CLK entry to avoid changes in
-> > > r9a07g044-cpg.c file.
-> >
-> > I'm not so fond of adding this.  Unlike the other definitions, it is
-> > not really part of the bindings, but merely a convenience definition
-> > for the driver.  Furthermore it has to change when a new definition
-> > is ever added.
-> >
-> Agreed will drop this.
->
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > ---
-> > >  include/dt-bindings/clock/r9a07g044-cpg.h | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/include/dt-bindings/clock/r9a07g044-cpg.h b/include/dt-bindings/clock/r9a07g044-cpg.h
-> > > index 0728ad07ff7a..2fd20db0b2f4 100644
-> > > --- a/include/dt-bindings/clock/r9a07g044-cpg.h
-> > > +++ b/include/dt-bindings/clock/r9a07g044-cpg.h
-> > > @@ -30,6 +30,8 @@
-> > >  #define R9A07G044_CLK_P2               19
-> > >  #define R9A07G044_CLK_AT               20
-> > >  #define R9A07G044_OSCCLK               21
-> > > +#define R9A07G044_CLK_P0_DIV2          22
-> > > +#define R9A07G044_LAST_CORE_CLK                23
-> >
-> > Third issue: off-by-one error, it should be 22 ;-)
-> >
-> 23 was intentionally as these numbers aren't used for core clock count
-> we use r9a07g044_core_clks[] instead.
+Hi Enric,
 
-It ends up as an off-by-one bug in the range check in
-rzg2l_cpg_clk_src_twocell_get().
+I love your patch! Perhaps something to improve:
 
-> Said that I'll drop this.
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on pza/reset/next linux/master linus/master 
+v5.14-rc1 next-20210714]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-OK.
+url: 
+https://github.com/0day-ci/linux/commits/Enric-Balletbo-i-Serra/Add-support-to-the-mmsys-driver-to-be-a-reset-controller/20210714-181318
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git 
+for-next
+:::::: branch date: 14 hours ago
+:::::: commit date: 14 hours ago
+compiler: riscv64-linux-gcc (GCC) 9.3.0
 
-Gr{oetje,eeting}s,
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>> drivers/soc/mediatek/mtk-mmsys.c:104:6: warning: Unused variable: i [unusedVariable]
+     int i;
+         ^
+
+vim +104 drivers/soc/mediatek/mtk-mmsys.c
+
+2c758e301ed95a Enric Balletbo i Serra 2020-03-25   97  08a3068f9490f0 
+Enric Balletbo i Serra 2021-07-14   98  static int 
+mtk_mmsys_reset_update(struct reset_controller_dev *rcdev, unsigned long id,
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14   99  				  bool assert)
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  100  {
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  101  	struct mtk_mmsys 
+*mmsys = container_of(rcdev, struct mtk_mmsys, rcdev);
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  102  	unsigned long flags;
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  103  	u32 reg;
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14 @104  	int i;
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  105  08a3068f9490f0 
+Enric Balletbo i Serra 2021-07-14  106  	spin_lock_irqsave(&mmsys->lock, 
+flags);
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  107  08a3068f9490f0 
+Enric Balletbo i Serra 2021-07-14  108  	reg = readl_relaxed(mmsys->regs 
++ MMSYS_SW0_RST_B);
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  109  08a3068f9490f0 
+Enric Balletbo i Serra 2021-07-14  110  	if (assert)
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  111  		reg &= ~BIT(id);
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  112  	else
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  113  		reg |= BIT(id);
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  114  08a3068f9490f0 
+Enric Balletbo i Serra 2021-07-14  115  	writel_relaxed(reg, mmsys->regs 
++ MMSYS_SW0_RST_B);
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  116  08a3068f9490f0 
+Enric Balletbo i Serra 2021-07-14  117 
+spin_unlock_irqrestore(&mmsys->lock, flags);
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  118  08a3068f9490f0 
+Enric Balletbo i Serra 2021-07-14  119  	return 0;
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  120  }
+08a3068f9490f0 Enric Balletbo i Serra 2021-07-14  121
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
