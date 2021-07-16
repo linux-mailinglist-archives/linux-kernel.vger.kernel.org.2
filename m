@@ -2,195 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C2F3CB24E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 08:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A69F3CB253
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 08:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbhGPGUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 02:20:39 -0400
-Received: from mail-eopbgr10081.outbound.protection.outlook.com ([40.107.1.81]:47878
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233176AbhGPGUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 02:20:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grJHRN90QE709FdTVUk3ZnGpuQ6djvF3NIFuNbVFlEM=;
- b=G/LNge1gwtNkWUJNN0MWTxTB1k4j0h/WHt/qQOUt3wmqzmre0zFf7X3N5eqCvoEOIw6kCGhhjAlRkyXOYEHoetHsOYF+WxFkkX7sKCFoPIyPvtpyulYPkSN2937fJx7zoWELKSxzzknnLFEhnp3G0ou+6e3NEDOhaHRWkno5U4I=
-Received: from AM6PR04CA0007.eurprd04.prod.outlook.com (2603:10a6:20b:92::20)
- by VE1PR08MB5263.eurprd08.prod.outlook.com (2603:10a6:803:116::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.26; Fri, 16 Jul
- 2021 06:17:40 +0000
-Received: from VE1EUR03FT044.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:20b:92:cafe::49) by AM6PR04CA0007.outlook.office365.com
- (2603:10a6:20b:92::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Fri, 16 Jul 2021 06:17:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
- header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- VE1EUR03FT044.mail.protection.outlook.com (10.152.19.106) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 06:17:40 +0000
-Received: ("Tessian outbound 664b93226e0b:v99"); Fri, 16 Jul 2021 06:17:39 +0000
-X-CR-MTA-TID: 64aa7808
-Received: from ab343009c2e1.1
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 032CFB5B-54E7-4343-98E1-01F81358224D.1;
-        Fri, 16 Jul 2021 06:17:33 +0000
-Received: from EUR03-VE1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id ab343009c2e1.1
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Fri, 16 Jul 2021 06:17:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BnRdvm35xKghB5+tmpatoedCcXgjJ+2Ssi4vLq0VuDrwj3dhMdwLyC1vXEgSUSVlTXbN0uemf4ygLH55n1M/7W4Y9993moThEqcyLGCENAcupilaJdYvhUkKC+kVXRCXF1Qbnqc6ghj7qGHnEOIDe7sW0+MZ3CN4Wqy/Q+5fVxWQySai6rZcir66m0F6KpuO0OnGoDF64ME4hSB9Ayeh1560VXWXbQaeAG7I7XVAneCr13iZBh2Yq4ysoqjcDp2zytJVlWD8GrYeUDh0fp4l/MLuJDL8KczNPsZtrcyGLRmVfcSGlOtE0wVwnETw3vODMjJc7MBWqS8e2eFpQZclcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grJHRN90QE709FdTVUk3ZnGpuQ6djvF3NIFuNbVFlEM=;
- b=CVQ+O3dwGPFjfpYXwqWUyPKhI9sC7Us8ivGD7eaFy4QDcP9n6W66z3VM7GxvaG1j+LQIlUkZjRrSK0OoCHnz/EW62jCsMOppZCVUfzT3O5Z7U+SkPOA3txv5YGFpI6DlVQfg43xRGGUeeKzXaSIBkAVZNbFC0TkZP5QRfSLog3CQygOjcf1amiowyz6vaixuMk5xb8y3AeffYbD9Skv0QN+kmaGZqEm0kr2HzIivGFkQDZeMUo1mGQIJFBkDja3Hoipe8EhT+iyDRT6a70+gfyNCSMBDyDd1FZrbk667Q/OXBeWQYATrh6XIIhW0eO7fOgoIyxIhMHjteo1leih69g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grJHRN90QE709FdTVUk3ZnGpuQ6djvF3NIFuNbVFlEM=;
- b=G/LNge1gwtNkWUJNN0MWTxTB1k4j0h/WHt/qQOUt3wmqzmre0zFf7X3N5eqCvoEOIw6kCGhhjAlRkyXOYEHoetHsOYF+WxFkkX7sKCFoPIyPvtpyulYPkSN2937fJx7zoWELKSxzzknnLFEhnp3G0ou+6e3NEDOhaHRWkno5U4I=
-Received: from AM6PR08MB4376.eurprd08.prod.outlook.com (2603:10a6:20b:bb::21)
- by AM6PR08MB3638.eurprd08.prod.outlook.com (2603:10a6:20b:4b::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.26; Fri, 16 Jul
- 2021 06:17:30 +0000
-Received: from AM6PR08MB4376.eurprd08.prod.outlook.com
- ([fe80::3452:c711:d09a:d8a1]) by AM6PR08MB4376.eurprd08.prod.outlook.com
- ([fe80::3452:c711:d09a:d8a1%5]) with mapi id 15.20.4331.026; Fri, 16 Jul 2021
- 06:17:29 +0000
-From:   Justin He <Justin.He@arm.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        nd <nd@arm.com>, "Darrick J. Wong" <djwong@kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH RFC 07/13] iomap: simplify iomap_swapfile_fail() with
- '%pD' specifier
-Thread-Topic: [PATCH RFC 07/13] iomap: simplify iomap_swapfile_fail() with
- '%pD' specifier
-Thread-Index: AQHXeSfOfVCeryK4fEmuKVaSKzQEI6tFIGIAgAABdjA=
-Date:   Fri, 16 Jul 2021 06:17:29 +0000
-Message-ID: <AM6PR08MB4376391DC23C94DF22E72B9CF7119@AM6PR08MB4376.eurprd08.prod.outlook.com>
-References: <20210715031533.9553-1-justin.he@arm.com>
- <20210715031533.9553-8-justin.he@arm.com> <YPEi9CvMoM5Bpq/i@infradead.org>
-In-Reply-To: <YPEi9CvMoM5Bpq/i@infradead.org>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ts-tracking-id: 75C995CFF37E3E439151CAC3BD09AAD4.0
-x-checkrecipientchecked: true
-Authentication-Results-Original: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=arm.com;
-x-ms-publictraffictype: Email
-X-MS-Office365-Filtering-Correlation-Id: d260e0db-dc2d-4203-5a11-08d948216a34
-x-ms-traffictypediagnostic: AM6PR08MB3638:|VE1PR08MB5263:
-X-Microsoft-Antispam-PRVS: <VE1PR08MB5263B47429225C4EF74FBA51F7119@VE1PR08MB5263.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-nodisclaimer: true
-x-ms-oob-tlc-oobclassifiers: OLM:7691;OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: xlXsaTdPC8fduV8BVbYeiXeagwWWRdYshbOxlmQj7EYHjdTne+YLMVCnoE/jmIjT96SkbwtbnOZEJbHE4lM9gevnifncXCIoRjmcrOfWd1fsx9ijoMNs+9cswhKJ/TPgCSzHWDh/VDCg90coyiVLQI8ir9IEAoDOE89JIXOJyIHjMVy7Hdn49goFs7qJzSoI8uzls2ITu5DaunivWJvaQ0ciH4OhQax/9lhK0WcqID80reICHrOdeRQyDG+88VpO0dBBghCoqAGna3oVlfKnfmunltfSD+dFJxRutrQsOfWRlIWAyonUEt93tl2/njtonKmSdpCwOagy0TPh+IPZ8I9+/t2rzY7MkIDeA+Yv01qHqH46eWBHFkskEjomUiE8tR9kIHCpUKQ0ExqwyPGBpDhDRDcNxeLUHgWhFwHoznhVkdgZRYlPtOn9bJsMjxOc3cgJB8ciMS7ooifN/liwHLxXBTq3alV1v31RIQ4JyR5wCVbAl3KQSTQbtJkzwhhtHxCzg+TThrOEdINvSqiQP/uc5lTDouK1SH8dCf0MCual9fF5a/ZV/zxqJv3fsPavoSI9JWWuVSEgs4ylRDYDhpQF0mI26OxLXqfGbDXUAFo5ywJpFclP5C4jlOkWzak44WxgEmZEP9QURkXpM83erZZhSMi75gs/YosllG5nYuUZ5xtqPr/wyreQOc4j+f/VmD+9DlcmKDsofS9+BGsnlA==
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4376.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39850400004)(366004)(136003)(376002)(478600001)(8936002)(122000001)(38100700002)(2906002)(83380400001)(8676002)(52536014)(4326008)(86362001)(4744005)(5660300002)(33656002)(64756008)(26005)(6506007)(6916009)(53546011)(9686003)(66556008)(186003)(55016002)(66446008)(71200400001)(66476007)(76116006)(66946007)(7696005)(316002)(54906003)(38070700004);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?eNxRce+SVAKZ1ImWo3ikGFZlJWVX+oC1d0AU3ooMB31PacpkG/TQjzryKPI5?=
- =?us-ascii?Q?2LJqC1dirSgLfWU/OJBduTNUoTPfou/jPBBowYoyPCqlVImXjTky+7cwuiZI?=
- =?us-ascii?Q?yhEFmlLWSefQC8xKc/Hy8NSaU/phgpbigpVex3jPYi1itjkQQgcR+pe9iXLD?=
- =?us-ascii?Q?Ooa2pDgnD8bMhOp69ePO6LMDUjyRE+mB57pjs4UewKYkmgS8YGtsA7lCsJ+P?=
- =?us-ascii?Q?DBaFcP+XoTisferrZvcxaF5QGUKC1h7OznHUXbfALZ8qYZplPQiIvN1Wg3GK?=
- =?us-ascii?Q?yiuMkdcM+jzMg28yI4FwfrcX7I/E9OYHZj/EfloTPlATgVZWGLN/R0Gh8FrX?=
- =?us-ascii?Q?6sqYjA3vJQcdvUQdP0tTDtaFcWCQDn4fBjkj+Rhs6qnIGOG5RIdgMo4CuMeo?=
- =?us-ascii?Q?sULxVL0BCoCmpu0ZFit8K0TAVypU18ib6VlmSWgIN329oKDxTT2YKk0ruwFB?=
- =?us-ascii?Q?HCofOiKuDNMCMT8eYf5ywvTg18+KlcqNkcfIyDthn2irP4DmfbsL2iry9lop?=
- =?us-ascii?Q?tnkfgy1cJR5RiBN7vIcVMk8Ip5I1g1ZeEJOmdcTkEYKyBB7eysurmRkNSkS0?=
- =?us-ascii?Q?g3Ch9tvHmtmVIVE9mBwSZe6gLchzRlPgWPPq4A5JSwmDaHOL7PF/VevbngVa?=
- =?us-ascii?Q?o2NaTUyNqarv9QWe5uAmcjZ61hP6S3QCKSRm1JCazxQFSO64Rgv6zCDdmSIV?=
- =?us-ascii?Q?XEq2xEgrWCU4yHIdiiNk2SvbFbph61mMXTwKk/E8K6PybmFXSowzPZLI0har?=
- =?us-ascii?Q?+Olr/KGK3Kpjqq8iGhNvvyUb5rAavnLY4v3wSz5beI9N7FSv8xxzcLEbFZpq?=
- =?us-ascii?Q?j8vEvR7g4GkAx9qwMT/YxhtWdZFCGp3yylrXdGvHm13UjeFc8JQZeu9yobfn?=
- =?us-ascii?Q?x3HuOmx07n3VQLc0XnohpuAGN4wwZckEBrGcJS6LWxt2h7U8tXf32pemPCsF?=
- =?us-ascii?Q?57x6Nd4jSRDbFbgf6v/tajhg3YLV3YwZssDE+8mZMAdlPh7Bf1fawsB3zlys?=
- =?us-ascii?Q?pBzpWp4b1d/iM2wRu/RhADsLJd9a6sEbjeey2fZ0KjWsGjgP1mB+9HtX41N5?=
- =?us-ascii?Q?SiVpQJIhUruFEWcr3H1uvP4d4Ra6d3jxUu6KNm89q8St+1pAHBNcrl1qPpG+?=
- =?us-ascii?Q?xmycuzA/Qpmlb3yd1XGK2srnxSRxKV/GHZt+iCsuMBTSP4s1cs/rhwsJoKKL?=
- =?us-ascii?Q?scqNHSLE9DivD7XJpHD84Bzr/hFdxZvPqWImnJL63mmfXkaYJJ6MGKHzxmgb?=
- =?us-ascii?Q?5NA35X/Dc84fg+BMZcN990uIvtA53hBp/l8VCzpyQUgMWcCYXHWHtig4K71H?=
- =?us-ascii?Q?Dt6hTabKfk3YosJyIHighrC1?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234418AbhGPGVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 02:21:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:63611 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233967AbhGPGVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 02:21:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626416296; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Sfg0cVqIzSwv9BXqL0UTlti+Cw93dhT2sJWRxV5rklM=;
+ b=ONnpmUQY56piu2iMkKaodS3GQCK9E/YfYhoKqSh7GRw3OSn3CY4w50ilq+TLYVaK9xUJZFgE
+ HL7mK9CMxO/GA79vn0gO3V1R8MXnYOb0m8lkvH0dtZD+BgIGVb/hQ5fnkAsgBEBl4GtzuE0h
+ YJcB1kpiaFAb6djnRDeAduw7twQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60f124a8c923fb7e09d5ef38 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Jul 2021 06:18:16
+ GMT
+Sender: sbhanu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9A4EEC433D3; Fri, 16 Jul 2021 06:18:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbhanu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E4CAC4338A;
+        Fri, 16 Jul 2021 06:18:14 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3638
-Original-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: VE1EUR03FT044.eop-EUR03.prod.protection.outlook.com
-X-MS-Office365-Filtering-Correlation-Id-Prvs: a49403ed-cdb2-4cb1-6cd4-08d9482163e6
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: u+Ci97KAdCT2gdfTdGHolH/6/cgaDqigDA4MJvR/y+3PVXoC9HPQg2dkkLgNXDafo05q+AK8/egJedfCOyoRcSoSuZnDg2QWQxYFVoC3ybvnV80qv9ZlO4+kzclzgPP23IBL5ljQbpx7yjO4DepxyV4TlOi+iGsm+uxldyw/Q3FR8plZ+0T7jlz8ODlzb4fi7xdBYG5m8T40QldRRgr/P8/EWQBSvPgs5AuD68LmgBnc09uY8w/IuK+r40+kfsB8oZa26FFe0HiLQgkCoBJVdFSxRto0r6nktoYKq1bX0n0XWWRaxk+xzTeFn7mTNR8qpx0XxmcZNJgjBRce90DYNud8G8NZ6TpioIk29Bv2FoZGzpV4AE/9kUGirCANPrn5ttFXAMJP364n/z2eQk2cFnmfPmSbnIxpi3H7M4H6s7bg34rXEFFpRS6jaFWWiaSNr3tDH6lmCJDuPFNnPNFxNkPgtm0j53zqqEykQDUqziOCJFlc8E9e8XTbgLKkD3PnStV8+obZAT9q1FarMU/aLBWoiLSDvV5HT1qlpFb8MvQQAR0pVEETsf4j1eZ/7hdra10arP6bXW4ZG08y3ts/qyKke45c4aMgsDUFGEJjZIcb47fp1MKGkV/j7c1Pb7gAhaX0p24CN3nDq1SIw1knYmCelwvDQT7l3dbg/qYG442+reQ0WiRAOEqed2HqGvEjjKXmcZuW0z8Gy2jMt+4E4A==
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(4326008)(52536014)(36860700001)(186003)(26005)(47076005)(2906002)(316002)(82310400003)(55016002)(70586007)(450100002)(70206006)(53546011)(6506007)(83380400001)(356005)(336012)(7696005)(6862004)(81166007)(9686003)(478600001)(33656002)(54906003)(8936002)(8676002)(5660300002)(86362001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 06:17:40.0593
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d260e0db-dc2d-4203-5a11-08d948216a34
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT044.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR08MB5263
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 16 Jul 2021 11:48:14 +0530
+From:   sbhanu@codeaurora.org
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     ulf.hansson@linaro.org, asutoshd@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        rampraka@codeaurora.org, sayalil@codeaurora.org,
+        sartgarg@codeaurora.org, rnayak@codeaurora.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+Subject: Re: [PATCH V3] mmc: sdhci-msm: Update the software timeout value for
+ sdhc
+In-Reply-To: <7bd56312-96ab-debe-0f80-112af994b233@intel.com>
+References: <1625500253-12815-1-git-send-email-sbhanu@codeaurora.org>
+ <7bd56312-96ab-debe-0f80-112af994b233@intel.com>
+Message-ID: <a27b8f689dca92f5bfd4b7a5976d14e6@codeaurora.org>
+X-Sender: sbhanu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph
-
-> -----Original Message-----
-> From: Christoph Hellwig <hch@infradead.org>
-> Sent: Friday, July 16, 2021 2:11 PM
-> To: Justin He <Justin.He@arm.com>
-> Cc: linux-kernel@vger.kernel.org; Linus Torvalds <torvalds@linux-
-> foundation.org>; Christoph Hellwig <hch@infradead.org>; nd <nd@arm.com>;
-> Darrick J. Wong <djwong@kernel.org>; linux-xfs@vger.kernel.org; linux-
-> fsdevel@vger.kernel.org
-> Subject: Re: [PATCH RFC 07/13] iomap: simplify iomap_swapfile_fail() with
-> '%pD' specifier
->=20
-> On Thu, Jul 15, 2021 at 11:15:27AM +0800, Jia He wrote:
-> > After the behavior of '%pD' is change to print the full path of file,
-> > iomap_swapfile_fail() can be simplified.
-> >
-> > Given the space with proper length would be allocated in vprintk_store(=
-),
-> > the kmalloc() is not required any more.
-> >
-> > Besides, the previous number postfix of '%pD' in format string is
-> > pointless.
->=20
-> This also touched iomap_dio_actor, but the commit og only mentions
-> iomap_swapfile_fail.
-Okay, I will refine the msg in next version.
-Thanks
-
-
---
-Cheers,
-Justin (Jia He)
-
-
+On 2021-07-15 10:59, Adrian Hunter wrote:
+> On 5/07/21 6:50 pm, Shaik Sajida Bhanu wrote:
+>> Whenever SDHC run at clock rate 50MHZ or below, the hardware data
+>> timeout value will be 21.47secs, which is approx. 22secs and we have
+>> a current software timeout value as 10secs. We have to set software
+>> timeout value more than the hardware data timeout value to avioid 
+>> seeing
+>> the below register dumps.
+>> 
+>> [  332.953670] mmc2: Timeout waiting for hardware interrupt.
+>> [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP 
+>> ===========
+>> [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  
+>> 0x00007202
+>> [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  
+>> 0x00000001
+>> [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 
+>> 0x00000027
+>> [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 
+>> 0x0000001f
+>> [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  
+>> 0x00000000
+>> [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    
+>> 0x00000007
+>> [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 
+>> 0x00000000
+>> [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 
+>> 0x03ff100b
+>> [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 
+>> 0x00000000
+>> [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   
+>> 0x0000808f
+>> [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 
+>> 0x00000000
+>> [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  
+>> 0x00000000
+>> [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  
+>> 0x00000000
+>> [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
+>> [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
+>> 0x0000000ffffff218
+>> [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
+>> -----------
+>> [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
+>> 0x6000642c | DLL cfg2: 0x0020a000
+>> [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
+>> 0x00000000 | DDR cfg: 0x80040873
+>> [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
+>> 0xf88218a8 Vndr func3: 0x02626040
+>> [  333.102371] mmc2: sdhci: 
+>> ============================================
+>> 
+>> So, set software timeout value more than hardware timeout value.
+>> 
+>> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+> 
+> A couple of minor nitpicks below.  Fix those and you can add:
+> 
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> 
+>> ---
+>> 
+>> Changes since V2:
+>> 	- Updated 22 with 22LL to avoid compiler warning as suggested by
+>> 	  Adrian Hunter.
+>> 	- Added a check to update software data timeout value if its value is
+>> 	  less than the calculated hardware data timeout value as suggested
+>> 	  by Veerabhadrarao Badiganti.
+>> 
+>> Changes since V1:
+>> 	- Moved software data timeout update part to qcom specific file
+>> 	  as suggested by Veerabhadrarao Badiganti.
+>> ---
+>>  drivers/mmc/host/sdhci-msm.c | 18 ++++++++++++++++++
+>>  1 file changed, 18 insertions(+)
+>> 
+>> diff --git a/drivers/mmc/host/sdhci-msm.c 
+>> b/drivers/mmc/host/sdhci-msm.c
+>> index e44b7a6..64fb85e 100644
+>> --- a/drivers/mmc/host/sdhci-msm.c
+>> +++ b/drivers/mmc/host/sdhci-msm.c
+>> @@ -2089,6 +2089,23 @@ static void sdhci_msm_cqe_disable(struct 
+>> mmc_host *mmc, bool recovery)
+>>  	sdhci_cqe_disable(mmc, recovery);
+>>  }
+>> 
+>> +static void sdhci_msm_set_timeout(struct sdhci_host *host, struct 
+>> mmc_command *cmd)
+>> +{
+>> +
+> 
+> Unnecessary blank line.
+Sure i will address this in my next patch set , Thanks for the review.
+> 
+>> +	u32 count, start = 15;
+>> +
+>> +	__sdhci_set_timeout(host, cmd);
+>> +	count = sdhci_readb(host, SDHCI_TIMEOUT_CONTROL);
+>> +	/*
+>> +	 * Update software timeout value if its value is less than hardware 
+>> data
+>> +	 * timeout value. Qcom SoC hardware data timeout value was 
+>> calculated
+>> +	 * using 4 * MCLK * 2^(count + 13). where MCLK = 1 / host->clock.
+>> +	 */
+>> +	if (cmd && cmd->data && host->clock > 400000 && host->clock <= 
+>> 50000000
+>> +			&& ((1 << (count + start)) > (10 * host->clock)))
+> 
+> '&&' is better at the end of the previous line
+> 
+> Also fewer parenthesis is more readable e.g.
+> 
+> 	if (cmd && cmd->data && host->clock > 400000 &&
+> 	    host->clock <= 50000000 &&
+> 	    (1 << (count + start)) > (10 * host->clock))
+> 
+Sure i will address this in my next patch set , Thanks for the review.
+>> +		host->data_timeout = 22LL * NSEC_PER_SEC;
+>> +}
+>> +
+>>  static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
+>>  	.enable		= sdhci_msm_cqe_enable,
+>>  	.disable	= sdhci_msm_cqe_disable,
+>> @@ -2438,6 +2455,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
+>>  	.irq	= sdhci_msm_cqe_irq,
+>>  	.dump_vendor_regs = sdhci_msm_dump_vendor_regs,
+>>  	.set_power = sdhci_set_power_noreg,
+>> +	.set_timeout = sdhci_msm_set_timeout,
+>>  };
+>> 
+>>  static const struct sdhci_pltfm_data sdhci_msm_pdata = {
+>> 
