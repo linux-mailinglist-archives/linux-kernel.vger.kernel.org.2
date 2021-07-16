@@ -2,145 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5395B3CB1BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 06:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B282A3CB1C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbhGPE5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 00:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhGPE5E (ORCPT
+        id S232708AbhGPFEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 01:04:31 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:29733 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhGPFEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 00:57:04 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09664C06175F;
-        Thu, 15 Jul 2021 21:54:09 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id v189so12872274ybg.3;
-        Thu, 15 Jul 2021 21:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rQzix+JFYmfW/cepcI4Z8ROSEcKPRKu53+WeoqkDB7A=;
-        b=jwefsGN2q3DMczJLbwqAjnfzjHEHa+7foEN6u4d0o+x+dLX6z5C5DJTjOIq61znv1e
-         nVbrL/7csPQwxRKBvA8T62c8AqnUHH3OQ5geAtgYhkpMgEbblfVYiAGEz4nf/a8djYW0
-         FALLZ+nBBqb+dJdGp4ffvY9si5KCyXXHITXs7qktzWLpDvOPJP11bEvExB2zkOU5otya
-         9kB7wIqxcmQNoovVh4PguWVk/nTwiF3x1PpUObw4FMPY+iIgqF0r+LosGfvr3g0mSBEV
-         OSawvw3QW/dSA33Z5K2zA8QZDapU5vplUfyP144Le+h/3+WSRDPFFnh0jJR7K3o+wI7n
-         7PdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rQzix+JFYmfW/cepcI4Z8ROSEcKPRKu53+WeoqkDB7A=;
-        b=jni9f/+WyR//G+F2p+28Uyv6o8DKEq8jFD1Md71YI3HL1/KblfVL+a5+B8HxvgYKLS
-         OG63Y4/BnFZcyAixpWx3y+i13o2yAwab6YxceJT8GSsGYoXXpm7mgjzZ7a0mSsaSIix4
-         mCnj0GS56jmHooGq1XwJ2MaJomZpTGyXtD5qgHrA8cqO5LeorHEVRuQTz7b5obce65ra
-         cLITfxjO5UfusW+Ym2S2EmNVFqEqRtzjTMM0PvNyj4551xtOdw9QX3x5gOdeeW5avoz/
-         UlcMxqG/M7jF+BiSvAYiOYPmbW1IH/nHRsDfY4p6B2CPI7zVmc8HL4swcytCzwPHBHlS
-         2ItA==
-X-Gm-Message-State: AOAM531mTOYVB3AEHgBP+7EUBSxKokXsPFPQ1J0EGUIGolSKUTqRd4H3
-        u0e/C7WTx4uqNK1ZcCjnu05DzH++U0Py57Iwz98=
-X-Google-Smtp-Source: ABdhPJzxj03IKaFa2qBgy45NtGwiSCFknimKCkKQAgrRypH9ACZQrA7xbGpcnh6EO3VGHtqS5jpn+5b6b7HNLZ2eOf8=
-X-Received: by 2002:a25:d349:: with SMTP id e70mr10212952ybf.510.1626411248254;
- Thu, 15 Jul 2021 21:54:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <1626180159-112996-1-git-send-email-chengshuyi@linux.alibaba.com> <1626180159-112996-4-git-send-email-chengshuyi@linux.alibaba.com>
-In-Reply-To: <1626180159-112996-4-git-send-email-chengshuyi@linux.alibaba.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 15 Jul 2021 21:53:57 -0700
-Message-ID: <CAEf4BzZY6WeSmox6zwxM1-jfWkaomK-3R4+W6M4tg5J=Ti9ARQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Switches existing
- selftests to using open_opts for custom BTF
-To:     Shuyi Cheng <chengshuyi@linux.alibaba.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 16 Jul 2021 01:04:30 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210716050134euoutp01bb5b94068bcbc3029e5e0fe71147046c~SLNGh3P3b1031610316euoutp01t
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 05:01:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210716050134euoutp01bb5b94068bcbc3029e5e0fe71147046c~SLNGh3P3b1031610316euoutp01t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1626411694;
+        bh=tlnKnhtiuN5X69bO+zZbqtZ5WXVcvvkwRcRObs1MPDY=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=iJ4j4jRPItwyKhnYGRLBU19LK0E3pyJsvJ4ld1V6eZnbp8+k+l3sQqst9hUXjOYrp
+         tyu2ebV9il0VM+ecWFWHXk/Jo9+2GVAU/Ybm2fRW4lUqT5ed+lzcY9queAj6EhxgTS
+         iYaKdmsQmRZUV4L79Pv6gG36kErtGZExgo2lZXmU=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210716050133eucas1p1a8635c11b814b4b831610b2febd77f93~SLNGJ9k7I2287522875eucas1p1H;
+        Fri, 16 Jul 2021 05:01:33 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 56.60.42068.DA211F06; Fri, 16
+        Jul 2021 06:01:33 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23~SLNFIrIWE0138901389eucas1p2x;
+        Fri, 16 Jul 2021 05:01:32 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210716050132eusmtrp1e7e85bfbdd812b3043d7b211ef2958c9~SLNFH_zkQ1937119371eusmtrp1k;
+        Fri, 16 Jul 2021 05:01:32 +0000 (GMT)
+X-AuditID: cbfec7f4-c89ff7000002a454-a0-60f112ad36d1
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 1F.14.20981.CA211F06; Fri, 16
+        Jul 2021 06:01:32 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210716050132eusmtip1e14cbdb21a1f293aacdd2cb276f51aed~SLNEnnoAG0836508365eusmtip1U;
+        Fri, 16 Jul 2021 05:01:32 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-usb@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] usb: dwc2: Skip clock gating on Samsung SoCs
+Date:   Fri, 16 Jul 2021 07:01:27 +0200
+Message-Id: <20210716050127.4406-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRmVeSWpSXmKPExsWy7djPc7prhT4mGPxsMbDovWNisXHGelaL
+        +TeTLBp/7WW3OH9+A7vF5V1z2CxmnN/HZLFoWSuzxdojd9kdOD02repk85h3MtCjb8sqRo8t
+        +z8zenzeJBfAGsVlk5Kak1mWWqRvl8CVcXNeN1PBbpmK88v/MjcwzhfvYuTkkBAwkfjes465
+        i5GLQ0hgBaNET8sURpCEkMAXRonLn60g7M+MEk0TGWEa1u9dygjRsJxRYsbCDlYIB6jhwok5
+        LCBVbAKGEl1vu9hAbBGBBIkjm98zg9jMAjOZJLqmCoDYwgK2EuvXLGQHsVkEVCWWfz3JCmLz
+        CthIrPm0nQVim7zE6g0HwM6TEOjlkPi0dT07RMJF4ubSg1BFwhKvjm+BistInJ7cwwLR0Mwo
+        8fDcWnYIpwfon6YZUE9YS9w59wvoPA6gkzQl1u/Shwg7Srye18kKEpYQ4JO48VYQ4mg+iUnb
+        pjNDhHklOtqEIKrVJGYdXwe39uCFS8wQtofEzqWzoaEYK/Hi40+2CYxysxB2LWBkXMUonlpa
+        nJueWmyUl1quV5yYW1yal66XnJ+7iRGYGE7/O/5lB+PyVx/1DjEycTAeYpTgYFYS4V1q9DZB
+        iDclsbIqtSg/vqg0J7X4EKM0B4uSOG/SljXxQgLpiSWp2ampBalFMFkmDk6pBqZex78ikxW2
+        LRL8FXW32F8vmKMsjGvV57YvKwoSS7fs3HdGIX9e7zHfzsNdru8zJwUIyCSm8f5naH11fUm3
+        3Roxiy8CodZeXhdXHdaeved4aGYj/2YPrc2Xlqxesbp7bsefC/OUZ39inK77NnLrJ7c2y+Sc
+        By/uzNbe9/365QmGHIf0J7IXXnTRbN4no3vw6+OZmzLnr3lexhXrfjWmKmzLNEuFsu3yp+/U
+        7l59WrN8EdeHEoFdGv4euw7kCKj/U/q3Q+R51eQTJW2Z7j+PLPivsPeWBO8moYqMToY/m74V
+        XzU9ncvNtW6v0zrdfxba5xrC6l5tMygT8n7R68/W5vaR+QGD/fElPjrv/WwrS84osRRnJBpq
+        MRcVJwIAohL+33sDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrALMWRmVeSWpSXmKPExsVy+t/xu7prhD4mGLzt17DovWNisXHGelaL
+        +TeTLBp/7WW3OH9+A7vF5V1z2CxmnN/HZLFoWSuzxdojd9kdOD02repk85h3MtCjb8sqRo8t
+        +z8zenzeJBfAGqVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mW
+        WqRvl6CXcXNeN1PBbpmK88v/MjcwzhfvYuTkkBAwkVi/dyljFyMXh5DAUkaJx32L2CASMhIn
+        pzWwQtjCEn+udbFBFH1ilLh/4jMzSIJNwFCi620XWIOIQJLE9SenWUCKmAXmMkl8n/cLrFtY
+        wFZi/ZqF7CA2i4CqxPKvJ8HivAI2Ems+bWeB2CAvsXrDAeYJjDwLGBlWMYqklhbnpucWG+kV
+        J+YWl+al6yXn525iBAbltmM/t+xgXPnqo94hRiYOxkOMEhzMSiK8S43eJgjxpiRWVqUW5ccX
+        leakFh9iNAXaN5FZSjQ5HxgXeSXxhmYGpoYmZpYGppZmxkrivCZH1sQLCaQnlqRmp6YWpBbB
+        9DFxcEo1MM081CKdLaOoWvVpifqWjuOzONn1m98KSO65+OJmUFniQfHVz17P9tnSdu7dNs8f
+        EY/ubdbkmfpddYL+/JSPiivk3drUzcV3eJ9V+O9yao3fS+bmF7IfHh6e61m55v7fjbv/R7Zn
+        i+rdF7qdVcM9edexf+xyc7bwvoi2Xdjz/ed6v71XZnpcvufft2XaF5slDRutNlWtYEptmPQw
+        7a5t7pWtHao8Mj327toHJbUd/qq4VZl8eP98w9bJZom9ykbnb7/YytbR0uEktp/TPPlduKNv
+        4Ja8TJ67+jZeD5acPPqq4/jmS7lf5px9cm5JsEDd1SWPblQFfYiynntb44bn35nbuq6KfJ/w
+        yDjTl/PDTh8GJZbijERDLeai4kQAy8uLwtMCAAA=
+X-CMS-MailID: 20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23
+References: <CGME20210716050132eucas1p285949f9a73764b173c29ad0fa8502f23@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 5:43 AM Shuyi Cheng
-<chengshuyi@linux.alibaba.com> wrote:
->
-> This patch mainly replaces the bpf_object_load_attr of
-> the core_autosize.c and core_reloc.c files with bpf_object_open_opts.
->
-> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
-> ---
->  .../selftests/bpf/prog_tests/core_autosize.c       | 22 ++++++++---------
->  .../testing/selftests/bpf/prog_tests/core_reloc.c  | 28 ++++++++++------------
->  2 files changed, 24 insertions(+), 26 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_autosize.c b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-> index 981c251..d163342 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-> @@ -54,7 +54,7 @@ void test_core_autosize(void)
->         int err, fd = -1, zero = 0;
->         int char_id, short_id, int_id, long_long_id, void_ptr_id, id;
->         struct test_core_autosize* skel = NULL;
-> -       struct bpf_object_load_attr load_attr = {};
-> +       struct bpf_object_open_opts open_opts = {};
->         struct bpf_program *prog;
->         struct bpf_map *bss_map;
->         struct btf *btf = NULL;
-> @@ -125,9 +125,11 @@ void test_core_autosize(void)
->         fd = -1;
->
->         /* open and load BPF program with custom BTF as the kernel BTF */
-> -       skel = test_core_autosize__open();
-> +       open_opts.btf_custom_path = btf_file;
-> +       open_opts.sz = sizeof(struct bpf_object_open_opts);
-> +       skel = test_core_autosize__open_opts(&open_opts);
->         if (!ASSERT_OK_PTR(skel, "skel_open"))
-> -               return;
-> +               goto cleanup;
->
->         /* disable handle_signed() for now */
->         prog = bpf_object__find_program_by_name(skel->obj, "handle_signed");
-> @@ -135,9 +137,7 @@ void test_core_autosize(void)
->                 goto cleanup;
->         bpf_program__set_autoload(prog, false);
->
-> -       load_attr.obj = skel->obj;
-> -       load_attr.target_btf_path = btf_file;
-> -       err = bpf_object__load_xattr(&load_attr);
-> +       err = bpf_object__load(skel->obj);
->         if (!ASSERT_OK(err, "prog_load"))
->                 goto cleanup;
->
-> @@ -204,13 +204,13 @@ void test_core_autosize(void)
->         skel = NULL;
->
->         /* now re-load with handle_signed() enabled, it should fail loading */
-> -       skel = test_core_autosize__open();
-> +       open_opts.btf_custom_path = btf_file;
-> +       open_opts.sz = sizeof(struct bpf_object_open_opts);
+Commit 0112b7ce68ea ("usb: dwc2: Update dwc2_handle_usb_suspend_intr
+function.") changed the way the driver handles power down modes in a such
+way that it uses clock gating when no other power down mode is available.
 
-For opts structs libbpf provides DECLARE_LIBBPF_OPTS macro for their
-initialization which zeroes the struct out and sets its sz
-automatically. So I'll switch to using that instead. All the rest
-looks good.
+This however doesn't work well on the DWC2 implementation used on the
+Samsung SoCs. When a clock gating is enabled, system hangs. It looks that
+the proper clock gating requires some additional glue code in the shared
+USB2 PHY and/or Samsung glue code for the DWC2. To restore driver
+operation on the Samsung SoCs simply skip enabling clock gating mode
+until one finds what is really needed to make it working reliably.
 
-> +       skel = test_core_autosize__open_opts(&opts);
->         if (!ASSERT_OK_PTR(skel, "skel_open"))
-> -               return;
-> +               goto cleanup;
->
-> -       load_attr.obj = skel->obj;
-> -       load_attr.target_btf_path = btf_file;
-> -       err = bpf_object__load_xattr(&load_attr);
-> +       err = bpf_object__load(skel);
->         if (!ASSERT_ERR(err, "bad_prog_load"))
->                 goto cleanup;
->
+Fixes: 0112b7ce68ea ("usb: dwc2: Update dwc2_handle_usb_suspend_intr function.")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/usb/dwc2/core.h      | 4 ++++
+ drivers/usb/dwc2/core_intr.c | 3 ++-
+ drivers/usb/dwc2/hcd.c       | 6 ++++--
+ drivers/usb/dwc2/params.c    | 1 +
+ 4 files changed, 11 insertions(+), 3 deletions(-)
 
-[...]
+diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+index ab6b815e0089..483de2bbfaab 100644
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -383,6 +383,9 @@ enum dwc2_ep0_state {
+  *			0 - No (default)
+  *			1 - Partial power down
+  *			2 - Hibernation
++ * @no_clock_gating:	Specifies whether to avoid clock gating feature.
++ *			0 - No (use clock gating)
++ *			1 - Yes (avoid it)
+  * @lpm:		Enable LPM support.
+  *			0 - No
+  *			1 - Yes
+@@ -480,6 +483,7 @@ struct dwc2_core_params {
+ #define DWC2_POWER_DOWN_PARAM_NONE		0
+ #define DWC2_POWER_DOWN_PARAM_PARTIAL		1
+ #define DWC2_POWER_DOWN_PARAM_HIBERNATION	2
++	bool no_clock_gating;
+ 
+ 	bool lpm;
+ 	bool lpm_clock_gating;
+diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
+index a5ab03808da6..a5c52b237e72 100644
+--- a/drivers/usb/dwc2/core_intr.c
++++ b/drivers/usb/dwc2/core_intr.c
+@@ -556,7 +556,8 @@ static void dwc2_handle_usb_suspend_intr(struct dwc2_hsotg *hsotg)
+ 				 * If neither hibernation nor partial power down are supported,
+ 				 * clock gating is used to save power.
+ 				 */
+-				dwc2_gadget_enter_clock_gating(hsotg);
++				if (!hsotg->params.no_clock_gating)
++					dwc2_gadget_enter_clock_gating(hsotg);
+ 			}
+ 
+ 			/*
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index 035d4911a3c3..2a7828971d05 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -3338,7 +3338,8 @@ int dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex)
+ 		 * If not hibernation nor partial power down are supported,
+ 		 * clock gating is used to save power.
+ 		 */
+-		dwc2_host_enter_clock_gating(hsotg);
++		if (!hsotg->params.no_clock_gating)
++			dwc2_host_enter_clock_gating(hsotg);
+ 		break;
+ 	}
+ 
+@@ -4402,7 +4403,8 @@ static int _dwc2_hcd_suspend(struct usb_hcd *hcd)
+ 		 * If not hibernation nor partial power down are supported,
+ 		 * clock gating is used to save power.
+ 		 */
+-		dwc2_host_enter_clock_gating(hsotg);
++		if (!hsotg->params.no_clock_gating)
++			dwc2_host_enter_clock_gating(hsotg);
+ 
+ 		/* After entering suspend, hardware is not accessible */
+ 		clear_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index 67c5eb140232..59e119345994 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -76,6 +76,7 @@ static void dwc2_set_s3c6400_params(struct dwc2_hsotg *hsotg)
+ 	struct dwc2_core_params *p = &hsotg->params;
+ 
+ 	p->power_down = DWC2_POWER_DOWN_PARAM_NONE;
++	p->no_clock_gating = true;
+ 	p->phy_utmi_width = 8;
+ }
+ 
+-- 
+2.17.1
+
