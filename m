@@ -2,143 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABB53CB3E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A86E3CB3ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 10:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237198AbhGPISU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 04:18:20 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53624 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236794AbhGPIST (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 04:18:19 -0400
-X-UUID: 8613e77c839f4d77969d995eb4674fe8-20210716
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=6pJ4tb3q/Wef8l+9r7qbzuTmCi4kds4LrIP47tjiUqc=;
-        b=qlfMT+kD4EIs/soqa4fts8RFwRhwSulQl6l8k5OxfLka4+U6okMhnfmwiHcylBOqHDDzRDUA+yN85cXwDp+VOF7mA8127xJki7Exz5OjDtiGFI0bDyadbtUtlyEUQN6H9V1MBUbmAy/fuRqm2THuCjmoUiUMr0BZiMsrAZ6fPao=;
-X-UUID: 8613e77c839f4d77969d995eb4674fe8-20210716
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <jason-jh.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1772663035; Fri, 16 Jul 2021 16:15:22 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 16 Jul 2021 16:15:14 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 16 Jul 2021 16:15:15 +0800
-Message-ID: <9c4613fffc80b3102ebb2df6d92cb3af1cd704c8.camel@mediatek.com>
-Subject: Re: [PATCH v2 7/9] drm/mediatek: add mediatek-drm of vdosys0
- support for mt8195
-From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <fshao@google.com>, Nancy Lin <nancy.lin@mediatek.com>,
-        <singo.chang@mediatek.com>
-Date:   Fri, 16 Jul 2021 16:15:14 +0800
-In-Reply-To: <CAAOTY_8LW0VSLL7P2qWOWngPF36FzzJvhdk6_0wGvkaWH3R1ZA@mail.gmail.com>
-References: <20210710113819.5170-1-jason-jh.lin@mediatek.com>
-         <20210710113819.5170-8-jason-jh.lin@mediatek.com>
-         <CAAOTY_8LW0VSLL7P2qWOWngPF36FzzJvhdk6_0wGvkaWH3R1ZA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S237611AbhGPITA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 04:19:00 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51406 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237415AbhGPISv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 04:18:51 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1m4J0O-0005fg-8y; Fri, 16 Jul 2021 16:15:32 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1m4J09-0000YN-HC; Fri, 16 Jul 2021 16:15:17 +0800
+Date:   Fri, 16 Jul 2021 16:15:17 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andres Salomon <dilinger@queued.net>,
+        linux-geode@lists.infradead.org, Matt Mackall <mpm@selenic.com>,
+        linux-crypto@vger.kernel.org,
+        Christian Gromm <christian.gromm@microchip.com>,
+        Krzysztof Halasa <khc@pm.waw.pl>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>, linux-x25@vger.kernel.org,
+        wireguard@lists.zx2c4.com
+Subject: Re: [PATCH 0/6 v2] treewide: rename 'mod_init' & 'mod_exit'
+ functions to be module-specific
+Message-ID: <20210716081517.GB2034@gondor.apana.org.au>
+References: <20210711223148.5250-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210711223148.5250-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA3LTE0IGF0IDIyOjM1ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgSmFzb246DQo+IA0KPiBqYXNvbi1qaC5saW4gPGphc29uLWpoLmxpbkBtZWRpYXRlay5j
-b20+IOaWvCAyMDIx5bm0N+aciDEw5pelIOmAseWFrSDkuIvljYg3OjM45a+r6YGT77yaDQo+ID4g
-DQo+ID4gQWRkIGRyaXZlciBkYXRhIG9mIG10ODE5NSB2ZG9zeXMwIHRvIG1lZGlhdGVrLWRybSBh
-bmQgdGhlIHN1Yg0KPiA+IGRyaXZlci4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBqYXNvbi1q
-aC5saW4gPGphc29uLWpoLmxpbkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMv
-Z3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9yZG1hLmMgfCAgNiArKysrKysNCj4gPiAgZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMgICB8IDI0DQo+ID4gKysrKysrKysrKysr
-KysrKysrKysrKysrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMzAgaW5zZXJ0aW9ucygrKQ0KPiA+
-IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfcmRt
-YS5jDQo+ID4gYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfcmRtYS5jDQo+ID4g
-aW5kZXggNzI4YWFhZGZlYThjLi4wMGU5ODI3YWNlZmUgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX3JkbWEuYw0KPiA+ICsrKyBiL2RyaXZlcnMvZ3B1
-L2RybS9tZWRpYXRlay9tdGtfZGlzcF9yZG1hLmMNCj4gPiBAQCAtMzU1LDYgKzM1NSwxMCBAQCBz
-dGF0aWMgY29uc3Qgc3RydWN0IG10a19kaXNwX3JkbWFfZGF0YQ0KPiA+IG10ODE4M19yZG1hX2Ry
-aXZlcl9kYXRhID0gew0KPiA+ICAgICAgICAgLmZpZm9fc2l6ZSA9IDUgKiBTWl8xSywNCj4gPiAg
-fTsNCj4gPiANCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9yZG1hX2RhdGEgbXQ4
-MTk1X3JkbWFfZHJpdmVyX2RhdGEgPSB7DQo+ID4gKyAgICAgICAuZmlmb19zaXplID0gMTkyMCwN
-Cj4gPiArfTsNCj4gPiArDQo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10
-a19kaXNwX3JkbWFfZHJpdmVyX2R0X21hdGNoW10gPQ0KPiA+IHsNCj4gPiAgICAgICAgIHsgLmNv
-bXBhdGlibGUgPSAibWVkaWF0ZWssbXQyNzAxLWRpc3AtcmRtYSIsDQo+ID4gICAgICAgICAgIC5k
-YXRhID0gJm10MjcwMV9yZG1hX2RyaXZlcl9kYXRhfSwNCj4gPiBAQCAtMzYyLDYgKzM2Niw4IEBA
-IHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkDQo+ID4gbXRrX2Rpc3BfcmRtYV9kcml2
-ZXJfZHRfbWF0Y2hbXSA9IHsNCj4gPiAgICAgICAgICAgLmRhdGEgPSAmbXQ4MTczX3JkbWFfZHJp
-dmVyX2RhdGF9LA0KPiA+ICAgICAgICAgeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMt
-ZGlzcC1yZG1hIiwNCj4gPiAgICAgICAgICAgLmRhdGEgPSAmbXQ4MTgzX3JkbWFfZHJpdmVyX2Rh
-dGF9LA0KPiA+ICsgICAgICAgeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTUtZGlzcC1y
-ZG1hIiwNCj4gPiArICAgICAgICAgLmRhdGEgPSAmbXQ4MTk1X3JkbWFfZHJpdmVyX2RhdGF9LA0K
-PiA+ICAgICAgICAge30sDQo+ID4gIH07DQo+ID4gIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIG10
-a19kaXNwX3JkbWFfZHJpdmVyX2R0X21hdGNoKTsNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
-cHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMNCj4gPiBiL2RyaXZlcnMvZ3B1L2RybS9tZWRp
-YXRlay9tdGtfZHJtX2Rydi5jDQo+ID4gaW5kZXggYjQ2YmRiODk4NWRhLi5kNmY2ZDFiZGFkODUg
-MTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMN
-Cj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYw0KPiA+IEBA
-IC0xNDcsNiArMTQ3LDE5IEBAIHN0YXRpYyBjb25zdCBlbnVtIG10a19kZHBfY29tcF9pZA0KPiA+
-IG10ODE4M19tdGtfZGRwX2V4dFtdID0gew0KPiA+ICAgICAgICAgRERQX0NPTVBPTkVOVF9EUEkw
-LA0KPiA+ICB9Ow0KPiA+IA0KPiA+ICtzdGF0aWMgY29uc3QgZW51bSBtdGtfZGRwX2NvbXBfaWQg
-bXQ4MTk1X210a19kZHBfbWFpbltdID0gew0KPiA+ICsgICAgICAgRERQX0NPTVBPTkVOVF9PVkww
-LA0KPiA+ICsgICAgICAgRERQX0NPTVBPTkVOVF9SRE1BMCwNCj4gPiArICAgICAgIEREUF9DT01Q
-T05FTlRfQ09MT1IwLA0KPiA+ICsgICAgICAgRERQX0NPTVBPTkVOVF9DQ09SUiwNCj4gPiArICAg
-ICAgIEREUF9DT01QT05FTlRfQUFMMCwNCj4gPiArICAgICAgIEREUF9DT01QT05FTlRfR0FNTUEs
-DQo+ID4gKyAgICAgICBERFBfQ09NUE9ORU5UX0RJVEhFUiwNCj4gPiArICAgICAgIEREUF9DT01Q
-T05FTlRfRFNDMCwNCj4gPiArICAgICAgIEREUF9DT01QT05FTlRfTUVSR0UwLA0KPiA+ICsgICAg
-ICAgRERQX0NPTVBPTkVOVF9EUF9JTlRGMCwNCj4gDQo+IFdoZXJlIGlzIHRoZSBkcF9pbnRmIGRy
-aXZlciBpbiB0aGlzIHNlcmllcz8NCj4gDQo+IFJlZ2FyZHMsDQo+IENodW4tS3VhbmcuDQo+IA0K
-SGkgQ0ssDQoNCmRwX2ludGYgZHJpdmVyIHdpbGwgYmUgdXBzdHJlYW0gaW4gYW5vdGhlciBzZXJp
-ZXMgcGF0Y2hlcyBieSBEUCBvd25lci4NCg0KUmVnYXJkcywNCkphc29uLUpILkxpbg0KDQo+ID4g
-K307DQo+ID4gKw0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG10a19tbXN5c19kcml2ZXJfZGF0
-YSBtdDI3MDFfbW1zeXNfZHJpdmVyX2RhdGENCj4gPiA9IHsNCj4gPiAgICAgICAgIC5tYWluX3Bh
-dGggPSBtdDI3MDFfbXRrX2RkcF9tYWluLA0KPiA+ICAgICAgICAgLm1haW5fbGVuID0gQVJSQVlf
-U0laRShtdDI3MDFfbXRrX2RkcF9tYWluKSwNCj4gPiBAQCAtMTg2LDYgKzE5OSwxMSBAQCBzdGF0
-aWMgY29uc3Qgc3RydWN0IG10a19tbXN5c19kcml2ZXJfZGF0YQ0KPiA+IG10ODE4M19tbXN5c19k
-cml2ZXJfZGF0YSA9IHsNCj4gPiAgICAgICAgIC5leHRfbGVuID0gQVJSQVlfU0laRShtdDgxODNf
-bXRrX2RkcF9leHQpLA0KPiA+ICB9Ow0KPiA+IA0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG10
-a19tbXN5c19kcml2ZXJfZGF0YQ0KPiA+IG10ODE5NV92ZG9zeXMwX2RyaXZlcl9kYXRhID0gew0K
-PiA+ICsgICAgICAgLm1haW5fcGF0aCA9IG10ODE5NV9tdGtfZGRwX21haW4sDQo+ID4gKyAgICAg
-ICAubWFpbl9sZW4gPSBBUlJBWV9TSVpFKG10ODE5NV9tdGtfZGRwX21haW4pLA0KPiA+ICt9Ow0K
-PiA+ICsNCj4gPiAgc3RhdGljIGludCBtdGtfZHJtX2ttc19pbml0KHN0cnVjdCBkcm1fZGV2aWNl
-ICpkcm0pDQo+ID4gIHsNCj4gPiAgICAgICAgIHN0cnVjdCBtdGtfZHJtX3ByaXZhdGUgKnByaXZh
-dGUgPSBkcm0tPmRldl9wcml2YXRlOw0KPiA+IEBAIC00MTAsNiArNDI4LDggQEAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQNCj4gPiBtdGtfZGRwX2NvbXBfZHRfaWRzW10gPSB7DQo+
-ID4gICAgICAgICAgIC5kYXRhID0gKHZvaWQgKilNVEtfRElTUF9SRE1BIH0sDQo+ID4gICAgICAg
-ICB7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLXJkbWEiLA0KPiA+ICAgICAg
-ICAgICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfUkRNQSB9LA0KPiA+ICsgICAgICAgeyAuY29t
-cGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTUtZGlzcC1yZG1hIiwNCj4gPiArICAgICAgICAgLmRh
-dGEgPSAodm9pZCAqKU1US19ESVNQX1JETUEgfSwNCj4gPiAgICAgICAgIHsgLmNvbXBhdGlibGUg
-PSAibWVkaWF0ZWssbXQ4MTczLWRpc3Atd2RtYSIsDQo+ID4gICAgICAgICAgIC5kYXRhID0gKHZv
-aWQgKilNVEtfRElTUF9XRE1BIH0sDQo+ID4gICAgICAgICB7IC5jb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10ODE4My1kaXNwLWNjb3JyIiwNCj4gPiBAQCAtNDQ4LDYgKzQ2OCw4IEBAIHN0YXRpYyBj
-b25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkDQo+ID4gbXRrX2RkcF9jb21wX2R0X2lkc1tdID0gew0K
-PiA+ICAgICAgICAgICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfTVVURVggfSwNCj4gPiAgICAg
-ICAgIHsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWRpc3AtbXV0ZXgiLA0KPiA+ICAg
-ICAgICAgICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfTVVURVggfSwNCj4gPiArICAgICAgIHsg
-LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTk1LWRpc3AtbXV0ZXgiLA0KPiA+ICsgICAgICAg
-ICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfTVVURVggfSwNCj4gPiAgICAgICAgIHsgLmNvbXBh
-dGlibGUgPSAibWVkaWF0ZWssbXQyNzAxLWRpc3AtcHdtIiwNCj4gPiAgICAgICAgICAgLmRhdGEg
-PSAodm9pZCAqKU1US19ESVNQX0JMUyB9LA0KPiA+ICAgICAgICAgeyAuY29tcGF0aWJsZSA9ICJt
-ZWRpYXRlayxtdDgxNzMtZGlzcC1wd20iLA0KPiA+IEBAIC00NjgsNiArNDkwLDggQEAgc3RhdGlj
-IGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQNCj4gPiBtdGtfZHJtX29mX2lkc1tdID0gew0KPiA+
-ICAgICAgICAgICAuZGF0YSA9ICZtdDgxNzNfbW1zeXNfZHJpdmVyX2RhdGF9LA0KPiA+ICAgICAg
-ICAgeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtbW1zeXMiLA0KPiA+ICAgICAgICAg
-ICAuZGF0YSA9ICZtdDgxODNfbW1zeXNfZHJpdmVyX2RhdGF9LA0KPiA+ICsgICAgICAgey5jb21w
-YXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS12ZG9zeXMwIiwNCj4gPiArICAgICAgICAgLmRhdGEg
-PSAmbXQ4MTk1X3Zkb3N5czBfZHJpdmVyX2RhdGF9LA0KPiA+ICAgICAgICAgeyB9DQo+ID4gIH07
-DQo+ID4gIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIG10a19kcm1fb2ZfaWRzKTsNCj4gPiAtLQ0K
-PiA+IDIuMTguMA0KPiA+IA0KLS0gDQpKYXNvbi1KSCBMaW4gPGphc29uLWpoLmxpbkBtZWRpYXRl
-ay5jb20+DQo=
+On Sun, Jul 11, 2021 at 03:31:42PM -0700, Randy Dunlap wrote:
+> There are multiple (16) modules which use a module_init() function
+> with the name 'mod_init' and a module_exit() function with the name
+> 'mod_exit'. This can lead to confusion or ambiguity when reading
+> crashes/oops/bugs etc. and when reading an initcall_debug log.
+> 
+> Example 1: (System.map file)
+> 
+> ffffffff83446d10 t mod_init
+> ffffffff83446d18 t mod_init
+> ffffffff83446d20 t mod_init
+> ...
+> ffffffff83454665 t mod_init
+> ffffffff834548a4 t mod_init
+> ffffffff83454a53 t mod_init
+> ...
+> ffffffff8345bd42 t mod_init
+> ...
+> ffffffff8345c916 t mod_init
+> ffffffff8345c92a t mod_init
+> ffffffff8345c93e t mod_init
+> ffffffff8345c952 t mod_init
+> ffffffff8345c966 t mod_init
+> ...
+> ffffffff834672c9 t mod_init
+> 
+> Example 2: (boot log when using 'initcall_debug')
+> 
+> [    0.252157] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+> [    0.252180] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+> [    0.252202] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+> ...
+> [    0.892907] initcall mod_init+0x0/0x23f returned -19 after 104 usecs
+> [    0.913788] initcall mod_init+0x0/0x1af returned -19 after 9 usecs
+> [    0.934353] initcall mod_init+0x0/0x49 returned -19 after 0 usecs
+> ...
+> [    1.454870] initcall mod_init+0x0/0x66 returned 0 after 72 usecs
+> ...
+> [    1.455527] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+> [    1.455531] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+> [    1.455536] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+> [    1.455541] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+> [    1.455545] initcall mod_init+0x0/0x52 returned 0 after 0 usecs
+> ...
+> [    1.588162] initcall mod_init+0x0/0xef returned 0 after 45 usecs
+> 
+> 
+> v2: wireguard: changes per Jason
+>     arm/crypto/curve25519-glue: add Russell's Acked-by
+> 
+> Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Andres Salomon <dilinger@queued.net>
+> Cc: linux-geode@lists.infradead.org
+> Cc: Matt Mackall <mpm@selenic.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: Christian Gromm <christian.gromm@microchip.com>
+> Cc: Krzysztof Halasa <khc@pm.waw.pl>
+> Cc: netdev@vger.kernel.org
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Martin Schiller <ms@dev.tdt.de>
+> Cc: linux-x25@vger.kernel.org
+> Cc: wireguard@lists.zx2c4.com
+> 
+> [PATCH 1/6 v2] arm: crypto: rename 'mod_init' & 'mod_exit' functions to be module-specific
+> [PATCH 2/6 v2] hw_random: rename 'mod_init' & 'mod_exit' functions to be module-specific
+> [PATCH 3/6 v2] lib: crypto: rename 'mod_init' & 'mod_exit' functions to be module-specific
+> [PATCH 4/6 v2] MOST: cdev: rename 'mod_init' & 'mod_exit' functions to be module-specific
+> [PATCH 5/6 v2] net: hdlc: rename 'mod_init' & 'mod_exit' functions to be module-specific
+> [PATCH 6/6 v2] net: wireguard: rename 'mod_init' & 'mod_exit' functions to be module-specific
+> 
+>  arch/arm/crypto/curve25519-glue.c  |    8 ++++----
+>  drivers/char/hw_random/amd-rng.c   |    8 ++++----
+>  drivers/char/hw_random/geode-rng.c |    8 ++++----
+>  drivers/char/hw_random/intel-rng.c |    8 ++++----
+>  drivers/char/hw_random/via-rng.c   |    8 ++++----
+>  drivers/most/most_cdev.c           |    8 ++++----
+>  drivers/net/wan/hdlc_cisco.c       |    8 ++++----
+>  drivers/net/wan/hdlc_fr.c          |    8 ++++----
+>  drivers/net/wan/hdlc_ppp.c         |    8 ++++----
+>  drivers/net/wan/hdlc_raw.c         |    8 ++++----
+>  drivers/net/wan/hdlc_raw_eth.c     |    8 ++++----
+>  drivers/net/wan/hdlc_x25.c         |    8 ++++----
+>  drivers/net/wireguard/main.c       |    8 ++++----
+>  lib/crypto/blake2s.c               |    8 ++++----
+>  lib/crypto/chacha20poly1305.c      |    8 ++++----
+>  lib/crypto/curve25519.c            |    8 ++++----
+>  16 files changed, 64 insertions(+), 64 deletions(-)
 
+Patches 1-3 applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
