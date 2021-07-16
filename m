@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A793CB743
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44B33CB74B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 14:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhGPMU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 08:20:27 -0400
-Received: from mga12.intel.com ([192.55.52.136]:36606 "EHLO mga12.intel.com"
+        id S238257AbhGPMW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 08:22:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:38338 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232024AbhGPMU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 08:20:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="190401757"
-X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="190401757"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 05:17:30 -0700
-X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="431192521"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 05:17:29 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m4MmQ-00EDjF-Lx; Fri, 16 Jul 2021 15:17:22 +0300
-Date:   Fri, 16 Jul 2021 15:17:22 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     laurentiu.tudor@nxp.com
-Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jon@solid-run.com
-Subject: Re: [PATCH] software node: balance refcount for managed sw nodes
-Message-ID: <YPF40t5bhgTFM2wK@smile.fi.intel.com>
-References: <20210716101602.1891-1-laurentiu.tudor@nxp.com>
+        id S232024AbhGPMW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 08:22:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08358D6E;
+        Fri, 16 Jul 2021 05:19:31 -0700 (PDT)
+Received: from [10.57.36.240] (unknown [10.57.36.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF0533F774;
+        Fri, 16 Jul 2021 05:19:28 -0700 (PDT)
+Subject: Re: [PATCH v1 16/16] dma-mapping: Disallow .map_sg operations from
+ returning zero on error
+To:     Christoph Hellwig <hch@lst.de>,
+        Logan Gunthorpe <logang@deltatee.com>
+Cc:     linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org,
+        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Stephen Bates <sbates@raithlin.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+References: <20210715164544.6827-1-logang@deltatee.com>
+ <20210715164544.6827-17-logang@deltatee.com> <20210716063332.GD13345@lst.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <21b7f2f1-ccac-4567-6933-a258dcad7099@arm.com>
+Date:   Fri, 16 Jul 2021 13:19:23 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716101602.1891-1-laurentiu.tudor@nxp.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210716063332.GD13345@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 01:16:02PM +0300, laurentiu.tudor@nxp.com wrote:
-> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+On 2021-07-16 07:33, Christoph Hellwig wrote:
+> On Thu, Jul 15, 2021 at 10:45:44AM -0600, Logan Gunthorpe wrote:
+>> @@ -194,6 +194,8 @@ static int __dma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
+>>   	else
+>>   		ents = ops->map_sg(dev, sg, nents, dir, attrs);
+>>   
+>> +	WARN_ON_ONCE(ents == 0);
 > 
-> software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
-> software nodes, thus leading to underflow errors. Balance the refcount by
-> bumping it in the device_create_managed_software_node() function.
-> 
-> The error [1] was encountered after adding a .shutdown() op to our
-> fsl-mc-bus driver.
+> Turns this into a negative error code while we're at it, just to keep
+> the callers sane?
 
-Looking into the history of adding ->shutdown() to dwc3 driver (it got reverted
-later on), I can tell that probably something is wrong in the ->shutdown()
-method itself.
+Right, by this point returning the 0 would pass through 
+dma_map_sg_attrs() OK, but AFAICS dma_map_sgtable() would now get 
+confused and return success but with sgt->nents = 0. Coercing it to an 
+error code (which dma_map_sg_attrs() would then just change right back) 
+seems sensible for the sake of easy robustness.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Robin.
