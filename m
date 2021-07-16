@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4429B3CB887
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDB53CB885
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 16:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240423AbhGPOPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 10:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233212AbhGPOPB (ORCPT
+        id S240358AbhGPOOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 10:14:40 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59598 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233040AbhGPOOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 10:15:01 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83514C06175F;
-        Fri, 16 Jul 2021 07:12:05 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id j34so5918240wms.5;
-        Fri, 16 Jul 2021 07:12:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pHO/OuJ19tFgQlImaLECSeFWZFEdjnugOKUNYJ6qjas=;
-        b=Ihnytgiyf1ZDDOEAswttF30OscuVa4F4xg4QtRKFYmu9KjBtibGRiliedYD2zwtgg2
-         ILgYAA0PZOJVJLTHiMD/9M8qNeleqkhvQb68cn27Jatu1tCwxnH7MY1NT4YJMOOcnDuO
-         SuE1vpkAeriB4jHEtHoKo1rnoRUW0maTHdusSU7Q/+7HESyVnPOq5cP/PmD/UkJ/IpkK
-         gmrjlx6262qEfGa7v70XRtGEvNlvCg7YFi4QE/njHs06qnKs6yL0AKRyZSfdpxLrSJmB
-         Yo52bNZDBHASGeFgKOL9BRpyj1MSIxOnGyJT53IJLCSSI4vw5n4u023h7Unfd1I5vFje
-         9iMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pHO/OuJ19tFgQlImaLECSeFWZFEdjnugOKUNYJ6qjas=;
-        b=VjsexSdF20T6U8Sc7F9kjypKi4UdgE6lrGyO8l0IenoOHdAOA47ChiJHIvdwP1f/13
-         10oQE2PfVEF0mesQsOUpCy5VvYW/NbarseTBge4LdmAtCl4A35YnijY4cTyaV9MQc6aQ
-         WyUqm0SOseLA80V2YWLmE/bGXy/HA94D8ibYxcEGDhFRoiG8dDCPNMnH+CghRowmNsUj
-         4tYFf6Rq2LSo+IXDcVDsrlO7LTjzE5+03byNxv4p4mE0kwhCPNsn96LbNK7BQVsxZW61
-         R9RWOWa5uchLfPHRlaDchmo+J5n1Vwtsovosa0WbaVDDUM5DaLI4hQLaLBbQYhqhK3bS
-         fGuw==
-X-Gm-Message-State: AOAM533vyfz/61D6Iq8+rovNC7X7NFn7INQt4m4jyHqyTw1YBiXLbZ1T
-        1JPRu3ks3u8IPTnnxOTBCIE=
-X-Google-Smtp-Source: ABdhPJyXA3L2LOIAr5mUWHvp28X930mFBTDm4GUANPazykCet5ITaCY4PDUFPS4wyQYc2vXbFnYXSw==
-X-Received: by 2002:a7b:c4d9:: with SMTP id g25mr16350004wmk.108.1626444723940;
-        Fri, 16 Jul 2021 07:12:03 -0700 (PDT)
-Received: from localhost.localdomain ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.googlemail.com with ESMTPSA id v21sm11327787wml.5.2021.07.16.07.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 07:12:03 -0700 (PDT)
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] perf data: close all files in close_dir
-Date:   Fri, 16 Jul 2021 16:11:20 +0200
-Message-Id: <20210716141122.858082-1-rickyman7@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 16 Jul 2021 10:14:39 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 823B322B46;
+        Fri, 16 Jul 2021 14:11:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626444703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=qZY0smo+O+Xk7iA7lzz8gDAiURl0BK1XyowcQM/UtiM=;
+        b=pQrhWDGDTiKDN16Qi3oehirpj9LgoFxfnXwRY7PRrj0cvkB0j4RZuTGc4B0nvWgxlmSycv
+        Q4ebQ9v7hlyQ6ITOEoqZ03ykRsa8ObzGJCIPcq0ZUi74yp3u+GjQ3Qp7pR/LVjS/o0VBA9
+        5xGKgK4884qqjIXAjAkte0KWilAKr6c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626444703;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=qZY0smo+O+Xk7iA7lzz8gDAiURl0BK1XyowcQM/UtiM=;
+        b=+YIPDQXHu0MZ2KzJWvt8YxlCNRVlfw1WDOkQCBvPoXKzwmVPiEWfR6n43SDzdloLBBSRI8
+        YFNTP/JJuwHgcXDA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 2558C13AF6;
+        Fri, 16 Jul 2021 14:11:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 5GVRBp+T8WCMTwAAGKfGzw
+        (envelope-from <iivanov@suse.de>); Fri, 16 Jul 2021 14:11:43 +0000
+From:   "Ivan T. Ivanov" <iivanov@suse.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: phy: leds: Trigger leds only if PHY speed is known
+Date:   Fri, 16 Jul 2021 17:11:42 +0300
+Message-Id: <20210716141142.12710-1-iivanov@suse.de>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using perf report in directory mode, the first file is not closed on
-exit, causing a memory leak.
-The problem is caused by the iterating variable never reaching 0.
+This prevents "No phy led trigger registered for speed(-1)"
+alert message which is coused by phy_led_trigger_chage_speed()
+being called during attaching phy to net_device where phy device
+speed could be still unknown.
 
-Cc: Jiri Olsa <jolsa@kernel.org>
-Fixes: 145520631130bd64 ("perf data: Add perf_data__(create_dir|close_dir) functions")
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
 ---
-Hi Arnaldo, 
-
-I think this patch might have gone lost in the mailbox, submerged by
-other mails.
-I'll take advantage of the resend to add the missing 'Fixes:' tag.
-
-I didn't flag this as v2 since it contains no logical change, let me
-know if doing so would've been better.
-
-Changes from first send: 
- - collected ack from Namhyung
- - added Fixes: tag
-
-Original: https://lkml.kernel.org/lkml/20210621214220.167927-1-rickyman7@gmail.com/
-
-Thanks,
-Riccardo
----
- tools/perf/util/data.c | 2 +-
+ drivers/net/phy/phy_led_triggers.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-index 8fca4779ae6a8e90..70b91ce35178c5f9 100644
---- a/tools/perf/util/data.c
-+++ b/tools/perf/util/data.c
-@@ -20,7 +20,7 @@
+diff --git a/drivers/net/phy/phy_led_triggers.c b/drivers/net/phy/phy_led_triggers.c
+index f550576eb9da..4d6497c45ae4 100644
+--- a/drivers/net/phy/phy_led_triggers.c
++++ b/drivers/net/phy/phy_led_triggers.c
+@@ -33,7 +33,7 @@ void phy_led_trigger_change_speed(struct phy_device *phy)
+ 	if (!phy->link)
+ 		return phy_led_trigger_no_link(phy);
  
- static void close_dir(struct perf_data_file *files, int nr)
- {
--	while (--nr >= 1) {
-+	while (--nr >= 0) {
- 		close(files[nr].fd);
- 		zfree(&files[nr].path);
- 	}
+-	if (phy->speed == 0)
++	if (phy->speed == 0 || phy->speed == SPEED_UNKNOWN)
+ 		return;
+ 
+ 	plt = phy_speed_to_led_trigger(phy, phy->speed);
 -- 
-2.23.0
+2.32.0
 
