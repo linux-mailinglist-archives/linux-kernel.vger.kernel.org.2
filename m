@@ -2,152 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C993CBC46
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0D23CBC4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbhGPTVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbhGPTVb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:21:31 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290D2C06175F;
-        Fri, 16 Jul 2021 12:18:36 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id m3so9739986qkm.10;
-        Fri, 16 Jul 2021 12:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=1r09uS1rxtOnlc1hkLX7O1w4u27LN+vnvyQRmy2lAkc=;
-        b=WJP8YiJqBTwNfuiSM6T3BtIXFKUhUj8Mi3NRsfKuidYFfya1GF7d0BsGVl4vkeonzX
-         ek/1jYxqudLe5cotv6gbYJLH0UUeHr+ur0kedfUncWAjgdxSwUgO6z+wI26Kz6c/aGBF
-         0ZnufqlmCjGx7R8DJ2XEe8TW3nxiHYl0iFg8LXqaFqQe9uALNO+9Zmqfhiy/7vkpEqS4
-         iYWlexEYMRfLh/5elCXGXijLOkq6sod60XZJ1aHyYqyff3LSE/M9pxiHpr/pDWzoE/R3
-         4a5/yNjQN/+1QBDyJovqo5B6gQeDnTj0OmjQu2rPQIaI+Kq+z+hVDK3qilZOCkOgjkPX
-         cnmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=1r09uS1rxtOnlc1hkLX7O1w4u27LN+vnvyQRmy2lAkc=;
-        b=YGwzVkPm5Myw6Yfmf6d4R1BCr02oWhcsnTcYSMlykxY1Gwwedo7/MjkaUiGtNY9jl9
-         aJMuqgH3lyatewm2NJUK5nvSnM/SqhMJQXyOHb0GidvrdG3KZt56rrjiwqc2LzT+tT9Y
-         v53FRCpcOrIjhiaivHg/7A9acpe3s0exb2Q/Ne5I9/qXfC7kBgka2EVMKY38YrEc5yZ3
-         sAXoxfbrJsE0bnqrEo7gCZVrzX4OzFSpvQMVD/kiXAbgU9BV9WofnyNkfA5/wRJGxlCA
-         EIzNypwsjZm1N/qIHFU5lvzhWSW3jE03K9081rChg98UfzlhQad9SpFZ4LLX5tE3SDmm
-         Shkw==
-X-Gm-Message-State: AOAM531LKV9yujNG0pUklNL9JnmA9uyeAJvsJns73EZKfbg5B6fmwPLM
-        dgCixrHi+bmYLqT35krh/a4=
-X-Google-Smtp-Source: ABdhPJx/1NDB3gesF4KpNANLA/3X4H8zBQvNdKbJmelf+kkEW8hYLzBlcX2sBukqg12tf4Zre1AEzw==
-X-Received: by 2002:a37:5d46:: with SMTP id r67mr11492788qkb.12.1626463115264;
-        Fri, 16 Jul 2021 12:18:35 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id h68sm4342737qkf.126.2021.07.16.12.18.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 12:18:34 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 16 Jul 2021 15:18:33 -0400
-Message-Id: <CCUT1ZDDWS1J.3CGKX5J1MNFOX@shaak>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 05/10] iio: afe: rescale: add INT_PLUS_{MICRO,NANO}
- support
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>
-References: <20210715031215.1534938-1-liambeguin@gmail.com>
- <20210715031215.1534938-6-liambeguin@gmail.com>
- <8417f698-eef2-3311-625a-1ceb17d3e5b2@axentia.se>
-In-Reply-To: <8417f698-eef2-3311-625a-1ceb17d3e5b2@axentia.se>
+        id S232633AbhGPTVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:21:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229981AbhGPTVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 15:21:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED072613DF;
+        Fri, 16 Jul 2021 19:18:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626463122;
+        bh=ksQ8CHwF3GSe7R4KX9/y53TSbrUHgfoZSogamqkWQoU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=CcjCEjz28Yp6vSFhJ3xpa9+gQYBue+Ws2nhFAekmEqNEZy/8KyqZ6uTpuTp2FuGPZ
+         LlMXudjv3Th05hpe0ab+BcDB1p9MyYkWP6HNNDGr7mHmgM+V0o23YE7EO/775GrsYb
+         qv8gTsnMl5O/Np2ta2HhhaWNKUNmsQ5+4fetrmqIyzZfnuMTnN2hok7Nw7aylku0em
+         VPcarSNE0cy8zdqW5DKxM1n6BZktw/7qHxy90Rtjvc1nUO7Y1pqcwoFUEzfTZxnOMt
+         n//U5ylEgsvoIddIRiDT/mPy8y1K9Sg7nLuP+k+eygXUf+9Z1e2A8bPrp0NU/u7MCN
+         NrMO9RIxycB0Q==
+Subject: Re: [GIT PULL] fallthrough fixes for Clang for 5.14-rc2
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210714200523.GA10606@embeddedor>
+ <CAHk-=wjQeeUiv+P_4cZfCy-hY13yGqCGS-scKGhuJ-SAzz2doA@mail.gmail.com>
+ <YPHUJsiaOuqzW0Od@archlinux-ax161>
+ <54a99f59-0211-d9c2-4ab5-e74bbc72086b@embeddedor.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <7774f876-6a60-03e4-b273-34f508d06404@kernel.org>
+Date:   Fri, 16 Jul 2021 12:18:41 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <54a99f59-0211-d9c2-4ab5-e74bbc72086b@embeddedor.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Jul 15, 2021 at 5:48 AM EDT, Peter Rosin wrote:
->
-> On 2021-07-15 05:12, Liam Beguin wrote:
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > Some ADCs use IIO_VAL_INT_PLUS_{NANO,MICRO} scale types.
-> > Add support for these to allow using the iio-rescaler with them.
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  drivers/iio/afe/iio-rescale.c | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >=20
-> > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescal=
-e.c
-> > index 4c3cfd4d5181..a2b220b5ba86 100644
-> > --- a/drivers/iio/afe/iio-rescale.c
-> > +++ b/drivers/iio/afe/iio-rescale.c
-> > @@ -92,7 +92,22 @@ static int rescale_read_raw(struct iio_dev *indio_de=
-v,
-> >  			do_div(tmp, 1000000000LL);
-> >  			*val =3D tmp;
-> >  			return ret;
-> > +		case IIO_VAL_INT_PLUS_NANO:
-> > +			tmp =3D ((s64)*val * 1000000000LL + *val2) * rescale->numerator;
-> > +			do_div(tmp, rescale->denominator);
-> > +
-> > +			*val =3D div_s64(tmp, 1000000000LL);
-> > +			*val2 =3D tmp - *val * 1000000000LL;
-> > +			return ret;
->
-> This is too simplistic and prone to overflow. We need something like
-> this
-> (untested)
->
-> tmp =3D (s64)*val * rescale->numerator;
-> rem =3D do_div(tmp, rescale->denominator);
-> *val =3D tmp;
-> tmp =3D ((s64)rem * 1000000000LL + (s64)*val2) * rescale->numerator;
-> do_div(tmp, rescale->denominator);
-> *val2 =3D tmp;
->
-> Still not very safe with numerator and denominator both "large", but
-> much
-> better. And then we need normalizing the fraction part after the above,
-> of
-> course.
->
+On 7/16/2021 11:57 AM, Gustavo A. R. Silva wrote
+> On 7/16/21 13:47, Nathan Chancellor wrote:
+>> On Thu, Jul 15, 2021 at 06:04:15PM -0700, Linus Torvalds wrote:
+>>> On Wed, Jul 14, 2021 at 1:03 PM Gustavo A. R. Silva
+>>> <gustavoars@kernel.org> wrote:
+>>>>
+>>>>    git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/Wimplicit-fallthrough-clang-5.14-rc2
+>>>
+>>> Grr.
+>>>
+>>> I merged this, but when I actually tested it on my clang build, it
+>>> turns out that the clang "-Wimplicit-fallthrough" flag is unbelievable
+>>> garbage.
+>>>
+>>> I get
+>>>
+>>>     warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+>>>
+>>> and the stupid warning doesn't even say WHERE THE PROBLEM HAPPENS.
+>>>
+>>> No file name, no line numbers. Just this pointless garbage warning.
+>>>
+>>> Honestly, how does a compiler even do something that broken? Am I
+>>> supposed to use my sixth sense to guide me in finding the warning?
+>>>
+>>> I like the concept of the fallthrough warning, but it looks like the
+>>> clang implementation of it is so unbelievably broken that it's getting
+>>> disabled again.
+>>>
+>>> Yeah, I can
+>>>
+>>>   (a) build the kernel without any parallelism
+>>>
+>>>   (b) use ">&" to get both output and errors into the same file
+>>>
+>>>   (c) see that it says
+>>>
+>>>      CC      kernel/sched/core.o
+>>>    warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+>>>    1 warning generated.
+>>>
+>>> and now I see at least which _file_ it is that causes that warning.
+>>>
+>>> I can then use my incredible powers of deduction (it's almost like a
+>>> sixth sense, but helped by the fact that there's only one single
+>>> "fallthrough" statement in that file) to figure out that it's
+>>> triggered by this code:
+>>>
+>>>                  case cpuset:
+>>>                          if (IS_ENABLED(CONFIG_CPUSETS)) {
+>>>                                  cpuset_cpus_allowed_fallback(p);
+>>>                                  state = possible;
+>>>                                  break;
+>>>                          }
+>>>                          fallthrough;
+>>>                  case possible:
+>>>
+>>> and it all makes it clear that the clang warning is just incredibly
+>>> broken garbage not only in that lack of filename and line number, but
+>>> just in general.
+>>
+>> I commented this on the LLVM bug tracker but I will copy and paste it
+>> here for posterity:
+>>
+>> "It is actually the fact that
+>>
+>> case 1:
+>>      if (something || !IS_ENABLED(CONFIG_SOMETHING))
+>>          return blah;
+>>      fallthrough;
+>> case 2:
+>>
+>> looks like
+>>
+>> case 1:
+>>      return blah;
+>>      fallthrough;
+>> case 2:
+>>
+>> For example: https://godbolt.org/z/GdPeMbdo8
+>>
+>> int foo(int a) {
+>>      switch (a) {
+>>      case 0:
+>>          if (0)
+>>              return 0;
+>>          __attribute__((__fallthrough__)); // no warning
+>>      case 1:
+>>          if (1)
+>>              return 1;
+>>          __attribute__((__fallthrough__)); // warning
+> 
+> I think that if the "1" in this case, depends on the initial
+> configuration, as it is the case with CONFIG_CPUSETS, then
+> Clang should not cause a warning either. That's how GCC seems
+> to be treating these scenarios.
 
-Understood, I'll test that.
+Correct. It does not seem like GCC warns at all about the use of 
+fallthrough attributes at all, for example, against the same clang test 
+cases: https://godbolt.org/z/4MvW1TnYa
 
-> And, of course, I'm not sure what *val =3D=3D -1 and *val2 =3D=3D 5000000=
-00
-> really
-> means. Is that -1.5 or -0.5? The above may very well need adjusting for
-> negative values...
->
+This could be a conscious decision by the clang developers to deviate 
+from GCC, the only way we will know is from the bug report above. I can 
+recall this happening once before where it impacted the kernel and the 
+clang developers allowed me to add another flag that was default enabled 
+but could be disabled separately from the warning to get GCC 
+compatibility without sacrificing the additional warning coverage they 
+felt was worth deviating from GCC for:
 
-I would've assumed the correct answer is -1 + 500000000e-9 =3D -0.5
-but adding a test case to iio-test-format.c seems to return -1.5...
+https://github.com/ClangBuiltLinux/linux/issues/887
+https://reviews.llvm.org/D72231
+https://reviews.llvm.org/D75758
 
-I believe that's a bug but we can work around if for now by moving the
-integer part of *val2 to *val.
+Hence why I suggested -Wimplicit-fallthrough-unreachable.
 
-Liam
+>>      case 2:
+>>          return 3;
+>>      default:
+>>          return 4;
+>>      }
+>> }
+>>
+>> I am not really sure how to resolve that within checkFallThroughIntoBlock() or
+>> fillReachableBlocks() but given that this is something specific to the kernel,
+>> we could introduce -Wimplicit-fallthrough-unreachable then disable it within
+>> the kernel.
+>>
+>> The file location not showing up was fixed by commit 1b4800c26259
+>> ("[clang][parser] Set source ranges for GNU-style attributes"). The
+>> differential revision mentions this issue specifically."
+>>
+>> Hopefully that would be an adequate solution, otherwise someone with more clang
+>> internal will have to take a look.
 
-> Cheers,
-> Peter
->
-> > +		case IIO_VAL_INT_PLUS_MICRO:
-> > +			tmp =3D ((s64)*val * 1000000LL + *val2) * rescale->numerator;
-> > +			do_div(tmp, rescale->denominator);
-> > +
-> > +			*val =3D div_s64(tmp, 1000000LL);
-> > +			*val2 =3D tmp - *val * 1000000LL;
-> > +			return ret;
-> >  		default:
-> > +			dev_err(&indio_dev->dev, "unsupported type %d\n", ret);
-> >  			return -EOPNOTSUPP;
-> >  		}
-> >  	default:
-> >=20
-
+Cheers,
+Nathan
