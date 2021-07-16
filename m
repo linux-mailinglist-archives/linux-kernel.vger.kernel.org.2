@@ -2,73 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B95E3CB6FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A899D3CB6ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238411AbhGPLw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
+        id S234128AbhGPLv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 07:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237802AbhGPLwU (ORCPT
+        with ESMTP id S232923AbhGPLv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 07:52:20 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2475C061762;
-        Fri, 16 Jul 2021 04:49:22 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id go30so14712002ejc.8;
-        Fri, 16 Jul 2021 04:49:22 -0700 (PDT)
+        Fri, 16 Jul 2021 07:51:27 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7170C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:48:31 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id e1-20020a9d63c10000b02904b8b87ecc43so9578212otl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:48:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jtDoDFMaQlXUnkyWhZs2qGQGHMHOzDLb9YuVOuYuZEs=;
-        b=DVzrB6KgeBkfuRRt0CwVodOGYNLy+VguYEyM4TEizkoGAY14clsIu/PHBKeRDJAFqU
-         68le6G5K/5MvhOHlz+FZ9oNDSGB+YhWwsrs6eme5TSx4COQTbGyPDs3k3V/nCHSQOgyL
-         Yi5mcx/qcs1eRFU1g+yivig7A5BljxFsZHX0VYAfFCqKFMZz8rJC6XRZD3HfHliZHtSz
-         ASBCRLKLL4zo/s9pca5exrOrSU1WLmUvD3X7uulalTHG8UlCByIy/pg17i3Zo47IkgZ8
-         gCTtdu5ooB/cY3wEXjAKmtj/0gzjFdvSj24LJtZ3gvosPiUdzeQULPuyZj60XNjDgVVY
-         2OBA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SCAMfplbo3e2iODI9poYTm8lXc8h2ulhVqpOO6GIdUY=;
+        b=D8DMuB/NoSjS+60zzJxsOOILuPr+HxIwVzVsSJVfm6zUYFS1NK0YvlI3cpD03tai3C
+         GJ9bLATPo02qo5E8EMlSboDUJKP3a9sv6/pf4ZEmXdYHyqYE4X6+ykPYrw+cf9C+ZsZM
+         jy/vjWBZ+SwF6pCP9/yMw+4irHxJqozlpJZ+OAQ3CHtihG4wGuaWQk4a3h02e9VhfTPi
+         +PPAsxYybVsZirFe4ViK0/MrEuKSapzKgGNQIhj70Cun52P3cfjO8EJCZushXIiZI7sY
+         0LPINYDjuebVi0DTeW+nsHzfkaLeQrUyZfCZXYYOUXNifGO03KOWcSSlKWPOBWDNiPVl
+         VRpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jtDoDFMaQlXUnkyWhZs2qGQGHMHOzDLb9YuVOuYuZEs=;
-        b=h8MtpkbeIZPv6iHC5jvmzgGso7OVI0HcuGZnMO2nWxVvSEWhGauNN2zi60PWjhccVc
-         6JZYtM3o5x8l9T7dJR1/mEMLuADXfvdBXrAov9rZZ1p+ulrhW9e9mLV8POvcXyOCSqro
-         ojyBKL6U+lGBrMGG1LQYsV/N4ACu/92M7HOFUID6Ve4qLWipXQ2ykWVKOOLYTpnYwMS6
-         uih9Rrd28KoUyy9UEI8+U5oPuolfz/UbCucVpRvCrrbIfiuhFHyLAB2hPZ3K8UAzCScQ
-         u6QnSaBbLaIVTwz3x8LRBMsNDHEEIDjumS8q6KyqLCKVXVgZmRn18aLMtSNrt9teCWpI
-         TSig==
-X-Gm-Message-State: AOAM533pjtuaFPnvuB/JnuS+djj+MLvuOI6UW1G5p8gWuqT3c//GfMWe
-        7Uafkh4XqtuYpaYOjcYcRQc=
-X-Google-Smtp-Source: ABdhPJwkQAOs7i1BtT+HlQ5gKECel0UQ27xDJ6WwZWxjuEqUyt5iJQK766/ia4xuuZVq0TN1uAu/DQ==
-X-Received: by 2002:a17:906:f88a:: with SMTP id lg10mr11427871ejb.283.1626436161394;
-        Fri, 16 Jul 2021 04:49:21 -0700 (PDT)
-Received: from L340.local ([2a02:587:7e0f:8439:950c:3d11:5241:56e4])
-        by smtp.gmail.com with ESMTPSA id cr9sm3572588edb.17.2021.07.16.04.49.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 04:49:20 -0700 (PDT)
-From:   "Leonidas P. Papadakos" <papadakospan@gmail.com>
-To:     zajec5@gmail.com
-Cc:     almaz.alexandrovich@paragon-software.com, djwong@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-        willy@infradead.org
-Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
-Date:   Fri, 16 Jul 2021 14:46:35 +0300
-Message-Id: <20210716114635.14797-1-papadakospan@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
-References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SCAMfplbo3e2iODI9poYTm8lXc8h2ulhVqpOO6GIdUY=;
+        b=mrNpCOK87aWNe2X6bgXTE8BU7NTdWkiwWNvc5N4I2kawX/+CZl5WNmChngOnAIQei9
+         P/ik5doZdHE5xlFWTGBwNkkzkeIR/fyM7+DzKmV1Bdue5A5wz/rVkRWe8KCYpntJ5s6L
+         EqWKOoSNN9sZzKZnsU672pr3HI4xpslM0qIqqplewqnX+mP/ElzJZP0Mgl6Y93D21CWf
+         DBXUzBjgT+HY8J8w9CPSEImiMgrgLSTG9FbHn9k+7SCb7QfKsScyCREC+r1M8BAm42oL
+         IVRjvbQ8r0vD5g6WGOyXihpjMhNJfSMrsTipqVBL24ehPydP2zL0yk4C0FAow8B1OBv2
+         HI/w==
+X-Gm-Message-State: AOAM5328U08RTXogBdkZu64E8f19YMqaizSgLi1NNdwJzQk1A/JAdbjH
+        wpCIN/MJAvkBcHFW7Pw8lsAb5UvX6HTDwuXGVsqATQ==
+X-Google-Smtp-Source: ABdhPJy8/WDKQVEqrCCE9FT/HDZN1LH/+u7mcWBjJjvPWwuIfb0/MZ3akM15S+WvAyRkg2OWOZfb6zqLz9Sg7NCFv6c=
+X-Received: by 2002:a9d:d04:: with SMTP id 4mr8241154oti.251.1626436110870;
+ Fri, 16 Jul 2021 04:48:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
+ <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+ <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
+ <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <87a6mnzbx2.fsf_-_@disp2133> <87bl73xx6x.fsf_-_@disp2133>
+In-Reply-To: <87bl73xx6x.fsf_-_@disp2133>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 16 Jul 2021 13:48:18 +0200
+Message-ID: <CANpmjNOv4mf3PiEVvAUFAXkRaA3V37UBYoB2j2P7_qF868B6mA@mail.gmail.com>
+Subject: Re: [PATCH 6/6] signal: Remove the generic __ARCH_SI_TRAPNO support
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the subject of this merge, I have to stress that this ntfs driver (fs/ntfs3, which would probably replace fs/ntfs, right?) is an important feature, from a user perspective. It would mean having good support for a cross-platform filesystem suitable for hard drives. exFAT is welcome, but it's a simple filesystem for flash storage.
+On Thu, 15 Jul 2021 at 20:13, Eric W. Biederman <ebiederm@xmission.com> wrote:
+> Now that __ARCH_SI_TRAPNO is no longer set by any architecture remove
+> all of the code it enabled from the kernel.
+>
+> On alpha and sparc a more explict approach of using
+> send_sig_fault_trapno or force_sig_fault_trapno in the very limited
+> circumstances where si_trapno was set to a non-zero value.
+>
+> The generic support that is being removed always set si_trapno on all
+> fault signals.  With only SIGILL ILL_ILLTRAP on sparc and SIGFPE and
+> SIGTRAP TRAP_UNK on alpla providing si_trapno values asking all senders
+> of fault signals to provide an si_trapno value does not make sense.
+>
+> Making si_trapno an ordinary extension of the fault siginfo layout has
+> enabled the architecture generic implementation of SIGTRAP TRAP_PERF,
+> and enables other faulting signals to grow architecture generic
+> senders as well.
+>
+> v1: https://lkml.kernel.org/r/m18s4zs7nu.fsf_-_@fess.ebiederm.org
+> v2: https://lkml.kernel.org/r/20210505141101.11519-8-ebiederm@xmission.com
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Relevant xkcd: https://xkcd.com/619/
+Reviewed-by: Marco Elver <elver@google.com>
 
-I think Paragon has been very good about supporting this driver with 26 patchsets and in my mind it would be suitable for staging. I've seen the discussion slow down since May, and I've been excited to see this merged. This driver is already in a much better feature state than the old ntfs driver from 2001.
+> ---
+>  arch/mips/include/uapi/asm/siginfo.h |  2 --
+>  include/linux/sched/signal.h         |  8 --------
+>  kernel/signal.c                      | 14 --------------
+>  3 files changed, 24 deletions(-)
+>
+> diff --git a/arch/mips/include/uapi/asm/siginfo.h b/arch/mips/include/uapi/asm/siginfo.h
+> index c34c7eef0a1c..8cb8bd061a68 100644
+> --- a/arch/mips/include/uapi/asm/siginfo.h
+> +++ b/arch/mips/include/uapi/asm/siginfo.h
+> @@ -10,9 +10,7 @@
+>  #ifndef _UAPI_ASM_SIGINFO_H
+>  #define _UAPI_ASM_SIGINFO_H
+>
+> -
+>  #define __ARCH_SIGEV_PREAMBLE_SIZE (sizeof(long) + 2*sizeof(int))
+> -#undef __ARCH_SI_TRAPNO /* exception code needs to fill this ...  */
+>
+>  #define __ARCH_HAS_SWAPPED_SIGINFO
+>
+> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> index 6657184cef07..928e0025d358 100644
+> --- a/include/linux/sched/signal.h
+> +++ b/include/linux/sched/signal.h
+> @@ -298,11 +298,6 @@ static inline void kernel_signal_stop(void)
+>
+>         schedule();
+>  }
+> -#ifdef __ARCH_SI_TRAPNO
+> -# define ___ARCH_SI_TRAPNO(_a1) , _a1
+> -#else
+> -# define ___ARCH_SI_TRAPNO(_a1)
+> -#endif
+>  #ifdef __ia64__
+>  # define ___ARCH_SI_IA64(_a1, _a2, _a3) , _a1, _a2, _a3
+>  #else
+> @@ -310,14 +305,11 @@ static inline void kernel_signal_stop(void)
+>  #endif
+>
+>  int force_sig_fault_to_task(int sig, int code, void __user *addr
+> -       ___ARCH_SI_TRAPNO(int trapno)
+>         ___ARCH_SI_IA64(int imm, unsigned int flags, unsigned long isr)
+>         , struct task_struct *t);
+>  int force_sig_fault(int sig, int code, void __user *addr
+> -       ___ARCH_SI_TRAPNO(int trapno)
+>         ___ARCH_SI_IA64(int imm, unsigned int flags, unsigned long isr));
+>  int send_sig_fault(int sig, int code, void __user *addr
+> -       ___ARCH_SI_TRAPNO(int trapno)
+>         ___ARCH_SI_IA64(int imm, unsigned int flags, unsigned long isr)
+>         , struct task_struct *t);
+>
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index ae06a424aa72..2181423e562a 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1666,7 +1666,6 @@ void force_sigsegv(int sig)
+>  }
+>
+>  int force_sig_fault_to_task(int sig, int code, void __user *addr
+> -       ___ARCH_SI_TRAPNO(int trapno)
+>         ___ARCH_SI_IA64(int imm, unsigned int flags, unsigned long isr)
+>         , struct task_struct *t)
+>  {
+> @@ -1677,9 +1676,6 @@ int force_sig_fault_to_task(int sig, int code, void __user *addr
+>         info.si_errno = 0;
+>         info.si_code  = code;
+>         info.si_addr  = addr;
+> -#ifdef __ARCH_SI_TRAPNO
+> -       info.si_trapno = trapno;
+> -#endif
+>  #ifdef __ia64__
+>         info.si_imm = imm;
+>         info.si_flags = flags;
+> @@ -1689,16 +1685,13 @@ int force_sig_fault_to_task(int sig, int code, void __user *addr
+>  }
+>
+>  int force_sig_fault(int sig, int code, void __user *addr
+> -       ___ARCH_SI_TRAPNO(int trapno)
+>         ___ARCH_SI_IA64(int imm, unsigned int flags, unsigned long isr))
+>  {
+>         return force_sig_fault_to_task(sig, code, addr
+> -                                      ___ARCH_SI_TRAPNO(trapno)
+>                                        ___ARCH_SI_IA64(imm, flags, isr), current);
+>  }
+>
+>  int send_sig_fault(int sig, int code, void __user *addr
+> -       ___ARCH_SI_TRAPNO(int trapno)
+>         ___ARCH_SI_IA64(int imm, unsigned int flags, unsigned long isr)
+>         , struct task_struct *t)
+>  {
+> @@ -1709,9 +1702,6 @@ int send_sig_fault(int sig, int code, void __user *addr
+>         info.si_errno = 0;
+>         info.si_code  = code;
+>         info.si_addr  = addr;
+> -#ifdef __ARCH_SI_TRAPNO
+> -       info.si_trapno = trapno;
+> -#endif
+>  #ifdef __ia64__
+>         info.si_imm = imm;
+>         info.si_flags = flags;
+> @@ -3283,10 +3273,6 @@ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
+>                                  ((sig == SIGFPE) ||
+>                                   ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
+>                                 layout = SIL_FAULT_TRAPNO;
+> -#ifdef __ARCH_SI_TRAPNO
+> -                       else if (layout == SIL_FAULT)
+> -                               layout = SIL_FAULT_TRAPNO;
+> -#endif
+>                 }
+>                 else if (si_code <= NSIGPOLL)
+>                         layout = SIL_POLL;
+> --
+> 2.20.1
+>
