@@ -2,334 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00DC3CB704
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8D43CB708
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 13:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhGPLzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 07:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
+        id S234603AbhGPL40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 07:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhGPLzC (ORCPT
+        with ESMTP id S232262AbhGPL4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 07:55:02 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9B0C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:52:08 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id o3-20020a17090a6783b0290173ce472b8aso8755137pjj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:52:08 -0700 (PDT)
+        Fri, 16 Jul 2021 07:56:25 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523C5C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:53:28 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id c17so14688043ejk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 04:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VDefuX9cEDK75TFnzNU2Hd/lg27JjRAaKGcjKhdtToQ=;
-        b=G8+jOyiQA6T5N2G5cGgtQoX2h1p2088vU8BOsYoKbY0583FxUtVULh4W0tMkROxCwZ
-         fOhNE6uqw6TgG4gijWyGhanc/z+CFrU3U76Hgjue+ZaZiFvhvklaLoRu+TRmtr3dsh1K
-         PxTyi+xNzGqi657O8fHCKsIcR0Cwimd6N/BFyKIeMNYoAhq8kldX3kn+zNM6skInuK9I
-         aOhgnT+VaiA12gGtHTiqaOYML/kHp+G96CGIILr99Ozo6t6uun5TbjdNX6Eqb01RC6Rw
-         Pf6F9dks38BiQnAJ9Urr4zm4jzNX4/EQLSMCkJjAmdWKWHyTrip2yhiI3zKTCZpgK/Hc
-         DYjw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=x31rx+sTedCLPZCYpFXXREs5WOIbW2tGnQ12o5YNa/8=;
+        b=zuTV6A5T3Pk4weqNtZJelZPVVKQg5mfnOtDJtHHrKSoebvuIeyNZupB8rnLBaYZuPG
+         P0RUaYGT47850VgfarnwzgobwB+a96AD+EU0yj5r4+lhDApEtjW6nPwk1pH7vn8C50nV
+         cnRvO6Ko3yi+Kl0iDLELmW6FBfYXE8SV+PBj4S6DtkolLM1xhza3PGt4DFb698tey2wD
+         Mmz0zXtAdRTPmlxlfU0ko6y3aWxKGNI4CpWXbFH/g+ocyvhe9t6OjuhY6/vJjztI7629
+         q6tGivwh4I2nyMZXrLGgzRV+SFxhJSa+jXbvYK6VcVB7rkDPNS439dcnSCPEgReMHFWd
+         RWVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VDefuX9cEDK75TFnzNU2Hd/lg27JjRAaKGcjKhdtToQ=;
-        b=RmbNaMGxhKQOh70yNiOjt/RdDbd433i/9q08nS93bTx3FILM3x94S7uw6SWF2oznnp
-         d/MBMSH9TzItFDv7krF6ZJM03pJiWR3cUdQKCOSr97Rs4dFVGgH+fH/j1knopY3coHEf
-         FuaL9BFbUXcahfCRq4IxsJE06ofcV4rpuHMTvekitTshCElYdWQ3GAUZZfOdBaxW6XZw
-         Sj7zqWasXBcqPW6WEHNDiC3LcrPUtexGiLKrCirqAsPF7Ym9aruQhsk8jK3ACwo/ZKLk
-         eujdjGW6k040frWeSZBADOxHLNOndGVfChHK6dxUXZlV0Cu2R2rqliPBJdTn3+wNsnpS
-         1SSQ==
-X-Gm-Message-State: AOAM532DmZsKkJnXOR2GGy2KPom6AToAWrwPmEgglYwzwMitH4ONnHNC
-        l9HIS2dL4N/ebR1vw5+K6TRe
-X-Google-Smtp-Source: ABdhPJyLc1gWCSQNnkCwYQ8I20Q6a+lTagOVlymlFNPd1JvDmUBgDgYGZbZDtJNvfiP0+IpFKYCm1Q==
-X-Received: by 2002:a17:90b:4ac9:: with SMTP id mh9mr15652509pjb.226.1626436327474;
-        Fri, 16 Jul 2021 04:52:07 -0700 (PDT)
-Received: from workstation ([120.138.12.214])
-        by smtp.gmail.com with ESMTPSA id y16sm10202593pfe.70.2021.07.16.04.52.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Jul 2021 04:52:06 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 17:22:03 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH] bus: mhi: core: Replace DMA allocation wrappers with
- original APIs
-Message-ID: <20210716115203.GI3323@workstation>
-References: <1624392428-9328-1-git-send-email-bbhatt@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=x31rx+sTedCLPZCYpFXXREs5WOIbW2tGnQ12o5YNa/8=;
+        b=eWfOvqgCCyXnbLrUpM8wLhe8oaQUV8Ta4QyWoUyAtr1MDTZvxTwLacpuJKkLixF5gT
+         ffk5Pi4s4VhTtUBcFDA7KO83aPkcgqwdeYgfX0M+HKLHpXLkmOP5nO/EC4g8F+6tEZQ2
+         NNweY7wKET7lWNishdqzSJCLpDWLZYuNI9BN8B2vVIpW39RzjFg4Bd/GY9K/DnXzpnhX
+         FnUmWAVR98iSg1E60/kDH0t7um+3Rg2mJxjkCiA5DS9pmFYglv5EeDumsv4P0/y7OSbg
+         6IuORZLw+TGTY9K7rtTRkY3lTxsrYi0552iFIojP2OR6D5G0Ln6En59C7wO7ZJQz9Y1k
+         mGeQ==
+X-Gm-Message-State: AOAM533C/nfFDkyGGF7PLexaB5Ns+B3RS+C7eeO5sr/uX8Q/lw+f994f
+        Nt93nXQxGici0fj4KrNyRMGleDpaauEdtXPs8H+UbQ==
+X-Google-Smtp-Source: ABdhPJyOC8XbnTIbBnAjQilx7mtJX7w19oKYnT2RFlTFL+DFJsWykVTcVj6Fme0pOPkSPy8T2cwzrzZgdVSI0uADqE0=
+X-Received: by 2002:a17:907:76b8:: with SMTP id jw24mr11004060ejc.375.1626436406679;
+ Fri, 16 Jul 2021 04:53:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624392428-9328-1-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210715182448.393443551@linuxfoundation.org>
+In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 16 Jul 2021 17:23:15 +0530
+Message-ID: <CA+G9fYtcXVt5V_56Br6AJaHUm6fL9xEd4j5aBNeLrwMaQsJ+Wg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/122] 5.4.133-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 01:07:08PM -0700, Bhaumik Bhatt wrote:
-> There is nothing special done within the mhi_alloc_coherent() and
-> the mhi_free_coherent() wrapper functions. They only directly
-> call the equivalent DMA allocation functions. Replace them with
-> the original function calls such that the implementation is clear
-> and direct.
+On Fri, 16 Jul 2021 at 00:12, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.133 release.
+> There are 122 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.133-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-There you go :) I was tempted to do this for a while...
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+## Build
+* kernel: 5.4.133-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: 7f5fd6e106edc9ee7ca2a508fd7fa81e074102e5
+* git describe: v5.4.132-123-g7f5fd6e106ed
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+32-123-g7f5fd6e106ed
 
-Thanks,
-Mani
+## No regressions (compared to v5.4.132)
 
-> ---
->  drivers/bus/mhi/core/boot.c     | 17 +++++++++--------
->  drivers/bus/mhi/core/init.c     | 32 ++++++++++++++++----------------
->  drivers/bus/mhi/core/internal.h | 20 --------------------
->  drivers/bus/mhi/core/main.c     |  6 +++---
->  4 files changed, 28 insertions(+), 47 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-> index 8100cf5..0a97262 100644
-> --- a/drivers/bus/mhi/core/boot.c
-> +++ b/drivers/bus/mhi/core/boot.c
-> @@ -302,8 +302,8 @@ void mhi_free_bhie_table(struct mhi_controller *mhi_cntrl,
->  	struct mhi_buf *mhi_buf = image_info->mhi_buf;
->  
->  	for (i = 0; i < image_info->entries; i++, mhi_buf++)
-> -		mhi_free_coherent(mhi_cntrl, mhi_buf->len, mhi_buf->buf,
-> -				  mhi_buf->dma_addr);
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, mhi_buf->len,
-> +				  mhi_buf->buf, mhi_buf->dma_addr);
->  
->  	kfree(image_info->mhi_buf);
->  	kfree(image_info);
-> @@ -339,8 +339,8 @@ int mhi_alloc_bhie_table(struct mhi_controller *mhi_cntrl,
->  			vec_size = sizeof(struct bhi_vec_entry) * i;
->  
->  		mhi_buf->len = vec_size;
-> -		mhi_buf->buf = mhi_alloc_coherent(mhi_cntrl, vec_size,
-> -						  &mhi_buf->dma_addr,
-> +		mhi_buf->buf = dma_alloc_coherent(mhi_cntrl->cntrl_dev,
-> +						  vec_size, &mhi_buf->dma_addr,
->  						  GFP_KERNEL);
->  		if (!mhi_buf->buf)
->  			goto error_alloc_segment;
-> @@ -354,8 +354,8 @@ int mhi_alloc_bhie_table(struct mhi_controller *mhi_cntrl,
->  
->  error_alloc_segment:
->  	for (--i, --mhi_buf; i >= 0; i--, mhi_buf--)
-> -		mhi_free_coherent(mhi_cntrl, mhi_buf->len, mhi_buf->buf,
-> -				  mhi_buf->dma_addr);
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, mhi_buf->len,
-> +				  mhi_buf->buf, mhi_buf->dma_addr);
->  
->  error_alloc_mhi_buf:
->  	kfree(img_info);
-> @@ -442,7 +442,8 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->  	if (size > firmware->size)
->  		size = firmware->size;
->  
-> -	buf = mhi_alloc_coherent(mhi_cntrl, size, &dma_addr, GFP_KERNEL);
-> +	buf = dma_alloc_coherent(mhi_cntrl->cntrl_dev, size, &dma_addr,
-> +				 GFP_KERNEL);
->  	if (!buf) {
->  		release_firmware(firmware);
->  		goto error_fw_load;
-> @@ -451,7 +452,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->  	/* Download image using BHI */
->  	memcpy(buf, firmware->data, size);
->  	ret = mhi_fw_load_bhi(mhi_cntrl, dma_addr, size);
-> -	mhi_free_coherent(mhi_cntrl, size, buf, dma_addr);
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, size, buf, dma_addr);
->  
->  	/* Error or in EDL mode, we're done */
->  	if (ret) {
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 4446760..c7ba715 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -129,7 +129,7 @@ static int mhi_alloc_aligned_ring(struct mhi_controller *mhi_cntrl,
->  				  u64 len)
->  {
->  	ring->alloc_size = len + (len - 1);
-> -	ring->pre_aligned = mhi_alloc_coherent(mhi_cntrl, ring->alloc_size,
-> +	ring->pre_aligned = dma_alloc_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  					       &ring->dma_handle, GFP_KERNEL);
->  	if (!ring->pre_aligned)
->  		return -ENOMEM;
-> @@ -221,13 +221,13 @@ void mhi_deinit_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  	mhi_cmd = mhi_cntrl->mhi_cmd;
->  	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++) {
->  		ring = &mhi_cmd->ring;
-> -		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  				  ring->pre_aligned, ring->dma_handle);
->  		ring->base = NULL;
->  		ring->iommu_base = 0;
->  	}
->  
-> -	mhi_free_coherent(mhi_cntrl,
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev,
->  			  sizeof(*mhi_ctxt->cmd_ctxt) * NR_OF_CMD_RINGS,
->  			  mhi_ctxt->cmd_ctxt, mhi_ctxt->cmd_ctxt_addr);
->  
-> @@ -237,17 +237,17 @@ void mhi_deinit_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  			continue;
->  
->  		ring = &mhi_event->ring;
-> -		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  				  ring->pre_aligned, ring->dma_handle);
->  		ring->base = NULL;
->  		ring->iommu_base = 0;
->  	}
->  
-> -	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->er_ctxt) *
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, sizeof(*mhi_ctxt->er_ctxt) *
->  			  mhi_cntrl->total_ev_rings, mhi_ctxt->er_ctxt,
->  			  mhi_ctxt->er_ctxt_addr);
->  
-> -	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->chan_ctxt) *
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, sizeof(*mhi_ctxt->chan_ctxt) *
->  			  mhi_cntrl->max_chan, mhi_ctxt->chan_ctxt,
->  			  mhi_ctxt->chan_ctxt_addr);
->  
-> @@ -275,7 +275,7 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  		return -ENOMEM;
->  
->  	/* Setup channel ctxt */
-> -	mhi_ctxt->chan_ctxt = mhi_alloc_coherent(mhi_cntrl,
-> +	mhi_ctxt->chan_ctxt = dma_alloc_coherent(mhi_cntrl->cntrl_dev,
->  						 sizeof(*mhi_ctxt->chan_ctxt) *
->  						 mhi_cntrl->max_chan,
->  						 &mhi_ctxt->chan_ctxt_addr,
-> @@ -307,7 +307,7 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  	}
->  
->  	/* Setup event context */
-> -	mhi_ctxt->er_ctxt = mhi_alloc_coherent(mhi_cntrl,
-> +	mhi_ctxt->er_ctxt = dma_alloc_coherent(mhi_cntrl->cntrl_dev,
->  					       sizeof(*mhi_ctxt->er_ctxt) *
->  					       mhi_cntrl->total_ev_rings,
->  					       &mhi_ctxt->er_ctxt_addr,
-> @@ -354,7 +354,7 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  
->  	/* Setup cmd context */
->  	ret = -ENOMEM;
-> -	mhi_ctxt->cmd_ctxt = mhi_alloc_coherent(mhi_cntrl,
-> +	mhi_ctxt->cmd_ctxt = dma_alloc_coherent(mhi_cntrl->cntrl_dev,
->  						sizeof(*mhi_ctxt->cmd_ctxt) *
->  						NR_OF_CMD_RINGS,
->  						&mhi_ctxt->cmd_ctxt_addr,
-> @@ -389,10 +389,10 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  	for (--i, --mhi_cmd; i >= 0; i--, mhi_cmd--) {
->  		struct mhi_ring *ring = &mhi_cmd->ring;
->  
-> -		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  				  ring->pre_aligned, ring->dma_handle);
->  	}
-> -	mhi_free_coherent(mhi_cntrl,
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev,
->  			  sizeof(*mhi_ctxt->cmd_ctxt) * NR_OF_CMD_RINGS,
->  			  mhi_ctxt->cmd_ctxt, mhi_ctxt->cmd_ctxt_addr);
->  	i = mhi_cntrl->total_ev_rings;
-> @@ -405,15 +405,15 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
->  		if (mhi_event->offload_ev)
->  			continue;
->  
-> -		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, ring->alloc_size,
->  				  ring->pre_aligned, ring->dma_handle);
->  	}
-> -	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->er_ctxt) *
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, sizeof(*mhi_ctxt->er_ctxt) *
->  			  mhi_cntrl->total_ev_rings, mhi_ctxt->er_ctxt,
->  			  mhi_ctxt->er_ctxt_addr);
->  
->  error_alloc_er_ctxt:
-> -	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->chan_ctxt) *
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, sizeof(*mhi_ctxt->chan_ctxt) *
->  			  mhi_cntrl->max_chan, mhi_ctxt->chan_ctxt,
->  			  mhi_ctxt->chan_ctxt_addr);
->  
-> @@ -567,7 +567,7 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
->  	if (!chan_ctxt->rbase) /* Already uninitialized */
->  		return;
->  
-> -	mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, tre_ring->alloc_size,
->  			  tre_ring->pre_aligned, tre_ring->dma_handle);
->  	vfree(buf_ring->base);
->  
-> @@ -610,7 +610,7 @@ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
->  	buf_ring->base = vzalloc(buf_ring->len);
->  
->  	if (!buf_ring->base) {
-> -		mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
-> +		dma_free_coherent(mhi_cntrl->cntrl_dev, tre_ring->alloc_size,
->  				  tre_ring->pre_aligned, tre_ring->dma_handle);
->  		return -ENOMEM;
->  	}
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 672052f..b5594fa 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -690,26 +690,6 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
->  void mhi_reset_chan(struct mhi_controller *mhi_cntrl,
->  		    struct mhi_chan *mhi_chan);
->  
-> -/* Memory allocation methods */
-> -static inline void *mhi_alloc_coherent(struct mhi_controller *mhi_cntrl,
-> -				       size_t size,
-> -				       dma_addr_t *dma_handle,
-> -				       gfp_t gfp)
-> -{
-> -	void *buf = dma_alloc_coherent(mhi_cntrl->cntrl_dev, size, dma_handle,
-> -				       gfp);
-> -
-> -	return buf;
-> -}
-> -
-> -static inline void mhi_free_coherent(struct mhi_controller *mhi_cntrl,
-> -				     size_t size,
-> -				     void *vaddr,
-> -				     dma_addr_t dma_handle)
-> -{
-> -	dma_free_coherent(mhi_cntrl->cntrl_dev, size, vaddr, dma_handle);
-> -}
-> -
->  /* Event processing methods */
->  void mhi_ctrl_ev_task(unsigned long data);
->  void mhi_ev_task(unsigned long data);
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 02c8c09..409c68bc 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -193,7 +193,7 @@ int mhi_map_single_no_bb(struct mhi_controller *mhi_cntrl,
->  int mhi_map_single_use_bb(struct mhi_controller *mhi_cntrl,
->  			  struct mhi_buf_info *buf_info)
->  {
-> -	void *buf = mhi_alloc_coherent(mhi_cntrl, buf_info->len,
-> +	void *buf = dma_alloc_coherent(mhi_cntrl->cntrl_dev, buf_info->len,
->  				       &buf_info->p_addr, GFP_ATOMIC);
->  
->  	if (!buf)
-> @@ -220,8 +220,8 @@ void mhi_unmap_single_use_bb(struct mhi_controller *mhi_cntrl,
->  	if (buf_info->dir == DMA_FROM_DEVICE)
->  		memcpy(buf_info->v_addr, buf_info->bb_addr, buf_info->len);
->  
-> -	mhi_free_coherent(mhi_cntrl, buf_info->len, buf_info->bb_addr,
-> -			  buf_info->p_addr);
-> +	dma_free_coherent(mhi_cntrl->cntrl_dev, buf_info->len,
-> +			  buf_info->bb_addr, buf_info->p_addr);
->  }
->  
->  static int get_nr_avail_ring_elements(struct mhi_controller *mhi_cntrl,
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+## No fixes (compared to v5.4.132)
+
+## Test result summary
+ total: 73331, pass: 59092, fail: 1149, skip: 11288, xfail: 1802,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 15 total, 15 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
