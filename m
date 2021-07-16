@@ -2,85 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18D23CBA78
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AF93CBA79
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 18:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhGPQVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 12:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhGPQVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:21:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FB04613CC;
-        Fri, 16 Jul 2021 16:18:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626452335;
-        bh=WAk9IVAreIzP0iiUk08WueaWZP/KWWYlRc+hny6iQ9o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=i50ltLmOJvjao+LSejGpAfKJLiyIoC8QSamxCcuGE3u3oMMREfgRK2iON57lJdgIx
-         6ab5mhnhOsdGHUeH4YlyJUq/vaCXiuE7AGrV+30y21kUFUXdrTrX9sZYlcgt5Vwv9C
-         UJqhnCu8AZF1p4l5vn4HZeQFcrVKDISvUOj+JN1IAWBNxHTaGQEgJkzIor+J/lVcVl
-         s/FQvufZTIpzMuA9Y/WCbFIqv/ZtE2KlbbpMoPoP4evTL8aJwUyvD72cmZOveX1A5V
-         U1qu/xZXv8DSMDiFDKPAD7c+FS2nQ2P/Pyrfv7O4lSf9ziRPTl69NDR1SGkS2mZFd4
-         AE+mmVWPQeWCw==
-Received: by mail-ot1-f41.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so10380319otq.11;
-        Fri, 16 Jul 2021 09:18:55 -0700 (PDT)
-X-Gm-Message-State: AOAM533JyF2bBrEKBEMwZwk5cNZ9V6PtjJ6NUmzO6f7m4/lm/zKzHbCK
-        q0Iwi5fPdvhOTJOLL0di14yDWa8E/4zHTuKl/Gk=
-X-Google-Smtp-Source: ABdhPJxrrOStaOTD1Lcs6eKNHNHVBRCd3/a0llUST1/uknmaLxfC3pzmTGMjOUPYV2cx6qNGAMxTpDy4Fx2RsEgb69o=
-X-Received: by 2002:a05:6830:3494:: with SMTP id c20mr2354717otu.108.1626452334532;
- Fri, 16 Jul 2021 09:18:54 -0700 (PDT)
+        id S229908AbhGPQWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 12:22:11 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:54243 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhGPQWD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 12:22:03 -0400
+Received: by mail-il1-f198.google.com with SMTP id j6-20020a926e060000b02901f2f7ba704aso5623068ilc.20
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 09:19:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=v+hIPKfq8b1qkJLuVkwXm4/bmuwjWY8bFn96h7dTncU=;
+        b=h/UZlvz3NzdtKPsvgGqef9YxGPf2QrBKpA7t+BfqbPiIUXaF1sqvWEjfFE1ONQ/eho
+         XdHntuduT78tnfuaIlvALT9s2ibDSbAzr3GLx5IHTMQQ1qKXuV43Hj9X/ZlXUFEklFm/
+         0cn+x5lSqRJaRvfsROlUtbvep0y5bZh2enf8IdC6pRoKK/HtzU6Dl5H9GkApKwuOqx+a
+         lbqm6oRX1YFvMJ2gs5FOmpvbA2CFvQyacjT4ZXSWS7WW9nRb/hA56I7GIczLwN/c0eqZ
+         E133pT3Ceaf+v4qGE06E/bOEBvXLpYcbcsJBLgZPE5EBWgGMVgq/TriB3HeVcTMI7svT
+         pwWQ==
+X-Gm-Message-State: AOAM531UA9wiat6VFaCpWY04FICIPmZkvVP8CLpW/rBenEykMuyViZQL
+        hoYuPoIprJ0HsTeyXWSdtH0CkpkM95mNRHoLC4K+ggp3suO2
+X-Google-Smtp-Source: ABdhPJylTEqDxWuIsTvrtSmKuLkDyG2tSWKvCuHjV/dWGy3InHB0iO0BWwgPa5j0Q7PlNyd9PlBPrMcsSSfvcJw1tVZehhAjKAUg
 MIME-Version: 1.0
-References: <20210702191044.988401-1-atish.patra@wdc.com>
-In-Reply-To: <20210702191044.988401-1-atish.patra@wdc.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 16 Jul 2021 18:18:43 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFVj8RFxy5Ujio7Ah6=HFOhNtHVWiCiPKzzQUF4ahY=xw@mail.gmail.com>
-Message-ID: <CAMj1kXFVj8RFxy5Ujio7Ah6=HFOhNtHVWiCiPKzzQUF4ahY=xw@mail.gmail.com>
-Subject: Re: [PATCH] efi/libstub: Fix the efi_load_initrd function description
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
+X-Received: by 2002:a92:dc4f:: with SMTP id x15mr7064318ilq.64.1626452348840;
+ Fri, 16 Jul 2021 09:19:08 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 09:19:08 -0700
+In-Reply-To: <20210716165526.20e3c1a9@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007f348105c73ff207@google.com>
+Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in profile_init
+From:   syzbot <syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, paskripkin@gmail.com,
+        penguin-kernel@I-love.SAKURA.ne.jp, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Jul 2021 at 21:10, Atish Patra <atish.patra@wdc.com> wrote:
->
-> The soft_limit and hard_limit in the function efi_load_initrd describes
-> the preferred and max address of initrd loading location respectively.
-> However, the description wrongly describes it as the size of the
-> allocated memory.
->
-> Fix the function description.
->
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+Hello,
 
-Now queued up, thanks.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> ---
->  drivers/firmware/efi/libstub/efi-stub-helper.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
-> index aa8da0a49829..ae87dded989d 100644
-> --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-> +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-> @@ -630,8 +630,8 @@ efi_status_t efi_load_initrd_cmdline(efi_loaded_image_t *image,
->   * @image:     EFI loaded image protocol
->   * @load_addr: pointer to loaded initrd
->   * @load_size: size of loaded initrd
-> - * @soft_limit:        preferred size of allocated memory for loading the initrd
-> - * @hard_limit:        minimum size of allocated memory
-> + * @soft_limit:        preferred address for loading the initrd
-> + * @hard_limit:        upper limit address for loading the initrd
->   *
->   * Return:     status code
->   */
-> --
-> 2.31.1
->
+Reported-and-tested-by: syzbot+e68c89a9510c159d9684@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         d936eb23 Revert "Makefile: Enable -Wimplicit-fallthrou..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7d53336580099d6
+dashboard link: https://syzkaller.appspot.com/bug?extid=e68c89a9510c159d9684
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16750fe2300000
+
+Note: testing is done by a robot and is best-effort only.
