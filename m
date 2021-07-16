@@ -2,201 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8213CBDE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3503CBDE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbhGPUl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41732 "EHLO
+        id S232524AbhGPUoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbhGPUlu (ORCPT
+        with ESMTP id S230256AbhGPUoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:41:50 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AA6C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:38:54 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id t143so12360068oie.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:38:54 -0700 (PDT)
+        Fri, 16 Jul 2021 16:44:22 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8761CC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:41:27 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id f93-20020a9d03e60000b02904b1f1d7c5f4so11175714otf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:41:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IJgvUkVXgZbTX3qLxhuoaY6GiCRRdHUowdy27+g8id0=;
-        b=WYlwc/BFJ9kWsGN75fG2dA74wm3XlU6b8G8Wke/1foL7NJ5EyVJEqe39lpOgHP8P9h
-         RhXzV3hwX/yfMgJkuEif5V3WxEPKBp8UkH2DIIHf64x42zX3F91QJZSuw0dMLkHxNk8f
-         NeHkKB3soZxjiLtu5+urRBSBO3LSTVSnmHkWObBN8uUiU/1Su7iHdZ7B4F5PI88terZp
-         of0xJsit2oozInoxrEkauDi8A1vMlJHm/gh6gDpTxCLku/Bnudhqj11Czu9MXRPw+3zi
-         3rNWRP/wLY/EuD1lNWUHP+AkDNg2FLF7yRllunuJv9t3FIgBAO5xcjWouqumUWQy2FkT
-         6/Yg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=GWg7KvZek5iHgGcgjBYGZpfEqTpA91OnuHVW1dgUmyk=;
+        b=P/in7RLZw4u1H7lAfXtHYVJrDzt51HXZnpV1rOttAGC0coD1XzQ4LeCMYBgI0t4SG0
+         SQQQSvA6C+txH0PnhRI92ODNW0GTD33hoUUz2bx1/wuAILbzAeRhpzqzXuWsICT8+RXN
+         5bk0M8rCUOBGVRHk/4uUg0aZe4/qcO/YCIEw+EwXy/gbvphsOvdWzmDnmXJiplI8K7Ow
+         lqFfkke2+D2Yzxot4SU8boUYq8MUuVOssCqopUme2t7PA04p6J9SWh6tG6bu/an5pIKz
+         Y2iE9SOYsfLmMP2fTwmA36kKYmmhEzwteC57dX8v+q1sf19N6KUZknnArVtXUApCcicO
+         y9TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IJgvUkVXgZbTX3qLxhuoaY6GiCRRdHUowdy27+g8id0=;
-        b=MQt2igK1k+zGHfNHjeHsVS0u8WPINE/5UYX2odU8ZCSOfT5JpwWRPiqbalFSRNr8qV
-         7ZvUgkn7J0KAQxkId/uXQ/Re3oawDZdjSecZbzqUQCq3xymkjtSAoSRMlCxY/Vwli0Fg
-         b6COxoS9yeelvMa5mQDtflWhhiKD4odO+E85ewC3pkEjFdBcQpNKiTN6caFozwePt3NY
-         bqofaCJSww/jJ8oM+UZmsX/Ot7bXYrT/GwzfGlRZ1rJvSoK6RuJNLT5Drj9thUG2A8r1
-         +78u2+TaYW33EOSHwI6toi3skCVkpD3bLL1RpGwnhNttk4GQv5tcPDQkFVOIUL9m9Gld
-         bsWA==
-X-Gm-Message-State: AOAM530CRFFuQXmCDx/mQq6SAH3nb5jXVDUaIqkJ2lhMabblWPodhF5d
-        xxje4LUM44OzNgq2MAt1zJ5A3w==
-X-Google-Smtp-Source: ABdhPJwAhm8v+4PMreO7KgFbhMG+0YSb1Zrl9zrkPOF6//abvy2P65VcBbjinuhdtUJVrZhCTANbig==
-X-Received: by 2002:aca:1802:: with SMTP id h2mr13665437oih.146.1626467933729;
-        Fri, 16 Jul 2021 13:38:53 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q9sm2087904otk.18.2021.07.16.13.38.52
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=GWg7KvZek5iHgGcgjBYGZpfEqTpA91OnuHVW1dgUmyk=;
+        b=YryelCWKjHQ/VZ9uO8rofG2m/k6u/fUsQpiZNmMY6KLMNRX3UN9lwnC91DYh502HAS
+         /tAhfpNK1CvD0F1cl+9MorkrEKYlF/EkfUSACshlMi9zR+AX1ICc4nL3xvHIZn2HDokr
+         r38QPgEeba4igt+ooAlughgWvtezc4Q6jLpsjKL5+ZiFOEN6n4b9CbnxApxk2ki54Rcc
+         8ISKmCzgmkvbMD236Rqb2KAb0XxDXcd07faA5bgPATP6MIZT413fgrkE8NsfBOMPpkcz
+         kIpYv3tXiF3IugCaWyjg0bWKuG1DWn9cXKpQ+LkEAnBWt0VJYDHeUce6rOCy8hrPcCeU
+         GKTQ==
+X-Gm-Message-State: AOAM530Wg8ukFYjc1A2CIAMg0hBBta7BK0EkJX+jo1RqeBaazIffNWAi
+        Sv6ggLbFsTR13yuuEIk6b3ovvQ==
+X-Google-Smtp-Source: ABdhPJzvQl8z42rkBo8kYI1UMWGkKto8Tj4Cd39VLbpPOLEaInWWqKTLgz4YDxrQf4GRp2lkr+7i6Q==
+X-Received: by 2002:a9d:61d9:: with SMTP id h25mr5619563otk.81.1626468086638;
+        Fri, 16 Jul 2021 13:41:26 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id v8sm2154907oth.69.2021.07.16.13.41.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 13:38:53 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 15:38:50 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bhelgaas@google.com, robh+dt@kernel.org, swboyd@chromium.org,
-        lorenzo.pieralisi@arm.com, svarbanov@mm-sol.com,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org
-Subject: Re: [PATCH v4 4/4] PCIe: qcom: Add support to control pipe clk src
-Message-ID: <YPHuWudai/FO6SMN@yoga>
-References: <1626443927-32028-5-git-send-email-pmaliset@codeaurora.org>
- <20210716150646.GA2098485@bjorn-Precision-5520>
+        Fri, 16 Jul 2021 13:41:26 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 13:41:24 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+cc:     akpm@linux-foundation.org, tyhicks@linux.microsoft.com,
+        pasha.tatashin@soleen.com, willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: KSM: fix data types
+In-Reply-To: <20210716055800.GA255851@asus>
+Message-ID: <e139c727-9f5a-3b8-9136-162ce5c1de40@google.com>
+References: <20210716055800.GA255851@asus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716150646.GA2098485@bjorn-Precision-5520>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Jul 10:06 CDT 2021, Bjorn Helgaas wrote:
+On Fri, 16 Jul 2021, Zhansaya Bagdauletkyzy wrote:
 
-> Run this:
-> 
->   $ git log --oneline drivers/pci/controller/dwc/pcie-qcom.c
-> 
-> and make your subject match the style and structure (in particular,
-> s/PCIe/PCI/).  In this case, maybe something like this?
-> 
->   PCI: qcom: Switch sc7280 gcc_pcie_1_pipe_clk_src after PHY init
-> 
-> On Fri, Jul 16, 2021 at 07:28:47PM +0530, Prasad Malisetty wrote:
-> > This is a new requirement for sc7280 SoC.
-> > To enable gdsc gcc_pcie_1_pipe_clk_src should be TCXO.
-> > after PHY initialization gcc_pcie_1_pipe_clk_src needs
-> > to switch from TCXO to gcc_pcie_1_pipe_clk.
-> 
-> This says what *needs* to happen, but it doesn't actually say what
-> this patch *does*.  I think it's something like:
-> 
->   On the sc7280 SoC, the clock source for pcie_1_pipe must be the TCXO
->   while gdsc is enabled.  But after the PHY is initialized, the clock
->   source must be switched to gcc_pcie_1_pipe_clk.
-> 
->   On sc7280, switch gcc_pcie_1_pipe_clk_src from TCXO to
->   gcc_pcie_1_pipe_clk after the PHY has been initialized.
-> 
-> Nits: Rewrap to fill 75 columns or so.  Add blank lines between
-> paragraphs.  Start sentences with capital letter.
-> 
-> > Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > index 8a7a300..9e0e4ab 100644
-> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
-> >  	struct regulator_bulk_data supplies[2];
-> >  	struct reset_control *pci_reset;
-> >  	struct clk *pipe_clk;
-> > +	struct clk *gcc_pcie_1_pipe_clk_src;
-> > +	struct clk *phy_pipe_clk;
-> > +	struct clk *ref_clk_src;
-> >  };
-> >  
-> >  union qcom_pcie_resources {
-> > @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
-> >  	if (ret < 0)
-> >  		return ret;
-> >  
-> > +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-> > +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-> > +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-> > +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
-> > +
-> > +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-> > +		if (IS_ERR(res->phy_pipe_clk))
-> > +			return PTR_ERR(res->phy_pipe_clk);
-> > +
-> > +		res->ref_clk_src = devm_clk_get(dev, "ref");
-> > +		if (IS_ERR(res->ref_clk_src))
-> > +			return PTR_ERR(res->ref_clk_src);
-> 
-> Not clear why ref_clk_src is here, since it's not used anywhere.  If
-> it's not necessary here, drop it and add it in a future patch that
-> uses it.
-> 
-> > +	}
-> > +
-> >  	res->pipe_clk = devm_clk_get(dev, "pipe");
-> >  	return PTR_ERR_OR_ZERO(res->pipe_clk);
-> >  }
-> > @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
-> >  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
-> >  {
-> >  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-> > +	struct dw_pcie *pci = pcie->pci;
-> > +	struct device *dev = pci->dev;
-> > +
-> > +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
-> 
-> Using of_device_is_compatible() follows existing style in the driver,
-> which is good.  But I'm not sure that's good style in general because
-> it's a little repetitious and wasteful.
-> 
+> Change data types of ksm_run and ksm_stable_node_chains_prune_millisecs
+> as there were a few discrepancies between the types and actual values
+> that were stored:
+> 1) ksm_run is declared as unsigned long but in run_store(), it is
+> converted to unsigned int. Change its type to unsigned int.
 
-Following the style is good, but up until the recent sm8250 addition it
-was just a hack to deal with legacy platforms that we don't know the
-exact details about.
+NAK to that part.
 
-But, all platforms I know of has the pipe_clk from the PHY fed into the
-pipe_clk_src mux in the gcc block and then ends up in the PCIe
-controller. As such, I suspect that the pipe_clk handling should be moved
-to the common code path of the driver and there's definitely no harm in
-making sure that the pipe_clk_src mux is explicitly configured on
-existing platforms (at least all 2.7.0 based ones).
+Compiling with CONFIG_MEMORY_HOTREMOVE=y would show you why.
 
-> qcom_pcie_probe() already calls of_device_get_match_data(), which does
-> basically the same thing as of_device_is_compatible(), so I think we
-> could take better advantage of that by augmenting struct qcom_pcie_ops
-> with these device-specific details.
+Search for where ksm_run is used: in one place
+	wait_on_bit(&ksm_run, ilog2(KSM_RUN_OFFLINE), TASK_UNINTERRUPTIBLE);
+and wait_on_bit() operates on an unsigned long *word.
+
+Before that wait while offlining, yes, ksm_run used to be an unsigned int.
+
+But there is nothing to be fixed by changing it to an unsigned int now.
+Save four bytes?  Better look elsewhere if you want to save four bytes.
+
+> 2) ksm_stable_node_chains_prune_millisecs is declared as int, but in
+> stable__node_chains_prune_millisecs_store(), it can store values up to
+> UINT_MAX. Change its type to unsigned int.
+
+Ack to that part.
+
 > 
+> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+> ---
+> v1 -> v2:
+> - merge two patches into one
 
-I agree.
+Sorry, that didn't work out so well.
 
-Regards,
-Bjorn
+Hugh
 
-> Some drivers that use this strategy:
 > 
->   drivers/pci/controller/cadence/pci-j721e.c
->   drivers/pci/controller/dwc/pci-imx6.c
->   drivers/pci/controller/dwc/pci-layerscape.c
->   drivers/pci/controller/dwc/pci-layerscape-ep.c
->   drivers/pci/controller/dwc/pcie-tegra194.c
->   drivers/pci/controller/pci-ftpci100.c
->   drivers/pci/controller/pcie-brcmstb.c
->   drivers/pci/controller/pcie-mediatek.c
+>  mm/ksm.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> > +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
-> >  
-> >  	return clk_prepare_enable(res->pipe_clk);
-> >  }
-> > -- 
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> > 
+> diff --git a/mm/ksm.c b/mm/ksm.c
+> index 3fa9bc8a67cf..2e4bd7662e52 100644
+> --- a/mm/ksm.c
+> +++ b/mm/ksm.c
+> @@ -259,7 +259,7 @@ static unsigned long ksm_stable_node_chains;
+>  static unsigned long ksm_stable_node_dups;
+>  
+>  /* Delay in pruning stale stable_node_dups in the stable_node_chains */
+> -static int ksm_stable_node_chains_prune_millisecs = 2000;
+> +static unsigned int ksm_stable_node_chains_prune_millisecs = 2000;
+>  
+>  /* Maximum number of page slots sharing a stable node */
+>  static int ksm_max_page_sharing = 256;
+> @@ -289,7 +289,7 @@ static int ksm_nr_node_ids = 1;
+>  #define KSM_RUN_MERGE	1
+>  #define KSM_RUN_UNMERGE	2
+>  #define KSM_RUN_OFFLINE	4
+> -static unsigned long ksm_run = KSM_RUN_STOP;
+> +static unsigned int ksm_run = KSM_RUN_STOP;
+>  static void wait_while_offlining(void);
+>  
+>  static DECLARE_WAIT_QUEUE_HEAD(ksm_thread_wait);
+> @@ -2874,7 +2874,7 @@ KSM_ATTR(pages_to_scan);
+>  static ssize_t run_show(struct kobject *kobj, struct kobj_attribute *attr,
+>  			char *buf)
+>  {
+> -	return sysfs_emit(buf, "%lu\n", ksm_run);
+> +	return sysfs_emit(buf, "%u\n", ksm_run);
+>  }
+>  
+>  static ssize_t run_store(struct kobject *kobj, struct kobj_attribute *attr,
+> @@ -3105,11 +3105,11 @@ stable_node_chains_prune_millisecs_store(struct kobject *kobj,
+>  					 struct kobj_attribute *attr,
+>  					 const char *buf, size_t count)
+>  {
+> -	unsigned long msecs;
+> +	unsigned int msecs;
+>  	int err;
+>  
+> -	err = kstrtoul(buf, 10, &msecs);
+> -	if (err || msecs > UINT_MAX)
+> +	err = kstrtouint(buf, 10, &msecs);
+> +	if (err)
+>  		return -EINVAL;
+>  
+>  	ksm_stable_node_chains_prune_millisecs = msecs;
+> -- 
+> 2.25.1
