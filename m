@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B62C3CB21C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671C93CB21D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 07:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhGPF4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 01:56:13 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40554 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhGPF4L (ORCPT
+        id S234479AbhGPF4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 01:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231458AbhGPF43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 01:56:11 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        Fri, 16 Jul 2021 01:56:29 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C62C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Jul 2021 22:53:34 -0700 (PDT)
+Received: from spock.localnet (unknown [151.237.229.131])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B733B1FE72;
-        Fri, 16 Jul 2021 05:53:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626414796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 2AF0BB37293;
+        Fri, 16 Jul 2021 07:53:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1626414811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/1L17zMr3wcNoCrkI7xQiSL9TJhP/u3QrOzu6reOkYI=;
-        b=IgQhLU4DcGIrIGK9fRLTm4ZrJxe7QVD77Q0sA7GJ6urwvybP5juQRgAQtNIvKO7roHGMOv
-        1t98kao/T5Hjk0pJtnlGN/+XvS/5WlebaRbS4hJramgU9axgFbnChXUDTYEe5taclwj5nW
-        x7Idu7Jeq0IjolxH3vIlTc+nRgVSPV0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626414796;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/1L17zMr3wcNoCrkI7xQiSL9TJhP/u3QrOzu6reOkYI=;
-        b=GhxXOHbmrdmzRs/DZqm1v/xTfHSI2dPxJ/QxAwKQCKm7s3tp+NMWii0ssGBuNHzcWfae3Q
-        KKgNe0ora8AV4VDQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 85A3F13357;
-        Fri, 16 Jul 2021 05:53:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id FCKqH8we8WBNOAAAGKfGzw
-        (envelope-from <hare@suse.de>); Fri, 16 Jul 2021 05:53:16 +0000
-Subject: Re: [RFC 5/6] nvme: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk
-Cc:     bvanassche@acm.org, ming.lei@redhat.com, hch@infradead.org,
-        jack@suse.cz, osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210715202341.2016612-1-mcgrof@kernel.org>
- <20210715202341.2016612-6-mcgrof@kernel.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <e9212eb9-269c-47d1-60d8-f5282ad5c441@suse.de>
-Date:   Fri, 16 Jul 2021 07:53:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=tld40cpEkGCNsmVNqC9ejnCY9hMvScB5LN5M3UpSOec=;
+        b=NcYFQaS95iwX4RFWyB1v+WBBTnfwwBGtEj4uv6HRuluQnEjny4JbKehbhlsBUnLiB//Zkf
+        vHU1h2JsFU4FZ3iXqR+I4fxnIrnWLqJ9IGoBjG7dZDrhM4hBaLWCEehKb4F/VKcjlvIIae
+        r9kwMgMzBzTGcpqhOWraBJBan88gTz4=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: New warning in nvme_setup_discard
+Date:   Fri, 16 Jul 2021 07:53:28 +0200
+Message-ID: <81322754.HEIg0oD171@natalenko.name>
+In-Reply-To: <YPDr8ucoDCE4NBSe@T590>
+References: <4729812.CpyZKHjjVO@natalenko.name> <YPDr8ucoDCE4NBSe@T590>
 MIME-Version: 1.0
-In-Reply-To: <20210715202341.2016612-6-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 10:23 PM, Luis Chamberlain wrote:
-> The GENHD_FL_DISK_ADDED flag is what we really want, as the
-> flag GENHD_FL_UP could be set on a semi-initialized device.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->   drivers/nvme/host/core.c      | 4 ++--
->   drivers/nvme/host/multipath.c | 2 +-
->   2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index 11779be42186..3848353fba11 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -1819,7 +1819,7 @@ static void nvme_update_disk_info(struct gendisk *disk,
->   static inline bool nvme_first_scan(struct gendisk *disk)
->   {
->   	/* nvme_alloc_ns() scans the disk prior to adding it */
-> -	return !(disk->flags & GENHD_FL_UP);
-> +	return !(disk->flags & GENHD_FL_DISK_ADDED);
->   }
->   
->   static void nvme_set_chunk_sectors(struct nvme_ns *ns, struct nvme_id_ns *id)
-> @@ -3823,7 +3823,7 @@ static void nvme_ns_remove(struct nvme_ns *ns)
->   	nvme_mpath_clear_current_path(ns);
->   	synchronize_srcu(&ns->head->srcu); /* wait for concurrent submissions */
->   
-> -	if (ns->disk->flags & GENHD_FL_UP) {
-> +	if (ns->disk->flags & GENHD_FL_DISK_ADDED) {
->   		if (!nvme_ns_head_multipath(ns->head))
->   			nvme_cdev_del(&ns->cdev, &ns->cdev_device);
->   		del_gendisk(ns->disk);
-> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-> index 0ea5298469c3..8048678969ba 100644
-> --- a/drivers/nvme/host/multipath.c
-> +++ b/drivers/nvme/host/multipath.c
-> @@ -764,7 +764,7 @@ void nvme_mpath_remove_disk(struct nvme_ns_head *head)
->   {
->   	if (!head->disk)
->   		return;
-> -	if (head->disk->flags & GENHD_FL_UP) {
-> +	if (head->disk->flags & GENHD_FL_DISK_ADDED) {
->   		nvme_cdev_del(&head->cdev, &head->cdev_device);
->   		del_gendisk(head->disk);
->   	}
-> 
-Same here: please use the wrapper.
+Hello.
 
-Cheers,
+On p=C3=A1tek 16. =C4=8Dervence 2021 4:16:18 CEST Ming Lei wrote:
+> >  850     if (WARN_ON_ONCE(n !=3D segments)) {
+>=20
+> What is 'n' and 'segments'?
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+So, I used this change to check that:
+
+```
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 66973bb56305..0a64f2f77daf 100644
+=2D-- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -847,7 +847,8 @@ static blk_status_t nvme_setup_discard(struct nvme_ns *=
+ns,=20
+struct request *req,
+ 		n++;
+ 	}
+=20
+=2D	if (WARN_ON_ONCE(n !=3D segments)) {
++	if (unlikely(n !=3D segments)) {
++		pr_warn("nvme_setup_discard: n !=3D segments (%u !=3D %u)\n", n,=20
+segments);
+ 		if (virt_to_page(range) =3D=3D ns->ctrl->discard_page)
+ 			clear_bit_unlock(0, &ns->ctrl->discard_page_busy);
+ 		else
+
+```
+
+and the result is:
+
+```
+nvme_setup_discard: n !=3D segments (3 !=3D 2)
+nvme_setup_discard: n !=3D segments (12 !=3D 11)
+```
+
+(those are from different boots)
+
+Thanks.
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
+
