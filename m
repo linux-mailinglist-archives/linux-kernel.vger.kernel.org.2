@@ -2,240 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466243CB944
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6E43CB946
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 17:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240553AbhGPPFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 11:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237590AbhGPPFm (ORCPT
+        id S240600AbhGPPGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 11:06:06 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:44633 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240573AbhGPPGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:05:42 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16467C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 08:02:46 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id f30so16544406lfj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 08:02:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=r+ugyUfc2QgnZo/+O3yrIrvQ0wPbe047sgVVtbVvgzA=;
-        b=yAh1f+2j2njOIaCfZcH7GMspqWkXGUa7iajPhVPwtkSpiEzXI1fL/k1QfxEMZk4Ncv
-         7NRGJF5T2dLyU1Z0MPpaRJpGNgoMsVKmxBrYIlWRki9cNMRL2MH1iVPoOp1mAUCo7DSZ
-         6ToSjtpcYcdstH2tuSfLhR+8mc090wtLQ3uvLpe3idA8z9yfBWLuWMjTxbR9qFXVdOUd
-         q+sKHEjnBl80NdLH6rqAVDnJGluWdhvgeRk1su02tQLWmi5feqg18LVy4SH7aNUncNEI
-         GKrp9fGMrjQzJNIb/ueRA8wxFSmdHYzrIb021kEQoHP+L9IfI2p+VQ5zQgOBhJhppJ5D
-         gdxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=r+ugyUfc2QgnZo/+O3yrIrvQ0wPbe047sgVVtbVvgzA=;
-        b=suJ8k86wqsJGeMnJERXin+VukImNWRmK+36BmHnxP8xThTiJlB4v4vwDHPRoTqpu4y
-         LQtaET7gRYjyx7QJv+Va/trrol6E8KWQcZYyAjpibn0P3P+W6StCn9v/6uSuyYCjxMa9
-         tTU2cdwjzg9Kv8oJ06FuPcmWxosGN34WIzr3/6f9oeqfZYy4pkOLOPmQbU3cs4mVUU0j
-         nQyOhLWf4DTzGx6XCKxJ0gJYOPs2WLD2k1eWYpmNrk4abY4cZjYy79Ps6JDFY5U+dA8U
-         OYkEa4MZSUrazmUlfWMwO3tHKEC+nF8Vx6PDuQiZ+7q3GAI7/19AEMbmTe/9MMPmeFm3
-         vUzQ==
-X-Gm-Message-State: AOAM531VP489VUEpbNRcowXddyvvzixNcD324znzTZWjUceFicrurVPI
-        8SxliDOHIJ8mvFx5AK8Fn2BJNQ==
-X-Google-Smtp-Source: ABdhPJz+/pc6/Y1brI3USB1i8gOJPKmDIxr6mV4OVHd7n/Ie7iKK3W+i603HFoG/g7AfFhPpyVQNFg==
-X-Received: by 2002:ac2:5684:: with SMTP id 4mr7995184lfr.386.1626447763155;
-        Fri, 16 Jul 2021 08:02:43 -0700 (PDT)
-Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
-        by smtp.gmail.com with ESMTPSA id y8sm667140lfe.226.2021.07.16.08.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 08:02:42 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 17:02:41 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Dennis Rachui <drachui@de.adit-jv.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
-Message-ID: <YPGfkcdnwqgozVEu@oden.dyn.berto.se>
-References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
- <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
- <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
- <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
- <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
- <YPAUoQ8KmmAE3fWD@oden.dyn.berto.se>
- <YPAeirL/qtmNYx99@pendragon.ideasonboard.com>
- <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
+        Fri, 16 Jul 2021 11:06:03 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Ufzr3Mb_1626447785;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ufzr3Mb_1626447785)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 16 Jul 2021 23:03:06 +0800
+Date:   Fri, 16 Jul 2021 23:03:04 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chao Yu <chao@kernel.org>, Liu Bo <bo.liu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>
+Subject: Re: [PATCH 1/2] iomap: support tail packing inline read
+Message-ID: <YPGfqLcSiH3/z2RT@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, Chao Yu <chao@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>
+References: <20210716050724.225041-1-hsiangkao@linux.alibaba.com>
+ <20210716050724.225041-2-hsiangkao@linux.alibaba.com>
+ <YPGDZYT9OxdgNYf2@casper.infradead.org>
+ <YPGQB3zT4Wp4Q38X@B-P7TQMD6M-0146.local>
+ <YPGbNCdCNXIpNdqd@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
+In-Reply-To: <YPGbNCdCNXIpNdqd@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dennis,
-
-On 2021-07-16 16:09:21 +0200, Dennis Rachui wrote:
-> Hi Laurent,
-> 
-> > On Thu, Jul 15, 2021 at 12:57:37PM +0200, Niklas Söderlund wrote:
-> > > On 2021-07-14 21:40:51 +0300, Laurent Pinchart wrote:
-> > > > On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
-> > > > > On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
-> > > > > > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
-> > > > > > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
-> > > > > > > > Verify that streaming is not active before setting the pad format.
-> > > > > > > > 
-> > > > > > > > According to the VIDIOC documentation [1] changes to the 
-> > > > > > > > active format of a media pad via the VIDIOC_SUBDEV_S_FMT 
-> > > > > > > > ioctl are applied to the underlying hardware.
-> > > > > > > > In rcar-csi2 a format change only applies to hardware, when 
-> > > > > > > > the pipeline is started. While the device is not in use, it 
-> > > > > > > > is therefore okay to update the format.
-> > > > > > > > 
-> > > > > > > > However, when the pipeline is active, this leads to a format 
-> > > > > > > > mismatch between driver and device.
-> > > > > > > > Other applications can query the format with 
-> > > > > > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported a 
-> > > > > > > > format that does not fit the current stream.
-> > > > > > > > 
-> > > > > > > > This commit prevents format update while streaming is active 
-> > > > > > > > and returns -EBUSY to user space, as suggested by [1].
-> > > > > > > > 
-> > > > > > > > [1] 
-> > > > > > > > Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rs
-> > > > > > > > t
-> > > > > > > 
-> > > > > > > I like that this is addressed, but I wonder is this not 
-> > > > > > > something that should be fixed in the V4L2 core and not in drivers?
-> > > > > > 
-> > > > > > Some drivers may support format changes during streaming (that's 
-> > > > > > allowed by the V4L2 API, I'm not sure if it's used anywhere 
-> > > > > > though). While I'd favour not duplicating the same logic in 
-> > > > > > different (and differently
-> > > > > > buggy) ways in drivers, I'm not sure how this could be 
-> > > > > > implemented in a sane way in the V4L2 core in its current state.
-> > > > > 
-> > > > > I understand it's possible from some devices to support to format 
-> > > > > changes during streaming, but as you point out it's the exception 
-> > > > > and not the rule, if used at all.
-> > > > > 
-> > > > > So my point is if we start to enforce this in drivers we are 
-> > > > > headed down a road where this will be messier to clean up. Would 
-> > > > > it not make more sens to default the V4L2 core to disallow format 
-> > > > > changes while streaming and add a new flag to V4L2_SUBDEV_CAP_ to 
-> > > > > signal that the subdevice supports format changes while streaming?
-> > > > > 
-> > > > > We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a 
-> > > > > subdevice only supports read-only operations so I think it would 
-> > > > > not be too hard to move this functionality into the core?
-> > > > 
-> > > > Yes, that's something we could try. The subdev core will then need 
-> > > > to track the streaming state, which may require wrapping the 
-> > > > .s_stream() call. Locking should then also likely be handled by the 
-> > > > core. Probably nothing impossible, but quite a bit of work. Any 
-> > > > volunteer ? :-)
+On Fri, Jul 16, 2021 at 03:44:04PM +0100, Matthew Wilcox wrote:
+> On Fri, Jul 16, 2021 at 09:56:23PM +0800, Gao Xiang wrote:
+> > Hi Matthew,
+> > 
+> > On Fri, Jul 16, 2021 at 02:02:29PM +0100, Matthew Wilcox wrote:
+> > > On Fri, Jul 16, 2021 at 01:07:23PM +0800, Gao Xiang wrote:
+> > > > This tries to add tail packing inline read to iomap. Different from
+> > > > the previous approach, it only marks the block range uptodate in the
+> > > > page it covers.
 > > > 
-> > > We already track the stream count in struct media_entity and it's 
-> > > incremented/decremented under the media device lock by
-> > > media_pipeline_start() and media_pipeline_stop(). So I don't think 
-> > > it's such a hard feature to add.
+> > > Why?  This path is called under two circumstances: readahead and readpage.
+> > > In both cases, we're trying to bring the entire page uptodate.  The inline
+> > > extent is always the tail of the file, so we may as well zero the part of
+> > > the page past the end of file and mark the entire page uptodate instead
+> > > and leaving the end of the page !uptodate.
 > > > 
-> > > The large task IMHO is to figure out if we have any subdevice in tree 
-> > > that allows format changes while streaming and that would need to set 
-> > > this new V4L2_SUBDEV_CAP_ flag.
-> >
-> > Many subdevs allow format changes during streaming. The question is whether any of them do so knowingly, or if they're all buggy :-) I'd be surprised if there > were more than a couple of drivers that actually support this correctly.
+> > > I see the case where, eg, we have the first 2048 bytes of the file
+> > > out-of-inode and then 20 bytes in the inode.  So we'll create the iop
+> > > for the head of the file, but then we may as well finish the entire
+> > > PAGE_SIZE chunk as part of this iteration rather than update 2048-3071
+> > > as being uptodate and leave the 3072-4095 block for a future iteration.
+> > 
+> > Thanks for your comments. Hmm... If I understand the words above correctly,
+> > what I'd like to do is to cover the inline extents (blocks) only
+> > reported by iomap_begin() rather than handling other (maybe)
+> > logical-not-strictly-relevant areas such as post-EOF (even pages
+> > will be finally entirely uptodated), I think such zeroed area should
+> > be handled by from the point of view of the extent itself
+> > 
+> >          if (iomap_block_needs_zeroing(inode, iomap, pos)) {
+> >                  zero_user(page, poff, plen);
+> >                  iomap_set_range_uptodate(page, poff, plen);
+> >                  goto done;
+> >          }
 > 
-> From my perspective, the current stream_count from struct media_entity
-> would not be sufficient. References should be counted per struct media_pad.
-> Otherwise, devices that allow multiple parallel streams would block user
-> space from updating media-pads that are not part of an active media-pipeline.
-> E.g. in rcar-csi2 this could effect a source pad connected to currently
-> unused VIN device.
+> That does work.  But we already mapped the page to write to it, and
+> we already have to zero to the end of the block.  Why not zero to
+> the end of the page?  It saves an iteration around the loop, it saves
+> a mapping of the page, and it saves a call to flush_dcache_page().
 
-I understand your reasoning, but with the current V4L2 design is this 
-really a concern? As s_stream() is not pad/stream aware it acts more or 
-less as a big start / stop button.
+I completely understand your concern, and that's also (sort of) why I
+left iomap_read_inline_page() to make the old !pos behavior as before.
 
-When starting all enabled media links formats needs to be evaluated 
-(something we can't do yet with multiplexed streams..) and all 
-subdivides that are part of the media graph are started. We can not 
-enable or disable any media links while the pipeline is streaming so I'm 
-not sure configuring the format of pads not part of the active capture 
-is such a big concern, am I missing something?
+Anyway, I could update Christoph's patch to behave like what you
+suggested. Will do later since I'm now taking some rest...
 
 > 
-> > > > > > > > Note: after creation of this commit, it was noticed that 
-> > > > > > > > Steve Longerbeam has a very similar solution in his fork.
-> > > > > > > > 
-> > > > > > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car 
-> > > > > > > > MIPI CSI-2 receiver driver")
-> > > > > > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
-> > > > > > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
-> > > > > > > > ---
-> > > > > > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 
-> > > > > > > > ++++++++++++++++++++-
-> > > > > > > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c 
-> > > > > > > > b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > index e28eff0..98152e1 100644
-> > > > > > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct 
-> > > > > > > > v4l2_subdev *sd,  {
-> > > > > > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
-> > > > > > > >  	struct v4l2_mbus_framefmt *framefmt;
-> > > > > > > > +	int ret = 0;
-> > > > > > > > +
-> > > > > > > > +	mutex_lock(&priv->lock);
-> > > > > > > >  
-> > > > > > > >  	if (!rcsi2_code_to_fmt(format->format.code))
-> > > > > > > >  		format->format.code = rcar_csi2_formats[0].code;
-> > > > > > > >  
-> > > > > > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
-> > > > > > > > +
-> > > > > > > > +		/*
-> > > > > > > > +		 * Do not apply changes to active format while streaming.
-> > > > > > > > +		 *
-> > > > > > > > +		 * Since video streams could be forwarded from sink pad to any
-> > > > > > > > +		 * source pad (depending on CSI-2 channel routing), all
-> > > > > > > > +		 * media pads are effected by this rule.
-> > > > > > > > +		 */
-> > > > > > > > +		if (priv->stream_count > 0) {
-> > > > > > > > +			ret = -EBUSY;
-> > > > > > > > +			goto out;
-> > > > > > > > +		}
-> > > > > > > > +
-> > > > > > > >  		priv->mf = format->format;
-> > > > > > > >  	} else {
-> > > > > > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > > > > > > >  		*framefmt = format->format;
-> > > > > > > >  	}
-> > > > > > > >  
-> > > > > > > > -	return 0;
-> > > > > > > > +out:
-> > > > > > > > +	mutex_unlock(&priv->lock);
-> > > > > > > > +
-> > > > > > > > +	return ret;
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
+> > The benefits I can think out are 1) it makes the logic understand
+> > easier and no special cases just for tail-packing handling 2) it can
+> > be then used for any inline extent cases (I mean e.g. in the middle of
+> > the file) rather than just tail-packing inline blocks although currently
+> > there is a BUG_ON to prevent this but it's easier to extend even further.
+> > 3) it can be used as a part for later partial page uptodate logic in
+> > order to match the legacy buffer_head logic (I remember something if my
+> > memory is not broken about this...)
 > 
-> --
-> 
-> Regards,
-> 
-> Dennis Rachui
-> 
+> Hopefully the legacy buffer_head logic will go away soon.
 
--- 
-Regards,
-Niklas Söderlund
+Hmmm.. I partially agree on this (I agree buffer_head is a legacy stuff
+but...), considering some big PAGE_SIZE like 64kb or bigger, partial
+uptodate can save I/O for random file read pattern in general (not mmap
+read, yes, also considering readahead, but I received some regression
+due to I/O amplification like this when I was at the previous * 2 company).
+
+Thanks,
+Gao Xiang
+
