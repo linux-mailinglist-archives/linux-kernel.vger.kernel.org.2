@@ -2,162 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F553CBCEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46A23CBD76
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234048AbhGPTrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 15:47:25 -0400
-Received: from mail-co1nam11on2059.outbound.protection.outlook.com ([40.107.220.59]:22880
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233127AbhGPTrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 15:47:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PTTzJzwDJ9nzaff3Mm9LtBkuSq/DO/ArSCKmDXHdr4iQMjQrpYTOW2bofHHov8myxeIT7Gla5Ynrn1TX8Jq4ZK1EM12nBeuVhk4q81Dv3DeEa0dJR8mLe2UP0Uhrc7Kxm11JYq/HRpzvSP1dhuh0GB/ztPSLq95gedmxfV8yzPt6eXiONn1qW0au4sEYbh8w6qZcdJF+pg0hwQWV/I9pnFTkKvAXuUzc6Vkk/7j63SkXdHSv7Adaf2ekqB783BgZ/7whPcocGmLlivH7bkU8d65t0b2PrxqPOOB+IJqaR5SmNDX8uyAvT2EctX/GyFsz9kvnTTCmD6rFXLDYU6WDPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LT5CScKnxWvfIsqJHay7adkjaawUbK0PJbA7l91V5OM=;
- b=TCaunC4KroRWFtSufmGHlDqq6WasCI5Vw3m9JvZfUiLrncDfxvZPmQmFmm4JrRH3eHI6hE5eZeQXpW8X8pYsf7UN3j/irFigDhTb9Z8oOmJs9uvhtpAvZqyovg2/mlagXTCnmk8bqry1xkhzEt2NojAE7X3xLHSnYxjryK907GUjyOUxTGnwdgH0QpYZMaLER/rG07RSJCRCdt6rAyAr0XScvbxBAliSouyOwIIj2yBC2f1g9Au9xTRYpXKNBmEggf9yWkYpOKpmELVy4QKpcmZEfm9Fz37Q5AH6aAAwabxVpKOLYtq/Fukb6/eR4AbdCkKqLrYfgR+9DKSzoocfqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LT5CScKnxWvfIsqJHay7adkjaawUbK0PJbA7l91V5OM=;
- b=22YGzioVbDozL+RxKY3eUK42TBjifDcvqHpWOd2sFGJQhVQD8M+JEsQ8rrxGC0m+F7tdaVdVit7KN8kyX6Sbpi1XTUPYPqOxSvbtajBZSRVdXM0opDy7icdhpSWuV2OkIQcCagtzRwls9iMeaqrxHKyse77uEs1ttDC2Z6zBDls=
-Received: from MW3PR05CA0021.namprd05.prod.outlook.com (2603:10b6:303:2b::26)
- by BYAPR12MB3127.namprd12.prod.outlook.com (2603:10b6:a03:d8::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Fri, 16 Jul
- 2021 19:44:27 +0000
-Received: from CO1NAM11FT019.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:2b:cafe::d6) by MW3PR05CA0021.outlook.office365.com
- (2603:10b6:303:2b::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.9 via Frontend
- Transport; Fri, 16 Jul 2021 19:44:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1NAM11FT019.mail.protection.outlook.com (10.13.175.57) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 19:44:27 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
- 2021 14:44:26 -0500
-Received: from vijendar-System-Product-Name.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4
- via Frontend Transport; Fri, 16 Jul 2021 14:44:17 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-        <krisman@collabora.com>,
-        Vijendar Mukunda <vijendar.mukunda@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH V3 12/12] ASoC: amd: enable vangogh acp5x driver build
-Date:   Sat, 17 Jul 2021 09:30:59 +0530
-Message-ID: <20210717040059.310410-13-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210717040059.310410-1-Vijendar.Mukunda@amd.com>
-References: <20210717040059.310410-1-Vijendar.Mukunda@amd.com>
+        id S233130AbhGPUFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 16:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233490AbhGPUFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 16:05:00 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F99DC061766
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:02:04 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id c15so5835328pls.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 13:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=15+pAbK3BFL8YJdD4x+WorUOU6nduiGry4z4wlzYpfU=;
+        b=Cyr5L2zEBLE8/ksq+6DuvYBQHNzA3lUhBq5RN/lGQ7ITJN4E4KHqi2Y4Y/PDi8Cw+k
+         LgZxelkzxGtwQ3vX7j+9nHKvicMlGxo30mEZa0NgFtklTEFp7ycmu3tXFkTJL9F5MtXF
+         N4OgbjbtyXdHVpg10u1AizQXhjJ2v5nPnexpUXB5+iy2Rpy2sCCgV+MyGooJ3eBm9EhT
+         oL61J8ZYqq2wlTsQlQfCe2FKPAjYplnoKjF2SrbVUrgsy3mgtjpmVVJKDUXXHqIERDQR
+         LZUHmydAP5gskJZjZ1h+/m/940DfzWZ8IPiRW+BZa8iIdoeacgrO40FZ7vMRrGZneQe/
+         kTbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=15+pAbK3BFL8YJdD4x+WorUOU6nduiGry4z4wlzYpfU=;
+        b=I/HyHw2sHIKomxsVJH8bhkClg0n1uPu7UzoKJ4DWTYTtaYEtOBbu4BpWqPszdE21ks
+         V4+XxW8wDSSy/jqglJleJrJh45skaxVWWvPRCrVtjn242/iDoFsjVNMsUPHIJas3K8d9
+         D0UC/cncmxChGj5XRelcZifuvMYga0bh34g4a9MAELkRJqSq9mU6Q0h/svHGtv4fXzFn
+         QSRAmKlwHj8gKQ0z2dKtuu2ggnyecb0KDxXhRrnVc+nBWxJZ6KwyL2rieKL15lKaiQB0
+         hx1beNq0uzMggy4AxhpLwkphYGu8vXz1tQpCWJlvc9M3qFgZuUWojQgJdhiwJwGojsO3
+         1MXA==
+X-Gm-Message-State: AOAM5310GF5H+nruZMEOOxaU2Uq0HrpRXl1MPrQGQM1jwSyUqQtHVp+P
+        0eoo+1O5EAkg4O3QwAxiP6viDg==
+X-Google-Smtp-Source: ABdhPJwWpPahXyFixmehdaGRHPqE/aN5FF1yBNsVgYBBc9MRSRQaMhtfBDhaq4PsI/PssYJfE2RCwQ==
+X-Received: by 2002:a17:902:bd02:b029:12b:1c90:eb65 with SMTP id p2-20020a170902bd02b029012b1c90eb65mr9012602pls.81.1626465723635;
+        Fri, 16 Jul 2021 13:02:03 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id mu9sm11224943pjb.26.2021.07.16.13.02.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jul 2021 13:02:03 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 20:01:59 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 24/40] KVM: SVM: Add
+ KVM_SEV_SNP_LAUNCH_UPDATE command
+Message-ID: <YPHlt4VCm6b2MZMs@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-25-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e64a5399-1048-4aad-31e4-08d948921f16
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3127:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB31270EDECD658104287CF6AC97119@BYAPR12MB3127.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JXpo2QznNdqrqWogSx1fkdQGO15bEnpaHwIPCx5VOcnaS9pv+kI4nc89GwQHHMp1oiynMjxAQzo6NVWknYKAEnZt2cWN/3Hi0yXpkKNacKs1sAiOjc5cG8udzW1IPrWviPuLpd8lYH+nLy0uIHtTq+qIHZ4vVtRIMA+nKhZqeVjz8vjXhgeQBuk9l/gjzS5MIDi9luHrylnUYxBDHG/a50t/rXuBN8JTpyIC+l0Rmf0fZwKHl+6mudz0qzj78TEzXQIE6beZoVEb9yO2MbEFVh4e7hrl1+AuFE1f09YKhldHvzFQ1CzFlJQOvKdXfSjNKK+BLT8XuiRT5rRCcwulU6f56pX81JS6g1VsJLwRAQ+uc0Qbd7q7VjJLUDBNMoeV3f1XjOC/Fuo1g9KqUOnX3KhY1Oe5FUyCo0n4vnV2WhaCO748xH0ADflqOeIBLgfRmwBXmdCMDOCJv4aTyJ3kXIWMLMgMRi+zrioqz7Vhi8zydZ7P4inOq0MNmdfxxc87B/x1FGocT37Ly0iNKR8CBzdqsFDZSBACLa+/sVPdrZdShFqswbP5x0QE4ZDutR3oDY3dHKXDEgWLbWlLdjqVZ1kdEfCMi0SR/Mvwe6cXSW7STdE8xkf8e6aSfmNTOom11KiS1oGSAM5f3fzHNLRF8sfmc1gYPlyPVhIULrXCucn1IIvbwV06stxQkMXlgiC+shNV/DDEeWZ2Hzh1sOIpvEi/JpvFuoEu+CVd/3cn5gUhRm2SoCld38mu65aRTpYOyeCAOpqdxPgCb8qtfgDBHWx7zvtmA+PJEYIQfXruErU=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(136003)(346002)(46966006)(36840700001)(8936002)(81166007)(356005)(2616005)(4326008)(336012)(86362001)(478600001)(36860700001)(1076003)(426003)(8676002)(6666004)(47076005)(70206006)(70586007)(54906003)(82310400003)(316002)(5660300002)(186003)(26005)(7696005)(110136005)(36756003)(82740400003)(2906002)(42413003)(32563001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 19:44:27.1880
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e64a5399-1048-4aad-31e4-08d948921f16
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT019.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3127
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707183616.5620-25-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijendar Mukunda <vijendar.mukunda@amd.com>
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> +static int snp_launch_update(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +{
+> +	unsigned long npages, vaddr, vaddr_end, i, next_vaddr;
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +	struct sev_data_snp_launch_update data = {};
+> +	struct kvm_sev_snp_launch_update params;
+> +	int *error = &argp->error;
+> +	struct kvm_vcpu *vcpu;
+> +	struct page **inpages;
+> +	struct rmpupdate e;
+> +	int ret;
+> +
+> +	if (!sev_snp_guest(kvm))
+> +		return -ENOTTY;
+> +
+> +	if (!sev->snp_context)
+> +		return -EINVAL;
+> +
+> +	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
+> +		return -EFAULT;
+> +
+> +	data.gctx_paddr = __psp_pa(sev->snp_context);
+> +
+> +	/* Lock the user memory. */
+> +	inpages = sev_pin_memory(kvm, params.uaddr, params.len, &npages, 1);
 
-Vangogh ACP5x drivers can be built by selecting necessary
-kernel config option.
-The patch enables build support of the same.
+params.uaddr needs to be checked for validity, e.g. proper alignment.
+sev_pin_memory() does some checks, but not all checks.
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
-v1 -> v2: remove extra line
-v2 ->v3: remove extra stuff from Make file
----
- sound/soc/amd/Kconfig          | 9 +++++++++
- sound/soc/amd/Makefile         | 1 +
- sound/soc/amd/vangogh/Makefile | 9 +++++++++
- 3 files changed, 19 insertions(+)
- create mode 100644 sound/soc/amd/vangogh/Makefile
+> +	if (!inpages)
+> +		return -ENOMEM;
+> +
+> +	vcpu = kvm_get_vcpu(kvm, 0);
+> +	vaddr = params.uaddr;
+> +	vaddr_end = vaddr + params.len;
+> +
+> +	for (i = 0; vaddr < vaddr_end; vaddr = next_vaddr, i++) {
+> +		unsigned long psize, pmask;
+> +		int level = PG_LEVEL_4K;
+> +		gpa_t gpa;
+> +
+> +		if (!hva_to_gpa(kvm, vaddr, &gpa)) {
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index ba5a85bf7412..cc48d4e5b080 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -52,3 +52,12 @@ config SND_SOC_AMD_RENOIR_MACH
- 	depends on SND_SOC_AMD_RENOIR
- 	help
- 	 This option enables machine driver for DMIC
-+
-+config SND_SOC_AMD_ACP5x
-+	tristate "AMD Audio Coprocessor-v5.x I2S support"
-+	depends on X86 && PCI
-+	help
-+	 This option enables ACP v5.x support on AMD platform
-+
-+	 By enabling this flag build will trigger for ACP PCI driver,
-+	 ACP DMA drvier, CPU DAI driver.
-diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
-index e6df2f72a2a1..07150d26f315 100644
---- a/sound/soc/amd/Makefile
-+++ b/sound/soc/amd/Makefile
-@@ -10,3 +10,4 @@ obj-$(CONFIG_SND_SOC_AMD_CZ_RT5645_MACH) += snd-soc-acp-rt5645-mach.o
- obj-$(CONFIG_SND_SOC_AMD_ACP3x) += raven/
- obj-$(CONFIG_SND_SOC_AMD_RV_RT5682_MACH) += snd-soc-acp-rt5682-mach.o
- obj-$(CONFIG_SND_SOC_AMD_RENOIR) += renoir/
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += vangogh/
-diff --git a/sound/soc/amd/vangogh/Makefile b/sound/soc/amd/vangogh/Makefile
-new file mode 100644
-index 000000000000..3353f93dc610
---- /dev/null
-+++ b/sound/soc/amd/vangogh/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+# Vangogh platform Support
-+snd-pci-acp5x-objs	:= pci-acp5x.o
-+snd-acp5x-i2s-objs	:= acp5x-i2s.o
-+snd-acp5x-pcm-dma-objs	:= acp5x-pcm-dma.o
-+
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-pci-acp5x.o
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x)	+= snd-acp5x-i2s.o
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-acp5x-pcm-dma.o
--- 
-2.25.1
+I'm having a bit of deja vu...  This flow needs to hold kvm->srcu to do a memslot
+lookup.
+
+That said, IMO having KVM do the hva->gpa is not a great ABI.  The memslots are
+completely arbitrary (from a certain point of view) and have no impact on the
+validity of the memory pinning or PSP command.  E.g. a memslot update while this
+code is in-flight would be all kinds of weird.
+
+In other words, make userspace provide both the hva (because it's sadly needed
+to pin memory) as well as the target gpa.  That prevents KVM from having to deal
+with memslot lookups and also means that userspace can issue the command before
+configuring the memslots (though I've no idea if that's actually feasible for
+any userspace VMM).
+
+> +			ret = -EINVAL;
+> +			goto e_unpin;
+> +		}
+> +
+> +		psize = page_level_size(level);
+> +		pmask = page_level_mask(level);
+
+Is there any hope of this path supporting 2mb/1gb pages in the not-too-distant
+future?  If not, then I vote to do away with the indirection and just hardcode
+4kg sizes in the flow.  I.e. if this works on 4kb chunks, make that obvious.
+
+> +		gpa = gpa & pmask;
+> +
+> +		/* Transition the page state to pre-guest */
+> +		memset(&e, 0, sizeof(e));
+> +		e.assigned = 1;
+> +		e.gpa = gpa;
+> +		e.asid = sev_get_asid(kvm);
+> +		e.immutable = true;
+> +		e.pagesize = X86_TO_RMP_PG_LEVEL(level);
+> +		ret = rmpupdate(inpages[i], &e);
+
+What happens if userspace pulls a stupid and assigns the same page to multiple
+SNP guests?  Does RMPUPDATE fail?  Can one RMPUPDATE overwrite another?
+
+> +		if (ret) {
+> +			ret = -EFAULT;
+> +			goto e_unpin;
+> +		}
+> +
+> +		data.address = __sme_page_pa(inpages[i]);
+> +		data.page_size = e.pagesize;
+> +		data.page_type = params.page_type;
+> +		data.vmpl3_perms = params.vmpl3_perms;
+> +		data.vmpl2_perms = params.vmpl2_perms;
+> +		data.vmpl1_perms = params.vmpl1_perms;
+> +		ret = __sev_issue_cmd(argp->sev_fd, SEV_CMD_SNP_LAUNCH_UPDATE, &data, error);
+> +		if (ret) {
+> +			snp_page_reclaim(inpages[i], e.pagesize);
+> +			goto e_unpin;
+> +		}
+> +
+> +		next_vaddr = (vaddr & pmask) + psize;
+> +	}
+> +
+> +e_unpin:
+> +	/* Content of memory is updated, mark pages dirty */
+> +	memset(&e, 0, sizeof(e));
+> +	for (i = 0; i < npages; i++) {
+> +		set_page_dirty_lock(inpages[i]);
+> +		mark_page_accessed(inpages[i]);
+> +
+> +		/*
+> +		 * If its an error, then update RMP entry to change page ownership
+> +		 * to the hypervisor.
+> +		 */
+> +		if (ret)
+> +			rmpupdate(inpages[i], &e);
+
+This feels wrong since it's purging _all_ RMP entries, not just those that were
+successfully modified.  And maybe add a RMP "reset" helper, e.g. why is zeroing
+the RMP entry the correct behavior?
+
+> +	}
+> +
+> +	/* Unlock the user pages */
+> +	sev_unpin_memory(kvm, inpages, npages);
+> +
+> +	return ret;
+> +}
+> +
 
