@@ -2,173 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9043CBB1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21873CBB26
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 19:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhGPR01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 13:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbhGPR00 (ORCPT
+        id S230442AbhGPRaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 13:30:30 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:36449 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhGPRa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 13:26:26 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF3CC06175F;
-        Fri, 16 Jul 2021 10:23:30 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id bu12so16354036ejb.0;
-        Fri, 16 Jul 2021 10:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qZ2DK15Kq7udcyL2I98hwSDJ/4D1rlU31IVeu+Pbg5I=;
-        b=PPaw1wWyp29w2I7OeXk8COAxvCMeQq9MX5dVI08+lA0B3XGqRAWuTZuGvguQmWmoIO
-         Qy7iVaS8C8OYGMb2PaJUHcevotaLCoiepG7ucTdQBK1Xz0vMHIIo+h825u7DCE2qTC4v
-         5rICFn0kQdRqkRoXHLsViYY+gAO3GynetU1xr42bdVife0W+Dj7dZY3eVg+7wZSoW+Qs
-         x4rZzX9Hhxbq3o+Ik3GlPuWUDfkjiCGc4th/7dBO0PE3yDC50XmkrC+8jl8W/tfMo8VY
-         aOE1n7j1SRJxbdKZc3eFgwudGxey7PAsBxSJzpdDvZw8EJ/kC4b3QRLy/k5ygWN09wlJ
-         v7Ww==
+        Fri, 16 Jul 2021 13:30:28 -0400
+Received: by mail-oi1-f182.google.com with SMTP id u15so11733102oiw.3;
+        Fri, 16 Jul 2021 10:27:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qZ2DK15Kq7udcyL2I98hwSDJ/4D1rlU31IVeu+Pbg5I=;
-        b=hXT/TLyka6DOMZi//9ic1Sfup6ruWdg7H19L+i9yT7Js3Lke/4oJHjkZhXGx0TFxyb
-         F0I9cmWFax869/ms6UuG1qoOd5hruD2wHAK7sYFQcyxkSDK1AvK2GHrYZFaLAMhzdmTf
-         j7uuivNM3rAnaKhxCQHloLRcNK0qwUEw82HWqTjIK92aLk+VukXdjeleWQow9UZNFQvM
-         p9SmXn+vNm43h7diKHYcxLUlCi3ovfCAzZ53QMzrWfUzF+8MfRdubRRhEzPBqilKo9Kt
-         TUVk60Woo6eh1AqaM/u4a/T6Fs+9mDOI6JFi90bnaBl3viFQPbPJGZQ/1k7fW0v64JDj
-         32Ng==
-X-Gm-Message-State: AOAM533Kt6sj+J7HM+o17CYYpR2vSf3YqqCOt4L5kF0utNxopItwgWQf
-        Ti1eDYFa799NDKX5C7MZsjO3jQpTSvnWArrP+90=
-X-Google-Smtp-Source: ABdhPJx/YSwMk/X7h1IvUMI7tNTP3Cb7B66n/uLPx4apIWw08GIiMtKfQWarDUNYo89qwzYF1NwWeZlmRxqPXIdRCAg=
-X-Received: by 2002:a17:906:190c:: with SMTP id a12mr13023343eje.37.1626456208797;
- Fri, 16 Jul 2021 10:23:28 -0700 (PDT)
+        bh=CeaYmmqy0BTpl+jDq91lfBNwbCyDsDM5K5yy/bAjZb8=;
+        b=FAPztlYFw1562P/9FCUHLVWBXjnHzhaV8eEK6EWsn2viuRPrgFrQIf0tkbeubJwyRy
+         oIqHCSy5/JDmDRuxK6Z3ShFAc/5v9bzZprxqBwWnfiz62VDq/BMzqOz7uvAjttuMQBKk
+         P2nzdNgLwVmbeiYXlLxpy+WenZbUHyKhUoKWsXvLsKZxoAAh1Q8Cl88lT45eYoC20SJf
+         TyG8CvsNniMvNFIW/rja5r4Ea+OLgoWTFMWLDvFq8Xyk7G027h2Y5v9PHMzu3Sch6nEu
+         xsc090SRo/Ypa6+kwTyKCrmgqjxz/O2dOqYRo9Fq+L0kVo8g+VnYdVzbFkKy2tQDBlB/
+         T6+Q==
+X-Gm-Message-State: AOAM532o9RjR1o3JWspNbqsvu9pO38AUDTdXfUop9qvK3RkI+BrYQ+Xr
+        L7WjhNZqruBDfu2z0rFDmsFgVHkwOr2B5NV5kcE=
+X-Google-Smtp-Source: ABdhPJwREseWLWurDmxtUAjhpSaJUD5vYvIYiRBtvUwiqgC0pgq77pnXlc+lgYa79H2Ecw7YYi0BHyoK3SF9OmCUYpY=
+X-Received: by 2002:a05:6808:10d0:: with SMTP id s16mr8300574ois.69.1626456451648;
+ Fri, 16 Jul 2021 10:27:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210703220202.5637-1-maxtram95@gmail.com> <20210703220202.5637-2-maxtram95@gmail.com>
- <CAO-hwJJxJqgW6CGPmvL41teh6vgWfSg55qoXWL3TjQx+mvsbHg@mail.gmail.com>
- <nycvar.YFH.7.76.2107152057230.8253@cbobk.fhfr.pm> <YPCc/k89XNTmeKVo@google.com>
- <20210715224905.GA18180@duo.ucw.cz>
-In-Reply-To: <20210715224905.GA18180@duo.ucw.cz>
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
-Date:   Fri, 16 Jul 2021 20:23:02 +0300
-Message-ID: <CAKErNvrc0NjVwpXiGVED0c2PatVh9ObUBjqem9mi8hq_TZcyWw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] HID: hid-input: Add offhook and ring LEDs for headsets
-To:     Pavel Machek <pavel@ucw.cz>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-leds@vger.kernel.org, Daniel Kurtz <djkurtz@chromium.org>,
-        Oliver Neukum <oneukum@suse.de>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20210712182121.2936794-1-andy.shevchenko@gmail.com> <d542bc45-6e52-dc12-69bf-76fa6dcaaf5e@gmail.com>
+In-Reply-To: <d542bc45-6e52-dc12-69bf-76fa6dcaaf5e@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Jul 2021 19:27:20 +0200
+Message-ID: <CAJZ5v0jR5T2+EHXz_RqzMDxb0i9pDhQTDZomWe3po91A7Bb-xg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ACPI: utils: Fix reference counting in for_each_acpi_dev_match()
+To:     Daniel Scally <djrscally@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 1:49 AM Pavel Machek <pavel@ucw.cz> wrote:
+On Wed, Jul 14, 2021 at 12:32 AM Daniel Scally <djrscally@gmail.com> wrote:
 >
-> On Thu 2021-07-15 13:39:26, Dmitry Torokhov wrote:
-> > On Thu, Jul 15, 2021 at 08:57:44PM +0200, Jiri Kosina wrote:
-> > > On Tue, 6 Jul 2021, Benjamin Tissoires wrote:
-> > >
-> > > > > A lot of USBHID headsets available on the market have LEDs that indicate
-> > > > > ringing and off-hook states when used with VoIP applications. This
-> > > > > commit exposes these LEDs via the standard sysfs interface.
+> Hi Andy - thanks for fixing this
 >
-> > > > > diff --git a/drivers/input/input-leds.c b/drivers/input/input-leds.c
-> > > > > index 0b11990ade46..bc6e25b9af25 100644
-> > > > > --- a/drivers/input/input-leds.c
-> > > > > +++ b/drivers/input/input-leds.c
-> > > > > @@ -33,6 +33,8 @@ static const struct {
-> > > > >         [LED_MISC]      = { "misc" },
-> > > > >         [LED_MAIL]      = { "mail" },
-> > > > >         [LED_CHARGING]  = { "charging" },
-> > > > > +       [LED_OFFHOOK]   = { "offhook" },
-> > > >
-> > > > I am pretty sure this also needs to be reviewed by the led folks.
-> > > > Adding them in Cc.
-> > >
-> > > Can we please get Ack from the LED maintainers? Thanks.
+> On 12/07/2021 19:21, Andy Shevchenko wrote:
+> > Currently it's possible to iterate over the dangling pointer in case the device
+> > suddenly disappears. This may happen becase callers put it at the end of a loop.
 > >
-> > I do not think we should be adding more LED bits to the input
-> > subsystem/events; this functionality should be routed purely though LED
-> > subsystem. input-leds is a bridge for legacy input functionality
-> > reflecting it onto the newer LED subsystem.
-
-I'm a bit confused by this answer. I wasn't aware that input-leds was
-some legacy stuff. Moreover, hid-input only handles LEDs through
-input-leds, it doesn't use any modern replacement. So, does your
-answer mean I need to implement this replacement? If so, I anticipate
-some issues with this approach:
-
-1. hid-input will handle different LEDs in different ways, which will
-make code complicated and error-prone. There will be two parallel
-implementations for LEDs.
-
-2. A lot of code will be similar with input-leds, but not shared/reused.
-
-3. New driver callbacks may be needed if drivers want to override the
-default behavior, like they do with input_mapping/input_mapped.
-
-4. If some hypothetical input device is a headset, but not HID, it
-won't be able to reuse the LED handling code. With input-leds it
-wouldn't be a problem.
-
-5. (Minor) LED_MUTE is already there. If we handle LED_OFFHOOK and
-LED_RING in a different way, it would be confusing.
-
-Let's discuss the architecture before I write any new code, if we are
-going to take this way. However, to me, input-leds looks like a better
-fit: the implementation is much simpler and follows existing patterns,
-and it integrates well with drivers and hid-input. If we throw away
-input-leds, we'll have to do its job ourselves, and if we throw it
-away only for part of LEDs, the code will likely be ugly.
-
-> If we do it purely through the LED subsystem, will it get trickier to
-> associate the devices?
-
-I agree with this point. With the current approach, it's easy to look
-up all LEDs of an input device. If the suggested approach makes it
-hard, it's a serious drawback.
-
-> Anyway, it is a headset. What does headset have to do with input
-> subsystem? Sounds like sound device to me...
-
-That's right, the main function of a headset is of course sound, but
-such headsets also have buttons (vol up/down, mic mute, answer the
-call) and LEDs (mic muted, ringing, offhook). The sound "subdevice"
-(sorry, I'm not really familiar with USB terminology) is handled by
-snd-usb-audio, and the buttons/LEDs are handled by usbhid.
-
-Two examples of such headsets are mentioned in commit messages in this
-patch series. Such headsets are usually "certified for skype for
-business", but of course can be used with a variety of other VoIP
-applications. The goal of this series is to provide a standard
-interface between headsets and userspace applications, so that VoIP
-applications could react to buttons and set LED state, making Linux
-more ready for desktop.
-
-> And we already have a
-> "micmute" LED which sounds quite similar to the "offhook" LED... no?
-
-These two are different. A typical headset has three LEDs: micmute,
-ring and offhook (ring and offhook are often one physical LED, which
-blinks in the ring state and glows constantly in the offhook state).
-
-Offhook indicates that a call is in progress, while micmute shows that
-the microphone is muted. These two states are orthogonal and may
-happen in any combination. On the tested devices, offhook state didn't
-affect sound, it was just a logical indication of an active call.
-
-If you are interested in more details, I can describe the behavior of
-the headsets that I tested (some info is actually in the commit
-messages), but the short answer is that micmute and offhook are two
-different physical LEDs with completely different functions.
-
+> > Instead, let's move that call inside acpi_dev_get_next_match_dev().
+> >
+> > Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
+> > Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_dev() and helper macro")
+> > Fixes: edbd1bc4951e ("efi/dev-path-parser: Switch to use for_each_acpi_dev_match()")
+> > Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 >
-> Best regards,
->                                                                 Pavel
-> --
-> http://www.livejournal.com/~pavelmachek
+> Reviewed-by: Daniel Scally <djrscally@gmail.com>
+
+Applied as 5.14-rc material, thanks!
+
+> > ---
+> > v2:
+> > - rebased on top of v5.14-rc1 and hence added fix for EFI code
+> > - added kernel documentation update to point out that
+> >   acpi_dev_get_next_match_dev() drops a reference on the given
+> >   ACPI device (Rafael)
+> >
+> >  drivers/acpi/utils.c                       | 7 +++----
+> >  drivers/firmware/efi/dev-path-parser.c     | 1 -
+> >  drivers/media/pci/intel/ipu3/cio2-bridge.c | 6 ++----
+> >  include/acpi/acpi_bus.h                    | 5 -----
+> >  4 files changed, 5 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> > index e7ddd281afff..d5cedffeeff9 100644
+> > --- a/drivers/acpi/utils.c
+> > +++ b/drivers/acpi/utils.c
+> > @@ -860,11 +860,9 @@ EXPORT_SYMBOL(acpi_dev_present);
+> >   * Return the next match of ACPI device if another matching device was present
+> >   * at the moment of invocation, or NULL otherwise.
+> >   *
+> > - * FIXME: The function does not tolerate the sudden disappearance of @adev, e.g.
+> > - * in the case of a hotplug event. That said, the caller should ensure that
+> > - * this will never happen.
+> > - *
+> >   * The caller is responsible for invoking acpi_dev_put() on the returned device.
+> > + * On the other hand the function invokes  acpi_dev_put() on the given @adev
+> > + * assuming that its reference counter had been increased beforehand.
+> >   *
+> >   * See additional information in acpi_dev_present() as well.
+> >   */
+> > @@ -880,6 +878,7 @@ acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const cha
+> >       match.hrv = hrv;
+> >
+> >       dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
+> > +     acpi_dev_put(adev);
+> >       return dev ? to_acpi_device(dev) : NULL;
+> >  }
+> >  EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
+> > diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
+> > index 10d4457417a4..eb9c65f97841 100644
+> > --- a/drivers/firmware/efi/dev-path-parser.c
+> > +++ b/drivers/firmware/efi/dev-path-parser.c
+> > @@ -34,7 +34,6 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
+> >                       break;
+> >               if (!adev->pnp.unique_id && node->acpi.uid == 0)
+> >                       break;
+> > -             acpi_dev_put(adev);
+> >       }
+> >       if (!adev)
+> >               return -ENODEV;
+> > diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+> > index 4657e99df033..59a36f922675 100644
+> > --- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
+> > +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
+> > @@ -173,10 +173,8 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
+> >       int ret;
+> >
+> >       for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
+> > -             if (!adev->status.enabled) {
+> > -                     acpi_dev_put(adev);
+> > +             if (!adev->status.enabled)
+> >                       continue;
+> > -             }
+> >
+> >               if (bridge->n_sensors >= CIO2_NUM_PORTS) {
+> >                       acpi_dev_put(adev);
+> > @@ -185,7 +183,6 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
+> >               }
+> >
+> >               sensor = &bridge->sensors[bridge->n_sensors];
+> > -             sensor->adev = adev;
+> >               strscpy(sensor->name, cfg->hid, sizeof(sensor->name));
+> >
+> >               ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
+> > @@ -215,6 +212,7 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
+> >                       goto err_free_swnodes;
+> >               }
+> >
+> > +             sensor->adev = acpi_dev_get(adev);
+> >               adev->fwnode.secondary = fwnode;
+> >
+> >               dev_info(&cio2->dev, "Found supported sensor %s\n",
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index 1ae993fee4a5..b9d434a93632 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -707,11 +707,6 @@ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
+> >   * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
+> >   *
+> >   * The caller is responsible for invoking acpi_dev_put() on the returned device.
+> > - *
+> > - * FIXME: Due to above requirement there is a window that may invalidate @adev
+> > - * and next iteration will use a dangling pointer, e.g. in the case of a
+> > - * hotplug event. That said, the caller should ensure that this will never
+> > - * happen.
+> >   */
+> >  #define for_each_acpi_dev_match(adev, hid, uid, hrv)                 \
+> >       for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);        \
