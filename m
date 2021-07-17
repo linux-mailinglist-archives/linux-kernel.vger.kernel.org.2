@@ -2,198 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87ED53CC29D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 12:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496AC3CC266
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 12:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbhGQKXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 06:23:11 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:55330
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S233431AbhGQKXI (ORCPT
+        id S233238AbhGQKNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 06:13:23 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7384 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232942AbhGQKNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 06:23:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=2Q0bC1AplAGhv7FihkJDId3aCukUvv29yqxy6h3U4rA=; b=L
-        Qa19Tb7TKAK+iduqFVELO+yzqsriQlE1TlKw3thbpDCTRdvSdG3CMAvNntl3nvNV
-        Uqt83hIBgvPJXoVvAwPT5Q6L1GXI5ZqhtsiSFIdyt/Guk9waZFMKvigSFUqzedpU
-        Vaz90pdW7wxJRd+KQrKj+VzWOf3JoGLcO+oE1oFoTs=
-Received: from localhost.localdomain (unknown [39.144.44.130])
-        by app2 (Coremail) with SMTP id XQUFCgC3L2mgrvJgjLzYBA--.38224S3;
-        Sat, 17 Jul 2021 18:19:13 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn
-Subject: [PATCH] SUNRPC: Convert from atomic_t to refcount_t on rpc_clnt->cl_count
-Date:   Sat, 17 Jul 2021 18:18:08 +0800
-Message-Id: <1626517112-42831-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgC3L2mgrvJgjLzYBA--.38224S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF18uFyrGr4UZF1UWw1kGrg_yoW7Xr1Upr
-        ZrC34rJF9Ykrs7K34vya1UZw1fAF1xAa4rKFW0y34rAF9xKr1Yq3WIkryjyrs7ZrW8uF12
-        qF4jgF45CF4DZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI4
-        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-        v20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUo8nYUUUUU
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        Sat, 17 Jul 2021 06:13:21 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GRkKf6gTjz7vnW;
+        Sat, 17 Jul 2021 18:06:46 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 17 Jul 2021 18:10:22 +0800
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 17 Jul 2021 18:10:22 +0800
+From:   Chen Wandun <chenwandun@huawei.com>
+To:     <akpm@linux-foundation.org>, <0x7f454c46@gmail.com>,
+        <wangkefeng.wang@huawei.com>, <weiyongjun1@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Chen Wandun <chenwandun@huawei.com>
+Subject: [PATCH] mm/mremap: fix memory account on do_munmap() failure
+Date:   Sat, 17 Jul 2021 18:19:42 +0800
+Message-ID: <20210717101942.120607-1-chenwandun@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-refcount_t type and corresponding API can protect refcounters from
-accidental underflow and overflow and further use-after-free situations.
+mremap will account the delta between new_len and old_len in
+vma_to_resize, and then call move_vma when expanding an existing
+memory mapping. In function move_vma, there are two scenarios when
+calling do_munmap:
+1. move_page_tables from old_addr to new_addr success
+2. move_page_tables from old_addr to new_addr fail
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+In first scenario, it should account old_len if do_munmap fail,
+because the delta has already been accounted.
+
+In second scenario, new_addr/new_len will assign to old_addr/old_len
+if move_page_table fail, so do_munmap is try to unmap new_addr actually,
+if do_munmap fail, it should account the new_len, because error code
+will be return from move_vma, and delta will be unaccounted.
+What'more, because of new_len == old_len, so account old_len also is
+OK.
+
+In summary, account old_len will be correct if do_munmap fail.
+
+Fixes: 51df7bcb6151 ("mm/mremap: account memory on do_munmap() failure")
+Signed-off-by: Chen Wandun <chenwandun@huawei.com>
 ---
- include/linux/sunrpc/clnt.h          |  3 ++-
- net/sunrpc/auth_gss/gss_rpc_upcall.c |  2 +-
- net/sunrpc/clnt.c                    | 14 +++++++-------
- net/sunrpc/debugfs.c                 |  2 +-
- net/sunrpc/rpc_pipe.c                |  2 +-
- 5 files changed, 12 insertions(+), 11 deletions(-)
+ mm/mremap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/sunrpc/clnt.h b/include/linux/sunrpc/clnt.h
-index 8b5d5c97553e..61f725b9f865 100644
---- a/include/linux/sunrpc/clnt.h
-+++ b/include/linux/sunrpc/clnt.h
-@@ -10,6 +10,7 @@
- #ifndef _LINUX_SUNRPC_CLNT_H
- #define _LINUX_SUNRPC_CLNT_H
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 5989d3990020..badfe17ade1f 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -686,7 +686,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+ 	if (do_munmap(mm, old_addr, old_len, uf_unmap) < 0) {
+ 		/* OOM: unable to split vma, just get accounts right */
+ 		if (vm_flags & VM_ACCOUNT && !(flags & MREMAP_DONTUNMAP))
+-			vm_acct_memory(new_len >> PAGE_SHIFT);
++			vm_acct_memory(old_len >> PAGE_SHIFT);
+ 		excess = 0;
+ 	}
  
-+#include <linux/refcount.h>
- #include <linux/types.h>
- #include <linux/socket.h>
- #include <linux/in.h>
-@@ -35,7 +36,7 @@ struct rpc_sysfs_client;
-  * The high-level client handle
-  */
- struct rpc_clnt {
--	atomic_t		cl_count;	/* Number of references */
-+	refcount_t		cl_count;	/* Number of references */
- 	unsigned int		cl_clid;	/* client id */
- 	struct list_head	cl_clients;	/* Global list of clients */
- 	struct list_head	cl_tasks;	/* List of tasks */
-diff --git a/net/sunrpc/auth_gss/gss_rpc_upcall.c b/net/sunrpc/auth_gss/gss_rpc_upcall.c
-index d1c003a25b0f..61c276bddaf2 100644
---- a/net/sunrpc/auth_gss/gss_rpc_upcall.c
-+++ b/net/sunrpc/auth_gss/gss_rpc_upcall.c
-@@ -160,7 +160,7 @@ static struct rpc_clnt *get_gssp_clnt(struct sunrpc_net *sn)
- 	mutex_lock(&sn->gssp_lock);
- 	clnt = sn->gssp_clnt;
- 	if (clnt)
--		atomic_inc(&clnt->cl_count);
-+		refcount_inc(&clnt->cl_count);
- 	mutex_unlock(&sn->gssp_lock);
- 	return clnt;
- }
-diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
-index 8b4de70e8ead..d6b64622bd04 100644
---- a/net/sunrpc/clnt.c
-+++ b/net/sunrpc/clnt.c
-@@ -167,7 +167,7 @@ static int rpc_clnt_skip_event(struct rpc_clnt *clnt, unsigned long event)
- 	case RPC_PIPEFS_MOUNT:
- 		if (clnt->cl_pipedir_objects.pdh_dentry != NULL)
- 			return 1;
--		if (atomic_read(&clnt->cl_count) == 0)
-+		if (refcount_read(&clnt->cl_count) == 0)
- 			return 1;
- 		break;
- 	case RPC_PIPEFS_UMOUNT:
-@@ -419,7 +419,7 @@ static struct rpc_clnt * rpc_new_client(const struct rpc_create_args *args,
- 	clnt->cl_rtt = &clnt->cl_rtt_default;
- 	rpc_init_rtt(&clnt->cl_rtt_default, clnt->cl_timeout->to_initval);
- 
--	atomic_set(&clnt->cl_count, 1);
-+	refcount_set(&clnt->cl_count, 1);
- 
- 	if (nodename == NULL)
- 		nodename = utsname()->nodename;
-@@ -431,7 +431,7 @@ static struct rpc_clnt * rpc_new_client(const struct rpc_create_args *args,
- 	if (err)
- 		goto out_no_path;
- 	if (parent)
--		atomic_inc(&parent->cl_count);
-+		refcount_inc(&parent->cl_count);
- 
- 	trace_rpc_clnt_new(clnt, xprt, program->name, args->servername);
- 	return clnt;
-@@ -926,10 +926,10 @@ rpc_free_auth(struct rpc_clnt *clnt)
- 	 *       release remaining GSS contexts. This mechanism ensures
- 	 *       that it can do so safely.
- 	 */
--	atomic_inc(&clnt->cl_count);
-+	refcount_inc(&clnt->cl_count);
- 	rpcauth_release(clnt->cl_auth);
- 	clnt->cl_auth = NULL;
--	if (atomic_dec_and_test(&clnt->cl_count))
-+	if (refcount_dec_and_test(&clnt->cl_count))
- 		return rpc_free_client(clnt);
- 	return NULL;
- }
-@@ -943,7 +943,7 @@ rpc_release_client(struct rpc_clnt *clnt)
- 	do {
- 		if (list_empty(&clnt->cl_tasks))
- 			wake_up(&destroy_wait);
--		if (!atomic_dec_and_test(&clnt->cl_count))
-+		if (!refcount_dec_and_test(&clnt->cl_count))
- 			break;
- 		clnt = rpc_free_auth(clnt);
- 	} while (clnt != NULL);
-@@ -1082,7 +1082,7 @@ void rpc_task_set_client(struct rpc_task *task, struct rpc_clnt *clnt)
- 	if (clnt != NULL) {
- 		rpc_task_set_transport(task, clnt);
- 		task->tk_client = clnt;
--		atomic_inc(&clnt->cl_count);
-+		refcount_inc(&clnt->cl_count);
- 		if (clnt->cl_softrtry)
- 			task->tk_flags |= RPC_TASK_SOFT;
- 		if (clnt->cl_softerr)
-diff --git a/net/sunrpc/debugfs.c b/net/sunrpc/debugfs.c
-index 56029e3af6ff..79995eb95927 100644
---- a/net/sunrpc/debugfs.c
-+++ b/net/sunrpc/debugfs.c
-@@ -90,7 +90,7 @@ static int tasks_open(struct inode *inode, struct file *filp)
- 		struct seq_file *seq = filp->private_data;
- 		struct rpc_clnt *clnt = seq->private = inode->i_private;
- 
--		if (!atomic_inc_not_zero(&clnt->cl_count)) {
-+		if (!refcount_inc_not_zero(&clnt->cl_count)) {
- 			seq_release(inode, filp);
- 			ret = -EINVAL;
- 		}
-diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
-index 09c000d490a1..ee5336d73fdd 100644
---- a/net/sunrpc/rpc_pipe.c
-+++ b/net/sunrpc/rpc_pipe.c
-@@ -423,7 +423,7 @@ rpc_info_open(struct inode *inode, struct file *file)
- 		spin_lock(&file->f_path.dentry->d_lock);
- 		if (!d_unhashed(file->f_path.dentry))
- 			clnt = RPC_I(inode)->private;
--		if (clnt != NULL && atomic_inc_not_zero(&clnt->cl_count)) {
-+		if (clnt != NULL && refcount_inc_not_zero(&clnt->cl_count)) {
- 			spin_unlock(&file->f_path.dentry->d_lock);
- 			m->private = clnt;
- 		} else {
 -- 
-2.7.4
+2.25.1
 
