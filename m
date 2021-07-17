@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C2D3CC212
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 10:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF693CC216
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 10:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhGQI7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 04:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229781AbhGQI7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 04:59:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64216613C0;
-        Sat, 17 Jul 2021 08:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626512164;
-        bh=Wuy4aT3AF+AKu9usxoWce9QDgBSD5R94pgf5H1/EgCo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Cm+FcwNJiex1lUkuru4Rs6Npk57fUiXFtrXRmO3CZIluRR84TBxUBBEkOo8iwZlBD
-         WzinCdbCbhQLfrJPIfq3Ytpguotw562bALHxdOAPlLNc6AzImrG0uW54aTF6uolbaB
-         8trXmYDN/lSj8tPJiESA6UWmNVphyeZbE/RAtzkwbm+9zIM9FjUkf611wAKuMF0FdK
-         S97630P0cYcpMHA7Mw4YkvyuMmcS+GAMvUw8MYVdoCAn0K8q7egjzaE0tuuXTcS8EB
-         2unHQBKlFdjmU0OWCNgfs/S25uuCc0Uiyh9m8aB/tOOBMq4lVMwBOTv1bnFfMpOwSx
-         EGmaspGy83jOQ==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix ctx->pos in f2fs_read_inline_dir()
-To:     Yangtao Li <frank.li@vivo.com>, jaegeuk@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210717034955.344408-1-frank.li@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <2d651236-40de-2e7b-d6c6-9a18ce9a25ff@kernel.org>
-Date:   Sat, 17 Jul 2021 16:56:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232705AbhGQJBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 05:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhGQJBV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 05:01:21 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7259C06175F;
+        Sat, 17 Jul 2021 01:58:24 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso8207872wme.0;
+        Sat, 17 Jul 2021 01:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nfIwxTHC2UAbzplalJLAoZ1ytLOVlqi4hD7eFiW46a0=;
+        b=TVDDnGMyVlqz45Kv5x35mdbl3Ye1J6kgmgP3KCliwUMSX2Oi8jyXEVqtJFmZ9DygRL
+         PkS99ZTaybqrbht95BJeFX4PJr8kmcc/pQf0eMJIQOgUwgKYgK4d4tY9fMUo7g/AObSd
+         HoaTpqre1HEOEorS5RP7nZP4MgCA4Er48F6OI6xzxpQVtw7TnlTk2wbwfbCrTwQUipk7
+         LLBnwO5XsInCggYcMq+yMQn8Wl9BOULzQtN/vPop/5tBedh7hQdNYshVkhgqTEkQC/VY
+         j7qB2791MM+TYkK6JqUEadF14HW42s5TzIprYIoLNHcYKitSb4abp0JrzWRnizOWr3oM
+         Q64A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nfIwxTHC2UAbzplalJLAoZ1ytLOVlqi4hD7eFiW46a0=;
+        b=bT52D+lSIMZiIEJpNmqpKixUos0PuyzkG/H+ffDajS9K506WRqJZg9uBC5QNpITW8v
+         jC/7njC5oohnU/0NNKXxJm3JDUFOHWDCbgaswuSUJyIkeyM/IqIiszyKKkxxQbj0UAiU
+         /nRxOMHDNDnez90T9nqo16LaRx8b5u7KWKSb0bh5mRxlU30/ESYQsQtGddZlmapWKSlX
+         RBm7F/i61eoPLkU+hDWZ9C66unuSTPcEOz3XUWvtaZqdMM8DGCkxvOstYPnsOX4WMhti
+         DLFh28gBtRGUwC8s7GznOZwhCcggul8NwH717dUMFUUVdHGE1eNDVtBllLLeKMCNtfkf
+         3R0w==
+X-Gm-Message-State: AOAM530TAdkWL4Yqk9xMa3mouzQ7iHW6kOKvCf8kwnRBX3T1+RSev5VU
+        ekA7+P3GsrG3DXENuSguuSs=
+X-Google-Smtp-Source: ABdhPJzznuiRp+fE+BVvFIsVl4tsjz2YtGMOITe+NxKxmE1bZsjQXsQYyrjti+YT4JU7hlZdI/F9+w==
+X-Received: by 2002:a05:600c:5106:: with SMTP id o6mr20995020wms.18.1626512302427;
+        Sat, 17 Jul 2021 01:58:22 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id p5sm9973859wme.2.2021.07.17.01.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Jul 2021 01:58:21 -0700 (PDT)
+Date:   Sat, 17 Jul 2021 09:58:19 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/119] 5.4.133-rc2 review
+Message-ID: <YPKbq2C56P3DKzkH@debian>
+References: <20210716182029.878765454@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210717034955.344408-1-frank.li@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716182029.878765454@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/17 11:49, Yangtao Li wrote:
-> I recently found a case where de->name_len is 0 in f2fs_fill_dentries() easily reproduced,
-> and finally set the fsck flag.
-> 
-> Thread A					Thread B
-> 
-> f2fs_readdir
-> 	f2fs_read_inline_dir
-> 		ctx->pos = d.max
-> 						f2fs_add_dentry
-> 							f2fs_add_inline_entry
-> 								do_convert_inline_dir
-> 							f2fs_add_regular_entry
-> f2fs_readdir
-> 	f2fs_fill_dentries
-> 		set_sbi_flag(sbi, SBI_NEED_FSCK)
-> 
-> Process A opens the folder, and has been reading without closing it. During this period,
-> Process B created a file under the folder (occupying multiple f2fs_dir_entry, exceeding
-> the d.max of the inline dir). After creation, process A uses the d.max of inline dir to
-> read it again, and it will read that de->name_len is 0.
+Hi Greg,
 
-Nice catch!
-
+On Fri, Jul 16, 2021 at 08:28:26PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.133 release.
+> There are 119 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> And returning early in f2fs_read_inline_dir will cause the process to be unable to see
-> the changes before reopening the file.
-> 
-> So don't return early and remove the modification of ctx->pos in f2fs_read_inline_dir().
-> 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->   fs/f2fs/inline.c | 5 -----
->   1 file changed, 5 deletions(-)
-> 
-> diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
-> index 56a20d5c15da..fc6551139a3d 100644
-> --- a/fs/f2fs/inline.c
-> +++ b/fs/f2fs/inline.c
-> @@ -729,9 +729,6 @@ int f2fs_read_inline_dir(struct file *file, struct dir_context *ctx,
->   
->   	make_dentry_ptr_inline(inode, &d, inline_dentry);
->   
-> -	if (ctx->pos == d.max)
-> -		return 0;
-> -
->   	ipage = f2fs_get_node_page(F2FS_I_SB(inode), inode->i_ino);
->   	if (IS_ERR(ipage))
->   		return PTR_ERR(ipage);
-> @@ -747,8 +744,6 @@ int f2fs_read_inline_dir(struct file *file, struct dir_context *ctx,
->   	make_dentry_ptr_inline(inode, &d, inline_dentry);
->   
->   	err = f2fs_fill_dentries(ctx, &d, 0, fstr);
+> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
+> Anything received after that time might be too late.
 
-After this function, ctx->pos will point to start position of first free slot after
-last dir_entry, we can't guarantee that the free slot won't be used in above race
-condition, right?
+Build test:
+mips (gcc version 11.1.1 20210702): 65 configs -> no failure
+arm (gcc version 11.1.1 20210702): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210702): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-Moreover, w/o inline conversion, the race condition still can happen as below, right?
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
-dir_entry1: A
-dir_entry2: B
-dir_entry3: C
-free slot: _
 
-Before:
-AAAABBBB___
-         ^
-Thread B delete dir_entry2, and create dir_entry3.
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-After:
-AAAACCCCC__
-         ^
-Thanks,
-
-> -	if (!err)
-> -		ctx->pos = d.max;
->   
->   	f2fs_put_page(ipage, 0);
->   	return err < 0 ? err : 0;
-> 
+--
+Regards
+Sudip
