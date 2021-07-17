@@ -2,163 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867C33CC332
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911703CC333
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbhGQMWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 08:22:25 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:34092 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhGQMWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 08:22:22 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1m4jHq-00051D-Eo; Sat, 17 Jul 2021 14:19:18 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>
-Subject: Re: [PATCH v2 1/3] clk: fractional-divider: Export approximation algo to the CCF users
-Date:   Sat, 17 Jul 2021 14:19:17 +0200
-Message-ID: <10550544.QTc0DxZM9B@diego>
-In-Reply-To: <20210716133448.24890-1-andriy.shevchenko@linux.intel.com>
-References: <20210716133448.24890-1-andriy.shevchenko@linux.intel.com>
+        id S233461AbhGQMXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 08:23:00 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:55450 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhGQMW7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 08:22:59 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 6924EB3A0CD;
+        Sat, 17 Jul 2021 14:20:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1626524401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gcD4BlYO0MJODsDv5lWH6aB5PZKfy3UHMX4EeHIRze0=;
+        b=UKdaankAPr0jcxwYSuFajzao+2C+/kY0QI+E6w340ovOHUIsN1phoIGsFcMj9LIFiZOpM2
+        +/dLezd7sR5sIby7C34UAOCtGj9Y1wmx+8vTOlWE2cyeaaKQiOyiGU2sRcv/a+z2KYX183
+        +5HO5bMs8da6m8YE4NcwQWxmw40YKVo=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: New warning in nvme_setup_discard
+Date:   Sat, 17 Jul 2021 14:19:59 +0200
+Message-ID: <8988303.mDXGIdCtx8@natalenko.name>
+In-Reply-To: <5053297.vgnLoh5Ws3@natalenko.name>
+References: <4729812.CpyZKHjjVO@natalenko.name> <YPKkZJWsD84mmKuk@T590> <5053297.vgnLoh5Ws3@natalenko.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 16. Juli 2021, 15:34:46 CEST schrieb Andy Shevchenko:
-> At least one user currently duplicates some functions that are provided
-> by fractional divider module. Let's export approximation algo and replace
-> the open-coded variant.
-> 
-> As a bonus the exported function will get better documentation in place.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On sobota 17. =C4=8Dervence 2021 14:11:05 CEST Oleksandr Natalenko wrote:
+> On sobota 17. =C4=8Dervence 2021 11:35:32 CEST Ming Lei wrote:
+> > Maybe you need to check if the build is OK, I can't reproduce it in my
+> > VM, and BFQ is still builtin:
+> >=20
+> > [root@ktest-01 ~]# uname -a
+> > Linux ktest-01 5.14.0-rc1+ #52 SMP Fri Jul 16 18:56:36 CST 2021 x86_64
+> > x86_64 x86_64 GNU/Linux [root@ktest-01 ~]# cat
+> > /sys/block/nvme0n1/queue/scheduler
+> > [none] mq-deadline kyber bfq
+>=20
+> I don't think this is an issue with the build=E2=80=A6 BTW, with `initcal=
+l_debug`:
+>=20
+> ```
+> [    0.902555] calling  bfq_init+0x0/0x8b @ 1
+> [    0.903448] initcall bfq_init+0x0/0x8b returned -28 after 507 usecs
+> ```
+>=20
+> -ENOSPC? Why? Also re-tested with the latest git tip, same result :(.
 
-on Rockchip rk3288 and rk3399
-Tested-by: Heiko Stuebner <heiko@sntech.de>
+OK, one extra pr_info, and I see this:
 
-Also for dropping the Rockchip-specific copy in favor of the main
-implementation
-Acked-by: Heiko Stuebner <heiko@sntech.de>
+```
+[    0.871180] blkcg_policy_register: BLKCG_MAX_POLS too small
+[    0.871612] blkcg_policy_register: -28
+```
 
+What does it mean please :)? The value seems to be hard-coded:
 
+```
+include/linux/blkdev.h
+60:#define BLKCG_MAX_POLS               5
+```
 
-> ---
-> v2: fixed compilation error (LKP), successfully compile-tested on x86
->  drivers/clk/clk-fractional-divider.c | 11 +++++++----
->  drivers/clk/clk-fractional-divider.h |  9 +++++++++
->  drivers/clk/rockchip/clk.c           | 17 +++--------------
->  3 files changed, 19 insertions(+), 18 deletions(-)
->  create mode 100644 drivers/clk/clk-fractional-divider.h
-> 
-> diff --git a/drivers/clk/clk-fractional-divider.c b/drivers/clk/clk-fractional-divider.c
-> index b1e556f20911..535d299af646 100644
-> --- a/drivers/clk/clk-fractional-divider.c
-> +++ b/drivers/clk/clk-fractional-divider.c
-> @@ -14,6 +14,8 @@
->  #include <linux/slab.h>
->  #include <linux/rational.h>
->  
-> +#include "clk-fractional-divider.h"
-> +
->  static inline u32 clk_fd_readl(struct clk_fractional_divider *fd)
->  {
->  	if (fd->flags & CLK_FRAC_DIVIDER_BIG_ENDIAN)
-> @@ -68,9 +70,10 @@ static unsigned long clk_fd_recalc_rate(struct clk_hw *hw,
->  	return ret;
->  }
->  
-> -static void clk_fd_general_approximation(struct clk_hw *hw, unsigned long rate,
-> -					 unsigned long *parent_rate,
-> -					 unsigned long *m, unsigned long *n)
-> +void clk_fractional_divider_general_approximation(struct clk_hw *hw,
-> +						  unsigned long rate,
-> +						  unsigned long *parent_rate,
-> +						  unsigned long *m, unsigned long *n)
->  {
->  	struct clk_fractional_divider *fd = to_clk_fd(hw);
->  	unsigned long scale;
-> @@ -102,7 +105,7 @@ static long clk_fd_round_rate(struct clk_hw *hw, unsigned long rate,
->  	if (fd->approximation)
->  		fd->approximation(hw, rate, parent_rate, &m, &n);
->  	else
-> -		clk_fd_general_approximation(hw, rate, parent_rate, &m, &n);
-> +		clk_fractional_divider_general_approximation(hw, rate, parent_rate, &m, &n);
->  
->  	ret = (u64)*parent_rate * m;
->  	do_div(ret, n);
-> diff --git a/drivers/clk/clk-fractional-divider.h b/drivers/clk/clk-fractional-divider.h
-> new file mode 100644
-> index 000000000000..4fa359a12ef4
-> --- /dev/null
-> +++ b/drivers/clk/clk-fractional-divider.h
-> @@ -0,0 +1,9 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +struct clk_hw;
-> +
-> +void clk_fractional_divider_general_approximation(struct clk_hw *hw,
-> +						  unsigned long rate,
-> +						  unsigned long *parent_rate,
-> +						  unsigned long *m,
-> +						  unsigned long *n);
-> diff --git a/drivers/clk/rockchip/clk.c b/drivers/clk/rockchip/clk.c
-> index 049e5e0b64f6..b7be7e11b0df 100644
-> --- a/drivers/clk/rockchip/clk.c
-> +++ b/drivers/clk/rockchip/clk.c
-> @@ -22,6 +22,8 @@
->  #include <linux/regmap.h>
->  #include <linux/reboot.h>
->  #include <linux/rational.h>
-> +
-> +#include "../clk-fractional-divider.h"
->  #include "clk.h"
->  
->  /*
-> @@ -178,10 +180,8 @@ static void rockchip_fractional_approximation(struct clk_hw *hw,
->  		unsigned long rate, unsigned long *parent_rate,
->  		unsigned long *m, unsigned long *n)
->  {
-> -	struct clk_fractional_divider *fd = to_clk_fd(hw);
->  	unsigned long p_rate, p_parent_rate;
->  	struct clk_hw *p_parent;
-> -	unsigned long scale;
->  
->  	p_rate = clk_hw_get_rate(clk_hw_get_parent(hw));
->  	if ((rate * 20 > p_rate) && (p_rate % rate != 0)) {
-> @@ -190,18 +190,7 @@ static void rockchip_fractional_approximation(struct clk_hw *hw,
->  		*parent_rate = p_parent_rate;
->  	}
->  
-> -	/*
-> -	 * Get rate closer to *parent_rate to guarantee there is no overflow
-> -	 * for m and n. In the result it will be the nearest rate left shifted
-> -	 * by (scale - fd->nwidth) bits.
-> -	 */
-> -	scale = fls_long(*parent_rate / rate - 1);
-> -	if (scale > fd->nwidth)
-> -		rate <<= scale - fd->nwidth;
-> -
-> -	rational_best_approximation(rate, *parent_rate,
-> -			GENMASK(fd->mwidth - 1, 0), GENMASK(fd->nwidth - 1, 0),
-> -			m, n);
-> +	clk_fractional_divider_general_approximation(hw, rate, parent_rate, m, n);
->  }
->  
->  static struct clk *rockchip_clk_register_frac_branch(
-> 
-
-
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
 
