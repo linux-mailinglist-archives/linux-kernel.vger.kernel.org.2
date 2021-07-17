@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E570F3CC4CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2045C3CC4D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbhGQRaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 13:30:01 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:59922 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232010AbhGQR36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 13:29:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=JHiMbsp05pbGMAUABzAHsB0xUjHxzmh4UHPPdbARD7U=; b=kc
-        YCaWUaoFG8tUNAUF++VCslkyByjSaaAWsQzrmC1jXnzwsSL4hA9BkmFgJ5JovrTmWGkmrYhbmXEf7
-        nJnhND6SgI1xfIt1pr21UC6jhy4H3ScNJ7eLXsO5fcvyzGzIVdJfOfNwUPHKfL8r7N+UG9P+0c9I1
-        lE3zjbDC8Q5t2RQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m4o5T-00DkJo-MT; Sat, 17 Jul 2021 19:26:51 +0200
-Date:   Sat, 17 Jul 2021 19:26:51 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        id S233159AbhGQRce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 13:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232010AbhGQRcc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 13:32:32 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A41C061762;
+        Sat, 17 Jul 2021 10:29:35 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id f30so21512081lfj.1;
+        Sat, 17 Jul 2021 10:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N5z7xrInHmNrXI9aN34rhAl4c3ECcOCnUV9aOKCVrIg=;
+        b=YWLHiL6JCxcbNMlOR6BFuGqIAblgPQHJosP23FUYarmDwJVc3NtsUY5qKPgzO8bKB8
+         6SLc5MBTx3GcPB1B+0J1SzFDs7UMnvonHgQOfA1vygxaaUHp6pHb5Vhf0Hx1NObWPpAs
+         KpkZ4sY/oJdP+yl3gyZ/Pa2iG9IhjXgQPKTzc19+h5T3FhgW92Ayphy8kk8JpkN0OSJU
+         jTyyOFJQOyANGhxkFcclOy/27rD/89EVnFuSjYbcfhFZE2i6izbE8ReTDsdaT/G6773V
+         Qf4F8IiNCumQM5V9/QiF5F6YmnNbd23fQmV8q8HY98HIr/hMTwq1SCvpuoVkPtIFPRxH
+         pi4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N5z7xrInHmNrXI9aN34rhAl4c3ECcOCnUV9aOKCVrIg=;
+        b=RNiy93nqjUOqnP0gLGsZQwiTeu+V42WmpLZCSACTsSdtubfj2BASEtocEPmdMPnU+e
+         Nw1wp1AA0na1qF+MsE3uRqx4JqFfMAbCmSDkOxN07xvMb/xsK/Ny5u2uAetQQstWByTV
+         nAuymiMZ6b+JY37YRSwJhg2tYZrhvELJOSNmMBh+iGBHqdpp/V5f22ipO+GkWtbUwA26
+         TWG3zg9B7iLfOCOgA5Hog2+4zu06PgnDs4MeYQRIMNYHbFA87dWh00Hx0f6dltnjmt8/
+         0VkcwyXphqdzWRcYGIUY4LHXl82V8037Q/4P/YCmIfZoPNr0JCnS2sFACXjMicxTzOFg
+         51tA==
+X-Gm-Message-State: AOAM530cb5i1LgJOeROkkqsXgPKAq16aaiw1TnadSZrmF0J1c60xjCuP
+        Yi8tOChUQ6Tu5tHbkxUL8uezoUkzyc0=
+X-Google-Smtp-Source: ABdhPJwBfAn5E2GJO9yPk4k/vB8xdiHsfYG9R/Bcgjxu8CLZu25n9DKLoYHljQE9Bz12qdbtFS/pAw==
+X-Received: by 2002:ac2:52ac:: with SMTP id r12mr11713196lfm.364.1626542973425;
+        Sat, 17 Jul 2021 10:29:33 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-17-250.dynamic.spd-mgts.ru. [46.138.17.250])
+        by smtp.googlemail.com with ESMTPSA id o11sm1385871ljg.29.2021.07.17.10.29.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Jul 2021 10:29:33 -0700 (PDT)
+Subject: Re: [PATCH v4 08/12] power: supply: smb347-charger: Remove caching of
+ charger state
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/5] serial: mvebu-uart: implement UART clock driver
- for configuring UART base clock
-Message-ID: <YPMS24faTg9tqreR@lunn.ch>
-References: <20210624224909.6350-1-pali@kernel.org>
- <20210717123829.5201-1-pali@kernel.org>
- <20210717123829.5201-3-pali@kernel.org>
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210717121112.3248-1-digetx@gmail.com>
+ <20210717121112.3248-9-digetx@gmail.com>
+ <20210717162006.66cqkbw2mertd6tr@earth.universe>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0df9fbf5-26fa-5d35-46d6-5c36567d6ed2@gmail.com>
+Date:   Sat, 17 Jul 2021 20:29:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20210717162006.66cqkbw2mertd6tr@earth.universe>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210717123829.5201-3-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 02:38:26PM +0200, Pali Roh�r wrote:
-> @@ -445,6 +472,7 @@ static void mvebu_uart_shutdown(struct uart_port *port)
->  static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
->  {
->  	unsigned int d_divisor, m_divisor;
-> +	unsigned long flags;
->  	u32 brdv, osamp;
->  
->  	if (!port->uartclk)
-> @@ -463,10 +491,12 @@ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
->  	m_divisor = OSAMP_DEFAULT_DIVISOR;
->  	d_divisor = DIV_ROUND_CLOSEST(port->uartclk, baud * m_divisor);
->  
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
+17.07.2021 19:20, Sebastian Reichel пишет:
+> Hi,
+> 
+> On Sat, Jul 17, 2021 at 03:11:08PM +0300, Dmitry Osipenko wrote:
+>> Regmap already provides us with the caching, so remove caching of charger
+>> state to make code cleaner.
+> 
+> cache_type is not initialized in smb347's regmap config and thus
+> set to 0 = REGCACHE_NONE:
+> 
+> static const struct regmap_config smb347_regmap = {
+> 	.reg_bits	= 8,
+> 	.val_bits	= 8,
+> 	.max_register	= SMB347_MAX_REGISTER,
+> 	.volatile_reg	= smb347_volatile_reg,
+> 	.readable_reg	= smb347_readable_reg,
+> };
 
-Hi Pali
-
-You only need spin_lock_irqsave() if you plan on taking the spinlock
-in an interrupt handler. It seems unlikely the baud rate will be
-changed in interrupt context? Please check, and then swap to plain
-spin_lock().
-
->  	brdv = readl(port->membase + UART_BRDV);
->  	brdv &= ~BRDV_BAUD_MASK;
->  	brdv |= d_divisor;
->  	writel(brdv, port->membase + UART_BRDV);
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
->  
->  	osamp = readl(port->membase + UART_OSAMP);
->  	osamp &= ~OSAMP_DIVISORS_MASK;
-
-> +	/* Recalculate UART1 divisor so UART1 baudrate does not change */
-> +	if (prev_clock_rate) {
-> +		divisor = DIV_U64_ROUND_CLOSEST((u64)(val & BRDV_BAUD_MASK) *
-> +						parent_clock_rate * prev_d1d2,
-> +						prev_clock_rate * d1 * d2);
-> +		if (divisor < 1)
-> +			divisor = 1;
-> +		else if (divisor > BRDV_BAUD_MAX)
-> +			divisor = BRDV_BAUD_MAX;
-> +		val = (val & ~BRDV_BAUD_MASK) | divisor;
-> +	}
-
-I don't see any range checks in the patch which verifies the requested
-baud rate is actually possible. With code like this, it seems like the
-baud rate change will be successful, but the actual baud rate will not
-be what is requested.
-
-> +	/* Recalculate UART2 divisor so UART2 baudrate does not change */
-> +	if (prev_clock_rate) {
-> +		val = readl(uart_clock_base->reg2);
-> +		divisor = DIV_U64_ROUND_CLOSEST((u64)(val & BRDV_BAUD_MASK) *
-> +						parent_clock_rate * prev_d1d2,
-> +						prev_clock_rate * d1 * d2);
-> +		if (divisor < 1)
-> +			divisor = 1;
-> +		else if (divisor > BRDV_BAUD_MAX)
-> +			divisor = BRDV_BAUD_MAX;
-> +		val = (val & ~BRDV_BAUD_MASK) | divisor;
-> +		writel(val, uart_clock_base->reg2);
-
-Here it looks like UART1 could request a baud rate change, which ends
-up setting the clocks so that UART2 is out of range? Could the change
-for UART1 be successful, but you end up breaking UART2? I'm thinking
-when you are at opposite ends of the scale. UART2 is running at
-110baud and UART1 at 230400baud.
-
-	Andrew
+Good catch, thank you. I'll add patch to enable caching.
