@@ -2,284 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340493CC67F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 23:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04D13CC681
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 23:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234627AbhGQVll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 17:41:41 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:56400 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232077AbhGQVlk (ORCPT
+        id S235537AbhGQVqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 17:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231542AbhGQVp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 17:41:40 -0400
-Date:   Sat, 17 Jul 2021 21:38:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1626557921;
-        bh=LCLMKFnO7TvI6Bx3wiF64fZ45WT+b2LT5S9wOpPgDac=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=bxU2nGMqY/sv3aFzrw92jHVnGa1ELjGQJrVmZdMf+cqTN+0zGgfe+jC505pdmZ2ad
-         USF53FQgEiSdwIprHGn47f6RhHk1LWFBWfyDJxs60QhJxU44arjjLX6JztSZsgJKpj
-         5cS35qRrJ+5Q0Hkr1J/8f1eESw7KW1/Wtno3qlXM=
-To:     Rob Herring <robh@kernel.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, jami.kettunen@somainline.org,
-        jo@jsfamily.in, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [RESEND PATCH v2 1/6] dt-bindings: input: add Qualcomm SPMI haptics driver
-Message-ID: <25d5bce7-401f-f1d5-207f-784e0780c5e0@connolly.tech>
-In-Reply-To: <20210622155837.GA3746854@robh.at.kernel.org>
-References: <20210618175041.323495-1-caleb@connolly.tech> <20210618175041.323495-2-caleb@connolly.tech> <20210622155837.GA3746854@robh.at.kernel.org>
+        Sat, 17 Jul 2021 17:45:59 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5928C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 14:43:01 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id u25so19262912ljj.11
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 14:43:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mLF1skfBW0gvZzwCxxdZix3vRJTMSgcW19qrBGOZZk4=;
+        b=s6YxieFcHITLcNkgs55oloVrenVVGve4xWor4pMaf2xcH98EABDBeLg26f185GC4Ai
+         TDphri0bmhs4vHW+MGtkR2NisqRq2eMW1FiUajdocTV3Awc8NVLB298x8INDjwzRkMW5
+         PpkaHlPHnPsuxqUPJzHC2L04F1XEGkgd/EtJzGcqBwMC0qghyc+in/xWMD3o0OhUajva
+         0yFnhgbYkHPXlAsN1JDTskF4gKjHoskihFYlElvn9ECsKm29hIZCoNXrHtJaEvYjZP/5
+         AYmDd3ivFALcl40qH7XxrUy+cfn1jxO90BXOs5+0pteITwBy5yEUWQjk8uqae3UKKqiu
+         DAzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mLF1skfBW0gvZzwCxxdZix3vRJTMSgcW19qrBGOZZk4=;
+        b=nvffHnth+qZg8hHK86Q9qRasA4akieEAHGLXBrGQ2RAbmppiOotBQr8iQKtn9lsM9w
+         E98XdcLR9htgOEpuSP1qY64ho+hoOuWriZcYG+I2/x0ZUynXNEnuQBQcxw7Yd5N5X8J0
+         yJMLKlP8LURTYbim6gbDR7U1lg/JoPUoF1nTLgYFv/j3MBkCzSkMRbeDzMYg3TxwpLnt
+         rTFXN1ZtZf2gAoeBhA0+KPRY1cmwXqMt3pnC3HGqyZ3NK9RvRjNE6FhY/0CUahO7YFvf
+         3b0R8BFHtcMRYPvwaVuBqxZBs3Ge6JX/JQy9JdzWCge4CSYgOz8Pg2Vi2KSju13aQZvt
+         ZVuQ==
+X-Gm-Message-State: AOAM533GiyRNOXTjVG3XHGiMs17QJo7UpvJInXifOAaAe8uErxYWNw7o
+        VK4wb+4xlT8MUpD93x9q1I6RHA==
+X-Google-Smtp-Source: ABdhPJz5aT4S0NpwIXlVRfFVKwWedsyH3dqoJ+sg2ZNoSyV4AActMHx1Uix1R+SNJutxZpO7+Ggt/A==
+X-Received: by 2002:a2e:743:: with SMTP id i3mr15614690ljd.266.1626558180199;
+        Sat, 17 Jul 2021 14:43:00 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id f9sm1469830ljf.73.2021.07.17.14.42.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Jul 2021 14:42:59 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id A9F591028D4; Sun, 18 Jul 2021 00:43:02 +0300 (+03)
+Date:   Sun, 18 Jul 2021 00:43:02 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Subject: Re: [git pull] drm fixes for 5.14-rc2
+Message-ID: <20210717214302.mpfil765uji5dnb7@box.shutemov.name>
+References: <CAPM=9tzb9KSspAtVkSH3pYN97hQ815MoOBTSiuHzUJnnb2fhRA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPM=9tzb9KSspAtVkSH3pYN97hQ815MoOBTSiuHzUJnnb2fhRA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Fri, Jul 16, 2021 at 01:41:18PM +1000, Dave Airlie wrote:
+> Hi Linus,
+> 
+> Regular rc2 fixes though a bit more than usual at rc2 stage, people
+> must have been testing early or else some fixes from last week got a
+> bit laggy. There is one larger change in the amd fixes to amalgamate
+> some power management code on the newer chips with the code from the
+> older chips, it should only affects chips where support was introduced
+> in rc1 and it should make future fixes easier to maintain probably a
+> good idea to merge it now. Otherwise it's mostly fixes across the
+> board.
+> 
+> Dave.
+> 
+> drm-fixes-2021-07-16:
+> drm fixes for 5.14-rc2
 
-Thanks a lot for your feedback.
+Dave, Daniel,
 
-I'm still struggling a little to get my head around schema, would you
-mind clarifying a few things?
+Looks like the fix[1] for nouveau regression[2] is missing. Hm?
 
-On 22/06/2021 16:58, Rob Herring wrote:
-> On Fri, Jun 18, 2021 at 05:51:03PM +0000, Caleb Connolly wrote:
->> Add bindings for qcom PMIC SPMI haptics driver.
->>
->> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
->> ---
->>   .../bindings/input/qcom,spmi-haptics.yaml     | 128 ++++++++++++++++++
->>   include/dt-bindings/input/qcom,spmi-haptics.h |  32 +++++
->>   2 files changed, 160 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/input/qcom,spmi-h=
-aptics.yaml
->>   create mode 100644 include/dt-bindings/input/qcom,spmi-haptics.h
->>
->> diff --git a/Documentation/devicetree/bindings/input/qcom,spmi-haptics.y=
-aml b/Documentation/devicetree/bindings/input/qcom,spmi-haptics.yaml
->> new file mode 100644
->> index 000000000000..8ef9b4ec3a07
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/input/qcom,spmi-haptics.yaml
->> @@ -0,0 +1,128 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +# Copyright 2020 Unisoc Inc.
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/input/qcom,spmi-haptics.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm Technologies Inc PMI8998 spmi haptics
->> +
->> +maintainers:
->> +  - Caleb Connolly <caleb@connolly.tech>
->> +
->> +description: |
->> +  Qualcomm SPMI haptics is a peripheral on some QTI PMICs. It supports =
-linear resonant
->> +  actuators and eccentric rotating mass type haptics commonly found in =
-mobile devices.
->> +  It supports multiple sources of wave data such as an internal buffer,=
- direct play
->> +  (from kernel or userspace) as well as an audio output mode.
->> +
->> +properties:
->> +  compatible:
->> +    items:
->> +      - enum:
->> +        - qcom,pmi8998-haptics
->> +        - qcom,pmi8996-haptics
->> +        - qcom,pmi8941-haptics
->> +      - const: qcom,spmi-haptics
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    items:
->> +      - description: short circuit interrupt
->> +      - description: play interrupt
->> +
->> +  interrupt-names:
->> +    items:
->> +      - const: short
->> +      - const: play
->> +
->> +  qcom,actuator-type:
->> +    description: |
->> +      The type of actuator attached to the hardware.
->> +      Allowed values are,
->> +        0 - HAP_TYPE_LRA
->> +        1 - HAP_TYPE_ERM
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    enum: [ 0, 1 ]
->> +    default: 0
->> +
->> +  qcom,wave-shape:
->> +    description: |
->> +      Selects the wave shape to use.
->> +      Allowed values are,
->> +        0 - HAP_WAVE_SINE
->> +        1 - HAP_WAVE_SQUARE
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    enum: [ 0, 1 ]
->> +    default: 0
->> +
->> +  qcom,play-mode:
->> +    description: |
->> +      Selects the play mode to use.
->> +      Allowed values are,
->> +        0 - HAP_PLAY_DIRECT
->> +        1 - HAP_PLAY_BUFFER
->> +        2 - HAP_PLAY_AUDIO
->> +        3 - HAP_PLAY_PWM
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    enum: [ 0, 1, 2, 3 ]
->> +    default: 2
->> +
->> +  qcom,wave-play-rate-us:
->> +    description: |
->> +      Wave sample durection in microseconds, 1/f where f
->> +      is the resonant frequency of the actuator.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
-> Don't need a type for standard units.
->
->> +    minimum: 0
->> +    maximum: 20475
->> +
->> +  qcom,brake-pattern:
->> +    minItems: 4
->> +    maxItems: 4
->> +    description: |
->> +      The brake pattern are the strengths of the pattern
->> +      used to brake the haptics. Allowed values are,
->> +        0 - 0V
->> +        1 - Vmax/4
->> +        2 - Vmax/2
->> +        3 - Vmax
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    default: [0x3, 0x3, 0x2, 0x1]
-> To express the constraints on all items:
->
-> items:
->    enum: [ 0, 1, 2, 3 ]
->
-> (items is a schema here rather than a list)
+[1] https://lore.kernel.org/nouveau/20210609172902.1937-1-christian.koenig@amd.com/
+[2] https://lore.kernel.org/lkml/YOC4uekpD7iA3xPi@Red/T/#u
 
-Ah, that's exactly what I was looking for! Should I replace one of the
-other properties with this?
-
-Or should I just add it to the list?
-
->
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - qcom,wave-play-rate-us
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/spmi/spmi.h>
->> +    #include <dt-bindings/interrupt-controller/irq.h>
->> +    #include <dt-bindings/input/qcom,spmi-haptics.h>
->> +
->> +    pmi8998_lsid1: pmic@3 {
-> Drop unused labels.
->
->> +      compatible =3D "qcom,pmi8998", "qcom,spmi-pmic";
-> Really, this needs to be converted to schema first so we're not adding
-> warnings.
-
-Hmm, is it ok to leave this here? I had a look at converting the spmi-pmic
-
-bindings to schema but it's a bit beyond me in all honestly.
-
->
->> +      reg =3D <0x3 SPMI_USID>;
->> +      #address-cells =3D <1>;
->> +      #size-cells =3D <0>;
->> +
->> +      pmi8998_haptics: haptics@c000 {
->> +        compatible =3D "qcom,pmi8998-haptics", "qcom,spmi-haptics";
->> +        reg =3D <0xc000>;
->> +
->> +        interrupts =3D <0x3 0xc0 0x0 IRQ_TYPE_EDGE_BOTH>,
->> +                     <0x3 0xc0 0x1 IRQ_TYPE_EDGE_BOTH>;
->> +        interrupt-names =3D "short", "play";
->> +
->> +        qcom,wave-shape =3D <HAP_WAVE_SINE>;
->> +        qcom,play-mode =3D <HAP_PLAY_BUFFER>;
->> +        qcom,brake-pattern =3D <0x3 0x3 0x2 0x1>;
->> +
->> +        status =3D "disabled";
-> Don't show status in examples.
->
->> +      };
->> +    };
->> diff --git a/include/dt-bindings/input/qcom,spmi-haptics.h b/include/dt-=
-bindings/input/qcom,spmi-haptics.h
->> new file mode 100644
->> index 000000000000..14a7e7d1471e
->> --- /dev/null
->> +++ b/include/dt-bindings/input/qcom,spmi-haptics.h
->> @@ -0,0 +1,32 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
-> Dual license please. DT files are used elsewhere.
-Will do.
->
->> +/*
->> + * This header provides constants for pmi8998 SPMI haptics options.
->> + */
->> +
->> +#ifndef _DT_BINDINGS_QCOM_PMIC_SPMI_HAPTICS_
->> +#define _DT_BINDINGS_QCOM_PMIC_SPMI_HAPTICS_
->> +
->> +// Actuator types
->> +#define HAP_TYPE_LRA=09=090
->> +#define HAP_TYPE_ERM=09=091
->> +
->> +// LRA Wave type
->> +#define HAP_WAVE_SINE=09=090
->> +#define HAP_WAVE_SQUARE=09=091
->> +
->> +// Play modes
->> +#define HAP_PLAY_DIRECT=09=090
->> +#define HAP_PLAY_BUFFER=09=091
->> +#define HAP_PLAY_AUDIO=09=092
->> +#define HAP_PLAY_PWM=09=093
->> +
->> +#define HAP_PLAY_MAX=09=09HAP_PLAY_PWM
->> +
->> +// Auto resonance type
->> +#define HAP_AUTO_RES_NONE=090
->> +#define HAP_AUTO_RES_ZXD=091
->> +#define HAP_AUTO_RES_QWD=092
->> +#define HAP_AUTO_RES_MAX_QWD=093
->> +#define HAP_AUTO_RES_ZXD_EOP=094
->> +
->> +#endif /* _DT_BINDINGS_QCOM_PMIC_SPMI_HAPTICS_ */
->> --
->> 2.31.1
->>
->>
->>
-Kind Regards,
-
-Caleb
-
-
+-- 
+ Kirill A. Shutemov
