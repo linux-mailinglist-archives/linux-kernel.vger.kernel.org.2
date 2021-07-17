@@ -2,160 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73993CC413
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813CB3CC439
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhGQPfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 11:35:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234255AbhGQPfq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 11:35:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626535968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kPx5lscN4uL5j5r5RwYLU17Da84bWZ603ZzJhrNc8ho=;
-        b=TjCfW/fTsUi0xGM56Jt66OO1afZo8YsBqGJtGNgdgeFC180zhHT1Q4d1ncsIwnekmwg9nO
-        7AxOyVgO0U1HO8ZSsYNmd56itcwhWK8wEdcofuxvVv8fdxnRdDrp4yqS4yrGnygS2Cfr/u
-        iTiTNH0TxPSq9LiorjhnYYDqouguXN8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-21-H88yS9uaPm2Ce6Bq-GUUDA-1; Sat, 17 Jul 2021 11:32:47 -0400
-X-MC-Unique: H88yS9uaPm2Ce6Bq-GUUDA-1
-Received: by mail-ed1-f69.google.com with SMTP id cw12-20020a056402228cb02903a4b3e93e15so6469626edb.2
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 08:32:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kPx5lscN4uL5j5r5RwYLU17Da84bWZ603ZzJhrNc8ho=;
-        b=Fw6PHfnN9kS3CZzUq4UidgTIjp/Fxjz4LIjIJeRTIrH7lezTT2GMR6i8xXx6Z3X36o
-         t2I0CF1orCDCkZxSVXR+s1Pm7Pqsnx0+gfzdwpOGMHCtUJLzESlLnLju1QuI1PH//vBP
-         6APt0gtgilVGGK05o8PXwmgIjEEiQ03rcoflXhu+UMdNBR9wYfan8LIDHdH1ZM2GiO3i
-         MdhxHxB86/6l4qclR9++nB8H6zTfXrVq//LeoA3k7FntPVkAGN6ChkMqBv0zCUbVVKbh
-         icCqD/iMhv2UY3dWLyCYahY4WhSS6NqlGFUqc1/GwkGflnNHjdby6+MraftSvbhlwrJu
-         cZ4w==
-X-Gm-Message-State: AOAM530L6lds6Z/EVG8XKPP2wiyrAOSFLgIXwrTn/nKSvsRFawyNHjVN
-        ApPur97FBXnNd49FIlfNi+8ug7JiKbbyONVdSrCS5CNTqgpSe35RN69cKiE/JriiXfU47CbZDH9
-        ImOW9/n3BNg4Ih90V9be6r4z+
-X-Received: by 2002:a05:6402:2899:: with SMTP id eg25mr22305934edb.13.1626535966440;
-        Sat, 17 Jul 2021 08:32:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwvEeHXTbnIqQjLgBnN+499hJOrKn4KHt9H2RXK7mwNrjqaOTiZ0IrY5GKZmGSI1sZuXHL1Vg==
-X-Received: by 2002:a05:6402:2899:: with SMTP id eg25mr22305916edb.13.1626535966309;
-        Sat, 17 Jul 2021 08:32:46 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id b10sm5014305edd.91.2021.07.17.08.32.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 08:32:46 -0700 (PDT)
-Subject: Re: [PATCH v5 0/5] Add Alder Lake PCH-S support to PMC core driver
-To:     Gayatri Kammela <gayatri.kammela@intel.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     mgross@linux.intel.com, irenic.rajneesh@gmail.com,
-        andriy.shevchenko@linux.intel.com, vicamo.yang@canonical.com,
-        srinivas.pandruvada@intel.com, david.e.box@intel.com,
-        linux-kernel@vger.kernel.org, tamar.mashiah@intel.com,
-        gregkh@linuxfoundation.org, rajatja@google.com,
-        Shyam-sundar.S-k@amd.com, Alexander.Deucher@amd.com,
-        mlimonci@amd.com
-References: <cover.1626459866.git.gayatri.kammela@intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <2a5ef70e-7194-1dcf-6653-9901c7470ace@redhat.com>
-Date:   Sat, 17 Jul 2021 17:32:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234616AbhGQPlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 11:41:55 -0400
+Received: from mout.gmx.net ([212.227.15.15]:36255 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234787AbhGQPld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 11:41:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626536304;
+        bh=iZJzMiq/vESZ2pyqPpRCYJAQLHIcDzTWUIgzTPJmsb4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=WxWI1u3PV381hd3LnI0jFzYt8hfQMwwoDzP5bEDn5qAkU3P2EephUGwGep0G1ZN7q
+         HuLjve0tVx+vY2SNzQhj6ZJaI9umeoSoHSOFN+8/mh1M3c2U26xJ0WmOGm4mFwJ6N6
+         G+yB5FfzcPQL0QlANjaV/Ucvejy5roAExHjbfSvw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MGQnP-1lv6943nMz-00GpmR; Sat, 17 Jul 2021 17:38:24 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/ks7010: Remove all strcpy() uses in favor of strscpy()
+Date:   Sat, 17 Jul 2021 17:37:59 +0200
+Message-Id: <20210717153759.13468-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <cover.1626459866.git.gayatri.kammela@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DKK2exlaQxwebtcjUBUsZXnGR2wcU/rdSgHOz1LAEFdMxSF7p78
+ cnPT0opL08BKaEjM2CCsl4i+zbwxMqopwc5VuItZ9oc8HJT+yq81aic3EgK4K2UvoThU91s
+ /E8qiqad79vEDThG6GQh7gFHsS5megGJTfsKHUo892/FfGa4kLtaXcvVuXGVI6xeb5Gs58h
+ ISBIiM4I+16yjsPF0KfmA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qEpoHoAWcqA=:7lYDvzrpcfy+7Og0JsmaU6
+ Bxa0t/lDZ28zzMPmuNF951Qk3cCqJ51KihfxZaM1I6CIVFH113bj3xXVNRuen6ncH1p7nSZua
+ dZHDsMJy50Hfrdslycm5o7Nz80VHGE4r1o2R4djUVY9Mf/BXTw3tqAHkoxGs0XLpX760UyDvF
+ h+lxRSul3MoZPHZTh6LxyMd9jjLsfWg9Z9UFVhrfnAOdlOV/31fJEaSIeyyImWn7rJjwlIUaV
+ g3ErzY6zVbPiUnF9EVXthOPJfDQxICcMawx4XsMcW5YsdQKu6P2ABkl2PqfpbcrgKHzrrFhWG
+ tyg+Kv8qN4gwPv9PWev+epehaxlC5T9Pz2b/dT7rU56W87OomObYKdqXnN19Ka/Q9TnIZw5sy
+ q+P9tW8IqbArE1lpz/CYv7/ghThB/ycn+5YJ0gojEO29YQuh5sv2a2p8TrL+OZPsSEbjN3mUH
+ ZtAPb7OAnm+HvWvDDrXc9UcsryQJ7j41darlgdZLb/r11kuJDRS/TMKVlaKpEIpXe7C0W3+bH
+ aK/hk/wvv30byuWs5+j69uKoogWVUw7IVBlhki8zkAnGXRoAOpjLxhAaNR89wC4ulGyb/J41r
+ bfHawYK1fGkPqCieFAjmzBpB5uIJaIYg9hy8bLcMXaxqPsFmYMlhUjL+KH0HAFOWpjJVbUSDT
+ HNhA15n+7Q0PBwC2/wGH+l5VDYUceYXQpWG/MRQOqzTgnNeuN61u2M5ptjqXeCjS/DLCDqYlU
+ zf8LTyUNx1lfiiXiRMidb1n32ybg6tFV1eA6YotiZ9w7OGojizUVAnDwKiEl/yi8npJ6it634
+ D2gffosUAd7QBl1+FpMzmrPW/rb+b6zu8q5imYE39xKiFC5j6V/l2pDQnNDa4jwMnp9z15Li9
+ xHeVJYNd7Csgyaa0h2T6GSgJpwrm/jw/CMWidLt6jjLJTIDqT0AG7dvx/24cpex2n5H/2Bq+y
+ myeAOnOyaYcvh01KlkztA2WU+6Vf0kIMo0Gyd+U6bgX7NVlNtKGozJd+GOWEqJr+vKI7gGYxT
+ R8Pz4wwkBK8e/ZjLZwSvhxXq8DiJf18bBSIo8E1dbbYyrrHxDGvHncD+carpbr8/Ebx6YIVia
+ ZC2gcMYRgpn4iwU6BLBjujoDf3L2oU06Glo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
 
-On 7/16/21 8:38 PM, Gayatri Kammela wrote:
-> Hi,
-> The patch series move intel_pmc_core* files to pmc subfolder as well as
-> add Alder Lake PCH-S support to PMC core driver.
-> 
-> Patch 1: Move intel_pmc_core* files to pmc subfolder
-> Patch 2: Add Alderlake support to pmc core driver
-> Patch 3: Add Latency Tolerance Reporting (LTR) support to Alder Lake
-> Patch 4: Add Alder Lake low power mode support for pmc core
-> Patch 5: Add GBE Package C10 fix for Alder Lake
-> 
-> Changes since v1:
-> 1) Add patch 1 to v2 i.e., Move intel_pmc_core* files to pmc subfolder.
-> 2) Modify commit message for patch 2.
-> 
-> Changes since v2:
-> 1) Dropped intel_pmc_ prefix from the file names.
-> 
-> Changes since v3:
-> 1) Fixed an error reported by lkp.
-> 
-> Changes since v4:
-> 1) Updated MAINTAINERS
-> 
-> 
-> David E. Box (1):
->   platform/x86/intel: pmc/core: Add GBE Package C10 fix for Alder Lake
->     PCH
-> 
-> Gayatri Kammela (4):
->   platform/x86/intel: intel_pmc_core: Move intel_pmc_core* files to pmc
->     subfolder
->   platform/x86/intel: pmc/core: Add Alderlake support to pmc core driver
->   platform/x86/intel: pmc/core: Add Latency Tolerance Reporting (LTR)
->     support to Alder Lake
->   platform/x86/intel: pmc/core: Add Alder Lake low power mode support
->     for pmc core
-> 
->  MAINTAINERS                                   |   2 +-
->  drivers/platform/x86/Kconfig                  |  21 --
->  drivers/platform/x86/Makefile                 |   1 -
->  drivers/platform/x86/intel/Kconfig            |   1 +
->  drivers/platform/x86/intel/Makefile           |   1 +
->  drivers/platform/x86/intel/pmc/Kconfig        |  22 ++
->  drivers/platform/x86/intel/pmc/Makefile       |   5 +
->  .../{intel_pmc_core.c => intel/pmc/core.c}    | 309 +++++++++++++++++-
->  .../{intel_pmc_core.h => intel/pmc/core.h}    |  17 +
->  .../pmc/pltdrv.c}                             |   0
->  10 files changed, 352 insertions(+), 27 deletions(-)
->  create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
->  create mode 100644 drivers/platform/x86/intel/pmc/Makefile
->  rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (85%)
->  rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (95%)
->  rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/pltdrv.c} (100%)
-> 
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: David Box <david.e.box@intel.com>
-> Cc: You-Sheng Yang <vicamo.yang@canonical.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-> 
-> base-commit: d936eb23874433caa3e3d841cfa16f5434b85dcf
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/ks7010/ks_wlan_net.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+diff --git a/drivers/staging/ks7010/ks_wlan_net.c b/drivers/staging/ks7010=
+/ks_wlan_net.c
+index 09e7b4cd0138..7a38b1ceeb5c 100644
+=2D-- a/drivers/staging/ks7010/ks_wlan_net.c
++++ b/drivers/staging/ks7010/ks_wlan_net.c
+@@ -158,13 +158,13 @@ static int ks_wlan_get_name(struct net_device *dev,
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+ 	/* for SLEEP MODE */
+ 	if (priv->dev_state < DEVICE_STATE_READY)
+-		strcpy(cwrq->name, "NOT READY!");
++		strscpy(cwrq->name, "NOT READY!", sizeof(cwrq->name));
+ 	else if (priv->reg.phy_type =3D=3D D_11B_ONLY_MODE)
+-		strcpy(cwrq->name, "IEEE 802.11b");
++		strscpy(cwrq->name, "IEEE 802.11b", sizeof(cwrq->name));
+ 	else if (priv->reg.phy_type =3D=3D D_11G_ONLY_MODE)
+-		strcpy(cwrq->name, "IEEE 802.11g");
++		strscpy(cwrq->name, "IEEE 802.11g", sizeof(cwrq->name));
+ 	else
+-		strcpy(cwrq->name, "IEEE 802.11b/g");
++		strscpy(cwrq->name, "IEEE 802.11b/g", sizeof(cwrq->name));
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+ 	return 0;
+ }
+@@ -1808,7 +1808,7 @@ static int ks_wlan_get_firmware_version(struct net_d=
+evice *dev,
+ {
+ 	struct ks_wlan_private *priv =3D netdev_priv(dev);
 
-Regards,
-
-Hans
+-	strcpy(extra, priv->firmware_version);
++	strscpy(extra, priv->firmware_version, sizeof(extra));
+ 	dwrq->length =3D priv->version_size + 1;
+ 	return 0;
+ }
+=2D-
+2.25.1
 
