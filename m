@@ -2,89 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F033CC3ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 16:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F083CC3EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 16:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234732AbhGQPAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 11:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234437AbhGQPAF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 11:00:05 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8CBC06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 07:57:08 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id a13so15497185wrf.10
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 07:57:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LBk5UwZLnUnusI8tJJ9UTs4/cIfOhq6Hn/jE2i8X2Z4=;
-        b=DNsvmn1OTxLVkCw+4u07ctBLqkE4Sl+hz+WbN59BFF1cp6jxq++APyA3TvaN5cni5A
-         1JbuiOl0CXdwJPXBk+x6KLhyCg6dGSPsOzhfnRjPds1GvkE1PldOvqb5sB8kbo1OfteR
-         m4RibZn7R5LJsF3999Mmn1l/EGmZFEZETem+h3n6LIjJfCVVuv/KVUGbrf6W6SfsxMAg
-         bwtZzQbNUS9K5GGwR86caNs0jGLkmDDZnGuFxoTtnxLMwtIwcW0CfTzqOulKNwAFF6Fr
-         /8hoyd6MITv4sK803tDX8/XNgJzl3MekytGXDRSMbxpZsUu3NG2wML2p7y2JMafrkwPu
-         4BkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LBk5UwZLnUnusI8tJJ9UTs4/cIfOhq6Hn/jE2i8X2Z4=;
-        b=bAlRiWQiTSALbnQJyylGOecQqwGmx07gqNz/Pf/MSP/h0QvdsT1zrYl7/DP8+Uwt3l
-         UP+pevt22L8mX1DY2SKxyKeTZgJZgRo4anEOoWRTAfUZOUT0HHAhe5ZSWawtDvVetCMl
-         dhKw/OJ6jh2ysBR4un2uOhRIp0RGn8IYHf5+7h9nP1xkDP1tTU9M2cju5ZbBCkdlxp+l
-         Wjl+F0pa8LHHrX1CJMx40/JZZukjFaVllpKcYxG08jbv00s30xxnG8h1q5ODzSRjNAeC
-         iOaVxRVKnl+UCNRW9RvBpwB4Dhs9lGRzs0w0OUcjpUZR2vD8wdTtasxRbHLcs6hejPgo
-         rwYQ==
-X-Gm-Message-State: AOAM532/x+rXBbrFU/IUWkgzm7VeZgsyGaQJAxxeJGH8mv3cGg0HGX/E
-        SvExDB5uTQJgZuO/Mg9Qjge6+cssvfM=
-X-Google-Smtp-Source: ABdhPJwLiCYrkyPzKik4u4QgFBpdMTw447xRnzBZ2nChUpnaX+xjp+ItNRbMlbLyvd8cKLPUbd6ewA==
-X-Received: by 2002:a05:6000:1867:: with SMTP id d7mr19390601wri.199.1626533827354;
-        Sat, 17 Jul 2021 07:57:07 -0700 (PDT)
-Received: from agape ([5.171.72.101])
-        by smtp.gmail.com with ESMTPSA id h20sm7642856wmb.17.2021.07.17.07.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 07:57:07 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, hdegoede@redhat.com,
-        Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/10] staging: rtl8723bs: fix camel case argument name in macro is_supported_tx_cck
-Date:   Sat, 17 Jul 2021 16:56:51 +0200
-Message-Id: <f38fbb1388a54c78602750ecb86d0716d1aaf66b.1626533647.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1626533647.git.fabioaiuto83@gmail.com>
-References: <cover.1626533647.git.fabioaiuto83@gmail.com>
+        id S234750AbhGQPBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 11:01:17 -0400
+Received: from mout.gmx.net ([212.227.15.18]:58481 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234437AbhGQPBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 11:01:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626533887;
+        bh=04xoGtUfP29/HnxDxC9oJykIveZ1+k8cBhMNVT6MtnA=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=boJ9INB3hK9jxRM8kKULYOkkppcAutJZvlFu+fZQJ33ojalbkxCb7BKIAq1qVKB34
+         NiaLXQCJdaS8HRmikJ1PpPXj3Xzvpj7mqbx1wpoSJM/MiVb8rOOXb9v1pYV3SU0seG
+         nlW0qqd/orJE4/PfUAF9Sm3SgPHQLjVd56Y3p7WU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.205]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M2f5Z-1m7mIi08nH-004Am1; Sat, 17
+ Jul 2021 16:58:07 +0200
+Message-ID: <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
+Subject: [patch] v2 mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Sat, 17 Jul 2021 16:58:05 +0200
+In-Reply-To: <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+         <878s2fnv79.ffs@nanos.tec.linutronix.de>
+         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JqZyItgw8KDovOoYnYJzQfp8No7m7bYMIvjYTMQ8MeqT813pU3k
+ FxVWQb/WTVFjneXntlRXPBfL+DQhuwukZq2Pa9TnxASm6PFcz8yxL/rwk97Wwb6pKgaZbgP
+ bT4+dPioWlXsW37owlHbRmdYyJbthERp3xM/I/ZwvmCC0Le8Eu1Nlz9bFxUly4vpXus02OO
+ x8TGiFeXTzNxqdOsihOMg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nBMkpUL43ZM=:coA3ZzRIYdbV3HCaiQDyaF
+ S1iw0PmN27pSxgbCyYkFUAiOkly8NLJCnccNifZYauXdxFDuP9N8hRgT6bJCLzVnliAcNDwWo
+ YvwxEW1AHPo+HZqvQvCUoFRQjuNO/pXhnk18mgt3bV2vITuHOWkfLnImxqRhulYJBap0JECVa
+ loIL9YPZanh2BT++zjPwyk9EZ70JXPrM5v0nw/M/OolzuvBUIREZOKyrF8ZURG7bCFm/AvwMX
+ G7sJ0uFqBSJZK6ag50ruv5nUWsQX5ehF+RweFin5Oz3iLggzTnV9ziV2kkcMkbbgC2hQMyZ+2
+ boXQk3vTmpSkK/AdZH5mneRoWC99YueiyKE1vr1HkrGEstNVzL6xXuU+/Psq/RTJfNq08yXLq
+ 7WiPzc9kUoS264ldLUMkSpftzyo/3/0Gvu5iKWpohNOgSiWLz3lB6w+WbdP1/srkmrtAjCgY2
+ gdWHRsnkFTgcQ9ZWUhnjSzzxwP+oIMZUrriNVTVmU4GeuaCm0J6jKTOk/joctgViWAWTAWJT8
+ XTuMGUnu2MdEYIP5K6+jz5N8L7OZW1c/A5sGhr52/7ggUxDYN+g6wD98aIzQ2h+6IJGY8LqQK
+ IUL53zMIPT/jlIlDTSYzKx40dy3Fhsn1AoUFL4WCHdwYmWUWnitjKHGeXGy1ODc7sEHcZDAjS
+ LJ0ieH+A9EJ02LEFZ9/T3hnDtxx6iK4lyex9GBpWYqoSe2AbuG7CDjwzBplDuhTlxF99bvl9I
+ SI1F7KIv7JxYNRcGUOug8tpIoCbIUIJ8o49uD1pmZfZs/sCFOq6Vhy/WmM5rEZyBFzF/CFsf8
+ C/7pSyqBYR254IBTM3BjD9HuSpXutmSns5ci/IRqrWLmPrTmynSxEKbb6N89vIFZy6oU052Dq
+ jI9lb053Hj61enyhlTpuyzTsdmTUm8E52jOpSSACCyPCmffIBGKJUlkI2yhUBLEgx4JEVWMZr
+ ASx453dVMaM/my7hZc/BK0JycBopO4ZHtiFS69evAmDybMRdL/8hsW7TXIYT/go11wK5ekkLd
+ 2yNh0wCgZbLFaWmZuFJ+fZbQLORDzWK6835HKDZyOwZjRqRQpBarMP53PsZZsZCeTgF9hhGbF
+ X9UiCWxDeFd9XON6BSc69b+n3py7mENZdoS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix camel case argument name in is_supported_tx_cck
+On Thu, 2021-07-15 at 18:34 +0200, Mike Galbraith wrote:
+> Greetings crickets,
+>
+> Methinks he problem is the hole these patches opened only for RT.
+>
+> static void put_cpu_partial(struct kmem_cache *s, struct page *page,
+> int drain)
+> {
+> #ifdef CONFIG_SLUB_CPU_PARTIAL
+> 	struct page *oldpage;
+> 	int pages;
+> 	int pobjects;
+>
+> 	slub_get_cpu_ptr(s->cpu_slab);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/include/ieee80211.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Bah, I'm tired of waiting to see what if anything mm folks do about
+this little bugger, so I'm gonna step on it my damn self and be done
+with it.  Fly or die little patchlet.
 
-diff --git a/drivers/staging/rtl8723bs/include/ieee80211.h b/drivers/staging/rtl8723bs/include/ieee80211.h
-index 07cff4c490a0..b3a9bcce4c44 100644
---- a/drivers/staging/rtl8723bs/include/ieee80211.h
-+++ b/drivers/staging/rtl8723bs/include/ieee80211.h
-@@ -158,7 +158,7 @@ enum network_type {
- 
- #define is_supported_24g(net_type) ((net_type) & SUPPORTED_24G_NETTYPE_MSK ? true : false)
- 
--#define is_supported_tx_cck(NetType) (((NetType) & (WIRELESS_11B)) ? true : false)
-+#define is_supported_tx_cck(net_type) (((net_type) & (WIRELESS_11B)) ? true : false)
- #define is_supported_ht(net_type) (((net_type) & (WIRELESS_11_24N)) ? true : false)
- 
- struct ieee_param {
--- 
-2.20.1
+mm/slub: restore/expand unfreeze_partials() local exclusion scope
+
+2180da7ea70a ("mm, slub: use migrate_disable() on PREEMPT_RT") replaced
+preempt_disable() in put_cpu_partial() with migrate_disable(), which when
+combined with ___slab_alloc() having become preemptibile, leads to
+kmem_cache_free()/kfree() blowing through ___slab_alloc() unimpeded,
+and vice versa, resulting in PREMPT_RT exclusive explosions in both
+paths while stress testing with both SLUB_CPU_PARTIAL/MEMCG enabled,
+___slab_alloc() during allocation (duh), and __unfreeze_partials()
+during free, both while accessing an unmapped page->freelist.
+
+Serialize put_cpu_partial()/unfreeze_partials() on cpu_slab->lock to
+ensure that alloc/free paths cannot pluck cpu_slab->partial out from
+underneath each other unconstrained.
+
+Signed-off-by: Mike Galbraith <efault@gmx.de>
+Fixes: 2180da7ea70a ("mm, slub: use migrate_disable() on PREEMPT_RT")
+=2D--
+ mm/slub.c |   23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+=2D-- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2418,6 +2418,17 @@ static void __unfreeze_partials(struct k
+ 	if (n)
+ 		spin_unlock_irqrestore(&n->list_lock, flags);
+
++	/*
++	 * If we got here via __slab_free() -> put_cpu_partial(),
++	 * memcg_free_page_obj_cgroups() ->kfree() may send us
++	 * back to __slab_free() -> put_cpu_partial() for an
++	 * unfortunate second encounter with cpu_slab->lock.
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && memcg_kmem_enabled()) {
++		lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock.lock));
++		local_unlock(&s->cpu_slab->lock);
++	}
++
+ 	while (discard_page) {
+ 		page =3D discard_page;
+ 		discard_page =3D discard_page->next;
+@@ -2426,6 +2437,9 @@ static void __unfreeze_partials(struct k
+ 		discard_slab(s, page);
+ 		stat(s, FREE_SLAB);
+ 	}
++
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && memcg_kmem_enabled())
++		local_lock(&s->cpu_slab->lock);
+ }
+
+ /*
+@@ -2497,7 +2511,9 @@ static void put_cpu_partial(struct kmem_
+ 				 * partial array is full. Move the existing
+ 				 * set to the per node partial list.
+ 				 */
++				local_lock(&s->cpu_slab->lock);
+ 				unfreeze_partials(s);
++				local_unlock(&s->cpu_slab->lock);
+ 				oldpage =3D NULL;
+ 				pobjects =3D 0;
+ 				pages =3D 0;
+@@ -2579,7 +2595,9 @@ static void flush_cpu_slab(struct work_s
+ 	if (c->page)
+ 		flush_slab(s, c, true);
+
++	local_lock(&s->cpu_slab->lock);
+ 	unfreeze_partials(s);
++	local_unlock(&s->cpu_slab->lock);
+ }
+
+ static bool has_cpu_slab(int cpu, struct kmem_cache *s)
+@@ -2632,8 +2650,11 @@ static int slub_cpu_dead(unsigned int cp
+ 	struct kmem_cache *s;
+
+ 	mutex_lock(&slab_mutex);
+-	list_for_each_entry(s, &slab_caches, list)
++	list_for_each_entry(s, &slab_caches, list) {
++		local_lock(&s->cpu_slab->lock);
+ 		__flush_cpu_slab(s, cpu);
++		local_unlock(&s->cpu_slab->lock);
++	}
+ 	mutex_unlock(&slab_mutex);
+ 	return 0;
+ }
 
