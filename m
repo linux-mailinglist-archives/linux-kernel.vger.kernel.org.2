@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832AE3CC4A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843553CC4A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbhGQRBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 13:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhGQRBB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 13:01:01 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F01AC06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 09:58:05 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 22so21279941lfy.12
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 09:58:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9jbWRwx3vNpivElmMcM2Cy7N7lse3df9EYtEBR82SZo=;
-        b=TW00OElWdldwhyck4ia1xSbAIrPzwakzZhTHlT/Wm7Rk9/2l94/pFpoLDmnvHTB7xq
-         Xr6VkhHdreJ264xO8wQwtSE35BLr531jqX0D13715NJxc3Cd9oDDmqYCipRGHo03TZPS
-         YkNM+jZo49wGSZtdvhgcUuYxGvG1QWoZG+nYbiuO7LojfNefn4nkuFsx8BTTfBklM/WC
-         aLw3vkDkZOFUJANsX9YtHV9+5DyiDQdJrgHx7Z/tfyhNLqWLcs6HdXqtIXrlWn8h3v4O
-         lGSngUm27yBN146gpT3syLh4UsNHXiU68U2nu94tuScpFpbjV3SynYF7r1gk8uFWSiNm
-         YBWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9jbWRwx3vNpivElmMcM2Cy7N7lse3df9EYtEBR82SZo=;
-        b=SuIYhlL5JVWQxkA8REDsihR6J8YQIyerl7ttJTc5wtcwMvYYeWRAw1c4MQjxO4TNqZ
-         lZbB+rqdksPY/PCizhJVckjWpXikALBx20GdlUcNr6uJcfjMP4v8Eo7XqXeQ184D7tiQ
-         vQjvKXt3+r03/7/pQUe6XbuQPL6BW8DYf1qSjxKd2/0KwNgZOP0pN5TlQEfV+tD/n2Pa
-         qbT+9oQkOvaxpqCgHGKFCnoA26JMK8nhNUsWlNjk0vmFSaEeieV1hEhT6Xav8wqcmudW
-         tEwtpCA314uaFC/T2w5h6K+uDzO5Cc+TTnLJn0YckvGmtGQB/N14SfP8+py6fuHoSYDq
-         CjXA==
-X-Gm-Message-State: AOAM533S74f5mJrk0Q6RiqQzNFAWQiZYPahuXvSLgip0n75UIYNx0B5w
-        fQcXkdXqOY5fFxC8dEXhTRl15SzP/yxIj3Y4NLk=
-X-Google-Smtp-Source: ABdhPJwrCrpsGopJrQu3ScHr6xqnj1uV7dwyg2XPuFn58dp3WjKS4HmlmmsJGZS9cogXbj2FtyVJ12VqTZxlkQEZt9E=
-X-Received: by 2002:a19:ae0f:: with SMTP id f15mr12291827lfc.117.1626541083299;
- Sat, 17 Jul 2021 09:58:03 -0700 (PDT)
+        id S232475AbhGQQ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 12:59:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232010AbhGQQ7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 12:59:08 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97118610F9;
+        Sat, 17 Jul 2021 16:56:09 +0000 (UTC)
+Date:   Sat, 17 Jul 2021 17:58:32 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] iio: buffer: Save a few cycles in
+ 'iio_scan_mask_set()'
+Message-ID: <20210717175832.2f3f8116@jic23-huawei>
+In-Reply-To: <89d8a766eb971eda1ee362444a8711037bdb208c.1626261211.git.christophe.jaillet@wanadoo.fr>
+References: <89d8a766eb971eda1ee362444a8711037bdb208c.1626261211.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210716182126.4392-1-dwaipayanray1@gmail.com> <CAKXUXMyvOh0GvpEf4uX5iFJYOJLo43tmO16Uf34j4i6XD0vBcg@mail.gmail.com>
-In-Reply-To: <CAKXUXMyvOh0GvpEf4uX5iFJYOJLo43tmO16Uf34j4i6XD0vBcg@mail.gmail.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Sat, 17 Jul 2021 22:27:52 +0530
-Message-ID: <CABJPP5Dqy4XAob_6D5TSX+hURs5JX+ufz2Tg2o=bR7kbMoGzMA@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: remove obsolete check for __dev* section markers
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Whitcroft <apw@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 10:02 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> On Fri, Jul 16, 2021 at 8:21 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
-> >
-> > Commit 54b956b90360 ("Remove __dev* markings from init.h")
-> > completely removed the definitions of __dev* section
-> > markers from init.h. They can no longer pop up in the kernel
-> > and hence the check for those markers is unneeded now.
-> >
->
-> Generally, a good idea! I like this commit of removing obsolete checks
-> in checkpatch. Can you identify more checks in checkpatch that are
-> potentially obsolete and share them with us?
->
+On Wed, 14 Jul 2021 13:14:41 +0200
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-I identified this one while writing the verbose documentations for that
-rule. I will probably get some more in this process. I will share if I get
-something else, given nobody has any objections.
-
-> I assume:
-> If you run checkpatch on the whole latest kernel tree and you run
-> checkpatch on the last 50,000 commits or so, all checks that were
-> never triggered on those evaluations are potentially obsolete. I
-> assume that only a handful of checks would qualify for that criteria,
-> and then we could dig deeper into the history of those checks and see
-> if they still serve a potential purpose or can be removed.
->
-> If you need a powerful server to run such checkpatch evaluations, just
-> let me know.
->
-
-I do have the checkpatch evaluation on the whole kernel that I did about
-last month on a cloud server. I can use that. And I have the 50k commit
-checkpatch report from v5.4. That should suffice for now. But thanks, I
-will share if I require any computing power.
-
-> Just on the wording of your commit message:
->
-> The first sentence reads very strange, because you are just repeating
-> the commit message. So, you can probably just combine the first two
-> sentences and make it much shorter:
->
-> Since commit ..., the check in checkpatch for __dev* markings is obsolete.
->
-> Remove this obsolete check.
->
-
-That sounds logical.
-This particular check was added by Joe in 2013 when the process for
-__dev* marker removal was in progress. If he has no objections to it,
-I can send in an updated patch.
+> Use 'bitmap_alloc()' instead of 'bitmap_zalloc()' because the bitmap
+> is fully overridden by a 'bitmap_copy()' call just after its allocation.
+> 
+> While at it, fix the style of a NULL check.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Applied to the togreg branch of iio.git and pushed out as testing for the autobuilders
+to poke at it.
 
 Thanks,
-Dwaipayan.
+
+Jonathan
+
+> ---
+>  drivers/iio/industrialio-buffer.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index fdd623407b96..6d4776a7f002 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -354,8 +354,8 @@ static int iio_scan_mask_set(struct iio_dev *indio_dev,
+>  	const unsigned long *mask;
+>  	unsigned long *trialmask;
+>  
+> -	trialmask = bitmap_zalloc(indio_dev->masklength, GFP_KERNEL);
+> -	if (trialmask == NULL)
+> +	trialmask = bitmap_alloc(indio_dev->masklength, GFP_KERNEL);
+> +	if (!trialmask)
+>  		return -ENOMEM;
+>  	if (!indio_dev->masklength) {
+>  		WARN(1, "Trying to set scanmask prior to registering buffer\n");
+
