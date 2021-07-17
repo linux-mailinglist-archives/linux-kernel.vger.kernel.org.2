@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA7D3CC2D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 13:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A05D3CC2D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 13:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhGQLdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 07:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
+        id S233426AbhGQLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 07:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbhGQLdf (ORCPT
+        with ESMTP id S229471AbhGQLck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 07:33:35 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FD5C06175F;
-        Sat, 17 Jul 2021 04:30:38 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id bn5so17424171ljb.10;
-        Sat, 17 Jul 2021 04:30:38 -0700 (PDT)
+        Sat, 17 Jul 2021 07:32:40 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894DEC06175F;
+        Sat, 17 Jul 2021 04:29:43 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id go30so19385614ejc.8;
+        Sat, 17 Jul 2021 04:29:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Gujm9tCb3Srfie3BRwmOcbAhEwZV58rTnt52/CyJI8k=;
-        b=U082m5MT/JGMZi9esWGhGI4GbucZmzQpZpZZ8xaZRZEvtBkbXp0C3o3peyYcEcv29d
-         LyNEid9ZVXF8WFtm9f9c4dAFUm4BHbwHloPU8v+zNQkeH5scpj3JYshMH1qIDojFJUzZ
-         k4sLCKN2W+W22Qo3xphw8TG/2IOG+PaVfcmAg4EDHC6+5QzzfUltgeCYODL/mvaR913F
-         bbnEpEPWS6ufh4acB/2owdqR3j/yTYh5riHgGVeauYnvV+x1Tk4dHO+63GBhhorYaNtU
-         BuNxNEej8Z0j07kADrJulc70MQANCaQed53n1h1+Xxl8J08FZW0WX7Y+cZTEQIXrmhVy
-         Tw5A==
+        bh=wMQzc9hsJBjF5+GiV3deRlNe0BUFyhoXni4Q39sORR0=;
+        b=nVcQW8yZtK9YjZwCSga6v5Bl9AXracc8wNFeqh16bVoP2bH7S+lRI0rM3neRXqFiWe
+         Av1b3slBHxFrJ5nShWl/+WErIEk0mWSYZ6fNX7MQhm2Tmqw16tKcVzP0vFbsVCwRk3tv
+         uJyXm0C1VPMgF1HHIsb3glZau0xoZVKg94BghYgTre8EazPmvykfYZ2M6cCQK4sbss4s
+         vkJA+M/6lIrA1P75sBPGf+iMJzfGyXAwLKJ7QsARHaSvRB4A2RQ8Bb0BlBwKCSVP9Uih
+         ++vRT2YeKyoC59xGZEDcmo2Wg+oFzCsVI0R30yWDeHmmvPiF1nOSGjwIdfsN1P2ENs1f
+         JSxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Gujm9tCb3Srfie3BRwmOcbAhEwZV58rTnt52/CyJI8k=;
-        b=at+/1ZSZRUJBD76TZl2ZOZnoHWdWe45rGUmhXc8TJQhCQTxfQxBpv0Nrza0yzBx8WE
-         eucOj36rEKVGMRzAWR3gYPD47leKGeP8g7PRJLd/HSbpeQnMpmzfeTlviUw9xHaUWQAS
-         RJFRD2XNiV/9RTfETt5QDiK+rxCkbpCmYAl99YcnMolColGBupk6s6U8uotrMXcQeepK
-         fvEajAG5Pxm2lfn12jPao0x+9I+WAE88NeFLVEU3yExoZBGFtEkj2HXtCmFznk8XZwXv
-         8hZFz0JyngioS3P09oDQpCHKqYzopydEKaRo1QnZU06Bp3F9N7wl3S1cp4L30/4A9tov
-         SD3A==
-X-Gm-Message-State: AOAM530J12mLLu3zGCxqER1OhV2ElJq1yfShnT3bRJLak3at/tRXtq+k
-        XmtUrR0o7rV/UtcZNdv1J74=
-X-Google-Smtp-Source: ABdhPJypxDT26vovNWBWoo8r9FZx1mF3tO/ar2uWe2+ywLdyBBejJBL3e+l2Ey4tJVIwdjwWznytEg==
-X-Received: by 2002:a05:651c:997:: with SMTP id b23mr11111696ljq.219.1626521437202;
-        Sat, 17 Jul 2021 04:30:37 -0700 (PDT)
-Received: from localhost.localdomain (46-138-17-250.dynamic.spd-mgts.ru. [46.138.17.250])
-        by smtp.gmail.com with ESMTPSA id n21sm825640ljq.33.2021.07.17.04.30.36
+        bh=wMQzc9hsJBjF5+GiV3deRlNe0BUFyhoXni4Q39sORR0=;
+        b=DgdUJ+dQjhJrYSfB/B4pRlER76r3pQ3BntqITeVYowe6GvqVs4ke72dFmrWftYcbxm
+         A1XAb5En6Bx+BcwKFEN/b9TuKd2fTR7uaG3CpUKSCACH8rpOG4e09ZpfXUx1XZyx6JaC
+         tbd8j9PQ+rPHQ4CBss2LE+qM4zgUirDHtUGt/Jqx0G935I7XdIX7uuFK9vpXFkGtPJco
+         zkIBMRcqe0WaF6oybfLAAJ7x8zIIU5ZLLaMROiBX4MMOcbz1pQej9ZQ8nrAzDkiZTyBu
+         yYCqtyIdo3D3b3R4iS3RVFaEbq3u8hWrx4PNslHaGN5GH8y1U47QVK7KIMALTD/DYpqg
+         ftgg==
+X-Gm-Message-State: AOAM532reMtoW+npY/IlNLtAX0QbOnkyKCERE4mx4M7XJS+vRGvxhS6J
+        PG1D19qN+0lMsmnhiVmQIHAJTKIy5QdsBFWK
+X-Google-Smtp-Source: ABdhPJynwZCuNTz1MOt+2HfnZf5Tn+qRujwbGWZkMySSKZi+WO82aUyw2Pd/gS6uipCLO/A9mtcpyQ==
+X-Received: by 2002:a17:906:9719:: with SMTP id k25mr17288756ejx.460.1626521381978;
+        Sat, 17 Jul 2021 04:29:41 -0700 (PDT)
+Received: from localhost.localdomain ([37.155.10.130])
+        by smtp.gmail.com with ESMTPSA id g3sm3782743ejp.2.2021.07.17.04.29.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 04:30:36 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] clk: tegra: Implement disable_unused() of tegra_clk_sdmmc_mux_ops
-Date:   Sat, 17 Jul 2021 14:27:42 +0300
-Message-Id: <20210717112742.7196-1-digetx@gmail.com>
+        Sat, 17 Jul 2021 04:29:41 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
+Subject: [PATCH] net: sched: fix memory leak in tcindex_partial_destroy_work
+Date:   Sat, 17 Jul 2021 14:29:33 +0300
+Message-Id: <20210717112933.12670-1-paskripkin@gmail.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,46 +64,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement disable_unused() callback of tegra_clk_sdmmc_mux_ops to fix
-imbalanced disabling of the unused MMC clock on Tegra210 Jetson Nano.
+Syzbot reported memory leak in tcindex_set_parms(). The problem was in
+non-freed perfect hash in tcindex_partial_destroy_work().
 
-Fixes: c592c8a28f58 ("clk: tegra: Fix refcounting of gate clocks")
-Reported-by: Jon Hunter <jonathanh@nvidia.com> # T210 Nano
-Tested-by: Jon Hunter <jonathanh@nvidia.com> # T210 Nano
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+In tcindex_set_parms() new tcindex_data is allocated and some fields from
+old one are copied to new one, but not the perfect hash. Since
+tcindex_partial_destroy_work() is the destroy function for old
+tcindex_data, we need to free perfect hash to avoid memory leak.
+
+Reported-and-tested-by: syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
+Fixes: 331b72922c5f ("net: sched: RCU cls_tcindex")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- drivers/clk/tegra/clk-sdmmc-mux.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ net/sched/cls_tcindex.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/tegra/clk-sdmmc-mux.c b/drivers/clk/tegra/clk-sdmmc-mux.c
-index 316912d3b1a4..4f2c3309eea4 100644
---- a/drivers/clk/tegra/clk-sdmmc-mux.c
-+++ b/drivers/clk/tegra/clk-sdmmc-mux.c
-@@ -194,6 +194,15 @@ static void clk_sdmmc_mux_disable(struct clk_hw *hw)
- 	gate_ops->disable(gate_hw);
+diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
+index c4007b9cd16d..7ffc7be1e05d 100644
+--- a/net/sched/cls_tcindex.c
++++ b/net/sched/cls_tcindex.c
+@@ -278,6 +278,8 @@ static int tcindex_filter_result_init(struct tcindex_filter_result *r,
+ 			     TCA_TCINDEX_POLICE);
  }
  
-+static void clk_sdmmc_mux_disable_unused(struct clk_hw *hw)
-+{
-+	struct tegra_sdmmc_mux *sdmmc_mux = to_clk_sdmmc_mux(hw);
-+	const struct clk_ops *gate_ops = sdmmc_mux->gate_ops;
-+	struct clk_hw *gate_hw = &sdmmc_mux->gate.hw;
++static void tcindex_free_perfect_hash(struct tcindex_data *cp);
 +
-+	gate_ops->disable_unused(gate_hw);
-+}
-+
- static void clk_sdmmc_mux_restore_context(struct clk_hw *hw)
+ static void tcindex_partial_destroy_work(struct work_struct *work)
  {
- 	struct clk_hw *parent = clk_hw_get_parent(hw);
-@@ -218,6 +227,7 @@ static const struct clk_ops tegra_clk_sdmmc_mux_ops = {
- 	.is_enabled = clk_sdmmc_mux_is_enabled,
- 	.enable = clk_sdmmc_mux_enable,
- 	.disable = clk_sdmmc_mux_disable,
-+	.disable_unused = clk_sdmmc_mux_disable_unused,
- 	.restore_context = clk_sdmmc_mux_restore_context,
- };
+ 	struct tcindex_data *p = container_of(to_rcu_work(work),
+@@ -285,7 +287,8 @@ static void tcindex_partial_destroy_work(struct work_struct *work)
+ 					      rwork);
  
+ 	rtnl_lock();
+-	kfree(p->perfect);
++	if (p->perfect)
++		tcindex_free_perfect_hash(p);
+ 	kfree(p);
+ 	rtnl_unlock();
+ }
 -- 
 2.32.0
 
