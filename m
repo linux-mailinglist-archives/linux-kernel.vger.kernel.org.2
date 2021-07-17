@@ -2,281 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0523CC452
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1B43CC44F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235085AbhGQQA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 12:00:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59514 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232146AbhGQQAz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 12:00:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626537477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Lnlp3V8M3/kRYDW1gANYfuMRIKDZLS7gsUfdmhXePs=;
-        b=WyVzNDPDGm5+kHarjWzwgnYdKv9hFQPWFWY0F2u+6H2adyyxDMNOzsh5HrOPYqenz/wjob
-        iEYiz5Toq/+Bh7YPT2a062PQ5FEcG62o+VlphDULyX49wOqPcHR/7DBCLG3SvGYWEl41Zw
-        P7HnJrvjx0TDEiXEz+EYx9Tx97bWt+E=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-OHx7kJ1xOaGkP1CuZ-grcw-1; Sat, 17 Jul 2021 11:57:56 -0400
-X-MC-Unique: OHx7kJ1xOaGkP1CuZ-grcw-1
-Received: by mail-ed1-f69.google.com with SMTP id ee46-20020a056402292eb02903a1187e547cso6501345edb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 08:57:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6Lnlp3V8M3/kRYDW1gANYfuMRIKDZLS7gsUfdmhXePs=;
-        b=mS3csFwefb6N/3pDSmeyEBAKewto3XJHYZnB9afOjmQVy92pmHX+jhofojKXDzlKGR
-         zwDaznQ/VqZwo0BtqlZG7eoxVzKFF5Eig5R2TLHoJxjHCiE6liw1RXMmq25UWfaOUV6C
-         z4wOXQIJpWJxhr9i16pc1xMuujvRu0RAI29c6HF5oKW2j28RCY0oINMBdaq10ECcbY66
-         kKKQE/R+EG3y2t5ZueiWqm9lL8JSLzRXnTt3ZrGZ4th+4wICGhvSKI9xyl+HRCnKL5dp
-         fNMCS2lbfP1O2mxIYpDF9h01AdWxiWHDoTbyMkn+fbPzOi+BdZEF3EIQKYo4/LhuzZhN
-         NPxQ==
-X-Gm-Message-State: AOAM530bh7YklUTImByj/57ZxyJbS5C3fBJWze+XHtKRS4sh0fOqbPsZ
-        lBlvX6wtT/tWebY/r1PWgeaZJhIRVzo2DqK502FOc0uO38NFVeJlrpRGCAPpL7eO96+Eur8/mMb
-        mcFkBGOapV7JPCiV2wDSUxzEz
-X-Received: by 2002:a05:6402:3507:: with SMTP id b7mr23029944edd.254.1626537475562;
-        Sat, 17 Jul 2021 08:57:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwO3noPz8DjoShn8yb+AJWxVzl/p4vT9QRyWaC+m4pw4R1z+Ok/xOTw+nUb7PDjF5j5yVMqbw==
-X-Received: by 2002:a05:6402:3507:: with SMTP id b7mr23029926edd.254.1626537475393;
-        Sat, 17 Jul 2021 08:57:55 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id c28sm4036620ejc.102.2021.07.17.08.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 08:57:54 -0700 (PDT)
-Subject: Re: [PATCH 3/4] asus-wmi: Add egpu enable method
-To:     Luke Jones <luke@ljones.dev>
-Cc:     pobrn@protonmail.com, mgross@linux.intel.com,
-        corentin.chary@gmail.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, acpi4asus-user@lists.sourceforge.net
-References: <20210717081323.7925-1-luke@ljones.dev>
- <20210717081323.7925-3-luke@ljones.dev> <UXQDWQ.MHGH7K6W57R5@ljones.dev>
- <65RDWQ.DNBXEUQTBV352@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <adb670de-e69a-6944-3d37-d2c0ef36d378@redhat.com>
-Date:   Sat, 17 Jul 2021 17:57:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234952AbhGQP7Y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 17 Jul 2021 11:59:24 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:31541 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232146AbhGQP7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 11:59:14 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GRt4w5lXbzB6Pg;
+        Sat, 17 Jul 2021 17:56:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xxSANAge3v1t; Sat, 17 Jul 2021 17:56:16 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GRt4w4cPPzB6Pf;
+        Sat, 17 Jul 2021 17:56:16 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id 248B6560; Sat, 17 Jul 2021 18:01:27 +0200 (CEST)
+Received: from 37-171-38-5.coucou-networks.fr
+ (37-171-38-5.coucou-networks.fr [37.171.38.5]) by messagerie.c-s.fr (Horde
+ Framework) with HTTP; Sat, 17 Jul 2021 18:01:27 +0200
+Date:   Sat, 17 Jul 2021 18:01:27 +0200
+Message-ID: <20210717180127.Horde.OIjMJnVEEfP_oAQkDsg2IA1@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/chrp: Revert "Move PHB discovery" and "Make
+ hydra_init() static"
+References: <20210716221159.3587039-1-linux@roeck-us.net>
+ <20210717175750.Horde.TLZWyADKWFGAyFWIYtmglA2@messagerie.c-s.fr>
+In-Reply-To: <20210717175750.Horde.TLZWyADKWFGAyFWIYtmglA2@messagerie.c-s.fr>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-In-Reply-To: <65RDWQ.DNBXEUQTBV352@ljones.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luke,
+Christophe Leroy <christophe.leroy@csgroup.eu> a écrit :
 
-On 7/17/21 10:19 AM, Luke Jones wrote:
-> Damn. I thought `-v2` on `git send-email` would bump patch version too. What is the correct way to do that for a full patch sequence?
-
-You need to split the sending of patches into 2 steps, which generally is a good
-idea anyways, since that will also allow you to easily add a cover-letter to the
-series:
-
-Lets say you are ready to send v3 and you have the 3 patches as the last 3
-commits in your git tree's current HEAD, then you would do:
-
-git format-patch --cover-letter -v3 HEAD~3
-$EDITOR v3-0000*.patch
-# Edit the cover letter, say something like:
-# Hi All here is v3 of my ... series, which does foobar
-# new in v3 is ...
-# And don't forget to set the Subject
-git send-email v3-00*.patch
-
-And you're done. I hope this helps.
-
-Regards,
-
-Hans
-
-
-
-
-
-> 
-> On Sat, Jul 17 2021 at 20:15:30 +1200, Luke Jones <luke@ljones.dev> wrote:
->> Apologies, I forgot that the patches contain sequence. There is actually no 4th patch (the patch itself was already upstreamed).
+> Guenter Roeck <linux@roeck-us.net> a écrit :
+>
+>> This patch reverts commit 407d418f2fd4 ("powerpc/chrp: Move PHB
+>> discovery") and commit 9634afa67bfd ("powerpc/chrp: Make hydra_init()
+>> static").
 >>
->> Sincere regards,
->> Luke.
+>> Running the upstream kernel on Qemu's brand new "pegasos2" emulation
+>> results in a variety of backtraces such as
 >>
->> On Sat, Jul 17 2021 at 20:13:23 +1200, Luke D. Jones <luke@ljones.dev> wrote:
->>> The X13 Flow laptops can utilise an external GPU. This requires
->>> toggling an ACPI method which will first disable the internal
->>> dGPU, and then enable the eGPU.
->>>
->>> Signed-off-by: Luke D. Jones <luke@ljones.dev>
->>> ---
->>>  drivers/platform/x86/asus-wmi.c            | 91 ++++++++++++++++++++++
->>>  include/linux/platform_data/x86/asus-wmi.h |  3 +
->>>  2 files changed, 94 insertions(+)
->>>
->>> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
->>> index 02762a60d27a..ee5d8656641e 100644
->>> --- a/drivers/platform/x86/asus-wmi.c
->>> +++ b/drivers/platform/x86/asus-wmi.c
->>> @@ -210,6 +210,9 @@ struct asus_wmi {
->>>      u8 fan_boost_mode_mask;
->>>      u8 fan_boost_mode;
->>>
->>> +    bool egpu_enable_available; // 0 = enable
->>> +    bool egpu_enable;
->>> +
->>>      bool dgpu_disable_available;
->>>      bool dgpu_disable;
->>>
->>> @@ -430,6 +433,86 @@ static void lid_flip_tablet_mode_get_state(struct asus_wmi *asus)
->>>      }
->>>  }
->>>
->>> +/* eGPU ********************************************************************/
->>> +static int egpu_enable_check_present(struct asus_wmi *asus)
->>> +{
->>> +    u32 result;
->>> +    int err;
->>> +
->>> +    asus->egpu_enable_available = false;
->>> +
->>> +    err = asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_EGPU, &result);
->>> +    if (err) {
->>> +        if (err == -ENODEV)
->>> +            return 0;
->>> +        return err;
->>> +    }
->>> +
->>> +    if (result & ASUS_WMI_DSTS_PRESENCE_BIT) {
->>> +        asus->egpu_enable_available = true;
->>> +        asus->egpu_enable = result & ASUS_WMI_DSTS_STATUS_BIT;
->>> +    }
->>> +
->>> +    return 0;
->>> +}
->>> +
->>> +static int egpu_enable_write(struct asus_wmi *asus)
->>> +{
->>> +    int err;
->>> +    u8 value;
->>> +    u32 retval;
->>> +
->>> +    value = asus->egpu_enable;
->>> +
->>> +    err = asus_wmi_set_devstate(ASUS_WMI_DEVID_EGPU, value, &retval);
->>> +
->>> +    if (err) {
->>> +        pr_warn("Failed to set egpu disable: %d\n", err);
->>> +        return err;
->>> +    }
->>> +
->>> +    if (retval > 1 || retval < 0) {
->>> +        pr_warn("Failed to set egpu disable (retval): 0x%x\n", retval);
->>> +        return -EIO;
->>> +    }
->>> +
->>> +    sysfs_notify(&asus->platform_device->dev.kobj, NULL, "egpu_enable");
->>> +
->>> +    return 0;
->>> +}
->>> +
->>> +static ssize_t egpu_enable_show(struct device *dev,
->>> +                   struct device_attribute *attr, char *buf)
->>> +{
->>> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->>> +    bool mode = asus->egpu_enable;
->>> +
->>> +    return sysfs_emit(buf, "%d\n", mode);
->>> +}
->>> +
->>> +static ssize_t egpu_enable_store(struct device *dev,
->>> +                    struct device_attribute *attr,
->>> +                    const char *buf, size_t count)
->>> +{
->>> +    int result;
->>> +    bool disable;
->>> +    struct asus_wmi *asus = dev_get_drvdata(dev);
->>> +
->>> +    result = kstrtobool(buf, &disable);
->>> +    if (result == -EINVAL)
->>> +        return result;
->>> +
->>> +    asus->egpu_enable = disable;
->>> +
->>> +    result = egpu_enable_write(asus);
->>> +    if (result != 0)
->>> +        return result;
->>> +
->>> +    return count;
->>> +}
->>> +
->>> +static DEVICE_ATTR_RW(egpu_enable);
->>> +
->>>  /* dGPU ********************************************************************/
->>>  static int dgpu_disable_check_present(struct asus_wmi *asus)
->>>  {
->>> @@ -2502,6 +2585,7 @@ static struct attribute *platform_attributes[] = {
->>>      &dev_attr_camera.attr,
->>>      &dev_attr_cardr.attr,
->>>      &dev_attr_touchpad.attr,
->>> +    &dev_attr_egpu_enable.attr,
->>>      &dev_attr_dgpu_disable.attr,
->>>      &dev_attr_lid_resume.attr,
->>>      &dev_attr_als_enable.attr,
->>> @@ -2529,6 +2613,8 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
->>>          devid = ASUS_WMI_DEVID_LID_RESUME;
->>>      else if (attr == &dev_attr_als_enable.attr)
->>>          devid = ASUS_WMI_DEVID_ALS_ENABLE;
->>> +    else if (attr == &dev_attr_egpu_enable.attr)
->>> +        ok = asus->egpu_enable_available;
->>>      else if (attr == &dev_attr_dgpu_disable.attr)
->>>          ok = asus->dgpu_disable_available;
->>>      else if (attr == &dev_attr_fan_boost_mode.attr)
->>> @@ -2792,6 +2878,10 @@ static int asus_wmi_add(struct platform_device *pdev)
->>>      if (err)
->>>          goto fail_platform;
->>>
->>> +    err = egpu_enable_check_present(asus);
->>> +    if (err)
->>> +        goto fail_egpu_enable;
->>> +
->>>      err = dgpu_disable_check_present(asus);
->>>      if (err)
->>>          goto fail_dgpu_disable;
->>> @@ -2896,6 +2986,7 @@ static int asus_wmi_add(struct platform_device *pdev)
->>>  fail_sysfs:
->>>  fail_throttle_thermal_policy:
->>>  fail_fan_boost_mode:
->>> +fail_egpu_enable:
->>>  fail_dgpu_disable:
->>>  fail_platform:
->>>  fail_panel_od:
->>> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
->>> index a528f9d0e4b7..17dc5cb6f3f2 100644
->>> --- a/include/linux/platform_data/x86/asus-wmi.h
->>> +++ b/include/linux/platform_data/x86/asus-wmi.h
->>> @@ -90,6 +90,9 @@
->>>  /* Keyboard dock */
->>>  #define ASUS_WMI_DEVID_KBD_DOCK        0x00120063
->>>
->>> +/* dgpu on/off */
->>> +#define ASUS_WMI_DEVID_EGPU        0x00090019
->>> +
->>>  /* dgpu on/off */
->>>  #define ASUS_WMI_DEVID_DGPU        0x00090020
->>>
->>> -- 
->>> 2.31.1
->>>
+>> Kernel attempted to write user page (a1) - exploit attempt? (uid: 0)
+>> ------------[ cut here ]------------
+>> Bug: Write fault blocked by KUAP!
+>> WARNING: CPU: 0 PID: 0 at arch/powerpc/mm/fault.c:230  
+>> do_page_fault+0x4f4/0x920
+>> CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.2 #40
+>> NIP:  c0021824 LR: c0021824 CTR: 00000000
+>> REGS: c1085d50 TRAP: 0700   Not tainted  (5.13.2)
+>> MSR:  00021032 <ME,IR,DR,RI>  CR: 24042254  XER: 00000000
 >>
-> 
-> 
+>> GPR00: c0021824 c1085e10 c0f8c520 00000021 3fffefff c1085c60  
+>> c1085c58 00000000
+>> GPR08: 00001032 00000000 00000000 c0ffb3ec 44042254 00000000  
+>> 00000000 00000004
+>> GPR16: 00000000 ffffffff 000000c4 000000d0 0188c6e0 01006000  
+>> 00000001 40b14000
+>> GPR24: c0ec000c 00000300 02000000 00000000 42000000 000000a1  
+>> 00000000 c1085e60
+>> NIP [c0021824] do_page_fault+0x4f4/0x920
+>> LR [c0021824] do_page_fault+0x4f4/0x920
+>> Call Trace:
+>> [c1085e10] [c0021824] do_page_fault+0x4f4/0x920 (unreliable)
+>> [c1085e50] [c0004254] DataAccess_virt+0xd4/0xe4
+>>
+>> and the system fails to boot. Bisect points to commit 407d418f2fd4
+>> ("powerpc/chrp: Move PHB discovery"). Reverting this patch together with
+>> commit 9634afa67bfd ("powerpc/chrp: Make hydra_init() static") fixes
+>> the problem.
+>
+> Isn't there more than that in the backtrace ? If there is a fault  
+> blocked by Kuap, it means there is a fault. It should be visible in  
+> the traces.
+>
+> Should we fix the problem instead of reverting the commit that made  
+> the problem visible ?
+>
+
+Also, as it is a KUAP fault, did you test without CONFIG_PPC_KUAP ?  
+Does it boot ?
+
+>
+>>
+>> Cc: Oliver O'Halloran <oohall@gmail.com>
+>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Fixes: 407d418f2fd4 ("powerpc/chrp: Move PHB discovery")
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>> arch/powerpc/include/asm/hydra.h    |  2 ++
+>> arch/powerpc/platforms/chrp/pci.c   | 11 ++---------
+>> arch/powerpc/platforms/chrp/setup.c | 12 +++++++++++-
+>> 3 files changed, 15 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/hydra.h  
+>> b/arch/powerpc/include/asm/hydra.h
+>> index d024447283a0..ae02eb53d6ef 100644
+>> --- a/arch/powerpc/include/asm/hydra.h
+>> +++ b/arch/powerpc/include/asm/hydra.h
+>> @@ -94,6 +94,8 @@ extern volatile struct Hydra __iomem *Hydra;
+>> #define HYDRA_INT_EXT7		18	/* Power Off Request */
+>> #define HYDRA_INT_SPARE		19
+>>
+>> +extern int hydra_init(void);
+>> +
+>> #endif /* __KERNEL__ */
+>>
+>> #endif /* _ASMPPC_HYDRA_H */
+>> diff --git a/arch/powerpc/platforms/chrp/pci.c  
+>> b/arch/powerpc/platforms/chrp/pci.c
+>> index 76e6256cb0a7..b2c2bf35b76c 100644
+>> --- a/arch/powerpc/platforms/chrp/pci.c
+>> +++ b/arch/powerpc/platforms/chrp/pci.c
+>> @@ -131,7 +131,8 @@ static struct pci_ops rtas_pci_ops =
+>>
+>> volatile struct Hydra __iomem *Hydra = NULL;
+>>
+>> -static int __init hydra_init(void)
+>> +int __init
+>> +hydra_init(void)
+>> {
+>> 	struct device_node *np;
+>> 	struct resource r;
+>> @@ -313,14 +314,6 @@ chrp_find_bridges(void)
+>> 		}
+>> 	}
+>> 	of_node_put(root);
+>> -
+>> -	/*
+>> -	 *  "Temporary" fixes for PCI devices.
+>> -	 *  -- Geert
+>> -	 */
+>> -	hydra_init();		/* Mac I/O */
+>> -
+>> -	pci_create_OF_bus_map();
+>> }
+>>
+>> /* SL82C105 IDE Control/Status Register */
+>> diff --git a/arch/powerpc/platforms/chrp/setup.c  
+>> b/arch/powerpc/platforms/chrp/setup.c
+>> index 3cfc382841e5..c45435aa5e36 100644
+>> --- a/arch/powerpc/platforms/chrp/setup.c
+>> +++ b/arch/powerpc/platforms/chrp/setup.c
+>> @@ -334,11 +334,22 @@ static void __init chrp_setup_arch(void)
+>> 	/* On pegasos, enable the L2 cache if not already done by OF */
+>> 	pegasos_set_l2cr();
+>>
+>> +	/* Lookup PCI host bridges */
+>> +	chrp_find_bridges();
+>> +
+>> +	/*
+>> +	 *  Temporary fixes for PCI devices.
+>> +	 *  -- Geert
+>> +	 */
+>> +	hydra_init();		/* Mac I/O */
+>> +
+>> 	/*
+>> 	 *  Fix the Super I/O configuration
+>> 	 */
+>> 	sio_init();
+>>
+>> +	pci_create_OF_bus_map();
+>> +
+>> 	/*
+>> 	 * Print the banner, then scroll down so boot progress
+>> 	 * can be printed.  -- Cort
+>> @@ -571,7 +582,6 @@ define_machine(chrp) {
+>> 	.name			= "CHRP",
+>> 	.probe			= chrp_probe,
+>> 	.setup_arch		= chrp_setup_arch,
+>> -	.discover_phbs		= chrp_find_bridges,
+>> 	.init			= chrp_init2,
+>> 	.show_cpuinfo		= chrp_show_cpuinfo,
+>> 	.init_IRQ		= chrp_init_IRQ,
+>> --
+>> 2.25.1
+
 
