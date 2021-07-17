@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1873CC59A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 21:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAD83CC5E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 21:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235006AbhGQTKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 15:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
+        id S235213AbhGQTbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 15:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbhGQTKJ (ORCPT
+        with ESMTP id S234296AbhGQTa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 15:10:09 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3273C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 12:07:12 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id d12so13931628pgd.9
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 12:07:12 -0700 (PDT)
+        Sat, 17 Jul 2021 15:30:57 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B534C061762;
+        Sat, 17 Jul 2021 12:28:01 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so13552262otq.11;
+        Sat, 17 Jul 2021 12:28:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+jEgXhaGLl1WV0YBpjmwQduY0ocPMs5Y7r0OTUJrdDI=;
-        b=E7gcyRNbXHbhoLmDnXSTK/smH8zzolsGQlxb1MH7XeyOQ6l4AepQwF2c5FvzuqLR5W
-         Db8Kz6fRMpDz3GflbfhHej8HgaUtiGysHe9vPjc+xUhD0UEH0fzamjOyHMrQbJMLN9U6
-         SQ2sxggJk8Av+T5qXQB6IjSuQdYWZWcGUiD2YcvNrWPbTWAZGUaJCEQZoCwddxiDP6fv
-         6R3RqGpnsEnyTnvR8RqsEQp6vBVTWWX2WAu53Fr0uJCgu2fvxQ4kpgf9wUdH1tn9TmCY
-         ZErpshYQagso9V90GKBMpx/5yJK8WZ5SOhH8qLpnbkQs4ellc3dL+cK95rSh41XT9jtp
-         h82A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OY5P3Qs+aXS0GXol5NiwP3hCcodvv6jduZx0L8iwDwo=;
+        b=GDk8Q5ty9EG6/PxzOvcNyuxFvY3tmhdqw7RivNyfIxypiERnzVII2o4n99M/A0CW7S
+         VinDg91/OEAyiWKItlwXmj14zRZ2+Q8mI85uXkJoDaHFtxJVeCA2Rf0zj/MLDoB57sYD
+         3fdxcK3vIVbyxy+qai/R2xW9qhnXyixG658F7PJfVMdd8qOJ/hDdgESJGXzjeMbzj7GS
+         Ybo/6iFiSMw8IeXYBFfCCeT30MgaoW4CvAi0ft8h6tycRO+eTSLtxIAMrEQ+HRkywvX+
+         6fhmYpWK1iqLEdnzqmw0U38orl/6XXuu0Tnl9Px7BQal2AWfR21w8eZrZWO0F/Y9aLW5
+         kLxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+jEgXhaGLl1WV0YBpjmwQduY0ocPMs5Y7r0OTUJrdDI=;
-        b=J76p+UN89Gdv2pzBQl53/NK7oA1NM6AW5dTPeXb18orprBCcd7FSsyvDazynNcMwnb
-         WKJ08MmRifgP4/mENanHYe2X2dBqIyM32CmQDCiNz258fd/8PGh4J521mH6mPKQkBNKa
-         nxlWMmVNvQBWZkuFdLeEnlczn3Y4k+JEUyQc6UIIhFESJEsp6mAfS6IRbCaBqIkqpjIX
-         oYmytWjs96AhIFQQo9ydeR63bBv+CKOguU6PUay7imB4r6y6/ipTn9MWG8/Jl3PMtxJS
-         FRscR1Q4sxqoXWmhqx55cXgp9HayRfN+aCodM0oOwrecCL3dSBgBAKKpnbEy/mnjboac
-         N6Tw==
-X-Gm-Message-State: AOAM530mAQ4hXRPWFiXnp6bL1g041s9fUE1CoPX32lw1q74KRm/033rg
-        S68fMS95vyEk9VgvyzS2NHZESQ==
-X-Google-Smtp-Source: ABdhPJwXR1+2PXUCqmhlgSN5E+SwPcEdBtdhYFxJF+jFqOF/x+oWuU0QY4dD4GuBGdnoI9aV5O3Hmw==
-X-Received: by 2002:a63:1656:: with SMTP id 22mr16342661pgw.163.1626548832088;
-        Sat, 17 Jul 2021 12:07:12 -0700 (PDT)
-Received: from [192.168.1.187] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id k5sm14829885pfu.142.2021.07.17.12.07.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 12:07:11 -0700 (PDT)
-Subject: Re: [PATCH] block: increase BLKCG_MAX_POLS
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        David Jeffery <djeffery@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>
-References: <20210717123328.945810-1-oleksandr@natalenko.name>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <32f6b089-46fa-55ec-ce7c-88da7e224728@kernel.dk>
-Date:   Sat, 17 Jul 2021 13:07:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OY5P3Qs+aXS0GXol5NiwP3hCcodvv6jduZx0L8iwDwo=;
+        b=jpHOBAxkwt0AuPwFDYRZJDjstvarYSkvo/hXYIhyY9eBoMjFfTblYtk41nBy5Khtgl
+         LXVEKTckQEc8dSZfOF6s+WxPzEi7Gy1Q23mbBEoZuI3X6Y4t6jHKZvupHK3JHt4h9i93
+         7XlnjRkExOUCquHASeP0NyowPsKjqdpFV/kfiXcBOavn9MI0KWhPsfJoxB0k3FICWTS1
+         hZszK/WWTsb4icr+kqrJgtLw+khkjJgVGzca5UfVYldZWVdqUkTs7ESpdzvyhJ0GIzeb
+         4AvLt+1IsdBNCdYKoAj4pDBdFSG9DnswVNdzjHGWKqo4s5GqfXW+g/81NWlEZL8Oz8l3
+         jOBg==
+X-Gm-Message-State: AOAM530ZEueH5IJlpkpHz4mot1Mf+P2EdP7uqdS918gjGq0Cp7uoqvVL
+        G9kkhAaXgIYYG8HcsegmxqYF1caljSsXhBkRVRY=
+X-Google-Smtp-Source: ABdhPJwdOL3GQLIGVxozk87GaIpeCxhnrSlIsGBjkPcciuhg1QX81Gna8arxi6vshxr7dwIurSKHYHuctsQpn+aidjQ=
+X-Received: by 2002:a9d:7e6:: with SMTP id 93mr6516748oto.370.1626550080413;
+ Sat, 17 Jul 2021 12:28:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210717123328.945810-1-oleksandr@natalenko.name>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210716153641.4678-1-ericwouds@gmail.com> <20210716210655.i5hxcwau5tdq4zhb@skbuf>
+ <eda300a2-4e36-4d0c-8ea8-eae5e6d62bea@gmail.com> <20210717154131.82657-1-dqfext@gmail.com>
+In-Reply-To: <20210717154131.82657-1-dqfext@gmail.com>
+From:   Eric Woudstra <ericwouds@gmail.com>
+Date:   Sat, 17 Jul 2021 21:27:48 +0200
+Message-ID: <CABROOSdLyDZd0SBrN7Su40cqZgK1o2hp19mTJ3t4vcgORd-pdg@mail.gmail.com>
+Subject: Re: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <landen.chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Frank Wunderlich <frank-w@public-files.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/21 6:33 AM, Oleksandr Natalenko wrote:
-> After mq-deadline learnt to deal with cgroups, the BLKCG_MAX_POLS value
-> became too small for all the elevators to be registered properly. The
-> following issue is seen:
-> 
-> ```
-> calling  bfq_init+0x0/0x8b @ 1
-> blkcg_policy_register: BLKCG_MAX_POLS too small
-> initcall bfq_init+0x0/0x8b returned -28 after 507 usecs
-> ```
-> 
-> and BFQ is non-functional.
-> 
-> Increase BLKCG_MAX_POLS to allow space for everyone
+On Sat 17 jul. 2021 at 17:41, DENG Qingfang <dqfext@gmail.com>: wrote:
+>
+> On Sat, Jul 17, 2021 at 10:09:53AM +0200, Eric Woudstra wrote:
+> >
+> > You are right now there is a problem with vlan unaware bridge.
+> >
+> > We need to change the line to:
+> >
+> > if (vid > 1) reg[1] |= ATA2_IVL;
+>
+> Does it not work with vid 1?
 
-LGTM, just needs a:
+No, I also thought so, but it actually does not. I'm working here on
+5.12.11, but there should not be any difference. It needs: if (vid >
+1). Just tried it with (vid > 0) but then it does not work.
 
-Fixes: 08a9ad8bf607 ("block/mq-deadline: Add cgroup support")
+I really like your fix on wifi roaming, it works nicely. However I
+found, still after this patch, it sadly does not work on vlan > 1. At
+least it does not on 5.12.11 (the 'self' entry does not get removed
+automatically, but after manual remove the client connects ok). I need
+to go 5.14 one of these days because I just read DSA has a major
+update. Then I also move from ubuntu focal to a more recent version.
+Then I'll try wifi roaming on vlan again.
 
-in there too, I'll add it.
-
--- 
-Jens Axboe
-
+>
+> >
+> > I have just tested this with a vlan unaware bridge and also with vlan bridge option disabled in the kernel. Only after applying the if statement it works for vlan unaware bridges/kernel.
