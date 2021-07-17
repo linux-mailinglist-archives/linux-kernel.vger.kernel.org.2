@@ -2,136 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD4A3CC56F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 20:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA42D3CC58A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 20:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235692AbhGQS0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 14:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
+        id S235010AbhGQSoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 14:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235444AbhGQS0L (ORCPT
+        with ESMTP id S234625AbhGQSoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 14:26:11 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23A4C061766;
-        Sat, 17 Jul 2021 11:23:12 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id g22so9691536lfu.0;
-        Sat, 17 Jul 2021 11:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y7SaHURNXyUBjsQfPYlKAP5ckfuIlCfIy3J3ukz+tBo=;
-        b=SaXxFTfEqC7NQlicWHSd03MNyG0RY/znqNOu4rKxPWPMT0ZQh8EUVnKZA1kpZw7MYo
-         gMmTSBmrOtbO70/O/pRvEBTehOafvb1TYOzBqqVvsfLUir6/g4T+ZhcHrnYqeVILHoU3
-         kUqy8YrgPCwFY+AhW3jjdRmJStzEabxuBOJxG9S/qOTY0JW+VZxyeWmg9x+mlgrbVLgb
-         A2ci7JvQXzeac1GoEq1MgO84reNM6bIURlghKdyH8cKX9I7kVktxW5p6wV+wP96TH49H
-         nYjY5CrNc94G0uT2C8ibJc72V3BnwVZItcTepsUIE84a4FJfjFZRRtMSTNAKiePjd7vM
-         7T2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y7SaHURNXyUBjsQfPYlKAP5ckfuIlCfIy3J3ukz+tBo=;
-        b=C71Y+UavVW+qJIRegTWGIgVC7FxUUfRvtcQc9rFiEaRLW2gQDfJIE6UXRhwsIulYLV
-         dvtjnHpoCGVSzA8CH6ySOiAIg+IpYmBuoRQKNYNPuLO7RuZmY84sTNcHe2w+3K2u38No
-         VvBVzPoOdbf0icVmkZe2Oi8UJalJYDQoZ+JE2RToZa+MR7tjvW5JXHt1qhv2t18uLqNs
-         OxiqW4oTRozE9/v2wSmtIWc4LiT80hzNsFB70dtoU+cgRzF1r9qT3p+wMRbS5ghins9e
-         cxm4RWSC1KogNl4tvpToGakodc+YTtu5TTdbFovyRmTPp8TFeMIzG7fEGGTp/sNPrIy/
-         lpDA==
-X-Gm-Message-State: AOAM533HabSKwygI4zEUluc5O7qdfxwHuJEZ5s2YqoSmehyLSwNngg/O
-        d60D5nq+wNlZb4M7jq66O0k=
-X-Google-Smtp-Source: ABdhPJx6kt3p/8AdTmBN/YG3dBRZZZ/0Uc//D7ucLTcZ1BioGC5bY11m6kaP7JckoOWhwxwWmO47CA==
-X-Received: by 2002:a05:6512:16a6:: with SMTP id bu38mr12308203lfb.92.1626546191314;
-        Sat, 17 Jul 2021 11:23:11 -0700 (PDT)
-Received: from localhost.localdomain (46-138-17-250.dynamic.spd-mgts.ru. [46.138.17.250])
-        by smtp.gmail.com with ESMTPSA id z20sm1409532ljk.123.2021.07.17.11.23.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 11:23:11 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v5 12/12] arm64: tegra132: Add new properties to USB PHY device-tree node
-Date:   Sat, 17 Jul 2021 21:21:34 +0300
-Message-Id: <20210717182134.30262-13-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210717182134.30262-1-digetx@gmail.com>
-References: <20210717182134.30262-1-digetx@gmail.com>
+        Sat, 17 Jul 2021 14:44:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D920C061762;
+        Sat, 17 Jul 2021 11:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=34IDPVr1FFgLa52/AyVJqWmL3gtZnKkbcxspv1mGiNc=; b=I2b1oobDIa9kR66Da+BrMpc96u
+        8qwvH+/Bzx9JFf2cZXlzgwO7lopBcV9cvwWLWo4tPAqfskgTbVnSxk969GtFfdRsVJ10jxWvYMeJr
+        /AhW3bBHX7rLl2SYQUpz0r+F2Rk1fLECQDEM2pNTGB1k71nHkvq+/5vOcAcHox4oWj7R2EJ59nW5u
+        SfA5gk4IUeM+gdGAjSZQoqs0v59/FTotmz5e+1zjNzsJ6pUhe/mR7E4Cuyw0uRPs8yW08QM3JFwzx
+        L4HRbGanuBnmEvb6furh2pwZJKqeKHmLMJ07Y+ZsF8rdre0OKZfyVYjzs8h/nGf2qgrJ0plAsOT/0
+        Djc9zL5A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m4pEv-005Tso-4z; Sat, 17 Jul 2021 18:40:49 +0000
+Date:   Sat, 17 Jul 2021 19:40:41 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
+        <andreas.gruenbacher@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Chao Yu <chao@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>
+Subject: Re: [PATCH 1/2] iomap: support tail packing inline read
+Message-ID: <YPMkKfegS+9KzEhK@casper.infradead.org>
+References: <20210716050724.225041-1-hsiangkao@linux.alibaba.com>
+ <20210716050724.225041-2-hsiangkao@linux.alibaba.com>
+ <YPGDZYT9OxdgNYf2@casper.infradead.org>
+ <YPGQB3zT4Wp4Q38X@B-P7TQMD6M-0146.local>
+ <YPGbNCdCNXIpNdqd@casper.infradead.org>
+ <YPGfqLcSiH3/z2RT@B-P7TQMD6M-0146.local>
+ <CAHpGcMJzEiJUbD=7ZOdH7NF+gq9MuEi8=ym34ay7QAm5_91s7g@mail.gmail.com>
+ <YPLdSja/4FBsjss/@B-P7TQMD6M-0146.local>
+ <YPLw0uc1jVKI8uKo@casper.infradead.org>
+ <YPL0LqHzEbUY4zY/@B-P7TQMD6M-0146.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPL0LqHzEbUY4zY/@B-P7TQMD6M-0146.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new properties to USB PHYs needed for enabling USB OTG mode.
+On Sat, Jul 17, 2021 at 11:15:58PM +0800, Gao Xiang wrote:
+> Hi Matthew,
+> 
+> On Sat, Jul 17, 2021 at 04:01:38PM +0100, Matthew Wilcox wrote:
+> > On Sat, Jul 17, 2021 at 09:38:18PM +0800, Gao Xiang wrote:
+> > > Sorry about some late. I've revised a version based on Christoph's
+> > > version and Matthew's thought above. I've preliminary checked with
+> > > EROFS, if it does make sense, please kindly help check on the gfs2
+> > > side as well..
+> > 
+> > I don't understand how this bit works:
+> 
+> This part inherited from the Christoph version without change.
+> The following thoughts are just my own understanding...
+> 
+> > 
+> > >  	struct page *page = ctx->cur_page;
+> > > -	struct iomap_page *iop;
+> > > +	struct iomap_page *iop = NULL;
+> > >  	bool same_page = false, is_contig = false;
+> > >  	loff_t orig_pos = pos;
+> > >  	unsigned poff, plen;
+> > >  	sector_t sector;
+> > >  
+> > > -	if (iomap->type == IOMAP_INLINE) {
+> > > -		WARN_ON_ONCE(pos);
+> > > -		iomap_read_inline_data(inode, page, iomap);
+> > > -		return PAGE_SIZE;
+> > > -	}
+> > > +	if (iomap->type == IOMAP_INLINE && !pos)
+> > > +		WARN_ON_ONCE(to_iomap_page(page) != NULL);
+> > > +	else
+> > > +		iop = iomap_page_create(inode, page);
+> > 
+> > Imagine you have a file with bytes 0-2047 in an extent which is !INLINE
+> > and bytes 2048-2051 in the INLINE extent.  When you read the page, first
+> > you create an iop for the !INLINE extent.  Then this function is called
+> 
+> Yes, it first created an iop for the !INLINE extent.
+> 
+> > again for the INLINE extent and you'll hit the WARN_ON_ONCE.  No?
+> 
+> If it is called again with another INLINE extent, pos will be non-0?
+> so (!pos) == false. Am I missing something?
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm64/boot/dts/nvidia/tegra132.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+Well, either sense of a WARN_ON is wrong.
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra132.dtsi b/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-index 9928a87f593a..f79a66226457 100644
---- a/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-@@ -1123,6 +1123,7 @@ phy1: usb-phy@7d000000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d000000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USBD>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1142,6 +1143,7 @@ phy1: usb-phy@7d000000 {
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
- 		nvidia,has-utmi-pad-registers;
-+		nvidia,pmc = <&tegra_pmc 0>;
- 		status = "disabled";
- 	};
- 
-@@ -1162,6 +1164,7 @@ phy2: usb-phy@7d004000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d004000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USB2>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1180,6 +1183,7 @@ phy2: usb-phy@7d004000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 1>;
- 		status = "disabled";
- 	};
- 
-@@ -1200,6 +1204,7 @@ phy3: usb-phy@7d008000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d008000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USB3>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1218,6 +1223,7 @@ phy3: usb-phy@7d008000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 2>;
- 		status = "disabled";
- 	};
- 
--- 
-2.32.0
+For a file which is PAGE_SIZE + 3 bytes in size, to_iomap_page() will
+be NULL.  For a file which is PAGE_SIZE/2 + 3 bytes in size,
+to_iomap_page() will not be NULL.  (assuming the block size is <=
+PAGE_SIZE / 2).
 
+I think we need a prep patch that looks something like this:
+
++++ b/fs/iomap/buffered-io.c
+@@ -252,8 +252,12 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+                return PAGE_SIZE;
+        }
+
++       if (offset_in_page(pos) || length < PAGE_SIZE)
++               iop = iomap_page_create(inode, page);
++       else
++               iop = NULL;
++
+        /* zero post-eof blocks as the page may be mapped */
+-       iop = iomap_page_create(inode, page);
+        iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+        if (plen == 0)
+                goto done;
+
+
+ie first get the conditions right under which we should create an iop.
