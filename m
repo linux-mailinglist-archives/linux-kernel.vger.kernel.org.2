@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B4D3CC4D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF893CC4E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbhGQRd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 13:33:26 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:59940 "EHLO vps0.lunn.ch"
+        id S233719AbhGQRgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 13:36:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232010AbhGQRdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 13:33:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=6l0CstberAqKZPlDzrCY/biBtWYITP+X3kt4+P+sPGs=; b=qX
-        6sJHcNOI4tx7tSjjDMM1T5XSQG/EqhAmg6aD4xu8oqWPhIc9QbqIiRcJO7hOHsTH2V5pXjJUXIY4q
-        r1oxM6Wm3gsilOzp0SewiOIPsGZk2B3Xpbqcrq//yGYgqAf2cgitK6LNzGAKbhYYL5fkw7FyT/va/
-        a0evCFDoz10tNNM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m4o8p-00DkKr-Kd; Sat, 17 Jul 2021 19:30:19 +0200
-Date:   Sat, 17 Jul 2021 19:30:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 3/5] dt-bindings: mvebu-uart: document DT bindings for
- marvell, armada-3700-uart-clock
-Message-ID: <YPMTq1wSo1YLJBQi@lunn.ch>
-References: <20210624224909.6350-1-pali@kernel.org>
- <20210717123829.5201-1-pali@kernel.org>
- <20210717123829.5201-4-pali@kernel.org>
+        id S232828AbhGQRgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 13:36:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2761360FE9;
+        Sat, 17 Jul 2021 17:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626543236;
+        bh=GDqTCOO4uFGwemmRAEP2WS2n7BZO4bDcvurji9/tB1g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lBbpu4nsV39zDRohQAu43Y327W1pCIkBvQrXND3O1vZP3qSqvDY+SOe5O+rOxL1tn
+         3wvZK+CjfK8Hg5EShc+7YSXxgSHT8qFPXAXs6wD/0El/TMcpcx9ZMil5go+I9AKXk6
+         dQKb9NBQ2MWsHcjBchVILzoX3mE7Q0oYVfWfSUcc=
+Date:   Sat, 17 Jul 2021 19:33:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Yan-Hsuan Chuang <tony0620emma@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislaw Gruszka <sgruszka@redhat.com>,
+        Pkshih <pkshih@realtek.com>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] rtw88: Fix out-of-bounds write
+Message-ID: <YPMUfbDh3jnV8hRZ@kroah.com>
+References: <20210716155311.5570-1-len.baker@gmx.com>
+ <YPG/8F7yYLm3vAlG@kroah.com>
+ <20210717133343.GA2009@titan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210717123829.5201-4-pali@kernel.org>
+In-Reply-To: <20210717133343.GA2009@titan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 02:38:27PM +0200, Pali Rohár wrote:
-> This change adds DT bindings documentation for device nodes with compatible
-> string "marvell,armada-3700-uart-clock".
+On Sat, Jul 17, 2021 at 03:33:43PM +0200, Len Baker wrote:
+> On Fri, Jul 16, 2021 at 07:20:48PM +0200, Greg KH wrote:
+> > On Fri, Jul 16, 2021 at 05:53:11PM +0200, Len Baker wrote:
+> > > In the rtw_pci_init_rx_ring function the "if (len > TRX_BD_IDX_MASK)"
+> > > statement guarantees that len is less than or equal to GENMASK(11, 0) or
+> > > in other words that len is less than or equal to 4095. However the
+> > > rx_ring->buf has a size of RTK_MAX_RX_DESC_NUM (defined as 512). This
+> > > way it is possible an out-of-bounds write in the for statement due to
+> > > the i variable can exceed the rx_ring->buff size.
+> > >
+> > > However, this overflow never happens due to the rtw_pci_init_rx_ring is
+> > > only ever called with a fixed constant of RTK_MAX_RX_DESC_NUM. But it is
+> > > better to be defensive in this case and add a new check to avoid
+> > > overflows if this function is called in a future with a value greater
+> > > than 512.
+> >
+> > If this can never happen, then no, this is not needed.
 > 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> ---
->  .../bindings/clock/armada3700-uart-clock.txt  | 24 +++++++++++++++++++
->  .../devicetree/bindings/serial/mvebu-uart.txt |  9 ++++---
->  2 files changed, 30 insertions(+), 3 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt
+> Then, if this can never happen, the current check would not be necessary
+> either.
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt
-> new file mode 100644
-> index 000000000000..144bc6d7eae8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt
+> > Why would you check twice for the same thing?
+> 
+> Ok, it makes no sense to double check the "len" variable twice. So, I
+> propose to modify the current check as follows:
+> 
+> diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
+> index e7d17ab8f113..0fd140523868 100644
+> --- a/drivers/net/wireless/realtek/rtw88/pci.c
+> +++ b/drivers/net/wireless/realtek/rtw88/pci.c
+> @@ -268,8 +268,8 @@ static int rtw_pci_init_rx_ring(struct rtw_dev *rtwdev,
+>         int i, allocated;
+>         int ret = 0;
+> 
+> -       if (len > TRX_BD_IDX_MASK) {
+> -               rtw_err(rtwdev, "len %d exceeds maximum RX entries\n", len);
+> +       if (len > ARRAY_SIZE(rx_ring->buf)) {
+> +               rtw_err(rtwdev, "len %d exceeds maximum RX ring buffer\n", len);
+>                 return -EINVAL;
+>         }
+> 
+> This way the overflow can never happen with the current call to
+> rtw_pci_init_rx_ring function or with a future call with a "len" parameter
+> greater than 512. What do you think?
+> 
+> If there are no objections I will send a v3 for review.
+> 
+> Another question: If this can never happen should I include the "Fixes" tag,
+> "Addresses-Coverity-ID" tag and Cc to stable?
 
-Since this is a new binding, please use YAML.
+If it can never happen, why have this check at all?
 
-      Andrew
+Looks like a Coverity false positive?
+
+thanks,
+
+greg k-h
