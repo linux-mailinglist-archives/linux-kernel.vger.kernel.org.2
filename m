@@ -2,115 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A6A3CC008
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 02:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB0A3CC00F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 02:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhGQAUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 20:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhGQAUM (ORCPT
+        id S231337AbhGQAZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 20:25:42 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:45700 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhGQAZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 20:20:12 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EBCC06175F;
-        Fri, 16 Jul 2021 17:17:15 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id u14so16388481ljh.0;
-        Fri, 16 Jul 2021 17:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=JePf1Btub1hmfZtg+ClXKQX7N/9PGylpCuoeIso+ePM=;
-        b=H0gbpzrHx9SMTN5EYuV/bld18qmBOGTajfMWX1GXfhRgAzPvaVqh+aIhBlATGxRd2Y
-         CtdwW6E4JViC9uO+EZXiuOyoIdpSxIARGb+Oc3kUOMzp6DE9lzn9PvQW8ZSHAOGObFh3
-         aapS6VDJWEtf6iXmeiPH/Eou+79B0D9GMI0bX4U5GIpYmSfQKprKjJd0Mk7crUJd6CCD
-         5CMX1LGiuQBm6ITSlY0HsB1NumNF9hjTF4Xf0kpxaDLiv3TKjoq8nByXZrwkLDHJdxFy
-         4wcM8mOvxSu3WAKAm13977N9UEVa1R3I/EunvaU1sR+CDYD3MuBZZAiy6JsnLZg+uPt1
-         HyoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=JePf1Btub1hmfZtg+ClXKQX7N/9PGylpCuoeIso+ePM=;
-        b=kryA0H9r8agN1mXwqYNZxb1vDnArraEXTWhKHhyX/ExDdcAEDWrqzR8Stj/EfNtjXj
-         uBO0oN2XQOo+befoAhptkPJohHfR5w3pgs16friDnfXaydVXPjoiGXE2jakeXJ6xnVnf
-         08x4P9m8VnbGyqVGyPVW4l0T5b/tl4jI6oFRxM/c9zOUlj544UWdAFRcoLmEGffJcWZl
-         dZAPbWvAYBqH80RN7X2zGQ8Vjq3j0kiRDAWggaqs67Si7TNCPgC0uGxTFpawFyiAIhE2
-         1B5tkFRFx1tPoid9srUw0ibjWkbdTLX8zeNlx7V+uxt509JGW1TClUzgkBktRGX+/kmb
-         oQcg==
-X-Gm-Message-State: AOAM531T2XP00uQfJ4D/Dj3Ouf1vBCJdYMdZeCvR+tfSh+iNGQp6sEwv
-        LOBZcnM6ptd7N9r6kmp0chZ/wFGjzZ3Z/X0eri8BwxcXDFXW+w==
-X-Google-Smtp-Source: ABdhPJy7jRzCFQdpnD68cle1KlIa35M3MgIxukXoVxNWlz9ZDeSJL34eiGxifI7eFlgLHlGQtu2b/GqAf4FN0cK/4uA=
-X-Received: by 2002:a2e:901a:: with SMTP id h26mr11010063ljg.218.1626481033816;
- Fri, 16 Jul 2021 17:17:13 -0700 (PDT)
+        Fri, 16 Jul 2021 20:25:41 -0400
+Received: from netfilter.org (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 0725D6164C;
+        Sat, 17 Jul 2021 02:22:25 +0200 (CEST)
+Date:   Sat, 17 Jul 2021 02:22:43 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        kernel test robot <lkp@intel.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] audit: fix memory leak in nf_tables_commit
+Message-ID: <20210717002243.GA27401@salvia>
+References: <20210714032703.505023-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 16 Jul 2021 19:17:01 -0500
-Message-ID: <CAH2r5munsckwgOj8BknkB1pu+oktLTDJA8hN1cHbDucQXVJ2Nw@mail.gmail.com>
-Subject: [GIT PULL] CIFS/SMB3 Fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210714032703.505023-1-mudongliangabcd@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+On Wed, Jul 14, 2021 at 11:27:03AM +0800, Dongliang Mu wrote:
+> In nf_tables_commit, if nf_tables_commit_audit_alloc fails, it does not
+> free the adp variable.
+> 
+> Fix this by adding nf_tables_commit_audit_free which frees 
+> the linked list with the head node adl.
+> 
+> backtrace:
+>   kmalloc include/linux/slab.h:591 [inline]
+>   kzalloc include/linux/slab.h:721 [inline]
+>   nf_tables_commit_audit_alloc net/netfilter/nf_tables_api.c:8439 [inline]
+>   nf_tables_commit+0x16e/0x1760 net/netfilter/nf_tables_api.c:8508
+>   nfnetlink_rcv_batch+0x512/0xa80 net/netfilter/nfnetlink.c:562
+>   nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
+>   nfnetlink_rcv+0x1fa/0x220 net/netfilter/nfnetlink.c:652
+>   netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+>   netlink_unicast+0x2c7/0x3e0 net/netlink/af_netlink.c:1340
+>   netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
+>   sock_sendmsg_nosec net/socket.c:702 [inline]
+>   sock_sendmsg+0x56/0x80 net/socket.c:722
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc1-smb3-fixes
-
-for you to fetch changes up to cdc3363065aba2711e51019b3d5787f044f8a133:
-
-  cifs: do not share tcp sessions of dfs connections (2021-07-16 00:21:47 -0500)
-
-----------------------------------------------------------------
-8 cifs/smb3 fixes including 3 for stable
-3 DFS related fixes, and two to fix problems pointed out by static checkers
-
-Still testing a set of important multichannel fixes which are not
-included in this
-
-Regression test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/730
-----------------------------------------------------------------
-Hyunchul Lee (1):
-      cifs: fix the out of range assignment to bit fields in
-parse_server_interfaces
-
-Paulo Alcantara (2):
-      cifs: handle reconnect of tcon when there is no cached dfs referral
-      cifs: do not share tcp sessions of dfs connections
-
-Ronnie Sahlberg (1):
-      cifs: Do not use the original cruid when following DFS links for
-multiuser mounts
-
-Shyam Prasad N (2):
-      cifs: use the expiry output of dns_query to schedule next resolution
-      cifs: added WARN_ON for all the count decrements
-
-Steve French (2):
-      cifs: fix missing null session check in mount
-      SMB3.1.1: fix mount failure to some servers when compression enabled
-
- fs/cifs/cifs_dfs_ref.c |   6 +++++-
- fs/cifs/cifsglob.h     |   7 +++++++
- fs/cifs/connect.c      | 110
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
- fs/cifs/dns_resolve.c  |  10 ++++++----
- fs/cifs/dns_resolve.h  |   2 +-
- fs/cifs/misc.c         |   2 +-
- fs/cifs/smb2ops.c      |   6 ++++--
- fs/cifs/smb2pdu.h      |   1 +
- 8 files changed, 124 insertions(+), 20 deletions(-)
-
-
---
-Thanks,
-
-Steve
+Applied, thanks.
