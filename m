@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A05D3CC2D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 13:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DEF3CC2E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbhGQLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 07:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
+        id S233336AbhGQMJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 08:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhGQLck (ORCPT
+        with ESMTP id S229471AbhGQMJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 07:32:40 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894DEC06175F;
-        Sat, 17 Jul 2021 04:29:43 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id go30so19385614ejc.8;
-        Sat, 17 Jul 2021 04:29:43 -0700 (PDT)
+        Sat, 17 Jul 2021 08:09:56 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14127C06175F;
+        Sat, 17 Jul 2021 05:06:59 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id s17so7204614ljo.12;
+        Sat, 17 Jul 2021 05:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=wMQzc9hsJBjF5+GiV3deRlNe0BUFyhoXni4Q39sORR0=;
-        b=nVcQW8yZtK9YjZwCSga6v5Bl9AXracc8wNFeqh16bVoP2bH7S+lRI0rM3neRXqFiWe
-         Av1b3slBHxFrJ5nShWl/+WErIEk0mWSYZ6fNX7MQhm2Tmqw16tKcVzP0vFbsVCwRk3tv
-         uJyXm0C1VPMgF1HHIsb3glZau0xoZVKg94BghYgTre8EazPmvykfYZ2M6cCQK4sbss4s
-         vkJA+M/6lIrA1P75sBPGf+iMJzfGyXAwLKJ7QsARHaSvRB4A2RQ8Bb0BlBwKCSVP9Uih
-         ++vRT2YeKyoC59xGZEDcmo2Wg+oFzCsVI0R30yWDeHmmvPiF1nOSGjwIdfsN1P2ENs1f
-         JSxA==
+        bh=aZ4FaSPclTvOdg2vW6OaAy8V6HK0XJGT4EPWt9T+Yc4=;
+        b=Zg0Rfncjjh1E/CVu9Hc6J32F1yWbyDY4wCNaaXTG/M9FQG2KkzrrxGav8YmYrPG+fS
+         3z2c0Zwh7FQ/Bdp9mDjwvLxf5GH2tAxXDQGiVrVYrwaquir+W7zvnaEsd8eEEwLEb+jn
+         3ydl1vEtCqJT/ugUWIiiJwYB0O1lJxK5GNAcOxsuI/5vr3I2zjBnHDwz9il/YxvvWewX
+         lAobBLd2gDs/h8YrZTNelN7bmbTBrAnfdslf9O1DhXH8m0RQfOZuXSx6Yc5Ac+GykJfF
+         tsqORzi0WltGGV6gmILxxex2lN4TNYrXM+jRyrdVRQStNh8dcKnWjPdcDqLQDw4lq557
+         Zb0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=wMQzc9hsJBjF5+GiV3deRlNe0BUFyhoXni4Q39sORR0=;
-        b=DgdUJ+dQjhJrYSfB/B4pRlER76r3pQ3BntqITeVYowe6GvqVs4ke72dFmrWftYcbxm
-         A1XAb5En6Bx+BcwKFEN/b9TuKd2fTR7uaG3CpUKSCACH8rpOG4e09ZpfXUx1XZyx6JaC
-         tbd8j9PQ+rPHQ4CBss2LE+qM4zgUirDHtUGt/Jqx0G935I7XdIX7uuFK9vpXFkGtPJco
-         zkIBMRcqe0WaF6oybfLAAJ7x8zIIU5ZLLaMROiBX4MMOcbz1pQej9ZQ8nrAzDkiZTyBu
-         yYCqtyIdo3D3b3R4iS3RVFaEbq3u8hWrx4PNslHaGN5GH8y1U47QVK7KIMALTD/DYpqg
-         ftgg==
-X-Gm-Message-State: AOAM532reMtoW+npY/IlNLtAX0QbOnkyKCERE4mx4M7XJS+vRGvxhS6J
-        PG1D19qN+0lMsmnhiVmQIHAJTKIy5QdsBFWK
-X-Google-Smtp-Source: ABdhPJynwZCuNTz1MOt+2HfnZf5Tn+qRujwbGWZkMySSKZi+WO82aUyw2Pd/gS6uipCLO/A9mtcpyQ==
-X-Received: by 2002:a17:906:9719:: with SMTP id k25mr17288756ejx.460.1626521381978;
-        Sat, 17 Jul 2021 04:29:41 -0700 (PDT)
-Received: from localhost.localdomain ([37.155.10.130])
-        by smtp.gmail.com with ESMTPSA id g3sm3782743ejp.2.2021.07.17.04.29.38
+        bh=aZ4FaSPclTvOdg2vW6OaAy8V6HK0XJGT4EPWt9T+Yc4=;
+        b=fQ1BjX3T7VAw38iUGKsT0XNfJPgJpioVYevXfo9IKW23yfgM2QQA2vgyb/KjjmKxOt
+         LQ+SqdwTj/6/ZjyaUMkqpCN8nCauDecqxR0MeHkHGTJAXYakK45PmkLxhEvmc36AlAb2
+         pW+/sMBK0wMI+LJXo6gFGKfYjA007sD4X1tJPdN+uIqbzai1OR5i579w4R2mAnQyDd9O
+         4tERZD9f2NT39dgso+oN7vQQc3EQ92P5WXO2v6yHwKJvlqhp58i7LBFEKhdWsHxNTlLe
+         MpLerRvuggjknED2mYM0kHZQamr/tvN+ohvj4m8F+LcBzYX/PHleyFy3gqw+GLMNiwMH
+         56NQ==
+X-Gm-Message-State: AOAM533weAcq12h7zTv1Rvxx5lhIgGTyxkvZfVNNTEElvvf5aMX5id6Q
+        ADfIpFxWoqcA0uiBnGyWVbU=
+X-Google-Smtp-Source: ABdhPJwaIrQqBWZppl7108v+ROhUv+epKNuGwObVIhyhNEXHZbSbds2xFFmrCQIWrQxAuckVp3xD6g==
+X-Received: by 2002:a2e:9e07:: with SMTP id e7mr13103444ljk.456.1626523617469;
+        Sat, 17 Jul 2021 05:06:57 -0700 (PDT)
+Received: from localhost.localdomain (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
+        by smtp.gmail.com with ESMTPSA id e5sm155334ljn.72.2021.07.17.05.06.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 04:29:41 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
-Subject: [PATCH] net: sched: fix memory leak in tcindex_partial_destroy_work
-Date:   Sat, 17 Jul 2021 14:29:33 +0300
-Message-Id: <20210717112933.12670-1-paskripkin@gmail.com>
+        Sat, 17 Jul 2021 05:06:56 -0700 (PDT)
+From:   Peter Ujfalusi <peter.ujfalusi@gmail.com>
+To:     tony@atomide.com, bcousson@baylibre.com
+Cc:     robh+dt@kernel.org, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hns@goldelico.com
+Subject: [PATCH 0/3] ARM: dts / ti-sysc: Enable McASP on OMAP4
+Date:   Sat, 17 Jul 2021 15:09:22 +0300
+Message-Id: <20210717120925.24505-1-peter.ujfalusi@gmail.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,44 +63,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported memory leak in tcindex_set_parms(). The problem was in
-non-freed perfect hash in tcindex_partial_destroy_work().
+Hi,
 
-In tcindex_set_parms() new tcindex_data is allocated and some fields from
-old one are copied to new one, but not the perfect hash. Since
-tcindex_partial_destroy_work() is the destroy function for old
-tcindex_data, we need to free perfect hash to avoid memory leak.
+This series is the dts / ti-sysc part of the McASP DIT and OMAP4 support:
+https://lore.kernel.org/alsa-devel/20210705194249.2385-1-peter.ujfalusi@gmail.com/
 
-Reported-and-tested-by: syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
-Fixes: 331b72922c5f ("net: sched: RCU cls_tcindex")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+The ASoC part has been picked up and it is in linux-next.
+
+I have followed the advice from Tony and added a quirk via ti-sysc to disable the
+non working SIDLE mode for McASP.
+
+Tested on PandaES.
+
+Since I have kept the McASP node disabled the ti-sysc patch can go via different
+tree if it is easier to handle.
+
+Regards,
+Peter
 ---
- net/sched/cls_tcindex.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Peter Ujfalusi (3):
+  ARM: dts: omap4-l4-abe: Correct sidle modes for McASP
+  bus: ti-sysc: Add quirk for OMAP4 McASP to disable SIDLE mode
+  ARM: dts: omap4-l4-abe: Add McASP configuration
 
-diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
-index c4007b9cd16d..7ffc7be1e05d 100644
---- a/net/sched/cls_tcindex.c
-+++ b/net/sched/cls_tcindex.c
-@@ -278,6 +278,8 @@ static int tcindex_filter_result_init(struct tcindex_filter_result *r,
- 			     TCA_TCINDEX_POLICE);
- }
- 
-+static void tcindex_free_perfect_hash(struct tcindex_data *cp);
-+
- static void tcindex_partial_destroy_work(struct work_struct *work)
- {
- 	struct tcindex_data *p = container_of(to_rcu_work(work),
-@@ -285,7 +287,8 @@ static void tcindex_partial_destroy_work(struct work_struct *work)
- 					      rwork);
- 
- 	rtnl_lock();
--	kfree(p->perfect);
-+	if (p->perfect)
-+		tcindex_free_perfect_hash(p);
- 	kfree(p);
- 	rtnl_unlock();
- }
+ arch/arm/boot/dts/omap4-l4-abe.dtsi | 38 +++++++++++++++--------------
+ drivers/bus/ti-sysc.c               |  3 ++-
+ 2 files changed, 22 insertions(+), 19 deletions(-)
+
 -- 
 2.32.0
 
