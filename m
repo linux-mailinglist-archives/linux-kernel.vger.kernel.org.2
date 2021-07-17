@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7471E3CC12F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 06:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD9F3CC142
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 06:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhGQE7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 00:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        id S231719AbhGQFAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 01:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhGQE7i (ORCPT
+        with ESMTP id S230204AbhGQE7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 00:59:38 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C84C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 21:56:41 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id y3so1932398plp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 21:56:41 -0700 (PDT)
+        Sat, 17 Jul 2021 00:59:41 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E68C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 21:56:44 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id i16-20020a17090acf90b02901736d9d2218so8271209pju.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 21:56:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ziJ5YcGkSYbFL2uIt1IxWQA6HzWtHmBZYzfxdUp5I6c=;
-        b=K7+Rv0oJRgRDFEpvFX6Ft5pXHMgu/hm0jwFUyb08BgQRjeav1m4xGAQtEa9jO33cq+
-         n3OH/Dqx4ovhxBoTCdgoaxHsL9AX7PavBXWhlvufUoYp56h39PxBzdjBW6mV4MyYn0Rz
-         +yse2idj2uxvPSI25vBIRJrddVfydfjvMv7Lc=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8e6XlbKC+KjOCVkxo+Eb2tDouy+mshYsdsUVUAEu5P0=;
+        b=gTkFAmbiJ1QVkJ2Vm7kvTo2ZOBk4PVmQMN6bdqkEpl5SDEB0Nw/ioy0AzHHOiyzU+/
+         S9R/X+DOAAl1hiTV0UvPhv1kCGUAt+ZNLQdKGk8zt93hzzuVM8eV9B5dOt+infBlHK+Q
+         KkEFLJv29N2/Zm7Db64oozASkYgNlD5DaWdG0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ziJ5YcGkSYbFL2uIt1IxWQA6HzWtHmBZYzfxdUp5I6c=;
-        b=H+9os7GbLy3IQrNcIlTEwhMyvo/vRPLoRYhJqR+owQGK5va6qc/kbmjZGhYd8NETII
-         MCKutZO/7tk0JxV0poobkIXEAA+tYTXIkVjGg01FeZhhW699+9usXB0HcpQtMHtJ1b21
-         7/RBqFp1DUZ13C+rZNovovkw4/eIF5M8yNkRKJdzUjJY0tm9z8IiRp37Op8zOrlx9UV6
-         9XoOzssNB/bdqP9Ds9Vx/cfdkN0o3MLXcGLdu3Nf/CnyNg7KPr6nI23h4VSVfiaJxcD3
-         8kEL3knxEuDwwj2LHC2ELjQaSmQVkWuPmNVFd3aniZ3br2J8D3EtK3Erdm2Yx18mKVsh
-         GBUQ==
-X-Gm-Message-State: AOAM533baobBK+6JBgAItp9PuK24ILN3EcmaRhifuQ4XsQbnV6COcsKe
-        X/BNa9JYk1yE3iIn8cwGuK842A==
-X-Google-Smtp-Source: ABdhPJzgzeOYl4W876FC7nvH5fuQ1vgG4J02K3X92aZRMt4lEiA6u7OIuKU1IKl/46HEBWnaEBURgQ==
-X-Received: by 2002:a17:90a:e54d:: with SMTP id ei13mr18752850pjb.187.1626497801110;
-        Fri, 16 Jul 2021 21:56:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8e6XlbKC+KjOCVkxo+Eb2tDouy+mshYsdsUVUAEu5P0=;
+        b=gd0KdVdhhvCN7QfXORLFiIhMrifcy3iF1of+c9SOv+i4Ri4UT2DyPTNDE121DteVaC
+         w5xkqH3zhRGyR4I9Y03PS3prHQLbZUScFUsPdqe5YezT7w2VsjHh+dDUQSIe0ku2HM6H
+         CX5Jux7rJxmk33YT/eI2/U/6BcNbt3O97K6HBo0nq65XQGbbjW3cDPz/dhwZC0E1WE0z
+         5yWE8bxit9+n0nX7vwKI4Ahk9Psulf4hmIeyCSoKTC8Iv9E1Y3Cw4QjJKAyk+jRXM9KF
+         3iFrSsvu5ufCljxSU0A5Y+we7+4Rm+G9HNMU3BlIzcFY0TfKo2OAxGkLwLnkadOEvxmX
+         04FQ==
+X-Gm-Message-State: AOAM531SHzqjZ4rqG0pVBkuOGHrsku7twuvdkAEdchkHBMY/F7Jy7R+e
+        qsASYl/35ejVCAoTGT8Hmn3ijw==
+X-Google-Smtp-Source: ABdhPJwoR0Fkmo9Na2dM1/fOXvJF37GjeGKSSmFizRu+R+7y+/7jIjcFbBQCYikme7Ht5nSy9ZLaWg==
+X-Received: by 2002:a17:90a:1d43:: with SMTP id u3mr19190689pju.121.1626497804165;
+        Fri, 16 Jul 2021 21:56:44 -0700 (PDT)
 Received: from shiro.work (p866038-ipngn200510sizuokaden.shizuoka.ocn.ne.jp. [180.9.60.38])
-        by smtp.googlemail.com with ESMTPSA id w2sm12522885pjf.2.2021.07.16.21.56.38
+        by smtp.googlemail.com with ESMTPSA id w2sm12522885pjf.2.2021.07.16.21.56.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 21:56:40 -0700 (PDT)
+        Fri, 16 Jul 2021 21:56:43 -0700 (PDT)
 From:   Daniel Palmer <daniel@0x0f.com>
 To:     devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linus.walleij@linaro.org, robh@kernel.org, romain.perier@gmail.com,
         Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH 00/10] gpio: msc313: Add gpio support for ssd20xd
-Date:   Sat, 17 Jul 2021 13:56:17 +0900
-Message-Id: <20210717045627.1739959-1-daniel@0x0f.com>
+Subject: [PATCH 01/10] dt-bindings: gpio: msc313: Add compatible for ssd20xd
+Date:   Sat, 17 Jul 2021 13:56:18 +0900
+Message-Id: <20210717045627.1739959-2-daniel@0x0f.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210717045627.1739959-1-daniel@0x0f.com>
+References: <20210717045627.1739959-1-daniel@0x0f.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a little series to add a compatible string for the Sigmastar
-SSD201 and SSD202D to the msc313 gpio driver, add the specific offsets
-for the pins on these chips, and then a bunch of DT wiring stuff so
-that the LEDs on the M5 stack unitv2 work and it can control the
-power switch for the USB connected.
+Add a compatible string for "ssd20xd" for the SigmaStar SSD201
+and SSD202D chips. These chips are the same die with different
+memory bonded so they don't need their own strings.
 
-Daniel Palmer (10):
-  dt-bindings: gpio: msc313: Add compatible for ssd20xd
-  dt-bindings: gpio: msc313: Add offsets for ssd20xd
-  gpio: msc313: Code clean ups
-  gpio: msc313: Add support for SSD201 and SSD202D
-  ARM: dts: mstar: Set gpio compatible for ssd20xd
-  ARM: dts: mstar: unitv2: Wire up LEDs
-  ARM: dts: mstar: unitv2: Add core regulator
-  ARM: dts: mstar: unitv2: Add io regulator
-  ARM: dts: mstar: unitv2: Add DRAM regulator
-  ARM: dts: mstar: unitv2: Add wifi switch
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+---
+ Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
- .../bindings/gpio/mstar,msc313-gpio.yaml      |   4 +-
- .../dts/mstar-infinity2m-ssd202d-unitv2.dts   |  46 +++
- .../boot/dts/mstar-infinity2m-ssd20xd.dtsi    |   5 +
- drivers/gpio/gpio-msc313.c                    | 266 +++++++++++++++++-
- include/dt-bindings/gpio/msc313-gpio.h        |  71 +++++
- 5 files changed, 387 insertions(+), 5 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml b/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
+index fe1e1c63ffe3..18fe90387b87 100644
+--- a/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
++++ b/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
+@@ -14,7 +14,9 @@ properties:
+     pattern: "^gpio@[0-9a-f]+$"
+ 
+   compatible:
+-    const: mstar,msc313-gpio
++    enum:
++      - mstar,msc313-gpio
++      - sstar,ssd20xd-gpio
+ 
+   reg:
+     maxItems: 1
 -- 
 2.32.0
 
