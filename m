@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813CB3CC439
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADC83CC437
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbhGQPlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 11:41:55 -0400
-Received: from mout.gmx.net ([212.227.15.15]:36255 "EHLO mout.gmx.net"
+        id S236676AbhGQPjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 11:39:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234787AbhGQPld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 11:41:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626536304;
-        bh=iZJzMiq/vESZ2pyqPpRCYJAQLHIcDzTWUIgzTPJmsb4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=WxWI1u3PV381hd3LnI0jFzYt8hfQMwwoDzP5bEDn5qAkU3P2EephUGwGep0G1ZN7q
-         HuLjve0tVx+vY2SNzQhj6ZJaI9umeoSoHSOFN+8/mh1M3c2U26xJ0WmOGm4mFwJ6N6
-         G+yB5FfzcPQL0QlANjaV/Ucvejy5roAExHjbfSvw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MGQnP-1lv6943nMz-00GpmR; Sat, 17 Jul 2021 17:38:24 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging/ks7010: Remove all strcpy() uses in favor of strscpy()
-Date:   Sat, 17 Jul 2021 17:37:59 +0200
-Message-Id: <20210717153759.13468-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S236355AbhGQPjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 11:39:37 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 165BB6109E;
+        Sat, 17 Jul 2021 15:36:37 +0000 (UTC)
+Date:   Sat, 17 Jul 2021 16:39:00 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andrea Merello <andrea.merello@gmail.com>
+Cc:     lars@metafoo.de, robh+dt@kernel.org, matt.ranostay@konsulko.com,
+        andriy.shevchenko@linux.intel.com, vlad.dogaru@intel.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Andrea Merello <andrea.merello@iit.it>
+Subject: Re: [PATCH 3/4] dt-bindings: iio: imu: add bosch BNO055 serdev
+ driver bindings
+Message-ID: <20210717163900.657ec48b@jic23-huawei>
+In-Reply-To: <20210715141742.15072-4-andrea.merello@gmail.com>
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+        <20210715141742.15072-4-andrea.merello@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DKK2exlaQxwebtcjUBUsZXnGR2wcU/rdSgHOz1LAEFdMxSF7p78
- cnPT0opL08BKaEjM2CCsl4i+zbwxMqopwc5VuItZ9oc8HJT+yq81aic3EgK4K2UvoThU91s
- /E8qiqad79vEDThG6GQh7gFHsS5megGJTfsKHUo892/FfGa4kLtaXcvVuXGVI6xeb5Gs58h
- ISBIiM4I+16yjsPF0KfmA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qEpoHoAWcqA=:7lYDvzrpcfy+7Og0JsmaU6
- Bxa0t/lDZ28zzMPmuNF951Qk3cCqJ51KihfxZaM1I6CIVFH113bj3xXVNRuen6ncH1p7nSZua
- dZHDsMJy50Hfrdslycm5o7Nz80VHGE4r1o2R4djUVY9Mf/BXTw3tqAHkoxGs0XLpX760UyDvF
- h+lxRSul3MoZPHZTh6LxyMd9jjLsfWg9Z9UFVhrfnAOdlOV/31fJEaSIeyyImWn7rJjwlIUaV
- g3ErzY6zVbPiUnF9EVXthOPJfDQxICcMawx4XsMcW5YsdQKu6P2ABkl2PqfpbcrgKHzrrFhWG
- tyg+Kv8qN4gwPv9PWev+epehaxlC5T9Pz2b/dT7rU56W87OomObYKdqXnN19Ka/Q9TnIZw5sy
- q+P9tW8IqbArE1lpz/CYv7/ghThB/ycn+5YJ0gojEO29YQuh5sv2a2p8TrL+OZPsSEbjN3mUH
- ZtAPb7OAnm+HvWvDDrXc9UcsryQJ7j41darlgdZLb/r11kuJDRS/TMKVlaKpEIpXe7C0W3+bH
- aK/hk/wvv30byuWs5+j69uKoogWVUw7IVBlhki8zkAnGXRoAOpjLxhAaNR89wC4ulGyb/J41r
- bfHawYK1fGkPqCieFAjmzBpB5uIJaIYg9hy8bLcMXaxqPsFmYMlhUjL+KH0HAFOWpjJVbUSDT
- HNhA15n+7Q0PBwC2/wGH+l5VDYUceYXQpWG/MRQOqzTgnNeuN61u2M5ptjqXeCjS/DLCDqYlU
- zf8LTyUNx1lfiiXiRMidb1n32ybg6tFV1eA6YotiZ9w7OGojizUVAnDwKiEl/yi8npJ6it634
- D2gffosUAd7QBl1+FpMzmrPW/rb+b6zu8q5imYE39xKiFC5j6V/l2pDQnNDa4jwMnp9z15Li9
- xHeVJYNd7Csgyaa0h2T6GSgJpwrm/jw/CMWidLt6jjLJTIDqT0AG7dvx/24cpex2n5H/2Bq+y
- myeAOnOyaYcvh01KlkztA2WU+6Vf0kIMo0Gyd+U6bgX7NVlNtKGozJd+GOWEqJr+vKI7gGYxT
- R8Pz4wwkBK8e/ZjLZwSvhxXq8DiJf18bBSIo8E1dbbYyrrHxDGvHncD+carpbr8/Ebx6YIVia
- ZC2gcMYRgpn4iwU6BLBjujoDf3L2oU06Glo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy().
+On Thu, 15 Jul 2021 16:17:41 +0200
+Andrea Merello <andrea.merello@gmail.com> wrote:
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/staging/ks7010/ks_wlan_net.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> Introduce new documentation file for the BNO055 serdev driver that will
+dt bindings are for the device not the driver (so don't mention driver
+in the binding or the patch description).
 
-diff --git a/drivers/staging/ks7010/ks_wlan_net.c b/drivers/staging/ks7010=
-/ks_wlan_net.c
-index 09e7b4cd0138..7a38b1ceeb5c 100644
-=2D-- a/drivers/staging/ks7010/ks_wlan_net.c
-+++ b/drivers/staging/ks7010/ks_wlan_net.c
-@@ -158,13 +158,13 @@ static int ks_wlan_get_name(struct net_device *dev,
+> be included in next patches of this same series
+> 
+> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+> Cc: Andrea Merello <andrea.merello@gmail.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Matt Ranostay <matt.ranostay@konsulko.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Vlad Dogaru <vlad.dogaru@intel.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-iio@vger.kernel.org
+> ---
+>  .../bindings/iio/imu/bosch,bno055-serial.yaml | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml b/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
+> new file mode 100644
+> index 000000000000..743c784ebc94
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
 
- 	/* for SLEEP MODE */
- 	if (priv->dev_state < DEVICE_STATE_READY)
--		strcpy(cwrq->name, "NOT READY!");
-+		strscpy(cwrq->name, "NOT READY!", sizeof(cwrq->name));
- 	else if (priv->reg.phy_type =3D=3D D_11B_ONLY_MODE)
--		strcpy(cwrq->name, "IEEE 802.11b");
-+		strscpy(cwrq->name, "IEEE 802.11b", sizeof(cwrq->name));
- 	else if (priv->reg.phy_type =3D=3D D_11G_ONLY_MODE)
--		strcpy(cwrq->name, "IEEE 802.11g");
-+		strscpy(cwrq->name, "IEEE 802.11g", sizeof(cwrq->name));
- 	else
--		strcpy(cwrq->name, "IEEE 802.11b/g");
-+		strscpy(cwrq->name, "IEEE 802.11b/g", sizeof(cwrq->name));
+Better to have just one doc covering this interface and i2c if that gets added.
 
- 	return 0;
- }
-@@ -1808,7 +1808,7 @@ static int ks_wlan_get_firmware_version(struct net_d=
-evice *dev,
- {
- 	struct ks_wlan_private *priv =3D netdev_priv(dev);
+> @@ -0,0 +1,40 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/imu/bosch,bno055-serial.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Serial-attached Bosch BNO055
+> +
+> +maintainers:
+> +  - Jonathan Cameron <jic23@kernel.org>
 
--	strcpy(extra, priv->firmware_version);
-+	strscpy(extra, priv->firmware_version, sizeof(extra));
- 	dwrq->length =3D priv->version_size + 1;
- 	return 0;
- }
-=2D-
-2.25.1
+That's just mean!  I have plenty of these to look after already! Joking
+aside, you'd be a better maintainer for this than me as more likely
+to pay attention.
+
+> +
+> +description: |
+> +  Inertial Measurement Unit with Accelerometer, Gyroscope, Magnetometer and
+> +  internal MCU for sensor fusion
+> +  https://www.bosch-sensortec.com/products/smart-sensors/bno055/
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +     - bosch,bno055-serial
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> + - |
+> +   #include <dt-bindings/gpio/gpio.h>
+> +   bno055 {
+
+name needs to be the one for the device type found in the device tree spec or
+if it's not there, something in same 'spirit'.  Probably imu here
+
+> +      compatible = "bosch,bno055-serial";
+Don't need the -serial. It will bind based on the bus this is under.
+Speaking of which, it's normal to provide that bus info as part of the example.
+See for example chemical/sensiron,scd30.yaml
+
+> +      reset-gpios = <&gpio0 54 GPIO_ACTIVE_LOW>;
+> +      clocks = <&imu_clk>;
+> +   };
 
