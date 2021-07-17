@@ -2,70 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9793CC4F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC74F3CC4F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbhGQRm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 13:42:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37888 "EHLO mail.kernel.org"
+        id S233599AbhGQRmU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 17 Jul 2021 13:42:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233702AbhGQRmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 13:42:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EF3B608FE;
-        Sat, 17 Jul 2021 17:39:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626543567;
-        bh=Q+2bkD5WfuZSmFgsqVWfw6pshTe4O9qGgeLkE8FzIks=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aSUX4iwQlT4MAMXCc0u9QSoN+8U4sRTlIEbQc2QCVHXZ5lmIUGBRnEa7kduKrOZvQ
-         5l5fSwyTJbeE6tTv6KBaOJvQ02+pQ21s5OJ/QB9q9KZhaix6rPWkTQKZ8HN0pBIDqu
-         ODYgs6tTVN1u58YXt7MjFlsxuepek94iQNJVzmX4=
-Date:   Sat, 17 Jul 2021 19:39:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kelvin Cheung <keguang.zhang@gmail.com>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5] dmaengine: Loongson1: Add Loongson1 dmaengine driver
-Message-ID: <YPMVyYoBojHYsMbJ@kroah.com>
-References: <20210704153314.6995-1-keguang.zhang@gmail.com>
- <YO5yo8v/tRZLGEdo@matsya>
- <CAJhJPsUNCSK4VYv9Z4ZNDxC03F4CxQoAXCCf+TJmmbdUe4XNNA@mail.gmail.com>
- <YPLrsXEmmHPtbZ+N@matsya>
+        id S232935AbhGQRmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 13:42:19 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D034D6101D;
+        Sat, 17 Jul 2021 17:39:19 +0000 (UTC)
+Date:   Sat, 17 Jul 2021 18:41:42 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Antti =?UTF-8?B?S2Vyw6RuZW4=?= <detegr@rbx.email>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-iio@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno Sa <nuno.sa@analog.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] iio: adis: set GPIO reset pin direction
+Message-ID: <20210717184142.6999e309@jic23-huawei>
+In-Reply-To: <20210714182507.4263dvarll5geacl@haukka.localdomain>
+References: <60e5ac8c.1c69fb81.c69f0.abab@mx.google.com>
+        <20210708095425.13295-1-detegr@rbx.email>
+        <20210713185311.200023ef@jic23-huawei>
+        <20210714100445.hr73r2dfkxf36f35@haukka.localdomain>
+        <20210714134005.00001322@Huawei.com>
+        <20210714182507.4263dvarll5geacl@haukka.localdomain>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YPLrsXEmmHPtbZ+N@matsya>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 08:09:45PM +0530, Vinod Koul wrote:
-> On 17-07-21, 18:57, Kelvin Cheung wrote:
-> > Vinod Koul <vkoul@kernel.org> 于2021年7月14日周三 下午1:14写道：
-> > >
-> > > On 04-07-21, 23:33, Keguang Zhang wrote:
-> > >
-> > > > +static struct platform_driver ls1x_dma_driver = {
-> > > > +     .probe  = ls1x_dma_probe,
-> > > > +     .remove = ls1x_dma_remove,
-> > > > +     .driver = {
-> > > > +             .name   = "ls1x-dma",
-> > > > +     },
-> > > > +};
-> > > > +
-> > > > +module_platform_driver(ls1x_dma_driver);
-> > >
-> > > so my comment was left unanswered, who creates this device!
-> > 
-> > Sorry!
-> > This patch will create the device: https://patchwork.kernel.org/patch/12281691
+On Wed, 14 Jul 2021 21:25:07 +0300
+Antti Keränen <detegr@rbx.email> wrote:
+
+> On Wed, Jul 14, 2021 at 01:40:05PM +0100, Jonathan Cameron wrote:
+> > Send the fixes tag in reply to this and I'll make sure it's added.
+> > No need to bother with a v3 for just that.  
 > 
-> Greg, looks like the above patch creates platform devices in mips, is
-> that the right way..?
+> Fixes: ecb010d44108 ("iio: imu: adis: Refactor adis_initial_startup")
+Great.
 
-I do not understand, what exactly is the question?
+Applied to the fixes-togreg branch of iio.git and marked for stable.
 
-thanks,
+Thanks,
 
-greg k-h
+Jonathan
+
+> 
+
