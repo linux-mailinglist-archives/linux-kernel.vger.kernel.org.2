@@ -2,92 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9073A3CC389
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 15:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8013CC390
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 15:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233800AbhGQNEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 09:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhGQNEq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 09:04:46 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A54C06175F;
-        Sat, 17 Jul 2021 06:01:48 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id dj21so16729902edb.0;
-        Sat, 17 Jul 2021 06:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AE0vk+OWuD10Z0EqVPnQQ5x0ytDuchGXP77/oS4iF8w=;
-        b=Gg1y0YAKvo0Fc2m2o1vuYshTnVDoA7AEjImeWOohdIoi86RJZkQ9EGTCNygubW7UC0
-         iWF3gHPbv+OvaA6L/VxSeru3cY8xFDX3AQtEzr2W30cIN0JDF1Uo/IwO1AgZQ6unYQet
-         /v5mHaAhdST8LsAcNoSt42YKdWLMXQAad+TtwKNhXVcfyXqu5b2j61dWRNxGJt4WuEb6
-         /aRUj2nfjXLymb/CFQuNKmrCZ7jx45a/CvHxfyDCpHPpoV3diEvtmPCDIOc5J/sRnhhL
-         89gECpkCFWK78McK6kEm3b+FdUvprUsVT7BaoKBMHDxdwAHArqlB/wzFq5l4Nv0j3r8g
-         iRlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AE0vk+OWuD10Z0EqVPnQQ5x0ytDuchGXP77/oS4iF8w=;
-        b=DTln/tiwBfDlMKlBXpyWpRjLhVWNBAN6bTRXI57O6A4yxQsD4m/JRngQ7coK7SOx7q
-         89rxYZZImvc2jSYeJR2QgBGIzDaLVQny4359sHqbxvYsiaeNUc8lVW4rHRNP8+pLFNj4
-         rPZge08IJ2IvDZoF+yepUbPhAnw9pQExi61deEHpN0/KszA3eqYodJvEQ2lWjRuBPxIp
-         hxDjgip7t/KD/lnofQHopLBRk8/EEBGJYb61JudPHcAsGoBoBK9SxPtUN+xMG+yLqRbh
-         URBfpmodc9v4Ii3pbHfPn3BG66IWHRxE2RbfGV6ULhRDr4ayB41XgC2tAUx9X57bMr3e
-         8qMQ==
-X-Gm-Message-State: AOAM531tQs39uvnIT2ZFiPcktruMtL82Vd41zud7SduG9L2NqHsnfxBX
-        hL1xRUQB28p1iC6CdDdzAwI=
-X-Google-Smtp-Source: ABdhPJwwTfY3aDydN4vgqwZ+1IdTA9/4VbUMf3AZZ5O7FnIURRVd000FJGicxnOWF91vKjlOHvQaQA==
-X-Received: by 2002:aa7:cfcf:: with SMTP id r15mr21810760edy.161.1626526905205;
-        Sat, 17 Jul 2021 06:01:45 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id e24sm3857192ejx.100.2021.07.17.06.01.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 06:01:44 -0700 (PDT)
-Date:   Sat, 17 Jul 2021 16:01:42 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Eric Woudstra <ericwouds@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <landen.chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        DENG Qingfang <dqfext@gmail.com>,
-        Frank Wunderlich <frank-w@public-files.de>
-Subject: Re: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
-Message-ID: <20210717130142.xm7ect5sc6i6hrii@skbuf>
-References: <20210716153641.4678-1-ericwouds@gmail.com>
- <20210716210655.i5hxcwau5tdq4zhb@skbuf>
- <eda300a2-4e36-4d0c-8ea8-eae5e6d62bea@gmail.com>
+        id S233680AbhGQN1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 09:27:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229746AbhGQN07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 09:26:59 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54F60613D0;
+        Sat, 17 Jul 2021 13:24:00 +0000 (UTC)
+Date:   Sat, 17 Jul 2021 14:26:23 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] iio: frequency: adrf6780: add support for
+ ADRF6780
+Message-ID: <20210717142623.45f96a22@jic23-huawei>
+In-Reply-To: <20210716114210.141560-1-antoniu.miclaus@analog.com>
+References: <20210716114210.141560-1-antoniu.miclaus@analog.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eda300a2-4e36-4d0c-8ea8-eae5e6d62bea@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 10:09:53AM +0200, Eric Woudstra wrote:
-> You are right now there is a problem with vlan unaware bridge.
->
-> We need to change the line to:
->
-> if (vid > 1) reg[1] |= ATA2_IVL;
->
-> I have just tested this with a vlan unaware bridge and also with vlan
-> bridge option disabled in the kernel. Only after applying the if
-> statement it works for vlan unaware bridges/kernel.
+On Fri, 16 Jul 2021 14:42:09 +0300
+Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
 
-Ok, make sure to read Documentation/process/submitting-patches.rst for
-how to add a Fixes: tag to your patch, Documentation/networking/netdev-FAQ.rst
-for how to set the subject-prefix to "PATCH net" in your git-send-email command,
-and send a fixup patch.
+> The ADRF6780 is a silicon germanium (SiGe) design, wideband,
+> microwave upconverter optimized for point to point microwave
+> radio designs operating in the 5.9 GHz to 23.6 GHz frequency
+> range.
+> 
+> Datasheet:
+> https://www.analog.com/media/en/technical-documentation/data-sheets/ADRF6780.pdf
+> 
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+Hi Antoniu
+
+As it looks like we'll have a v7, a few trivial comments from me.
+
+...
+
+> +
+> +static int adrf6780_init(struct adrf6780_dev *dev)
+> +{
+> +	int ret;
+> +	unsigned int chip_id, enable_reg, enable_reg_msk;
+> +	struct spi_device *spi = dev->spi;
+> +
+> +	/* Perform a software reset */
+> +	ret = adrf6780_reset(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = adrf6780_spi_read(dev, ADRF6780_REG_CONTROL, &chip_id);
+> +	if (ret)
+> +		return ret;
+> +
+> +	chip_id = FIELD_GET(ADRF6780_CHIP_ID_MSK, chip_id);
+> +	if (chip_id != ADRF6780_CHIP_ID) {
+> +		dev_err(&spi->dev, "ADRF6780 Invalid Chip ID.\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	enable_reg_msk = ADRF6780_VGA_BUFFER_EN_MSK |
+> +			ADRF6780_DETECTOR_EN_MSK |
+> +			ADRF6780_LO_BUFFER_EN_MSK |
+> +			ADRF6780_IF_MODE_EN_MSK |
+> +			ADRF6780_IQ_MODE_EN_MSK |
+> +			ADRF6780_LO_X2_EN_MSK |
+> +			ADRF6780_LO_PPF_EN_MSK |
+> +			ADRF6780_LO_EN_MSK |
+> +			ADRF6780_UC_BIAS_EN_MSK;
+> +
+> +	enable_reg = FIELD_PREP(ADRF6780_VGA_BUFFER_EN_MSK, dev->vga_buff_en) |
+> +			FIELD_PREP(ADRF6780_DETECTOR_EN_MSK, 1) |
+> +			FIELD_PREP(ADRF6780_LO_BUFFER_EN_MSK, dev->lo_buff_en) |
+> +			FIELD_PREP(ADRF6780_IF_MODE_EN_MSK, dev->if_mode_en) |
+> +			FIELD_PREP(ADRF6780_IQ_MODE_EN_MSK, dev->iq_mode_en) |
+> +			FIELD_PREP(ADRF6780_LO_X2_EN_MSK, dev->lo_x2_en) |
+> +			FIELD_PREP(ADRF6780_LO_PPF_EN_MSK, dev->lo_ppf_en) |
+> +			FIELD_PREP(ADRF6780_LO_EN_MSK, dev->lo_en) |
+> +			FIELD_PREP(ADRF6780_UC_BIAS_EN_MSK, dev->uc_bias_en);
+
+Here we are probably turning on a bunch of stuff which will result in power usage.
+Would it be sensible to turn it off again in remove path?  (devm managed should be fine).
+
+
+> +
+> +	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_ENABLE, enable_reg_msk, enable_reg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_LO_PATH,
+> +						ADRF6780_LO_SIDEBAND_MSK,
+> +						FIELD_PREP(ADRF6780_LO_SIDEBAND_MSK, dev->lo_sideband));
+> +	if (ret)
+> +		return ret;
+> +
+> +	return adrf6780_spi_update_bits(dev, ADRF6780_REG_ADC_CONTROL,
+> +						ADRF6780_VDET_OUTPUT_SELECT_MSK,
+> +						FIELD_PREP(ADRF6780_VDET_OUTPUT_SELECT_MSK, dev->vdet_out_en));
+> +}
+> +
+
+> +static void adrf6780_dt_parse(struct adrf6780_dev *dev)
+
+Trivial nitpick, but given this is all device property based (great)
+the dt naming is now misleading.  Perhaps _properties_parse() ?
+
+> +{
+> +	struct spi_device *spi = dev->spi;
+> +
+> +	dev->vga_buff_en = device_property_read_bool(&spi->dev, "adi,vga-buff-en");
+> +	dev->lo_buff_en = device_property_read_bool(&spi->dev, "adi,lo-buff-en");
+> +	dev->if_mode_en = device_property_read_bool(&spi->dev, "adi,if-mode-en");
+> +	dev->iq_mode_en = device_property_read_bool(&spi->dev, "adi,iq-mode-en");
+> +	dev->lo_x2_en = device_property_read_bool(&spi->dev, "adi,lo-x2-en");
+> +	dev->lo_ppf_en = device_property_read_bool(&spi->dev, "adi,lo-ppf-en");
+> +	dev->lo_en = device_property_read_bool(&spi->dev, "adi,lo-en");
+> +	dev->uc_bias_en = device_property_read_bool(&spi->dev, "adi,uc-bias-en");
+> +	dev->lo_sideband = device_property_read_bool(&spi->dev, "adi,lo-sideband");
+> +	dev->vdet_out_en = device_property_read_bool(&spi->dev, "adi,vdet-out-en");
+> +}
+
