@@ -2,153 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FDF3CC6CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1C43CC6D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhGQXdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 19:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
+        id S231420AbhGQXeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 19:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbhGQXdh (ORCPT
+        with ESMTP id S230171AbhGQXeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 19:33:37 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D66DC061762
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 16:30:39 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id l7so16498412wrv.7
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 16:30:39 -0700 (PDT)
+        Sat, 17 Jul 2021 19:34:11 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB9BC061762;
+        Sat, 17 Jul 2021 16:31:13 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id o201so12720182pfd.1;
+        Sat, 17 Jul 2021 16:31:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FJiK6ZPfj0SXkTk/BERUcE9u2Ss9uOY9yYEJynNuJRE=;
-        b=sWxRlKLGfombM7n/SQKbdgHjDcsYANaqKK/V/9slxJwdEmWNMzIfZVXIhxZUztF/QQ
-         bgjYQwlRzHaWIjJZWhWLKjZmSo8LrtSEOLUzbRvzAl0F4oxhKVjycAq854htHPN+mWMc
-         kHnWO+hb89Hi/nQnYb7w0dTTMvlgvxu18R/yJd9pXul3B7X+zkVOiiPX48iop/9paaMg
-         A+kkkAlHgwmX5ANsFL23EDu3EH6EDCoJigDqX8By2uwMRp8LsH7zRyX38By/hGbeHMR8
-         h+ePVEJgXKa5go3Oy8Z4SpeSefYI94WUBJTV6zKMgl4FcMlbwafLOquB+J+ExPboqR3w
-         kDJA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fxKIUXLbmRN8ueNsQhq3eLN6c3ekGbBfhVweDY7xvjY=;
+        b=OTXya9tvVbxwqG9UznvVyJwGzUxWNeneKvmr1IOcWsp8SwM9TsE+izZZFUBL1wfHYy
+         sC2w+X1nMAPFfBHB8V+qTJBL3MvgxcgwIKE5Hb7VhXiIIc1KlD7ZmFNAABjW4zQ3Br62
+         H2RnHm5l5abh/RxPrRIc3qafhVo5shXaVYPxkbFG2BBKZ9+4k92yX7x/v+lori515bLI
+         aYDeo/DJZzmkMiGD+f67AwYeHFJpp5QehK51UBvFxjSAH+5SQ6Nvs5df1UO10oxSxCB9
+         TLLFonFCFgdhkXzq4X910jg742J7UIAcSvpehodaC2Ujm29iO1w76KypnUTD+9I8R005
+         6wnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FJiK6ZPfj0SXkTk/BERUcE9u2Ss9uOY9yYEJynNuJRE=;
-        b=N2bKNjsLRBI+dHwW4Jf77GUIaUYLgBPHieujODAzIoAlKrNbJnYH4guWfDTJZ+0zVZ
-         fwj2tG3wvWSBTkyt9Dys905pqbVcR3igyp9SFxBlIMq5Tc6Ixi5suDT2LTigwPbDSyLB
-         C1/h2gygxAnBYngbBFtjnYyLj+BgVpyREwgMa+24W5a2gTFRtixAX4TvDOI7efnhuT1L
-         WAkzxkYb2gHtoWDjmWntgN2GlP8rD306P3fnyu95J67FeVJISPSmI4u8VO4i4qGy5gLL
-         pAqXpwPjfiE6LhXrthgEV42bM5IDy5XT4Qy+F0G8rge3gmr8aIYkPCTbnqZenOZJxPoe
-         Xr3g==
-X-Gm-Message-State: AOAM5330jKZ9kWccCdQu58SRRHrrojFE+CZCLk8527sjWGf/DxK4ZXmk
-        YtQ4nvOHORGW2fRpvEDS5zM=
-X-Google-Smtp-Source: ABdhPJwVTlimgC+HBeL7qBCgE7Kt4D4zsydJswDaUEdpNebka11e9Ob4P7IdljCl6B1/fVutj9prpg==
-X-Received: by 2002:adf:facf:: with SMTP id a15mr21055072wrs.39.1626564637959;
-        Sat, 17 Jul 2021 16:30:37 -0700 (PDT)
-Received: from localhost.localdomain (dynamic-2a01-0c22-7602-4e00-f22f-74ff-fe21-0725.c22.pool.telefonica.de. [2a01:c22:7602:4e00:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id q19sm14824051wmq.38.2021.07.17.16.30.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 16:30:37 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-amlogic@lists.infradead.org
-Cc:     narmstrong@baylibre.com, khilman@baylibre.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v2 2/2] ARM: dts: meson8b: ec100: wire up the RT5640 audio codec
-Date:   Sun, 18 Jul 2021 01:30:30 +0200
-Message-Id: <20210717233030.331273-3-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210717233030.331273-1-martin.blumenstingl@googlemail.com>
-References: <20210717233030.331273-1-martin.blumenstingl@googlemail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fxKIUXLbmRN8ueNsQhq3eLN6c3ekGbBfhVweDY7xvjY=;
+        b=TOgTjncScDOrCa3EyLGzpnVuobXLJZp9VFuq4Ffc99rhAJnveLE7wgBpa8YM9MCGCN
+         J0wmfrv28M605EpHsAH/+Cm6J7EZkw/xCA9OSaurE9SOytHac/GJccwBN81ikDC++3L8
+         gu5itavMzlb2g3VRAL6DBrvM1CgeToazLno9Vbu17x4B29kXbeNB4+Vo8xhcqK3Bm56Z
+         DSSJobNPOj7uPCiGAvQQRNyZvdKE48sLibocM2KAcZ/KfuIUHFRHXapcjlUO5VmmwmJh
+         +Z2u6MVzOio9GbzpDDMdZwn0/joRXKh6msInE50N4JCL9wobJS1fcnZkzt87BkROxPNE
+         EVyw==
+X-Gm-Message-State: AOAM530Up8lto8yxSXhtedirKHay/IsOej0hEL72O0tcgwIFFnWNZFlH
+        XcCHin8lskGPO54ZoYRLq0VWgs7zgaM=
+X-Google-Smtp-Source: ABdhPJwHM9pvcBAPo4YUczQdqjuc5bP+LvvHYV6Uia2+FkAE/q//uJuGg76gZolJaf/A+IOQWQimvA==
+X-Received: by 2002:a62:8283:0:b029:336:6e7a:9c73 with SMTP id w125-20020a6282830000b02903366e7a9c73mr9404473pfd.45.1626564672761;
+        Sat, 17 Jul 2021 16:31:12 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id m24sm15794494pgv.24.2021.07.17.16.31.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Jul 2021 16:31:12 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/119] 5.4.133-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210716182029.878765454@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <52aa0a43-3f55-1209-4237-0b66c6dbe094@gmail.com>
+Date:   Sat, 17 Jul 2021 16:31:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210716182029.878765454@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Realtek RT5640 codec is connected to the SoC's I2S interface.
-Describe this in the .dts together with the codec's LDO1 enable GPIO so
-audio can be played on the Endless Mini.
-While here, add a note about the realtek,ldo1-en-gpios for which the
-EC100 uses GPIO_BSD_EN. Due to driver limitations this pin cannot be
-used currently.
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- arch/arm/boot/dts/meson8b-ec100.dts | 44 +++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
 
-diff --git a/arch/arm/boot/dts/meson8b-ec100.dts b/arch/arm/boot/dts/meson8b-ec100.dts
-index 8e48ccc6b634..e404bdccdab9 100644
---- a/arch/arm/boot/dts/meson8b-ec100.dts
-+++ b/arch/arm/boot/dts/meson8b-ec100.dts
-@@ -96,6 +96,32 @@ rtc32k_xtal: rtc32k-xtal-clk {
- 		#clock-cells = <0>;
- 	};
- 
-+	sound {
-+		compatible = "amlogic,gx-sound-card";
-+		model = "M8B-EC100";
-+
-+		assigned-clocks = <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>,
-+				  <&clkc CLKID_MPLL2>;
-+		assigned-clock-rates = <270950400>,
-+				       <294912000>,
-+				       <393216000>;
-+
-+		dai-link-0 {
-+			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
-+			dai-format = "i2s";
-+			mclk-fs = <256>;
-+
-+			codec-0 {
-+				sound-dai = <&rt5640>;
-+			};
-+		};
-+	};
-+
- 	usb_vbus: regulator-usb-vbus {
- 		/*
- 		 * Silergy SY6288CCAC-GP 2A Power Distribution Switch.
-@@ -242,6 +268,14 @@ vddee: regulator-vddee {
- 	};
- };
- 
-+&aiu {
-+	status = "okay";
-+
-+	pinctrl-0 = <&i2s_am_clk_pins>, <&i2s_out_ao_clk_pins>,
-+		    <&i2s_out_lr_clk_pins>, <&i2s_out_ch01_ao_pins>;
-+	pinctrl-names = "default";
-+};
-+
- &cpu0 {
- 	cpu-supply = <&vcck>;
- };
-@@ -283,9 +317,19 @@ &i2c_A {
- 
- 	rt5640: codec@1c {
- 		compatible = "realtek,rt5640";
-+
- 		reg = <0x1c>;
-+
-+		#sound-dai-cells = <0>;
-+
- 		interrupt-parent = <&gpio_intc>;
- 		interrupts = <13 IRQ_TYPE_EDGE_BOTH>; /* GPIOAO_13 */
-+
-+		/*
-+		 * TODO: realtek,ldo1-en-gpios is connected to GPIO_BSD_EN.
-+		 * We currently cannot configure this pin correctly.
-+		 * Luckily for us it's in the "right" state by default.
-+		 */
- 		realtek,in1-differential;
- 	};
- };
+On 7/16/2021 11:28 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.133 release.
+> There are 119 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.133-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.32.0
-
+Florian
