@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4FD3CC342
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24CB3CC34C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233744AbhGQMiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 08:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhGQMiO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 08:38:14 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EB6C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 05:35:18 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id DB435B3A141;
-        Sat, 17 Jul 2021 14:35:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626525316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pwPW8ZBvYJ1j6+zanxZpBpf+XE4okDGSxJ4O6NxNGC4=;
-        b=OgUN6xJYnj2LxCuxDio9SMp9DICiOTdRp2n7hAcLY2ZuQERSVY9LN892F+OClOEZO1Jiqz
-        TW4GliCHxiv9WwwKctKqqFOL8A0bE+g4tBLkrnwBVs2CW7H4MnUl+6h7qlKN52v3IspiVW
-        qzCa3bBmWlkrI3uUXnBzhCkXhusGrLg=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        David Jeffery <djeffery@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: New warning in nvme_setup_discard
-Date:   Sat, 17 Jul 2021 14:35:14 +0200
-Message-ID: <3383530.3bVf3B8HMu@natalenko.name>
-In-Reply-To: <8988303.mDXGIdCtx8@natalenko.name>
-References: <4729812.CpyZKHjjVO@natalenko.name> <5053297.vgnLoh5Ws3@natalenko.name> <8988303.mDXGIdCtx8@natalenko.name>
+        id S233677AbhGQMlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 08:41:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229471AbhGQMlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 08:41:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 389D961285;
+        Sat, 17 Jul 2021 12:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626525528;
+        bh=2Yit2k4uDAQ+Npx8/IXzxBh/GhjT1kx6H+uYPeax3WY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oJ4/by3lNsgTX1+KqA4I3lcmb5kYVk8Mt4AZOmz38C34j9iQS00kUes7WOj50syU0
+         j+U54LAqA8voUBURpN2B5/54zX69nsvgar31Bvomy9wZ9ZdTHfrQFB98baR/MEet40
+         JC5lRQVCxwbBZnFXb6CJZPRkzk2VJTYH772oq5UGWacj46sDrGyW3eKcvO4rqiogxC
+         qHBjsobDlIZ38T3Wsr7WZ1UaXEk5PvRyH13LGu0D/iLegumP6GyEDGTBXheiQI8QZX
+         njaSIceFvdFLn8r6EKaP6gY0Ikjzz22D9VZ2+HKlzO05igPnM36rDLLyIdJXv/4CHM
+         pYzCkPlI3Ocqg==
+Received: by pali.im (Postfix)
+        id 6CD79EA7; Sat, 17 Jul 2021 14:38:45 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Andrew Lunn" <andrew@lunn.ch>,
+        "Gregory Clement" <gregory.clement@bootlin.com>,
+        "Sebastian Hesselbarth" <sebastian.hesselbarth@gmail.com>,
+        "Vladimir Vid" <vladimir.vid@sartura.hr>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3 0/5] serial: mvebu-uart: Support for higher baudrates
+Date:   Sat, 17 Jul 2021 14:38:24 +0200
+Message-Id: <20210717123829.5201-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210624224909.6350-1-pali@kernel.org>
+References: <20210624224909.6350-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On sobota 17. =C4=8Dervence 2021 14:19:59 CEST Oleksandr Natalenko wrote:
-> On sobota 17. =C4=8Dervence 2021 14:11:05 CEST Oleksandr Natalenko wrote:
-> > On sobota 17. =C4=8Dervence 2021 11:35:32 CEST Ming Lei wrote:
-> > > Maybe you need to check if the build is OK, I can't reproduce it in my
-> > > VM, and BFQ is still builtin:
-> > >=20
-> > > [root@ktest-01 ~]# uname -a
-> > > Linux ktest-01 5.14.0-rc1+ #52 SMP Fri Jul 16 18:56:36 CST 2021 x86_64
-> > > x86_64 x86_64 GNU/Linux [root@ktest-01 ~]# cat
-> > > /sys/block/nvme0n1/queue/scheduler
-> > > [none] mq-deadline kyber bfq
-> >=20
-> > I don't think this is an issue with the build=E2=80=A6 BTW, with `initc=
-all_debug`:
-> >=20
-> > ```
-> > [    0.902555] calling  bfq_init+0x0/0x8b @ 1
-> > [    0.903448] initcall bfq_init+0x0/0x8b returned -28 after 507 usecs
-> > ```
-> >=20
-> > -ENOSPC? Why? Also re-tested with the latest git tip, same result :(.
->=20
-> OK, one extra pr_info, and I see this:
->=20
-> ```
-> [    0.871180] blkcg_policy_register: BLKCG_MAX_POLS too small
-> [    0.871612] blkcg_policy_register: -28
-> ```
->=20
-> What does it mean please :)? The value seems to be hard-coded:
->=20
-> ```
-> include/linux/blkdev.h
-> 60:#define BLKCG_MAX_POLS               5
-> ```
+This patch series add support for baudrates higher than 230400 on
+Marvell Armada 37xx boards.
 
-OK, after increasing this to 6 I've got my BFQ back. Please see [1].
+This new version v3 is rebased on top of Linus master branch and all
+already applied patches were dropped. There are no changes in patches
+itself since v2.
 
-[1] https://lore.kernel.org/linux-block/20210717123328.945810-1-oleksandr@n=
-atalenko.name/
+Please review these patches as they touch both Device Tree bindings and
+mvebu-uart.c driver.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
+Pali Rohár (5):
+  math64: New DIV_U64_ROUND_CLOSEST helper
+  serial: mvebu-uart: implement UART clock driver for configuring UART
+    base clock
+  dt-bindings: mvebu-uart: document DT bindings for
+    marvell,armada-3700-uart-clock
+  arm64: dts: marvell: armada-37xx: add device node for UART clock and
+    use it
+  serial: mvebu-uart: implement support for baudrates higher than 230400
 
+ .../bindings/clock/armada3700-uart-clock.txt  |  24 +
+ .../devicetree/bindings/serial/mvebu-uart.txt |   9 +-
+ .../arm64/boot/dts/marvell/armada-3720-db.dts |   4 +
+ .../dts/marvell/armada-3720-espressobin.dtsi  |   4 +
+ .../dts/marvell/armada-3720-turris-mox.dts    |   4 +
+ .../boot/dts/marvell/armada-3720-uDPU.dts     |   4 +
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  15 +-
+ drivers/tty/serial/Kconfig                    |   1 +
+ drivers/tty/serial/mvebu-uart.c               | 592 +++++++++++++++++-
+ include/linux/math64.h                        |  13 +
+ 10 files changed, 649 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt
+
+-- 
+2.20.1
 
