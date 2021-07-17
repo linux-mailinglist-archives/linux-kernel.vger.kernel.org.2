@@ -2,96 +2,520 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594663CC47E
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7C53CC47D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhGQQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 12:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbhGQQly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 12:41:54 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C708BC06175F;
-        Sat, 17 Jul 2021 09:38:57 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S231830AbhGQQl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 12:41:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231346AbhGQQlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 12:41:25 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4GRv262cbLzQjxR;
-        Sat, 17 Jul 2021 18:38:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
-        t=1626539932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=51iRsPRsaK8PFBVEti+F4/go88cBe72Pk1iRRqNdOUE=;
-        b=FctGs9pLtZFrmn9PP0JjHA9dUQ8K92CKywdDeLcx4GS1Ie31QUFRwMuYvgKLeFXSrEZx2j
-        ErSzKB0AquYGcZiMzC4gPj6HnxIAEVgH9BbnR4+/oLHv/5PKsuzCGmoQLIEm5uEESPPqhj
-        UzhKfSzgC8XqD84GBnEV1Wrrq7JLLDxD8Z9iBQIpRJuJ2brSjVxvBYjyitzX5sSYy+nqIC
-        KAP5hV9FgfSe82j3BEr17AYaYY2wEfkg+WjUK1dNQWn0k58X89imzssV5sT7upEGHV4x9c
-        6cRhrlceujLlRo8dFqkKMxi0kpvvX/gbJc51cETJcb5XXfriHW+YsGubK+7v8g==
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122]) (amavisd-new, port 10030)
-        with ESMTP id hrDd85UIi720; Sat, 17 Jul 2021 18:38:50 +0200 (CEST)
-Subject: Re: [PATCH net-next v3] net: phy: intel-xway: Add RGMII internal
- delay configuration
-To:     Andrew Lunn <andrew@lunn.ch>, Martin Schiller <ms@dev.tdt.de>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        f.fainelli@gmail.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210709164216.18561-1-ms@dev.tdt.de>
- <CAFBinCCw9+oCV==1DrNFU6Lu02h3OyZu9wM=78RKGMCZU6ObEA@mail.gmail.com>
- <fcb3203ea82d1180a6e471f22e39e817@dev.tdt.de> <YO2P8J4Ln+RwxkfO@lunn.ch>
-From:   Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <9fa0ce38-d3b5-a60e-cfc4-7799b832065f@hauke-m.de>
-Date:   Sat, 17 Jul 2021 18:38:43 +0200
+        by mail.kernel.org (Postfix) with ESMTPSA id 2010F610CB;
+        Sat, 17 Jul 2021 16:38:26 +0000 (UTC)
+Date:   Sat, 17 Jul 2021 17:40:48 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH v4 1/1] iio: proximity: vcnl3020: add periodic mode
+Message-ID: <20210717174048.3b73edde@jic23-huawei>
+In-Reply-To: <20210715124728.838455-2-i.mikhaylov@yadro.com>
+References: <20210715124728.838455-1-i.mikhaylov@yadro.com>
+        <20210715124728.838455-2-i.mikhaylov@yadro.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YO2P8J4Ln+RwxkfO@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: D9FAB18BE
-X-Rspamd-UID: 80aec0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/21 3:06 PM, Andrew Lunn wrote:
->>> [...]
->>>> +#if IS_ENABLED(CONFIG_OF_MDIO)
->>> is there any particular reason why we need to guard this with
->>> CONFIG_OF_MDIO?
->>> The dp83822 driver does not use this #if either (as far as I
->>> understand at least)
->>>
->>
->> It makes no sense to retrieve properties from the device tree if we are
->> compiling for a target that does not support a device tree.
->> At least that is my understanding of this condition.
+On Thu, 15 Jul 2021 15:47:28 +0300
+Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+
+> Add the possibility to run proximity sensor in periodic measurement
+> mode with thresholds.
 > 
-> There should be stubs for all these functions, so if OF is not part of
-> the configured kernel, stub functions take their place. That has the
-> advantage of at least compiling the code, so checking parameter types
-> etc. We try to avoid #ifdef where possible, so we get better compiler
-> build test coverage. The more #ifef there are, the more different
-> configurations that need compiling in order to get build coverage.
+> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+
+Hi Ivan,
+
+The content here is fine, but a result of earlier reviews is that you have
+included a couple of fixes / improvements that aren't directly related
+to the main topic of this patch, or indeed mentioned in the description.
+
+Those need to pulled out as precusors to the main patch.  The bulk
+read one 'might' be a bug fix for some odd hardware combination for
+example so we need to make it easy to spot.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/proximity/vcnl3020.c | 328 +++++++++++++++++++++++++++++--
+>  1 file changed, 313 insertions(+), 15 deletions(-)
 > 
-> 	       Andrew
-> 
+> diff --git a/drivers/iio/proximity/vcnl3020.c b/drivers/iio/proximity/vcnl3020.c
+> index 43817f6b3086..edbc920635f1 100644
+> --- a/drivers/iio/proximity/vcnl3020.c
+> +++ b/drivers/iio/proximity/vcnl3020.c
+> @@ -3,7 +3,6 @@
+>   * Support for Vishay VCNL3020 proximity sensor on i2c bus.
+>   * Based on Vishay VCNL4000 driver code.
+>   *
 
-The phy_get_internal_delay() function does not have a stub function 
-directly, but it calls phy_get_int_delay_property() which has a stub, if 
-CONFIG_OF_MDIO is not set, see:
-https://elixir.bootlin.com/linux/v5.14-rc1/source/drivers/net/phy/phy_device.c#L2797
+Totally trivial, but good to clear out this blank line as well!
 
-The extra ifdef in the PHY driver only saves some code in the HY driver, 
-but it should still work as before on systems without CONFIG_OF_MDIO.
+> - * TODO: interrupts.
+>   */
+>  
+>  #include <linux/module.h>
+> @@ -11,9 +10,10 @@
+>  #include <linux/err.h>
+>  #include <linux/delay.h>
+>  #include <linux/regmap.h>
+> +#include <linux/interrupt.h>
+>  
+>  #include <linux/iio/iio.h>
+> -#include <linux/iio/sysfs.h>
+> +#include <linux/iio/events.h>
+>  
+>  #define VCNL3020_PROD_ID	0x21
+>  
+> @@ -37,6 +37,21 @@
+>  					* measurement
+>  					*/
+>  
+> +/* Enables periodic proximity measurement */
+> +#define VCNL_PS_EN		BIT(1)
+> +
+> +/* Enables state machine and LP oscillator for self timed  measurements */
+> +#define VCNL_PS_SELFTIMED_EN	BIT(0)
+> +
+> +/* Bit masks for ICR */
+> +
+> +/* Enable interrupts on low or high thresholds */
+> +#define  VCNL_ICR_THRES_EN	BIT(1)
+> +
+> +/* Bit masks for ISR */
+> +#define VCNL_INT_TH_HI		BIT(0)	/* High threshold hit */
+> +#define VCNL_INT_TH_LOW		BIT(1)	/* Low threshold hit */
+> +
+>  #define VCNL_ON_DEMAND_TIMEOUT_US	100000
+>  #define VCNL_POLL_US			20000
+>  
+> @@ -63,6 +78,7 @@ struct vcnl3020_data {
+>  	struct device *dev;
+>  	u8 rev;
+>  	struct mutex lock;
+> +	__be16 buf ____cacheline_aligned;
+>  };
+>  
+>  /**
+> @@ -140,14 +156,31 @@ static int vcnl3020_init(struct vcnl3020_data *data)
+>  					       vcnl3020_led_current_property);
+>  };
+>  
+> +static bool vcnl3020_is_in_periodic_mode(struct vcnl3020_data *data)
+> +{
+> +	int rc;
+> +	unsigned int cmd;
+> +
+> +	rc = regmap_read(data->regmap, VCNL_COMMAND, &cmd);
+> +	if (rc)
 
-I would also prefer to remove the ifdef from the intel-xway phy driver.
+A little inelegant to hide the error.
 
-Hauke
+> +		return false;
+> +
+> +	return !!(cmd & VCNL_PS_SELFTIMED_EN);
+> +}
+> +
+>  static int vcnl3020_measure_proximity(struct vcnl3020_data *data, int *val)
+>  {
+>  	int rc;
+>  	unsigned int reg;
+> -	__be16 res;
+>  
+>  	mutex_lock(&data->lock);
+>  
+> +	/* Protect against event capture. */
+> +	if (vcnl3020_is_in_periodic_mode(data)) {
+> +		rc = -EBUSY;
+> +		goto err_unlock;
+> +	}
+> +
+>  	rc = regmap_write(data->regmap, VCNL_COMMAND, VCNL_PS_OD);
+>  	if (rc)
+>  		goto err_unlock;
+> @@ -163,12 +196,12 @@ static int vcnl3020_measure_proximity(struct vcnl3020_data *data, int *val)
+>  	}
+>  
+>  	/* high & low result bytes read */
+> -	rc = regmap_bulk_read(data->regmap, VCNL_PS_RESULT_HI, &res,
+> -			      sizeof(res));
+> +	rc = regmap_bulk_read(data->regmap, VCNL_PS_RESULT_HI, &data->buf,
+> +			      sizeof(data->buf));
+
+This is good to have as discussed, but it's not related to the rest of the patch.
+Please break this out to a precursor patch as it will make it easier to review
+what is going on here.
+
+>  	if (rc)
+>  		goto err_unlock;
+>  
+> -	*val = be16_to_cpu(res);
+> +	*val = be16_to_cpu(data->buf);
+>  
+>  err_unlock:
+>  	mutex_unlock(&data->lock);
+> @@ -200,6 +233,15 @@ static int vcnl3020_write_proxy_samp_freq(struct vcnl3020_data *data, int val,
+>  {
+>  	unsigned int i;
+>  	int index = -1;
+> +	int rc;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	/* Protect against event capture. */
+> +	if (vcnl3020_is_in_periodic_mode(data)) {
+> +		rc = -EBUSY;
+> +		goto err_unlock;
+> +	}
+>  
+>  	for (i = 0; i < ARRAY_SIZE(vcnl3020_prox_sampling_frequency); i++) {
+>  		if (val == vcnl3020_prox_sampling_frequency[i][0] &&
+> @@ -209,18 +251,229 @@ static int vcnl3020_write_proxy_samp_freq(struct vcnl3020_data *data, int val,
+>  		}
+>  	}
+>  
+> -	if (index < 0)
+> +	if (index < 0) {
+> +		rc = -EINVAL;
+> +		goto err_unlock;
+> +	}
+> +
+> +	rc = regmap_write(data->regmap, VCNL_PROXIMITY_RATE, index);
+> +
+> +err_unlock:
+> +	mutex_unlock(&data->lock);
+> +
+> +	return rc;
+> +}
+> +
+> +static bool vcnl3020_is_thr_enabled(struct vcnl3020_data *data)
+> +{
+> +	int rc;
+> +	unsigned int icr;
+> +
+> +	rc = regmap_read(data->regmap, VCNL_PS_ICR, &icr);
+> +	if (rc)
+> +		return false;
+> +
+> +	return !!(icr & VCNL_ICR_THRES_EN);
+> +}
+> +
+> +static int vcnl3020_read_event(struct iio_dev *indio_dev,
+> +			       const struct iio_chan_spec *chan,
+> +			       enum iio_event_type type,
+> +			       enum iio_event_direction dir,
+> +			       enum iio_event_info info,
+> +			       int *val, int *val2)
+> +{
+> +	int rc;
+> +	struct vcnl3020_data *data = iio_priv(indio_dev);
+> +
+> +	switch (info) {
+> +	case IIO_EV_INFO_VALUE:
+> +		switch (dir) {
+> +		case IIO_EV_DIR_RISING:
+> +			rc = regmap_bulk_read(data->regmap, VCNL_PS_HI_THR_HI,
+> +					      &data->buf, sizeof(data->buf));
+> +			if (rc < 0)
+> +				return rc;
+> +			*val = be16_to_cpu(data->buf);
+> +			return IIO_VAL_INT;
+> +		case IIO_EV_DIR_FALLING:
+> +			rc = regmap_bulk_read(data->regmap, VCNL_PS_LO_THR_HI,
+> +					      &data->buf, sizeof(data->buf));
+> +			if (rc < 0)
+> +				return rc;
+> +			*val = be16_to_cpu(data->buf);
+> +			return IIO_VAL_INT;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	default:
+>  		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int vcnl3020_write_event(struct iio_dev *indio_dev,
+> +				const struct iio_chan_spec *chan,
+> +				enum iio_event_type type,
+> +				enum iio_event_direction dir,
+> +				enum iio_event_info info,
+> +				int val, int val2)
+> +{
+> +	int rc;
+> +	struct vcnl3020_data *data = iio_priv(indio_dev);
+>  
+> -	return regmap_write(data->regmap, VCNL_PROXIMITY_RATE, index);
+> +	mutex_lock(&data->lock);
+> +
+> +	switch (info) {
+> +	case IIO_EV_INFO_VALUE:
+> +		switch (dir) {
+> +		case IIO_EV_DIR_RISING:
+> +			/* 16 bit word/ low * high */
+> +			data->buf = cpu_to_be16(val);
+> +			rc = regmap_bulk_write(data->regmap, VCNL_PS_HI_THR_HI,
+> +					       &data->buf, sizeof(data->buf));
+> +			if (rc < 0)
+> +				goto err_unlock;
+> +			rc = IIO_VAL_INT;
+> +			goto err_unlock;
+> +		case IIO_EV_DIR_FALLING:
+> +			data->buf = cpu_to_be16(val);
+> +			rc = regmap_bulk_write(data->regmap, VCNL_PS_LO_THR_HI,
+> +					       &data->buf, sizeof(data->buf));
+> +			if (rc < 0)
+> +				goto err_unlock;
+> +			rc = IIO_VAL_INT;
+> +			goto err_unlock;
+> +		default:
+> +			rc = -EINVAL;
+> +			goto err_unlock;
+> +		}
+> +	default:
+> +		rc = -EINVAL;
+> +		goto err_unlock;
+> +	}
+> +err_unlock:
+> +	mutex_unlock(&data->lock);
+> +
+> +	return rc;
+>  }
+>  
+> +static int vcnl3020_enable_periodic(struct iio_dev *indio_dev,
+> +				    struct vcnl3020_data *data)
+> +{
+> +	int rc;
+> +	int cmd;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	/* Enable periodic measurement of proximity data. */
+> +	cmd = VCNL_PS_EN | VCNL_PS_SELFTIMED_EN;
+> +
+> +	rc = regmap_write(data->regmap, VCNL_COMMAND, cmd);
+> +	if (rc)
+> +		goto err_unlock;
+> +
+> +	/*
+> +	 * Enable interrupts on threshold, for proximity data by
+> +	 * default.
+> +	 */
+> +	rc = regmap_write(data->regmap, VCNL_PS_ICR, VCNL_ICR_THRES_EN);
+> +
+> +err_unlock:
+> +	mutex_unlock(&data->lock);
+> +
+> +	return rc;
+> +}
+> +
+> +static int vcnl3020_disable_periodic(struct iio_dev *indio_dev,
+> +				     struct vcnl3020_data *data)
+> +{
+> +	int rc;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	rc = regmap_write(data->regmap, VCNL_COMMAND, 0);
+> +	if (rc)
+> +		goto err_unlock;
+> +
+> +	rc = regmap_write(data->regmap, VCNL_PS_ICR, 0);
+> +	if (rc)
+> +		goto err_unlock;
+> +
+> +	/* Clear interrupt flag bit */
+> +	rc = regmap_write(data->regmap, VCNL_ISR, 0);
+> +
+> +err_unlock:
+> +	mutex_unlock(&data->lock);
+> +
+> +	return rc;
+> +}
+> +
+> +static int vcnl3020_config_threshold(struct iio_dev *indio_dev, bool state)
+> +{
+> +	struct vcnl3020_data *data = iio_priv(indio_dev);
+> +
+> +	if (state) {
+> +		return vcnl3020_enable_periodic(indio_dev, data);
+> +	} else {
+> +		if (!vcnl3020_is_thr_enabled(data))
+> +			return 0;
+> +		return vcnl3020_disable_periodic(indio_dev, data);
+> +	}
+> +}
+> +
+> +static int vcnl3020_write_event_config(struct iio_dev *indio_dev,
+> +				       const struct iio_chan_spec *chan,
+> +				       enum iio_event_type type,
+> +				       enum iio_event_direction dir,
+> +				       int state)
+> +{
+> +	switch (chan->type) {
+> +	case IIO_PROXIMITY:
+> +		return vcnl3020_config_threshold(indio_dev, state);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int vcnl3020_read_event_config(struct iio_dev *indio_dev,
+> +				      const struct iio_chan_spec *chan,
+> +				      enum iio_event_type type,
+> +				      enum iio_event_direction dir)
+> +{
+> +	struct vcnl3020_data *data = iio_priv(indio_dev);
+> +
+> +	switch (chan->type) {
+> +	case IIO_PROXIMITY:
+> +		return vcnl3020_is_thr_enabled(data);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static const struct iio_event_spec vcnl3020_event_spec[] = {
+> +	{
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_RISING,
+> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
+> +	}, {
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_FALLING,
+> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
+> +	}, {
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_EITHER,
+> +		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
+> +	},
+> +};
+> +
+>  static const struct iio_chan_spec vcnl3020_channels[] = {
+>  	{
+>  		.type = IIO_PROXIMITY,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+>  				      BIT(IIO_CHAN_INFO_SAMP_FREQ),
+>  		.info_mask_separate_available = BIT(IIO_CHAN_INFO_SAMP_FREQ),
+> +		.event_spec = vcnl3020_event_spec,
+> +		.num_event_specs = ARRAY_SIZE(vcnl3020_event_spec),
+>  	},
+>  };
+>  
+> @@ -251,17 +504,11 @@ static int vcnl3020_write_raw(struct iio_dev *indio_dev,
+>  			      struct iio_chan_spec const *chan,
+>  			      int val, int val2, long mask)
+>  {
+> -	int rc;
+>  	struct vcnl3020_data *data = iio_priv(indio_dev);
+>  
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+> -		rc = iio_device_claim_direct_mode(indio_dev);
+> -		if (rc)
+> -			return rc;
+> -		rc = vcnl3020_write_proxy_samp_freq(data, val, val2);
+> -		iio_device_release_direct_mode(indio_dev);
+> -		return rc;
+> +		return vcnl3020_write_proxy_samp_freq(data, val, val2);
+
+This is another thing that is not related (I think) to the main change
+here so should be in a separate patch.
+
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -287,6 +534,10 @@ static const struct iio_info vcnl3020_info = {
+>  	.read_raw = vcnl3020_read_raw,
+>  	.write_raw = vcnl3020_write_raw,
+>  	.read_avail = vcnl3020_read_avail,
+> +	.read_event_value = vcnl3020_read_event,
+> +	.write_event_value = vcnl3020_write_event,
+> +	.read_event_config = vcnl3020_read_event_config,
+> +	.write_event_config = vcnl3020_write_event_config,
+>  };
+>  
+>  static const struct regmap_config vcnl3020_regmap_config = {
+> @@ -295,6 +546,40 @@ static const struct regmap_config vcnl3020_regmap_config = {
+>  	.max_register	= VCNL_PS_MOD_ADJ,
+>  };
+>  
+> +static irqreturn_t vcnl3020_handle_irq_thread(int irq, void *p)
+> +{
+> +	struct iio_dev *indio_dev = p;
+> +	struct vcnl3020_data *data = iio_priv(indio_dev);
+> +	unsigned int isr;
+> +	int rc;
+> +
+> +	rc = regmap_read(data->regmap, VCNL_ISR, &isr);
+> +	if (rc) {
+> +		dev_err(data->dev, "Error (%d) reading reg (0x%x)\n",
+> +			rc, VCNL_ISR);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	if (isr & VCNL_ICR_THRES_EN) {
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(IIO_PROXIMITY,
+> +						    1,
+> +						    IIO_EV_TYPE_THRESH,
+> +						    IIO_EV_DIR_RISING),
+> +			       iio_get_time_ns(indio_dev));
+> +
+> +		rc = regmap_write(data->regmap, VCNL_ISR,
+> +				  isr & VCNL_ICR_THRES_EN);
+> +		if (rc)
+> +			dev_err(data->dev, "Error (%d) writing in reg (0x%x)\n",
+> +				rc, VCNL_ISR);
+> +	} else {
+> +		return IRQ_NONE;
+> +	}
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static int vcnl3020_probe(struct i2c_client *client)
+>  {
+>  	struct vcnl3020_data *data;
+> @@ -327,6 +612,19 @@ static int vcnl3020_probe(struct i2c_client *client)
+>  	indio_dev->name = "vcnl3020";
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  
+> +	if (client->irq) {
+> +		rc = devm_request_threaded_irq(&client->dev, client->irq,
+> +					       NULL, vcnl3020_handle_irq_thread,
+> +					       IRQF_ONESHOT, indio_dev->name,
+> +					       indio_dev);
+> +		if (rc) {
+> +			dev_err(&client->dev,
+> +				"Error (%d) irq request failed (%u)\n", rc,
+> +				client->irq);
+> +			return rc;
+> +		}
+> +	}
+> +
+>  	return devm_iio_device_register(&client->dev, indio_dev);
+>  }
+>  
+
