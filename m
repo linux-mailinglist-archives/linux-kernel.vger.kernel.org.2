@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EE43CC0DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 05:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666973CC0E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 05:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232881AbhGQDVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 23:21:36 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:52938 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230504AbhGQDVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 23:21:34 -0400
-Received: from localhost.localdomain (unknown [114.217.243.208])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxgOIATPJgEO8gAA--.19368S2;
-        Sat, 17 Jul 2021 11:18:29 +0800 (CST)
-From:   Rui Wang <wangrui@loongson.cn>
-To:     linux-acpi@vger.kernel.org
-Cc:     Rui Wang <wangrui@loongson.cn>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Shunyong Yang <shunyong.yang@hxt-semitech.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPI: Kconfig: Fix table override from built-in initrd
-Date:   Sat, 17 Jul 2021 11:18:06 +0800
-Message-Id: <20210717031806.29866-1-wangrui@loongson.cn>
+        id S230283AbhGQEAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 00:00:40 -0400
+Received: from mail-m121143.qiye.163.com ([115.236.121.143]:50014 "EHLO
+        mail-m121143.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhGQEAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 00:00:39 -0400
+X-Greylist: delayed 466 seconds by postgrey-1.27 at vger.kernel.org; Sat, 17 Jul 2021 00:00:39 EDT
+DKIM-Signature: a=rsa-sha256;
+        b=iH/OZ3HHXC/mBIn+vvby/MRMx0JtGS6/KxC+ikd63TTmeMUlCAoufXG7cuFZSrhFlQg7dHrWEzXYkBm/2FHl7smn7PvBC1vOgTrKhIrhpGZYp2ZD3m14U4wHj8JYe5PuO2x4fScHnrN+7ZOr8b0nJAWws74qTM8+qsL4kr6zZmE=;
+        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
+        bh=upSSh/KOwILS29K5sdGT0T+g8OnbUotq6IY7mSmY6H4=;
+        h=date:mime-version:subject:message-id:from;
+Received: from comdg01144022.vivo.xyz (unknown [218.104.188.165])
+        by mail-m121143.qiye.163.com (Hmail) with ESMTPA id 7B1F2540208;
+        Sat, 17 Jul 2021 11:49:56 +0800 (CST)
+From:   Yangtao Li <frank.li@vivo.com>
+To:     jaegeuk@kernel.org, chao@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>
+Subject: [PATCH] f2fs: fix ctx->pos in f2fs_read_inline_dir()
+Date:   Sat, 17 Jul 2021 11:49:55 +0800
+Message-Id: <20210717034955.344408-1-frank.li@vivo.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9BxgOIATPJgEO8gAA--.19368S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gw4kXF43ur17Ww15KrWfZrb_yoWkZFXEg3
-        WDJF1xJryUArW0yry0qa1fZw1qyw1fWFyfZw4DK34Svr97J393u3s8AFyDJ347Ca4xKw1U
-        Zwn5Xrn7Ary2vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU84SoDUUUU
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlNGhpWS04fGkJJTU4YSE
+        0fVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KxQ6FTo6FT8CFA4zSRIhE0JN
+        DRoKFB5VSlVKTUlNT0JITEJNQk5OVTMWGhIXVR0JGhUQVRcSOw0SDRRVGBQWRVlXWRILWUFZSUpD
+        VUpLT1VKQ0NVSk1OWVdZCAFZQUlOTUg3Bg++
+X-HM-Tid: 0a7ab295c12ab038kuuu7b1f2540208
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 65e00e04e5aea ("initramfs: refactor the initramfs build rules")
-had dropped the CONFIG_INITRAMFS_COMPRESSION.
+I recently found a case where de->name_len is 0 in f2fs_fill_dentries() easily reproduced,
+and finally set the fsck flag.
 
-This patch updates INITRAMFS_COMPRESSION="" to INITRAMFS_COMPRESSION_NONE.
+Thread A					Thread B
 
-CC: Rafael J. Wysocki <rjw@rjwysocki.net>
-CC: Len Brown <lenb@kernel.org>
-CC: Shunyong Yang <shunyong.yang@hxt-semitech.com>
-CC: linux-acpi@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-Signed-off-by: Rui Wang <wangrui@loongson.cn>
+f2fs_readdir
+	f2fs_read_inline_dir
+		ctx->pos = d.max
+						f2fs_add_dentry
+							f2fs_add_inline_entry
+								do_convert_inline_dir
+							f2fs_add_regular_entry
+f2fs_readdir
+	f2fs_fill_dentries
+		set_sbi_flag(sbi, SBI_NEED_FSCK)
+
+Process A opens the folder, and has been reading without closing it. During this period,
+Process B created a file under the folder (occupying multiple f2fs_dir_entry, exceeding
+the d.max of the inline dir). After creation, process A uses the d.max of inline dir to
+read it again, and it will read that de->name_len is 0.
+
+And returning early in f2fs_read_inline_dir will cause the process to be unable to see
+the changes before reopening the file.
+
+So don't return early and remove the modification of ctx->pos in f2fs_read_inline_dir().
+
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
 ---
- drivers/acpi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/inline.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index 9d872ea477a6..8f9940f40baa 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -370,7 +370,7 @@ config ACPI_TABLE_UPGRADE
- config ACPI_TABLE_OVERRIDE_VIA_BUILTIN_INITRD
- 	bool "Override ACPI tables from built-in initrd"
- 	depends on ACPI_TABLE_UPGRADE
--	depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION=""
-+	depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION_NONE
- 	help
- 	  This option provides functionality to override arbitrary ACPI tables
- 	  from built-in uncompressed initrd.
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index 56a20d5c15da..fc6551139a3d 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -729,9 +729,6 @@ int f2fs_read_inline_dir(struct file *file, struct dir_context *ctx,
+ 
+ 	make_dentry_ptr_inline(inode, &d, inline_dentry);
+ 
+-	if (ctx->pos == d.max)
+-		return 0;
+-
+ 	ipage = f2fs_get_node_page(F2FS_I_SB(inode), inode->i_ino);
+ 	if (IS_ERR(ipage))
+ 		return PTR_ERR(ipage);
+@@ -747,8 +744,6 @@ int f2fs_read_inline_dir(struct file *file, struct dir_context *ctx,
+ 	make_dentry_ptr_inline(inode, &d, inline_dentry);
+ 
+ 	err = f2fs_fill_dentries(ctx, &d, 0, fstr);
+-	if (!err)
+-		ctx->pos = d.max;
+ 
+ 	f2fs_put_page(ipage, 0);
+ 	return err < 0 ? err : 0;
 -- 
 2.32.0
 
