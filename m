@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1C43CC6D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA943CC6DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhGQXeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 19:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
+        id S230435AbhGQXk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 19:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbhGQXeL (ORCPT
+        with ESMTP id S230171AbhGQXk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 19:34:11 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB9BC061762;
-        Sat, 17 Jul 2021 16:31:13 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id o201so12720182pfd.1;
-        Sat, 17 Jul 2021 16:31:13 -0700 (PDT)
+        Sat, 17 Jul 2021 19:40:28 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35640C061762;
+        Sat, 17 Jul 2021 16:37:31 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id k4so16490933wrc.8;
+        Sat, 17 Jul 2021 16:37:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fxKIUXLbmRN8ueNsQhq3eLN6c3ekGbBfhVweDY7xvjY=;
-        b=OTXya9tvVbxwqG9UznvVyJwGzUxWNeneKvmr1IOcWsp8SwM9TsE+izZZFUBL1wfHYy
-         sC2w+X1nMAPFfBHB8V+qTJBL3MvgxcgwIKE5Hb7VhXiIIc1KlD7ZmFNAABjW4zQ3Br62
-         H2RnHm5l5abh/RxPrRIc3qafhVo5shXaVYPxkbFG2BBKZ9+4k92yX7x/v+lori515bLI
-         aYDeo/DJZzmkMiGD+f67AwYeHFJpp5QehK51UBvFxjSAH+5SQ6Nvs5df1UO10oxSxCB9
-         TLLFonFCFgdhkXzq4X910jg742J7UIAcSvpehodaC2Ujm29iO1w76KypnUTD+9I8R005
-         6wnA==
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j8SRcWM58smf+vYhn8K7x+OEcA/vx7MoAU3pV30b6XE=;
+        b=iT7eNzuLPQl8K6h6qY+QEObeT5rLsR5X26z1sUiqS15kH8QVZ6b5E895tf3I489vpI
+         gmwrX5dDwaAf7UvT2OE0SL/y4Qai9kL3qiCUZPPOCI/SDL2JdKCsaAyjQZWEXwhLFcZF
+         y3h5eDBMAs/VulbHzmaZgDSfP3Lm8nrqdNWYY0FVbdA2G7jS6FI6vjBigJYU6k28qKhj
+         1+kP071UwEFMA92MX+O5cYfWpBHCDw9HdyTiB4wuZhG4SVEUdQKJAbF6Ae7DvCWrV3ob
+         9lWlP7ZUyifIJtdIa5zxF6VQ4xahkSOuQrBgEDxPzrjgLmlNyV6F6EAqS6WwB/0Y8PfN
+         2Vmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=fxKIUXLbmRN8ueNsQhq3eLN6c3ekGbBfhVweDY7xvjY=;
-        b=TOgTjncScDOrCa3EyLGzpnVuobXLJZp9VFuq4Ffc99rhAJnveLE7wgBpa8YM9MCGCN
-         J0wmfrv28M605EpHsAH/+Cm6J7EZkw/xCA9OSaurE9SOytHac/GJccwBN81ikDC++3L8
-         gu5itavMzlb2g3VRAL6DBrvM1CgeToazLno9Vbu17x4B29kXbeNB4+Vo8xhcqK3Bm56Z
-         DSSJobNPOj7uPCiGAvQQRNyZvdKE48sLibocM2KAcZ/KfuIUHFRHXapcjlUO5VmmwmJh
-         +Z2u6MVzOio9GbzpDDMdZwn0/joRXKh6msInE50N4JCL9wobJS1fcnZkzt87BkROxPNE
-         EVyw==
-X-Gm-Message-State: AOAM530Up8lto8yxSXhtedirKHay/IsOej0hEL72O0tcgwIFFnWNZFlH
-        XcCHin8lskGPO54ZoYRLq0VWgs7zgaM=
-X-Google-Smtp-Source: ABdhPJwHM9pvcBAPo4YUczQdqjuc5bP+LvvHYV6Uia2+FkAE/q//uJuGg76gZolJaf/A+IOQWQimvA==
-X-Received: by 2002:a62:8283:0:b029:336:6e7a:9c73 with SMTP id w125-20020a6282830000b02903366e7a9c73mr9404473pfd.45.1626564672761;
-        Sat, 17 Jul 2021 16:31:12 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id m24sm15794494pgv.24.2021.07.17.16.31.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 16:31:12 -0700 (PDT)
-Subject: Re: [PATCH 5.4 000/119] 5.4.133-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210716182029.878765454@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <52aa0a43-3f55-1209-4237-0b66c6dbe094@gmail.com>
-Date:   Sat, 17 Jul 2021 16:31:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=j8SRcWM58smf+vYhn8K7x+OEcA/vx7MoAU3pV30b6XE=;
+        b=PweiNPfbR4w0wYatAOOzHY3yQMJaIze83X0z8ZGOqp3m1GolQ4mANjnncZJiQTMey/
+         Hhh2uB/XVlxSi5bCKNSxMM+NTKG9qh4UDYAN71QELVWRjGQN+RRgpnpM/0RYx0bUWQsc
+         8+YGh43Rs7YrBKmH5ki5j82+MTbGNAYhGh3HyXeSoK9PB/dynH1ngNIC42GwrtvN+42q
+         ZENtP5mo1JYZuV3R5LTc7fCDzI82jnPmIwIHgQ2kMGMDEQoCcG1BPFDpil4W/Xxnzgn4
+         OL4TBQd1vejA5uUfjRJOhCSfT9uhKN/uFFqPXyBBllTNB1Bd3NYnLZ5RnOu9eMnbcaLZ
+         aNXA==
+X-Gm-Message-State: AOAM531WtwpvJcJH0DbqeDBdqYvs3aazs+oeBF6iOyDSV6a75MGcthrV
+        frhRldeotCd3ybegrOLFIX8o24t6GaU=
+X-Google-Smtp-Source: ABdhPJwD+rzxamNG/ejFbfNCgwhHng6HUyFGRe1HALoyZ1dFXnYHYJ8DMmNuNUEXIFBwTnDWWk3R2A==
+X-Received: by 2002:adf:d236:: with SMTP id k22mr21385767wrh.392.1626565049555;
+        Sat, 17 Jul 2021 16:37:29 -0700 (PDT)
+Received: from localhost.localdomain (dynamic-2a01-0c22-7602-4e00-f22f-74ff-fe21-0725.c22.pool.telefonica.de. [2a01:c22:7602:4e00:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id q7sm12347527wmq.33.2021.07.17.16.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Jul 2021 16:37:29 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-iio@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, jic23@kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 0/3] iio: adc: meson-saradc: Three small improvements
+Date:   Sun, 18 Jul 2021 01:37:15 +0200
+Message-Id: <20210717233718.332267-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210716182029.878765454@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+the first patch from this series saves a few CPU cycles on G12A, G12B
+and SM1 SoCs. The other two patches are small whitespace cleanups.
+
+In my opinion none of these patches are any real bugfix, which is why
+I omitted the "Fixes" tag.
 
 
-On 7/16/2021 11:28 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.133 release.
-> There are 119 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.133-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Martin Blumenstingl (3):
+  iio: adc: meson-saradc: Disable BL30 integration on G12A and newer
+    SoCs
+  iio: adc: meson-saradc: Add missing space between if and parenthesis
+  iio: adc: meson-saradc: Fix indentation of arguments after a
+    line-break
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+ drivers/iio/adc/meson_saradc.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Florian
+2.32.0
+
