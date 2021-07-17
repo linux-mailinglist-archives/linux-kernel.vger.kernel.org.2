@@ -2,277 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DC03CC39C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 15:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4040D3CC3A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 15:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbhGQNlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 09:41:20 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:39770 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232974AbhGQNlT (ORCPT
+        id S233880AbhGQNmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 09:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232974AbhGQNm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 09:41:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Ug2miKJ_1626529099;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ug2miKJ_1626529099)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 17 Jul 2021 21:38:20 +0800
-Date:   Sat, 17 Jul 2021 21:38:18 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
-        <andreas.gruenbacher@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chao Yu <chao@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-Subject: Re: [PATCH 1/2] iomap: support tail packing inline read
-Message-ID: <YPLdSja/4FBsjss/@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Andreas =?utf-8?Q?Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chao Yu <chao@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-References: <20210716050724.225041-1-hsiangkao@linux.alibaba.com>
- <20210716050724.225041-2-hsiangkao@linux.alibaba.com>
- <YPGDZYT9OxdgNYf2@casper.infradead.org>
- <YPGQB3zT4Wp4Q38X@B-P7TQMD6M-0146.local>
- <YPGbNCdCNXIpNdqd@casper.infradead.org>
- <YPGfqLcSiH3/z2RT@B-P7TQMD6M-0146.local>
- <CAHpGcMJzEiJUbD=7ZOdH7NF+gq9MuEi8=ym34ay7QAm5_91s7g@mail.gmail.com>
+        Sat, 17 Jul 2021 09:42:29 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A10FC06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 06:39:32 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id l11so2866705ljq.4
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 06:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wMysod/FxYgvZzqmI+wGDhxKEpokYzXYS9Z8NQkl9ME=;
+        b=dx3rzI7bTiu4T3bOQldfOy1OsFPlkh8bBfCb9jy5V8APCP58TFHseMNd9H/okgmswf
+         hUKephRuwDpjGCW1EMdvDYrqArAsrkr0iOBqiPc/BNwsAcr63DSlQ8/fMJJKhjWoZTvJ
+         VeTfrx1L3pkh4TvaF7hs8xXw2oxYnqrN+/WH4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wMysod/FxYgvZzqmI+wGDhxKEpokYzXYS9Z8NQkl9ME=;
+        b=On/IWQeycBB4laphermKcpNvBgkLL3+AK34pBgsO8nbSbq3lnBapfJmeFpNKaX9T62
+         vvuZkCb6fTx2E4DuiR6IuDzQiANfUC6eNol62qYLfvAf/V7Nb/fRypdGiNX3QiB06p/5
+         NVpia9hJ8oZ9l5TV37gBImaBtcRlL4b8+EUDIN9xHWSK+CgkWLUm9Mx3EFWDeB6VlJvw
+         2K8H1JZnyIkW7c/1j8k1s//nQNB0n18HAwC5h5kjPXn1B0LL3aTBz8pyLFBkDkayLHpK
+         HdVDsclFUmH0CdY7OoO8qDjeewLx/lXNk45d9+0nbL+lxrIwKAvoA/wuTgQ45+68WXbG
+         bzEQ==
+X-Gm-Message-State: AOAM530uksAvPsrkYP+t8XOjsGiiGIVU0KyZC3r2p6pKXOBdsDH/WxjU
+        Yhh++hcuJKr2HB3OtF4lGqsqTgvMcyl79cY5gnZvAQ==
+X-Google-Smtp-Source: ABdhPJwrBJIk83MDhG8twlHGK2D602TuoBySGjD8NgUQYkCsFRJjpLsnWZmn20MwEw5AyXgT+h/L6Y637xngf2CDgJM=
+X-Received: by 2002:a2e:a90e:: with SMTP id j14mr8861414ljq.250.1626529170617;
+ Sat, 17 Jul 2021 06:39:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcMJzEiJUbD=7ZOdH7NF+gq9MuEi8=ym34ay7QAm5_91s7g@mail.gmail.com>
+References: <20210712060912.995381202@linuxfoundation.org> <20210712060916.499546891@linuxfoundation.org>
+In-Reply-To: <20210712060916.499546891@linuxfoundation.org>
+From:   Justin Forbes <jmforbes@linuxtx.org>
+Date:   Sat, 17 Jul 2021 08:39:19 -0500
+Message-ID: <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
+Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
+ ROM state
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Moritz Fischer <mdf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas, Christoph, Matthew, and all,
-
-On Fri, Jul 16, 2021 at 05:53:19PM +0200, Andreas Grünbacher wrote:
-> Am Fr., 16. Juli 2021 um 17:03 Uhr schrieb Gao Xiang
-> <hsiangkao@linux.alibaba.com>:
-> > On Fri, Jul 16, 2021 at 03:44:04PM +0100, Matthew Wilcox wrote:
-> > > On Fri, Jul 16, 2021 at 09:56:23PM +0800, Gao Xiang wrote:
-> > > > Hi Matthew,
-> > > >
-> > > > On Fri, Jul 16, 2021 at 02:02:29PM +0100, Matthew Wilcox wrote:
-> > > > > On Fri, Jul 16, 2021 at 01:07:23PM +0800, Gao Xiang wrote:
-> > > > > > This tries to add tail packing inline read to iomap. Different from
-> > > > > > the previous approach, it only marks the block range uptodate in the
-> > > > > > page it covers.
-> > > > >
-> > > > > Why?  This path is called under two circumstances: readahead and readpage.
-> > > > > In both cases, we're trying to bring the entire page uptodate.  The inline
-> > > > > extent is always the tail of the file, so we may as well zero the part of
-> > > > > the page past the end of file and mark the entire page uptodate instead
-> > > > > and leaving the end of the page !uptodate.
-> > > > >
-> > > > > I see the case where, eg, we have the first 2048 bytes of the file
-> > > > > out-of-inode and then 20 bytes in the inode.  So we'll create the iop
-> > > > > for the head of the file, but then we may as well finish the entire
-> > > > > PAGE_SIZE chunk as part of this iteration rather than update 2048-3071
-> > > > > as being uptodate and leave the 3072-4095 block for a future iteration.
-> > > >
-> > > > Thanks for your comments. Hmm... If I understand the words above correctly,
-> > > > what I'd like to do is to cover the inline extents (blocks) only
-> > > > reported by iomap_begin() rather than handling other (maybe)
-> > > > logical-not-strictly-relevant areas such as post-EOF (even pages
-> > > > will be finally entirely uptodated), I think such zeroed area should
-> > > > be handled by from the point of view of the extent itself
-> > > >
-> > > >          if (iomap_block_needs_zeroing(inode, iomap, pos)) {
-> > > >                  zero_user(page, poff, plen);
-> > > >                  iomap_set_range_uptodate(page, poff, plen);
-> > > >                  goto done;
-> > > >          }
-> > >
-> > > That does work.  But we already mapped the page to write to it, and
-> > > we already have to zero to the end of the block.  Why not zero to
-> > > the end of the page?  It saves an iteration around the loop, it saves
-> > > a mapping of the page, and it saves a call to flush_dcache_page().
-> >
-> > I completely understand your concern, and that's also (sort of) why I
-> > left iomap_read_inline_page() to make the old !pos behavior as before.
-> >
-> > Anyway, I could update Christoph's patch to behave like what you
-> > suggested. Will do later since I'm now taking some rest...
-> 
-> Looking forward to that for some testing; Christoph's version was
-> already looking pretty good.
-> 
-> This code is a bit brittle, hopefully less so with the recent iop
-> fixes on iomap-for-next.
+On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Moritz Fischer <mdf@kernel.org>
+>
+> commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
+>
+> The ROM load sometimes seems to return an unknown status
+> (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
+>
+> If the ROM load indeed failed this leads to failures when trying to
+> communicate with the controller later on.
+>
+> Attempt to load firmware using RAM load in those cases.
+>
+> Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
+> Cc: stable@vger.kernel.org
+> Cc: Mathias Nyman <mathias.nyman@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Tested-by: Vinod Koul <vkoul@kernel.org>
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 >
 
-Sorry about some late. I've revised a version based on Christoph's
-version and Matthew's thought above. I've preliminary checked with
-EROFS, if it does make sense, please kindly help check on the gfs2
-side as well..
+After sending out 5.12.17 for testing, we had a user complain that all
+of their USB devices disappeared with the error:
 
-Thanks,
-Gao Xiang
+Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
+for renesas_usb_fw.mem failed with error -2
+Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
+Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
 
-From 62f367245492e389711bcebbf7da5adae586299f Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Fri, 16 Jul 2021 10:52:48 +0200
-Subject: [PATCH] iomap: support tail packing inline read
+After first assuming that something was missing in the backport to
+5.12, I had the user try 5.13.2, and then 5.14-rc1. Both of those
+failed in the same way, so it is not working in the current Linus tree
+either.  Reverting this patch fixed the issue.
 
-This tries to add tail packing inline read to iomap, which can support
-several inline tail blocks. Similar to the previous approach, it cleans
-post-EOF in one iteration.
+Justin
 
-The write path remains untouched since EROFS cannot be used for testing.
-It'd be better to be implemented if upcoming real users care rather than
-leave untested dead code around.
-
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
- fs/iomap/buffered-io.c | 59 ++++++++++++++++++++++++++++--------------
- fs/iomap/direct-io.c   |  6 +++--
- 2 files changed, 43 insertions(+), 22 deletions(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..95d4d0a76dbc 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -207,23 +207,25 @@ struct iomap_readpage_ctx {
- 
- static void
- iomap_read_inline_data(struct inode *inode, struct page *page,
--		struct iomap *iomap)
-+		struct iomap *iomap, loff_t pos)
- {
--	size_t size = i_size_read(inode);
-+	unsigned int size = iomap->length + pos - iomap->offset;
-+	unsigned int poff = offset_in_page(pos);
- 	void *addr;
- 
--	if (PageUptodate(page))
--		return;
--
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline source data must be inside a single page */
-+	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* handle tail-packing blocks cross the current page into the next */
-+	if (size > PAGE_SIZE - poff)
-+		size = PAGE_SIZE - poff;
- 
- 	addr = kmap_atomic(page);
--	memcpy(addr, iomap->inline_data, size);
--	memset(addr + size, 0, PAGE_SIZE - size);
-+	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
-+	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
- 	kunmap_atomic(addr);
--	SetPageUptodate(page);
-+	flush_dcache_page(page);
-+
-+	iomap_set_range_uptodate(page, poff, PAGE_SIZE - poff);
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -240,24 +242,29 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- {
- 	struct iomap_readpage_ctx *ctx = data;
- 	struct page *page = ctx->cur_page;
--	struct iomap_page *iop;
-+	struct iomap_page *iop = NULL;
- 	bool same_page = false, is_contig = false;
- 	loff_t orig_pos = pos;
- 	unsigned poff, plen;
- 	sector_t sector;
- 
--	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
--		return PAGE_SIZE;
--	}
-+	if (iomap->type == IOMAP_INLINE && !pos)
-+		WARN_ON_ONCE(to_iomap_page(page) != NULL);
-+	else
-+		iop = iomap_page_create(inode, page);
- 
--	/* zero post-eof blocks as the page may be mapped */
--	iop = iomap_page_create(inode, page);
-+	/* needs to skip some leading uptodated blocks */
- 	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
- 	if (plen == 0)
- 		goto done;
- 
-+	if (iomap->type == IOMAP_INLINE) {
-+		iomap_read_inline_data(inode, page, iomap, pos);
-+		plen = PAGE_SIZE - poff;
-+		goto done;
-+	}
-+
-+	/* zero post-eof blocks as the page may be mapped */
- 	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
- 		zero_user(page, poff, plen);
- 		iomap_set_range_uptodate(page, poff, plen);
-@@ -589,6 +596,18 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode, loff_t pos,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case, disable for now */
-+	if (WARN_ON_ONCE(pos != 0))
-+		return -EIO;
-+	if (PageUptodate(page))
-+		return 0;
-+	iomap_read_inline_data(inode, page, srcmap, pos);
-+	return 0;
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,7 +637,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, pos, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..a70a8632df22 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -380,7 +380,8 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 	struct iov_iter *iter = dio->submit.iter;
- 	size_t copied;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline data must be inside a single page */
-+	BUG_ON(length > PAGE_SIZE - offset_in_page(iomap->inline_data));
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
-@@ -394,7 +395,8 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(iomap->inline_data + pos - iomap->offset,
-+				length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
--- 
-2.24.4
-
- 
+> ---
+>  drivers/usb/host/xhci-pci-renesas.c |   16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> --- a/drivers/usb/host/xhci-pci-renesas.c
+> +++ b/drivers/usb/host/xhci-pci-renesas.c
+> @@ -207,7 +207,8 @@ static int renesas_check_rom_state(struc
+>                         return 0;
+>
+>                 case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
+> -                       return 0;
+> +                       dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
+> +                       break;
+>
+>                 case RENESAS_ROM_STATUS_ERROR: /* Error State */
+>                 default: /* All other states are marked as "Reserved states" */
+> @@ -224,13 +225,12 @@ static int renesas_fw_check_running(stru
+>         u8 fw_state;
+>         int err;
+>
+> -       /* Check if device has ROM and loaded, if so skip everything */
+> -       err = renesas_check_rom(pdev);
+> -       if (err) { /* we have rom */
+> -               err = renesas_check_rom_state(pdev);
+> -               if (!err)
+> -                       return err;
+> -       }
+> +       /*
+> +        * Only if device has ROM and loaded FW we can skip loading and
+> +        * return success. Otherwise (even unknown state), attempt to load FW.
+> +        */
+> +       if (renesas_check_rom(pdev) && !renesas_check_rom_state(pdev))
+> +               return 0;
+>
+>         /*
+>          * Test if the device is actually needing the firmware. As most
+>
+>
