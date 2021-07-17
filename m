@@ -2,197 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1B43CC44F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6763CC473
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234952AbhGQP7Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 17 Jul 2021 11:59:24 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:31541 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232146AbhGQP7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 11:59:14 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GRt4w5lXbzB6Pg;
-        Sat, 17 Jul 2021 17:56:16 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xxSANAge3v1t; Sat, 17 Jul 2021 17:56:16 +0200 (CEST)
-Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GRt4w4cPPzB6Pf;
-        Sat, 17 Jul 2021 17:56:16 +0200 (CEST)
-Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
-        id 248B6560; Sat, 17 Jul 2021 18:01:27 +0200 (CEST)
-Received: from 37-171-38-5.coucou-networks.fr
- (37-171-38-5.coucou-networks.fr [37.171.38.5]) by messagerie.c-s.fr (Horde
- Framework) with HTTP; Sat, 17 Jul 2021 18:01:27 +0200
-Date:   Sat, 17 Jul 2021 18:01:27 +0200
-Message-ID: <20210717180127.Horde.OIjMJnVEEfP_oAQkDsg2IA1@messagerie.c-s.fr>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/chrp: Revert "Move PHB discovery" and "Make
- hydra_init() static"
-References: <20210716221159.3587039-1-linux@roeck-us.net>
- <20210717175750.Horde.TLZWyADKWFGAyFWIYtmglA2@messagerie.c-s.fr>
-In-Reply-To: <20210717175750.Horde.TLZWyADKWFGAyFWIYtmglA2@messagerie.c-s.fr>
-User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
-Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
+        id S231318AbhGQQbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 12:31:11 -0400
+Received: from m15111.mail.126.com ([220.181.15.111]:46525 "EHLO
+        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhGQQbK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 12:31:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=hMHAVT3FIryoflpAxS
+        YqU4AtSFOocoMnlnWbF2KwP8E=; b=jAsb6MoTPynP1oEPb5GXBKo3IkGfL6WFb4
+        FPFvyK5YkQ/iBJEeoROWMaNOQqQP0lZU8Iid8NjcNhmlwLhDkpTKGDYTg1ezHiiJ
+        IhqH9PHFFnl7XZ7Wr/GCWN1M4Ndmc8/ShDhikRYIDsSGIPH4VEjc0mOfeMkhvGSl
+        pLy2MeNww=
+Received: from 192.168.137.133 (unknown [112.10.74.16])
+        by smtp1 (Coremail) with SMTP id C8mowAB3Ol1S_fJg_DnxTA--.9273S3;
+        Sat, 17 Jul 2021 23:55:03 +0800 (CST)
+From:   Xianting Tian <xianting_tian@126.com>
+To:     agk@redhat.com, snitzer@redhat.com
+Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>
+Subject: [PATCH] dm io: fix comments to align with on-stack plugging
+Date:   Sat, 17 Jul 2021 11:54:23 -0400
+Message-Id: <1626537263-8752-1-git-send-email-xianting_tian@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: C8mowAB3Ol1S_fJg_DnxTA--.9273S3
+X-Coremail-Antispam: 1Uf129KBjvdXoWruF1UKFykZF4kZw45AFy5Jwb_yoWkAFX_Cr
+        90qa97Wr1YkF13Kr43Gr4avr95KrZ7uF1xWF1UKa9xWa40vws0qr9rKrnxKr1UZayxCa98
+        GFWkJ34rC3y09jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnKhF7UUUUU==
+X-Originating-IP: [112.10.74.16]
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbizhfSpF8RNK227wAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> a écrit :
+From: Xianting Tian <xianting.tian@linux.alibaba.com>
 
-> Guenter Roeck <linux@roeck-us.net> a écrit :
->
->> This patch reverts commit 407d418f2fd4 ("powerpc/chrp: Move PHB
->> discovery") and commit 9634afa67bfd ("powerpc/chrp: Make hydra_init()
->> static").
->>
->> Running the upstream kernel on Qemu's brand new "pegasos2" emulation
->> results in a variety of backtraces such as
->>
->> Kernel attempted to write user page (a1) - exploit attempt? (uid: 0)
->> ------------[ cut here ]------------
->> Bug: Write fault blocked by KUAP!
->> WARNING: CPU: 0 PID: 0 at arch/powerpc/mm/fault.c:230  
->> do_page_fault+0x4f4/0x920
->> CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.2 #40
->> NIP:  c0021824 LR: c0021824 CTR: 00000000
->> REGS: c1085d50 TRAP: 0700   Not tainted  (5.13.2)
->> MSR:  00021032 <ME,IR,DR,RI>  CR: 24042254  XER: 00000000
->>
->> GPR00: c0021824 c1085e10 c0f8c520 00000021 3fffefff c1085c60  
->> c1085c58 00000000
->> GPR08: 00001032 00000000 00000000 c0ffb3ec 44042254 00000000  
->> 00000000 00000004
->> GPR16: 00000000 ffffffff 000000c4 000000d0 0188c6e0 01006000  
->> 00000001 40b14000
->> GPR24: c0ec000c 00000300 02000000 00000000 42000000 000000a1  
->> 00000000 c1085e60
->> NIP [c0021824] do_page_fault+0x4f4/0x920
->> LR [c0021824] do_page_fault+0x4f4/0x920
->> Call Trace:
->> [c1085e10] [c0021824] do_page_fault+0x4f4/0x920 (unreliable)
->> [c1085e50] [c0004254] DataAccess_virt+0xd4/0xe4
->>
->> and the system fails to boot. Bisect points to commit 407d418f2fd4
->> ("powerpc/chrp: Move PHB discovery"). Reverting this patch together with
->> commit 9634afa67bfd ("powerpc/chrp: Make hydra_init() static") fixes
->> the problem.
->
-> Isn't there more than that in the backtrace ? If there is a fault  
-> blocked by Kuap, it means there is a fault. It should be visible in  
-> the traces.
->
-> Should we fix the problem instead of reverting the commit that made  
-> the problem visible ?
->
+Ther is no unplugging timer now, on-stack io plugging is used:
+	struct blk_plug plug;
 
-Also, as it is a KUAP fault, did you test without CONFIG_PPC_KUAP ?  
-Does it boot ?
+	blk_start_plug(&plug);
+	submit_batch_of_io();
+	blk_finish_plug(&plug);
 
->
->>
->> Cc: Oliver O'Halloran <oohall@gmail.com>
->> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->> Fixes: 407d418f2fd4 ("powerpc/chrp: Move PHB discovery")
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
->> arch/powerpc/include/asm/hydra.h    |  2 ++
->> arch/powerpc/platforms/chrp/pci.c   | 11 ++---------
->> arch/powerpc/platforms/chrp/setup.c | 12 +++++++++++-
->> 3 files changed, 15 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/hydra.h  
->> b/arch/powerpc/include/asm/hydra.h
->> index d024447283a0..ae02eb53d6ef 100644
->> --- a/arch/powerpc/include/asm/hydra.h
->> +++ b/arch/powerpc/include/asm/hydra.h
->> @@ -94,6 +94,8 @@ extern volatile struct Hydra __iomem *Hydra;
->> #define HYDRA_INT_EXT7		18	/* Power Off Request */
->> #define HYDRA_INT_SPARE		19
->>
->> +extern int hydra_init(void);
->> +
->> #endif /* __KERNEL__ */
->>
->> #endif /* _ASMPPC_HYDRA_H */
->> diff --git a/arch/powerpc/platforms/chrp/pci.c  
->> b/arch/powerpc/platforms/chrp/pci.c
->> index 76e6256cb0a7..b2c2bf35b76c 100644
->> --- a/arch/powerpc/platforms/chrp/pci.c
->> +++ b/arch/powerpc/platforms/chrp/pci.c
->> @@ -131,7 +131,8 @@ static struct pci_ops rtas_pci_ops =
->>
->> volatile struct Hydra __iomem *Hydra = NULL;
->>
->> -static int __init hydra_init(void)
->> +int __init
->> +hydra_init(void)
->> {
->> 	struct device_node *np;
->> 	struct resource r;
->> @@ -313,14 +314,6 @@ chrp_find_bridges(void)
->> 		}
->> 	}
->> 	of_node_put(root);
->> -
->> -	/*
->> -	 *  "Temporary" fixes for PCI devices.
->> -	 *  -- Geert
->> -	 */
->> -	hydra_init();		/* Mac I/O */
->> -
->> -	pci_create_OF_bus_map();
->> }
->>
->> /* SL82C105 IDE Control/Status Register */
->> diff --git a/arch/powerpc/platforms/chrp/setup.c  
->> b/arch/powerpc/platforms/chrp/setup.c
->> index 3cfc382841e5..c45435aa5e36 100644
->> --- a/arch/powerpc/platforms/chrp/setup.c
->> +++ b/arch/powerpc/platforms/chrp/setup.c
->> @@ -334,11 +334,22 @@ static void __init chrp_setup_arch(void)
->> 	/* On pegasos, enable the L2 cache if not already done by OF */
->> 	pegasos_set_l2cr();
->>
->> +	/* Lookup PCI host bridges */
->> +	chrp_find_bridges();
->> +
->> +	/*
->> +	 *  Temporary fixes for PCI devices.
->> +	 *  -- Geert
->> +	 */
->> +	hydra_init();		/* Mac I/O */
->> +
->> 	/*
->> 	 *  Fix the Super I/O configuration
->> 	 */
->> 	sio_init();
->>
->> +	pci_create_OF_bus_map();
->> +
->> 	/*
->> 	 * Print the banner, then scroll down so boot progress
->> 	 * can be printed.  -- Cort
->> @@ -571,7 +582,6 @@ define_machine(chrp) {
->> 	.name			= "CHRP",
->> 	.probe			= chrp_probe,
->> 	.setup_arch		= chrp_setup_arch,
->> -	.discover_phbs		= chrp_find_bridges,
->> 	.init			= chrp_init2,
->> 	.show_cpuinfo		= chrp_show_cpuinfo,
->> 	.init_IRQ		= chrp_init_IRQ,
->> --
->> 2.25.1
+So remove the old comments for unplugging timer.
 
+Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+---
+ drivers/md/dm-io.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/md/dm-io.c b/drivers/md/dm-io.c
+index 2d3cda0..7dba193 100644
+--- a/drivers/md/dm-io.c
++++ b/drivers/md/dm-io.c
+@@ -528,11 +528,6 @@ static int dp_init(struct dm_io_request *io_req, struct dpages *dp,
+ 
+ /*
+  * New collapsed (a)synchronous interface.
+- *
+- * If the IO is asynchronous (i.e. it has notify.fn), you must either unplug
+- * the queue with blk_unplug() some time later or set REQ_SYNC in
+- * io_req->bi_opf. If you fail to do one of these, the IO will be submitted to
+- * the disk after q->unplug_delay, which defaults to 3ms in blk-settings.c.
+  */
+ int dm_io(struct dm_io_request *io_req, unsigned num_regions,
+ 	  struct dm_io_region *where, unsigned long *sync_error_bits)
+-- 
+1.8.3.1
 
