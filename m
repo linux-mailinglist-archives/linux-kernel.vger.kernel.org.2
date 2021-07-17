@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307BD3CC1F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 10:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCF03CC1F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 10:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhGQIRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 04:17:09 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:55307 "EHLO
+        id S232884AbhGQIRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 04:17:34 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:52283 "EHLO
         wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231862AbhGQIQc (ORCPT
+        by vger.kernel.org with ESMTP id S233226AbhGQIQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 04:16:32 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 38A9732007F9;
-        Sat, 17 Jul 2021 04:13:34 -0400 (EDT)
+        Sat, 17 Jul 2021 04:16:38 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 58976320091F;
+        Sat, 17 Jul 2021 04:13:41 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sat, 17 Jul 2021 04:13:34 -0400
+  by compute5.internal (MEProxy); Sat, 17 Jul 2021 04:13:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=OL8LS2RF3uwborwIE
-        ay0AbN5xC77/xl6wasXY6aVF7Q=; b=QoOhWMoyeemJfdDdqd814u3GRHQ011dDM
-        grj0lsZUnX4YtcJpEeLqNzbdq3HbHEWDs3T9IqrzDNA0RY9fSThBwDZAikJKqCcR
-        cFayhbwGVykP2qkXUtAH5EjV+qsg0WSlrQjj7TA2Xm1rDLOB6sTt3RrygdaebSZO
-        YMPM2LwGZmHY1nUJQUgyd4IRWmsKXj9BkXlzFd7wCbP76rf6HXuRH6vOaB41W7jV
-        yvAZA72YY/39Fk29Ok+o/bGPrWIU3UJfvPdbqkMvUQO2tXj1ZGjVVEAQze0TFSIx
-        HGbsYpjNzuQW+hepjlYYXZjLI8yE1k7DKLeX3bIjpncSBUJBy5quA==
-X-ME-Sender: <xms:LZHyYFpbhGBa2Tzc5aaZin0YdHt7OK7xi4aw9ajNMjJaPebWb88OMg>
-    <xme:LZHyYHrdW40j4yZ3FB7HavPnbT1Q40LnxXlxEluCY5O8DZBgc3QF5U-ek839hWOWs
-    Q8e348SdyGEgxXzjv4>
-X-ME-Received: <xmr:LZHyYCNB8agK-iCYuX5neJaQHzLfHzHiqNTWofrcZWN0W9dyyjKPtFeEgn7P>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=wOVVUBRAmyrV9aWXsHDM8tXQfsI+uLgR+NVbWqufuL8=; b=gk5ojOQg
+        teEY3xHnfHHQFk2dQolJaye9aK02plOpgzi/yqfNtkhoh+76FRmxuK2nYD4raNJr
+        xWKgj5idpSHjieWxtWv+MfJnxXHrkBhoRvcmO2EFaSAwlfe7n9DGWgu1NX0crVTE
+        Bf8/2dAmqPx9sibQUI470+NhFM0RHn+AAVtAdIOvVXvXMNj5NUHIZBW9FoPHgJQN
+        MZGFyGt8sFG+wJ1cE9Lc+Jvdo7Xt9YxEPpcRYCubQY860XQcTOodFlBpGlXOfhNk
+        QqdcYZjnG9JWd7B8XN2FxGl4puqsKUju3+2jnqzrIvjnMdSUoraZFh2RqyzVASAU
+        FAC1Ln4hl6+hfQ==
+X-ME-Sender: <xms:NJHyYLktN2NsNgLnnVuf2okfROcoDAyDw9BPeaWNuJEuTutDQPhOfw>
+    <xme:NJHyYO3JFK6QcUrEYW2gpNVeb50aQrfS2hNRV_8hwFN_ac3P_VtaHwoQsaFXS5CoB
+    WkXJNGnHonYfHSft6c>
+X-ME-Received: <xmr:NJHyYBpAIXBwwYtGAcqrPz0BVBB_4NYmN2XpqAALvYDGa902t6y-v1kYeS2Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeggdejfecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhhonhgv
-    shdruggvvheqnecuggftrfgrthhtvghrnheplefflefhledthfdtveeugfevueeukeegte
-    eigfeihffgjedvtedvueevtdfhvdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:LZHyYA6aZVrG6ys485i6gyEs9szC5XUTMf27xOUn38FM9BmkIz8j6A>
-    <xmx:LZHyYE7w1ipUnrLsDstVBJKL92pOT29C3XZKOUvtp5Ht9zK-ORpz0A>
-    <xmx:LZHyYIgBOQbKqEj_Dt7TLKu1Qf1hSR6CSsipifGkfZPI1kYDTVS17A>
-    <xmx:LZHyYORNRZf6QiznBU7rkycUPM3uywCheXpPMNY3o8xdV7PKCg8xmw>
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+    ertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhho
+    nhgvshdruggvvheqnecuggftrfgrthhtvghrnhepvdetkedvueehtdfhueduleehjeeihf
+    dvtdetleelgefhkefhuefgheegkefftdehnecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:NJHyYDkTm4bBInvWDk8XJVLsG_BoW3dRghqFMWqX8clM6mVIvf1Zaw>
+    <xmx:NJHyYJ0pHAbjMuTutK9txg8v-WJsaH0gTLouZtyup8MGoIEZzQmAqQ>
+    <xmx:NJHyYCtiA-takfE1LyhUy8v9MMdkk1Mx74szmfeKnpIlFlCGIcQOAw>
+    <xmx:NJHyYB9vXGloQDOuyOSJnxenxBD6-bsyrzaLzZbQ6jrVQmCj82mVVw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 17 Jul 2021 04:13:29 -0400 (EDT)
+ 17 Jul 2021 04:13:37 -0400 (EDT)
 From:   "Luke D. Jones" <luke@ljones.dev>
 To:     hdegoede@redhat.com
 Cc:     pobrn@protonmail.com, mgross@linux.intel.com,
         corentin.chary@gmail.com, platform-driver-x86@vger.kernel.org,
         linux-kernel@vger.kernel.org, acpi4asus-user@lists.sourceforge.net,
         "Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH 1/4] asus-wmi: Add panel overdrive functionality
-Date:   Sat, 17 Jul 2021 20:13:21 +1200
-Message-Id: <20210717081323.7925-1-luke@ljones.dev>
+Subject: [PATCH 2/4] asus-wmi: Add dgpu disable method
+Date:   Sat, 17 Jul 2021 20:13:22 +1200
+Message-Id: <20210717081323.7925-2-luke@ljones.dev>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210717081323.7925-1-luke@ljones.dev>
+References: <20210717081323.7925-1-luke@ljones.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some ASUS ROG laptops have the ability to drive the display panel
-a higher rate to eliminate or reduce ghosting.
+In Windows the ASUS Armory Crate program can enable or disable the
+dGPU via a WMI call. This functions much the same as various Linux
+methods in software where the dGPU is removed from the device tree.
+
+However the WMI call saves the state of dGPU (enabled or not) and
+this then changes the dGPU visibility in Linux with no way for
+Linux users to re-enable it. We expose the WMI method so users can
+see and change the dGPU ACPI state.
 
 Signed-off-by: Luke D. Jones <luke@ljones.dev>
 ---
- drivers/platform/x86/asus-wmi.c            | 91 ++++++++++++++++++++++
- include/linux/platform_data/x86/asus-wmi.h |  1 +
- 2 files changed, 92 insertions(+)
+ drivers/platform/x86/asus-wmi.c            | 99 ++++++++++++++++++++++
+ include/linux/platform_data/x86/asus-wmi.h |  3 +
+ 2 files changed, 102 insertions(+)
 
 diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index ebaeb7bb80f5..cd881443bc2f 100644
+index cd881443bc2f..02762a60d27a 100644
 --- a/drivers/platform/x86/asus-wmi.c
 +++ b/drivers/platform/x86/asus-wmi.c
-@@ -216,6 +216,9 @@ struct asus_wmi {
- 	// The RSOC controls the maximum charging percentage.
- 	bool battery_rsoc_available;
+@@ -210,6 +210,9 @@ struct asus_wmi {
+ 	u8 fan_boost_mode_mask;
+ 	u8 fan_boost_mode;
  
-+	bool panel_overdrive_available;
-+	bool panel_overdrive;
++	bool dgpu_disable_available;
++	bool dgpu_disable;
 +
- 	struct hotplug_slot hotplug_slot;
- 	struct mutex hotplug_lock;
- 	struct mutex wmi_lock;
-@@ -1221,6 +1224,86 @@ static int asus_wmi_rfkill_init(struct asus_wmi *asus)
- 	return result;
+ 	bool throttle_thermal_policy_available;
+ 	u8 throttle_thermal_policy_mode;
+ 
+@@ -427,6 +430,94 @@ static void lid_flip_tablet_mode_get_state(struct asus_wmi *asus)
+ 	}
  }
  
-+/* Panel Overdrive ************************************************************/
-+static int panel_od_check_present(struct asus_wmi *asus)
++/* dGPU ********************************************************************/
++static int dgpu_disable_check_present(struct asus_wmi *asus)
 +{
 +	u32 result;
 +	int err;
 +
-+	asus->panel_overdrive_available = false;
++	asus->dgpu_disable_available = false;
 +
-+	err = asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_PANEL_OD, &result);
++	err = asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_DGPU, &result);
 +	if (err) {
 +		if (err == -ENODEV)
 +			return 0;
@@ -103,121 +112,131 @@ index ebaeb7bb80f5..cd881443bc2f 100644
 +	}
 +
 +	if (result & ASUS_WMI_DSTS_PRESENCE_BIT) {
-+		asus->panel_overdrive_available = true;
-+		asus->panel_overdrive = result & ASUS_WMI_DSTS_STATUS_BIT;
++		asus->dgpu_disable_available = true;
++		asus->dgpu_disable = result & ASUS_WMI_DSTS_STATUS_BIT;
 +	}
 +
 +	return 0;
 +}
 +
-+static int panel_od_write(struct asus_wmi *asus)
++static int dgpu_disable_write(struct asus_wmi *asus)
 +{
 +	int err;
 +	u8 value;
 +	u32 retval;
 +
-+	value = asus->panel_overdrive;
++	value = asus->dgpu_disable;
 +
-+	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_PANEL_OD, value, &retval);
++	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_DGPU, value, &retval);
 +
 +	if (err) {
-+		pr_warn("Failed to set panel overdrive: %d\n", err);
++		pr_warn("Failed to set dgpu disable: %d\n", err);
 +		return err;
 +	}
 +
 +	if (retval > 1 || retval < 0) {
-+		pr_warn("Failed to set panel overdrive (retval): 0x%x\n", retval);
++		pr_warn("Failed to set dgpu disable (retval): 0x%x\n", retval);
 +		return -EIO;
 +	}
 +
-+	sysfs_notify(&asus->platform_device->dev.kobj, NULL, "panel_od");
++	sysfs_notify(&asus->platform_device->dev.kobj, NULL, "dgpu_disable");
 +
 +	return 0;
 +}
 +
-+static ssize_t panel_od_show(struct device *dev,
++static ssize_t dgpu_disable_show(struct device *dev,
 +				   struct device_attribute *attr, char *buf)
 +{
 +	struct asus_wmi *asus = dev_get_drvdata(dev);
-+	bool mode = asus->panel_overdrive;
++	bool mode = asus->dgpu_disable;
 +
 +	return sysfs_emit(buf, "%d\n", mode);
 +}
 +
-+static ssize_t panel_od_store(struct device *dev,
++static ssize_t dgpu_disable_store(struct device *dev,
 +				    struct device_attribute *attr,
 +				    const char *buf, size_t count)
 +{
 +	int result;
-+	bool overdrive;
++	bool disable;
 +	struct asus_wmi *asus = dev_get_drvdata(dev);
 +
-+	result = kstrtobool(buf, &overdrive);
++	result = kstrtobool(buf, &disable);
 +	if (result == -EINVAL)
 +		return result;
 +
-+	asus->panel_overdrive = overdrive;
-+	result = panel_od_write(asus);
++	asus->dgpu_disable = disable;
++	/*
++	 * The ACPI call used does not save the mode unless the call is run twice.
++	 * Once to disable, then once to check status and save - this is two code
++	 * paths in the method in the ACPI dumps.
++	*/
++	result = dgpu_disable_write(asus);
++	if (result != 0)
++		return result;
 +
++	result = dgpu_disable_write(asus);
 +	if (result != 0)
 +		return result;
 +
 +	return count;
 +}
 +
-+static DEVICE_ATTR_RW(panel_od);
++static DEVICE_ATTR_RW(dgpu_disable);
 +
- /* Quirks *********************************************************************/
+ /* Battery ********************************************************************/
  
- static void asus_wmi_set_xusb2pr(struct asus_wmi *asus)
-@@ -2332,6 +2415,7 @@ static struct attribute *platform_attributes[] = {
+ /* The battery maximum charging percentage */
+@@ -2411,6 +2502,7 @@ static struct attribute *platform_attributes[] = {
+ 	&dev_attr_camera.attr,
+ 	&dev_attr_cardr.attr,
+ 	&dev_attr_touchpad.attr,
++	&dev_attr_dgpu_disable.attr,
+ 	&dev_attr_lid_resume.attr,
  	&dev_attr_als_enable.attr,
  	&dev_attr_fan_boost_mode.attr,
- 	&dev_attr_throttle_thermal_policy.attr,
-+	&dev_attr_panel_od.attr,
- 	NULL
- };
- 
-@@ -2357,6 +2441,8 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
+@@ -2437,6 +2529,8 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
+ 		devid = ASUS_WMI_DEVID_LID_RESUME;
+ 	else if (attr == &dev_attr_als_enable.attr)
+ 		devid = ASUS_WMI_DEVID_ALS_ENABLE;
++	else if (attr == &dev_attr_dgpu_disable.attr)
++		ok = asus->dgpu_disable_available;
+ 	else if (attr == &dev_attr_fan_boost_mode.attr)
  		ok = asus->fan_boost_mode_available;
  	else if (attr == &dev_attr_throttle_thermal_policy.attr)
- 		ok = asus->throttle_thermal_policy_available;
-+	else if (attr == &dev_attr_panel_od.attr)
-+		ok = asus->panel_overdrive_available;
- 
- 	if (devid != -1)
- 		ok = !(asus_wmi_get_devstate_simple(asus, devid) < 0);
-@@ -2622,6 +2708,10 @@ static int asus_wmi_add(struct platform_device *pdev)
- 	else
- 		throttle_thermal_policy_set_default(asus);
- 
-+	err = panel_od_check_present(asus);
-+	if (err)
-+		goto fail_panel_od;
-+
- 	err = asus_wmi_sysfs_init(asus->platform_device);
+@@ -2698,6 +2792,10 @@ static int asus_wmi_add(struct platform_device *pdev)
  	if (err)
- 		goto fail_sysfs;
-@@ -2709,6 +2799,7 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 		goto fail_platform;
+ 
++	err = dgpu_disable_check_present(asus);
++	if (err)
++		goto fail_dgpu_disable;
++
+ 	err = fan_boost_mode_check_present(asus);
+ 	if (err)
+ 		goto fail_fan_boost_mode;
+@@ -2798,6 +2896,7 @@ static int asus_wmi_add(struct platform_device *pdev)
+ fail_sysfs:
  fail_throttle_thermal_policy:
  fail_fan_boost_mode:
++fail_dgpu_disable:
  fail_platform:
-+fail_panel_od:
+ fail_panel_od:
  	kfree(asus);
- 	return err;
- }
 diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-index 2f274cf52805..428aea701c7b 100644
+index 428aea701c7b..a528f9d0e4b7 100644
 --- a/include/linux/platform_data/x86/asus-wmi.h
 +++ b/include/linux/platform_data/x86/asus-wmi.h
-@@ -61,6 +61,7 @@
- #define ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY 0x00120075
+@@ -90,6 +90,9 @@
+ /* Keyboard dock */
+ #define ASUS_WMI_DEVID_KBD_DOCK		0x00120063
  
- /* Misc */
-+#define ASUS_WMI_DEVID_PANEL_OD		0x00050019
- #define ASUS_WMI_DEVID_CAMERA		0x00060013
- #define ASUS_WMI_DEVID_LID_FLIP		0x00060062
- 
++/* dgpu on/off */
++#define ASUS_WMI_DEVID_DGPU		0x00090020
++
+ /* DSTS masks */
+ #define ASUS_WMI_DSTS_STATUS_BIT	0x00000001
+ #define ASUS_WMI_DSTS_UNKNOWN_BIT	0x00000002
 -- 
 2.31.1
 
