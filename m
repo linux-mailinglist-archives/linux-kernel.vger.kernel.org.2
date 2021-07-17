@@ -2,99 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C95B3CC178
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 08:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218833CC180
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 08:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhGQGPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 02:15:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229379AbhGQGPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 02:15:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B4C56101A;
-        Sat, 17 Jul 2021 06:12:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626502377;
-        bh=8cLLirT0hvzwP0lrOx0mYq7s2nFKexMw23WQLVT2LaA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hco7pen6gNCqtDfle51bfDisW7MKsJ7n/yhJi/ea0Luopx32VeCXVFVzqjXe1fHsv
-         im88Oz/kBkydDPFmD0wThbs3xhZ7b2i6UZFwJBk6c87sOh3hMd7ha2yC9lJ+sZiRyD
-         I44xXq/isGnKo9KsybOIgKXsc0N8UQhHswUeWkm4=
-Date:   Sat, 17 Jul 2021 08:12:52 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Winiarska, Iwona" <iwona.winiarska@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "jason.m.bills@linux.intel.com" <jason.m.bills@linux.intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 06/14] peci: Add core infrastructure
-Message-ID: <YPJ05JUiOggKajIx@kroah.com>
-References: <20210712220447.957418-1-iwona.winiarska@intel.com>
- <20210712220447.957418-7-iwona.winiarska@intel.com>
- <59428599ef7efb2521bd62c49a3bc55c710f29de.camel@intel.com>
- <6807a14deb52956ad2fe390b1811dd98901a642a.camel@intel.com>
- <CAPcyv4ifjCZSUuk5H5qw6sjt5vdAkTfNzd+4imu+9e_iOt74gQ@mail.gmail.com>
+        id S231424AbhGQG0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 02:26:49 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:37836 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232540AbhGQGYU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 02:24:20 -0400
+Received: by mail-io1-f70.google.com with SMTP id p7-20020a6b63070000b029050017e563a6so7758367iog.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 23:21:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Zyn4lLMUe1Vj+bngYaZZYD4Ow6s0haxh7TzGmnut+IM=;
+        b=BiiJYVx797Y5cBV26MCBRiJl5xFQ00H7o2ASmGLnNLhLiROX+fpHPr61PvZQp9TDyM
+         xYLqAa/TzJGinvRTx5pmhYPwpZGayIwfi0Cqqw8NQSqGMkU+qRRalfUiFPUlDa6+Xvqd
+         oG5D8pB+yIs98isig6dhTOp+NIJmFrVEthHwxFoX2CjEYJB2B0AOZoVXznrJRkzNDEKp
+         T7pP8EFZi1pdP9/LNdpNAef7QKrm1881yRyFrNIivop7medIPGnvihif7OjdxLeXYDtE
+         +eoaGmNsAZJzn0v0s0kg24NJrGveaCq6pLZ98pRVqqc28CBZeCgkpoyeAzrpYPy1AhNR
+         qDsQ==
+X-Gm-Message-State: AOAM531aXPrmyt1FMCwVIaV111ZXOaOKdjRtMwrp79EyJQFxZ9h1mxFW
+        S8tOEGM+G8Z2isAcQqo0K6otyoaf2InsBU/vjM4uCJPk1t2G
+X-Google-Smtp-Source: ABdhPJzo5vOVyCWxKFkVkFaPqb5No0KVHeYEDxPPBMiiUKkjCQqqXf/jcoV3m+v7pmYz/kRGxcs5d26l326YTfRRQxbW31jUVLeq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4ifjCZSUuk5H5qw6sjt5vdAkTfNzd+4imu+9e_iOt74gQ@mail.gmail.com>
+X-Received: by 2002:a92:3004:: with SMTP id x4mr9189736ile.269.1626502884405;
+ Fri, 16 Jul 2021 23:21:24 -0700 (PDT)
+Date:   Fri, 16 Jul 2021 23:21:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a6b91c05c74bb6ac@google.com>
+Subject: [syzbot] KASAN: use-after-free Write in alloc_ucounts
+From:   syzbot <syzbot+59dd63761094a80ad06d@syzkaller.appspotmail.com>
+To:     ebiederm@xmission.com, legion@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 02:50:04PM -0700, Dan Williams wrote:
-> On Fri, Jul 16, 2021 at 2:08 PM Winiarska, Iwona
-> > > > +}
-> > > > +EXPORT_SYMBOL_NS_GPL(peci_controller_add, PECI);
-> > >
-> > > I think it's cleaner to declare symbol namespaces in the Makefile. In
-> > > this case, add:
-> > >
-> > > cflags-y += -DDEFAULT_SYMBOL_NAMESPACE=PECI
-> > >
-> > > ...and just use EXPORT_SYMBOL_GPL as normal in the C file.
-> > >
-> >
-> > I kind of prefer the more verbose EXPORT_SYMBOL_NS_GPL - it also
-> > doesn't "hide" the fact that we're using namespaces (everything is in
-> > the C file rather than mixed into Makefile), but it's not a strong
-> > opinion, so sure - I can change this.
-> >
-> 
-> Perhaps as a tie breaker, the maintainer you are submitting this to,
-> Greg, uses the -DDEFAULT_SYMBOL_NAMESPACE scheme in his subsystem,
-> drivers/usb/.
+Hello,
 
-We did that because namespaces were added _after_ the kernel code was
-already there.  For new code like this, the original use of
-EXPORT_SYMBOL_NS_GPL() is best as it is explicit and obvious.  No need
-to dig around in a Makefile to find out the namespace name.
+syzbot found the following issue on:
 
-thanks,
+HEAD commit:    db503865b9ba Add linux-next specific files for 20210712
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=155c3772300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d4d624afc208db3
+dashboard link: https://syzkaller.appspot.com/bug?extid=59dd63761094a80ad06d
 
-greg k-h
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+59dd63761094a80ad06d@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_add_negative include/asm-generic/atomic-instrumented.h:556 [inline]
+BUG: KASAN: use-after-free in get_ucounts kernel/ucount.c:152 [inline]
+BUG: KASAN: use-after-free in get_ucounts kernel/ucount.c:150 [inline]
+BUG: KASAN: use-after-free in alloc_ucounts+0x19b/0x5b0 kernel/ucount.c:188
+Write of size 4 at addr ffff88802821e41c by task syz-executor.4/16785
+
+CPU: 1 PID: 16785 Comm: syz-executor.4 Not tainted 5.14.0-rc1-next-20210712-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
+ check_region_inline mm/kasan/generic.c:183 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_add_negative include/asm-generic/atomic-instrumented.h:556 [inline]
+ get_ucounts kernel/ucount.c:152 [inline]
+ get_ucounts kernel/ucount.c:150 [inline]
+ alloc_ucounts+0x19b/0x5b0 kernel/ucount.c:188
+ set_cred_ucounts+0x171/0x3a0 kernel/cred.c:684
+ __sys_setuid+0x285/0x400 kernel/sys.c:623
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fde54097188 EFLAGS: 00000246 ORIG_RAX: 0000000000000069
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000000ff
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffc8655740f R14: 00007fde54097300 R15: 0000000000022000
+
+Allocated by task 16784:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+ __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:522
+ kmalloc include/linux/slab.h:591 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ alloc_ucounts+0x23d/0x5b0 kernel/ucount.c:169
+ set_cred_ucounts+0x171/0x3a0 kernel/cred.c:684
+ __sys_setuid+0x285/0x400 kernel/sys.c:623
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 16785:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:229 [inline]
+ slab_free_hook mm/slub.c:1650 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1675
+ slab_free mm/slub.c:3235 [inline]
+ kfree+0xeb/0x650 mm/slub.c:4295
+ put_ucounts kernel/ucount.c:200 [inline]
+ put_ucounts+0x117/0x150 kernel/ucount.c:192
+ put_cred_rcu+0x27a/0x520 kernel/cred.c:124
+ rcu_do_batch kernel/rcu/tree.c:2550 [inline]
+ rcu_core+0x7ab/0x1380 kernel/rcu/tree.c:2785
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
+ insert_work+0x48/0x370 kernel/workqueue.c:1332
+ __queue_work+0x5c1/0xed0 kernel/workqueue.c:1498
+ queue_work_on+0xee/0x110 kernel/workqueue.c:1525
+ queue_work include/linux/workqueue.h:507 [inline]
+ call_usermodehelper_exec+0x1f0/0x4c0 kernel/umh.c:435
+ kobject_uevent_env+0xf8f/0x1650 lib/kobject_uevent.c:618
+ netdev_queue_add_kobject net/core/net-sysfs.c:1621 [inline]
+ netdev_queue_update_kobjects+0x374/0x450 net/core/net-sysfs.c:1655
+ register_queue_kobjects net/core/net-sysfs.c:1716 [inline]
+ netdev_register_kobject+0x35a/0x430 net/core/net-sysfs.c:1959
+ register_netdevice+0xd33/0x1500 net/core/dev.c:10331
+ nsim_init_netdevsim drivers/net/netdevsim/netdev.c:317 [inline]
+ nsim_create+0x381/0x4d0 drivers/net/netdevsim/netdev.c:364
+ __nsim_dev_port_add+0x32e/0x830 drivers/net/netdevsim/dev.c:1295
+ nsim_dev_port_add_all+0x53/0x150 drivers/net/netdevsim/dev.c:1355
+ nsim_dev_probe+0xcb5/0x1190 drivers/net/netdevsim/dev.c:1496
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3356
+ nsim_bus_dev_new drivers/net/netdevsim/bus.c:431 [inline]
+ new_device_store+0x436/0x710 drivers/net/netdevsim/bus.c:298
+ bus_attr_store+0x72/0xa0 drivers/base/bus.c:122
+ sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+ kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2152 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x75a/0xa40 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
+ insert_work+0x48/0x370 kernel/workqueue.c:1332
+ __queue_work+0x5c1/0xed0 kernel/workqueue.c:1498
+ queue_work_on+0xee/0x110 kernel/workqueue.c:1525
+ queue_work include/linux/workqueue.h:507 [inline]
+ call_usermodehelper_exec+0x1f0/0x4c0 kernel/umh.c:435
+ kobject_uevent_env+0xf8f/0x1650 lib/kobject_uevent.c:618
+ kobject_synth_uevent+0x701/0x850 lib/kobject_uevent.c:208
+ uevent_store+0x20/0x50 drivers/base/core.c:2371
+ dev_attr_store+0x50/0x80 drivers/base/core.c:2072
+ sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+ kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2152 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x75a/0xa40 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff88802821e400
+ which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 28 bytes inside of
+ 192-byte region [ffff88802821e400, ffff88802821e4c0)
+The buggy address belongs to the page:
+page:ffffea0000a08780 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2821e
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888010841a00
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, ts 12874702440, free_ts 12637793385
+ prep_new_page mm/page_alloc.c:2433 [inline]
+ get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4166
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5374
+ alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2119
+ alloc_pages+0x238/0x2a0 mm/mempolicy.c:2242
+ alloc_slab_page mm/slub.c:1713 [inline]
+ allocate_slab+0x32b/0x4c0 mm/slub.c:1853
+ new_slab mm/slub.c:1916 [inline]
+ new_slab_objects mm/slub.c:2662 [inline]
+ ___slab_alloc+0x4ba/0x820 mm/slub.c:2825
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2865
+ slab_alloc_node mm/slub.c:2947 [inline]
+ slab_alloc mm/slub.c:2989 [inline]
+ __kmalloc+0x312/0x330 mm/slub.c:4133
+ kmalloc include/linux/slab.h:596 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ __register_sysctl_table+0x112/0x1090 fs/proc/proc_sysctl.c:1318
+ rds_tcp_init_net+0x1db/0x4f0 net/rds/tcp.c:551
+ ops_init+0xaf/0x470 net/core/net_namespace.c:140
+ __register_pernet_operations net/core/net_namespace.c:1137 [inline]
+ register_pernet_operations+0x35a/0x850 net/core/net_namespace.c:1214
+ register_pernet_device+0x26/0x70 net/core/net_namespace.c:1301
+ rds_tcp_init+0x77/0xe0 net/rds/tcp.c:717
+ do_one_initcall+0x103/0x650 init/main.c:1285
+ do_initcall_level init/main.c:1360 [inline]
+ do_initcalls init/main.c:1376 [inline]
+ do_basic_setup init/main.c:1396 [inline]
+ kernel_init_freeable+0x6b8/0x741 init/main.c:1598
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1343 [inline]
+ free_pcp_prepare+0x312/0x7d0 mm/page_alloc.c:1394
+ free_unref_page_prepare mm/page_alloc.c:3329 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3408
+ __vunmap+0x783/0xb70 mm/vmalloc.c:2587
+ free_work+0x58/0x70 mm/vmalloc.c:82
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Memory state around the buggy address:
+ ffff88802821e300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88802821e380: 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc
+>ffff88802821e400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff88802821e480: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88802821e500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
