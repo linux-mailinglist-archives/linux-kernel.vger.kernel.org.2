@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACB73CC671
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 23:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC6C3CC678
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 23:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbhGQVIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 17:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbhGQVIB (ORCPT
+        id S235461AbhGQV3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 17:29:36 -0400
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:35534 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231542AbhGQV3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 17:08:01 -0400
-X-Greylist: delayed 352 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 17 Jul 2021 14:05:04 PDT
-Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256F1C061762;
-        Sat, 17 Jul 2021 14:05:04 -0700 (PDT)
-From:   Joshua Kinard <kumba@gentoo.org>
-Subject: Re: [PATCH v2 1/3] MAINTAINERS: mark sections from Ralf Baechle
- orphan
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
-Cc:     "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
-        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210625110419.24503-1-lukas.bulwahn@gmail.com>
- <20210625110419.24503-2-lukas.bulwahn@gmail.com>
- <CAKXUXMxFBaBneVZf3WCCYJ8Theu55Nf-gFe=hs5u3mMVd41mTw@mail.gmail.com>
-Openpgp: preference=signencrypt
-Message-ID: <c9e6753b-ce4d-fe63-1b4d-fc37cca77a3b@gentoo.org>
-Date:   Sat, 17 Jul 2021 16:59:08 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Sat, 17 Jul 2021 17:29:33 -0400
+Received: by mail-vk1-f173.google.com with SMTP id d7so2969850vkf.2;
+        Sat, 17 Jul 2021 14:26:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5XAK7+Gzh6ieUWzhfnNuMlvI9N6Gdn2a7QuEsKGdrmI=;
+        b=WOhJ54ThX1910pZdfOoOLLltmo4c2ABqT73CgoA0dJ2bzOf6G5nQVecaJwzXnb2WdC
+         eQ99IX6ZWhHHxEhda18VjUD4gNgx6jFugS9Bt2AUOj1mrjXiKVMTQbAcgvogqCWrsxCv
+         2uMURxKoKnNF8FUu+aQPCeybWTXUkV9AgwFNxdNwHqZQwv9MIRqO8g4janiG9YKroa+J
+         GQUl52T/mC/JmvAyTs5L+yilGjcSt8AkRP5X1lo4jPJvK0uLjQBojXOljFvsNFLpBHHT
+         e1uawz3n/zEnC+pKcEBmKj0GG4o/IphI9vgGjWT3yOzRHb4uClFZBMRie4OXflA8I1Ms
+         jdTA==
+X-Gm-Message-State: AOAM531Me8zXKY1Ab469L1D8O3dPr4kj466c4kEpRRQ4gMUCHw9NyeMd
+        jYsL+8C5upXPkRGaWLKisHZKsx955Y5YFs0hLb8=
+X-Google-Smtp-Source: ABdhPJxKtXqo7qX7mahoa3XiRLqE8QXZHw2p1elWbvQVbW2yxP2VBcyH4F+ae1VpHCI1QWGOlvgIFuopgxhAvZh4mhc=
+X-Received: by 2002:a05:6122:a12:: with SMTP id 18mr18049497vkn.1.1626557195307;
+ Sat, 17 Jul 2021 14:26:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKXUXMxFBaBneVZf3WCCYJ8Theu55Nf-gFe=hs5u3mMVd41mTw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201210200315.2965567-1-robh@kernel.org> <20201210200315.2965567-5-robh@kernel.org>
+In-Reply-To: <20201210200315.2965567-5-robh@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 17 Jul 2021 23:26:24 +0200
+Message-ID: <CAMuHMdU7f_zhHfnSNmY03bfBN5Kd2mO2N=yi5XTYwDNsd2XBFA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] dt-bindings: Remove PicoXcell bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jamie Iles <jamie@jamieiles.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, arm-soc <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/2021 03:03, Lukas Bulwahn wrote:
-> On Fri, Jun 25, 2021 at 1:04 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->>
->> The domain lookup for linux-mips.org fails for quite some time now. Hence,
->> webpages, the patchwork instance and Ralf Baechle's email there is not
->> reachable anymore.
->>
-> 
-> There has not been any specific comment on marking kernel parts solely
-> "maintained" by Ralf Baechle as Orphan.
-> 
-> So, given the feedback on this overall patch set from Maciej and Kurt:
-> - the domain lookup for linux-mips.org does resolve again.
-> - the patchwork instance moved.
-> - Ralf Baechle's email now does at least forward somewhere.
-> 
-> However, it still holds that:
-> 
-> Ralf Baechle has not been active since February 2018; so, set all
-> MAINTAINERS sections with Ralf as sole maintainer to Orphan, and give
-> others a chance to claim maintainership if these sections are still of
-> interest.
-> 
-> I suggest that independent of the other patches in this patch set, I
-> rework the commit message of this patch here (basically dropping the
-> first sentence) and send out a final patch for this subject that
-> Thomas can then pick.
-> 
-> Any comments or rejections to that suggestion?
-> 
-> Lukas
+Hi Rob,
+
+(replying to an old patch that was applied a while ago)
+
+On Thu, Dec 10, 2020 at 9:06 PM Rob Herring <robh@kernel.org> wrote:
+> PicoXcell has had nothing but treewide cleanups for at least the last 8
+> years and no signs of activity. The most recent activity is a yocto vendor
+> kernel based on v3.0 in 2015.
+>
+> Cc: Jamie Iles <jamie@jamieiles.com>
+> Cc: linux-crypto@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+> --- a/Documentation/devicetree/bindings/net/macb.txt
+> +++ b/Documentation/devicetree/bindings/net/macb.txt
+> @@ -7,8 +7,6 @@ Required properties:
+>    Use "cdns,sam9x60-macb" for Microchip sam9x60 SoC.
+>    Use "cdns,np4-macb" for NP4 SoC devices.
+>    Use "cdns,at32ap7000-macb" for other 10/100 usage or use the generic form: "cdns,macb".
+> -  Use "cdns,pc302-gem" for Picochip picoXcell pc302 and later devices based on
+> -  the Cadence GEM, or the generic form: "cdns,gem".
+
+Note that (a) the generic form is still used as the sole compatible
+value in arch/arm64/boot/dts/lg/lg131[23].dtsi, and the Linux driver
+matches against it, and (b) arch/arm/boot/dts/zynq-7000.dtsi uses
+the generic form as a secondary compatible value.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 
->> @@ -9654,9 +9652,8 @@ F:        Documentation/devicetree/bindings/iio/gyroscope/invensense,mpu3050.yaml
->>  F:     drivers/iio/gyro/mpu3050*
->>
->>  IOC3 ETHERNET DRIVER
->> -M:     Ralf Baechle <ralf@linux-mips.org>
->>  L:     linux-mips@vger.kernel.org
->> -S:     Maintained
->> +S:     Orphan
->>  F:     drivers/net/ethernet/sgi/ioc3-eth.c
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Thomas virtually re-wrote this driver, so it is probably more appropriate to
-leave it as maintained, but mark him as the maintainer.
-
--- 
-Joshua Kinard
-Gentoo/MIPS
-kumba@gentoo.org
-rsa6144/5C63F4E3F5C6C943 2015-04-27
-177C 1972 1FB8 F254 BAD0 3E72 5C63 F4E3 F5C6 C943
-
-"The past tempts us, the present confuses us, the future frightens us.  And
-our lives slip away, moment by moment, lost in that vast, terrible in-between."
-
---Emperor Turhan, Centauri Republic
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
