@@ -2,53 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306C03CC27D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 12:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C8E3CC29A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 12:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbhGQKVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 06:21:11 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:36253
+        id S233132AbhGQKWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 06:22:39 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:45377
         "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S233065AbhGQKUw (ORCPT
+        by vger.kernel.org with SMTP id S233074AbhGQKWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 06:20:52 -0400
+        Sat, 17 Jul 2021 06:22:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=SnnB84HTJybRqGX8XSBko+YwUlD/NAywFxZKJPyBXn4=; b=j
-        ISXk25aV8lELnsKRcYczXBbBjv2dcwVf0GrUBszgFu1Ly4lKBEmrqptXxeOIP1VL
-        5hLzDcfq2r+U4udNmtUPi+s4cvpmEaoQ0pXVJJz9XHbA9Ibi8wm51iXo7ORsvvva
-        GTOUlfpvQ9hsir9kE7tdXcLY/ucsMsTo9P/L9oJYeQ=
+        Message-Id; bh=csHolcubn9N81o0+mDQBqCw5dpseCZ5PZKV23CkCt9M=; b=O
+        g96D50FotJgIaepXmrCNZZMz7voK4CSGgFHqEobH3y9o2Y4MNvOv1Q69Berh3wf/
+        s8AKZ6/Vz5W5PUewR+lJp0q2VtB+9wL62GKb84c1U3oKxOLfoLu4273qQsQcR5Mn
+        /unrzw4lzr85BI+m+8ZfOrS3G4T3quT34BG018r2SE=
 Received: from localhost.localdomain (unknown [39.144.44.130])
-        by app1 (Coremail) with SMTP id XAUFCgAnCWo0rvJgjV58AA--.31928S3;
-        Sat, 17 Jul 2021 18:17:25 +0800 (CST)
+        by app2 (Coremail) with SMTP id XQUFCgBXHGtLrvJgx7vYBA--.38653S3;
+        Sat, 17 Jul 2021 18:17:48 +0800 (CST)
 From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         linux-kernel@vger.kernel.org
 Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
         Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] misc: sgi-gru: Convert from atomic_t to refcount_t on gru_thread_state->ts_refcnt
-Date:   Sat, 17 Jul 2021 18:17:22 +0800
-Message-Id: <1626517043-42696-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Subject: [PATCH] sched: Convert from atomic_t to refcount_t on root_domain->refcount
+Date:   Sat, 17 Jul 2021 18:17:45 +0800
+Message-Id: <1626517066-42760-1-git-send-email-xiyuyang19@fudan.edu.cn>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgAnCWo0rvJgjV58AA--.31928S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZF47WFWxWw4rXwb_yoW5Jr1DpF
-        4j93y0yrZYyF4DJFnrta1kuFW3Ja4kXry5ur9rC34rWr43Jw4Y9w1kJa45JrykZFW2qF1Y
-        vr4Ygwn0ka1qqaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: XQUFCgBXHGtLrvJgx7vYBA--.38653S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZFyfWFyfJrW5Wrg_yoW5JryDpF
+        4qvrW5JFZ5GryxJrnrC3yDZrWrW34xA34fKay5JwsxJr93Jws0g3WvvFy3CryUCrnxAr1a
+        vF429342yFsFvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfUosqXDUUUU
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+        Y4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbGjg7UUUUU==
 X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -60,62 +65,82 @@ accidental underflow and overflow and further use-after-free situations.
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- drivers/misc/sgi-gru/grumain.c   | 6 +++---
- drivers/misc/sgi-gru/grutables.h | 3 ++-
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ kernel/sched/sched.h    |  3 ++-
+ kernel/sched/topology.c | 12 ++++++------
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/misc/sgi-gru/grumain.c b/drivers/misc/sgi-gru/grumain.c
-index 40ac59dd018c..9afda47efbf2 100644
---- a/drivers/misc/sgi-gru/grumain.c
-+++ b/drivers/misc/sgi-gru/grumain.c
-@@ -282,7 +282,7 @@ static void gru_unload_mm_tracker(struct gru_state *gru,
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 14a41a243f7b..8197738a615a 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3,6 +3,7 @@
+  * Scheduler internal types and methods:
   */
- void gts_drop(struct gru_thread_state *gts)
- {
--	if (gts && atomic_dec_return(&gts->ts_refcnt) == 0) {
-+	if (gts && refcount_dec_and_test(&gts->ts_refcnt)) {
- 		if (gts->ts_gms)
- 			gru_drop_mmu_notifier(gts->ts_gms);
- 		kfree(gts);
-@@ -323,7 +323,7 @@ struct gru_thread_state *gru_alloc_gts(struct vm_area_struct *vma,
+ #include <linux/sched.h>
++#include <linux/refcount.h>
  
- 	STAT(gts_alloc);
- 	memset(gts, 0, sizeof(struct gru_thread_state)); /* zero out header */
--	atomic_set(&gts->ts_refcnt, 1);
-+	refcount_set(&gts->ts_refcnt, 1);
- 	mutex_init(&gts->ts_ctxlock);
- 	gts->ts_cbr_au_count = cbr_au_count;
- 	gts->ts_dsr_au_count = dsr_au_count;
-@@ -888,7 +888,7 @@ struct gru_state *gru_assign_gru_context(struct gru_thread_state *gts)
- 		gts->ts_gru = gru;
- 		gts->ts_blade = gru->gs_blade_id;
- 		gts->ts_ctxnum = gru_assign_context_number(gru);
--		atomic_inc(&gts->ts_refcnt);
-+		refcount_inc(&gts->ts_refcnt);
- 		gru->gs_gts[gts->ts_ctxnum] = gts;
- 		spin_unlock(&gru->gs_lock);
- 
-diff --git a/drivers/misc/sgi-gru/grutables.h b/drivers/misc/sgi-gru/grutables.h
-index 5ce8f3081e96..e4c067c61251 100644
---- a/drivers/misc/sgi-gru/grutables.h
-+++ b/drivers/misc/sgi-gru/grutables.h
-@@ -129,6 +129,7 @@
+ #include <linux/sched/autogroup.h>
+ #include <linux/sched/clock.h>
+@@ -784,7 +785,7 @@ struct perf_domain {
   *
   */
+ struct root_domain {
+-	atomic_t		refcount;
++	refcount_t		refcount;
+ 	atomic_t		rto_count;
+ 	struct rcu_head		rcu;
+ 	cpumask_var_t		span;
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index b77ad49dc14f..5d7d767e62ed 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -482,11 +482,11 @@ void rq_attach_root(struct rq *rq, struct root_domain *rd)
+ 		 * set old_rd to NULL to skip the freeing later
+ 		 * in this function:
+ 		 */
+-		if (!atomic_dec_and_test(&old_rd->refcount))
++		if (!refcount_dec_and_test(&old_rd->refcount))
+ 			old_rd = NULL;
+ 	}
  
-+#include <linux/refcount.h>
- #include <linux/rmap.h>
- #include <linux/interrupt.h>
- #include <linux/mutex.h>
-@@ -358,7 +359,7 @@ struct gru_thread_state {
- 						     enabled */
- 	int			ts_ctxnum;	/* context number where the
- 						   context is loaded */
--	atomic_t		ts_refcnt;	/* reference count GTS */
-+	refcount_t		ts_refcnt;	/* reference count GTS */
- 	unsigned char		ts_dsr_au_count;/* Number of DSR resources
- 						   required for contest */
- 	unsigned char		ts_cbr_au_count;/* Number of CBR resources
+-	atomic_inc(&rd->refcount);
++	refcount_inc(&rd->refcount);
+ 	rq->rd = rd;
+ 
+ 	cpumask_set_cpu(rq->cpu, rd->span);
+@@ -501,12 +501,12 @@ void rq_attach_root(struct rq *rq, struct root_domain *rd)
+ 
+ void sched_get_rd(struct root_domain *rd)
+ {
+-	atomic_inc(&rd->refcount);
++	refcount_inc(&rd->refcount);
+ }
+ 
+ void sched_put_rd(struct root_domain *rd)
+ {
+-	if (!atomic_dec_and_test(&rd->refcount))
++	if (!refcount_dec_and_test(&rd->refcount))
+ 		return;
+ 
+ 	call_rcu(&rd->rcu, free_rootdomain);
+@@ -562,7 +562,7 @@ void init_defrootdomain(void)
+ {
+ 	init_rootdomain(&def_root_domain);
+ 
+-	atomic_set(&def_root_domain.refcount, 1);
++	refcount_set(&def_root_domain.refcount, 1);
+ }
+ 
+ static struct root_domain *alloc_rootdomain(void)
+@@ -1419,7 +1419,7 @@ static void __free_domain_allocs(struct s_data *d, enum s_alloc what,
+ {
+ 	switch (what) {
+ 	case sa_rootdomain:
+-		if (!atomic_read(&d->rd->refcount))
++		if (!refcount_read(&d->rd->refcount))
+ 			free_rootdomain(&d->rd->rcu);
+ 		fallthrough;
+ 	case sa_sd:
 -- 
 2.7.4
 
