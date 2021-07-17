@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580003CC282
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 12:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306C03CC27D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 12:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233498AbhGQKVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 06:21:14 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:44860
+        id S233393AbhGQKVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 06:21:11 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:36253
         "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S232942AbhGQKU4 (ORCPT
+        by vger.kernel.org with SMTP id S233065AbhGQKUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 06:20:56 -0400
+        Sat, 17 Jul 2021 06:20:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=bbBWRmvP5ym/xXm3w2T9Gmj6e8oJLxtKTwk1h23bysA=; b=I
-        iMvouwF6D7bt44ME4A0NcvR4zJ1x2oXk9i6jJQ/3zMgYG1Jnh2JmdKWhBpTnWIMv
-        GKKNHrvz0p1dClp7f2QpzUoO3BH9EGUtUhIJfwwok68YF+Zk3xZSXAjyuv9fO+oN
-        I0q6zzGpsM2+6rm5ZJkIjJSfmzxjAE26n6STBi+6Jc=
+        Message-Id; bh=SnnB84HTJybRqGX8XSBko+YwUlD/NAywFxZKJPyBXn4=; b=j
+        ISXk25aV8lELnsKRcYczXBbBjv2dcwVf0GrUBszgFu1Ly4lKBEmrqptXxeOIP1VL
+        5hLzDcfq2r+U4udNmtUPi+s4cvpmEaoQ0pXVJJz9XHbA9Ibi8wm51iXo7ORsvvva
+        GTOUlfpvQ9hsir9kE7tdXcLY/ucsMsTo9P/L9oJYeQ=
 Received: from localhost.localdomain (unknown [39.144.44.130])
-        by app2 (Coremail) with SMTP id XQUFCgDHzycdrvJgerrYBA--.38232S3;
-        Sat, 17 Jul 2021 18:17:02 +0800 (CST)
+        by app1 (Coremail) with SMTP id XAUFCgAnCWo0rvJgjV58AA--.31928S3;
+        Sat, 17 Jul 2021 18:17:25 +0800 (CST)
 From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Raju Rangoju <rajur@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+To:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
         Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] cxgb4: Convert from atomic_t to refcount_t on l2t_entry->refcnt
-Date:   Sat, 17 Jul 2021 18:16:54 +0800
-Message-Id: <1626517014-42631-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Subject: [PATCH] misc: sgi-gru: Convert from atomic_t to refcount_t on gru_thread_state->ts_refcnt
+Date:   Sat, 17 Jul 2021 18:17:22 +0800
+Message-Id: <1626517043-42696-1-git-send-email-xiyuyang19@fudan.edu.cn>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgDHzycdrvJgerrYBA--.38232S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF15Kw1xXw47XrW7Jw48Crg_yoW7Kr4UpF
-        sIka4kurWrGF4xX3yDtw4kZryavw10v345GrW3G3savryav3y3G3W0gFWUAry5AF4kWF4a
-        yrsF9rW5CF1DtrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: XAUFCgAnCWo0rvJgjV58AA--.31928S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZF47WFWxWw4rXwb_yoW5Jr1DpF
+        4j93y0yrZYyF4DJFnrta1kuFW3Ja4kXry5ur9rC34rWr43Jw4Y9w1kJa45JrykZFW2qF1Y
+        vr4Ygwn0ka1qqaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
         1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
@@ -45,7 +45,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3WF15Kw1xXw47XrW7Jw48Crg_yoW7Kr4UpF
         1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
         rcIFxwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
         1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
         IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E
         87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
         IFyTuYvjfUosqXDUUUU
@@ -60,163 +60,62 @@ accidental underflow and overflow and further use-after-free situations.
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- drivers/net/ethernet/chelsio/cxgb4/l2t.c | 31 ++++++++++++++++---------------
- drivers/net/ethernet/chelsio/cxgb4/l2t.h |  3 ++-
- 2 files changed, 18 insertions(+), 16 deletions(-)
+ drivers/misc/sgi-gru/grumain.c   | 6 +++---
+ drivers/misc/sgi-gru/grutables.h | 3 ++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/l2t.c b/drivers/net/ethernet/chelsio/cxgb4/l2t.c
-index a10a6862a9a4..cb26a5e315b1 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/l2t.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/l2t.c
-@@ -69,7 +69,8 @@ static inline unsigned int vlan_prio(const struct l2t_entry *e)
- 
- static inline void l2t_hold(struct l2t_data *d, struct l2t_entry *e)
+diff --git a/drivers/misc/sgi-gru/grumain.c b/drivers/misc/sgi-gru/grumain.c
+index 40ac59dd018c..9afda47efbf2 100644
+--- a/drivers/misc/sgi-gru/grumain.c
++++ b/drivers/misc/sgi-gru/grumain.c
+@@ -282,7 +282,7 @@ static void gru_unload_mm_tracker(struct gru_state *gru,
+  */
+ void gts_drop(struct gru_thread_state *gts)
  {
--	if (atomic_add_return(1, &e->refcnt) == 1)  /* 0 -> 1 transition */
-+	refcount_inc(&e->refcnt);
-+	if (refcount_read(&e->refcnt) == 1)  /* 0 -> 1 transition */
- 		atomic_dec(&d->nfree);
- }
+-	if (gts && atomic_dec_return(&gts->ts_refcnt) == 0) {
++	if (gts && refcount_dec_and_test(&gts->ts_refcnt)) {
+ 		if (gts->ts_gms)
+ 			gru_drop_mmu_notifier(gts->ts_gms);
+ 		kfree(gts);
+@@ -323,7 +323,7 @@ struct gru_thread_state *gru_alloc_gts(struct vm_area_struct *vma,
  
-@@ -270,10 +271,10 @@ static struct l2t_entry *alloc_l2e(struct l2t_data *d)
+ 	STAT(gts_alloc);
+ 	memset(gts, 0, sizeof(struct gru_thread_state)); /* zero out header */
+-	atomic_set(&gts->ts_refcnt, 1);
++	refcount_set(&gts->ts_refcnt, 1);
+ 	mutex_init(&gts->ts_ctxlock);
+ 	gts->ts_cbr_au_count = cbr_au_count;
+ 	gts->ts_dsr_au_count = dsr_au_count;
+@@ -888,7 +888,7 @@ struct gru_state *gru_assign_gru_context(struct gru_thread_state *gts)
+ 		gts->ts_gru = gru;
+ 		gts->ts_blade = gru->gs_blade_id;
+ 		gts->ts_ctxnum = gru_assign_context_number(gru);
+-		atomic_inc(&gts->ts_refcnt);
++		refcount_inc(&gts->ts_refcnt);
+ 		gru->gs_gts[gts->ts_ctxnum] = gts;
+ 		spin_unlock(&gru->gs_lock);
  
- 	/* there's definitely a free entry */
- 	for (e = d->rover, end = &d->l2tab[d->l2t_size]; e != end; ++e)
--		if (atomic_read(&e->refcnt) == 0)
-+		if (refcount_read(&e->refcnt) == 0)
- 			goto found;
+diff --git a/drivers/misc/sgi-gru/grutables.h b/drivers/misc/sgi-gru/grutables.h
+index 5ce8f3081e96..e4c067c61251 100644
+--- a/drivers/misc/sgi-gru/grutables.h
++++ b/drivers/misc/sgi-gru/grutables.h
+@@ -129,6 +129,7 @@
+  *
+  */
  
--	for (e = d->l2tab; atomic_read(&e->refcnt); ++e)
-+	for (e = d->l2tab; refcount_read(&e->refcnt); ++e)
- 		;
- found:
- 	d->rover = e + 1;
-@@ -302,7 +303,7 @@ static struct l2t_entry *find_or_alloc_l2e(struct l2t_data *d, u16 vlan,
- 	struct l2t_entry *first_free = NULL;
- 
- 	for (e = &d->l2tab[0], end = &d->l2tab[d->l2t_size]; e != end; ++e) {
--		if (atomic_read(&e->refcnt) == 0) {
-+		if (refcount_read(&e->refcnt) == 0) {
- 			if (!first_free)
- 				first_free = e;
- 		} else {
-@@ -352,7 +353,7 @@ static void _t4_l2e_free(struct l2t_entry *e)
- {
- 	struct l2t_data *d;
- 
--	if (atomic_read(&e->refcnt) == 0) {  /* hasn't been recycled */
-+	if (refcount_read(&e->refcnt) == 0) {  /* hasn't been recycled */
- 		if (e->neigh) {
- 			neigh_release(e->neigh);
- 			e->neigh = NULL;
-@@ -370,7 +371,7 @@ static void t4_l2e_free(struct l2t_entry *e)
- 	struct l2t_data *d;
- 
- 	spin_lock_bh(&e->lock);
--	if (atomic_read(&e->refcnt) == 0) {  /* hasn't been recycled */
-+	if (refcount_read(&e->refcnt) == 0) {  /* hasn't been recycled */
- 		if (e->neigh) {
- 			neigh_release(e->neigh);
- 			e->neigh = NULL;
-@@ -385,7 +386,7 @@ static void t4_l2e_free(struct l2t_entry *e)
- 
- void cxgb4_l2t_release(struct l2t_entry *e)
- {
--	if (atomic_dec_and_test(&e->refcnt))
-+	if (refcount_dec_and_test(&e->refcnt))
- 		t4_l2e_free(e);
- }
- EXPORT_SYMBOL(cxgb4_l2t_release);
-@@ -441,7 +442,7 @@ struct l2t_entry *cxgb4_l2t_get(struct l2t_data *d, struct neighbour *neigh,
- 		if (!addreq(e, addr) && e->ifindex == ifidx &&
- 		    e->vlan == vlan && e->lport == lport) {
- 			l2t_hold(d, e);
--			if (atomic_read(&e->refcnt) == 1)
-+			if (refcount_read(&e->refcnt) == 1)
- 				reuse_entry(e, neigh);
- 			goto done;
- 		}
-@@ -458,7 +459,7 @@ struct l2t_entry *cxgb4_l2t_get(struct l2t_data *d, struct neighbour *neigh,
- 		e->hash = hash;
- 		e->lport = lport;
- 		e->v6 = addr_len == 16;
--		atomic_set(&e->refcnt, 1);
-+		refcount_set(&e->refcnt, 1);
- 		neigh_replace(e, neigh);
- 		e->vlan = vlan;
- 		e->next = d->l2tab[hash].first;
-@@ -520,7 +521,7 @@ void t4_l2t_update(struct adapter *adap, struct neighbour *neigh)
- 	for (e = d->l2tab[hash].first; e; e = e->next)
- 		if (!addreq(e, addr) && e->ifindex == ifidx) {
- 			spin_lock(&e->lock);
--			if (atomic_read(&e->refcnt))
-+			if (refcount_read(&e->refcnt))
- 				goto found;
- 			spin_unlock(&e->lock);
- 			break;
-@@ -585,12 +586,12 @@ struct l2t_entry *t4_l2t_alloc_switching(struct adapter *adap, u16 vlan,
- 	e = find_or_alloc_l2e(d, vlan, port, eth_addr);
- 	if (e) {
- 		spin_lock(&e->lock);          /* avoid race with t4_l2t_free */
--		if (!atomic_read(&e->refcnt)) {
-+		if (!refcount_read(&e->refcnt)) {
- 			e->state = L2T_STATE_SWITCHING;
- 			e->vlan = vlan;
- 			e->lport = port;
- 			ether_addr_copy(e->dmac, eth_addr);
--			atomic_set(&e->refcnt, 1);
-+			refcount_set(&e->refcnt, 1);
- 			ret = write_l2e(adap, e, 0);
- 			if (ret < 0) {
- 				_t4_l2e_free(e);
-@@ -599,7 +600,7 @@ struct l2t_entry *t4_l2t_alloc_switching(struct adapter *adap, u16 vlan,
- 				return NULL;
- 			}
- 		} else {
--			atomic_inc(&e->refcnt);
-+			refcount_inc(&e->refcnt);
- 		}
- 
- 		spin_unlock(&e->lock);
-@@ -654,7 +655,7 @@ struct l2t_data *t4_init_l2t(unsigned int l2t_start, unsigned int l2t_end)
- 		d->l2tab[i].idx = i;
- 		d->l2tab[i].state = L2T_STATE_UNUSED;
- 		spin_lock_init(&d->l2tab[i].lock);
--		atomic_set(&d->l2tab[i].refcnt, 0);
-+		refcount_set(&d->l2tab[i].refcnt, 0);
- 		skb_queue_head_init(&d->l2tab[i].arpq);
- 	}
- 	return d;
-@@ -726,7 +727,7 @@ static int l2t_seq_show(struct seq_file *seq, void *v)
- 		seq_printf(seq, "%4u %-25s %17pM %4d %u %2u   %c   %5u %s\n",
- 			   e->idx + d->l2t_start, ip, e->dmac,
- 			   e->vlan & VLAN_VID_MASK, vlan_prio(e), e->lport,
--			   l2e_state(e), atomic_read(&e->refcnt),
-+			   l2e_state(e), refcount_read(&e->refcnt),
- 			   e->neigh ? e->neigh->dev->name : "");
- 		spin_unlock_bh(&e->lock);
- 	}
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/l2t.h b/drivers/net/ethernet/chelsio/cxgb4/l2t.h
-index 340fecb28a13..6914a0e9836b 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/l2t.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/l2t.h
-@@ -38,6 +38,7 @@
- #include <linux/spinlock.h>
- #include <linux/if_ether.h>
- #include <linux/atomic.h>
 +#include <linux/refcount.h>
- 
- #define VLAN_NONE 0xfff
- 
-@@ -80,7 +81,7 @@ struct l2t_entry {
- 	struct l2t_entry *next;     /* next l2t_entry on chain */
- 	struct sk_buff_head arpq;   /* packet queue awaiting resolution */
- 	spinlock_t lock;
--	atomic_t refcnt;            /* entry reference count */
-+	refcount_t refcnt;            /* entry reference count */
- 	u16 hash;                   /* hash bucket the entry is on */
- 	u16 vlan;                   /* VLAN TCI (id: bits 0-11, prio: 13-15 */
- 	u8 v6;                      /* whether entry is for IPv6 */
+ #include <linux/rmap.h>
+ #include <linux/interrupt.h>
+ #include <linux/mutex.h>
+@@ -358,7 +359,7 @@ struct gru_thread_state {
+ 						     enabled */
+ 	int			ts_ctxnum;	/* context number where the
+ 						   context is loaded */
+-	atomic_t		ts_refcnt;	/* reference count GTS */
++	refcount_t		ts_refcnt;	/* reference count GTS */
+ 	unsigned char		ts_dsr_au_count;/* Number of DSR resources
+ 						   required for contest */
+ 	unsigned char		ts_cbr_au_count;/* Number of CBR resources
 -- 
 2.7.4
 
