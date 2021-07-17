@@ -2,141 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991893CC5EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 21:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A1B3CC5F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 21:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235198AbhGQTtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 15:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234296AbhGQTtP (ORCPT
+        id S235283AbhGQTvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 15:51:52 -0400
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:34669 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234296AbhGQTvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 15:49:15 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEA5C061762;
-        Sat, 17 Jul 2021 12:46:17 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id v1so17477965edt.6;
-        Sat, 17 Jul 2021 12:46:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uf9ovgwZadCx9qH0j7ni/tLHBwLpSqqtIpLKHpJ2A5k=;
-        b=amz7jyI6NWsc3UfcTGAZpqkYN7ZZ39sstx2gCWuQeDsnK4T5Ds0rAbwzj59MV3qOXS
-         qVBOaKZ2v2IvqGnmHG45Qz/VtbUPE17qbDEoAlnZq3s2G8uVUJfgtKR9iPtmnIe5ysn5
-         BLzMd6KEt5ugFv4yzpBAFSmWGCLCkxJb/Q/7C65uhvWIGqhce9y0rC+ugflM0C6mC0Xg
-         +fBx+8vWN4IsZzoKP9raOuZ3QwjDUK5navpcxbsZCn3GpNR+6F/5EdOrvXWsr+Wq5R+9
-         Q//P+eGDC4wTeAwLxtTeytA1HziCt4zF+/uqs4ulnlwH0QRKMQQdvwUymuTTlWDryeiZ
-         oPew==
+        Sat, 17 Jul 2021 15:51:50 -0400
+Received: by mail-pf1-f175.google.com with SMTP id o201so12354698pfd.1;
+        Sat, 17 Jul 2021 12:48:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uf9ovgwZadCx9qH0j7ni/tLHBwLpSqqtIpLKHpJ2A5k=;
-        b=I4rEj4nCss2uMgV9ihp9H7BTRVv5Ba4r1k0ISrLcRfGLysLlQN03Mig4guzBbhFRxQ
-         jD4e8dmAYrbsBz827QZcxr0fscd1Lcy/aT9tPPozsFrzOUWQrKbugIqcK6RhZwkcpjBZ
-         N+wrJwFsWYt8zpX7dYZ+ZnDiDGrMjsB1ABzU4qvl9kTShNl6kvDUmXedj/emBoRe5G4z
-         N/yLsXse/GhoOVIffLuMYjQnOTwsgOBeGfFl1iW1HcieWhto4UcTHOcFPtt+v7s8cfIc
-         xniFaEwBH3d4P80A61paCVcFmXUIiFlBJdjbYXGxFOa7rp0gegw/KTw8Eih8vBbr5zEc
-         ch3Q==
-X-Gm-Message-State: AOAM530qsbw0c0TtyjCaMUiE3FDJnl6msfD/9RjaXyE6WDS2H64PjW86
-        alFwU8Yyx4E2vpQ/dXji5nBoylgatWqEYLXrnqw=
-X-Google-Smtp-Source: ABdhPJwdhDJeG3UUdeAYHhaU+cyLC7AqaAQpYGsHZwnBCdZoSn/tUwKYj1BghaowLSKgddaJsiwEdUkYfnDBaoQm8q8=
-X-Received: by 2002:aa7:c550:: with SMTP id s16mr23560320edr.130.1626551174723;
- Sat, 17 Jul 2021 12:46:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XzqBX+hros9NGU/wG4gITs49J7cStdDidaUInx9C9QA=;
+        b=X+GjG4y468SyHYR1GU39g3wCulnk7J2SFTZNiosDGWcxWOTO0MYwpCobrc8VCTn11/
+         JcImSOVoBLmJOzsatnf44vB2ZtrpNab/njzWHopgkqoLRN+0tPfHv/30CNYjFL+SQ8gN
+         uA16kJwYxJ3bnGB1cio7sifkqaY/qImJxsMX0skKRmJsgIaw//kK+MqvzHhVrAV4xL33
+         8jwWY5aOpFpXPs6CohGWhwRzSgfspM5Wa4r9ciBabSGKNUXRIH64Jp2MXJxwdnZ8UYw3
+         k5n1YFBq+jiTFEuwHuNh2ualPfWgFNbuGSED/B80kNa4+WGDvwtMAVWXzfUeCyM98ssO
+         z/7A==
+X-Gm-Message-State: AOAM531CwBT8i6U/7qSn72AueWYb6k0OLMCI9/Ajix0RnhRQGsqz1/XG
+        6FlkuZQYPxfwMeumNUWXDvY=
+X-Google-Smtp-Source: ABdhPJybPMeS0UYdluDgqim9MHVrNXhvjV6ol0mK8qMV0fxClAyA+iqrKL8tfIPt2uGqzKjQe+beYA==
+X-Received: by 2002:a63:4f62:: with SMTP id p34mr16507883pgl.283.1626551332853;
+        Sat, 17 Jul 2021 12:48:52 -0700 (PDT)
+Received: from localhost ([24.4.24.239])
+        by smtp.gmail.com with ESMTPSA id w123sm14290136pfb.109.2021.07.17.12.48.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Jul 2021 12:48:51 -0700 (PDT)
+Date:   Sat, 17 Jul 2021 12:48:48 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Justin Forbes <jmforbes@linuxtx.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Moritz Fischer <mdf@kernel.org>
+Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
+ ROM state
+Message-ID: <YPM0IE8U7oDSVbvd@epycbox.lan>
+References: <20210712060912.995381202@linuxfoundation.org>
+ <20210712060916.499546891@linuxfoundation.org>
+ <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
+ <YPMUu+kNu0GZeQQ1@kroah.com>
 MIME-Version: 1.0
-References: <20210716103651.1455-1-linux.amoon@gmail.com> <20210716103651.1455-2-linux.amoon@gmail.com>
-In-Reply-To: <20210716103651.1455-2-linux.amoon@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 17 Jul 2021 21:46:04 +0200
-Message-ID: <CAFBinCDeqauw_V-Vn9cat9HaCXj6HEMz6G+G+VbqCNtGEFGYzg@mail.gmail.com>
-Subject: Re: [PATCHv2 1/4] ARM: dts: meson8b: odroidc1: Add usb phy power node
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPMUu+kNu0GZeQQ1@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+On Sat, Jul 17, 2021 at 07:34:51PM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
+> > On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > From: Moritz Fischer <mdf@kernel.org>
+> > >
+> > > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
+> > >
+> > > The ROM load sometimes seems to return an unknown status
+> > > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
+> > >
+> > > If the ROM load indeed failed this leads to failures when trying to
+> > > communicate with the controller later on.
+> > >
+> > > Attempt to load firmware using RAM load in those cases.
+> > >
+> > > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
+> > > Cc: stable@vger.kernel.org
+> > > Cc: Mathias Nyman <mathias.nyman@intel.com>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Cc: Vinod Koul <vkoul@kernel.org>
+> > > Tested-by: Vinod Koul <vkoul@kernel.org>
+> > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > >
+> > 
+> > After sending out 5.12.17 for testing, we had a user complain that all
+> > of their USB devices disappeared with the error:
+> > 
+> > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
+> > for renesas_usb_fw.mem failed with error -2
+> > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
+> > Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
+> > 
+> > After first assuming that something was missing in the backport to
+> > 5.12, I had the user try 5.13.2, and then 5.14-rc1. Both of those
+> > failed in the same way, so it is not working in the current Linus tree
+> > either.  Reverting this patch fixed the issue.
+> 
+> Can you send a revert for this so I can get that into Linus's tree and
+> then all stable releases as well?
+> 
+> thanks,
+> 
+> greg k-h
 
-On Fri, Jul 16, 2021 at 12:37 PM Anand Moon <linux.amoon@gmail.com> wrote:
->
-> Add missing usb phy power node for phy mode fix below warning.
-> P5V0 regulator suppy input voltage range to USB host controller.
-low prio - typo: suppy -> supply
+Me or Justin? I can do it. This is annoying my system doesn't work
+without this :-(
 
-> As descriped in the C1+ schematics, GPIO GPIOAO_5 is used to
-low prio - typo: descriped -> described
+Back to the drawing board I guess ...
 
-> enable input power to USB ports, set it to Active Low.
->
-> [    1.253149] phy phy-c1108820.phy.0: Looking up phy-supply from device tree
-> [    1.253166] phy phy-c1108820.phy.0: Looking up phy-supply property
->                 in node /soc/cbus@c1100000/phy@8820 failed
-high prio:
-Can you please describe how I can test this patch?
-My concern is that previously I have tested your patch with ACTIVE_LOW
-and ACTIVE_HIGH polarity.
-In both cases USB is working and I cannot observe any change (apart
-from this debug message being gone).
+Justin, any idea if your customer had the eeprom populated and
+programmed or not, just as additional datapoint.
 
-In the Odroid-C1 schematics (page 1) GPIOAO.BIT5 is connected to USB_OTG *only*.
-I cannot give my Acked-/Reviewed-/Tested-by without a description of
-how I can actually test the GPIO potion of this patch.
-
-[...]
-> +               /*
-> +                * signal name from schematics: PWREN - GPIOAO.BIT5
-> +                */
-> +               gpios = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
-low prio:
-Even though it's strictly not necessary I think this is confusing to read.
-Since there's no "enable-active-high" property the GPIO will be
-considered as "active low".
-My suggestion is to change GPIO_ACTIVE_HIGH to GPIO_ACTIVE_LOW
-
-Also if you have any extra information since you last pinged me on IRC
-then it would be great if you could document it.
-I am referring to these IRC message, where you are stating that the
-correct polarity should be "active high":
-<armoon> xdarklight I have a question on USB GPIO Polarity on Odroid C1+
-<armoon> As per the
-https://dn.odroid.com/S805/Schematics/odroid-c1+_rev0.4_20160226.pdf
-<armoon> MP62551DGT-LF IC controls the power for the USB PORTS
-<armoon> https://www.mouser.com/datasheet/2/277/MP62550-1384050.pdf is
-MP62551DGT datasheet
-<armoon> As per the data sheet in section ORDERING INFORMATION  Active
-enable signal is set below MP62551DGT Active High
-
-[...]
->  &usb1_phy {
->         status = "okay";
-> +       phy-supply = <&usb_pwr_en>;
-medium priority:
-I have raised the following concern in one of my previous emails on this topic:
-> The mistake I made before is considering USB VBUS as PHY power supply.
-> I believe the USB PHY is actually powered by the AVDD18_USB_ADC and
-> USB33_VDDIOH signals. See the S905 datasheet [0], page 25
-> These are 1.8V and 3.3V signals while you are adding a 5V regulator.
-you replied with:
-> OK, thanks.
-so I don't understand what "OK, thanks" means.
-If it means "Martin, you are wrong" then please provide a description
-so I can also learn something!
-
-
-Best regards,
-Martin
+- Moritz
