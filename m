@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8303CC012
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 02:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B515E3CC020
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 02:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhGQA1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 20:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        id S231839AbhGQAft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 20:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhGQA1q (ORCPT
+        with ESMTP id S229566AbhGQAfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 20:27:46 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2D7C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 17:24:50 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id k20so11578043pgg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 17:24:50 -0700 (PDT)
+        Fri, 16 Jul 2021 20:35:47 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48810C06175F;
+        Fri, 16 Jul 2021 17:32:51 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id k184so17575284ybf.12;
+        Fri, 16 Jul 2021 17:32:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kapKSccYf+3d8IEDbRUj0u/6LBJIHmDYeekKIvB07CM=;
-        b=QuPsbhLsvtd9XpYR91VosjMB3PPm7XoKqQ6bSM7zU6K4f+gIZy2K1PS2oodCR/B18p
-         Yz6wCLfZGeHBy1z9kRR9G4wgFRm7d61JzEsZHA+6wgD25K6Ly2FKbrd01HXNCL4U6hcb
-         7bIR+OqDG2FMe7TiHbP0UfPrSbNY6zOaXWZa0=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kpyLInZ23t1JdTv5YH8Lulxd0oqyy3IgpReraeEh2kY=;
+        b=NTtlhJOe+oL5dewMsuBCE+A+AJNOTNfqOu8V3/s2uNOL6Pt4a+NRpQswWlYGLa2CiX
+         5pBjDGoUu+mz5p3cWBN54RZAXbVM+Fy5zJZJY3PepDYYM7zOanR1tfueHnD88Twuv6Bg
+         ybyFy0j9uHT0I/IAJq+nFWOi8V9DZ7pBZVFU79+R102GpnifWJIfxhgMl12pH+H8A1CH
+         rAJLHLcUhv9JrZaVYVy8agrxi9ioXeAKbKUvMcMCZeCoEnWnFfkAMZztfVW/DaZaZVsx
+         0UE9JFPHZVvCpUgXo/tInaGorDkhk9mzG2RIcm3wsxMtn6D9FYwplYF1L/LUrCKVBgy4
+         0hyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kapKSccYf+3d8IEDbRUj0u/6LBJIHmDYeekKIvB07CM=;
-        b=F5CAHG7aOnqSZIzJXqSpdoe6B7XZZA2Ii7rCB1wgxjpwca03bYKDKAM3LcBosoXkS/
-         5YacFNla+WmHwNd1aptpVqKopF5kY7IHOa4vqYfC2JRbVHp4SyOVf4TNWndJGE/TJuOW
-         13QJhUwKY0msnlbrntOQ6Uf57AcXAa/yJON/UqAv9hZWP0FG8qxy9Cmw/sRTvxCf/Zy2
-         MdkQaJZhQPZELOtpYquxAVnwmInB5g/8OdBgUExV5yil1GAM3T/jl0IrvytvBZlQ8Zr8
-         k64aqmCrwvCs+YRybQkLmEm9obfbF6iF+vwO1Qsx95J3vWWnOlA92iZoMnptrqQxp5Ec
-         BPkQ==
-X-Gm-Message-State: AOAM532cuz31ih6dghiXI46Pefw3x0izOXYQ+x/hlzcQsTHR3lKdWbfK
-        r56F3ysV8aUPJ9IaSQdqVIIYaw==
-X-Google-Smtp-Source: ABdhPJzaA08Bg4H8f+oxijbl0pXZESDDUpg8+o2qUI2cA0P+MmccR8kd9Gy5hbpsXo1yaCaxLOIyHQ==
-X-Received: by 2002:a63:d014:: with SMTP id z20mr12457261pgf.203.1626481490358;
-        Fri, 16 Jul 2021 17:24:50 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:9be5:9410:eeb8:524e])
-        by smtp.gmail.com with ESMTPSA id o25sm12819698pgd.21.2021.07.16.17.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 17:24:49 -0700 (PDT)
-Date:   Sat, 17 Jul 2021 09:24:43 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] x86/kvm: do not touch watchdogs in pvclock
-Message-ID: <YPIjS2ZTksEkeiqK@google.com>
-References: <20210716053405.1243239-1-senozhatsky@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kpyLInZ23t1JdTv5YH8Lulxd0oqyy3IgpReraeEh2kY=;
+        b=o0Pj4ETjJ3XQxotAgLnu6e7NyHYv7nRBvu1ACpRT6iT+e6OWheBNFZLXHCTnq+Iwtd
+         IAlMIEmSPjiOZQI6CVo0ecW9bhwiQBF1fZEHOJk9fWK2Kufy12NzrLTtQnsIf8NP4QlI
+         7vIr4mSXCTh9HdAsizniO292A6jMZPy+esYV9co5Oy6i0YMJbS+mbCCW2AqCNrz6EnBY
+         uiJxrMkVLLqSqcHuyrqOxeqxDbdSy2zlbOFFHI6Ln0D/4gKSdqYcW0aq+RUOPWp2Z+/4
+         LDVbLxckzGSWXQ4sCspOdCC/Tf8+oWTCb/JYfaNwmEZ8MrOvwtChiUmgvkRo2kXT1/1P
+         a1/Q==
+X-Gm-Message-State: AOAM530G0C7w1ggJh6G8Qq2EmXJmoD51ZqGo4pUoqtqm4Bgj+QsA1GaG
+        OAW3F/BJioZLkUOAgvelyLQVaRRRfytpj3R3fA0=
+X-Google-Smtp-Source: ABdhPJxe3mFqGu3F5HoBSLl+FlVHoWz/Qd4EKRmuOiH8k+dleyNeGfcYE46wGcVq720EBwmWmTKJZHtZ1cwGq8C7leE=
+X-Received: by 2002:a25:d349:: with SMTP id e70mr16315021ybf.510.1626481970369;
+ Fri, 16 Jul 2021 17:32:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716053405.1243239-1-senozhatsky@chromium.org>
+References: <1626475617-25984-1-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1626475617-25984-1-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 16 Jul 2021 17:32:39 -0700
+Message-ID: <CAEf4BzbCYhJnvrEOvbYt3vbhr23BytbfDPkc=GUgkzneVJVJMQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/3] libbpf: BTF typed dump cleanups
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/07/16 14:34), Sergey Senozhatsky wrote:
-> 
-> <IRQ>
-> apic_timer_interrupt()
->  smp_apic_timer_interrupt()
->   hrtimer_interrupt()
->    _raw_spin_lock_irqsave()
->     lock_acquire()
->      __lock_acquire()
->       sched_clock_cpu()
->        sched_clock()
->         kvm_sched_clock_read()
->          kvm_clock_read()
->           pvclock_clocksource_read()
->            pvclock_touch_watchdogs()
-> 
-> Since this is VM and VCPU resume path, jiffies still maybe
-> be outdated here, which is often the case on my device.
-> pvclock_clocksource_read() clears PVCLOCK_GUEST_STOPPED,
-> touches watchdogs, but it uses stale jiffies: 4294740764
-> (for example).
+On Fri, Jul 16, 2021 at 3:47 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> Fix issues with libbpf BTF typed dump code.  Patch 1 addresses handling
+> of unaligned data. Patch 2 fixes issues Andrii noticed when compiling
+> on ppc64le.  Patch 3 simplifies typed dump by getting rid of allocation
+> of dump data structure which tracks dump state etc.
+>
+> Changes since v1:
+>
+>  - Andrii suggested using a function instead of a macro for checking
+>    alignment of data, and pointed out that we need to consider dump
+>    ptr size versus native pointer size (patch 1)
+>
+> Alan Maguire (3):
+>   libbpf: clarify/fix unaligned data issues for btf typed dump
+>   libbpf: fix compilation errors on ppc64le for btf dump typed data
+>   libbpf: btf typed dump does not need to allocate dump data
+>
+>  tools/lib/bpf/btf_dump.c | 39 ++++++++++++++++++++++++++++++---------
+>  1 file changed, 30 insertions(+), 9 deletions(-)
+>
+> --
+> 1.8.3.1
+>
 
-Hmm, on the other hand, there is probably nothing that guarantees
-that the first watchdog hard IRQ we execute on a resuming VCPU is
-going to see updated jiffies, it still can use stale jiffies.
+Thank you for the quick follow up. But see all the comments I left and
+the fix ups I had to do. Just because the changes are small doesn't
+mean you should get sloppy about making them. Please be a bit more
+thorough in future patches.
+
+Applied to bpf-next.
