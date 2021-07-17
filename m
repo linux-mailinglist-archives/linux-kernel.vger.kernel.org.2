@@ -2,96 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04D13CC681
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 23:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277F03CC685
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 23:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbhGQVqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 17:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbhGQVp7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 17:45:59 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5928C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 14:43:01 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u25so19262912ljj.11
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 14:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mLF1skfBW0gvZzwCxxdZix3vRJTMSgcW19qrBGOZZk4=;
-        b=s6YxieFcHITLcNkgs55oloVrenVVGve4xWor4pMaf2xcH98EABDBeLg26f185GC4Ai
-         TDphri0bmhs4vHW+MGtkR2NisqRq2eMW1FiUajdocTV3Awc8NVLB298x8INDjwzRkMW5
-         PpkaHlPHnPsuxqUPJzHC2L04F1XEGkgd/EtJzGcqBwMC0qghyc+in/xWMD3o0OhUajva
-         0yFnhgbYkHPXlAsN1JDTskF4gKjHoskihFYlElvn9ECsKm29hIZCoNXrHtJaEvYjZP/5
-         AYmDd3ivFALcl40qH7XxrUy+cfn1jxO90BXOs5+0pteITwBy5yEUWQjk8uqae3UKKqiu
-         DAzw==
+        id S232274AbhGQVyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 17:54:11 -0400
+Received: from mx.ucr.edu ([169.235.156.38]:23548 "EHLO mx-lax3-3.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231528AbhGQVyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 17:54:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1626558673; x=1658094673;
+  h=mime-version:references:in-reply-to:from:date:message-id:
+   subject:cc;
+  bh=1yilOERNyPcoY3A26m/nt1Y2t9Ypa4x9Ubo3GY7XWj8=;
+  b=d0et77i9rItA6Lt47431yzqS3mBeZZLyZn69cDoB4jO286P0ChZ47zcb
+   SlWRlT2ckPa+ojPbpUsorw3CqkzvlLPRY1iFktfey32mE7ayN3hIzFQF3
+   VcKZb7rnBdfSPSZ+N1K93SCZCWgpHQykHkUJT/bPlrwOGljYvwfyn+A+5
+   Na3oSnyLKSbpuaonJLlIJ+lzsxjBwi+BBzNvRdOaxEcBBbPXmLHWPwApN
+   IB4eFDSK4/cbBoP+tiJ7qiGQX/N+TLnmRXBObLpb2Pi4aJYDR89Oklf/x
+   PAqmf8JYVBPU5bXq8ddNMSulPwXe9FZcQ5yCbeSDLU6j2FQdMP+/Bu4Ky
+   g==;
+IronPort-SDR: ZqKMpSr86yFTejtlWDQjraasEPFFYDqyuBIgnLFs27gaxtxwsXLoo9tIrUdyhfUzTmxG1Bh3mf
+ Gx7Hlwg7vyKs8+yuBMHpXGocCzoVk+ZG/ujSl41DXCjKmAGc9LSl50wy9605gDsqxnqQ9IKY+2
+ WptarHzL/ihDtLTmJiMqJU1jHX6KQ0frL6Vwt5UoP+OPqyTlyyDmC4PJv3nu+9qDkweLCBayRK
+ GpQECy354o86gg6iuZwD4oTd9j/1rI/DYZ8G2GLa0P9+s1cE0/VYX3SNNbIw/Y+0h8ycDTBKsZ
+ kx73AQIALFyppiNNGLuth+gM
+X-IPAS-Result: =?us-ascii?q?A2GyAgBOUPNghsfXVdFaHgEBCxIMQIFOC4N4VhaESJFgi?=
+ =?us-ascii?q?mKBGoZ8iGaBfAIJAQEBD0EEAQGEVwIjglsCJTQJDgIEAQEBAQMCAwEBAQEBA?=
+ =?us-ascii?q?QMBAQYBAQEBAQEFBAEBAhABAQEBgQoLWQtjgU+BeQYEPYI4KYNlCQEBAQMSE?=
+ =?us-ascii?q?QRSEAsLDQICJgICIhIBBQEcGSI5ghYBgwebDIEEPYsyfzOBAYd8AQkNgWMSf?=
+ =?us-ascii?q?iqHCoZiJ4IpgUuBBYEzNz6HWxSCUASDF3sTW4JIVgEBAZAvG4MGiz2BJptjA?=
+ =?us-ascii?q?QYCgwockj+LeiuVPZEhuysQI4E4ghUzGiV/BmcKgUFNAQIBAgEMAgECAQIBA?=
+ =?us-ascii?q?gECCAEBAo41jlYkLzgCBgsBAQMJjDsB?=
+IronPort-PHdr: A9a23:6UnWXRfg9pB6zbH7zTSGT6rPlGM+R97LVj580XLHo4xHfqnrxZn+J
+ kuXvawr0AWRG9+GoKIcw6qO6ua8AD1Guc7A+Fk5M7V0HycfjssXmwFySOWkMmbcaMDQUiohA
+ c5ZX0Vk9XzoeWJcGcL5ekGA6ibqtW1aFRrwLxd6KfroEYDOkcu3y/qy+5rOaAlUmTaxe7x/I
+ AuqoQnLqMUbgYRuJ6UtxhDUpndEZ/layXlnKF6Omxvw/Nu88IJm/y9Np/8v6slMXLngca8lV
+ 7JYFjMmM2405M3vqxbOSBaE62UfXGsLjBdGGhDJ4x7mUJj/tCv6rfd91zKBPcLqV7A0WC+t4
+ LltRRT1lSoILT858GXQisxtkKJWpQ+qqhJjz4LIZoyeKeFzdb3Bc9wEWWVBX95RVy1fDYO6c
+ 4sPFPcKMeJBo4Xgu1cCsR6yCA+pBOPu0T9InX723as10+88Dw/IxRErH9wPsHvKqNX6KboZX
+ eS7waXUyDnOae5d1zXg54jSah0urv+MUrBwf8TfykchCh/Kg06MqYD5JT6ZyvgBv3SZ4udmS
+ Omhi3QnqwZ0ojW3xMgsi4jIhoIIylDD6C52w4Y1Kse5SEVmZtOlEJpRtyGAOIt3Xs8uX29lt
+ T0nyrIao563ZjYFx4k6xxPGbfGMboeH7A75WumLPTd4mGxqeKi5hxuq7EWt1+LyW8qw3VtKs
+ iZLnNbCu3IQ2hHN68WKV/Vw80Su1DiA2Q7e9v1JLEM2mKffN5Mt3qA9m4YSvEnAAiL7nEP7h
+ 7KVeEU84uWk9fjrb7H8qpKfN4J4kB/yPrkul8ClHOg1NgwDUm6G8uqmzrLj51f2QLBSg/0zl
+ anWrY7VKNwApq68Hw9VyoEj6wujDzu+0NQXg30HLFVddRKClYfpOlXOLOngDfewnligiTlry
+ +3CM7DlGJnNIX/DkLDufbZ59UFQ0hY8zdda555MC7EBJuz8WlPpudDGEhM0Nxa4zuXnBdlny
+ I8SRGKCDrWEPK7WtVKE/ucvLPONZI8Rtjb9Mf8l5/v2gH45mF4dfbOm3ZoLZHykEPlrOFiZb
+ mb2gtsbD2gFoxc+QPTwiFKeST5Te2qyX6Uk6zE/CYKmC5rDR4+0jLyCwii7BJtWaX5CCl2XD
+ 3foeJuLW+0WZCKRPMBhiDoEWqalS4M70hGurgD6mPJJNO3RrxwZp5L+05BH5+TS3UUj5zx9D
+ pzFiEmQRHsyk28VEWxllJtjqFBwnw/QmZNzhOZVQJkMv5t0
+IronPort-HdrOrdr: A9a23:3ixkoKsGoEltC8M9FMUsx72U7skDc9V00zEX/kB9WHVpmwKj5q
+ aTdZUgpGbJYVkqKRQdcLy7Scu9qDbnhP1ICOoqXItKPjOW3FdARbsKheDfKn/bexEWndQtsp
+ uIsJISNDQzNzJHZArBjDVQ2uxOruW6zA==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.84,248,1620716400"; 
+   d="scan'208";a="57826492"
+Received: from mail-pg1-f199.google.com ([209.85.215.199])
+  by smtp-lax3-3.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Jul 2021 14:51:12 -0700
+Received: by mail-pg1-f199.google.com with SMTP id j17-20020a63cf110000b0290226eb0c27acso10496691pgg.23
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 14:51:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mLF1skfBW0gvZzwCxxdZix3vRJTMSgcW19qrBGOZZk4=;
-        b=nvffHnth+qZg8hHK86Q9qRasA4akieEAHGLXBrGQ2RAbmppiOotBQr8iQKtn9lsM9w
-         E98XdcLR9htgOEpuSP1qY64ho+hoOuWriZcYG+I2/x0ZUynXNEnuQBQcxw7Yd5N5X8J0
-         yJMLKlP8LURTYbim6gbDR7U1lg/JoPUoF1nTLgYFv/j3MBkCzSkMRbeDzMYg3TxwpLnt
-         rTFXN1ZtZf2gAoeBhA0+KPRY1cmwXqMt3pnC3HGqyZ3NK9RvRjNE6FhY/0CUahO7YFvf
-         3b0R8BFHtcMRYPvwaVuBqxZBs3Ge6JX/JQy9JdzWCge4CSYgOz8Pg2Vi2KSju13aQZvt
-         ZVuQ==
-X-Gm-Message-State: AOAM533GiyRNOXTjVG3XHGiMs17QJo7UpvJInXifOAaAe8uErxYWNw7o
-        VK4wb+4xlT8MUpD93x9q1I6RHA==
-X-Google-Smtp-Source: ABdhPJz5aT4S0NpwIXlVRfFVKwWedsyH3dqoJ+sg2ZNoSyV4AActMHx1Uix1R+SNJutxZpO7+Ggt/A==
-X-Received: by 2002:a2e:743:: with SMTP id i3mr15614690ljd.266.1626558180199;
-        Sat, 17 Jul 2021 14:43:00 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id f9sm1469830ljf.73.2021.07.17.14.42.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 14:42:59 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id A9F591028D4; Sun, 18 Jul 2021 00:43:02 +0300 (+03)
-Date:   Sun, 18 Jul 2021 00:43:02 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Subject: Re: [git pull] drm fixes for 5.14-rc2
-Message-ID: <20210717214302.mpfil765uji5dnb7@box.shutemov.name>
-References: <CAPM=9tzb9KSspAtVkSH3pYN97hQ815MoOBTSiuHzUJnnb2fhRA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:cc;
+        bh=24ruHgKdRqiISpvE23HRNMHuYpAUJ+UGSln1cmXL8UU=;
+        b=ICxByutlTrW/UigrjK+vEp4v5qHRabPCFyitpykaCnMyJ4oQIntdD42xYtNbcifx5v
+         C24d/Mrd2tMvIBARa92hsmo/lABP33rq879N8uYp90fIkMC/ZHHXLhOTDf0R13QgG0SZ
+         dyy8nX5KnTqCUfkH/9y0vxqb8xXDR9MaclCu5LGmBGUrL4zhUIT9LbNd7jct5WC99PRQ
+         KrLFv7i4Nx/WSy4uUX6V8gHZeQz1T/lbvzGXJVYycHUpBVi0ZTF7T/xA6iBtRFKGcW0V
+         hj1lJLPVmFRwOPitt6ifqkJR0NpexGHuQ7g9woRz9DqE4tDhBdMc1Jnoj8PjI9XpiM8U
+         8PzQ==
+X-Gm-Message-State: AOAM5309Ijv7lVFfHGDXLg44lKlUH+7EdRfRbuvQrFrgMX8PZNxzODV9
+        0xZn95lJ19Mru4lxKlzvOp7F5O3nyv5fncfj8jmd3noHxuJGDB9n8uxVK6/Fs/kbNSdW9RAGw5T
+        J8bLgN5irCjqXrzcVPnidUxnXw4QfmlYE0B+bIT5J0w==
+X-Google-Smtp-Source: ABdhPJxjcYD5ySdMjptKWIwJXI/6cV1wOnHcpRa5G9B3khFeGN6yFjiDKV3UGhAWzEhCKKRSzcn6m7KZM7CQ5wy1sG0=
+X-Received: by 2002:a62:dd83:0:b029:2e8:e511:c32f with SMTP id w125-20020a62dd830000b02902e8e511c32fmr17145131pff.49.1626558669968;
+        Sat, 17 Jul 2021 14:51:09 -0700 (PDT)
+X-Received: by 2002:a62:dd83:0:b029:2e8:e511:c32f with SMTP id
+ w125-20020a62dd830000b02902e8e511c32fmt11615347pff.49.1626558669672; Sat, 17
+ Jul 2021 14:51:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPM=9tzb9KSspAtVkSH3pYN97hQ815MoOBTSiuHzUJnnb2fhRA@mail.gmail.com>
+References: <20210624031719.11157-1-yzhai003@ucr.edu> <20210625053858.3862-1-yzhai003@ucr.edu>
+In-Reply-To: <20210625053858.3862-1-yzhai003@ucr.edu>
+From:   Yizhuo Zhai <yzhai003@ucr.edu>
+Date:   Sat, 17 Jul 2021 14:50:59 -0700
+Message-ID: <CABvMjLRQdTzfPX8YRtAwsPbh=FjbzxRu7Hhun1gk0i1kka94nA@mail.gmail.com>
+Subject: Re: [PATCH v3] media: atomisp: fix the uninitialized use and rename "retvalue"
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 01:41:18PM +1000, Dave Airlie wrote:
-> Hi Linus,
-> 
-> Regular rc2 fixes though a bit more than usual at rc2 stage, people
-> must have been testing early or else some fixes from last week got a
-> bit laggy. There is one larger change in the amd fixes to amalgamate
-> some power management code on the newer chips with the code from the
-> older chips, it should only affects chips where support was introduced
-> in rc1 and it should make future fixes easier to maintain probably a
-> good idea to merge it now. Otherwise it's mostly fixes across the
-> board.
-> 
-> Dave.
-> 
-> drm-fixes-2021-07-16:
-> drm fixes for 5.14-rc2
+All:
+Does the new patch work?
 
-Dave, Daniel,
 
-Looks like the fix[1] for nouveau regression[2] is missing. Hm?
+On Thu, Jun 24, 2021 at 10:37 PM Yizhuo <yzhai003@ucr.edu> wrote:
+>
+> Inside function mt9m114_detect(), variable "retvalue" could
+> be uninitialized if mt9m114_read_reg() returns error, however, it
+> is used in the later if statement, which is potentially unsafe.
+>
+> The local variable "retvalue" is renamed to "model" to avoid
+> confusion.
+>
+> Fixes: ad85094 (media / atomisp: fix the uninitialized use of model ID)
+> Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+> ---
+>  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> index f5de81132177..77293579a134 100644
+> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> @@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
+>  static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
+>  {
+>         struct i2c_adapter *adapter = client->adapter;
+> -       u32 retvalue;
+> +       u32 model;
+> +       int ret;
+>
+>         if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
+>                 dev_err(&client->dev, "%s: i2c error", __func__);
+>                 return -ENODEV;
+>         }
+> -       mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
+> -       dev->real_model_id = retvalue;
+> +       ret = mt9m114_read_reg(client, MISENSOR_16BIT, MT9M114_PID, &model);
+> +       if (ret)
+> +               return ret;
+> +       dev->real_model_id = model;
+>
+> -       if (retvalue != MT9M114_MOD_ID) {
+> +       if (model != MT9M114_MOD_ID) {
+>                 dev_err(&client->dev, "%s: failed: client->addr = %x\n",
+>                         __func__, client->addr);
+>                 return -ENODEV;
+> --
+> 2.17.1
+>
 
-[1] https://lore.kernel.org/nouveau/20210609172902.1937-1-christian.koenig@amd.com/
-[2] https://lore.kernel.org/lkml/YOC4uekpD7iA3xPi@Red/T/#u
 
 -- 
- Kirill A. Shutemov
+Kind Regards,
+
+Yizhuo Zhai
+
+Computer Science, Graduate Student
+University of California, Riverside
