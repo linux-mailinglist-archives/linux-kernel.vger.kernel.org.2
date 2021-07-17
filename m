@@ -2,83 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EED3CC3C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 16:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55953CC3C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 16:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhGQOQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 10:16:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33872 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230003AbhGQOQR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 10:16:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626531200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=IL9abqLFpQxnCVMsSaErThGRkK/d52bEDlY1K//VL08=;
-        b=duSuOK4xfpWcKiA0M+kUSjm6AauDKe29E+pLOfM1hT4AkhKVE0+ihi3zMlEq/cPzW7Kc0h
-        Qx0BgNaVM1UaBOvFipz01WFiBRx+Rm5WgdoPA/oZoRGfESSAUlqX8ppudwjD8Z3carmZBT
-        Ud9G8C4K9lnwvodhyzTqOp2z/7wZCLg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-gsBxIYOTOFerUq2VdtjRMw-1; Sat, 17 Jul 2021 10:13:18 -0400
-X-MC-Unique: gsBxIYOTOFerUq2VdtjRMw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S234197AbhGQOW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 10:22:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230003AbhGQOWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 10:22:23 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 425741084F55;
-        Sat, 17 Jul 2021 14:13:17 +0000 (UTC)
-Received: from lclaudio.dyndns.org (ovpn-119-14.rdu2.redhat.com [10.10.119.14])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B150380;
-        Sat, 17 Jul 2021 14:13:16 +0000 (UTC)
-Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
-        id D8C3A3C0205; Sat, 17 Jul 2021 11:13:14 -0300 (-03)
-Date:   Sat, 17 Jul 2021 11:13:14 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 4.14.239-rt119
-Message-ID: <YPLleq6XlLnSwqgj@uudg.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A041613BA;
+        Sat, 17 Jul 2021 14:19:24 +0000 (UTC)
+Date:   Sat, 17 Jul 2021 15:21:47 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 2/2] dt-bindings: iio: frequency: add adrf6780 doc
+Message-ID: <20210717152147.01f0cae9@jic23-huawei>
+In-Reply-To: <20210716114210.141560-2-antoniu.miclaus@analog.com>
+References: <20210716114210.141560-1-antoniu.miclaus@analog.com>
+        <20210716114210.141560-2-antoniu.miclaus@analog.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Fri, 16 Jul 2021 14:42:10 +0300
+Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
 
-I'm pleased to announce the 4.14.239-rt119 stable release.
+> Add device tree bindings for the ADRF6780 Upconverter.
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 
-This release is just an update to the new stable 4.14.239 version
-and no RT specific changes have been made.
+oops. Would have ideally gotten to taking a close look at this before v6 :(  
+Sorry about that!  I don't suppose we have any other reviewers whose knowledge of
+this sort of hardware is fresher and deeper than mine?  I'd like more eyes on
+the next version of this if possible!
 
-You can get this release via the git tree at:
+Jonathan
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+> ---
+> no changes in v6
+>  .../bindings/iio/frequency/adi,adrf6780.yaml  | 119 ++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+> new file mode 100644
+> index 000000000000..65cb3bee4aca
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+> @@ -0,0 +1,119 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/frequency/adi,adrf6780.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ADRF6780 Microwave Upconverter
+> +
+> +maintainers:
+> +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
+> +
+> +description: |
+> +   Wideband, microwave upconverter optimized for point to point microwave
+> +   radio designs operating in the 5.9 GHz to 23.6 GHz frequency range.
+> +
+> +   https://www.analog.com/en/products/adrf6780.html
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,adrf6780
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  spi-max-frequency:
+> +    maximum: 1000000
+> +
+> +  clocks:
+> +    description:
+> +      Definition of the external clock.
+> +    minItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: lo_in
+> +
+> +  clock-output-names:
+> +    maxItems: 1
+> +
+> +  adi,vga-buff-en:
+> +    description:
+> +      VGA Buffer Enable.
 
-  branch: v4.14-rt
-  Head SHA1: ae45d0714cf4e05f0bfdf481e594e0507243c3d2
+Ideally I'd like any acronyms spelt out in the descriptions.
+(I assume this is variable gain amplifier?) The fun question from looking at
+this in the datasheet is where is it in the functional diagram?  I'm not actually
+sure where it might be.  Perhaps in the VVA, so on the VAAT input?
 
-Or to build 4.14.239-rt119 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.239.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.239-rt119.patch.xz
+If you have a convenient path to point out to your datasheet people that it is
+undocumented, that might be good to clean up :)
+My guess is this is needed if the precision reference on the example circuit needs
+a high impedance input, but I'm only guessing.
 
 
-Enjoy!
-Luis
+> +    type: boolean
+> +
+> +  adi,lo-buff-en:
+> +    description:
+> +      LO Buffer Enable.
+
+What is LO and why might it need a buffer? (or is it always a good idea to turn this on
+when using the device?)
+
+> +    type: boolean
+> +
+> +  adi,if-mode-en:
+> +    description:
+> +      IF Mode Enable.
+IF stands for what? Intermediate Frequency...
+
+> +    type: boolean
+> +
+> +  adi,iq-mode-en:
+> +    description:
+> +      IQ Mode Enable.
+> +    type: boolean
+
+I struggled to figure this out from the datasheet, but is there a circumstance under which
+if and iq mode might both be enabled? Nothing stops you setting the registers that way, but
+it seems to be documented as one or the other...
+
+For that matter, why probably want to describe this as "baseband IQ mode" given datasheet
+refers to as baseband in most places other than the register definition.
+
+> +
+> +  adi,lo-x2-en:
+> +    description:
+> +      LO x2 Enable.
+> +    type: boolean
+> +
+> +  adi,lo-ppf-en:
+> +    description:
+> +      LO x1 Enable.
+
+This is curious. I agree that the register write documents it as x1 enable, but it seems
+to be be enabling polyphase filters - what exactly their relationship is to x1 is not that
+clear to me.  Perhaps one to query with the hardware people if possible!
+
+> +    type: boolean
+> +
+> +  adi,lo-en:
+> +    description:
+> +      LO Enable.
+> +    type: boolean
+
+Would you ever have this off whilst running?  It's possible I'm missing something, but
+I think you need that frequency path to be enabled to get anything at all to
+happen.
+
+> +
+> +  adi,uc-bias-en:
+> +    description:
+> +      UC Bias Enable.
+> +    type: boolean
+
+This being completely undocumented apart from the register setting, I have 0 idea what
+it actually is.   Any chance we can get some more details?
+
+> +
+> +  adi,lo-sideband:
+> +    description:
+> +      Switch to the Other LO Sideband.
+
+Switch what to the other LO sideband?
+
+> +    type: boolean
+> +
+> +  adi,vdet-out-en:
+
+So my reading of the datasheet on this one didn't lead me to a completely clear answer.
+Does turning this one effectively stop you using the internal ADC to measure the power
+whilst exposing the signal on an external pin?
+
+> +    description:
+> +      VDET Output Select Enable.
+> +    type: boolean
+> +
+> +  '#clock-cells':
+> +    const: 0
+> +
+> +dependencies:
+> +  adi,lo-x2-en: [ "adi,lo-en" ]
+> +  adi,lo-ppf-en: [ "adi,lo-en" ]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      adrf6780@0 {
+> +        compatible = "adi,adrf6780";
+> +        reg = <0>;
+> +        spi-max-frequency = <1000000>;
+> +        clocks = <&adrf6780_lo>;
+> +        clock-names = "lo_in";
+> +      };
+> +    };
+> +...
 
