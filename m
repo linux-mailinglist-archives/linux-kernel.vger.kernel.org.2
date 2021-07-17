@@ -2,98 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762813CC6E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB9D3CC6EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhGQXun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 19:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S231586AbhGQXvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 19:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhGQXul (ORCPT
+        with ESMTP id S231207AbhGQXvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 19:50:41 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8CBC061762;
-        Sat, 17 Jul 2021 16:47:43 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id p9so9110138pjl.3;
-        Sat, 17 Jul 2021 16:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jqm9bADBTjXarUNO7zNvEPBe57n8l0U81FwrzNRCVBU=;
-        b=o0/CU2otK+wkGdWL2VfOksB2vsd8J/gWqCz+Prs2K9Hk0LtWTYBDOH83WnzvNyKnWg
-         n6ADZDOM1iZpEjKHLMv3NTaEqi1RVxVkEgYyiYRtXmnqCRS1r/ig1eRWEg555uW7pCbu
-         Rjkp1ouZz9g7u3UDkL7hmfFyYKmcY0g5zrUGZ0cOW4aS01BjBGEtmqOxLAF/Knt3Dlgg
-         IPhnPXi+5CSdyUkNIftkfF71f+tlOacz1o0Uk3HcHYCRB6L/PVs9IUcwJjw71rmMOeGk
-         K2H5TA0Es0blKeeWACaO9ltlyzMAlcBqgMojV5LRLvbAZeYpE4Nd8xzkCX84VUsNqM4A
-         T7iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jqm9bADBTjXarUNO7zNvEPBe57n8l0U81FwrzNRCVBU=;
-        b=PlwXKEWhMPyQt0IVhjo1CGPkHb/zQRKEc5GfqUiWL0y8fBZs6WH8qiUFwCXPj2w2oq
-         hyg00MtoFGjMxIZIhh7vjdwArPpMAs5NUpFy5S6HECqhqg4M2gH8Zkrhvy1jPO6NN0X2
-         hNd90ww9jEFRURF8mUp3pucR5u5fMev1U10pacc+z9/hiFeiD9JYndcQ38RoxlL7dXCC
-         hMgLZJ7As0IDNjr+6k6c8t4XmEDDhm0RMBpZtm6+JDuZWFgrWXWV/fG0+UQG7rFJSaLn
-         vl/8eW+fh2Kj61VXSam2cq8XMiuw79r54bz0UaT6dYEheNOA2OwsWJhGDPMYw+NWvGhe
-         gpZA==
-X-Gm-Message-State: AOAM53264ph93mFcQQ1Y8Hgw6JoKmhYf0SUTHJn+mGtvBgDncymr8QX8
-        RFshqYpKklVLIq23GGOg7PrSWEqZruU+7g==
-X-Google-Smtp-Source: ABdhPJxEVxLytbsBKYrYydTqlTJiGCIbb+nTfdQ3fKy/Dmj1Qk14so2vhwdwZhUssi3kivAk9Vv0Rw==
-X-Received: by 2002:a17:902:ecd2:b029:12b:25f7:9d52 with SMTP id a18-20020a170902ecd2b029012b25f79d52mr13514529plh.18.1626565662745;
-        Sat, 17 Jul 2021 16:47:42 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x10sm15384814pgj.73.2021.07.17.16.47.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 16:47:41 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/212] 5.10.51-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sat, 17 Jul 2021 19:51:12 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB20C061762;
+        Sat, 17 Jul 2021 16:48:15 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 384AE1F41384
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210716182126.028243738@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <fbac9104-b01d-4336-69ec-a53daa12c1db@gmail.com>
-Date:   Sat, 17 Jul 2021 16:47:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
+        David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        tales.aparecida@gmail.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH v5 0/1] lib: Convert UUID runtime test to KUnit
+Date:   Sat, 17 Jul 2021 20:47:57 -0300
+Message-Id: <20210717234758.46598-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210716182126.028243738@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+This patch converts existing UUID runtime test to use KUnit framework.
+
+Below, there's a comparison between the old output format and the new
+one. Keep in mind that even if KUnit seems very verbose, this is the
+corner case where _every_ test has failed.
+
+* This is how the current output looks like in success:
+
+  test_uuid: all 18 tests passed
+
+* And when it fails:
+
+  test_uuid: conversion test #1 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #2 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #2 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: conversion test #3 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #4 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #4 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: conversion test #5 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #6 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #6 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: conversion test #7 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #8 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #8 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: conversion test #9 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #10 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #10 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: conversion test #11 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #12 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #12 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: negative test #13 passed on wrong LE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
+  test_uuid: negative test #14 passed on wrong BE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
+  test_uuid: negative test #15 passed on wrong LE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
+  test_uuid: negative test #16 passed on wrong BE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
+  test_uuid: negative test #17 passed on wrong LE data: '0cb4ddff-a545-4401-9d06-688af53e'
+  test_uuid: negative test #18 passed on wrong BE data: '0cb4ddff-a545-4401-9d06-688af53e'
+  test_uuid: failed 18 out of 18 tests
 
 
-On 7/16/2021 11:28 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.51 release.
-> There are 212 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.51-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+* Now, here's how it looks like with KUnit:
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+  ======== [PASSED] uuid ========
+  [PASSED] uuid_correct_be
+  [PASSED] uuid_correct_le
+  [PASSED] uuid_wrong_be
+  [PASSED] uuid_wrong_le
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+* And if every test fail with KUnit:
+
+  ======== [FAILED] uuid ========
+  [FAILED] uuid_correct_be
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
+      # uuid_correct_be: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
+      # uuid_correct_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
+      # uuid_correct_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+      not ok 1 - uuid_correct_be
+  
+  [FAILED] uuid_correct_le
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
+      # uuid_correct_le: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
+      # uuid_correct_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
+      # uuid_correct_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+      not ok 2 - uuid_correct_le
+  
+  [FAILED] uuid_wrong_be
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
+      # uuid_wrong_be: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
+      # uuid_wrong_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
+      # uuid_wrong_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+      not ok 3 - uuid_wrong_be
+  
+  [FAILED] uuid_wrong_le
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
+      # uuid_wrong_le: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
+      # uuid_wrong_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
+      # uuid_wrong_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+      not ok 4 - uuid_wrong_le
+
+Changes from v4:
+ - Add reviewed-by
+v4: https://lore.kernel.org/lkml/20210621133148.9226-1-andrealmeid@collabora.com/
+
+Changes from v3:
+ - Drop unnecessary casts and braces.
+ - Simplify Kconfig entry
+v3: https://lore.kernel.org/lkml/20210610163959.71634-1-andrealmeid@collabora.com/
+
+Changes from v2:
+ - Clarify in commit message the new test cases setup
+v2: https://lore.kernel.org/lkml/20210609233730.164082-1-andrealmeid@collabora.com/
+
+Changes from v1:
+ - Test suite name: uuid_test -> uuid
+ - Config name: TEST_UUID -> UUID_KUNIT_TEST
+ - Config entry in the Kconfig file left where it is
+ - Converted tests to use _MSG variant
+v1: https://lore.kernel.org/lkml/20210605215215.171165-1-andrealmeid@collabora.com/
+
+André Almeida (1):
+  lib: Convert UUID runtime test to KUnit
+
+ lib/Kconfig.debug |   8 ++-
+ lib/Makefile      |   2 +-
+ lib/test_uuid.c   | 137 +++++++++++++++++++---------------------------
+ 3 files changed, 64 insertions(+), 83 deletions(-)
+
 -- 
-Florian
+2.32.0
+
