@@ -2,61 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCC33CC609
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 22:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D264B3CC60B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 22:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbhGQUQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 16:16:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234719AbhGQUQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 16:16:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5C04361073;
-        Sat, 17 Jul 2021 20:13:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626552817;
-        bh=R5V5R0C9S92oh4qIP/pHfW6NP+H2PzTvT66oEP3UeH0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=REFkvchDtSec1YiW/PUUqTn9cliQNpmcQ3VTdBMfwvTqwhB5GAzEBzM0JOSdwteVb
-         AQfHAqAWyCW6nQatDFiu6/AFNmYh4NZtW72RAoqFt//M2QwvJzlknegejL7clWJ4x3
-         t5xXGtzkSqZd1n9ReGVZ7j0qayPoxBXuHixgcQaWU24rd13Unr2v4Wa3zn9YqX8/57
-         KlmEv+mgnBRVdrVFjDZVrtosQTCXT/TK4ceZek1+5+mfaw8X+qwx2zPRd4KXIaFMlb
-         MoO849y3/ZcMAfYaS/3lD/2ks7lrTa4ihaFnDzgiojjfqlabYMvX15HR4sJheVAruo
-         KoLJfAO/iSnGg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 50620609EF;
-        Sat, 17 Jul 2021 20:13:37 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.14-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <57d614d67af1c091c40a520bb8e2dca27e08833e.camel@HansenPartnership.com>
-References: <57d614d67af1c091c40a520bb8e2dca27e08833e.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <57d614d67af1c091c40a520bb8e2dca27e08833e.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 053c16ac89050ef0e8ab9dc1edaf157bf104c8c6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5d766d55d163a60b709317b15db6c8bb02bf54e4
-Message-Id: <162655281732.27873.12042789984497413675.pr-tracker-bot@kernel.org>
-Date:   Sat, 17 Jul 2021 20:13:37 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S235418AbhGQUZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 16:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235163AbhGQUZK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 16:25:10 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219B5C061762;
+        Sat, 17 Jul 2021 13:22:12 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id u1so16199212wrs.1;
+        Sat, 17 Jul 2021 13:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=gXfaMr10+49LODFR985aCKMJck1/mjXW4KPiUERGuJQ=;
+        b=oIjePKcJYxn2OwhpdfZ2bOxRLZvQPSBR2iEuVlnSlCY9miuu53sDNXgqjVansb1uAk
+         pZm1fE8+neFHGVKynppFPQh+yrtIalFoaMcJYa1UMBqjfVxfUCevCobzVXUasAJPqfqS
+         iuB0I4QdYQn2C+/xq6fDZu5+93PRxegCi2xXfZy/1RKWYIPV3smJbfSx6zuN4cH6g0/I
+         7BHIj1ILaLsvrNZ2pVWklJssq37yWGor/wP0w8V7a5XKa9mfBbVbcD+z8xDiCpDymB5y
+         8tIP62OnRZoH2Y/xqSWSA59tYX5+7xZhUHskz4FBVFlCGceZ0s3WLuKJEZjKY3icEySK
+         aD6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=gXfaMr10+49LODFR985aCKMJck1/mjXW4KPiUERGuJQ=;
+        b=XHRf2Fu/+TZmsOc5hYkesEmqVKwkDe5EgQk3+Og3jhIMITvt4sEXxqDrq3EJADTtJh
+         Z31Gqr8YwY41zINowmmlMCyPHwIibN8miSYGdvTuL4aYRYphHRniWAihVsHnn19MP6j9
+         dYsm5QsqSPWbjuszPSSK9ITt+zA7LQxIOCXJol0YXQ01y75Z3pq2tQWO+UZ6rcKsZWlf
+         8bxAtDoiYrRddX3STKVadqULANxga8EXVBWDAkp4QXlFgxkHT+yomX/FCIJ27oWKvQn3
+         R7fjR0R2qCLLg6Mi5NwB8lPNfuxVtU8IIX9EvIU53QNCXKEp6F8LA9KlQOwaMLhJZzPW
+         aNDw==
+X-Gm-Message-State: AOAM5333pBOUpIDAkvTJ64WmjYH3grA9+xupA8XnkoVfKzBP097Krz1z
+        aZc+UlyOa4v9lJV2odc5KCkh4AUoI1a2lOgY
+X-Google-Smtp-Source: ABdhPJzv+Ai2KZ9GgcEXfI9HE6h6YTTC53p2eDHcSFpYPJldCqGZpDulQwjo2Zyrjsn8ZOGBhpI5zw==
+X-Received: by 2002:adf:ef03:: with SMTP id e3mr20480695wro.316.1626553330589;
+        Sat, 17 Jul 2021 13:22:10 -0700 (PDT)
+Received: from [192.168.1.10] ([94.10.31.26])
+        by smtp.googlemail.com with ESMTPSA id k24sm15093290wrh.30.2021.07.17.13.22.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Jul 2021 13:22:09 -0700 (PDT)
+To:     LKML <linux-kernel@vger.kernel.org>, linux-stable@vger.kernel.org
+From:   Chris Clayton <chris2553@googlemail.com>
+Subject: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Message-ID: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
+Date:   Sat, 17 Jul 2021 21:22:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 17 Jul 2021 07:38:43 +0100:
+Hi
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+I checked the output from dmesg yesterday and found the following warning:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5d766d55d163a60b709317b15db6c8bb02bf54e4
+[Fri Jul 16 09:15:29 2021] ------------[ cut here ]------------
+[Fri Jul 16 09:15:29 2021] WARNING: CPU: 11 PID: 2701 at kernel/rcu/tree_plugin.h:359 rcu_note_context_switch+0x37/0x3d0
+[Fri Jul 16 09:15:29 2021] Modules linked in: uas hidp rfcomm bnep xt_MASQUERADE iptable_nat nf_nat xt_LOG nf_log_syslog
+xt_limit xt_multiport xt_conntrack iptable_filter btusb btintel wmi_bmof uvcvideo videobuf2_vmalloc videobuf2_memops
+videobuf2_v4l2 videobuf2_common coretemp hwmon snd_hda_codec_hdmi x86_pkg_temp_thermal snd_hda_codec_realtek
+snd_hda_codec_generic ledtrig_audio snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core i2c_i801
+i2c_smbus iwlmvm mac80211 iwlwifi i915 mei_me mei cfg80211 intel_lpss_pci intel_lpss wmi nf_conntrack_ftp xt_helper
+nf_conntrack nf_defrag_ipv4 tun
+[Fri Jul 16 09:15:29 2021] CPU: 11 PID: 2701 Comm: lpqd Not tainted 5.13.2 #1
+[Fri Jul 16 09:15:29 2021] Hardware name: Notebook                         NP50DE_DB                       /NP50DE_DB
+                   , BIOS 1.07.04 02/17/2020
+[Fri Jul 16 09:15:29 2021] RIP: 0010:rcu_note_context_switch+0x37/0x3d0
+[Fri Jul 16 09:15:29 2021] Code: 02 00 e8 ec a0 6c 00 89 c0 65 4c 8b 2c 25 00 6d 01 00 48 03 1c c5 80 56 e1 b6 40 84 ed
+75 0d 41 8b 95 04 03 00 00 85 d2 7e 02 <0f> 0b 65 48 8b 04 25 00 6d 01 00 8b 80 04 03 00 00 85 c0 7e 0a 41
+[Fri Jul 16 09:15:29 2021] RSP: 0000:ffffb5d483837c70 EFLAGS: 00010002
+[Fri Jul 16 09:15:29 2021] RAX: 000000000000000b RBX: ffff9b77806e1d80 RCX: 0000000000000100
+[Fri Jul 16 09:15:29 2021] RDX: 0000000000000001 RSI: ffffffffb6d82ead RDI: ffffffffb6da5e4e
+[Fri Jul 16 09:15:29 2021] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+[Fri Jul 16 09:15:29 2021] R10: 000000067bce4fff R11: 0000000000000000 R12: ffff9b77806e1100
+[Fri Jul 16 09:15:29 2021] R13: ffff9b734a833a00 R14: ffff9b734a833a00 R15: 0000000000000000
+[Fri Jul 16 09:15:29 2021] FS:  00007fccbfc5fe40(0000) GS:ffff9b77806c0000(0000) knlGS:0000000000000000
+[Fri Jul 16 09:15:29 2021] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[Fri Jul 16 09:15:29 2021] CR2: 00007fccc2db7290 CR3: 00000003fb0b8002 CR4: 00000000007706e0
+[Fri Jul 16 09:15:29 2021] PKRU: 55555554
+[Fri Jul 16 09:15:29 2021] Call Trace:
+[Fri Jul 16 09:15:29 2021]  __schedule+0x86/0x810
+[Fri Jul 16 09:15:29 2021]  schedule+0x40/0xe0
+[Fri Jul 16 09:15:29 2021]  io_schedule+0x3d/0x60
+[Fri Jul 16 09:15:29 2021]  wait_on_page_bit_common+0x129/0x390
+[Fri Jul 16 09:15:29 2021]  ? __filemap_set_wb_err+0x10/0x10
+[Fri Jul 16 09:15:29 2021]  __lock_page_or_retry+0x13f/0x1d0
+[Fri Jul 16 09:15:29 2021]  do_swap_page+0x335/0x5b0
+[Fri Jul 16 09:15:29 2021]  __handle_mm_fault+0x444/0xb20
+[Fri Jul 16 09:15:29 2021]  handle_mm_fault+0x5c/0x170
+[Fri Jul 16 09:15:29 2021]  ? find_vma+0x5b/0x70
+[Fri Jul 16 09:15:29 2021]  exc_page_fault+0x1ab/0x610
+[Fri Jul 16 09:15:29 2021]  ? fpregs_assert_state_consistent+0x19/0x40
+[Fri Jul 16 09:15:29 2021]  ? asm_exc_page_fault+0x8/0x30
+[Fri Jul 16 09:15:29 2021]  asm_exc_page_fault+0x1e/0x30
+[Fri Jul 16 09:15:29 2021] RIP: 0033:0x7fccc2d3c520
+[Fri Jul 16 09:15:29 2021] Code: 68 4c 00 00 00 e9 20 fb ff ff ff 25 7a ad 07 00 68 4d 00 00 00 e9 10 fb ff ff ff 25 72
+ad 07 00 68 4e 00 00 00 e9 00 fb ff ff <ff> 25 6a ad 07 00 68 4f 00 00 00 e9 f0 fa ff ff ff 25 62 ad 07 00
+[Fri Jul 16 09:15:29 2021] RSP: 002b:00007ffebd529048 EFLAGS: 00010293
+[Fri Jul 16 09:15:29 2021] RAX: 0000000000000001 RBX: 00007fccc46e2890 RCX: 0000000000000010
+[Fri Jul 16 09:15:29 2021] RDX: 0000000000000010 RSI: 0000000000000000 RDI: 00007fccc46e2890
+[Fri Jul 16 09:15:29 2021] RBP: 000056264f1dd4a0 R08: 000056264f21aba0 R09: 000056264f1f58a0
+[Fri Jul 16 09:15:29 2021] R10: 0000000000000007 R11: 0000000000000246 R12: 000056264f21ac00
+[Fri Jul 16 09:15:29 2021] R13: 000056264f1e0a30 R14: 00007ffebd529080 R15: 00000000000dd87b
+[Fri Jul 16 09:15:29 2021] ---[ end trace c8b06e067d8b0fc2 ]---
 
-Thank you!
+At the time the warning was issued I was creating a (weekly) backup of my linux system (home-brewed based on the
+guidance from Linux From Scratch). My backup routine is completed by copying the archive files (created with dar) and a
+directory that contains about 7000 source and binary rpm files to an external USB drive. I didn't spot the warning until
+later in the day, so I'm not sure exactly where I was in my backup process.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I haven't seen this warning before. Consequently, I don;t know how easy (or otherwise) it is to reproduce.
+
+Let me know if I can provide any additional diagnostics, but please cc me as I'm not subscribed.
+
+Chris
+
+
