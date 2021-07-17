@@ -2,206 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042B23CC372
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24123CC37F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233521AbhGQMrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 08:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhGQMrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 08:47:45 -0400
-Received: from mta02.hs-regensburg.de (mta02.hs-regensburg.de [IPv6:2001:638:a01:1096::12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D63C06175F;
-        Sat, 17 Jul 2021 05:44:48 -0700 (PDT)
-Received: from E16S03.hs-regensburg.de (e16s03.hs-regensburg.de [IPv6:2001:638:a01:8013::93])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client CN "E16S03", Issuer "E16S03" (not verified))
-        by mta02.hs-regensburg.de (Postfix) with ESMTPS id 4GRnqw2sPQzxxM;
-        Sat, 17 Jul 2021 14:44:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oth-regensburg.de;
-        s=mta01-20160622; t=1626525884;
-        bh=DObdPEz8dc9fpgzhCh0TXIKplWQjWy3yuMi0S8nVwn0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To:From;
-        b=Atwzcr1LfwKQOLIsRwfQKHCtxICogZrce/pO56aFJR5Gvy/3z2X+3J/wPY9WtBaAm
-         CjV2iMk3Ev34F4KTeC4bzRcvshIaJVv8SOnf+Vb0hp+qm9jM6fFlL7AH0J37ddRuMh
-         DgCgAXUiOGEbj3CHwc7GH+ZL1Eg7RlEpW1ZYKeB+UdBIfBc3E47clmot3uglsmy8ij
-         qFLlvQMSuCvOlNREXXvzk3R/YMSQXq4Sk0rXQVJG63ZT9wDhhWg9wfydUkIgL5lbTC
-         Hnki53ZCd8XjuBE6tExAzLSC/ycetejhLz+G5301r/RnKOMx5ytaDG8ahAjecjY6vv
-         6PRbDMd3J52pg==
-Received: from [IPv6:2001:678:ddc:11:17a4:3bb5:620b:1dcb]
- (2001:638:a01:8013::138) by E16S03.hs-regensburg.de (2001:638:a01:8013::93)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Sat, 17 Jul
- 2021 14:44:43 +0200
-Subject: Re: [EXT] Re: [PATCH v1 3/4] serial: 8250_pci: Always try MSI/MSI-X
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Jiri Slaby <jirislaby@kernel.org>, <linux-serial@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210713104026.58560-1-andriy.shevchenko@linux.intel.com>
- <20210713104026.58560-3-andriy.shevchenko@linux.intel.com>
- <9af24b96-8119-7ccf-f0d0-d725af80aa0b@kernel.org>
- <784629f9-677e-ee53-aceb-89397ce0951a@oth-regensburg.de>
- <CAHp75VdoaE7hCOzsRvuf=7A4mmv0NWBmwqK_mM8vO-K3YZKTUQ@mail.gmail.com>
- <ac8ac10e-aa43-93a1-d36e-6304643375ae@oth-regensburg.de>
- <CAHp75VcLicxAz5BjP+Lp2yHxEGiKcT9OUZbPeRUgZVcYLdY0FA@mail.gmail.com>
- <599a37bd-3cb4-1e4b-d5f8-936c4daae71f@oth-regensburg.de>
- <YPHBhpfk8RoEuQx2@smile.fi.intel.com>
-From:   Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
-Message-ID: <447b30df-cb9e-cfaf-6381-0a1c426fa57c@oth-regensburg.de>
-Date:   Sat, 17 Jul 2021 14:44:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <YPHBhpfk8RoEuQx2@smile.fi.intel.com>
-Content-Type: multipart/mixed;
-        boundary="------------22358B651524AC6FC03F8265"
+        id S233715AbhGQMzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 08:55:12 -0400
+Received: from mail-bn7nam10on2131.outbound.protection.outlook.com ([40.107.92.131]:18625
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229746AbhGQMzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 08:55:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FzaWj/u1Gglwa/YLgTImecHAH3V0vssRSUHD/c2dZTtYRxq61W2W59e96add/DBWWmTxT60F9MHkYHZCA9t1y9uoNfwE0m9SXb7AXs0NFtSonWdF1cV88vYu/aVUnjU02UjC8JEIu2gwUev17OliDKTEarHByPn5Mhfpp8DtfKwGVwXRUKd0wuzgSZL8hGe9FkBIQ3M2Fzq0eDXM4YFFJQxxyFWdZWabKJp68x+5l00b0agG9C/qhTp3FWIEhV+H6AWg3HZgkSebf0kabQLaeJarnXNc375z2kGuixSIL253nVtzyL9tasHj/7EsDAJMpBXctzFkaCeS/ZeoiUcF4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zbikGumy1RTQMYr3697LIIIU4H0ZjIt4cgCncgfyrhE=;
+ b=i5TzHRfsEVGoMw37C1ugZkHZxgyUFlbZD6d9Sw7F6rwWTjdgcAKkX+ZYNZo/6Iby5YHiL4yTa76Mni/jQiZVjshlodMe8aJpOmsIYT8EeRa+MdJZB3b8EdAqoDU5la5kUKuOWHaQ2eUAc8OpC031o4OYGnPbfkvY3FQ7jNd+Ir4plpd4XTeIMeSO9a87VbPU/6MO3moFyVSU1fmOTltQJZBo73c7uHRZwxGAWaBzIo5KSJTca0J6etxv2jUUQIoFBiAdMzDUG/s9ZKOEevjKoeAgbEg2veeSDXU/v3GxWia4g8ClRxzF2uGGgF0ZHi12G1N1zIWP1loulUmAGwjTgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zbikGumy1RTQMYr3697LIIIU4H0ZjIt4cgCncgfyrhE=;
+ b=QBZZ/e28rI/Bla7UJny9vBg5UFA5s97zMFOb0MfYz+uhGE2wrXE42A/kT5b0SdbYeFdzKfOQE8Pxa/LISCbVKyEbY1gyeF+LnBmA7pVIvo3YxMrXKct91cCw/F/cRvz/OsUlLgQEn2RZN5aiJqz9Kr+XWzROewQwAdcNZh8kUdc=
+Authentication-Results: lwn.net; dkim=none (message not signed)
+ header.d=none;lwn.net; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
+ MWHPR01MB2733.prod.exchangelabs.com (2603:10b6:300:f4::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4331.21; Sat, 17 Jul 2021 12:52:04 +0000
+Received: from MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::452a:24fb:12cb:9d7e]) by MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::452a:24fb:12cb:9d7e%5]) with mapi id 15.20.4331.026; Sat, 17 Jul 2021
+ 12:52:04 +0000
+Subject: Re: [PATCH v5 1/4] dt-bindings: mfd: Add bindings for Ampere Altra
+ SMPro MFD driver
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joel Stanley <joel@jms.id.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Open Source Submission <patches@amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
+        openbmc@lists.ozlabs.org, linux-hwmon@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        Phong Vo <phong@os.amperecomputing.com>,
+        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        Jonathan Corbet <corbet@lwn.net>
+References: <20210713060031.31568-1-quan@os.amperecomputing.com>
+ <20210713060031.31568-2-quan@os.amperecomputing.com>
+ <20210716173443.GA3643583@robh.at.kernel.org>
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+Message-ID: <ece6e0ec-4566-0371-be57-89a69d425683@os.amperecomputing.com>
+Date:   Sat, 17 Jul 2021 19:51:52 +0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <20210716173443.GA3643583@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [2001:638:a01:8013::138]
-X-ClientProxiedBy: E16S01.hs-regensburg.de (2001:638:a01:8013::91) To
- E16S03.hs-regensburg.de (2001:638:a01:8013::93)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: HK2PR03CA0059.apcprd03.prod.outlook.com
+ (2603:1096:202:17::29) To MW2PR0102MB3482.prod.exchangelabs.com
+ (2603:10b6:302:c::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2402:800:623c:a5ad:55f4:5d0e:4366:3aa5] (2402:800:623c:a5ad:55f4:5d0e:4366:3aa5) by HK2PR03CA0059.apcprd03.prod.outlook.com (2603:1096:202:17::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.8 via Frontend Transport; Sat, 17 Jul 2021 12:51:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d614883d-cfee-4c61-d911-08d94921ad14
+X-MS-TrafficTypeDiagnostic: MWHPR01MB2733:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR01MB2733E217B7A1A33B4AE0EAB1F2109@MWHPR01MB2733.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: b2c/+JDDmP0FqlnR+CMzw0YEGUUc8PqJgWsiLdXn4TSsZa4MJN7NpVY5Fsb/i9h1Ksoz6ajhPpUrePQIWUQtDRMCg0t++pR83g4Kt8C54ucsiSBUqux6ldU/hE/AmUN3lZ5Yoh+cj8SBNVB+iHJpiuCQs1vkkq00I+fuN46F0qhTV/ABlNser0QWwAivLhxnEKbBlkeVDHa6DJPgh6OYimy/Cz9K0734YaiXrKU9Es4GR/q0Ej4fn4cBdfc79hOoqRNupH/6HQNdMTxiZVEdEdPtfdLVcQaN2+KBo1yfZOIuFTKz9lvqMqGBzu/8TgNt98rQD9i10GTtxNm7AQLkl3EWRj1O2qGW3ZtoqUXk/XzMI0i+GFD8A8meCKd0Vt0qY7MhCjvrHtrANc9bTrejPtBPKs/ZIQ8LgQ8v82aV/1hAnr7+qVCOPJOicB6rqwaI3dsyTnlZUc27Mm2l9OkDSJ1sC7fKCxE+0KqP5NqNyBGA6e64Q88j1ghCM9yG9aH4+VHT13JibKYZnjH153OuoSEO9FHqQ7YVAUxFyvnfqQ9hj2+NvyfKEgZvb6cApZJVgzWns418zQgDPXI4b9IoqPkK0TMt7iNRDKCMVLrk7/1SwwRPXV3KUOeIIfvkchJofPrI0DBgHbDpykEpIKtBigRH4hmldS6A09rJb4VPXaffAPprnaDCKID3PMrB9utz0uPVWURCB8jFiKklGwNbSQuSqE5gmZG2LfFPF/eqIgY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(366004)(39850400004)(478600001)(31696002)(7416002)(6916009)(5660300002)(4326008)(2616005)(6486002)(31686004)(6666004)(66556008)(66476007)(52116002)(66946007)(38100700002)(8936002)(8676002)(54906003)(53546011)(86362001)(316002)(83380400001)(186003)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZnZkL24rSTlaMlR1eVBMc291VE1QZ1NsZU1lOEIyOHlDdkhGOHpnNnZ1MFBY?=
+ =?utf-8?B?aFF4dm82ME52M2xNTmszaUx2NndmM3dFYXZ0aDE5WW1ZMHZsamh0QnIrZWFO?=
+ =?utf-8?B?ek5yemhyVHFqcW43WnoyTU4razZ4d3NjNmZmeGM0Q0lJSXA0azJrUVM1U3VU?=
+ =?utf-8?B?QUJML2xKWmJKNmZpZGw4ZWZnUkZScDA1M1VzZmROZjdGTEN5RnFwMDhhZzhJ?=
+ =?utf-8?B?ZG1CUmh6MmNobk1XbmhIbUpaOGJtVW9KNHQ5MFB0QnIrNW9aZ0hwbHJyaGtz?=
+ =?utf-8?B?TGUxNzREWVEvcFN4eS9hSWVMTEpuZHlHTXVBWlVrTFhWZnNTWjRYMFdFRkVL?=
+ =?utf-8?B?Wk4wUnA5a2RHWklHSHlEZ1lBSUJWSC9OZ0pHc0JMZW1HRHBXUGY3dVNaYWhC?=
+ =?utf-8?B?M2NGV3hBL0RnMVI4MEtjQlgzUnJwVm9qaWVZWTVZUGZjaEdXc3FZZVBnMVBn?=
+ =?utf-8?B?T1Z6TnVaKzBYZzZobkU4MGplcUNrb2Z6ZEl1SlFPQS9JTXUreHk4VUcrQ1k3?=
+ =?utf-8?B?N1k3K3lKMVNZNk5OTnpIS1JyVWwxREl4cVE1bTYvbVJDQS9CZ2tvaHNuZUVX?=
+ =?utf-8?B?dVBqY0d3ZW96Tk1wWnEwQVQwKzlwckRaNThxT0ljU2tzVWw2NzZuZnBic1Rp?=
+ =?utf-8?B?cEFCKzNJKzdmWDdvZUJZdEZOSTZySExjaGxKSi9XQTcrdUo2WWQ3QkhFeWJI?=
+ =?utf-8?B?YjgrYUhIYTJVclZDeDZURlBwOUFqM1NaVHZVQjlqaGR1WXNPSWtlL1NWSXpY?=
+ =?utf-8?B?YjNnTWhjQXF4eHR6aFd2MDhrMW8wYXhJYmJZSy80REs1cExWaC9Yc2k4NVJn?=
+ =?utf-8?B?K3VkODJibUFJRnBWMUg3bHdrNW1qUEJrTUF5REVXZXRndFlUU25ibS9OVXV6?=
+ =?utf-8?B?d1JjL2c3NU95UEM3SW83elFaclJUZnZidzUrT2RYNHBKdmxqcFQ5QmpBS2Mv?=
+ =?utf-8?B?SlNOTERKK0JYZXpTMnRnemFNbnBwa3BtQm9mb3F5dDVkRnBvQ2RNZTFvQ2tO?=
+ =?utf-8?B?SzZxZS8rTTlaa25TQzF2b2lMNkFWMVIvNjQ5ZEpVYzJYZHYrRTkyR0NJdHRH?=
+ =?utf-8?B?cjhvc2U4Z2UzdWFNNW5YZW85NzBsYTM3a0N6dWN4WnZ3WHhneWw2VlN3QzA0?=
+ =?utf-8?B?MFltY3hiR0tZYzZpUk9aRmlkek5VSzFuTFoyaXBtWnNjRk1xelNxSnpNRlBs?=
+ =?utf-8?B?ZS94ZnpScUJTditaZDMzRlRNNHNubjc4UUhTU0xpRGtmaDJsMkRMb1RGT3gv?=
+ =?utf-8?B?ZGg3U05oYnViWlRzNzFtL2FIVno3M1dCVVRnZkVNOXUyLzl3bnEvanhqMG9t?=
+ =?utf-8?B?L0ZjN1JqbGV1d0FoU0dBOHhNa3VCTERaNXFMOW1SL2dsSHNOcHY2YUMzb0Np?=
+ =?utf-8?B?ajhOMThrRTBkWGVMVkFxVlNyM0Q4b21vd3Z2RXJJVlpubjB6bGtjdEhkS2sv?=
+ =?utf-8?B?aTdnYnl6cXFHVGovaGt5NTNvbE5abXhUb0hLM2t0U1RkQ1ZnaVBvNkgwUnkr?=
+ =?utf-8?B?aURuMU9jVG5EbjlJNXlGSnhwakZ5b3ViWUQvTkdHdVJYeWRqM3RGbSt1ZWpY?=
+ =?utf-8?B?WjZvdkpUU20yMUNVSWFnZDAvWktDRDhEbU94M1JBcTBseXJlMkRRUHRVakZT?=
+ =?utf-8?B?cXdUY21jNjgzdGVUL0JRQk01TVZIWVh1aWMyb2QwMlh2eC9TSHJBbFc1ZXJE?=
+ =?utf-8?B?SmRTb3VzajNDWjNSRU9Ua0lkQ0hmVTRzMWZLVUlhQXZQcU5OalJ3R3o2Ykhm?=
+ =?utf-8?B?Y29vM2RPM0hVd0VRRkF2Q3U2MDlCNWdQVkZERzd2S1l5M1ZDSlI0Zm16STZq?=
+ =?utf-8?B?dEZCUnVRRTdVRmRGeHM2YWNpMS9idHZVeFJCdjM4YzZJajZjUTBOSXcyNk1t?=
+ =?utf-8?Q?ULvKyIQzezxaw?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d614883d-cfee-4c61-d911-08d94921ad14
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2021 12:52:04.2645
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cg/HBBIPf9JvNJsakvwHrIJ57xrb8KD0c/pBXadIIAou1sjkcwFu1NZeAudDzXYO4ZOLb11Xqha6WyYtHMUzmj11UEdHlWIxqGTTHfxvmtc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR01MB2733
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------22358B651524AC6FC03F8265
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-
-
-
-On 16/07/2021 19:27, Andy Shevchenko wrote:
-> On Fri, Jul 16, 2021 at 05:27:36PM +0200, Ralf Ramsauer wrote:
->> On 16/07/2021 17:01, Andy Shevchenko wrote:
->>> On Fri, Jul 16, 2021 at 4:07 PM Ralf Ramsauer
->>> <ralf.ramsauer@oth-regensburg.de> wrote:
->>>> On 14/07/2021 15:35, Andy Shevchenko wrote:
->>>>> On Wed, Jul 14, 2021 at 3:56 PM Ralf Ramsauer
->>>>> <ralf.ramsauer@oth-regensburg.de> wrote:
->>>>>> On 14/07/2021 08:54, Jiri Slaby wrote:
->>>>>>> On 13. 07. 21, 12:40, Andy Shevchenko wrote:
->>>>>
->>>>>>> Hmm, have you checked the commit which introduced the whitelist?
->>>>>>>
->>>>>>>     Nevertheless, this needs to handled with care: while many 8250 devices
->>>>>>>     actually claim to support MSI(-X) interrupts it should not be
->>>>>>> enabled be
->>>>>>>     default. I had at least one device in my hands with broken MSI
->>>>>>>     implementation.
->>>>>>>
->>>>>>>     So better introduce a whitelist with devices that are known to support
->>>>>>>     MSI(-X) interrupts. I tested all devices mentioned in the patch.
->>>>>>>
->>>>>>>
->>>>>>> You should have at least CCed the author for an input.
->>>>>>
->>>>>> Yep, back then I was testing three different 8250 pci cards. All of them
->>>>>> claimed to support MSI, while one really worked with MSI, the one that I
->>>>>> whitelisted. So I thought it would be better to use legacy IRQs as long
->>>>>> as no one tested a specific card to work with MSI.
->>>>>
->>>>> Can you shed a light eventually what those cards are?
->>>
->>>> So I found a no-name el-cheapo card that has some issues with MSI:
->>>
->>> Win Chip Head (WCH)
->>>
->>>> 18:00.0 Serial controller: Device 1c00:3253 (rev 10) (prog-if 05 [16850])
+On 17/07/2021 00:34, Rob Herring wrote:
+> On Tue, 13 Jul 2021 13:00:28 +0700, Quan Nguyen wrote:
+>> Adds device tree bindings for SMPro MFD driver found on the Mt.Jade
+>> hardware reference platform with Ampere's Altra Processor family.
+>>
+>> The SMpro co-processor on Ampere Altra processor family is to monitor
+>> and report various data included hwmon-related info, RAS errors, and
+>> other miscellaneous information.
+>>
+>> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+>> ---
+>> Changes in v5:
+>>    + Dropped ../bindings/hwmon/ampere,ac01-hwmon.yaml file [Quan]
+>>    + Removed patternProperties section and child DT nodes in example
+>>    section [Quan]
+>>    + Revised commit message [Quan]
+>>
+>> Changes in v4:
+>>    + Revised the commit message to clarify how the specific info will
+>>      be handled commented by Rob.
+>>
+>> Changes in v3:
+>>    + Supported list of compatible string [Rob]
+>>    + Introduced reg property in DT to specify reg offset [Rob]
+>>    + Updated description and other minor changes in yaml file [Rob]
+>>
+>> Changes in v2:
+>>    + Changed "ampere,ac01-smpro" to "ampere,smpro" [Quan]
+>>
+>>   .../devicetree/bindings/mfd/ampere,smpro.yaml | 52 +++++++++++++++++++
+>>   1 file changed, 52 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/mfd/ampere,smpro.yaml
+>>
 > 
-> Thank you!
-> 
-> One more thing, ist it possible to see entire PCI configuration space (w/ or
-> w/o MSI, I don't think it matters)? Something like
-> 
-> 	`lspci -nk -vvv -xxx -s 18:0`
-> 
-> to run.
-> 
-> (I believe there are a lot of 0xff bytes)
+> Reviewed-by: Rob Herring <robh@kernel.org>
+>
 
-Find it attached, w/ MSI+. Not that many, only the 0xffs for the MSI
-mask, afaict.
+Thanks Rob for the review.
+- Quan
 
-  Ralf
 
---------------22358B651524AC6FC03F8265
-Content-Type: text/plain; charset="UTF-8"; name="18.0.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="18.0.txt"
-
-MTg6MDAuMCAwNzAwOiAxYzAwOjMyNTMgKHJldiAxMCkgKHByb2ctaWYgMDUgWzE2ODUwXSkK
-CVN1YnN5c3RlbTogMWMwMDozMjUzCglDb250cm9sOiBJL08rIE1lbSsgQnVzTWFzdGVyKyBT
-cGVjQ3ljbGUtIE1lbVdJTlYtIFZHQVNub29wLSBQYXJFcnItIFN0ZXBwaW5nLSBTRVJSLSBG
-YXN0QjJCLSBEaXNJTlR4KwoJU3RhdHVzOiBDYXArIDY2TUh6LSBVREYtIEZhc3RCMkItIFBh
-ckVyci0gREVWU0VMPWZhc3QgPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydC0gPlNFUlItIDxQ
-RVJSLSBJTlR4LQoJTGF0ZW5jeTogMAoJSW50ZXJydXB0OiBwaW4gQSByb3V0ZWQgdG8gSVJR
-IDEwNAoJTlVNQSBub2RlOiAwCglSZWdpb24gMDogSS9PIHBvcnRzIGF0IDQwMDAgW3NpemU9
-MjU2XQoJUmVnaW9uIDE6IE1lbW9yeSBhdCBhYjAwMDAwMCAoMzItYml0LCBwcmVmZXRjaGFi
-bGUpIFtzaXplPTMyS10KCVJlZ2lvbiAyOiBJL08gcG9ydHMgYXQgNDEwMCBbc2l6ZT00XQoJ
-RXhwYW5zaW9uIFJPTSBhdCBhYjIwMDAwMCBbZGlzYWJsZWRdIFtzaXplPTMyS10KCUNhcGFi
-aWxpdGllczogWzYwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMwoJCUZsYWdzOiBQTUVD
-bGstIERTSS0gRDEtIEQyLSBBdXhDdXJyZW50PTM3NW1BIFBNRShEMCssRDEtLEQyLSxEM2hv
-dCssRDNjb2xkKykKCQlTdGF0dXM6IEQwIE5vU29mdFJzdC0gUE1FLUVuYWJsZS0gRFNlbD0w
-IERTY2FsZT0wIFBNRS0KCUNhcGFiaWxpdGllczogWzY4XSBNU0k6IEVuYWJsZSsgQ291bnQ9
-MS8zMiBNYXNrYWJsZSsgNjRiaXQrCgkJQWRkcmVzczogMDAwMDAwMDBmZWUwMDBiOCAgRGF0
-YTogMDAwMAoJCU1hc2tpbmc6IGZmZmZmZmZmICBQZW5kaW5nOiAwMDAwMDAwMAoJQ2FwYWJp
-bGl0aWVzOiBbODBdIEV4cHJlc3MgKHYyKSBMZWdhY3kgRW5kcG9pbnQsIE1TSSAwMAoJCURl
-dkNhcDoJTWF4UGF5bG9hZCAyNTYgYnl0ZXMsIFBoYW50RnVuYyAwLCBMYXRlbmN5IEwwcyA8
-MnVzLCBMMSA8MzJ1cwoJCQlFeHRUYWctIEF0dG5CdG4tIEF0dG5JbmQtIFB3ckluZC0gUkJF
-KyBGTFJlc2V0LQoJCURldkN0bDoJQ29yckVyci0gTm9uRmF0YWxFcnIrIEZhdGFsRXJyKyBV
-bnN1cFJlcSsKCQkJUmx4ZE9yZCsgRXh0VGFnLSBQaGFudEZ1bmMtIEF1eFB3ci0gTm9Tbm9v
-cCsKCQkJTWF4UGF5bG9hZCAyNTYgYnl0ZXMsIE1heFJlYWRSZXEgNTEyIGJ5dGVzCgkJRGV2
-U3RhOglDb3JyRXJyLSBOb25GYXRhbEVyci0gRmF0YWxFcnItIFVuc3VwUmVxLSBBdXhQd3Ir
-IFRyYW5zUGVuZC0KCQlMbmtDYXA6CVBvcnQgIzAsIFNwZWVkIDIuNUdUL3MsIFdpZHRoIHgx
-LCBBU1BNIEwwcyBMMSwgRXhpdCBMYXRlbmN5IEwwcyB1bmxpbWl0ZWQsIEwxIHVubGltaXRl
-ZAoJCQlDbG9ja1BNKyBTdXJwcmlzZS0gTExBY3RSZXAtIEJ3Tm90LSBBU1BNT3B0Q29tcC0K
-CQlMbmtDdGw6CUFTUE0gRGlzYWJsZWQ7IFJDQiA2NCBieXRlcywgRGlzYWJsZWQtIENvbW1D
-bGsrCgkJCUV4dFN5bmNoLSBDbG9ja1BNLSBBdXRXaWREaXMtIEJXSW50LSBBdXRCV0ludC0K
-CQlMbmtTdGE6CVNwZWVkIDIuNUdUL3MgKG9rKSwgV2lkdGggeDEgKG9rKQoJCQlUckVyci0g
-VHJhaW4tIFNsb3RDbGsrIERMQWN0aXZlLSBCV01nbXQtIEFCV01nbXQtCgkJRGV2Q2FwMjog
-Q29tcGxldGlvbiBUaW1lb3V0OiBOb3QgU3VwcG9ydGVkLCBUaW1lb3V0RGlzKyBOUk9QclBy
-UC0gTFRSLQoJCQkgMTBCaXRUYWdDb21wLSAxMEJpdFRhZ1JlcS0gT0JGRiBOb3QgU3VwcG9y
-dGVkLCBFeHRGbXQtIEVFVExQUHJlZml4LQoJCQkgRW1lcmdlbmN5UG93ZXJSZWR1Y3Rpb24g
-Tm90IFN1cHBvcnRlZCwgRW1lcmdlbmN5UG93ZXJSZWR1Y3Rpb25Jbml0LQoJCQkgRlJTLQoJ
-CQkgQXRvbWljT3BzQ2FwOiAzMmJpdC0gNjRiaXQtIDEyOGJpdENBUy0KCQlEZXZDdGwyOiBD
-b21wbGV0aW9uIFRpbWVvdXQ6IDUwdXMgdG8gNTBtcywgVGltZW91dERpcy0gTFRSLSBPQkZG
-IERpc2FibGVkLAoJCQkgQXRvbWljT3BzQ3RsOiBSZXFFbi0KCQlMbmtDdGwyOiBUYXJnZXQg
-TGluayBTcGVlZDogMi41R1QvcywgRW50ZXJDb21wbGlhbmNlLSBTcGVlZERpcy0KCQkJIFRy
-YW5zbWl0IE1hcmdpbjogTm9ybWFsIE9wZXJhdGluZyBSYW5nZSwgRW50ZXJNb2RpZmllZENv
-bXBsaWFuY2UtIENvbXBsaWFuY2VTT1MtCgkJCSBDb21wbGlhbmNlIERlLWVtcGhhc2lzOiAt
-NmRCCgkJTG5rU3RhMjogQ3VycmVudCBEZS1lbXBoYXNpcyBMZXZlbDogLTZkQiwgRXF1YWxp
-emF0aW9uQ29tcGxldGUtIEVxdWFsaXphdGlvblBoYXNlMS0KCQkJIEVxdWFsaXphdGlvblBo
-YXNlMi0gRXF1YWxpemF0aW9uUGhhc2UzLSBMaW5rRXF1YWxpemF0aW9uUmVxdWVzdC0KCQkJ
-IFJldGltZXItIDJSZXRpbWVycy0gQ3Jvc3NsaW5rUmVzOiB1bnN1cHBvcnRlZAoJQ2FwYWJp
-bGl0aWVzOiBbMTAwIHYxXSBBZHZhbmNlZCBFcnJvciBSZXBvcnRpbmcKCQlVRVN0YToJRExQ
-LSBTREVTLSBUTFAtIEZDUC0gQ21wbHRUTy0gQ21wbHRBYnJ0LSBVbnhDbXBsdC0gUnhPRi0g
-TWFsZlRMUC0gRUNSQy0gVW5zdXBSZXEtIEFDU1Zpb2wtCgkJVUVNc2s6CURMUC0gU0RFUy0g
-VExQLSBGQ1AtIENtcGx0VE8tIENtcGx0QWJydC0gVW54Q21wbHQrIFJ4T0YtIE1hbGZUTFAt
-IEVDUkMtIFVuc3VwUmVxLSBBQ1NWaW9sKwoJCVVFU3ZydDoJRExQKyBTREVTLSBUTFArIEZD
-UCsgQ21wbHRUTysgQ21wbHRBYnJ0LSBVbnhDbXBsdC0gUnhPRisgTWFsZlRMUCsgRUNSQysg
-VW5zdXBSZXEtIEFDU1Zpb2wtCgkJQ0VTdGE6CVJ4RXJyLSBCYWRUTFAtIEJhZERMTFAtIFJv
-bGxvdmVyLSBUaW1lb3V0LSBBZHZOb25GYXRhbEVyci0KCQlDRU1zazoJUnhFcnIrIEJhZFRM
-UCsgQmFkRExMUCsgUm9sbG92ZXIrIFRpbWVvdXQrIEFkdk5vbkZhdGFsRXJyKwoJCUFFUkNh
-cDoJRmlyc3QgRXJyb3IgUG9pbnRlcjogMDAsIEVDUkNHZW5DYXArIEVDUkNHZW5FbisgRUNS
-Q0Noa0NhcCsgRUNSQ0Noa0VuKwoJCQlNdWx0SGRyUmVjQ2FwLSBNdWx0SGRyUmVjRW4tIFRM
-UFBmeFByZXMtIEhkckxvZ0NhcC0KCQlIZWFkZXJMb2c6IDAwMDAwMDAwIDAwMDAwMDAwIDAw
-MDAwMDAwIDAwMDAwMDAwCglLZXJuZWwgZHJpdmVyIGluIHVzZTogc2VyaWFsCglLZXJuZWwg
-bW9kdWxlczogODI1MF9wY2kKMDA6IDAwIDFjIDUzIDMyIDA3IDA0IDEwIDAwIDEwIDA1IDAw
-IDA3IDAwIDAwIDAwIDAwCjEwOiAwMSA0MCAwMCAwMCAwOCAwMCAwMCBhYiAwMSA0MSAwMCAw
-MCAwMCAwMCAwMCAwMAoyMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMWMgNTMgMzIKMzA6IDAwIDgwIGZmIGZmIDYwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIGZm
-IDAxIDAwIDAwCjQwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMAo1MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAKNjA6IDAxIDY4IGMzIGM5IDAwIDAwIDAwIDAwIDA1IDgwIDhiIDAxIGI4IDAwIGUw
-IGZlCjcwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBmZiBmZiBmZiBmZiAwMCAwMCAwMCAw
-MAo4MDogMTAgMDAgMTIgMDAgNDEgOGIgNjQgMDAgM2UgMjggMTAgMDAgMTEgZmMgMDcgMDAK
-OTA6IDQwIDAwIDExIDEwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmEw
-OiAwMCAwMCAwMCAwMCAxMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApiMDog
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYzA6IDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmQwOiAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAplMDogMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZjA6IDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCgo=
---------------22358B651524AC6FC03F8265--
