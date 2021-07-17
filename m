@@ -2,136 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FBF3CC32F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867C33CC332
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 14:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234012AbhGQMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 08:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234330AbhGQMOf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 08:14:35 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F32C061765;
-        Sat, 17 Jul 2021 05:11:37 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id s17so7215800ljo.12;
-        Sat, 17 Jul 2021 05:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y7SaHURNXyUBjsQfPYlKAP5ckfuIlCfIy3J3ukz+tBo=;
-        b=MPGGjtky5B1QjVnHzZk2Y9tZ5eRCeZDogYDcIrAFBSqneLBpI8uAdKFMV7hnIhZto3
-         E4qBBrXTSPk5xSpwWbVo6MiNItgc2UZYRxIWFqDsSLemUgVAMoGxrYHDk3VDQ3EscKRH
-         FgyOnn6ktqiSkzDNpfiMVPl3keAxC0MZmXj6hdMaEwwI6TolCQjn0r7xl6MkcdDLN4Hg
-         WBgP6pnhnxt3Z4Jpbpn0z04p0FD+WSaWs3dx1MXMCOVAoJ8H5+Bb1shLSjIKv3Q5I7Kt
-         QkepzB5OD1Or6iTNdaqwFPiqa4i1t45nXCV75WlaPX1xQPY7Qn0Eff9sqstZlvQhxbhB
-         TS8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y7SaHURNXyUBjsQfPYlKAP5ckfuIlCfIy3J3ukz+tBo=;
-        b=kVnphTkLoXxK1KO2fuQDadONZW48G1ZNpWgSAdfj+b9C796+U9AbQXJgt344bPpLfW
-         3ghr8JMVNluB+SwbW8FskgeUTTIpZA2b6sViGtsWzOlOz8FgkkrNdp/iC1i7GdfGqQt8
-         /VsM6GG3vnMHNT1R04vlk2+m4Y/KUetEpfD8LgHdX8mDEswpUAMbOvERFqI+AnnEvIoV
-         D3n30+JB/9bcs3kiaClhFOZiO/4mjlDN/alohOmOjdljZ9ySrvwdwcupFCOG8yMHrb1D
-         UlaUNQU7Civ2n/JsfHA2IugF+FELwZHThy6aL6WGDeozduLonBnPa2c3C/tJfpx5d5R7
-         bx2g==
-X-Gm-Message-State: AOAM53369tH3XJ0x0alDWFGYqDqsGREkNZ+9zWEzVrmZAjAq+y9kWThM
-        hubgE5eN5Dr4XuBVPj8ybwM=
-X-Google-Smtp-Source: ABdhPJwLtaMqw1TRvMbCm3ekqLeX8D0ZjgQWdCO0U6IJvKNwbj5hgc5XsS0cTxgG7iyGadGOL43arw==
-X-Received: by 2002:a05:651c:896:: with SMTP id d22mr13758314ljq.242.1626523895793;
-        Sat, 17 Jul 2021 05:11:35 -0700 (PDT)
-Received: from localhost.localdomain (46-138-17-250.dynamic.spd-mgts.ru. [46.138.17.250])
-        by smtp.gmail.com with ESMTPSA id m16sm852597lfq.23.2021.07.17.05.11.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 05:11:35 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v4 12/12] arm64: tegra132: Add new properties to USB PHY device-tree node
-Date:   Sat, 17 Jul 2021 15:11:12 +0300
-Message-Id: <20210717121112.3248-13-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210717121112.3248-1-digetx@gmail.com>
-References: <20210717121112.3248-1-digetx@gmail.com>
+        id S233327AbhGQMWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 08:22:25 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:34092 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229471AbhGQMWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 08:22:22 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1m4jHq-00051D-Eo; Sat, 17 Jul 2021 14:19:18 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>
+Subject: Re: [PATCH v2 1/3] clk: fractional-divider: Export approximation algo to the CCF users
+Date:   Sat, 17 Jul 2021 14:19:17 +0200
+Message-ID: <10550544.QTc0DxZM9B@diego>
+In-Reply-To: <20210716133448.24890-1-andriy.shevchenko@linux.intel.com>
+References: <20210716133448.24890-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new properties to USB PHYs needed for enabling USB OTG mode.
+Am Freitag, 16. Juli 2021, 15:34:46 CEST schrieb Andy Shevchenko:
+> At least one user currently duplicates some functions that are provided
+> by fractional divider module. Let's export approximation algo and replace
+> the open-coded variant.
+> 
+> As a bonus the exported function will get better documentation in place.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm64/boot/dts/nvidia/tegra132.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+on Rockchip rk3288 and rk3399
+Tested-by: Heiko Stuebner <heiko@sntech.de>
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra132.dtsi b/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-index 9928a87f593a..f79a66226457 100644
---- a/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-@@ -1123,6 +1123,7 @@ phy1: usb-phy@7d000000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d000000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USBD>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1142,6 +1143,7 @@ phy1: usb-phy@7d000000 {
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
- 		nvidia,has-utmi-pad-registers;
-+		nvidia,pmc = <&tegra_pmc 0>;
- 		status = "disabled";
- 	};
- 
-@@ -1162,6 +1164,7 @@ phy2: usb-phy@7d004000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d004000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USB2>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1180,6 +1183,7 @@ phy2: usb-phy@7d004000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 1>;
- 		status = "disabled";
- 	};
- 
-@@ -1200,6 +1204,7 @@ phy3: usb-phy@7d008000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d008000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USB3>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1218,6 +1223,7 @@ phy3: usb-phy@7d008000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 2>;
- 		status = "disabled";
- 	};
- 
--- 
-2.32.0
+Also for dropping the Rockchip-specific copy in favor of the main
+implementation
+Acked-by: Heiko Stuebner <heiko@sntech.de>
+
+
+
+> ---
+> v2: fixed compilation error (LKP), successfully compile-tested on x86
+>  drivers/clk/clk-fractional-divider.c | 11 +++++++----
+>  drivers/clk/clk-fractional-divider.h |  9 +++++++++
+>  drivers/clk/rockchip/clk.c           | 17 +++--------------
+>  3 files changed, 19 insertions(+), 18 deletions(-)
+>  create mode 100644 drivers/clk/clk-fractional-divider.h
+> 
+> diff --git a/drivers/clk/clk-fractional-divider.c b/drivers/clk/clk-fractional-divider.c
+> index b1e556f20911..535d299af646 100644
+> --- a/drivers/clk/clk-fractional-divider.c
+> +++ b/drivers/clk/clk-fractional-divider.c
+> @@ -14,6 +14,8 @@
+>  #include <linux/slab.h>
+>  #include <linux/rational.h>
+>  
+> +#include "clk-fractional-divider.h"
+> +
+>  static inline u32 clk_fd_readl(struct clk_fractional_divider *fd)
+>  {
+>  	if (fd->flags & CLK_FRAC_DIVIDER_BIG_ENDIAN)
+> @@ -68,9 +70,10 @@ static unsigned long clk_fd_recalc_rate(struct clk_hw *hw,
+>  	return ret;
+>  }
+>  
+> -static void clk_fd_general_approximation(struct clk_hw *hw, unsigned long rate,
+> -					 unsigned long *parent_rate,
+> -					 unsigned long *m, unsigned long *n)
+> +void clk_fractional_divider_general_approximation(struct clk_hw *hw,
+> +						  unsigned long rate,
+> +						  unsigned long *parent_rate,
+> +						  unsigned long *m, unsigned long *n)
+>  {
+>  	struct clk_fractional_divider *fd = to_clk_fd(hw);
+>  	unsigned long scale;
+> @@ -102,7 +105,7 @@ static long clk_fd_round_rate(struct clk_hw *hw, unsigned long rate,
+>  	if (fd->approximation)
+>  		fd->approximation(hw, rate, parent_rate, &m, &n);
+>  	else
+> -		clk_fd_general_approximation(hw, rate, parent_rate, &m, &n);
+> +		clk_fractional_divider_general_approximation(hw, rate, parent_rate, &m, &n);
+>  
+>  	ret = (u64)*parent_rate * m;
+>  	do_div(ret, n);
+> diff --git a/drivers/clk/clk-fractional-divider.h b/drivers/clk/clk-fractional-divider.h
+> new file mode 100644
+> index 000000000000..4fa359a12ef4
+> --- /dev/null
+> +++ b/drivers/clk/clk-fractional-divider.h
+> @@ -0,0 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +struct clk_hw;
+> +
+> +void clk_fractional_divider_general_approximation(struct clk_hw *hw,
+> +						  unsigned long rate,
+> +						  unsigned long *parent_rate,
+> +						  unsigned long *m,
+> +						  unsigned long *n);
+> diff --git a/drivers/clk/rockchip/clk.c b/drivers/clk/rockchip/clk.c
+> index 049e5e0b64f6..b7be7e11b0df 100644
+> --- a/drivers/clk/rockchip/clk.c
+> +++ b/drivers/clk/rockchip/clk.c
+> @@ -22,6 +22,8 @@
+>  #include <linux/regmap.h>
+>  #include <linux/reboot.h>
+>  #include <linux/rational.h>
+> +
+> +#include "../clk-fractional-divider.h"
+>  #include "clk.h"
+>  
+>  /*
+> @@ -178,10 +180,8 @@ static void rockchip_fractional_approximation(struct clk_hw *hw,
+>  		unsigned long rate, unsigned long *parent_rate,
+>  		unsigned long *m, unsigned long *n)
+>  {
+> -	struct clk_fractional_divider *fd = to_clk_fd(hw);
+>  	unsigned long p_rate, p_parent_rate;
+>  	struct clk_hw *p_parent;
+> -	unsigned long scale;
+>  
+>  	p_rate = clk_hw_get_rate(clk_hw_get_parent(hw));
+>  	if ((rate * 20 > p_rate) && (p_rate % rate != 0)) {
+> @@ -190,18 +190,7 @@ static void rockchip_fractional_approximation(struct clk_hw *hw,
+>  		*parent_rate = p_parent_rate;
+>  	}
+>  
+> -	/*
+> -	 * Get rate closer to *parent_rate to guarantee there is no overflow
+> -	 * for m and n. In the result it will be the nearest rate left shifted
+> -	 * by (scale - fd->nwidth) bits.
+> -	 */
+> -	scale = fls_long(*parent_rate / rate - 1);
+> -	if (scale > fd->nwidth)
+> -		rate <<= scale - fd->nwidth;
+> -
+> -	rational_best_approximation(rate, *parent_rate,
+> -			GENMASK(fd->mwidth - 1, 0), GENMASK(fd->nwidth - 1, 0),
+> -			m, n);
+> +	clk_fractional_divider_general_approximation(hw, rate, parent_rate, m, n);
+>  }
+>  
+>  static struct clk *rockchip_clk_register_frac_branch(
+> 
+
+
+
 
