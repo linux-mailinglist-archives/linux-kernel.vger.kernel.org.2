@@ -2,704 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4705F3CC447
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708AC3CC449
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbhGQPu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 11:50:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59434 "EHLO mail.kernel.org"
+        id S235023AbhGQPzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 11:55:13 -0400
+Received: from mout.gmx.net ([212.227.15.18]:56997 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234432AbhGQPu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 11:50:56 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD88E61106;
-        Sat, 17 Jul 2021 15:47:56 +0000 (UTC)
-Date:   Sat, 17 Jul 2021 16:50:18 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     lars@metafoo.de, robh+dt@kernel.org, matt.ranostay@konsulko.com,
-        andriy.shevchenko@linux.intel.com, vlad.dogaru@intel.com,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [PATCH 4/4] iio: imu: add BNO055 serdev driver
-Message-ID: <20210717165018.50a26629@jic23-huawei>
-In-Reply-To: <20210715141742.15072-5-andrea.merello@gmail.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
-        <20210715141742.15072-5-andrea.merello@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234454AbhGQPzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 11:55:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626537126;
+        bh=mZcP3QmI7YItRwoSRYnjV0gfYLGImu6x7tc+Qai8wIQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=hsKpqVOZ3p7sWvpcDkUU01YH+SeIlBaRhzd4uMxBYC/yOl6zyp61HmktWIY/36gGR
+         lMN8wm17G1tB/NYk9x2rpE1wUb1tj6I+DWIiRENBz4JDrj2BsHZT2LBtL04CkcNIuR
+         zWFgliqBtNkW5a8M2sl0s2Y/1vNG3gFOr88vYsIg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MgeoI-1lUJje2GA0-00h3sX; Sat, 17 Jul 2021 17:52:06 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/rtl8712: Remove all strcpy() uses in favor of strscpy()
+Date:   Sat, 17 Jul 2021 17:51:45 +0200
+Message-Id: <20210717155145.15041-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5C1c4EKwqwdWzS1m8cugGHgErNfVnZaBAsgwiLEyAvM7mbWHFh6
+ 3dPzuepBGkRvzS6i/eiEy9tk2c+MCnBxRn757yPDgAmfn3NbFT7qTul3SG2DocmU/96FEoe
+ GsGpaKKgIIO7UDxOv+2O/8x2/9RmZkrEnQYa6NxCRbl1CAqv0zmt4T/HfkyNl1CJQSMCVkn
+ ZS54E7eEKFAJOoUSZqPVg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:00IjXtN2iM8=:8GT4FY/lAjE2z6TxXsschr
+ h7HSls1qOnKtKjqOTnzolJHU+2Flj2+roAGKB6ppp2N21u5YZVLJ/64gxl7CDdAKnQog4c1iD
+ uKbC/V05Zc3yxm6FBcG94TXswtdYY9W0Io71tzSqdLnrtQJqgPjF6jYTNQmRlI7UcgD914Y5q
+ W8uHaVEIphKt1jS2xcQEl8RoJ5lKQXUc9Z72FQ08wYJaff8DhgXt2hr4+XMnz6FKX4Oqh832d
+ u5yr5AEu4f7OJb9vJD1PXr8amodxKt+0k5czt/hRSfl61l+aWuVnYBxg+g3tn6c2NdGbBPBQ+
+ pCenu4efjCn+CpUrP/ls1HMk7c8SwOZF+Ij8/MKq+H4qJqNsZsu8QAQTmapM/Tri3xvxpiojI
+ PEuSnh8CDAwTe+ysfQoVRYSg+Jm+Gd9/sdwNaCMRUiEBx4f/9UzI/1k6ZFBJgGzXB7rQBWBdk
+ 8bFkqTAimOgZOtu/x/nBqlokyZMzdD2h37jVP1XOC0lH4crqLACIXUyg+H+htAAb4Ejm8ISwm
+ KRufPyjvzRaC+a9/VTfluE2lcBW5mQ6ayDjFZsN7JLOlwD+FwbccEYpi3Dy1KT89DMEj4zg/2
+ SW12lqlRcjx0/Qs36ZE++qCmxPpAaRMuJFecP5MQWZmYQTplqpzsREeeL+W91bs5DjJEPkqkY
+ p5UZNSOYmsy2tY/K43LhLDPmTfWuOpys45M4SipCCrx9SfpahQ8az1WVfNCJT67/malL8bSG/
+ utXNRGEFlkDSo6Cb3hbC2M4qWW+ShEnUxWzlP6mjYDtwHG0AvK3zmsHmh0Qo2eMD8p1PRArjX
+ kWGYiQztd3LCTh3lyCvj4H8Qlh3wke+lexIzIwQEuyhB5DCkaQ6sVWWM2WA6DsbgYBJInW4gJ
+ Hk/V06UCvBe7d5lXOq6KZISfXQSBlq+uCuosqqAvLYfE0+rLvd1KA59lCulT1HGxCAK1PFODD
+ gspNP4EmkKfMQzCMopeueZ3N06YD3SiqW03HnblJ5aneZyT0uPnE05MStMQXs1fVXw3o9cdAa
+ nFoVdvEEX9rTVnyMv2T0WNbBCk6suQ077V9WUtSW8v8O7GH7nB2hM8+oBy45Pg82kkp5dAetu
+ 70ecFhQAks8caXhhkq9+/nw+UkAZt7Kmz9V
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Jul 2021 16:17:42 +0200
-Andrea Merello <andrea.merello@gmail.com> wrote:
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
 
-> This path adds a serdev driver for communicating to a BNO055 IMU
-> via serial bus, and enables the BNO055 core driver to work in this
-> scenario.
-> 
-> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-> Cc: Andrea Merello <andrea.merello@gmail.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Matt Ranostay <matt.ranostay@konsulko.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Vlad Dogaru <vlad.dogaru@intel.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-iio@vger.kernel.org
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/rtl8712/os_intfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Andrea,
-
-A few comments inline.
-
-Jonathan
-
-> ---
->  drivers/iio/imu/bno055/Kconfig     |   5 +
->  drivers/iio/imu/bno055/Makefile    |   1 +
->  drivers/iio/imu/bno055/bno055_sl.c | 576 +++++++++++++++++++++++++++++
->  3 files changed, 582 insertions(+)
->  create mode 100644 drivers/iio/imu/bno055/bno055_sl.c
-> 
-> diff --git a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
-> index 2bfed8df4554..6d2e8c9f85b7 100644
-> --- a/drivers/iio/imu/bno055/Kconfig
-> +++ b/drivers/iio/imu/bno055/Kconfig
-> @@ -5,3 +5,8 @@
->  
->  config BOSH_BNO055_IIO
->  	tristate
-> +
-> +config BOSH_BNO055_SERIAL
-> +	tristate "Bosh BNO055 attached via serial bus"
-> +	depends on SERIAL_DEV_BUS
-> +	select BOSH_BNO055_IIO
-> diff --git a/drivers/iio/imu/bno055/Makefile b/drivers/iio/imu/bno055/Makefile
-> index 15c5ddf8d648..b704b10b6bd1 100644
-> --- a/drivers/iio/imu/bno055/Makefile
-> +++ b/drivers/iio/imu/bno055/Makefile
-> @@ -4,3 +4,4 @@
->  #
->  
->  obj-$(CONFIG_BOSH_BNO055_IIO) += bno055.o
-> +obj-$(CONFIG_BOSH_BNO055_SERIAL) += bno055_sl.o
-> diff --git a/drivers/iio/imu/bno055/bno055_sl.c b/drivers/iio/imu/bno055/bno055_sl.c
-> new file mode 100644
-> index 000000000000..9604d73d126c
-> --- /dev/null
-> +++ b/drivers/iio/imu/bno055/bno055_sl.c
-> @@ -0,0 +1,576 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Serial line interface for Bosh BNO055 IMU (via serdev).
-> + * This file implements serial communication up to the register read/write
-> + * level.
-> + *
-> + * Copyright (C) 2021 Istituto Italiano di Tecnologia
-> + * Electronic Design Laboratory
-> + * Written by Andrea Merello <andrea.merello@iit.it>
-> + *
-> + * This driver is besed on
-> + *	Plantower PMS7003 particulate matter sensor driver
-> + *	Which is
-> + *	Copyright (c) Tomasz Duszynski <tduszyns@gmail.com>
-> + */
-> +
-> +#include <linux/completion.h>
-> +#include <linux/device.h>
-> +#include <linux/errno.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/regmap.h>
-> +#include <linux/serdev.h>
-> +
-> +#include "bno055.h"
-> +
-> +#define BNO055_SL_DRIVER_NAME "bno055-sl"
-> +
-> +/*
-> + * Register writes cmd have the following format
-> + * +------+------+-----+-----+----- ... ----+
-> + * | 0xAA | 0xOO | REG | LEN | payload[LEN] |
-> + * +------+------+-----+-----+----- ... ----+
-> + *
-> + * Register write responses have the following format
-> + * +------+----------+
-> + * | 0xEE | ERROCODE |
-> + * +------+----------+
-> + *
-> + * Register read have the following format
-> + * +------+------+-----+-----+
-> + * | 0xAA | 0xO1 | REG | LEN |
-> + * +------+------+-----+-----+
-> + *
-> + * Successful register read response have the following format
-> + * +------+-----+----- ... ----+
-> + * | 0xBB | LEN | payload[LEN] |
-> + * +------+-----+----- ... ----+
-> + *
-> + * Failed register read response have the following format
-> + * +------+--------+
-> + * | 0xEE | ERRCODE|  (ERRCODE always > 1)
-> + * +------+--------+
-> + *
-> + * Error codes are
-> + * 01: OK
-> + * 02: read/write FAIL
-> + * 04: invalid address
-> + * 05: write on RO
-> + * 06: wrong start byte
-> + * 07: bus overrun
-> + * 08: len too high
-> + * 09: len too low
-> + * 10: bus RX byte timeout (timeout is 30mS)
-> + *
-> + *
-> + * **WORKAROUND ALERT**
-> + *
-> + * Serial communication seems very fragile: the BNO055 buffer seems to overflow
-> + * very easy; BNO055 seems able to sink few bytes, then it needs a brief pause.
-> + * On the other hand, it is also picky on timeout: if there is a pause > 30mS in
-> + * between two bytes then the transaction fails (IMU internal RX FSM resets).
-> + *
-> + * BMU055 has been seen also failing to process commands in case we send them
-> + * too close each other (or if it is somehow busy?)
-> + *
-> + * One idea would be to split data in chunks, and then wait 1-2mS between
-> + * chunks (we hope not to exceed 30mS delay for any reason - which should
-> + * be pretty a lot of time for us), and eventually retry in case the BNO055
-> + * gets upset for any reason. This seems to work in avoiding the overflow
-> + * errors, but indeed it seems slower than just perform a retry when an overflow
-> + * error occur.
-> + * In particular I saw these scenarios:
-> + * 1) If we send 2 bytes per time, then the IMU never(?) overflows.
-> + * 2) If we send 4 bytes per time (i.e. the full header), then the IMU could
-> + *    overflow, but it seem to sink all 4 bytes, then it returns error.
-> + * 3) If we send more than 4 bytes, the IMU could overflow, and I saw it sending
-> + *    error after 4 bytes are sent; we have troubles in synchronizing again,
-> + *    because we are still sending data, and the IMU interprets it as the 1st
-> + *    byte of a new command.
-> + *
-> + * So, we workaround all this in the following way:
-> + * In case of read we don't split the header but we rely on retries; This seems
-> + * convenient for data read (where we TX only the hdr).
-> + * For TX we split the transmission in 2-bytes chunks so that, we should not
-> + * only avoid case 2 (which is still manageable), but we also hopefully avoid
-> + * case 3, that would be by far worse.
-
-Nice docs and this sounds terrible!
-
-> + */
-> +
-> +/* Read operation overhead:
-> + * 4 bytes req + 2byte resp hdr
-> + * 6 bytes = 60 bit (considering 1start + 1stop bits).
-> + * 60/115200 = ~520uS
-> + * In 520uS we could read back about 34 bytes that means 3 samples, this means
-> + * that in case of scattered read in which the gap is 3 samples or less it is
-> + * still convenient to go for a burst.
-> + * We have to take into account also IMU response time - IMU seems to be often
-> + * reasonably quick to respond, but sometimes it seems to be in some "critical
-> + * section" in which it delays handling of serial protocol.
-> + * By experiment, it seems convenient to burst up to about 5/6-samples-long gap
-> + */
-> +
-> +#define BNO055_SL_XFER_BURST_BREAK_THRESHOLD 6
-> +
-> +struct bno055_sl_priv {
-> +	struct serdev_device *serdev;
-> +	struct completion cmd_complete;
-> +	enum {
-> +		CMD_NONE,
-> +		CMD_READ,
-> +		CMD_WRITE,
-> +	} expect_response;
-> +	int expected_data_len;
-> +	u8 *response_buf;
-> +	enum {
-> +		STATUS_OK = 0,  /* command OK */
-> +		STATUS_FAIL = 1,/* IMU communicated an error */
-> +		STATUS_CRIT = -1/* serial communication with IMU failed */
-> +	} cmd_status;
-> +	struct mutex lock;
-> +
-> +	/* Only accessed in behalf of RX callback context. No lock needed. */
-> +	struct {
-> +		enum {
-> +			RX_IDLE,
-> +			RX_START,
-> +			RX_DATA
-> +		} state;
-> +		int databuf_count;
-> +		int expected_len;
-> +		int type;
-> +	} rx;
-> +
-> +	/* Never accessed in behalf of RX callback context. No lock needed */
-> +	bool cmd_stale;
-> +};
-> +
-> +static int bno055_sl_send_chunk(struct bno055_sl_priv *priv, u8 *data, int len)
-> +{
-> +	int ret;
-> +
-> +	dev_dbg(&priv->serdev->dev, "send (len: %d): %*ph", len, len, data);
-> +	ret = serdev_device_write(priv->serdev, data, len,
-> +				  msecs_to_jiffies(25));
-> +	if (ret < len)
-> +		return ret < 0 ? ret : -EIO;
-
-Break this up perhaps as will be easier to read.
-
-	if (ret < 0)
-		return ret;
-
-	if (ret < len)
-		return -EIO;
-
-	return 0;
-
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Sends a read or write command.
-> + * 'data' can be NULL (used in read case). 'len' parameter is always valid; in
-> + * case 'data' is non-NULL then it must match 'data' size.
-> + */
-> +static int bno055_sl_do_send_cmd(struct bno055_sl_priv *priv,
-> +				 int read, int addr, int len, u8 *data)
-> +{
-> +	int ret;
-> +	int chunk_len;
-> +	u8 hdr[] = {0xAA, !!read, addr, len};
-> +
-> +	if (read) {
-> +		ret = bno055_sl_send_chunk(priv, hdr, 4);
-> +	} else {
-> +		ret = bno055_sl_send_chunk(priv, hdr, 2);
-> +		if (ret)
-> +			goto fail;
-> +
-> +		usleep_range(2000, 3000);
-> +		ret = bno055_sl_send_chunk(priv, hdr + 2, 2);
-> +	}
-> +	if (ret)
-> +		goto fail;
-> +
-> +	if (data) {
-> +		while (len) {
-> +			chunk_len = min(len, 2);
-> +			usleep_range(2000, 3000);
-> +			ret = bno055_sl_send_chunk(priv, data, chunk_len);
-> +			if (ret)
-> +				goto fail;
-> +			data += chunk_len;
-> +			len -= chunk_len;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +fail:
-> +	/* waiting more than 30mS should clear the BNO055 internal state */
-> +	usleep_range(40000, 50000);
-> +	return ret;
-> +}
-> +
-> +static int bno_sl_send_cmd(struct bno055_sl_priv *priv,
-> +			   int read, int addr, int len, u8 *data)
-> +{
-> +	const int retry_max = 5;
-> +	int retry = retry_max;
-> +	int ret = 0;
-> +
-> +	/*
-> +	 * In case previous command was interrupted we still neet to wait it to
-> +	 * complete before we can issue new commands
-> +	 */
-> +	if (priv->cmd_stale) {
-> +		ret = wait_for_completion_interruptible_timeout(&priv->cmd_complete,
-> +								msecs_to_jiffies(100));
-> +		if (ret == -ERESTARTSYS)
-> +			return -ERESTARTSYS;
-> +
-> +		priv->cmd_stale = false;
-> +		/* if serial protocol broke, bail out */
-> +		if (priv->cmd_status == STATUS_CRIT)
-> +			goto exit;
-> +	}
-> +
-> +	/*
-> +	 * Try to convince the IMU to cooperate.. as explained in the comments
-> +	 * at the top of this file, the IMU could also refuse the command (i.e.
-> +	 * it is not ready yet); retry in this case.
-> +	 */
-> +	while (retry--) {
-> +		mutex_lock(&priv->lock);
-> +		priv->expect_response = read ? CMD_READ : CMD_WRITE;
-> +		reinit_completion(&priv->cmd_complete);
-> +		mutex_unlock(&priv->lock);
-> +
-> +		if (retry != (retry_max - 1))
-> +			dev_dbg(&priv->serdev->dev, "cmd retry: %d",
-> +				retry_max - retry);
-> +		ret = bno055_sl_do_send_cmd(priv, read, addr, len, data);
-> +		if (ret)
-> +			continue;
-> +
-> +		ret = wait_for_completion_interruptible_timeout(&priv->cmd_complete,
-> +								msecs_to_jiffies(100));
-> +		if (ret == -ERESTARTSYS) {
-> +			priv->cmd_stale = true;
-> +			return -ERESTARTSYS;
-> +		} else if (!ret) {
-> +			ret = -ETIMEDOUT;
-> +			break;
-> +		}
-> +		ret = 0;
-> +
-> +		/*
-> +		 * Poll if the IMU returns error (i.e busy), break if the IMU
-> +		 * returns OK or if the serial communication broke
-> +		 */
-> +		if (priv->cmd_status <= 0)
-> +			break;
-> +	}
-> +
-> +exit:
-> +	if (ret)
-> +		return ret;
-> +	if (priv->cmd_status == STATUS_CRIT)
-> +		return -EIO;
-> +	if (priv->cmd_status == STATUS_FAIL)
-> +		return -EINVAL;
-> +	return 0;
-> +}
-> +
-> +static int bno055_sl_write_reg(void *context, const void *data, size_t count)
-> +{
-> +	int ret;
-> +	int reg;
-> +	u8 *write_data = (u8 *)data + 1;
-> +	struct bno055_sl_priv *priv = context;
-> +
-> +	if (count < 2) {
-> +		dev_err(&priv->serdev->dev, "Invalid write count %d", count);
-> +		return -EINVAL;
-> +	}
-> +
-> +	reg = ((u8 *)data)[0];
-> +	dev_dbg(&priv->serdev->dev, "wr reg 0x%x = 0x%x", reg, ((u8 *)data)[1]);
-> +	ret = bno_sl_send_cmd(priv, 0, reg, count - 1, write_data);
-> +
-> +	return ret;
-> +}
-> +
-> +static int bno055_sl_read_reg(void *context,
-> +			      const void *reg, size_t reg_size,
-> +			      void *val, size_t val_size)
-> +{
-> +	int ret;
-> +	int reg_addr;
-> +	struct bno055_sl_priv *priv = context;
-> +
-> +	if (reg_size != 1) {
-
-Can we plausibly hit this?  I would have though the regmap controls it
-and is set appropriately.  Hence safe to drop this check.
-
-> +		dev_err(&priv->serdev->dev, "Invalid read regsize %d",
-> +			reg_size);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (val_size > 128) {
-> +		dev_err(&priv->serdev->dev, "Invalid read valsize %d",
-> +			val_size);
-> +		return -EINVAL;
-> +	}
-> +
-> +	reg_addr = ((u8 *)reg)[0];
-> +	dev_dbg(&priv->serdev->dev, "rd reg 0x%x (len %d)", reg_addr, val_size);
-> +	mutex_lock(&priv->lock);
-> +	priv->expected_data_len = val_size;
-> +	priv->response_buf = val;
-> +	mutex_unlock(&priv->lock);
-> +
-> +	ret = bno_sl_send_cmd(priv, 1, reg_addr, val_size, NULL);
-> +
-> +	mutex_lock(&priv->lock);
-> +	priv->response_buf = NULL;
-> +	mutex_unlock(&priv->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Handler for received data; this is called from the reicever callback whenever
-> + * it got some packet from the serial bus. The status tell us whether the
-> + * packet is valid (i.e. header ok && received payload len consistent wrt the
-> + * header). It's now our responsability to check whether this is what we
-> + * expected, of whether we got some unexpected, yet valid, packet.
-> + */
-> +static void bno055_sl_handle_rx(struct bno055_sl_priv *priv, int status)
-> +{
-> +	mutex_lock(&priv->lock);
-> +	switch (priv->expect_response) {
-> +	case CMD_NONE:
-> +		dev_warn(&priv->serdev->dev, "received unexpected, yet valid, data from sensor");
-> +		mutex_unlock(&priv->lock);
-> +		return;
-> +
-> +	case CMD_READ:
-> +		priv->cmd_status = status;
-> +		if (status == STATUS_OK &&
-> +		    priv->rx.databuf_count != priv->expected_data_len) {
-> +			/*
-> +			 * If we got here, then the lower layer serial protocol
-> +			 * seems consistent with itself; if we got an unexpected
-> +			 * amount of data then signal it as a non critical error
-> +			 */
-> +			priv->cmd_status = STATUS_FAIL;
-> +			dev_warn(&priv->serdev->dev, "received an unexpected amount of, yet valid, data from sensor");
-> +		}
-> +		break;
-> +
-> +	case CMD_WRITE:
-> +		priv->cmd_status = status;
-> +		break;
-> +	}
-> +
-> +	priv->expect_response = CMD_NONE;
-> +	complete(&priv->cmd_complete);
-> +	mutex_unlock(&priv->lock);
-> +}
-> +
-> +/*
-> + * Serdev receiver FSM. This tracks the serial communication and parse the
-> + * header. It pushes packets to bno055_sl_handle_rx(), eventually communicating
-> + * failures (i.e. malformed packets).
-> + * Idellay it doesn't know anything about upper layer (i.e. if this is the
-
-Ideally
-
-> + * packet we were really expecting), but since we copies the payload into the
-> + * receiver buffer (that is not valid when i.e. we don't expect data), we
-> + * snoop a bit in the upper layer..
-> + * Also, we assume to RX one pkt per time (i.e. the HW doesn't send anything
-> + * unless we require to AND we don't queue more than one request per time).
-> + */
-> +static int bno055_sl_receive_buf(struct serdev_device *serdev,
-> +				 const unsigned char *buf, size_t size)
-> +{
-> +	int status;
-> +	struct bno055_sl_priv *priv = serdev_device_get_drvdata(serdev);
-> +	int _size = size;
-> +
-> +	if (size == 0)
-> +		return 0;
-> +
-> +	dev_dbg(&priv->serdev->dev, "recv (len %d): %*ph ", size, size, buf);
-> +	switch (priv->rx.state) {
-> +	case RX_IDLE:
-> +		/*
-> +		 * New packet.
-> +		 * Check for its 1st byte, that identifies the pkt type.
-> +		 */
-> +		if (buf[0] != 0xEE && buf[0] != 0xBB) {
-> +			dev_err(&priv->serdev->dev,
-> +				"Invalid packet start %x", buf[0]);
-> +			bno055_sl_handle_rx(priv, STATUS_CRIT);
-> +			break;
-> +		}
-> +		priv->rx.type = buf[0];
-> +		priv->rx.state = RX_START;
-> +		size--;
-> +		buf++;
-> +		priv->rx.databuf_count = 0;
-> +		fallthrough;
-> +
-> +	case RX_START:
-> +		/*
-> +		 * Packet RX in progress, we expect either 1-byte len or 1-byte
-> +		 * status depending by the packet type.
-> +		 */
-> +		if (size == 0)
-> +			break;
-> +
-> +		if (priv->rx.type == 0xEE) {
-> +			if (size > 1) {
-> +				dev_err(&priv->serdev->dev, "EE pkt. Extra data received");
-> +				status = STATUS_CRIT;
-> +
-> +			} else {
-> +				status = (buf[0] == 1) ? STATUS_OK : STATUS_FAIL;
-> +			}
-> +			bno055_sl_handle_rx(priv, status);
-> +			priv->rx.state = RX_IDLE;
-> +			break;
-> +
-> +		} else {
-> +			/*priv->rx.type == 0xBB */
-> +			priv->rx.state = RX_DATA;
-> +			priv->rx.expected_len = buf[0];
-> +			size--;
-> +			buf++;
-> +		}
-> +		fallthrough;
-> +
-> +	case RX_DATA:
-> +		/* Header parsed; now receiving packet data payload */
-> +		if (size == 0)
-> +			break;
-> +
-> +		if (priv->rx.databuf_count + size > priv->rx.expected_len) {
-> +			/*
-> +			 * This is a inconsistency in serial protocol, we lost
-> +			 * sync and we don't know how to handle further data
-> +			 */
-> +			dev_err(&priv->serdev->dev, "BB pkt. Extra data received");
-> +			bno055_sl_handle_rx(priv, STATUS_CRIT);
-> +			priv->rx.state = RX_IDLE;
-> +			break;
-> +		}
-> +
-> +		mutex_lock(&priv->lock);
-> +		/*
-> +		 * NULL e.g. when read cmd is stale or when no read cmd is
-> +		 * actually pending.
-> +		 */
-> +		if (priv->response_buf &&
-> +		    /*
-> +		     * Snoop on the upper layer protocol stuff to make sure not
-> +		     * to write to an invalid memory. Apart for this, let's the
-> +		     * upper layer manage any inconsistency wrt expected data
-> +		     * len (as long as the serial protocol is consistent wrt
-> +		     * itself (i.e. response header is consistent with received
-> +		     * response len.
-> +		     */
-> +		    (priv->rx.databuf_count + size <= priv->expected_data_len))
-> +			memcpy(priv->response_buf + priv->rx.databuf_count,
-> +			       buf, size);
-> +		mutex_unlock(&priv->lock);
-> +
-> +		priv->rx.databuf_count += size;
-> +
-> +		/*
-> +		 * Reached expected len advertised by the IMU for the current
-> +		 * packet. Pass it to the upper layer (for us it is just valid).
-> +		 */
-> +		if (priv->rx.databuf_count == priv->rx.expected_len) {
-> +			bno055_sl_handle_rx(priv, STATUS_OK);
-> +			priv->rx.state = RX_IDLE;
-> +		}
-> +		break;
-> +	}
-> +
-> +	return _size;
-> +}
-> +
-> +static const struct serdev_device_ops bno055_sl_serdev_ops = {
-> +	.receive_buf = bno055_sl_receive_buf,
-> +	.write_wakeup = serdev_device_write_wakeup,
-> +};
-> +
-> +static struct regmap_bus bno055_sl_regmap_bus = {
-> +	.write = bno055_sl_write_reg,
-> +	.read = bno055_sl_read_reg,
-> +};
-> +
-> +static int bno055_sl_probe(struct serdev_device *serdev)
-> +{
-> +	struct bno055_sl_priv *priv;
-> +	struct regmap *regmap;
-> +	int ret;
-> +	int irq = 0;
-> +
-> +	priv = devm_kzalloc(&serdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	serdev_device_set_drvdata(serdev, priv);
-> +	priv->serdev = serdev;
-> +	mutex_init(&priv->lock);
-> +	init_completion(&priv->cmd_complete);
-> +
-> +	serdev_device_set_client_ops(serdev, &bno055_sl_serdev_ops);
-> +	ret = devm_serdev_device_open(&serdev->dev, serdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (serdev_device_set_baudrate(serdev, 115200) != 115200) {
-> +		dev_err(&serdev->dev, "Cannot set required baud rate");
-> +		return -EIO;
-> +	}
-> +
-> +	ret = serdev_device_set_parity(serdev, SERDEV_PARITY_NONE);
-> +	if (ret) {
-> +		dev_err(&serdev->dev, "Cannot set required parity setting");
-> +		return ret;
-> +	}
-> +	serdev_device_set_flow_control(serdev, false);
-> +
-> +	regmap = devm_regmap_init(&serdev->dev, &bno055_sl_regmap_bus,
-> +				  priv, &bno055_regmap_config);
-> +	if (IS_ERR(regmap)) {
-> +		dev_err(&serdev->dev, "Unable to init register map");
-> +		return PTR_ERR(regmap);
-> +	}
-> +
-> +	if (serdev->dev.of_node) {
-If possible, use generic fw node functions from
-linux/property.h rather than of specific ones. It 'might' be possible
-to instantiate this from ACPI using the magic of PRP0001
-(which uses the dt bindings from an entry in the DSDT table in ACPI
-firmware).
-
-> +		irq = of_irq_get(serdev->dev.of_node, 0);
-> +		if (irq == -EPROBE_DEFER)
-> +			return irq;
-> +		if (irq <= 0) {
-> +			dev_info(&serdev->dev,
-> +				 "Can't get IRQ resource (err %d)", irq);
-Isn't there an explicit errno for when it fails to get it because it
-isn't specified?  We want to catch that and error out on anything else.
-
-Afterall if someone specified an IRQ that doesn't work, then they don't
-want us to hid that fact.
-
-> +			irq = 0;
-> +		}
-> +	}
-> +
-> +	return bno055_probe(&serdev->dev, regmap, irq,
-> +			    BNO055_SL_XFER_BURST_BREAK_THRESHOLD);
-> +}
-> +
-> +static const struct of_device_id bno055_sl_of_match[] = {
-> +	{ .compatible = "bosch,bno055-serial" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, bno055_sl_of_match);
-> +
-> +static struct serdev_device_driver bno055_sl_driver = {
-> +	.driver = {
-> +		.name = BNO055_SL_DRIVER_NAME,
-> +		.of_match_table = bno055_sl_of_match,
-> +	},
-> +	.probe = bno055_sl_probe,
-> +};
-> +module_serdev_device_driver(bno055_sl_driver);
-> +
-> +MODULE_AUTHOR("Andrea Merello <andrea.merello@iit.it>");
-> +MODULE_DESCRIPTION("Bosch BNO055 serdev interface");
-> +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/staging/rtl8712/os_intfs.c b/drivers/staging/rtl8712/=
+os_intfs.c
+index 2214aca09730..9502f6aa5306 100644
+=2D-- a/drivers/staging/rtl8712/os_intfs.c
++++ b/drivers/staging/rtl8712/os_intfs.c
+@@ -203,7 +203,7 @@ struct net_device *r8712_init_netdev(void)
+ 	if (!pnetdev)
+ 		return NULL;
+ 	if (dev_alloc_name(pnetdev, ifname) < 0) {
+-		strcpy(ifname, "wlan%d");
++		strscpy(ifname, "wlan%d", sizeof(ifname));
+ 		dev_alloc_name(pnetdev, ifname);
+ 	}
+ 	padapter =3D netdev_priv(pnetdev);
+=2D-
+2.25.1
 
