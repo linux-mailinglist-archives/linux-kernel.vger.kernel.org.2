@@ -2,101 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256453CC082
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 03:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99B33CC08B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 03:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237660AbhGQBYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 21:24:39 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15030 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbhGQBYi (ORCPT
+        id S232787AbhGQBnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 21:43:00 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53472 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231772AbhGQBmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 21:24:38 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GRVbx4rbwzZmSP;
-        Sat, 17 Jul 2021 09:18:21 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 17 Jul 2021 09:21:40 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 17 Jul 2021 09:21:40 +0800
-Subject: Re: [PATCH 5.4 000/122] 5.4.133-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210715182448.393443551@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <ba6b0216-3fe4-be08-15be-4330bf3d74c8@huawei.com>
-Date:   Sat, 17 Jul 2021 09:21:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 16 Jul 2021 21:42:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Ug.Dp-t_1626485996;
+Received: from B-39YZML7H-2200.local(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0Ug.Dp-t_1626485996)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 17 Jul 2021 09:39:57 +0800
+Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Switches existing
+ selftests to using open_opts for custom BTF
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+References: <1626180159-112996-1-git-send-email-chengshuyi@linux.alibaba.com>
+ <1626180159-112996-4-git-send-email-chengshuyi@linux.alibaba.com>
+ <CAEf4Bza3X410=1ryu4xZ+5ST2=69CB9BDusBrLMX=VSsXtnuDQ@mail.gmail.com>
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Message-ID: <7400a2b2-1e1e-0981-3966-43492305534c@linux.alibaba.com>
+Date:   Sat, 17 Jul 2021 09:39:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210715182448.393443551@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAEf4Bza3X410=1ryu4xZ+5ST2=69CB9BDusBrLMX=VSsXtnuDQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/7/16 2:37, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.133 release.
-> There are 122 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 7/17/21 4:27 AM, Andrii Nakryiko wrote:
+> On Tue, Jul 13, 2021 at 5:43 AM Shuyi Cheng
+> <chengshuyi@linux.alibaba.com> wrote:
+>>
+>> This patch mainly replaces the bpf_object_load_attr of
+>> the core_autosize.c and core_reloc.c files with bpf_object_open_opts.
+>>
+>> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+>> ---
+>>   .../selftests/bpf/prog_tests/core_autosize.c       | 22 ++++++++---------
+>>   .../testing/selftests/bpf/prog_tests/core_reloc.c  | 28 ++++++++++------------
+>>   2 files changed, 24 insertions(+), 26 deletions(-)
+>>
 > 
-> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.133-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> So I applied this, but it's obvious you haven't bothered even
+> *building* selftests, because it had at least one compilation warning
+> and one compilation *error*, not building test_progs at all. I've
+> noted stuff I fixed (and still remember) below. I understand it might
+> be your first kernel contribution, but it's not acceptable to submit
+> patches that don't build. Next time please be more thorough.
 > 
 
-Tested on arm64 and x86 for 5.4.133-rc1,
+I'm very sorry, it was my fault. Although I learned a lot from libbpf, 
+there is still a lot to learn and improve. Thank you very much for your 
+advice and the very powerful libbpf.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.133-rc1
-Commit: 7f5fd6e106edc9ee7ca2a508fd7fa81e074102e5
-Compiler: gcc version 7.3.0 (GCC)
+regards,
+Shuyi
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+> [...]
+> 
+>>
+>> -       load_attr.obj = skel->obj;
+>> -       load_attr.target_btf_path = btf_file;
+>> -       err = bpf_object__load_xattr(&load_attr);
+>> +       err = bpf_object__load(skel);
+> 
+> This didn't compile outright, because it should have been
+> test_core_autosize__load(skel).
+> 
+>>          if (!ASSERT_ERR(err, "bad_prog_load"))
+>>                  goto cleanup;
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+>> index d02e064..10eb2407 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+>> @@ -816,7 +816,7 @@ static size_t roundup_page(size_t sz)
+>>   void test_core_reloc(void)
+>>   {
+>>          const size_t mmap_sz = roundup_page(sizeof(struct data));
+>> -       struct bpf_object_load_attr load_attr = {};
+>> +       struct bpf_object_open_opts open_opts = {};
+>>          struct core_reloc_test_case *test_case;
+>>          const char *tp_name, *probe_name;
+>>          int err, i, equal;
+>> @@ -846,9 +846,17 @@ void test_core_reloc(void)
+>>                                  continue;
+>>                  }
+>>
+>> -               obj = bpf_object__open_file(test_case->bpf_obj_file, NULL);
+>> +               if (test_case->btf_src_file) {
+>> +                       err = access(test_case->btf_src_file, R_OK);
+>> +                       if (!ASSERT_OK(err, "btf_src_file"))
+>> +                               goto cleanup;
+>> +               }
+>> +
+>> +               open_opts.btf_custom_path = test_case->btf_src_file;
+> 
+> This was reporting a valid warning about dropping const modifier. For
+> good reason, becyase btf_custom_path in open_opts should have been
+> `const char *`, I fixed that.
+> 
+>> +               open_opts.sz = sizeof(struct bpf_object_open_opts);
+>> +               obj = bpf_object__open_file(test_case->bpf_obj_file, &open_opts);
+>>                  if (!ASSERT_OK_PTR(obj, "obj_open"))
+>> -                       continue;
+>> +                       goto cleanup;
+>>
+>>                  probe_name = "raw_tracepoint/sys_enter";
+>>                  tp_name = "sys_enter";
+> 
+> [...]
+> 
