@@ -2,286 +2,456 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7CF3CBD59
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 22:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550B33CBCD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Jul 2021 21:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233456AbhGPUEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 16:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbhGPUEJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 16:04:09 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FABC06175F;
-        Fri, 16 Jul 2021 13:01:13 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso7652961wme.0;
-        Fri, 16 Jul 2021 13:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=81dBSyl4A976Nqz/qCrpejJkUwjb5q0HIouHkydQaxM=;
-        b=ckfZLnOPWM6rzt0GAoeTIe6EjEVV2zyXdRVaLrcJmkM4JbGAdGYMARkSqJXsi6Y/wq
-         cpSjc6cAcRZsJ2VHBJ7Kq583qNQW68SudpYGMoN42w1YjULbJXIe5OUs+WE7h8UpyhLE
-         1w2FlJvP2rWlMkF0ZZ7szemgBOgqAer5aDUaVQSeLDFF8sp1tkjQ3McZBwLLMSBFr2RL
-         W827Rqrgx0CzPhJZxW/DthcoZ/y6di3mf7v/11XBCNAICKtCG/edm/jOKZ4iUq19n6AN
-         YiSLzIHOozPTk2jSIVDI520nqVkFUPtuKSLmobbL7OpeWsMMXCtADG3iMZQ68VTkKUim
-         Yz4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=81dBSyl4A976Nqz/qCrpejJkUwjb5q0HIouHkydQaxM=;
-        b=QLxqUkz3Q5a3cw4y+XstMbjzevWWnDB+mutdQVa2emFolemtiQ1Uii2Q5wsy1rb08s
-         BwJesW921McfxBOPtWVi7sPO5GBbHn9kwMiDWGyPIU1TvP5xIH6lKKaeLRXfVbtvFRKY
-         ZCUbdK25SpSe2DSfiAdE/EEj6zU3C/ayijbl5CvMiyGtwM1/xymKeqRyLTqoLicjvfuj
-         5GHrROOsEeR1ZoDReIg9I+bnRtG05wRHJUI5VJy0+OARuHWMLnQMaYrX392WeAI/apqQ
-         vR6exoNVws3NmXpFItcwTpwDQRLA6quougsxsn4akzxqIRiDOQTCrjDIbyor90bu0Q8u
-         +s+Q==
-X-Gm-Message-State: AOAM532FnmntFUxGVzuZowOAhPILnq2IPQqZVk3hpLKWcEFBwD0mj6d7
-        HvsBnERAcXXeleJXI00Q6PxUaCcRjZLrEZTCHAY=
-X-Google-Smtp-Source: ABdhPJxXBBpTuxspBZzF06QKRXHc4i5UObViOzSTt3JTe1ixeXMvB+HzQ88OgmpYqQ2s4DR/KEVhU+mSj83Ka2O8Vbo=
-X-Received: by 2002:a1c:988a:: with SMTP id a132mr18341579wme.175.1626465671063;
- Fri, 16 Jul 2021 13:01:11 -0700 (PDT)
+        id S232214AbhGPTpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 15:45:06 -0400
+Received: from mail-dm6nam12on2065.outbound.protection.outlook.com ([40.107.243.65]:39264
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229611AbhGPTpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 15:45:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KgresJD6AsHJ+WGUPRrB0Fuwk6qOLK8t5oxb1PgJndc4/kTOz6YTbzY7H2UMgBzTG67Jt7iKcFS9xulI4M/OKQHBUWccab0LysqGQeZRB0MsVVeLOYGMTcV0E8F7XoKEL7AsDwiORnhXON7yV5QCzm4RiaFJloEOKcO7Eh6dGhzW6KaumgiIpr0Ti3Or2Tki3KpW2Z21zLR0jyaABq3VAkKeM8IGTm4LXFMNhNdiMmmn70u7v5sk6HNIuBgAhNZdxeE5hG/H1gF2Kt1KsXQK8DjeCOKhk81K5ZbZ/SWCbDi9pwJ1EDKfkKzf+YlLkJY2j0ZlNgf0vO0xlqtfGl6v7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a8rhHe1e0gcG19viWuk6wXuDcrSnXPmeP8K+qIbFadY=;
+ b=DNZNTgbXgT8HuOpQY1p3vuJ07/hZqtGV7RfJaJ1OSA/ZnTaRneAdvVeXqpoIUf91m0NvQmuSaJbVrhuikAgCKS75dIAg+W7f7Bsjn55StjMdLJW5FrkRseIzwEfKS37Nlnge0h6W2mjxG2uLlnzlHyjy8pAfEEpWWZvOY+9CsZ4ajgremL0ZUSdNiM6UA0/NUcphXOIip8uasfEZFS6ocpb3HyHIt+aDmx+rfqh/ITgGmn8H77tZGuYclUAZNgZXjXRTUXb7IY4gkMlkNU8ae+mXADeeRiaCmZTTs7gQ3ODitJzEevEF21HgIvvOjstEDxToA6FnbLaZ1Jp/u3dshQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a8rhHe1e0gcG19viWuk6wXuDcrSnXPmeP8K+qIbFadY=;
+ b=f3Ef8zf8P7jyz6WCqa1Bx7oTFl5GR+bI/SVUl1+tCBOrJDq3uzojs8mA+iLFsEZ1UoihZoSjZ0Mm/QHni/y4nkGiRnEeyL9O+Ocz0qsXkwmhtZ89WXbn/E5vfrqmPNklN2S2r7ZpX3kWGImDdLSErn31YrVmqoQ+jrOHu4D94/s=
+Received: from MWHPR10CA0069.namprd10.prod.outlook.com (2603:10b6:300:2c::31)
+ by SN6PR12MB2656.namprd12.prod.outlook.com (2603:10b6:805:67::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Fri, 16 Jul
+ 2021 19:42:03 +0000
+Received: from CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:2c:cafe::d1) by MWHPR10CA0069.outlook.office365.com
+ (2603:10b6:300:2c::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Fri, 16 Jul 2021 19:42:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CO1NAM11FT061.mail.protection.outlook.com (10.13.175.200) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 19:42:02 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
+ 2021 14:42:01 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 16 Jul
+ 2021 12:42:01 -0700
+Received: from vijendar-System-Product-Name.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4
+ via Frontend Transport; Fri, 16 Jul 2021 14:41:58 -0500
+From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
+        <krisman@collabora.com>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND 01/12] ASoC: amd: add Vangogh ACP5x IP register header
+Date:   Sat, 17 Jul 2021 09:30:48 +0530
+Message-ID: <20210717040059.310410-2-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210717040059.310410-1-Vijendar.Mukunda@amd.com>
+References: <20210717040059.310410-1-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
-References: <000000000000a0982305c6e5c9f5@google.com>
-In-Reply-To: <000000000000a0982305c6e5c9f5@google.com>
-From:   Xin Long <lucien.xin@gmail.com>
-Date:   Fri, 16 Jul 2021 16:01:01 -0400
-Message-ID: <CADvbK_cRwJNgCpYtsCR6Ljymbqh7eQfGTWBAp7SZqzBvdViDbg@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Write in sctp_auth_shkey_hold
-To:     syzbot <syzbot+b774577370208727d12b@syzkaller.appspotmail.com>
-Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-sctp @ vger . kernel . org" <linux-sctp@vger.kernel.org>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        network dev <netdev@vger.kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vlad Yasevich <vyasevich@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b6df0f72-92f5-4c55-5536-08d94891c8f7
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2656:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2656597CA635211ED8B9D2A097119@SN6PR12MB2656.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:46;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HflxZSUW7vy6YzSI6m8eFb4EftPg5gW+WpQ/l7hCA2My9yTYW2iLoeTTa6W0ucnZ+jdbPmdjNv25vtPjNgA0SIvXVJOaetTkIABRuZZs+Hl5USU5hxOjFP9y+JVbQWywU0YagSPb9ghn2auXH9wBbkCY7EYKqJHbEa6mMrPeCLU/Wz5hSDJ+GicDXvo17OYdMeeH/ZYL+nv4vh80NZPjdFl9QIUJOqATb/V4l4q4CT/ALOEvM5pdd8kof9rzBVgGDL7DjbTLRgO9ZoBxPiMhOoNudoC7CgefnjuBMUJL+g8UwKpndvpJYoNwS3fDZYqEkXU6iOWEQeqOJHyJUzEXVq71UB+Kc1GZ18+l4lnQeKyqaotkSka6J56qT86og9+1hqbf+/E3i5bnlHZsoad2GvuBpRdnaNSS0Tz9E3bTbrs+yzNCl3V4jel5tS52Vomg7fwD1CdJT4+83/sN/k1Vl4oSgaL50csWkf3TBULgPakqMjhFrWsBvsR6Y2mA/5/dnA1UISuA3vHC1ZN1HJTFJaM31iOXSqyYxlw45AHfcbOTcui/npk54MlSbBZBhi/dTCIUYSZ/R6ING+z5qrLaM+DaQZuylRQSEzNlNoz0mA3uA+8Y0JziXKELt30Z4FGVZchhUboiSI36zsM2aO8mIiPwtn4o8MRkr5ezjxC/SjBRdrYgky0HH3+WGRepY44EvmcjXUI8RDQ7XeRpdetqyEb1uieE3sY5F6pVwoxaa4rYuv11wA6s0DD8Of5YqgqO
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(36840700001)(46966006)(83380400001)(478600001)(2906002)(186003)(7696005)(81166007)(6666004)(36756003)(70206006)(1076003)(26005)(8676002)(356005)(47076005)(36860700001)(110136005)(82740400003)(4326008)(8936002)(5660300002)(82310400003)(30864003)(336012)(70586007)(86362001)(2616005)(316002)(54906003)(426003)(32563001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 19:42:02.6987
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6df0f72-92f5-4c55-5536-08d94891c8f7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2656
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:46 AM syzbot
-<syzbot+b774577370208727d12b@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    5e437416 Merge branch 'dsa-mv88e6xxx-topaz-fixes'
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14503bac300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4cb84363d46e9fc3
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b774577370208727d12b
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b774577370208727d12b@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-> BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:111 [inline]
-> BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
-> BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
-> BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
-> BUG: KASAN: use-after-free in sctp_auth_shkey_hold+0x22/0xa0 net/sctp/auth.c:112
-> Write of size 4 at addr ffff88802053ad58 by task syz-executor.1/31590
->
-> CPU: 0 PID: 31590 Comm: syz-executor.1 Not tainted 5.13.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
->  print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
->  __kasan_report mm/kasan/report.c:419 [inline]
->  kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
->  check_region_inline mm/kasan/generic.c:183 [inline]
->  kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
->  instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
->  atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:111 [inline]
->  __refcount_add include/linux/refcount.h:193 [inline]
->  __refcount_inc include/linux/refcount.h:250 [inline]
->  refcount_inc include/linux/refcount.h:267 [inline]
->  sctp_auth_shkey_hold+0x22/0xa0 net/sctp/auth.c:112
->  sctp_set_owner_w net/sctp/socket.c:131 [inline]
->  sctp_sendmsg_to_asoc+0x152e/0x2180 net/sctp/socket.c:1865
->  sctp_sendmsg+0x103b/0x1d30 net/sctp/socket.c:2027
->  inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:821
->  sock_sendmsg_nosec net/socket.c:702 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:722
->  ____sys_sendmsg+0x331/0x810 net/socket.c:2385
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2439
->  __sys_sendmmsg+0x195/0x470 net/socket.c:2525
->  __do_sys_sendmmsg net/socket.c:2554 [inline]
->  __se_sys_sendmmsg net/socket.c:2551 [inline]
->  __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2551
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x4665d9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f679ad9b188 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-> RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-> RDX: 0000000000000002 RSI: 0000000020002340 RDI: 0000000000000003
-> RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-> R13: 00007ffc95431f0f R14: 00007f679ad9b300 R15: 0000000000022000
->
-> Allocated by task 31590:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:434 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:513 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:472 [inline]
->  __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:522
->  kmalloc include/linux/slab.h:591 [inline]
->  kzalloc include/linux/slab.h:721 [inline]
->  sctp_auth_shkey_create+0x85/0x1f0 net/sctp/auth.c:84
->  sctp_auth_asoc_copy_shkeys+0x1e8/0x350 net/sctp/auth.c:363
->  sctp_association_init net/sctp/associola.c:257 [inline]
->  sctp_association_new+0x1829/0x2250 net/sctp/associola.c:298
->  sctp_connect_new_asoc+0x1ac/0x770 net/sctp/socket.c:1088
->  __sctp_connect+0x3d0/0xc30 net/sctp/socket.c:1194
->  sctp_connect net/sctp/socket.c:4804 [inline]
->  sctp_inet_connect+0x15e/0x200 net/sctp/socket.c:4819
->  __sys_connect_file+0x155/0x1a0 net/socket.c:1872
->  __sys_connect+0x161/0x190 net/socket.c:1889
->  __do_sys_connect net/socket.c:1899 [inline]
->  __se_sys_connect net/socket.c:1896 [inline]
->  __x64_sys_connect+0x6f/0xb0 net/socket.c:1896
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Freed by task 31590:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
->  ____kasan_slab_free mm/kasan/common.c:366 [inline]
->  ____kasan_slab_free mm/kasan/common.c:328 [inline]
->  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:374
->  kasan_slab_free include/linux/kasan.h:229 [inline]
->  slab_free_hook mm/slub.c:1639 [inline]
->  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1664
->  slab_free mm/slub.c:3224 [inline]
->  kfree+0xeb/0x670 mm/slub.c:4268
->  sctp_auth_shkey_destroy net/sctp/auth.c:101 [inline]
->  sctp_auth_shkey_release+0x100/0x160 net/sctp/auth.c:107
->  sctp_auth_set_key+0x508/0x6d0 net/sctp/auth.c:862
-It seems caused by not updating asoc->shkey when the old key is being deleted:
+Add register header for ACP5x IP in Vangogh platform.
 
-diff --git a/net/sctp/auth.c b/net/sctp/auth.c
-index 6f8319b..d095247 100644
---- a/net/sctp/auth.c
-+++ b/net/sctp/auth.c
-@@ -858,6 +858,8 @@ int sctp_auth_set_key(struct sctp_endpoint *ep,
-        cur_key->key = key;
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+ sound/soc/amd/vangogh/vg_chip_offset_byte.h | 337 ++++++++++++++++++++
+ 1 file changed, 337 insertions(+)
+ create mode 100644 sound/soc/amd/vangogh/vg_chip_offset_byte.h
 
-        if (replace) {
-+               if (asoc && asoc->shkey == shkey)
-+                       asoc->shkey = cur_key;
-                list_del_init(&shkey->key_list);
-                sctp_auth_shkey_release(shkey);
-        }
+diff --git a/sound/soc/amd/vangogh/vg_chip_offset_byte.h b/sound/soc/amd/vangogh/vg_chip_offset_byte.h
+new file mode 100644
+index 000000000000..b1165ae142b7
+--- /dev/null
++++ b/sound/soc/amd/vangogh/vg_chip_offset_byte.h
+@@ -0,0 +1,337 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * AMD ACP 5.x Register Documentation
++ *
++ * Copyright 2021 Advanced Micro Devices, Inc.
++ */
++
++#ifndef _acp_ip_OFFSET_HEADER
++#define _acp_ip_OFFSET_HEADER
++
++/* Registers from ACP_DMA block */
++#define ACP_DMA_CNTL_0                                0x1240000
++#define ACP_DMA_CNTL_1                                0x1240004
++#define ACP_DMA_CNTL_2                                0x1240008
++#define ACP_DMA_CNTL_3                                0x124000C
++#define ACP_DMA_CNTL_4                                0x1240010
++#define ACP_DMA_CNTL_5                                0x1240014
++#define ACP_DMA_CNTL_6                                0x1240018
++#define ACP_DMA_CNTL_7                                0x124001C
++#define ACP_DMA_DSCR_STRT_IDX_0                       0x1240020
++#define ACP_DMA_DSCR_STRT_IDX_1                       0x1240024
++#define ACP_DMA_DSCR_STRT_IDX_2                       0x1240028
++#define ACP_DMA_DSCR_STRT_IDX_3                       0x124002C
++#define ACP_DMA_DSCR_STRT_IDX_4                       0x1240030
++#define ACP_DMA_DSCR_STRT_IDX_5                       0x1240034
++#define ACP_DMA_DSCR_STRT_IDX_6                       0x1240038
++#define ACP_DMA_DSCR_STRT_IDX_7                       0x124003C
++#define ACP_DMA_DSCR_CNT_0                            0x1240040
++#define ACP_DMA_DSCR_CNT_1                            0x1240044
++#define ACP_DMA_DSCR_CNT_2                            0x1240048
++#define ACP_DMA_DSCR_CNT_3                            0x124004C
++#define ACP_DMA_DSCR_CNT_4                            0x1240050
++#define ACP_DMA_DSCR_CNT_5                            0x1240054
++#define ACP_DMA_DSCR_CNT_6                            0x1240058
++#define ACP_DMA_DSCR_CNT_7                            0x124005C
++#define ACP_DMA_PRIO_0                                0x1240060
++#define ACP_DMA_PRIO_1                                0x1240064
++#define ACP_DMA_PRIO_2                                0x1240068
++#define ACP_DMA_PRIO_3                                0x124006C
++#define ACP_DMA_PRIO_4                                0x1240070
++#define ACP_DMA_PRIO_5                                0x1240074
++#define ACP_DMA_PRIO_6                                0x1240078
++#define ACP_DMA_PRIO_7                                0x124007C
++#define ACP_DMA_CUR_DSCR_0                            0x1240080
++#define ACP_DMA_CUR_DSCR_1                            0x1240084
++#define ACP_DMA_CUR_DSCR_2                            0x1240088
++#define ACP_DMA_CUR_DSCR_3                            0x124008C
++#define ACP_DMA_CUR_DSCR_4                            0x1240090
++#define ACP_DMA_CUR_DSCR_5                            0x1240094
++#define ACP_DMA_CUR_DSCR_6                            0x1240098
++#define ACP_DMA_CUR_DSCR_7                            0x124009C
++#define ACP_DMA_CUR_TRANS_CNT_0                       0x12400A0
++#define ACP_DMA_CUR_TRANS_CNT_1                       0x12400A4
++#define ACP_DMA_CUR_TRANS_CNT_2                       0x12400A8
++#define ACP_DMA_CUR_TRANS_CNT_3                       0x12400AC
++#define ACP_DMA_CUR_TRANS_CNT_4                       0x12400B0
++#define ACP_DMA_CUR_TRANS_CNT_5                       0x12400B4
++#define ACP_DMA_CUR_TRANS_CNT_6                       0x12400B8
++#define ACP_DMA_CUR_TRANS_CNT_7                       0x12400BC
++#define ACP_DMA_ERR_STS_0                             0x12400C0
++#define ACP_DMA_ERR_STS_1                             0x12400C4
++#define ACP_DMA_ERR_STS_2                             0x12400C8
++#define ACP_DMA_ERR_STS_3                             0x12400CC
++#define ACP_DMA_ERR_STS_4                             0x12400D0
++#define ACP_DMA_ERR_STS_5                             0x12400D4
++#define ACP_DMA_ERR_STS_6                             0x12400D8
++#define ACP_DMA_ERR_STS_7                             0x12400DC
++#define ACP_DMA_DESC_BASE_ADDR                        0x12400E0
++#define ACP_DMA_DESC_MAX_NUM_DSCR                     0x12400E4
++#define ACP_DMA_CH_STS                                0x12400E8
++#define ACP_DMA_CH_GROUP                              0x12400EC
++#define ACP_DMA_CH_RST_STS                            0x12400F0
++
++/* Registers from ACP_AXI2AXIATU block */
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1                0x1240C00
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_1                0x1240C04
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_2                0x1240C08
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_2                0x1240C0C
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_3                0x1240C10
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_3                0x1240C14
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_4                0x1240C18
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_4                0x1240C1C
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_5                0x1240C20
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_5                0x1240C24
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_6                0x1240C28
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_6                0x1240C2C
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_7                0x1240C30
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_7                0x1240C34
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_8                0x1240C38
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_8                0x1240C3C
++#define ACPAXI2AXI_ATU_CTRL                           0x1240C40
++
++/*  Registers from ACP_CLKRST block */
++#define ACP_SOFT_RESET                                0x1241000
++#define ACP_CONTROL                                   0x1241004
++#define ACP_STATUS                                    0x1241008
++#define ACP_DYNAMIC_CG_MASTER_CONTROL                 0x1241010
++
++/* Registers from ACP_MISC block */
++#define ACP_EXTERNAL_INTR_ENB                         0x1241800
++#define ACP_EXTERNAL_INTR_CNTL                        0x1241804
++#define ACP_EXTERNAL_INTR_STAT                        0x1241808
++#define ACP_ERROR_STATUS                              0x12418C4
++#define ACP_SW_I2S_ERROR_REASON                       0x12418C8
++#define ACP_MEM_PG_STS                                0x12418CC
++#define ACP_PGMEM_DEEP_SLEEP_CTRL                     0x12418D0
++#define ACP_PGMEM_SHUT_DOWN_CTRL                      0x12418D4
++
++/* Registers from ACP_PGFSM block */
++#define ACP_PIN_CONFIG                                0x1241400
++#define ACP_PAD_PULLUP_CTRL                           0x1241404
++#define ACP_PAD_PULLDOWN_CTRL                         0x1241408
++#define ACP_PAD_DRIVE_STRENGTH_CTRL                   0x124140C
++#define ACP_PAD_SCHMEN_CTRL                           0x1241410
++#define ACP_SW_PAD_KEEPER_EN                          0x1241414
++#define ACP_SW_WAKE_EN                                0x1241418
++#define ACP_I2S_WAKE_EN                               0x124141C
++#define ACP_PME_EN                                    0x1241420
++#define ACP_PGFSM_CONTROL                             0x1241424
++#define ACP_PGFSM_STATUS                              0x1241428
++#define ACP_CLKMUX_SEL                                0x124142C
++#define ACP_DEVICE_STATE                              0x1241430
++#define AZ_DEVICE_STATE                               0x1241434
++#define ACP_INTR_URGENCY_TIMER                        0x1241438
++#define AZ_INTR_URGENCY_TIMER                         0x124143C
++#define ACP_AON_SW_INTR_TRIG                          0x1241440
++
++/* Registers from ACP_SCRATCH block */
++#define ACP_SCRATCH_REG_0                             0x1250000
++#define ACP_SCRATCH_REG_1                             0x1250004
++#define ACP_SCRATCH_REG_2                             0x1250008
++#define ACP_SCRATCH_REG_3                             0x125000C
++#define ACP_SCRATCH_REG_4                             0x1250010
++#define ACP_SCRATCH_REG_5                             0x1250014
++#define ACP_SCRATCH_REG_6                             0x1250018
++#define ACP_SCRATCH_REG_7                             0x125001C
++#define ACP_SCRATCH_REG_8                             0x1250020
++#define ACP_SCRATCH_REG_9                             0x1250024
++#define ACP_SCRATCH_REG_10                            0x1250028
++#define ACP_SCRATCH_REG_11                            0x125002C
++#define ACP_SCRATCH_REG_12                            0x1250030
++#define ACP_SCRATCH_REG_13                            0x1250034
++#define ACP_SCRATCH_REG_14                            0x1250038
++#define ACP_SCRATCH_REG_15                            0x125003C
++#define ACP_SCRATCH_REG_16                            0x1250040
++#define ACP_SCRATCH_REG_17                            0x1250044
++#define ACP_SCRATCH_REG_18                            0x1250048
++#define ACP_SCRATCH_REG_19                            0x125004C
++#define ACP_SCRATCH_REG_20                            0x1250050
++#define ACP_SCRATCH_REG_21                            0x1250054
++#define ACP_SCRATCH_REG_22                            0x1250058
++#define ACP_SCRATCH_REG_23                            0x125005C
++#define ACP_SCRATCH_REG_24                            0x1250060
++#define ACP_SCRATCH_REG_25                            0x1250064
++#define ACP_SCRATCH_REG_26                            0x1250068
++#define ACP_SCRATCH_REG_27                            0x125006C
++#define ACP_SCRATCH_REG_28                            0x1250070
++#define ACP_SCRATCH_REG_29                            0x1250074
++#define ACP_SCRATCH_REG_30                            0x1250078
++#define ACP_SCRATCH_REG_31                            0x125007C
++#define ACP_SCRATCH_REG_32                            0x1250080
++#define ACP_SCRATCH_REG_33                            0x1250084
++#define ACP_SCRATCH_REG_34                            0x1250088
++#define ACP_SCRATCH_REG_35                            0x125008C
++#define ACP_SCRATCH_REG_36                            0x1250090
++#define ACP_SCRATCH_REG_37                            0x1250094
++#define ACP_SCRATCH_REG_38                            0x1250098
++#define ACP_SCRATCH_REG_39                            0x125009C
++#define ACP_SCRATCH_REG_40                            0x12500A0
++#define ACP_SCRATCH_REG_41                            0x12500A4
++#define ACP_SCRATCH_REG_42                            0x12500A8
++#define ACP_SCRATCH_REG_43                            0x12500AC
++#define ACP_SCRATCH_REG_44                            0x12500B0
++#define ACP_SCRATCH_REG_45                            0x12500B4
++#define ACP_SCRATCH_REG_46                            0x12500B8
++#define ACP_SCRATCH_REG_47                            0x12500BC
++#define ACP_SCRATCH_REG_48                            0x12500C0
++#define ACP_SCRATCH_REG_49                            0x12500C4
++#define ACP_SCRATCH_REG_50                            0x12500C8
++#define ACP_SCRATCH_REG_51                            0x12500CC
++#define ACP_SCRATCH_REG_52                            0x12500D0
++#define ACP_SCRATCH_REG_53                            0x12500D4
++#define ACP_SCRATCH_REG_54                            0x12500D8
++#define ACP_SCRATCH_REG_55                            0x12500DC
++#define ACP_SCRATCH_REG_56                            0x12500E0
++#define ACP_SCRATCH_REG_57                            0x12500E4
++#define ACP_SCRATCH_REG_58                            0x12500E8
++#define ACP_SCRATCH_REG_59                            0x12500EC
++#define ACP_SCRATCH_REG_60                            0x12500F0
++#define ACP_SCRATCH_REG_61                            0x12500F4
++#define ACP_SCRATCH_REG_62                            0x12500F8
++#define ACP_SCRATCH_REG_63                            0x12500FC
++#define ACP_SCRATCH_REG_64                            0x1250100
++#define ACP_SCRATCH_REG_65                            0x1250104
++#define ACP_SCRATCH_REG_66                            0x1250108
++#define ACP_SCRATCH_REG_67                            0x125010C
++#define ACP_SCRATCH_REG_68                            0x1250110
++#define ACP_SCRATCH_REG_69                            0x1250114
++#define ACP_SCRATCH_REG_70                            0x1250118
++#define ACP_SCRATCH_REG_71                            0x125011C
++#define ACP_SCRATCH_REG_72                            0x1250120
++#define ACP_SCRATCH_REG_73                            0x1250124
++#define ACP_SCRATCH_REG_74                            0x1250128
++#define ACP_SCRATCH_REG_75                            0x125012C
++#define ACP_SCRATCH_REG_76                            0x1250130
++#define ACP_SCRATCH_REG_77                            0x1250134
++#define ACP_SCRATCH_REG_78                            0x1250138
++#define ACP_SCRATCH_REG_79                            0x125013C
++#define ACP_SCRATCH_REG_80                            0x1250140
++#define ACP_SCRATCH_REG_81                            0x1250144
++#define ACP_SCRATCH_REG_82                            0x1250148
++#define ACP_SCRATCH_REG_83                            0x125014C
++#define ACP_SCRATCH_REG_84                            0x1250150
++#define ACP_SCRATCH_REG_85                            0x1250154
++#define ACP_SCRATCH_REG_86                            0x1250158
++#define ACP_SCRATCH_REG_87                            0x125015C
++#define ACP_SCRATCH_REG_88                            0x1250160
++#define ACP_SCRATCH_REG_89                            0x1250164
++#define ACP_SCRATCH_REG_90                            0x1250168
++#define ACP_SCRATCH_REG_91                            0x125016C
++#define ACP_SCRATCH_REG_92                            0x1250170
++#define ACP_SCRATCH_REG_93                            0x1250174
++#define ACP_SCRATCH_REG_94                            0x1250178
++#define ACP_SCRATCH_REG_95                            0x125017C
++#define ACP_SCRATCH_REG_96                            0x1250180
++#define ACP_SCRATCH_REG_97                            0x1250184
++#define ACP_SCRATCH_REG_98                            0x1250188
++#define ACP_SCRATCH_REG_99                            0x125018C
++#define ACP_SCRATCH_REG_100                           0x1250190
++#define ACP_SCRATCH_REG_101                           0x1250194
++#define ACP_SCRATCH_REG_102                           0x1250198
++#define ACP_SCRATCH_REG_103                           0x125019C
++#define ACP_SCRATCH_REG_104                           0x12501A0
++#define ACP_SCRATCH_REG_105                           0x12501A4
++#define ACP_SCRATCH_REG_106                           0x12501A8
++#define ACP_SCRATCH_REG_107                           0x12501AC
++#define ACP_SCRATCH_REG_108                           0x12501B0
++#define ACP_SCRATCH_REG_109                           0x12501B4
++#define ACP_SCRATCH_REG_110                           0x12501B8
++#define ACP_SCRATCH_REG_111                           0x12501BC
++#define ACP_SCRATCH_REG_112                           0x12501C0
++#define ACP_SCRATCH_REG_113                           0x12501C4
++#define ACP_SCRATCH_REG_114                           0x12501C8
++#define ACP_SCRATCH_REG_115                           0x12501CC
++#define ACP_SCRATCH_REG_116                           0x12501D0
++#define ACP_SCRATCH_REG_117                           0x12501D4
++#define ACP_SCRATCH_REG_118                           0x12501D8
++#define ACP_SCRATCH_REG_119                           0x12501DC
++#define ACP_SCRATCH_REG_120                           0x12501E0
++#define ACP_SCRATCH_REG_121                           0x12501E4
++#define ACP_SCRATCH_REG_122                           0x12501E8
++#define ACP_SCRATCH_REG_123                           0x12501EC
++#define ACP_SCRATCH_REG_124                           0x12501F0
++#define ACP_SCRATCH_REG_125                           0x12501F4
++#define ACP_SCRATCH_REG_126                           0x12501F8
++#define ACP_SCRATCH_REG_127                           0x12501FC
++#define ACP_SCRATCH_REG_128                           0x1250200
++
++/* Registers from ACP_AUDIO_BUFFERS block */
++#define ACP_I2S_RX_RINGBUFADDR                        0x1242000
++#define ACP_I2S_RX_RINGBUFSIZE                        0x1242004
++#define ACP_I2S_RX_LINKPOSITIONCNTR                   0x1242008
++#define ACP_I2S_RX_FIFOADDR                           0x124200C
++#define ACP_I2S_RX_FIFOSIZE                           0x1242010
++#define ACP_I2S_RX_DMA_SIZE                           0x1242014
++#define ACP_I2S_RX_LINEARPOSCNTR_HIGH                 0x1242018
++#define ACP_I2S_RX_LINEARPOSCNTR_LOW                  0x124201C
++#define ACP_I2S_RX_INTR_WATERMARK_SIZE                0x1242020
++#define ACP_I2S_TX_RINGBUFADDR                        0x1242024
++#define ACP_I2S_TX_RINGBUFSIZE                        0x1242028
++#define ACP_I2S_TX_LINKPOSITIONCNTR                   0x124202C
++#define ACP_I2S_TX_FIFOADDR                           0x1242030
++#define ACP_I2S_TX_FIFOSIZE                           0x1242034
++#define ACP_I2S_TX_DMA_SIZE                           0x1242038
++#define ACP_I2S_TX_LINEARPOSCNTR_HIGH                 0x124203C
++#define ACP_I2S_TX_LINEARPOSCNTR_LOW                  0x1242040
++#define ACP_I2S_TX_INTR_WATERMARK_SIZE                0x1242044
++#define ACP_BT_RX_RINGBUFADDR                         0x1242048
++#define ACP_BT_RX_RINGBUFSIZE                         0x124204C
++#define ACP_BT_RX_LINKPOSITIONCNTR                    0x1242050
++#define ACP_BT_RX_FIFOADDR                            0x1242054
++#define ACP_BT_RX_FIFOSIZE                            0x1242058
++#define ACP_BT_RX_DMA_SIZE                            0x124205C
++#define ACP_BT_RX_LINEARPOSCNTR_HIGH                  0x1242060
++#define ACP_BT_RX_LINEARPOSCNTR_LOW                   0x1242064
++#define ACP_BT_RX_INTR_WATERMARK_SIZE                 0x1242068
++#define ACP_BT_TX_RINGBUFADDR                         0x124206C
++#define ACP_BT_TX_RINGBUFSIZE                         0x1242070
++#define ACP_BT_TX_LINKPOSITIONCNTR                    0x1242074
++#define ACP_BT_TX_FIFOADDR                            0x1242078
++#define ACP_BT_TX_FIFOSIZE                            0x124207C
++#define ACP_BT_TX_DMA_SIZE                            0x1242080
++#define ACP_BT_TX_LINEARPOSCNTR_HIGH                  0x1242084
++#define ACP_BT_TX_LINEARPOSCNTR_LOW                   0x1242088
++#define ACP_BT_TX_INTR_WATERMARK_SIZE                 0x124208C
++#define ACP_HS_RX_RINGBUFADDR                         0x1242090
++#define ACP_HS_RX_RINGBUFSIZE                         0x1242094
++#define ACP_HS_RX_LINKPOSITIONCNTR                    0x1242098
++#define ACP_HS_RX_FIFOADDR                            0x124209C
++#define ACP_HS_RX_FIFOSIZE                            0x12420A0
++#define ACP_HS_RX_DMA_SIZE                            0x12420A4
++#define ACP_HS_RX_LINEARPOSCNTR_HIGH	              0x12420A8
++#define ACP_HS_RX_LINEARPOSCNTR_LOW                   0x12420AC
++#define ACP_HS_RX_INTR_WATERMARK_SIZE                 0x12420B0
++#define ACP_HS_TX_RINGBUFADDR                         0x12420B4
++#define ACP_HS_TX_RINGBUFSIZE                         0x12420B8
++#define ACP_HS_TX_LINKPOSITIONCNTR                    0x12420BC
++#define ACP_HS_TX_FIFOADDR                            0x12420C0
++#define ACP_HS_TX_FIFOSIZE                            0x12420C4
++#define ACP_HS_TX_DMA_SIZE                            0x12420C8
++#define ACP_HS_TX_LINEARPOSCNTR_HIGH                  0x12420CC
++#define ACP_HS_TX_LINEARPOSCNTR_LOW                   0x12420D0
++#define ACP_HS_TX_INTR_WATERMARK_SIZE                 0x12420D4
++
++/* Registers from ACP_I2S_TDM block */
++#define ACP_I2STDM_IER                                0x1242400
++#define ACP_I2STDM_IRER                               0x1242404
++#define ACP_I2STDM_RXFRMT                             0x1242408
++#define ACP_I2STDM_ITER                               0x124240C
++#define ACP_I2STDM_TXFRMT                             0x1242410
++#define ACP_I2STDM0_MSTRCLKGEN                        0x1242414
++#define ACP_I2STDM1_MSTRCLKGEN                        0x1242418
++#define ACP_I2STDM2_MSTRCLKGEN                        0x124241C
++#define ACP_I2STDM_REFCLKGEN                          0x1242420
++
++/* Registers from ACP_BT_TDM block */
++#define ACP_BTTDM_IER                                 0x1242800
++#define ACP_BTTDM_IRER                                0x1242804
++#define ACP_BTTDM_RXFRMT                              0x1242808
++#define ACP_BTTDM_ITER                                0x124280C
++#define ACP_BTTDM_TXFRMT                              0x1242810
++#define ACP_HSTDM_IER                                 0x1242814
++#define ACP_HSTDM_IRER                                0x1242818
++#define ACP_HSTDM_RXFRMT                              0x124281C
++#define ACP_HSTDM_ITER                                0x1242820
++#define ACP_HSTDM_TXFRMT                              0x1242824
++#endif
+-- 
+2.25.1
 
->  sctp_setsockopt_auth_key net/sctp/socket.c:3643 [inline]
->  sctp_setsockopt+0x4919/0xa5e0 net/sctp/socket.c:4682
->  __sys_setsockopt+0x2db/0x610 net/socket.c:2152
->  __do_sys_setsockopt net/socket.c:2163 [inline]
->  __se_sys_setsockopt net/socket.c:2160 [inline]
->  __x64_sys_setsockopt+0xba/0x150 net/socket.c:2160
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> The buggy address belongs to the object at ffff88802053ad40
->  which belongs to the cache kmalloc-32 of size 32
-> The buggy address is located 24 bytes inside of
->  32-byte region [ffff88802053ad40, ffff88802053ad60)
-> The buggy address belongs to the page:
-> page:ffffea0000814e80 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2053a
-> flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888010841500
-> raw: 0000000000000000 0000000080400040 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY), pid 4873, ts 20137001110, free_ts 20080007470
->  prep_new_page mm/page_alloc.c:2445 [inline]
->  get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4178
->  __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5386
->  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
->  alloc_slab_page mm/slub.c:1702 [inline]
->  allocate_slab+0x32b/0x4c0 mm/slub.c:1842
->  new_slab mm/slub.c:1905 [inline]
->  new_slab_objects mm/slub.c:2651 [inline]
->  ___slab_alloc+0x4ba/0x820 mm/slub.c:2814
->  __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2854
->  slab_alloc_node mm/slub.c:2936 [inline]
->  slab_alloc mm/slub.c:2978 [inline]
->  __kmalloc+0x312/0x330 mm/slub.c:4106
->  kmalloc include/linux/slab.h:596 [inline]
->  kzalloc include/linux/slab.h:721 [inline]
->  tomoyo_encode2.part.0+0xe9/0x3a0 security/tomoyo/realpath.c:45
->  tomoyo_encode2 security/tomoyo/realpath.c:31 [inline]
->  tomoyo_encode+0x28/0x50 security/tomoyo/realpath.c:80
->  tomoyo_realpath_from_path+0x186/0x620 security/tomoyo/realpath.c:288
->  tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
->  tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
->  security_inode_getattr+0xcf/0x140 security/security.c:1332
->  vfs_getattr fs/stat.c:139 [inline]
->  vfs_statx+0x164/0x390 fs/stat.c:207
->  vfs_fstatat fs/stat.c:225 [inline]
->  vfs_lstat include/linux/fs.h:3384 [inline]
->  __do_sys_newlstat+0x91/0x110 fs/stat.c:380
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> page last free stack trace:
->  reset_page_owner include/linux/page_owner.h:24 [inline]
->  free_pages_prepare mm/page_alloc.c:1355 [inline]
->  free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1406
->  free_unref_page_prepare mm/page_alloc.c:3341 [inline]
->  free_unref_page+0x19/0x690 mm/page_alloc.c:3420
->  qlink_free mm/kasan/quarantine.c:146 [inline]
->  qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
->  kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
->  __kasan_slab_alloc+0x8e/0xa0 mm/kasan/common.c:444
->  kasan_slab_alloc include/linux/kasan.h:253 [inline]
->  slab_post_alloc_hook mm/slab.h:512 [inline]
->  slab_alloc_node mm/slub.c:2970 [inline]
->  slab_alloc mm/slub.c:2978 [inline]
->  kmem_cache_alloc+0x29b/0x4a0 mm/slub.c:2983
->  getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
->  getname_flags include/linux/audit.h:319 [inline]
->  getname+0x8e/0xd0 fs/namei.c:209
->  do_sys_openat2+0xf5/0x420 fs/open.c:1189
->  do_sys_open fs/open.c:1211 [inline]
->  __do_sys_open fs/open.c:1219 [inline]
->  __se_sys_open fs/open.c:1215 [inline]
->  __x64_sys_open+0x119/0x1c0 fs/open.c:1215
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Memory state around the buggy address:
->  ffff88802053ac00: 00 00 00 02 fc fc fc fc fa fb fb fb fc fc fc fc
->  ffff88802053ac80: 00 00 00 00 fc fc fc fc fa fb fb fb fc fc fc fc
-> >ffff88802053ad00: fb fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
->                                                     ^
->  ffff88802053ad80: fb fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
->  ffff88802053ae00: fb fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
