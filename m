@@ -2,85 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9ED3CC19D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 08:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2763CC1A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 09:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhGQHCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 03:02:20 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7383 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231916AbhGQHCM (ORCPT
+        id S231916AbhGQHGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 03:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhGQHGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 03:02:12 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GRf561SFSz7vnB;
-        Sat, 17 Jul 2021 14:55:38 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
- (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 17
- Jul 2021 14:59:13 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <hannes@cmpxchg.org>, <vbabka@suse.cz>, <mhocko@suse.com>,
-        <axboe@kernel.dk>, <iamjoonsoo.kim@lge.com>, <alexs@kernel.org>,
-        <apopple@nvidia.com>, <willy@infradead.org>, <minchan@kernel.org>,
-        <david@redhat.com>, <shli@fb.com>, <hillf.zj@alibaba-inc.com>,
-        <yuzhao@google.com>, <jhubbard@nvidia.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH v2 4/4] mm/vmscan: add 'else' to remove check_pending label
-Date:   Sat, 17 Jul 2021 14:59:11 +0800
-Message-ID: <20210717065911.61497-5-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210717065911.61497-1-linmiaohe@huawei.com>
-References: <20210717065911.61497-1-linmiaohe@huawei.com>
+        Sat, 17 Jul 2021 03:06:13 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF1DC06175F;
+        Sat, 17 Jul 2021 00:03:17 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id i18so18509640yba.13;
+        Sat, 17 Jul 2021 00:03:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BbroIoc7LDtT2txrNFS/xQy0xFSErdRqfHllOcQwfc0=;
+        b=veDKEL0V1E9DYQKQwEiDEO8pT6hoq0f2y/gkCJ9RRHfNh2Bn89LaQUxOpvKIU0KNmX
+         iKy2eTMA8MC5117W/aPOjZb+j593/l67cyg1Be12DWoYffLn70hZUegYZ4yOcNewzlYk
+         DOUv8X2izPqpmX7Fp/51mAtv3F6/dTP6ZHVNH1bGQkkHIYM49Iqqh5j0u5Kv6DLmtuyh
+         ANTfnh9d20Sh6ojb6vTbN8+7GBLspqIj9MGehH8jVmp+dM77Bo5gCxirTGc917L+BGvP
+         nFJFEJfAJCouiQkfv9pcPedicDawz4bDZD+gRTC39I0CNVOth+YUw6j5ZfvJ6qZc5xtT
+         sJWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BbroIoc7LDtT2txrNFS/xQy0xFSErdRqfHllOcQwfc0=;
+        b=tyws3OktXhM/ItjAGZpe5I3E+s0dMIFufFFRI88RcQBPaz8f+icsH8SPPlwk/m/ysK
+         f3mQhaGPetaRswalKzdnlAyyFQTy57k7eOrfesUcVdCE3PDYS6CHI8Hio7X23t0C7DZS
+         KATviw6nszWWgPyLbbaPG6YHbAPccTBLOgaWa/sOF3WHzaof6FmhlSJmB60AsJko83LF
+         Vso0x9CLd4EfiK8/ZvWqLKbz2ZUUWOAhLA98VIPRs1ihzXRXoAV/J0tQYdzg7WdZMhZY
+         7t8q1oL3V3QlaPiB2w6oMabOSeQnsqs87kbpOC3qkYpKXkKvpE6WS7tvbU3lvPQSm6Q3
+         67Kw==
+X-Gm-Message-State: AOAM531WpuXtdWDcU8ZIh+OA/sIOZthdp0K4YvTx6mjVWvMcefa85zNr
+        ALY7wxS8wHyArkTOfce0frwg5BGGIfp/e7L8fIo=
+X-Google-Smtp-Source: ABdhPJxwybjMmQrU+IM/ucdw+ZVNb6wGCViKshplkSCt/ZkghNPRfSWREa6iuYeAEeQXiwkC453s3dPhNc6x8a3NwJk=
+X-Received: by 2002:a25:8b86:: with SMTP id j6mr16900370ybl.470.1626505396299;
+ Sat, 17 Jul 2021 00:03:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+References: <20210625110419.24503-1-lukas.bulwahn@gmail.com> <20210625110419.24503-2-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210625110419.24503-2-lukas.bulwahn@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Sat, 17 Jul 2021 09:03:05 +0200
+Message-ID: <CAKXUXMxFBaBneVZf3WCCYJ8Theu55Nf-gFe=hs5u3mMVd41mTw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] MAINTAINERS: mark sections from Ralf Baechle orphan
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
+Cc:     "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
+        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We could add 'else' to remove the somewhat odd check_pending label to
-make code core succinct.
+On Fri, Jun 25, 2021 at 1:04 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> The domain lookup for linux-mips.org fails for quite some time now. Hence,
+> webpages, the patchwork instance and Ralf Baechle's email there is not
+> reachable anymore.
+>
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- mm/vmscan.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+There has not been any specific comment on marking kernel parts solely
+"maintained" by Ralf Baechle as Orphan.
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 260d900db20d..d226f7f1f2c4 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3430,18 +3430,14 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
- 	 * blocked waiting on the same lock. Instead, throttle for up to a
- 	 * second before continuing.
- 	 */
--	if (!(gfp_mask & __GFP_FS)) {
-+	if (!(gfp_mask & __GFP_FS))
- 		wait_event_interruptible_timeout(pgdat->pfmemalloc_wait,
- 			allow_direct_reclaim(pgdat), HZ);
-+	else
-+		/* Throttle until kswapd wakes the process */
-+		wait_event_killable(zone->zone_pgdat->pfmemalloc_wait,
-+			allow_direct_reclaim(pgdat));
- 
--		goto check_pending;
--	}
--
--	/* Throttle until kswapd wakes the process */
--	wait_event_killable(zone->zone_pgdat->pfmemalloc_wait,
--		allow_direct_reclaim(pgdat));
--
--check_pending:
- 	if (fatal_signal_pending(current))
- 		return true;
- 
--- 
-2.23.0
+So, given the feedback on this overall patch set from Maciej and Kurt:
+- the domain lookup for linux-mips.org does resolve again.
+- the patchwork instance moved.
+- Ralf Baechle's email now does at least forward somewhere.
 
+However, it still holds that:
+
+Ralf Baechle has not been active since February 2018; so, set all
+MAINTAINERS sections with Ralf as sole maintainer to Orphan, and give
+others a chance to claim maintainership if these sections are still of
+interest.
+
+I suggest that independent of the other patches in this patch set, I
+rework the commit message of this patch here (basically dropping the
+first sentence) and send out a final patch for this subject that
+Thomas can then pick.
+
+Any comments or rejections to that suggestion?
+
+Lukas
+
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  MAINTAINERS | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3d657e1fe359..eb9110c756f7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3094,9 +3094,8 @@ F:        Documentation/devicetree/bindings/iio/adc/avia-hx711.yaml
+>  F:     drivers/iio/adc/hx711.c
+>
+>  AX.25 NETWORK LAYER
+> -M:     Ralf Baechle <ralf@linux-mips.org>
+>  L:     linux-hams@vger.kernel.org
+> -S:     Maintained
+> +S:     Orphan
+>  W:     http://www.linux-ax25.org/
+>  F:     include/net/ax25.h
+>  F:     include/uapi/linux/ax25.h
+> @@ -6575,10 +6574,9 @@ S:       Maintained
+>  F:     drivers/edac/highbank*
+>
+>  EDAC-CAVIUM OCTEON
+> -M:     Ralf Baechle <ralf@linux-mips.org>
+>  L:     linux-edac@vger.kernel.org
+>  L:     linux-mips@vger.kernel.org
+> -S:     Supported
+> +S:     Orphan
+>  F:     drivers/edac/octeon_edac*
+>
+>  EDAC-CAVIUM THUNDERX
+> @@ -9654,9 +9652,8 @@ F:        Documentation/devicetree/bindings/iio/gyroscope/invensense,mpu3050.yaml
+>  F:     drivers/iio/gyro/mpu3050*
+>
+>  IOC3 ETHERNET DRIVER
+> -M:     Ralf Baechle <ralf@linux-mips.org>
+>  L:     linux-mips@vger.kernel.org
+> -S:     Maintained
+> +S:     Orphan
+>  F:     drivers/net/ethernet/sgi/ioc3-eth.c
+>
+>  IOMAP FILESYSTEM LIBRARY
+> @@ -12832,9 +12829,8 @@ F:      net/bridge/br_netfilter*.c
+>  F:     net/netfilter/
+>
+>  NETROM NETWORK LAYER
+> -M:     Ralf Baechle <ralf@linux-mips.org>
+>  L:     linux-hams@vger.kernel.org
+> -S:     Maintained
+> +S:     Orphan
+>  W:     http://www.linux-ax25.org/
+>  F:     include/net/netrom.h
+>  F:     include/uapi/linux/netrom.h
+> @@ -16007,9 +16003,8 @@ F:      include/linux/mfd/rohm-generic.h
+>  F:     include/linux/mfd/rohm-shared.h
+>
+>  ROSE NETWORK LAYER
+> -M:     Ralf Baechle <ralf@linux-mips.org>
+>  L:     linux-hams@vger.kernel.org
+> -S:     Maintained
+> +S:     Orphan
+>  W:     http://www.linux-ax25.org/
+>  F:     include/net/rose.h
+>  F:     include/uapi/linux/rose.h
+> --
+> 2.17.1
+>
