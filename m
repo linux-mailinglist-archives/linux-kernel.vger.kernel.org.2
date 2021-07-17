@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3E43CC462
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 488863CC46D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhGQQNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 12:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
+        id S231228AbhGQQX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 12:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhGQQNT (ORCPT
+        with ESMTP id S231229AbhGQQXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 12:13:19 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFF2C06175F;
-        Sat, 17 Jul 2021 09:10:22 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id a6so6128618pgw.3;
-        Sat, 17 Jul 2021 09:10:22 -0700 (PDT)
+        Sat, 17 Jul 2021 12:23:18 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0DF59C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 09:20:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xddb+N0v+hHcIs8maktgerWuQ0JfLKpmotpQrY+Dm6o=;
-        b=K3mWlWtGp3+sZiNKnyZo4q4zcJSrUR5+nVVmPc7EEIkqndxaK2XG0NxzboGgqTyI9k
-         ziUHif5h6yzGkfjh5Tv1/V32G8rT94a1NOHTqopO8SE3nO87QRCpewBwgo206Ot2Nx7R
-         rRKPI5A3FXsFw5d55LPFq6E8F47JFzf4ONaVIuw2Myy1+XaBf9BNkWkbykeP5NtRxN7k
-         i7rsh0THw5OPhfe+271i50THyl/bj7/8GDExFn5mlp/iiLn+QKQWz/46TnLTboHZyurG
-         v1+IRkBFdpx2sMM3xRn2NLj4iKODOamwtU2W158P+xus55bIwiQCQPMu0thHWAACaAoE
-         WjDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xddb+N0v+hHcIs8maktgerWuQ0JfLKpmotpQrY+Dm6o=;
-        b=WhhYoXZJvbUsSSHkF/rnwC61r0nPc2RVzq478yl/zQQVvD4uM5FDOO/asK7h+nV58C
-         CCbgWEwqpNM75Wc+xXZqGvdv0IAPRfkb/AA8wUHOJP0ggAFh9gXYL3K6Eq+MnL80tj4w
-         vTNzAENiofn/k4c6nCtouL4bal51MaXdEe7R87Y6rlJHWwGt5TQqf+NxY74/TYS4lHVq
-         J/VuTs73VVbBFMY/vaQqKtFTvazaIC5GV9KPRD/CbU9/8CXShWNeIdQA7Hu93iNtGbhR
-         25Xh3v6L87MgNT+Ff98MHUrj3QoRE0qg6MRDqMZSZOhiPQMV3C8XujGYJG+BltuoWywa
-         NsRQ==
-X-Gm-Message-State: AOAM531MfyZ3dH+AH8Y1SNWW/pFrrDYRuKUJizOs5i3mxPCyp4o7Pa6G
-        oQ5z81Mt4Wiwure+poaWj1Q=
-X-Google-Smtp-Source: ABdhPJwcTd76xSeBEG+xnuCq2rCXkuZNbJtwb9EbT6snml/J+5qteEAFArnsBXdPZt5MrtYlzAFO8g==
-X-Received: by 2002:a63:171e:: with SMTP id x30mr16045233pgl.368.1626538222307;
-        Sat, 17 Jul 2021 09:10:22 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u16sm15735548pgh.53.2021.07.17.09.10.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 09:10:21 -0700 (PDT)
-Subject: Re: [PATCH net, v2] net: Update MAINTAINERS for MediaTek switch
- driver
-To:     DENG Qingfang <dqfext@gmail.com>,
-        Landen Chao <landen.chao@mediatek.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, frank-w@public-files.de,
-        steven.liu@mediatek.com
-References: <20210601024508.iIbiNrsg-6lZjXwIt9-j76r37lcQSk3LsYBoZyl3fUM@z>
- <20210717154523.82890-1-dqfext@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <d62aa80d-9ee2-23b8-f68f-449b488a3b0f@gmail.com>
-Date:   Sat, 17 Jul 2021 09:10:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=YJt+haE2Sm3TLKcrxpxqRl/5JPhip7THLelT9v5ADVo=; b=WWt45czOxtIdP
+        Tia0fhXd3+CSEOeDje5VRQ5SXcfIGxO7d0knPtE4a9SmB6L+36MlK5iG3xAUdAMl
+        Hl/LAbHWUaWy240U97AFPI3LhV7y2160d9boGtIRW5rOeg7Runi+X0CojZMqHkGZ
+        9icv1Kn7WlwGb0E2NoEHEzwArdOtjo=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCXnPw9A_Ngex6CAA--.1530S2;
+        Sun, 18 Jul 2021 00:20:14 +0800 (CST)
+Date:   Sun, 18 Jul 2021 00:14:23 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: enable GENERIC_FIND_FIRST_BIT
+Message-ID: <20210718001423.6b8e1d23@xhacker>
 MIME-Version: 1.0
-In-Reply-To: <20210717154523.82890-1-dqfext@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygCXnPw9A_Ngex6CAA--.1530S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFyDGF1kGFyxtFyDAw15CFg_yoWDKrg_Gr
+        yxArZ5G34UZrWIyrWvvF4Sqa1Ykayqga98Zr9Fyr4UWFy3Gw1fJa95tryFqr1xGw4fXFWU
+        Za92qFnF9rnrXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbrAYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
+        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
+        JbIYCTnIWIevJa73UjIFyTuYvjxUcVWlDUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jisheng Zhang <jszhang@kernel.org>
 
+riscv doesn't implement architecture-optimized bitsearching functions
+such as find_first_{zero}_bit() etc.
 
-On 7/17/2021 8:45 AM, DENG Qingfang wrote:
-> On Tue, Jun 01, 2021 at 10:45:08AM +0800, Landen Chao wrote:
->> Update maintainers for MediaTek switch driver with Deng Qingfang who
->> contributes many useful patches (interrupt, VLAN, GPIO, and etc.) to
->> enhance MediaTek switch driver and will help maintenance.
->>
->> Signed-off-by: Landen Chao <landen.chao@mediatek.com>
->> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> 
-> Ping?
+When GENERIC_FIND_FIRST_BIT=n, find_first_bit() is implemented with
+find_next_bit() which is less efficient. Enable GENERIC_FIND_FIRST_BIT
+for riscv to get more optimized find_first_bit() implementation, an
+initial test(lib/find_bit_benchmark) shows find_first_bit() performance
+is improved by nearly 32%.
 
-You might have to resend, when you do:
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 8fcceb8eda07..7ebc54c5c245 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -47,6 +47,7 @@ config RISCV
+ 	select GENERIC_ATOMIC64 if !64BIT
+ 	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
+ 	select GENERIC_EARLY_IOREMAP
++	select GENERIC_FIND_FIRST_BIT
+ 	select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO
+ 	select GENERIC_IOREMAP
+ 	select GENERIC_IRQ_MULTI_HANDLER
 -- 
-Florian
+2.32.0
+
+
