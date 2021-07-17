@@ -2,314 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F23B3CC4DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2843CC4E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233355AbhGQRfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 13:35:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33800 "EHLO mail.kernel.org"
+        id S233822AbhGQRh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 13:37:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233128AbhGQRfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 13:35:13 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15DF860FE9;
-        Sat, 17 Jul 2021 17:32:13 +0000 (UTC)
-Date:   Sat, 17 Jul 2021 18:34:37 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
-        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v3 3/4] iio: adc: ad7949: add support for internal vref
-Message-ID: <20210717183437.4d183037@jic23-huawei>
-In-Reply-To: <20210713043425.3321230-4-liambeguin@gmail.com>
-References: <20210713043425.3321230-1-liambeguin@gmail.com>
-        <20210713043425.3321230-4-liambeguin@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233280AbhGQRhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 13:37:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D75B61151;
+        Sat, 17 Jul 2021 17:34:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626543297;
+        bh=cNLDAL8cqetw2WohunGLgyT4MIPB2gmlE1nTue+sV7A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MgVmORWCi6BHeqxwX4gkgMDUCvIfr3/p+OA9sOzzP2Ghb9YMJIif7XlBEXSQd4qGU
+         /W7JvDXtpajlLTIOT6Ki/jkAxA6rXnJFwNJVmZWyhkkYYtPwp2wLZg95qe1MgEb2gl
+         QZcYPcL6boZjVw+15YB1NCRlnf6YnvIYDq5V0LfU=
+Date:   Sat, 17 Jul 2021 19:34:51 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Justin Forbes <jmforbes@linuxtx.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Moritz Fischer <mdf@kernel.org>
+Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
+ ROM state
+Message-ID: <YPMUu+kNu0GZeQQ1@kroah.com>
+References: <20210712060912.995381202@linuxfoundation.org>
+ <20210712060916.499546891@linuxfoundation.org>
+ <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 00:34:24 -0400
-Liam Beguin <liambeguin@gmail.com> wrote:
-
-> From: Liam Beguin <lvb@xiphos.com>
+On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
+> On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Moritz Fischer <mdf@kernel.org>
+> >
+> > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
+> >
+> > The ROM load sometimes seems to return an unknown status
+> > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
+> >
+> > If the ROM load indeed failed this leads to failures when trying to
+> > communicate with the controller later on.
+> >
+> > Attempt to load firmware using RAM load in those cases.
+> >
+> > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
+> > Cc: stable@vger.kernel.org
+> > Cc: Mathias Nyman <mathias.nyman@intel.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Tested-by: Vinod Koul <vkoul@kernel.org>
+> > Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >
 > 
-> Add support for selecting a custom reference voltage from the
-> devicetree. If an external source is used, a vref regulator should be
-> defined in the devicetree.
+> After sending out 5.12.17 for testing, we had a user complain that all
+> of their USB devices disappeared with the error:
 > 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
-
-Hi Liam,
-
-A few minor things inline.
-
-Jonathan
-
-> ---
->  drivers/iio/adc/ad7949.c | 133 +++++++++++++++++++++++++++++++++------
->  1 file changed, 115 insertions(+), 18 deletions(-)
+> Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
+> for renesas_usb_fw.mem failed with error -2
+> Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
+> Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
 > 
-> diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
-> index 65f78751225b..8b78da7ead36 100644
-> --- a/drivers/iio/adc/ad7949.c
-> +++ b/drivers/iio/adc/ad7949.c
-> @@ -36,7 +36,11 @@
->  
->  /* REF: reference/buffer selection */
->  #define AD7949_CFG_BIT_REF		GENMASK(5, 3)
-> -#define AD7949_CFG_VAL_REF_EXT_BUF		7
-> +#define AD7949_CFG_VAL_REF_EXT_TEMP_BUF		3
-> +#define AD7949_CFG_VAL_REF_EXT_TEMP		2
-> +#define AD7949_CFG_VAL_REF_INT_4096		1
-> +#define AD7949_CFG_VAL_REF_INT_2500		0
-> +#define AD7949_CFG_VAL_REF_EXTERNAL		BIT(1)
->  
->  /* SEQ: channel sequencer. Allows for scanning channels */
->  #define AD7949_CFG_BIT_SEQ		GENMASK(2, 1)
-> @@ -61,6 +65,14 @@ static const struct ad7949_adc_spec ad7949_adc_spec[] = {
->  	[ID_AD7689] = { .num_channels = 8, .resolution = 16 },
->  };
->  
-> +/**
-> + * struct ad7949_channel - ADC Channel parameters
-> + * @refsel: reference selection
-> + */
-> +struct ad7949_channel {
-> +	u32 refsel;
-> +};
-> +
->  /**
->   * struct ad7949_adc_chip - AD ADC chip
->   * @lock: protects write sequences
-> @@ -78,6 +90,7 @@ struct ad7949_adc_chip {
->  	struct regulator *vref;
->  	struct iio_dev *indio_dev;
->  	struct spi_device *spi;
-> +	struct ad7949_channel *channels;
->  	u8 resolution;
->  	u8 bits_per_word;
->  	u16 cfg;
-> @@ -138,6 +151,7 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
->  	int i;
->  	u8 buf8[2];
->  	struct spi_message msg;
-> +	struct ad7949_channel ad7949_chan = ad7949_adc->channels[channel];
+> After first assuming that something was missing in the backport to
+> 5.12, I had the user try 5.13.2, and then 5.14-rc1. Both of those
+> failed in the same way, so it is not working in the current Linus tree
+> either.  Reverting this patch fixed the issue.
 
-Better to use a pointer rather than copying the data.
+Can you send a revert for this so I can get that into Linus's tree and
+then all stable releases as well?
 
->  	struct spi_transfer tx[] = {
->  		{
->  			.rx_buf = &ad7949_adc->buffer,
-> @@ -154,8 +168,9 @@ static int ad7949_spi_read_channel(struct ad7949_adc_chip *ad7949_adc, int *val,
->  	 */
->  	for (i = 0; i < 2; i++) {
->  		ret = ad7949_spi_write_cfg(ad7949_adc,
-> -					   FIELD_PREP(AD7949_CFG_BIT_INX, channel),
-> -					   AD7949_CFG_BIT_INX);
-> +					   FIELD_PREP(AD7949_CFG_BIT_INX, channel) |
-> +					   FIELD_PREP(AD7949_CFG_BIT_REF, ad7949_chan.refsel),
-> +					   AD7949_CFG_BIT_INX | AD7949_CFG_BIT_REF);
->  		if (ret)
->  			return ret;
->  		if (channel == ad7949_adc->current_channel)
-> @@ -225,6 +240,7 @@ static int ad7949_spi_read_raw(struct iio_dev *indio_dev,
->  			   int *val, int *val2, long mask)
->  {
->  	struct ad7949_adc_chip *ad7949_adc = iio_priv(indio_dev);
-> +	struct ad7949_channel ad7949_chan = ad7949_adc->channels[chan->channel];
->  	int ret;
->  
->  	if (!val)
-> @@ -242,12 +258,26 @@ static int ad7949_spi_read_raw(struct iio_dev *indio_dev,
->  		return IIO_VAL_INT;
->  
->  	case IIO_CHAN_INFO_SCALE:
-> -		ret = regulator_get_voltage(ad7949_adc->vref);
-> -		if (ret < 0)
-> -			return ret;
-> +		switch (ad7949_chan.refsel) {
-> +		case AD7949_CFG_VAL_REF_INT_2500:
-> +			*val = 2500;
-> +			break;
-> +		case AD7949_CFG_VAL_REF_INT_4096:
-> +			*val = 4096;
-> +			break;
-> +		case AD7949_CFG_VAL_REF_EXT_TEMP:
-> +		case AD7949_CFG_VAL_REF_EXT_TEMP_BUF:
-> +			ret = regulator_get_voltage(ad7949_adc->vref);
-> +			if (ret < 0)
-> +				return ret;
-> +
-> +			/* convert value back to mV */
-> +			*val = ret / 1000;
-> +			break;
-> +		}
->  
-> -		*val = ret / 5000;
-> -		return IIO_VAL_INT;
-> +		*val2 = (1 << ad7949_adc->resolution) - 1;
-> +		return IIO_VAL_FRACTIONAL;
->  	}
->  
->  	return -EINVAL;
-> @@ -286,7 +316,7 @@ static int ad7949_spi_init(struct ad7949_adc_chip *ad7949_adc)
->  		FIELD_PREP(AD7949_CFG_BIT_INCC, AD7949_CFG_VAL_INCC_UNIPOLAR_GND) |
->  		FIELD_PREP(AD7949_CFG_BIT_INX, ad7949_adc->current_channel) |
->  		FIELD_PREP(AD7949_CFG_BIT_BW_FULL, 1) |
-> -		FIELD_PREP(AD7949_CFG_BIT_REF, AD7949_CFG_VAL_REF_EXT_BUF) |
-> +		FIELD_PREP(AD7949_CFG_BIT_REF, ad7949_adc->channels[0].refsel) |
->  		FIELD_PREP(AD7949_CFG_BIT_SEQ, 0x0) |
->  		FIELD_PREP(AD7949_CFG_BIT_RBN, 1);
->  
-> @@ -302,14 +332,24 @@ static int ad7949_spi_init(struct ad7949_adc_chip *ad7949_adc)
->  	return ret;
->  }
->  
-> +static void ad7949_disable_reg(void *reg)
-> +{
-> +	regulator_disable(reg);
-> +}
-> +
->  static int ad7949_spi_probe(struct spi_device *spi)
->  {
->  	u32 spi_ctrl_mask = spi->controller->bits_per_word_mask;
->  	struct device *dev = &spi->dev;
->  	const struct ad7949_adc_spec *spec;
->  	struct ad7949_adc_chip *ad7949_adc;
-> +	struct ad7949_channel *ad7949_chan;
-> +	struct device_node *child;
->  	struct iio_dev *indio_dev;
-> +	int mode;
-> +	u32 tmp;
->  	int ret;
-> +	int i;
->  
->  	indio_dev = devm_iio_device_alloc(dev, sizeof(*ad7949_adc));
->  	if (!indio_dev) {
-> @@ -343,16 +383,75 @@ static int ad7949_spi_probe(struct spi_device *spi)
->  		return -EINVAL;
->  	}
->  
-> -	ad7949_adc->vref = devm_regulator_get(dev, "vref");
-> +	/* Setup external voltage ref, buffered? */
-> +	ad7949_adc->vref = devm_regulator_get(dev, "vrefin");
->  	if (IS_ERR(ad7949_adc->vref)) {
-> -		dev_err(dev, "fail to request regulator\n");
-> -		return PTR_ERR(ad7949_adc->vref);
-> +		/* unbuffered? */
-> +		ad7949_adc->vref = devm_regulator_get(dev, "vref");
-> +		if (IS_ERR(ad7949_adc->vref)) {
-> +			/* Internal then */
-> +			mode = AD7949_CFG_VAL_REF_INT_4096;
-> +		}
-> +		mode = AD7949_CFG_VAL_REF_EXT_TEMP;
->  	}
-> +	mode = AD7949_CFG_VAL_REF_EXT_TEMP_BUF;
->  
-> -	ret = regulator_enable(ad7949_adc->vref);
-> -	if (ret < 0) {
-> -		dev_err(dev, "fail to enable regulator\n");
-> -		return ret;
-> +	if (mode > AD7949_CFG_VAL_REF_INT_4096) {
+thanks,
 
-Range checks on enum values are always rather messy.  So
-better to explicitly match the cases that matter.
-
-> +		ret = regulator_enable(ad7949_adc->vref);
-> +		if (ret < 0) {
-> +			dev_err(dev, "fail to enable regulator\n");
-> +			return ret;
-> +		}
-> +
-> +		ret = devm_add_action_or_reset(dev, ad7949_disable_reg,
-> +					       ad7949_adc->vref);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	ad7949_adc->channels = devm_kcalloc(dev, spec->num_channels,
-> +					    sizeof(*ad7949_adc->channels),
-> +					    GFP_KERNEL);
-> +	if (!ad7949_adc->channels) {
-> +		dev_err(dev, "unable to allocate ADC channels\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	/* Initialize all channel structures */
-> +	for (i = 0; i < spec->num_channels; i++) {
-> +		ad7949_adc->channels[i].refsel = mode;
-
-Kernel style is no brackets when only one item in a block.
-
-> +	}
-> +
-> +	/* Read channel specific information form the devicetree */
-> +	for_each_child_of_node(dev->of_node, child) {
-> +		ret = of_property_read_u32(child, "reg", &i);
-> +		if (ret) {
-> +			dev_err(dev, "missing reg property in child: %s\n",
-> +				child->full_name);
-> +			of_node_put(child);
-> +			return ret;
-> +		}
-> +
-> +		ad7949_chan = &ad7949_adc->channels[i];
-> +
-> +		ret = of_property_read_u32(child, "adi,internal-ref-mv", &tmp);
-
-Preference for generic device firmware properties not of_* specific ones.
-
-I think there is nothing stopping this driver being probed from ACPI via PRP0001
-before this change.  Note you'll also need fwnode_for_each_child_node() above.
-
-> +		if (ret < 0 && ret != -EINVAL) {
-> +			of_node_put(child);
-> +			return ret;
-> +		}
-> +
-> +		switch (tmp) {
-> +		case 2500:
-> +			ad7949_chan->refsel = AD7949_CFG_VAL_REF_INT_2500;
-> +			break;
-> +		case 4096:
-> +			ad7949_chan->refsel = AD7949_CFG_VAL_REF_INT_4096;
-> +			break;
-> +		default:
-> +			dev_err(dev, "unsupported internal voltage reference\n");
-> +			of_node_put(child);
-> +			return -EINVAL;
-> +		}
->  	}
->  
->  	mutex_init(&ad7949_adc->lock);
-> @@ -373,7 +472,6 @@ static int ad7949_spi_probe(struct spi_device *spi)
->  
->  err:
->  	mutex_destroy(&ad7949_adc->lock);
-> -	regulator_disable(ad7949_adc->vref);
->  
->  	return ret;
->  }
-> @@ -385,7 +483,6 @@ static int ad7949_spi_remove(struct spi_device *spi)
->  
->  	iio_device_unregister(indio_dev);
->  	mutex_destroy(&ad7949_adc->lock);
-> -	regulator_disable(ad7949_adc->vref);
-
-Given mutex_destroy is mostly pointless (and definitely is here) that
-leaves us with just iio_device_register().   Hence if you could do
-a follow up patch finishing conversion of this to entirely devm managed
-that would be a nice addition to this series (or separate patch is fine as well).
-
->  
->  	return 0;
->  }
-
+greg k-h
