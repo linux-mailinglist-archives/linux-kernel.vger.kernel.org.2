@@ -2,99 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2045C3CC4D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B4D3CC4D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 19:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhGQRce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 13:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbhGQRcc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 13:32:32 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A41C061762;
-        Sat, 17 Jul 2021 10:29:35 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id f30so21512081lfj.1;
-        Sat, 17 Jul 2021 10:29:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=N5z7xrInHmNrXI9aN34rhAl4c3ECcOCnUV9aOKCVrIg=;
-        b=YWLHiL6JCxcbNMlOR6BFuGqIAblgPQHJosP23FUYarmDwJVc3NtsUY5qKPgzO8bKB8
-         6SLc5MBTx3GcPB1B+0J1SzFDs7UMnvonHgQOfA1vygxaaUHp6pHb5Vhf0Hx1NObWPpAs
-         KpkZ4sY/oJdP+yl3gyZ/Pa2iG9IhjXgQPKTzc19+h5T3FhgW92Ayphy8kk8JpkN0OSJU
-         jTyyOFJQOyANGhxkFcclOy/27rD/89EVnFuSjYbcfhFZE2i6izbE8ReTDsdaT/G6773V
-         Qf4F8IiNCumQM5V9/QiF5F6YmnNbd23fQmV8q8HY98HIr/hMTwq1SCvpuoVkPtIFPRxH
-         pi4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=N5z7xrInHmNrXI9aN34rhAl4c3ECcOCnUV9aOKCVrIg=;
-        b=RNiy93nqjUOqnP0gLGsZQwiTeu+V42WmpLZCSACTsSdtubfj2BASEtocEPmdMPnU+e
-         Nw1wp1AA0na1qF+MsE3uRqx4JqFfMAbCmSDkOxN07xvMb/xsK/Ny5u2uAetQQstWByTV
-         nAuymiMZ6b+JY37YRSwJhg2tYZrhvELJOSNmMBh+iGBHqdpp/V5f22ipO+GkWtbUwA26
-         TWG3zg9B7iLfOCOgA5Hog2+4zu06PgnDs4MeYQRIMNYHbFA87dWh00Hx0f6dltnjmt8/
-         0VkcwyXphqdzWRcYGIUY4LHXl82V8037Q/4P/YCmIfZoPNr0JCnS2sFACXjMicxTzOFg
-         51tA==
-X-Gm-Message-State: AOAM530cb5i1LgJOeROkkqsXgPKAq16aaiw1TnadSZrmF0J1c60xjCuP
-        Yi8tOChUQ6Tu5tHbkxUL8uezoUkzyc0=
-X-Google-Smtp-Source: ABdhPJwBfAn5E2GJO9yPk4k/vB8xdiHsfYG9R/Bcgjxu8CLZu25n9DKLoYHljQE9Bz12qdbtFS/pAw==
-X-Received: by 2002:ac2:52ac:: with SMTP id r12mr11713196lfm.364.1626542973425;
-        Sat, 17 Jul 2021 10:29:33 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-17-250.dynamic.spd-mgts.ru. [46.138.17.250])
-        by smtp.googlemail.com with ESMTPSA id o11sm1385871ljg.29.2021.07.17.10.29.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 10:29:33 -0700 (PDT)
-Subject: Re: [PATCH v4 08/12] power: supply: smb347-charger: Remove caching of
- charger state
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
+        id S233270AbhGQRd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 13:33:26 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:59940 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232010AbhGQRdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 13:33:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=6l0CstberAqKZPlDzrCY/biBtWYITP+X3kt4+P+sPGs=; b=qX
+        6sJHcNOI4tx7tSjjDMM1T5XSQG/EqhAmg6aD4xu8oqWPhIc9QbqIiRcJO7hOHsTH2V5pXjJUXIY4q
+        r1oxM6Wm3gsilOzp0SewiOIPsGZk2B3Xpbqcrq//yGYgqAf2cgitK6LNzGAKbhYYL5fkw7FyT/va/
+        a0evCFDoz10tNNM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m4o8p-00DkKr-Kd; Sat, 17 Jul 2021 19:30:19 +0200
+Date:   Sat, 17 Jul 2021 19:30:19 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210717121112.3248-1-digetx@gmail.com>
- <20210717121112.3248-9-digetx@gmail.com>
- <20210717162006.66cqkbw2mertd6tr@earth.universe>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0df9fbf5-26fa-5d35-46d6-5c36567d6ed2@gmail.com>
-Date:   Sat, 17 Jul 2021 20:29:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 3/5] dt-bindings: mvebu-uart: document DT bindings for
+ marvell, armada-3700-uart-clock
+Message-ID: <YPMTq1wSo1YLJBQi@lunn.ch>
+References: <20210624224909.6350-1-pali@kernel.org>
+ <20210717123829.5201-1-pali@kernel.org>
+ <20210717123829.5201-4-pali@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210717162006.66cqkbw2mertd6tr@earth.universe>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210717123829.5201-4-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.07.2021 19:20, Sebastian Reichel пишет:
-> Hi,
+On Sat, Jul 17, 2021 at 02:38:27PM +0200, Pali Roh�r wrote:
+> This change adds DT bindings documentation for device nodes with compatible
+> string "marvell,armada-3700-uart-clock".
 > 
-> On Sat, Jul 17, 2021 at 03:11:08PM +0300, Dmitry Osipenko wrote:
->> Regmap already provides us with the caching, so remove caching of charger
->> state to make code cleaner.
+> Signed-off-by: Pali Roh�r <pali@kernel.org>
+> ---
+>  .../bindings/clock/armada3700-uart-clock.txt  | 24 +++++++++++++++++++
+>  .../devicetree/bindings/serial/mvebu-uart.txt |  9 ++++---
+>  2 files changed, 30 insertions(+), 3 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt
 > 
-> cache_type is not initialized in smb347's regmap config and thus
-> set to 0 = REGCACHE_NONE:
-> 
-> static const struct regmap_config smb347_regmap = {
-> 	.reg_bits	= 8,
-> 	.val_bits	= 8,
-> 	.max_register	= SMB347_MAX_REGISTER,
-> 	.volatile_reg	= smb347_volatile_reg,
-> 	.readable_reg	= smb347_readable_reg,
-> };
+> diff --git a/Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt
+> new file mode 100644
+> index 000000000000..144bc6d7eae8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.txt
 
-Good catch, thank you. I'll add patch to enable caching.
+Since this is a new binding, please use YAML.
+
+      Andrew
