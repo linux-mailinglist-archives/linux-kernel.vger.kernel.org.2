@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E1B3CC6F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB683CC6F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhGQX6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 19:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhGQX6K (ORCPT
+        id S232077AbhGQX7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 19:59:15 -0400
+Received: from mail-pg1-f182.google.com ([209.85.215.182]:46799 "EHLO
+        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230259AbhGQX7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 19:58:10 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D057C061762;
-        Sat, 17 Jul 2021 16:55:12 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id i14so729172pfd.5;
-        Sat, 17 Jul 2021 16:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b2op3mkk2MCHF98+VW/bu+eiOjzGo/Vvil6HUQyZCWQ=;
-        b=VFfmIVtkrb2cEfy5C9tlUBzKYbnMkAZIn2E7YIQ01hutPpexV+wDYYsgc2jspw5bvB
-         zWliS21GYXV+XRlZnGlbgDagocjuQBjBDPDetW9bUFQR47l2SIxMlx7ILQ4jHuf/aXH0
-         NHkCkowgpbMRnWokuSdb5UxRl0XAalt9WZnjQlCYETNNnSd0STU/Gqjb6eOadyDPZFjj
-         9lQrqJF0TGiTEv9czMThKwRWqIhun97Vn+uBZ8nj3akdls7YmZstXOa+EMOlesfpoW+d
-         ID7RKwlVGJzE1LF8RvIUEE3Amb9RRj1zcgOr6W+WZsrf1DQ9gp+Jt4MFVMjAsAFcit6J
-         83Pg==
+        Sat, 17 Jul 2021 19:59:04 -0400
+Received: by mail-pg1-f182.google.com with SMTP id w15so14672658pgk.13;
+        Sat, 17 Jul 2021 16:56:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b2op3mkk2MCHF98+VW/bu+eiOjzGo/Vvil6HUQyZCWQ=;
-        b=UDGn4c7ZjDYlQoYNnTcaUGznaL2lhMU876bhU/hKrnYQMQswbxn3lozSAoA2cpSaGL
-         pN9+wcTumR9LXaTb5MLoiJb9gz4K74N5QGDRW1cvLxX82zzXg+82IZWf2QE/UAC2nfAs
-         lRUkrFc9nWzHUuAPrtl39tlbaF4ymx2DdbkJ1LFnT9eH2pkG/1+Vk0lzbROQJeZs+4LG
-         bzfTLl/BpggfkdDG0gBVgRWr/DJBNc6qveZ5jMvOH8wdGSZsZWuxLxP9m+xfKuigCuQe
-         LbMRVvOXszwbeX5eZR2sJ1edIB7lVGMFbn5baDVECPmNeSI0DLM/Nt/TbyGVxdPSUPVs
-         rUCA==
-X-Gm-Message-State: AOAM532qiUbBgG/uCOVGEfDZenUY/vpnlZkCYZvAYtQjc8I7r3+Y2z5P
-        K4XabVGAhwRxf2mpueoYk0tfL9Ew8SrKIg==
-X-Google-Smtp-Source: ABdhPJxU29IYfmbPd7swJe3fDfkAHWj1PV0Nm6xz5iW7Gxt/WCREDy5y1hC28jPdBnmlIcWjesF3NQ==
-X-Received: by 2002:aa7:9ae4:0:b029:32e:b1:78e8 with SMTP id y4-20020aa79ae40000b029032e00b178e8mr17800176pfp.46.1626566111463;
-        Sat, 17 Jul 2021 16:55:11 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o3sm15615200pjp.27.2021.07.17.16.55.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 16:55:10 -0700 (PDT)
-Subject: Re: [PATCH 5.12 000/235] 5.12.18-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210716182137.994236340@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <71213f74-8101-e40b-2a24-79ab5db1d6ba@gmail.com>
-Date:   Sat, 17 Jul 2021 16:55:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QBPwPehfJNZ2LsnsANIrsrlPDWfZeZDsGvfQK0F94As=;
+        b=S0PaLnwSYGufGz78bspThIaR3flxvTT42VFinQ5EJQ5XcUW1Je8N5l1jVDKgFHHOpr
+         F/m5Ty5TXlEDRXa9FOkSURjDiH6oe0AznJVyx1YuFTaZx7onP5LTcqKcrAmu4YBPP9aF
+         9z72Qlnrl/NddYsoY0dB66OOteQVd1Rd3B5n9+8VVtZW4BEnXURLSiqf8cRT7IIf1/SY
+         zFZwWFkg/TltI9JY/Gn4bGjoA1uGHFNhOuqDlM+GRoD+aVDKjwHYrqMR5A+FUFfwMnsa
+         EZw7LIXSF/dD5n5YZCyzvLBer6xTWpOxOgQsBdCDMehX1CCjWNU08E+SSYzuJAE9PZ2z
+         dwwA==
+X-Gm-Message-State: AOAM530qiMOHE1IsAKb/EdmgRjEc3UYSffllLXk7c1SlOlNX13/6hWZU
+        trsbsCK3FOxfg+DIZy1LVG8=
+X-Google-Smtp-Source: ABdhPJyCGy2eEB94sfSOMS2sxY2uL1l2UjzA/JuHNafcDXLUC8Tuce2jhHchh+W2EkQMQWbo+UKyjA==
+X-Received: by 2002:a65:6248:: with SMTP id q8mr17609947pgv.279.1626566166808;
+        Sat, 17 Jul 2021 16:56:06 -0700 (PDT)
+Received: from localhost ([24.4.24.239])
+        by smtp.gmail.com with ESMTPSA id h5sm14030558pfv.145.2021.07.17.16.56.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Jul 2021 16:56:06 -0700 (PDT)
+Date:   Sat, 17 Jul 2021 16:56:05 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] spi: spi-altera-dfl: support n5010 feature
+ revision
+Message-ID: <YPNuFX4ZfwJoOlMk@epycbox.lan>
+References: <20210716135441.3235863-1-martin@geanix.com>
+ <20210716135441.3235863-3-martin@geanix.com>
+ <20210716173335.GC4137@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210716182137.994236340@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210716173335.GC4137@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/16/2021 11:29 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.18 release.
-> There are 235 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Jul 16, 2021 at 06:33:35PM +0100, Mark Brown wrote:
+> On Fri, Jul 16, 2021 at 03:54:40PM +0200, Martin Hundebøll wrote:
+> > From: Martin Hundebøll <mhu@silicom.dk>
+> > 
+> > The Max10 BMC on the Silicom n5010 PAC is slightly different than the
+> > existing BMCs, so use a dedicated feature revision detect it.
 > 
-> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.18-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Mark do you want me to provide a tag for this and the previous commit to
+avoid conflicts for other FPGA changes or do you think it's easier to
+just pick both of them up through FPGA or SPI tree?
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+- Moritz
