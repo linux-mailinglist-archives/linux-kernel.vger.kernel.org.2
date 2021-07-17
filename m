@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311B03CC421
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3353CC420
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbhGQPiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 11:38:19 -0400
-Received: from mga09.intel.com ([134.134.136.24]:24179 "EHLO mga09.intel.com"
+        id S235094AbhGQPiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 11:38:17 -0400
+Received: from mga09.intel.com ([134.134.136.24]:24183 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234785AbhGQPiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234844AbhGQPiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 17 Jul 2021 11:38:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10047"; a="210853808"
+X-IronPort-AV: E=McAfee;i="6200,9189,10047"; a="210853813"
 X-IronPort-AV: E=Sophos;i="5.84,248,1620716400"; 
-   d="scan'208";a="210853808"
+   d="scan'208";a="210853813"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2021 08:35:03 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,248,1620716400"; 
-   d="scan'208";a="631386964"
+   d="scan'208";a="631386968"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by orsmga005.jf.intel.com with ESMTP; 17 Jul 2021 08:35:03 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -27,10 +27,10 @@ To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
 Cc:     len.brown@intel.com, dave.hansen@intel.com,
         thiago.macieira@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, kvm@vger.kernel.org
-Subject: [PATCH v8 03/26] x86/fpu/xstate: Modify address finders to handle both static and dynamic buffers
-Date:   Sat, 17 Jul 2021 08:28:40 -0700
-Message-Id: <20210717152903.7651-4-chang.seok.bae@intel.com>
+        chang.seok.bae@intel.com
+Subject: [PATCH v8 04/26] x86/fpu/xstate: Add a new variable to indicate dynamic user states
+Date:   Sat, 17 Jul 2021 08:28:41 -0700
+Message-Id: <20210717152903.7651-5-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210717152903.7651-1-chang.seok.bae@intel.com>
 References: <20210717152903.7651-1-chang.seok.bae@intel.com>
@@ -38,11 +38,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Have all the functions finding XSTATE address take a struct fpu * pointer
-in preparation for dynamic state buffer support.
-
-init_fpstate is a special case, which is indicated by a null pointer
-parameter to get_xsave_addr() and __raw_xsave_addr().
+The XSTATE per-task buffer is in preparation to be dynamic for user states.
+Introduce a new mask variable to indicate the 'dynamic' user states. The
+value is determined at boot-time.
 
 No functional change.
 
@@ -50,181 +48,69 @@ Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: kvm@vger.kernel.org
 ---
 Changes from v5:
-* Adjusted some call sites for the new base.
+* Made the variable __ro_after_init.
+* Dropped the perf's xstate buffer renaming, as renamed already.
 
 Changes from v3:
 * Updated the changelog. (Borislav Petkov)
-* Updated the function comment to use kernel-doc style. (Borislav Petkov)
+* Updated the code comment. (Borislav Petkov)
 
 Changes from v2:
-* Updated the changelog with task->fpu removed. (Borislav Petkov)
-
-Changes from v1:
-* Rebased on the upstream kernel (5.10)
+* Updated the changelog for clarification.
 ---
- arch/x86/include/asm/fpu/xstate.h |  2 +-
- arch/x86/kernel/fpu/xstate.c      | 42 ++++++++++++++++++++++++-------
- arch/x86/kvm/x86.c                | 10 +++-----
- 3 files changed, 38 insertions(+), 16 deletions(-)
+ arch/x86/include/asm/fpu/xstate.h | 2 ++
+ arch/x86/kernel/fpu/xstate.c      | 9 +++++++++
+ 2 files changed, 11 insertions(+)
 
 diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index ede166e9d3f2..2451bccc6cac 100644
+index 2451bccc6cac..bc4cba62906b 100644
 --- a/arch/x86/include/asm/fpu/xstate.h
 +++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -134,7 +134,7 @@ extern u64 xstate_fx_sw_bytes[USER_XSTATE_FX_SW_WORDS];
- extern void __init update_regset_xstate_info(unsigned int size,
- 					     u64 xstate_mask);
+@@ -129,6 +129,8 @@ static inline u64 xfeatures_mask_independent(void)
+ 	return XFEATURE_MASK_INDEPENDENT;
+ }
  
--void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
-+void *get_xsave_addr(struct fpu *fpu, int xfeature_nr);
- int xfeature_size(int xfeature_nr);
- int copy_uabi_from_kernel_to_xstate(struct fpu *fpu, const void *kbuf);
- int copy_sigframe_from_user_to_xstate(struct fpu *fpu, const void __user *ubuf);
++extern u64 xfeatures_mask_user_dynamic;
++
+ extern u64 xstate_fx_sw_bytes[USER_XSTATE_FX_SW_WORDS];
+ 
+ extern void __init update_regset_xstate_info(unsigned int size,
 diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 59f08953201c..d9c029ab9497 100644
+index d9c029ab9497..74e608c6ad6c 100644
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -841,19 +841,34 @@ void fpu__resume_cpu(void)
- 	}
- }
+@@ -62,6 +62,12 @@ static short xsave_cpuid_features[] __initdata = {
+ u64 xfeatures_mask_all __ro_after_init;
+ EXPORT_SYMBOL_GPL(xfeatures_mask_all);
  
--/*
-+/**
-+ * __raw_xsave_addr - Find the address where the feature state is saved.
-+ *
-  * Given an xstate feature nr, calculate where in the xsave
-  * buffer the state is.  Callers should ensure that the buffer
-  * is valid.
-+ *
-+ * If @fpu is NULL, use init_fpstate.
-+ *
-+ * @fpu:	A struct fpu * pointer
-+ *
-+ * Return:	An address of the feature state in the buffer
-  */
--static void *__raw_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
-+static void *__raw_xsave_addr(struct fpu *fpu, int xfeature_nr)
++/*
++ * This represents user xstates, a subset of xfeatures_mask_all, saved in a
++ * dynamic kernel XSAVE buffer.
++ */
++u64 xfeatures_mask_user_dynamic __ro_after_init;
++
+ static unsigned int xstate_offsets[XFEATURE_MAX] __ro_after_init =
+ 	{ [ 0 ... XFEATURE_MAX - 1] = -1};
+ static unsigned int xstate_sizes[XFEATURE_MAX] __ro_after_init =
+@@ -709,6 +715,7 @@ static int __init init_xstate_size(void)
+ static void fpu__init_disable_system_xstate(void)
  {
-+	void *xsave;
-+
- 	if (!xfeature_enabled(xfeature_nr)) {
- 		WARN_ON_FPU(1);
- 		return NULL;
- 	}
- 
--	return (void *)xsave + xstate_comp_offsets[xfeature_nr];
-+	if (fpu)
-+		xsave = &fpu->state.xsave;
-+	else
-+		xsave = &init_fpstate.xsave;
-+
-+	return xsave + xstate_comp_offsets[xfeature_nr];
+ 	xfeatures_mask_all = 0;
++	xfeatures_mask_user_dynamic = 0;
+ 	cr4_clear_bits(X86_CR4_OSXSAVE);
+ 	setup_clear_cpu_cap(X86_FEATURE_XSAVE);
  }
- /*
-  * Given the xsave area and a state inside, this function returns the
-@@ -866,15 +881,18 @@ static void *__raw_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
-  * this will return NULL.
-  *
-  * Inputs:
-- *	xstate: the thread's storage area for all FPU data
-+ *	fpu: the thread's FPU data to reference xstate buffer(s).
-+ *	     (A null pointer parameter indicates init_fpstate.)
-  *	xfeature_nr: state which is defined in xsave.h (e.g. XFEATURE_FP,
-  *	XFEATURE_SSE, etc...)
-  * Output:
-  *	address of the state in the xsave area, or NULL if the
-  *	field is not present in the xsave buffer.
-  */
--void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
-+void *get_xsave_addr(struct fpu *fpu, int xfeature_nr)
- {
-+	struct xregs_state *xsave;
-+
- 	/*
- 	 * Do we even *have* xsave state?
- 	 */
-@@ -887,6 +905,12 @@ void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
- 	 */
- 	WARN_ONCE(!(xfeatures_mask_all & BIT_ULL(xfeature_nr)),
- 		  "get of unsupported state");
-+
-+	if (fpu)
-+		xsave = &fpu->state.xsave;
-+	else
-+		xsave = &init_fpstate.xsave;
-+
- 	/*
- 	 * This assumes the last 'xsave*' instruction to
- 	 * have requested that 'xfeature_nr' be saved.
-@@ -901,7 +925,7 @@ void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
- 	if (!(xsave->header.xfeatures & BIT_ULL(xfeature_nr)))
- 		return NULL;
+@@ -780,6 +787,8 @@ void __init fpu__init_system_xstate(void)
  
--	return __raw_xsave_addr(xsave, xfeature_nr);
-+	return __raw_xsave_addr(fpu, xfeature_nr);
- }
- EXPORT_SYMBOL_GPL(get_xsave_addr);
+ 	/* Store it for paranoia check at the end */
+ 	xfeatures = xfeatures_mask_all;
++	/* Do not support the dynamically allocated buffer yet. */
++	xfeatures_mask_user_dynamic = 0;
  
-@@ -1061,8 +1085,8 @@ void copy_xstate_to_uabi_buf(struct membuf to, struct task_struct *tsk,
- 			membuf_write(&to, &pkru, sizeof(pkru));
- 		} else {
- 			copy_feature(header.xfeatures & BIT_ULL(i), &to,
--				     __raw_xsave_addr(xsave, i),
--				     __raw_xsave_addr(xinit, i),
-+				     __raw_xsave_addr(&tsk->thread.fpu, i),
-+				     __raw_xsave_addr(NULL, i),
- 				     xstate_sizes[i]);
- 		}
- 		/*
-@@ -1129,7 +1153,7 @@ static int copy_uabi_to_xstate(struct fpu *fpu, const void *kbuf,
- 		u64 mask = ((u64)1 << i);
- 
- 		if (hdr.xfeatures & mask) {
--			void *dst = __raw_xsave_addr(xsave, i);
-+			void *dst = __raw_xsave_addr(fpu, i);
- 
- 			offset = xstate_offsets[i];
- 			size = xstate_sizes[i];
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 606b66c9b44a..bd1e655dda9a 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4717,7 +4717,7 @@ static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
- 			memcpy(dest + offset, &vcpu->arch.pkru,
- 			       sizeof(vcpu->arch.pkru));
- 		} else {
--			src = get_xsave_addr(xsave, xfeature_nr);
-+			src = get_xsave_addr(vcpu->arch.guest_fpu, xfeature_nr);
- 			if (src)
- 				memcpy(dest + offset, src, size);
- 		}
-@@ -4760,7 +4760,7 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
- 			memcpy(&vcpu->arch.pkru, src + offset,
- 			       sizeof(vcpu->arch.pkru));
- 		} else {
--			void *dest = get_xsave_addr(xsave, xfeature_nr);
-+			void *dest = get_xsave_addr(vcpu->arch.guest_fpu, xfeature_nr);
- 
- 			if (dest)
- 				memcpy(dest, src + offset, size);
-@@ -10829,12 +10829,10 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 		 */
- 		if (init_event)
- 			kvm_put_guest_fpu(vcpu);
--		mpx_state_buffer = get_xsave_addr(&vcpu->arch.guest_fpu->state.xsave,
--					XFEATURE_BNDREGS);
-+		mpx_state_buffer = get_xsave_addr(vcpu->arch.guest_fpu, XFEATURE_BNDREGS);
- 		if (mpx_state_buffer)
- 			memset(mpx_state_buffer, 0, sizeof(struct mpx_bndreg_state));
--		mpx_state_buffer = get_xsave_addr(&vcpu->arch.guest_fpu->state.xsave,
--					XFEATURE_BNDCSR);
-+		mpx_state_buffer = get_xsave_addr(vcpu->arch.guest_fpu, XFEATURE_BNDCSR);
- 		if (mpx_state_buffer)
- 			memset(mpx_state_buffer, 0, sizeof(struct mpx_bndcsr));
- 		if (init_event)
+ 	/* Enable xstate instructions to be able to continue with initialization: */
+ 	fpu__init_cpu_xstate();
 -- 
 2.17.1
 
