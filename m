@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3E23CC608
+	by mail.lfdr.de (Postfix) with ESMTP id CCCC33CC609
 	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 22:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235442AbhGQUQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 16:16:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37944 "EHLO mail.kernel.org"
+        id S235492AbhGQUQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 16:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234456AbhGQUQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234719AbhGQUQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 17 Jul 2021 16:16:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 48B5C610CB;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5C04361073;
         Sat, 17 Jul 2021 20:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626552817;
-        bh=mXv2AWLSzGV7cjOOkMzpkblzTOH81G8M/4AIsEvAWkM=;
+        bh=R5V5R0C9S92oh4qIP/pHfW6NP+H2PzTvT66oEP3UeH0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=l+aItfC22jCFCdDSB9qIotQrTe0sMlqfVDHgz1ZRp/HNEXy9KdsnmDgehhEmoYTWt
-         hK+Fbo92ioTRUZGq/PawmAtcw1yLjb/n1LQLH5fwwHvpgwvFfo6eMdcn8gnp7+LDf3
-         foF0RjenAgjHw1ZNQg27sDkQzXUI6uXcLy8NaU7PhZlMZp1AEso1kYawEJsLY+oHAW
-         U8NFvCyIG5+ZysnQ1QFl56eF8MBLcEJ6P0cripozR61H4ZtZIh6QKQizbL/KCGvkS0
-         AVdSOP0pHgWpSZwaw8bj0klYv7I5ago2lIxzuZnOPBmpnemfI94lAI2A4siktRkulN
-         JEMne4j+68vPA==
+        b=REFkvchDtSec1YiW/PUUqTn9cliQNpmcQ3VTdBMfwvTqwhB5GAzEBzM0JOSdwteVb
+         AQfHAqAWyCW6nQatDFiu6/AFNmYh4NZtW72RAoqFt//M2QwvJzlknegejL7clWJ4x3
+         t5xXGtzkSqZd1n9ReGVZ7j0qayPoxBXuHixgcQaWU24rd13Unr2v4Wa3zn9YqX8/57
+         KlmEv+mgnBRVdrVFjDZVrtosQTCXT/TK4ceZek1+5+mfaw8X+qwx2zPRd4KXIaFMlb
+         MoO849y3/ZcMAfYaS/3lD/2ks7lrTa4ihaFnDzgiojjfqlabYMvX15HR4sJheVAruo
+         KoLJfAO/iSnGg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3DCE160A23;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 50620609EF;
         Sat, 17 Jul 2021 20:13:37 +0000 (UTC)
-Subject: Re: [GIT PULL] CIFS/SMB3 Fixes
+Subject: Re: [GIT PULL] SCSI fixes for 5.14-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5munsckwgOj8BknkB1pu+oktLTDJA8hN1cHbDucQXVJ2Nw@mail.gmail.com>
-References: <CAH2r5munsckwgOj8BknkB1pu+oktLTDJA8hN1cHbDucQXVJ2Nw@mail.gmail.com>
+In-Reply-To: <57d614d67af1c091c40a520bb8e2dca27e08833e.camel@HansenPartnership.com>
+References: <57d614d67af1c091c40a520bb8e2dca27e08833e.camel@HansenPartnership.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5munsckwgOj8BknkB1pu+oktLTDJA8hN1cHbDucQXVJ2Nw@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc1-smb3-fixes
-X-PR-Tracked-Commit-Id: cdc3363065aba2711e51019b3d5787f044f8a133
+X-PR-Tracked-Message-Id: <57d614d67af1c091c40a520bb8e2dca27e08833e.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 053c16ac89050ef0e8ab9dc1edaf157bf104c8c6
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 44cb60b425ab5221a2567e420f5088ff4315c57a
-Message-Id: <162655281719.27873.5172880899513558575.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 5d766d55d163a60b709317b15db6c8bb02bf54e4
+Message-Id: <162655281732.27873.12042789984497413675.pr-tracker-bot@kernel.org>
 Date:   Sat, 17 Jul 2021 20:13:37 +0000
-To:     Steve French <smfrench@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 16 Jul 2021 19:17:01 -0500:
+The pull request you sent on Sat, 17 Jul 2021 07:38:43 +0100:
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc1-smb3-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/44cb60b425ab5221a2567e420f5088ff4315c57a
+https://git.kernel.org/torvalds/c/5d766d55d163a60b709317b15db6c8bb02bf54e4
 
 Thank you!
 
