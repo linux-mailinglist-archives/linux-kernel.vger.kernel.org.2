@@ -2,91 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856333CC196
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 08:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615563CC197
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 08:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhGQG4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 02:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhGQG4w (ORCPT
+        id S231370AbhGQG6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 02:58:53 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:35752 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhGQG6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 02:56:52 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC67CC06175F;
-        Fri, 16 Jul 2021 23:53:55 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id r132so18580050yba.5;
-        Fri, 16 Jul 2021 23:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7g1basq9FIMEpxZHyAA7wCvpnCVvOwjerdE9BRFHgr4=;
-        b=jx2mOZGG/9NAOBxuu+ImUitJqa/QecCGWQ2n/a+OaVrhni/m6bAT+dLEAV5p4xDTtQ
-         1wCnldiCQMzzE8TEP71/J0qWgJiiimwpRwzt9XfVyL/NWWJTsukjCkAM6VLOn+OgMMQY
-         PjayFSCUHZG3ScrB5X38+V/7xGbZJv/09cSd5yeUc5lixwu6sTL8jK5VqEXpS+faz2RU
-         5VoDAE4uSvYorO3I9T4Iq+SglZ3SGO5biixnFxPg3byx6luGl8wklN47LJLqj186kxhg
-         mup+Be9QlHYVrhKGVKOJ3CkVmkha11cgFzgQ1y9epECo7u3CO6bSiBQ9l8P9QqOOEyAg
-         piHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7g1basq9FIMEpxZHyAA7wCvpnCVvOwjerdE9BRFHgr4=;
-        b=HvhMu6gdgGZ0V4783Bl7ZY6BmYMAkcWRWZNeuBKeLHDfVkKNMtL7vrmWw5aZpxsGHz
-         8/Rhq9mWC8YcYgWoJY5q4YKzchyfWa0weGjB4ZHL6LDHOP4LbBCIZlJRDiPcVD3Q3uuV
-         +ZuP9x1ukqUGC2glDUGwHMKbXHlTvRcoZQnAT6SW6RCU5d1VPmQ2QyjAm68AG5wOlNWo
-         eJHFJfGcEt7GbVxJ1/sOG4LEMl0n2NU+//N3nht9o33R1zZxKORem/1YM/RnnDQO5dk7
-         o/QWPYdVKcXlfQzEx6WaW3Pg/p+29Bmx5VR61JEkFsk4G0Nkv+YaS4nS9M59bPaTdMVf
-         enZw==
-X-Gm-Message-State: AOAM531CMAOxLZzkL1zWsu4beFiVAB6S1mz+2bNppLlYcbQ4CZXyKCRL
-        EMA9mM6hezqTc4EXzIQP6BZli4cbcAkF5suKb7A=
-X-Google-Smtp-Source: ABdhPJyEr8R3tdbDULeEJeCfuC4XeVSmEmoHn3grGBCxXWcZhr/V1VsfgufnVDaLI1QFGDA3AxYDRqpjU0wREEqN+hI=
-X-Received: by 2002:a25:f0b:: with SMTP id 11mr17705020ybp.518.1626504834998;
- Fri, 16 Jul 2021 23:53:54 -0700 (PDT)
+        Sat, 17 Jul 2021 02:58:52 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4GRf5P0WMxz1qwGh;
+        Sat, 17 Jul 2021 08:55:53 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4GRf5N6Vjqz1qqkp;
+        Sat, 17 Jul 2021 08:55:52 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id S-rncmjGV8P5; Sat, 17 Jul 2021 08:55:51 +0200 (CEST)
+X-Auth-Info: ttBBSncvPvWxCsoB24c5cQK0+OdIzsqtJ76ETM1VxzIZYm8dChFf2ksCeGRCMqv2
+Received: from tiger.home (ppp-46-244-176-127.dynamic.mnet-online.de [46.244.176.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Sat, 17 Jul 2021 08:55:51 +0200 (CEST)
+Received: by tiger.home (Postfix, from userid 1000)
+        id DD1A748743; Sat, 17 Jul 2021 08:55:50 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Tong Tiangen <tongtiangen@huawei.com>, <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
+References: <20210621032855.130650-1-tongtiangen@huawei.com>
+        <87pmvjtumc.fsf@igel.home> <20210716205332.5856df78@xhacker>
+        <871r7yz241.fsf@igel.home> <20210717101805.2afabacb@xhacker>
+X-Yow:  Now I'm concentrating on a specific tank battle toward
+ the end of World War II!
+Date:   Sat, 17 Jul 2021 08:55:50 +0200
+In-Reply-To: <20210717101805.2afabacb@xhacker> (Jisheng Zhang's message of
+        "Sat, 17 Jul 2021 10:18:05 +0800")
+Message-ID: <875yx9qvih.fsf@linux-m68k.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20210625110419.24503-1-lukas.bulwahn@gmail.com>
- <20210625110419.24503-4-lukas.bulwahn@gmail.com> <CAAdtpL6CMAbBPJr3La31Y3AYY48TjLZhDHjKWjUJxXdBS--Xmw@mail.gmail.com>
- <alpine.DEB.2.21.2106261919300.37803@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2106261919300.37803@angie.orcam.me.uk>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sat, 17 Jul 2021 08:53:44 +0200
-Message-ID: <CAKXUXMwsiOMX0CismKBhcopkNtCUTmwDxQTC9KOBYQ2VfK6q-g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arch: mips: remove dead references
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
-        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 7:22 PM Maciej W. Rozycki <macro@orcam.me.uk> wrote=
-:
->
-> On Sat, 26 Jun 2021, Philippe Mathieu-Daud=C3=A9 wrote:
->
-> > >   http://www.computer-refuge.org/classiccmp/ftp.digital.com/pub/DEC/T=
-riAdd/
-> >
-> > https://web.archive.org/web/20050205114151/ftp.digital.com/pub/DEC/TriA=
-dd/
->
->  I suggest: <ftp://ftp.hp.com/pub/alphaserver/archive/triadd/> as the
-> canonical reference nowadays.  If that goes offline sometime, we can thin=
-k
-> of an alternative.
->
+Please use
+https://download.opensuse.org/repositories/home:/Andreas_Schwab:/riscv:/jeos/images/openSUSE-Tumbleweed-RISC-V-JeOS-efi.riscv64.raw.xz
+and run it in qemu with u-boot as kernel.
 
-Thanks, Maciej. I will update the reference to that location, when I
-come across to send the next version of this patch set.
+Andreas.
 
-Lukas
-
->   Maciej
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
