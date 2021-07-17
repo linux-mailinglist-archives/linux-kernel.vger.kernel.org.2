@@ -2,117 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196573CBFDF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 01:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F4F3CBFF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 02:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhGPX5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 19:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhGPX5u (ORCPT
+        id S231567AbhGQAEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 20:04:47 -0400
+Received: from mail1.protonmail.ch ([185.70.40.18]:61333 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhGQAEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 19:57:50 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339E1C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 16:54:55 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id u11so12950462oiv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 16:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VJGdspG2J1Lj8nevb/Lj+7rawdMA9S4WQ8v9/yvZMvo=;
-        b=OkAzUjq+SaObhfByR+nUx5mgIQ3Mj2gMLVbecs/XMcl0FGNc538qnz06xKozYcDCH+
-         T2G34oXtNn6K04Y3tJ/tzc7PAdF9ohrL/VszWgflvy/59nrcZM586yOU9z2qwdFfSxoz
-         4rk+f/B2DvrfjOHw/2DRWu8foTSqwez0nexmMgwvUX65nMDUUOljQtPVEw1W9PqI6ixE
-         uznwYPTE3PqGoglVJ3dT1PRSWyK40h86fx7eCXlJDVoUh4MiYQtlU7+rJSkLsB6WuQIX
-         nb89ZRwBzc8ZP5sHAnolgZ4W7sX2x8Gm6XH2a9mu82raDwbjxpywlhcj7DuniAbxeSgJ
-         oaQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VJGdspG2J1Lj8nevb/Lj+7rawdMA9S4WQ8v9/yvZMvo=;
-        b=dlIBkmaHg4akLRIklp7DP10Al5akIBiESt+XKbxi2IFdJwWff5aPwSp2StlDp9souL
-         RcVVjWysmANHADv/9YRC2vPMFQROqiqIO27LYQ9hIy6ajgySi22ZoSFN7B62ofbh0Cxb
-         anN1tvCsGmJbnmqNsPG67Xdr2/NyADnDb8WqL8EnZHX2240tNpPxjBhqnFe7KU3nb3s9
-         qH50AZOYCA/uhkV+ld9W1D6eAxk2bwEw/+tWQ+YOzjniNGj7SkY7HVBuMygnJOKpU3ex
-         7cUAykYXssCo32ds3QpkC0gqME7Nc8PiWIb4lmmZr123IttGsQXssr7YsWMm1h5hH+oE
-         xypw==
-X-Gm-Message-State: AOAM530cpucoX7Dw5v1A0dbaEUMqjxdnPr2YTGLSAj2bGKkca4pmcU8m
-        4nwIcFYZC0BXK0M3I0d/mATUpg==
-X-Google-Smtp-Source: ABdhPJzPb0xrQfYz/QsYG3LsjhsCqhhunDjTyM/p4U47JfwRJ5DQarU6cR+d2fPgJkfLT6b+EUMmLQ==
-X-Received: by 2002:aca:dc44:: with SMTP id t65mr9803129oig.76.1626479694464;
-        Fri, 16 Jul 2021 16:54:54 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b10sm2434834oiy.4.2021.07.16.16.54.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jul 2021 16:54:54 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 18:54:51 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sarthak Garg <sartgarg@codeaurora.org>
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        stummala@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V1 2/2] mmc: sdhci-msm: Use maximum possible data timeout
- value
-Message-ID: <YPIcSx90JqhVn3A1@yoga>
-References: <1626444182-2187-1-git-send-email-sartgarg@codeaurora.org>
- <1626444182-2187-3-git-send-email-sartgarg@codeaurora.org>
+        Fri, 16 Jul 2021 20:04:46 -0400
+Date:   Sat, 17 Jul 2021 00:01:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1626480109; bh=r2E7sDKBOZy+lOoF6oEpTdm7rXJRh85I7jVCdPqIxzQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=UEAK77EQBjM4SnpgIoN3010K1t+oFXp/rV9Owy0N+IT9lsTAGfRyi/VumpNDTTDc+
+         3+9AW1DEPZuGUhRxkaf4xdri7+uPI/B3ccQ8U8PU7T7rOF3ptgNr7DDveFXRZEobHU
+         2bS7y6UQS8LJt/aHmfjDHIAYP0AgXEZ4eoSwCtptqS1VCW3OFkTXESdl7Xt+dzyWe4
+         FjLUZo6u1zUoTYSYCpQhk6k9rIa08SM3OPEH5I7eymptUyHeioj0JQsY5dpR1NicrK
+         a1gELG0LNQ8I7xTfzfu+gh0WRCNfAHPn9XMEXH5QR47krdJzWtO9p2m8SA9MLm52d6
+         989M2EfM6VWZg==
+To:     Sami Tolvanen <samitolvanen@google.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
+Message-ID: <20210716235415.161850-1-alobakin@pm.me>
+In-Reply-To: <CABCJKucqW6a8h55tUQ072QMZxzB5O4djjF+TN1-Btb=TY8KE=Q@mail.gmail.com>
+References: <20210716204545.3536354-1-samitolvanen@google.com> <20210716225245.67939-1-alobakin@pm.me> <CABCJKucqW6a8h55tUQ072QMZxzB5O4djjF+TN1-Btb=TY8KE=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626444182-2187-3-git-send-email-sartgarg@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Jul 09:03 CDT 2021, Sarthak Garg wrote:
+From: Sami Tolvanen <samitolvanen@google.com>
+Date: Fri, 16 Jul 2021 16:18:42 -0700
 
-> The Qcom SD controller defines the usage of 0xF in data
-> timeout counter register (0x2E) which is actually a reserved
-> bit as per specification. This would result in maximum of 21.26 secs
-> timeout value.
-> 
-> Some SDcard taking more time than 2.67secs (timeout value corresponding
-> to 0xE) and with that observed data timeout errors.
-> So increasing the timeout value to max possible timeout.
-> 
-> Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+> Hi Al,
+>
+> On Fri, Jul 16, 2021 at 4:00 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > From:   Sami Tolvanen <samitolvanen@google.com>
+> > Date:   Fri, 16 Jul 2021 13:45:45 -0700
+> >
+> > > With CONFIG_LTO_CLANG, we currently link modules into native
+> > > code just before modpost, which means with TRIM_UNUSED_KSYMS
+> > > enabled, we still look at the LLVM bitcode in the .o files when
+> > > generating the list of used symbols. As the bitcode doesn't
+> > > yet have calls to compiler intrinsics and llvm-nm doesn't see
+> > > function references that only exist in function-level inline
+> > > assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
+> > > work with LTO.
+> > >
+> > > This change moves module LTO linking to happen earlier, and
+> > > thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
+> > > entirely, allowing us to also drop the whitelist from
+> > > gen_autoksyms.sh.
+> > >
+> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1369
+> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > > ---
+> > >  scripts/Makefile.build    | 25 ++++++++++++++++++++++++-
+> > >  scripts/Makefile.lib      |  7 +++++++
+> > >  scripts/Makefile.modfinal | 21 ++-------------------
+> > >  scripts/Makefile.modpost  | 22 +++-------------------
+> > >  scripts/gen_autoksyms.sh  | 12 ------------
+> > >  5 files changed, 36 insertions(+), 51 deletions(-)
+> > >
+> > > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> > > index 10b2f2380d6f..80e0fa810870 100644
+> > > --- a/scripts/Makefile.build
+> > > +++ b/scripts/Makefile.build
+> > > @@ -202,6 +202,7 @@ sub_cmd_record_mcount =3D                        =
+           \
+> > >       if [ $(@) !=3D "scripts/mod/empty.o" ]; then      \
+> > >               $(objtree)/scripts/recordmcount $(RECORDMCOUNT_FLAGS) "=
+$(@)";   \
+> > >       fi;
+> > > +/
+> >
+> > Seems like a leftover or a random typo here.
+>
+> Oops, indeed.
+>
+> > >  recordmcount_source :=3D $(srctree)/scripts/recordmcount.c \
+> > >                   $(srctree)/scripts/recordmcount.h
+> > >  else
+> > > @@ -271,12 +272,34 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $=
+$(objtool_dep) FORCE
+> > >       $(call if_changed_rule,cc_o_c)
+> > >       $(call cmd,force_checksrc)
+> > >
+> > > +ifdef CONFIG_LTO_CLANG
+> > > +# Module .o files may contain LLVM bitcode, compile them into native=
+ code
+> > > +# before ELF processing
+> > > +quiet_cmd_cc_lto_link_modules =3D LTO [M] $@
+> > > +cmd_cc_lto_link_modules =3D                                         =
+   \
+> > > +     $(LD) $(ld_flags) -r -o $@                                     =
+ \
+> > > +             $(shell [ -s $(@:.lto.o=3D.o.symversions) ] &&         =
+   \
+> > > +                     echo -T $(@:.lto.o=3D.o.symversions))          =
+   \
+> > > +             --whole-archive $^
+> > > +
+> > > +ifdef CONFIG_STACK_VALIDATION
+> > > +# objtool was skipped for LLVM bitcode, run it now that we have comp=
+iled
+> > > +# modules into native code
+> > > +cmd_cc_lto_link_modules +=3D ;                                      =
+   \
+> > > +     $(objtree)/tools/objtool/objtool $(objtool_args)               =
+ \
+> >
+> > Now $(part-of-module) inside $(objtool_args) doesn't get expanded
+> > properly, because previously it was being called on x.ko, and now
+> > it's being called on x.lto.o. $(basename $@) returns "x.lto" instead
+> > of "x", and Make doesn't find "x.lto.o" in $(real-objs-m).
 
-The From: of the email says you wrote the patch, but the first person to
-certify its origin is Sahitya. Did you perhaps write this together? If
-so you should have a:
+To be more precise:
 
-Co-developed-by: Sahitya
+Previously, objtool was being called from Makefile.modfinal, where
+part-of-module is hardcoded to 'y'. Now it's being called from
+Makefile.build, and part-of-module is being calculated the same
+way as for non-LTO build (when objtool is being called on each
+object file rather than final composite object).
+So, part-of-module and objtool invocation is now correct for modules
+with single source file, but wrong for multi-object modules.
 
-If Sahitya wrote the patch, certifies its origin and then you picks it
-up and certify that you got it from Sahitya, then you should write it as
-you did - but you should have retained Sahitya as author...
+The simplest fix is to append '--module' to objtool args
+unconditionally when we're trying to process .lto.o file.
 
-Regards,
-Bjorn
+> > An example of objtool args dump:
+> >
+> >   LTO [M] fs/btrfs/btrfs.lto.o
+> > Call: ./tools/objtool/objtool orc generate --no-fp --no-unreachable --r=
+etpoline --uaccess fs/btrfs/btrfs.lto.o
+> > fs/btrfs/btrfs.lto.o: warning: objtool: static_call: can't find static_=
+call_key symbol: __SCK__might_resched
+>
+> Curiously I didn't see objtool warnings when building allmodconfig,
+> but you're obviously correct here. I'll fix this in v2.
+>
+> > As can be seen, objtools command line no longer contains "--module".
+> > And this warning about "can't find static_call_key" can appear only
+> > in case of !module -> no -m|--module param was given.
+> >
+> > As a result, modules get broken and the kernel panics after loading
+> > initramfs.
+>
+> Thanks for taking a look!
+>
+> Sami
 
-> Signed-off-by: Sarthak Garg <sartgarg@codeaurora.org>
-> ---
->  drivers/mmc/host/sdhci-msm.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index e44b7a6..19e4673 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -2696,6 +2696,9 @@ static int sdhci_msm_probe(struct platform_device *pdev)
->  
->  	msm_host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY | MMC_CAP_NEED_RSP_BUSY;
->  
-> +	/* Set the timeout value to max possible */
-> +	host->max_timeout_count = 0xF;
-> +
->  	pm_runtime_get_noresume(&pdev->dev);
->  	pm_runtime_set_active(&pdev->dev);
->  	pm_runtime_enable(&pdev->dev);
-> -- 
-> 2.7.4
-> 
+Thanks for working on ClangLTO/CFI!
+Al
+
