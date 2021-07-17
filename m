@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577503CC6AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 00:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3856C3CC6CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhGQWgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 18:36:33 -0400
-Received: from mail-pf1-f174.google.com ([209.85.210.174]:34530 "EHLO
-        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhGQWgb (ORCPT
+        id S230484AbhGQXdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 19:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhGQXdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 18:36:31 -0400
-Received: by mail-pf1-f174.google.com with SMTP id o201so12643242pfd.1;
-        Sat, 17 Jul 2021 15:33:34 -0700 (PDT)
+        Sat, 17 Jul 2021 19:33:35 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947DBC061762
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 16:30:37 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id a13so16476783wrf.10
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 16:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xkxt3iyAxj9INcBajX2r0UFT3eJBxPbJGH4oT44k7Og=;
+        b=SAfsJgdoPyUlpznyaSaNDTFpbFaFj1VabR+V2sdUgYQ5C1H8XBtVe04b7Gd9Pfg0EA
+         +gStx9xSXOcy5PSjpYCedpJ1VFpMGgBh68Vm6od5GKHgcuESVYNn5Zn77CMGZ4CiEviq
+         88IC9Utlk1kMKhh3FtgbkB1h745NEg22Ia3dnFqVnj0j7FUJgWQQ4Ueht5zshIj5f+jH
+         w22Yu4PRuvKeUBFC/58JM8Zsz7zF7SfeQfQQffp1bzscJxixJrYVBpATbrR5OcW7j/4e
+         o0zpuF/1KpLlxcubbKjTYMNv1xLQn0taZGS4jgGlbcYWzh17FhtqQLC9giJrFU6X3g/X
+         q7/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=leiLcAGlRO9EctZ5GZcN4ZTz5wyDhsmWRqazNx7hX4U=;
-        b=JzxdoTYFFD1sr7dGnniqB26DzsYqPGCwU0GZ25XNr/uL/+6J6Q3rINGYnKq8AdFQoa
-         xfTnFv3CmDZMIm64DapYADdTyP8fNL0TLwFX8Xqrwu/Ifg2x+OSl4nvjxcTAE9QhGIrK
-         EbTgllJ5VvyOHHwDnJ6zzxLeNXPK/9XYi8E+WDWS2njvG+A6TMzv8+DN1UxbZbYiMoco
-         1PMeVSbk4O4AdH+QrclDIXN6ilOdlFwbuWDXhBW4pAtMArJXME68jRikll3kar/FzG0D
-         gZ66LQ2BdK5ouvdM2t1uhofRJ0k5Xfwnk+GNujrGU66+05tS+Yd7tI3bp8r4XTLr/fRh
-         9+1A==
-X-Gm-Message-State: AOAM531o0vzmwo5EqJIUcpMDt9Ohhva8IGJO44dLxFZwM1dR5bUTgwsA
-        Qhlc2Vc0oPQYO0gKd3boMkI=
-X-Google-Smtp-Source: ABdhPJxbzuBLAjmXziU93pXHGW+ZR8OBrTOPyaFL8kbMl15cfbNWYEWLNkRW8AtVYWzywHQ59BLUiQ==
-X-Received: by 2002:aa7:98c6:0:b029:32e:608b:7e86 with SMTP id e6-20020aa798c60000b029032e608b7e86mr17212940pfm.68.1626561213778;
-        Sat, 17 Jul 2021 15:33:33 -0700 (PDT)
-Received: from localhost ([24.4.24.239])
-        by smtp.gmail.com with ESMTPSA id x14sm11475306pjc.4.2021.07.17.15.33.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xkxt3iyAxj9INcBajX2r0UFT3eJBxPbJGH4oT44k7Og=;
+        b=PzeXyorsc/Cog0JNvj64tzxNH80MV6UilioSNDuEHlHA/nbB3QYWUsFD6YvMZzh0k7
+         aiFXT8HRkbCG1J1pwbAGAqJQXUVOpoPfBmEE1fN5/dvjyp/VTv5PNXGpYjJJ+YgRF3EG
+         Kndu/GpVNz5GK+4/9pS+tlCHyaCttC8bls4/PTDqXJ2869YMS0paL3rudHjvleq1aPFB
+         ymBqnhIX3U19g2JzXfOpC8EbwgWfToZRa9TJoTsEqEqYFqgHa2lp/B9c9oOCqwGI1aZO
+         dy76p2OwrMYMZd/ePoyd2iwkotcLUk79TF2dUgS1i00XEWOi/Gc6Hg/6/mO3ZT5j7Oip
+         gFbA==
+X-Gm-Message-State: AOAM532rA2u4y77AZ8SOzWQrOFBqxi/11oTu89nbycIGKb3luiFClgtH
+        kZ1QplT6EVGm5IMU4BkVZvI=
+X-Google-Smtp-Source: ABdhPJx2vG1xT5/8TvIJ+TR25Q4Vj07jSRMGfdJ+EoASteOiqg/fOSx5EnSSjjdB9bEVeKwIxcL4oA==
+X-Received: by 2002:a5d:6389:: with SMTP id p9mr21798564wru.1.1626564636046;
+        Sat, 17 Jul 2021 16:30:36 -0700 (PDT)
+Received: from localhost.localdomain (dynamic-2a01-0c22-7602-4e00-f22f-74ff-fe21-0725.c22.pool.telefonica.de. [2a01:c22:7602:4e00:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id q19sm14824051wmq.38.2021.07.17.16.30.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 15:33:33 -0700 (PDT)
-Date:   Sat, 17 Jul 2021 15:33:32 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Justin Forbes <jmforbes@linuxtx.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Moritz Fischer <mdf@kernel.org>
-Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
- ROM state
-Message-ID: <YPNavEl340mxcNVd@epycbox.lan>
-References: <20210712060912.995381202@linuxfoundation.org>
- <20210712060916.499546891@linuxfoundation.org>
- <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
+        Sat, 17 Jul 2021 16:30:35 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-amlogic@lists.infradead.org
+Cc:     narmstrong@baylibre.com, khilman@baylibre.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 0/2] Meson8/Meson8b: sound card support
+Date:   Sun, 18 Jul 2021 01:30:28 +0200
+Message-Id: <20210717233030.331273-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Justin,
+This series adds the AIU audio controller for Meson8 and Meson8b. The
+AIU audio controller has been found to work fine with out-of-tree
+patches for HDMI audio (over I2S). SPDIF output also works (tested with
+a scope).
+Endless Mini (EC-100) has an RT5640 audio codec. The driver for this
+codec can be selected since commit 08c56cab302a05 ("ASoC: rt5640: Make
+codec selectable"), which is part of Linux 5.14-rc1. While support is
+not perfect (due to us lacking proper support for configuring
+GPIO_BSD_EN) audio output still works fine.
 
-On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
-> On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Moritz Fischer <mdf@kernel.org>
-> >
-> > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
-> >
-> > The ROM load sometimes seems to return an unknown status
-> > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
-> >
-> > If the ROM load indeed failed this leads to failures when trying to
-> > communicate with the controller later on.
-> >
-> > Attempt to load firmware using RAM load in those cases.
-> >
-> > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
-> > Cc: stable@vger.kernel.org
-> > Cc: Mathias Nyman <mathias.nyman@intel.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Tested-by: Vinod Koul <vkoul@kernel.org>
-> > Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> > Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> 
-> After sending out 5.12.17 for testing, we had a user complain that all
-> of their USB devices disappeared with the error:
-> 
-> Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
-> for renesas_usb_fw.mem failed with error -2
-> Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
-> Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
+This series is based on my bugfix patch "ARM: dts: meson8: Use a
+higher default GPU clock frequency" from [0]
 
-This looks like it fails finding the actual firmware file (ENOENT). Any
-chance you could give this a whirl on top of the original patch?
-
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index 18c2bbddf080..cde8f6f1ec5d 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -379,7 +379,11 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
-        driver_data = (struct xhci_driver_data *)id->driver_data;
-        if (driver_data && driver_data->quirks & XHCI_RENESAS_FW_QUIRK) {
-                retval = renesas_xhci_check_request_fw(dev, id);
--               if (retval)
-+               /*
-+                * If firmware wasn't found there's still a chance this might work without
-+                * loading firmware on some systems, so let's try at least.
-+                */
-+               if (retval && retval != -ENOENT)
-                        return retval;
-        }
+Changes since v1 at [1]:
+- added sound-name-prefix = "AIU"; to the first patch to make it
+  identical to what we have in meson-gx.dtsi
+- drop audio-routing property from the sound card in the second patch
+  as it doesn't appear to be needed
 
 
-Thanks,
-Moritz
+[0] https://patchwork.kernel.org/project/linux-amlogic/patch/20210711214023.2163565-1-martin.blumenstingl@googlemail.com/
+[1] https://patchwork.kernel.org/project/linux-amlogic/cover/20210713231103.2994354-1-martin.blumenstingl@googlemail.com/
+
+
+Martin Blumenstingl (2):
+  ARM: dts: meson: Add the AIU audio controller
+  ARM: dts: meson8b: ec100: wire up the RT5640 audio codec
+
+ arch/arm/boot/dts/meson.dtsi        | 12 ++++++
+ arch/arm/boot/dts/meson8.dtsi       | 63 +++++++++++++++++++++++++++++
+ arch/arm/boot/dts/meson8b-ec100.dts | 44 ++++++++++++++++++++
+ arch/arm/boot/dts/meson8b.dtsi      | 63 +++++++++++++++++++++++++++++
+ 4 files changed, 182 insertions(+)
+
+-- 
+2.32.0
+
