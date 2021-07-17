@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8013CC390
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 15:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81ED3CC393
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 15:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233680AbhGQN1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 09:27:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229746AbhGQN07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 09:26:59 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54F60613D0;
-        Sat, 17 Jul 2021 13:24:00 +0000 (UTC)
-Date:   Sat, 17 Jul 2021 14:26:23 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v6 1/2] iio: frequency: adrf6780: add support for
- ADRF6780
-Message-ID: <20210717142623.45f96a22@jic23-huawei>
-In-Reply-To: <20210716114210.141560-1-antoniu.miclaus@analog.com>
-References: <20210716114210.141560-1-antoniu.miclaus@analog.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233448AbhGQNgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 09:36:17 -0400
+Received: from mail-m17652.qiye.163.com ([59.111.176.52]:53472 "EHLO
+        mail-m17652.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhGQNgQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 09:36:16 -0400
+X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Sat, 17 Jul 2021 09:36:15 EDT
+DKIM-Signature: a=rsa-sha256;
+        b=AZBJtlrH+ns0Wmc11Ad0TcE6gQ+l2pyhsXrfKTZjuiOANzdCXmsTXWv/DnzLWJiWtA1bkgrrrhWGIch6pCBvP9CUBTERAczfMZ+bQTDBaiAn0uF0e+2taxeESKfBOE/tSvKXqEoAxzztMAHZgQGl33oa/O4a6ap9Ssjm8f+kliM=;
+        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
+        bh=LtvisgyOL6o8S6prWoa7+r/wo7a6rAned5lX/FaCHH8=;
+        h=date:mime-version:subject:message-id:from;
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m17652.qiye.163.com (Hmail) with ESMTP id 2A0653C014C;
+        Sat, 17 Jul 2021 21:25:46 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AAoAygBXD7UuY6twAU03JKpm.3.1626528346162.Hmail.frank.li@vivo.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: =?UTF-8?B?UmU6UmU6IFtmMmZzLWRldl0gW1BBVENIXSBmMmZzOiBmaXggY3R4LT5wb3MgaW4gZjJmc19yZWFkX2lubGluZV9kaXIoKQ==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.231
+In-Reply-To: <2d651236-40de-2e7b-d6c6-9a18ce9a25ff@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from frank.li@vivo.com( [58.251.74.231) ] by ajax-webmail ( [127.0.0.1] ) ; Sat, 17 Jul 2021 21:25:46 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
+Date:   Sat, 17 Jul 2021 21:25:46 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRpITE1WGR0ZTEMeQhpPQx
+        0dVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OSUtDTExNTkpPN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6OhQ6Ahw5Iz9MLg4iTQ8MOi5LSDEwCxZVSFVKTUlNTklDSE9NT01DVTMWGhIXVR0JGhUQVRcS
+        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSU5KVUxPVUlISllXWQgBWUFOTUxMNwY+
+X-HM-Tid: 0a7ab4a4f03dd9fckuws2a0653c014c
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 14:42:09 +0300
-Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
-
-> The ADRF6780 is a silicon germanium (SiGe) design, wideband,
-> microwave upconverter optimized for point to point microwave
-> radio designs operating in the 5.9 GHz to 23.6 GHz frequency
-> range.
-> 
-> Datasheet:
-> https://www.analog.com/media/en/technical-documentation/data-sheets/ADRF6780.pdf
-> 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-Hi Antoniu
-
-As it looks like we'll have a v7, a few trivial comments from me.
-
-...
-
-> +
-> +static int adrf6780_init(struct adrf6780_dev *dev)
-> +{
-> +	int ret;
-> +	unsigned int chip_id, enable_reg, enable_reg_msk;
-> +	struct spi_device *spi = dev->spi;
-> +
-> +	/* Perform a software reset */
-> +	ret = adrf6780_reset(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = adrf6780_spi_read(dev, ADRF6780_REG_CONTROL, &chip_id);
-> +	if (ret)
-> +		return ret;
-> +
-> +	chip_id = FIELD_GET(ADRF6780_CHIP_ID_MSK, chip_id);
-> +	if (chip_id != ADRF6780_CHIP_ID) {
-> +		dev_err(&spi->dev, "ADRF6780 Invalid Chip ID.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	enable_reg_msk = ADRF6780_VGA_BUFFER_EN_MSK |
-> +			ADRF6780_DETECTOR_EN_MSK |
-> +			ADRF6780_LO_BUFFER_EN_MSK |
-> +			ADRF6780_IF_MODE_EN_MSK |
-> +			ADRF6780_IQ_MODE_EN_MSK |
-> +			ADRF6780_LO_X2_EN_MSK |
-> +			ADRF6780_LO_PPF_EN_MSK |
-> +			ADRF6780_LO_EN_MSK |
-> +			ADRF6780_UC_BIAS_EN_MSK;
-> +
-> +	enable_reg = FIELD_PREP(ADRF6780_VGA_BUFFER_EN_MSK, dev->vga_buff_en) |
-> +			FIELD_PREP(ADRF6780_DETECTOR_EN_MSK, 1) |
-> +			FIELD_PREP(ADRF6780_LO_BUFFER_EN_MSK, dev->lo_buff_en) |
-> +			FIELD_PREP(ADRF6780_IF_MODE_EN_MSK, dev->if_mode_en) |
-> +			FIELD_PREP(ADRF6780_IQ_MODE_EN_MSK, dev->iq_mode_en) |
-> +			FIELD_PREP(ADRF6780_LO_X2_EN_MSK, dev->lo_x2_en) |
-> +			FIELD_PREP(ADRF6780_LO_PPF_EN_MSK, dev->lo_ppf_en) |
-> +			FIELD_PREP(ADRF6780_LO_EN_MSK, dev->lo_en) |
-> +			FIELD_PREP(ADRF6780_UC_BIAS_EN_MSK, dev->uc_bias_en);
-
-Here we are probably turning on a bunch of stuff which will result in power usage.
-Would it be sensible to turn it off again in remove path?  (devm managed should be fine).
-
-
-> +
-> +	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_ENABLE, enable_reg_msk, enable_reg);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_LO_PATH,
-> +						ADRF6780_LO_SIDEBAND_MSK,
-> +						FIELD_PREP(ADRF6780_LO_SIDEBAND_MSK, dev->lo_sideband));
-> +	if (ret)
-> +		return ret;
-> +
-> +	return adrf6780_spi_update_bits(dev, ADRF6780_REG_ADC_CONTROL,
-> +						ADRF6780_VDET_OUTPUT_SELECT_MSK,
-> +						FIELD_PREP(ADRF6780_VDET_OUTPUT_SELECT_MSK, dev->vdet_out_en));
-> +}
-> +
-
-> +static void adrf6780_dt_parse(struct adrf6780_dev *dev)
-
-Trivial nitpick, but given this is all device property based (great)
-the dt naming is now misleading.  Perhaps _properties_parse() ?
-
-> +{
-> +	struct spi_device *spi = dev->spi;
-> +
-> +	dev->vga_buff_en = device_property_read_bool(&spi->dev, "adi,vga-buff-en");
-> +	dev->lo_buff_en = device_property_read_bool(&spi->dev, "adi,lo-buff-en");
-> +	dev->if_mode_en = device_property_read_bool(&spi->dev, "adi,if-mode-en");
-> +	dev->iq_mode_en = device_property_read_bool(&spi->dev, "adi,iq-mode-en");
-> +	dev->lo_x2_en = device_property_read_bool(&spi->dev, "adi,lo-x2-en");
-> +	dev->lo_ppf_en = device_property_read_bool(&spi->dev, "adi,lo-ppf-en");
-> +	dev->lo_en = device_property_read_bool(&spi->dev, "adi,lo-en");
-> +	dev->uc_bias_en = device_property_read_bool(&spi->dev, "adi,uc-bias-en");
-> +	dev->lo_sideband = device_property_read_bool(&spi->dev, "adi,lo-sideband");
-> +	dev->vdet_out_en = device_property_read_bool(&spi->dev, "adi,vdet-out-en");
-> +}
-
+SEkgQ2hhbywKCkZyb206IENoYW8gWXUgPGNoYW9Aa2VybmVsLm9yZz4KRGF0ZTogMjAyMS0wNy0x
+NyAxNjo1NjowMQpUbzogIFlhbmd0YW8gTGkgPGZyYW5rLmxpQHZpdm8uY29tPixqYWVnZXVrQGtl
+cm5lbC5vcmcKQ2M6ICBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnLGxpbnV4LWYyZnMtZGV2
+ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0ClN1YmplY3Q6IFJlOiBbZjJmcy1kZXZdIFtQQVRDSF0g
+ZjJmczogZml4IGN0eC0+cG9zIGluIGYyZnNfcmVhZF9pbmxpbmVfZGlyKCk+T24gMjAyMS83LzE3
+IDExOjQ5LCBZYW5ndGFvIExpIHdyb3RlOgo+PiBJIHJlY2VudGx5IGZvdW5kIGEgY2FzZSB3aGVy
+ZSBkZS0+bmFtZV9sZW4gaXMgMCBpbiBmMmZzX2ZpbGxfZGVudHJpZXMoKSBlYXNpbHkgcmVwcm9k
+dWNlZCwKPj4gYW5kIGZpbmFsbHkgc2V0IHRoZSBmc2NrIGZsYWcuCj4+IAo+PiBUaHJlYWQgQQkJ
+CQkJVGhyZWFkIEIKPj4gCj4+IGYyZnNfcmVhZGRpcgo+PiAJZjJmc19yZWFkX2lubGluZV9kaXIK
+Pj4gCQljdHgtPnBvcyA9IGQubWF4Cj4+IAkJCQkJCWYyZnNfYWRkX2RlbnRyeQo+PiAJCQkJCQkJ
+ZjJmc19hZGRfaW5saW5lX2VudHJ5Cj4+IAkJCQkJCQkJZG9fY29udmVydF9pbmxpbmVfZGlyCj4+
+IAkJCQkJCQlmMmZzX2FkZF9yZWd1bGFyX2VudHJ5Cj4+IGYyZnNfcmVhZGRpcgo+PiAJZjJmc19m
+aWxsX2RlbnRyaWVzCj4+IAkJc2V0X3NiaV9mbGFnKHNiaSwgU0JJX05FRURfRlNDSykKPj4gCj4+
+IFByb2Nlc3MgQSBvcGVucyB0aGUgZm9sZGVyLCBhbmQgaGFzIGJlZW4gcmVhZGluZyB3aXRob3V0
+IGNsb3NpbmcgaXQuIER1cmluZyB0aGlzIHBlcmlvZCwKPj4gUHJvY2VzcyBCIGNyZWF0ZWQgYSBm
+aWxlIHVuZGVyIHRoZSBmb2xkZXIgKG9jY3VweWluZyBtdWx0aXBsZSBmMmZzX2Rpcl9lbnRyeSwg
+ZXhjZWVkaW5nCj4+IHRoZSBkLm1heCBvZiB0aGUgaW5saW5lIGRpcikuIEFmdGVyIGNyZWF0aW9u
+LCBwcm9jZXNzIEEgdXNlcyB0aGUgZC5tYXggb2YgaW5saW5lIGRpciB0bwo+PiByZWFkIGl0IGFn
+YWluLCBhbmQgaXQgd2lsbCByZWFkIHRoYXQgZGUtPm5hbWVfbGVuIGlzIDAuCj4KPk5pY2UgY2F0
+Y2ghCj4KPj4gCj4+IEFuZCByZXR1cm5pbmcgZWFybHkgaW4gZjJmc19yZWFkX2lubGluZV9kaXIg
+d2lsbCBjYXVzZSB0aGUgcHJvY2VzcyB0byBiZSB1bmFibGUgdG8gc2VlCj4+IHRoZSBjaGFuZ2Vz
+IGJlZm9yZSByZW9wZW5pbmcgdGhlIGZpbGUuCj4+IAo+PiBTbyBkb24ndCByZXR1cm4gZWFybHkg
+YW5kIHJlbW92ZSB0aGUgbW9kaWZpY2F0aW9uIG9mIGN0eC0+cG9zIGluIGYyZnNfcmVhZF9pbmxp
+bmVfZGlyKCkuCj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBZYW5ndGFvIExpIDxmcmFuay5saUB2aXZv
+LmNvbT4KPj4gLS0tCj4+ICAgZnMvZjJmcy9pbmxpbmUuYyB8IDUgLS0tLS0KPj4gICAxIGZpbGUg
+Y2hhbmdlZCwgNSBkZWxldGlvbnMoLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9mcy9mMmZzL2lubGlu
+ZS5jIGIvZnMvZjJmcy9pbmxpbmUuYwo+PiBpbmRleCA1NmEyMGQ1YzE1ZGEuLmZjNjU1MTEzOWEz
+ZCAxMDA2NDQKPj4gLS0tIGEvZnMvZjJmcy9pbmxpbmUuYwo+PiArKysgYi9mcy9mMmZzL2lubGlu
+ZS5jCj4+IEBAIC03MjksOSArNzI5LDYgQEAgaW50IGYyZnNfcmVhZF9pbmxpbmVfZGlyKHN0cnVj
+dCBmaWxlICpmaWxlLCBzdHJ1Y3QgZGlyX2NvbnRleHQgKmN0eCwKPj4gICAKPj4gICAJbWFrZV9k
+ZW50cnlfcHRyX2lubGluZShpbm9kZSwgJmQsIGlubGluZV9kZW50cnkpOwo+PiAgIAo+PiAtCWlm
+IChjdHgtPnBvcyA9PSBkLm1heCkKPj4gLQkJcmV0dXJuIDA7Cj4+IC0KPj4gICAJaXBhZ2UgPSBm
+MmZzX2dldF9ub2RlX3BhZ2UoRjJGU19JX1NCKGlub2RlKSwgaW5vZGUtPmlfaW5vKTsKPj4gICAJ
+aWYgKElTX0VSUihpcGFnZSkpCj4+ICAgCQlyZXR1cm4gUFRSX0VSUihpcGFnZSk7Cj4+IEBAIC03
+NDcsOCArNzQ0LDYgQEAgaW50IGYyZnNfcmVhZF9pbmxpbmVfZGlyKHN0cnVjdCBmaWxlICpmaWxl
+LCBzdHJ1Y3QgZGlyX2NvbnRleHQgKmN0eCwKPj4gICAJbWFrZV9kZW50cnlfcHRyX2lubGluZShp
+bm9kZSwgJmQsIGlubGluZV9kZW50cnkpOwo+PiAgIAo+PiAgIAllcnIgPSBmMmZzX2ZpbGxfZGVu
+dHJpZXMoY3R4LCAmZCwgMCwgZnN0cik7Cj4KPkFmdGVyIHRoaXMgZnVuY3Rpb24sIGN0eC0+cG9z
+IHdpbGwgcG9pbnQgdG8gc3RhcnQgcG9zaXRpb24gb2YgZmlyc3QgZnJlZSBzbG90IGFmdGVyCj5s
+YXN0IGRpcl9lbnRyeSwgd2UgY2FuJ3QgZ3VhcmFudGVlIHRoYXQgdGhlIGZyZWUgc2xvdCB3b24n
+dCBiZSB1c2VkIGluIGFib3ZlIHJhY2UKPmNvbmRpdGlvbiwgcmlnaHQ/Cj4KPk1vcmVvdmVyLCB3
+L28gaW5saW5lIGNvbnZlcnNpb24sIHRoZSByYWNlIGNvbmRpdGlvbiBzdGlsbCBjYW4gaGFwcGVu
+IGFzIGJlbG93LCByaWdodD8KPgo+ZGlyX2VudHJ5MTogQQo+ZGlyX2VudHJ5MjogQgo+ZGlyX2Vu
+dHJ5MzogQwo+ZnJlZSBzbG90OiBfCj4KPkJlZm9yZToKPkFBQUFCQkJCX19fCj4gICAgICAgICBe
+Cj5UaHJlYWQgQiBkZWxldGUgZGlyX2VudHJ5MiwgYW5kIGNyZWF0ZSBkaXJfZW50cnkzLgo+Cj5B
+ZnRlcjoKPkFBQUFDQ0NDQ19fCj4gICAgICAgICBeCgpUYWtpbmcgaW50byBhY2NvdW50IHRoZSBh
+Ym92ZSBzaXR1YXRpb25zLCBJIHRoaW5rIHRoaXMgY2FzZSB3aGVyZSBkZS0+bmFtZV9sZW4gaXMg
+MCBpbiBmMmZzX2ZpbGxfZGVudHJpZXMoKQpzaG91bGQgYmUgbm9ybWFsIGFuZCB0aGVyZSBpcyBu
+byB3YXkgdG8gYXZvaWQgaXQuIE1heWJlIHdlIHNob3VsZG4ndCBzZXQgZnNjayBmbGFnIGF0IHRo
+aXMgdGltZT8KQmVjYXVzZSB0aGUgZmlsZSBzeXN0ZW0gaXMgbm90IGRhbWFnZWQuCgpNQlIgLyBZ
+YW5ndGFvCg0KDQo=
