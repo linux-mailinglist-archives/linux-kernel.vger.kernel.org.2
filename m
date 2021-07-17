@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314A43CC5F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 21:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957443CC5F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 21:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235452AbhGQT4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 15:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53586 "EHLO mail.kernel.org"
+        id S235325AbhGQT4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 15:56:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234719AbhGQT4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234296AbhGQT4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 17 Jul 2021 15:56:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D0B7A61159;
+Received: by mail.kernel.org (Postfix) with ESMTPS id DA9CB6115B;
         Sat, 17 Jul 2021 19:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626551615;
-        bh=yYf2+EYtaVaPG0UsjRXw/olRd2r37JYfJ6thWnq2GPo=;
+        bh=0getJaUh+DluUzLQ1dE6gcIChSlw9UutOhBGuNelQKw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=bRNt2MY6yF++iUIwF7KfVw4EyuwzrzJbWhdaWUHt/2kgu6EfNxrKz1jIUbJ+sYKKO
-         XjCvBpkyw6CtLfmVKWNg5yytR7Q5IayLJOXBxsfHnM79jHPD+47Xb6HepFpy9Lcaq6
-         EcRDdacj0hoND0sWd33PzMLGmex5fgdgiPkMJ9UFlbWzkIWEMaBxUzLyh8jo1K++je
-         m8g2mQ6zax7hvdm1t8917xIIHUv9sVhtvwG+n4xMS9CQOll//aK+TVr+yFig5SDL24
-         X5LbIstCgiufxSQ1YaK+M2ZNdk20GfXdIna7C3BqRpDWxT9HRVC8+uCXZffaOYylrR
-         QDmJ6Aj1KGOFg==
+        b=A0XcwSFumc/dDZ3Up0FeFBnWCTqIW8Du2GOHNMZjoYBflzTIskh42zhRvBF/htiT4
+         xxC9VFS91g9R09DCdpdZmpE9Vzju0riKuJfd3qfSu2w0yWKklxUAI983wZr+1uGuwj
+         cdxDI/CKeqm01Sio05aPdVIEArwDi2ijDk92dgFFZn5848417IuaEcxbgKd9dPWVNW
+         N10GskPTAhEUko6KkEq4yKrQCK8x8eYkkMcXFd0HvF6rQiJ/xqc83WsYVE2kb71/wg
+         LLfMmiCtZPugLEpOVebXbgy8M+mj9Laz57IozMHVfgkODLtuAD4bzxX3UeFOnEDhmo
+         64oBnrZ9bYC7A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BB6A5609A3;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CDA8760A4E;
         Sat, 17 Jul 2021 19:53:35 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Do not reference char * as a string in
- histograms
+Subject: Re: [GIT PULL] Kselftest update for Linux 5.14-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210716174517.033472e4@oasis.local.home>
-References: <20210716174517.033472e4@oasis.local.home>
+In-Reply-To: <ae8c3cdd-8bc6-fd64-ce73-9a27a60a8820@linuxfoundation.org>
+References: <ae8c3cdd-8bc6-fd64-ce73-9a27a60a8820@linuxfoundation.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210716174517.033472e4@oasis.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.14-5
-X-PR-Tracked-Commit-Id: 704adfb5a9978462cd861f170201ae2b5e3d3a80
+X-PR-Tracked-Message-Id: <ae8c3cdd-8bc6-fd64-ce73-9a27a60a8820@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.14-rc2
+X-PR-Tracked-Commit-Id: 0c0f6299ba71faf610e311605e09e96331c45f28
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3fdacf402bb2221c77940f68ef56a0214c098ee0
-Message-Id: <162655161570.18489.2521491561719779671.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 00397e74e37a1285baee8678085297a330a6e2ce
+Message-Id: <162655161583.18489.3863236889559715041.pr-tracker-bot@kernel.org>
 Date:   Sat, 17 Jul 2021 19:53:35 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 16 Jul 2021 17:45:17 -0400:
+The pull request you sent on Fri, 16 Jul 2021 16:24:37 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.14-5
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.14-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3fdacf402bb2221c77940f68ef56a0214c098ee0
+https://git.kernel.org/torvalds/c/00397e74e37a1285baee8678085297a330a6e2ce
 
 Thank you!
 
