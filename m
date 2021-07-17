@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD163CC2A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 12:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980373CC2AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 12:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbhGQKZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 06:25:01 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:51485
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229471AbhGQKY7 (ORCPT
+        id S233163AbhGQK4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 06:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhGQK4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 06:24:59 -0400
+        Sat, 17 Jul 2021 06:56:00 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1B0C06175F;
+        Sat, 17 Jul 2021 03:53:02 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id a6so17737277ljq.3;
+        Sat, 17 Jul 2021 03:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=ydl1CC9qmQMBePWmO2HdKxSyxruYJSVvGnoibNZA+sI=; b=t
-        pbaSWqYkbpbRLwEfTtUuOqbcdy8xlR0V5GsmBNf0Tm7+0zCUzXmVyGQ5wopEhRUa
-        gATHHJ3Pg/I3Dto2IaqG24oV9liki3iG74zFY8eIRMy+AMZJgkfU2N1OO3Q25nqQ
-        lwiWao4JDkyAVuRaemquBY8QMRglCJsmuj1mJDUMAs=
-Received: from localhost.localdomain (unknown [39.144.44.130])
-        by app1 (Coremail) with SMTP id XAUFCgCXd5wlr_Jg_GR8AA--.36366S3;
-        Sat, 17 Jul 2021 18:21:25 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] xfs: Convert from atomic_t to refcount_t on xlog_ticket->t_ref
-Date:   Sat, 17 Jul 2021 18:21:02 +0800
-Message-Id: <1626517262-42986-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgCXd5wlr_Jg_GR8AA--.36366S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZrWxKr1DGr1Dtrb_yoW8tr1Dpr
-        93Ga4DKayDCF48CFn7G390ga13ta48ZrWrKrWkKr43Zrnxtw4ayr1rtF17Xw1rXFWDXrn5
-        Gr1UKa1UZa15G3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUd73kUUUUU=
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DCRC3rQb6QUFHodoiHVlMqRF0dyiXmaZMG9uskF+xX8=;
+        b=TWOYlUzJ6mAil9DPO60Vrg9hPzn756jShGgHB5ifi05EcMAMeGV7aZmStVVfQz1FNN
+         p2WqVSazQwFXlyAKT6IDfGl29DvEW8JtyX+Fdkwy+s/iKaAOunaL+Jp6uj2KcHoejDC0
+         6UBlMfhPzJAtuX/8zsfg0MG+Ai4UJ0fdv7ECnTOyuBNlQebr4FccMCCo3t1L2edgyLOR
+         6W3kEVo+FC6zpXaPxJ2CNMmgab1RqwF9k8Yyv8fAHpO9Jy33BpVY4r2fGCGLqqafK0nt
+         0QBfgc60otZaOG1tUlbzUXzbHVyoNwXCLWBC8FI3IT+2jJTHKJDN/wKj2zLvNqjvD8oU
+         7NAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DCRC3rQb6QUFHodoiHVlMqRF0dyiXmaZMG9uskF+xX8=;
+        b=FfOr//LatlsLr2Sge5EOByGKVqLmp/ZnSmcoEhFAbKnk82HGU8D/qN8Z+uL+odRqNQ
+         GWRhcSSf6fBhiAx0tKvYf0qMkNtLrias8dURz1OYjYlZPlcvJSK6fN2q6rb0q9g4gr/1
+         AXXKCucwo924uR8YxIJRWzF/mdrp29sOa2qUJKSWvKi4p5luiX25cQR60dEODTDZb3yk
+         DjybVCyJJuO60FHjd7IxLcYiV0qN8abJq49g9gMwopuG8K6nBNdACJn1H7xnJRmBXVi2
+         bIBi0w2owycximEydBHoXrU2nngzsy5gFzx8/ye51Qz3bGwqU0PK/DE/FA1dS7sBjCP+
+         YINw==
+X-Gm-Message-State: AOAM532vTAEE7TXtIw0n8WCeWdjd+/+vgcpJ49C8xT+dFS3BA2g8ViyJ
+        cpp2lCxw4is5oHlpR1a2c8J8Cr1itRDyWcXKvW4=
+X-Google-Smtp-Source: ABdhPJwIv1nSMaBkgtLZ1JeUIDv1zTV+jTgiz3WR+enxsQIMSv3tLHCFmKp0AFfeW+Sdkv3Zw0Pxd2ria7DJrBhoEE0=
+X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr13146709ljk.265.1626519180043;
+ Sat, 17 Jul 2021 03:53:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210704153314.6995-1-keguang.zhang@gmail.com> <YO5yo8v/tRZLGEdo@matsya>
+In-Reply-To: <YO5yo8v/tRZLGEdo@matsya>
+From:   Kelvin Cheung <keguang.zhang@gmail.com>
+Date:   Sat, 17 Jul 2021 18:52:48 +0800
+Message-ID: <CAJhJPsWBbfHresHYpmsydsuf=1LFtc-ZPuAX+bi_a2nx=y0zAw@mail.gmail.com>
+Subject: Re: [PATCH V5] dmaengine: Loongson1: Add Loongson1 dmaengine driver
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-refcount_t type and corresponding API can protect refcounters from
-accidental underflow and overflow and further use-after-free situations.
+Vinod Koul <vkoul@kernel.org> =E4=BA=8E2021=E5=B9=B47=E6=9C=8814=E6=97=A5=
+=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:14=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On 04-07-21, 23:33, Keguang Zhang wrote:
+>
+> > +static struct platform_driver ls1x_dma_driver =3D {
+> > +     .probe  =3D ls1x_dma_probe,
+> > +     .remove =3D ls1x_dma_remove,
+> > +     .driver =3D {
+> > +             .name   =3D "ls1x-dma",
+> > +     },
+> > +};
+> > +
+> > +module_platform_driver(ls1x_dma_driver);
+>
+> so my comment was left unanswered, who creates this device!
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- fs/xfs/xfs_log.c      | 10 +++++-----
- fs/xfs/xfs_log_priv.h |  4 +++-
- 2 files changed, 8 insertions(+), 6 deletions(-)
+Sorry!
+This patch will create the device: https://patchwork.kernel.org/patch/12357=
+539
 
-diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-index 36fa2650b081..1da711f1a229 100644
---- a/fs/xfs/xfs_log.c
-+++ b/fs/xfs/xfs_log.c
-@@ -3347,8 +3347,8 @@ void
- xfs_log_ticket_put(
- 	xlog_ticket_t	*ticket)
- {
--	ASSERT(atomic_read(&ticket->t_ref) > 0);
--	if (atomic_dec_and_test(&ticket->t_ref))
-+	ASSERT(refcount_read(&ticket->t_ref) > 0);
-+	if (refcount_dec_and_test(&ticket->t_ref))
- 		kmem_cache_free(xfs_log_ticket_zone, ticket);
- }
- 
-@@ -3356,8 +3356,8 @@ xlog_ticket_t *
- xfs_log_ticket_get(
- 	xlog_ticket_t	*ticket)
- {
--	ASSERT(atomic_read(&ticket->t_ref) > 0);
--	atomic_inc(&ticket->t_ref);
-+	ASSERT(refcount_read(&ticket->t_ref) > 0);
-+	refcount_inc(&ticket->t_ref);
- 	return ticket;
- }
- 
-@@ -3477,7 +3477,7 @@ xlog_ticket_alloc(
- 
- 	unit_res = xlog_calc_unit_res(log, unit_bytes);
- 
--	atomic_set(&tic->t_ref, 1);
-+	refcount_set(&tic->t_ref, 1);
- 	tic->t_task		= current;
- 	INIT_LIST_HEAD(&tic->t_queue);
- 	tic->t_unit_res		= unit_res;
-diff --git a/fs/xfs/xfs_log_priv.h b/fs/xfs/xfs_log_priv.h
-index 4c41bbfa33b0..c4157d87cea4 100644
---- a/fs/xfs/xfs_log_priv.h
-+++ b/fs/xfs/xfs_log_priv.h
-@@ -6,6 +6,8 @@
- #ifndef	__XFS_LOG_PRIV_H__
- #define __XFS_LOG_PRIV_H__
- 
-+#include <linux/refcount.h>
-+
- struct xfs_buf;
- struct xlog;
- struct xlog_ticket;
-@@ -163,7 +165,7 @@ typedef struct xlog_ticket {
- 	struct list_head   t_queue;	 /* reserve/write queue */
- 	struct task_struct *t_task;	 /* task that owns this ticket */
- 	xlog_tid_t	   t_tid;	 /* transaction identifier	 : 4  */
--	atomic_t	   t_ref;	 /* ticket reference count       : 4  */
-+	refcount_t	   t_ref;	 /* ticket reference count       : 4  */
- 	int		   t_curr_res;	 /* current reservation in bytes : 4  */
- 	int		   t_unit_res;	 /* unit reservation in bytes    : 4  */
- 	char		   t_ocnt;	 /* original count		 : 1  */
--- 
-2.7.4
+>
+> --
+> ~Vinod
 
+
+
+--=20
+Best regards,
+
+Kelvin Cheung
