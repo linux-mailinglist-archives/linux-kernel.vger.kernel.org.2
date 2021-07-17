@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708AC3CC449
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98FF3CC44C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbhGQPzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 11:55:13 -0400
-Received: from mout.gmx.net ([212.227.15.18]:56997 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234454AbhGQPzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 11:55:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626537126;
-        bh=mZcP3QmI7YItRwoSRYnjV0gfYLGImu6x7tc+Qai8wIQ=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=hsKpqVOZ3p7sWvpcDkUU01YH+SeIlBaRhzd4uMxBYC/yOl6zyp61HmktWIY/36gGR
-         lMN8wm17G1tB/NYk9x2rpE1wUb1tj6I+DWIiRENBz4JDrj2BsHZT2LBtL04CkcNIuR
-         zWFgliqBtNkW5a8M2sl0s2Y/1vNG3gFOr88vYsIg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MgeoI-1lUJje2GA0-00h3sX; Sat, 17 Jul 2021 17:52:06 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging/rtl8712: Remove all strcpy() uses in favor of strscpy()
-Date:   Sat, 17 Jul 2021 17:51:45 +0200
-Message-Id: <20210717155145.15041-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S233309AbhGQP5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 11:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbhGQP5c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 11:57:32 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE95C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 08:54:35 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id m13so2882425qvh.8
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 08:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/AmEWCj5cXsx6W4oaKZsoab5w8JmJ+9MssIjB5+swwA=;
+        b=Hd7cFMGqcK3734ZSRwBdBTBnPszJUkSaEgKGOSuTyf/9CVvvNfXluFBSaLkqh+vhUh
+         QcrT26qOCpfZc1WiHF4mKDD77VaNcYLaA4X7EeCUnD599C/30/hYg2crk7JwD7LWYouM
+         QOihc6TRUO3to8f8fESP33q4Y62wfeI36gXgoSU4oyvnNfExtwIvT+orPuGfx8DmHazn
+         aiD+1sObT9TkpJVcTQyr+UmDLRLttJ+AV6/s1Qp++DeDte7qcMlwc05Jp5E2l9tnTn0i
+         z/HU8M7Kh1ZgxSwCGUKkPA1Uhyo59wcJ9cyEWR9+YBPFTcnFad3dmDkblvyYHWAWCPeu
+         ZbEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/AmEWCj5cXsx6W4oaKZsoab5w8JmJ+9MssIjB5+swwA=;
+        b=gYqHqrep0FYtXi+Q13cUEJiNwhhmEqVpP3Eu64U21xcQfE6kZFkdVeyd2XyMCetvRP
+         cHGE+ldervj0D72NZou9TjkhcL0mZRFsUJ532/Bjo/AqSiksNzOlaMJkArR1AXru27xp
+         3N4ByCOAChQQz05kTbsnUS98KAJPwKuLTYEwgKcekoRn+0tRVwwRhNusXBfYmZriq86a
+         WBaSnmtAzn2Yzpdy+qqh9SNF/SpIxtpiZvG5OxQj6hqG6/W4zkKh3zlwqIGMw7jzekhS
+         +9PgvqwhFn0JVE5/kRqlbFmyU5rcirlU3UWrQ21SSvn4onvekPnVaSSzT/qtMZed0KBq
+         mvQA==
+X-Gm-Message-State: AOAM532OAaLKvVCy7KN0JTWbSpZNWAHC3zvYKqnG6rqI2zjsiAxim3eI
+        jDX+btEKXyD8tTLVFdqpiw24Rw3WeNQVe4x54BOuG834pwmyew==
+X-Google-Smtp-Source: ABdhPJx6da7bNxrbahuQ1ZMmUEUmGz/s4AMwe9r3af+DEfFlkKfncSOREj83WikQRIBmu7VH6T14DsqX92XdK+L9ZyA=
+X-Received: by 2002:a05:6214:1cb:: with SMTP id c11mr16338918qvt.47.1626537274819;
+ Sat, 17 Jul 2021 08:54:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5C1c4EKwqwdWzS1m8cugGHgErNfVnZaBAsgwiLEyAvM7mbWHFh6
- 3dPzuepBGkRvzS6i/eiEy9tk2c+MCnBxRn757yPDgAmfn3NbFT7qTul3SG2DocmU/96FEoe
- GsGpaKKgIIO7UDxOv+2O/8x2/9RmZkrEnQYa6NxCRbl1CAqv0zmt4T/HfkyNl1CJQSMCVkn
- ZS54E7eEKFAJOoUSZqPVg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:00IjXtN2iM8=:8GT4FY/lAjE2z6TxXsschr
- h7HSls1qOnKtKjqOTnzolJHU+2Flj2+roAGKB6ppp2N21u5YZVLJ/64gxl7CDdAKnQog4c1iD
- uKbC/V05Zc3yxm6FBcG94TXswtdYY9W0Io71tzSqdLnrtQJqgPjF6jYTNQmRlI7UcgD914Y5q
- W8uHaVEIphKt1jS2xcQEl8RoJ5lKQXUc9Z72FQ08wYJaff8DhgXt2hr4+XMnz6FKX4Oqh832d
- u5yr5AEu4f7OJb9vJD1PXr8amodxKt+0k5czt/hRSfl61l+aWuVnYBxg+g3tn6c2NdGbBPBQ+
- pCenu4efjCn+CpUrP/ls1HMk7c8SwOZF+Ij8/MKq+H4qJqNsZsu8QAQTmapM/Tri3xvxpiojI
- PEuSnh8CDAwTe+ysfQoVRYSg+Jm+Gd9/sdwNaCMRUiEBx4f/9UzI/1k6ZFBJgGzXB7rQBWBdk
- 8bFkqTAimOgZOtu/x/nBqlokyZMzdD2h37jVP1XOC0lH4crqLACIXUyg+H+htAAb4Ejm8ISwm
- KRufPyjvzRaC+a9/VTfluE2lcBW5mQ6ayDjFZsN7JLOlwD+FwbccEYpi3Dy1KT89DMEj4zg/2
- SW12lqlRcjx0/Qs36ZE++qCmxPpAaRMuJFecP5MQWZmYQTplqpzsREeeL+W91bs5DjJEPkqkY
- p5UZNSOYmsy2tY/K43LhLDPmTfWuOpys45M4SipCCrx9SfpahQ8az1WVfNCJT67/malL8bSG/
- utXNRGEFlkDSo6Cb3hbC2M4qWW+ShEnUxWzlP6mjYDtwHG0AvK3zmsHmh0Qo2eMD8p1PRArjX
- kWGYiQztd3LCTh3lyCvj4H8Qlh3wke+lexIzIwQEuyhB5DCkaQ6sVWWM2WA6DsbgYBJInW4gJ
- Hk/V06UCvBe7d5lXOq6KZISfXQSBlq+uCuosqqAvLYfE0+rLvd1KA59lCulT1HGxCAK1PFODD
- gspNP4EmkKfMQzCMopeueZ3N06YD3SiqW03HnblJ5aneZyT0uPnE05MStMQXs1fVXw3o9cdAa
- nFoVdvEEX9rTVnyMv2T0WNbBCk6suQ077V9WUtSW8v8O7GH7nB2hM8+oBy45Pg82kkp5dAetu
- 70ecFhQAks8caXhhkq9+/nw+UkAZt7Kmz9V
+References: <20210716221159.3587039-1-linux@roeck-us.net>
+In-Reply-To: <20210716221159.3587039-1-linux@roeck-us.net>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Sun, 18 Jul 2021 01:54:23 +1000
+Message-ID: <CAOSf1CHuLhYO1rXiAhPz6xyQ-GgrjE-dj=Af6v7CWSH6QroEtQ@mail.gmail.com>
+Subject: Re: [PATCH] powerpc/chrp: Revert "Move PHB discovery" and "Make
+ hydra_init() static"
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy().
+On Sat, Jul 17, 2021 at 8:12 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> This patch reverts commit 407d418f2fd4 ("powerpc/chrp: Move PHB
+> discovery") and commit 9634afa67bfd ("powerpc/chrp: Make hydra_init()
+> static").
+>
+> Running the upstream kernel on Qemu's brand new "pegasos2" emulation
+> results in a variety of backtraces such as
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/staging/rtl8712/os_intfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+...and actually using it appears to require both manually enabling it
+in the qemu config and finding a random bios blob that is no longer
+distributed by the manufacturer. Cool.
 
-diff --git a/drivers/staging/rtl8712/os_intfs.c b/drivers/staging/rtl8712/=
-os_intfs.c
-index 2214aca09730..9502f6aa5306 100644
-=2D-- a/drivers/staging/rtl8712/os_intfs.c
-+++ b/drivers/staging/rtl8712/os_intfs.c
-@@ -203,7 +203,7 @@ struct net_device *r8712_init_netdev(void)
- 	if (!pnetdev)
- 		return NULL;
- 	if (dev_alloc_name(pnetdev, ifname) < 0) {
--		strcpy(ifname, "wlan%d");
-+		strscpy(ifname, "wlan%d", sizeof(ifname));
- 		dev_alloc_name(pnetdev, ifname);
- 	}
- 	padapter =3D netdev_priv(pnetdev);
-=2D-
-2.25.1
+> Kernel attempted to write user page (a1) - exploit attempt? (uid: 0)
+> ------------[ cut here ]------------
+> Bug: Write fault blocked by KUAP!
+> WARNING: CPU: 0 PID: 0 at arch/powerpc/mm/fault.c:230 do_page_fault+0x4f4/0x920
+> CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.2 #40
+> NIP:  c0021824 LR: c0021824 CTR: 00000000
+> REGS: c1085d50 TRAP: 0700   Not tainted  (5.13.2)
+> MSR:  00021032 <ME,IR,DR,RI>  CR: 24042254  XER: 00000000
+>
+> GPR00: c0021824 c1085e10 c0f8c520 00000021 3fffefff c1085c60 c1085c58 00000000
+> GPR08: 00001032 00000000 00000000 c0ffb3ec 44042254 00000000 00000000 00000004
+> GPR16: 00000000 ffffffff 000000c4 000000d0 0188c6e0 01006000 00000001 40b14000
+> GPR24: c0ec000c 00000300 02000000 00000000 42000000 000000a1 00000000 c1085e60
+> NIP [c0021824] do_page_fault+0x4f4/0x920
+> LR [c0021824] do_page_fault+0x4f4/0x920
+> Call Trace:
+> [c1085e10] [c0021824] do_page_fault+0x4f4/0x920 (unreliable)
+> [c1085e50] [c0004254] DataAccess_virt+0xd4/0xe4
+>
+> and the system fails to boot. Bisect points to commit 407d418f2fd4
+> ("powerpc/chrp: Move PHB discovery"). Reverting this patch together with
+> commit 9634afa67bfd ("powerpc/chrp: Make hydra_init() static") fixes
+> the problem.
 
+The rationale for adding ppc_md.discover_phbs() and shifting all the
+platforms over to using it is in commit 5537fcb319d0 ("powerpc/pci:
+Add ppc_md.discover_phbs()"). I'd rather not go back to having random
+platforms doing their PCI init before the kernel has setup the page
+allocator. You need to either debug the problem fully, or provide
+enough replication details so that someone who isn't invested in
+emulating ancient hardware (i.e. me) with enough information to
+actually replicate the problem.
+
+Oliver
