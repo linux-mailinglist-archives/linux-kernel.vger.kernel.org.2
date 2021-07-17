@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7A33CBFF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 02:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E113CBFF7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 02:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhGQAGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 20:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
+        id S232521AbhGQAJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 20:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhGQAGr (ORCPT
+        with ESMTP id S229665AbhGQAJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 20:06:47 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C8AC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 17:03:52 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so14737261ybp.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 17:03:52 -0700 (PDT)
+        Fri, 16 Jul 2021 20:09:13 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F539C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 17:06:16 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id z17so5980688iog.12
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Jul 2021 17:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=RDUgVelj+CPe4t6KMZ4n5EMZaDtjmTsbCz6doNCZT/Y=;
-        b=mPUoPVF+UTyT3Xl5NHYNtSv/jypRlVxeOpMlkbcT24Zgqmwt/mtY8uJWvmoDPasjGd
-         CW1nKH2M2c45U6oB5xKM4ycZTubjmL+c0EUYs4yKoqDRId8jq7EMAaIIzK4TVvbhC/rs
-         EEazyyXLFmoUZUbHy9s64iwrCDniZW29p/ynuq9sMCH8kmXZ+VbiwDQZtFsh9aB4HAKu
-         zfYt/l7dCFIVoeVE7DgrNY9C0qWB24ULvTR7IuvgVSTDRDn9UzjbU4V6FL/TGXhEYE48
-         ZS8G/oTDvabtrBrK4ei+jRt4WVeh3IF8wWgBAJhaTUrftWep+uwNMvITgW1I3vUxyt7T
-         nckg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NBMqm9QbgY8pXr43Ar0+BX9+G1u/HV8S3ltMcAtx8kU=;
+        b=Yx8gH1TC8ab7+WtnYQr1YUiMmbNltVYS+hGLaRZLV/Ft/0YQgoDiPbQTaBx4PxWFFM
+         spEto2zKosQevQO2QD2CmOn8bZ0WhC4tehQUWVQ+kZpLzuATthjzNvd7p6JC6OwMIKNX
+         m9CHbz7d+HD9id0MvqsD5PJZnCGR6Zlncak+w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=RDUgVelj+CPe4t6KMZ4n5EMZaDtjmTsbCz6doNCZT/Y=;
-        b=ZALHXlg2Qgp7MJKmOaXXdvGDPgXUljwO58SFlFi7ZM/iKvtwmhEuCybBstj7bUoBXd
-         o2RNn5Bvg1ywIfBzzidBjEmj6EbEqtgFJLWInuSE0zumKn747dlzhNY6Apf5nvWAhP+n
-         dxJS89tPceO/XyiOWMa7CCnkTT2+lgb4V7q/lANbGcxql0i5yGrzrpwxPSUdhEVH4x6A
-         zEX1PX8SfUdkQThge5zsyg1jdyKHbiWs978KpHPOFzg6+7TQnXYtk5IFmA7vqeUerQu8
-         W2GJqXxJTv3eRL1qj1oX5NjIK2t1U7FnVOAOHf05/S4EVT2JLVkQBhPSIVO3BMYAvOol
-         GHhw==
-X-Gm-Message-State: AOAM532vZfSY/8a05BOfQvWe8k4JgpRS3D50mQGRDmZXzXs0pAWLskNd
-        EERq2xr/G6BLjz/RgM8Gtx2v70fl20OsKsfia+M=
-X-Google-Smtp-Source: ABdhPJwSrg4qElhxKhNcrm6xV1ytMGy0zO80SmC4fYKzdGyzuW2mJn9UxS+CxIPPFfgIwa6nvBIRVIKrIB5dHLYaDqo=
-X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2dd0])
- (user=willmcvicker job=sendgmr) by 2002:a25:8b0d:: with SMTP id
- i13mr16613822ybl.398.1626480231660; Fri, 16 Jul 2021 17:03:51 -0700 (PDT)
-Date:   Sat, 17 Jul 2021 00:03:45 +0000
-Message-Id: <20210717000345.2345429-1-willmcvicker@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH] drm/mipi: set fwnode when a mipi_dsi_device is registered
-From:   Will McVicker <willmcvicker@google.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Will McVicker <willmcvicker@google.com>,
-        Saravana Kannan <saravanak@google.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NBMqm9QbgY8pXr43Ar0+BX9+G1u/HV8S3ltMcAtx8kU=;
+        b=imMtss8nGK7mPbatZ8LYTqvtppI34QLB4k8GnC7YKZppEbWYxZjHdDc4AUfvYP1nfg
+         +KAjewakpYb4wOMKI4dRThNYdG96ohFl+QOCeEAf9nMhDU/5oZc81FI00H09ZMNX8Pns
+         KgANbpUhu85Gpee4IaBSFI7g8rPWrs/2H1hVEAAkX5+i2xeKRxfwC2/+pGAloXrdQReE
+         tR6LnGs1qD4QaWzy5qG4aILYmGpuFsRZjGF5VW0EVjfhzz4+N2CuRnx37V5SYdqKCN2w
+         m6G2fegm/4dE3vZtIk9CNbLQTXj4C+jv/2/gS8dANmqDfcSZBHs/Ih0A4qajJqw5zLIA
+         kLbA==
+X-Gm-Message-State: AOAM533tgKN4CWUmrfdgW4HzijI0I61tEVyIH4uy8yGXeX4ZDn5Jh/4h
+        h+3UY5UxgCqyiA902vlib62Wpw==
+X-Google-Smtp-Source: ABdhPJwrPd85TTx0d5mLdbGd69KRJHwRqgQw4ejggbAGySxLdWlui281ODJm4kk8NyKpGXKhcK6ybw==
+X-Received: by 2002:a5d:914a:: with SMTP id y10mr9467052ioq.140.1626480375996;
+        Fri, 16 Jul 2021 17:06:15 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h13sm4994982ila.44.2021.07.16.17.06.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 17:06:15 -0700 (PDT)
+Subject: Re: [PATCH 5.13 000/258] 5.13.3-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210716182150.239646976@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <dc5724fb-151d-429f-8a6e-0caba4ee8fb2@linuxfoundation.org>
+Date:   Fri, 16 Jul 2021 18:06:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210716182150.239646976@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows the fw_devlink feature to work across mipi_dsi bus devices too.
-This feature avoids unnecessary probe deferrals of mipi_dsi devices, defers
-consumers of mipi_dsi devices till the mipi_dsi devices probe, and allows
-mipi_dsi drivers to implement sync_state() callbacks.
+On 7/16/21 12:29 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.13.3 release.
+> There are 258 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.3-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Suggested-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
-Reviewed-by: Saravana Kannan <saravanak@google.com>
----
- drivers/gpu/drm/drm_mipi_dsi.c | 1 +
- 1 file changed, 1 insertion(+)
+Compiled and booted on my test system. No dmesg regressions.
 
-v2:
- Thanks Saravana for the comments! I updated the commit message and added your
- reviewed-by.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-index 5dd475e82995..469d56cf2a50 100644
---- a/drivers/gpu/drm/drm_mipi_dsi.c
-+++ b/drivers/gpu/drm/drm_mipi_dsi.c
-@@ -222,6 +222,7 @@ mipi_dsi_device_register_full(struct mipi_dsi_host *host,
- 	}
- 
- 	dsi->dev.of_node = info->node;
-+	dsi->dev.fwnode = of_fwnode_handle(info->node);
- 	dsi->channel = info->channel;
- 	strlcpy(dsi->name, info->type, sizeof(dsi->name));
- 
--- 
-2.32.0.402.g57bb445576-goog
+thanks,
+-- Shuah
 
