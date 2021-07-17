@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C193CC0BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 04:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EE43CC0DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 05:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbhGQCnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 22:43:43 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7022 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbhGQCnm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 22:43:42 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GRXJQ6H1gzYcrx;
-        Sat, 17 Jul 2021 10:35:02 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 17 Jul 2021 10:40:44 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 17 Jul 2021 10:40:43 +0800
-Subject: Re: [PATCH -next 3/3] kasan: arm64: Fix pcpu_page_first_chunk crash
- with KASAN_VMALLOC
-To:     Marco Elver <elver@google.com>
-CC:     Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
-        <linux-mm@kvack.org>, Daniel Axtens <dja@axtens.net>
-References: <20210705111453.164230-1-wangkefeng.wang@huawei.com>
- <20210705111453.164230-4-wangkefeng.wang@huawei.com>
- <YOMfcE7V7lSE3N/z@elver.google.com>
- <089f5187-9a4d-72dc-1767-8130434bfb3a@huawei.com>
- <5f760f6c-dcbd-b28a-2116-a2fb233fc534@huawei.com>
- <CANpmjNP8Js3nKeVfwPqV7oQaBbGebKxFYRWe8TifTduP2q86xA@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <a0431275-2ca1-0d5e-72e2-9ec6b256cbf1@huawei.com>
-Date:   Sat, 17 Jul 2021 10:40:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S232881AbhGQDVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 23:21:36 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:52938 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230504AbhGQDVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Jul 2021 23:21:34 -0400
+Received: from localhost.localdomain (unknown [114.217.243.208])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxgOIATPJgEO8gAA--.19368S2;
+        Sat, 17 Jul 2021 11:18:29 +0800 (CST)
+From:   Rui Wang <wangrui@loongson.cn>
+To:     linux-acpi@vger.kernel.org
+Cc:     Rui Wang <wangrui@loongson.cn>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Shunyong Yang <shunyong.yang@hxt-semitech.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ACPI: Kconfig: Fix table override from built-in initrd
+Date:   Sat, 17 Jul 2021 11:18:06 +0800
+Message-Id: <20210717031806.29866-1-wangrui@loongson.cn>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNP8Js3nKeVfwPqV7oQaBbGebKxFYRWe8TifTduP2q86xA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9BxgOIATPJgEO8gAA--.19368S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw4kXF43ur17Ww15KrWfZrb_yoWkZFXEg3
+        WDJF1xJryUArW0yry0qa1fZw1qyw1fWFyfZw4DK34Svr97J393u3s8AFyDJ347Ca4xKw1U
+        Zwn5Xrn7Ary2vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU84SoDUUUU
+X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The commit 65e00e04e5aea ("initramfs: refactor the initramfs build rules")
+had dropped the CONFIG_INITRAMFS_COMPRESSION.
 
-On 2021/7/16 15:41, Marco Elver wrote:
-> On Fri, 16 Jul 2021 at 07:06, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->> Hi Marco and Dmitry, any comments about the following replay, thanks.
-> Can you clarify the question? I've been waiting for v2.
->
-> I think you said that this will remain arm64 specific and the existing
-> generic kasan_populate_early_shadow() doesn't work.
+This patch updates INITRAMFS_COMPRESSION="" to INITRAMFS_COMPRESSION_NONE.
 
-Yes, I can't find a generic way to solve the issue, if there is no 
-better way, I
+CC: Rafael J. Wysocki <rjw@rjwysocki.net>
+CC: Len Brown <lenb@kernel.org>
+CC: Shunyong Yang <shunyong.yang@hxt-semitech.com>
+CC: linux-acpi@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+Signed-off-by: Rui Wang <wangrui@loongson.cn>
+---
+ drivers/acpi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-will send a new version(fix the build error and the wrong __weak comment)
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index 9d872ea477a6..8f9940f40baa 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -370,7 +370,7 @@ config ACPI_TABLE_UPGRADE
+ config ACPI_TABLE_OVERRIDE_VIA_BUILTIN_INITRD
+ 	bool "Override ACPI tables from built-in initrd"
+ 	depends on ACPI_TABLE_UPGRADE
+-	depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION=""
++	depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION_NONE
+ 	help
+ 	  This option provides functionality to override arbitrary ACPI tables
+ 	  from built-in uncompressed initrd.
+-- 
+2.32.0
 
->
-> If there's nothing else that needs resolving, please go ahead and send
-> v2 (the __weak comment still needs resolving).
-Thanks. will do.
->
-> Thanks,
-> -- Marco
-> .
->
