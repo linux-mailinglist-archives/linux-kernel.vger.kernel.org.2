@@ -2,119 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007303CC239
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 11:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAFA3CC23C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 11:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhGQJiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 05:38:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60705 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231862AbhGQJit (ORCPT
+        id S232944AbhGQJoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 05:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231716AbhGQJoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 05:38:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626514552;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vMfm6Ul5FP8FBIaSxrSqUf9N4MLQ8vm57kxlps+k2qU=;
-        b=U1De0HZg3C0tzFp3neO9BzMfNyvJKIQAbC5+PDXA4+yo4yA8isDXD0wkT42095+CA63zDT
-        5IrulCNpvoaAyE+TqwPTKDcgJy0VsimokREuWHPeDbT0LC1FsT1AUrDE2XeTTEIQghBHe4
-        LoOXnblXpbKVaU6xjecLulxJe2zftRc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-br8uF12bMaujpXW8N-2Tmg-1; Sat, 17 Jul 2021 05:35:48 -0400
-X-MC-Unique: br8uF12bMaujpXW8N-2Tmg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5762A1084F53;
-        Sat, 17 Jul 2021 09:35:46 +0000 (UTC)
-Received: from T590 (ovpn-12-83.pek2.redhat.com [10.72.12.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C433260862;
-        Sat, 17 Jul 2021 09:35:36 +0000 (UTC)
-Date:   Sat, 17 Jul 2021 17:35:32 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        David Jeffery <djeffery@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: New warning in nvme_setup_discard
-Message-ID: <YPKkZJWsD84mmKuk@T590>
-References: <4729812.CpyZKHjjVO@natalenko.name>
- <2455133.St5lIfLNcX@natalenko.name>
- <YPFicCW90Jse4oms@T590>
- <1687461.6WkTYu5mUM@natalenko.name>
+        Sat, 17 Jul 2021 05:44:05 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0128C06175F;
+        Sat, 17 Jul 2021 02:41:08 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d1so6590082plg.0;
+        Sat, 17 Jul 2021 02:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5yIJkQt3GFQl4d9x0leKlizsNtZXqf9kI+djIJdlY34=;
+        b=jDur00L7znCQBRdMT8eZ6uE1OzbeM3CVkJa9zGog9JRTEtDpGcj1VgX88idel9uiDJ
+         iQ8BBLIVgmvxe1rapcEoe9/84mcIURsjYwKS5fJSwMYA519Cv6tUXfCV2pfbzDQW/rGM
+         qVKQdzJeZDmuax4Zcoi1ZuXBC+X6FrXIOVWeHSMaPZtIBmrleP0zy6fWRd12iMBZ2HAk
+         2YONGql4n7Eo6kJ5BFfmaG034Pj+J4JZxvKBbQjBCcdDOCC86Qc11IJ/Kqw1Kj1TA9QR
+         e5FGhf8GeyVIRVLfgAUDQ28YzNTs/UE2eaX6u4YbTGap/SH1kXYH/2XeczyVZNWA008h
+         WwkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5yIJkQt3GFQl4d9x0leKlizsNtZXqf9kI+djIJdlY34=;
+        b=QUKo52JQaPC1vKc1S4ZsSqxYKBqb3FnGLlROl2Frks9KGzdc0ArrRNjpwUc2SRY1M7
+         qvrbabWBgKlE1A2goEKn4V7ZCztgfDGuvRYGaki5xaT93iiSBKFFgD0/N/NZH/xVLExz
+         CPNcPUvHmNEfI5NcrKuwIKTPKV4b7psREJ4eK/QSukV/mKHMkh/VjzRpbAh8dCuiKN5z
+         I5ahzUgfmePTIUQ1bimZ20TrIarpwwuptwABK9cnWFn5WS9m30BJk1f2rwnHvwG/i7YA
+         8vgf+AU4qzHbpd6GZaKLuqVSh1noI4vrHFvtrdIwmoVR5SCvov/eelus+1LqnvG5IerC
+         au7w==
+X-Gm-Message-State: AOAM53399BgXx2jDGxZjX92J6ao0EhR6Qsaa/eOILAfsJ61XqkHXRbT8
+        OW+wrs7e+I8ixwd72nMKQDQ=
+X-Google-Smtp-Source: ABdhPJzLbnHsYSoN6Jg8HyvVaZLw+r9Ux8iqDqa2h+aIY7KU5LHIY9tdpM7rwrjR6FPD4/czUOFERQ==
+X-Received: by 2002:a17:90b:1010:: with SMTP id gm16mr20332240pjb.192.1626514868316;
+        Sat, 17 Jul 2021 02:41:08 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id q21sm13043739pff.55.2021.07.17.02.41.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Jul 2021 02:41:07 -0700 (PDT)
+Subject: Re: [syzbot] possible deadlock in loop_add
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Hillf Danton <hdanton@sina.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        syzbot <syzbot+118992efda475c16dfb0@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000ec01e405c6c2cee3@google.com>
+ <20210710131638.605-1-hdanton@sina.com> <20210712052740.GA8599@lst.de>
+ <c3d4ebd5-5679-cd81-d1de-4f5f2cbe13db@gmail.com>
+ <20210716010028.4218b0de@xps13>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <77da708c-b63d-dac0-c7e6-43ced0d49982@gmail.com>
+Date:   Sat, 17 Jul 2021 17:41:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210716010028.4218b0de@xps13>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1687461.6WkTYu5mUM@natalenko.name>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 02:56:22PM +0200, Oleksandr Natalenko wrote:
-> On pátek 16. července 2021 12:41:52 CEST Ming Lei wrote:
-> > > Do I understand correctly that this will be something like:
-> > > 
-> > > Fixes: 2705dfb209 ("block: fix discard request merge")
-> > > 
-> > > ?
-> > > 
-> > > Because as the bisection progresses, I've bumped into this commit only.
-> > > Without it the issue is not reproducible, at least so far.
-> > 
-> > It could be.
-> > 
-> > So can you just test v5.14-rc1?
+On 16/7/21 7:00 am, Miquel Raynal wrote:
+> Hello,
 > 
-> Doing it right now, but I've got another issue. Why BFQ is not listed here:
+> Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com> wrote on Mon, 12 Jul
+> 2021 16:29:16 +0800:
 > 
-> ```
-> /sys/class/block/nvme0n1/queue/scheduler:[mq-deadline] kyber none
-> /sys/class/block/nvme1n1/queue/scheduler:[mq-deadline] kyber none
-> ```
-
-Maybe you need to check if the build is OK, I can't reproduce it in my
-VM, and BFQ is still builtin:
-
-[root@ktest-01 ~]# uname -a
-Linux ktest-01 5.14.0-rc1+ #52 SMP Fri Jul 16 18:56:36 CST 2021 x86_64 x86_64 x86_64 GNU/Linux
-[root@ktest-01 ~]# cat /sys/block/nvme0n1/queue/scheduler
-[none] mq-deadline kyber bfq
-
+>> On 12/7/21 1:27 pm, Christoph Hellwig wrote:
+>>> On Sat, Jul 10, 2021 at 09:16:38PM +0800, Hillf Danton wrote:
+>>>> To break the lock chain, un/register blkdev without mtd_table_mutex held.
+>>>
+>>> Yes, Desmond Cheong Zhi Xi sent pretty much the same patch on June 18th
+>>> (mtd: break circular locks in register_mtd_blktrans), but it did not get
+>>> picked up.
+>>>    
+>>
+>> I believe Miquèl was waiting for -rc1 to apply it.
 > 
-> ?
+> Indeed, I already applied it but did not advertise yet.
 > 
-> It is a built-in, FWIW:
+
+Thanks Miquèl!
+
+>>
+>> But taking a closer look, although the fix for the register path is the same, Hillf Danton's proposed patch additionally avoids inverting the lock hierarchy on the unregister path. So I believe this new patch should be more robust.
 > 
-> ```
-> $ modinfo bfq
-> name:           bfq
-> filename:       (builtin)
-> description:    MQ Budget Fair Queueing I/O Scheduler
-> license:        GPL
-> file:           block/bfq
-> author:         Paolo Valente
-> alias:          bfq-iosched
-> ```
+> We can definitely do this in two steps if you want.
 > 
-> So far the issue is not reproducible with your patch + 5.13.2 as well as 5.14-
-> rc1 (but I don't have BFQ either with v5.14-rc1).
 
-You have to verify it with BFQ applied, :-)
+Sounds good, I'll prepare a patch with Hillf's suggestion for the 
+unregister path.
 
-
-Thanks, 
-Ming
+> Thanks,
+> Miquèl
+> 
 
