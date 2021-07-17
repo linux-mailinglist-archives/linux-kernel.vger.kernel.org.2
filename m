@@ -2,175 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F083CC3EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 16:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A01C3CC3F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 17:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234750AbhGQPBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 11:01:17 -0400
-Received: from mout.gmx.net ([212.227.15.18]:58481 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234437AbhGQPBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 11:01:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626533887;
-        bh=04xoGtUfP29/HnxDxC9oJykIveZ1+k8cBhMNVT6MtnA=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=boJ9INB3hK9jxRM8kKULYOkkppcAutJZvlFu+fZQJ33ojalbkxCb7BKIAq1qVKB34
-         NiaLXQCJdaS8HRmikJ1PpPXj3Xzvpj7mqbx1wpoSJM/MiVb8rOOXb9v1pYV3SU0seG
-         nlW0qqd/orJE4/PfUAF9Sm3SgPHQLjVd56Y3p7WU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.217.205]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M2f5Z-1m7mIi08nH-004Am1; Sat, 17
- Jul 2021 16:58:07 +0200
-Message-ID: <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
-Subject: [patch] v2 mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-From:   Mike Galbraith <efault@gmx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Sat, 17 Jul 2021 16:58:05 +0200
-In-Reply-To: <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
-         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-         <878s2fnv79.ffs@nanos.tec.linutronix.de>
-         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
-         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S234447AbhGQPDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 11:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234330AbhGQPDq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 11:03:46 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6DDC06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 08:00:49 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id dj21so17002623edb.0
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 08:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lKMibIsS9rT2fMwJ90ICX9C9VxJ1nvPaBmilinRidwY=;
+        b=ODbRE9y82G8vvp0wCrzGcMnwQsvmVPgW0YCvZ13DDasa+YYcjkFEJdKbWM45ZClJy6
+         Pb7C0rjVABX4T+s7fEF33DxjvxxM9vzVvz4STFSnzqwgzVcbBgH+jtXuegbbf9TY62JJ
+         u+FteOwA5LkLTljDRSiaVQ2ikfUzHgZWqjfOTPSKBa+xUOkYjAHZeG1MKjl1QvYe1hdL
+         ZXWP/RMkqRe2+OCzwxnRAjvPJRLZ3WF8iYyk4F5L9EvCTZfqHksQtrgud74fSwsTchO2
+         bZ0Bunr69/mMq2KiB5EqF1C7YUvi5Lg1EehVvfPMCYWTlKJ5CfRR2oHZfGUbsdAIGaNj
+         TQWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lKMibIsS9rT2fMwJ90ICX9C9VxJ1nvPaBmilinRidwY=;
+        b=rSZxx6kGe22UQkT91LOjuBRU6z1t+uiq0t2bpnxCJWc1EXpSqftWj6saE9vN2gUMXI
+         yommTGUWU7pQAOYF6CvmiwbnTjbbLVITDJQCwEvCfEgFj0rAl8iWEmC3cyHkHbKt6ZHh
+         +lDTkrGT+Gf5xbUovUQPObOlSCx5VmcdPgOqpl5Xghpb/1q7S/1yxRaHoskQWoD7qtZE
+         ZWsb8OnjkSk73ZjCAegyDb9zGuOoUNySh8RWZeKaE5z5eyx74f3wO9vaGMww940LvxEa
+         oKA9SqEjhmgPPtykSOExc8dF68yetTjJ0qwL8h4lOCM1F/RKL3MuVZ+5AEG7NqMLEqXS
+         uepg==
+X-Gm-Message-State: AOAM531EXK4WY0sk4KqTk/IbK4+Wf3H6kLl/rsiY9IILNYGv9Db3rScD
+        oaPOYRqb8Kmj40rPX844lktKbB+pTA6CwRNRitVaWg==
+X-Google-Smtp-Source: ABdhPJyinOuYsnSquwzBxkUya+jJtrGVKl1n0RGU49BT6E0ChyLqxGg9c/0Z108PYAMlW5De4zIYTSvnTrpMxOOUYeg=
+X-Received: by 2002:aa7:dc01:: with SMTP id b1mr22227345edu.239.1626534047968;
+ Sat, 17 Jul 2021 08:00:47 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210716182150.239646976@linuxfoundation.org>
+In-Reply-To: <20210716182150.239646976@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 17 Jul 2021 20:30:36 +0530
+Message-ID: <CA+G9fYsGZKxkOqWZJwcTr9mpnVE5WEUr5FG1wrh+KNHX9oZpWQ@mail.gmail.com>
+Subject: Re: [PATCH 5.13 000/258] 5.13.3-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JqZyItgw8KDovOoYnYJzQfp8No7m7bYMIvjYTMQ8MeqT813pU3k
- FxVWQb/WTVFjneXntlRXPBfL+DQhuwukZq2Pa9TnxASm6PFcz8yxL/rwk97Wwb6pKgaZbgP
- bT4+dPioWlXsW37owlHbRmdYyJbthERp3xM/I/ZwvmCC0Le8Eu1Nlz9bFxUly4vpXus02OO
- x8TGiFeXTzNxqdOsihOMg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nBMkpUL43ZM=:coA3ZzRIYdbV3HCaiQDyaF
- S1iw0PmN27pSxgbCyYkFUAiOkly8NLJCnccNifZYauXdxFDuP9N8hRgT6bJCLzVnliAcNDwWo
- YvwxEW1AHPo+HZqvQvCUoFRQjuNO/pXhnk18mgt3bV2vITuHOWkfLnImxqRhulYJBap0JECVa
- loIL9YPZanh2BT++zjPwyk9EZ70JXPrM5v0nw/M/OolzuvBUIREZOKyrF8ZURG7bCFm/AvwMX
- G7sJ0uFqBSJZK6ag50ruv5nUWsQX5ehF+RweFin5Oz3iLggzTnV9ziV2kkcMkbbgC2hQMyZ+2
- boXQk3vTmpSkK/AdZH5mneRoWC99YueiyKE1vr1HkrGEstNVzL6xXuU+/Psq/RTJfNq08yXLq
- 7WiPzc9kUoS264ldLUMkSpftzyo/3/0Gvu5iKWpohNOgSiWLz3lB6w+WbdP1/srkmrtAjCgY2
- gdWHRsnkFTgcQ9ZWUhnjSzzxwP+oIMZUrriNVTVmU4GeuaCm0J6jKTOk/joctgViWAWTAWJT8
- XTuMGUnu2MdEYIP5K6+jz5N8L7OZW1c/A5sGhr52/7ggUxDYN+g6wD98aIzQ2h+6IJGY8LqQK
- IUL53zMIPT/jlIlDTSYzKx40dy3Fhsn1AoUFL4WCHdwYmWUWnitjKHGeXGy1ODc7sEHcZDAjS
- LJ0ieH+A9EJ02LEFZ9/T3hnDtxx6iK4lyex9GBpWYqoSe2AbuG7CDjwzBplDuhTlxF99bvl9I
- SI1F7KIv7JxYNRcGUOug8tpIoCbIUIJ8o49uD1pmZfZs/sCFOq6Vhy/WmM5rEZyBFzF/CFsf8
- C/7pSyqBYR254IBTM3BjD9HuSpXutmSns5ci/IRqrWLmPrTmynSxEKbb6N89vIFZy6oU052Dq
- jI9lb053Hj61enyhlTpuyzTsdmTUm8E52jOpSSACCyPCmffIBGKJUlkI2yhUBLEgx4JEVWMZr
- ASx453dVMaM/my7hZc/BK0JycBopO4ZHtiFS69evAmDybMRdL/8hsW7TXIYT/go11wK5ekkLd
- 2yNh0wCgZbLFaWmZuFJ+fZbQLORDzWK6835HKDZyOwZjRqRQpBarMP53PsZZsZCeTgF9hhGbF
- X9UiCWxDeFd9XON6BSc69b+n3py7mENZdoS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-15 at 18:34 +0200, Mike Galbraith wrote:
-> Greetings crickets,
+On Fri, 16 Jul 2021 at 23:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Methinks he problem is the hole these patches opened only for RT.
+> This is the start of the stable review cycle for the 5.13.3 release.
+> There are 258 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> static void put_cpu_partial(struct kmem_cache *s, struct page *page,
-> int drain)
-> {
-> #ifdef CONFIG_SLUB_CPU_PARTIAL
-> 	struct page *oldpage;
-> 	int pages;
-> 	int pobjects;
+> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
+> Anything received after that time might be too late.
 >
-> 	slub_get_cpu_ptr(s->cpu_slab);
->         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.13.3-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.13.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Bah, I'm tired of waiting to see what if anything mm folks do about
-this little bugger, so I'm gonna step on it my damn self and be done
-with it.  Fly or die little patchlet.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-mm/slub: restore/expand unfreeze_partials() local exclusion scope
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-2180da7ea70a ("mm, slub: use migrate_disable() on PREEMPT_RT") replaced
-preempt_disable() in put_cpu_partial() with migrate_disable(), which when
-combined with ___slab_alloc() having become preemptibile, leads to
-kmem_cache_free()/kfree() blowing through ___slab_alloc() unimpeded,
-and vice versa, resulting in PREMPT_RT exclusive explosions in both
-paths while stress testing with both SLUB_CPU_PARTIAL/MEMCG enabled,
-___slab_alloc() during allocation (duh), and __unfreeze_partials()
-during free, both while accessing an unmapped page->freelist.
+## Build
+* kernel: 5.13.3-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.13.y
+* git commit: df7d40fdca4b2ca46a7606a7e0b2107f2f82628a
+* git describe: v5.13.2-259-gdf7d40fdca4b
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
+.2-259-gdf7d40fdca4b
 
-Serialize put_cpu_partial()/unfreeze_partials() on cpu_slab->lock to
-ensure that alloc/free paths cannot pluck cpu_slab->partial out from
-underneath each other unconstrained.
+## No regressions (compared to v5.13.2-267-g7e5885df1870)
 
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Fixes: 2180da7ea70a ("mm, slub: use migrate_disable() on PREEMPT_RT")
-=2D--
- mm/slub.c |   23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+## Fixes (compared to v5.13.2-267-g7e5885df1870)
 
-=2D-- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2418,6 +2418,17 @@ static void __unfreeze_partials(struct k
- 	if (n)
- 		spin_unlock_irqrestore(&n->list_lock, flags);
+* s390, build
+  - clang-10-allnoconfig
+  - clang-10-defconfig
+  - clang-10-tinyconfig
+  - clang-11-allnoconfig
+  - clang-11-defconfig
+  - clang-11-tinyconfig
+  - clang-12-allnoconfig
+  - clang-12-defconfig
+  - clang-12-tinyconfig
+  - gcc-10-allnoconfig
+  - gcc-10-defconfig
+  - gcc-10-tinyconfig
+  - gcc-8-allnoconfig
+  - gcc-8-defconfig
+  - gcc-8-tinyconfig
+  - gcc-9-allnoconfig
+  - gcc-9-defconfig
+  - gcc-9-tinyconfig
 
-+	/*
-+	 * If we got here via __slab_free() -> put_cpu_partial(),
-+	 * memcg_free_page_obj_cgroups() ->kfree() may send us
-+	 * back to __slab_free() -> put_cpu_partial() for an
-+	 * unfortunate second encounter with cpu_slab->lock.
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && memcg_kmem_enabled()) {
-+		lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock.lock));
-+		local_unlock(&s->cpu_slab->lock);
-+	}
-+
- 	while (discard_page) {
- 		page =3D discard_page;
- 		discard_page =3D discard_page->next;
-@@ -2426,6 +2437,9 @@ static void __unfreeze_partials(struct k
- 		discard_slab(s, page);
- 		stat(s, FREE_SLAB);
- 	}
-+
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && memcg_kmem_enabled())
-+		local_lock(&s->cpu_slab->lock);
- }
 
- /*
-@@ -2497,7 +2511,9 @@ static void put_cpu_partial(struct kmem_
- 				 * partial array is full. Move the existing
- 				 * set to the per node partial list.
- 				 */
-+				local_lock(&s->cpu_slab->lock);
- 				unfreeze_partials(s);
-+				local_unlock(&s->cpu_slab->lock);
- 				oldpage =3D NULL;
- 				pobjects =3D 0;
- 				pages =3D 0;
-@@ -2579,7 +2595,9 @@ static void flush_cpu_slab(struct work_s
- 	if (c->page)
- 		flush_slab(s, c, true);
+## Test result summary
+ total: 79739, pass: 65308, fail: 2144, skip: 11035, xfail: 1252,
 
-+	local_lock(&s->cpu_slab->lock);
- 	unfreeze_partials(s);
-+	local_unlock(&s->cpu_slab->lock);
- }
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
 
- static bool has_cpu_slab(int cpu, struct kmem_cache *s)
-@@ -2632,8 +2650,11 @@ static int slub_cpu_dead(unsigned int cp
- 	struct kmem_cache *s;
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
- 	mutex_lock(&slab_mutex);
--	list_for_each_entry(s, &slab_caches, list)
-+	list_for_each_entry(s, &slab_caches, list) {
-+		local_lock(&s->cpu_slab->lock);
- 		__flush_cpu_slab(s, cpu);
-+		local_unlock(&s->cpu_slab->lock);
-+	}
- 	mutex_unlock(&slab_mutex);
- 	return 0;
- }
-
+--
+Linaro LKFT
+https://lkft.linaro.org
