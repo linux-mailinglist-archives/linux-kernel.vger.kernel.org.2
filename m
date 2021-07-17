@@ -2,140 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4040D3CC3A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 15:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3A23CC3A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 15:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233880AbhGQNmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 09:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbhGQNm3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 09:42:29 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A10FC06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 06:39:32 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id l11so2866705ljq.4
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 06:39:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wMysod/FxYgvZzqmI+wGDhxKEpokYzXYS9Z8NQkl9ME=;
-        b=dx3rzI7bTiu4T3bOQldfOy1OsFPlkh8bBfCb9jy5V8APCP58TFHseMNd9H/okgmswf
-         hUKephRuwDpjGCW1EMdvDYrqArAsrkr0iOBqiPc/BNwsAcr63DSlQ8/fMJJKhjWoZTvJ
-         VeTfrx1L3pkh4TvaF7hs8xXw2oxYnqrN+/WH4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wMysod/FxYgvZzqmI+wGDhxKEpokYzXYS9Z8NQkl9ME=;
-        b=On/IWQeycBB4laphermKcpNvBgkLL3+AK34pBgsO8nbSbq3lnBapfJmeFpNKaX9T62
-         vvuZkCb6fTx2E4DuiR6IuDzQiANfUC6eNol62qYLfvAf/V7Nb/fRypdGiNX3QiB06p/5
-         NVpia9hJ8oZ9l5TV37gBImaBtcRlL4b8+EUDIN9xHWSK+CgkWLUm9Mx3EFWDeB6VlJvw
-         2K8H1JZnyIkW7c/1j8k1s//nQNB0n18HAwC5h5kjPXn1B0LL3aTBz8pyLFBkDkayLHpK
-         HdVDsclFUmH0CdY7OoO8qDjeewLx/lXNk45d9+0nbL+lxrIwKAvoA/wuTgQ45+68WXbG
-         bzEQ==
-X-Gm-Message-State: AOAM530uksAvPsrkYP+t8XOjsGiiGIVU0KyZC3r2p6pKXOBdsDH/WxjU
-        Yhh++hcuJKr2HB3OtF4lGqsqTgvMcyl79cY5gnZvAQ==
-X-Google-Smtp-Source: ABdhPJwrBJIk83MDhG8twlHGK2D602TuoBySGjD8NgUQYkCsFRJjpLsnWZmn20MwEw5AyXgT+h/L6Y637xngf2CDgJM=
-X-Received: by 2002:a2e:a90e:: with SMTP id j14mr8861414ljq.250.1626529170617;
- Sat, 17 Jul 2021 06:39:30 -0700 (PDT)
+        id S233963AbhGQNnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 09:43:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232974AbhGQNnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 09:43:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0797D60FF4;
+        Sat, 17 Jul 2021 13:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626529225;
+        bh=yj+KdEn4aulPEDG+yzq3nw0iG5UOrL1GtmX/BSTLjQ0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=uYnJRQ8CK4u9N8+Y3RSFbdSgE2aZ3D4vcC7lbVa+xqVzZfC5FnSlax0N3I4qy5dbU
+         R2iv7XhzI1cJhIcWFAKrfcTPrE/St4eqjgDrbARf6H5ne7V0vJdZdtTsofsjtmKVem
+         dCsSEo9Q8fSuxD1ZqLl9XwNiPLKOIlIviwoXsEIn+oP61aXZqZfwsOpHC8xK8GWWBO
+         Fshm4rWnNmBaPuWNOhLGThHaRHiIqHiIm8oR4292JNjtf/8dgE7A4cb6she140Uez4
+         DEtVpKLx4/iLs+odcfXcpbyj21rHCjTAB81fOdAPR/hE5Eov0SitnhjswEG6THqwC2
+         EAbsu1rjaD8hg==
+Message-ID: <ee1b82eb7c008dc330f7e45dc906eb44a7a17dae.camel@kernel.org>
+Subject: Re: Re: [PATCH] ceph: Convert from atomic_t to refcount_t on
+ ceph_snap_realm->nref
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Yejune Deng <yejune.deng@gmail.com>
+Date:   Sat, 17 Jul 2021 09:40:23 -0400
+In-Reply-To: <702aa2de.980b.17ab46ee99b.Coremail.xiyuyang19@fudan.edu.cn>
+References: <1626516381-40440-1-git-send-email-xiyuyang19@fudan.edu.cn>
+         <2e5088eb8df4db5ea4d9c9f2862fc19c3bf186d4.camel@kernel.org>
+         <702aa2de.980b.17ab46ee99b.Coremail.xiyuyang19@fudan.edu.cn>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-References: <20210712060912.995381202@linuxfoundation.org> <20210712060916.499546891@linuxfoundation.org>
-In-Reply-To: <20210712060916.499546891@linuxfoundation.org>
-From:   Justin Forbes <jmforbes@linuxtx.org>
-Date:   Sat, 17 Jul 2021 08:39:19 -0500
-Message-ID: <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
-Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
- ROM state
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Moritz Fischer <mdf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Moritz Fischer <mdf@kernel.org>
->
-> commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
->
-> The ROM load sometimes seems to return an unknown status
-> (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
->
-> If the ROM load indeed failed this leads to failures when trying to
-> communicate with the controller later on.
->
-> Attempt to load firmware using RAM load in those cases.
->
-> Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
-> Cc: stable@vger.kernel.org
-> Cc: Mathias Nyman <mathias.nyman@intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Tested-by: Vinod Koul <vkoul@kernel.org>
-> Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
+I think this is probably a place where we just can't reasonably convert
+to using refcount_t, as the lifecycle of the refcounted objects doesn't
+fully conform to the "standard" refcount_t model.
 
-After sending out 5.12.17 for testing, we had a user complain that all
-of their USB devices disappeared with the error:
+It may also be possible to extend the refcount_t API with a
+refcount_inc_return or something, but I'm not sure that really gains us
+much here.
 
-Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
-for renesas_usb_fw.mem failed with error -2
-Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
-Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
+-- Jeff
 
-After first assuming that something was missing in the backport to
-5.12, I had the user try 5.13.2, and then 5.14-rc1. Both of those
-failed in the same way, so it is not working in the current Linus tree
-either.  Reverting this patch fixed the issue.
+On Sat, 2021-07-17 at 20:26 +0800, Xiyu Yang wrote:
+> Thank you for pointing out the problem in the patch. I cannot find an unique refcount API work like atomic_inc_return, thus I chose two APIs to play a similar role and forgot the potential racy case. So are you have a better choice to help this refcount type convertation?
+> 
+> 
+> > -----Original Messages-----
+> > From: "Jeff Layton" <jlayton@kernel.org>
+> > Sent Time: 2021-07-17 19:21:40 (Saturday)
+> > To: "Xiyu Yang" <xiyuyang19@fudan.edu.cn>, "Ilya Dryomov" <idryomov@gmail.com>, ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+> > Cc: yuanxzhang@fudan.edu.cn, "Xin Tan" <tanxin.ctf@gmail.com>, "Yejune Deng" <yejune.deng@gmail.com>
+> > Subject: Re: [PATCH] ceph: Convert from atomic_t to refcount_t on ceph_snap_realm->nref
+> > 
+> > On Sat, 2021-07-17 at 18:06 +0800, Xiyu Yang wrote:
+> > > refcount_t type and corresponding API can protect refcounters from
+> > > accidental underflow and overflow and further use-after-free situations.
+> > > 
+> > > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> > > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> > > ---
+> > >  fs/ceph/snap.c  | 15 ++++++++-------
+> > >  fs/ceph/super.h |  3 ++-
+> > >  2 files changed, 10 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/fs/ceph/snap.c b/fs/ceph/snap.c
+> > > index 4ac0606dcbd4..d4ec9c5118bd 100644
+> > > --- a/fs/ceph/snap.c
+> > > +++ b/fs/ceph/snap.c
+> > > @@ -68,14 +68,15 @@ void ceph_get_snap_realm(struct ceph_mds_client *mdsc,
+> > >  	lockdep_assert_held(&mdsc->snap_rwsem);
+> > >  
+> > >  	dout("get_realm %p %d -> %d\n", realm,
+> > > -	     atomic_read(&realm->nref), atomic_read(&realm->nref)+1);
+> > > +	     refcount_read(&realm->nref), refcount_read(&realm->nref)+1);
+> > >  	/*
+> > >  	 * since we _only_ increment realm refs or empty the empty
+> > >  	 * list with snap_rwsem held, adjusting the empty list here is
+> > >  	 * safe.  we do need to protect against concurrent empty list
+> > >  	 * additions, however.
+> > >  	 */
+> > > -	if (atomic_inc_return(&realm->nref) == 1) {
+> > > +	refcount_inc(&realm->nref);
+> > > +	if (refcount_read(&realm->nref) == 1) {
+> > 
+> > The above is potentially racy as you've turned a single atomic operation
+> > into two. Another task could come in and increment or decrement
+> > realm->nref just after your recount_inc but before the refcount_read,
+> > and then the read would show the wrong result.
+> > 
+> > FWIW, Yejune Deng (cc'ed) proposed a very similar patch a few months ago
+> > that caused this regression:
+> > 
+> >     https://tracker.ceph.com/issues/50281
+> > 
+> > >  		spin_lock(&mdsc->snap_empty_lock);
+> > >  		list_del_init(&realm->empty_item);
+> > >  		spin_unlock(&mdsc->snap_empty_lock);
+> > > @@ -121,7 +122,7 @@ static struct ceph_snap_realm *ceph_create_snap_realm(
+> > >  	if (!realm)
+> > >  		return ERR_PTR(-ENOMEM);
+> > >  
+> > > -	atomic_set(&realm->nref, 1);    /* for caller */
+> > > +	refcount_set(&realm->nref, 1);    /* for caller */
+> > >  	realm->ino = ino;
+> > >  	INIT_LIST_HEAD(&realm->children);
+> > >  	INIT_LIST_HEAD(&realm->child_item);
+> > > @@ -209,8 +210,8 @@ static void __put_snap_realm(struct ceph_mds_client *mdsc,
+> > >  	lockdep_assert_held_write(&mdsc->snap_rwsem);
+> > >  
+> > >  	dout("__put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
+> > > -	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
+> > > -	if (atomic_dec_and_test(&realm->nref))
+> > > +	     refcount_read(&realm->nref), refcount_read(&realm->nref)-1);
+> > > +	if (refcount_dec_and_test(&realm->nref))
+> > >  		__destroy_snap_realm(mdsc, realm);
+> > >  }
+> > >  
+> > > @@ -221,8 +222,8 @@ void ceph_put_snap_realm(struct ceph_mds_client *mdsc,
+> > >  			 struct ceph_snap_realm *realm)
+> > >  {
+> > >  	dout("put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
+> > > -	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
+> > > -	if (!atomic_dec_and_test(&realm->nref))
+> > > +	     refcount_read(&realm->nref), refcount_read(&realm->nref)-1);
+> > > +	if (!refcount_dec_and_test(&realm->nref))
+> > >  		return;
+> > >  
+> > >  	if (down_write_trylock(&mdsc->snap_rwsem)) {
+> > > diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> > > index 6b6332a5c113..3abb00d7a0eb 100644
+> > > --- a/fs/ceph/super.h
+> > > +++ b/fs/ceph/super.h
+> > > @@ -2,6 +2,7 @@
+> > >  #ifndef _FS_CEPH_SUPER_H
+> > >  #define _FS_CEPH_SUPER_H
+> > >  
+> > > +#include <linux/refcount.h>
+> > >  #include <linux/ceph/ceph_debug.h>
+> > >  
+> > >  #include <asm/unaligned.h>
+> > > @@ -859,7 +860,7 @@ struct ceph_readdir_cache_control {
+> > >  struct ceph_snap_realm {
+> > >  	u64 ino;
+> > >  	struct inode *inode;
+> > > -	atomic_t nref;
+> > > +	refcount_t nref;
+> > >  	struct rb_node node;
+> > >  
+> > >  	u64 created, seq;
+> > 
+> > -- 
+> > Jeff Layton <jlayton@kernel.org>
+> 
+> 
+> 
+> 
+> 
+> 
 
-Justin
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-> ---
->  drivers/usb/host/xhci-pci-renesas.c |   16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> --- a/drivers/usb/host/xhci-pci-renesas.c
-> +++ b/drivers/usb/host/xhci-pci-renesas.c
-> @@ -207,7 +207,8 @@ static int renesas_check_rom_state(struc
->                         return 0;
->
->                 case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
-> -                       return 0;
-> +                       dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
-> +                       break;
->
->                 case RENESAS_ROM_STATUS_ERROR: /* Error State */
->                 default: /* All other states are marked as "Reserved states" */
-> @@ -224,13 +225,12 @@ static int renesas_fw_check_running(stru
->         u8 fw_state;
->         int err;
->
-> -       /* Check if device has ROM and loaded, if so skip everything */
-> -       err = renesas_check_rom(pdev);
-> -       if (err) { /* we have rom */
-> -               err = renesas_check_rom_state(pdev);
-> -               if (!err)
-> -                       return err;
-> -       }
-> +       /*
-> +        * Only if device has ROM and loaded FW we can skip loading and
-> +        * return success. Otherwise (even unknown state), attempt to load FW.
-> +        */
-> +       if (renesas_check_rom(pdev) && !renesas_check_rom_state(pdev))
-> +               return 0;
->
->         /*
->          * Test if the device is actually needing the firmware. As most
->
->
