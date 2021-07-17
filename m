@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7933CC6E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762813CC6E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhGQXkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 19:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
+        id S231160AbhGQXun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 19:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbhGQXkc (ORCPT
+        with ESMTP id S230259AbhGQXul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 19:40:32 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991C0C061764;
-        Sat, 17 Jul 2021 16:37:33 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id f9so16497264wrq.11;
-        Sat, 17 Jul 2021 16:37:33 -0700 (PDT)
+        Sat, 17 Jul 2021 19:50:41 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8CBC061762;
+        Sat, 17 Jul 2021 16:47:43 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id p9so9110138pjl.3;
+        Sat, 17 Jul 2021 16:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XT3dSBF1T+xb0vIDoCrx2w6ZTm5g1KZ+GveMuxTzekE=;
-        b=CtXz2OYi/GCxjfmSsp1YKE9LnoDSnkeBX/+cM0CqBTWLFyQ6l+6dF7g0GALhl5vFip
-         bB1RIaGem2FXKgNiq5DFd/DPWKamLAy953PR8qpNsuuHn+CCMqud62IDqI2tgLVcNVJL
-         pqiUeR/+krg7X5p1lecyAvFwM5jkR75NGg6E5w+CQb1NJ9sbUYwh+ep4qbz61fVvxMJp
-         TcSgS/GtSGwi5iDDi8i26O8rXG9dnoxKH7P/myimGPxHn9jsUFuERMigxDKxjx9wQWSW
-         v8eZgG05pDqFZaqWIbBJC5A9z6GV2VeemXuFYPhFjx3Pr9A3KDKuqhML1I7a9D5eavp+
-         fGEA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jqm9bADBTjXarUNO7zNvEPBe57n8l0U81FwrzNRCVBU=;
+        b=o0/CU2otK+wkGdWL2VfOksB2vsd8J/gWqCz+Prs2K9Hk0LtWTYBDOH83WnzvNyKnWg
+         n6ADZDOM1iZpEjKHLMv3NTaEqi1RVxVkEgYyiYRtXmnqCRS1r/ig1eRWEg555uW7pCbu
+         Rjkp1ouZz9g7u3UDkL7hmfFyYKmcY0g5zrUGZ0cOW4aS01BjBGEtmqOxLAF/Knt3Dlgg
+         IPhnPXi+5CSdyUkNIftkfF71f+tlOacz1o0Uk3HcHYCRB6L/PVs9IUcwJjw71rmMOeGk
+         K2H5TA0Es0blKeeWACaO9ltlyzMAlcBqgMojV5LRLvbAZeYpE4Nd8xzkCX84VUsNqM4A
+         T7iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XT3dSBF1T+xb0vIDoCrx2w6ZTm5g1KZ+GveMuxTzekE=;
-        b=hzbXrzU3BQhDC+1ScPbhWHiKhEG/YrZexMXJkxL7iQFEMX/WESQnpYKpVCk2dYyVwQ
-         yYy1rSyz0J06A1cAeAJ0FNsfoBxNjkjiRZ3qOrd/L7vyRv2Uctdf68qm3KeXIpzkNr9A
-         wzc6pp+av0JlVgXVlMlGsG+5BG0eEBPdc6VIgWhxbd9NriiCqFUoFKba2Fqh4rxUQPdn
-         ngXfFr1gSB7dsXhXHxrJEtbYL/mGkFGdwm4nCF8hlHJtCzt6rKMhyv1CILA9upMaiLnb
-         xS3NHMEf+aUDgkA+D2PsnKFeb387ZfNyKBb+6hbrnXp2w4jeigt21lKDzuv4pvvn2ujk
-         QFuQ==
-X-Gm-Message-State: AOAM533P8fsNpJGCjpm4DODj3q8JJbJKwDiYv70owT1/CzAN0QNyEtcC
-        ZMRxIuEt2JQRPVwNGGLyJzo65fqa/yY=
-X-Google-Smtp-Source: ABdhPJyMHQezFPPUSmeL1JZrcqZFIjqXhH77/GR5QaHIt7RRb8WSy+hK7rcUeEv/o/KOCoaagS0qRw==
-X-Received: by 2002:a5d:5141:: with SMTP id u1mr21346802wrt.193.1626565052070;
-        Sat, 17 Jul 2021 16:37:32 -0700 (PDT)
-Received: from localhost.localdomain (dynamic-2a01-0c22-7602-4e00-f22f-74ff-fe21-0725.c22.pool.telefonica.de. [2a01:c22:7602:4e00:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id q7sm12347527wmq.33.2021.07.17.16.37.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 16:37:31 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-iio@vger.kernel.org, linux-amlogic@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lars@metafoo.de, jic23@kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 3/3] iio: adc: meson-saradc: Fix indentation of arguments after a line-break
-Date:   Sun, 18 Jul 2021 01:37:18 +0200
-Message-Id: <20210717233718.332267-4-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210717233718.332267-1-martin.blumenstingl@googlemail.com>
-References: <20210717233718.332267-1-martin.blumenstingl@googlemail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jqm9bADBTjXarUNO7zNvEPBe57n8l0U81FwrzNRCVBU=;
+        b=PlwXKEWhMPyQt0IVhjo1CGPkHb/zQRKEc5GfqUiWL0y8fBZs6WH8qiUFwCXPj2w2oq
+         hyg00MtoFGjMxIZIhh7vjdwArPpMAs5NUpFy5S6HECqhqg4M2gH8Zkrhvy1jPO6NN0X2
+         hNd90ww9jEFRURF8mUp3pucR5u5fMev1U10pacc+z9/hiFeiD9JYndcQ38RoxlL7dXCC
+         hMgLZJ7As0IDNjr+6k6c8t4XmEDDhm0RMBpZtm6+JDuZWFgrWXWV/fG0+UQG7rFJSaLn
+         vl/8eW+fh2Kj61VXSam2cq8XMiuw79r54bz0UaT6dYEheNOA2OwsWJhGDPMYw+NWvGhe
+         gpZA==
+X-Gm-Message-State: AOAM53264ph93mFcQQ1Y8Hgw6JoKmhYf0SUTHJn+mGtvBgDncymr8QX8
+        RFshqYpKklVLIq23GGOg7PrSWEqZruU+7g==
+X-Google-Smtp-Source: ABdhPJxEVxLytbsBKYrYydTqlTJiGCIbb+nTfdQ3fKy/Dmj1Qk14so2vhwdwZhUssi3kivAk9Vv0Rw==
+X-Received: by 2002:a17:902:ecd2:b029:12b:25f7:9d52 with SMTP id a18-20020a170902ecd2b029012b25f79d52mr13514529plh.18.1626565662745;
+        Sat, 17 Jul 2021 16:47:42 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x10sm15384814pgj.73.2021.07.17.16.47.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Jul 2021 16:47:41 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/212] 5.10.51-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210716182126.028243738@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <fbac9104-b01d-4336-69ec-a53daa12c1db@gmail.com>
+Date:   Sat, 17 Jul 2021 16:47:39 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210716182126.028243738@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align the function arguments after a line-break with the opening
-parenthesis on the previous line. No functional changes intended.
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/iio/adc/meson_saradc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
-index b4e16f2e957f..705d5e11a54b 100644
---- a/drivers/iio/adc/meson_saradc.c
-+++ b/drivers/iio/adc/meson_saradc.c
-@@ -497,8 +497,8 @@ static int meson_sar_adc_lock(struct iio_dev *indio_dev)
- 	if (priv->param->has_bl30_integration) {
- 		/* prevent BL30 from using the SAR ADC while we are using it */
- 		regmap_update_bits(priv->regmap, MESON_SAR_ADC_DELAY,
--				MESON_SAR_ADC_DELAY_KERNEL_BUSY,
--				MESON_SAR_ADC_DELAY_KERNEL_BUSY);
-+				   MESON_SAR_ADC_DELAY_KERNEL_BUSY,
-+				   MESON_SAR_ADC_DELAY_KERNEL_BUSY);
- 
- 		/*
- 		 * wait until BL30 releases it's lock (so we can use the SAR
-@@ -525,7 +525,7 @@ static void meson_sar_adc_unlock(struct iio_dev *indio_dev)
- 	if (priv->param->has_bl30_integration)
- 		/* allow BL30 to use the SAR ADC again */
- 		regmap_update_bits(priv->regmap, MESON_SAR_ADC_DELAY,
--				MESON_SAR_ADC_DELAY_KERNEL_BUSY, 0);
-+				   MESON_SAR_ADC_DELAY_KERNEL_BUSY, 0);
- 
- 	mutex_unlock(&indio_dev->mlock);
- }
-@@ -791,7 +791,7 @@ static int meson_sar_adc_init(struct iio_dev *indio_dev)
- 	 * on the vendor driver), which we don't support at the moment.
- 	 */
- 	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG0,
--			MESON_SAR_ADC_REG0_ADC_TEMP_SEN_SEL, 0);
-+			   MESON_SAR_ADC_REG0_ADC_TEMP_SEN_SEL, 0);
- 
- 	/* disable all channels by default */
- 	regmap_write(priv->regmap, MESON_SAR_ADC_CHAN_LIST, 0x0);
+On 7/16/2021 11:28 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.51 release.
+> There are 212 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.51-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.32.0
-
+Florian
