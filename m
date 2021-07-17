@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF633CC666
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 22:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CACB73CC671
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 23:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235500AbhGQU6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 16:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        id S235560AbhGQVIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 17:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233721AbhGQU6C (ORCPT
+        with ESMTP id S231542AbhGQVIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 16:58:02 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C718BC061765
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 13:55:05 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id c1so8662151pfc.13
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 13:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AzejeF7pARl9nvNZ/SKXjtBr8tSI+wQVjunUNUziOkA=;
-        b=yG/94pT++KysRkRR7Ee9X/reRZojfKEcZDLOovFdsOCIl6tMAHuE4febS8dZjRq5on
-         KakPilolQePL2d3aMUyd0sD2TpYRm3tFxj9hcX+iuHw+lTBEHfYq8POysMd5FJbVILZq
-         b8CQb+EfVh6yJZzKi3jm+4bSd90uJQgsJBmJLGe3ZJSJIYCLeIkEdLUyG4qCERiR/D3Y
-         CLFZxGYQ2TrtobRV/SdNOcMAnBKcFjZrQJtjrVYq7LWy4xElrWV7FvFTn060p8a4rY4U
-         adR8o5Jt47WSv1Zror7vG7WmZ4dkwESOOo1I1AuekVMbzXvKduiajK3Zbz5E0/tyNsPV
-         XgfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AzejeF7pARl9nvNZ/SKXjtBr8tSI+wQVjunUNUziOkA=;
-        b=srKHFK2VABSYToLIyB0Uf/ASG4XtMPzhbWDujyGMUbf7+6fnsgyV/Ez7NTZyCNOh6a
-         P6Dr5z7gD3w40q/vLo93ULOivpsI3V3W9vNAiJ9HNFmKJVRPWvIAMwwo6E4uiWZTfowt
-         bKrgNYeGEcz24ey5NSqBpF1r/rm8Qa9dN6HJW95Y7wD+kmEm3IywRBT2Hnl98BdE+yLW
-         YJ6M3tCCbDztmM64DFV27MYZwSo3gyXKcb6f/i9lZVaNAJoY0b1yqYaBsSmuNsuZR+mM
-         mgqCeNVgumzMZlrzLSLhhJ8qHX2z7NwgJ+C5TbAgWE8YVn6fC+jkJNrKFUlsMh4sQ8fd
-         3yIA==
-X-Gm-Message-State: AOAM531VzcKRLzH524hpz87D+Y249nVzNRqJ/64Qx30ke+XpLrI25EMD
-        aAYriuVfMw4qpRxZCzG6kWypcCIkwbGKraBeqfvqwA==
-X-Google-Smtp-Source: ABdhPJwegUQnpKKeNNS0aeS1tIibmSwIVu8h0HW57Wt8a6q24xYnmH9VFR5v+d9CeKf0ktP85MKfdE2UMTwvnwW1EYI=
-X-Received: by 2002:a65:6248:: with SMTP id q8mr16976866pgv.279.1626555305105;
- Sat, 17 Jul 2021 13:55:05 -0700 (PDT)
+        Sat, 17 Jul 2021 17:08:01 -0400
+X-Greylist: delayed 352 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 17 Jul 2021 14:05:04 PDT
+Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256F1C061762;
+        Sat, 17 Jul 2021 14:05:04 -0700 (PDT)
+From:   Joshua Kinard <kumba@gentoo.org>
+Subject: Re: [PATCH v2 1/3] MAINTAINERS: mark sections from Ralf Baechle
+ orphan
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
+Cc:     "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
+        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210625110419.24503-1-lukas.bulwahn@gmail.com>
+ <20210625110419.24503-2-lukas.bulwahn@gmail.com>
+ <CAKXUXMxFBaBneVZf3WCCYJ8Theu55Nf-gFe=hs5u3mMVd41mTw@mail.gmail.com>
+Openpgp: preference=signencrypt
+Message-ID: <c9e6753b-ce4d-fe63-1b4d-fc37cca77a3b@gentoo.org>
+Date:   Sat, 17 Jul 2021 16:59:08 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20210712220447.957418-1-iwona.winiarska@intel.com>
- <20210712220447.957418-7-iwona.winiarska@intel.com> <59428599ef7efb2521bd62c49a3bc55c710f29de.camel@intel.com>
- <6807a14deb52956ad2fe390b1811dd98901a642a.camel@intel.com>
- <CAPcyv4ifjCZSUuk5H5qw6sjt5vdAkTfNzd+4imu+9e_iOt74gQ@mail.gmail.com> <YPJ05JUiOggKajIx@kroah.com>
-In-Reply-To: <YPJ05JUiOggKajIx@kroah.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 17 Jul 2021 13:54:54 -0700
-Message-ID: <CAPcyv4iuP=uSEWyd+N65FpasQidtN82tW8q-dvf_qT7_FMiTsw@mail.gmail.com>
-Subject: Re: [PATCH 06/14] peci: Add core infrastructure
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     "Winiarska, Iwona" <iwona.winiarska@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "jason.m.bills@linux.intel.com" <jason.m.bills@linux.intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKXUXMxFBaBneVZf3WCCYJ8Theu55Nf-gFe=hs5u3mMVd41mTw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 11:13 PM gregkh@linuxfoundation.org
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Jul 16, 2021 at 02:50:04PM -0700, Dan Williams wrote:
-> > On Fri, Jul 16, 2021 at 2:08 PM Winiarska, Iwona
-> > > > > +}
-> > > > > +EXPORT_SYMBOL_NS_GPL(peci_controller_add, PECI);
-> > > >
-> > > > I think it's cleaner to declare symbol namespaces in the Makefile. In
-> > > > this case, add:
-> > > >
-> > > > cflags-y += -DDEFAULT_SYMBOL_NAMESPACE=PECI
-> > > >
-> > > > ...and just use EXPORT_SYMBOL_GPL as normal in the C file.
-> > > >
-> > >
-> > > I kind of prefer the more verbose EXPORT_SYMBOL_NS_GPL - it also
-> > > doesn't "hide" the fact that we're using namespaces (everything is in
-> > > the C file rather than mixed into Makefile), but it's not a strong
-> > > opinion, so sure - I can change this.
-> > >
-> >
-> > Perhaps as a tie breaker, the maintainer you are submitting this to,
-> > Greg, uses the -DDEFAULT_SYMBOL_NAMESPACE scheme in his subsystem,
-> > drivers/usb/.
->
-> We did that because namespaces were added _after_ the kernel code was
-> already there.  For new code like this, the original use of
-> EXPORT_SYMBOL_NS_GPL() is best as it is explicit and obvious.  No need
-> to dig around in a Makefile to find out the namespace name.
+On 7/17/2021 03:03, Lukas Bulwahn wrote:
+> On Fri, Jun 25, 2021 at 1:04 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>>
+>> The domain lookup for linux-mips.org fails for quite some time now. Hence,
+>> webpages, the patchwork instance and Ralf Baechle's email there is not
+>> reachable anymore.
+>>
+> 
+> There has not been any specific comment on marking kernel parts solely
+> "maintained" by Ralf Baechle as Orphan.
+> 
+> So, given the feedback on this overall patch set from Maciej and Kurt:
+> - the domain lookup for linux-mips.org does resolve again.
+> - the patchwork instance moved.
+> - Ralf Baechle's email now does at least forward somewhere.
+> 
+> However, it still holds that:
+> 
+> Ralf Baechle has not been active since February 2018; so, set all
+> MAINTAINERS sections with Ralf as sole maintainer to Orphan, and give
+> others a chance to claim maintainership if these sections are still of
+> interest.
+> 
+> I suggest that independent of the other patches in this patch set, I
+> rework the commit message of this patch here (basically dropping the
+> first sentence) and send out a final patch for this subject that
+> Thomas can then pick.
+> 
+> Any comments or rejections to that suggestion?
+> 
+> Lukas
 
-Fair enough.
 
-/me goes to update drivers/cxl/
+>> @@ -9654,9 +9652,8 @@ F:        Documentation/devicetree/bindings/iio/gyroscope/invensense,mpu3050.yaml
+>>  F:     drivers/iio/gyro/mpu3050*
+>>
+>>  IOC3 ETHERNET DRIVER
+>> -M:     Ralf Baechle <ralf@linux-mips.org>
+>>  L:     linux-mips@vger.kernel.org
+>> -S:     Maintained
+>> +S:     Orphan
+>>  F:     drivers/net/ethernet/sgi/ioc3-eth.c
+
+Thomas virtually re-wrote this driver, so it is probably more appropriate to
+leave it as maintained, but mark him as the maintainer.
+
+-- 
+Joshua Kinard
+Gentoo/MIPS
+kumba@gentoo.org
+rsa6144/5C63F4E3F5C6C943 2015-04-27
+177C 1972 1FB8 F254 BAD0 3E72 5C63 F4E3 F5C6 C943
+
+"The past tempts us, the present confuses us, the future frightens us.  And
+our lives slip away, moment by moment, lost in that vast, terrible in-between."
+
+--Emperor Turhan, Centauri Republic
