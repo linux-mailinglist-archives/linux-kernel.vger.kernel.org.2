@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63D33CC07A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 03:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7AA3CC080
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 03:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhGQBSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Jul 2021 21:18:50 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:43251 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229753AbhGQBSt (ORCPT
+        id S229963AbhGQBXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Jul 2021 21:23:47 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11326 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhGQBXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Jul 2021 21:18:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Ug.os52_1626484550;
-Received: from B-39YZML7H-2200.local(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0Ug.os52_1626484550)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 17 Jul 2021 09:15:50 +0800
-Subject: Re: [PATCH bpf-next v4 1/3] libbpf: Introduce 'btf_custom_path' to
- 'bpf_obj_open_opts'
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-References: <1626180159-112996-1-git-send-email-chengshuyi@linux.alibaba.com>
- <1626180159-112996-2-git-send-email-chengshuyi@linux.alibaba.com>
- <CAEf4BzawyyJ0hhvmSM8ba817VffOV2O3qG49fqh+VFseiixigA@mail.gmail.com>
-From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
-Message-ID: <0fa3b7f1-7928-eff9-1644-df3384171bcd@linux.alibaba.com>
-Date:   Sat, 17 Jul 2021 09:15:50 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Fri, 16 Jul 2021 21:23:45 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GRVYX0jD0z7tCQ;
+        Sat, 17 Jul 2021 09:16:16 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 17 Jul 2021 09:20:47 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 17 Jul 2021 09:20:46 +0800
+Subject: Re: [PATCH 5.10 000/215] 5.10.51-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210715182558.381078833@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <e74608b6-df10-cdc5-2570-336b364c1774@huawei.com>
+Date:   Sat, 17 Jul 2021 09:20:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzawyyJ0hhvmSM8ba817VffOV2O3qG49fqh+VFseiixigA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210715182558.381078833@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/16/21 12:51 PM, Andrii Nakryiko wrote:
-> On Tue, Jul 13, 2021 at 5:43 AM Shuyi Cheng
-> <chengshuyi@linux.alibaba.com> wrote:
->>
->> btf_custom_path allows developers to load custom BTF, and subsequent
->> CO-RE will use custom BTF for relocation.
->>
->> Learn from Andrii's comments in [0], add the btf_custom_path parameter
->> to bpf_obj_open_opts, you can directly use the skeleton's
->> <objname>_bpf__open_opts function to pass in the btf_custom_path
->> parameter.
->>
->> Prior to this, there was also a developer who provided a patch with
->> similar functions. It is a pity that the follow-up did not continue to
->> advance. See [1].
->>
->>          [0]https://lore.kernel.org/bpf/CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com/#t
->>          [1]https://yhbt.net/lore/all/CAEf4Bzbgw49w2PtowsrzKQNcxD4fZRE6AKByX-5-dMo-+oWHHA@mail.gmail.com/
->>
->> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
->> ---
->>   tools/lib/bpf/libbpf.c | 36 ++++++++++++++++++++++++++++++------
->>   tools/lib/bpf/libbpf.h |  9 ++++++++-
->>   2 files changed, 38 insertions(+), 7 deletions(-)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 1e04ce7..6e11a7b 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -498,6 +498,13 @@ struct bpf_object {
->>           * it at load time.
->>           */
->>          struct btf *btf_vmlinux;
->> +       /* Path to the custom BTF to be used for BPF CO-RE relocations.
->> +        * This custom BTF completely replaces the use of vmlinux BTF
->> +        * for the purpose of CO-RE relocations.
->> +        * NOTE: any other BPF feature (e.g., fentry/fexit programs,
->> +        * struct_ops, etc) will need actual kernel BTF at /sys/kernel/btf/vmlinux.
->> +        */
+On 2021/7/16 2:36, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.51 release.
+> There are 215 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> this comment completely duplicates the one from bpf_object_open_opts,
-> I'll remove or shorten it
+> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
+> Anything received after that time might be too late.
 > 
->> +       char *btf_custom_path;
->>          /* vmlinux BTF override for CO-RE relocations */
->>          struct btf *btf_vmlinux_override;
->>          /* Lazily initialized kernel module BTFs */
->> @@ -2645,10 +2652,6 @@ static bool obj_needs_vmlinux_btf(const struct bpf_object *obj)
->>          struct bpf_program *prog;
->>          int i;
->>
->> -       /* CO-RE relocations need kernel BTF */
->> -       if (obj->btf_ext && obj->btf_ext->core_relo_info.len)
->> -               return true;
->> -
->>          /* Support for typed ksyms needs kernel BTF */
->>          for (i = 0; i < obj->nr_extern; i++) {
->>                  const struct extern_desc *ext;
->> @@ -2665,6 +2668,13 @@ static bool obj_needs_vmlinux_btf(const struct bpf_object *obj)
->>                          return true;
->>          }
->>
->> +       /* CO-RE relocations need kernel BTF, only when btf_custom_path
->> +        * is not specified
->> +        */
->> +       if (obj->btf_ext && obj->btf_ext->core_relo_info.len
->> +               && !obj->btf_custom_path)
->> +               return true;
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.51-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> not sure why you moved it, I'll move it back to minimize code churn
+> thanks,
+> 
+> greg k-h
+> 
 
-You're right. 👍
+Tested on arm64 and x86 for 5.10.51-rc1,
 
-regards,
-Shuyi
-> 
->> +
->>          return false;
->>   }
->>
-> 
-> [...]
-> 
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.51-rc1
+Commit: 36558b9a3bb700ca62ec3ac2f06e6fbec57a35d2
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
