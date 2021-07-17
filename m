@@ -2,146 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E743CC4A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832AE3CC4A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Jul 2021 18:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbhGQQ43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 12:56:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231346AbhGQQ42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 12:56:28 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1FA26109E;
-        Sat, 17 Jul 2021 16:53:28 +0000 (UTC)
-Date:   Sat, 17 Jul 2021 17:55:51 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Liam Beguin" <liambeguin@gmail.com>
-Cc:     "Peter Rosin" <peda@axentia.se>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 05/10] iio: afe: rescale: add INT_PLUS_{MICRO,NANO}
- support
-Message-ID: <20210717175551.20265ac4@jic23-huawei>
-In-Reply-To: <CCUT1ZDDWS1J.3CGKX5J1MNFOX@shaak>
-References: <20210715031215.1534938-1-liambeguin@gmail.com>
-        <20210715031215.1534938-6-liambeguin@gmail.com>
-        <8417f698-eef2-3311-625a-1ceb17d3e5b2@axentia.se>
-        <CCUT1ZDDWS1J.3CGKX5J1MNFOX@shaak>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232769AbhGQRBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 13:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhGQRBB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 13:01:01 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F01AC06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 09:58:05 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 22so21279941lfy.12
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 09:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9jbWRwx3vNpivElmMcM2Cy7N7lse3df9EYtEBR82SZo=;
+        b=TW00OElWdldwhyck4ia1xSbAIrPzwakzZhTHlT/Wm7Rk9/2l94/pFpoLDmnvHTB7xq
+         Xr6VkhHdreJ264xO8wQwtSE35BLr531jqX0D13715NJxc3Cd9oDDmqYCipRGHo03TZPS
+         YkNM+jZo49wGSZtdvhgcUuYxGvG1QWoZG+nYbiuO7LojfNefn4nkuFsx8BTTfBklM/WC
+         aLw3vkDkZOFUJANsX9YtHV9+5DyiDQdJrgHx7Z/tfyhNLqWLcs6HdXqtIXrlWn8h3v4O
+         lGSngUm27yBN146gpT3syLh4UsNHXiU68U2nu94tuScpFpbjV3SynYF7r1gk8uFWSiNm
+         YBWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9jbWRwx3vNpivElmMcM2Cy7N7lse3df9EYtEBR82SZo=;
+        b=SuIYhlL5JVWQxkA8REDsihR6J8YQIyerl7ttJTc5wtcwMvYYeWRAw1c4MQjxO4TNqZ
+         lZbB+rqdksPY/PCizhJVckjWpXikALBx20GdlUcNr6uJcfjMP4v8Eo7XqXeQ184D7tiQ
+         vQjvKXt3+r03/7/pQUe6XbuQPL6BW8DYf1qSjxKd2/0KwNgZOP0pN5TlQEfV+tD/n2Pa
+         qbT+9oQkOvaxpqCgHGKFCnoA26JMK8nhNUsWlNjk0vmFSaEeieV1hEhT6Xav8wqcmudW
+         tEwtpCA314uaFC/T2w5h6K+uDzO5Cc+TTnLJn0YckvGmtGQB/N14SfP8+py6fuHoSYDq
+         CjXA==
+X-Gm-Message-State: AOAM533S74f5mJrk0Q6RiqQzNFAWQiZYPahuXvSLgip0n75UIYNx0B5w
+        fQcXkdXqOY5fFxC8dEXhTRl15SzP/yxIj3Y4NLk=
+X-Google-Smtp-Source: ABdhPJwrCrpsGopJrQu3ScHr6xqnj1uV7dwyg2XPuFn58dp3WjKS4HmlmmsJGZS9cogXbj2FtyVJ12VqTZxlkQEZt9E=
+X-Received: by 2002:a19:ae0f:: with SMTP id f15mr12291827lfc.117.1626541083299;
+ Sat, 17 Jul 2021 09:58:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210716182126.4392-1-dwaipayanray1@gmail.com> <CAKXUXMyvOh0GvpEf4uX5iFJYOJLo43tmO16Uf34j4i6XD0vBcg@mail.gmail.com>
+In-Reply-To: <CAKXUXMyvOh0GvpEf4uX5iFJYOJLo43tmO16Uf34j4i6XD0vBcg@mail.gmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Sat, 17 Jul 2021 22:27:52 +0530
+Message-ID: <CABJPP5Dqy4XAob_6D5TSX+hURs5JX+ufz2Tg2o=bR7kbMoGzMA@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: remove obsolete check for __dev* section markers
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Whitcroft <apw@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 15:18:33 -0400
-"Liam Beguin" <liambeguin@gmail.com> wrote:
-
-> On Thu Jul 15, 2021 at 5:48 AM EDT, Peter Rosin wrote:
+On Sat, Jul 17, 2021 at 10:02 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> On Fri, Jul 16, 2021 at 8:21 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
 > >
-> > On 2021-07-15 05:12, Liam Beguin wrote:  
-> > > From: Liam Beguin <lvb@xiphos.com>
-> > > 
-> > > Some ADCs use IIO_VAL_INT_PLUS_{NANO,MICRO} scale types.
-> > > Add support for these to allow using the iio-rescaler with them.
-> > > 
-> > > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > > ---
-> > >  drivers/iio/afe/iio-rescale.c | 15 +++++++++++++++
-> > >  1 file changed, 15 insertions(+)
-> > > 
-> > > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
-> > > index 4c3cfd4d5181..a2b220b5ba86 100644
-> > > --- a/drivers/iio/afe/iio-rescale.c
-> > > +++ b/drivers/iio/afe/iio-rescale.c
-> > > @@ -92,7 +92,22 @@ static int rescale_read_raw(struct iio_dev *indio_dev,
-> > >  			do_div(tmp, 1000000000LL);
-> > >  			*val = tmp;
-> > >  			return ret;
-> > > +		case IIO_VAL_INT_PLUS_NANO:
-> > > +			tmp = ((s64)*val * 1000000000LL + *val2) * rescale->numerator;
-> > > +			do_div(tmp, rescale->denominator);
-> > > +
-> > > +			*val = div_s64(tmp, 1000000000LL);
-> > > +			*val2 = tmp - *val * 1000000000LL;
-> > > +			return ret;  
+> > Commit 54b956b90360 ("Remove __dev* markings from init.h")
+> > completely removed the definitions of __dev* section
+> > markers from init.h. They can no longer pop up in the kernel
+> > and hence the check for those markers is unneeded now.
 > >
-> > This is too simplistic and prone to overflow. We need something like
-> > this
-> > (untested)
-> >
-> > tmp = (s64)*val * rescale->numerator;
-> > rem = do_div(tmp, rescale->denominator);
-> > *val = tmp;
-> > tmp = ((s64)rem * 1000000000LL + (s64)*val2) * rescale->numerator;
-> > do_div(tmp, rescale->denominator);
-> > *val2 = tmp;
-> >
-> > Still not very safe with numerator and denominator both "large", but
-> > much
-> > better. And then we need normalizing the fraction part after the above,
-> > of
-> > course.
-> >  
-> 
-> Understood, I'll test that.
-> 
-> > And, of course, I'm not sure what *val == -1 and *val2 == 500000000
-> > really
-> > means. Is that -1.5 or -0.5? The above may very well need adjusting for
-> > negative values...
-> >  
-> 
-> I would've assumed the correct answer is -1 + 500000000e-9 = -0.5
-> but adding a test case to iio-test-format.c seems to return -1.5...
+>
+> Generally, a good idea! I like this commit of removing obsolete checks
+> in checkpatch. Can you identify more checks in checkpatch that are
+> potentially obsolete and share them with us?
+>
 
-No. -1.5 is as intended, though the IIO_VAL_PLUS_MICRO is rather confusing
-naming :( We should perhaps add more documentation for that.  Signs were
-always a bit of a pain with this two integer scheme for fixed point.
+I identified this one while writing the verbose documentations for that
+rule. I will probably get some more in this process. I will share if I get
+something else, given nobody has any objections.
 
-The intent is to have moderately readable look up tables with the problem that
-we don't have a signed 0 available.  Meh, maybe this decision a long time
-back wasn't a the right one, but it may be a pain to change now as too many
-drivers to check!
+> I assume:
+> If you run checkpatch on the whole latest kernel tree and you run
+> checkpatch on the last 50,000 commits or so, all checks that were
+> never triggered on those evaluations are potentially obsolete. I
+> assume that only a handful of checks would qualify for that criteria,
+> and then we could dig deeper into the history of those checks and see
+> if they still serve a potential purpose or can be removed.
+>
+> If you need a powerful server to run such checkpatch evaluations, just
+> let me know.
+>
 
-1, 0000000  == 1
-0, 5000000  == 0.5
-0, 0000000  == 0
-0, -5000000 == -0.5
--1, 5000000 == -1.5
+I do have the checkpatch evaluation on the whole kernel that I did about
+last month on a cloud server. I can use that. And I have the 50k commit
+checkpatch report from v5.4. That should suffice for now. But thanks, I
+will share if I require any computing power.
 
+> Just on the wording of your commit message:
+>
+> The first sentence reads very strange, because you are just repeating
+> the commit message. So, you can probably just combine the first two
+> sentences and make it much shorter:
+>
+> Since commit ..., the check in checkpatch for __dev* markings is obsolete.
+>
+> Remove this obsolete check.
+>
 
-> 
-> I believe that's a bug but we can work around if for now by moving the
-> integer part of *val2 to *val.
+That sounds logical.
+This particular check was added by Joe in 2013 when the process for
+__dev* marker removal was in progress. If he has no objections to it,
+I can send in an updated patch.
 
-Yup.  Fiddly corner cases..
-
-Jonathan
-
-> 
-> Liam
-> 
-> > Cheers,
-> > Peter
-> >  
-> > > +		case IIO_VAL_INT_PLUS_MICRO:
-> > > +			tmp = ((s64)*val * 1000000LL + *val2) * rescale->numerator;
-> > > +			do_div(tmp, rescale->denominator);
-> > > +
-> > > +			*val = div_s64(tmp, 1000000LL);
-> > > +			*val2 = tmp - *val * 1000000LL;
-> > > +			return ret;
-> > >  		default:
-> > > +			dev_err(&indio_dev->dev, "unsupported type %d\n", ret);
-> > >  			return -EOPNOTSUPP;
-> > >  		}
-> > >  	default:
-> > >   
-> 
-
+Thanks,
+Dwaipayan.
