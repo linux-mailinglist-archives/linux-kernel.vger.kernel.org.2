@@ -2,236 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDE83CC7D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 07:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A88D3CC7E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 08:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhGRFLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 01:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhGRFLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 01:11:05 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AF5C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 22:08:07 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id c17so22094769ejk.13
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 22:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k63KwcexfQ/trbQfAxJJ9bXfqYrH7waIF5eMyRc0K+Q=;
-        b=Dgcb4ECdixAFvZI/VVJCaD1ucI8p8o+kpwYZd6dTIZdABwea/gGqD+kJV1kaeuNtZC
-         pSbM0Wqpe2HlAJ0xSh+SJSluGUuMaOeOXVuNfwpsFEfcOxITB47J7aT/N/U1GdHsWhvw
-         8s41zOkcCK3aqzJN892ASY8ndP/o+N0KIWytFdJ1UHLwMDZT5bKPRrRxSxmQpcnhfC4d
-         Udz6b7SFWu//SeSc4Agelxt6c9unCCEp7sDyYLnZJicdH1t6oqndo4XpetVjE9n4OOHk
-         DtTHNCnmPp33jof7qCLovgcl6FJL9kN3gYp4w7i51APMO+UzhTx2swJgQxb2HfLIgz/Q
-         jTpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k63KwcexfQ/trbQfAxJJ9bXfqYrH7waIF5eMyRc0K+Q=;
-        b=Xl9JknUz7KYcFHhHrhoMo21bDZXjVBJms8m2j+H0uPrqS51qDjLgrtBLgCEgn07vbW
-         Ixuf+ckIwOxBQRQqfBnZ5iYviML0NdVEBsH67ocKL+wfaoXcBY2C+41doq+kUHx0p40y
-         7Gw5tythlN0UpxapsEicNG+kPmPgd0lWDwLxbC+wqCd5CGA97nuAptKZ/w2AtRLSFLHC
-         kzq/Fl9OKGtUn8GftWshNHCJrLMFwKkvGhn65MCNWX2PTvOkQb3C0HtVSkyGoLqpRhL5
-         /r5JrqKed3RrxTC/AJBX2PiePlhx8Lle2knVzYgiAtQ3oJPW0K6nIs2miszOfr8ArjxD
-         i9yg==
-X-Gm-Message-State: AOAM530qtpIC4PsCcwuvunh4PNCtAHJ2omhJzv7FJUaPg3l84qXO4Xjn
-        WOxIyQl7CtBCj7p1LL/p5Rz6OOb5oufD9fBi6u0KPQ==
-X-Google-Smtp-Source: ABdhPJyXRTcU339VkbZ2leOfSEShcKNNnmWp49zlCLS1bnt/t1sBQqlnQpkgP0AmYjT7mYMbF9ByDWF6Z1+j9937wK0=
-X-Received: by 2002:a17:906:844d:: with SMTP id e13mr20638301ejy.503.1626584885451;
- Sat, 17 Jul 2021 22:08:05 -0700 (PDT)
+        id S230003AbhGRGNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 02:13:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:33850 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhGRGNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 02:13:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E35BA6D;
+        Sat, 17 Jul 2021 23:10:17 -0700 (PDT)
+Received: from [10.163.66.155] (unknown [10.163.66.155])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76A823F766;
+        Sat, 17 Jul 2021 23:10:14 -0700 (PDT)
+Subject: Re: [PATCH 3/5] coresight: trbe: Keep TRBE disabled on overflow irq
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        al.grant@arm.com, leo.yan@linaro.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, peterz@infradead.org, Tamas.Zsoldos@arm.com,
+        will@kernel.org
+References: <20210712113830.2803257-1-suzuki.poulose@arm.com>
+ <20210712113830.2803257-4-suzuki.poulose@arm.com>
+ <4ea6e548-db54-a3cc-751e-42700d76704f@arm.com>
+ <a198ebd3-5fd5-4d3a-7101-c64095956ec9@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <5b123a11-fdf3-ebc4-779d-40bace7c7cbf@arm.com>
+Date:   Sun, 18 Jul 2021 11:41:03 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210716182029.878765454@linuxfoundation.org>
-In-Reply-To: <20210716182029.878765454@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 18 Jul 2021 10:37:54 +0530
-Message-ID: <CA+G9fYujYcZKM6kErHuP7amrncCD9-fdaWX09h-GimRpzLk8nw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/119] 5.4.133-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <a198ebd3-5fd5-4d3a-7101-c64095956ec9@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 at 23:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.133 release.
-> There are 119 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.133-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On 7/15/21 1:58 PM, Suzuki K Poulose wrote:
+> On 15/07/2021 04:54, Anshuman Khandual wrote:
+>>
+>>
+>> On 7/12/21 5:08 PM, Suzuki K Poulose wrote:
+>>> When an AUX buffer is marked TRUNCATED, the kernel will disable
+>>> the event (via irq_work) and can only be re-enabled by the
+>>> userspace tool.
+>>
+>> Will it be renabled via normal perf event enable callback OR an
+>> explicit perf event restart is required upon the TRUNCATED flag ?
+> 
+> The perf event moves to a DISABLED state. At this state an
+> explicit restart from the userspace tool is required, via
+> PERF_EVENT_IOC_ENABLE.
 
-## Build
-* kernel: 5.4.133-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 017fed873b8e6dc52381e14f3fd58bda603e54d6
-* git describe: v5.4.132-120-g017fed873b8e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-32-120-g017fed873b8e
+Got it.
 
-## No regressions (compared to v5.4.132-123-g7f5fd6e106ed)
+> 
+>>
+>>>
+>>> Also, since we *always* mark the buffer as TRUNCATED (which is
+>>> needs to be reconsidered, see below), we need not re-enable the
+>>> TRBE as the event is going to be now disabled. This follows the
+>>> SPE driver behavior.
+>>>
+>>> Without this change, we could leave the event disabled for
+>>> ever under certain conditions. i.e, when we try to re-enable
+>>> in the IRQ handler, if there is no space left in the buffer,
+>>> we "TRUNCATE" the buffer and create a record of size 0.
+>>> The perf tool skips such records and the event will remain
+>>> disabled forever.
+>>
+>> Why ? Should not the user space tool explicitly start back the
+>> tracing event after detecting zero sized record with buffer
+>> marked with TRUNCATE flag ? What prevents it to restart the
+>> event ?
+> 
+> The perf tool discards a 0 sized packet. While I agree that
+> this is something that should be fixed in perf tool too, this
+> deviation from the "expected driver" behavior (see SPE driver
+> which this one was inspired from) will break the existing
+> perf tools (not an ABI break, but a functional issue
+> which is not nice and generally discouraged in the kernel).
 
-## No Fixes (compared to v5.4.132-123-g7f5fd6e106ed)
+Makes sense not to cause deviation from the expected driver behaviour
+for now, though perf tool should eventually accommodate a zero sized
+trace record in the buffer and restart the event.
 
-## Test result summary
- total: 75991, pass: 62449, fail: 857, skip: 11406, xfail: 1279,
+> 
+>>
+>>>
+>>> Regarding the use of TRUNCATED flag:
+>>> With FILL mode, the TRBE stops collection when the buffer is
+>>> full, raising the IRQ. Now, since the IRQ is asynchronous,
+>>> we could loose some amount of trace, after the buffer was
+>>> full until the IRQ is handled. Also the last packet may
+>>> have been trimmed. The decoder can figure this out and
+>>> cope with this. The side effect of this approach is:
+>>>
+>>>   We always disable the event when there is an IRQ, even
+>>>   when the other half of the ring buffer is free ! This
+>>>   is not ideal.
+>>>
+>>> Now, we should switch to using PARTIAL to indicate that there
+>>> was potentially some partial trace packets in the buffer and
+>>> some data was lost. We should use TRUNCATED only when there
+>>> is absolutely no space in the ring buffer. This change would
+>>> also require some additional changes in the CoreSight PMU
+>>> framework to allow, sinks to "close" the handle (rather
+>>> than the PMU driver closing the handle upon event_stop).
+>>> So, until that is sorted, let us keep the TRUNCATED flag
+>>> and the rework can be addressed separately.
+>>
+>> But I guess this is a separate problem all together.
+> 
+> Yes, it is. As mentioned above, we need changes to the
+> coresight PMU framework to be able to use the available
+> buffer. And the message already is clear, that this
+> is fixing the "odd" behavior.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
+Got it.
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* timesync-off
-* v4l2-compliance
+> 
+>>
+>>>
+>>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+>>> Reported-by: Tamas Zsoldos <Tamas.Zsoldos@arm.com>
+>>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: Leo Yan <leo.yan@linaro.org>
+>>> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> ---
+>>>   drivers/hwtracing/coresight/coresight-trbe.c | 34 +++++++-------------
+>>>   1 file changed, 12 insertions(+), 22 deletions(-)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>>> index 176868496879..ec38cf17b693 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>>> @@ -696,10 +696,8 @@ static void trbe_handle_spurious(struct perf_output_handle *handle)
+>>>     static void trbe_handle_overflow(struct perf_output_handle *handle)
+>>>   {
+>>> -    struct perf_event *event = handle->event;
+>>>       struct trbe_buf *buf = etm_perf_sink_config(handle);
+>>>       unsigned long offset, size;
+>>> -    struct etm_event_data *event_data;
+>>>         offset = get_trbe_limit_pointer() - get_trbe_base_pointer();
+>>>       size = offset - PERF_IDX2OFF(handle->head, buf);
+>>> @@ -709,30 +707,22 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
+>>>       /*
+>>>        * Mark the buffer as truncated, as we have stopped the trace
+>>>        * collection upon the WRAP event, without stopping the source.
+>>> +     *
+>>> +     * We don't re-enable the TRBE here, as the event is
+>>> +     * bound to be disabled due to the TRUNCATED flag.
+>>> +     * This is not ideal, as we could use the available space in
+>>> +     * the ring buffer and continue the tracing.
+>>> +     *
+>>> +     * TODO: Revisit the use of TRUNCATED flag and may be instead use
+>>> +     * PARTIAL, to indicate trace may contain partial packets.
+>>> +     * And TRUNCATED can be used only if we do not have enough space
+>>> +     * in the buffer. This would need additional changes in
+>>> +     * etm_event_stop() to allow the sinks to leave a closed
+>>> +     * aux_handle.
+>>>        */
+>>>       perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW |
+>>>                        PERF_AUX_FLAG_TRUNCATED);
+>>>       perf_aux_output_end(handle, size);
+>>> -    event_data = perf_aux_output_begin(handle, event);
+>>> -    if (!event_data) {
+>>> -        /*
+>>> -         * We are unable to restart the trace collection,
+>>> -         * thus leave the TRBE disabled. The etm-perf driver
+>>> -         * is able to detect this with a disconnected handle
+>>> -         * (handle->event = NULL).
+>>> -         */
+>>> -        trbe_drain_and_disable_local();
+>>> -        *this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
+>>> -        return;
+>>> -    }
+>>> -    buf->trbe_limit = compute_trbe_buffer_limit(handle);
+>>> -    buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+>>> -    if (buf->trbe_limit == buf->trbe_base) {
+>>> -        trbe_stop_and_truncate_event(handle);
+>>> -        return;
+>>> -    }
+>>> -    *this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
+>>> -    trbe_enable_hw(buf);
+>>>   }
+>>
+>> The change here just stops the event restart after handling the IRQ
+>> and marking the buffer with PERF_AUX_FLAG_TRUNCATED which helps the
+>> event from being disabled for ever (still need to understand how !).
+> 
+> The real issue is unnecessary starting of the event with new buffer
+> after we have "TRUNCATED" the buffer. This can lead to occassionally
+> hitting "0" sized buffer, because the "irq_work_run()" could kick
+> in and disable the event, leaving no trace generated (because we
+> were tracing only userspace). So, we now have a 0 sized record
+> with the event in disabled state, which the perf tool ignores.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Got it.
+
+> 
+>>
+>> I guess it might be better to separate out the problems with using
+>> PERF_AUX_FLAG_TRUNCATED and related aspects, in a subsequent patch
+>> which just updates the code with the above TODO comment ?
+> 
+> The problems with the driver using TRUNCATED flag must be addressed
+> in a different patch. This patch is only to comply with the behavior,
+> of "TRUNCATED" indicates the event is disabled. So do not start a
+> session.
+> 
+> Does that help ?
+
+Yes but I was just suggesting about listing out the problems with current
+PERF_AUX_FLAG_TRUNCATED and possible usage of PERF_AUX_FLAG_PARTIAL instead,
+along with the comments (as proposed here in this patch) in a separate patch
+without any code change. This might help keep this patch's objective clear.
