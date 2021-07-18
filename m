@@ -2,282 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764023CC8E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 13:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686B03CC8E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 13:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbhGRLpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 07:45:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24695 "EHLO mga17.intel.com"
+        id S233074AbhGRL5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 07:57:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232851AbhGRLpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 07:45:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10048"; a="191222998"
-X-IronPort-AV: E=Sophos;i="5.84,249,1620716400"; 
-   d="scan'208";a="191222998"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2021 04:42:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,249,1620716400"; 
-   d="scan'208";a="430144900"
-Received: from lkp-server01.sh.intel.com (HELO a467b34d8c10) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 18 Jul 2021 04:42:41 -0700
-Received: from kbuild by a467b34d8c10 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m55Bw-0000ED-RI; Sun, 18 Jul 2021 11:42:40 +0000
-Date:   Sun, 18 Jul 2021 19:42:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/Warray-bounds] BUILD REGRESSION
- 0d6455c92b82b36e29e5206a46329058d75fbc33
-Message-ID: <60f4138b.6j0tYIOJm9mNiMYY%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232685AbhGRL5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 07:57:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B152461040;
+        Sun, 18 Jul 2021 11:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626609258;
+        bh=J+Ypxx9ComWDmWZ+Oxy1Q4AusaFM9UVaVCI3jF221iM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jHqO0m/4ZbVdNR3yxUv/Nj2P4cvLxewaRnXfqyip4j4OC5v6iGqHKkHs4BHB5ibuL
+         PZeMsYCapvgq6a7PDciQphyqr5G8skEHMjRysKr0nwaGhYm7QJsDyUl4vyZ1ZF4Unq
+         rgMzuXjCGlrMHRaqoWaMw8W5oNGYthqDT15lsddYIHIEjQJafkFaTJEV4pyxspx1Dt
+         gOtX4d8+tIO4kafRmGVZquwr2TT/V8nMKpJCIbJrPgJPyuN6tbco2mxtBel4IWcxkg
+         2K3/Qj9TPWass1wZxIwqGm5aXk1MyW/12V3S3qvFeNNgkhw1aTcgMX8B/g4G/igqAE
+         L1fgRKY3tWfqg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Tal Gilboa <talgi@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH mlx5-next] IB/mlx5: Rename is_apu_thread_cq function to is_apu_cq
+Date:   Sun, 18 Jul 2021 14:54:13 +0300
+Message-Id: <0e3364dab7e0e4eea5423878b01aa42470be8d36.1626609184.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/Warray-bounds
-branch HEAD: 0d6455c92b82b36e29e5206a46329058d75fbc33  Makefile: Enable -Warray-bounds
+From: Tal Gilboa <talgi@nvidia.com>
 
-Error/Warning in current branch:
+is_apu_thread_cq() used to detect CQs which are attached to APU
+threads. This was extended to support other elements as well,
+so the function was renamed to is_apu_cq().
 
-arch/arm/kernel/atags_compat.c:200:2: warning: 'strcpy' offset 364 from the object at 'tags' is out of the bounds of referenced subobject 'cmdline' with type 'char[1]' at offset 364 [-Warray-bounds]
-arch/sparc/kernel/irq_32.c:258:7: error: array subscript [16, 79] is outside array bounds of 'struct tt_entry[1]' [-Werror=array-bounds]
+c_eqn_or_apu_element was extended from 8 bits to 32 bits, which wan't
+reflected when the APU support was first introduced.
 
-possible Error/Warning in current branch:
-
-arch/arm/mm/dma-mapping.c:395:15: warning: array subscript <unknown> is outside array bounds of 'struct dma_contig_early_reserve[0]' [-Warray-bounds]
-arch/arm/mm/dma-mapping.c:404:36: warning: array subscript i is outside array bounds of 'struct dma_contig_early_reserve[0]' [-Warray-bounds]
-arch/xtensa/kernel/process.c:255:24: warning: array subscript 53 is above array bounds of 'long unsigned int[16]' [-Warray-bounds]
-drivers/net/ethernet/i825xx/sun3_82586.c:993:108: warning: array subscript 1 is above array bounds of 'volatile struct transmit_cmd_struct *[1]' [-Warray-bounds]
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- arm-alldefconfig
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- arm-am200epdkit_defconfig
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- arm-collie_defconfig
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- arm-lpc32xx_defconfig
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- arm-neponset_defconfig
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- arm-pxa3xx_defconfig
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- arm-randconfig-r003-20210715
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- arm-randconfig-r035-20210715
-|   `-- arch-arm-kernel-atags_compat.c:warning:strcpy-offset-from-the-object-at-tags-is-out-of-the-bounds-of-referenced-subobject-cmdline-with-type-char-at-offset
-|-- arm-spear13xx_defconfig
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- arm-tct_hammer_defconfig
-|   |-- arch-arm-mm-dma-mapping.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|   `-- arch-arm-mm-dma-mapping.c:warning:array-subscript-unknown-is-outside-array-bounds-of-struct-dma_contig_early_reserve
-|-- m68k-sun3_defconfig
-|   `-- drivers-net-ethernet-i825xx-sun3_82586.c:warning:array-subscript-is-above-array-bounds-of-volatile-struct-transmit_cmd_struct
-|-- sparc-randconfig-p002-20210715
-|   `-- arch-sparc-kernel-irq_32.c:error:array-subscript-is-outside-array-bounds-of-struct-tt_entry
-`-- xtensa-allyesconfig
-    `-- arch-xtensa-kernel-process.c:warning:array-subscript-is-above-array-bounds-of-long-unsigned-int
-
-elapsed time: 5099m
-
-configs tested: 176
-configs skipped: 3
-
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-arm                              allmodconfig
-powerpc                       ebony_defconfig
-mips                             allyesconfig
-arm                     am200epdkit_defconfig
-sh                           se7619_defconfig
-openrisc                  or1klitex_defconfig
-mips                         db1xxx_defconfig
-mips                      malta_kvm_defconfig
-s390                             allyesconfig
-sh                          sdk7786_defconfig
-powerpc                   currituck_defconfig
-sh                   secureedge5410_defconfig
-sparc                            alldefconfig
-m68k                           sun3_defconfig
-powerpc                 mpc832x_mds_defconfig
-ia64                          tiger_defconfig
-m68k                            mac_defconfig
-powerpc                     stx_gp3_defconfig
-arm                            mps2_defconfig
-arm                      tct_hammer_defconfig
-mips                     decstation_defconfig
-arc                            hsdk_defconfig
-arm                             ezx_defconfig
-openrisc                 simple_smp_defconfig
-sh                        sh7757lcr_defconfig
-arm                  colibri_pxa300_defconfig
-sh                           se7705_defconfig
-powerpc                     sequoia_defconfig
-mips                  decstation_64_defconfig
-m68k                        m5272c3_defconfig
-sh                          rsk7264_defconfig
-arc                      axs103_smp_defconfig
-powerpc                 mpc8560_ads_defconfig
-powerpc                         wii_defconfig
-arm                       versatile_defconfig
-sh                          rsk7201_defconfig
-arc                          axs101_defconfig
-powerpc                      chrp32_defconfig
-mips                            ar7_defconfig
-powerpc                     tqm8555_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                         apsh4a3a_defconfig
-m68k                       m5249evb_defconfig
-powerpc                      pmac32_defconfig
-sh                          sdk7780_defconfig
-mips                           ip32_defconfig
-arm                       spear13xx_defconfig
-mips                         rt305x_defconfig
-xtensa                generic_kc705_defconfig
-sh                ecovec24-romimage_defconfig
-arm                         lpc32xx_defconfig
-mips                         tb0226_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                           stm32_defconfig
-arc                           tb10x_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                   bluestone_defconfig
-mips                         tb0219_defconfig
-sh                        sh7763rdp_defconfig
-h8300                               defconfig
-sh                                  defconfig
-arc                     haps_hs_smp_defconfig
-arm                          collie_defconfig
-arm                           sunxi_defconfig
-arc                        nsimosci_defconfig
-mips                           ip28_defconfig
-arm                         s3c6400_defconfig
-powerpc                       holly_defconfig
-arm                          pxa3xx_defconfig
-arm                        realview_defconfig
-arm                        keystone_defconfig
-sh                         ecovec24_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                              alldefconfig
-arm                        shmobile_defconfig
-arm                        neponset_defconfig
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-ia64                             allmodconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                           allyesconfig
-parisc                              defconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210714
-x86_64               randconfig-a004-20210714
-x86_64               randconfig-a002-20210714
-x86_64               randconfig-a003-20210714
-x86_64               randconfig-a006-20210714
-x86_64               randconfig-a001-20210714
-i386                 randconfig-a005-20210715
-i386                 randconfig-a006-20210715
-i386                 randconfig-a004-20210715
-i386                 randconfig-a001-20210715
-i386                 randconfig-a002-20210715
-i386                 randconfig-a003-20210715
-i386                 randconfig-a005-20210714
-i386                 randconfig-a006-20210714
-i386                 randconfig-a004-20210714
-i386                 randconfig-a001-20210714
-i386                 randconfig-a003-20210714
-i386                 randconfig-a002-20210714
-x86_64               randconfig-a013-20210715
-x86_64               randconfig-a012-20210715
-x86_64               randconfig-a015-20210715
-x86_64               randconfig-a014-20210715
-x86_64               randconfig-a016-20210715
-x86_64               randconfig-a011-20210715
-i386                 randconfig-a014-20210715
-i386                 randconfig-a015-20210715
-i386                 randconfig-a011-20210715
-i386                 randconfig-a013-20210715
-i386                 randconfig-a012-20210715
-i386                 randconfig-a016-20210715
-i386                 randconfig-a014-20210714
-i386                 randconfig-a015-20210714
-i386                 randconfig-a011-20210714
-i386                 randconfig-a013-20210714
-i386                 randconfig-a012-20210714
-i386                 randconfig-a016-20210714
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210715
-x86_64               randconfig-b001-20210716
-x86_64               randconfig-a005-20210715
-x86_64               randconfig-a004-20210715
-x86_64               randconfig-a002-20210715
-x86_64               randconfig-a003-20210715
-x86_64               randconfig-a006-20210715
-x86_64               randconfig-a001-20210715
-x86_64               randconfig-a013-20210714
-x86_64               randconfig-a015-20210714
-x86_64               randconfig-a012-20210714
-x86_64               randconfig-a014-20210714
-x86_64               randconfig-a016-20210714
-x86_64               randconfig-a011-20210714
-
+Signed-off-by: Tal Gilboa <talgi@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/infiniband/hw/mlx5/cq.c                            | 2 +-
+ drivers/infiniband/hw/mlx5/devx.c                          | 7 +++----
+ drivers/net/ethernet/mellanox/mlx5/core/cq.c               | 3 ++-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c          | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c        | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c | 2 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c                          | 2 +-
+ include/linux/mlx5/mlx5_ifc.h                              | 5 ++---
+ 8 files changed, 12 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+index aef87a7c01ff..464e6a1ecdb0 100644
+--- a/drivers/infiniband/hw/mlx5/cq.c
++++ b/drivers/infiniband/hw/mlx5/cq.c
+@@ -997,7 +997,7 @@ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 				  MLX5_IB_CQ_PR_FLAGS_CQE_128_PAD));
+ 	MLX5_SET(cqc, cqc, log_cq_size, ilog2(entries));
+ 	MLX5_SET(cqc, cqc, uar_page, index);
+-	MLX5_SET(cqc, cqc, c_eqn, eqn);
++	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+ 	MLX5_SET64(cqc, cqc, dbr_addr, cq->db.dma);
+ 	if (cq->create_flags & IB_UVERBS_CQ_FLAGS_IGNORE_OVERRUN)
+ 		MLX5_SET(cqc, cqc, oi, 1);
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index edcac8b3f384..31f5f4c73d25 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -1437,11 +1437,10 @@ static void devx_cq_comp(struct mlx5_core_cq *mcq, struct mlx5_eqe *eqe)
+ 	rcu_read_unlock();
+ }
+ 
+-static bool is_apu_thread_cq(struct mlx5_ib_dev *dev, const void *in)
++static bool is_apu_cq(struct mlx5_ib_dev *dev, const void *in)
+ {
+ 	if (!MLX5_CAP_GEN(dev->mdev, apu) ||
+-	    !MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context),
+-		      apu_thread_cq))
++	    !MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context), apu_cq))
+ 		return false;
+ 
+ 	return true;
+@@ -1501,7 +1500,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
+ 		err = mlx5_core_create_dct(dev, &obj->core_dct, cmd_in,
+ 					   cmd_in_len, cmd_out, cmd_out_len);
+ 	} else if (opcode == MLX5_CMD_OP_CREATE_CQ &&
+-		   !is_apu_thread_cq(dev, cmd_in)) {
++		   !is_apu_cq(dev, cmd_in)) {
+ 		obj->flags |= DEVX_OBJ_FLAGS_CQ;
+ 		obj->core_cq.comp = devx_cq_comp;
+ 		err = mlx5_core_create_cq(dev->mdev, &obj->core_cq,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+index df3e4938ecdd..99ec278d0370 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+@@ -89,7 +89,8 @@ static void mlx5_add_cq_to_tasklet(struct mlx5_core_cq *cq,
+ int mlx5_core_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+ 			u32 *in, int inlen, u32 *out, int outlen)
+ {
+-	int eqn = MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context), c_eqn);
++	int eqn = MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context),
++			   c_eqn_or_apu_element);
+ 	u32 din[MLX5_ST_SZ_DW(destroy_cq_in)] = {};
+ 	struct mlx5_eq_comp *eq;
+ 	int err;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index c47603a952f3..308ccace48d0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -1626,7 +1626,7 @@ static int mlx5e_create_cq(struct mlx5e_cq *cq, struct mlx5e_cq_param *param)
+ 				  (__be64 *)MLX5_ADDR_OF(create_cq_in, in, pas));
+ 
+ 	MLX5_SET(cqc,   cqc, cq_period_mode, param->cq_period_mode);
+-	MLX5_SET(cqc,   cqc, c_eqn,         eqn);
++	MLX5_SET(cqc,   cqc, c_eqn_or_apu_element, eqn);
+ 	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.uar->index);
+ 	MLX5_SET(cqc,   cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
+ 					    MLX5_ADAPTER_PAGE_SHIFT);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
+index 6f78716ff321..9bb4944820df 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
+@@ -454,7 +454,7 @@ static int mlx5_fpga_conn_create_cq(struct mlx5_fpga_conn *conn, int cq_size)
+ 
+ 	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
+ 	MLX5_SET(cqc, cqc, log_cq_size, ilog2(cq_size));
+-	MLX5_SET(cqc, cqc, c_eqn, eqn);
++	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+ 	MLX5_SET(cqc, cqc, uar_page, fdev->conn_res.uar->index);
+ 	MLX5_SET(cqc, cqc, log_page_size, conn->cq.wq_ctrl.buf.page_shift -
+ 			   MLX5_ADAPTER_PAGE_SHIFT);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+index d1300b16d054..a4a3ee87a903 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+@@ -790,7 +790,7 @@ static struct mlx5dr_cq *dr_create_cq(struct mlx5_core_dev *mdev,
+ 
+ 	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
+ 	MLX5_SET(cqc, cqc, log_cq_size, ilog2(ncqe));
+-	MLX5_SET(cqc, cqc, c_eqn, eqn);
++	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+ 	MLX5_SET(cqc, cqc, uar_page, uar->index);
+ 	MLX5_SET(cqc, cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
+ 		 MLX5_ADAPTER_PAGE_SHIFT);
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index 0121c7c49396..83fa3c26cbd2 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -573,7 +573,7 @@ static int cq_create(struct mlx5_vdpa_net *ndev, u16 idx, u32 num_ent)
+ 	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
+ 	MLX5_SET(cqc, cqc, log_cq_size, ilog2(num_ent));
+ 	MLX5_SET(cqc, cqc, uar_page, ndev->mvdev.res.uar->index);
+-	MLX5_SET(cqc, cqc, c_eqn, eqn);
++	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+ 	MLX5_SET64(cqc, cqc, dbr_addr, vcq->db.dma);
+ 
+ 	err = mlx5_core_create_cq(mdev, &vcq->mcq, in, inlen, out, sizeof(out));
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index c980eab89867..e93f16b87312 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -3923,7 +3923,7 @@ struct mlx5_ifc_cqc_bits {
+ 	u8         status[0x4];
+ 	u8         reserved_at_4[0x2];
+ 	u8         dbr_umem_valid[0x1];
+-	u8         apu_thread_cq[0x1];
++	u8         apu_cq[0x1];
+ 	u8         cqe_sz[0x3];
+ 	u8         cc[0x1];
+ 	u8         reserved_at_c[0x1];
+@@ -3949,8 +3949,7 @@ struct mlx5_ifc_cqc_bits {
+ 	u8         cq_period[0xc];
+ 	u8         cq_max_count[0x10];
+ 
+-	u8         reserved_at_a0[0x18];
+-	u8         c_eqn[0x8];
++	u8         c_eqn_or_apu_element[0x20];
+ 
+ 	u8         reserved_at_c0[0x3];
+ 	u8         log_page_size[0x5];
+-- 
+2.31.1
+
