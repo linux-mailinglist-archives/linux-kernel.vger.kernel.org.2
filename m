@@ -2,81 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D873CC858
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF373CC85A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhGRJg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 05:36:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhGRJgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 05:36:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAFB0611AC;
-        Sun, 18 Jul 2021 09:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626600837;
-        bh=C9vs+jm4iqSIHTHVlZgj2Q7epuO0aeP6olaAwjSBvhI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dJ1X5RBlw4eqiXH2P1aAqFLMWuHkwaj4M9MuyYMDs6vXzKp39r1zb7InpGrpOX0U1
-         Aa/fII51i417UZdBSf3cqgpWnkYJe1ZdtqtHQxwSJcSxpNYH5PwjzPmzpYmoIvTbWs
-         nS6jsTUqzvehurN2BJHF2UWSlUIrsAD/Xc2vVGcEhd8ApQkDyeuy0Xq6kSx2bE1N1w
-         CtbgZd/6Y4FnpcU8eWC7ubJu8xhoflPWAlQr9UYWk1U1fP1bKNuBRj25Hi3M7RCIuw
-         rgk1b3Xf9FwZ77IocmY9p2Vew4dynzKmgvp5IayMhprK3xK4pB+oa7xdKMdzrxBHZW
-         FAd5a+ePkKDPw==
-Date:   Sun, 18 Jul 2021 12:33:54 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     saeedm@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: Fix missing error code in
- mlx5_devlink_eswitch_inline_mode_set()
-Message-ID: <YPP1glxuO+qJKx9v@unreal>
-References: <1626432728-118051-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S231555AbhGRJk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 05:40:28 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:41022 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhGRJk1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 05:40:27 -0400
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 16I9b8Dk028602;
+        Sun, 18 Jul 2021 18:37:09 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 16I9b8Dk028602
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1626601029;
+        bh=VP/7yr/B+ENgaIKa1/s5XFIZJMjO0e3ONBbcEfdKM7k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zahNNZymfnZQDkdfwP8P/RVPjyOM8uWfAvIrkj8/8C9pCCGbxOong1VlEQMnTgnd3
+         wEyqT0PwSFaMwMfd4ggtDdsPTdMrhlRMzthJtvLCiqV9m++ItLj9/iTllKzWERtrEw
+         ROJCY3f0vD5XAcp8v4d318sDAyKuGXUUQXy+Ap1tPUu5sHcFO7n66c4l3B72r48IXY
+         owcB1kS6dCzxpl3zF+khYpt9XI+pjVYmFgArY2P06NUolO3Qx+o6JZQLUcq4VYcpq1
+         PKC5LTkDcZJ9hkqNcyeerdCpRrnotdIjTXMZVVgnIrj2TtkmHlJdAbryG3zOCkl5Tb
+         hOWRL4tZLU/kw==
+X-Nifty-SrcIP: [209.85.215.169]
+Received: by mail-pg1-f169.google.com with SMTP id t9so15597148pgn.4;
+        Sun, 18 Jul 2021 02:37:09 -0700 (PDT)
+X-Gm-Message-State: AOAM531XKfwTQYX0hdPwa317rMj2gAqTrbcfJEEEeOBREfThzK0dv8t/
+        OnCJmH5nq9yipGKm9t0l2pGIR7WpGoLshh5a8fM=
+X-Google-Smtp-Source: ABdhPJyLY+vQ2PhiLGLAxJjHE06h78KKD3ksRb5lJ7vNzUhm5sbcTeEFqR4mzSDA7zPpuM3AIzjpEmxR/HAuHuNuvn4=
+X-Received: by 2002:a63:d80a:: with SMTP id b10mr19578322pgh.47.1626601028449;
+ Sun, 18 Jul 2021 02:37:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626432728-118051-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <ad9c50c54887bde41ae5de782248231c06a527c0.1626262835.git.rrichter@amd.com>
+ <49b4c2512afba7a2c2ee39e10f14188ecfcdffc0.1626262835.git.rrichter@amd.com>
+In-Reply-To: <49b4c2512afba7a2c2ee39e10f14188ecfcdffc0.1626262835.git.rrichter@amd.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 18 Jul 2021 18:36:31 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQpTBb8gyESBxzUcrz6vKw1MecnB5=xPd-CYfSFCC4hgA@mail.gmail.com>
+Message-ID: <CAK7LNAQpTBb8gyESBxzUcrz6vKw1MecnB5=xPd-CYfSFCC4hgA@mail.gmail.com>
+Subject: Re: [PATCH] Documentation/kbuild: Document the kconfig choice default value
+To:     Robert Richter <rrichter@amd.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 06:52:08PM +0800, Jiapeng Chong wrote:
-> The error code is missing in this code scenario, add the error code
-> '-EINVAL' to the return value 'err'.
-> 
-> Eliminate the follow smatch warning:
-> 
-> vers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c:3083
-> mlx5_devlink_eswitch_inline_mode_set() warn: missing error code 'err'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Thu, Jul 15, 2021 at 6:26 PM Robert Richter <rrichter@amd.com> wrote:
+>
+> Document how choice defaults are determined:
+>
+> Default of a choice is its first visible choice element [1]. Choice
+> elements do not support default attributes. [2]
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/kconfig/symbol.c?h=v5.14-rc1#n245
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/kconfig/menu.c?h=v5.14-rc1#n494
+>
+> Signed-off-by: Robert Richter <rrichter@amd.com>
 > ---
->  drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> index 7579f34..b38b6c1 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> @@ -3079,8 +3079,10 @@ int mlx5_devlink_eswitch_inline_mode_set(struct devlink *devlink, u8 mode,
->  
->  	switch (MLX5_CAP_ETH(dev, wqe_inline_mode)) {
->  	case MLX5_CAP_INLINE_MODE_NOT_REQUIRED:
-> -		if (mode == DEVLINK_ESWITCH_INLINE_MODE_NONE)
-> +		if (mode == DEVLINK_ESWITCH_INLINE_MODE_NONE) {
-> +			err = -EINVAL;
+>  Documentation/kbuild/kconfig-language.rst | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
+> index 98c24183d8c3..e4d3463594e1 100644
+> --- a/Documentation/kbuild/kconfig-language.rst
+> +++ b/Documentation/kbuild/kconfig-language.rst
+> @@ -417,6 +417,9 @@ definitions of that choice. If a [symbol] is associated to the choice,
+>  then you may define the same choice (i.e. with the same entries) in another
+>  place.
+>
+> +The default value of a choice is set to the first visible choice element.
 
-This change is wrong, it should be err = 0;
-and please add Fixes line.
-Fixes: 8e0aa4bc959c ("net/mlx5: E-switch, Protect eswitch mode changes")
 
->  			goto out;
-> +		}
->  		fallthrough;
->  	case MLX5_CAP_INLINE_MODE_L2:
->  		NL_SET_ERR_MSG_MOD(extack, "Inline mode can't be set");
-> -- 
-> 1.8.3.1
-> 
+The default value of a choice is set to the first visible choice element
+unless it is explicitly set by the 'default' property.
+
+... is more precise.
+
+
+
+
+> +Choice elements do not support the default attribute like menu entries do.
+
+I doubt this info is useful.
+Rather, is it even confusing?
+
+
+choices support 'default' but
+choice elements (i.e. choice values) do not.
+
+
+
+
+
+
+
+
+
+> +
+>  comment::
+>
+>         "comment" <prompt>
+> --
+> 2.29.2
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
