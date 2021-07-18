@@ -2,146 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659E03CC91F
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D9D3CC933
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhGRMkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 08:40:04 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:48880 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbhGRMkD (ORCPT
+        id S233687AbhGRM4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 08:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233552AbhGRM4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 08:40:03 -0400
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 16ICabv0016307;
-        Sun, 18 Jul 2021 21:36:37 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 16ICabv0016307
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626611798;
-        bh=Z7Y6MKvjHBLx3XfKJNGwbkgZLTPhlTzY3EDPtspyw8A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OYOC7lGfq2DXR/g05emm/mxdKzds9sP9hS3QQ3J56oWVe4HhlamBHqXu1iCJQvvWE
-         RorgQ1btB3smTcq+Snzn31tWzL7fT1Tl8Pm3YfPDFL9TrTBOTkei1VRGIkQNPblMKi
-         l58eH+SOdcbmRfIjC2sm6T4xhTWBgd8kIvZ0v588hghW1n0AzgbwfFMoVRa3xvbNBA
-         ucsB04HFmYiXbGXbAP8rOrcLJArEDxqy0N7ikVq1nqHhcgkx+ALEh3uR8UqB2m9jgC
-         x1ys/ZfGd8atPq7do1ObRw60MUCQ4qke6Lp04/2I5DtJkSquuc+fcoUuvnsizZvB+L
-         /w30DIuTzv8vA==
-X-Nifty-SrcIP: [209.85.216.43]
-Received: by mail-pj1-f43.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso10431338pjp.5;
-        Sun, 18 Jul 2021 05:36:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531R7eT8UPI9NJVK99BfTVm5hV5grffVecCkqq9ybl0DdSAskJU2
-        yT3yFVByn8DLLTaLUSrDpHUXywpH7gFQXSP0tFo=
-X-Google-Smtp-Source: ABdhPJzdtxwhf+bxbS33sjH7orq0F564NAAExBhJrqDYpzo/C2KZHJicyJT8bJWZizaz2Gl474SM2ShFoxA7xLwsM/Y=
-X-Received: by 2002:a17:90a:c506:: with SMTP id k6mr25485599pjt.198.1626611796963;
- Sun, 18 Jul 2021 05:36:36 -0700 (PDT)
+        Sun, 18 Jul 2021 08:56:20 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAF4C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 05:53:21 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id k184so22991420ybf.12
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 05:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ot3x9A+QM97mDVvcXkVBRBSDikDCHSFweeQqLAuQYRE=;
+        b=i0Dgr+5XSFqFjaFWpj1aY0gLIBeJs6hYn9X1Uq2cXBST2RiP2cy3qAYr2Eiutu3Ths
+         uP7aEee5iQDo7LxlqOh2sY3DeafUdN7hVcD2zNlk/Sicp4/TSbsVCQu9KpjUWBaIIrci
+         MW89mob8mwp+wm1m6ov0RCRMYbeFzPNssFBekFIdzA23ywQovtH75EvbwdK0/GdJAKjl
+         VdqxNn/67qOUu9Fgoq6mQjD2RAiMawYNgYhjspXWslw6DqZFkszCJkhG1UOwZI3T0sWY
+         oyFMiVqaKDzLFi8fC0M8W8nnf3TiApMF4er97XTg6ZrSHtEw8N6anI5WMLzvW10fErFw
+         RbGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ot3x9A+QM97mDVvcXkVBRBSDikDCHSFweeQqLAuQYRE=;
+        b=CSphXuPBhryBitUjFl1aeMW2feosz30R2VJ3+8On84q3KLkurUIY4s3PtJDUffGgn/
+         BhWtUkgPo+d8+cvllemzSe/6gUsXvVIdNuCGehBSi4/+TzoNUasNSNaaD7TlHwxcifZl
+         EPVI5Rn3FIcgFkrF1R5VTtaszjefh6Pfgph19gPpxD87Df8Md7nqIxMBhtOSO48y92/n
+         sNDuBnutte/w3+apXws7SBn9G4LsLBK2/5VCe1SpQRQ46cdwOk365LCo/gQFY/qnoloy
+         QdvWOWc8ZHLNEaIRZKVGhIeEK4kWTzQdqfSH0uhKtxrbhkVisyaT8wfVs6Dde8FmYbX1
+         O/Zw==
+X-Gm-Message-State: AOAM530j4AFdkxwYCcWv66eV56kI92H4sBO9nacX9taesP2iD/Dq7X3K
+        hODJG+z0NATvlTjVVmMXYjNKBjMf2oLwMbeDjhV/TA==
+X-Google-Smtp-Source: ABdhPJzCJzVpAuBh1eXxB04z9eJ2uKhVE74rrp28KmYF1XrEhVyuZZhjXsiKoxD0Oc+R5FpSpoQ+B1ciYWYT730Ysog=
+X-Received: by 2002:a25:ad95:: with SMTP id z21mr25056929ybi.25.1626612800425;
+ Sun, 18 Jul 2021 05:53:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <YO3txvw87MjKfdpq@localhost.localdomain> <YO8ioz4sHwcUAkdt@localhost.localdomain>
- <YPClYgoJOTUn4V0w@localhost.localdomain>
-In-Reply-To: <YPClYgoJOTUn4V0w@localhost.localdomain>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 18 Jul 2021 21:36:00 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASq9DwxTF90u_8XZJo8VBLbEPDbP8kVk6c+AHpaCtH01g@mail.gmail.com>
-Message-ID: <CAK7LNASq9DwxTF90u_8XZJo8VBLbEPDbP8kVk6c+AHpaCtH01g@mail.gmail.com>
-Subject: Re: [PATCH -mm] fixup "Decouple build from userspace headers"
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>
+References: <20210702133712.128611-1-linux@rasmusvillemoes.dk>
+In-Reply-To: <20210702133712.128611-1-linux@rasmusvillemoes.dk>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Sun, 18 Jul 2021 14:53:09 +0200
+Message-ID: <CAMpxmJWrmVNb2jYs8e585kDnE+Xv8yNiFpABh3RwDUFg1KAWqA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "gpio: mpc8xxx: change the gpio interrupt flags."
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Song Hui <hui.song_1@nxp.com>,
+        "Stable # 4 . 20+" <stable@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 6:15 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+On Fri, Jul 2, 2021 at 3:37 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
 >
-> Allow to find SIMD headers where necessary.
+> This reverts commit 3d5bfbd9716318b1ca5c38488aa69f64d38a9aa5.
 >
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> When booting with threadirqs, it causes a splat
+>
+>   WARNING: CPU: 0 PID: 29 at kernel/irq/handle.c:159 __handle_irq_event_percpu+0x1ec/0x27c
+>   irq 66 handler irq_default_primary_handler+0x0/0x1c enabled interrupts
+>
+> That splat later went away with commit 81e2073c175b ("genirq: Disable
+> interrupts for force threaded handlers"), which got backported to
+> -stable. However, when running an -rt kernel, the splat still
+> exists. Moreover, quoting Thomas Gleixner [1]
+>
+>   But 3d5bfbd97163 ("gpio: mpc8xxx: change the gpio interrupt flags.")
+>   has nothing to do with that:
+>
+>       "Delete the interrupt IRQF_NO_THREAD flags in order to gpio interrupts
+>        can be threaded to allow high-priority processes to preempt."
+>
+>   This changelog is blatantly wrong. In mainline forced irq threads
+>   have always been invoked with softirqs disabled, which obviously
+>   makes them non-preemptible.
+>
+> So the patch didn't even do what its commit log said.
+>
+> [1] https://lore.kernel.org/lkml/871r8zey88.ffs@nanos.tec.linutronix.de/
+>
+> Cc: stable@vger.kernel.org # v5.9+
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 > ---
->
->         fold into decouple-build-from-userspace-headers.patch
->
->  arch/arm64/lib/Makefile   |    2 +-
->  arch/powerpc/lib/Makefile |    2 +-
->  lib/raid6/Makefile        |    4 ++--
->  3 files changed, 4 insertions(+), 4 deletions(-)
 
+Applied for fixes, thanks!
 
-OK. Perhaps, we can import <arm_neon.h> and  <altivec.h>
-into the kernel tree as we did for <stdarg.h>,
-then remove "-isystem $(shell $(CC) -print-file-name=include)"
-entirely, but I did not look into it.
-
-
-If we can avoid the arm_neon.h mess,
-we can clean up arch/arm/include/uapi/asm/types.h as well.
-It is a possible future work.
-
-Anyway, could you add some comments?
-(see blew)
-
-
-
-> --- a/arch/arm64/lib/Makefile
-> +++ b/arch/arm64/lib/Makefile
-> @@ -8,7 +8,7 @@ lib-y           := clear_user.o delay.o copy_from_user.o                \
->  ifeq ($(CONFIG_KERNEL_MODE_NEON), y)
->  obj-$(CONFIG_XOR_BLOCKS)       += xor-neon.o
->  CFLAGS_REMOVE_xor-neon.o       += -mgeneral-regs-only
-> -CFLAGS_xor-neon.o              += -ffreestanding
-
-Can you add comment, # for <arm_neon.h>
-
-> +CFLAGS_xor-neon.o              += -ffreestanding -isystem $(shell $(CC) -print-file-name=include)
->  endif
->
->  lib-$(CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE) += uaccess_flushcache.o
-> --- a/arch/powerpc/lib/Makefile
-> +++ b/arch/powerpc/lib/Makefile
-> @@ -64,6 +64,6 @@ obj-$(CONFIG_PPC_LIB_RHEAP) += rheap.o
->  obj-$(CONFIG_FTR_FIXUP_SELFTEST) += feature-fixups-test.o
->
->  obj-$(CONFIG_ALTIVEC)  += xor_vmx.o xor_vmx_glue.o
-> -CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec)
-
-Can you add comment, # for <altivec.h>
-
-> +CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec) -isystem $(shell $(CC) -print-file-name=include)
->
->  obj-$(CONFIG_PPC64) += $(obj64-y)
-> --- a/lib/raid6/Makefile
-> +++ b/lib/raid6/Makefile
-> @@ -13,7 +13,7 @@ raid6_pq-$(CONFIG_S390) += s390vx8.o recov_s390xc.o
->  hostprogs      += mktables
->
->  ifeq ($(CONFIG_ALTIVEC),y)
-> -altivec_flags := -maltivec $(call cc-option,-mabi=altivec)
-
-Can you add comment, # for <altivec.h>
-
-> +altivec_flags := -maltivec $(call cc-option,-mabi=altivec) -isystem $(shell $(CC) -print-file-name=include)
->
->  ifdef CONFIG_CC_IS_CLANG
->  # clang ppc port does not yet support -maltivec when -msoft-float is
-> @@ -33,7 +33,7 @@ endif
->  # The GCC option -ffreestanding is required in order to compile code containing
->  # ARM/NEON intrinsics in a non C99-compliant environment (such as the kernel)
->  ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
-> -NEON_FLAGS := -ffreestanding
-
-Can you add comment, # for <arm_neon.h>
-
-> +NEON_FLAGS := -ffreestanding -isystem $(shell $(CC) -print-file-name=include)
->  ifeq ($(ARCH),arm)
->  NEON_FLAGS += -march=armv7-a -mfloat-abi=softfp -mfpu=neon
->  endif
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Bartosz
