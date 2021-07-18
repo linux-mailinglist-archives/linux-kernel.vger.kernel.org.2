@@ -2,253 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527653CC8FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0903CC900
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhGRMEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 08:04:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44376 "EHLO mail.kernel.org"
+        id S233043AbhGRMNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 08:13:15 -0400
+Received: from mout.gmx.net ([212.227.17.22]:44629 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233673AbhGRMEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 08:04:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3450F610D1;
-        Sun, 18 Jul 2021 12:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626609695;
-        bh=/xVusLaIisjwDrhXsvTfDCOTo4UomSFhxaE4UNzqDKw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tlBgpCaOgQl+f4P/lZePWrp2FJY1W7wWBVXbsPlBArWT5cbsCdBdIF4RUkXHiSd1J
-         msWD0is3f7tLTVjqsKGWrsRoh6vtRtvLFsNCICtcyyTCkH1Q6aTDxBG5r/SPfekhga
-         2mSplqEyAGYmfXXbYMOFrF91pEfkEwRYc/0GFEwSuflgFnOTnXuVpe5NZotDIFbdBK
-         MuQusF6riXH45KhMs4F43bzOxgH+ECJGF+qfJYRuAtmRBNY+nuucGA7A7b+GQRJPRi
-         qdWQU+WFgPqMDfZcbxkKK4ClCN5cHZy55CaSyQbEpqd+sdSLLh9J5K8+wGUbR8GL4x
-         mbWfNHeYpUGVg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next 9/9] RDMA/mlx5: Drop in-driver verbs object creations
-Date:   Sun, 18 Jul 2021 15:00:59 +0300
-Message-Id: <b5f778c93b2d98721f635c0c160f05d33dea9285.1626609283.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626609283.git.leonro@nvidia.com>
-References: <cover.1626609283.git.leonro@nvidia.com>
+        id S232845AbhGRMNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 08:13:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626610187;
+        bh=cuqyPzrx7IAW5c7lY3bsuKCM76Nm9JRNbAQCn9di5QA=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=UBB1LCMega6vU4v0MXFc6E3FD4j/lTM22onIBtg0BGL5Tai0wRCaOZTMpjRQC0pO3
+         x3YjXRjiD6jzrbSyQk+30IyqUpurzGCzncTwPnNKE8L3r0kJkoxxS+ir5KVOjewFzm
+         aeeHylUnfv2kUM0KDZMmNbZSIrCm3SFQn+7nZ4IM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.250]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1fmq-1l7vUY32zo-01242S; Sun, 18
+ Jul 2021 14:09:46 +0200
+Message-ID: <6c9d110538d431ce3f14577815a94be491eaa719.camel@gmx.de>
+Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
+ compatible
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+Date:   Sun, 18 Jul 2021 14:09:44 +0200
+In-Reply-To: <64eda4de845c8d98e0dcb7f6fa3177037120e317.camel@gmx.de>
+References: <20210609113903.1421-1-vbabka@suse.cz>
+         <20210702182944.lqa7o2a25to6czju@linutronix.de>
+         <891dc24e38106f8542f4c72831d52dc1a1863ae8.camel@gmx.de>
+         <ef4903e2-c2ce-9a64-68b0-c7ee483eb582@suse.cz>
+         <64eda4de845c8d98e0dcb7f6fa3177037120e317.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5ECMWE5n8wQibvnqzkfpFwBBauoJJ23F8wK36voR7s7nCr0SlBZ
+ ds+42/nYfwP5juSTwWGCaVqCY4K0x3Swgy/4X7VWClPACmPBAVcSnhWDu8hVO/rJD7W5JkV
+ qliocb8coV0/+LVqT6K278L7n38zB5WbcFeNdYRrSaSaah3fv4LkArgXmcZo/yJUxuf9rmy
+ gos6/assHMrKKqTg98Qiw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EZGkQIaZYb8=:r3yG/CuEiIzWxNmVS5kSOb
+ q+zrhApLYx0sSpLhC+C7Q2x2jxsSWlAi/etupKU9cLwepQwPmUdJ+fVT14L6bjfowZratdx7N
+ NJA4MbE/oXPmzPyAxjq4MY949YvYlf1E3lSyGF+xZmX8tVfNQRBeoPaqglRKejDQ5Do9/er6O
+ u1Roy4QLh1dLDk0ysqZADOs+ueHjYkzGUqAE6DgbnQxLBCRtpXEf49nC0YLrD2SF2AMxNl3Qn
+ tA0KtlvF2Pk6NlLR1mUwsdIDk1dFzoysHGX6JSOd1U3Y0sKaz6TGCqTHkRF7DzH0bYbO67NYn
+ 17Cln1+/ZTHpWXi7hqJd6mRnDvWIwyFGkHx8WG9ps4cLcPg68BJylwG4KEiAULk7cOgU/8Vzn
+ RkffxdajTQoRcufsSfssfrCuBkV8eF+KJb733oxO0lAosrF0A9TPtaJO7wR73rLwL8QrySkPi
+ JjV3rb22qMutg/U1xKYXpNXBg0xpRCw7HQuXvrAB3Lyx0yWuvvab9x3UrZ1zt8LOM4S2Gcp9D
+ 2CEQgVvGJ5Ab/KGlAkqWY4KLN2hm8TLwZa1GMzAZitD5fYTj/LrN5IM9KKCa37HqeSwBvqgKt
+ Sg1Z/e82EfOfxqqrqbptu2Sv/4Y5eBzInFnT/bI/qfH+/xcXi3GTwEViIWtUr7EFtfA6jlhgh
+ 30dZIX1Od9nMKSSa38AKdAPezwnB+rno0h2NKEM2ACQtXAweRIpMN3/WmoPhqRkY4W5M4lnGC
+ vsLHhmzDvDM6wwbDxpBbNbzL/FTMSyBf6QDvTwlEOdMgoyE76Ir3zHq+omdjAJdEyAfmLDG90
+ PNpkCwCxXPh5TOIFm1vvadpynuD/rWFpmTuSHNxCyL+rpTbqIlJds2UouTSNiC7S0lWFY0PAi
+ /0mYddBEHz59liL4TPFyG1kO0CnuaKHM2ejjjlo163Aqpx9GGFYi4QZR7MfE2FFj3QTkDrkwB
+ BwKW2jv250Hyesz2luDrC8Z4ntq09uao77GjhM8+PckwzNUbl6LtC8aPz/dvDDRPrcRX215Hg
+ YjWhENFdzs8z/0qpFn8n6mbqjDKsEL6zlqgFLp6NPo4I1hxiG21fG+APKswPe0BOHjn+MlaOL
+ L7qQk8Lr/LWvE/PXx7V7J67PLLKz7bHSRb1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Sun, 2021-07-18 at 10:29 +0200, Mike Galbraith wrote:
+> On Sun, 2021-07-18 at 09:41 +0200, Vlastimil Babka wrote:
+> > On 7/3/21 9:24 AM, Mike Galbraith wrote:
+> > > On Fri, 2021-07-02 at 20:29 +0200, Sebastian Andrzej Siewior
+> > > wrote:
+> > > > I replaced my slub changes with slub-local-lock-v2r3.
+> > > > I haven't seen any complains from lockdep or so which is good.
+> > > > Then I
+> > > > did this with RT enabled (and no debug):
+> > >
+> > > Below is some raw hackbench data from my little i4790 desktop
+> > > box.  It
+> > > says we'll definitely still want list_lock to be raw.
+> >
+> > Hi Mike, thanks a lot for the testing, sorry for late reply.
+> >
+> > Did you try, instead of raw list_lock, not applying the last, local
+> > lock patch, as I suggested in reply to bigeasy?
+>
+> No, but I suppose I can give that a go.
 
-There is no real value in bypassing IB/core APIs for creating standard
-objects with standard types. The open-coded variant didn't have any
-restrack task management calls and caused to such objects to be not
-present when running rdmatoool.
+The kernel has of course moved forward, so measure 'em again, but
+starting before replacing 5.12-rt patches with slub-local-lock-v2r3.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/verbs.c   |  7 ++-
- drivers/infiniband/hw/mlx5/main.c | 92 +++++++------------------------
- 2 files changed, 25 insertions(+), 74 deletions(-)
+box is old i4790 desktop
+perf stat -r10 hackbench -s4096 -l500
+full warmup, record, repeat twice for elapsed
 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index a164609c2ee7..89c6987cb5eb 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1035,7 +1035,8 @@ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
- 	}
- 	if (srq->srq_type == IB_SRQT_XRC) {
- 		srq->ext.xrc.xrcd = srq_init_attr->ext.xrc.xrcd;
--		atomic_inc(&srq->ext.xrc.xrcd->usecnt);
-+		if (srq->ext.xrc.xrcd)
-+			atomic_inc(&srq->ext.xrc.xrcd->usecnt);
- 	}
- 	atomic_inc(&pd->usecnt);
- 
-@@ -1046,7 +1047,7 @@ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
- 	if (ret) {
- 		rdma_restrack_put(&srq->res);
- 		atomic_dec(&srq->pd->usecnt);
--		if (srq->srq_type == IB_SRQT_XRC)
-+		if (srq->srq_type == IB_SRQT_XRC && srq->ext.xrc.xrcd)
- 			atomic_dec(&srq->ext.xrc.xrcd->usecnt);
- 		if (ib_srq_has_cq(srq->srq_type))
- 			atomic_dec(&srq->ext.cq->usecnt);
-@@ -1090,7 +1091,7 @@ int ib_destroy_srq_user(struct ib_srq *srq, struct ib_udata *udata)
- 		return ret;
- 
- 	atomic_dec(&srq->pd->usecnt);
--	if (srq->srq_type == IB_SRQT_XRC)
-+	if (srq->srq_type == IB_SRQT_XRC && srq->ext.xrc.xrcd)
- 		atomic_dec(&srq->ext.xrc.xrcd->usecnt);
- 	if (ib_srq_has_cq(srq->srq_type))
- 		atomic_dec(&srq->ext.cq->usecnt);
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 7a6bafc19c9b..fbed9e4241e1 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2802,31 +2802,16 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	if (!MLX5_CAP_GEN(dev->mdev, xrc))
- 		return -EOPNOTSUPP;
- 
--	devr->p0 = rdma_zalloc_drv_obj(ibdev, ib_pd);
--	if (!devr->p0)
--		return -ENOMEM;
--
--	devr->p0->device  = ibdev;
--	devr->p0->uobject = NULL;
--	atomic_set(&devr->p0->usecnt, 0);
-+	devr->p0 = ib_alloc_pd(ibdev, 0);
-+	if (IS_ERR(devr->p0))
-+		return PTR_ERR(devr->p0);
- 
--	ret = mlx5_ib_alloc_pd(devr->p0, NULL);
--	if (ret)
--		goto error0;
--
--	devr->c0 = rdma_zalloc_drv_obj(ibdev, ib_cq);
--	if (!devr->c0) {
--		ret = -ENOMEM;
-+	devr->c0 = ib_create_cq(ibdev, NULL, NULL, NULL, &cq_attr);
-+	if (IS_ERR(devr->c0)) {
-+		ret = PTR_ERR(devr->c0);
- 		goto error1;
- 	}
- 
--	devr->c0->device = &dev->ib_dev;
--	atomic_set(&devr->c0->usecnt, 0);
--
--	ret = mlx5_ib_create_cq(devr->c0, &cq_attr, NULL);
--	if (ret)
--		goto err_create_cq;
--
- 	ret = mlx5_cmd_xrcd_alloc(dev->mdev, &devr->xrcdn0, 0);
- 	if (ret)
- 		goto error2;
-@@ -2841,45 +2826,22 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	attr.srq_type = IB_SRQT_XRC;
- 	attr.ext.cq = devr->c0;
- 
--	devr->s0 = rdma_zalloc_drv_obj(ibdev, ib_srq);
--	if (!devr->s0) {
--		ret = -ENOMEM;
--		goto error4;
--	}
--
--	devr->s0->device	= &dev->ib_dev;
--	devr->s0->pd		= devr->p0;
--	devr->s0->srq_type      = IB_SRQT_XRC;
--	devr->s0->ext.cq	= devr->c0;
--	ret = mlx5_ib_create_srq(devr->s0, &attr, NULL);
--	if (ret)
-+	devr->s0 = ib_create_srq(devr->p0, &attr);
-+	if (IS_ERR(devr->s0)) {
-+		ret = PTR_ERR(devr->s0);
- 		goto err_create;
--
--	atomic_inc(&devr->s0->ext.cq->usecnt);
--	atomic_inc(&devr->p0->usecnt);
--	atomic_set(&devr->s0->usecnt, 0);
-+	}
- 
- 	memset(&attr, 0, sizeof(attr));
- 	attr.attr.max_sge = 1;
- 	attr.attr.max_wr = 1;
- 	attr.srq_type = IB_SRQT_BASIC;
--	devr->s1 = rdma_zalloc_drv_obj(ibdev, ib_srq);
--	if (!devr->s1) {
--		ret = -ENOMEM;
--		goto error5;
--	}
--
--	devr->s1->device	= &dev->ib_dev;
--	devr->s1->pd		= devr->p0;
--	devr->s1->srq_type      = IB_SRQT_BASIC;
--	devr->s1->ext.cq	= devr->c0;
- 
--	ret = mlx5_ib_create_srq(devr->s1, &attr, NULL);
--	if (ret)
-+	devr->s1 = ib_create_srq(devr->p0, &attr);
-+	if (IS_ERR(devr->s1)) {
-+		ret = PTR_ERR(devr->s1);
- 		goto error6;
--
--	atomic_inc(&devr->p0->usecnt);
--	atomic_set(&devr->s1->usecnt, 0);
-+	}
- 
- 	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
- 		INIT_WORK(&devr->ports[port].pkey_change_work,
-@@ -2888,23 +2850,15 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	return 0;
- 
- error6:
--	kfree(devr->s1);
--error5:
--	mlx5_ib_destroy_srq(devr->s0, NULL);
-+	ib_destroy_srq(devr->s0);
- err_create:
--	kfree(devr->s0);
--error4:
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn1, 0);
- error3:
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn0, 0);
- error2:
--	mlx5_ib_destroy_cq(devr->c0, NULL);
--err_create_cq:
--	kfree(devr->c0);
-+	ib_destroy_cq(devr->c0);
- error1:
--	mlx5_ib_dealloc_pd(devr->p0, NULL);
--error0:
--	kfree(devr->p0);
-+	ib_dealloc_pd(devr->p0);
- 	return ret;
- }
- 
-@@ -2922,16 +2876,12 @@ static void mlx5_ib_dev_res_cleanup(struct mlx5_ib_dev *dev)
- 	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
- 		cancel_work_sync(&devr->ports[port].pkey_change_work);
- 
--	mlx5_ib_destroy_srq(devr->s1, NULL);
--	kfree(devr->s1);
--	mlx5_ib_destroy_srq(devr->s0, NULL);
--	kfree(devr->s0);
-+	ib_destroy_srq(devr->s1);
-+	ib_destroy_srq(devr->s0);
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn1, 0);
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn0, 0);
--	mlx5_ib_destroy_cq(devr->c0, NULL);
--	kfree(devr->c0);
--	mlx5_ib_dealloc_pd(devr->p0, NULL);
--	kfree(devr->p0);
-+	ib_destroy_cq(devr->c0);
-+	ib_dealloc_pd(devr->p0);
- }
- 
- static u32 get_core_cap_flags(struct ib_device *ibdev,
--- 
-2.31.1
+Config has only SLUB+SLUB_DEBUG, as originally measured.
+
+5.14.0.g79e92006-tip-rt (5.12-rt, 5.13-rt didn't exist when first measured=
+)
+          7,984.52 msec task-clock                #    7.565 CPUs utilized=
+            ( +-  0.66% )
+           353,566      context-switches          #   44.281 K/sec        =
+            ( +-  2.77% )
+            37,685      cpu-migrations            #    4.720 K/sec        =
+            ( +-  6.37% )
+            12,939      page-faults               #    1.620 K/sec        =
+            ( +-  0.67% )
+    29,901,079,227      cycles                    #    3.745 GHz          =
+            ( +-  0.71% )
+    14,550,797,818      instructions              #    0.49  insn per cycl=
+e           ( +-  0.47% )
+     3,056,685,643      branches                  #  382.826 M/sec        =
+            ( +-  0.51% )
+         9,598,083      branch-misses             #    0.31% of all branch=
+es          ( +-  2.11% )
+
+           1.05542 +- 0.00409 seconds time elapsed  ( +-  0.39% )
+           1.05990 +- 0.00244 seconds time elapsed  ( +-  0.23% ) (repeat)
+           1.05367 +- 0.00303 seconds time elapsed  ( +-  0.29% ) (repeat)
+
+5.14.0.g79e92006-tip-rt +slub-local-lock-v2r3 -0034-mm-slub-convert-kmem_c=
+pu_slab-protection-to-local_lock.patch
+          6,899.35 msec task-clock                #    5.637 CPUs utilized=
+            ( +-  0.53% )
+           420,304      context-switches          #   60.919 K/sec        =
+            ( +-  2.83% )
+           187,130      cpu-migrations            #   27.123 K/sec        =
+            ( +-  1.81% )
+            13,206      page-faults               #    1.914 K/sec        =
+            ( +-  0.96% )
+    25,110,362,933      cycles                    #    3.640 GHz          =
+            ( +-  0.49% )
+    15,853,643,635      instructions              #    0.63  insn per cycl=
+e           ( +-  0.64% )
+     3,366,261,524      branches                  #  487.910 M/sec        =
+            ( +-  0.70% )
+        14,839,618      branch-misses             #    0.44% of all branch=
+es          ( +-  2.01% )
+
+           1.22390 +- 0.00744 seconds time elapsed  ( +-  0.61% )
+           1.21813 +- 0.00907 seconds time elapsed  ( +-  0.74% ) (repeat)
+           1.22097 +- 0.00952 seconds time elapsed  ( +-  0.78% ) (repeat)
+
+repeat of above with raw list_lock
+          8,072.62 msec task-clock                #    7.605 CPUs utilized=
+            ( +-  0.49% )
+           359,514      context-switches          #   44.535 K/sec        =
+            ( +-  4.95% )
+            35,285      cpu-migrations            #    4.371 K/sec        =
+            ( +-  5.82% )
+            13,503      page-faults               #    1.673 K/sec        =
+            ( +-  0.96% )
+    30,247,989,681      cycles                    #    3.747 GHz          =
+            ( +-  0.52% )
+    14,580,011,391      instructions              #    0.48  insn per cycl=
+e           ( +-  0.81% )
+     3,063,743,405      branches                  #  379.523 M/sec        =
+            ( +-  0.85% )
+         8,907,160      branch-misses             #    0.29% of all branch=
+es          ( +-  3.99% )
+
+           1.06150 +- 0.00427 seconds time elapsed  ( +-  0.40% )
+           1.05041 +- 0.00176 seconds time elapsed  ( +-  0.17% ) (repeat)
+           1.06086 +- 0.00237 seconds time elapsed  ( +-  0.22% ) (repeat)
+
+5.14.0.g79e92006-rt3-tip-rt +slub-local-lock-v2r3 full set
+          7,598.44 msec task-clock                #    5.813 CPUs utilized=
+            ( +-  0.85% )
+           488,161      context-switches          #   64.245 K/sec        =
+            ( +-  4.29% )
+           196,866      cpu-migrations            #   25.909 K/sec        =
+            ( +-  1.49% )
+            13,042      page-faults               #    1.716 K/sec        =
+            ( +-  0.73% )
+    27,695,116,746      cycles                    #    3.645 GHz          =
+            ( +-  0.79% )
+    18,423,934,168      instructions              #    0.67  insn per cycl=
+e           ( +-  0.88% )
+     3,969,540,695      branches                  #  522.415 M/sec        =
+            ( +-  0.92% )
+        15,493,482      branch-misses             #    0.39% of all branch=
+es          ( +-  2.15% )
+
+           1.30709 +- 0.00890 seconds time elapsed  ( +-  0.68% )
+           1.3205 +- 0.0134 seconds time elapsed  ( +-  1.02% ) (repeat)
+           1.3083 +- 0.0132 seconds time elapsed  ( +-  1.01% ) (repeat)
 
