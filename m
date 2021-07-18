@@ -2,327 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACD53CC848
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504703CC861
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhGRJSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 05:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhGRJSs (ORCPT
+        id S232277AbhGRKBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 06:01:06 -0400
+Received: from gateway36.websitewelcome.com ([192.185.193.119]:20579 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230446AbhGRKBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 05:18:48 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DDCC061764
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 02:15:49 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id d9so16129620ioo.2
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 02:15:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UY/uuimcwG2QGP6zR2h/qQpbp8YhinG01JRSs5/gTjE=;
-        b=gOEVPphpi1VzCpTsAIyxKVFkGHSyEUfzBM3ZTa534U3l+mA5NM5es8Sk+A8Agai92x
-         CDP7GTIHQ6Eoj3PifZ2Hieye99sQxBslvMQTo+NGu7GofmhIIqnDHwJp3cyuGEFY2hcO
-         m/9mVXK+nx7jO1z5qzWEHzNPKdcTcZjG1uitgmp29t1dFxfea20bq4J+zLIB/EKWfqlf
-         o31eb7Ary3+dpu8u+WCE6qARXS3gAU+kBS3kFQFBg2fruszR0XCxFnJLdE884X2eSkZI
-         jFBY4PT+MG7RqI7c3u7R7Ns5DOxQczPJ+ybkWE3JMrkkmoPLU8f9T7DIu11UvNDfXnU+
-         gJVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UY/uuimcwG2QGP6zR2h/qQpbp8YhinG01JRSs5/gTjE=;
-        b=c1oPD4Uda1BL3ww6Mj7wDUAJ9HBrUFmS4fVgll2skFOVTmvH8efZfdhamlT6eWD168
-         30iVfmkgk0KVoD4hSDT9WR7Hypr0Ov4KJJNYE5Kz6CooJ9pPxn3H3ACH6OHPWt+/YcDL
-         AuhGeCHvEbU1GfiB1Ptueg2s1wjFWCR4K/XooC10af/cvZGCJ9eaYhW3PaLqQMLZH2vU
-         ois4FUHMoE1/GywtUu0+SUVuS6FVwtN99PhaG1usoUgchP/B6akHBW6ImsTPKI0Tk0g9
-         l6Ivq3txkMdRdux/mXPu5ErrDJVkWWlMleY7vfNsm7lQrwzi1ULG3O8+i3VMVMdNbmM4
-         hK9A==
-X-Gm-Message-State: AOAM533uT/gip0O1IS8g2R02WihFwd8q3L+1xjI9Y4vEeTJqYGnpLWAe
-        z3bRPDcccJr8xbiHnYYbZScwWl86Ae1TwOm998i7tg==
-X-Google-Smtp-Source: ABdhPJxsDlY/mNXq4LhEUBA3aOHiO7SXmodQRqqXcqzbpqtwExP67gls3WehwZ1+DLVas2tPH9/Mi37mr3vRZHMLbqA=
-X-Received: by 2002:a6b:1406:: with SMTP id 6mr14481233iou.25.1626599749201;
- Sun, 18 Jul 2021 02:15:49 -0700 (PDT)
+        Sun, 18 Jul 2021 06:01:05 -0400
+X-Greylist: delayed 1501 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Jul 2021 06:01:05 EDT
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 7491D400D6F9C
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 04:08:15 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id 52mVmiNpYL9qA52mVmCHe1; Sun, 18 Jul 2021 04:08:15 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-37-206-118.retail.telecomitalia.it ([79.37.206.118]:53030 helo=f34.bristot.me)
+        by gator4132.hostgator.com with esmtpa (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1m52mR-001x7t-Kq; Sun, 18 Jul 2021 04:08:11 -0500
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] trace/timerlat: Add a header with PREEMPT_RT additional fields
+Date:   Sun, 18 Jul 2021 11:07:54 +0200
+Message-Id: <babb83529a3211bd0805be0b8c21608230202c55.1626598844.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1626598844.git.bristot@kernel.org>
+References: <cover.1626598844.git.bristot@kernel.org>
 MIME-Version: 1.0
-References: <20210607123317.3242031-1-robert.marko@sartura.hr>
- <20210607123317.3242031-5-robert.marko@sartura.hr> <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
- <20210713222528.GA952399@robh.at.kernel.org>
-In-Reply-To: <20210713222528.GA952399@robh.at.kernel.org>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Sun, 18 Jul 2021 11:15:38 +0200
-Message-ID: <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
-Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.37.206.118
+X-Source-L: No
+X-Exim-ID: 1m52mR-001x7t-Kq
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-37-206-118.retail.telecomitalia.it (f34.bristot.me) [79.37.206.118]:53030
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 10
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 12:25 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, Jun 25, 2021 at 01:46:08PM +0200, Robert Marko wrote:
-> > On Mon, Jun 7, 2021 at 2:33 PM Robert Marko <robert.marko@sartura.hr> wrote:
-> > >
-> > > Add binding documents for the Delta TN48M CPLD drivers.
-> > >
-> > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > ---
-> > > Changes in v3:
-> > > * Include bindings for reset driver
-> > >
-> > > Changes in v2:
-> > > * Implement MFD as a simple I2C MFD
-> > > * Add GPIO bindings as separate
-> > >
-> > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 +++++++++
-> > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 90 +++++++++++++++++++
-> > >  .../bindings/reset/delta,tn48m-reset.yaml     | 35 ++++++++
-> > >  3 files changed, 167 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
-> > > new file mode 100644
-> > > index 000000000000..aca646aecb12
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
-> > > @@ -0,0 +1,42 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/gpio/delta,tn48m-gpio.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Delta Networks TN48M CPLD GPIO controller
-> > > +
-> > > +maintainers:
-> > > +  - Robert Marko <robert.marko@sartura.hr>
-> > > +
-> > > +description: |
-> > > +  This module is part of the Delta TN48M multi-function device. For more
-> > > +  details see ../mfd/delta,tn48m-cpld.yaml.
-> > > +
-> > > +  GPIO controller module provides GPIO-s for the SFP slots.
-> > > +  It is split into 3 controllers, one output only for the SFP TX disable
-> > > +  pins, one input only for the SFP present pins and one input only for
-> > > +  the SFP LOS pins.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - delta,tn48m-gpio-sfp-tx-disable
-> > > +      - delta,tn48m-gpio-sfp-present
-> > > +      - delta,tn48m-gpio-sfp-los
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  "#gpio-cells":
-> > > +    const: 2
-> > > +
-> > > +  gpio-controller: true
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - "#gpio-cells"
-> > > +  - gpio-controller
-> > > +
-> > > +additionalProperties: false
-> > > diff --git a/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
-> > > new file mode 100644
-> > > index 000000000000..2c6e2adf73ca
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
-> > > @@ -0,0 +1,90 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/mfd/delta,tn48m-cpld.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Delta Networks TN48M CPLD controller
-> > > +
-> > > +maintainers:
-> > > +  - Robert Marko <robert.marko@sartura.hr>
-> > > +
-> > > +description: |
-> > > +  Lattice CPLD onboard the TN48M switches is used for system
-> > > +  management.
-> > > +
-> > > +  It provides information about the hardware model, revision,
-> > > +  PSU status etc.
-> > > +
-> > > +  It is also being used as a GPIO expander for the SFP slots and
-> > > +  reset controller for the switch MAC-s and other peripherals.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: delta,tn48m-cpld
-> > > +
-> > > +  reg:
-> > > +    description:
-> > > +      I2C device address.
-> > > +    maxItems: 1
-> > > +
-> > > +  "#address-cells":
-> > > +    const: 1
-> > > +
-> > > +  "#size-cells":
-> > > +    const: 0
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - "#address-cells"
-> > > +  - "#size-cells"
-> > > +
-> > > +patternProperties:
-> > > +  "^gpio(@[0-9a-f]+)?$":
-> > > +    $ref: ../gpio/delta,tn48m-gpio.yaml
-> > > +
-> > > +  "^reset-controller?$":
-> > > +    $ref: ../reset/delta,tn48m-reset.yaml
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    i2c {
-> > > +        #address-cells = <1>;
-> > > +        #size-cells = <0>;
-> > > +
-> > > +        cpld@41 {
-> > > +            compatible = "delta,tn48m-cpld";
-> > > +            reg = <0x41>;
-> > > +            #address-cells = <1>;
-> > > +            #size-cells = <0>;
-> > > +
-> > > +            gpio@31 {
-> > > +                compatible = "delta,tn48m-gpio-sfp-tx-disable";
-> > > +                reg = <0x31>;
-> > > +                gpio-controller;
-> > > +                #gpio-cells = <2>;
-> > > +            };
-> > > +
-> > > +            gpio@3a {
-> > > +                compatible = "delta,tn48m-gpio-sfp-present";
-> > > +                reg = <0x3a>;
-> > > +                gpio-controller;
-> > > +                #gpio-cells = <2>;
-> > > +            };
-> > > +
-> > > +            gpio@40 {
-> > > +                compatible = "delta,tn48m-gpio-sfp-los";
-> > > +                reg = <0x40>;
-> > > +                gpio-controller;
-> > > +                #gpio-cells = <2>;
-> > > +            };
-> > > +
-> > > +            reset-controller {
-> > > +              compatible = "delta,tn48m-reset";
-> > > +              #reset-cells = <1>;
-> > > +            };
-> > > +        };
-> > > +    };
-> > > diff --git a/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
-> > > new file mode 100644
-> > > index 000000000000..0e5ee8decc0d
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
-> > > @@ -0,0 +1,35 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/reset/delta,tn48m-reset.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Delta Networks TN48M CPLD reset controller
-> > > +
-> > > +maintainers:
-> > > +  - Robert Marko <robert.marko@sartura.hr>
-> > > +
-> > > +description: |
-> > > +  This module is part of the Delta TN48M multi-function device. For more
-> > > +  details see ../mfd/delta,tn48m-cpld.yaml.
-> > > +
-> > > +  Reset controller modules provides resets for the following:
-> > > +  * 88F7040 SoC
-> > > +  * 88F6820 SoC
-> > > +  * 98DX3265 switch MAC-s
-> > > +  * 88E1680 PHY-s
-> > > +  * 88E1512 PHY
-> > > +  * PoE PSE controller
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: delta,tn48m-reset
-> > > +
-> > > +  "#reset-cells":
-> > > +    const: 1
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - "#reset-cells"
-> > > +
-> > > +additionalProperties: false
-> > > --
-> > > 2.31.1
-> > >
-> >
-> > Are there any issues with the bindings?
->
-> Yes. Primarily the GPIO function being part of the compatible. I'm
-> surprised Linus W is okay with that.
+Some extra flags are printed to the trace header when using the
+PREEMPT_RT config. The extra flags are: need-resched-lazy,
+preempt-lazy-depth, and migrate-disable.
 
-I think I already explained this before, having a single compatible
-won't work here.
-Then there would not be anything to know whether its input or output
-only as the pins
-have specific purpose.
-And knowing the capabilites is a requirment of the GPIO regmap driver
-and the GPIO
-core itself as it exposes that information in a generic manner and
-driver like for the
-SFP bus use that.
+Without printing these fields, the timerlat specific fields are
+shifted by three positions, for example:
 
-Maybe Linus W can chime in here as well.
+ # tracer: timerlat
+ #
+ #                                _-----=> irqs-off
+ #                               / _----=> need-resched
+ #                              | / _---=> hardirq/softirq
+ #                              || / _--=> preempt-depth
+ #                              || /
+ #                              ||||             ACTIVATION
+ #           TASK-PID      CPU# ||||   TIMESTAMP    ID            CONTEXT                LATENCY
+ #              | |         |   ||||      |         |                  |                       |
+           <idle>-0       [000] d..h...  3279.798871: #1     context    irq timer_latency       830 ns
+            <...>-807     [000] .......  3279.798881: #1     context thread timer_latency     11301 ns
 
->
-> > The patch series is depending on this as the rest has been reviewed.
->
-> The bindings have been reviewed too, you just didn't like my comments...
+Add a new header for timerlat with the missing fields, to be used
+when the PREEMPT_RT is enabled.
 
-Sorry, I did not pick that up as after my replies there was no further
-discussion.
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Tom Zanussi <zanussi@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ kernel/trace/trace_osnoise.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-I am really hoping that we can find a middle ground here and get this
-merged as the driver code itself has been revied and ACK-ed.
-
-Regards,
-Robert
->
-> Rob
-
-
-
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index 03ef720b491d..518a5c190b2b 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -354,6 +354,24 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
+ /*
+  * Print the timerlat header info.
+  */
++#ifdef CONFIG_PREEMPT_RT
++static void print_timerlat_headers(struct seq_file *s)
++{
++	seq_puts(s, "#                                _-------=> irqs-off\n");
++	seq_puts(s, "#                               / _------=> need-resched\n");
++	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
++	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
++	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
++	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
++	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
++	seq_puts(s, "#                              |||||| /\n");
++	seq_puts(s, "#                              |||||||             ACTIVATION\n");
++	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    ID     ");
++	seq_puts(s, "       CONTEXT                LATENCY\n");
++	seq_puts(s, "#              | |         |   |||||||      |         |      ");
++	seq_puts(s, "            |                       |\n");
++}
++#else /* CONFIG_PREEMPT_RT */
+ static void print_timerlat_headers(struct seq_file *s)
+ {
+ 	seq_puts(s, "#                                _-----=> irqs-off\n");
+@@ -367,6 +385,7 @@ static void print_timerlat_headers(struct seq_file *s)
+ 	seq_puts(s, "#              | |         |   ||||      |         |      ");
+ 	seq_puts(s, "            |                       |\n");
+ }
++#endif /* CONFIG_PREEMPT_RT */
+ 
+ /*
+  * Record an timerlat_sample into the tracer buffer.
 -- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+2.31.1
+
