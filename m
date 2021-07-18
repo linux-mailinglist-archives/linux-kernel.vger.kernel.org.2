@@ -2,77 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1452D3CC878
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 12:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF233CC881
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 12:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhGRKuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 06:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231836AbhGRKuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 06:50:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 158B56100A;
-        Sun, 18 Jul 2021 10:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626605231;
-        bh=UK4GyKvDfMGN0HjWigqnE/GTzdduZA9HuEDZ3yQX1/U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NBjoiK9W6M7W7DapoBXfo5EzDnNXce7pTNlTSKlFFED87herxsfuw7A43gkE0H1ck
-         Ghegt54o5zMuxWF38OedFLvLn5UPfulIG5F7ol3g8zZHSXB0ACIbOy6+85PJkunZPT
-         hrnTNxICCLufm3YmEoAA8RbK3lOh4aurCJgk6YxnrLHWotJCJUc1PLsIxGKwrqeU1Z
-         7dTtuZMc2VF9jewWKwe64colsObZlGDqIhmAoiHuDDypi2VpaR7QqwTcpBHufFHwy0
-         3yUlHUltzUK4W6gD3NMZN2yebVG8Ao3vdSlbkZbUj7IkHnzchsiN3F1a40DBaF/Uze
-         oBs8X0sBe/YqQ==
-Date:   Sun, 18 Jul 2021 13:47:08 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "tanxin.ctf@gmail.com" <tanxin.ctf@gmail.com>,
-        "xiyuyang19@fudan.edu.cn" <xiyuyang19@fudan.edu.cn>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kolga@netapp.com" <kolga@netapp.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>
-Subject: Re: [PATCH] SUNRPC: Convert from atomic_t to refcount_t on
- rpc_clnt->cl_count
-Message-ID: <YPQGrMEuZ2q4JhgW@unreal>
-References: <1626517112-42831-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <1f12b3569565fa8590b45cc2fbe7c176ca7c5184.camel@hammerspace.com>
+        id S232951AbhGRKwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 06:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232405AbhGRKwI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 06:52:08 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C63C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 03:49:09 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id a6so21219910ljq.3
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 03:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ns8QFitZLPcwmFGJH/IoWVhidyJ3YSGIPh601UhjtkI=;
+        b=jb4KPfNuh2HcFsXjoaZ7xMCSJDtz22TZQxRYH5Ld12mOhGZ/2KDcqeaKvo+d1oStIb
+         EKR+AMufiaKJrEn53rJwaUSUU5AF2urVMiCwhReGqmT7pl7hdgeHah0z0T2+VHFsX80Q
+         eSH3N60Ar5zw9Ow4TPMWsDIsqWLLitIaNMkUDPiXR3f3LZCJOswO8seQ1mwHtkoEcp+v
+         GGLwpJZ5arUbwZmKCt2Svq3az6OesdCT0EH652bekQCzkYWN9uYdO30p1aUUPmxPijvD
+         xxmbx8+qIKkKhfH40ZdEvFY+YXBChaCRJJXg78RBQoPIfWn31OIXymHu7cicPtNfZoiD
+         BVQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ns8QFitZLPcwmFGJH/IoWVhidyJ3YSGIPh601UhjtkI=;
+        b=mfQHNaKrk5j1+9tU5zAF0NqBLw0ZwklHcyIKtWXbquB4NcYrtFW2uglP2hixpDip5d
+         2u/sQrOMBkopBN5zDKyKA2Jq36/wNS7bD9isbKb7Nt8NEMmOG13AUpGsKsT79sAg5VJY
+         sNm1LjUrqZMQ72x49WlId/cueVa8fUGX2WyhEfrOv8RSFIDN4b/rehrEZVCxCMPfm56V
+         yaYjZvyjxUTHyx8A+4CooEX/T+ed23Ky5tLSr4v+U1CrzYL4xzDY+E+Qq+tB0TwzI/lR
+         uczEA8EYQZV9PkZ3GcZ3Mn+dhRINFCX07oCOgo4ortBcSAzARY16V5GqdUcYks6uv67E
+         lOoA==
+X-Gm-Message-State: AOAM530c+CSyz8DnMwLnDBaeexDRvdHPy7Fxy9nKAIMgK769foT+li25
+        wZTEcDs+y7UWAeX4q6t0arfHnA==
+X-Google-Smtp-Source: ABdhPJwQUY96yW4DWHCu3a9S3SRo1yCER4Jyu3t5Ey7be7LR7OHHsHKYC8T7ghLROfIuf/weJoX+7A==
+X-Received: by 2002:a2e:a315:: with SMTP id l21mr13201098lje.359.1626605347382;
+        Sun, 18 Jul 2021 03:49:07 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id y22sm1039528lfh.154.2021.07.18.03.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Jul 2021 03:49:06 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/6] clk: qcom: use power-domain for sm8250's clock controllers
+Date:   Sun, 18 Jul 2021 13:48:52 +0300
+Message-Id: <20210718104901.454843-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f12b3569565fa8590b45cc2fbe7c176ca7c5184.camel@hammerspace.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 02:43:26PM +0000, Trond Myklebust wrote:
-> On Sat, 2021-07-17 at 18:18 +0800, Xiyu Yang wrote:
-> > refcount_t type and corresponding API can protect refcounters from
-> > accidental underflow and overflow and further use-after-free
-> > situations.
-> > 
-> 
-> Have you tested this patch? As far as I remember, the reason why we
-> never converted is that refcount_inc() gets upset and WARNs when you
-> bump a zero refcount, like we do very much on purpose in
-> rpc_free_auth(). Is that no longer the case?
+On SM8250 both the display and video clock controllers are powered up by
+the MMCX power domain. Handle this by linking clock controllers to the
+proper power domain, and using runtime power management to enable and
+disable the MMCX power domain.
 
-It is still the case, they sent gazillion conversion patches with same
-mistake.
+Dependencies:
+- https://lore.kernel.org/linux-arm-msm/20210703005416.2668319-1-bjorn.andersson@linaro.org/
+  (pending)
 
-Thanks
+Changes since v4:
+ - Dropped pm_runtime handling from drivers/clk/qcom/common.c Moved the
+   code into dispcc-sm8250.c and videocc-sm8250.c
 
-> 
-> 
-> -- 
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
-> 
-> 
+Changes since v3:
+ - Wrap gdsc_enable/gdsc_disable into pm_runtime_get/put calls rather
+   than calling pm_runtime_get in gdsc_enabled and _put in gdsc_disable
+ - Squash gdsc patches together to remove possible dependencies between
+   two patches.
+
+Changes since v2:
+ - Move pm_runtime calls from generic genpd code to the gdsc code for
+   now (as suggested by Ulf & Bjorn)
+
+Changes since v1:
+ - Rebase on top of Bjorn's patches, removing the need for setting
+   performance state directly.
+ - Move runtime PM calls from GDSC code to generic genpd code.
+ - Always call pm_runtime_enable in the Qualcomm generic clock
+   controller code.
+ - Register GDSC power domains as subdomains of the domain powering the
+   clock controller if there is one.
+
+----------------------------------------------------------------
+Dmitry Baryshkov (9):
+      dt-bindings: clock: qcom,dispcc-sm8x50: add mmcx power domain
+      dt-bindings: clock: qcom,videocc: add mmcx power domain
+      PM: runtime: add devm_pm_runtime_enable helper
+      clk: qcom: dispcc-sm8250: use runtime PM for the clock controller
+      clk: qcom: videocc-sm8250: use runtime PM for the clock controller
+      clk: qcom: gdsc: enable optional power domain support
+      arm64: dts: qcom: sm8250: remove mmcx regulator
+      clk: qcom: dispcc-sm8250: stop using mmcx regulator
+      clk: qcom: videocc-sm8250: stop using mmcx regulator
+
+ .../bindings/clock/qcom,dispcc-sm8x50.yaml         |  7 +++
+ .../devicetree/bindings/clock/qcom,videocc.yaml    |  7 +++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               | 11 +---
+ drivers/base/power/runtime.c                       | 17 +++++++
+ drivers/clk/qcom/dispcc-sm8250.c                   | 21 ++++++--
+ drivers/clk/qcom/gdsc.c                            | 59 ++++++++++++++++++++--
+ drivers/clk/qcom/gdsc.h                            |  2 +
+ drivers/clk/qcom/videocc-sm8250.c                  | 24 ++++++---
+ include/linux/pm_runtime.h                         |  4 ++
+ 9 files changed, 131 insertions(+), 21 deletions(-)
+
+
