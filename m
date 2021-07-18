@@ -2,98 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723FB3CCA80
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 21:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012A33CCA81
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 21:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhGRTqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 15:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
+        id S230486AbhGRTsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 15:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhGRTqR (ORCPT
+        with ESMTP id S229585AbhGRTsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 15:46:17 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292E0C061762;
-        Sun, 18 Jul 2021 12:43:19 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id bt15so10058638pjb.2;
-        Sun, 18 Jul 2021 12:43:19 -0700 (PDT)
+        Sun, 18 Jul 2021 15:48:20 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314E1C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 12:45:22 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id dt7so24595930ejc.12
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 12:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7exFBskhTjXcI0G1jQYaweC6zi6nB0YxhW9GhW8QVJk=;
-        b=hTAqgsHvvgfNcEagZtVOoEg9FPZ1K7swFoeQE74LVxhVPjWe4cMJ36z1icfI5N90l0
-         Q5NEeHaePN4cZlD/CHtW4Q3HajTJXac5NUjQ3Tfn2qYdk7cJOxD93QiuahCUEOdvoYan
-         yWAQXjAMKElZboyb3fVwi3x1JZL/sJ6Kaf4cbOmJ4HWzjIM7H5CRcv+C/ovoiTK5KLZO
-         MewH468+Xkk/Jq2ehDT+j7bKEfHjqYerJXYXfL+fUWicAa9dKBPN3mXL6A41iuyJcvu0
-         q699wJgigkj4sMp84K14HXfLRz4drOEqjzlqLQhWSBDA6e5vjBNH9oe/EgXH+w0RCd+7
-         LXXQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=T8dUc3SXwaBsVYYjDAa1ofMWafpFPoq2kjbhNS/mXgo=;
+        b=Al61pz2fbLNYqTQVpMOpUYlb2lawKvW1rVG0uaUX80Jg8AMi69VP7w8pijfMSWhnW+
+         ouox80RMw8tNUmMUnnO5Dt4OphCpbNzHPu3tgpKqU+et8bLw4FqX7PopcWuPKrYWuGkO
+         fYqW3R0raqW7hHnz8+YktXvRz3ZrMdgSrDgn8G3CcZKNhy2zPKx/7AunxxnVTIHYpMtg
+         1EG3/h0MNQrvUEV9S9bqjtuzPqXO22INi3bL24AD3aSylHwH4J7yXY944nT0nuONhTiC
+         kgwLRlC3/fZiREAU+65CcdxuS9RFrIMmoUC4rox8GLRQ9E1aVxRLQus2tAbmzIii4SaR
+         vI/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7exFBskhTjXcI0G1jQYaweC6zi6nB0YxhW9GhW8QVJk=;
-        b=hzXQQjqBS0Dn4fcomJyCxdw5jlUTqkBv7NNsLWVST38focPuLioFLiv39VW7D2xDT3
-         U86rtZtpcNuNJwPPRchhD54vpO5K89FUpr4Wnr/NtUdis/SQVXveaHnv7ITBxSWY1Ix4
-         LeILry6BiLyVOILgsQLL5bT+imfUV8iUPQPx4zj10Ab0jV+IZlp95rofNGF9e69R0CEA
-         Ttp6BlOg3mC/ZuARw/n59Ip8yFJVjcC7J7Xt2kPLmY7RD1aG0RzxBTsiFF84/RsWAHnW
-         b73xbCQwwHC0ZHzs5at4lTbo0zNbjZcobfKJ4jgI20Qbp2izi1CD86lCncL9qLqxuHff
-         X1sg==
-X-Gm-Message-State: AOAM531FSTCXOaSqt7UbuJwxC+lz1d/Wl3G0M/SieLiC6nZErNQ+dHl8
-        ISGzI7P6PZ1uL2KdfmZ8yJxtzuyLyOrje/xm6aw=
-X-Google-Smtp-Source: ABdhPJxzjFnbQny4tL/Gtmd96c7VmxuNdY93ug+tJ2p9Dj5gOXvWXiaA+eeh1wWvAvNR+4wesFTmw2sp9FFlCmRM9oI=
-X-Received: by 2002:a17:902:b198:b029:11b:2246:e374 with SMTP id
- s24-20020a170902b198b029011b2246e374mr16552094plr.17.1626637398478; Sun, 18
- Jul 2021 12:43:18 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=T8dUc3SXwaBsVYYjDAa1ofMWafpFPoq2kjbhNS/mXgo=;
+        b=V6Wm5YmwiWQuE3LIBrUoQYK/lr3HplN85FBuvNOuNR8r2AwoTEOvm6g2cdmbGlZAsk
+         B+89pe3QgB37jMb93Y2WiL7ZXvMMrJCvJybqm81BCxhCfc9K32/7/+APvt8M2eY8QUMQ
+         eWk2AAg5bsyY0NyFQEy+J6bgFvJkeCNSfavwBTOfs+xx0wZ8epCXW2ms3yd5KB4XTkfh
+         aJ/3Njx7rveEnlyuRa3dTc8CvVqs0bQCKKwsejVGT9re79JTg4cXn7HeJLalxzq97d0W
+         tarzJUjvyjdy6KI+fVVEf/AR9PKc8JtJidYJ0rD03dUmT6TqbudfmB6RgpaDUbT0gMMq
+         zAGA==
+X-Gm-Message-State: AOAM53244kM+5t2+0WRw298B0S/f0gddFsYiXqQhxV6P/xIhHn1pBzTW
+        0ngAS0PC4FhwZIJX5hVdGS6qKDDDc9S6LC9w428=
+X-Google-Smtp-Source: ABdhPJwaltQnFz+rOPahDThhLzoQNHdbZeqcd5K9/JZdqsAOROkCBDNpsIbg05Nlf+7xkWdFBwb0oXXGoDekt1A3lo8=
+X-Received: by 2002:a17:906:4e15:: with SMTP id z21mr23987505eju.333.1626637520809;
+ Sun, 18 Jul 2021 12:45:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210718133920.15825-1-len.baker@gmx.com>
-In-Reply-To: <20210718133920.15825-1-len.baker@gmx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 18 Jul 2021 22:42:42 +0300
-Message-ID: <CAHp75VeEA0=KFsfdjCnBm-b9+F+NnFWJ38nkh+qtb85XdXVWog@mail.gmail.com>
-Subject: Re: [PATCH] staging/fbtft: Remove all strcpy() uses
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Phil Reid <preid@electromag.com.au>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: by 2002:a55:80c3:0:b029:e9:982a:c44d with HTTP; Sun, 18 Jul 2021
+ 12:45:20 -0700 (PDT)
+Reply-To: barristerdinkarim09@gmail.com
+From:   Din Karim <allenwalker731@gmail.com>
+Date:   Sun, 18 Jul 2021 19:45:20 +0000
+Message-ID: <CAK9uXxMd26sL1bSkYt4jGS6D4vnaCu0E5PM3KSc9A_1dQ_D9gQ@mail.gmail.com>
+Subject: Dear
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 4:43 PM Len Baker <len.baker@gmx.com> wrote:
->
-> strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading
-> to all kinds of misbehaviors. The safe replacement is strscpy() but in
-> this case it is simpler to add NULL to the first position since we want
-> to empty the string.
+Hello dear,
 
-> This is a previous step in the path to remove the strcpy() function.
+I'm Barr Din Karim from Please i wish to have a communication with you.
 
-Any document behind this (something to read on the site(s) more or
-less affiliated with what is going to happen in the kernel) to read
-background?
+I wait for your response.
 
-...
-
->                 case -1:
->                         i++;
->                         /* make debug message */
-> -                       strcpy(msg, "");
-> +                       msg[0] = 0;
-
-Strictly speaking it should be '\0'.
-
->                         j = i + 1;
->                         while (par->init_sequence[j] >= 0) {
->                                 sprintf(str, "0x%02X ", par->init_sequence[j]);
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Barr Din Karim(Esq)
