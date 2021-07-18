@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32DB3CC6FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 01:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC753CC704
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 02:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhGRAAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 20:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60314 "EHLO
+        id S231899AbhGRAUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 20:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhGRAAh (ORCPT
+        with ESMTP id S230259AbhGRAUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 20:00:37 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB4DC061762;
-        Sat, 17 Jul 2021 16:57:40 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id i14so733210pfd.5;
-        Sat, 17 Jul 2021 16:57:40 -0700 (PDT)
+        Sat, 17 Jul 2021 20:20:04 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56FFC061764
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 17:17:06 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id q4so19633183ljp.13
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 17:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KZ8KPrGTn9OA5fnTg2Aua33JFfJNUaNDTtuE4XF0600=;
-        b=ULYuXQGWtlzCaUeJoq+h45/EUWsbEwv0cIDOlyN1cKI9Gg61qNuR9iOad3OoWKiMCf
-         LqjnPgMvCqEUgTmEjK4exA5UkoEokDw1hor27Wz5hxswbjDcdT8n0q5rjOUowuoqTyG7
-         bm6j3vrPq8OYTh7goBYtf33kY8+TX5IIi48PV6CEouk1uVzX2et+noxqB16sAyjtqPnf
-         +DnT0aRnpWVRt8U52tgZEmMCNrAIThhC4VaIC3B0dR7E1D0bm9PnHE59ttGF400fdUb5
-         xJ90V9fIGcO74eFZU9mOqMkDSaQM5CK6v0+HUdZVkiZmiD82W1GbOOJfq4nfmNde5aEt
-         C1NA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X1WDN9LkkfTLodn/7AZmvdlWK3elCwMaUY4+s15zcjs=;
+        b=lr/rWTTelnW7nH05zdzy9FmUTLjtt9x/tUlCN50zyyz+UyWy1fPUrp4MBwEazKLI1X
+         2tI09g2FvGKVdBNeR3iA0kePNjlxn4uF99kvRlbRpGmJBtM2bXfqPCvnMsV4fZEDXgOB
+         cfwfCTZpRJpP8XCfwPBB5HLe6EFbcUx+r6SV3aYbkgX+R7j54g2UEufmNHwppKl+Dy60
+         eOF4MHP2iIoOLUblsBzMt0mEgLB7yhdJNOCfiHkbgnmudCLvzyCDPAW4uBSYjhD/V0iB
+         QzT5UmxJpzVt0uhk/TARoTkXEq7y4rI/1NwAj9vsXfO4oc8lvVdfu0NPKzeKeoGF+Sjn
+         KtGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KZ8KPrGTn9OA5fnTg2Aua33JFfJNUaNDTtuE4XF0600=;
-        b=RRaxFAKIKxNUNY2qaL1auAT9J50hgH8J5zp8ZUI0zsqriZbJWJlr4C0n4ORgd3B4VB
-         RUw7UHw+K4vStHmLN+0f7nP+nxblDChCkVKpTaw3BU5W+eJyOejwG5Q51j0p4toqDCzN
-         2+6kL1a6pg2c9mipOnO0WlHhILE6g4RAF705HmgeiaxwqJKP/8IFExAB8xComd9R2k49
-         ptMuMzplIwHA82OMKzXS3UkSgGcqn+hIy0JkaqeckuTBQ/k6CT6o1xxV37Z720tisrM3
-         PJT16bKTy58AWE1/ENO+zFgJe1CgZh+4S0lN9H4Zd9dbLu5tlUlOFc42lnQHW+Xj9CDh
-         xkYw==
-X-Gm-Message-State: AOAM53155TsR+e7g1vaaCQ9UWa4pLHrd766cPnytg06HsTAA3M3S8IEp
-        thtvfg1dAy69HwN7dZCDYpuk/0RwRFvu0w==
-X-Google-Smtp-Source: ABdhPJy13afSpOFqjnsYyIeG3cSWO1IiR48A9ntNGfu7m5uKzAQdu+CAPjS/o7klZxfP69iqKfjlow==
-X-Received: by 2002:a05:6a00:158e:b029:32b:9de5:a198 with SMTP id u14-20020a056a00158eb029032b9de5a198mr18007990pfk.3.1626566259660;
-        Sat, 17 Jul 2021 16:57:39 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u62sm2554800pfb.19.2021.07.17.16.57.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Jul 2021 16:57:39 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/258] 5.13.3-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210716182150.239646976@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <1d9e4220-980c-aa1c-39be-9c3beeb6d654@gmail.com>
-Date:   Sat, 17 Jul 2021 16:57:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X1WDN9LkkfTLodn/7AZmvdlWK3elCwMaUY4+s15zcjs=;
+        b=FF/i24AL3ASbvpicLSgyxznkMAQAoq55iTe0wBj3FxLUtJkUkK5opkyM6b83/kFEIO
+         J1P3RFEZ4E0/iRMXUP4ln+PXgn3IIBnAp1GVQMx0shoI27kQwDLwuZqUCOggvaw9+4O7
+         BgGguQbGJ9WHZN+iUwK64OfKOf43BCixtnF5J0tgp8lLjkz+ytxUXrZf3IvR8MjZyxtC
+         afLkEwKoLFuUErf0Ujgwn5l5MWZl/smZOEWCiSSXZo5KyBNCFj3B+e017nxkmoKitmII
+         fXcwvhvzx9OG4PQMXwWoaU0fhSHS5aBq5yd6936a0fY4qXNQRTSjHi4lFV+WIGSR+xQC
+         2lrQ==
+X-Gm-Message-State: AOAM533ODCET1ze3Q/OY3DNGWIXGKOcHCncjpviaRhZLQwtHOm/l9EKm
+        MN+XpWZLOE6wt9TSKnWEO9wtb26GkKPTnbz4QCqyQg==
+X-Google-Smtp-Source: ABdhPJyH8Es5S0fiHP/hznaMowGfa4CiQ/5DqH3eELfDWrap1a8f9HW2gm8T83Kn6nYavVuv3RpCOGtt2aCb7jKivCo=
+X-Received: by 2002:a05:651c:160e:: with SMTP id f14mr7064711ljq.273.1626567424296;
+ Sat, 17 Jul 2021 17:17:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210716182150.239646976@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1626430843-23823-1-git-send-email-dillon.minfei@gmail.com> <1626430843-23823-2-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <1626430843-23823-2-git-send-email-dillon.minfei@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 18 Jul 2021 02:16:53 +0200
+Message-ID: <CACRpkdbkOY08THPsPHfOOMeToHGXZvN2DBoKG9+WHeke9jypzQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: display: panel: Add ilitek ili9341 panel bindings
+To:     dillon min <dillon.minfei@gmail.com>
+Cc:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dillon,
 
+thanks for your patch!
 
-On 7/16/2021 11:29 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.3 release.
-> There are 258 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 18 Jul 2021 18:16:27 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.3-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Fri, Jul 16, 2021 at 12:20 PM <dillon.minfei@gmail.com> wrote:
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+> From: Dillon Min <dillon.minfei@gmail.com>
+>
+> Add documentation for "ilitek,ili9341" panel.
+>
+> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> +  dc-gpios:
+> +    maxItems: 1
+> +    description: Display data/command selection (D/CX)
+
+This is a DBI feature so mention in the description that this is a
+DBI panel.
+
+> +  spi-3wire: true
+> +
+> +  spi-max-frequency:
+> +    const: 10000000
+> +
+> +  port: true
+> +
+> +additionalProperties: false
+
+Please add regulator supplies for the power lines, it's fine
+not to implement code handling them in the driver but they
+should be in the bindings.
+
+For the ili9341 it should be
+
+  vci-supply:
+    description: Analog voltage supply (2.5 .. 3.3V)
+
+  vddi-supply:
+    description: Voltage supply for interface logic (1.65 .. 3.3 V)
+
+  vddi-led-supply:
+    description: Voltage supply for the LED driver (1.65 .. 3.3 V)
+
+Yours,
+Linus Walleij
