@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF8F3CC828
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 10:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C9B3CC82D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 10:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhGRIPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 04:15:04 -0400
-Received: from mout.gmx.net ([212.227.17.21]:35335 "EHLO mout.gmx.net"
+        id S231207AbhGRIdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 04:33:06 -0400
+Received: from mout.gmx.net ([212.227.15.19]:55411 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhGRIPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 04:15:03 -0400
+        id S229578AbhGRIdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 04:33:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626595914;
-        bh=KV34qVRDRX4HzUGJlfF/hgIY5lowDhF96SMQf1+Mm08=;
+        s=badeba3b8450; t=1626596972;
+        bh=C3fcgolBPCedQ4D/+2yjkrUfly9qUKkzLQRI38gnXHI=;
         h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=idCSCnf/ub1eZxKKucRvicU10txuYZf3/3mZuihzKsZlB8APLrJ8NXnjWaTvD/g68
-         HehBJVGaKBhKWW/Sheei185N9Ww5AvOOhdgz+9cARCECOt8juBBDxyitvSKWR1Dpzi
-         D3SMCUEWs0Xq70cHR6GW+ElVXx2elTPKDMlNKwvU=
+        b=SVF8uOrJptlEy8CVf02KS8Z+FVgkzDLxKYeKuLmxDpJa1Yqr4M/8wPKnnufzsdJiv
+         EtSei88k0Dq+goFlyagQt2uRqH//bOpAkg3/XUYe7s7hsT01gYj/D/6aNwjoTjOD3R
+         qF0geb1qDUaHtVOZccvZlQw12ySP9c12j7NgelTE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.250]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M1HZi-1m6gam1QZm-002qXJ; Sun, 18
- Jul 2021 10:11:54 +0200
-Message-ID: <f15287cff6a212029bdf603e51892b2d295736f2.camel@gmx.de>
-Subject: Re: [patch] v2 mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
+Received: from homer.fritz.box ([185.221.148.250]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTzay-1ldypd3rAw-00Qyjq; Sun, 18
+ Jul 2021 10:29:32 +0200
+Message-ID: <64eda4de845c8d98e0dcb7f6fa3177037120e317.camel@gmx.de>
+Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
+ compatible
 From:   Mike Galbraith <efault@gmx.de>
 To:     Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Sun, 18 Jul 2021 10:11:53 +0200
-In-Reply-To: <725fe90b-4918-321e-ca88-6166bec0c131@suse.cz>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
-         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-         <878s2fnv79.ffs@nanos.tec.linutronix.de>
-         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
-         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
-         <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
-         <725fe90b-4918-321e-ca88-6166bec0c131@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+Date:   Sun, 18 Jul 2021 10:29:29 +0200
+In-Reply-To: <ef4903e2-c2ce-9a64-68b0-c7ee483eb582@suse.cz>
+References: <20210609113903.1421-1-vbabka@suse.cz>
+         <20210702182944.lqa7o2a25to6czju@linutronix.de>
+         <891dc24e38106f8542f4c72831d52dc1a1863ae8.camel@gmx.de>
+         <ef4903e2-c2ce-9a64-68b0-c7ee483eb582@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:anPAfTyiWoxwHinUd+8Y9MBiMVv4AZmtbHgVZnc69YUIVPh8GRC
- qC8svcEpfxPmzEbE948h3OV8JefJo92wypvbdt7V5Q5q9gahF9PRASQIji+57hStV4ESFgX
- 8zS1a5MJM3NJiSpcxti4+5XCpiofqdbBe5xBwNOth4EfzpYBaNp0uOIEAmTAJlcfvA9VmXW
- tIOQzgiE4lMxw4XyZvxtw==
+X-Provags-ID: V03:K1:d/PpY/pSlP89e6xkF6+DLWyRoolVhRkrqKuKZngBrPjkaZDXmv0
+ x2Zs2T37BPv1BPLqoimnU0QP8hDl50p7tJzdBXMNT4khvFQWje+QnL6BBk5aha+bpeBkADl
+ PPXQskXTT+WczYLebDwWrJIi7SYKvLNvVTF5fLW+s7KMm2VulzCVBQpAHYdN8zkaJTZTBOx
+ FAQFKa9uoOruX46n7MoLg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SsdtYme0vY4=:yhuUJp+gz/yTGxYSOfA1us
- LVt7CzSm9emZmMbDXcmWzM8JsUKoBO37CmJVd+pDrgDR8cAOwV7/18U4bJz8l/IGust9qUt7E
- bi3AZLhz8TdiGVSCrFmEZRH30ouRaXjJbPJd9vJrkBn8jo1PYIqaLme6ImT1ukAjSDSSzh0GV
- ADTSbdI3SUlaANlYiOyNmo5TIAbbc9jjy/qBpzb6SyNnu8f2PROF1Pe5eJREG8e3/gJMIsGlE
- oC01AcFMdPwkLMCFmE+jWhPos0j86az1Otf9oaevU2oUlpqTM/JkMXxMnblEceSH4kn8+ReLV
- Vd6f9SJXGnGnnh3vzNlgzJgTWFGMMBLB35wp83ndD7r9Ghm5eReSn77YahkAGLKq8HIV+dQoC
- 7KeW1tUhqCxY3VsG/2+yyfWy6nWRx0GEouCSfCLLibSctdwUudjzJPMYywRzaqorne4F9OCvP
- 9oOfX/f73ECxKbct9ZUK50oexWB/Alta0iIvv5F9SihtZp0NBanm27U5yeyrT+zAhdIXImRwP
- o3AmjKPssIyp0GQW0OOorWgGNpx3gd9L0dSvjpyaRpm0RtjTESHuzdFKsTybkIHujcIjL2XEn
- teSPm3SXH6CT9BLJpTHUSTtBKUhxnkyiXT/tDESoxzwl84VifmAOQoa7PSnZLRqNSlmxLDjFf
- sCRRrgez72pFD3qfJsM4wOvKhBAD7w7MS0lKZv3GvXbEZfNXM+7Q34cqvL4JEk7A7f1GH98IQ
- u/B9aJlQ9IKwkU1nhSSjJ7iwnuj06I9bVHUR52tcN3/NcWG4mTWqp3lkln2Hyp/X9ZN/XQFEH
- oDb3F0YfJtiN+p1Kqg8VnrkzRKkfzGM5U6XzqswhnPQDWnNvi2knsqPd9ZMyLySj7d/OBe5n2
- nmaHQ6F+nCFGoQcg1apExy4ONdWjYKTMYWVkKuRSXuCqY+ixJQHEt4rrL+tttm2dWJVBPUXNl
- dt8nUKwPKeD9/gXvR1rX8TZ3Knwha/qG3cZqVQlyMz0+RHE8+Pr+iAfe3L9XiPavVLQh/zwWJ
- NIpoD1eeKXmQLi4vP6x9dbVE6V8YVuHAX/oKqtFs9wUQyx52aKavA+GK712OhF6Niou/3gMzr
- ooxxdJZuZID79FjccuP3hfGiKU2+f1ecYMS
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VMIpsfVM0uQ=:E+L/pFjyeV1dQu/kkE5be+
+ 5LH6iTiMMufwwTnSm3sCNVuLZVJFekQqBRBWv09XTj36kWJmWbFZS9uy5sh4Gb4qjt6SdUDeA
+ lEjjbYmx8LzV3ChpCvEfoSvieHDRS+o31nbLwvOE4UwDdU9t7zTlMq+ZTclvRhD4/5mDVMdRB
+ Aj57qJlYXffUdlbGpdHJawlxhKodbK6avosZTySvhz6ZNLprGD4I+w3T5ZGbMnw9cxY8hMnXt
+ SsfTJrlIfdoFVhKdxkrhp9EQCm593mtuX8fktcDiTazE2vdyhJp03MZGunF4YXctpgYF0MNMU
+ +ameMF5QEDnJqyeRXruFrrL8NnlHgJawl37edl7y0ARSrQ6Zhpw6MF0rWirX3NyWbYXUquJ/y
+ XfSdVdcXILyL8zR2pbhGsCZEUT48liZvBMyIFUjTPXIvE3rvz2asMMruAF0Nr2AsTjkOmgxDK
+ GXGWoZxA7wM35IkJ+yReSxR6Dwm5nOxnKCW3qN9rbbABKFW6HTpDbEK3m9y4ECBR/bE4KXhTN
+ JinikKEAAEcS9FcNkNTBl/nliGNrYadCBrNejCVz6G6LX60dXuMq7qQhuVhrONwO8Ug+cmC48
+ JQIGhz178WLLNtSymgQxjWWxsJZvhzdl0Hsi3PW8LnxZq9HgeoAdTXhwqSHxzekvJUWWFMo8C
+ Gm290Ir2gzpOGP/kovjOgSQaMQzQBl0IVR7KdqUhA1EskXehD0KDf3C1aUDmDL3CnnUnMTAaV
+ +PatDUbcgMfFSZSWcBdQBeRtO8v1BONweHKHyIVJaSTCP39lwjFlSYopXkvXgvuUwWnvLCaWP
+ 0qXFo2qscfuZjhq0iUtWuaf7Vx16ockPpF08RjKeM5kKxXfh5sDpxU1lFA4GELsZmm1GUtgOz
+ WN0UZiKXeNQ7SR79WhWzkRqPyAbnONddr8GAmSCOGSqSnLKwBNe0uxb3HMkTiAwSYNWb3c694
+ bu/OuipZth8xvHOHPeN0UZhm4cyWBBSubhiUxlpVq2FNQWuQk/ud1jO25HKYc+5MEDMGthiKk
+ ej5JH93P8MQQxJn8n9fnVJGxIDMJroeZpBPntDAPH4Ohbugh4CEucyAU3TbXZKXiIb+GVCmB1
+ ttIXum2z1ptkSxInsOgMCxoMQyyfbYjO981
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-07-18 at 09:58 +0200, Vlastimil Babka wrote:
-> On 7/17/21 4:58 PM, Mike Galbraith wrote:
-> > On Thu, 2021-07-15 at 18:34 +0200, Mike Galbraith wrote:
-> > > Greetings crickets,
-> > >
-> > > Methinks he problem is the hole these patches opened only for RT.
-> > >
-> > > static void put_cpu_partial(struct kmem_cache *s, struct page
-> > > *page,
-> > > int drain)
-> > > {
-> > > #ifdef CONFIG_SLUB_CPU_PARTIAL
-> > > 	struct page *oldpage;
-> > > 	int pages;
-> > > 	int pobjects;
-> > >
-> > > 	slub_get_cpu_ptr(s->cpu_slab);
-> > >         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+On Sun, 2021-07-18 at 09:41 +0200, Vlastimil Babka wrote:
+> On 7/3/21 9:24 AM, Mike Galbraith wrote:
+> > On Fri, 2021-07-02 at 20:29 +0200, Sebastian Andrzej Siewior wrote:
+> > > I replaced my slub changes with slub-local-lock-v2r3.
+> > > I haven't seen any complains from lockdep or so which is good.
+> > > Then I
+> > > did this with RT enabled (and no debug):
 > >
-> > Bah, I'm tired of waiting to see what if anything mm folks do about
-> > this little bugger, so I'm gonna step on it my damn self and be
-> > done
-> > with it.  Fly or die little patchlet.
+> > Below is some raw hackbench data from my little i4790 desktop
+> > box.  It
+> > says we'll definitely still want list_lock to be raw.
 >
-> Sorry, Mike. Got some badly timed sickness. Will check ASAP.
+> Hi Mike, thanks a lot for the testing, sorry for late reply.
+>
+> Did you try, instead of raw list_lock, not applying the last, local
+> lock patch, as I suggested in reply to bigeasy?
 
-Hey, no apology necessary.  I have no way of knowing what's going on
-behind the scenes, but I also didn't like the notion of just walking
-away from a busted thing, so given the silence, figured it's better to
-post the working something I've got (wart and all) than to let the bug
-go unchallenged.  (take that damn bug.. pokes it with sharp stick;)
+No, but I suppose I can give that a go.
 
 	-Mike
 
