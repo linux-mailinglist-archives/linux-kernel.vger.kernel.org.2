@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CCA3CC94A
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1933F3CC94B
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhGRNPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 09:15:34 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:56336 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbhGRNPd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 09:15:33 -0400
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 16IDCIw1031967;
-        Sun, 18 Jul 2021 22:12:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 16IDCIw1031967
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626613939;
-        bh=kc1rcQBGfa+6hfoq/T5JXuXb+iXKX94PdSMwOW/jXE0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=X+Ay0LyD9j4uNFmXNKicUmgwMbvfukDHETwWPx+Qe6O8JvbODLxi3mCrO64aXAPz5
-         ktQhyNPPviBzXCCp3TiD+22ohEpy7nO4SsTbdgjOGGtmqWVMM1BBhEs9Q3WRxuf36x
-         r9ED0l/iAai1s0CLwP0SjpW9QvvVpO0PBmNXwgLcfYs8friRhxhwHwq5zb8uJIzrj7
-         Vh6cE3H7Gjb9YhskQK1tySUJ/Q8ePib5VNqte3aFu6IhByKQHbLj+eTiU0SQ1cFhV6
-         l8u2wcbHlwLyvUsgarlOgh1JdKlPKNceBLOx7lXq+ZaTMXxC1uzE6zbF+YwdBicVeg
-         +sAc84R2E0mmA==
-X-Nifty-SrcIP: [209.85.215.176]
-Received: by mail-pg1-f176.google.com with SMTP id u14so15853256pga.11;
-        Sun, 18 Jul 2021 06:12:19 -0700 (PDT)
-X-Gm-Message-State: AOAM530rr42s2gGS7R8paYUAUplgf5c3mg+rAiBP4K4w5af7eVVx5czV
-        rd7JXg1H1W9g5Dk4tdeyhmavGzckzAWXdhoeG60=
-X-Google-Smtp-Source: ABdhPJzSkHgcEbqBBBiyEW9ocGzd5CZyaxrABLAJkaJthoa3FG9uRh1Uwgr3YHSbvJ9PqJdN2CPNI0/rNElzl2m+Wl0=
-X-Received: by 2002:a63:d80a:: with SMTP id b10mr20458153pgh.47.1626613938476;
- Sun, 18 Jul 2021 06:12:18 -0700 (PDT)
+        id S233833AbhGRNQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 09:16:03 -0400
+Received: from mout.gmx.net ([212.227.17.20]:36851 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232859AbhGRNQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 09:16:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626613967;
+        bh=CMvGExjMQupZPMM62nT0Q6JQOogckE+ME36zM5PHuC8=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=RTunmgyV+vLhQr3GLSNe+8yCGuvuj/oyle9SRy+kcJHqI2xoC05WSP3nEmuFGtu2t
+         2avtZSC7+8iVDW80mauCcOaQOZVkQMYNync8tOfcWhxFmPilvYi38E0DQSk17El7yB
+         TUIKh++cVOB7sRT70pOjdf7nKxO/WsZD9Ug4MAh0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MOREc-1lkq9p1MKs-00PwA5; Sun, 18 Jul 2021 15:12:47 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Len Baker <len.baker@gmx.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Amarjargal Gundjalam <amarjargal16@gmail.com>,
+        linux-staging@lists.linux.dev,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/vc04_services: Remove all strcpy() uses in favor of strscpy()
+Date:   Sun, 18 Jul 2021 15:12:17 +0200
+Message-Id: <20210718131217.3806-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <YO3txvw87MjKfdpq@localhost.localdomain> <YO8ioz4sHwcUAkdt@localhost.localdomain>
- <CADYN=9+ZO1XHu2YZYy7s+6_qAh1obi2wk+d4A3vKmxtkoNvQLg@mail.gmail.com> <YPFa/tIF38eTJt1B@localhost.localdomain>
-In-Reply-To: <YPFa/tIF38eTJt1B@localhost.localdomain>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 18 Jul 2021 22:11:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATt3tvF9n5LMosirxs50PMQ1RKPp1j1FVAx3yz+uXmvVw@mail.gmail.com>
-Message-ID: <CAK7LNATt3tvF9n5LMosirxs50PMQ1RKPp1j1FVAx3yz+uXmvVw@mail.gmail.com>
-Subject: Re: [PATCH v2] Decouple build from userspace headers
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4CWYGQVn1yChMQul7TO5K5N/vYGRpc5gC1NngggoplhCLQvq7UR
+ Z/HWFm+d+hcQkbIxIBasqT68H7KghdhPfDoEwZXfqRQMHyfxew4AXTZZDgrS8fpcnssK6DH
+ W4V5u7iImiY9vaTuTNYLFph00vhSYuu5PWhUOGhJIKl4OPGrxh8o/2gZlCceTasze/aOe2i
+ gF4kCIz1mIVAM7ILbQlhQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6S41qTiwtB8=:8/PB9bpLTNhvOD307p5f5m
+ qAR7TmxiE5IeX1VSkkeNG+N1SCzLdK0rD7iVYRE/mWrJGPMQRAG/xbLNkMWFGGFQOQONZ93kI
+ cjH0MnbrVB3+DqTajN26pTH68IvJ1xxtVybFelcQQiM9W2j7QPO0LDkMRUkj4Z3LMWJMkuc9G
+ YXVyCfisG+IMtdkOG5Ud/l1CRd92SjIlbqt2sXSgLVgtcdwQrOBNz5tJDgNYuLtAqpOgAJNng
+ Wa2PWH4wuy+H/k/r+d1Vqeo1gVfoXC9HchmKplG2m7Vv0kJqLXu6esIjHWQD11wVW+2zs7GrT
+ zdMN21BIBDTJCJ2CSm71poakUtC7xhnMyBAVTpkyyw/VjGKbei6dxprm0W/y1GO+geOK38lk8
+ vg1yWwuQEziy31IMsnBjxrkzAOcTeoWfo1PSEwchbskRIguAIWyQ+tStjIe6gLfDDXa+DSTUa
+ RDFQ4cpHUH+phhMUIAsesr9Ug8cXbbTrV883f4KVINRmVL3f5KFDPQjrjkRRe3FmQyzrPiZso
+ lwwtnMvr0F5s49JDIgjH3gR+X+nyogkoEFOo9QKKTDUyswj3VeMNAh+CwNHissBoR0LDWEJLn
+ H4kzTKG5QVe+Db6Z3JdjMGO+uIT5cyw86N2dd9/4WDnct6g2f8VKEoUUrcg8tJjlEusuyJL2i
+ tlH7qtEwZqOS4sb6vDhGP5lWk33GU7zJwEbhVoUdyQuzvTMSCqwmJPYf54tfLLi6PxkY+mf+N
+ HNVqEV6osjVT09uG0ThYk2cD8BRNTYijVuUt46Bkf5eiphpsBb5l+3w5gxnGFJ1V1adt/7ADw
+ bX2roppqSR7M6nZysQEY/phrzUlJfJWb6ImZTLUu2raNLUp4+z00U6HUAsGd3ib9Ye3eMK6SD
+ r8EZoU+OFnCGKkpH1edwVzlNu0fWAV9gVlCek0XKT+NQXOkC7itr5WWQ5Z1nlcKk8ELubPki8
+ 8eWwHmI9ezL72rPK6Bu23atfD/7VmkhONWbYlM4ABl/wF7ch2HbSlfzgSR1gcLyVRNRR0CqzA
+ 3r8j5oUSH840OEQIkBBh4BNz84ezFFw0qRx2rwuXjW4ZmM43c78AFtFwy6MgxA7zXtPYILO5z
+ iOMiVuvhtKwwYiopnQh7BXM0UCFGkcnP7FI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 7:10 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
->
-> On Fri, Jul 16, 2021 at 11:03:41AM +0200, Anders Roxell wrote:
-> > On Wed, 14 Jul 2021 at 19:45, Alexey Dobriyan <adobriyan@gmail.com> wrote:
-> > >
->
-> > In file included from
-> > /home/anders/src/kernel/testing/crypto/aegis128-neon-inner.c:7:
-> > /home/anders/src/kernel/testing/arch/arm64/include/asm/neon-intrinsics.h:33:10:
-> > fatal error: arm_neon.h: No such file or directory
-> >    33 | #include <arm_neon.h>
-> >       |          ^~~~~~~~~~~~
->
-> > If I revert this patch I can build it.
->
-> Please, see followup fixes or grab new -mm.
-> https://lore.kernel.org/lkml/YO8ioz4sHwcUAkdt@localhost.localdomain/
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
 
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c  | 2 +-
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-With the follow-up fix,
-this patch is doing many things in a single patch.
+diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c=
+ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+index df90c1f9d148..1b184d5c6b82 100644
+=2D-- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
++++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+@@ -884,7 +884,7 @@ static int vidioc_querycap(struct file *file, void *pr=
+iv,
 
-Can you split it into a series of smaller patches?
+ 	vchiq_mmal_version(dev->instance, &major, &minor);
 
+-	strcpy((char *)cap->driver, "bm2835 mmal");
++	strscpy(cap->driver, "bm2835 mmal", sizeof(cap->driver));
+ 	snprintf((char *)cap->card, sizeof(cap->card), "mmal service %d.%d",
+ 		 major, minor);
 
-1/4: changes for arch/um/include/shared/irq_user.h
-     and arch/um/os-Linux/signal.c
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.=
+c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+index 4f43e4213bfe..9429b8a642fb 100644
+=2D-- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+@@ -3716,7 +3716,7 @@ int vchiq_dump_service_state(void *dump_context, str=
+uct vchiq_service *service)
+ 					sizeof(remoteport) - len2,
+ 					" (client %x)", service->client_id);
+ 		} else {
+-			strcpy(remoteport, "n/a");
++			strscpy(remoteport, "n/a", sizeof(remoteport));
+ 		}
 
+ 		len +=3D scnprintf(buf + len, sizeof(buf) - len,
+=2D-
+2.25.1
 
-2/4:  remove wrong <stdbool.h> or <stddef.h> inclusions
-      (or maybe you need to replace them with <linux/types.h>
-      to keep the affected headers self-contained)
-
-
-3/4: add include/linux/stdarg.h,
-     then <stdarg.h> with <linux/stdarg.h>
-
-
-4/4: move -isystem $(shell $(CC) -print-file-name=include)
-     to some sub-Makefiles from the top Makefile.
-
-
-
-
-
-(please note 4/4 will introduce a breakage in linux-next
-if somebody adds a new <stdarg.h> inclusion in this
-development cycle.
-I hope that will not happen, though)
-
-
-
-
---
-Best Regards
-Masahiro Yamada
