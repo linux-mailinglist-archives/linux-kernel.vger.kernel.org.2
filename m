@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5019C3CCAED
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC6F3CCAF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbhGRVeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 17:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
+        id S233294AbhGRVeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 17:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbhGRVeD (ORCPT
+        with ESMTP id S233065AbhGRVeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 17:34:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E16C061762;
-        Sun, 18 Jul 2021 14:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=saEY/4vR5oVUgdhiPTwdJ9ZlWWuuc9HoXDEQmM/u3RI=; b=SpOFLg8Z3oudwQfDI8th2AcBRG
-        cyxA4iKcmxJ4ZhLHx411qiILoxlaYfk57jk//4rQpDLbsRJ9JPv5UoWg+zL6atAPMUqIBZabwFNmo
-        ixzlJ2aHsas4CUgAsPCm5ayH6KsAMDXL8PocJ+/BIsCkTrm9G4R2oVWuYo94moamUne87giTl6CbN
-        UMVqq7/npPjhOf5WR3mW2KBO7dBwtfV8OmUKM3N7eut0euO5Q/dikDmpDdvB8V2Fkq2bSb8aJI5jr
-        wQWz0NkNqRcmSJeZ9BWfq6Sk3ctONHj7jPLFcVstZhavfaX4BFaQMw3Yf5dkpECzyQCfrECPJ1GOl
-        Q4s06rwA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5ELo-006JBR-EE; Sun, 18 Jul 2021 21:29:37 +0000
-Date:   Sun, 18 Jul 2021 22:29:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Hildenbrand <david@redhat.com>, apopple@nvidia.com,
-        Minchan Kim <minchan@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v3 2/3] mm, memcg: inline mem_cgroup_{charge/uncharge} to
- improve disabled memcg config
-Message-ID: <YPSdONIP8r9S31wM@casper.infradead.org>
-References: <20210710003626.3549282-1-surenb@google.com>
- <20210710003626.3549282-2-surenb@google.com>
- <YPRdH56+dOFs/Ypu@casper.infradead.org>
- <CAJuCfpFNXmH3gQ51c-+3U_0HPG401dE9Mp9_hwMP67Tyg-zWGg@mail.gmail.com>
+        Sun, 18 Jul 2021 17:34:18 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B67C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:31:19 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id b29so1950273ljf.11
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F9ILCk8N3sERVUTaY+/ZVi6bG07HT24teouMKnXfFEQ=;
+        b=ax13dcXsQdSfOz+9HVljsgiGChow9heRlR8KjejNczxJGHDUg6gsv24iZ2QyUExZmj
+         wQh6yUun2RAFTurk6dA0NJMkInZBtaW3QlA7diHzWjCJo+2E9x/zMtsYBpzq8Qo7SLNN
+         3QqLXkNULJs0Q5LBpjLIp8AmZGk3FhEGYesSLd76i6x6tuJHsj2KlVu5D6OfW/lckUuY
+         1zXDoFoI240WefoNiWy3RY8vfT12vc5KjxjdiAWWn7Ms30PAZ75iPsrVwfHABzH7CyWW
+         CYtzflOrlbUO8sRAbStI3uJP2bWlBubp097D1XWgZ6WtwdZxvflRVNhAEnHD7tX5BGak
+         f/DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F9ILCk8N3sERVUTaY+/ZVi6bG07HT24teouMKnXfFEQ=;
+        b=Rk7KwBVyBgo7vnQyhRpBG/LKQj07ywgfXvRjQYdxOmoipisfQeMkMwJCZlpI2vB4KR
+         q/IjugsSKld/ccXdICzELvZ3TYZRjqNzHxH+uFy/ve5tgwsdxRBdKWXIDYdcnSd4TClt
+         r29NCJLiuRsnqtY5VuyiAzVko+ipMClZF1vOuAyIGJr/bf9rtsltM22hYrAbmF6GQb/g
+         hGc0LeOO9q8bgTYn0UjwFbe/Ocy5amyPPtJmql9/lUqD4KdMLVvAGve0zrjoTEWaL0KS
+         ep4uLAtv3PgFg03wZOXaPBldneWS1oZxAq73o2ibZobpvtMXLeUda50ypv6HpEsWi3Y1
+         8ASg==
+X-Gm-Message-State: AOAM530Q9NgpuJmB1pQoQuMcT2QMtEZgmBBSOCzGqtGIf72mBeanEF9C
+        iCThoxxFEgqDcT+YNSOp1CvS2g==
+X-Google-Smtp-Source: ABdhPJwtT5qmE/P10UDYjLKt4tr/vkQdwA/jD7zdttq+I56o4yokObToWGuF9FbR11p8WQaMKdSbqQ==
+X-Received: by 2002:a05:651c:158b:: with SMTP id h11mr19410663ljq.395.1626643877625;
+        Sun, 18 Jul 2021 14:31:17 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id r3sm1237633lfc.280.2021.07.18.14.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Jul 2021 14:31:16 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id CB77E10260F; Mon, 19 Jul 2021 00:31:20 +0300 (+03)
+Date:   Mon, 19 Jul 2021 00:31:20 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+Subject: Re: [PATCH 2/7] mm: introduce pte_install() helper
+Message-ID: <20210718213120.rtqbgseb6drcwxj4@box.shutemov.name>
+References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
+ <20210718043034.76431-3-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpFNXmH3gQ51c-+3U_0HPG401dE9Mp9_hwMP67Tyg-zWGg@mail.gmail.com>
+In-Reply-To: <20210718043034.76431-3-zhengqi.arch@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 02:25:50PM -0700, Suren Baghdasaryan wrote:
-> On Sun, Jul 18, 2021 at 9:56 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Fri, Jul 09, 2021 at 05:36:25PM -0700, Suren Baghdasaryan wrote:
-> > > @@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
-> > >  }
-> > >
-> > >  /**
-> > > - * mem_cgroup_charge - charge a newly allocated page to a cgroup
-> > > + * __mem_cgroup_charge - charge a newly allocated page to a cgroup
-> > >   * @page: page to charge
-> > >   * @mm: mm context of the victim
-> > >   * @gfp_mask: reclaim mode
-> >
-> > This patch conflicts with the folio work, so I'm just rebasing the
-> > folio patches on top of this, and I think this part of the patch is a
-> > mistake.  We don't want to document the __mem_cgroup_charge() function.
-> > That's an implementation detail.  This patch should instead have moved the
-> > kernel-doc to memcontrol.h and continued to document mem_cgroup_charge().
+On Sun, Jul 18, 2021 at 12:30:28PM +0800, Qi Zheng wrote:
+> Currently we have three times the same few lines repeated in the
+> code. Deduplicate them by newly introduced pte_install() helper.
 > 
-> Ack.
-> There was a v4 version of this patch:
-> https://lore.kernel.org/patchwork/patch/1458907 which was picked up by
-> Andrew already. If others agree that documentation should be moved
-> into the header file then I'll gladly post another version. Or I can
-> post a separate patch moving the documentation only. Whatever works
-> best. Andrew, Michal, Johannes, WDYT?
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-At this point, I've moved the documentation as part of the folio patch.
-I'd rather not redo that patch again ...
+I don't like the name of the helper: we have confusion of PTE being
+PTE-entry or PTE page table. And pte_install() doing pmd_populate()
+doesn't help the situation.
+
+Maybe pmd_install()? Or pte_table_install()? I donno.
+
+-- 
+ Kirill A. Shutemov
