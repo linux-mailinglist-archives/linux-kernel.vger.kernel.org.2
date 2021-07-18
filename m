@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E20B3CC733
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 03:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6AC3CC736
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 04:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbhGRByT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 21:54:19 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:46973 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233428AbhGRByP (ORCPT
+        id S233333AbhGRCDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 22:03:11 -0400
+Received: from mail-pf1-f179.google.com ([209.85.210.179]:38487 "EHLO
+        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231351AbhGRCDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 21:54:15 -0400
-Received: by mail-pl1-f179.google.com with SMTP id c15so7618286pls.13;
-        Sat, 17 Jul 2021 18:51:17 -0700 (PDT)
+        Sat, 17 Jul 2021 22:03:07 -0400
+Received: by mail-pf1-f179.google.com with SMTP id i14so894335pfd.5;
+        Sat, 17 Jul 2021 19:00:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NG6pheoCZKg5UXChiGjOLrLU9fLUpsB1CjGA68gDk8k=;
-        b=tJDge/o+yeqJDcdkBEI9FsGha/sE8vIVAhoX4RJpYryq4sbAeSAPqe5HMjaCj6BhBt
-         TC3Cm+tRz4t6EMZ+cdyF6IiSnGx2jkwkTndxN0gldkvYZHrNGDmNfJs2/t4tLeMOGcmh
-         bBwvqzB0CL3Y4UutLNjOU7reYzgF/3gw8VHnOBDd3RMu60Zd7NUwqLU4rS4x5qp69jOH
-         FsuAKo5w3aWksy0nDCUivgNs8RS3ivZFvjusmej+yiS9HBH7zqcLYH36PHLIiW1QVtJ3
-         GtqSPLXbNvCZ7DGJQS8UiRoLCHRJDJ4mK7FN1EuvzQJcLNTC7I/3qRi8Zj1U0Qj9382f
-         x8iA==
-X-Gm-Message-State: AOAM532I6Y/OfBuOp9mc3F+Ap8/JvNLwtUKQbMlGPrFXL+2KJGy21v7/
-        GFlpdnLoZqVWtR2xkNC2EFlE+0uPpsc=
-X-Google-Smtp-Source: ABdhPJzto7UloYy2y1932tH4/csp9BczYENPIJQN0qn19MDDh3Lc0exmtcvMH1cFQ/pVNaGwxEQ/QA==
-X-Received: by 2002:a17:903:234f:b029:12b:7bad:75cb with SMTP id c15-20020a170903234fb029012b7bad75cbmr3028593plh.67.1626573076666;
-        Sat, 17 Jul 2021 18:51:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZFzP39M9iZaxx5c7vluzIRVcenkLvCX6Tkh+7bLeuTA=;
+        b=RhEblqoGYwdLc3hxlbo+US0tZB3wRbETlreLOEIlO1Z+gMaPCr1U+QXt9BT1uHAlQ6
+         MbEp8weqEJuSrSGbIEz8nVON6pnr7JJklbcsJB6L9Pg/8S27uvnW7CzJBgWOayUOk6rp
+         iehAuwb4Slb5P+eOaFW0Tn0Vxh4hMpiPPMzYLrXav2GhXTtKA3uJDuGfu1SNLcoPOqCe
+         fCq1B/pzDn5YVLC8YTlgRxlIOqkYPgtI1J/5z2j2/h5IENMBCfT3d5Stoj+1u8/29/Zs
+         K7oxBG5zwQWq+lJkIoLkb122Mnq+OWdoh9/IIKyMhS5/O0Tg0pdiHeLFn8NHVJTRoltN
+         Soig==
+X-Gm-Message-State: AOAM530p2VvJpv/Hhs668X+GRAR0iXBfp0L2raceKDfjwVelokNnZpHe
+        4ANXvxBwGdT19IpOm/3ZIFU=
+X-Google-Smtp-Source: ABdhPJyG3ElGXJZOX/6F/ViVLj/DbOpr7gKRKBe9L/dy9QJFfg4/qzyutsiJo9xA0e2HRUE89ZJx2A==
+X-Received: by 2002:a62:2bc6:0:b029:2cc:242f:ab69 with SMTP id r189-20020a622bc60000b02902cc242fab69mr18262108pfr.16.1626573609019;
+        Sat, 17 Jul 2021 19:00:09 -0700 (PDT)
 Received: from localhost ([24.4.24.239])
-        by smtp.gmail.com with ESMTPSA id q3sm14726441pfj.89.2021.07.17.18.51.15
+        by smtp.gmail.com with ESMTPSA id s36sm16094661pgk.64.2021.07.17.19.00.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 18:51:16 -0700 (PDT)
+        Sat, 17 Jul 2021 19:00:08 -0700 (PDT)
+Date:   Sat, 17 Jul 2021 19:00:07 -0700
 From:   Moritz Fischer <mdf@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org, moritzf@google.com,
-        mathias.nyman@intel.com, gregkh@linuxfoundation.org,
-        Moritz Fischer <mdf@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 2/2] usb: renesas-xhci: Remove renesas_xhci_pci_exit()
-Date:   Sat, 17 Jul 2021 18:51:11 -0700
-Message-Id: <20210718015111.389719-3-mdf@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210718015111.389719-1-mdf@kernel.org>
-References: <20210718015111.389719-1-mdf@kernel.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] FPGA Manager address unused variable warnings
+Message-ID: <YPOLJ6mg9WWQ9/gI@epycbox.lan>
+References: <20210702035404.397853-1-mdf@kernel.org>
+ <d0088161-ec7f-4ff4-d5c1-c0746ca17283@redhat.com>
+ <20210707020309.GA12358@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707020309.GA12358@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove empty function renesas_xhci_pci_exit() that does not
-actually do anything.
+On Wed, Jul 07, 2021 at 10:03:09AM +0800, Xu Yilun wrote:
+> On Tue, Jul 06, 2021 at 09:28:37AM -0700, Tom Rix wrote:
+> > 
+> > On 7/1/21 8:54 PM, Moritz Fischer wrote:
+> > > This patchset addresses a handful of warnings as result of_match_ids
+> > > being not properly wrapped in #ifdef CONFIG_OF.
+> > > 
+> > > Moritz Fischer (4):
+> > >    fpga: altera-freeze-bridge: Address warning about unused variable
+> > >    fpga: xiilnx-spi: Address warning about unused variable
+> > >    fpga: xilinx-pr-decoupler: Address warning about unused variable
+> > >    fpga: zynqmp-fpga: Address warning about unused variable
+> > > 
+> > >   drivers/fpga/altera-freeze-bridge.c | 2 ++
+> > >   drivers/fpga/xilinx-pr-decoupler.c  | 2 ++
+> > >   drivers/fpga/xilinx-spi.c           | 2 ++
+> > >   drivers/fpga/zynqmp-fpga.c          | 3 ++-
+> > >   4 files changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > I am not seeing these warnings, but it is still worth doing.
+> > 
+> > I think a few more files need this change.
+> > 
+> > altera-ps-spi.c, dfl-n3000-nios.c, altera-hps2fpga.c, stratix10-soc.c,
+> > socfpga-a10.c, altera-fpga2sdram.c
+> 
+> dfl-n3000-nios is not using of_device_id, and doesn't need the change.
+> 
+> Thanks,
+> Yilun
+> 
+> > 
+> > Not needed for
+> > 
+> > altera-pr-ip-core-plat.c and ice40-spi.c
+> > 
+> > These have depends on OF in Kconfig.
+> > 
+> > Tom
 
-Cc: Mathias Nyman <mathias.nyman@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
----
- drivers/usb/host/xhci-pci-renesas.c | 5 -----
- drivers/usb/host/xhci-pci.c         | 2 --
- drivers/usb/host/xhci-pci.h         | 3 ---
- 3 files changed, 10 deletions(-)
+Applied to for-next,
 
-diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
-index 327f6a6d5672..1ebacc42a552 100644
---- a/drivers/usb/host/xhci-pci-renesas.c
-+++ b/drivers/usb/host/xhci-pci-renesas.c
-@@ -620,9 +620,4 @@ int renesas_xhci_check_request_fw(struct pci_dev *pdev,
- }
- EXPORT_SYMBOL_GPL(renesas_xhci_check_request_fw);
- 
--void renesas_xhci_pci_exit(struct pci_dev *dev)
--{
--}
--EXPORT_SYMBOL_GPL(renesas_xhci_pci_exit);
--
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index 18c2bbddf080..4456ba338b74 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -449,8 +449,6 @@ static void xhci_pci_remove(struct pci_dev *dev)
- 	struct xhci_hcd *xhci;
- 
- 	xhci = hcd_to_xhci(pci_get_drvdata(dev));
--	if (xhci->quirks & XHCI_RENESAS_FW_QUIRK)
--		renesas_xhci_pci_exit(dev);
- 
- 	xhci->xhc_state |= XHCI_STATE_REMOVING;
- 
-diff --git a/drivers/usb/host/xhci-pci.h b/drivers/usb/host/xhci-pci.h
-index acd7cf0a1706..cb9a8f331a44 100644
---- a/drivers/usb/host/xhci-pci.h
-+++ b/drivers/usb/host/xhci-pci.h
-@@ -7,7 +7,6 @@
- #if IS_ENABLED(CONFIG_USB_XHCI_PCI_RENESAS)
- int renesas_xhci_check_request_fw(struct pci_dev *dev,
- 				  const struct pci_device_id *id);
--void renesas_xhci_pci_exit(struct pci_dev *dev);
- 
- #else
- static int renesas_xhci_check_request_fw(struct pci_dev *dev,
-@@ -16,8 +15,6 @@ static int renesas_xhci_check_request_fw(struct pci_dev *dev,
- 	return 0;
- }
- 
--static void renesas_xhci_pci_exit(struct pci_dev *dev) { };
--
- #endif
- 
- struct xhci_driver_data {
--- 
-2.32.0
-
+Moritz
