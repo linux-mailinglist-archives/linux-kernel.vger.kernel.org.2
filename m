@@ -2,69 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898283CC9F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 18:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581073CC9FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 19:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhGRRAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 13:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhGRRAV (ORCPT
+        id S229994AbhGRRIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 13:08:01 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:45278 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhGRRIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 13:00:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BF3C061762;
-        Sun, 18 Jul 2021 09:57:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ozqJ+/aQSjcd7Pmom3rhVpy9HyQmkQvEGQeoGv8EhNQ=; b=EBrcemI+F3ONTAb2qCb4CEiXIg
-        OYQQFvoPudaW7rBK4ckow3sSEtO1iPo7moFRRx2My4GKi27935oIsbbE9ZXDpmXIDA4Gy2HeT8RkP
-        PMo5gt0m311JLvrjuS9W8iZPz3mXKyyxf3QFAK2ltH78FIc5ELc2ENoTioPuPt1uxqCtCUGdevzks
-        Bgg9PupQJhHpdlGAdDCggkjqj1HH1HsRNMzQEueEDkpp3wrW9tWOrp2JDtZPM1WpJPVjV7LFeRdOD
-        E3N5TaOgKd0vAEJymLbibT2ApzY8njVJH1GWaPOdj48YuFFDrmyh1Qm72HEr/w7y/nipf4cDBgmqY
-        DwE3ui3A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5A59-0069Zd-JQ; Sun, 18 Jul 2021 16:56:08 +0000
-Date:   Sun, 18 Jul 2021 17:55:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     tj@kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        shakeelb@google.com, guro@fb.com, songmuchun@bytedance.com,
-        shy828301@gmail.com, alexs@kernel.org, richard.weiyang@gmail.com,
-        vbabka@suse.cz, axboe@kernel.dk, iamjoonsoo.kim@lge.com,
-        david@redhat.com, apopple@nvidia.com, minchan@kernel.org,
-        linmiaohe@huawei.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 2/3] mm, memcg: inline mem_cgroup_{charge/uncharge} to
- improve disabled memcg config
-Message-ID: <YPRdH56+dOFs/Ypu@casper.infradead.org>
-References: <20210710003626.3549282-1-surenb@google.com>
- <20210710003626.3549282-2-surenb@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710003626.3549282-2-surenb@google.com>
+        Sun, 18 Jul 2021 13:08:00 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id B994D4D31EF42;
+        Sun, 18 Jul 2021 10:05:01 -0700 (PDT)
+Date:   Sun, 18 Jul 2021 10:04:57 -0700 (PDT)
+Message-Id: <20210718.100457.250657299500744178.davem@davemloft.net>
+To:     vvs@virtuozzo.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yoshfuji@linux-ipv6.org, kuba@kernel.org, dsahern@kernel.org,
+        eric.dumazet@gmail.com
+Subject: Re: [PATCH NET v4 1/1] ipv6: allocate enough headroom in
+ ip6_finish_output2()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <922a110c-4d20-a1e9-8560-8836d4ddbba1@virtuozzo.com>
+References: <cover.1626177047.git.vvs@virtuozzo.com>
+        <dc51dab2-8434-9f88-d6cd-4e6754383413@virtuozzo.com>
+        <922a110c-4d20-a1e9-8560-8836d4ddbba1@virtuozzo.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Sun, 18 Jul 2021 10:05:02 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 05:36:25PM -0700, Suren Baghdasaryan wrote:
-> @@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
->  }
->  
->  /**
-> - * mem_cgroup_charge - charge a newly allocated page to a cgroup
-> + * __mem_cgroup_charge - charge a newly allocated page to a cgroup
->   * @page: page to charge
->   * @mm: mm context of the victim
->   * @gfp_mask: reclaim mode
+From: Vasily Averin <vvs@virtuozzo.com>
+Date: Sun, 18 Jul 2021 13:44:33 +0300
 
-This patch conflicts with the folio work, so I'm just rebasing the
-folio patches on top of this, and I think this part of the patch is a
-mistake.  We don't want to document the __mem_cgroup_charge() function.
-That's an implementation detail.  This patch should instead have moved the
-kernel-doc to memcontrol.h and continued to document mem_cgroup_charge().
+> Dear David,
+> I've found that you have added v3 version of this patch into netdev-net git.
+> This version had one mistake: skb_set_owner_w() should set sk not to old skb byt to new nskb.
+> I've fixed it in v4 version.
+> 
+> Could you please drop bad v3 version and pick up fixed one ?
+> Should I perhaps submit separate fixup instead?
+
+Always submit a fixup in these situations..
+
+Thank you.
