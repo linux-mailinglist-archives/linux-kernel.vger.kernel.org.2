@@ -2,199 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C22C3CC944
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37B03CC941
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbhGRNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 09:09:18 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:34946 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbhGRNJQ (ORCPT
+        id S233783AbhGRNIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 09:08:30 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:41691 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232859AbhGRNI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 09:09:16 -0400
-X-Greylist: delayed 1753 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Jul 2021 09:09:15 EDT
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 16ID5rKn018956;
-        Sun, 18 Jul 2021 22:05:54 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 16ID5rKn018956
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626613554;
-        bh=yhIG4/mhI0KryuwCf2e2wfoiwF06SUSrgf+QazUPih0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HVdJHdW33JE2DKbYfa52ylLKWvow/QKW+Yz0USvVhpnEvfuEHxhuTA5H86pDxTZ+F
-         qT4ZlLQ+BV9Ay6N7WaPiFo6YQ79aBS6t2ABBWz0z7IA9XOn/D0HG0qchorRPIkr9es
-         QodHbUu9t1vqFK80IDvdG2hHE4cclWUOtY34qw0MhHl+ngoQsEV+oV+M4qeq2J39EA
-         e4Mwqu/DhVIxU2/y3kqsMp8A1lL4WZjyL2Sji9RaxXxTxQhyMiRwbXs8QrqaA53NrC
-         F3pG5WzpL98QsvnBocc4guS3ZqqBdDgrljZfwhemCXpj43JvxTPUM47ywxxXGpkv8Z
-         Bz43S/iXaMPfA==
-X-Nifty-SrcIP: [209.85.210.171]
-Received: by mail-pf1-f171.google.com with SMTP id b12so13714554pfv.6;
-        Sun, 18 Jul 2021 06:05:54 -0700 (PDT)
-X-Gm-Message-State: AOAM531DRPJCD29rOx9WUe7RmLq52AC1esmdsOSE1LhQFayW7A1cqjRc
-        w7w5ToJzAjIEaEgZgM26RcFfk8IRoN1jFz6um9Q=
-X-Google-Smtp-Source: ABdhPJyjXGKYkI7wwmKtSIF62hypxKul4sPRb/pA9o4M0fHbfT1nhsBgBrNsct1dlu8o/a+RHGdP1J2xeUaHynBP5zw=
-X-Received: by 2002:a62:1d84:0:b029:304:5af1:65f6 with SMTP id
- d126-20020a621d840000b02903045af165f6mr20225303pfd.80.1626613553400; Sun, 18
- Jul 2021 06:05:53 -0700 (PDT)
+        Sun, 18 Jul 2021 09:08:27 -0400
+Received: by mail-io1-f71.google.com with SMTP id b20-20020a0566023314b0290523c137a6a4so10225884ioz.8
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 06:05:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gtL4p5cHU8XeH+65TJNNSFyAP4IndYy+groV9Bwj3zk=;
+        b=Ffw2UAIQmA2zgXi/5TnDC2YX5cZPS2q2bbI0GIOwX/fjclWkDrnBKgQYBSaLrYh0FY
+         Bee0OD3JCuf2DV5aE8jjWhvGYrLzg60PcGPKy1eEoKdbj6Nxj4xIzc5/fvsb0lZfopHJ
+         s7IJDtAFgrIIz1LlAndlmTTubdlftn0Ui7ufeYhBPxafNCRJIn3mRCO1p+naKy9buF+J
+         C96Pj/02kryKd+S7obr2YZrz8+gkAtlLn5UVehEBwj9RzB4pB56CgGPbgcezkwKWXEIy
+         qLImuGsSRWR2XqElksu/Mm8NpwgpeTQY6B26m3H/fQqSajVdkw+YbkI7Iu4YqTytJir7
+         jr1w==
+X-Gm-Message-State: AOAM533sahwbMbH1xzuH8nFuyXb6ahtlecUT7rhzEzdGOOsMWxKQV5MT
+        zfUazvy4ZT5VNnIwaf52cJ6NFCTrOygdkKlumLxBO/GayyFR
+X-Google-Smtp-Source: ABdhPJxH3oVRzl3kzeuUz+vS7PkDKpf8IVWEFbNHgEczQ32pXO/FE2SLZhC5/vGaaNmb+ylQxgbJyCXx3eSNow3Ha+jPs/4JIJ5t
 MIME-Version: 1.0
-References: <YO3txvw87MjKfdpq@localhost.localdomain> <YO8ioz4sHwcUAkdt@localhost.localdomain>
- <YPClYgoJOTUn4V0w@localhost.localdomain> <CAK7LNASq9DwxTF90u_8XZJo8VBLbEPDbP8kVk6c+AHpaCtH01g@mail.gmail.com>
-In-Reply-To: <CAK7LNASq9DwxTF90u_8XZJo8VBLbEPDbP8kVk6c+AHpaCtH01g@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 18 Jul 2021 22:05:16 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQonQAo00hGjxZX6TE9hBYadYiwBrdfiE9eaUjSKxLPPw@mail.gmail.com>
-Message-ID: <CAK7LNAQonQAo00hGjxZX6TE9hBYadYiwBrdfiE9eaUjSKxLPPw@mail.gmail.com>
-Subject: Re: [PATCH -mm] fixup "Decouple build from userspace headers"
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>
+X-Received: by 2002:a92:d141:: with SMTP id t1mr13090632ilg.171.1626613528546;
+ Sun, 18 Jul 2021 06:05:28 -0700 (PDT)
+Date:   Sun, 18 Jul 2021 06:05:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008e52e005c765798b@google.com>
+Subject: [syzbot] WARNING in scsi_alloc_sgtables
+From:   syzbot <syzbot+d44b35ecfb807e5af0b5@syzkaller.appspotmail.com>
+To:     jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 9:36 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Fri, Jul 16, 2021 at 6:15 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
-> >
-> > Allow to find SIMD headers where necessary.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> > ---
-> >
-> >         fold into decouple-build-from-userspace-headers.patch
-> >
-> >  arch/arm64/lib/Makefile   |    2 +-
-> >  arch/powerpc/lib/Makefile |    2 +-
-> >  lib/raid6/Makefile        |    4 ++--
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    dd9c7df94c1b Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13dffb78300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4743a765b066cc1c
+dashboard link: https://syzkaller.appspot.com/bug?extid=d44b35ecfb807e5af0b5
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d44b35ecfb807e5af0b5@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 15940 at drivers/scsi/scsi_lib.c:988 scsi_alloc_sgtables+0xc92/0xf80 drivers/scsi/scsi_lib.c:988
+Modules linked in:
+CPU: 1 PID: 15940 Comm: syz-executor.0 Not tainted 5.14.0-rc1-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:scsi_alloc_sgtables+0xc92/0xf80 drivers/scsi/scsi_lib.c:988
+Code: 31 ff 44 89 f6 e8 1e e5 f3 fc 45 85 f6 0f 84 28 f5 ff ff e8 60 dc f3 fc 41 83 c4 01 45 0f b7 e4 e9 1b f5 ff ff e8 4e dc f3 fc <0f> 0b 41 be 0a 00 00 00 e9 25 fb ff ff 41 be 09 00 00 00 e9 1a fb
+RSP: 0018:ffffc90003c87468 EFLAGS: 00010202
+RAX: 00000000000086f0 RBX: ffff88801d2c0128 RCX: ffffc90001929000
+RDX: 0000000000040000 RSI: ffffffff8480e152 RDI: 0000000000000003
+RBP: ffff88801d2c0000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8480d659 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888014892000 R14: 0000000000000000 R15: ffff888014448000
+FS:  00007f47d4121700(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000515cb0 CR3: 000000004d420000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ scsi_setup_scsi_cmnd drivers/scsi/scsi_lib.c:1160 [inline]
+ scsi_prepare_cmd drivers/scsi/scsi_lib.c:1559 [inline]
+ scsi_queue_rq+0x26b2/0x35b0 drivers/scsi/scsi_lib.c:1665
+ blk_mq_dispatch_rq_list+0x422/0x1f00 block/blk-mq.c:1380
+ __blk_mq_sched_dispatch_requests+0x20b/0x410 block/blk-mq-sched.c:327
+ blk_mq_sched_dispatch_requests+0xfb/0x180 block/blk-mq-sched.c:360
+ __blk_mq_run_hw_queue+0xd8/0x150 block/blk-mq.c:1500
+ __blk_mq_delay_run_hw_queue+0x547/0x640 block/blk-mq.c:1577
+ blk_mq_run_hw_queue+0x16c/0x2f0 block/blk-mq.c:1630
+ blk_mq_sched_insert_request+0x368/0x450 block/blk-mq-sched.c:479
+ blk_execute_rq+0xdc/0x410 block/blk-exec.c:96
+ sg_io+0x602/0xfe0 block/scsi_ioctl.c:358
+ scsi_cmd_ioctl+0x519/0x580 block/scsi_ioctl.c:808
+ scsi_cmd_blk_ioctl block/scsi_ioctl.c:866 [inline]
+ scsi_cmd_blk_ioctl+0xe1/0x130 block/scsi_ioctl.c:857
+ sd_ioctl_common+0x17e/0x280 drivers/scsi/sd.c:1585
+ sd_ioctl+0x26/0xf0 drivers/scsi/sd.c:1778
+ blkdev_ioctl+0x2a1/0x6d0 block/ioctl.c:585
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1602
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f47d4121188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 00000000200065c0 RSI: 0000000000002285 RDI: 0000000000000004
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffc92ec284f R14: 00007f47d4121300 R15: 0000000000022000
 
 
-I did not compile-test it yet, but
-I see more <arm_neon.h> inclusion.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
-
-crypto/aegis128-neon-inner.c:
-
-
-
-#ifdef CONFIG_ARM64
-#include <asm/neon-intrinsics.h>
-
-#define AES_ROUND       "aese %0.16b, %1.16b \n\t aesmc %0.16b, %0.16b"
-#else
-#include <arm_neon.h>
-
-#define AES_ROUND       "aese.8 %q0, %q1 \n\t aesmc.8 %q0, %q0"
-#endif
-
-
-
-
-Can you test crypto/aegis128-neon-inner.c
-with CONFIG_ARM64=n  (i.e. CONFIG_ARM=y) ?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-> >  3 files changed, 4 insertions(+), 4 deletions(-)
->
->
-> OK. Perhaps, we can import <arm_neon.h> and  <altivec.h>
-> into the kernel tree as we did for <stdarg.h>,
-> then remove "-isystem $(shell $(CC) -print-file-name=include)"
-> entirely, but I did not look into it.
->
->
-> If we can avoid the arm_neon.h mess,
-> we can clean up arch/arm/include/uapi/asm/types.h as well.
-> It is a possible future work.
->
-> Anyway, could you add some comments?
-> (see blew)
->
->
->
-> > --- a/arch/arm64/lib/Makefile
-> > +++ b/arch/arm64/lib/Makefile
-> > @@ -8,7 +8,7 @@ lib-y           := clear_user.o delay.o copy_from_user.o                \
-> >  ifeq ($(CONFIG_KERNEL_MODE_NEON), y)
-> >  obj-$(CONFIG_XOR_BLOCKS)       += xor-neon.o
-> >  CFLAGS_REMOVE_xor-neon.o       += -mgeneral-regs-only
-> > -CFLAGS_xor-neon.o              += -ffreestanding
->
-> Can you add comment, # for <arm_neon.h>
->
-> > +CFLAGS_xor-neon.o              += -ffreestanding -isystem $(shell $(CC) -print-file-name=include)
-> >  endif
-> >
-> >  lib-$(CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE) += uaccess_flushcache.o
-> > --- a/arch/powerpc/lib/Makefile
-> > +++ b/arch/powerpc/lib/Makefile
-> > @@ -64,6 +64,6 @@ obj-$(CONFIG_PPC_LIB_RHEAP) += rheap.o
-> >  obj-$(CONFIG_FTR_FIXUP_SELFTEST) += feature-fixups-test.o
-> >
-> >  obj-$(CONFIG_ALTIVEC)  += xor_vmx.o xor_vmx_glue.o
-> > -CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec)
->
-> Can you add comment, # for <altivec.h>
->
-> > +CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec) -isystem $(shell $(CC) -print-file-name=include)
-> >
-> >  obj-$(CONFIG_PPC64) += $(obj64-y)
-> > --- a/lib/raid6/Makefile
-> > +++ b/lib/raid6/Makefile
-> > @@ -13,7 +13,7 @@ raid6_pq-$(CONFIG_S390) += s390vx8.o recov_s390xc.o
-> >  hostprogs      += mktables
-> >
-> >  ifeq ($(CONFIG_ALTIVEC),y)
-> > -altivec_flags := -maltivec $(call cc-option,-mabi=altivec)
->
-> Can you add comment, # for <altivec.h>
->
-> > +altivec_flags := -maltivec $(call cc-option,-mabi=altivec) -isystem $(shell $(CC) -print-file-name=include)
-> >
-> >  ifdef CONFIG_CC_IS_CLANG
-> >  # clang ppc port does not yet support -maltivec when -msoft-float is
-> > @@ -33,7 +33,7 @@ endif
-> >  # The GCC option -ffreestanding is required in order to compile code containing
-> >  # ARM/NEON intrinsics in a non C99-compliant environment (such as the kernel)
-> >  ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
-> > -NEON_FLAGS := -ffreestanding
->
-> Can you add comment, # for <arm_neon.h>
->
-> > +NEON_FLAGS := -ffreestanding -isystem $(shell $(CC) -print-file-name=include)
-> >  ifeq ($(ARCH),arm)
-> >  NEON_FLAGS += -march=armv7-a -mfloat-abi=softfp -mfpu=neon
-> >  endif
->
->
->
-> --
-> Best Regards
-> Masahiro Yamada
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
