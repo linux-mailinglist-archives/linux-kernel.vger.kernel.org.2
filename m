@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571EC3CCAE2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4343CCAE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhGRVbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 17:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
+        id S233383AbhGRVbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 17:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbhGRVbH (ORCPT
+        with ESMTP id S233231AbhGRVbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 17:31:07 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAA5C061765;
-        Sun, 18 Jul 2021 14:28:08 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id h9so23016715ljm.5;
-        Sun, 18 Jul 2021 14:28:08 -0700 (PDT)
+        Sun, 18 Jul 2021 17:31:12 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01432C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:28:13 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id l11so7760775ljq.4
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:28:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/2TaNdcasZkobL90Ag9/S0mipkwZ8znoNlAL9mBQuBo=;
-        b=Bl6ZnkL0X44oiMQCqgLnNGPKYslyWc50Wznp85cs5sA6oaW3AniVEtBW8NZBPOTHO6
-         Bs6RlOCO8FqcWVnODZn5H/W6apfnKJ4i6cXEeCFuELlZ9Rbyd4PtzTh7Wj/x+Ff0qYiZ
-         tfOf1PVdNsslm3kavU8oPl5zciUL/rVCvDM7LOBcqhvCRSuxOfqSxWO9MWiVqezyN1ie
-         kh8FQaTU8vdqaKvIAMXiXPMtPh87hhnIl17YneXTIa/SoQc0wsJGkjlzyMlzn1QwfpEx
-         7gRwhpoSacl4MUCs3yPbVd3Yp/iGwP+37zty6HhQ//l19r+855Xj9FeAHKye1S2rJFz/
-         DBDg==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RDmZbfk4umt1NTgReOWa0nlo9wbj8HPSJ0b72AWtHlI=;
+        b=m3X+8h5sNcmib/Jzd1hwMXGfSUSimXJ8rCCYFjWXgqdSTHMLURCciTa1Gkf8rtY8gF
+         IncY0rxbJp7diuFaM+sFO05fUn4c92aIEMDVyrXI8pBY4anM35msGOlHF0MDM4G62Dk2
+         FhjzD5Th/XMP9NIJnqKS/cWnewOk8N41dGlkiPqK/TQK+uGp9PoN7en3TFzuESVIRDVe
+         kr2/rVucVrHylll2n8fEOui5IgqOAIj4yZKDt0w5Td30AqPv6TC7MY5vZrLeh82nYqP9
+         3pq3j/JTjz9QWloFIbVWejNWh2rAHLrHh4gy2ZCayJtoD1AYG6AVo/w29miAlO0N3kz/
+         cokg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/2TaNdcasZkobL90Ag9/S0mipkwZ8znoNlAL9mBQuBo=;
-        b=MS15VfirGEEa90dQIthavMpyf9LelHsGwoV4RAG4tMZ7E+4sMecutaysqDKxu7lDUJ
-         QqAixiJx4YcGn3lb4qzR3p23QeIJD4XLbx8f6wPa0rVf8iTNok2k8+0SGTehbzrZ8mbQ
-         u6OCIm02v7mNK5AfQ/zzQorSy4jP9/pPBSPJAxyHPUk2lQBKAjRDobbGhdB12JrZMWch
-         nr2+WFi9BcVMM7s975Z3IAg5ZDSlShRDuiCjvaqPqBpTrYkT1KvZPqET7TJMPVDlbRb/
-         1oJJLkZd/Sj9CABNn4c4VRTuAM3BkC7y28hotUGXdyTfHUsytKjL9/X4N2cfjPb2UhAC
-         sBJA==
-X-Gm-Message-State: AOAM531FjyjCR3T1M2E767Ajfg1C3irFsT/dCQFjjW82Y2jqer51jjGh
-        O4dWN3oAFVUPiTXrkfIqxJ4=
-X-Google-Smtp-Source: ABdhPJwyuF0ScQBajAY8wqquTubQrcfSm3HIoBpZ4sqQwDoxZnLamhQ052JBJbIxTiy1kzGI9g7srA==
-X-Received: by 2002:a05:651c:10a2:: with SMTP id k2mr19254126ljn.89.1626643686869;
-        Sun, 18 Jul 2021 14:28:06 -0700 (PDT)
-Received: from localhost.localdomain (46-138-17-53.dynamic.spd-mgts.ru. [46.138.17.53])
-        by smtp.gmail.com with ESMTPSA id c10sm1229062lfv.10.2021.07.18.14.28.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RDmZbfk4umt1NTgReOWa0nlo9wbj8HPSJ0b72AWtHlI=;
+        b=oC+MdJKK/QNq7mnCF4urJ2spf1yYkDmJaKeWWhoWrKpMuHBuvHCDIf3FdQZ2vL1dj3
+         Fp4nlNDxhg6FazjnjN+k6zhf9I/wOdqlCbJNsiu/GrOagwXihyAo4LlPbJ5aztXAK3dj
+         aIKRnxiGxRsncKAQ0hj1Ye9oIcbzBQIBJU4icy5puVzns1ydqPMVBqtUblQ+QZdNH/xk
+         ssUsmU+5dvih4oFIYydaUZiMj7A5tqv82yZ/VMcByBq6w+pIWNDrRua0UCLaTly+cZK3
+         ZjEX4UL+ouwAvmtytRdjFGjzLcWHGA5zBk+v8xu8XgjWvhp1AzH2c5EPf/k0RrKGoYsr
+         b6xQ==
+X-Gm-Message-State: AOAM5326ikrXkgiAxWlEKTKrg001Femj+GEEFEHleL5vNqFkzZSMZq8B
+        qJeyAPrebzSiTx6ChfBOUccBVw==
+X-Google-Smtp-Source: ABdhPJzslQtZZUuJs3gEJ2cjkwE33akLtrf7biZvMZ6KhTw7w+qis1t8Cmc/qZBJE6B/zyxqPlhZpA==
+X-Received: by 2002:a2e:3506:: with SMTP id z6mr20511573ljz.238.1626643691394;
+        Sun, 18 Jul 2021 14:28:11 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id z13sm1232704lfb.40.2021.07.18.14.28.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jul 2021 14:28:06 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] cpuidle: tegra: Check whether PMC is ready
-Date:   Mon, 19 Jul 2021 00:27:06 +0300
-Message-Id: <20210718212706.21659-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210718212706.21659-1-digetx@gmail.com>
-References: <20210718212706.21659-1-digetx@gmail.com>
+        Sun, 18 Jul 2021 14:28:10 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 6C5B610260F; Mon, 19 Jul 2021 00:28:14 +0300 (+03)
+Date:   Mon, 19 Jul 2021 00:28:14 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+Subject: Re: [PATCH 1/7] mm: fix the deadlock in finish_fault()
+Message-ID: <20210718212814.suvziikndiyezi6m@box.shutemov.name>
+References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
+ <20210718043034.76431-2-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210718043034.76431-2-zhengqi.arch@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check whether PMC is ready before proceeding with the cpuidle registration.
-This fixes racing with the PMC driver probe order, which results in a
-disabled deepest CC6 idling state if cpuidle driver is probed before the
-PMC.
+On Sun, Jul 18, 2021 at 12:30:27PM +0800, Qi Zheng wrote:
+> The commit 63f3655f9501(mm, memcg: fix reclaim deadlock with writeback)
+> fix a deadlock bug by pre-allocating the pte page table outside of the
+> page lock, the commit f9ce0be71d1f(mm: Cleanup faultaround and
+> finish_fault() codepaths) rework the relevant code but ignore this race,
+> fix it.
+> 
+> Fixes: f9ce0be71d1f(mm: Cleanup faultaround and finish_fault() codepaths)
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/cpuidle/cpuidle-tegra.c | 3 +++
- 1 file changed, 3 insertions(+)
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-diff --git a/drivers/cpuidle/cpuidle-tegra.c b/drivers/cpuidle/cpuidle-tegra.c
-index 508bd9f23792..9845629aeb6d 100644
---- a/drivers/cpuidle/cpuidle-tegra.c
-+++ b/drivers/cpuidle/cpuidle-tegra.c
-@@ -337,6 +337,9 @@ static void tegra_cpuidle_setup_tegra114_c7_state(void)
- 
- static int tegra_cpuidle_probe(struct platform_device *pdev)
- {
-+	if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
-+		return -EPROBE_DEFER;
-+
- 	/* LP2 could be disabled in device-tree */
- 	if (tegra_pmc_get_suspend_mode() < TEGRA_SUSPEND_LP2)
- 		tegra_cpuidle_disable_state(TEGRA_CC6);
+and add stable@, please.
+
 -- 
-2.32.0
-
+ Kirill A. Shutemov
