@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219E93CCACE
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FAC3CCAD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhGRVZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 17:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        id S232613AbhGRV3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 17:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhGRVZk (ORCPT
+        with ESMTP id S229697AbhGRV3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 17:25:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA33C061762;
-        Sun, 18 Jul 2021 14:22:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=bkAVAt/3DQZ7jiAuNPkT7sUY+jmd1SQANJgkqozmmAM=; b=p/n16vws4Zla/DwGh1eH9QPXEY
-        M9stV+oN/cgZvQdGQcpGvAIhLq5q8OtH1Dg+kUM/3VScbgd9OCORaqVtdQ3TcaS0Odp8Ffx/vQsWZ
-        gnTJ8g3liZXHJWqnfHI+oYHfScJTDt6HUAz/i7LSUabLIBtq6C6OG2ixxwLf502wwO30EV94e00iZ
-        K43DIB3ACwQ35uTIK7UwqmFjZSG0UkynrvQ/Sf6GJ6rsXYxzQp9IYhdpMg1NH1wAIjqRTp0zksGZ7
-        RPGDa2NxZvzGOzM7MJXZzpb1VxR9LmHmRLRd/IrPX/88nW2bmtFX2zmSGZBCA7qRlzwR9L0px0QAD
-        djAR8qZg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5EEv-006Iqu-RN; Sun, 18 Jul 2021 21:22:28 +0000
-Date:   Sun, 18 Jul 2021 22:22:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Chris Clayton <chris2553@googlemail.com>,
-        Chris Rankin <rankincj@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-Message-ID: <YPSbjXrBYsRZagAv@casper.infradead.org>
-References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
- <2245518.LNIG0phfVR@natalenko.name>
- <6698965.kvI7vG0SvZ@natalenko.name>
+        Sun, 18 Jul 2021 17:29:00 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9575C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:26:01 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id c16so17799754ybl.9
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eGxqoewCd9mhFWgt/ehslfj46aucbxn1D+/d7qW9O88=;
+        b=df57gXl4ZzkvkZyhsxlQQF7U9VmDfcRkVljcTPIjcrGf37NyTgxTFZj+G8Ml/mTcxY
+         RWsy0tqZSs/6kHR/mBrtERPFADvucC9akxtOwz0tT6148Jcd17t8RO8z3HO2oq2tjUov
+         +9vXOGMPkWXu7QOoq0jdSSZarSP4I+AKB6NbEwcpIo/Qz1hRh/qFwfp1UqcXA4ZlxZ+H
+         HHRjqBSPiDlOVEWVdDP5CqreuQEUyppyddaR640otpripVPHT/1+VYieLA5Ojndsc22c
+         xUN/nyK8EMwWKZbpOpXdrjfIYiAqT3jgGe/MyQ4uxM2svHfA5luxO3V/y1NbB0Ri9JRJ
+         /yYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eGxqoewCd9mhFWgt/ehslfj46aucbxn1D+/d7qW9O88=;
+        b=DkopysJX27Ivopc9pjTcr2MuyNE3ZevI7ZiuRG1z2r98dRDBD0QNzXm98834w7EI62
+         vA41KJk2fyCxeutiJ4N+Jt1gtlLkWyR6sdoUTeROJD+UktsVKuT9RsUssEGkW/5ylUpR
+         PhUrGrBmx56sd2YllUWlIeXYKDMV1w+RKhqXugzCa3xDcTU5eN0QS8FLzGl3xPuIRI6h
+         zOXSgJW9oj4XHp14rg4flHHZEEQYsbBzRaoJzFhSAbFjN0+/MwHU3ldM4Slx3NTHZUq9
+         cJ7W0XXCI3eAg0bJgfOOk8Vc1guGvghEN2ZfiKWY/DMzGCuMFztiSYe5Cj38PyLmpMea
+         Cxeg==
+X-Gm-Message-State: AOAM530gth1acRMEpACqaI1AtVbKKgwOeZJnvc/IXwMwr7ikn/mB+TOM
+        AQTY5+V5VEb67dW4wVBlZsEtDcRx6sy2gbhIN5qFeQ==
+X-Google-Smtp-Source: ABdhPJzG/WkV228ZnkTQT7/9F5qD3UkoOrEL3ZDcaj1Q5ZR1yH1Ha91RDJq+ac4aRtYMNYmL0XXBbhg3846E9AuIQPo=
+X-Received: by 2002:a25:83ca:: with SMTP id v10mr27596137ybm.84.1626643560918;
+ Sun, 18 Jul 2021 14:26:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6698965.kvI7vG0SvZ@natalenko.name>
+References: <20210710003626.3549282-1-surenb@google.com> <20210710003626.3549282-2-surenb@google.com>
+ <YPRdH56+dOFs/Ypu@casper.infradead.org>
+In-Reply-To: <YPRdH56+dOFs/Ypu@casper.infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Sun, 18 Jul 2021 14:25:50 -0700
+Message-ID: <CAJuCfpFNXmH3gQ51c-+3U_0HPG401dE9Mp9_hwMP67Tyg-zWGg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] mm, memcg: inline mem_cgroup_{charge/uncharge} to
+ improve disabled memcg config
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Hildenbrand <david@redhat.com>, apopple@nvidia.com,
+        Minchan Kim <minchan@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 11:03:51PM +0200, Oleksandr Natalenko wrote:
-> + stable@vger.kernel.org
-> 
-> On neděle 18. července 2021 23:01:24 CEST Oleksandr Natalenko wrote:
-> > Hello.
-> > 
-> > On sobota 17. července 2021 22:22:08 CEST Chris Clayton wrote:
-> > > I checked the output from dmesg yesterday and found the following warning:
-> > > 
-> > > [Fri Jul 16 09:15:29 2021] ------------[ cut here ]------------
-> > > [Fri Jul 16 09:15:29 2021] WARNING: CPU: 11 PID: 2701 at
-> > > kernel/rcu/tree_plugin.h:359 rcu_note_context_switch+0x37/0x3d0 [Fri Jul
+On Sun, Jul 18, 2021 at 9:56 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Fri, Jul 09, 2021 at 05:36:25PM -0700, Suren Baghdasaryan wrote:
+> > @@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+> >  }
+> >
+> >  /**
+> > - * mem_cgroup_charge - charge a newly allocated page to a cgroup
+> > + * __mem_cgroup_charge - charge a newly allocated page to a cgroup
+> >   * @page: page to charge
+> >   * @mm: mm context of the victim
+> >   * @gfp_mask: reclaim mode
+>
+> This patch conflicts with the folio work, so I'm just rebasing the
+> folio patches on top of this, and I think this part of the patch is a
+> mistake.  We don't want to document the __mem_cgroup_charge() function.
+> That's an implementation detail.  This patch should instead have moved the
+> kernel-doc to memcontrol.h and continued to document mem_cgroup_charge().
 
-Could you run ./scripts/faddr2line vmlinux rcu_note_context_switch+0x37/0x3d0
-
-> > > [Fri Jul 16 09:15:29 2021] Call Trace:
-> > > [Fri Jul 16 09:15:29 2021]  __schedule+0x86/0x810
-> > > [Fri Jul 16 09:15:29 2021]  schedule+0x40/0xe0
-> > > [Fri Jul 16 09:15:29 2021]  io_schedule+0x3d/0x60
-> > > [Fri Jul 16 09:15:29 2021]  wait_on_page_bit_common+0x129/0x390
-> > > [Fri Jul 16 09:15:29 2021]  ? __filemap_set_wb_err+0x10/0x10
-> > > [Fri Jul 16 09:15:29 2021]  __lock_page_or_retry+0x13f/0x1d0
-> > > [Fri Jul 16 09:15:29 2021]  do_swap_page+0x335/0x5b0
-> > > [Fri Jul 16 09:15:29 2021]  __handle_mm_fault+0x444/0xb20
-> > > [Fri Jul 16 09:15:29 2021]  handle_mm_fault+0x5c/0x170
-
-You were handling a page fault at the time.  The page you wanted was
-on swap and this warning fired as a result of waiting for the page
-to come back in from swap.  There are a number of warnings in that
-function, so it'd be good to track down exactly which one it is.
-
+Ack.
+There was a v4 version of this patch:
+https://lore.kernel.org/patchwork/patch/1458907 which was picked up by
+Andrew already. If others agree that documentation should be moved
+into the header file then I'll gladly post another version. Or I can
+post a separate patch moving the documentation only. Whatever works
+best. Andrew, Michal, Johannes, WDYT?
