@@ -2,92 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7766D3CC822
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 09:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B774F3CC825
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 09:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhGRH47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 03:56:59 -0400
-Received: from mout.gmx.net ([212.227.15.15]:55591 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhGRH44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 03:56:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626594818;
-        bh=sSf1sanoNyOf1s8ToImMPkw6H4e74dn8eSrq/chg8Q0=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=QkiEAqWbOy8TBkMzD6dJ6iOxmbJNklBnmN5fmO5auXc39bOBUZNmCiMMq6BzSe3SL
-         JHlnNQq3lUG0HnHZh3kFx69V2wfElMn+LWVlmRU9AMyXD6X98DNztXI7iYaFJD8WVU
-         AzgwOEPvZWB6eThd5AW+lSxBnGfy2WPJ8pLOBjwM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([83.52.228.41]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MSbxD-1lgVh247tR-00Swiu; Sun, 18
- Jul 2021 09:53:38 +0200
-Date:   Sun, 18 Jul 2021 09:53:24 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Yan-Hsuan Chuang <tony0620emma@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislaw Gruszka <sgruszka@redhat.com>,
-        Pkshih <pkshih@realtek.com>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] rtw88: Fix out-of-bounds write
-Message-ID: <20210718075324.GA3118@titan>
-References: <20210716155311.5570-1-len.baker@gmx.com>
- <YPG/8F7yYLm3vAlG@kroah.com>
- <20210717133343.GA2009@titan>
- <YPMUfbDh3jnV8hRZ@kroah.com>
+        id S231377AbhGRIBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 04:01:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54098 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230502AbhGRIBd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 04:01:33 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B07C222253;
+        Sun, 18 Jul 2021 07:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626595114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lFXsUKClt9utCJbeMYGbYEMZneK/Y9bderWwll5CPcs=;
+        b=wKPZLk5/rmIzr6WECg4igKhcKud+egQh55TY46yLjRlD5LrtR0cJWqEQ25sWveaSQpF3rq
+        l0Cd+807vUnSfnqPtmToLd/CTUpKWw9gwepNsau536tfhUWCJNBTZMk6gc5r8rpEFKoRCZ
+        QgG+9Z66BcLsmwczjlQ0TX6xJX+d18w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626595114;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lFXsUKClt9utCJbeMYGbYEMZneK/Y9bderWwll5CPcs=;
+        b=0F0+yxWY5mWsKimkLVmjUA+WF7upqj1oyCRhpEPl92SbXvCLu05XQZhx8uGoGxfNDcsdJd
+        k5HpLgX0/N8sokBw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7C07B13AD2;
+        Sun, 18 Jul 2021 07:58:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id Hjd1HCrf82DBDwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Sun, 18 Jul 2021 07:58:34 +0000
+Subject: Re: [patch] v2 mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+To:     Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+ <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+ <878s2fnv79.ffs@nanos.tec.linutronix.de>
+ <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+ <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+ <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <725fe90b-4918-321e-ca88-6166bec0c131@suse.cz>
+Date:   Sun, 18 Jul 2021 09:58:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPMUfbDh3jnV8hRZ@kroah.com>
-X-Provags-ID: V03:K1:JhNSeBGs0zGSWWl5J6a1ocVLtAtD6Ugtat/wFNLVSUgDhgjxb5V
- 88TXcSkGduQlfyCmZIXMllL7WXSwL0iYJIw/HRkeXLaGkZt9TQA+F3lTwKSJ4PMEDZUBFVP
- FLriM5kbh8nenUg/RbsZH/EMXmeLuR5QD+0VVHlH2ej/P0J6aGKh1GeARjfWvPk9GjpaUWZ
- eYTCYljvuLwUa/GHZ3XOQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3Gsqx7Fsm5s=:SUyH/zdppSSWWeT2atMcIU
- OJoajrmk7YOGbQc4atP37nheeL7mYoA/rCw2itbYprFYuOIOcvpG/uhtrhqt513ABup1wKihj
- aywtvxmPXkr3HjbD71jtoMaOUgwhUXTI5LrPGWV4Siatim/zgF8hBWSHRu8g6c1yvvzNScnvh
- YYCPLWk10iETYJ/pwWnqMfuKcyOje5409Q9Ck6AjL2vBqO57s4+UoewIdxxqxMC45D3W5Lt7e
- VtKnvWLaF0Ps68uSJZCH9fVBnj/YCZiePUTQWekXwDQPLq1IcF3Kmdvg8uDr2GotLf/cveiQF
- bhrtwI4IWT4vf94erqhnwMlGaQU83owU/+ynUZ7D1dQ3LNRaRe0v5R9OVrfBGIU+lquSqoJZ2
- 2Hkc/US8xqD46BAuvLgnfkP6/Br4TR0gRmqjwZo/4K1n8Ore8Ktn22a7N3bNp6W1/yAft7pTv
- otxrm/PtOb4jz4nebcLPeMb9nnspC1IqzzUApN8fRlNDvWriLbUpcUQsLFIHe3bFe6zjN9Q2K
- i35EiwD0le+aP45iaJkjeTZdWx4M+9Ft/edoIxSZ8FUEgE4hU7D9XDtDHUTG4nFK0FBe1n3Qf
- Kn+JuTihguTNaAQKz2LTYfsoUldZviCz6Fp6x+oqIKvN28tJ+jTb/v8w2BLF7TH0C9CGT6LYY
- 5KfLkwW5ou/BlZaXuL5z9+LzkDG98Yy/5fwoJ6Ucdv4NJA5iQwEaVVjC8ISNuy8iwLLY8n0KT
- lgBUBZWe+5h1TsGTKQobDbr8GdJT4hfTJtBZggyeU4KxkxjXZUNBCMjNtr6Yr7p5NzKxjVG5V
- y9o3DPzhuMhzAGWYRXXvUxiBLvfPsEPqEhn9EpnxJ78iQXBRGdlUsB0v03ZTWqKo/VgTXezPb
- GBWLKKnCn73OkJx6dAvP6h7sNXz4GZmbRMMqWMUlI9TgZx1dZcF78z7vYBTsTQkBta1YybX+m
- r3TDnmq8PAqjpYrI71CT+2KPP9xwak5lehy9uMSpkrPRAI52Vfzf2q6vpY86wy2MYiavE7gXA
- kvSO+HJ1k7SBrkgIMHEqRprmy8Yo6tqvQgh51nhH4lOhk0ClsilVBKuDJ1OTRn/FSJvTKSEob
- npgU56hW0Zg+ALy5mwXTqA/H3bqcmxIq9de
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 07:33:49PM +0200, Greg KH wrote:
-> On Sat, Jul 17, 2021 at 03:33:43PM +0200, Len Baker wrote:
-> > Another question: If this can never happen should I include the "Fixes=
-" tag,
-> > "Addresses-Coverity-ID" tag and Cc to stable?
->
-> If it can never happen, why have this check at all?
->
-> Looks like a Coverity false positive?
+On 7/17/21 4:58 PM, Mike Galbraith wrote:
+> On Thu, 2021-07-15 at 18:34 +0200, Mike Galbraith wrote:
+>> Greetings crickets,
+>>
+>> Methinks he problem is the hole these patches opened only for RT.
+>>
+>> static void put_cpu_partial(struct kmem_cache *s, struct page *page,
+>> int drain)
+>> {
+>> #ifdef CONFIG_SLUB_CPU_PARTIAL
+>> 	struct page *oldpage;
+>> 	int pages;
+>> 	int pobjects;
+>>
+>> 	slub_get_cpu_ptr(s->cpu_slab);
+>>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> Bah, I'm tired of waiting to see what if anything mm folks do about
+> this little bugger, so I'm gonna step on it my damn self and be done
+> with it.  Fly or die little patchlet.
 
-Ok, then I will remove the check and I will send a patch for review.
+Sorry, Mike. Got some badly timed sickness. Will check ASAP.
 
->
-> thanks,
->
-> greg k-h
+> mm/slub: restore/expand unfreeze_partials() local exclusion scope
+> 
+> 2180da7ea70a ("mm, slub: use migrate_disable() on PREEMPT_RT") replaced
+> preempt_disable() in put_cpu_partial() with migrate_disable(), which when
+> combined with ___slab_alloc() having become preemptibile, leads to
+> kmem_cache_free()/kfree() blowing through ___slab_alloc() unimpeded,
+> and vice versa, resulting in PREMPT_RT exclusive explosions in both
+> paths while stress testing with both SLUB_CPU_PARTIAL/MEMCG enabled,
+> ___slab_alloc() during allocation (duh), and __unfreeze_partials()
+> during free, both while accessing an unmapped page->freelist.
+> 
+> Serialize put_cpu_partial()/unfreeze_partials() on cpu_slab->lock to
+> ensure that alloc/free paths cannot pluck cpu_slab->partial out from
+> underneath each other unconstrained.
+> 
+> Signed-off-by: Mike Galbraith <efault@gmx.de>
+> Fixes: 2180da7ea70a ("mm, slub: use migrate_disable() on PREEMPT_RT")
+> ---
+>  mm/slub.c |   23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
+> 
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2418,6 +2418,17 @@ static void __unfreeze_partials(struct k
+>  	if (n)
+>  		spin_unlock_irqrestore(&n->list_lock, flags);
+> 
+> +	/*
+> +	 * If we got here via __slab_free() -> put_cpu_partial(),
+> +	 * memcg_free_page_obj_cgroups() ->kfree() may send us
+> +	 * back to __slab_free() -> put_cpu_partial() for an
+> +	 * unfortunate second encounter with cpu_slab->lock.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_PREEMPT_RT) && memcg_kmem_enabled()) {
+> +		lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock.lock));
+> +		local_unlock(&s->cpu_slab->lock);
+> +	}
+> +
+>  	while (discard_page) {
+>  		page = discard_page;
+>  		discard_page = discard_page->next;
+> @@ -2426,6 +2437,9 @@ static void __unfreeze_partials(struct k
+>  		discard_slab(s, page);
+>  		stat(s, FREE_SLAB);
+>  	}
+> +
+> +	if (IS_ENABLED(CONFIG_PREEMPT_RT) && memcg_kmem_enabled())
+> +		local_lock(&s->cpu_slab->lock);
+>  }
+> 
+>  /*
+> @@ -2497,7 +2511,9 @@ static void put_cpu_partial(struct kmem_
+>  				 * partial array is full. Move the existing
+>  				 * set to the per node partial list.
+>  				 */
+> +				local_lock(&s->cpu_slab->lock);
+>  				unfreeze_partials(s);
+> +				local_unlock(&s->cpu_slab->lock);
+>  				oldpage = NULL;
+>  				pobjects = 0;
+>  				pages = 0;
+> @@ -2579,7 +2595,9 @@ static void flush_cpu_slab(struct work_s
+>  	if (c->page)
+>  		flush_slab(s, c, true);
+> 
+> +	local_lock(&s->cpu_slab->lock);
+>  	unfreeze_partials(s);
+> +	local_unlock(&s->cpu_slab->lock);
+>  }
+> 
+>  static bool has_cpu_slab(int cpu, struct kmem_cache *s)
+> @@ -2632,8 +2650,11 @@ static int slub_cpu_dead(unsigned int cp
+>  	struct kmem_cache *s;
+> 
+>  	mutex_lock(&slab_mutex);
+> -	list_for_each_entry(s, &slab_caches, list)
+> +	list_for_each_entry(s, &slab_caches, list) {
+> +		local_lock(&s->cpu_slab->lock);
+>  		__flush_cpu_slab(s, cpu);
+> +		local_unlock(&s->cpu_slab->lock);
+> +	}
+>  	mutex_unlock(&slab_mutex);
+>  	return 0;
+>  }
+> 
 
-Regards,
-Len
