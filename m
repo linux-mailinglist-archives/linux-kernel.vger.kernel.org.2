@@ -2,185 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CE73CC8A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 12:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D8E3CC8B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 13:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhGRK6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 06:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45366 "EHLO mail.kernel.org"
+        id S232766AbhGRLMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 07:12:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230461AbhGRK6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 06:58:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4282360E09;
-        Sun, 18 Jul 2021 10:55:06 +0000 (UTC)
+        id S230461AbhGRLMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 07:12:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FAF561166;
+        Sun, 18 Jul 2021 11:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626605708;
-        bh=IbtTbduagSl46TiZq6dHHvm7L6082HA3Xm8jM1+Pkps=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c5EeEyh6UJstCmymZEE59uhejrYUfXl3NeBcZgpqlZdioFyw665uC8wN0gsyLwCUm
-         CyckWCJ52+cchqyQcUbUciadgF+Cyh0YImU5OFaqEbQRrOD0f4yQXT4O5UxNZITTSC
-         o5cy6wjRU01CHtWU3WZNqz8DTVmy45biQgxNE7NHJBpk3LxbNdo3eVgTX18FDGGnwU
-         7ZJQ9NOkgkouzZzDUT06TKo566wSAEXIZ9HfDf471qf5ECVgZM724sZb6lYVUGfvag
-         7KhdjlJcqfm9DmJxr0PFgvLNZelBr6fPq1mrgW2bVOmtV2q7qTpIRwsHjoLL00aVmR
-         b+s7KFwqlGAxw==
-Date:   Sun, 18 Jul 2021 12:55:03 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] dt-bindings: PCI: add snps,dw-pcie.yaml
-Message-ID: <20210718125503.395515e7@coco.lan>
-In-Reply-To: <20210718115916.3a37f969@coco.lan>
-References: <cover.1626174242.git.mchehab+huawei@kernel.org>
-        <0454d09414d74d9789213f5e7779002bcc024537.1626174242.git.mchehab+huawei@kernel.org>
-        <20210715172337.GA1263164@robh.at.kernel.org>
-        <20210718115916.3a37f969@coco.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        s=k20201202; t=1626606558;
+        bh=scysiXjyferckCGbthGvR8xqveehOph98QgmtZIcrec=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XNrMJtjIYfhN0XTG3RHYKnxAldtmMPe3Fn0tYzrYyOc78jO/VZ7uH/sHudWjRpkiP
+         yZLIgj8DXTnC15yOHZ62829FXeY2Ylj1hfLGbcahe50CKpZOaFEwF509uzrVf0XmQq
+         zXSSnU+F418MiGnCpbYvqomVTOuZOYCSHVdOoXVHnz+VJQsymAScSGgGet+gdvGtU4
+         SyhAgAPAtdBDP/5e0cts9gfcDq5FfYoxtiPFX7811Rm6Wue+ucosWfB3uyrtxjtEuD
+         hXlJfssJ96pNrvx3E/7kuAe86zgezKeuERXXD3k0Q2LAAUYlEZRPDfirtPvTHrpCcT
+         1K7JSLV5lg+zQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v2 0/2] SG fix together with update to RDMA umem
+Date:   Sun, 18 Jul 2021 14:09:11 +0300
+Message-Id: <cover.1626605893.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, 18 Jul 2021 11:59:16 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-> Em Thu, 15 Jul 2021 11:23:37 -0600
-> Rob Herring <robh@kernel.org> escreveu:
-> 
-> > On Tue, Jul 13, 2021 at 01:17:51PM +0200, Mauro Carvalho Chehab wrote:  
-> > > Currently, the designware schema is defined on a text file:
-> > > 	designware-pcie.txt
-> > > 
-> > > Convert the pci-bus part into a schema.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > >  .../devicetree/bindings/pci/snps,dw-pcie.yaml | 96 +++++++++++++++++++
-> > >  MAINTAINERS                                   |  1 +
-> > >  2 files changed, 97 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> > > new file mode 100644
-> > > index 000000000000..fd372d715ab4
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> > > @@ -0,0 +1,96 @@
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/pci/snps,dw-pcie.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Synopsys DesignWare PCIe interface
-> > > +
-> > > +maintainers:
-> > > +  - Jingoo Han <jingoohan1@gmail.com>
-> > > +  - Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-> > > +
-> > > +description: |
-> > > +  Synopsys DesignWare PCIe host controller
-> > > +
-> > > +allOf:
-> > > +  - $ref: /schemas/pci/pci-bus.yaml#
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    anyOf:
-> > > +      - {}
-> > > +      - const: snps,dw-pcie
-> > > +
-> > > +  reg:
-> > > +    description: |
-> > > +      It should contain Data Bus Interface (dbi) and config registers for all
-> > > +      versions.
-> > > +      For designware core version >= 4.80, it may contain ATU address space.
-> > > +    minItems: 2
-> > > +    maxItems: 4
-> > > +
-> > > +  reg-names:
-> > > +    minItems: 2
-> > > +    maxItems: 4
-> > > +    items:
-> > > +      enum: [dbi, dbi2, config, atu, addr_space, app, elbi, mgmt]    
-> > 
-> > Isn't 'config' only for host and 'addr_space' only for endpoint?  
-> 
-> The problem on enforcing an enum here is that severa *.dts files violate it. 
-> In the specific case of 'addr_space', there is (are?) place(s) where the wrong
-> compatible was used, like on arch/arm/boot/dts/artpec6.dtsi:
-> 
-> 	pcie: pcie@f8050000 {
-> 		compatible = "axis,artpec6-pcie", "snps,dw-pcie";
-> 		reg = <0xf8050000 0x2000
-> 		       0xf8040000 0x1000
-> 		       0xc0000000 0x2000>;
-> 		reg-names = "dbi", "phy", "config";
-> 		#address-cells = <3>;
-> 		#size-cells = <2>;
-> 		device_type = "pci";
-> 			  /* downstream I/O */
-> 		ranges = <0x81000000 0 0 0xc0002000 0 0x00010000
-> 			  /* non-prefetchable memory */
-> 			  0x82000000 0 0xc0012000 0xc0012000 0 0x1ffee000>;
-> 		num-lanes = <2>;
-> 		bus-range = <0x00 0xff>;
-> 		interrupts = <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
-> 		interrupt-names = "msi";
-> 		#interrupt-cells = <1>;
-> 		interrupt-map-mask = <0 0 0 0x7>;
-> 		interrupt-map = <0 0 0 1 &intc GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>,
-> 				<0 0 0 2 &intc GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>,
-> 				<0 0 0 3 &intc GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>,
-> 				<0 0 0 4 &intc GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>;
-> 		axis,syscon-pcie = <&syscon>;
-> 		status = "disabled";
-> 	};
-> 
-> 	pcie_ep: pcie_ep@f8050000 {
-> 		compatible = "axis,artpec6-pcie-ep", "snps,dw-pcie";
-> 		reg = <0xf8050000 0x2000
-> 		       0xf8051000 0x2000
-> 		       0xf8040000 0x1000
-> 		       0xc0000000 0x20000000>;
-> 		reg-names = "dbi", "dbi2", "phy", "addr_space";
-> 		num-ib-windows = <6>;
-> 		num-ob-windows = <2>;
-> 		num-lanes = <2>;
-> 		axis,syscon-pcie = <&syscon>;
-> 		status = "disabled";
-> 	};
-> 
-> (funny enough, this is not generating warnings here).
-> 
-> Btw, besides the above, there are some DTS that use something different
-> from what's there at the enum:
-> 
-> 
-> 	$ make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 dtbs_check 2>&1 |tee dtbs_check.log
-> 	$ grep "\['dbi', 'dbi2', 'config', 'atu', 'app', 'elbi', 'mgmt'\]" dtbs_check.log|sed "s,From schema:,,"|cut -d: -f 2-|cut -d' ' -f 4-|sort|uniq -c|sort -n -r
-> 	     51 'ctrl' is not one of ['dbi', 'dbi2', 'config', 'atu', 'app', 'elbi', 'mgmt']
-> 	     44 'parf' is not one of ['dbi', 'dbi2', 'config', 'atu', 'app', 'elbi', 'mgmt']
-> 	     18 'cfg' is not one of ['dbi', 'dbi2', 'config', 'atu', 'app', 'elbi', 'mgmt']
-> 	      4 'link' is not one of ['dbi', 'dbi2', 'config', 'atu', 'app', 'elbi', 'mgmt']
-> 
-> In order to use an enum and not having warnings, the enum should be 
-> instead:
-> 
-> 	reg-names:
-> 	  minItems: 2
-> 	  maxItems: 4
-> 	  items:
-> 	    enum: [dbi, dbi2, config, atu, app, elbi, mgmt, ctrl, parf, cfg, link] 
+Changelog:
+v2:
+ * Changed implementation of first patch, based on our discussion with Christoph.
+   https://lore.kernel.org/lkml/YNwaVTT0qmQdxaZz@infradead.org/
+v1: https://lore.kernel.org/lkml/cover.1624955710.git.leonro@nvidia.com/
+ * Fixed sg_page with a _dma_ API in the umem.c
+v0: https://lore.kernel.org/lkml/cover.1624361199.git.leonro@nvidia.com
 
-Actually, some reg definitions have 5 items.
+Maor Gottlieb (2):
+  lib/scatterlist: Fix wrong update of orig_nents
+  RDMA: Use dma_map_sgtable for map umem pages
 
-I'm sending an updated patch series.
+ drivers/gpu/drm/drm_prime.c                 |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c  |  2 +-
+ drivers/infiniband/core/umem.c              | 33 +++-----
+ drivers/infiniband/core/umem_dmabuf.c       |  1 -
+ drivers/infiniband/hw/mlx4/mr.c             |  4 +-
+ drivers/infiniband/hw/mlx5/mr.c             |  3 +-
+ drivers/infiniband/sw/rdmavt/mr.c           |  2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c          |  3 +-
+ include/linux/scatterlist.h                 |  3 +-
+ include/rdma/ib_umem.h                      |  6 +-
+ include/rdma/ib_verbs.h                     | 28 +++++++
+ lib/scatterlist.c                           | 88 ++++++++++++++-------
+ tools/testing/scatterlist/main.c            | 15 +++-
+ 14 files changed, 128 insertions(+), 64 deletions(-)
 
-Thanks,
-Mauro
+-- 
+2.31.1
+
