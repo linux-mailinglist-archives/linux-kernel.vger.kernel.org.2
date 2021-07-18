@@ -2,277 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB4A3CC8B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 13:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F265A3CC8C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 13:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhGRLMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 07:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56354 "EHLO mail.kernel.org"
+        id S232942AbhGRLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 07:35:31 -0400
+Received: from mout.gmx.net ([212.227.17.22]:53757 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232831AbhGRLMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 07:12:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D170C61179;
-        Sun, 18 Jul 2021 11:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626606561;
-        bh=WymSd8E+zl7DWfXzmH25kO8A3dUQu5ir04bp7X4oYAA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Div0VZukZii6DFdi3WLQD0ZvarEV7dglobaNb+w0/Scbg2FC5tYP5i5jFlzh7anCX
-         7o7sa1GMtbxk4on4UNLLEk6CJK9oNmxIzlRfzHjGoGPZp6Q0KGPhlGSAEidLjnO+HR
-         IBzlu/01IgAY0KTsz8sw6CcP34n1OZYJi985kyvfe3H3oKLLH1U5gUmFu5l8BOIjv5
-         QT2HSgUF846o0Qgsm7XNA28f5YXe5tmdD+Jnq4OSR+jaDCIphgMh29h5syJtjFpzUQ
-         3w6lQsAVOdfow3cwwoTAdf6+EAaCzxRhyNXs2aByW6+a59ySw97WUKTnrBH3PD4XDj
-         LODAllrPnn2qg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v2 2/2] RDMA: Use dma_map_sgtable for map umem pages
-Date:   Sun, 18 Jul 2021 14:09:13 +0300
-Message-Id: <009740c35873683e401da3f86d0e7a78b2f25601.1626605893.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626605893.git.leonro@nvidia.com>
-References: <cover.1626605893.git.leonro@nvidia.com>
+        id S232716AbhGRLfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 07:35:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626607941;
+        bh=LA49RbtvFLlDFLYkYUJ7wqBn32o6JA4TKOxnCiR8riU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=IAKSAeYIZzeXzWstR3EfVZWhw6zooTgiSU9m0+sNX8mzlZb9qHpjtK5AALuo8ntSa
+         jIlXNEdR2Y+dyB1/ky8+Euv4WfJ02jlDyhek9l96o5lxmHjFXYFyC3n7jmaaK1MsG4
+         26BRJYRGxl9GG+luMbiyCOnUvQbFuPebdvfMaIX4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MVN6t-1leW0I0EwZ-00SR95; Sun, 18 Jul 2021 13:32:21 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>, Lee Jones <lee.jones@linaro.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Dmitrii Wolf <dev.dragon@bk.ru>,
+        Iain Craig <coldcity@gmail.com>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/rtl8192u: Remove all strcpy() uses in favor of strscpy()
+Date:   Sun, 18 Jul 2021 13:32:07 +0200
+Message-Id: <20210718113207.10045-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dBu3Bugp12qVQZxAg91AEm7ns7kPEURACegd5+ybpLZTG5IEete
+ 1hFixhvOFQbOuaUw6Sugs3ePMYwswpVgXY3J2Vq3qQixiDbGKTlk6tuxMvzRpfBmu6lNxva
+ /M+/jHjl+kA3Lx7EbQgFDy8PPz+04nRmmdRZmctJjLbOWvXO3Uux0vLYRuI6AGKC2hnEKg6
+ CQyXXPLPyzSBEExUp1NFg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1yA/OMqDmt8=:hi9aDlDkPdyH1IELgu0gO1
+ YC4XGCi+SEN9yOsPaVC3mmHBBK9YALdsf7+qXoa5/kD9mjDRakj/bC6j0jGdwSdYwdYI9O33e
+ v87UnkynYZP7bdq9ZnzyiObVogRuOeS12BuwyvveNsF69cDK0Ans8d+ZwchjnXXBR8r12utdt
+ /a14X+xmWxK7pTMo2iswVAPKSD64f8MRdpu6dGtQbFxoMVEtdlXoYw/Pq/qxfT7opFi5VP6zi
+ 2Sk6EhIn5ffXNEL7zp7EodU1JVdw9B5gYlCDLGKarloe3st79nyzLUbJji2yIgFvXxb0c8vyL
+ 7DevtH4MUiEGnmsUnqmiWAMveGYIjqEfYgljOkcw2kIA9eKhJwFnLM5AEnWl81ValnDhE4Gl3
+ /fLRd61Puf+h+u9bck4aFeOlF9YibQHnyczFgoxu+QO/gsbwWZvThH8cdYzBUtP2HQNSa0Xxa
+ N6MXRWZr6xP7KYFoeGDFbifx/90t1pwrH/tCXCk2QjePyQ1F4y6Yhi7JEN5cj80CthqrBAsht
+ vi590xX7Uz/P026tIJ41dmHXbiSynjuUYd00iXSDHUu3GVf0wAlCqPsshiXwisZeZTCOoCBBT
+ Y8x85bWx3L7g9l58P1BbC2IW6jVmR/f38TGCrExgC+Nd7C4BtI4IJzvyHCCVTiemPTpaP4e4+
+ ku+y4qDjRyn5JC1Kj3SpqVOseDhtgL/JAz5WGRLr8fVpsTdpg6O1UhyAhFl5ykv+WgZn9iVxV
+ N5fIz7pK0DQhnvZjr8ODeEFqhPhEg3+IgVXNSCHCLUeZ69ZnZrhJXjSu0G4bHIskGzMOwU/x8
+ zLniHdvIje2fJZbS+C3X9a3We4gkGHc0OQ3AmxvotnXn61USXf/u1woD/dq/AJcJNXU7xFg4c
+ S5DA4Wo+wnftnSeLmY+yWcJNRwrRwCzSVDWYT1Y+UqqDQwZXYLbmDivf2X3+RhK9mEb4GSj2V
+ aj5Ef+DmYMxw4lDkXMi+PMHmMz4Y8W5JoeoM9m3UGKCxe3kIit82Bo1oE/GdrVeDRZT8MQvrf
+ DwTsMsR4d/mia76xXdp3mRsy/O4zvTzlaj7i0cQUcAlpVAACwoOABWco8xaVIm1RD7Md2Gqyq
+ 1gfa/N4D3TO5B7EHADjnvgtAaacH1anxvXl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
 
-In order to avoid incorrect usage of sg_table fields, change umem to
-use dma_map_sgtable for map the pages for DMA. Since dma_map_sgtable
-update the nents field (number of DMA entries), there is no need
-anymore for nmap variable, hence do some cleanups accordingly.
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/umem.c        | 28 +++++++++++----------------
- drivers/infiniband/core/umem_dmabuf.c |  1 -
- drivers/infiniband/hw/mlx4/mr.c       |  4 ++--
- drivers/infiniband/hw/mlx5/mr.c       |  3 ++-
- drivers/infiniband/sw/rdmavt/mr.c     |  2 +-
- drivers/infiniband/sw/rxe/rxe_mr.c    |  3 ++-
- include/rdma/ib_umem.h                |  3 ++-
- include/rdma/ib_verbs.h               | 28 +++++++++++++++++++++++++++
- 8 files changed, 48 insertions(+), 24 deletions(-)
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/driv=
+ers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+index ab885353f668..1a193f900779 100644
+=2D-- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+@@ -2226,7 +2226,8 @@ static void ieee80211_start_ibss_wq(struct work_stru=
+ct *work)
+ 	mutex_lock(&ieee->wx_mutex);
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index cf4197363346..77c2df1c91d1 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -51,11 +51,11 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 	struct scatterlist *sg;
- 	unsigned int i;
- 
--	if (umem->nmap > 0)
--		ib_dma_unmap_sg(dev, umem->sg_head.sgl, umem->sg_nents,
--				DMA_BIDIRECTIONAL);
-+	if (dirty)
-+		ib_dma_unmap_sgtable_attrs(dev, &umem->sg_head,
-+					   DMA_BIDIRECTIONAL, 0);
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->sg_nents, i)
-+	for_each_sgtable_sg(&umem->sg_head, sg, i)
- 		unpin_user_page_range_dirty_lock(sg_page(sg),
- 			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
- 
-@@ -111,7 +111,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 	/* offset into first SGL */
- 	pgoff = umem->address & ~PAGE_MASK;
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		/* Walk SGL and reduce max page size if VA/PA bits differ
- 		 * for any address.
- 		 */
-@@ -121,7 +121,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 		 * the maximum possible page size as the low bits of the iova
- 		 * must be zero when starting the next chunk.
- 		 */
--		if (i != (umem->nmap - 1))
-+		if (i != (umem->sg_head.nents - 1))
- 			mask |= va;
- 		pgoff = 0;
+ 	if (ieee->current_network.ssid_len =3D=3D 0) {
+-		strcpy(ieee->current_network.ssid, IEEE80211_DEFAULT_TX_ESSID);
++		strscpy(ieee->current_network.ssid, IEEE80211_DEFAULT_TX_ESSID,
++			sizeof(ieee->current_network.ssid));
+ 		ieee->current_network.ssid_len =3D strlen(IEEE80211_DEFAULT_TX_ESSID);
+ 		ieee->ssid_set =3D 1;
  	}
-@@ -240,16 +240,10 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 	if (access & IB_ACCESS_RELAXED_ORDERING)
- 		dma_attr |= DMA_ATTR_WEAK_ORDERING;
- 
--	umem->nmap =
--		ib_dma_map_sg_attrs(device, umem->sg_head.sgl, umem->sg_nents,
--				    DMA_BIDIRECTIONAL, dma_attr);
--
--	if (!umem->nmap) {
--		ret = -ENOMEM;
-+	ret = ib_dma_map_sgtable_attrs(device, &umem->sg_head,
-+				       DMA_BIDIRECTIONAL, dma_attr);
-+	if (ret)
- 		goto umem_release;
--	}
--
--	ret = 0;
- 	goto out;
- 
- umem_release:
-@@ -309,8 +303,8 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
- 		return -EINVAL;
- 	}
- 
--	ret = sg_pcopy_to_buffer(umem->sg_head.sgl, umem->sg_nents, dst, length,
--				 offset + ib_umem_offset(umem));
-+	ret = sg_pcopy_to_buffer(umem->sg_head.sgl, umem->sg_head.orig_nents,
-+				 dst, length, offset + ib_umem_offset(umem));
- 
- 	if (ret < 0)
- 		return ret;
-diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-index c6e875619fac..2884e4526d78 100644
---- a/drivers/infiniband/core/umem_dmabuf.c
-+++ b/drivers/infiniband/core/umem_dmabuf.c
-@@ -57,7 +57,6 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
- 
- 	umem_dmabuf->umem.sg_head.sgl = umem_dmabuf->first_sg;
- 	umem_dmabuf->umem.sg_head.nents = nmap;
--	umem_dmabuf->umem.nmap = nmap;
- 	umem_dmabuf->sgt = sgt;
- 
- wait_fence:
-diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
-index 50becc0e4b62..ab5dc8eac7f8 100644
---- a/drivers/infiniband/hw/mlx4/mr.c
-+++ b/drivers/infiniband/hw/mlx4/mr.c
-@@ -200,7 +200,7 @@ int mlx4_ib_umem_write_mtt(struct mlx4_ib_dev *dev, struct mlx4_mtt *mtt,
- 	mtt_shift = mtt->page_shift;
- 	mtt_size = 1ULL << mtt_shift;
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		if (cur_start_addr + len == sg_dma_address(sg)) {
- 			/* still the same block */
- 			len += sg_dma_len(sg);
-@@ -273,7 +273,7 @@ int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va,
- 
- 	*num_of_mtts = ib_umem_num_dma_blocks(umem, PAGE_SIZE);
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		/*
- 		 * Initialization - save the first chunk start as the
- 		 * current_block_start - block means contiguous pages.
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 3263851ea574..4954fb9eb6dc 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1226,7 +1226,8 @@ int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
- 	orig_sg_length = sg.length;
- 
- 	cur_mtt = mtt;
--	rdma_for_each_block (mr->umem->sg_head.sgl, &biter, mr->umem->nmap,
-+	rdma_for_each_block (mr->umem->sg_head.sgl, &biter,
-+			     mr->umem->sg_head.nents,
- 			     BIT(mr->page_shift)) {
- 		if (cur_mtt == (void *)mtt + sg.length) {
- 			dma_sync_single_for_device(ddev, sg.addr, sg.length,
-diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
-index 34b7af6ab9c2..d955c8c4acc4 100644
---- a/drivers/infiniband/sw/rdmavt/mr.c
-+++ b/drivers/infiniband/sw/rdmavt/mr.c
-@@ -410,7 +410,7 @@ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	mr->mr.page_shift = PAGE_SHIFT;
- 	m = 0;
- 	n = 0;
--	for_each_sg_page (umem->sg_head.sgl, &sg_iter, umem->nmap, 0) {
-+	for_each_sg_page (umem->sg_head.sgl, &sg_iter, umem->sg_head.nents, 0) {
- 		void *vaddr;
- 
- 		vaddr = page_address(sg_page_iter_page(&sg_iter));
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 1ee5bd8291e5..ba534b6c67f0 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -141,7 +141,8 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	if (length > 0) {
- 		buf = map[0]->buf;
- 
--		for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->nmap, 0) {
-+		for_each_sg_page(umem->sg_head.sgl, &sg_iter,
-+				 umem->sg_head.nents, 0) {
- 			if (num_buf >= RXE_BUF_PER_MAP) {
- 				map++;
- 				buf = map[0]->buf;
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index 5a65212efc2e..3f5576877072 100644
---- a/include/rdma/ib_umem.h
-+++ b/include/rdma/ib_umem.h
-@@ -76,7 +76,8 @@ static inline void __rdma_umem_block_iter_start(struct ib_block_iter *biter,
- 						struct ib_umem *umem,
- 						unsigned long pgsz)
- {
--	__rdma_block_iter_start(biter, umem->sg_head.sgl, umem->nmap, pgsz);
-+	__rdma_block_iter_start(biter, umem->sg_head.sgl, umem->sg_head.nents,
-+				pgsz);
- }
- 
- /**
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 371df1c80aeb..2dba30849731 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4057,6 +4057,34 @@ static inline void ib_dma_unmap_sg_attrs(struct ib_device *dev,
- 				   dma_attrs);
- }
- 
-+/**
-+ * ib_dma_map_sgtable_attrs - Map a scatter/gather table to DMA addresses
-+ * @dev: The device for which the DMA addresses are to be created
-+ * @sg: The sg_table object describing the buffer
-+ * @direction: The direction of the DMA
-+ * @attrs: Optional DMA attributes for the map operation
-+ */
-+static inline int ib_dma_map_sgtable_attrs(struct ib_device *dev,
-+					   struct sg_table *sgt,
-+					   enum dma_data_direction direction,
-+					   unsigned long dma_attrs)
-+{
-+	if (ib_uses_virt_dma(dev)) {
-+		ib_dma_virt_map_sg(dev, sgt->sgl, sgt->orig_nents);
-+		return 0;
-+	}
-+	return dma_map_sgtable(dev->dma_device, sgt, direction, dma_attrs);
-+}
-+
-+static inline void ib_dma_unmap_sgtable_attrs(struct ib_device *dev,
-+					      struct sg_table *sgt,
-+					      enum dma_data_direction direction,
-+					      unsigned long dma_attrs)
-+{
-+	if (!ib_uses_virt_dma(dev))
-+		dma_unmap_sgtable(dev->dma_device, sgt, direction, dma_attrs);
-+}
-+
- /**
-  * ib_dma_map_sg - Map a scatter/gather list to DMA addresses
-  * @dev: The device for which the DMA addresses are to be created
--- 
-2.31.1
+=2D-
+2.25.1
 
