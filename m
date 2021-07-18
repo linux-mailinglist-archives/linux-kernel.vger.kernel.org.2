@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70ECA3CC9C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 17:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7033CC9CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 17:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234087AbhGRPqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 11:46:17 -0400
-Received: from mout.gmx.net ([212.227.17.20]:56665 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232895AbhGRPqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 11:46:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626622986;
-        bh=a+VvLRIxhM4HpYMb3aSKVzaKVRxoB06CViB/BbBakoI=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=ImynfnIpUFmhlBzlUzYKMdRUnM1qgiFmW0x45GUJpFov/xNjPCsHaUqhLtBcUAn9W
-         PiaMAJ1pdClM751DHET5hXhoLlFJTSJpd181sHiV6lwLyXLyBxxHXWi6dS2BXVB1Gm
-         fZWHQUf7GgRCk/DZlSNJcuMsmPgNPnT0pWX4Bpmk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.250]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MkYXm-1lOxRU0Axy-00m5bA; Sun, 18
- Jul 2021 17:43:06 +0200
-Message-ID: <fba5b2ca7472ea06690e4a92ba0fbd4dd8557f86.camel@gmx.de>
-Subject: Re: [patch] v2 mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-From:   Mike Galbraith <efault@gmx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Sun, 18 Jul 2021 17:43:05 +0200
-In-Reply-To: <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
-         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-         <878s2fnv79.ffs@nanos.tec.linutronix.de>
-         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
-         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
-         <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S234119AbhGRPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 11:49:21 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:34691 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232895AbhGRPtS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 11:49:18 -0400
+Received: by mail-il1-f200.google.com with SMTP id w2-20020a056e0213e2b029020f555eb3c6so8867111ilj.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 08:46:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=3BTWT7hOTOoutziemX0GlZm4ft3GIKdnYK170YdXmDk=;
+        b=jKgJwUeJFO/4bJPDgZFIJuxUddGi8E07yKgdLjk49Sj37TVgNTmfDHNPxb5iuKrrVO
+         KY23Vv7MQNn5YIy3W1uhF9xUyjjkU6cp7xcfymVQLeAnpTYJ3vL9yUJM7wydZXhEhP8e
+         muocyoHMm82hnd3kI0mCvOtRJlTBj66l/NQcexdBQTmf/YIB7hfx/dp6zfk+wdULgCwz
+         h+hBGDTZUhPSxsvUwzaZmZPoqbk3y4T3CeNY/O7L+qgs3P/AkzHFQpepxQizJ066JEzb
+         w4JtCCzDeJcgatNCXkivBgProNtUcVjQIJVjKBTXJ1DGnHUZUKVf3TAD32YOEuQdHDfH
+         H5CA==
+X-Gm-Message-State: AOAM531lFE4TgwxwxR/BAjmLB/mERBJmMKCRNBiWZBUIq/akpAXKzv/E
+        FVLHoPzMk8mqMIEpgLMCnfnb1piVF0PoHDQGwUrBBNJQPCbZ
+X-Google-Smtp-Source: ABdhPJxxjcNkJfLc/19iCekAmSQTCZ0At/ztzraN5OxSKXhe6pIuPgcfxEjJ+pVXWIYItwRnUKm2DmNLtBmfiKy3YWaMVI60jNjn
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:r16f4cB0F6DSMRY35FPrWtAmuhXmjMyXaD80Tug0wlWZeLA/shA
- gbSnrzuyxOMuQT5Xqm9jzmEZpgp39LttxGh5qUJidYNpBnkunaRa/fZS5MxA8/ua5vwNgaA
- NJ/vRdkaxWTAlldWuylcQznU2xRY1q+EFRJTUWTDLkZOCRh7ovdVDC7EjizpVdyIzMzJezm
- XjoJTcGkcRypmTLxKkAlA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IfIZN4BWmn8=:EQJILZUQNjelhPj94JRUlw
- eoZhFT2lUk+a8lQMeARAQ31IN8USPAZjEcbqoaTbZoHQBN1RAWinSVZrXfLaM2yoCqLuF08tU
- WbBH08kRe86RxJVbnB3NeN/TWrhFpi8To0fq52E+YayFv8cnOmFdUSHCig+BcDA1/xJbE6iZD
- KTut94TfY/gVm5V2sfXZy78zrN5hiUexeef0ujRNF6wmrzawc64577GyNM0XhcmDtD5iNikIH
- bMNRAlqObE0GiDhWYqsvyoL2uveaYLPSl1xbmYoePDjJdgs9zTccTQhFpgBimdT4rdh1cjQfj
- e3Q/cureqHYsUQ6/6M7JtFfg0VCjNBwhPwHX4QQx29EKx02uCvW/nCXOiwuhKZHKOltMsTwww
- BiZe9p7KMWJqT6SjASHN21VWaUjUj4KlkkPHtWQhAjcewoEuqTD65AbgJbdmeBHyvfcqFH3lr
- xsuIMdet1OM2kH20NpUDQAcO9MLHQSOdeVkIhLSCQsRTyJr0CIARC68t6xzWuMiTyF106nHLt
- 4CK5MB/WpWSdXhPYdE5kj/1OK6J8e6k8OMLYLBoEulvSjnJgCmXmAJHcxhP6Dk15wHQjbL+75
- 7VXa8vqC3JrtdfZJnrPze4xRLiLSVXGy1jzMHJQDE6AoqKGdAZU9smgwM+tll/EJBP52WwC8s
- M5ImoL15HysJnmv+gB8IkU78FFOXF0elB5YE6Qy5smrFLVVjLcrBlx+1WKuW/qpQJgXNeAkFD
- Rxf8a9EGcZPpHxFgEpOLFD3uIPTfiJNBOzkYKYuSyf5pulHk3+YKPU4VuW0y4n2w03hsOfwqF
- jSkeTPMaRE65oqOQ+XjGOeKkbQOk/mK/AbqzRWSm9Dy8PwGHuHnEg9h2lzhzkNpXlLLlpAi+o
- 2fKzV18D3R5P/rlfGn/F7cujW2dTLNV/YbmU5flQsZ+AomOM2aBHIW7Xdav440QPkikPBffZq
- PzIQ/Tyb/CO8IKQnuTbiUADiIqQbbA1iFkk1DnXSZhuBB8oZzg99QwTxlK7v5Nxq+5kFKuKTs
- 5r6mkS6VjVtVrU9yInKoFV4lu4b8cveoBl3LlOy1pBHc2/4Nihsft95vrkFfUAzOr+K+4LAnx
- m+rgnXIAbcTDOnxBtCDJdXHtu6SywdzU2u4
+X-Received: by 2002:a92:cf48:: with SMTP id c8mr4985606ilr.237.1626623180239;
+ Sun, 18 Jul 2021 08:46:20 -0700 (PDT)
+Date:   Sun, 18 Jul 2021 08:46:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d77b6505c767b8f8@google.com>
+Subject: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
+From:   syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
+To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's moot, but for the record...
+Hello,
 
-@@ -2418,6 +2418,17 @@ static void __unfreeze_partials(struct k
->  	if (n)
->  		spin_unlock_irqrestore(&n->list_lock, flags);
->
-> +	/*
-> +	 * If we got here via __slab_free() -> put_cpu_partial(),
-> +	 * memcg_free_page_obj_cgroups() ->kfree() may send us
-> +	 * back to __slab_free() -> put_cpu_partial() for an
-> +	 * unfortunate second encounter with cpu_slab->lock.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RT) && memcg_kmem_enabled()) {
-> +		lockdep_assert_held(this_cpu_ptr(&s->cpu_slab.lock.lock));
+syzbot found the following issue on:
 
-...that assert needs to hide behind something less transparent.
+HEAD commit:    dd9c7df94c1b Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a9f66a300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b998c1afc13578
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b57a46bf1801ce2a2ca
+userspace arch: i386
 
-	-Mike
+Unfortunately, I don't have any reproducer for this issue yet.
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+usb 7-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType a1
+WARNING: CPU: 0 PID: 15508 at drivers/usb/core/urb.c:410 usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+Modules linked in:
+CPU: 0 PID: 15508 Comm: syz-executor.2 Not tainted 5.14.0-rc1-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+Code: 7c 24 40 e8 a5 e9 1f fc 48 8b 7c 24 40 e8 db 25 0c ff 45 89 e8 44 89 f1 4c 89 e2 48 89 c6 48 c7 c7 60 96 27 8a e8 e4 b2 91 03 <0f> 0b e9 a5 ee ff ff e8 77 e9 1f fc 0f b6 1d 37 2e 02 08 31 ff 41
+RSP: 0018:ffffc900021cfb88 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffff8880786df058 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815d6855 RDI: fffff52000439f63
+RBP: ffff88804a27bbe0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815d068e R11: 0000000000000000 R12: ffff8880168a42a8
+R13: 00000000000000a1 R14: 0000000080000280 R15: ffff888029c86f00
+FS:  0000000000000000(0000) GS:ffff88802ca00000(0063) knlGS:00000000f558cb40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000f5580db0 CR3: 0000000077c36000 CR4: 0000000000150ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ hid_submit_ctrl+0x6ec/0xd80 drivers/hid/usbhid/hid-core.c:416
+ usbhid_restart_ctrl_queue.isra.0+0x244/0x3a0 drivers/hid/usbhid/hid-core.c:258
+ __usbhid_submit_report+0x6f0/0xd50 drivers/hid/usbhid/hid-core.c:603
+ usbhid_submit_report drivers/hid/usbhid/hid-core.c:640 [inline]
+ usbhid_init_reports+0x16e/0x3b0 drivers/hid/usbhid/hid-core.c:784
+ hiddev_ioctl+0x10d4/0x1630 drivers/hid/usbhid/hiddev.c:794
+ compat_ptr_ioctl+0x67/0x90 fs/ioctl.c:1105
+ __do_compat_sys_ioctl+0x1c7/0x290 fs/ioctl.c:1167
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fb3549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f558c5fc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000c018480d
+RDX: 0000000020000080 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
