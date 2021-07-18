@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504703CC861
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254BE3CC854
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhGRKBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 06:01:06 -0400
-Received: from gateway36.websitewelcome.com ([192.185.193.119]:20579 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230446AbhGRKBF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 06:01:05 -0400
-X-Greylist: delayed 1501 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Jul 2021 06:01:05 EDT
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id 7491D400D6F9C
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 04:08:15 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id 52mVmiNpYL9qA52mVmCHe1; Sun, 18 Jul 2021 04:08:15 -0500
-X-Authority-Reason: nr=8
-Received: from host-79-37-206-118.retail.telecomitalia.it ([79.37.206.118]:53030 helo=f34.bristot.me)
-        by gator4132.hostgator.com with esmtpa (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1m52mR-001x7t-Kq; Sun, 18 Jul 2021 04:08:11 -0500
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        id S232002AbhGRJec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 05:34:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229863AbhGRJeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 05:34:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34BC960C3F;
+        Sun, 18 Jul 2021 09:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626600693;
+        bh=+rDFm9FsoZ08b6sGG01ofP3oHAAfan2l2sSh1XQwSR0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aAJYxQFsJbdGWKQX5mdFOrV/4Mbkl/qDKVE1yIy9pxZq4HHu+AWBm7dAXBHiriHrG
+         M6m8IZZlz8muKxk60d6kD7Ci0+jfD6udeh8+tb/Wjp4ehaNbxOk+whVAujiNEkYQKS
+         PHKvYjq3fNIu4UVm+Z7v4s1fZPkunITPVAf1yELADkVpf4vJWy/8lOCgPU6CkkrMob
+         G2A2DWUH3/st5jP+5I66EBcTvI628tSgsh/H2qXMbgg5RGPD0p0Qgg9hCd2BSvFR0S
+         Mooq4W/uqRwgTonQqFVILswVYaEe6mhHurnQ/7N9BoQJY/gSkg9c01sBSpCcowA3bv
+         jBJiC2NBzPWPw==
+Date:   Sun, 18 Jul 2021 12:31:21 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        linux-mm@kvack.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] trace/timerlat: Add a header with PREEMPT_RT additional fields
-Date:   Sun, 18 Jul 2021 11:07:54 +0200
-Message-Id: <babb83529a3211bd0805be0b8c21608230202c55.1626598844.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626598844.git.bristot@kernel.org>
-References: <cover.1626598844.git.bristot@kernel.org>
+Subject: Re: [PATCH v4 02/10] memblock: Add variables for usable memory
+ limitation
+Message-ID: <YPP06QG7hfypZgYg@kernel.org>
+References: <cover.1626266516.git.geert+renesas@glider.be>
+ <04c4d231fb03a3810d72a45c8a5bc2272c5975f3.1626266516.git.geert+renesas@glider.be>
+ <20210714135101.GB2441138@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.37.206.118
-X-Source-L: No
-X-Exim-ID: 1m52mR-001x7t-Kq
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-37-206-118.retail.telecomitalia.it (f34.bristot.me) [79.37.206.118]:53030
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 10
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714135101.GB2441138@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some extra flags are printed to the trace header when using the
-PREEMPT_RT config. The extra flags are: need-resched-lazy,
-preempt-lazy-depth, and migrate-disable.
+Hi,
 
-Without printing these fields, the timerlat specific fields are
-shifted by three positions, for example:
+On Wed, Jul 14, 2021 at 07:51:01AM -0600, Rob Herring wrote:
+> On Wed, Jul 14, 2021 at 02:50:12PM +0200, Geert Uytterhoeven wrote:
+> > Add two global variables (cap_mem_addr and cap_mem_size) for storing a
+> > base address and size, describing a limited region in which memory may
+> > be considered available for use by the kernel.  If enabled, memory
+> > outside of this range is not available for use.
+> > 
+> > These variables can by filled by firmware-specific code, and used in
+> > calls to memblock_cap_memory_range() by architecture-specific code.
+> > An example user is the parser of the "linux,usable-memory-range"
+> > property in the DT "/chosen" node.
+> > 
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > This is similar to how the initial ramdisk (phys_initrd_{start,size})
+> > and ELF core headers (elfcorehdr_{addr,size})) are handled.
+> > 
+> > Does there exist a suitable place in the common memblock code to call
+> > "memblock_cap_memory_range(cap_mem_addr, cap_mem_size)", or does this
+> > have to be done in architecture-specific code?
+> 
+> Can't you just call it from early_init_dt_scan_usablemem? If the 
+> property is present, you want to call it. If the property is not 
+> present, nothing happens.
 
- # tracer: timerlat
- #
- #                                _-----=> irqs-off
- #                               / _----=> need-resched
- #                              | / _---=> hardirq/softirq
- #                              || / _--=> preempt-depth
- #                              || /
- #                              ||||             ACTIVATION
- #           TASK-PID      CPU# ||||   TIMESTAMP    ID            CONTEXT                LATENCY
- #              | |         |   ||||      |         |                  |                       |
-           <idle>-0       [000] d..h...  3279.798871: #1     context    irq timer_latency       830 ns
-            <...>-807     [000] .......  3279.798881: #1     context thread timer_latency     11301 ns
+For memblock_cap_memory_range() to work properly it should be called after
+memory is detected and added to memblock with memblock_add[_node]()
 
-Add a new header for timerlat with the missing fields, to be used
-when the PREEMPT_RT is enabled.
+I'm not huge fan of adding more globals to memblock so if such ordering can
+be implemented on the DT side it would be great.
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/trace/trace_osnoise.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index 03ef720b491d..518a5c190b2b 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -354,6 +354,24 @@ static void trace_osnoise_sample(struct osnoise_sample *sample)
- /*
-  * Print the timerlat header info.
-  */
-+#ifdef CONFIG_PREEMPT_RT
-+static void print_timerlat_headers(struct seq_file *s)
-+{
-+	seq_puts(s, "#                                _-------=> irqs-off\n");
-+	seq_puts(s, "#                               / _------=> need-resched\n");
-+	seq_puts(s, "#                              | / _-----=> need-resched-lazy\n");
-+	seq_puts(s, "#                              || / _----=> hardirq/softirq\n");
-+	seq_puts(s, "#                              ||| / _---=> preempt-depth\n");
-+	seq_puts(s, "#                              |||| / _--=> preempt-lazy-depth\n");
-+	seq_puts(s, "#                              ||||| / _-=> migrate-disable\n");
-+	seq_puts(s, "#                              |||||| /\n");
-+	seq_puts(s, "#                              |||||||             ACTIVATION\n");
-+	seq_puts(s, "#           TASK-PID      CPU# |||||||   TIMESTAMP    ID     ");
-+	seq_puts(s, "       CONTEXT                LATENCY\n");
-+	seq_puts(s, "#              | |         |   |||||||      |         |      ");
-+	seq_puts(s, "            |                       |\n");
-+}
-+#else /* CONFIG_PREEMPT_RT */
- static void print_timerlat_headers(struct seq_file *s)
- {
- 	seq_puts(s, "#                                _-----=> irqs-off\n");
-@@ -367,6 +385,7 @@ static void print_timerlat_headers(struct seq_file *s)
- 	seq_puts(s, "#              | |         |   ||||      |         |      ");
- 	seq_puts(s, "            |                       |\n");
- }
-+#endif /* CONFIG_PREEMPT_RT */
+I don't see a way to actually enforce this ordering, so maybe we'd want to
+add warning in memblock_cap_memory_range() if memblock.memory is empty.
  
- /*
-  * Record an timerlat_sample into the tracer buffer.
--- 
-2.31.1
+> Rob
 
+-- 
+Sincerely yours,
+Mike.
