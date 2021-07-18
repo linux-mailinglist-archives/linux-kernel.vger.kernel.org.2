@@ -2,91 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F265A3CC8C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 13:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31123CC8C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 13:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhGRLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 07:35:31 -0400
-Received: from mout.gmx.net ([212.227.17.22]:53757 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232716AbhGRLfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 07:35:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626607941;
-        bh=LA49RbtvFLlDFLYkYUJ7wqBn32o6JA4TKOxnCiR8riU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=IAKSAeYIZzeXzWstR3EfVZWhw6zooTgiSU9m0+sNX8mzlZb9qHpjtK5AALuo8ntSa
-         jIlXNEdR2Y+dyB1/ky8+Euv4WfJ02jlDyhek9l96o5lxmHjFXYFyC3n7jmaaK1MsG4
-         26BRJYRGxl9GG+luMbiyCOnUvQbFuPebdvfMaIX4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MVN6t-1leW0I0EwZ-00SR95; Sun, 18 Jul 2021 13:32:21 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Len Baker <len.baker@gmx.com>, Lee Jones <lee.jones@linaro.org>,
-        Romain Perier <romain.perier@gmail.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Dmitrii Wolf <dev.dragon@bk.ru>,
-        Iain Craig <coldcity@gmail.com>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging/rtl8192u: Remove all strcpy() uses in favor of strscpy()
-Date:   Sun, 18 Jul 2021 13:32:07 +0200
-Message-Id: <20210718113207.10045-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S232967AbhGRLkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 07:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232685AbhGRLkV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 07:40:21 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69143C061762;
+        Sun, 18 Jul 2021 04:37:18 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id v1so19452150edt.6;
+        Sun, 18 Jul 2021 04:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PHSGuty7B6YPbzNEfZoQuX908EWj8TjgLEyoDQArPbY=;
+        b=hJN18CfEEkE/cugKeyj1SYBW9Lg5TNVKdTNTlRgKfefOOwd+8cUuqSF5m68G4ybP//
+         s/OCkyiVN7fnU9rqcM3mfuFrz+xFO/6Yahq/b111SZjy5ZDrcsadiuRjAI2oyeMQ/uFF
+         5/qsw4Rxg8sZV/FlBbVJGIMhM3/03emT/Swyq+/wQTnQfrFNEpbvAOwhdl0CewD20nEn
+         ebH1Swh4DuumFGxN16wEtKQvTdepIF5y1nihDHVURMSgUAth82OSNVdCMMZLRmpGJF1d
+         WeMgAdarlVc6rZJWBunOgC121EbH5PigtP9tFc4ieseqO8XAN4feZabeK/U7Yve1Ow/W
+         iTJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PHSGuty7B6YPbzNEfZoQuX908EWj8TjgLEyoDQArPbY=;
+        b=CDV2WIvo6Qr1mTXy90a9OEq56WhMi19BlZtvbompBgYHnfhnQXlWKRZOnqvEMqgLwv
+         FukuSYRkIoFIfcOawldr9WdtpCKABkVACFfqlSlhV4MoBHBKPw1LyrLbcQxbMnzncE55
+         wi6smuYuwsLd+zRZldJES0Q1/4X6Isp9NR+Yv8SQaBNjCN4Zrc0pphbq2cU23Opdpphi
+         zi4j7yEc85xiSma1MuMNRKjL4V0EorXQi+JJSTyapbXkEGPMxrZPqS2wnP/n1qbTKM4t
+         kD8mpkEeNMPM1U3A1yJqRJ7lUM4xfHDMY4kBlYxI43J0edYCM16sAYtIqPb3NI0bJmjH
+         jLWQ==
+X-Gm-Message-State: AOAM530tFURiPV1cEEcAzdnt8FP9/FOkh7k6iV4p9U4MVyyGAd5AZVCB
+        gnl4NX2nueWWnTPz5UBn8SZu+rgsFmEFIVRjv4I=
+X-Google-Smtp-Source: ABdhPJyZ/uIBWh6k8oyyLLVMxBTrqWfesWZ/ycTiPYUPmALnvu5NB4epSQ/odsfu7AvpOsOBet5S+b9cfadOkPgjV4k=
+X-Received: by 2002:aa7:c74e:: with SMTP id c14mr28017980eds.40.1626608235749;
+ Sun, 18 Jul 2021 04:37:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dBu3Bugp12qVQZxAg91AEm7ns7kPEURACegd5+ybpLZTG5IEete
- 1hFixhvOFQbOuaUw6Sugs3ePMYwswpVgXY3J2Vq3qQixiDbGKTlk6tuxMvzRpfBmu6lNxva
- /M+/jHjl+kA3Lx7EbQgFDy8PPz+04nRmmdRZmctJjLbOWvXO3Uux0vLYRuI6AGKC2hnEKg6
- CQyXXPLPyzSBEExUp1NFg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1yA/OMqDmt8=:hi9aDlDkPdyH1IELgu0gO1
- YC4XGCi+SEN9yOsPaVC3mmHBBK9YALdsf7+qXoa5/kD9mjDRakj/bC6j0jGdwSdYwdYI9O33e
- v87UnkynYZP7bdq9ZnzyiObVogRuOeS12BuwyvveNsF69cDK0Ans8d+ZwchjnXXBR8r12utdt
- /a14X+xmWxK7pTMo2iswVAPKSD64f8MRdpu6dGtQbFxoMVEtdlXoYw/Pq/qxfT7opFi5VP6zi
- 2Sk6EhIn5ffXNEL7zp7EodU1JVdw9B5gYlCDLGKarloe3st79nyzLUbJji2yIgFvXxb0c8vyL
- 7DevtH4MUiEGnmsUnqmiWAMveGYIjqEfYgljOkcw2kIA9eKhJwFnLM5AEnWl81ValnDhE4Gl3
- /fLRd61Puf+h+u9bck4aFeOlF9YibQHnyczFgoxu+QO/gsbwWZvThH8cdYzBUtP2HQNSa0Xxa
- N6MXRWZr6xP7KYFoeGDFbifx/90t1pwrH/tCXCk2QjePyQ1F4y6Yhi7JEN5cj80CthqrBAsht
- vi590xX7Uz/P026tIJ41dmHXbiSynjuUYd00iXSDHUu3GVf0wAlCqPsshiXwisZeZTCOoCBBT
- Y8x85bWx3L7g9l58P1BbC2IW6jVmR/f38TGCrExgC+Nd7C4BtI4IJzvyHCCVTiemPTpaP4e4+
- ku+y4qDjRyn5JC1Kj3SpqVOseDhtgL/JAz5WGRLr8fVpsTdpg6O1UhyAhFl5ykv+WgZn9iVxV
- N5fIz7pK0DQhnvZjr8ODeEFqhPhEg3+IgVXNSCHCLUeZ69ZnZrhJXjSu0G4bHIskGzMOwU/x8
- zLniHdvIje2fJZbS+C3X9a3We4gkGHc0OQ3AmxvotnXn61USXf/u1woD/dq/AJcJNXU7xFg4c
- S5DA4Wo+wnftnSeLmY+yWcJNRwrRwCzSVDWYT1Y+UqqDQwZXYLbmDivf2X3+RhK9mEb4GSj2V
- aj5Ef+DmYMxw4lDkXMi+PMHmMz4Y8W5JoeoM9m3UGKCxe3kIit82Bo1oE/GdrVeDRZT8MQvrf
- DwTsMsR4d/mia76xXdp3mRsy/O4zvTzlaj7i0cQUcAlpVAACwoOABWco8xaVIm1RD7Md2Gqyq
- 1gfa/N4D3TO5B7EHADjnvgtAaacH1anxvXl
+References: <20210716103651.1455-1-linux.amoon@gmail.com> <20210716103651.1455-2-linux.amoon@gmail.com>
+ <CAFBinCDeqauw_V-Vn9cat9HaCXj6HEMz6G+G+VbqCNtGEFGYzg@mail.gmail.com> <CANAwSgQ5PDGUWMH-jxnz5wwutUVniTn7RAe=4J=8-jbmqxYRRg@mail.gmail.com>
+In-Reply-To: <CANAwSgQ5PDGUWMH-jxnz5wwutUVniTn7RAe=4J=8-jbmqxYRRg@mail.gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 18 Jul 2021 13:37:04 +0200
+Message-ID: <CAFBinCBhg+dije+3DvV_V_kqHv9q+r4EPxXCYFti6KuA4mK7KQ@mail.gmail.com>
+Subject: Re: [PATCHv2 1/4] ARM: dts: meson8b: odroidc1: Add usb phy power node
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Matt Corallo <oc2udbzfd@mattcorallo.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>,
+        Brian Kim <brian.kim@hardkernel.com>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy().
+Hi Anand,
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Sun, Jul 18, 2021 at 5:38 AM Anand Moon <linux.amoon@gmail.com> wrote:
+[...]
+> > > enable input power to USB ports, set it to Active Low.
+> > >
+> > > [    1.253149] phy phy-c1108820.phy.0: Looking up phy-supply from device tree
+> > > [    1.253166] phy phy-c1108820.phy.0: Looking up phy-supply property
+> > >                 in node /soc/cbus@c1100000/phy@8820 failed
+> > high prio:
+> > Can you please describe how I can test this patch?
+> > My concern is that previously I have tested your patch with ACTIVE_LOW
+> > and ACTIVE_HIGH polarity.
+> > In both cases USB is working and I cannot observe any change (apart
+> > from this debug message being gone).
+> >
+> > In the Odroid-C1 schematics (page 1) GPIOAO.BIT5 is connected to USB_OTG *only*.
+> > I cannot give my Acked-/Reviewed-/Tested-by without a description of
+> > how I can actually test the GPIO potion of this patch.
+This question is still open.
+Even with all your explanations below I am missing a way to verify if
+GPIOAO_5 is the correct GPIO to use.
 
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/driv=
-ers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-index ab885353f668..1a193f900779 100644
-=2D-- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-@@ -2226,7 +2226,8 @@ static void ieee80211_start_ibss_wq(struct work_stru=
-ct *work)
- 	mutex_lock(&ieee->wx_mutex);
+> > [...]
+> > > +               /*
+> > > +                * signal name from schematics: PWREN - GPIOAO.BIT5
+> > > +                */
+> > > +               gpios = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
+> > low prio:
+> > Even though it's strictly not necessary I think this is confusing to read.
+> > Since there's no "enable-active-high" property the GPIO will be
+> > considered as "active low".
+> > My suggestion is to change GPIO_ACTIVE_HIGH to GPIO_ACTIVE_LOW
+> >
+> My apologies, I might have sent the wrong set of patches its
+> GPIO_ACTIVE_LOW I meant
+> I have formatted with and in the course of testing and verifying It
+> might have got SKIPPED.
+> I didn't do this intentionally it happen with a mistake with my two
+> repositories.
+> I don't intend to repeat my mistake, again and again, *sorry for the trouble*.
+no worries, that's why I mentioned that it's low priority
 
- 	if (ieee->current_network.ssid_len =3D=3D 0) {
--		strcpy(ieee->current_network.ssid, IEEE80211_DEFAULT_TX_ESSID);
-+		strscpy(ieee->current_network.ssid, IEEE80211_DEFAULT_TX_ESSID,
-+			sizeof(ieee->current_network.ssid));
- 		ieee->current_network.ssid_len =3D strlen(IEEE80211_DEFAULT_TX_ESSID);
- 		ieee->ssid_set =3D 1;
- 	}
-=2D-
-2.25.1
+> > Also if you have any extra information since you last pinged me on IRC
+> > then it would be great if you could document it.
+> > I am referring to these IRC message, where you are stating that the
+> > correct polarity should be "active high":
+> > <armoon> xdarklight I have a question on USB GPIO Polarity on Odroid C1+
+>  > <armoon> As per the
+> > https://dn.odroid.com/S805/Schematics/odroid-c1+_rev0.4_20160226.pdf
+> > <armoon> MP62551DGT-LF IC controls the power for the USB PORTS
+> > <armoon> https://www.mouser.com/datasheet/2/277/MP62550-1384050.pdf is
+> > MP62551DGT datasheet
+> > <armoon> As per the data sheet in section ORDERING INFORMATION  Active
+> > enable signal is set below MP62551DGT Active High
+> >
+>
+> [1] https://www.mouser.com/datasheet/2/277/MP62550-1384050.pdf
+>
+> I have read the datasheets MP62551DGT EN*  pin its Enable input. Active Low:
+>        *EN I Enable input. Active Low: (MP62550), Active High: (MP62551).*
+>
+> I have tested with ACTIVE_LOW and followed all the steps invalidating
+>  this with debugfs output.
+>
+> Last login: Tue Jul 13 00:02:49 2021 from 10.0.0.14
+> [alarm@archl-c1e ~]$ sudo cat /sys/kernel/debug/gpio | grep usb
+>  gpio-1953 (USB_HUB_RST_N       |usb-hub-reset       ) out hi
+>  gpio-1954 (USB_OTG_PWREN       |regulator-usb-pwr-en) out lo ACTIVE LOW
+This means that whatever is configured in the .dts is also showing up
+in debugfs.
+It doesn't mean that the correct GPIO or polarity is used -> that is
+why I want to understand how to actually test this patch.
+Technically I can write a patch that makes GPIOAO_13 (which is
+connected to the status LED) show up as being used by
+regulator-usb-pwr-en in debugfs.
 
+[...]
+> > >  &usb1_phy {
+> > >         status = "okay";
+> > > +       phy-supply = <&usb_pwr_en>;
+> > medium priority:
+> > I have raised the following concern in one of my previous emails on this topic:
+> > > The mistake I made before is considering USB VBUS as PHY power supply.
+> > > I believe the USB PHY is actually powered by the AVDD18_USB_ADC and
+> > > USB33_VDDIOH signals. See the S905 datasheet [0], page 25
+> > > These are 1.8V and 3.3V signals while you are adding a 5V regulator.
+> > you replied with:
+> > > OK, thanks.
+> > so I don't understand what "OK, thanks" means.
+> > If it means "Martin, you are wrong" then please provide a description
+> > so I can also learn something!
+>
+> Yes, I understood your inputs. But from the logs below is seen to
+> looking for phy-supply
+This sentence is correct
+
+> This is the reason I went ahead with phy-supply as the core phy node
+> needs this property.
+This sentence is not correct
+From drivers/phy/phy-core.c:
+    phy->pwr = regulator_get_optional(&phy->dev, "phy");
+
+As you can see, the "phy-supply" regulator is marked as optional in
+the PHY subsystem.
+This matches with
+Documentation/devicetree/bindings/phy/phy-bindings.txt where
+"phy-supply" is marked as an optional property.
+
+> Please check below commit
+> e841ec956e53 ("ARM64: dts: meson-gxbb-odroidc2: fix usb1 power supply")
+That commit is from 2017. You'll also find some commits where I am
+also using the phy-supply property (I didn't know better back then).
+However, in 2018 things changed when the dwc2 driver gained a
+vbus-supply property in commit 531ef5ebea9639 ("usb: dwc2: add support
+for host mode external vbus supply")
+So for new .dts support phy-supply should not be used anymore for VBUS
+because phy-supply (described as "Phandle to a regulator that provides
+power to the PHY." in
+Documentation/devicetree/bindings/phy/phy-bindings.txt) and
+vbus-supply are two different things.
+
+
+Best regards,
+Martin
