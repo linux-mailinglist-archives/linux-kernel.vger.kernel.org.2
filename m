@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F613CCA79
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 21:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723FB3CCA80
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 21:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhGRTkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 15:40:03 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53384 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbhGRTj5 (ORCPT
+        id S230324AbhGRTqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 15:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhGRTqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 15:39:57 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 46F1E1FF85;
-        Sun, 18 Jul 2021 19:36:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626637017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4VE9wboOFBx1A8aW4S+ryH5vyFPrMvrAxG+rYAOecbI=;
-        b=ukHRmbXDBEVbDHcM8eunsLDAOCZk5tNxG2yqo2wO+OmNccN+pO9QVa8fBvTTQ+h1/EaJe+
-        qsC1Me6BrCQHMrj/f3WSmmaTpkRy3BWLxX1oG5wrL3f/tcP4ZLSyMqvPiEb1Kzeuo4vzpa
-        F7wuGKbvUdPQgRGF0k2/WVsElwduTII=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626637017;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4VE9wboOFBx1A8aW4S+ryH5vyFPrMvrAxG+rYAOecbI=;
-        b=P4Wce5HwkC9qDoGp1bzga35bz0KN5aO0WYhI+Y8CCVO4Vs+nvxKEGEASXw86rC2vKUtHP2
-        DJOa6+oJWTVjvIDA==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id AEAC5A3B83;
-        Sun, 18 Jul 2021 19:36:56 +0000 (UTC)
-Date:   Sun, 18 Jul 2021 21:36:55 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-riscv@lists.infradead.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] libbpf: Remove from kernel tree.
-Message-ID: <20210718193655.GP24916@kitsune.suse.cz>
-References: <20210718065039.15627-1-msuchanek@suse.de>
- <c621c6c6-ad2d-5ce0-3f8c-014daf7cad64@iogearbox.net>
+        Sun, 18 Jul 2021 15:46:17 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292E0C061762;
+        Sun, 18 Jul 2021 12:43:19 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id bt15so10058638pjb.2;
+        Sun, 18 Jul 2021 12:43:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7exFBskhTjXcI0G1jQYaweC6zi6nB0YxhW9GhW8QVJk=;
+        b=hTAqgsHvvgfNcEagZtVOoEg9FPZ1K7swFoeQE74LVxhVPjWe4cMJ36z1icfI5N90l0
+         Q5NEeHaePN4cZlD/CHtW4Q3HajTJXac5NUjQ3Tfn2qYdk7cJOxD93QiuahCUEOdvoYan
+         yWAQXjAMKElZboyb3fVwi3x1JZL/sJ6Kaf4cbOmJ4HWzjIM7H5CRcv+C/ovoiTK5KLZO
+         MewH468+Xkk/Jq2ehDT+j7bKEfHjqYerJXYXfL+fUWicAa9dKBPN3mXL6A41iuyJcvu0
+         q699wJgigkj4sMp84K14HXfLRz4drOEqjzlqLQhWSBDA6e5vjBNH9oe/EgXH+w0RCd+7
+         LXXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7exFBskhTjXcI0G1jQYaweC6zi6nB0YxhW9GhW8QVJk=;
+        b=hzXQQjqBS0Dn4fcomJyCxdw5jlUTqkBv7NNsLWVST38focPuLioFLiv39VW7D2xDT3
+         U86rtZtpcNuNJwPPRchhD54vpO5K89FUpr4Wnr/NtUdis/SQVXveaHnv7ITBxSWY1Ix4
+         LeILry6BiLyVOILgsQLL5bT+imfUV8iUPQPx4zj10Ab0jV+IZlp95rofNGF9e69R0CEA
+         Ttp6BlOg3mC/ZuARw/n59Ip8yFJVjcC7J7Xt2kPLmY7RD1aG0RzxBTsiFF84/RsWAHnW
+         b73xbCQwwHC0ZHzs5at4lTbo0zNbjZcobfKJ4jgI20Qbp2izi1CD86lCncL9qLqxuHff
+         X1sg==
+X-Gm-Message-State: AOAM531FSTCXOaSqt7UbuJwxC+lz1d/Wl3G0M/SieLiC6nZErNQ+dHl8
+        ISGzI7P6PZ1uL2KdfmZ8yJxtzuyLyOrje/xm6aw=
+X-Google-Smtp-Source: ABdhPJxzjFnbQny4tL/Gtmd96c7VmxuNdY93ug+tJ2p9Dj5gOXvWXiaA+eeh1wWvAvNR+4wesFTmw2sp9FFlCmRM9oI=
+X-Received: by 2002:a17:902:b198:b029:11b:2246:e374 with SMTP id
+ s24-20020a170902b198b029011b2246e374mr16552094plr.17.1626637398478; Sun, 18
+ Jul 2021 12:43:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c621c6c6-ad2d-5ce0-3f8c-014daf7cad64@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210718133920.15825-1-len.baker@gmx.com>
+In-Reply-To: <20210718133920.15825-1-len.baker@gmx.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 18 Jul 2021 22:42:42 +0300
+Message-ID: <CAHp75VeEA0=KFsfdjCnBm-b9+F+NnFWJ38nkh+qtb85XdXVWog@mail.gmail.com>
+Subject: Re: [PATCH] staging/fbtft: Remove all strcpy() uses
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Phil Reid <preid@electromag.com.au>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 09:04:16PM +0200, Daniel Borkmann wrote:
-> On 7/18/21 8:50 AM, Michal Suchanek wrote:
-> > libbpf shipped by the kernel is outdated and has problems. Remove it.
-> > 
-> > Current version of libbpf is available at
-> > 
-> > https://github.com/libbpf/libbpf
-> > 
-> > Link: https://lore.kernel.org/bpf/b07015ebd7bbadb06a95a5105d9f6b4ed5817b2f.camel@debian.org/
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> 
-> NAK, I'm not applying any of this. If there are issues, then fix them. If
+On Sun, Jul 18, 2021 at 4:43 PM Len Baker <len.baker@gmx.com> wrote:
+>
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. The safe replacement is strscpy() but in
+> this case it is simpler to add NULL to the first position since we want
+> to empty the string.
 
-They are fixed in the github version.
+> This is a previous step in the path to remove the strcpy() function.
 
-> you would have checked tools/lib/bpf/ git history, you would have found
-> that libbpf is under active development in the upstream kernel tree and
+Any document behind this (something to read on the site(s) more or
+less affiliated with what is going to happen in the kernel) to read
+background?
 
-So is the github version.
+...
 
-> you could have spared yourself this patch.
+>                 case -1:
+>                         i++;
+>                         /* make debug message */
+> -                       strcpy(msg, "");
+> +                       msg[0] = 0;
 
-You could have spared me a lot of problems if there was only one source
-for libbpf.
+Strictly speaking it should be '\0'.
 
-Can't you BPF people agree on one place to develop the library?
+>                         j = i + 1;
+>                         while (par->init_sequence[j] >= 0) {
+>                                 sprintf(str, "0x%02X ", par->init_sequence[j]);
 
-Thanks
 
-Michal
+-- 
+With Best Regards,
+Andy Shevchenko
