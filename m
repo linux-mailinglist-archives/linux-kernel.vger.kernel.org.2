@@ -2,150 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BBA3CCAB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD513CCAB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbhGRVEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 17:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhGRVEL (ORCPT
+        id S232973AbhGRVE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 17:04:28 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:55588 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhGRVE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 17:04:11 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E723C061762;
-        Sun, 18 Jul 2021 14:01:12 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id w14so20872677edc.8;
-        Sun, 18 Jul 2021 14:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wkVpMiI/1dyHY4pesGQ09SEuq36Bw6ApFoQ9agB3/Rs=;
-        b=ll9QRUPfovKVcEoesAgjgOil/BYS4M+JmcoKCWUhoYpDtV33nYNXPuBVeQUcRhghvt
-         q4tDTYwLHpQ2CUQhUNmH4gS7ss2PnNPMLcRdvTElq522RvlY9ccTgwh2l8WKCEvHvCYQ
-         2N/ZSWFADTcM0bpuV8FI43bfcx6bbodmfphyS8ZWrh3zK/+dSXvyMU8gO9uJU0U+wUut
-         dxUTOxfIq1Zw/OWTlffnmRdabNNFZPejiUFa4shkg1/kA8l7l24S/0JaD0J5xtIkL0tb
-         YhKhI7tJf1MqXeS65SVJXlXi5dU5tpN73TPLych6g0LeKoX+mcRWKQOIRK3I2JmsnqPD
-         NBWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wkVpMiI/1dyHY4pesGQ09SEuq36Bw6ApFoQ9agB3/Rs=;
-        b=tUzZX6r0jPFoaN4RhgTRZIqUfawjbNddgL4vhq+JkVCF616R6N6H4kTHagCWMAYSbH
-         hS/LCsrWNFeQVjEh9QGvcLA2s1HHtA14slfRTrB7pJEcJCTxRg02D86J0YlZ6Dk6S3TI
-         nkKdX9B9QxvLQKHFI4qQNGIBLeKKMLaHocUJEhjli+nsK0cBQMMaVs+PdjbpJOVWO/2w
-         Rv3zF38+EaTaH+9Wnvx4ar2Yw03wI9dx9YxhtKJrKx4L+kBQ15CHNxWVwjzNfWgOVOv5
-         hKZwdcTct8p06F8dqPPFRDVvtSvJm2Mf0Q2mNX3J2xq/ygNmaxx4Ii5YU5CofdRgkuop
-         Ofdw==
-X-Gm-Message-State: AOAM5310grfKm7KmAQfFVfh1NhIa+0ABvAPBPebv0n/ifHH+GQFmdrIS
-        Wty7qbmMl5S5jGbnbM5GVyw=
-X-Google-Smtp-Source: ABdhPJyH8VIts6bNGMlGzRD2vwvN1gTii7t146Vo+1gbteyJCZYUN9uWSjc25YWsb6plEEjMKicJaQ==
-X-Received: by 2002:a50:a456:: with SMTP id v22mr24604309edb.333.1626642070846;
-        Sun, 18 Jul 2021 14:01:10 -0700 (PDT)
-Received: from localhost.localdomain ([176.30.96.12])
-        by smtp.gmail.com with ESMTPSA id jw8sm5112825ejc.60.2021.07.18.14.01.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jul 2021 14:01:10 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, kaber@trash.net,
-        david.ward@ll.mit.edu
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+5cfab121b54dff775399@syzkaller.appspotmail.com
-Subject: [PATCH] net: 802: fix memory leak in mrp_uninit_applicant
-Date:   Mon, 19 Jul 2021 00:01:04 +0300
-Message-Id: <20210718210104.30285-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Sun, 18 Jul 2021 17:04:27 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id ACB80B3DDA6;
+        Sun, 18 Jul 2021 23:01:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1626642086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nuNEHpRuvz2uyV8EpNDOxUhNUR1kzfNBXqMI2tk0wGo=;
+        b=PbkHcDtD7NiQwH9x/u+3Ey2V9td+Iwx46hM6Aa00WEPHpVW/Eaf0AVOCwuNeRsXKCRU5KA
+        YPHA1Jw1WNiCkmrvyT+W30FJJIlvrTrjzmkr/9/gPRmu8RxbRAGl9Ep0kcF8Mqtmt420XA
+        h1WD1iJ7L8nfeg6R3hDlEnbIjKC91cU=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-stable@vger.kernel.org,
+        Chris Clayton <chris2553@googlemail.com>,
+        Chris Rankin <rankincj@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Date:   Sun, 18 Jul 2021 23:01:24 +0200
+Message-ID: <2245518.LNIG0phfVR@natalenko.name>
+In-Reply-To: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
+References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported memory leak in mrp_uninit_applicant(). The problem was
-in missing clean up function in mrp_uninit_applicant().
+Hello.
 
-The reproducer provided by syzbot doing following things in order:
+On sobota 17. =C4=8Dervence 2021 22:22:08 CEST Chris Clayton wrote:
+> I checked the output from dmesg yesterday and found the following warning:
+>=20
+> [Fri Jul 16 09:15:29 2021] ------------[ cut here ]------------
+> [Fri Jul 16 09:15:29 2021] WARNING: CPU: 11 PID: 2701 at
+> kernel/rcu/tree_plugin.h:359 rcu_note_context_switch+0x37/0x3d0 [Fri Jul =
+16
+> 09:15:29 2021] Modules linked in: uas hidp rfcomm bnep xt_MASQUERADE
+> iptable_nat nf_nat xt_LOG nf_log_syslog xt_limit xt_multiport xt_conntrack
+> iptable_filter btusb btintel wmi_bmof uvcvideo videobuf2_vmalloc
+> videobuf2_memops videobuf2_v4l2 videobuf2_common coretemp hwmon
+> snd_hda_codec_hdmi x86_pkg_temp_thermal snd_hda_codec_realtek
+> snd_hda_codec_generic ledtrig_audio snd_hda_intel snd_intel_dspcfg
+> snd_hda_codec snd_hwdep snd_hda_core i2c_i801 i2c_smbus iwlmvm mac80211
+> iwlwifi i915 mei_me mei cfg80211 intel_lpss_pci intel_lpss wmi
+> nf_conntrack_ftp xt_helper nf_conntrack nf_defrag_ipv4 tun
+> [Fri Jul 16 09:15:29 2021] CPU: 11 PID: 2701 Comm: lpqd Not tainted 5.13.2
+> #1 [Fri Jul 16 09:15:29 2021] Hardware name: Notebook                    =
+ =20
+>   NP50DE_DB                       /NP50DE_DB , BIOS 1.07.04 02/17/2020
+> [Fri Jul 16 09:15:29 2021] RIP: 0010:rcu_note_context_switch+0x37/0x3d0
+> [Fri Jul 16 09:15:29 2021] Code: 02 00 e8 ec a0 6c 00 89 c0 65 4c 8b 2c 25
+> 00 6d 01 00 48 03 1c c5 80 56 e1 b6 40 84 ed 75 0d 41 8b 95 04 03 00 00 85
+> d2 7e 02 <0f> 0b 65 48 8b 04 25 00 6d 01 00 8b 80 04 03 00 00 85 c0 7e 0a
+> 41 [Fri Jul 16 09:15:29 2021] RSP: 0000:ffffb5d483837c70 EFLAGS: 00010002
+> [Fri Jul 16 09:15:29 2021] RAX: 000000000000000b RBX: ffff9b77806e1d80 RC=
+X:
+> 0000000000000100 [Fri Jul 16 09:15:29 2021] RDX: 0000000000000001 RSI:
+> ffffffffb6d82ead RDI: ffffffffb6da5e4e [Fri Jul 16 09:15:29 2021] RBP:
+> 0000000000000000 R08: 0000000000000001 R09: 0000000000000000 [Fri Jul 16
+> 09:15:29 2021] R10: 000000067bce4fff R11: 0000000000000000 R12:
+> ffff9b77806e1100 [Fri Jul 16 09:15:29 2021] R13: ffff9b734a833a00 R14:
+> ffff9b734a833a00 R15: 0000000000000000 [Fri Jul 16 09:15:29 2021] FS:=20
+> 00007fccbfc5fe40(0000) GS:ffff9b77806c0000(0000) knlGS:0000000000000000
+> [Fri Jul 16 09:15:29 2021] CS:  0010 DS: 0000 ES: 0000 CR0:
+> 0000000080050033 [Fri Jul 16 09:15:29 2021] CR2: 00007fccc2db7290 CR3:
+> 00000003fb0b8002 CR4: 00000000007706e0 [Fri Jul 16 09:15:29 2021] PKRU:
+> 55555554
+> [Fri Jul 16 09:15:29 2021] Call Trace:
+> [Fri Jul 16 09:15:29 2021]  __schedule+0x86/0x810
+> [Fri Jul 16 09:15:29 2021]  schedule+0x40/0xe0
+> [Fri Jul 16 09:15:29 2021]  io_schedule+0x3d/0x60
+> [Fri Jul 16 09:15:29 2021]  wait_on_page_bit_common+0x129/0x390
+> [Fri Jul 16 09:15:29 2021]  ? __filemap_set_wb_err+0x10/0x10
+> [Fri Jul 16 09:15:29 2021]  __lock_page_or_retry+0x13f/0x1d0
+> [Fri Jul 16 09:15:29 2021]  do_swap_page+0x335/0x5b0
+> [Fri Jul 16 09:15:29 2021]  __handle_mm_fault+0x444/0xb20
+> [Fri Jul 16 09:15:29 2021]  handle_mm_fault+0x5c/0x170
+> [Fri Jul 16 09:15:29 2021]  ? find_vma+0x5b/0x70
+> [Fri Jul 16 09:15:29 2021]  exc_page_fault+0x1ab/0x610
+> [Fri Jul 16 09:15:29 2021]  ? fpregs_assert_state_consistent+0x19/0x40
+> [Fri Jul 16 09:15:29 2021]  ? asm_exc_page_fault+0x8/0x30
+> [Fri Jul 16 09:15:29 2021]  asm_exc_page_fault+0x1e/0x30
+> [Fri Jul 16 09:15:29 2021] RIP: 0033:0x7fccc2d3c520
+> [Fri Jul 16 09:15:29 2021] Code: 68 4c 00 00 00 e9 20 fb ff ff ff 25 7a ad
+> 07 00 68 4d 00 00 00 e9 10 fb ff ff ff 25 72 ad 07 00 68 4e 00 00 00 e9 00
+> fb ff ff <ff> 25 6a ad 07 00 68 4f 00 00 00 e9 f0 fa ff ff ff 25 62 ad 07
+> 00 [Fri Jul 16 09:15:29 2021] RSP: 002b:00007ffebd529048 EFLAGS: 00010293
+> [Fri Jul 16 09:15:29 2021] RAX: 0000000000000001 RBX: 00007fccc46e2890 RC=
+X:
+> 0000000000000010 [Fri Jul 16 09:15:29 2021] RDX: 0000000000000010 RSI:
+> 0000000000000000 RDI: 00007fccc46e2890 [Fri Jul 16 09:15:29 2021] RBP:
+> 000056264f1dd4a0 R08: 000056264f21aba0 R09: 000056264f1f58a0 [Fri Jul 16
+> 09:15:29 2021] R10: 0000000000000007 R11: 0000000000000246 R12:
+> 000056264f21ac00 [Fri Jul 16 09:15:29 2021] R13: 000056264f1e0a30 R14:
+> 00007ffebd529080 R15: 00000000000dd87b [Fri Jul 16 09:15:29 2021] ---[ end
+> trace c8b06e067d8b0fc2 ]---
+>=20
+> At the time the warning was issued I was creating a (weekly) backup of my
+> linux system (home-brewed based on the guidance from Linux From Scratch).
+> My backup routine is completed by copying the archive files (created with
+> dar) and a directory that contains about 7000 source and binary rpm files
+> to an external USB drive. I didn't spot the warning until later in the da=
+y,
+> so I'm not sure exactly where I was in my backup process.
+>=20
+> I haven't seen this warning before. Consequently, I don;t know how easy (=
+or
+> otherwise) it is to reproduce.
+>=20
+> Let me know if I can provide any additional diagnostics, but please cc me=
+ as
+> I'm not subscribed.
 
-	1. mrp_request_join()
-	     mrp_attr_event(app, attr, MRP_EVENT_JOIN);
-		/* attr->state == MRP_APPLICANT_VP */
+Confirming the same for me with v5.13.2, and cross-referencing another
+report [1] against v5.12.17.
 
-	2. mrp_request_leave()
-	     mrp_attr_event(app, attr, MRP_EVENT_LV);
-		/* attr->state == MRP_APPLICANT_VO */
+Also Cc'ing relevant people on this.
 
-	3. mrp_uninit_applicant()
-  	     mrp_mad_event(app, MRP_EVENT_TX);
-		/* attr is not freed */
+Thanks.
 
-Why attr won't be freed? Since last event == MRP_EVENT_TX let's refer
-to mrp_tx_action_table:
+[1] https://lore.kernel.org/lkml/CAK2bqVK0Q9YcpakE7_Rc6nr-E4e2GnMOgi5jJj=3D=
+_Eh_1kEHLHA@mail.gmail.com/
 
-static const u8
-mrp_tx_action_table[MRP_APPLICANT_MAX + 1] = {
-	[MRP_APPLICANT_VO] = MRP_TX_ACTION_S_IN_OPTIONAL,
-	[MRP_APPLICANT_VP] = MRP_TX_ACTION_S_JOIN_IN,
-	[MRP_APPLICANT_VN] = MRP_TX_ACTION_S_NEW,
-	[MRP_APPLICANT_AN] = MRP_TX_ACTION_S_NEW,
-	[MRP_APPLICANT_AA] = MRP_TX_ACTION_S_JOIN_IN,
-	[MRP_APPLICANT_QA] = MRP_TX_ACTION_S_JOIN_IN_OPTIONAL,
-	[MRP_APPLICANT_LA] = MRP_TX_ACTION_S_LV,
-	[MRP_APPLICANT_AO] = MRP_TX_ACTION_S_IN_OPTIONAL,
-	[MRP_APPLICANT_QO] = MRP_TX_ACTION_S_IN_OPTIONAL,
-	[MRP_APPLICANT_AP] = MRP_TX_ACTION_S_JOIN_IN,
-	[MRP_APPLICANT_QP] = MRP_TX_ACTION_S_IN_OPTIONAL,
-};
 
-[MRP_APPLICANT_VO] member has MRP_TX_ACTION_S_IN_OPTIONAL action and
-mrp_attr_event() just returns in case of this action.
-Since mrp_uninit_applicant() is destroy function for applicant we need
-to free remaining attrs to avoid memory leaks.
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
-Reported-and-tested-by: syzbot+5cfab121b54dff775399@syzkaller.appspotmail.com
-Fixes: febf018d2234 ("net/802: Implement Multiple Registration Protocol (MRP)")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/802/mrp.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/net/802/mrp.c b/net/802/mrp.c
-index bea6e43d45a0..bf319f3f2094 100644
---- a/net/802/mrp.c
-+++ b/net/802/mrp.c
-@@ -834,6 +834,16 @@ static void mrp_release_port(struct net_device *dev)
- 	kfree_rcu(port, rcu);
- }
- 
-+static void mrp_destroy_remaining_attrs(struct mrp_applicant *app)
-+{
-+	while (!RB_EMPTY_ROOT(&app->mad)) {
-+		struct mrp_attr *attr =
-+			rb_entry(rb_first(&app->mad),
-+				 struct mrp_attr, node);
-+		mrp_attr_destroy(app, attr);
-+	}
-+}
-+
- int mrp_init_applicant(struct net_device *dev, struct mrp_application *appl)
- {
- 	struct mrp_applicant *app;
-@@ -896,6 +906,13 @@ void mrp_uninit_applicant(struct net_device *dev, struct mrp_application *appl)
- 	spin_lock_bh(&app->lock);
- 	mrp_mad_event(app, MRP_EVENT_TX);
- 	mrp_pdu_queue(app);
-+
-+	/* We need to free remaining attrs since this scenario is possible:
-+	 *	mrp_request_join()
-+	 *	mrp_request_leave()
-+	 *	mrp_uninit_applicant()
-+	 */
-+	mrp_destroy_remaining_attrs(app);
- 	spin_unlock_bh(&app->lock);
- 
- 	mrp_queue_xmit(app);
--- 
-2.32.0
 
