@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235103CC9B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 17:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580D03CC9BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 17:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234040AbhGRPLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 11:11:47 -0400
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:35803 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbhGRPLr (ORCPT
+        id S234049AbhGRPYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 11:24:35 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:18272 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232895AbhGRPYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 11:11:47 -0400
-Received: by mail-pj1-f47.google.com with SMTP id gp5-20020a17090adf05b0290175c085e7a5so5186260pjb.0;
-        Sun, 18 Jul 2021 08:08:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4zq80uEtE5BBY4R3qEiD4+J935URhD9frNVaQc5xESk=;
-        b=JoPwc+Tp/TuFzYX5fYP+BPp48Z6q0xZULETotGBZcZk9DhMCuTDOZGwbPWxIgr8Sle
-         XNTTqwlgwSUQg6WaWBkb/7U+NwdQt7lhBce5b46WUQqxWVIKB3ZhDOHlxOqBhtonpAWj
-         5OeuGfYp1QOHwOW/eXLgPcDekSI9LomYqGsQyNawDd2Urpm9VksntutOVE0z0/eqKIk0
-         n9/WOdqsdVKasG6yW4MOQXrEtR/fgtrJh5Ntyt2Ne2oJEcCXB5WFnFIb85fbLksXqx/d
-         nnbH+ZVouRCqcYyvHk9hY7PRwoJFQTnXEE1y8rKmxdFJugTdrm2wnYbEAXcbcDl2DUwy
-         d4gQ==
-X-Gm-Message-State: AOAM531bXKPUOVe89WJKs5nu79mlY6jRcEUjgx/MPzmBt/FDxh85s/ag
-        iw+jUSjcEg5SyAAr2C8fq10=
-X-Google-Smtp-Source: ABdhPJwBWQU4uhGsNRdgKws1foJV/PHgABwGPtiR4POfUFXAth50N47yKiUgnKw2jAaJ3WiMXMG8DA==
-X-Received: by 2002:a17:90a:dc0a:: with SMTP id i10mr20352871pjv.136.1626620927883;
-        Sun, 18 Jul 2021 08:08:47 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
-        by smtp.gmail.com with ESMTPSA id v23sm16793602pje.33.2021.07.18.08.08.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jul 2021 08:08:46 -0700 (PDT)
-Date:   Sun, 18 Jul 2021 08:08:45 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     trix@redhat.com
-Cc:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 0/7]  wrappers for fpga_manager_ops
-Message-ID: <YPRD/WPxvzI3GxmB@epycbox.lan>
-References: <20210625195148.837230-1-trix@redhat.com>
+        Sun, 18 Jul 2021 11:24:34 -0400
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 16IFLJKS001749;
+        Mon, 19 Jul 2021 00:21:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 16IFLJKS001749
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1626621679;
+        bh=94bI8XIbdkrYTDoJTP2YnBc4d8x/+TbzJfHfFZEdmDw=;
+        h=From:Date:Subject:To:Cc:From;
+        b=2INYdstQDj8MpApo+ss4CPLbbtUg9q//bko+nJFUK+uINY+mlD/QSOjsFRkk0Axit
+         ILZr0Ebu9MbsScTgfwjE2fsVKt5myOS5cvvi+2q607uUj3rNxGUioNvGmYSWxYnnx7
+         AMewQLG8nuYMlL83LhMhCiUnMWw1cnMXTSg4mNhZf9AzlALFr5OylAIvhSzG1vyb3i
+         5WJ02+gyj7308Mz061NZROgjPheIseqMXCbbOA0Eg2b+K3wjp3VGsz8x8go1f8taAb
+         fezpYgfvY0zX8axrpgTr+5iJwHLZOnDlS5Sas9ma7S6t5MRzWoVP9Pbqx5sFNGHJYB
+         RHVFRVjOLyRMA==
+X-Nifty-SrcIP: [209.85.210.169]
+Received: by mail-pf1-f169.google.com with SMTP id o201so13889568pfd.1;
+        Sun, 18 Jul 2021 08:21:19 -0700 (PDT)
+X-Gm-Message-State: AOAM5326/+eFoBj6FxoXEachEaTqxEYQpczh6Bo3yFUDGbIlC8G9aIDn
+        XNO3dOGPOrpYhsi8fENFeZu00bFDUY3Eqvs9Ju4=
+X-Google-Smtp-Source: ABdhPJylFtMhyWkA1Weq9xdjXS5tJitlTouANQK8hvs0urvGqJneYaN6ABGr44k3K9oSCx8qO8qggji16UhNFHKSe7M=
+X-Received: by 2002:a65:498a:: with SMTP id r10mr20974249pgs.7.1626621678842;
+ Sun, 18 Jul 2021 08:21:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625195148.837230-1-trix@redhat.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 19 Jul 2021 00:20:42 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQDiO4fsn8W11qoLMvryJadsgoHm6HeXFvqOz5Mzzb1Jw@mail.gmail.com>
+Message-ID: <CAK7LNAQDiO4fsn8W11qoLMvryJadsgoHm6HeXFvqOz5Mzzb1Jw@mail.gmail.com>
+Subject: [GIT PULL] Kbuild fixes for v5.14-rc2
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:51:40PM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> As followup from
-> https://lore.kernel.org/linux-fpga/06301910-10a1-0e62-45a0-d28ab5a787ed@redhat.com/
-> 
-> Boards should not be required to have noop functions.
-> So improve or create fpga-mgr wrappers for the fpga_manager_ops.  
-> Remove the noop functions.
-> Refactor fpga-mgr to use the wrappers.
-> 
-> Changes from
-> 
-> v1:
->   commit subject,log
-> 
-> v2:
->   rebase to next-20210623
-> 
-> v3:
->   remove mops check
->   add write_sg wrapper
->   drop 'fpga-mgr: collect wappers and change to inline'
-> 
-> Tom Rix (7):
->   fpga-mgr: wrap the write_init() op
->   fpga-mgr: make write_complete() op optional
->   fpga-mgr: wrap the write() op
->   fpga-mgr: wrap the status() op
->   fpga-mgr: wrap the state() op
->   fpga-mgr: wrap the fpga_remove() op
->   fpga-mgr: wrap the write_sg() op
-> 
->  drivers/fpga/dfl-fme-mgr.c   |   6 --
->  drivers/fpga/fpga-mgr.c      | 111 +++++++++++++++++++++++------------
->  drivers/fpga/stratix10-soc.c |   6 --
->  drivers/fpga/ts73xx-fpga.c   |   6 --
->  drivers/fpga/zynqmp-fpga.c   |   7 ---
->  5 files changed, 75 insertions(+), 61 deletions(-)
-> 
-> -- 
-> 2.26.3
-> 
+Hi Linus,
 
-Appled to for-next,
+Please pull some Kbuild fixes.
+Thanks.
 
-Thanks
+
+
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-fixes-v5.14
+
+for you to fetch changes up to 5e60f363b38fd40e4d8838b5d6f4d4ecee92c777:
+
+  Documentation: Fix intiramfs script name (2021-07-18 23:48:14 +0900)
+
+----------------------------------------------------------------
+Kbuild fixes for v5.14
+
+ - Restore the original behavior of scripts/setlocalversion when
+   LOCALVERSION is set to empty.
+
+ - Show Kconfig prompts even for 'make -s'
+
+ - Fix the combination of COFNIG_LTO_CLANG=y and CONFIG_MODVERSIONS=y
+   for older GNU Make versions
+
+----------------------------------------------------------------
+Lecopzer Chen (1):
+      Kbuild: lto: fix module versionings mismatch in GNU make 3.X
+
+Masahiro Yamada (1):
+      kbuild: do not suppress Kconfig prompts for silent build
+
+Mikulas Patocka (1):
+      scripts/setlocalversion: fix a bug when LOCALVERSION is empty
+
+Robert Richter (1):
+      Documentation: Fix intiramfs script name
+
+ Documentation/driver-api/early-userspace/early_userspace_support.rst
+|  8 ++++----
+ Documentation/filesystems/ramfs-rootfs-initramfs.rst                 |  2 +-
+ Makefile
+|  9 +++++----
+ scripts/Makefile.build                                               |  2 +-
+ scripts/setlocalversion
+| 13 ++++++++-----
+ 5 files changed, 19 insertions(+), 15 deletions(-)
+
+
+-- 
+Best Regards
+Masahiro Yamada
