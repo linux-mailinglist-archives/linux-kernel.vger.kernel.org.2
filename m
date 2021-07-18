@@ -2,129 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518303CCAF8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4713CCAFA
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhGRVek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 17:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
+        id S233247AbhGRVfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 17:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232898AbhGRVej (ORCPT
+        with ESMTP id S232898AbhGRVfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 17:34:39 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BF9C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:31:40 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id a7so14097330iln.6
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:31:40 -0700 (PDT)
+        Sun, 18 Jul 2021 17:35:13 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E68BC061762
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:32:14 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id b13so24573187ybk.4
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:32:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ow7yd/6EUrynMpV9RE7C75DLtK0l6+jas8yJI3xp7nA=;
-        b=M46LF2jPXQUEqMWCQA1GJEDgHnFKPafk0j/m7OJpzIwXIXSeRamjQeBx6AezMOeN0g
-         IEreoVDKuzhzDPvO8dwW4w9RNjfMLFsLHmuM7cdzhQ5e9Y0zknjPlOTeC4VifadUxhHb
-         7rB5RdkrVyPtsfCKYPbOPa3mdXwk5Rz2f4IqQ=
+        bh=2+/+LhyG5jvyV2FwgkrvUngRXo+GiZNFji+6rwemUzs=;
+        b=vedZyKz3lL38LRdICKgLFxrEXvjXGc5BgkO2T78tkSNG8sI2Hlk33sbY4W5Y63syJE
+         mURxKSpo24wSQ9o/ud5y4QDgt6SvMpf9VVsh6F507XJUpmQHNL0dW9oxTms5nlK0xUSc
+         PuHLZCQNZUwHfduWT20rlRZOCXMBJrXKRIYo8Mb7fDiylsOGnIrE0HgtfxVul6uQd/rV
+         1LG0LAQ4sJ9oJ6jQ9RuzMIK2dpGVBQhO5zFqDDnpLK9olnfgkR0dUTgG7hbqRmoeiac5
+         zKoaJ6wS4qh1aAk9zJR/Tn2YTD8GhmJhjazXSfsyDxBgXeizJ4jqLkfMgQDSenGJ6lCg
+         SJlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ow7yd/6EUrynMpV9RE7C75DLtK0l6+jas8yJI3xp7nA=;
-        b=KX6Qjmf09AvTpW21rpISrqExqnyxX3NC2DYPO0tHikf8H66qdoJoYTmENEUrlKxTAD
-         ylC6WhRpQU88bx0zoyQ0o8hHXt3oUP7z0O1xh2N85b1Q1K43TBX3wXGfwQ09KdzUlKIW
-         aMblTphftqRgq2lf3J7M1e+XAfD81XhH9aHsVZqWl/fKZyRxCTeBB6pAgHmhUrIUH0vv
-         jpq4p/Tw59bDtOo8hie1UBZZKelVj5uu0W9B7m8W9HLMAyw9O06t1EuWggdHboAOJb+R
-         44K62CfgZm62o5cU4A6iemFymHzNZniU1nPKtWJ42VnzGPC0/8owjygDhTuxNrRFirE8
-         MBVA==
-X-Gm-Message-State: AOAM5328cuk63hecLkSfGVS4LB1Adas6TdRZodUF34LCPwPSn72wYp2o
-        /wm2aRGdNK/KgQGVYsJNgmTfintnkttB2IgrTXnelg==
-X-Google-Smtp-Source: ABdhPJwghGaCyhofCPCUPvO43wl6OmCztC95fJB9QhJBHJw32g7l8URTTePKqAz97E7EEj9n5OiidKZJxOgHf4ayC/4=
-X-Received: by 2002:a92:2010:: with SMTP id j16mr14254152ile.98.1626643899633;
- Sun, 18 Jul 2021 14:31:39 -0700 (PDT)
+        bh=2+/+LhyG5jvyV2FwgkrvUngRXo+GiZNFji+6rwemUzs=;
+        b=XmaTbaVNKYIktUa7FreQi+SecnlKMa89oLvDv/q1AtnHUsZBArvKVaPY+Uzp2LLobm
+         D2+D9WeplvOSXqFpvCPYVvyurW8T/1ZGCVGht7Khm9XxwJ7RBUNtNZy8p8T7vRByxBJk
+         GH9RhbF9aQE6ku3MMN5A46MJan2Trvo9x+wIs7QZvtnGA8ZU+6Jlt5GGQPKPKeSKnlmr
+         CL0QColg/8MxRm/iDH8WK7bz2IvqxoHLP0PgQ40l4P6LCwsEveNk6H7IILLz7817a9xR
+         3g0rOTh1M5w/TqNdus9QASi5Cchww4e1Vi/5gPHoLyKhgmtXooRstTYlr4BBNLMmOkhF
+         5HjA==
+X-Gm-Message-State: AOAM530C/gtcUYsKFzdjHhm60wHjXzVypRJpCyRrrv+rOeyOzuScf9I6
+        3BkLKmb+YxU/j8vKL0ASLY1Qo23h8CQWRZQec2oYmQ==
+X-Google-Smtp-Source: ABdhPJwcutQSQe7gkLcIvJWxIAQckzSBIZ4Ug/aclHp9CEPkdqSJ9KU5lsiYI1BnbeWezs1no9qujWoToRyP4xUylQw=
+X-Received: by 2002:a25:71c4:: with SMTP id m187mr26883038ybc.397.1626643933133;
+ Sun, 18 Jul 2021 14:32:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210614141820.2034827-1-chris.lesiak@licor.com>
- <20210616134335.76715e55@jic23-huawei> <20210718155152.66f791bc@jic23-huawei>
-In-Reply-To: <20210718155152.66f791bc@jic23-huawei>
-From:   Matt Ranostay <matt.ranostay@konsulko.com>
-Date:   Sun, 18 Jul 2021 14:31:28 -0700
-Message-ID: <CAJCx=gnJJatCbrPiWh5cDkabNLN8PG3e55r_y8veFzPRBRbD_w@mail.gmail.com>
-Subject: Re: [PATCH v3] iio: humidity: hdc100x: Add margin to the conversion time
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Chris Lesiak <chris.lesiak@licor.com>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210710003626.3549282-1-surenb@google.com> <20210710003626.3549282-2-surenb@google.com>
+ <YPRdH56+dOFs/Ypu@casper.infradead.org> <CAJuCfpFNXmH3gQ51c-+3U_0HPG401dE9Mp9_hwMP67Tyg-zWGg@mail.gmail.com>
+ <YPSdONIP8r9S31wM@casper.infradead.org>
+In-Reply-To: <YPSdONIP8r9S31wM@casper.infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Sun, 18 Jul 2021 14:32:02 -0700
+Message-ID: <CAJuCfpH-E9wJZysL7g8wvD1t62tkSoxjRzr0-aCYn-5XK8KUzg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] mm, memcg: inline mem_cgroup_{charge/uncharge} to
+ improve disabled memcg config
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Hildenbrand <david@redhat.com>, apopple@nvidia.com,
+        Minchan Kim <minchan@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 7:49 AM Jonathan Cameron <jic23@kernel.org> wrote:
+On Sun, Jul 18, 2021 at 2:30 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> On Wed, 16 Jun 2021 13:43:35 +0100
-> Jonathan Cameron <jic23@kernel.org> wrote:
->
-> > On Mon, 14 Jun 2021 09:18:20 -0500
-> > Chris Lesiak <chris.lesiak@licor.com> wrote:
-> >
-> > > The datasheets have the following note for the conversion time
-> > > specification: "This parameter is specified by design and/or
-> > > characterization and it is not tested in production."
+> On Sun, Jul 18, 2021 at 02:25:50PM -0700, Suren Baghdasaryan wrote:
+> > On Sun, Jul 18, 2021 at 9:56 AM Matthew Wilcox <willy@infradead.org> wrote:
 > > >
-> > > Parts have been seen that require more time to do 14-bit conversions for
-> > > the relative humidity channel.  The result is ENXIO due to the address
-> > > phase of a transfer not getting an ACK.
+> > > On Fri, Jul 09, 2021 at 05:36:25PM -0700, Suren Baghdasaryan wrote:
+> > > > @@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+> > > >  }
+> > > >
+> > > >  /**
+> > > > - * mem_cgroup_charge - charge a newly allocated page to a cgroup
+> > > > + * __mem_cgroup_charge - charge a newly allocated page to a cgroup
+> > > >   * @page: page to charge
+> > > >   * @mm: mm context of the victim
+> > > >   * @gfp_mask: reclaim mode
 > > >
-> > > Delay an additional 1 ms per conversion to allow for additional margin.
-> > >
-> > > Fixes: 4839367d99e3 ("iio: humidity: add HDC100x support")
-> > > Signed-off-by: Chris Lesiak <chris.lesiak@licor.com>
+> > > This patch conflicts with the folio work, so I'm just rebasing the
+> > > folio patches on top of this, and I think this part of the patch is a
+> > > mistake.  We don't want to document the __mem_cgroup_charge() function.
+> > > That's an implementation detail.  This patch should instead have moved the
+> > > kernel-doc to memcontrol.h and continued to document mem_cgroup_charge().
 > >
-> > +CC Matt as this is one of his drivers.
+> > Ack.
+> > There was a v4 version of this patch:
+> > https://lore.kernel.org/patchwork/patch/1458907 which was picked up by
+> > Andrew already. If others agree that documentation should be moved
+> > into the header file then I'll gladly post another version. Or I can
+> > post a separate patch moving the documentation only. Whatever works
+> > best. Andrew, Michal, Johannes, WDYT?
 >
-> @Matt. Ping.
->
-> >
-> > Looks good to me.
+> At this point, I've moved the documentation as part of the folio patch.
+> I'd rather not redo that patch again ...
 
-Looks good to me as well.
-
-Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
-
-> >
-> > > ---
-> > >  drivers/iio/humidity/hdc100x.c | 6 ++++--
-> > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/humidity/hdc100x.c b/drivers/iio/humidity/hdc100x.c
-> > > index 2a957f19048e..9e0fce917ce4 100644
-> > > --- a/drivers/iio/humidity/hdc100x.c
-> > > +++ b/drivers/iio/humidity/hdc100x.c
-> > > @@ -25,6 +25,8 @@
-> > >  #include <linux/iio/trigger_consumer.h>
-> > >  #include <linux/iio/triggered_buffer.h>
-> > >
-> > > +#include <linux/time.h>
-> > > +
-> > >  #define HDC100X_REG_TEMP                   0x00
-> > >  #define HDC100X_REG_HUMIDITY                       0x01
-> > >
-> > > @@ -166,7 +168,7 @@ static int hdc100x_get_measurement(struct hdc100x_data *data,
-> > >                                struct iio_chan_spec const *chan)
-> > >  {
-> > >     struct i2c_client *client = data->client;
-> > > -   int delay = data->adc_int_us[chan->address];
-> > > +   int delay = data->adc_int_us[chan->address] + 1*USEC_PER_MSEC;
-> > >     int ret;
-> > >     __be16 val;
-> > >
-> > > @@ -316,7 +318,7 @@ static irqreturn_t hdc100x_trigger_handler(int irq, void *p)
-> > >     struct iio_dev *indio_dev = pf->indio_dev;
-> > >     struct hdc100x_data *data = iio_priv(indio_dev);
-> > >     struct i2c_client *client = data->client;
-> > > -   int delay = data->adc_int_us[0] + data->adc_int_us[1];
-> > > +   int delay = data->adc_int_us[0] + data->adc_int_us[1] + 2*USEC_PER_MSEC;
-> > >     int ret;
-> > >
-> > >     /* dual read starts at temp register */
-> >
->
+Ok. If you need me to redo anything please let me know.
