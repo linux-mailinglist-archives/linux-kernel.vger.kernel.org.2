@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A478F3CC906
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB9B3CC907
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbhGRMVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 08:21:22 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60190 "EHLO
+        id S233462AbhGRMXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 08:23:10 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:60786 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhGRMVW (ORCPT
+        with ESMTP id S232851AbhGRMXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 08:21:22 -0400
+        Sun, 18 Jul 2021 08:23:09 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 01F901C0B76; Sun, 18 Jul 2021 14:18:23 +0200 (CEST)
-Date:   Sun, 18 Jul 2021 14:18:22 +0200
+        id 418491C0B82; Sun, 18 Jul 2021 14:20:11 +0200 (CEST)
+Date:   Sun, 18 Jul 2021 14:20:11 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     kernel list <linux-kernel@vger.kernel.org>, jpoimboe@redhat.com,
-        peterz@infradead.org, mingo@kernel.org
-Subject: Re: 5.14-rc0: regression when compiling tools/objtool
-Message-ID: <20210718121822.GA14683@amd>
-References: <20210711091729.GA22833@duo.ucw.cz>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: Build regressions/improvements in v5.14-rc1
+Message-ID: <20210718122011.GA22167@duo.ucw.cz>
+References: <20210714143239.2529044-1-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
+        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
 Content-Disposition: inline
-In-Reply-To: <20210711091729.GA22833@duo.ucw.cz>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210714143239.2529044-1-geert@linux-m68k.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---XsQoSWH+UP9D9v3l
+--C7zPtVaVf+AK4Oqc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi!
 
-> I'm getting build errors trying to build 5.14-rc0. Earlier -rc0
-> releases built okay. This is 64-bit x86 build, 32-bit x86 and arm
-> build okay for me, too. Attaching config, as it may be related?
+> Below is the list of build error/warning regressions/improvements in
+> v5.14-rc1[1] compared to v5.13+[2].
+>=20
+> Summarized:
+>   - build errors: +24/-4
+>   - build warnings: +71/-65
+>=20
+> Happy fixing! ;-)
+>=20
+> Thanks to the linux-next team for providing the build service.
 
-This is quite annoying, as I'd like to try 5.14. Problem is not fixed
-in -next, either...
+I have onemore:
+
+https://lkml.org/lkml/2021/7/11/50
 
 Best regards,
-								Pavel
-
->   CC      /fast/l/k/o/64/tools/objtool/check.o
->   CC      /fast/l/k/o/64/tools/objtool/weak.o
->   CC      /fast/l/k/o/64/tools/objtool/arch/x86/special.o
->   CC      /fast/l/k/o/64/tools/objtool/arch/x86/decode.o
-> In file included from /fast/l/k/tools/objtool/include/objtool/objtool.h:1=
-3,
->                  from /fast/l/k/tools/objtool/include/objtool/arch.h:11,
->                  from /fast/l/k/tools/objtool/include/objtool/check.h:11,
->                  from /fast/l/k/tools/objtool/include/objtool/special.h:1=
-0,
->                  from arch/x86/special.c:4:
-> /fast/l/k/tools/objtool/include/objtool/elf.h:10:10: fatal error: gelf.h:=
- No such file or directory
->  #include <gelf.h>
->           ^~~~~~~~
-> compilation terminated.
-> make[5]: *** [/fast/l/k/tools/build/Makefile.build:97: /fast/l/k/o/64/too=
-ls/objtool/arch/x86/special.o] Error 1
-> make[5]: *** Waiting for unfinished jobs....
-> In file included from /fast/l/k/tools/objtool/include/objtool/objtool.h:1=
-3,
->                  from weak.c:10:
-> /fast/l/k/tools/objtool/include/objtool/elf.h:10:10: fatal error: gelf.h:=
- No such file or directory
->  #include <gelf.h>
->           ^~~~~~~~
-> compilation terminated.
->=20
-
-
-
-
-
+									Pavel
 --=20
 http://www.livejournal.com/~pavelmachek
 
---XsQoSWH+UP9D9v3l
+--C7zPtVaVf+AK4Oqc
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iEYEARECAAYFAmD0HA4ACgkQMOfwapXb+vKDkACgwqvl5ShEG/+sRy1/KTWJF+TR
-nKQAnjD90Va2U4IaTYfrPcRvKII4kwWq
-=91d9
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYPQcewAKCRAw5/Bqldv6
+8vZ+AJ4+4H3wWdRpR5hYBITXMJY/tv8GdACeLmZgKW6iAALtrzqvrIFtfHrFZNU=
+=sf4K
 -----END PGP SIGNATURE-----
 
---XsQoSWH+UP9D9v3l--
+--C7zPtVaVf+AK4Oqc--
