@@ -2,92 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EEE3CC845
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACD53CC848
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhGRJRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 05:17:08 -0400
-Received: from mxout02.lancloud.ru ([45.84.86.82]:35632 "EHLO
-        mxout02.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhGRJRH (ORCPT
+        id S231840AbhGRJSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 05:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhGRJSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 05:17:07 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout02.lancloud.ru B137E2327E2A
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: [PATCH AUTOSEL 4.19 05/39] scsi: hisi_sas: Propagate errors in
- interrupt_init_v1_hw()
-To:     Sasha Levin <sashal@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>
-References: <20210710023204.3171428-1-sashal@kernel.org>
- <20210710023204.3171428-5-sashal@kernel.org>
- <3e2af821-00e3-6db9-5820-696fdbe003d6@omp.ru> <YPOB8hs4jOBRyQsS@sashalap>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <24e2041e-8dab-dabf-2b74-5573e25ead6d@omp.ru>
-Date:   Sun, 18 Jul 2021 12:13:45 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sun, 18 Jul 2021 05:18:48 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DDCC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 02:15:49 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id d9so16129620ioo.2
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 02:15:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UY/uuimcwG2QGP6zR2h/qQpbp8YhinG01JRSs5/gTjE=;
+        b=gOEVPphpi1VzCpTsAIyxKVFkGHSyEUfzBM3ZTa534U3l+mA5NM5es8Sk+A8Agai92x
+         CDP7GTIHQ6Eoj3PifZ2Hieye99sQxBslvMQTo+NGu7GofmhIIqnDHwJp3cyuGEFY2hcO
+         m/9mVXK+nx7jO1z5qzWEHzNPKdcTcZjG1uitgmp29t1dFxfea20bq4J+zLIB/EKWfqlf
+         o31eb7Ary3+dpu8u+WCE6qARXS3gAU+kBS3kFQFBg2fruszR0XCxFnJLdE884X2eSkZI
+         jFBY4PT+MG7RqI7c3u7R7Ns5DOxQczPJ+ybkWE3JMrkkmoPLU8f9T7DIu11UvNDfXnU+
+         gJVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UY/uuimcwG2QGP6zR2h/qQpbp8YhinG01JRSs5/gTjE=;
+        b=c1oPD4Uda1BL3ww6Mj7wDUAJ9HBrUFmS4fVgll2skFOVTmvH8efZfdhamlT6eWD168
+         30iVfmkgk0KVoD4hSDT9WR7Hypr0Ov4KJJNYE5Kz6CooJ9pPxn3H3ACH6OHPWt+/YcDL
+         AuhGeCHvEbU1GfiB1Ptueg2s1wjFWCR4K/XooC10af/cvZGCJ9eaYhW3PaLqQMLZH2vU
+         ois4FUHMoE1/GywtUu0+SUVuS6FVwtN99PhaG1usoUgchP/B6akHBW6ImsTPKI0Tk0g9
+         l6Ivq3txkMdRdux/mXPu5ErrDJVkWWlMleY7vfNsm7lQrwzi1ULG3O8+i3VMVMdNbmM4
+         hK9A==
+X-Gm-Message-State: AOAM533uT/gip0O1IS8g2R02WihFwd8q3L+1xjI9Y4vEeTJqYGnpLWAe
+        z3bRPDcccJr8xbiHnYYbZScwWl86Ae1TwOm998i7tg==
+X-Google-Smtp-Source: ABdhPJxsDlY/mNXq4LhEUBA3aOHiO7SXmodQRqqXcqzbpqtwExP67gls3WehwZ1+DLVas2tPH9/Mi37mr3vRZHMLbqA=
+X-Received: by 2002:a6b:1406:: with SMTP id 6mr14481233iou.25.1626599749201;
+ Sun, 18 Jul 2021 02:15:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YPOB8hs4jOBRyQsS@sashalap>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.11.198]
-X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
- LFEX1907.lancloud.ru (fd00:f066::207)
+References: <20210607123317.3242031-1-robert.marko@sartura.hr>
+ <20210607123317.3242031-5-robert.marko@sartura.hr> <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
+ <20210713222528.GA952399@robh.at.kernel.org>
+In-Reply-To: <20210713222528.GA952399@robh.at.kernel.org>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Sun, 18 Jul 2021 11:15:38 +0200
+Message-ID: <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
+Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Wed, Jul 14, 2021 at 12:25 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Jun 25, 2021 at 01:46:08PM +0200, Robert Marko wrote:
+> > On Mon, Jun 7, 2021 at 2:33 PM Robert Marko <robert.marko@sartura.hr> wrote:
+> > >
+> > > Add binding documents for the Delta TN48M CPLD drivers.
+> > >
+> > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > ---
+> > > Changes in v3:
+> > > * Include bindings for reset driver
+> > >
+> > > Changes in v2:
+> > > * Implement MFD as a simple I2C MFD
+> > > * Add GPIO bindings as separate
+> > >
+> > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 +++++++++
+> > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 90 +++++++++++++++++++
+> > >  .../bindings/reset/delta,tn48m-reset.yaml     | 35 ++++++++
+> > >  3 files changed, 167 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > >  create mode 100644 Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > new file mode 100644
+> > > index 000000000000..aca646aecb12
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > @@ -0,0 +1,42 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/gpio/delta,tn48m-gpio.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Delta Networks TN48M CPLD GPIO controller
+> > > +
+> > > +maintainers:
+> > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > +
+> > > +description: |
+> > > +  This module is part of the Delta TN48M multi-function device. For more
+> > > +  details see ../mfd/delta,tn48m-cpld.yaml.
+> > > +
+> > > +  GPIO controller module provides GPIO-s for the SFP slots.
+> > > +  It is split into 3 controllers, one output only for the SFP TX disable
+> > > +  pins, one input only for the SFP present pins and one input only for
+> > > +  the SFP LOS pins.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - delta,tn48m-gpio-sfp-tx-disable
+> > > +      - delta,tn48m-gpio-sfp-present
+> > > +      - delta,tn48m-gpio-sfp-los
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  "#gpio-cells":
+> > > +    const: 2
+> > > +
+> > > +  gpio-controller: true
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - "#gpio-cells"
+> > > +  - gpio-controller
+> > > +
+> > > +additionalProperties: false
+> > > diff --git a/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > > new file mode 100644
+> > > index 000000000000..2c6e2adf73ca
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > > @@ -0,0 +1,90 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/mfd/delta,tn48m-cpld.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Delta Networks TN48M CPLD controller
+> > > +
+> > > +maintainers:
+> > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > +
+> > > +description: |
+> > > +  Lattice CPLD onboard the TN48M switches is used for system
+> > > +  management.
+> > > +
+> > > +  It provides information about the hardware model, revision,
+> > > +  PSU status etc.
+> > > +
+> > > +  It is also being used as a GPIO expander for the SFP slots and
+> > > +  reset controller for the switch MAC-s and other peripherals.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: delta,tn48m-cpld
+> > > +
+> > > +  reg:
+> > > +    description:
+> > > +      I2C device address.
+> > > +    maxItems: 1
+> > > +
+> > > +  "#address-cells":
+> > > +    const: 1
+> > > +
+> > > +  "#size-cells":
+> > > +    const: 0
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - "#address-cells"
+> > > +  - "#size-cells"
+> > > +
+> > > +patternProperties:
+> > > +  "^gpio(@[0-9a-f]+)?$":
+> > > +    $ref: ../gpio/delta,tn48m-gpio.yaml
+> > > +
+> > > +  "^reset-controller?$":
+> > > +    $ref: ../reset/delta,tn48m-reset.yaml
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    i2c {
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <0>;
+> > > +
+> > > +        cpld@41 {
+> > > +            compatible = "delta,tn48m-cpld";
+> > > +            reg = <0x41>;
+> > > +            #address-cells = <1>;
+> > > +            #size-cells = <0>;
+> > > +
+> > > +            gpio@31 {
+> > > +                compatible = "delta,tn48m-gpio-sfp-tx-disable";
+> > > +                reg = <0x31>;
+> > > +                gpio-controller;
+> > > +                #gpio-cells = <2>;
+> > > +            };
+> > > +
+> > > +            gpio@3a {
+> > > +                compatible = "delta,tn48m-gpio-sfp-present";
+> > > +                reg = <0x3a>;
+> > > +                gpio-controller;
+> > > +                #gpio-cells = <2>;
+> > > +            };
+> > > +
+> > > +            gpio@40 {
+> > > +                compatible = "delta,tn48m-gpio-sfp-los";
+> > > +                reg = <0x40>;
+> > > +                gpio-controller;
+> > > +                #gpio-cells = <2>;
+> > > +            };
+> > > +
+> > > +            reset-controller {
+> > > +              compatible = "delta,tn48m-reset";
+> > > +              #reset-cells = <1>;
+> > > +            };
+> > > +        };
+> > > +    };
+> > > diff --git a/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > > new file mode 100644
+> > > index 000000000000..0e5ee8decc0d
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > > @@ -0,0 +1,35 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/reset/delta,tn48m-reset.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Delta Networks TN48M CPLD reset controller
+> > > +
+> > > +maintainers:
+> > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > +
+> > > +description: |
+> > > +  This module is part of the Delta TN48M multi-function device. For more
+> > > +  details see ../mfd/delta,tn48m-cpld.yaml.
+> > > +
+> > > +  Reset controller modules provides resets for the following:
+> > > +  * 88F7040 SoC
+> > > +  * 88F6820 SoC
+> > > +  * 98DX3265 switch MAC-s
+> > > +  * 88E1680 PHY-s
+> > > +  * 88E1512 PHY
+> > > +  * PoE PSE controller
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: delta,tn48m-reset
+> > > +
+> > > +  "#reset-cells":
+> > > +    const: 1
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - "#reset-cells"
+> > > +
+> > > +additionalProperties: false
+> > > --
+> > > 2.31.1
+> > >
+> >
+> > Are there any issues with the bindings?
+>
+> Yes. Primarily the GPIO function being part of the compatible. I'm
+> surprised Linus W is okay with that.
 
-On 18.07.2021 4:20, Sasha Levin wrote:
+I think I already explained this before, having a single compatible
+won't work here.
+Then there would not be anything to know whether its input or output
+only as the pins
+have specific purpose.
+And knowing the capabilites is a requirment of the GPIO regmap driver
+and the GPIO
+core itself as it exposes that information in a generic manner and
+driver like for the
+SFP bus use that.
 
-[...]
->>> [ Upstream commit ab17122e758ef68fb21033e25c041144067975f5 ]
->>>
->>> After commit 6c11dc060427 ("scsi: hisi_sas: Fix IRQ checks") we have the
->>> error codes returned by platform_get_irq() ready for the propagation
->>> upsream in interrupt_init_v1_hw() -- that will fix still broken deferred
->>> probing. Let's propagate the error codes from devm_request_irq() as well
->>> since I don't see the reason to override them with -ENOENT...
->>>
->>> Link: https://lore.kernel.org/r/49ba93a3-d427-7542-d85a-b74fe1a33a73@omp.ru
->>> Acked-by: John Garry <john.garry@huawei.com>
->>> Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
->>> Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
->>> Signed-off-by: Sasha Levin <sashal@kernel.org>
->>> ---
->>>  drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 12 ++++++------
->>>  1 file changed, 6 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c 
->>> b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
->>> index 8aa3222fe486..5a777e48963b 100644
->>> --- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
->>> +++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
->> [...]
->>> @@ -1717,7 +1717,7 @@ static int interrupt_init_v1_hw(struct hisi_hba 
->>> *hisi_hba)
->>>          if (!irq) {
->>>              dev_err(dev, "irq init: could not map cq interrupt %d\n",
->>>                  idx);
->>> -            return -ENOENT;
->>> +            return irq;
->>
->>   This patch is borked too, we don't want to return 0 here...
-> 
-> Looks like it's broken on <=4.19, I'll drop it. Thanks!
+Maybe Linus W can chime in here as well.
 
-    You might to want backport the below patch (before this one),
-the same way yoo did for 5.x-stable):
+>
+> > The patch series is depending on this as the rest has been reviewed.
+>
+> The bindings have been reviewed too, you just didn't like my comments...
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6c11dc060427e07ca144eacaccd696106b361b06
+Sorry, I did not pick that up as after my replies there was no further
+discussion.
 
-MBR, Sergei
+I am really hoping that we can find a middle ground here and get this
+merged as the driver code itself has been revied and ACK-ed.
+
+Regards,
+Robert
+>
+> Rob
+
+
+
+-- 
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
