@@ -2,138 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60EF3CC964
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9213CC96A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbhGRNxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 09:53:20 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:45935 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233673AbhGRNxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 09:53:18 -0400
-Received: by mail-io1-f70.google.com with SMTP id e24-20020a5d8e180000b02904dd8a55bbd7so10260486iod.12
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 06:50:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=OXoW0tdh3u7kirLpVINFuQ3xib/WnFYX8gUfwjUENjk=;
-        b=FAqMvqFr4GeUit7JfiJB8HSpdp6BG6S8tVQKikoU/pX04hjRyG9teHOo8o2yaqC+LD
-         6eDToaW77jVCnJyc75/LfNzAql/KYkXcMYnO53KbecQu4VK+AURj/U75KcGu9pACvlyk
-         4hm6B4L+emqHYCpG6BSwbuzU4WN8sQjzkFqiZGntCQeuG7Q2apsmYnOVp2o3rb6YEmTi
-         HElMZgLsKvWzB5aO64wzFfxpm04OnQybdC8zOot8e1C4lRes48DAW8DMRVoifN0eDuWI
-         7D51a0ed+JWVXZk2UUuta9s3y9LJfw/sRQMZU8URydxZLJWYPVKMYgjCtC2RlvhICy9F
-         EQGg==
-X-Gm-Message-State: AOAM530CdyfkWLo6mmclo70WuaklYUcL16vdG7bMjbD/q9YRS+dX6rMz
-        gW4/o4kAat/M2ugx124lpdYApFPWTbTzXbb9slTXRyWU/Rsj
-X-Google-Smtp-Source: ABdhPJyFGBpgqB+KxTMFlxIFRrUzHrB23N5+7Q8y4qgeiIzmmR5jT7VlVjTFWPQysotCZaG+Zalw0PAJkLjKEJRzUYR31zdxvWi1
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:550:: with SMTP id i16mr13219001ils.207.1626616220337;
- Sun, 18 Jul 2021 06:50:20 -0700 (PDT)
-Date:   Sun, 18 Jul 2021 06:50:20 -0700
-In-Reply-To: <0000000000005866b005c7394288@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ffcb8205c7661908@google.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in ath9k_htc_rxep
-From:   syzbot <syzbot+dc6c749aec286992cea2@syzkaller.appspotmail.com>
-To:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S232831AbhGROAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 10:00:08 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:60550 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229842AbhGROAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 10:00:07 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([79.45.45.231])
+        by smtp-34.iol.local with ESMTPA
+        id 57Hym0FThLCum57I2mIAvx; Sun, 18 Jul 2021 15:57:07 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1626616627; bh=rOfM+3SnDUoi4Zw7AQaIgYut2m3EXateesuCvJ04ulU=;
+        h=From;
+        b=JrnyqGMhY4RO+0YzAjovFlnHMyqriWq3eUn8pOak0yBMk9GgJCqTwUjA/6OLd+NHK
+         U0bQHXqK+msbDgUjlcsCHFm812Xicq42VfkwifuyfNC4eI6QW3PCqNT2in4mlbBudB
+         Kz014GqJjZfayD2j0LPbL4cGh4OuxgyUQMWDSvyTtq3JKjozwYblduys3UNYXA3kwc
+         S6yWJ8yBIxTbT6IDl4ez00l0hgAY+hKYBxx4gMyGiGapcr5iy3Vo+FAI6TaNZztJQt
+         8ZDd205s12ngVELTnq0iTn84a/U14wF9VZEuSIlJcEu7hpEsveKHDcRatMgvFC6TQ6
+         U1ZJVrBJrSrYw==
+X-CNFS-Analysis: v=2.4 cv=a8D1SWeF c=1 sm=1 tr=0 ts=60f43333 cx=a_exe
+ a=TX8r+oJM0yLPAmPh5WrBoQ==:117 a=TX8r+oJM0yLPAmPh5WrBoQ==:17 a=8b9GpE9nAAAA:8
+ a=VwQbUJbxAAAA:8 a=wSIzyl8AIrrWyGTfDxQA:9 a=T3LWEMljR5ZiDmsYVIUa:22
+ a=AjGcO6oz07-iQ99wixmX:22
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-clk@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Gabriel Fernandez <gabriel.fernandez@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH v4] clk: stm32f4: fix post divisor setup for I2S/SAI PLLs
+Date:   Sun, 18 Jul 2021 15:57:00 +0200
+Message-Id: <20210718135700.27247-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfNdcUJVaPcCs2XhTQXQRRi4T1vSjJGkxrKaH2JDps0CgcRK7Q9xaRlwEOZudmAeMlX5cm38tkXi5bMbmGsCxY7Tj8G0GutHOCKFzK//aYXqbp6v6TyZ+
+ 0/aVFhsZHmYYbaA6buzm+Et5WRSx6AyVOA5kiGg7FPTcHWI1RcBSunm/krObAZGP4HyBU3jThxziNkuDrK2dQg8aCXI64iC+JK3Lz80MOW+H9bwapI6wjZMu
+ yC0o5C3HnZ+fpQ4tKm6+yTdYhJR0oYN5skye/fldQP6Q2P7p7RbNHR9biYJS4wob5n2VUzALpHWMljEfF1ytNLy5g+ZKVCWJSc85+yP3bp7s0+yMQhpQkKIh
+ VZqB/RfZRco2/sAZgNuBPvsXxNognotXOimzkGwuHokVTVqUGfgwrK93Vu47sxXpAVFyZI0GWk79ziW/SgtfctHx0Jm2QSK3tuQt/iGkQ3CSJLProBJth6oj
+ UHyp5uvQrYNG5/u4FstZWizFm0EaSlztYpB+WvVhF+MeRMExj+pEhPM/SesmvFMh5K+7fkyh+KZ/SC3D+31//a/n9bwJUYPsk7aNP9Ytx7ilz0wSuWzbEn7n
+ HOVkiEanhMdCEaCU5c2cqHjp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Enabling the framebuffer leads to a system hang. Running, as a debug
+hack, the store_pan() function in drivers/video/fbdev/core/fbsysfs.c
+without taking the console_lock, allows to see the crash backtrace on
+the serial line.
 
-HEAD commit:    97db1b081e12 dt-bindings: usb: dwc3: Update dwc3 TX fifo p..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b7fd02300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=db8b503c237253ee
-dashboard link: https://syzkaller.appspot.com/bug?extid=dc6c749aec286992cea2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10431e54300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d2dc32300000
+~ # echo 0 0 > /sys/class/graphics/fb0/pan
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dc6c749aec286992cea2@syzkaller.appspotmail.com
+[    9.719414] Unhandled exception: IPSR = 00000005 LR = fffffff1
+[    9.726937] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
+[    9.733008] Hardware name: STM32 (Device Tree Support)
+[    9.738296] PC is at clk_gate_is_enabled+0x0/0x28
+[    9.743426] LR is at stm32f4_pll_div_set_rate+0xf/0x38
+[    9.748857] pc : [<0011e4be>]    lr : [<0011f9e3>]    psr: 0100000b
+[    9.755373] sp : 00bc7be0  ip : 00000000  fp : 001f3ac4
+[    9.760812] r10: 002610d0  r9 : 01efe920  r8 : 00540560
+[    9.766269] r7 : 02e7ddb0  r6 : 0173eed8  r5 : 00000000  r4 : 004027c0
+[    9.773081] r3 : 0011e4bf  r2 : 02e7ddb0  r1 : 0173eed8  r0 : 1d3267b8
+[    9.779911] xPSR: 0100000b
+[    9.782719] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
+[    9.788791] Hardware name: STM32 (Device Tree Support)
+[    9.794120] [<0000afa1>] (unwind_backtrace) from [<0000a33f>] (show_stack+0xb/0xc)
+[    9.802421] [<0000a33f>] (show_stack) from [<0000a8df>] (__invalid_entry+0x4b/0x4c)
 
-BUG: unable to handle page fault for address: ffffffffffffffc8
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 7426067 P4D 7426067 PUD 7428067 PMD 0 
-Oops: 0000 [#1] SMP KASAN
-CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W         5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ath9k_htc_rxep+0xb5/0x210 drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:1135
-Code: 8b 43 38 48 8d 58 c8 49 39 c4 0f 84 ee 00 00 00 e8 f0 64 37 fe 48 89 d8 48 c1 e8 03 0f b6 04 28 84 c0 74 06 0f 8e 0a 01 00 00 <44> 0f b6 3b 31 ff 44 89 fe e8 fd 6b 37 fe 45 84 ff 75 a8 e8 c3 64
-RSP: 0018:ffffc900001489b8 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffffffffffffffc8 RCX: 0000000000000100
-RDX: ffff8881002c0000 RSI: ffffffff830a0050 RDI: ffffc90000148928
-RBP: dffffc0000000000 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff52000029125 R11: 0000000000000000 R12: ffff888119a9b678
-R13: ffff888119a9b240 R14: ffff888119a9b688 R15: ffff8881088974a8
-FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffc8 CR3: 000000010719b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- ath9k_htc_rx_msg+0x2e4/0xb70 drivers/net/wireless/ath/ath9k/htc_hst.c:461
- ath9k_hif_usb_reg_in_cb+0x1ac/0x630 drivers/net/wireless/ath/ath9k/hif_usb.c:733
- __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1656
- usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1726
- dummy_timer+0x11f9/0x32b0 drivers/usb/gadget/udc/dummy_hcd.c:1987
- call_timer_fn+0x1a5/0x630 kernel/time/timer.c:1417
- expire_timers kernel/time/timer.c:1462 [inline]
- __run_timers.part.0+0x675/0xa10 kernel/time/timer.c:1731
- __run_timers kernel/time/timer.c:1712 [inline]
- run_timer_softirq+0x80/0x120 kernel/time/timer.c:1744
- __do_softirq+0x1b0/0x910 kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu+0x117/0x160 kernel/softirq.c:636
- irq_exit_rcu+0x5/0x10 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x6a/0x90 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
-RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:70 [inline]
-RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:132 [inline]
-RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:110 [inline]
-RIP: 0010:acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
-Code: 89 de e8 cd ed 80 fb 84 db 75 ac e8 94 e6 80 fb e8 5f f2 86 fb eb 0c e8 88 e6 80 fb 0f 00 2d 81 b0 88 00 e8 7c e6 80 fb fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 07 ef 80 fb 48 85 db
-RSP: 0018:ffffc900000dfd18 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8881002c0000 RSI: ffffffff85c07ec4 RDI: ffffffff85c07eb1
-RBP: ffff888109b93064 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81477148 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888109b93000 R14: ffff888109b93064 R15: ffff88810cf00004
- acpi_idle_enter+0x355/0x4f0 drivers/acpi/processor_idle.c:688
- cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
- cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
- call_cpuidle kernel/sched/idle.c:158 [inline]
- cpuidle_idle_call kernel/sched/idle.c:239 [inline]
- do_idle+0x3dd/0x580 kernel/sched/idle.c:306
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:403
- start_secondary+0x267/0x340 arch/x86/kernel/smpboot.c:270
- secondary_startup_64_no_verify+0xb0/0xbb
-Modules linked in:
-CR2: ffffffffffffffc8
----[ end trace c812365639e6eb14 ]---
-RIP: 0010:ath9k_htc_rxep+0xb5/0x210 drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:1135
-Code: 8b 43 38 48 8d 58 c8 49 39 c4 0f 84 ee 00 00 00 e8 f0 64 37 fe 48 89 d8 48 c1 e8 03 0f b6 04 28 84 c0 74 06 0f 8e 0a 01 00 00 <44> 0f b6 3b 31 ff 44 89 fe e8 fd 6b 37 fe 45 84 ff 75 a8 e8 c3 64
-RSP: 0018:ffffc900001489b8 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffffffffffffffc8 RCX: 0000000000000100
-RDX: ffff8881002c0000 RSI: ffffffff830a0050 RDI: ffffc90000148928
-RBP: dffffc0000000000 R08: 0000000000000001 R09: 0000000000000003
-R10: fffff52000029125 R11: 0000000000000000 R12: ffff888119a9b678
-R13: ffff888119a9b240 R14: ffff888119a9b688 R15: ffff8881088974a8
-FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffc8 CR3: 000000010719b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+The `pll_num' field in the post_div_data configuration contained a wrong
+value which also referenced an uninitialized hardware clock when
+clk_register_pll_div() was called.
+
+Fixes: 517633ef630e ("clk: stm32f4: Add post divisor for I2S & SAI PLLs")
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
+Reviewed-by: Gabriel Fernandez <gabriel.fernandez@st.com>
+
+---
+I added Gabriel Fernandez's 'Reviewed-by' tag as requested by himself
+15 days ago at https://lore.kernel.org/patchwork/patch/1450964/.
+
+Changes in v4:
+- Really add Gabriel Fernandez 'Reviewed-by' tag. In version 3 I forgot
+  to add the tag.
+
+Changes in v3:
+- Add Gabriel Fernandez 'Reviewed-by' tag.
+
+Changes in v2:
+- Change  'u8 pll_num' from 'stm32f4_pll_post_div_data' structure into
+  'int pll_idx'.
+
+ drivers/clk/clk-stm32f4.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+index 18117ce5ff85..5c75e3d906c2 100644
+--- a/drivers/clk/clk-stm32f4.c
++++ b/drivers/clk/clk-stm32f4.c
+@@ -526,7 +526,7 @@ struct stm32f4_pll {
+ 
+ struct stm32f4_pll_post_div_data {
+ 	int idx;
+-	u8 pll_num;
++	int pll_idx;
+ 	const char *name;
+ 	const char *parent;
+ 	u8 flag;
+@@ -557,13 +557,13 @@ static const struct clk_div_table post_divr_table[] = {
+ 
+ #define MAX_POST_DIV 3
+ static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DIV] = {
+-	{ CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
++	{ CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
+ 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
+ 
+-	{ CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
++	{ CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
+ 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
+ 
+-	{ NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
++	{ NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
+ 		STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
+ };
+ 
+@@ -1774,7 +1774,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
+ 				post_div->width,
+ 				post_div->flag_div,
+ 				post_div->div_table,
+-				clks[post_div->pll_num],
++				clks[post_div->pll_idx],
+ 				&stm32f4_clk_lock);
+ 
+ 		if (post_div->idx != NO_IDX)
+-- 
+2.17.1
 
