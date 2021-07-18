@@ -2,96 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6AC3CC736
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 04:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2531D3CC738
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 04:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhGRCDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 22:03:11 -0400
-Received: from mail-pf1-f179.google.com ([209.85.210.179]:38487 "EHLO
-        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhGRCDH (ORCPT
+        id S231351AbhGRCMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 22:12:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60717 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230228AbhGRCMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 22:03:07 -0400
-Received: by mail-pf1-f179.google.com with SMTP id i14so894335pfd.5;
-        Sat, 17 Jul 2021 19:00:09 -0700 (PDT)
+        Sat, 17 Jul 2021 22:12:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626574161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gpM2d5Iuvyh50YGnyAEB1mGNqLkDz1f1Frpy8iBXokw=;
+        b=Q8+Pr+1USYC4SWUPvxuW7dULepZC/DGasjIexI3OirO+Aq18CgqxAcetftj3U6vMmB8rhP
+        BMMtXHfgnvdb2VnfrRhEvQ9Bj1vj8DgPZHkdfWthXYoGmbAbBcKR4qVCbhrVWxWUl/Qtw0
+        GpwcMAQRhuSJxzpzTULT6diFJlwtZlk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-v4hHnQjXOrywiiyRqGVQ7g-1; Sat, 17 Jul 2021 22:09:19 -0400
+X-MC-Unique: v4hHnQjXOrywiiyRqGVQ7g-1
+Received: by mail-wr1-f72.google.com with SMTP id j6-20020adff5460000b029013c7749ad05so7136416wrp.8
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Jul 2021 19:09:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ZFzP39M9iZaxx5c7vluzIRVcenkLvCX6Tkh+7bLeuTA=;
-        b=RhEblqoGYwdLc3hxlbo+US0tZB3wRbETlreLOEIlO1Z+gMaPCr1U+QXt9BT1uHAlQ6
-         MbEp8weqEJuSrSGbIEz8nVON6pnr7JJklbcsJB6L9Pg/8S27uvnW7CzJBgWOayUOk6rp
-         iehAuwb4Slb5P+eOaFW0Tn0Vxh4hMpiPPMzYLrXav2GhXTtKA3uJDuGfu1SNLcoPOqCe
-         fCq1B/pzDn5YVLC8YTlgRxlIOqkYPgtI1J/5z2j2/h5IENMBCfT3d5Stoj+1u8/29/Zs
-         K7oxBG5zwQWq+lJkIoLkb122Mnq+OWdoh9/IIKyMhS5/O0Tg0pdiHeLFn8NHVJTRoltN
-         Soig==
-X-Gm-Message-State: AOAM530p2VvJpv/Hhs668X+GRAR0iXBfp0L2raceKDfjwVelokNnZpHe
-        4ANXvxBwGdT19IpOm/3ZIFU=
-X-Google-Smtp-Source: ABdhPJyG3ElGXJZOX/6F/ViVLj/DbOpr7gKRKBe9L/dy9QJFfg4/qzyutsiJo9xA0e2HRUE89ZJx2A==
-X-Received: by 2002:a62:2bc6:0:b029:2cc:242f:ab69 with SMTP id r189-20020a622bc60000b02902cc242fab69mr18262108pfr.16.1626573609019;
-        Sat, 17 Jul 2021 19:00:09 -0700 (PDT)
-Received: from localhost ([24.4.24.239])
-        by smtp.gmail.com with ESMTPSA id s36sm16094661pgk.64.2021.07.17.19.00.08
+        bh=gpM2d5Iuvyh50YGnyAEB1mGNqLkDz1f1Frpy8iBXokw=;
+        b=eg/dkHb2EnRF7tp3MmmCpPACRwQkwanZefjUZKXXMaf0Vi9XRm9Xe79tufS0SwDNLf
+         KQmW6uFR9Bl1rAiy/18ahwam8ojDann7i/7rwWvjKyu6rDkomAcOzN7/WwhHLUTSdzRw
+         llmTwHgVGksp6W+KLzNJsgL0sBuPgC4iuDWYNoDNL925yvsJkK6F1F/pFmmsHRGlpucQ
+         QYfMgn87uhjMCfW9NrA5+S91YJ6KoB6WwnIv1KCgueNYf6l3ZdbQSnSTU++D1bjx9Dz9
+         /XL5rQsmwBS1rBcHJPyUUlmr1avvZFQbyWUQPsdFJLDOxsReGejr2kjwoVB3krf4HFr9
+         iZJg==
+X-Gm-Message-State: AOAM533abzzyMcQl0cu6uWK7lZ8wrY2+gDLqG8mfPaStfSKXC4Vt2sLY
+        JuRkhjBuXBRMWG1zwvDKzvTLOHPO5wc3ilOYLWbChHg0s3vgmDD9mmglLdtpIjLW7gODtoypjFd
+        S5CRTNwHIIi2vPSlXzm70iOi2
+X-Received: by 2002:a05:600c:3541:: with SMTP id i1mr25022291wmq.135.1626574158605;
+        Sat, 17 Jul 2021 19:09:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAjXutwxw/shIh8se3On5/NgHRsL0GVBZVfCQw0Xr/xWe4iHnIbPhvf8WMAk9eZvm7QX+O3A==
+X-Received: by 2002:a05:600c:3541:: with SMTP id i1mr25022272wmq.135.1626574158446;
+        Sat, 17 Jul 2021 19:09:18 -0700 (PDT)
+Received: from redhat.com ([2.55.29.175])
+        by smtp.gmail.com with ESMTPSA id n7sm14590296wmq.37.2021.07.17.19.09.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 19:00:08 -0700 (PDT)
-Date:   Sat, 17 Jul 2021 19:00:07 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] FPGA Manager address unused variable warnings
-Message-ID: <YPOLJ6mg9WWQ9/gI@epycbox.lan>
-References: <20210702035404.397853-1-mdf@kernel.org>
- <d0088161-ec7f-4ff4-d5c1-c0746ca17283@redhat.com>
- <20210707020309.GA12358@yilunxu-OptiPlex-7050>
+        Sat, 17 Jul 2021 19:09:17 -0700 (PDT)
+Date:   Sat, 17 Jul 2021 22:09:13 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, jasowang@redhat.com,
+        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com,
+        akpm@linux-foundation.org, yury.norov@gmail.com,
+        andriy.shevchenko@linux.intel.com, ojeda@kernel.org,
+        ndesaulniers@gooogle.com, joe@perches.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] tools: add missing infrastructure for
+ building ptr_ring.h
+Message-ID: <20210717220239-mutt-send-email-mst@kernel.org>
+References: <1625457455-4667-1-git-send-email-linyunsheng@huawei.com>
+ <1625457455-4667-2-git-send-email-linyunsheng@huawei.com>
+ <20210705143144-mutt-send-email-mst@kernel.org>
+ <cbc4053e-7eda-4c46-5b98-558c741e45b6@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707020309.GA12358@yilunxu-OptiPlex-7050>
+In-Reply-To: <cbc4053e-7eda-4c46-5b98-558c741e45b6@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 10:03:09AM +0800, Xu Yilun wrote:
-> On Tue, Jul 06, 2021 at 09:28:37AM -0700, Tom Rix wrote:
+On Tue, Jul 06, 2021 at 10:04:02AM +0800, Yunsheng Lin wrote:
+> On 2021/7/6 2:39, Michael S. Tsirkin wrote:
+> > On Mon, Jul 05, 2021 at 11:57:34AM +0800, Yunsheng Lin wrote:
+> >> In order to build ptr_ring.h in userspace, the cacheline
+> >> aligning, cpu_relax() and slab related infrastructure is
+> >> needed, so add them in this patch.
+> >>
+> >> As L1_CACHE_BYTES may be different for different arch, which
+> >> is mostly defined in include/generated/autoconf.h, so user may
+> >> need to do "make defconfig" before building a tool using the
+> >> API in linux/cache.h.
+> >>
+> >> Also "linux/lockdep.h" is not added in "tools/include" yet,
+> >> so remove it in "linux/spinlock.h", and the only place using
+> >> "linux/spinlock.h" is tools/testing/radix-tree, removing that
+> >> does not break radix-tree testing.
+> >>
+> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 > > 
-> > On 7/1/21 8:54 PM, Moritz Fischer wrote:
-> > > This patchset addresses a handful of warnings as result of_match_ids
-> > > being not properly wrapped in #ifdef CONFIG_OF.
-> > > 
-> > > Moritz Fischer (4):
-> > >    fpga: altera-freeze-bridge: Address warning about unused variable
-> > >    fpga: xiilnx-spi: Address warning about unused variable
-> > >    fpga: xilinx-pr-decoupler: Address warning about unused variable
-> > >    fpga: zynqmp-fpga: Address warning about unused variable
-> > > 
-> > >   drivers/fpga/altera-freeze-bridge.c | 2 ++
-> > >   drivers/fpga/xilinx-pr-decoupler.c  | 2 ++
-> > >   drivers/fpga/xilinx-spi.c           | 2 ++
-> > >   drivers/fpga/zynqmp-fpga.c          | 3 ++-
-> > >   4 files changed, 8 insertions(+), 1 deletion(-)
-> > 
-> > I am not seeing these warnings, but it is still worth doing.
-> > 
-> > I think a few more files need this change.
-> > 
-> > altera-ps-spi.c, dfl-n3000-nios.c, altera-hps2fpga.c, stratix10-soc.c,
-> > socfpga-a10.c, altera-fpga2sdram.c
+> > This is hard to review.
+> > Try to split this please. Functional changes separate from
+> > merely moving code around.
 > 
-> dfl-n3000-nios is not using of_device_id, and doesn't need the change.
-> 
-> Thanks,
-> Yilun
+> Sure.
 > 
 > > 
-> > Not needed for
 > > 
-> > altera-pr-ip-core-plat.c and ice40-spi.c
+> >> ---
+> >>  tools/include/asm/cache.h          | 56 ++++++++++++++++++++++++
+> >>  tools/include/asm/processor.h      | 36 ++++++++++++++++
+> >>  tools/include/generated/autoconf.h |  1 +
+> >>  tools/include/linux/align.h        | 15 +++++++
+> >>  tools/include/linux/cache.h        | 87 ++++++++++++++++++++++++++++++++++++++
+> >>  tools/include/linux/gfp.h          |  4 ++
+> >>  tools/include/linux/slab.h         | 46 ++++++++++++++++++++
+> >>  tools/include/linux/spinlock.h     |  2 -
+> >>  8 files changed, 245 insertions(+), 2 deletions(-)
+> >>  create mode 100644 tools/include/asm/cache.h
+> >>  create mode 100644 tools/include/asm/processor.h
+> >>  create mode 100644 tools/include/generated/autoconf.h
+> >>  create mode 100644 tools/include/linux/align.h
+> >>  create mode 100644 tools/include/linux/cache.h
+> >>  create mode 100644 tools/include/linux/slab.h
+> >>
+> >> diff --git a/tools/include/asm/cache.h b/tools/include/asm/cache.h
+> >> new file mode 100644
+> >> index 0000000..071e310
+> >> --- /dev/null
+> >> +++ b/tools/include/asm/cache.h
+> >> @@ -0,0 +1,56 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> >> +
+> >> +#ifndef __TOOLS_LINUX_ASM_CACHE_H
+> >> +#define __TOOLS_LINUX_ASM_CACHE_H
+> >> +
+> >> +#include <generated/autoconf.h>
+> >> +
+> >> +#if defined(__i386__) || defined(__x86_64__)
+> >> +#define L1_CACHE_SHIFT	(CONFIG_X86_L1_CACHE_SHIFT)
+> >> +#elif defined(__arm__)
+> >> +#define L1_CACHE_SHIFT	(CONFIG_ARM_L1_CACHE_SHIFT)
+> >> +#elif defined(__aarch64__)
+> >> +#define L1_CACHE_SHIFT	(6)
+> >> +#elif defined(__powerpc__)
+> >> +
+> >> +/* bytes per L1 cache line */
+> >> +#if defined(CONFIG_PPC_8xx)
+> >> +#define L1_CACHE_SHIFT	4
+> >> +#elif defined(CONFIG_PPC_E500MC)
+> >> +#define L1_CACHE_SHIFT	6
+> >> +#elif defined(CONFIG_PPC32)
+> >> +#if defined(CONFIG_PPC_47x)
+> >> +#define L1_CACHE_SHIFT	7
+> >> +#else
+> >> +#define L1_CACHE_SHIFT	5
+> >> +#endif
+> >> +#else /* CONFIG_PPC64 */
+> >> +#define L1_CACHE_SHIFT	7
+> >> +#endif
+> >> +
+> >> +#elif defined(__sparc__)
+> >> +#define L1_CACHE_SHIFT 5
+> >> +#elif defined(__alpha__)
+> >> +
+> >> +#if defined(CONFIG_ALPHA_GENERIC) || defined(CONFIG_ALPHA_EV6)
+> >> +#define L1_CACHE_SHIFT	6
+> >> +#else
+> >> +/* Both EV4 and EV5 are write-through, read-allocate,
+> >> +   direct-mapped, physical.
+> >> +*/
+> >> +#define L1_CACHE_SHIFT	5
+> >> +#endif
+> >> +
+> >> +#elif defined(__mips__)
+> >> +#define L1_CACHE_SHIFT	CONFIG_MIPS_L1_CACHE_SHIFT
+> >> +#elif defined(__ia64__)
+> >> +#define L1_CACHE_SHIFT	CONFIG_IA64_L1_CACHE_SHIFT
+> >> +#elif defined(__nds32__)
+> >> +#define L1_CACHE_SHIFT	5
+> >> +#else
+> >> +#define L1_CACHE_SHIFT	5
+> >> +#endif
+> >> +
+> >> +#define L1_CACHE_BYTES	(1 << L1_CACHE_SHIFT)
+> >> +
+> >> +#endif
+> >> diff --git a/tools/include/asm/processor.h b/tools/include/asm/processor.h
+> >> new file mode 100644
+> >> index 0000000..3198ad6
+> >> --- /dev/null
+> >> +++ b/tools/include/asm/processor.h
+> >> @@ -0,0 +1,36 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> >> +
+> >> +#ifndef __TOOLS_LINUX_ASM_PROCESSOR_H
+> >> +#define __TOOLS_LINUX_ASM_PROCESSOR_H
+> >> +
+> >> +#include <pthread.h>
+> >> +
+> >> +#if defined(__i386__) || defined(__x86_64__)
+> >> +#include "../../arch/x86/include/asm/vdso/processor.h"
+> >> +#elif defined(__arm__)
+> >> +#include "../../arch/arm/include/asm/vdso/processor.h"
+> >> +#elif defined(__aarch64__)
+> >> +#include "../../arch/arm64/include/asm/vdso/processor.h"
+> >> +#elif defined(__powerpc__)
+> >> +#include "../../arch/powerpc/include/vdso/processor.h"
+> >> +#elif defined(__s390__)
+> >> +#include "../../arch/s390/include/vdso/processor.h"
+> >> +#elif defined(__sh__)
+> >> +#include "../../arch/sh/include/asm/processor.h"
+> >> +#elif defined(__sparc__)
+> >> +#include "../../arch/sparc/include/asm/processor.h"
+> >> +#elif defined(__alpha__)
+> >> +#include "../../arch/alpha/include/asm/processor.h"
+> >> +#elif defined(__mips__)
+> >> +#include "../../arch/mips/include/asm/vdso/processor.h"
+> >> +#elif defined(__ia64__)
+> >> +#include "../../arch/ia64/include/asm/processor.h"
+> >> +#elif defined(__xtensa__)
+> >> +#include "../../arch/xtensa/include/asm/processor.h"
+> >> +#elif defined(__nds32__)
+> >> +#include "../../arch/nds32/include/asm/processor.h"
+> >> +#else
+> >> +#define cpu_relax()	sched_yield()
 > > 
-> > These have depends on OF in Kconfig.
-> > 
-> > Tom
+> > Does this have a chance to work outside of kernel?
+> 
+> I am not sure I understand what you meant here.
+> sched_yield() is a pthread API, so it should work in the
+> user space.
+> And it allow the rigntest to compile when it is built on
+> the arch which is not handled as above.
 
-Applied to for-next,
+It might compile but is likely too heavy to behave
+reasonably.
 
-Moritz
+Also, given you did not actually test it I don't
+think you should add such arch code.
+Note you broke at least s390 here:
+../../arch/s390/include/vdso/processor.h
+does not actually exist. Where these headers
+do exit they tend to include lots of code which won't
+build out of kernel.
+
+All this is just for cpu_relax - open coding that seems way easier.
+
+
+> > 
+> >> +#endif
+> > 
+> > did you actually test or even test build all these arches?
+> > Not sure we need to bother with hacks like these.
+> 
+> Only x86_64 and arm64 arches have been built and tested.
+
+In that case I think you should not add code that you
+have not even built let alone tested.
+
+
+> This is added referring the tools/include/asm/barrier.h.
+> 
+> > 
+> > 
+> >> +
+
