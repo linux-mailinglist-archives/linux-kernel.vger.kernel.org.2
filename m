@@ -2,130 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2495C3CC83E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840E03CC83F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 11:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhGRJEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 05:04:45 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21314 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhGRJEp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 05:04:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1626598895; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=no8t3Q/xQT2MtkrM8auQd508gyzFYHKVzf5OxkiDBkdsyuOon/MLmzcgthRwEhjDz5eGUMkNjm3ag3HAGrA/OXpkYODNw7t8wsiStDykTvu/0v9JuWEZc6MB/PKXdERZnUX1TOLBV7WB/LC1eU4ETmnmPaISAMBRNnRIbEMtwH0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1626598895; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=2wt/14A1pbZkAsPR8s1nN21cj4iIR0IrgJ5NsyPUWKI=; 
-        b=mfRLlzmNU2Uw5ifLLMgMnAoPm6MMD+JhDRgM2wwQZ3URRbit9DQKFxdjgAp2pOh+YcJlzR4KkS/6GA1jCxpfX/vMcoumIxnPcNVBgeHfZThHX5BMHoei/UBF7btYorrnj7l+p+s5onNT1tYFp+ZVlsXesPZMPlBii+bjkOVA3hI=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1626598895;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
-        bh=2wt/14A1pbZkAsPR8s1nN21cj4iIR0IrgJ5NsyPUWKI=;
-        b=vi6tkpXBNdff45SnZnZAN6MDzNz81TmFdQkJyRVFUSLRhUxSe+m5egpzHYsa7xsp
-        JLln7RAJYrxe9xicLTh18dnM2+YYflfYaT+Jr8D45c53njIqW4yiWxaytqIoSNVJmnv
-        EZ4EvR6ZAztcuRCY0JA1DDJfRMxIQCc+PXD9cRnA=
-Received: from anirudhrb.com (106.51.111.185 [106.51.111.185]) by mx.zohomail.com
-        with SMTPS id 1626598890186242.15286515869423; Sun, 18 Jul 2021 02:01:30 -0700 (PDT)
-Date:   Sun, 18 Jul 2021 14:31:23 +0530
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+77cea49e091776a57689@syzkaller.appspotmail.com,
-        mail@anirudhrb.com
-Subject: Re: [PATCH] firmware_loader: Fix use-after-free Read in
- firmware_loading_store
-Message-ID: <YPPt42dw47tluE4V@anirudhrb.com>
-References: <20210708031321.50800-1-skhan@linuxfoundation.org>
- <20210709091721.1869-1-hdanton@sina.com>
- <d851dd11-1b4f-4ed2-bad2-0c267e3d6021@linuxfoundation.org>
- <3eb42554-c054-6e46-54ce-b9f637b72751@linuxfoundation.org>
- <20210715222817.tjsotu7fuhwz37ki@garbanzo>
- <d17eeb0f-a46e-2515-43a6-36c16002928a@linuxfoundation.org>
- <20210715232105.am4wsxfclj2ufjdw@garbanzo>
+        id S231862AbhGRJKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 05:10:40 -0400
+Received: from mout.gmx.net ([212.227.17.21]:49343 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231821AbhGRJKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 05:10:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626599225;
+        bh=+6rDoqUFu3qBP1AIrVC/pau8jOnDcbVJF+6LXY1WD7w=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=KqQg8YsX2lUz9W8bmXr4wCSfSmODfsGaOgBHM9C0XJP5HBPBXTMQt9euVm+zC7TaY
+         9BgIf1tf13tbBZ9DEpx7/TMmBMyAs8kjQbrVOD+VEl84dRY5GBpy7G38zBfPUT9oSH
+         ZF7ytNKZ5mG0L/y6hPG+o1kq+7rzOu7VS4GuJIIM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MYNJq-1lZbjP21pa-00VPl3; Sun, 18 Jul 2021 11:07:05 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>, Nikolay Kyx <knv418@gmail.com>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        William Durand <will+git@drnd.me>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        zhaoxiao <zhaoxiao@uniontech.com>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/rtl8192e: Remove all strcpy() uses in favor of strscpy()
+Date:   Sun, 18 Jul 2021 11:06:36 +0200
+Message-Id: <20210718090636.7905-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715232105.am4wsxfclj2ufjdw@garbanzo>
-X-ZohoMailClient: External
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Voc2Cp0NQ9L4VJxa4xEKXL2Qq4U+GqL3n7u+Nbx+4c0jmibXiCJ
+ iBsyR+7se8vo5P7RV9Sww1ThVkRZhbQL0bcx1j1LIOnwv12rQnnbAut6z9QqubHfQIW4iye
+ /k/UPwVx7lOo/CpHEuEA070RcVOmUUDmE/zUyjCzGIsNl3y/Ba7vBxnKAd4y9BQ0emW0yNd
+ FyG2A1i3sKzOgGHIN8TnA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RYSB4NMtGLo=:ENQBY+LZT4mPpBEaX4bRB4
+ /tYy06anyPRnuzVEmoJVI3MpcmD1EiksDz3vKGbUc9gjiWswp+robXZ7nvEjKVaIcNlDhwWOp
+ 7wVkp15+5ce/U+OLTAJwZiWdM80jB7RSUsmZrqWycepxVszVoNrPdmaocgEYiTKkKFhlxmTYV
+ r83MqcBuoppbWYOQkRp36i+EFjgBy6f5sB7x7g+S1AjOHJYMqY075IfwYfxWpetzkToDMUzp/
+ 6QSVkMkXPBHqeaaSSl6pPu6FkWyS3deOfRpQ/oP6SwrKIff6iRkN584MeE2nAgH/K1rYsKQks
+ epDO2qx9V4ZSe2CV3AbB0R2QeAQ/+ewFJLvBeQuZDvgqJ0x2Q0noYOM978RnpAb6Ycikj5Xvj
+ dJSlQc3oRitSGXK43fx5k9UO2u7q6899I8H3vZIYc6GVVznLWM3f/YDJJuT7H3iNY8Wncs/gt
+ xJUIYqriTyA7sNdXIV6oBsZ+74Umu91N42X8Rs1Ot4PwTH+8ltxNFgMyptUlHJZRXoOPPJF/f
+ f3IO41l8M8JbHvz2VaCh6fFobsMuAGU65o832y6n1QIdG8OTsI18443Sgcf2xvJuRFOzbGtMy
+ rbxbskedo7a4yx36nCwQdl0bRSL3vgU9yzugDP0+erncPjx8JMA7jbnRdrQEarVjtxCriz57X
+ 5WirWNnidEPKcr2sDGmGj248HuJXcRFEKsvXAeA58zrZecpsLYuB/tbufU1oPa/uMyJsXYr+/
+ Nx2sTYuafU70M5qqzO/JCkv9iEHU85G9OF0Osxyz/A/xTqBQPDZQAjc4CQo/B4QdNCyZIbjcs
+ zGNi9zElVI1NJWTprE7QF7eNdAMQezo9gzey4DoWbYLjYlgruL3qmgZgZayZPSN70F13W+rbI
+ cRVJrnOQKlHMbI9YA8BaC0h5lTT2eoFvTv2dJ5Kt0InUtZJCa03jzgVOHcVD9OeI1UDvcJsV8
+ 1SO+nZkMM+Q37/NnW/zUEvigg8hKMNg2VyWnxhOoU0kiRzttZhgxURBDIsV3yxU0WyQ1bo482
+ jD64Qn7qFPXs4BvzMgLl+HidjPSds1laKWRER2cUqRNAdoDbeLrWyrxQZmg/sOUbRAOOZ8Hxb
+ aCD6LM7/hNVaT75Je1h/ZMPtn4NLu25t6pW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:21:05PM -0700, Luis Chamberlain wrote:
-> On Thu, Jul 15, 2021 at 04:46:24PM -0600, Shuah Khan wrote:
-> > On 7/15/21 4:28 PM, Luis Chamberlain wrote:
-> > > On Fri, Jul 09, 2021 at 10:38:12AM -0600, Shuah Khan wrote:
-> > > > However I am seeing the following over and over again in the
-> > > > log - hence I think it is safer to check the aborted status
-> > > > in __fw_load_abort().
-> > > > 
-> > > > ? __list_del_entry_valid+0xe0/0xf0
-> > > > [  348.604808][T12994]  __list_del_entry_valid+0xe0/0xf0
-> > > > [  348.610020][T12994]  firmware_loading_store+0x141/0x650
-> > > > [  348.615761][T12994]  ? firmware_data_write+0x4e0/0x4e0
-> > > > [  348.621064][T12994]  ? sysfs_file_ops+0x1c0/0x1c0
-> > > > [  348.625921][T12994]  dev_attr_store+0x50/0x80
-> > > > 
-> > > > Also the fallback logic takes actions based on errors as in
-> > > > fw_load_sysfs_fallback() that returns -EAGAIN which would
-> > > > trigger request_firmware() again.
-> > > > 
-> > > > Based on all of this I think this fix is needed, if only I can
-> > > > test for sure.
-> > > 
-> > > Shuah, curious if you had read this patch from Anirudh Rayabharam
-> > > and my response to that v4 patch iteration?
-> > > 
-> > > https://lkml.kernel.org/r/20210518155921.4181-1-mail@anirudhrb.com
-> > > 
-> > 
-> > Yes. I realized I am trying to fix the same problem we have been
-> > discussing. :) Sorry for the noise.
-> 
-> No worries, and thanks again for you help!
-> 
-> > Ignore my patch. I will follow the thread.
-> 
-> OK ! I think all we need is just Anirudh to split his patch to
-> remove the -EAGAIN return value in a separate patch as a first step,
-> documenting in the commmit log that:
-> 
-> The only motivation on her part with using -EAGAIN on commit
-> 0542ad88fbdd81bb ("firmware loader: Fix _request_firmware_load()
-> return val for fw load abort") was to distinguish the error from
-> -ENOMEM, and so there is no real reason in keeping it. Keeping
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
 
-Are you sure about this? As per Shuah's explanation [1], it sounds to
-me like certain media drivers explicitly check for -EAGAIN to retry
-the firmware load. Shuah, is my understanding correct?
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 2 +-
+ drivers/staging/rtl8192e/rtllib_softmac.c      | 3 ++-
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c   | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-[1]: https://lore.kernel.org/lkml/04b5bb2f-edf7-5b43-585a-3267d83bd8c3@linuxfoundation.org/
+diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/stag=
+ing/rtl8192e/rtl8192e/r8192E_dev.c
+index b626ac45db80..358b629d2cc6 100644
+=2D-- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
++++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
+@@ -2167,7 +2167,7 @@ rtl92e_init_variables(struct net_device  *dev)
+ {
+ 	struct r8192_priv *priv =3D rtllib_priv(dev);
 
-> -ETIMEDOUT is much telling of what the reason for a failure is,
-> so just use that.
-> 
-> Then his second patch would be simplified without the -EAGAIN
-> condition.
-> 
-> All I asked was to confirm that the -ETIMEDOUT was indeed propagated.
+-	strcpy(priv->nick, "rtl8192E");
++	strscpy(priv->nick, "rtl8192E", sizeof(priv->nick));
 
-Yes, -ETIMEDOUT is indeed propagated by fw_sysfs_wait_timeout.
+ 	priv->rtllib->softmac_features  =3D IEEE_SOFTMAC_SCAN |
+ 		IEEE_SOFTMAC_ASSOCIATE | IEEE_SOFTMAC_PROBERQ |
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/r=
+tl8192e/rtllib_softmac.c
+index 25b3d3950a3c..d2726d01c757 100644
+=2D-- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -2582,7 +2582,8 @@ static void rtllib_start_ibss_wq(void *data)
+ 	mutex_lock(&ieee->wx_mutex);
 
-> 
-> Anirudh, sorry for the trouble, but can I ask you for a v5 with two
-> patches as described above?
+ 	if (ieee->current_network.ssid_len =3D=3D 0) {
+-		strcpy(ieee->current_network.ssid, RTLLIB_DEFAULT_TX_ESSID);
++		strscpy(ieee->current_network.ssid, RTLLIB_DEFAULT_TX_ESSID,
++			sizeof(ieee->current_network.ssid));
+ 		ieee->current_network.ssid_len =3D strlen(RTLLIB_DEFAULT_TX_ESSID);
+ 		ieee->ssid_set =3D 1;
+ 	}
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/stagin=
+g/rtl8192e/rtllib_softmac_wx.c
+index f89799d43b1b..5968407c646d 100644
+=2D-- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+@@ -543,7 +543,7 @@ int rtllib_wx_get_name(struct rtllib_device *ieee,
+ 			     struct iw_request_info *info,
+ 			     union iwreq_data *wrqu, char *extra)
+ {
+-	strcpy(wrqu->name, "802.11");
++	strscpy(wrqu->name, "802.11", sizeof(wrqu->name));
 
-Sure, I will do that. 
+ 	if (ieee->modulation & RTLLIB_CCK_MODULATION)
+ 		strcat(wrqu->name, "b");
+=2D-
+2.25.1
 
-	- Anirudh.
-
-> 
->   Luis
