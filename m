@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62453CC952
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52BF3CC955
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbhGRN03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 09:26:29 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:61842 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbhGRN01 (ORCPT
+        id S233824AbhGRNbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 09:31:32 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:16732 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232859AbhGRNbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 09:26:27 -0400
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 16IDN6VF026573;
-        Sun, 18 Jul 2021 22:23:06 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 16IDN6VF026573
+        Sun, 18 Jul 2021 09:31:31 -0400
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 16IDSL8j001468
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 22:28:21 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 16IDSL8j001468
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1626614587;
-        bh=Ze113MyRnH/xltMWjfaGCsj9jL5X6qLXZcynrxc1yNs=;
+        s=dec2015msa; t=1626614901;
+        bh=YHSiAnz6Je5fuj8dGcu+SNF81bL0OsgiFPsyXkM2Yo4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AlNhgOXFJuGtM5Sv/s/0YXXa09yNhNu5SanENdrUsk2r8Q1uHMxcd3ggJ4DPZV7lv
-         2ds526fDdeqcv3YYoXPzvP2Vlcge+gZOwNikMOwQp9Ja1xuv4A6yrM0wEPd1OPuErp
-         LRyNZhpoAd6qWEWVSOOCHrVkMUUBAhjKM4bhutBwJ8YdxK5d6u78R1FrGtk0Le4TAB
-         iAhWDdNIVPEzDnz6oh8Ivjx+igizxsXFXAtmhAyOB7+RrH0dpWCL5jobN9Osv1n0Me
-         dl3afoSYwwHbeH1N2MhZoG6KZ4PsoTs6nvIC0rbgEBe5RXaJTmUx49pI/Hz0Uk12yt
-         5Bm2n0bVQ5TUA==
-X-Nifty-SrcIP: [209.85.214.178]
-Received: by mail-pl1-f178.google.com with SMTP id b12so8031093plh.10;
-        Sun, 18 Jul 2021 06:23:06 -0700 (PDT)
-X-Gm-Message-State: AOAM5332RON5xNkw35Ii039Wl6LkErZ0QGdJ2H9sF+55ogIoc0EBJ8NP
-        vXR10lny018s9Lf9bEM4mMjQ2bBHdInbqIpJCyY=
-X-Google-Smtp-Source: ABdhPJyCp2zQIsACSECMSy2+lp/QzUfLy+IVv/0JoHPh3da16U7sUtk+MqY3b3gWloZTnaAQ2j9EiyvW1u9208mzCu0=
-X-Received: by 2002:a17:902:be0f:b029:12b:6dff:2a22 with SMTP id
- r15-20020a170902be0fb029012b6dff2a22mr8231303pls.1.1626614586036; Sun, 18 Jul
- 2021 06:23:06 -0700 (PDT)
+        b=IlnBKFaPQijcy8UMi/ddzFZEgDKmjmACLSGegCjRo44y74vt3vRguIRH+aAwGmc8m
+         RUd2XCKkzZRljrWjnSZqMJrMC6VVg+wgoVxPph0E5asm1z3GqEU7eNr3/rzGCVaEgE
+         sdDqjfHLbQWiBd+qkZ+szW9jy6UIOjEpkQaqBQoPYmGlZy+zVSRbvvRQiCWChXPRmR
+         5Z7T/5fIiLK++Na/1eRDKlqdBSoDzzJMPpUiyS9QHfSoTnwo0AhclJZDBaKCVwPK1z
+         LYUVMu357hRan+zxZzNVijsqs3qOqdMBwAJOkWn3AwUFhxCCICg821O7FCBhZlvBEz
+         brQu6vbwH9Wgw==
+X-Nifty-SrcIP: [209.85.216.43]
+Received: by mail-pj1-f43.google.com with SMTP id p9so9646072pjl.3
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 06:28:21 -0700 (PDT)
+X-Gm-Message-State: AOAM531yfmNCI/I1yKcwPHzLjS+4FuDfHwefDaQ8Yu12GuB3rmPYGxAC
+        hgPWfEtQHOZ2wcf60e70NJNd33L6AeXBZ90ryKQ=
+X-Google-Smtp-Source: ABdhPJzACnn+XtZ229M87+xlRA/X1EiKrya+Q+Egd8GXnTniie3jvjteVJ9gFACIaSKiFDtQkKWvTSkbMVSQCtLQZco=
+X-Received: by 2002:a17:90b:11d4:: with SMTP id gv20mr23838852pjb.87.1626614900913;
+ Sun, 18 Jul 2021 06:28:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210714042349.219199-1-masahiroy@kernel.org>
-In-Reply-To: <20210714042349.219199-1-masahiroy@kernel.org>
+References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com>
+ <YOyGrUvA4LjydcP3@kroah.com> <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com>
+ <YOyVH3qD9O3qsNUL@kroah.com> <alpine.LRH.2.02.2107121528270.11724@file01.intranet.prod.int.rdu2.redhat.com>
+ <87tukzgrkg.fsf@ungleich.ch> <alpine.LRH.2.02.2107130454430.3795@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAK7LNAQkZSyNjoxVfrKr2goP7rNB0OAPXS6B-p24=8QjDcYWFA@mail.gmail.com>
+In-Reply-To: <CAK7LNAQkZSyNjoxVfrKr2goP7rNB0OAPXS6B-p24=8QjDcYWFA@mail.gmail.com>
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 18 Jul 2021 22:22:28 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS6NgAL7XQ4Hr5n+BFv8bkFiY1ttMj_p9kBXVi_MCxWsg@mail.gmail.com>
-Message-ID: <CAK7LNAS6NgAL7XQ4Hr5n+BFv8bkFiY1ttMj_p9kBXVi_MCxWsg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: do not suppress Kconfig prompts for silent build
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Michal Marek <michal.lkml@markovi.net>,
+Date:   Sun, 18 Jul 2021 22:27:43 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATTKZgTLqe87t=qBKBcvd+GW9boOQQjSRk_ES4+Lb+eug@mail.gmail.com>
+Message-ID: <CAK7LNATTKZgTLqe87t=qBKBcvd+GW9boOQQjSRk_ES4+Lb+eug@mail.gmail.com>
+Subject: Re: [PATCH v3] scripts/setlocalversion: fix a bug when LOCALVERSION
+ is empty
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 1:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Wed, Jul 14, 2021 at 8:54 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> When a new CONFIG option is available, Kbuild shows a prompt to get
-> the user input.
+> On Tue, Jul 13, 2021 at 5:59 PM Mikulas Patocka <mpatocka@redhat.com> wrote:
+> >
+> >
+> >
+> > On Mon, 12 Jul 2021, Nico Schottelius wrote:
+> >
+> > >
+> > > Sorry to say, but I am not convinced by the patch.
+> > >
+> > > While yes, we might have changed the behaviour slightly, reading
+> > > something on the line of
+> > >
+> > > if [ -z ... ]
+> > >
+> > > is significantly more simple, elegant and easier to maintain, than
+> > > a rather atypical special case for setting a variable to empty,
+> > > using
+> > >
+> > > if [ "${LOCALVERSION+set}" != "set" ] ..
+> > >
+> > > *and* because it is so atypical, adding a long comment for it, too.
+> > >
+> > > Additonally, -z should be correct if the variable *is* truly empty. I
+> > > assume it actually isn't and contains whitespace, which is not the same
+> > > as being set and empty.
+> > >
+> > > Instead of re-adding complexity, could you consider changing the build
+> > > flow so that LOCALVERSION is either unset or empty?
+> > >
+> > > Nico
+> >
+> > I set LOCALVERSION to an empty string (with "export LOCALVERSION="). This
+> > prevented the kernel from adding a "+" sign to the kernel version. Since
+> > the commit 042da426f8eb, it no longer works and the kernel adds a "+" sign
+> > if LOCALVERSION is set and empty.
+> >
+> > If you don't like "if [ "${LOCALVERSION+set}" != "set" ]", then please
+> > provide some other way how to test if the variable is set.
 >
->   $ make
->   [ snip ]
->   Core Scheduling for SMT (SCHED_CORE) [N/y/?] (NEW)
+> if [ -z "${LOCALVERSION+set}" ]
 >
-> This is the only interactive place during the build process.
+> is the alternative way I came up with, but
+> I am OK with your v3.
 >
-> Commit 174a1dcc9642 ("kbuild: sink stdout from cmd for silent build")
-> suppressed Kconfig prompts as well because syncconfig is invoked by
-> the 'cmd' macro. You cannot notice the fact that Kconfig is waiting
-> for the user input.
 >
-> Use 'kecho' to show the equivalent short log without suppressing stdout
-> from sub-make.
+> I will pick it up for -rc2.
 >
-> Fixes: 174a1dcc9642 ("kbuild: sink stdout from cmd for silent build")
-> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+>
 
 Applied to linux-kbuild.
+Thanks.
 
 
-
->  Makefile | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index c3f9bd191b89..6272126abe23 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -728,11 +728,9 @@ $(KCONFIG_CONFIG):
->  # This exploits the 'multi-target pattern rule' trick.
->  # The syncconfig should be executed only once to make all the targets.
->  # (Note: use the grouped target '&:' when we bump to GNU Make 4.3)
-> -quiet_cmd_syncconfig = SYNC    $@
-> -      cmd_syncconfig = $(MAKE) -f $(srctree)/Makefile syncconfig
-> -
->  %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h: $(KCONFIG_CONFIG)
-> -       +$(call cmd,syncconfig)
-> +       $(Q)$(kecho) "  SYNC    $@"
-> +       $(Q)$(MAKE) -f $(srctree)/Makefile syncconfig
->  else # !may-sync-config
->  # External modules and some install targets need include/generated/autoconf.h
->  # and include/config/auto.conf but do not care if they are up-to-date.
-> --
-> 2.27.0
->
 
 
 -- 
