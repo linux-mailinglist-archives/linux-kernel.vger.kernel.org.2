@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D9D3CC933
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41B23CC93D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbhGRM4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 08:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
+        id S233745AbhGRND1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 09:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233552AbhGRM4U (ORCPT
+        with ESMTP id S232859AbhGRNDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 08:56:20 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAF4C061764
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 05:53:21 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id k184so22991420ybf.12
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 05:53:21 -0700 (PDT)
+        Sun, 18 Jul 2021 09:03:25 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED89C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 06:00:26 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so12194737pju.4
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 06:00:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ot3x9A+QM97mDVvcXkVBRBSDikDCHSFweeQqLAuQYRE=;
-        b=i0Dgr+5XSFqFjaFWpj1aY0gLIBeJs6hYn9X1Uq2cXBST2RiP2cy3qAYr2Eiutu3Ths
-         uP7aEee5iQDo7LxlqOh2sY3DeafUdN7hVcD2zNlk/Sicp4/TSbsVCQu9KpjUWBaIIrci
-         MW89mob8mwp+wm1m6ov0RCRMYbeFzPNssFBekFIdzA23ywQovtH75EvbwdK0/GdJAKjl
-         VdqxNn/67qOUu9Fgoq6mQjD2RAiMawYNgYhjspXWslw6DqZFkszCJkhG1UOwZI3T0sWY
-         oyFMiVqaKDzLFi8fC0M8W8nnf3TiApMF4er97XTg6ZrSHtEw8N6anI5WMLzvW10fErFw
-         RbGg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bSHPvZPfRYSth2tUS+kE5c7yrjHQorfQj9Klu2G123E=;
+        b=OpqE0H0U5nfLqCRHzHbS+ZQGBFRXp+bI+2tX5Dy7QRgE7IvktgkCO7I9dZhm2AKHxP
+         iDiuZWQsDxSkO6e91VDaDww/y1KUEiNSNxeB6HrFz4q8mxeIFX21SrlEzUZ9DM2Gl3Mn
+         XjumSj5KB7+pIVTVUdkDaSC0yM2Itb72Yt6YmkOU5WTamXI1b0vBWzXRtWL/Sa0+/Aem
+         jujlYPO2FTT1fFKPUXlEu1pLbwYqqrG4qjLAldfEw53q2avgQsssPRyyw74B0gVghJyw
+         zrXRsQi00i3vKFv5iqQpwwjBHJqxacVk96dP2s9nh8B458z4BuNAOkHQoiQV0orQFyVD
+         zGPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ot3x9A+QM97mDVvcXkVBRBSDikDCHSFweeQqLAuQYRE=;
-        b=CSphXuPBhryBitUjFl1aeMW2feosz30R2VJ3+8On84q3KLkurUIY4s3PtJDUffGgn/
-         BhWtUkgPo+d8+cvllemzSe/6gUsXvVIdNuCGehBSi4/+TzoNUasNSNaaD7TlHwxcifZl
-         EPVI5Rn3FIcgFkrF1R5VTtaszjefh6Pfgph19gPpxD87Df8Md7nqIxMBhtOSO48y92/n
-         sNDuBnutte/w3+apXws7SBn9G4LsLBK2/5VCe1SpQRQ46cdwOk365LCo/gQFY/qnoloy
-         QdvWOWc8ZHLNEaIRZKVGhIeEK4kWTzQdqfSH0uhKtxrbhkVisyaT8wfVs6Dde8FmYbX1
-         O/Zw==
-X-Gm-Message-State: AOAM530j4AFdkxwYCcWv66eV56kI92H4sBO9nacX9taesP2iD/Dq7X3K
-        hODJG+z0NATvlTjVVmMXYjNKBjMf2oLwMbeDjhV/TA==
-X-Google-Smtp-Source: ABdhPJzCJzVpAuBh1eXxB04z9eJ2uKhVE74rrp28KmYF1XrEhVyuZZhjXsiKoxD0Oc+R5FpSpoQ+B1ciYWYT730Ysog=
-X-Received: by 2002:a25:ad95:: with SMTP id z21mr25056929ybi.25.1626612800425;
- Sun, 18 Jul 2021 05:53:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bSHPvZPfRYSth2tUS+kE5c7yrjHQorfQj9Klu2G123E=;
+        b=hPzjFhthdIK8ii9pBPLZ7NS4Luw36O877bxQopPcpvzs50MCmUYJvSytF4a8i9gfKT
+         fK1uJaSWHXmCcyODmxgAaxJupgtQjgyIq82NWOzKWtGAkVIkPpA4qtq1vBYAl1C64Bsw
+         jZ/ArmKFUsCZRi2JEi1tQLqiLbWRJV/wACFiLNKCypgVwEyp2ufykgCmMAaCm3ld9n94
+         k70sqX8qLbDW9wbVDt9rx3n7cjJcoelgxB71Y7s1jrzlJvVLhX0L2bvrnC80mQdjGGLn
+         V5I94em3vg+7jZ6HMOcBP1u4Xb3nqGdmnaVBH8Ed26Gymp+1i1XXrW12n076hFgqO8o5
+         GXqQ==
+X-Gm-Message-State: AOAM533e3N1TkmnidDIMD5AasGAaRgcUXU7GZSlyHCpZ609wflkoKSWi
+        Zy03CoBeEfqPhdMaSuQMDoE=
+X-Google-Smtp-Source: ABdhPJyc4TURBaVcefqAvMJ8wxvNKyyrcz3F/gG1Y83mxlRblAoDgsW4fteOvaj/zfxbh/jzRcvQnQ==
+X-Received: by 2002:a17:902:b717:b029:11a:fae3:ba7c with SMTP id d23-20020a170902b717b029011afae3ba7cmr15048651pls.28.1626613225856;
+        Sun, 18 Jul 2021 06:00:25 -0700 (PDT)
+Received: from localhost.localdomain ([49.37.52.138])
+        by smtp.gmail.com with ESMTPSA id n123sm17698981pga.69.2021.07.18.06.00.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Jul 2021 06:00:25 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        apw@canonical.com, Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: [PATCH v2] checkpatch: remove obsolete check for __dev* section markers
+Date:   Sun, 18 Jul 2021 18:30:15 +0530
+Message-Id: <20210718130015.8903-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210702133712.128611-1-linux@rasmusvillemoes.dk>
-In-Reply-To: <20210702133712.128611-1-linux@rasmusvillemoes.dk>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Sun, 18 Jul 2021 14:53:09 +0200
-Message-ID: <CAMpxmJWrmVNb2jYs8e585kDnE+Xv8yNiFpABh3RwDUFg1KAWqA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "gpio: mpc8xxx: change the gpio interrupt flags."
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Song Hui <hui.song_1@nxp.com>,
-        "Stable # 4 . 20+" <stable@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 3:37 PM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> This reverts commit 3d5bfbd9716318b1ca5c38488aa69f64d38a9aa5.
->
-> When booting with threadirqs, it causes a splat
->
->   WARNING: CPU: 0 PID: 29 at kernel/irq/handle.c:159 __handle_irq_event_percpu+0x1ec/0x27c
->   irq 66 handler irq_default_primary_handler+0x0/0x1c enabled interrupts
->
-> That splat later went away with commit 81e2073c175b ("genirq: Disable
-> interrupts for force threaded handlers"), which got backported to
-> -stable. However, when running an -rt kernel, the splat still
-> exists. Moreover, quoting Thomas Gleixner [1]
->
->   But 3d5bfbd97163 ("gpio: mpc8xxx: change the gpio interrupt flags.")
->   has nothing to do with that:
->
->       "Delete the interrupt IRQF_NO_THREAD flags in order to gpio interrupts
->        can be threaded to allow high-priority processes to preempt."
->
->   This changelog is blatantly wrong. In mainline forced irq threads
->   have always been invoked with softirqs disabled, which obviously
->   makes them non-preemptible.
->
-> So the patch didn't even do what its commit log said.
->
-> [1] https://lore.kernel.org/lkml/871r8zey88.ffs@nanos.tec.linutronix.de/
->
-> Cc: stable@vger.kernel.org # v5.9+
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
+Since commit 54b956b90360 ("Remove __dev* markings from init.h"),
+the check for __dev* section markers in checkpatch is obsolete
+as no new instances of these markers can be introduced in the
+kernel.
 
-Applied for fixes, thanks!
+Remove this obsolete check from checkpatch.
 
-Bartosz
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+
+Changes in v2:
+- Reword commit message as suggested by Lukas
+  https://lore.kernel.org/lkml/CAKXUXMyvOh0GvpEf4uX5iFJYOJLo43tmO16Uf34j4i6XD0vBcg@mail.gmail.com/
+
+ scripts/checkpatch.pl | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 461d4221e4a4..e29c0961b25e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4023,12 +4023,6 @@ sub process {
+ 			     "CVS style keyword markers, these will _not_ be updated\n". $herecurr);
+ 		}
+ 
+-# check for old HOTPLUG __dev<foo> section markings
+-		if ($line =~ /\b(__dev(init|exit)(data|const|))\b/) {
+-			WARN("HOTPLUG_SECTION",
+-			     "Using $1 is unnecessary\n" . $herecurr);
+-		}
+-
+ # Check for potential 'bare' types
+ 		my ($stat, $cond, $line_nr_next, $remain_next, $off_next,
+ 		    $realline_next);
+-- 
+2.28.0
+
