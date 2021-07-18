@@ -2,110 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7033CC9CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 17:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D49B3CC9D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 18:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhGRPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 11:49:21 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:34691 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbhGRPtS (ORCPT
+        id S233840AbhGRQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 12:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230307AbhGRQNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 11:49:18 -0400
-Received: by mail-il1-f200.google.com with SMTP id w2-20020a056e0213e2b029020f555eb3c6so8867111ilj.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 08:46:20 -0700 (PDT)
+        Sun, 18 Jul 2021 12:13:01 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3FFC061762
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 09:10:02 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id c13so8604914qtc.10
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 09:10:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QkTXEObmutr68IWcNIV9tCbj7lXflMOhhNgNvZVkDI4=;
+        b=nDjh27EkGaosIWAJ+UPvTPC1JVUoewykDFtyqC7eqoQ87MxJFli1DO9/amqUX/BBcB
+         xF/gh5lUToGbtVK9Iq1S6JCNMXAxtiS9W9VuXOY+ZxOw4glLbKIhSzqn30Mv9hYsQi6k
+         EByV8hvQxpov0HnULnXXat9fxVO3IxRbSPs1xCPgXxfYZZ1kSM6XrOs9o+Y06CRUrKfe
+         DEP2yX1yaOML6GrCPw9nODAjmfchCEY1snePJi9Xtyli8EnZdVKzuX1VkYo5bidT/z/F
+         p8cp8zxp16TaSMhutp7phoP+mlaocAtirkA2Nkhl8S+XN55eg+wNCp1JskPv+REsAtBO
+         5CHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3BTWT7hOTOoutziemX0GlZm4ft3GIKdnYK170YdXmDk=;
-        b=jKgJwUeJFO/4bJPDgZFIJuxUddGi8E07yKgdLjk49Sj37TVgNTmfDHNPxb5iuKrrVO
-         KY23Vv7MQNn5YIy3W1uhF9xUyjjkU6cp7xcfymVQLeAnpTYJ3vL9yUJM7wydZXhEhP8e
-         muocyoHMm82hnd3kI0mCvOtRJlTBj66l/NQcexdBQTmf/YIB7hfx/dp6zfk+wdULgCwz
-         h+hBGDTZUhPSxsvUwzaZmZPoqbk3y4T3CeNY/O7L+qgs3P/AkzHFQpepxQizJ066JEzb
-         w4JtCCzDeJcgatNCXkivBgProNtUcVjQIJVjKBTXJ1DGnHUZUKVf3TAD32YOEuQdHDfH
-         H5CA==
-X-Gm-Message-State: AOAM531lFE4TgwxwxR/BAjmLB/mERBJmMKCRNBiWZBUIq/akpAXKzv/E
-        FVLHoPzMk8mqMIEpgLMCnfnb1piVF0PoHDQGwUrBBNJQPCbZ
-X-Google-Smtp-Source: ABdhPJxxjcNkJfLc/19iCekAmSQTCZ0At/ztzraN5OxSKXhe6pIuPgcfxEjJ+pVXWIYItwRnUKm2DmNLtBmfiKy3YWaMVI60jNjn
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QkTXEObmutr68IWcNIV9tCbj7lXflMOhhNgNvZVkDI4=;
+        b=RTrpiRr/iq2MbpF5aC7+Chdn+PRAuF32pyfJ7SIPPbON7fETk8sxfUZT9bpIlOqRxq
+         derN4XbF7zk5TuIxB4Kj8g+mQ3FvmY4CX5321iR4BW45vaDB2pjECE7fttf02KuDcwrY
+         nnxpMc7m8PZEKl9exUhhzx2PwM7t5nN5BBt3BPAmVIvDj1tIE9Y2k4Puq983j1l6MZNR
+         a5qSKyAQmfxM/eCCShJ7tF6ka9Zbq81hEY36qo7EzqiDqcbsU/N5hJaUZ6OxU0nGfRwY
+         3xTz2AW0B7Fx0+F+Ui/rTg6idd4S0KYXCQFAq1DABtR0maA4KvWOQaLGDwyE3wLZ6sgm
+         rMzw==
+X-Gm-Message-State: AOAM531Y4qLgd2GvsRTQ8ibVkcdED+BOIDbD6hhLodS4KJV/v9eljyUs
+        mpKWItA/17VL5jK267odr5enHhCAYXFGmofoA7kFAWNhDm8=
+X-Google-Smtp-Source: ABdhPJyNTKo2iDf4gdlx3AQLGgfrGu2Zd+DR9nj9vuu0fbDqvnaCxv1t66htCEbkTeTXzMzYR5IGL0bJZ4Vpjxmnazk=
+X-Received: by 2002:ac8:5ac7:: with SMTP id d7mr18733586qtd.240.1626624601244;
+ Sun, 18 Jul 2021 09:10:01 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:cf48:: with SMTP id c8mr4985606ilr.237.1626623180239;
- Sun, 18 Jul 2021 08:46:20 -0700 (PDT)
-Date:   Sun, 18 Jul 2021 08:46:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d77b6505c767b8f8@google.com>
-Subject: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
-From:   syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
-To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20210716221159.3587039-1-linux@roeck-us.net> <20210717175750.Horde.TLZWyADKWFGAyFWIYtmglA2@messagerie.c-s.fr>
+ <20210717162359.GA3130272@roeck-us.net>
+In-Reply-To: <20210717162359.GA3130272@roeck-us.net>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Mon, 19 Jul 2021 02:09:50 +1000
+Message-ID: <CAOSf1CGxp2xuEgR=Fb2AL+Ra5owqdN5=MtK6o_MCYqp=+P9arw@mail.gmail.com>
+Subject: Re: [PATCH] powerpc/chrp: Revert "Move PHB discovery" and "Make
+ hydra_init() static"
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Jul 18, 2021 at 2:24 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Sat, Jul 17, 2021 at 05:57:50PM +0200, Christophe Leroy wrote:
+> > Guenter Roeck <linux@roeck-us.net> a =C3=A9crit :
+> >
+> > > This patch reverts commit 407d418f2fd4 ("powerpc/chrp: Move PHB
+> > > discovery") and commit 9634afa67bfd ("powerpc/chrp: Make hydra_init()
+> > > static").
+> > >
+> > > Running the upstream kernel on Qemu's brand new "pegasos2" emulation
+> > > results in a variety of backtraces such as
+> > >
+> > > Kernel attempted to write user page (a1) - exploit attempt? (uid: 0)
+> > > ------------[ cut here ]------------
+> > > Bug: Write fault blocked by KUAP!
+> > > WARNING: CPU: 0 PID: 0 at arch/powerpc/mm/fault.c:230
+> > > do_page_fault+0x4f4/0x920
+> > > CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.2 #40
+> > > NIP:  c0021824 LR: c0021824 CTR: 00000000
+> > > REGS: c1085d50 TRAP: 0700   Not tainted  (5.13.2)
+> > > MSR:  00021032 <ME,IR,DR,RI>  CR: 24042254  XER: 00000000
+> > >
+> > > GPR00: c0021824 c1085e10 c0f8c520 00000021 3fffefff c1085c60 c1085c58
+> > > 00000000
+> > > GPR08: 00001032 00000000 00000000 c0ffb3ec 44042254 00000000 00000000
+> > > 00000004
+> > > GPR16: 00000000 ffffffff 000000c4 000000d0 0188c6e0 01006000 00000001
+> > > 40b14000
+> > > GPR24: c0ec000c 00000300 02000000 00000000 42000000 000000a1 00000000
+> > > c1085e60
+> > > NIP [c0021824] do_page_fault+0x4f4/0x920
+> > > LR [c0021824] do_page_fault+0x4f4/0x920
+> > > Call Trace:
+> > > [c1085e10] [c0021824] do_page_fault+0x4f4/0x920 (unreliable)
+> > > [c1085e50] [c0004254] DataAccess_virt+0xd4/0xe4
+> > >
+> > > and the system fails to boot. Bisect points to commit 407d418f2fd4
+> > > ("powerpc/chrp: Move PHB discovery"). Reverting this patch together w=
+ith
+> > > commit 9634afa67bfd ("powerpc/chrp: Make hydra_init() static") fixes
+> > > the problem.
+> >
+> > Isn't there more than that in the backtrace ? If there is a fault block=
+ed by
+> > Kuap, it means there is a fault. It should be visible in the traces.
+> >
+> > Should we fix the problem instead of reverting the commit that made the
+> > problem visible ?
+> >
+>
+> I do not think the patch reverted here made the problem visible. I am
+> quite sure that it introduced it. AFAIS the problem is that the new code
+> initializes and remaps PCI much later, after it is being used.
 
-syzbot found the following issue on:
+Right. The bug is that on 32bit platforms the PHB setup also maps one
+of the PHB's IO space as "ISA IO space" as a side effect. There's a
+handful of platforms (pegasos2 is one) which use an i8259 interrupt
+controller and configuring that requires access to IO / ISA space. The
+KUAP faults we're setting are because isa_io_base is still set to zero
+so outb() and friends are accessing the zero page.
 
-HEAD commit:    dd9c7df94c1b Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a9f66a300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b998c1afc13578
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b57a46bf1801ce2a2ca
-userspace arch: i386
+I don't think there's any real reason why we need to have PCI fully
+set up to handle that situation. A few platforms already have early
+fixup code which parses the DT directly rather than using the fields
+of pci_controller (which are parsed from the DT anyway) and I'm pretty
+sure we can do something similar.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> Also, the
+> patch introducing the problem was never tested on real hardware (it even
+> says so in the patch comments). That by itself seems to be quite
+> problematic for such an invasive patch, and makes me wonder if some of
+> the other PHB discovery related patches introduced similar problems.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com
+The legacy platforms are maintained on a best-effort basis. Ellerman's
+CI farm covers most of the powerpc CPU types, but there's no real way
+to test the bulk of the platforms in the tree since most of the
+hardware is currently in landfill.
 
-------------[ cut here ]------------
-usb 7-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType a1
-WARNING: CPU: 0 PID: 15508 at drivers/usb/core/urb.c:410 usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
-Modules linked in:
-CPU: 0 PID: 15508 Comm: syz-executor.2 Not tainted 5.14.0-rc1-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-RIP: 0010:usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
-Code: 7c 24 40 e8 a5 e9 1f fc 48 8b 7c 24 40 e8 db 25 0c ff 45 89 e8 44 89 f1 4c 89 e2 48 89 c6 48 c7 c7 60 96 27 8a e8 e4 b2 91 03 <0f> 0b e9 a5 ee ff ff e8 77 e9 1f fc 0f b6 1d 37 2e 02 08 31 ff 41
-RSP: 0018:ffffc900021cfb88 EFLAGS: 00010082
-RAX: 0000000000000000 RBX: ffff8880786df058 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815d6855 RDI: fffff52000439f63
-RBP: ffff88804a27bbe0 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815d068e R11: 0000000000000000 R12: ffff8880168a42a8
-R13: 00000000000000a1 R14: 0000000080000280 R15: ffff888029c86f00
-FS:  0000000000000000(0000) GS:ffff88802ca00000(0063) knlGS:00000000f558cb40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00000000f5580db0 CR3: 0000000077c36000 CR4: 0000000000150ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- hid_submit_ctrl+0x6ec/0xd80 drivers/hid/usbhid/hid-core.c:416
- usbhid_restart_ctrl_queue.isra.0+0x244/0x3a0 drivers/hid/usbhid/hid-core.c:258
- __usbhid_submit_report+0x6f0/0xd50 drivers/hid/usbhid/hid-core.c:603
- usbhid_submit_report drivers/hid/usbhid/hid-core.c:640 [inline]
- usbhid_init_reports+0x16e/0x3b0 drivers/hid/usbhid/hid-core.c:784
- hiddev_ioctl+0x10d4/0x1630 drivers/hid/usbhid/hiddev.c:794
- compat_ptr_ioctl+0x67/0x90 fs/ioctl.c:1105
- __do_compat_sys_ioctl+0x1c7/0x290 fs/ioctl.c:1167
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7fb3549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f558c5fc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000c018480d
-RDX: 0000000020000080 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> Anyway, I do not use or have that hardware. I was just playing with the
+> latest version of qemu and ended up tracking down why its brand new
+> pegasos2 emulation no longer boots with the latest Linux kernel.
+> I personally don't care too much if ppc/chrp support is broken in the
+> upstream kernel or not. Please take this patch as problem report,
+> and feel free to do with it whatever you like, including ignoring it.
 
+Problem reports are fine and appreciated. I'd be less cranky if you
+included the kernel config you used in the initial report since I
+wasted an hour of my saturday trying to replicate it with various
+kernel configs that had SMP enabled since that's what the
+chrp_defconfig uses.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Oliver
