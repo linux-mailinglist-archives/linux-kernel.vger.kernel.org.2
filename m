@@ -2,189 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB223CCACB
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219E93CCACE
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbhGRVWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 17:22:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45088 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhGRVWp (ORCPT
+        id S232783AbhGRVZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 17:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhGRVZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 17:22:45 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E3BA6220EA;
-        Sun, 18 Jul 2021 21:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626643185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ExL8vB9Qx3eR5ggHERFJxosSa1ncV8PMZ+AT9hitkh8=;
-        b=fKcI0WRaHFTw9riALTE2BpEB2w3q3zfYezTKbkNPbDbJrv7tPPVGE/CzAGjZNgUkwgAuks
-        mdyz5MBWxusGICuSnMa21VpaSF6KAs/lJEU0ZCVTSXYd+yk9lxcp2AfCFkwGpkHajJKr/2
-        IP7i4jSRawplENtecXh1v3uQ2mNuyY8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626643185;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ExL8vB9Qx3eR5ggHERFJxosSa1ncV8PMZ+AT9hitkh8=;
-        b=yuRnG/6SSGMdB8n64rHkLQVS2HmJkssdghXB9SYxYFQGQyYV2pNTQ+bNWiHrQznXoBvBuM
-        epqulXGETKAC/XAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B2F6F1332A;
-        Sun, 18 Jul 2021 21:19:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id HF3nKfGa9GAeEgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Sun, 18 Jul 2021 21:19:45 +0000
-Subject: Re: [patch] v2 mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-To:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
- <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
- <878s2fnv79.ffs@nanos.tec.linutronix.de>
- <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
- <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
- <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <dd10ebb3-7687-6e8d-8984-3dfb9cd0e927@suse.cz>
-Date:   Sun, 18 Jul 2021 23:19:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 18 Jul 2021 17:25:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA33C061762;
+        Sun, 18 Jul 2021 14:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=bkAVAt/3DQZ7jiAuNPkT7sUY+jmd1SQANJgkqozmmAM=; b=p/n16vws4Zla/DwGh1eH9QPXEY
+        M9stV+oN/cgZvQdGQcpGvAIhLq5q8OtH1Dg+kUM/3VScbgd9OCORaqVtdQ3TcaS0Odp8Ffx/vQsWZ
+        gnTJ8g3liZXHJWqnfHI+oYHfScJTDt6HUAz/i7LSUabLIBtq6C6OG2ixxwLf502wwO30EV94e00iZ
+        K43DIB3ACwQ35uTIK7UwqmFjZSG0UkynrvQ/Sf6GJ6rsXYxzQp9IYhdpMg1NH1wAIjqRTp0zksGZ7
+        RPGDa2NxZvzGOzM7MJXZzpb1VxR9LmHmRLRd/IrPX/88nW2bmtFX2zmSGZBCA7qRlzwR9L0px0QAD
+        djAR8qZg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5EEv-006Iqu-RN; Sun, 18 Jul 2021 21:22:28 +0000
+Date:   Sun, 18 Jul 2021 22:22:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Chris Clayton <chris2553@googlemail.com>,
+        Chris Rankin <rankincj@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Message-ID: <YPSbjXrBYsRZagAv@casper.infradead.org>
+References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
+ <2245518.LNIG0phfVR@natalenko.name>
+ <6698965.kvI7vG0SvZ@natalenko.name>
 MIME-Version: 1.0
-In-Reply-To: <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6698965.kvI7vG0SvZ@natalenko.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/21 4:58 PM, Mike Galbraith wrote:
-> On Thu, 2021-07-15 at 18:34 +0200, Mike Galbraith wrote:
->> Greetings crickets,
->>
->> Methinks he problem is the hole these patches opened only for RT.
->>
->> static void put_cpu_partial(struct kmem_cache *s, struct page *page,
->> int drain)
->> {
->> #ifdef CONFIG_SLUB_CPU_PARTIAL
->> 	struct page *oldpage;
->> 	int pages;
->> 	int pobjects;
->>
->> 	slub_get_cpu_ptr(s->cpu_slab);
->>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+On Sun, Jul 18, 2021 at 11:03:51PM +0200, Oleksandr Natalenko wrote:
+> + stable@vger.kernel.org
 > 
-> Bah, I'm tired of waiting to see what if anything mm folks do about
-> this little bugger, so I'm gonna step on it my damn self and be done
-> with it.  Fly or die little patchlet.
-> 
-> mm/slub: restore/expand unfreeze_partials() local exclusion scope
-> 
-> 2180da7ea70a ("mm, slub: use migrate_disable() on PREEMPT_RT") replaced
-> preempt_disable() in put_cpu_partial() with migrate_disable(), which when
-> combined with ___slab_alloc() having become preemptibile, leads to
-> kmem_cache_free()/kfree() blowing through ___slab_alloc() unimpeded,
-> and vice versa, resulting in PREMPT_RT exclusive explosions in both
-> paths while stress testing with both SLUB_CPU_PARTIAL/MEMCG enabled,
-> ___slab_alloc() during allocation (duh), and __unfreeze_partials()
-> during free, both while accessing an unmapped page->freelist.
-> 
-> Serialize put_cpu_partial()/unfreeze_partials() on cpu_slab->lock to
+> On neděle 18. července 2021 23:01:24 CEST Oleksandr Natalenko wrote:
+> > Hello.
+> > 
+> > On sobota 17. července 2021 22:22:08 CEST Chris Clayton wrote:
+> > > I checked the output from dmesg yesterday and found the following warning:
+> > > 
+> > > [Fri Jul 16 09:15:29 2021] ------------[ cut here ]------------
+> > > [Fri Jul 16 09:15:29 2021] WARNING: CPU: 11 PID: 2701 at
+> > > kernel/rcu/tree_plugin.h:359 rcu_note_context_switch+0x37/0x3d0 [Fri Jul
 
-Hm you mention put_cpu_partial() but your patch handles only the
-unfreeze_partial() call from that function? If I understand the problem
-correctly, all modifications of cpu_slab->partial has to be protected
-on RT after the local_lock conversion, thus also the one that
-put_cpu_partial() does by itself (via this_cpu_cmpxchg).
+Could you run ./scripts/faddr2line vmlinux rcu_note_context_switch+0x37/0x3d0
 
-On the other hand the slub_cpu_dead() part should really be unnecessary,
-as tglx pointed out.
+> > > [Fri Jul 16 09:15:29 2021] Call Trace:
+> > > [Fri Jul 16 09:15:29 2021]  __schedule+0x86/0x810
+> > > [Fri Jul 16 09:15:29 2021]  schedule+0x40/0xe0
+> > > [Fri Jul 16 09:15:29 2021]  io_schedule+0x3d/0x60
+> > > [Fri Jul 16 09:15:29 2021]  wait_on_page_bit_common+0x129/0x390
+> > > [Fri Jul 16 09:15:29 2021]  ? __filemap_set_wb_err+0x10/0x10
+> > > [Fri Jul 16 09:15:29 2021]  __lock_page_or_retry+0x13f/0x1d0
+> > > [Fri Jul 16 09:15:29 2021]  do_swap_page+0x335/0x5b0
+> > > [Fri Jul 16 09:15:29 2021]  __handle_mm_fault+0x444/0xb20
+> > > [Fri Jul 16 09:15:29 2021]  handle_mm_fault+0x5c/0x170
 
-How about the patch below? It handles also the recursion issue
-differently by not locking around __unfreeze_partials().
-If that works, I can think of making it less ugly :/
+You were handling a page fault at the time.  The page you wanted was
+on swap and this warning fired as a result of waiting for the page
+to come back in from swap.  There are a number of warnings in that
+function, so it'd be good to track down exactly which one it is.
 
-----8<----
-diff --git a/mm/slub.c b/mm/slub.c
-index 581004a5aca9..1c7a41460941 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2437,6 +2437,9 @@ static void unfreeze_partials(struct kmem_cache *s)
- {
- 	struct page *partial_page;
- 
-+#ifdef CONFIG_PREEMPT_RT
-+	local_lock(&s->cpu_slab->lock);
-+#endif
- 	do {
- 		partial_page = this_cpu_read(s->cpu_slab->partial);
- 
-@@ -2444,6 +2447,9 @@ static void unfreeze_partials(struct kmem_cache *s)
- 		 this_cpu_cmpxchg(s->cpu_slab->partial, partial_page, NULL)
- 				  != partial_page);
- 
-+#ifdef CONFIG_PREEMPT_RT
-+	local_unlock(&s->cpu_slab->lock);
-+#endif
- 	if (partial_page)
- 		__unfreeze_partials(s, partial_page);
- }
-@@ -2482,7 +2488,11 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 	int pages;
- 	int pobjects;
- 
--	slub_get_cpu_ptr(s->cpu_slab);
-+#ifndef CONFIG_PREEMPT_RT
-+	get_cpu_ptr(s->cpu_slab);
-+#else
-+	local_lock(&s->cpu_slab->lock);
-+#endif
- 	do {
- 		pages = 0;
- 		pobjects = 0;
-@@ -2496,7 +2506,15 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 				 * partial array is full. Move the existing
- 				 * set to the per node partial list.
- 				 */
-+#ifndef CONFIG_PREEMPT_RT
- 				unfreeze_partials(s);
-+#else
-+				this_cpu_write(s->cpu_slab->partial, NULL);
-+				local_unlock(&s->cpu_slab->lock);
-+				__unfreeze_partials(s, oldpage);
-+				local_lock(&s->cpu_slab->lock);
-+#endif
-+
- 				oldpage = NULL;
- 				pobjects = 0;
- 				pages = 0;
-@@ -2513,7 +2531,11 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 
- 	} while (this_cpu_cmpxchg(s->cpu_slab->partial, oldpage, page)
- 								!= oldpage);
--	slub_put_cpu_ptr(s->cpu_slab);
-+#ifndef CONFIG_PREMPT_RT
-+	put_cpu_ptr(s->cpu_slab);
-+#else
-+	local_unlock(&s->cpu_slab->lock);
-+#endif
- #endif	/* CONFIG_SLUB_CPU_PARTIAL */
- }
- 
