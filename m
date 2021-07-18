@@ -2,100 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41B23CC93D
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C22C3CC944
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhGRND1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 09:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbhGRNDZ (ORCPT
+        id S233814AbhGRNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 09:09:18 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:34946 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232859AbhGRNJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 09:03:25 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED89C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 06:00:26 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so12194737pju.4
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 06:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bSHPvZPfRYSth2tUS+kE5c7yrjHQorfQj9Klu2G123E=;
-        b=OpqE0H0U5nfLqCRHzHbS+ZQGBFRXp+bI+2tX5Dy7QRgE7IvktgkCO7I9dZhm2AKHxP
-         iDiuZWQsDxSkO6e91VDaDww/y1KUEiNSNxeB6HrFz4q8mxeIFX21SrlEzUZ9DM2Gl3Mn
-         XjumSj5KB7+pIVTVUdkDaSC0yM2Itb72Yt6YmkOU5WTamXI1b0vBWzXRtWL/Sa0+/Aem
-         jujlYPO2FTT1fFKPUXlEu1pLbwYqqrG4qjLAldfEw53q2avgQsssPRyyw74B0gVghJyw
-         zrXRsQi00i3vKFv5iqQpwwjBHJqxacVk96dP2s9nh8B458z4BuNAOkHQoiQV0orQFyVD
-         zGPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bSHPvZPfRYSth2tUS+kE5c7yrjHQorfQj9Klu2G123E=;
-        b=hPzjFhthdIK8ii9pBPLZ7NS4Luw36O877bxQopPcpvzs50MCmUYJvSytF4a8i9gfKT
-         fK1uJaSWHXmCcyODmxgAaxJupgtQjgyIq82NWOzKWtGAkVIkPpA4qtq1vBYAl1C64Bsw
-         jZ/ArmKFUsCZRi2JEi1tQLqiLbWRJV/wACFiLNKCypgVwEyp2ufykgCmMAaCm3ld9n94
-         k70sqX8qLbDW9wbVDt9rx3n7cjJcoelgxB71Y7s1jrzlJvVLhX0L2bvrnC80mQdjGGLn
-         V5I94em3vg+7jZ6HMOcBP1u4Xb3nqGdmnaVBH8Ed26Gymp+1i1XXrW12n076hFgqO8o5
-         GXqQ==
-X-Gm-Message-State: AOAM533e3N1TkmnidDIMD5AasGAaRgcUXU7GZSlyHCpZ609wflkoKSWi
-        Zy03CoBeEfqPhdMaSuQMDoE=
-X-Google-Smtp-Source: ABdhPJyc4TURBaVcefqAvMJ8wxvNKyyrcz3F/gG1Y83mxlRblAoDgsW4fteOvaj/zfxbh/jzRcvQnQ==
-X-Received: by 2002:a17:902:b717:b029:11a:fae3:ba7c with SMTP id d23-20020a170902b717b029011afae3ba7cmr15048651pls.28.1626613225856;
-        Sun, 18 Jul 2021 06:00:25 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.52.138])
-        by smtp.gmail.com with ESMTPSA id n123sm17698981pga.69.2021.07.18.06.00.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jul 2021 06:00:25 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        apw@canonical.com, Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: [PATCH v2] checkpatch: remove obsolete check for __dev* section markers
-Date:   Sun, 18 Jul 2021 18:30:15 +0530
-Message-Id: <20210718130015.8903-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Sun, 18 Jul 2021 09:09:16 -0400
+X-Greylist: delayed 1753 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Jul 2021 09:09:15 EDT
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 16ID5rKn018956;
+        Sun, 18 Jul 2021 22:05:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 16ID5rKn018956
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1626613554;
+        bh=yhIG4/mhI0KryuwCf2e2wfoiwF06SUSrgf+QazUPih0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HVdJHdW33JE2DKbYfa52ylLKWvow/QKW+Yz0USvVhpnEvfuEHxhuTA5H86pDxTZ+F
+         qT4ZlLQ+BV9Ay6N7WaPiFo6YQ79aBS6t2ABBWz0z7IA9XOn/D0HG0qchorRPIkr9es
+         QodHbUu9t1vqFK80IDvdG2hHE4cclWUOtY34qw0MhHl+ngoQsEV+oV+M4qeq2J39EA
+         e4Mwqu/DhVIxU2/y3kqsMp8A1lL4WZjyL2Sji9RaxXxTxQhyMiRwbXs8QrqaA53NrC
+         F3pG5WzpL98QsvnBocc4guS3ZqqBdDgrljZfwhemCXpj43JvxTPUM47ywxxXGpkv8Z
+         Bz43S/iXaMPfA==
+X-Nifty-SrcIP: [209.85.210.171]
+Received: by mail-pf1-f171.google.com with SMTP id b12so13714554pfv.6;
+        Sun, 18 Jul 2021 06:05:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531DRPJCD29rOx9WUe7RmLq52AC1esmdsOSE1LhQFayW7A1cqjRc
+        w7w5ToJzAjIEaEgZgM26RcFfk8IRoN1jFz6um9Q=
+X-Google-Smtp-Source: ABdhPJyjXGKYkI7wwmKtSIF62hypxKul4sPRb/pA9o4M0fHbfT1nhsBgBrNsct1dlu8o/a+RHGdP1J2xeUaHynBP5zw=
+X-Received: by 2002:a62:1d84:0:b029:304:5af1:65f6 with SMTP id
+ d126-20020a621d840000b02903045af165f6mr20225303pfd.80.1626613553400; Sun, 18
+ Jul 2021 06:05:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YO3txvw87MjKfdpq@localhost.localdomain> <YO8ioz4sHwcUAkdt@localhost.localdomain>
+ <YPClYgoJOTUn4V0w@localhost.localdomain> <CAK7LNASq9DwxTF90u_8XZJo8VBLbEPDbP8kVk6c+AHpaCtH01g@mail.gmail.com>
+In-Reply-To: <CAK7LNASq9DwxTF90u_8XZJo8VBLbEPDbP8kVk6c+AHpaCtH01g@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 18 Jul 2021 22:05:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQonQAo00hGjxZX6TE9hBYadYiwBrdfiE9eaUjSKxLPPw@mail.gmail.com>
+Message-ID: <CAK7LNAQonQAo00hGjxZX6TE9hBYadYiwBrdfiE9eaUjSKxLPPw@mail.gmail.com>
+Subject: Re: [PATCH -mm] fixup "Decouple build from userspace headers"
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 54b956b90360 ("Remove __dev* markings from init.h"),
-the check for __dev* section markers in checkpatch is obsolete
-as no new instances of these markers can be introduced in the
-kernel.
+On Sun, Jul 18, 2021 at 9:36 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Fri, Jul 16, 2021 at 6:15 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> >
+> > Allow to find SIMD headers where necessary.
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> > ---
+> >
+> >         fold into decouple-build-from-userspace-headers.patch
+> >
+> >  arch/arm64/lib/Makefile   |    2 +-
+> >  arch/powerpc/lib/Makefile |    2 +-
+> >  lib/raid6/Makefile        |    4 ++--
 
-Remove this obsolete check from checkpatch.
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
+I did not compile-test it yet, but
+I see more <arm_neon.h> inclusion.
 
-Changes in v2:
-- Reword commit message as suggested by Lukas
-  https://lore.kernel.org/lkml/CAKXUXMyvOh0GvpEf4uX5iFJYOJLo43tmO16Uf34j4i6XD0vBcg@mail.gmail.com/
 
- scripts/checkpatch.pl | 6 ------
- 1 file changed, 6 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 461d4221e4a4..e29c0961b25e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4023,12 +4023,6 @@ sub process {
- 			     "CVS style keyword markers, these will _not_ be updated\n". $herecurr);
- 		}
- 
--# check for old HOTPLUG __dev<foo> section markings
--		if ($line =~ /\b(__dev(init|exit)(data|const|))\b/) {
--			WARN("HOTPLUG_SECTION",
--			     "Using $1 is unnecessary\n" . $herecurr);
--		}
--
- # Check for potential 'bare' types
- 		my ($stat, $cond, $line_nr_next, $remain_next, $off_next,
- 		    $realline_next);
+crypto/aegis128-neon-inner.c:
+
+
+
+#ifdef CONFIG_ARM64
+#include <asm/neon-intrinsics.h>
+
+#define AES_ROUND       "aese %0.16b, %1.16b \n\t aesmc %0.16b, %0.16b"
+#else
+#include <arm_neon.h>
+
+#define AES_ROUND       "aese.8 %q0, %q1 \n\t aesmc.8 %q0, %q0"
+#endif
+
+
+
+
+Can you test crypto/aegis128-neon-inner.c
+with CONFIG_ARM64=n  (i.e. CONFIG_ARM=y) ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> >  3 files changed, 4 insertions(+), 4 deletions(-)
+>
+>
+> OK. Perhaps, we can import <arm_neon.h> and  <altivec.h>
+> into the kernel tree as we did for <stdarg.h>,
+> then remove "-isystem $(shell $(CC) -print-file-name=include)"
+> entirely, but I did not look into it.
+>
+>
+> If we can avoid the arm_neon.h mess,
+> we can clean up arch/arm/include/uapi/asm/types.h as well.
+> It is a possible future work.
+>
+> Anyway, could you add some comments?
+> (see blew)
+>
+>
+>
+> > --- a/arch/arm64/lib/Makefile
+> > +++ b/arch/arm64/lib/Makefile
+> > @@ -8,7 +8,7 @@ lib-y           := clear_user.o delay.o copy_from_user.o                \
+> >  ifeq ($(CONFIG_KERNEL_MODE_NEON), y)
+> >  obj-$(CONFIG_XOR_BLOCKS)       += xor-neon.o
+> >  CFLAGS_REMOVE_xor-neon.o       += -mgeneral-regs-only
+> > -CFLAGS_xor-neon.o              += -ffreestanding
+>
+> Can you add comment, # for <arm_neon.h>
+>
+> > +CFLAGS_xor-neon.o              += -ffreestanding -isystem $(shell $(CC) -print-file-name=include)
+> >  endif
+> >
+> >  lib-$(CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE) += uaccess_flushcache.o
+> > --- a/arch/powerpc/lib/Makefile
+> > +++ b/arch/powerpc/lib/Makefile
+> > @@ -64,6 +64,6 @@ obj-$(CONFIG_PPC_LIB_RHEAP) += rheap.o
+> >  obj-$(CONFIG_FTR_FIXUP_SELFTEST) += feature-fixups-test.o
+> >
+> >  obj-$(CONFIG_ALTIVEC)  += xor_vmx.o xor_vmx_glue.o
+> > -CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec)
+>
+> Can you add comment, # for <altivec.h>
+>
+> > +CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec) -isystem $(shell $(CC) -print-file-name=include)
+> >
+> >  obj-$(CONFIG_PPC64) += $(obj64-y)
+> > --- a/lib/raid6/Makefile
+> > +++ b/lib/raid6/Makefile
+> > @@ -13,7 +13,7 @@ raid6_pq-$(CONFIG_S390) += s390vx8.o recov_s390xc.o
+> >  hostprogs      += mktables
+> >
+> >  ifeq ($(CONFIG_ALTIVEC),y)
+> > -altivec_flags := -maltivec $(call cc-option,-mabi=altivec)
+>
+> Can you add comment, # for <altivec.h>
+>
+> > +altivec_flags := -maltivec $(call cc-option,-mabi=altivec) -isystem $(shell $(CC) -print-file-name=include)
+> >
+> >  ifdef CONFIG_CC_IS_CLANG
+> >  # clang ppc port does not yet support -maltivec when -msoft-float is
+> > @@ -33,7 +33,7 @@ endif
+> >  # The GCC option -ffreestanding is required in order to compile code containing
+> >  # ARM/NEON intrinsics in a non C99-compliant environment (such as the kernel)
+> >  ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
+> > -NEON_FLAGS := -ffreestanding
+>
+> Can you add comment, # for <arm_neon.h>
+>
+> > +NEON_FLAGS := -ffreestanding -isystem $(shell $(CC) -print-file-name=include)
+> >  ifeq ($(ARCH),arm)
+> >  NEON_FLAGS += -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+> >  endif
+>
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
+
+
+
 -- 
-2.28.0
-
+Best Regards
+Masahiro Yamada
