@@ -2,71 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB9B3CC907
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869E13CC90B
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 14:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbhGRMXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 08:23:10 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60786 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhGRMXJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 08:23:09 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 418491C0B82; Sun, 18 Jul 2021 14:20:11 +0200 (CEST)
-Date:   Sun, 18 Jul 2021 14:20:11 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Build regressions/improvements in v5.14-rc1
-Message-ID: <20210718122011.GA22167@duo.ucw.cz>
-References: <20210714143239.2529044-1-geert@linux-m68k.org>
+        id S233577AbhGRMXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 08:23:31 -0400
+Received: from aposti.net ([89.234.176.197]:37100 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232851AbhGRMXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 08:23:30 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        list@opendingux.net, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 1/3] dt-bindings: dma: ingenic: Add compatible strings for MDMA
+Date:   Sun, 18 Jul 2021 13:20:22 +0100
+Message-Id: <20210718122024.204907-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
-Content-Disposition: inline
-In-Reply-To: <20210714143239.2529044-1-geert@linux-m68k.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The JZ4760 and JZ4760B SoCs have an additional DMA controller, dubbed
+MDMA, that only supports memcpy operations.
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ Documentation/devicetree/bindings/dma/ingenic,dma.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Hi!
+diff --git a/Documentation/devicetree/bindings/dma/ingenic,dma.yaml b/Documentation/devicetree/bindings/dma/ingenic,dma.yaml
+index ac4d59494fc8..fe25af0dc0e7 100644
+--- a/Documentation/devicetree/bindings/dma/ingenic,dma.yaml
++++ b/Documentation/devicetree/bindings/dma/ingenic,dma.yaml
+@@ -18,7 +18,9 @@ properties:
+       - ingenic,jz4740-dma
+       - ingenic,jz4725b-dma
+       - ingenic,jz4760-dma
++      - ingenic,jz4760-mdma
+       - ingenic,jz4760b-dma
++      - ingenic,jz4760b-mdma
+       - ingenic,jz4770-dma
+       - ingenic,jz4780-dma
+       - ingenic,x1000-dma
+-- 
+2.30.2
 
-> Below is the list of build error/warning regressions/improvements in
-> v5.14-rc1[1] compared to v5.13+[2].
->=20
-> Summarized:
->   - build errors: +24/-4
->   - build warnings: +71/-65
->=20
-> Happy fixing! ;-)
->=20
-> Thanks to the linux-next team for providing the build service.
-
-I have onemore:
-
-https://lkml.org/lkml/2021/7/11/50
-
-Best regards,
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---C7zPtVaVf+AK4Oqc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYPQcewAKCRAw5/Bqldv6
-8vZ+AJ4+4H3wWdRpR5hYBITXMJY/tv8GdACeLmZgKW6iAALtrzqvrIFtfHrFZNU=
-=sf4K
------END PGP SIGNATURE-----
-
---C7zPtVaVf+AK4Oqc--
