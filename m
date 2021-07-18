@@ -2,104 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8003CC70E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 02:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0C73CC711
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 02:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhGRAmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 20:42:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230259AbhGRAmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 20:42:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83B5D610CD;
-        Sun, 18 Jul 2021 00:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626568747;
-        bh=UjYo2V0cXJyspi9AgX26xgd83MEXg3QGm8D9TQwRIt8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fxyf2mO8PJrZSzLuZk/HO6MeLoe8dkSgzwBezY1Son2QTPNBIiecYq7zse6MO+x7Z
-         mzHZE0xYxsn9kgnclS2Dm+v0tgC2iAAwpneW88yWWecalj5AzUkML7G169iyGkvSby
-         +uGeOKpCiIvqrgQcYkjgMpXmS1W2+ppybzeTwfA6NvC7YmwNeF43ciqmnhFusN71sE
-         +3b/z/BFaaVgUWbFlR2RMZUJWAZQ+AuGpm0D8DXJZ86Z0X3a1qVeg5UIX2BnjIMSGf
-         X5rIJErSoWBctNIvem62E3o5ER/Y8qCxfO9obRrJmekasJG7aFLsur10vK4qYuJzVk
-         XDAKESYWndqEQ==
-Date:   Sat, 17 Jul 2021 20:39:06 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.13 013/114] serial: 8250: of: Check for
- CONFIG_SERIAL_8250_BCM7271
-Message-ID: <YPN4KiU/50HGeXHj@sashalap>
-References: <20210710021748.3167666-1-sashal@kernel.org>
- <20210710021748.3167666-13-sashal@kernel.org>
- <b431c751-0a45-47f1-c5c6-7ca02581ad57@gmail.com>
+        id S232405AbhGRAot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 20:44:49 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54358 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230259AbhGRAos (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Jul 2021 20:44:48 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16I0fVOg068128;
+        Sat, 17 Jul 2021 19:41:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1626568891;
+        bh=PiqmPCh8Le/+a2lKDpBMpR+4Ut+G4awxjwCJtRnmK5E=;
+        h=From:To:CC:Subject:Date;
+        b=K1k82Cex/RiKNWYOnJntgl++ZbNBWeZMMbxK7/u3336HMFYgpktTW4Pyltl20yGyi
+         sg4hxH5RMaS1WEiN8yka1nTXNxhfCtrr1hpDQItvfjq09FpE92m9LiGJdbZ16Q0ij2
+         OVwmiXCdOaZ0zxcL9raTUkAcGhlmNqpqpoQMy3b0=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16I0fVl2004765
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 17 Jul 2021 19:41:31 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 17
+ Jul 2021 19:41:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Sat, 17 Jul 2021 19:41:31 -0500
+Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16I0fQW1038673;
+        Sat, 17 Jul 2021 19:41:27 -0500
+From:   Apurva Nandan <a-nandan@ti.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+        Apurva Nandan <a-nandan@ti.com>
+Subject: [PATCH] dt-bindings: mtd: spi-nand: Convert to DT schema format
+Date:   Sun, 18 Jul 2021 00:41:25 +0000
+Message-ID: <20210718004125.733-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.31.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <b431c751-0a45-47f1-c5c6-7ca02581ad57@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 07:33:25PM -0700, Florian Fainelli wrote:
->
->
->On 7/9/2021 7:16 PM, Sasha Levin wrote:
->>From: Jim Quinlan <jim2101024@gmail.com>
->>
->>[ Upstream commit f5b08386dee439c7a9e60ce0a4a4a705f3a60dff ]
->>
->>Our SoC's have always had a NS16650A UART core and older SoC's would
->>have a compatible string of: 'compatible = ""ns16550a"' and use the
->>8250_of driver. Our newer SoC's have added enhancements to the base
->>core to add support for DMA and accurate high speed baud rates and use
->>this newer 8250_bcm7271 driver. The Device Tree node for our enhanced
->>UARTs has a compatible string of: 'compatible = "brcm,bcm7271-uart",
->>"ns16550a"''. With both drivers running and the link order setup so
->>that the 8250_bcm7217 driver is initialized before the 8250_of driver,
->>we should bind the 8250_bcm7271 driver to the enhanced UART, or for
->>upstream kernels that don't have the 8250_bcm7271 driver, we bind to
->>the 8250_of driver.
->>
->>The problem is that when both the 8250_of and 8250_bcm7271 drivers
->>were running, occasionally the 8250_of driver would be bound to the
->>enhanced UART instead of the 8250_bcm7271 driver. This was happening
->>because we use SCMI based clocks which come up late in initialization
->>and cause probe DEFER's when the two drivers get their clocks.
->>
->>Occasionally the SCMI clock would become ready between the 8250_bcm7271
->>probe and the 8250_of probe and the 8250_of driver would be bound. To
->>fix this we decided to config only our 8250_bcm7271 driver and added
->>"ns16665a0" to the compatible string so the driver would work on our
->>older system.
->>
->>This commit has of_platform_serial_probe() check specifically for the
->>"brcm,bcm7271-uart" and whether its companion driver is enabled. If it
->>is the case, and the clock provider is not ready, we want to make sure
->>that when the 8250_bcm7271.c driver returns EPROBE_DEFER, we are not
->>getting the UART registered via 8250_of.c.
->>
->>Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->>Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
->>Signed-off-by: Al Cooper <alcooperx@gmail.com>
->>Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->>Link: https://lore.kernel.org/r/20210423183206.3917725-1-f.fainelli@gmail.com
->>Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->This commit is only relevant with 
->41a469482de257ea8db43cf74b6311bd055de030 ("serial: 8250: Add new 
->8250-core based Broadcom STB driver") which is included in v5.13 and 
->newer. You would want to drop that commit from the 5.12, 5.10 and 5.4 
->auto-selection.
+Convert spi-nand.txt binding to YAML format with an added example.
 
-I'll drop it from 5.12 and older, thanks!
+Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+---
+ .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
+ .../devicetree/bindings/mtd/spi-nand.yaml     | 74 +++++++++++++++++++
+ 2 files changed, 74 insertions(+), 5 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
 
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+deleted file mode 100644
+index 8b51f3b6d55c..000000000000
+--- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
++++ /dev/null
+@@ -1,5 +0,0 @@
+-SPI NAND flash
+-
+-Required properties:
+-- compatible: should be "spi-nand"
+-- reg: should encode the chip-select line used to access the NAND chip
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+new file mode 100644
+index 000000000000..366b86e1b19c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SPI NAND flash
++
++maintainers:
++  - Apurva Nandan <a-nandan@ti.com>
++
++allOf:
++  - $ref: "mtd.yaml#"
++
++properties:
++  compatible:
++    oneOf:
++      - const: spi-nand
++
++  reg:
++    items:
++      description:
++        should encode the chip-select line used to access the NAND chip
++
++  spi-max-frequency: true
++  spi-rx-bus-width: true
++  spi-tx-bus-width: true
++
++  partitions:
++    type: object
++
++  '#address-cells': true
++  '#size-cells': true
++
++patternProperties:
++  # Note: use 'partitions' node for new users
++  '^partition@':
++    type: object
++
++  "^otp(-[0-9]+)?$":
++    type: object
++
++additionalProperties: false
++
++examples:
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@6 {
++            #address-cells = <1>;
++            #size-cells = <1>;
++            compatible = "spi-nand";
++            reg = <0x6>;
++            spi-max-frequency = <42000000>;
++
++            partitions {
++                compatible = "fixed-partitions";
++                #address-cells = <1>;
++                #size-cells = <1>;
++
++                partition@0 {
++                    label = "boot";
++                    reg = <0 0x200000>;
++                };
++
++                partition@200000 {
++                    label = "rootfs";
++                    reg = <0x200000 0xce0000>;
++                };
++            };
++        };
++    };
 -- 
-Thanks,
-Sasha
+2.17.1
+
