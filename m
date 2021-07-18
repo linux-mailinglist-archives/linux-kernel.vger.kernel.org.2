@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1933F3CC94B
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62453CC952
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 15:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbhGRNQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 09:16:03 -0400
-Received: from mout.gmx.net ([212.227.17.20]:36851 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232859AbhGRNQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 09:16:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626613967;
-        bh=CMvGExjMQupZPMM62nT0Q6JQOogckE+ME36zM5PHuC8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=RTunmgyV+vLhQr3GLSNe+8yCGuvuj/oyle9SRy+kcJHqI2xoC05WSP3nEmuFGtu2t
-         2avtZSC7+8iVDW80mauCcOaQOZVkQMYNync8tOfcWhxFmPilvYi38E0DQSk17El7yB
-         TUIKh++cVOB7sRT70pOjdf7nKxO/WsZD9Ug4MAh0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MOREc-1lkq9p1MKs-00PwA5; Sun, 18 Jul 2021 15:12:47 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Len Baker <len.baker@gmx.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Amarjargal Gundjalam <amarjargal16@gmail.com>,
-        linux-staging@lists.linux.dev,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging/vc04_services: Remove all strcpy() uses in favor of strscpy()
-Date:   Sun, 18 Jul 2021 15:12:17 +0200
-Message-Id: <20210718131217.3806-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S233805AbhGRN03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 09:26:29 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:61842 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232859AbhGRN01 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 09:26:27 -0400
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 16IDN6VF026573;
+        Sun, 18 Jul 2021 22:23:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 16IDN6VF026573
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1626614587;
+        bh=Ze113MyRnH/xltMWjfaGCsj9jL5X6qLXZcynrxc1yNs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AlNhgOXFJuGtM5Sv/s/0YXXa09yNhNu5SanENdrUsk2r8Q1uHMxcd3ggJ4DPZV7lv
+         2ds526fDdeqcv3YYoXPzvP2Vlcge+gZOwNikMOwQp9Ja1xuv4A6yrM0wEPd1OPuErp
+         LRyNZhpoAd6qWEWVSOOCHrVkMUUBAhjKM4bhutBwJ8YdxK5d6u78R1FrGtk0Le4TAB
+         iAhWDdNIVPEzDnz6oh8Ivjx+igizxsXFXAtmhAyOB7+RrH0dpWCL5jobN9Osv1n0Me
+         dl3afoSYwwHbeH1N2MhZoG6KZ4PsoTs6nvIC0rbgEBe5RXaJTmUx49pI/Hz0Uk12yt
+         5Bm2n0bVQ5TUA==
+X-Nifty-SrcIP: [209.85.214.178]
+Received: by mail-pl1-f178.google.com with SMTP id b12so8031093plh.10;
+        Sun, 18 Jul 2021 06:23:06 -0700 (PDT)
+X-Gm-Message-State: AOAM5332RON5xNkw35Ii039Wl6LkErZ0QGdJ2H9sF+55ogIoc0EBJ8NP
+        vXR10lny018s9Lf9bEM4mMjQ2bBHdInbqIpJCyY=
+X-Google-Smtp-Source: ABdhPJyCp2zQIsACSECMSy2+lp/QzUfLy+IVv/0JoHPh3da16U7sUtk+MqY3b3gWloZTnaAQ2j9EiyvW1u9208mzCu0=
+X-Received: by 2002:a17:902:be0f:b029:12b:6dff:2a22 with SMTP id
+ r15-20020a170902be0fb029012b6dff2a22mr8231303pls.1.1626614586036; Sun, 18 Jul
+ 2021 06:23:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4CWYGQVn1yChMQul7TO5K5N/vYGRpc5gC1NngggoplhCLQvq7UR
- Z/HWFm+d+hcQkbIxIBasqT68H7KghdhPfDoEwZXfqRQMHyfxew4AXTZZDgrS8fpcnssK6DH
- W4V5u7iImiY9vaTuTNYLFph00vhSYuu5PWhUOGhJIKl4OPGrxh8o/2gZlCceTasze/aOe2i
- gF4kCIz1mIVAM7ILbQlhQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6S41qTiwtB8=:8/PB9bpLTNhvOD307p5f5m
- qAR7TmxiE5IeX1VSkkeNG+N1SCzLdK0rD7iVYRE/mWrJGPMQRAG/xbLNkMWFGGFQOQONZ93kI
- cjH0MnbrVB3+DqTajN26pTH68IvJ1xxtVybFelcQQiM9W2j7QPO0LDkMRUkj4Z3LMWJMkuc9G
- YXVyCfisG+IMtdkOG5Ud/l1CRd92SjIlbqt2sXSgLVgtcdwQrOBNz5tJDgNYuLtAqpOgAJNng
- Wa2PWH4wuy+H/k/r+d1Vqeo1gVfoXC9HchmKplG2m7Vv0kJqLXu6esIjHWQD11wVW+2zs7GrT
- zdMN21BIBDTJCJ2CSm71poakUtC7xhnMyBAVTpkyyw/VjGKbei6dxprm0W/y1GO+geOK38lk8
- vg1yWwuQEziy31IMsnBjxrkzAOcTeoWfo1PSEwchbskRIguAIWyQ+tStjIe6gLfDDXa+DSTUa
- RDFQ4cpHUH+phhMUIAsesr9Ug8cXbbTrV883f4KVINRmVL3f5KFDPQjrjkRRe3FmQyzrPiZso
- lwwtnMvr0F5s49JDIgjH3gR+X+nyogkoEFOo9QKKTDUyswj3VeMNAh+CwNHissBoR0LDWEJLn
- H4kzTKG5QVe+Db6Z3JdjMGO+uIT5cyw86N2dd9/4WDnct6g2f8VKEoUUrcg8tJjlEusuyJL2i
- tlH7qtEwZqOS4sb6vDhGP5lWk33GU7zJwEbhVoUdyQuzvTMSCqwmJPYf54tfLLi6PxkY+mf+N
- HNVqEV6osjVT09uG0ThYk2cD8BRNTYijVuUt46Bkf5eiphpsBb5l+3w5gxnGFJ1V1adt/7ADw
- bX2roppqSR7M6nZysQEY/phrzUlJfJWb6ImZTLUu2raNLUp4+z00U6HUAsGd3ib9Ye3eMK6SD
- r8EZoU+OFnCGKkpH1edwVzlNu0fWAV9gVlCek0XKT+NQXOkC7itr5WWQ5Z1nlcKk8ELubPki8
- 8eWwHmI9ezL72rPK6Bu23atfD/7VmkhONWbYlM4ABl/wF7ch2HbSlfzgSR1gcLyVRNRR0CqzA
- 3r8j5oUSH840OEQIkBBh4BNz84ezFFw0qRx2rwuXjW4ZmM43c78AFtFwy6MgxA7zXtPYILO5z
- iOMiVuvhtKwwYiopnQh7BXM0UCFGkcnP7FI
+References: <20210714042349.219199-1-masahiroy@kernel.org>
+In-Reply-To: <20210714042349.219199-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 18 Jul 2021 22:22:28 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS6NgAL7XQ4Hr5n+BFv8bkFiY1ttMj_p9kBXVi_MCxWsg@mail.gmail.com>
+Message-ID: <CAK7LNAS6NgAL7XQ4Hr5n+BFv8bkFiY1ttMj_p9kBXVi_MCxWsg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: do not suppress Kconfig prompts for silent build
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy().
+On Wed, Jul 14, 2021 at 1:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> When a new CONFIG option is available, Kbuild shows a prompt to get
+> the user input.
+>
+>   $ make
+>   [ snip ]
+>   Core Scheduling for SMT (SCHED_CORE) [N/y/?] (NEW)
+>
+> This is the only interactive place during the build process.
+>
+> Commit 174a1dcc9642 ("kbuild: sink stdout from cmd for silent build")
+> suppressed Kconfig prompts as well because syncconfig is invoked by
+> the 'cmd' macro. You cannot notice the fact that Kconfig is waiting
+> for the user input.
+>
+> Use 'kecho' to show the equivalent short log without suppressing stdout
+> from sub-make.
+>
+> Fixes: 174a1dcc9642 ("kbuild: sink stdout from cmd for silent build")
+> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c  | 2 +-
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Applied to linux-kbuild.
 
-diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c=
- b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
-index df90c1f9d148..1b184d5c6b82 100644
-=2D-- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
-+++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
-@@ -884,7 +884,7 @@ static int vidioc_querycap(struct file *file, void *pr=
-iv,
 
- 	vchiq_mmal_version(dev->instance, &major, &minor);
 
--	strcpy((char *)cap->driver, "bm2835 mmal");
-+	strscpy(cap->driver, "bm2835 mmal", sizeof(cap->driver));
- 	snprintf((char *)cap->card, sizeof(cap->card), "mmal service %d.%d",
- 		 major, minor);
+>  Makefile | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index c3f9bd191b89..6272126abe23 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -728,11 +728,9 @@ $(KCONFIG_CONFIG):
+>  # This exploits the 'multi-target pattern rule' trick.
+>  # The syncconfig should be executed only once to make all the targets.
+>  # (Note: use the grouped target '&:' when we bump to GNU Make 4.3)
+> -quiet_cmd_syncconfig = SYNC    $@
+> -      cmd_syncconfig = $(MAKE) -f $(srctree)/Makefile syncconfig
+> -
+>  %/config/auto.conf %/config/auto.conf.cmd %/generated/autoconf.h: $(KCONFIG_CONFIG)
+> -       +$(call cmd,syncconfig)
+> +       $(Q)$(kecho) "  SYNC    $@"
+> +       $(Q)$(MAKE) -f $(srctree)/Makefile syncconfig
+>  else # !may-sync-config
+>  # External modules and some install targets need include/generated/autoconf.h
+>  # and include/config/auto.conf but do not care if they are up-to-date.
+> --
+> 2.27.0
+>
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.=
-c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-index 4f43e4213bfe..9429b8a642fb 100644
-=2D-- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-@@ -3716,7 +3716,7 @@ int vchiq_dump_service_state(void *dump_context, str=
-uct vchiq_service *service)
- 					sizeof(remoteport) - len2,
- 					" (client %x)", service->client_id);
- 		} else {
--			strcpy(remoteport, "n/a");
-+			strscpy(remoteport, "n/a", sizeof(remoteport));
- 		}
 
- 		len +=3D scnprintf(buf + len, sizeof(buf) - len,
-=2D-
-2.25.1
-
+-- 
+Best Regards
+Masahiro Yamada
