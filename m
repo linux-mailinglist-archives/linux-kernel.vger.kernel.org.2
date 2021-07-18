@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7107B3CC9EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 18:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898283CC9F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 18:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhGRQxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 12:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhGRQxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 12:53:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0743E61184;
-        Sun, 18 Jul 2021 16:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626627005;
-        bh=IPDW8GOsBua4YTnf75L7530GqftR90icqXiwYN/4dos=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CemA7e5DbtEy16P0IwlFcIBA2J/agWYCkek0aOYoNQHXxW7c7atNKd5lVZqBrT5pD
-         fNf7EkGsB5NUMPQAugliYc8ff+rk4KvlU3Mx4y2ZkqKgl8l6EK8QuJHM+i/yLqQTlW
-         vxmRDYYYZAb5M+kBPO+D5tpI9xHOk7r5hvTF/Wr+AV8IXYNrs5iFv3YkkdiPbWRDNe
-         6vIipHCoCD+x5tw9k4uA2Mf/5Ds0Um2qCuXkBOUunnDjQ/eJ0V2rtwKb7G4BQIdqz7
-         /ZufBwnjeg9UYywZhN+4yj2NIdoVsLeKK6Kd4O07fgD9muT4/AWfxbdrPcDJi5geDY
-         t6c2SCGHf/AQw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F15F9609DA;
-        Sun, 18 Jul 2021 16:50:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229653AbhGRRAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 13:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhGRRAV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 13:00:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BF3C061762;
+        Sun, 18 Jul 2021 09:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ozqJ+/aQSjcd7Pmom3rhVpy9HyQmkQvEGQeoGv8EhNQ=; b=EBrcemI+F3ONTAb2qCb4CEiXIg
+        OYQQFvoPudaW7rBK4ckow3sSEtO1iPo7moFRRx2My4GKi27935oIsbbE9ZXDpmXIDA4Gy2HeT8RkP
+        PMo5gt0m311JLvrjuS9W8iZPz3mXKyyxf3QFAK2ltH78FIc5ELc2ENoTioPuPt1uxqCtCUGdevzks
+        Bgg9PupQJhHpdlGAdDCggkjqj1HH1HsRNMzQEueEDkpp3wrW9tWOrp2JDtZPM1WpJPVjV7LFeRdOD
+        E3N5TaOgKd0vAEJymLbibT2ApzY8njVJH1GWaPOdj48YuFFDrmyh1Qm72HEr/w7y/nipf4cDBgmqY
+        DwE3ui3A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5A59-0069Zd-JQ; Sun, 18 Jul 2021 16:56:08 +0000
+Date:   Sun, 18 Jul 2021 17:55:59 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     tj@kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
+        shakeelb@google.com, guro@fb.com, songmuchun@bytedance.com,
+        shy828301@gmail.com, alexs@kernel.org, richard.weiyang@gmail.com,
+        vbabka@suse.cz, axboe@kernel.dk, iamjoonsoo.kim@lge.com,
+        david@redhat.com, apopple@nvidia.com, minchan@kernel.org,
+        linmiaohe@huawei.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 2/3] mm, memcg: inline mem_cgroup_{charge/uncharge} to
+ improve disabled memcg config
+Message-ID: <YPRdH56+dOFs/Ypu@casper.infradead.org>
+References: <20210710003626.3549282-1-surenb@google.com>
+ <20210710003626.3549282-2-surenb@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: sched: fix memory leak in tcindex_partial_destroy_work
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162662700498.19662.15454403088763553589.git-patchwork-notify@kernel.org>
-Date:   Sun, 18 Jul 2021 16:50:04 +0000
-References: <20210717112933.12670-1-paskripkin@gmail.com>
-In-Reply-To: <20210717112933.12670-1-paskripkin@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210710003626.3549282-2-surenb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Jul 09, 2021 at 05:36:25PM -0700, Suren Baghdasaryan wrote:
+> @@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+>  }
+>  
+>  /**
+> - * mem_cgroup_charge - charge a newly allocated page to a cgroup
+> + * __mem_cgroup_charge - charge a newly allocated page to a cgroup
+>   * @page: page to charge
+>   * @mm: mm context of the victim
+>   * @gfp_mask: reclaim mode
 
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Sat, 17 Jul 2021 14:29:33 +0300 you wrote:
-> Syzbot reported memory leak in tcindex_set_parms(). The problem was in
-> non-freed perfect hash in tcindex_partial_destroy_work().
-> 
-> In tcindex_set_parms() new tcindex_data is allocated and some fields from
-> old one are copied to new one, but not the perfect hash. Since
-> tcindex_partial_destroy_work() is the destroy function for old
-> tcindex_data, we need to free perfect hash to avoid memory leak.
-> 
-> [...]
-
-Here is the summary with links:
-  - net: sched: fix memory leak in tcindex_partial_destroy_work
-    https://git.kernel.org/netdev/net/c/f5051bcece50
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+This patch conflicts with the folio work, so I'm just rebasing the
+folio patches on top of this, and I think this part of the patch is a
+mistake.  We don't want to document the __mem_cgroup_charge() function.
+That's an implementation detail.  This patch should instead have moved the
+kernel-doc to memcontrol.h and continued to document mem_cgroup_charge().
