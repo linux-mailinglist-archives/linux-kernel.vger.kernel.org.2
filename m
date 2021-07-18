@@ -2,178 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C653CC815
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 09:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7766D3CC822
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 09:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhGRHpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 03:45:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52600 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhGRHpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 03:45:18 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7596922623;
-        Sun, 18 Jul 2021 07:42:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626594139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MFgZm8r9p9xLPJ2nnX1oYo1nIlbmFhaGZvcR8KOfakQ=;
-        b=ZycUc2WV3x2zNsIhKlaL1b0qD+bwQ6ZRahXon19oTOOGlb0rvwnw4dvtsYl/TOxLePnHOy
-        cahACcsQt8bLG0BQs/nF3vsaItMGw9CghRY8iVzCOR9DjAu6NBUaFLCUUX4+aYjrs/bnNP
-        kysgHbepCZkpzVnrghmJRQkRfyMlA/8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626594139;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MFgZm8r9p9xLPJ2nnX1oYo1nIlbmFhaGZvcR8KOfakQ=;
-        b=4B7JdJ37kMLZeHmM+KFtSgRO69hvRkoqRVI94mP1uBXaWpp5YM+gNv/L9rfDqGjwq8OA4T
-        xztLJ8qKvUTc9tDw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 227BA13AD2;
-        Sun, 18 Jul 2021 07:42:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 3jLoBlvb82AFDQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Sun, 18 Jul 2021 07:42:19 +0000
-Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
- compatible
-To:     Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-References: <20210609113903.1421-1-vbabka@suse.cz>
- <20210702182944.lqa7o2a25to6czju@linutronix.de>
- <891dc24e38106f8542f4c72831d52dc1a1863ae8.camel@gmx.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <ef4903e2-c2ce-9a64-68b0-c7ee483eb582@suse.cz>
-Date:   Sun, 18 Jul 2021 09:41:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231150AbhGRH47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 03:56:59 -0400
+Received: from mout.gmx.net ([212.227.15.15]:55591 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhGRH44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 03:56:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626594818;
+        bh=sSf1sanoNyOf1s8ToImMPkw6H4e74dn8eSrq/chg8Q0=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=QkiEAqWbOy8TBkMzD6dJ6iOxmbJNklBnmN5fmO5auXc39bOBUZNmCiMMq6BzSe3SL
+         JHlnNQq3lUG0HnHZh3kFx69V2wfElMn+LWVlmRU9AMyXD6X98DNztXI7iYaFJD8WVU
+         AzgwOEPvZWB6eThd5AW+lSxBnGfy2WPJ8pLOBjwM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([83.52.228.41]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MSbxD-1lgVh247tR-00Swiu; Sun, 18
+ Jul 2021 09:53:38 +0200
+Date:   Sun, 18 Jul 2021 09:53:24 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Yan-Hsuan Chuang <tony0620emma@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislaw Gruszka <sgruszka@redhat.com>,
+        Pkshih <pkshih@realtek.com>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] rtw88: Fix out-of-bounds write
+Message-ID: <20210718075324.GA3118@titan>
+References: <20210716155311.5570-1-len.baker@gmx.com>
+ <YPG/8F7yYLm3vAlG@kroah.com>
+ <20210717133343.GA2009@titan>
+ <YPMUfbDh3jnV8hRZ@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <891dc24e38106f8542f4c72831d52dc1a1863ae8.camel@gmx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPMUfbDh3jnV8hRZ@kroah.com>
+X-Provags-ID: V03:K1:JhNSeBGs0zGSWWl5J6a1ocVLtAtD6Ugtat/wFNLVSUgDhgjxb5V
+ 88TXcSkGduQlfyCmZIXMllL7WXSwL0iYJIw/HRkeXLaGkZt9TQA+F3lTwKSJ4PMEDZUBFVP
+ FLriM5kbh8nenUg/RbsZH/EMXmeLuR5QD+0VVHlH2ej/P0J6aGKh1GeARjfWvPk9GjpaUWZ
+ eYTCYljvuLwUa/GHZ3XOQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3Gsqx7Fsm5s=:SUyH/zdppSSWWeT2atMcIU
+ OJoajrmk7YOGbQc4atP37nheeL7mYoA/rCw2itbYprFYuOIOcvpG/uhtrhqt513ABup1wKihj
+ aywtvxmPXkr3HjbD71jtoMaOUgwhUXTI5LrPGWV4Siatim/zgF8hBWSHRu8g6c1yvvzNScnvh
+ YYCPLWk10iETYJ/pwWnqMfuKcyOje5409Q9Ck6AjL2vBqO57s4+UoewIdxxqxMC45D3W5Lt7e
+ VtKnvWLaF0Ps68uSJZCH9fVBnj/YCZiePUTQWekXwDQPLq1IcF3Kmdvg8uDr2GotLf/cveiQF
+ bhrtwI4IWT4vf94erqhnwMlGaQU83owU/+ynUZ7D1dQ3LNRaRe0v5R9OVrfBGIU+lquSqoJZ2
+ 2Hkc/US8xqD46BAuvLgnfkP6/Br4TR0gRmqjwZo/4K1n8Ore8Ktn22a7N3bNp6W1/yAft7pTv
+ otxrm/PtOb4jz4nebcLPeMb9nnspC1IqzzUApN8fRlNDvWriLbUpcUQsLFIHe3bFe6zjN9Q2K
+ i35EiwD0le+aP45iaJkjeTZdWx4M+9Ft/edoIxSZ8FUEgE4hU7D9XDtDHUTG4nFK0FBe1n3Qf
+ Kn+JuTihguTNaAQKz2LTYfsoUldZviCz6Fp6x+oqIKvN28tJ+jTb/v8w2BLF7TH0C9CGT6LYY
+ 5KfLkwW5ou/BlZaXuL5z9+LzkDG98Yy/5fwoJ6Ucdv4NJA5iQwEaVVjC8ISNuy8iwLLY8n0KT
+ lgBUBZWe+5h1TsGTKQobDbr8GdJT4hfTJtBZggyeU4KxkxjXZUNBCMjNtr6Yr7p5NzKxjVG5V
+ y9o3DPzhuMhzAGWYRXXvUxiBLvfPsEPqEhn9EpnxJ78iQXBRGdlUsB0v03ZTWqKo/VgTXezPb
+ GBWLKKnCn73OkJx6dAvP6h7sNXz4GZmbRMMqWMUlI9TgZx1dZcF78z7vYBTsTQkBta1YybX+m
+ r3TDnmq8PAqjpYrI71CT+2KPP9xwak5lehy9uMSpkrPRAI52Vfzf2q6vpY86wy2MYiavE7gXA
+ kvSO+HJ1k7SBrkgIMHEqRprmy8Yo6tqvQgh51nhH4lOhk0ClsilVBKuDJ1OTRn/FSJvTKSEob
+ npgU56hW0Zg+ALy5mwXTqA/H3bqcmxIq9de
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/3/21 9:24 AM, Mike Galbraith wrote:
-> On Fri, 2021-07-02 at 20:29 +0200, Sebastian Andrzej Siewior wrote:
->> I replaced my slub changes with slub-local-lock-v2r3.
->> I haven't seen any complains from lockdep or so which is good. Then I
->> did this with RT enabled (and no debug):
-> 
-> Below is some raw hackbench data from my little i4790 desktop box.  It
-> says we'll definitely still want list_lock to be raw.
+On Sat, Jul 17, 2021 at 07:33:49PM +0200, Greg KH wrote:
+> On Sat, Jul 17, 2021 at 03:33:43PM +0200, Len Baker wrote:
+> > Another question: If this can never happen should I include the "Fixes=
+" tag,
+> > "Addresses-Coverity-ID" tag and Cc to stable?
+>
+> If it can never happen, why have this check at all?
+>
+> Looks like a Coverity false positive?
 
-Hi Mike, thanks a lot for the testing, sorry for late reply.
+Ok, then I will remove the check and I will send a patch for review.
 
-Did you try, instead of raw list_lock, not applying the last, local lock
-patch, as I suggested in reply to bigeasy? I think the impact at
-reducing the RT-specific overhead would be larger (than raw list_lock),
-the result should still be RT compatible, and it would also deal with
-the bugs you found there... (which I'll look into).
+>
+> thanks,
+>
+> greg k-h
 
-Thanks,
-Vlastimil
-
-> It also appears to be saying that there's something RT specific to
-> stare at in addition to the list_lock business, but add a pinch of salt
-> to that due to the config of the virgin(ish) tip tree being much
-> lighter than the enterprise(ish) config of the tip-rt tree.
-> 
-> perf stat -r10 hackbench -s4096 -l500
-> full warmup, record, repeat twice for elapsed
-> 
-> 5.13.0.g60ab3ed-tip-rt
->           8,898.51 msec task-clock                #    7.525 CPUs utilized            ( +-  0.33% )
->            368,922      context-switches          #    0.041 M/sec                    ( +-  5.20% )
->             42,281      cpu-migrations            #    0.005 M/sec                    ( +-  5.28% )
->             13,180      page-faults               #    0.001 M/sec                    ( +-  0.70% )
->     33,343,378,867      cycles                    #    3.747 GHz                      ( +-  0.30% )
->     21,656,783,887      instructions              #    0.65  insn per cycle           ( +-  0.67% )
->      4,408,569,663      branches                  #  495.428 M/sec                    ( +-  0.73% )
->         12,040,125      branch-misses             #    0.27% of all branches          ( +-  2.93% )
-> 
->            1.18260 +- 0.00473 seconds time elapsed  ( +-  0.40% )
->            1.19018 +- 0.00441 seconds time elapsed  ( +-  0.37% ) (repeat)
->            1.18260 +- 0.00473 seconds time elapsed  ( +-  0.40% ) (repeat)
-> 
-> 5.13.0.g60ab3ed-tip-rt +slub-local-lock-v2r3 list_lock=raw_spinlock_t
->           9,642.00 msec task-clock                #    7.521 CPUs utilized            ( +-  0.46% )
->            462,091      context-switches          #    0.048 M/sec                    ( +-  4.79% )
->             44,411      cpu-migrations            #    0.005 M/sec                    ( +-  4.34% )
->             12,980      page-faults               #    0.001 M/sec                    ( +-  0.43% )
->     36,098,859,429      cycles                    #    3.744 GHz                      ( +-  0.44% )
->     25,462,853,462      instructions              #    0.71  insn per cycle           ( +-  0.50% )
->      5,260,898,360      branches                  #  545.623 M/sec                    ( +-  0.52% )
->         16,088,686      branch-misses             #    0.31% of all branches          ( +-  2.02% )
-> 
->            1.28207 +- 0.00568 seconds time elapsed  ( +-  0.44% )
->            1.28744 +- 0.00713 seconds time elapsed  ( +-  0.55% ) (repeat)
->            1.28085 +- 0.00850 seconds time elapsed  ( +-  0.66% ) (repeat)
-> 
-> 5.13.0.g60ab3ed-tip-rt +slub-local-lock-v2r3 list_lock=spinlock_t
->          10,004.89 msec task-clock                #    6.029 CPUs utilized            ( +-  1.37% )
->            654,311      context-switches          #    0.065 M/sec                    ( +-  5.16% )
->            211,070      cpu-migrations            #    0.021 M/sec                    ( +-  1.38% )
->             13,262      page-faults               #    0.001 M/sec                    ( +-  0.79% )
->     36,585,914,931      cycles                    #    3.657 GHz                      ( +-  1.35% )
->     27,682,240,511      instructions              #    0.76  insn per cycle           ( +-  1.06% )
->      5,766,064,432      branches                  #  576.325 M/sec                    ( +-  1.11% )
->         24,269,069      branch-misses             #    0.42% of all branches          ( +-  2.03% )
-> 
->             1.6595 +- 0.0116 seconds time elapsed  ( +-  0.70% )
->             1.6270 +- 0.0180 seconds time elapsed  ( +-  1.11% ) (repeat)
->             1.6213 +- 0.0150 seconds time elapsed  ( +-  0.93% ) (repeat)
-> 
-> virgin(ish) tip
-> 5.13.0.g60ab3ed-tip
->           7,320.67 msec task-clock                #    7.792 CPUs utilized            ( +-  0.31% )
->            221,215      context-switches          #    0.030 M/sec                    ( +-  3.97% )
->             16,234      cpu-migrations            #    0.002 M/sec                    ( +-  4.07% )
->             13,233      page-faults               #    0.002 M/sec                    ( +-  0.91% )
->     27,592,205,252      cycles                    #    3.769 GHz                      ( +-  0.32% )
->      8,309,495,040      instructions              #    0.30  insn per cycle           ( +-  0.37% )
->      1,555,210,607      branches                  #  212.441 M/sec                    ( +-  0.42% )
->          5,484,209      branch-misses             #    0.35% of all branches          ( +-  2.13% )
-> 
->            0.93949 +- 0.00423 seconds time elapsed  ( +-  0.45% )
->            0.94608 +- 0.00384 seconds time elapsed  ( +-  0.41% ) (repeat)
->            0.94422 +- 0.00410 seconds time elapsed  ( +-  0.43% )
-> 
-> 5.13.0.g60ab3ed-tip +slub-local-lock-v2r3
->           7,343.57 msec task-clock                #    7.776 CPUs utilized            ( +-  0.44% )
->            223,044      context-switches          #    0.030 M/sec                    ( +-  3.02% )
->             16,057      cpu-migrations            #    0.002 M/sec                    ( +-  4.03% )
->             13,164      page-faults               #    0.002 M/sec                    ( +-  0.97% )
->     27,684,906,017      cycles                    #    3.770 GHz                      ( +-  0.45% )
->      8,323,273,871      instructions              #    0.30  insn per cycle           ( +-  0.28% )
->      1,556,106,680      branches                  #  211.901 M/sec                    ( +-  0.31% )
->          5,463,468      branch-misses             #    0.35% of all branches          ( +-  1.33% )
-> 
->            0.94440 +- 0.00352 seconds time elapsed  ( +-  0.37% )
->            0.94830 +- 0.00228 seconds time elapsed  ( +-  0.24% ) (repeat)
->            0.93813 +- 0.00440 seconds time elapsed  ( +-  0.47% ) (repeat)
-> 
-
+Regards,
+Len
