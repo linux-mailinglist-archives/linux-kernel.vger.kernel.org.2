@@ -2,84 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC6F3CCAF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518303CCAF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 23:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbhGRVeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 17:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        id S233400AbhGRVek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 17:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbhGRVeS (ORCPT
+        with ESMTP id S232898AbhGRVej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 17:34:18 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B67C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:31:19 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id b29so1950273ljf.11
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:31:19 -0700 (PDT)
+        Sun, 18 Jul 2021 17:34:39 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BF9C061764
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:31:40 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id a7so14097330iln.6
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 14:31:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F9ILCk8N3sERVUTaY+/ZVi6bG07HT24teouMKnXfFEQ=;
-        b=ax13dcXsQdSfOz+9HVljsgiGChow9heRlR8KjejNczxJGHDUg6gsv24iZ2QyUExZmj
-         wQh6yUun2RAFTurk6dA0NJMkInZBtaW3QlA7diHzWjCJo+2E9x/zMtsYBpzq8Qo7SLNN
-         3QqLXkNULJs0Q5LBpjLIp8AmZGk3FhEGYesSLd76i6x6tuJHsj2KlVu5D6OfW/lckUuY
-         1zXDoFoI240WefoNiWy3RY8vfT12vc5KjxjdiAWWn7Ms30PAZ75iPsrVwfHABzH7CyWW
-         CYtzflOrlbUO8sRAbStI3uJP2bWlBubp097D1XWgZ6WtwdZxvflRVNhAEnHD7tX5BGak
-         f/DA==
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ow7yd/6EUrynMpV9RE7C75DLtK0l6+jas8yJI3xp7nA=;
+        b=M46LF2jPXQUEqMWCQA1GJEDgHnFKPafk0j/m7OJpzIwXIXSeRamjQeBx6AezMOeN0g
+         IEreoVDKuzhzDPvO8dwW4w9RNjfMLFsLHmuM7cdzhQ5e9Y0zknjPlOTeC4VifadUxhHb
+         7rB5RdkrVyPtsfCKYPbOPa3mdXwk5Rz2f4IqQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F9ILCk8N3sERVUTaY+/ZVi6bG07HT24teouMKnXfFEQ=;
-        b=Rk7KwBVyBgo7vnQyhRpBG/LKQj07ywgfXvRjQYdxOmoipisfQeMkMwJCZlpI2vB4KR
-         q/IjugsSKld/ccXdICzELvZ3TYZRjqNzHxH+uFy/ve5tgwsdxRBdKWXIDYdcnSd4TClt
-         r29NCJLiuRsnqtY5VuyiAzVko+ipMClZF1vOuAyIGJr/bf9rtsltM22hYrAbmF6GQb/g
-         hGc0LeOO9q8bgTYn0UjwFbe/Ocy5amyPPtJmql9/lUqD4KdMLVvAGve0zrjoTEWaL0KS
-         ep4uLAtv3PgFg03wZOXaPBldneWS1oZxAq73o2ibZobpvtMXLeUda50ypv6HpEsWi3Y1
-         8ASg==
-X-Gm-Message-State: AOAM530Q9NgpuJmB1pQoQuMcT2QMtEZgmBBSOCzGqtGIf72mBeanEF9C
-        iCThoxxFEgqDcT+YNSOp1CvS2g==
-X-Google-Smtp-Source: ABdhPJwtT5qmE/P10UDYjLKt4tr/vkQdwA/jD7zdttq+I56o4yokObToWGuF9FbR11p8WQaMKdSbqQ==
-X-Received: by 2002:a05:651c:158b:: with SMTP id h11mr19410663ljq.395.1626643877625;
-        Sun, 18 Jul 2021 14:31:17 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id r3sm1237633lfc.280.2021.07.18.14.31.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jul 2021 14:31:16 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id CB77E10260F; Mon, 19 Jul 2021 00:31:20 +0300 (+03)
-Date:   Mon, 19 Jul 2021 00:31:20 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-Subject: Re: [PATCH 2/7] mm: introduce pte_install() helper
-Message-ID: <20210718213120.rtqbgseb6drcwxj4@box.shutemov.name>
-References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
- <20210718043034.76431-3-zhengqi.arch@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ow7yd/6EUrynMpV9RE7C75DLtK0l6+jas8yJI3xp7nA=;
+        b=KX6Qjmf09AvTpW21rpISrqExqnyxX3NC2DYPO0tHikf8H66qdoJoYTmENEUrlKxTAD
+         ylC6WhRpQU88bx0zoyQ0o8hHXt3oUP7z0O1xh2N85b1Q1K43TBX3wXGfwQ09KdzUlKIW
+         aMblTphftqRgq2lf3J7M1e+XAfD81XhH9aHsVZqWl/fKZyRxCTeBB6pAgHmhUrIUH0vv
+         jpq4p/Tw59bDtOo8hie1UBZZKelVj5uu0W9B7m8W9HLMAyw9O06t1EuWggdHboAOJb+R
+         44K62CfgZm62o5cU4A6iemFymHzNZniU1nPKtWJ42VnzGPC0/8owjygDhTuxNrRFirE8
+         MBVA==
+X-Gm-Message-State: AOAM5328cuk63hecLkSfGVS4LB1Adas6TdRZodUF34LCPwPSn72wYp2o
+        /wm2aRGdNK/KgQGVYsJNgmTfintnkttB2IgrTXnelg==
+X-Google-Smtp-Source: ABdhPJwghGaCyhofCPCUPvO43wl6OmCztC95fJB9QhJBHJw32g7l8URTTePKqAz97E7EEj9n5OiidKZJxOgHf4ayC/4=
+X-Received: by 2002:a92:2010:: with SMTP id j16mr14254152ile.98.1626643899633;
+ Sun, 18 Jul 2021 14:31:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210718043034.76431-3-zhengqi.arch@bytedance.com>
+References: <20210614141820.2034827-1-chris.lesiak@licor.com>
+ <20210616134335.76715e55@jic23-huawei> <20210718155152.66f791bc@jic23-huawei>
+In-Reply-To: <20210718155152.66f791bc@jic23-huawei>
+From:   Matt Ranostay <matt.ranostay@konsulko.com>
+Date:   Sun, 18 Jul 2021 14:31:28 -0700
+Message-ID: <CAJCx=gnJJatCbrPiWh5cDkabNLN8PG3e55r_y8veFzPRBRbD_w@mail.gmail.com>
+Subject: Re: [PATCH v3] iio: humidity: hdc100x: Add margin to the conversion time
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Chris Lesiak <chris.lesiak@licor.com>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 12:30:28PM +0800, Qi Zheng wrote:
-> Currently we have three times the same few lines repeated in the
-> code. Deduplicate them by newly introduced pte_install() helper.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+On Sun, Jul 18, 2021 at 7:49 AM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Wed, 16 Jun 2021 13:43:35 +0100
+> Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> > On Mon, 14 Jun 2021 09:18:20 -0500
+> > Chris Lesiak <chris.lesiak@licor.com> wrote:
+> >
+> > > The datasheets have the following note for the conversion time
+> > > specification: "This parameter is specified by design and/or
+> > > characterization and it is not tested in production."
+> > >
+> > > Parts have been seen that require more time to do 14-bit conversions for
+> > > the relative humidity channel.  The result is ENXIO due to the address
+> > > phase of a transfer not getting an ACK.
+> > >
+> > > Delay an additional 1 ms per conversion to allow for additional margin.
+> > >
+> > > Fixes: 4839367d99e3 ("iio: humidity: add HDC100x support")
+> > > Signed-off-by: Chris Lesiak <chris.lesiak@licor.com>
+> >
+> > +CC Matt as this is one of his drivers.
+>
+> @Matt. Ping.
+>
+> >
+> > Looks good to me.
 
-I don't like the name of the helper: we have confusion of PTE being
-PTE-entry or PTE page table. And pte_install() doing pmd_populate()
-doesn't help the situation.
+Looks good to me as well.
 
-Maybe pmd_install()? Or pte_table_install()? I donno.
+Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
 
--- 
- Kirill A. Shutemov
+> >
+> > > ---
+> > >  drivers/iio/humidity/hdc100x.c | 6 ++++--
+> > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/humidity/hdc100x.c b/drivers/iio/humidity/hdc100x.c
+> > > index 2a957f19048e..9e0fce917ce4 100644
+> > > --- a/drivers/iio/humidity/hdc100x.c
+> > > +++ b/drivers/iio/humidity/hdc100x.c
+> > > @@ -25,6 +25,8 @@
+> > >  #include <linux/iio/trigger_consumer.h>
+> > >  #include <linux/iio/triggered_buffer.h>
+> > >
+> > > +#include <linux/time.h>
+> > > +
+> > >  #define HDC100X_REG_TEMP                   0x00
+> > >  #define HDC100X_REG_HUMIDITY                       0x01
+> > >
+> > > @@ -166,7 +168,7 @@ static int hdc100x_get_measurement(struct hdc100x_data *data,
+> > >                                struct iio_chan_spec const *chan)
+> > >  {
+> > >     struct i2c_client *client = data->client;
+> > > -   int delay = data->adc_int_us[chan->address];
+> > > +   int delay = data->adc_int_us[chan->address] + 1*USEC_PER_MSEC;
+> > >     int ret;
+> > >     __be16 val;
+> > >
+> > > @@ -316,7 +318,7 @@ static irqreturn_t hdc100x_trigger_handler(int irq, void *p)
+> > >     struct iio_dev *indio_dev = pf->indio_dev;
+> > >     struct hdc100x_data *data = iio_priv(indio_dev);
+> > >     struct i2c_client *client = data->client;
+> > > -   int delay = data->adc_int_us[0] + data->adc_int_us[1];
+> > > +   int delay = data->adc_int_us[0] + data->adc_int_us[1] + 2*USEC_PER_MSEC;
+> > >     int ret;
+> > >
+> > >     /* dual read starts at temp register */
+> >
+>
