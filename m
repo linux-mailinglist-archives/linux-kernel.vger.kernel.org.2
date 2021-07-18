@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2D73CC889
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 12:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811573CC8A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 12:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhGRKwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 06:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59658 "EHLO
+        id S233506AbhGRKwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 06:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232716AbhGRKwI (ORCPT
+        with ESMTP id S232745AbhGRKwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 18 Jul 2021 06:52:08 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3024CC0613DC
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5929C0613DD
         for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 03:49:10 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y42so24293316lfa.3
+Received: by mail-lj1-x230.google.com with SMTP id t20so5445825ljd.2
         for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 03:49:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=D63/+TxRKfSO58fkCSffqgWBORWJvZPVM0amiHKwxec=;
-        b=t+HDcrLUacRbP8DNOo5e+GGGeA4NvCD16BJ6c9ka/ZJCd3Nrv0m/OPSnhoca/L5Igj
-         NWWteA5rbOi21sMd5M2yzB7oPIJPe1s+LlUlQTO9nibj69OR/n//T/n52ChJmo8kA1Lw
-         Jj7WfAhY2T/S9uCN0pnCx6Y1EpU9+90hCQgo+Rqqkuz6RZ0PZiXgoprRAJ75NE5dGKWn
-         5Hin+Sxz3IVE5JWELvfTEFkpkjYPU6Y4+cZPS5JW83kuF9XJR/Z3aHM1UY5PBgb9lnWT
-         tWhmhCMwLAo/Orn+ldJhB472Aanj37ZIkjs/pg3O+Eman8HYvduy0fN2WdSimiL9JFq+
-         XTgg==
+        bh=EIpScdiCXHtz5HFKS+jehHcY8/9fE5GMmH0c5uPACAU=;
+        b=AGXbjUn/f3tkWKTzx4g2vWUI5rxD3aacaiAgepT1wJ8AKNjwnPE5WAK2X84qlhjCwy
+         RffR+Zr0Eu0JY1AyUZqurpCwnbWzFpsN0pBSLtD2Q9p10oDl6qo8guwUYrtq24voA0SU
+         AaIxvQJ6vxPo0JjrEiPW+Nve9JDFOBUPKfHBuA0Ev+j01idNpH47tue4U4M9usRkv2WV
+         vxG73R8vqG8GEPZ6LQXRpvDnOvB8a42enrn67mqn5ZN46rPOhH19ezQ6fM4SW0ocKKON
+         cO5yCGPcs69TvgvuSo5vftylRTkvc8sOQr5BDJOmPtRheY1xKPsgDD3UIwMBECPtWMO4
+         XqXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=D63/+TxRKfSO58fkCSffqgWBORWJvZPVM0amiHKwxec=;
-        b=bMgWcCtSlnaohduWAa94QNYBVyQgq6VDLi3WmCjvCiqjTEcq5dSezmXMCYYsHAMMhc
-         5p49cU/PA7tMCuk/BkWITp26Qtc/rztLHDRXKsjJqQgcvKrTwMn48JGDP7uPsAWtrL5K
-         WLt77yma8UAlwFeKa4gMWllofccXCghCfk8U9pZfN6ZWCWgtnUJqb9S8TqwNxTwpRb/n
-         xwkmfxx0yg6njciTCQNZkOHRTtYXmQhxh0jBKp2HOBkOVwfsYXPjZ3T7JAXddKiyExoZ
-         5qnVQPnaU08+2/zWytiSEd4Ddl1w+zOO3QLey4jpCKUuuS6gLokUei8CRqYfA9NT8Ivn
-         oySg==
-X-Gm-Message-State: AOAM530Tbw0eUbQqmKH0nkc4K8vSt6NOaMf6xg9sgRZWLNruS0cqhgG3
-        RvPxD+Gzqzm3Gah58iYyvsXQ0w==
-X-Google-Smtp-Source: ABdhPJxc2vkNluaAJwBoTzZVkGdqt9L9Rob3X0LlWnRT1n/e0yx/7dEc6/8BDRbSN5dRTl7uFfdk6A==
-X-Received: by 2002:ac2:4206:: with SMTP id y6mr14382336lfh.206.1626605348335;
-        Sun, 18 Jul 2021 03:49:08 -0700 (PDT)
+        bh=EIpScdiCXHtz5HFKS+jehHcY8/9fE5GMmH0c5uPACAU=;
+        b=AcaWmspqFEF5o2+P3o6W1L3dIcIhKCu38aX/fG352JLoqWz2RcWrjmIVtKIJrgQJ5E
+         YSk1kRxLbD9LYBO9AOiTo4xIsDYk/dvitW3ZiX04c1Gkl/d/AOYXbTxRzC5Qx8N7k1LN
+         QW/8paoD/i1xz0gD8FfE0gqi/ljJnzPUS2WEXDTzabVuGPqT+yFvbm2VnSS3GsWww4BL
+         uLzxagdGf/lQ0S6kOASyuFjfZuXQH2Sm6yCNAR9Tad8X4bTr1shvo0w86usuc2JXnaJ3
+         b5cM5jJPsgiVfZMm2AsLJZ7Ek202pv97/2G3c6erC9CJBvPRJzc91zmpg0bKWWsCY64W
+         HPow==
+X-Gm-Message-State: AOAM532zP9d5JRjkk3ByzaRYqZPIYYgVcna2kd2D2pthv1nkBGM9Ruhy
+        gfjrRdsZW5qG92zOZ/IwLVQORA==
+X-Google-Smtp-Source: ABdhPJzOptY7RHE6Ww4LdDbyp0j9IiGHw27LBAjoow5E5fHJnPAUgsG68vtXCYXp/sQC8rHd10KVoA==
+X-Received: by 2002:a2e:7f1e:: with SMTP id a30mr18322867ljd.2.1626605349117;
+        Sun, 18 Jul 2021 03:49:09 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id y22sm1039528lfh.154.2021.07.18.03.49.07
+        by smtp.gmail.com with ESMTPSA id y22sm1039528lfh.154.2021.07.18.03.49.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 18 Jul 2021 03:49:08 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
@@ -62,9 +62,9 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         Mark Brown <broonie@kernel.org>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 1/9] dt-bindings: clock: qcom,dispcc-sm8x50: add mmcx power domain
-Date:   Sun, 18 Jul 2021 13:48:53 +0300
-Message-Id: <20210718104901.454843-2-dmitry.baryshkov@linaro.org>
+Subject: [PATCH v5 2/9] dt-bindings: clock: qcom,videocc: add mmcx power domain
+Date:   Sun, 18 Jul 2021 13:48:54 +0300
+Message-Id: <20210718104901.454843-3-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210718104901.454843-1-dmitry.baryshkov@linaro.org>
 References: <20210718104901.454843-1-dmitry.baryshkov@linaro.org>
@@ -74,7 +74,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On sm8250 dispcc requires MMCX power domain to be powered up before
+On sm8250 videocc requires MMCX power domain to be powered up before
 clock controller's registers become available. For now sm8250 was using
 external regulator driven by the power domain to describe this
 relationship. Switch into specifying power-domain and required opp-state
@@ -84,14 +84,14 @@ Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml      | 7 +++++++
+ Documentation/devicetree/bindings/clock/qcom,videocc.yaml | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-index 6667261dc665..6b3380cf1a10 100644
---- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-@@ -56,6 +56,11 @@ properties:
+diff --git a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
+index 567202942b88..db4ada6acf27 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
+@@ -47,6 +47,11 @@ properties:
    reg:
      maxItems: 1
  
@@ -103,15 +103,15 @@ index 6667261dc665..6b3380cf1a10 100644
  required:
    - compatible
    - reg
-@@ -70,6 +75,7 @@ additionalProperties: false
+@@ -61,6 +66,7 @@ additionalProperties: false
  examples:
    - |
      #include <dt-bindings/clock/qcom,rpmh.h>
 +    #include <dt-bindings/power/qcom-rpmpd.h>
-     clock-controller@af00000 {
-       compatible = "qcom,sm8250-dispcc";
-       reg = <0x0af00000 0x10000>;
-@@ -90,5 +96,6 @@ examples:
+     clock-controller@ab00000 {
+       compatible = "qcom,sdm845-videocc";
+       reg = <0x0ab00000 0x10000>;
+@@ -69,5 +75,6 @@ examples:
        #clock-cells = <1>;
        #reset-cells = <1>;
        #power-domain-cells = <1>;
