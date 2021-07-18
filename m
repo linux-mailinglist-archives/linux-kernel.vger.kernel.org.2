@@ -2,122 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A6B3CC748
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 05:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D133CC74A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Jul 2021 05:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhGRDjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Jul 2021 23:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
+        id S233466AbhGRDlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Jul 2021 23:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhGRDjv (ORCPT
+        with ESMTP id S230102AbhGRDlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Jul 2021 23:39:51 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB871C061762;
-        Sat, 17 Jul 2021 20:36:52 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id u14so15047805pga.11;
-        Sat, 17 Jul 2021 20:36:52 -0700 (PDT)
+        Sat, 17 Jul 2021 23:41:37 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B037C061762;
+        Sat, 17 Jul 2021 20:38:39 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id l26so18466571eda.10;
+        Sat, 17 Jul 2021 20:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UqspULE7Gruxz35tDs84/+gdhXNETD4hOwg9f63iBVA=;
-        b=ZFNPnsOoUr28WsTsZG9AHEhK7vIrhso65KmkuMEDQteYISSH36Im+rDl/YICTXkHvU
-         2JRLEObZ2TJ8X8wXE/xfJQ3ABBqcZia2CzuV4G9H6COqrn4XUAuFcrd70sQ1InZIUY0O
-         Nv0Ju6MsYiKicIRImx1Rn/Hbl7g5f2/5sx+1fU9bwrJocEZ0ABawsGkwuWCp8qGAPffN
-         nW8YRs+wOV3r6M1IvWkrjLDYUyTUF1IWCY84txdnmFEt7wlaKsAOZWyEJMG6AwjJh21s
-         29iPA7l5SKrKLT6n8eN6P05vndP/ReagYp21l60XuhArkWTNq7GTw400sYgGDBW9uHQu
-         2uaQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LIlzqY37/ApwF5j7PXVX2Gcn6RoFS6mgR/Cwi+L/v2E=;
+        b=Jb6ROQWd5jMjvTPpWafimOYgQ0d4hBWyXVXH3MHDcL0If5wBBIAjcT3NWkmsDz69IK
+         QLw7gleWCs7hpilMT54gT1L2UYa7ifs18BNVMAmVxkI/9EWMV1hZWE7ujnhEpZfXUU2m
+         vQnzo9rfCbxGmvB1ln8WcDk6yBvRpoo5z61ROgymq3ARCJRRim8XRulvAas20ffSAofp
+         pfQLojOlPrnyV+5n9EOw4LTur9NdLpCMeZkEIBe/6htPd6Tcf4F7zRM3QcLSjciyHkvK
+         bm2JMJq1sRzzRSfOa4Y0DESU1G+pvGOOhWZSC4EmKa1zjIKEUsXVwf7wqZhAVrUmH/rL
+         MbUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UqspULE7Gruxz35tDs84/+gdhXNETD4hOwg9f63iBVA=;
-        b=hYPMJjqv83eBS3QjWF57MNrL3hEm2aD2K18VEKy4NQKDhgbS9JUSQlMFHQOFMnrldL
-         pfcAhMh6Je7u2iDg8MXop0Yq7wSLGVmg8vNkh5fxIFNzOeY1XHnOcutVJ0cLNWqZ7Ibr
-         IpC0XUE8htO9F8yx2cfe5Bc2V5i7TXZzHZxswugjuawCORMX6n78pdIdtZdY+3MYHhcC
-         nd+ZREKMpveAo8+GXYmj3LZOrbbzbfjsXXaZUiHp0GwiDwTfD7V3gyOffjKRKAnxNMJH
-         VRTBziwx/n4nYjlTVyNI7b2CrC+qf5+ezW9+pvbbRgw0tdt7s/WpaofI9jykSps+6i2V
-         J3Pg==
-X-Gm-Message-State: AOAM532rzTJKPUoBjEFZUpHpbcxFGonRSJcrcuCKvpih26Wo8bbelPzy
-        Zi7h82TRe6TVD1n7HiGzU08=
-X-Google-Smtp-Source: ABdhPJzx+Bn6XaAoaIsSBrTf0Ya8H9XJK4nnLWZqM1KjRGsOEhBP7qYPQvZfEVkR2HDXXE8PnvDenQ==
-X-Received: by 2002:a05:6a00:1582:b029:333:a366:fe47 with SMTP id u2-20020a056a001582b0290333a366fe47mr14280622pfk.0.1626579411994;
-        Sat, 17 Jul 2021 20:36:51 -0700 (PDT)
-Received: from gmail.com ([2601:600:8500:5f14:d627:c51e:516e:a105])
-        by smtp.gmail.com with ESMTPSA id s10sm4717431pga.28.2021.07.17.20.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 20:36:51 -0700 (PDT)
-Date:   Sat, 17 Jul 2021 20:33:06 -0700
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/2] move_mount: allow to add a mount into an existing
- group
-Message-ID: <YPOg8tl6Q6+d9Sa2@gmail.com>
-References: <20210715100714.120228-1-ptikhomirov@virtuozzo.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LIlzqY37/ApwF5j7PXVX2Gcn6RoFS6mgR/Cwi+L/v2E=;
+        b=cW7ZLlEW9fzlLWip/Qrxw23nqkrCdjuKfyUMF+wr4JD3i2tso4yq7b+yj5xkveYsNJ
+         I4iPrPR3131gQMgNd5NIdqnW5oc0dUNs5bq1jG0teInPYi9aPFvJ02QTppEcoVvWFBhN
+         e9PPJQHrMMh6hFqgeAJd6/FiwCB7E6HyVv6g6IOoVPT8LcgsyZJ28XUlysCIs7aGBUBg
+         m+LVcFiWCZ4TntlY4qsdACwV+3Vipafb9b/UN8NFUsfOWKJxIn3UxgYJ6rtqAyC9a1pk
+         O3sJvF4QqfE9d6m+jLvQbleyxuc+V4in6cR7A8cPY26EkK3m5Vtqr0EC7/d2L+OyYf2m
+         YxzA==
+X-Gm-Message-State: AOAM533SCEy9tH2af+g43YWX75egyurttox3u30rUB8NK8f4FFJ+0G3U
+        5GXhPEoEy5hc3w5iccguD9atBAPmpeXlkZLipMw=
+X-Google-Smtp-Source: ABdhPJy+xX/itKKz5o91fjWk6bMjvkzO6a0D0U3UXljnVdJNK9vkNcWGEWkjMlPG/iCTUG9wAw/pzrx5tlWLQH0x2tU=
+X-Received: by 2002:a05:6402:1218:: with SMTP id c24mr25333898edw.59.1626579517304;
+ Sat, 17 Jul 2021 20:38:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20210715100714.120228-1-ptikhomirov@virtuozzo.com>
+References: <20210716103651.1455-1-linux.amoon@gmail.com> <20210716103651.1455-2-linux.amoon@gmail.com>
+ <CAFBinCDeqauw_V-Vn9cat9HaCXj6HEMz6G+G+VbqCNtGEFGYzg@mail.gmail.com>
+In-Reply-To: <CAFBinCDeqauw_V-Vn9cat9HaCXj6HEMz6G+G+VbqCNtGEFGYzg@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Sun, 18 Jul 2021 09:08:26 +0530
+Message-ID: <CANAwSgQ5PDGUWMH-jxnz5wwutUVniTn7RAe=4J=8-jbmqxYRRg@mail.gmail.com>
+Subject: Re: [PATCHv2 1/4] ARM: dts: meson8b: odroidc1: Add usb phy power node
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Matt Corallo <oc2udbzfd@mattcorallo.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>,
+        Brian Kim <brian.kim@hardkernel.com>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 01:07:13PM +0300, Pavel Tikhomirov wrote:
-> Previously a sharing group (shared and master ids pair) can be only
-> inherited when mount is created via bindmount. This patch adds an
-> ability to add an existing private mount into an existing sharing group.
-> 
-> With this functionality one can first create the desired mount tree from
-> only private mounts (without the need to care about undesired mount
-> propagation or mount creation order implied by sharing group
-> dependencies), and next then setup any desired mount sharing between
-> those mounts in tree as needed.
-> 
-> This allows CRIU to restore any set of mount namespaces, mount trees and
-> sharing group trees for a container.
-> 
-> We have many issues with restoring mounts in CRIU related to sharing
-> groups and propagation:
-> - reverse sharing groups vs mount tree order requires complex mounts
->   reordering which mostly implies also using some temporary mounts
-> (please see https://lkml.org/lkml/2021/3/23/569 for more info)
-> 
-> - mount() syscall creates tons of mounts due to propagation
-> - mount re-parenting due to propagation
-> - "Mount Trap" due to propagation
-> - "Non Uniform" propagation, meaning that with different tricks with
->   mount order and temporary children-"lock" mounts one can create mount
->   trees which can't be restored without those tricks
-> (see https://www.linuxplumbersconf.org/event/7/contributions/640/)
-> 
-> With this new functionality we can resolve all the problems with
-> propagation at once.
-> 
-> Cc: Eric W. Biederman <ebiederm@xmission.com>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: Mattias Nissler <mnissler@chromium.org>
-> Cc: Aleksa Sarai <cyphar@cyphar.com>
-> Cc: Andrei Vagin <avagin@gmail.com>
+Hi Martin,
 
-Looks good to me.
+Thanks for the review comments.
 
-Co-developed-by: Andrei Vagin <avagin@gmail.com>
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
+On Sun, 18 Jul 2021 at 01:16, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Hi Anand,
+>
+> On Fri, Jul 16, 2021 at 12:37 PM Anand Moon <linux.amoon@gmail.com> wrote:
+> >
+> > Add missing usb phy power node for phy mode fix below warning.
+> > P5V0 regulator suppy input voltage range to USB host controller.
+> low prio - typo: suppy -> supply
+>
+> > As descriped in the C1+ schematics, GPIO GPIOAO_5 is used to
+> low prio - typo: descriped -> described
+>
+I definitely run checkpatch with the spellcheck option but I need to
+improve on this aspect.
 
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-api@vger.kernel.org
-> Cc: lkml <linux-kernel@vger.kernel.org>
-> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> > enable input power to USB ports, set it to Active Low.
+> >
+> > [    1.253149] phy phy-c1108820.phy.0: Looking up phy-supply from device tree
+> > [    1.253166] phy phy-c1108820.phy.0: Looking up phy-supply property
+> >                 in node /soc/cbus@c1100000/phy@8820 failed
+> high prio:
+> Can you please describe how I can test this patch?
+> My concern is that previously I have tested your patch with ACTIVE_LOW
+> and ACTIVE_HIGH polarity.
+> In both cases USB is working and I cannot observe any change (apart
+> from this debug message being gone).
+>
+> In the Odroid-C1 schematics (page 1) GPIOAO.BIT5 is connected to USB_OTG *only*.
+> I cannot give my Acked-/Reviewed-/Tested-by without a description of
+> how I can actually test the GPIO potion of this patch.
+>
+> [...]
+> > +               /*
+> > +                * signal name from schematics: PWREN - GPIOAO.BIT5
+> > +                */
+> > +               gpios = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
+> low prio:
+> Even though it's strictly not necessary I think this is confusing to read.
+> Since there's no "enable-active-high" property the GPIO will be
+> considered as "active low".
+> My suggestion is to change GPIO_ACTIVE_HIGH to GPIO_ACTIVE_LOW
+>
+My apologies, I might have sent the wrong set of patches its
+GPIO_ACTIVE_LOW I meant
+I have formatted with and in the course of testing and verifying It
+might have got SKIPPED.
+I didn't do this intentionally it happen with a mistake with my two
+repositories.
+I don't intend to repeat my mistake, again and again, *sorry for the trouble*.
+
+> Also if you have any extra information since you last pinged me on IRC
+> then it would be great if you could document it.
+> I am referring to these IRC message, where you are stating that the
+> correct polarity should be "active high":
+> <armoon> xdarklight I have a question on USB GPIO Polarity on Odroid C1+
+ > <armoon> As per the
+> https://dn.odroid.com/S805/Schematics/odroid-c1+_rev0.4_20160226.pdf
+> <armoon> MP62551DGT-LF IC controls the power for the USB PORTS
+> <armoon> https://www.mouser.com/datasheet/2/277/MP62550-1384050.pdf is
+> MP62551DGT datasheet
+> <armoon> As per the data sheet in section ORDERING INFORMATION  Active
+> enable signal is set below MP62551DGT Active High
 >
 
-Thanks,
-Andrei 
+[1] https://www.mouser.com/datasheet/2/277/MP62550-1384050.pdf
+
+I have read the datasheets MP62551DGT EN*  pin its Enable input. Active Low:
+       *EN I Enable input. Active Low: (MP62550), Active High: (MP62551).*
+
+I have tested with ACTIVE_LOW and followed all the steps invalidating
+ this with debugfs output.
+
+Last login: Tue Jul 13 00:02:49 2021 from 10.0.0.14
+[alarm@archl-c1e ~]$ sudo cat /sys/kernel/debug/gpio | grep usb
+ gpio-1953 (USB_HUB_RST_N       |usb-hub-reset       ) out hi
+ gpio-1954 (USB_OTG_PWREN       |regulator-usb-pwr-en) out lo ACTIVE LOW
+
+> [...]
+> >  &usb1_phy {
+> >         status = "okay";
+> > +       phy-supply = <&usb_pwr_en>;
+> medium priority:
+> I have raised the following concern in one of my previous emails on this topic:
+> > The mistake I made before is considering USB VBUS as PHY power supply.
+> > I believe the USB PHY is actually powered by the AVDD18_USB_ADC and
+> > USB33_VDDIOH signals. See the S905 datasheet [0], page 25
+> > These are 1.8V and 3.3V signals while you are adding a 5V regulator.
+> you replied with:
+> > OK, thanks.
+> so I don't understand what "OK, thanks" means.
+> If it means "Martin, you are wrong" then please provide a description
+> so I can also learn something!
+
+Yes, I understood your inputs. But from the logs below is seen to
+looking for phy-supply
+This is the reason I went ahead with phy-supply as the core phy node
+needs this property.
+
+Please check below commit
+e841ec956e53 ("ARM64: dts: meson-gxbb-odroidc2: fix usb1 power supply")
+
+[    1.253149] phy phy-c1108820.phy.0: Looking up phy-supply from device tree
+[    1.253166] phy phy-c1108820.phy.0: Looking up phy-supply property
+in node /soc/cbus@c1100000/phy@8820 failed
+[    1.255031] pwm-regulator regulator-vcck: Failed to get PWM, deferring probe
+[    1.256730] pwm-regulator regulator-vddee: Failed to get PWM, deferring probe
+[    1.260300] dwc2 c90c0000.usb: mapped PA c90c0000 to VA (ptrval)
+[    1.260446] dwc2 c90c0000.usb: Looking up vusb_d-supply from device tree
+[    1.260460] dwc2 c90c0000.usb: Looking up vusb_d-supply property in
+node /soc/usb@c90c0000 failed
+[    1.260490] dwc2 c90c0000.usb: supply vusb_d not found, using dummy regulator
+[    1.260606] dwc2 c90c0000.usb: Looking up vusb_a-supply from device tree
+[    1.260620] dwc2 c90c0000.usb: Looking up vusb_a-supply property in
+node /soc/usb@c90c0000 failed
+[    1.260641] dwc2 c90c0000.usb: supply vusb_a not found, using dummy regulator
+[    1.260717] dwc2 c90c0000.usb: registering common handler for irq35
+[    1.260772] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
+[    1.260784] dwc2 c90c0000.usb: Looking up vbus-supply property in
+node /soc/usb@c90c0000 failed
+[    1.261949] dwc2 c90c0000.usb: Core Release: 3.10a (snpsid=4f54310a)
+
+>
+>
+> Best regards,
+> Martin
+
+-Anand
