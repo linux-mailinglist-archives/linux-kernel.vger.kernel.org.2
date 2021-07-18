@@ -2,113 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078EE3CCB76
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 00:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57D13CCB78
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 00:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbhGRWyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 18:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231846AbhGRWyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 18:54:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A05761029;
-        Sun, 18 Jul 2021 22:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626648662;
-        bh=E1GZ9wrZahjmOXpHUuWjVZgdMkfsdbwei1t/mYpy9C4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fClH3BDDoUNpc0wpEmkVw6BZObdB09nhHWUouGZ9Nt9+0dBTqhSvf4UBJTG5G88Py
-         fnJ+3D9LUNTde008quKP3XAf/TjsMhADDwPJu6Ja42YByr3gBGr6cj+4r/7mODjot9
-         46UFpgUH5FnrZROfr7kPRgTen5UPZxso8aXPvSbaaBTGcp276PXXNVrzlcdmz6V4Yf
-         Oekv64bmFvz7I7WBOd5ljLtcuIsR6q1rbLFNJ/YMGoNT3WXuKPDExZzqxdm3DwMe7b
-         e3uk7Ik4tE68dZdn/nsCHqJrvHVdf9EiV1CdRl2l+DSN3YHkbpBfHUf4hp3+Iik7Zc
-         euDGV64UE/ULg==
-Received: by pali.im (Postfix)
-        id 448579EE; Mon, 19 Jul 2021 00:50:59 +0200 (CEST)
-Date:   Mon, 19 Jul 2021 00:50:59 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Oliver O'Halloran <oohall@gmail.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Aaron Ma <aaron.ma@canonical.com>, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-pci <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH 1/2] igc: don't rd/wr iomem when PCI is removed
-Message-ID: <20210718225059.hd3od4k4on3aopcu@pali>
-References: <CAOSf1CGVpogQGAatuY_N0db6OL2BFegGtj6VTLA9KFz0TqYBQg@mail.gmail.com>
- <20210708154550.GA1019947@bjorn-Precision-5520>
- <CAOSf1CHtHLyEHC58jwemZS6j=jAU2OrrYitkUYmdisJtuFu4dw@mail.gmail.com>
+        id S233685AbhGRWzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 18:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231846AbhGRWz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Jul 2021 18:55:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF2BC061762;
+        Sun, 18 Jul 2021 15:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RHSK5EGB6FHr3oxPvJZpzufbw3Ms9NA52kVasTcg4p4=; b=EO8B14wpWTQwqTdTHNRIsPGLqT
+        wOvfRyDsX9UOviGYwZ6BLIZSOb8CNAH48qsNPi0CRJ6xSG9tFMXwvUCP3tM3OEK2nQvhOArtaBSfE
+        bXaA5NbN5MMB/fpIg1U7PR4ROUcddLqQa5S9BKCm0ibaKVzDluRcku6kRN5Dk+pF2ksqzAFAAxU2b
+        H/FePW411Q6kY2HM9g8JIVC6oD3kfulR9lETb8rwxMswGtNvjxDxFWTWyASrLxZi0KZjN4m0B9LPf
+        6P7FfzVWDYjvBOlG/ZWNOFdyMVJDTz0tx0KYghGMOprXcwYI96BFG97OYG17pLT87GvlOJ09Ko38/
+        WlThaU3w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5FdI-006MEM-As; Sun, 18 Jul 2021 22:51:56 +0000
+Date:   Sun, 18 Jul 2021 23:51:36 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Chris Clayton <chris2553@googlemail.com>,
+        Chris Rankin <rankincj@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Message-ID: <YPSweHyCrD2q2Pue@casper.infradead.org>
+References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
+ <2245518.LNIG0phfVR@natalenko.name>
+ <6698965.kvI7vG0SvZ@natalenko.name>
+ <20210718215914.GQ4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOSf1CHtHLyEHC58jwemZS6j=jAU2OrrYitkUYmdisJtuFu4dw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210718215914.GQ4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 19 July 2021 02:31:10 Oliver O'Halloran wrote:
-> On Fri, Jul 9, 2021 at 1:45 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > *snip*
-> >
-> > Apologies for rehashing what's probably obvious to everybody but me.
-> > I'm trying to get a better handle on benign vs poisonous errors.
-> >
-> > MMIO means CPU reads or writes to the device.  In PCI, writes are
-> > posted and don't receive a response, so a driver will never see
-> > writel() return an error (although an error may be reported
-> > asynchronously via AER or similar).
-> >
-> > So I think we're mostly talking about CPU reads here.  We expect a PCI
-> > response containing the data.  Sometimes there's no response or an
-> > error response.  The behavior of the host bridge in these error cases
-> > is not defined by PCI, so what the CPU sees is not consistent across
-> > platforms.  In some cases, the bridge handles this as a catastrophic
-> > error that forces a system restart.
-> >
-> > But in most cases, at least on x86, the bridge logs an error and
-> > fabricates ~0 data so the CPU read can complete.  Then it's up to
-> > software to recognize that an error occurred and decide what to do
-> > about it.  Is this a benign or a poisonous error?
-> >
-> > I'd say this is a benign error. It certainly can't be ignored, but as
-> > long as the driver recognizes the error, it should be able to deal
-> > with it without crashing the whole system and forcing a restart.
+On Sun, Jul 18, 2021 at 02:59:14PM -0700, Paul E. McKenney wrote:
+> > > https://lore.kernel.org/lkml/CAK2bqVK0Q9YcpakE7_Rc6nr-E4e2GnMOgi5jJj=_Eh_1k
+> > > EHLHA@mail.gmail.com/
 > 
-> I was thinking more in terms of what the driver author sees rather
-> than what's happening on the CPU side. The crash seen in the OP
-> appears to be because the code is "doing an MMIO." However, the
-> reasons for the crash have nothing to do with the actual mechanics of
-> the operation (which should be benign). The point I was making is that
-> the pattern of:
+> But this one does show this warning in v5.12.17:
 > 
-> if (is_disconnected())
->     return failure;
-> return do_mmio_read(addr);
+> 	WARN_ON_ONCE(!preempt && rcu_preempt_depth() > 0);
 > 
-> does have some utility as a last-ditch attempt to prevent crashes in
-> the face of obnoxious bridges or bad hardware. Granted, that should be
-> a platform concern rather than something that should ever appear in
-> driver code, but considering drivers open-code readl()/writel() calls
-> there's not really any place to put that sort of workaround.
+> This is in rcu_note_context_switch(), and could be caused by something
+> like a schedule() within an RCU read-side critical section.  This would
+> of course be RCU-usage bugs, given that you are not permitted to block
+> within an RCU read-side critical section.
 > 
-> That all said, the case in the OP is due to an entirely avoidable
-> driver bug and that sort of hack is absolutely the wrong thing to do.
-> 
-> Oliver
+> I suggest checking the functions in the stack trace to see where the
+> rcu_read_lock() is hiding.  CONFIG_PROVE_LOCKING might also be helpful.
 
-And do we have some solution for this kind of issue? There are more PCIe
-controllers / platforms which do not like MMIO read/write operation when
-card / link is not connected.
+I'm not sure I see it in this stack trace.
 
-If we do not provide a way how to solve these problems then we can
-expect that people would just hack ethernet / wifi / ... device drivers
-which are currently crashing by patches like in this thread.
-
-Maybe PCI subsystem could provide wrapper function which implements
-above pattern and which can be used by device drivers?
+Is it possible that there's something taking the rcu read lock in an
+interrupt handler, then returning from the interrupt handler without
+releasing the rcu lock?  Do we have debugging that would fire if
+somebody did this?
