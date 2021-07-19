@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612E33CEDC6
+	by mail.lfdr.de (Postfix) with ESMTP id D2EFB3CEDC7
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386994AbhGSTpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:45:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358191AbhGSTVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:21:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95B6D610FB;
-        Mon, 19 Jul 2021 20:01:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626724891;
-        bh=AtilYTYAIi/v289g3hvYA7Xnfh/9TR5jTuUQdlcooaU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MmwQBagM86Zvha3FDzTeqpfHrhaaF8hafQyEBNKW+VVwgTm4955iNjsAzQGGQnmsh
-         c/iSIyg0GLURQG0X4bBHYbqeGkpc1S3VbB/RnhU/QlCt8RNdhm+o2tMJvXuucbMZdl
-         OCHMDUl0aXj93gj1uJpqrpP730D6VO0BVcovn5TVXYuc+CtCI78AvJdO+oJAKOY4k6
-         ZPFWzkGaJmmdcc0BJBV2hi1UWwIGGTNfLofgeHP+6hCvbnsCt2nxIP9v8U8E/ekE1y
-         c+CIdEnXoPOwtERWOSb0N4ryQ9YtPEEhHCUB51N8CyacvRy5LYLEUlhzzlsnjPzmRU
-         /wvrE+1rD7/TQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0D5E3403F2; Mon, 19 Jul 2021 17:01:29 -0300 (-03)
-Date:   Mon, 19 Jul 2021 17:01:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Zhangshaokun <zhangshaokun@hisilicon.com>,
-        "liuqi (BA)" <liuqi115@huawei.com>
-Subject: Re: [bug report] Patch "perf tools: Fix pattern matching for same
- substring in different pmu type" broken
-Message-ID: <YPXaGPfofvrUGBLa@kernel.org>
-References: <44e25825-5f23-c641-9f1c-72268d895f75@huawei.com>
+        id S1387047AbhGSTp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:45:28 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46654 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358267AbhGSTWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 15:22:02 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B5AF51C0B77; Mon, 19 Jul 2021 22:02:32 +0200 (CEST)
+Date:   Mon, 19 Jul 2021 22:02:32 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 000/188] 4.4.276-rc1 review
+Message-ID: <20210719200232.GA14510@duo.ucw.cz>
+References: <20210719144913.076563739@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
 Content-Disposition: inline
-In-Reply-To: <44e25825-5f23-c641-9f1c-72268d895f75@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jul 19, 2021 at 03:13:06PM +0100, John Garry escreveu:
-> Hi guys,
-> 
-> The named patch has broken PMU alias matching on my arm64 system.
 
-Hi Jin, can you please address this report? Otherwise I'll have to
-revert the patch in my next pull req to Linus :-\
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Arnaldo
- 
-> Specifically it is broken for when multiple tokens are used in the alias.
-> For example, alias "hisi_sccl,l3c" would previously match for PMU
-> "hisi_sccl3_l3c7", but that no longer works.
-> 
-> In my example, in looking at the code, the callchain
-> pmu_uncore_alias_match("hisi_sccl,l3c", "hisi_sccl3_l3c7") ->
-> per_pmu__valid_suffix("hisi_sccl3_l3c7", "hisi_sccl") fails in the following
-> check:
-> 
-> static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
-> {
-> 	char *p;
-> 	...
-> 	p = pmu_name + strlen(tok);
-> 	...
-> 	if (*p != '_') //here
-> 		return false;
-> }
-> 
-> This check assumes the first token must be followed by a '_', but it is
-> possibly a numeric.
-> 
-> Please let me know how this should work. Previously it would match on the
-> tokens, ignoring numerics and '_'.
-> 
-> As an aside, I'll look at why our testcases don't cover this scenario and
-> look to add a test if necessary.
-> 
-> Thanks,
-> john
-> 
-> Ps, please cc linux-perf-users@vger.kernel.org as in the MAINTAINERS file in
-> future, as not all subscribe to the open kernel list (and so cannot easily
-> reply directly).
-> 
+Hi!
 
--- 
+> This is the start of the stable review cycle for the 4.4.276 release.
+> There are 188 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-- Arnaldo
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--uAKRQypu60I7Lcqm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYPXaWAAKCRAw5/Bqldv6
+8v4lAKCxDNSq1NsONcFd3aCbEgNX9MqFqgCfWMyXgaqjTIHpzsd2SDk0wbuC4s4=
+=oDC2
+-----END PGP SIGNATURE-----
+
+--uAKRQypu60I7Lcqm--
