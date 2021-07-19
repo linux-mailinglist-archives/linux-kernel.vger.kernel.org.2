@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBBC3CDF1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170AA3CE007
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345071AbhGSPHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:07:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
+        id S1345925AbhGSPNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:13:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344447AbhGSOst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344451AbhGSOst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B612060551;
-        Mon, 19 Jul 2021 15:29:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CB0560241;
+        Mon, 19 Jul 2021 15:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708557;
-        bh=Hwvwt6k205To0ee+LDrYRntsYD0KUL5yf//ru9VS6RI=;
+        s=korg; t=1626708560;
+        bh=Vn2V99S3tKjCz2qHU4IrEN+n4Te0ZW8MTELd31wPxZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V6uRwTiAqxtPysUODAaU490JwFHo+EX4w48oBi5FrVVYA/asfqWH8UH/w9/eK530B
-         Xd5xTHqmIRAEaIvSelQEdv5iuVhKVXvYF5oNCZDehXfQPSjUxBxxN2fZbKqmHXDYKS
-         O5KXL9mOaoXrwAeV/dyfrpQmcYaO94nfqlrxyUlY=
+        b=PKquXlvRRadoPuNQuj7nl5M3mzJVhT6fwvAU8qm3GcPwWETBa/a9+czRsKye2HlUi
+         scbJCjlBmrrHYrGMPMpKBqFgsEY3WM77lcMEa1ZJWvu07/ydYpxcQGb7PxbXdJPgFA
+         Qp7GgmhrDtM8fsA5VHj2ZlHmfR+4Xdqo7SiW8aIM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.com>
-Subject: [PATCH 4.19 007/421] usb: gadget: eem: fix echo command packet response issue
-Date:   Mon, 19 Jul 2021 16:46:58 +0200
-Message-Id: <20210719144946.556024498@linuxfoundation.org>
+        stable@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>
+Subject: [PATCH 4.19 008/421] USB: cdc-acm: blacklist Heimann USB Appset device
+Date:   Mon, 19 Jul 2021 16:46:59 +0200
+Message-Id: <20210719144946.588377448@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -38,111 +38,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linyu Yuan <linyyuan@codeaurora.com>
+From: Hannu Hartikainen <hannu@hrtk.in>
 
-commit 4249d6fbc10fd997abdf8a1ea49c0389a0edf706 upstream.
+commit 4897807753e078655a78de39ed76044d784f3e63 upstream.
 
-when receive eem echo command, it will send a response,
-but queue this response to the usb request which allocate
-from gadget device endpoint zero,
-and transmit the request to IN endpoint of eem interface.
+The device (32a7:0000 Heimann Sensor GmbH USB appset demo) claims to be
+a CDC-ACM device in its descriptors but in fact is not. If it is run
+with echo disabled it returns garbled data, probably due to something
+that happens in the TTY layer. And when run with echo enabled (the
+default), it will mess up the calibration data of the sensor the first
+time any data is sent to the device.
 
-on dwc3 gadget, it will trigger following warning in function
-__dwc3_gadget_ep_queue(),
+In short, I had a bad time after connecting the sensor and trying to get
+it to work. I hope blacklisting it in the cdc-acm driver will save
+someone else a bit of trouble.
 
-	if (WARN(req->dep != dep, "request %pK belongs to '%s'\n",
-				&req->request, req->dep->name))
-		return -EINVAL;
-
-fix it by allocating a usb request from IN endpoint of eem interface,
-and transmit the usb request to same IN endpoint of eem interface.
-
-Signed-off-by: Linyu Yuan <linyyuan@codeaurora.com>
+Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210616115142.34075-1-linyyuan@codeaurora.org
+Link: https://lore.kernel.org/r/20210622141454.337948-1-hannu@hrtk.in
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/function/f_eem.c |   43 ++++++++++++++++++++++++++++++++----
- 1 file changed, 39 insertions(+), 4 deletions(-)
+ drivers/usb/class/cdc-acm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/usb/gadget/function/f_eem.c
-+++ b/drivers/usb/gadget/function/f_eem.c
-@@ -30,6 +30,11 @@ struct f_eem {
- 	u8				ctrl_id;
- };
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -2000,6 +2000,11 @@ static const struct usb_device_id acm_id
+ 	.driver_info = IGNORE_DEVICE,
+ 	},
  
-+struct in_context {
-+	struct sk_buff	*skb;
-+	struct usb_ep	*ep;
-+};
++	/* Exclude Heimann Sensor GmbH USB appset demo */
++	{ USB_DEVICE(0x32a7, 0x0000),
++	.driver_info = IGNORE_DEVICE,
++	},
 +
- static inline struct f_eem *func_to_eem(struct usb_function *f)
- {
- 	return container_of(f, struct f_eem, port.func);
-@@ -323,9 +328,12 @@ fail:
- 
- static void eem_cmd_complete(struct usb_ep *ep, struct usb_request *req)
- {
--	struct sk_buff *skb = (struct sk_buff *)req->context;
-+	struct in_context *ctx = req->context;
- 
--	dev_kfree_skb_any(skb);
-+	dev_kfree_skb_any(ctx->skb);
-+	kfree(req->buf);
-+	usb_ep_free_request(ctx->ep, req);
-+	kfree(ctx);
- }
- 
- /*
-@@ -413,7 +421,9 @@ static int eem_unwrap(struct gether *por
- 		 * b15:		bmType (0 == data, 1 == command)
- 		 */
- 		if (header & BIT(15)) {
--			struct usb_request	*req = cdev->req;
-+			struct usb_request	*req;
-+			struct in_context	*ctx;
-+			struct usb_ep		*ep;
- 			u16			bmEEMCmd;
- 
- 			/* EEM command packet format:
-@@ -442,11 +452,36 @@ static int eem_unwrap(struct gether *por
- 				skb_trim(skb2, len);
- 				put_unaligned_le16(BIT(15) | BIT(11) | len,
- 							skb_push(skb2, 2));
-+
-+				ep = port->in_ep;
-+				req = usb_ep_alloc_request(ep, GFP_ATOMIC);
-+				if (!req) {
-+					dev_kfree_skb_any(skb2);
-+					goto next;
-+				}
-+
-+				req->buf = kmalloc(skb2->len, GFP_KERNEL);
-+				if (!req->buf) {
-+					usb_ep_free_request(ep, req);
-+					dev_kfree_skb_any(skb2);
-+					goto next;
-+				}
-+
-+				ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
-+				if (!ctx) {
-+					kfree(req->buf);
-+					usb_ep_free_request(ep, req);
-+					dev_kfree_skb_any(skb2);
-+					goto next;
-+				}
-+				ctx->skb = skb2;
-+				ctx->ep = ep;
-+
- 				skb_copy_bits(skb2, 0, req->buf, skb2->len);
- 				req->length = skb2->len;
- 				req->complete = eem_cmd_complete;
- 				req->zero = 1;
--				req->context = skb2;
-+				req->context = ctx;
- 				if (usb_ep_queue(port->in_ep, req, GFP_ATOMIC))
- 					DBG(cdev, "echo response queue fail\n");
- 				break;
+ 	/* control interfaces without any protocol set */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
+ 		USB_CDC_PROTO_NONE) },
 
 
