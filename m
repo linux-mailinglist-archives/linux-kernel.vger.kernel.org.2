@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E92B3CE7FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51EF3CE6BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354985AbhGSQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:35:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59754 "EHLO mail.kernel.org"
+        id S1351117AbhGSQNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:13:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347852AbhGSPWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:22:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4A306113A;
-        Mon, 19 Jul 2021 15:59:35 +0000 (UTC)
+        id S1346072AbhGSPKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80E4460238;
+        Mon, 19 Jul 2021 15:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710376;
-        bh=dQXRwl+jaHmxdeLPAIHrajF3etZ4p+FU8NlpsilrVhM=;
+        s=korg; t=1626709823;
+        bh=Vg9AYoWLHZff+2GqtDIE6iJCmyMllQ9Kc6xvATz3QIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kLzTSOI+92XnnUKaW3NdBQwFFnIu8SQK8+AvfU4lNxnSGPfuHbXkycOELsX21r0PF
-         d2x4Rt7q1CkQN1xgCdtsodBdkhtuAY+Ut51armSMlfJHEzMqzGOPU1IBQEtmumipaR
-         SYPhNoNHaTBd4KdyZW0LOb3h+bJyToSBxJ1H+6y8=
+        b=lPxHN+wTHA7GLU7hMLuuwQyYj2jEnwTbCgDeUgmETg0zTOEzCl2G5bCtSSrcvjWrf
+         cwfPAi4ux8Gh8BK0ARXYy44QbWJqMWzDGX5tQOJmJ/RTWyoRSKkYZjF6lpPs8yBrrw
+         kfFmU0eLP/80h6IXqyKv8Vrs9H+ZQT31A61bDYSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 191/243] ARM: dts: exynos: fix PWM LED max brightness on Odroid XU/XU3
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 112/149] ALSA: isa: Fix error return code in snd_cmi8330_probe()
 Date:   Mon, 19 Jul 2021 16:53:40 +0200
-Message-Id: <20210719144947.083992436@linuxfoundation.org>
+Message-Id: <20210719144927.876942513@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 75121e1dc9fe4def41e63d57f6a53749b88006ed ]
+[ Upstream commit 31028cbed26a8afa25533a10425ffa2ab794c76c ]
 
-There is no "max_brightness" property.  This brings the intentional
-brightness reduce of green LED and dtschema checks as well:
+When 'SB_HW_16' check fails, the error code -ENODEV instead of 0 should be
+returned, which is the same as that returned when 'WSS_HW_CMI8330' check
+fails.
 
-  arch/arm/boot/dts/exynos5410-odroidxu.dt.yaml: led-controller-1: led-1: 'max-brightness' is a required property
-
-Fixes: 719f39fec586 ("ARM: dts: exynos5422-odroidxu3: Hook up PWM and use it for LEDs")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210505135941.59898-3-krzysztof.kozlowski@canonical.com
+Fixes: 43bcd973d6d0 ("[ALSA] Add snd_card_set_generic_dev() call to ISA drivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210707074051.2663-1-thunder.leizhen@huawei.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/isa/cmi8330.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-index 56acd832f0b3..16e1087ec717 100644
---- a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-+++ b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-@@ -22,7 +22,7 @@
- 			 * Green LED is much brighter than the others
- 			 * so limit its max brightness
- 			 */
--			max_brightness = <127>;
-+			max-brightness = <127>;
- 			linux,default-trigger = "mmc0";
- 		};
+diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
+index bb7d4940ac25..281ecd0eea48 100644
+--- a/sound/isa/cmi8330.c
++++ b/sound/isa/cmi8330.c
+@@ -549,7 +549,7 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
+ 	}
+ 	if (acard->sb->hardware != SB_HW_16) {
+ 		snd_printk(KERN_ERR PFX "SB16 not found during probe\n");
+-		return err;
++		return -ENODEV;
+ 	}
  
-@@ -30,7 +30,7 @@
- 			label = "blue:heartbeat";
- 			pwms = <&pwm 2 2000000 0>;
- 			pwm-names = "pwm2";
--			max_brightness = <255>;
-+			max-brightness = <255>;
- 			linux,default-trigger = "heartbeat";
- 		};
- 	};
+ 	snd_wss_out(acard->wss, CS4231_MISC_INFO, 0x40); /* switch on MODE2 */
 -- 
 2.30.2
 
