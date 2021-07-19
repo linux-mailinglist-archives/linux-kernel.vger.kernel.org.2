@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFAB3CE034
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193373CDF50
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346606AbhGSPO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:14:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
+        id S1344567AbhGSPJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:09:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343777AbhGSOsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B11776124B;
-        Mon, 19 Jul 2021 15:24:55 +0000 (UTC)
+        id S1343906AbhGSOsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ECF6613C1;
+        Mon, 19 Jul 2021 15:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708296;
-        bh=C1ShubNXVTEITTM499ROiCEtSal1Awt21Bbup50aTP8=;
+        s=korg; t=1626708298;
+        bh=UneAK/DRjDNfyR8fmzdC+wouinMrBxCTvyD8NB2tdLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WRkSJQxZIg/Q6jUHwrS8lapCXjz38ASlIc4Rk6F4d72fKf5IVdO9U4fhKd/dCoaQ4
-         gb423XsH70vOZzQq9T/JMPVEKUVcSs4QSMjGCwLFUrgjjUyNpwyDXjbzg+ZaEF+LQP
-         BwJy4nZ7CGl89/LW5pHhIeCEQdhRFt5asl5hFPZo=
+        b=ug4IaOLJTHu4IBWEFcuPiIvIkNnH2MxI1p5jUhdP2sSfPXemJVqHEw90CBKxJn55U
+         2aRyz4gWCjCOFdq+uF/zEN5eZNdFdZHWHPnSv0vkZhzPjzosp47ZNSqsoqC9jTteWM
+         DLFRCZRy/mP5H75tF+ZXGKV9kPbUX3pXNXJsOB7c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.14 222/315] dm btree remove: assign new_root only when removal succeeds
-Date:   Mon, 19 Jul 2021 16:51:51 +0200
-Message-Id: <20210719144950.728049887@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.14 223/315] media: dtv5100: fix control-request directions
+Date:   Mon, 19 Jul 2021 16:51:52 +0200
+Message-Id: <20210719144950.760279779@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -39,60 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit b6e58b5466b2959f83034bead2e2e1395cca8aeb upstream.
+commit 8c8b9a9be2afa8bd6a72ad1130532baab9fab89d upstream.
 
-remove_raw() in dm_btree_remove() may fail due to IO read error
-(e.g. read the content of origin block fails during shadowing),
-and the value of shadow_spine::root is uninitialized, but
-the uninitialized value is still assign to new_root in the
-end of dm_btree_remove().
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-For dm-thin, the value of pmd->details_root or pmd->root will become
-an uninitialized value, so if trying to read details_info tree again
-out-of-bound memory may occur as showed below:
+Fix the control requests which erroneously used usb_rcvctrlpipe().
 
-  general protection fault, probably for non-canonical address 0x3fdcb14c8d7520
-  CPU: 4 PID: 515 Comm: dmsetup Not tainted 5.13.0-rc6
-  Hardware name: QEMU Standard PC
-  RIP: 0010:metadata_ll_load_ie+0x14/0x30
-  Call Trace:
-   sm_metadata_count_is_more_than_one+0xb9/0xe0
-   dm_tm_shadow_block+0x52/0x1c0
-   shadow_step+0x59/0xf0
-   remove_raw+0xb2/0x170
-   dm_btree_remove+0xf4/0x1c0
-   dm_pool_delete_thin_device+0xc3/0x140
-   pool_message+0x218/0x2b0
-   target_message+0x251/0x290
-   ctl_ioctl+0x1c4/0x4d0
-   dm_ctl_ioctl+0xe/0x20
-   __x64_sys_ioctl+0x7b/0xb0
-   do_syscall_64+0x40/0xb0
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Fixing it by only assign new_root when removal succeeds
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: 8466028be792 ("V4L/DVB (8734): Initial support for AME DTV-5100 USB2.0 DVB-T")
+Cc: stable@vger.kernel.org      # 2.6.28
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/persistent-data/dm-btree-remove.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb/dtv5100.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/md/persistent-data/dm-btree-remove.c
-+++ b/drivers/md/persistent-data/dm-btree-remove.c
-@@ -549,7 +549,8 @@ int dm_btree_remove(struct dm_btree_info
- 		delete_at(n, index);
- 	}
+--- a/drivers/media/usb/dvb-usb/dtv5100.c
++++ b/drivers/media/usb/dvb-usb/dtv5100.c
+@@ -35,6 +35,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 			   u8 *wbuf, u16 wlen, u8 *rbuf, u16 rlen)
+ {
+ 	struct dtv5100_state *st = d->priv;
++	unsigned int pipe;
+ 	u8 request;
+ 	u8 type;
+ 	u16 value;
+@@ -43,6 +44,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 	switch (wlen) {
+ 	case 1:
+ 		/* write { reg }, read { value } */
++		pipe = usb_rcvctrlpipe(d->udev, 0);
+ 		request = (addr == DTV5100_DEMOD_ADDR ? DTV5100_DEMOD_READ :
+ 							DTV5100_TUNER_READ);
+ 		type = USB_TYPE_VENDOR | USB_DIR_IN;
+@@ -50,6 +52,7 @@ static int dtv5100_i2c_msg(struct dvb_us
+ 		break;
+ 	case 2:
+ 		/* write { reg, value } */
++		pipe = usb_sndctrlpipe(d->udev, 0);
+ 		request = (addr == DTV5100_DEMOD_ADDR ? DTV5100_DEMOD_WRITE :
+ 							DTV5100_TUNER_WRITE);
+ 		type = USB_TYPE_VENDOR | USB_DIR_OUT;
+@@ -63,7 +66,7 @@ static int dtv5100_i2c_msg(struct dvb_us
  
--	*new_root = shadow_root(&spine);
-+	if (!r)
-+		*new_root = shadow_root(&spine);
- 	exit_shadow_spine(&spine);
+ 	memcpy(st->data, rbuf, rlen);
+ 	msleep(1); /* avoid I2C errors */
+-	return usb_control_msg(d->udev, usb_rcvctrlpipe(d->udev, 0), request,
++	return usb_control_msg(d->udev, pipe, request,
+ 			       type, value, index, st->data, rlen,
+ 			       DTV5100_USB_TIMEOUT);
+ }
+@@ -150,7 +153,7 @@ static int dtv5100_probe(struct usb_inte
  
- 	return r;
+ 	/* initialize non qt1010/zl10353 part? */
+ 	for (i = 0; dtv5100_init[i].request; i++) {
+-		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
++		ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+ 				      dtv5100_init[i].request,
+ 				      USB_TYPE_VENDOR | USB_DIR_OUT,
+ 				      dtv5100_init[i].value,
 
 
