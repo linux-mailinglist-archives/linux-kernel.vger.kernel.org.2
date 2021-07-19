@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224F13CE938
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994FD3CE9D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357466AbhGSQvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40020 "EHLO mail.kernel.org"
+        id S1348689AbhGSRCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:02:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348020AbhGSPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC9D86120A;
-        Mon, 19 Jul 2021 16:00:30 +0000 (UTC)
+        id S1348797AbhGSPfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AF5F6113E;
+        Mon, 19 Jul 2021 16:14:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710431;
-        bh=ikMwR0A7h4fWrrPKAFxy37vlSaxXGimpIGdxdSg4sZA=;
+        s=korg; t=1626711284;
+        bh=qIHsGpLixeg8dOYF5kWldwpAWRdIofQ8+bT445OOgUo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OQEM7CsHpvee7j6JSOhi1M0CqOJf4JMhdoTg1AuReYrMuLFRJkXjqTguCXXt7588S
-         H6sGBwKYCmmfyYrl7ikCVr9NMHCAeFlGclseWuV/EJJFLbdp/BoDld7J+v+s8CMyAC
-         IAm8tZIAMpAA0ZSkmIs/mcIV+s963NGnMAhSHOUs=
+        b=MgdzXKzQsex8d5Cttkh5P1Iu6cCuiCBzn7CCs8vbrt9j3+h8xmSxaJ8KhIo1qPoa8
+         OhfG9ukY+PpNq53K8KpG4aYPMFN6scATz25d0NVf+ZAqgwN4yScam1/U92xt3rdt+e
+         kvD9ZSODKOkiRclzGMFStDPcuZtHw5bIn7b6Idu0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 212/243] ARM: dts: BCM5301X: Fixup SPI binding
-Date:   Mon, 19 Jul 2021 16:54:01 +0200
-Message-Id: <20210719144947.770593003@linuxfoundation.org>
+Subject: [PATCH 5.13 296/351] arm64: dts: renesas: Add missing opp-suspend properties
+Date:   Mon, 19 Jul 2021 16:54:02 +0200
+Message-Id: <20210719144954.833247524@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,78 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit d5aede3e6dd1b8ca574600a1ecafe1e580c53f2f ]
+[ Upstream commit 44b615ac9fab16d1552cd8360454077d411e3c35 ]
 
-1. Reorder interrupts
-2. Fix typo: s/spi_lr_overhead/spi_lr_overread/
-3. Rename node: s/spi-nor@0/flash@0/
+Tag the highest "Power Optimized" (1.5 GHz) Cortex-A57 operating point
+table entries for the RZ/G2M, R-Car M3-W and M3-W+ SoCs with the
+"opp-suspend" property.  This makes sure the system will enter suspend
+in the same performance state as it will be resumed by the firmware
+later, avoiding state inconsistencies after resume.
 
-This fixes:
-arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dt.yaml: spi@18029200: interrupt-names: 'oneOf' conditional failed, one must be fixed:
-        ['spi_lr_fullness_reached', 'spi_lr_session_aborted', 'spi_lr_impatient', 'spi_lr_session_done', 'spi_lr_overhead', 'mspi_done', 'mspi_halted'] is too long
-        Additional items are not allowed ('spi_lr_session_aborted', 'spi_lr_impatient', 'spi_lr_session_done', 'spi_lr_overhead', 'mspi_done', 'mspi_halted' were unexpected)
-        'mspi_done' was expected
-        'spi_l1_intr' was expected
-        'mspi_halted' was expected
-        'spi_lr_fullness_reached' was expected
-        'spi_lr_session_aborted' was expected
-        'spi_lr_impatient' was expected
-        'spi_lr_session_done' was expected
-        'spi_lr_overread' was expected
-        From schema: Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.yaml
-arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dt.yaml: spi-nor@0: $nodename:0: 'spi-nor@0' does not match '^flash(@.*)?$'
-        From schema: Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+Based on a patch for R-Car M3-W in the BSP by Takeshi Kihara
+<takeshi.kihara.df@renesas.com>.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 800037e815b91d8c ("arm64: dts: renesas: r8a774a1: Add operating points")
+Fixes: da7e3113344fda50 ("arm64: dts: renesas: r8a7796: Add OPPs table for cpu devices")
+Fixes: f51746ad7d1ff6b4 ("arm64: dts: renesas: Add Renesas R8A77961 SoC support")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Link: https://lore.kernel.org/r/45a061c3b0463aac7d10664f47c4afdd999da50d.1619699721.git.geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm5301x.dtsi | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ arch/arm64/boot/dts/renesas/r8a774a1.dtsi | 1 +
+ arch/arm64/boot/dts/renesas/r8a77960.dtsi | 1 +
+ arch/arm64/boot/dts/renesas/r8a77961.dtsi | 1 +
+ 3 files changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
-index ac3a99cf2079..72b0df6910bd 100644
---- a/arch/arm/boot/dts/bcm5301x.dtsi
-+++ b/arch/arm/boot/dts/bcm5301x.dtsi
-@@ -515,27 +515,27 @@
- 		      <0x1811b408 0x004>,
- 		      <0x180293a0 0x01c>;
- 		reg-names = "mspi", "bspi", "intr_regs", "intr_status_reg";
--		interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
-+		interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
--			     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
--			     <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
--			     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
--		interrupt-names = "spi_lr_fullness_reached",
-+			     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-names = "mspi_done",
-+				  "mspi_halted",
-+				  "spi_lr_fullness_reached",
- 				  "spi_lr_session_aborted",
- 				  "spi_lr_impatient",
- 				  "spi_lr_session_done",
--				  "spi_lr_overhead",
--				  "mspi_done",
--				  "mspi_halted";
-+				  "spi_lr_overread";
- 		clocks = <&iprocmed>;
- 		clock-names = "iprocmed";
- 		num-cs = <2>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
+diff --git a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+index 46f8dbf68904..95d9262d4f8a 100644
+--- a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+@@ -76,6 +76,7 @@
+ 			opp-hz = /bits/ 64 <1500000000>;
+ 			opp-microvolt = <820000>;
+ 			clock-latency-ns = <300000>;
++			opp-suspend;
+ 		};
+ 	};
  
--		spi_nor: spi-nor@0 {
-+		spi_nor: flash@0 {
- 			compatible = "jedec,spi-nor";
- 			reg = <0>;
- 			spi-max-frequency = <20000000>;
+diff --git a/arch/arm64/boot/dts/renesas/r8a77960.dtsi b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
+index 12476e354d74..cc09c5c652fa 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77960.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
+@@ -75,6 +75,7 @@
+ 			opp-hz = /bits/ 64 <1500000000>;
+ 			opp-microvolt = <820000>;
+ 			clock-latency-ns = <300000>;
++			opp-suspend;
+ 		};
+ 		opp-1600000000 {
+ 			opp-hz = /bits/ 64 <1600000000>;
+diff --git a/arch/arm64/boot/dts/renesas/r8a77961.dtsi b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
+index d9804768425a..7d1333b9b92b 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77961.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
+@@ -64,6 +64,7 @@
+ 			opp-hz = /bits/ 64 <1500000000>;
+ 			opp-microvolt = <820000>;
+ 			clock-latency-ns = <300000>;
++			opp-suspend;
+ 		};
+ 		opp-1600000000 {
+ 			opp-hz = /bits/ 64 <1600000000>;
 -- 
 2.30.2
 
