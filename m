@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A5B3CEA4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838B33CE936
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350416AbhGSRKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:10:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57408 "EHLO mail.kernel.org"
+        id S1357430AbhGSQvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348757AbhGSPfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F026113A;
-        Mon, 19 Jul 2021 16:14:38 +0000 (UTC)
+        id S1348000AbhGSPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6765B61248;
+        Mon, 19 Jul 2021 16:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711278;
-        bh=v8/fH8vt3ZYanw6Nbkc0VurSBavd0JBh7biQHhn9k/o=;
+        s=korg; t=1626710429;
+        bh=nBuEjXP7MDnryNt1YS+NImG5NqXM1GptOt3LZMjOBnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fMzzhYKqp3A3ef5xUQ9aAFbZmRxL9HqXI+gXROGGUAeipy3YikttnqxSqJcHplf2g
-         n+mXN3sIkLyYXDLK8g8TSQDI2/Cc776euJf1uHFWOS2++J3V7jXgZXjZTl5DhaxEMC
-         8izjeVS/uE2RECNBg/KKFeclwnf0CV8N/RVCPmk0=
+        b=D+kYVdhwB644aD8s3KhW2y6eXbsxTaR05iwvcYgO+PKSiNLCX/UAhsAwW1YaxPVcK
+         M00/CyG/qVe1ehtx6jrcFKQWFic73UzDFp3PVHWAKOauz1J5vMHXIdXS7s+Npg7G+W
+         4kEqMCPr+ZDIXT5KSu197GLzj45PpG5vO8DNkeDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 294/351] ARM: dts: qcom: sdx55-t55: Represent secure-regions as 64-bit elements
+Subject: [PATCH 5.10 211/243] dt-bindings: i2c: at91: fix example for scl-gpios
 Date:   Mon, 19 Jul 2021 16:54:00 +0200
-Message-Id: <20210719144954.759258520@linuxfoundation.org>
+Message-Id: <20210719144947.740521263@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-[ Upstream commit 619d3c4bf8f346ac9192d3c266efc9e231ca5d17 ]
+[ Upstream commit 92e669017ff1616ba7d8ba3c65f5193bc2a7acbe ]
 
-The corresponding MTD code expects the regions to be of 64-bit elements.
-Hence, prefix "/bits/ 64", otherwise the regions will not be parsed
-correctly.
+The SCL gpio pin used by I2C bus for recovery needs to be configured as
+open drain, so fix the binding example accordingly.
+In relation with fix c5a283802573 ("ARM: dts: at91: Configure I2C SCL
+gpio as open drain").
 
-Fixes: 3263d4be5788 ("ARM: dts: qcom: sdx55: Add basic devicetree support for Thundercomm T55")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20210512050141.43338-1-manivannan.sadhasivam@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Fixes: 19e5cef058a0 ("dt-bindings: i2c: at91: document optional bus recovery properties")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/qcom-sdx55-t55.dts | 2 +-
+ Documentation/devicetree/bindings/i2c/i2c-at91.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/qcom-sdx55-t55.dts b/arch/arm/boot/dts/qcom-sdx55-t55.dts
-index ddcd53aa533d..2ffcd085904d 100644
---- a/arch/arm/boot/dts/qcom-sdx55-t55.dts
-+++ b/arch/arm/boot/dts/qcom-sdx55-t55.dts
-@@ -250,7 +250,7 @@
- 		nand-ecc-step-size = <512>;
- 		nand-bus-width = <8>;
- 		/* efs2 partition is secured */
--		secure-regions = <0x500000 0xb00000>;
-+		secure-regions = /bits/ 64 <0x500000 0xb00000>;
- 	};
- };
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-at91.txt b/Documentation/devicetree/bindings/i2c/i2c-at91.txt
+index 96c914e048f5..2015f50aed0f 100644
+--- a/Documentation/devicetree/bindings/i2c/i2c-at91.txt
++++ b/Documentation/devicetree/bindings/i2c/i2c-at91.txt
+@@ -73,7 +73,7 @@ i2c0: i2c@f8034600 {
+ 	pinctrl-0 = <&pinctrl_i2c0>;
+ 	pinctrl-1 = <&pinctrl_i2c0_gpio>;
+ 	sda-gpios = <&pioA 30 GPIO_ACTIVE_HIGH>;
+-	scl-gpios = <&pioA 31 GPIO_ACTIVE_HIGH>;
++	scl-gpios = <&pioA 31 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
  
+ 	wm8731: wm8731@1a {
+ 		compatible = "wm8731";
 -- 
 2.30.2
 
