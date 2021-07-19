@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285BA3CE068
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819873CE045
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346418AbhGSPRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:17:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40450 "EHLO mail.kernel.org"
+        id S1347405AbhGSPQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:16:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245412AbhGSOr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245177AbhGSOr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:47:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 187816113E;
-        Mon, 19 Jul 2021 15:23:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B513E6136D;
+        Mon, 19 Jul 2021 15:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708222;
-        bh=2AaJMXPyTNzGPT0DezVUCbPTaRMDdBxQtVMbc6OcCXk=;
+        s=korg; t=1626708227;
+        bh=EVtl3DQpMr+8kzgOJSeZTYtS123L4SiJJlDRRAR5rQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kejQVIbvt2CWyuL5PscAZTCkoCqWx5AkkN/yGyCHYYDTcdv7Y2bu0sRDHdSgqmY09
-         fa3HKoFZFcB0IgVaZdxTc/S8gun5Ko84ZvvkDdQZd4VcrK3bcK06J0qN4GajQlvthp
-         NiZbPfKSV9SuPvWi4gOe05PHorRU6RhK0KBCkJ2Q=
+        b=h89eH3dK/OKcR+4lFSj5tw9fsCtoHxKEU2xrdRkM07CMErigqFYUml2NRytLqjVdp
+         g9QQ4A2PAGIDYRuLO8v6YBYtxKXfgQeEzyPbompHLYH3xHPV3ZaYaTTm/Uuq9mk8AF
+         khz16/OfWEbUgmvrmWRyAKEhy5w5o/D3YJfT9fD4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: [PATCH 4.14 229/315] smackfs: restrict bytes count in smk_set_cipso()
-Date:   Mon, 19 Jul 2021 16:51:58 +0200
-Message-Id: <20210719144950.953110881@linuxfoundation.org>
+        stable@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.14 231/315] KVM: X86: Disable hardware breakpoints unconditionally before kvm_x86->run()
+Date:   Mon, 19 Jul 2021 16:52:00 +0200
+Message-Id: <20210719144951.016562972@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,39 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-commit 49ec114a6e62d8d320037ce71c1aaf9650b3cafd upstream.
+commit f85d40160691881a17a397c448d799dfc90987ba upstream.
 
-Oops, I failed to update subject line.
+When the host is using debug registers but the guest is not using them
+nor is the guest in guest-debug state, the kvm code does not reset
+the host debug registers before kvm_x86->run().  Rather, it relies on
+the hardware vmentry instruction to automatically reset the dr7 registers
+which ensures that the host breakpoints do not affect the guest.
 
->From 07571157c91b98ce1a4aa70967531e64b78e8346 Mon Sep 17 00:00:00 2001
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Date: Mon, 12 Apr 2021 22:25:06 +0900
-Subject: [PATCH 4.14 229/315] smackfs: restrict bytes count in smk_set_cipso()
+This however violates the non-instrumentable nature around VM entry
+and exit; for example, when a host breakpoint is set on vcpu->arch.cr2,
 
-Commit 7ef4c19d245f3dc2 ("smackfs: restrict bytes count in smackfs write
-functions") missed that count > SMK_CIPSOMAX check applies to only
-format == SMK_FIXED24_FMT case.
+Another issue is consistency.  When the guest debug registers are active,
+the host breakpoints are reset before kvm_x86->run(). But when the
+guest debug registers are inactive, the host breakpoints are delayed to
+be disabled.  The host tracing tools may see different results depending
+on what the guest is doing.
 
-Reported-by: syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+To fix the problems, we clear %db7 unconditionally before kvm_x86->run()
+if the host has set any breakpoints, no matter if the guest is using
+them or not.
+
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Message-Id: <20210628172632.81029-1-jiangshanlai@gmail.com>
+Cc: stable@vger.kernel.org
+[Only clear %db7 instead of reloading all debug registers. - Paolo]
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/smack/smackfs.c |    2 ++
+ arch/x86/kvm/x86.c |    2 ++
  1 file changed, 2 insertions(+)
 
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -883,6 +883,8 @@ static ssize_t smk_set_cipso(struct file
- 	if (format == SMK_FIXED24_FMT &&
- 	    (count < SMK_CIPSOMIN || count > SMK_CIPSOMAX))
- 		return -EINVAL;
-+	if (count > PAGE_SIZE)
-+		return -EINVAL;
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7237,6 +7237,8 @@ static int vcpu_enter_guest(struct kvm_v
+ 		set_debugreg(vcpu->arch.eff_db[3], 3);
+ 		set_debugreg(vcpu->arch.dr6, 6);
+ 		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
++	} else if (unlikely(hw_breakpoint_active())) {
++		set_debugreg(0, 7);
+ 	}
  
- 	data = memdup_user_nul(buf, count);
- 	if (IS_ERR(data))
+ 	kvm_x86_ops->run(vcpu);
 
 
