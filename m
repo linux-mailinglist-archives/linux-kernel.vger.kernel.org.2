@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB6F3CE041
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4FC3CE04E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347341AbhGSPP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:15:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
+        id S1347035AbhGSPP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:15:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343642AbhGSOsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C32ED61205;
-        Mon, 19 Jul 2021 15:24:18 +0000 (UTC)
+        id S1343713AbhGSOsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66D7E613BA;
+        Mon, 19 Jul 2021 15:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708259;
-        bh=EACN06jeR+HmOakUjwaxQakXBayQUM2oTJ89JBlOwIE=;
+        s=korg; t=1626708261;
+        bh=wia/TUYpbbKj1UwbejGKotlRBPD2a0DaKGT95+sCIfY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ysp4bP8VSjRQUmamNk4PRb2e5p0k/SzWBP8YMVE5i0bPd9tDRr33KO509+1UeHBfC
-         Zxba1hEGkhJpDwdro6GPTWNZeNJsNmhh90S9/L00dP0MZfxfKQUfxzr9O2hHUv66VY
-         Fs1lCAXuOaVC+xfgve7FupFKQjtaCC5fFU3pyWxs=
+        b=YCAJcYypBXDXXe9usdySM5ZIiyNNv3dLcCLbW+iRtRZZxmsoutey054jAU1jibUF/
+         lDWv/wvKUEcX7qpP1EF2/ZzWvro0sp5yMOSrybvyency3ERPk9OF9Mmto14GAc9m8X
+         oeWcdxGlodvC6BqlsvzlfLWwA3fhebO+UApnP6Mw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        John Garry <john.garry@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 242/315] scsi: core: Cap scsi_host cmd_per_lun at can_queue
-Date:   Mon, 19 Jul 2021 16:52:11 +0200
-Message-Id: <20210719144951.377595343@linuxfoundation.org>
+Subject: [PATCH 4.14 243/315] tty: serial: 8250: serial_cs: Fix a memory leak in error handling path
+Date:   Mon, 19 Jul 2021 16:52:12 +0200
+Message-Id: <20210719144951.412564932@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,49 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Garry <john.garry@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ea2f0f77538c50739b9fb4de4700cee5535e1f77 ]
+[ Upstream commit fad92b11047a748c996ebd6cfb164a63814eeb2e ]
 
-The sysfs handling function sdev_store_queue_depth() enforces that the sdev
-queue depth cannot exceed shost can_queue. The initial sdev queue depth
-comes from shost cmd_per_lun. However, the LLDD may manually set
-cmd_per_lun to be larger than can_queue, which leads to an initial sdev
-queue depth greater than can_queue.
+In the probe function, if the final 'serial_config()' fails, 'info' is
+leaking.
 
-Such an issue was reported in [0], which caused a hang. That has since been
-fixed in commit fc09acb7de31 ("scsi: scsi_debug: Fix cmd_per_lun, set to
-max_queue").
+Add a resource handling path to free this memory.
 
-Stop this possibly happening for other drivers by capping shost cmd_per_lun
-at shost can_queue.
-
-[0] https://lore.kernel.org/linux-scsi/YHaez6iN2HHYxYOh@T590/
-
-Link: https://lore.kernel.org/r/1621434662-173079-1-git-send-email-john.garry@huawei.com
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/dc25f96b7faebf42e60fe8d02963c941cf4d8124.1621971720.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/hosts.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/tty/serial/8250/serial_cs.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
-index 20bb5a7dca3c..ec976b93341c 100644
---- a/drivers/scsi/hosts.c
-+++ b/drivers/scsi/hosts.c
-@@ -213,6 +213,9 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
- 		goto fail;
- 	}
+diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8250/serial_cs.c
+index ba9731ace0e4..3747991024d5 100644
+--- a/drivers/tty/serial/8250/serial_cs.c
++++ b/drivers/tty/serial/8250/serial_cs.c
+@@ -305,6 +305,7 @@ static int serial_resume(struct pcmcia_device *link)
+ static int serial_probe(struct pcmcia_device *link)
+ {
+ 	struct serial_info *info;
++	int ret;
  
-+	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
-+				   shost->can_queue);
+ 	dev_dbg(&link->dev, "serial_attach()\n");
+ 
+@@ -319,7 +320,15 @@ static int serial_probe(struct pcmcia_device *link)
+ 	if (do_sound)
+ 		link->config_flags |= CONF_ENABLE_SPKR;
+ 
+-	return serial_config(link);
++	ret = serial_config(link);
++	if (ret)
++		goto free_info;
 +
- 	error = scsi_init_sense_cache(shost);
- 	if (error)
- 		goto fail;
++	return 0;
++
++free_info:
++	kfree(info);
++	return ret;
+ }
+ 
+ static void serial_detach(struct pcmcia_device *link)
 -- 
 2.30.2
 
