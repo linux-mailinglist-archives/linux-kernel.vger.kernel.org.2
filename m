@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7593CD879
+	by mail.lfdr.de (Postfix) with ESMTP id 331263CD878
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242564AbhGSOWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:22:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56506 "EHLO mail.kernel.org"
+        id S242064AbhGSOWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242729AbhGSOUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:20:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A51561003;
-        Mon, 19 Jul 2021 15:01:15 +0000 (UTC)
+        id S242736AbhGSOUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:20:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9342C610D2;
+        Mon, 19 Jul 2021 15:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706876;
-        bh=C1ShubNXVTEITTM499ROiCEtSal1Awt21Bbup50aTP8=;
+        s=korg; t=1626706879;
+        bh=Qbe14ViApLo4BnwrGsChjVqOq0qVtB+nCq9Q2MjtzcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=evSB3qmYEdo6k2Li6B3WAIMXyaAGkNbqnHeGq0i16VLNK5tEX9FD8HwOjaTkIJ43g
-         x0D7gh4Fd5ponUSVJQRnq3U8P9wi+a0QIwAbZDjKrAMLyskSvMrTs91pAT1klGuK/m
-         SO9+lKWi2Lu0SwGTdI6714y2OBJXYJBdZZy3MdLg=
+        b=EnfpsV1n3ul+HjmCwU8flFWGprY8CFVe1ZNlh9uaZtg8wfALS41ARZcUJCyoOKd7R
+         p8JgBoDMVbtqn5i7EfwzcXx6OhDjx9lMkFSQAIJPJqAG8dDpO/avNI1LCj8v3dbBe2
+         sUGQ9ScNSTC9SiMdcJQF4BRlHQuAR37LkYKeFJtQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.4 135/188] dm btree remove: assign new_root only when removal succeeds
-Date:   Mon, 19 Jul 2021 16:51:59 +0200
-Message-Id: <20210719144940.901535007@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.4 136/188] media: zr364xx: fix memory leak in zr364xx_start_readpipe
+Date:   Mon, 19 Jul 2021 16:52:00 +0200
+Message-Id: <20210719144940.934426492@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -39,60 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit b6e58b5466b2959f83034bead2e2e1395cca8aeb upstream.
+commit 0a045eac8d0427b64577a24d74bb8347c905ac65 upstream.
 
-remove_raw() in dm_btree_remove() may fail due to IO read error
-(e.g. read the content of origin block fails during shadowing),
-and the value of shadow_spine::root is uninitialized, but
-the uninitialized value is still assign to new_root in the
-end of dm_btree_remove().
+syzbot reported memory leak in zr364xx driver.
+The problem was in non-freed urb in case of
+usb_submit_urb() fail.
 
-For dm-thin, the value of pmd->details_root or pmd->root will become
-an uninitialized value, so if trying to read details_info tree again
-out-of-bound memory may occur as showed below:
+backtrace:
+  [<ffffffff82baedf6>] kmalloc include/linux/slab.h:561 [inline]
+  [<ffffffff82baedf6>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+  [<ffffffff82f7cce8>] zr364xx_start_readpipe+0x78/0x130 drivers/media/usb/zr364xx/zr364xx.c:1022
+  [<ffffffff84251dfc>] zr364xx_board_init drivers/media/usb/zr364xx/zr364xx.c:1383 [inline]
+  [<ffffffff84251dfc>] zr364xx_probe+0x6a3/0x851 drivers/media/usb/zr364xx/zr364xx.c:1516
+  [<ffffffff82bb6507>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+  [<ffffffff826018a9>] really_probe+0x159/0x500 drivers/base/dd.c:576
 
-  general protection fault, probably for non-canonical address 0x3fdcb14c8d7520
-  CPU: 4 PID: 515 Comm: dmsetup Not tainted 5.13.0-rc6
-  Hardware name: QEMU Standard PC
-  RIP: 0010:metadata_ll_load_ie+0x14/0x30
-  Call Trace:
-   sm_metadata_count_is_more_than_one+0xb9/0xe0
-   dm_tm_shadow_block+0x52/0x1c0
-   shadow_step+0x59/0xf0
-   remove_raw+0xb2/0x170
-   dm_btree_remove+0xf4/0x1c0
-   dm_pool_delete_thin_device+0xc3/0x140
-   pool_message+0x218/0x2b0
-   target_message+0x251/0x290
-   ctl_ioctl+0x1c4/0x4d0
-   dm_ctl_ioctl+0xe/0x20
-   __x64_sys_ioctl+0x7b/0xb0
-   do_syscall_64+0x40/0xb0
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Fixing it by only assign new_root when removal succeeds
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+Fixes: ccbf035ae5de ("V4L/DVB (12278): zr364xx: implement V4L2_CAP_STREAMING")
 Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Reported-by: syzbot+af4fa391ef18efdd5f69@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/persistent-data/dm-btree-remove.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/usb/zr364xx/zr364xx.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/md/persistent-data/dm-btree-remove.c
-+++ b/drivers/md/persistent-data/dm-btree-remove.c
-@@ -549,7 +549,8 @@ int dm_btree_remove(struct dm_btree_info
- 		delete_at(n, index);
+--- a/drivers/media/usb/zr364xx/zr364xx.c
++++ b/drivers/media/usb/zr364xx/zr364xx.c
+@@ -1068,6 +1068,7 @@ static int zr364xx_start_readpipe(struct
+ 	DBG("submitting URB %p\n", pipe_info->stream_urb);
+ 	retval = usb_submit_urb(pipe_info->stream_urb, GFP_KERNEL);
+ 	if (retval) {
++		usb_free_urb(pipe_info->stream_urb);
+ 		printk(KERN_ERR KBUILD_MODNAME ": start read pipe failed\n");
+ 		return retval;
  	}
- 
--	*new_root = shadow_root(&spine);
-+	if (!r)
-+		*new_root = shadow_root(&spine);
- 	exit_shadow_spine(&spine);
- 
- 	return r;
 
 
