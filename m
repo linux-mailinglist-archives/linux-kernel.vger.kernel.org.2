@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB453CDDF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466853CDD7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345040AbhGSPBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:01:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56372 "EHLO mail.kernel.org"
+        id S245326AbhGSO6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:58:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245732AbhGSOj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 613C9611ED;
-        Mon, 19 Jul 2021 15:18:54 +0000 (UTC)
+        id S1343644AbhGSOjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D8E61370;
+        Mon, 19 Jul 2021 15:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707934;
-        bh=41LjCZkoFw8j9KodFlAdJLBRM03BI3Og3dUoeeKipZA=;
+        s=korg; t=1626707961;
+        bh=c6i7tPqcq84ouDu+cRAHUd7+KaKygtOOlH28V7RFbHQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bYRoh1A1w2kStG8gD/wgmt4A7qATvfHgYFMFUzXgabTxkghIl0wT/w5iXO/5uYY91
-         PGsVWLgj50uIfuE+6jHGM5HyTijrGrTVFJzwA5eMxkK0548VjlP1cSB8nFWF5/7dr9
-         H3Tjdio3nGfMOy+KndldFzcOt0WweSpD2pIJpRFU=
+        b=EuFZ8goywajstFLsbglXROzNEZlZNp0zIokLR+lP/4IOOv6oA8nYnzB7DhHVmqKTb
+         mS+YrDfA/Yu4csVO9MgoJ2u0odP4qgmw99z1RCVbTw43Md6SMPHfGcEwAhXMAd5gk7
+         PvZkW+n8GclriEGUkCKfHEf3THW81qTkV96gKWZ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 107/315] net: ethernet: aeroflex: fix UAF in greth_of_remove
-Date:   Mon, 19 Jul 2021 16:49:56 +0200
-Message-Id: <20210719144946.392340113@linuxfoundation.org>
+Subject: [PATCH 4.14 108/315] net: ethernet: ezchip: fix UAF in nps_enet_remove
+Date:   Mon, 19 Jul 2021 16:49:57 +0200
+Message-Id: <20210719144946.422750339@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,50 +42,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit e3a5de6d81d8b2199935c7eb3f7d17a50a7075b7 ]
+[ Upstream commit e4b8700e07a86e8eab6916aa5c5ba99042c34089 ]
 
-static int greth_of_remove(struct platform_device *of_dev)
-{
-...
-	struct greth_private *greth = netdev_priv(ndev);
-...
-	unregister_netdev(ndev);
-	free_netdev(ndev);
-
-	of_iounmap(&of_dev->resource[0], greth->regs, resource_size(&of_dev->resource[0]));
-...
-}
-
-greth is netdev private data, but it is used
-after free_netdev(). It can cause use-after-free when accessing greth
-pointer. So, fix it by moving free_netdev() after of_iounmap()
+priv is netdev private data, but it is used
+after free_netdev(). It can cause use-after-free when accessing priv
+pointer. So, fix it by moving free_netdev() after netif_napi_del()
 call.
 
-Fixes: d4c41139df6e ("net: Add Aeroflex Gaisler 10/100/1G Ethernet MAC driver")
+Fixes: 0dd077093636 ("NET: Add ezchip ethernet driver")
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/aeroflex/greth.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/ezchip/nps_enet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/aeroflex/greth.c b/drivers/net/ethernet/aeroflex/greth.c
-index 4309be3724ad..a20e95b39cf7 100644
---- a/drivers/net/ethernet/aeroflex/greth.c
-+++ b/drivers/net/ethernet/aeroflex/greth.c
-@@ -1546,10 +1546,11 @@ static int greth_of_remove(struct platform_device *of_dev)
- 	mdiobus_unregister(greth->mdio);
+diff --git a/drivers/net/ethernet/ezchip/nps_enet.c b/drivers/net/ethernet/ezchip/nps_enet.c
+index 659f1ad37e96..fbadf08b7c5d 100644
+--- a/drivers/net/ethernet/ezchip/nps_enet.c
++++ b/drivers/net/ethernet/ezchip/nps_enet.c
+@@ -658,8 +658,8 @@ static s32 nps_enet_remove(struct platform_device *pdev)
+ 	struct nps_enet_priv *priv = netdev_priv(ndev);
  
  	unregister_netdev(ndev);
 -	free_netdev(ndev);
- 
- 	of_iounmap(&of_dev->resource[0], greth->regs, resource_size(&of_dev->resource[0]));
- 
+ 	netif_napi_del(&priv->napi);
 +	free_netdev(ndev);
-+
+ 
  	return 0;
  }
- 
 -- 
 2.30.2
 
