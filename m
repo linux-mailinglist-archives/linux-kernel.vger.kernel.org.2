@@ -2,148 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021B43CCCD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 05:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5372F3CCCD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 06:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhGSEBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 00:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhGSEBk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 00:01:40 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766D0C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 20:58:41 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso16856083otu.10
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 20:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+LbuH1gv0Z8p8POEk6Rwg6KtJYOHpK1pv64iTmdjHlE=;
-        b=bry3jTPPmqQhz2Q74H5M5/vitP9J/jj90PFDihnrkuWNpbrWX7/sKASXNKdiv884pk
-         8UbSz64yrusucvdZ/ja1JJmJrG/sbEKzxbxOhlx0b/kl2NcHjzB5xW2W8VBvfUjgMPPc
-         l+NUHtdDsbT5ydV3Tf4ap5AvXpBFXV75L7gmFGaKekuA87/LRJceX9PJFSp9RdgRUyP5
-         7BV1UZXvnyezH8d684/9a6r+Ol1GAyTxAfrkk2LWJAHHBrswjPbSjw6CnP6+b/B1FLDg
-         44pw93hfUDqQsJcQ71vsdszUfKIZtX+AwOTxfiSh+905Sp9+qwi7K8fYRScJbLbwpzQJ
-         8ovA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+LbuH1gv0Z8p8POEk6Rwg6KtJYOHpK1pv64iTmdjHlE=;
-        b=JoPvo55bR2GCfzgROKTO0QywGrBct922bF5mm9ccfqiMCZ9OidasbwoMKtv94xB7HP
-         H66kaZyFzqs0Ii4ERWukFErpaRjluell2Rck299U9vES9UzFRqqe/m7G8JvBsbEI16E/
-         N9XoqnpzLm7sKNRXz8uAm6h9z2CTE700937xLeFzNvst0GhN6qYArWBCnzhnPoQVl3RB
-         m8mTjImf6y+z2zzGsoxXLLUC5QqHrR6GH13gcjw0HSpBR//WfXu45VyfdICdQ4PNxJE/
-         A5LlH3B4MG8yQYRl/b5AZOCsyPQ1jzTfdmhdYJQwnpwhFrlgLv0Gwab2NNSA31txuznl
-         OfMA==
-X-Gm-Message-State: AOAM533xo1ko0mlZ/MN0y6Nf6qCP8OYi++gWn6l+6PBki8fGH8n1zvSD
-        HS3cEubjtGJwvwPCMNtP6j/JW/4zo3c+GpI4SqUp7A==
-X-Google-Smtp-Source: ABdhPJwTSYQhH4xCe+n21M0lekgIZi5cdGFZbhL5AmYXNo2DcYDgnAP2k62wixIVWMH4O7rTCHqdizMzXXANz2QAot0=
-X-Received: by 2002:a9d:61d9:: with SMTP id h25mr13512153otk.81.1626667120443;
- Sun, 18 Jul 2021 20:58:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAPpJ_ecx4byFQ+SJL3ZgFyf1q2HvGfLHhdf1khM9Znib_8iwEw@mail.gmail.com>
-In-Reply-To: <CAPpJ_ecx4byFQ+SJL3ZgFyf1q2HvGfLHhdf1khM9Znib_8iwEw@mail.gmail.com>
-From:   Jian-Hong Pan <jhp@endlessos.org>
-Date:   Mon, 19 Jul 2021 11:57:49 +0800
-Message-ID: <CAPpJ_eepsLfehv5xkk1Eu+LVrOZpU7-EBobuds3hsqSFzd6RGw@mail.gmail.com>
-Subject: Re: [BUG] U-Boot makes Linux kernel boot failed with "mmc1: invalid
- bus width" on RPi 400
-To:     Matthias Brugger <mbrugger@suse.com>, nsaenz@kernel.org,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com, u-boot@lists.denx.de,
-        linux-rpi-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux@endlessos.org, devicetree <devicetree@vger.kernel.org>
+        id S229974AbhGSEEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 00:04:43 -0400
+Received: from mout.gmx.net ([212.227.15.19]:57755 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhGSEEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 00:04:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626667299;
+        bh=HCJDDIc8iDe4AoIykd92qO5vSXF85+DD8a8vNQB+A8g=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=cGo4NqQKp7+AFWiGcuyrcHSR27bvHkaj2gecQE2SB1a2UjbW05W2QXrEprXW0y4J0
+         dGzRp2vKu0T+oYyqSQcAr9neYJaMR+Wkgw0FkbZQQXJTcy8CjMWPcFZRC/ZHO6ApgC
+         BmdAEwW4MzhncpjQ8Bm4d3J2867C4oofpXnOZk3w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.216.243]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mw9UE-1lDEPv0Rca-00s8YH; Mon, 19
+ Jul 2021 06:01:39 +0200
+Message-ID: <00a7c04b109c01a7668abc2a8192a6b889765de5.camel@gmx.de>
+Subject: Re: [patch] v2 mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Mon, 19 Jul 2021 06:01:38 +0200
+In-Reply-To: <dd10ebb3-7687-6e8d-8984-3dfb9cd0e927@suse.cz>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+         <878s2fnv79.ffs@nanos.tec.linutronix.de>
+         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+         <476d147ab6eec386a1e8b8e11cb09708377f8c3e.camel@gmx.de>
+         <dd10ebb3-7687-6e8d-8984-3dfb9cd0e927@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UkBuBQ5jP2bFLgAIB0WM8jYjER0ZRFI9JiJltyIlE3wLomFEH2i
+ Sv/KZr24o4ZDf8yWg9J+OTW3xeW48IJRmJY7hFIR2Qpece0IbgvJ1t9exJqW8gv3Sd4fHjA
+ /VIUzo4uRM/O3NJkA+CSr8rJi4HXGRxVyaPCWmise3W9n9bP3232/MK36wjPOTpLkiow1Gb
+ w/S4c6y2I2AmEHkqFZB8g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CtdQEPmWUWI=:hYCyshGp2oYcnAnuvPJTr+
+ QBq0eJ/7MJgQgmmlCoqytu4GZMMbMtm9vjFt4nHUQqTPUpvy/wXS07Ih5ejpFHKJUO44bW9Cz
+ xC0fw2GwFMe4Ecl+Ioj+Tks/+jlBRkizUoioI1Ol8zc+F9ozMp1NsmMKpc0RYcsT//w54sl5/
+ Bs17QStd9ESQC3YpRYC1VpT2Wzs5Oa62/gs9oV/WSYjI5+h46ch0UxIKbfbIGk6Wjm8BCITFA
+ EUtwf0nG5bUOGrEFnCI0Cy0/1H5xdtGrvVPv2g6FWzdEPSkhACLrbEZ7WYTuihX6IzwNMcsyC
+ 8R+vliVX43aUPNAibJwdUG9GpS4t59PcmDY/zzQsDGw1B+wjQX5cjbDm4z5RdHPX1U2Q4RzG4
+ eaUAfuiduNCVMt04CjVzwVxtAFXp2VAUFeNw+F6GL6N1IEgRzzw7APQiCmShrmuwkts2itNsk
+ 2oJiCXzoba/bV4EhNW8+LScWTzwlfju9heSkbh7vM8RY299Bp/gvIepBWD9OwYmznBOgLqboc
+ ljlFpfROT6py9A0U0qsw6KtLgXnLatULR3waP2PbvSae7CXEmvhdFg4bUaNj6NjTsmOYY8e1Y
+ 2StdaAtRNerjpObVYj6VlN5f3u3gCnN77aN4EKcgih6wLCJIIhlUj2YTk0yD4oQA3ra31jDt2
+ hoWUtlyEHfwRz6/YzdO22F3KbQwHdBeC1/sp1QHonIH5x4Hg6KBWzstdF3/mSDniz+y2nLmJw
+ nFTEgRjdpNq5k4oV2+LFQYFhLIcWrIxuE+0AUK0MQEV779I8o5g84IgBEB+dNPXIYQJfBO6+/
+ c9yMyXK2OfYQEvzNF/RxNRR+21K1jNcJP2i3d9NQsNjUs85JCaanYXrlwCTrnSYA1jqZ3DjrJ
+ 4QK+4UwgExBCFaX5BLdTRvSZq0kxCJJQgUwnegp/Z4Vtr++9zypLfGdL/s61HMx82HAOQb6l0
+ HERxif3awRCHKeY8hGaifZL/B6IgJ8enTU0wUVfx4pa+1DR46w9Bg2FteVdvw4rOam5zO6FhC
+ S2XwiNCT1x+NH+UpH8Yv+Ea6CDX/W5oKIlc7lKqP3JfnTDMYvKrSsiKbrMRTtk7pJDVE0kXir
+ ErrY8Vao8FeDrGVGalTwUgxmz4m0WL4vpkm
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jian-Hong Pan <jhp@endlessos.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=887=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8812:23=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Hi,
->
-> I tried to boot Linux next kernel at tag 5.13.0-next-20210701 from
-> latest U-Boot at commit 1311dd37ec ("Merge branch
-> '2021-07-01-update-CI-containers'") on Raspberry Pi 400.
-> * U-Boot goes with the bcm2711-rpi-400.dtb from Raspberry Pi OS
-> firmware at tag 1.20210527 [1].  U-Boot is built with the
-> rpi_4_defconfig.
-> * The Linux next kernel goes with the corresponding
-> bcm2711-rpi-400.dtb at tag 5.13.0-next-20210701.
-> However, the Linux kernel is stuck at failed mmc, which keeps showing
-> "mmc1: invalid bus width":
->
-> [    7.776752] mmc1: invalid bus width
-> [    7.781398] mmc1: error -22 whilst initialising SD card
-> [   17.891183] mmc1: Timeout waiting for hardware cmd interrupt.
-> [   17.900265] mmc1: sdhci: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D SDHCI RE=
-GISTER DUMP =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [   17.910046] mmc1: sdhci: Sys addr:  0x00000000 | Version:  0x00001002
-> [   17.919829] mmc1: sdhci: Blk size:  0x00000000 | Blk cnt:  0x00000000
-> [   17.929595] mmc1: sdhci: Argument:  0x80000c08 | Trn mode: 0x00000000
-> [   17.939337] mmc1: sdhci: Present:   0x1fff0001 | Host ctl: 0x00000001
-> [   17.949092] mmc1: sdhci: Power:     0x0000000f | Blk gap:  0x00000080
-> [   17.958827] mmc1: sdhci: Wake-up:   0x00000000 | Clock:    0x0000f447
-> [   17.968531] mmc1: sdhci: Timeout:   0x00000000 | Int stat: 0x00000000
-> [   17.978201] mmc1: sdhci: Int enab:  0x00ff1003 | Sig enab: 0x00ff1003
-> [   17.987850] mmc1: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
-> [   17.997456] mmc1: sdhci: Caps:      0x45ee6432 | Caps_1:   0x0000a525
-> [   18.007044] mmc1: sdhci: Cmd:       0x0000341a | Max curr: 0x00080008
-> [   18.016622] mmc1: sdhci: Resp[0]:   0x00000000 | Resp[1]:  0x00000000
-> [   18.026157] mmc1: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
-> [   18.035650] mmc1: sdhci: Host ctl2: 0x00000000
-> [   18.043066] mmc1: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0x00000000
-> [   18.052540] mmc1: sdhci: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> [   18.139162] mmc1: invalid bus width
-> [   18.144682] mmc1: error -22 whilst initialising SD card
-> [   19.498785] mmc1: invalid bus width
-> [   19.503344] mmc1: error -22 whilst initialising SD card
->
-> The full log can be foud at
-> https://gist.github.com/starnight/dec6e6ee627f19c2d291f3ff973b06fa#file-u=
-boot-kernel-log
->
-> In Linux kernel, SD card driver checks the bus_width bits for
-> validation [2] in mmc_decode_scr(). The value of bus_width comes from
-> the resp, which is assigned from mmc_card's raw_scr.
-> However, the values of resp[0..3] are 0, which means no
-> SD_SCR_BUS_WIDTH_1, nor SD_SCR_BUS_WIDTH_4.
-> After studied the call trace of mmc_decode_scr(), learned that
-> mmc_sd_init_card() -> mmc_app_send_scr() gets and assigns mmc_card's
-> raw_scr value [3] with "DMA" mechanism.
->
-> Therefore, I try to boot the same Linux next kernel with the same
-> corresponding bcm2711-rpi-400.dtb at tag 5.13.0-next-20210701
-> directly, without u-boot.
-> The system boots up and the mmc works correctly.  The full log can be
-> found at https://gist.github.com/starnight/dec6e6ee627f19c2d291f3ff973b06=
-fa#file-kernel-without-uboot-log
->
-> Is there something special that should be done in U-Boot for Raspberry Pi=
- 400?
->
-> [1] https://github.com/raspberrypi/firmware/blob/1.20210527/boot/bcm2711-=
-rpi-400.dtb
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/t=
-ree/drivers/mmc/core/sd.c?h=3Dnext-20210701#n239
-> [3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/t=
-ree/drivers/mmc/core/sd_ops.c?h=3Dnext-20210701#n297
+(a pox on whomever broke evolution text quoting yet again)
 
-I notice that mainline kernel 5.14-rc* includes the Raspberry Pi 400
-device tree commits.  So, I build latest kernel 5.14-rc2.  The kernel
-still boot failed at "mmc1: invalid bus width" on RPi 400.
+On Sun, 2021-07-18 at 23:19 +0200, Vlastimil Babka wrote:
+>
+> Hm you mention put_cpu_partial() but your patch handles only the
+> unfreeze_partial() call from that function?
 
-To make it easy to track, I filed this bug on kernel's bugzilla:
-https://bugzilla.kernel.org/show_bug.cgi?id=3D213753
+Indeed, and that's because when I poked that slub_get_cpu_ptr(), it
+poked me back by real deal deadlocking on boot, so I posted the
+restoration of previously existing exclusion points with the
+unlock/relock to appease lockdep (big hairy wart) bit instead.
 
-BR.
-Jian-Hong Pan
+>  If I understand the problem
+> correctly, all modifications of cpu_slab->partial has to be protected
+> on RT after the local_lock conversion, thus also the one that
+> put_cpu_partial() does by itself (via this_cpu_cmpxchg).
+
+Yup, that's what I concluded too, but box disagreed by not booting when
+I did that, while seemingly being perfectly fine with the one in
+put_cpu_partial() itself.  I figured my slub_get_cpu_ptr() replacement
+had failed due to list_lock/local_lock order woes that I didn't notice
+until after box bricked on me, but despite the unlock/relock in this
+patch, it still manages to be a -ENOBOOT.
+
+	-Mike
+
