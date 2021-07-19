@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AA53CEA71
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3903CE926
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355657AbhGSRPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:15:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37194 "EHLO mail.kernel.org"
+        id S1356848AbhGSQvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:51:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245415AbhGSPiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:38:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4856A61422;
-        Mon, 19 Jul 2021 16:18:20 +0000 (UTC)
+        id S1349334AbhGSP0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:26:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB4960FD7;
+        Mon, 19 Jul 2021 16:07:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711500;
-        bh=6HTHVIOonIARUObqEiWAXa0pMPP6v6IGfStkdlr7Hss=;
+        s=korg; t=1626710832;
+        bh=S8FyD6i2KZoQxaYSfpwYpugH0oeXfUDcS6wNKhOTYhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IyV0Q8SbbVY8I4EHq7ktbsMnHURRMY3KrwfHHOoyFD47XhBOEvmawKJIv3CVEYuKd
-         QbruFhtiHRIxm3kIt/pMAL/giTneLZ+F38ck1RDqD2YacYBbroI+pwUXMvw7+PFtvn
-         bb/j8Z1N01gFwFc3m0JwVu7dAgRz08KQ1llMKVoE=
+        b=rHsJ69636b4m1El5PIVAy6+ZKuqNAFJadN6kulN6k5KRcXzrp+QgXo+b8jWzLGjwe
+         PTVrsoKwCUEKM1BC1a3K4pXggHwsmpufSImFtGTg15e4iGqGSKkf7JJ1qG7QY2n9ca
+         PLrBSRpdcHBK9VTYp8cYtpQku6MootoYPgr6sbmA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 008/292] KVM: X86: Disable hardware breakpoints unconditionally before kvm_x86->run()
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 124/351] s390/mem_detect: fix tprot() program check new psw handling
 Date:   Mon, 19 Jul 2021 16:51:10 +0200
-Message-Id: <20210719144942.797770948@linuxfoundation.org>
+Message-Id: <20210719144948.578477307@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit f85d40160691881a17a397c448d799dfc90987ba upstream.
+[ Upstream commit da9057576785aaab52e706e76c0475c85b77ec14 ]
 
-When the host is using debug registers but the guest is not using them
-nor is the guest in guest-debug state, the kvm code does not reset
-the host debug registers before kvm_x86->run().  Rather, it relies on
-the hardware vmentry instruction to automatically reset the dr7 registers
-which ensures that the host breakpoints do not affect the guest.
+The tprot() inline asm temporarily changes the program check new psw
+to redirect a potential program check on the diag instruction.
+Restoring of the program check new psw is done in C code behind the
+inline asm.
 
-This however violates the non-instrumentable nature around VM entry
-and exit; for example, when a host breakpoint is set on vcpu->arch.cr2,
+This can be problematic, especially if the function is inlined, since
+the compiler can reorder instructions in such a way that a different
+instruction, which may result in a program check, might be executed
+before the program check new psw has been restored.
 
-Another issue is consistency.  When the guest debug registers are active,
-the host breakpoints are reset before kvm_x86->run(). But when the
-guest debug registers are inactive, the host breakpoints are delayed to
-be disabled.  The host tracing tools may see different results depending
-on what the guest is doing.
+To avoid such a scenario move restoring into the inline asm. For
+consistency reasons move also saving of the original program check new
+psw into the inline asm.
 
-To fix the problems, we clear %db7 unconditionally before kvm_x86->run()
-if the host has set any breakpoints, no matter if the guest is using
-them or not.
-
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-Message-Id: <20210628172632.81029-1-jiangshanlai@gmail.com>
-Cc: stable@vger.kernel.org
-[Only clear %db7 instead of reloading all debug registers. - Paolo]
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/boot/mem_detect.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9194,6 +9194,8 @@ static int vcpu_enter_guest(struct kvm_v
- 		set_debugreg(vcpu->arch.eff_db[3], 3);
- 		set_debugreg(vcpu->arch.dr6, 6);
- 		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
-+	} else if (unlikely(hw_breakpoint_active())) {
-+		set_debugreg(0, 7);
- 	}
+diff --git a/arch/s390/boot/mem_detect.c b/arch/s390/boot/mem_detect.c
+index 3f093556dc3b..a0e980f57c02 100644
+--- a/arch/s390/boot/mem_detect.c
++++ b/arch/s390/boot/mem_detect.c
+@@ -114,24 +114,30 @@ static int diag260(void)
  
- 	for (;;) {
+ static int tprot(unsigned long addr)
+ {
+-	unsigned long pgm_addr;
++	unsigned long reg1, reg2;
+ 	int rc = -EFAULT;
+-	psw_t old = S390_lowcore.program_new_psw;
++	psw_t old;
+ 
+-	S390_lowcore.program_new_psw.mask = __extract_psw();
+ 	asm volatile(
+-		"	larl	%[pgm_addr],1f\n"
+-		"	stg	%[pgm_addr],%[psw_pgm_addr]\n"
++		"	mvc	0(16,%[psw_old]),0(%[psw_pgm])\n"
++		"	epsw	%[reg1],%[reg2]\n"
++		"	st	%[reg1],0(%[psw_pgm])\n"
++		"	st	%[reg2],4(%[psw_pgm])\n"
++		"	larl	%[reg1],1f\n"
++		"	stg	%[reg1],8(%[psw_pgm])\n"
+ 		"	tprot	0(%[addr]),0\n"
+ 		"	ipm	%[rc]\n"
+ 		"	srl	%[rc],28\n"
+-		"1:\n"
+-		: [pgm_addr] "=&d"(pgm_addr),
+-		  [psw_pgm_addr] "=Q"(S390_lowcore.program_new_psw.addr),
+-		  [rc] "+&d"(rc)
+-		: [addr] "a"(addr)
++		"1:	mvc	0(16,%[psw_pgm]),0(%[psw_old])\n"
++		: [reg1] "=&d" (reg1),
++		  [reg2] "=&a" (reg2),
++		  [rc] "+&d" (rc),
++		  "=Q" (S390_lowcore.program_new_psw.addr),
++		  "=Q" (old)
++		: [psw_old] "a" (&old),
++		  [psw_pgm] "a" (&S390_lowcore.program_new_psw),
++		  [addr] "a" (addr)
+ 		: "cc", "memory");
+-	S390_lowcore.program_new_psw = old;
+ 	return rc;
+ }
+ 
+-- 
+2.30.2
+
 
 
