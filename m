@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7143CDC36
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EDD3CE021
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238628AbhGSOvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:51:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47690 "EHLO mail.kernel.org"
+        id S243707AbhGSPNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:13:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244779AbhGSOeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7191F6113B;
-        Mon, 19 Jul 2021 15:13:43 +0000 (UTC)
+        id S1344241AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C341261175;
+        Mon, 19 Jul 2021 15:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707623;
-        bh=tsXakENf65MVAX+mh5UgIySG52GWmSjONSb1rsvTrUk=;
+        s=korg; t=1626708453;
+        bh=BMwHAXZgdhqQwUQ5+UshBBH8/SkY4gFxYKmSeVWpeAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zjUDIKSw+yTSKk8pIHAYPFcRO5lr6Yvsfu8S/pa3vMyl2euWYqlrK0kF1xBknIUsU
-         Xw5FYvjeqE/iodNXAYuVU5EAA6Kf7aXbNw/cCF8NOHks2A6/LXTqu7SVm5IX2eK4Jr
-         pGf4LuMZWFvq3XFy5O35r0v1e0LKSPJv2ZjETxrY=
+        b=swfYa9EPYqzX7ffKJW5QFjGyDGPcLqCQDYTeVqIMVu47dFxaBm9yMvQ12PLIdPqeT
+         URACfNdm7BGwSr5FExquZpTklxRVW1EE8/boiRwczicHCXlliKrw3hAWY+Dhn6ZLuM
+         rWVCMTpXb0D8YZcl13yxUzmcyL03PjrnASQZEeqI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        anton.ivanov@cambridgegreys.com,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 238/245] reset: bail if try_module_get() fails
+Subject: [PATCH 4.14 291/315] um: fix error return code in winch_tramp()
 Date:   Mon, 19 Jul 2021 16:53:00 +0200
-Message-Id: <20210719144948.066708794@linuxfoundation.org>
+Message-Id: <20210719144953.020883433@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 4fb26fb83f0def3d39c14e268bcd4003aae8fade ]
+[ Upstream commit ccf1236ecac476d9d2704866d9a476c86e387971 ]
 
-Abort instead of returning a new reset control for a reset controller
-device that is going to have its module unloaded.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Fixes: 61fc41317666 ("reset: Add reset controller API")
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20210607082615.15160-1-p.zabel@pengutronix.de
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Fixes: 89df6bfc0405 ("uml: DEBUG_SHIRQ fixes")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Acked-By: anton.ivanov@cambridgegreys.com
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/um/drivers/chan_user.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/reset/core.c b/drivers/reset/core.c
-index d0ebca301afc..c15c898fe0dc 100644
---- a/drivers/reset/core.c
-+++ b/drivers/reset/core.c
-@@ -263,7 +263,10 @@ static struct reset_control *__reset_control_get_internal(
- 	if (!rstc)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
+index 3fd7c3efdb18..feb7f5ab4084 100644
+--- a/arch/um/drivers/chan_user.c
++++ b/arch/um/drivers/chan_user.c
+@@ -256,7 +256,8 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+ 		goto out_close;
+ 	}
  
--	try_module_get(rcdev->owner);
-+	if (!try_module_get(rcdev->owner)) {
-+		kfree(rstc);
-+		return ERR_PTR(-ENODEV);
-+	}
- 
- 	rstc->rcdev = rcdev;
- 	list_add(&rstc->list, &rcdev->reset_control_head);
+-	if (os_set_fd_block(*fd_out, 0)) {
++	err = os_set_fd_block(*fd_out, 0);
++	if (err) {
+ 		printk(UM_KERN_ERR "winch_tramp: failed to set thread_fd "
+ 		       "non-blocking.\n");
+ 		goto out_close;
 -- 
 2.30.2
 
