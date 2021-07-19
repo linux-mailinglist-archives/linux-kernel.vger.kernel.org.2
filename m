@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1963CE8A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2CE3CE743
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356923AbhGSQoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:44:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43618 "EHLO mail.kernel.org"
+        id S242107AbhGSQYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:24:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346588AbhGSP0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:26:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B650610D0;
-        Mon, 19 Jul 2021 16:06:43 +0000 (UTC)
+        id S1346036AbhGSPNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:13:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1519061380;
+        Mon, 19 Jul 2021 15:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710803;
-        bh=QPEGqWnvg/M9SOi9/WFAMyHyq0f1o69BZE92gvGfvec=;
+        s=korg; t=1626709996;
+        bh=4DYIJkBBNEgbBtLUIK/WIpKbeZB5/9WqbXBS6E8Bh54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I4yt3oeTxcSPHQIJlM4DvJU+mYsKWzSW3Bw6S6n67IXtWo9vABwe/pbeZffr3qbOl
-         qiUWlhxtciZyfdBTD17F3qz7b8Qe8A79XckZ+dCQGGNlYwD/NJTtnDiS0eSa72cLAW
-         HOclvz58cQIyCo7qRBsdNbaPQ6XW2St97mw6r+NQ=
+        b=koLCHCTsp3FYkKsMNuXhQSg/KuifllUM15TG0sHijRO0XccwV9LZUYU3+UuSD/VLe
+         yN5Mq2QM4dFJr+6G5U70F342nOjmIkW2bV8TYgKXYWZ2U+11wwrhmy6GEPf/nFmTaw
+         jx42gDnxJHh3RfEhJLC46JfBEjIGvf6ftd5ReaUk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 114/351] xhci: handle failed buffer copy to URB sg list and fix a W=1 copiler warning
+Subject: [PATCH 5.10 031/243] misc/libmasm/module: Fix two use after free in ibmasm_init_one
 Date:   Mon, 19 Jul 2021 16:51:00 +0200
-Message-Id: <20210719144948.251045457@linuxfoundation.org>
+Message-Id: <20210719144941.939613773@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 271a21d8b280b186f8cc9ca6f7151902efde9512 ]
+[ Upstream commit 7272b591c4cb9327c43443f67b8fbae7657dd9ae ]
 
-Set the urb->actual_length to bytes successfully copied in case all bytes
-weren't copied from a temporary buffer to the URB sg list.
-Also print a debug message
+In ibmasm_init_one, it calls ibmasm_init_remote_input_dev().
+Inside ibmasm_init_remote_input_dev, mouse_dev and keybd_dev are
+allocated by input_allocate_device(), and assigned to
+sp->remote.mouse_dev and sp->remote.keybd_dev respectively.
 
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210617150354.1512157-4-mathias.nyman@linux.intel.com
+In the err_free_devices error branch of ibmasm_init_one,
+mouse_dev and keybd_dev are freed by input_free_device(), and return
+error. Then the execution runs into error_send_message error branch
+of ibmasm_init_one, where ibmasm_free_remote_input_dev(sp) is called
+to unregister the freed sp->remote.mouse_dev and sp->remote.keybd_dev.
+
+My patch add a "error_init_remote" label to handle the error of
+ibmasm_init_remote_input_dev(), to avoid the uaf bugs.
+
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Link: https://lore.kernel.org/r/20210426170620.10546-1-lyl2019@mail.ustc.edu.cn
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/misc/ibmasm/module.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 27283654ca08..9248ce8d09a4 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1361,12 +1361,17 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
- 				 urb->transfer_buffer_length,
- 				 dir);
+diff --git a/drivers/misc/ibmasm/module.c b/drivers/misc/ibmasm/module.c
+index 4edad6c445d3..dc8a06c06c63 100644
+--- a/drivers/misc/ibmasm/module.c
++++ b/drivers/misc/ibmasm/module.c
+@@ -111,7 +111,7 @@ static int ibmasm_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	result = ibmasm_init_remote_input_dev(sp);
+ 	if (result) {
+ 		dev_err(sp->dev, "Failed to initialize remote queue\n");
+-		goto error_send_message;
++		goto error_init_remote;
+ 	}
  
--	if (usb_urb_dir_in(urb))
-+	if (usb_urb_dir_in(urb)) {
- 		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
- 					   urb->transfer_buffer,
- 					   buf_len,
- 					   0);
--
-+		if (len != buf_len) {
-+			xhci_dbg(hcd_to_xhci(hcd),
-+				 "Copy from tmp buf to urb sg list failed\n");
-+			urb->actual_length = len;
-+		}
-+	}
- 	urb->transfer_flags &= ~URB_DMA_MAP_SINGLE;
- 	kfree(urb->transfer_buffer);
- 	urb->transfer_buffer = NULL;
+ 	result = ibmasm_send_driver_vpd(sp);
+@@ -131,8 +131,9 @@ static int ibmasm_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	return 0;
+ 
+ error_send_message:
+-	disable_sp_interrupts(sp->base_address);
+ 	ibmasm_free_remote_input_dev(sp);
++error_init_remote:
++	disable_sp_interrupts(sp->base_address);
+ 	free_irq(sp->irq, (void *)sp);
+ error_request_irq:
+ 	iounmap(sp->base_address);
 -- 
 2.30.2
 
