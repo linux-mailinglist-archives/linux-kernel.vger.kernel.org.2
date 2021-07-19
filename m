@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F133CE7BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E413CE693
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351225AbhGSQcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:32:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57794 "EHLO mail.kernel.org"
+        id S1349766AbhGSQJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345844AbhGSPQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:16:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96567610D0;
-        Mon, 19 Jul 2021 15:57:05 +0000 (UTC)
+        id S1345020AbhGSPHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:07:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C129E6120E;
+        Mon, 19 Jul 2021 15:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710226;
-        bh=iM1K6mqKlaFRjb/3+kOuMfyvud8VMFcfwJgch6Mi2cM=;
+        s=korg; t=1626709668;
+        bh=c3pGcO7VwwhEPAcrjKBb3SnOFO6hstcNqRSHQqU0mt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K4R9VUy+aKkzQ6t18d48clRjSxiE2DG3ixomS+cZLEUdDsCXObPG3+IJ7MjfTsNEt
-         i83hkSfsjPEDz3mv2kRDHRvD/qQr8koMqL5Lzs5OexGI7/nfo4n/yVIFO1XMdhRUjZ
-         2V6DjMGFPx4PxhdUy6RNWbdD51Gr3NGb26JNbr8Q=
+        b=r0cTci4VcwTpf2gVHYxD8VdJxNqy7NHuEIaehqKBhvdOPmVmYsABlJjl+MpYOpAeM
+         UCMSK+vj8YokNudZttsK0FrXpqJ8s4p9YWaKmLnpQJId7g7vMcr4FpGf1P6uaTnkcB
+         uSFXbyZUOPMtTDFCbI41HVAzgqXh1kMqGJgDE1MY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 128/243] x86/fpu: Return proper error codes from user access functions
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 049/149] s390/processor: always inline stap() and __load_psw_mask()
 Date:   Mon, 19 Jul 2021 16:52:37 +0200
-Message-Id: <20210719144945.042322427@linuxfoundation.org>
+Message-Id: <20210719144913.076661908@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,84 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit aee8c67a4faa40a8df4e79316dbfc92d123989c1 ]
+[ Upstream commit 9c9a915afd90f7534c16a71d1cd44b58596fddf3 ]
 
-When *RSTOR from user memory raises an exception, there is no way to
-differentiate them. That's bad because it forces the slow path even when
-the failure was not a fault. If the operation raised eg. #GP then going
-through the slow path is pointless.
+s390 is the only architecture which makes use of the __no_kasan_or_inline
+attribute for two functions. Given that both stap() and __load_psw_mask()
+are very small functions they can and should be always inlined anyway.
 
-Use _ASM_EXTABLE_FAULT() which stores the trap number and let the exception
-fixup return the negated trap number as error.
+Therefore get rid of __no_kasan_or_inline and always inline these
+functions.
 
-This allows to separate the fast path and let it handle faults directly and
-avoid the slow path for all other exceptions.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210623121457.601480369@linutronix.de
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/fpu/internal.h | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ arch/s390/include/asm/processor.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index 16bf4d4a8159..4e5af2b00d89 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -103,6 +103,7 @@ static inline void fpstate_init_fxstate(struct fxregs_state *fx)
+diff --git a/arch/s390/include/asm/processor.h b/arch/s390/include/asm/processor.h
+index 560d8b77b1d1..48d6ccdef5f7 100644
+--- a/arch/s390/include/asm/processor.h
++++ b/arch/s390/include/asm/processor.h
+@@ -215,7 +215,7 @@ static inline unsigned long current_stack_pointer(void)
+ 	return sp;
  }
- extern void fpstate_sanitize_xstate(struct fpu *fpu);
  
-+/* Returns 0 or the negated trap number, which results in -EFAULT for #PF */
- #define user_insn(insn, output, input...)				\
- ({									\
- 	int err;							\
-@@ -110,14 +111,14 @@ extern void fpstate_sanitize_xstate(struct fpu *fpu);
- 	might_fault();							\
- 									\
- 	asm volatile(ASM_STAC "\n"					\
--		     "1:" #insn "\n\t"					\
-+		     "1: " #insn "\n"					\
- 		     "2: " ASM_CLAC "\n"				\
- 		     ".section .fixup,\"ax\"\n"				\
--		     "3:  movl $-1,%[err]\n"				\
-+		     "3:  negl %%eax\n"					\
- 		     "    jmp  2b\n"					\
- 		     ".previous\n"					\
--		     _ASM_EXTABLE(1b, 3b)				\
--		     : [err] "=r" (err), output				\
-+		     _ASM_EXTABLE_FAULT(1b, 3b)				\
-+		     : [err] "=a" (err), output				\
- 		     : "0"(0), input);					\
- 	err;								\
- })
-@@ -219,16 +220,20 @@ static inline void fxsave(struct fxregs_state *fx)
- #define XRSTOR		".byte " REX_PREFIX "0x0f,0xae,0x2f"
- #define XRSTORS		".byte " REX_PREFIX "0x0f,0xc7,0x1f"
+-static __no_kasan_or_inline unsigned short stap(void)
++static __always_inline unsigned short stap(void)
+ {
+ 	unsigned short cpu_address;
  
-+/*
-+ * After this @err contains 0 on success or the negated trap number when
-+ * the operation raises an exception. For faults this results in -EFAULT.
-+ */
- #define XSTATE_OP(op, st, lmask, hmask, err)				\
- 	asm volatile("1:" op "\n\t"					\
- 		     "xor %[err], %[err]\n"				\
- 		     "2:\n\t"						\
- 		     ".pushsection .fixup,\"ax\"\n\t"			\
--		     "3: movl $-2,%[err]\n\t"				\
-+		     "3: negl %%eax\n\t"				\
- 		     "jmp 2b\n\t"					\
- 		     ".popsection\n\t"					\
--		     _ASM_EXTABLE(1b, 3b)				\
--		     : [err] "=r" (err)					\
-+		     _ASM_EXTABLE_FAULT(1b, 3b)				\
-+		     : [err] "=a" (err)					\
- 		     : "D" (st), "m" (*st), "a" (lmask), "d" (hmask)	\
- 		     : "memory")
- 
+@@ -254,7 +254,7 @@ static inline void __load_psw(psw_t psw)
+  * Set PSW mask to specified value, while leaving the
+  * PSW addr pointing to the next instruction.
+  */
+-static __no_kasan_or_inline void __load_psw_mask(unsigned long mask)
++static __always_inline void __load_psw_mask(unsigned long mask)
+ {
+ 	unsigned long addr;
+ 	psw_t psw;
 -- 
 2.30.2
 
