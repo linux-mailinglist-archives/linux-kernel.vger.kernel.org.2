@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFD53CE694
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C843CE7C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349805AbhGSQJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:09:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40614 "EHLO mail.kernel.org"
+        id S1351133AbhGSQcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:32:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345064AbhGSPHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:07:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7430E6121E;
-        Mon, 19 Jul 2021 15:47:55 +0000 (UTC)
+        id S1346033AbhGSPQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:16:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A564961222;
+        Mon, 19 Jul 2021 15:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709676;
-        bh=OU7RHW8RCJ20JtwD/Ek2scsCmITqJZlaW4FZJH/iKEk=;
+        s=korg; t=1626710233;
+        bh=9sHeRwrUUh9yPtTPlC8N358xe2XQYAzu9ijcoIe1FJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c1SgT5dUKxTnClbX7xyZYCGSlNCdePaWosTtZLCTs76oiq14KAOqO6VoQVGO547Ab
-         1+ArbK/t0M4r1gXVNz3J2tMNUMeWFDdRI+TBZC3FNJXJuxJ51WIcqaGh9nyqcRx9RI
-         VjTPuMSmUmAcysBQjlhZfXevki1Hmhn6zCXqRnGE=
+        b=NzIRMxgjTq6UwzsN+6402V+esRq0dHts6rgIRCyVfTxM14Y0PvpjcUWcO5vSoi4Pn
+         52MCeXsGmQzlNHAEmg5x5/tamX37ywgzaTC3QyfVSTHRoIovX8lhP2vXq+qER/TfSY
+         b3BU8jWqjzJwOFcCiT1vyGdvjSV9/RAX5/vG7iMo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 052/149] s390/mem_detect: fix tprot() program check new psw handling
+Subject: [PATCH 5.10 131/243] orangefs: fix orangefs df output.
 Date:   Mon, 19 Jul 2021 16:52:40 +0200
-Message-Id: <20210719144913.751104605@linuxfoundation.org>
+Message-Id: <20210719144945.145343268@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,77 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Mike Marshall <hubcap@omnibond.com>
 
-[ Upstream commit da9057576785aaab52e706e76c0475c85b77ec14 ]
+[ Upstream commit 0fdec1b3c9fbb5e856a40db5993c9eaf91c74a83 ]
 
-The tprot() inline asm temporarily changes the program check new psw
-to redirect a potential program check on the diag instruction.
-Restoring of the program check new psw is done in C code behind the
-inline asm.
+Orangefs df output is whacky. Walt Ligon suggested this might fix it.
+It seems way more in line with reality now...
 
-This can be problematic, especially if the function is inlined, since
-the compiler can reorder instructions in such a way that a different
-instruction, which may result in a program check, might be executed
-before the program check new psw has been restored.
-
-To avoid such a scenario move restoring into the inline asm. For
-consistency reasons move also saving of the original program check new
-psw into the inline asm.
-
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Mike Marshall <hubcap@omnibond.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/boot/mem_detect.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ fs/orangefs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/s390/boot/mem_detect.c b/arch/s390/boot/mem_detect.c
-index 032d68165216..85049541c191 100644
---- a/arch/s390/boot/mem_detect.c
-+++ b/arch/s390/boot/mem_detect.c
-@@ -115,24 +115,30 @@ static int diag260(void)
+diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
+index ee5efdc35cc1..2f2e430461b2 100644
+--- a/fs/orangefs/super.c
++++ b/fs/orangefs/super.c
+@@ -209,7 +209,7 @@ static int orangefs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	buf->f_bavail = (sector_t) new_op->downcall.resp.statfs.blocks_avail;
+ 	buf->f_files = (sector_t) new_op->downcall.resp.statfs.files_total;
+ 	buf->f_ffree = (sector_t) new_op->downcall.resp.statfs.files_avail;
+-	buf->f_frsize = sb->s_blocksize;
++	buf->f_frsize = 0;
  
- static int tprot(unsigned long addr)
- {
--	unsigned long pgm_addr;
-+	unsigned long reg1, reg2;
- 	int rc = -EFAULT;
--	psw_t old = S390_lowcore.program_new_psw;
-+	psw_t old;
- 
--	S390_lowcore.program_new_psw.mask = __extract_psw();
- 	asm volatile(
--		"	larl	%[pgm_addr],1f\n"
--		"	stg	%[pgm_addr],%[psw_pgm_addr]\n"
-+		"	mvc	0(16,%[psw_old]),0(%[psw_pgm])\n"
-+		"	epsw	%[reg1],%[reg2]\n"
-+		"	st	%[reg1],0(%[psw_pgm])\n"
-+		"	st	%[reg2],4(%[psw_pgm])\n"
-+		"	larl	%[reg1],1f\n"
-+		"	stg	%[reg1],8(%[psw_pgm])\n"
- 		"	tprot	0(%[addr]),0\n"
- 		"	ipm	%[rc]\n"
- 		"	srl	%[rc],28\n"
--		"1:\n"
--		: [pgm_addr] "=&d"(pgm_addr),
--		  [psw_pgm_addr] "=Q"(S390_lowcore.program_new_psw.addr),
--		  [rc] "+&d"(rc)
--		: [addr] "a"(addr)
-+		"1:	mvc	0(16,%[psw_pgm]),0(%[psw_old])\n"
-+		: [reg1] "=&d" (reg1),
-+		  [reg2] "=&a" (reg2),
-+		  [rc] "+&d" (rc),
-+		  "=Q" (S390_lowcore.program_new_psw.addr),
-+		  "=Q" (old)
-+		: [psw_old] "a" (&old),
-+		  [psw_pgm] "a" (&S390_lowcore.program_new_psw),
-+		  [addr] "a" (addr)
- 		: "cc", "memory");
--	S390_lowcore.program_new_psw = old;
- 	return rc;
- }
- 
+ out_op_release:
+ 	op_release(new_op);
 -- 
 2.30.2
 
