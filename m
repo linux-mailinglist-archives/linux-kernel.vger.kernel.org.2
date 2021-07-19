@@ -2,137 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62CE3CD40C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B484E3CD40E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236373AbhGSLCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:02:54 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35938 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbhGSLCx (ORCPT
+        id S236517AbhGSLDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232156AbhGSLDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:02:53 -0400
-Received: from [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc] (unknown [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 46FA31F41A99;
-        Mon, 19 Jul 2021 12:43:30 +0100 (BST)
-Subject: Re: [PATCH v4 00/15] media: mtk-vcodec: support for MT8183 decoder
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Eizan Miyamoto <eizan@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-References: <20210427111526.1772293-1-acourbot@chromium.org>
- <976d420c-b4fc-bc23-c398-9b3a7ab4ffc9@collabora.com>
- <CAPBb6MVcnei2OLFYG-2YyqZrY8JvA-CJN6SUv=vGRmOZ2Af47g@mail.gmail.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <dc3e6d05-39cd-9124-a452-1a72348c33ea@collabora.com>
-Date:   Mon, 19 Jul 2021 13:43:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 07:03:14 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0BCC061574;
+        Mon, 19 Jul 2021 03:56:27 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id b29so4787476ljf.11;
+        Mon, 19 Jul 2021 04:43:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lkb64p666TsMQoJB8bFW0M3JYMVrr4pV3PJi1xmP1sQ=;
+        b=SCfJHRU6fnw/UMQ5GYy0ViwQJ1/EotLasE0u7oWiQ3108H8J1jp36eN0UgTgXZ70kb
+         367x5tyu4Ih0c1uu1XsKkwIbgtCH4I8EakwPF4jvugPRuheEe5lnKS/XFoC0C3+vxeN8
+         klhUV9++zgYfZZYTuE8G2ylpXcqXerxlI9WS3YJYheVPFpj7/qzeipOxZaNeh1H3ci/s
+         Z2aZZx3V3gP6kyDJV2tyq5VBlmdntZbWTvY8rZbPMmrt8cK+tny9Ki0/TKhE+Iwky6ci
+         tbix8ML+ZaCFQ8XIHZ6oNhaX2ayeN4y4IrvThIcUi7wsVcpTWVrlJ9kUdEY1JqyXtpM6
+         EzGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lkb64p666TsMQoJB8bFW0M3JYMVrr4pV3PJi1xmP1sQ=;
+        b=mL8Ft1XDFbDWzAADFX+wUEgc74BLfHVPGGPZodaFqlqYQ1FsL51dzFQjjcbMjZyNIj
+         tiur6LZyNCSTL8lV6Xun68LV5hroaNIcPG1XM3bAvuQj13/6jqPjvb7F6GKqotXFEVtt
+         kOrMARUD3Gw2FwQHGevE9Ol9UocdKWIDst1jbn9ju3EDAHVIz/TGVZIpGeIk/mbGJz9B
+         D5OVI89nBpEosSmY4E8hYEYkKTU9WhP1ig1mNjuqiUkKKxsueXlQ4kElkQEdD+TC+NIl
+         rg9G7I/PZxyAkEXgk2JHDfqU+hL9Hgqc+LpXWw4LULY5/XtFjKsdjkJL5NrAjWCgAi+E
+         55Ow==
+X-Gm-Message-State: AOAM533n1RnlwhAuQ05Yy7pAtif18ESKrfmCsNbDrP1BBWTIGW3VkdGJ
+        jsMkwxu4ib7ZxC8QUPkVJJ+1X38uJmIAtOSXrJE=
+X-Google-Smtp-Source: ABdhPJzIhAU4QrjoXm1+IuJ1PPgygM3ag3xTzeuBXWLLnwly7hdscJbAtcdKyZjdEHduEPdpeEFkHja8VzimP7DuAvw=
+X-Received: by 2002:a2e:9e8e:: with SMTP id f14mr21872042ljk.468.1626695031106;
+ Mon, 19 Jul 2021 04:43:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPBb6MVcnei2OLFYG-2YyqZrY8JvA-CJN6SUv=vGRmOZ2Af47g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210715182551.731989182@linuxfoundation.org> <20210715182634.577299401@linuxfoundation.org>
+ <CAJn8CcF+gfXToErpZv=pWmBKF-i--oVWmaM=6AQ8YZCb21X=oA@mail.gmail.com> <YPVgtybrZLxe3XeW@kroah.com>
+In-Reply-To: <YPVgtybrZLxe3XeW@kroah.com>
+From:   Xiaotian Feng <xtfeng@gmail.com>
+Date:   Mon, 19 Jul 2021 19:43:39 +0800
+Message-ID: <CAJn8CcHHKSo7GF29Z1ufXJJpMUzn6+fdvwiqe9=JvgpcfvnbHQ@mail.gmail.com>
+Subject: Re: [PATCH 5.12 237/242] drm/ast: Remove reference to struct drm_device.pdev
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        kernel test robot <lkp@intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 19, 2021 at 7:23 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Jul 19, 2021 at 05:57:30PM +0800, Xiaotian Feng wrote:
+> > On Fri, Jul 16, 2021 at 5:13 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > From: Thomas Zimmermann <tzimmermann@suse.de>
+> > >
+> > > commit 0ecb51824e838372e01330752503ddf9c0430ef7 upstream.
+> > >
+> > > Using struct drm_device.pdev is deprecated. Upcast with to_pci_dev()
+> > > from struct drm_device.dev to get the PCI device structure.
+> > >
+> > > v9:
+> > >         * fix remaining pdev references
+> > >
+> > > Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> > > Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> > > Fixes: ba4e0339a6a3 ("drm/ast: Fixed CVE for DP501")
+> > > Cc: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+> > > Cc: kernel test robot <lkp@intel.com>
+> > > Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > > Cc: Dave Airlie <airlied@redhat.com>
+> > > Cc: dri-devel@lists.freedesktop.org
+> > > Link: https://patchwork.freedesktop.org/patch/msgid/20210429105101.25667-2-tzimmermann@suse.de
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > >  drivers/gpu/drm/ast/ast_main.c |    5 ++---
+> > >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > >
+> > > --- a/drivers/gpu/drm/ast/ast_main.c
+> > > +++ b/drivers/gpu/drm/ast/ast_main.c
+> > > @@ -411,7 +411,6 @@ struct ast_private *ast_device_create(co
+> > >                 return ast;
+> > >         dev = &ast->base;
+> > >
+> > > -       dev->pdev = pdev;
+> > >         pci_set_drvdata(pdev, dev);
+> > >
+> > >         ast->regs = pcim_iomap(pdev, 1, 0);
+> > > @@ -453,8 +452,8 @@ struct ast_private *ast_device_create(co
+> > >
+> > >         /* map reserved buffer */
+> > >         ast->dp501_fw_buf = NULL;
+> > > -       if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
+> > > -               ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
+> > > +       if (dev->vram_mm->vram_size < pci_resource_len(pdev, 0)) {
+> > > +               ast->dp501_fw_buf = pci_iomap_range(pdev, 0, dev->vram_mm->vram_size, 0);
+> > >                 if (!ast->dp501_fw_buf)
+> > >                         drm_info(dev, "failed to map reserved buffer!\n");
+> > >         }
+> > >
+> >
+> > Hi Greg,
+> >
+> >      This backport is incomplete for 5.10 kernel,  kernel is panicked
+> > on RIP: ast_device_create+0x7d.  When I look into the crash code, I
+> > found
+> >
+> > struct ast_private *ast_device_create(struct drm_driver *drv,
+> >                                       struct pci_dev *pdev,
+> >                                       unsigned long flags)
+> > {
+> > .......
+> >         dev->pdev = pdev;  // This is removed
+> >         pci_set_drvdata(pdev, dev);
+> >
+> >         ast->regs = pcim_iomap(pdev, 1, 0);
+> >         if (!ast->regs)
+> >                 return ERR_PTR(-EIO);
+> >
+> >         /*
+> >          * If we don't have IO space at all, use MMIO now and
+> >          * assume the chip has MMIO enabled by default (rev 0x20
+> >          * and higher).
+> >          */
+> >         if (!(pci_resource_flags(dev->pdev, 2) & IORESOURCE_IO)) { //
+> > dev->pdev is in used here.
+> >                 drm_info(dev, "platform has no IO space, trying MMIO\n");
+> >                 ast->ioregs = ast->regs + AST_IO_MM_OFFSET;
+> >         }
+> >
+> >         That's because commit 46fb883c3d0d8a823ef995ddb1f9b0817dea6882
+> > is not backported to 5.10 kernel.
+>
+> So what should I do here?  Backport that commit (was was not called
+> out), or just revert this?
+>
+I think we can just simply revert the patch. Because commit 46fb883c
+removed drm_device.pdev usage,
+then commit ba4e0339 used drm_device.pdev again. Since commit 46fb883c
+is not in 5.10.50 kernel,
+it's not a stable fix.
 
-
-On 13.05.21 10:21, Alexandre Courbot wrote:
-> Hi Dafna,
-> 
-> On Thu, Apr 29, 2021 at 9:07 PM Dafna Hirschfeld
-> <dafna.hirschfeld@collabora.com> wrote:
->>
->> Hi,
->>
->> On 27.04.21 13:15, Alexandre Courbot wrote:
->>> This series adds support for the stateless API into mtk-vcodec, by first
->>> separating the stateful ops into their own source file, and introducing
->>> a new set of ops suitable for stateless decoding. As such, support for
->>> stateful decoders should remain completely unaffected.
->>>
->>> This series has been tested with both MT8183 and MT8173. Decoding was
->>> working for both chips, and in the case of MT8173 no regression has been
->>> noticed.
->>
->> I am trying to test the decoder with this patchset using v4l2-ctl on mt8173.
->>
->> I am trying to decode an h264 file into V4L2_PIX_FMT_MT21C format.
->> I am not able to do it. It seems that the driver expects each buffer to start
->> with a nal starting code, and the v4l2-ctl command just read the files into
->> buffers without any parsing.
->>
->> Can you share the command and the files you used for testing?
-> 
-> I have been using the Chromium test suite (aka
-> video_decode_accelerator_tests). I had doubts after reading your email
-> but I tested the series again using this tool and confirmed it was
-> working.
-
-Hi, I have a chromeos userspace that I compiled. I use it to test the codec drivers on latest 5.14.
-Could you share the exact command you use for your tests?
-
-I used the command:
-tast -verbose run -build=false 10.42.0.175 video.DecodeAccel*h264*
-
-With that commands, all the tests that ends with 'VD' fail , the other tests pass.
-
-The docs in [1] says that the command video_decode_accelerator_tests  does not require the "full Chrome browser stack",
-does that mean that it can be compiled and run on userspace other than chromeos?
-I could not find the instructions of how to compile and install that command. Could you instruct me to it?
-
-The mt8173 doc [2] says that the supported video decoders are "H.264,  H.265 / HEVC,  MPEG-1/2/4"
-But running 'v4l2-ctl --list-formats-out -d0' shows:
-
-ioctl: VIDIOC_ENUM_FMT
-     Type: Video Output Multiplanar
-
-     [0]: 'H264' (H.264, compressed)
-     [1]: 'VP80' (VP8, compressed)
-     [2]: 'VP90' (VP9, compressed)
-
-So the source code shows support for vp8, vp9 which is not stated in the official doc.
-Do you know the explanation for that difference? Do you know if elm device should support vp8, vp9?
-
-[1] https://chromium.googlesource.com/chromium/src/+/HEAD/docs/media/gpu/video_decoder_test_usage.md
-
-[2] https://www.mediatek.com/products/tablets/mt8173
-
-Thanks,
-Dafna
-
-> 
-> Unfortunately this test is not easy to build, but maybe if you have a
-> Chromium environment ready you can run it. mtk-vcodec does expect the
-> input buffers to be split by NAL units (as per the spec [1] IIUC), so
-> that would explain why v4l2-ctl failed (I assume that it also fails
-> without this series?).
-> 
-> Maybe ffmpeg can also be used to exercice this driver with properly
-> split NAL units, but I am not familiar with its use with V4L2. I'm
-> also not sure it would be happy about the MT21C format that the driver
-> outputs, or that it could pick the MDP to convert it to something
-> readable...
-> 
-> Cheers,
-> Alex.
-> 
-> [1] https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/pixfmt-compressed.html#compressed-formats
-> 
+> thanks,
+>
+> greg k-h
