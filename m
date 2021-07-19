@@ -2,159 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBACB3CECCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5283CECF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381228AbhGSRhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:37:47 -0400
-Received: from mail-bn8nam11on2080.outbound.protection.outlook.com ([40.107.236.80]:17984
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1349122AbhGSP5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:57:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCEi9WBwo4YR+8QTUOgHFDHKKfl3FtWbzi+mJl34HdtUCbM84LhtoF3dOer61xN1B3MU38YjpFW7icjdsGHiiLayWPlbO7Z2xcwSkHXBy2gAJPOwkaDp/jpabi/iv0Fvv6qukEIITc6ZmUl5aWNrCve2PsRtRrlK7JaP/dagmJUbVoHA9Od7ZhrntX/zaU1Ju+02+//Ll0EXcZgeZPZjCOAQ3bl5vHB5cTVgCl1sn1H0DW2C+M/BSRPOsVocT94IErDTDKKtGrXxqa8oe9a61SE1qD1AncPLBMjtpkywLSNOU1FTL4DEwfGv+XDtWtDpe/39nWwf+jiaiFzjKkpOTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=itoC+dU7JqRwv4JQILTVtQf6KRWj2ygEKdHZk2k/eoY=;
- b=REEBaP6yd/vbVL/nkml5r0IkliCI1TO9SkeZJZnic6ebvhOmTtRj2K04QZPAc1GEYj2xmaIM0X5nk8nwGbES1b0wESMQfmRE3Rn9a/ga5eNPG7BSeEqUZvNNPhSserMrigsxy4zo8qu8a/HG/l2UJJmK1qRucMrd9m0bl4OANpO00bXHxMohmg2L6fSk23KWieozFIvwAfzbiTbEGB99pkFPGUF1K4B0TscEoUp+Esw3OkdIU/07wOdjLzjV9ww3be6qwGs7l8en0SDgSoHXD6Ql+vNfThm7C5TkRa2p5RGsv0wjS3dIzNB6ufWYsvgAXVbSjC0zInscH0N+fC4JmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=itoC+dU7JqRwv4JQILTVtQf6KRWj2ygEKdHZk2k/eoY=;
- b=5OH0hhO3NAftOjqJzYOV4Xcpm3HoC4CC/ylXjkWIFMUJNGnX6TOtyvRSsrHhXetFy68iilA3uV1t4ZBloQWEGwQx29yNINYnFoXUtJ0Jd4m7b+aSaKEXTChXwdeYwuGQHrDIP1gSy89UlcrwF8vZEsegdSEy3appiyiBvEqWMjM=
-Received: from DM5PR16CA0005.namprd16.prod.outlook.com (2603:10b6:3:c0::15) by
- DM6PR12MB3178.namprd12.prod.outlook.com (2603:10b6:5:18d::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4331.29; Mon, 19 Jul 2021 16:37:25 +0000
-Received: from DM6NAM11FT037.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:c0:cafe::1c) by DM5PR16CA0005.outlook.office365.com
- (2603:10b6:3:c0::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Mon, 19 Jul 2021 16:37:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT037.mail.protection.outlook.com (10.13.172.122) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 16:37:25 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 19 Jul
- 2021 11:37:24 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 19 Jul
- 2021 11:37:24 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Mon, 19 Jul 2021 11:37:15 -0500
-From:   Vijendar Mukunda <vijendar.mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-        <krisman@collabora.com>,
-        Vijendar Mukunda <vijendar.mukunda@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH V3 12/12] ASoC: amd: enable vangogh acp5x driver build
-Date:   Mon, 19 Jul 2021 22:21:40 +0530
-Message-ID: <20210719165140.16143-13-vijendar.mukunda@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210719165140.16143-1-vijendar.mukunda@amd.com>
-References: <20210719165140.16143-1-vijendar.mukunda@amd.com>
+        id S1382605AbhGSRje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346413AbhGSQ1B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 12:27:01 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2703AC078822
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:30:19 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so18827463otq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Cy4iVbzufWhZCm436CcvP6lCnhJGscRGC54iYRVwmoo=;
+        b=hbfbYh82IVBorFGJBYfFg7s0s+R2hWKPmXttDt6CVLsSLfZLF98PDtcbYYMSjlJK0a
+         gqigxBkXyLt3nKL1xZPicYQCjsfXE2aJEZ5l/5l7ebEhwztVHrioy3Z0dCjOKg6ndmRi
+         RfLRUiiv7DVzYXo6+g+QebRL3FUtMp56mvCPfBFSe9MO/cmIA/+ofQWc8TVNLYsypRkJ
+         FJBxI13oAjee1XI4mTNhCILdJDaasWVZuEcRm51TNcK0j8reeH7H+AfZyJI2vNNBoln3
+         BQSLKEL+MliU+4Yj2aZZPc2eZt9XScS3PEYYXKcWqlPLX42iHpfQ+fY/koifIviBpqDt
+         D6Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cy4iVbzufWhZCm436CcvP6lCnhJGscRGC54iYRVwmoo=;
+        b=C7bVOXRh1J6FgSokkXS8e4ixOBqCOcM5cK7KUwxmUfRYryyKE+93AjH3IWXehfZtEw
+         jxgdFdOkieq++3YTxrtTM87mjpKxaHxi2RKLdgpo1KzyKne8I3m84ylHS9Jdu+EMvtk+
+         NWeaccg7sp0V+jAQ64tkNk2/KUqZjgd7TSaT3siKn3SWm/p+2zsaEU2hH3YjsQ9UfIJb
+         lgF9/cD76ES95kXl2XnwXIZRMUEvkjYt+5lGVeaj2T+z5cTCeSqMx83t1xocK7xIxCEN
+         FIKHLAXneWAXWK+OOpKJt5kCCDB5J7TcNvwjE8En/ubk87WF3GOx8hw9d/qFsJy5Wngw
+         rZCQ==
+X-Gm-Message-State: AOAM532UI9n1JU5xnu4L3yVEAwDF3Lf5cKPQ9UifpRM42zrS1fMf4xk6
+        wb5qnYrrfk5hrA5ffgjHfg/fEw==
+X-Google-Smtp-Source: ABdhPJx3sDQ0mQzT1Ak+Tz9xwpnqNz8n4Z/jQM063iCfZPKDAyZDLp9h62NqEIDf5Wftb1H8RWUQ+w==
+X-Received: by 2002:a9d:1ec:: with SMTP id e99mr13761129ote.367.1626713522660;
+        Mon, 19 Jul 2021 09:52:02 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j22sm3728031otl.46.2021.07.19.09.52.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 09:52:02 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 11:52:00 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        balbi@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org
+Subject: Re: [PATCH v2 1/3] arm64: dts: qcom: Use correct naming for dwc3 usb
+ nodes in dts files
+Message-ID: <YPWtsPbxTLsInOGv@yoga>
+References: <20210627114616.717101-1-bhupesh.sharma@linaro.org>
+ <20210627114616.717101-2-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fc8681c0-2373-4ad9-2e33-08d94ad37d80
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3178:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB31789A45BBB2126A79E55D7397E19@DM6PR12MB3178.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j6vrcZ68Tv3xz24aNPCZnEYTiNuIej5sW9Z1pXeMX57gBOX3JG2k0sWI2X/qt+nSWWXBlGiUfJgUb+mSW3/LMMrFIsoIAiJyi+qpTiZkIDv/5dA1eCs8yBHFtos5HMygZxR5bYU9Db5oNU44dUcKAjFrgSN4krkBpMqLLN7yg2WpkgPBNWa9sL/HjjvP/8tbEuH+VVOiZlY9Dvolngbw/56l0f+GxzPy1BD/uc+wKeT71/AHzkDqP/Ln3w+8TwM2xiC7rVYoEqfPnGu/MLJzIfIJYD1Fkk/NUFbrt0PgLR+d4DXbUIcnP2UP3DSxqWUU3ytwJ4oCw0CVv36Ji/eTk5TEIW1H0yJyUDTaMOZRjIwIEKfP3Ovwk3MRLFzrNM9YfkTiROqY6luaWz9eBv4frK4XMCIbuzE1GWQCwsoi8rYoWWRx3YA1cbjyG6ar5bA2A0ObOusjg3g0efhiBGe2WxP3lKNa0dE81LxGmZVegr2KGsOnwZWD3gM67FIN0PRAqVUB+rTkX0C/qRp+Na0E7L7oquJqubnXLLeZ1dI/Aw4B2QXNNaqG9F5Pp5uNDVo5+4YcXx6jMmK+Y+09pTAm7/E6n8kVwt9vsLgiOt9UIbMJ0uGmwkGXKTB0GWAJ8miTu9eljihebJI3dCnBOHXdIXfq7JFMUN45yH5fgQaNqn4fLjNk6nJl+ik5JHz1mvZD7sx24peSNzyBq3wGu81RNcT9xatrlHLSbrJK+i5QX/wSmgfNQUyYE8Mp7LEV7TDCNPvXR3MIwhqszdB+F9wPjQtPUA9SMCSmNAxGHKq133Q=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(36840700001)(46966006)(336012)(70206006)(186003)(70586007)(6666004)(86362001)(478600001)(7696005)(81166007)(356005)(54906003)(47076005)(26005)(110136005)(2616005)(36860700001)(5660300002)(36756003)(426003)(316002)(2906002)(1076003)(82740400003)(82310400003)(4326008)(8936002)(8676002)(44832011)(42413003)(32563001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 16:37:25.2493
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc8681c0-2373-4ad9-2e33-08d94ad37d80
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT037.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3178
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210627114616.717101-2-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vangogh ACP5x drivers can be built by selecting necessary
-kernel config option.
-The patch enables build support of the same.
+On Sun 27 Jun 06:46 CDT 2021, Bhupesh Sharma wrote:
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/Kconfig          | 9 +++++++++
- sound/soc/amd/Makefile         | 1 +
- sound/soc/amd/vangogh/Makefile | 9 +++++++++
- 3 files changed, 19 insertions(+)
- create mode 100644 sound/soc/amd/vangogh/Makefile
+> The dwc3 usb nodes in several arm64 qcom dts are currently named
+> differently, somewhere as 'usb@<addr>' and somewhere as 'dwc3@<addr>',
+> leading to some confusion when one sees the entries in sysfs or
+> dmesg:
+> [    1.943482] dwc3 a600000.usb: Adding to iommu group 1
+> [    2.266127] dwc3 a800000.dwc3: Adding to iommu group 2
+> 
+> Name the usb nodes as 'usb@<addr>' for consistency, which is
+> the correct convention as per the 'snps,dwc3' dt-binding as
+> well (see [1]).
+> 
+> [1]. Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> 
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index ba5a85bf7412..cc48d4e5b080 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -52,3 +52,12 @@ config SND_SOC_AMD_RENOIR_MACH
- 	depends on SND_SOC_AMD_RENOIR
- 	help
- 	 This option enables machine driver for DMIC
-+
-+config SND_SOC_AMD_ACP5x
-+	tristate "AMD Audio Coprocessor-v5.x I2S support"
-+	depends on X86 && PCI
-+	help
-+	 This option enables ACP v5.x support on AMD platform
-+
-+	 By enabling this flag build will trigger for ACP PCI driver,
-+	 ACP DMA drvier, CPU DAI driver.
-diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
-index e6df2f72a2a1..07150d26f315 100644
---- a/sound/soc/amd/Makefile
-+++ b/sound/soc/amd/Makefile
-@@ -10,3 +10,4 @@ obj-$(CONFIG_SND_SOC_AMD_CZ_RT5645_MACH) += snd-soc-acp-rt5645-mach.o
- obj-$(CONFIG_SND_SOC_AMD_ACP3x) += raven/
- obj-$(CONFIG_SND_SOC_AMD_RV_RT5682_MACH) += snd-soc-acp-rt5682-mach.o
- obj-$(CONFIG_SND_SOC_AMD_RENOIR) += renoir/
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += vangogh/
-diff --git a/sound/soc/amd/vangogh/Makefile b/sound/soc/amd/vangogh/Makefile
-new file mode 100644
-index 000000000000..3353f93dc610
---- /dev/null
-+++ b/sound/soc/amd/vangogh/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+# Vangogh platform Support
-+snd-pci-acp5x-objs	:= pci-acp5x.o
-+snd-acp5x-i2s-objs	:= acp5x-i2s.o
-+snd-acp5x-pcm-dma-objs	:= acp5x-pcm-dma.o
-+
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-pci-acp5x.o
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x)	+= snd-acp5x-i2s.o
-+obj-$(CONFIG_SND_SOC_AMD_ACP5x) += snd-acp5x-pcm-dma.o
--- 
-2.17.1
+I thought we had more of the platforms sorted out already, thanks for
+fixing this Bhupesh.
 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/msm8994.dtsi | 2 +-
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi  | 2 +-
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi  | 4 ++--
+>  arch/arm64/boot/dts/qcom/sm8350.dtsi  | 4 ++--
+>  4 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/msm8994.dtsi b/arch/arm64/boot/dts/qcom/msm8994.dtsi
+> index f9f0b5aa6a26..662f2f246b9b 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8994.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8994.dtsi
+> @@ -430,7 +430,7 @@ usb3: usb@f92f8800 {
+>  			power-domains = <&gcc USB30_GDSC>;
+>  			qcom,select-utmi-as-pipe-clk;
+>  
+> -			dwc3@f9200000 {
+> +			usb@f9200000 {
+>  				compatible = "snps,dwc3";
+>  				reg = <0xf9200000 0xcc00>;
+>  				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
+> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> index 612dda0fef43..9c931beeb614 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> @@ -2389,7 +2389,7 @@ usb_2: usb@a8f8800 {
+>  
+>  			resets = <&gcc GCC_USB30_SEC_BCR>;
+>  
+> -			usb_2_dwc3: dwc3@a800000 {
+> +			usb_2_dwc3: usb@a800000 {
+>  				compatible = "snps,dwc3";
+>  				reg = <0 0x0a800000 0 0xcd00>;
+>  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index 4798368b02ef..9c1462cc9dad 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -2321,7 +2321,7 @@ usb_1: usb@a6f8800 {
+>  
+>  			resets = <&gcc GCC_USB30_PRIM_BCR>;
+>  
+> -			usb_1_dwc3: dwc3@a600000 {
+> +			usb_1_dwc3: usb@a600000 {
+>  				compatible = "snps,dwc3";
+>  				reg = <0 0x0a600000 0 0xcd00>;
+>  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> @@ -2372,7 +2372,7 @@ usb_2: usb@a8f8800 {
+>  
+>  			resets = <&gcc GCC_USB30_SEC_BCR>;
+>  
+> -			usb_2_dwc3: dwc3@a800000 {
+> +			usb_2_dwc3: usb@a800000 {
+>  				compatible = "snps,dwc3";
+>  				reg = <0 0x0a800000 0 0xcd00>;
+>  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> index 0d16392bb976..a631d58166b1 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> @@ -1273,7 +1273,7 @@ usb_1: usb@a6f8800 {
+>  
+>  			resets = <&gcc GCC_USB30_PRIM_BCR>;
+>  
+> -			usb_1_dwc3: dwc3@a600000 {
+> +			usb_1_dwc3: usb@a600000 {
+>  				compatible = "snps,dwc3";
+>  				reg = <0 0x0a600000 0 0xcd00>;
+>  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> @@ -1317,7 +1317,7 @@ usb_2: usb@a8f8800 {
+>  
+>  			resets = <&gcc GCC_USB30_SEC_BCR>;
+>  
+> -			usb_2_dwc3: dwc3@a800000 {
+> +			usb_2_dwc3: usb@a800000 {
+>  				compatible = "snps,dwc3";
+>  				reg = <0 0x0a800000 0 0xcd00>;
+>  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+> -- 
+> 2.31.1
+> 
