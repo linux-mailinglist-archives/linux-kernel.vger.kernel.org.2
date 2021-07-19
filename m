@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50163CE6E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4EF3CE7ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353543AbhGSQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:16:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47292 "EHLO mail.kernel.org"
+        id S1354959AbhGSQfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344523AbhGSPKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BBD461264;
-        Mon, 19 Jul 2021 15:51:18 +0000 (UTC)
+        id S1347850AbhGSPWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:22:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5571960FE7;
+        Mon, 19 Jul 2021 15:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709879;
-        bh=4IG6gmizIJJXG3ujUKlj9tPQg7Xe/8JS38uDa1wvkzg=;
+        s=korg; t=1626710368;
+        bh=sdBBz6SeEoP0TXvqNQMBRF5RsOiw3j/3bOpE4t+//iQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vui9b9y+9h2GZikoJEr+0JbcQLwNP4RP9afkSvPrJK9nqk64bcD1KAZOaILhCaUF8
-         qX/QZGHrjZoiqGzDmG8QvzzivsZxTIS3F4qwdh6db2iEOjMenj+Oe3/edY1PerU4zl
-         wsN/cbt1fJcGNDEvCgMqOc3gO7fChJBj2RqxQmJw=
+        b=TUoGJ9x1d+rfYczAqq12uXN0mzg3rq3RTrtx+bbC1w3RQqxx5kDF2miGLtvFm21SO
+         vULy3Xp16OMhs0tPRB9SoZd8Gai6bKyDUypCLx94gYP0/RwywO8iPnFbrA8diQRXxc
+         ttWqosfBAFltaxBHMtd8xMwxAB2tLrCG/ZkAwjog=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        anton.ivanov@cambridgegreys.com,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 101/149] um: fix error return code in slip_open()
+Subject: [PATCH 5.10 180/243] vdpa/mlx5: Clear vq ready indication upon device reset
 Date:   Mon, 19 Jul 2021 16:53:29 +0200
-Message-Id: <20210719144925.320280625@linuxfoundation.org>
+Message-Id: <20210719144946.725209338@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Eli Cohen <elic@nvidia.com>
 
-[ Upstream commit b77e81fbe5f5fb4ad9a61ec80f6d1e30b6da093a ]
+[ Upstream commit e3aadf2e1614174dc81d52cbb9dabb77913b11c6 ]
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+After device reset, the virtqueues are not ready so clear the ready
+field.
 
-Fixes: a3c77c67a443 ("[PATCH] uml: slirp and slip driver cleanups and fixes")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Acked-By: anton.ivanov@cambridgegreys.com
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Failing to do so can result in virtio_vdpa failing to load if the device
+was previously used by vhost_vdpa and the old values are ready.
+virtio_vdpa expects to find VQs in "not ready" state.
+
+Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+Link: https://lore.kernel.org/r/20210606053128.170399-1-elic@nvidia.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/slip_user.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/um/drivers/slip_user.c b/arch/um/drivers/slip_user.c
-index 8016d32b6809..8d736eb62961 100644
---- a/arch/um/drivers/slip_user.c
-+++ b/arch/um/drivers/slip_user.c
-@@ -145,7 +145,8 @@ static int slip_open(void *data)
- 	}
- 	sfd = err;
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index 5773b68f9a93..fe7ed3212473 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -1752,6 +1752,14 @@ out:
+ 	mutex_unlock(&ndev->reslock);
+ }
  
--	if (set_up_tty(sfd))
-+	err = set_up_tty(sfd);
-+	if (err)
- 		goto out_close2;
- 
- 	pri->slave = sfd;
++static void clear_vqs_ready(struct mlx5_vdpa_net *ndev)
++{
++	int i;
++
++	for (i = 0; i < ndev->mvdev.max_vqs; i++)
++		ndev->vqs[i].ready = false;
++}
++
+ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+ {
+ 	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+@@ -1762,6 +1770,7 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+ 	if (!status) {
+ 		mlx5_vdpa_info(mvdev, "performing device reset\n");
+ 		teardown_driver(ndev);
++		clear_vqs_ready(ndev);
+ 		mlx5_vdpa_destroy_mr(&ndev->mvdev);
+ 		ndev->mvdev.status = 0;
+ 		ndev->mvdev.mlx_features = 0;
 -- 
 2.30.2
 
