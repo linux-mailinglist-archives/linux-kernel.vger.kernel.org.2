@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219993CE7E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515693CE6B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354772AbhGSQfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:35:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
+        id S1351061AbhGSQNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:13:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347848AbhGSPWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:22:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0A0961006;
-        Mon, 19 Jul 2021 15:59:30 +0000 (UTC)
+        id S1346052AbhGSPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F0EF61221;
+        Mon, 19 Jul 2021 15:50:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710371;
-        bh=Z6ZydqLjlMDD66kySE5xSLlnlFJ4OA8zpDyXLTtJ/IE=;
+        s=korg; t=1626709818;
+        bh=WF0TpTCVtD/q8bjs/VLUNrGERQsRQGf0gDxkGI0J854=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P/oTsHBj36S2H6fIdjctm2eRoWABDayCM40CywRYM1wDZuyf1LRgRdKOdNi5r21US
-         v55aVxrDZZ1DmTzgP5eRDmZn6UIe/pgkIizj6XrLJf3dJZmuGWEBTzZKYbs3DqonkX
-         JKjN4oxHLuuv73hVZ922aWduwdzYaQlYcumgeqdM=
+        b=EALweJnoTuoYJPHG0Ws2TjZX7RsRHoA/wNpu1nsTeeJJNzQdt0IyXsgcElXCTYBIv
+         Po38tff61z2NvIdmNmphPpuy541tFg7TMmApGsiL8GlAmIizHy6l/0aXS6OZW8qJ3J
+         JtNKAf8/bdSrCxXtejhYZa6aSgwWMuQ0MOgPvSMk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 189/243] reset: a10sr: add missing of_match_table reference
-Date:   Mon, 19 Jul 2021 16:53:38 +0200
-Message-Id: <20210719144947.021197330@linuxfoundation.org>
+        stable@vger.kernel.org, Maurizio Lombardi <mlombard@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 111/149] nvme-tcp: cant set sk_user_data without write_lock
+Date:   Mon, 19 Jul 2021 16:53:39 +0200
+Message-Id: <20210719144927.643964494@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Maurizio Lombardi <mlombard@redhat.com>
 
-[ Upstream commit 466ba3c8ff4fae39e455ff8d080b3d5503302765 ]
+[ Upstream commit 0755d3be2d9bb6ea38598ccd30d6bbaa1a5c3a50 ]
 
-The driver defined of_device_id table but did not use it with
-of_match_table.  This prevents usual matching via devicetree and causes
-a W=1 warning:
+The sk_user_data pointer is supposed to be modified only while
+holding the write_lock "sk_callback_lock", otherwise
+we could race with other threads and crash the kernel.
 
-  drivers/reset/reset-a10sr.c:111:34: warning:
-    ‘a10sr_reset_of_match’ defined but not used [-Wunused-const-variable=]
+we can't take the write_lock in nvmet_tcp_state_change()
+because it would cause a deadlock, but the release_work queue
+will set the pointer to NULL later so we can simply remove
+the assignment.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 627006820268 ("reset: Add Altera Arria10 SR Reset Controller")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210507112803.20012-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Fixes: b5332a9f3f3d ("nvmet-tcp: fix incorrect locking in state_change sk callback")
+
+Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/reset-a10sr.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvme/target/tcp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/reset/reset-a10sr.c b/drivers/reset/reset-a10sr.c
-index 7eacc89382f8..99b3bc8382f3 100644
---- a/drivers/reset/reset-a10sr.c
-+++ b/drivers/reset/reset-a10sr.c
-@@ -118,6 +118,7 @@ static struct platform_driver a10sr_reset_driver = {
- 	.probe	= a10sr_reset_probe,
- 	.driver = {
- 		.name		= "altr_a10sr_reset",
-+		.of_match_table	= a10sr_reset_of_match,
- 	},
- };
- module_platform_driver(a10sr_reset_driver);
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index 9bfd92b6677b..2ae846297d7c 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -1412,7 +1412,6 @@ static void nvmet_tcp_state_change(struct sock *sk)
+ 	case TCP_CLOSE_WAIT:
+ 	case TCP_CLOSE:
+ 		/* FALLTHRU */
+-		sk->sk_user_data = NULL;
+ 		nvmet_tcp_schedule_release_queue(queue);
+ 		break;
+ 	default:
 -- 
 2.30.2
 
