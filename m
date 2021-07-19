@@ -2,106 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63533CCEF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DF63CCEF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235125AbhGSH5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 03:57:08 -0400
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:35698 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235180AbhGSH4q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 03:56:46 -0400
-Received: by mail-ua1-f54.google.com with SMTP id n61so6493301uan.2;
-        Mon, 19 Jul 2021 00:53:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UFrHGkePZup1taj30Rt41mFp0n9XCiwOIs/xt1tbnaw=;
-        b=ILbqZWvTJ4tnouXLPQmgYQhcoUF9/+cAIYgUjJbF0zcCAcWJcwAEcIRXWs/zvynuzZ
-         HJx2hYBqI8YtidL3XlaDBILFYUzzS+p2boNhgF2Hr3xaav2OLSLq/PWdHkUWTD1ULZW8
-         2YxcM1NZJzJDLarp7S1Ut2q5RqcOD8N3U6RK+5ZB61eY2cPwTPy5zlY9iPgc7zXmh/Y9
-         rtRBw15hG5TrG2S2zHOF/F5tr7hMyX/u94wN8ZIPS50+TXgiJ3dthcDb12FoV7Dh4I2n
-         RWoDy0eP0qZ/8keeFIwwhl4jYxPuaktVxl0UZ8WDJzWztYImUUEn1HcU4GUlw5LaIyYn
-         y7AQ==
-X-Gm-Message-State: AOAM5324RULE5Dm+9m9/N9mPwofzWP5ZBnCsVaaIMBVP0r7c8zV4IPSc
-        si+ocUseyrm5QXSZNrLWNXIcIE7Op5C5mk4AVYw=
-X-Google-Smtp-Source: ABdhPJzXmKaiICvApSnCr48W0kVIIhAe0HClSDvRY/+X8t7EqH9YSmdjsOer92Kdg8iWZJTvPkJd3JyN+8IpVFrQ92Y=
-X-Received: by 2002:a9f:3f0d:: with SMTP id h13mr24866271uaj.100.1626681220672;
- Mon, 19 Jul 2021 00:53:40 -0700 (PDT)
+        id S235053AbhGSH6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:58:22 -0400
+Received: from relay.sw.ru ([185.231.240.75]:52586 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234899AbhGSH6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 03:58:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=Qs4XlbPUE6apDQAFm0j0TfDJpKNeesqn0NIlAUMQvZg=; b=TDrzIglAE7CTyNlJXQX
+        XRRcDWM4LgStXDf45HnxX6I2gojsVOjcgc1RwN7UXvnpSnof5AYlMpj2cAMKLi5d6nodnbEa6PuZT
+        kIB66iAS0gjNXuGdGguH7eNH90EdKqdM6KVVvfd7GuPnwDIQQ3YHK3WVt6frgk5lifB/2jKjvrw=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m5O7P-004Ps3-1b; Mon, 19 Jul 2021 10:55:15 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH NET] ipv6: ip6_finish_output2: set sk into newly allocated
+ nskb
+References: <20210718.100457.250657299500744178.davem@davemloft.net>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Message-ID: <70c0744f-89ae-1869-7e3e-4fa292158f4b@virtuozzo.com>
+Date:   Mon, 19 Jul 2021 10:55:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210718133920.15825-1-len.baker@gmx.com> <CAHp75VeEA0=KFsfdjCnBm-b9+F+NnFWJ38nkh+qtb85XdXVWog@mail.gmail.com>
-In-Reply-To: <CAHp75VeEA0=KFsfdjCnBm-b9+F+NnFWJ38nkh+qtb85XdXVWog@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Jul 2021 09:53:29 +0200
-Message-ID: <CAMuHMdXnhzumSrr=MAkv5nwY2o8xCa4s5zKa9meJTuo0r9yABw@mail.gmail.com>
-Subject: Re: [PATCH] staging/fbtft: Remove all strcpy() uses
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Phil Reid <preid@electromag.com.au>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210718.100457.250657299500744178.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 9:43 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Sun, Jul 18, 2021 at 4:43 PM Len Baker <len.baker@gmx.com> wrote:
-> > strcpy() performs no bounds checking on the destination buffer. This
-> > could result in linear overflows beyond the end of the buffer, leading
-> > to all kinds of misbehaviors. The safe replacement is strscpy() but in
-> > this case it is simpler to add NULL to the first position since we want
+skb_set_owner_w() should set sk not to old skb but to new nskb.
 
-"NULL" is a pointer value, "NUL" is the character with value zero.
+Fixes: 5796015fa968("ipv6: allocate enough headroom in ip6_finish_output2()")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ net/ipv6/ip6_output.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > to empty the string.
->
-> > This is a previous step in the path to remove the strcpy() function.
->
-> Any document behind this (something to read on the site(s) more or
-> less affiliated with what is going to happen in the kernel) to read
-> background?
->
-> ...
->
-> >                 case -1:
-> >                         i++;
-> >                         /* make debug message */
-> > -                       strcpy(msg, "");
-
-While this strcpy() is provably safe at compile-time, and will probably
-be replaced by an assignment to zero by the compiler...
-
-> > +                       msg[0] = 0;
->
-> Strictly speaking it should be '\0'.
->
-> >                         j = i + 1;
-> >                         while (par->init_sequence[j] >= 0) {
-> >                                 sprintf(str, "0x%02X ", par->init_sequence[j]);
-
-... the real danger is the
-
-        strcat(msg, str);
-
-on the next line.
-Fortunately this whole debug printing block (including the strcpy)
-can (and should) be rewritten to just use "%*ph".
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 01bea76..e1b9f7a 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -74,7 +74,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ 
+ 			if (likely(nskb)) {
+ 				if (skb->sk)
+-					skb_set_owner_w(skb, skb->sk);
++					skb_set_owner_w(nskb, skb->sk);
+ 				consume_skb(skb);
+ 			} else {
+ 				kfree_skb(skb);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+1.8.3.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
