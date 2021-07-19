@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EDC3CDAB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3743CDA36
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245186AbhGSOhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:37:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
+        id S241854AbhGSOfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:35:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243245AbhGSO24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:28:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAD8961242;
-        Mon, 19 Jul 2021 15:08:33 +0000 (UTC)
+        id S243921AbhGSO3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:29:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 230666120C;
+        Mon, 19 Jul 2021 15:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707314;
-        bh=fvKy1X4vRSJubuRPvcduF5CfYzHb+OZ32u0JTjFbEKM=;
+        s=korg; t=1626707316;
+        bh=2yr7JMpXV0iB4Syaw+DA6vUV6mRSKPCFUDbVQ40onSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Da0ERFgWqDQ7EH+tzW+TeznZ6sLXZsBccSBfukqHMzozm/g0xWkbDrcMSZuf3PM9Z
-         FTBOqRAuhAJKedwn9F/QOpeJ53GmovlrSUtjDfjachX0nyyFXWCg4IufAKqWXL+jDj
-         fdywYAt1cVQYERwDZreWqC5imuK2evo9LOLEQFEw=
+        b=AVktQLHAQzuRWNCHawnm6DiJexUesHFiLlTL9s17SMjZFh7CeBnBV0dicoDfSsncX
+         wZl0PkP/e5uLyYWMdcQkF6FLgD81xECK71i/+2z6/d+5vTgJ3fk+ZtprkcIT0rWPe1
+         i9XQAt2I5DWlHEnK8rGrecJg5PLv1ccWBLzeiyVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 111/245] staging: gdm724x: check for buffer overflow in gdm_lte_multi_sdu_pkt()
-Date:   Mon, 19 Jul 2021 16:50:53 +0200
-Message-Id: <20210719144944.011705769@linuxfoundation.org>
+Subject: [PATCH 4.9 112/245] staging: gdm724x: check for overflow in gdm_lte_netif_rx()
+Date:   Mon, 19 Jul 2021 16:50:54 +0200
+Message-Id: <20210719144944.041837758@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -41,56 +41,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 4a36e160856db8a8ddd6a3d2e5db5a850ab87f82 ]
+[ Upstream commit 7002b526f4ff1f6da34356e67085caafa6be383a ]
 
-There needs to be a check to verify that we don't read beyond the end
-of "buf".  This function is called from do_rx().  The "buf" is the USB
-transfer_buffer and "len" is "urb->actual_length".
+This code assumes that "len" is at least 62 bytes, but we need a check
+to prevent a read overflow.
 
 Fixes: 61e121047645 ("staging: gdm7240: adding LTE USB driver")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YMcnl4zCwGWGDVMG@mwanda
+Link: https://lore.kernel.org/r/YMcoTPsCYlhh2TQo@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/gdm724x/gdm_lte.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/staging/gdm724x/gdm_lte.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/staging/gdm724x/gdm_lte.c b/drivers/staging/gdm724x/gdm_lte.c
-index e72dfa9699f3..1bc2b3365e32 100644
+index 1bc2b3365e32..454e47424ade 100644
 --- a/drivers/staging/gdm724x/gdm_lte.c
 +++ b/drivers/staging/gdm724x/gdm_lte.c
-@@ -689,6 +689,7 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
- 	struct multi_sdu *multi_sdu = (struct multi_sdu *)buf;
- 	struct sdu *sdu = NULL;
- 	u8 *data = (u8 *)multi_sdu->data;
-+	int copied;
- 	u16 i = 0;
- 	u16 num_packet;
- 	u16 hci_len;
-@@ -702,6 +703,12 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
- 				      multi_sdu->num_packet);
- 
- 	for (i = 0; i < num_packet; i++) {
-+		copied = data - multi_sdu->data;
-+		if (len < copied + sizeof(*sdu)) {
-+			pr_err("rx prevent buffer overflow");
-+			return;
-+		}
-+
- 		sdu = (struct sdu *)data;
- 
- 		cmd_evt = gdm_dev16_to_cpu(phy_dev->
-@@ -715,7 +722,8 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
- 			pr_err("rx sdu wrong hci %04x\n", cmd_evt);
- 			return;
+@@ -624,10 +624,12 @@ static void gdm_lte_netif_rx(struct net_device *dev, char *buf,
+ 						  * bytes (99,130,83,99 dec)
+ 						  */
+ 			} __packed;
+-			void *addr = buf + sizeof(struct iphdr) +
+-				sizeof(struct udphdr) +
+-				offsetof(struct dhcp_packet, chaddr);
+-			ether_addr_copy(nic->dest_mac_addr, addr);
++			int offset = sizeof(struct iphdr) +
++				     sizeof(struct udphdr) +
++				     offsetof(struct dhcp_packet, chaddr);
++			if (offset + ETH_ALEN > len)
++				return;
++			ether_addr_copy(nic->dest_mac_addr, buf + offset);
  		}
--		if (hci_len < 12) {
-+		if (hci_len < 12 ||
-+		    len < copied + sizeof(*sdu) + (hci_len - 12)) {
- 			pr_err("rx sdu invalid len %d\n", hci_len);
- 			return;
- 		}
+ 	}
+ 
 -- 
 2.30.2
 
