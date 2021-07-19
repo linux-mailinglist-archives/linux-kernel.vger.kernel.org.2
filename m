@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603433CE3FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D823CE421
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347530AbhGSPli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:41:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53364 "EHLO mail.kernel.org"
+        id S242318AbhGSPmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:42:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344377AbhGSO7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 995D260FED;
-        Mon, 19 Jul 2021 15:40:08 +0000 (UTC)
+        id S1344405AbhGSO7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F78260FEA;
+        Mon, 19 Jul 2021 15:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709209;
-        bh=31Ub/rAmamMuqUyAYomvVjIMuT5sFytp9RJ8rrIffdI=;
+        s=korg; t=1626709212;
+        bh=YLXnt5wG5jvESbfEUk+/masoINAD5jvQEUvbk327gPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PDEsQPfnzUKHBVYs4epU29VOXmDk8BABZyRpAwYFMIjRzP19DQJ3SR/VgbmLP0h4Y
-         VhIp/JVZ+jGtKydTDEwcBJ4dpEXyMPdJekxuBQOWt1dYKhKt0HT+UISEl4qxm8AyDe
-         rmEvVFvNigxosP4B0HdDlX9unLteD9GSP+U4LEJ8=
+        b=vdfyCfFxv5AiZ1M6MMns8Y9ikdRETqtU/k4q4nQHy9TXRsju+VX+wj8SWn/Qu/rQT
+         Kp1h/5jZg1peBw3A+PlbPI8DcV5IW8+iheu+7p93e2xm6dw3DVmbz9jBIrtI381163
+         TZtD+ypvJ1dXiHJ9aUuCtTcAG12l15D0l78F5l54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pascal Terjan <pterjan@google.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Huang Pei <huangpei@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 259/421] rtl8xxxu: Fix device info for RTL8192EU devices
-Date:   Mon, 19 Jul 2021 16:51:10 +0200
-Message-Id: <20210719144955.372641727@linuxfoundation.org>
+Subject: [PATCH 4.19 260/421] MIPS: add PMD table accounting into MIPSpmd_alloc_one
+Date:   Mon, 19 Jul 2021 16:51:11 +0200
+Message-Id: <20210719144955.403489020@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,145 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pascal Terjan <pterjan@google.com>
+From: Huang Pei <huangpei@loongson.cn>
 
-[ Upstream commit c240b044edefa3c3af4014a4030e017dd95b59a1 ]
+[ Upstream commit ed914d48b6a1040d1039d371b56273d422c0081e ]
 
-Based on 2001:3319 and 2357:0109 which I used to test the fix and
-0bda:818b and 2357:0108 for which I found efuse dumps online.
+This fixes Page Table accounting bug.
 
-== 2357:0109 ==
-=== Before ===
-Vendor: Realtek
-Product: \x03802.11n NI
-Serial:
-=== After ===
-Vendor: Realtek
-Product: 802.11n NIC
-Serial not available.
+MIPS is the ONLY arch just defining __HAVE_ARCH_PMD_ALLOC_ONE alone.
+Since commit b2b29d6d011944 (mm: account PMD tables like PTE tables),
+"pmd_free" in asm-generic with PMD table accounting and "pmd_alloc_one"
+in MIPS without PMD table accounting causes PageTable accounting number
+negative, which read by global_zone_page_state(), always returns 0.
 
-== 2001:3319 ==
-=== Before ===
-Vendor: Realtek
-Product: Wireless N
-Serial: no USB Adap
-=== After ===
-Vendor: Realtek
-Product: Wireless N Nano USB Adapter
-Serial not available.
-
-Signed-off-by: Pascal Terjan <pterjan@google.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210424172959.1559890-1-pterjan@google.com
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  | 11 +---
- .../realtek/rtl8xxxu/rtl8xxxu_8192e.c         | 59 +++++++++++++++++--
- 2 files changed, 56 insertions(+), 14 deletions(-)
+ arch/mips/include/asm/pgalloc.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-index 47c2bfe06d03..bd28deff9b8c 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-@@ -861,15 +861,10 @@ struct rtl8192eu_efuse {
- 	u8 usb_optional_function;
- 	u8 res9[2];
- 	u8 mac_addr[ETH_ALEN];		/* 0xd7 */
--	u8 res10[2];
--	u8 vendor_name[7];
--	u8 res11[2];
--	u8 device_name[0x0b];		/* 0xe8 */
--	u8 res12[2];
--	u8 serial[0x0b];		/* 0xf5 */
--	u8 res13[0x30];
-+	u8 device_info[80];
-+	u8 res11[3];
- 	u8 unknown[0x0d];		/* 0x130 */
--	u8 res14[0xc3];
-+	u8 res12[0xc3];
- };
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 39b9f311c4ef..f800872f867b 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -93,11 +93,15 @@ do {							\
  
- struct rtl8xxxu_reg8val {
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-index 380e86f9e00b..837a1b9d189d 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-@@ -562,9 +562,43 @@ rtl8192e_set_tx_power(struct rtl8xxxu_priv *priv, int channel, bool ht40)
- 	}
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *pmd;
++	pmd_t *pmd = NULL;
++	struct page *pg;
+ 
+-	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
+-	if (pmd)
++	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
++	if (pg) {
++		pgtable_pmd_page_ctor(pg);
++		pmd = (pmd_t *)page_address(pg);
+ 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
++	}
+ 	return pmd;
  }
  
-+static void rtl8192eu_log_next_device_info(struct rtl8xxxu_priv *priv,
-+					   char *record_name,
-+					   char *device_info,
-+					   unsigned int *record_offset)
-+{
-+	char *record = device_info + *record_offset;
-+
-+	/* A record is [ total length | 0x03 | value ] */
-+	unsigned char l = record[0];
-+
-+	/*
-+	 * The whole device info section seems to be 80 characters, make sure
-+	 * we don't read further.
-+	 */
-+	if (*record_offset + l > 80) {
-+		dev_warn(&priv->udev->dev,
-+			 "invalid record length %d while parsing \"%s\" at offset %u.\n",
-+			 l, record_name, *record_offset);
-+		return;
-+	}
-+
-+	if (l >= 2) {
-+		char value[80];
-+
-+		memcpy(value, &record[2], l - 2);
-+		value[l - 2] = '\0';
-+		dev_info(&priv->udev->dev, "%s: %s\n", record_name, value);
-+		*record_offset = *record_offset + l;
-+	} else {
-+		dev_info(&priv->udev->dev, "%s not available.\n", record_name);
-+	}
-+}
-+
- static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
- {
- 	struct rtl8192eu_efuse *efuse = &priv->efuse_wifi.efuse8192eu;
-+	unsigned int record_offset;
- 	int i;
- 
- 	if (efuse->rtl_id != cpu_to_le16(0x8129))
-@@ -612,12 +646,25 @@ static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
- 	priv->has_xtalk = 1;
- 	priv->xtalk = priv->efuse_wifi.efuse8192eu.xtal_k & 0x3f;
- 
--	dev_info(&priv->udev->dev, "Vendor: %.7s\n", efuse->vendor_name);
--	dev_info(&priv->udev->dev, "Product: %.11s\n", efuse->device_name);
--	if (memchr_inv(efuse->serial, 0xff, 11))
--		dev_info(&priv->udev->dev, "Serial: %.11s\n", efuse->serial);
--	else
--		dev_info(&priv->udev->dev, "Serial not available.\n");
-+	/*
-+	 * device_info section seems to be laid out as records
-+	 * [ total length | 0x03 | value ] so:
-+	 * - vendor length + 2
-+	 * - 0x03
-+	 * - vendor string (not null terminated)
-+	 * - product length + 2
-+	 * - 0x03
-+	 * - product string (not null terminated)
-+	 * Then there is one or 2 0x00 on all the 4 devices I own or found
-+	 * dumped online.
-+	 * As previous version of the code handled an optional serial
-+	 * string, I now assume there may be a third record if the
-+	 * length is not 0.
-+	 */
-+	record_offset = 0;
-+	rtl8192eu_log_next_device_info(priv, "Vendor", efuse->device_info, &record_offset);
-+	rtl8192eu_log_next_device_info(priv, "Product", efuse->device_info, &record_offset);
-+	rtl8192eu_log_next_device_info(priv, "Serial", efuse->device_info, &record_offset);
- 
- 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_EFUSE) {
- 		unsigned char *raw = priv->efuse_wifi.raw;
 -- 
 2.30.2
 
