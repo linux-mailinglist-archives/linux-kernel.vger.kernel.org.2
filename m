@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C7A3CE6BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAA63CE6C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351305AbhGSQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
+        id S1351615AbhGSQNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:13:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346108AbhGSPKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346103AbhGSPKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:10:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F2AB60FED;
-        Mon, 19 Jul 2021 15:50:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03A84601FD;
+        Mon, 19 Jul 2021 15:50:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709833;
-        bh=Z6ZydqLjlMDD66kySE5xSLlnlFJ4OA8zpDyXLTtJ/IE=;
+        s=korg; t=1626709835;
+        bh=NEL5vn7iogq6X0R54soqCwBBVtUiO6NdcHvE9jqLBNI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o47dLeVFN3sITqMtY9SNTjg8P7PxW+FhbyLw4SmQ+dcuwzw64jZWobfQTLKRXx9l6
-         X6b6L/PvNpNZYsiI+mXqV9+j4n/rHoUP50poVSko2u9cAm7bRb7aVOIv2crq+HZPgQ
-         RtOEcDUSlFtTGJDMtWjOQbpguqsclJUkHOyfrN8M=
+        b=nk1OrmzSNe8MSAO3XNZ3/ZVMwZi8FP9Ywz4knUE9ChCE8z5J4n1vjwjqYxzPENkjI
+         ecBsddfByM7Szl7v+zu/tlxlrcZi+pgnVYehLr/lznN/tuYlVEaKQ2MneWA8wnrc8E
+         047QtaNRQf33S0/LHNQYp65udA+Cx5hFVKrHa2gc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 116/149] reset: a10sr: add missing of_match_table reference
-Date:   Mon, 19 Jul 2021 16:53:44 +0200
-Message-Id: <20210719144928.880010531@linuxfoundation.org>
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 117/149] ARM: exynos: add missing of_node_put for loop iteration
+Date:   Mon, 19 Jul 2021 16:53:45 +0200
+Message-Id: <20210719144929.095444365@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
 References: <20210719144901.370365147@linuxfoundation.org>
@@ -43,37 +42,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 466ba3c8ff4fae39e455ff8d080b3d5503302765 ]
+[ Upstream commit 48d551bf20858240f38a0276be3016ff379918ac ]
 
-The driver defined of_device_id table but did not use it with
-of_match_table.  This prevents usual matching via devicetree and causes
-a W=1 warning:
+Early exits from for_each_compatible_node() should decrement the
+node reference counter.  Reported by Coccinelle:
 
-  drivers/reset/reset-a10sr.c:111:34: warning:
-    ‘a10sr_reset_of_match’ defined but not used [-Wunused-const-variable=]
+  arch/arm/mach-exynos/exynos.c:52:1-25: WARNING:
+    Function "for_each_compatible_node" should have of_node_put() before break around line 58.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 627006820268 ("reset: Add Altera Arria10 SR Reset Controller")
+Fixes: b3205dea8fbf ("ARM: EXYNOS: Map SYSRAM through generic DT bindings")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210507112803.20012-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20210425174945.164612-1-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/reset-a10sr.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/mach-exynos/exynos.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/reset/reset-a10sr.c b/drivers/reset/reset-a10sr.c
-index 7eacc89382f8..99b3bc8382f3 100644
---- a/drivers/reset/reset-a10sr.c
-+++ b/drivers/reset/reset-a10sr.c
-@@ -118,6 +118,7 @@ static struct platform_driver a10sr_reset_driver = {
- 	.probe	= a10sr_reset_probe,
- 	.driver = {
- 		.name		= "altr_a10sr_reset",
-+		.of_match_table	= a10sr_reset_of_match,
- 	},
- };
- module_platform_driver(a10sr_reset_driver);
+diff --git a/arch/arm/mach-exynos/exynos.c b/arch/arm/mach-exynos/exynos.c
+index 9aa483366ebc..f226d4f57bf4 100644
+--- a/arch/arm/mach-exynos/exynos.c
++++ b/arch/arm/mach-exynos/exynos.c
+@@ -46,6 +46,7 @@ void __init exynos_sysram_init(void)
+ 		sysram_base_addr = of_iomap(node, 0);
+ 		sysram_base_phys = of_translate_address(node,
+ 					   of_get_address(node, 0, NULL, NULL));
++		of_node_put(node);
+ 		break;
+ 	}
+ 
+@@ -53,6 +54,7 @@ void __init exynos_sysram_init(void)
+ 		if (!of_device_is_available(node))
+ 			continue;
+ 		sysram_ns_base_addr = of_iomap(node, 0);
++		of_node_put(node);
+ 		break;
+ 	}
+ }
 -- 
 2.30.2
 
