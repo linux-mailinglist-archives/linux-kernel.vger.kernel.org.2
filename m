@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DFB3CEACF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3926C3CE9A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355165AbhGSRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43682 "EHLO mail.kernel.org"
+        id S1346721AbhGSQ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348360AbhGSPmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:42:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BC4660E0C;
-        Mon, 19 Jul 2021 16:22:02 +0000 (UTC)
+        id S236397AbhGSPcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:32:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 381F761415;
+        Mon, 19 Jul 2021 16:10:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711722;
-        bh=l7HpfyGaASe1EXqssYiTB8W6w7CPgRkUmS+BAL1qRFQ=;
+        s=korg; t=1626711022;
+        bh=y1sY3euYtBZvP8OHnxjT729dgnQjvBrBmXfJxI2ZmLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xfSR1x219IloCC541eUrfsvt8boPC3RyoXvkimGTmXSztO8oN88x2ZK1YzIDcDHhi
-         2/IDsgNjBCsh39Dgkn5fIj5rdw790/qAXakyL0x+kv9lo0CNk+0rBfnspQK+D15pPx
-         OZocLTuLIoGLLL/+rtKRsv486TbiykO47q7VfqP8=
+        b=vVG5alQdkmAhM3m+L3cjSfG9IPd3DG3PV1IER13kAN75SnStTFL9duNo8XkeIQrDA
+         7vkfcFl08BvZ4UwFFF76HjivUoAdangyAnumrG2oSMkvvLyWKFGvpI6x8dpoBIBSvc
+         vd7loXzWwaNvWtVBgPTb6HNZo40hiUXYkY3qhmGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Mack <daniel@zonque.org>,
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 081/292] serial: tty: uartlite: fix console setup
+Subject: [PATCH 5.13 197/351] virtio_console: Assure used length from device is limited
 Date:   Mon, 19 Jul 2021 16:52:23 +0200
-Message-Id: <20210719144945.179891420@linuxfoundation.org>
+Message-Id: <20210719144951.482643127@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,90 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Mack <daniel@zonque.org>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit d157fca711ad42e75efef3444c83d2e1a17be27a ]
+[ Upstream commit d00d8da5869a2608e97cfede094dfc5e11462a46 ]
 
-Remove the hack to assign the global console_port variable at probe time.
-This assumption that cons->index is -1 is wrong for systems that specify
-'console=' in the cmdline (or 'stdout-path' in dts). Hence, on such system
-the actual console assignment is ignored, and the first UART that happens
-to be probed is used as console instead.
+The buf->len might come from an untrusted device. This
+ensures the value would not exceed the size of the buffer
+to avoid data corruption or loss.
 
-Move the logic to console_setup() and map the console to the correct port
-through the array of available ports instead.
-
-Signed-off-by: Daniel Mack <daniel@zonque.org>
-Link: https://lore.kernel.org/r/20210528133321.1859346-1-daniel@zonque.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Link: https://lore.kernel.org/r/20210525125622.1203-1-xieyongji@bytedance.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/uartlite.c | 27 ++++++---------------------
- 1 file changed, 6 insertions(+), 21 deletions(-)
+ drivers/char/virtio_console.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
-index f42ccc40ffa6..a5f15f22d9ef 100644
---- a/drivers/tty/serial/uartlite.c
-+++ b/drivers/tty/serial/uartlite.c
-@@ -505,21 +505,23 @@ static void ulite_console_write(struct console *co, const char *s,
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index 59dfd9c421a1..7eaf303a7a86 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -475,7 +475,7 @@ static struct port_buffer *get_inbuf(struct port *port)
  
- static int ulite_console_setup(struct console *co, char *options)
- {
--	struct uart_port *port;
-+	struct uart_port *port = NULL;
- 	int baud = 9600;
- 	int bits = 8;
- 	int parity = 'n';
- 	int flow = 'n';
- 
--
--	port = console_port;
-+	if (co->index >= 0 && co->index < ULITE_NR_UARTS)
-+		port = ulite_ports + co->index;
- 
- 	/* Has the device been initialized yet? */
--	if (!port->mapbase) {
-+	if (!port || !port->mapbase) {
- 		pr_debug("console on ttyUL%i not present\n", co->index);
- 		return -ENODEV;
+ 	buf = virtqueue_get_buf(port->in_vq, &len);
+ 	if (buf) {
+-		buf->len = len;
++		buf->len = min_t(size_t, len, buf->size);
+ 		buf->offset = 0;
+ 		port->stats.bytes_received += len;
  	}
+@@ -1709,7 +1709,7 @@ static void control_work_handler(struct work_struct *work)
+ 	while ((buf = virtqueue_get_buf(vq, &len))) {
+ 		spin_unlock(&portdev->c_ivq_lock);
  
-+	console_port = port;
-+
- 	/* not initialized yet? */
- 	if (!port->membase) {
- 		if (ulite_request_port(port))
-@@ -655,17 +657,6 @@ static int ulite_assign(struct device *dev, int id, u32 base, int irq,
+-		buf->len = len;
++		buf->len = min_t(size_t, len, buf->size);
+ 		buf->offset = 0;
  
- 	dev_set_drvdata(dev, port);
- 
--#ifdef CONFIG_SERIAL_UARTLITE_CONSOLE
--	/*
--	 * If console hasn't been found yet try to assign this port
--	 * because it is required to be assigned for console setup function.
--	 * If register_console() don't assign value, then console_port pointer
--	 * is cleanup.
--	 */
--	if (ulite_uart_driver.cons->index == -1)
--		console_port = port;
--#endif
--
- 	/* Register the port */
- 	rc = uart_add_one_port(&ulite_uart_driver, port);
- 	if (rc) {
-@@ -675,12 +666,6 @@ static int ulite_assign(struct device *dev, int id, u32 base, int irq,
- 		return rc;
- 	}
- 
--#ifdef CONFIG_SERIAL_UARTLITE_CONSOLE
--	/* This is not port which is used for console that's why clean it up */
--	if (ulite_uart_driver.cons->index == -1)
--		console_port = NULL;
--#endif
--
- 	return 0;
- }
- 
+ 		handle_control_message(vq->vdev, portdev, buf);
 -- 
 2.30.2
 
