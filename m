@@ -2,132 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2353CD625
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E883CD629
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241035AbhGSNNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 09:13:08 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:6370 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241026AbhGSNNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 09:13:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1626702821; x=1658238821;
-  h=message-id:subject:from:to:cc:date:mime-version:
-   content-transfer-encoding;
-  bh=Zqzcp0xqv3eYdauf8qb63WRm1VeBKPhKQJtvMJl77Sg=;
-  b=PlUTGbdLHpCTG5XOErQyT3viGq9B5jOAlAsW/0Hkm71bmqmNQQYZCWpW
-   9RNORWQfk78jqSqPLyRiFdndjnIkQMs289bsVMCapF3o49GsPuN4X9Q0H
-   31dzCyne7CEcgb9i7AHA8VNcxGCS5kgfQ7CW0l8Fwwq7t+mnb+e2KXfti
-   WZjWa9rYS89u86E+osWEl2ImgyL6fl598m8MSbJQDIakGqjnlt6i/d/Gn
-   Sl7hyIL0FBPM60X5IeDkPe2D8GcZiFJBVdUZTSrza7ZoEUZwkLn/LVFoX
-   AmslZ6CDYgLdoTfLasiP4bsPOG4zTom++UNDFjdq4fK8t3H/FzRMr39rv
-   g==;
-X-IronPort-AV: E=Sophos;i="5.84,252,1620684000"; 
-   d="scan'208";a="18524165"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 19 Jul 2021 15:53:40 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 19 Jul 2021 15:53:40 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 19 Jul 2021 15:53:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1626702820; x=1658238820;
-  h=message-id:subject:from:to:cc:date:mime-version:
-   content-transfer-encoding;
-  bh=Zqzcp0xqv3eYdauf8qb63WRm1VeBKPhKQJtvMJl77Sg=;
-  b=XC+jPQQZcft8tbKvcrOoqjAKgRNYGrdDMq+8SvzhVrkZOeRc2j1GsL0i
-   dM/p60WUjhiiODjaW/4c60i5P1v1xT9s6nkN2mF6SBEGr4c36MFO5lpp4
-   Nt1oY0j/vtjoKQRnAndgmZiK7meQlGkPJfyin7eA+q+vXST+8taaWG0FF
-   DNhcBvoaZGxUVXiPawnJyJI14R3UzB7LHdVEBTxldd/UHFT6M/q12WHT3
-   kQwPmq9aj+0pylq0lFIpy4t8p73GXpn2YoWRVpJThUSSENdek6KKWyzmu
-   tVngIZ82KBdBkr0/dQY+eP92Miftj+FoDJQLVT4StiKfLEietgtRPSRO0
-   A==;
-X-IronPort-AV: E=Sophos;i="5.84,252,1620684000"; 
-   d="scan'208";a="18524164"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 19 Jul 2021 15:53:40 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 3FD39280070;
-        Mon, 19 Jul 2021 15:53:40 +0200 (CEST)
-Message-ID: <eb27b79ce46bde0202a4e7b047a3aaec8338fb6d.camel@ew.tq-group.com>
-Subject: Duplicate calls to regmap_debugfs_init() through regmap_attach_dev()
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 19 Jul 2021 15:53:38 +0200
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        id S241044AbhGSNNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 09:13:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53062 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S241029AbhGSNNf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 09:13:35 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JDiN4H195829;
+        Mon, 19 Jul 2021 09:53:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bG+X0zh0Xpv72GLaZ0EbCCB+IPhr2RzBO2EEM9ydBUw=;
+ b=GKZpGepeYY5QsC5SEy3aYS33TZ/rwxRh+ZKJpuxs9Oa6Tqmk+w+A0ATWomkGFBnBddXJ
+ hlm+gldCw/NJhECVedpgIj/lru79d95h5BNSQXNTclYTq4pAAKBJ2orC//JManFbAokx
+ 8y6QKrH9zxW5DEUkJgp6EbY87gbHTA487jtoG6aYDqh8Ldqt+RaoezgWCly/Zd2PDUr6
+ X+x4iYVCeR7L/SEHRNsx8G/2/+eF+cHdnGW6bveyYha2IFHWrBE8KhbDUDsHeyUfk/3R
+ GSRBDkKX/XkvgMls44M4GH6mecfpKdc9pCS1owqUxtiDziWm1WKpTKZElcxrrsaQ4zUY Zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39w7x4e6m7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 09:53:51 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16JDipJs002148;
+        Mon, 19 Jul 2021 09:53:50 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39w7x4e6gd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 09:53:50 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16JDCXxu018923;
+        Mon, 19 Jul 2021 13:53:46 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 39upu88r2c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 13:53:46 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16JDpP1L21889350
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jul 2021 13:51:25 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 37A6AAE058;
+        Mon, 19 Jul 2021 13:53:44 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4921AE059;
+        Mon, 19 Jul 2021 13:53:43 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.62.205])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Jul 2021 13:53:43 +0000 (GMT)
+Subject: Re: [PATCH v5 02/11] powerpc/kernel/iommu: Add new
+ iommu_table_in_use() helper
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        kernel test robot <lkp@intel.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210716082755.428187-1-leobras.c@gmail.com>
+ <20210716082755.428187-3-leobras.c@gmail.com>
+From:   Frederic Barrat <fbarrat@linux.ibm.com>
+Message-ID: <29c199f3-63a8-3edb-b29e-de157431d89f@linux.ibm.com>
+Date:   Mon, 19 Jul 2021 15:53:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210716082755.428187-3-leobras.c@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TFluKUD2HZvcl5_ntqKYotqIH5VodY1O
+X-Proofpoint-GUID: RfAfaSxtRfVXmhLnVoCkiQZccTmjhGoO
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-19_05:2021-07-19,2021-07-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 clxscore=1015 bulkscore=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
+ phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107190078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
 
-I hope I got the right list of maintainers for this issue, which seems
-to be rooted in the interaction between regmap, syscon and pinctrl-imx.
 
-With recent kernels (observed on v5.10.y, but the code doesn't look
-significantly different on master/next) I've seen the following message
-on boot on i.MX6UL SoCs:
+On 16/07/2021 10:27, Leonardo Bras wrote:
+> @@ -1099,18 +1105,13 @@ int iommu_take_ownership(struct iommu_table *tbl)
+>   	for (i = 0; i < tbl->nr_pools; i++)
+>   		spin_lock_nest_lock(&tbl->pools[i].lock, &tbl->large_pool.lock);
+>   
+> -	iommu_table_release_pages(tbl);
+> -
+> -	if (!bitmap_empty(tbl->it_map, tbl->it_size)) {
+> +	if (iommu_table_in_use(tbl)) {
+>   		pr_err("iommu_tce: it_map is not empty");
+>   		ret = -EBUSY;
+> -		/* Undo iommu_table_release_pages, i.e. restore bit#0, etc */
+> -		iommu_table_reserve_pages(tbl, tbl->it_reserved_start,
+> -				tbl->it_reserved_end);
+> -	} else {
+> -		memset(tbl->it_map, 0xff, sz);
+>   	}
+>   
+> +	memset(tbl->it_map, 0xff, sz);
+> +
 
-> debugfs: Directory 'dummy-iomuxc-gpr@20e4000' with parent 'regmap' already present!
 
-I've tracked this down to this piece of code in the pinctrl-imx driver:
+So if the table is not empty, we fail (EBUSY) but we now also completely 
+overwrite the bitmap. It was in an unexpected state, but we're making it 
+worse. Or am I missing something?
 
-> 		gpr = syscon_regmap_lookup_by_compatible(info->gpr_compatible);
-> 		if (!IS_ERR(gpr))
-> 			regmap_attach_dev(&pdev->dev, gpr, &config);
+   Fred
 
-__regmap_init() (called by syscon_regmap_lookup_by_compatible()) has:
 
-> 	if (dev) {
-> 		ret = regmap_attach_dev(dev, map, config);
-> 		if (ret != 0)
-> 			goto err_regcache;
-> 	} else {
-> 		regmap_debugfs_init(map);
-> 	}
-
-As dev is NULL in this call, regmap_debugfs_init() will be called.
-
-pinctrl-imx then calls regmap_attach_dev(), which calls
-regmap_debugfs_init() again. Unless I'm missing something, this is very
-problematic: regmap_debugfs_init() does a lot more than just adding
-debugfs files - it also initializes list heads and mutices in the
-regmap structure.
-
-It seems to me that there is no correct way to use regmap_attach_dev()
-from outside of __regmap_init(). In particular on a syscon regmap that
-may be shared between different drivers, setting map->dev looks wrong
-to me.
-
-The total number of drivers that call regmap_attach_dev() is very low
-(I count 5), but all of them use it on a syscon regmap. Some of them
-perform further operations on the regmap as if they owned it, like
-modifying the cache configuration.
-
-While not directly related, could anyone tell me why the locking around
-syscon_list in the syscon driver is correct (or if it is in fact
-incorrect)? It looks to me like two tasks might call
-device_node_get_regmap() at the same time, leading to two concurrent
-constructions of the same syscon regmap.
-
-Kind regards,
-Matthias
-
+>   	for (i = 0; i < tbl->nr_pools; i++)
+>   		spin_unlock(&tbl->pools[i].lock);
+>   	spin_unlock_irqrestore(&tbl->large_pool.lock, flags);
