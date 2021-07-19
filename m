@@ -2,142 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD8C3CED09
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4557D3CED0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382745AbhGSRmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        id S1382762AbhGSRm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358366AbhGSQxF (ORCPT
+        with ESMTP id S1358549AbhGSQxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:53:05 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194C9C02524F
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:09:38 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id f93-20020a9d03e60000b02904b1f1d7c5f4so18925613otf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:28:20 -0700 (PDT)
+        Mon, 19 Jul 2021 12:53:15 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077A9C0A8878;
+        Mon, 19 Jul 2021 10:10:23 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id g16so23011472wrw.5;
+        Mon, 19 Jul 2021 10:29:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wcwQJYf67o94a9TBPs5MmeYX0NSO4HBqK2b4H8Qxl1k=;
-        b=Qp4Pg9+ZODgt1PgZecCPV9NqTHTA+BZkY/Hc/xTZHcjW4cSUZ6my1w0e+pwdM3zFgD
-         WRUs74b/eQHSx2OGTREIvPC1APn3pkEVLlnBhBImloXWbbCWWYWVgke8p2ZcYvq6bX4z
-         6ehYVSNIzbTMLkjpu52gwzAHwbHD2GObMY42MQDUg4ffPnBjLpYD8xQX8qGqRQqLRW+/
-         NmdXDIHvymD/sOrMWH25AfNVc8Vl1SvUsuhWO7xMUePmjUyDRY6iBLUWDr7/B00oWBmu
-         ghuhG5wtbIsvLA0aLhIZRmxBw7LmZTQGtm2jeLnhgSmKYkAlbRAGKCkZNuF4A2nNCzl/
-         k7+A==
+        d=gmail.com; s=20161025;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=SspOufy8IxePVa2SqHnpK2fSzNtm7ELeqTvtgBfDdaI=;
+        b=Mznpbm+pHfyK6OsXSEIdTTal9vHlqbcv/Bg/FMSn4v2kzcLb1IdGpGaGf11XIM49Pn
+         YCC57yySK942BiE4xahv6Naw15yAszkPpe3+uPk+bGs/bzXjyd/16PlVepy4BlfMlcJs
+         K+Z7Ldfj0rE3u8YhgtxAwcS49J6hjpvC6nKQHWOlsykOxuGV6Ftg5k/EeGE5LfBTrxZN
+         3pBTb5qbdBn2lhfAhwvPx45dyloziTzw/XXxsodSVLdUSmbAe9BdKSl3A5t9P2b/KG6Q
+         ArK/G3RZkRVo3OzIGr9eLidXjlrYXOHcsCMZiBGDHofpCgGar26lE8TyWNWWC1XpbRZO
+         h4CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wcwQJYf67o94a9TBPs5MmeYX0NSO4HBqK2b4H8Qxl1k=;
-        b=pdcTbYkcFoHwcH/8sFYmnrz4WCm3OhZJtWZjVfrzYANhlRX0m7MKZXOinixpzmTbbA
-         JPTewaK99EMV85kgiE/JSff024qynEZ6+eXkNjN04ue6b/rYSaAWaHtxhkD9dxBvlxem
-         MmC1M5tZSiXamJhda09D1mICPg7sFQn2T8nUh85rXbH2UaJrRJxcPovO+nX8D3xH6xtA
-         foMmGKjvUItqNTwnW2lwN59RKSfWt7B/5EkOSkTTo++hes5S7beDTTIKA3ki6tXPT5zd
-         3yQz8HAhbbs8Kg4Mbp8myxyDv2ia8Sik6jjttta1h4ar6sNsk+VSCBLf09LdpPflIjOe
-         tm7Q==
-X-Gm-Message-State: AOAM531obdSGBANNEz0aMsPneBuQFcnr366Rfv+cQ4uA8uemggatnI9q
-        uL2du9Rloi1QUf9E1MUcp5kRqffALRmCIvELgXqvtA==
-X-Google-Smtp-Source: ABdhPJzUI/tvjcaqBTVTLQvqMVFNcLp5pNnHuNKOF/yo0hg4caIfHYLZ3XY+PpIK957Z1HK66E+79t8qRdmsxq1OLIM=
-X-Received: by 2002:a9d:32f:: with SMTP id 44mr19289969otv.266.1626715699953;
- Mon, 19 Jul 2021 10:28:19 -0700 (PDT)
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SspOufy8IxePVa2SqHnpK2fSzNtm7ELeqTvtgBfDdaI=;
+        b=S16Qrw5gQCfYzrGbfCscKY/fCKWXnWxErs1pWWdkQXyLVAonhmBKLRDU/cyPjfUP+k
+         52HYc1CcdX3hRbkriiff0HAigFDPVI8bL8E3I+9xCIa3XwtPhCutSzxSDXQtKbBKFsBI
+         UIGj+HAL+RiPNn6/NNSsnISVgdWjRQauRoRsnIcD0qqqDMw0JNHxtgygcGaGAafd+a2w
+         L0awVpMKODqXdjrj/yqx4eilMVjHvE2ollp8xtbBOQBz8fLBTzPMGLSQ/+wol3VNjwff
+         ClNEq5S6uN+iHvpO+K1JS0gOKPVRY/AyNh+NGM3ZmTp/iSVLSDfEpHOMpEkKh5unXyNf
+         2lHw==
+X-Gm-Message-State: AOAM5311QUf+6NbZCoXFbmOOy0F8LIZ+bGzWtY8gQQnnGREX3SHqi+n9
+        /hrt7yE5IL07hXrvNjTul2M=
+X-Google-Smtp-Source: ABdhPJwkN43JzRKrh+BMwp0S+4awvcgTmrnnz61Jxi1T51tdU9Bc2r8sSRzqm9E0G4VxPuCoRO3r9g==
+X-Received: by 2002:a5d:5692:: with SMTP id f18mr30195074wrv.135.1626715740867;
+        Mon, 19 Jul 2021 10:29:00 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.204])
+        by smtp.gmail.com with ESMTPSA id l14sm20057228wrs.22.2021.07.19.10.28.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 10:29:00 -0700 (PDT)
+To:     Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+ac957324022b7132accf@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        will@kernel.org
+References: <000000000000e1f38205c73b72cc@google.com>
+ <c57f80f7-440b-9f12-a7b7-a58ed7ab400a@gmail.com>
+ <3ff29943-0f93-1381-1c8a-46f80aecd0b4@kernel.dk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [syzbot] INFO: task hung in io_sq_thread_park (2)
+Message-ID: <b48f3e01-c07d-56ac-3624-afc74ef08acd@gmail.com>
+Date:   Mon, 19 Jul 2021 18:28:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210719144942.514164272@linuxfoundation.org>
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 19 Jul 2021 22:58:08 +0530
-Message-ID: <CA+G9fYts0yyTCEpSQf=1AEWEJ5Y7=o=3fGE7k5rhPA5mXJCBng@mail.gmail.com>
-Subject: Re: [PATCH 5.12 000/292] 5.12.19-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3ff29943-0f93-1381-1c8a-46f80aecd0b4@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 at 21:54, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> NOTE, this is going to be the LAST 5.12.y release.  After this one, it
-> is end-of-life for this kernel branch.  Please move to 5.13.y at this
-> point in time.
->
-> ---------------
->
-> This is the start of the stable review cycle for the 5.12.19 release.
-> There are 292 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.19-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 7/19/21 6:13 PM, Jens Axboe wrote:
+> On 7/19/21 10:57 AM, Pavel Begunkov wrote:
+>> On 7/16/21 11:57 AM, syzbot wrote:
+>>> Hello,
+>>>
+>>> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+>>> WARNING in io_uring_cancel_generic
+>>
+>> __arm_poll doesn't remove a second poll entry in case of failed
+>> __io_queue_proc(), it's most likely the cause here.
+>>
+>> #syz test: https://github.com/isilence/linux.git syztest_sqpoll_hang
+> 
+> Was my thought on seeing the last debug run too. Haven't written a test
+> case, but my initial thought was catching this at the time that double
+> poll is armed, in __io_queue_proc(). Totally untested, just tossing
+> it out there.
 
-Following build errors noticed on arm64 architecture on 5.12 branch.
+Wouldn't help, unfortunately, the way syz triggers it is making a
+request to go through __io_queue_proc() three times.
 
-> Kishon Vijay Abraham I <kishon@ti.com>
->     arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for SERDES
+Either it's 3 waitqueues or we need to extend the check below to
+the double poll entry.
 
+if (poll_one->head == head)
+	return;
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
-CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
-'HOSTCC=sccache gcc'
-/builds/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts:12:10:
-fatal error: dt-bindings/phy/phy-cadence.h: No such file or directory
-   12 | #include <dt-bindings/phy/phy-cadence.h>
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[3]: *** [scripts/Makefile.lib:336:
-arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dtb] Error 1
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 0cac361bf6b8..ed33de5fffd2 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -5002,6 +5002,9 @@ static void __io_queue_proc(struct io_poll_iocb *poll, struct io_poll_table *pt,
+>  	if (unlikely(poll->head)) {
+>  		struct io_poll_iocb *poll_one = poll;
+>  
+> +		/* first poll failed, don't arm double poll */
+> +		if (pt->error)
+> +			return;
+>  		/* already have a 2nd entry, fail a third attempt */
+>  		if (*poll_ptr) {
+>  			pt->error = -EINVAL;
+> 
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-ref:
-https://builds.tuxbuild.com/1vXepgrWZ3f66we49R8XJj2fGTR/
-https://builds.tuxbuild.com/1vXepgrWZ3f66we49R8XJj2fGTR/config
-
-Steps to reproduce:
---------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-
-tuxmake --runtime podman --target-arch arm64 --toolchain gcc-10
---kconfig defconfig
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Pavel Begunkov
