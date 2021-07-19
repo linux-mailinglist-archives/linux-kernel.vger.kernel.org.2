@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4163CE5D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511E43CE650
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349800AbhGSPyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:54:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59018 "EHLO mail.kernel.org"
+        id S237429AbhGSQEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:04:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345521AbhGSPEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C4A6120A;
-        Mon, 19 Jul 2021 15:44:11 +0000 (UTC)
+        id S1345551AbhGSPEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B68E161221;
+        Mon, 19 Jul 2021 15:44:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709451;
-        bh=FgqSjQ3cKtP/OqAQ3Ef4jS4Y62Dr+ipSI10gqyoyvrg=;
+        s=korg; t=1626709454;
+        bh=ISuSGZrA2s+qVlTUCJJysGqf5n68q9hKA1W7aqYp+tY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ncgMqp5ybNxoDZE9goHOM2mGlFfjAxh8v8uZvofex6cs0gypRFkqPcdx89kR3lexj
-         zDZXqhB+1viCvpjbdKGcOhgINCecUpsm6FenMxxB7bADvJsXJl+HQAFG5KvY+mQWJd
-         SNLBHSy6Wg1y8334M3OlY+Tgf+lFf4gpdPSxXLVc=
+        b=W/RW64RJNhJ5PlW+otha4sE4fDnlbNiIIqre7Sl8EU9Aist+yEOJpiX8gHV/m+l+W
+         xHogrgHGymsjWh1YPR3JsJcfQIPsxgHtkO00Agji5xOJWoW3TfH2QZfvtShh6tjb/E
+         YYVEeqnSIKzzdLUKcf9+ud0cbQdjdkXcJjpx3rFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Sandor Bodo-Merle <sbodomerle@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Ray Jui <ray.jui@broadcom.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 389/421] ubifs: Set/Clear I_LINKABLE under i_lock for whiteout inode
-Date:   Mon, 19 Jul 2021 16:53:20 +0200
-Message-Id: <20210719144959.864671358@linuxfoundation.org>
+Subject: [PATCH 4.19 390/421] PCI: iproc: Fix multi-MSI base vector number allocation
+Date:   Mon, 19 Jul 2021 16:53:21 +0200
+Message-Id: <20210719144959.895754338@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,76 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Sandor Bodo-Merle <sbodomerle@gmail.com>
 
-[ Upstream commit a801fcfeef96702fa3f9b22ad56c5eb1989d9221 ]
+[ Upstream commit e673d697b9a234fc3544ac240e173cef8c82b349 ]
 
-xfstests-generic/476 reports a warning message as below:
+Commit fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+introduced multi-MSI support with a broken allocation mechanism (it failed
+to reserve the proper number of bits from the inner domain).  Natural
+alignment of the base vector number was also not guaranteed.
 
-WARNING: CPU: 2 PID: 30347 at fs/inode.c:361 inc_nlink+0x52/0x70
-Call Trace:
-  do_rename+0x502/0xd40 [ubifs]
-  ubifs_rename+0x8b/0x180 [ubifs]
-  vfs_rename+0x476/0x1080
-  do_renameat2+0x67c/0x7b0
-  __x64_sys_renameat2+0x6e/0x90
-  do_syscall_64+0x66/0xe0
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Following race case can cause this:
-         rename_whiteout(Thread 1)             wb_workfn(Thread 2)
-ubifs_rename
-  do_rename
-                                          __writeback_single_inode
-					    spin_lock(&inode->i_lock)
-    whiteout->i_state |= I_LINKABLE
-                                            inode->i_state &= ~dirty;
----- How race happens on i_state:
-    (tmp = whiteout->i_state | I_LINKABLE)
-		                           (tmp = inode->i_state & ~dirty)
-    (whiteout->i_state = tmp)
-		                           (inode->i_state = tmp)
-----
-					    spin_unlock(&inode->i_lock)
-    inc_nlink(whiteout)
-    WARN_ON(!(inode->i_state & I_LINKABLE)) !!!
-
-Fix to add i_lock to avoid i_state update race condition.
-
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Link: https://lore.kernel.org/r/20210622152630.40842-1-sbodomerle@gmail.com
+Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+Reported-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Pali Rohár <pali@kernel.org>
+Acked-by: Ray Jui <ray.jui@broadcom.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/dir.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/pci/controller/pcie-iproc-msi.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 8fe2ee5462a0..dbdf6a4230fb 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1354,7 +1354,10 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 			goto out_release;
- 		}
+diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+index dc953c73cb56..b43ae4c06f30 100644
+--- a/drivers/pci/controller/pcie-iproc-msi.c
++++ b/drivers/pci/controller/pcie-iproc-msi.c
+@@ -252,18 +252,18 @@ static int iproc_msi_irq_domain_alloc(struct irq_domain *domain,
  
-+		spin_lock(&whiteout->i_lock);
- 		whiteout->i_state |= I_LINKABLE;
-+		spin_unlock(&whiteout->i_lock);
-+
- 		whiteout_ui = ubifs_inode(whiteout);
- 		whiteout_ui->data = dev;
- 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
-@@ -1447,7 +1450,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	mutex_lock(&msi->bitmap_lock);
  
- 		inc_nlink(whiteout);
- 		mark_inode_dirty(whiteout);
+-	/* Allocate 'nr_cpus' number of MSI vectors each time */
+-	hwirq = bitmap_find_next_zero_area(msi->bitmap, msi->nr_msi_vecs, 0,
+-					   msi->nr_cpus, 0);
+-	if (hwirq < msi->nr_msi_vecs) {
+-		bitmap_set(msi->bitmap, hwirq, msi->nr_cpus);
+-	} else {
+-		mutex_unlock(&msi->bitmap_lock);
+-		return -ENOSPC;
+-	}
++	/*
++	 * Allocate 'nr_irqs' multiplied by 'nr_cpus' number of MSI vectors
++	 * each time
++	 */
++	hwirq = bitmap_find_free_region(msi->bitmap, msi->nr_msi_vecs,
++					order_base_2(msi->nr_cpus * nr_irqs));
+ 
+ 	mutex_unlock(&msi->bitmap_lock);
+ 
++	if (hwirq < 0)
++		return -ENOSPC;
 +
-+		spin_lock(&whiteout->i_lock);
- 		whiteout->i_state &= ~I_LINKABLE;
-+		spin_unlock(&whiteout->i_lock);
-+
- 		iput(whiteout);
- 	}
+ 	for (i = 0; i < nr_irqs; i++) {
+ 		irq_domain_set_info(domain, virq + i, hwirq + i,
+ 				    &iproc_msi_bottom_irq_chip,
+@@ -284,7 +284,8 @@ static void iproc_msi_irq_domain_free(struct irq_domain *domain,
+ 	mutex_lock(&msi->bitmap_lock);
+ 
+ 	hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq);
+-	bitmap_clear(msi->bitmap, hwirq, msi->nr_cpus);
++	bitmap_release_region(msi->bitmap, hwirq,
++			      order_base_2(msi->nr_cpus * nr_irqs));
+ 
+ 	mutex_unlock(&msi->bitmap_lock);
  
 -- 
 2.30.2
