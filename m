@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A8B3CE7F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC303CE7F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355600AbhGSQg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:36:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38166 "EHLO mail.kernel.org"
+        id S1346881AbhGSQgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:36:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348088AbhGSPYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D022B61420;
-        Mon, 19 Jul 2021 16:01:32 +0000 (UTC)
+        id S1348111AbhGSPYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23DA26143E;
+        Mon, 19 Jul 2021 16:01:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710493;
-        bh=ynxWwos6ThPE3LdqM4qwi1zF9hkoNni01RHbrBSvwtw=;
+        s=korg; t=1626710502;
+        bh=43/x1/W8oa55JhLu6E58HoHNqnMOr2sHVb5/+N2+Da8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GNi5LHxW831pWnOjYGIfubFw77u7Uv1Xph19x0FPxgJIw4j+pXc2G+xSxrEzArrEe
-         zF8i7yrDCSrlTg3WW0BdR3pWTw5ot/OIpJh1hzdjc6TcY8PvrXVCH+dBLzf4CCPVjZ
-         UxFW7HtApKgXfgT8rmUe5P2COKFRpWs3SewslBuE=
+        b=WCHOzCfmADVYjwa6Al8FhgrLxqDiKntFbi1kAHHtP/W04VvRXdQA0pZND1hU+9PUy
+         M3CTXtqXwQ9yCtqdB8SE0Nw5IFKFU4BHFIUUGgotdAmcqGHcYdb71vLTv5yV8rQbvm
+         IEarJTfT/clU7cDPWdpaE8/4KKcplwLB+I+NRYxE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 239/243] mips: always link byteswap helpers into decompressor
-Date:   Mon, 19 Jul 2021 16:54:28 +0200
-Message-Id: <20210719144948.637353837@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 243/243] scsi: scsi_dh_alua: Fix signedness bug in alua_rtpg()
+Date:   Mon, 19 Jul 2021 16:54:32 +0200
+Message-Id: <20210719144948.766537290@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,65 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit cddc40f5617e53f97ef019d5b29c1bd6cbb031ec ]
+commit 80927822e8b6be46f488524cd7d5fe683de97fc4 upstream.
 
-My series to clean up the unaligned access implementation
-across architectures caused some mips randconfig builds to
-fail with:
+The "retval" variable needs to be signed for the error handling to work.
 
-   mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `decompress_kernel':
-   decompress.c:(.text.decompress_kernel+0x54): undefined reference to `__bswapsi2'
-
-It turns out that this problem has already been fixed for the XZ
-decompressor but now it also shows up in (at least) LZO and LZ4.  From my
-analysis I concluded that the compiler could always have emitted those
-calls, but the different implementation allowed it to make otherwise
-better decisions about not inlining the byteswap, which results in the
-link error when the out-of-line code is missing.
-
-While it could be addressed by adding it to the two decompressor
-implementations that are known to be affected, but as this only adds
-112 bytes to the kernel, the safer choice is to always add them.
-
-Fixes: c50ec6787536 ("MIPS: zboot: Fix the build with XZ compression on older GCC versions")
-Fixes: 0652035a5794 ("asm-generic: unaligned: remove byteshift helpers")
-Link: https://lore.kernel.org/linux-mm/202106301304.gz2wVY9w-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202106260659.TyMe8mjr-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202106172016.onWT6Tza-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202105231743.JJcALnhS-lkp@intel.com/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/YLjMEAFNxOas1mIp@mwanda
+Fixes: 7e26e3ea0287 ("scsi: scsi_dh_alua: Check for negative result value")
+Reviewed-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/boot/compressed/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/device_handler/scsi_dh_alua.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 337ab1d18cc1..eae0fad30f27 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -39,7 +39,7 @@ KCOV_INSTRUMENT		:= n
- UBSAN_SANITIZE := n
- 
- # decompressor objects (linked with vmlinuz)
--vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o
-+vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o $(obj)/bswapsi.o
- 
- ifdef CONFIG_DEBUG_ZBOOT
- vmlinuzobjs-$(CONFIG_DEBUG_ZBOOT)		   += $(obj)/dbg.o
-@@ -53,7 +53,7 @@ extra-y += uart-ath79.c
- $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
- 	$(call cmd,shipped)
- 
--vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o $(obj)/bswapsi.o
-+vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
- 
- extra-y += ashldi3.c
- $(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
--- 
-2.30.2
-
+--- a/drivers/scsi/device_handler/scsi_dh_alua.c
++++ b/drivers/scsi/device_handler/scsi_dh_alua.c
+@@ -508,7 +508,8 @@ static int alua_rtpg(struct scsi_device
+ 	struct alua_port_group *tmp_pg;
+ 	int len, k, off, bufflen = ALUA_RTPG_SIZE;
+ 	unsigned char *desc, *buff;
+-	unsigned err, retval;
++	unsigned err;
++	int retval;
+ 	unsigned int tpg_desc_tbl_off;
+ 	unsigned char orig_transition_tmo;
+ 	unsigned long flags;
 
 
