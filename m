@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE0F3CCEB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80813CCEB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234926AbhGSHpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 03:45:01 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:46116 "EHLO
+        id S234928AbhGSHr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:47:56 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:60104 "EHLO
         lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234861AbhGSHo6 (ORCPT
+        with ESMTP id S233759AbhGSHrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 03:44:58 -0400
-Received: from localhost (unknown [192.168.167.224])
-        by lucky1.263xmail.com (Postfix) with ESMTP id A154EB1E2B;
-        Mon, 19 Jul 2021 15:41:47 +0800 (CST)
+        Mon, 19 Jul 2021 03:47:55 -0400
+Received: from localhost (unknown [192.168.167.223])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 12A68D57AF;
+        Mon, 19 Jul 2021 15:44:51 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
 X-SKE-CHECKED: 1
 X-ANTISPAM-LEVEL: 2
 Received: from localhost.localdomain (unknown [113.57.152.160])
-        by smtp.263.net (postfix) whith ESMTP id P4529T140205484918528S1626680507152669_;
-        Mon, 19 Jul 2021 15:41:47 +0800 (CST)
+        by smtp.263.net (postfix) whith ESMTP id P8840T140566866151168S1626680689900188_;
+        Mon, 19 Jul 2021 15:44:50 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <64e0872b634c955f01fe8d3d28d83891>
+X-UNIQUE-TAG: <56610e78d3f53125ad2d21b0119ad930>
 X-RL-SENDER: chenhaoa@uniontech.com
 X-SENDER: chenhaoa@uniontech.com
 X-LOGIN-NAME: chenhaoa@uniontech.com
@@ -40,9 +40,9 @@ Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
         linux@armlinux.org.uk, netdev@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-kernel@vger.kernel.org, Hao Chen <chenhaoa@uniontech.com>
-Subject: [PATCH] net: stmmac: fix 'ethtool -P' return -EBUSY
-Date:   Mon, 19 Jul 2021 15:41:06 +0800
-Message-Id: <20210719074106.4251-1-chenhaoa@uniontech.com>
+Subject: [PATCH v2] net: stmmac: fix 'ethtool -P' return -EBUSY
+Date:   Mon, 19 Jul 2021 15:44:10 +0800
+Message-Id: <20210719074410.6787-1-chenhaoa@uniontech.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,7 +65,7 @@ Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index d0ce608b81c3..ef99b9533612 100644
+index d0ce608b81c3..7ccb0d738a1c 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
 @@ -412,8 +412,10 @@ static void stmmac_ethtool_setmsglevel(struct net_device *dev, u32 level)
@@ -74,7 +74,7 @@ index d0ce608b81c3..ef99b9533612 100644
  {
 -	if (!netif_running(dev))
 -		return -EBUSY;
-+	struct stmmac_priv *priv = netdev_priv(ndev);
++	struct stmmac_priv *priv = netdev_priv(dev);
 +
 +	pm_runtime_get_sync(priv->device);
 +
