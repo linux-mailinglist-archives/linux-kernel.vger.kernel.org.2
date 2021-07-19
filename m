@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5797C3CE711
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04AC83CE8B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350527AbhGSQUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
+        id S1345763AbhGSQpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:45:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345619AbhGSPMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:12:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 590716128E;
-        Mon, 19 Jul 2021 15:52:36 +0000 (UTC)
+        id S1349420AbhGSP0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:26:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B68AB608FC;
+        Mon, 19 Jul 2021 16:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709956;
-        bh=yaTQYHirmBKbG37mh1K7PYcOY8yl4a4MLQ1mreivnoc=;
+        s=korg; t=1626710852;
+        bh=w4ldn3ob9QOxbsAs9pNu3leleo9bN8XQ4UgnfzhSaKk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R8oevDr7qMofJyfIIMcnyTqZ+PYDWsiqNsdOga/oTO5T3hvHz0lnnIyO3JD1NL3X8
-         j3mGp7CstbFFqw2f23qW/P8MesJIb6NtAAy7ufwfgEUR+SV9SUMQ1e4RCtfxk7nKns
-         4UhBi6/1EebSvzovuBqJp8A3/JTZnnehQ11IjwtY=
+        b=XWvbtkFiI0WZFXJ7lMIrigGnaSIwmbBlY8S5Am7m33m/f/+ReViWRw35hiBfxLnHF
+         vU0qKw7s871WwEfuv4S0TDN2HByehEfBc1c5qzLV1+iLHrlpW/hCC8Xksrhuw91rVp
+         Ttgiuj69Naja3bmrl1/WCHjJmpK6dE0PzBfTEI54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wayne Lin <Wayne.Lin@amd.com>,
-        Lyude Paul <lyude@redhat.com>
-Subject: [PATCH 5.10 016/243] drm/dp_mst: Avoid to mess up payload table by ports in stale topology
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, Will Deacon <will@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 099/351] iommu/arm-smmu: Fix arm_smmu_device refcount leak when arm_smmu_rpm_get fails
 Date:   Mon, 19 Jul 2021 16:50:45 +0200
-Message-Id: <20210719144941.445588771@linuxfoundation.org>
+Message-Id: <20210719144947.780037834@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,121 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wayne Lin <Wayne.Lin@amd.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-commit 3769e4c0af5b82c8ea21d037013cb9564dfaa51f upstream.
+[ Upstream commit 1adf30f198c26539a62d761e45af72cde570413d ]
 
-[Why]
-After unplug/hotplug hub from the system, userspace might start to
-clear stale payloads gradually. If we call drm_dp_mst_deallocate_vcpi()
-to release stale VCPI of those ports which are not relating to current
-topology, we have chane to wrongly clear active payload table entry for
-current topology.
+arm_smmu_rpm_get() invokes pm_runtime_get_sync(), which increases the
+refcount of the "smmu" even though the return value is less than 0.
 
-E.g.
-We have allocated VCPI 1 in current payload table and we call
-drm_dp_mst_deallocate_vcpi() to clean VCPI 1 in stale topology. In
-drm_dp_mst_deallocate_vcpi(), it will call drm_dp_mst_put_payload_id()
-tp put VCPI 1 and which means ID 1 is available again. Thereafter, if we
-want to allocate a new payload stream, it will find ID 1 is available by
-drm_dp_mst_assign_payload_id(). However, ID 1 is being used
+The reference counting issue happens in some error handling paths of
+arm_smmu_rpm_get() in its caller functions. When arm_smmu_rpm_get()
+fails, the caller functions forget to decrease the refcount of "smmu"
+increased by arm_smmu_rpm_get(), causing a refcount leak.
 
-[How]
-Check target sink is relating to current topology or not before doing
-any payload table update.
-Searching upward to find the target sink's relevant root branch device.
-If the found root branch device is not the same root of current
-topology, don't update payload table.
+Fix this issue by calling pm_runtime_resume_and_get() instead of
+pm_runtime_get_sync() in arm_smmu_rpm_get(), which can keep the refcount
+balanced in case of failure.
 
-Changes since v1:
-* Change debug macro to use drm_dbg_kms() instead
-* Amend the commit message to add Cc tag.
-
-Signed-off-by: Wayne Lin <Wayne.Lin@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210616035501.3776-3-Wayne.Lin@amd.com
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Link: https://lore.kernel.org/r/1623293672-17954-1-git-send-email-xiyuyang19@fudan.edu.cn
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |   29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/iommu/arm/arm-smmu/arm-smmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -94,6 +94,9 @@ static int drm_dp_mst_register_i2c_bus(s
- static void drm_dp_mst_unregister_i2c_bus(struct drm_dp_mst_port *port);
- static void drm_dp_mst_kick_tx(struct drm_dp_mst_topology_mgr *mgr);
- 
-+static bool drm_dp_mst_port_downstream_of_branch(struct drm_dp_mst_port *port,
-+						 struct drm_dp_mst_branch *branch);
-+
- #define DBG_PREFIX "[dp_mst]"
- 
- #define DP_STR(x) [DP_ ## x] = #x
-@@ -3362,6 +3365,7 @@ int drm_dp_update_payload_part1(struct d
- 	struct drm_dp_mst_port *port;
- 	int i, j;
- 	int cur_slots = 1;
-+	bool skip;
- 
- 	mutex_lock(&mgr->payload_lock);
- 	for (i = 0; i < mgr->max_payloads; i++) {
-@@ -3376,6 +3380,14 @@ int drm_dp_update_payload_part1(struct d
- 			port = container_of(vcpi, struct drm_dp_mst_port,
- 					    vcpi);
- 
-+			mutex_lock(&mgr->lock);
-+			skip = !drm_dp_mst_port_downstream_of_branch(port, mgr->mst_primary);
-+			mutex_unlock(&mgr->lock);
-+
-+			if (skip) {
-+				drm_dbg_kms("Virtual channel %d is not in current topology\n", i);
-+				continue;
-+			}
- 			/* Validated ports don't matter if we're releasing
- 			 * VCPI
- 			 */
-@@ -3475,6 +3487,7 @@ int drm_dp_update_payload_part2(struct d
- 	struct drm_dp_mst_port *port;
- 	int i;
- 	int ret = 0;
-+	bool skip;
- 
- 	mutex_lock(&mgr->payload_lock);
- 	for (i = 0; i < mgr->max_payloads; i++) {
-@@ -3484,6 +3497,13 @@ int drm_dp_update_payload_part2(struct d
- 
- 		port = container_of(mgr->proposed_vcpis[i], struct drm_dp_mst_port, vcpi);
- 
-+		mutex_lock(&mgr->lock);
-+		skip = !drm_dp_mst_port_downstream_of_branch(port, mgr->mst_primary);
-+		mutex_unlock(&mgr->lock);
-+
-+		if (skip)
-+			continue;
-+
- 		DRM_DEBUG_KMS("payload %d %d\n", i, mgr->payloads[i].payload_state);
- 		if (mgr->payloads[i].payload_state == DP_PAYLOAD_LOCAL) {
- 			ret = drm_dp_create_payload_step2(mgr, port, mgr->proposed_vcpis[i]->vcpi, &mgr->payloads[i]);
-@@ -4565,9 +4585,18 @@ EXPORT_SYMBOL(drm_dp_mst_reset_vcpi_slot
- void drm_dp_mst_deallocate_vcpi(struct drm_dp_mst_topology_mgr *mgr,
- 				struct drm_dp_mst_port *port)
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index 6f72c4d208ca..ee6cac9e7c02 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -74,7 +74,7 @@ static bool using_legacy_binding, using_generic_binding;
+ static inline int arm_smmu_rpm_get(struct arm_smmu_device *smmu)
  {
-+	bool skip;
-+
- 	if (!port->vcpi.vcpi)
- 		return;
+ 	if (pm_runtime_enabled(smmu->dev))
+-		return pm_runtime_get_sync(smmu->dev);
++		return pm_runtime_resume_and_get(smmu->dev);
  
-+	mutex_lock(&mgr->lock);
-+	skip = !drm_dp_mst_port_downstream_of_branch(port, mgr->mst_primary);
-+	mutex_unlock(&mgr->lock);
-+
-+	if (skip)
-+		return;
-+
- 	drm_dp_mst_put_payload_id(mgr, port->vcpi.vcpi);
- 	port->vcpi.num_slots = 0;
- 	port->vcpi.pbn = 0;
+ 	return 0;
+ }
+-- 
+2.30.2
+
 
 
