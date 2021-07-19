@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D276E3CE7E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BAB3CE69D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353298AbhGSQfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:35:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59754 "EHLO mail.kernel.org"
+        id S1350329AbhGSQJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:09:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347588AbhGSPTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:19:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D2861418;
-        Mon, 19 Jul 2021 15:58:52 +0000 (UTC)
+        id S1343663AbhGSPI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:08:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C589261364;
+        Mon, 19 Jul 2021 15:48:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710333;
-        bh=HOxSyPrt04JCbP6msvV7QklAOcAnbKgXxpTQnRh46tI=;
+        s=korg; t=1626709707;
+        bh=YrfJ8dKNlutmPddgbdWUgLKsXiT8/9F7vm9xuBCNROM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qdxpu+ICOkkMnD2csJFsDlHLcfE6d1TmWS2yh5w1LmRaKojwPdUPiumZ0blHsXche
-         jksw59/NmKGKwiO1sKDov79R26br1RNBOs/g5t0zDhotqI6ghTvHsRLpmc5PBCsrf7
-         IHzSj5qw3xl1ECDceKsing/ULvvPLENRsH1weu8o=
+        b=nYGpnVPflGYjpd5Ts+MtHrvzhQzsCkUu1ub/Ae6o1NltxYRE1rzylWz6AiRWNH+bY
+         t5fgvy5QMB273CrF4rC+tZH75Kc9YQzj01hfSruddy8fACnY/XQU/qMjw25YQKacxw
+         zOfY7k23CLfAv7z5AFfayMJHWz0H6Ukr5Ay7oyzg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 145/243] virtio_console: Assure used length from device is limited
+Subject: [PATCH 5.4 066/149] intel_th: Wait until port is in reset before programming it
 Date:   Mon, 19 Jul 2021 16:52:54 +0200
-Message-Id: <20210719144945.591213011@linuxfoundation.org>
+Message-Id: <20210719144916.966692141@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +41,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 
-[ Upstream commit d00d8da5869a2608e97cfede094dfc5e11462a46 ]
+[ Upstream commit ab1afed701d2db7eb35c1a2526a29067a38e93d1 ]
 
-The buf->len might come from an untrusted device. This
-ensures the value would not exceed the size of the buffer
-to avoid data corruption or loss.
+Some devices don't drain their pipelines if we don't make sure that
+the corresponding output port is in reset before programming it for
+a new trace capture, resulting in bits of old trace appearing in the
+new trace capture. Fix that by explicitly making sure the reset is
+asserted before programming new trace capture.
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/20210525125622.1203-1-xieyongji@bytedance.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Link: https://lore.kernel.org/r/20210621151246.31891-5-alexander.shishkin@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/virtio_console.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwtracing/intel_th/core.c     | 17 +++++++++++++++++
+ drivers/hwtracing/intel_th/gth.c      | 16 ++++++++++++++++
+ drivers/hwtracing/intel_th/intel_th.h |  3 +++
+ 3 files changed, 36 insertions(+)
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 1836cc56e357..673522874cec 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -475,7 +475,7 @@ static struct port_buffer *get_inbuf(struct port *port)
+diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
+index c9ac3dc65113..9cb8c7d13d46 100644
+--- a/drivers/hwtracing/intel_th/core.c
++++ b/drivers/hwtracing/intel_th/core.c
+@@ -215,6 +215,22 @@ static ssize_t port_show(struct device *dev, struct device_attribute *attr,
  
- 	buf = virtqueue_get_buf(port->in_vq, &len);
- 	if (buf) {
--		buf->len = len;
-+		buf->len = min_t(size_t, len, buf->size);
- 		buf->offset = 0;
- 		port->stats.bytes_received += len;
- 	}
-@@ -1712,7 +1712,7 @@ static void control_work_handler(struct work_struct *work)
- 	while ((buf = virtqueue_get_buf(vq, &len))) {
- 		spin_unlock(&portdev->c_ivq_lock);
+ static DEVICE_ATTR_RO(port);
  
--		buf->len = len;
-+		buf->len = min_t(size_t, len, buf->size);
- 		buf->offset = 0;
++static void intel_th_trace_prepare(struct intel_th_device *thdev)
++{
++	struct intel_th_device *hub = to_intel_th_hub(thdev);
++	struct intel_th_driver *hubdrv = to_intel_th_driver(hub->dev.driver);
++
++	if (hub->type != INTEL_TH_SWITCH)
++		return;
++
++	if (thdev->type != INTEL_TH_OUTPUT)
++		return;
++
++	pm_runtime_get_sync(&thdev->dev);
++	hubdrv->prepare(hub, &thdev->output);
++	pm_runtime_put(&thdev->dev);
++}
++
+ static int intel_th_output_activate(struct intel_th_device *thdev)
+ {
+ 	struct intel_th_driver *thdrv =
+@@ -235,6 +251,7 @@ static int intel_th_output_activate(struct intel_th_device *thdev)
+ 	if (ret)
+ 		goto fail_put;
  
- 		handle_control_message(vq->vdev, portdev, buf);
++	intel_th_trace_prepare(thdev);
+ 	if (thdrv->activate)
+ 		ret = thdrv->activate(thdev);
+ 	else
+diff --git a/drivers/hwtracing/intel_th/gth.c b/drivers/hwtracing/intel_th/gth.c
+index 28509b02a0b5..b3308934a687 100644
+--- a/drivers/hwtracing/intel_th/gth.c
++++ b/drivers/hwtracing/intel_th/gth.c
+@@ -564,6 +564,21 @@ static void gth_tscu_resync(struct gth_device *gth)
+ 	iowrite32(reg, gth->base + REG_TSCU_TSUCTRL);
+ }
+ 
++static void intel_th_gth_prepare(struct intel_th_device *thdev,
++				 struct intel_th_output *output)
++{
++	struct gth_device *gth = dev_get_drvdata(&thdev->dev);
++	int count;
++
++	/*
++	 * Wait until the output port is in reset before we start
++	 * programming it.
++	 */
++	for (count = GTH_PLE_WAITLOOP_DEPTH;
++	     count && !(gth_output_get(gth, output->port) & BIT(5)); count--)
++		cpu_relax();
++}
++
+ /**
+  * intel_th_gth_enable() - enable tracing to an output device
+  * @thdev:	GTH device
+@@ -815,6 +830,7 @@ static struct intel_th_driver intel_th_gth_driver = {
+ 	.assign		= intel_th_gth_assign,
+ 	.unassign	= intel_th_gth_unassign,
+ 	.set_output	= intel_th_gth_set_output,
++	.prepare	= intel_th_gth_prepare,
+ 	.enable		= intel_th_gth_enable,
+ 	.trig_switch	= intel_th_gth_switch,
+ 	.disable	= intel_th_gth_disable,
+diff --git a/drivers/hwtracing/intel_th/intel_th.h b/drivers/hwtracing/intel_th/intel_th.h
+index 5fe694708b7a..595615b79108 100644
+--- a/drivers/hwtracing/intel_th/intel_th.h
++++ b/drivers/hwtracing/intel_th/intel_th.h
+@@ -143,6 +143,7 @@ intel_th_output_assigned(struct intel_th_device *thdev)
+  * @remove:	remove method
+  * @assign:	match a given output type device against available outputs
+  * @unassign:	deassociate an output type device from an output port
++ * @prepare:	prepare output port for tracing
+  * @enable:	enable tracing for a given output device
+  * @disable:	disable tracing for a given output device
+  * @irq:	interrupt callback
+@@ -164,6 +165,8 @@ struct intel_th_driver {
+ 					  struct intel_th_device *othdev);
+ 	void			(*unassign)(struct intel_th_device *thdev,
+ 					    struct intel_th_device *othdev);
++	void			(*prepare)(struct intel_th_device *thdev,
++					   struct intel_th_output *output);
+ 	void			(*enable)(struct intel_th_device *thdev,
+ 					  struct intel_th_output *output);
+ 	void			(*trig_switch)(struct intel_th_device *thdev,
 -- 
 2.30.2
 
