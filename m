@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A9D3CE802
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A8B3CE7F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355288AbhGSQgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:36:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40472 "EHLO mail.kernel.org"
+        id S1355600AbhGSQg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348085AbhGSPYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348088AbhGSPYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:24:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05ACE61422;
-        Mon, 19 Jul 2021 16:01:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D022B61420;
+        Mon, 19 Jul 2021 16:01:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710488;
-        bh=bzAJFaqA633qEJK6/CJXsDy9zhJaM2uv59iOV6xizyM=;
+        s=korg; t=1626710493;
+        bh=ynxWwos6ThPE3LdqM4qwi1zF9hkoNni01RHbrBSvwtw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rohONbfbyl2HOdYUpDkkqrWZExtBc+c7FBknZ7uUauCTiyx0OlZ9yPJ6ZxpZHRArM
-         51bpEwyYsrFXYt+Hrpw5sGoeLCVqG0u+gmQ5wIsJGp3KaoPrMHRn6W8fhhs2DczKRS
-         F3tr6dwoTd+ka386N1DeDEbCh5hq6R9OA4ox/BwM=
+        b=GNi5LHxW831pWnOjYGIfubFw77u7Uv1Xph19x0FPxgJIw4j+pXc2G+xSxrEzArrEe
+         zF8i7yrDCSrlTg3WW0BdR3pWTw5ot/OIpJh1hzdjc6TcY8PvrXVCH+dBLzf4CCPVjZ
+         UxFW7HtApKgXfgT8rmUe5P2COKFRpWs3SewslBuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 237/243] jump_label: Fix jump_label_text_reserved() vs __init
-Date:   Mon, 19 Jul 2021 16:54:26 +0200
-Message-Id: <20210719144948.573397991@linuxfoundation.org>
+Subject: [PATCH 5.10 239/243] mips: always link byteswap helpers into decompressor
+Date:   Mon, 19 Jul 2021 16:54:28 +0200
+Message-Id: <20210719144948.637353837@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -42,75 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 9e667624c291753b8a5128f620f493d0b5226063 ]
+[ Upstream commit cddc40f5617e53f97ef019d5b29c1bd6cbb031ec ]
 
-It turns out that jump_label_text_reserved() was reporting __init text
-as being reserved past the time when the __init text was freed and
-re-used.
+My series to clean up the unaligned access implementation
+across architectures caused some mips randconfig builds to
+fail with:
 
-For a long time, this resulted in, at worst, not being able to kprobe
-text that happened to land at the re-used address. However a recent
-commit e7bf1ba97afd ("jump_label, x86: Emit short JMP") made it a
-fatal mistake because it now needs to read the instruction in order to
-determine the conflict -- an instruction that's no longer there.
+   mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `decompress_kernel':
+   decompress.c:(.text.decompress_kernel+0x54): undefined reference to `__bswapsi2'
 
-Fixes: 4c3ef6d79328 ("jump label: Add jump_label_text_reserved() to reserve jump points")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20210628113045.045141693@infradead.org
+It turns out that this problem has already been fixed for the XZ
+decompressor but now it also shows up in (at least) LZO and LZ4.  From my
+analysis I concluded that the compiler could always have emitted those
+calls, but the different implementation allowed it to make otherwise
+better decisions about not inlining the byteswap, which results in the
+link error when the out-of-line code is missing.
+
+While it could be addressed by adding it to the two decompressor
+implementations that are known to be affected, but as this only adds
+112 bytes to the kernel, the safer choice is to always add them.
+
+Fixes: c50ec6787536 ("MIPS: zboot: Fix the build with XZ compression on older GCC versions")
+Fixes: 0652035a5794 ("asm-generic: unaligned: remove byteshift helpers")
+Link: https://lore.kernel.org/linux-mm/202106301304.gz2wVY9w-lkp@intel.com/
+Link: https://lore.kernel.org/linux-mm/202106260659.TyMe8mjr-lkp@intel.com/
+Link: https://lore.kernel.org/linux-mm/202106172016.onWT6Tza-lkp@intel.com/
+Link: https://lore.kernel.org/linux-mm/202105231743.JJcALnhS-lkp@intel.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/jump_label.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ arch/mips/boot/compressed/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-index a0c325664190..4ae693ce71a4 100644
---- a/kernel/jump_label.c
-+++ b/kernel/jump_label.c
-@@ -316,14 +316,16 @@ static int addr_conflict(struct jump_entry *entry, void *start, void *end)
- }
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index 337ab1d18cc1..eae0fad30f27 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -39,7 +39,7 @@ KCOV_INSTRUMENT		:= n
+ UBSAN_SANITIZE := n
  
- static int __jump_label_text_reserved(struct jump_entry *iter_start,
--		struct jump_entry *iter_stop, void *start, void *end)
-+		struct jump_entry *iter_stop, void *start, void *end, bool init)
- {
- 	struct jump_entry *iter;
+ # decompressor objects (linked with vmlinuz)
+-vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o
++vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o $(obj)/bswapsi.o
  
- 	iter = iter_start;
- 	while (iter < iter_stop) {
--		if (addr_conflict(iter, start, end))
--			return 1;
-+		if (init || !jump_entry_is_init(iter)) {
-+			if (addr_conflict(iter, start, end))
-+				return 1;
-+		}
- 		iter++;
- 	}
+ ifdef CONFIG_DEBUG_ZBOOT
+ vmlinuzobjs-$(CONFIG_DEBUG_ZBOOT)		   += $(obj)/dbg.o
+@@ -53,7 +53,7 @@ extra-y += uart-ath79.c
+ $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
+ 	$(call cmd,shipped)
  
-@@ -561,7 +563,7 @@ static int __jump_label_mod_text_reserved(void *start, void *end)
+-vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o $(obj)/bswapsi.o
++vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
  
- 	ret = __jump_label_text_reserved(mod->jump_entries,
- 				mod->jump_entries + mod->num_jump_entries,
--				start, end);
-+				start, end, mod->state == MODULE_STATE_COMING);
- 
- 	module_put(mod);
- 
-@@ -786,8 +788,9 @@ early_initcall(jump_label_init_module);
-  */
- int jump_label_text_reserved(void *start, void *end)
- {
-+	bool init = system_state < SYSTEM_RUNNING;
- 	int ret = __jump_label_text_reserved(__start___jump_table,
--			__stop___jump_table, start, end);
-+			__stop___jump_table, start, end, init);
- 
- 	if (ret)
- 		return ret;
+ extra-y += ashldi3.c
+ $(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
 -- 
 2.30.2
 
