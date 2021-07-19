@@ -2,331 +2,1495 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BD43CEDF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BA63CEDF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387315AbhGSUDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 16:03:35 -0400
-Received: from mail-bn8nam12on2055.outbound.protection.outlook.com ([40.107.237.55]:42593
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1386999AbhGSTpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:45:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J4sk0zlHtnIxf+u6HofbqaC45JSZyawXgvRX7FTzZr4ZqEI+dzXOZdUs5C0nrEvhGgv9Zl4x6mj75kyOgcGQZKYuA8sw4UwZabFFPG4PRc6ue2jrQVeMa2D8B3gwTAVL/I38mwKW1609yg0uJmfji//J+LRMczriSQ+kmmkWpsKTYvExuLfp0rxB3EKrKd4rvLmiS2TayLXpbA2g5inTGE0xlXvDqAPQXV2kAQK4Huyb1VA57gA9J4sRjDy841etq+S31jfutFmVVVWUJBK/ITCLdo9XKKBjx6hFNnK+xBEY0IbHn1owSyPiZNdgAWt5X0mF8L4tqE8Y8Btuyo7X6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XVrg2hM0wBEZ+bgcMscO41zwwPMX0MM2gm28wLhK+G0=;
- b=J4PCAkY1hsSPKjcg6sGRdw6+M4Cq8Q6NcPXYiattW7G1HfgpctxG7jVz2W/6nVI3SxNwOLjkRqdwCJP68zw81QFAYvP9wgC6LWeNv4/Pawn6Vhs/PMHKXD6uFKz3/vsgdpeKfFoaKcKlaJ/L0LppEP3Al3jRYIFEQZE+8U6J8QpjySzTcb9ydRHoiCqVli3thXQKxTW9spFIjGD9h+I4NSX5a/f3wbtCVX6haAcXam8GtykFsV1QcQnAAds0JZdutO503PNNTpbanQ5iXOrWvpoOo8q/7VC7vDbYZz8b2RFU4hrR/xXioDi1MGcDwjIVY6F1hpO7Js/GPDFxZ3CJQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XVrg2hM0wBEZ+bgcMscO41zwwPMX0MM2gm28wLhK+G0=;
- b=WnqP35jZ5TOLfaRXv3StpJPuOc+oh/XHKHLK675fx88wZeSc94s+3JZRZDCSPKZ4EhrgewKTkiPAbBECM3iSoj3/B1AVfSmmDaWh0brT3Ni+AfX9EPl0FmPFCzGDH+sUR9bOD/nqw7jK7jqFLyg3DycBZQGNr8dxZO8wO/HnLso=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN6PR12MB1251.namprd12.prod.outlook.com (2603:10b6:404:1a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
- 2021 20:25:57 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::c099:e7a1:249a:a8a2]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::c099:e7a1:249a:a8a2%7]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 20:25:57 +0000
-Date:   Mon, 19 Jul 2021 16:25:54 -0400
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, bp@alien8.de, mingo@redhat.com,
-        mchehab@kernel.org
-Subject: Re: [PATCH 2/7] x86/amd_nb: Add support for northbridges on Aldebaran
-Message-ID: <20210719202554.GB19451@aus-x-yghannam.amd.com>
-References: <20210630152828.162659-1-nchatrad@amd.com>
- <20210630152828.162659-3-nchatrad@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630152828.162659-3-nchatrad@amd.com>
-X-ClientProxiedBy: BN6PR12CA0036.namprd12.prod.outlook.com
- (2603:10b6:405:70::22) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+        id S1387372AbhGSUGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:06:38 -0400
+Received: from mail-io1-f49.google.com ([209.85.166.49]:46807 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344877AbhGSTrC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 15:47:02 -0400
+Received: by mail-io1-f49.google.com with SMTP id p186so21499044iod.13;
+        Mon, 19 Jul 2021 13:27:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5/i387wzZOzEquTg4UjOa+DIn+wPVfpVr5ofXJ+h3uY=;
+        b=doPqNAfPBZDjFndx8SH+gAhSY6wfNQembQsiElLcp0SRtQszj0GOWW6bPHpChWiLWr
+         AD8LhQNy03xP/W434E0BRxY7lKMdoVn85LJ2GRAUTTh1JYFNSzh23G+ywCZfuCeJ32MV
+         ztZJXsxHJTc0RjDerhAiULqfP6bQD88iJlGEGR5nw7tuYsqjIBG4gwxDCFuRQ5U6/r3W
+         izHGhawrXULLXlALb/wtHJEpRwijjb17tQuwQbnZpBdFb2xK5QZIpp58XsiGVaXF9fkN
+         xOpZPFL3ciUBLUCknzJx6kqXdY6YCWLwjvqVvhkLIw4EC0rwpmIxkNrptQteYPSRUs/I
+         5YqA==
+X-Gm-Message-State: AOAM531hlH2FxVqvF+X4VDd207eE3IqOCWGikmomtSZxe14xKDRPL+Qk
+        iHBX0CKfKxpLW1O2be14Lg==
+X-Google-Smtp-Source: ABdhPJyJ/+bVaPpCVbHTIJVImgxLLMWp7XMe/PBixsr1D7G7qgq1zD17AK1TzCmctFKjKLvXDhMJIg==
+X-Received: by 2002:a02:8783:: with SMTP id t3mr23188417jai.45.1626726456440;
+        Mon, 19 Jul 2021 13:27:36 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.248])
+        by smtp.googlemail.com with ESMTPSA id g15sm8745969ild.29.2021.07.19.13.27.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 13:27:35 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yangtao Li <tiny.windzz@gmail.com>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] dt-bindings: opp: Convert to DT schema
+Date:   Mon, 19 Jul 2021 14:27:32 -0600
+Message-Id: <20210719202732.2490287-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aus-x-yghannam.amd.com (165.204.25.250) by BN6PR12CA0036.namprd12.prod.outlook.com (2603:10b6:405:70::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 20:25:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 26fa6c69-dbc3-452c-5ece-08d94af36a29
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1251:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR12MB125110EB18FEEE10334665E9F8E19@BN6PR12MB1251.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vbbBysHyy/49I9Od2ySbfDWSa8JVEk5tjYINKA0RUj+aAykQUEc1+DBU5B4kAiXeKdbZ38u0B8oeZwtruR7aYFm0w/0AS/iF0Z/0mBi6WIp4mYwoTFGDrHCVsm1FwHi0kMh0tnk2XRzOZcfhVd6IxxrvXDy8jKlbuYETToBgrJ8wCs/XOh53hV0lCqqtKFqme5rnyklx3tFkcXIMoeVLRsTB2+bEyfOH9hBDuzYNNdO8xyx++A1nUGOmf2elbXmwyveHojedtfeNod+IdsduzyPWyUSiDuKvasBFzL/bH1mIV+5BWfC+mcobH+RaHlPMGIYn6ROCEW///v44bHjE8SiY+Cf7tqqw8d6w35/6Y9gzka1aDsRnwJyYjt+j+GpW7QYXwjdYhLIIHEmKw3Q49LB48LPPd77l4JYwy6evFqFFlTfvhDwPnRz6Lz2D16O1CyZO5YcGPq3p8od8dE8O2i3rkTf6DQNXY9R3vG0gIgRZ1xWu8eoXT8KAKuV13F/mVrjUvaihtYHzBv9HSIBWBXPhfMp7z5CSGT7ECaQIonQWdVsaB9S13V2R1lsYkYPCodABlY75qlrylwShfgHpdrDgxDA2wDTa7RI9RX1HgwGk/ceVCh63orxpmsA6vEMjvSlkt3tJqLN89I5uwHpLmb9WUtADHm13etZ/Qv5FfgbY7Gvm4bSeEq1Y3gTCVD4QqQrhHug3XuK1LrcvxoWN+g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(366004)(5660300002)(66476007)(66556008)(33656002)(66946007)(38350700002)(38100700002)(478600001)(1076003)(316002)(8676002)(956004)(44832011)(8936002)(7696005)(52116002)(83380400001)(86362001)(186003)(26005)(2906002)(55016002)(6636002)(6862004)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0GD3ts/09jVXmB6W+R7pVViVejgbXigW3Jtjt4Yct+mvJIATdnaFEP23MUYf?=
- =?us-ascii?Q?Xjaqh52CjBMyTXj3qwvlhTU03NEerw9/MkMd+yXHFloh3iyPE0fvW5Mj5ocz?=
- =?us-ascii?Q?gtt2EqNtrK8DD+CVdwAVl4mIPNRHbHWDwC8pIRlULVxo5TUdc6aFglMdVY2y?=
- =?us-ascii?Q?P3B11zAvbFN28o8Ys8l/ndtLDrFxEObnEi+ZPHoeMx8d7kYuwr2QPyk4t11m?=
- =?us-ascii?Q?UVT5xzKsY/g//v9zK/V2vhSpBZ1SVb7bLmXRZaYwHregKCZlhQDqktLjhZz8?=
- =?us-ascii?Q?nSz+VlIWfaU5e0GUHDFkq3vW6SisSsxn3q4bnzVOfbLDlhFAGFVJQQ0ZVl5I?=
- =?us-ascii?Q?FpR8o3NRev5HqWNN0ywziU2zE0qLSeI4VGq7c1Ca/vJzyHPib7SG+3aq8DVy?=
- =?us-ascii?Q?dLC56Ino+fgBTUmLx/LrL4HLeEvOs64jtJ9ISSnYp0/DOYs9XLhNKz+JcxXT?=
- =?us-ascii?Q?12kgxzPfOTe0StHtHzJkmKTCUaedja9hH1F9C8syZO2GUOLYaZJs086CHIEr?=
- =?us-ascii?Q?FHIibg8qD2L9C9J/R8eMDj+Apdu7HB8iE/0ZROcqwsqYXu0dyQsIlKafRI0S?=
- =?us-ascii?Q?eIZRjUoP5x7M8tq21WlUZlVwa9cQIcL/qhWK0Yjis1nWDaihUdG5b4lc3AHd?=
- =?us-ascii?Q?6SwnNesWiKx8Sg19mDxKr9J4Vah44BkSUMDVsvB7wtRbzbtgiiEbSokZfbaP?=
- =?us-ascii?Q?rUd7ReEc9hlKtJJmpsJZdOP8aPqtkzWxakMIFiUUAmRT6uJLezaPpi0F0pX7?=
- =?us-ascii?Q?1hp9SWQGQ0NKNdT0y89+jWnA8MTOyZmg/h5aAvWaEYFYWChOi63ALjkMxWQN?=
- =?us-ascii?Q?iQepnGhAbid6W9AWVnep38jswMQdI2RkbVMIDMXwAXQH5qKpnIU7zqxP4tlY?=
- =?us-ascii?Q?e6vDMUthaf/9+kF2xCFbQFoz6qoNPRIiJv0VVgV1T2U78vc3IJD46/14HdUa?=
- =?us-ascii?Q?kDdwVDiMw2A2Pp9uMwL0SZf33UE/IJgwJdp18kdKRVZ1t4vK+bP7pVzsDC4G?=
- =?us-ascii?Q?yhFfCaIv6mC4GNGQoF7uyzBS/zWpnEu+y5j3aSwnjLlKmeeswp8FB3vsCwWu?=
- =?us-ascii?Q?kq1goiwC1Kau8wwDWNx7GFOiAnPqxNIs8B405FXnGttigjbt88M3bO5aZIZF?=
- =?us-ascii?Q?FQ7eRdxxSMn21FlvYET6PsJqqKljqX/UThOQROG4KNnVEGMi0qeOTVGXdLy/?=
- =?us-ascii?Q?nbIgNPDRbq1aH1O2RUxzUoE0iU/3Qut4j3w+u0sqTQqGVxJLupy/vGOWRiOy?=
- =?us-ascii?Q?9S3bTSyNafAbxiKZ2ySrs6X2cAxr3V5YiWqGMfb8UReB5qtWLCln0dqDgHsc?=
- =?us-ascii?Q?zKZibWHRvuUcwNQuLUYte/lr?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26fa6c69-dbc3-452c-5ece-08d94af36a29
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 20:25:57.1778
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ozikgCgTEO4BqwvP2Bw1Y6OyAUN1El3g58iaO/oX7dkevGe9gusD7fx/iiQPt/jib1SmOaixOLhWP06N4s6iHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1251
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 08:58:23PM +0530, Naveen Krishna Chatradhi wrote:
-> From: Muralidhara M K <muralimk@amd.com>
-> 
-> On newer heterogeneous systems from AMD, there is a possibility of
-> having GPU nodes along with CPU nodes with the MCA banks. The GPU
-> nodes (noncpu nodes) starts enumerating from northbridge index 8.
->
+Convert the OPP v1 and v2 bindings to DT schema format. As the OPPv2 binding
+can be extended by vendors, we need to split the common part out from the
+"operating-points-v2" conforming compatible.
 
-"there is a possibility of having GPU nodes along with CPU nodes with
-the MCA banks" doesn't read clearly to me. It could be more explicit.
-For example, "On newer systems...the CPUs manages MCA errors reported
-from the GPUs. Enumerate the GPU nodes with the AMD NB framework to
-support EDAC, etc." or something like this.
+Cc: Yangtao Li <tiny.windzz@gmail.com>
+Cc: Nishanth Menon <nm@ti.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: linux-pm@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+- move opp-peak-kBps next to opp-avg-kBps. Also add a dependency schema.
+- Correct the opp-microamp schemas. It's always a single value for each
+  regulator.
+- Add missing type for '^opp-microamp-'
+---
+ .../allwinner,sun50i-h6-operating-points.yaml |   4 +
+ .../devicetree/bindings/opp/opp-v1.yaml       |  51 ++
+ .../devicetree/bindings/opp/opp-v2-base.yaml  | 214 ++++++
+ .../devicetree/bindings/opp/opp-v2.yaml       | 475 +++++++++++++
+ Documentation/devicetree/bindings/opp/opp.txt | 622 ------------------
+ 5 files changed, 744 insertions(+), 622 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/opp/opp-v1.yaml
+ create mode 100644 Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+ create mode 100644 Documentation/devicetree/bindings/opp/opp-v2.yaml
+ delete mode 100644 Documentation/devicetree/bindings/opp/opp.txt
 
-Also, "northbridge index" isn't a hardware thing rather it's an internal
-Linux value. I think you are referring to the "AMD Node ID" value from
-CPUID. The GPUs don't have CPUID, so the "AMD Node ID" value can't be
-directly read like for CPUs. But the current hardware implementation is
-such that the GPU nodes are enumerated in sequential order based on the
-PCI hierarchy, and the first GPU node is assumed to have an "AMD Node
-ID" value of 8 (the second GPU node has 9, etc.). With this
-implemenation detail, the Data Fabric on the GPU nodes can be accessed
-the same way as the Data Fabric on CPU nodes.
+diff --git a/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml b/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml
+index aeff2bd774dd..729ae97b63d9 100644
+--- a/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml
++++ b/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml
+@@ -18,6 +18,9 @@ description: |
+   sun50i-cpufreq-nvmem driver reads the efuse value from the SoC to
+   provide the OPP framework with required information.
+ 
++allOf:
++  - $ref: opp-v2-base.yaml#
++
+ properties:
+   compatible:
+     const: allwinner,sun50i-h6-operating-points
+@@ -43,6 +46,7 @@ patternProperties:
+ 
+     properties:
+       opp-hz: true
++      clock-latency-ns: true
+ 
+     patternProperties:
+       "opp-microvolt-.*": true
+diff --git a/Documentation/devicetree/bindings/opp/opp-v1.yaml b/Documentation/devicetree/bindings/opp/opp-v1.yaml
+new file mode 100644
+index 000000000000..d585d536a3fb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/opp/opp-v1.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/opp/opp-v1.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Generic OPP (Operating Performance Points) v1 Bindings
++
++maintainers:
++  - Viresh Kumar <viresh.kumar@linaro.org>
++
++description: |+
++  Devices work at voltage-current-frequency combinations and some implementations
++  have the liberty of choosing these. These combinations are called Operating
++  Performance Points aka OPPs. This document defines bindings for these OPPs
++  applicable across wide range of devices. For illustration purpose, this document
++  uses CPU as a device.
++
++  This binding only supports voltage-frequency pairs.
++
++select: true
++
++properties:
++  operating-points:
++    $ref: /schemas/types.yaml#/definitions/uint32-matrix
++    items:
++      items:
++        - description: Frequency in kHz
++        - description: Voltage for OPP in uV
++
++
++additionalProperties: true
++examples:
++  - |
++    cpus {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cpu@0 {
++            compatible = "arm,cortex-a9";
++            device_type = "cpu";
++            reg = <0>;
++            next-level-cache = <&L2>;
++            operating-points =
++                /* kHz    uV */
++                <792000 1100000>,
++                <396000 950000>,
++                <198000 850000>;
++        };
++    };
++...
+diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+new file mode 100644
+index 000000000000..ae3ae4d39843
+--- /dev/null
++++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+@@ -0,0 +1,214 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/opp/opp-v2-base.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Generic OPP (Operating Performance Points) Common Binding
++
++maintainers:
++  - Viresh Kumar <viresh.kumar@linaro.org>
++
++description: |
++  Devices work at voltage-current-frequency combinations and some implementations
++  have the liberty of choosing these. These combinations are called Operating
++  Performance Points aka OPPs. This document defines bindings for these OPPs
++  applicable across wide range of devices. For illustration purpose, this document
++  uses CPU as a device.
++
++  This describes the OPPs belonging to a device.
++
++select: false
++
++properties:
++  $nodename:
++    pattern: '^opp-table(-[a-z0-9]+)?$'
++
++  opp-shared:
++    description:
++      Indicates that device nodes using this OPP Table Node's phandle switch
++      their DVFS state together, i.e. they share clock/voltage/current lines.
++      Missing property means devices have independent clock/voltage/current
++      lines, but they share OPP tables.
++    type: boolean
++
++patternProperties:
++  '^opp-?[0-9]+$':
++    type: object
++    description:
++      One or more OPP nodes describing voltage-current-frequency combinations.
++      Their name isn't significant but their phandle can be used to reference an
++      OPP. These are mandatory except for the case where the OPP table is
++      present only to indicate dependency between devices using the opp-shared
++      property.
++
++    properties:
++      opp-hz:
++        description:
++          Frequency in Hz, expressed as a 64-bit big-endian integer. This is a
++          required property for all device nodes, unless another "required"
++          property to uniquely identify the OPP nodes exists. Devices like power
++          domains must have another (implementation dependent) property.
++
++      opp-microvolt:
++        description: |
++          Voltage for the OPP
++
++          A single regulator's voltage is specified with an array of size one or three.
++          Single entry is for target voltage and three entries are for <target min max>
++          voltages.
++
++          Entries for multiple regulators shall be provided in the same field separated
++          by angular brackets <>. The OPP binding doesn't provide any provisions to
++          relate the values to their power supplies or the order in which the supplies
++          need to be configured and that is left for the implementation specific
++          binding.
++
++          Entries for all regulators shall be of the same size, i.e. either all use a
++          single value or triplets.
++        minItems: 1
++        maxItems: 8   # Should be enough regulators
++        items:
++          minItems: 1
++          maxItems: 3
++
++      opp-microamp:
++        description: |
++          The maximum current drawn by the device in microamperes considering
++          system specific parameters (such as transients, process, aging,
++          maximum operating temperature range etc.) as necessary. This may be
++          used to set the most efficient regulator operating mode.
++
++          Should only be set if opp-microvolt or opp-microvolt-<name> is set for
++          the OPP.
++
++          Entries for multiple regulators shall be provided in the same field
++          separated by angular brackets <>. If current values aren't required
++          for a regulator, then it shall be filled with 0. If current values
++          aren't required for any of the regulators, then this field is not
++          required. The OPP binding doesn't provide any provisions to relate the
++          values to their power supplies or the order in which the supplies need
++          to be configured and that is left for the implementation specific
++          binding.
++        minItems: 1
++        maxItems: 8   # Should be enough regulators
++
++      opp-level:
++        description:
++          A value representing the performance level of the device.
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++      opp-peak-kBps:
++        description:
++          Peak bandwidth in kilobytes per second, expressed as an array of
++          32-bit big-endian integers. Each element of the array represents the
++          peak bandwidth value of each interconnect path. The number of elements
++          should match the number of interconnect paths.
++        minItems: 1
++        maxItems: 32  # Should be enough
++
++      opp-avg-kBps:
++        description:
++          Average bandwidth in kilobytes per second, expressed as an array
++          of 32-bit big-endian integers. Each element of the array represents the
++          average bandwidth value of each interconnect path. The number of elements
++          should match the number of interconnect paths. This property is only
++          meaningful in OPP tables where opp-peak-kBps is present.
++        minItems: 1
++        maxItems: 32  # Should be enough
++
++      clock-latency-ns:
++        description:
++          Specifies the maximum possible transition latency (in nanoseconds) for
++          switching to this OPP from any other OPP.
++
++      turbo-mode:
++        description:
++          Marks the OPP to be used only for turbo modes. Turbo mode is available
++          on some platforms, where the device can run over its operating
++          frequency for a short duration of time limited by the device's power,
++          current and thermal limits.
++        type: boolean
++
++      opp-suspend:
++        description:
++          Marks the OPP to be used during device suspend. If multiple OPPs in
++          the table have this, the OPP with highest opp-hz will be used.
++        type: boolean
++
++      opp-supported-hw:
++        description: |
++          This property allows a platform to enable only a subset of the OPPs
++          from the larger set present in the OPP table, based on the current
++          version of the hardware (already known to the operating system).
++
++          Each block present in the array of blocks in this property, represents
++          a sub-group of hardware versions supported by the OPP. i.e. <sub-group
++          A>, <sub-group B>, etc. The OPP will be enabled if _any_ of these
++          sub-groups match the hardware's version.
++
++          Each sub-group is a platform defined array representing the hierarchy
++          of hardware versions supported by the platform. For a platform with
++          three hierarchical levels of version (X.Y.Z), this field shall look
++          like
++
++          opp-supported-hw = <X1 Y1 Z1>, <X2 Y2 Z2>, <X3 Y3 Z3>.
++
++          Each level (eg. X1) in version hierarchy is represented by a 32 bit
++          value, one bit per version and so there can be maximum 32 versions per
++          level. Logical AND (&) operation is performed for each level with the
++          hardware's level version and a non-zero output for _all_ the levels in
++          a sub-group means the OPP is supported by hardware. A value of
++          0xFFFFFFFF for each level in the sub-group will enable the OPP for all
++          versions for the hardware.
++        $ref: /schemas/types.yaml#/definitions/uint32-matrix
++        maxItems: 32
++        items:
++          minItems: 1
++          maxItems: 4
++
++      required-opps:
++        description:
++          This contains phandle to an OPP node in another device's OPP table. It
++          may contain an array of phandles, where each phandle points to an OPP
++          of a different device. It should not contain multiple phandles to the
++          OPP nodes in the same OPP table. This specifies the minimum required
++          OPP of the device(s), whose OPP's phandle is present in this property,
++          for the functioning of the current device at the current OPP (where
++          this property is present).
++        $ref: /schemas/types.yaml#/definitions/phandle-array
++
++    patternProperties:
++      '^opp-microvolt-':
++        description:
++          Named opp-microvolt property. This is exactly similar to the above
++          opp-microvolt property, but allows multiple voltage ranges to be
++          provided for the same OPP. At runtime, the platform can pick a <name>
++          and matching opp-microvolt-<name> property will be enabled for all
++          OPPs. If the platform doesn't pick a specific <name> or the <name>
++          doesn't match with any opp-microvolt-<name> properties, then
++          opp-microvolt property shall be used, if present.
++        $ref: /schemas/types.yaml#/definitions/uint32-matrix
++        minItems: 1
++        maxItems: 8   # Should be enough regulators
++        items:
++          minItems: 1
++          maxItems: 3
++
++      '^opp-microamp-':
++        description:
++          Named opp-microamp property. Similar to opp-microvolt-<name> property,
++          but for microamp instead.
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        minItems: 1
++        maxItems: 8   # Should be enough regulators
++
++    dependencies:
++      opp-avg-kBps: [ opp-peak-kBps ]
++
++required:
++  - compatible
++
++additionalProperties: true
++
++...
+diff --git a/Documentation/devicetree/bindings/opp/opp-v2.yaml b/Documentation/devicetree/bindings/opp/opp-v2.yaml
+new file mode 100644
+index 000000000000..609f68db9610
+--- /dev/null
++++ b/Documentation/devicetree/bindings/opp/opp-v2.yaml
+@@ -0,0 +1,475 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/opp/opp-v2.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Generic OPP (Operating Performance Points) Bindings
++
++maintainers:
++  - Viresh Kumar <viresh.kumar@linaro.org>
++
++allOf:
++  - $ref: opp-v2-base.yaml#
++
++properties:
++  compatible:
++    const: operating-points-v2
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    /*
++     * Example 1: Single cluster Dual-core ARM cortex A9, switch DVFS states
++     * together.
++     */
++    cpus {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cpu@0 {
++            compatible = "arm,cortex-a9";
++            device_type = "cpu";
++            reg = <0>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 0>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply0>;
++            operating-points-v2 = <&cpu0_opp_table0>;
++        };
++
++        cpu@1 {
++            compatible = "arm,cortex-a9";
++            device_type = "cpu";
++            reg = <1>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 0>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply0>;
++            operating-points-v2 = <&cpu0_opp_table0>;
++        };
++    };
++
++    cpu0_opp_table0: opp-table {
++        compatible = "operating-points-v2";
++        opp-shared;
++
++        opp-1000000000 {
++            opp-hz = /bits/ 64 <1000000000>;
++            opp-microvolt = <975000 970000 985000>;
++            opp-microamp = <70000>;
++            clock-latency-ns = <300000>;
++            opp-suspend;
++        };
++        opp-1100000000 {
++            opp-hz = /bits/ 64 <1100000000>;
++            opp-microvolt = <1000000 980000 1010000>;
++            opp-microamp = <80000>;
++            clock-latency-ns = <310000>;
++        };
++        opp-1200000000 {
++            opp-hz = /bits/ 64 <1200000000>;
++            opp-microvolt = <1025000>;
++            clock-latency-ns = <290000>;
++            turbo-mode;
++        };
++    };
++
++  - |
++    /*
++     * Example 2: Single cluster, Quad-core Qualcom-krait, switches DVFS states
++     * independently.
++     */
++    cpus {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cpu@0 {
++            compatible = "qcom,krait";
++            device_type = "cpu";
++            reg = <0>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 0>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply0>;
++            operating-points-v2 = <&cpu_opp_table>;
++        };
++
++        cpu@1 {
++            compatible = "qcom,krait";
++            device_type = "cpu";
++            reg = <1>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 1>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply1>;
++            operating-points-v2 = <&cpu_opp_table>;
++        };
++
++        cpu@2 {
++            compatible = "qcom,krait";
++            device_type = "cpu";
++            reg = <2>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 2>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply2>;
++            operating-points-v2 = <&cpu_opp_table>;
++        };
++
++        cpu@3 {
++            compatible = "qcom,krait";
++            device_type = "cpu";
++            reg = <3>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 3>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply3>;
++            operating-points-v2 = <&cpu_opp_table>;
++        };
++    };
++
++    cpu_opp_table: opp-table {
++        compatible = "operating-points-v2";
++
++        /*
++         * Missing opp-shared property means CPUs switch DVFS states
++         * independently.
++         */
++
++        opp-1000000000 {
++            opp-hz = /bits/ 64 <1000000000>;
++            opp-microvolt = <975000 970000 985000>;
++            opp-microamp = <70000>;
++            clock-latency-ns = <300000>;
++            opp-suspend;
++        };
++        opp-1100000000 {
++            opp-hz = /bits/ 64 <1100000000>;
++            opp-microvolt = <1000000 980000 1010000>;
++            opp-microamp = <80000>;
++            clock-latency-ns = <310000>;
++        };
++        opp-1200000000 {
++            opp-hz = /bits/ 64 <1200000000>;
++            opp-microvolt = <1025000>;
++            opp-microamp = <90000>;
++            lock-latency-ns = <290000>;
++            turbo-mode;
++        };
++    };
++
++  - |
++    /*
++     * Example 3: Dual-cluster, Dual-core per cluster. CPUs within a cluster switch
++     * DVFS state together.
++     */
++    cpus {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cpu@0 {
++            compatible = "arm,cortex-a7";
++            device_type = "cpu";
++            reg = <0>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 0>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply0>;
++            operating-points-v2 = <&cluster0_opp>;
++        };
++
++        cpu@1 {
++            compatible = "arm,cortex-a7";
++            device_type = "cpu";
++            reg = <1>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 0>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply0>;
++            operating-points-v2 = <&cluster0_opp>;
++        };
++
++        cpu@100 {
++            compatible = "arm,cortex-a15";
++            device_type = "cpu";
++            reg = <100>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 1>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply1>;
++            operating-points-v2 = <&cluster1_opp>;
++        };
++
++        cpu@101 {
++            compatible = "arm,cortex-a15";
++            device_type = "cpu";
++            reg = <101>;
++            next-level-cache = <&L2>;
++            clocks = <&clk_controller 1>;
++            clock-names = "cpu";
++            cpu-supply = <&cpu_supply1>;
++            operating-points-v2 = <&cluster1_opp>;
++        };
++    };
++
++    cluster0_opp: opp-table-0 {
++        compatible = "operating-points-v2";
++        opp-shared;
++
++        opp-1000000000 {
++            opp-hz = /bits/ 64 <1000000000>;
++            opp-microvolt = <975000 970000 985000>;
++            opp-microamp = <70000>;
++            clock-latency-ns = <300000>;
++            opp-suspend;
++        };
++        opp-1100000000 {
++            opp-hz = /bits/ 64 <1100000000>;
++            opp-microvolt = <1000000 980000 1010000>;
++            opp-microamp = <80000>;
++            clock-latency-ns = <310000>;
++        };
++        opp-1200000000 {
++            opp-hz = /bits/ 64 <1200000000>;
++            opp-microvolt = <1025000>;
++            opp-microamp = <90000>;
++            clock-latency-ns = <290000>;
++            turbo-mode;
++        };
++    };
++
++    cluster1_opp: opp-table-1 {
++        compatible = "operating-points-v2";
++        opp-shared;
++
++        opp-1300000000 {
++            opp-hz = /bits/ 64 <1300000000>;
++            opp-microvolt = <1050000 1045000 1055000>;
++            opp-microamp = <95000>;
++            clock-latency-ns = <400000>;
++            opp-suspend;
++        };
++        opp-1400000000 {
++            opp-hz = /bits/ 64 <1400000000>;
++            opp-microvolt = <1075000>;
++            opp-microamp = <100000>;
++            clock-latency-ns = <400000>;
++        };
++        opp-1500000000 {
++            opp-hz = /bits/ 64 <1500000000>;
++            opp-microvolt = <1100000 1010000 1110000>;
++            opp-microamp = <95000>;
++            clock-latency-ns = <400000>;
++            turbo-mode;
++        };
++    };
++
++  - |
++    /* Example 4: Handling multiple regulators */
++    cpus {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cpu@0 {
++            compatible = "vendor,cpu-type";
++            device_type = "cpu";
++            reg = <0>;
++
++            vcc0-supply = <&cpu_supply0>;
++            vcc1-supply = <&cpu_supply1>;
++            vcc2-supply = <&cpu_supply2>;
++            operating-points-v2 = <&cpu0_opp_table4>;
++        };
++    };
++
++    cpu0_opp_table4: opp-table-0 {
++        compatible = "operating-points-v2";
++        opp-shared;
++
++        opp-1000000000 {
++            opp-hz = /bits/ 64 <1000000000>;
++            opp-microvolt = <970000>, /* Supply 0 */
++                            <960000>, /* Supply 1 */
++                            <960000>; /* Supply 2 */
++            opp-microamp =  <70000>,  /* Supply 0 */
++                            <70000>,  /* Supply 1 */
++                            <70000>;  /* Supply 2 */
++            clock-latency-ns = <300000>;
++        };
++
++        /* OR */
++
++        opp-1000000001 {
++            opp-hz = /bits/ 64 <1000000001>;
++            opp-microvolt = <975000 970000 985000>, /* Supply 0 */
++                            <965000 960000 975000>, /* Supply 1 */
++                            <965000 960000 975000>; /* Supply 2 */
++            opp-microamp =  <70000>,    /* Supply 0 */
++                <70000>,    /* Supply 1 */
++                <70000>;    /* Supply 2 */
++            clock-latency-ns = <300000>;
++        };
++
++        /* OR */
++
++        opp-1000000002 {
++            opp-hz = /bits/ 64 <1000000002>;
++            opp-microvolt = <975000 970000 985000>, /* Supply 0 */
++                <965000 960000 975000>, /* Supply 1 */
++                <965000 960000 975000>; /* Supply 2 */
++            opp-microamp =  <70000>,    /* Supply 0 */
++                <0>,      /* Supply 1 doesn't need this */
++                <70000>;    /* Supply 2 */
++            clock-latency-ns = <300000>;
++        };
++    };
++
++  - |
++    /*
++     * Example 5: opp-supported-hw
++     * (example: three level hierarchy of versions: cuts, substrate and process)
++     */
++    cpus {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cpu@0 {
++            compatible = "arm,cortex-a7";
++            device_type = "cpu";
++            reg = <0>;
++            cpu-supply = <&cpu_supply>;
++            operating-points-v2 = <&cpu0_opp_table_slow>;
++        };
++    };
++
++    cpu0_opp_table_slow: opp-table {
++        compatible = "operating-points-v2";
++        opp-shared;
++
++        opp-600000000 {
++            /*
++             * Supports all substrate and process versions for 0xF
++             * cuts, i.e. only first four cuts.
++             */
++            opp-supported-hw = <0xF 0xFFFFFFFF 0xFFFFFFFF>;
++            opp-hz = /bits/ 64 <600000000>;
++        };
++
++        opp-800000000 {
++            /*
++             * Supports:
++             * - cuts: only one, 6th cut (represented by 6th bit).
++             * - substrate: supports 16 different substrate versions
++             * - process: supports 9 different process versions
++             */
++            opp-supported-hw = <0x20 0xff0000ff 0x0000f4f0>;
++            opp-hz = /bits/ 64 <800000000>;
++        };
++
++        opp-900000000 {
++            /*
++             * Supports:
++             * - All cuts and substrate where process version is 0x2.
++             * - All cuts and process where substrate version is 0x2.
++             */
++            opp-supported-hw = <0xFFFFFFFF 0xFFFFFFFF 0x02>,
++                               <0xFFFFFFFF 0x01 0xFFFFFFFF>;
++            opp-hz = /bits/ 64 <900000000>;
++        };
++    };
++
++  - |
++    /*
++     * Example 6: opp-microvolt-<name>, opp-microamp-<name>:
++     * (example: device with two possible microvolt ranges: slow and fast)
++     */
++    cpus {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cpu@0 {
++            compatible = "arm,cortex-a7";
++            device_type = "cpu";
++            reg = <0>;
++            operating-points-v2 = <&cpu0_opp_table6>;
++        };
++    };
++
++    cpu0_opp_table6: opp-table-0 {
++        compatible = "operating-points-v2";
++        opp-shared;
++
++        opp-1000000000 {
++            opp-hz = /bits/ 64 <1000000000>;
++            opp-microvolt-slow = <915000 900000 925000>;
++            opp-microvolt-fast = <975000 970000 985000>;
++            opp-microamp-slow =  <70000>;
++            opp-microamp-fast =  <71000>;
++        };
++
++        opp-1200000000 {
++            opp-hz = /bits/ 64 <1200000000>;
++            opp-microvolt-slow = <915000 900000 925000>, /* Supply vcc0 */
++                                 <925000 910000 935000>; /* Supply vcc1 */
++            opp-microvolt-fast = <975000 970000 985000>, /* Supply vcc0 */
++                                 <965000 960000 975000>; /* Supply vcc1 */
++            opp-microamp =  <70000>; /* Will be used for both slow/fast */
++        };
++    };
++
++  - |
++    /*
++     * Example 7: Single cluster Quad-core ARM cortex A53, OPP points from firmware,
++     * distinct clock controls but two sets of clock/voltage/current lines.
++     */
++    cpus {
++        #address-cells = <2>;
++        #size-cells = <0>;
++
++        cpu@0 {
++            compatible = "arm,cortex-a53";
++            device_type = "cpu";
++            reg = <0x0 0x100>;
++            next-level-cache = <&A53_L2>;
++            clocks = <&dvfs_controller 0>;
++            operating-points-v2 = <&cpu_opp0_table>;
++        };
++        cpu@1 {
++            compatible = "arm,cortex-a53";
++            device_type = "cpu";
++            reg = <0x0 0x101>;
++            next-level-cache = <&A53_L2>;
++            clocks = <&dvfs_controller 1>;
++            operating-points-v2 = <&cpu_opp0_table>;
++        };
++        cpu@2 {
++            compatible = "arm,cortex-a53";
++            device_type = "cpu";
++            reg = <0x0 0x102>;
++            next-level-cache = <&A53_L2>;
++            clocks = <&dvfs_controller 2>;
++            operating-points-v2 = <&cpu_opp1_table>;
++        };
++        cpu@3 {
++            compatible = "arm,cortex-a53";
++            device_type = "cpu";
++            reg = <0x0 0x103>;
++            next-level-cache = <&A53_L2>;
++            clocks = <&dvfs_controller 3>;
++            operating-points-v2 = <&cpu_opp1_table>;
++        };
++
++    };
++
++    cpu_opp0_table: opp-table-0 {
++        compatible = "operating-points-v2";
++        opp-shared;
++    };
++
++    cpu_opp1_table: opp-table-1 {
++        compatible = "operating-points-v2";
++        opp-shared;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/opp/opp.txt b/Documentation/devicetree/bindings/opp/opp.txt
+deleted file mode 100644
+index 08b3da4736cf..000000000000
+--- a/Documentation/devicetree/bindings/opp/opp.txt
++++ /dev/null
+@@ -1,622 +0,0 @@
+-Generic OPP (Operating Performance Points) Bindings
+-----------------------------------------------------
+-
+-Devices work at voltage-current-frequency combinations and some implementations
+-have the liberty of choosing these. These combinations are called Operating
+-Performance Points aka OPPs. This document defines bindings for these OPPs
+-applicable across wide range of devices. For illustration purpose, this document
+-uses CPU as a device.
+-
+-This document contain multiple versions of OPP binding and only one of them
+-should be used per device.
+-
+-Binding 1: operating-points
+-============================
+-
+-This binding only supports voltage-frequency pairs.
+-
+-Properties:
+-- operating-points: An array of 2-tuples items, and each item consists
+-  of frequency and voltage like <freq-kHz vol-uV>.
+-	freq: clock frequency in kHz
+-	vol: voltage in microvolt
+-
+-Examples:
+-
+-cpu@0 {
+-	compatible = "arm,cortex-a9";
+-	reg = <0>;
+-	next-level-cache = <&L2>;
+-	operating-points = <
+-		/* kHz    uV */
+-		792000  1100000
+-		396000  950000
+-		198000  850000
+-	>;
+-};
+-
+-
+-Binding 2: operating-points-v2
+-============================
+-
+-* Property: operating-points-v2
+-
+-Devices supporting OPPs must set their "operating-points-v2" property with
+-phandle to a OPP table in their DT node. The OPP core will use this phandle to
+-find the operating points for the device.
+-
+-This can contain more than one phandle for power domain providers that provide
+-multiple power domains. That is, one phandle for each power domain. If only one
+-phandle is available, then the same OPP table will be used for all power domains
+-provided by the power domain provider.
+-
+-If required, this can be extended for SoC vendor specific bindings. Such bindings
+-should be documented as Documentation/devicetree/bindings/power/<vendor>-opp.txt
+-and should have a compatible description like: "operating-points-v2-<vendor>".
+-
+-* OPP Table Node
+-
+-This describes the OPPs belonging to a device. This node can have following
+-properties:
+-
+-Required properties:
+-- compatible: Allow OPPs to express their compatibility. It should be:
+-  "operating-points-v2".
+-
+-- OPP nodes: One or more OPP nodes describing voltage-current-frequency
+-  combinations. Their name isn't significant but their phandle can be used to
+-  reference an OPP. These are mandatory except for the case where the OPP table
+-  is present only to indicate dependency between devices using the opp-shared
+-  property.
+-
+-Optional properties:
+-- opp-shared: Indicates that device nodes using this OPP Table Node's phandle
+-  switch their DVFS state together, i.e. they share clock/voltage/current lines.
+-  Missing property means devices have independent clock/voltage/current lines,
+-  but they share OPP tables.
+-
+-- status: Marks the OPP table enabled/disabled.
+-
+-
+-* OPP Node
+-
+-This defines voltage-current-frequency combinations along with other related
+-properties.
+-
+-Required properties:
+-- opp-hz: Frequency in Hz, expressed as a 64-bit big-endian integer. This is a
+-  required property for all device nodes, unless another "required" property to
+-  uniquely identify the OPP nodes exists. Devices like power domains must have
+-  another (implementation dependent) property.
+-
+-- opp-peak-kBps: Peak bandwidth in kilobytes per second, expressed as an array
+-  of 32-bit big-endian integers. Each element of the array represents the
+-  peak bandwidth value of each interconnect path. The number of elements should
+-  match the number of interconnect paths.
+-
+-Optional properties:
+-- opp-microvolt: voltage in micro Volts.
+-
+-  A single regulator's voltage is specified with an array of size one or three.
+-  Single entry is for target voltage and three entries are for <target min max>
+-  voltages.
+-
+-  Entries for multiple regulators shall be provided in the same field separated
+-  by angular brackets <>. The OPP binding doesn't provide any provisions to
+-  relate the values to their power supplies or the order in which the supplies
+-  need to be configured and that is left for the implementation specific
+-  binding.
+-
+-  Entries for all regulators shall be of the same size, i.e. either all use a
+-  single value or triplets.
+-
+-- opp-microvolt-<name>: Named opp-microvolt property. This is exactly similar to
+-  the above opp-microvolt property, but allows multiple voltage ranges to be
+-  provided for the same OPP. At runtime, the platform can pick a <name> and
+-  matching opp-microvolt-<name> property will be enabled for all OPPs. If the
+-  platform doesn't pick a specific <name> or the <name> doesn't match with any
+-  opp-microvolt-<name> properties, then opp-microvolt property shall be used, if
+-  present.
+-
+-- opp-microamp: The maximum current drawn by the device in microamperes
+-  considering system specific parameters (such as transients, process, aging,
+-  maximum operating temperature range etc.) as necessary. This may be used to
+-  set the most efficient regulator operating mode.
+-
+-  Should only be set if opp-microvolt is set for the OPP.
+-
+-  Entries for multiple regulators shall be provided in the same field separated
+-  by angular brackets <>. If current values aren't required for a regulator,
+-  then it shall be filled with 0. If current values aren't required for any of
+-  the regulators, then this field is not required. The OPP binding doesn't
+-  provide any provisions to relate the values to their power supplies or the
+-  order in which the supplies need to be configured and that is left for the
+-  implementation specific binding.
+-
+-- opp-microamp-<name>: Named opp-microamp property. Similar to
+-  opp-microvolt-<name> property, but for microamp instead.
+-
+-- opp-level: A value representing the performance level of the device,
+-  expressed as a 32-bit integer.
+-
+-- opp-avg-kBps: Average bandwidth in kilobytes per second, expressed as an array
+-  of 32-bit big-endian integers. Each element of the array represents the
+-  average bandwidth value of each interconnect path. The number of elements
+-  should match the number of interconnect paths. This property is only
+-  meaningful in OPP tables where opp-peak-kBps is present.
+-
+-- clock-latency-ns: Specifies the maximum possible transition latency (in
+-  nanoseconds) for switching to this OPP from any other OPP.
+-
+-- turbo-mode: Marks the OPP to be used only for turbo modes. Turbo mode is
+-  available on some platforms, where the device can run over its operating
+-  frequency for a short duration of time limited by the device's power, current
+-  and thermal limits.
+-
+-- opp-suspend: Marks the OPP to be used during device suspend. If multiple OPPs
+-  in the table have this, the OPP with highest opp-hz will be used.
+-
+-- opp-supported-hw: This property allows a platform to enable only a subset of
+-  the OPPs from the larger set present in the OPP table, based on the current
+-  version of the hardware (already known to the operating system).
+-
+-  Each block present in the array of blocks in this property, represents a
+-  sub-group of hardware versions supported by the OPP. i.e. <sub-group A>,
+-  <sub-group B>, etc. The OPP will be enabled if _any_ of these sub-groups match
+-  the hardware's version.
+-
+-  Each sub-group is a platform defined array representing the hierarchy of
+-  hardware versions supported by the platform. For a platform with three
+-  hierarchical levels of version (X.Y.Z), this field shall look like
+-
+-  opp-supported-hw = <X1 Y1 Z1>, <X2 Y2 Z2>, <X3 Y3 Z3>.
+-
+-  Each level (eg. X1) in version hierarchy is represented by a 32 bit value, one
+-  bit per version and so there can be maximum 32 versions per level. Logical AND
+-  (&) operation is performed for each level with the hardware's level version
+-  and a non-zero output for _all_ the levels in a sub-group means the OPP is
+-  supported by hardware. A value of 0xFFFFFFFF for each level in the sub-group
+-  will enable the OPP for all versions for the hardware.
+-
+-- status: Marks the node enabled/disabled.
+-
+-- required-opps: This contains phandle to an OPP node in another device's OPP
+-  table. It may contain an array of phandles, where each phandle points to an
+-  OPP of a different device. It should not contain multiple phandles to the OPP
+-  nodes in the same OPP table. This specifies the minimum required OPP of the
+-  device(s), whose OPP's phandle is present in this property, for the
+-  functioning of the current device at the current OPP (where this property is
+-  present).
+-
+-Example 1: Single cluster Dual-core ARM cortex A9, switch DVFS states together.
+-
+-/ {
+-	cpus {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		cpu@0 {
+-			compatible = "arm,cortex-a9";
+-			reg = <0>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 0>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply0>;
+-			operating-points-v2 = <&cpu0_opp_table>;
+-		};
+-
+-		cpu@1 {
+-			compatible = "arm,cortex-a9";
+-			reg = <1>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 0>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply0>;
+-			operating-points-v2 = <&cpu0_opp_table>;
+-		};
+-	};
+-
+-	cpu0_opp_table: opp_table0 {
+-		compatible = "operating-points-v2";
+-		opp-shared;
+-
+-		opp-1000000000 {
+-			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt = <975000 970000 985000>;
+-			opp-microamp = <70000>;
+-			clock-latency-ns = <300000>;
+-			opp-suspend;
+-		};
+-		opp-1100000000 {
+-			opp-hz = /bits/ 64 <1100000000>;
+-			opp-microvolt = <1000000 980000 1010000>;
+-			opp-microamp = <80000>;
+-			clock-latency-ns = <310000>;
+-		};
+-		opp-1200000000 {
+-			opp-hz = /bits/ 64 <1200000000>;
+-			opp-microvolt = <1025000>;
+-			clock-latency-ns = <290000>;
+-			turbo-mode;
+-		};
+-	};
+-};
+-
+-Example 2: Single cluster, Quad-core Qualcom-krait, switches DVFS states
+-independently.
+-
+-/ {
+-	cpus {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		cpu@0 {
+-			compatible = "qcom,krait";
+-			reg = <0>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 0>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply0>;
+-			operating-points-v2 = <&cpu_opp_table>;
+-		};
+-
+-		cpu@1 {
+-			compatible = "qcom,krait";
+-			reg = <1>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 1>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply1>;
+-			operating-points-v2 = <&cpu_opp_table>;
+-		};
+-
+-		cpu@2 {
+-			compatible = "qcom,krait";
+-			reg = <2>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 2>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply2>;
+-			operating-points-v2 = <&cpu_opp_table>;
+-		};
+-
+-		cpu@3 {
+-			compatible = "qcom,krait";
+-			reg = <3>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 3>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply3>;
+-			operating-points-v2 = <&cpu_opp_table>;
+-		};
+-	};
+-
+-	cpu_opp_table: opp_table {
+-		compatible = "operating-points-v2";
+-
+-		/*
+-		 * Missing opp-shared property means CPUs switch DVFS states
+-		 * independently.
+-		 */
+-
+-		opp-1000000000 {
+-			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt = <975000 970000 985000>;
+-			opp-microamp = <70000>;
+-			clock-latency-ns = <300000>;
+-			opp-suspend;
+-		};
+-		opp-1100000000 {
+-			opp-hz = /bits/ 64 <1100000000>;
+-			opp-microvolt = <1000000 980000 1010000>;
+-			opp-microamp = <80000>;
+-			clock-latency-ns = <310000>;
+-		};
+-		opp-1200000000 {
+-			opp-hz = /bits/ 64 <1200000000>;
+-			opp-microvolt = <1025000>;
+-			opp-microamp = <90000;
+-			lock-latency-ns = <290000>;
+-			turbo-mode;
+-		};
+-	};
+-};
+-
+-Example 3: Dual-cluster, Dual-core per cluster. CPUs within a cluster switch
+-DVFS state together.
+-
+-/ {
+-	cpus {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		cpu@0 {
+-			compatible = "arm,cortex-a7";
+-			reg = <0>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 0>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply0>;
+-			operating-points-v2 = <&cluster0_opp>;
+-		};
+-
+-		cpu@1 {
+-			compatible = "arm,cortex-a7";
+-			reg = <1>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 0>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply0>;
+-			operating-points-v2 = <&cluster0_opp>;
+-		};
+-
+-		cpu@100 {
+-			compatible = "arm,cortex-a15";
+-			reg = <100>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 1>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply1>;
+-			operating-points-v2 = <&cluster1_opp>;
+-		};
+-
+-		cpu@101 {
+-			compatible = "arm,cortex-a15";
+-			reg = <101>;
+-			next-level-cache = <&L2>;
+-			clocks = <&clk_controller 1>;
+-			clock-names = "cpu";
+-			cpu-supply = <&cpu_supply1>;
+-			operating-points-v2 = <&cluster1_opp>;
+-		};
+-	};
+-
+-	cluster0_opp: opp_table0 {
+-		compatible = "operating-points-v2";
+-		opp-shared;
+-
+-		opp-1000000000 {
+-			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt = <975000 970000 985000>;
+-			opp-microamp = <70000>;
+-			clock-latency-ns = <300000>;
+-			opp-suspend;
+-		};
+-		opp-1100000000 {
+-			opp-hz = /bits/ 64 <1100000000>;
+-			opp-microvolt = <1000000 980000 1010000>;
+-			opp-microamp = <80000>;
+-			clock-latency-ns = <310000>;
+-		};
+-		opp-1200000000 {
+-			opp-hz = /bits/ 64 <1200000000>;
+-			opp-microvolt = <1025000>;
+-			opp-microamp = <90000>;
+-			clock-latency-ns = <290000>;
+-			turbo-mode;
+-		};
+-	};
+-
+-	cluster1_opp: opp_table1 {
+-		compatible = "operating-points-v2";
+-		opp-shared;
+-
+-		opp-1300000000 {
+-			opp-hz = /bits/ 64 <1300000000>;
+-			opp-microvolt = <1050000 1045000 1055000>;
+-			opp-microamp = <95000>;
+-			clock-latency-ns = <400000>;
+-			opp-suspend;
+-		};
+-		opp-1400000000 {
+-			opp-hz = /bits/ 64 <1400000000>;
+-			opp-microvolt = <1075000>;
+-			opp-microamp = <100000>;
+-			clock-latency-ns = <400000>;
+-		};
+-		opp-1500000000 {
+-			opp-hz = /bits/ 64 <1500000000>;
+-			opp-microvolt = <1100000 1010000 1110000>;
+-			opp-microamp = <95000>;
+-			clock-latency-ns = <400000>;
+-			turbo-mode;
+-		};
+-	};
+-};
+-
+-Example 4: Handling multiple regulators
+-
+-/ {
+-	cpus {
+-		cpu@0 {
+-			compatible = "vendor,cpu-type";
+-			...
+-
+-			vcc0-supply = <&cpu_supply0>;
+-			vcc1-supply = <&cpu_supply1>;
+-			vcc2-supply = <&cpu_supply2>;
+-			operating-points-v2 = <&cpu0_opp_table>;
+-		};
+-	};
+-
+-	cpu0_opp_table: opp_table0 {
+-		compatible = "operating-points-v2";
+-		opp-shared;
+-
+-		opp-1000000000 {
+-			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt = <970000>, /* Supply 0 */
+-					<960000>, /* Supply 1 */
+-					<960000>; /* Supply 2 */
+-			opp-microamp =  <70000>,  /* Supply 0 */
+-					<70000>,  /* Supply 1 */
+-					<70000>;  /* Supply 2 */
+-			clock-latency-ns = <300000>;
+-		};
+-
+-		/* OR */
+-
+-		opp-1000000000 {
+-			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt = <975000 970000 985000>, /* Supply 0 */
+-					<965000 960000 975000>, /* Supply 1 */
+-					<965000 960000 975000>; /* Supply 2 */
+-			opp-microamp =  <70000>,		/* Supply 0 */
+-					<70000>,		/* Supply 1 */
+-					<70000>;		/* Supply 2 */
+-			clock-latency-ns = <300000>;
+-		};
+-
+-		/* OR */
+-
+-		opp-1000000000 {
+-			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt = <975000 970000 985000>, /* Supply 0 */
+-					<965000 960000 975000>, /* Supply 1 */
+-					<965000 960000 975000>; /* Supply 2 */
+-			opp-microamp =  <70000>,		/* Supply 0 */
+-					<0>,			/* Supply 1 doesn't need this */
+-					<70000>;		/* Supply 2 */
+-			clock-latency-ns = <300000>;
+-		};
+-	};
+-};
+-
+-Example 5: opp-supported-hw
+-(example: three level hierarchy of versions: cuts, substrate and process)
+-
+-/ {
+-	cpus {
+-		cpu@0 {
+-			compatible = "arm,cortex-a7";
+-			...
+-
+-			cpu-supply = <&cpu_supply>
+-			operating-points-v2 = <&cpu0_opp_table_slow>;
+-		};
+-	};
+-
+-	opp_table {
+-		compatible = "operating-points-v2";
+-		opp-shared;
+-
+-		opp-600000000 {
+-			/*
+-			 * Supports all substrate and process versions for 0xF
+-			 * cuts, i.e. only first four cuts.
+-			 */
+-			opp-supported-hw = <0xF 0xFFFFFFFF 0xFFFFFFFF>
+-			opp-hz = /bits/ 64 <600000000>;
+-			...
+-		};
+-
+-		opp-800000000 {
+-			/*
+-			 * Supports:
+-			 * - cuts: only one, 6th cut (represented by 6th bit).
+-			 * - substrate: supports 16 different substrate versions
+-			 * - process: supports 9 different process versions
+-			 */
+-			opp-supported-hw = <0x20 0xff0000ff 0x0000f4f0>
+-			opp-hz = /bits/ 64 <800000000>;
+-			...
+-		};
+-
+-		opp-900000000 {
+-			/*
+-			 * Supports:
+-			 * - All cuts and substrate where process version is 0x2.
+-			 * - All cuts and process where substrate version is 0x2.
+-			 */
+-			opp-supported-hw = <0xFFFFFFFF 0xFFFFFFFF 0x02>, <0xFFFFFFFF 0x01 0xFFFFFFFF>
+-			opp-hz = /bits/ 64 <900000000>;
+-			...
+-		};
+-	};
+-};
+-
+-Example 6: opp-microvolt-<name>, opp-microamp-<name>:
+-(example: device with two possible microvolt ranges: slow and fast)
+-
+-/ {
+-	cpus {
+-		cpu@0 {
+-			compatible = "arm,cortex-a7";
+-			...
+-
+-			operating-points-v2 = <&cpu0_opp_table>;
+-		};
+-	};
+-
+-	cpu0_opp_table: opp_table0 {
+-		compatible = "operating-points-v2";
+-		opp-shared;
+-
+-		opp-1000000000 {
+-			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt-slow = <915000 900000 925000>;
+-			opp-microvolt-fast = <975000 970000 985000>;
+-			opp-microamp-slow =  <70000>;
+-			opp-microamp-fast =  <71000>;
+-		};
+-
+-		opp-1200000000 {
+-			opp-hz = /bits/ 64 <1200000000>;
+-			opp-microvolt-slow = <915000 900000 925000>, /* Supply vcc0 */
+-					      <925000 910000 935000>; /* Supply vcc1 */
+-			opp-microvolt-fast = <975000 970000 985000>, /* Supply vcc0 */
+-					     <965000 960000 975000>; /* Supply vcc1 */
+-			opp-microamp =  <70000>; /* Will be used for both slow/fast */
+-		};
+-	};
+-};
+-
+-Example 7: Single cluster Quad-core ARM cortex A53, OPP points from firmware,
+-distinct clock controls but two sets of clock/voltage/current lines.
+-
+-/ {
+-	cpus {
+-		#address-cells = <2>;
+-		#size-cells = <0>;
+-
+-		cpu@0 {
+-			compatible = "arm,cortex-a53";
+-			reg = <0x0 0x100>;
+-			next-level-cache = <&A53_L2>;
+-			clocks = <&dvfs_controller 0>;
+-			operating-points-v2 = <&cpu_opp0_table>;
+-		};
+-		cpu@1 {
+-			compatible = "arm,cortex-a53";
+-			reg = <0x0 0x101>;
+-			next-level-cache = <&A53_L2>;
+-			clocks = <&dvfs_controller 1>;
+-			operating-points-v2 = <&cpu_opp0_table>;
+-		};
+-		cpu@2 {
+-			compatible = "arm,cortex-a53";
+-			reg = <0x0 0x102>;
+-			next-level-cache = <&A53_L2>;
+-			clocks = <&dvfs_controller 2>;
+-			operating-points-v2 = <&cpu_opp1_table>;
+-		};
+-		cpu@3 {
+-			compatible = "arm,cortex-a53";
+-			reg = <0x0 0x103>;
+-			next-level-cache = <&A53_L2>;
+-			clocks = <&dvfs_controller 3>;
+-			operating-points-v2 = <&cpu_opp1_table>;
+-		};
+-
+-	};
+-
+-	cpu_opp0_table: opp0_table {
+-		compatible = "operating-points-v2";
+-		opp-shared;
+-	};
+-
+-	cpu_opp1_table: opp1_table {
+-		compatible = "operating-points-v2";
+-		opp-shared;
+-	};
+-};
+-- 
+2.27.0
 
-> Aldebaran GPUs have 2 root ports, with 4 misc port for each root.
-> 
-
-I don't fully understand this sentence. There are 2 "Nodes"/Data Fabrics
-per GPU package, but what do "4 misc port for each root" mean? In any
-case, is this relevant to this patch?
-
-Also, there should be an imperitive in the commit message, i.e. "Add
-...".
-
-> Signed-off-by: Muralidhara M K <muralimk@amd.com>
-> Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
-> ---
->  arch/x86/include/asm/amd_nb.h |  6 ++++
->  arch/x86/kernel/amd_nb.c      | 62 ++++++++++++++++++++++++++++++++---
->  2 files changed, 63 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/amd_nb.h b/arch/x86/include/asm/amd_nb.h
-> index 00d1a400b7a1..e71581cf00e3 100644
-> --- a/arch/x86/include/asm/amd_nb.h
-> +++ b/arch/x86/include/asm/amd_nb.h
-> @@ -79,6 +79,12 @@ struct amd_northbridge_info {
->  
->  #ifdef CONFIG_AMD_NB
->  
-> +/*
-> + * On Newer heterogeneous systems from AMD with CPU and GPU nodes connected
-> + * via xGMI links, the NON CPU Nodes are enumerated from index 8
-> + */
-> +#define NONCPU_NODE_INDEX	8
-
-"Newer" doesn't need to be capatilized. And there should be a period at
-the end of the sentence.
-
-I don't think "xGMI links" would mean much to most folks. I think the
-implication here is that the CPUs and GPUs are connected directly
-together (or rather their Data Fabrics are connected) like is done with
-2 socket CPU systems and also within a socket for Multi-chip Module
-(MCM) CPUs like Naples.
-
-> +
->  u16 amd_nb_num(void);
->  bool amd_nb_has_feature(unsigned int feature);
->  struct amd_northbridge *node_to_amd_nb(int node);
-> diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
-> index 5884dfa619ff..489003e850dd 100644
-> --- a/arch/x86/kernel/amd_nb.c
-> +++ b/arch/x86/kernel/amd_nb.c
-> @@ -26,6 +26,8 @@
->  #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F4 0x1444
->  #define PCI_DEVICE_ID_AMD_19H_DF_F4	0x1654
->  #define PCI_DEVICE_ID_AMD_19H_M50H_DF_F4 0x166e
-> +#define PCI_DEVICE_ID_AMD_ALDEBARAN_ROOT	0x14bb
-> +#define PCI_DEVICE_ID_AMD_ALDEBARAN_DF_F4	0x14d4
->
-
-These PCI IDs look correct.
-
->  /* Protect the PCI config register pairs used for SMN. */
->  static DEFINE_MUTEX(smn_mutex);
-> @@ -94,6 +96,21 @@ static const struct pci_device_id hygon_nb_link_ids[] = {
->  	{}
->  };
->  
-> +static const struct pci_device_id amd_noncpu_root_ids[] = {
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_ALDEBARAN_ROOT) },
-> +	{}
-> +};
-> +
-> +static const struct pci_device_id amd_noncpu_nb_misc_ids[] = {
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_ALDEBARAN_DF_F3) },
-> +	{}
-> +};
-> +
-> +static const struct pci_device_id amd_noncpu_nb_link_ids[] = {
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_ALDEBARAN_DF_F4) },
-> +	{}
-> +};
-> +
-
-I think separating the CPU and non-CPU IDs is a good idea.
-
->  const struct amd_nb_bus_dev_range amd_nb_bus_dev_ranges[] __initconst = {
->  	{ 0x00, 0x18, 0x20 },
->  	{ 0xff, 0x00, 0x20 },
-> @@ -182,11 +199,16 @@ int amd_cache_northbridges(void)
->  	const struct pci_device_id *misc_ids = amd_nb_misc_ids;
->  	const struct pci_device_id *link_ids = amd_nb_link_ids;
->  	const struct pci_device_id *root_ids = amd_root_ids;
-> +
-> +	const struct pci_device_id *noncpu_misc_ids = amd_noncpu_nb_misc_ids;
-> +	const struct pci_device_id *noncpu_link_ids = amd_noncpu_nb_link_ids;
-> +	const struct pci_device_id *noncpu_root_ids = amd_noncpu_root_ids;
-> +
->  	struct pci_dev *root, *misc, *link;
->  	struct amd_northbridge *nb;
->  	u16 roots_per_misc = 0;
-> -	u16 misc_count = 0;
-> -	u16 root_count = 0;
-> +	u16 misc_count = 0, misc_count_noncpu = 0;
-> +	u16 root_count = 0, root_count_noncpu = 0;
->  	u16 i, j;
->  
->  	if (amd_northbridges.num)
-> @@ -205,10 +227,16 @@ int amd_cache_northbridges(void)
->  	if (!misc_count)
->  		return -ENODEV;
->  
-> +	while ((misc = next_northbridge(misc, noncpu_misc_ids)) != NULL)
-> +		misc_count_noncpu++;
-> +
->  	root = NULL;
->  	while ((root = next_northbridge(root, root_ids)) != NULL)
->  		root_count++;
->  
-> +	while ((root = next_northbridge(root, noncpu_root_ids)) != NULL)
-> +		root_count_noncpu++;
-> +
->  	if (root_count) {
->  		roots_per_misc = root_count / misc_count;
->  
-> @@ -222,15 +250,27 @@ int amd_cache_northbridges(void)
->  		}
->  	}
->  
-> -	nb = kcalloc(misc_count, sizeof(struct amd_northbridge), GFP_KERNEL);
-> +	/*
-> +	 * The valid amd_northbridges are in between (0 ~ misc_count) and
-> +	 * (NONCPU_NODE_INDEX ~ NONCPU_NODE_INDEX + misc_count_noncpu)
-> +	 */
-
-This comment isn't clear to me. Is it even necessary?
-
-> +	if (misc_count_noncpu)
-> +		/*
-> +		 * There are NONCPU Nodes with pci root ports starting at index 8
-> +		 * allocate few extra cells for simplicity in handling the indexes
-> +		 */
-
-I think this comment can be more explicit. The first non-CPU Node ID
-starts at 8 even if there are fewer than 8 CPU nodes. To maintain the
-AMD Node ID to Linux amd_nb indexing scheme, allocate the number of GPU
-nodes plus 8. Some allocated amd_northbridge structures will go unused
-when the number of CPU nodes is less than 8, but this tradeoff is to
-keep things relatively simple.
-
-> +		amd_northbridges.num = NONCPU_NODE_INDEX + misc_count_noncpu;
-> +	else
-> +		amd_northbridges.num = misc_count;
-
-The if-else statements should have {}s even though there's only a single
-line of code in each. This is just to make it easier to read multiple
-lines. Or the second code comment can be merged with the first outside
-the if-else.
-
-> +
-> +	nb = kcalloc(amd_northbridges.num, sizeof(struct amd_northbridge), GFP_KERNEL);
->  	if (!nb)
->  		return -ENOMEM;
->  
->  	amd_northbridges.nb = nb;
-> -	amd_northbridges.num = misc_count;
->  
->  	link = misc = root = NULL;
-> -	for (i = 0; i < amd_northbridges.num; i++) {
-> +	for (i = 0; i < misc_count; i++) {
->  		node_to_amd_nb(i)->root = root =
->  			next_northbridge(root, root_ids);
->  		node_to_amd_nb(i)->misc = misc =
-> @@ -251,6 +291,18 @@ int amd_cache_northbridges(void)
->  			root = next_northbridge(root, root_ids);
->  	}
->  
-> +	link = misc = root = NULL;
-
-This line can go inside the if statement below.
-
-I'm not sure it's totally necessary since the GPU devices should be
-listed after the CPU devices. But I guess better safe than sorry in case
-that implementation detail doesn't hold in the future. If you keep it,
-then I think you should do the same above when finding the counts.
-
-> +	if (misc_count_noncpu) {
-> +		for (i = NONCPU_NODE_INDEX; i < NONCPU_NODE_INDEX + misc_count_noncpu; i++) {
-> +			node_to_amd_nb(i)->root = root =
-> +				next_northbridge(root, noncpu_root_ids);
-> +			node_to_amd_nb(i)->misc = misc =
-> +				next_northbridge(misc, noncpu_misc_ids);
-> +			node_to_amd_nb(i)->link = link =
-> +				next_northbridge(link, noncpu_link_ids);
-> +		}
-> +	}
-> +
->  	if (amd_gart_present())
->  		amd_northbridges.flags |= AMD_NB_GART;
->  
-> -- 
-
-Thanks,
-Yazen
