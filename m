@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B3F3CDC5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92623CE031
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237558AbhGSOwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:52:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46606 "EHLO mail.kernel.org"
+        id S1346428AbhGSPOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:14:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245397AbhGSOef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D3B61263;
-        Mon, 19 Jul 2021 15:14:01 +0000 (UTC)
+        id S1344146AbhGSOsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 163BD613F7;
+        Mon, 19 Jul 2021 15:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707642;
-        bh=ghKo1xjvWvhn4IaZZczjFnezfWRlmMquzd5E4DMGxMo=;
+        s=korg; t=1626708403;
+        bh=VvtALEWSNEAVWuiRWv20AZYkGoMKH7GeHM9YHnFQOUw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IliRm6N/Hfw5y4XqEd74StfABCwrJlW9D/0M0OoJhpL1UWk30vVUYjwQ6VnEdk0ym
-         jx0u6SxzhID3iAKZzMgUjb+e6Y3yW7ouhQtKLOGUPWzb3ciN8a+Oblib0VW0DYcBk4
-         rkJEO35SRwQ68AlFcHp/Z/PF1oa7jDLLGRkzzHC8=
+        b=fD3TBBKMsj1dJmYqs3B5UcZYUDcyjd8wVMXys+XfuQGjhyfnCKFYZDKDJx6zzkQXy
+         gkXoC1i1ZL3nNfZxuT1nEzYXeFsPt8G+bp6JRqywkJMh2Tlk8WieDgHz8XhNfD468o
+         EBfFeIKfba+C5BXKn2gZowipNxe1SY9gY2oeiZdw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Kyungsik Lee <kyungsik.lee@lge.com>,
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Brian Cain <bcain@codeaurora.org>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Glitta <glittao@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 244/245] mips: disable branch profiling in boot/decompress.o
-Date:   Mon, 19 Jul 2021 16:53:06 +0200
-Message-Id: <20210719144948.248554918@linuxfoundation.org>
+Subject: [PATCH 4.14 298/315] hexagon: use common DISCARDS macro
+Date:   Mon, 19 Jul 2021 16:53:07 +0200
+Message-Id: <20210719144953.270864689@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,46 +46,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 97e488073cfca0eea84450169ca4cbfcc64e33e3 ]
+[ Upstream commit 681ba73c72302214686401e707e2087ed11a6556 ]
 
-Use DISABLE_BRANCH_PROFILING for arch/mips/boot/compressed/decompress.o
-to prevent linkage errors.
+ld.lld warns that the '.modinfo' section is not currently handled:
 
-mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
-decompress.c:(.text+0x8c): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: decompress.c:(.text+0xf4): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: decompress.c:(.text+0x200): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: decompress.c:(.text+0x230): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: decompress.c:(.text+0x320): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x3f4): more undefined references to `ftrace_likely_update' follow
+ld.lld: warning: kernel/built-in.a(workqueue.o):(.modinfo) is being placed in '.modinfo'
+ld.lld: warning: kernel/built-in.a(printk/printk.o):(.modinfo) is being placed in '.modinfo'
+ld.lld: warning: kernel/built-in.a(irq/spurious.o):(.modinfo) is being placed in '.modinfo'
+ld.lld: warning: kernel/built-in.a(rcu/update.o):(.modinfo) is being placed in '.modinfo'
 
-Fixes: e76e1fdfa8f8 ("lib: add support for LZ4-compressed kernel")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Kyungsik Lee <kyungsik.lee@lge.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+The '.modinfo' section was added in commit 898490c010b5 ("moduleparam:
+Save information about built-in modules in separate file") to the DISCARDS
+macro but Hexagon has never used that macro.  The unification of DISCARDS
+happened in commit 023bf6f1b8bf ("linker script: unify usage of discard
+definition") in 2009, prior to Hexagon being added in 2011.
+
+Switch Hexagon over to the DISCARDS macro so that anything that is
+expected to be discarded gets discarded.
+
+Link: https://lkml.kernel.org/r/20210521011239.1332345-3-nathan@kernel.org
+Fixes: e95bf452a9e2 ("Hexagon: Add configuration and makefiles for the Hexagon architecture.")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Acked-by: Brian Cain <bcain@codeaurora.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Oliver Glitta <glittao@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/boot/compressed/decompress.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/hexagon/kernel/vmlinux.lds.S | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
-index 3a015e41b762..66096c766a60 100644
---- a/arch/mips/boot/compressed/decompress.c
-+++ b/arch/mips/boot/compressed/decompress.c
-@@ -11,6 +11,8 @@
-  * option) any later version.
-  */
+diff --git a/arch/hexagon/kernel/vmlinux.lds.S b/arch/hexagon/kernel/vmlinux.lds.S
+index ec87e67feb19..22c10102712a 100644
+--- a/arch/hexagon/kernel/vmlinux.lds.S
++++ b/arch/hexagon/kernel/vmlinux.lds.S
+@@ -71,13 +71,8 @@ SECTIONS
  
-+#define DISABLE_BRANCH_PROFILING
-+
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/string.h>
+ 	_end = .;
+ 
+-	/DISCARD/ : {
+-		EXIT_TEXT
+-		EXIT_DATA
+-		EXIT_CALL
+-	}
+-
+ 	STABS_DEBUG
+ 	DWARF_DEBUG
+ 
++	DISCARDS
+ }
 -- 
 2.30.2
 
