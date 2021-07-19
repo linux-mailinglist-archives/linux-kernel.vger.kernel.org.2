@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C544F3CD2B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAAA3CD2BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbhGSKHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        id S236754AbhGSKHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236735AbhGSKHX (ORCPT
+        with ESMTP id S236768AbhGSKHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:07:23 -0400
-Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7A3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:55:59 -0700 (PDT)
-Received: by mail-ej1-x649.google.com with SMTP id t8-20020a1709063e48b0290501cd965554so5226660eji.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:48:03 -0700 (PDT)
+        Mon, 19 Jul 2021 06:07:25 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69D4C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:56:01 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id a4-20020a0560001884b02901401e436a18so8632111wri.21
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:48:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=dNi42ehjO4NUi77Uj+cYvrOU4Ks5G49fj0fQYIq6rpI=;
-        b=Zo9CxzDhUX2cZC2KYawro8tC3zo0gCGU9bsbwig5j0S3OAyeSDfj6KLCvhewOJXss3
-         ScGYWjjud+BfSjX1bw156hEet1J0T/Zqk+5fp1+CJaOunTaub7sgNqmoVkWv4/0g/rzU
-         ZYfZpco3hJ67xUtZI9pTg9Vo5ayKvZcYbWYX32i7f9viXdeSPFpPtsmRiydpflNHKvaZ
-         xJX3jC/HH6IpfzQrNolC63LcfYbtbE36mpB0gvl0+eobqmpRV69cepN1WIehO6m5AK3p
-         /KS5RCENmYr5NttKLDRGsPdS7odJ5r7HBgi/UC8GW3gSGPXH/MBjxAGstC6Bk+7nxeXY
-         xpPQ==
+        bh=CdbaQ8ErF1YpwqlK/5v4bHdri/rt0mg1VAsqwWTr/Tw=;
+        b=aS8jkLkK2wa4INhA28hZzPjEUZaTZKmwenqCsFfJQTdAz0UFabdJsQo6ri3VfTWEFw
+         RGYXatDhYnjA27xu0fDx7wkypb2FYIlxvf85tFl8oYsJq2rHaR4IgkQpa+q4+FwBsWna
+         y/5f6F8ckCQplGSacvD6+H8TPidKSuTLdk1aFl3aPp9BvtHNW1S7YV6XGANf94XI+K92
+         wG0tzBduwioFtmG8ODCJFZhpzoP2jF27+9hOe1r+E4fg0ujsayMVKVG7rMKfXMgeAsAF
+         CGBfReNZE1y1Up6lw+wxGzVUgnz28Z7y6A7GjkAKvbDoo8/B1qcvnhtx5JDqVDbCH60+
+         RlAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=dNi42ehjO4NUi77Uj+cYvrOU4Ks5G49fj0fQYIq6rpI=;
-        b=AJVZPDdLIcZw7ho5UZkg0FDcnrdtms+tKK6EL+Lado376aa9rnw7f8DSy6e2YPSVHe
-         IWZj8nlH0x4fCAefYt+w5WruJPKP3UKTaPKFdyDDREeBInSfZ5CW+Pp/mx/nuwXzBTtS
-         I7aQVcUeB9c2HlhcUlCN20xL5KczIQAZwlkgRT92x27+kS0tkYli0Yr7tQGnS5+9otCj
-         OihoYOMNpCGvJEq95saOhfUsLNE87kU/Hl5uKdzGEyKcqbfmui6FGU8yhQWkkCmkKyBA
-         Gjzz2mdciS/aUFWYfbiT6NY3KIU6boKqx/I3u8/IlODc5imfY2fKg2Exa48oWJaHUz4A
-         sd+w==
-X-Gm-Message-State: AOAM532uDJDZZOwipClPl7HSfcx1LkPvM49wqtC/6BuzLgk0CKTqlL2Q
-        C/EfTMhJm40C6oCcu/TV3bOqMBLD7Acg
-X-Google-Smtp-Source: ABdhPJyAyrN45gMOAlaStcGcdibOpYIOibhoQ9RmoK/yB/n96peiRQ6P/R0p8ef0yM8amQWGs/batNr68Iti
+        bh=CdbaQ8ErF1YpwqlK/5v4bHdri/rt0mg1VAsqwWTr/Tw=;
+        b=WOQdBwsictlEV7i4zdO6Hydb0mQbo5rYMTouk4UYm2Dvg5QTy5jroUbugA8f06QM8F
+         xF7aSmQN+kTkbxNyJk1Pd/em9tOhK5PyMMKgthNgZcf1OOXKRWXlI/zGm7g568fEAXdG
+         /M/RZxDEjLafzQhYbJ6ElsA8gZU9F1iDw4y13whMV18jCbcecK+egMjs72Pg0stGT/KH
+         P7L1mBvu9jv+EWBdkrHh2PVoXmr9Mrf0ZPyEhv9qP+wDa2ekLO2ZqFBlNvDgRqSHnyMu
+         ZSklVeolphKMLmV6qQDYxaMQNPl0BJ4gKfIqtR6H+DdYTT9E+3gD5JRf2KuubErUzx6e
+         8R1A==
+X-Gm-Message-State: AOAM531XCCncAWnnXzELrYF1S5/X9ljDevI85uVlOOD+2kIWa+jTldem
+        LmjMoliHZvrRFM+ja+aV5hxfgmrvSIR2
+X-Google-Smtp-Source: ABdhPJznScsyUNWBAsIAI2Jzd/ytZ2sHt95anHYybQcNiWFSnjuNiVNyg44CFTl1PSMEfVjtqavG8Cwof0vY
 X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:1a96:a43f:6c2e:bb5a])
- (user=qperret job=sendgmr) by 2002:a17:906:d8da:: with SMTP id
- re26mr26655364ejb.205.1626691681533; Mon, 19 Jul 2021 03:48:01 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 11:47:30 +0100
+ (user=qperret job=sendgmr) by 2002:a7b:ca50:: with SMTP id
+ m16mr31242327wml.140.1626691683897; Mon, 19 Jul 2021 03:48:03 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 11:47:31 +0100
 In-Reply-To: <20210719104735.3681732-1-qperret@google.com>
-Message-Id: <20210719104735.3681732-10-qperret@google.com>
+Message-Id: <20210719104735.3681732-11-qperret@google.com>
 Mime-Version: 1.0
 References: <20210719104735.3681732-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH 09/14] KVM: arm64: Mark host bss and rodata section as shared
+Subject: [PATCH 10/14] KVM: arm64: Enable retrieving protections attributes of PTEs
 From:   Quentin Perret <qperret@google.com>
 To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
         suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
@@ -64,150 +64,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the hypervisor maps the host's .bss and .rodata sections in its
-stage-1, make sure to tag them as shared in hyp and host page-tables.
-
-But since the hypervisor relies on the presence of these mappings, we
-cannot let the host in complete control of the memory regions -- it
-must not unshare or donate them to another entity for example. To
-prevent this, let's transfer the ownership of those ranges to the
-hypervisor itself, and share the page back with the host.
+Introduce helper functions in the KVM stage-2 and stage-1 page-table
+manipulation library allowing to retrieve the enum kvm_pgtable_prot of a
+PTE. This will be useful to implement custom walkers outside of
+pgtable.c.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  1 +
- arch/arm64/kvm/hyp/nvhe/mem_protect.c         |  7 ++-
- arch/arm64/kvm/hyp/nvhe/setup.c               | 52 ++++++++++++++++---
- 3 files changed, 51 insertions(+), 9 deletions(-)
+ arch/arm64/include/asm/kvm_pgtable.h | 20 ++++++++++++
+ arch/arm64/kvm/hyp/pgtable.c         | 49 ++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+)
 
-diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-index 9c227d87c36d..b39047463075 100644
---- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-+++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-@@ -23,6 +23,7 @@ extern struct host_kvm host_kvm;
- int __pkvm_prot_finalize(void);
- int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
- 
-+int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot);
- int kvm_host_prepare_stage2(void *pgt_pool_base);
- void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt);
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index cdace80d3e28..6f28edf58407 100644
---- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -235,6 +235,11 @@ static bool host_stage2_want_pte_cb(u64 addr, u64 end, enum kvm_pgtable_prot pro
- 		return prot != KVM_PGTABLE_PROT_RW;
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index f6d3d5c8910d..1aa49d6aabb7 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -467,4 +467,24 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
+  */
+ int kvm_pgtable_stage2_find_range(struct kvm_pgtable *pgt, u64 addr,
+ 				  int owner, struct kvm_mem_range *range);
++
++/**
++ * kvm_pgtable_stage2_pte_prot() - Retrieve the protection attributes of a
++ *				   stage-2 Page-Table Entry.
++ * @pte:	Page-table entry
++ *
++ * Return: protection attributes of the page-table entry in the enum
++ *	   kvm_pgtable_prot format.
++ */
++enum kvm_pgtable_prot kvm_pgtable_stage2_pte_prot(kvm_pte_t pte);
++
++/**
++ * kvm_pgtable_hyp_pte_prot() - Retrieve the protection attributes of a stage-1
++ *				Page-Table Entry.
++ * @pte:	Page-table entry
++ *
++ * Return: protection attributes of the page-table entry in the enum
++ *	   kvm_pgtable_prot format.
++ */
++enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
+ #endif	/* __ARM64_KVM_PGTABLE_H__ */
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 51598b79dafc..c7120797404a 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -234,6 +234,20 @@ static kvm_pte_t pte_ignored_bit_prot(enum kvm_pgtable_prot prot)
+ 	return FIELD_PREP(KVM_PTE_LEAF_ATTR_IGNORED, ignored_bits);
  }
  
-+int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot)
++static enum kvm_pgtable_prot pte_read_ignored_bits_prot(kvm_pte_t pte)
 +{
-+	return host_stage2_try(__host_stage2_idmap, start, end, prot);
++	enum kvm_pgtable_prot prot = 0;
++	kvm_pte_t ignored_bits = 0;
++
++	ignored_bits = FIELD_GET(KVM_PTE_LEAF_ATTR_IGNORED, pte);
++	if (ignored_bits & BIT(1))
++		prot |= KVM_PGTABLE_STATE_BORROWED | KVM_PGTABLE_STATE_SHARED;
++	if (ignored_bits & BIT(0))
++		prot |= KVM_PGTABLE_STATE_SHARED;
++
++	return prot;
 +}
 +
- static int host_stage2_idmap(u64 addr)
- {
- 	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_RW;
-@@ -250,7 +255,7 @@ static int host_stage2_idmap(u64 addr)
- 	if (ret)
- 		goto unlock;
- 
--	ret = host_stage2_try(__host_stage2_idmap, range.start, range.end, prot);
-+	ret = host_stage2_idmap_locked(range.start, range.end, prot);
- unlock:
- 	hyp_spin_unlock(&host_kvm.lock);
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
-index 0b574d106519..74dce83a6fad 100644
---- a/arch/arm64/kvm/hyp/nvhe/setup.c
-+++ b/arch/arm64/kvm/hyp/nvhe/setup.c
-@@ -83,10 +83,6 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
- 	if (ret)
- 		return ret;
- 
--	ret = pkvm_create_mappings(__start_rodata, __end_rodata, PAGE_HYP_RO);
--	if (ret)
--		return ret;
--
- 	ret = pkvm_create_mappings(__hyp_rodata_start, __hyp_rodata_end, PAGE_HYP_RO);
- 	if (ret)
- 		return ret;
-@@ -95,10 +91,6 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
- 	if (ret)
- 		return ret;
- 
--	ret = pkvm_create_mappings(__hyp_bss_end, __bss_stop, PAGE_HYP_RO);
--	if (ret)
--		return ret;
--
- 	ret = pkvm_create_mappings(virt, virt + size, PAGE_HYP);
- 	if (ret)
- 		return ret;
-@@ -117,6 +109,25 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
- 			return ret;
- 	}
- 
-+	/*
-+	 * Map the host's .bss and .rodata sections RO in the hypervisor, but
-+	 * transfer the ownerhsip from the host to the hypervisor itself to
-+	 * make sure it can't be donated or shared with another entity.
-+	 *
-+	 * The ownership transtion requires matching changes in the host
-+	 * stage-2. This will done later (see finalize_mappings()) once the
-+	 * hyp_vmemmap is addressable.
-+	 */
-+	ret = pkvm_create_mappings(__start_rodata, __end_rodata,
-+				   PAGE_HYP_RO | KVM_PGTABLE_STATE_SHARED);
-+	if (ret)
-+		return ret;
-+
-+	ret = pkvm_create_mappings(__hyp_bss_end, __bss_stop,
-+				   PAGE_HYP_RO | KVM_PGTABLE_STATE_SHARED);
-+	if (ret)
-+		return ret;
-+
+ static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
+ 				  u32 level, kvm_pte_t *ptep,
+ 				  enum kvm_pgtable_walk_flags flag)
+@@ -386,6 +400,25 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
  	return 0;
  }
  
-@@ -148,6 +159,27 @@ static void hpool_put_page(void *addr)
- 	hyp_put_page(&hpool, addr);
- }
- 
-+static int finalize_mappings(void)
++enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte)
 +{
-+	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_RWX;
-+	int ret;
++	enum kvm_pgtable_prot prot = 0;
++	u32 ap;
 +
-+	/*
-+	 * The host's .bss and .rodata sections are now conceptually owned by
-+	 * the hypervisor, so mark them as 'borrowed' in the host stage-2. We
-+	 * can safely use host_stage2_idmap_locked() at this point since the
-+	 * host stage-2 has not been enabled yet.
-+	 */
-+	prot |= KVM_PGTABLE_STATE_SHARED | KVM_PGTABLE_STATE_BORROWED;
-+	ret = host_stage2_idmap_locked(__hyp_pa(__start_rodata),
-+				       __hyp_pa(__end_rodata), prot);
-+	if (ret)
-+		return ret;
++	if (!(pte & KVM_PTE_LEAF_ATTR_HI_S1_XN))
++		prot |= KVM_PGTABLE_PROT_X;
 +
-+	return host_stage2_idmap_locked(__hyp_pa(__hyp_bss_end),
-+					__hyp_pa(__bss_stop), prot);
++	ap = FIELD_GET(KVM_PTE_LEAF_ATTR_LO_S1_AP, pte);
++	if (ap == KVM_PTE_LEAF_ATTR_LO_S1_AP_RO)
++		prot |= KVM_PGTABLE_PROT_R;
++	else if (ap == KVM_PTE_LEAF_ATTR_LO_S1_AP_RW)
++		prot |= KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W;
++
++	prot |= pte_read_ignored_bits_prot(pte);
++
++	return prot;
 +}
 +
- void __noreturn __pkvm_init_finalise(void)
+ static bool hyp_pte_needs_update(kvm_pte_t old, kvm_pte_t new)
  {
- 	struct kvm_host_data *host_data = this_cpu_ptr(&kvm_host_data);
-@@ -167,6 +199,10 @@ void __noreturn __pkvm_init_finalise(void)
- 	if (ret)
- 		goto out;
+ 	if (old == new)
+@@ -588,6 +621,22 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
+ 	return 0;
+ }
  
-+	ret = finalize_mappings();
-+	if (ret)
-+		goto out;
++enum kvm_pgtable_prot kvm_pgtable_stage2_pte_prot(kvm_pte_t pte)
++{
++	enum kvm_pgtable_prot prot = 0;
 +
- 	pkvm_pgtable_mm_ops = (struct kvm_pgtable_mm_ops) {
- 		.zalloc_page = hyp_zalloc_hyp_page,
- 		.phys_to_virt = hyp_phys_to_virt,
++	if (pte & KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R)
++		prot |= KVM_PGTABLE_PROT_R;
++	if (pte & KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W)
++		prot |= KVM_PGTABLE_PROT_W;
++	if (!(pte & KVM_PTE_LEAF_ATTR_HI_S2_XN))
++		prot |= KVM_PGTABLE_PROT_X;
++
++	prot |= pte_read_ignored_bits_prot(pte);
++
++	return prot;
++}
++
+ static bool stage2_pte_needs_update(kvm_pte_t old, kvm_pte_t new)
+ {
+ 	if (!kvm_pte_valid(old) || !kvm_pte_valid(new))
 -- 
 2.32.0.402.g57bb445576-goog
 
