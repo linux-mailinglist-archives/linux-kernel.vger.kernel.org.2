@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685C93CF0BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16683CF0CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345657AbhGSXnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 19:43:37 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:55101 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354527AbhGSWUn (ORCPT
+        id S1377731AbhGSXoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1441928AbhGSW0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:20:43 -0400
-Received: by mail-pj1-f41.google.com with SMTP id g24so12594359pji.4;
-        Mon, 19 Jul 2021 16:00:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6pg2i/azcWb8fV5GRB9TXpG0kxE6pMvcP1mwssbbB1E=;
-        b=dY5sj4KZ1RwP34q0oi+lldDoAFu1NGM1ESIwo5khbK73EBQ6Z+OaWY+WWrge8So9jT
-         EWt997TeopT/oNYmW8QxUCZBfUINngG8LQylnk6tAEGTQKRf8QbJT7jxLkqWuW46c+Pa
-         tVR6yFAZXqoMQfj3maaeGvmTn6dGlAw9rXNwRujnw3WrUxOW7uBZNPLNgmcbuwJp9slO
-         CkJhzi/NyPKSrNdmDDUhaKSH2EAF72bNG2XCRTuAEuZj8bqZYE23AFCT/IPSyQ25FCAq
-         JFnAitp71n7QLEPrXasQ1osnQQlj6ylxP56d3H91GJFVIU4wDHAI8TMNsC/Nv7pvs4hq
-         EDsw==
-X-Gm-Message-State: AOAM530SPf8Q/qvGc9d3EZ2B/QsOprIy0wggOOyXXBXMPlWPD/5sDiqm
-        aoVMotxrwEe57xAjOzVnDAc=
-X-Google-Smtp-Source: ABdhPJyf3kntOiyFjtzdBFjhJlFSOhbtmvf1HxErtiJNE0ulq5JA34OQQeWh8FISvl2v5kb4pOH4uQ==
-X-Received: by 2002:a17:902:d4d2:b029:12b:72cf:9178 with SMTP id o18-20020a170902d4d2b029012b72cf9178mr12783201plg.53.1626735659423;
-        Mon, 19 Jul 2021 16:00:59 -0700 (PDT)
-Received: from garbanzo ([191.96.121.239])
-        by smtp.gmail.com with ESMTPSA id o184sm23823355pga.18.2021.07.19.16.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 16:00:58 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 16:00:56 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, jack@suse.cz, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] block: skip queue if NULL on blk_cleanup_queue()
-Message-ID: <20210719230056.wekatjwyuzt6zzok@garbanzo>
-References: <20210715045531.420201-1-mcgrof@kernel.org>
- <20210715045531.420201-7-mcgrof@kernel.org>
- <YO/fvbe5LeAP2Mtq@infradead.org>
- <20210715190726.xlukndxddvph4fx6@garbanzo>
- <YPVK1SPI0ZWmkOgd@infradead.org>
+        Mon, 19 Jul 2021 18:26:51 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D312BC0613E6;
+        Mon, 19 Jul 2021 16:04:20 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GTHTs1crwz9sS8;
+        Tue, 20 Jul 2021 09:04:16 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626735857;
+        bh=U9dlsr4YHzfWpAfVsdW9AZpPXJCMyfPY5QJPYdcMf8k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mHdA9Bl+ScuVImzL6201tvS35kzq9MuECxPbx7+/Jl4Yz3LjaZ1KoV6rFhgHtmFPM
+         2YfdtS46upio1APoA33QMvwEaqP6TOv06bqqbRW0nrBP7MGRliK+6fuJw11+sx0kQ1
+         yuvJHoTLvkDq6Xul2ceVyg5ERyvaWH3PcY9GhvaDgf1WnKZC41OpOUYmc58K7ZKlks
+         nMrKyQVKbSArW5Ie2Ye1tFBhDbWg20cXC+Ro0izoHe3cU160hAx3bx4mrAMmyuzTYY
+         LCO2CJAHdB+zNOHyKcPqx7cqyv4Xs/d7emEfz+j42R834ARKMd8rUQz6Dsw7ZrrcUs
+         0TbXDDAFjIHvg==
+Date:   Tue, 20 Jul 2021 09:04:15 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the overlayfs tree
+Message-ID: <20210720090415.279cbb19@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPVK1SPI0ZWmkOgd@infradead.org>
+Content-Type: multipart/signed; boundary="Sig_/gym2R/aMqFK1abFsmh.cgpp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 10:50:13AM +0100, Christoph Hellwig wrote:
-> On Thu, Jul 15, 2021 at 12:07:26PM -0700, Luis Chamberlain wrote:
-> > > For all drivers using blk_alloc_disk/blk_mq_alloc_disk there should
-> > > always be a queue.  The others ones aren't ready to handle errors
-> > > from add_disk yet in any way I think (and I plan to fix this up
-> > > ASAP).
-> > 
-> > Have an example in mind?
-> 
-> The only ones left are nvme, dasd and scsi.  NVMe is trivial (attached),
-> dasd needs a little more work, I need to send up a WIP to the
-> maintainers.  scsi is the real problem and will require a fair amount
-> of work.
+--Sig_/gym2R/aMqFK1abFsmh.cgpp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Alright, I'll wait until these changes are merged before sending those
-driver's conversions. Without this patch though, there's no way to test
-the error injection in case the driver was buggy and removed the queue
-by mistake. Recall my first patch moved that check to the beginning too.
+Hi all,
 
-So we either skip that error injection test ... or not sure what else to do.
+Commits
 
- Luis
+  3132b5adad49 ("ovl: pass ovl_fs to ovl_check_setxattr()")
+  d1e717e0032c ("fs: add generic helper for filling statx attribute flags")
+
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gym2R/aMqFK1abFsmh.cgpp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD2BO8ACgkQAVBC80lX
+0GwBGwf8C5Q0551FvdLACT0oXWJ+PdLFm4hPZp36900tzsv2XHO0KbzSZ3sqAT+/
+O8iDOS5rNw2tCxS2Rul56pB96c6hOshOoe9+UQq6VAZ5vHo52qOUzNo7Leno/vba
+PHu7jtAnE5XZ3u4dnoMa0N3qd5qcC8Vojo0250k+EACSe7Qibxk/LYUw9/LiqfQx
+CuROfPIwrsJZcG5JrNYLCzG8SR4i75Hk5+TXLMtn+6vT6A5lNmvCp3aPAv1CGKGm
+nLa+knAnw0lQa8jTCOV0p13+dy3ub68jRmrf7x1D+qe+HxgxgXHP+QYCWmvttVhO
+ZvgXNqwD8ZcgcI0EPgOp1cNYMzoChw==
+=4CT8
+-----END PGP SIGNATURE-----
+
+--Sig_/gym2R/aMqFK1abFsmh.cgpp--
