@@ -2,155 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E273CD442
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D70A3CD44C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236644AbhGSLTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:19:46 -0400
-Received: from mail-eopbgr140087.outbound.protection.outlook.com ([40.107.14.87]:35694
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230493AbhGSLTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:19:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OCDav62R6zSs3N2AqDUqOjhMGr03ZtxJd703IEyvAEN4ju3ALGbVE7uyC1otUFJZ/vbtM/h/JySaZoUqNOV1g7RJrc4e9nXlh1p2HAj1JjuUs/6ol2c6aga8ldo/0yCBD88JpPpxpI0a/nVupvQXkk60tZMdt8lqOjaHiGVYn+yGdw0x/z2iG1iZHEDV+y3MGxMbv+LKJlAOGesZPSLntzbWCb22f+RNdd1/eShiyqehLxXZWeigmPpe8zei6AEpBZXtFOx2B4+nFBjtbeuQm0G/45RlEllX4psZ7sQ73U6PAn4g6Onc44V5+jYxgW7itUhDaLsb0/Rpq4Rk5oo4zA==
+        id S236869AbhGSLYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:24:09 -0400
+Received: from mx0b-00105401.pphosted.com ([67.231.152.184]:22824 "EHLO
+        mx0b-00105401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236839AbhGSLYD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:24:03 -0400
+X-Greylist: delayed 1803 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Jul 2021 07:24:03 EDT
+Received: from pps.filterd (m0266029.ppops.net [127.0.0.1])
+        by mx0a-00105401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JBUkhf021395;
+        Mon, 19 Jul 2021 11:34:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=collins.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=POD051818;
+ bh=k0xXp4ZRXwL+3hnEta1oOFxa3ymJdM7mnmWkfPYGMzc=;
+ b=YZBj/DPsYFoJdtmuIB+SZidV4qJr4uUduDdBBnLBhf7jD+VO0pKUwi3oSe9WZ2DkREZ7
+ uGEGg9Pv+3ctfzxX8WOjFvvAFXmoxl6DeJ0josAxJD2Mct4hP7XjAMp0dCss4xDn2G2F
+ WV3TzlMFjo2ptEZsw1wP9Set9TV84iQSk8F+6HfBCKMTMIDsIWfNyUTDciULlgs1xS6S
+ 0vGm+EsIsifkblF9bIglgSFlhxO3CSFxJVleo5mEAvdAyeXiJvqtV9JPENtFDgIxS2vr
+ gVP4TQaLNzHSC7v0rFgad4CT2LkV3G71NdKsatHWA3vdtWiFL7TrAE0OaAQAKh+9erf7 dw== 
+Received: from xmnpv39.utc.com ([167.17.255.19])
+        by mx0a-00105401.pphosted.com with ESMTP id 39unm9cfyg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jul 2021 11:34:35 +0000
+Received: from qusmna5k.utcapp.com (qusmna5k.utcapp.com [10.161.160.133])
+        by xmnpv39.utc.com (8.16.0.27/8.16.0.27) with ESMTPS id 16JBYYTv161309
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 19 Jul 2021 11:34:35 GMT
+Received: from UUSALE05.utcmail.com (UUSALE05.utcmail.com [10.220.35.15])
+        by qusmna5k.utcapp.com (8.16.1.2/8.16.1.2) with ESMTPS id 16JBYYUh018300
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 11:34:34 GMT
+Received: from uusale2b.utcmail.com (10.220.63.21) by UUSALE05.utcmail.com
+ (10.220.35.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 19 Jul
+ 2021 07:34:34 -0400
+Received: from uusale29.utcmail.com (10.220.63.19) by uusale2b.utcmail.com
+ (10.220.63.21) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Jul
+ 2021 07:34:34 -0400
+Received: from USG02-BN3-obe.outbound.protection.office365.us (23.103.199.148)
+ by uusale29.utcmail.com (10.220.63.19) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 19 Jul 2021 07:34:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector5401; d=microsoft.com; cv=none;
+ b=enclBXzb1eRPzfUME2iPjEHKnK5RFr7hKmdSi1UZQvZPOLBKNoe7n7pNsadUNScnkqttVIPWGVNXloa5YuizzvENyWpa8bhmarkH8it+p9TFQnPu7jtz+UWAVA/DJ1EGUYPBJ3c9Xdoec0C+H97My3ifElA+MV7g6XqrdYpHQqO7Px3VPHjpoEMIlIlSaaGheSsJut0YlcsrjCognowfDqVH4SzC1qrdfQv9k/li6aTMzUUoyb8NDfCF+tcxXI0SvxUJd/bHW0hgKXkZJSDKgaLMKf+EyX/xZxBUYxK0gndPVOhNqH1eLQMlQNfBDtZewzre0I2fmgB/4+7NNtfCqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
+ s=arcselector5401;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qUZ+fdEIBj+SWEtw7LmD22G5xqVnGlPgJMazhkSyWZM=;
- b=ZRTuYP+vz988FqziJ17rTSAoYW9vsiiDO0O/la0/u07mOqALFevw8OisX/PX+UcpFQXcN68hBUS91X8u/S6qPWa8HZqJ2njUverRjjVy7D+7BPo94daIeTrKrImMg6buxvF68GEBehv8sCVduhCmMUvZ+dNu95vwRDB9VVo1zUFrfeGfg5KGgz1DROcsO2u5vHwJKUgQCbcuwsZn42k6ywoNNWywElHlSx+0tyfqliYyDLpLHkBDAQo2W9TE6JJ/Wqon9xbjDcBrHNX1IwWRiOF2EP2fu/35XPl12WMDgUCF10XkWOwMVqx60+V7MvWPlCXQiK3+GtzYcyLN1nKOlQ==
+ bh=k0xXp4ZRXwL+3hnEta1oOFxa3ymJdM7mnmWkfPYGMzc=;
+ b=AuQTCsqxgIJOv1sF01s6N/5KNlTFQm6LmfwRPefbK9sx91vExa/8mJc2I0Z00hJp793Ha7eRRezmboAtZLkqit38KyskSD45jJXP2al/RoCZks9Qr9nnxrfNjjjBsXkIyFd4KmSfzfave36FRGARBCOGIguHR+nOK8jJRYVdNWOxUIu5RpqJp+3fG9FebiUIG1h6Pjfc+KRfkuO0nZlsKVNvA/M1Vp1MqN+xwXvN4FjaWRAr/2gcozfSoPTWyIhEh/wqyHV2DxfT+14JZvnROdt8ae8odsZztlBnSbxOV8a6fkiBRaIFaJCCB0alfP8bbAVE9DvN/89mPPaXm91B2A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=collins.com; dmarc=pass action=none header.from=collins.com;
+ dkim=pass header.d=collins.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rtxusers.onmicrosoft.us; s=selector1-rtxusers-onmicrosoft-us;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qUZ+fdEIBj+SWEtw7LmD22G5xqVnGlPgJMazhkSyWZM=;
- b=Y5KM02PBc4dDb1YcxG3wQQj+r5hYuLkUI98eiMbiaurgLVT5SFlTTEiUQgrvSi/w/rTjBtasipsMoIdZJ3VTe493ouEH9CnhNH5L3FPWTMNhaFkL1rMLhvkmDpf5fIU8bUbNidjZVI/S2YjxtD8E3RnZkkR1nWB6nacx9ysibG4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
- by VI1PR0402MB3423.eurprd04.prod.outlook.com (2603:10a6:803:9::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
- 2021 12:00:21 +0000
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::c424:7608:b9e8:f09f]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::c424:7608:b9e8:f09f%5]) with mapi id 15.20.4331.032; Mon, 19 Jul 2021
- 12:00:21 +0000
-Subject: Re: [PATCH] software node: balance refcount for managed sw nodes
-To:     Jon Nettleton <jon@solid-run.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210716101602.1891-1-laurentiu.tudor@nxp.com>
- <YPF40t5bhgTFM2wK@smile.fi.intel.com>
- <CABdtJHuKyybhJazpAc8KT54ELtZ319rdb6CbSH6zB5x3NhgtAw@mail.gmail.com>
-From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Message-ID: <bb009f85-687e-d560-9cc5-1ac4f586a6bd@nxp.com>
-Date:   Mon, 19 Jul 2021 15:00:17 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <CABdtJHuKyybhJazpAc8KT54ELtZ319rdb6CbSH6zB5x3NhgtAw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+ bh=k0xXp4ZRXwL+3hnEta1oOFxa3ymJdM7mnmWkfPYGMzc=;
+ b=JT2eXwz9fcdbxu4o/KPV4q4J1yb0iRBZYIZ/ACbdGSBt1FgwEX1KPh7VNMCY+ruoJnB1Uq1fNhKp1d9IZ+LAwRgEOfuJKgqfomMij8DXGuYuhJNFcdrNS0a/fzcHex7eI6OWbAmTR/sGxSQfSWIWsPrPGu87i/ypoeRsvC8wvW0=
+Received: from BN1P110MB0148.NAMP110.PROD.OUTLOOK.COM (23.103.23.27) by
+ BN1P110MB0115.NAMP110.PROD.OUTLOOK.COM (23.103.22.26) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4331.22; Mon, 19 Jul 2021 11:34:33 +0000
+Received: from BN1P110MB0148.NAMP110.PROD.OUTLOOK.COM ([23.103.23.27]) by
+ BN1P110MB0148.NAMP110.PROD.OUTLOOK.COM ([23.103.23.27]) with mapi id
+ 15.20.4331.032; Mon, 19 Jul 2021 11:34:33 +0000
+From:   "Anderson, Maury J Collins" <Maury.Anderson@collins.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <aardelean@deviqon.com>
+CC:     "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] iio: potentiometer: max5481: convert probe to
+ device-managed
+Thread-Topic: [PATCH] iio: potentiometer: max5481: convert probe to
+ device-managed
+Thread-Index: AQHXe+EkJO36PEJgGkW/TleK9ljyh6tKKzHw
+Date:   Mon, 19 Jul 2021 11:34:33 +0000
+Message-ID: <BN1P110MB0148698C7F6716431F54E85A9FE19@BN1P110MB0148.NAMP110.PROD.OUTLOOK.COM>
+References: <20210624080641.9953-1-aardelean@deviqon.com>
+ <20210718152936.3d4194e6@jic23-huawei>
+In-Reply-To: <20210718152936.3d4194e6@jic23-huawei>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR0902CA0017.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::27) To VI1PR0402MB3405.eurprd04.prod.outlook.com
- (2603:10a6:803:3::26)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=collins.com;
+x-originating-ip: [173.22.99.192]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4405f877-105b-44c7-971b-08d94aa92e16
+x-ms-traffictypediagnostic: BN1P110MB0115:
+x-microsoft-antispam-prvs: <BN1P110MB0115E059881E9CD7E7BEC0069FE19@BN1P110MB0115.NAMP110.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: THRxa4eWkZtEmEMB20kdWLfnEW7g+RQmUoGwrYD2usbkBthZTpYsqcSm4Xw26iAwQmqtMAnntlm/4fceTYV/C4vvVDCdUJI0BI3bUeNJ+tmnmUvvJDUeUhq0sH8nKr+aoOC/XZUmEdSIXznMCifm+c3iXnzDyAGgkfdMBRnddmHBpeYVRoWa5LPLPNkBAeWJyU6/Bpj29SaHIWyz1UIpzJ8wc0oCrqSw+XUuZm1XR/2HrkKYSFoB66sErMMk11C8nphKF2NKGyOvt1/iVFw46xds/VfT4+2SfxW3o77zqxJEfZHGsbqQLdnReqN8LmLW8c4AqsjHuc/qGk2ADVmdzMkpjK20j2XYIqMZCLaB1Di8zOD3ZPC5yXvKBuwOeIRjG57jCsQlor/k0a3adIPDmoBRS9/VcTtaSB7SCxEEjGjIQ6Zf6W4pqWVntW7wh4hn9nIAaldrbsUBur6IGO/ViSJTDTF/3qsk7lTGLzTjUqeO+9FsMm5nredgIT9oO5+zyEN0FChTfdsyAhZjUj3qNz7HaKFRf55VN0Dr3fj9DEWYfhitaPLR2v8r7QDDs/BD+ASoZhjbNP4aupUt/tacF+b31/BBuGkQW1KbPdxdFl1vEiyxPyyJAm4I48bNwlzA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN1P110MB0148.NAMP110.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(136003)(346002)(39860400002)(8936002)(33656002)(38100700002)(956004)(8676002)(64756008)(66556008)(2906002)(5660300002)(76116006)(66476007)(66446008)(66946007)(9686003)(52536014)(122000001)(26005)(316002)(110136005)(4326008)(54906003)(83380400001)(53546011)(55016002)(6506007)(86362001)(7696005)(71200400001)(186003)(478600001)(38070700004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 5kQlZAOsYnjgFyOnvkAUHOo+L2M8mYSgX16y+9XnU84fC5scl1PZrfKYjA4ffxmrDQbECnqAiTQSvCzRcigbGx/ZrD0o0B+hE4GpmxtzpaoIQlHnhrnCMRD4XpOM5jLzzmSDR8JRAVSTnfrhyTBHVPYHOpdXcwQ3AA40S/dCIRysNqI7Rdxo6Azbd+8+Un3BGY9nEm8tL/0cKk5gWzUqzbZFwEF/DMLNAQlOcjQr9FXBpHRKMofQPc0TVqRZFyyn+KW7Fs6pb6LyFFG4GeGr3CjZ4bhSYAmLQof/ON/QjoD6OMOh+MPJHVtoNNf5iDd6lJbZq5gAYkApJFu5MEeiF03suExXi5Ji5/w6nTAslRZ1hdLommUJnqDjNy3z9sGihpqTtUzJT0p1nJfDLKg+IFXcFQYFfYCoeqGOsE2ZJtHajdPo4pknt/DEPOPsUPMb8kuaRrRaq/LersPcHbZFJWS9ai4wWOJz7JS40m59TZsMFWu2kYGuXE1/vRCoPhA/7Hb3Lw7ieI5u8Kz0RKfuzVCr+leR6Z4Xgj4qBufUeYwbgs8b36HECgpA87SS2oeV6OzDmoisvt4Oq7fZEF2aNJ2iXNftRsdm4PCmNgmjn6fgxkf+VMWfOximU1cFNZkNTfd4awn2MA1BN7pxaazYgnuM5YuqV56JO5LstO+zYUqnPCNBxnCe6v+IudtycjUlvu9mbjWrzmD/kFTcktLsLQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.103] (86.120.185.232) by AM4PR0902CA0017.eurprd09.prod.outlook.com (2603:10a6:200:9b::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 12:00:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 00429aaa-6ba2-44e4-d26a-08d94aacc8b0
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3423:
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB3423992B6313A8C2479D624AECE19@VI1PR0402MB3423.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HhXW7+VGfcXtK4fkCRNFxhzns5FHToZPg5LLBvilMjsFbtYqkHzOtCm0R52fUDW12tPyg33VtGA2589pHIhIXYCuaTtmz6xdQSSLWNx1qb7zoEizDnFcfqlUj08wgmtdTXFd+GheBEjZlumQ9Gpi1pHaGYK5enJKLALfqoIMIwrASXhvHeeQpV+ys+021hBCv0AnzixcRuszSjnz2nEBDJESP9u9IZm10e4fsMfMTzHChr7sM2W3W7YVZrxFQkBFeobHktLhViXX40GDzGv+XVCf14pwFElodyGEmT1rvCUvcZ7ddcwqlyxw4CzTUnfxBWfZnw1u+zPfvJTxyJ1D/h6Hy2EQBQ/wWpGm2kp+RiNY2MJmt5yOHyATf99C7xgcXg20u82Gv1qNCW2ChcZONdrB7gRFWkrYnxFkHNJq0GPcDQssycs2kFiqgLO2KsLBBp4IDycymNpfQ1q7vmVJ4gnmszuJrhUjZxMId+bRXqqjzKyezhN41/0GTMRVpy/Bq0EYwf2Gjdx2NAbnA58Wk1onK36CMn/OOZs/kJNCo6bp/QSYlD5Kd8Bnk8dao3jlBiXapPUzIlOE9ykMT9FihAbwKw8sCpuJ3t6sBtQfiRhqglnPdrJM+T3BfqpMJoauxeRI66s128Vi4gpxIg5F+Qd/pFrAKjhUeByDJcT5KMyzFt7+AUQAhiZMY2iQRociFULZF2wa5u9OVpWc5o1gI3PWvMPRnrPRW4mR1DoWI052AMgfUNaCeOq8ci5N6/cFlen+91wbzOpkEO/nil2eVg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(31686004)(6486002)(44832011)(26005)(52116002)(2906002)(16576012)(8936002)(66476007)(53546011)(54906003)(6666004)(956004)(316002)(83380400001)(4326008)(31696002)(110136005)(2616005)(5660300002)(66556008)(66946007)(86362001)(38100700002)(508600001)(186003)(8676002)(38350700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWc5cHNWUmZQaW9FVFlxcFdXak1WY052dmMwanhnMXgzazNxV3k0U21Gb3Z2?=
- =?utf-8?B?dVB5UVB1L2pEdUZUeXFmWWthNW1vL1Byckw1SmtXdEpoRXBjYTZOL3B6NDdL?=
- =?utf-8?B?TjBpbVJZVS9TbGFWWFBSQTVGTythOGFUeHhCVTJGZXVZeFBvR2haMFZIcEdH?=
- =?utf-8?B?Q051dndGRTdBRG9SZlh1MHBjSXlWdFJnSnBWT0svbWZ3eE9hanpFMWJxUVZD?=
- =?utf-8?B?VnBUaEtucDhQSFMrL0xTSkQrQnA3MWkyMmdmOU5KbE5DWFpmOG1XV2cwRkRM?=
- =?utf-8?B?S1Z6QVFtYXFGUTFta040NkFoYXUzVFVLNzFBR1BaQUZobGYrQ1ZIVWpISThv?=
- =?utf-8?B?eTEvczRFZEhoZTlsdXY4R1BXTlF3Y2cvNnVyV1VtV3V6c3JkWEgyempvdzVk?=
- =?utf-8?B?b0x6WWtSUkt5aThVQUxRdnJ2OElMZUNxY20wQWxpcDJTZWdERi8wV01SQjhR?=
- =?utf-8?B?c3h2T1AwUlR6YXFTYjI5UUlvdzZ2cUNTMzRCdUJrQTMzekxZN04zSWFsdXNa?=
- =?utf-8?B?dXQ3NU1hSDRZdFl5YmRienBPWHNVK3l4VERxWXNzbTBTZ3UyVHhTbkMycUNt?=
- =?utf-8?B?bVYxcTJOTnNXN2VFZlYrUEVVZjl1cE90ME9FbjhnY05FTGlLdENnOGJyRXh2?=
- =?utf-8?B?aHhmNHVPazVOZEE0TEhwazdzZVdsVFZJUTRFRkJoVzBnQm93UjBNMTNaYy9O?=
- =?utf-8?B?WGxicGhKRDhJTzJwd051K0V5Unh3YUp3MzhzOTNUT2dnSXI2TnpWRFBDYnFU?=
- =?utf-8?B?NDZjVlRNcXdmUzgxN2IzYkl2QWM1VjcvTHM3VStFTmFaSFYyU0xBeVJXeWdj?=
- =?utf-8?B?cDd0T0pHeVFabDRYYytPOTl3bTF4T2FVRTRKSTRqdjE2bDdRNjE5Nm93cUJQ?=
- =?utf-8?B?ZEoxRHFFcU1OdTNuNHRSZDRBVWNiNjFFd3BIdThsZUNBQzdyTi8vcTltWG44?=
- =?utf-8?B?b0JxMEU1QUZTOGo1SUhxREZlL0JmQ3JGZmpMb1JRKzBOM0JwbVlUWUdrZmJm?=
- =?utf-8?B?K0J3NXNjLzN0aTVXREh3S2JPaEpPVFM5WWt3SjNOTE5tMURzWFc5WDBqckRK?=
- =?utf-8?B?Ty9jMk5MU2FUNWFROGd2WmdFSXUwdjlWcDBXSGl3M0VFUFE1em5vSFpBMDRZ?=
- =?utf-8?B?dk96a0xBd0tINElXNkxsZDZtMitlb1dYSmp1ZzFKdk1KZWlxTDJ3U3NHVkNF?=
- =?utf-8?B?NGJaVWg0amRrVHJ3WmpSV1JhdE9HdHphMnR2bTFhT0ExYzFwQUZzSTdnVmF6?=
- =?utf-8?B?TGFuTnhLRjFLMi9GTmlnbmM5bm5NRUxzSUttbFpkY3E4QTdTYTJjaUFGUzQ5?=
- =?utf-8?B?R0ZQYmsyYkpzalVjVDJ0YTBuOU0vcjVrYWtVeGo2bmFEMllkZ0xLSW01RlhG?=
- =?utf-8?B?VmFKcVhmMjQ3c0hqYzd0Z0Zhc0N6QU5MdlcycWU3TFRrY3RYKzl5bFpJQzRy?=
- =?utf-8?B?Rzh2TkQxTi92ZVFBQkw2Y0U2RjBoZjFpQ3IzNENBbWlXWnNHckMzNzVacDg2?=
- =?utf-8?B?aVk0TFkvTldWRExLdXdKQUFneXdKVGt5Vm93bnE1azVuY1gxcWhsN2tBSGpq?=
- =?utf-8?B?S0pJWk1TUXI3bWtpcTc5Smk3aVFHN2tGWnlsblEvaGxXOG1pMTJnbmcrRWFP?=
- =?utf-8?B?NmFRVzZMMkRZNjZGQWcrSTNjWUhxMzg1ZkVUQTZIMTlBQ0xFcDFGcHpMYk0w?=
- =?utf-8?B?TEt2K2dTa3dWN01DUTVNNzVSUE1BeVRvRnhBS2FvbStKdUpjbzhQaHhTL0FD?=
- =?utf-8?Q?EpzExV6GXRhh25XFDriWZHKjmiXSiv7NdzQPv74?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00429aaa-6ba2-44e4-d26a-08d94aacc8b0
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 12:00:21.3866
+X-MS-Exchange-CrossTenant-AuthSource: BN1P110MB0148.NAMP110.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4405f877-105b-44c7-971b-08d94aa92e16
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2021 11:34:33.1627
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gPQF36TXxVcJYKmpukwf/EJbTuctUHzcvn+LECCJ3O810fGthk1UNRgYSPZBx5H65EbI7gYd+8oR6SM42Fnfag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3423
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 7a18110d-ef9b-4274-acef-e62ab0fe28ed
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN1P110MB0115
+X-PassedThroughOnPremises: Yes
+X-OriginatorOrg: Collins.com
+X-Proofpoint-ORIG-GUID: 3H049p0sax8fPdVsVWIKHgm3RnuLUE0F
+X-Proofpoint-GUID: 3H049p0sax8fPdVsVWIKHgm3RnuLUE0F
+X-Proofpoint-Spam-Details: rule=outbound_default_notspam policy=outbound_default score=0
+ lowpriorityscore=0 adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ clxscore=1011 impostorscore=0 phishscore=0 priorityscore=1501
+ suspectscore=0 mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2107190065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jonathan and Alex,
 
+This change makes sense to me.  Silly comment on my part.  The intent as I =
+recall was that the device would not "jump back to default" when the contro=
+lling system went through a reboot phase.
 
-On 7/16/2021 8:21 PM, Jon Nettleton wrote:
-> On Fri, Jul 16, 2021 at 2:17 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
->>
->> On Fri, Jul 16, 2021 at 01:16:02PM +0300, laurentiu.tudor@nxp.com wrote:
->>> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
->>>
->>> software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
->>> software nodes, thus leading to underflow errors. Balance the refcount by
->>> bumping it in the device_create_managed_software_node() function.
->>>
->>> The error [1] was encountered after adding a .shutdown() op to our
->>> fsl-mc-bus driver.
->>
->> Looking into the history of adding ->shutdown() to dwc3 driver (it got reverted
->> later on), I can tell that probably something is wrong in the ->shutdown()
->> method itself.
->>
->> --
->> With Best Regards,
->> Andy Shevchenko
->>
->>
-> 
-> Isn't the other alternative to just remove the second kobject_put from
-> KOBJ_REMOVE ?
-> 
+Thank you.
 
-Or maybe on top of Heikki's suggestion, replace the calls to
-sysfs_create_link() from KOBJ_ADD with sysfs_create_link_nowarn()?
+Maury
 
----
-Best Regards, Laurentiu
+-----Original Message-----
+From: Jonathan Cameron <jic23@kernel.org>=20
+Sent: Sunday, July 18, 2021 9:30 AM
+To: Alexandru Ardelean <aardelean@deviqon.com>
+Cc: linux-iio@vger.kernel.org; linux-kernel@vger.kernel.org; Anderson, Maur=
+y J Collins <Maury.Anderson@collins.com>
+Subject: Re: [PATCH] iio: potentiometer: max5481: convert probe to device-m=
+anaged
+
+On Thu, 24 Jun 2021 11:06:41 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
+
+> The change converts the probe function to use the
+> devm_iio_device_register() function.
+>=20
+> Before calling that, we need to register an action to store the wiper bac=
+k
+> to non-volatile memory when the device is de-registered.
+>=20
+> We don't need to do this if the probe fails, because the only place where
+> the probe can fail now is devm_iio_device_register() and that shouldn't
+> create an IIO device (for userspace to poke at) if it fails.
+>=20
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+Hi Alex,
+
+This one took a little bit of thought because it's a bit unusual in that
+that wiper write back isn't technically unwinding anything so doesn't
+have an obvious match in probe.  However, as it logically wants to happen
+just after we've removed the userspace interfaces, I agree with your
+logic that it makes sense to do it with a devm triggered call.
+
+So, on that basis applied.=20
+
++CC Maury on basis might still be about on that address and want to
+express a view on whether this makes sense.
+
+Jonathan
+
+> ---
+>  drivers/iio/potentiometer/max5481.c | 22 +++++++++-------------
+>  1 file changed, 9 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/drivers/iio/potentiometer/max5481.c b/drivers/iio/potentiome=
+ter/max5481.c
+> index 6e22b538091f..098d144a8fdd 100644
+> --- a/drivers/iio/potentiometer/max5481.c
+> +++ b/drivers/iio/potentiometer/max5481.c
+> @@ -125,6 +125,11 @@ static const struct of_device_id max5481_match[] =3D=
+ {
+>  };
+>  MODULE_DEVICE_TABLE(of, max5481_match);
+> =20
+> +static void max5481_wiper_save(void *data)
+> +{
+> +	max5481_write_cmd(data, MAX5481_COPY_AB_TO_NV, 0);
+> +}
+> +
+>  static int max5481_probe(struct spi_device *spi)
+>  {
+>  	struct iio_dev *indio_dev;
+> @@ -136,7 +141,6 @@ static int max5481_probe(struct spi_device *spi)
+>  	if (!indio_dev)
+>  		return -ENOMEM;
+> =20
+> -	spi_set_drvdata(spi, indio_dev);
+>  	data =3D iio_priv(indio_dev);
+> =20
+>  	data->spi =3D spi;
+> @@ -158,18 +162,11 @@ static int max5481_probe(struct spi_device *spi)
+>  	if (ret < 0)
+>  		return ret;
+> =20
+> -	return iio_device_register(indio_dev);
+> -}
+> -
+> -static int max5481_remove(struct spi_device *spi)
+> -{
+> -	struct iio_dev *indio_dev =3D spi_get_drvdata(spi);
+> -	struct max5481_data *data =3D iio_priv(indio_dev);
+> -
+> -	iio_device_unregister(indio_dev);
+> +	ret =3D devm_add_action(&spi->dev, max5481_wiper_save, data);
+> +	if (ret < 0)
+> +		return ret;
+> =20
+> -	/* save wiper reg to NV reg */
+> -	return max5481_write_cmd(data, MAX5481_COPY_AB_TO_NV, 0);
+> +	return devm_iio_device_register(&spi->dev, indio_dev);
+>  }
+> =20
+>  static const struct spi_device_id max5481_id_table[] =3D {
+> @@ -187,7 +184,6 @@ static struct spi_driver max5481_driver =3D {
+>  		.of_match_table =3D max5481_match,
+>  	},
+>  	.probe =3D max5481_probe,
+> -	.remove =3D max5481_remove,
+>  	.id_table =3D max5481_id_table,
+>  };
+> =20
+
