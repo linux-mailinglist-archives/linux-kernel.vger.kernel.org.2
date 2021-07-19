@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5569A3CE6BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAE93CE7EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351383AbhGSQNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:13:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40730 "EHLO mail.kernel.org"
+        id S1354933AbhGSQfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346105AbhGSPKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A652961264;
-        Mon, 19 Jul 2021 15:50:37 +0000 (UTC)
+        id S1347858AbhGSPWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:22:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C9ED613AE;
+        Mon, 19 Jul 2021 15:59:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709838;
-        bh=dQXRwl+jaHmxdeLPAIHrajF3etZ4p+FU8NlpsilrVhM=;
+        s=korg; t=1626710391;
+        bh=nXyHw/DQ+3MHnoET8dBcqqnuoyNIonAdyS8lNG25KEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nmlErxxBdBuUNxKCMf2AWdy62787RT7l4OhsuarscIWh7N4JNwjs2QxTbEUXlQpXT
-         j25uAfHOXeMCYMYs7e/U8sdrgt8VlJjzUOuMyylayQndloHT9h2zUGbs254BsKLWGc
-         mJX5y6J87NFhjbZqjhG0TvKeveA7SqFyuMJzsArI=
+        b=jZJyOQ0wyzZ+LKIx6TERvItNk8rs6qA4Lw8JIKBLmeYgkvzLPb8UH0xRKnNprwphj
+         pHHZPviKd2kT9mfqbAwtXmBzE1k7M7wpUtbxksR8/niwUwfEA1unXNeke8QfQKwcXM
+         R5crBx3BT7cwyLub+dYdT7LAHEvyblwF9or66ICg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 118/149] ARM: dts: exynos: fix PWM LED max brightness on Odroid XU/XU3
+Subject: [PATCH 5.10 197/243] memory: pl353: Fix error return code in pl353_smc_probe()
 Date:   Mon, 19 Jul 2021 16:53:46 +0200
-Message-Id: <20210719144929.320587848@linuxfoundation.org>
+Message-Id: <20210719144947.288786629@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 75121e1dc9fe4def41e63d57f6a53749b88006ed ]
+[ Upstream commit 76e5624f3f9343a621dd3f4006f4e4d9c3f91e33 ]
 
-There is no "max_brightness" property.  This brings the intentional
-brightness reduce of green LED and dtschema checks as well:
+When no child nodes are matched, an appropriate error code -ENODEV should
+be returned. However, we currently do not explicitly assign this error
+code to 'err'. As a result, 0 was incorrectly returned.
 
-  arch/arm/boot/dts/exynos5410-odroidxu.dt.yaml: led-controller-1: led-1: 'max-brightness' is a required property
-
-Fixes: 719f39fec586 ("ARM: dts: exynos5422-odroidxu3: Hook up PWM and use it for LEDs")
+Fixes: fee10bd22678 ("memory: pl353: Add driver for arm pl353 static memory controller")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210515040004.6983-1-thunder.leizhen@huawei.com
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210505135941.59898-3-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/memory/pl353-smc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-index 56acd832f0b3..16e1087ec717 100644
---- a/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-+++ b/arch/arm/boot/dts/exynos54xx-odroidxu-leds.dtsi
-@@ -22,7 +22,7 @@
- 			 * Green LED is much brighter than the others
- 			 * so limit its max brightness
- 			 */
--			max_brightness = <127>;
-+			max-brightness = <127>;
- 			linux,default-trigger = "mmc0";
- 		};
- 
-@@ -30,7 +30,7 @@
- 			label = "blue:heartbeat";
- 			pwms = <&pwm 2 2000000 0>;
- 			pwm-names = "pwm2";
--			max_brightness = <255>;
-+			max-brightness = <255>;
- 			linux,default-trigger = "heartbeat";
- 		};
- 	};
+diff --git a/drivers/memory/pl353-smc.c b/drivers/memory/pl353-smc.c
+index b42804b1801e..cc01979780d8 100644
+--- a/drivers/memory/pl353-smc.c
++++ b/drivers/memory/pl353-smc.c
+@@ -407,6 +407,7 @@ static int pl353_smc_probe(struct amba_device *adev, const struct amba_id *id)
+ 		break;
+ 	}
+ 	if (!match) {
++		err = -ENODEV;
+ 		dev_err(&adev->dev, "no matching children\n");
+ 		goto out_clk_disable;
+ 	}
 -- 
 2.30.2
 
