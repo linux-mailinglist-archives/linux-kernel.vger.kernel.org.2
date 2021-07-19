@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F6D3CE8AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8A73CE768
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357164AbhGSQpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:45:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43682 "EHLO mail.kernel.org"
+        id S1353759AbhGSQ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:26:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349347AbhGSP0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:26:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9A3561002;
-        Mon, 19 Jul 2021 16:07:14 +0000 (UTC)
+        id S1346542AbhGSPOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:14:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C69E6128E;
+        Mon, 19 Jul 2021 15:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710835;
-        bh=hwI9xTL2ebUdO0DmxdC1jpzwPPvsqSev3UsSzitDOfE=;
+        s=korg; t=1626710101;
+        bh=koMInF0pTJ4jH9nnaDMP7JTIKBlVOtHo4QGr2fpwcdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hZwXLzy6DoIquM+MKA47+DBxjtvRXluR5H16GcHL0CznmP11mfD1Nd4Y6yZJfdbjV
-         fVRdnuDJOnyGzt/uplDpwlncdPehzIfxDZ2VYQw6s0ukV+fvG33c0C6axjSboBTJyC
-         fTuh/JjPKlglQaBaizer5JI2yGkm4BV87xneEm4Y=
+        b=cDNi4/3JcAYXnKRIRsWSmQBAN3MQR7PIbGBW8K2FoGTuEPSXVy2x7YSMOdTYcf0Bf
+         SMrBLKauIzWsFpwxNPzuzwj6sVPB24RQRIQczuz6vljOF8KzGe3Q7f4rHI81+LfXt1
+         8hWY46AxdvQWByKmv4LF8EdK3sroDEj539gXg1AI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yizhuo <yzhai003@ucr.edu>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, ching Huang <ching2048@areca.com.tw>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 125/351] Input: hideep - fix the uninitialized use in hideep_nvm_unlock()
-Date:   Mon, 19 Jul 2021 16:51:11 +0200
-Message-Id: <20210719144948.609832956@linuxfoundation.org>
+Subject: [PATCH 5.10 043/243] scsi: arcmsr: Fix doorbell status being updated late on ARC-1886
+Date:   Mon, 19 Jul 2021 16:51:12 +0200
+Message-Id: <20210719144942.316155164@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,65 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yizhuo Zhai <yzhai003@ucr.edu>
+From: ching Huang <ching2048@areca.com.tw>
 
-[ Upstream commit cac7100d4c51c04979dacdfe6c9a5e400d3f0a27 ]
+[ Upstream commit d9a231226f28261a787535e08d0c78669e1ad010 ]
 
-Inside function hideep_nvm_unlock(), variable "unmask_code" could
-be uninitialized if hideep_pgm_r_reg() returns error, however, it
-is used in the later if statement after an "and" operation, which
-is potentially unsafe.
+It is possible for the IOP to be delayed in updating the doorbell
+status. The doorbell status should not be 0 so loop until the value
+changes.
 
-Signed-off-by: Yizhuo <yzhai003@ucr.edu>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Link: https://lore.kernel.org/r/afdfdf7eabecf14632492c4987a6b9ac6312a7ad.camel@areca.com.tw
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/hideep.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/scsi/arcmsr/arcmsr_hba.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/hideep.c b/drivers/input/touchscreen/hideep.c
-index ddad4a82a5e5..e9547ee29756 100644
---- a/drivers/input/touchscreen/hideep.c
-+++ b/drivers/input/touchscreen/hideep.c
-@@ -361,13 +361,16 @@ static int hideep_enter_pgm(struct hideep_ts *ts)
- 	return -EIO;
- }
+diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
+index 4838f790dac7..9294a2c677b3 100644
+--- a/drivers/scsi/arcmsr/arcmsr_hba.c
++++ b/drivers/scsi/arcmsr/arcmsr_hba.c
+@@ -2424,10 +2424,17 @@ static void arcmsr_hbaD_doorbell_isr(struct AdapterControlBlock *pACB)
  
--static void hideep_nvm_unlock(struct hideep_ts *ts)
-+static int hideep_nvm_unlock(struct hideep_ts *ts)
+ static void arcmsr_hbaE_doorbell_isr(struct AdapterControlBlock *pACB)
  {
- 	u32 unmask_code;
-+	int error;
+-	uint32_t outbound_doorbell, in_doorbell, tmp;
++	uint32_t outbound_doorbell, in_doorbell, tmp, i;
+ 	struct MessageUnit_E __iomem *reg = pACB->pmuE;
  
- 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_SFR_RPAGE);
--	hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
-+	error = hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
- 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_DEFAULT_PAGE);
-+	if (error)
-+		return error;
- 
- 	/* make it unprotected code */
- 	unmask_code &= ~HIDEEP_PROT_MODE;
-@@ -384,6 +387,8 @@ static void hideep_nvm_unlock(struct hideep_ts *ts)
- 	NVM_W_SFR(HIDEEP_NVM_MASK_OFS, ts->nvm_mask);
- 	SET_FLASH_HWCONTROL();
- 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_DEFAULT_PAGE);
-+
-+	return 0;
- }
- 
- static int hideep_check_status(struct hideep_ts *ts)
-@@ -462,7 +467,9 @@ static int hideep_program_nvm(struct hideep_ts *ts,
- 	u32 addr = 0;
- 	int error;
- 
--	hideep_nvm_unlock(ts);
-+       error = hideep_nvm_unlock(ts);
-+       if (error)
-+               return error;
- 
- 	while (ucode_len > 0) {
- 		xfer_len = min_t(size_t, ucode_len, HIDEEP_NVM_PAGE_SIZE);
+-	in_doorbell = readl(&reg->iobound_doorbell);
++	if (pACB->adapter_type == ACB_ADAPTER_TYPE_F) {
++		for (i = 0; i < 5; i++) {
++			in_doorbell = readl(&reg->iobound_doorbell);
++			if (in_doorbell != 0)
++				break;
++		}
++	} else
++		in_doorbell = readl(&reg->iobound_doorbell);
+ 	outbound_doorbell = in_doorbell ^ pACB->in_doorbell;
+ 	do {
+ 		writel(0, &reg->host_int_status); /* clear interrupt */
 -- 
 2.30.2
 
