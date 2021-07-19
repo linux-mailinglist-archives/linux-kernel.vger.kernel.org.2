@@ -2,215 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253143CCE85
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12DD3CCE8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbhGSHfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 03:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S234874AbhGSHgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233759AbhGSHfV (ORCPT
+        with ESMTP id S234770AbhGSHgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 03:35:21 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F172C061762;
-        Mon, 19 Jul 2021 00:32:21 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id d12so20695233wre.13;
-        Mon, 19 Jul 2021 00:32:21 -0700 (PDT)
+        Mon, 19 Jul 2021 03:36:07 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEC3C061762;
+        Mon, 19 Jul 2021 00:33:07 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id bu12so27158754ejb.0;
+        Mon, 19 Jul 2021 00:33:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DtUq5QndHQB6F6YkqSnVGACCyGdHUihJ0/gPYf6mMAQ=;
-        b=YMH7ZePXjhGt0czla36MTUNlil3M3fXG8oCHjJBm2GHLjqJe+mNV8jGUd52dfn2cGa
-         /OxcS5jQPsF2MdTx9QlhWYEbmpxAHgg/8JQLe1pC0kTUqmoZ7hlev7CQrCeF+Sh9R4jw
-         PvVG7wNfUezW9/6dmSRJkYHFuEu/d8+znaShUR9D4oPMoV1oOUrWNVWMm0a7aszL5I2O
-         xmJtpBoTD1h0S/lqIpm7E1f7zUUvFaBvv45VJ/zLn1jqB4phcGLr2HPfmHTHdKMMYK4Z
-         KPcvFgJ40N7ohzesY7ArWvnbvlVMMMdZofrLeNlLnIzaqHC/C7sUwsnaq2GrKDKD69D9
-         DWzw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TIm1TRm27OD8u584vFf5/FAIcFfcqCrDwZRKQMrp8+E=;
+        b=fcr3a2cvoZtesTmKOlpDO6qVC1rsr6D7gyDChuhqKjxKhzleCd2RwmD2uEOmKsaUk7
+         QergnofOQVv2TIIezGqEFtI93NU7BXxTIYlv5P50wesLHbQKR3Z9TCTGdqlwdL8Hc/Qc
+         c+QsRB8RKn0es6Tv1ss15vufchonedlFJC6kub6RjJVwqp6l/7WhSs+xV/Vle51mqiy4
+         fdlhfkYtEqEAlskJhZAFWXrpHQuxQmPfmRpj47b5on5tHREVbIsniPrtiYsUHhBpA0z2
+         keMnbgItkqxB/H8rxkhpvVHg/fw9CBQfohf4sMSfsc5Ix3ldQpkXJVoJfBo+QnB56TzA
+         EC5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DtUq5QndHQB6F6YkqSnVGACCyGdHUihJ0/gPYf6mMAQ=;
-        b=T3X99dZe9rJ/1CHvf8vI4INDDLnCPmSF7g1RzQ2wAUPwfQy3jmXNxw8c7q+KRcX9wI
-         zvHW5/1hHJEWorBBWS5NVMfPWZ2qEXKosEXH+xMalnOscOhZp0Zz8oKcA3QFxYV47p4T
-         x/DNea6mbZYe8/6leQbnRt5MdFZZUiEkW0GykgFjOsQErJaMVMT9rnigkQ5hizVRDURj
-         8C91BffcBeJlM5zFYV/Pt9NHW0IrNoh4Ql3BQPMxcN32SQeEzccSMolfO14mzDKdcGBB
-         tx/ADaBVxwbEJw03H2c96sQ+6HzzTbUhdjC7kQZYRSNzfE0De4I7z7olHfgOUwll7KM/
-         CDCA==
-X-Gm-Message-State: AOAM533rxuRZF0oSrlGo0YQNbDgHdkr2QzsxHIafpb29jY3fxzrQyaMr
-        RUklMwc15eKbSN9nyOj2rCUPae3cQeO8DvZL2Wg=
-X-Google-Smtp-Source: ABdhPJzu5hSrVvuqrrqkCFTxkGeN9COxIYF+mbSmPTcYLnzmXJQ8BjH/NRrT3scOLP6URsXNc/Lipw==
-X-Received: by 2002:adf:dfc4:: with SMTP id q4mr27572584wrn.329.1626679939401;
-        Mon, 19 Jul 2021 00:32:19 -0700 (PDT)
-Received: from [192.168.1.10] ([94.10.31.26])
-        by smtp.googlemail.com with ESMTPSA id m32sm18455949wms.23.2021.07.19.00.32.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 00:32:18 -0700 (PDT)
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-To:     paulmck@kernel.org, Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
- <2245518.LNIG0phfVR@natalenko.name> <6698965.kvI7vG0SvZ@natalenko.name>
- <20210718215914.GQ4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Chris Clayton <chris2553@googlemail.com>
-Message-ID: <dc7e0e8b-9b2d-bdde-f362-a58cfe937bbe@googlemail.com>
-Date:   Mon, 19 Jul 2021 08:32:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TIm1TRm27OD8u584vFf5/FAIcFfcqCrDwZRKQMrp8+E=;
+        b=aQO/0bJw6t931K/Ks+kITSuXk0GcuU5UJR9V54xi8TrXkAxnoGx7C/+VRXTs8mf/0b
+         KRrZbvJJkMY/fHub/u3DqEWGGueV4rynuHMbIe9BsjCcdzJcOP8QgfBvBlVHPVrIQB17
+         0ryJinzSVnXlFJ9VmaKsiZI3nMBRe3//KCQSKDecaQdJz+qo4MvIZSCtOcmuniUIzpEm
+         q0s+QQydPyBU2K0mVsvrJP1jGy65dz5VoiPLRDQoC3WHfg3L3Pscyq6Vlm4XgyOaK6JA
+         JBcegCJ7wI/dVIn39XtfAvhZHrNWNQhJKgDJWntLBnKX+M3o4OiYFm8RPEaeDBTZ6HWg
+         nGZA==
+X-Gm-Message-State: AOAM533tsDy7jgjIvgDR3J1I9xyKq6tOPKdjTgMzT/9rMK7dX03g0PrT
+        kOuTvxRyYwd1yRbAIGJ8Q6PiJip0qWwvU8wl7S8=
+X-Google-Smtp-Source: ABdhPJwmTXjcuWz6XUSS0BDPVjIeCIAdcRFPcTqpRK8pezxFp1u2ZfSu+Yx2jZYHYe2UFOKq+wgv7dSkezK9726LGKk=
+X-Received: by 2002:a17:906:a202:: with SMTP id r2mr25521827ejy.398.1626679986549;
+ Mon, 19 Jul 2021 00:33:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210718215914.GQ4397@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20210718203746.7159-1-theobf@usp.br>
+In-Reply-To: <20210718203746.7159-1-theobf@usp.br>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Mon, 19 Jul 2021 10:32:54 +0300
+Message-ID: <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
+Subject: Re: [PATCH] iio: dac: max5821: convert device register to device
+ managed function
+To:     =?UTF-8?Q?Th=C3=A9o_Bor=C3=A9m_Fabris?= <theobf@usp.br>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jul 18, 2021 at 11:42 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br=
+> wrote:
+>
+> Add a device managed hook, via devm_add_action_or_reset() and
+> max5821_regulator_disable(), to disable voltage regulator on device
+> detach.
+> Replace iio_device_register() by devm_iio_device_register() and remove
+> the max5821_remove() function used to unregister the device and disable t=
+he
+> voltage regulator.
+> Remove i2c_set_clientdata() from the probe function, since
+> i2c_get_clientdata() is not used anymore.
 
+Looks good overall.
+A few comments inline.
 
-On 18/07/2021 22:59, Paul E. McKenney wrote:
-> On Sun, Jul 18, 2021 at 11:03:51PM +0200, Oleksandr Natalenko wrote:
->> + stable@vger.kernel.org
->>
->> On neděle 18. července 2021 23:01:24 CEST Oleksandr Natalenko wrote:
->>> Hello.
->>>
->>> On sobota 17. července 2021 22:22:08 CEST Chris Clayton wrote:
->>>> I checked the output from dmesg yesterday and found the following warning:
->>>>
->>>> [Fri Jul 16 09:15:29 2021] ------------[ cut here ]------------
->>>> [Fri Jul 16 09:15:29 2021] WARNING: CPU: 11 PID: 2701 at
->>>> kernel/rcu/tree_plugin.h:359 rcu_note_context_switch+0x37/0x3d0 [Fri Jul
->>>> 16
-> 
-> I am not seeing a warning at line 359 of either v5.13.2 or v5.12.7.
-> 
+>
+> Signed-off-by: Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>
+> ---
+>  drivers/iio/dac/max5821.c | 30 ++++++++++++++++--------------
+>  1 file changed, 16 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max5821.c
+> index bd6e75699a63..44c04ae70b32 100644
+> --- a/drivers/iio/dac/max5821.c
+> +++ b/drivers/iio/dac/max5821.c
+> @@ -294,6 +294,13 @@ static const struct iio_info max5821_info =3D {
+>         .write_raw =3D max5821_write_raw,
+>  };
+>
+> +static void max5821_regulator_disable(void *data)
+> +{
+> +       struct regulator *rdata =3D data;
+> +
+> +       regulator_disable(rdata);
 
-Mmm, in the 5.13.2 tarball downloaded from https://cdn.kernel.org/pub/linux/kernel/v5.x/ I see:
+This can be simplified a bit:
 
-    350  */
-    351 void rcu_note_context_switch(bool preempt)
-    352 {
-    353         struct task_struct *t = current;
-    354         struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-    355         struct rcu_node *rnp;
-    356
-    357         trace_rcu_utilization(TPS("Start context switch"));
-    358         lockdep_assert_irqs_disabled();
-    359         WARN_ON_ONCE(!preempt && rcu_preempt_depth() > 0);
-    360         if (rcu_preempt_depth() > 0 &&
-    361             !t->rcu_read_unlock_special.b.blocked) {
-    362
+static void max5821_regulator_disable(void *reg)
+{
+      regulator_disable(reg);
+}
 
->>>> 09:15:29 2021] Modules linked in: uas hidp rfcomm bnep xt_MASQUERADE
->>>> iptable_nat nf_nat xt_LOG nf_log_syslog xt_limit xt_multiport xt_conntrack
->>>> iptable_filter btusb btintel wmi_bmof uvcvideo videobuf2_vmalloc
->>>> videobuf2_memops videobuf2_v4l2 videobuf2_common coretemp hwmon
->>>> snd_hda_codec_hdmi x86_pkg_temp_thermal snd_hda_codec_realtek
->>>> snd_hda_codec_generic ledtrig_audio snd_hda_intel snd_intel_dspcfg
->>>> snd_hda_codec snd_hwdep snd_hda_core i2c_i801 i2c_smbus iwlmvm mac80211
->>>> iwlwifi i915 mei_me mei cfg80211 intel_lpss_pci intel_lpss wmi
->>>> nf_conntrack_ftp xt_helper nf_conntrack nf_defrag_ipv4 tun
->>>> [Fri Jul 16 09:15:29 2021] CPU: 11 PID: 2701 Comm: lpqd Not tainted 5.13.2
->>>> #1 [Fri Jul 16 09:15:29 2021] Hardware name: Notebook
->>>>
->>>>   NP50DE_DB                       /NP50DE_DB , BIOS 1.07.04 02/17/2020
->>>>
->>>> [Fri Jul 16 09:15:29 2021] RIP: 0010:rcu_note_context_switch+0x37/0x3d0
->>>> [Fri Jul 16 09:15:29 2021] Code: 02 00 e8 ec a0 6c 00 89 c0 65 4c 8b 2c 25
->>>> 00 6d 01 00 48 03 1c c5 80 56 e1 b6 40 84 ed 75 0d 41 8b 95 04 03 00 00 85
->>>> d2 7e 02 <0f> 0b 65 48 8b 04 25 00 6d 01 00 8b 80 04 03 00 00 85 c0 7e 0a
->>>> 41 [Fri Jul 16 09:15:29 2021] RSP: 0000:ffffb5d483837c70 EFLAGS: 00010002
->>>> [Fri Jul 16 09:15:29 2021] RAX: 000000000000000b RBX: ffff9b77806e1d80
->>>> RCX:
->>>> 0000000000000100 [Fri Jul 16 09:15:29 2021] RDX: 0000000000000001 RSI:
->>>> ffffffffb6d82ead RDI: ffffffffb6da5e4e [Fri Jul 16 09:15:29 2021] RBP:
->>>> 0000000000000000 R08: 0000000000000001 R09: 0000000000000000 [Fri Jul 16
->>>> 09:15:29 2021] R10: 000000067bce4fff R11: 0000000000000000 R12:
->>>> ffff9b77806e1100 [Fri Jul 16 09:15:29 2021] R13: ffff9b734a833a00 R14:
->>>> ffff9b734a833a00 R15: 0000000000000000 [Fri Jul 16 09:15:29 2021] FS:
->>>> 00007fccbfc5fe40(0000) GS:ffff9b77806c0000(0000) knlGS:0000000000000000
->>>> [Fri Jul 16 09:15:29 2021] CS:  0010 DS: 0000 ES: 0000 CR0:
->>>> 0000000080050033 [Fri Jul 16 09:15:29 2021] CR2: 00007fccc2db7290 CR3:
->>>> 00000003fb0b8002 CR4: 00000000007706e0 [Fri Jul 16 09:15:29 2021] PKRU:
->>>> 55555554
->>>> [Fri Jul 16 09:15:29 2021] Call Trace:
->>>> [Fri Jul 16 09:15:29 2021]  __schedule+0x86/0x810
->>>> [Fri Jul 16 09:15:29 2021]  schedule+0x40/0xe0
->>>> [Fri Jul 16 09:15:29 2021]  io_schedule+0x3d/0x60
->>>> [Fri Jul 16 09:15:29 2021]  wait_on_page_bit_common+0x129/0x390
->>>> [Fri Jul 16 09:15:29 2021]  ? __filemap_set_wb_err+0x10/0x10
->>>> [Fri Jul 16 09:15:29 2021]  __lock_page_or_retry+0x13f/0x1d0
->>>> [Fri Jul 16 09:15:29 2021]  do_swap_page+0x335/0x5b0
->>>> [Fri Jul 16 09:15:29 2021]  __handle_mm_fault+0x444/0xb20
->>>> [Fri Jul 16 09:15:29 2021]  handle_mm_fault+0x5c/0x170
->>>> [Fri Jul 16 09:15:29 2021]  ? find_vma+0x5b/0x70
->>>> [Fri Jul 16 09:15:29 2021]  exc_page_fault+0x1ab/0x610
->>>> [Fri Jul 16 09:15:29 2021]  ? fpregs_assert_state_consistent+0x19/0x40
->>>> [Fri Jul 16 09:15:29 2021]  ? asm_exc_page_fault+0x8/0x30
->>>> [Fri Jul 16 09:15:29 2021]  asm_exc_page_fault+0x1e/0x30
->>>> [Fri Jul 16 09:15:29 2021] RIP: 0033:0x7fccc2d3c520
->>>> [Fri Jul 16 09:15:29 2021] Code: 68 4c 00 00 00 e9 20 fb ff ff ff 25 7a ad
->>>> 07 00 68 4d 00 00 00 e9 10 fb ff ff ff 25 72 ad 07 00 68 4e 00 00 00 e9 00
->>>> fb ff ff <ff> 25 6a ad 07 00 68 4f 00 00 00 e9 f0 fa ff ff ff 25 62 ad 07
->>>> 00 [Fri Jul 16 09:15:29 2021] RSP: 002b:00007ffebd529048 EFLAGS: 00010293
->>>> [Fri Jul 16 09:15:29 2021] RAX: 0000000000000001 RBX: 00007fccc46e2890
->>>> RCX:
->>>> 0000000000000010 [Fri Jul 16 09:15:29 2021] RDX: 0000000000000010 RSI:
->>>> 0000000000000000 RDI: 00007fccc46e2890 [Fri Jul 16 09:15:29 2021] RBP:
->>>> 000056264f1dd4a0 R08: 000056264f21aba0 R09: 000056264f1f58a0 [Fri Jul 16
->>>> 09:15:29 2021] R10: 0000000000000007 R11: 0000000000000246 R12:
->>>> 000056264f21ac00 [Fri Jul 16 09:15:29 2021] R13: 000056264f1e0a30 R14:
->>>> 00007ffebd529080 R15: 00000000000dd87b [Fri Jul 16 09:15:29 2021] ---[ end
->>>> trace c8b06e067d8b0fc2 ]---
->>>>
->>>> At the time the warning was issued I was creating a (weekly) backup of my
->>>> linux system (home-brewed based on the guidance from Linux From Scratch).
->>>> My backup routine is completed by copying the archive files (created with
->>>> dar) and a directory that contains about 7000 source and binary rpm files
->>>> to an external USB drive. I didn't spot the warning until later in the
->>>> day,
->>>> so I'm not sure exactly where I was in my backup process.
->>>>
->>>> I haven't seen this warning before. Consequently, I don;t know how easy
->>>> (or
->>>> otherwise) it is to reproduce.
->>>>
->>>> Let me know if I can provide any additional diagnostics, but please cc me
->>>> as I'm not subscribed.
->>>
->>> Confirming the same for me with v5.13.2, and cross-referencing another
->>> report [1] against v5.12.17.
->>>
->>> Also Cc'ing relevant people on this.
->>>
->>> Thanks.
->>>
->>> [1]
->>> https://lore.kernel.org/lkml/CAK2bqVK0Q9YcpakE7_Rc6nr-E4e2GnMOgi5jJj=_Eh_1k
->>> EHLHA@mail.gmail.com/
-> 
-> But this one does show this warning in v5.12.17:
-> 
-> 	WARN_ON_ONCE(!preempt && rcu_preempt_depth() > 0);
-> 
-> This is in rcu_note_context_switch(), and could be caused by something
-> like a schedule() within an RCU read-side critical section.  This would
-> of course be RCU-usage bugs, given that you are not permitted to block
-> within an RCU read-side critical section.
-> 
-> I suggest checking the functions in the stack trace to see where the
-> rcu_read_lock() is hiding.  CONFIG_PROVE_LOCKING might also be helpful.
-> 
-> 							Thanx, Paul
-> 
+I used to do explicit casting, but then I also figured that it's not necess=
+ary.
+
+> +}
+> +
+>  static int max5821_probe(struct i2c_client *client,
+>                         const struct i2c_device_id *id)
+>  {
+> @@ -306,7 +313,6 @@ static int max5821_probe(struct i2c_client *client,
+>         if (!indio_dev)
+>                 return -ENOMEM;
+>         data =3D iio_priv(indio_dev);
+> -       i2c_set_clientdata(client, indio_dev);
+>         data->client =3D client;
+>         mutex_init(&data->lock);
+>
+> @@ -331,6 +337,14 @@ static int max5821_probe(struct i2c_client *client,
+>                 goto error_free_reg;
+>         }
+>
+> +       ret =3D devm_add_action_or_reset(&client->dev, max5821_regulator_=
+disable,
+> +                                      data->vref_reg);
+> +       if (ret) {
+> +               dev_err(&client->dev,
+> +                       "Failed to add action to managed regulator: %d\n"=
+, ret);
+> +               goto error_disable_reg;
+
+return ret;
+
+devm_add_action_or_reset() should call max5821_regulator_disable() in
+case of error
+
+> +       }
+> +
+>         ret =3D regulator_get_voltage(data->vref_reg);
+>         if (ret < 0) {
+>                 dev_err(&client->dev,
+> @@ -346,7 +360,7 @@ static int max5821_probe(struct i2c_client *client,
+>         indio_dev->modes =3D INDIO_DIRECT_MODE;
+>         indio_dev->info =3D &max5821_info;
+>
+> -       return iio_device_register(indio_dev);
+> +       return devm_iio_device_register(&client->dev, indio_dev);
+>
+>  error_disable_reg:
+
+This entire goto block should be removed.
+The idea of using only devm_ functions is to not have these goto statements=
+.
+
+>         regulator_disable(data->vref_reg);
+> @@ -356,17 +370,6 @@ static int max5821_probe(struct i2c_client *client,
+>         return ret;
+>  }
+>
+> -static int max5821_remove(struct i2c_client *client)
+> -{
+> -       struct iio_dev *indio_dev =3D i2c_get_clientdata(client);
+> -       struct max5821_data *data =3D iio_priv(indio_dev);
+> -
+> -       iio_device_unregister(indio_dev);
+> -       regulator_disable(data->vref_reg);
+> -
+> -       return 0;
+> -}
+> -
+>  static const struct i2c_device_id max5821_id[] =3D {
+>         { "max5821", ID_MAX5821 },
+>         { }
+> @@ -386,7 +389,6 @@ static struct i2c_driver max5821_driver =3D {
+>                 .pm     =3D &max5821_pm_ops,
+>         },
+>         .probe          =3D max5821_probe,
+> -       .remove         =3D max5821_remove,
+>         .id_table       =3D max5821_id,
+>  };
+>  module_i2c_driver(max5821_driver);
+> --
+> 2.20.1
+>
