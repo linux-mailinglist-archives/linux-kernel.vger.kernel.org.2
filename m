@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F0B3CE7A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A0F3CE7A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354440AbhGSQaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:30:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49366 "EHLO mail.kernel.org"
+        id S244117AbhGSQai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:30:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346162AbhGSPOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:14:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFB83613F8;
-        Mon, 19 Jul 2021 15:53:52 +0000 (UTC)
+        id S1345357AbhGSPOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:14:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24C1861400;
+        Mon, 19 Jul 2021 15:53:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710033;
-        bh=cjFLiYvpXgJg5R8/A0oRgy/TxHOhY+yBWW71dNTeMZw=;
+        s=korg; t=1626710035;
+        bh=Sf6e4yExoweHIOKnhm/QYEDg5XEg6e3wHd9VOfVKaFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XpOvnsqsj/FcnIhrriuOn+IZbqyeFNR7KYcAT4x0DtSbPmPSkjxCzt1eXS1+Sv74X
-         WiZtk1uCSPl+qG/CPOjcScy5TQhqPdvCMcxHqeYHE7gi1/w9rzIo8SHIgYTRNR2t+o
-         lzmPITGdA+obCxFj51Ct00pIKR5AuFAp8exxDXgw=
+        b=BWNWS6nyBAMMp8nAxF/jHeNl6iuyR8ABiIoobAFVl1CD1BvLAhugjE7bl6eEA55p6
+         h6/nbjrYT6TBT5vGW/h80fYau5Z9itxb0A+jI2YHqCZMHE0x4i5ClqF2an3YltG6Lt
+         Bszn+5aa9FlXwqo5rZw4rzcjihNoDv363fi8zC30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yufen Yu <yuyufen@huawei.com>, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 048/243] ALSA: ac97: fix PM reference leak in ac97_bus_remove()
-Date:   Mon, 19 Jul 2021 16:51:17 +0200
-Message-Id: <20210719144942.469031110@linuxfoundation.org>
+Subject: [PATCH 5.10 049/243] tty: serial: 8250: serial_cs: Fix a memory leak in error handling path
+Date:   Mon, 19 Jul 2021 16:51:18 +0200
+Message-Id: <20210719144942.500837804@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,37 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufen Yu <yuyufen@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit a38e93302ee25b2ca6f4ee76c6c974cf3637985e ]
+[ Upstream commit fad92b11047a748c996ebd6cfb164a63814eeb2e ]
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+In the probe function, if the final 'serial_config()' fails, 'info' is
+leaking.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yufen Yu <yuyufen@huawei.com>
-Link: https://lore.kernel.org/r/20210524093811.612302-1-yuyufen@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Add a resource handling path to free this memory.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/dc25f96b7faebf42e60fe8d02963c941cf4d8124.1621971720.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/ac97/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/8250/serial_cs.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
-index 7985dd8198b6..99e1728b52ae 100644
---- a/sound/ac97/bus.c
-+++ b/sound/ac97/bus.c
-@@ -520,7 +520,7 @@ static int ac97_bus_remove(struct device *dev)
- 	struct ac97_codec_driver *adrv = to_ac97_driver(dev->driver);
- 	int ret;
+diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8250/serial_cs.c
+index 1d3ec8503cef..7c3ea68e533e 100644
+--- a/drivers/tty/serial/8250/serial_cs.c
++++ b/drivers/tty/serial/8250/serial_cs.c
+@@ -306,6 +306,7 @@ static int serial_resume(struct pcmcia_device *link)
+ static int serial_probe(struct pcmcia_device *link)
+ {
+ 	struct serial_info *info;
++	int ret;
  
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
+ 	dev_dbg(&link->dev, "serial_attach()\n");
  
+@@ -320,7 +321,15 @@ static int serial_probe(struct pcmcia_device *link)
+ 	if (do_sound)
+ 		link->config_flags |= CONF_ENABLE_SPKR;
+ 
+-	return serial_config(link);
++	ret = serial_config(link);
++	if (ret)
++		goto free_info;
++
++	return 0;
++
++free_info:
++	kfree(info);
++	return ret;
+ }
+ 
+ static void serial_detach(struct pcmcia_device *link)
 -- 
 2.30.2
 
