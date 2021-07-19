@@ -2,57 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5013CD014
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505003CD0C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235875AbhGSI1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235844AbhGSI1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:27:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE1BA600CD;
-        Mon, 19 Jul 2021 09:07:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626685679;
-        bh=od5XSDQTfWU6h3EBK31swNvCr2oAj09MRWLUd2Bmnk8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jtQXNI4SmLk8EtT5ECK7dKulrmM27pE6h63WGyxaR8Zhvmv3AptHX4KRl98JRmYhe
-         HXR3DKCvblTMrhg+ZmnL+GmB2q3l9rrTWyjz4E5Cm5HZngF7KQJp1EiYwTguPwAB/j
-         koLO92gxFUnUzu26HblHWuQOSG5oQu2t0LrrTS5NLTLZuIWZel2X9pOLkH57LHxGRx
-         LWv4Yy3Ke3k/6jk2tuUbzqlvudtBqSMgd6W0wUZh3EK23eC3jmAyV2O6ZXDA9eLL6F
-         MJrVkaLMT98XhmlWbWORhGQxvay7vs+ybFoyINZRkQ14E6eneZ/X/1olMf+HUdCNTE
-         LtJqIr02RyIHw==
-Date:   Mon, 19 Jul 2021 10:07:54 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH] iommu/amd: Convert from atomic_t to refcount_t on
- device_state->count
-Message-ID: <20210719090754.GB6221@willie-the-truck>
-References: <1626674437-56007-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        id S235755AbhGSIrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235807AbhGSIrF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 04:47:05 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE89C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 01:28:58 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1m5PHJ-0006Ck-GR; Mon, 19 Jul 2021 11:09:33 +0200
+Subject: Re: [PATCH v2 1/6] KEYS: trusted: allow use of TEE as backend without
+ TCG_TPM support
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Richard Weinberger <richard@nod.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        Andreas Rammhold <andreas@rammhold.de>
+References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
+ <f8285eb0135ba30c9d846cf9dd395d1f5f8b1efc.1624364386.git-series.a.fatoum@pengutronix.de>
+ <CAFA6WYMJp5u_+3bNc0ykFzveakOS4nqJfPvSoaFGQApFctL47A@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <6003f9a3-1588-c317-4eeb-889d8e6c40e3@pengutronix.de>
+Date:   Mon, 19 Jul 2021 11:09:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626674437-56007-1-git-send-email-xiyuyang19@fudan.edu.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAFA6WYMJp5u_+3bNc0ykFzveakOS4nqJfPvSoaFGQApFctL47A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 02:00:37PM +0800, Xiyu Yang wrote:
-> refcount_t type and corresponding API can protect refcounters from
-> accidental underflow and overflow and further use-after-free situations.
+Hello Sumit,
+
+On 19.07.21 10:04, Sumit Garg wrote:
+> Hi Ahmad,
 > 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->  drivers/iommu/amd/iommu_v2.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+> On Tue, 22 Jun 2021 at 18:08, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>
+>> With recent rework, trusted keys are no longer limited to TPM as trust
+>> source. The Kconfig symbol is unchanged however leading to a few issues:
+>>
+>>  - TCG_TPM is required, even if only TEE is to be used
+>>  - Enabling TCG_TPM, but excluding it from available trusted sources
+>>    is not possible
+>>  - TEE=m && TRUSTED_KEYS=y will lead to TEE support being silently
+>>    dropped, which is not the best user experience
+>>
+>> Remedy these issues by introducing two new Kconfig symbols:
+>> TRUSTED_KEYS_TPM and TRUSTED_KEYS_TEE with the appropriate
+>> dependencies.
+>>
+> 
+> This should include a fixes tag to the rework commit.
 
-Can pasid_state::count be converted similarly?
+Yes. I wasn't aware of the regression that Andreas (CC'd) recently
+reported. Knowing, it now indeed warrants a backport. Will add in v2.
 
-Will
+>> diff --git a/security/keys/Kconfig b/security/keys/Kconfig
+>> index 64b81abd087e..6fdb953b319f 100644
+>> --- a/security/keys/Kconfig
+>> +++ b/security/keys/Kconfig
+>> @@ -70,23 +70,23 @@ config BIG_KEYS
+>>
+>>  config TRUSTED_KEYS
+>>         tristate "TRUSTED KEYS"
+>> -       depends on KEYS && TCG_TPM
+>> +       depends on KEYS
+> 
+>>         select CRYPTO
+>>         select CRYPTO_HMAC
+>>         select CRYPTO_SHA1
+>>         select CRYPTO_HASH_INFO
+> 
+> Should move these as well to TRUSTED_KEYS_TPM as the core code doesn't
+> mandate their need.
+
+Ok, will test and change appropriately.
+
+> 
+>> -       select ASN1_ENCODER
+>> -       select OID_REGISTRY
+>> -       select ASN1
+
+>>  $(obj)/trusted_tpm2.o: $(obj)/tpm2key.asn1.h
+>> -trusted-y += trusted_tpm2.o
+>> -trusted-y += tpm2key.asn1.o
+>> +trusted-$(CONFIG_TRUSTED_KEYS_TPM) += trusted_tpm2.o
+>> +trusted-$(CONFIG_TRUSTED_KEYS_TPM) += tpm2key.asn1.o
+>> +
+>> +trusted-$(CONFIG_TRUSTED_KEYS_TEE) += trusted_tee.o
+>>
+>>  trusted-$(CONFIG_TEE) += trusted_tee.o
+> 
+> This should be dropped.
+
+Right..
+
+Thanks for the review. I'll isolate this patch for v2.
+
+Cheers,
+Ahmad
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
