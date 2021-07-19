@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4723CE76B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B583CE88E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353855AbhGSQ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48730 "EHLO mail.kernel.org"
+        id S1352142AbhGSQnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:43:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345674AbhGSPNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:13:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E0E4613E3;
-        Mon, 19 Jul 2021 15:53:35 +0000 (UTC)
+        id S239031AbhGSPZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:25:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0124A6008E;
+        Mon, 19 Jul 2021 16:06:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710016;
-        bh=YE3aL0P/ukx86rH/nOPjZS+oU/mYIqW7gQhYJcpmOYk=;
+        s=korg; t=1626710763;
+        bh=l7HpfyGaASe1EXqssYiTB8W6w7CPgRkUmS+BAL1qRFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NJxxKqcFOYnxvQDberwBbDbfW0j+QGTjwMYc4IUe4hQyLDqu5obnnyFIDYXzpYXzD
-         rtLyIofoOh57Mtzm/gt5zwA9u2RrnoE/J9LmS+8RgMDawCcm0HhlSsCWwo04XV5b6y
-         zhTgNmO0u/xYU56NoYRfDwcSvuVnCyegaXHVBXkU=
+        b=qL1UB9jVCXKHLmwJzcxrL4f8zp5tWbxzQfWaGGeP6D1t6Z5kp2osiXOI7FqqU1ZRo
+         autY9MYtHpAlKbb7Gn4NzWv02s6h34vTOHM+DpE47hFrRdZ/5pZs4+TE1WW+iIshwb
+         f9VT1UE2jrKdmkVFJYXJ0eqYUx3IJWO/JpYy5tY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Block <bblock@linux.ibm.com>,
-        Steffen Maier <maier@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 009/243] scsi: zfcp: Report port fc_security as unknown early during remote cable pull
+        stable@vger.kernel.org, Daniel Mack <daniel@zonque.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 092/351] serial: tty: uartlite: fix console setup
 Date:   Mon, 19 Jul 2021 16:50:38 +0200
-Message-Id: <20210719144941.219405096@linuxfoundation.org>
+Message-Id: <20210719144947.545091333@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Maier <maier@linux.ibm.com>
+From: Daniel Mack <daniel@zonque.org>
 
-commit 8b3bdd99c092bbaeaa7d9eecb1a3e5dc9112002b upstream.
+[ Upstream commit d157fca711ad42e75efef3444c83d2e1a17be27a ]
 
-On remote cable pull, a zfcp_port keeps its status and only gets
-ZFCP_STATUS_PORT_LINK_TEST added. Only after an ADISC timeout, we would
-actually start port recovery and remove ZFCP_STATUS_COMMON_UNBLOCKED which
-zfcp_sysfs_port_fc_security_show() detected and reported as "unknown"
-instead of the old and possibly stale zfcp_port->connection_info.
+Remove the hack to assign the global console_port variable at probe time.
+This assumption that cons->index is -1 is wrong for systems that specify
+'console=' in the cmdline (or 'stdout-path' in dts). Hence, on such system
+the actual console assignment is ignored, and the first UART that happens
+to be probed is used as console instead.
 
-Add check for ZFCP_STATUS_PORT_LINK_TEST for timely "unknown" report.
+Move the logic to console_setup() and map the console to the correct port
+through the array of available ports instead.
 
-Link: https://lore.kernel.org/r/20210702160922.2667874-1-maier@linux.ibm.com
-Fixes: a17c78460093 ("scsi: zfcp: report FC Endpoint Security in sysfs")
-Cc: <stable@vger.kernel.org> #5.7+
-Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
-Signed-off-by: Steffen Maier <maier@linux.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+Link: https://lore.kernel.org/r/20210528133321.1859346-1-daniel@zonque.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/scsi/zfcp_sysfs.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/serial/uartlite.c | 27 ++++++---------------------
+ 1 file changed, 6 insertions(+), 21 deletions(-)
 
---- a/drivers/s390/scsi/zfcp_sysfs.c
-+++ b/drivers/s390/scsi/zfcp_sysfs.c
-@@ -487,6 +487,7 @@ static ssize_t zfcp_sysfs_port_fc_securi
- 	if (0 == (status & ZFCP_STATUS_COMMON_OPEN) ||
- 	    0 == (status & ZFCP_STATUS_COMMON_UNBLOCKED) ||
- 	    0 == (status & ZFCP_STATUS_PORT_PHYS_OPEN) ||
-+	    0 != (status & ZFCP_STATUS_PORT_LINK_TEST) ||
- 	    0 != (status & ZFCP_STATUS_COMMON_ERP_FAILED) ||
- 	    0 != (status & ZFCP_STATUS_COMMON_ACCESS_BOXED))
- 		i = sprintf(buf, "unknown\n");
+diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
+index f42ccc40ffa6..a5f15f22d9ef 100644
+--- a/drivers/tty/serial/uartlite.c
++++ b/drivers/tty/serial/uartlite.c
+@@ -505,21 +505,23 @@ static void ulite_console_write(struct console *co, const char *s,
+ 
+ static int ulite_console_setup(struct console *co, char *options)
+ {
+-	struct uart_port *port;
++	struct uart_port *port = NULL;
+ 	int baud = 9600;
+ 	int bits = 8;
+ 	int parity = 'n';
+ 	int flow = 'n';
+ 
+-
+-	port = console_port;
++	if (co->index >= 0 && co->index < ULITE_NR_UARTS)
++		port = ulite_ports + co->index;
+ 
+ 	/* Has the device been initialized yet? */
+-	if (!port->mapbase) {
++	if (!port || !port->mapbase) {
+ 		pr_debug("console on ttyUL%i not present\n", co->index);
+ 		return -ENODEV;
+ 	}
+ 
++	console_port = port;
++
+ 	/* not initialized yet? */
+ 	if (!port->membase) {
+ 		if (ulite_request_port(port))
+@@ -655,17 +657,6 @@ static int ulite_assign(struct device *dev, int id, u32 base, int irq,
+ 
+ 	dev_set_drvdata(dev, port);
+ 
+-#ifdef CONFIG_SERIAL_UARTLITE_CONSOLE
+-	/*
+-	 * If console hasn't been found yet try to assign this port
+-	 * because it is required to be assigned for console setup function.
+-	 * If register_console() don't assign value, then console_port pointer
+-	 * is cleanup.
+-	 */
+-	if (ulite_uart_driver.cons->index == -1)
+-		console_port = port;
+-#endif
+-
+ 	/* Register the port */
+ 	rc = uart_add_one_port(&ulite_uart_driver, port);
+ 	if (rc) {
+@@ -675,12 +666,6 @@ static int ulite_assign(struct device *dev, int id, u32 base, int irq,
+ 		return rc;
+ 	}
+ 
+-#ifdef CONFIG_SERIAL_UARTLITE_CONSOLE
+-	/* This is not port which is used for console that's why clean it up */
+-	if (ulite_uart_driver.cons->index == -1)
+-		console_port = NULL;
+-#endif
+-
+ 	return 0;
+ }
+ 
+-- 
+2.30.2
+
 
 
