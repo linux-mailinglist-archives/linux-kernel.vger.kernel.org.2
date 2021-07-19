@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A513CE01C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71593CDC45
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345625AbhGSPNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:13:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
+        id S243467AbhGSOvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:51:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344253AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4548F61289;
-        Mon, 19 Jul 2021 15:27:40 +0000 (UTC)
+        id S245221AbhGSOe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0E5161279;
+        Mon, 19 Jul 2021 15:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708460;
-        bh=iVA0Irtyj5+vISta1uNTPfwIhilsrb46kFwIemRbYWc=;
+        s=korg; t=1626707637;
+        bh=aE8rBFuYz3w5rOYaRyxgwOAw28bOE77csA3Aj7bsi9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o3Ztew/FapXlGTraAo2pDk8Gjedo9baZ2CAijyIg6cqyn46Ds2gDQbt/TfwBw5cqb
-         WVz6OzJ4YzGQ1x3IgGVdOGrcBWLUfZHM1INzRHe8PswI3uiVgxoUJAsDExcdbfa/QN
-         OBAvQpcgx3bLy9viVUCXKBrGuV9ooz9SKr5vsW5U=
+        b=GzycPhdsW3dYLFSH2SPMNkPWGjQ5mpXHuh4gytd8vbREED6WBYMMgUMg8R6BlhfC3
+         gmM5NCOOsQb8CYZIIeL1t4s/cU1jqKU/4Gm0nL40tJJWAVzAdluilzOOY/is2g7ZUj
+         qOyqV3hLhhfYpuagPkmZESlpVcJkd1vSGEPN1OkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 294/315] ubifs: Set/Clear I_LINKABLE under i_lock for whiteout inode
-Date:   Mon, 19 Jul 2021 16:53:03 +0200
-Message-Id: <20210719144953.135574307@linuxfoundation.org>
+Subject: [PATCH 4.9 242/245] scsi: be2iscsi: Fix an error handling path in beiscsi_dev_probe()
+Date:   Mon, 19 Jul 2021 16:53:04 +0200
+Message-Id: <20210719144948.187253369@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,77 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit a801fcfeef96702fa3f9b22ad56c5eb1989d9221 ]
+[ Upstream commit 030e4138d11fced3b831c2761e4cecf347bae99c ]
 
-xfstests-generic/476 reports a warning message as below:
+If an error occurs after a pci_enable_pcie_error_reporting() call, it must
+be undone by a corresponding pci_disable_pcie_error_reporting() call, as
+already done in the remove function.
 
-WARNING: CPU: 2 PID: 30347 at fs/inode.c:361 inc_nlink+0x52/0x70
-Call Trace:
-  do_rename+0x502/0xd40 [ubifs]
-  ubifs_rename+0x8b/0x180 [ubifs]
-  vfs_rename+0x476/0x1080
-  do_renameat2+0x67c/0x7b0
-  __x64_sys_renameat2+0x6e/0x90
-  do_syscall_64+0x66/0xe0
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Following race case can cause this:
-         rename_whiteout(Thread 1)             wb_workfn(Thread 2)
-ubifs_rename
-  do_rename
-                                          __writeback_single_inode
-					    spin_lock(&inode->i_lock)
-    whiteout->i_state |= I_LINKABLE
-                                            inode->i_state &= ~dirty;
----- How race happens on i_state:
-    (tmp = whiteout->i_state | I_LINKABLE)
-		                           (tmp = inode->i_state & ~dirty)
-    (whiteout->i_state = tmp)
-		                           (inode->i_state = tmp)
-----
-					    spin_unlock(&inode->i_lock)
-    inc_nlink(whiteout)
-    WARN_ON(!(inode->i_state & I_LINKABLE)) !!!
-
-Fix to add i_lock to avoid i_state update race condition.
-
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Link: https://lore.kernel.org/r/77adb02cfea7f1364e5603ecf3930d8597ae356e.1623482155.git.christophe.jaillet@wanadoo.fr
+Fixes: 3567f36a09d1 ("[SCSI] be2iscsi: Fix AER handling in driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/dir.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/scsi/be2iscsi/be_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 9d5face7fdc0..de0d63a347ac 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1408,7 +1408,10 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 			goto out_release;
- 		}
- 
-+		spin_lock(&whiteout->i_lock);
- 		whiteout->i_state |= I_LINKABLE;
-+		spin_unlock(&whiteout->i_lock);
-+
- 		whiteout_ui = ubifs_inode(whiteout);
- 		whiteout_ui->data = dev;
- 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
-@@ -1501,7 +1504,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 
- 		inc_nlink(whiteout);
- 		mark_inode_dirty(whiteout);
-+
-+		spin_lock(&whiteout->i_lock);
- 		whiteout->i_state &= ~I_LINKABLE;
-+		spin_unlock(&whiteout->i_lock);
-+
- 		iput(whiteout);
- 	}
- 
+diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
+index 741cc96379cb..628bf2e6a526 100644
+--- a/drivers/scsi/be2iscsi/be_main.c
++++ b/drivers/scsi/be2iscsi/be_main.c
+@@ -5847,6 +5847,7 @@ hba_free:
+ 		pci_disable_msix(phba->pcidev);
+ 	pci_dev_put(phba->pcidev);
+ 	iscsi_host_free(phba->shost);
++	pci_disable_pcie_error_reporting(pcidev);
+ 	pci_set_drvdata(pcidev, NULL);
+ disable_pci:
+ 	pci_release_regions(pcidev);
 -- 
 2.30.2
 
