@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1EE3CEAB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09CE3CE96A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377399AbhGSRQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:16:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34196 "EHLO mail.kernel.org"
+        id S1358996AbhGSQzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348145AbhGSPjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8426661245;
-        Mon, 19 Jul 2021 16:19:53 +0000 (UTC)
+        id S243877AbhGSP2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:28:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E67E61351;
+        Mon, 19 Jul 2021 16:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711594;
-        bh=4DYIJkBBNEgbBtLUIK/WIpKbeZB5/9WqbXBS6E8Bh54=;
+        s=korg; t=1626710924;
+        bh=HUMXNiWlr+lAzD0WDDX5+BAJHVe2ELrSxvY4d7GcbJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CCjRfvD3xNyhR61aJG2Wqttw5yooDtvs4PVTIof+Tukn2N7TBAnz8SWoPmSA6YNHk
-         r6EBdaixzW7T06u2AH8pxtDwAXznkqckI0/cT6yrIY64P22Haz63mm8J2XObWD971N
-         jpew/kZf7ykfEt9jkDFZ2IwOi/wHVMeOl2pYafNA=
+        b=zKRsUZDRzZnO1MvsMcpmP2hptLeUM23di5jGIDuAtllBbak0iZogt1Zldx8xcAlGr
+         5d6oLTg5XhmHVNAAvVYy1Z7+TCHWehyTCwrMh+XE7fWiXCfkXs3AJXpGiLUK7su5+f
+         Z3mlMcwXCuwq6q7PWQVHVYCXHI97uQ9iLVIYCniE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 043/292] misc/libmasm/module: Fix two use after free in ibmasm_init_one
+Subject: [PATCH 5.13 159/351] power: reset: gpio-poweroff: add missing MODULE_DEVICE_TABLE
 Date:   Mon, 19 Jul 2021 16:51:45 +0200
-Message-Id: <20210719144943.927920697@linuxfoundation.org>
+Message-Id: <20210719144950.227663229@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,56 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit 7272b591c4cb9327c43443f67b8fbae7657dd9ae ]
+[ Upstream commit ed3443fb4df4e140a22f65144546c8a8e1e27f4e ]
 
-In ibmasm_init_one, it calls ibmasm_init_remote_input_dev().
-Inside ibmasm_init_remote_input_dev, mouse_dev and keybd_dev are
-allocated by input_allocate_device(), and assigned to
-sp->remote.mouse_dev and sp->remote.keybd_dev respectively.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-In the err_free_devices error branch of ibmasm_init_one,
-mouse_dev and keybd_dev are freed by input_free_device(), and return
-error. Then the execution runs into error_send_message error branch
-of ibmasm_init_one, where ibmasm_free_remote_input_dev(sp) is called
-to unregister the freed sp->remote.mouse_dev and sp->remote.keybd_dev.
-
-My patch add a "error_init_remote" label to handle the error of
-ibmasm_init_remote_input_dev(), to avoid the uaf bugs.
-
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Link: https://lore.kernel.org/r/20210426170620.10546-1-lyl2019@mail.ustc.edu.cn
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/ibmasm/module.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/power/reset/gpio-poweroff.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/misc/ibmasm/module.c b/drivers/misc/ibmasm/module.c
-index 4edad6c445d3..dc8a06c06c63 100644
---- a/drivers/misc/ibmasm/module.c
-+++ b/drivers/misc/ibmasm/module.c
-@@ -111,7 +111,7 @@ static int ibmasm_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 	result = ibmasm_init_remote_input_dev(sp);
- 	if (result) {
- 		dev_err(sp->dev, "Failed to initialize remote queue\n");
--		goto error_send_message;
-+		goto error_init_remote;
- 	}
+diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
+index c5067eb75370..1c5af2fef142 100644
+--- a/drivers/power/reset/gpio-poweroff.c
++++ b/drivers/power/reset/gpio-poweroff.c
+@@ -90,6 +90,7 @@ static const struct of_device_id of_gpio_poweroff_match[] = {
+ 	{ .compatible = "gpio-poweroff", },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, of_gpio_poweroff_match);
  
- 	result = ibmasm_send_driver_vpd(sp);
-@@ -131,8 +131,9 @@ static int ibmasm_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return 0;
- 
- error_send_message:
--	disable_sp_interrupts(sp->base_address);
- 	ibmasm_free_remote_input_dev(sp);
-+error_init_remote:
-+	disable_sp_interrupts(sp->base_address);
- 	free_irq(sp->irq, (void *)sp);
- error_request_irq:
- 	iounmap(sp->base_address);
+ static struct platform_driver gpio_poweroff_driver = {
+ 	.probe = gpio_poweroff_probe,
 -- 
 2.30.2
 
