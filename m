@@ -2,106 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9553CD200
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2C43CD203
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbhGSJxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236171AbhGSJxA (ORCPT
+        id S236311AbhGSJxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:53:51 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47206
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235440AbhGSJxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:53:00 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64199C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:40:24 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id jx7-20020a17090b46c7b02901757deaf2c8so11843176pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:33:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=K40Jyf6F4VypIX0uQQ58aazesoLZiATF2ozlOf/u82E=;
-        b=tm6QKxQaVJ1rfx4hcKqkfQh+kNZs1qfo7yu8WQJ/aS2+N/K/j3hAC7EJoGOLcI7mki
-         RbXLpX3EUAsaeCKfy7dK+lsB9pV6bpejySCGNZ0YrrUbjtL9cXrDtvYSaEOtKyH8Yl2h
-         pQwq59Y80QoFdRlHXZ8BxNEhIWPeZUnsy31tQXJKRws0GQIqiqzGSSdf27UDzkXZs8WU
-         e1QslQq68CgzpzJ9WZD1zQIK/3f5QCVmqRqT17KzPkbNDIEwoysrIasghiLrG6lc43/K
-         0V/1IrT6lyVKAbt3+yYq/dWQNyTPcSMQk5oAmymYYQz6722hEl9bSCG0440pYjIpbs0r
-         hcZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=K40Jyf6F4VypIX0uQQ58aazesoLZiATF2ozlOf/u82E=;
-        b=VYc93i0dU17ID8I6vRxpugMpiluu+gTnPlUz1oLAT5jSs/7ZQ3VO+PSU8l0Dj09bcP
-         Wu7HlUNLuOEt/SkdLvdlFkaXtiwkfHtp4BD0PYVoOrWD/Sd7V4ELZiBvF2GtTRox7HU+
-         O7aaNYVKXo5ls2iMdD2L9UrB4cXQja869Y40OcrDszPx+Qi8A7JiPZ5qLiyopy2eh7Xv
-         hSf2PVVMFVtCuSHuP17x3Z0YCuT9rv9Gd0/OnSymM3CiSdpczAooV/Iju6oF9wsrg0+x
-         /HlNiapN6q3BUysns2fIYoVs97RO9wuwLcoayQgxz0e1tcsXU2c3GLBhg7MDZDpaWgu6
-         u6kg==
-X-Gm-Message-State: AOAM531RLv2UBwK1naJt8PjQxi7OoUG3P+M9VoVFpHg+ANX/TRA2LRYr
-        rhfSorO7Rva65YWh+sfKVlMx4g==
-X-Google-Smtp-Source: ABdhPJwl4MXidm+h6UyC6mKBdXmjy/5RSub0SZcKsJot16gWN5QT/b3nRghByFFqbqrk8t4XWLYxlA==
-X-Received: by 2002:a17:90a:b284:: with SMTP id c4mr24363136pjr.213.1626690819793;
-        Mon, 19 Jul 2021 03:33:39 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id w5sm19850101pfq.130.2021.07.19.03.33.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 03:33:38 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 16:03:36 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device
- subnode
-Message-ID: <20210719103336.oyz6dppd5jf65w4m@vireshk-i7>
-References: <cover.1626173013.git.viresh.kumar@linaro.org>
- <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
- <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com>
- <20210713151917.zouwfckidnjxvohn@vireshk-i7>
- <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
- <CAK8P3a3Gve=M9GF-E+2OJED1Hd1qngxOkVSO15wB0jVWK8D0_Q@mail.gmail.com>
- <CAL_JsqKLjFx9AOcMiyxdQvDU7V8Sak8YPyrJm2TuSE-TTqvREw@mail.gmail.com>
- <CAK8P3a2mS3GoW9MXdDNK7-EbnRH-9Kn4_k_TgnGSCycSez8Xow@mail.gmail.com>
+        Mon, 19 Jul 2021 05:53:51 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 272FC40334;
+        Mon, 19 Jul 2021 10:34:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626690870;
+        bh=oD0uyN5gHA69IbTnnbd6ii92QeiCFwsBKCa7VtjsOp8=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=p3RfhgLW4LF4rmf7I9Hq2e7Ay9l58gFnwmJm19NIr1bnkA2yRT737hF9y3UpXd3VC
+         2V5VnURhQLvcpqoTMq3nNHGZR+nYnGWKNrSW8+LZbc+TPpamgtuwtrlEnZMIMVZyvn
+         2sJOB62r9J+8avlZwMwAMfnqPOmzK9Ko06X/tlM6oAbAN+0l5TNcWsF3K6fGhyuzWM
+         9U4uqacf/bsYjGzBnD4DQs1zo0Ihx9pNXBh8hsiyC9eZax/A0sEzueB3yrUYbwSTcR
+         lyV3fltBZyWbWnXXAJ9R2IkRuLSDVJkhOqm/9bLGZbqSMvxDsPyo/pOa4NTtvkPmc7
+         bK1IRNITu5q2g==
+From:   Colin King <colin.king@canonical.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: Fix a couple of spelling mistakes in Kconfig
+Date:   Mon, 19 Jul 2021 11:34:29 +0100
+Message-Id: <20210719103429.15544-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2mS3GoW9MXdDNK7-EbnRH-9Kn4_k_TgnGSCycSez8Xow@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-07-21, 23:07, Arnd Bergmann wrote:
-> On Wed, Jul 14, 2021 at 5:43 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > I guess it comes down to is 'virtio,mmio' providing a bus or is it
-> > just a device? I guess a bus (so 2 nodes) does make sense here.
-> > 'virtio,mmio' defines how you access/discover the virtio queues (the
-> > bus) and the functional device (i2c, gpio, iommu, etc.) is accessed
-> > via the virtio queues.
-> 
-> It's not really a bus since there is only ever one device behind it.
-> A better analogy would be your 'serdev' framework: You could
-> have a 8250 or a pl011 uart, and behind that have a mouse, GPS
-> receiver or bluetooth dongle.
-> 
-> In Documentation/devicetree/bindings/serial/serial.yaml, you also
-> have two nodes for a single device, so we could follow that
-> example.
+From: Colin Ian King <colin.king@canonical.com>
 
-So two device nodes is final then ? Pretty much like how this patchset did it
-already ? I need to get rid of reg thing and use "virtio,DID" though.
+There are a couple of spelling mistakes in the Kconfig text. Fix them.
 
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/regulator/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 6562d4c243b0..c63d5faa883c 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -1044,7 +1044,7 @@ config REGULATOR_RT6160
+ 	help
+ 	  This adds support for voltage regulator in Richtek RT6160.
+ 	  This device automatically change voltage output mode from
+-	  Buck or Boost. The mode transistion depend on the input source voltage.
++	  Buck or Boost. The mode transition depend on the input source voltage.
+ 	  The wide output range is from 2025mV to 5200mV and can be used on most
+ 	  common application scenario.
+ 
+@@ -1053,7 +1053,7 @@ config REGULATOR_RT6245
+ 	depends on I2C
+ 	select REGMAP_I2C
+ 	help
+-	  This adds supprot for Richtek RT6245 voltage regulator.
++	  This adds support for Richtek RT6245 voltage regulator.
+ 	  It can support up to 14A output current and adjustable output voltage
+ 	  from 0.4375V to 1.3875V, per step 12.5mV.
+ 
 -- 
-viresh
+2.31.1
+
