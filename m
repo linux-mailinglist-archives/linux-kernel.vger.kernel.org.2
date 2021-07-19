@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52EE3CE6DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326253CE7FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352199AbhGSQQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:16:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46478 "EHLO mail.kernel.org"
+        id S1355132AbhGSQf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245743AbhGSPKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7402D60FED;
-        Mon, 19 Jul 2021 15:50:50 +0000 (UTC)
+        id S1347971AbhGSPXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:23:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09173613D3;
+        Mon, 19 Jul 2021 16:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709851;
-        bh=SqMSKcVET3eL/CjFpttP+c/eX1PAOvEaZL+V4uhj9J0=;
+        s=korg; t=1626710406;
+        bh=R5v9OgEwcjZa8ieC98gxzWeUdtmbSLxTyoDoyWpuVyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UUmIW4DnsV6LzVjeL6jyUuLC5MAuSwS5F80VwMKLJnXz31iWzrXgBfYNwVcLTJOh9
-         QQU10XDbEQYE2fzIHBdq7xuit0+rfVa8gufVvigKtI39yRip4kJ7PRDQVqWyTs+Jri
-         QPQWaU32t70JOA+c4RYeCX4U3O5yt6g1+3dFDq0U=
+        b=I7nNwqy7IEXV+mZ/C+zo8tjzaeg+765KmcRX8F+7EGyZ3qbEg3qPsWVUzdR1Czgc9
+         czhVPWm2SFXi8s7BjxWR5mXnxehTgc48PhGWcd9bET0+ZNn8FwFLI8Ul+bns4Iv+HR
+         SmPsN/5iGV3CtEK+tCsdnyuQkkiiRv7tBCtoriSg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 122/149] reset: brcmstb: Add missing MODULE_DEVICE_TABLE
-Date:   Mon, 19 Jul 2021 16:53:50 +0200
-Message-Id: <20210719144930.270901127@linuxfoundation.org>
+        stable@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 202/243] arm64: dts: ti: j7200-main: Enable USB2 PHY RX sensitivity workaround
+Date:   Mon, 19 Jul 2021 16:53:51 +0200
+Message-Id: <20210719144947.451238345@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Roger Quadros <rogerq@ti.com>
 
-[ Upstream commit e207457f9045343a24d936fbb67eb4b412f1c6ad ]
+[ Upstream commit a2894d85f44ba3f2bdf5806c8dc62e2ec40c1c09 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Enable work around feature built into the controller to address issue with
+RX Sensitivity for USB2 PHY.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 77750bc089e4 ("reset: Add Broadcom STB SW_INIT reset controller driver")
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Link: https://lore.kernel.org/r/1620789283-15048-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Fixes: 6197d7139d12 ("arm64: dts: ti: k3-j7200-main: Add USB controller")
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Link: https://lore.kernel.org/r/20210512153308.5840-1-a-govindraju@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/reset-brcmstb.c | 1 +
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/reset/reset-brcmstb.c b/drivers/reset/reset-brcmstb.c
-index f213264c8567..42c9d5241c53 100644
---- a/drivers/reset/reset-brcmstb.c
-+++ b/drivers/reset/reset-brcmstb.c
-@@ -111,6 +111,7 @@ static const struct of_device_id brcmstb_reset_of_match[] = {
- 	{ .compatible = "brcm,brcmstb-reset" },
- 	{ /* sentinel */ }
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index 689538244392..5832ad830ed1 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -446,6 +446,7 @@
+ 					  "otg";
+ 			maximum-speed = "super-speed";
+ 			dr_mode = "otg";
++			cdns,phyrst-a-enable;
+ 		};
+ 	};
  };
-+MODULE_DEVICE_TABLE(of, brcmstb_reset_of_match);
- 
- static struct platform_driver brcmstb_reset_driver = {
- 	.probe	= brcmstb_reset_probe,
 -- 
 2.30.2
 
