@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFE83CE5D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D153CE641
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351287AbhGSPyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:54:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58644 "EHLO mail.kernel.org"
+        id S1347352AbhGSQDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:03:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345718AbhGSPE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41CFD60FE7;
-        Mon, 19 Jul 2021 15:45:06 +0000 (UTC)
+        id S1345743AbhGSPE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED45C610A5;
+        Mon, 19 Jul 2021 15:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709506;
-        bh=8tRsXTV6Z+VTJTcpq+arqcMVBsTWKamCkYIdBK/+HX8=;
+        s=korg; t=1626709509;
+        bh=AWvCJaMoRoL6V6OkU1vz1o+Zcy7vJQWQqMK9pByqGdk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rt7WAsfMIMfUGl1mAORvA6bhBjR41KwUgoroIKawBMI2Kdz4jZsx2Zoxv3FenC4N4
-         jD2XLNzEdGfYNmm3dE3KfLBnEonDP6LWPo0Xqy+obwQ/3d9w7igbpbtqbWRyGnfeDb
-         LntxqkWFoJ5glgyI5Mux+Kw6E1EiDT574Z5CiH74=
+        b=zXkzXs7+dTUr4kNk5l9JRXcyeCLKAjS1MsBgkSlx0apKReZcv+yNhqIEdXFIMQ3v9
+         j52T3oymr/1L87Qwm1Zb1KkX7gfgVTmkLjW6R510y48ACSfuualw+EPzikOwtpKDpY
+         g8XEAJc71gwDtU1Njc+DN0+UgaZMyYrfMl91bR9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Marek Vasut <marex@denx.de>,
         NXP Linux Team <linux-imx@nxp.com>,
         kernel@dh-electronics.com, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 412/421] ARM: dts: imx6q-dhcom: Fix ethernet reset time properties
-Date:   Mon, 19 Jul 2021 16:53:43 +0200
-Message-Id: <20210719145000.599084295@linuxfoundation.org>
+Subject: [PATCH 4.19 413/421] ARM: dts: imx6q-dhcom: Fix ethernet plugin detection problems
+Date:   Mon, 19 Jul 2021 16:53:44 +0200
+Message-Id: <20210719145000.630943720@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -46,10 +46,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christoph Niedermaier <cniedermaier@dh-electronics.com>
 
-[ Upstream commit c016c26c1631f539c652b5d82242a3ca402545c1 ]
+[ Upstream commit e2bdd3484890441b9cc2560413a86e8f2aa04157 ]
 
-Fix ethernet reset time properties as described in
-Documentation/devicetree/bindings/net/ethernet-phy.yaml
+To make the ethernet cable plugin detection reliable the
+power detection of the smsc phy has been disabled.
 
 Fixes: 52c7a088badd ("ARM: dts: imx6q: Add support for the DHCOM iMX6 SoM and PDK2")
 Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
@@ -62,21 +62,18 @@ To: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6q-dhcom-som.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/imx6q-dhcom-som.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/boot/dts/imx6q-dhcom-som.dtsi b/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
-index 8d4a4cd01e07..b158e530a796 100644
+index b158e530a796..6c08ef354a39 100644
 --- a/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
 +++ b/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
-@@ -97,8 +97,8 @@
- 			reg = <0>;
- 			max-speed = <100>;
+@@ -99,6 +99,7 @@
  			reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
--			reset-delay-us = <1000>;
--			reset-post-delay-us = <1000>;
-+			reset-assert-us = <1000>;
-+			reset-deassert-us = <1000>;
+ 			reset-assert-us = <1000>;
+ 			reset-deassert-us = <1000>;
++			smsc,disable-energy-detect; /* Make plugin detection reliable */
  		};
  	};
  };
