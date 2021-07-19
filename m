@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D911C3CE9B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88E23CEACA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357762AbhGSRAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:00:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59680 "EHLO mail.kernel.org"
+        id S1351226AbhGSRTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:19:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235578AbhGSPeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:34:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D06A0613BB;
-        Mon, 19 Jul 2021 16:11:04 +0000 (UTC)
+        id S1347918AbhGSPlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:41:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B834F61283;
+        Mon, 19 Jul 2021 16:21:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711065;
-        bh=q2An+mu1ao07rcVJygd5q0JKjr0hlytbk9vYI4g09tU=;
+        s=korg; t=1626711701;
+        bh=wVFWZjD32RCEOXrQYqbhnw7dQOnDS4glSrjrbV4SPHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FdG2UNXJi14RJ2Ck3cwG9VZrXQHKT35/cl9oHzDuR/yRr88VeMfehdqC85hYYgmJf
-         1yfppQJdQtbHwTR6qqok7MchRYUUR+OhMGyvAz0KWndNh+tgcnAGzi0nvlVQ5QAIZb
-         2PjZEALVuJi9VDk53pig1qIZmw4IjIObbR/x1x9o=
+        b=2sqich22+DzIrg288yFSfX9pN92VuhSXn+3W4fcPV7gcbLcv1hvZ6uSN5+jVxfHVH
+         JoFKwSUnnI3NC63APSTuZj8BclBnx3ZhCwXbLbmWTmiFb9+eoR/YRggzvUOaQ2fybB
+         9Cb/x7zY2rIBVVcKqnBAA3rhIFcMAtKvbmyG5QiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 215/351] sunrpc: Avoid a KASAN slab-out-of-bounds bug in xdr_set_page_base()
-Date:   Mon, 19 Jul 2021 16:52:41 +0200
-Message-Id: <20210719144952.071555317@linuxfoundation.org>
+Subject: [PATCH 5.12 100/292] xhci: handle failed buffer copy to URB sg list and fix a W=1 copiler warning
+Date:   Mon, 19 Jul 2021 16:52:42 +0200
+Message-Id: <20210719144945.790451390@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 6d1c0f3d28f98ea2736128ed3e46821496dc3a8c ]
+[ Upstream commit 271a21d8b280b186f8cc9ca6f7151902efde9512 ]
 
-This seems to happen fairly easily during READ_PLUS testing on NFS v4.2.
-I found that we could end up accessing xdr->buf->pages[pgnr] with a pgnr
-greater than the number of pages in the array. So let's just return
-early if we're setting base to a point at the end of the page data and
-let xdr_set_tail_base() handle setting up the buffer pointers instead.
+Set the urb->actual_length to bytes successfully copied in case all bytes
+weren't copied from a temporary buffer to the URB sg list.
+Also print a debug message
 
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Fixes: 8d86e373b0ef ("SUNRPC: Clean up helpers xdr_set_iov() and xdr_set_page_base()")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210617150354.1512157-4-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xdr.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/usb/host/xhci.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/net/sunrpc/xdr.c b/net/sunrpc/xdr.c
-index 3964ff74ee51..ca10ba2626f2 100644
---- a/net/sunrpc/xdr.c
-+++ b/net/sunrpc/xdr.c
-@@ -1230,10 +1230,9 @@ static unsigned int xdr_set_page_base(struct xdr_stream *xdr,
- 	void *kaddr;
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 0d2f1c37ab74..73cdaa3f3067 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1362,12 +1362,17 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
+ 				 urb->transfer_buffer_length,
+ 				 dir);
  
- 	maxlen = xdr->buf->page_len;
--	if (base >= maxlen) {
--		base = maxlen;
--		maxlen = 0;
--	} else
-+	if (base >= maxlen)
-+		return 0;
-+	else
- 		maxlen -= base;
- 	if (len > maxlen)
- 		len = maxlen;
+-	if (usb_urb_dir_in(urb))
++	if (usb_urb_dir_in(urb)) {
+ 		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
+ 					   urb->transfer_buffer,
+ 					   buf_len,
+ 					   0);
+-
++		if (len != buf_len) {
++			xhci_dbg(hcd_to_xhci(hcd),
++				 "Copy from tmp buf to urb sg list failed\n");
++			urb->actual_length = len;
++		}
++	}
+ 	urb->transfer_flags &= ~URB_DMA_MAP_SINGLE;
+ 	kfree(urb->transfer_buffer);
+ 	urb->transfer_buffer = NULL;
 -- 
 2.30.2
 
