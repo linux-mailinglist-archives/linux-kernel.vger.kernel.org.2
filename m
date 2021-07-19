@@ -2,211 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40383CD00B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074783CCFE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235766AbhGSI0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:26:21 -0400
-Received: from mxout70.expurgate.net ([91.198.224.70]:41518 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhGSI0U (ORCPT
+        id S235633AbhGSIWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:22:05 -0400
+Received: from mail-qv1-f45.google.com ([209.85.219.45]:42541 "EHLO
+        mail-qv1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235609AbhGSIWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:26:20 -0400
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1m5OdC-000HtA-9i; Mon, 19 Jul 2021 10:28:06 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1m5OdB-000HsS-4b; Mon, 19 Jul 2021 10:28:05 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 6235F240041;
-        Mon, 19 Jul 2021 10:28:02 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id B3689240040;
-        Mon, 19 Jul 2021 10:28:01 +0200 (CEST)
-Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id 2D19A20176;
-        Mon, 19 Jul 2021 10:28:01 +0200 (CEST)
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     hauke@hauke-m.de, martin.blumenstingl@googlemail.com,
-        f.fainelli@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>
-Subject: [PATCH net-next v6] net: phy: intel-xway: Add RGMII internal delay configuration
-Date:   Mon, 19 Jul 2021 10:27:56 +0200
-Message-ID: <20210719082756.15733-1-ms@dev.tdt.de>
-X-Mailer: git-send-email 2.20.1
+        Mon, 19 Jul 2021 04:22:04 -0400
+Received: by mail-qv1-f45.google.com with SMTP id ck17so8006518qvb.9;
+        Mon, 19 Jul 2021 02:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cGOQ+tHFFR3Lj7D9YmjuYRyBNzj2z0fXhnb3i5wHBdU=;
+        b=Tuv4KBacoXGBFfhz3unVvZAsOpJYEE59bZCMw8zc6xo1kS6sY97c7tw/9rWHG7xqPO
+         j6V9k5W+jiN0rRdnRKwpFJXlWCh60r+m6I3B7ZJGA/4pJ4zlopc+0z19BhOMnEYlGW5U
+         U3t/jO5kw2mFtnHWhjWgYokgTK0F5tWjzPwkcjwKLbzXOJxz8Z00zV7uJnJ0v3gdov7+
+         6ct09u//y/8/5TvhxNrLPxQh/g4Xew5zvPJHj/GXUWTKKA0idSOOenlKuXOZ6Dhin7Ei
+         g6LBoMms879Ar6GmZ7NCT6G17wb6o5ppGMo4w0lYSVKgdHoRLGib2lRuIHrSg7om8R9Q
+         iRew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cGOQ+tHFFR3Lj7D9YmjuYRyBNzj2z0fXhnb3i5wHBdU=;
+        b=b7V83+gf4JdTYV+YBezpbcYnfGjVeG2QX16IghLQ2lIwBRYQ+xKICfuQ3lZRaKaiio
+         ywEGZr32c9KAFQL4Upie7onApBRbkPm52gstI8m0efnFGgfl0f35FmLm1zY8eVB4JPR2
+         UCKe5n6yE0h4QUfRPk+FKgkasgtSrIb9jjAxZU5SqaRWEUIF5gvtC7EJXmm0QFE+6eRB
+         fNlNvApelKE8lVFp8lDhUNDdCXpZ2YBnkJ7Pk2spehVg/84MoI1oUzYIbV+IkBWLTSSw
+         5rr2Y0BQbxf2NOSiokbzD3m2gPbs/oqnu31ccjiTvfCVPOWojZGn7vF+VUOfbZyP23X5
+         +1fA==
+X-Gm-Message-State: AOAM531qeEgye0rvKRWI+hMUo+OPs2i7QB2WxRY7tzt/USiiDuv/LJU0
+        6L/WDKYAKWrcfX9ol8BphUJROENsjhYGUj5nvwquKj6+MPJAJg==
+X-Google-Smtp-Source: ABdhPJwbcOLmqqf3lpsjfNWi7POT2gx3i6SMG9gi91heJIOYE178GJ08/892lA+YWdl7zsfiX5LabOkUTfHft6/6NqY=
+X-Received: by 2002:a05:6122:1041:: with SMTP id z1mr20802749vkn.5.1626683483673;
+ Mon, 19 Jul 2021 01:31:23 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-Content-Transfer-Encoding: quoted-printable
-X-purgate: clean
-X-purgate-type: clean
-X-purgate-ID: 151534::1626683285-000012BD-6C8C5360/0/0
+References: <20210708070429.31871-1-sergio.paracuellos@gmail.com>
+ <20210708070429.31871-2-sergio.paracuellos@gmail.com> <20210719075723.GA8818@kessel>
+In-Reply-To: <20210719075723.GA8818@kessel>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Mon, 19 Jul 2021 10:31:12 +0200
+Message-ID: <CAMhs-H8QeRcY+EiCrN2Rw1A1-xDdpuDqr-knoQEAcQiTXvdBDw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpiolib: convert 'devprop_gpiochip_set_names' to
+ support multiple gpiochip baks per device
+To:     Gregory Fong <gregory.0xf0@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        NeilBrown <neil@brown.name>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the possibility to configure the RGMII RX/TX clock skew via
-devicetree.
+Hi Gregory,
 
-Simply set phy mode to "rgmii-id", "rgmii-rxid" or "rgmii-txid" and add
-the "rx-internal-delay-ps" or "tx-internal-delay-ps" property to the
-devicetree.
+Thanks for the feedback.
 
-Furthermore, a warning is now issued if the phy mode is configured to
-"rgmii" and an internal delay is set in the phy (e.g. by pin-strapping),
-as in the dp83867 driver.
+On Mon, Jul 19, 2021 at 9:57 AM Gregory Fong <gregory.0xf0@gmail.com> wrote:
+>
+> Hi Sergio,
+>
+> On Thu, Jul 08, 2021 at 09:04:27AM +0200, Sergio Paracuellos wrote:
+> > The default gpiolib-of implementation does not work with the multiple
+> > gpiochip banks per device structure used for example by the gpio-mt7621
+> > and gpio-brcmstb drivers. To fix these kind of situations driver code
+> > is forced to fill the names to avoid the gpiolib code to set names
+> > repeated along the banks. Instead of continue with that antipattern
+> > fix the gpiolib core function to get expected behaviour for every
+> > single situation adding a field 'offset' in the gpiochip structure.
+> > Doing in this way, we can assume this offset will be zero for normal
+> > driver code where only one gpiochip bank per device is used but
+> > can be set explicitly in those drivers that really need more than
+> > one gpiochip.
+>
+> This is a nice improvement, thanks for putting this together!  A few
+> remarks below:
+>
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  drivers/gpio/gpiolib.c      | 34 ++++++++++++++++++++++++++++------
+> >  include/linux/gpio/driver.h |  4 ++++
+> >  2 files changed, 32 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> > index 27c07108496d..f3f45b804542 100644
+> > --- a/drivers/gpio/gpiolib.c
+> > +++ b/drivers/gpio/gpiolib.c
+> > @@ -382,11 +382,16 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+> >       if (count < 0)
+> >               return 0;
+> >
+> > -     if (count > gdev->ngpio) {
+> > -             dev_warn(&gdev->dev, "gpio-line-names is length %d but should be at most length %d",
+> > -                      count, gdev->ngpio);
+> > -             count = gdev->ngpio;
+> > -     }
+> > +     /*
+> > +      * When offset is set in the driver side we assume the driver internally
+> > +      * is using more than one gpiochip per the same device. We have to stop
+> > +      * setting friendly names if the specified ones with 'gpio-line-names'
+> > +      * are less than the offset in the device itself. This means all the
+> > +      * lines are not present for every single pin within all the internal
+> > +      * gpiochips.
+> > +      */
+> > +     if (count <= chip->offset)
+> > +             return 0;
+>
+> This case needs a descriptive warning message.  Silent failure to assign
+> names here will leave someone confused about what they're doing wrong.
 
-Signed-off-by: Martin Schiller <ms@dev.tdt.de>
----
+Ok, I will add something like "All line names are not defined for bank
+X.". Or any other suggestion would be also ok :).
 
-Changes to v5:
-o remove #if IS_ENABLED(CONFIG_OF_MDIO) check
-o rename new function to xway_gphy_rgmii_init()
+>
+> >
+> >       names = kcalloc(count, sizeof(*names), GFP_KERNEL);
+> >       if (!names)
+> > @@ -400,8 +405,25 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+> >               return ret;
+> >       }
+> >
+> > +     /*
+> > +      * When more that one gpiochip per device is used, 'count' can
+> > +      * contain at most number gpiochips x chip->ngpio. We have to
+> > +      * correctly distribute all defined lines taking into account
+> > +      * chip->offset as starting point from where we will assign
+> > +      * the names to pins from the 'names' array. Since property
+> > +      * 'gpio-line-names' cannot contains gaps, we have to be sure
+> > +      * we only assign those pins that really exists since chip->ngpio
+> > +      * can be different of the chip->offset.
+> > +      */
+> > +     count = (count > chip->offset) ? count - chip->offset : count;
+> > +     if (count > chip->ngpio) {
+>
+> In the multiple gpiochip case, if there are 3+ gpiochips this seems like
+> it will yield an invalid warning. For example, if there are 3 gpiochips
+> (banks 0, 1, and 2), and all gpios are given names in gpio-line-names,
+> isn't this condition going to always evaluate to true for bank 1,
+> resulting in an invalid warning?  In that case I would think setting
+> count to chip->ngpio is the *expected* behavior.
+>
+> Since that's a "normal" behavior in the multiple gpiochip case, I'm not
+> sure there's a simple way to detect an over-long gpio-line-names here
+> in this function anymore.
 
-Changes to v4:
-o Fix Alignment to match open parenthesis
+Yes, in case of multiple chips with all lines names defined this
+warning will be displayed but I wanted to maintain the warning for
+normal cases and I was not able to find an easy way of distinc that
+cases with those having multiple gpiochips internally. So I ended up
+in "ok, will be displayed for those special cases and interpreted as
+we are just assigning names within an offset along the gpiochips in
+the device.". Any other suggestion of course is always welcome :)
 
-Changes to v3:
-o Fix typo in commit message
-o use FIELD_PREP() and FIELD_GET() macros
-o further code cleanups
-o always mask rxskew AND txskew value in the register value
+Thanks,
+    Sergio Paracuellos
 
-Changes to v2:
-o Fix missing whitespace in warning.
-
-Changes to v1:
-o code cleanup and use phy_modify().
-o use default of 2.0ns if delay property is absent instead of returning
-  an error.
-
----
- drivers/net/phy/intel-xway.c | 78 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
-
-diff --git a/drivers/net/phy/intel-xway.c b/drivers/net/phy/intel-xway.c
-index d453ec016168..fd7da2eeb963 100644
---- a/drivers/net/phy/intel-xway.c
-+++ b/drivers/net/phy/intel-xway.c
-@@ -8,11 +8,16 @@
- #include <linux/module.h>
- #include <linux/phy.h>
- #include <linux/of.h>
-+#include <linux/bitfield.h>
-=20
-+#define XWAY_MDIO_MIICTRL		0x17	/* mii control */
- #define XWAY_MDIO_IMASK			0x19	/* interrupt mask */
- #define XWAY_MDIO_ISTAT			0x1A	/* interrupt status */
- #define XWAY_MDIO_LED			0x1B	/* led control */
-=20
-+#define XWAY_MDIO_MIICTRL_RXSKEW_MASK	GENMASK(14, 12)
-+#define XWAY_MDIO_MIICTRL_TXSKEW_MASK	GENMASK(10, 8)
-+
- /* bit 15:12 are reserved */
- #define XWAY_MDIO_LED_LED3_EN		BIT(11)	/* Enable the integrated function=
- of LED3 */
- #define XWAY_MDIO_LED_LED2_EN		BIT(10)	/* Enable the integrated function=
- of LED2 */
-@@ -157,6 +162,75 @@
- #define PHY_ID_PHY11G_VR9_1_2		0xD565A409
- #define PHY_ID_PHY22F_VR9_1_2		0xD565A419
-=20
-+static const int xway_internal_delay[] =3D {0, 500, 1000, 1500, 2000, 25=
-00,
-+					 3000, 3500};
-+
-+static int xway_gphy_rgmii_init(struct phy_device *phydev)
-+{
-+	struct device *dev =3D &phydev->mdio.dev;
-+	unsigned int delay_size =3D ARRAY_SIZE(xway_internal_delay);
-+	s32 int_delay;
-+	int val =3D 0;
-+
-+	if (!phy_interface_is_rgmii(phydev))
-+		return 0;
-+
-+	/* Existing behavior was to use default pin strapping delay in rgmii
-+	 * mode, but rgmii should have meant no delay.  Warn existing users,
-+	 * but do not change anything at the moment.
-+	 */
-+	if (phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII) {
-+		u16 txskew, rxskew;
-+
-+		val =3D phy_read(phydev, XWAY_MDIO_MIICTRL);
-+		if (val < 0)
-+			return val;
-+
-+		txskew =3D FIELD_GET(XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
-+		rxskew =3D FIELD_GET(XWAY_MDIO_MIICTRL_RXSKEW_MASK, val);
-+
-+		if (txskew > 0 || rxskew > 0)
-+			phydev_warn(phydev,
-+				    "PHY has delays (e.g. via pin strapping), but phy-mode =3D 'rgmi=
-i'\n"
-+				    "Should be 'rgmii-id' to use internal delays txskew:%d ps rxskew=
-:%d ps\n",
-+				    xway_internal_delay[txskew],
-+				    xway_internal_delay[rxskew]);
-+		return 0;
-+	}
-+
-+	if (phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII_ID ||
-+	    phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII_RXID) {
-+		int_delay =3D phy_get_internal_delay(phydev, dev,
-+						   xway_internal_delay,
-+						   delay_size, true);
-+
-+		if (int_delay < 0) {
-+			phydev_warn(phydev, "rx-internal-delay-ps is missing, use default of =
-2.0 ns\n");
-+			int_delay =3D 4; /* 2000 ps */
-+		}
-+
-+		val |=3D FIELD_PREP(XWAY_MDIO_MIICTRL_RXSKEW_MASK, int_delay);
-+	}
-+
-+	if (phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII_ID ||
-+	    phydev->interface =3D=3D PHY_INTERFACE_MODE_RGMII_TXID) {
-+		int_delay =3D phy_get_internal_delay(phydev, dev,
-+						   xway_internal_delay,
-+						   delay_size, false);
-+
-+		if (int_delay < 0) {
-+			phydev_warn(phydev, "tx-internal-delay-ps is missing, use default of =
-2.0 ns\n");
-+			int_delay =3D 4; /* 2000 ps */
-+		}
-+
-+		val |=3D FIELD_PREP(XWAY_MDIO_MIICTRL_TXSKEW_MASK, int_delay);
-+	}
-+
-+	return phy_modify(phydev, XWAY_MDIO_MIICTRL,
-+			  XWAY_MDIO_MIICTRL_RXSKEW_MASK |
-+			  XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
-+}
-+
- static int xway_gphy_config_init(struct phy_device *phydev)
- {
- 	int err;
-@@ -204,6 +278,10 @@ static int xway_gphy_config_init(struct phy_device *=
-phydev)
- 	phy_write_mmd(phydev, MDIO_MMD_VEND2, XWAY_MMD_LED2H, ledxh);
- 	phy_write_mmd(phydev, MDIO_MMD_VEND2, XWAY_MMD_LED2L, ledxl);
-=20
-+	err =3D xway_gphy_rgmii_init(phydev);
-+	if (err)
-+		return err;
-+
- 	return 0;
- }
-=20
---=20
-2.20.1
-
+>
+> > +             dev_warn(&gdev->dev, "gpio-line-names is length %d but
+> > should be at most length %d", +                        count,
+> > chip->ngpio);
+> > +             count = chip->ngpio; +  } + for (i = 0; i < count; i++)
+> > -             gdev->descs[i].name = names[i]; +
+> > gdev->descs[i].name = names[chip->offset + i];
+> >
+> >       kfree(names);
+> >
+> > [snip]
+>
+> Best regards,
+> Gregory
