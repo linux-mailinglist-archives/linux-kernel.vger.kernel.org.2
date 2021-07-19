@@ -2,97 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE0B3CEE62
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58AB3CEE76
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359044AbhGSUkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 16:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352508AbhGSUac (ORCPT
+        id S1348931AbhGSU5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:57:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32561 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1387840AbhGSUgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 16:30:32 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F32EC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:10:35 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i5so32538695lfe.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zb6rr15bSXQwTnBPqI4g1KEDBlw35vq1tATeF4vahZQ=;
-        b=l4zG9dD7D5TRbenNJfZXIawPdQYAmC+6KoVsGyDr8lFRRQ+nMV8zf6CakVJ74ozmx8
-         vECyxqO5TWTiHtWqFoi+uLPJxjW6P+c6KohNly84YXa5LEl918+v52vTCL8MUc04Fkg0
-         FidoisJjEXwrJEZGeYj2xyRBG8xrNKwGwp0Jy+L4vyThjoK5911PpAW4hJ2AglZOFbbS
-         jBycTJKlXbwBTmY1x+4yXw8i/eg9P80H1wR6TilaCK4a5Xo+m4xCFix+wNVNQ9hnJRTD
-         Rqkpss14DPkVkhN/ICpG16/LdrQfUh3SMEyfzYX8HNliUh5LEHcAarapfkhyJkKBbSHU
-         nzwA==
+        Mon, 19 Jul 2021 16:36:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626729376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CZbqAx8RCbkxkOvue3VbFWnAjITofkdFcSi0ebBpg7c=;
+        b=LopMR2h4/mKBTIbo5vFuos2vIBXsI137sPQ+oF/lIVKwA6+8Y+OdfdkWAPgl5bZWMdIGFB
+        zovyWtaIu4JeUMtHF+COzZ8y+FlqLFUChCDFLgdI8wtNrXvcjtVXfoLs06CyFcFc4nqsia
+        mODia137yNLlutyVyX6dUSjMIk+SLiQ=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-B3QSsoB5ONW2mmiNUk2y6g-1; Mon, 19 Jul 2021 17:13:31 -0400
+X-MC-Unique: B3QSsoB5ONW2mmiNUk2y6g-1
+Received: by mail-ej1-f69.google.com with SMTP id bl17-20020a170906c251b029052292d7c3b4so5929792ejb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:13:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zb6rr15bSXQwTnBPqI4g1KEDBlw35vq1tATeF4vahZQ=;
-        b=VacJtUjQ1iQmKJfykFUU1nzsJb8lzC1kI/qSEOh7h3rEDoVREnIHl7GQxTOzZC0OSA
-         4oKrsuQv/4EGfzNfy0iLcwxvvBrd+7VZyY9p5yNY5R7+W7nfUVzDh4jvfPZnERyHj3eJ
-         9bgvGrXtb3u/IUx2axXkw2sxIunJFb1Vhyuv6CiEDLJQs8Y7YLyrO82tE4bnIwhD6Xa7
-         hrizCFXtRfBhCL9J4/D7bwc4cWM6jCV/DCcM5Ew7c1tO25KSin0KVOQuiZ0USbhqRpFP
-         YxRJcjr+mizPcd3ygn4RqqqXs9pzVdIFF/J7zeV+ZJw/h9tRw/NVrqJGrO+lF0Jpx7Vq
-         UFew==
-X-Gm-Message-State: AOAM530nK5SH6XnUZaHdX0/X7h8WC2ZAdWHBRgIAM6m3bqKEGLEWBlQv
-        5VmI25aCAV9/NKGG6q50exV7bRc/XkHDzSmh3AQcBg==
-X-Google-Smtp-Source: ABdhPJy0PZFmXCRTMOqx4byvOHdwlSuCDhdl5z9Ba70UxfA55JfR5WyxqS2xZlcRCm5/igJgrDDjUGdXBJsIXwQbZD4=
-X-Received: by 2002:ac2:4ac6:: with SMTP id m6mr20508306lfp.73.1626729043401;
- Mon, 19 Jul 2021 14:10:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CZbqAx8RCbkxkOvue3VbFWnAjITofkdFcSi0ebBpg7c=;
+        b=FUJuYy+vQ0rBOCNp0lomuJyZhUi/xpNMLgTcY54OY0wHQEC+Xxg9XnQNHMemEketfE
+         ncbwGHXX8Kr4WHM4QXPebvRGLQGYfgdLwoycTy/bbxfo7wPoeRhEGBlphGPddlcM1iNH
+         1uzhvdc8Er1NS4rf7TfxbTqKOFlrU6cy1iLqOH0YrxMHXzxQDKQKtwOg/HonpGbZvsBl
+         ihmbR3njZ6DzmmpB9piWfId58EgM4WbUOyVuNnxHzH7AvdvmMVZrARsxYaQtHfneDuMY
+         lVFfINbqNtn5tglVHmzdruf9+Kh83RQc+Tcye0a+0pQE2ml04eohwfiN8Rv2fdnH8URk
+         yoUQ==
+X-Gm-Message-State: AOAM531N72fijNBDrdaG0DlYpbOWifRVk/4oxeuTYyDlqhUSSr3Filf4
+        RcTlx1KG7FwvbDKrg9AdjDpEUz+8FFSjY7SMzeYgL4Uz0gl1RVkrdUf+sBFYTdVQ5oOmQDJkDyZ
+        bDsmHJVxKInOpSuNBhp32XEMO
+X-Received: by 2002:a17:907:1c9f:: with SMTP id nb31mr29626539ejc.342.1626729209742;
+        Mon, 19 Jul 2021 14:13:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZcbdUplE0ZM5hFo76QHPnaJkulHVLBuERYtpqhzmRgCab8byCiyP4+jrQdhO9FmizVgN1RQ==
+X-Received: by 2002:a17:907:1c9f:: with SMTP id nb31mr29626521ejc.342.1626729209530;
+        Mon, 19 Jul 2021 14:13:29 -0700 (PDT)
+Received: from krava ([83.240.60.59])
+        by smtp.gmail.com with ESMTPSA id jw8sm6284226ejc.60.2021.07.19.14.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 14:13:29 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 23:13:27 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH 00/10] perf: add workqueue library and use it in
+ synthetic-events
+Message-ID: <YPXq95yUYo+cH740@krava>
+References: <cover.1626177381.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-References: <20210707224310.1403944-1-ndesaulniers@google.com>
-In-Reply-To: <20210707224310.1403944-1-ndesaulniers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 19 Jul 2021 14:10:32 -0700
-Message-ID: <CAKwvOdnG-E8HpK9txn4X=MiZSzfFHd90y1qny=0syNUWY3AaCg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] infer CROSS_COMPILE from ARCH for LLVM=1 LLVM_IAS=1
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1626177381.git.rickyman7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro,
-Do you have further thoughts on this series?
+On Tue, Jul 13, 2021 at 02:11:11PM +0200, Riccardo Mancini wrote:
+> This patchset introduces a new utility library inside perf/util, which
+> provides a work queue abstraction, which loosely follows the Kernel
+> workqueue API.
+> 
+> The workqueue abstraction is made up by two components:
+>  - threadpool: which takes care of managing a pool of threads. It is
+>    inspired by the prototype for threaded trace in perf-record from Alexey:
+>    https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+>  - workqueue: manages a shared queue and provides the workers implementation.
+> 
+> On top of the workqueue, a simple parallel-for utility is implemented
+> which is then showcased in synthetic-events.c, replacing the previous
+> manual pthread-created threads.
+> 
+> Through some experiments with perf bench, I can see how the new 
+> workqueue has a higher overhead compared to manual creation of threads, 
+> but is able to more effectively partition work among threads, yielding 
+> a better result with more threads.
+> Furthermore, the overhead could be configured by changing the
+> `work_size` (currently 1), aka the number of dirents that are 
+> processed by a thread before grabbing a lock to get the new work item.
+> I experimented with different sizes but, while bigger sizes reduce overhead
+> as expected, they do not scale as well to more threads.
+> 
+> I tried to keep the patchset as simple as possible, deferring possible
+> improvements and features to future work.
+> Naming a few:
+>  - in order to achieve a better performance, we could consider using 
+>    work-stealing instead of a common queue.
+>  - affinities in the thread pool, as in Alexey prototype for
+>    perf-record. Doing so would enable reusing the same threadpool for
+>    different purposes (evlist open, threaded trace, synthetic threads),
+>    avoiding having to spin up threads multiple times.
+>  - resizable threadpool, e.g. for lazy spawining of threads.
+> 
+> @Arnaldo
+> Since I wanted the workqueue to provide a similar API to the Kernel's
+> workqueue, I followed the naming style I found there, instead of the
+> usual object__method style that is typically found in perf. 
+> Let me know if you'd like me to follow perf style instead.
+> 
+> Thanks,
+> Riccardo
+> 
+> Riccardo Mancini (10):
+>   perf workqueue: threadpool creation and destruction
+>   perf tests: add test for workqueue
+>   perf workqueue: add threadpool start and stop functions
+>   perf workqueue: add threadpool execute and wait functions
+>   perf workqueue: add sparse annotation header
+>   perf workqueue: introduce workqueue struct
+>   perf workqueue: implement worker thread and management
+>   perf workqueue: add queue_work and flush_workqueue functions
+>   perf workqueue: add utility to execute a for loop in parallel
+>   perf synthetic-events: use workqueue parallel_for
 
+looks great, would it make sense to put this to libperf?
 
-On Wed, Jul 7, 2021 at 3:43 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> We get constant feedback that the command line invocation of make is too
-> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-> target triple, or is an absolute path outside of $PATH, but it's mostly
-> redundant for a given ARCH.
->
-> Instead, let's infer it from ARCH, and move some flag handling into a
-> new file included from the top level Makefile.
->
-> Nick Desaulniers (2):
->   Makefile: move initial clang flag handling into scripts/Makefile.clang
->   Makefile: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
->
->  Documentation/kbuild/llvm.rst |  5 ++++
->  MAINTAINERS                   |  1 +
->  Makefile                      | 15 +----------
->  scripts/Makefile.clang        | 48 +++++++++++++++++++++++++++++++++++
->  4 files changed, 55 insertions(+), 14 deletions(-)
->  create mode 100644 scripts/Makefile.clang
->
->
-> base-commit: a0e781a2a35a8dd4e6a38571998d59c6b0e32cd8
-> --
-> 2.32.0.93.g670b81a890-goog
->
+jirka
 
+> 
+>  tools/perf/tests/Build                 |   1 +
+>  tools/perf/tests/builtin-test.c        |   9 +
+>  tools/perf/tests/tests.h               |   3 +
+>  tools/perf/tests/workqueue.c           | 453 +++++++++++++++++
+>  tools/perf/util/Build                  |   1 +
+>  tools/perf/util/synthetic-events.c     | 131 +++--
+>  tools/perf/util/workqueue/Build        |   2 +
+>  tools/perf/util/workqueue/sparse.h     |  21 +
+>  tools/perf/util/workqueue/threadpool.c | 516 ++++++++++++++++++++
+>  tools/perf/util/workqueue/threadpool.h |  29 ++
+>  tools/perf/util/workqueue/workqueue.c  | 642 +++++++++++++++++++++++++
+>  tools/perf/util/workqueue/workqueue.h  |  38 ++
+>  12 files changed, 1771 insertions(+), 75 deletions(-)
+>  create mode 100644 tools/perf/tests/workqueue.c
+>  create mode 100644 tools/perf/util/workqueue/Build
+>  create mode 100644 tools/perf/util/workqueue/sparse.h
+>  create mode 100644 tools/perf/util/workqueue/threadpool.c
+>  create mode 100644 tools/perf/util/workqueue/threadpool.h
+>  create mode 100644 tools/perf/util/workqueue/workqueue.c
+>  create mode 100644 tools/perf/util/workqueue/workqueue.h
+> 
+> -- 
+> 2.31.1
+> 
 
---
-Thanks,
-~Nick Desaulniers
