@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11513CE789
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAE73CE78F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349247AbhGSQ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:28:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55880 "EHLO mail.kernel.org"
+        id S1349622AbhGSQ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:28:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347152AbhGSPPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:15:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81643606A5;
-        Mon, 19 Jul 2021 15:56:19 +0000 (UTC)
+        id S1347153AbhGSPPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:15:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BFBD60200;
+        Mon, 19 Jul 2021 15:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710180;
-        bh=beYeCVqpXG//mMve1jdsA+aMH4RCqJHoakwYn0A5V8M=;
+        s=korg; t=1626710182;
+        bh=3l0hm/n+PZ0Ti6m3rzVF1Hvo6vMMTW5neVE/CU70Buc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bsP8b2gkFSPYakUkpFXM4mBxBkyrxNnEpFiIiIbVlQCm9OWoRq5T9L8MMPDCl7aL/
-         8jpIq9EJQJafjtayYGVp7I2QxssCKr87JlVtEh4mITeS8akpc/xSMNZmLv9zCkDRGX
-         IPbHBI3HgxwYaUnPBO9cqThjYq6RPN1m2FKedgOI=
+        b=fJwy3Pc6vS/48rqQ4YbofgRZv/6kKgizdzKVHYcjIEbshm2Ni4ubeqzu8ALUYu3kG
+         CA8ywUP8qRu+xF7ABqoW3tzo1znq/n4eOhivMbKkYJJ8Co+vsIgswekCD9yINLgPLf
+         cWti/BuTA8S74eofTpcZGL9t/ZfjX8Ngoj50/rGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 075/243] iommu/arm-smmu: Fix arm_smmu_device refcount leak in address translation
-Date:   Mon, 19 Jul 2021 16:51:44 +0200
-Message-Id: <20210719144943.328401125@linuxfoundation.org>
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 076/243] ASoC: soc-pcm: fix the return value in dpcm_apply_symmetry()
+Date:   Mon, 19 Jul 2021 16:51:45 +0200
+Message-Id: <20210719144943.359012770@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -41,65 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Jaroslav Kysela <perex@perex.cz>
 
-[ Upstream commit 7c8f176d6a3fa18aa0f8875da6f7c672ed2a8554 ]
+[ Upstream commit 12ffd726824a2f52486f72338b6fd3244b512959 ]
 
-The reference counting issue happens in several exception handling paths
-of arm_smmu_iova_to_phys_hard(). When those error scenarios occur, the
-function forgets to decrease the refcount of "smmu" increased by
-arm_smmu_rpm_get(), causing a refcount leak.
+In case, where the loops are not executed for a reason, the uninitialized
+variable 'err' is returned to the caller. Make code fully predictible
+and assign zero in the declaration.
 
-Fix this issue by jumping to "out" label when those error scenarios
-occur.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Reviewed-by: Rob Clark <robdclark@chromium.org>
-Link: https://lore.kernel.org/r/1623293391-17261-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20210614071746.1787072-1-perex@perex.cz
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 052f0a1bf037..df24bbe3ea4f 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -1284,6 +1284,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
- 	u64 phys;
- 	unsigned long va, flags;
- 	int ret, idx = cfg->cbndx;
-+	phys_addr_t addr = 0;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 91bf33958159..8b8a9aca2912 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1738,7 +1738,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 	struct snd_soc_dpcm *dpcm;
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(fe_substream);
+ 	struct snd_soc_dai *fe_cpu_dai;
+-	int err;
++	int err = 0;
+ 	int i;
  
- 	ret = arm_smmu_rpm_get(smmu);
- 	if (ret < 0)
-@@ -1303,6 +1304,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
- 		dev_err(dev,
- 			"iova to phys timed out on %pad. Falling back to software table walk.\n",
- 			&iova);
-+		arm_smmu_rpm_put(smmu);
- 		return ops->iova_to_phys(ops, iova);
- 	}
- 
-@@ -1311,12 +1313,14 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
- 	if (phys & ARM_SMMU_CB_PAR_F) {
- 		dev_err(dev, "translation fault!\n");
- 		dev_err(dev, "PAR = 0x%llx\n", phys);
--		return 0;
-+		goto out;
- 	}
- 
-+	addr = (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
-+out:
- 	arm_smmu_rpm_put(smmu);
- 
--	return (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
-+	return addr;
- }
- 
- static phys_addr_t arm_smmu_iova_to_phys(struct iommu_domain *domain,
+ 	/* apply symmetry for FE */
 -- 
 2.30.2
 
