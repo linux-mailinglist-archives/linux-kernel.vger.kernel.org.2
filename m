@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622913CDF93
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDD93CDF87
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344256AbhGSPKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:10:48 -0400
+        id S239553AbhGSPIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:08:48 -0400
 Received: from mail.kernel.org ([198.145.29.99]:41932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343905AbhGSOsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BADB61220;
-        Mon, 19 Jul 2021 15:25:06 +0000 (UTC)
+        id S1344052AbhGSOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CD99613E3;
+        Mon, 19 Jul 2021 15:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708306;
-        bh=U3XyAJ4TRtQBnQOuHtoGHvzGvSgBkJEg6w1xIsCvSHU=;
+        s=korg; t=1626708364;
+        bh=mg/dBNjmOrN16CbWPwjsPBTSuVAxaYt3Ce/hTeTt/RE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Dp8mHIjNzhMf3KXx47vtOsmwxSv6vV0ejC0P2mjVRXDyymQJDeAiQJxov8eQ3ykb
-         GR8SW+7uepC5CpeKTKkvIw4rCCtCMNOqAMVJJ9zDuheD46qC/X91cpALigc48geFo+
-         ZtbRRgh0fsJzQZfYMtpKh27WE2lhhForvfpDHSr8=
+        b=tQ70Xui088/pA0J9Odynhw3Ux1gXz75C13gAPq7JtQ4kve1jXG8dRnlzidA2PIYpA
+         MpAFrAvX0WoAoSfr5g+YKmjL2G3NqSdjPO0uQ5SdejzXV5+vSJPTIDtXCfOs2FIutR
+         fNoWG/iZkAMK/l+moYteCHBbOx9qryT/xQdbVtYo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 253/315] ALSA: ppc: fix error return code in snd_pmac_probe()
-Date:   Mon, 19 Jul 2021 16:52:22 +0200
-Message-Id: <20210719144951.749586831@linuxfoundation.org>
+        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 255/315] ASoC: soc-core: Fix the error return code in snd_soc_of_parse_audio_routing()
+Date:   Mon, 19 Jul 2021 16:52:24 +0200
+Message-Id: <20210719144951.812741885@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,39 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 80b9c1be567c3c6bbe0d4b290af578e630485b5d ]
+[ Upstream commit 7d3865a10b9ff2669c531d5ddd60bf46b3d48f1e ]
 
-If snd_pmac_tumbler_init() or snd_pmac_tumbler_post_init() fails,
-snd_pmac_probe() need return error code.
+When devm_kcalloc() fails, the error code -ENOMEM should be returned
+instead of -EINVAL.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210616021121.1991502-1-yangyingliang@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210617103729.1918-1-thunder.leizhen@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/ppc/powermac.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/ppc/powermac.c b/sound/ppc/powermac.c
-index 33c6be9fb388..7c70ba5e2540 100644
---- a/sound/ppc/powermac.c
-+++ b/sound/ppc/powermac.c
-@@ -90,7 +90,11 @@ static int snd_pmac_probe(struct platform_device *devptr)
- 		sprintf(card->shortname, "PowerMac %s", name_ext);
- 		sprintf(card->longname, "%s (Dev %d) Sub-frame %d",
- 			card->shortname, chip->device_id, chip->subframe);
--		if ( snd_pmac_tumbler_init(chip) < 0 || snd_pmac_tumbler_post_init() < 0)
-+		err = snd_pmac_tumbler_init(chip);
-+		if (err < 0)
-+			goto __error;
-+		err = snd_pmac_tumbler_post_init();
-+		if (err < 0)
- 			goto __error;
- 		break;
- 	case PMAC_AWACS:
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 42c2a3065b77..2a172de37466 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -4046,7 +4046,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 	if (!routes) {
+ 		dev_err(card->dev,
+ 			"ASoC: Could not allocate DAPM route table\n");
+-		return -EINVAL;
++		return -ENOMEM;
+ 	}
+ 
+ 	for (i = 0; i < num_routes; i++) {
 -- 
 2.30.2
 
