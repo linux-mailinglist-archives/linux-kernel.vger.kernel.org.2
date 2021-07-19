@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0D73CE974
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AA23CEA99
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359184AbhGSQzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:55:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47454 "EHLO mail.kernel.org"
+        id S1378252AbhGSRRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:17:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346924AbhGSPao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:30:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A7F4613AF;
-        Mon, 19 Jul 2021 16:10:01 +0000 (UTC)
+        id S1347044AbhGSPka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:40:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5331A6113E;
+        Mon, 19 Jul 2021 16:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711001;
-        bh=fZGHgcZdyMyj8hK9jL4JTogNvYUpyPjOlqiR63pKdqo=;
+        s=korg; t=1626711636;
+        bh=bx2NjaHIi7EIzUuk5t5pEMwJV/11m704jcJmZ6JoNMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OXMxm0517gaXGL7eSPvQkeEuQJZK+88r94Z2z9QUbV0eBOfD74oh5SwvwZUUrGEA3
-         PX4LzroqPvfpKBfAhTD5bqhtATvZrHDcaVTGyQhWAARjsoIG7fI3t2Qwz4EfJnVq/o
-         G8VQc+dpn2ZEO80n/x4s1iQ25eT96va71Wy/IaVU=
+        b=0iOLH85UXjoz8nzm2RbADSrDiikEc4cIGSY24wk+P27ulaSVW9OMJiUOZvUS26aIW
+         g7zEtsmDlJSV7JdyYfMgvM6B7jyHTJGN0QRI3aa5ThtK/FH+wz97Ci+7cSolYS6P2G
+         AdDNTiFmTYnJO5+l0dd70ST5pB8O5FQ2IGpEtbws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 190/351] pwm: tegra: Dont modify HW state in .remove callback
-Date:   Mon, 19 Jul 2021 16:52:16 +0200
-Message-Id: <20210719144951.260246351@linuxfoundation.org>
+Subject: [PATCH 5.12 075/292] scsi: qedi: Fix TMF session block/unblock use
+Date:   Mon, 19 Jul 2021 16:52:17 +0200
+Message-Id: <20210719144944.991185173@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit 86f7fa71cd830d18d7ebcaf719dffd5ddfe1acdd ]
+[ Upstream commit 2819b4ae2873d50fd55292877b0231ec936c3b2e ]
 
-A consumer is expected to disable a PWM before calling pwm_put(). And if
-they didn't there is hopefully a good reason (or the consumer needs
-fixing). Also if disabling an enabled PWM was the right thing to do,
-this should better be done in the framework instead of in each low level
-driver.
+Drivers shouldn't be calling block/unblock session for tmf handling because
+the functions can change the session state from under libiscsi.
+iscsi_queuecommand's call to iscsi_prep_scsi_cmd_pdu->
+iscsi_check_tmf_restrictions will prevent new cmds from being sent to qedi
+after we've started handling a TMF. So we don't need to try and block it in
+the driver, and we can remove these block calls.
 
-So drop the hardware modification from the .remove() callback.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Link: https://lore.kernel.org/r/20210525181821.7617-25-michael.christie@oracle.com
+Reviewed-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-tegra.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ drivers/scsi/qedi/qedi_fw.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/pwm/pwm-tegra.c b/drivers/pwm/pwm-tegra.c
-index c529a170bcdd..5509ce0d5432 100644
---- a/drivers/pwm/pwm-tegra.c
-+++ b/drivers/pwm/pwm-tegra.c
-@@ -300,7 +300,6 @@ static int tegra_pwm_probe(struct platform_device *pdev)
- static int tegra_pwm_remove(struct platform_device *pdev)
- {
- 	struct tegra_pwm_chip *pc = platform_get_drvdata(pdev);
--	unsigned int i;
- 	int err;
+diff --git a/drivers/scsi/qedi/qedi_fw.c b/drivers/scsi/qedi/qedi_fw.c
+index c12bb2dd5ff9..4c87640e6a91 100644
+--- a/drivers/scsi/qedi/qedi_fw.c
++++ b/drivers/scsi/qedi/qedi_fw.c
+@@ -159,14 +159,9 @@ static void qedi_tmf_resp_work(struct work_struct *work)
+ 	set_bit(QEDI_CONN_FW_CLEANUP, &qedi_conn->flags);
+ 	resp_hdr_ptr =  (struct iscsi_tm_rsp *)qedi_cmd->tmf_resp_buf;
  
- 	if (WARN_ON(!pc))
-@@ -310,18 +309,6 @@ static int tegra_pwm_remove(struct platform_device *pdev)
- 	if (err < 0)
- 		return err;
- 
--	for (i = 0; i < pc->chip.npwm; i++) {
--		struct pwm_device *pwm = &pc->chip.pwms[i];
--
--		if (!pwm_is_enabled(pwm))
--			if (clk_prepare_enable(pc->clk) < 0)
--				continue;
--
--		pwm_writel(pc, i, 0);
--
--		clk_disable_unprepare(pc->clk);
+-	iscsi_block_session(session->cls_session);
+ 	rval = qedi_cleanup_all_io(qedi, qedi_conn, qedi_cmd->task, true);
+-	if (rval) {
+-		iscsi_unblock_session(session->cls_session);
++	if (rval)
+ 		goto exit_tmf_resp;
 -	}
 -
- 	reset_control_assert(pc->rst);
- 	clk_disable_unprepare(pc->clk);
+-	iscsi_unblock_session(session->cls_session);
  
+ 	spin_lock(&session->back_lock);
+ 	__iscsi_complete_pdu(conn, (struct iscsi_hdr *)resp_hdr_ptr, NULL, 0);
 -- 
 2.30.2
 
