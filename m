@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478FF3CDAF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE043CD863
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244130AbhGSOk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:40:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39078 "EHLO mail.kernel.org"
+        id S241375AbhGSOWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:22:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245107AbhGSOaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:30:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BECDA60720;
-        Mon, 19 Jul 2021 15:10:57 +0000 (UTC)
+        id S242694AbhGSOU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:20:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D624F611EF;
+        Mon, 19 Jul 2021 15:01:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707458;
-        bh=nzdydNYmLflCaFutndl1RJtdrTqtelCnjdq+dPZ1GI8=;
+        s=korg; t=1626706863;
+        bh=GMxS9DfMtnmP7n3N51meeAEyDGM3GJ/tnF8tGL7WL7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fd6V93SjWoExGtRJOGbqmpYLYyzicvBjrbmB2Uku4euEG3i0Rp/vJSVqq+09ZTEPq
-         t/Uq3jjrqWbhwvyB+jI7g0kYZl2MVeNcFOT0sqJPVU1DHtTuxVNsS46rWJ1NU0Ka2C
-         eJGzhYERebq4by+qjr/J6WPxavozmnPomxvtq8y0=
+        b=xpdNXDOgcE+/p0f7Bkglk6EKcBVNgWiQeqhSJzHplpE+oIhVO3CnBbWTCIzDGk+og
+         0em1ycYPR41pKeSwh8WRT1DObSMH3/Rpgqi9rEGqKpIM2dfshorUsxVfvNT3/yuhoh
+         2IfCzB0b6LUtpsd2GUcuIIKUWaSRiiSzVbqLjWLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH 4.9 171/245] ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe
-Date:   Mon, 19 Jul 2021 16:51:53 +0200
-Message-Id: <20210719144945.929352762@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 130/188] ASoC: tegra: Set driver_name=tegra for all machine drivers
+Date:   Mon, 19 Jul 2021 16:51:54 +0200
+Message-Id: <20210719144940.745823014@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+References: <20210719144913.076563739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +39,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit 9272e5d0028d45a3b45b58c9255e6e0df53f7ad9 upstream.
+commit f6eb84fa596abf28959fc7e0b626f925eb1196c7 upstream.
 
-In the out_err_bus_register error branch of tpci200_pci_probe,
-tpci200->info->cfg_regs is freed by tpci200_uninstall()->
-tpci200_unregister()->pci_iounmap(..,tpci200->info->cfg_regs)
-in the first time.
+The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
+Tegra UCMs don't match by the path/name.
 
-But later, iounmap() is called to free tpci200->info->cfg_regs
-again.
+All Tegra machine drivers are specifying the card's name, but it has no
+effect if model name is specified in the device-tree since it overrides
+the card's name. We need to set the driver_name to "tegra" in order to
+get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
+path has a form of driver_name/card_name.
 
-My patch sets tpci200->info->cfg_regs to NULL after tpci200_uninstall()
-to avoid the double free.
+The old lookup paths that are based on driver module name continue to
+work as before. Note that UCM matching never worked for Tegra ASoC drivers
+if they were compiled as built-in, this is fixed by supporting the new
+naming scheme.
 
-Fixes: cea2f7cdff2af ("Staging: ipack/bridges/tpci200: Use the TPCI200 in big endian mode")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Link: https://lore.kernel.org/r/20210524093205.8333-1-lyl2019@mail.ustc.edu.cn
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210529154649.25936-2-digetx@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/ipack/carriers/tpci200.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/ipack/carriers/tpci200.c
-+++ b/drivers/ipack/carriers/tpci200.c
-@@ -591,8 +591,11 @@ static int tpci200_pci_probe(struct pci_
+---
+ sound/soc/tegra/tegra_alc5632.c  |    1 +
+ sound/soc/tegra/tegra_max98090.c |    1 +
+ sound/soc/tegra/tegra_rt5640.c   |    1 +
+ sound/soc/tegra/tegra_rt5677.c   |    1 +
+ sound/soc/tegra/tegra_wm8753.c   |    1 +
+ sound/soc/tegra/tegra_wm8903.c   |    1 +
+ sound/soc/tegra/tegra_wm9712.c   |    1 +
+ sound/soc/tegra/trimslice.c      |    1 +
+ 8 files changed, 8 insertions(+)
+
+--- a/sound/soc/tegra/tegra_alc5632.c
++++ b/sound/soc/tegra/tegra_alc5632.c
+@@ -149,6 +149,7 @@ static struct snd_soc_dai_link tegra_alc
  
- out_err_bus_register:
- 	tpci200_uninstall(tpci200);
-+	/* tpci200->info->cfg_regs is unmapped in tpci200_uninstall */
-+	tpci200->info->cfg_regs = NULL;
- out_err_install:
--	iounmap(tpci200->info->cfg_regs);
-+	if (tpci200->info->cfg_regs)
-+		iounmap(tpci200->info->cfg_regs);
- out_err_ioremap:
- 	pci_release_region(pdev, TPCI200_CFG_MEM_BAR);
- out_err_pci_request:
+ static struct snd_soc_card snd_soc_tegra_alc5632 = {
+ 	.name = "tegra-alc5632",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.remove = tegra_alc5632_card_remove,
+ 	.dai_link = &tegra_alc5632_dai,
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -205,6 +205,7 @@ static struct snd_soc_dai_link tegra_max
+ 
+ static struct snd_soc_card snd_soc_tegra_max98090 = {
+ 	.name = "tegra-max98090",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.remove = tegra_max98090_card_remove,
+ 	.dai_link = &tegra_max98090_dai,
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -150,6 +150,7 @@ static struct snd_soc_dai_link tegra_rt5
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5640 = {
+ 	.name = "tegra-rt5640",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.remove = tegra_rt5640_card_remove,
+ 	.dai_link = &tegra_rt5640_dai,
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -198,6 +198,7 @@ static struct snd_soc_dai_link tegra_rt5
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5677 = {
+ 	.name = "tegra-rt5677",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.remove = tegra_rt5677_card_remove,
+ 	.dai_link = &tegra_rt5677_dai,
+--- a/sound/soc/tegra/tegra_wm8753.c
++++ b/sound/soc/tegra/tegra_wm8753.c
+@@ -110,6 +110,7 @@ static struct snd_soc_dai_link tegra_wm8
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8753 = {
+ 	.name = "tegra-wm8753",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8753_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -227,6 +227,7 @@ static struct snd_soc_dai_link tegra_wm8
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8903 = {
+ 	.name = "tegra-wm8903",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8903_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/tegra_wm9712.c
++++ b/sound/soc/tegra/tegra_wm9712.c
+@@ -59,6 +59,7 @@ static struct snd_soc_dai_link tegra_wm9
+ 
+ static struct snd_soc_card snd_soc_tegra_wm9712 = {
+ 	.name = "tegra-wm9712",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm9712_dai,
+ 	.num_links = 1,
+--- a/sound/soc/tegra/trimslice.c
++++ b/sound/soc/tegra/trimslice.c
+@@ -103,6 +103,7 @@ static struct snd_soc_dai_link trimslice
+ 
+ static struct snd_soc_card snd_soc_trimslice = {
+ 	.name = "tegra-trimslice",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &trimslice_tlv320aic23_dai,
+ 	.num_links = 1,
 
 
