@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A283CDFD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032633CDEDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243312AbhGSPM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:12:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40456 "EHLO mail.kernel.org"
+        id S1344658AbhGSPGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:06:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344294AbhGSOso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F420961357;
-        Mon, 19 Jul 2021 15:27:57 +0000 (UTC)
+        id S1344357AbhGSOsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89A8F61415;
+        Mon, 19 Jul 2021 15:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708478;
-        bh=3WcOl2F11oKeEtJ+ojYPQK11j/yNj5HrX/b0jaZicnk=;
+        s=korg; t=1626708507;
+        bh=tahq6JToa68uUGtnt3ALWt3B4+osFQ1cpCXdHZDCfn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JOLUBWyKC/6826KdXtn8GhVh0M7cYm3VvoWay+mH8gFfDAC2JGfb0QzsXgRsoTsRs
-         KzJ7ytttJ8yWst8psl6b5JVAhCd9T5hmyLUlAtuPFiqXAwSAhs8b+RnfiEBZ+JKu4+
-         2cVE+GFbniUPYAMjU+ugTsyqHg04SHtQ8FV/Hdpo=
+        b=p5MVnKuXJn1//RLV++ICPT7NPxPVl10dQWy7Bl5nznfnZdLRBOymOaJ6frOI2IyCx
+         pIOaAi2ReLdzjXhLDajthgYrelyu8H3UbloPvBxORK8bSDmf4Rp0PsKF6x4/pQAGy8
+         /r8jY/fafFg4jZI1qpfWh+NG5uNkMDsq22fK82FE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Quat Le <quat.le@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.19 001/421] scsi: core: Retry I/O for Notify (Enable Spinup) Required error
-Date:   Mon, 19 Jul 2021 16:46:52 +0200
-Message-Id: <20210719144946.361149113@linuxfoundation.org>
+        stable@vger.kernel.org, Daehwan Jung <dh10.jung@samsung.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 002/421] ALSA: usb-audio: fix rate on Ozone Z90 USB headset
+Date:   Mon, 19 Jul 2021 16:46:53 +0200
+Message-Id: <20210719144946.393729271@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,35 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quat Le <quat.le@oracle.com>
+From: Daehwan Jung <dh10.jung@samsung.com>
 
-commit 104739aca4488909175e9e31d5cd7d75b82a2046 upstream.
+commit aecc19ec404bdc745c781058ac97a373731c3089 upstream.
 
-If the device is power-cycled, it takes time for the initiator to transmit
-the periodic NOTIFY (ENABLE SPINUP) SAS primitive, and for the device to
-respond to the primitive to become ACTIVE. Retry the I/O request to allow
-the device time to become ACTIVE.
+It mislabels its 96 kHz altsetting and that's why it causes some noise
 
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210629155826.48441-1-quat.le@oracle.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Quat Le <quat.le@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/1623836097-61918-1-git-send-email-dh10.jung@samsung.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/scsi_lib.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/format.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -872,6 +872,7 @@ static void scsi_io_completion_action(st
- 				case 0x07: /* operation in progress */
- 				case 0x08: /* Long write in progress */
- 				case 0x09: /* self test in progress */
-+				case 0x11: /* notify (enable spinup) required */
- 				case 0x14: /* space allocation in progress */
- 				case 0x1a: /* start stop unit in progress */
- 				case 0x1b: /* sanitize in progress */
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -206,9 +206,11 @@ static int parse_audio_format_rates_v1(s
+ 				continue;
+ 			/* C-Media CM6501 mislabels its 96 kHz altsetting */
+ 			/* Terratec Aureon 7.1 USB C-Media 6206, too */
++			/* Ozone Z90 USB C-Media, too */
+ 			if (rate == 48000 && nr_rates == 1 &&
+ 			    (chip->usb_id == USB_ID(0x0d8c, 0x0201) ||
+ 			     chip->usb_id == USB_ID(0x0d8c, 0x0102) ||
++			     chip->usb_id == USB_ID(0x0d8c, 0x0078) ||
+ 			     chip->usb_id == USB_ID(0x0ccd, 0x00b1)) &&
+ 			    fp->altsetting == 5 && fp->maxpacksize == 392)
+ 				rate = 96000;
 
 
