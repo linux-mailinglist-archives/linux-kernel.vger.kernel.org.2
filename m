@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F783CE642
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54A33CE627
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242700AbhGSQDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:03:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60626 "EHLO mail.kernel.org"
+        id S1352540AbhGSQBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345607AbhGSPEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60C22606A5;
-        Mon, 19 Jul 2021 15:44:31 +0000 (UTC)
+        id S1346098AbhGSPFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:05:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 962D8601FD;
+        Mon, 19 Jul 2021 15:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709472;
-        bh=x88MS2ITws8FK+xlvLz/ieDFsmVgFG8E+Ow7UVUBkA0=;
+        s=korg; t=1626709554;
+        bh=kgOQcQcZkxo0yO2UGtK/dmDKkNSk1YJLXcaCsGyLF88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G9+d1gjYE1hlD5QT+cSKjf2e44AReYpLymMCpFVM/P6CFt7+rnwqQOYempUhWpEH3
-         j0fH2+hCRXJo4tQmSJ0/t3IK+MsT8xFuAedjpAITiAl5HP9ZKahT1cE8DvWB+5jnQs
-         aMTzSh1n7r4ucwR9ETA3hUzwkLhBIivmKCygeaDw=
+        b=EWZgYJZCR31Zg4dfhYVnTYKpeWMVH93uwISGdBHxzCZhwn45X1YBatueh5rYuXBQW
+         bqKvSQgJZVfaGYfz1h3IBx9WZepLwWZp9TRQiwQuKskD8x/d8n4G9grI7bygDFO+Rd
+         HP/rNNXD+/WV2TK0By6QKqv1AAGWoHyJAYECR3M0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brian Cain <bcain@codeaurora.org>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Glitta <glittao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 396/421] hexagon: use common DISCARDS macro
-Date:   Mon, 19 Jul 2021 16:53:27 +0200
-Message-Id: <20210719145000.096295657@linuxfoundation.org>
+Subject: [PATCH 4.19 397/421] reset: a10sr: add missing of_match_table reference
+Date:   Mon, 19 Jul 2021 16:53:28 +0200
+Message-Id: <20210719145000.128577738@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -46,60 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 681ba73c72302214686401e707e2087ed11a6556 ]
+[ Upstream commit 466ba3c8ff4fae39e455ff8d080b3d5503302765 ]
 
-ld.lld warns that the '.modinfo' section is not currently handled:
+The driver defined of_device_id table but did not use it with
+of_match_table.  This prevents usual matching via devicetree and causes
+a W=1 warning:
 
-ld.lld: warning: kernel/built-in.a(workqueue.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(printk/printk.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(irq/spurious.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(rcu/update.o):(.modinfo) is being placed in '.modinfo'
+  drivers/reset/reset-a10sr.c:111:34: warning:
+    ‘a10sr_reset_of_match’ defined but not used [-Wunused-const-variable=]
 
-The '.modinfo' section was added in commit 898490c010b5 ("moduleparam:
-Save information about built-in modules in separate file") to the DISCARDS
-macro but Hexagon has never used that macro.  The unification of DISCARDS
-happened in commit 023bf6f1b8bf ("linker script: unify usage of discard
-definition") in 2009, prior to Hexagon being added in 2011.
-
-Switch Hexagon over to the DISCARDS macro so that anything that is
-expected to be discarded gets discarded.
-
-Link: https://lkml.kernel.org/r/20210521011239.1332345-3-nathan@kernel.org
-Fixes: e95bf452a9e2 ("Hexagon: Add configuration and makefiles for the Hexagon architecture.")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Brian Cain <bcain@codeaurora.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Oliver Glitta <glittao@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 627006820268 ("reset: Add Altera Arria10 SR Reset Controller")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210507112803.20012-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/hexagon/kernel/vmlinux.lds.S | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/reset/reset-a10sr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/hexagon/kernel/vmlinux.lds.S b/arch/hexagon/kernel/vmlinux.lds.S
-index ad69d181c939..757f9554118e 100644
---- a/arch/hexagon/kernel/vmlinux.lds.S
-+++ b/arch/hexagon/kernel/vmlinux.lds.S
-@@ -73,13 +73,8 @@ SECTIONS
- 
- 	_end = .;
- 
--	/DISCARD/ : {
--		EXIT_TEXT
--		EXIT_DATA
--		EXIT_CALL
--	}
--
- 	STABS_DEBUG
- 	DWARF_DEBUG
- 
-+	DISCARDS
- }
+diff --git a/drivers/reset/reset-a10sr.c b/drivers/reset/reset-a10sr.c
+index 37496bd27fa2..306fba5b3519 100644
+--- a/drivers/reset/reset-a10sr.c
++++ b/drivers/reset/reset-a10sr.c
+@@ -129,6 +129,7 @@ static struct platform_driver a10sr_reset_driver = {
+ 	.probe	= a10sr_reset_probe,
+ 	.driver = {
+ 		.name		= "altr_a10sr_reset",
++		.of_match_table	= a10sr_reset_of_match,
+ 	},
+ };
+ module_platform_driver(a10sr_reset_driver);
 -- 
 2.30.2
 
