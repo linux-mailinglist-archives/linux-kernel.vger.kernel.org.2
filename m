@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F293CE017
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B3F3CDC5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345416AbhGSPNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:13:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40462 "EHLO mail.kernel.org"
+        id S237558AbhGSOwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:52:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344254AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BBAB61351;
-        Mon, 19 Jul 2021 15:27:52 +0000 (UTC)
+        id S245397AbhGSOef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D3B61263;
+        Mon, 19 Jul 2021 15:14:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708473;
-        bh=4yeDjT5D5euz2WWCVdMQo2mPVg1rCQ9V0ZvkE5GBJ3Y=;
+        s=korg; t=1626707642;
+        bh=ghKo1xjvWvhn4IaZZczjFnezfWRlmMquzd5E4DMGxMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FO7t/pVBSVEMTNSirFlmIh6SrjaNWKoWe6bbSii/qyMe+afvklJmpmQ2PQqbJdaOu
-         FBUMSodzGXS+iDRQuzkNplthuFV1iPLI8BJLLWRxEzNtJU8/Rl2ICxkLt3Ll5bk0LB
-         7Sp8fwXiLYIUDM9W49BwQK9aZawHT9aSEjIq/BZo=
+        b=IliRm6N/Hfw5y4XqEd74StfABCwrJlW9D/0M0OoJhpL1UWk30vVUYjwQ6VnEdk0ym
+         jx0u6SxzhID3iAKZzMgUjb+e6Y3yW7ouhQtKLOGUPWzb3ciN8a+Oblib0VW0DYcBk4
+         rkJEO35SRwQ68AlFcHp/Z/PF1oa7jDLLGRkzzHC8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Kyungsik Lee <kyungsik.lee@lge.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 297/315] NFSv4/pNFS: Dont call _nfs4_pnfs_v3_ds_connect multiple times
+Subject: [PATCH 4.9 244/245] mips: disable branch profiling in boot/decompress.o
 Date:   Mon, 19 Jul 2021 16:53:06 +0200
-Message-Id: <20210719144953.239040175@linuxfoundation.org>
+Message-Id: <20210719144948.248554918@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,102 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit f46f84931a0aa344678efe412d4b071d84d8a805 ]
+[ Upstream commit 97e488073cfca0eea84450169ca4cbfcc64e33e3 ]
 
-After we grab the lock in nfs4_pnfs_ds_connect(), there is no check for
-whether or not ds->ds_clp has already been initialised, so we can end up
-adding the same transports multiple times.
+Use DISABLE_BRANCH_PROFILING for arch/mips/boot/compressed/decompress.o
+to prevent linkage errors.
 
-Fixes: fc821d59209d ("pnfs/NFSv4.1: Add multipath capabilities to pNFS flexfiles servers over NFSv3")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
+decompress.c:(.text+0x8c): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0xf4): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x200): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x230): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x320): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x3f4): more undefined references to `ftrace_likely_update' follow
+
+Fixes: e76e1fdfa8f8 ("lib: add support for LZ4-compressed kernel")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Kyungsik Lee <kyungsik.lee@lge.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pnfs_nfs.c | 52 +++++++++++++++++++++++------------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+ arch/mips/boot/compressed/decompress.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/nfs/pnfs_nfs.c b/fs/nfs/pnfs_nfs.c
-index b0ef37f3e2dd..29bdf1525d82 100644
---- a/fs/nfs/pnfs_nfs.c
-+++ b/fs/nfs/pnfs_nfs.c
-@@ -555,19 +555,16 @@ out:
- }
- EXPORT_SYMBOL_GPL(nfs4_pnfs_ds_add);
+diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+index 3a015e41b762..66096c766a60 100644
+--- a/arch/mips/boot/compressed/decompress.c
++++ b/arch/mips/boot/compressed/decompress.c
+@@ -11,6 +11,8 @@
+  * option) any later version.
+  */
  
--static void nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
-+static int nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
- {
- 	might_sleep();
--	wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING,
--			TASK_KILLABLE);
-+	return wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING, TASK_KILLABLE);
- }
- 
- static void nfs4_clear_ds_conn_bit(struct nfs4_pnfs_ds *ds)
- {
- 	smp_mb__before_atomic();
--	clear_bit(NFS4DS_CONNECTING, &ds->ds_state);
--	smp_mb__after_atomic();
--	wake_up_bit(&ds->ds_state, NFS4DS_CONNECTING);
-+	clear_and_wake_up_bit(NFS4DS_CONNECTING, &ds->ds_state);
- }
- 
- static struct nfs_client *(*get_v3_ds_connect)(
-@@ -728,30 +725,33 @@ int nfs4_pnfs_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds,
- {
- 	int err;
- 
--again:
--	err = 0;
--	if (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) == 0) {
--		if (version == 3) {
--			err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo,
--						       retrans);
--		} else if (version == 4) {
--			err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo,
--						       retrans, minor_version);
--		} else {
--			dprintk("%s: unsupported DS version %d\n", __func__,
--				version);
--			err = -EPROTONOSUPPORT;
--		}
-+	do {
-+		err = nfs4_wait_ds_connect(ds);
-+		if (err || ds->ds_clp)
-+			goto out;
-+		if (nfs4_test_deviceid_unavailable(devid))
-+			return -ENODEV;
-+	} while (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) != 0);
- 
--		nfs4_clear_ds_conn_bit(ds);
--	} else {
--		nfs4_wait_ds_connect(ds);
-+	if (ds->ds_clp)
-+		goto connect_done;
- 
--		/* what was waited on didn't connect AND didn't mark unavail */
--		if (!ds->ds_clp && !nfs4_test_deviceid_unavailable(devid))
--			goto again;
-+	switch (version) {
-+	case 3:
-+		err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo, retrans);
-+		break;
-+	case 4:
-+		err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo, retrans,
-+					       minor_version);
-+		break;
-+	default:
-+		dprintk("%s: unsupported DS version %d\n", __func__, version);
-+		err = -EPROTONOSUPPORT;
- 	}
- 
-+connect_done:
-+	nfs4_clear_ds_conn_bit(ds);
-+out:
- 	/*
- 	 * At this point the ds->ds_clp should be ready, but it might have
- 	 * hit an error.
++#define DISABLE_BRANCH_PROFILING
++
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/string.h>
 -- 
 2.30.2
 
