@@ -2,31 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F523CD92D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4C53CD932
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243761AbhGSO1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:27:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36934 "EHLO mail.kernel.org"
+        id S243788AbhGSO1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:27:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244093AbhGSOYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244095AbhGSOYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:24:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC67C6113C;
-        Mon, 19 Jul 2021 15:05:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 150F9611CE;
+        Mon, 19 Jul 2021 15:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707102;
-        bh=W4dfKPYzJfB6MDAJ5rD8u1fU9PIYlxiT86MoLQ3ZGF8=;
+        s=korg; t=1626707104;
+        bh=XKIdcRFmU5GuMtfXcljpIi+SkH8MyrVAUkuEs5VReRU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C98HKtLnh17WN42w+cT6RqZAcaLKvJtiUfPbmikn0S1fkQIUVEXzIbhgfFmuPAcAl
-         RlEWZrtNsaHdZwd+AVKMBisjOd2VuzkbFzIG7Xth/QKc8tzpoGFT5BrEjPU/C3lZQh
-         /lzysd9T2NtQq3b5/N68+D30VBHcaIAm+w3OwkWc=
+        b=pI9xyqFJ9qHKaQetQDcUGo58b20Xza902F/4x6OKh5j4TFKNXv5+OC8xIh3pyRxP8
+         KPQxeycSXRu8knw+q/rOUsZO8btp99tP9C4KTGc1OV3yAdgg1R7Kktp5Pi8FoiFrVP
+         N7OGwdjBiLfMKRfHbY9m4hBe1j7PqQ8oNIm8CYE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>
-Subject: [PATCH 4.9 006/245] USB: cdc-acm: blacklist Heimann USB Appset device
-Date:   Mon, 19 Jul 2021 16:49:08 +0200
-Message-Id: <20210719144940.590164762@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 007/245] ntfs: fix validity check for file name attribute
+Date:   Mon, 19 Jul 2021 16:49:09 +0200
+Message-Id: <20210719144940.623198277@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -38,43 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannu Hartikainen <hannu@hrtk.in>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-commit 4897807753e078655a78de39ed76044d784f3e63 upstream.
+commit d98e4d95411bbde2220a7afa38dcc9c14d71acbe upstream.
 
-The device (32a7:0000 Heimann Sensor GmbH USB appset demo) claims to be
-a CDC-ACM device in its descriptors but in fact is not. If it is run
-with echo disabled it returns garbled data, probably due to something
-that happens in the TTY layer. And when run with echo enabled (the
-default), it will mess up the calibration data of the sensor the first
-time any data is sent to the device.
+When checking the file name attribute, we want to ensure that it fits
+within the bounds of ATTR_RECORD.  To do this, we should check that (attr
+record + file name offset + file name length) < (attr record + attr record
+length).
 
-In short, I had a bad time after connecting the sensor and trying to get
-it to work. I hope blacklisting it in the cdc-acm driver will save
-someone else a bit of trouble.
+However, the original check did not include the file name offset in the
+calculation.  This means that corrupted on-disk metadata might not caught
+by the incorrect file name check, and lead to an invalid memory access.
 
-Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210622141454.337948-1-hannu@hrtk.in
+An example can be seen in the crash report of a memory corruption error
+found by Syzbot:
+https://syzkaller.appspot.com/bug?id=a1a1e379b225812688566745c3e2f7242bffc246
+
+Adding the file name offset to the validity check fixes this error and
+passes the Syzbot reproducer test.
+
+Link: https://lkml.kernel.org/r/20210614050540.289494-1-desmondcheongzx@gmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Reported-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+Tested-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+Acked-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/class/cdc-acm.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ fs/ntfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1894,6 +1894,11 @@ static const struct usb_device_id acm_id
- 	.driver_info = IGNORE_DEVICE,
- 	},
- 
-+	/* Exclude Heimann Sensor GmbH USB appset demo */
-+	{ USB_DEVICE(0x32a7, 0x0000),
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+
- 	/* control interfaces without any protocol set */
- 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
- 		USB_CDC_PROTO_NONE) },
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -502,7 +502,7 @@ err_corrupt_attr:
+ 		}
+ 		file_name_attr = (FILE_NAME_ATTR*)((u8*)attr +
+ 				le16_to_cpu(attr->data.resident.value_offset));
+-		p2 = (u8*)attr + le32_to_cpu(attr->data.resident.value_length);
++		p2 = (u8 *)file_name_attr + le32_to_cpu(attr->data.resident.value_length);
+ 		if (p2 < (u8*)attr || p2 > p)
+ 			goto err_corrupt_attr;
+ 		/* This attribute is ok, but is it in the $Extend directory? */
 
 
