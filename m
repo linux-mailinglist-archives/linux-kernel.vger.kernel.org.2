@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D343CE58E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02E43CE58F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347885AbhGSPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:52:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60210 "EHLO mail.kernel.org"
+        id S1343817AbhGSPwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:52:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245597AbhGSPEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B501D6121F;
-        Mon, 19 Jul 2021 15:43:23 +0000 (UTC)
+        id S245671AbhGSPEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC4961283;
+        Mon, 19 Jul 2021 15:43:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709404;
-        bh=HzeovM7VAqG9IHKAhS7VZd/73DqujE/7DQQFHvPr5ms=;
+        s=korg; t=1626709407;
+        bh=6IYPfWE+5IeR/dEkm7wv/Js5ccM0uPOpf+6BdWqZWuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a+WTe8uYv5XeVmiXbvrTz7xvwqVnMLkY6xL5cmm+7A3uEcLNa6kcmEBK+44uicsny
-         Jv1V0UTBfmqMDSd7qfUFjnXu1wabN4ZOeZmunQ2y8wlkXhceYIbdbBPvS9SoQ6w6s5
-         NzsCqH4PfXR5hy2yPRep8AZo+3Zaqnht4YYWN568=
+        b=bug/YJZE+hS7KP4PXi+qvgjqkxA9OK0GiJZxONKjgMTkXe6WZD4MGlaQl9kzLJOQU
+         4Hxtr4IW9VLsSTuOCP7TlFazoxO7UhgqWAyTYLDjZYKppqtCWvGEgNrticryDQOsQl
+         qew1AfiK6qNffc1uGoJf+9iH6IK6Az0QJaFuPH8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 371/421] ceph: remove bogus checks and WARN_ONs from ceph_set_page_dirty
-Date:   Mon, 19 Jul 2021 16:53:02 +0200
-Message-Id: <20210719144959.112091593@linuxfoundation.org>
+Subject: [PATCH 4.19 372/421] NFS: nfs_find_open_context() may only select open files
+Date:   Mon, 19 Jul 2021 16:53:03 +0200
+Message-Id: <20210719144959.143193733@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,54 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 22d41cdcd3cfd467a4af074165357fcbea1c37f5 ]
+[ Upstream commit e97bc66377bca097e1f3349ca18ca17f202ff659 ]
 
-The checks for page->mapping are odd, as set_page_dirty is an
-address_space operation, and I don't see where it would be called on a
-non-pagecache page.
+If a file has already been closed, then it should not be selected to
+support further I/O.
 
-The warning about the page lock also seems bogus.  The comment over
-set_page_dirty() says that it can be called without the page lock in
-some rare cases. I don't think we want to warn if that's the case.
-
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+[Trond: Fix an invalid pointer deref reported by Colin Ian King]
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/addr.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ fs/nfs/inode.c         | 4 ++++
+ include/linux/nfs_fs.h | 1 +
+ 2 files changed, 5 insertions(+)
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index e59b2f53a81f..de10899da837 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -75,10 +75,6 @@ static int ceph_set_page_dirty(struct page *page)
- 	struct inode *inode;
- 	struct ceph_inode_info *ci;
- 	struct ceph_snap_context *snapc;
--	int ret;
--
--	if (unlikely(!mapping))
--		return !TestSetPageDirty(page);
- 
- 	if (PageDirty(page)) {
- 		dout("%p set_page_dirty %p idx %lu -- already dirty\n",
-@@ -124,11 +120,7 @@ static int ceph_set_page_dirty(struct page *page)
- 	page->private = (unsigned long)snapc;
- 	SetPagePrivate(page);
- 
--	ret = __set_page_dirty_nobuffers(page);
--	WARN_ON(!PageLocked(page));
--	WARN_ON(!page->mapping);
--
--	return ret;
-+	return __set_page_dirty_nobuffers(page);
+diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
+index dc55ecc3bec4..2cdd8883b7c5 100644
+--- a/fs/nfs/inode.c
++++ b/fs/nfs/inode.c
+@@ -1038,6 +1038,7 @@ EXPORT_SYMBOL_GPL(nfs_inode_attach_open_context);
+ void nfs_file_set_open_context(struct file *filp, struct nfs_open_context *ctx)
+ {
+ 	filp->private_data = get_nfs_open_context(ctx);
++	set_bit(NFS_CONTEXT_FILE_OPEN, &ctx->flags);
+ 	if (list_empty(&ctx->list))
+ 		nfs_inode_attach_open_context(ctx);
  }
+@@ -1057,6 +1058,8 @@ struct nfs_open_context *nfs_find_open_context(struct inode *inode, struct rpc_c
+ 			continue;
+ 		if ((pos->mode & (FMODE_READ|FMODE_WRITE)) != mode)
+ 			continue;
++		if (!test_bit(NFS_CONTEXT_FILE_OPEN, &pos->flags))
++			continue;
+ 		ctx = get_nfs_open_context(pos);
+ 		break;
+ 	}
+@@ -1071,6 +1074,7 @@ void nfs_file_clear_open_context(struct file *filp)
+ 	if (ctx) {
+ 		struct inode *inode = d_inode(ctx->dentry);
  
- /*
++		clear_bit(NFS_CONTEXT_FILE_OPEN, &ctx->flags);
+ 		/*
+ 		 * We fatal error on write before. Try to writeback
+ 		 * every page again.
+diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
+index a0831e9d19c9..0ff7dd2bf8a4 100644
+--- a/include/linux/nfs_fs.h
++++ b/include/linux/nfs_fs.h
+@@ -78,6 +78,7 @@ struct nfs_open_context {
+ #define NFS_CONTEXT_RESEND_WRITES	(1)
+ #define NFS_CONTEXT_BAD			(2)
+ #define NFS_CONTEXT_UNLOCK	(3)
++#define NFS_CONTEXT_FILE_OPEN		(4)
+ 	int error;
+ 
+ 	struct list_head list;
 -- 
 2.30.2
 
