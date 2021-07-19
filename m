@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19B33CDDAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7E13CDE90
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344551AbhGSO7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:59:50 -0400
-Received: from verein.lst.de ([213.95.11.211]:50095 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245109AbhGSOhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:37:08 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E6FF767373; Mon, 19 Jul 2021 17:17:44 +0200 (CEST)
-Date:   Mon, 19 Jul 2021 17:17:44 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dm-devel@redhat.com,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@lst.de, agk@redhat.com,
-        snitzer@redhat.com, rgoldwyn@suse.de
-Subject: Re: [PATCH v5 2/9] dax: Introduce holder for dax_device
-Message-ID: <20210719151744.GA22718@lst.de>
-References: <20210628000218.387833-1-ruansy.fnst@fujitsu.com> <20210628000218.387833-3-ruansy.fnst@fujitsu.com>
+        id S245462AbhGSPEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:04:01 -0400
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:42774 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245225AbhGSOiB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:38:01 -0400
+Received: by mail-lj1-f173.google.com with SMTP id r16so26826395ljk.9;
+        Mon, 19 Jul 2021 08:18:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qNIqat7cYfcb63IwviLUw0Xdroq3HYsAHAyWsh0CF1I=;
+        b=GQJzrRP+J6XHrvFhRRRah1X8HLVt5JOaXVH2tK8ICn4LXj4J4p8uW7VUkL+Z/UdnEy
+         1DYmLTvi1glHVDsZuF+ZORC7UCxA164GkvS0q5qQVJbVE5IAP2ge5BHdXzkEyebwXlTY
+         2P1qsCw3eIXHs+5r1lWX0gQiNWexs3tf66OK4c6kGvOSF6t08zDpmTydIz/pZdqRN2BH
+         Cn2x64RWqjPsEjE9Pu4zUaqqGB6gd84hiFkSm9YFujwwlp4SCjfqcycjrzE4MdAvtUgb
+         WaUevC5CPIomK/vbvsw0dyo7jO8PkdR+8QYrD7VPFTcrOs6krmlHEX4wDC+uUJCcak6O
+         BAXA==
+X-Gm-Message-State: AOAM530e4witZp921aEvbZwmnmjxCaNyUA4YEwXvNIJpJIR8sMjD4Dfd
+        qgkCR5634E2PdTK2NDH8WwQ=
+X-Google-Smtp-Source: ABdhPJy2Iy5SpdUFHLCw4EWwJAecbyGu4Lab48/CA34GciD86ngDPCOFSwH/fROYScyhpsd4Pkj63Q==
+X-Received: by 2002:a05:651c:1695:: with SMTP id bd21mr15632606ljb.312.1626707919411;
+        Mon, 19 Jul 2021 08:18:39 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id e7sm1400948ljq.9.2021.07.19.08.18.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 08:18:38 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 17:18:37 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: endpoint: Use sysfs_emit() in "show" functions
+Message-ID: <20210719151837.GA473693@rocinante>
+References: <1626662666-15798-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <20210719034313.GA274232@rocinante>
+ <af1d4c61-53ff-f4e9-a708-33251b7e6470@socionext.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210628000218.387833-3-ruansy.fnst@fujitsu.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <af1d4c61-53ff-f4e9-a708-33251b7e6470@socionext.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 08:02:11AM +0800, Shiyang Ruan wrote:
-> +int dax_holder_notify_failure(struct dax_device *dax_dev, loff_t offset,
-> +			      size_t size, void *data)
-> +{
-> +	int rc = -ENXIO;
-> +	if (!dax_dev)
-> +		return rc;
-> +
-> +	if (dax_dev->holder_data) {
-> +		rc = dax_dev->holder_ops->notify_failure(dax_dev, offset,
-> +							 size, data);
-> +		if (rc == -ENODEV)
-> +			rc = -ENXIO;
-> +	} else
-> +		rc = -EOPNOTSUPP;
+[+cc Sasha for visibility]
 
-The style looks a little odd.  Why not:
+Hi!
 
-	if (!dax_dev)
-		return -ENXIO
-	if (!dax_dev->holder_data)
-		return -EOPNOTSUPP;
-	return dax_dev->holder_ops->notify_failure(dax_dev, offset, size, data);
+[...]
+> > Nice catch!
+> 
+> I actually executed "cat" against configfs to meet the issue and found
+> your solution in pci-sysfs.
 
-and let everyone deal with the same errno codes?
+Oh!  That's not good...  I am curious, which attribute caused this?
 
-Also why do we even need the dax_dev NULL check?
+Also, if this is fixing a bug, then it might warrant letting the folks who look
+after the long-term and stable kernels know.  I also wonder if there would be
+something to add for the "Fixes:" tag, if there is a previous commit this
+change fixes.
 
-> +void dax_set_holder(struct dax_device *dax_dev, void *holder,
-> +		const struct dax_holder_operations *ops)
-> +{
-> +	if (!dax_dev)
-> +		return;
-
-I don't think we really need that check here.
-
-> +void *dax_get_holder(struct dax_device *dax_dev)
-> +{
-> +	void *holder_data;
-> +
-> +	if (!dax_dev)
-> +		return NULL;
-
-Same here.
-
-> +
-> +	down_read(&dax_dev->holder_rwsem);
-> +	holder_data = dax_dev->holder_data;
-> +	up_read(&dax_dev->holder_rwsem);
-> +
-> +	return holder_data;
-
-That lock won't protect anything.  I think we simply must have
-synchronization to prevent unregistration while the ->notify_failure
-call is in progress.
+	Krzysztof
