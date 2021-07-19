@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1CA3CE6E4
+	by mail.lfdr.de (Postfix) with ESMTP id 963043CE6E3
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353481AbhGSQQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:16:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46982 "EHLO mail.kernel.org"
+        id S1353449AbhGSQQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:16:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245440AbhGSPK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 926BD60FD7;
-        Mon, 19 Jul 2021 15:51:08 +0000 (UTC)
+        id S1345274AbhGSPKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01560611F2;
+        Mon, 19 Jul 2021 15:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709869;
-        bh=110oo0bp8XEIgGoX8PuIKeTuPmcHodzQu7MT/F3PYyg=;
+        s=korg; t=1626709871;
+        bh=vLRAzC3PB3D1e2H6/tAEcR/aEhROiBVS9SoP3n7iMSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fVCCLf7KZUmZG26a1XEYtKj5u8CY8J2DjxVPXQyBk6iLYSe2kSjLrCcoSZAEmgLma
-         /NvUHUwl6p1Y+74XVS7LeJpk/baX+Qr+5vdmxgfKASXHgh6HD1W9ypkI2ugkOYrHsh
-         yqBIpilpNZUzdkHzD2V0Zue8EvoCKKry0yJBS0MU=
+        b=gbZFEruAY+F1CO0bGM9BnttRrIf+GXL1EhyMQ/JDtkeAQ1MM5tDjGxRW9vVS0V61P
+         ruZmstgL7Ms/5FqFF034zxov7zBH6VI6lUtae4k6Vl/zkdG+eYnvV2t7fU37syAL6U
+         GfWK3WrsIVCQXIk12KhYbXXRq9wSZfqn8iQoIBUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, marcosfrm <marcosfrm@gmail.com>,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 097/149] f2fs: add MODULE_SOFTDEP to ensure crc32 is included in the initramfs
-Date:   Mon, 19 Jul 2021 16:53:25 +0200
-Message-Id: <20210719144924.326628728@linuxfoundation.org>
+Subject: [PATCH 5.4 098/149] PCI/sysfs: Fix dsm_label_utf16s_to_utf8s() buffer overrun
+Date:   Mon, 19 Jul 2021 16:53:26 +0200
+Message-Id: <20210719144924.563585893@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
 References: <20210719144901.370365147@linuxfoundation.org>
@@ -40,40 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Krzysztof Wilczyński <kw@linux.com>
 
-[ Upstream commit 0dd571785d61528d62cdd8aa49d76bc6085152fe ]
+[ Upstream commit bdcdaa13ad96f1a530711c29e6d4b8311eff767c ]
 
-As marcosfrm reported in bugzilla:
+"utf16s_to_utf8s(..., buf, PAGE_SIZE)" puts up to PAGE_SIZE bytes into
+"buf" and returns the number of bytes it actually put there.  If it wrote
+PAGE_SIZE bytes, the newline added by dsm_label_utf16s_to_utf8s() would
+overrun "buf".
 
-https://bugzilla.kernel.org/show_bug.cgi?id=213089
+Reduce the size available for utf16s_to_utf8s() to use so there is always
+space for the newline.
 
-Initramfs generators rely on "pre" softdeps (and "depends") to include
-additional required modules.
-
-F2FS does not declare "pre: crc32" softdep. Then every generator (dracut,
-mkinitcpio...) has to maintain a hardcoded list for this purpose.
-
-Hence let's use MODULE_SOFTDEP("pre: crc32") in f2fs code.
-
-Fixes: 43b6573bac95 ("f2fs: use cryptoapi crc32 functions")
-Reported-by: marcosfrm <marcosfrm@gmail.com>
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+[bhelgaas: reorder patch in series, commit log]
+Fixes: 6058989bad05 ("PCI: Export ACPI _DSM provided firmware instance number and string name to sysfs")
+Link: https://lore.kernel.org/r/20210603000112.703037-7-kw@linux.com
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/super.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/pci-label.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index a9a083232bcf..6d904dc9bd19 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3804,4 +3804,5 @@ module_exit(exit_f2fs_fs)
- MODULE_AUTHOR("Samsung Electronics's Praesto Team");
- MODULE_DESCRIPTION("Flash Friendly File System");
- MODULE_LICENSE("GPL");
-+MODULE_SOFTDEP("pre: crc32");
+diff --git a/drivers/pci/pci-label.c b/drivers/pci/pci-label.c
+index a5910f942857..9fb4ef568f40 100644
+--- a/drivers/pci/pci-label.c
++++ b/drivers/pci/pci-label.c
+@@ -162,7 +162,7 @@ static void dsm_label_utf16s_to_utf8s(union acpi_object *obj, char *buf)
+ 	len = utf16s_to_utf8s((const wchar_t *)obj->buffer.pointer,
+ 			      obj->buffer.length,
+ 			      UTF16_LITTLE_ENDIAN,
+-			      buf, PAGE_SIZE);
++			      buf, PAGE_SIZE - 1);
+ 	buf[len] = '\n';
+ }
  
 -- 
 2.30.2
