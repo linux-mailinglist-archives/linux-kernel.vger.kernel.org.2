@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742FF3CDB86
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54DD3CD8AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237529AbhGSOnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:43:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48094 "EHLO mail.kernel.org"
+        id S243644AbhGSOYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:24:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244291AbhGSObf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:31:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 186A26113C;
-        Mon, 19 Jul 2021 15:12:14 +0000 (UTC)
+        id S242810AbhGSOWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2219160551;
+        Mon, 19 Jul 2021 15:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707535;
-        bh=mrt589wS+yaIuYhEoK1hDGW+oRU/G8TwBt8BJea3Fv8=;
+        s=korg; t=1626706944;
+        bh=XWiPw7umbjmeU/JEnr2FjZX9/PD8fOl6yYG1jQX7LoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cbRflnlBj5tMIbwM4NzfmRx3GZDctlmCt0lDyZ6Dbb9w6qzRgfy4gnjI47KtiNNlL
-         Qj9rdZfFdr4I4WjkXZv0yS4piTXtselTKjXoR+Q63lc+YKieqzbxKdE4FaAntJqjM+
-         k93+ueMoU10sdW++qNdI6fo42a+Cot7LVCqdvG9k=
+        b=17Gnq6o4rJe/WbtLYJziKGOPUlZwUciY+t9AuUin9E8lAg8W2hlMknRW6E0C8vh9u
+         bmspnFlDO7ATIrs+3Z1/x6k8k9QFShG9DvMsZV9HMUROjtFFNJVruPoh40w7r2aOmR
+         fVhi3FFORbFvNrqs+kVQwE5etoPrXozyym6myGM8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 202/245] usb: gadget: hid: fix error return code in hid_bind()
-Date:   Mon, 19 Jul 2021 16:52:24 +0200
-Message-Id: <20210719144946.934045917@linuxfoundation.org>
+Subject: [PATCH 4.4 161/188] backlight: lm3630a: Fix return code of .update_status() callback
+Date:   Mon, 19 Jul 2021 16:52:25 +0200
+Message-Id: <20210719144941.761164150@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+References: <20210719144913.076563739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 88693f770bb09c196b1eb5f06a484a254ecb9924 ]
+[ Upstream commit b9481a667a90ec739995e85f91f3672ca44d6ffa ]
 
-Fix to return a negative error code from the error handling
-case instead of 0.
+According to <linux/backlight.h> .update_status() is supposed to
+return 0 on success and a negative error code otherwise. Adapt
+lm3630a_bank_a_update_status() and lm3630a_bank_b_update_status() to
+actually do it.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210618043835.2641360-1-yangyingliang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+While touching that also add the error code to the failure message.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/legacy/hid.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/video/backlight/lm3630a_bl.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/gadget/legacy/hid.c b/drivers/usb/gadget/legacy/hid.c
-index a71a884f79fc..cccbb948821b 100644
---- a/drivers/usb/gadget/legacy/hid.c
-+++ b/drivers/usb/gadget/legacy/hid.c
-@@ -175,8 +175,10 @@ static int hid_bind(struct usb_composite_dev *cdev)
- 		struct usb_descriptor_header *usb_desc;
+diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
+index 5ef6f9d420a2..ab882c04f975 100644
+--- a/drivers/video/backlight/lm3630a_bl.c
++++ b/drivers/video/backlight/lm3630a_bl.c
+@@ -183,7 +183,7 @@ static int lm3630a_bank_a_update_status(struct backlight_device *bl)
+ 	if ((pwm_ctrl & LM3630A_PWM_BANK_A) != 0) {
+ 		lm3630a_pwm_ctrl(pchip, bl->props.brightness,
+ 				 bl->props.max_brightness);
+-		return bl->props.brightness;
++		return 0;
+ 	}
  
- 		usb_desc = usb_otg_descriptor_alloc(gadget);
--		if (!usb_desc)
-+		if (!usb_desc) {
-+			status = -ENOMEM;
- 			goto put;
-+		}
- 		usb_otg_descriptor_init(gadget, usb_desc);
- 		otg_desc[0] = usb_desc;
- 		otg_desc[1] = NULL;
+ 	/* disable sleep */
+@@ -203,8 +203,8 @@ static int lm3630a_bank_a_update_status(struct backlight_device *bl)
+ 	return 0;
+ 
+ out_i2c_err:
+-	dev_err(pchip->dev, "i2c failed to access\n");
+-	return bl->props.brightness;
++	dev_err(pchip->dev, "i2c failed to access (%pe)\n", ERR_PTR(ret));
++	return ret;
+ }
+ 
+ static int lm3630a_bank_a_get_brightness(struct backlight_device *bl)
+@@ -260,7 +260,7 @@ static int lm3630a_bank_b_update_status(struct backlight_device *bl)
+ 	if ((pwm_ctrl & LM3630A_PWM_BANK_B) != 0) {
+ 		lm3630a_pwm_ctrl(pchip, bl->props.brightness,
+ 				 bl->props.max_brightness);
+-		return bl->props.brightness;
++		return 0;
+ 	}
+ 
+ 	/* disable sleep */
+@@ -280,8 +280,8 @@ static int lm3630a_bank_b_update_status(struct backlight_device *bl)
+ 	return 0;
+ 
+ out_i2c_err:
+-	dev_err(pchip->dev, "i2c failed to access REG_CTRL\n");
+-	return bl->props.brightness;
++	dev_err(pchip->dev, "i2c failed to access (%pe)\n", ERR_PTR(ret));
++	return ret;
+ }
+ 
+ static int lm3630a_bank_b_get_brightness(struct backlight_device *bl)
 -- 
 2.30.2
 
