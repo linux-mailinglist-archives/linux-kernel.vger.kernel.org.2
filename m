@@ -2,74 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CD03CDBC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B29C3CD860
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238595AbhGSOtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244895AbhGSOe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 585C761205;
-        Mon, 19 Jul 2021 15:13:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707634;
-        bh=1fOpBQFPGJh3jYfnNThexnAEFH4o1IaAuITIQp2BZdw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wSG7duYpY9oCw3HSfzxFx5NID1Pu2F/MsHe28IyoQv6x76Y0S8BLfC+u6DMHXvlSY
-         UTC07vSNMdMZ4faGgXi6qyGdXsWDgTA30bXeHhMDGHtsCcU5RPsQ7g616LZ5dDqlXC
-         yRWLf43pRVbP+IoyyA49/MlZmorXzGZbnGx8A1kA=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 241/245] ARM: dts: am335x: align ti,pindir-d0-out-d1-in property with dt-shema
-Date:   Mon, 19 Jul 2021 16:53:03 +0200
-Message-Id: <20210719144948.157415418@linuxfoundation.org>
+        id S242157AbhGSOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:21:59 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:11923 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242638AbhGSOUP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:20:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626706842;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=5asqN0lZNo3xHl1CBAymxXSuEQ1yqbDJbz4DcdRrSLk=;
+    b=J9E+jk/CxpvlIzVoB/gE8iHadnpWEZV9qry2QxLZXyEkGS7q4EgvuV9EjmJIRSVpem
+    KeFT3hGVQ6Tj9uCV5zEIE4TqdyV1AFUiM1Hry1Fof7HFo6pNjNOKae5EmecnZ5+DHFRR
+    ayD0gafOmrrg9Tl82I/2xmSaciITVipVQU0LdlBaii+/6w2b6rTJhsuWVkp0VzmKK7rG
+    dTJed3H6EXEJof3peozzJWgjGwHDCJzXg4ijsslOKUowXCcsU+33yb0ApAwQvyh3ituP
+    mZAduTazt+061IzKtbWUOfzTOpzboSLhVsM4fQ9uDmPy2jSNB0JIeCcoNojLHFrxacBP
+    Fy9g==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4m6O43/v"
+X-RZG-CLASS-ID: mo00
+Received: from droid..
+    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
+    with ESMTPSA id g02a44x6JF0c42H
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 19 Jul 2021 17:00:38 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [RFC PATCH net-next 0/4] net: wwan: Add Qualcomm BAM-DMUX WWAN network driver
+Date:   Mon, 19 Jul 2021 16:53:13 +0200
+Message-Id: <20210719145317.79692-1-stephan@gerhold.net>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aswath Govindraju <a-govindraju@ti.com>
+The BAM Data Multiplexer provides access to the network data channels
+of modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916
+or MSM8974. This series adds a driver that allows using it.
 
-[ Upstream commit 414bfe1d26b60ef20b58e36efd5363188a694bab ]
+For more information about BAM-DMUX, see PATCH 4/4.
 
-ti,pindir-d0-out-d1-in property is expected to be of type boolean.
-Therefore, fix the property accordingly.
+Shortly said, BAM-DMUX is built using a simple protocol layer on top of
+a DMA engine (Qualcomm BAM DMA). For BAM-DMUX, the BAM DMA engine runs in
+a quite strange mode that I call "remote power collapse", where the
+modem/remote side is responsible for powering on the BAM when needed but we
+are responsible to initialize it. The BAM is power-collapsed when unneeded
+by coordinating power control via bidirectional interrupts from the
+BAM-DMUX driver.
 
-Fixes: 444d66fafab8 ("ARM: dts: add spi wifi support to cm-t335")
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/arm/boot/dts/am335x-cm-t335.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The series first adds one possible solution for handling this "remote power
+collapse" mode in the bam_dma driver, then it adds the BAM-DMUX driver to
+the WWAN subsystem. Note that the BAM-DMUX driver does not actually make
+use of the WWAN subsystem yet, since I'm not sure how to fit it in there
+yet (see PATCH 4/4).
 
-diff --git a/arch/arm/boot/dts/am335x-cm-t335.dts b/arch/arm/boot/dts/am335x-cm-t335.dts
-index 947c81b7aaaf..56a04d3086c3 100644
---- a/arch/arm/boot/dts/am335x-cm-t335.dts
-+++ b/arch/arm/boot/dts/am335x-cm-t335.dts
-@@ -552,7 +552,7 @@ status = "okay";
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&spi0_pins>;
--	ti,pindir-d0-out-d1-in = <1>;
-+	ti,pindir-d0-out-d1-in;
- 	/* WLS1271 WiFi */
- 	wlcore: wlcore@1 {
- 		compatible = "ti,wl1271";
+Please note that all of the changes in this patch series are based on
+a fairly complicated driver from Qualcomm [1].
+I do not have access to any documentation about "BAM-DMUX". :(
+
+The driver has been used in postmarketOS [2] on various smartphones/tablets
+based on Qualcomm MSM8916 and MSM8974 for a year now with no reported
+problems.
+
+At runtime (but not compile-time), the following two patches are needed
+additionally for full functionality:
+  - https://lore.kernel.org/linux-arm-msm/20210712135703.324748-1-stephan@gerhold.net/
+  - https://lore.kernel.org/linux-arm-msm/20210712135703.324748-2-stephan@gerhold.net/
+
+[1]: https://source.codeaurora.org/quic/la/kernel/msm-3.10/tree/drivers/soc/qcom/bam_dmux.c?h=LA.BR.1.2.9.1-02310-8x16.0
+[2]: https://postmarketos.org/
+
+Stephan Gerhold (4):
+  dt-bindings: dmaengine: bam_dma: Add remote power collapse mode
+  dmaengine: qcom: bam_dma: Add remote power collapse mode
+  dt-bindings: net: Add schema for Qualcomm BAM-DMUX
+  net: wwan: Add Qualcomm BAM-DMUX WWAN network driver
+
+ .../devicetree/bindings/dma/qcom_bam_dma.txt  |   2 +
+ .../bindings/net/qcom,bam-dmux.yaml           |  87 ++
+ MAINTAINERS                                   |   8 +
+ drivers/dma/qcom/bam_dma.c                    |  88 +-
+ drivers/net/wwan/Kconfig                      |  13 +
+ drivers/net/wwan/Makefile                     |   1 +
+ drivers/net/wwan/qcom_bam_dmux.c              | 907 ++++++++++++++++++
+ 7 files changed, 1074 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
+ create mode 100644 drivers/net/wwan/qcom_bam_dmux.c
+
 -- 
-2.30.2
-
-
+2.32.0
 
