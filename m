@@ -2,180 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AAF3CCD31
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 06:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E823CCD2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 06:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhGSEuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 00:50:39 -0400
-Received: from mail-dm6nam11on2044.outbound.protection.outlook.com ([40.107.223.44]:12896
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229512AbhGSEuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 00:50:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TVapaeEgP/Mb/60iea5QUbil1Ww/D4B0xuFHzNE1OifDFiKuGws8+ZfcdpjyLwiIodx/XwImbURzfW0cjPQ0FCDUwvGyKyCmVdOviLP/Fig/dqDUXn8dt4TUVoG4H8jm1UDXNhw4+VhHNwXi+Z2uICJHkiW6gzMdswAgFwGI0KQ3cNx9cdE9MDAzd/2ge7a5rszAU/w01MQDmsni1QXCh/ghnzqfAuxq2O0e7yf/ZUaNumnazk/KetdySsxLKpQPkCDHwTB8Aw31efjYGcu3jiL9TfLNNcDpVdtr77HIFFwxjSjBexuPhOzeK2CifQB9ujEhku8ZZ6ldatuF+wke1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5COegz6ZvBWIbEvm69/AZ2OY6Fr4/gAjjySbfpLvm4=;
- b=DxBwAfui1zPyi2R/lnzpNPY36inaNkfuOjUEfVIaPIiyFccDNtOV7kAYQyfXo1CWd5RgFDMgl0RCkyd4F+FfsjJNAtBUGaNhRGQgXqua1R0Yj50Z1JegkxX6sJ3N+QbNQttBIUaEs+wupIcHLRLs3cKodOHfe+qqXCcYo8IPqeTKIzNdxpk4oyeurVz9oQp5VAbrMket10yk0xMk05sOwijAeDItpgRbF1NcN106lDYQY3XGV/cDhl7balLUIkyrlbZPoaZo9O+oA11ceekUs7njOUV8E+fL8Dp5fUyWclg1DDSnkLxxAWdDz3xAp8caIHGIXImL1i3it/NblRPW6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5COegz6ZvBWIbEvm69/AZ2OY6Fr4/gAjjySbfpLvm4=;
- b=d6hhGsJ0AUMENgnEOyFFq4GouDJF1pUq3JUoxphkMF5YPU2cZwDif171B08vYfvEjC1X9oxO+vO/C3oUAKBwtNt6ocbmCtcR49UAEgio1jcdTMm5q56+6Jq3pFAS5sgMLTtutbCHmcBrIUe1I1aAsKaWmcTMJkBdwkzv93gCC+YaTLORxlEDizQCkfyVVZnaLmHenPK8JHJOR8L7V0lg61MszA+0m/VOcCi2FaRXr/YTuZPHJd+aY158+WvHIA+55XFhVTyWbcMhCcz687y23OLSOk+0WVUg7JzUntYs6MpTSr9WLStktVak/bMhT6J9F3rfsoE/extnWPDBq9a8AA==
-Received: from MWHPR13CA0007.namprd13.prod.outlook.com (2603:10b6:300:16::17)
- by DM6PR12MB4337.namprd12.prod.outlook.com (2603:10b6:5:2a9::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.24; Mon, 19 Jul
- 2021 04:47:37 +0000
-Received: from CO1NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:16:cafe::3a) by MWHPR13CA0007.outlook.office365.com
- (2603:10b6:300:16::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.11 via Frontend
- Transport; Mon, 19 Jul 2021 04:47:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- CO1NAM11FT018.mail.protection.outlook.com (10.13.175.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 04:47:37 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Jul
- 2021 04:47:36 +0000
-Received: from kyarlagadda-linux.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 19 Jul 2021 04:47:33 +0000
-From:   Akhil R <akhilrajeev@nvidia.com>
-To:     <bgolaszewski@baylibre.com>
-CC:     <akhilrajeev@nvidia.com>, <andy.shevchenko@gmail.com>,
-        <jonathanh@nvidia.com>, <kyarlagadda@nvidia.com>,
-        <ldewangan@nvidia.com>, <linus.walleij@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <mperttunen@nvidia.com>,
-        <smangipudi@nvidia.com>, <thierry.reding@gmail.com>
-Subject: [PATCH v6] gpio: tegra186: Add ACPI support
-Date:   Mon, 19 Jul 2021 10:16:41 +0530
-Message-ID: <1626670001-22832-1-git-send-email-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <CAMpxmJWZm_N3yPKa2+32PNOyCUuSbjqWiDBSO3WHjKekZj8Fzg@mail.gmail.com>
-References: <CAMpxmJWZm_N3yPKa2+32PNOyCUuSbjqWiDBSO3WHjKekZj8Fzg@mail.gmail.com>
-X-NVConfidentiality: public
+        id S229764AbhGSEtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 00:49:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:48884 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhGSEte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 00:49:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B309B31B;
+        Sun, 18 Jul 2021 21:46:34 -0700 (PDT)
+Received: from [10.163.64.230] (unknown [10.163.64.230])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 026E33F694;
+        Sun, 18 Jul 2021 21:46:30 -0700 (PDT)
+Subject: Re: [RFC 07/10] arm64/mm: Detect and enable FEAT_LPA2
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, mark.rutland@arm.com, will@kernel.org,
+        catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        steven.price@arm.com
+References: <1626229291-6569-1-git-send-email-anshuman.khandual@arm.com>
+ <1626229291-6569-8-git-send-email-anshuman.khandual@arm.com>
+ <18c42dd0-b6db-d118-dad0-cac0bf6ab2ce@arm.com>
+ <8adefac5-c677-1fca-20dd-bba8543f8d59@arm.com>
+ <429105f9-e967-492e-1d1f-5bb913ef6854@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <a2ba2c98-bcf6-85cc-bdb7-633b5e5aa756@arm.com>
+Date:   Mon, 19 Jul 2021 10:17:20 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c2a2709a-51a1-4958-24a4-08d94a7054fd
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4337:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB43379BE7B044FF4004ADFB02C0E19@DM6PR12MB4337.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1284;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5NZCLkl88BnlbAllZpfKh6z+U58DWo2nPaRDosetS8VBQZn+jRq9vaCCDvUBqA/89/NRziGJKLEZlpUihvMskMcJ+b3/K2tEW3Dh9eetvquaxxQkZlvV9Y/XIZNSlB1lKiZ/rllYLeRnX80Sp+1NpIMG9o7Ld/WlgkuThX3SUKzwm+W32TaSo3rfVTIaQnlpAXkGe6QsFit5vbcFZBjh8sGt1CFG4vmEuGu2aOd1TCMxEUKLVvtXT4qhJBSSmGXPJ+lY+xDUR1JsoV/EPMqgQ1nDWDOk6XfS3VMkFHuzDng3cCDURh1Uo/gdjaKYvQxvLaa0ezkYbACZBYP6ZO2KGlNhQj8K20mU+BWXkng/RL0Z+j/0MbvVi8og+/DHLdI4PB3gKi+mqjjfgZqOtUXpg6dHjHH9zKZvHhWZChmujrAnuq893wuamwQHN2yTrpiZWO4r3SkD8b8YVz4ShvGJuRVutwKGyDaoOnTe//uAdg5Vf4JVsqLcoNUFHyh6yg1kRIJORZoQ/hGknKJU2QBPO0qVdDCw0bCxgA410TK7Frl1Y6VMn7z61kp5cKqAmYZe8DWPfi5f0DzvKdZJe7Xuy732vssiY1yLUK8ASvlQGBAiqpSfSWI4hJqVNIBnJ+r5fGlWeEhu6/odwRuJf7b8YvjHO5syUjcELakesBHxPvGjVQg5gBvdcnx/bO2XyRXA1npgBJ2/3c0gtN8/HU4V8A==
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(346002)(376002)(36840700001)(46966006)(8676002)(7696005)(5660300002)(356005)(54906003)(8936002)(82310400003)(316002)(36906005)(7636003)(36860700001)(70206006)(6666004)(36756003)(6916009)(336012)(426003)(478600001)(83380400001)(186003)(86362001)(2906002)(82740400003)(47076005)(2616005)(70586007)(4326008)(26005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 04:47:37.1135
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2a2709a-51a1-4958-24a4-08d94a7054fd
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4337
+In-Reply-To: <429105f9-e967-492e-1d1f-5bb913ef6854@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ACPI module ID to probe the driver from the ACPI based bootloader
-firmware.
 
-Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
----
-v6 changes:
-	* Rebased on top of v5.14-rc1
 
- drivers/gpio/gpio-tegra186.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+On 7/16/21 1:38 PM, Suzuki K Poulose wrote:
+> On 16/07/2021 08:06, Anshuman Khandual wrote:
+>>
+>> On 7/14/21 1:51 PM, Suzuki K Poulose wrote:
+>>> On 14/07/2021 03:21, Anshuman Khandual wrote:
+>>>> Detect FEAT_LPA2 implementation early enough during boot when requested via
+>>>> CONFIG_ARM64_PA_BITS_52_LPA2 and remember in a variable arm64_lpa2_enabled.
+>>>> This variable could then be used to turn on TCR_EL1.TCR_DS effecting the 52
+>>>> bits PA range or fall back to default 48 bits PA range if FEAT_LPA2 feature
+>>>> was requested but found not to be implemented.
+>>>>
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> ---
+>>>>    arch/arm64/include/asm/memory.h |  1 +
+>>>>    arch/arm64/kernel/head.S        | 15 +++++++++++++++
+>>>>    arch/arm64/mm/mmu.c             |  3 +++
+>>>>    arch/arm64/mm/proc.S            |  9 +++++++++
+>>>>    4 files changed, 28 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+>>>> index 824a365..d0ca002 100644
+>>>> --- a/arch/arm64/include/asm/memory.h
+>>>> +++ b/arch/arm64/include/asm/memory.h
+>>>> @@ -178,6 +178,7 @@
+>>>>    #include <asm/bug.h>
+>>>>      extern u64            vabits_actual;
+>>>> +extern u64            arm64_lpa2_enabled;
+>>>>      extern s64            memstart_addr;
+>>>>    /* PHYS_OFFSET - the physical address of the start of memory. */
+>>>> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+>>>> index 6444147..9cf79ea 100644
+>>>> --- a/arch/arm64/kernel/head.S
+>>>> +++ b/arch/arm64/kernel/head.S
+>>>> @@ -94,6 +94,21 @@ SYM_CODE_START(primary_entry)
+>>>>        adrp    x23, __PHYS_OFFSET
+>>>>        and    x23, x23, MIN_KIMG_ALIGN - 1    // KASLR offset, defaults to 0
+>>>>        bl    set_cpu_boot_mode_flag
+>>>> +
+>>>> +#ifdef CONFIG_ARM64_PA_BITS_52_LPA2
+>>>> +    mrs     x10, ID_AA64MMFR0_EL1
+>>>> +    ubfx    x10, x10, #ID_AA64MMFR0_TGRAN_SHIFT, 4
+>>>> +    cmp     x10, #ID_AA64MMFR0_TGRAN_LPA2
+>>>> +    b.ne    1f
+>>>
+>>> For the sake of forward compatibility, this should be "b.lt"
+>> Right, I guess we could assume that the feature will be present from the
+>> current ID_AA64MMFR0_TGRAN_LPA2 values onward in the future. But should
+>> not this also be capped at ID_AA64MMFR0_TGRAN_SUPPORTED_MAX as the upper
+>> limit is different for 4K and 16K page sizes.
+> 
+> Absolutely.
 
-diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
-index d38980b..046b7c8 100644
---- a/drivers/gpio/gpio-tegra186.c
-+++ b/drivers/gpio/gpio-tegra186.c
-@@ -610,15 +610,21 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
- 	if (!gpio)
- 		return -ENOMEM;
- 
--	gpio->soc = of_device_get_match_data(&pdev->dev);
-+	gpio->soc = device_get_match_data(&pdev->dev);
- 
- 	gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
--	if (IS_ERR(gpio->secure))
--		return PTR_ERR(gpio->secure);
-+	if (IS_ERR(gpio->secure)) {
-+		gpio->secure = devm_platform_ioremap_resource(pdev, 0);
-+		if (IS_ERR(gpio->secure))
-+			return PTR_ERR(gpio->secure);
-+	}
- 
- 	gpio->base = devm_platform_ioremap_resource_byname(pdev, "gpio");
--	if (IS_ERR(gpio->base))
--		return PTR_ERR(gpio->base);
-+	if (IS_ERR(gpio->base)) {
-+		gpio->base = devm_platform_ioremap_resource(pdev, 1);
-+		if (IS_ERR(gpio->base))
-+			return PTR_ERR(gpio->base);
-+	}
- 
- 	err = platform_irq_count(pdev);
- 	if (err < 0)
-@@ -680,11 +686,13 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
- 
- 	gpio->gpio.names = (const char * const *)names;
- 
-+#if defined(CONFIG_OF_GPIO)
- 	gpio->gpio.of_node = pdev->dev.of_node;
- 	gpio->gpio.of_gpio_n_cells = 2;
- 	gpio->gpio.of_xlate = tegra186_gpio_of_xlate;
-+#endif /* CONFIG_OF_GPIO */
- 
--	gpio->intc.name = pdev->dev.of_node->name;
-+	gpio->intc.name = dev_name(&pdev->dev);
- 	gpio->intc.irq_ack = tegra186_irq_ack;
- 	gpio->intc.irq_mask = tegra186_irq_mask;
- 	gpio->intc.irq_unmask = tegra186_irq_unmask;
-@@ -896,10 +904,20 @@ static const struct of_device_id tegra186_gpio_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, tegra186_gpio_of_match);
- 
-+static const struct acpi_device_id  tegra186_gpio_acpi_match[] = {
-+	{ .id = "NVDA0108", .driver_data = (kernel_ulong_t)&tegra186_main_soc },
-+	{ .id = "NVDA0208", .driver_data = (kernel_ulong_t)&tegra186_aon_soc },
-+	{ .id = "NVDA0308", .driver_data = (kernel_ulong_t)&tegra194_main_soc },
-+	{ .id = "NVDA0408", .driver_data = (kernel_ulong_t)&tegra194_aon_soc },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(acpi, tegra186_gpio_acpi_match);
-+
- static struct platform_driver tegra186_gpio_driver = {
- 	.driver = {
- 		.name = "tegra186-gpio",
- 		.of_match_table = tegra186_gpio_of_match,
-+		.acpi_match_table = tegra186_gpio_acpi_match,
- 	},
- 	.probe = tegra186_gpio_probe,
- };
--- 
-2.7.4
-
+ID_AA64MMFR0_TGRAN_SUPPORTED_MAX check there is not required as __enable_mmu()
+already performs the required boundary check for a given page size support.
