@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A2B3CE691
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D2C3CE6AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349674AbhGSQIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:08:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40562 "EHLO mail.kernel.org"
+        id S1350770AbhGSQL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344689AbhGSPH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:07:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FC4760FD7;
-        Mon, 19 Jul 2021 15:47:44 +0000 (UTC)
+        id S1345096AbhGSPHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:07:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 059866121F;
+        Mon, 19 Jul 2021 15:48:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709665;
-        bh=iifnX91AN+L2jLWiw4nnHxUcq6QolYgUh6Mjh5RIBdw=;
+        s=korg; t=1626709683;
+        bh=cjFLiYvpXgJg5R8/A0oRgy/TxHOhY+yBWW71dNTeMZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sag/CqF36LXrylHrL/ay/u5V/od+g5MTZwGeW+Uxurnt3G/pbHyJGlyRPgnoHHf9/
-         UJbIQNTAW2hB5HHpwwUD7gHlVG5W+O1anFOyTupY8K3Cz/D4sVxEBADHlIVQfvU1h4
-         oNGB+S7qSfzfdX0043U4/nP9Ihx+AnXOLyXPxnH8=
+        b=z23eXDQbkGD13kY1JbYx5KqM9fndwriaVmsfxKfg/ZG2NGZEwIdV2Bhh5k8zTHXbE
+         UwFZuoENZSbMtVTHs+Nn57wD0B8M/+/aCi376ErO1dzOQFNitYEp+DtOR7zmIhlszX
+         uudnuYM6yzf54tX/e8+jo6cvyfhDR5lzePh3zB6U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        John Garry <john.garry@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yufen Yu <yuyufen@huawei.com>, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 022/149] scsi: core: Cap scsi_host cmd_per_lun at can_queue
-Date:   Mon, 19 Jul 2021 16:52:10 +0200
-Message-Id: <20210719144906.767188521@linuxfoundation.org>
+Subject: [PATCH 5.4 023/149] ALSA: ac97: fix PM reference leak in ac97_bus_remove()
+Date:   Mon, 19 Jul 2021 16:52:11 +0200
+Message-Id: <20210719144907.023364346@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
 References: <20210719144901.370365147@linuxfoundation.org>
@@ -42,49 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Garry <john.garry@huawei.com>
+From: Yufen Yu <yuyufen@huawei.com>
 
-[ Upstream commit ea2f0f77538c50739b9fb4de4700cee5535e1f77 ]
+[ Upstream commit a38e93302ee25b2ca6f4ee76c6c974cf3637985e ]
 
-The sysfs handling function sdev_store_queue_depth() enforces that the sdev
-queue depth cannot exceed shost can_queue. The initial sdev queue depth
-comes from shost cmd_per_lun. However, the LLDD may manually set
-cmd_per_lun to be larger than can_queue, which leads to an initial sdev
-queue depth greater than can_queue.
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Such an issue was reported in [0], which caused a hang. That has since been
-fixed in commit fc09acb7de31 ("scsi: scsi_debug: Fix cmd_per_lun, set to
-max_queue").
-
-Stop this possibly happening for other drivers by capping shost cmd_per_lun
-at shost can_queue.
-
-[0] https://lore.kernel.org/linux-scsi/YHaez6iN2HHYxYOh@T590/
-
-Link: https://lore.kernel.org/r/1621434662-173079-1-git-send-email-john.garry@huawei.com
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yufen Yu <yuyufen@huawei.com>
+Link: https://lore.kernel.org/r/20210524093811.612302-1-yuyufen@huawei.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/hosts.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/ac97/bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
-index 119c292cdb8f..7c736e4ddafe 100644
---- a/drivers/scsi/hosts.c
-+++ b/drivers/scsi/hosts.c
-@@ -219,6 +219,9 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
- 		goto fail;
- 	}
+diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
+index 7985dd8198b6..99e1728b52ae 100644
+--- a/sound/ac97/bus.c
++++ b/sound/ac97/bus.c
+@@ -520,7 +520,7 @@ static int ac97_bus_remove(struct device *dev)
+ 	struct ac97_codec_driver *adrv = to_ac97_driver(dev->driver);
+ 	int ret;
  
-+	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
-+				   shost->can_queue);
-+
- 	error = scsi_init_sense_cache(shost);
- 	if (error)
- 		goto fail;
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.30.2
 
