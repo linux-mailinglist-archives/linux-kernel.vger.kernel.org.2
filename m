@@ -2,193 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB583CD476
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC133CD470
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236907AbhGSLbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
+        id S236881AbhGSLb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236896AbhGSLbr (ORCPT
+        with ESMTP id S236865AbhGSLb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:31:47 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8D2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 04:27:25 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id b14so15729180ilf.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 05:12:27 -0700 (PDT)
+        Mon, 19 Jul 2021 07:31:27 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDDCC061766
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 04:27:03 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id dj21so23727968edb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 05:12:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ILUF7qjRxTiocP1Zp+X8u/f+lmCGdZuIc0GgBU021os=;
-        b=YQi681anoX0pIB4Jii3ZDrwQMz2PA9iYkCP0VerlJqUM9AFuH9CM3qLuLXVLu1n22r
-         nKECvsAkuo4B/IGXUYrrD1BMQToItpOldCUA/t9wUr69frZ6peTVrDKMjy0oT/4RiN0x
-         P/4Nn60BNX8zd0mLiA3UYyG5YQX8kSRgffRPcBIyWWAoyexO+pUNCTbgUua09D1nfLmk
-         2i9RrdDcYaO13Znk9LYBOgjc6DU/a8TIo6qVed8OYzzZp1q5VySzMHZQsAXHZ0YB4C0P
-         lHgr/IZXNIAFV6Qiv+hMVXxA50H31zaohpS8lP6ZCII2JcpAxEPOV0SWMwfWmjcTvEzI
-         FWNQ==
+        bh=/UU/c96xB2XnsKcImXrMAG0NX8G+S47OMuRsfPPQPuI=;
+        b=CK1gkwphNUpnV7qz0pEiNQPARKls7lgV4k0YhHtRviZNNNf9pduPYAm6rasO2Z4JYq
+         yCfq8C7eKnhN+sLicDffhTPpp6ANXP4DqCoi59AQthWxFpsbTPcmXNQxiSf4zkbTW0pW
+         K3aY/qy6QxN6TUQ+ylVmRuiz2j60u5w0PKO//4WhJzkw8/BP/YMkgXaltIlAxAr5v94A
+         fKQ0wT14If3pjD//EisFpRLYUCGqpzt6ZOREOCfMTFpNyAAbyVqgTwrKeuMjTSC4anJJ
+         Vb2nRPBLSF9PjEe+M0s5mDp+DlyqqAgbMhs3l4NUalgsijVHBhCBnMXqQ6NfFE39Zzyf
+         K6dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ILUF7qjRxTiocP1Zp+X8u/f+lmCGdZuIc0GgBU021os=;
-        b=c+Zy4Fx8/+NfDBN/6yXN3ljsXJBSZxy3DsQGvS5+wtQxws+08EbAGy5H/XOGq4hL0M
-         dBwMz5N+RXOcglvBy0hJ8DgMVZNgQ7UUFXL3SFmV2Bj9sMMKQ6hNSMWoQhPMgFG/WLF4
-         DJjuqHRibGdRqu06bswyIOWVzlIUUxh13RSyddvVGMzCd9K8yPfEfx29N/Zgozyf0ELp
-         Bsa+RyxtO/PDV5w/PNjQddPmFq+LwltAB0TcEo7ml6+GDkCGatsUr1/oN9bXHM4A0bv5
-         2XQcTE8a0nE4yMwl5jL9xd9BuyO0LevQLbKxONlEimM5hV4qy9asRLWbzEZ50JATTVBA
-         xUhg==
-X-Gm-Message-State: AOAM532sSENkPJ/toejYGdln1pXXp0qQz01XxQsjIJykX6vkRylxmRbr
-        Y+wjOCwCvkhBvyOrgTAIUX6F9i4YnS3BhP3//G4=
-X-Google-Smtp-Source: ABdhPJxQDiUupSHCfHAq9gN5Nlhipomd917y/uOQycCZMABwOzToCTbtI+ydFttSH8eN0CVrqTqkoO/G7zf8lpbdWaI=
-X-Received: by 2002:a92:b003:: with SMTP id x3mr16933404ilh.93.1626696746821;
- Mon, 19 Jul 2021 05:12:26 -0700 (PDT)
+        bh=/UU/c96xB2XnsKcImXrMAG0NX8G+S47OMuRsfPPQPuI=;
+        b=raejg82S3BG85l8mMrf2q980yK+G/7kNtUQcL61jA6u4TWpZ9sk0b1S4k03KgFMFSq
+         zJFlcTgUIKl9O8NfNy9Y3EMAfWtZMO2qRH37xZEmhV17HBnwX8WJCHM/ayTi0XrvMD0f
+         FJVtI71cblLt2b5iWQbR3zQs5u/5u4GOYdxnTbfdWpdAd1/KwbFWk8WUl2aL9giDHLOD
+         liino1V0Sgw5BvJwrKopg3sjIbOyvaP1e5uTr7QJc6/t1DMDdvplpZz4A7vUBu467+kw
+         f2e9TBuTiyeU5QM112gJIYKXsio+rAkrqF1SpNQXeLvBoz8W21W9+7h0eDyeOcp9guV+
+         O3Kg==
+X-Gm-Message-State: AOAM5306V0m9V3h6EMbi7LDfYt1z9S5NhlEY4bEgmFoxN6QvHu09ujDP
+        HT48GImkCia1GsUlmLufph0vgQYazy4FTrEyH/j7Sw==
+X-Google-Smtp-Source: ABdhPJxzmls3MdY2v2rmmBRiXXunC11WlDfin6gHks3OmV5v5L2L+bdoxTg7/Z6IALIyVbWP7RXCTZMIZTIgJWrEzIY=
+X-Received: by 2002:a05:6402:152:: with SMTP id s18mr33808453edu.221.1626696725478;
+ Mon, 19 Jul 2021 05:12:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <CALOAHbAS26LP2p9Fe7m6xynZmazYENmx_HfTV4LebwPWr7XLmA@mail.gmail.com>
- <dfbe1030-05bf-3371-bc0a-56f79dcd6f39@arm.com>
-In-Reply-To: <dfbe1030-05bf-3371-bc0a-56f79dcd6f39@arm.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Mon, 19 Jul 2021 20:11:50 +0800
-Message-ID: <CALOAHbBLTwjnYyqdSkAqzT=X9v-NSygM0rfK_Bk5JMwZ6vB_fQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] sched: do active load balance in balance callback
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1626362126-27775-1-git-send-email-alan.maguire@oracle.com> <1626362126-27775-2-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1626362126-27775-2-git-send-email-alan.maguire@oracle.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 19 Jul 2021 17:41:53 +0530
+Message-ID: <CA+G9fYtqga+zMop8Ae3+fa1ENP2T8fwfFfwWmvfRWZSYB7cPDw@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 1/3] libbpf: BTF dumper support for typed data
+To:     Alan Maguire <alan.maguire@oracle.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john.fastabend@gmail.com, kpsingh@kernel.org, morbo@google.com,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 10:23 PM Dietmar Eggemann
-<dietmar.eggemann@arm.com> wrote:
+On Thu, 15 Jul 2021 at 20:46, Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> On 11/07/2021 09:40, Yafang Shao wrote:
-> > The active load balance which means to migrate the CFS task running on
-> > the busiest CPU to the new idle CPU has a known issue[1][2] that
-> > there are some race window between waking up the migration thread on the
-> > busiest CPU and it begins to preempt the current running CFS task.
-> > These race window may cause unexpected behavior that the latency
-> > sensitive RT tasks may be preempted by the migration thread as it has a
-> > higher priority.
-> >
-> > This RFC patch tries to improve this situation. Instead of waking up the
-> > migration thread to do this work, this patch do it in the balance
-> > callback as follows,
-> >
-> >      The New idle CPUm                The target CPUn
-> >      find the target task A           CFS task A is running
-> >      queue it into the target CPUn    A is scheduling out
-> >                                       do balance callback and migrate A to CPUm
-> > It avoids two context switches - task A to migration/n and migration/n to
-> > task B. And it avoids preempting the RT task if the RT task has already
-> > preempted task A before we do the queueing.
-> >
-> > TODO:
-> > - I haven't done some benchmark to measure the impact on performance
-> > - To avoid deadlock I have to unlock the busiest_rq->lock before
-> >   calling attach_one_task() and lock it again after executing
-> >   attach_one_task(). That may re-introduce the issue addressed by
-> >   commit 565790d28b1e ("sched: Fix balance_callback()")
-> >
-> > [1]. https://lore.kernel.org/lkml/CAKfTPtBygNcVewbb0GQOP5xxO96am3YeTZNP5dK9BxKHJJAL-g@mail.gmail.com/
-> > [2]. https://lore.kernel.org/lkml/20210615121551.31138-1-laoar.shao@gmail.com/
+> Add a BTF dumper for typed data, so that the user can dump a typed
+> version of the data provided.
 >
-> This didn't apply for me and I guess won't compile on tip/sched/core:
+> The API is
 >
-> raw_spin_{,un}lock(&busiest_rq->lock) -> raw_spin_rq_{,un}lock(busiest_rq)
+> int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+>                              void *data, size_t data_sz,
+>                              const struct btf_dump_type_data_opts *opts);
 >
-> p->state == TASK_RUNNING -> p->__state or task_is_running(p)
+> ...where the id is the BTF id of the data pointed to by the "void *"
+> argument; for example the BTF id of "struct sk_buff" for a
+> "struct skb *" data pointer.  Options supported are
 >
+>  - a starting indent level (indent_lvl)
+>  - a user-specified indent string which will be printed once per
+>    indent level; if NULL, tab is chosen but any string <= 32 chars
+>    can be provided.
+>  - a set of boolean options to control dump display, similar to those
+>    used for BPF helper bpf_snprintf_btf().  Options are
+>         - compact : omit newlines and other indentation
+>         - skip_names: omit member names
+>         - emit_zeroes: show zero-value members
+>
+> Default output format is identical to that dumped by bpf_snprintf_btf(),
+> for example a "struct sk_buff" representation would look like this:
+>
+> struct sk_buff){
+>         (union){
+>                 (struct){
+>                         .next = (struct sk_buff *)0xffffffffffffffff,
+>                         .prev = (struct sk_buff *)0xffffffffffffffff,
+>                 (union){
+>                         .dev = (struct net_device *)0xffffffffffffffff,
+>                         .dev_scratch = (long unsigned int)18446744073709551615,
+>                 },
+>         },
+> ...
+>
+> If the data structure is larger than the *data_sz*
+> number of bytes that are available in *data*, as much
+> of the data as possible will be dumped and -E2BIG will
+> be returned.  This is useful as tracers will sometimes
+> not be able to capture all of the data associated with
+> a type; for example a "struct task_struct" is ~16k.
+> Being able to specify that only a subset is available is
+> important for such cases.  On success, the amount of data
+> dumped is returned.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  tools/lib/bpf/btf.h      |  19 ++
+>  tools/lib/bpf/btf_dump.c | 819 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  tools/lib/bpf/libbpf.map |   1 +
+>  3 files changed, 834 insertions(+), 5 deletions(-)
 
-I made this patch based on Linus's tree. I will do it based on tip/sched/core.
+<trim>
 
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/sched/core.c  |  1 +
-> >  kernel/sched/fair.c  | 69 ++++++++++++++------------------------------
-> >  kernel/sched/sched.h |  6 +++-
-> >  3 files changed, 28 insertions(+), 48 deletions(-)
-> >
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 4ca80df205ce..a0a90a37e746 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -8208,6 +8208,7 @@ void __init sched_init(void)
-> >                 rq->cpu_capacity = rq->cpu_capacity_orig = SCHED_CAPACITY_SCALE;
-> >                 rq->balance_callback = &balance_push_callback;
-> >                 rq->active_balance = 0;
-> > +               rq->active_balance_target = NULL;
-> >                 rq->next_balance = jiffies;
-> >                 rq->push_cpu = 0;
-> >                 rq->cpu = i;
->
-> [...]
->
-> > +DEFINE_PER_CPU(struct callback_head, active_balance_head);
-> > +
-> >  /*
-> >   * Check this_cpu to ensure it is balanced within domain. Attempt to move
-> >   * tasks if there is an imbalance.
-> > @@ -9845,15 +9817,14 @@ static int load_balance(int this_cpu, struct
-> > rq *this_rq,
-> >                         if (!busiest->active_balance) {
-> >                                 busiest->active_balance = 1;
-> >                                 busiest->push_cpu = this_cpu;
-> > +                               busiest->active_balance_target = busiest->curr;
-> >                                 active_balance = 1;
-> >                         }
-> > -                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
-> >
-> > -                       if (active_balance) {
-> > -                               stop_one_cpu_nowait(cpu_of(busiest),
-> > -                                       active_load_balance_cpu_stop, busiest,
-> > -                                       &busiest->active_balance_work);
-> > -                       }
-> > +                       if (active_balance)
-> > +                               queue_balance_callback(busiest,
-> > &per_cpu(active_balance_head, busiest->cpu),
-> > active_load_balance_cpu_stop);
->
->
-> When you defer the active load balance of p into a balance_callback
-> (from __schedule()) p has to stop running on busiest, right?
-
-Right. But p doesn't have to stop running it immediately.
-
-> Deferring active load balance for too long might be defeat the purpose
-> of load balance which has to happen now.
->
-
-Maybe we need to do some benchmark to measure whether it is proper to
-deter the active load balance.
-But I don't know which benchmark is suitable now.
-
-> Also, before balance_callback get invoked,  active balancing might try
-> to migrate p again and again but fails because `busiest->active_balance`
-> is still 1 (you kept this former synchronization meant for
-> active_balance_work). In this case the likelihood increases that one of
-> the error condition in active_load_balance_cpu_stop() hit when it's
-> finally called.
->
-
-Seems that is a problem. I will think about it.
-
-> What's wrong with the FIFO-1 "stopper" for CFS active lb?
->
-
-We have to introduce another per-cpu kernel thread, but I don't know
-whether it is worth doing it.
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 5dc6b517..929cf93 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
 
 
--- 
-Thanks
-Yafang
+Following perf build errors noticed on i386 and arm 32-bit architectures on
+linux next 20210719 tag with gcc-11.
+
+metadata:
+--------------
+   git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+   git_short_log: 08076eab6fef ( Add linux-next specific files for 20210719 )
+   toolchain: gcc-11
+   target_arch: arm and i386
+
+
+> +static void btf_dump_int128(struct btf_dump *d,
+> +                           const struct btf_type *t,
+> +                           const void *data)
+> +{
+> +       __int128 num = *(__int128 *)data;
+
+
+btf_dump.c: In function 'btf_dump_int128':
+btf_dump.c:1559:9: error: expected expression before '__int128'
+ 1559 |         __int128 num = *(__int128 *)data;
+      |         ^~~~~~~~
+btf_dump.c:1561:14: error: 'num' undeclared (first use in this function)
+ 1561 |         if ((num >> 64) == 0)
+      |              ^~~
+btf_dump.c:1561:14: note: each undeclared identifier is reported only
+once for each function it appears in
+btf_dump.c: At top level:
+btf_dump.c:1568:17: error: '__int128' is not supported on this target
+ 1568 | static unsigned __int128 btf_dump_bitfield_get_data(struct btf_dump *d,
+      |                 ^~~~~~~~
+btf_dump.c: In function 'btf_dump_bitfield_get_data':
+btf_dump.c:1576:18: error: '__int128' is not supported on this target
+ 1576 |         unsigned __int128 num = 0, ret;
+      |                  ^~~~~~~~
+btf_dump.c: In function 'btf_dump_bitfield_check_zero':
+btf_dump.c:1608:9: error: expected expression before '__int128'
+ 1608 |         __int128 check_num;
+      |         ^~~~~~~~
+btf_dump.c:1610:9: error: 'check_num' undeclared (first use in this function)
+ 1610 |         check_num = btf_dump_bitfield_get_data(d, t, data,
+bits_offset, bit_sz);
+      |         ^~~~~~~~~
+btf_dump.c: In function 'btf_dump_bitfield_data':
+btf_dump.c:1622:18: error: '__int128' is not supported on this target
+ 1622 |         unsigned __int128 print_num;
+      |                  ^~~~~~~~
+btf_dump.c: In function 'btf_dump_dump_type_data':
+btf_dump.c:2212:34: error: '__int128' is not supported on this target
+ 2212 |                         unsigned __int128 print_num;
+      |                                  ^~~~~~~~
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+reference build link,
+build: https://builds.tuxbuild.com/1vWeCpIox9EoV35c80bwOvU9nbb/
+config: https://builds.tuxbuild.com/1vWeCpIox9EoV35c80bwOvU9nbb/config
+
+
+steps to reproduce:
+---------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+
+tuxmake --runtime podman --target-arch arm --toolchain gcc-11
+--kconfig defconfig --kconfig-add
+https://builds.tuxbuild.com/1vWeCpIox9EoV35c80bwOvU9nbb/config
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
