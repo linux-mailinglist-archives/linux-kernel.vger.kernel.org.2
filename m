@@ -2,102 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621703CED11
+	by mail.lfdr.de (Postfix) with ESMTP id AB9903CED12
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382887AbhGSRnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S1382904AbhGSRnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376972AbhGSRGZ (ORCPT
+        with ESMTP id S1351006AbhGSRJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 13:06:25 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37B5C06178C;
-        Mon, 19 Jul 2021 10:29:04 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 70so16385915pgh.2;
-        Mon, 19 Jul 2021 10:46:17 -0700 (PDT)
+        Mon, 19 Jul 2021 13:09:15 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EB5C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:33:00 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so26352221ybp.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:49:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=567lMHe3NlgilbfxJyqh3uDUfUKAOXLKcBBON8GKkVE=;
-        b=t0xchnQD1+iKAiFXsM8I7l2XPZrmqZpq/+BsTcJVkTjgv97DH0dJwwNgjsA8gOQFUu
-         80Q3+OxWeU0MJN4in9P8Cqn2701zeLLmx1O688lwZQjA9rrjBw92TdW7pxZCl5eRXvZQ
-         Bi66qINxokIlVrPBeZVoAi10AkHZABHlD7yPqsO9TDFpgwNnxOCaaJUWBMqJ1rzcC8Lc
-         V2mzZ2nzV2z9eIi9rByn1/xrog/qwXWq5S1gCnPw4GynWxjfqrCVS8p3ZONF0jqwRHkJ
-         Li//zQzn1u1hLz4/VcxZJAJMBmpAKR82C+jCt2+Zzbwl5rBg1rKnvgLq4HC2XPgeDD+W
-         keZA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=PnXVhrtpNSY8K6Airi4QeOTjIwthOHKmstGMgKKPkpY=;
+        b=iCuEeYmkBQV0IrOLOqGgEnK87nSyTq8HZW7FgmwoyBn7B+EQAPwF+dh/7AaoO23Io7
+         U2i3AlWBrM+k13XwrErsH6yeMJtNfW9PR0d2AZN0Vbxz7iq47QgjLKhF6MQ2eNlnG6c/
+         LDDEoVlsdn61egfVBdAlzdOKS6EWywGU2dXXOYrci99AhCIMqxJyCQwsjIVUixonOFvB
+         mMQT2078h7ISy0AHrEElEMX7YaFu/zrkxYMfxPiZrVMZCzbPWwKlACYmQgQQybK6RIiI
+         ujfxFjqhgJ7ZBc9fWHkvMnlzdSAvfyHP4KtOfIh8h38IjIZKgtO/l53VEIP9dfvOBBN/
+         J9KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=567lMHe3NlgilbfxJyqh3uDUfUKAOXLKcBBON8GKkVE=;
-        b=MCHRPosdN5c5KUUxpSyQOdeU/ImsWaT3MkicP1iug2AdbrHKIbCPlpFBOVN2MMhDrk
-         uC1AvthZHr4Dh4H37Y2T2NMSdyVpQwGOWuVmfIvlgwAMIvLwvVidlShMlO60yRfsRJIO
-         eGh2YkvS4doP8uNdluLw0AJ73srxAm/QKmH6YFcqrBf9pAwMuwNiapiBbocv/okehjYl
-         lGAm941iIy88I0XqRxsKFzyX6BOaTtX2dvmHO72wbAeuVqLuZhOkEw4Kme/GLMZfc6TR
-         dZnoVOtVIq9JbrkLMV+2Pa+OsgQta82PzfCElFmEsif+aD2/JQrPOlXyUKTJg79petzD
-         78Qw==
-X-Gm-Message-State: AOAM530TASZk3Jkr0nDcz1LDObRPC9MKetkuSOBKNVGnan0WE9b7/riM
-        zqbt1OoMqq+SPHNqLAZURkWOEJqeHcMJjA==
-X-Google-Smtp-Source: ABdhPJwwdYvh2bILtb63ANKpGRqLAoqdZifLUcDO03Pco3zlAEET3iCf1uaF27Q21gQKpoOTvVfq+g==
-X-Received: by 2002:aa7:938c:0:b029:32a:1725:a3d7 with SMTP id t12-20020aa7938c0000b029032a1725a3d7mr27140847pfe.64.1626716776682;
-        Mon, 19 Jul 2021 10:46:16 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l7sm9694723pfd.164.2021.07.19.10.46.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 10:46:16 -0700 (PDT)
-Subject: Re: [PATCH 5.4 000/149] 5.4.134-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210719144901.370365147@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <fc7a7b3a-26d2-dd9b-131f-00a1c558d729@gmail.com>
-Date:   Mon, 19 Jul 2021 10:46:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=PnXVhrtpNSY8K6Airi4QeOTjIwthOHKmstGMgKKPkpY=;
+        b=tH3xP47DC/S36f1wDPRnRPaFO2rN+yIB1PW3Q/E0h5T5lJqKADC+QU0pQaeEd9Dxhr
+         8Y557LY6ETr14pG1G1ZuVobROVi7X3ow0XNVdgS8UhweyBEUWFwreu2c4NZv9gmmpO3l
+         o32NibwQ6bNhxP9POD+X8ZFNhgsooITZKY0N8y8S4voA8boB6j7FLIeg0vtOKrNuMmlR
+         XEITworGdsKkazQLdFkKy6M+VRGOTFg3iky2iJmoKadBrp6HWLedTW3962DtEn+xVAIX
+         wJVreI6waYSfu0ZZDy2CLZuh03SMxEau96HJV3CtpvyIMW7kL0y0I8wxo437ZRRN7VID
+         R+wA==
+X-Gm-Message-State: AOAM53124LTKDZfkubQcqzl1ZRzHUeEeBFFBATtRVcKDoLTSpSltXswA
+        uVz+zqX8f13CHegCeOV1zupwmH1mgDvH0kiwIog=
+X-Google-Smtp-Source: ABdhPJz8wyNXMxuGt80LWKGnbEA7XJMFzTizQr6iwKCqeSTDw6lI7w+O9iDxkJN+c4lwACL6hpoNTY2+WletpOZ7NDg=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:38da:abb3:1d37:359d])
+ (user=samitolvanen job=sendgmr) by 2002:a25:a565:: with SMTP id
+ h92mr32480939ybi.423.1626716994474; Mon, 19 Jul 2021 10:49:54 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 10:49:51 -0700
+Message-Id: <20210719174951.4087373-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+Subject: [PATCH v2] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 7:51 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.134 release.
-> There are 149 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.134-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+With CONFIG_LTO_CLANG, we currently link modules into native
+code just before modpost, which means with TRIM_UNUSED_KSYMS
+enabled, we still look at the LLVM bitcode in the .o files when
+generating the list of used symbols. As the bitcode doesn't
+yet have calls to compiler intrinsics and llvm-nm doesn't see
+function references that only exist in function-level inline
+assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
+work with LTO.
 
-If you need to post an rc2, could you also pick up:
+This change moves module LTO linking to happen earlier, and
+thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
+entirely, allowing us to also drop the whitelist from
+gen_autoksyms.sh.
 
-d0244847f9fc5e20df8b7483c8a4717fe0432d38 ("mmc: sdhci: Fix warning
-message when accessing RPMB in HS400 mode") which is in 4.9, 4.14 and
-4.19 stable queues but not stable 5.4 and beyond. Thanks!
+Link: https://github.com/ClangBuiltLinux/linux/issues/1369
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Alexander Lobakin <alobakin@pm.me>
+Tested-by: Alexander Lobakin <alobakin@pm.me>
+---
+Changes in v2:
+- Fixed a couple of typos.
+- Fixed objtool arguments for .lto.o to always include --module.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+---
+ scripts/Makefile.build    | 24 +++++++++++++++++++++++-
+ scripts/Makefile.lib      |  7 +++++++
+ scripts/Makefile.modfinal | 21 ++-------------------
+ scripts/Makefile.modpost  | 22 +++-------------------
+ scripts/gen_autoksyms.sh  | 12 ------------
+ 5 files changed, 35 insertions(+), 51 deletions(-)
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 02197cb8e3a7..778dabea3a89 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -271,12 +271,34 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
+ 
++ifdef CONFIG_LTO_CLANG
++# Module .o files may contain LLVM bitcode, compile them into native code
++# before ELF processing
++quiet_cmd_cc_lto_link_modules = LTO [M] $@
++cmd_cc_lto_link_modules =						\
++	$(LD) $(ld_flags) -r -o $@					\
++		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
++			echo -T $(@:.lto.o=.o.symversions))		\
++		--whole-archive $^
++
++ifdef CONFIG_STACK_VALIDATION
++# objtool was skipped for LLVM bitcode, run it now that we have compiled
++# modules into native code
++cmd_cc_lto_link_modules += ;						\
++	$(objtree)/tools/objtool/objtool $(objtool_args) --module	\
++		$(@:.ko=$(mod-prelink-ext).o)
++endif
++
++$(obj)/%.lto.o: $(obj)/%.o
++	$(call if_changed,cc_lto_link_modules)
++endif
++
+ cmd_mod = { \
+ 	echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
+ 	$(undefined_syms) echo; \
+ 	} > $@
+ 
+-$(obj)/%.mod: $(obj)/%.o FORCE
++$(obj)/%.mod: $(obj)/%$(mod-prelink-ext).o FORCE
+ 	$(call if_changed,mod)
+ 
+ quiet_cmd_cc_lst_c = MKLST   $@
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 10950559b223..af1c920a585c 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -225,6 +225,13 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
+ 		 $(addprefix -I,$(DTC_INCLUDE))                          \
+ 		 -undef -D__DTS__
+ 
++ifeq ($(CONFIG_LTO_CLANG),y)
++# With CONFIG_LTO_CLANG, .o files in modules might be LLVM bitcode, so we
++# need to run LTO to compile them into native code (.lto.o) before further
++# processing.
++mod-prelink-ext := .lto
++endif
++
+ # Objtool arguments are also needed for modfinal with LTO, so we define
+ # then here to avoid duplication.
+ objtool_args =								\
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 5e9b8057fb24..ff805777431c 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -9,7 +9,7 @@ __modfinal:
+ include include/config/auto.conf
+ include $(srctree)/scripts/Kbuild.include
+ 
+-# for c_flags and objtool_args
++# for c_flags and mod-prelink-ext
+ include $(srctree)/scripts/Makefile.lib
+ 
+ # find all modules listed in modules.order
+@@ -30,23 +30,6 @@ quiet_cmd_cc_o_c = CC [M]  $@
+ 
+ ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
+ 
+-ifdef CONFIG_LTO_CLANG
+-# With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
+-# avoid a second slow LTO link
+-prelink-ext := .lto
+-
+-# ELF processing was skipped earlier because we didn't have native code,
+-# so let's now process the prelinked binary before we link the module.
+-
+-ifdef CONFIG_STACK_VALIDATION
+-cmd_ld_ko_o +=								\
+-	$(objtree)/tools/objtool/objtool $(objtool_args)		\
+-		$(@:.ko=$(prelink-ext).o);
+-
+-endif # CONFIG_STACK_VALIDATION
+-
+-endif # CONFIG_LTO_CLANG
+-
+ quiet_cmd_ld_ko_o = LD [M]  $@
+       cmd_ld_ko_o +=							\
+ 	$(LD) -r $(KBUILD_LDFLAGS)					\
+@@ -72,7 +55,7 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+ 
+ 
+ # Re-generate module BTFs if either module's .ko or vmlinux changed
+-$(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
++$(modules): %.ko: %$(mod-prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
+ 	+$(call if_changed_except,ld_ko_o,vmlinux)
+ ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+ 	+$(if $(newer-prereqs),$(call cmd,btf_ko))
+diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+index c383ba33d837..eef56d629799 100644
+--- a/scripts/Makefile.modpost
++++ b/scripts/Makefile.modpost
+@@ -41,7 +41,7 @@ __modpost:
+ include include/config/auto.conf
+ include $(srctree)/scripts/Kbuild.include
+ 
+-# for ld_flags
++# for mod-prelink-ext
+ include $(srctree)/scripts/Makefile.lib
+ 
+ MODPOST = scripts/mod/modpost								\
+@@ -118,22 +118,6 @@ $(input-symdump):
+ 	@echo >&2 '         Modules may not have dependencies or modversions.'
+ 	@echo >&2 '         You may get many unresolved symbol warnings.'
+ 
+-ifdef CONFIG_LTO_CLANG
+-# With CONFIG_LTO_CLANG, .o files might be LLVM bitcode, so we need to run
+-# LTO to compile them into native code before running modpost
+-prelink-ext := .lto
+-
+-quiet_cmd_cc_lto_link_modules = LTO [M] $@
+-cmd_cc_lto_link_modules =						\
+-	$(LD) $(ld_flags) -r -o $@					\
+-		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
+-			echo -T $(@:.lto.o=.o.symversions))		\
+-		--whole-archive $^
+-
+-%.lto.o: %.o
+-	$(call if_changed,cc_lto_link_modules)
+-endif
+-
+ modules := $(sort $(shell cat $(MODORDER)))
+ 
+ # KBUILD_MODPOST_WARN can be set to avoid error out in case of undefined symbols
+@@ -144,9 +128,9 @@ endif
+ # Read out modules.order to pass in modpost.
+ # Otherwise, allmodconfig would fail with "Argument list too long".
+ quiet_cmd_modpost = MODPOST $@
+-      cmd_modpost = sed 's/\.ko$$/$(prelink-ext)\.o/' $< | $(MODPOST) -T -
++      cmd_modpost = sed 's/\.ko$$/$(mod-prelink-ext)\.o/' $< | $(MODPOST) -T -
+ 
+-$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(prelink-ext).o) FORCE
++$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(mod-prelink-ext).o) FORCE
+ 	$(call if_changed,modpost)
+ 
+ targets += $(output-symdump)
+diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
+index da320151e7c3..6ed0d225c8b1 100755
+--- a/scripts/gen_autoksyms.sh
++++ b/scripts/gen_autoksyms.sh
+@@ -26,18 +26,6 @@ if [ -n "$CONFIG_MODVERSIONS" ]; then
+ 	needed_symbols="$needed_symbols module_layout"
+ fi
+ 
+-# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
+-# when the .mod files are generated, which means they don't yet contain
+-# references to certain symbols that will be present in the final binaries.
+-if [ -n "$CONFIG_LTO_CLANG" ]; then
+-	# intrinsic functions
+-	needed_symbols="$needed_symbols memcpy memmove memset"
+-	# ftrace
+-	needed_symbols="$needed_symbols _mcount"
+-	# stack protector symbols
+-	needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
+-fi
+-
+ ksym_wl=
+ if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
+ 	# Use 'eval' to expand the whitelist path and check if it is relative
 -- 
-Florian
+2.32.0.402.g57bb445576-goog
+
