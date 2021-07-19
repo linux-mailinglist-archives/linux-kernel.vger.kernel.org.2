@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5AE3CE57D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92EC43CE683
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350373AbhGSPu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:50:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32768 "EHLO mail.kernel.org"
+        id S1348957AbhGSQHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:07:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344786AbhGSPBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:01:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38B7660E0C;
-        Mon, 19 Jul 2021 15:42:07 +0000 (UTC)
+        id S1344816AbhGSPGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:06:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 722C660FED;
+        Mon, 19 Jul 2021 15:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709327;
-        bh=cWHiH12FvTJFDthkEwrs//hjGIjPEoNDcrBkmfawt0I=;
+        s=korg; t=1626709650;
+        bh=l1+Dx61/cWPcTwFaYUWs/nFxBvnaM5RYdBseYqHyH0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c5JsjkhJHTIfJNV5pFT+rSewW4UArT8OfcnExOzSJIqHjrV4HqNyQfwyyzgB5bKWR
-         cwJCktuMukZsMFqXaA2k4FP+pxxROIhgWzxCvZSabCM1lAfPQpK3Kqw00g6sJYKtRO
-         exX63yC/9n4mmf5YgqW6uieWiuTUPlE88tl0vryI=
+        b=k8osGVHlwnIIVj7l42UlNhmOTW0YTkJmVgzCgIVrbfUqkCKg6KGQuKAwUoxkYhIh7
+         fNgsjHQalHE8uMUeUhKYKHDXWTYTYXuL56FKI7AX/MnGhry/GYN61oOtrYZI2DD++m
+         NfvU5M8HEW7aMeUILnNB5kQ9ilibJvi8mu2FoOVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Po-Hsu Lin <po-hsu.lin@canonical.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 340/421] selftests: timers: rtcpie: skip test if default RTC device does not exist
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 043/149] iommu/arm-smmu: Fix arm_smmu_device refcount leak in address translation
 Date:   Mon, 19 Jul 2021 16:52:31 +0200
-Message-Id: <20210719144958.092942289@linuxfoundation.org>
+Message-Id: <20210719144911.646673537@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit 0d3e5a057992bdc66e4dca2ca50b77fa4a7bd90e ]
+[ Upstream commit 7c8f176d6a3fa18aa0f8875da6f7c672ed2a8554 ]
 
-This test will require /dev/rtc0, the default RTC device, or one
-specified by user to run. Since this default RTC is not guaranteed to
-exist on all of the devices, so check its existence first, otherwise
-skip this test with the kselftest skip code 4.
+The reference counting issue happens in several exception handling paths
+of arm_smmu_iova_to_phys_hard(). When those error scenarios occur, the
+function forgets to decrease the refcount of "smmu" increased by
+arm_smmu_rpm_get(), causing a refcount leak.
 
-Without this patch this test will fail like this on a s390x zVM:
-$ selftests: timers: rtcpie
-$ /dev/rtc0: No such file or directory
-not ok 1 selftests: timers: rtcpie # exit=22
+Fix this issue by jumping to "out" label when those error scenarios
+occur.
 
-With this patch:
-$ selftests: timers: rtcpie
-$ Default RTC /dev/rtc0 does not exist. Test Skipped!
-not ok 9 selftests: timers: rtcpie # SKIP
-
-Fixed up change log so "With this patch" text doesn't get dropped.
-Shuah Khan <skhan@linuxfoundation.org>
-
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Reviewed-by: Rob Clark <robdclark@chromium.org>
+Link: https://lore.kernel.org/r/1623293391-17261-1-git-send-email-xiyuyang19@fudan.edu.cn
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/timers/rtcpie.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/iommu/arm-smmu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/timers/rtcpie.c b/tools/testing/selftests/timers/rtcpie.c
-index 47b5bad1b393..4ef2184f1558 100644
---- a/tools/testing/selftests/timers/rtcpie.c
-+++ b/tools/testing/selftests/timers/rtcpie.c
-@@ -18,6 +18,8 @@
- #include <stdlib.h>
- #include <errno.h>
+diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+index abf4cf285548..2185ea5191c1 100644
+--- a/drivers/iommu/arm-smmu.c
++++ b/drivers/iommu/arm-smmu.c
+@@ -1231,6 +1231,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
+ 	u64 phys;
+ 	unsigned long va, flags;
+ 	int ret, idx = cfg->cbndx;
++	phys_addr_t addr = 0;
  
-+#include "../kselftest.h"
-+
- /*
-  * This expects the new RTC class driver framework, working with
-  * clocks that will often not be clones of what the PC-AT had.
-@@ -35,8 +37,14 @@ int main(int argc, char **argv)
- 	switch (argc) {
- 	case 2:
- 		rtc = argv[1];
--		/* FALLTHROUGH */
-+		break;
- 	case 1:
-+		fd = open(default_rtc, O_RDONLY);
-+		if (fd == -1) {
-+			printf("Default RTC %s does not exist. Test Skipped!\n", default_rtc);
-+			exit(KSFT_SKIP);
-+		}
-+		close(fd);
- 		break;
- 	default:
- 		fprintf(stderr, "usage:  rtctest [rtcdev] [d]\n");
+ 	ret = arm_smmu_rpm_get(smmu);
+ 	if (ret < 0)
+@@ -1249,6 +1250,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
+ 		dev_err(dev,
+ 			"iova to phys timed out on %pad. Falling back to software table walk.\n",
+ 			&iova);
++		arm_smmu_rpm_put(smmu);
+ 		return ops->iova_to_phys(ops, iova);
+ 	}
+ 
+@@ -1257,12 +1259,14 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
+ 	if (phys & CB_PAR_F) {
+ 		dev_err(dev, "translation fault!\n");
+ 		dev_err(dev, "PAR = 0x%llx\n", phys);
+-		return 0;
++		goto out;
+ 	}
+ 
++	addr = (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
++out:
+ 	arm_smmu_rpm_put(smmu);
+ 
+-	return (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
++	return addr;
+ }
+ 
+ static phys_addr_t arm_smmu_iova_to_phys(struct iommu_domain *domain,
 -- 
 2.30.2
 
