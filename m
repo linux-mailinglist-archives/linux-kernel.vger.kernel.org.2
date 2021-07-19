@@ -2,152 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E943CD1A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9053CD1A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236176AbhGSJaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:30:18 -0400
-Received: from mail-mw2nam12on2134.outbound.protection.outlook.com ([40.107.244.134]:46945
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235179AbhGSJaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:30:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fn97hVcuxTh2RNVORIrTHHK9lqtx0yxvqVy7PYWwE7YJg7QexShhyatQO3FXnQ+vgxyHdbyF4QHI5oGO0/JyBwrCcZgxSQeHdtPBsRlXPsRJp7wgqx4Ik1n7MeMeOa5Bz2bWDDXpLdwp9fGcFQYqI4Opocq/SVtHnSRGKfePNdcVvintawiUQ7KfRnmcl+OP5pbv3Ae4IXiE/J8Uy2oETAOBV506eUoBQVHSljPBPSd+ITkfuVSK5GRvVCALOG9Pt0hl3eklvX21MAKuYldlKmKhtiY4icFIjWFrr0lXSt1wENjqTAe5Eqs/6vPPlDlMCk5kpqzSXF8GhnF22rUICA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=skmraAaRPuL+Dm2SJmUQIYDKd0zUAZM+B/rE9xFjvJw=;
- b=H8ertGhLFXu4v+fNNXF/cLQyAmNv81RZb+Bd7H8mW9ZZy4bPzw0b9qTGO4DPobN7KyKrPZugjCOoB6BVVLXRg4ttyA6yu4eFn9m6OQeD85PjRIjXecXNl1LXFPBr/YdbyiR+AXma2C5jyIgw8dZoGOtx3PM3uoDty5jlFXjaUF8jD7j7o6iOOEmM2ZzXhAs3bx6Oan7i3rKc2WpOjiteIQLbqxF3HNx65GGyXdA2ji6c3zgc0gclartB/On2qOSKYRj1nC5njPavr0qpE4yKU+k46aqokSS6oJDv8y9mBcYR9rF6MNfFa0oE6US8VuuLkG3vHiZ6iZYlpCJQjzgmdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=skmraAaRPuL+Dm2SJmUQIYDKd0zUAZM+B/rE9xFjvJw=;
- b=cD1M49IqPdZ1ojvx4SdAo8FTKaAg1XybbJmkZOib4NAVHRHVbSyGpYRDW/dk8MpWHvfzgYSeWho6jQs+GCvJBUTEF7Nn05UVPNoZAGkOIxD+cB0L/XiOzW0b/V4SblT2OhQXPOQMZuiSEaP0m+quY/xgqur5hrK2cVV1wbBcnYE=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BY5PR04MB6568.namprd04.prod.outlook.com (2603:10b6:a03:1de::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
- 2021 10:10:56 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5c0e:fbe5:2bd6:ec6]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5c0e:fbe5:2bd6:ec6%4]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 10:10:56 +0000
-Date:   Mon, 19 Jul 2021 18:10:51 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Robert Foss <robert.foss@linaro.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        Zhen Li <zhenli@analogixsemi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH v10 2/4] drm/bridge: anx7625: fix not correct return value
-Message-ID: <bc6bc1015acbcdadfbfce306cb3c9959a502cbc4.1626685856.git.xji@analogixsemi.com>
-References: <cover.1626685856.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1626685856.git.xji@analogixsemi.com>
-X-ClientProxiedBy: HK2P15301CA0013.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::23) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        id S236219AbhGSJaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:30:35 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:34888 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236180AbhGSJae (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 05:30:34 -0400
+Received: from [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc] (unknown [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 609391F4248F;
+        Mon, 19 Jul 2021 11:11:12 +0100 (BST)
+Subject: Re: [PATCH v2, 10/14] media: mtk-vcodec: Add core thread
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+References: <20210717081233.7809-1-yunfei.dong@mediatek.com>
+ <20210717081233.7809-11-yunfei.dong@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <6bcb5964-0afa-f3c3-a80e-c34ef26eea4b@collabora.com>
+Date:   Mon, 19 Jul 2021 12:11:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2P15301CA0013.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.0 via Frontend Transport; Mon, 19 Jul 2021 10:10:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e373bd74-2e1b-4028-77b1-08d94a9d7f98
-X-MS-TrafficTypeDiagnostic: BY5PR04MB6568:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR04MB65685F9F5B6B64BA160EBA79C7E19@BY5PR04MB6568.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:813;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2TfibFyVzgj+MhTuTDwu9FCUd55ia0UN1GaZ33teqc/OGNzz3+7OC4449Tdb86aEFzadwbpCJRCuO0QgwBe9+4WmA4durd3t1aZ4vn+6Mmmsn/phoFp3xAeqGwbiThV7Z2bptV4VlEzUZSjRLlLpvVJgdCpMoIw3ZJVCIvy1IrApkfV4bOMf9PefSfJwELSyz0KUBa6+SbUVFeh0k8U74+38AfygENRR48N9lIw6TZzDxX57jF2i5lBF6MgFLM5gVnsvoqJlK0EnjytuisqbW2105Xe7TTOG4qFNSwz0mi4aTf1BK3087fHjkkEo/FEincusk3BTKbhPzloe/ZDLZgXoEzseUKUHJf1DXDFUCXDVn4llCQw2bn5zsIdhb+yMivb0m5eMwueljpj6W9B++oTpShjLyVQq/J43EcXhKak/DXxKtiS3BBATVNZx2Bkk12DsaoVze0RU1cAT7NR/+MvmBnuyH4IdJxL512aiO3E+Zv6UukLW6Pb81IB+Fd6BrK1OXeGC7Qd04oPF2CjGIxLSKTuYuHK5TtkBFsbJtRtVWQYwvxkdn/om65akWo2ip2j1BRxfz9FR6sx+FSLUANLgYDWqx+SyAk4Dip64M+QUAn67rOlQAUQLLD9Bbt2XTfl0eaaEXAbYebgnzcmjIMkrMuyJPLFbQnGFec2A4o/X8k5Klnk05ZqeidpwO4RHtFQFzbxPBkIvG+5u8oeeSw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(39840400004)(396003)(346002)(186003)(52116002)(83380400001)(6486002)(8936002)(86362001)(4326008)(6666004)(26005)(2906002)(55236004)(36756003)(5660300002)(66556008)(7416002)(66476007)(4744005)(54906003)(956004)(316002)(2616005)(8676002)(110136005)(38350700002)(66946007)(38100700002)(6496006)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2J44bxZZZDTh8ch/pqblttxPPD1v0DGZwJ3pC9Otw9C/CJBLL8pnBSNvZt/J?=
- =?us-ascii?Q?oYo+0syU7l9CA+Dcm3Z4+gotYBYy2H6Z/7emWYlX8fNwoRgwD1EYUgpDYqnO?=
- =?us-ascii?Q?WPBJI9AE2zKDa65t+aY76jymF+WkzctzUTd/p2r6Dhgqv4R3DgUFXqEqAcb3?=
- =?us-ascii?Q?W+TwYUmAbOKJU0hB2adczTBDKSvUYcvnHHDUBoL8tocdXXXXJXlA+G0mg1L4?=
- =?us-ascii?Q?C/AtcjdmP5BQZw50enVf4/otrmUiEl9SW5hLSXWzCm9/VMp6JSCkHTfpJghE?=
- =?us-ascii?Q?VSCwd7/qhgEJm8G96LZXl7op5ithc2PNcPUDQttDbayeVxZr8EKpa23EkUL9?=
- =?us-ascii?Q?E1pkjY7qZ4CIjd75u6yJnfaZjznvFMYdTGkTu5qSHyuXy0uPACC3oDqudsfg?=
- =?us-ascii?Q?1v4H2XrijWGA+BR0O++jNTGZ9IXZ92Mu2QZWptPOvisElWjJ0W+0WugIVqCc?=
- =?us-ascii?Q?MaR3rcpTLyGDNnCFhRA9oW6HTqvQ2sa4PmpV+HlmlrHmimMyhAOEd/z25LX0?=
- =?us-ascii?Q?5KADUh8c75A8TaZ5Rrafd7293Xulgr8ZcIRUDl4eGPlos3VFfdZTPajmZmGj?=
- =?us-ascii?Q?l7Xb+Ei0laWglDZz7D22L/ygZVBKOHEkB46lBXwFY8d1UZ37KjLxmoXoha6F?=
- =?us-ascii?Q?K1Ww85l/L65MgP8//GESXv1tOrcSu769ghj9Byh/cJscAJ2MEQUsdVrMBpam?=
- =?us-ascii?Q?zV7XO7yrcHeeiFUYt/jRLymHxHU7clC8/vL9j3uqFMz1dOpjaAA4oPhEuH1C?=
- =?us-ascii?Q?B7OY2mOYAL1Tkv/wPAnQhlkotV7wwZLnwFS1DydVNpkVkuG3ccr7REElBTIk?=
- =?us-ascii?Q?jJZ3LgySdO9+NTmNKDucB53W+hu5+QYWZebLpn6XQkMY07I9eOcS9HN+ms1o?=
- =?us-ascii?Q?apTBBxtJR78t4rbb1Ydq2fNRAdP+yQr2JCi9VGG6DlCUbruKmk8qCbty/yIc?=
- =?us-ascii?Q?TwEgkUn0F6sjgMxf2jgY3lwAnZ/qLeWrqBRedEqcY0Y4XTGdpV/qnD4n1NUY?=
- =?us-ascii?Q?WXhAtD8D6MzxN5pM1ncYrnrfuJdQiBlPW+/uZQs+uetE1WOX8cP1EGFmblR/?=
- =?us-ascii?Q?DLLDQCdeDwBTT5ivMEFdebDZkTNBm/UwW/fBf2DtOm43oP+F0Ht2qYQ5RNZD?=
- =?us-ascii?Q?7mI3wrVddUA1+xbIYe5JaZhJZDvYTzjktLgrsQ6F9QNgZZyl5yFnhxks8Omr?=
- =?us-ascii?Q?Cmf+XqVjvvI7MXOEzblktxflKIUoyPfqFu5gA6qu3QP5kZ6XfgzZbo1nEeUG?=
- =?us-ascii?Q?1zvdEkC4afveknW86lSb7l5KJ03iDVaWqZmzXlGy9KtmY6V3MXtdh2hCaf0R?=
- =?us-ascii?Q?CUfZnTbh9n+dahJ15MREtKXc?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e373bd74-2e1b-4028-77b1-08d94a9d7f98
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 10:10:56.4199
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Bs1NTdmFaY+V4ozNinUbd7ERGELPUgDFknzEniwAyD8zRi7Ns2AxY1Fp7CMcOSNVK41Sc/W/yz4yWmXwk0HZsw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6568
+In-Reply-To: <20210717081233.7809-11-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At some time, the original code may return non zero value, force return 0
-if operation finished.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index a3d82377066b..3fc6b7ce7fc7 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -191,10 +191,10 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
- 			       AP_AUX_CTRL_STATUS);
- 	if (val < 0 || (val & 0x0F)) {
- 		DRM_DEV_ERROR(dev, "aux status %02x\n", val);
--		val = -EIO;
-+		return -EIO;
- 	}
- 
--	return val;
-+	return 0;
- }
- 
- static int anx7625_video_mute_control(struct anx7625_data *ctx,
--- 
-2.25.1
+On 17.07.21 10:12, Yunfei Dong wrote:
+> Core thread:
+> 1. Gets lat_buf from core msg queue.
+> 2. Proceeds core decode.
+> 3. Puts the lat_buf back to lat msg queue.
+> 
+> Both H264 and VP9 rely on the core thread.
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+> v2: no changes
+> ---
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  6 ++++
+>   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  3 ++
+>   .../platform/mtk-vcodec/vdec_msg_queue.c      | 32 +++++++++++++++++++
+>   .../platform/mtk-vcodec/vdec_msg_queue.h      |  6 ++++
+>   4 files changed, 47 insertions(+)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> index 078daeeff576..e05224aca888 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> @@ -437,6 +437,12 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>   		goto err_res;
+>   	}
+>   
+> +	if (VDEC_LAT_ARCH(dev->vdec_pdata->hw_arch)) {
+> +		vdec_msg_queue_init_ctx(&dev->core_ctx, MTK_VDEC_CORE);
+> +		dev->kthread_core = kthread_run(vdec_msg_queue_core_thead, dev,
+> +			"mtk-%s", "core");
 
+why would we want to run this thread when probing?
+also, don't we need to check errors?
+
+> +	}
+> +
+>   	for (i = 0; i < MTK_VDEC_HW_MAX; i++)
+>   		mutex_init(&dev->dec_mutex[i]);
+>   	mutex_init(&dev->dev_mutex);
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> index 9207ce079960..3beba0e2ea91 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> @@ -32,6 +32,7 @@
+>   #define MTK_VCODEC_MAX_PLANES	3
+>   #define MTK_V4L2_BENCHMARK	0
+>   #define WAIT_INTR_TIMEOUT_MS	1000
+> +#define VDEC_LAT_ARCH(hw_arch) ((hw_arch) >= MTK_VDEC_LAT_SINGLE_CORE)
+>   
+>   /*
+>    * enum mtk_hw_reg_idx - MTK hw register base index
+> @@ -480,6 +481,7 @@ struct mtk_vcodec_enc_pdata {
+>    * @component_node: component node
+>    * @comp_idx: component index
+>    *
+> + * @kthread_core: thread used for core hardware decode
+>    * @core_ctx: core queue context
+>    */
+>   struct mtk_vcodec_dev {
+> @@ -524,6 +526,7 @@ struct mtk_vcodec_dev {
+>   	struct device_node *component_node[MTK_VDEC_HW_MAX];
+>   	int comp_idx;
+>   
+> +	struct task_struct *kthread_core;
+>   	struct vdec_msg_queue_ctx core_ctx;
+>   };
+>   
+> diff --git a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
+> index 016a70416e55..60bc3796bb58 100644
+> --- a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
+> +++ b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
+> @@ -252,3 +252,35 @@ void vdec_msg_queue_deinit(
+>   			kfree(lat_buf->private_data);
+>   	}
+>   }
+> +
+> +int vdec_msg_queue_core_thead(void *data)
+> +{
+> +	struct mtk_vcodec_dev *dev = data;
+> +	struct vdec_lat_buf *lat_buf;
+> +	struct mtk_vcodec_ctx *ctx;
+> +
+> +	set_freezable();
+> +	for (;;) {
+> +		try_to_freeze();
+> +		if (kthread_should_stop())
+> +			break;
+> +
+> +		lat_buf = vdec_msg_queue_dqbuf(&dev->core_ctx);
+> +		if (!lat_buf)
+> +			continue;
+> +
+> +		ctx = lat_buf->ctx;
+> +		mtk_vcodec_set_curr_ctx(dev, ctx, MTK_VDEC_CORE);
+> +
+> +		if (!lat_buf->core_decode)
+> +			mtk_v4l2_err("Core decode callback func is NULL");
+> +		else
+> +			lat_buf->core_decode(lat_buf);
+> +
+> +		mtk_vcodec_set_curr_ctx(dev, NULL, MTK_VDEC_CORE);
+> +		vdec_msg_queue_qbuf(&ctx->msg_queue.lat_ctx, lat_buf);
+> +	}
+> +
+> +	mtk_v4l2_debug(3, "Video Capture Thread End");
+> +	return 0;
+> +}
+> diff --git a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
+> index 297aa1598788..27ce528cbe89 100644
+> --- a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
+> +++ b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
+> @@ -134,4 +134,10 @@ void vdec_msg_queue_deinit(
+>   	struct vdec_msg_queue *msg_queue,
+>   	struct mtk_vcodec_ctx *ctx);
+>   
+> +/**
+> + * vdec_msg_queue_core_thead - used for core decoder.
+> + * @data: private data used for each codec
+> + */
+> +int vdec_msg_queue_core_thead(void *data);
+> +
+>   #endif
+> 
