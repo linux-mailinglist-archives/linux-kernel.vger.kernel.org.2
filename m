@@ -2,181 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731BD3CD170
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85413CD16E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbhGSJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236212AbhGSJSS (ORCPT
+        id S236224AbhGSJSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:18:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37802 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236185AbhGSJSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:18:18 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B29CC061574;
-        Mon, 19 Jul 2021 02:02:48 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id ee25so23126215edb.5;
-        Mon, 19 Jul 2021 02:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FXmf8gnmrhy2GyOGMcTkKRbmrND8t8oV7ZWyl5/d3aI=;
-        b=TjIKZrf9Ms60L2amW06L8YjtBgylgXv6ZYq5B2EZ8I0BxZBYOcdK8EF/GK9NIPUq6R
-         4uwzWni2FbCqBN13OxHHNO0ldPBvvPJCyNg4fF78stdHM+qvZabF5e+gcZ2c842S5WDZ
-         i1zM4mG8cj2B3RLoOT9/T4UglMIR84LFhJ+Uudc84YrOvJuHcLOGQo5FfV0Gip49jVNC
-         TvUbhJ0xqGlc+Mt3eRIrvxgvWBIUgQCXRa9fyJ824k8Wt/+UodS/gTBUDRk1PEJVoyxN
-         lSF1KXDHu2AI3K7rvArATcgGH4yyMGAXGV9m/tkXyDAdLSgP3hyatkSQeWK0DSp2QtGO
-         Az6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FXmf8gnmrhy2GyOGMcTkKRbmrND8t8oV7ZWyl5/d3aI=;
-        b=AQi0RWqkwJ5aNKSq3NjNLOI4Y2H2FE60a2WbJkLj88DaztNfBpqk4b7gtMkf39J7E1
-         9n+3f5mj9WKB4P8erERzKavA0m9AqA02AhY+cBUR8j9iahGiYgqLJ1B9A2aU2AQQ76tK
-         cJRfbQOkHS2UaXViY+/5BIogTWfMD6lHAbEil3AV6ZSwG1Ww4+0gylwnaMcfJnCSdiqg
-         QMuB9DOfd0jNhbwwVN71ZsWYBfvzuF0Ivxn1TCzzq1aAStydX3cAetJ3MeTeWdoH03Ow
-         rv8Tlxy3gQt7IUK0KLNMSuQCS8m89a/pwXbBsACkSv4RNbIKvTA92bg8awkEHZlM5ioH
-         5now==
-X-Gm-Message-State: AOAM532DYzf7POOnqUQe5pM27b1FsTgeZyWms0Z38mSBFpLnBbgdgKpK
-        i5oNHA6Iu4v6NbmcFTpKNZMCvJffjYgy4yFuYns=
-X-Google-Smtp-Source: ABdhPJxwgNhJ13JftchIfihnAK4wrWoUBHwunAFqMOhuCHNJS0nl2W2bClagI2IslOPYbS/sC7WBD5jtohu1jX2SDyU=
-X-Received: by 2002:a05:6402:4c5:: with SMTP id n5mr33082879edw.322.1626688736695;
- Mon, 19 Jul 2021 02:58:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210707093409.1445747-1-mudongliangabcd@gmail.com>
- <20210713084853.GA6572@gofer.mess.org> <CAD-N9QVao4jFEPNrFm5=_qS6brXQuJYfXkSo6YqECgUZtVhW3w@mail.gmail.com>
- <CAD-N9QUVDPeJqZPA7WEYHS5rKojTP1ae_vDJ1bK0=-+Aqppebg@mail.gmail.com>
-In-Reply-To: <CAD-N9QUVDPeJqZPA7WEYHS5rKojTP1ae_vDJ1bK0=-+Aqppebg@mail.gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 19 Jul 2021 17:58:30 +0800
-Message-ID: <CAD-N9QWsdswh3JeOpe9+9gmv+KjznhaVQ5ujHa4yr-dQ_ZGXhQ@mail.gmail.com>
-Subject: Re: [PATCH v2] [media] em28xx-input: fix refcount bug in em28xx_usb_disconnect
-To:     Sean Young <sean@mess.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        Mon, 19 Jul 2021 05:18:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626688725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9iuXMiXB3koc/GvJU+Wg2k7jYKX5Po4q4IzNF0aqa3Y=;
+        b=hb4L+ULsGFBoTF6ShuSTReiVSAVwKsaEAow/PCi8Ybct3Xl+TABrsLpL3XbuJlEKa1kejI
+        x3BR9wmr0eGmbrYZd58jM9VEdFq8WbiIg59FH5b+nF8rXoCDA+rBLehJ6L+kwhDCBQYqPL
+        /PZ+TnJj5rGn/5rC2G7wTxBqMSRcSqk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-36K-_R-8PYmpgC70XqLYyg-1; Mon, 19 Jul 2021 05:58:43 -0400
+X-MC-Unique: 36K-_R-8PYmpgC70XqLYyg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4E32362FD;
+        Mon, 19 Jul 2021 09:58:41 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0826A10074FD;
+        Mon, 19 Jul 2021 09:58:37 +0000 (UTC)
+Message-ID: <779741344dc401aa572c8c9bea05e059afe9a6d2.camel@redhat.com>
+Subject: Re: [PATCH v2 8/8] KVM: x86: hyper-v: Deactivate APICv only when
+ AutoEOI feature is in use
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Date:   Mon, 19 Jul 2021 12:58:36 +0300
+In-Reply-To: <87tukqzmg7.fsf@vitty.brq.redhat.com>
+References: <20210713142023.106183-1-mlevitsk@redhat.com>
+         <20210713142023.106183-9-mlevitsk@redhat.com>
+         <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
+         <87wnpmzqw3.fsf@vitty.brq.redhat.com>
+         <b2978f4868437db23208718b3850b8fb6c0409eb.camel@redhat.com>
+         <87tukqzmg7.fsf@vitty.brq.redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 5:57 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> This can also fix another crash report - KASAN: use-after-free Read in
-> em28xx_close_extension [1]. It should be duplicated bug reports with
-> the memory leak.
+On Mon, 2021-07-19 at 11:23 +0200, Vitaly Kuznetsov wrote:
+> Maxim Levitsky <mlevitsk@redhat.com> writes:
+> 
+> > On Mon, 2021-07-19 at 09:47 +0200, Vitaly Kuznetsov wrote:
+> > > Maxim Levitsky <mlevitsk@redhat.com> writes:
+> > > 
+> > > > On Tue, 2021-07-13 at 17:20 +0300, Maxim Levitsky wrote:
+> > > > > From: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > > > > 
+> > > > > APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
+> > > > > SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
+> > > > > however, possible to track whether the feature was actually used by the
+> > > > > guest and only inhibit APICv/AVIC when needed.
+> > > > > 
+> > > > > TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
+> > > > > Windows know that AutoEOI feature should be avoided. While it's up to
+> > > > > KVM userspace to set the flag, KVM can help a bit by exposing global
+> > > > > APICv/AVIC enablement: in case APICv/AVIC usage is impossible, AutoEOI
+> > > > > is still preferred.
+> > > > > Maxim:
+> > > > >    - added SRCU lock drop around call to kvm_request_apicv_update
+> > > > >    - always set HV_DEPRECATING_AEOI_RECOMMENDED in kvm_get_hv_cpuid,
+> > > > >      since this feature can be used regardless of AVIC
+> > > > > 
+> > > > > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > > > > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > > > > ---
+> > > > >  arch/x86/include/asm/kvm_host.h |  3 +++
+> > > > >  arch/x86/kvm/hyperv.c           | 34 +++++++++++++++++++++++++++------
+> > > > >  2 files changed, 31 insertions(+), 6 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > > > > index e11d64aa0bcd..f900dca58af8 100644
+> > > > > --- a/arch/x86/include/asm/kvm_host.h
+> > > > > +++ b/arch/x86/include/asm/kvm_host.h
+> > > > > @@ -956,6 +956,9 @@ struct kvm_hv {
+> > > > >  	/* How many vCPUs have VP index != vCPU index */
+> > > > >  	atomic_t num_mismatched_vp_indexes;
+> > > > >  
+> > > > > +	/* How many SynICs use 'AutoEOI' feature */
+> > > > > +	atomic_t synic_auto_eoi_used;
+> > > > > +
+> > > > >  	struct hv_partition_assist_pg *hv_pa_pg;
+> > > > >  	struct kvm_hv_syndbg hv_syndbg;
+> > > > >  };
+> > > > > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> > > > > index b07592ca92f0..6bf47a583d0e 100644
+> > > > > --- a/arch/x86/kvm/hyperv.c
+> > > > > +++ b/arch/x86/kvm/hyperv.c
+> > > > > @@ -85,9 +85,22 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
+> > > > >  	return false;
+> > > > >  }
+> > > > >  
+> > > > > +
+> > > > > +static void synic_toggle_avic(struct kvm_vcpu *vcpu, bool activate)
+> > > > > +{
+> > > > > +	srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
+> > > > > +	kvm_request_apicv_update(vcpu->kvm, activate,
+> > > > > +			APICV_INHIBIT_REASON_HYPERV);
+> > > > > +	vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
+> > > > > +}
+> > > > 
+> > > > Well turns out that this patch still doesn't work (on this
+> > > > weekend I found out that all my AVIC enabled VMs hang on reboot).
+> > > > 
+> > > > I finally found out what prompted me back then to make srcu lock drop
+> > > > in synic_update_vector conditional on whether the write was done
+> > > > by the host.
+> > > >  
+> > > > Turns out that while KVM_SET_MSRS does take the kvm->srcu lock,
+> > > > it stores the returned srcu index in a local variable and not
+> > > > in vcpu->srcu_idx, thus the lock drop in synic_toggle_avic
+> > > > doesn't work.
+> > > >  
+> > > > So it is likely that I have seen it not work, and blamed 
+> > > > KVM_SET_MSRS for not taking the srcu lock which was a wrong assumption.
+> > > >  
+> > > > I am more inclined to fix this by just tracking if we hold the srcu
+> > > > lock on each VCPU manually, just as we track the srcu index anyway,
+> > > > and then kvm_request_apicv_update can use this to drop the srcu
+> > > > lock when needed.
+> > > > 
+> > > 
+> > > Would it be possible to use some magic value in 'vcpu->srcu_idx' and not
+> > > introduce a new 'srcu_ls_locked' flag?
+> > 
+> > Well, currently the returned index value from srcu_read_lock is opaque 
+> > (and we have two SRCU implementations and both I think return small positive numbers, 
+> > but I haven't studied them in depth).
+> >  
+> > We can ask the people that maintain SRCU to reserve a number (like -1)
+> > or so.
+> > I probably first add the 'srcu_is_locked' thought and then as a follow up patch
+> > remove it if they agree.
+> > 
+> 
+> Ah, OK. BTW, I've just discovered srcu_read_lock_held() which sounds
+> like the function we need but unfortunately it is not.
 
-not memory leak, just the refcount bug mentioned in the commit message.
+Yea, exactly this. :-(
 
->
-> [1] https://syzkaller.appspot.com/bug?id=a09553fd4df4c4a3824dc37a4040bf80d2600a50
->
->
-> On Tue, Jul 13, 2021 at 5:49 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> >
-> > On Tue, Jul 13, 2021 at 4:48 PM Sean Young <sean@mess.org> wrote:
-> > >
-> > > On Wed, Jul 07, 2021 at 05:34:09PM +0800, Dongliang Mu wrote:
-> > > > If em28xx_ir_init fails, it would decrease the refcount of dev. However,
-> > > > in the em28xx_ir_fini, when ir is NULL, it goes to ref_put and decrease
-> > > > the refcount of dev. This will lead to a refcount bug.
-> > > >
-> > > > Fix this bug by removing the kref_put in the error handling code
-> > > > of em28xx_ir_init.
-> > > >
-> > > > refcount_t: underflow; use-after-free.
-> > > > WARNING: CPU: 0 PID: 7 at lib/refcount.c:28 refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
-> > > > Modules linked in:
-> > > > CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.13.0 #3
-> > > > Workqueue: usb_hub_wq hub_event
-> > > > RIP: 0010:refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
-> > > > Call Trace:
-> > > >   kref_put.constprop.0+0x60/0x85 include/linux/kref.h:69
-> > > >   em28xx_usb_disconnect.cold+0xd7/0xdc drivers/media/usb/em28xx/em28xx-cards.c:4150
-> > > >   usb_unbind_interface+0xbf/0x3a0 drivers/usb/core/driver.c:458
-> > > >   __device_release_driver drivers/base/dd.c:1201 [inline]
-> > > >   device_release_driver_internal+0x22a/0x230 drivers/base/dd.c:1232
-> > > >   bus_remove_device+0x108/0x160 drivers/base/bus.c:529
-> > > >   device_del+0x1fe/0x510 drivers/base/core.c:3540
-> > > >   usb_disable_device+0xd1/0x1d0 drivers/usb/core/message.c:1419
-> > > >   usb_disconnect+0x109/0x330 drivers/usb/core/hub.c:2221
-> > > >   hub_port_connect drivers/usb/core/hub.c:5151 [inline]
-> > > >   hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
-> > > >   port_event drivers/usb/core/hub.c:5586 [inline]
-> > > >   hub_event+0xf81/0x1d40 drivers/usb/core/hub.c:5668
-> > > >   process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
-> > > >   process_scheduled_works kernel/workqueue.c:2338 [inline]
-> > > >   worker_thread+0x333/0x5b0 kernel/workqueue.c:2424
-> > > >   kthread+0x188/0x1d0 kernel/kthread.c:319
-> > > >   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> > > >
-> > > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > Fixes: ac5688637144 ("media: em28xx: Fix possible memory leak of em28xx struct")
-> > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > ---
-> > > > v1->v2: move kref_get to the original position
-> > > >  drivers/media/usb/em28xx/em28xx-input.c | 1 -
-> > > >  1 file changed, 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/media/usb/em28xx/em28xx-input.c b/drivers/media/usb/em28xx/em28xx-input.c
-> > > > index 59529cbf9cd0..0b6d77c3bec8 100644
-> > > > --- a/drivers/media/usb/em28xx/em28xx-input.c
-> > > > +++ b/drivers/media/usb/em28xx/em28xx-input.c
-> > > > @@ -842,7 +842,6 @@ static int em28xx_ir_init(struct em28xx *dev)
-> > > >       kfree(ir);
-> > > >  ref_put:
-> > > >       em28xx_shutdown_buttons(dev);
-> > > > -     kref_put(&dev->ref, em28xx_free_device);
-> > > >       return err;
-> > > >  }
-> > >
-> > > Ideally we want an init function to not have any side effects if it returns
-> > > an error (or to do undo those side effects). With this change, the as long
-> > > as is_audio_only is not set, we always do a kref_get(), even in the error
-> > > case. As long as is_audio_only is not set, fini always does a kref_put().
-> > >
-> > > Now this works but it's not really very readable code, and it requires that
-> > > the fini is called even if init returns an error.
-> > >
-> > > If an init function returns an error, it should undo any side effects like
-> > > allocations or reference counts. So the best way to handle this to only
-> > > do a kref_get() in the happy path of em28xx_ir_init().
-> >
-> > Hi Sean,
-> >
-> > In the v1 version, I moved kref_get from the beginning to the ending.
-> > Do you mean this change?
-> >
-> > @@ -708,7 +708,6 @@ static int em28xx_ir_init(struct em28xx *dev)
-> >   return 0;
-> >   }
-> >
-> > - kref_get(&dev->ref);
-> >   INIT_DELAYED_WORK(&dev->buttons_query_work, em28xx_query_buttons);
-> >
-> >   if (dev->board.buttons)
-> > @@ -833,6 +832,9 @@ static int em28xx_ir_init(struct em28xx *dev)
-> >
-> >   dev_info(&dev->intf->dev, "Input extension successfully initialized\n");
-> >
-> > + /* Only increase refcount when this function is executed successfully */
-> > + kref_get(&dev->ref);
-> > +
-> >   return 0;
-> >
-> > Another reason not to move kref_get is that Paval comments on my patch:
-> >
-> > > kref_get() should be before this call to not trigger UAF in em28xx_query_buttons()
-> >
-> > So I think it's safe to call kref_get at the beginning.
-> >
-> > >
-> > >
-> > > Thanks
-> > >
-> > > Sean
+Best regards,
+	Maxim Levitsky
+
+> 
+
+
