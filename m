@@ -2,147 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFE13CED1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0383CED17
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244072AbhGSRoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378937AbhGSR0d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 13:26:33 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996D4C05BD3C
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:46:39 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id w14so25139898edc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 11:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iwY647XqSBr0nhop6u+nJOZDJO2ojgmzAbMlPyzAP2A=;
-        b=de4dSCIFeNoXczBGIJKhs+9cQ67ihAH384iDNj7/ghw8A521i45BAOlb9Wj5VrML2B
-         ts5bNRNWddT+aI1DLJIMor+SL4/f3zNwEtrLVZsD2tjcjsRkzEr1TRxdDN0DwJUJ6pq2
-         vSViocJn6F9z759rRSS8/3I8kikyFNECOd2Jum/ADid6KfFaxXYT7kzrn3v/uD/drMMG
-         QmB7VB6/FnvNvlUQU1yQ7RgVec5cXCMQW4i7ue70iiKVBvUrwW3xqoF7vRTo45xa+TQV
-         ER89LXFuY7yD0DDbzZMfbrV5Of00o5bIHTQbJFYMZNcVBnBX+yL0g9CKq1SafiocuodB
-         XvpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iwY647XqSBr0nhop6u+nJOZDJO2ojgmzAbMlPyzAP2A=;
-        b=M9+UpOSZ8MJpRbinHhXcoEcArPSrdglGCknd4JZHY7l7o3XnTSOWA8U0XGVmb/Nm5g
-         xsQ0oFlD5D4HruDMaao1vgGhuiQYjI6N7p2W8Ii9/atfOKH4crQg/mHOFSLcehchL/M2
-         ia4S67CSX7COZmK1OarZyEecSZwht99vAkL+V0IHk6Y85K2d7NzcZM57OrU0ezPy16Ig
-         pX4RmjLV9rMe9vbJOLUPnaiTW6TiZwwwP2+dCtk2gwR0VqfalWa+7nS47y2zyVmAk/H5
-         /kF3movUvswMlfGwbS9Se3XY0+dZ6i1NOtaM1r1/O6dbaSwNWxPJi27om1nek3JHIkLl
-         45Zw==
-X-Gm-Message-State: AOAM530el5mtwvX8/KG+QQYcUq7Act8zZKA9un30SVuH0JpPFLqMG+Se
-        Ef7oB6i3NZiTSXMuEGsrg/sXJw==
-X-Google-Smtp-Source: ABdhPJyQlO0WF1yuY/72pvxqzE/S/j0RUDWpsZG3FB/CGPHlXlZjXIrduqfJdRb/baD0ksNgkAUGWw==
-X-Received: by 2002:a05:6402:1592:: with SMTP id c18mr35924631edv.243.1626717749925;
-        Mon, 19 Jul 2021 11:02:29 -0700 (PDT)
-Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
-        by smtp.gmail.com with ESMTPSA id n14sm8178314edo.23.2021.07.19.11.02.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 11:02:29 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 20:02:06 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     maz@kernel.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, corbet@lwn.net, james.morse@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        lorenzo.pieralisi@arm.com, salil.mehta@huawei.com,
-        shameerali.kolothum.thodi@huawei.com, jonathan.cameron@huawei.com
-Subject: Re: [RFC PATCH 0/5] KVM: arm64: Pass PSCI to userspace
-Message-ID: <YPW+Hv3r586zKxpY@myrica>
-References: <20210608154805.216869-1-jean-philippe@linaro.org>
- <c29ff5c8-9c94-6a6c-6142-3bed440676bf@arm.com>
+        id S1382991AbhGSRnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:43:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355710AbhGSRYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 13:24:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCE0961006;
+        Mon, 19 Jul 2021 18:04:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626717881;
+        bh=9as0j8CiNrSuZT5+O13jymSlEI71fFFkRK1kxuK+uek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f/UsVwE34gSFoCxfJ/G/w43xOp9PTXdJ4bVR8czoXEqwyc/fJQVp0l7RXRC6adZDk
+         dncCqnR4Z9tJEX7BRpJMrlXSFsvKAqrUoaPK6okOAZneoyMY+zfOOFYC9WnmeK39Y0
+         QcD48rA6DgD2mTHM9FwqfxTynEl5FeF4cmzKd3J7aOp200pGFijNEjAftYAVwCtHmW
+         LY06mmUeCG9i0UD/gN848Lrw+3p/3RTeRQ7JydB1eCaNPa5UwDj6P6ag5mT8wOCdaH
+         7wOUXlGnwsvuPcqBwA8ZiPaQwTOlnDch6FVj3HphY/Gsw7uaCaTA6sJ9fe7Iz4fdWq
+         ttj1aB01S84Lw==
+Date:   Mon, 19 Jul 2021 11:04:41 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
+        Murphy Zhou <jencce.kernel@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] writeback, cgroup: do not reparent dax inodes
+Message-ID: <20210719180441.GH23236@magnolia>
+References: <20210719171350.3876830-1-guro@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c29ff5c8-9c94-6a6c-6142-3bed440676bf@arm.com>
+In-Reply-To: <20210719171350.3876830-1-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-I'm not planning to resend this work at the moment, because it looks like
-vcpu hot-add will go a different way so I don't have a user. But I'll
-probably address the feedback so far and park it on some branch, in case
-anyone else needs it.
-
-On Mon, Jul 19, 2021 at 04:29:18PM +0100, Alexandru Elisei wrote:
-> 1. Why forwarding PSCI calls to userspace depend on enabling forwarding for other
-> HVC calls? As I understand from the patches, those handle distinct function IDs.
-
-The HVC cap from patch 4 enables returning from the VCPU_RUN ioctl with
-KVM_EXIT_HYPERCALL, for any HVC not handled by KVM. This one should
-definitely be improved, either by letting userspace choose the ranges of
-HVC it wants, or at least by reporting ranges reserved by KVM to
-userspace.
-
-The PSCI cap from patch 5 disables the in-kernel PSCI implementation. As a
-result those HVCs are forwarded to userspace.
-
-It was suggested that other users will want to handle HVC calls (SDEI for
-example [1]), hence splitting into two capabilities rather than just the
-PSCI cap. In v5.14 x86 added KVM_CAP_EXIT_HYPERCALL [2], which lets
-userspace receive specific hypercalls. We could reuse that and have PSCI
-be one bit of that capability's parameter.
-
-[1] https://lore.kernel.org/linux-arm-kernel/20170808164616.25949-12-james.morse@arm.com/
-[2] https://lore.kernel.org/kvm/90778988e1ee01926ff9cac447aacb745f954c8c.1623174621.git.ashish.kalra@amd.com/
-
-> 2. HVC call forwarding to userspace also forwards PSCI functions which are defined
-> in ARM DEN 0022D, but not (yet) implemented by KVM. What happens if KVM's PSCI
-> implementation gets support for one of those functions? How does userspace know
-> that now it also needs to enable PSCI call forwarding to be able to handle that
-> function?
-
-We forward the whole PSCI function range, so it's either KVM or userspace.
-If KVM manages PSCI and the guest calls an unimplemented function, that
-returns directly to the guest without going to userspace.
-
-The concern is valid for any other range, though. If userspace enables the
-HVC cap it receives function calls that at some point KVM might need to
-handle itself. So we need some negotiation between user and KVM about the
-specific HVC ranges that userspace can and will handle.
-
-> It looks to me like the boundary between the functions that are forwarded when HVC
-> call forwarding is enabled and the functions that are forwarded when PSCI call
-> forwarding is enabled is based on what Linux v5.13 handles. Have you considered
-> choosing this boundary based on something less arbitrary, like the function types
-> specified in ARM DEN 0028C, table 2-1?
-
-For PSCI I've used the range 0-0x1f as the boundary, which is reserved for
-PSCI by SMCCC (table 6-4 in that document).
-
+On Mon, Jul 19, 2021 at 10:13:50AM -0700, Roman Gushchin wrote:
+> The inode switching code is not suited for dax inodes. An attempt
+> to switch a dax inode to a parent writeback structure (as a part
+> of a writeback cleanup procedure) results in a panic like this:
 > 
-> In my opinion, setting the MP state to HALTED looks like a sensible approach to
-> implementing PSCI_SUSPEND. I'll take a closer look at the patches after I get a
-> better understanding about what is going on.
+>   [  987.071651] run fstests generic/270 at 2021-07-15 05:54:02
+>   [  988.704940] XFS (pmem0p2): EXPERIMENTAL big timestamp feature in
+>   use.  Use at your own risk!
+>   [  988.746847] XFS (pmem0p2): DAX enabled. Warning: EXPERIMENTAL, use
+>   at your own risk
+>   [  988.786070] XFS (pmem0p2): EXPERIMENTAL inode btree counters
+>   feature in use. Use at your own risk!
+>   [  988.828639] XFS (pmem0p2): Mounting V5 Filesystem
+>   [  988.854019] XFS (pmem0p2): Ending clean mount
+>   [  988.874550] XFS (pmem0p2): Quotacheck needed: Please wait.
+>   [  988.900618] XFS (pmem0p2): Quotacheck: Done.
+>   [  989.090783] XFS (pmem0p2): xlog_verify_grant_tail: space > BBTOB(tail_blocks)
+>   [  989.092751] XFS (pmem0p2): xlog_verify_grant_tail: space > BBTOB(tail_blocks)
+>   [  989.092962] XFS (pmem0p2): xlog_verify_grant_tail: space > BBTOB(tail_blocks)
+>   [ 1010.105586] BUG: unable to handle page fault for address: 0000000005b0f669
+>   [ 1010.141817] #PF: supervisor read access in kernel mode
+>   [ 1010.167824] #PF: error_code(0x0000) - not-present page
+>   [ 1010.191499] PGD 0 P4D 0
+>   [ 1010.203346] Oops: 0000 [#1] SMP PTI
+>   [ 1010.219596] CPU: 13 PID: 10479 Comm: kworker/13:16 Not tainted
+>   5.14.0-rc1-master-8096acd7442e+ #8
+>   [ 1010.260441] Hardware name: HP ProLiant DL360 Gen9/ProLiant DL360
+>   Gen9, BIOS P89 09/13/2016
+>   [ 1010.297792] Workqueue: inode_switch_wbs inode_switch_wbs_work_fn
+>   [ 1010.324832] RIP: 0010:inode_do_switch_wbs+0xaf/0x470
+>   [ 1010.347261] Code: 00 30 0f 85 c1 03 00 00 0f 1f 44 00 00 31 d2 48
+>   c7 c6 ff ff ff ff 48 8d 7c 24 08 e8 eb 49 1a 00 48 85 c0 74 4a bb ff
+>   ff ff ff <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 00 a8 08
+>   0f 85
+>   [ 1010.434307] RSP: 0018:ffff9c66691abdc8 EFLAGS: 00010002
+>   [ 1010.457795] RAX: 0000000005b0f661 RBX: 00000000ffffffff RCX: ffff89e6a21382b0
+>   [ 1010.489922] RDX: 0000000000000001 RSI: ffff89e350230248 RDI: ffffffffffffffff
+>   [ 1010.522085] RBP: ffff89e681d19400 R08: 0000000000000000 R09: 0000000000000228
+>   [ 1010.554234] R10: ffffffffffffffff R11: ffffffffffffffc0 R12: ffff89e6a2138130
+>   [ 1010.586414] R13: ffff89e316af7400 R14: ffff89e316af6e78 R15: ffff89e6a21382b0
+>   [ 1010.619394] FS:  0000000000000000(0000) GS:ffff89ee5fb40000(0000)
+>   knlGS:0000000000000000
+>   [ 1010.658874] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   [ 1010.688085] CR2: 0000000005b0f669 CR3: 0000000cb2410004 CR4: 00000000001706e0
+>   [ 1010.722129] Call Trace:
+>   [ 1010.733132]  inode_switch_wbs_work_fn+0xb6/0x2a0
+>   [ 1010.754121]  process_one_work+0x1e6/0x380
+>   [ 1010.772512]  worker_thread+0x53/0x3d0
+>   [ 1010.789221]  ? process_one_work+0x380/0x380
+>   [ 1010.807964]  kthread+0x10f/0x130
+>   [ 1010.822043]  ? set_kthread_struct+0x40/0x40
+>   [ 1010.840818]  ret_from_fork+0x22/0x30
+>   [ 1010.856851] Modules linked in: xt_CHECKSUM xt_MASQUERADE
+>   xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_chain_nat nf_nat
+>   nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nft_counter nf_tables
+>   nfnetlink bridge stp llc rfkill sunrpc intel_rapl_msr
+>   intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp
+>   coretemp kvm_intel ipmi_ssif kvm mgag200 i2c_algo_bit iTCO_wdt
+>   irqbypass drm_kms_helper iTCO_vendor_support acpi_ipmi rapl
+>   syscopyarea sysfillrect intel_cstate ipmi_si sysimgblt ioatdma
+>   dax_pmem_compat fb_sys_fops ipmi_devintf device_dax i2c_i801 pcspkr
+>   intel_uncore hpilo nd_pmem cec dax_pmem_core dca i2c_smbus acpi_tad
+>   lpc_ich ipmi_msghandler acpi_power_meter drm fuse xfs libcrc32c sd_mod
+>   t10_pi crct10dif_pclmul crc32_pclmul crc32c_intel tg3
+>   ghash_clmulni_intel serio_raw hpsa hpwdt scsi_transport_sas wmi
+>   dm_mirror dm_region_hash dm_log dm_mod
+>   [ 1011.200864] CR2: 0000000005b0f669
+>   [ 1011.215700] ---[ end trace ed2105faff8384f3 ]---
+>   [ 1011.241727] RIP: 0010:inode_do_switch_wbs+0xaf/0x470
+>   [ 1011.264306] Code: 00 30 0f 85 c1 03 00 00 0f 1f 44 00 00 31 d2 48
+>   c7 c6 ff ff ff ff 48 8d 7c 24 08 e8 eb 49 1a 00 48 85 c0 74 4a bb ff
+>   ff ff ff <48> 8b 50 08 48 8d 4a ff 83 e2 01 48 0f 45 c1 48 8b 00 a8 08
+>   0f 85
+>   [ 1011.348821] RSP: 0018:ffff9c66691abdc8 EFLAGS: 00010002
+>   [ 1011.372734] RAX: 0000000005b0f661 RBX: 00000000ffffffff RCX: ffff89e6a21382b0
+>   [ 1011.405826] RDX: 0000000000000001 RSI: ffff89e350230248 RDI: ffffffffffffffff
+>   [ 1011.437852] RBP: ffff89e681d19400 R08: 0000000000000000 R09: 0000000000000228
+>   [ 1011.469926] R10: ffffffffffffffff R11: ffffffffffffffc0 R12: ffff89e6a2138130
+>   [ 1011.502179] R13: ffff89e316af7400 R14: ffff89e316af6e78 R15: ffff89e6a21382b0
+>   [ 1011.534233] FS:  0000000000000000(0000) GS:ffff89ee5fb40000(0000)
+>   knlGS:0000000000000000
+>   [ 1011.571247] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   [ 1011.597063] CR2: 0000000005b0f669 CR3: 0000000cb2410004 CR4: 00000000001706e0
+>   [ 1011.629160] Kernel panic - not syncing: Fatal exception
+>   [ 1011.653802] Kernel Offset: 0x15200000 from 0xffffffff81000000
+>   (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+>   [ 1011.713723] ---[ end Kernel panic - not syncing: Fatal exception ]---
 > 
-> On 6/8/21 4:48 PM, Jean-Philippe Brucker wrote:
-> > Allow userspace to request handling PSCI calls from guests. Our goal is
-> > to enable a vCPU hot-add solution for Arm where the VMM presents
-> > possible resources to the guest at boot, and controls which vCPUs can be
-> > brought up by allowing or denying PSCI CPU_ON calls. Passing HVC and
-> > PSCI to userspace has been discussed on the list in the context of vCPU
-> > hot-add [1,2] but it can also be useful for implementing other SMCCC and
-> > vendor hypercalls [3,4,5].
-> >
-> > Patches 1-3 allow userspace to request WFI to be executed in KVM. That
+> The crash happens on an attempt to iterate over attached pagecache
+> pages and check the dirty flag: a dax inode's xarray contains pfn's
+> instead of generic struct page pointers.
 > 
-> I don't understand this. KVM, in kvm_vcpu_block(), does not execute an WFI.
-> PSCI_SUSPEND is documented as being indistinguishable from an WFI from the guest's
-> point of view, but it's implementation is not architecturally defined.
+> Fix the problem by bailing out (with the false return value) of
+> inode_prepare_sbs_switch() if a dax inode is passed.
+> 
+> Fixes: c22d70a162d3 ("writeback, cgroup: release dying cgwbs by switching attached inodes")
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Reported-by: Murphy Zhou <jencce.kernel@gmail.com>
+> Reported-by: Darrick J. Wong <djwong@kernel.org>
+> Tested-by: Murphy Zhou <jencce.kernel@gmail.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
 
-Yes that was an oversimplification on my part
+Seems to fix the problem here too, so:
+Tested-by: Darrick J. Wong <djwong@kernel.org>
 
-Thanks,
-Jean
+--D
+
+> ---
+>  fs/fs-writeback.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 06d04a74ab6c..4c3370548982 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -521,6 +521,9 @@ static bool inode_prepare_wbs_switch(struct inode *inode,
+>  	 */
+>  	smp_mb();
+>  
+> +	if (IS_DAX(inode))
+> +		return false;
+> +
+>  	/* while holding I_WB_SWITCH, no one else can update the association */
+>  	spin_lock(&inode->i_lock);
+>  	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
+> -- 
+> 2.31.1
+> 
