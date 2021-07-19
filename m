@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464D63CD8C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869473CDB9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243219AbhGSOZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:25:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
+        id S1343820AbhGSOse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:48:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242696AbhGSOWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:22:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFB5761242;
-        Mon, 19 Jul 2021 15:02:42 +0000 (UTC)
+        id S244014AbhGSOcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:32:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 943126121E;
+        Mon, 19 Jul 2021 15:12:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706963;
-        bh=ofUSPjF/yzLP/MLlyjcF+HuRo4cIJ3w1XQeSscxrtvo=;
+        s=korg; t=1626707571;
+        bh=vGFioSWvtRgICLzoYPoDXxpPQu2d3N5bConmOJySD3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ukSKFzxesVVc3Vsr0XcKi7kKo5OdyM+4qu3yDuqXH5b1GCSI6ikrZc0CnPGUEY9Cw
-         lxf5h9/GjsJB5qTI7mY3rrq1121DuGUgyBMN91do+z2lpvEOVlC2b9JiZaygy2D9S5
-         F4hdYf0PVaQvBJux0FRqWmJlt6/Pc/6hc3nB912Y=
+        b=SfWigAsIFOrTl500CZnH3ZFu+uGSgcePumXzaoTx3aqtBRl883FpTLWPAHrOnnIr+
+         u4TYwxI2pCeeYZOlzKDE6BESH2dg0gLaEr4Zx4oQHxFXbZRSSeJfwwOf00ImA4bO8J
+         4mXl/IJ5K02ouC1M2gNnsgLAUeaFp9HcVx3kB/2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <jiancai@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 167/188] ARM: 9087/1: kprobes: test-thumb: fix for LLVM_IAS=1
-Date:   Mon, 19 Jul 2021 16:52:31 +0200
-Message-Id: <20210719144941.958876782@linuxfoundation.org>
+Subject: [PATCH 4.9 210/245] power: reset: gpio-poweroff: add missing MODULE_DEVICE_TABLE
+Date:   Mon, 19 Jul 2021 16:52:32 +0200
+Message-Id: <20210719144947.189085340@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit 8b95a7d90ce8160ac5cffd5bace6e2eba01a871e ]
+[ Upstream commit ed3443fb4df4e140a22f65144546c8a8e1e27f4e ]
 
-There's a few instructions that GAS infers operands but Clang doesn't;
-from what I can tell the Arm ARM doesn't say these are optional.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-F5.1.257 TBB, TBH T1 Halfword variant
-F5.1.238 STREXD T1 variant
-F5.1.84 LDREXD T1 variant
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1309
-
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Jian Cai <jiancai@google.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/probes/kprobes/test-thumb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/power/reset/gpio-poweroff.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/probes/kprobes/test-thumb.c b/arch/arm/probes/kprobes/test-thumb.c
-index b683b4517458..4254391f3906 100644
---- a/arch/arm/probes/kprobes/test-thumb.c
-+++ b/arch/arm/probes/kprobes/test-thumb.c
-@@ -444,21 +444,21 @@ void kprobe_thumb32_test_cases(void)
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
+diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
+index be3d81ff51cc..a44e3427fdeb 100644
+--- a/drivers/power/reset/gpio-poweroff.c
++++ b/drivers/power/reset/gpio-poweroff.c
+@@ -84,6 +84,7 @@ static const struct of_device_id of_gpio_poweroff_match[] = {
+ 	{ .compatible = "gpio-poweroff", },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, of_gpio_poweroff_match);
  
--	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,"]",
-+	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
- 
--	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,"]",
-+	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
- 
--	TEST_RRX("tbh	[r",1,9f, ", r",14,1,"]",
-+	TEST_RRX("tbh	[r",1,9f, ", r",14,1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
-@@ -471,10 +471,10 @@ void kprobe_thumb32_test_cases(void)
- 
- 	TEST_UNSUPPORTED("strexb	r0, r1, [r2]")
- 	TEST_UNSUPPORTED("strexh	r0, r1, [r2]")
--	TEST_UNSUPPORTED("strexd	r0, r1, [r2]")
-+	TEST_UNSUPPORTED("strexd	r0, r1, r2, [r2]")
- 	TEST_UNSUPPORTED("ldrexb	r0, [r1]")
- 	TEST_UNSUPPORTED("ldrexh	r0, [r1]")
--	TEST_UNSUPPORTED("ldrexd	r0, [r1]")
-+	TEST_UNSUPPORTED("ldrexd	r0, r1, [r1]")
- 
- 	TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
- 
+ static struct platform_driver gpio_poweroff_driver = {
+ 	.probe = gpio_poweroff_probe,
 -- 
 2.30.2
 
