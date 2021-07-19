@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA373CE68F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BBF3CE7B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349259AbhGSQIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:08:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40366 "EHLO mail.kernel.org"
+        id S1351004AbhGSQbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344028AbhGSPHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:07:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2DCD6113A;
-        Mon, 19 Jul 2021 15:47:34 +0000 (UTC)
+        id S1347420AbhGSPQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:16:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D33666120A;
+        Mon, 19 Jul 2021 15:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709655;
-        bh=aNgvai2dHUFLmKna88+VloTUFYnAA2YEoAtKk5xaEIQ=;
+        s=korg; t=1626710214;
+        bh=xWCCHaF5NQH3bwlPXq7cZGPq7DcVswBFm6vzcPVvN44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wApl70bDRnmp66LUHXAF5Il1M26MUl1MU0BK/ewHbcFlAkzgHS39V05zODltGkwd6
-         t9e3wo11jwz19vhKNuadvTeYyvehfIsCJRcFGsWIMBEzzpGrfmjn/RTC925ZywQDdt
-         emvlULVjEAzatWXQTAKnVwtz1xl8yjPmYZiCdYmQ=
+        b=e7PhVHrjWgoof7vRroDLYy4sXAWKV0f//GRYUmPUbd88I4qAraSaKs5SNbw76nOhd
+         T1qR1NSUnFU7Qo+SRjQ6eUXNVUS/abovEjD9CLGbymKwGV54B7D5BBXD0ppjrowlEo
+         +UY+nXEwwVl5qBAGVcqbtMtveoc2MaCfOKpqYHaY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 045/149] ALSA: ppc: fix error return code in snd_pmac_probe()
+        Zou Wei <zou_wei@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 124/243] watchdog: sc520_wdt: Fix possible use-after-free in wdt_turnoff()
 Date:   Mon, 19 Jul 2021 16:52:33 +0200
-Message-Id: <20210719144912.096593176@linuxfoundation.org>
+Message-Id: <20210719144944.912355790@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 80b9c1be567c3c6bbe0d4b290af578e630485b5d ]
+[ Upstream commit 90b7c141132244e8e49a34a4c1e445cce33e07f4 ]
 
-If snd_pmac_tumbler_init() or snd_pmac_tumbler_post_init() fails,
-snd_pmac_probe() need return error code.
+This module's remove path calls del_timer(). However, that function
+does not wait until the timer handler finishes. This means that the
+timer handler may still be running after the driver's remove function
+has finished, which would result in a use-after-free.
+
+Fix by calling del_timer_sync(), which makes sure the timer handler
+has finished, and unable to re-schedule itself.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210616021121.1991502-1-yangyingliang@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/1620716691-108460-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/ppc/powermac.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/watchdog/sc520_wdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/ppc/powermac.c b/sound/ppc/powermac.c
-index 96ef55082bf9..b135d114ce89 100644
---- a/sound/ppc/powermac.c
-+++ b/sound/ppc/powermac.c
-@@ -77,7 +77,11 @@ static int snd_pmac_probe(struct platform_device *devptr)
- 		sprintf(card->shortname, "PowerMac %s", name_ext);
- 		sprintf(card->longname, "%s (Dev %d) Sub-frame %d",
- 			card->shortname, chip->device_id, chip->subframe);
--		if ( snd_pmac_tumbler_init(chip) < 0 || snd_pmac_tumbler_post_init() < 0)
-+		err = snd_pmac_tumbler_init(chip);
-+		if (err < 0)
-+			goto __error;
-+		err = snd_pmac_tumbler_post_init();
-+		if (err < 0)
- 			goto __error;
- 		break;
- 	case PMAC_AWACS:
+diff --git a/drivers/watchdog/sc520_wdt.c b/drivers/watchdog/sc520_wdt.c
+index e66e6b905964..ca65468f4b9c 100644
+--- a/drivers/watchdog/sc520_wdt.c
++++ b/drivers/watchdog/sc520_wdt.c
+@@ -186,7 +186,7 @@ static int wdt_startup(void)
+ static int wdt_turnoff(void)
+ {
+ 	/* Stop the timer */
+-	del_timer(&timer);
++	del_timer_sync(&timer);
+ 
+ 	/* Stop the watchdog */
+ 	wdt_config(0);
 -- 
 2.30.2
 
