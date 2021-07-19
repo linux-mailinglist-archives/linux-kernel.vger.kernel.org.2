@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EBB3CE9A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36673CE9A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347163AbhGSQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:58:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46560 "EHLO mail.kernel.org"
+        id S1353999AbhGSQ7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241542AbhGSPcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:32:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A198C61424;
-        Mon, 19 Jul 2021 16:10:35 +0000 (UTC)
+        id S234342AbhGSPck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:32:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80BD661429;
+        Mon, 19 Jul 2021 16:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711036;
-        bh=96LjCpP+q2lNFwkuwSh8WkFF0CnkOkRCU0meSQEXn2I=;
+        s=korg; t=1626711039;
+        bh=JCceWoIyomxU38c1w+Wf7+r22ShFUMgD3auRbHx+tIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YUoKfVx3cIS2Xvra6sfMDjSy0WPYy6dLtlQzePSeWhSaeuk0cqYXG+wVYXhFiV+Vn
-         JS4v1MKwdm858YhtsoVZvpFuWgV3CnkvfwfZn7057BI6H1QyE7Cw7VnFromV9MXFvJ
-         5Oe9cXjrt6KALH5/BWMTJiHkNZ+DDVRyii1IUdSE=
+        b=byIc84V7LSAl5IKqKw90elTLKBQKFJlZmGf3z4YhGhVWGfZLt16US2FLwoP+qp8q3
+         F8s9o9e7W3rUoFO/At2a8WJMPfmQ0DxFLlpWYY2PI6VvfZ9klb0LD2OZnrkscgox94
+         Boek8tR2MS32orhlI0EFCtj5kpK7jHWhxfualhxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Robert Krawitz <rlk@redhat.com>,
+        Greg Kurz <groug@kaod.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 169/351] watchdog: iTCO_wdt: Account for rebooting on second timeout
-Date:   Mon, 19 Jul 2021 16:51:55 +0200
-Message-Id: <20210719144950.563664788@linuxfoundation.org>
+Subject: [PATCH 5.13 170/351] virtiofs: propagate sync() to file server
+Date:   Mon, 19 Jul 2021 16:51:56 +0200
+Message-Id: <20210719144950.597158929@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -41,69 +41,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+From: Greg Kurz <groug@kaod.org>
 
-[ Upstream commit cb011044e34c293e139570ce5c01aed66a34345c ]
+[ Upstream commit 2d82ab251ef0f6e7716279b04e9b5a01a86ca530 ]
 
-This was already attempted to fix via 1fccb73011ea: If the BIOS did not
-enable TCO SMIs, the timer definitely needs to trigger twice in order to
-cause a reboot. If TCO SMIs are on, as well as SMIs in general, we can
-continue to assume that the BIOS will perform a reboot on the first
-timeout.
+Even if POSIX doesn't mandate it, linux users legitimately expect sync() to
+flush all data and metadata to physical storage when it is located on the
+same system.  This isn't happening with virtiofs though: sync() inside the
+guest returns right away even though data still needs to be flushed from
+the host page cache.
 
-QEMU with its ICH9 and related BIOS falls into the former category,
-currently taking twice the configured timeout in order to reboot the
-machine. For iTCO version that fall under turn_SMI_watchdog_clear_off,
-this is also true and was currently only addressed for v1, irrespective
-of the turn_SMI_watchdog_clear_off value.
+This is easily demonstrated by doing the following in the guest:
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/0b8bb307-d08b-41b5-696c-305cdac6789c@siemens.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+$ dd if=/dev/zero of=/mnt/foo bs=1M count=5K ; strace -T -e sync sync
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB, 5.0 GiB) copied, 5.22224 s, 1.0 GB/s
+sync()                                  = 0 <0.024068>
+
+and start the following in the host when the 'dd' command completes
+in the guest:
+
+$ strace -T -e fsync /usr/bin/sync virtiofs/foo
+fsync(3)                                = 0 <10.371640>
+
+There are no good reasons not to honor the expected behavior of sync()
+actually: it gives an unrealistic impression that virtiofs is super fast
+and that data has safely landed on HW, which isn't the case obviously.
+
+Implement a ->sync_fs() superblock operation that sends a new FUSE_SYNCFS
+request type for this purpose.  Provision a 64-bit placeholder for possible
+future extensions.  Since the file server cannot handle the wait == 0 case,
+we skip it to avoid a gratuitous roundtrip.  Note that this is
+per-superblock: a FUSE_SYNCFS is send for the root mount and for each
+submount.
+
+Like with FUSE_FSYNC and FUSE_FSYNCDIR, lack of support for FUSE_SYNCFS in
+the file server is treated as permanent success.  This ensures
+compatibility with older file servers: the client will get the current
+behavior of sync() not being propagated to the file server.
+
+Note that such an operation allows the file server to DoS sync().  Since a
+typical FUSE file server is an untrusted piece of software running in
+userspace, this is disabled by default.  Only enable it with virtiofs for
+now since virtiofsd is supposedly trusted by the guest kernel.
+
+Reported-by: Robert Krawitz <rlk@redhat.com>
+Signed-off-by: Greg Kurz <groug@kaod.org>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/iTCO_wdt.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ fs/fuse/fuse_i.h          |  3 +++
+ fs/fuse/inode.c           | 40 +++++++++++++++++++++++++++++++++++++++
+ fs/fuse/virtio_fs.c       |  1 +
+ include/uapi/linux/fuse.h | 10 +++++++++-
+ 4 files changed, 53 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
-index bf31d7b67a69..3f1324871cfd 100644
---- a/drivers/watchdog/iTCO_wdt.c
-+++ b/drivers/watchdog/iTCO_wdt.c
-@@ -71,6 +71,8 @@
- #define TCOBASE(p)	((p)->tco_res->start)
- /* SMI Control and Enable Register */
- #define SMI_EN(p)	((p)->smi_res->start)
-+#define TCO_EN		(1 << 13)
-+#define GBL_SMI_EN	(1 << 0)
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 7e463e220053..f48dd7ff32af 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -761,6 +761,9 @@ struct fuse_conn {
+ 	/* Auto-mount submounts announced by the server */
+ 	unsigned int auto_submounts:1;
  
- #define TCO_RLD(p)	(TCOBASE(p) + 0x00) /* TCO Timer Reload/Curr. Value */
- #define TCOv1_TMR(p)	(TCOBASE(p) + 0x01) /* TCOv1 Timer Initial Value*/
-@@ -355,8 +357,12 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
++	/* Propagate syncfs() to server */
++	unsigned int sync_fs:1;
++
+ 	/** The number of requests waiting for completion */
+ 	atomic_t num_waiting;
  
- 	tmrval = seconds_to_ticks(p, t);
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 393e36b74dc4..93d28dc1f572 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -506,6 +506,45 @@ static int fuse_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	return err;
+ }
  
--	/* For TCO v1 the timer counts down twice before rebooting */
--	if (p->iTCO_version == 1)
++static int fuse_sync_fs(struct super_block *sb, int wait)
++{
++	struct fuse_mount *fm = get_fuse_mount_super(sb);
++	struct fuse_conn *fc = fm->fc;
++	struct fuse_syncfs_in inarg;
++	FUSE_ARGS(args);
++	int err;
++
 +	/*
-+	 * If TCO SMIs are off, the timer counts down twice before rebooting.
-+	 * Otherwise, the BIOS generally reboots when the SMI triggers.
++	 * Userspace cannot handle the wait == 0 case.  Avoid a
++	 * gratuitous roundtrip.
 +	 */
-+	if (p->smi_res &&
-+	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
- 		tmrval /= 2;
++	if (!wait)
++		return 0;
++
++	/* The filesystem is being unmounted.  Nothing to do. */
++	if (!sb->s_root)
++		return 0;
++
++	if (!fc->sync_fs)
++		return 0;
++
++	memset(&inarg, 0, sizeof(inarg));
++	args.in_numargs = 1;
++	args.in_args[0].size = sizeof(inarg);
++	args.in_args[0].value = &inarg;
++	args.opcode = FUSE_SYNCFS;
++	args.nodeid = get_node_id(sb->s_root->d_inode);
++	args.out_numargs = 0;
++
++	err = fuse_simple_request(fm, &args);
++	if (err == -ENOSYS) {
++		fc->sync_fs = 0;
++		err = 0;
++	}
++
++	return err;
++}
++
+ enum {
+ 	OPT_SOURCE,
+ 	OPT_SUBTYPE,
+@@ -909,6 +948,7 @@ static const struct super_operations fuse_super_operations = {
+ 	.put_super	= fuse_put_super,
+ 	.umount_begin	= fuse_umount_begin,
+ 	.statfs		= fuse_statfs,
++	.sync_fs	= fuse_sync_fs,
+ 	.show_options	= fuse_show_options,
+ };
  
- 	/* from the specs: */
-@@ -521,7 +527,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
- 		 * Disables TCO logic generating an SMI#
- 		 */
- 		val32 = inl(SMI_EN(p));
--		val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
-+		val32 &= ~TCO_EN;	/* Turn off SMI clearing watchdog */
- 		outl(val32, SMI_EN(p));
- 	}
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index bcb8a02e2d8b..f9809b1b82f0 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -1447,6 +1447,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+ 	fc->release = fuse_free_conn;
+ 	fc->delete_stale = true;
+ 	fc->auto_submounts = true;
++	fc->sync_fs = true;
  
+ 	/* Tell FUSE to split requests that exceed the virtqueue's size */
+ 	fc->max_pages_limit = min_t(unsigned int, fc->max_pages_limit,
+diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+index 271ae90a9bb7..36ed092227fa 100644
+--- a/include/uapi/linux/fuse.h
++++ b/include/uapi/linux/fuse.h
+@@ -181,6 +181,9 @@
+  *  - add FUSE_OPEN_KILL_SUIDGID
+  *  - extend fuse_setxattr_in, add FUSE_SETXATTR_EXT
+  *  - add FUSE_SETXATTR_ACL_KILL_SGID
++ *
++ *  7.34
++ *  - add FUSE_SYNCFS
+  */
+ 
+ #ifndef _LINUX_FUSE_H
+@@ -216,7 +219,7 @@
+ #define FUSE_KERNEL_VERSION 7
+ 
+ /** Minor version number of this interface */
+-#define FUSE_KERNEL_MINOR_VERSION 33
++#define FUSE_KERNEL_MINOR_VERSION 34
+ 
+ /** The node ID of the root inode */
+ #define FUSE_ROOT_ID 1
+@@ -509,6 +512,7 @@ enum fuse_opcode {
+ 	FUSE_COPY_FILE_RANGE	= 47,
+ 	FUSE_SETUPMAPPING	= 48,
+ 	FUSE_REMOVEMAPPING	= 49,
++	FUSE_SYNCFS		= 50,
+ 
+ 	/* CUSE specific operations */
+ 	CUSE_INIT		= 4096,
+@@ -971,4 +975,8 @@ struct fuse_removemapping_one {
+ #define FUSE_REMOVEMAPPING_MAX_ENTRY   \
+ 		(PAGE_SIZE / sizeof(struct fuse_removemapping_one))
+ 
++struct fuse_syncfs_in {
++	uint64_t	padding;
++};
++
+ #endif /* _LINUX_FUSE_H */
 -- 
 2.30.2
 
