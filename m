@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806513CDD61
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA24F3CDE8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245024AbhGSO5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55638 "EHLO mail.kernel.org"
+        id S245708AbhGSPDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:03:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245294AbhGSOiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245305AbhGSOiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:38:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16FC961283;
-        Mon, 19 Jul 2021 15:17:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D199061248;
+        Mon, 19 Jul 2021 15:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707872;
-        bh=RCGYkda+Eld/Z8zYNhEmDAB2IWxc0ZfaR4QT2RV4Wj0=;
+        s=korg; t=1626707875;
+        bh=SgxVTqg3TOEmf5WCKocn+ohWTqbmvn+yxTfwJ7zmAnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IXcVc4PrYDQoE0rfs4aNiOVS8QuS8jubhWMeQ65IWnTcfm7EvUeyedzSRuIFl9hD+
-         xZj7ZyZJHRbVYaYRAIm9bw0T5AEDDCmG5zyaudx0MPAbRqqqa7eluW454FM9c1yVZO
-         EVSI6MN4kYR+kTBXt/T5wnsczcQxQWKAxrl6nBTs=
+        b=RvL8dzUgRq4EsGzNKUAY4zg4RVfEFddNLsPdiIQ6uMoyc9Zje4V/oBshXJwuStJGT
+         XcBrzBh6QLIIX+E8m/kCKvSQH7Wsl5g+12B37NcIrBLM7KyrL1+yBpFjXIYUTTdt4Y
+         c0dIdsGGfnuoOTE0Qj7NS3tMUQ3Ud9z+N23Bvtoc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
-        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 090/315] hwmon: (max31790) Fix fan speed reporting for fan7..12
-Date:   Mon, 19 Jul 2021 16:49:39 +0200
-Message-Id: <20210719144945.830660605@linuxfoundation.org>
+Subject: [PATCH 4.14 091/315] btrfs: clear log tree recovering status if starting transaction fails
+Date:   Mon, 19 Jul 2021 16:49:40 +0200
+Message-Id: <20210719144945.868251942@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,45 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit cbbf244f0515af3472084f22b6213121b4a63835 ]
+[ Upstream commit 1aeb6b563aea18cd55c73cf666d1d3245a00f08c ]
 
-Fans 7..12 do not have their own set of configuration registers.
-So far the code ignored that and read beyond the end of the configuration
-register range to get the tachometer period. This resulted in more or less
-random fan speed values for those fans.
+When a log recovery is in progress, lots of operations have to take that
+into account, so we keep this status per tree during the operation. Long
+time ago error handling revamp patch 79787eaab461 ("btrfs: replace many
+BUG_ONs with proper error handling") removed clearing of the status in
+an error branch. Add it back as was intended in e02119d5a7b4 ("Btrfs:
+Add a write ahead tree log to optimize synchronous operations").
 
-The datasheet is quite vague when it comes to defining the tachometer
-period for fans 7..12. Experiments confirm that the period is the same
-for both fans associated with a given set of configuration registers.
+There are probably no visible effects, log replay is done only during
+mount and if it fails all structures are cleared so the stale status
+won't be kept.
 
-Fixes: 54187ff9d766 ("hwmon: (max31790) Convert to use new hwmon registration API")
-Fixes: 195a4b4298a7 ("hwmon: Driver for Maxim MAX31790")
-Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
-Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
-Cc: Václav Kubernát <kubernat@cesnet.cz>
-Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210526154022.3223012-2-linux@roeck-us.net
+Fixes: 79787eaab461 ("btrfs: replace many BUG_ONs with proper error handling")
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/max31790.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/tree-log.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-index 281491cca510..66cf772de7d2 100644
---- a/drivers/hwmon/max31790.c
-+++ b/drivers/hwmon/max31790.c
-@@ -179,7 +179,7 @@ static int max31790_read_fan(struct device *dev, u32 attr, int channel,
- 
- 	switch (attr) {
- 	case hwmon_fan_input:
--		sr = get_tach_period(data->fan_dynamics[channel]);
-+		sr = get_tach_period(data->fan_dynamics[channel % NR_CHANNEL]);
- 		rpm = RPM_FROM_REG(data->tach[channel], sr);
- 		*val = rpm;
- 		return 0;
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index f890fdb59915..fbcfee38583b 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5957,6 +5957,7 @@ next:
+ error:
+ 	if (wc.trans)
+ 		btrfs_end_transaction(wc.trans);
++	clear_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags);
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
 -- 
 2.30.2
 
