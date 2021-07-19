@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19693CCDA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73F43CCDB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234381AbhGSFzP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Jul 2021 01:55:15 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:56574 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhGSFzN (ORCPT
+        id S233771AbhGSGBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:01:48 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:58407
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S229906AbhGSGBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 01:55:13 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16J5q2Hv9029644, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16J5q2Hv9029644
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 19 Jul 2021 13:52:02 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 19 Jul 2021 13:52:01 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 19 Jul 2021 13:52:01 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91]) by
- RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91%5]) with mapi id
- 15.01.2106.013; Mon, 19 Jul 2021 13:52:01 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-CC:     "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Neo Jou <neojou@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: RE: [PATCH RFC v1 0/7] rtw88: prepare locking for SDIO support
-Thread-Topic: [PATCH RFC v1 0/7] rtw88: prepare locking for SDIO support
-Thread-Index: AQHXe0wk6jb0WXKpqUOtgfYNe/k5BatJzIYQ
-Date:   Mon, 19 Jul 2021 05:52:01 +0000
-Message-ID: <11f077c7612a4f33bbcd4fbd6a2e9ac3@realtek.com>
-References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.146]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/7/19_=3F=3F_01:06:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/19/2021 05:41:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165067 [Jul 18 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
-X-KSE-AntiSpam-Info: {Tracking_from_exist}
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 07/19/2021 05:43:00
+        Mon, 19 Jul 2021 02:01:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=NQYPHYKWyImTIt81fB2YSWliTUObkR6rOuO5JzaQPuU=; b=k
+        bTyJfpYgjWbNMqFrWuhaxIan+V5S9V9FhKQfE7zprqRstEqa8S0Q7c5Ys+WhSQ9H
+        9c3dJTtketxyl+/vVXEWN0qDRRleOPm24djBw/9BUu9ujHggyWpPJCvjDPEmMR3v
+        5c6RUubvbuk4Im7itMKMrDyzoLAUqxAee02IYdTCqQ=
+Received: from localhost.localdomain (unknown [10.162.86.133])
+        by app1 (Coremail) with SMTP id XAUFCgAnCGl+FPVgDhOJAA--.1226S3;
+        Mon, 19 Jul 2021 13:58:22 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        codalist@coda.cs.cmu.edu, linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] coda: Convert from atomic_t to refcount_t on coda_vm_ops->refcnt
+Date:   Mon, 19 Jul 2021 13:58:19 +0800
+Message-Id: <1626674299-55672-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XAUFCgAnCGl+FPVgDhOJAA--.1226S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZrWxtw47XF1rtFb_yoW8Zr1UpF
+        4ak3WjkFs8G3Z3G3W8AF48Xr13tr18G3WUXFyjg34aqrnagwsYvrWkGw1jyrs8JFZ7ur9x
+        Way5t345uw47taUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjfUOlksUUUUU
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+refcount_t type and corresponding API can protect refcounters from
+accidental underflow and overflow and further use-after-free situations.
 
-> -----Original Message-----
-> From: Martin Blumenstingl [mailto:martin.blumenstingl@googlemail.com]
-> Sent: Sunday, July 18, 2021 4:41 AM
-> To: linux-wireless@vger.kernel.org
-> Cc: tony0620emma@gmail.com; kvalo@codeaurora.org; johannes@sipsolutions.net; netdev@vger.kernel.org;
-> linux-kernel@vger.kernel.org; Neo Jou; Jernej Skrabec; Martin Blumenstingl
-> Subject: [PATCH RFC v1 0/7] rtw88: prepare locking for SDIO support
-> 
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ fs/coda/file.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-[...]
-
-I have reviewed patchset v1. But, please wait a moment before sending v2 to see
-if other experts have better suggestions. 
-
---
-Ping-Ke
+diff --git a/fs/coda/file.c b/fs/coda/file.c
+index ef5ca22bfb3e..66fb420f4e77 100644
+--- a/fs/coda/file.c
++++ b/fs/coda/file.c
+@@ -8,6 +8,7 @@
+  * to the Coda project. Contact Peter Braam <coda@cs.cmu.edu>.
+  */
+ 
++#include <linux/refcount.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/time.h>
+@@ -28,7 +29,7 @@
+ #include "coda_int.h"
+ 
+ struct coda_vm_ops {
+-	atomic_t refcnt;
++	refcount_t refcnt;
+ 	struct file *coda_file;
+ 	const struct vm_operations_struct *host_vm_ops;
+ 	struct vm_operations_struct vm_ops;
+@@ -98,7 +99,7 @@ coda_vm_open(struct vm_area_struct *vma)
+ 	struct coda_vm_ops *cvm_ops =
+ 		container_of(vma->vm_ops, struct coda_vm_ops, vm_ops);
+ 
+-	atomic_inc(&cvm_ops->refcnt);
++	refcount_inc(&cvm_ops->refcnt);
+ 
+ 	if (cvm_ops->host_vm_ops && cvm_ops->host_vm_ops->open)
+ 		cvm_ops->host_vm_ops->open(vma);
+@@ -113,7 +114,7 @@ coda_vm_close(struct vm_area_struct *vma)
+ 	if (cvm_ops->host_vm_ops && cvm_ops->host_vm_ops->close)
+ 		cvm_ops->host_vm_ops->close(vma);
+ 
+-	if (atomic_dec_and_test(&cvm_ops->refcnt)) {
++	if (refcount_dec_and_test(&cvm_ops->refcnt)) {
+ 		vma->vm_ops = cvm_ops->host_vm_ops;
+ 		fput(cvm_ops->coda_file);
+ 		kfree(cvm_ops);
+@@ -189,7 +190,7 @@ coda_file_mmap(struct file *coda_file, struct vm_area_struct *vma)
+ 		cvm_ops->vm_ops.open = coda_vm_open;
+ 		cvm_ops->vm_ops.close = coda_vm_close;
+ 		cvm_ops->coda_file = coda_file;
+-		atomic_set(&cvm_ops->refcnt, 1);
++		refcount_set(&cvm_ops->refcnt, 1);
+ 
+ 		vma->vm_ops = &cvm_ops->vm_ops;
+ 	}
+-- 
+2.7.4
 
