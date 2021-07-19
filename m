@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0BE3CEACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992BD3CEA10
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378406AbhGSRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
+        id S1377012AbhGSRGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:06:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236339AbhGSPmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:42:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F50613E3;
-        Mon, 19 Jul 2021 16:21:51 +0000 (UTC)
+        id S239277AbhGSPeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:34:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7AD66135D;
+        Mon, 19 Jul 2021 16:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711712;
-        bh=JzkuAcSmVBtG76fI/d037P05ZTfdP1DYnXJZSR8G6ls=;
+        s=korg; t=1626711081;
+        bh=9zqASD8Vjs3E/spUcYvm/3cnW30v8MLmnrtGEW8CPc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cueHfgOYz/0ZTo1p2DDqKWerFSw0EzZvgo/2B/DALzuURGU0rcz1vbj+IhrolMMp5
-         0ElvHvNFW6nIMxi9YtgT/geaEmHqJKEXx/sFLRAlpYLuqsLbTWMAKdru+XqvISP8yt
-         WJY/Bxtpl/4DiQO6uQZmu7Q5s/cx7XZwTEF7SFdw=
+        b=aLKaaU1uRKGivGvVs4Y2/tJiM+7x2No53Ileuy5H/VBQyEn7p7lmnkRL7z32+yWTQ
+         aBCgs5J8NZWrbcFujmQF2heqSkiUFBWeqGZlS01SZjAwcubD+qp+GYPywkk7uOzUiX
+         EGojzsjDHYUAIC0GsQW+YrjisuObdG3wPH27asP0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Koby Elbaz <kelbaz@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kris Pan <kris.pan@intel.com>,
+        Shruthi Sanil <shruthi.sanil@intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 104/292] habanalabs: remove node from list before freeing the node
+Subject: [PATCH 5.13 220/351] watchdog: keembay: Update WDT pre-timeout during the initialization
 Date:   Mon, 19 Jul 2021 16:52:46 +0200
-Message-Id: <20210719144945.919616354@linuxfoundation.org>
+Message-Id: <20210719144952.238924071@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Koby Elbaz <kelbaz@habana.ai>
+From: Shruthi Sanil <shruthi.sanil@intel.com>
 
-[ Upstream commit f5eb7bf0c487a212ebda3c1b048fc3ccabacc147 ]
+[ Upstream commit 29353816300c79cb5157ed2719cc71285c7b77aa ]
 
-fix the following smatch warnings:
+The pretimeout register has a default reset value. Hence
+when a smaller WDT timeout is set which would be lesser than the
+default pretimeout, the system behaves abnormally, starts
+triggering the pretimeout interrupt even when the WDT is
+not enabled, most of the times leading to system crash.
+Hence an update in the pre-timeout is also required for the
+default timeout that is being configured.
 
-goya_pin_memory_before_cs()
-warn: '&userptr->job_node' not removed from list
-
-gaudi_pin_memory_before_cs()
-warn: '&userptr->job_node' not removed from list
-
-Signed-off-by: Koby Elbaz <kelbaz@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Fixes: fa0f8d51e90d ("watchdog: Add watchdog driver for Intel Keembay Soc")
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Kris Pan <kris.pan@intel.com>
+Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
+Link: https://lore.kernel.org/r/20210517174953.19404-2-shruthi.sanil@intel.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 1 +
- drivers/misc/habanalabs/goya/goya.c   | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/watchdog/keembay_wdt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index a03f13aa47f8..0c6092ebbc04 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -4901,6 +4901,7 @@ already_pinned:
- 	return 0;
+diff --git a/drivers/watchdog/keembay_wdt.c b/drivers/watchdog/keembay_wdt.c
+index 547d3fea33ff..f2f5c9fae29c 100644
+--- a/drivers/watchdog/keembay_wdt.c
++++ b/drivers/watchdog/keembay_wdt.c
+@@ -29,6 +29,7 @@
+ #define WDT_LOAD_MAX		U32_MAX
+ #define WDT_LOAD_MIN		1
+ #define WDT_TIMEOUT		5
++#define WDT_PRETIMEOUT		4
  
- unpin_memory:
-+	list_del(&userptr->job_node);
- 	hl_unpin_host_memory(hdev, userptr);
- free_userptr:
- 	kfree(userptr);
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index ed566c52ccaa..45c9065c4b92 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -3249,6 +3249,7 @@ already_pinned:
- 	return 0;
+ static unsigned int timeout = WDT_TIMEOUT;
+ module_param(timeout, int, 0);
+@@ -224,11 +225,13 @@ static int keembay_wdt_probe(struct platform_device *pdev)
+ 	wdt->wdd.min_timeout	= WDT_LOAD_MIN;
+ 	wdt->wdd.max_timeout	= WDT_LOAD_MAX / wdt->rate;
+ 	wdt->wdd.timeout	= WDT_TIMEOUT;
++	wdt->wdd.pretimeout	= WDT_PRETIMEOUT;
  
- unpin_memory:
-+	list_del(&userptr->job_node);
- 	hl_unpin_host_memory(hdev, userptr);
- free_userptr:
- 	kfree(userptr);
+ 	watchdog_set_drvdata(&wdt->wdd, wdt);
+ 	watchdog_set_nowayout(&wdt->wdd, nowayout);
+ 	watchdog_init_timeout(&wdt->wdd, timeout, dev);
+ 	keembay_wdt_set_timeout(&wdt->wdd, wdt->wdd.timeout);
++	keembay_wdt_set_pretimeout(&wdt->wdd, wdt->wdd.pretimeout);
+ 
+ 	ret = devm_watchdog_register_device(dev, &wdt->wdd);
+ 	if (ret)
 -- 
 2.30.2
 
