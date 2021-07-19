@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5023CE38F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79673CE0FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236536AbhGSPkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:40:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52468 "EHLO mail.kernel.org"
+        id S1347304AbhGSPTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344270AbhGSO7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B443E6120E;
-        Mon, 19 Jul 2021 15:39:30 +0000 (UTC)
+        id S237759AbhGSOoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:44:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2AE561287;
+        Mon, 19 Jul 2021 15:22:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709171;
-        bh=r+uNq6xVPeeHYVlzTAA+XS2FUy5VsF2CtQiRgnyg8CA=;
+        s=korg; t=1626708155;
+        bh=+cuDqX5PpSsMLKiVqFTjDpSLudQy9uoeZ1BfxJC7dc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DgY6ZYy6Gh+CoaCcTGojVpopEUBqCSQ26cxcRDe7lB+h3TOwPnDQwP1gJsYC+gtuh
-         vxALoQdsFceQ5C2RP4CYQIGm96fJRdqTDdivoKnfrJ8WZv7Yzh02ZRkjxH4w2LP3jQ
-         hW+DBViSY7b3ChQ8CYgvMJxOteULSNg9XZ/M1Pdg=
+        b=Hp6t3zssKIB5ceFTwvWIXR8sLXOr+ubgdaXbD1llJKfPIvNdHW38pQ12AUWcPRUsz
+         DK/VKufIFEmb67rqcq135uwpqw3En6XIbaX68+IcPX8H9CZ5LRDhElKsXuiLlnWipt
+         Re2QxFwfyg8KhwTc5D0RVz2xdIazP0R7qS2nisBA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 4.19 279/421] fscrypt: dont ignore minor_hash when hash is 0
-Date:   Mon, 19 Jul 2021 16:51:30 +0200
-Message-Id: <20210719144956.015619907@linuxfoundation.org>
+Subject: [PATCH 4.14 202/315] fscrypt: dont ignore minor_hash when hash is 0
+Date:   Mon, 19 Jul 2021 16:51:31 +0200
+Message-Id: <20210719144950.070572738@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -76,7 +76,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/crypto/fname.c
 +++ b/fs/crypto/fname.c
-@@ -275,13 +275,8 @@ int fscrypt_fname_disk_to_usr(struct ino
+@@ -304,13 +304,8 @@ int fscrypt_fname_disk_to_usr(struct ino
  					   oname->name);
  		return 0;
  	}
