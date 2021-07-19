@@ -2,178 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A973CEF4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 00:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C023CEF4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 00:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1390055AbhGSViG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 17:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359698AbhGSVWX (ORCPT
+        id S1390074AbhGSVjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 17:39:10 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:38474 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1388871AbhGSVXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 17:22:23 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3F8C05BD15
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:54:25 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id r135so30061354ybc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mgewm5mjx+FRnoLmab+NYqOB950vpM/jLC7o5sa2XM8=;
-        b=l0R7mPgHhU+9/Prsowfdj7Q2tQ1PxSoUyzKyHKVvNc724HS7Q2DlFv99s3OP2TG/Zq
-         lwEOjLRSF21f2rIl6xbmlp+HtCrfmG/rtgg50IMgNNhdd7MvHme0UH+zssIKkD4DysIV
-         9n03+QQKXy8uuwmkJD8Mr+uOSE/yA0i2iVtHLv/9GUxl+FSGRkhTePgD8pYCukp4Dyz7
-         nqQ6P12jnkTl+CUhabJGja6HSNCHhD9KeRBFuzhgnM8w1DbZ2CXLE0Q7Ci39eg+sf+vv
-         GsJnL5QEKafmdGXCglA+rJ9522ssx6xe5cbdRqM+wnuZ2Iz4xFxlQvezVkADeXN2P62Z
-         xTTg==
+        Mon, 19 Jul 2021 17:23:18 -0400
+Received: by mail-il1-f181.google.com with SMTP id s5so10418947ild.5;
+        Mon, 19 Jul 2021 15:03:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mgewm5mjx+FRnoLmab+NYqOB950vpM/jLC7o5sa2XM8=;
-        b=kNcjMifM9ncaVy9FH72F8h+mmnfSjVTg4KpLP/kzqq41dEpGxq/YUWVs7OuV7CDNQQ
-         cX6ksADYVG9b0aOw18DCC4ItfAR/Wx1UipgjL/UkVa3dKNd8eqSlx/88GSQdJp8HF6/R
-         Fu6nDtlDeZ4lg9y3Ffl8Gcd+Zv3FSJEKpzmo4O5BZ9W+b+dLXkDwmoAgAnnihdzlm4fq
-         PfwBzQkkJ8UXv8VTTzcUKW9yNPJXMxaxwC1AqqZ8wD+ZeW3Yp0Oy0Mjv4xwVxT+bbyr/
-         ibAxRYokrfCzTFZ7L0ia5yIB2GJljWhthZu6PxIK5uKzJX6BbGaTt+6dWBWivNqAZLXU
-         wvSg==
-X-Gm-Message-State: AOAM5320Mr+r8TM4lAEvsCDJhwd3cuasbOlIoQAu04oBmgEvqySpP5Iv
-        4wRtBlSj+ndnQDC9seX4b0oBJn7ekJQOraI5ik1uyA==
-X-Google-Smtp-Source: ABdhPJzzk8LrlzrvE22blW8gQTFo/PFlSTmtqN8jtyX4Dwh9d+eIRQ31WAGLf0IV9Ru2kTwRL7h6I1jaXreQrxJjSnI=
-X-Received: by 2002:a25:8b91:: with SMTP id j17mr33097786ybl.228.1626731663924;
- Mon, 19 Jul 2021 14:54:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pzlQxVexFT0nXKu400I5otv1xS1kX5e7p5IFCKmC89Y=;
+        b=bb9a7HluwskF/TsSO8yL6ED15xvhBp5iyeHRX2rv5wH7siOBM++Sd7xZCBNh176q0p
+         IoKU9g7gG9u442xrIrLoz2lOBxe/HWbhwgq+w3PnynR+t0UJ6zPwPO6ZAJMoyt2zm3Or
+         9yu7nGuKNI6lLdYdnR1+sDhOvNJKzUdU5ZahniBipggWqQlW8pUS4b+OyFckoiQ0v5wM
+         UiIs3xpMblfr6wTXM5JlJv6LzSGrZLVjbZ7wpfnOSuhnp9WXKAhEA1uOA8pNHdeAY8f0
+         2MBoHIhQPEfd7TslGtG5UBRsIkomVzKwH9LndZQQ+2vi4WKC0OCw2cgCfGdpi7Uzc3uO
+         agdw==
+X-Gm-Message-State: AOAM533EnTMqVgJb4ffrxnlTt1kRwlRJMBhW3IpkQCsyMvzkGYF7hDGA
+        vRY3f4hn2oXQE8EyC8j/DwWueUEWcg==
+X-Google-Smtp-Source: ABdhPJzoKMbKmAb3ccakj6Vj9GEZRfR9hVNWLZmDghEpm/GdIZYC6nPCY4IPFscWPOJFp1koKn/oAw==
+X-Received: by 2002:a92:3209:: with SMTP id z9mr18796486ile.115.1626732235559;
+        Mon, 19 Jul 2021 15:03:55 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.248])
+        by smtp.googlemail.com with ESMTPSA id e17sm9973095ilr.51.2021.07.19.15.03.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 15:03:55 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Dilip Kota <eswara.kota@linux.intel.com>,
+        linux-pci@vger.kernel.org
+Subject: [PATCH] dt-bindings: PCI: intel,lgm-pcie: Add reference to common schemas
+Date:   Mon, 19 Jul 2021 16:03:51 -0600
+Message-Id: <20210719220351.2662758-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210707045320.529186-1-john.stultz@linaro.org>
- <YPJkF21ItYlKODyq@yoga> <CALAqxLUzTNiA7u=4_y9pkrh=Q_+vpPgFrhf_6F8-U0XPQU9crQ@mail.gmail.com>
- <YPXUI0VzpxYO56BU@yoga>
-In-Reply-To: <YPXUI0VzpxYO56BU@yoga>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 19 Jul 2021 14:53:47 -0700
-Message-ID: <CAGETcx90xNFzEB9yfWvLg=X+ptrgNaQg9Ncxi-U_Z0vXHrUcgw@mail.gmail.com>
-Subject: Re: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
- as a permenent module
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 12:36 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Mon 19 Jul 14:00 CDT 2021, John Stultz wrote:
->
-> > On Fri, Jul 16, 2021 at 10:01 PM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > > On Tue 06 Jul 23:53 CDT 2021, John Stultz wrote:
-> > > > Allow the qcom_scm driver to be loadable as a permenent module.
-> > > >
-> > > > This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-> > > > ensure that drivers that call into the qcom_scm driver are
-> > > > also built as modules. While not ideal in some cases its the
-> > > > only safe way I can find to avoid build errors without having
-> > > > those drivers select QCOM_SCM and have to force it on (as
-> > > > QCOM_SCM=n can be valid for those drivers).
-> > > >
-> > > > Reviving this now that Saravana's fw_devlink defaults to on,
-> > > > which should avoid loading troubles seen before.
-> > > >
-> > >
-> > > Are you (in this last paragraph) saying that all those who have been
-> > > burnt by fw_devlink during the last months and therefor run with it
-> > > disabled will have a less fun experience once this is merged?
-> > >
+Add a reference to snps,dw-pcie.yaml (and indirectly pci-bus.yaml) schemas.
+With this, the common bus properties can be dropped from the schema.
 
-Bjorn,
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Dilip Kota <eswara.kota@linux.intel.com>
+Cc: linux-pci@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+This applies on top of Mauro's snps,dw-pcie.yaml series which I've 
+applied to the DT tree.
 
-I jump in and help with any reports of issues with fw_devlink if I'm
-cc'ed. Please feel free to add me and I'll help fix any issues you
-have with fw_devlink=on.
+ .../bindings/pci/intel-gw-pcie.yaml           | 34 +++----------------
+ 1 file changed, 4 insertions(+), 30 deletions(-)
 
-> >
-> > I guess potentially. So way back when this was originally submitted,
-> > some folks had trouble booting if it was set as a module due to it
-> > loading due to the deferred_probe_timeout expiring.
-> > My attempts to change the default timeout value to be larger ran into
-> > trouble, but Saravana's fw_devlink does manage to resolve things
-> > properly for this case.
-> >
->
-> Unfortunately I see really weird things coming out of that, e.g. display
-> on my db845c is waiting for the USB hub on PCIe to load its firmware,
-> which typically times out after 60 seconds.
->
-> I've stared at it quite a bit and I don't understand how they are
-> related.
+diff --git a/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml b/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
+index a1e2be737eec..e15730d31274 100644
+--- a/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
+@@ -17,21 +17,15 @@ select:
+   required:
+     - compatible
+ 
++allOf:
++  - $ref: /schemas/pci/snps,dw-pcie.yaml#
++
+ properties:
+   compatible:
+     items:
+       - const: intel,lgm-pcie
+       - const: snps,dw-pcie
+ 
+-  device_type:
+-    const: pci
+-
+-  "#address-cells":
+-    const: 3
+-
+-  "#size-cells":
+-    const: 2
+-
+   reg:
+     items:
+       - description: Controller control and status registers.
+@@ -62,30 +56,13 @@ properties:
+   reset-gpios:
+     maxItems: 1
+ 
+-  linux,pci-domain: true
+-
+   num-lanes:
+     maximum: 2
+-    description: Number of lanes to use for this port.
+-
+-  '#interrupt-cells':
+-    const: 1
+-
+-  interrupt-map-mask:
+-    description: Standard PCI IRQ mapping properties.
+-
+-  interrupt-map:
+-    description: Standard PCI IRQ mapping properties.
+ 
+   max-link-speed:
+-    description: Specify PCI Gen for link capability.
+-    $ref: /schemas/types.yaml#/definitions/uint32
+     enum: [1, 2, 3, 4]
+     default: 1
+ 
+-  bus-range:
+-    description: Range of bus numbers associated with this controller.
+-
+   reset-assert-ms:
+     description: |
+       Delay after asserting reset to the PCIe device.
+@@ -94,9 +71,6 @@ properties:
+ 
+ required:
+   - compatible
+-  - device_type
+-  - "#address-cells"
+-  - "#size-cells"
+   - reg
+   - reg-names
+   - ranges
+@@ -109,7 +83,7 @@ required:
+   - interrupt-map
+   - interrupt-map-mask
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+-- 
+2.27.0
 
-Can you please add me to any email thread with the details? I'd be
-happy to help.
-
-First step is to make sure all the devices probe as with
-fw_devlink=permissive. After that if you are still seeing issues, it's
-generally timing issues in the driver. But if the actual timing issue
-is identified (by you or whoever knows the driver seeing the issue),
-then I can help with fixes or suggestions for fixes.
-
-> > But if folks are having issues w/ fw_devlink, and have it disabled,
-> > and set QCOM_SCM=m they could still trip over the issue with the
-> > timeout firing before it is loaded (especially if they are loading
-> > modules from late mounted storage rather than ramdisk).
-> >
->
-> I guess we'll have to force QCOM_SCM=y in the defconfig and hope people
-> don't make it =m.
->
-> > > (I'm picking this up, but I don't fancy the idea that some people are
-> > > turning the boot process into a lottery)
-> >
-> > Me neither, and I definitely think the deferred_probe_timeout logic is
-> > way too fragile, which is why I'm eager for fw_devlink as it's a much
-> > less racy approach to handling module loading dependencies.
->
-> Right, deferred_probe_timeout is the main issue here. Without it we
-> might get some weird probe deferral runs, but either some driver is
-> missing or it settles eventually.
->
-> With deferred_probe_timeout it's rather common for me to see things
-> end up probe out of order (even more now with fw_devlink finding cyclic
-> dependencies) and deferred_probe_timeout just breaking things.
-
-Again, please CC me on these threads and I'd be happy to help.
-
->
-> > So if you
-> > want to hold on this, while any remaining fw_devlink issues get
-> > sorted, that's fine.  But I'd also not cast too much ire at
-> > fw_devlink, as the global probe timeout approach for handling optional
-> > links isn't great, and we need a better solution.
-> >
->
-> There's no end to the possible and valid ways you can setup your
-> defconfig and run into the probe deferral issues, so I see no point in
-> holding this one back any longer. I just hope that one day it will be
-> possible to boot the upstream kernel in a reliable fashion.
-
-Might not be believable, but I'm hoping fw_devlink helps you meet this goal :)
-
--Saravana
