@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C51C3CE932
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AC23CE9DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357347AbhGSQve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:51:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40008 "EHLO mail.kernel.org"
+        id S1349404AbhGSRC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348017AbhGSPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDBCE611C1;
-        Mon, 19 Jul 2021 16:00:32 +0000 (UTC)
+        id S1348805AbhGSPfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3927D61175;
+        Mon, 19 Jul 2021 16:14:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710433;
-        bh=rwzGqL9E430fV40mb9qcXcGWbH17WOZWxI28qKfql3E=;
+        s=korg; t=1626711286;
+        bh=+dpuHWWPT+l1VZQL7B14BNrXE1GXw3v2R11JJJr8Qi4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wQAR26V/wcKAC8j2sWfO6ZVSsz8kRs6H1pylzhY47m+DsHb0yHb/Xe3gPxvyNWdgz
-         tkjMU9vVSd+SAO2j21Y/iH37FYadoJt6Y1j+dMFHWZuo23ac18rzuEyPkTDJHR/qc+
-         +qi0/4zp97NUuekGfhwfnwkWztYA2dCPGN40EvHc=
+        b=PoMRFiXWkx17fMS++vKtKRPcDFzjl1//YxBjItirxuzBvTiW5nhrTpN3V9yUrJpre
+         kx+OiR3MxqGg+RAMTAYzRMxDX+bHkyPQ+OxJyoD2/DD6duOFURguI2/OtDzDiTRHw8
+         KXw5DXSmtH/+HTzySglx0+ZeXbT+QI8ASLVmhK8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 213/243] reset: bail if try_module_get() fails
-Date:   Mon, 19 Jul 2021 16:54:02 +0200
-Message-Id: <20210719144947.799401343@linuxfoundation.org>
+Subject: [PATCH 5.13 297/351] arm64: dts: renesas: r8a7796[01]: Fix OPP table entry voltages
+Date:   Mon, 19 Jul 2021 16:54:03 +0200
+Message-Id: <20210719144954.868834307@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 4fb26fb83f0def3d39c14e268bcd4003aae8fade ]
+[ Upstream commit 659b38203f04f5c3d1dc60f1a3e54b582ad3841c ]
 
-Abort instead of returning a new reset control for a reset controller
-device that is going to have its module unloaded.
+Correct the voltages in the "Power Optimized" (<= 1.5 GHz) Cortex-A57
+operating point table entries for the R-Car M3-W and M3-W+ SoCs from
+0.82V to 0.83V, as per the R-Car Gen3 EC Manual Errata for Revision
+0.53.
 
-Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Fixes: 61fc41317666 ("reset: Add reset controller API")
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20210607082615.15160-1-p.zabel@pengutronix.de
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Based on a patch for R-Car M3-W in the BSP by Takeshi Kihara
+<takeshi.kihara.df@renesas.com>.
+
+Fixes: da7e3113344fda50 ("arm64: dts: renesas: r8a7796: Add OPPs table for cpu devices")
+Fixes: f51746ad7d1ff6b4 ("arm64: dts: renesas: Add Renesas R8A77961 SoC support")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/b9e9db907514790574429b83d070c823b36085ef.1619699909.git.geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/renesas/r8a77960.dtsi | 6 +++---
+ arch/arm64/boot/dts/renesas/r8a77961.dtsi | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/reset/core.c b/drivers/reset/core.c
-index a2df88e90011..f93388b9a4a1 100644
---- a/drivers/reset/core.c
-+++ b/drivers/reset/core.c
-@@ -567,7 +567,10 @@ static struct reset_control *__reset_control_get_internal(
- 	if (!rstc)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/arch/arm64/boot/dts/renesas/r8a77960.dtsi b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
+index cc09c5c652fa..a91a42c57484 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77960.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77960.dtsi
+@@ -63,17 +63,17 @@
  
--	try_module_get(rcdev->owner);
-+	if (!try_module_get(rcdev->owner)) {
-+		kfree(rstc);
-+		return ERR_PTR(-ENODEV);
-+	}
+ 		opp-500000000 {
+ 			opp-hz = /bits/ 64 <500000000>;
+-			opp-microvolt = <820000>;
++			opp-microvolt = <830000>;
+ 			clock-latency-ns = <300000>;
+ 		};
+ 		opp-1000000000 {
+ 			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt = <820000>;
++			opp-microvolt = <830000>;
+ 			clock-latency-ns = <300000>;
+ 		};
+ 		opp-1500000000 {
+ 			opp-hz = /bits/ 64 <1500000000>;
+-			opp-microvolt = <820000>;
++			opp-microvolt = <830000>;
+ 			clock-latency-ns = <300000>;
+ 			opp-suspend;
+ 		};
+diff --git a/arch/arm64/boot/dts/renesas/r8a77961.dtsi b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
+index 7d1333b9b92b..7f9d5c360522 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77961.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
+@@ -52,17 +52,17 @@
  
- 	rstc->rcdev = rcdev;
- 	list_add(&rstc->list, &rcdev->reset_control_head);
+ 		opp-500000000 {
+ 			opp-hz = /bits/ 64 <500000000>;
+-			opp-microvolt = <820000>;
++			opp-microvolt = <830000>;
+ 			clock-latency-ns = <300000>;
+ 		};
+ 		opp-1000000000 {
+ 			opp-hz = /bits/ 64 <1000000000>;
+-			opp-microvolt = <820000>;
++			opp-microvolt = <830000>;
+ 			clock-latency-ns = <300000>;
+ 		};
+ 		opp-1500000000 {
+ 			opp-hz = /bits/ 64 <1500000000>;
+-			opp-microvolt = <820000>;
++			opp-microvolt = <830000>;
+ 			clock-latency-ns = <300000>;
+ 			opp-suspend;
+ 		};
 -- 
 2.30.2
 
