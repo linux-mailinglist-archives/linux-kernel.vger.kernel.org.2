@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4051C3CCD47
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E8B3CCD4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhGSFVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 01:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhGSFVh (ORCPT
+        id S233205AbhGSFWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 01:22:51 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52856 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229512AbhGSFWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 01:21:37 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A5FC061762;
-        Sun, 18 Jul 2021 22:18:37 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1626671914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vthMeTbzAZtY0okruVW6qC1LJnjv61WTI0OJ6N5pgbk=;
-        b=NHm5vOJUd5siLlRil2h9aOuBAL4XvZlMre29vn0hltC3cGW4gbeaxnuYcoQ78mVolWyZhF
-        Q+wYsCLfYNqoN9rivnEay63oiwxH+lX2qCksvlIB/Bjd2TVyQp4U3NKKxkuJl2lC7u2GmO
-        zv5W5ZL4kf48hQ+kekbam2ppCFiyFf4=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] netlink: Deal with ESRCH error in nlmsg_notify()
-Date:   Mon, 19 Jul 2021 13:18:16 +0800
-Message-Id: <20210719051816.11762-1-yajun.deng@linux.dev>
+        Mon, 19 Jul 2021 01:22:50 -0400
+X-UUID: 55cc68f87f38451c8374012eec6793c7-20210719
+X-UUID: 55cc68f87f38451c8374012eec6793c7-20210719
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 485152648; Mon, 19 Jul 2021 13:19:47 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 19 Jul 2021 13:19:46 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas07.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Mon, 19 Jul 2021 13:19:46 +0800
+From:   <guangming.cao@mediatek.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+CC:     <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: [PATCH] dma_buf: remove dmabuf sysfs teardown before release/detach
+Date:   Mon, 19 Jul 2021 13:19:44 +0800
+Message-ID: <20210719051944.40871-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yonghong Song report:
-The bpf selftest tc_bpf failed with latest bpf-next. 
-The following is the command to run and the result:
-$ ./test_progs -n 132
-[   40.947571] bpf_testmod: loading out-of-tree module taints kernel.
-test_tc_bpf:PASS:test_tc_bpf__open_and_load 0 nsec
-test_tc_bpf:PASS:bpf_tc_hook_create(BPF_TC_INGRESS) 0 nsec
-test_tc_bpf:PASS:bpf_tc_hook_create invalid hook.attach_point 0 nsec
-test_tc_bpf_basic:PASS:bpf_obj_get_info_by_fd 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_attach 0 nsec
-test_tc_bpf_basic:PASS:handle set 0 nsec
-test_tc_bpf_basic:PASS:priority set 0 nsec
-test_tc_bpf_basic:PASS:prog_id set 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_attach replace mode 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_query 0 nsec
-test_tc_bpf_basic:PASS:handle set 0 nsec
-test_tc_bpf_basic:PASS:priority set 0 nsec
-test_tc_bpf_basic:PASS:prog_id set 0 nsec
-libbpf: Kernel error message: Failed to send filter delete notification
-test_tc_bpf_basic:FAIL:bpf_tc_detach unexpected error: -3 (errno 3)
-test_tc_bpf:FAIL:test_tc_internal ingress unexpected error: -3 (errno 3)
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-The failure seems due to the commit
-    cfdf0d9ae75b ("rtnetlink: use nlmsg_notify() in rtnetlink_send()")
+Dmabuf sysfs stat is used for dmabuf info track.
+but these file maybe still use after buffer release/detach,
+should clear it before buffer release/detach.
 
-Deal with ESRCH error in nlmsg_notify() even the report variable is zero.
-
-Reported-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
 ---
- net/netlink/af_netlink.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/dma-buf/dma-buf.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index 380f95aacdec..24b7cf447bc5 100644
---- a/net/netlink/af_netlink.c
-+++ b/net/netlink/af_netlink.c
-@@ -2545,13 +2545,15 @@ int nlmsg_notify(struct sock *sk, struct sk_buff *skb, u32 portid,
- 		/* errors reported via destination sk->sk_err, but propagate
- 		 * delivery errors if NETLINK_BROADCAST_ERROR flag is set */
- 		err = nlmsg_multicast(sk, skb, exclude_portid, group, flags);
-+		if (err == -ESRCH)
-+			err = 0;
- 	}
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 510b42771974..9fa4620bd4bb 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -76,12 +76,12 @@ static void dma_buf_release(struct dentry *dentry)
+ 	 */
+ 	BUG_ON(dmabuf->cb_shared.active || dmabuf->cb_excl.active);
  
- 	if (report) {
- 		int err2;
++	dma_buf_stats_teardown(dmabuf);
+ 	dmabuf->ops->release(dmabuf);
  
- 		err2 = nlmsg_unicast(sk, skb, portid);
--		if (!err || err == -ESRCH)
-+		if (!err)
- 			err = err2;
- 	}
+ 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+ 		dma_resv_fini(dmabuf->resv);
  
+-	dma_buf_stats_teardown(dmabuf);
+ 	module_put(dmabuf->owner);
+ 	kfree(dmabuf->name);
+ 	kfree(dmabuf);
+@@ -875,10 +875,11 @@ void dma_buf_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attach)
+ 	dma_resv_lock(dmabuf->resv, NULL);
+ 	list_del(&attach->node);
+ 	dma_resv_unlock(dmabuf->resv);
++
++	dma_buf_attach_stats_teardown(attach);
+ 	if (dmabuf->ops->detach)
+ 		dmabuf->ops->detach(dmabuf, attach);
+ 
+-	dma_buf_attach_stats_teardown(attach);
+ 	kfree(attach);
+ }
+ EXPORT_SYMBOL_GPL(dma_buf_detach);
 -- 
-2.32.0
+2.17.1
 
