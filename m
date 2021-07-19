@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DEA3CDA7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE0B3CD824
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244050AbhGSOgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:36:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37912 "EHLO mail.kernel.org"
+        id S241909AbhGSOUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:20:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244525AbhGSO3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:29:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FA2F61364;
-        Mon, 19 Jul 2021 15:09:57 +0000 (UTC)
+        id S242196AbhGSOTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:19:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBFEF60FDC;
+        Mon, 19 Jul 2021 15:00:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707397;
-        bh=E7wTSz+U1lpd+F+dd1pk3DvWWv9XGdvIxyggNW2n+N8=;
+        s=korg; t=1626706811;
+        bh=n2vsdjTx/lctda6weRG5p0tIWznoempiBW0ujVFOs84=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SpCk8FDtCH3skXVe8K/cY1X/UKbJvL9FqYVkDgTpQUCbMsE/fd9+GLwn+ORNQcqjp
-         pBwhkU20yAyPvLFeIKKdJPy84P83WvHdb4V0cgi1+XVFx1M3b1J/RzamcK/MEvKvfg
-         DJuA5A61fCUnnLeGWul4eA1zZ6urVEHUm/rxPf7M=
+        b=pcCo09PA8LrCc2mx5a04UFl6meBxMnDbvvG01OgJd1PhVk4cliXq4Vx9aWkyPWM5+
+         tDm2QgxglLhQuS+LXGUH4yCBHXBP5pJ9yXNnz+zHMythmNA2TSFqM21EjNSPWc/zut
+         vvLocT0X4kK8l8LACH+ChWF+I5yElS883m2O4P+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiao Yang <yangx.jy@fujitsu.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 148/245] RDMA/rxe: Dont overwrite errno from ib_umem_get()
-Date:   Mon, 19 Jul 2021 16:51:30 +0200
-Message-Id: <20210719144945.197699602@linuxfoundation.org>
+Subject: [PATCH 4.4 107/188] net: micrel: check return value after calling platform_get_resource()
+Date:   Mon, 19 Jul 2021 16:51:31 +0200
+Message-Id: <20210719144938.043726850@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
+References: <20210719144913.076563739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Yang <yangx.jy@fujitsu.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
+[ Upstream commit 20f1932e2282c58cb5ac59517585206cf5b385ae ]
 
-rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
-fails so it's hard for user to know which actual error happens in
-ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
-trying to pin pages on a DAX file.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-Return actual error as mlx4/mlx5 does.
-
-Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/micrel/ks8842.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 6d1ba75398a1..e23b322224ab 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -175,7 +175,7 @@ int rxe_mem_init_user(struct rxe_dev *rxe, struct rxe_pd *pd, u64 start,
- 	if (IS_ERR(umem)) {
- 		pr_warn("err %d from rxe_umem_get\n",
- 			(int)PTR_ERR(umem));
--		err = -EINVAL;
-+		err = PTR_ERR(umem);
- 		goto err1;
- 	}
+diff --git a/drivers/net/ethernet/micrel/ks8842.c b/drivers/net/ethernet/micrel/ks8842.c
+index cb0102dd7f70..d691c33dffc6 100644
+--- a/drivers/net/ethernet/micrel/ks8842.c
++++ b/drivers/net/ethernet/micrel/ks8842.c
+@@ -1150,6 +1150,10 @@ static int ks8842_probe(struct platform_device *pdev)
+ 	unsigned i;
+ 
+ 	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!iomem) {
++		dev_err(&pdev->dev, "Invalid resource\n");
++		return -EINVAL;
++	}
+ 	if (!request_mem_region(iomem->start, resource_size(iomem), DRV_NAME))
+ 		goto err_mem_region;
  
 -- 
 2.30.2
