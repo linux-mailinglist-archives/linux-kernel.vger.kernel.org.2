@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100EE3CE963
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFA93CEA94
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354242AbhGSQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:54:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48720 "EHLO mail.kernel.org"
+        id S1378122AbhGSRR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:17:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348390AbhGSPaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:30:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 020A36135C;
-        Mon, 19 Jul 2021 16:09:37 +0000 (UTC)
+        id S1344144AbhGSPk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:40:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADFEA60FD7;
+        Mon, 19 Jul 2021 16:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710978;
-        bh=BwS4FGvYH+5J50gDNL+sFbHRZu+tSr/ySH75Dxt2hMw=;
+        s=korg; t=1626711613;
+        bh=j2iFc+yHPohmL0+Nq7gWMIupbe/xXIB04J5KHEO+GR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Aq9qSSb9GpN1R5EVh2h0XrJ1GXrkW4oXL4qDNgTlMKpz0Es6SzGr3KUR0JRuzxRo0
-         pVznZrFJxd03m5KE7UTB1xIhfgdhqNcUEXXPPKsWWKeHZsjyrwKk9ber6yT11j316Y
-         drdfS/ZYwpqTRZB970hplKgySa2JE2zpn7WsYqs4=
+        b=V3N4lEGHPy9eCBcPCktZOTnBJGNd3gT4Aa60UxZx+p2aMCcJNQJxmrcXP3rQOHB6g
+         cQCnOqfBPKmTuTgbvYWyJU2vJKPFPDFxTfdR/fvXRV40m+v0Iblo8l15GiP1K1LpUC
+         TrCDkViEncfDNgFtFsxGV16k01g0XkW9Ow7t+9VM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 182/351] NFS: nfs_find_open_context() may only select open files
-Date:   Mon, 19 Jul 2021 16:52:08 +0200
-Message-Id: <20210719144950.997098704@linuxfoundation.org>
+Subject: [PATCH 5.12 067/292] scsi: megaraid_sas: Fix resource leak in case of probe failure
+Date:   Mon, 19 Jul 2021 16:52:09 +0200
+Message-Id: <20210719144944.725342639@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
 
-[ Upstream commit e97bc66377bca097e1f3349ca18ca17f202ff659 ]
+[ Upstream commit b5438f48fdd8e1c3f130d32637511efd32038152 ]
 
-If a file has already been closed, then it should not be selected to
-support further I/O.
+The driver doesn't clean up all the allocated resources properly when
+scsi_add_host(), megasas_start_aen() function fails during the PCI device
+probe.
 
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-[Trond: Fix an invalid pointer deref reported by Colin Ian King]
+Clean up all those resources.
+
+Link: https://lore.kernel.org/r/20210528131307.25683-3-chandrakanth.patil@broadcom.com
+Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/inode.c         | 4 ++++
- include/linux/nfs_fs.h | 1 +
- 2 files changed, 5 insertions(+)
+ drivers/scsi/megaraid/megaraid_sas_base.c   | 13 +++++++++++++
+ drivers/scsi/megaraid/megaraid_sas_fusion.c |  1 +
+ 2 files changed, 14 insertions(+)
 
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index 327f9ae4dd3f..1acae1716df1 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -1101,6 +1101,7 @@ EXPORT_SYMBOL_GPL(nfs_inode_attach_open_context);
- void nfs_file_set_open_context(struct file *filp, struct nfs_open_context *ctx)
- {
- 	filp->private_data = get_nfs_open_context(ctx);
-+	set_bit(NFS_CONTEXT_FILE_OPEN, &ctx->flags);
- 	if (list_empty(&ctx->list))
- 		nfs_inode_attach_open_context(ctx);
- }
-@@ -1120,6 +1121,8 @@ struct nfs_open_context *nfs_find_open_context(struct inode *inode, const struct
- 			continue;
- 		if ((pos->mode & (FMODE_READ|FMODE_WRITE)) != mode)
- 			continue;
-+		if (!test_bit(NFS_CONTEXT_FILE_OPEN, &pos->flags))
-+			continue;
- 		ctx = get_nfs_open_context(pos);
- 		if (ctx)
- 			break;
-@@ -1135,6 +1138,7 @@ void nfs_file_clear_open_context(struct file *filp)
- 	if (ctx) {
- 		struct inode *inode = d_inode(ctx->dentry);
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 63a4f48bdc75..7ab741f03b84 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -7478,11 +7478,16 @@ static int megasas_probe_one(struct pci_dev *pdev,
+ 	return 0;
  
-+		clear_bit(NFS_CONTEXT_FILE_OPEN, &ctx->flags);
- 		/*
- 		 * We fatal error on write before. Try to writeback
- 		 * every page again.
-diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
-index ffba254d2098..ce6474594872 100644
---- a/include/linux/nfs_fs.h
-+++ b/include/linux/nfs_fs.h
-@@ -84,6 +84,7 @@ struct nfs_open_context {
- #define NFS_CONTEXT_RESEND_WRITES	(1)
- #define NFS_CONTEXT_BAD			(2)
- #define NFS_CONTEXT_UNLOCK	(3)
-+#define NFS_CONTEXT_FILE_OPEN		(4)
- 	int error;
+ fail_start_aen:
++	instance->unload = 1;
++	scsi_remove_host(instance->host);
+ fail_io_attach:
+ 	megasas_mgmt_info.count--;
+ 	megasas_mgmt_info.max_index--;
+ 	megasas_mgmt_info.instance[megasas_mgmt_info.max_index] = NULL;
  
- 	struct list_head list;
++	if (instance->requestorId && !instance->skip_heartbeat_timer_del)
++		del_timer_sync(&instance->sriov_heartbeat_timer);
++
+ 	instance->instancet->disable_intr(instance);
+ 	megasas_destroy_irqs(instance);
+ 
+@@ -7490,8 +7495,16 @@ fail_io_attach:
+ 		megasas_release_fusion(instance);
+ 	else
+ 		megasas_release_mfi(instance);
++
+ 	if (instance->msix_vectors)
+ 		pci_free_irq_vectors(instance->pdev);
++	instance->msix_vectors = 0;
++
++	if (instance->fw_crash_state != UNAVAILABLE)
++		megasas_free_host_crash_buffer(instance);
++
++	if (instance->adapter_type != MFI_SERIES)
++		megasas_fusion_stop_watchdog(instance);
+ fail_init_mfi:
+ 	scsi_host_put(host);
+ fail_alloc_instance:
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+index 73295cf74cbe..54f8a8073ca0 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -5201,6 +5201,7 @@ megasas_alloc_fusion_context(struct megasas_instance *instance)
+ 		if (!fusion->log_to_span) {
+ 			dev_err(&instance->pdev->dev, "Failed from %s %d\n",
+ 				__func__, __LINE__);
++			kfree(instance->ctrl_context);
+ 			return -ENOMEM;
+ 		}
+ 	}
 -- 
 2.30.2
 
