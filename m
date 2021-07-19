@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FCB3CE47F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D793B3CE4A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348480AbhGSPn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:43:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53798 "EHLO mail.kernel.org"
+        id S1349727AbhGSPpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:45:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343861AbhGSO7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 727F66128D;
-        Mon, 19 Jul 2021 15:37:32 +0000 (UTC)
+        id S1343962AbhGSO7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02E0661175;
+        Mon, 19 Jul 2021 15:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709053;
-        bh=QxMsqh2Dtak9GW1fH42izSg9EdwGEWoPHdlqZYEFBgo=;
+        s=korg; t=1626709068;
+        bh=I+FqOmRyObkijY/msE33fTQdbnQudaAaFYANp9Xw0cE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eifdSgjoNcRcVgLnMjlU3noDpeLtAMPawVbcseRuy0jqXsiuOixO8gq1aXRxKXyVG
-         zokkcxiSnjSNJGw0fhRUXxMUhxFychbgXiO0jJ5Z7kIK1kI3+jOLMGMiguLCLqgXOJ
-         fsijpwwg5B5KOzV5GLHtqBnHVzZCkste1dWDsj7A=
+        b=qILqD9JdiyWDt5Wr5xsbMRXgj5vaCyqU9ByP7QlKxyn7/eNRX2PmWQTmcqUxgFRg0
+         IkyVYQSRLzIjU/EaJdpVC1wnYaK6xu/FIcfoZn6Lyg+oR750qiqm5dDv1ftWv0vRK0
+         c/NNuEqEjGobE6GEyAMiqdykWtOAeJ4yV9DfCGz0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 235/421] atm: nicstar: Fix possible use-after-free in nicstar_cleanup()
-Date:   Mon, 19 Jul 2021 16:50:46 +0200
-Message-Id: <20210719144954.566056631@linuxfoundation.org>
+Subject: [PATCH 4.19 240/421] e100: handle eeprom as little endian
+Date:   Mon, 19 Jul 2021 16:50:51 +0200
+Message-Id: <20210719144954.736254372@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,39 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-[ Upstream commit 34e7434ba4e97f4b85c1423a59b2922ba7dff2ea ]
+[ Upstream commit d4ef55288aa2e1b76033717242728ac98ddc4721 ]
 
-This module's remove path calls del_timer(). However, that function
-does not wait until the timer handler finishes. This means that the
-timer handler may still be running after the driver's remove function
-has finished, which would result in a use-after-free.
+Sparse tool was warning on some implicit conversions from
+little endian data read from the EEPROM on the e100 cards.
 
-Fix by calling del_timer_sync(), which makes sure the timer handler
-has finished, and unable to re-schedule itself.
+Fix these by being explicit about the conversions using
+le16_to_cpu().
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/nicstar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/e100.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/atm/nicstar.c b/drivers/atm/nicstar.c
-index 0d3754a4ac20..5281db3d6783 100644
---- a/drivers/atm/nicstar.c
-+++ b/drivers/atm/nicstar.c
-@@ -296,7 +296,7 @@ static void __exit nicstar_cleanup(void)
+diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
+index 78b44d787638..bf64fab38385 100644
+--- a/drivers/net/ethernet/intel/e100.c
++++ b/drivers/net/ethernet/intel/e100.c
+@@ -1398,7 +1398,7 @@ static int e100_phy_check_without_mii(struct nic *nic)
+ 	u8 phy_type;
+ 	int without_mii;
+ 
+-	phy_type = (nic->eeprom[eeprom_phy_iface] >> 8) & 0x0f;
++	phy_type = (le16_to_cpu(nic->eeprom[eeprom_phy_iface]) >> 8) & 0x0f;
+ 
+ 	switch (phy_type) {
+ 	case NoSuchPhy: /* Non-MII PHY; UNTESTED! */
+@@ -1518,7 +1518,7 @@ static int e100_phy_init(struct nic *nic)
+ 		mdio_write(netdev, nic->mii.phy_id, MII_BMCR, bmcr);
+ 	} else if ((nic->mac >= mac_82550_D102) || ((nic->flags & ich) &&
+ 	   (mdio_read(netdev, nic->mii.phy_id, MII_TPISTATUS) & 0x8000) &&
+-		(nic->eeprom[eeprom_cnfg_mdix] & eeprom_mdix_enabled))) {
++	   (le16_to_cpu(nic->eeprom[eeprom_cnfg_mdix]) & eeprom_mdix_enabled))) {
+ 		/* enable/disable MDI/MDI-X auto-switching. */
+ 		mdio_write(netdev, nic->mii.phy_id, MII_NCONFIG,
+ 				nic->mii.force_media ? 0 : NCONFIG_AUTO_SWITCH);
+@@ -2264,9 +2264,9 @@ static int e100_asf(struct nic *nic)
  {
- 	XPRINTK("nicstar: nicstar_cleanup() called.\n");
+ 	/* ASF can be enabled from eeprom */
+ 	return (nic->pdev->device >= 0x1050) && (nic->pdev->device <= 0x1057) &&
+-	   (nic->eeprom[eeprom_config_asf] & eeprom_asf) &&
+-	   !(nic->eeprom[eeprom_config_asf] & eeprom_gcl) &&
+-	   ((nic->eeprom[eeprom_smbus_addr] & 0xFF) != 0xFE);
++	   (le16_to_cpu(nic->eeprom[eeprom_config_asf]) & eeprom_asf) &&
++	   !(le16_to_cpu(nic->eeprom[eeprom_config_asf]) & eeprom_gcl) &&
++	   ((le16_to_cpu(nic->eeprom[eeprom_smbus_addr]) & 0xFF) != 0xFE);
+ }
  
--	del_timer(&ns_timer);
-+	del_timer_sync(&ns_timer);
+ static int e100_up(struct nic *nic)
+@@ -2922,7 +2922,7 @@ static int e100_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
  
- 	pci_unregister_driver(&nicstar_driver);
- 
+ 	/* Wol magic packet can be enabled from eeprom */
+ 	if ((nic->mac >= mac_82558_D101_A4) &&
+-	   (nic->eeprom[eeprom_id] & eeprom_id_wol)) {
++	   (le16_to_cpu(nic->eeprom[eeprom_id]) & eeprom_id_wol)) {
+ 		nic->flags |= wol_magic;
+ 		device_set_wakeup_enable(&pdev->dev, true);
+ 	}
 -- 
 2.30.2
 
