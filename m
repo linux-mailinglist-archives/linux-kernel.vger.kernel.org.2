@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4A93CEA4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2BA3CE9E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351970AbhGSRLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:11:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        id S1350426AbhGSRDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348836AbhGSPfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E60A611C1;
-        Mon, 19 Jul 2021 16:14:54 +0000 (UTC)
+        id S1348817AbhGSPfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F29B6120A;
+        Mon, 19 Jul 2021 16:14:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711295;
-        bh=hQKG8WzU/ImgcyAEnpgRlL+LMrb0OIqB7/JE9LOKuEc=;
+        s=korg; t=1626711297;
+        bh=COFsRCR5FAvmzhR4K9/J+3u2Pp14fMhkJTNqHmAebXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1kOq0rH82sG7m8gityI37T/XU7IubiOGw/L4TcsNkjScyUsyYIPTKKWR61l4jnBAG
-         4ty/BICWFG5XJ3gRmXisUWiOVXZkWeq7uMWtz8glos3ydAWAnG/nkwydpfg/wZ51zo
-         3s9oVqXOcFko5oOESAZlBffIbMCiZTVo8Knbsh/0=
+        b=jHeHF+M5j7+FyjKE/KqVGJRdhEpK30+0MA3aPW77biMmwDjq6H+oU2u19DAprGKif
+         Y/Vs1awc7Bdb+gHSzfv+hmBIKO11ADbNjFmkDpUUhQrfGAHfFG7DO+5sBfG3RbQuZS
+         z0pCDuUQBd6kG/Q2OpzeRwI5F0w/wa/g5AvhLNpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Douglas Anderson <dianders@chromium.org>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
         Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Steev Klimaszewski <steev@kali.org>,
         Stephen Boyd <swboyd@chromium.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 300/351] arm64: dts: qcom: trogdor: Add no-hpd to DSI bridge node
-Date:   Mon, 19 Jul 2021 16:54:06 +0200
-Message-Id: <20210719144954.981249480@linuxfoundation.org>
+Subject: [PATCH 5.13 301/351] arm64: dts: qcom: c630: Add no-hpd to DSI bridge node
+Date:   Mon, 19 Jul 2021 16:54:07 +0200
+Message-Id: <20210719144955.011324919@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -46,34 +45,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stephen Boyd <swboyd@chromium.org>
 
-[ Upstream commit 5f551b5ce55575b14c26933fe9b49365ea246b3d ]
+[ Upstream commit c0dcfe6a784fdf7fcc0fdc74bfbb06e9f77de964 ]
 
 We should indicate that we're not using the HPD pin on this device, per
 the binding document. Otherwise if code in the future wants to enable
-HPD in the bridge when this property is absent we'll be wasting power
-powering hpd when we don't use it on trogdor boards. We didn't notice
-this before because the kernel driver blindly disables hpd, but that
-won't be true for much longer.
+HPD in the bridge when this property is absent we'll be enabling HPD
+when it isn't supposed to be used. Presumably this board isn't using hpd
+on the bridge.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Reviewed-by: Douglas Anderson <dianders@chromium.org>
 Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Cc: Douglas Anderson <dianders@chromium.org>
-Fixes: 7ec3e67307f8 ("arm64: dts: qcom: sc7180-trogdor: add initial trogdor and lazor dt")
+Cc: Steev Klimaszewski <steev@kali.org>
+Fixes: 956e9c85f47b ("arm64: dts: qcom: c630: Define eDP bridge and panel")
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20210324025534.1837405-1-swboyd@chromium.org
+Link: https://lore.kernel.org/r/20210324231424.2890039-1-swboyd@chromium.org
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 ++
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 24d293ef56d7..74d15789ce9a 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -655,6 +655,8 @@ edp_brij_i2c: &i2c2 {
- 		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index 140db2d5ba31..c2a709a384e9 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -376,6 +376,8 @@
+ 		clocks = <&sn65dsi86_refclk>;
  		clock-names = "refclk";
  
 +		no-hpd;
