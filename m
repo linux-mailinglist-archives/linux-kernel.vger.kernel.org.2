@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645963CE9D5
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4C73CE9D4
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376306AbhGSRCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
+        id S1376258AbhGSRB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:01:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348739AbhGSPf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348736AbhGSPf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:35:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5960061026;
-        Mon, 19 Jul 2021 16:14:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7D146112D;
+        Mon, 19 Jul 2021 16:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711270;
-        bh=6zMoGvdyRiAdL1Rr8Y7Ml0iP5yrtB+TvFUDRV33Trqg=;
+        s=korg; t=1626711276;
+        bh=POVJYcV1G8yQ1RGLdbugP1lHdOsLMPBdmmtpGxi9Zgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m6KmrfY5K6/E5vnM7OGHlPJ7xRnn5mIqfsz+zq4RdmzhWe/0K3IbeilqhlsHpM2wU
-         fYee2v93r8a3RyogO1ExWZHndA8EKc0K5eFlRuCsqg3nWJBI8wc9deovXX2lVOT2h3
-         0muZcz7v+6XOW8jGYUcol78Q6LVR2/aLk6kLJ2kg=
+        b=NJSYjnxtHH0PT+02qF/SfI4OrVn7fQccnlXnbTJGVRKK6xO0GcnXCSqt0Sa2jJB/L
+         5XlriUbQTR7FCfIlDJRSWzh24vEkl/kZ9a/gLC0z28dEVQjLJbXwBwIHATgiKTbJ+8
+         W8vS+6PK3JGc0LhuF1O/39TEkNbJNPtkDypbxOk8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 292/351] arm64: dts: ti: k3-j7200: Remove "#address-cells" property from GPIO DT nodes
-Date:   Mon, 19 Jul 2021 16:53:58 +0200
-Message-Id: <20210719144954.697535435@linuxfoundation.org>
+        stable@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 293/351] arm64: dts: ti: j7200-main: Enable USB2 PHY RX sensitivity workaround
+Date:   Mon, 19 Jul 2021 16:53:59 +0200
+Message-Id: <20210719144954.729148052@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -40,80 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aswath Govindraju <a-govindraju@ti.com>
+From: Roger Quadros <rogerq@ti.com>
 
-[ Upstream commit 6ec8ba764165f6ecb6f6f7efbfd2ec7ad76dedcb ]
+[ Upstream commit a2894d85f44ba3f2bdf5806c8dc62e2ec40c1c09 ]
 
-GPIO device tree nodes do not have child nodes. Therefore, "#address-cells"
-property should not be added.
+Enable work around feature built into the controller to address issue with
+RX Sensitivity for USB2 PHY.
 
-Fixes: e0b2e6af39ea ("arm64: dts: ti: k3-j7200: Add gpio nodes")
+Fixes: 6197d7139d12 ("arm64: dts: ti: k3-j7200-main: Add USB controller")
+Signed-off-by: Roger Quadros <rogerq@ti.com>
 Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Reviewed-by: Lokesh  Vutla <lokeshvutla@ti.com>
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Nishanth Menon <nm@ti.com>
-Link: https://lore.kernel.org/r/20210423064758.25520-1-a-govindraju@ti.com
+Link: https://lore.kernel.org/r/20210512153308.5840-1-a-govindraju@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi       | 4 ----
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi | 2 --
- 2 files changed, 6 deletions(-)
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index 19fea8adbcff..7e7169195902 100644
+index 7e7169195902..a4b4b17a6ad7 100644
 --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
 +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -696,7 +696,6 @@
- 			     <149>;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
--		#address-cells = <0>;
- 		ti,ngpio = <69>;
- 		ti,davinci-gpio-unbanked = <0>;
- 		power-domains = <&k3_pds 105 TI_SCI_PD_EXCLUSIVE>;
-@@ -714,7 +713,6 @@
- 			     <158>;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
--		#address-cells = <0>;
- 		ti,ngpio = <69>;
- 		ti,davinci-gpio-unbanked = <0>;
- 		power-domains = <&k3_pds 107 TI_SCI_PD_EXCLUSIVE>;
-@@ -732,7 +730,6 @@
- 			     <167>;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
--		#address-cells = <0>;
- 		ti,ngpio = <69>;
- 		ti,davinci-gpio-unbanked = <0>;
- 		power-domains = <&k3_pds 109 TI_SCI_PD_EXCLUSIVE>;
-@@ -750,7 +747,6 @@
- 			     <176>;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
--		#address-cells = <0>;
- 		ti,ngpio = <69>;
- 		ti,davinci-gpio-unbanked = <0>;
- 		power-domains = <&k3_pds 111 TI_SCI_PD_EXCLUSIVE>;
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index 5663fe3ea466..343449af53fb 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -117,7 +117,6 @@
- 		interrupts = <103>, <104>, <105>, <106>, <107>, <108>;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
--		#address-cells = <0>;
- 		ti,ngpio = <85>;
- 		ti,davinci-gpio-unbanked = <0>;
- 		power-domains = <&k3_pds 113 TI_SCI_PD_EXCLUSIVE>;
-@@ -134,7 +133,6 @@
- 		interrupts = <112>, <113>, <114>, <115>, <116>, <117>;
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
--		#address-cells = <0>;
- 		ti,ngpio = <85>;
- 		ti,davinci-gpio-unbanked = <0>;
- 		power-domains = <&k3_pds 114 TI_SCI_PD_EXCLUSIVE>;
+@@ -683,6 +683,7 @@
+ 					  "otg";
+ 			maximum-speed = "super-speed";
+ 			dr_mode = "otg";
++			cdns,phyrst-a-enable;
+ 		};
+ 	};
+ 
 -- 
 2.30.2
 
