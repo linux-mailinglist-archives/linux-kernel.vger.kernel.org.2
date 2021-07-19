@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9E93CE538
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B2F3CE4A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346257AbhGSPsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:48:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58902 "EHLO mail.kernel.org"
+        id S1349276AbhGSPo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:44:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345254AbhGSPA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:00:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5868F6023D;
-        Mon, 19 Jul 2021 15:41:05 +0000 (UTC)
+        id S1345276AbhGSPA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:00:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04B4C60241;
+        Mon, 19 Jul 2021 15:41:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709265;
-        bh=B6+XWZXA+bQiRmX2fdIQY8tXieVWOpTLaUqOfFmMmnI=;
+        s=korg; t=1626709268;
+        bh=tWVXGu/HX1v3G1LQMW2of1bw8eLUL8rFjcAstOR9S8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IGVuuDO8BCsOcFNUb5CvyPcBbQ/N1NDpMaZfkK8xOyCFIqfl4qDjrKQTEmGJTm3cw
-         LMvIrrQJPs3qzqVPRBYSTCeUC+PG1f+xL+QXxYf5lcnM4XuYN7TrTY9kqc+UeWmftp
-         5EobdlGelX/kaDfnyD+WyY8+30+2Ci3sSq31RyTw=
+        b=sYs4JLfRt6pCyyYAPfpSXQ/io7lrMsjkGhHxiUiRJ9ApEdJCdcCXmVph59ifJXm7q
+         J0e092xwdsen8F/A4k2FMX+p23mA3fVjhTWrjjR6rlk3pSc4C77+ABWxEXMHmN1LWl
+         2GKSEky0T/uSeR0/XNkSfBydlfWjddMID9s7NuTA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.19 314/421] pinctrl: mcp23s08: Fix missing unlock on error in mcp23s08_irq()
-Date:   Mon, 19 Jul 2021 16:52:05 +0200
-Message-Id: <20210719144957.199050521@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 315/421] jfs: fix GPF in diFree
+Date:   Mon, 19 Jul 2021 16:52:06 +0200
+Message-Id: <20210719144957.235331538@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,36 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 884af72c90016cfccd5717439c86b48702cbf184 upstream.
+commit 9d574f985fe33efd6911f4d752de6f485a1ea732 upstream.
 
-Add the missing unlock before return from function mcp23s08_irq()
-in the error handling case.
+Avoid passing inode with
+JFS_SBI(inode->i_sb)->ipimap == NULL to
+diFree()[1]. GFP will appear:
 
-v1-->v2:
-   remove the "return IRQ_HANDLED" line
+	struct inode *ipimap = JFS_SBI(ip->i_sb)->ipimap;
+	struct inomap *imap = JFS_IP(ipimap)->i_imap;
 
-Fixes: 897120d41e7a ("pinctrl: mcp23s08: fix race condition in irq handler")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Link: https://lore.kernel.org/r/1623134048-56051-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+JFS_IP() will return invalid pointer when ipimap == NULL
+
+Call Trace:
+ diFree+0x13d/0x2dc0 fs/jfs/jfs_imap.c:853 [1]
+ jfs_evict_inode+0x2c9/0x370 fs/jfs/inode.c:154
+ evict+0x2ed/0x750 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x3fe/0x820 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
+
+Reported-and-tested-by: syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-mcp23s08.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jfs/inode.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -460,7 +460,7 @@ static irqreturn_t mcp23s08_irq(int irq,
+--- a/fs/jfs/inode.c
++++ b/fs/jfs/inode.c
+@@ -161,7 +161,8 @@ void jfs_evict_inode(struct inode *inode
+ 			if (test_cflag(COMMIT_Freewmap, inode))
+ 				jfs_free_zero_link(inode);
  
- 	if (intf == 0) {
- 		/* There is no interrupt pending */
--		return IRQ_HANDLED;
-+		goto unlock;
- 	}
+-			diFree(inode);
++			if (JFS_SBI(inode->i_sb)->ipimap)
++				diFree(inode);
  
- 	if (mcp_read(mcp, MCP_INTCAP, &intcap))
+ 			/*
+ 			 * Free the inode from the quota allocation.
 
 
