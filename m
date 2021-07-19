@@ -2,158 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B81A3CD16C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4916B3CD157
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236205AbhGSJR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:17:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235976AbhGSJR4 (ORCPT
+        id S235998AbhGSJRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235888AbhGSJRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:17:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626688716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nl05Atso+AuNvautQ00PbExeQ6q6lD+u2YEfbOwtiR0=;
-        b=DNbPj5WsfgCLmUQ5DbW6OT+a3QXKsaFbj/xPKlfchQom+zll+m7KETya5irVCyTMzq+mlI
-        hn3GGzmFXDeMSAU8wziWjl85wtW6PskGJ1Gzw+qQyJkxwuWS/mpWsivJK2c6YolYuHkSvC
-        iJHbTlIeAwENZp+Rxhx6XqLpfpvay8E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-5ZtCIki3P8W9ppD46R69Tg-1; Mon, 19 Jul 2021 05:58:32 -0400
-X-MC-Unique: 5ZtCIki3P8W9ppD46R69Tg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B151C804146;
-        Mon, 19 Jul 2021 09:58:31 +0000 (UTC)
-Received: from localhost (ovpn-12-118.pek2.redhat.com [10.72.12.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1733969282;
-        Mon, 19 Jul 2021 09:58:24 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
-Subject: [RFC PATCH 7/7] blk-mq: build default queue map via group_cpus_evenly()
-Date:   Mon, 19 Jul 2021 17:57:29 +0800
-Message-Id: <20210719095729.834332-8-ming.lei@redhat.com>
-In-Reply-To: <20210719095729.834332-1-ming.lei@redhat.com>
-References: <20210719095729.834332-1-ming.lei@redhat.com>
+        Mon, 19 Jul 2021 05:17:04 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75F6C061574;
+        Mon, 19 Jul 2021 02:01:27 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id e14so6978815ljo.7;
+        Mon, 19 Jul 2021 02:57:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nIaKqXMa6oT0DO29A1M702A2DzJt7GwY+je+42Ehw2U=;
+        b=t22cOT+xVJTGURpEm0vVYzWkOxYXprVgMKeerHF2EZm3Zdy8pdvbgC2uh1eLyddFj8
+         Z5TIu6abrPgkvAJhkonXStQDAJTEvdQMi8kfM3KXFHaR8HS9ccMf7czm1OxONjJL42dX
+         aC6NuhU80BNiOet6Bvg6m5rB0JrXOmfdgPk8oOMyDzQlhsKDXw1AHd+4VVKpcdd+Wipd
+         sAsfigBVWGv0uxefH0aBZdNFTurUREA0/sBdmF++lUw3zax4c9FKB12B1cgozaScg3sm
+         RGAs//BIptNvMCI4bUV789Crg4/muCG62kZUvjTiwxToN+yWxD3jOeAve//jwKaJSGen
+         xNCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nIaKqXMa6oT0DO29A1M702A2DzJt7GwY+je+42Ehw2U=;
+        b=COyIZkhI0xbs9XxGIvPXL0Vib2tfuy5TvJKwoEgE1CBp3SFUicfOhsflW+9uQ12Ggo
+         R2JBW8GX7tJ88yBWszXXq+ydOJBiK3IylDXTR0yq17pdWZJs0WjglI32hcvGhGakJPMA
+         ttyPEy15mWNBqSlFMwp0pO3BtD+gwCF0N9Vw0POoaVwiNGLvsKO2CcMXI6U/AY4oIUTB
+         f93cjD+Cb9vEiAh42gdPjQtqDGWiYofBS9Z5aO5ncmqZzcezqGP9NImQm+ENMAgvo85Z
+         ipglIW1ZlOzcRB60mrrCnfWM//c6FyoqFFwEnjXeuGckXOMHe4oBUETKKFDoNWpILhEo
+         u/NA==
+X-Gm-Message-State: AOAM532r8wSTp9RHEjWV+EFHZRVfZYIky7eijlefe56ibXQLB+sa/NJ9
+        ElZ2N4uk5HdRSvMefSO5z04iTcdFtmCWbw5n7Ss=
+X-Google-Smtp-Source: ABdhPJzC3ZrVaSM/trW2y79AnzNLWj1tMCUTAOqCDil7DtCgZMztht9kYxdQpcPnJV13Xz0w61TFJAkJG8pgoTmmh6o=
+X-Received: by 2002:a2e:9e05:: with SMTP id e5mr21916618ljk.141.1626688661931;
+ Mon, 19 Jul 2021 02:57:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210715182551.731989182@linuxfoundation.org> <20210715182634.577299401@linuxfoundation.org>
+In-Reply-To: <20210715182634.577299401@linuxfoundation.org>
+From:   Xiaotian Feng <xtfeng@gmail.com>
+Date:   Mon, 19 Jul 2021 17:57:30 +0800
+Message-ID: <CAJn8CcF+gfXToErpZv=pWmBKF-i--oVWmaM=6AQ8YZCb21X=oA@mail.gmail.com>
+Subject: Re: [PATCH 5.12 237/242] drm/ast: Remove reference to struct drm_device.pdev
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        kernel test robot <lkp@intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default queue mapping builder of blk_mq_map_queues doesn't take NUMA
-topo into account, so the built mapping is pretty bad, since CPUs
-belonging to different NUMA node are assigned to same queue. It is
-observed that IOPS drops by ~30% when running two jobs on same hctx
-of null_blk from two CPUs belonging to two NUMA nodes compared with
-from same NUMA node.
+On Fri, Jul 16, 2021 at 5:13 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Thomas Zimmermann <tzimmermann@suse.de>
+>
+> commit 0ecb51824e838372e01330752503ddf9c0430ef7 upstream.
+>
+> Using struct drm_device.pdev is deprecated. Upcast with to_pci_dev()
+> from struct drm_device.dev to get the PCI device structure.
+>
+> v9:
+>         * fix remaining pdev references
+>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> Fixes: ba4e0339a6a3 ("drm/ast: Fixed CVE for DP501")
+> Cc: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+> Cc: kernel test robot <lkp@intel.com>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Dave Airlie <airlied@redhat.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Link: https://patchwork.freedesktop.org/patch/msgid/20210429105101.25667-2-tzimmermann@suse.de
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/gpu/drm/ast/ast_main.c |    5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> --- a/drivers/gpu/drm/ast/ast_main.c
+> +++ b/drivers/gpu/drm/ast/ast_main.c
+> @@ -411,7 +411,6 @@ struct ast_private *ast_device_create(co
+>                 return ast;
+>         dev = &ast->base;
+>
+> -       dev->pdev = pdev;
+>         pci_set_drvdata(pdev, dev);
+>
+>         ast->regs = pcim_iomap(pdev, 1, 0);
+> @@ -453,8 +452,8 @@ struct ast_private *ast_device_create(co
+>
+>         /* map reserved buffer */
+>         ast->dp501_fw_buf = NULL;
+> -       if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
+> -               ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
+> +       if (dev->vram_mm->vram_size < pci_resource_len(pdev, 0)) {
+> +               ast->dp501_fw_buf = pci_iomap_range(pdev, 0, dev->vram_mm->vram_size, 0);
+>                 if (!ast->dp501_fw_buf)
+>                         drm_info(dev, "failed to map reserved buffer!\n");
+>         }
+>
 
-Address the issue by reusing group_cpus_evenly() for addressing the
-issue since group_cpus_evenly() does group cpus according to CPU/NUMA
-locality.
+Hi Greg,
 
-Lots of drivers may benefit from the change, such as nvme pci poll,
-nvme tcp, ...
+     This backport is incomplete for 5.10 kernel,  kernel is panicked
+on RIP: ast_device_create+0x7d.  When I look into the crash code, I
+found
 
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- block/blk-mq-cpumap.c | 64 +++++++++----------------------------------
- 1 file changed, 13 insertions(+), 51 deletions(-)
+struct ast_private *ast_device_create(struct drm_driver *drv,
+                                      struct pci_dev *pdev,
+                                      unsigned long flags)
+{
+.......
+        dev->pdev = pdev;  // This is removed
+        pci_set_drvdata(pdev, dev);
 
-diff --git a/block/blk-mq-cpumap.c b/block/blk-mq-cpumap.c
-index 3db84d3197f1..5f183f52626c 100644
---- a/block/blk-mq-cpumap.c
-+++ b/block/blk-mq-cpumap.c
-@@ -10,67 +10,29 @@
- #include <linux/mm.h>
- #include <linux/smp.h>
- #include <linux/cpu.h>
-+#include <linux/group_cpus.h>
- 
- #include <linux/blk-mq.h>
- #include "blk.h"
- #include "blk-mq.h"
- 
--static int queue_index(struct blk_mq_queue_map *qmap,
--		       unsigned int nr_queues, const int q)
--{
--	return qmap->queue_offset + (q % nr_queues);
--}
--
--static int get_first_sibling(unsigned int cpu)
--{
--	unsigned int ret;
--
--	ret = cpumask_first(topology_sibling_cpumask(cpu));
--	if (ret < nr_cpu_ids)
--		return ret;
--
--	return cpu;
--}
--
- int blk_mq_map_queues(struct blk_mq_queue_map *qmap)
- {
--	unsigned int *map = qmap->mq_map;
--	unsigned int nr_queues = qmap->nr_queues;
--	unsigned int cpu, first_sibling, q = 0;
--
--	for_each_possible_cpu(cpu)
--		map[cpu] = -1;
-+	const struct cpumask *masks;
-+	unsigned int queue, cpu;
- 
--	/*
--	 * Spread queues among present CPUs first for minimizing
--	 * count of dead queues which are mapped by all un-present CPUs
--	 */
--	for_each_present_cpu(cpu) {
--		if (q >= nr_queues)
--			break;
--		map[cpu] = queue_index(qmap, nr_queues, q++);
--	}
-+	masks = group_cpus_evenly(qmap->nr_queues);
-+	if (!masks)
-+		goto fallback;
- 
--	for_each_possible_cpu(cpu) {
--		if (map[cpu] != -1)
--			continue;
--		/*
--		 * First do sequential mapping between CPUs and queues.
--		 * In case we still have CPUs to map, and we have some number of
--		 * threads per cores then map sibling threads to the same queue
--		 * for performance optimizations.
--		 */
--		if (q < nr_queues) {
--			map[cpu] = queue_index(qmap, nr_queues, q++);
--		} else {
--			first_sibling = get_first_sibling(cpu);
--			if (first_sibling == cpu)
--				map[cpu] = queue_index(qmap, nr_queues, q++);
--			else
--				map[cpu] = map[first_sibling];
--		}
-+	for (queue = 0; queue < qmap->nr_queues; queue++) {
-+		for_each_cpu(cpu, &masks[queue])
-+			qmap->mq_map[cpu] = qmap->queue_offset + queue;
- 	}
--
-+	return 0;
-+ fallback:
-+	for_each_possible_cpu(cpu)
-+		qmap->mq_map[cpu] = qmap->queue_offset;
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(blk_mq_map_queues);
--- 
-2.31.1
+        ast->regs = pcim_iomap(pdev, 1, 0);
+        if (!ast->regs)
+                return ERR_PTR(-EIO);
 
+        /*
+         * If we don't have IO space at all, use MMIO now and
+         * assume the chip has MMIO enabled by default (rev 0x20
+         * and higher).
+         */
+        if (!(pci_resource_flags(dev->pdev, 2) & IORESOURCE_IO)) { //
+dev->pdev is in used here.
+                drm_info(dev, "platform has no IO space, trying MMIO\n");
+                ast->ioregs = ast->regs + AST_IO_MM_OFFSET;
+        }
+
+        That's because commit 46fb883c3d0d8a823ef995ddb1f9b0817dea6882
+is not backported to 5.10 kernel.
+
+Best Regards
+Xiaotian
