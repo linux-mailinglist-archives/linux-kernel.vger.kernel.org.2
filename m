@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058693CEA4D
+	by mail.lfdr.de (Postfix) with ESMTP id C84573CEA4F
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350800AbhGSRKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:10:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57394 "EHLO mail.kernel.org"
+        id S1352433AbhGSRLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:11:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348748AbhGSPf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA03461629;
-        Mon, 19 Jul 2021 16:14:11 +0000 (UTC)
+        id S1348725AbhGSPf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E8E61621;
+        Mon, 19 Jul 2021 16:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711252;
-        bh=LDL4Bqi17LueZ8n7BQx1SbwuFjKuWJ/E8uFrCXGqHxA=;
+        s=korg; t=1626711255;
+        bh=DhNr/YIHnr2doWNV2z18T/NAGpuzYzIlt4aNAxgXud0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ENKsCGlj6jzH9MLGTa3Nemsgd4yguyH4LktEe13kOfcXUnDsh5WJ6tqMmKk9b5Shl
-         NRu1W7jN15+Srt9rz8jd7uRJBnR6jvuXzXYK+uZ5NzpHLLxVmsul3lneg5/L/TEcsX
-         EDnwWnSFgjr57qJ2ICtSNOXvlCTcRLolQj1lCt00=
+        b=Pyc3bLfG7XBA9ECKBOieMnTsuZXvytO8BUBO5sBJUUC9FcpEwFzytkz8E+wlnyjId
+         eleLygUJaxiFHIKIFHxwYVU9bg7u0dyDQ3zl4WLpLCWGGm4xOuszqFnSoc0Y7ot6cM
+         C+RsuU/z7c0T27ZF46yQ8vIolUKkuewFamAwshdA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "B.R. Oake" <broake@mailfence.com>,
-        Vagrant Cascadian <vagrant@reproducible-builds.org>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 285/351] ARM: dts: sun8i: h3: orangepi-plus: Fix ethernet phy-mode
-Date:   Mon, 19 Jul 2021 16:53:51 +0200
-Message-Id: <20210719144954.462410955@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH 5.13 286/351] rtc: bd70528: fix BD71815 watchdog dependency
+Date:   Mon, 19 Jul 2021 16:53:52 +0200
+Message-Id: <20210719144954.495231762@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -42,44 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Salvatore Bonaccorso <carnil@debian.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit b19d3479f25e8a0ff24df0b46c82e50ef0f900dd ]
+[ Upstream commit b0ddc5b170058a9ed3c9f031501d735a4eb8ee89 ]
 
-Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
-config") sets the RX/TX delay according to the phy-mode property in the
-device tree. For the Orange Pi Plus board this is "rgmii", which is the
-wrong setting.
+The added Kconfig dependency is slightly incorrect, which can
+lead to a link failure when the watchdog is a loadable module:
 
-Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
-Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
-the Ethernet working again on this board.
+arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_set_rtc_based_timers':
+rtc-bd70528.c:(.text+0x6cc): undefined reference to `bd70528_wdt_set'
+arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_set_time':
+rtc-bd70528.c:(.text+0xaa0): undefined reference to `bd70528_wdt_lock'
+arm-linux-gnueabi-ld: rtc-bd70528.c:(.text+0xab8): undefined reference to `bd70528_wdt_unlock'
+arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_alm_enable':
+rtc-bd70528.c:(.text+0xfc0): undefined reference to `bd70528_wdt_lock'
+arm-linux-gnueabi-ld: rtc-bd70528.c:(.text+0x1030): undefined reference to `bd70528_wdt_unlock'
 
-Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
-Reported-by: "B.R. Oake" <broake@mailfence.com>
-Reported-by: Vagrant Cascadian <vagrant@reproducible-builds.org>
-Link: https://bugs.debian.org/988574
-Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210524122111.416885-1-carnil@debian.org
+The problem is that it allows to be built-in if MFD_ROHM_BD71828
+is built-in, even when the watchdog is a loadable module.
+
+Rework this so that having the watchdog as a loadable module always
+forces the rtc to be a module as well instead of built-in,
+regardless of bd71828.
+
+Fixes: c56dc069f268 ("rtc: bd70528: Support RTC on ROHM BD71815")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210422151545.2403356-1-arnd@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/rtc/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-index 97f497854e05..d05fa679dcd3 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-@@ -85,7 +85,7 @@
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_gmac_3v3>;
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index d8c13fded164..914497abeef9 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -502,7 +502,8 @@ config RTC_DRV_M41T80_WDT
  
- 	status = "okay";
- };
+ config RTC_DRV_BD70528
+ 	tristate "ROHM BD70528, BD71815 and BD71828 PMIC RTC"
+-	depends on MFD_ROHM_BD71828 || MFD_ROHM_BD70528 && (BD70528_WATCHDOG || !BD70528_WATCHDOG)
++	depends on MFD_ROHM_BD71828 || MFD_ROHM_BD70528
++	depends on BD70528_WATCHDOG || !BD70528_WATCHDOG
+ 	help
+ 	  If you say Y here you will get support for the RTC
+ 	  block on ROHM BD70528, BD71815 and BD71828 Power Management IC.
 -- 
 2.30.2
 
