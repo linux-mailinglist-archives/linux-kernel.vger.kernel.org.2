@@ -2,80 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A4A3CF1EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B943CF216
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241434AbhGTBaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 21:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241853AbhGTB1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 21:27:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C3EC61164;
-        Tue, 20 Jul 2021 02:07:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626746861;
-        bh=r5wSh0N4B6XoXmmj5VoGs+TOmUC23WqLrxAwPTMxhoQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OBWz8xXpkqJGSA8ojBaW0KwNmW7OQyIdOvwR3SaOz64AUscnJJqspPyQ+ILyM0Hli
-         8CnpSqb8pMhHw2n4RozPYP9v69Z2i11mXUfVV+zBA70Y5kMSe0THk640gSjSrqgxFX
-         oBBZJRIAfbt33d0Tv79cCnsxBpyXjwv1VZirwa8b5hJ04TFpFjh3cqCo5HQkNAsQvF
-         bwZLO7aHRGVVpjxkA2cjrwUBdipSA29QMZ3XWX6FgevtDDkaBAEuPSBRmUJZ9yMalN
-         5jltaLsOX3aRzqLcqX2rDMGnvQ/4Q+BRGsdHGkWH70yvFxVoGiLehnvhz7pRGyrtmt
-         YbyXQGBBLd4wA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 67CFC5C06CA; Mon, 19 Jul 2021 19:07:41 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 19:07:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, apw@canonical.com,
-        joe@perches.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        mingo@kernel.org
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-Message-ID: <20210720020741.GD4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
- <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
- <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
- <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2xDNtjZew=Rr7QvEDX7jnVCcE+JFpSDxiQ4yNPUE6kj-g@mail.gmail.com>
- <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2wuWtGAGRqWJb3Gewm5VLZdZ_C=LRZsFbaG3jcQabO3qA@mail.gmail.com>
- <20210718210854.GP4397@paulmck-ThinkPad-P17-Gen-1>
- <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
+        id S241534AbhGTB4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 21:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1442242AbhGSWxd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 18:53:33 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43FAC0612FC
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id k20so20850872pgg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ml3Q/kTxZiD4jac4rsa9z6q3oqgw/koE0r8JlYAWEoE=;
+        b=sMaBLc6xZX7zehQ8U1kn7T2/C76fdCJIRBEmJcwUdtN+Ur6xNDVNIA4wnj+n5MAgrI
+         fRKop8qSFfB5cJj5Qd7DEJPBG9n2V1DApSvIFOjQinvQRz7V6ozyOBexcCug8btYPM+J
+         MMZqkMfsPwKR7hJ8KfXCbL9q5j/u8ILTW+OotIbqxzJ+akWq3OX+Rux7DSgW64emjSxx
+         /G3uagHiW/9cKFWa857nddfAl6IcWtZDkPwv7s7H35o+5FI3X0D2AEhUoR4OdKHktGMB
+         5lpjpv8BqF9q2yg/iuIW7lEANMTukouIkKW+oDuuhgdavYXnIqR/tPR7p66hSzMduya7
+         pthQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ml3Q/kTxZiD4jac4rsa9z6q3oqgw/koE0r8JlYAWEoE=;
+        b=M23mqJhgG2q8asEQnt0zWkwabV2d3wCdWmz+I1MtYdlgeOpF8UJmUJkNyDJtpkxHLG
+         PIQfUFpAjWnXMiiyCGxpUw61NmqBQfqHryfz/LgJlb6FTTWaGWHQ+IdoJYuxIopnXIkr
+         Fyrl7vDpKC4ADnIYVZItpMGmeMhv+bfvJsjgZMvlg1jjdn5bm+qp8yFIHhKEicpgfrzF
+         MEdO6GC0cSSTkMHqawm30fN4/f3LWJHxu1HKOWHVTBe1XgRsDs3mc3uPm3WsupoHCyaQ
+         8+3Hbdlotq1jDLKfAKtyn2Dzhjtl8tKOxcdssVQwyIqToB6Txmg/z0Sf1YqiYhi/zR0K
+         F7hg==
+X-Gm-Message-State: AOAM530jm9HHiDz81Biw6YXDvg5xvpy4eshALHjHenKBV4yeyorUqJB9
+        sRr/i44dd3CbkbIOLHWI7Cx2tw==
+X-Google-Smtp-Source: ABdhPJxkrxZk/0Zz1bAor5ysJ9w0e2+YW2IaG8snr9Fl4r2Iz1JNpsaNu5NP3/nbL6PnRtlutO5udg==
+X-Received: by 2002:a62:4e0f:0:b029:329:20be:287a with SMTP id c15-20020a624e0f0000b029032920be287amr28021297pfb.55.1626737431050;
+        Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id bt17sm571551pjb.40.2021.07.19.16.30.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 16:30:30 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 23:30:26 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 35/40] KVM: Add arch hooks to track the host
+ write to guest memory
+Message-ID: <YPYLEksyzOWHZwpA@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-36-brijesh.singh@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
+In-Reply-To: <20210707183616.5620-36-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 06:39:17PM -0700, Randy Dunlap wrote:
-> On 7/18/21 2:08 PM, Paul E. McKenney wrote:
-> > On Sun, Jul 18, 2021 at 06:03:34AM +0800, Zhouyi Zhou wrote:
-> >> Hi Paul
-> >> During the research, I found a already existing tool to detect
-> >> undefined Kconfig macro:
-> >> scripts/checkkconfigsymbols.py. It is marvellous!
-> > 
-> > Nice!  Maybe I should add this to torture.sh.
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> The kvm_write_guest{_page} and kvm_vcpu_write_guest{_page} are used by
+> the hypevisor to write to the guest memory. The kvm_vcpu_map() and
+> kvm_map_gfn() are used by the hypervisor to map the guest memory and
+> and access it later.
 > 
-> Paul, I believe that subsystems should take care of themselves,
-> so you can do that for RCU, e.g., but at the same time, I think that
-> some CI should be running that script (and other relevant scripts)
-> on the entire kernel tree and reporting problems that are found.
+> When SEV-SNP is enabled in the guest VM, the guest memory pages can
+> either be a private or shared. A write from the hypervisor goes through
+> the RMP checks. If hardware sees that hypervisor is attempting to write
+> to a guest private page, then it triggers an RMP violation (i.e, #PF with
+> RMP bit set).
+> 
+> Enhance the KVM guest write helpers to invoke an architecture specific
+> hooks (kvm_arch_write_gfn_{begin,end}) to track the write access from the
+> hypervisor.
+> 
+> When SEV-SNP is enabled, the guest uses the PAGE_STATE vmgexit to ask the
+> hypervisor to change the page state from shared to private or vice versa.
+> While changing the page state to private, use the
+> kvm_host_write_track_is_active() to check whether the page is being
+> tracked for the host write access (i.e either mapped or kvm_write_guest
+> is in progress). If its tracked, then do not change the page state.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
 
-Even better!  ;-)
+...
 
-							Thanx, Paul
+> @@ -3468,3 +3489,33 @@ int sev_get_tdp_max_page_level(struct kvm_vcpu *vcpu, gpa_t gpa, int max_level)
+>  
+>  	return min_t(uint32_t, level, max_level);
+>  }
+> +
+> +void sev_snp_write_page_begin(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn)
+> +{
+> +	struct rmpentry *e;
+> +	int level, rc;
+> +	kvm_pfn_t pfn;
+> +
+> +	if (!sev_snp_guest(kvm))
+> +		return;
+> +
+> +	pfn = gfn_to_pfn(kvm, gfn);
+> +	if (is_error_noslot_pfn(pfn))
+> +		return;
+> +
+> +	e = snp_lookup_page_in_rmptable(pfn_to_page(pfn), &level);
+> +	if (unlikely(!e))
+> +		return;
+> +
+> +	/*
+> +	 * A hypervisor should never write to the guest private page. A write to the
+> +	 * guest private will cause an RMP violation. If the guest page is private,
+> +	 * then make it shared.
+
+NAK on converting RMP entries in response to guest accesses.  Corrupting guest
+data (due to dropping the "validated" flag) on a rogue/incorrect guest emulation
+request or misconfigured PV feature is double ungood.  The potential kernel panic
+below isn't much better.
+
+And I also don't think we need this heavyweight flow for user access, e.g.
+__copy_to_user(), just eat the RMP violation #PF like all other #PFs and exit
+to userspace with -EFAULT.
+
+kvm_vcpu_map() and friends might need the manual lookup, at least initially, but
+in an ideal world that would be naturally handled by gup(), e.g. by unmapping
+guest private memory or whatever approach TDX ends up employing to avoid #MCs.
+
+> +	 */
+> +	if (rmpentry_assigned(e)) {
+> +		pr_err("SEV-SNP: write to guest private gfn %llx\n", gfn);
+> +		rc = snp_make_page_shared(kvm_get_vcpu(kvm, 0),
+> +				gfn << PAGE_SHIFT, pfn, PG_LEVEL_4K);
+> +		BUG_ON(rc != 0);
+> +	}
+> +}
+
+...
+
+> +void kvm_arch_write_gfn_begin(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn)
+> +{
+> +	update_gfn_track(slot, gfn, KVM_PAGE_TRACK_WRITE, 1);
+
+Tracking only writes isn't correct, as KVM reads to guest private memory will
+return garbage.  Pulling the rug out from under KVM reads won't fail as
+spectacularly as writes (at least not right away), but they'll still fail.  I'm
+actually ok reading garbage if the guest screws up, but KVM needs consistent
+semantics.
+
+Good news is that per-gfn tracking is probably overkill anyways.  As mentioned
+above, user access don't need extra magic, they either fail or they don't.
+
+For kvm_vcpu_map(), one thought would be to add a "short-term" map variant that
+is not allowed to be retained across VM-Entry, and then use e.g. SRCU to block
+PSC requests until there are no consumers.
+
+> +	if (kvm_x86_ops.write_page_begin)
+> +		kvm_x86_ops.write_page_begin(kvm, slot, gfn);
+> +}
