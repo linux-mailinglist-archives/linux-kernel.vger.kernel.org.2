@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB283CE7EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D993CE6C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354801AbhGSQfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:35:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38036 "EHLO mail.kernel.org"
+        id S1351856AbhGSQNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:13:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347846AbhGSPWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:22:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C56786120D;
-        Mon, 19 Jul 2021 15:59:40 +0000 (UTC)
+        id S1346085AbhGSPKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F418A60FE7;
+        Mon, 19 Jul 2021 15:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710381;
-        bh=pzmtmxI/U1ELK8/cBfH439MhCpDdJZeq2qdP9btUgy0=;
+        s=korg; t=1626709830;
+        bh=dQ6jBxel0zs8R32fG0TfjmV0geTMvOiuEXZIOSy8qzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QYR3Q3CbwxLHYm9+4BHVcjntMrxT1UD1uYP20RfBR5avGawT3I98ITsg2oPG98H9t
-         P1OBfY1NFYAr9Z1s4kn7+fGJieBb63uIVJ5URT0Xn4D2Og+HtQ4stEn/VwdzjmjdaF
-         CcGckzZTqFItzJNIBCi71oAsuMaJFLx5O01Hrqck=
+        b=IrHOKH4lxLyrpAWaidzjo2YVamj2z8WX4khOvVb4ROirBYf4D/OCa+HmvJMHUGTA6
+         RZtxJx4vBavu/jDlhGkEtXHqIg2E8xZxYEwEZRdGhtxV18otocGtdhVeO7QSttWFjt
+         k/StexjXmEKKOsnkgpIY96maQqlS3thhX+0lpnEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 193/243] ARM: dts: exynos: fix PWM LED max brightness on Odroid XU4
-Date:   Mon, 19 Jul 2021 16:53:42 +0200
-Message-Id: <20210719144947.145558074@linuxfoundation.org>
+Subject: [PATCH 5.4 115/149] ARM: dts: gemini-rut1xx: remove duplicate ethernet node
+Date:   Mon, 19 Jul 2021 16:53:43 +0200
+Message-Id: <20210719144928.633362567@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit fd2f1717966535b7d0b6fe45cf0d79e94330da5f ]
+[ Upstream commit 3d3bb3d27cd371d3edb43eeb1beb8ae4e92a356d ]
 
-There is no "max_brightness" property as pointed out by dtschema:
+Two ethernet node was added by
+commit 95220046a62c ("ARM: dts: Add ethernet to a bunch of platforms")
+and commit d6d0cef55e5b ("ARM: dts: Add the FOTG210 USB host to Gemini boards")
 
-  arch/arm/boot/dts/exynos5422-odroidxu4.dt.yaml: led-controller: led-1: 'max-brightness' is a required property
+This patch removes the duplicate one.
 
-Fixes: 6658356014cb ("ARM: dts: Add support Odroid XU4 board for exynos5422-odroidxu4")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210505135941.59898-5-krzysztof.kozlowski@canonical.com
+Fixes: d6d0cef55e5b ("ARM: dts: Add the FOTG210 USB host to Gemini boards")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5422-odroidxu4.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/gemini-rut1xx.dts | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos5422-odroidxu4.dts b/arch/arm/boot/dts/exynos5422-odroidxu4.dts
-index ddd55d3bcadd..4ef0dbc84b0c 100644
---- a/arch/arm/boot/dts/exynos5422-odroidxu4.dts
-+++ b/arch/arm/boot/dts/exynos5422-odroidxu4.dts
-@@ -24,7 +24,7 @@
- 			label = "blue:heartbeat";
- 			pwms = <&pwm 2 2000000 0>;
- 			pwm-names = "pwm2";
--			max_brightness = <255>;
-+			max-brightness = <255>;
- 			linux,default-trigger = "heartbeat";
+diff --git a/arch/arm/boot/dts/gemini-rut1xx.dts b/arch/arm/boot/dts/gemini-rut1xx.dts
+index 9611ddf06792..08091d2a64e1 100644
+--- a/arch/arm/boot/dts/gemini-rut1xx.dts
++++ b/arch/arm/boot/dts/gemini-rut1xx.dts
+@@ -125,18 +125,6 @@
+ 			};
  		};
- 	};
+ 
+-		ethernet@60000000 {
+-			status = "okay";
+-
+-			ethernet-port@0 {
+-				phy-mode = "rgmii";
+-				phy-handle = <&phy0>;
+-			};
+-			ethernet-port@1 {
+-				/* Not used in this platform */
+-			};
+-		};
+-
+ 		usb@68000000 {
+ 			status = "okay";
+ 		};
 -- 
 2.30.2
 
