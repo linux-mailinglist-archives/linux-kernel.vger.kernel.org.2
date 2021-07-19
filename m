@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3B93CD7D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8DC3CD79A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242449AbhGSOTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:19:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53426 "EHLO mail.kernel.org"
+        id S241990AbhGSORk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:17:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241934AbhGSOSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:18:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 272AA611ED;
-        Mon, 19 Jul 2021 14:59:01 +0000 (UTC)
+        id S241773AbhGSORH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:17:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72A386112D;
+        Mon, 19 Jul 2021 14:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706741;
-        bh=nFiVBD9s1F0BKiFDeyhGID7OC5rzFoiX0HeTvFie4L0=;
+        s=korg; t=1626706666;
+        bh=yDH8cV6MFLEEu2EKWdiakBTwPlzjkcvVf4r8ExwE1d8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eeZyeVZuNzlMaHPbrStN5hV5GO64sZMbDC5aFeQQgQg9ImaXvU2dDIEESAG2gALVo
-         HWLruCouRYoz3orQ1JEfGcEZaLb3Y1bDH2Zpu+G4/O9yhWjA5x5ntA9ouWzle4k0Pj
-         B1DWr98lZfPKjPlDbmMu8+dTmdgVW6qT2Lp6LcoA=
+        b=QkLdCKDSm7PGQ7MtNS9tGio4fvzvV9AHBANkHmned+L+7R1IpdcEYZPHiBf4JoPun
+         DFRFC8508hiTlrLZwY3Urkqn1JtcTl781ZUD7eFUXjTlPokMnQHVSdS06uDM98OFim
+         ORtUdnf0ZuplUUoZ5k+EmhBej//HXF9blE7AtrLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 044/188] random32: Fix implicit truncation warning in prandom_seed_state()
-Date:   Mon, 19 Jul 2021 16:50:28 +0200
-Message-Id: <20210719144923.344948711@linuxfoundation.org>
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 046/188] platform/x86: toshiba_acpi: Fix missing error code in toshiba_acpi_setup_keyboard()
+Date:   Mon, 19 Jul 2021 16:50:30 +0200
+Message-Id: <20210719144923.786608590@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -40,46 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit d327ea15a305024ef0085252fa3657bbb1ce25f5 ]
+[ Upstream commit 28e367127718a9cb85d615a71e152f7acee41bfc ]
 
-sparse generates the following warning:
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'error'.
 
- include/linux/prandom.h:114:45: sparse: sparse: cast truncates bits from
- constant value
+Eliminate the follow smatch warning:
 
-This is because the 64-bit seed value is manipulated and then placed in a
-u32, causing an implicit cast and truncation. A forced cast to u32 doesn't
-prevent this warning, which is reasonable because a typecast doesn't prove
-that truncation was expected.
+drivers/platform/x86/toshiba_acpi.c:2834 toshiba_acpi_setup_keyboard()
+warn: missing error code 'error'.
 
-Logical-AND the value with 0xffffffff to make explicit that truncation to
-32-bit is intended.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20210525122012.6336-3-rf@opensource.cirrus.com
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Link: https://lore.kernel.org/r/1622628348-87035-1-git-send-email-jiapeng.chong@linux.alibaba.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/prandom.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/toshiba_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/prandom.h b/include/linux/prandom.h
-index cc1e71334e53..e20339c78a84 100644
---- a/include/linux/prandom.h
-+++ b/include/linux/prandom.h
-@@ -93,7 +93,7 @@ static inline u32 __seed(u32 x, u32 m)
-  */
- static inline void prandom_seed_state(struct rnd_state *state, u64 seed)
- {
--	u32 i = (seed >> 32) ^ (seed << 10) ^ seed;
-+	u32 i = ((seed >> 32) ^ (seed << 10) ^ seed) & 0xffffffffUL;
+diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
+index 1ff95b5a429d..974d4ac78d10 100644
+--- a/drivers/platform/x86/toshiba_acpi.c
++++ b/drivers/platform/x86/toshiba_acpi.c
+@@ -2448,6 +2448,7 @@ static int toshiba_acpi_setup_keyboard(struct toshiba_acpi_dev *dev)
  
- 	state->s1 = __seed(i,   2U);
- 	state->s2 = __seed(i,   8U);
+ 	if (!dev->info_supported && !dev->system_event_supported) {
+ 		pr_warn("No hotkey query interface found\n");
++		error = -EINVAL;
+ 		goto err_remove_filter;
+ 	}
+ 
 -- 
 2.30.2
 
