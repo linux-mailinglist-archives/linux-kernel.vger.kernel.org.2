@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FA93CE957
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FBB3CEAB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358792AbhGSQxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:53:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47276 "EHLO mail.kernel.org"
+        id S1377575AbhGSRQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346484AbhGSP2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E7F26135D;
-        Mon, 19 Jul 2021 16:09:05 +0000 (UTC)
+        id S240940AbhGSPhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:37:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CE1761248;
+        Mon, 19 Jul 2021 16:18:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710945;
-        bh=kqyg7CJAfmjiDbc0FaQuC/ZCu6IEVDBFFYXk5fhMUBE=;
+        s=korg; t=1626711481;
+        bh=QD1d3pOJsWBYGMDUpWa4YS0LLXpRn9mRsdxNn5EXTc0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PlYg2/5kSuDWzPKGvZ4ap3rPfhLgXTO56OQgpnrT9svEIaAFvD+MkY8lrTXYJ8+9H
-         60Ft1h9rasJRoeOf+v5r5vjzgwU26RcAYhAjGBoq9sDPFUshqL4jz65ib/SS+NLKJb
-         XyqadCJMYd1U+EF6xi2mZ1DgznWO0T06nmWkXauc=
+        b=ZkVpjybQ2HlXssNOsJI8RUmiwKboLVMDPwHDV8L+pENpMfK3ho5EYcTUr2dnqusLd
+         esXjuQxg7ihIbsVCdArajDUCFGZRDtKPI6YXQOmFjOH3lIM6brtPC/LubuPt+nY3FF
+         10Vzl26syUwNlYlTiuH4x6KRJpwisdK3vObA9Jh4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 135/351] ASoC: Intel: kbl_da7219_max98357a: shrink platform_id below 20 characters
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-edac@vger.kernel.org,
+        bowsingbetee <bowsingbetee@protonmail.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.12 019/292] EDAC/igen6: fix core dependency AGAIN
 Date:   Mon, 19 Jul 2021 16:51:21 +0200
-Message-Id: <20210719144948.948672251@linuxfoundation.org>
+Message-Id: <20210719144943.166355936@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 94efd726b947f265bd313605c9f73edec5469d65 ]
+commit a1c9ca5f65c9acfd7c02474b9d5cacbd7ea288df upstream.
 
-Sparse throws the following warnings:
+My previous patch had a typo/thinko which prevents this driver
+from being enabled: change X64_64 to X86_64.
 
-sound/soc/intel/boards/kbl_da7219_max98357a.c:647:25: error: too long
-initializer-string for array of char(no space for nul char)
-
-Fix by using the 'mx' acronym for Maxim.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Link: https://lore.kernel.org/r/20210621194057.21711-6-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 0a9ece9ba154 ("EDAC/igen6: fix core dependency")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-edac@vger.kernel.org
+Cc: bowsingbetee <bowsingbetee@protonmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/intel/boards/kbl_da7219_max98357a.c     | 4 ++--
- sound/soc/intel/common/soc-acpi-intel-kbl-match.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/edac/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index c0d8a73c6d21..7ca3347dbd2e 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -644,7 +644,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
- 
- static const struct platform_device_id kbl_board_ids[] = {
- 	{
--		.name = "kbl_da7219_max98357a",
-+		.name = "kbl_da7219_mx98357a",
- 		.driver_data =
- 			(kernel_ulong_t)&kabylake_audio_card_da7219_m98357a,
- 	},
-@@ -666,4 +666,4 @@ module_platform_driver(kabylake_audio)
- MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A in I2S mode");
- MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:kbl_da7219_max98357a");
-+MODULE_ALIAS("platform:kbl_da7219_mx98357a");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-index 47dadc9d5d2a..ba5ff468c265 100644
---- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-@@ -113,7 +113,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
- 	},
- 	{
- 		.id = "DLGS7219",
--		.drv_name = "kbl_da7219_max98373",
-+		.drv_name = "kbl_da7219_mx98373",
- 		.fw_filename = "intel/dsp_fw_kbl.bin",
- 		.machine_quirk = snd_soc_acpi_codec_list,
- 		.quirk_data = &kbl_7219_98373_codecs,
--- 
-2.30.2
-
+--- a/drivers/edac/Kconfig
++++ b/drivers/edac/Kconfig
+@@ -271,7 +271,7 @@ config EDAC_PND2
+ config EDAC_IGEN6
+ 	tristate "Intel client SoC Integrated MC"
+ 	depends on PCI && PCI_MMCONFIG && ARCH_HAVE_NMI_SAFE_CMPXCHG
+-	depends on X64_64 && X86_MCE_INTEL
++	depends on X86_64 && X86_MCE_INTEL
+ 	help
+ 	  Support for error detection and correction on the Intel
+ 	  client SoC Integrated Memory Controller using In-Band ECC IP.
 
 
