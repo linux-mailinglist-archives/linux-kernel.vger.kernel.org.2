@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E766C3CCD44
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3643CCD46
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhGSFSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 01:18:04 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:54844 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229512AbhGSFSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 01:18:02 -0400
-Received: from BJHW-Mail-Ex08.internal.baidu.com (unknown [10.127.64.18])
-        by Forcepoint Email with ESMTPS id 5AE66E362F1524674B1A;
-        Mon, 19 Jul 2021 13:14:56 +0800 (CST)
-Received: from BJHW-MAIL-EX25.internal.baidu.com (10.127.64.40) by
- BJHW-Mail-Ex08.internal.baidu.com (10.127.64.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Mon, 19 Jul 2021 13:14:56 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-MAIL-EX25.internal.baidu.com (10.127.64.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Mon, 19 Jul 2021 13:14:55 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
- BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
- 15.01.2308.014; Mon, 19 Jul 2021 13:14:55 +0800
-From:   "Cai,Huoqing" <caihuoqing@baidu.com>
-To:     "sgarzare@redhat.com" <sgarzare@redhat.com>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>
-CC:     "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/2] virtio_ring: fix error - unknown type name
- 'spinlock_t'
-Thread-Topic: [PATCH 1/2] virtio_ring: fix error - unknown type name
- 'spinlock_t'
-Thread-Index: AQHXeFgEtZ7bhfAxVUC3N/ftcHawDatJyDiQ
-Date:   Mon, 19 Jul 2021 05:14:55 +0000
-Message-ID: <c25458bf5b2c46c390afb4851836f7dc@baidu.com>
-References: <20210714022854.1077-1-caihuoqing@baidu.com>
- <20210714022854.1077-2-caihuoqing@baidu.com>
-In-Reply-To: <20210714022854.1077-2-caihuoqing@baidu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.18.18.49]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S232982AbhGSFU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 01:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhGSFUZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 01:20:25 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DD1C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 22:17:26 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id z9so15632616qkg.5
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 22:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DHVrqtdYh0+ezX5UJ5k9Sd/FBBWh5d9n+IK0Mwb7sUA=;
+        b=WOKLVuTZ2DH2z86799jz/I3LHftCfoCUttYlx5QOAGNYSNQNe5J/o33YCauJZZQX6R
+         IIBbTs2OlFXWMZKd1+T1JPai8T0VMYMVT7ETHSBVJuDphrnMZV6VLRIOiGar8e0gr7wJ
+         7TfWlWgRsjoasfI1HBdolgwnIEAiABc6BHKik=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DHVrqtdYh0+ezX5UJ5k9Sd/FBBWh5d9n+IK0Mwb7sUA=;
+        b=jAWoojC4kid36e51++r0SohUJljDUPfNNuAk02FKsaYKIIueNff2QXTRNX/2weEsQ8
+         VlORD3SNQNy/DQeyiYj1R30fxA2FVnkXyF7bOVBbqELMaMvMbppoAQgCksDYGdFT0mwB
+         emhrusgx0yZX/mJIHTQDvf9jw8Eo3I66DoTX/n8mw+CASRMbe1gQp4C5WQfNt4R0bpu5
+         LwCicJE85+2wDDO2bxCUVx4o/Ol2Bhwub5/ZiL5MqQDzKaEwvAvhFWEvS+/SwLBNAXH2
+         gtq6triCsHCFYpaeTytwMS0dttJ1PwHJgu+kWLXcUIoe7Cet7WK0WqYVT11ayQJFTE8y
+         FBtQ==
+X-Gm-Message-State: AOAM530GdttawIDAvo0KxiXCmNeWkM5Z9QjC2SrakOypJahvu6bpZniL
+        ghLAhcY3dMGFlMR0A1HE4jIo+9eeVhoYMZrb3d+cYWJ5UCo=
+X-Google-Smtp-Source: ABdhPJx1bZbfBzlkU6aXDmMJEi/cGfv5vrFsnI0MUjB1+6nx1xbSqSp1ohZGeAgksa22rG4d77V/k3Zddp2Kb50to0w=
+X-Received: by 2002:a05:620a:1242:: with SMTP id a2mr22037379qkl.443.1626671845953;
+ Sun, 18 Jul 2021 22:17:25 -0700 (PDT)
 MIME-Version: 1.0
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex08_2021-07-19 13:14:56:368
+References: <202107190200.Z2RoQoYz-lkp@intel.com>
+In-Reply-To: <202107190200.Z2RoQoYz-lkp@intel.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Mon, 19 Jul 2021 14:17:15 +0900
+Message-ID: <CAFr9PXng3dVVeHm8Xcy3i7MfjnPOM8ewCtGAWWUcgBZcM+RJqw@mail.gmail.com>
+Subject: Re: [linux-chenxing:mstar_v5_14_rebase_i2_drm 257/349]
+ drivers/clk/mstar/clk-msc313-mux.c:27:2: error: implicit declaration of
+ function 'regmap_field_read'; did you mean 'regmap_field_write'?
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SXMgaXQgYSBlcnJvciwgIHRyeSChsG1ha2UgdmlydGlvobEgaW4gdGhlIHBhdGggb2YgbGludXgv
-dG9vbHMvIHdpdGggY29uZmlnIFZIT1NUX0lPVExCPW4NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0NCkZyb206IENhaSxIdW9xaW5nIDxjYWlodW9xaW5nQGJhaWR1LmNvbT4gDQpTZW50OiAy
-MDIxxOo31MIxNMjVIDEwOjI5DQpUbzogc2dhcnphcmVAcmVkaGF0LmNvbTsgbXN0QHJlZGhhdC5j
-b207IGphc293YW5nQHJlZGhhdC5jb20NCkNjOiB2aXJ0dWFsaXphdGlvbkBsaXN0cy5saW51eC1m
-b3VuZGF0aW9uLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgQ2FpLEh1b3Fpbmcg
-PGNhaWh1b3FpbmdAYmFpZHUuY29tPg0KU3ViamVjdDogW1BBVENIIDEvMl0gdmlydGlvX3Jpbmc6
-IGZpeCBlcnJvciAtIHVua25vd24gdHlwZSBuYW1lICdzcGlubG9ja190Jw0KDQp3aGVuIHJ1biAi
-bWFrZSB2aXJ0aW8iIGluIGxpbnV4L3Rvb2xzLA0KdGhlIGVycm9yOiB1bmtub3duIHR5cGUgbmFt
-ZSAnc3BpbmxvY2tfdCcgb2NjdXJzDQoNClNpZ25lZC1vZmYtYnk6IENhaSBIdW9xaW5nIDxjYWlo
-dW9xaW5nQGJhaWR1LmNvbT4NCi0tLQ0KIGluY2x1ZGUvbGludXgvdnJpbmdoLmggfCAyICsrDQog
-MSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
-aW51eC92cmluZ2guaCBiL2luY2x1ZGUvbGludXgvdnJpbmdoLmggaW5kZXggODRkYjdiOGY5MTJm
-Li5mZjIxYzI2NDM3OTIgMTAwNjQ0DQotLS0gYS9pbmNsdWRlL2xpbnV4L3ZyaW5naC5oDQorKysg
-Yi9pbmNsdWRlL2xpbnV4L3ZyaW5naC5oDQpAQCAtNDMsMTEgKzQzLDEzIEBAIHN0cnVjdCB2cmlu
-Z2ggew0KICAgICAgICAvKiBUaGUgdnJpbmcgKG5vdGU6IGl0IG1heSBjb250YWluIHVzZXIgcG9p
-bnRlcnMhKSAqLw0KICAgICAgICBzdHJ1Y3QgdnJpbmcgdnJpbmc7DQoNCisjaWYgSVNfUkVBQ0hB
-QkxFKENPTkZJR19WSE9TVF9JT1RMQikNCiAgICAgICAgLyogSU9UTEIgZm9yIHRoaXMgdnJpbmcg
-Ki8NCiAgICAgICAgc3RydWN0IHZob3N0X2lvdGxiICppb3RsYjsNCg0KICAgICAgICAvKiBzcGlu
-bG9jayB0byBzeW5jaHJvbml6ZSBJT1RMQiBhY2Nlc3NlcyAqLw0KICAgICAgICBzcGlubG9ja190
-ICppb3RsYl9sb2NrOw0KKyNlbmRpZg0KDQogICAgICAgIC8qIFRoZSBmdW5jdGlvbiB0byBjYWxs
-IHRvIG5vdGlmeSB0aGUgZ3Vlc3QgYWJvdXQgYWRkZWQgYnVmZmVycyAqLw0KICAgICAgICB2b2lk
-ICgqbm90aWZ5KShzdHJ1Y3QgdnJpbmdoICopOw0KLS0NCjIuMjUuMQ0KDQo=
+On Mon, 19 Jul 2021 at 03:52, kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   git://github.com/linux-chenxing/linux.git mstar_v5_14_rebase_i2_drm
+
+Is it possible to stop this bot from building branches that don't make
+any sense?
+This branch for example was a work branch for reverse engineering the
+display hardware and has a lot of junk in it.
+
+Cheers,
+
+Daniel
