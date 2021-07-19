@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C295E3CE806
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E473CE7F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355548AbhGSQgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:36:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39206 "EHLO mail.kernel.org"
+        id S1355647AbhGSQgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:36:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348086AbhGSPYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C145F6140C;
-        Mon, 19 Jul 2021 16:01:17 +0000 (UTC)
+        id S1348078AbhGSPYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BC6C61417;
+        Mon, 19 Jul 2021 16:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710478;
-        bh=VsOISFCwQv1AE/8JHSouyfP6yzXVxKdCN4oZ5qKMw4c=;
+        s=korg; t=1626710486;
+        bh=5seagCm6Ve4VniNFFV5xW3qMx/jh+v5Yg6lXa6SkrnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xB4cMajGcSTbTSGnqMKz1qrczwZiJIghapg5M3ncQy5dochvGFBdl7RfBMdwO1wvO
-         CCeYv86kv2DzNTySrZEb1xlSo4I39NxSmzFOP1lYiqW9yLj1a5km1T8l6WkWzOrAM+
-         4I58ZXwp1WTnqG0fd3RQ6uxl8/I4TInppvFRKdd4=
+        b=R6RDhbR3CfHx3QWAF7uAfE7ijf5Cu6b9FnfQ+PqMRew6RVG9qeOqtN86cYlT1AT7a
+         tBmzkOBhpzSXksu570hZf34qUHUq1eknPlXUY5PLFmk2n5bH5Xh7pwBizm0AticGCI
+         k1C/s79DGzm78ZqGxre9uTvVXjrGRi41B2uwQAFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Xuewen Yan <xuewen.yan@unisoc.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 234/243] arm64: dts: rockchip: Re-add regulator-always-on for vcc_sdio for rk3399-roc-pc
-Date:   Mon, 19 Jul 2021 16:54:23 +0200
-Message-Id: <20210719144948.476515787@linuxfoundation.org>
+Subject: [PATCH 5.10 236/243] sched/uclamp: Ignore max aggregation if rq is idle
+Date:   Mon, 19 Jul 2021 16:54:25 +0200
+Message-Id: <20210719144948.536532588@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,36 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Bee <knaerzche@gmail.com>
+From: Xuewen Yan <xuewen.yan@unisoc.com>
 
-[ Upstream commit eb607cd4957fb0ef97beb2a8293478be6a54240a ]
+[ Upstream commit 3e1493f46390618ea78607cb30c58fc19e2a5035 ]
 
-Re-add the regulator-always-on property for vcc_sdio which supplies sdmmc,
-since it gets disabled during reboot now and the bootrom expects it to be
-enabled  when booting from SD card. This makes rebooting impossible in that
-case and requires a hard reset to boot again.
+When a task wakes up on an idle rq, uclamp_rq_util_with() would max
+aggregate with rq value. But since there is no task enqueued yet, the
+values are stale based on the last task that was running. When the new
+task actually wakes up and enqueued, then the rq uclamp values should
+reflect that of the newly woken up task effective uclamp values.
 
-Fixes: 04a0077fdb19 ("arm64: dts: rockchip: Remove always-on properties from regulator nodes on rk3399-roc-pc.")
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
-Link: https://lore.kernel.org/r/20210619121306.7740-1-knaerzche@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+This is a problem particularly for uclamp_max because it default to
+1024. If a task p with uclamp_max = 512 wakes up, then max aggregation
+would ignore the capping that should apply when this task is enqueued,
+which is wrong.
+
+Fix that by ignoring max aggregation if the rq is idle since in that
+case the effective uclamp value of the rq will be the ones of the task
+that will wake up.
+
+Fixes: 9d20ad7dfc9a ("sched/uclamp: Add uclamp_util_with()")
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+[qias: Changelog]
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+Link: https://lore.kernel.org/r/20210630141204.8197-1-xuewen.yan94@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/sched/sched.h | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-index e4345e5bdfb6..35b7ab3bf10c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-@@ -384,6 +384,7 @@
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index fdebfcbdfca9..39112ac7ab34 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2422,20 +2422,27 @@ static __always_inline
+ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+ 				  struct task_struct *p)
+ {
+-	unsigned long min_util;
+-	unsigned long max_util;
++	unsigned long min_util = 0;
++	unsigned long max_util = 0;
  
- 			vcc_sdio: LDO_REG4 {
- 				regulator-name = "vcc_sdio";
-+				regulator-always-on;
- 				regulator-boot-on;
- 				regulator-min-microvolt = <1800000>;
- 				regulator-max-microvolt = <3000000>;
+ 	if (!static_branch_likely(&sched_uclamp_used))
+ 		return util;
+ 
+-	min_util = READ_ONCE(rq->uclamp[UCLAMP_MIN].value);
+-	max_util = READ_ONCE(rq->uclamp[UCLAMP_MAX].value);
+-
+ 	if (p) {
+-		min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
+-		max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
++		min_util = uclamp_eff_value(p, UCLAMP_MIN);
++		max_util = uclamp_eff_value(p, UCLAMP_MAX);
++
++		/*
++		 * Ignore last runnable task's max clamp, as this task will
++		 * reset it. Similarly, no need to read the rq's min clamp.
++		 */
++		if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
++			goto out;
+ 	}
+ 
++	min_util = max_t(unsigned long, min_util, READ_ONCE(rq->uclamp[UCLAMP_MIN].value));
++	max_util = max_t(unsigned long, max_util, READ_ONCE(rq->uclamp[UCLAMP_MAX].value));
++out:
+ 	/*
+ 	 * Since CPU's {min,max}_util clamps are MAX aggregated considering
+ 	 * RUNNABLE tasks with _different_ clamps, we can end up with an
 -- 
 2.30.2
 
