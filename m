@@ -2,177 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BB73CEE3A
+	by mail.lfdr.de (Postfix) with ESMTP id 6736B3CEE39
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387734AbhGSU24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 16:28:56 -0400
-Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:58593
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1387391AbhGSUJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 16:09:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XFV4jKJ4usLfLm6P72oNQFOx0nVbJotkzjBGoZ9HrmQgdJQaDvnxWOWG22ljPZZud4HYKwhflL3zwHpOwf5FmsJ3muHuLtLyar1D4dXizEZwXhSnJmtTCiJKNGfaDnXwyuzyb7ISnHHobFypCyCslxz9klqKj6glsKgBs9v7nGC+hbhRPlbrn2ahHwrGYkB8tC8+d7w/42eVMqXsEH4KKxc0poPsxbYATGXst/h++9KRO3dE6nJxOhspsBKKqcWdYhYBtg+rQ211pQsbLAdtupxrsB86wXtS0aY6kkgIYZ1JornE2U5DotD9ZIjKNzOGu/F7T0sxdj/A+N+GI6J5WQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2zfm8zw3uIfG9RNcACb7IYgVp419b+9ePKBc9XPRyGA=;
- b=NTLAFIjnTu5eM6KKqJ+QjTNrFlG/zlBR+5bn++XcagyAVnjf0aX39kxESKZg0LmKZFFCzFVN7v0x6AHkrTdWc/5EurP+yjkRODmJC6uHKfb2wbVQypyrOUPyq5h6l9CMRONADhfPT4WJ+jdTnZaXmHbVNe5wLUAqXub2DP9Vrrf8oEgbF/vAuX4ok7fOzEyiJxwJLRKXZPczrt+VxL9N0h0G2KzZwICBSYwfZMIVj0RqqVviWp404uii4MGfoC3kZEBSAKO3Xo192ri8PDdboknHkedsBJDEGmetVOrj0+SHF5OelwVsUuqnOPS1gHnnX5RrKW2rLuFcr/RUvq+KGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2zfm8zw3uIfG9RNcACb7IYgVp419b+9ePKBc9XPRyGA=;
- b=mCoqXVoBEn3OQ8YyWfM72zJcVQUyhdnIPS2C7Lb/83yvKbDEIRij18U1/H8iZYruTT0VWa5omDWD0zhfc1zdTiZ2xqpBqBC5ZRTDVCUvBaHibkvc6yyzPfIyWdtaLvjiWlEI8BD27ITo/BpRI0gAYGbw6icYFDR8yX9mPYOorFo=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN8PR12MB2979.namprd12.prod.outlook.com (2603:10b6:408:66::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Mon, 19 Jul
- 2021 20:48:02 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::c099:e7a1:249a:a8a2]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::c099:e7a1:249a:a8a2%7]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 20:48:02 +0000
-Date:   Mon, 19 Jul 2021 16:47:58 -0400
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, bp@alien8.de, mingo@redhat.com,
-        mchehab@kernel.org
-Subject: Re: [PATCH 3/7] EDAC/mc: Add new HBM2 memory type
-Message-ID: <20210719204758.GC19451@aus-x-yghannam.amd.com>
-References: <20210630152828.162659-1-nchatrad@amd.com>
- <20210630152828.162659-4-nchatrad@amd.com>
+        id S1387707AbhGSU2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1387494AbhGSUL1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 16:11:27 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CAA0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 13:50:20 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id 21so17675091pfp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 13:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AFTM2GRWufz5H7ZF2I53fhdcy31mPSD1WmaoCuSp/kE=;
+        b=EaCLfVRUeWm1VySqrv8i2wNaa1wkPklvEK+xtMHdsSwgX2wFqb1Td6Qxx/Gb5l+cVb
+         iFDBBPj7D4Vc1AccEll1JyWJ1bUw6f6E5fWHeRlt33bQVWVeosWbQYPcJTxJJzXLzM9O
+         kIducZm41jdtN6sUFDlUG707INiMICk4cgWapIwGO3HfFDCHIJXCNZP4gXRP+tRtGBAe
+         upzRB6mNR4POD1tE5HNErufrnwLonZnXJR1npy0SArVe6sk5bxak769zdSKot2JBoe2R
+         8I+m0tueFJM91D9WIUbZQDxA3BDZrk+shYWYLpiKWRmq9uaqtm4emtrPiHXDahsjmVPG
+         OV2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AFTM2GRWufz5H7ZF2I53fhdcy31mPSD1WmaoCuSp/kE=;
+        b=neCVKbyepg7KWlkoUQeTRI5M7j+bf3/hQQL5nmqMSm9zo1QB6McCNhKEW/B/49KpB6
+         OLP0SrFPyVjvEdf6v9l+9OLYL6dNiQ5F6zyqq6wQ4Bc6txZuKi/l6iYfCBQquLDQT4B4
+         +Ed58zhCyPDvT06b+xiJhyfW7zGPV8l8RvFYdAERWD8PQqJXjgguYu5Cwk+IPjCMOBZD
+         10YJ6qA6YoPJ9AkiIVplwgmf8u9TSwNLAVkzL7DvfpBk7LZfe3Le95Z3dwXtG8oqBmer
+         ydp6SYoZS0gopAwFs46Arov9LQTAA98AM0qePa/NEmv8TKzkoYLuIfB+DgsIezmuIhJz
+         2PqA==
+X-Gm-Message-State: AOAM532njvQQcJQ994B6jfz/wcF6Ya5AAw6DBdphoHZHsfQraG0o2sAW
+        EzkL9AtxxqVtEJkPBn3ObD1xUnxghhjQrg==
+X-Google-Smtp-Source: ABdhPJyjItrVjb+a0pFhuKYnpkTfNH72AHGpeo/P7u6yE1PaSgsExPO2J1JwGyGZTKpxOFB6QaRDuw==
+X-Received: by 2002:a62:3045:0:b029:32b:880f:c03a with SMTP id w66-20020a6230450000b029032b880fc03amr27819158pfw.22.1626727923390;
+        Mon, 19 Jul 2021 13:52:03 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v10sm381814pjd.29.2021.07.19.13.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 13:52:02 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 20:51:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 24/40] KVM: SVM: Add
+ KVM_SEV_SNP_LAUNCH_UPDATE command
+Message-ID: <YPXl7sVBx7lDLx/U@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-25-brijesh.singh@amd.com>
+ <YPHlt4VCm6b2MZMs@google.com>
+ <a574de6d-f810-004f-dad2-33e3f389482b@amd.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210630152828.162659-4-nchatrad@amd.com>
-X-ClientProxiedBy: BN6PR13CA0056.namprd13.prod.outlook.com
- (2603:10b6:404:11::18) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aus-x-yghannam.amd.com (165.204.25.250) by BN6PR13CA0056.namprd13.prod.outlook.com (2603:10b6:404:11::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.10 via Frontend Transport; Mon, 19 Jul 2021 20:48:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48f93578-91a5-4e57-57d9-08d94af67fc7
-X-MS-TrafficTypeDiagnostic: BN8PR12MB2979:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR12MB29792369C8BD8A411E0DCF4BF8E19@BN8PR12MB2979.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:669;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NkvVqKD1idAYlksKrCVCrzT1X/YGN/Mz0REDu2LuhhqW8fZm1XbJI0WEjwm7DZj7huA87zOY/6XJDAyWJttn5YUab2VDYjGBDh+9EDug5CbR6wYTVl23YAwwmdSXqQUHusWnm2Abrux0PS++75y3UKkMZe1oQ18jMhq7aiqHxykHVqLV/QlTKLDp+5c9CGWlJgCR59LuELFgBmmxaA8a+HixQEvoUdggHqCmXrXZ60OpbxGzKE1OKDpkyaYf2cxwM8akelEKdVA7diSOyLAnjmv/fsQr9gQLP+kTHh59vQ0oJOQM4t4bDSbVf/LRXZzeJ3sduxxqXOT8q5zdccXGMiYta1RP1gtd7NbdqJR+75BHor4o+ByXpfXmSFRL/ILkK1qeZj9PzFeuUjUjvVzWDIFB6gwMTOi6/PMvx5fiW94FMvTrnxlss2Vu8WyM9E6ZXJqEWfgTUKrY3dmDd0F6OV7ZfjTZ1YYUxYyy1isGaB2kY5+QVnlWJDVR5gGQ3MdYr1sEfHY2YrJ0QidQqRM6Yg84tto0clq7plthFoXSe7KrQLqnFDz8N/70MdPqBx185eXDsCpQ1ij4m9iSvcv92enLPpycQjgf6DMWp48ptlz9P0um6Gez+4m7sWgMtvT2RmKroyfCfgzvc+Xun/Uf1hOostOMybM8CeQl2SbkLDDxi3CyeTYAK/T6v6/lUBMTxc9uoGAtuwlL/A2YKOBpPg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(136003)(366004)(478600001)(4326008)(33656002)(66946007)(2906002)(44832011)(1076003)(66556008)(8936002)(38350700002)(52116002)(66476007)(38100700002)(83380400001)(7696005)(956004)(316002)(110136005)(8676002)(5660300002)(186003)(86362001)(26005)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3VefWqurEYGWIqBzvUYrB8XRIl2xRIo3GQ2KDewtutmPbituZq3rqmgjpcnU?=
- =?us-ascii?Q?9TV6iyO5ZU8FHSE2IWhZkOnXyiPjc9GtdkOo1JVFCU7twvOIxBmEKOz66Fes?=
- =?us-ascii?Q?EJf5pvnM19PZXD4iwNTRXuDHOQ4k8rXQw+V0H/iu9wG0mYAjG060PsPE0oM0?=
- =?us-ascii?Q?3A1YLOo0YXk+HKovaOeG+2uNZK1XbhM/sCSpNSeunWMffrr1iVM68ydQkrgs?=
- =?us-ascii?Q?pciHYPMPb+Y0RvzZ3pycjCol+s4RLRjNn9ttkdmyZX1PBm4a5gIyrRIf/dc6?=
- =?us-ascii?Q?axPkF2sUdJB41GznccRIr9TL9IHuvEIlJe3kDrFypkgssz39I0a4PkFqZ3HY?=
- =?us-ascii?Q?Awb+7U+w/0YlrJ6w5lqHBYREuKczwOQf5hvygggBizRAemGwmj4YrOgWGpPD?=
- =?us-ascii?Q?8J/rlm/wvtS9Edik3T/S3FEwgtc4hg4wzwg0kFFvDjOlpqz9fNxwQQneIeZu?=
- =?us-ascii?Q?p26gNq24p0gh8hRcMmuGjO1T6hqhimAhB3pp7gZzM1Q4aaXl8g/MKkrpnxIr?=
- =?us-ascii?Q?yDp4s8aRj3Eo6xmVUh56/6suvzqS6Ek2Tgs+DRj0yo5y6Bm0u3db1cbhSRMN?=
- =?us-ascii?Q?yMQqWuDYY8ilGnM7nVHrGoArhslZhcwqCvEV/DJMbwx4Sbm/DWGNJ4JSVzTj?=
- =?us-ascii?Q?h1krD1tm6YB/g5otGznudXv5i4hHbIIur80Q2mlv4YGEquUt5HjM6bYuU3b/?=
- =?us-ascii?Q?NtXvW/wDpu4CHMyPgdREcc5I8amlsfDimxZHl3kSR/jDNU9QgYBWJ2Vr0dIs?=
- =?us-ascii?Q?uvgrBOnIHy70KtG3wBgJAC+/twSFyAFa+7m0Z52zpZAD64zE497Sq1YEI+mT?=
- =?us-ascii?Q?sDizXTgoenvE5UcmkFmoLPv5DZzFlMJVlSVHADv8kp/RAT5Qm56CK/LicDAO?=
- =?us-ascii?Q?VwWwdKTm8EF85rAkecWQ8B6TuwVVZo3X7HetS4okyGtpgnclBcPrfrMGeS51?=
- =?us-ascii?Q?649jKx7NhJHnKtSCTGNQvVgWjQGSCfDY1nSMstr9RkBvN7mIdiMvThhW09uq?=
- =?us-ascii?Q?iiigNJDwl2RCJa6uD7IpWK+VAi8MEUNrup5cfaiqON2yVcxk4XCi6Mh4Uo1O?=
- =?us-ascii?Q?cuuBhSiMs3Esq7XijqCjcjKRa8UMhSsichQVD4GBAeIQI0OUn+WjC1xBFD6H?=
- =?us-ascii?Q?VuSF3kkQ5cdlEOlwXRuHr7Hb2sA97gUM0zfdBCPSXsHCDk6majKl3CGB8SOL?=
- =?us-ascii?Q?JQalNMsBslvb3NstxJoofBYYbrzHl7Svz0wlU/C790DMHMoAUrkgQmG6d4H5?=
- =?us-ascii?Q?XKXyBMFUjy8EIuWOBY1WLMjb7GcN5rwA8drjbDHEDvuvPJoSZTBle7cK6Re8?=
- =?us-ascii?Q?V7nUfYO7VutcXmlZVgAzeXe8?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48f93578-91a5-4e57-57d9-08d94af67fc7
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 20:48:01.9754
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KfFwu/tRswMtcMaxKbwzb/Gqkc8shL6HXPM+I1tOc5T67zNqeC5o3o2h7E2qUD+dn+xutCZiebXusZ+crTQJKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2979
+In-Reply-To: <a574de6d-f810-004f-dad2-33e3f389482b@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 08:58:24PM +0530, Naveen Krishna Chatradhi wrote:
-> Add a new entry to 'enum mem_type' and a new string to 'edac_mem_types[]'
-> for HBM2 (High Bandwidth Memory Gen 2) new memory type.
+On Fri, Jul 16, 2021, Brijesh Singh wrote:
 > 
-> Signed-off-by: Muralidhara M K <muralimk@amd.com>
-> Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
-> ---
->  drivers/edac/edac_mc.c | 1 +
->  include/linux/edac.h   | 3 +++
->  2 files changed, 4 insertions(+)
+> On 7/16/21 3:01 PM, Sean Christopherson wrote:
+> > I'm having a bit of deja vu...  This flow needs to hold kvm->srcu to do a memslot
+> > lookup.
+> >
+> > That said, IMO having KVM do the hva->gpa is not a great ABI.  The memslots are
+> > completely arbitrary (from a certain point of view) and have no impact on the
+> > validity of the memory pinning or PSP command.  E.g. a memslot update while this
+> > code is in-flight would be all kinds of weird.
+> >
+> > In other words, make userspace provide both the hva (because it's sadly needed
+> > to pin memory) as well as the target gpa.  That prevents KVM from having to deal
+> > with memslot lookups and also means that userspace can issue the command before
+> > configuring the memslots (though I've no idea if that's actually feasible for
+> > any userspace VMM).
 > 
-> diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
-> index f6d462d0be2d..2c5975674723 100644
-> --- a/drivers/edac/edac_mc.c
-> +++ b/drivers/edac/edac_mc.c
-> @@ -166,6 +166,7 @@ const char * const edac_mem_types[] = {
->  	[MEM_DDR5]	= "Unbuffered-DDR5",
->  	[MEM_NVDIMM]	= "Non-volatile-RAM",
->  	[MEM_WIO2]	= "Wide-IO-2",
-> +	[MEM_HBM2]	= "High-bandwidth-memory-Gen2",
->  };
->  EXPORT_SYMBOL_GPL(edac_mem_types);
->  
-> diff --git a/include/linux/edac.h b/include/linux/edac.h
-> index 76d3562d3006..4207d06996a4 100644
-> --- a/include/linux/edac.h
-> +++ b/include/linux/edac.h
-> @@ -184,6 +184,7 @@ static inline char *mc_event_error_type(const unsigned int err_type)
->   * @MEM_DDR5:		Unbuffered DDR5 RAM
->   * @MEM_NVDIMM:		Non-volatile RAM
->   * @MEM_WIO2:		Wide I/O 2.
-> + * @MEM_HBM2:		High bandwidth Memory Gen 2.
->   */
->  enum mem_type {
->  	MEM_EMPTY = 0,
-> @@ -212,6 +213,7 @@ enum mem_type {
->  	MEM_DDR5,
->  	MEM_NVDIMM,
->  	MEM_WIO2,
-> +	MEM_HBM2,
->  };
->  
->  #define MEM_FLAG_EMPTY		BIT(MEM_EMPTY)
-> @@ -239,6 +241,7 @@ enum mem_type {
->  #define MEM_FLAG_DDR5           BIT(MEM_DDR5)
->  #define MEM_FLAG_NVDIMM         BIT(MEM_NVDIMM)
->  #define MEM_FLAG_WIO2		BIT(MEM_WIO2)
-> +#define MEM_FLAG_HBM2		BIT(MEM_HBM2)
->  
->  /**
->   * enum edac_type - Error Detection and Correction capabilities and mode
-> -- 
+> The operation happen during the guest creation time so I was not sure if
+> memslot will be updated while we are executing this command. But I guess
+> its possible that a VMM may run different thread which may update
+> memslot while another thread calls the encryption. I'll let userspace
+> provide both the HVA and GPA as you recommended.
 
-Looks okay to me.
+I'm not worried about a well-behaved userspace VMM, I'm worried about the code
+KVM has to carry to guard against a misbehaving VMM.
+ 
+> >> +			ret = -EINVAL;
+> >> +			goto e_unpin;
+> >> +		}
+> >> +
+> >> +		psize = page_level_size(level);
+> >> +		pmask = page_level_mask(level);
+> > Is there any hope of this path supporting 2mb/1gb pages in the not-too-distant
+> > future?  If not, then I vote to do away with the indirection and just hardcode
+> > 4kg sizes in the flow.  I.e. if this works on 4kb chunks, make that obvious.
+> 
+> No plans to do 1g/2mb in this path. I will make that obvious by
+> hardcoding it.
+> 
+> 
+> >> +		gpa = gpa & pmask;
+> >> +
+> >> +		/* Transition the page state to pre-guest */
+> >> +		memset(&e, 0, sizeof(e));
+> >> +		e.assigned = 1;
+> >> +		e.gpa = gpa;
+> >> +		e.asid = sev_get_asid(kvm);
+> >> +		e.immutable = true;
+> >> +		e.pagesize = X86_TO_RMP_PG_LEVEL(level);
+> >> +		ret = rmpupdate(inpages[i], &e);
+> > What happens if userspace pulls a stupid and assigns the same page to multiple
+> > SNP guests?  Does RMPUPDATE fail?  Can one RMPUPDATE overwrite another?
+> 
+> The RMPUPDATE is available to the hv and it can call anytime with
+> whatever it want. The important thing is the RMPUPDATE + PVALIDATE
+> combination is what locks the page. In this case, PSP firmware updates
+> the RMP table and also validates the page.
+> 
+> If someone else attempts to issue another RMPUPDATE then Validated bit
+> will be cleared and page is no longer used as a private. Access to
+> unvalidated page will cause #VC.
 
-Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Hmm, and there's no indication on success that the previous entry was assigned?
+Adding a tracepoint in rmpupdate() to allow tracking transitions is probably a
+good idea, otherwise debugging RMP violations and/or unexpected #VC is going to
+be painful.
 
-Tony,
-The following commit added HBM support to some Intel EDAC code.
+And/or if the kernel/KVM behavior is to never reassign directly and reading an RMP
+entry isn't prohibitively expensive, then we could add a sanity check that the RMP
+is unassigned and reject rmpupdate() if the page is already assigned.  Probably
+not worth it if the overhead is noticeable, but it could be nice to have if things
+go sideways.
 
-  c945088384d0 EDAC/i10nm: Add support for high bandwidth memory
+> >> +e_unpin:
+> >> +  /* Content of memory is updated, mark pages dirty */
+> >> +  memset(&e, 0, sizeof(e));
+> >> +  for (i = 0; i < npages; i++) {
+> >> +          set_page_dirty_lock(inpages[i]);
+> >> +          mark_page_accessed(inpages[i]);
+> >> +
+> >> +          /*
+> >> +           * If its an error, then update RMP entry to change page ownership
+> >> +           * to the hypervisor.
+> >> +           */
+> >> +          if (ret)
+> >> +                  rmpupdate(inpages[i], &e);
+> > This feels wrong since it's purging _all_ RMP entries, not just those that were
+> > successfully modified.  And maybe add a RMP "reset" helper, e.g. why is zeroing
+> > the RMP entry the correct behavior?
+> 
+> By default all the pages are hypervior owned (i.e zero). If the
+> LAUNCH_UPDATE was successful then page should have transition from the
+> hypervisor owned to guest valid. By zero'ing it are reverting it back to
+> hypevisor owned.
+>
+> I agree that I optimize it to clear the modified entries only and leave
+> everything else as a default.
 
-But it didn't include a new mem_type for HBM. Should it have?
-
-I only see some edac_mem_types use in sysfs and some debug messages. So
-I'm curious if users find this information useful.
-
-Thanks,
-Yazen
+To be clear, it's not just an optimization.  Pages that haven't yet been touched
+may be already owned by a different VM (or even this VM).  I.e. "reverting" those
+pages would actually result in a form of corruption.  It's somewhat of a moot point
+because assigning a single page to multiple guests is going to be fatal anyways,
+but potentially making a bug worse by introducing even more noise/confusion is not
+good.
