@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354E23CE96C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1963CEA92
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359015AbhGSQzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
+        id S1378051AbhGSRRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:17:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347180AbhGSP2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:28:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E496613E9;
-        Mon, 19 Jul 2021 16:08:46 +0000 (UTC)
+        id S245183AbhGSPkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:40:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EE4C61248;
+        Mon, 19 Jul 2021 16:20:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710926;
-        bh=NVlw8FdD1InjhL9vfc52dDxWF+C4FWMDMsiClR8WO7w=;
+        s=korg; t=1626711624;
+        bh=8s8TEK/Xbj+pB8AdCTlyVxz3O5KUi40VYYY3jTVFzuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KLQqsV0x4+rD92uP8PrkBCl5yr4z8sXGlWdrhi9GUjiEue3wgb59WFGH0WUKuB4+K
-         7hRbBZaJ+H9ueZ1yegqSFMDLNwYncAqz8VK8ZKVXw6GdQAr87f1HAVy+2CgU0Dl3lu
-         B5vgvYZFAHYkrS+RAA61TTNAArTr/dvTrKVS8Rmo=
+        b=V/AREUTdkmO1KqlBg8aPYdnoFZGnucXJ5YLePbojcBG6fO8L3ci8VZ5Isc/DnrzvP
+         JR1tqjEQO0xXoFP9eNq/V1HkUgl0j0ePhIInO0AlurhGvli8brQNL7WZewtqAhbt0J
+         VyIc7vdNy8paDJCs0x6JZJrdartcIp0NBvJOqQYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <jiancai@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 160/351] ARM: 9087/1: kprobes: test-thumb: fix for LLVM_IAS=1
+Subject: [PATCH 5.12 044/292] misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
 Date:   Mon, 19 Jul 2021 16:51:46 +0200
-Message-Id: <20210719144950.264511432@linuxfoundation.org>
+Message-Id: <20210719144943.957542690@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 8b95a7d90ce8160ac5cffd5bace6e2eba01a871e ]
+[ Upstream commit 3ce3e45cc333da707d4d6eb433574b990bcc26f5 ]
 
-There's a few instructions that GAS infers operands but Clang doesn't;
-from what I can tell the Arm ARM doesn't say these are optional.
+There is an issue with the ASPM(optional) capability checking function.
+A device might be attached to root complex directly, in this case,
+bus->self(bridge) will be NULL, thus priv->parent_pdev is NULL.
+Since alcor_pci_init_check_aspm(priv->parent_pdev) checks the PCI link's
+ASPM capability and populate parent_cap_off, which will be used later by
+alcor_pci_aspm_ctrl() to dynamically turn on/off device, what we can do
+here is to avoid checking the capability if we are on the root complex.
+This will make pdev_cap_off 0 and alcor_pci_aspm_ctrl() will simply
+return when bring called, effectively disable ASPM for the device.
 
-F5.1.257 TBB, TBH T1 Halfword variant
-F5.1.238 STREXD T1 variant
-F5.1.84 LDREXD T1 variant
+[    1.246492] BUG: kernel NULL pointer dereference, address: 00000000000000c0
+[    1.248731] RIP: 0010:pci_read_config_byte+0x5/0x40
+[    1.253998] Call Trace:
+[    1.254131]  ? alcor_pci_find_cap_offset.isra.0+0x3a/0x100 [alcor_pci]
+[    1.254476]  alcor_pci_probe+0x169/0x2d5 [alcor_pci]
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1309
-
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Jian Cai <jiancai@google.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Link: https://lore.kernel.org/r/20210513040732.1310159-1-ztong0001@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/probes/kprobes/test-thumb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/misc/cardreader/alcor_pci.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/probes/kprobes/test-thumb.c b/arch/arm/probes/kprobes/test-thumb.c
-index 456c181a7bfe..4e11f0b760f8 100644
---- a/arch/arm/probes/kprobes/test-thumb.c
-+++ b/arch/arm/probes/kprobes/test-thumb.c
-@@ -441,21 +441,21 @@ void kprobe_thumb32_test_cases(void)
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
+diff --git a/drivers/misc/cardreader/alcor_pci.c b/drivers/misc/cardreader/alcor_pci.c
+index cd402c89189e..0a62307f7ffb 100644
+--- a/drivers/misc/cardreader/alcor_pci.c
++++ b/drivers/misc/cardreader/alcor_pci.c
+@@ -139,7 +139,13 @@ static void alcor_pci_init_check_aspm(struct alcor_pci_priv *priv)
+ 	u32 val32;
  
--	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,"]",
-+	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
+ 	priv->pdev_cap_off    = alcor_pci_find_cap_offset(priv, priv->pdev);
+-	priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
++	/*
++	 * A device might be attached to root complex directly and
++	 * priv->parent_pdev will be NULL. In this case we don't check its
++	 * capability and disable ASPM completely.
++	 */
++	if (!priv->parent_pdev)
++		priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
+ 							 priv->parent_pdev);
  
--	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,"]",
-+	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
- 
--	TEST_RRX("tbh	[r",1,9f, ", r",14,1,"]",
-+	TEST_RRX("tbh	[r",1,9f, ", r",14,1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
-@@ -468,10 +468,10 @@ void kprobe_thumb32_test_cases(void)
- 
- 	TEST_UNSUPPORTED("strexb	r0, r1, [r2]")
- 	TEST_UNSUPPORTED("strexh	r0, r1, [r2]")
--	TEST_UNSUPPORTED("strexd	r0, r1, [r2]")
-+	TEST_UNSUPPORTED("strexd	r0, r1, r2, [r2]")
- 	TEST_UNSUPPORTED("ldrexb	r0, [r1]")
- 	TEST_UNSUPPORTED("ldrexh	r0, [r1]")
--	TEST_UNSUPPORTED("ldrexd	r0, [r1]")
-+	TEST_UNSUPPORTED("ldrexd	r0, r1, [r1]")
- 
- 	TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
- 
+ 	if ((priv->pdev_cap_off == 0) || (priv->parent_cap_off == 0)) {
 -- 
 2.30.2
 
