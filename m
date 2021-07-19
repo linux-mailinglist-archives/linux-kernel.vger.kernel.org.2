@@ -2,112 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58823CEBD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA023CECCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378866AbhGSR0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
+        id S1381310AbhGSRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350225AbhGSPpo (ORCPT
+        with ESMTP id S1351423AbhGSP7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:45:44 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2018BC0225AE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:34:30 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so18675411otl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:00:31 -0700 (PDT)
+        Mon, 19 Jul 2021 11:59:50 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A67C0733AB
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:47:11 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so18694762otq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:12:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UbfZ2fxZ551eOr1A/qga0gzaS5+WRQ4KJX74KhhPDFM=;
-        b=aEJBXYEGXLQIMGfJtJjzxrxQy5KffM4hwJEbbAPWNkjyCyghqnicmRZqLSpaclQS2X
-         U4zyRqO9iz304m6X2RZ+f3BAKQ32at+CME38elE8vRGCg+eSeWt4PlIypfzuF0oPjADx
-         w2goxBQiF6uew6evCpUXKA/1c0JjtGWkGJERNp+T77kknUr7QUe78T3ixvc1bCXF2Iga
-         EZA+ZrcZY/ROk5t4udwtWKjfytRCdBGgX/U5efVzG0SMGxgKwCGoR7igX+xMhaEIdT6D
-         faoleBrQu57OaUsovtkJeeEt+QODrDMSFOJe+eVFxzO8aU4m15i5vee1W0IQKkVi3s8+
-         6sdA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K9U1G+fYwgbItG9ePuqHimuSDkMCh9q2v+fd/TSnMYU=;
+        b=yVbMUkqoG8aAUUMp+h8u8fkVLxlbQh2P7hhgc2rd70abF9xihK07p4zltiom2eF/PY
+         SE40g70iY+RjZtnAPWUbLEjTiEO2PZkir7AgjvcupxFm4+hGAlaup822ZABbN/EKYuYQ
+         /KJLXdcID/sFq/96pZn8YroCHUTSu5quUX88hlfUgZSt2H2Xhyrpnkh9rvjbh1uTOaAK
+         hDsB33/waOvg0Gsaw8PHM4LMoGmZpnuayXwXJIvilErskWJOsSBBmTJp5T+8N2NhPuJD
+         TMmzYnT4XpbbtUke1Jk3UMbvm5ug0LFchNTZl6hDVLj9Xz+kkuWXpAQDFI5+ZdxO9ipo
+         Hwsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UbfZ2fxZ551eOr1A/qga0gzaS5+WRQ4KJX74KhhPDFM=;
-        b=PdKT4ec4NKNhsK44LOEODlBS8oiqhRCS4AdyE71i6m9T6XKpx4m6QtrjaKDMfHsCBf
-         M6D/wFILx6WMa1OGGur9oQfYHf8IEUhVvJlp7xftzIc4QXmcb+61czapwPHRyFKU2N8h
-         BF20gx0SdzqXrIqB2LnhfSXBX2QTuXqBsM1FijdzmzOHu2DSHqMV4FCPTiS+kT/pk8Dh
-         rAdfIRsXoYbNNNbbQfQom8YCnzDdMcCf1CLl1voRCRVJBl1FTw/LabnnehAX4GMII9QH
-         aVQlPIPy2cHiNIXLzTO+sKqFIYxDtvg8no2Ig5v44LtMm6hrptT/HicfWiHzZ1vfqQxs
-         rhnQ==
-X-Gm-Message-State: AOAM531eg26dhM1FDuH772b2MSbVpXtXRmkglWT79OnUcnxi0cycrlmx
-        KEEsN3gz0/KY4mTWyKaQiJEv+n9ErJkRkh1NbLgGGw==
-X-Google-Smtp-Source: ABdhPJwv9+IjPbCxEnJPxnBF1OwIRjiGsjXXPowfEMzPFtAAEYemEYMgOmkn/d2G4i0vSOA8Cr/faULWMBVQiGSFky0=
-X-Received: by 2002:a05:6830:242f:: with SMTP id k15mr19709878ots.72.1626710431057;
- Mon, 19 Jul 2021 09:00:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K9U1G+fYwgbItG9ePuqHimuSDkMCh9q2v+fd/TSnMYU=;
+        b=TN9ZClYFkp7fU4Tbw7VMymIn6GqapCYNki5f7B50bGifRQjX3F9grsBOSic+SoKcQG
+         LvRMGQsp6JnoACtROKeXv6/tJ5rNbh/XaD/2pdNumYqDI4ZKFOJTOG1rMsJ728/hAdp+
+         O19EnRP7hFHsBlE5OwW8w+icU7BMgG14i9FEseaI02o1+EByaOYP90HGufbbAePSi4DM
+         fZbd2TjLNCwrIARBLL3TTlIbtE4HMmEsegnOshS8+Ur5VyT3BgS7oUOIBwPScOzO6WcM
+         JqXs6sB1WtTerAHreZuDdbZPRQSzQ94QayUYQHgLcYnH0A/UbMu9unXo7wwPwnYVHqm0
+         G0tw==
+X-Gm-Message-State: AOAM5332iAR2WwFE75Z8G4oJb0r6VmZ1ilDQdCBQj6qVlpNPcGBc//Za
+        OYeHgj2lQuo3xessaD17tMzncw==
+X-Google-Smtp-Source: ABdhPJzb/CgKbdI3li12NH3nn29kjW7PGT1abVu7Y6tH+jXpOrVTdDpt9hB3r+u3fd4vyo1YiSPDmA==
+X-Received: by 2002:a05:6830:1d88:: with SMTP id y8mr18300222oti.95.1626711133687;
+        Mon, 19 Jul 2021 09:12:13 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a83sm3433975oii.13.2021.07.19.09.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 09:12:13 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 11:12:11 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, kgunda@codeaurora.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V6 2/2] dt-bindings: pinctrl: qcom-pmic-gpio: Remove the
+ interrupts property
+Message-ID: <YPWkW5f2akHntBJS@yoga>
+References: <1626692855-10194-1-git-send-email-skakit@codeaurora.org>
+ <1626692855-10194-3-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-References: <20210719144946.310399455@linuxfoundation.org>
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 19 Jul 2021 21:30:17 +0530
-Message-ID: <CA+G9fYsbeQCFhBv-TVxmD3Djp1BCXmVdPmJuopF82ghqMAG_3A@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/421] 4.19.198-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626692855-10194-3-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 at 21:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.198 release.
-> There are 421 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.198-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon 19 Jul 06:07 CDT 2021, satya priya wrote:
 
+> Remove the interrupts property as we no longer specify it.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Following patch caused arm64 build errors on 4.19 and 4.14.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-> Petr Vorel <petr.vorel@gmail.com>
->     arm64: dts: qcom: msm8994-angler: Fix gpio-reserved-ranges 85-88
+Regards,
+Bjorn
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
-CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
-'HOSTCC=sccache gcc'
-Error: /builds/linux/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts:42.1-6
-Label or path tlmm not found
-FATAL ERROR: Syntax error parsing input tree
-make[3]: *** [scripts/Makefile.lib:294:
-arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dtb] Error 1
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [/builds/linux/scripts/Makefile.build:544:
-arch/arm64/boot/dts/qcom] Error 2
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> ---
+> Changes in V5:
+>  - This is newly added in V5.As per Bjorn's comments on [1]
+>    removed the interrupts property as it is no longer used.
+> 
+>  [1] https://lore.kernel.org/patchwork/patch/1434144/
+> 
+> Changes in V6:
+>  - No changes.
+> 
+>  .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 28 ++++------------------
+>  1 file changed, 4 insertions(+), 24 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> index 7a0d2d8..9bd01db 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> @@ -56,18 +56,11 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> -  interrupts:
+> -    minItems: 1
+> -    maxItems: 44
+> -    description:
+> -      Must contain an array of encoded interrupt specifiers for
+> -      each available GPIO
+> +  interrupt-controller: true
+>  
+>    '#interrupt-cells':
+>      const: 2
+>  
+> -  interrupt-controller: true
+> -
+>    gpio-controller: true
+>  
+>    gpio-ranges:
+> @@ -87,6 +80,7 @@ required:
+>    - gpio-controller
+>    - '#gpio-cells'
+>    - gpio-ranges
+> +  - interrupt-controller
+>  
+>  patternProperties:
+>    '-state$':
+> @@ -223,22 +217,8 @@ examples:
+>      pm8921_gpio: gpio@150 {
+>        compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
+>        reg = <0x150 0x160>;
+> -      interrupts = <192 1>, <193 1>, <194 1>,
+> -                   <195 1>, <196 1>, <197 1>,
+> -                   <198 1>, <199 1>, <200 1>,
+> -                   <201 1>, <202 1>, <203 1>,
+> -                   <204 1>, <205 1>, <206 1>,
+> -                   <207 1>, <208 1>, <209 1>,
+> -                   <210 1>, <211 1>, <212 1>,
+> -                   <213 1>, <214 1>, <215 1>,
+> -                   <216 1>, <217 1>, <218 1>,
+> -                   <219 1>, <220 1>, <221 1>,
+> -                   <222 1>, <223 1>, <224 1>,
+> -                   <225 1>, <226 1>, <227 1>,
+> -                   <228 1>, <229 1>, <230 1>,
+> -                   <231 1>, <232 1>, <233 1>,
+> -                   <234 1>, <235 1>;
+> -
+> +      interrupt-controller;
+> +      #interrupt-cells = <2>;
+>        gpio-controller;
+>        gpio-ranges = <&pm8921_gpio 0 0 44>;
+>        #gpio-cells = <2>;
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
