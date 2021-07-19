@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5333CE615
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09E83CE640
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352225AbhGSQB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:01:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        id S1347093AbhGSQCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:02:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345753AbhGSPE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86A6760238;
-        Mon, 19 Jul 2021 15:45:29 +0000 (UTC)
+        id S1345756AbhGSPE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66C566113A;
+        Mon, 19 Jul 2021 15:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709530;
-        bh=PPgBTkzggWDOjYGtn1EBckHWrI1Q6tPwwTuhJwolJ0w=;
+        s=korg; t=1626709533;
+        bh=LcbxIa7e05ZX3ykG3csMpr0pbIBpzTAFA4Hu+i1Ttw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CWfonLFXz21n3Ufb1ZY5bfdZsmBBatUOIx6Y/vrNmot4BFgs+JSq4/3oqOiu+M9w2
-         rlCIA30FXxjrrSv7lwJn1cQxSCh5sJSayB4HMqCiHbpv0ZlY1uwuqNrlc1cd2rvKGq
-         81y8FMAISgjOm6CY4DTA8VUl89L3syF3+IfD8Kc8=
+        b=mCn72H4VkOUz7xZ66EIF1hd0ZiPxp2ic93sw8jorIZ1d0U9h38zIt2Xp9K9ulj1Aj
+         qxHHuHH/Wynoam2sEoVgaE+gnu8mKkazuFf4XdqPtcpUDuFxmLLbs7S3qwKM9wriQv
+         /30+URcUXTu3PlXQ9+c8PwM6FYScihqFjGbhWsFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 420/421] net: bridge: multicast: fix PIM hello router port marking race
-Date:   Mon, 19 Jul 2021 16:53:51 +0200
-Message-Id: <20210719145000.879567007@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 421/421] scsi: scsi_dh_alua: Fix signedness bug in alua_rtpg()
+Date:   Mon, 19 Jul 2021 16:53:52 +0200
+Message-Id: <20210719145000.914979752@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -39,36 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikolay Aleksandrov <nikolay@nvidia.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 04bef83a3358946bfc98a5ecebd1b0003d83d882 upstream.
+commit 80927822e8b6be46f488524cd7d5fe683de97fc4 upstream.
 
-When a PIM hello packet is received on a bridge port with multicast
-snooping enabled, we mark it as a router port automatically, that
-includes adding that port the router port list. The multicast lock
-protects that list, but it is not acquired in the PIM message case
-leading to a race condition, we need to take it to fix the race.
+The "retval" variable needs to be signed for the error handling to work.
 
-Cc: stable@vger.kernel.org
-Fixes: 91b02d3d133b ("bridge: mcast: add router port on PIM hello message")
-Signed-off-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/YLjMEAFNxOas1mIp@mwanda
+Fixes: 7e26e3ea0287 ("scsi: scsi_dh_alua: Check for negative result value")
+Reviewed-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bridge/br_multicast.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/device_handler/scsi_dh_alua.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -1791,7 +1791,9 @@ static void br_multicast_pim(struct net_
- 	    pim_hdr_type(pimhdr) != PIM_TYPE_HELLO)
- 		return;
- 
-+	spin_lock(&br->multicast_lock);
- 	br_multicast_mark_router(br, port);
-+	spin_unlock(&br->multicast_lock);
- }
- 
- static int br_multicast_ipv4_rcv(struct net_bridge *br,
+--- a/drivers/scsi/device_handler/scsi_dh_alua.c
++++ b/drivers/scsi/device_handler/scsi_dh_alua.c
+@@ -522,7 +522,8 @@ static int alua_rtpg(struct scsi_device
+ 	struct alua_port_group *tmp_pg;
+ 	int len, k, off, bufflen = ALUA_RTPG_SIZE;
+ 	unsigned char *desc, *buff;
+-	unsigned err, retval;
++	unsigned err;
++	int retval;
+ 	unsigned int tpg_desc_tbl_off;
+ 	unsigned char orig_transition_tmo;
+ 	unsigned long flags;
 
 
