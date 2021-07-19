@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2F33CE7A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB653CE747
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351964AbhGSQ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:29:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49652 "EHLO mail.kernel.org"
+        id S1348329AbhGSQYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346214AbhGSPOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:14:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05E796124C;
-        Mon, 19 Jul 2021 15:54:01 +0000 (UTC)
+        id S1346320AbhGSPOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:14:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35E6B613F5;
+        Mon, 19 Jul 2021 15:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710042;
-        bh=JPtE6/POe2kzDiNAsnf2rJwrMZwZuBqlLA51f9qPsE8=;
+        s=korg; t=1626710044;
+        bh=YpocWr17IC73lrDXfQ8pQR21WQ1hbjgFYsS/FrqkNUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3KGbw+1Ur3SydG3vqz7GTNvYeUZZWZMGFcwWL2SIoapxLOpS5jbiu5Qbfhq/lvPh
-         xt6OJfJAd9mm/7bZhDtJfUouwciYKu6bc4VaW9i8/MCPc8m/o/XGD6YQYBKvVzvmdK
-         jiwYD9341s6x7n8QwbdvKzbyANKFlB9ifpwYJU3Q=
+        b=U37w4oH67MzIWHgJin8hMps4XY0x3GnORgf77ibLAaxB+ABw95LqYaIzKBmkOdQpq
+         ZCP/WTvwScdpf5A6vuA7f144ipPmLHmISQzvSlJ0D7ZoMBIyPDdoZDXyE0O9u9eMTc
+         cZjn6KMy6Xy5y77ymJ7R/Wly9+ZRo/1lEz0lYrrE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 052/243] scsi: scsi_dh_alua: Check for negative result value
-Date:   Mon, 19 Jul 2021 16:51:21 +0200
-Message-Id: <20210719144942.600835590@linuxfoundation.org>
+Subject: [PATCH 5.10 053/243] fs/jfs: Fix missing error code in lmLogInit()
+Date:   Mon, 19 Jul 2021 16:51:22 +0200
+Message-Id: <20210719144942.632289448@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,56 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit 7e26e3ea028740f934477ec01ba586ab033c35aa ]
+[ Upstream commit 492109333c29e1bb16d8732e1d597b02e8e0bf2e ]
 
-scsi_execute() will now return a negative error if there was an error prior
-to command submission; evaluate that instead if checking for DRIVER_ERROR.
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'rc.
 
-[mkp: build fix]
+Eliminate the follow smatch warning:
 
-Link: https://lore.kernel.org/r/20210427083046.31620-6-hare@suse.de
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+fs/jfs/jfs_logmgr.c:1327 lmLogInit() warn: missing error code 'rc'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/device_handler/scsi_dh_alua.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/jfs/jfs_logmgr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
-index df5a3bbeba5e..4743317a269a 100644
---- a/drivers/scsi/device_handler/scsi_dh_alua.c
-+++ b/drivers/scsi/device_handler/scsi_dh_alua.c
-@@ -548,12 +548,12 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 			kfree(buff);
- 			return SCSI_DH_OK;
- 		}
--		if (!scsi_sense_valid(&sense_hdr)) {
-+		if (retval < 0 || !scsi_sense_valid(&sense_hdr)) {
- 			sdev_printk(KERN_INFO, sdev,
- 				    "%s: rtpg failed, result %d\n",
- 				    ALUA_DH_NAME, retval);
- 			kfree(buff);
--			if (driver_byte(retval) == DRIVER_ERROR)
-+			if (retval < 0)
- 				return SCSI_DH_DEV_TEMP_BUSY;
- 			return SCSI_DH_IO;
- 		}
-@@ -775,11 +775,11 @@ static unsigned alua_stpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 	retval = submit_stpg(sdev, pg->group_id, &sense_hdr);
- 
- 	if (retval) {
--		if (!scsi_sense_valid(&sense_hdr)) {
-+		if (retval < 0 || !scsi_sense_valid(&sense_hdr)) {
- 			sdev_printk(KERN_INFO, sdev,
- 				    "%s: stpg failed, result %d",
- 				    ALUA_DH_NAME, retval);
--			if (driver_byte(retval) == DRIVER_ERROR)
-+			if (retval < 0)
- 				return SCSI_DH_DEV_TEMP_BUSY;
+diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+index 9330eff210e0..78fd136ac13b 100644
+--- a/fs/jfs/jfs_logmgr.c
++++ b/fs/jfs/jfs_logmgr.c
+@@ -1324,6 +1324,7 @@ int lmLogInit(struct jfs_log * log)
  		} else {
- 			sdev_printk(KERN_INFO, sdev, "%s: stpg failed\n",
+ 			if (!uuid_equal(&logsuper->uuid, &log->uuid)) {
+ 				jfs_warn("wrong uuid on JFS log device");
++				rc = -EINVAL;
+ 				goto errout20;
+ 			}
+ 			log->size = le32_to_cpu(logsuper->size);
 -- 
 2.30.2
 
