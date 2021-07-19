@@ -2,61 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBEE3CCDC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5913CCDBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234583AbhGSGEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:04:51 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:35423
+        id S234606AbhGSGD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:03:28 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:35794
         "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S233710AbhGSGEt (ORCPT
+        by vger.kernel.org with SMTP id S229916AbhGSGD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:04:49 -0400
+        Mon, 19 Jul 2021 02:03:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=3HTbXrkdRBgh0QIJpcMwxUac2r5yW+CgKCOIIaqrpTU=; b=i
-        yATwRcX4oZ8epqf7PjXbQskHxBZzHOV3t7PrOM2EHIPMfih0WAtq3yyvbQkpezBE
-        iib4k7qsPxOya81btjirA3kpO7dbvh27pm27jcyHg/mCmIgw3/9oamt95i1RJLTI
-        To6iQzkqFO8q/lNhD1C6eeBnwTFeq3Ib5IR5qTeOE8=
+        Message-Id; bh=L3fGInUdPUsxdzuEYFBYnROR1kVtg2RLwc+sUqkyDwY=; b=k
+        a5GxKAXP1J2+wmFp0qYlwjiiF0N7bww/U1A5+Br7Xfzd0MrG7MLgM0f2Lw+A+xwf
+        GV/BvAs0JqHYThYngFQ16pwWgZeWHTiFv/6W7esEIy+NVREevnppZ3uxXVghRDUQ
+        Zgzohbl6DOFheeh05T+HHqrCCuG0yRZlkFB1W+b1oQ=
 Received: from localhost.localdomain (unknown [10.162.86.133])
-        by app1 (Coremail) with SMTP id XAUFCgDHzYnbFPVgPRWJAA--.1241S3;
-        Mon, 19 Jul 2021 13:59:55 +0800 (CST)
+        by app2 (Coremail) with SMTP id XQUFCgAn32j4FPVgnkfoBA--.1815S3;
+        Mon, 19 Jul 2021 14:00:24 +0800 (CST)
 From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+To:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
         linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn
-Subject: [PATCH] fbmem: Convert from atomic_t to refcount_t on fb_info->count
-Date:   Mon, 19 Jul 2021 13:59:45 +0800
-Message-Id: <1626674392-55857-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] fscache: Convert from atomic_t to refcount_t on fscache_cache_tag->usage
+Date:   Mon, 19 Jul 2021 14:00:20 +0800
+Message-Id: <1626674421-55948-1-git-send-email-xiyuyang19@fudan.edu.cn>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgDHzYnbFPVgPRWJAA--.1241S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZF1DKw45CrW5Awb_yoW8Zr1fpF
-        n8Ka4DtF4rAryxCr4kCa1jvFy3Ja18CF9xJrZFga4FyFy3tr1Ygw1DJFyYvrWrArWxCF4Y
-        qryI9w15CFWUur7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9G14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: XQUFCgAn32j4FPVgnkfoBA--.1815S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZrWxKFWfGw4xCrg_yoW5JFW3pa
+        9rCr1xCFW8Zr17Ar4rXw4jkr1rX34DJ3W7X34xZw4ruw4agr4UXws7CF1YvF93u3yIyay3
+        ZF45Kwn8Cws8Xr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
         1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
         JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
         CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r
         4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMx
-        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
-        wI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
-        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
-        0xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
-        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbLID7UUUUU==
+        648v4I1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7VUbX18DUUUUU==
 X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -68,62 +58,71 @@ accidental underflow and overflow and further use-after-free situations.
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- drivers/video/fbdev/core/fbmem.c | 6 +++---
- include/linux/fb.h               | 3 ++-
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ fs/fscache/cache.c            | 8 ++++----
+ include/linux/fscache-cache.h | 3 ++-
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-index 98f193078c05..b7d26b928e1d 100644
---- a/drivers/video/fbdev/core/fbmem.c
-+++ b/drivers/video/fbdev/core/fbmem.c
-@@ -67,7 +67,7 @@ static struct fb_info *get_fb_info(unsigned int idx)
- 	mutex_lock(&registration_lock);
- 	fb_info = registered_fb[idx];
- 	if (fb_info)
--		atomic_inc(&fb_info->count);
-+		refcount_inc(&fb_info->count);
- 	mutex_unlock(&registration_lock);
+diff --git a/fs/fscache/cache.c b/fs/fscache/cache.c
+index fcc136361415..a17faaae3668 100644
+--- a/fs/fscache/cache.c
++++ b/fs/fscache/cache.c
+@@ -29,7 +29,7 @@ struct fscache_cache_tag *__fscache_lookup_cache_tag(const char *name)
  
- 	return fb_info;
-@@ -75,7 +75,7 @@ static struct fb_info *get_fb_info(unsigned int idx)
+ 	list_for_each_entry(tag, &fscache_cache_tag_list, link) {
+ 		if (strcmp(tag->name, name) == 0) {
+-			atomic_inc(&tag->usage);
++			refcount_inc(&tag->usage);
+ 			up_read(&fscache_addremove_sem);
+ 			return tag;
+ 		}
+@@ -43,7 +43,7 @@ struct fscache_cache_tag *__fscache_lookup_cache_tag(const char *name)
+ 		/* return a dummy tag if out of memory */
+ 		return ERR_PTR(-ENOMEM);
  
- static void put_fb_info(struct fb_info *fb_info)
- {
--	if (!atomic_dec_and_test(&fb_info->count))
-+	if (!refcount_dec_and_test(&fb_info->count))
- 		return;
- 	if (fb_info->fbops->fb_destroy)
- 		fb_info->fbops->fb_destroy(fb_info);
-@@ -1594,7 +1594,7 @@ static int do_register_framebuffer(struct fb_info *fb_info)
- 		if (!registered_fb[i])
- 			break;
- 	fb_info->node = i;
--	atomic_set(&fb_info->count, 1);
-+	refcount_set(&fb_info->count, 1);
- 	mutex_init(&fb_info->lock);
- 	mutex_init(&fb_info->mm_lock);
+-	atomic_set(&xtag->usage, 1);
++	refcount_set(&xtag->usage, 1);
+ 	strcpy(xtag->name, name);
  
-diff --git a/include/linux/fb.h b/include/linux/fb.h
-index ecfbcc0553a5..5950f8f5dc74 100644
---- a/include/linux/fb.h
-+++ b/include/linux/fb.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_FB_H
- #define _LINUX_FB_H
+ 	/* write lock, search again and add if still not present */
+@@ -51,7 +51,7 @@ struct fscache_cache_tag *__fscache_lookup_cache_tag(const char *name)
+ 
+ 	list_for_each_entry(tag, &fscache_cache_tag_list, link) {
+ 		if (strcmp(tag->name, name) == 0) {
+-			atomic_inc(&tag->usage);
++			refcount_inc(&tag->usage);
+ 			up_write(&fscache_addremove_sem);
+ 			kfree(xtag);
+ 			return tag;
+@@ -71,7 +71,7 @@ void __fscache_release_cache_tag(struct fscache_cache_tag *tag)
+ 	if (tag != ERR_PTR(-ENOMEM)) {
+ 		down_write(&fscache_addremove_sem);
+ 
+-		if (atomic_dec_and_test(&tag->usage))
++		if (refcount_dec_and_test(&tag->usage))
+ 			list_del_init(&tag->link);
+ 		else
+ 			tag = NULL;
+diff --git a/include/linux/fscache-cache.h b/include/linux/fscache-cache.h
+index 3235ddbdcc09..d3c609cfd762 100644
+--- a/include/linux/fscache-cache.h
++++ b/include/linux/fscache-cache.h
+@@ -14,6 +14,7 @@
+ #ifndef _LINUX_FSCACHE_CACHE_H
+ #define _LINUX_FSCACHE_CACHE_H
  
 +#include <linux/refcount.h>
- #include <linux/kgdb.h>
- #include <uapi/linux/fb.h>
+ #include <linux/fscache.h>
+ #include <linux/sched.h>
+ #include <linux/workqueue.h>
+@@ -45,7 +46,7 @@ struct fscache_cache_tag {
+ 	struct fscache_cache	*cache;		/* cache referred to by this tag */
+ 	unsigned long		flags;
+ #define FSCACHE_TAG_RESERVED	0		/* T if tag is reserved for a cache */
+-	atomic_t		usage;
++	refcount_t		usage;
+ 	char			name[];	/* tag name */
+ };
  
-@@ -435,7 +436,7 @@ struct fb_tile_ops {
- 
- 
- struct fb_info {
--	atomic_t count;
-+	refcount_t count;
- 	int node;
- 	int flags;
- 	/*
 -- 
 2.7.4
 
