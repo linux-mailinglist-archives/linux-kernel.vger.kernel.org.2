@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD0B3CCFDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2F23CCFF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235549AbhGSIV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:21:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:53934 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235374AbhGSIV4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:21:56 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16J8sCwJ068595;
-        Mon, 19 Jul 2021 03:54:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626684852;
-        bh=2aMBT68yvyc9qhPFHnpJ7+fH8WKBnf72TNPAa/X9gaw=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=m9FJNSTvtUGOE+poP5uIp89WM1bmQhLqXRlfKy5Jdy8/zQnGHpLiKvw+5LlYp1VpI
-         +VDwrmLha4aNt+9dI3ScwSQltkrzeB5p5ebOjGbL1Cur74gtgJdshM9MtgnUlHPXsD
-         iNQ0inm/8eaLdHN3lIp+HrVZRMqZFAuOikXvQ5WY=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16J8sB39120975
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Jul 2021 03:54:11 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
- Jul 2021 03:54:11 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 19 Jul 2021 03:54:11 -0500
-Received: from uda0131933.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16J8s3hD047822;
-        Mon, 19 Jul 2021 03:54:09 -0500
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-To:     Nishanth Menon <nm@ti.com>, <kristo@kernel.org>
-CC:     Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH 2/4] arm64: dts: ti: k3-am64-main: Add ecap pwm nodes
-Date:   Mon, 19 Jul 2021 14:24:00 +0530
-Message-ID: <20210719085402.28569-3-lokeshvutla@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210719085402.28569-1-lokeshvutla@ti.com>
-References: <20210719085402.28569-1-lokeshvutla@ti.com>
+        id S235850AbhGSIXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:23:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235831AbhGSIXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 04:23:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 250FE61220;
+        Mon, 19 Jul 2021 08:54:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626684882;
+        bh=PNDJ3yy1GPRXY9a7Ib41rhUp0LSubtpNKhCmo000WW0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Wi22x+SkuOH27vAvSGfrA9zM/OPV2VsSbhqMH1RZBuH6r6mpLmE9Pt/Y4oo9Owpb8
+         IeQKkqM4xvS/wlUO4yxfF8XdiE+pLv/4Hricg5yMANx2Jh4ewrotwg48XdP2SvnEY8
+         PulIlWTHFgVWmV/Kp3whindn+ApSH6ol3ivPTKONkXr8SFAMBXugXZ6agtM/UJSGqt
+         28ScV9MZ9Cn7DGpYht48nQ3mEqHSVf/B3/NFW1Uf2t9PDpqIDjARamFOQhpPaReUpD
+         5t7o/ytjri2aLr9ojxBjlDClX6IZEedJv0QndKNlFSn9V8K98ebJDHnjerFOAGO9Wv
+         D/qdcm+cYhg3g==
+Subject: Re: [f2fs-dev] [PATCH] f2fs: reset free segment to prefree status
+ when do_checkpoint() fail
+To:     Yangtao Li <frank.li@vivo.com>, jaegeuk@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20210427082106.2755-1-frank.li@vivo.com>
+ <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <5f37995c-2390-e8ca-d002-3639ad39e0d3@kernel.org>
+Date:   Mon, 19 Jul 2021 16:54:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <12ae52df-bc5e-82c3-4f78-1eafe7723f93@huawei.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are 3 instances of ecap modules that are capable of generating
-a pwm when configured in apwm mode. Add DT nodes for these 3 ecap
-instances.
+On 2021/4/27 20:37, Chao Yu wrote:
+> I think just reverting dirty/free bitmap is not enough if checkpoint fails,
+> due to we have updated sbi->cur_cp_pack and nat/sit bitmap, next CP tries
+> to overwrite last valid meta/node/data, then filesystem will be corrupted.
+> 
+> So I suggest to set cp_error if do_checkpoint() fails until we can handle
+> all cases, which is not so easy.
+> 
+> How do you think?
 
-Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Let's add below patch first before you figure out the patch which covers all
+things.
+
+ From 3af957c98e9e04259f8bb93ca0b74ba164f3f27e Mon Sep 17 00:00:00 2001
+From: Chao Yu <chao@kernel.org>
+Date: Mon, 19 Jul 2021 16:37:44 +0800
+Subject: [PATCH] f2fs: fix to stop filesystem update once CP failed
+
+During f2fs_write_checkpoint(), once we failed in
+f2fs_flush_nat_entries() or do_checkpoint(), metadata of filesystem
+such as prefree bitmap, nat/sit version bitmap won't be recovered,
+it may cause f2fs image to be inconsistent, let's just set CP error
+flag to avoid further updates until we figure out a scheme to rollback
+all metadatas in such condition.
+
+Reported-by: Yangtao Li <frank.li@vivo.com>
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 27 ++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+  fs/f2fs/checkpoint.c | 10 +++++++---
+  1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 9e762f64b631..42d1d219a3fd 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -946,4 +946,31 @@ epwm8: pwm@23080000 {
- 		clocks = <&epwm_tbclk 8>, <&k3_clks 94 0>;
- 		clock-names = "tbclk", "fck";
- 	};
-+
-+	ecap0: pwm@23100000 {
-+		compatible = "ti,am64-ecap", "ti,am3352-ecap";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23100000 0x0 0x60>;
-+		power-domains = <&k3_pds 51 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 51 0>;
-+		clock-names = "fck";
-+	};
-+
-+	ecap1: pwm@23110000 {
-+		compatible = "ti,am64-ecap", "ti,am3352-ecap";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23110000 0x0 0x60>;
-+		power-domains = <&k3_pds 52 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 52 0>;
-+		clock-names = "fck";
-+	};
-+
-+	ecap2: pwm@23120000 {
-+		compatible = "ti,am64-ecap", "ti,am3352-ecap";
-+		#pwm-cells = <3>;
-+		reg = <0x0 0x23120000 0x0 0x60>;
-+		power-domains = <&k3_pds 53 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 53 0>;
-+		clock-names = "fck";
-+	};
- };
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 6c208108d69c..096c85022f62 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -1639,8 +1639,10 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+
+  	/* write cached NAT/SIT entries to NAT/SIT area */
+  	err = f2fs_flush_nat_entries(sbi, cpc);
+-	if (err)
++	if (err) {
++		f2fs_stop_checkpoint(sbi, false);
+  		goto stop;
++	}
+
+  	f2fs_flush_sit_entries(sbi, cpc);
+
+@@ -1648,10 +1650,12 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+  	f2fs_save_inmem_curseg(sbi);
+
+  	err = do_checkpoint(sbi, cpc);
+-	if (err)
++	if (err) {
++		f2fs_stop_checkpoint(sbi, false);
+  		f2fs_release_discard_addrs(sbi);
+-	else
++	} else {
+  		f2fs_clear_prefree_segments(sbi, cpc);
++	}
+
+  	f2fs_restore_inmem_curseg(sbi);
+  stop:
 -- 
-2.30.0
-
+2.22.1
