@@ -2,189 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12DD3CCE8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA57C3CCE92
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbhGSHgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 03:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234770AbhGSHgH (ORCPT
+        id S234882AbhGSHhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:37:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233759AbhGSHhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 03:36:07 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEC3C061762;
-        Mon, 19 Jul 2021 00:33:07 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id bu12so27158754ejb.0;
-        Mon, 19 Jul 2021 00:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TIm1TRm27OD8u584vFf5/FAIcFfcqCrDwZRKQMrp8+E=;
-        b=fcr3a2cvoZtesTmKOlpDO6qVC1rsr6D7gyDChuhqKjxKhzleCd2RwmD2uEOmKsaUk7
-         QergnofOQVv2TIIezGqEFtI93NU7BXxTIYlv5P50wesLHbQKR3Z9TCTGdqlwdL8Hc/Qc
-         c+QsRB8RKn0es6Tv1ss15vufchonedlFJC6kub6RjJVwqp6l/7WhSs+xV/Vle51mqiy4
-         fdlhfkYtEqEAlskJhZAFWXrpHQuxQmPfmRpj47b5on5tHREVbIsniPrtiYsUHhBpA0z2
-         keMnbgItkqxB/H8rxkhpvVHg/fw9CBQfohf4sMSfsc5Ix3ldQpkXJVoJfBo+QnB56TzA
-         EC5w==
+        Mon, 19 Jul 2021 03:37:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626680064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0sfSO6C1l3WtCtuFbg0VI6VLBjRIkRSfgQNpDtonfxE=;
+        b=PdsUK6CcnpDkzgT7rmSkVERCqDksMyVtTzhWFXH9O/OY2DVC1dRu5drARJOuZMM4CUZ206
+        I1JqnMoc48CmU0NSDUpAVrMFxG4EgQdZ2l5ZLnbaDeLL3nstwkiWsR8U+dWlBHRoiDYi0j
+        uJxWUx4Mg2mesO2oLFpCewMtRUIrzC8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-66-QGB3zAoxPNCtdMDAyHWvxw-1; Mon, 19 Jul 2021 03:34:23 -0400
+X-MC-Unique: QGB3zAoxPNCtdMDAyHWvxw-1
+Received: by mail-wm1-f71.google.com with SMTP id y6-20020a7bc1860000b0290227b53c7cefso5064663wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 00:34:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TIm1TRm27OD8u584vFf5/FAIcFfcqCrDwZRKQMrp8+E=;
-        b=aQO/0bJw6t931K/Ks+kITSuXk0GcuU5UJR9V54xi8TrXkAxnoGx7C/+VRXTs8mf/0b
-         KRrZbvJJkMY/fHub/u3DqEWGGueV4rynuHMbIe9BsjCcdzJcOP8QgfBvBlVHPVrIQB17
-         0ryJinzSVnXlFJ9VmaKsiZI3nMBRe3//KCQSKDecaQdJz+qo4MvIZSCtOcmuniUIzpEm
-         q0s+QQydPyBU2K0mVsvrJP1jGy65dz5VoiPLRDQoC3WHfg3L3Pscyq6Vlm4XgyOaK6JA
-         JBcegCJ7wI/dVIn39XtfAvhZHrNWNQhJKgDJWntLBnKX+M3o4OiYFm8RPEaeDBTZ6HWg
-         nGZA==
-X-Gm-Message-State: AOAM533tsDy7jgjIvgDR3J1I9xyKq6tOPKdjTgMzT/9rMK7dX03g0PrT
-        kOuTvxRyYwd1yRbAIGJ8Q6PiJip0qWwvU8wl7S8=
-X-Google-Smtp-Source: ABdhPJwmTXjcuWz6XUSS0BDPVjIeCIAdcRFPcTqpRK8pezxFp1u2ZfSu+Yx2jZYHYe2UFOKq+wgv7dSkezK9726LGKk=
-X-Received: by 2002:a17:906:a202:: with SMTP id r2mr25521827ejy.398.1626679986549;
- Mon, 19 Jul 2021 00:33:06 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=0sfSO6C1l3WtCtuFbg0VI6VLBjRIkRSfgQNpDtonfxE=;
+        b=q2WF6rkap+/df3ysjo3RQilRcHavQhGGh3eeSJxFQnQrMFk9vaQ6sc5vDJvDi6pQ0k
+         MwrjL/0L/MoAN2/LYN5OlD++OimfdNES/Xhu0WTbgsAc8e+R3pYa/vijH3l417oTN/Wj
+         CD3dKvng5HT5k+1GIMdqWIB08PuZXDqpn2u1aYQs90WDjf967UfVGiIHdiSVtvny54ax
+         MsRRiBgOXdzjP+Wz1IUa2kiiKF1icc3ngG0oFUIhwUvPAo2NYmQVx3QPzfzxrqxu+oCr
+         cA1S0hp+77lZW2QZgEOgmnHq2wHSr++il4H71UUUpJUNiiopEU233tgeh0IQiiT1Mq1U
+         u3yw==
+X-Gm-Message-State: AOAM5336PZfE9LceauwQuCdONqhrdsR02oID/fRImb1aoQKB7kRNLsI7
+        vUguXlUjTHa2LJ9kco2d8M7r7F7Btlayh6Mv0hZIjJkRpSQjM1N4Yk8fWSjPASiLJmMr7as3MsQ
+        52zzKY2m2UXXvtHmNWCl973NY
+X-Received: by 2002:a05:600c:3595:: with SMTP id p21mr17863833wmq.105.1626680062007;
+        Mon, 19 Jul 2021 00:34:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz07efcFEv5EX0OoyTVlUJhLNO1Fd9o7f8O9ViBtmkhlottvR3Rzu2ykVMUwwmu3TH+CIaAhw==
+X-Received: by 2002:a05:600c:3595:: with SMTP id p21mr17863820wmq.105.1626680061792;
+        Mon, 19 Jul 2021 00:34:21 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id y3sm19433446wrh.16.2021.07.19.00.34.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 00:34:21 -0700 (PDT)
+To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH 0/7] Free user PTE page table pages
+Message-ID: <5ce5fb25-df1d-b807-8807-595b8a7bfc63@redhat.com>
+Date:   Mon, 19 Jul 2021 09:34:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210718203746.7159-1-theobf@usp.br>
-In-Reply-To: <20210718203746.7159-1-theobf@usp.br>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 19 Jul 2021 10:32:54 +0300
-Message-ID: <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
-Subject: Re: [PATCH] iio: dac: max5821: convert device register to device
- managed function
-To:     =?UTF-8?Q?Th=C3=A9o_Bor=C3=A9m_Fabris?= <theobf@usp.br>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 11:42 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br=
-> wrote:
->
-> Add a device managed hook, via devm_add_action_or_reset() and
-> max5821_regulator_disable(), to disable voltage regulator on device
-> detach.
-> Replace iio_device_register() by devm_iio_device_register() and remove
-> the max5821_remove() function used to unregister the device and disable t=
-he
-> voltage regulator.
-> Remove i2c_set_clientdata() from the probe function, since
-> i2c_get_clientdata() is not used anymore.
+On 18.07.21 06:30, Qi Zheng wrote:
+> Hi,
+> 
+> This patch series aims to free user PTE page table pages when all PTE entries
+> are empty.
+> 
+> The beginning of this story is that some malloc libraries(e.g. jemalloc or
+> tcmalloc) usually allocate the amount of VAs by mmap() and do not unmap those VAs.
+> They will use madvise(MADV_DONTNEED) to free physical memory if they want.
+> But the page tables do not be freed by madvise(), so it can produce many
+> page tables when the process touches an enormous virtual address space.
 
-Looks good overall.
-A few comments inline.
+... did you see that I am actually looking into this?
 
->
-> Signed-off-by: Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>
-> ---
->  drivers/iio/dac/max5821.c | 30 ++++++++++++++++--------------
->  1 file changed, 16 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max5821.c
-> index bd6e75699a63..44c04ae70b32 100644
-> --- a/drivers/iio/dac/max5821.c
-> +++ b/drivers/iio/dac/max5821.c
-> @@ -294,6 +294,13 @@ static const struct iio_info max5821_info =3D {
->         .write_raw =3D max5821_write_raw,
->  };
->
-> +static void max5821_regulator_disable(void *data)
-> +{
-> +       struct regulator *rdata =3D data;
-> +
-> +       regulator_disable(rdata);
+https://lkml.kernel.org/r/bae8b967-c206-819d-774c-f57b94c4b362@redhat.com
 
-This can be simplified a bit:
+and have already spent a significant time on it as part of my research, 
+which is *really* unfortunate and makes me quite frustrated at the 
+beginning of the week alreadty ...
 
-static void max5821_regulator_disable(void *reg)
-{
-      regulator_disable(reg);
-}
+Ripping out page tables is quite difficult, as we have to stop all page 
+table walkers from touching it, including the fast_gup, rmap and page 
+faults. This usually involves taking the mmap lock in write. My approach 
+does page table reclaim asynchronously from another thread and do not 
+rely on reference counts.
 
-I used to do explicit casting, but then I also figured that it's not necess=
-ary.
+-- 
+Thanks,
 
-> +}
-> +
->  static int max5821_probe(struct i2c_client *client,
->                         const struct i2c_device_id *id)
->  {
-> @@ -306,7 +313,6 @@ static int max5821_probe(struct i2c_client *client,
->         if (!indio_dev)
->                 return -ENOMEM;
->         data =3D iio_priv(indio_dev);
-> -       i2c_set_clientdata(client, indio_dev);
->         data->client =3D client;
->         mutex_init(&data->lock);
->
-> @@ -331,6 +337,14 @@ static int max5821_probe(struct i2c_client *client,
->                 goto error_free_reg;
->         }
->
-> +       ret =3D devm_add_action_or_reset(&client->dev, max5821_regulator_=
-disable,
-> +                                      data->vref_reg);
-> +       if (ret) {
-> +               dev_err(&client->dev,
-> +                       "Failed to add action to managed regulator: %d\n"=
-, ret);
-> +               goto error_disable_reg;
+David / dhildenb
 
-return ret;
-
-devm_add_action_or_reset() should call max5821_regulator_disable() in
-case of error
-
-> +       }
-> +
->         ret =3D regulator_get_voltage(data->vref_reg);
->         if (ret < 0) {
->                 dev_err(&client->dev,
-> @@ -346,7 +360,7 @@ static int max5821_probe(struct i2c_client *client,
->         indio_dev->modes =3D INDIO_DIRECT_MODE;
->         indio_dev->info =3D &max5821_info;
->
-> -       return iio_device_register(indio_dev);
-> +       return devm_iio_device_register(&client->dev, indio_dev);
->
->  error_disable_reg:
-
-This entire goto block should be removed.
-The idea of using only devm_ functions is to not have these goto statements=
-.
-
->         regulator_disable(data->vref_reg);
-> @@ -356,17 +370,6 @@ static int max5821_probe(struct i2c_client *client,
->         return ret;
->  }
->
-> -static int max5821_remove(struct i2c_client *client)
-> -{
-> -       struct iio_dev *indio_dev =3D i2c_get_clientdata(client);
-> -       struct max5821_data *data =3D iio_priv(indio_dev);
-> -
-> -       iio_device_unregister(indio_dev);
-> -       regulator_disable(data->vref_reg);
-> -
-> -       return 0;
-> -}
-> -
->  static const struct i2c_device_id max5821_id[] =3D {
->         { "max5821", ID_MAX5821 },
->         { }
-> @@ -386,7 +389,6 @@ static struct i2c_driver max5821_driver =3D {
->                 .pm     =3D &max5821_pm_ops,
->         },
->         .probe          =3D max5821_probe,
-> -       .remove         =3D max5821_remove,
->         .id_table       =3D max5821_id,
->  };
->  module_i2c_driver(max5821_driver);
-> --
-> 2.20.1
->
