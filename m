@@ -2,70 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1263CD145
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9BC3CD15B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235752AbhGSJPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:15:02 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44148
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231928AbhGSJPB (ORCPT
+        id S236062AbhGSJRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235999AbhGSJRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:15:01 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 913D940333;
-        Mon, 19 Jul 2021 09:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626688533;
-        bh=NeHvk9CH9MzNaHMMnngpGmg0816fMoabsjV9w7Sujo0=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=L0DAiBLGaexsMDOLjcAxv5HUFc5vJ6tef9lciZSKNT2fJYWcCTsNlj2JI/ON2X+W9
-         SGudH1exrM9v7V27hYzs6ORXdVaKcua97w3i/RfwHuOAGPCtDiHJ0lb8e+Dspe6WQV
-         W1S/j8Ka7J8VbIVkeMcOdP3tDDd2gKjr3vyi1OgXq8S8fjWKiaXsI4uDiwBUfzWVoj
-         gYFoQi8Q7BLeBxy+98reKgyOkwdasIh8ssgsL8gyiuudkjO36jvkbk+7mlPN4R1K3L
-         YnNm3Fc6ZEeVJzY5zlP+TR7NvkkBfKD5ylXVo/FynF6WWPf/JLOdilJSIsPNDjAdPs
-         0kZSWwCWmEn0g==
-From:   Colin King <colin.king@canonical.com>
-To:     Al Cooper <alcooperx@gmail.com>, Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] serial: 8250_bcm7271: use NULL to initialized a null pointer
-Date:   Mon, 19 Jul 2021 10:55:33 +0100
-Message-Id: <20210719095533.14017-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 19 Jul 2021 05:17:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9491C061574;
+        Mon, 19 Jul 2021 02:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DONrBKe0eDHZgnOVXg2rUrja0fq1NqKtT/Q/VwbF93s=; b=qvj01gb4dGHw/A51PUG4ACE0Dw
+        Seb+BDqozPlbJP6oroIE/M5gylWf+xTaGkhki3+dYbK9iCZd1E+bCNJhYTi9s6SPAosAZr/MUHf1Z
+        SIfy+bcZdFEvop5sRGMmRUIueNZW0yD8ycdCFJqaWAg+T+acxHF08F3TyNndAjfBQa+AJI6KOmfYo
+        IbRKbu/OmIO0NlIfDFfaOhxVwsszRX4mV+MmRVwl6YJSa3gr01GEN6ByeGRAwXXh0P9CDGbbOPZvj
+        M6kQ8rSgFBReWXzGZHvVGASaynm2MR/sRm+VYD6zbjAxZQuWMBaypT8/kEMj7zRr/fSMo/GFy24IE
+        fHxG/rCw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5Q0N-006ipf-5F; Mon, 19 Jul 2021 09:56:31 +0000
+Date:   Mon, 19 Jul 2021 10:56:07 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, hch@infradead.org, jack@suse.cz,
+        osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 0/6] block: enhance use of GENHD_FL_UP
+Message-ID: <YPVMN90+tyKHTC7V@infradead.org>
+References: <20210715202341.2016612-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715202341.2016612-1-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
-
-Pointer membase is currently being in initialized with zero rather
-than NULL. Fix this.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/tty/serial/8250/8250_bcm7271.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
-index 725a450058f8..7f656fac503f 100644
---- a/drivers/tty/serial/8250/8250_bcm7271.c
-+++ b/drivers/tty/serial/8250/8250_bcm7271.c
-@@ -941,7 +941,7 @@ static int brcmuart_probe(struct platform_device *pdev)
- 	struct clk *baud_mux_clk;
- 	struct uart_8250_port up;
- 	struct resource *irq;
--	void __iomem *membase = 0;
-+	void __iomem *membase = NULL;
- 	resource_size_t mapbase = 0;
- 	u32 clk_rate = 0;
- 	int ret;
--- 
-2.31.1
-
+So while patch 1 seems a little pointless given where I'd like to go,
+the rest of the series goes exactly where I'd like to move things.
+Can you respin this one quickly and send it out to Jens without the RFC?
