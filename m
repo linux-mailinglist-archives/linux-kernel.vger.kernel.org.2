@@ -2,209 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6FE3CD36B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D863CD37A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236417AbhGSK11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        id S236429AbhGSK2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235440AbhGSK10 (ORCPT
+        with ESMTP id S235905AbhGSK2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:27:26 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255D9C061574;
-        Mon, 19 Jul 2021 03:17:43 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so12159741pjo.3;
-        Mon, 19 Jul 2021 04:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=1oaFsfB75KGXZ2Jfm6WhblXtwA8C/MYDZ5+7R5cBPf0=;
-        b=A9wlRwjI0b8eN2FOcPpMBL/fD/cMWlyUiYCdwaN42z1rr6gqYRrE/0usqGgvGJkQoK
-         yEN8aeaUdE0ZUpeFwJ9jfvlj241thx5AapHzbul34XoetkLzcQqWZBi1vBhJ5NtI7jNP
-         zLqc0z1xYNWZdyeYpUyPgixLLIay0e/h3mQMl7w42Z30aIxxYTYaUWvTdILERvlnDwbC
-         M2+N0gRJTnqzO89+5RrkR26lbUBnsEF5TeD89hbx6DXm/FlCq7oa9bRyeuTsC0VGEl9G
-         PK1BAaWfTd7Ua7MwgSuzCc0uecIZRNs0HS85FiEUxUKcqJ600f8GU1JptRcWjsQDyvIA
-         G7hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=1oaFsfB75KGXZ2Jfm6WhblXtwA8C/MYDZ5+7R5cBPf0=;
-        b=r+RQfKuBrNNiY4O7mXfVFsw9FHq7mYfh8WQMQH5dJxe17jHYtkVcm3EHanDiljwd72
-         GO1ptlx4XXvNvo02kENRiiAHljSNoAWj+KIY9aVBZKv3Yv2N/o3Y4qL3jdKJnOifcEm3
-         KjG/yUEnnl6dpQEnRRQMy5Z+jRXpV3weGnMl0asvzceYEoc5OuVRTBzZaZ1XkqFpMOJF
-         CMERuYi/gWbaAcQP2MK1Ea76j8Fas5jtBrCSQg01RFArZUa0iVU0PTajkhUMYvKk6VAq
-         k3FvcAY7lFWoA3Pi8zrr8nobzBbkNNaxLAuMa8c2PrgXJuX/eu5R3zO+7LHpHLdLvif6
-         ltXg==
-X-Gm-Message-State: AOAM533ybnP8XygYUn3edXQs2T3BEJSdbqSMVWw1FZV82AaX26Q1gHO+
-        6QK8LX/3QICCuFOdQTJK1Yc=
-X-Google-Smtp-Source: ABdhPJyKlze6Rj7YCnjhyaZ2tfFiUDKmdyn+Rec3ECNOfKahs6GoqIL24PZJD+J0SGykQP0+eWCMlQ==
-X-Received: by 2002:a17:90a:9205:: with SMTP id m5mr30120442pjo.172.1626692886349;
-        Mon, 19 Jul 2021 04:08:06 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id x23sm21168646pgk.90.2021.07.19.04.08.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 04:08:05 -0700 (PDT)
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>
-Cc:     Hu Haowen <src.res@email.cn>,
-        Shinwoo Lee <shinwoo.lee.us@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: [RFC PATCH v2 0/7] docs: pdfdocs: Improve font choice in CJK
- translations
-Message-ID: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
-Date:   Mon, 19 Jul 2021 20:08:02 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 06:28:48 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E50C061574;
+        Mon, 19 Jul 2021 03:19:07 -0700 (PDT)
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1626692962;
+        bh=sC7ZaoZ3ZM/6VTYs+9U+cW0/9mUmm3YgRFhT1CTcR7A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c1/amgeG6Nr1KZZnErG45+iKldHi3xEjE6AMXcL6BQudJxPS5/vBA6JbjllIAlUiu
+         yE6kPBSL97l4FTBBqIcWjWbzENoCpMHduVHrJrOkz6omD3gFjOCRBFdMkW7V2WYyTA
+         OgZjKqv5zQRjQZ2ERaaZcCCjAuXCuXJuKGqHqWoo=
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, Ben Chen <ben_chen@bizlinktech.com>
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] HID: cmedia: add support for HS-100B mute button
+Date:   Mon, 19 Jul 2021 13:09:11 +0200
+Message-Id: <20210719110911.310701-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+These chips report mute button events in bit 4 of their report without
+it being part of the report descriptor.
+Use a custom descriptor that maps this bit.
 
-I'm calling this patch set "RFC PATCH v2", but the approach has changed
-a lot since "RFC PATCH 0/3 docs: pdfdocs: Improve alignment of CJK
-ascii-art" [1], hence the different title.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+v1: https://lore.kernel.org/linux-input/a769ae40-6d0c-47c4-803f-2c8dbc362f24@t-8ch.de/
 
-I added Hu Haowen, who is working on zh_TW translations, and Shinwoo Lee,
-who has recently shown interest in enhancing ko_KR translations [2] but
-has got no public response yet, in the CC list in the faint hope of their
-interest in CJK typesetting by Sphinx + XeLaTeX.  If either (or both) of
-you has no interest, please let me know.  I won't bother you in this area.
+v1 -> v2:
+ * Merged into the existing cmedia driver instead of creating a dedicated
+   driver.
 
-I thought it was impossible to switch CJK font choices in the middle
-of a document, but it turns out it is actually possible.
+v2: https://lore.kernel.org/linux-input/20210716160659.154779-1-linux@weissschuh.net/
 
-Patch 1/7 is mostly the same as the original "RFC PATCH 1/3".
+v2 -> v3:
+ * Fixed cosmetic checkpatch warnings
+ * CC-ed Ben Chen who is the original author of hid-cmedia.c
 
-Patch 2/7 is the most important change in this patch set.
-It introduces a pair of LaTeX macros for each CJK language:
-    zh_CN:  \kerneldocBeginSC, \kerneldocEndSC
-    ko_KR:  \kerneldocBeginKR, \kerneldocEndKR
-    ja_JP:  \kerneldocBeginJP, \kerneldocEndJP
+ drivers/hid/Kconfig      |  5 +-
+ drivers/hid/hid-cmedia.c | 99 +++++++++++++++++++++++++++++++++++-----
+ drivers/hid/hid-ids.h    |  1 +
+ drivers/hid/hid-quirks.c |  1 +
+ 4 files changed, 93 insertions(+), 13 deletions(-)
 
-, which perform magical font settings for the languages.
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index 160554903ef9..6f72ecd79db0 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -259,10 +259,11 @@ config HID_PRODIKEYS
+ 	  and some additional multimedia keys.
+ 
+ config HID_CMEDIA
+-	tristate "CMedia CM6533 HID audio jack controls"
++	tristate "CMedia audio chips"
+ 	depends on HID
+ 	help
+-	Support for CMedia CM6533 HID audio jack controls.
++	Support for CMedia CM6533 HID audio jack controls
++        and HS100B mute buttons.
+ 
+ config HID_CP2112
+ 	tristate "Silicon Labs CP2112 HID USB-to-SMBus Bridge support"
+diff --git a/drivers/hid/hid-cmedia.c b/drivers/hid/hid-cmedia.c
+index 3296c5050264..084a75dd527a 100644
+--- a/drivers/hid/hid-cmedia.c
++++ b/drivers/hid/hid-cmedia.c
+@@ -1,8 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * HID driver for CMedia CM6533 audio jack controls
++ * and HS100B mute buttons
+  *
+  * Copyright (C) 2015 Ben Chen <ben_chen@bizlinktech.com>
++ * Copyright (C) 2021 Thomas Weißschuh <linux@weissschuh.net>
+  */
+ 
+ #include <linux/device.h>
+@@ -11,13 +13,16 @@
+ #include "hid-ids.h"
+ 
+ MODULE_AUTHOR("Ben Chen");
+-MODULE_DESCRIPTION("CM6533 HID jack controls");
++MODULE_AUTHOR("Thomas Weißschuh");
++MODULE_DESCRIPTION("CM6533 HID jack controls and HS100B mute button");
+ MODULE_LICENSE("GPL");
+ 
+ #define CM6533_JD_TYPE_COUNT      1
+ #define CM6533_JD_RAWEV_LEN	 16
+ #define CM6533_JD_SFX_OFFSET	  8
+ 
++#define HS100B_RDESC_ORIG_SIZE   60
++
+ /*
+ *
+ *CM6533 audio jack HID raw events:
+@@ -40,13 +45,50 @@ static int jack_switch_types[CM6533_JD_TYPE_COUNT] = {
+ 	SW_HEADPHONE_INSERT,
+ };
+ 
+-struct cmhid {
++struct cmhid_cm6533 {
+ 	struct input_dev *input_dev;
+ 	struct hid_device *hid;
+ 	unsigned short switch_map[CM6533_JD_TYPE_COUNT];
+ };
+ 
+-static void hp_ev(struct hid_device *hid, struct cmhid *cm, int value)
++/* Fixed report descriptor of HS-100B audio chip
++ * Bit 4 is an abolute Microphone mute usage instead of being unassigned.
++ */
++static __u8 hs100b_rdesc_fixed[] = {
++	0x05, 0x0C,         /*  Usage Page (Consumer),          */
++	0x09, 0x01,         /*  Usage (Consumer Control),       */
++	0xA1, 0x01,         /*  Collection (Application),       */
++	0x15, 0x00,         /*      Logical Minimum (0),        */
++	0x25, 0x01,         /*      Logical Maximum (1),        */
++	0x09, 0xE9,         /*      Usage (Volume Inc),         */
++	0x09, 0xEA,         /*      Usage (Volume Dec),         */
++	0x75, 0x01,         /*      Report Size (1),            */
++	0x95, 0x02,         /*      Report Count (2),           */
++	0x81, 0x02,         /*      Input (Variable),           */
++	0x09, 0xE2,         /*      Usage (Mute),               */
++	0x95, 0x01,         /*      Report Count (1),           */
++	0x81, 0x06,         /*      Input (Variable, Relative), */
++	0x05, 0x0B,         /*      Usage Page (Telephony),     */
++	0x09, 0x2F,         /*      Usage (2Fh),                */
++	0x81, 0x02,         /*      Input (Variable),           */
++	0x09, 0x20,         /*      Usage (20h),                */
++	0x81, 0x06,         /*      Input (Variable, Relative), */
++	0x05, 0x0C,         /*      Usage Page (Consumer),      */
++	0x09, 0x00,         /*      Usage (00h),                */
++	0x95, 0x03,         /*      Report Count (3),           */
++	0x81, 0x02,         /*      Input (Variable),           */
++	0x26, 0xFF, 0x00,   /*      Logical Maximum (255),      */
++	0x09, 0x00,         /*      Usage (00h),                */
++	0x75, 0x08,         /*      Report Size (8),            */
++	0x95, 0x03,         /*      Report Count (3),           */
++	0x81, 0x02,         /*      Input (Variable),           */
++	0x09, 0x00,         /*      Usage (00h),                */
++	0x95, 0x04,         /*      Report Count (4),           */
++	0x91, 0x02,         /*      Output (Variable),          */
++	0xC0                /*  End Collection                  */
++};
++
++static void hp_ev(struct hid_device *hid, struct cmhid_cm6533 *cm, int value)
+ {
+ 	input_report_switch(cm->input_dev, SW_HEADPHONE_INSERT, value);
+ 	input_sync(cm->input_dev);
+@@ -55,7 +97,12 @@ static void hp_ev(struct hid_device *hid, struct cmhid *cm, int value)
+ static int cmhid_raw_event(struct hid_device *hid, struct hid_report *report,
+ 	 u8 *data, int len)
+ {
+-	struct cmhid *cm = hid_get_drvdata(hid);
++	struct cmhid_cm6533 *cm;
++
++	if (hid->product != USB_DEVICE_ID_CM6533)
++		return 0;
++
++	cm = hid_get_drvdata(hid);
+ 
+ 	if (len != CM6533_JD_RAWEV_LEN)
+ 		goto out;
+@@ -79,9 +126,12 @@ static int cmhid_input_configured(struct hid_device *hid,
+ 		struct hid_input *hidinput)
+ {
+ 	struct input_dev *input_dev = hidinput->input;
+-	struct cmhid *cm = hid_get_drvdata(hid);
++	struct cmhid_cm6533 *cm = hid_get_drvdata(hid);
+ 	int i;
+ 
++	if (hid->product != USB_DEVICE_ID_CM6533)
++		return 0;
++
+ 	cm->input_dev = input_dev;
+ 	memcpy(cm->switch_map, jack_switch_types, sizeof(cm->switch_map));
+ 	input_dev->evbit[0] = BIT(EV_SW);
+@@ -95,15 +145,27 @@ static int cmhid_input_mapping(struct hid_device *hid,
+ 		struct hid_input *hi, struct hid_field *field,
+ 		struct hid_usage *usage, unsigned long **bit, int *max)
+ {
+-	return -1;
++	switch (hid->product) {
++	case USB_DEVICE_ID_CM6533:
++		return -1;
++	default:
++		return 0;
++	}
+ }
+ 
+ static int cmhid_probe(struct hid_device *hid, const struct hid_device_id *id)
+ {
+ 	int ret;
+-	struct cmhid *cm;
++	struct cmhid_cm6533 *cm;
++
++	if (hid->product != USB_DEVICE_ID_CM6533) {
++		ret = hid_open_report(hid);
++		if (!ret)
++			ret = hid_hw_start(hid, HID_CONNECT_DEFAULT);
++		return ret;
++	}
+ 
+-	cm = kzalloc(sizeof(struct cmhid), GFP_KERNEL);
++	cm = kzalloc(sizeof(*cm), GFP_KERNEL);
+ 	if (!cm) {
+ 		ret = -ENOMEM;
+ 		goto allocfail;
+@@ -132,7 +194,6 @@ static int cmhid_probe(struct hid_device *hid, const struct hid_device_id *id)
+ allocfail:
+ 	return ret;
+ }
+-
+ static void cmhid_remove(struct hid_device *hid)
+ {
+ 	struct cmhid *cm = hid_get_drvdata(hid);
+@@ -141,20 +202,36 @@ static void cmhid_remove(struct hid_device *hid)
+ 	kfree(cm);
+ }
+ 
++static __u8 *cmhid_report_fixup(struct hid_device *hid, __u8 *rdesc,
++				unsigned int *rsize)
++{
++	switch (hid->product) {
++	case USB_DEVICE_ID_CMEDIA_HS100B:
++		if (*rsize == HS100B_RDESC_ORIG_SIZE) {
++			hid_info(hid, "Fixing CMedia HS-100B report descriptor\n");
++			rdesc = hs100b_rdesc_fixed;
++			*rsize = sizeof(hs100b_rdesc_fixed);
++		}
++		break;
++	}
++	return rdesc;
++}
++
+ static const struct hid_device_id cmhid_devices[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CMEDIA, USB_DEVICE_ID_CM6533) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_CMEDIA, USB_DEVICE_ID_CMEDIA_HS100B) },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(hid, cmhid_devices);
+ 
+ static struct hid_driver cmhid_driver = {
+-	.name = "cm6533_jd",
++	.name = "cmedia",
+ 	.id_table = cmhid_devices,
+ 	.raw_event = cmhid_raw_event,
+ 	.input_configured = cmhid_input_configured,
+ 	.probe = cmhid_probe,
+ 	.remove = cmhid_remove,
++	.report_fixup = cmhid_report_fixup,
+ 	.input_mapping = cmhid_input_mapping,
+ };
+ module_hid_driver(cmhid_driver);
+-
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 8f1893e68112..6864e4e6ac8b 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -292,6 +292,7 @@
+ 
+ #define USB_VENDOR_ID_CMEDIA		0x0d8c
+ #define USB_DEVICE_ID_CM109		0x000e
++#define USB_DEVICE_ID_CMEDIA_HS100B	0x0014
+ #define USB_DEVICE_ID_CM6533		0x0022
+ 
+ #define USB_VENDOR_ID_CODEMERCS		0x07c0
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 51b39bda9a9d..8c1813abd86f 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -345,6 +345,7 @@ static const struct hid_device_id hid_have_special_driver[] = {
+ #endif
+ #if IS_ENABLED(CONFIG_HID_CMEDIA)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CMEDIA, USB_DEVICE_ID_CM6533) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_CMEDIA, USB_DEVICE_ID_CMEDIA_HS100B) },
+ #endif
+ #if IS_ENABLED(CONFIG_HID_CORSAIR)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_DEVICE_ID_CORSAIR_K90) },
 
-Each pair of macros are added in translations' respective index.rst.
-
-As for Hangul inter-phrase spaces, xeCJK provides a knob to preserve
-them.  \kerneldocBeginKR has the knob enabled.
-
-Also note that CJKmainfont is changed from "Noto Sans CJK" to "Noto
-Serif CJK", as the latter looks more consistent with the roman (serif)
-family of Latin text.
-
-The font choice of latin monospace letters is overridden (for
-ascii-art alignmet) only when the document is built by
-"make SPHINXDIRS=translations pdfdocs".
-
-As for the to-be-merged zh_TW translations, the same approach should
-work by choosing "Noto xxxx CJK TC" fonts.
-
-There remain a couple of glitches remaining as of Patch 2/7.
-Following patches address them one by one.
-
-Patch 3/7 increases line spacing of CJK contents.
-In general, CJK characters in single spacing looks too busy.
-One-half spacing generates a reasonable result (to my eyes).
-
-Patch 4/7 is a workaround of "Noto CJK" fonts' lack of italic shapes.
-
-Patch 5/7 fixes excessive kerning by xeCJK around quotation marks
-in Korean and Japanese translations. Quotation marks in "Noto Serif
-CJK KR" and "Not Serif CJK JP" fonts are half-width rather than
-full-width in "Noto Serif CJK SC".
-
-Patches 6/7 and 7/7 corresponds to 2/3 and 3/3 in the original RFC.
-They attempt to align ascii-art figures found in the Korean translation
-of memory-barriers.txt.
-
-Now, candidates of *true* monospace font for Hangul are:
-
-    D2Coding, Sarasa Mono K, and (ugly looking) Unifont.
-
-I said earlier in response to Mauro's concerns with regard to
-"Sarasa Mono" font and sphinx-pre-install [3]:
-
-Akira>>> Existence of "Sarasa Mono SC" can be checked by the command:
-     >>>
-     >>>     fc-list | grep "Sarasa Mono SC," | grep "style=Regular" | wc -l
-     >>>
-     >>> If the result is *not* "0", you have the font somewhere in your
-     >>> fontconfig path.
-     >>>
-     >>> I think this is portable across distros.
-     >>> Wouldn't this suffice for sphinx-pre-install?
-Mauro>> 
-     >> No. The sphinx-pre-install tool generate a list of commands
-     >> needed to install the pre-reqs on a given distro.
-     >> ...
-     >> The same command, when executed on a different distro will
-     >> print a different set of packages and commands.
-Akira>
-     > I see...
-     >
-     > So let's forget Unifont and "Sarasa Mono" for the time being.
-     >
-     > By adding some custom configuration of fontconfig, "Noto Sans Mono
-     > CJK SC" can be made an alias of "Sarasa Mono", "Unifont", or whatever
-     > alternative font one wants to try.
-
-This was my misunderstanding.  Yes, alias is possible by fontconfig,
-but fontconfig's alias names are not recognized by fontspec/xeCJK + XeLaTeX.
-So we need to embed the actual names of candidate fonts in the preamble.
-
-Mauro, isn't the header comment in conf.py added in Patch 6/7 good enough?
-I don't think those nice-to-have fonts are pre-reqs that should be
-taken care of by the sphinx-pre-install script.
-
-On the other hand, as having heard of nothing from SeongJae, who is
-the maintainer of Korean memory-barrier.txt, there might be nobody
-who cares the Korean chapter in translations.pdf.
-Patches 6/7 and 7/7 need explicit Acks of someone who reads it, I guess.
-
-This series is tested against Sphinx 2.4.4 and brand-new 4.1.1.
-
-Again, any feedback is appreciated!
-
-	Thanks, Akira
-
-[1]: https://lore.kernel.org/lkml/386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com/
-[2]: https://lore.kernel.org/linux-doc/CAJMZz3_M34cy4ZbKGLZniGeUPOoJ7DMXdDOQxy-T44_cQ1+Udw@mail.gmail.com/
-[3]: https://lore.kernel.org/lkml/0cfd8dfb-b304-4073-973c-930a93d19a17@gmail.com/
-
---
-Akira Yokosawa (7):
-  docs: pdfdocs: Refactor config for CJK document
-  docs: pdfdocs: Add CJK-language-specific font settings
-  docs: pdfdocs: Use one-half spacing in CJK translations
-  docs: pdfdocs: Permit AutoFakeSlant for CJK fonts
-  docs: pdfdocs: Teach xeCJK the width of quotation marks
-  docs: pdfdocs: Add optional choices for Korean monospace font
-  docs/ko_KR: Use white spaces behind CJK characters in ascii-art
-
- Documentation/conf.py                         | 77 +++++++++++++++----
- Documentation/translations/conf.py            | 44 +++++++++++
- Documentation/translations/ja_JP/howto.rst    |  8 ++
- Documentation/translations/ja_JP/index.rst    |  5 ++
- Documentation/translations/ko_KR/howto.rst    |  8 ++
- Documentation/translations/ko_KR/index.rst    |  2 +
- .../translations/ko_KR/memory-barriers.txt    | 14 ++--
- Documentation/translations/zh_CN/index.rst    |  5 ++
- 8 files changed, 140 insertions(+), 23 deletions(-)
- create mode 100644 Documentation/translations/conf.py
-
+base-commit: 1b97ec646386cea5b4be139f7685b4a4b4d3799a
 -- 
-2.17.1
-
+2.32.0
 
