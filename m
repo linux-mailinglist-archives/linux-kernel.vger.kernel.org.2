@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8103CE7C0
+	by mail.lfdr.de (Postfix) with ESMTP id 78F9B3CE7C1
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351664AbhGSQcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:32:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57792 "EHLO mail.kernel.org"
+        id S1351923AbhGSQcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:32:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345966AbhGSPQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:16:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11A4B6127C;
-        Mon, 19 Jul 2021 15:57:07 +0000 (UTC)
+        id S1346037AbhGSPQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:16:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4590761279;
+        Mon, 19 Jul 2021 15:57:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710228;
-        bh=5s5W2nW/VJwzeHHfStZ6DKDgBTQn+P3DbBHGlW+c7Jc=;
+        s=korg; t=1626710230;
+        bh=7zuqEJtcX/xnHOsRzILBcADqTxEWzA2lE8i1F+mGGWc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jkXMqHIwRrlslxuWTlImg6OZ7kDhDyzGR2ICE4ZeWlSW5hypJvKXdysPvbwVO86Tx
-         zchAEG2AqDGThXjyP0Abqy9R3OPG+eg3EZxN8QjgwJi1SOWDFRWFwnScwlKLY2yqCv
-         RMz4lcMQiKZFLQl4DP9Py1opm5SlSRcv5V+fp2OY=
+        b=HnXFSiLsfC5GHXX+HTv6YRL6bLbjT6LqQb/hAS3wesRJAJTQuCQZrXweCp5V6+bfN
+         kAlGkmnEQImycVrsMftlJqvhjhMSezliL5GMFZ8ZwZm2ts7peMh6GMGkqYpPzCBGZM
+         qcQzt3YkAl5VUyxf7igRTWoR1sRKVtI5SwSJzCc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Siddharth Gupta <sidgup@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 129/243] remoteproc: core: Fix cdev remove and rproc del
-Date:   Mon, 19 Jul 2021 16:52:38 +0200
-Message-Id: <20210719144945.082764029@linuxfoundation.org>
+Subject: [PATCH 5.10 130/243] PCI: tegra: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 19 Jul 2021 16:52:39 +0200
+Message-Id: <20210719144945.112278753@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,58 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Siddharth Gupta <sidgup@codeaurora.org>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 930eec0be20c93a53160c74005a1485a230e6911 ]
+[ Upstream commit 7bf475a4614a9722b9b989e53184a02596cf16d1 ]
 
-The rproc_char_device_remove() call currently unmaps the cdev
-region instead of simply deleting the cdev that was added as a
-part of the rproc_char_device_add() call. This change fixes that
-behaviour, and also fixes the order in which device_del() and
-cdev_del() need to be called.
+Add missing MODULE_DEVICE_TABLE definition so we generate correct modalias
+for automatic loading of this driver when it is built as a module.
 
-Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-Link: https://lore.kernel.org/r/1623723671-5517-4-git-send-email-sidgup@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/1620792422-16535-1-git-send-email-zou_wei@huawei.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Vidya Sagar <vidyas@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/remoteproc_cdev.c | 2 +-
- drivers/remoteproc/remoteproc_core.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pci-tegra.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-index b19ea3057bde..ff92ed25d8b0 100644
---- a/drivers/remoteproc/remoteproc_cdev.c
-+++ b/drivers/remoteproc/remoteproc_cdev.c
-@@ -111,7 +111,7 @@ int rproc_char_device_add(struct rproc *rproc)
+diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
+index 8fcabed7c6a6..1a2af963599c 100644
+--- a/drivers/pci/controller/pci-tegra.c
++++ b/drivers/pci/controller/pci-tegra.c
+@@ -2506,6 +2506,7 @@ static const struct of_device_id tegra_pcie_of_match[] = {
+ 	{ .compatible = "nvidia,tegra20-pcie", .data = &tegra20_pcie },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, tegra_pcie_of_match);
  
- void rproc_char_device_remove(struct rproc *rproc)
+ static void *tegra_pcie_ports_seq_start(struct seq_file *s, loff_t *pos)
  {
--	__unregister_chrdev(MAJOR(rproc->dev.devt), rproc->index, 1, "remoteproc");
-+	cdev_del(&rproc->cdev);
- }
- 
- void __init rproc_init_cdev(void)
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index dab2c0f5caf0..47924d5ed4f5 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2290,7 +2290,6 @@ int rproc_del(struct rproc *rproc)
- 	mutex_unlock(&rproc->lock);
- 
- 	rproc_delete_debug_dir(rproc);
--	rproc_char_device_remove(rproc);
- 
- 	/* the rproc is downref'ed as soon as it's removed from the klist */
- 	mutex_lock(&rproc_list_mutex);
-@@ -2301,6 +2300,7 @@ int rproc_del(struct rproc *rproc)
- 	synchronize_rcu();
- 
- 	device_del(&rproc->dev);
-+	rproc_char_device_remove(rproc);
- 
- 	return 0;
- }
 -- 
 2.30.2
 
