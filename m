@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8AA3CEDCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C633CEDD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343905AbhGSTq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:46:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46992 "EHLO mail.kernel.org"
+        id S239744AbhGSTsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:48:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1386354AbhGST36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:29:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1827610FB;
-        Mon, 19 Jul 2021 20:10:36 +0000 (UTC)
+        id S1358890AbhGSTbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 15:31:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E00761164;
+        Mon, 19 Jul 2021 20:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626725437;
-        bh=rKR67g1sIBg6Y7Tg6bJuaStZpslkuAKbjv8O8NlYaM8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eJzGOUXx8pA0xFxLyuyRWXbtNiKycwYGpH8S50wL12n9743cYlhx7f5pa7vydO9+D
-         2aLvWn7Zmw0Qghos2NdrqbjM9nEHceo71Zc46Jvmtt2ntJ++2QOWCQcwnBI4buJalf
-         bKBVq+btEIbP3e9vvQbe/9w0dY2nstPGS19DGEQ/EogOkzhDuQmF7AFTnvZ1k6oJTV
-         VlQEk/l2Oim21YoK9UPjUtTjgxfIyhol//oGErlTVmqpGI0zJdXHu9z5EofhHQe5le
-         alCCXf0NkgeC+PnCN+jCN7bQbKVQX241pY1GUQ0dJpnLt500sjw2LPQRtE4T9NTKen
-         jSdniQ40cgb1w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E3DF4403F2; Mon, 19 Jul 2021 17:10:34 -0300 (-03)
-Date:   Mon, 19 Jul 2021 17:10:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        leo.yan@linaro.org, al.grant@arm.com, branislav.rankov@arm.com,
-        denik@chromium.org, suzuki.poulose@arm.com,
-        anshuman.khandual@arm.com, John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
-Message-ID: <YPXcOrkjYdUJ3iRl@kernel.org>
-References: <20210624164303.28632-1-james.clark@arm.com>
- <20210624164303.28632-3-james.clark@arm.com>
- <20210705193338.GB1493103@p14s>
- <YO8ivntow2JfdQWW@kernel.org>
- <20210719163336.GA2255168@p14s>
+        s=k20201202; t=1626725544;
+        bh=JCj9N4s/hdtVIGnVeiVqSJIQIXC5g0PIHW7LS3LSnQQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bYsT06FdvrtF6+L2WZ/G8akQFJ48X/JNEH3PoG/rEXDpPvNSVUsXMP9D7Qrx2iueP
+         eJ0spKqMyZ4z9dGwva0crTrObiU031Qzwb59RtUqiUOP7NqiozRJ/VbjkZpha9gNpf
+         IyV7IEItJ2HqJqDUzTFyXYzt4sogWEHdW5uUZ+8D/aJ2btnhwsg9SjoYoOZogL530d
+         SWIsNOyX5TOfXIMwNcKQlgZkU5aSd3+F2ODF8Toas6H557Q9dzbtCfWTmJk3ji02v+
+         ndYA2erHeBeXu8lTCUC/aecp/ED9YN7i3Csx6i9/5uo7q/bgA2dmsaCJQ+513XD9re
+         /idw7mcXXM6KQ==
+Received: by mail-ed1-f42.google.com with SMTP id w14so25629982edc.8;
+        Mon, 19 Jul 2021 13:12:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530MFexKNspyxygcxZcgI7npKzqUDdJtJ0FNl8wLutdGxzc00yY6
+        BdGfKORwqDfzdniIhTLkyYs3UUhv3cv6+aXJRg==
+X-Google-Smtp-Source: ABdhPJwCxUJGpCNipUis1RgH8ABZHN7f3vU7SUFmhfDjndCv9fUJN8pvhKea2xsLX28gDThbSCs5vLmtxN/9QbIt8Lw=
+X-Received: by 2002:aa7:c641:: with SMTP id z1mr27592530edr.289.1626725542940;
+ Mon, 19 Jul 2021 13:12:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719163336.GA2255168@p14s>
-X-Url:  http://acmel.wordpress.com
+References: <20210610175613.167601-1-nfraprado@collabora.com>
+ <20210624190041.GA1812802@robh.at.kernel.org> <20210719195115.cgh7fh54kwloo4o7@notapiano>
+In-Reply-To: <20210719195115.cgh7fh54kwloo4o7@notapiano>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 19 Jul 2021 14:12:10 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKoEwbfKz3s3OJJkk8izu2ak=dEhD2qjaw6Ad71Tb3_EA@mail.gmail.com>
+Message-ID: <CAL_JsqKoEwbfKz3s3OJJkk8izu2ak=dEhD2qjaw6Ad71Tb3_EA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: clk: Convert rockchip,rk3399-cru to DT schema
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Xing Zheng <zhengxing@rock-chips.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jul 19, 2021 at 10:33:36AM -0600, Mathieu Poirier escreveu:
-> Hi Arnaldo,
-> 
-> On Wed, Jul 14, 2021 at 02:45:34PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Mon, Jul 05, 2021 at 01:33:38PM -0600, Mathieu Poirier escreveu:
-> > > On Thu, Jun 24, 2021 at 05:43:03PM +0100, James Clark wrote:
-> > > > for example:
-> > > > 
-> > > >         Idx:808; ID:1c; I_BAD_SEQUENCE : Invalid Sequence in packet.[I_ASYNC]
-> > > >         ...
-> > > >         PKTP_ETMV4I_0016 : 0x0014 (OCSD_ERR_INVALID_PCKT_HDR) [Invalid packet header]; TrcIdx=822
-> > > > 
-> > > > Signed-off-by: James Clark <james.clark@arm.com>
-> > > > ---
-> > > >  tools/perf/util/cs-etm.c | 20 ++++++++++++++++++--
-> > > >  1 file changed, 18 insertions(+), 2 deletions(-)
-> > > > 
-> > > 
-> > > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > 
-> > 
-> > 
-> > Thanks, applied.
-> 
-> This patch is the second of a two patch series[1][2].  The first one was applied and
-> is in Linus' current master branch.  But I can't find the second one in
-> either your core branch or Linus', and that despite your reply above that it has been
-> applied.  As such I am guessing something went wrong with the process.  
-> 
-> How do you want to proceed - should we resend the second patch[2] or you still
-> have it somewhere in your Inbox?
+On Mon, Jul 19, 2021 at 1:51 PM N=C3=ADcolas F. R. A. Prado
+<nfraprado@collabora.com> wrote:
+>
+> On Thu, Jun 24, 2021 at 01:00:41PM -0600, Rob Herring wrote:
+> > On Thu, 10 Jun 2021 14:56:13 -0300, N=C3=ADcolas F. R. A. Prado wrote:
+> > > Convert the rockchip,rk3399-cru binding to DT schema format.
+> > > Tested with
+> > > ARCH=3Darm64 make dt_binding_check DT_SCHEMA_FILES=3DDocumentation/de=
+vicetree/bindings/clock/rockchip,rk3399-cru.yaml
+> > > ARCH=3Darm64 make dtbs_check DT_SCHEMA_FILES=3DDocumentation/devicetr=
+ee/bindings/clock/rockchip,rk3399-cru.yaml
+> > >
+> > > Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+> > > ---
+> > >
+> > > One caveat is that this node expects certain external clocks, mainly =
+'xin24m'.
+> > >
+> >
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+>
+> Thanks! Is this blocked on something else?
 
-My bad, its no in tmp.perf/urgent, after testing together with other
-patches will move to perf/urgent and by the end of this week I'll submit
-it to Linus, sorry.
+I'm expecting Stephen to pick this up.
 
-- Arnaldo
- 
-> Thanks,
-> Mathieu
-> 
-> [1]. https://lists.linaro.org/pipermail/coresight/2021-June/006575.html
-> [2]. https://lists.linaro.org/pipermail/coresight/2021-June/006576.html
-> 
-> > 
-> > - Arnaldo
-> > 
-
--- 
-
-- Arnaldo
+Rob
