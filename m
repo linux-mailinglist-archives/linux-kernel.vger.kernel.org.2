@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025BC3CE913
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CC53CEA89
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353007AbhGSQuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:50:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46962 "EHLO mail.kernel.org"
+        id S1377708AbhGSRQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347431AbhGSP13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:27:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E10D61283;
-        Mon, 19 Jul 2021 16:08:08 +0000 (UTC)
+        id S1347739AbhGSPje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1369613BB;
+        Mon, 19 Jul 2021 16:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710889;
-        bh=sEkRuphTMwr2a3ubNhQqvFiqPbchASYk6LFAm9qznhE=;
+        s=korg; t=1626711553;
+        bh=eoc4cLiQjCjJt6iB1YsgNIaKOaMVWDvMyt9zswIFKPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wNL6nMA/YJ/2SGpSFSvdMxDquJRVPJ/wbsnnjPQOUcwdYC3nOAqdJDkNc1bh15+NQ
-         JvkAPtzSKLxVUIF5QwyQtCw+DZatYKkm7E0g3SvYtqlM7hHuwjxVY8H9c3Xoo6fZqC
-         2CiUvBRweojbqWO55PBZsPPSUjhniDXTCCXKVc0w=
+        b=ekdH4Hy4hX3QKPNobnmVKDPKZTQUhBo8OTIj4kx3LFx+wWQH/sX+Gg0SH/FNh8LZe
+         IiZfv7m1kHHp7qLpLDr4b6b3mYHPF+3Y0T34JOM3/ZDAsdhVPvg39qfibrpx1lmdvA
+         6aL22W48B/hGrqamGO4ckEYfLDiv+YS+5gJ70O5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 129/351] ALSA: usb-audio: scarlett2: Fix data_mutex lock
+        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.12 013/292] tracing: Do not reference char * as a string in histograms
 Date:   Mon, 19 Jul 2021 16:51:15 +0200
-Message-Id: <20210719144948.753335070@linuxfoundation.org>
+Message-Id: <20210719144942.967546113@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,77 +44,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geoffrey D. Bennett <g@b4.vu>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit 9b5ddea9ce5a68d7d2bedcb69901ac2a86c96c7b ]
+commit 704adfb5a9978462cd861f170201ae2b5e3d3a80 upstream.
 
-The private->vol_updated flag was being checked outside of the
-mutex_lock/unlock() of private->data_mutex leading to the volume data
-being fetched twice from the device unnecessarily or old volume data
-being returned.
+The histogram logic was allowing events with char * pointers to be used as
+normal strings. But it was easy to crash the kernel with:
 
-Update scarlett2_*_ctl_get() and include the private->vol_updated flag
-check inside the critical region.
+ # echo 'hist:keys=filename' > events/syscalls/sys_enter_openat/trigger
 
-Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
-Link: https://lore.kernel.org/r/20210620164643.GA9216@m.b4.vu
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+And open some files, and boom!
+
+ BUG: unable to handle page fault for address: 00007f2ced0c3280
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 1173fa067 P4D 1173fa067 PUD 1171b6067 PMD 1171dd067 PTE 0
+ Oops: 0000 [#1] PREEMPT SMP
+ CPU: 6 PID: 1810 Comm: cat Not tainted 5.13.0-rc5-test+ #61
+ Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
+v03.03 07/14/2016
+ RIP: 0010:strlen+0x0/0x20
+ Code: f6 82 80 2a 0b a9 20 74 11 0f b6 50 01 48 83 c0 01 f6 82 80 2a 0b
+a9 20 75 ef c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 <80> 3f 00 74
+10 48 89 f8 48 83 c0 01 80 38 00 75 f7 48 29 f8 c3
+
+ RSP: 0018:ffffbdbf81567b50 EFLAGS: 00010246
+ RAX: 0000000000000003 RBX: ffff93815cdb3800 RCX: ffff9382401a22d0
+ RDX: 0000000000000100 RSI: 0000000000000000 RDI: 00007f2ced0c3280
+ RBP: 0000000000000100 R08: ffff9382409ff074 R09: ffffbdbf81567c98
+ R10: ffff9382409ff074 R11: 0000000000000000 R12: ffff9382409ff074
+ R13: 0000000000000001 R14: ffff93815a744f00 R15: 00007f2ced0c3280
+ FS:  00007f2ced0f8580(0000) GS:ffff93825a800000(0000)
+knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f2ced0c3280 CR3: 0000000107069005 CR4: 00000000001706e0
+ Call Trace:
+  event_hist_trigger+0x463/0x5f0
+  ? find_held_lock+0x32/0x90
+  ? sched_clock_cpu+0xe/0xd0
+  ? lock_release+0x155/0x440
+  ? kernel_init_free_pages+0x6d/0x90
+  ? preempt_count_sub+0x9b/0xd0
+  ? kernel_init_free_pages+0x6d/0x90
+  ? get_page_from_freelist+0x12c4/0x1680
+  ? __rb_reserve_next+0xe5/0x460
+  ? ring_buffer_lock_reserve+0x12a/0x3f0
+  event_triggers_call+0x52/0xe0
+  ftrace_syscall_enter+0x264/0x2c0
+  syscall_trace_enter.constprop.0+0x1ee/0x210
+  do_syscall_64+0x1c/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Where it triggered a fault on strlen(key) where key was the filename.
+
+The reason is that filename is a char * to user space, and the histogram
+code just blindly dereferenced it, with obvious bad results.
+
+I originally tried to use strncpy_from_user/kernel_nofault() but found
+that there's other places that its dereferenced and not worth the effort.
+
+Just do not allow "char *" to act like strings.
+
+Link: https://lkml.kernel.org/r/20210715000206.025df9d2@rorschach.local.home
+
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Cc: stable@vger.kernel.org
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Acked-by: Tom Zanussi <zanussi@kernel.org>
+Fixes: 79e577cbce4c4 ("tracing: Support string type key properly")
+Fixes: 5967bd5c4239 ("tracing: Let filter_assign_type() detect FILTER_PTR_STRING")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/mixer_scarlett_gen2.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ kernel/trace/trace_events_hist.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 1982e67a0f32..2ea41c8eafd1 100644
---- a/sound/usb/mixer_scarlett_gen2.c
-+++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -1033,11 +1033,10 @@ static int scarlett2_master_volume_ctl_get(struct snd_kcontrol *kctl,
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_mixer_data *private = mixer->private_data;
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1673,7 +1673,9 @@ static struct hist_field *create_hist_fi
+ 	if (WARN_ON_ONCE(!field))
+ 		goto out;
  
--	if (private->vol_updated) {
--		mutex_lock(&private->data_mutex);
-+	mutex_lock(&private->data_mutex);
-+	if (private->vol_updated)
- 		scarlett2_update_volumes(mixer);
--		mutex_unlock(&private->data_mutex);
--	}
-+	mutex_unlock(&private->data_mutex);
+-	if (is_string_field(field)) {
++	/* Pointers to strings are just pointers and dangerous to dereference */
++	if (is_string_field(field) &&
++	    (field->filter_type != FILTER_PTR_STRING)) {
+ 		flags |= HIST_FIELD_FL_STRING;
  
- 	ucontrol->value.integer.value[0] = private->master_vol;
- 	return 0;
-@@ -1051,11 +1050,10 @@ static int scarlett2_volume_ctl_get(struct snd_kcontrol *kctl,
- 	struct scarlett2_mixer_data *private = mixer->private_data;
- 	int index = elem->control;
+ 		hist_field->size = MAX_FILTER_STR_VAL;
+@@ -4469,8 +4471,6 @@ static inline void add_to_key(char *comp
+ 		field = key_field->field;
+ 		if (field->filter_type == FILTER_DYN_STRING)
+ 			size = *(u32 *)(rec + field->offset) >> 16;
+-		else if (field->filter_type == FILTER_PTR_STRING)
+-			size = strlen(key);
+ 		else if (field->filter_type == FILTER_STATIC_STRING)
+ 			size = field->size;
  
--	if (private->vol_updated) {
--		mutex_lock(&private->data_mutex);
-+	mutex_lock(&private->data_mutex);
-+	if (private->vol_updated)
- 		scarlett2_update_volumes(mixer);
--		mutex_unlock(&private->data_mutex);
--	}
-+	mutex_unlock(&private->data_mutex);
- 
- 	ucontrol->value.integer.value[0] = private->vol[index];
- 	return 0;
-@@ -1319,11 +1317,10 @@ static int scarlett2_button_ctl_get(struct snd_kcontrol *kctl,
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_mixer_data *private = mixer->private_data;
- 
--	if (private->vol_updated) {
--		mutex_lock(&private->data_mutex);
-+	mutex_lock(&private->data_mutex);
-+	if (private->vol_updated)
- 		scarlett2_update_volumes(mixer);
--		mutex_unlock(&private->data_mutex);
--	}
-+	mutex_unlock(&private->data_mutex);
- 
- 	ucontrol->value.enumerated.item[0] = private->buttons[elem->control];
- 	return 0;
--- 
-2.30.2
-
 
 
