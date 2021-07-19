@@ -2,45 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C393CE4AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1953CE4B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349861AbhGSPpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:45:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52466 "EHLO mail.kernel.org"
+        id S1350169AbhGSPpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344155AbhGSO7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D50CD61363;
-        Mon, 19 Jul 2021 15:38:44 +0000 (UTC)
+        id S1344251AbhGSO7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F4966120A;
+        Mon, 19 Jul 2021 15:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709125;
-        bh=8HpQHPCkSzrADkTZ/pMXcY+Hsmpe2Aypku5O0/pmY0U=;
+        s=korg; t=1626708196;
+        bh=DLMSh4j0AnmTMlzgxM/VboZ7+8wm4ULFHQ39d2I+ppE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xmPMavuEQ9pSF9nIJqh1iyI44p/hEhPxk0JAk2Xxa88PwKqLkRmk6y72t+mqlvIFe
-         6qlNe2qCxUHsxplpmbELjCypDx7e6Taq+6aOQlludAuzoGxc8fUR6HLhMwmVYsZXH5
-         cDaaVmWxJm0JEww4az1mjXX2Oe2p+XVroVoJ/Yvc=
+        b=vudZg5PoMkXrdBTlrh3fHw3VmL7nJlsN1h1y4m7DNPpbuVAYLIJ0HmVcCdEZiQFxk
+         ktf5MEiWkR3V3WQn6kLBtb/zMTU20qk7Ym5HycH0YUfcwH+Pl6112g8m17Cd7/DYY7
+         WSTvbOGok9maM0LOc4o2YBwT56TtPF7wTUZIRS2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        lixianming <lixianming5@huawei.com>,
-        "Longpeng(Mike)" <longpeng2@huawei.com>,
+        stable@vger.kernel.org, Lee Gibson <leegib@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 263/421] vsock: notify server to shutdown when client has pending signal
+Subject: [PATCH 4.14 185/315] wl1251: Fix possible buffer overflow in wl1251_cmd_scan
 Date:   Mon, 19 Jul 2021 16:51:14 +0200
-Message-Id: <20210719144955.509022881@linuxfoundation.org>
+Message-Id: <20210719144948.979870242@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,70 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng(Mike) <longpeng2@huawei.com>
+From: Lee Gibson <leegib@gmail.com>
 
-[ Upstream commit c7ff9cff70601ea19245d997bb977344663434c7 ]
+[ Upstream commit d10a87a3535cce2b890897914f5d0d83df669c63 ]
 
-The client's sk_state will be set to TCP_ESTABLISHED if the server
-replay the client's connect request.
+Function wl1251_cmd_scan calls memcpy without checking the length.
+Harden by checking the length is within the maximum allowed size.
 
-However, if the client has pending signal, its sk_state will be set
-to TCP_CLOSE without notify the server, so the server will hold the
-corrupt connection.
-
-            client                        server
-
-1. sk_state=TCP_SYN_SENT         |
-2. call ->connect()              |
-3. wait reply                    |
-                                 | 4. sk_state=TCP_ESTABLISHED
-                                 | 5. insert to connected list
-                                 | 6. reply to the client
-7. sk_state=TCP_ESTABLISHED      |
-8. insert to connected list      |
-9. *signal pending* <--------------------- the user kill client
-10. sk_state=TCP_CLOSE           |
-client is exiting...             |
-11. call ->release()             |
-     virtio_transport_close
-      if (!(sk->sk_state == TCP_ESTABLISHED ||
-	      sk->sk_state == TCP_CLOSING))
-		return true; *return at here, the server cannot notice the connection is corrupt*
-
-So the client should notify the peer in this case.
-
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Jorgen Hansen <jhansen@vmware.com>
-Cc: Norbert Slusarek <nslusarek@gmx.net>
-Cc: Andra Paraschiv <andraprs@amazon.com>
-Cc: Colin Ian King <colin.king@canonical.com>
-Cc: David Brazdil <dbrazdil@google.com>
-Cc: Alexander Popov <alex.popov@linux.com>
-Suggested-by: Stefano Garzarella <sgarzare@redhat.com>
-Link: https://lkml.org/lkml/2021/5/17/418
-Signed-off-by: lixianming <lixianming5@huawei.com>
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Lee Gibson <leegib@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210428115508.25624-1-leegib@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/af_vsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ti/wl1251/cmd.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index aceafec612a8..2d31fce5c218 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1225,7 +1225,7 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
+index 9547aea01b0f..ea0215246c5c 100644
+--- a/drivers/net/wireless/ti/wl1251/cmd.c
++++ b/drivers/net/wireless/ti/wl1251/cmd.c
+@@ -466,9 +466,12 @@ int wl1251_cmd_scan(struct wl1251 *wl, u8 *ssid, size_t ssid_len,
+ 		cmd->channels[i].channel = channels[i]->hw_value;
+ 	}
  
- 		if (signal_pending(current)) {
- 			err = sock_intr_errno(timeout);
--			sk->sk_state = TCP_CLOSE;
-+			sk->sk_state = sk->sk_state == TCP_ESTABLISHED ? TCP_CLOSING : TCP_CLOSE;
- 			sock->state = SS_UNCONNECTED;
- 			vsock_transport_cancel_pkt(vsk);
- 			goto out_wait;
+-	cmd->params.ssid_len = ssid_len;
+-	if (ssid)
+-		memcpy(cmd->params.ssid, ssid, ssid_len);
++	if (ssid) {
++		int len = clamp_val(ssid_len, 0, IEEE80211_MAX_SSID_LEN);
++
++		cmd->params.ssid_len = len;
++		memcpy(cmd->params.ssid, ssid, len);
++	}
+ 
+ 	ret = wl1251_cmd_send(wl, CMD_SCAN, cmd, sizeof(*cmd));
+ 	if (ret < 0) {
 -- 
 2.30.2
 
