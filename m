@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750CE3CF27F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FE43CF26E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 05:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243390AbhGTCne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 22:43:34 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:50830 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351453AbhGSVEx (ORCPT
+        id S1345837AbhGTC3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 22:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359677AbhGSVWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 17:04:53 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 019E8806B6;
-        Tue, 20 Jul 2021 09:44:35 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1626731075;
-        bh=arTStlnRLucuQiOyAqdPWMy1jWTooNhp27kK8HT5aGo=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=TAPBWMPS5JPCaf7MP02z8Rju9CZ/crjx53q48Fm1Ieb3uHX+glDvQNsKQtNEZujLN
-         JEaDMq7PDWn0a5IAzfCGLHhnKgnLshv7Gi2EAsYGP1LZv1R+vnpsmdqKqWycgtw/9S
-         XEVCsGHInUqazNbYCUOxqXc5ohd5VzlmFPZTL8HC33ymybEOdoJCrm2IwmEopXA1RY
-         ncssO5U96/fSRyC3rbZHIUoXAhmIlzJwn7PU1LDC20awT7sZVaas7wNzIVtex2XCEz
-         /o1zlmTSVTIZPpKdj0//i/s7gngCQHhXHzQyZ/0oq5oYYJlvuSPkjiHfDtl2a9Sme9
-         TInGV1fYKWs9Q==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60f5f2420001>; Tue, 20 Jul 2021 09:44:34 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 20 Jul 2021 09:44:34 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.023; Tue, 20 Jul 2021 09:44:34 +1200
-From:   Richard Laing <Richard.Laing@alliedtelesis.co.nz>
-To:     Loic Poulain <loic.poulain@linaro.org>
-CC:     David Miller <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bus: mhi: pci-generic: configurable network interface MRU
-Thread-Topic: [PATCH] bus: mhi: pci-generic: configurable network interface
- MRU
-Thread-Index: AQHXePXNQwvlV1kNe0CXQRxG8ENZtqtJUccAgADBqIA=
-Date:   Mon, 19 Jul 2021 21:44:33 +0000
-Message-ID: <5165a859-1b00-e50e-985e-25044cf0e9ec@alliedtelesis.co.nz>
-References: <20210714211805.22350-1-richard.laing@alliedtelesis.co.nz>
- <CAMZdPi-1E5pieVwt_XFF-+PML-cX05nM=PdD0pApD_ym5k_uMQ@mail.gmail.com>
-In-Reply-To: <CAMZdPi-1E5pieVwt_XFF-+PML-cX05nM=PdD0pApD_ym5k_uMQ@mail.gmail.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.16.78]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C3218BD5D940284481E061C0BF8A5B60@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Mon, 19 Jul 2021 17:22:11 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED08BC05BD13;
+        Mon, 19 Jul 2021 14:53:51 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id h6-20020a17090a6486b029017613554465so1205905pjj.4;
+        Mon, 19 Jul 2021 14:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2ArHNhEaAihBAE/6AhTLO2iS0mlPZBVBtvEpG6ldHiw=;
+        b=jgfT7lcSDmPPJ3VUf1fDeEKuCvL1UtsGKEaIMolJR4+amNgf3ZZyPfp5vH2yWmoC2g
+         RUPUNVn0I8h/n/MOw1udLA5I4O6hEof9aJ1Y+Dg1YJ9e9nJKeLBuMrJ/DeMloyAHm7o+
+         +csPRmJf/g0vw9+ioKVC7muLeaaQOi7q5vQAmGsvUO9fHHwrAg9u/Kx9L34E3MUjYBV4
+         T2ku+XqXiq1BJLGN8bayQFCYWvzrQJ/nBSzfF+0g/Xln3dMqRwGWo3etfel9B60+riPr
+         XbhSKtBlQ3qnquE82q6v+xkVk2Kr99UBpi2RO1YCOI/jv/uOMe6ZCXb2UEmXjoszL2sZ
+         4drg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2ArHNhEaAihBAE/6AhTLO2iS0mlPZBVBtvEpG6ldHiw=;
+        b=omTTVM4YjeG3/BWtWGfqr3jru7RU/YqjCzRTf2t4kYyB+yXr8xqGiaNbyWzOgxhqy7
+         EbH+mq+ndvBXpYC4dNv+C1iuMLDIQLoekYlKG222UbgdgZpPXs+G8dOexfVt/W3eFfWD
+         nSX+1qx0Msjk6tBXQ38LjqX/e75QoX0CJyg2O9GZsGo/Rq/d1UILq7K32IC9WW883JD6
+         nWS3iGqwNJO4OCfHcl+JsfDlhJYnKlrAZsTQgrGIBrUzFBWCFhqfgbaDWMk3O9K7Qviz
+         5gFUUbGIkmt1sD2zQtIcO8I6OmOv8UX+M5Svp55BtRaKbBN05K8ZO/ndj4EDGljURr3/
+         ALzg==
+X-Gm-Message-State: AOAM532EiV/s7PCtSr7uqP1qPcJk+rXCZH+RLDVVRY6xjjAaBml3lET/
+        HFu6Rw3C3J0oRQlsvv7IGkIbAuB9ytvP3w==
+X-Google-Smtp-Source: ABdhPJwWaGI0CTyc/nBhCSgWwRjcYK09Ve/xT8Eh4i7B5lJucr3zAcWIoAzkuTjtDfDSc/yc6Xgj9Q==
+X-Received: by 2002:a17:90a:17a1:: with SMTP id q30mr26302632pja.190.1626731631063;
+        Mon, 19 Jul 2021 14:53:51 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id m13sm20489138pfc.119.2021.07.19.14.53.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 14:53:50 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/289] 5.12.19-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210719183557.768945788@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <3ebe56db-c21a-40bc-f2ee-a518c380ecfc@gmail.com>
+Date:   Mon, 19 Jul 2021 14:53:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=dvql9Go4 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=8KpF8ikWtqQA:10 a=IkcTkHD0fZMA:10 a=e_q4qTt1xDgA:10 a=893OgPLA04CPpLZ5ZCUA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+In-Reply-To: <20210719183557.768945788@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTG9pYywNCg0KT24gNy8xOS8yMSAxMDoxMSBQTSwgTG9pYyBQb3VsYWluIHdyb3RlOg0KPiBG
-b3IgbXkgaW50ZXJlc3QgZG8geW91IGhhdmUgc29tZSBudW1iZXJzIGhlcmUgaGlnaGxpZ2h0aW5n
-IGltcHJvdmVtZW50Pw0KVGhlc2UgYXJlIHNvbWUgb2YgdGhlIG51bWJlcnMgd2UgZm91bmQgZnJv
-bSBpbml0aWFsIHRlc3RpbmcgdXNpbmcgYW4gDQpleHRlcm5hbCBwYWNrZXQgZ2VuZXJhdG9yOg0K
-DQpwYWNrZXQgc2l6ZcKgwqDCoCBwYWNrZXRzIHNlbnTCoCB0aHJvdWdocHV0ICglcHBzKQ0KNjTC
-oMKgwqAgwqDCoMKgwqDCoMKgwqDCoCAxMDAwMDAwwqDCoMKgIMKgwqDCoCA2LjIxJQ0KMTI4wqDC
-oMKgIMKgwqAgwqAgwqDCoCAxMDAwMDAwwqDCoMKgIMKgwqDCoCA3LjQyJQ0KMjU2wqDCoMKgIMKg
-wqDCoMKgwqDCoMKgIDEwMDAwMDDCoMKgwqAgwqDCoMKgIDEwLjc5JQ0KNTEywqDCoMKgIMKgIMKg
-IMKgIMKgIDEwMDAwMDDCoMKgwqAgwqDCoMKgIDE2LjQwJQ0KMTAyNMKgwqDCoCDCoMKgwqDCoMKg
-wqAgMTAwMDAwMMKgwqDCoCDCoMKgwqAgMzQuMzQlDQoxMjYywqDCoMKgIMKgwqAgwqAgwqAgMTAw
-MDAwMMKgwqDCoCDCoMKgwqAgNDMuODIlDQoxMjYzwqDCoMKgIMKgwqAgwqAgwqAgMTAwMDAwMMKg
-wqDCoCDCoMKgwqAgMjIuNDUlwqDCoMKgIDwtLQ0KMTI4MMKgwqDCoCDCoMKgIMKgIMKgIDEwMDAw
-MDDCoMKgwqAgwqDCoMKgIDIzLjE1JQ0KMTUwMMKgwqDCoCDCoMKgIMKgIMKgIDEwMDAwMDDCoMKg
-wqAgwqDCoMKgIDQ2LjMyJQ0KMTUxOMKgwqDCoCDCoMKgIMKgIMKgIDEwMDAwMDDCoMKgwqAgwqDC
-oMKgIDQ2Ljg0JQ0KDQpZb3UgY2FuIHNlZSB0aGUgc3VkZGVuIGRyb3Agb2YgYWxtb3N0IDUwJSBi
-ZXR3ZWVuIDEyNjIgYW5kIDEyNjMgYnl0ZSANCnBhY2tldHMuIFRoaXMgaXMgd2hhdCBjYXVzZWQg
-dXMgdG8gaW52ZXN0aWdhdGUgZnVydGhlci4gRm9sbG93aW5nIHRoZSANCmNoYW5nZSB0byAzMktC
-IGJ1ZmZlcnMgdGhlIGRyb3AgaW4gdGhyb3VnaHB1dCBpcyBubyBsb25nZXIgc2Vlbi4NCg0KcGFj
-a2V0IHNpemXCoMKgwqAgcGFja2V0cyBzZW50wqAgdGhyb3VnaHB1dCAoJXBwcykNCjY0wqDCoMKg
-IMKgwqDCoMKgwqDCoMKgwqAgMTAwMDAwMMKgwqDCoCDCoMKgIDQuNDElDQoxMjjCoMKgwqAgwqAg
-wqAgwqAgwqAgMTAwMDAwMMKgwqDCoCDCoMKgIDcuNzAlDQoyNTbCoMKgwqAgwqDCoCDCoCDCoMKg
-IDEwMDAwMDDCoMKgwqAgwqDCoCAxNC4yNiUNCjUxMsKgwqDCoCDCoMKgIMKgIMKgwqAgMTAwMDAw
-MMKgwqDCoCDCoMKgIDI3LjA2JQ0KMTAyNMKgwqDCoCDCoCDCoCDCoMKgIDEwMDAwMDDCoMKgwqAg
-wqDCoCA0OS4zOSUNCjEyODDCoMKgwqAgwqDCoCDCoCDCoCAxMDAwMDAwwqDCoMKgIMKgwqAgNTgu
-ODIlDQoxNDI4wqDCoMKgIMKgwqAgwqAgwqAgMTAwMDAwMMKgwqDCoCDCoMKgIDYyLjYzJQ0KDQpJ
-biBhbGwgY2FzZXMgd2Ugd2VyZSB0ZXN0aW5nIHdpdGggdGhlIG1vZGVtIGl0c2VsZiBpbiBpbnRl
-cm5hbCBsb29wYmFjayANCm1vZGUuDQoNCldlIGhhdmUgbm90ZWQgdGhhdCBvdXIgbW9kZW0gZGVm
-YXVsdHMgdG8gMzJLQiBidWZmZXJzIChhbmQgYSBtYXhpbXVtIG9mIA0KMzIgcGFja2V0cyBwZXIg
-YnVmZmVyKSBhbmQgYWxzbyB0aGF0IHRoZXNlIHZhbHVlcyBjYW4gYmUgY2hhbmdlZC4gV2UgYXJl
-IA0KY29uc2lkZXJpbmcgYWRkaW5nIHRoZSBhYmlsaXR5IHRvIHR1bmUgdGhlIGJ1ZmZlciBzaXpl
-LCBwZXJoYXBzIGFkZGluZyBhIA0Kc3lzZnMgZW50cnkgb3IgbmV0bGluayBtZXNzYWdlIHRvIGNo
-YW5nZSB0aGUgYnVmZmVyIHNpemUgaW5zdGVhZCBvZiB0aGUgDQpoYXJkIGNvZGVkIHZhbHVlLiBB
-bnkgY29tbWVudHMgd291bGQgYmUgYXBwcmVjaWF0ZWQuDQoNClJlZ2FyZHMsDQpSaWNoYXJkDQoN
-Cg0KDQo=
+On 7/19/21 11:36 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.19 release.
+> There are 289 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 21 Jul 2021 18:35:15 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.19-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
