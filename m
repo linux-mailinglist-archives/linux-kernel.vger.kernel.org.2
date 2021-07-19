@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197863CEABF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CE63CE96F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378141AbhGSRR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38030 "EHLO mail.kernel.org"
+        id S1359095AbhGSQze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:55:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344166AbhGSPk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C839860E0C;
-        Mon, 19 Jul 2021 16:20:20 +0000 (UTC)
+        id S1347621AbhGSPaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:30:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF53C6141E;
+        Mon, 19 Jul 2021 16:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711621;
-        bh=+P5K42DrmBhqGQBFpUiwhFZgk+RVsc386cMnz3CQ6+8=;
+        s=korg; t=1626710991;
+        bh=j4v5bf/wFIPeGXrivdJqrxD4COA5DL2k+uD4+wcYois=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PnjI0u6FegTHKoS5Y4to6rSOJZwMc7PuesAU7M4uNOyZdxK0t2K4lKw7p5WitzmWa
-         OVwFEfGxYjh4bdEyYwuDsso7t4yMOq22/5eB+K6RoVLrdPBAdGjoJ6X+oQ5pCpMf4m
-         qMfwc1rKY9Uta3ppkV55XwqXu2eFN+edbz66o7KE=
+        b=thkZRWgfVSTHYzN960HbIY4JlFMSQC5Q71OHVpxVSPxJATDvs6OdMcxXVV1yJBgs9
+         KkBSZ1M91rrfuD0VBQX7sC1ULgrb6mZ3hqFBCc8AL/juBXEkW43fe2nj+oqt/F65dI
+         wORkPbOXkKwT+3XQknFWxR0LLJrcNjiQlCqAZuB0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 070/292] scsi: iscsi: Add iscsi_cls_conn refcount helpers
+Subject: [PATCH 5.13 186/351] power: supply: axp288_fuel_gauge: Make "T3 MRD" no_battery_list DMI entry more generic
 Date:   Mon, 19 Jul 2021 16:52:12 +0200
-Message-Id: <20210719144944.816637048@linuxfoundation.org>
+Message-Id: <20210719144951.133330019@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,95 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit b1d19e8c92cfb0ded180ef3376c20e130414e067 ]
+[ Upstream commit 3a06b912a5ce494d7b7300b12719c562be7b566f ]
 
-There are a couple places where we could free the iscsi_cls_conn while it's
-still in use. This adds some helpers to get/put a refcount on the struct
-and converts an exiting user. Subsequent commits will then use the helpers
-to fix 2 bugs in the eh code.
+It turns out that the "T3 MRD" DMI_BOARD_NAME value is used in a lot of
+different Cherry Trail x5-z8300 / x5-z8350 based Mini-PC / HDMI-stick
+models from Ace PC / Meegopad / MinisForum / Wintel (and likely also
+other vendors).
 
-Link: https://lore.kernel.org/r/20210525181821.7617-11-michael.christie@oracle.com
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Most of the other DMI strings on these boxes unfortunately contain various
+generic values like "Default string" or "$(DEFAULT_STRING)", so we cannot
+match on them. These devices do have their chassis-type correctly set to a
+value of "3" (desktop) which is a pleasant surprise, so also match on that.
+
+This should avoid the quirk accidentally also getting applied to laptops /
+tablets (which do actually have a battery). Although in my quite large
+database of Bay and Cherry Trail based devices DMIdecode dumps I don't
+have any laptops / tables with a board-name of "T3 MRD", so this should
+not be an issue.
+
+BugLink: https://askubuntu.com/questions/1206714/how-can-a-mini-pc-be-stopped-from-being-detected-as-a-laptop-with-a-battery/
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libiscsi.c             |  7 ++-----
- drivers/scsi/scsi_transport_iscsi.c | 12 ++++++++++++
- include/scsi/scsi_transport_iscsi.h |  2 ++
- 3 files changed, 16 insertions(+), 5 deletions(-)
+ drivers/power/supply/axp288_fuel_gauge.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 2aaf83678654..ab39d7f65bbb 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -1361,7 +1361,6 @@ void iscsi_session_failure(struct iscsi_session *session,
- 			   enum iscsi_err err)
- {
- 	struct iscsi_conn *conn;
--	struct device *dev;
+diff --git a/drivers/power/supply/axp288_fuel_gauge.c b/drivers/power/supply/axp288_fuel_gauge.c
+index 39e16ecb7638..37af0e216bc3 100644
+--- a/drivers/power/supply/axp288_fuel_gauge.c
++++ b/drivers/power/supply/axp288_fuel_gauge.c
+@@ -723,15 +723,6 @@ static const struct dmi_system_id axp288_fuel_gauge_blacklist[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "MEEGOPAD T02"),
+ 		},
+ 	},
+-	{
+-		/* Meegopad T08 */
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Default string"),
+-			DMI_MATCH(DMI_BOARD_VENDOR, "To be filled by OEM."),
+-			DMI_MATCH(DMI_BOARD_NAME, "T3 MRD"),
+-			DMI_MATCH(DMI_BOARD_VERSION, "V1.1"),
+-		},
+-	},
+ 	{	/* Mele PCG03 Mini PC */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Mini PC"),
+@@ -745,6 +736,15 @@ static const struct dmi_system_id axp288_fuel_gauge_blacklist[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Z83-4"),
+ 		}
+ 	},
++	{
++		/* Various Ace PC/Meegopad/MinisForum/Wintel Mini-PCs/HDMI-sticks */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "T3 MRD"),
++			DMI_MATCH(DMI_CHASSIS_TYPE, "3"),
++			DMI_MATCH(DMI_BIOS_VENDOR, "American Megatrends Inc."),
++			DMI_MATCH(DMI_BIOS_VERSION, "5.11"),
++		},
++	},
+ 	{}
+ };
  
- 	spin_lock_bh(&session->frwd_lock);
- 	conn = session->leadconn;
-@@ -1370,10 +1369,8 @@ void iscsi_session_failure(struct iscsi_session *session,
- 		return;
- 	}
- 
--	dev = get_device(&conn->cls_conn->dev);
-+	iscsi_get_conn(conn->cls_conn);
- 	spin_unlock_bh(&session->frwd_lock);
--	if (!dev)
--	        return;
- 	/*
- 	 * if the host is being removed bypass the connection
- 	 * recovery initialization because we are going to kill
-@@ -1383,7 +1380,7 @@ void iscsi_session_failure(struct iscsi_session *session,
- 		iscsi_conn_error_event(conn->cls_conn, err);
- 	else
- 		iscsi_conn_failure(conn, err);
--	put_device(dev);
-+	iscsi_put_conn(conn->cls_conn);
- }
- EXPORT_SYMBOL_GPL(iscsi_session_failure);
- 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 6ce1cc992d1d..b07105ae7c91 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -2459,6 +2459,18 @@ int iscsi_destroy_conn(struct iscsi_cls_conn *conn)
- }
- EXPORT_SYMBOL_GPL(iscsi_destroy_conn);
- 
-+void iscsi_put_conn(struct iscsi_cls_conn *conn)
-+{
-+	put_device(&conn->dev);
-+}
-+EXPORT_SYMBOL_GPL(iscsi_put_conn);
-+
-+void iscsi_get_conn(struct iscsi_cls_conn *conn)
-+{
-+	get_device(&conn->dev);
-+}
-+EXPORT_SYMBOL_GPL(iscsi_get_conn);
-+
- /*
-  * iscsi interface functions
-  */
-diff --git a/include/scsi/scsi_transport_iscsi.h b/include/scsi/scsi_transport_iscsi.h
-index 3974329d4d02..c5d7810fd792 100644
---- a/include/scsi/scsi_transport_iscsi.h
-+++ b/include/scsi/scsi_transport_iscsi.h
-@@ -443,6 +443,8 @@ extern void iscsi_remove_session(struct iscsi_cls_session *session);
- extern void iscsi_free_session(struct iscsi_cls_session *session);
- extern struct iscsi_cls_conn *iscsi_create_conn(struct iscsi_cls_session *sess,
- 						int dd_size, uint32_t cid);
-+extern void iscsi_put_conn(struct iscsi_cls_conn *conn);
-+extern void iscsi_get_conn(struct iscsi_cls_conn *conn);
- extern int iscsi_destroy_conn(struct iscsi_cls_conn *conn);
- extern void iscsi_unblock_session(struct iscsi_cls_session *session);
- extern void iscsi_block_session(struct iscsi_cls_session *session);
 -- 
 2.30.2
 
