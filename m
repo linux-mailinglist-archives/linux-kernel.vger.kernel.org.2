@@ -2,256 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B693CF0B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7F83CF0B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhGSXlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 19:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441887AbhGSWOD (ORCPT
+        id S1379392AbhGSXme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:42:34 -0400
+Received: from mail-io1-f44.google.com ([209.85.166.44]:34399 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350764AbhGSWSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:14:03 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1393C0613B7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:50:07 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id y4so20749882pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/KQZ/og+MMwG7+gZQy+I2ifIZbW2sC3CrysTm6RWo48=;
-        b=TrC6uyzelR+/+DuhHGkQhT8ZilBSns6EN6zr6R3GsDzwt1A0B1ob14VfGLKbKtyYHf
-         UnePiDR4FpHICi6z5QS4Br4KOWkHIgLEeR8gx7IzpIzQOJFTLlF7+NNZycoVeKnxYD6h
-         HbjmZ/PaBHV0V8e+cfLnxBcowZivtCrjpWnTV8c2ZjABFcunj+ENtzWsgGQLyJbKIFv/
-         VR+A8muZqP5sibfw7uvl/qPo2Ty2GVOGxwdOKplp/U4hoGQCi7nhVUCLUrGwfAlFMGnd
-         p98tI4Tr+xvCXIgbQNI2AJDXVbX1JKOsFuuzRo2sS//yKyLQdg5uMFTMCUas9NSy8J5b
-         Frtg==
+        Mon, 19 Jul 2021 18:18:37 -0400
+Received: by mail-io1-f44.google.com with SMTP id g22so21968258iom.1;
+        Mon, 19 Jul 2021 15:59:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/KQZ/og+MMwG7+gZQy+I2ifIZbW2sC3CrysTm6RWo48=;
-        b=qcEZNdNJ7S66GXfDOAPuISGbY0V+OmFwNLbnwz9R4GoTVUPZUz44wMybOoJeOCf8YV
-         WxD7LLLjyoMB5OmasWb5BFq9pWcjODJUqpHf9S2Bxm2hjFqpDPSdek/6Gk5xcxbmm5n6
-         VoNEKVsJtM5WL8PSC6ys+MJPDKg4g0exPaJVfc0U39d5xH2CF+FeO2kRj5/Pe7erZg4f
-         8U5SWTN7saj38HEVJjaMy3EVf9l4IrgvN3l7TSjm1tySTy+QTUbVfuKxl+JLFgPfxqdR
-         xRtQQb5+cmjX3V2OCpzwJZnjzOeJtRLS28Gi6V4uDbSz/7jpiwoenT2Q1vAHRqH8HTp0
-         ucFA==
-X-Gm-Message-State: AOAM531gL74uR+6iOtM+iiK8wEdgALoFNiRwd6mNE6EgVxbdGiM20jly
-        UDIe5OVCtNF240UKAWyYnj1NAw==
-X-Google-Smtp-Source: ABdhPJy/imUID7VPk45W7GZdlhJTj17s4zd4R4dZUGmjWKYmnjQB23dmeWQOvmtu+8kvlA6P6vSXfw==
-X-Received: by 2002:a63:a558:: with SMTP id r24mr12070616pgu.438.1626735006916;
-        Mon, 19 Jul 2021 15:50:06 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p33sm21208412pfw.40.2021.07.19.15.50.06
+        bh=x8FnStsqO07lJSEXVH2fhD2YnsyTXGxzxYo2rndiFjw=;
+        b=oFU9d7ug5BgPJESQ1DaDl8tGpXutie8YRwxUZuhOk7sZWNYsL7kvf5qVZx7qM6WiWH
+         cbC3dHS4BJMjXQyqFhMukI0WKRMSvTimBOUBtEqZa+ja5xOvGBGQZP+WSm+WCoLE9lKa
+         01yQ008Gi5BAI1UPGJZK+hWeeM20rgUzmZh0YgBhf4SaHlLVSkHGjfn2SlSNagpOOc/0
+         nf3zwWZNaZg107wtlIIWkBrAvsECUGSvtH1W9A2FuTh+AMoCb7EoIZWf2M2VqQ50xxy/
+         qyfoNDzEBDtBcz0nTfsReInp1fTsHSXaLeWwbBHll4juvwNVyigx0BSpVdzPpfWZpCLU
+         biIQ==
+X-Gm-Message-State: AOAM531+WBBtuQC1ApglQBQ4RbemQY+OOk+9wq3dT4FGBRrQ5wHAfz6X
+        i+WPZ/KVKnG2thSRIKDyDA==
+X-Google-Smtp-Source: ABdhPJzKEYYZ9HvB9YP4Yl5mDCrRDIc4wH0J8A79h25okpD3UQMyfuLlC0B1lWiH/mWa1hAUjvMU+A==
+X-Received: by 2002:a5d:930b:: with SMTP id l11mr21477012ion.177.1626735551513;
+        Mon, 19 Jul 2021 15:59:11 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id h1sm5655055ioz.22.2021.07.19.15.59.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 15:50:06 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 22:50:02 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 38/40] KVM: SVM: Provide support for
- SNP_GUEST_REQUEST NAE event
-Message-ID: <YPYBmlCuERUIO5+M@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-39-brijesh.singh@amd.com>
+        Mon, 19 Jul 2021 15:59:10 -0700 (PDT)
+Received: (nullmailer pid 2786165 invoked by uid 1000);
+        Mon, 19 Jul 2021 22:59:06 -0000
+Date:   Mon, 19 Jul 2021 16:59:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+Message-ID: <20210719225906.GA2769608@robh.at.kernel.org>
+References: <20210607123317.3242031-1-robert.marko@sartura.hr>
+ <20210607123317.3242031-5-robert.marko@sartura.hr>
+ <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
+ <20210713222528.GA952399@robh.at.kernel.org>
+ <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-39-brijesh.singh@amd.com>
+In-Reply-To: <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> Version 2 of GHCB specification added the support two SNP Guest Request
-> Message NAE event. The events allows for an SEV-SNP guest to make request
-> to the SEV-SNP firmware through hypervisor using the SNP_GUEST_REQUEST
-> API define in the SEV-SNP firmware specification.
+On Sun, Jul 18, 2021 at 11:15:38AM +0200, Robert Marko wrote:
+> On Wed, Jul 14, 2021 at 12:25 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Jun 25, 2021 at 01:46:08PM +0200, Robert Marko wrote:
+> > > On Mon, Jun 7, 2021 at 2:33 PM Robert Marko <robert.marko@sartura.hr> wrote:
+> > > >
+> > > > Add binding documents for the Delta TN48M CPLD drivers.
+> > > >
+> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > ---
+> > > > Changes in v3:
+> > > > * Include bindings for reset driver
+> > > >
+> > > > Changes in v2:
+> > > > * Implement MFD as a simple I2C MFD
+> > > > * Add GPIO bindings as separate
+> > > >
+> > > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 +++++++++
+> > > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 90 +++++++++++++++++++
+> > > >  .../bindings/reset/delta,tn48m-reset.yaml     | 35 ++++++++
+> > > >  3 files changed, 167 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > > >  create mode 100644 Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..aca646aecb12
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > > @@ -0,0 +1,42 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/gpio/delta,tn48m-gpio.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Delta Networks TN48M CPLD GPIO controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > > +
+> > > > +description: |
+> > > > +  This module is part of the Delta TN48M multi-function device. For more
+> > > > +  details see ../mfd/delta,tn48m-cpld.yaml.
+> > > > +
+> > > > +  GPIO controller module provides GPIO-s for the SFP slots.
+> > > > +  It is split into 3 controllers, one output only for the SFP TX disable
+> > > > +  pins, one input only for the SFP present pins and one input only for
+> > > > +  the SFP LOS pins.
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    enum:
+> > > > +      - delta,tn48m-gpio-sfp-tx-disable
+> > > > +      - delta,tn48m-gpio-sfp-present
+> > > > +      - delta,tn48m-gpio-sfp-los
+> > > > +
+> > > > +  reg:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  "#gpio-cells":
+> > > > +    const: 2
+> > > > +
+> > > > +  gpio-controller: true
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +  - "#gpio-cells"
+> > > > +  - gpio-controller
+> > > > +
+> > > > +additionalProperties: false
+> > > > diff --git a/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..2c6e2adf73ca
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > > > @@ -0,0 +1,90 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/mfd/delta,tn48m-cpld.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Delta Networks TN48M CPLD controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > > +
+> > > > +description: |
+> > > > +  Lattice CPLD onboard the TN48M switches is used for system
+> > > > +  management.
+> > > > +
+> > > > +  It provides information about the hardware model, revision,
+> > > > +  PSU status etc.
+> > > > +
+> > > > +  It is also being used as a GPIO expander for the SFP slots and
+> > > > +  reset controller for the switch MAC-s and other peripherals.
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: delta,tn48m-cpld
+> > > > +
+> > > > +  reg:
+> > > > +    description:
+> > > > +      I2C device address.
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  "#address-cells":
+> > > > +    const: 1
+> > > > +
+> > > > +  "#size-cells":
+> > > > +    const: 0
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +  - "#address-cells"
+> > > > +  - "#size-cells"
+> > > > +
+> > > > +patternProperties:
+> > > > +  "^gpio(@[0-9a-f]+)?$":
+> > > > +    $ref: ../gpio/delta,tn48m-gpio.yaml
+> > > > +
+> > > > +  "^reset-controller?$":
+> > > > +    $ref: ../reset/delta,tn48m-reset.yaml
+> > > > +
+> > > > +additionalProperties: false
+> > > > +
+> > > > +examples:
+> > > > +  - |
+> > > > +    i2c {
+> > > > +        #address-cells = <1>;
+> > > > +        #size-cells = <0>;
+> > > > +
+> > > > +        cpld@41 {
+> > > > +            compatible = "delta,tn48m-cpld";
+> > > > +            reg = <0x41>;
+> > > > +            #address-cells = <1>;
+> > > > +            #size-cells = <0>;
+> > > > +
+> > > > +            gpio@31 {
+> > > > +                compatible = "delta,tn48m-gpio-sfp-tx-disable";
+> > > > +                reg = <0x31>;
+> > > > +                gpio-controller;
+> > > > +                #gpio-cells = <2>;
+> > > > +            };
+> > > > +
+> > > > +            gpio@3a {
+> > > > +                compatible = "delta,tn48m-gpio-sfp-present";
+> > > > +                reg = <0x3a>;
+> > > > +                gpio-controller;
+> > > > +                #gpio-cells = <2>;
+> > > > +            };
+> > > > +
+> > > > +            gpio@40 {
+> > > > +                compatible = "delta,tn48m-gpio-sfp-los";
+> > > > +                reg = <0x40>;
+> > > > +                gpio-controller;
+> > > > +                #gpio-cells = <2>;
+> > > > +            };
+> > > > +
+> > > > +            reset-controller {
+> > > > +              compatible = "delta,tn48m-reset";
+> > > > +              #reset-cells = <1>;
+> > > > +            };
+> > > > +        };
+> > > > +    };
+> > > > diff --git a/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..0e5ee8decc0d
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > > > @@ -0,0 +1,35 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/reset/delta,tn48m-reset.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Delta Networks TN48M CPLD reset controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > > +
+> > > > +description: |
+> > > > +  This module is part of the Delta TN48M multi-function device. For more
+> > > > +  details see ../mfd/delta,tn48m-cpld.yaml.
+> > > > +
+> > > > +  Reset controller modules provides resets for the following:
+> > > > +  * 88F7040 SoC
+> > > > +  * 88F6820 SoC
+> > > > +  * 98DX3265 switch MAC-s
+> > > > +  * 88E1680 PHY-s
+> > > > +  * 88E1512 PHY
+> > > > +  * PoE PSE controller
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: delta,tn48m-reset
+> > > > +
+> > > > +  "#reset-cells":
+> > > > +    const: 1
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - "#reset-cells"
+> > > > +
+> > > > +additionalProperties: false
+> > > > --
+> > > > 2.31.1
+> > > >
+> > >
+> > > Are there any issues with the bindings?
+> >
+> > Yes. Primarily the GPIO function being part of the compatible. I'm
+> > surprised Linus W is okay with that.
+> 
+> I think I already explained this before, having a single compatible
+> won't work here.
+> Then there would not be anything to know whether its input or output
+> only as the pins
+> have specific purpose.
 
-IIUC, this snippet in the spec means KVM can't restrict what requests are made
-by the guests.  If so, that makes it difficult to detect/ratelimit a misbehaving
-guest, and also limits our options if there are firmware issues (hopefully there
-aren't).  E.g. ratelimiting a guest after KVM has explicitly requested it to
-migrate is not exactly desirable.
+The client side should tell the direction. Are you using the SFP 
+binding?: Documentation/devicetree/bindings/net/sff,sfp.txt
 
-  The hypervisor cannot alter the messages without detection nor read the
-  plaintext of the messages.
+Specific purpose IOs are not general purpose IOs. Repeating Linus W 
+here. Maybe his opinion has evolved...
 
-> The SNP_GUEST_REQUEST requires two unique pages, one page for the request
-> and one page for the response. The response page need to be in the firmware
-> state. The GHCB specification says that both the pages need to be in the
-> hypervisor state but before executing the SEV-SNP command the response page
-> need to be in the firmware state.
- 
-...
+If the programming model of each instance is different, then different 
+compatibles are justified. But describe what the difference is, not the 
+connection.
 
-> Now that KVM supports all the VMGEXIT NAEs required for the base SEV-SNP
-> feature, set the hypervisor feature to advertise it.
+> And knowing the capabilites is a requirment of the GPIO regmap driver
+> and the GPIO
+> core itself as it exposes that information in a generic manner and
+> driver like for the
+> SFP bus use that.
 
-It would helpful if this changelog listed the Guest Requests that are required
-for "base" SNP, e.g. to provide some insight as to why we care about guest
-requests.
+Driver details aren't justification for bindings.
 
->  static int snp_bind_asid(struct kvm *kvm, int *error)
-> @@ -1618,6 +1631,12 @@ static int snp_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	if (rc)
->  		goto e_free_context;
->  
-> +	/* Used for rate limiting SNP guest message request, use the default settings */
-> +	ratelimit_default_init(&sev->snp_guest_msg_rs);
-
-Is this exposed to userspace in any way?  This feels very much like a knob that
-needs to be configurable per-VM.
-
-Also, what are the estimated latencies of a guest request?  If the worst case
-latency is >200ms, a default ratelimit frequency of 5hz isn't going to do a whole
-lot.
-
-> +static void snp_handle_guest_request(struct vcpu_svm *svm, struct ghcb *ghcb,
-> +				     gpa_t req_gpa, gpa_t resp_gpa)
-> +{
-> +	struct sev_data_snp_guest_request data = {};
-> +	struct kvm_vcpu *vcpu = &svm->vcpu;
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct kvm_sev_info *sev;
-> +	int rc, err = 0;
-> +
-> +	if (!sev_snp_guest(vcpu->kvm)) {
-> +		rc = -ENODEV;
-> +		goto e_fail;
-> +	}
-> +
-> +	sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +	if (!__ratelimit(&sev->snp_guest_msg_rs)) {
-> +		pr_info_ratelimited("svm: too many guest message requests\n");
-> +		rc = -EAGAIN;
-
-What guarantee do we have that the guest actually understands -EAGAIN?  Ditto
-for -EINVAL returned by snp_build_guest_buf().  AFAICT, our options are to return
-one of the error codes defined in "Table 95. Status Codes for SNP_GUEST_REQUEST"
-of the firmware ABI, kill the guest, or ratelimit the guest without returning
-control to the guest.
-
-> +		goto e_fail;
-> +	}
-> +
-> +	rc = snp_build_guest_buf(svm, &data, req_gpa, resp_gpa);
-> +	if (rc)
-> +		goto e_fail;
-> +
-> +	sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +	mutex_lock(&kvm->lock);
-
-Question on the VMPCK sequences.  The firmware ABI says:
-
-   Each guest has four VMPCKs ... Each message contains a sequence number per
-   VMPCK. The sequence number is incremented with each message sent. Messages
-   sent by the guest to the firmware and by the firmware to the guest must be
-   delivered in order. If not, the firmware will reject subsequent messages ...
-
-Does that mean there are four independent sequences, i.e. four streams the guest
-can use "concurrently", or does it mean the overall freshess/integrity check is
-composed from four VMPCK sequences, all of which must be correct for the message
-to be valid?
-
-If it's the latter, then a traditional mutex isn't really necessary because the
-guest must implement its own serialization, e.g. it's own mutex or whatever, to
-ensure there is at most one request in-flight at any given time.  And on the KVM
-side it means KVM can simpy reject requests if there is already an in-flight
-request.  It might also give us more/better options for ratelimiting?
-
-> +	rc = sev_issue_cmd(kvm, SEV_CMD_SNP_GUEST_REQUEST, &data, &err);
-> +	if (rc) {
-> +		mutex_unlock(&kvm->lock);
-
-I suspect you reused this pattern from other, more complex code, but here it's
-overkill.  E.g.
-
-	if (!rc)
-		rc = kvm_write_guest(kvm, resp_gpa, sev->snp_resp_page, PAGE_SIZE);
-	else if (err)
-		rc = err;
-
-	mutex_unlock(&kvm->lock);
-
-	ghcb_set_sw_exit_info_2(ghcb, rc);
-
-> +		/* If we have a firmware error code then use it. */
-> +		if (err)
-> +			rc = err;
-> +
-> +		goto e_fail;
-> +	}
-> +
-> +	/* Copy the response after the firmware returns success. */
-> +	rc = kvm_write_guest(kvm, resp_gpa, sev->snp_resp_page, PAGE_SIZE);
-> +
-> +	mutex_unlock(&kvm->lock);
-> +
-> +e_fail:
-> +	ghcb_set_sw_exit_info_2(ghcb, rc);
-> +}
-> +
-> +static void snp_handle_ext_guest_request(struct vcpu_svm *svm, struct ghcb *ghcb,
-> +					 gpa_t req_gpa, gpa_t resp_gpa)
-> +{
-> +	struct sev_data_snp_guest_request req = {};
-> +	struct kvm_vcpu *vcpu = &svm->vcpu;
-> +	struct kvm *kvm = vcpu->kvm;
-> +	unsigned long data_npages;
-> +	struct kvm_sev_info *sev;
-> +	unsigned long err;
-> +	u64 data_gpa;
-> +	int rc;
-> +
-> +	if (!sev_snp_guest(vcpu->kvm)) {
-> +		rc = -ENODEV;
-> +		goto e_fail;
-> +	}
-> +
-> +	sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +	if (!__ratelimit(&sev->snp_guest_msg_rs)) {
-> +		pr_info_ratelimited("svm: too many guest message requests\n");
-> +		rc = -EAGAIN;
-> +		goto e_fail;
-> +	}
-> +
-> +	if (!sev->snp_certs_data) {
-> +		pr_err("svm: certs data memory is not allocated\n");
-> +		rc = -EFAULT;
-
-Another instance where the kernel's error numbers will not suffice.
-
-> +		goto e_fail;
-> +	}
-> +
-> +	data_gpa = ghcb_get_rax(ghcb);
-> +	data_npages = ghcb_get_rbx(ghcb);
+> Maybe Linus W can chime in here as well.
+> 
+> >
+> > > The patch series is depending on this as the rest has been reviewed.
+> >
+> > The bindings have been reviewed too, you just didn't like my comments...
+> 
+> Sorry, I did not pick that up as after my replies there was no further
+> discussion.
+> 
+> I am really hoping that we can find a middle ground here and get this
+> merged as the driver code itself has been revied and ACK-ed.
+> 
+> Regards,
+> Robert
+> >
+> > Rob
+> 
+> 
+> 
+> -- 
+> Robert Marko
+> Staff Embedded Linux Engineer
+> Sartura Ltd.
+> Lendavska ulica 16a
+> 10000 Zagreb, Croatia
+> Email: robert.marko@sartura.hr
+> Web: www.sartura.hr
+> 
