@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7663CE53F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C70C3CE66E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347646AbhGSPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:48:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58902 "EHLO mail.kernel.org"
+        id S1347714AbhGSQFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:05:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345315AbhGSPAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:00:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A99CB60238;
-        Mon, 19 Jul 2021 15:41:10 +0000 (UTC)
+        id S1344264AbhGSPGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:06:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EE096121F;
+        Mon, 19 Jul 2021 15:46:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709271;
-        bh=FsPxri3gfRLtr9txcmOvhLNCaxYZiy2IXVIUQXOPk5U=;
+        s=korg; t=1626709608;
+        bh=0LIP5qKIYPKgyLpH3K4NFeCwIuVJD7wjkrRIpCICnDU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIaJIJGtfrUvByChC6SZYriW6p90TyblMJs1LvLHrvkjOXIizyThWMMB2+TTN38hj
-         JBHkHwkwrtM5Ys4rDJV2wqz6whjL1UgvrlzMsc2fYE8wlEPncj+rAzsrFMWL6YETiN
-         8bULYRvH8u2Q9GntG79Au6jAVG4SIQflbSs5hjUo=
+        b=PYbXMHMfaYyk8VqgAnjrnhl6Q0MEBy4dLwRExH3PaUIHI1iWxDw2263D1JL0Vu8QA
+         1Z3z4onAoyKzh1HXQEHEaDe3nlg/F5RD/PyjTi/MNZV4Guh552SjB91nAm7SLyBrkL
+         WNne1AgYubZtNFeBAkvb+F0yKhGO624BA1Uv2W58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: [PATCH 4.19 316/421] smackfs: restrict bytes count in smk_set_cipso()
-Date:   Mon, 19 Jul 2021 16:52:07 +0200
-Message-Id: <20210719144957.265183240@linuxfoundation.org>
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 020/149] scsi: lpfc: Fix "Unexpected timeout" error in direct attach topology
+Date:   Mon, 19 Jul 2021 16:52:08 +0200
+Message-Id: <20210719144906.253245006@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: James Smart <jsmart2021@gmail.com>
 
-commit 49ec114a6e62d8d320037ce71c1aaf9650b3cafd upstream.
+[ Upstream commit e30d55137edef47434c40d7570276a0846fe922c ]
 
-Oops, I failed to update subject line.
+An 'unexpected timeout' message may be seen in a point-2-point topology.
+The message occurs when a PLOGI is received before the driver is notified
+of FLOGI completion. The FLOGI completion failure causes discovery to be
+triggered for a second time. The discovery timer is restarted but no new
+discovery activity is initiated, thus the timeout message eventually
+appears.
 
->From 07571157c91b98ce1a4aa70967531e64b78e8346 Mon Sep 17 00:00:00 2001
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Date: Mon, 12 Apr 2021 22:25:06 +0900
-Subject: [PATCH 4.19 316/421] smackfs: restrict bytes count in smk_set_cipso()
+In point-2-point, when discovery has progressed before the FLOGI completion
+is processed, it is not a failure. Add code to FLOGI completion to detect
+that discovery has progressed and exit the FLOGI handling (noop'ing it).
 
-Commit 7ef4c19d245f3dc2 ("smackfs: restrict bytes count in smackfs write
-functions") missed that count > SMK_CIPSOMAX check applies to only
-format == SMK_FIXED24_FMT case.
-
-Reported-by: syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210514195559.119853-4-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smackfs.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/lpfc/lpfc_els.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -883,6 +883,8 @@ static ssize_t smk_set_cipso(struct file
- 	if (format == SMK_FIXED24_FMT &&
- 	    (count < SMK_CIPSOMIN || count > SMK_CIPSOMAX))
- 		return -EINVAL;
-+	if (count > PAGE_SIZE)
-+		return -EINVAL;
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 4e994a693e3f..2040affa0887 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -1179,6 +1179,15 @@ stop_rr_fcf_flogi:
+ 			phba->fcf.fcf_redisc_attempted = 0; /* reset */
+ 			goto out;
+ 		}
++	} else if (vport->port_state > LPFC_FLOGI &&
++		   vport->fc_flag & FC_PT2PT) {
++		/*
++		 * In a p2p topology, it is possible that discovery has
++		 * already progressed, and this completion can be ignored.
++		 * Recheck the indicated topology.
++		 */
++		if (!sp->cmn.fPort)
++			goto out;
+ 	}
  
- 	data = memdup_user_nul(buf, count);
- 	if (IS_ERR(data))
+ flogifail:
+-- 
+2.30.2
+
 
 
