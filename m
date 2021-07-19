@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D2D3CE79B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE3F3CE754
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350185AbhGSQ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:29:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
+        id S1352052AbhGSQZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:25:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346529AbhGSPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:14:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D25AD6120A;
-        Mon, 19 Jul 2021 15:55:05 +0000 (UTC)
+        id S1346615AbhGSPO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:14:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B31D600EF;
+        Mon, 19 Jul 2021 15:55:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710106;
-        bh=cWHiH12FvTJFDthkEwrs//hjGIjPEoNDcrBkmfawt0I=;
+        s=korg; t=1626710132;
+        bh=6dhkOTtgfdcdhxD2ZprguMLZIVnF8Y6WHZsOVdLQsy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xwUe/Q3xi+mtkwVpHBNkkb1sAW5vj/wFQwbD1uRuuwl2CF+Apz0yIWiEWeSEuCAo2
-         e9/b7zP1Cc5n/yBof00QCyTqLiEKdmylCNoddxsx0W3wCLmFERA0JJAK0OnsJNNZAP
-         IXCzUAaLqUn+EfOMJyr8kk2jISEeaabcUYrwK3es=
+        b=NM4UT9P0lRhMlY3THV67Zo0ys9aaJzAVGhmf+Jy8l3MlMGkJSBEkL+UjQyOD2BLfL
+         2dLp0ZuVKUQMPQYMVXDBgYKkdJhMI273fekmLmBoNWC8MpY2lqobe1JN11Ok0NthnB
+         MNK/Q6gurpyNE0iCsi4q1hV6zaCvQ8HGLYHi9ANA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Po-Hsu Lin <po-hsu.lin@canonical.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 071/243] selftests: timers: rtcpie: skip test if default RTC device does not exist
-Date:   Mon, 19 Jul 2021 16:51:40 +0200
-Message-Id: <20210719144943.203098410@linuxfoundation.org>
+Subject: [PATCH 5.10 072/243] ALSA: sb: Fix potential double-free of CSP mixer elements
+Date:   Mon, 19 Jul 2021 16:51:41 +0200
+Message-Id: <20210719144943.233578405@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,64 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 0d3e5a057992bdc66e4dca2ca50b77fa4a7bd90e ]
+[ Upstream commit c305366a37441c2ac90b08711cb6f032b43672f2 ]
 
-This test will require /dev/rtc0, the default RTC device, or one
-specified by user to run. Since this default RTC is not guaranteed to
-exist on all of the devices, so check its existence first, otherwise
-skip this test with the kselftest skip code 4.
+snd_sb_qsound_destroy() contains the calls of removing the previously
+created mixer controls, but it doesn't clear the pointers.  As
+snd_sb_qsound_destroy() itself may be repeatedly called via ioctl,
+this could lead to double-free potentially.
 
-Without this patch this test will fail like this on a s390x zVM:
-$ selftests: timers: rtcpie
-$ /dev/rtc0: No such file or directory
-not ok 1 selftests: timers: rtcpie # exit=22
+Fix it by clearing the struct fields properly afterwards.
 
-With this patch:
-$ selftests: timers: rtcpie
-$ Default RTC /dev/rtc0 does not exist. Test Skipped!
-not ok 9 selftests: timers: rtcpie # SKIP
-
-Fixed up change log so "With this patch" text doesn't get dropped.
-Shuah Khan <skhan@linuxfoundation.org>
-
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210608140540.17885-4-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/timers/rtcpie.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/isa/sb/sb16_csp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/timers/rtcpie.c b/tools/testing/selftests/timers/rtcpie.c
-index 47b5bad1b393..4ef2184f1558 100644
---- a/tools/testing/selftests/timers/rtcpie.c
-+++ b/tools/testing/selftests/timers/rtcpie.c
-@@ -18,6 +18,8 @@
- #include <stdlib.h>
- #include <errno.h>
+diff --git a/sound/isa/sb/sb16_csp.c b/sound/isa/sb/sb16_csp.c
+index 1528e04a4d28..dbcd9ab2c2b7 100644
+--- a/sound/isa/sb/sb16_csp.c
++++ b/sound/isa/sb/sb16_csp.c
+@@ -1072,10 +1072,14 @@ static void snd_sb_qsound_destroy(struct snd_sb_csp * p)
+ 	card = p->chip->card;	
+ 	
+ 	down_write(&card->controls_rwsem);
+-	if (p->qsound_switch)
++	if (p->qsound_switch) {
+ 		snd_ctl_remove(card, p->qsound_switch);
+-	if (p->qsound_space)
++		p->qsound_switch = NULL;
++	}
++	if (p->qsound_space) {
+ 		snd_ctl_remove(card, p->qsound_space);
++		p->qsound_space = NULL;
++	}
+ 	up_write(&card->controls_rwsem);
  
-+#include "../kselftest.h"
-+
- /*
-  * This expects the new RTC class driver framework, working with
-  * clocks that will often not be clones of what the PC-AT had.
-@@ -35,8 +37,14 @@ int main(int argc, char **argv)
- 	switch (argc) {
- 	case 2:
- 		rtc = argv[1];
--		/* FALLTHROUGH */
-+		break;
- 	case 1:
-+		fd = open(default_rtc, O_RDONLY);
-+		if (fd == -1) {
-+			printf("Default RTC %s does not exist. Test Skipped!\n", default_rtc);
-+			exit(KSFT_SKIP);
-+		}
-+		close(fd);
- 		break;
- 	default:
- 		fprintf(stderr, "usage:  rtctest [rtcdev] [d]\n");
+ 	/* cancel pending transfer of QSound parameters */
 -- 
 2.30.2
 
