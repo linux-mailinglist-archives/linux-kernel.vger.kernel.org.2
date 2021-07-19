@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9615C3CD3AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6013CD3BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236363AbhGSKfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
+        id S236756AbhGSKlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235999AbhGSKfJ (ORCPT
+        with ESMTP id S236590AbhGSKkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:35:09 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA91C061574;
-        Mon, 19 Jul 2021 03:26:03 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id p9so11232231pjl.3;
-        Mon, 19 Jul 2021 04:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xm5kZ9iiuiXOod5i9iz4p0syanKjvZYe/iVvk7lSJJU=;
-        b=tqSrk1wiPDewm905DKY02ogzus7JCRYQy/0QA0RnUWEvuCqs7N22tdUMyUkdYRgWvg
-         u8QycD8mOTdXPVmRajiZ4+w6jkFMX6BuhIN/k0PJJtLwSdGdI2p3G66EL4hS6ZMmntIW
-         wfvwNrzHfWtai7K9W2oUzO61or2IDl/QCkLKdqop88GN04ZKd+uDC+PZ/SH9tNZZ55wo
-         GFKjtMLYFJvcxh9vXeYKUcvs1w7yDi6DB2Oicz56QrvVcSBao37pkjBwcbVaJ8Jz9R9b
-         BdPoIm75nuWUqIYOb56RmgjStrgMnzwHKG0Vx13JSMb3U7lBKI40PGUCXHC1eEw44ihr
-         S/QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xm5kZ9iiuiXOod5i9iz4p0syanKjvZYe/iVvk7lSJJU=;
-        b=pMaxBetdDYu1ANu6UVcxhuEjZFqWHgpBIT60P+ayJtGkZXQW/2wXKkhIirK1J9Hvaz
-         bkzrFelDnVJc83/r4pgBC0iKCvWv1P/NgWDbHd8J/kGomm1Z/Sz2Ed+K3lvYAQKgLNuR
-         +wcLF0muzqpLrGFoSKYI5+UFfHuU63rJkm+ItivZ008Jne8I8Ga63pmA5k8QVvnFe4mp
-         fQskxd/P4wmCh2QejZZblU6hkmaCIropIOi/wIcVNIHrIf0zQnOZfLHEbIQ5z9wKuKBv
-         +WfcNBoiwgZ16tHejCY1z2b2niMJTD2BejxLKF6+zJeZplqnDZv/3FtiLTr+53yWviiw
-         Awrg==
-X-Gm-Message-State: AOAM533Wi0PxENtyxn6FWKF5ClUVyVsrbcEX2E7nvxGgEuPsIxHPm6di
-        Lt4/d3mKRU5tpridjq2ua4k=
-X-Google-Smtp-Source: ABdhPJx46sn8xwubJ0j4N8c5vGiVWmiEk0HyXI/C/Oj52qP7aO//sLHg3HOhQnO/QqOqyYO6a3bzsw==
-X-Received: by 2002:a17:90b:ed2:: with SMTP id gz18mr29398587pjb.184.1626693348315;
-        Mon, 19 Jul 2021 04:15:48 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id e30sm22640597pga.63.2021.07.19.04.15.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 04:15:48 -0700 (PDT)
-Subject: [RFC PATCH v2 5/7] docs: pdfdocs: Teach xeCJK the width of quotation
- marks
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>
-Cc:     Hu Haowen <src.res@email.cn>,
-        Shinwoo Lee <shinwoo.lee.us@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <16d212cc-de0a-9259-6564-ce7431ed1f44@gmail.com>
-Date:   Mon, 19 Jul 2021 20:15:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 06:40:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78133C061574;
+        Mon, 19 Jul 2021 03:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XRraZAxjHWHOmKDHLSEsZ8UjvPxlwYc6y4fq7IIgfIQ=; b=h1qdBi0FWIlit/z9Kr+XrqBsI2
+        8zGpF3RiZW81r65EUD8AOdCS5gMjNpuAwM5GfsuJnGIBIdlO6ajbmKyu0YlZhjoGpxIWvovLGulb0
+        +ngRKmWAGi5Q4LL5rkDiAgHGqvtNsCI+o4aUgF7Lom+mJNC5Uco8q6X0cyT9KBR+/lLHZbg0/B1D2
+        ZlxsXcHG+QEqLhO/LnIVys+tZHfQWPJDZJO4stCWDkyvftKpCdBWHr4dvnn6kdep4sZfZxcpiMbpU
+        7G80OcHXKGajF53erZ23RAJfv2Dcmm66BZxo/dlPrZCBNvnj+tORfSn7/vRYFcGMO+C70MH7S3AqU
+        SLckoFZw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5RFT-006nL5-Qf; Mon, 19 Jul 2021 11:15:56 +0000
+Date:   Mon, 19 Jul 2021 12:15:47 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andreas Gr??nbacher <andreas.gruenbacher@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Chao Yu <chao@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>
+Subject: Re: [PATCH 1/2] iomap: support tail packing inline read
+Message-ID: <YPVe41YqpfGLNsBS@infradead.org>
+References: <20210716050724.225041-1-hsiangkao@linux.alibaba.com>
+ <20210716050724.225041-2-hsiangkao@linux.alibaba.com>
+ <YPGDZYT9OxdgNYf2@casper.infradead.org>
+ <YPGQB3zT4Wp4Q38X@B-P7TQMD6M-0146.local>
+ <YPGbNCdCNXIpNdqd@casper.infradead.org>
+ <YPGfqLcSiH3/z2RT@B-P7TQMD6M-0146.local>
+ <CAHpGcMJzEiJUbD=7ZOdH7NF+gq9MuEi8=ym34ay7QAm5_91s7g@mail.gmail.com>
+ <YPLdSja/4FBsjss/@B-P7TQMD6M-0146.local>
 MIME-Version: 1.0
-In-Reply-To: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPLdSja/4FBsjss/@B-P7TQMD6M-0146.local>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quotation marks in "Noto Serif CJK KR" and "Not Serif CJK JP" fonts
-are half width.
-xeCJK assumes they are full width as in "Noto Serif CJK SC" and are
-confused by the KR/JP variants.
+On Sat, Jul 17, 2021 at 09:38:18PM +0800, Gao Xiang wrote:
+> >From 62f367245492e389711bcebbf7da5adae586299f Mon Sep 17 00:00:00 2001
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Fri, 16 Jul 2021 10:52:48 +0200
+> Subject: [PATCH] iomap: support tail packing inline read
 
-Give xeCJK the character-class hints by the \xeCJKDeclareCharClass
-command.
+I'd still credit this to you as you did all the hard work.
 
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
----
- Documentation/conf.py | 4 ++++
- 1 file changed, 4 insertions(+)
+> +	/* inline source data must be inside a single page */
+> +	BUG_ON(iomap->length > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> +	/* handle tail-packing blocks cross the current page into the next */
+> +	if (size > PAGE_SIZE - poff)
+> +		size = PAGE_SIZE - poff;
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 9a237471289b..8a715765dada 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -384,6 +384,8 @@ latex_elements['preamble']  +=3D '''
- 	\\newcommand{\\kerneldocEndSC}{\\endgroup}
- 	\\newcommand{\\kerneldocBeginKR}{%
- 	    \\begingroup%
-+	    \\xeCJKDeclareCharClass{HalfLeft}{`=E2=80=9C,`=E2=80=98}%
-+	    \\xeCJKDeclareCharClass{HalfRight}{`=E2=80=9D,`=E2=80=99}%
- 	    \\krserif%
- 	    \\renewcommand{\\CJKrmdefault}{KRserif}%
- 	    \\renewcommand{\\CJKsfdefault}{KRsans}%
-@@ -393,6 +395,8 @@ latex_elements['preamble']  +=3D '''
- 	\\newcommand{\\kerneldocEndKR}{\\endgroup}
- 	\\newcommand{\\kerneldocBeginJP}{%
- 	    \\begingroup%
-+	    \\xeCJKDeclareCharClass{HalfLeft}{`=E2=80=9C,`=E2=80=98}%
-+	    \\xeCJKDeclareCharClass{HalfRight}{`=E2=80=9D,`=E2=80=99}%
- 	    \\jpserif%
- 	    \\renewcommand{\\CJKrmdefault}{JPserif}%
- 	    \\renewcommand{\\CJKsfdefault}{JPsans}%
---=20
-2.17.1
+This should probably use min or min_t.
 
+>  
+>  	addr = kmap_atomic(page);
+> -	memcpy(addr, iomap->inline_data, size);
+> -	memset(addr + size, 0, PAGE_SIZE - size);
+> +	memcpy(addr + poff, iomap->inline_data - iomap->offset + pos, size);
+> +	memset(addr + poff + size, 0, PAGE_SIZE - poff - size);
+>  	kunmap_atomic(addr);
+> -	SetPageUptodate(page);
+> +	flush_dcache_page(page);
 
+The flush_dcache_page addition should be a separate patch.
 
+>  
+>  	if (dio->flags & IOMAP_DIO_WRITE) {
+>  		loff_t size = inode->i_size;
+> @@ -394,7 +395,8 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+>  			mark_inode_dirty(inode);
+>  		}
+>  	} else {
+> -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
+> +		copied = copy_to_iter(iomap->inline_data + pos - iomap->offset,
+> +				length, iter);
+
+We also need to take the offset into account for the write side.
+I guess it would be nice to have a local variable for the inline
+address to not duplicate that calculation multiple times.
