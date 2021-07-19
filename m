@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2C43CD203
+	by mail.lfdr.de (Postfix) with ESMTP id C6F903CD204
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236311AbhGSJxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:53:51 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47206
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235440AbhGSJxv (ORCPT
+        id S236297AbhGSJzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235440AbhGSJzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:53:51 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 272FC40334;
-        Mon, 19 Jul 2021 10:34:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626690870;
-        bh=oD0uyN5gHA69IbTnnbd6ii92QeiCFwsBKCa7VtjsOp8=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=p3RfhgLW4LF4rmf7I9Hq2e7Ay9l58gFnwmJm19NIr1bnkA2yRT737hF9y3UpXd3VC
-         2V5VnURhQLvcpqoTMq3nNHGZR+nYnGWKNrSW8+LZbc+TPpamgtuwtrlEnZMIMVZyvn
-         2sJOB62r9J+8avlZwMwAMfnqPOmzK9Ko06X/tlM6oAbAN+0l5TNcWsF3K6fGhyuzWM
-         9U4uqacf/bsYjGzBnD4DQs1zo0Ihx9pNXBh8hsiyC9eZax/A0sEzueB3yrUYbwSTcR
-         lyV3fltBZyWbWnXXAJ9R2IkRuLSDVJkhOqm/9bLGZbqSMvxDsPyo/pOa4NTtvkPmc7
-         bK1IRNITu5q2g==
-From:   Colin King <colin.king@canonical.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: Fix a couple of spelling mistakes in Kconfig
-Date:   Mon, 19 Jul 2021 11:34:29 +0100
-Message-Id: <20210719103429.15544-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 19 Jul 2021 05:55:43 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE35C061574;
+        Mon, 19 Jul 2021 02:43:20 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id c17so3006547wmb.5;
+        Mon, 19 Jul 2021 03:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z0X9y/lDNtL87bpbBdWAHXnXi5ZZR2DEsvITW9WU+Ow=;
+        b=ivtnYf6oY3VW1qZ9gJU5TOuNYFInsWGpX/L5R+O/hukf0IavtW9yKBl/SEr//dzigb
+         oWshTwmLhf8IBeDUMwkqknBgVORUHZBE1pgOz8a8+a4mgAaG8X+7A+YgrDSZsxN4GFQ2
+         iHxs9hKXrqufvdexpXBPy5VBTY6AQjf1BwkefMYn57s4W9ktCGlMWktY3YfnePn8tJfy
+         EUTDjavjnRPUitlbnU/tanC5rSOaS67ps/Ih7wlgkok/qd7V0khqnUXuViD6k4EO6ziX
+         Rcc4FjRbilyp3dPK3e3uBH3pRQJwEmx3e50S6km3WZPioYORLleZqIuohW60Wgm44TH8
+         1Atw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z0X9y/lDNtL87bpbBdWAHXnXi5ZZR2DEsvITW9WU+Ow=;
+        b=gLrSpLOee/l/TiCyRvoLAZn06oPgl+iI7W1pPr6wACVfmTshxRI1afUliKi05a7Lst
+         xq/Ox8EpSDkewe5snr488MShpgBcQJ7PVdvgZme8t3hCJM35uKnZuRcIpEZQ2O9vdv0a
+         i22KeC8CijwHN13dDgQY04TEP2YmYiyLIe9hgx1E5T0xt3GClf7o1navChKHAOCK6HNB
+         2zN4fAXx9w3HeaGau2X53+FI3oAsL8zmnoPveUD1nDZGUiELF1twrm8hUKxlLbQFWXES
+         ZEy8civb5p7zwyu5jjknHleRbC4R4Q3b9amSLkfYbv5bfFoi1TtoYIe5ZASNq3eVNcWl
+         pqDA==
+X-Gm-Message-State: AOAM532kKNiq2+8zy/Kptjao66SOUzHYj/ZSl9l7oLq5SNzLAoMvgFKW
+        22Te/+1sRpvO6YoLzeMBTZsDoIRQDPJ63rD0azA=
+X-Google-Smtp-Source: ABdhPJy7PaMSlTPT5+4WNzlo/jagkWEZ/FWGrVOaqegHMGeX1nECerUJ/MvUu5+cffU0nvJCpSkpVPp70mB5kZpyolA=
+X-Received: by 2002:a05:600c:246:: with SMTP id 6mr25128473wmj.180.1626690981597;
+ Mon, 19 Jul 2021 03:36:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210715080822.14575-1-justin.he@arm.com>
+In-Reply-To: <20210715080822.14575-1-justin.he@arm.com>
+From:   Prabhakar Kushwaha <prabhakar.pkin@gmail.com>
+Date:   Mon, 19 Jul 2021 16:05:45 +0530
+Message-ID: <CAJ2QiJLWgxw0X8rkMhKgAGgiFS5xhrhMF5Dct_J791Kt-ys7QQ@mail.gmail.com>
+Subject: Re: [PATCH] qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()
+To:     Jia He <justin.he@arm.com>
+Cc:     Ariel Elior <aelior@marvell.com>, GR-everest-linux-l2@marvell.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nd@arm.com, Shai Malin <malin1024@gmail.com>,
+        Shai Malin <smalin@marvell.com>,
+        Prabhakar Kushwaha <pkushwaha@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Jia,
 
-There are a couple of spelling mistakes in the Kconfig text. Fix them.
+On Thu, Jul 15, 2021 at 2:28 PM Jia He <justin.he@arm.com> wrote:
+>
+> Liajian reported a bug_on hit on a ThunderX2 arm64 server with FastLinQ
+> QL41000 ethernet controller:
+>  BUG: scheduling while atomic: kworker/0:4/531/0x00000200
+>   [qed_probe:488()]hw prepare failed
+>   kernel BUG at mm/vmalloc.c:2355!
+>   Internal error: Oops - BUG: 0 [#1] SMP
+>   CPU: 0 PID: 531 Comm: kworker/0:4 Tainted: G W 5.4.0-77-generic #86-Ubuntu
+>   pstate: 00400009 (nzcv daif +PAN -UAO)
+>  Call trace:
+>   vunmap+0x4c/0x50
+>   iounmap+0x48/0x58
+>   qed_free_pci+0x60/0x80 [qed]
+>   qed_probe+0x35c/0x688 [qed]
+>   __qede_probe+0x88/0x5c8 [qede]
+>   qede_probe+0x60/0xe0 [qede]
+>   local_pci_probe+0x48/0xa0
+>   work_for_cpu_fn+0x24/0x38
+>   process_one_work+0x1d0/0x468
+>   worker_thread+0x238/0x4e0
+>   kthread+0xf0/0x118
+>   ret_from_fork+0x10/0x18
+>
+> In this case, qed_hw_prepare() returns error due to hw/fw error, but in
+> theory work queue should be in process context instead of interrupt.
+>
+> The root cause might be the unpaired spin_{un}lock_bh() in
+> _qed_mcp_cmd_and_union(), which causes botton half is disabled incorrectly.
+>
+> Reported-by: Lijian Zhang <Lijian.Zhang@arm.com>
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/regulator/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This patch is adding additional spin_{un}lock_bh().
+Can you please enlighten about the exact flow causing this unpaired
+spin_{un}lock_bh.
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 6562d4c243b0..c63d5faa883c 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -1044,7 +1044,7 @@ config REGULATOR_RT6160
- 	help
- 	  This adds support for voltage regulator in Richtek RT6160.
- 	  This device automatically change voltage output mode from
--	  Buck or Boost. The mode transistion depend on the input source voltage.
-+	  Buck or Boost. The mode transition depend on the input source voltage.
- 	  The wide output range is from 2025mV to 5200mV and can be used on most
- 	  common application scenario.
- 
-@@ -1053,7 +1053,7 @@ config REGULATOR_RT6245
- 	depends on I2C
- 	select REGMAP_I2C
- 	help
--	  This adds supprot for Richtek RT6245 voltage regulator.
-+	  This adds support for Richtek RT6245 voltage regulator.
- 	  It can support up to 14A output current and adjustable output voltage
- 	  from 0.4375V to 1.3875V, per step 12.5mV.
- 
--- 
-2.31.1
+Also,
+as per description, looks like you are not sure actual the root-cause.
+does this patch really solved the problem?
 
+--pk
