@@ -2,104 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8356B3CD6FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752EC3CD701
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241137AbhGSOCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:02:34 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53258 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbhGSOCd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:02:33 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 46A85368E44;
-        Mon, 19 Jul 2021 10:43:12 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 26RKPd2CIvGt; Mon, 19 Jul 2021 10:43:11 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 063BC36909B;
-        Mon, 19 Jul 2021 10:43:11 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 063BC36909B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1626705791;
-        bh=de0GThxO6PSlD37MzhGtHRKbYXX9HTffYP5G6p3CMdg=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=aFjed2K3OyYgZKzXWrUAG6Jc1NXo/aeMCY8/7L/GSef5XVm2xNIM2go3EVmiQiLCJ
-         9brYsup+v5p5VCDopV2ynTVTutKHKU7LEy2/otAMSRlQUIJXlIOlzNWwSW30ogMDcO
-         dVVfqLAAJJ866PlJb2jlBZnK5ALubPYl1EVr8HgEcmVhdeLB3ibdS8fidFkoIYkqzQ
-         eY7nBTPfPigwTTyLp1kfqCyVg7bGcBAiGssowmiKEJ83QMXC3UsoeYhhAFKiovD9Fl
-         ZtTqZZuHWXjDJAB46RBaXwb+TzkkReJTkfYxNeBrYnLut6EH80IsnNuEUUMHmN7LaF
-         xj50Ic6dgliIA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id sf-mVCvsc1_g; Mon, 19 Jul 2021 10:43:10 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id EB702368CE8;
-        Mon, 19 Jul 2021 10:43:10 -0400 (EDT)
-Date:   Mon, 19 Jul 2021 10:43:10 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Vincent Chen <vincent.chen@sifive.com>,
-        Guo Ren <guoren@linux.alibaba.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <1257037909.25426.1626705790861.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1583733592-22873-3-git-send-email-vincent.chen@sifive.com>
-References: <1583733592-22873-1-git-send-email-vincent.chen@sifive.com> <1583733592-22873-3-git-send-email-vincent.chen@sifive.com>
-Subject: Re: [PATCH V2 2/3] riscv: Add support for restartable sequence
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4059)
-Thread-Topic: riscv: Add support for restartable sequence
-Thread-Index: korcCokQEeN3DVoNTVQS7BBBu9PEUQ==
+        id S241153AbhGSOC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:02:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232531AbhGSOC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:02:56 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8948661003;
+        Mon, 19 Jul 2021 14:43:36 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m5UUY-00EEFY-MJ; Mon, 19 Jul 2021 15:43:34 +0100
+Date:   Mon, 19 Jul 2021 15:43:34 +0100
+Message-ID: <87fswajre1.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH 08/14] KVM: arm64: Add support for tagging shared pages in page-table
+In-Reply-To: <20210719104735.3681732-9-qperret@google.com>
+References: <20210719104735.3681732-1-qperret@google.com>
+        <20210719104735.3681732-9-qperret@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com, tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Mar 9, 2020, at 1:59 AM, Vincent Chen vincent.chen@sifive.com wrote:
-[...]
-> --- a/arch/riscv/kernel/signal.c
-> +++ b/arch/riscv/kernel/signal.c
-> @@ -234,6 +234,7 @@ static void handle_signal(struct ksignal *ksig, struct
-> pt_regs *regs)
-> 	sigset_t *oldset = sigmask_to_save();
-> 	int ret;
+On Mon, 19 Jul 2021 11:47:29 +0100,
+Quentin Perret <qperret@google.com> wrote:
 > 
-> +	rseq_signal_deliver(ksig, regs);
-> 	/* Are we from a system call? */
-> 	if (regs->cause == EXC_SYSCALL) {
+> The hypervisor will soon be in charge of tracking ownership of all
+> memory pages in the system. The current page-tracking infrastructure at
+> EL2 only allows binary states: a page is either owned or not by an
+> entity. But a number of use-cases will require more complex states for
+> pages that are shared between two entities (host, hypervisor, or guests).
+> 
+> In preparation for supporting these use-cases, introduce in the KVM
+> page-table library some infrastructure allowing to tag shared pages
+> using ignored bits (a.k.a. software bits) in PTEs.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_pgtable.h |  5 +++++
+>  arch/arm64/kvm/hyp/pgtable.c         | 25 +++++++++++++++++++++++++
+>  2 files changed, 30 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index dd72653314c7..f6d3d5c8910d 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -81,6 +81,8 @@ enum kvm_pgtable_stage2_flags {
+>   * @KVM_PGTABLE_PROT_W:		Write permission.
+>   * @KVM_PGTABLE_PROT_R:		Read permission.
+>   * @KVM_PGTABLE_PROT_DEVICE:	Device attributes.
+> + * @KVM_PGTABLE_STATE_SHARED:	Page shared with another entity.
+> + * @KVM_PGTABLE_STATE_BORROWED:	Page borrowed from another entity.
+>   */
+>  enum kvm_pgtable_prot {
+>  	KVM_PGTABLE_PROT_X			= BIT(0),
+> @@ -88,6 +90,9 @@ enum kvm_pgtable_prot {
+>  	KVM_PGTABLE_PROT_R			= BIT(2),
+>  
+>  	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
+> +
+> +	KVM_PGTABLE_STATE_SHARED		= BIT(4),
+> +	KVM_PGTABLE_STATE_BORROWED		= BIT(5),
 
-[...]
+I'd rather have some indirection here, as we have other potential
+users for the SW bits outside of pKVM (see the NV series, which uses
+some of these SW bits as the backend for TTL-based TLB invalidation).
 
-As Al Viro pointed out on IRC, the rseq_signal_deliver() should go after syscall
-restart handling, similarly to what is done on every other supported architecture.
+Can we instead only describe the SW bit states in this enum, and let
+the users map the semantic they require onto that state? See [1] for
+what I carry in the NV branch.
 
-Note that there is already an upstream commit derived on this non-upstream patch:
+>  };
+>  
+>  #define KVM_PGTABLE_PROT_RW	(KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 5bdbe7a31551..51598b79dafc 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -211,6 +211,29 @@ static kvm_pte_t kvm_init_invalid_leaf_owner(u8 owner_id)
+>  	return FIELD_PREP(KVM_INVALID_PTE_OWNER_MASK, owner_id);
+>  }
+>  
+> +static kvm_pte_t pte_ignored_bit_prot(enum kvm_pgtable_prot prot)
 
-commit 9866d141a097 ("csky: Add support for restartable sequence")
+Can we call these sw rather than ignored?
 
-which is broken in the same way.
+> +{
+> +	kvm_pte_t ignored_bits = 0;
+> +
+> +	/*
+> +	 * Ignored bits 0 and 1 are reserved to track the memory ownership
+> +	 * state of each page:
+> +	 *   00: The page is owned solely by the page-table owner.
+> +	 *   01: The page is owned by the page-table owner, but is shared
+> +	 *       with another entity.
+> +	 *   10: The page is shared with, but not owned by the page-table owner.
+> +	 *   11: Reserved for future use (lending).
+> +	 */
+> +	if (prot & KVM_PGTABLE_STATE_SHARED) {
+> +		if (prot & KVM_PGTABLE_STATE_BORROWED)
+> +			ignored_bits |= BIT(1);
+> +		else
+> +			ignored_bits |= BIT(0);
+> +	}
+> +
+> +	return FIELD_PREP(KVM_PTE_LEAF_ATTR_IGNORED, ignored_bits);
+> +}
+> +
+>  static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
+>  				  u32 level, kvm_pte_t *ptep,
+>  				  enum kvm_pgtable_walk_flags flag)
+> @@ -357,6 +380,7 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
+>  	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S1_AP, ap);
+>  	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S1_SH, sh);
+>  	attr |= KVM_PTE_LEAF_ATTR_LO_S1_AF;
+> +	attr |= pte_ignored_bit_prot(prot);
+>  	*ptep = attr;
+>  
+>  	return 0;
+> @@ -558,6 +582,7 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
+>  
+>  	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S2_SH, sh);
+>  	attr |= KVM_PTE_LEAF_ATTR_LO_S2_AF;
+> +	attr |= pte_ignored_bit_prot(prot);
+>  	*ptep = attr;
+>  
+>  	return 0;
 
-I'm not sure why I was never CC'd on the csky patch. Considering that nobody
-bothered to implement the rseq selftests for csky, I don't see how any of
-this is tested. I would favor a revert of that commit until the testing glue
-is contributed. Unfortunately, the csky commit has been upstream since v5.7.
+How about kvm_pgtable_stage2_relax_perms()?
 
 Thanks,
 
-Mathieu
+	M.
 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=kvm-arm64/nv-5.13&id=5dea6d82de76cfcda59818ec2532fc34c615db39
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Without deviation from the norm, progress is not possible.
