@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D563CED08
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7C83CED0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382721AbhGSRmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:42:17 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:58980 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357721AbhGSQwQ (ORCPT
+        id S1382853AbhGSRnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359782AbhGSRBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:52:16 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:57914)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m5X8Q-00C5r8-9k; Mon, 19 Jul 2021 11:32:54 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34170 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m5X8P-003nal-5j; Mon, 19 Jul 2021 11:32:53 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Jens Axboe <axboe@kernel.dk>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org
-References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
-        <cover.1626688654.git.vvs@virtuozzo.com>
-        <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com>
-Date:   Mon, 19 Jul 2021 12:32:46 -0500
-In-Reply-To: <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com> (Vasily
-        Averin's message of "Mon, 19 Jul 2021 13:45:44 +0300")
-Message-ID: <87k0lmryyp.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 19 Jul 2021 13:01:47 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259CCC09CE7D;
+        Mon, 19 Jul 2021 10:20:28 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id y17so19693894pgf.12;
+        Mon, 19 Jul 2021 10:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z4goUSDiNXNUovyb7udx8l8uy4sxEgjoc6vUDMc1ybc=;
+        b=VlQSfr3W51AolZZ4Na80TpeaKGcZ6ZgD0Gp+wJuhcCxTW6GvNEK+n5axRndXEH+Xh7
+         JmX81QKPjcn+pIiN64tfpTTFZshh0zvwjwUwIQCBU4ixQtMTEnw34k7sgp1s3dc9eJ43
+         mCGwQNAJnDjAYAz21IeTGQHkljZSSfq7K1u2hFZU2dvBVNDgop9MsbhK9DxWqFvjrmB0
+         gS8KKCTMokU2jV8pfs6ylrFxjDj3UEVpTSfz6gQJPjZ8BViUMFa8EJ9G8aW19/VDpfPm
+         5yMJiulayn9dsxJyMPdp5j4Y/aVUlJRwdFr9tZCT4C2CLKmAJ141fB8J3mnUTjp5AH0Y
+         jbOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z4goUSDiNXNUovyb7udx8l8uy4sxEgjoc6vUDMc1ybc=;
+        b=XRJixz6S8k8oPvJQ3d+Fgt9TlU8jBM8MxBKs6CHq17lI/XDOrVnt5Og7phdXJ4WdI0
+         O0Se1KzyVYrQlO46QwPfRrS2e6dHOf4hxDYv4PRWbdCRlvKtd8z+RhGQNcGmQHzz/FAg
+         y7/iEQXc8LRIUMQls0Pl9iIWNLXLlxjfudabOLlEW2VKqdtEeVSqCnq6GwG29a48spZY
+         DDFeNt9rEGDARl7GsS0XPOssEhoBChSoXRSLu4oTPljc6YUR0z8qmGr8xswLNfCiy/V7
+         VbPEPqq4AfIYzQeitjl1Iruc3RLMxTDQHox9z8H1AZ1lHFlF5Ln+2wkaVwwzmYgh51Pm
+         vCrw==
+X-Gm-Message-State: AOAM531uHRYhOInyzphxRPN7Krx8jr2MG9XPL+Yxckyvsvy9inunsdbz
+        CV3aWwtXgv7OUoA0YH9ZhahPmclJFSzYbA==
+X-Google-Smtp-Source: ABdhPJwj7jw3ncyb/vlR0b/mjdnZGtJJwK7vbXSZz1aLycpRB4K6FkGqNHOPuvn6UmE/8fLhh5GfjA==
+X-Received: by 2002:aa7:947c:0:b029:32e:ba1c:173c with SMTP id t28-20020aa7947c0000b029032eba1c173cmr27204810pfq.28.1626716299626;
+        Mon, 19 Jul 2021 10:38:19 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id gm7sm17248100pjb.28.2021.07.19.10.38.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 10:38:19 -0700 (PDT)
+Subject: Re: [PATCH 4.9 000/245] 4.9.276-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210719144940.288257948@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <3a0c6d00-415f-91b2-08c7-d9ef4fddf2a0@gmail.com>
+Date:   Mon, 19 Jul 2021 10:38:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m5X8P-003nal-5j;;;mid=<87k0lmryyp.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19riCDlCttkz1EHUrkai0JB6kWYfxt9MHc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Vasily Averin <vvs@virtuozzo.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 538 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 8 (1.6%), b_tie_ro: 7 (1.4%), parse: 1.00 (0.2%),
-        extract_message_metadata: 11 (2.1%), get_uri_detail_list: 1.27 (0.2%),
-        tests_pri_-1000: 5 (1.0%), tests_pri_-950: 1.24 (0.2%),
-        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 188 (35.0%), check_bayes:
-        184 (34.2%), b_tokenize: 10 (1.8%), b_tok_get_all: 6 (1.1%),
-        b_comp_prob: 3.7 (0.7%), b_tok_touch_all: 161 (29.9%), b_finish: 0.88
-        (0.2%), tests_pri_0: 298 (55.3%), check_dkim_signature: 1.73 (0.3%),
-        check_dkim_adsp: 10 (1.9%), poll_dns_idle: 0.53 (0.1%), tests_pri_10:
-        2.4 (0.4%), tests_pri_500: 19 (3.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v5 13/16] memcg: enable accounting for signals
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vasily Averin <vvs@virtuozzo.com> writes:
+On 7/19/21 7:49 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.276 release.
+> There are 245 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.276-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> When a user send a signal to any another processes it forces the kernel
-> to allocate memory for 'struct sigqueue' objects. The number of signals
-> is limited by RLIMIT_SIGPENDING resource limit, but even the default
-> settings allow each user to consume up to several megabytes of memory.
-> Moreover, an untrusted admin inside container can increase the limit or
-> create new fake users and force them to sent signals.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-Not any more.  Currently the number of sigqueue objects is limited
-by the rlimit of the creator of the user namespace of the container.
-
-> It makes sense to account for these allocations to restrict the host's
-> memory consumption from inside the memcg-limited container.
-
-Does it?  Why?  The given justification appears to have bit-rotted
-since -rc1.
-
-I know a lot of these things only really need a limit just to catch a
-program that starts malfunctioning.  If that is indeed the case
-reasonable per-resource limits are probably better than some great big
-group limit that can be exhausted with any single resource in the group.
-
-Is there a reason I am not aware of that where it makes sense to group
-all of the resources together and only count the number of bytes
-consumed?
-
-Eric
-
-
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->  kernel/signal.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index a3229ad..8921c4a 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -4663,7 +4663,7 @@ void __init signals_init(void)
->  {
->  	siginfo_buildtime_checks();
->  
-> -	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC);
-> +	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC | SLAB_ACCOUNT);
->  }
->  
->  #ifdef CONFIG_KGDB_KDB
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
