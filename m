@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3C43CDA04
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921C93CDA06
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241474AbhGSOc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38474 "EHLO mail.kernel.org"
+        id S242676AbhGSOcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:32:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243186AbhGSO0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:26:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27281610A5;
-        Mon, 19 Jul 2021 15:07:02 +0000 (UTC)
+        id S243483AbhGSO00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:26:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 955CC61166;
+        Mon, 19 Jul 2021 15:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707222;
-        bh=UPvY9TDJNFJ+IvpRKDOqyPzpCmbXCH0z2RGVsbMFq/k=;
+        s=korg; t=1626707225;
+        bh=lxopFPDHC6mOd/aY5hyhvyn8ruVz09GjuJa7/oI9518=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hhevQbJdWX6vBdzT9UmIWP2KsMp7nwHXxNCM+bXJZqVa883hg8Vhu/uCC7OOhBdxs
-         riqEQh8DbMEoe8kinchldlicqU7AK1cUjRxpKlMS5J5ZbEIQn0WLY0DhSU3cMlfJ4/
-         pP6R0K4VbAsnz1/pDTxSJTpl9NfPZGaqDcVgTKWE=
+        b=KbEWVTkADd/+CzzZOvxo0dAGh8tPumPyzFac6UWqeASJA0G5esJmhFWb5kHkmkSv4
+         iDtgE3uuPA5ij7OjpI29CChH+0PL681Gr5pSwjY7pKBkWJn8LuKYu/mWyqBgObtmgh
+         KLGsQIkTIuXkHRVkhrDkaw21H7Z8zZ0DCrs4S5ao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Yi Zhang <yi.zhang@redhat.com>,
+        Kamal Heib <kamalheib1@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 076/245] ehea: fix error return code in ehea_restart_qps()
-Date:   Mon, 19 Jul 2021 16:50:18 +0200
-Message-Id: <20210719144942.868991365@linuxfoundation.org>
+Subject: [PATCH 4.9 077/245] RDMA/rxe: Fix failure during driver load
+Date:   Mon, 19 Jul 2021 16:50:19 +0200
+Message-Id: <20210719144942.900148335@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -41,67 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-[ Upstream commit 015dbf5662fd689d581c0bc980711b073ca09a1a ]
+[ Upstream commit 32a25f2ea690dfaace19f7a3a916f5d7e1ddafe8 ]
 
-Fix to return -EFAULT from the error handling case instead of 0, as done
-elsewhere in this function.
+To avoid the following failure when trying to load the rdma_rxe module
+while IPv6 is disabled, add a check for EAFNOSUPPORT and ignore the
+failure, also delete the needless debug print from rxe_setup_udp_tunnel().
 
-By the way, when get_zeroed_page() fails, directly return -ENOMEM to
-simplify code.
+$ modprobe rdma_rxe
+modprobe: ERROR: could not insert 'rdma_rxe': Operation not permitted
 
-Fixes: 2c69448bbced ("ehea: DLPAR memory add fix")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210528085555.9390-1-thunder.leizhen@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: dfdd6158ca2c ("IB/rxe: Fix kernel panic in udp_setup_tunnel")
+Link: https://lore.kernel.org/r/20210603090112.36341-1-kamalheib1@gmail.com
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ehea/ehea_main.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_net.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-index 3692adb8902d..6c70cba92df0 100644
---- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
-+++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-@@ -2656,10 +2656,8 @@ static int ehea_restart_qps(struct net_device *dev)
- 	u16 dummy16 = 0;
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index e39261234528..f431cecd8b56 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -259,10 +259,8 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
  
- 	cb0 = (void *)get_zeroed_page(GFP_KERNEL);
--	if (!cb0) {
--		ret = -ENOMEM;
--		goto out;
+ 	/* Create UDP socket */
+ 	err = udp_sock_create(net, &udp_cfg, &sock);
+-	if (err < 0) {
+-		pr_err("failed to create udp socket. err = %d\n", err);
++	if (err < 0)
+ 		return ERR_PTR(err);
 -	}
-+	if (!cb0)
-+		return -ENOMEM;
  
- 	for (i = 0; i < (port->num_def_qps); i++) {
- 		struct ehea_port_res *pr =  &port->port_res[i];
-@@ -2679,6 +2677,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					    cb0);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "query_ehea_qp failed (1)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
+ 	tnl_cfg.encap_type = 1;
+ 	tnl_cfg.encap_rcv = rxe_udp_encap_recv;
+@@ -665,6 +663,12 @@ int rxe_net_ipv6_init(void)
  
-@@ -2691,6 +2690,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					     &dummy64, &dummy16, &dummy16);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "modify_ehea_qp failed (1)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
-@@ -2699,6 +2699,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					    cb0);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "query_ehea_qp failed (2)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
+ 	recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
+ 						htons(ROCE_V2_UDP_DPORT), true);
++	if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT) {
++		recv_sockets.sk6 = NULL;
++		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
++		return 0;
++	}
++
+ 	if (IS_ERR(recv_sockets.sk6)) {
+ 		recv_sockets.sk6 = NULL;
+ 		pr_err("Failed to create IPv6 UDP tunnel\n");
 -- 
 2.30.2
 
