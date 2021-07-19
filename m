@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F45C3CE7AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F453CE81C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349654AbhGSQaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:30:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49078 "EHLO mail.kernel.org"
+        id S1350151AbhGSQqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:46:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345165AbhGSPNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:13:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 008D8613F1;
-        Mon, 19 Jul 2021 15:53:45 +0000 (UTC)
+        id S1347177AbhGSP1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:27:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3EE360200;
+        Mon, 19 Jul 2021 16:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710026;
-        bh=QtvRV+ywbWvf5Ob5LjgKwga0Bz4DLWTM5dMniOTQAAo=;
+        s=korg; t=1626710860;
+        bh=ol+E2vJtoIGxg5jzdmCL+Y61nA1fIs0spuGJBTEUgNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gsfLIcP23bZxt9VNccfxqzMQKtaKi5/VxgtDmGYLv0fgtkt9lxEDG+B58XKZJrA0R
-         vqkCI5is+L2s7QP8Op96I+xyKoKwUh6JuXde5I4iNCeejbVob/2gHmceBJlyuMdON+
-         E+Av2lFr8skagwS15g6dWG6pdMDEicnSe2dq3TqA=
+        b=UDJ+LQL1Jhsimhh7obEmfL/FUekDTQ2agXBhc+/AgsXZ3iv6yQBk5lzOteg9l2o+/
+         cmdBDiU2kvDMQeQjL8u406RPPLldCGpKFltP/Us+hT0I5qUZ+7Z323lUr9GjH0PgeZ
+         NI6yETRIqlJPeQScqTbCHvo/w8OlOXmyZDJBa0w0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 045/243] scsi: lpfc: Fix "Unexpected timeout" error in direct attach topology
+        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 128/351] ALSA: usb-audio: scarlett2: Fix 18i8 Gen 2 PCM Input count
 Date:   Mon, 19 Jul 2021 16:51:14 +0200
-Message-Id: <20210719144942.377423412@linuxfoundation.org>
+Message-Id: <20210719144948.722453878@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Geoffrey D. Bennett <g@b4.vu>
 
-[ Upstream commit e30d55137edef47434c40d7570276a0846fe922c ]
+[ Upstream commit c5210f213456383482b4a77c5310282a89a106b5 ]
 
-An 'unexpected timeout' message may be seen in a point-2-point topology.
-The message occurs when a PLOGI is received before the driver is notified
-of FLOGI completion. The FLOGI completion failure causes discovery to be
-triggered for a second time. The discovery timer is restarted but no new
-discovery activity is initiated, thus the timeout message eventually
-appears.
+The 18i8 Gen 2 has 8 PCM Inputs, not 20. Fix the ports entry in
+s18i8_gen2_info.
 
-In point-2-point, when discovery has progressed before the FLOGI completion
-is processed, it is not a failure. Add code to FLOGI completion to detect
-that discovery has progressed and exit the FLOGI handling (noop'ing it).
-
-Link: https://lore.kernel.org/r/20210514195559.119853-4-jsmart2021@gmail.com
-Co-developed-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Link: https://lore.kernel.org/r/20210620164625.GA9165@m.b4.vu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_els.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/usb/mixer_scarlett_gen2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index b60945182db8..3d9889b3d5c8 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -1179,6 +1179,15 @@ stop_rr_fcf_flogi:
- 			phba->fcf.fcf_redisc_attempted = 0; /* reset */
- 			goto out;
- 		}
-+	} else if (vport->port_state > LPFC_FLOGI &&
-+		   vport->fc_flag & FC_PT2PT) {
-+		/*
-+		 * In a p2p topology, it is possible that discovery has
-+		 * already progressed, and this completion can be ignored.
-+		 * Recheck the indicated topology.
-+		 */
-+		if (!sp->cmn.fPort)
-+			goto out;
- 	}
- 
- flogifail:
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index bca3e7fe27df..1982e67a0f32 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -356,7 +356,7 @@ static const struct scarlett2_device_info s18i8_gen2_info = {
+ 		},
+ 		[SCARLETT2_PORT_TYPE_PCM] = {
+ 			.id = 0x600,
+-			.num = { 20, 18, 18, 14, 10 },
++			.num = { 8, 18, 18, 14, 10 },
+ 			.src_descr = "PCM %d",
+ 			.src_num_offset = 1,
+ 			.dst_descr = "PCM %02d Capture"
 -- 
 2.30.2
 
