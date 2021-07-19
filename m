@@ -2,158 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87C73CED83
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F8B3CED71
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385045AbhGSSoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 14:44:14 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:20020 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384175AbhGSSZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:25:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626721494;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=si1VbeKiIZ19ZrpCEuSh1q4t99XU93cCVq7c0UUPpO4=;
-    b=DweVk8v4oYEMLbdS1ZvgXGffa95/qcKp0BznOUALM3OJn3rKK00Rh3dyXkJL5uvAlC
-    BnfJZ4RgPpV5U1LRCiQrY+cprNU1Iwbmdc5QGgW4LDkBNDTkjhdB5O4G01RCrVbvcRQr
-    iOg/Nwwz5rRNhetYqNsDQ2n8q+3N5eakyLFHVyCzHG93FTNz/Czc6KNNhTC/VCJx4Bpg
-    9slxObOxtrmqTvSevZmSFEgeMVeLMa+zRRkzxxgyDTFMMgdk4PG4VFR5GBNSi+4BBS8P
-    xwkrNnGqceuzRzHzC+Uqtf+YmyIxJ/FGPjyWzn7cm6gcC8+sjOQg521HXLYvDmode+SS
-    SCNQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43roAE="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
-    with ESMTPSA id Z037e4x6JJ4sGIh
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Mon, 19 Jul 2021 21:04:54 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH 0/2] Regex fixes for mips and x86 cross-compile
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <cover.1625734629.git.hns@goldelico.com>
-Date:   Mon, 19 Jul 2021 21:04:53 +0200
-Cc:     Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, kernel@pyra-handheld.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4AC1CCE9-CCAF-4D4B-BAD5-CEB9E5155FDF@goldelico.com>
-References: <cover.1625734629.git.hns@goldelico.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Jessica Yu <jeyu@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-X-Mailer: Apple Mail (2.3445.104.21)
+        id S1357512AbhGSScY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 14:32:24 -0400
+Received: from mail-bn7nam10on2087.outbound.protection.outlook.com ([40.107.92.87]:44580
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1382417AbhGSSHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 14:07:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BP8QQxS9+Dbb+Gq+js2vTWvn6UDgjFL8PhOc8oWhSpvIX6ek5MuEF331c9kKX7A6DQvR3OruYI80Dne751zgZEObCqGVNIg0dmmdLLADp77iOnsL2mZJV9uGdm5IZfWhwivF6p/va5LftKYjpRkckvldijsd0drKmroacQwBLbh0RLONYUvbdo3vkoqMayzD30aAjOKpAolFyapR0dcVK3KbZYNTi/QJj+4x7fmgJkldftrrsx/XxlsddF4LELIrGEasao4WHcdqPPoMHGtzJom5yR3MsBXOYqr2IjVB1qvPFqkPakSBPpEZD9/d87mvLD6p+0BN2xI9N4hc3N/F4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bVVb9NE0ANB8ayAz6BMHe37UYlasYy1tgApcX9LV10E=;
+ b=eisRvhIe4rTtOD6yZVOzddGdsjCJHnKPrqZt/3VqCepm00ZuY5tBLc9So0xzNqvBPR/1Xs6jNls0Cff3u7yYZ6vLMGNb5DqNk6f8MwUdERa7SbeW1CdVmPiSFFsW29IRjpkB+NaYBGBZOchYpw/rgzmctAVDafKu4O/xJOKMDUhYawrSElAWHtC6ffVJ0qfawvdl9OkfjUXDdswBpY2Y0tnB/90MoMvpsDNm7LRrJ73CdrVB3DjskOPQZiDK10T+7AOIo/7LRpXVRwA/h6TomeReB6os+vrW74xqXWdE3LAW/kcqrPQPJiJQ6PICkPvlwChPv1BCAqjCLd3Xp8G9TA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bVVb9NE0ANB8ayAz6BMHe37UYlasYy1tgApcX9LV10E=;
+ b=emZzQvVcQFwWq1Z76Ro8Yr7mHiVr0btJDuZCSjRLJkQKuAc8OmaILoer8yDyA6GkFyEE9g86fvTrpn21+FdDLvgrJ2/95tPTSLUNMjrEgxrbnVReuIOH0He3m1ZOKCgiG6N8gY69UGNZyYD2hiLU8QbyOspt/kBgJ7Z8uAKXSV4=
+Authentication-Results: collabora.com; dkim=none (message not signed)
+ header.d=none;collabora.com; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MWHPR12MB1261.namprd12.prod.outlook.com
+ (2603:10b6:300:10::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
+ 2021 18:48:14 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4331.033; Mon, 19 Jul
+ 2021 18:48:14 +0000
+Subject: Re: [PATCH V3 05/12] ASoC: amd: add ACP5x PCM platform driver
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        broonie@kernel.org, alsa-devel@alsa-project.org
+Cc:     Sunil-kumar.Dommati@amd.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Alexander.Deucher@amd.com,
+        krisman@collabora.com
+References: <20210719165140.16143-1-vijendar.mukunda@amd.com>
+ <20210719165140.16143-6-vijendar.mukunda@amd.com>
+ <f476dc4a-8185-77fd-d469-728aebdc6f65@linux.intel.com>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <6c27b2bd-cd7b-ef0f-a89f-106d3d936580@amd.com>
+Date:   Tue, 20 Jul 2021 00:35:57 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <f476dc4a-8185-77fd-d469-728aebdc6f65@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MAXPR0101CA0053.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:e::15) To MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.160] (49.206.46.65) by MAXPR0101CA0053.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:e::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23 via Frontend Transport; Mon, 19 Jul 2021 18:48:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3706cf3d-8a52-435c-c3bb-08d94ae5c39d
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1261:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB12617E99CCD6A46C753D523697E19@MWHPR12MB1261.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Oh7Yjx9lkUYzcVKKkMzHIw5YvL94zAhFpEhZfTfQHU+mSaBzTli4mxPrKu4du4/u+n57FkaMBHAfZE2oQEx6GdWz6F6GOeZslYQnIDbyPoIcWgT8fIV2r6qjA35fmPnzSrltbZrQSHKbMRWT739H5lMAZDk+HuQZ3P3ifWXHSC0tS+KImaG+QHDmIzrfJLsOw4d3UBf4buIppMwwaRzWRsdzGLZTwIIbuzZlD5ljtwVVSlN8/luxXBsMcJTH0Gp7it3WP8M7q9KQLW6JnzDArEthpxxRMmmkfINZgIDlGD8zK5tp3hf17CCJiu491nkCHIpvLIG7+FEtIw/QKiR/rSLI3dx6nDUR13RjwOHQiRx9MBpgJOFuzPLswrwzi3zGcwNYNpn3gB/2iiZcz5HZxGWyczXvn7jJoBikMEpV+1RmUwZJjMdb2kQxg4alk2UBJD/tnGrMs8aW4Nkt3c3xVIPSOUfnhYiWnQPs9qpju6Ea7ziUpjghagzpc8YMckdbUa/e7tDcg4PSFupkJN17yne3cfcf+YVg+56HucmOf8OcarXddKUY6XGXyd6WXIIdeWkGiZI+Q/tcJFf0tY9WNFBPNac8Ma0k0r1iGZ82VS9fDXzb0DxB9V5ZWe8FanKlI8BoeIVbbvcV1EJJY/d2Im42YeFhniTjtyCk7+zSXNKta3sCLmJU3Bg9yjOD0OrGsfvrpNYUL5WDg85Lg0roJVV2GI3snO9ePxdSJyiOXHLvHHvZ10IiJ2SDbc85/1W9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(396003)(39860400002)(54906003)(55236004)(53546011)(2906002)(1006002)(6666004)(956004)(26005)(4326008)(2616005)(186003)(16576012)(316002)(38100700002)(86362001)(6486002)(31696002)(5660300002)(478600001)(8936002)(66476007)(66556008)(8676002)(31686004)(36756003)(66946007)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aEFmS1V6cThWTk55T2VvMU9WVHljaFdFZU10akd5ZXBQbmoxZWNVUjNISUUv?=
+ =?utf-8?B?Y0VUMExGVi9QSWhEMnZOV09YRDJNMlJKQmRWd283MzdUcjlHVWZIR0xWZXlw?=
+ =?utf-8?B?eDJNN1hDUElvdXVBdm1NN1FDc1FXSGU5YTY2Yk5XRGFhWFU2S01sTGZZc3lo?=
+ =?utf-8?B?WTBocmlVY083dWdaR2N3TGVGenFYSFhjWW1GalFoaS9aSjV3WDZEZGI2L3E1?=
+ =?utf-8?B?NW9QalFKY2tLbVZ4d2xkbGt4TkdlS0hvNi8zQktrWXNhUzg5dXQ4dFBBOVZm?=
+ =?utf-8?B?VTl2TWJyR3dyWEFYaWlDVjFuWmhWQlBuV3A0VDNRQ0YvYnBHa2h3MDNCME1V?=
+ =?utf-8?B?WEErVStzTHJUN2tvTWM2TVZhdGFpYjBERDZJSWk3U21xbG1lSmVVWS9qWlk1?=
+ =?utf-8?B?OCtKakJ2VjhNbXg2K1hDaDNWWFVocmxEOWsyTXNjUi96N2U0Q2pRKzN5OHRZ?=
+ =?utf-8?B?am44TmJSbGszeS9yMWRLdTRvV1FzWnpNLzB4bkdwNjlSdFlrSnN6YXE4YWZ1?=
+ =?utf-8?B?WkRFaEpPbmFzS0diZVhUNEdmN0FaRzM4dUR6a1dYUGNPUzFlbWw5K1FoUHQv?=
+ =?utf-8?B?bDZHdGNUblBET2taZFllZCtwck1JNXc0S3I5bUZ4NEJ6MmpaejJhZUFxcGxo?=
+ =?utf-8?B?UDU0Yk5hdWpjYjVHLzZqaWVyTS9jQ3hCS2trVmlaK2w0dDZubElSTm82QVAx?=
+ =?utf-8?B?NDZVeDdCVWN0UzN6L1NMelJxSW52eGtVVjQzUTRtZnhpdWp0UDhFMWdkZGo3?=
+ =?utf-8?B?QU80SG9lREtzVXlrV3Yvdk44RGlTSkp1aW5haGJHRHI3RHRSaVc2dmk1bDFT?=
+ =?utf-8?B?UjhkczlmekgzaVdhTGphdXNLWkF2S2hPSzJkNUNMSU1US1NSSElsZ080U1h6?=
+ =?utf-8?B?N29yZWlmbVp6UnhIYm1uZjBsYzFVMys5c3NwNkg3bFc4MTV0SnNxYVZmdmlU?=
+ =?utf-8?B?NGM5SExyUG1qd1VadkxFdDlIWm9IeFovU045Y2ZoMFdKQ1ZTSTB2T0hyT3R2?=
+ =?utf-8?B?N2laWHkvVmhKQy9EYVJEY2Fwd1R0NEFORzg5NWNEZlplMjVNM0lHM3FPckZ1?=
+ =?utf-8?B?dHZRVjVrc3p3TDBqRTd2cWxBRldFYXN3MUVTOXEvVlhzUWFEcnRDekNnaWty?=
+ =?utf-8?B?dllaT1hja2h1ZVRzbnFYbU1zTVNWT0Q5SWREcnU2MjBTWDNwZGYxOWxrdHZ6?=
+ =?utf-8?B?WndSMGZRbWFIRHUyRFVOSzZtb2RHLzY0UDBGbkRoVkpVVkNQYXgrUkU0VC9J?=
+ =?utf-8?B?a1JmSzRuZnZNNkIrME9ZdE5peElrUGtGNUZXVjh2Qkw3a0ZOSGFhSEtqM1Rw?=
+ =?utf-8?B?Ujhqc3RuZHlNcW9YQTRiVFZsVHd0T0dqZk5udkp4czdtUjRaMTlMcWN1OUhC?=
+ =?utf-8?B?SHlHVnJjYkRJdDBEK3RBZEtteHpwVW1FTUc3QmFpYXhoRjdMNU8yV2ptZFpi?=
+ =?utf-8?B?NGQ4WFloV1FROWJCSEVrZnljeTNzWDZWYkFZWEs4MS90OEZhRG14Vlljb0l1?=
+ =?utf-8?B?a05aRjVJWGdwVk9MeDZGMnRYd0tCeUoySjdETzRuak5ldGE4Q2hWdmlTVGlq?=
+ =?utf-8?B?clJJcEVGbEIwSTBIM1QyallYNlUxVG5jKzhSM2xOS2pqUjQ5ZTY5S1Uvd3pl?=
+ =?utf-8?B?UVlnM0tNQ2tkaTFYaC82SWZML1h4Vkt0VEN2SnJjV0pta1UwdEhLTG5NVXVM?=
+ =?utf-8?B?b3Zrc1dyMkJRUWtpekxWdTRpYXR5U0U1Z1pmanRuZW9wZ1dHTUZGN1FSWEsx?=
+ =?utf-8?Q?+33FYbCjPgD3HsPy1zH6QA0JDKPZQs4GPMlPmCZ?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3706cf3d-8a52-435c-c3bb-08d94ae5c39d
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 18:48:14.1667
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yqz+P0eOE/8ZxkttIqBhd82wg54rdU4hmc7nf6dU6N7o7NUEoFXsw4ZHibeGkYCshPPPl0OoFmoEhIROSkW7Pg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1261
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any chance that it gets merged?
+On 7/19/21 11:39 PM, Pierre-Louis Bossart wrote:
+> 
+>> +static int acp5x_audio_probe(struct platform_device *pdev)
+>> +{
+>> +	struct resource *res;
+>> +	struct i2s_dev_data *adata;
+>> +	int status;
+>> +
+>> +	if (!pdev->dev.platform_data) {
+>> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
+>> +		return -ENODEV;
+>> +	}
+>> +	irqflags = *((unsigned int *)(pdev->dev.platform_data));
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	if (!res) {
+>> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
+>> +			return -ENODEV;
+>> +	}
+>> +
+>> +	adata = devm_kzalloc(&pdev->dev, sizeof(*adata), GFP_KERNEL);
+>> +	if (!adata)
+>> +		return -ENOMEM;
+>> +
+>> +	adata->acp5x_base = devm_ioremap(&pdev->dev, res->start,
+>> +					 resource_size(res));
+>> +	if (!adata->acp5x_base)
+>> +		return -ENOMEM;
+>> +	dev_set_drvdata(&pdev->dev, adata);
+>> +	status = devm_snd_soc_register_component(&pdev->dev,
+>> +						 &acp5x_i2s_component,
+>> +						 NULL, 0);
+>> +	if (status) {
+>> +		dev_err(&pdev->dev, "Fail to register acp i2s component\n");
+>> +		return -ENODEV;
+> 
+> Unclear why you need to change the error code explicitly to -ENODEV?
+> 
+> return status?
 
-> Am 08.07.2021 um 10:57 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->=20
-> Trying to run the x86 relocs tool on a BSD based HOSTCC (cross
-> compilation environment) leads to errors like
->=20
->  VOFFSET arch/x86/boot/compressed/../voffset.h - due to: vmlinux
->  CC      arch/x86/boot/compressed/misc.o - due to: =
-arch/x86/boot/compressed/../voffset.h
->  OBJCOPY arch/x86/boot/compressed/vmlinux.bin - due to: vmlinux
->  RELOCS  arch/x86/boot/compressed/vmlinux.relocs - due to: vmlinux
-> empty (sub)expressionarch/x86/boot/compressed/Makefile:118: recipe for =
-target 'arch/x86/boot/compressed/vmlinux.relocs' failed
-> make[3]: *** [arch/x86/boot/compressed/vmlinux.relocs] Error 1
->=20
-> and when cross compiling a MIPS kernel on a BSD based HOSTCC
-> we get errors like
->=20
->  SYNC    include/config/auto.conf.cmd - due to: .config
-> egrep: empty (sub)expression
->  UPD     include/config/kernel.release
->  HOSTCC  scripts/dtc/dtc.o - due to target missing
->=20
-> It turns out that relocs.c on x86 uses patterns like
->=20
-> 	"something(|_end)"
->=20
-> while MIPS uses egrep with
->=20
-> 	(|MINOR_|PATCHLEVEL_)
->=20
-> In both cases it is not valid syntax or gives undefined results
-> according to POSIX 9.5.3 ERE Grammar
->=20
-> 	=
-https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
->=20
-> It seems to be silently accepted by the Linux regcmp() or egrep
-> implementation while a BSD host complains.
->=20
-> Such patterns can be replaced by a transformation like
->=20
-> 	"(|p1|p2)" -> "(p1|p2)?"
->=20
-> Test Linux:
->=20
-> root@letux:~# echo foo | egrep '^(|foo)$'
-> foo
-> root@letux:~# echo fool | egrep '^(foo)?$'
-> root@letux:~# echo fun | egrep '^(|foo)$'
-> root@letux:~# echo f | egrep '^(|foo)$'
-> root@letux:~# echo | egrep '^(|foo)$'
->=20
-> root@letux:~# echo foo | egrep '^(foo)?$'
-> foo
-> root@letux:~# echo fool | egrep '^(foo)?$'
-> root@letux:~# echo fun | egrep '^(foo)?$'
-> root@letux:~# echo f | egrep '^(foo)?$'
-> root@letux:~# echo | egrep '^(foo)?$'
->=20
-> root@letux:~#=20
->=20
-> Test BSD:
->=20
-> iMac:master hns$ echo foo | egrep '^(|foo)$'
-> egrep: empty (sub)expression
-> iMac:master hns$ echo fool | egrep '^(foo)?$'
-> egrep: empty (sub)expression
-> iMac:master hns$ echo fun | egrep '^(|foo)$'
-> egrep: empty (sub)expression
-> iMac:master hns$ echo f | egrep '^(|foo)$'
-> egrep: empty (sub)expression
-> iMac:master hns$ echo | egrep '^(|foo)$'
-> egrep: empty (sub)expression
-> iMac:master hns$ echo foo | egrep '^(foo)?$'
-> foo
-> iMac:master hns$ echo fool | egrep '^(foo)?$'
-> iMac:master hns$ echo fun | egrep '^(foo)?$'
-> iMac:master hns$ echo f | egrep '^(foo)?$'
-> iMac:master hns$ echo | egrep '^(foo)?$'
->=20
-> iMac:master hns$=20
->=20
->=20
-> H. Nikolaus Schaller (2):
->  x86/tools/relocs: Fix non-POSIX regexp
->  arch: mips: Fix non-POSIX regexp
->=20
-> arch/mips/Makefile      | 2 +-
-> arch/x86/tools/relocs.c | 8 ++++----
-> 2 files changed, 5 insertions(+), 5 deletions(-)
->=20
-> --=20
-> 2.31.1
->=20
+yes, we can return status rather than forcing error as -ENODEV.
+Will fix it and post the new version.
+> 
+> 
+>> +	}
+>> +	return 0;
+>> +}
+>> +
 
