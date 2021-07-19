@@ -2,113 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317C03CED87
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87C73CED83
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357733AbhGSSys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 14:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384164AbhGSSYX (ORCPT
+        id S1385045AbhGSSoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 14:44:14 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:20020 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1384175AbhGSSZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:24:23 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E27AC0613DF
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 11:52:23 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so133950pju.4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9m2rZHOVB1NoZtYoNA6EFBVCz7Bbir+fDae0NyH8yOk=;
-        b=cKMSuskXfTZmYOL+qFY2CjsQm3HSNuYn6k9NptZ+JPJvmISriI4cZ3yoIyeYtyxvv1
-         7oGLcbXabYb6lI+2vVxKFEJvm0ak02KG+H7bbNvqNZVkkmSiKcPJdAFjSPe2MDdu91II
-         l5JB7D82QfrUjFShHZTnPAy+smnwbQuWDI0w462/H1ygcKedZSNtC5I7u7xO9JNeg7vg
-         JqJAwxUtVLVBsS9kTMF9Thfv1hSTtzrZlIZ31izAavsZjUTXVHIXgvyzcT/qV9CGue75
-         c7WuDs77rTWCMSdOjcww3bR8tv6L5H28sqTZcJJbnPEzgwpVo2WWSvCNXmrmWKdZYdE+
-         Hl1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9m2rZHOVB1NoZtYoNA6EFBVCz7Bbir+fDae0NyH8yOk=;
-        b=GIjFx05MWbSF3jio6RGPFoB5Di3Ey1DEQO9BulYeMj/dC32N3AhbJjltukKWghi0JR
-         TWOhI8Da2tcgolDJzaQq5VsqF/joiWcP3TjOjxHVSR8GkndR6eklBhl+Pl1Dg+eXwt+D
-         TfMDIVmHDVXngjNbay0A00K4EbEZNGv9ggYWq5dKzkO7XE5k8HYddiVbL1v1ncH+HATH
-         O4qZubzWW76IigKJlNYUy5+assuMAjK7pDLmyKqQTvFGou7kmsusEIymUXfoVyoNKSwV
-         v85cd342PqogtmxbVpYmp2nKt9UPYnMr1YF4QOuo0SnyCkA+waLZ0+yKQ+vEQu7ygS2o
-         9qPg==
-X-Gm-Message-State: AOAM531CbrvKMudsZjD1aj5bZ7nLj52R9tr2Yje3tX2rnSJVf1jdkPG8
-        YMmGvJlBWsZ9S/A2bXlvmrrvMA==
-X-Google-Smtp-Source: ABdhPJzKRz7pQLf5Lk3Ijby/XshCZupalvr6olwQaiWS02HChg4VytvEL0vS1aw+zs+u/vaUP8R/OA==
-X-Received: by 2002:a17:90a:d486:: with SMTP id s6mr26678412pju.142.1626721391280;
-        Mon, 19 Jul 2021 12:03:11 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f7sm20453955pfc.111.2021.07.19.12.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 12:03:10 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 19:03:06 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 25/40] KVM: SVM: Reclaim the guest pages
- when SEV-SNP VM terminates
-Message-ID: <YPXMas+9O1Y5910b@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-26-brijesh.singh@amd.com>
- <YPHnb5pW9IoTcwWU@google.com>
- <2711d9f9-21a0-7baa-d0ff-2c0f69ca6949@amd.com>
- <YPIoaoDCjNVzn2ZM@google.com>
- <e1cc1e21-e7b7-5930-1c01-8f4bb6e43b3a@amd.com>
- <YPWz6YwjDZcla5/+@google.com>
- <912c929c-06ba-a391-36bb-050384907d81@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <912c929c-06ba-a391-36bb-050384907d81@amd.com>
+        Mon, 19 Jul 2021 14:25:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1626721494;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=si1VbeKiIZ19ZrpCEuSh1q4t99XU93cCVq7c0UUPpO4=;
+    b=DweVk8v4oYEMLbdS1ZvgXGffa95/qcKp0BznOUALM3OJn3rKK00Rh3dyXkJL5uvAlC
+    BnfJZ4RgPpV5U1LRCiQrY+cprNU1Iwbmdc5QGgW4LDkBNDTkjhdB5O4G01RCrVbvcRQr
+    iOg/Nwwz5rRNhetYqNsDQ2n8q+3N5eakyLFHVyCzHG93FTNz/Czc6KNNhTC/VCJx4Bpg
+    9slxObOxtrmqTvSevZmSFEgeMVeLMa+zRRkzxxgyDTFMMgdk4PG4VFR5GBNSi+4BBS8P
+    xwkrNnGqceuzRzHzC+Uqtf+YmyIxJ/FGPjyWzn7cm6gcC8+sjOQg521HXLYvDmode+SS
+    SCNQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43roAE="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
+    with ESMTPSA id Z037e4x6JJ4sGIh
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Mon, 19 Jul 2021 21:04:54 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH 0/2] Regex fixes for mips and x86 cross-compile
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <cover.1625734629.git.hns@goldelico.com>
+Date:   Mon, 19 Jul 2021 21:04:53 +0200
+Cc:     Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, kernel@pyra-handheld.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4AC1CCE9-CCAF-4D4B-BAD5-CEB9E5155FDF@goldelico.com>
+References: <cover.1625734629.git.hns@goldelico.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Jessica Yu <jeyu@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021, Brijesh Singh wrote:
-> 
-> On 7/19/21 12:18 PM, Sean Christopherson wrote:
-> > > 
-> > > Okay, I will add helper to make things easier. One case where we will
-> > > need to directly call the rmpupdate() is during the LAUNCH_UPDATE
-> > > command. In that case the page is private and its immutable bit is also
-> > > set. This is because the firmware makes change to the page, and we are
-> > > required to set the immutable bit before the call.
-> > 
-> > Or do "int rmp_make_firmware(u64 pfn, bool immutable)"?
-> 
-> That's not what we need.
-> 
-> We need 'rmp_make_private() + immutable' all in one RMPUPDATE.  Here is the
-> snippet from SNP_LAUNCH_UPDATE.
+Any chance that it gets merged?
 
-Ah, not firmwrare, gotcha.  But we can still use a helper, e.g. an inner
-double-underscore helper, __rmp_make_private().
+> Am 08.07.2021 um 10:57 schrieb H. Nikolaus Schaller =
+<hns@goldelico.com>:
+>=20
+> Trying to run the x86 relocs tool on a BSD based HOSTCC (cross
+> compilation environment) leads to errors like
+>=20
+>  VOFFSET arch/x86/boot/compressed/../voffset.h - due to: vmlinux
+>  CC      arch/x86/boot/compressed/misc.o - due to: =
+arch/x86/boot/compressed/../voffset.h
+>  OBJCOPY arch/x86/boot/compressed/vmlinux.bin - due to: vmlinux
+>  RELOCS  arch/x86/boot/compressed/vmlinux.relocs - due to: vmlinux
+> empty (sub)expressionarch/x86/boot/compressed/Makefile:118: recipe for =
+target 'arch/x86/boot/compressed/vmlinux.relocs' failed
+> make[3]: *** [arch/x86/boot/compressed/vmlinux.relocs] Error 1
+>=20
+> and when cross compiling a MIPS kernel on a BSD based HOSTCC
+> we get errors like
+>=20
+>  SYNC    include/config/auto.conf.cmd - due to: .config
+> egrep: empty (sub)expression
+>  UPD     include/config/kernel.release
+>  HOSTCC  scripts/dtc/dtc.o - due to target missing
+>=20
+> It turns out that relocs.c on x86 uses patterns like
+>=20
+> 	"something(|_end)"
+>=20
+> while MIPS uses egrep with
+>=20
+> 	(|MINOR_|PATCHLEVEL_)
+>=20
+> In both cases it is not valid syntax or gives undefined results
+> according to POSIX 9.5.3 ERE Grammar
+>=20
+> 	=
+https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
+>=20
+> It seems to be silently accepted by the Linux regcmp() or egrep
+> implementation while a BSD host complains.
+>=20
+> Such patterns can be replaced by a transformation like
+>=20
+> 	"(|p1|p2)" -> "(p1|p2)?"
+>=20
+> Test Linux:
+>=20
+> root@letux:~# echo foo | egrep '^(|foo)$'
+> foo
+> root@letux:~# echo fool | egrep '^(foo)?$'
+> root@letux:~# echo fun | egrep '^(|foo)$'
+> root@letux:~# echo f | egrep '^(|foo)$'
+> root@letux:~# echo | egrep '^(|foo)$'
+>=20
+> root@letux:~# echo foo | egrep '^(foo)?$'
+> foo
+> root@letux:~# echo fool | egrep '^(foo)?$'
+> root@letux:~# echo fun | egrep '^(foo)?$'
+> root@letux:~# echo f | egrep '^(foo)?$'
+> root@letux:~# echo | egrep '^(foo)?$'
+>=20
+> root@letux:~#=20
+>=20
+> Test BSD:
+>=20
+> iMac:master hns$ echo foo | egrep '^(|foo)$'
+> egrep: empty (sub)expression
+> iMac:master hns$ echo fool | egrep '^(foo)?$'
+> egrep: empty (sub)expression
+> iMac:master hns$ echo fun | egrep '^(|foo)$'
+> egrep: empty (sub)expression
+> iMac:master hns$ echo f | egrep '^(|foo)$'
+> egrep: empty (sub)expression
+> iMac:master hns$ echo | egrep '^(|foo)$'
+> egrep: empty (sub)expression
+> iMac:master hns$ echo foo | egrep '^(foo)?$'
+> foo
+> iMac:master hns$ echo fool | egrep '^(foo)?$'
+> iMac:master hns$ echo fun | egrep '^(foo)?$'
+> iMac:master hns$ echo f | egrep '^(foo)?$'
+> iMac:master hns$ echo | egrep '^(foo)?$'
+>=20
+> iMac:master hns$=20
+>=20
+>=20
+> H. Nikolaus Schaller (2):
+>  x86/tools/relocs: Fix non-POSIX regexp
+>  arch: mips: Fix non-POSIX regexp
+>=20
+> arch/mips/Makefile      | 2 +-
+> arch/x86/tools/relocs.c | 8 ++++----
+> 2 files changed, 5 insertions(+), 5 deletions(-)
+>=20
+> --=20
+> 2.31.1
+>=20
+
