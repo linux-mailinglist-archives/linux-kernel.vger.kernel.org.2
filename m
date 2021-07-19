@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6AF3CEE7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA193CEE81
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383761AbhGSU6k convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Jul 2021 16:58:40 -0400
-Received: from mga06.intel.com ([134.134.136.31]:29438 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1387923AbhGSUih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 16:38:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="272247948"
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="272247948"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 14:16:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="500060605"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by FMSMGA003.fm.intel.com with ESMTP; 19 Jul 2021 14:16:59 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Mon, 19 Jul 2021 14:16:58 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Mon, 19 Jul 2021 14:16:58 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
- Mon, 19 Jul 2021 14:16:58 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Naveen Krishna Chatradhi <nchatrad@amd.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-CC:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>
-Subject: RE: [PATCH 3/7] EDAC/mc: Add new HBM2 memory type
-Thread-Topic: [PATCH 3/7] EDAC/mc: Add new HBM2 memory type
-Thread-Index: AQHXfN9g3bq+MffDR0eiB1M8/p7+KatKyi7w
-Date:   Mon, 19 Jul 2021 21:16:58 +0000
-Message-ID: <df4b694601a947d5b6f3d87c5d776807@intel.com>
-References: <20210630152828.162659-1-nchatrad@amd.com>
- <20210630152828.162659-4-nchatrad@amd.com>
- <20210719204758.GC19451@aus-x-yghannam.amd.com>
-In-Reply-To: <20210719204758.GC19451@aus-x-yghannam.amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1388568AbhGSU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:59:30 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:44599 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379206AbhGSUkc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 16:40:32 -0400
+Received: by mail-io1-f42.google.com with SMTP id v26so21673975iom.11;
+        Mon, 19 Jul 2021 14:20:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=raiog5253SxE12vV+UiSQQkE0yT8nRcpaRkSvQgu3/E=;
+        b=DD5Kpp1gJ4kZNS+WolU0H3OTEUG8GRv60E+VzDb88aKBqP3nhAJi5DielBB4cfyEOD
+         LmB5UUeVwdCaImDUpiP1FJC9z3jHIvELAzj6NtTjR1ounGlCh9h2xb0KsPGCEzUA2cDv
+         xT6w6v+AmYjerNCVv2MKEpmHfZUdKI4omphOicHnLcnhq8J1BakH14RhyvLtn9Y4IVjW
+         cdeMp0AcPMQiAcjM3Ovb1djYdQX80/1pcr7BOw6w5odZfIb5JmmO/Qi4UcgDAZMphxc3
+         rRMOs5fMfJl9BN4Kn0tTxaKj1B9umsXfKUWOkqBBBBK2lkrn6zkj42oN51oBACdkqCl+
+         VGQw==
+X-Gm-Message-State: AOAM532pFjGQrXAMMJoOnPocr3lIN1p7uw4ykAGyBJApDmsRlPdFuKEm
+        FRCOtDiY3rckkILWFXSeBQ==
+X-Google-Smtp-Source: ABdhPJzHuJUA6pU6N8cr1hA0Fn0T//P5iRFY26E2QLesik1UmyP26LtnrN8vxpgaG2usj0ayO3B25w==
+X-Received: by 2002:a05:6638:538:: with SMTP id j24mr14151107jar.59.1626729601504;
+        Mon, 19 Jul 2021 14:20:01 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id k13sm9821416ilv.18.2021.07.19.14.19.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 14:20:00 -0700 (PDT)
+Received: (nullmailer pid 2572362 invoked by uid 1000);
+        Mon, 19 Jul 2021 21:19:58 -0000
+Date:   Mon, 19 Jul 2021 15:19:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Bjorn Helgaas <bhelgaas@google.com>, JC Kuo <jckuo@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Vidya Sagar <vidyas@nvidia.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v5 5/5] dt-bindings: arm64: tegra: fix pcie-ep DT nodes
+Message-ID: <20210719211958.GA2571127@robh.at.kernel.org>
+References: <cover.1626608375.git.mchehab+huawei@kernel.org>
+ <15cf5067c0567614d5b186d006ebd88395d56b63.1626608375.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15cf5067c0567614d5b186d006ebd88395d56b63.1626608375.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The following commit added HBM support to some Intel EDAC code.
->
->  c945088384d0 EDAC/i10nm: Add support for high bandwidth memory
->
-> But it didn't include a new mem_type for HBM. Should it have?
->
-> I only see some edac_mem_types use in sysfs and some debug messages. So
-> I'm curious if users find this information useful.
+On Sun, Jul 18, 2021 at 01:40:52PM +0200, Mauro Carvalho Chehab wrote:
+> As defined by Documentation/devicetree/bindings/pci/pci-ep.yaml,
+> PCIe endpoints match this pattern:
+> 
+> 	properties:
+> 	  $nodename:
+> 	    pattern: "^pcie-ep@"
+> 
+> Change the existing ones in order to avoid those warnings:
+> 
+> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0001.dt.yaml: pcie_ep@14160000: $nodename:0: 'pcie_ep@14160000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0001.dt.yaml: pcie_ep@14180000: $nodename:0: 'pcie_ep@14180000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0001.dt.yaml: pcie_ep@141a0000: $nodename:0: 'pcie_ep@141a0000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dt.yaml: pcie_ep@14160000: $nodename:0: 'pcie_ep@14160000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dt.yaml: pcie_ep@14180000: $nodename:0: 'pcie_ep@14180000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dt.yaml: pcie_ep@141a0000: $nodename:0: 'pcie_ep@141a0000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 	arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dt.yaml: pcie_ep@14160000: $nodename:0: 'pcie_ep@14160000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 	arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dt.yaml: pcie_ep@14180000: $nodename:0: 'pcie_ep@14180000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 	arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dt.yaml: pcie_ep@141a0000: $nodename:0: 'pcie_ep@141a0000' does not match '^pcie-ep@'
+> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../devicetree/bindings/pci/nvidia,tegra194-pcie.txt        | 2 +-
+>  arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts          | 2 +-
+>  arch/arm64/boot/dts/nvidia/tegra194-p3509-0000.dtsi         | 2 +-
+>  arch/arm64/boot/dts/nvidia/tegra194.dtsi                    | 6 +++---
+>  4 files changed, 6 insertions(+), 6 deletions(-)
 
-Yazen,
+The Tegra maintainers should apply this one.
 
-That commit makes the normal vs. HBM error visible in the DIMM label (by
-prefixing the "MC" for memory controller with "HB".
-
-+       if (imc->hbm_mc)
-+               snprintf(dimm->label, sizeof(dimm->label), "CPU_SrcID#%u_HBMC#%u_Chan#%u",
-+                        imc->src_id, imc->lmc, chan);
-+       else
-+               snprintf(dimm->label, sizeof(dimm->label), "CPU_SrcID#%u_MC#%u_Chan#%u_DIMM#%u",
-+                        imc->src_id, imc->lmc, chan, dimmno);
-
-Perhaps we should also set the "type" of the DIMMs.  Qiuxu: opinion?
-
--Tony
+Acked-by: Rob Herring <robh@kernel.org>
