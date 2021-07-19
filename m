@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C7B3CEAAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A7B3CE908
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355879AbhGSRPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:15:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34788 "EHLO mail.kernel.org"
+        id S1352089AbhGSQth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:49:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346066AbhGSPii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:38:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D94B7613F9;
-        Mon, 19 Jul 2021 16:18:22 +0000 (UTC)
+        id S1343728AbhGSP1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:27:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D8536135D;
+        Mon, 19 Jul 2021 16:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711503;
-        bh=kR4rGXaj+fSyBhupG/0kvtljqdtyArO3zLmYzlaCnbE=;
+        s=korg; t=1626710876;
+        bh=RJCSYonEIdY+Cg6Y3/6P0yc3xqk8QadSuTrGJqMxzLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zQCbZPrIspG8HpGeyIX7Z2BR1aValPI3HFfOv1sRKvO7WUgKNtK0g4xPr8Vaj/sws
-         /Yknm1Qkm6xi5LWIJImxV3aeua5z5mGVM099a1+ULHHcIaBregBJAlxBK9D0I9zC8i
-         AR0kT1Rb2naRIRfNfz7ATZeBRc4KbxgGT+RGve/A=
+        b=drqTpXkY8jsWG6jGLRKxifvl69/ALXOE6SRRmM2VJXFYnEVcwiF9qm4abGqZt4AUJ
+         X46ZrY70K8RROQUy+NT9uH/tYW2n3fXzvh2aQXGMEGxGV+p/4Yeyhn/QO3dlNBBHWG
+         vRWCCYc53UVOZQywzougnZMHl3uzPazmXSKU3Pxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.12 026/292] btrfs: zoned: fix wrong mutex unlock on failure to allocate log root tree
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 142/351] staging: rtl8723bs: fix check allowing 5Ghz settings
 Date:   Mon, 19 Jul 2021 16:51:28 +0200
-Message-Id: <20210719144943.389640644@linuxfoundation.org>
+Message-Id: <20210719144949.173975953@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Fabio Aiuto <fabioaiuto83@gmail.com>
 
-commit ea32af47f00a046a1f953370514d6d946efe0152 upstream.
+[ Upstream commit 990a1472930bf2bb7927ea2def4b434790780a8d ]
 
-When syncing the log, if we fail to allocate the root node for the log
-root tree:
+fix check allowing 5Ghz settings, only disabled and
+2.4Ghz enabled states are allowed. Fix comment
+accordingly.
 
-1) We are unlocking fs_info->tree_log_mutex, but at this point we have
-   not yet locked this mutex;
-
-2) We have locked fs_info->tree_root->log_mutex, but we end up not
-   unlocking it;
-
-So fix this by unlocking fs_info->tree_root->log_mutex instead of
-fs_info->tree_log_mutex.
-
-Fixes: e75f9fd194090e ("btrfs: zoned: move log tree node allocation out of log_root_tree->log_mutex")
-CC: stable@vger.kernel.org # 5.13+
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Link: https://lore.kernel.org/r/df7d0ecc02ac7a27e568768523dd7b3f34acd551.1624367072.git.fabioaiuto83@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-log.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3173,7 +3173,7 @@ int btrfs_sync_log(struct btrfs_trans_ha
- 		if (!log_root_tree->node) {
- 			ret = btrfs_alloc_log_tree_node(trans, log_root_tree);
- 			if (ret) {
--				mutex_unlock(&fs_info->tree_log_mutex);
-+				mutex_unlock(&fs_info->tree_root->log_mutex);
- 				goto out;
- 			}
- 		}
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+index 6d0d0beed402..0cd5608e6496 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+@@ -2602,10 +2602,9 @@ static int rtw_dbg_port(struct net_device *dev,
+ 				case 0x12: /* set rx_stbc */
+ 				{
+ 					struct registry_priv *pregpriv = &padapter->registrypriv;
+-					/*  0: disable, bit(0):enable 2.4g, bit(1):enable 5g, 0x3: enable both 2.4g and 5g */
+-					/* default is set to enable 2.4GHZ for IOT issue with bufflao's AP at 5GHZ */
+-					if (extra_arg == 0 || extra_arg == 1 ||
+-					    extra_arg == 2 || extra_arg == 3)
++					/*  0: disable, bit(0):enable 2.4g */
++					/* default is set to enable 2.4GHZ */
++					if (extra_arg == 0 || extra_arg == 1)
+ 						pregpriv->rx_stbc = extra_arg;
+ 				}
+ 				break;
+-- 
+2.30.2
+
 
 
