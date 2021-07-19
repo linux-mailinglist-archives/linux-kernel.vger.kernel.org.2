@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBFC3CD00E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2093CCFE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235646AbhGSI00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:26:26 -0400
-Received: from mxout70.expurgate.net ([194.37.255.70]:33291 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhGSI0Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:26:24 -0400
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1m5OPm-0006CO-Ap; Mon, 19 Jul 2021 10:14:14 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1m5OPj-0001dO-Ty; Mon, 19 Jul 2021 10:14:11 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 35A24240041;
-        Mon, 19 Jul 2021 10:14:11 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 873DA240040;
-        Mon, 19 Jul 2021 10:14:10 +0200 (CEST)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id D566F20176;
-        Mon, 19 Jul 2021 10:14:09 +0200 (CEST)
+        id S235728AbhGSIWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:22:42 -0400
+Received: from mout.gmx.net ([212.227.17.21]:35513 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235073AbhGSIWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 04:22:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626685395;
+        bh=hgrS4whYS4mlBgjCJJ3krDPj9t9aNc71BUlz4g1F6FU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=OjiOCYEGAblNtLZA2LfU5MKYKfYvgZkOI2V+efNdUVRaFLdXbOOwFfPzGC+Ss/HoM
+         aj+nHOhS8nGl9ao0SAckj/FAOKii+/IB21IczzqACldribc1YO7OzZZ1psBM47JAxA
+         7yXhTK7VV45tTk5eTcVKT8SSCGZHYnRugyFMi5Ds=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [87.130.101.138] ([87.130.101.138]) by web-mail.gmx.net
+ (3c-app-gmx-bap33.server.lan [172.19.172.103]) (via HTTP); Mon, 19 Jul 2021
+ 10:20:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 19 Jul 2021 10:14:09 +0200
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Hauke Mehrtens <hauke@hauke-m.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        f.fainelli@gmail.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3] net: phy: intel-xway: Add RGMII internal
- delay configuration
-Organization: TDT AG
-In-Reply-To: <9fa0ce38-d3b5-a60e-cfc4-7799b832065f@hauke-m.de>
-References: <20210709164216.18561-1-ms@dev.tdt.de>
- <CAFBinCCw9+oCV==1DrNFU6Lu02h3OyZu9wM=78RKGMCZU6ObEA@mail.gmail.com>
- <fcb3203ea82d1180a6e471f22e39e817@dev.tdt.de> <YO2P8J4Ln+RwxkfO@lunn.ch>
- <9fa0ce38-d3b5-a60e-cfc4-7799b832065f@hauke-m.de>
-Message-ID: <42d639692238c4c89fdbca1e0b2b27cd@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1626682452-000007D5-24CB71FF/0/0
-X-purgate: clean
-X-purgate-type: clean
+Message-ID: <trinity-e0322d42-d4ca-43a6-96d6-cfe89112ad9e-1626682813094@3c-app-gmx-bap33>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Aw: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware
+ process the layer 4 checksum
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 19 Jul 2021 10:20:13 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20210715143648.yutq6vceoblnhhfp@skbuf>
+References: <20210714191723.31294-1-LinoSanfilippo@gmx.de>
+ <20210714191723.31294-3-LinoSanfilippo@gmx.de>
+ <20210714194812.stay3oqyw3ogshhj@skbuf> <YO9F2LhTizvr1l11@lunn.ch>
+ <20210715065455.7nu7zgle2haa6wku@skbuf> <YPAzZXaC/En3s4ly@lunn.ch>
+ <20210715143648.yutq6vceoblnhhfp@skbuf>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:oyX0+TuW8PHL+WK/JEozk6jlWR2O/yBuSlUBcGgGWhBxNvMorJ0I01RBiHgA50eYXf8E8
+ 8sgNFp+WL6gbGwdyFBwyhFH4Ts381FPUkIMPfHIFAqJ8tC7CDwHr1JQH2gjUMBT1BHMK2jbyKNl1
+ QPHt+BBnzcEbKXxy8Taqp5ShQ3wJ8Fkz4pEaGcD6hieK9aaGYKHhN4qg7Dpko3IUGgJj6h96lwkl
+ 7y/cSU7rk2a5BDjeROD+oAJB2GF4sZ7kf2CQmEUyoSDBohoDpmvHmbDyDB+Isqg1xruY1Kq0JLw+
+ dY=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UrWgcxsN8To=:J4sw6C5qkIfBDmaTLY6kFg
+ EkTgLaC4xKg6kQTcwnhoK/ud0HXNmD7R5bpeMUU7lHmCqEigX4+ZvHh/kbgk1diF+QmNF28dg
+ O637nOtUORnFfMSXhRsQhjPOzwJXvuASxeI6DGqH0XFPAEc8/A+EOhcViRws0uZ3OWxvU4UlS
+ 1uWWgeDagQ4MrBAMOf8kEn6KIYi7LVcfHGHy7+QhC+NwTNBoYwrR+vjxjkaw7vA6FnqczN2VC
+ ctvf4jJr236Mk+Qf2UpCZW+Szwn8hON7Cxldg3Tm76UUZ6QCdl9jQRyfbg0gLPeAWhXBTqCTi
+ h/PylXplAfWWFym4Emh5iXsGLU8jF8UpBzDsXVYK8J9qZVeV2KlwGC+fbbgb7s5+lCnz0ZATT
+ OoxgLY7DNCWUwJ0cvVa6vnh+Kt9M8vLnVHbuELY9nOp/Oqd5o32XJHrpwA0MiFRDsfWcWKxU6
+ HlqE0Ce5cE7bzbEflOM6xD/75tmZCXJEioBf9+ED519gH81TGVfgYP4swb6+B2eYxsvcDBeU/
+ qbe0IIC1QyNyYPzfjySNUFdXf4vemlEXILsc2oZ4UA6zJxNvA+MCb02PcYIeaJC+3NM2/FRJJ
+ aucRfPUnUQDRhK7UC59wn6/l/LwJv/S+ETOEtiezdQxcbFKuF0Ge8qDtDdtjqNwA/LWC8pJmm
+ miNL7IAbbp+TBDDJpzY6U9pzqGg8eRnDoos8Z1kas4H5AFDMWXjWHgqh03iTKoK/0FF0gfukL
+ X9Wv2Or/KIhj++KJaJaMpuhPftmoaOvEkbWE10TPmM2fQtOmLFZES21jMlrKWhaPqEHv5O3WB
+ CcukA53MmfbJlgSwN3n2SPaF0U5lQ==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-17 18:38, Hauke Mehrtens wrote:
-> On 7/13/21 3:06 PM, Andrew Lunn wrote:
->>>> [...]
->>>>> +#if IS_ENABLED(CONFIG_OF_MDIO)
->>>> is there any particular reason why we need to guard this with
->>>> CONFIG_OF_MDIO?
->>>> The dp83822 driver does not use this #if either (as far as I
->>>> understand at least)
->>>> 
->>> 
->>> It makes no sense to retrieve properties from the device tree if we 
->>> are
->>> compiling for a target that does not support a device tree.
->>> At least that is my understanding of this condition.
->> 
->> There should be stubs for all these functions, so if OF is not part of
->> the configured kernel, stub functions take their place. That has the
->> advantage of at least compiling the code, so checking parameter types
->> etc. We try to avoid #ifdef where possible, so we get better compiler
->> build test coverage. The more #ifef there are, the more different
->> configurations that need compiling in order to get build coverage.
->> 
->> 	       Andrew
->> 
-> 
-> The phy_get_internal_delay() function does not have a stub function
-> directly, but it calls phy_get_int_delay_property() which has a stub,
-> if CONFIG_OF_MDIO is not set, see:
-> https://elixir.bootlin.com/linux/v5.14-rc1/source/drivers/net/phy/phy_device.c#L2797
-> 
-> The extra ifdef in the PHY driver only saves some code in the HY
-> driver, but it should still work as before on systems without
-> CONFIG_OF_MDIO.
-> 
-> I would also prefer to remove the ifdef from the intel-xway phy driver.
-> 
-> Hauke
+Hi,
 
-OK, so I'll remove the ifdef from the driver.
+> Gesendet: Donnerstag, 15. Juli 2021 um 16:36 Uhr
+> Von: "Vladimir Oltean" <olteanv@gmail.com>
+> An: "Andrew Lunn" <andrew@lunn.ch>
+> Cc: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>, woojung.huh@microchip.com=
+, UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com, f.fainelli@gmail=
+.com, davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, linux-=
+kernel@vger.kernel.org
+> Betreff: Re: [PATCH 2/2] net: dsa: tag_ksz: dont let the hardware proces=
+s the layer 4 checksum
+>
+> On Thu, Jul 15, 2021 at 03:08:53PM +0200, Andrew Lunn wrote:
+> > > - If we inherit NETIF_F_HW_CSUM from the master for tail taggers, it=
+ is
+> > >   actively detrimential to keep this feature enabled, as proven my L=
+ino.
+> > >   As for header taggers, I fail to see how this would be helpful, si=
+nce
+> > >   the DSA master would always fail to see the real IP header (it has
+> > >   been pushed to the right by the DSA tag), and therefore, the DSA
+> > >   master offload would be effectively bypassed.
+> >
+> > The Marvell MACs know about DSA and should be able to perform hardware
+> > checksumming. It is a long time since i looked at how this works, but
+> > i think there is a field in the descriptor which gets set with the
+> > offset to the IP header, so it work for DSA as well as EDSA.
+> >
+> > I _think_ Broadcom MACs also know about Broadcom tags and can do the
+> > right thing.
+> >
+> > So we need to be a bit careful here to prevent performance regressions
+> > for same vendor MAC+Switch combinations.
+>
+> Tell me more (show me some code). Do Marvell Ethernet controllers which
+> support TX checksumming with Marvell switches do different things
+> depending on whether DSA or EDSA is used? Because we can currently
+> toggle between DSA and EDSA at runtime.
+>
+> This new information means we can only accept Lino's patch 2/2 as-is for
+> the "net" tree, otherwise we will introduce regressions one way or
+> another. It will only be a partial fix for the particular case of KSZ
+> switches which probably have no DSA master counterpart to support TX
+> checksumming.
+>
 
+Should I then resend the series with patch 1 handling the NETIF_F_SG and
+NETIF_F_FRAGLIST flags (i.e. deleting them if tailroom is needed) in
+dsa_slave_setup_tagger() as you suggested and patch 2 as it is?
+
+Regards,
+Lino
