@@ -2,96 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1149C3CD4E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16093CD4ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbhGSL6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:58:40 -0400
-Received: from mga01.intel.com ([192.55.52.88]:3319 "EHLO mga01.intel.com"
+        id S237044AbhGSL7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:59:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236811AbhGSL6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:58:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="232817083"
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="232817083"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 05:39:19 -0700
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="499901418"
-Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.254.211.183]) ([10.254.211.183])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 05:39:14 -0700
-Subject: Re: [PATCH 6/6] KVM: VMX: enable IPI virtualization
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hu, Robert" <robert.hu@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>
-References: <20210716064808.14757-1-guang.zeng@intel.com>
- <20210716064808.14757-7-guang.zeng@intel.com>
- <8aed2541-082d-d115-09ac-e7fcc05f96dc@redhat.com>
- <89f240cb-cb3a-c362-7ded-ee500cc12dc3@intel.com>
- <0d6f7852-95b3-d628-955b-f44d88a86478@redhat.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-Message-ID: <949abcb7-5f24-2107-a089-5e6c1bee8cf2@intel.com>
-Date:   Mon, 19 Jul 2021 20:38:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S237041AbhGSL7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:59:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0146113B;
+        Mon, 19 Jul 2021 12:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626698411;
+        bh=ec9aSpU01rDk3L8/1MWG2xSeLpf8itpXYZ3hxC+ULgY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XMAYxAts9Xl2J4OPBUKPBvtcBknkVvrEXexP+6Xp4Ju3YIe0sEZVG/ie1iXby6XW8
+         CjJE12YKdYhcjfSKKUTHmbqLH5D57pbnePca6a8gRTrFk2xTcQQT5HXPrNShRxsOJY
+         Lp+noSbzn3n0jnBo8kQ4Ob2y1Sk+7orMqjH+gG7s=
+Date:   Mon, 19 Jul 2021 14:40:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     sudipm.mukherjee@gmail.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, davem@davemloft.net, sashal@kernel.org
+Subject: Re: [PATCH 5.4] net: moxa: Use
+ devm_platform_get_and_ioremap_resource()
+Message-ID: <YPVyophPac6yjBws@kroah.com>
+References: <20210716093245.315536-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <0d6f7852-95b3-d628-955b-f44d88a86478@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716093245.315536-1-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/2021 4:32 AM, Paolo Bonzini wrote:
-> On 17/07/21 05:55, Zeng Guang wrote:
->>>> +    if (vmx->ipiv_active)
->>>> +        install_pid(vmx);
->>> This should be if (enable_ipiv) instead, I think.
->>>
->>> In fact, in all other places that are using vmx->ipiv_active, you can
->>> actually replace it with enable_ipiv; they are all reached only with
->>> kvm_vcpu_apicv_active(vcpu) == true.
->>>
->> enable_ipiv as a global variable indicates the hardware capability to
->> enable IPIv. Each VM may have different IPIv configuration according to
->> kvm_vcpu_apicv_active status. So we use ipiv_active per VM to enclose
->> IPIv related operations.
-> Understood, but in practice all uses of vmx->ipiv_active are guarded by
-> kvm_vcpu_apicv_active so they are always reached with vmx->ipiv_active
-> == enable_ipiv.
->
-> The one above instead seems wrong and should just use enable_ipiv.
+On Fri, Jul 16, 2021 at 05:32:45PM +0800, Yang Yingliang wrote:
+> [ Upstream commit 35cba15a504bf4f585bb9d78f47b22b28a1a06b2 ]
+> 
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code and avoid a null-ptr-deref by checking 'res' in it.
+> 
+> [yyl: since devm_platform_get_and_ioremap_resource() is introduced
+>       in linux-5.7, so just check the return value after calling
+>       platform_get_resource()]
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> ---
+>  drivers/net/ethernet/moxa/moxart_ether.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-enable_ipiv associate with "IPI virtualization" setting in tertiary exec 
-controls and
-enable_apicv which depends on cpu_has_vmx_apicv(). kvm_vcpu_apicv_active 
-still
-can be false even if enable_ipiv is true, e.g. in case irqchip not 
-emulated in kernel.
+Now queued up, thanks.
 
-It's ok to use enable_ipiv here. vmcs setup succeed for IPIv but it 
-won't take into effect as
-false kvm_vcpu_apicv_active disable “IPI virtualization" in this case.
-
-> Paolo
->
+greg k-h
