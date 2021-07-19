@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F013CE798
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2533CE79E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350143AbhGSQ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:29:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56322 "EHLO mail.kernel.org"
+        id S1350448AbhGSQ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:29:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344030AbhGSPQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:16:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5395600EF;
-        Mon, 19 Jul 2021 15:56:41 +0000 (UTC)
+        id S1347367AbhGSPQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:16:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F059B60FDA;
+        Mon, 19 Jul 2021 15:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710202;
-        bh=NVlw8FdD1InjhL9vfc52dDxWF+C4FWMDMsiClR8WO7w=;
+        s=korg; t=1626710204;
+        bh=qfTRyoMxz6dWPn/7RMp+HaHSUxHIEGIeUWhQntLvNrs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cCdTlfJLlZfSP2VnKPU6uqGOxRuRKBHgeyGtqWS41LWeKAbLReFKlSxKB2g3GdEdP
-         9N8tc43tCtldlDEzfVuoQPp6oR3UDUHNUVio3zqj8rBb0+T6KPCl9b5TvUcR0GQKMJ
-         YdCZuvkdCPSh3UXzwXBvLJEuLVjac7kOPwM/GOY0=
+        b=XqV35ROIHVFyADay4aYTWICPaCVgUnoKDSY0bj9Amcw+beLfIrntkWooqqp9vBbL9
+         NOjuTR+LloOvFu5Mtnxr+awrlLqpZl0dPdegxX9O0vePX3x7MTnqvculht2YKUBnSh
+         bejBM4Qgwq36/QbeUuDR5cfHzOPY2QvwaOcxOBH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <jiancai@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 119/243] ARM: 9087/1: kprobes: test-thumb: fix for LLVM_IAS=1
-Date:   Mon, 19 Jul 2021 16:52:28 +0200
-Message-Id: <20210719144944.758853891@linuxfoundation.org>
+Subject: [PATCH 5.10 120/243] PCI/P2PDMA: Avoid pci_get_slot(), which may sleep
+Date:   Mon, 19 Jul 2021 16:52:29 +0200
+Message-Id: <20210719144944.788940640@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -41,69 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Logan Gunthorpe <logang@deltatee.com>
 
-[ Upstream commit 8b95a7d90ce8160ac5cffd5bace6e2eba01a871e ]
+[ Upstream commit 3ec0c3ec2d92c09465534a1ff9c6f9d9506ffef6 ]
 
-There's a few instructions that GAS infers operands but Clang doesn't;
-from what I can tell the Arm ARM doesn't say these are optional.
+In order to use upstream_bridge_distance_warn() from a dma_map function, it
+must not sleep. However, pci_get_slot() takes the pci_bus_sem so it might
+sleep.
 
-F5.1.257 TBB, TBH T1 Halfword variant
-F5.1.238 STREXD T1 variant
-F5.1.84 LDREXD T1 variant
+In order to avoid this, try to get the host bridge's device from the first
+element in the device list. It should be impossible for the host bridge's
+device to go away while references are held on child devices, so the first
+element should not be able to change and, thus, this should be safe.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1309
+Introduce a static function called pci_host_bridge_dev() to obtain the host
+bridge's root device.
 
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Jian Cai <jiancai@google.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Link: https://lore.kernel.org/r/20210610160609.28447-7-logang@deltatee.com
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/probes/kprobes/test-thumb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/pci/p2pdma.c | 34 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/probes/kprobes/test-thumb.c b/arch/arm/probes/kprobes/test-thumb.c
-index 456c181a7bfe..4e11f0b760f8 100644
---- a/arch/arm/probes/kprobes/test-thumb.c
-+++ b/arch/arm/probes/kprobes/test-thumb.c
-@@ -441,21 +441,21 @@ void kprobe_thumb32_test_cases(void)
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
+diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+index de1c331dbed4..f07c5dbc94e1 100644
+--- a/drivers/pci/p2pdma.c
++++ b/drivers/pci/p2pdma.c
+@@ -308,10 +308,41 @@ static const struct pci_p2pdma_whitelist_entry {
+ 	{}
+ };
  
--	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,"]",
-+	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
++/*
++ * This lookup function tries to find the PCI device corresponding to a given
++ * host bridge.
++ *
++ * It assumes the host bridge device is the first PCI device in the
++ * bus->devices list and that the devfn is 00.0. These assumptions should hold
++ * for all the devices in the whitelist above.
++ *
++ * This function is equivalent to pci_get_slot(host->bus, 0), however it does
++ * not take the pci_bus_sem lock seeing __host_bridge_whitelist() must not
++ * sleep.
++ *
++ * For this to be safe, the caller should hold a reference to a device on the
++ * bridge, which should ensure the host_bridge device will not be freed
++ * or removed from the head of the devices list.
++ */
++static struct pci_dev *pci_host_bridge_dev(struct pci_host_bridge *host)
++{
++	struct pci_dev *root;
++
++	root = list_first_entry_or_null(&host->bus->devices,
++					struct pci_dev, bus_list);
++
++	if (!root)
++		return NULL;
++	if (root->devfn != PCI_DEVFN(0, 0))
++		return NULL;
++
++	return root;
++}
++
+ static bool __host_bridge_whitelist(struct pci_host_bridge *host,
+ 				    bool same_host_bridge)
+ {
+-	struct pci_dev *root = pci_get_slot(host->bus, PCI_DEVFN(0, 0));
++	struct pci_dev *root = pci_host_bridge_dev(host);
+ 	const struct pci_p2pdma_whitelist_entry *entry;
+ 	unsigned short vendor, device;
  
--	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,"]",
-+	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
+@@ -320,7 +351,6 @@ static bool __host_bridge_whitelist(struct pci_host_bridge *host,
  
--	TEST_RRX("tbh	[r",1,9f, ", r",14,1,"]",
-+	TEST_RRX("tbh	[r",1,9f, ", r",14,1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
-@@ -468,10 +468,10 @@ void kprobe_thumb32_test_cases(void)
+ 	vendor = root->vendor;
+ 	device = root->device;
+-	pci_dev_put(root);
  
- 	TEST_UNSUPPORTED("strexb	r0, r1, [r2]")
- 	TEST_UNSUPPORTED("strexh	r0, r1, [r2]")
--	TEST_UNSUPPORTED("strexd	r0, r1, [r2]")
-+	TEST_UNSUPPORTED("strexd	r0, r1, r2, [r2]")
- 	TEST_UNSUPPORTED("ldrexb	r0, [r1]")
- 	TEST_UNSUPPORTED("ldrexh	r0, [r1]")
--	TEST_UNSUPPORTED("ldrexd	r0, [r1]")
-+	TEST_UNSUPPORTED("ldrexd	r0, r1, [r1]")
- 
- 	TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
- 
+ 	for (entry = pci_p2pdma_whitelist; entry->vendor; entry++) {
+ 		if (vendor != entry->vendor || device != entry->device)
 -- 
 2.30.2
 
