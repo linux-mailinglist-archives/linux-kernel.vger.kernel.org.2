@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8DB3CDFCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314CE3CDF10
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345540AbhGSPLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:11:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
+        id S1345009AbhGSPHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:07:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344279AbhGSOso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344289AbhGSOso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0DA061287;
-        Mon, 19 Jul 2021 15:27:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F7306128E;
+        Mon, 19 Jul 2021 15:27:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708463;
-        bh=GUnLCwqGq+Q1BY2Di5mdFrrVM7TVqfE4gqATT0VHGZw=;
+        s=korg; t=1626708470;
+        bh=dI0pHhPcB160m+cv+0IezzUj6hvXNpfMeDRFZDsAkXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eHW2Ptaldz3rTUhmPrkIlC/HubOIh65Xd/oZ2vP3jDvsK7pUxC3JDtKI0KGC3YgQp
-         i578stM/jFyfwaGDIdLzIg8+kDgATlxFoTBHtLoCFDQX6/LUwtvVyBk91nJ1KDIKVj
-         MGxlPAY5VL/DVbLUxKBYe0goLRe4eD7HkywlrNMw=
+        b=HYp4SVMsRbL7N4OtBPhSGApnCo2Xxz+5N0xOOv0hwNlFSLUwJofO3yZr+su2bbtBp
+         DObMrP7RACxBLJr1vfT/EfLHErD9aCT6fiHItqFTIWM9WheJim3sZIM8A0ZmjqR12y
+         NAfgQznqCmMuvqkUqujvALBng38Yxkl7/UiVHE1A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 295/315] x86/fpu: Limit xstate copy size in xstateregs_set()
-Date:   Mon, 19 Jul 2021 16:53:04 +0200
-Message-Id: <20210719144953.166987065@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 296/315] ALSA: isa: Fix error return code in snd_cmi8330_probe()
+Date:   Mon, 19 Jul 2021 16:53:05 +0200
+Message-Id: <20210719144953.199255646@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,37 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 07d6688b22e09be465652cf2da0da6bf86154df6 ]
+[ Upstream commit 31028cbed26a8afa25533a10425ffa2ab794c76c ]
 
-If the count argument is larger than the xstate size, this will happily
-copy beyond the end of xstate.
+When 'SB_HW_16' check fails, the error code -ENODEV instead of 0 should be
+returned, which is the same as that returned when 'WSS_HW_CMI8330' check
+fails.
 
-Fixes: 91c3dba7dbc1 ("x86/fpu/xstate: Fix PTRACE frames for XSAVES")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
-Reviewed-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210623121452.120741557@linutronix.de
+Fixes: 43bcd973d6d0 ("[ALSA] Add snd_card_set_generic_dev() call to ISA drivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210707074051.2663-1-thunder.leizhen@huawei.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/fpu/regset.c | 2 +-
+ sound/isa/cmi8330.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index bc02f5144b95..621d249ded0b 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -128,7 +128,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
- 	/*
- 	 * A whole standard-format XSAVE buffer is needed:
- 	 */
--	if ((pos != 0) || (count < fpu_user_xstate_size))
-+	if (pos != 0 || count != fpu_user_xstate_size)
- 		return -EFAULT;
+diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
+index 6b8c46942efb..75b3d76eb852 100644
+--- a/sound/isa/cmi8330.c
++++ b/sound/isa/cmi8330.c
+@@ -564,7 +564,7 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
+ 	}
+ 	if (acard->sb->hardware != SB_HW_16) {
+ 		snd_printk(KERN_ERR PFX "SB16 not found during probe\n");
+-		return err;
++		return -ENODEV;
+ 	}
  
- 	xsave = &fpu->state.xsave;
+ 	snd_wss_out(acard->wss, CS4231_MISC_INFO, 0x40); /* switch on MODE2 */
 -- 
 2.30.2
 
