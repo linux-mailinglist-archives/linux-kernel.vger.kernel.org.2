@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44863CE9D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9635E3CE9DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359846AbhGSRBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:01:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
+        id S1349840AbhGSRCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:02:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348689AbhGSPf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6966F616ED;
-        Mon, 19 Jul 2021 16:14:03 +0000 (UTC)
+        id S1348738AbhGSPf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A79160E0C;
+        Mon, 19 Jul 2021 16:14:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711244;
-        bh=GMvgYgkja1Sax4I4/4tVq674OEQOwwyKimhEDiDdJKI=;
+        s=korg; t=1626711273;
+        bh=Z6ZydqLjlMDD66kySE5xSLlnlFJ4OA8zpDyXLTtJ/IE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nrRNMbXnGGbIE8ej60UFzhLBZXuckeDag0gejwZnMOHcNXi64n75RcqchnSR54yUU
-         S3kyvPbmzsXWZNwW/Cy586X79BywmbKObo38hnSYHVPEu062s+BK2qUrEl/78oTe2a
-         Du5bDTLGCbI5w/hpE/0EX+MQHbNe4J0xLq/IIAO4=
+        b=xv216PckF6VZX7Sh4snI2cB92OhndIMXcpje2c5WJ6U8btKJOk8rsJ1WQmMfWcT32
+         +5Q2WntAq1sarPQwW5dNKWhsxJfWikkZTU87PhKcTp8v0A/u6OyjC9fi82mRrc+sOl
+         JY+v0zZV/5EwR93ND/ndOWx9lIeCD3JN1szv9qSE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 274/351] reset: RESET_INTEL_GW should depend on X86
-Date:   Mon, 19 Jul 2021 16:53:40 +0200
-Message-Id: <20210719144954.012955322@linuxfoundation.org>
+Subject: [PATCH 5.13 275/351] reset: a10sr: add missing of_match_table reference
+Date:   Mon, 19 Jul 2021 16:53:41 +0200
+Message-Id: <20210719144954.044640898@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -41,35 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 6ab9d6219f86f0db916105444813aafce626a2f4 ]
+[ Upstream commit 466ba3c8ff4fae39e455ff8d080b3d5503302765 ]
 
-The Intel Gateway reset controller is only present on Intel Gateway
-platforms.  Hence add a dependency on X86, to prevent asking the user
-about this driver when configuring a kernel without Intel Gateway
-support.
+The driver defined of_device_id table but did not use it with
+of_match_table.  This prevents usual matching via devicetree and causes
+a W=1 warning:
 
-Fixes: c9aef213e38cde27 ("reset: intel: Add system reset controller driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+  drivers/reset/reset-a10sr.c:111:34: warning:
+    ‘a10sr_reset_of_match’ defined but not used [-Wunused-const-variable=]
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 627006820268 ("reset: Add Altera Arria10 SR Reset Controller")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210507112803.20012-1-krzysztof.kozlowski@canonical.com
 Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/Kconfig | 1 +
+ drivers/reset/reset-a10sr.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 312b7064cdb4..bc8e90c8be52 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -83,6 +83,7 @@ config RESET_IMX7
- 
- config RESET_INTEL_GW
- 	bool "Intel Reset Controller Driver"
-+	depends on X86 || COMPILE_TEST
- 	depends on OF && HAS_IOMEM
- 	select REGMAP_MMIO
- 	help
+diff --git a/drivers/reset/reset-a10sr.c b/drivers/reset/reset-a10sr.c
+index 7eacc89382f8..99b3bc8382f3 100644
+--- a/drivers/reset/reset-a10sr.c
++++ b/drivers/reset/reset-a10sr.c
+@@ -118,6 +118,7 @@ static struct platform_driver a10sr_reset_driver = {
+ 	.probe	= a10sr_reset_probe,
+ 	.driver = {
+ 		.name		= "altr_a10sr_reset",
++		.of_match_table	= a10sr_reset_of_match,
+ 	},
+ };
+ module_platform_driver(a10sr_reset_driver);
 -- 
 2.30.2
 
