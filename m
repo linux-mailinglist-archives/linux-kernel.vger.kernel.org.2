@@ -2,170 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F8B3CED71
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDDB3CED84
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357512AbhGSScY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 14:32:24 -0400
-Received: from mail-bn7nam10on2087.outbound.protection.outlook.com ([40.107.92.87]:44580
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1382417AbhGSSHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:07:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BP8QQxS9+Dbb+Gq+js2vTWvn6UDgjFL8PhOc8oWhSpvIX6ek5MuEF331c9kKX7A6DQvR3OruYI80Dne751zgZEObCqGVNIg0dmmdLLADp77iOnsL2mZJV9uGdm5IZfWhwivF6p/va5LftKYjpRkckvldijsd0drKmroacQwBLbh0RLONYUvbdo3vkoqMayzD30aAjOKpAolFyapR0dcVK3KbZYNTi/QJj+4x7fmgJkldftrrsx/XxlsddF4LELIrGEasao4WHcdqPPoMHGtzJom5yR3MsBXOYqr2IjVB1qvPFqkPakSBPpEZD9/d87mvLD6p+0BN2xI9N4hc3N/F4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bVVb9NE0ANB8ayAz6BMHe37UYlasYy1tgApcX9LV10E=;
- b=eisRvhIe4rTtOD6yZVOzddGdsjCJHnKPrqZt/3VqCepm00ZuY5tBLc9So0xzNqvBPR/1Xs6jNls0Cff3u7yYZ6vLMGNb5DqNk6f8MwUdERa7SbeW1CdVmPiSFFsW29IRjpkB+NaYBGBZOchYpw/rgzmctAVDafKu4O/xJOKMDUhYawrSElAWHtC6ffVJ0qfawvdl9OkfjUXDdswBpY2Y0tnB/90MoMvpsDNm7LRrJ73CdrVB3DjskOPQZiDK10T+7AOIo/7LRpXVRwA/h6TomeReB6os+vrW74xqXWdE3LAW/kcqrPQPJiJQ6PICkPvlwChPv1BCAqjCLd3Xp8G9TA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bVVb9NE0ANB8ayAz6BMHe37UYlasYy1tgApcX9LV10E=;
- b=emZzQvVcQFwWq1Z76Ro8Yr7mHiVr0btJDuZCSjRLJkQKuAc8OmaILoer8yDyA6GkFyEE9g86fvTrpn21+FdDLvgrJ2/95tPTSLUNMjrEgxrbnVReuIOH0He3m1ZOKCgiG6N8gY69UGNZyYD2hiLU8QbyOspt/kBgJ7Z8uAKXSV4=
-Authentication-Results: collabora.com; dkim=none (message not signed)
- header.d=none;collabora.com; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MWHPR12MB1261.namprd12.prod.outlook.com
- (2603:10b6:300:10::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
- 2021 18:48:14 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4331.033; Mon, 19 Jul
- 2021 18:48:14 +0000
-Subject: Re: [PATCH V3 05/12] ASoC: amd: add ACP5x PCM platform driver
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        broonie@kernel.org, alsa-devel@alsa-project.org
-Cc:     Sunil-kumar.Dommati@amd.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Alexander.Deucher@amd.com,
-        krisman@collabora.com
-References: <20210719165140.16143-1-vijendar.mukunda@amd.com>
- <20210719165140.16143-6-vijendar.mukunda@amd.com>
- <f476dc4a-8185-77fd-d469-728aebdc6f65@linux.intel.com>
-From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <6c27b2bd-cd7b-ef0f-a89f-106d3d936580@amd.com>
-Date:   Tue, 20 Jul 2021 00:35:57 +0530
+        id S1385074AbhGSSpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 14:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1384296AbhGSS10 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 14:27:26 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE8AC0613DB;
+        Mon, 19 Jul 2021 11:57:41 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so142826pju.4;
+        Mon, 19 Jul 2021 12:08:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YtTiAwHF5vIY0ChH0MGNNiiSvFI3fYT0+jWxvH0yTvw=;
+        b=Z2K3wl6UcSwBX5kgUs9MOGevKI7SmlEzt+VNI0P4R3v6pwL936ujLnJN6p4E7SZzIm
+         rvHEjenJWcRVGbKoV6ERxH42EYHl7q3Lf57Py7CSFXfqlOi4T1Lk4O00a6jeBUbV5NSw
+         YfqgDa08u3PzarHVpPI1BlY2LJVDMv9AzNInkbibrK62xsM8Pf523ReMRImAb8hWmcX7
+         N46eRsjDJP3d0g0Zn155zyTCK/WIH7kh8xStYWKntiXxNkIkosDiFHpBgB3QXY0eUpN7
+         Ias99RO5RSaHN+tRRcxnTEeW1CwNYwNrHOr32cntR0bNP45IDA5woPzDGjuUSJkPz+Ov
+         AI0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YtTiAwHF5vIY0ChH0MGNNiiSvFI3fYT0+jWxvH0yTvw=;
+        b=bZF2sIzCgXDMgXtuAplbcwgrcA0YgAOvaeiCPvLgyO0/JeOSraEBmRHsNVXbaXj69y
+         7Cn3LBj4hkrBqh5UGFGw3udlvqXzVtLDxsc2EXLSwIDCxnhrrV8aVYnKsw6fq5/KABST
+         aGOvkVDOcSA2PTY8nQlk9O8+ZjxBrseM2aIj3TJza4e1Utah2wKUdkaeqXnZVI+q39W4
+         w/6mNUkl1LHnhtVImRp1Y44VNZAFvaIF3MnUM8gz92n2RocCspNqbhQsSFxsTkK8g1lo
+         zgUEIVlpUu3SVhJC0cfnz4ufpW4Hp9NvhdIyZk0doDOvu110uUUXr6Xm1XhYskDUPf3R
+         4TnQ==
+X-Gm-Message-State: AOAM533gBWqYLIe+pgeVjQxiKDB/hDk74LS5TuGqIgrMXLlFFP6hqpKH
+        V2z8mfadfaOq3ZSBuIz4OyIHQ649Yo49Ag==
+X-Google-Smtp-Source: ABdhPJwXwngD/gR/VFbyDXrcCqOXfrfxj5Z7UlprUQ8BagN95RsWB3j5W0DO9dYNxH/QZUXlQlNtyg==
+X-Received: by 2002:a17:90b:338d:: with SMTP id ke13mr31762321pjb.151.1626721684950;
+        Mon, 19 Jul 2021 12:08:04 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id n5sm20878290pfv.29.2021.07.19.12.08.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 12:08:04 -0700 (PDT)
+Subject: Re: [PATCH net] mt7530 mt7530_fdb_write only set ivl bit vid larger
+ than 1
+To:     ericwouds@gmail.com, Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210719182359.5262-1-ericwouds@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <685001c0-2dfb-686a-126e-d6b2854d372d@gmail.com>
+Date:   Mon, 19 Jul 2021 12:08:02 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <f476dc4a-8185-77fd-d469-728aebdc6f65@linux.intel.com>
+MIME-Version: 1.0
+In-Reply-To: <20210719182359.5262-1-ericwouds@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MAXPR0101CA0053.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:e::15) To MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.160] (49.206.46.65) by MAXPR0101CA0053.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:e::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23 via Frontend Transport; Mon, 19 Jul 2021 18:48:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3706cf3d-8a52-435c-c3bb-08d94ae5c39d
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1261:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB12617E99CCD6A46C753D523697E19@MWHPR12MB1261.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:173;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Oh7Yjx9lkUYzcVKKkMzHIw5YvL94zAhFpEhZfTfQHU+mSaBzTli4mxPrKu4du4/u+n57FkaMBHAfZE2oQEx6GdWz6F6GOeZslYQnIDbyPoIcWgT8fIV2r6qjA35fmPnzSrltbZrQSHKbMRWT739H5lMAZDk+HuQZ3P3ifWXHSC0tS+KImaG+QHDmIzrfJLsOw4d3UBf4buIppMwwaRzWRsdzGLZTwIIbuzZlD5ljtwVVSlN8/luxXBsMcJTH0Gp7it3WP8M7q9KQLW6JnzDArEthpxxRMmmkfINZgIDlGD8zK5tp3hf17CCJiu491nkCHIpvLIG7+FEtIw/QKiR/rSLI3dx6nDUR13RjwOHQiRx9MBpgJOFuzPLswrwzi3zGcwNYNpn3gB/2iiZcz5HZxGWyczXvn7jJoBikMEpV+1RmUwZJjMdb2kQxg4alk2UBJD/tnGrMs8aW4Nkt3c3xVIPSOUfnhYiWnQPs9qpju6Ea7ziUpjghagzpc8YMckdbUa/e7tDcg4PSFupkJN17yne3cfcf+YVg+56HucmOf8OcarXddKUY6XGXyd6WXIIdeWkGiZI+Q/tcJFf0tY9WNFBPNac8Ma0k0r1iGZ82VS9fDXzb0DxB9V5ZWe8FanKlI8BoeIVbbvcV1EJJY/d2Im42YeFhniTjtyCk7+zSXNKta3sCLmJU3Bg9yjOD0OrGsfvrpNYUL5WDg85Lg0roJVV2GI3snO9ePxdSJyiOXHLvHHvZ10IiJ2SDbc85/1W9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(396003)(39860400002)(54906003)(55236004)(53546011)(2906002)(1006002)(6666004)(956004)(26005)(4326008)(2616005)(186003)(16576012)(316002)(38100700002)(86362001)(6486002)(31696002)(5660300002)(478600001)(8936002)(66476007)(66556008)(8676002)(31686004)(36756003)(66946007)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aEFmS1V6cThWTk55T2VvMU9WVHljaFdFZU10akd5ZXBQbmoxZWNVUjNISUUv?=
- =?utf-8?B?Y0VUMExGVi9QSWhEMnZOV09YRDJNMlJKQmRWd283MzdUcjlHVWZIR0xWZXlw?=
- =?utf-8?B?eDJNN1hDUElvdXVBdm1NN1FDc1FXSGU5YTY2Yk5XRGFhWFU2S01sTGZZc3lo?=
- =?utf-8?B?WTBocmlVY083dWdaR2N3TGVGenFYSFhjWW1GalFoaS9aSjV3WDZEZGI2L3E1?=
- =?utf-8?B?NW9QalFKY2tLbVZ4d2xkbGt4TkdlS0hvNi8zQktrWXNhUzg5dXQ4dFBBOVZm?=
- =?utf-8?B?VTl2TWJyR3dyWEFYaWlDVjFuWmhWQlBuV3A0VDNRQ0YvYnBHa2h3MDNCME1V?=
- =?utf-8?B?WEErVStzTHJUN2tvTWM2TVZhdGFpYjBERDZJSWk3U21xbG1lSmVVWS9qWlk1?=
- =?utf-8?B?OCtKakJ2VjhNbXg2K1hDaDNWWFVocmxEOWsyTXNjUi96N2U0Q2pRKzN5OHRZ?=
- =?utf-8?B?am44TmJSbGszeS9yMWRLdTRvV1FzWnpNLzB4bkdwNjlSdFlrSnN6YXE4YWZ1?=
- =?utf-8?B?WkRFaEpPbmFzS0diZVhUNEdmN0FaRzM4dUR6a1dYUGNPUzFlbWw5K1FoUHQv?=
- =?utf-8?B?bDZHdGNUblBET2taZFllZCtwck1JNXc0S3I5bUZ4NEJ6MmpaejJhZUFxcGxo?=
- =?utf-8?B?UDU0Yk5hdWpjYjVHLzZqaWVyTS9jQ3hCS2trVmlaK2w0dDZubElSTm82QVAx?=
- =?utf-8?B?NDZVeDdCVWN0UzN6L1NMelJxSW52eGtVVjQzUTRtZnhpdWp0UDhFMWdkZGo3?=
- =?utf-8?B?QU80SG9lREtzVXlrV3Yvdk44RGlTSkp1aW5haGJHRHI3RHRSaVc2dmk1bDFT?=
- =?utf-8?B?UjhkczlmekgzaVdhTGphdXNLWkF2S2hPSzJkNUNMSU1US1NSSElsZ080U1h6?=
- =?utf-8?B?N29yZWlmbVp6UnhIYm1uZjBsYzFVMys5c3NwNkg3bFc4MTV0SnNxYVZmdmlU?=
- =?utf-8?B?NGM5SExyUG1qd1VadkxFdDlIWm9IeFovU045Y2ZoMFdKQ1ZTSTB2T0hyT3R2?=
- =?utf-8?B?N2laWHkvVmhKQy9EYVJEY2Fwd1R0NEFORzg5NWNEZlplMjVNM0lHM3FPckZ1?=
- =?utf-8?B?dHZRVjVrc3p3TDBqRTd2cWxBRldFYXN3MUVTOXEvVlhzUWFEcnRDekNnaWty?=
- =?utf-8?B?dllaT1hja2h1ZVRzbnFYbU1zTVNWT0Q5SWREcnU2MjBTWDNwZGYxOWxrdHZ6?=
- =?utf-8?B?WndSMGZRbWFIRHUyRFVOSzZtb2RHLzY0UDBGbkRoVkpVVkNQYXgrUkU0VC9J?=
- =?utf-8?B?a1JmSzRuZnZNNkIrME9ZdE5peElrUGtGNUZXVjh2Qkw3a0ZOSGFhSEtqM1Rw?=
- =?utf-8?B?Ujhqc3RuZHlNcW9YQTRiVFZsVHd0T0dqZk5udkp4czdtUjRaMTlMcWN1OUhC?=
- =?utf-8?B?SHlHVnJjYkRJdDBEK3RBZEtteHpwVW1FTUc3QmFpYXhoRjdMNU8yV2ptZFpi?=
- =?utf-8?B?NGQ4WFloV1FROWJCSEVrZnljeTNzWDZWYkFZWEs4MS90OEZhRG14Vlljb0l1?=
- =?utf-8?B?a05aRjVJWGdwVk9MeDZGMnRYd0tCeUoySjdETzRuak5ldGE4Q2hWdmlTVGlq?=
- =?utf-8?B?clJJcEVGbEIwSTBIM1QyallYNlUxVG5jKzhSM2xOS2pqUjQ5ZTY5S1Uvd3pl?=
- =?utf-8?B?UVlnM0tNQ2tkaTFYaC82SWZML1h4Vkt0VEN2SnJjV0pta1UwdEhLTG5NVXVM?=
- =?utf-8?B?b3Zrc1dyMkJRUWtpekxWdTRpYXR5U0U1Z1pmanRuZW9wZ1dHTUZGN1FSWEsx?=
- =?utf-8?Q?+33FYbCjPgD3HsPy1zH6QA0JDKPZQs4GPMlPmCZ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3706cf3d-8a52-435c-c3bb-08d94ae5c39d
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 18:48:14.1667
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yqz+P0eOE/8ZxkttIqBhd82wg54rdU4hmc7nf6dU6N7o7NUEoFXsw4ZHibeGkYCshPPPl0OoFmoEhIROSkW7Pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1261
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 11:39 PM, Pierre-Louis Bossart wrote:
+On 7/19/21 11:23 AM, ericwouds@gmail.com wrote:
+> From: Eric Woudstra <ericwouds@gmail.com>
 > 
->> +static int acp5x_audio_probe(struct platform_device *pdev)
->> +{
->> +	struct resource *res;
->> +	struct i2s_dev_data *adata;
->> +	int status;
->> +
->> +	if (!pdev->dev.platform_data) {
->> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
->> +		return -ENODEV;
->> +	}
->> +	irqflags = *((unsigned int *)(pdev->dev.platform_data));
->> +
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	if (!res) {
->> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
->> +			return -ENODEV;
->> +	}
->> +
->> +	adata = devm_kzalloc(&pdev->dev, sizeof(*adata), GFP_KERNEL);
->> +	if (!adata)
->> +		return -ENOMEM;
->> +
->> +	adata->acp5x_base = devm_ioremap(&pdev->dev, res->start,
->> +					 resource_size(res));
->> +	if (!adata->acp5x_base)
->> +		return -ENOMEM;
->> +	dev_set_drvdata(&pdev->dev, adata);
->> +	status = devm_snd_soc_register_component(&pdev->dev,
->> +						 &acp5x_i2s_component,
->> +						 NULL, 0);
->> +	if (status) {
->> +		dev_err(&pdev->dev, "Fail to register acp i2s component\n");
->> +		return -ENODEV;
+> Fixes my earlier patch which broke vlan unaware bridges.
 > 
-> Unclear why you need to change the error code explicitly to -ENODEV?
+> The IVL bit now only gets set for vid's larger than 1.
 > 
-> return status?
+> Fixes: 11d8d98cbeef ("mt7530 fix mt7530_fdb_write vid missing ivl bit")
+> Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
 
-yes, we can return status rather than forcing error as -ENODEV.
-Will fix it and post the new version.
-> 
-> 
->> +	}
->> +	return 0;
->> +}
->> +
-
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
