@@ -2,52 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D7F3CCDB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBEE3CCDC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234516AbhGSGC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:02:28 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:52474
+        id S234583AbhGSGEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:04:51 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:35423
         "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S234187AbhGSGC1 (ORCPT
+        by vger.kernel.org with SMTP id S233710AbhGSGEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:02:27 -0400
+        Mon, 19 Jul 2021 02:04:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=Ljg4WLub9QHWm4GrWNCvNrAqcmp4JsSqjNQ2EP2ANOM=; b=v
-        T824+xX0yplmxTG8ZS3lVAfElADQLXmbIppGy2XnFbaaF2nHYL1THDJwmPo1vy1P
-        mtcPHV5ilmSwEazM5CODALEc7Z65/TiaICmFR7F1iKAYyy46k6b6RFfhUKC89FJ/
-        0ixGn+/SmqmOZEqhbBILZ/lTQt0JmJ+NopiOmGTtP0=
+        Message-Id; bh=3HTbXrkdRBgh0QIJpcMwxUac2r5yW+CgKCOIIaqrpTU=; b=i
+        yATwRcX4oZ8epqf7PjXbQskHxBZzHOV3t7PrOM2EHIPMfih0WAtq3yyvbQkpezBE
+        iib4k7qsPxOya81btjirA3kpO7dbvh27pm27jcyHg/mCmIgw3/9oamt95i1RJLTI
+        To6iQzkqFO8q/lNhD1C6eeBnwTFeq3Ib5IR5qTeOE8=
 Received: from localhost.localdomain (unknown [10.162.86.133])
-        by app1 (Coremail) with SMTP id XAUFCgBXX0+1FPVgdxSJAA--.1776S3;
-        Mon, 19 Jul 2021 13:59:17 +0800 (CST)
+        by app1 (Coremail) with SMTP id XAUFCgDHzYnbFPVgPRWJAA--.1241S3;
+        Mon, 19 Jul 2021 13:59:55 +0800 (CST)
 From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] ext4: Convert from atomic_t to refcount_t on ext4_io_end->count
-Date:   Mon, 19 Jul 2021 13:59:14 +0800
-Message-Id: <1626674355-55795-1-git-send-email-xiyuyang19@fudan.edu.cn>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn
+Subject: [PATCH] fbmem: Convert from atomic_t to refcount_t on fb_info->count
+Date:   Mon, 19 Jul 2021 13:59:45 +0800
+Message-Id: <1626674392-55857-1-git-send-email-xiyuyang19@fudan.edu.cn>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgBXX0+1FPVgdxSJAA--.1776S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZrWxKrWftr4xJFb_yoW8tFyfpF
-        yq9FWUGFWxZwn2krW7GanrZr1UJ34Iy3y8W347GFWjyr93WFs0q3WFqF15JF18ZrWxCF17
-        XF48WF98ZF13GrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: XAUFCgDHzYnbFPVgPRWJAA--.1241S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZF1DKw45CrW5Awb_yoW8Zr1fpF
+        n8Ka4DtF4rAryxCr4kCa1jvFy3Ja18CF9xJrZFga4FyFy3tr1Ygw1DJFyYvrWrArWxCF4Y
+        qryI9w15CFWUur7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9G14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
         1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
         JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
         CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
         F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r
         4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
-        ZEXa7VUbZmitUUUUU==
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
+        0xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
+        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbLID7UUUUU==
 X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -59,70 +68,62 @@ accidental underflow and overflow and further use-after-free situations.
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- fs/ext4/ext4.h    | 3 ++-
- fs/ext4/page-io.c | 8 ++++----
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ drivers/video/fbdev/core/fbmem.c | 6 +++---
+ include/linux/fb.h               | 3 ++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 3c51e243450d..e5b3575da7e9 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -17,6 +17,7 @@
- #ifndef _EXT4_H
- #define _EXT4_H
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 98f193078c05..b7d26b928e1d 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -67,7 +67,7 @@ static struct fb_info *get_fb_info(unsigned int idx)
+ 	mutex_lock(&registration_lock);
+ 	fb_info = registered_fb[idx];
+ 	if (fb_info)
+-		atomic_inc(&fb_info->count);
++		refcount_inc(&fb_info->count);
+ 	mutex_unlock(&registration_lock);
+ 
+ 	return fb_info;
+@@ -75,7 +75,7 @@ static struct fb_info *get_fb_info(unsigned int idx)
+ 
+ static void put_fb_info(struct fb_info *fb_info)
+ {
+-	if (!atomic_dec_and_test(&fb_info->count))
++	if (!refcount_dec_and_test(&fb_info->count))
+ 		return;
+ 	if (fb_info->fbops->fb_destroy)
+ 		fb_info->fbops->fb_destroy(fb_info);
+@@ -1594,7 +1594,7 @@ static int do_register_framebuffer(struct fb_info *fb_info)
+ 		if (!registered_fb[i])
+ 			break;
+ 	fb_info->node = i;
+-	atomic_set(&fb_info->count, 1);
++	refcount_set(&fb_info->count, 1);
+ 	mutex_init(&fb_info->lock);
+ 	mutex_init(&fb_info->mm_lock);
+ 
+diff --git a/include/linux/fb.h b/include/linux/fb.h
+index ecfbcc0553a5..5950f8f5dc74 100644
+--- a/include/linux/fb.h
++++ b/include/linux/fb.h
+@@ -2,6 +2,7 @@
+ #ifndef _LINUX_FB_H
+ #define _LINUX_FB_H
  
 +#include <linux/refcount.h>
- #include <linux/types.h>
- #include <linux/blkdev.h>
- #include <linux/magic.h>
-@@ -241,7 +242,7 @@ typedef struct ext4_io_end {
- 	struct bio		*bio;		/* Linked list of completed
- 						 * bios covering the extent */
- 	unsigned int		flag;		/* unwritten or not */
--	atomic_t		count;		/* reference counter */
-+	refcount_t		count;		/* reference counter */
- 	struct list_head	list_vec;	/* list of ext4_io_end_vec */
- } ext4_io_end_t;
+ #include <linux/kgdb.h>
+ #include <uapi/linux/fb.h>
  
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index f038d578d8d8..9cb261714991 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -279,14 +279,14 @@ ext4_io_end_t *ext4_init_io_end(struct inode *inode, gfp_t flags)
- 		io_end->inode = inode;
- 		INIT_LIST_HEAD(&io_end->list);
- 		INIT_LIST_HEAD(&io_end->list_vec);
--		atomic_set(&io_end->count, 1);
-+		refcount_set(&io_end->count, 1);
- 	}
- 	return io_end;
- }
+@@ -435,7 +436,7 @@ struct fb_tile_ops {
  
- void ext4_put_io_end_defer(ext4_io_end_t *io_end)
- {
--	if (atomic_dec_and_test(&io_end->count)) {
-+	if (refcount_dec_and_test(&io_end->count)) {
- 		if (!(io_end->flag & EXT4_IO_END_UNWRITTEN) ||
- 				list_empty(&io_end->list_vec)) {
- 			ext4_release_io_end(io_end);
-@@ -300,7 +300,7 @@ int ext4_put_io_end(ext4_io_end_t *io_end)
- {
- 	int err = 0;
  
--	if (atomic_dec_and_test(&io_end->count)) {
-+	if (refcount_dec_and_test(&io_end->count)) {
- 		if (io_end->flag & EXT4_IO_END_UNWRITTEN) {
- 			err = ext4_convert_unwritten_io_end_vec(io_end->handle,
- 								io_end);
-@@ -314,7 +314,7 @@ int ext4_put_io_end(ext4_io_end_t *io_end)
- 
- ext4_io_end_t *ext4_get_io_end(ext4_io_end_t *io_end)
- {
--	atomic_inc(&io_end->count);
-+	refcount_inc(&io_end->count);
- 	return io_end;
- }
- 
+ struct fb_info {
+-	atomic_t count;
++	refcount_t count;
+ 	int node;
+ 	int flags;
+ 	/*
 -- 
 2.7.4
 
