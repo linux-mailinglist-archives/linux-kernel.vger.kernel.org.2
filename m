@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45803CE85D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D25E3CE6A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356098AbhGSQkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:40:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58336 "EHLO mail.kernel.org"
+        id S1350491AbhGSQK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:10:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346912AbhGSPSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:18:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A1276135D;
-        Mon, 19 Jul 2021 15:58:10 +0000 (UTC)
+        id S1345487AbhGSPJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:09:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30825613BB;
+        Mon, 19 Jul 2021 15:48:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710291;
-        bh=SIeiKKr65/+iePijq9wHcz1W/ALmD3TMh+937v8EIEQ=;
+        s=korg; t=1626709736;
+        bh=ZZadxa0w8dtzQqSSAXWpiz/dHqayTUoeHiO1uRLZiEI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h2/8GYxSeR7a58F4lMIHMRMt7H0lBrECzbiznPYoE3XyVoJnLxBBFM4Z9oKS1DzFG
-         /Y7wWeosZRXmbz19OB0dnwCKTVB0Y1zZqwtyuj0QvimNvzjUMoGDWRIm3JOSjQewer
-         uFDIdIdAQ2XSDfXThhlNFh4i1To1YkOD9Tn1qkI0=
+        b=2M73R7IeND0AoRG8ClVS/70h+0Pp+w0ZL0ywthDhh3eNpN3yFT4rx7/wzvJlaGxun
+         A5XJqsJunCgIGlKHJ+ioNNwNqJ8zzr9X7DC4SC7R2X0TiWU9QBlosxlf8YpSIwqAE4
+         olG5J/t4zLmAvZ5IKrZARlL1o+MJPT8uJzXiTjDA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Tong Zhang <ztong0001@gmail.com>
-Subject: [PATCH 5.10 156/243] misc: alcor_pci: fix inverted branch condition
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 077/149] watchdog: Fix possible use-after-free in wdt_startup()
 Date:   Mon, 19 Jul 2021 16:53:05 +0200
-Message-Id: <20210719144945.947068255@linuxfoundation.org>
+Message-Id: <20210719144919.536797026@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-commit 281e468446994a7672733af2bf941f4110d4a895 upstream.
+[ Upstream commit c08a6b31e4917034f0ed0cb457c3bb209576f542 ]
 
-This patch fixes a trivial mistake that I made in the previous attempt
-in fixing the null bridge issue. The branch condition is inverted and we
-should call alcor_pci_find_cap_offset() only if bridge is not null.
+This module's remove path calls del_timer(). However, that function
+does not wait until the timer handler finishes. This means that the
+timer handler may still be running after the driver's remove function
+has finished, which would result in a use-after-free.
 
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 3ce3e45cc333 ("misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge")
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210522043725.602179-1-ztong0001@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix by calling del_timer_sync(), which makes sure the timer handler
+has finished, and unable to re-schedule itself.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/1620716495-108352-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/cardreader/alcor_pci.c |    2 +-
+ drivers/watchdog/sbc60xxwdt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/misc/cardreader/alcor_pci.c
-+++ b/drivers/misc/cardreader/alcor_pci.c
-@@ -144,7 +144,7 @@ static void alcor_pci_init_check_aspm(st
- 	 * priv->parent_pdev will be NULL. In this case we don't check its
- 	 * capability and disable ASPM completely.
- 	 */
--	if (!priv->parent_pdev)
-+	if (priv->parent_pdev)
- 		priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
- 							 priv->parent_pdev);
- 
+diff --git a/drivers/watchdog/sbc60xxwdt.c b/drivers/watchdog/sbc60xxwdt.c
+index c3151642694c..de1f7add05c3 100644
+--- a/drivers/watchdog/sbc60xxwdt.c
++++ b/drivers/watchdog/sbc60xxwdt.c
+@@ -146,7 +146,7 @@ static void wdt_startup(void)
+ static void wdt_turnoff(void)
+ {
+ 	/* Stop the timer */
+-	del_timer(&timer);
++	del_timer_sync(&timer);
+ 	inb_p(wdt_stop);
+ 	pr_info("Watchdog timer is now disabled...\n");
+ }
+-- 
+2.30.2
+
 
 
