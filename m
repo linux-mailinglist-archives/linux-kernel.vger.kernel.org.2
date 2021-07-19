@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F203CE714
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE013CE71A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350715AbhGSQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:20:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
+        id S1351411AbhGSQUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:20:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345622AbhGSPML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:12:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9B536135C;
-        Mon, 19 Jul 2021 15:52:38 +0000 (UTC)
+        id S1345656AbhGSPMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:12:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2983361279;
+        Mon, 19 Jul 2021 15:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709959;
-        bh=clzoqKNetUcJ+lkLQDWwtYU9CiEyEKAkHpiyoVX86Eo=;
+        s=korg; t=1626709961;
+        bh=hF/vTH+1CY/GWVUsaya4fy7AT5xadmNfZnudOOYv4Mo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dDCVq3Exqxh/2gG35oSrrWAu22TJplYUA/IRpz0M/9LxGAZ7W0EldZdxoxNN8vbyd
-         rYF/gq0kUKBv2Atr0rP5MIWF5J9soxoakyOPnCqVciflbOGitGaSBYj3NQhXb1GqQd
-         MJMdsvEvrutk4txZiolpu40+z5POzU2Tq3EeLjPM=
+        b=Unl4+sU1ZK3hW0syDG3W63s3QDvabZE+VF7NUUGefzZWhVdNBAwH7TSbfRxGxiO26
+         Y5XZl6w/EbFBI2HOrbEvbuSgiJVFjNMMfn+tLRxT13Vex8DCfcluhit/DC8Cu/QLiF
+         Jcjwbm6GlqwtErhfN8SG0+ZvfPmFZw2Akm4aC64c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wayne Lin <Wayne.Lin@amd.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>
-Subject: [PATCH 5.10 017/243] drm/dp_mst: Add missing drm parameters to recently added call to drm_dbg_kms()
-Date:   Mon, 19 Jul 2021 16:50:46 +0200
-Message-Id: <20210719144941.475992307@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH 5.10 018/243] drm/ingenic: Fix non-OSD mode
+Date:   Mon, 19 Jul 2021 16:50:47 +0200
+Message-Id: <20210719144941.515329280@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,50 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: José Roberto de Souza <jose.souza@intel.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 24ff3dc18b99c4b912ab1746e803ddb3be5ced4c upstream.
+commit 7b4957684e5d813fcbdc98144e3cc5c4467b3e2e upstream.
 
-Commit 3769e4c0af5b ("drm/dp_mst: Avoid to mess up payload table by
-ports in stale topology") added to calls to drm_dbg_kms() but it
-missed the first parameter, the drm device breaking the build.
+Even though the JZ4740 did not have the OSD mode, it had (according to
+the documentation) two DMA channels, but there is absolutely no
+information about how to select the second DMA channel.
 
-Fixes: 3769e4c0af5b ("drm/dp_mst: Avoid to mess up payload table by ports in stale topology")
-Cc: Wayne Lin <Wayne.Lin@amd.com>
-Cc: Lyude Paul <lyude@redhat.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: stable@vger.kernel.org
-Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210616194415.36926-1-jose.souza@intel.com
+Make the ingenic-drm driver work in non-OSD mode by using the
+foreground0 plane (which is bound to the DMA0 channel) as the primary
+plane, instead of the foreground1 plane, which is the primary plane
+when in OSD mode.
+
+Fixes: 3c9bea4ef32b ("drm/ingenic: Add support for OSD mode")
+Cc: <stable@vger.kernel.org> # v5.8+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210124085552.29146-5-paul@crapouillou.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -3385,7 +3385,9 @@ int drm_dp_update_payload_part1(struct d
- 			mutex_unlock(&mgr->lock);
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -455,7 +455,7 @@ static void ingenic_drm_plane_atomic_upd
+ 		height = state->src_h >> 16;
+ 		cpp = state->fb->format->cpp[0];
  
- 			if (skip) {
--				drm_dbg_kms("Virtual channel %d is not in current topology\n", i);
-+				drm_dbg_kms(mgr->dev,
-+					    "Virtual channel %d is not in current topology\n",
-+					    i);
- 				continue;
- 			}
- 			/* Validated ports don't matter if we're releasing
-@@ -3400,7 +3402,8 @@ int drm_dp_update_payload_part1(struct d
- 						payload->start_slot = req_payload.start_slot;
- 						continue;
- 					} else {
--						drm_dbg_kms("Fail:set payload to invalid sink");
-+						drm_dbg_kms(mgr->dev,
-+							    "Fail:set payload to invalid sink");
- 						mutex_unlock(&mgr->payload_lock);
- 						return -EINVAL;
- 					}
+-		if (priv->soc_info->has_osd && plane->type == DRM_PLANE_TYPE_OVERLAY)
++		if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
+ 			hwdesc = priv->dma_hwdesc_f0;
+ 		else
+ 			hwdesc = priv->dma_hwdesc_f1;
+@@ -692,6 +692,7 @@ static int ingenic_drm_bind(struct devic
+ 	const struct jz_soc_info *soc_info;
+ 	struct ingenic_drm *priv;
+ 	struct clk *parent_clk;
++	struct drm_plane *primary;
+ 	struct drm_bridge *bridge;
+ 	struct drm_panel *panel;
+ 	struct drm_encoder *encoder;
+@@ -784,9 +785,11 @@ static int ingenic_drm_bind(struct devic
+ 	if (soc_info->has_osd)
+ 		priv->ipu_plane = drm_plane_from_index(drm, 0);
+ 
+-	drm_plane_helper_add(&priv->f1, &ingenic_drm_plane_helper_funcs);
++	primary = priv->soc_info->has_osd ? &priv->f1 : &priv->f0;
+ 
+-	ret = drm_universal_plane_init(drm, &priv->f1, 1,
++	drm_plane_helper_add(primary, &ingenic_drm_plane_helper_funcs);
++
++	ret = drm_universal_plane_init(drm, primary, 1,
+ 				       &ingenic_drm_primary_plane_funcs,
+ 				       ingenic_drm_primary_formats,
+ 				       ARRAY_SIZE(ingenic_drm_primary_formats),
+@@ -798,7 +801,7 @@ static int ingenic_drm_bind(struct devic
+ 
+ 	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
+ 
+-	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
++	ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
+ 					NULL, &ingenic_drm_crtc_funcs, NULL);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to init CRTC: %i\n", ret);
 
 
