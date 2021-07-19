@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61213CE965
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633CD3CEA9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354321AbhGSQyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:54:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46560 "EHLO mail.kernel.org"
+        id S236723AbhGSRRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:17:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347951AbhGSPaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:30:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97568613CC;
-        Mon, 19 Jul 2021 16:09:40 +0000 (UTC)
+        id S235235AbhGSPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:40:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 066C961380;
+        Mon, 19 Jul 2021 16:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710981;
-        bh=0rOQmzH2/RHjeIWMPO1I5FaTDOuQ4tbgwtr7wXAqSH0=;
+        s=korg; t=1626711655;
+        bh=ROI89Oip2jR67RT8yJVn6b9Pa50pCCGVtr7XrH1qn1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SvRV09LNul3dWZIZQRmpGNH3dgGqhfevrTHNAKx9K723ER8co5kjEUxTNzqh39KLz
-         GSRYvUJnMQT1nnu5DT7Bk1toFDcZMC3jw4ktisL3oxMIadDBj7BhuDVwekF9A5NsIT
-         fJvjs8LCw8/EFoUmSmQF92v20f+dE2T0D4f9x45M=
+        b=Ma1ynCN7Xv+dUwH/zcGWkCwg2zAfHYHe5E0vQCzwkT+khB2lVZo6KyiyuItoQNjEP
+         xlsoNBBRbna5JxZeMEpJyjDAqyALZ+GUKeEuU36fuXGpSogZZ9W9OoRB+dAl8G7Cd5
+         BnhGak79+dJXAUEBqFP9pqJxJKNl74czhVk5UztA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 165/351] watchdog: Fix possible use-after-free in wdt_startup()
+Subject: [PATCH 5.12 049/292] iio: magn: bmc150: Balance runtime pm + use pm_runtime_resume_and_get()
 Date:   Mon, 19 Jul 2021 16:51:51 +0200
-Message-Id: <20210719144950.425310541@linuxfoundation.org>
+Message-Id: <20210719144944.121515533@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit c08a6b31e4917034f0ed0cb457c3bb209576f542 ]
+[ Upstream commit 264da512431495e542fcaf56ffe75e7df0e7db74 ]
 
-This module's remove path calls del_timer(). However, that function
-does not wait until the timer handler finishes. This means that the
-timer handler may still be running after the driver's remove function
-has finished, which would result in a use-after-free.
+probe() error paths after runtime pm is enabled, should disable it.
+remove() should not call pm_runtime_put_noidle() as there is no
+matching get() to have raised the reference count.  This case
+has no affect a the runtime pm core protects against going negative.
 
-Fix by calling del_timer_sync(), which makes sure the timer handler
-has finished, and unable to re-schedule itself.
+Whilst here use pm_runtime_resume_and_get() to tidy things up a little.
+coccicheck script didn't get this one due to complex code structure so
+found by inspection.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/1620716495-108352-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/r/20210509113354.660190-12-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/sbc60xxwdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/magnetometer/bmc150_magn.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/watchdog/sbc60xxwdt.c b/drivers/watchdog/sbc60xxwdt.c
-index a947a63fb44a..7b974802dfc7 100644
---- a/drivers/watchdog/sbc60xxwdt.c
-+++ b/drivers/watchdog/sbc60xxwdt.c
-@@ -146,7 +146,7 @@ static void wdt_startup(void)
- static void wdt_turnoff(void)
- {
- 	/* Stop the timer */
--	del_timer(&timer);
-+	del_timer_sync(&timer);
- 	inb_p(wdt_stop);
- 	pr_info("Watchdog timer is now disabled...\n");
- }
+diff --git a/drivers/iio/magnetometer/bmc150_magn.c b/drivers/iio/magnetometer/bmc150_magn.c
+index 20a0842f0e3a..26c6400cb08c 100644
+--- a/drivers/iio/magnetometer/bmc150_magn.c
++++ b/drivers/iio/magnetometer/bmc150_magn.c
+@@ -265,7 +265,7 @@ static int bmc150_magn_set_power_state(struct bmc150_magn_data *data, bool on)
+ 	int ret;
+ 
+ 	if (on) {
+-		ret = pm_runtime_get_sync(data->dev);
++		ret = pm_runtime_resume_and_get(data->dev);
+ 	} else {
+ 		pm_runtime_mark_last_busy(data->dev);
+ 		ret = pm_runtime_put_autosuspend(data->dev);
+@@ -274,9 +274,6 @@ static int bmc150_magn_set_power_state(struct bmc150_magn_data *data, bool on)
+ 	if (ret < 0) {
+ 		dev_err(data->dev,
+ 			"failed to change power state to %d\n", on);
+-		if (on)
+-			pm_runtime_put_noidle(data->dev);
+-
+ 		return ret;
+ 	}
+ #endif
+@@ -967,12 +964,14 @@ int bmc150_magn_probe(struct device *dev, struct regmap *regmap,
+ 	ret = iio_device_register(indio_dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "unable to register iio device\n");
+-		goto err_buffer_cleanup;
++		goto err_disable_runtime_pm;
+ 	}
+ 
+ 	dev_dbg(dev, "Registered device %s\n", name);
+ 	return 0;
+ 
++err_disable_runtime_pm:
++	pm_runtime_disable(dev);
+ err_buffer_cleanup:
+ 	iio_triggered_buffer_cleanup(indio_dev);
+ err_free_irq:
+@@ -996,7 +995,6 @@ int bmc150_magn_remove(struct device *dev)
+ 
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_set_suspended(dev);
+-	pm_runtime_put_noidle(dev);
+ 
+ 	iio_triggered_buffer_cleanup(indio_dev);
+ 
 -- 
 2.30.2
 
