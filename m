@@ -2,145 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1AC3CECEB
+	by mail.lfdr.de (Postfix) with ESMTP id 001803CECEC
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382447AbhGSRjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
+        id S1382487AbhGSRjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352758AbhGSQOh (ORCPT
+        with ESMTP id S1352768AbhGSQOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:14:37 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5057C069A4D
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:09:47 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id r80so7588205oie.13
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:33:06 -0700 (PDT)
+        Mon, 19 Jul 2021 12:14:40 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24F9C069A59
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:10:25 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id j4so2864805pgk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=5pip44uz8G7BvdketPGGb7rO6ArAVuWxJOw8cYl5Dck=;
-        b=pTokBLHDVKUO6/S3IXyWzU0zhd+tz6Gtzh0fmA122RJbECmVbws0irqr5MuT96wcv1
-         cp95ZgMJQI6W+8Gsvt1v/hPalzRu+gYem1Vnp2KzyIzvDe3+Bk1lwZz4D3UXHlEDEMpr
-         gMlzSmzTVzSvTtMNRj38dm7zE9SY9GZRn5FzqPFL0/jf2qLcAyHyyA0addRmRIbFXTPN
-         8JXWYDD/ertD1+MhskCe8Ht+Fsxiej2r2UeMh4swFdfAxHW+WKIrSIKzfXj3AVsVUbaB
-         cjy5NuLdvuP1ZM4xpDC9qN78HCI5Rv5U2P/PPBkBWk/DRdhpgOEHPmSZZl8DILw5qtNn
-         oiUw==
+        bh=o4i922N5SDDsYvh6TuHE/Y23vxIVmH2yUEAQuG2pCpE=;
+        b=hgDtj98JFI7Uz5/o2YUanStRm2pgcmFJm9RqwEPCvbw2aM+Q7aSMp7yYigxQLxLrzH
+         WNufFHdOpsrEeWEMk14EzulrQrKVeKMqiawwkWlOy9p3p4o6bzsyvJMizvYqVx68p/Wn
+         ULZo05dvfacQM7L+0gDIHSUcsxwbDVvdEMH/SGJIWpO0kaOoLZtFWWJ721B1R8cRY8JC
+         LknEn894OJbOJbPp7UeYwkUfk6UbSjWUyserq0H/3TbOq1jybBTUIntbBKihgBSTR+Z8
+         /6LWc2I0wa9wt3wLPo7CFnGXHNs6oq/aYDDJehLcati9Mqs2LOBk57XXuGoVDGOFUkPc
+         DEgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5pip44uz8G7BvdketPGGb7rO6ArAVuWxJOw8cYl5Dck=;
-        b=qxU8wtnW2pANZWwFjARh3ZueqoLKor6vrK9j9Vd1OthqrLWLu1FDckEVscxZ7NEnh4
-         94l9un878i15SDDYzvtkUwMPrYdAYlTB0CsP8DFqlTdpj2ipMVOuVTAUK+sgPeo/0Vf0
-         4/mt0SmpJj5ZBdpbDBopGCnQZO7vjbB4m0bp71uYxFEOb0FGxUk6MZKCcM60nYkeVJhx
-         TjB+xgiL/LL2vN7fohWTWxbSiwxbHAyIhRvJmAoUU9kwN5wU5quUPDsH9quYNAFceRu+
-         BXbh53HQIVtj4NTdcgTSyDyxj24b9h7el3MJRoeiu3+VcVF0pwFTIyy6QryjXKAnZeih
-         R4+g==
-X-Gm-Message-State: AOAM530I6rjJQwyxrUa2AjRo0wDybPIkyJllRFKu0r5jpgjGbmTsWwXv
-        hF3qElabIfWvfMChILIW7hOMPw==
-X-Google-Smtp-Source: ABdhPJwQCvoXkJu7zax2U3Jk0zW9PX4Ges1w6phQIYQ662ersmvpvpSXwXazl78T/nS00H8n/6O//Q==
-X-Received: by 2002:aca:b309:: with SMTP id c9mr8414386oif.135.1626712385860;
-        Mon, 19 Jul 2021 09:33:05 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h1sm3774252otj.48.2021.07.19.09.33.04
+        bh=o4i922N5SDDsYvh6TuHE/Y23vxIVmH2yUEAQuG2pCpE=;
+        b=OAZRA9qVsofy2CuotXrC0MoB1RiKghCUZC/Z6ql/lgspQ+NAtHwzsdA/zEXBjMWMnB
+         UaJbN08DEN5bQ7poGcrfhGrXHI5it97hzPdJxfBgVNmmWcJC4fkkED/jBK62SEvV0Flt
+         +LuRWULk+9tH775y543A/ylUSMCVGuxYMNyy93fbtMJZjdHG4/RnAqw9NDCA7EsBrgmS
+         4RGlZDVyVNGQKLE09hxiOThp1IdBA9wDjcAcN3ax07RcQBMtVYeF/1IogEgTsb3yMmnd
+         rm/LxhQEVaNF2l4B3iPPlYn79XLSozgF004bQch4MhhWoXlvsp6uleTB0ENeFDW2bn6I
+         TBCw==
+X-Gm-Message-State: AOAM532Fd+ElLNRtrYvXwAg6hAi7qoyCuvz3fnzYVL7DisI4zDr9/0Tr
+        JsupM+iKTVrwsLDCGeKtD3NS7A==
+X-Google-Smtp-Source: ABdhPJy2jGcpXSz3/n0yGq6EvR3KsN/25stQN4X0pzpZtImNNpTvcohu0e6B44HVvELefA3SZ45ehQ==
+X-Received: by 2002:a63:ef45:: with SMTP id c5mr26810707pgk.78.1626712421192;
+        Mon, 19 Jul 2021 09:33:41 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id y82sm21001336pfb.121.2021.07.19.09.33.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 09:33:05 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 11:33:02 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        tdas@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [Patch v3 4/6] arm64: boot: dts: qcom: sdm45: Add support for
- LMh node
-Message-ID: <YPWpPt+EfTtAUEOH@yoga>
-References: <20210708120656.663851-1-thara.gopinath@linaro.org>
- <20210708120656.663851-5-thara.gopinath@linaro.org>
+        Mon, 19 Jul 2021 09:33:39 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 10:33:36 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        leo.yan@linaro.org, al.grant@arm.com, branislav.rankov@arm.com,
+        denik@chromium.org, suzuki.poulose@arm.com,
+        anshuman.khandual@arm.com, John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
+Message-ID: <20210719163336.GA2255168@p14s>
+References: <20210624164303.28632-1-james.clark@arm.com>
+ <20210624164303.28632-3-james.clark@arm.com>
+ <20210705193338.GB1493103@p14s>
+ <YO8ivntow2JfdQWW@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210708120656.663851-5-thara.gopinath@linaro.org>
+In-Reply-To: <YO8ivntow2JfdQWW@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 08 Jul 07:06 CDT 2021, Thara Gopinath wrote:
+Hi Arnaldo,
 
-> Add LMh nodes for cpu cluster0 and cpu cluster1. Also add interrupt
-> support in cpufreq node to capture the LMh interrupt and let the scheduler
-> know of the max frequency throttling.
+On Wed, Jul 14, 2021 at 02:45:34PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Jul 05, 2021 at 01:33:38PM -0600, Mathieu Poirier escreveu:
+> > On Thu, Jun 24, 2021 at 05:43:03PM +0100, James Clark wrote:
+> > > for example:
+> > > 
+> > >         Idx:808; ID:1c; I_BAD_SEQUENCE : Invalid Sequence in packet.[I_ASYNC]
+> > >         ...
+> > >         PKTP_ETMV4I_0016 : 0x0014 (OCSD_ERR_INVALID_PCKT_HDR) [Invalid packet header]; TrcIdx=822
+> > > 
+> > > Signed-off-by: James Clark <james.clark@arm.com>
+> > > ---
+> > >  tools/perf/util/cs-etm.c | 20 ++++++++++++++++++--
+> > >  1 file changed, 18 insertions(+), 2 deletions(-)
+> > > 
+> > 
+> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 > 
+> 
+> 
+> Thanks, applied.
 
-Just noticed, could you please drop "boot: " from $subject and add the
-missing '8', as you're resubmitting the series.
+This patch is the second of a two patch series[1][2].  The first one was applied and
+is in Linus' current master branch.  But I can't find the second one in
+either your core branch or Linus', and that despite your reply above that it has been
+applied.  As such I am guessing something went wrong with the process.  
 
-Regards,
-Bjorn
+How do you want to proceed - should we resend the second patch[2] or you still
+have it somewhere in your Inbox?
 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
+Thanks,
+Mathieu
+
+[1]. https://lists.linaro.org/pipermail/coresight/2021-June/006575.html
+[2]. https://lists.linaro.org/pipermail/coresight/2021-June/006576.html
+
 > 
-> v2->v3:
-> 	- Changed the LMh low and high trip to 94500 and 95000 mC from
-> 	  74500 and 75000 mC. This was a bug that got introduced in v2.
-> v1->v2:
-> 	- Dropped dt property qcom,support-lmh as per Bjorn's review comments.
-> 	- Changed lmh compatible from generic to platform specific.
-> 	- Introduced properties specifying arm, low and high temp thresholds for LMh
-> 	  as per Daniel's suggestion.
-> 
->  arch/arm64/boot/dts/qcom/sdm845.dtsi | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index 0a86fe71a66d..4da6b8f3dd7b 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -3646,6 +3646,30 @@ swm: swm@c85 {
->  			};
->  		};
->  
-> +		lmh_cluster1: lmh@17d70800 {
-> +			compatible = "qcom,sdm845-lmh";
-> +			reg = <0 0x17d70800 0 0x401>;
-> +			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-> +			qcom,lmh-cpu-id = <0x4>;
-> +			qcom,lmh-temperature-arm = <65000>;
-> +			qcom,lmh-temperature-low = <94500>;
-> +			qcom,lmh-temperature-high = <95000>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <1>;
-> +		};
-> +
-> +		lmh_cluster0: lmh@17d78800 {
-> +			compatible = "qcom,sdm845-lmh";
-> +			reg = <0 0x17d78800 0 0x401>;
-> +			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-> +			qcom,lmh-cpu-id = <0x0>;
-> +			qcom,lmh-temperature-arm = <65000>;
-> +			qcom,lmh-temperature-low = <94500>;
-> +			qcom,lmh-temperature-high = <95000>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <1>;
-> +		};
-> +
->  		sound: sound {
->  		};
->  
-> @@ -4911,6 +4935,8 @@ cpufreq_hw: cpufreq@17d43000 {
->  			reg = <0 0x17d43000 0 0x1400>, <0 0x17d45800 0 0x1400>;
->  			reg-names = "freq-domain0", "freq-domain1";
->  
-> +			interrupts-extended = <&lmh_cluster0 0>, <&lmh_cluster1 0>;
-> +
->  			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GPLL0>;
->  			clock-names = "xo", "alternate";
->  
-> -- 
-> 2.25.1
+> - Arnaldo
 > 
