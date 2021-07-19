@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3973CD835
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B478A3CDA99
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242849AbhGSOVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:21:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56458 "EHLO mail.kernel.org"
+        id S241905AbhGSOgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241733AbhGSOTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:19:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 740C9610D2;
-        Mon, 19 Jul 2021 15:00:26 +0000 (UTC)
+        id S244286AbhGSO3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:29:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D956961355;
+        Mon, 19 Jul 2021 15:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706826;
-        bh=ot9WFLrtV9IRlq4JW8u+TpybfLFLqjEm+tpVjY/xEZw=;
+        s=korg; t=1626707347;
+        bh=e/Wp1bjqjK1PsGeaKF3gy6/72TzCAYu6V3A0KPqjxK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pH9qMY390x/SNmTL15zsn1L8kXiSEIBjAGQ7ATV8dcMnUkCO8GsGxNyL27ubBe+pX
-         /67ypQIMUhKx9PTXBgXyPnYpwFtu1Tw0UCVfLUWFoTNtzEX4Byf5DIvW8QvFFTrt1V
-         3WMHrx+pTVfPBiy3aJ1v7fPgNDzQ/fgvqdJUDwZE=
+        b=NYY0sUx2ZcdjnCT1imJgjnxNHNnunmWkIyPoXf8OKxjx5i/FzKaYCiL2jk48nD6lr
+         MEdy/UPFY9JrcGrQnSojzRp9ZzAbimvTNfpFZCaqDitx3mzeN7IGV7z6aobXAWYc15
+         Tc8dm5uitTdPxu0Cq6+k8hQWya6cDGCKYOc/LZcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 082/188] char: pcmcia: error out if num_bytes_read is greater than 4 in set_protocol()
+Subject: [PATCH 4.9 124/245] net: pch_gbe: Use proper accessors to BE data in pch_ptp_match()
 Date:   Mon, 19 Jul 2021 16:51:06 +0200
-Message-Id: <20210719144932.126410889@linuxfoundation.org>
+Message-Id: <20210719144944.421193435@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 37188559c610f1b7eec83c8e448936c361c578de ]
+[ Upstream commit 443ef39b499cc9c6635f83238101f1bb923e9326 ]
 
-Theoretically, it will cause index out of bounds error if
-'num_bytes_read' is greater than 4. As we expect it(and was tested)
-never to be greater than 4, error out if it happens.
+Sparse is not happy about handling of strict types in pch_ptp_match():
 
-Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/20210521120617.138396-1-yukuai3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  .../pch_gbe_main.c:158:33: warning: incorrect type in argument 2 (different base types)
+  .../pch_gbe_main.c:158:33:    expected unsigned short [usertype] uid_hi
+  .../pch_gbe_main.c:158:33:    got restricted __be16 [usertype]
+  .../pch_gbe_main.c:158:45: warning: incorrect type in argument 3 (different base types)
+  .../pch_gbe_main.c:158:45:    expected unsigned int [usertype] uid_lo
+  .../pch_gbe_main.c:158:45:    got restricted __be32 [usertype]
+  .../pch_gbe_main.c:158:56: warning: incorrect type in argument 4 (different base types)
+  .../pch_gbe_main.c:158:56:    expected unsigned short [usertype] seqid
+  .../pch_gbe_main.c:158:56:    got restricted __be16 [usertype]
+
+Fix that by switching to use proper accessors to BE data.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Flavio Suligoi <f.suligoi@asem.it>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/pcmcia/cm4000_cs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../ethernet/oki-semi/pch_gbe/pch_gbe_main.c  | 19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
-index c115217c79ae..f8d98f7e6fb7 100644
---- a/drivers/char/pcmcia/cm4000_cs.c
-+++ b/drivers/char/pcmcia/cm4000_cs.c
-@@ -544,6 +544,10 @@ static int set_protocol(struct cm4000_dev *dev, struct ptsreq *ptsreq)
- 		io_read_num_rec_bytes(iobase, &num_bytes_read);
- 		if (num_bytes_read >= 4) {
- 			DEBUGP(2, dev, "NumRecBytes = %i\n", num_bytes_read);
-+			if (num_bytes_read > 4) {
-+				rc = -EIO;
-+				goto exit_setprotocol;
-+			}
- 			break;
- 		}
- 		mdelay(10);
+diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+index 5d39b5319d50..cd59577a0c92 100644
+--- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
++++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+@@ -124,7 +124,7 @@ static int pch_ptp_match(struct sk_buff *skb, u16 uid_hi, u32 uid_lo, u16 seqid)
+ {
+ 	u8 *data = skb->data;
+ 	unsigned int offset;
+-	u16 *hi, *id;
++	u16 hi, id;
+ 	u32 lo;
+ 
+ 	if (ptp_classify_raw(skb) == PTP_CLASS_NONE)
+@@ -135,14 +135,11 @@ static int pch_ptp_match(struct sk_buff *skb, u16 uid_hi, u32 uid_lo, u16 seqid)
+ 	if (skb->len < offset + OFF_PTP_SEQUENCE_ID + sizeof(seqid))
+ 		return 0;
+ 
+-	hi = (u16 *)(data + offset + OFF_PTP_SOURCE_UUID);
+-	id = (u16 *)(data + offset + OFF_PTP_SEQUENCE_ID);
++	hi = get_unaligned_be16(data + offset + OFF_PTP_SOURCE_UUID + 0);
++	lo = get_unaligned_be32(data + offset + OFF_PTP_SOURCE_UUID + 2);
++	id = get_unaligned_be16(data + offset + OFF_PTP_SEQUENCE_ID);
+ 
+-	memcpy(&lo, &hi[1], sizeof(lo));
+-
+-	return (uid_hi == *hi &&
+-		uid_lo == lo &&
+-		seqid  == *id);
++	return (uid_hi == hi && uid_lo == lo && seqid == id);
+ }
+ 
+ static void
+@@ -152,7 +149,6 @@ pch_rx_timestamp(struct pch_gbe_adapter *adapter, struct sk_buff *skb)
+ 	struct pci_dev *pdev;
+ 	u64 ns;
+ 	u32 hi, lo, val;
+-	u16 uid, seq;
+ 
+ 	if (!adapter->hwts_rx_en)
+ 		return;
+@@ -168,10 +164,7 @@ pch_rx_timestamp(struct pch_gbe_adapter *adapter, struct sk_buff *skb)
+ 	lo = pch_src_uuid_lo_read(pdev);
+ 	hi = pch_src_uuid_hi_read(pdev);
+ 
+-	uid = hi & 0xffff;
+-	seq = (hi >> 16) & 0xffff;
+-
+-	if (!pch_ptp_match(skb, htons(uid), htonl(lo), htons(seq)))
++	if (!pch_ptp_match(skb, hi, lo, hi >> 16))
+ 		goto out;
+ 
+ 	ns = pch_rx_snap_read(pdev);
 -- 
 2.30.2
 
