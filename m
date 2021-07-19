@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD3B3CD6BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91013CD6D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 16:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241101AbhGSN5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 09:57:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241054AbhGSN5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 09:57:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49DB861107;
-        Mon, 19 Jul 2021 14:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626705476;
-        bh=VNwdS0+8c9WbGN3K5A5MZ3wG/e+O8rjIniWqtVydlw8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BOJ5IEM2OpxchkGJILvsPCVblPpGHWfvF6iEE9LzWKDgXppgK8DYn3J0OIrazAMV1
-         KO33DjU9ujzMGMgn8O1d0pCLwnxom/idp2ReGECAZDTlaDT0EnmWUWPQ6YBiTmaZQ0
-         x9T1lrqX/BWESBmkZLzq0Qg2K7ujXHva0XRDQaubfx8lbaFIubSIPcvuhtpiGnSltt
-         n1OyEKHENrrBtmt6yiQSDy+TCYfZqZloO6u9KzxCbmRpUROVvtZFi01FYuRL4V9XZN
-         vlealkPHmtxAWH4jvA8LrnDLPFWByTyYEwQ4I/g5YeUCDInnHpJE8w8jhuONL2fwFx
-         1ojOJ1/igEb7Q==
-From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Colin King <colin.king@canonical.com>
-Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: Fix a couple of spelling mistakes in Kconfig
-Date:   Mon, 19 Jul 2021 15:37:43 +0100
-Message-Id: <162670521669.50753.17260706438616909217.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210719103429.15544-1-colin.king@canonical.com>
-References: <20210719103429.15544-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S241160AbhGSN7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 09:59:07 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:4499 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232395AbhGSN7F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 09:59:05 -0400
+X-IronPort-AV: E=Sophos;i="5.84,252,1620658800"; 
+   d="scan'208";a="88086566"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 19 Jul 2021 23:39:43 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0C4694003EC3;
+        Mon, 19 Jul 2021 23:39:39 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 0/5] Renesas RZ/G2L CANFD support
+Date:   Mon, 19 Jul 2021 15:38:06 +0100
+Message-Id: <20210719143811.2135-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 11:34:29 +0100, Colin King wrote:
-> There are a couple of spelling mistakes in the Kconfig text. Fix them.
+Hi All,
 
-Applied to
+This patch series adds CANFD support to Renesas RZ/G2L family.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+CANFD block on RZ/G2L SoC is almost identical to one found on
+R-Car Gen3 SoC's. On RZ/G2L SoC interrupt sources for each channel
+are split into individual sources.
 
-Thanks!
+Cheers,
+Prabhakar
 
-[1/1] regulator: Fix a couple of spelling mistakes in Kconfig
-      commit: f020e4d0b4016f5592d082cc3a1db430c567c4dc
+Changes for v2:
+* Added interrupt-names property and marked it as required for 
+  RZ/G2L family
+* Added descriptions for reset property
+* Re-used irq handlers on RZ/G2L SoC
+* Added new enum for chip_id
+* Dropped R9A07G044_LAST_CORE_CLK
+* Dropped patch (clk: renesas: r9a07g044-cpg: Add clock and reset
+  entries for CANFD) as its been merged into renesas tree
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Lad Prabhakar (5):
+  dt-bindings: net: can: renesas,rcar-canfd: Document RZ/G2L SoC
+  can: rcar_canfd: Add support for RZ/G2L family
+  dt-bindings: clk: r9a07g044-cpg: Add entry for P0_DIV2 core clock
+  clk: renesas: r9a07g044-cpg: Add entry for fixed clock P0_DIV2
+  arm64: dts: renesas: r9a07g044: Add CANFD node
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+ .../bindings/net/can/renesas,rcar-canfd.yaml  |  66 ++++++-
+ arch/arm64/boot/dts/renesas/r9a07g044.dtsi    |  42 +++++
+ drivers/clk/renesas/r9a07g044-cpg.c           |   3 +-
+ drivers/net/can/rcar/rcar_canfd.c             | 178 +++++++++++++++---
+ include/dt-bindings/clock/r9a07g044-cpg.h     |   1 +
+ 5 files changed, 252 insertions(+), 38 deletions(-)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
+-- 
+2.17.1
 
-Thanks,
-Mark
