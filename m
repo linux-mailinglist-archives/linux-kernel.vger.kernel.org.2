@@ -2,83 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22D73CD62C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF7C3CD62E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239508AbhGSNOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 09:14:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239352AbhGSNOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 09:14:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CED6E601FF;
-        Mon, 19 Jul 2021 13:54:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626702883;
-        bh=3tPYHJRCtyoikc4wbq0m278Es/pj7dJKMWmF4o9SYdI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lBqipVouv/afMeOExIbgc8TRLYvc+TzbDan0pk48/NMDDBYu9+VnfgMKHmuc+Zbfq
-         oWannhkXisQ/J/4F2Ckwh9SGyqS0FnscUjQX2O0IU5RwlWxdXLgGF83mCYFWSnVvsV
-         8vLSBnh1vBhyM6GTLrA2McF8IexugqXkb5iEfBPVk8+3H0RZWQBXOqRXJzIccNaQpu
-         nY1NkZ9fDJLnUBG78SFGQwpUMX3RpwUDdOczwXWqtTG+8k7HH8A5VrKUo5anc6tDeN
-         XvGtRyFXyWmD1YcG12u80zCsWOifgfNV/VNTGGEhyAuzYVW9y4PnE0raywRGksDTW9
-         44zyrQ+BNGjRg==
-Date:   Mon, 19 Jul 2021 15:54:40 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     He Zhe <zhe.he@windriver.com>, anna-maria@linutronix.de,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH] timers: Fix get_next_timer_interrupt() with no timers
- pending
-Message-ID: <20210719135440.GC116346@lothringen>
-References: <20200723151641.12236-1-frederic@kernel.org>
- <dfbf752e-91db-b128-76a8-98fde4c5d480@windriver.com>
- <20210708153620.GA6716@lothringen>
- <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
- <20210709084303.GA17239@lothringen>
- <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
- <f520c8b87f56fcda0158853c5127f0488918503e.camel@redhat.com>
- <4409fa71931446d9cabd849431ee0098c9b31292.camel@redhat.com>
- <20210710005243.GA23956@lothringen>
- <95fb6503b1513cff1df54a043d9e3df530ddd63a.camel@redhat.com>
+        id S240685AbhGSNOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 09:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239352AbhGSNOc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 09:14:32 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB37C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 06:18:43 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g24so11491409pji.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 06:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=lm5IvueyUucmK9+B2ni/XxO2ccY0iQ71cX0W8b88G5Q=;
+        b=sz8XlcoTWg7QOOThmUdhRqfOEh4bAF0RlzrOKRYgVCfmfoVxnb8ki1w6R53afZMNIX
+         bdT96FHA+buGLamd0coIbTgd1GQ3t1yjKojeNpnVbMJvzSf2gR0qrBByfAbk+THN1JZd
+         X2mw0ixNrQROBuEP5APK+cpPDxTIO/WKx3lP7kEsnFd6y5pEtP5lfPIxDhzWJBdwtcx5
+         GjY4Zme5iIpEf8bkZtTghuxAvMYfZ0/K9zz5+1j/9HqrkIGESdvj0nneVVNfNPJwcAPE
+         cKoV/FkhkpHt6nJVzZO6xK6C8xqF/TVafiNXd27Ob3GJSP2/QsRMzgIzVOWVqFkPY/AP
+         SJsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=lm5IvueyUucmK9+B2ni/XxO2ccY0iQ71cX0W8b88G5Q=;
+        b=UikLWz+yOkbtP2BfSs7tI6cl3f3SzYabu9Ckki8iNeMvqvxuFVDI3gJPQhP9WdQHzU
+         PCJ/iepfDQMJYIkb+NGgNx1Bd/gAJpdavBy9LDEVJRjVpbdELkVs2NXcNF6eLLjg2T+t
+         OU9D4whaA2SKmf3odMMwzzRjV0eV0yMxxE/CfKbv/tEWfopAi0PGJGtW9dboCFPfeT8K
+         5kLLNOdVi2STpsm51OVUfeu3vOZ19hciFjXlwGxh7FfKTuTOTup1Q3zs3c3fXLLmp8qj
+         ymuDnrVGVbeIbysAJlmZJTxuTnIn5A/Wzu98lynGsxEgeN8wqDbOIvzHfrfKFp32a0/m
+         R41w==
+X-Gm-Message-State: AOAM530IspQWugbEy+SF3A7wwEMtRy4Z9mkBl27OCbaDHGDiNfwy+l6k
+        osJvgBsCkJeIJRGIbIFVyLMICg==
+X-Google-Smtp-Source: ABdhPJwS87p0XskdKotYAQaKNw4ZH1KiJK6VQskISM1Uku2ELfoNfsYxzKc/JhHKwxYL7E/GWjYh8g==
+X-Received: by 2002:a17:902:bb83:b029:120:512b:86c0 with SMTP id m3-20020a170902bb83b0290120512b86c0mr19562256pls.32.1626702911622;
+        Mon, 19 Jul 2021 06:55:11 -0700 (PDT)
+Received: from [10.200.196.235] ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id v69sm20867208pfc.118.2021.07.19.06.55.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 06:55:11 -0700 (PDT)
+Subject: Re: [PATCH 5/7] mm: free user PTE page table pages
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+References: <20210718043034.76431-1-zhengqi.arch@bytedance.com>
+ <20210718043034.76431-6-zhengqi.arch@bytedance.com>
+ <20210718220110.nqcd73luncf3v7mk@box.shutemov.name>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Message-ID: <fa819293-7b0b-0b80-699a-63c1ad0469c2@bytedance.com>
+Date:   Mon, 19 Jul 2021 21:55:05 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <95fb6503b1513cff1df54a043d9e3df530ddd63a.camel@redhat.com>
+In-Reply-To: <20210718220110.nqcd73luncf3v7mk@box.shutemov.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 06:38:37PM +0200, Nicolas Saenz Julienne wrote:
-> On Sat, 2021-07-10 at 02:52 +0200, Frederic Weisbecker wrote:
-> > I guess later we can turn this .timers_pending into
-> > .timers_count and that would spare us the costly call to
-> > __next_timer_interrupt() up to the last level after the last
-> > timer is dequeued.
+On 7/19/21 6:01 AM, Kirill A. Shutemov wrote:
+> On Sun, Jul 18, 2021 at 12:30:31PM +0800, Qi Zheng wrote:
+>> Some malloc libraries(e.g. jemalloc or tcmalloc) usually
+>> allocate the amount of VAs by mmap() and do not unmap
+>> those VAs. They will use madvise(MADV_DONTNEED) to free
+>> physical memory if they want. But the page tables do not
+>> be freed by madvise(), so it can produce many page tables
+>> when the process touches an enormous virtual address space.
+>>
+>> The following figures are a memory usage snapshot of one
+>> process which actually happened on our server:
+>>
+>>          VIRT:  55t
+>>          RES:   590g
+>>          VmPTE: 110g
+>>
+>> As we can see, the PTE page tables size is 110g, while the
+>> RES is 590g. In theory, the process only need 1.2g PTE page
+>> tables to map those physical memory. The reason why PTE page
+>> tables occupy a lot of memory is that madvise(MADV_DONTNEED)
+>> only empty the PTE and free physical memory but doesn't free
+>> the PTE page table pages. So we can free those empty PTE page
+>> tables to save memory. In the above cases, we can save memory
+>> about 108g(best case). And the larger the difference between
+>> the size of VIRT and RES, the more memory we save.
+>>
+>> In this patch series, we add a pte_refcount field to the
+>> struct page of page table to track how many users of PTE page
+>> table. Similar to the mechanism of page refcount, the user of
+>> PTE page table should hold a refcount to it before accessing.
+>> The PTE page table page will be freed when the last refcount
+>> is dropped.
 > 
-> I've been looking into this. AFAIU there is no limit to the number of timers
-> one might enqueue, so there is no fool proof way of selecting .timers_count's
-> size. That said, 'struct timer_list' size is 40 bytes (as per pahole), so in
-> order to overflow an u32 .timers_count you'd need to allocate ~160GB in 'struct
-> timer_list' which I think is safe to assume will never happen.
+> The patch is very hard to review.
 > 
-> Also, I measured the costy call to __next_timer_interrupt() it's slightly less
-> than 1us on my test machine. Not a that big in the grand scheme of things, but
-> it's in the irq exit code path, so I think it's worth the extra complexity in
-> the timer code.
+> Could you split up introduction of the new API in the separate patch? With
+> a proper documentation of the API.
 
-And also each time we iterate the idle loop. In fact __next_timer_interrupt()
-won't always have the same cost: the worst case is when the wheel is entirely
-empty after the last removal and we need to walk through all 9 levels. It's
-a pretty common case because it happens when the last timer expires.
-
-And that's the only one case to measure because it's the only one covered
-by the counter.
+Good idea, i will do it.
 
 > 
-> Any thoughs?
+> Why pte_refcount is atomic? Looks like you do everything under pmd_lock().
+> Do I miss something?
+
+When we do pte_get_unless_zero(), we hold pmd_lock to protect against
+free_pte_table(). But we don't need to hold the pmd lock when we do
+pte_get()/pte_put() in mapping/unmapping routine.
+
 > 
-> -- 
-> Nicolás Sáenz
+> And performance numbers should be included. I don't expect pmd_lock() in
+> all hotpaths to scale well.
 > 
+
+Yeah, so we use rcu lock to replace the pmd lock in some routines in the
+subsequent patch (mm: defer freeing PTE page table for a grace period).
+
+Thanks,
+
+Qi
