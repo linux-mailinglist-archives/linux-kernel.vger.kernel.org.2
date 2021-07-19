@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C153CE927
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFC73CEA6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357059AbhGSQvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:51:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
+        id S1355549AbhGSRPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349322AbhGSP0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:26:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 609C360200;
-        Mon, 19 Jul 2021 16:07:09 +0000 (UTC)
+        id S236731AbhGSPhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:37:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAA7F610FB;
+        Mon, 19 Jul 2021 16:17:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710830;
-        bh=ZP9KQES+HDuOGeyqR9cpbVw/7pbTbMeag+0gntsBwL4=;
+        s=korg; t=1626711471;
+        bh=zmOByIB8qMmfz787nQbKHYGg6IpOuowegXQdddHUonE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w2wpunK7fWWd0GtZVs46T60+11B6NdHz8wCBUITGc7vCp6m7phJ/4m1tzLhnHY6TY
-         BA0jTurchCAak0M4K6o7exVPLfZ9JaB4LDAZB7A5o0fBIqomU9kWWEJrkS48HIV8BU
-         kZYGAT6Gs9GGFZdX0KKWaqFkwgNWxnP+XzTly1dA=
+        b=vR6/u7RE7OUM0zbORhJAW141pTA1zIT7maZSWFkbsdi7yqESWD4Xnf3MMZx/EpJ+P
+         8kznpARsE/y9ReSw4UblWO2no4RZbKrPGaUnwvTuUzsBw1T7/TkwaglaHTNI34N4uQ
+         grtTH2RNo0SOWa20RGYICp5D2U9DVLl1NvFvIhbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 123/351] s390/mem_detect: fix diag260() program check new psw handling
+        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.12 007/292] KVM: nSVM: Check the value written to MSR_VM_HSAVE_PA
 Date:   Mon, 19 Jul 2021 16:51:09 +0200
-Message-Id: <20210719144948.547557005@linuxfoundation.org>
+Message-Id: <20210719144942.758030410@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,73 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-[ Upstream commit 86807f348f418a84970eebb8f9912a7eea16b497 ]
+commit fce7e152ffc8f89d02a80617b16c7aa1527847c8 upstream.
 
-The __diag260() inline asm temporarily changes the program check new
-psw to redirect a potential program check on the diag instruction.
-Restoring of the program check new psw is done in C code behind the
-inline asm.
+APM states that #GP is raised upon write to MSR_VM_HSAVE_PA when
+the supplied address is not page-aligned or is outside of "maximum
+supported physical address for this implementation".
+page_address_valid() check seems suitable. Also, forcefully page-align
+the address when it's written from VMM.
 
-This can be problematic, especially if the function is inlined, since
-the compiler can reorder instructions in such a way that a different
-instruction, which may result in a program check, might be executed
-before the program check new psw has been restored.
-
-To avoid such a scenario move restoring into the inline asm. For
-consistency reasons move also saving of the original program check new
-psw into the inline asm.
-
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Message-Id: <20210628104425.391276-2-vkuznets@redhat.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+[Add comment about behavior for host-provided values. - Paolo]
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/boot/mem_detect.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ arch/x86/kvm/svm/svm.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/boot/mem_detect.c b/arch/s390/boot/mem_detect.c
-index 40168e59abd3..3f093556dc3b 100644
---- a/arch/s390/boot/mem_detect.c
-+++ b/arch/s390/boot/mem_detect.c
-@@ -69,24 +69,27 @@ static int __diag260(unsigned long rx1, unsigned long rx2)
- 	register unsigned long _ry asm("4") = 0x10; /* storage configuration */
- 	int rc = -1;				    /* fail */
- 	unsigned long reg1, reg2;
--	psw_t old = S390_lowcore.program_new_psw;
-+	psw_t old;
- 
- 	asm volatile(
-+		"	mvc	0(16,%[psw_old]),0(%[psw_pgm])\n"
- 		"	epsw	%0,%1\n"
--		"	st	%0,%[psw_pgm]\n"
--		"	st	%1,%[psw_pgm]+4\n"
-+		"	st	%0,0(%[psw_pgm])\n"
-+		"	st	%1,4(%[psw_pgm])\n"
- 		"	larl	%0,1f\n"
--		"	stg	%0,%[psw_pgm]+8\n"
-+		"	stg	%0,8(%[psw_pgm])\n"
- 		"	diag	%[rx],%[ry],0x260\n"
- 		"	ipm	%[rc]\n"
- 		"	srl	%[rc],28\n"
--		"1:\n"
-+		"1:	mvc	0(16,%[psw_pgm]),0(%[psw_old])\n"
- 		: "=&d" (reg1), "=&a" (reg2),
--		  [psw_pgm] "=Q" (S390_lowcore.program_new_psw),
-+		  "+Q" (S390_lowcore.program_new_psw),
-+		  "=Q" (old),
- 		  [rc] "+&d" (rc), [ry] "+d" (_ry)
--		: [rx] "d" (_rx1), "d" (_rx2)
-+		: [rx] "d" (_rx1), "d" (_rx2),
-+		  [psw_old] "a" (&old),
-+		  [psw_pgm] "a" (&S390_lowcore.program_new_psw)
- 		: "cc", "memory");
--	S390_lowcore.program_new_psw = old;
- 	return rc == 0 ? _ry : -1;
- }
- 
--- 
-2.30.2
-
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2982,7 +2982,16 @@ static int svm_set_msr(struct kvm_vcpu *
+ 			svm_disable_lbrv(vcpu);
+ 		break;
+ 	case MSR_VM_HSAVE_PA:
+-		svm->nested.hsave_msr = data;
++		/*
++		 * Old kernels did not validate the value written to
++		 * MSR_VM_HSAVE_PA.  Allow KVM_SET_MSR to set an invalid
++		 * value to allow live migrating buggy or malicious guests
++		 * originating from those kernels.
++		 */
++		if (!msr->host_initiated && !page_address_valid(vcpu, data))
++			return 1;
++
++		svm->nested.hsave_msr = data & PAGE_MASK;
+ 		break;
+ 	case MSR_VM_CR:
+ 		return svm_set_vm_cr(vcpu, data);
 
 
