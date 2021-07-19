@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63173CE89F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FA53CE76A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356515AbhGSQos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
+        id S1353828AbhGSQ0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:26:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346541AbhGSP0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:26:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F20C760FD7;
-        Mon, 19 Jul 2021 16:06:37 +0000 (UTC)
+        id S1346023AbhGSPNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:13:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E11C6120A;
+        Mon, 19 Jul 2021 15:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710798;
-        bh=xn8zvo5PmEO6AmZd5H31rEwXkj3zR4ZR3UbEHQBnKQA=;
+        s=korg; t=1626709994;
+        bh=sm2FY7N6Td+dyjTpFS9FtsjJ7Nw+3308wntXtWM0dFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NMwrKa9OBnMQlpFaKV+LUu1BlRbMtKLvtFrjAw0vB8MPhcLaEcAxr4TSUeC+fRTD3
-         o3PSem8VFQO4f+KMFIJX5LTjDFeip0lOQuk24ptDlw+80Uny08L4PDTK0aSrIA8eFG
-         8edG9mqatP1VQHm7mIhvaQOEs3MOcPRrV5LJuU8A=
+        b=rSNyLaM7vZVivgNkSDCoa5VApaNApNPcUJJqIn6fmu8gyWU4B2qXEgTIHkAJOkUTQ
+         vrMYAAZAXpQNqOmF2T/YhYlMlvtGcHcWKThrkrx04eCUY1Nm/52TKN2vWs8SmizD/t
+         SSxmqBCo78eWixF3+Cke5SEY3ZdAjtNID6vxcZ/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 112/351] powerpc/mm/book3s64: Fix possible build error
-Date:   Mon, 19 Jul 2021 16:50:58 +0200
-Message-Id: <20210719144948.189634200@linuxfoundation.org>
+Subject: [PATCH 5.10 030/243] serial: fsl_lpuart: disable DMA for console and fix sysrq
+Date:   Mon, 19 Jul 2021 16:50:59 +0200
+Message-Id: <20210719144941.901092263@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,86 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit 07d8ad6fd8a3d47f50595ca4826f41dbf4f3a0c6 ]
+[ Upstream commit 8cac2f6eb8548245e6f8fb893fc7f2a714952654 ]
 
-Update _tlbiel_pid() such that we can avoid build errors like below when
-using this function in other places.
+SYSRQ doesn't work with DMA. This is because there is no error
+indication whether a symbol had a framing error or not. Actually,
+this is not completely correct, there is a bit in the data register
+which is set in this case, but we'd have to read change the DMA access
+to 16 bit and we'd need to post process the data, thus make the DMA
+pointless in the first place.
 
-arch/powerpc/mm/book3s64/radix_tlb.c: In function ‘__radix__flush_tlb_range_psize’:
-arch/powerpc/mm/book3s64/radix_tlb.c:114:2: warning: ‘asm’ operand 3 probably does not match constraints
-  114 |  asm volatile(PPC_TLBIEL(%0, %4, %3, %2, %1)
-      |  ^~~
-arch/powerpc/mm/book3s64/radix_tlb.c:114:2: error: impossible constraint in ‘asm’
-make[4]: *** [scripts/Makefile.build:271: arch/powerpc/mm/book3s64/radix_tlb.o] Error 1
-m
-
-With this fix, we can also drop the __always_inline in __radix_flush_tlb_range_psize
-which was added by commit e12d6d7d46a6 ("powerpc/mm/radix: mark __radix__flush_tlb_range_psize() as __always_inline")
-
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210610083639.387365-1-aneesh.kumar@linux.ibm.com
+Signed-off-by: Michael Walle <michael@walle.cc>
+Link: https://lore.kernel.org/r/20210512141255.18277-10-michael@walle.cc
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/book3s64/radix_tlb.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ drivers/tty/serial/fsl_lpuart.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
-index 409e61210789..817a02ef6032 100644
---- a/arch/powerpc/mm/book3s64/radix_tlb.c
-+++ b/arch/powerpc/mm/book3s64/radix_tlb.c
-@@ -291,22 +291,30 @@ static inline void fixup_tlbie_lpid(unsigned long lpid)
- /*
-  * We use 128 set in radix mode and 256 set in hpt mode.
-  */
--static __always_inline void _tlbiel_pid(unsigned long pid, unsigned long ric)
-+static inline void _tlbiel_pid(unsigned long pid, unsigned long ric)
- {
- 	int set;
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+index 36f270261a57..2e74c88808db 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -1571,6 +1571,9 @@ static void lpuart_tx_dma_startup(struct lpuart_port *sport)
+ 	u32 uartbaud;
+ 	int ret;
  
- 	asm volatile("ptesync": : :"memory");
++	if (uart_console(&sport->port))
++		goto err;
++
+ 	if (!sport->dma_tx_chan)
+ 		goto err;
  
--	/*
--	 * Flush the first set of the TLB, and if we're doing a RIC_FLUSH_ALL,
--	 * also flush the entire Page Walk Cache.
--	 */
--	__tlbiel_pid(pid, 0, ric);
-+	switch (ric) {
-+	case RIC_FLUSH_PWC:
+@@ -1600,6 +1603,9 @@ static void lpuart_rx_dma_startup(struct lpuart_port *sport)
+ 	int ret;
+ 	unsigned char cr3;
  
--	/* For PWC, only one flush is needed */
--	if (ric == RIC_FLUSH_PWC) {
-+		/* For PWC, only one flush is needed */
-+		__tlbiel_pid(pid, 0, RIC_FLUSH_PWC);
- 		ppc_after_tlbiel_barrier();
- 		return;
-+	case RIC_FLUSH_TLB:
-+		__tlbiel_pid(pid, 0, RIC_FLUSH_TLB);
-+		break;
-+	case RIC_FLUSH_ALL:
-+	default:
-+		/*
-+		 * Flush the first set of the TLB, and if
-+		 * we're doing a RIC_FLUSH_ALL, also flush
-+		 * the entire Page Walk Cache.
-+		 */
-+		__tlbiel_pid(pid, 0, RIC_FLUSH_ALL);
- 	}
++	if (uart_console(&sport->port))
++		goto err;
++
+ 	if (!sport->dma_rx_chan)
+ 		goto err;
  
- 	if (!cpu_has_feature(CPU_FTR_ARCH_31)) {
-@@ -1176,7 +1184,7 @@ void radix__tlb_flush(struct mmu_gather *tlb)
- 	}
- }
- 
--static __always_inline void __radix__flush_tlb_range_psize(struct mm_struct *mm,
-+static void __radix__flush_tlb_range_psize(struct mm_struct *mm,
- 				unsigned long start, unsigned long end,
- 				int psize, bool also_pwc)
- {
 -- 
 2.30.2
 
