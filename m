@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07073CE4B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8ECF3CE4B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbhGSPps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:45:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52768 "EHLO mail.kernel.org"
+        id S239724AbhGSPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:45:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344332AbhGSO7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344321AbhGSO7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF6F16124C;
-        Mon, 19 Jul 2021 15:39:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94FE76120C;
+        Mon, 19 Jul 2021 15:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709184;
-        bh=RG9t+dyDgK2lFFy1wsx1GkKwscFAG0qF4DvGZutVgK0=;
+        s=korg; t=1626709187;
+        bh=lxo5OpBggpjvMAzCMAYvT0FbGUxzwNEToMFBodGRDhg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e5gTEtMTvrtwjYYkv/zWUTJ59Cacm8+zabVWB9WONyjqkxTBUGqar2cOl/uwtzqcd
-         rHFUhkuUA5T5XVDm7jYP3gVUtjZQasN9a9FJfMaVO+6rUUB3uynIy10V96bE+LaGf8
-         Gd3D5UlTT14ykHWVr4HK3t20Woc8+iq1aviS1abo=
+        b=BDYDAmXyQzagF4e1rCRHrijAG0mrdior3W8KTJofP4a+ft9SNtiExjRhmPLcfyTjo
+         WOLmkaziHlCQls4dsARKkRq6HCzhog7VVOwQTcTH78SQktFW+3egVXmSF9Iq4Yneup
+         7l8dYwfJWuZtolTp2mcfh05o6IVVV/g/Ri2hoebk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anatoly Trosinenko <anatoly.trosinenko@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.19 283/421] fuse: reject internal errno
-Date:   Mon, 19 Jul 2021 16:51:34 +0200
-Message-Id: <20210719144956.156457683@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 284/421] powerpc/barrier: Avoid collision with clangs __lwsync macro
+Date:   Mon, 19 Jul 2021 16:51:35 +0200
+Message-Id: <20210719144956.189560616@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,32 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 49221cf86d18bb66fe95d3338cb33bd4b9880ca5 upstream.
+commit 015d98149b326e0f1f02e44413112ca8b4330543 upstream.
 
-Don't allow userspace to report errors that could be kernel-internal.
+A change in clang 13 results in the __lwsync macro being defined as
+__builtin_ppc_lwsync, which emits 'lwsync' or 'msync' depending on what
+the target supports. This breaks the build because of -Werror in
+arch/powerpc, along with thousands of warnings:
 
-Reported-by: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
-Fixes: 334f485df85a ("[PATCH] FUSE - device functions")
-Cc: <stable@vger.kernel.org> # v2.6.14
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+ In file included from arch/powerpc/kernel/pmc.c:12:
+ In file included from include/linux/bug.h:5:
+ In file included from arch/powerpc/include/asm/bug.h:109:
+ In file included from include/asm-generic/bug.h:20:
+ In file included from include/linux/kernel.h:12:
+ In file included from include/linux/bitops.h:32:
+ In file included from arch/powerpc/include/asm/bitops.h:62:
+ arch/powerpc/include/asm/barrier.h:49:9: error: '__lwsync' macro redefined [-Werror,-Wmacro-redefined]
+ #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+        ^
+ <built-in>:308:9: note: previous definition is here
+ #define __lwsync __builtin_ppc_lwsync
+        ^
+ 1 error generated.
+
+Undefine this macro so that the runtime patching introduced by
+commit 2d1b2027626d ("powerpc: Fixup lwsync at runtime") continues to
+work properly with clang and the build no longer breaks.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1386
+Link: https://github.com/llvm/llvm-project/commit/62b5df7fe2b3fda1772befeda15598fbef96a614
+Link: https://lore.kernel.org/r/20210528182752.1852002-1-nathan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fuse/dev.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/barrier.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -1896,7 +1896,7 @@ static ssize_t fuse_dev_do_write(struct
- 	}
+--- a/arch/powerpc/include/asm/barrier.h
++++ b/arch/powerpc/include/asm/barrier.h
+@@ -44,6 +44,8 @@
+ #    define SMPWMB      eieio
+ #endif
  
- 	err = -EINVAL;
--	if (oh.error <= -1000 || oh.error > 0)
-+	if (oh.error <= -512 || oh.error > 0)
- 		goto err_finish;
- 
- 	spin_lock(&fpq->lock);
++/* clang defines this macro for a builtin, which will not work with runtime patching */
++#undef __lwsync
+ #define __lwsync()	__asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+ #define dma_rmb()	__lwsync()
+ #define dma_wmb()	__asm__ __volatile__ (stringify_in_c(SMPWMB) : : :"memory")
 
 
