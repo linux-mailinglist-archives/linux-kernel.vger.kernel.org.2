@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763BA3CED0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D563CED08
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382836AbhGSRmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358906AbhGSQx3 (ORCPT
+        id S1382721AbhGSRmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:42:17 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:58980 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357721AbhGSQwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:53:29 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD6BC0F26EB
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:11:39 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id l11so12179951ljq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 10:30:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+vqFcAPpr2Wrm3IQBRWJ29wt2kc6RE+Zc3iAnlFe6GY=;
-        b=DREFa+Crra3/Gwt/ozWS6XyyFKY4Mg7dPcld3cizJiTFXWiznp9HUE67QvDO9oZbMl
-         3B000kz0sS3krAYD5a9gSu4NLZy1dE4yjQ9TVgBrKCK528Roj8zK08CGtsxThRGSyXDy
-         ffWrnC9O7291POYBsVEi4zTCMxsxY7N/ykOM/tzi3rOF108KqHG+a3+2JefEhIN/oX0f
-         VyMRoQNFp8urHC5L9xqQac7l8DS+rfqzzY7gd9u2EOqO//9C9pgpq/ZMCAFw4jQUsB6A
-         v19hBqOGOdThZ0zo/07dXAHgVKO8uuU8kzOaDdOVo8Li2Tzapur/tu/weHW3xGPsT6zs
-         GwVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+vqFcAPpr2Wrm3IQBRWJ29wt2kc6RE+Zc3iAnlFe6GY=;
-        b=eTQGG5OyrwgcSAbLPc3bz/+bWfVISiKHA7k8Bi+RBYuUgfmFxKwuZgEimB/wfM4gC5
-         HbJlWcem/FMAIUuVQfqd8d6MOt4uHOIRB676iVJsIc1cO3VZ16YJDUOXkTviY1JZD4L/
-         nYQLqghCKUEgsZpePkolZS55kV7Kqk/vLXfOHyEEsRy0KPidthqkvv5fj5Kjj3xPZILl
-         d2yMYNn4BryQDkIwfgz7mrZg4PqbNoOT28SFXToKjbuqt0Ts5XEltq708Rg70wCWzKI1
-         vTtKYeHCGT3by4bov+WIWdEiSaXsdpah/WzHkKFOaKZBp9+RtKZ1UFQsyFk4B+NqKU7s
-         Be6w==
-X-Gm-Message-State: AOAM533W0CVnuRM2AT8xZDsD3V55kWy13RJU+8//9QmjhHwxVj6geDAR
-        tu007frbu/PY6THjEIdEyBoUrtVJ2G7NZfV6WdZcWQ==
-X-Google-Smtp-Source: ABdhPJyo55MqgRQDKulqoMn04KoWQCUp51qWy4Z5KYNeT0BBLUr4vsWWfK5wvi9jXem9ykTLN5UMvoyZTpEdSMcXwUM=
-X-Received: by 2002:a2e:934f:: with SMTP id m15mr22566736ljh.208.1626715811254;
- Mon, 19 Jul 2021 10:30:11 -0700 (PDT)
+        Mon, 19 Jul 2021 12:52:16 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:57914)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m5X8Q-00C5r8-9k; Mon, 19 Jul 2021 11:32:54 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34170 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m5X8P-003nal-5j; Mon, 19 Jul 2021 11:32:53 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Jens Axboe <axboe@kernel.dk>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org
+References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+        <cover.1626688654.git.vvs@virtuozzo.com>
+        <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com>
+Date:   Mon, 19 Jul 2021 12:32:46 -0500
+In-Reply-To: <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com> (Vasily
+        Averin's message of "Mon, 19 Jul 2021 13:45:44 +0300")
+Message-ID: <87k0lmryyp.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210716184719.269033-5-posk@google.com> <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
-In-Reply-To: <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Mon, 19 Jul 2021 10:29:59 -0700
-Message-ID: <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
-To:     Thierry Delisle <tdelisle@uwaterloo.ca>
-Cc:     posk@posk.io, avagin@google.com, bsegall@google.com,
-        jannh@google.com, jnewsome@torproject.org, joel@joelfernandes.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, pjt@google.com,
-        tglx@linutronix.de, Peter Buhr <pabuhr@uwaterloo.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1m5X8P-003nal-5j;;;mid=<87k0lmryyp.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19riCDlCttkz1EHUrkai0JB6kWYfxt9MHc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Vasily Averin <vvs@virtuozzo.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 538 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 8 (1.6%), b_tie_ro: 7 (1.4%), parse: 1.00 (0.2%),
+        extract_message_metadata: 11 (2.1%), get_uri_detail_list: 1.27 (0.2%),
+        tests_pri_-1000: 5 (1.0%), tests_pri_-950: 1.24 (0.2%),
+        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 188 (35.0%), check_bayes:
+        184 (34.2%), b_tokenize: 10 (1.8%), b_tok_get_all: 6 (1.1%),
+        b_comp_prob: 3.7 (0.7%), b_tok_touch_all: 161 (29.9%), b_finish: 0.88
+        (0.2%), tests_pri_0: 298 (55.3%), check_dkim_signature: 1.73 (0.3%),
+        check_dkim_adsp: 10 (1.9%), poll_dns_idle: 0.53 (0.1%), tests_pri_10:
+        2.4 (0.4%), tests_pri_500: 19 (3.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v5 13/16] memcg: enable accounting for signals
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 9:07 AM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
->
->  > /**
->  >  * @idle_servers_ptr: a single-linked list pointing to the list
->  >  *                    of idle servers. Can be NULL.
->  >  *
->  >  * Readable/writable by both the kernel and the userspace: the
->  >  * userspace adds items to the list, the kernel removes them.
->  >  *
->  >  * This is a single-linked list (stack): head->next->next->next->NULL.
->  >  * "next" nodes are idle_servers_ptr fields in struct umcg_task.
->  >  *
->  >  * Example:
->  >  *
->  >  *  a running worker             idle server 1        idle server 2
->  >  *
->  >  * struct umct_task:             struct umcg_task:    struct umcg_task:
->  >  *    state                         state state
->  >  *    api_version                   api_version api_version
->  >  *    ...                           ...                  ...
->  >  *    idle_servers_ptr --> head --> idle_servers_ptr -->
-> idle_servers_ptr --> NULL
->  >  *    ...                           ...                  ...
->  >  *
->  >  *
->  >  * Due to the way struct umcg_task is aligned, idle_servers_ptr
->  >  * is aligned at 8 byte boundary, and so has its first byte as zero
->  >  * when it holds a valid pointer.
->  >  *
->  >  * When pulling idle servers from the list, the kernel marks nodes as
->  >  * "deleted" by ORing the node value (the pointer) with 1UL atomically.
->  >  * If a node is "deleted" (i.e. its value AND 1UL is not zero),
->  >  * the kernel proceeds to the next node.
->  >  *
->  >  * The kernel checks at most [nr_cpu_ids * 2] first nodes in the list.
->  >  *
->  >  * It is NOT considered an error if the kernel cannot find an idle
->  >  * server.
->  >  *
->  >  * The userspace is responsible for cleanup/gc (i.e. for actually
->  >  * removing nodes marked as "deleted" from the list).
->  >  */
->  > uint64_t    idle_servers_ptr;    /* r/w */
->
-> I don't understand the reason for using this ad-hoc scheme, over using a
-> simple
-> eventfd to do the job. As I understand it, the goal here is to let
-> servers that
-> cannot find workers to run, block instead of spinning. Isn't that
-> exactly what
-> the eventfd interface is for?
+Vasily Averin <vvs@virtuozzo.com> writes:
 
-Latency/efficiency: on worker wakeup an idle server can be picked from
-the list and context-switched into synchronously, on the same CPU.
-Using FDs and select/poll/epoll will add extra layers of abstractions;
-synchronous context-switches (not yet fully implemented in UMCG) will
-most likely be impossible. This patchset seems much more efficient and
-lightweight than whatever can be built on top of FDs.
+> When a user send a signal to any another processes it forces the kernel
+> to allocate memory for 'struct sigqueue' objects. The number of signals
+> is limited by RLIMIT_SIGPENDING resource limit, but even the default
+> settings allow each user to consume up to several megabytes of memory.
+> Moreover, an untrusted admin inside container can increase the limit or
+> create new fake users and force them to sent signals.
 
+Not any more.  Currently the number of sigqueue objects is limited
+by the rlimit of the creator of the user namespace of the container.
+
+> It makes sense to account for these allocations to restrict the host's
+> memory consumption from inside the memcg-limited container.
+
+Does it?  Why?  The given justification appears to have bit-rotted
+since -rc1.
+
+I know a lot of these things only really need a limit just to catch a
+program that starts malfunctioning.  If that is indeed the case
+reasonable per-resource limits are probably better than some great big
+group limit that can be exhausted with any single resource in the group.
+
+Is there a reason I am not aware of that where it makes sense to group
+all of the resources together and only count the number of bytes
+consumed?
+
+Eric
+
+
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+>  kernel/signal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Have you considered an idle_fd field, the kernel writes 1 to the fd when a
-> worker is appended to the idle_workers_ptr? Servers that don't find work can
-> read the fd or alternatively use select/poll/epoll. Multiple workers are
-> expected to share fds, either a single global fd, one fd per server, or any
-> other combination the scheduler may fancy.
->
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index a3229ad..8921c4a 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -4663,7 +4663,7 @@ void __init signals_init(void)
+>  {
+>  	siginfo_buildtime_checks();
+>  
+> -	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC);
+> +	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC | SLAB_ACCOUNT);
+>  }
+>  
+>  #ifdef CONFIG_KGDB_KDB
