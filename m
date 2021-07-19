@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EB43CE949
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E63A3CEA16
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357934AbhGSQwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59504 "EHLO mail.kernel.org"
+        id S1377099AbhGSRGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:06:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347823AbhGSPVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:21:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B13161427;
-        Mon, 19 Jul 2021 15:59:13 +0000 (UTC)
+        id S1345752AbhGSPeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:34:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CD2F6144F;
+        Mon, 19 Jul 2021 16:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710354;
-        bh=wsIh+jGczAMVFbBo4ONafmK+bREhMF5LDyj1DJOuSng=;
+        s=korg; t=1626711113;
+        bh=PsM/oEeLeFVpxT9DvqvZk4ztkjZyublkQYANPYhPMQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gJ4oIgnizIAKSw77I7wndxe5N+y/z7N/509xmJW3/hXj8Dm+pwDmpL2NC0FRTSuqc
-         rxm44m+yIEkmX7fY05j2ba+gn2Ouu05uRDfzv0r/JH0+5Bo1Jg5PLQiA5mXVxbQ3Xa
-         GaEskEKTC019ZmHzjHAmNS0YlcmNKoNli30F7uc8=
+        b=Xr7YLJdSJOTgfWGlRFVWYp2i2UkMdIj+qfDhDYLTb/tdwz9CeuglDhP2T+PcjdgFC
+         JKrYeB76L35svNJxTXmuapaxoJ1bvnvt1bW57ALZ66fHrbH973VcLfq5py/Ks74igP
+         GbPBYyFpsMMlmqx6xJoKBo9FgCmVvjUWoaMrAemo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Wysochanski <dwysocha@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "J. Bruce Fields" <bfields@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Sandor Bodo-Merle <sbodomerle@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Ray Jui <ray.jui@broadcom.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 147/243] NFSD: Fix TP_printk() format specifier in nfsd_clid_class
-Date:   Mon, 19 Jul 2021 16:52:56 +0200
-Message-Id: <20210719144945.657682587@linuxfoundation.org>
+Subject: [PATCH 5.13 231/351] PCI: iproc: Fix multi-MSI base vector number allocation
+Date:   Mon, 19 Jul 2021 16:52:57 +0200
+Message-Id: <20210719144952.588115571@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,88 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Sandor Bodo-Merle <sbodomerle@gmail.com>
 
-[ Upstream commit a948b1142cae66785521a389cab2cce74069b547 ]
+[ Upstream commit e673d697b9a234fc3544ac240e173cef8c82b349 ]
 
-Since commit 9a6944fee68e ("tracing: Add a verifier to check string
-pointers for trace events"), which was merged in v5.13-rc1,
-TP_printk() no longer tacitly supports the "%.*s" format specifier.
+Commit fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+introduced multi-MSI support with a broken allocation mechanism (it failed
+to reserve the proper number of bits from the inner domain).  Natural
+alignment of the base vector number was also not guaranteed.
 
-These are low value tracepoints, so just remove them.
-
-Reported-by: David Wysochanski <dwysocha@redhat.com>
-Fixes: dd5e3fbc1f47 ("NFSD: Add tracepoints to the NFSD state management code")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Link: https://lore.kernel.org/r/20210622152630.40842-1-sbodomerle@gmail.com
+Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+Reported-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Pali Rohár <pali@kernel.org>
+Acked-by: Ray Jui <ray.jui@broadcom.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4state.c |  3 ---
- fs/nfsd/trace.h     | 29 -----------------------------
- 2 files changed, 32 deletions(-)
+ drivers/pci/controller/pcie-iproc-msi.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index ac20f79bbedd..80e394a2e3fd 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -7158,7 +7158,6 @@ nfs4_client_to_reclaim(struct xdr_netobj name, struct xdr_netobj princhash,
- 	unsigned int strhashval;
- 	struct nfs4_client_reclaim *crp;
+diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+index eede4e8f3f75..557d93dcb3bc 100644
+--- a/drivers/pci/controller/pcie-iproc-msi.c
++++ b/drivers/pci/controller/pcie-iproc-msi.c
+@@ -252,18 +252,18 @@ static int iproc_msi_irq_domain_alloc(struct irq_domain *domain,
  
--	trace_nfsd_clid_reclaim(nn, name.len, name.data);
- 	crp = alloc_reclaim();
- 	if (crp) {
- 		strhashval = clientstr_hashval(name);
-@@ -7208,8 +7207,6 @@ nfsd4_find_reclaim_client(struct xdr_netobj name, struct nfsd_net *nn)
- 	unsigned int strhashval;
- 	struct nfs4_client_reclaim *crp = NULL;
+ 	mutex_lock(&msi->bitmap_lock);
  
--	trace_nfsd_clid_find(nn, name.len, name.data);
--
- 	strhashval = clientstr_hashval(name);
- 	list_for_each_entry(crp, &nn->reclaim_str_hashtbl[strhashval], cr_strhash) {
- 		if (compare_blob(&crp->cr_name, &name) == 0) {
-diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
-index 99bf07800cd0..c8ca73d69ad0 100644
---- a/fs/nfsd/trace.h
-+++ b/fs/nfsd/trace.h
-@@ -368,35 +368,6 @@ DEFINE_EVENT(nfsd_net_class, nfsd_##name, \
- DEFINE_NET_EVENT(grace_start);
- DEFINE_NET_EVENT(grace_complete);
+-	/* Allocate 'nr_cpus' number of MSI vectors each time */
+-	hwirq = bitmap_find_next_zero_area(msi->bitmap, msi->nr_msi_vecs, 0,
+-					   msi->nr_cpus, 0);
+-	if (hwirq < msi->nr_msi_vecs) {
+-		bitmap_set(msi->bitmap, hwirq, msi->nr_cpus);
+-	} else {
+-		mutex_unlock(&msi->bitmap_lock);
+-		return -ENOSPC;
+-	}
++	/*
++	 * Allocate 'nr_irqs' multiplied by 'nr_cpus' number of MSI vectors
++	 * each time
++	 */
++	hwirq = bitmap_find_free_region(msi->bitmap, msi->nr_msi_vecs,
++					order_base_2(msi->nr_cpus * nr_irqs));
  
--DECLARE_EVENT_CLASS(nfsd_clid_class,
--	TP_PROTO(const struct nfsd_net *nn,
--		 unsigned int namelen,
--		 const unsigned char *namedata),
--	TP_ARGS(nn, namelen, namedata),
--	TP_STRUCT__entry(
--		__field(unsigned long long, boot_time)
--		__field(unsigned int, namelen)
--		__dynamic_array(unsigned char,  name, namelen)
--	),
--	TP_fast_assign(
--		__entry->boot_time = nn->boot_time;
--		__entry->namelen = namelen;
--		memcpy(__get_dynamic_array(name), namedata, namelen);
--	),
--	TP_printk("boot_time=%16llx nfs4_clientid=%.*s",
--		__entry->boot_time, __entry->namelen, __get_str(name))
--)
--
--#define DEFINE_CLID_EVENT(name) \
--DEFINE_EVENT(nfsd_clid_class, nfsd_clid_##name, \
--	TP_PROTO(const struct nfsd_net *nn, \
--		 unsigned int namelen, \
--		 const unsigned char *namedata), \
--	TP_ARGS(nn, namelen, namedata))
--
--DEFINE_CLID_EVENT(find);
--DEFINE_CLID_EVENT(reclaim);
--
- TRACE_EVENT(nfsd_clid_inuse_err,
- 	TP_PROTO(const struct nfs4_client *clp),
- 	TP_ARGS(clp),
+ 	mutex_unlock(&msi->bitmap_lock);
+ 
++	if (hwirq < 0)
++		return -ENOSPC;
++
+ 	for (i = 0; i < nr_irqs; i++) {
+ 		irq_domain_set_info(domain, virq + i, hwirq + i,
+ 				    &iproc_msi_bottom_irq_chip,
+@@ -284,7 +284,8 @@ static void iproc_msi_irq_domain_free(struct irq_domain *domain,
+ 	mutex_lock(&msi->bitmap_lock);
+ 
+ 	hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq);
+-	bitmap_clear(msi->bitmap, hwirq, msi->nr_cpus);
++	bitmap_release_region(msi->bitmap, hwirq,
++			      order_base_2(msi->nr_cpus * nr_irqs));
+ 
+ 	mutex_unlock(&msi->bitmap_lock);
+ 
 -- 
 2.30.2
 
