@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841D63CDDA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC6B3CDD82
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343545AbhGSO7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:59:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54628 "EHLO mail.kernel.org"
+        id S245536AbhGSO62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343931AbhGSOju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48D14610D2;
-        Mon, 19 Jul 2021 15:19:59 +0000 (UTC)
+        id S1343953AbhGSOjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D3DC60FED;
+        Mon, 19 Jul 2021 15:20:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707999;
-        bh=MC4NVmBGXrM/WSdJz6Zwb7kvjndWarIAprMhhRf7m+Q=;
+        s=korg; t=1626708002;
+        bh=lMySY2p3SQcBCujOTLnmX9KF+eIUCAjUsx88WREPhAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pcPBhaEHMH8WycBVLzxZwHzJzdqpZKJZI325Dc87NEvPT7neyG1jPRKMgEViNiged
-         tUy1LMb+qhJbg27d+C3sPZGMup+LjWWQlUVz8l9X6+fMrxpRnsknao6w66EBE5USfZ
-         1rz74GV/m0bBdYIeD8kYfdd+lwVKGbn11a4jS5e8=
+        b=Y+FxtBOskayNixfpEeMSWPyWZ/Ss5fxUIqR08cwYVT/90RirTVzLQFmymlUaMhk32
+         1U5UI8U5lhzUqhGJtYp+jr3myDoBYLGZaA0HyiFCmziouw94m6wuf0hmT6K2EAI/Cu
+         W+c2WMxrSo1uFiltRX3qviEea+nDTqqaNVzQgHuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 139/315] char: pcmcia: error out if num_bytes_read is greater than 4 in set_protocol()
-Date:   Mon, 19 Jul 2021 16:50:28 +0200
-Message-Id: <20210719144947.463946299@linuxfoundation.org>
+Subject: [PATCH 4.14 140/315] tty: nozomi: Fix the error handling path of nozomi_card_init()
+Date:   Mon, 19 Jul 2021 16:50:29 +0200
+Message-Id: <20210719144947.500057078@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -39,38 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 37188559c610f1b7eec83c8e448936c361c578de ]
+[ Upstream commit 6ae7d0f5a92b9619f6e3c307ce56b2cefff3f0e9 ]
 
-Theoretically, it will cause index out of bounds error if
-'num_bytes_read' is greater than 4. As we expect it(and was tested)
-never to be greater than 4, error out if it happens.
+The error handling path is broken and we may un-register things that have
+never been registered.
 
-Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/20210521120617.138396-1-yukuai3@huawei.com
+Update the loops index accordingly.
+
+Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/e28c2e92c7475da25b03d022ea2d6dcf1ba807a2.1621968629.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/pcmcia/cm4000_cs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/tty/nozomi.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
-index cd53771b9ae7..432e161efe5d 100644
---- a/drivers/char/pcmcia/cm4000_cs.c
-+++ b/drivers/char/pcmcia/cm4000_cs.c
-@@ -544,6 +544,10 @@ static int set_protocol(struct cm4000_dev *dev, struct ptsreq *ptsreq)
- 		io_read_num_rec_bytes(iobase, &num_bytes_read);
- 		if (num_bytes_read >= 4) {
- 			DEBUGP(2, dev, "NumRecBytes = %i\n", num_bytes_read);
-+			if (num_bytes_read > 4) {
-+				rc = -EIO;
-+				goto exit_setprotocol;
-+			}
- 			break;
- 		}
- 		mdelay(10);
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index d19acddc3cf3..0c424624a00c 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -1416,7 +1416,7 @@ static int nozomi_card_init(struct pci_dev *pdev,
+ 			NOZOMI_NAME, dc);
+ 	if (unlikely(ret)) {
+ 		dev_err(&pdev->dev, "can't request irq %d\n", pdev->irq);
+-		goto err_free_kfifo;
++		goto err_free_all_kfifo;
+ 	}
+ 
+ 	DBG1("base_addr: %p", dc->base_addr);
+@@ -1454,13 +1454,15 @@ static int nozomi_card_init(struct pci_dev *pdev,
+ 	return 0;
+ 
+ err_free_tty:
+-	for (i = 0; i < MAX_PORT; ++i) {
++	for (i--; i >= 0; i--) {
+ 		tty_unregister_device(ntty_driver, dc->index_start + i);
+ 		tty_port_destroy(&dc->port[i].port);
+ 	}
+ 	free_irq(pdev->irq, dc);
++err_free_all_kfifo:
++	i = MAX_PORT;
+ err_free_kfifo:
+-	for (i = 0; i < MAX_PORT; i++)
++	for (i--; i >= PORT_MDM; i--)
+ 		kfifo_free(&dc->port[i].fifo_ul);
+ err_free_sbuf:
+ 	kfree(dc->send_buf);
 -- 
 2.30.2
 
