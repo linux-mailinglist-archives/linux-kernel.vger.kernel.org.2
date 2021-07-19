@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133983CDFA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563B23CDC61
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344078AbhGSPK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:10:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
+        id S237543AbhGSOwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:52:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343891AbhGSOsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC7061263;
-        Mon, 19 Jul 2021 15:25:22 +0000 (UTC)
+        id S245543AbhGSOeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DCEF6128D;
+        Mon, 19 Jul 2021 15:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708322;
-        bh=RHz1293Or9glW9h0I1wJ0BaHJz6pfTXd6PQSHZjnH6Y=;
+        s=korg; t=1626707650;
+        bh=zOkvkDVVrsYdslozqi9IrXBmgGJDkAGaU2YsKa2eYnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CmzjmZTPjdwqgz6dXhwlgcow/5q8f/v+SQcufMQpLnK8rcT8s8I1RidsewlIgQUEh
-         vfGTvRhn6haLNrElrcaLPVPv14Q/vsoSCC2/Bqiv2HP9cdSPynTbuOEricZpFIIHjB
-         EdarMzrwwoa6d/GtzDtKACU+dSciERNkZArorTIQ=
+        b=lBO/BO47hp9CTBzaRCZqwnRqCu5XaUS5olj3LyBia4hKDY3Zt0onVEjA/b2e5SX6V
+         BsF5IF48hKh9bkeiBvpEgpOFiUN9/8LnsFZQNOP1AKLW9Id6ZrEo/xWut/cBjcaAZx
+         gxf7v20UZdk84H+v4cboQhoRG8lDycWC3EjcS0Bc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 267/315] power: supply: ab8500: Avoid NULL pointers
-Date:   Mon, 19 Jul 2021 16:52:36 +0200
-Message-Id: <20210719144952.196381447@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 215/245] x86/fpu: Return proper error codes from user access functions
+Date:   Mon, 19 Jul 2021 16:52:37 +0200
+Message-Id: <20210719144947.340502148@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 5bcb5087c9dd3dca1ff0ebd8002c5313c9332b56 ]
+[ Upstream commit aee8c67a4faa40a8df4e79316dbfc92d123989c1 ]
 
-Sometimes the code will crash because we haven't enabled
-AC or USB charging and thus not created the corresponding
-psy device. Fix it by checking that it is there before
-notifying.
+When *RSTOR from user memory raises an exception, there is no way to
+differentiate them. That's bad because it forces the slow path even when
+the failure was not a fault. If the operation raised eg. #GP then going
+through the slow path is pointless.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Use _ASM_EXTABLE_FAULT() which stores the trap number and let the exception
+fixup return the negated trap number as error.
+
+This allows to separate the fast path and let it handle faults directly and
+avoid the slow path for all other exceptions.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210623121457.601480369@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/ab8500_charger.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/fpu/internal.h | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
-index 5a76c6d343de..8e74d27fad29 100644
---- a/drivers/power/supply/ab8500_charger.c
-+++ b/drivers/power/supply/ab8500_charger.c
-@@ -409,6 +409,14 @@ disable_otp:
- static void ab8500_power_supply_changed(struct ab8500_charger *di,
- 					struct power_supply *psy)
- {
-+	/*
-+	 * This happens if we get notifications or interrupts and
-+	 * the platform has been configured not to support one or
-+	 * other type of charging.
-+	 */
-+	if (!psy)
-+		return;
-+
- 	if (di->autopower_cfg) {
- 		if (!di->usb.charger_connected &&
- 		    !di->ac.charger_connected &&
-@@ -435,7 +443,15 @@ static void ab8500_charger_set_usb_connected(struct ab8500_charger *di,
- 		if (!connected)
- 			di->flags.vbus_drop_end = false;
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index 21d6fa27b4a9..ebda4718eb8f 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -94,6 +94,7 @@ static inline void fpstate_init_fxstate(struct fxregs_state *fx)
+ }
+ extern void fpstate_sanitize_xstate(struct fpu *fpu);
  
--		sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL, "present");
-+		/*
-+		 * Sometimes the platform is configured not to support
-+		 * USB charging and no psy has been created, but we still
-+		 * will get these notifications.
-+		 */
-+		if (di->usb_chg.psy) {
-+			sysfs_notify(&di->usb_chg.psy->dev.kobj, NULL,
-+				     "present");
-+		}
++/* Returns 0 or the negated trap number, which results in -EFAULT for #PF */
+ #define user_insn(insn, output, input...)				\
+ ({									\
+ 	int err;							\
+@@ -101,14 +102,14 @@ extern void fpstate_sanitize_xstate(struct fpu *fpu);
+ 	might_fault();							\
+ 									\
+ 	asm volatile(ASM_STAC "\n"					\
+-		     "1:" #insn "\n\t"					\
++		     "1: " #insn "\n"					\
+ 		     "2: " ASM_CLAC "\n"				\
+ 		     ".section .fixup,\"ax\"\n"				\
+-		     "3:  movl $-1,%[err]\n"				\
++		     "3:  negl %%eax\n"					\
+ 		     "    jmp  2b\n"					\
+ 		     ".previous\n"					\
+-		     _ASM_EXTABLE(1b, 3b)				\
+-		     : [err] "=r" (err), output				\
++		     _ASM_EXTABLE_FAULT(1b, 3b)				\
++		     : [err] "=a" (err), output				\
+ 		     : "0"(0), input);					\
+ 	err;								\
+ })
+@@ -227,16 +228,20 @@ static inline void copy_fxregs_to_kernel(struct fpu *fpu)
+ #define XRSTOR		".byte " REX_PREFIX "0x0f,0xae,0x2f"
+ #define XRSTORS		".byte " REX_PREFIX "0x0f,0xc7,0x1f"
  
- 		if (connected) {
- 			mutex_lock(&di->charger_attached_mutex);
++/*
++ * After this @err contains 0 on success or the negated trap number when
++ * the operation raises an exception. For faults this results in -EFAULT.
++ */
+ #define XSTATE_OP(op, st, lmask, hmask, err)				\
+ 	asm volatile("1:" op "\n\t"					\
+ 		     "xor %[err], %[err]\n"				\
+ 		     "2:\n\t"						\
+ 		     ".pushsection .fixup,\"ax\"\n\t"			\
+-		     "3: movl $-2,%[err]\n\t"				\
++		     "3: negl %%eax\n\t"				\
+ 		     "jmp 2b\n\t"					\
+ 		     ".popsection\n\t"					\
+-		     _ASM_EXTABLE(1b, 3b)				\
+-		     : [err] "=r" (err)					\
++		     _ASM_EXTABLE_FAULT(1b, 3b)				\
++		     : [err] "=a" (err)					\
+ 		     : "D" (st), "m" (*st), "a" (lmask), "d" (hmask)	\
+ 		     : "memory")
+ 
 -- 
 2.30.2
 
