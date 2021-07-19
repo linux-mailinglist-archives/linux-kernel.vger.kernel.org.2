@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D2C3CE6AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCAF3CE786
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350770AbhGSQL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:11:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
+        id S1348467AbhGSQ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:28:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345096AbhGSPHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:07:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 059866121F;
-        Mon, 19 Jul 2021 15:48:02 +0000 (UTC)
+        id S1347006AbhGSPPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:15:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E76F7601FD;
+        Mon, 19 Jul 2021 15:56:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709683;
-        bh=cjFLiYvpXgJg5R8/A0oRgy/TxHOhY+yBWW71dNTeMZw=;
+        s=korg; t=1626710165;
+        bh=8EJRPTTr15rA84yafnSoGD+sZKxiTw2IVyPhALaL9kQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z23eXDQbkGD13kY1JbYx5KqM9fndwriaVmsfxKfg/ZG2NGZEwIdV2Bhh5k8zTHXbE
-         UwFZuoENZSbMtVTHs+Nn57wD0B8M/+/aCi376ErO1dzOQFNitYEp+DtOR7zmIhlszX
-         uudnuYM6yzf54tX/e8+jo6cvyfhDR5lzePh3zB6U=
+        b=EhRgyUBNLvUe4ZZMI1/SDL2E6nx5zjRFjjOhGTSluRt1Oiyb5fSCPZ4dMAxHuYVlc
+         gJQP8D9aCN/fHr4qfn6o5Brnyv/Vn+WDRqgopJ/kqQ6hYiHV9MVo8xts1FrIxxs+rk
+         fLpCI/SsEXdB/oY08yCAX89GP1sO93zHYXDRh7KE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yufen Yu <yuyufen@huawei.com>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 023/149] ALSA: ac97: fix PM reference leak in ac97_bus_remove()
+        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 102/243] ALSA: usb-audio: scarlett2: Fix 6i6 Gen 2 line out descriptions
 Date:   Mon, 19 Jul 2021 16:52:11 +0200
-Message-Id: <20210719144907.023364346@linuxfoundation.org>
+Message-Id: <20210719144944.182413536@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufen Yu <yuyufen@huawei.com>
+From: Geoffrey D. Bennett <g@b4.vu>
 
-[ Upstream commit a38e93302ee25b2ca6f4ee76c6c974cf3637985e ]
+[ Upstream commit c712c6c0ff2d60478582e337185bcdd520a7dc2e ]
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+There are two headphone outputs, and they map to the four analogue
+outputs.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yufen Yu <yuyufen@huawei.com>
-Link: https://lore.kernel.org/r/20210524093811.612302-1-yuyufen@huawei.com
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Link: https://lore.kernel.org/r/205e5e5348f08ded0cc4da5446f604d4b91db5bf.1624294591.git.g@b4.vu
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/ac97/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/mixer_scarlett_gen2.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
-index 7985dd8198b6..99e1728b52ae 100644
---- a/sound/ac97/bus.c
-+++ b/sound/ac97/bus.c
-@@ -520,7 +520,7 @@ static int ac97_bus_remove(struct device *dev)
- 	struct ac97_codec_driver *adrv = to_ac97_driver(dev->driver);
- 	int ret;
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index 1802aee390c7..1b7c7b754c38 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -254,10 +254,10 @@ static const struct scarlett2_device_info s6i6_gen2_info = {
+ 	.pad_input_count = 2,
  
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
+ 	.line_out_descrs = {
+-		"Monitor L",
+-		"Monitor R",
+-		"Headphones L",
+-		"Headphones R",
++		"Headphones 1 L",
++		"Headphones 1 R",
++		"Headphones 2 L",
++		"Headphones 2 R",
+ 	},
  
+ 	.ports = {
 -- 
 2.30.2
 
