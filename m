@@ -2,115 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85A43CED90
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB143CED91
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385687AbhGSTH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:07:29 -0400
-Received: from mga18.intel.com ([134.134.136.126]:19106 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384906AbhGSSjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:39:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="198389184"
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="198389184"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 12:20:27 -0700
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="657011128"
-Received: from mwlibby-mobl1.amr.corp.intel.com (HELO [10.209.98.141]) ([10.209.98.141])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 12:20:26 -0700
-Subject: Re: [PATCH] x86,mm: print likely CPU at segfault time
-To:     Rik van Riel <riel@surriel.com>, linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, kernel-team@fb.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-References: <20210719150041.3c719c94@imladris.surriel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <c8e023cb-6f50-36f5-65d4-c5e25b264029@intel.com>
-Date:   Mon, 19 Jul 2021 12:20:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1385740AbhGSTIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:08:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1384935AbhGSSlP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 14:41:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626722482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bTwq4PuX2DzHsZtvOO0BQjYNFm+9mjIm5nAUk4EcBYk=;
+        b=iyUM+VhAaBggTiZOwy03jtKuLoZFScNH0QW/p+0/jDlELixHycY4FGtWsjB4ajbZm+U0oz
+        pPxGiSbrzNO7hUGBdMl9KHXBvFvoh/WYnErEpbnIk1ri7O/cOzNWI+Wp9mbEroJsnRj38u
+        BDQCtnb/whg8acegHFeCO1SyJQnCFnE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-MKklWKgmMsCUY88pUXXW1A-1; Mon, 19 Jul 2021 15:21:21 -0400
+X-MC-Unique: MKklWKgmMsCUY88pUXXW1A-1
+Received: by mail-wm1-f69.google.com with SMTP id g13-20020a05600c4ecdb0290242a8f4cf9cso423733wmq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:21:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=bTwq4PuX2DzHsZtvOO0BQjYNFm+9mjIm5nAUk4EcBYk=;
+        b=WKxePNtve/W+LTj5iMqsEeZqgDecGi1bHclPP8WbNcdsc0ZnD9qxsl5arodiZrho/C
+         FhS6qmI/icPG+CB5gCIPEEaNzN3C0mrn7GxoCC3aRSwPCWysjCOMzDCoICqkFtt7T3YE
+         w9V0fV0vpdN93F+woLbOQnhVKZ3laMIdjQlHWoEE22AO+o85qCR+BSlEoxhrIQv9YROJ
+         sXCC0q+Z9xdlEe77XcWuoIRZnVVtWAxghG98+wmxraK9//bl0iM4HgFWtiLIMaSEPbx+
+         yiOOy0bDzFf9dHk778Gy7/t5QVAwzblCGEuYFYC4GwlmpYlB7xECYCuC3RkJ1LRSEHMb
+         T+sQ==
+X-Gm-Message-State: AOAM533AvSkNTWzXSwIjAheJlWJgdHkjobAfzNUponk1ZlBuzlIG5wDO
+        uWh9J4BB3PjpZvYrgZT6W14v8X+R2+dYR8ZfwCYWVYl4GlJtOfYAgCCMYVUOCFrAYZLZDslpacb
+        +fBuQZxPqw2xNTMMTAQDKstjQ
+X-Received: by 2002:a05:6000:10d0:: with SMTP id b16mr5980504wrx.332.1626722479903;
+        Mon, 19 Jul 2021 12:21:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxHS0AwxkuMU+B+rIqWnOeSf01dX6b1TkG+iLkkBuz0iDHECPP6ZWmOrT1DQ9QifA6xEGP3ig==
+X-Received: by 2002:a05:6000:10d0:: with SMTP id b16mr5980475wrx.332.1626722479595;
+        Mon, 19 Jul 2021 12:21:19 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id n16sm21493126wrr.73.2021.07.19.12.21.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 12:21:19 -0700 (PDT)
+To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>
+References: <20210715201422.211004-1-peterx@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v5 00/26] userfaultfd-wp: Support shmem and hugetlbfs
+Message-ID: <251ed5e3-d898-efdc-ca5c-7b047dc80cb4@redhat.com>
+Date:   Mon, 19 Jul 2021 21:21:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210719150041.3c719c94@imladris.surriel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210715201422.211004-1-peterx@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/21 12:00 PM, Rik van Riel wrote:
-> In a large enough fleet of computers, it is common to have a few bad
-> CPUs. Those can often be identified by seeing that some commonly run
-> kernel code (that runs fine everywhere else) keeps crashing on the
-> same CPU core on a particular bad system.
+On 15.07.21 22:13, Peter Xu wrote:
+> This is v5 of uffd-wp shmem & hugetlbfs support, which completes uffd-wp as a
+> full feature.  It's based on v5.14-rc1.
+> 
+> I reposted the whole series majorly to trigger the syzbot tests again; sorry if
+> it brings a bit of noise.  Please let me know if there's easier way to trigger
+> the syzbot test instead of reposting the whole series.
+> 
+> Meanwhile, recently discussion around soft-dirty shows that soft-dirty may have
+> similar requirement as uffd-wp on persisting the dirty information:
+> 
+> https://lore.kernel.org/lkml/20210714152426.216217-1-tiberiu.georgescu@nutanix.com/
+> 
+> Then the mechanism provided in this patchset may be suitable for soft-dirty too.
+> 
+> The whole series can also be found online [1].
+> 
+> v5 changelog:
+> - Fix two issues spotted by syzbot
+> - Compile test with (1) !USERFAULTFD, (2) USERFAULTFD && !USERFAULTFD_WP
+> 
+> Previous versions:
+> 
+> RFC: https://lore.kernel.org/lkml/20210115170907.24498-1-peterx@redhat.com/
+> v1:  https://lore.kernel.org/lkml/20210323004912.35132-1-peterx@redhat.com/
+> v2:  https://lore.kernel.org/lkml/20210427161317.50682-1-peterx@redhat.com/
+> v3:  https://lore.kernel.org/lkml/20210527201927.29586-1-peterx@redhat.com/
+> v4:  https://lore.kernel.org/lkml/20210714222117.47648-1-peterx@redhat.com/
+> 
+> About Swap Special PTE
+> ======================
+> 
+> In short, the so-called "swap special pte" in this patchset is a new type of
+> pte that doesn't exist in the past, but it got used initially in this series in
+> file-backed memories.  It is used to persist information even if the ptes got
+> dropped meanwhile when the page cache still existed.  For example, when
+> splitting a file-backed huge pmd, we could be simply dropping the pmd entry
+> then wait until another fault coming.  It's okay in the past since all
+> information in the pte can be retained from the page cache when the next page
+> fault triggers.  However in this case, uffd-wp is per-pte information which
+> cannot be kept in page cache, so that information needs to be maintained
+> somehow still in the pgtable entry, even if the pgtable entry is going to be
+> dropped.  Here instead of replacing with a none entry, we used the "swap
+> special pte".  Then when the next page fault triggers, we can observe orig_pte
+> to retain this information.
+> 
+> I'm copy-pasting some commit message from the patch "mm/swap: Introduce the
+> idea of special swap ptes", where it tried to explain this pte in another angle:
+> 
+>      We used to have special swap entries, like migration entries, hw-poison
+>      entries, device private entries, etc.
+> 
+>      Those "special swap entries" reside in the range that they need to be at least
+>      swap entries first, and their types are decided by swp_type(entry).
+> 
+>      This patch introduces another idea called "special swap ptes".
+> 
+>      It's very easy to get confused against "special swap entries", but a speical
+>      swap pte should never contain a swap entry at all.  It means, it's illegal to
+>      call pte_to_swp_entry() upon a special swap pte.
+> 
+>      Make the uffd-wp special pte to be the first special swap pte.
+> 
+>      Before this patch, is_swap_pte()==true means one of the below:
+> 
+>         (a.1) The pte has a normal swap entry (non_swap_entry()==false).  For
+>               example, when an anonymous page got swapped out.
+> 
+>         (a.2) The pte has a special swap entry (non_swap_entry()==true).  For
+>               example, a migration entry, a hw-poison entry, etc.
+> 
+>      After this patch, is_swap_pte()==true means one of the below, where case (b) is
+>      added:
+> 
+>       (a) The pte contains a swap entry.
+> 
+>         (a.1) The pte has a normal swap entry (non_swap_entry()==false).  For
+>               example, when an anonymous page got swapped out.
+> 
+>         (a.2) The pte has a special swap entry (non_swap_entry()==true).  For
+>               example, a migration entry, a hw-poison entry, etc.
+> 
+>       (b) The pte does not contain a swap entry at all (so it cannot be passed
+>           into pte_to_swp_entry()).  For example, uffd-wp special swap pte.
+> 
+> Hugetlbfs needs similar thing because it's also file-backed.  I directly reused
+> the same special pte there, though the shmem/hugetlb change on supporting this
+> new pte is different since they don't share code path a lot.
+> 
+> Patch layout
+> ============
+> 
+> Part (1): Shmem support, this is where the special swap pte is introduced.
+> Some zap rework is needed within the process:
+> 
+>    mm/shmem: Unconditionally set pte dirty in mfill_atomic_install_pte
+>    shmem/userfaultfd: Take care of UFFDIO_COPY_MODE_WP
+>    mm: Clear vmf->pte after pte_unmap_same() returns
+>    mm/userfaultfd: Introduce special pte for unmapped file-backed mem
+>    mm/swap: Introduce the idea of special swap ptes
+>    shmem/userfaultfd: Handle uffd-wp special pte in page fault handler
+>    mm: Drop first_index/last_index in zap_details
+>    mm: Introduce zap_details.zap_flags
+>    mm: Introduce ZAP_FLAG_SKIP_SWAP
+>    shmem/userfaultfd: Persist uffd-wp bit across zapping for file-backed
+>    shmem/userfaultfd: Allow wr-protect none pte for file-backed mem
+>    shmem/userfaultfd: Allows file-back mem to be uffd wr-protected on thps
+>    shmem/userfaultfd: Handle the left-overed special swap ptes
+>    shmem/userfaultfd: Pass over uffd-wp special swap pte when fork()
+> 
+> Part (2): Hugetlb supportdisable huge pmd sharing for uffd-wp patches have been
+> merged.  The rest is the changes required to teach hugetlbfs understand the
+> special swap pte too that introduced with the uffd-wp change:
+> 
+>    mm/hugetlb: Drop __unmap_hugepage_range definition from hugetlb.h
+>    mm/hugetlb: Introduce huge pte version of uffd-wp helpers
+>    hugetlb/userfaultfd: Hook page faults for uffd write protection
+>    hugetlb/userfaultfd: Take care of UFFDIO_COPY_MODE_WP
+>    hugetlb/userfaultfd: Handle UFFDIO_WRITEPROTECT
+>    mm/hugetlb: Introduce huge version of special swap pte helpers
+>    hugetlb/userfaultfd: Handle uffd-wp special pte in hugetlb pf handler
+>    hugetlb/userfaultfd: Allow wr-protect none ptes
+>    hugetlb/userfaultfd: Only drop uffd-wp special pte if required
+> 
+> Part (3): Enable both features in code and test (plus pagemap support)
+> 
+>    mm/pagemap: Recognize uffd-wp bit for shmem/hugetlbfs
+>    userfaultfd: Enable write protection for shmem & hugetlbfs
+>    userfaultfd/selftests: Enable uffd-wp for shmem/hugetlbfs
+> 
+> Tests
+> =====
+> 
+> I've tested it using either userfaultfd kselftest program, but also with
+> umapsort [2] which should be even stricter.  Tested page swapping in/out during
+> umapsort.
+> 
+> If anyone would like to try umapsort, need to use an extremely hacked version
+> of umap library [3], because by default umap only supports anonymous.  So to
+> test it we need to build [3] then [2].
+> 
+> Any comment would be greatly welcomed.  Thanks,
 
-I've encountered a few of these kinds of things over the years.  This is
-*definitely* useful.  What you've proposed here is surely the simplest
-thing we could print and probably also offers the best bang for our buck.
+Hi Peter,
 
-The only other thing I thought of is that it might be nice to print out
-the core id instead of the CPU id.  If there are hardware issues with a
-CPU, they're likely to affect both threads.  Seeing to different "CPUs"
-in an SMT environment might tempt some folks to think it's not a
-core-level hardware issue.
+I just stumbled over copy_page_range() optimization
 
-If it's as trivial as:
+	/*
+	 * Don't copy ptes where a page fault will fill them correctly.
+	 * Fork becomes much lighter when there are big shared or private
+	 * readonly mappings. The tradeoff is that copy_page_range is more
+	 * efficient than faulting.
+	 */
+	if (!(src_vma->vm_flags & (VM_HUGETLB | VM_PFNMAP | VM_MIXEDMAP)) &&
+	    !src_vma->anon_vma)
+		return 0;
 
-	printk(KERN_CONT " on cpu/core %d/%d",
-		raw_smp_processor_id(),
-		topology_core_id(raw_smp_processor_id()));
+IIUC, that means you'll not copy the WP bits for shmem and,
+therefore, lose them during fork.
 
-it would be handy.  But, it's also not hard to look at 10 segfaults, see
-that they happened only on 2 CPUs and realize that hyperthreading is
-enabled.
+-- 
+Thanks,
 
-Either way, this patch moves things in the right direction, so:
+David / dhildenb
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
