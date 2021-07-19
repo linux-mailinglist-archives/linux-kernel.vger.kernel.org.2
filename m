@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2159E3CDF6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A19F3CDF0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345079AbhGSPKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:10:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:33380 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245468AbhGSOry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:47:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 151981FB;
-        Mon, 19 Jul 2021 08:28:21 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 91F053F66F;
-        Mon, 19 Jul 2021 08:28:18 -0700 (PDT)
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Subject: Re: [RFC PATCH 0/5] KVM: arm64: Pass PSCI to userspace
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>, maz@kernel.org
-Cc:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, corbet@lwn.net, james.morse@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        lorenzo.pieralisi@arm.com, salil.mehta@huawei.com,
-        shameerali.kolothum.thodi@huawei.com, jonathan.cameron@huawei.com
-References: <20210608154805.216869-1-jean-philippe@linaro.org>
-Message-ID: <c29ff5c8-9c94-6a6c-6142-3bed440676bf@arm.com>
-Date:   Mon, 19 Jul 2021 16:29:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S1344594AbhGSPH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:07:27 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:42188 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344265AbhGSOso (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgI5qI7_1626708560;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgI5qI7_1626708560)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 19 Jul 2021 23:29:22 +0800
+Date:   Mon, 19 Jul 2021 23:29:20 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v3] iomap: support tail packing inline read
+Message-ID: <YPWaUNeV1K13vpGF@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+References: <20210719144747.189634-1-hsiangkao@linux.alibaba.com>
+ <YPWUBhxhoaEp8Frn@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210608154805.216869-1-jean-philippe@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <YPWUBhxhoaEp8Frn@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jean-Philippe,
+On Mon, Jul 19, 2021 at 04:02:30PM +0100, Matthew Wilcox wrote:
+> On Mon, Jul 19, 2021 at 10:47:47PM +0800, Gao Xiang wrote:
+> > @@ -246,18 +245,19 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> >  	unsigned poff, plen;
+> >  	sector_t sector;
+> >  
+> > -	if (iomap->type == IOMAP_INLINE) {
+> > -		WARN_ON_ONCE(pos);
+> > -		iomap_read_inline_data(inode, page, iomap);
+> > -		return PAGE_SIZE;
+> > -	}
+> > -
+> > -	/* zero post-eof blocks as the page may be mapped */
+> >  	iop = iomap_page_create(inode, page);
+> > +	/* needs to skip some leading uptodated blocks */
+> >  	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
+> >  	if (plen == 0)
+> >  		goto done;
+> >  
+> > +	if (iomap->type == IOMAP_INLINE) {
+> > +		iomap_read_inline_data(inode, page, iomap, pos);
+> > +		plen = PAGE_SIZE - poff;
+> > +		goto done;
+> > +	}
+> 
+> This is going to break Andreas' case that he just patched to work.
+> GFS2 needs for there to _not_ be an iop for inline data.  That's
+> why I said we need to sort out when to create an iop before moving
+> the IOMAP_INLINE case below the creation of the iop.
 
-I'm not really familiar with this part of KVM, and I'm still trying to get my head
-around how this works, so please bare with me if I ask silly questions.
+I have no idea how it breaks Andreas' case from the previous commit
+message: "
+iomap: Don't create iomap_page objects for inline files
+In iomap_readpage_actor, don't create iop objects for inline inodes.
+Otherwise, iomap_read_inline_data will set PageUptodate without setting
+iop->uptodate, and iomap_page_release will eventually complain.
 
-This is how I understand this will work:
+To prevent this kind of bug from occurring in the future, make sure the
+page doesn't have private data attached in iomap_read_inline_data.
+"
 
-1. VMM opts in to forward HVC calls not handled by KVM.
+After this patch, iomap_read_inline_data() will set iop->uptodate with
+iomap_set_range_uptodate() rather than set PageUptodate() directly, 
+so iomap_page_release won't complain.
 
-2. VMM opts in to forward PSCI calls, other than
-PSCI_1_0_FN_PSCI_FEATURES(ARM_SMCCC_VERSION_FUNC_ID).
-
-3. Guest emulates PSCI calls (and all the other HVC calls).
-
-    3.a For CPU_SUSPEND coming from VCPU A, userspace does a
-KVM_SET_MP_STATE(KVM_MP_STATE_HALTED) ioctl on the VCPU fd which sets the request
-KVM_REQ_SUSPEND.
-
-    3.b The next time the VCPU is run, KVM blocks the VCPU as a result of the
-request. kvm_vcpu_block() does a schedule() in a loop until it decides that the
-CPU must unblock.
-
-    3.c The VCPU will run as normal after kvm_vcpu_block() returns.
-
-Please correct me if I got something wrong.
-
-I have a few general questions. It doesn't mean there's something wrong with your
-approach, I'm just trying to understand it better.
-
-1. Why forwarding PSCI calls to userspace depend on enabling forwarding for other
-HVC calls? As I understand from the patches, those handle distinct function IDs.
-
-2. HVC call forwarding to userspace also forwards PSCI functions which are defined
-in ARM DEN 0022D, but not (yet) implemented by KVM. What happens if KVM's PSCI
-implementation gets support for one of those functions? How does userspace know
-that now it also needs to enable PSCI call forwarding to be able to handle that
-function?
-
-It looks to me like the boundary between the functions that are forwarded when HVC
-call forwarding is enabled and the functions that are forwarded when PSCI call
-forwarding is enabled is based on what Linux v5.13 handles. Have you considered
-choosing this boundary based on something less arbitrary, like the function types
-specified in ARM DEN 0028C, table 2-1?
-
-In my opinion, setting the MP state to HALTED looks like a sensible approach to
-implementing PSCI_SUSPEND. I'll take a closer look at the patches after I get a
-better understanding about what is going on.
-
-On 6/8/21 4:48 PM, Jean-Philippe Brucker wrote:
-> Allow userspace to request handling PSCI calls from guests. Our goal is
-> to enable a vCPU hot-add solution for Arm where the VMM presents
-> possible resources to the guest at boot, and controls which vCPUs can be
-> brought up by allowing or denying PSCI CPU_ON calls. Passing HVC and
-> PSCI to userspace has been discussed on the list in the context of vCPU
-> hot-add [1,2] but it can also be useful for implementing other SMCCC and
-> vendor hypercalls [3,4,5].
->
-> Patches 1-3 allow userspace to request WFI to be executed in KVM. That
-
-I don't understand this. KVM, in kvm_vcpu_block(), does not execute an WFI.
-PSCI_SUSPEND is documented as being indistinguishable from an WFI from the guest's
-point of view, but it's implementation is not architecturally defined.
+Am I missing something?
 
 Thanks,
+Gao Xiang
 
-Alex
-
-> way the VMM can easily implement the PSCI CPU_SUSPEND function, which is
-> mandatory from PSCI v0.2 onwards (even if it doesn't have a more useful
-> implementation than WFI, natively available to the guest).
->
-> Patch 4 lets userspace request any HVC that isn't handled by KVM, and
-> patch 5 lets userspace request PSCI calls, disabling in-kernel PSCI
-> handling.
->
-> I'm focusing on the PSCI bits, but a complete prototype of vCPU hot-add
-> for arm64 on Linux and QEMU, most of it from Salil and James, is
-> available at [6].
->
-> [1] https://lore.kernel.org/kvmarm/82879258-46a7-a6e9-ee54-fc3692c1cdc3@arm.com/
-> [2] https://lore.kernel.org/linux-arm-kernel/20200625133757.22332-1-salil.mehta@huawei.com/
->     (Followed by KVM forum and Linaro Open discussions)
-> [3] https://lore.kernel.org/linux-arm-kernel/f56cf420-affc-35f0-2355-801a924b8a35@arm.com/
-> [4] https://lore.kernel.org/kvm/bf7e83f1-c58e-8d65-edd0-d08f27b8b766@arm.com/
-> [5] https://lore.kernel.org/kvm/1569338454-26202-2-git-send-email-guoheyi@huawei.com/
-> [6] https://jpbrucker.net/git/linux/log/?h=cpuhp/devel
->     https://jpbrucker.net/git/qemu/log/?h=cpuhp/devel    
->
-> Jean-Philippe Brucker (5):
->   KVM: arm64: Replace power_off with mp_state in struct kvm_vcpu_arch
->   KVM: arm64: Move WFI execution to check_vcpu_requests()
->   KVM: arm64: Allow userspace to request WFI
->   KVM: arm64: Pass hypercalls to userspace
->   KVM: arm64: Pass PSCI calls to userspace
->
->  Documentation/virt/kvm/api.rst      | 46 +++++++++++++++----
->  Documentation/virt/kvm/arm/psci.rst |  1 +
->  arch/arm64/include/asm/kvm_host.h   | 10 +++-
->  include/kvm/arm_hypercalls.h        |  1 +
->  include/kvm/arm_psci.h              |  4 ++
->  include/uapi/linux/kvm.h            |  3 ++
->  arch/arm64/kvm/arm.c                | 71 +++++++++++++++++++++--------
->  arch/arm64/kvm/handle_exit.c        |  3 +-
->  arch/arm64/kvm/hypercalls.c         | 28 +++++++++++-
->  arch/arm64/kvm/psci.c               | 69 ++++++++++++++--------------
->  10 files changed, 170 insertions(+), 66 deletions(-)
->
+> 
+> If we're not going to do that first, then I recommend leaving the
+> IOMAP_INLINE case where it is and changing it to ...
+> 
+> 	if (iomap->type == IOMAP_INLINE)
+> 		return iomap_read_inline_data(inode, page, iomap, pos);
+> 
+> ... and have iomap_read_inline_data() return the number of bytes that
+> it copied + zeroed (ie PAGE_SIZE - poff).
