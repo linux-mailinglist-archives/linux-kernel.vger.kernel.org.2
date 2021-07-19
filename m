@@ -2,170 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3142E3CED8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2492B3CED7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357923AbhGSTDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:03:44 -0400
-Received: from mail-dm6nam10on2049.outbound.protection.outlook.com ([40.107.93.49]:41056
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        id S1384945AbhGSSl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 14:41:29 -0400
+Received: from mail-bn8nam12on2047.outbound.protection.outlook.com ([40.107.237.47]:30784
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1384745AbhGSSfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:35:19 -0400
+        id S1384076AbhGSSSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 14:18:49 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kFprU6AoQDA8oKsXFJO/s/zcE78UOY7hsCGk8Dzf20l2dT0rEhJkDAiH6XPpZAfUyPkJXOPqJgW1gWXKECNsbz1dLPUlB7E4PKASieiLWjipuzGgmzYey98eUdNn+2L7CxBOtlEuoFDXqe8NeSFh+B69EY5Tod4T/AkLrhEyVHXyD5j3PwMIZN/5KsgYsUWdxmO2JGgyJ5XZGCxdYreJct+dYtmmRy+w3CFLTR0bnTFj+lNxOwcHy7LD3cwyjZ6rabTDp4EVuARpvGGwyiMmQINY7AnWOEX74UvimsQKZQlWKy8hTw7LFCbtBpeR64f411k1Fd6DBalEo3YRWZq/rg==
+ b=Jh8vbgavik8xuVJXumMr3ojzmvoLR2aNUbfZ5t+r183ZSBBxdWko1P+jvp86BE8kXIj4xvZYfHjcBmiQjNw0C8a/JigSgIjBVkNy9Sy/MvgQ3FzUB7Auu8Uvzl8TPLWakEBxOtB4rcR+HMb1xnGa2Cz0OLy4LhzBIuyW1H3rDGRSvqAvXKHwEMrV9dUrCQssGqhaJ2pr/WzbzeTGk2MEBEcujr0vH/jPOnoCPURLTfTBNRp59twab6W0j6x/Hl8s1j3Qnt95b0jYXXgN1g0riFa4l43lLO8U5DdCwK+80VNWYAylh4k7bchhxmNdasIGl3qmX16SCvjPuB5MShNVQQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wvLwnqtPHmOZd5trZ438U1FZahxX3f3tUXyHUSBO+6c=;
- b=AqW7pUp5PyRryhSMdZ5O45+/K4rPzoGXQ/e55r/vDVGTsHB0+0Oie9UtpbDG7KNxb6fYYleNhsIgeA2pnsQu2x6dXkX91OPnkZvp7Us4Txp2IyrThVw98mwyWIA70m8QluReZ3hBpd5BGAl5RHesn5uCczrxFvf7OkoS51/NOW+r1NmifYmR1EB4/HQjfH9wYRuaHbirEDCZtexrews4n2WpUP2q604nkY+l5zbCkDg38ILoaaCE8+5HkcI7z0ZTuu7woqzTIGymLMz3oqCuIJYtmTNDRrsAinL0DegjGOQTYPQ0GDJBDgq/yGwQbtOq+QPcglrRrr5rl9KNBjkdOw==
+ bh=/fVN7qvrhtgvTQt0F7G3JjGzeJUzQIENvcBLC4Cn57E=;
+ b=jqVq7mKVVj+3xkt3XHzLOPehSU4SLj8UkjNFNlMrur36mlPgUOBuz/cPtftqntW0Fe9K5TwzSQqkGmmoMfVdBTOtzAtIOJJc3rAepyUPOmT8dvpjikJvHFZddIZWJuji//s6w6/Zb0a4nfkbS++X28hKELUvfNcGA2aAosF6v61GPwLzgNxDCMCOo4Qx+FBfG9n6xMSAGWU+R00Uk9+ACHWStwZa35s+Y9McfgeyIRg5Ki4boD+ADJwBGGeJE01ZyXEu9PshDeEzCLiQe4KNMvNAG4oMI/aan5upLO+n+8XzYc1A+KXhGCIac2tNBU9KpwmGmrSO4HViYRsNCJdqzA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wvLwnqtPHmOZd5trZ438U1FZahxX3f3tUXyHUSBO+6c=;
- b=YvQwUO+NQnF3qI7/VNkxNBYQkZr/U2We33LGYrNBNnUj7OLso4sq3uyEbwJFBXDvLSs7jnzlk2zypHT8Cx+sCUQV2Cq/FTLQ7UxnXTj1Qbg5kVETTc/lt+yP49iW418RBwDk9Wo2WBgTUH1zuiIEGAIywV7fD6uhVBYtiWkDpFA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB4750.namprd12.prod.outlook.com (2603:10b6:805:e3::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.26; Mon, 19 Jul
- 2021 19:15:56 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 19:15:56 +0000
-Cc:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 33/40] KVM: SVM: Add support to handle MSR
- based Page State Change VMGEXIT
-To:     Sean Christopherson <seanjc@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-34-brijesh.singh@amd.com> <YPHzcstus9mS8hOm@google.com>
- <b9527f12-f3ad-c6b9-2967-5d708d69d937@amd.com> <YPXKuiRCjod8Wn2n@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <2b636096-2af3-0297-3f93-5380db89d820@amd.com>
-Date:   Mon, 19 Jul 2021 14:15:53 -0500
+ bh=/fVN7qvrhtgvTQt0F7G3JjGzeJUzQIENvcBLC4Cn57E=;
+ b=B7BTikLmYs/8GpM7xmYPADd1pHJAfeSQq/XUCYifFtJkN8HrT1dSh4dk+3DtVPqJxjmof6V8SNM8wf07QjZcZUueAXTbfOxsRydf1cavOcXNzXA/EZhf0CuATSMu/GIones8MY95u+g54BSdVm4oORBS+hCASUwGKK2gCOtdP7M=
+Authentication-Results: collabora.com; dkim=none (message not signed)
+ header.d=none;collabora.com; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MWHPR1201MB0221.namprd12.prod.outlook.com
+ (2603:10b6:301:56::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.25; Mon, 19 Jul
+ 2021 18:59:20 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4331.033; Mon, 19 Jul
+ 2021 18:59:19 +0000
+Subject: Re: [PATCH V3 04/12] ASoC: amd: create acp5x platform devices
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        broonie@kernel.org, alsa-devel@alsa-project.org
+Cc:     Sunil-kumar.Dommati@amd.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Alexander.Deucher@amd.com,
+        krisman@collabora.com
+References: <20210719165140.16143-1-vijendar.mukunda@amd.com>
+ <20210719165140.16143-5-vijendar.mukunda@amd.com>
+ <035b3dbe-bbe0-bf0b-3893-d176418658f7@linux.intel.com>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <a6c5600b-4d1b-2791-8b61-f241dcdbeb14@amd.com>
+Date:   Tue, 20 Jul 2021 00:47:03 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <YPXKuiRCjod8Wn2n@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <035b3dbe-bbe0-bf0b-3893-d176418658f7@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0042.namprd05.prod.outlook.com
- (2603:10b6:803:41::19) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+X-ClientProxiedBy: MAXPR0101CA0012.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:c::22) To MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.31.95] (165.204.77.1) by SN4PR0501CA0042.namprd05.prod.outlook.com (2603:10b6:803:41::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.11 via Frontend Transport; Mon, 19 Jul 2021 19:15:55 +0000
+Received: from [192.168.0.160] (49.206.46.65) by MAXPR0101CA0012.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 18:59:17 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 263a7078-8e80-4e67-b8ba-08d94ae9a224
-X-MS-TrafficTypeDiagnostic: SN6PR12MB4750:
+X-MS-Office365-Filtering-Correlation-Id: f76776db-0c0e-47a9-04c3-08d94ae75063
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0221:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB4750A1AE34B4C59F1D9535B5E5E19@SN6PR12MB4750.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB0221DCF9B69D34B62B268A6197E19@MWHPR1201MB0221.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iJh8lwDUtjZZAH/A2LP/zYwJAFsidAaOh/EJ+9+ULZDK29BXnRZfEIBkPZPj4wEtR8N9OxK8i1PQ+tcxVlH12/TSIBRuOS21xbVLxmyflVHNG3bQRDwQJkVvrP2Uk00+yUyM0HkX+AZHVoSOCN7878itXAP4SbxUug8k6OjYbqNN/6GJcfivFM5RAEsgd7u+NSutSfcpJ9JHsuf84cJ1fvxzHVM+/3QoY+18VhZThkYk0ovyAAoQEkKmLOU8BQIkHMoN7KJhZ+dWoIHRnhVQvkpXmJREjdrp6351SGz0azSumKDAwToYXRpQrmzmpxLEqgXSkOT+hXDb2ZNJrCM9Q6rWJBSC2X5kcMjRnjtQICajjYfDUd9WfmvhStEivR3DJKQ+DOXZ6EkyKTm0+6kDfx2BvTVuj5+ACF41+uEVy/mwifzLGKGvRRnnYnxzop23vw5jlX6lrpaRWTKwa4XI1TJWzJY3CNx/xfiq/d993Qo58ZveiG/0wI5+v9xNpzINPzs+cLPIq/VLKVJg7U1j6z4tbBkRyW4DyBPleOcYLNGNaSqOhjygDHooBJEX5Jti6z0YC6F6NhKh3aLJtaiRW5UXqa31TXpUP3Gy6pcwpXO7cEF7EBdSpq7UqArVnSlWyjGeRQkGvmm9Vgv9AO3u8koTtAjgEque/VoS8ea2oZbDIiitnZUwYGbjml/FT0hu02pjDGAbh9yxv11Q0cit9Xl0OKvc8Yycb895D4p2l9qPAcnQVVmqGtxFa3MmOoCJZ2lwNG2CRnWmIvKnIyw9dw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(366004)(83380400001)(8676002)(6916009)(38100700002)(38350700002)(7406005)(186003)(86362001)(54906003)(2616005)(6486002)(44832011)(36756003)(2906002)(53546011)(5660300002)(956004)(31696002)(16576012)(26005)(52116002)(7416002)(66476007)(66946007)(316002)(31686004)(8936002)(478600001)(66556008)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 3LBfh5c6+kXU6efHKjlnB1tIo54BU5iv4lVBRdUUWsuAF564lrUzolLQahURfDhGVV3uetXKO+wBja4L6/wuMeWi/AbwQ5dRJs8c9/51aMRwWTZkWz7Ca8d0QYN3v8lTTnC4cnqmYKT49/T58oSveGzPs+UiM5I73vFyG+6wxpsQPuSWSY6mnNldZloG4IJ/0aiJShOTYKLlYY4NBxeTfvJWHyvlmLcL3KQ2FpMYaptcr1kUvUx0oUILi8vKcKs00wGbLtjqfSWgGmT32A1VaiGceAhgI2gmANxq9rQQMUyUuWZGbotnswcOdmMXHNOge/qKTWpraAco9ikX8Kuf6Ux23LejXifPQ5MhNLsNYEtIwsOBuawL/XEjfat0vuc78+eSFOM6CobtOvQxmgSZVEe64j1y0jQ1LzML4U7kSxe+ih1o9lL0rAFmbHRiZfv3sStHb9sZGglwIDM4ERmuJTShbORLoqaWsgYiXJLSk/Dm/+A1FpcwoKm73c6JCzggCYwfhPIpaxlnjQVdKV3JtWg2TpcQuZMVQbKbXRvxf5DeVpgyqCDVDpPsXyyBXaaU0ecrpMQcPlYuO5X2Ri5kRxgfAY+U48so6DugjQJCSzjkzSULy+acHekNvpN4UVkYRtHGeh78urTd7CT/D907DxAUjqNJfedg2deyHk02tG+fXUu3HMDQktoM6oknpJEdYojjD+0pQ1Z8B98SKrlKIEEugJrc/FpIgFYpDTtFCsFtqbanQ0PVCpL3Hn5ehd/4oJ0uf6/5sg0udLzLA7ymoNnAy6vlmAr8rVeofvs66BE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(366004)(2906002)(316002)(956004)(31696002)(2616005)(6486002)(4326008)(16576012)(36756003)(66556008)(54906003)(55236004)(66946007)(26005)(66476007)(186003)(6666004)(8936002)(1006002)(8676002)(31686004)(86362001)(5660300002)(38100700002)(83380400001)(478600001)(53546011)(42413003)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b0ZwdHBweDlqcldrR3p4MTBOVGdaSnluUzVCZ1Y2RnRDMkxBazVydTIyRmxS?=
- =?utf-8?B?VmFqQWRmTnA5WUU4S2ZCc1psQWRIOG4wMnRmeWtyVmRKK0UwSWlvMGpMZDZX?=
- =?utf-8?B?UlRNL01lR281ZFYvTVFIWXplVG50RzI5WlZPTm5uV0NwbTVrL3hFaU1SVmNS?=
- =?utf-8?B?bWpIbCtLYlFQc1k3QjcwaUxrQm5Yc3oySmlGZEUxa1B5cWh5bGFka0dBTGZV?=
- =?utf-8?B?T1dzbmljTXBhek0vSW5mYUp2bU5rNmxuampPa0hMQnJPaUFtcGIvVW1GbmdY?=
- =?utf-8?B?dnZlbWxOQ1BnMGNPT0g1Z3ZGMCt4bURndjQzN0Jtc1VrQXhSL0gvdVlsaUJE?=
- =?utf-8?B?ZURkNXBROXZXVWRMbFVFQXhINmxyL0lTT2FZUE1SRkMyRjRzb0J2WlcxMnZF?=
- =?utf-8?B?bUt4eSs1RzV2VGppUGtlRU5VZ3JTZ3pyRnNaakJxYTdMWXdUd0loMnVPTWhv?=
- =?utf-8?B?bmprRWdUUXk5bVJQVGdRSlFiS0JFY1F1UEVEaUt2YTFSdDFRMEY4cXpWYS9V?=
- =?utf-8?B?d3hsc0loZmRDSHF0d3NhMmNSSmFTbWNLZUJpRzBuV2tZQWtJRmNzbGtJRnYx?=
- =?utf-8?B?Rit2dkpPeEplc054elB4V2tGNjZYRktHWjRVTnpWUElMcXB2L09WK0xyem9r?=
- =?utf-8?B?b0ZlZWxaeDRlWGFTbWVibFRKSVg0YTJHVDNuRjVXcDJxRlVkSGQ0ekdLaitk?=
- =?utf-8?B?T3dtV3MveEd3UVExUVNLSW5hOEZZMzNuTGNvRGpkZE9CVWJwRFovR2ZhRFU3?=
- =?utf-8?B?TWpPclVmUkFpb3JhcTFGKy9xWEFObUlxVitiQ3VaSWFKUmYrYWM4SHFwVENC?=
- =?utf-8?B?RlhkL0I2VGJaNGxPa1hLQXEzMS9GVG1VSXUwTGs2K2szbk1sRkZhdkN6UTVS?=
- =?utf-8?B?V25XaE5nWjhGckFUQUUzWjNBQ29GYmFMeGZuWmZKL0IwK1doQytjbS9sRkF1?=
- =?utf-8?B?TGNwTVZ3SGtSaEhBRS9KNXkyRmpDOXVGUm0xQWF4d3lLM2dRMEg4TTBic2lw?=
- =?utf-8?B?NEtjZFdCR2VHeGljSXowaTBiMTNzdkNyMDJvcno0RWZlZnorY25vdngzY2NG?=
- =?utf-8?B?b1VQYVJrUzhGOWd3emowalF0R0xYODRNVktZcjhKRHZ2Smp4TlRITXZrektE?=
- =?utf-8?B?dG5nWmphYllYbFJOUlp2M2twVnF6dVVTT0F3V3VRa3laNkIyYmh6aDlXcmRJ?=
- =?utf-8?B?eDZ5TUdma1JFajZOSUIzSi9rQzkxbGhLOWZzczZGY09pL0tvRmtiNmhvSHdk?=
- =?utf-8?B?N1lJWXhORXRzbkRTRmlPUHJ0UGdvc0I5a3FpZFJWRk05cGJNeGExUnRSVTds?=
- =?utf-8?B?dGJFdDllbGpjMGYwMXludjIrL3V2aHVHTnpPRUYza1pBQlMwWFlEZjZtNk11?=
- =?utf-8?B?OHdHc29iZmVmVFVuWDR5NnFUd3pNdXpPTEI2cmJPOXU5bVF6aWRWL2lrZUR5?=
- =?utf-8?B?cGZrVjljSHZtOTlBV2xhcHdZYmRrZUVqSlBTZGVyeWtDRGxTTGtOSEExdnh3?=
- =?utf-8?B?TWZNMW5ISGltaHVvSG5RRndHMEdsRFcxNTM4REZVaVJCbTFRQjZQVXQ4aDIz?=
- =?utf-8?B?MWZ5RERTZ09sZkRkMThkN0VuMDVwbi9kR1AwV3RhbGJOa2plL1FpdThzeG4w?=
- =?utf-8?B?cU90MEtPbzl6SXpDK3NiQ05jdjFla3Q0VytVaUJjY0hMalhMdkZ6eDRwUHpX?=
- =?utf-8?B?dncvTHNTcmU5NjcxUzlKRlhqZFZLalV0UGswM3BpMEJucHpob2tPY1JUTGta?=
- =?utf-8?Q?7SI9QSq5e1Y4/PcpS/FgBU0lEGTQxx/NtaPwerL?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WXBmTVI4eHROc1hUNTJHWFpVTFkzYTE1dFFPSlRhQTRDTWwxRVNLKzdrVW1M?=
+ =?utf-8?B?NENHZXFCa1VIWWNVUmNaK3RPbWxEWUFrczhaTzlsT3VGaE96a2lEdzNhV2xw?=
+ =?utf-8?B?OVpCalg1M1F4L1FGTGZscCtTc3FNVlhGeW9UVkpwWjdMbWlmVVZ3S251Q3Ro?=
+ =?utf-8?B?b1NxZFEyR1VjdTNQeXd6b1kxb2xPQkNVbmtoc2dDc3lzUWc1UHZNMFA4TUsv?=
+ =?utf-8?B?YWpCdTVtT0R6bnlqZktFTFBySytKeG8rNW41Tmo5RGdRamtZdEgrbG9YZEdt?=
+ =?utf-8?B?YSs4TkF6MWZUd3NwVEtpZzJ3YWkyYS9NdTVGRnV5d0VGWUxBcjdxREFiRDlG?=
+ =?utf-8?B?K1k2Wk1kODM3bHo5V1pEUU9yd05uSWtrS0l2b0l5RmtVcnVKdFE1b1pSeFVP?=
+ =?utf-8?B?T3d1dFNJQmtEbG5FcVlCN0s0blVXeVJ0MHpxczVVN3l1RFlnSXl2T3dPRFVx?=
+ =?utf-8?B?bTZxQWN5K2xlVmtKbmtZcEdNOExYbkNVejIvMC9GbURqNkgwOGFqQ05HL1JV?=
+ =?utf-8?B?ZURzTno0SGxYeG9SaEsvVlVjbXBPL2hMWnlkNktHcU12MVV1aHpMb3VJMjdo?=
+ =?utf-8?B?ekprNHpSWWdqbisycGx3NUpMalNzNXVpWEtqaWExdmVjbytlYzJHU3JHTElv?=
+ =?utf-8?B?MjZHNzMyOTlZbldZSnd6ejRnYlp6MWNqSmdmR2NaRVE5QWI4MzN5eGs4VGNZ?=
+ =?utf-8?B?Nk5EUFRYRFFUMlJMbEVpWUd3VHR2M2dPYmFBVWZpNEtZVE5PV0tmSkllSGxZ?=
+ =?utf-8?B?UmYwcGtQYTA1OW04Ykd3aDhLWkZHR014bGVHUjJZSGoxbUs1OXZzQ0hRNFdG?=
+ =?utf-8?B?RmJJNzIxejVMRkZFeXlLeCswaWVkdUJTMUdvN2sxSDVwZUVDUHFuWTNSdXF6?=
+ =?utf-8?B?cTAvdFRhT1I5amVFQ1hKaWRoWTJrTFZoUVB2NHlrblFhSEQ0TzJmTVZBaE9S?=
+ =?utf-8?B?OERBK0RiUDQvdDNWVHdLbW5uUk9PQzlLeTVjYkkwc1ZvUWhsWDV1RmFxNUxB?=
+ =?utf-8?B?RVZ2WUhsS0pPZmNYdGlKWUE4Ym40UFRUYXlscEx0SXdqWTRQMVdJWGdWbXJV?=
+ =?utf-8?B?eitvK1ZMYnBEV1h0T0g2cGlBczFJSnhkMWpNcU9vV1pudU8wK09lM28reXhY?=
+ =?utf-8?B?T3dubEkxZEdOVTJyRjkwUWNwZlRKMGNyYUhwWENQNkFtdkYwU0ducWdPeng4?=
+ =?utf-8?B?QmVWRDMrRnloV1ZySVkrVkNhWXE1QWIrbnRDN0NHTlVkU0dZQWpSSW5maFV6?=
+ =?utf-8?B?Y1pGSzhGQSs0Z3N5M2sxSUptbGl2Y2hSTThrbStjZ2k3Z2FWdXdqNE9IQU9J?=
+ =?utf-8?B?RTFES1g3ZEhNNXBjSkhJQXA1eERMZmZnMERjWTR2Y1JuQ3JQRS8rV2NTbFpY?=
+ =?utf-8?B?TzV4M09YWktReXlRbVcxaTZBRkNUWjdzQlo1T1IzUU5CemJWcUFiNjlxM3E2?=
+ =?utf-8?B?U1VQMTRXOGpLVHlnK3VkSmJXaEhIek9Wd29VR0g4Nnlpa1ZJVW9tSmI3eEw1?=
+ =?utf-8?B?aFNaZmI2dSt6bml4RHJLVkpPNWFFeEpSUE45SHpoa2k2dnVEQzA4eWhrUVVv?=
+ =?utf-8?B?T3c1cDQ3UkVySmVBa3lwanVLRkljbmVpWHFtODN3akJJNmtVaVlHbHlFRUZv?=
+ =?utf-8?B?Rk84OFhZanNCRC9MSk4vQndZZXdyNVF5K0tQZk9wZHR0YjJubHY2eFR4NTkw?=
+ =?utf-8?B?VlpSSjVtMFcrZzJBZDFHWWdUd2MwaFZxQ1pVTmxPY24raHpsOTd0ekwrYThD?=
+ =?utf-8?Q?XjA4UmSuoiHfuTUahoEES3DHnvlcd4Wb+udOlQQ?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 263a7078-8e80-4e67-b8ba-08d94ae9a224
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f76776db-0c0e-47a9-04c3-08d94ae75063
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 19:15:56.0715
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 18:59:19.7882
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IADwerDdncU/qOJso/+B+ErPsa32u16LkTVYDjeL1uzVDCBMINLPQ+WM0TJeAzoRHLNUOnNjixEZYc5UgGQsWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4750
+X-MS-Exchange-CrossTenant-UserPrincipalName: UekjKRRtUn6alzULIFNRmg5R9xP7eDcnHaYxXyoFQxpN0/hJN8MioUShN91/+MQ05OdahkmIxDOovo2we8HZXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0221
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/19/21 1:55 PM, Sean Christopherson wrote:
+On 7/19/21 11:37 PM, Pierre-Louis Bossart wrote:
 > 
-> I've no objection to using PSC for enums and whatnot, and I'll happily defer to
-> Boris for functions in the core kernel and guest, but for KVM I'd really like to
-> spell out the name for the two or so main handler functions.
-
-Noted.
-
-
+> 
+> On 7/19/21 11:51 AM, Vijendar Mukunda wrote:
+>> ACP5.x IP has multiple I2S controllers and DMA controller.
+>> Create platform devices for I2S HS controller instance, I2S SP controller
+>> instance and DMA contrller.
+> 
+> typo: controller
+Will fix it.
+> 
+>> Pass PCI resources like MMIO, irq to these platform devices.
 >>
->> Maybe I am missing something, I am not able to follow 'guest won't be able
->> to convert a 2mb chunk back to a 2mb large page'. The page-size used inside
->> the guest have to relationship with the RMP/NPT page-size. e.g, a guest can
->> validate the page range as a 4k and still map the page range as a 2mb or 1gb
->> in its pagetable.
+>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+>> ---
+>>  sound/soc/amd/vangogh/acp5x.h     | 10 ++++
+>>  sound/soc/amd/vangogh/pci-acp5x.c | 95 ++++++++++++++++++++++++++++++-
+>>  2 files changed, 102 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/sound/soc/amd/vangogh/acp5x.h b/sound/soc/amd/vangogh/acp5x.h
+>> index 708586109315..bbf29fd2b12f 100644
+>> --- a/sound/soc/amd/vangogh/acp5x.h
+>> +++ b/sound/soc/amd/vangogh/acp5x.h
+>> @@ -22,6 +22,16 @@
+>>  #define ACP_ERR_INTR_MASK	0x20000000
+>>  #define ACP_EXT_INTR_STAT_CLEAR_MASK 0xFFFFFFFF
+>>  
+>> +#define ACP5x_DEVS 0x03
 > 
-> The proposed code walks KVM's TDP and adjusts the RMP level to be the min of the
-> guest+host levels.  Once KVM has installed a 4kb TDP SPTE, that walk will find
-> the 4kb TDP SPTE and thus operate on the RMP at a 4kb granularity.  To allow full
-> restoration of 2mb PTE+SPTE+RMP, KVM needs to zap the 4kb SPTE(s) at some point
-> to allow rebuilding a 2mb SPTE.
+> 3?
 > 
+Will create 3 platform devices for DMA device and two
+I2S controllers.
 
-Ah I see. In that case, SNP firmware provides a command 
-"SNP_PAGE_UNMASH" that can be used by the hypervisor to combines the 
-multiple 4k entry into a single 2mb without affecting the validation.
+>> +#define	ACP5x_REG_START	0x1240000
+>> +#define	ACP5x_REG_END	0x1250200
+>> +#define ACP5x_I2STDM_REG_START	0x1242400
+>> +#define ACP5x_I2STDM_REG_END	0x1242410
+>> +#define ACP5x_HS_TDM_REG_START	0x1242814
+>> +#define ACP5x_HS_TDM_REG_END	0x1242824
+>> +#define I2S_MODE 0x00
+>> +#define ACP5x_I2S_MODE 0x00
+>> +
+>>  /* common header file uses exact offset rather than relative
+>>   * offset which requires substraction logic from base_addr
+> 
+> typo: subtraction
+Will fix it
+> 
+>>   * for accessing ACP5x MMIO space registers
+>> diff --git a/sound/soc/amd/vangogh/pci-acp5x.c b/sound/soc/amd/vangogh/pci-acp5x.c
+>> index 523b962fe35e..3cc15a15b745 100644
+>> --- a/sound/soc/amd/vangogh/pci-acp5x.c
+>> +++ b/sound/soc/amd/vangogh/pci-acp5x.c
+>> @@ -8,11 +8,16 @@
+>>  #include <linux/module.h>
+>>  #include <linux/io.h>
+>>  #include <linux/delay.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/interrupt.h>
+>>  
+>>  #include "acp5x.h"
+>>  
+>>  struct acp5x_dev_data {
+>>  	void __iomem *acp5x_base;
+>> +	bool acp5x_audio_mode;
+>> +	struct resource *res;
+>> +	struct platform_device *pdev[3];
+> 
+> pdev[ACP5x_DEVS] ?
+Will update it.
+> 
+>>  };
+>>  
+>>  static int acp5x_power_on(void __iomem *acp5x_base)
+>> @@ -114,9 +119,12 @@ static int snd_acp5x_probe(struct pci_dev *pci,
+>>  			   const struct pci_device_id *pci_id)
+>>  {
+>>  	struct acp5x_dev_data *adata;
+>> -	int ret;
+>> -	u32 addr;
+>> +	struct platform_device_info pdevinfo[3];
+>> +	unsigned int irqflags;
+>> +	int ret, i;
+>> +	u32 addr, val;
+>>  
+>> +	irqflags = IRQF_SHARED;
+>>  	if (pci->revision != 0x50)
+>>  		return -ENODEV;
+>>  
+>> @@ -150,6 +158,83 @@ static int snd_acp5x_probe(struct pci_dev *pci,
+>>  	if (ret)
+>>  		goto release_regions;
+>>  
+>> +	val = acp_readl(adata->acp5x_base + ACP_PIN_CONFIG);
+>> +	switch (val) {
+>> +	case I2S_MODE:
+>> +		adata->res = devm_kzalloc(&pci->dev,
+>> +					  sizeof(struct resource) * 4,
+> 
+> what is this 4 value?
+We are creating 4 resources using MFD framework.
+Will use macro instead of hard-coded value.
+> 
+>> +					  GFP_KERNEL);
+>> +		if (!adata->res) {
+>> +			ret = -ENOMEM;
+>> +			goto de_init;
+>> +		}
+>> +
+>> +		adata->res[0].name = "acp5x_i2s_iomem";
+>> +		adata->res[0].flags = IORESOURCE_MEM;
+>> +		adata->res[0].start = addr;
+>> +		adata->res[0].end = addr + (ACP5x_REG_END - ACP5x_REG_START);
+>> +
+>> +		adata->res[1].name = "acp5x_i2s_sp";
+>> +		adata->res[1].flags = IORESOURCE_MEM;
+>> +		adata->res[1].start = addr + ACP5x_I2STDM_REG_START;
+>> +		adata->res[1].end = addr + ACP5x_I2STDM_REG_END;
+>> +
+>> +		adata->res[2].name = "acp5x_i2s_hs";
+>> +		adata->res[2].flags = IORESOURCE_MEM;
+>> +		adata->res[2].start = addr + ACP5x_HS_TDM_REG_START;
+>> +		adata->res[2].end = addr + ACP5x_HS_TDM_REG_END;
+>> +
+>> +		adata->res[3].name = "acp5x_i2s_irq";
+>> +		adata->res[3].flags = IORESOURCE_IRQ;
+>> +		adata->res[3].start = pci->irq;
+>> +		adata->res[3].end = adata->res[3].start;
+>> +
+>> +		adata->acp5x_audio_mode = ACP5x_I2S_MODE;
+>> +
+>> +		memset(&pdevinfo, 0, sizeof(pdevinfo));
+>> +		pdevinfo[0].name = "acp5x_i2s_dma";
+>> +		pdevinfo[0].id = 0;
+>> +		pdevinfo[0].parent = &pci->dev;
+>> +		pdevinfo[0].num_res = 4;
+>> +		pdevinfo[0].res = &adata->res[0];
+>> +		pdevinfo[0].data = &irqflags;
+>> +		pdevinfo[0].size_data = sizeof(irqflags);
+>> +
+>> +		pdevinfo[1].name = "acp5x_i2s_playcap";
+>> +		pdevinfo[1].id = 0;
+>> +		pdevinfo[1].parent = &pci->dev;
+>> +		pdevinfo[1].num_res = 1;
+>> +		pdevinfo[1].res = &adata->res[1];
+>> +
+>> +		pdevinfo[2].name = "acp5x_i2s_playcap";
+>> +		pdevinfo[2].id = 1;
+>> +		pdevinfo[2].parent = &pci->dev;
+>> +		pdevinfo[2].num_res = 1;
+>> +		pdevinfo[2].res = &adata->res[2];
+>> +
+>> +		for (i = 0; i < ACP5x_DEVS; i++) {
+>> +			adata->pdev[i] =
+>> +				platform_device_register_full(&pdevinfo[i]);
+>> +			if (IS_ERR(adata->pdev[i])) {
+>> +				dev_err(&pci->dev, "cannot register %s device\n",
+>> +					pdevinfo[i].name);
+>> +				ret = PTR_ERR(adata->pdev[i]);
+>> +				goto unregister_devs;
+>> +			}
+>> +		}
+>> +		break;
+>> +	default:
+>> +		dev_info(&pci->dev, "ACP audio mode : %d\n", val);
+>> +	}
+>> +	return 0;
+>> +
+>> +unregister_devs:
+>> +	if (val == I2S_MODE)
+> 
+> nit-pick: you can't reach this point outside of the I2S_MODE, so this test is not useful
+> 
+> 
+>> +		for (i = 0; i < ACP5x_DEVS; i++)
+>> +			platform_device_unregister(adata->pdev[i]);
+> 
+> only unregister what you registered?
 
--Brijesh
+Yes, We are unregistering devices which got registered.
+We can refactor the code by moving code to switch case it self rather
+than handling by declaring the label for it.
+
+Will fix it and post the new version.
+
+> 
+> for (--i; i > 0; i--)
+> 
+>> +de_init:
+>> +	if (acp5x_deinit(adata->acp5x_base))
+>> +		dev_err(&pci->dev, "ACP de-init failed\n");
+>>  release_regions:
+>>  	pci_release_regions(pci);
+>>  disable_pci:
+>> @@ -161,9 +246,13 @@ static int snd_acp5x_probe(struct pci_dev *pci,
+>>  static void snd_acp5x_remove(struct pci_dev *pci)
+>>  {
+>>  	struct acp5x_dev_data *adata;
+>> -	int ret;
+>> +	int i, ret;
+>>  
+>>  	adata = pci_get_drvdata(pci);
+>> +	if (adata->acp5x_audio_mode == ACP5x_I2S_MODE) {
+>> +		for (i = 0; i < ACP5x_DEVS; i++)
+>> +			platform_device_unregister(adata->pdev[i]);
+>> +	}
+>>  	ret = acp5x_deinit(adata->acp5x_base);
+>>  	if (ret)
+>>  		dev_err(&pci->dev, "ACP de-init failed\n");
+>>
+
