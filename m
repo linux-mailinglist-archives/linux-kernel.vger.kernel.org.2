@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF073CEA76
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE543CE92D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359292AbhGSRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:15:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38792 "EHLO mail.kernel.org"
+        id S1357276AbhGSQvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:51:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346902AbhGSPjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D64B8606A5;
-        Mon, 19 Jul 2021 16:18:46 +0000 (UTC)
+        id S1346006AbhGSP1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:27:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61300613CF;
+        Mon, 19 Jul 2021 16:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711527;
-        bh=gFLmGYKdOvbKE65Qf1cWwT+DPi2OwF30/ZEi8k4bv9c=;
+        s=korg; t=1626710901;
+        bh=qjAee10GKoNtEd3QJvJ5ofikK7mIpHulu3nelTdmX4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DKaaOwSDyoe3gvF7B8P3/gpEIyW45CvlJAbkP6bz1ETc9JVYLV9aT0yl43+p9PR7k
-         40SiW41d/G3kqpdEXXpdxIFfyMwJk/caafxeCYycbAEnweU31AsUuS4uiuQAVGZFDl
-         DI8zAXQlwJXONgenNohV5AdL6+JTxCPWqCNcNjNI=
+        b=O0MIf8cyLlyIbQvqCqKQP9grhoxAZRimw6fvASIMXfnz8HztkPSvJd2j3rE8feEWo
+         D1FoGTrj/hVm1BzM47VZX6RvWbnDd5HzaIgLnCBSZLGCl4hUFlA+lD17WEUY5hsD0s
+         Q59EYF5AzvyUiG3Dn8UHtqkTZ8AkKKi9Afb/Z8+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 035/292] ASoC: Intel: sof_sdw: add mutual exclusion between PCH DMIC and RT715
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 151/351] PCI: ftpci100: Rename macro name collision
 Date:   Mon, 19 Jul 2021 16:51:37 +0200
-Message-Id: <20210719144943.681913538@linuxfoundation.org>
+Message-Id: <20210719144949.969845638@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,132 +45,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 35564e2bf94611c3eb51d35362addb3cb394ad54 ]
+[ Upstream commit 5be967d5016ac5ffb9c4d0df51b48441ee4d5ed1 ]
 
-When external RT714/715 devices are used for capture, we don't want
-the PCH DMICs to be used.
+PCI_IOSIZE is defined in mach-loongson64/spaces.h, so change the name
+of the PCI_* macros in pci-ftpci100.c to use FTPCI_* so that they are
+more localized and won't conflict with other drivers or arches.
 
-Any information provided by the SOF platform driver or DMI quirks will
-be overridden.
+../drivers/pci/controller/pci-ftpci100.c:37: warning: "PCI_IOSIZE" redefined
+   37 | #define PCI_IOSIZE 0x00
+      |
+In file included from ../arch/mips/include/asm/addrspace.h:13,
+...              from ../drivers/pci/controller/pci-ftpci100.c:15:
+arch/mips/include/asm/mach-loongson64/spaces.h:11: note: this is the location of the previous definition
+   11 | #define PCI_IOSIZE SZ_16M
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Libin Yang <libin.yang@intel.com>
-Link: https://lore.kernel.org/r/20210505163705.305616-5-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20210517234117.3660-1-rdunlap@infradead.org
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Krzysztof Wilczyński <kw@linux.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c        | 19 +++++++++++++++++--
- sound/soc/intel/boards/sof_sdw_common.h |  1 +
- 2 files changed, 18 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pci-ftpci100.c | 30 +++++++++++++--------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index dfad2ad129ab..5827a16773c9 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -354,6 +354,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.part_id = 0x714,
- 		.version_id = 3,
- 		.direction = {false, true},
-+		.ignore_pch_dmic = true,
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_sdca_init,
- 	},
-@@ -361,6 +362,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.part_id = 0x715,
- 		.version_id = 3,
- 		.direction = {false, true},
-+		.ignore_pch_dmic = true,
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_sdca_init,
- 	},
-@@ -368,6 +370,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.part_id = 0x714,
- 		.version_id = 2,
- 		.direction = {false, true},
-+		.ignore_pch_dmic = true,
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_init,
- 	},
-@@ -375,6 +378,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.part_id = 0x715,
- 		.version_id = 2,
- 		.direction = {false, true},
-+		.ignore_pch_dmic = true,
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_init,
- 	},
-@@ -730,7 +734,8 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
- 			      int *cpu_id, bool *group_generated,
- 			      struct snd_soc_codec_conf *codec_conf,
- 			      int codec_count,
--			      int *codec_conf_index)
-+			      int *codec_conf_index,
-+			      bool *ignore_pch_dmic)
- {
- 	const struct snd_soc_acpi_link_adr *link_next;
- 	struct snd_soc_dai_link_component *codecs;
-@@ -783,6 +788,9 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
- 	if (codec_index < 0)
- 		return codec_index;
+diff --git a/drivers/pci/controller/pci-ftpci100.c b/drivers/pci/controller/pci-ftpci100.c
+index da3cd216da00..aefef1986201 100644
+--- a/drivers/pci/controller/pci-ftpci100.c
++++ b/drivers/pci/controller/pci-ftpci100.c
+@@ -34,12 +34,12 @@
+  * Special configuration registers directly in the first few words
+  * in I/O space.
+  */
+-#define PCI_IOSIZE	0x00
+-#define PCI_PROT	0x04 /* AHB protection */
+-#define PCI_CTRL	0x08 /* PCI control signal */
+-#define PCI_SOFTRST	0x10 /* Soft reset counter and response error enable */
+-#define PCI_CONFIG	0x28 /* PCI configuration command register */
+-#define PCI_DATA	0x2C
++#define FTPCI_IOSIZE	0x00
++#define FTPCI_PROT	0x04 /* AHB protection */
++#define FTPCI_CTRL	0x08 /* PCI control signal */
++#define FTPCI_SOFTRST	0x10 /* Soft reset counter and response error enable */
++#define FTPCI_CONFIG	0x28 /* PCI configuration command register */
++#define FTPCI_DATA	0x2C
  
-+	if (codec_info_list[codec_index].ignore_pch_dmic)
-+		*ignore_pch_dmic = true;
-+
- 	cpu_dai_index = *cpu_id;
- 	for_each_pcm_streams(stream) {
- 		char *name, *cpu_name;
-@@ -914,6 +922,7 @@ static int sof_card_dai_links_create(struct device *dev,
- 	const struct snd_soc_acpi_link_adr *adr_link;
- 	struct snd_soc_dai_link_component *cpus;
- 	struct snd_soc_codec_conf *codec_conf;
-+	bool ignore_pch_dmic = false;
- 	int codec_conf_count;
- 	int codec_conf_index = 0;
- 	bool group_generated[SDW_MAX_GROUPS];
-@@ -1020,7 +1029,8 @@ static int sof_card_dai_links_create(struct device *dev,
- 					 sdw_cpu_dai_num, cpus, adr_link,
- 					 &cpu_id, group_generated,
- 					 codec_conf, codec_conf_count,
--					 &codec_conf_index);
-+					 &codec_conf_index,
-+					 &ignore_pch_dmic);
- 		if (ret < 0) {
- 			dev_err(dev, "failed to create dai link %d", be_id);
- 			return -ENOMEM;
-@@ -1088,6 +1098,10 @@ SSP:
- DMIC:
- 	/* dmic */
- 	if (dmic_num > 0) {
-+		if (ignore_pch_dmic) {
-+			dev_warn(dev, "Ignoring PCH DMIC\n");
-+			goto HDMI;
-+		}
- 		cpus[cpu_id].dai_name = "DMIC01 Pin";
- 		init_dai_link(dev, links + link_id, be_id, "dmic01",
- 			      0, 1, // DMIC only supports capture
-@@ -1106,6 +1120,7 @@ DMIC:
- 		INC_ID(be_id, cpu_id, link_id);
+ #define FARADAY_PCI_STATUS_CMD		0x04 /* Status and command */
+ #define FARADAY_PCI_PMC			0x40 /* Power management control */
+@@ -195,9 +195,9 @@ static int faraday_raw_pci_read_config(struct faraday_pci *p, int bus_number,
+ 			PCI_CONF_FUNCTION(PCI_FUNC(fn)) |
+ 			PCI_CONF_WHERE(config) |
+ 			PCI_CONF_ENABLE,
+-			p->base + PCI_CONFIG);
++			p->base + FTPCI_CONFIG);
+ 
+-	*value = readl(p->base + PCI_DATA);
++	*value = readl(p->base + FTPCI_DATA);
+ 
+ 	if (size == 1)
+ 		*value = (*value >> (8 * (config & 3))) & 0xFF;
+@@ -230,17 +230,17 @@ static int faraday_raw_pci_write_config(struct faraday_pci *p, int bus_number,
+ 			PCI_CONF_FUNCTION(PCI_FUNC(fn)) |
+ 			PCI_CONF_WHERE(config) |
+ 			PCI_CONF_ENABLE,
+-			p->base + PCI_CONFIG);
++			p->base + FTPCI_CONFIG);
+ 
+ 	switch (size) {
+ 	case 4:
+-		writel(value, p->base + PCI_DATA);
++		writel(value, p->base + FTPCI_DATA);
+ 		break;
+ 	case 2:
+-		writew(value, p->base + PCI_DATA + (config & 3));
++		writew(value, p->base + FTPCI_DATA + (config & 3));
+ 		break;
+ 	case 1:
+-		writeb(value, p->base + PCI_DATA + (config & 3));
++		writeb(value, p->base + FTPCI_DATA + (config & 3));
+ 		break;
+ 	default:
+ 		ret = PCIBIOS_BAD_REGISTER_NUMBER;
+@@ -469,7 +469,7 @@ static int faraday_pci_probe(struct platform_device *pdev)
+ 		if (!faraday_res_to_memcfg(io->start - win->offset,
+ 					   resource_size(io), &val)) {
+ 			/* setup I/O space size */
+-			writel(val, p->base + PCI_IOSIZE);
++			writel(val, p->base + FTPCI_IOSIZE);
+ 		} else {
+ 			dev_err(dev, "illegal IO mem size\n");
+ 			return -EINVAL;
+@@ -477,11 +477,11 @@ static int faraday_pci_probe(struct platform_device *pdev)
  	}
  
-+HDMI:
- 	/* HDMI */
- 	if (hdmi_num > 0) {
- 		idisp_components = devm_kcalloc(dev, hdmi_num,
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index f3cb6796363e..ea60e8ed215c 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -56,6 +56,7 @@ struct sof_sdw_codec_info {
- 	int amp_num;
- 	const u8 acpi_id[ACPI_ID_LEN];
- 	const bool direction[2]; // playback & capture support
-+	const bool ignore_pch_dmic;
- 	const char *dai_name;
- 	const struct snd_soc_ops *ops;
- 
+ 	/* Setup hostbridge */
+-	val = readl(p->base + PCI_CTRL);
++	val = readl(p->base + FTPCI_CTRL);
+ 	val |= PCI_COMMAND_IO;
+ 	val |= PCI_COMMAND_MEMORY;
+ 	val |= PCI_COMMAND_MASTER;
+-	writel(val, p->base + PCI_CTRL);
++	writel(val, p->base + FTPCI_CTRL);
+ 	/* Mask and clear all interrupts */
+ 	faraday_raw_pci_write_config(p, 0, 0, FARADAY_PCI_CTRL2 + 2, 2, 0xF000);
+ 	if (variant->cascaded_irq) {
 -- 
 2.30.2
 
