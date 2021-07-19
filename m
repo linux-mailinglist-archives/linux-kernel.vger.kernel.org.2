@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630173CDBCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9CD3CDBC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238090AbhGSOtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:49:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
+        id S238647AbhGSOtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:49:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244743AbhGSOeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCBD36112D;
-        Mon, 19 Jul 2021 15:13:40 +0000 (UTC)
+        id S244880AbhGSOe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C35D661073;
+        Mon, 19 Jul 2021 15:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707621;
-        bh=gclrGqiJVU0lZ2aOjJDRWM/lezZrMs03wDKPwf1sCdE=;
+        s=korg; t=1626707629;
+        bh=Ull+HBjYMAu3jf+YhHQ7f8LdoRH52QHKotZnOBasL6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IRzrjfngcAmV05+Oww32NpCDPujI8mbGqSNzXlWabosfKs8Mo8ihFSXE9xfIpUbAN
-         M9OXL8PaFKhDjNUvQXpX8yQMaXXK/KAjxoD789gx56fohR4mtQA/8F4pT9LxkAKCoQ
-         NJIv7FLLf9yl7jpDnZQdUxrZLIOoMXhN5RmQ7TeQ=
+        b=ngcmvESsClMCUrn7Q+pqQdC4wNptOZEiw96WoUftOAmbdLt/+ZVTpE+g8VRtVdokH
+         zopBOJdEMm1bZVwajnhC3G2Hd+NNiFsdLF70gNULhAJfKwByrcdvS7YoVXXo6bE3WB
+         Ki/bztMFUwYj3oxudsi6HaWCNA3+ZYcvsuPmngPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 237/245] ARM: dts: r8a7779, marzen: Fix DU clock names
-Date:   Mon, 19 Jul 2021 16:52:59 +0200
-Message-Id: <20210719144948.036319767@linuxfoundation.org>
+Subject: [PATCH 4.9 239/245] memory: fsl_ifc: fix leak of IO mapping on probe failure
+Date:   Mon, 19 Jul 2021 16:53:01 +0200
+Message-Id: <20210719144948.097274299@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -41,53 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 6ab8c23096a29b69044209a5925758a6f88bd450 ]
+[ Upstream commit 3b132ab67fc7a358fff35e808fa65d4bea452521 ]
 
-"make dtbs_check" complains:
+On probe error the driver should unmap the IO memory.  Smatch reports:
 
-    arch/arm/boot/dts/r8a7779-marzen.dt.yaml: display@fff80000: clock-names:0: 'du.0' was expected
+  drivers/memory/fsl_ifc.c:298 fsl_ifc_ctrl_probe() warn: 'fsl_ifc_ctrl_dev->gregs' not released on lines: 298.
 
-Change the first clock name to match the DT bindings.
-This has no effect on actual operation, as the Display Unit driver in
-Linux does not use the first clock name on R-Car H1, but just grabs the
-first clock.
-
-Fixes: 665d79aa47cb3983 ("ARM: shmobile: marzen: Add DU external pixel clock to DT")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Link: https://lore.kernel.org/r/9d5e1b371121883b3b3e10a3df43802a29c6a9da.1619699965.git.geert+renesas@glider.be
+Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210527154322.81253-1-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/r8a7779-marzen.dts | 2 +-
- arch/arm/boot/dts/r8a7779.dtsi       | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/memory/fsl_ifc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/r8a7779-marzen.dts b/arch/arm/boot/dts/r8a7779-marzen.dts
-index 541678df90a9..50ec24bb1d79 100644
---- a/arch/arm/boot/dts/r8a7779-marzen.dts
-+++ b/arch/arm/boot/dts/r8a7779-marzen.dts
-@@ -136,7 +136,7 @@
- 	status = "okay";
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index 1b182b117f9c..74bbbdc584f4 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -231,8 +231,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	fsl_ifc_ctrl_dev->gregs = of_iomap(dev->dev.of_node, 0);
+ 	if (!fsl_ifc_ctrl_dev->gregs) {
+ 		dev_err(&dev->dev, "failed to get memory region\n");
+-		ret = -ENODEV;
+-		goto err;
++		return -ENODEV;
+ 	}
  
- 	clocks = <&mstp1_clks R8A7779_CLK_DU>, <&x3_clk>;
--	clock-names = "du", "dclkin.0";
-+	clock-names = "du.0", "dclkin.0";
- 
- 	ports {
- 		port@0 {
-diff --git a/arch/arm/boot/dts/r8a7779.dtsi b/arch/arm/boot/dts/r8a7779.dtsi
-index 6c6d4893e92d..3fb0a8d2530b 100644
---- a/arch/arm/boot/dts/r8a7779.dtsi
-+++ b/arch/arm/boot/dts/r8a7779.dtsi
-@@ -431,6 +431,7 @@
- 		reg = <0 0xfff80000 0 0x40000>;
- 		interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&mstp1_clks R8A7779_CLK_DU>;
-+		clock-names = "du.0";
- 		power-domains = <&sysc R8A7779_PD_ALWAYS_ON>;
- 		status = "disabled";
+ 	if (of_property_read_bool(dev->dev.of_node, "little-endian")) {
+@@ -308,6 +307,7 @@ err_irq:
+ 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
+ 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
+ err:
++	iounmap(fsl_ifc_ctrl_dev->gregs);
+ 	return ret;
+ }
  
 -- 
 2.30.2
