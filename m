@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DD03CE9CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F683CE94A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359395AbhGSRB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:01:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59802 "EHLO mail.kernel.org"
+        id S1358001AbhGSQwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:52:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347896AbhGSPfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F405C613CC;
-        Mon, 19 Jul 2021 16:13:04 +0000 (UTC)
+        id S1347816AbhGSPVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:21:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50BC861289;
+        Mon, 19 Jul 2021 15:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711185;
-        bh=HqmlAkqCj5oe2HY1FIeZOrtpfv+jYtfWJVS8YpOkWRI=;
+        s=korg; t=1626710346;
+        bh=/CLhTyXPjjLRNb07GDJOFxKmUnEMQlQ76RxjoNskkSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=flNpj0gCzagPy6MkgBxcb/Bams/2CdQcocR4VcV33L9yAruLCGHHxRKBv6qh6y2UT
-         V9EWSPdAlrmK7SnFn4eKPxBgiW3S5q0eNPPuZ2vQbBnG78EkVqDPW8TeCc3CPHU6S6
-         Ox+wUhmCkKqXNB4AxVAvcGvGZ+v0EFsLHjh7xsKs=
+        b=gB5Z7gwRCSAD/1w42W9UBx9RK5XP7XzUz7O4e5aPdtOhkWYQ8hGHdHKtdxlSDLS4h
+         fJHVEzjfQqL99697BWbR+GR4eRsSqJ4a4as3amB1/URuCrARc65PvpvXXaEsUo2mLl
+         tyvIVLUJofJVOkNusiVEuBmgIlwc3egBx0Y+pQ0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 259/351] NFSD: Prevent a possible oops in the nfs_dirent() tracepoint
-Date:   Mon, 19 Jul 2021 16:53:25 +0200
-Message-Id: <20210719144953.519491077@linuxfoundation.org>
+        stable@vger.kernel.org, Maurizio Lombardi <mlombard@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 177/243] nvme-tcp: cant set sk_user_data without write_lock
+Date:   Mon, 19 Jul 2021 16:53:26 +0200
+Message-Id: <20210719144946.614584990@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Maurizio Lombardi <mlombard@redhat.com>
 
-[ Upstream commit 7b08cf62b1239a4322427d677ea9363f0ab677c6 ]
+[ Upstream commit 0755d3be2d9bb6ea38598ccd30d6bbaa1a5c3a50 ]
 
-The double copy of the string is a mistake, plus __assign_str()
-uses strlen(), which is wrong to do on a string that isn't
-guaranteed to be NUL-terminated.
+The sk_user_data pointer is supposed to be modified only while
+holding the write_lock "sk_callback_lock", otherwise
+we could race with other threads and crash the kernel.
 
-Fixes: 6019ce0742ca ("NFSD: Add a tracepoint to record directory entry encoding")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+we can't take the write_lock in nvmet_tcp_state_change()
+because it would cause a deadlock, but the release_work queue
+will set the pointer to NULL later so we can simply remove
+the assignment.
+
+Fixes: b5332a9f3f3d ("nvmet-tcp: fix incorrect locking in state_change sk callback")
+
+Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/trace.h | 1 -
+ drivers/nvme/target/tcp.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
-index e7a269291a73..f3961506fe16 100644
---- a/fs/nfsd/trace.h
-+++ b/fs/nfsd/trace.h
-@@ -408,7 +408,6 @@ TRACE_EVENT(nfsd_dirent,
- 		__entry->ino = ino;
- 		__entry->len = namlen;
- 		memcpy(__get_str(name), name, namlen);
--		__assign_str(name, name);
- 	),
- 	TP_printk("fh_hash=0x%08x ino=%llu name=%.*s",
- 		__entry->fh_hash, __entry->ino,
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index 4df4f37e6b89..dedcb7aaf0d8 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -1467,7 +1467,6 @@ static void nvmet_tcp_state_change(struct sock *sk)
+ 	case TCP_CLOSE_WAIT:
+ 	case TCP_CLOSE:
+ 		/* FALLTHRU */
+-		sk->sk_user_data = NULL;
+ 		nvmet_tcp_schedule_release_queue(queue);
+ 		break;
+ 	default:
 -- 
 2.30.2
 
