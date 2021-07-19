@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958063CEC8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EDD3CECA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356091AbhGSReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:34:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49766 "EHLO mail.kernel.org"
+        id S1380661AbhGSRgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:36:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350409AbhGSPvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:51:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1095B60FDC;
-        Mon, 19 Jul 2021 16:29:27 +0000 (UTC)
+        id S1350480AbhGSPvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:51:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F02E560FD8;
+        Mon, 19 Jul 2021 16:29:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626712168;
-        bh=VsOISFCwQv1AE/8JHSouyfP6yzXVxKdCN4oZ5qKMw4c=;
+        s=korg; t=1626712171;
+        bh=5l+CbeNtFNMZRmjXjvby5K20xdEF5yT9XL4lP0yvdsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WsFlyvmsV3Asy1Nlcojp4uSIEdrGuAuj9aDD4e7nELYgIovTbS/imy9pM1xxarUWq
-         DXehQthkrVoPKLnKXJ2kEcv7Vop5omfwn7sVwH1DT7QAzWlBPcHknASYMM/EuSsgqb
-         VMguuaYjSDig91ndMDn0yQy+X0uy2G46ZVVV0k9Y=
+        b=Sft6gWiOMiXB5I1S1dqRplQesLKkkU5A5WrqIimeGJFbFBiQlojswtmk/lxcLAP52
+         D+s3264FmKc1NWWuNI7gRMXJT+RL9IRiLfoaroJWSkaK2/ma8RtKCI+4I88XrJm48w
+         KmkyAm67nlg9ovPyL0pCOto9CmCpq3FucfojhOg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 277/292] arm64: dts: rockchip: Re-add regulator-always-on for vcc_sdio for rk3399-roc-pc
-Date:   Mon, 19 Jul 2021 16:55:39 +0200
-Message-Id: <20210719144952.020134326@linuxfoundation.org>
+Subject: [PATCH 5.12 278/292] scsi: be2iscsi: Fix an error handling path in beiscsi_dev_probe()
+Date:   Mon, 19 Jul 2021 16:55:40 +0200
+Message-Id: <20210719144952.061172604@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
 References: <20210719144942.514164272@linuxfoundation.org>
@@ -40,36 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Bee <knaerzche@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit eb607cd4957fb0ef97beb2a8293478be6a54240a ]
+[ Upstream commit 030e4138d11fced3b831c2761e4cecf347bae99c ]
 
-Re-add the regulator-always-on property for vcc_sdio which supplies sdmmc,
-since it gets disabled during reboot now and the bootrom expects it to be
-enabled  when booting from SD card. This makes rebooting impossible in that
-case and requires a hard reset to boot again.
+If an error occurs after a pci_enable_pcie_error_reporting() call, it must
+be undone by a corresponding pci_disable_pcie_error_reporting() call, as
+already done in the remove function.
 
-Fixes: 04a0077fdb19 ("arm64: dts: rockchip: Remove always-on properties from regulator nodes on rk3399-roc-pc.")
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
-Link: https://lore.kernel.org/r/20210619121306.7740-1-knaerzche@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://lore.kernel.org/r/77adb02cfea7f1364e5603ecf3930d8597ae356e.1623482155.git.christophe.jaillet@wanadoo.fr
+Fixes: 3567f36a09d1 ("[SCSI] be2iscsi: Fix AER handling in driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi | 1 +
+ drivers/scsi/be2iscsi/be_main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-index e4345e5bdfb6..35b7ab3bf10c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-@@ -384,6 +384,7 @@
- 
- 			vcc_sdio: LDO_REG4 {
- 				regulator-name = "vcc_sdio";
-+				regulator-always-on;
- 				regulator-boot-on;
- 				regulator-min-microvolt = <1800000>;
- 				regulator-max-microvolt = <3000000>;
+diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
+index 09d2f8351539..207e3f53c638 100644
+--- a/drivers/scsi/be2iscsi/be_main.c
++++ b/drivers/scsi/be2iscsi/be_main.c
+@@ -5745,6 +5745,7 @@ free_hba:
+ 	pci_disable_msix(phba->pcidev);
+ 	pci_dev_put(phba->pcidev);
+ 	iscsi_host_free(phba->shost);
++	pci_disable_pcie_error_reporting(pcidev);
+ 	pci_set_drvdata(pcidev, NULL);
+ disable_pci:
+ 	pci_release_regions(pcidev);
 -- 
 2.30.2
 
