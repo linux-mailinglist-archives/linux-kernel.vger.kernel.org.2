@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E63A3CDD2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7983CDD2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237658AbhGSO41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46936 "EHLO mail.kernel.org"
+        id S238736AbhGSO4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:56:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244947AbhGSOfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:35:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43ACF60720;
-        Mon, 19 Jul 2021 15:16:30 +0000 (UTC)
+        id S244060AbhGSOfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:35:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72E9A61003;
+        Mon, 19 Jul 2021 15:16:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707790;
-        bh=c9FPzrAZJ4DPglSf/wv9oOPPMbR8tL55X3iSkGq5r6c=;
+        s=korg; t=1626707792;
+        bh=pKqI2pkO70CnS+DtvaX3vs3rypSMeNa91l6XsGr7q9A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g6AgjRhj1ehuJf4385jIXlHDyZfIVHx200lmG73Mr1KjGz2hC/HRqo2gN2acHH/5y
-         YQOC5OP+KyoJHS1CcyN5j3XQyRmb/b6LmXBImRHKb/QYLejFH8uF2sIkn7cKY/I+Nm
-         O0+G3J+tohm3opb9yK07IGGDI4kIRedcaINkDuoM=
+        b=10PzujzdTZzDTfEVd8vW12KqH5e5lP/cZltjAK7O+408VconjZoQRlOFYr0bjtgX0
+         zxUbWHZ7oYE8mtNw6ewUau3vRFd3uLQdh4iK4s+g2FNo1TCHF7Ubhd1+R8G9D3QKVg
+         lQWhA1thUJBkQUpfkDMQBhuNzZgimotfD1Aw5r5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 057/315] btrfs: abort transaction if we fail to update the delayed inode
-Date:   Mon, 19 Jul 2021 16:49:06 +0200
-Message-Id: <20210719144944.735148307@linuxfoundation.org>
+Subject: [PATCH 4.14 058/315] btrfs: disable build on platforms having page size 256K
+Date:   Mon, 19 Jul 2021 16:49:07 +0200
+Message-Id: <20210719144944.765313066@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,41 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 04587ad9bef6ce9d510325b4ba9852b6129eebdb ]
+[ Upstream commit b05fbcc36be1f8597a1febef4892053a0b2f3f60 ]
 
-If we fail to update the delayed inode we need to abort the transaction,
-because we could leave an inode with the improper counts or some other
-such corruption behind.
+With a config having PAGE_SIZE set to 256K, BTRFS build fails
+with the following message
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+  include/linux/compiler_types.h:326:38: error: call to
+  '__compiletime_assert_791' declared with attribute error:
+  BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+
+BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
+256K pages at the time being.
+
+There are two platforms that can select 256K pages:
+ - hexagon
+ - powerpc
+
+Disable BTRFS when 256K page size is selected. Supporting this would
+require changes to the subpage mode that's currently being developed.
+Given that 256K is many times larger than page sizes commonly used and
+for what the algorithms and structures have been tuned, it's out of
+scope and disabling build is a reasonable option.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+[ update changelog ]
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/delayed-inode.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/btrfs/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 3631154d8245..9f276d1dd29c 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1105,6 +1105,14 @@ err_out:
- 	btrfs_delayed_inode_release_metadata(fs_info, node);
- 	btrfs_release_delayed_inode(node);
+diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+index a26c63b4ad68..9dd07eb88455 100644
+--- a/fs/btrfs/Kconfig
++++ b/fs/btrfs/Kconfig
+@@ -11,6 +11,8 @@ config BTRFS_FS
+ 	select RAID6_PQ
+ 	select XOR_BLOCKS
+ 	select SRCU
++	depends on !PPC_256K_PAGES	# powerpc
++	depends on !PAGE_SIZE_256KB	# hexagon
  
-+	/*
-+	 * If we fail to update the delayed inode we need to abort the
-+	 * transaction, because we could leave the inode with the improper
-+	 * counts behind.
-+	 */
-+	if (ret && ret != -ENOENT)
-+		btrfs_abort_transaction(trans, ret);
-+
- 	return ret;
- 
- search:
+ 	help
+ 	  Btrfs is a general purpose copy-on-write filesystem with extents,
 -- 
 2.30.2
 
