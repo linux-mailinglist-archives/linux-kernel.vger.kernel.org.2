@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF243CDD77
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5867B3CDD72
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240899AbhGSO6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:58:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54384 "EHLO mail.kernel.org"
+        id S245265AbhGSO6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:58:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343585AbhGSOje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343590AbhGSOje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:39:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 887086135B;
-        Mon, 19 Jul 2021 15:19:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B63B46128E;
+        Mon, 19 Jul 2021 15:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707945;
-        bh=D8BXHcIXHA4M2KU5OCnPId8v/LQQk0xGA2S5lcpYDm0=;
+        s=korg; t=1626707947;
+        bh=eyhrDi3gUAam2qacXv6Di8YUNYqq+9qs1tRhUQL/saw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OnmJw3mj/EUb5dyqyCep2aJFICOVAPmcpWjECR2RVm0DZ72PxNWQyJzQKvmK9B+vF
-         W4Rn3EDSo40YMjPMzDg5vlvOyhkYQHRa0Unj1Y1HcarCKlsFjtB/isPMdvD0F/yl3c
-         m0/G7RWzbrP+cFrRj4DvpyQ+nnzgEFZLIwtZvnLk=
+        b=DmRQmOqMsSkIkQojuIaSwZ5SV0cnRJdVEFtHUM4pyOd3AkXC9HItynuhdJoxeBpxN
+         VScoKXTu+jQhvl/NjA9JdTGkbRkch3CjLsVpJKvAhFZ7MecIAZJ6FUtWiTpxf4/0Fm
+         IId+TjFLZPNZVfOFSRD7EThh2SW/7XGmkfyjgRf4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 119/315] mwifiex: re-fix for unaligned accesses
-Date:   Mon, 19 Jul 2021 16:50:08 +0200
-Message-Id: <20210719144946.784540123@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Nuno Sa <nuno.sa@analog.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 120/315] iio: adis_buffer: do not return ints in irq handlers
+Date:   Mon, 19 Jul 2021 16:50:09 +0200
+Message-Id: <20210719144946.816601776@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -39,60 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Nuno Sa <nuno.sa@analog.com>
 
-[ Upstream commit 8f4e3d48bb50765ab27ae5bebed2595b20de80a1 ]
+[ Upstream commit d877539ad8e8fdde9af69887055fec6402be1a13 ]
 
-A patch from 2017 changed some accesses to DMA memory to use
-get_unaligned_le32() and similar interfaces, to avoid problems
-with doing unaligned accesson uncached memory.
+On an IRQ handler we should not return normal error codes as 'irqreturn_t'
+is expected.
 
-However, the change in the mwifiex_pcie_alloc_sleep_cookie_buf()
-function ended up changing the size of the access instead,
-as it operates on a pointer to u8.
+Not necessarily stable material as the old check cannot fail, so it's a bug
+we can not hit.
 
-Change this function back to actually access the entire 32 bits.
-Note that the pointer is aligned by definition because it came
-from dma_alloc_coherent().
-
-Fixes: 92c70a958b0b ("mwifiex: fix for unaligned reads")
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: ccd2b52f4ac69 ("staging:iio: Add common ADIS library")
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210422101911.135630-2-nuno.sa@analog.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwifiex/pcie.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/iio/imu/adis_buffer.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-index 7f615ad98aca..5b12d5191acc 100644
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -1070,7 +1070,7 @@ static int mwifiex_pcie_delete_cmdrsp_buf(struct mwifiex_adapter *adapter)
- static int mwifiex_pcie_alloc_sleep_cookie_buf(struct mwifiex_adapter *adapter)
- {
- 	struct pcie_service_card *card = adapter->card;
--	u32 tmp;
-+	u32 *cookie;
+diff --git a/drivers/iio/imu/adis_buffer.c b/drivers/iio/imu/adis_buffer.c
+index 9de553e8c214..625f54d9e382 100644
+--- a/drivers/iio/imu/adis_buffer.c
++++ b/drivers/iio/imu/adis_buffer.c
+@@ -83,9 +83,6 @@ static irqreturn_t adis_trigger_handler(int irq, void *p)
+ 	struct adis *adis = iio_device_get_drvdata(indio_dev);
+ 	int ret;
  
- 	card->sleep_cookie_vbase = pci_alloc_consistent(card->dev, sizeof(u32),
- 						     &card->sleep_cookie_pbase);
-@@ -1079,13 +1079,11 @@ static int mwifiex_pcie_alloc_sleep_cookie_buf(struct mwifiex_adapter *adapter)
- 			    "pci_alloc_consistent failed!\n");
- 		return -ENOMEM;
- 	}
-+	cookie = (u32 *)card->sleep_cookie_vbase;
- 	/* Init val of Sleep Cookie */
--	tmp = FW_AWAKE_COOKIE;
--	put_unaligned(tmp, card->sleep_cookie_vbase);
-+	*cookie = FW_AWAKE_COOKIE;
- 
--	mwifiex_dbg(adapter, INFO,
--		    "alloc_scook: sleep cookie=0x%x\n",
--		    get_unaligned(card->sleep_cookie_vbase));
-+	mwifiex_dbg(adapter, INFO, "alloc_scook: sleep cookie=0x%x\n", *cookie);
- 
- 	return 0;
- }
+-	if (!adis->buffer)
+-		return -ENOMEM;
+-
+ 	if (adis->data->has_paging) {
+ 		mutex_lock(&adis->txrx_lock);
+ 		if (adis->current_page != 0) {
 -- 
 2.30.2
 
