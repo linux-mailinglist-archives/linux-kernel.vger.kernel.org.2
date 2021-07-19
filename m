@@ -2,65 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5383CEE3B
+	by mail.lfdr.de (Postfix) with ESMTP id 788263CEE3C
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387756AbhGSU3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 16:29:30 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34780 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358297AbhGSUQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 16:16:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=LZePE50xSuSqrDuocYC1iK5RvzuFoCiQqu0MVQ7AeoE=; b=fTCodS85M87FDJ97Yu/UfsHUpi
-        Y2aNKXXrmQGzU86VUAkK1haEHl+V2dvpr48clLpsmZlffqEoVoynAR0p2r95d1fqOAg9gzXzRLbPg
-        UeI4i7N17Qn8cwdtB2yHVm0mPj21Bi+hfdMI5l4b6EMS34W0ftScQLW0HL5tW1fPq3LM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m5aJJ-00DxjV-Nm; Mon, 19 Jul 2021 22:56:21 +0200
-Date:   Mon, 19 Jul 2021 22:56:21 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     hauke@hauke-m.de, martin.blumenstingl@googlemail.com,
-        f.fainelli@gmail.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6] net: phy: intel-xway: Add RGMII internal
- delay configuration
-Message-ID: <YPXm9avkMoD/oat8@lunn.ch>
-References: <20210719082756.15733-1-ms@dev.tdt.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719082756.15733-1-ms@dev.tdt.de>
+        id S1387791AbhGSUaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:30:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60236 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1358280AbhGSUTG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 16:19:06 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JKlxbx106523;
+        Mon, 19 Jul 2021 16:59:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=jZHWpDjeE6vOHFw8ZDf6MrL5Q086fduFHeEMPfIw1hY=;
+ b=MqDv760rWXrusWKJXFTLhFRqBZuKsGQ7YWs98LPjpqGO3p4c668RqyLIyC51dG4DJSgo
+ OGRzcfKX3MnjmJ4Usz50s+NKvrpR6xL8gygfHzVV/VoX4g6c0qLmHLuYy51B6bdzT+Qb
+ pKHKpJxn8KeTIsfNKVW1gGhDpdDoxH2fXWrUF3msUmIU178gNjROZmKeo7798kCYA9Yo
+ W9j4cjQDT0QlN1zN24/AP25PMBm+FD+J2b9iegsqgK2amZj9LgX4MB/MzQsYv5e6xEWf
+ +gXzm7Q5hosd5iqCrmzzsuoqusIBu9VPFMrKxGuneXNASw5VscYkn2pN9forv4Hv7gk+ WA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wgrcg769-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 16:59:40 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16JKn2c5111036;
+        Mon, 19 Jul 2021 16:59:40 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wgrcg75k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 16:59:39 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16JKxbpj021216;
+        Mon, 19 Jul 2021 20:59:37 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 39upu88w5s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 20:59:37 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16JKxZOV36831492
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jul 2021 20:59:35 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 08979A4057;
+        Mon, 19 Jul 2021 20:59:35 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F05F0A4040;
+        Mon, 19 Jul 2021 20:59:32 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.28.163])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Jul 2021 20:59:32 +0000 (GMT)
+Message-ID: <e2f33ad4dca9eba9b2a05a00de571e9f94022343.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 3/3] ima: Add digest and digest_len params to the
+ functions to measure a buffer
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, paul@paul-moore.com
+Cc:     stephen.smalley.work@gmail.com, prsriva02@gmail.com,
+        tusharsu@linux.microsoft.com, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
+Date:   Mon, 19 Jul 2021 16:59:32 -0400
+In-Reply-To: <20210705090922.3321178-4-roberto.sassu@huawei.com>
+References: <20210705090922.3321178-1-roberto.sassu@huawei.com>
+         <20210705090922.3321178-4-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oViPlRVS_7IGirnDVCX6rF6hGwCr-Wry
+X-Proofpoint-ORIG-GUID: KdozGSTi1aeAoprdV8zr6m1zsnR43faD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-19_10:2021-07-19,2021-07-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ bulkscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ clxscore=1015 adultscore=0 priorityscore=1501 suspectscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107190116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
-> +		int_delay = phy_get_internal_delay(phydev, dev,
-> +						   xway_internal_delay,
-> +						   delay_size, true);
-> +
-> +		if (int_delay < 0) {
-> +			phydev_warn(phydev, "rx-internal-delay-ps is missing, use default of 2.0 ns\n");
-> +			int_delay = 4; /* 2000 ps */
+Hi Roberto,
 
-The binding say:
+On Mon, 2021-07-05 at 11:09 +0200, Roberto Sassu wrote:
+> This patch adds the 'digest' and 'digest_len' parameters to
+> ima_measure_critical_data() and process_buffer_measurement(), so that
+> callers can get the digest of the passed buffer.
+> 
+> These functions calculate the digest even if there is no suitable rule in
+> the IMA policy and, in this case, they simply return 1 before generating a
+> new measurement entry.
 
- rx-internal-delay-ps:
-    description: |
-      RGMII Receive PHY Clock Delay defined in pico seconds.  This is used for
-      PHY's that have configurable RX internal delays.  If this property is
-      present then the PHY applies the RX delay.
+I agree ima_measure_critical_data() is special.  Both this patch
+description and 1/3 describe "what", not "why".  Please provide the
+motivation for these changes at least in the cover letter, if not in
+the patch description.
 
-So the property is optional. It being missing should not generate a
-warning. Please just use the default of 2ns. This makes the usage the
-same as the other drivers using phy_get_internal_delay().
+thanks,
 
-     Andrew
+Mimi
+
