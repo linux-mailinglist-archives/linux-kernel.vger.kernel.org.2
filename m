@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792EB3CE93A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE873CEA2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357508AbhGSQwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:52:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40696 "EHLO mail.kernel.org"
+        id S1350114AbhGSRIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:08:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347991AbhGSPX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:23:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF3AB613BA;
-        Mon, 19 Jul 2021 16:00:21 +0000 (UTC)
+        id S1348266AbhGSPfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A69B2600EF;
+        Mon, 19 Jul 2021 16:13:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710422;
-        bh=BNX6y5/y5h4PLRqYX8uBjpHS5I+n3ABAsSXgaq9wdc4=;
+        s=korg; t=1626711207;
+        bh=GnEbgjOoesj4kucC4ZvqxRU4x6/Bv7moaBcaNisZGas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pzkMjyejKyxDjfNFG6kwS/l99vGmQG6m2DAvh8EJEy4jubZG4Bf5TSJp5yX2ZqlPP
-         URCGo+9RAQ7C6iQfBxwGWHtFwQnVfIhZu/03zrY/94k/Cy1XMfDTeUXRmOUaqiwstk
-         RBzZHamleSk1Rqowq/KwUs0W1dMMfbaYkX2SepDQ=
+        b=BGhPY88LLopeAoJJXs9rsbrItfSWLptnxv/LQdTxdoSJ6mXEUQFxBbfRc3AZYQTsR
+         Xfqcq0jl8DgYP7WsqPdDAbftauXnSrWiOUGuNfv1OVzvU1OexixD/4caQ13ZyKyB4N
+         zOzv1KDOb5GTCxqzxm4lcqqOTt/8u7hVIGgrWJ9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 182/243] NFSv4/pnfs: Fix layoutget behaviour after invalidation
-Date:   Mon, 19 Jul 2021 16:53:31 +0200
-Message-Id: <20210719144946.793544088@linuxfoundation.org>
+Subject: [PATCH 5.13 266/351] NFSv4/pnfs: Fix layoutget behaviour after invalidation
+Date:   Mon, 19 Jul 2021 16:53:32 +0200
+Message-Id: <20210719144953.741323387@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,10 +56,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
-index c0c2612f14af..371665e0c154 100644
+index ffe02e43f8c0..be960e47d7f6 100644
 --- a/fs/nfs/pnfs.c
 +++ b/fs/nfs/pnfs.c
-@@ -2015,7 +2015,7 @@ lookup_again:
+@@ -2014,7 +2014,7 @@ lookup_again:
  	 * If the layout segment list is empty, but there are outstanding
  	 * layoutget calls, then they might be subject to a layoutrecall.
  	 */
@@ -68,7 +68,7 @@ index c0c2612f14af..371665e0c154 100644
  	    atomic_read(&lo->plh_outstanding) != 0) {
  		spin_unlock(&ino->i_lock);
  		lseg = ERR_PTR(wait_var_event_killable(&lo->plh_outstanding,
-@@ -2391,11 +2391,13 @@ pnfs_layout_process(struct nfs4_layoutget *lgp)
+@@ -2390,11 +2390,13 @@ pnfs_layout_process(struct nfs4_layoutget *lgp)
  		goto out_forget;
  	}
  
@@ -84,7 +84,7 @@ index c0c2612f14af..371665e0c154 100644
  				lo->plh_barrier = 0;
  			dprintk("%s forget reply due to sequence\n", __func__);
  			goto out_forget;
-@@ -2416,8 +2418,6 @@ pnfs_layout_process(struct nfs4_layoutget *lgp)
+@@ -2413,8 +2415,6 @@ pnfs_layout_process(struct nfs4_layoutget *lgp)
  		goto out_forget;
  	} else {
  		/* We have a completely new layout */
