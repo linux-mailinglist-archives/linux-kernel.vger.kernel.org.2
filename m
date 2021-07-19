@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E453CE9CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3D93CEA33
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359552AbhGSRBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57568 "EHLO mail.kernel.org"
+        id S1350788AbhGSRJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:09:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348268AbhGSPfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348223AbhGSPfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:35:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C15E61625;
-        Mon, 19 Jul 2021 16:13:39 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11BA061601;
+        Mon, 19 Jul 2021 16:13:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711220;
-        bh=ZGTCVaMWRWgDhzNB2GUFnf+Pg1+nHhjQr+lTpUYSymI=;
+        s=korg; t=1626711222;
+        bh=pZcMXx1l67f2NROb7JPoPMqXFjUa20hfB2QYR1czKLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QbpJvlHyEWH5shlKXg1Qy6Ah0hQ1GmPT11MW5tSxF2f276rxm5FywjTsjNuZ259wF
-         lTL90FAJLJ+TC9cpZVF6mSytRG7XDrJcxJ/4A8cr9OMlEdaRzBPmdkMocv7Du1mLBI
-         eQd1FgS835QdHS5XogUZl3p/5zMKfF0VtS/hKBvE=
+        b=lVRUPUodp+9n7qmHcB+dl6g0jlJgTVpNtlqgWUWpfFs/v7GdTXfn6zmYMA6G3hrkO
+         Xz9bgT/MX8Qwx2bl1FTnXWroxn6pA2PnjIS3MiQYNlugPxAhfvcaSiZNYiR9nAxacW
+         VVThobiqg0fXCDWPb7DoL1DhIHTDqcCepU/7/ewQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Tianling Shen <cnsztl@gmail.com>,
+        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
         Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 271/351] arm64: dts: rockchip: rename LED label for NanoPi R4S
-Date:   Mon, 19 Jul 2021 16:53:37 +0200
-Message-Id: <20210719144953.903548504@linuxfoundation.org>
+Subject: [PATCH 5.13 272/351] arm64: dts: rockchip: Drop fephy pinctrl from gmac2phy on rk3328 rock-pi-e
+Date:   Mon, 19 Jul 2021 16:53:38 +0200
+Message-Id: <20210719144953.937405562@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -41,37 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianling Shen <cnsztl@gmail.com>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit 6a11ffc2cc54d89719d5b2f3ca44244cebd7ed2e ]
+[ Upstream commit e6526f90696e6a7d722d04b958f15b97d6fd9ce6 ]
 
-However "sys" is not a valid function, and it is always on.
-Let's keep existing functions.
+Turns out the fephy pins are already claimed in the phy node, which is
+rightfully where they should be claimed.
 
-Fixes: db792e9adbf85f ("rockchip: rk3399: Add support for FriendlyARM NanoPi R4S")
+Drop the pinctrl properties from the gmac2phy node for the ROCK Pi E.
 
-Suggested-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-Acked-by: Pavel Machek <pavel@ucw.cz>
-Link: https://lore.kernel.org/r/20210426114652.29542-1-cnsztl@gmail.com
+Fixes: b918e81f2145 ("arm64: dts: rockchip: rk3328: Add Radxa ROCK Pi E")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Link: https://lore.kernel.org/r/20210426095916.14574-1-wens@kernel.org
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-index fa5809887643..cef4d18b599d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-@@ -33,7 +33,7 @@
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
+index c7e31efdd2e1..c02059c0a954 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
+@@ -177,8 +177,6 @@
+ };
  
- 		sys_led: led-sys {
- 			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
--			label = "red:sys";
-+			label = "red:power";
- 			default-state = "on";
- 		};
+ &gmac2phy {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&fephyled_linkm1>, <&fephyled_rxm1>;
+ 	status = "okay";
+ };
  
 -- 
 2.30.2
