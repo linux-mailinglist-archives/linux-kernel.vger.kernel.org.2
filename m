@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2A73CD7FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43563CD805
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242599AbhGSOUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:20:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54440 "EHLO mail.kernel.org"
+        id S242549AbhGSOUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:20:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242310AbhGSOSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:18:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0531761181;
-        Mon, 19 Jul 2021 14:59:28 +0000 (UTC)
+        id S239395AbhGSOS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:18:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E531061166;
+        Mon, 19 Jul 2021 14:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706769;
-        bh=5gOwJuJ/jy85Jx3mGUgtiDd1y+uHStsfksjVszNFFMw=;
+        s=korg; t=1626706776;
+        bh=VWgybo6UdQK7yA7mFtlq2wAJEp1iKQxqC9LYG+LYNMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W+iMULGyhIsJnqgHUgqXYpj4sI6ndHcEC0x04jaJ7TEHVgb2Hl4TQ916o4lUhydmE
-         b5vJyS3iLbCa4Qf9okJ6ws0vkac6KgNrHbqz6TWusrm0eFZFt13AXE2nu76A7gBxRk
-         KBqwixsk1NlfCYWaqtl59+gDikI6+Qer8IgJ82Ms=
+        b=I3kIVEv2S2mJMIaBmoWCEWPTGvqXO98Tq6uZZK2oY9AbaeCLW28QmSWYkq7wV2kkD
+         ocFgwJG6VPil0oHqnrUmkuoKCT5M+Txvl2P+CXAeEwSRUgPedYDmoO7nsH1dCYCc0j
+         0vuHI5S0p5UpBXKHsj2ZpcOCRrw7pKBHfW8B/7eA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 091/188] extcon: max8997: Add missing modalias string
-Date:   Mon, 19 Jul 2021 16:51:15 +0200
-Message-Id: <20210719144934.270005239@linuxfoundation.org>
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Quat Le <quat.le@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.4 093/188] scsi: core: Retry I/O for Notify (Enable Spinup) Required error
+Date:   Mon, 19 Jul 2021 16:51:17 +0200
+Message-Id: <20210719144934.750498223@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -41,33 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Quat Le <quat.le@oracle.com>
 
-[ Upstream commit dc11fc2991e9efbceef93912b83e333d2835fb19 ]
+commit 104739aca4488909175e9e31d5cd7d75b82a2046 upstream.
 
-The platform device driver name is "max8997-muic", so advertise it
-properly in the modalias string. This fixes automated module loading when
-this driver is compiled as a module.
+If the device is power-cycled, it takes time for the initiator to transmit
+the periodic NOTIFY (ENABLE SPINUP) SAS primitive, and for the device to
+respond to the primitive to become ACTIVE. Retry the I/O request to allow
+the device time to become ACTIVE.
 
-Fixes: b76668ba8a77 ("Extcon: add MAX8997 extcon driver")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210629155826.48441-1-quat.le@oracle.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Quat Le <quat.le@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/extcon/extcon-max8997.c | 1 +
+ drivers/scsi/scsi_lib.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
-index 3d6b42f61f56..a37c7257ccc7 100644
---- a/drivers/extcon/extcon-max8997.c
-+++ b/drivers/extcon/extcon-max8997.c
-@@ -780,3 +780,4 @@ module_platform_driver(max8997_muic_driver);
- MODULE_DESCRIPTION("Maxim MAX8997 Extcon driver");
- MODULE_AUTHOR("Donggeun Kim <dg77.kim@samsung.com>");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:max8997-muic");
--- 
-2.30.2
-
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -1004,6 +1004,7 @@ void scsi_io_completion(struct scsi_cmnd
+ 				case 0x07: /* operation in progress */
+ 				case 0x08: /* Long write in progress */
+ 				case 0x09: /* self test in progress */
++				case 0x11: /* notify (enable spinup) required */
+ 				case 0x14: /* space allocation in progress */
+ 					action = ACTION_DELAYED_RETRY;
+ 					break;
 
 
