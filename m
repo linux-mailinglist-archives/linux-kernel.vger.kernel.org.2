@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D703CDE91
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 435383CDE8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245565AbhGSPEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:04:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55058 "EHLO mail.kernel.org"
+        id S245731AbhGSPDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245158AbhGSOhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:37:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CD8261002;
-        Mon, 19 Jul 2021 15:17:44 +0000 (UTC)
+        id S245308AbhGSOiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:38:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6989B6023D;
+        Mon, 19 Jul 2021 15:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707864;
-        bh=FwKramHi+dr2kw7DRNAEGf8PnakUmwzWZwzcgNuH/To=;
+        s=korg; t=1626707870;
+        bh=sX/1dpxLfrkwkd8GfgqXXons5CRaM2BzMnnGYZmHzvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=orqleblWrORqBunMtLNOZbsqYj6gXDJQkv5Mf+cEZaGMhRLFo/0p74w+ka0e8bDLG
-         KJD+M/JWItyagzRfSuPSUOTDYD/H2Iar3nSIGX3xc6Tm3Z0RcVNhEltWSF1rYKRvUA
-         hlhxqjfhLg/q2YrfE5Chh8OT87v21HH0MpFnhj8I=
+        b=QHeIj52/0VX4HDSTkR8ihBkV0n7LYNGI6IN5/3MN986Rvr5SJfcqxBRDcQuJ5q5Zv
+         oOuSNa7TsVBF9PBvToxXAMil099uVVOxR3dsnK4ot4wKFdpQyogPyLDpj9/0f8Yt4B
+         fbWiBQrmw+V0bxhJaDvgqZMlMnQxeLbYJWxGiuc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 088/315] media: s5p-g2d: Fix a memory leak on ctx->fh.m2m_ctx
-Date:   Mon, 19 Jul 2021 16:49:37 +0200
-Message-Id: <20210719144945.766841857@linuxfoundation.org>
+Subject: [PATCH 4.14 089/315] hwmon: (max31722) Remove non-standard ACPI device IDs
+Date:   Mon, 19 Jul 2021 16:49:38 +0200
+Message-Id: <20210719144945.798186605@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,38 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dillon Min <dillon.minfei@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 5d11e6aad1811ea293ee2996cec9124f7fccb661 ]
+[ Upstream commit 97387c2f06bcfd79d04a848d35517b32ee6dca7c ]
 
-The m2m_ctx resources was allocated by v4l2_m2m_ctx_init() in g2d_open()
-should be freed from g2d_release() when it's not used.
+Valid Maxim Integrated ACPI device IDs would start with MXIM,
+not with MAX1. On top of that, ACPI device IDs reflecting chip names
+are almost always invalid.
 
-Fix it
+Remove the invalid ACPI IDs.
 
-Fixes: 918847341af0 ("[media] v4l: add G2D driver for s5p device family")
-Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 04e1e70afec6 ("hwmon: (max31722) Add support for MAX31722/MAX31723 temperature sensors")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/s5p-g2d/g2d.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/hwmon/max31722.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/drivers/media/platform/s5p-g2d/g2d.c b/drivers/media/platform/s5p-g2d/g2d.c
-index 770100d40372..4b745138b363 100644
---- a/drivers/media/platform/s5p-g2d/g2d.c
-+++ b/drivers/media/platform/s5p-g2d/g2d.c
-@@ -283,6 +283,9 @@ static int g2d_release(struct file *file)
- 	struct g2d_dev *dev = video_drvdata(file);
- 	struct g2d_ctx *ctx = fh2ctx(file->private_data);
+diff --git a/drivers/hwmon/max31722.c b/drivers/hwmon/max31722.c
+index 30a100e70a0d..877c3d7dca01 100644
+--- a/drivers/hwmon/max31722.c
++++ b/drivers/hwmon/max31722.c
+@@ -9,7 +9,6 @@
+  * directory of this archive for more details.
+  */
  
-+	mutex_lock(&dev->mutex);
-+	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
-+	mutex_unlock(&dev->mutex);
- 	v4l2_ctrl_handler_free(&ctx->ctrl_handler);
- 	v4l2_fh_del(&ctx->fh);
- 	v4l2_fh_exit(&ctx->fh);
+-#include <linux/acpi.h>
+ #include <linux/hwmon.h>
+ #include <linux/hwmon-sysfs.h>
+ #include <linux/kernel.h>
+@@ -138,20 +137,12 @@ static const struct spi_device_id max31722_spi_id[] = {
+ 	{"max31723", 0},
+ 	{}
+ };
+-
+-static const struct acpi_device_id __maybe_unused max31722_acpi_id[] = {
+-	{"MAX31722", 0},
+-	{"MAX31723", 0},
+-	{}
+-};
+-
+ MODULE_DEVICE_TABLE(spi, max31722_spi_id);
+ 
+ static struct spi_driver max31722_driver = {
+ 	.driver = {
+ 		.name = "max31722",
+ 		.pm = &max31722_pm_ops,
+-		.acpi_match_table = ACPI_PTR(max31722_acpi_id),
+ 	},
+ 	.probe =            max31722_probe,
+ 	.remove =           max31722_remove,
 -- 
 2.30.2
 
