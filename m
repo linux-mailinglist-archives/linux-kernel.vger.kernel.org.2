@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B9E3CE6E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B86C3CE6DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353574AbhGSQRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:17:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
+        id S1351768AbhGSQQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:16:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345438AbhGSPKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16A0E6120E;
-        Mon, 19 Jul 2021 15:51:20 +0000 (UTC)
+        id S1345889AbhGSPJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:09:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43E1F611F2;
+        Mon, 19 Jul 2021 15:49:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709881;
-        bh=O4J8QoEERd6GnFu29lmxaZSXoFJjy5YXIk8dGSABdNQ=;
+        s=korg; t=1626709793;
+        bh=Kbh2t3UhUwFykH6852mSxWLXEXKjB4hI7B6a9yxTSOc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jPUU55O2SJh2MrvL5zQojzsya27qrTpJDRqoty0S46QsqD9P+MUhRbiPw8Keu5R9w
-         Xd4NLwbg4nlQBhNda/02VNSBlUewzwQYF8nQ0aA9NBrKodxZTM1treAalyD1VYAMef
-         G3+J8dEXouhSEGlUTM2vDXGyjt5jrj8yb7XO3dDM=
+        b=FoAF2OYzzUvSpdrazUdfAZJwQ+ZlyE74P3Bd0pRpaMlkXsCs1WRCVxyrij3wPkMUk
+         TWm8yOEIHpGIhFGlKd46NAcxPvmp8FIL99lSGohxeDZlPlTmVisngsRyTQKPvtHoQm
+         +4rysU2SimGqpDS53+Tx51qP5sT2aiuN3Tzpkl2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 092/149] ACPI: video: Add quirk for the Dell Vostro 3350
-Date:   Mon, 19 Jul 2021 16:53:20 +0200
-Message-Id: <20210719144923.177456148@linuxfoundation.org>
+Subject: [PATCH 5.4 093/149] virtio-blk: Fix memory leak among suspend/resume procedure
+Date:   Mon, 19 Jul 2021 16:53:21 +0200
+Message-Id: <20210719144923.413273582@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
 References: <20210719144901.370365147@linuxfoundation.org>
@@ -40,47 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit 9249c32ec9197e8d34fe5179c9e31668a205db04 ]
+[ Upstream commit b71ba22e7c6c6b279c66f53ee7818709774efa1f ]
 
-The Dell Vostro 3350 ACPI video-bus device reports spurious
-ACPI_VIDEO_NOTIFY_CYCLE events resulting in spurious KEY_SWITCHVIDEOMODE
-events being reported to userspace (and causing trouble there).
+The vblk->vqs should be freed before we call init_vqs()
+in virtblk_restore().
 
-Add a quirk setting the report_key_events mask to
-REPORT_BRIGHTNESS_KEY_EVENTS so that the ACPI_VIDEO_NOTIFY_CYCLE
-events will be ignored, while still reporting brightness up/down
-hotkey-presses to userspace normally.
-
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1911763
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Link: https://lore.kernel.org/r/20210517084332.280-1-xieyongji@bytedance.com
+Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpi_video.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/block/virtio_blk.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
-index 4f325e47519f..81cd47d29932 100644
---- a/drivers/acpi/acpi_video.c
-+++ b/drivers/acpi/acpi_video.c
-@@ -543,6 +543,15 @@ static const struct dmi_system_id video_dmi_table[] = {
- 		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V131"),
- 		},
- 	},
-+	{
-+	 .callback = video_set_report_key_events,
-+	 .driver_data = (void *)((uintptr_t)REPORT_BRIGHTNESS_KEY_EVENTS),
-+	 .ident = "Dell Vostro 3350",
-+	 .matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
-+		},
-+	},
- 	/*
- 	 * Some machines change the brightness themselves when a brightness
- 	 * hotkey gets pressed, despite us telling them not to. In this case
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 2eeb2bcb488d..816eb2db7308 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -1057,6 +1057,8 @@ static int virtblk_freeze(struct virtio_device *vdev)
+ 	blk_mq_quiesce_queue(vblk->disk->queue);
+ 
+ 	vdev->config->del_vqs(vdev);
++	kfree(vblk->vqs);
++
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
