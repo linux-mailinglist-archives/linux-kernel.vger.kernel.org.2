@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0E23CE920
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952823CEA78
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354070AbhGSQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:50:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47164 "EHLO mail.kernel.org"
+        id S1376416AbhGSRP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:15:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245168AbhGSP1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:27:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CE06113B;
-        Mon, 19 Jul 2021 16:08:13 +0000 (UTC)
+        id S1346867AbhGSPjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F56761026;
+        Mon, 19 Jul 2021 16:18:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710893;
-        bh=LxXAEoD5Ila78o+YYGT3jjqLa2D/vUuiuMAS6PHKgPI=;
+        s=korg; t=1626711519;
+        bh=ohu4GLdFZVFzF+SIykILYAGTNT0w1INs83PMAbFV1Tk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rWrBeC6MLZr1Q+kAkF8bm7zUVqsdfA7pBXqNPOwVdr++gZ+8uxziPlg/gXVqbLJi6
-         T4LW/M4OcOwnKaQzw0NCLl9DiJ7xsSXz8O7dyfWMK4HhqQqKNWNeFdV2FjtnEEZc8K
-         oIwanejDwEgePvx9hd6Y3Xmf1Ve1+AYwUyvgwhIw=
+        b=PtwK3XTTZaqS3kGhcQz9u0OotzOyr96SVKUOg/5qSnUzSWCeniXz1PvsSQYt3AEQm
+         7ZsM31q77OEGH008A98VRJWUjszJSfHuf8tNfdB4sir72ObEo59Sn5DcL3erYNo5jC
+         ZcvKwPK2Q5gQRRX9yHraCjP5SW88mWtHSAazdFeo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 148/351] power: supply: sc27xx: Add missing MODULE_DEVICE_TABLE
+        stable@vger.kernel.org, Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.12 032/292] net: bridge: multicast: fix PIM hello router port marking race
 Date:   Mon, 19 Jul 2021 16:51:34 +0200
-Message-Id: <20210719144949.872588319@linuxfoundation.org>
+Message-Id: <20210719144943.584046434@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Nikolay Aleksandrov <nikolay@nvidia.com>
 
-[ Upstream commit 603fcfb9d4ec1cad8d66d3bb37f3613afa8a661a ]
+commit 04bef83a3358946bfc98a5ecebd1b0003d83d882 upstream.
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+When a PIM hello packet is received on a bridge port with multicast
+snooping enabled, we mark it as a router port automatically, that
+includes adding that port the router port list. The multicast lock
+protects that list, but it is not acquired in the PIM message case
+leading to a race condition, we need to take it to fix the race.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 91b02d3d133b ("bridge: mcast: add router port on PIM hello message")
+Signed-off-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/power/supply/sc27xx_fuel_gauge.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/bridge/br_multicast.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/power/supply/sc27xx_fuel_gauge.c b/drivers/power/supply/sc27xx_fuel_gauge.c
-index 9c627618c224..1ae8374e1ceb 100644
---- a/drivers/power/supply/sc27xx_fuel_gauge.c
-+++ b/drivers/power/supply/sc27xx_fuel_gauge.c
-@@ -1342,6 +1342,7 @@ static const struct of_device_id sc27xx_fgu_of_match[] = {
- 	{ .compatible = "sprd,sc2731-fgu", },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(of, sc27xx_fgu_of_match);
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -3087,7 +3087,9 @@ static void br_multicast_pim(struct net_
+ 	    pim_hdr_type(pimhdr) != PIM_TYPE_HELLO)
+ 		return;
  
- static struct platform_driver sc27xx_fgu_driver = {
- 	.probe = sc27xx_fgu_probe,
--- 
-2.30.2
-
++	spin_lock(&br->multicast_lock);
+ 	br_multicast_mark_router(br, port);
++	spin_unlock(&br->multicast_lock);
+ }
+ 
+ static int br_ip4_multicast_mrd_rcv(struct net_bridge *br,
 
 
