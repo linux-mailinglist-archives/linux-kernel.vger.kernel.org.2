@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521B63CE409
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940C53CE115
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347989AbhGSPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:41:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
+        id S1347608AbhGSPUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:20:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344412AbhGSO7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D27A260551;
-        Mon, 19 Jul 2021 15:40:05 +0000 (UTC)
+        id S237677AbhGSOoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:44:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6FD661244;
+        Mon, 19 Jul 2021 15:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709206;
-        bh=NYdkv1krDDvfASXYqmGKcEbFBMGcWOv8+irBhrGseyg=;
+        s=korg; t=1626708145;
+        bh=u1PpIDPS7NFiht1LIP/tao01czv2fiehmhzB/rd0p+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TRNRuapE/OPvDtDM6xL4u/xNxc/GJBdi1RQ99BSBLVXfhAoI4TspiqdfMSfwsZlfz
-         5ZJujs80Icy/0s/xCFP7ddus1uWnOtwcRD8EDOSnMucjMRdauSuNef3gpIJBqWWPJU
-         G94O3FAMVeVJUwneyq9BxjD6fihFGZmsUM4myIZQ=
+        b=QYtUvspE730A6CYvInwBV9s96ix/GZ3FurHdsJ6kFVJDYjOpT+urSyHRT29JDghHR
+         3IKOO697WHZzfMwXXBkkRiMLEPltr26Iz99IPdn8qwq+q++tZYHn1I9lstaoe7fO//
+         LSGjJJNUzSFapZHsPMmw8D7RCWZNddSkLF+NlEPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 258/421] net: fix mistake path for netdev_features_strings
-Date:   Mon, 19 Jul 2021 16:51:09 +0200
-Message-Id: <20210719144955.339703482@linuxfoundation.org>
+Subject: [PATCH 4.14 181/315] fjes: check return value after calling platform_get_resource()
+Date:   Mon, 19 Jul 2021 16:51:10 +0200
+Message-Id: <20210719144948.836809454@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Shen <shenjian15@huawei.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 2d8ea148e553e1dd4e80a87741abdfb229e2b323 ]
+[ Upstream commit f18c11812c949553d2b2481ecaa274dd51bed1e7 ]
 
-Th_strings arrays netdev_features_strings, tunable_strings, and
-phy_tunable_strings has been moved to file net/ethtool/common.c.
-So fixes the comment.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/netdev_features.h | 2 +-
- include/uapi/linux/ethtool.h    | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/fjes/fjes_main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/netdev_features.h b/include/linux/netdev_features.h
-index 4c76fe2c8488..2a8105d204a9 100644
---- a/include/linux/netdev_features.h
-+++ b/include/linux/netdev_features.h
-@@ -88,7 +88,7 @@ enum {
+diff --git a/drivers/net/fjes/fjes_main.c b/drivers/net/fjes/fjes_main.c
+index 314e3eac09b9..26d3051591da 100644
+--- a/drivers/net/fjes/fjes_main.c
++++ b/drivers/net/fjes/fjes_main.c
+@@ -1277,6 +1277,10 @@ static int fjes_probe(struct platform_device *plat_dev)
+ 	adapter->interrupt_watch_enable = false;
  
- 	/*
- 	 * Add your fresh new feature above and remember to update
--	 * netdev_features_strings[] in net/core/ethtool.c and maybe
-+	 * netdev_features_strings[] in net/ethtool/common.c and maybe
- 	 * some feature mask #defines below. Please also describe it
- 	 * in Documentation/networking/netdev-features.txt.
- 	 */
-diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
-index fc21d3726b59..35b11c246aeb 100644
---- a/include/uapi/linux/ethtool.h
-+++ b/include/uapi/linux/ethtool.h
-@@ -227,7 +227,7 @@ enum tunable_id {
- 	ETHTOOL_PFC_PREVENTION_TOUT, /* timeout in msecs */
- 	/*
- 	 * Add your fresh new tunable attribute above and remember to update
--	 * tunable_strings[] in net/core/ethtool.c
-+	 * tunable_strings[] in net/ethtool/common.c
- 	 */
- 	__ETHTOOL_TUNABLE_COUNT,
- };
-@@ -261,7 +261,7 @@ enum phy_tunable_id {
- 	ETHTOOL_PHY_DOWNSHIFT,
- 	/*
- 	 * Add your fresh new phy tunable attribute above and remember to update
--	 * phy_tunable_strings[] in net/core/ethtool.c
-+	 * phy_tunable_strings[] in net/ethtool/common.c
- 	 */
- 	__ETHTOOL_PHY_TUNABLE_COUNT,
- };
+ 	res = platform_get_resource(plat_dev, IORESOURCE_MEM, 0);
++	if (!res) {
++		err = -EINVAL;
++		goto err_free_control_wq;
++	}
+ 	hw->hw_res.start = res->start;
+ 	hw->hw_res.size = resource_size(res);
+ 	hw->hw_res.irq = platform_get_irq(plat_dev, 0);
 -- 
 2.30.2
 
