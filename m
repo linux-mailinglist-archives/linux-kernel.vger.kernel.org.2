@@ -2,208 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F85A3CCE23
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1D13CCE24
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbhGSG6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbhGSG6i (ORCPT
+        id S234677AbhGSG7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:59:08 -0400
+Received: from fallback9.mail.ru ([94.100.178.49]:56530 "EHLO
+        fallback9.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233048AbhGSG7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:58:38 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A58C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 23:55:38 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id w15so18014127pgk.13
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 23:55:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=+6yGoau3aQvc6RIl0I2KR/4JCvjXnSHM4sVzJrYS06E=;
-        b=YyMrE+FD5G+7FSMOJSFu4WYFJsnsgzQFoEJoUueIDQpJOym0IAIC+tgfbZxHsAUyK6
-         jUSuRJQkEuXi+47Tvg4SE5R71SfxeR8qxHhtwLrFx7zyas7n+k7Jzcy89iV1hg316vwx
-         +KVHHnzeLdyeAr2SrPcEWpTvTRKTK+ErFq/+/j7/ofp6jMSwE4Y/Nore6I9lSoyMWsNa
-         bCT0mw/UPaulIFAmbNlHurTvWXkLE7pBasyYzMbPrPuz5IrdTjAZ3+d2Nqyg9SynL8GG
-         0FI3ryDpmgqM+/rnKugn8x0Q8ZPoIu5XwBB8QEGX2JkvVu+zXcQysvEmLEBJ6F9ef25K
-         F7Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=+6yGoau3aQvc6RIl0I2KR/4JCvjXnSHM4sVzJrYS06E=;
-        b=GK4BvzRGX2VSk1eMv+CcvbKvrgiQHkRa2EtXu/KKJQAeBf9XJKbkQPTc2FKHp8dOP5
-         vE3M5anPFdlW50Wg7HlgoQkhyRpP0EY580Z23pWrIMYZ83OtT10IedFStqX7a941G243
-         0/E1+P0WsqbgHYJs1j7RTFH5XExOq1PiLvj4XIYdMAK379HCZYqtYTM8mz3ihqqbPzQ8
-         TG3emj8auHdtm39nieID1aMwvd+fZ4PCsF0B4HbdE4vYpXC+CuFCqHpAEfl1usYxgZUm
-         /v+Sn+1T0G44Olpigp+ZzsSNy6vv1YmW9OJkXZrIUYN9LRS5QNOw0ew/FFMLe+qhq1ax
-         88zQ==
-X-Gm-Message-State: AOAM531YSRzL3d/j625jhTWsjaKYHHu9R7o+5SpEJ3HvHHKUcrF4LTfd
-        SCocEmn1EA7UcKp/vPVOzicFGQ==
-X-Google-Smtp-Source: ABdhPJxG1rvnF9yI/mCoWeevIkrdHkOS6c4LlopRJQZePwTOvDI4YMYzpxAvaOacyc8fcMlUhyTjMw==
-X-Received: by 2002:a62:1bc7:0:b029:328:f2c:8ff1 with SMTP id b190-20020a621bc70000b02903280f2c8ff1mr24353758pfb.18.1626677738126;
-        Sun, 18 Jul 2021 23:55:38 -0700 (PDT)
-Received: from anisinha-lenovo ([115.96.137.169])
-        by smtp.googlemail.com with ESMTPSA id g19sm4946096pjl.25.2021.07.18.23.55.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jul 2021 23:55:37 -0700 (PDT)
-From:   Ani Sinha <ani@anisinha.ca>
-X-Google-Original-From: Ani Sinha <anisinha@anisinha.ca>
-Date:   Mon, 19 Jul 2021 12:25:26 +0530 (IST)
-X-X-Sender: anisinha@anisinha-lenovo
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-cc:     Ani Sinha <ani@anisinha.ca>, Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        anirban.sinha@nokia.com, mikelley@microsoft.com,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: Re: [PATCH v3] checkpatch: add a rule to check general block comment
- style
-In-Reply-To: <CAKXUXMyJ9Ab_Fvpk8WAimEnDjcOhJRe2uODkC=RxCgsN8T0WyQ@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2107191221570.12107@anisinha-lenovo>
-References: <20210714063422.2164699-1-ani@anisinha.ca> <alpine.DEB.2.22.394.2107162145100.3277407@anisinha-lenovo> <CAKXUXMzxyQxYKdnuVbZnUFbYFuKMq+Vc5LxSR-_fKtH2dv-4wA@mail.gmail.com> <alpine.DEB.2.21.2107181853320.55905@ani-ubuntu>
- <c32293fc03a8673ade348ed4451c60dfdf9bb2c1.camel@perches.com> <alpine.DEB.2.22.394.2107191054260.9400@anisinha-lenovo> <CAKXUXMyJ9Ab_Fvpk8WAimEnDjcOhJRe2uODkC=RxCgsN8T0WyQ@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 19 Jul 2021 02:59:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=jlVPb7XqgScpfTAiq8xf+wIhk75doE3OweTWVPymt5Q=;
+        t=1626677768;x=1627283168; 
+        b=A3fZIYZ22v6+Z1OQ32b5qQL17sJbfsC4sSzJn/DNeJ4euqKvIbYN38IS+WwOegFeF/KjpQuH5gHUjCYckgx2uM2OqkiIrNjnPvwLaQCV/wWLUOnC9Z1kS7DetfDphrR4jWUQeuv4bNTipBZZQTFD4Okf7DTBNO5/4kc9Gsu7FaQ=;
+Received: from [10.161.16.37] (port=41742 helo=smtp63.i.mail.ru)
+        by fallback9.m.smailru.net with esmtp (envelope-from <fido_max@inbox.ru>)
+        id 1m5NC9-0008M8-Px; Mon, 19 Jul 2021 09:56:06 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=jlVPb7XqgScpfTAiq8xf+wIhk75doE3OweTWVPymt5Q=;
+        t=1626677765;x=1627283165; 
+        b=j0mfH/SudyMMvimDXmI6ja1RntA7oHK5wscgac7BCqqN6hxIiWS+Q5YOqEqKSXzvqFkz6JzaNj3tpid2BM7wsyZkEkbPN3yVE4XrHkYk/ssTKpbquCGfbQ0hqH+F/FjlJMo50TR2V8D8TWDpgnYICk28nmMau0z+hn+lmmjlQDQ=;
+Received: by smtp63.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
+        id 1m5NC0-0008Kf-Kd; Mon, 19 Jul 2021 09:55:57 +0300
+Subject: Re: [PATCH] soc: fsl: qe: convert QE interrupt controller to
+ platform_device
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, saravanak@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Zhao Qiang <qiang.zhao@nxp.com>
+References: <20210705111250.1513634-1-fido_max@inbox.ru>
+ <CADRPPNRYDBFHEppfpYLwsy7MMEdtsOLS764MJboL9ERW0-KK3Q@mail.gmail.com>
+From:   Maxim Kochetkov <fido_max@inbox.ru>
+Message-ID: <ec981260-fbe3-5cc4-1da3-dfb2f70f8f85@inbox.ru>
+Date:   Mon, 19 Jul 2021 09:58:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CADRPPNRYDBFHEppfpYLwsy7MMEdtsOLS764MJboL9ERW0-KK3Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD941C43E597735A9C30288BCF456A452EC92BAB6D044D5CCDE182A05F538085040970E04EB18AC644E62BB44EC95E4DE5D7E6CFC7276E5AB684A5E87B9EF38C923
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7A8325FA649D0A450EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637B5932F77F0041FFB8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8624C5589F4A67543EA42AE62D2A384966F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE719E4A684E2A1C1059FA2833FD35BB23D9E625A9149C048EE33AC447995A7AD186FD1C55BDD38FC3FD2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8B292D688DDAD4E7BC389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F790063768889A976CB567F3D81D268191BDAD3DBD4B6F7A4D31EC0BEA7A3FFF5B025636D81D268191BDAD3D78DA827A17800CE70DE4A3D039A8938BEC76A7562686271EEC990983EF5C03292E808ACE2090B5E14AD6D5ED66289B5259CC434672EE63711DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C3EBF4D8D28E8B690335872C767BF85DA2F004C90652538430E4A6367B16DE6309
+X-C1DE0DAB: 0D63561A33F958A5BDAB937D0AAAF409900C4707482EDA874E14DF739995CE16D59269BC5F550898D99A6476B3ADF6B47008B74DF8BB9EF7333BD3B22AA88B938A852937E12ACA75BF6B963DD989C0FC410CA545F18667F91A7EA1CDA0B5A7A0
+X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D342E8FEDBD32DECB6DC437571DECC2E525555548622D32E58AA652C9B4DDF8FAF8BEA16A2CF5DD50191D7E09C32AA3244C155573CC54E23DA102D5B3B2736B6A1DD9ADFF0C0BDB8D1FDCA3B3C10BC03908
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj+8+KVR9NZrGMW3pz8SWWqg==
+X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB241E30759B32BE3EAEAC99A2C7D853D61063DB8BCE4C7EAB77EE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
+X-Mras: Ok
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B4DE24245422D83CE6F6EF26CB7A2DAAF2AD80CE56E34D1B8B049FFFDB7839CE9E74D7C836B7A62AF36E4DA991870F257BCD2B5554D74425294E2ADDE868B22C20
+X-7FA49CB5: 0D63561A33F958A5F817D3147438D2EB216344FC4F7B9A042139A057198A38C8CACD7DF95DA8FC8BD5E8D9A59859A8B6F657401E1635F1D7CC7F00164DA146DAFE8445B8C89999728AA50765F79006372255A60090D554F4389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8DA7BFA4571439BB2F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C568FCE88E0C8489D2D242C3BD2E3F4C64AD6D5ED66289B52698AB9A7B718F8C442539A7722CA490CD5E8D9A59859A8B60E26A56DB46E81E4089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
+X-C1DE0DAB: 0D63561A33F958A5F817D3147438D2EB216344FC4F7B9A0473D271DEF64DE5B1D59269BC5F550898D99A6476B3ADF6B4886A5961035A09600383DAD389E261318FB05168BE4CE3AF
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj+8+KVR9NZrE4QyZrWTrpSw==
+X-Mailru-MI: 800
+X-Mailru-Sender: A5480F10D64C90059D04A353E0DED3E654C6AA2CA14A4DDCBEE6447B0D21ED662C417F07DC1D704CC099ADC76E806A99D50E20E2BC48EF5A30D242760C51EA9CEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+15.07.2021 01:29, Li Yang wrote:
+>  From the original code, this should be type = "qeic".  It is not
+> defined in current binding but probably needed for backward
+> compatibility.
 
+I took these strings from this part:
 
-On Mon, 19 Jul 2021, Lukas Bulwahn wrote:
+        np = of_find_compatible_node(NULL, NULL, "fsl,qe-ic");
 
-> On Mon, Jul 19, 2021 at 7:28 AM Ani Sinha <ani@anisinha.ca> wrote:
-> >
-> >
-> >
-> > On Sun, 18 Jul 2021, Joe Perches wrote:
-> >
-> > > On Sun, 2021-07-18 at 19:08 +0530, Ani Sinha wrote:
-> > > > On Sun, 18 Jul 2021, Lukas Bulwahn wrote:
-> > > > > On Fri, Jul 16, 2021 at 6:15 PM Ani Sinha <ani@anisinha.ca> wrote:
-> > > > > > checkpatch maintainers, any comments?
-> > > > > > On Wed, 14 Jul 2021, Ani Sinha wrote:
-> > > > > > > The preferred style for long (multi-line) comments is:
-> > > > > > >
-> > > > > > > .. code-block:: c
-> > > > > > >
-> > > > > > >       /*
-> > > > > > >        * This is the preferred style for multi-line
-> > > > > > >        * comments in the Linux kernel source code.
-> > > > > > >        * Please use it consistently.
-> > > > > > >        *
-> > > > > > >        * Description:  A column of asterisks on the left side,
-> > > > > > >        * with beginning and ending almost-blank lines.
-> > > > > > >        */
-> > > > > > >
-> > > > > > > It seems rule in checkpatch.pl is missing to ensure this for
-> > > > > > > non-networking related changes. This patch adds this rule.
-> > > []
-> > > > > Honest feedback: IMHO, your commit message is unreadable and incomprehensible.
-> > > >
-> > > > OK. However, I fail to see how your above comment is useful without any
-> > > > suggestion as to how to improve the commit log. I find having some test
-> > > > data with the commit message valuable so that there is some sort of record
-> > > > as to how the change was tested and with what arguments. Beyond that this
-> > > > is not something I am really worried about. The commit message can be
-> > > > modified and improved in any way reviewers like.
-> > > >
-> > > > >
-> > > > > Now to the feature you are proposing:
-> > > > >
-> > > > > I do not think that it is good if checkpatch would point out a quite
-> > > > > trivial syntactic issue that probably is currently violated many times
-> > > > > (>10,000 or even >100,000 times?) in the overall repository. That will
-> > > > > make checkpatch warn on many commits with this check and divert the
-> > > > > attention from other checks that are more important than the style of
-> > > > > starting comments.
-> > > >
-> > > > I have some strong opinions on this. Just because a rule has been violated
-> > > > in the past does not mean it can continue to be violated in the future.
-> > >
-> > > Intensity of opinion varies considerably here.
-> > >
-> > > > > Further, some evaluation by Aditya shows that the distinction between
-> > > > > NETWORKING COMMENT STYLE and GENERAL KERNEL COMMENT STYLE is not as
-> > > > > easily split as currently encoded in the checkpatch script,
-> > > > > https://lore.kernel.org/linux-kernel-mentees/cfff5784-9ca3-07f8-c51c-f1c82b2871e3@gmail.com/.
-> > > > > So, this checkpatch check is largely wrong already as of now and most
-> > > > > probably ignored by many contributors.
-> > >
-> > > The only reason the rule exists at all is because the networking maintainer
-> > > was constantly telling people to change the comment style in patches.
-> > >
-> > > I don't care one way or another.
-> > >
-> > > // comments are fine
-> > > /* comments are fine */
-> > >
-> > > In networking, multiline comments are almost exclusively like
-> > > what Linus himself does not like:
-> > >
-> > >       /* comment
-> > >        * ...
-> > >        */
-> > >
-> > > but in other subsystems, the styles of multiline comments varies.
-> > >
-> > > Either works, there is no single standard.
-> > >
-> >
-> > OK then in that case, maybe update
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?h=v5.14-rc2#n584
-> >
->
-> The rule may still hold.
->
+        if (!np) {
 
-Hence, I do not see why we cannot add this rule to checkpatch. If the
-reviewer likes the other style of commenting they can always ask for a
-correction. Having checkpatch agree with Linus' preferred style of
-commenting and the preferred documeted style of commenting (which seems to
-be the same) does make everything uniform and agreeable.
+                np = of_find_node_by_type(NULL, "qeic");
 
-> > It is confusing to patch submitters (and it happened to me with a recent
-> > patch) that the reviewer insists on a particular commenting style when
-> > checkpatch does not enforce it. Its confusing for reviewers too.
-> >
->
-> I think this is more about the confusion of what you should really
-> expect from checkpatch.
->
-> Checkpatch does some checking, but this checking is not sound, i.e.,
-> perfect wrt. expectations on submissions, i.e., there are various
-> cases where checkpatch's suggestion is NOT the
-> community's/maintainer's preference. Some rules are even quite basic
-> heuristics, and can get confused by unexpected patterns.
->
-> Hence, in its current state, with all rules enabled, you could not
-> enforce a checkpatch pre-commit hook as you suggested.
->
-> Further, checkpatch is not complete either: just because checkpatch
-> did not complain on some stylistic issues does not mean that all rules
-> on style that might be automatically checkable are followed in a
-> patch. During the patch submission, reviewers might still ask for
-> further stylistic improvements, even if checkpatch did not point them
-> out.
->
-> Contributing to checkpatch improvements is certainly welcome. However,
-> it is a non-trivial task to include checks that make checkpatch more
-> usable (more accepted among developers and maintainers) with the
-> current submission practice and the currently existing code in the
-> kernel repository.
->
-> Lukas
->
-> >
-> > > And as the referenced link by Aditya somewhat shows, the nominal
-> > > rule compliance varies by the age of the code.  No one care much
-> > > about code submitted a couple decades ago for subsystems and drivers
-> > > that are effectively obsolete...
-> > >
-> > >
-> > >
->
+                if (!np)
+
+                        return -ENODEV;
+
+        }
+
+However I can't find usage of "qeic" in any dts, so I will drop this in V2
