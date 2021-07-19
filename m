@@ -2,196 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675723CD5ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C08B3CD5F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239577AbhGSNBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 09:01:49 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:50828 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239527AbhGSNBr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 09:01:47 -0400
-Received: by mail-io1-f71.google.com with SMTP id t10-20020a6b5f0a0000b029052c7ba9d3c3so8850097iob.17
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 06:42:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=LmzuAbr1S4QYzHKh1chjZLU0DJX1LhIL/fhQuZ9XnbY=;
-        b=cl1IjJ5FSCRGP0hhNuGW6401mfssR5wiGMuz7fgWsL417tgWrcyAsjmiy/0ZAK8QYQ
-         ems64zQAEKigkXAfZVqUGY/h+8JSnQ16sJwjK71tb+aqhhGS+fhNJe7nLVRSHVdVuLo2
-         mULco/B7219PnDs+lcz1wdYIXdWL9ZAMkgQhcBj736IL4ZW55bsGHaDZTULpKJAauyY2
-         MQenYioMkUFwtiF5B5fljcjr36b1hX35kIDmdnY1sa5QexFsaOzrOyiuMPs5/PsGK5Fg
-         rXtU27nQ4bVf0cxvRvzHQHCCQ4GdP2NeUSaJMmmuYXbWjvrDrYvY0LWYKlOzER/b8ooq
-         JMcg==
-X-Gm-Message-State: AOAM530QMi9dCHtWpvDXrKfS5FnNegPtsdruhILlYdyNYRjkDi3CgGI2
-        A/V1n3a2sZouhKzpfbkxOyUA8iX0cxg1bqsrhMFB924Ed0BU
-X-Google-Smtp-Source: ABdhPJzi9GPMoqAQaea0pqj3j0E7fe+X2tw45B+UNXaAtqbrwhm4YsQX62hArhkS9ZtkKpnej2ZhhAGqeuWu0UgafBBqY0DZ6/E/
+        id S240011AbhGSNDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 09:03:47 -0400
+Received: from mail-mw2nam12on2049.outbound.protection.outlook.com ([40.107.244.49]:46297
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239959AbhGSNDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 09:03:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QuDf5mixclf8zO8MzmPFbRlOmBeke7MOqtzJXhe1qcsyEfVgyP0ssFoR3iCvvM8eYmojuEotbeB9/eEI8WXTtXCpvzs9+m03D+SPRgCEosHaa/f7QB+t7qhfMJAYH+gjU59ogP4l45wF+fwWEAV0FRjdQwVyLMqD4b1JBKgm7DaNL3rKAE0eBgUhYxKxs94m8x27fwieo9BaTd2goWqfDJpKeTf3AYp2RTI7oPY2tN53fdjS7A1lMwvorkwFQAc14LFCDYIs2eDBeZJBU3digd6eCvNDUfYY8R6dfrhmCiAMqDabcgUyX3L9QlQ2lPOUAgijnnk3lHWnQRckk2Ai+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1v19/5Gv1fG719jqlg4uoR1E+dfC5fo4bFzThSh2vaM=;
+ b=LzLTq8wOPbaN/a/5aSxr9CpawnuKygzhaaTQ6hAVTm85VIPqhR01Al8h1n7gejBfls+M5hsFsyv0ypeNpLzub3BEfrGpBxgqGpVf/zgUe0fWUnvvBeQPmatsi8ZKUWQWrRxoUpr5R8pW3hbp7uSx/GvtgRIQG7HbykLBmxJN4H/pYfFTfAr3nfULVAisRwqhogsJ+1xBellGTEcIYHwNYY2Bi9EplCoHLthKCcCaPgsZkoBUtgvhjYQQhp8+KmWsQ5QLP9f7YyR4W8kpjgcXppGAufve4mPn8aqe90tC8n218SupKXk+FPUIA7SHu9fnWnOBuPmfSaUjOXpeaSv+/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1v19/5Gv1fG719jqlg4uoR1E+dfC5fo4bFzThSh2vaM=;
+ b=IRa6I66tC0LF0I6KEn9JdKK6FyZ5zkJW2rM6VtXrJ2qYuMXMP1NSvPNA64VCe2IsI9qLbrBOrt6o3AfE/On3HCHXp4nXL//qcKIJDMZjXOrmAqm5LATGemR20a6z0WkWoLXvtB3IHnLtj5NZVlxDvr1G/o1/UUfQ0fFNvMUYwYFZvDG+CBQeHxiK/5DXf/5Ia2PuPmu7BsOSNQnXXpvDc8JhE/QrPoG16SovL6YDw30iEvSgZ0EosbwdHi+qbnGex7sQs/r/Gxf2OtneKaa0uXYBOgSBOTKX1D5nBAxX8+FKsalBRxcgqBhBYHqexxrob72/6Hrw/ppJBiz/vS0t6g==
+Received: from BN6PR18CA0004.namprd18.prod.outlook.com (2603:10b6:404:121::14)
+ by DM6PR12MB2667.namprd12.prod.outlook.com (2603:10b6:5:42::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.30; Mon, 19 Jul
+ 2021 13:44:23 +0000
+Received: from BN8NAM11FT041.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:121:cafe::c3) by BN6PR18CA0004.outlook.office365.com
+ (2603:10b6:404:121::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Mon, 19 Jul 2021 13:44:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT041.mail.protection.outlook.com (10.13.177.18) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 13:44:23 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Jul
+ 2021 06:44:22 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Jul
+ 2021 13:44:22 +0000
+Received: from vdi.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 19 Jul 2021 13:44:20 +0000
+From:   Eli Cohen <elic@nvidia.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>, <sgarzare@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <elic@nvidia.com>
+Subject: [PATCH] vdpa/vdpa_sim: Use the negotiated features when calling vringh_init_iotlb
+Date:   Mon, 19 Jul 2021 16:44:07 +0300
+Message-ID: <20210719134407.175884-1-elic@nvidia.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3796:: with SMTP id w22mr5599143jal.34.1626702145287;
- Mon, 19 Jul 2021 06:42:25 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 06:42:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008678f205c77a1b93@google.com>
-Subject: [syzbot] KASAN: slab-out-of-bounds Read in do_wait_for_common
-From:   syzbot <syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, hridayhegde1999@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        paskripkin@gmail.com, rkovhaev@gmail.com, straube.linux@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 86cd09bc-2692-4bd1-2e9d-08d94abb518f
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2667:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB266738DB447E35C0E7B6076FABE19@DM6PR12MB2667.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: q4ZBFi9DC32zxwlPvQh4jH0zKT00BR9zBO1ccJGnUIV10NQivVYoBDGjzZ4dTt8ZxUrrejHsXZmM8cwB6xt0nQT1kVOGhe2lmjKYvQfEV9P0Y/6XWfTvtp4+u5jksMP71/RbCuvRiPcR6CCzElj04dnkE1VOXZP0d0rTCcnsMBoC5T/sWGLlSZCXRReuLniqm2EEsWs7W6coAsHoUoqGQwTCIVOY9lEBbl1Nn9qjfxmUklNkGM4XJt0r6T2BKmSOMNPGIUF2iJ6JImp//wqKT79TFBz2d5sAlydk1zpWpnMg/Xy8hKqDj0dcSY0H2nfPyFDqKhyDxIBZ94INZ9Ddn/muXW7KG8OSmx8cV/Et0AAHwhXdRLDi4mCSf3OJXGzsVromptIBkvnT0QCWw9CMIrSG36gLtOWIHdrmsiWmr/xHRrxy9QRQjwfZRMi3CAxrxCUJlm+eMnD6KhSvOs2KaFLzOoRBptJPVTND3P9roiUQszqmk7MjXeKZzq1KN9ixGbAFgpegj5LtPssLEqTkij1GDxoBDhrEuRXRAwuV+hyzKjjHY3kCva9P1W2G2EGlTpdHuy2bVf6V1cUSRZFECxNVn1jUsSVSws8zBZwyJd2teS17/4NFJdNdaRWJ7cGMwsATmPNU9AgqQLCNL4pbG/cf2MVsK1PwEzpudR34JZ1OUJejBY9dsVWL4x29waxnOg0Vg+C2eslldO4kYCgv6Q==
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(136003)(46966006)(36840700001)(8936002)(478600001)(26005)(83380400001)(7696005)(70586007)(186003)(70206006)(36756003)(4326008)(2616005)(6666004)(336012)(426003)(107886003)(110136005)(86362001)(2906002)(47076005)(1076003)(5660300002)(316002)(82740400003)(82310400003)(7636003)(356005)(36860700001)(8676002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 13:44:23.5684
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86cd09bc-2692-4bd1-2e9d-08d94abb518f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT041.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2667
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+When calling vringh_init_iotlb(), use the negotiated features which
+might be different than the supported features.
 
-syzbot found the following issue on:
-
-HEAD commit:    8096acd7442e Merge tag 'net-5.14-rc2' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=167ca94a300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5294764a378649cb
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc699626e48a6ebaf295
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d68024300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e4f180300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in debug_spin_lock_before kernel/locking/spinlock_debug.c:83 [inline]
-BUG: KASAN: slab-out-of-bounds in do_raw_spin_lock+0x4f5/0x8e0 kernel/locking/spinlock_debug.c:112
-Read of size 4 at addr ffff88802b46ce14 by task kworker/0:6/8471
-
-CPU: 0 PID: 8471 Comm: kworker/0:6 Tainted: G        W         5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
- print_address_description+0x66/0x3b0 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report+0x163/0x210 mm/kasan/report.c:436
- debug_spin_lock_before kernel/locking/spinlock_debug.c:83 [inline]
- do_raw_spin_lock+0x4f5/0x8e0 kernel/locking/spinlock_debug.c:112
- __raw_spin_lock_irq include/linux/spinlock_api_smp.h:129 [inline]
- _raw_spin_lock_irq+0xba/0xf0 kernel/locking/spinlock.c:167
- do_wait_for_common+0x2e5/0x480 kernel/sched/completion.c:86
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x48/0x60 kernel/sched/completion.c:138
- r871xu_dev_remove+0x83/0x460 drivers/staging/rtl8712/usb_intf.c:599
- usb_unbind_interface+0x1f2/0x860 drivers/usb/core/driver.c:458
- __device_release_driver drivers/base/dd.c:1201 [inline]
- device_release_driver_internal+0x51e/0x7b0 drivers/base/dd.c:1232
- bus_remove_device+0x2fd/0x410 drivers/base/bus.c:529
- device_del+0x6e1/0xc10 drivers/base/core.c:3540
- usb_disable_device+0x407/0x800 drivers/usb/core/message.c:1419
- usb_disconnect+0x33a/0x8a0 drivers/usb/core/hub.c:2221
- hub_port_connect+0x297/0x27a0 drivers/usb/core/hub.c:5151
- hub_port_connect_change+0x5d0/0xbf0 drivers/usb/core/hub.c:5440
- port_event+0xaee/0x1140 drivers/usb/core/hub.c:5586
- hub_event+0x48d/0xd80 drivers/usb/core/hub.c:5668
- process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
- worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
- kthread+0x453/0x480 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Allocated by task 10:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- __kasan_slab_alloc+0x96/0xd0 mm/kasan/common.c:467
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc_node mm/slub.c:2981 [inline]
- kmem_cache_alloc_node+0x200/0x370 mm/slub.c:3017
- alloc_task_struct_node kernel/fork.c:171 [inline]
- dup_task_struct+0x52/0x980 kernel/fork.c:871
- copy_process+0x615/0x5b00 kernel/fork.c:1952
- kernel_clone+0x21a/0x7d0 kernel/fork.c:2509
- kernel_thread+0x146/0x1c0 kernel/fork.c:2561
- call_usermodehelper_exec_work+0x57/0x220 kernel/umh.c:174
- process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
- worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
- kthread+0x453/0x480 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Last potentially related work creation:
- kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
- kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
- __call_rcu kernel/rcu/tree.c:3029 [inline]
- call_rcu+0x1a0/0xa20 kernel/rcu/tree.c:3109
- schedule_tail+0xc/0xb0 kernel/sched/core.c:4619
- ret_from_fork+0x8/0x30 arch/x86/entry/entry_64.S:280
-
-The buggy address belongs to the object at ffff88802b46b880
- which belongs to the cache task_struct of size 6976
-The buggy address is located 5524 bytes inside of
- 6976-byte region [ffff88802b46b880, ffff88802b46d3c0)
-The buggy address belongs to the page:
-page:ffffea0000ad1a00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2b468
-head:ffffea0000ad1a00 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 0000000000000000 dead000000000122 ffff888140006280
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 10, ts 43802781641, free_ts 43793596145
- prep_new_page mm/page_alloc.c:2433 [inline]
- get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4166
- __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5374
- alloc_slab_page mm/slub.c:1713 [inline]
- allocate_slab+0xf1/0x540 mm/slub.c:1853
- new_slab mm/slub.c:1916 [inline]
- new_slab_objects mm/slub.c:2662 [inline]
- ___slab_alloc+0x1cf/0x350 mm/slub.c:2825
- __slab_alloc mm/slub.c:2865 [inline]
- slab_alloc_node mm/slub.c:2947 [inline]
- kmem_cache_alloc_node+0x2ca/0x370 mm/slub.c:3017
- alloc_task_struct_node kernel/fork.c:171 [inline]
- dup_task_struct+0x52/0x980 kernel/fork.c:871
- copy_process+0x615/0x5b00 kernel/fork.c:1952
- kernel_clone+0x21a/0x7d0 kernel/fork.c:2509
- kernel_thread+0x146/0x1c0 kernel/fork.c:2561
- call_usermodehelper_exec_work+0x57/0x220 kernel/umh.c:174
- process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
- worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
- kthread+0x453/0x480 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1343 [inline]
- free_pcp_prepare+0xc29/0xd20 mm/page_alloc.c:1394
- free_unref_page_prepare mm/page_alloc.c:3329 [inline]
- free_unref_page+0x7e/0x550 mm/page_alloc.c:3408
- kfree+0x287/0x2d0 mm/slub.c:4292
- request_firmware_work_func+0x175/0x250 drivers/base/firmware_loader/main.c:1081
- process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
- worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
- kthread+0x453/0x480 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Memory state around the buggy address:
- ffff88802b46cd00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88802b46cd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff88802b46ce00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                         ^
- ffff88802b46ce80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88802b46cf00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
+Fixes: 011c35bac5ef ("vdpa_sim: add supported_features field in vdpasim_dev_attr)
+Signed-off-by: Eli Cohen <elic@nvidia.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index 14e024de5cbf..89a474c7a096 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -66,7 +66,7 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
+ {
+ 	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
+ 
+-	vringh_init_iotlb(&vq->vring, vdpasim->dev_attr.supported_features,
++	vringh_init_iotlb(&vq->vring, vdpasim->features,
+ 			  VDPASIM_QUEUE_MAX, false,
+ 			  (struct vring_desc *)(uintptr_t)vq->desc_addr,
+ 			  (struct vring_avail *)
+@@ -86,7 +86,7 @@ static void vdpasim_vq_reset(struct vdpasim *vdpasim,
+ 	vq->device_addr = 0;
+ 	vq->cb = NULL;
+ 	vq->private = NULL;
+-	vringh_init_iotlb(&vq->vring, vdpasim->dev_attr.supported_features,
++	vringh_init_iotlb(&vq->vring, vdpasim->features,
+ 			  VDPASIM_QUEUE_MAX, false, NULL, NULL, NULL);
+ 
+ 	vq->vring.notify = NULL;
+-- 
+2.30.1
+
