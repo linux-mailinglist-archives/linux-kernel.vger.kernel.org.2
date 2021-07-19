@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838B33CE936
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D55C3CE9D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357430AbhGSQvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38038 "EHLO mail.kernel.org"
+        id S235702AbhGSRCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:02:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348000AbhGSPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6765B61248;
-        Mon, 19 Jul 2021 16:00:28 +0000 (UTC)
+        id S1348778AbhGSPfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E406113B;
+        Mon, 19 Jul 2021 16:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710429;
-        bh=nBuEjXP7MDnryNt1YS+NImG5NqXM1GptOt3LZMjOBnE=;
+        s=korg; t=1626711281;
+        bh=cyssPot+2ta3N6rVaE2Dy+1Sk+5cmyL76+LCPB/deyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D+kYVdhwB644aD8s3KhW2y6eXbsxTaR05iwvcYgO+PKSiNLCX/UAhsAwW1YaxPVcK
-         M00/CyG/qVe1ehtx6jrcFKQWFic73UzDFp3PVHWAKOauz1J5vMHXIdXS7s+Npg7G+W
-         4kEqMCPr+ZDIXT5KSu197GLzj45PpG5vO8DNkeDE=
+        b=BdrEDLKW3jLWs6jEmhHOQYFxKTpEEYv6qoby8xQ3oeWENFqrEkZVP92Xyai+zMRFX
+         nLRzVZQx6nzhqEuab2m5EK32kUsgFawfkwsGzYHErU2f+onHqfcEbNonreib+mMdbr
+         tsh2sWxTBHYUbON4fc7TnUMe5b76DQ4Efph8C3bo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 211/243] dt-bindings: i2c: at91: fix example for scl-gpios
-Date:   Mon, 19 Jul 2021 16:54:00 +0200
-Message-Id: <20210719144947.740521263@linuxfoundation.org>
+Subject: [PATCH 5.13 295/351] ARM: dts: qcom: sdx55-telit: Represent secure-regions as 64-bit elements
+Date:   Mon, 19 Jul 2021 16:54:01 +0200
+Message-Id: <20210719144954.791379133@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-[ Upstream commit 92e669017ff1616ba7d8ba3c65f5193bc2a7acbe ]
+[ Upstream commit 0fa1baeedf06765ec6b441692ba2a2e83b7d17dc ]
 
-The SCL gpio pin used by I2C bus for recovery needs to be configured as
-open drain, so fix the binding example accordingly.
-In relation with fix c5a283802573 ("ARM: dts: at91: Configure I2C SCL
-gpio as open drain").
+The corresponding MTD code expects the regions to be of 64-bit elements.
+Hence, prefix "/bits/ 64", otherwise the regions will not be parsed
+correctly.
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Fixes: 19e5cef058a0 ("dt-bindings: i2c: at91: document optional bus recovery properties")
+Fixes: 6a5d3c611930 ("ARM: dts: qcom: sdx55: Add basic devicetree support for Telit FN980 TLB")
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20210512050141.43338-2-manivannan.sadhasivam@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/i2c/i2c-at91.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/qcom-sdx55-telit-fn980-tlb.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-at91.txt b/Documentation/devicetree/bindings/i2c/i2c-at91.txt
-index 96c914e048f5..2015f50aed0f 100644
---- a/Documentation/devicetree/bindings/i2c/i2c-at91.txt
-+++ b/Documentation/devicetree/bindings/i2c/i2c-at91.txt
-@@ -73,7 +73,7 @@ i2c0: i2c@f8034600 {
- 	pinctrl-0 = <&pinctrl_i2c0>;
- 	pinctrl-1 = <&pinctrl_i2c0_gpio>;
- 	sda-gpios = <&pioA 30 GPIO_ACTIVE_HIGH>;
--	scl-gpios = <&pioA 31 GPIO_ACTIVE_HIGH>;
-+	scl-gpios = <&pioA 31 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+diff --git a/arch/arm/boot/dts/qcom-sdx55-telit-fn980-tlb.dts b/arch/arm/boot/dts/qcom-sdx55-telit-fn980-tlb.dts
+index 3065f84634b8..80c40da79604 100644
+--- a/arch/arm/boot/dts/qcom-sdx55-telit-fn980-tlb.dts
++++ b/arch/arm/boot/dts/qcom-sdx55-telit-fn980-tlb.dts
+@@ -250,8 +250,8 @@
+ 		nand-ecc-step-size = <512>;
+ 		nand-bus-width = <8>;
+ 		/* ico and efs2 partitions are secured */
+-		secure-regions = <0x500000 0x500000
+-				  0xa00000 0xb00000>;
++		secure-regions = /bits/ 64 <0x500000 0x500000
++					    0xa00000 0xb00000>;
+ 	};
+ };
  
- 	wm8731: wm8731@1a {
- 		compatible = "wm8731";
 -- 
 2.30.2
 
