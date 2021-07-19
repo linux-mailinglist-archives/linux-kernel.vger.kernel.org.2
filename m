@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536CB3CDAD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8723CDB16
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245403AbhGSOie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:38:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39180 "EHLO mail.kernel.org"
+        id S1343896AbhGSOjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244498AbhGSO3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:29:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 425E561221;
-        Mon, 19 Jul 2021 15:09:46 +0000 (UTC)
+        id S241866AbhGSO2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:28:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6263261264;
+        Mon, 19 Jul 2021 15:08:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707386;
-        bh=ty9UynT7PDHbcdewFsITahOLJKeL+JHzrnPnrkjxVss=;
+        s=korg; t=1626707307;
+        bh=PxyD3vuui0Czt6+qLbgM1PyCIZ5V3NELgEMkjmqlK9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X6y243bhzQuGA2dtC9zoYBdStGxkm7mcDKewg3smGb1KZQBHRhfll8u/SRrA07RJN
-         hiW6iO1no8AoS1rJLmYX1vyGtN1Ccp43BKwoYtlT6ekB3vWAzKDSA9etZ+sBiAvuON
-         M3UBloFYXi29/b/mxsHxfvWSzltaVMi+drWMDJW4=
+        b=AGddbtpinxEDKll32WRDMnRfkwZE5uWp6jDNAJtHQDq16iFflP+EgAyiIJNbHqnym
+         7JP0E3evuqRWcYHlinbKBcWP9dSMlGZGMiY2EFzjKX8KfjpO9zBb5i795b7rTDMe5m
+         zgiaIL9QvCWVwJPFgZfkh6VtUulkWxAiguqhbm8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stefan-Gabriel Mirea <stefan-gabriel.mirea@nxp.com>,
+        Sanchayan Maity <maitysanchayan@gmail.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 099/245] iio: adc: ti-ads1015: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:50:41 +0200
-Message-Id: <20210719144943.625719346@linuxfoundation.org>
+Subject: [PATCH 4.9 100/245] iio: adc: vf610: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 19 Jul 2021 16:50:42 +0200
+Message-Id: <20210719144943.655497708@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -45,58 +45,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit d85d71dd1ab67eaa7351f69fec512d8f09d164e1 ]
+[ Upstream commit 7765dfaa22ea08abf0c175e7553826ba2a939632 ]
 
 To make code more readable, use a structure to express the channel
 layout and ensure the timestamp is 8 byte aligned.
 
-Found during an audit of all calls of this function.
+Found during an audit of all calls of uses of
+iio_push_to_buffers_with_timestamp()
 
-Fixes: ecc24e72f437 ("iio: adc: Add TI ADS1015 ADC driver support")
+Fixes: 0010d6b44406 ("iio: adc: vf610: Add IIO buffer support for Vybrid ADC")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Stefan-Gabriel Mirea <stefan-gabriel.mirea@nxp.com>
+Cc: Sanchayan Maity <maitysanchayan@gmail.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-9-jic23@kernel.org
+Link: https://lore.kernel.org/r/20210501170121.512209-10-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/ti-ads1015.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/iio/adc/vf610_adc.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/adc/ti-ads1015.c b/drivers/iio/adc/ti-ads1015.c
-index 5afe32f6587b..d892c0fe5c31 100644
---- a/drivers/iio/adc/ti-ads1015.c
-+++ b/drivers/iio/adc/ti-ads1015.c
-@@ -292,10 +292,14 @@ static irqreturn_t ads1015_trigger_handler(int irq, void *p)
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct ads1015_data *data = iio_priv(indio_dev);
--	s16 buf[8]; /* 1x s16 ADC val + 3x s16 padding +  4x s16 timestamp */
-+	/* Ensure natural alignment of timestamp */
+diff --git a/drivers/iio/adc/vf610_adc.c b/drivers/iio/adc/vf610_adc.c
+index d1bde6d2721e..2a14800e6514 100644
+--- a/drivers/iio/adc/vf610_adc.c
++++ b/drivers/iio/adc/vf610_adc.c
+@@ -180,7 +180,11 @@ struct vf610_adc {
+ 	u32 sample_freq_avail[5];
+ 
+ 	struct completion completion;
+-	u16 buffer[8];
++	/* Ensure the timestamp is naturally aligned */
 +	struct {
-+		s16 chan;
++		u16 chan;
 +		s64 timestamp __aligned(8);
 +	} scan;
- 	int chan, ret, res;
+ };
  
--	memset(buf, 0, sizeof(buf));
-+	memset(&scan, 0, sizeof(scan));
- 
- 	mutex_lock(&data->lock);
- 	chan = find_first_bit(indio_dev->active_scan_mask,
-@@ -306,10 +310,10 @@ static irqreturn_t ads1015_trigger_handler(int irq, void *p)
- 		goto err;
- 	}
- 
--	buf[0] = res;
-+	scan.chan = res;
- 	mutex_unlock(&data->lock);
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buf,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &scan,
- 					   iio_get_time_ns(indio_dev));
- 
- err:
+ static const u32 vf610_hw_avgs[] = { 1, 4, 8, 16, 32 };
+@@ -592,9 +596,9 @@ static irqreturn_t vf610_adc_isr(int irq, void *dev_id)
+ 	if (coco & VF610_ADC_HS_COCO0) {
+ 		info->value = vf610_adc_read_data(info);
+ 		if (iio_buffer_enabled(indio_dev)) {
+-			info->buffer[0] = info->value;
++			info->scan.chan = info->value;
+ 			iio_push_to_buffers_with_timestamp(indio_dev,
+-					info->buffer,
++					&info->scan,
+ 					iio_get_time_ns(indio_dev));
+ 			iio_trigger_notify_done(indio_dev->trig);
+ 		} else
 -- 
 2.30.2
 
