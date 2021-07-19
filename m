@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7A23CDF5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617F93CE030
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345998AbhGSPJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:09:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42642 "EHLO mail.kernel.org"
+        id S1346287AbhGSPOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:14:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344904AbhGSOtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:49:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9708F60551;
-        Mon, 19 Jul 2021 15:29:56 +0000 (UTC)
+        id S1344485AbhGSOsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 591E260FE7;
+        Mon, 19 Jul 2021 15:29:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708597;
-        bh=FAzYmYsss1pbrGsEmD/nkM6Aop2UQEWpOl/NDVl0/hk=;
+        s=korg; t=1626708570;
+        bh=1p9J9VbDBIgjw5AxmgFFgAP0lyVx/2K10/Ztkn+Ecbw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RCuh/1EAf2sZCYrxGyAOfifGGwifJa8gFWAwZAOrbLS9B2Fc0sV4cLIC5JJQ/bUNF
-         gRM7jltLM46cvauZvLPPXsNLIEaGc115cbareaGjKf4jWjDpxzQaAk222TMR0jnNVL
-         ZYVq5SdXsmDR5bpollHMxQe4TY63q5wh+Y/ziDvc=
+        b=Jsud7D6VIpPlNG+I6FmGcVZIElwF5Fc8xNlYwVRDAkH/8dCe/xHcRZdj3Esg5V/WQ
+         YCRg1TkQ+4NPPCZHrd6fj6o0e+Xk6WdlsFmfXhrxs09UyoXOdDpBmwqphVLW5bflU8
+         bod2Dsm+fEoBDmAurZSeDx1dPb+koM1p3aOhnQOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Oliver Lang <Oliver.Lang@gossenmetrawatt.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>, Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Nikita Travkin <nikita@trvn.ru>
-Subject: [PATCH 4.19 036/421] iio: ltr501: ltr501_read_ps(): add missing endianness conversion
-Date:   Mon, 19 Jul 2021 16:47:27 +0200
-Message-Id: <20210719144947.482084338@linuxfoundation.org>
+        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.19 044/421] tracing/histograms: Fix parsing of "sym-offset" modifier
+Date:   Mon, 19 Jul 2021 16:47:35 +0200
+Message-Id: <20210719144947.748865304@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -43,51 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 71b33f6f93ef9462c84560e2236ed22209d26a58 upstream.
+commit 26c563731056c3ee66f91106c3078a8c36bb7a9e upstream.
 
-The PS ADC Channel data is spread over 2 registers in little-endian
-form. This patch adds the missing endianness conversion.
+With the addition of simple mathematical operations (plus and minus), the
+parsing of the "sym-offset" modifier broke, as it took the '-' part of the
+"sym-offset" as a minus, and tried to break it up into a mathematical
+operation of "field.sym - offset", in which case it failed to parse
+(unless the event had a field called "offset").
 
-Fixes: 2690be905123 ("iio: Add Lite-On ltr501 ambient light / proximity sensor driver")
-Signed-off-by: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Tested-by: Nikita Travkin <nikita@trvn.ru> # ltr559
-Link: https://lore.kernel.org/r/20210610134619.2101372-4-mkl@pengutronix.de
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Both .sym and .sym-offset modifiers should not be entered into
+mathematical calculations anyway. If ".sym-offset" is found in the
+modifier, then simply make it not an operation that can be calculated on.
+
+Link: https://lkml.kernel.org/r/20210707110821.188ae255@oasis.local.home
+
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 100719dcef447 ("tracing: Add simple expression support to hist triggers")
+Reviewed-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/light/ltr501.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/trace/trace_events_hist.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/iio/light/ltr501.c
-+++ b/drivers/iio/light/ltr501.c
-@@ -411,18 +411,19 @@ static int ltr501_read_als(struct ltr501
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -2211,6 +2211,13 @@ static int contains_operator(char *str)
  
- static int ltr501_read_ps(struct ltr501_data *data)
- {
--	int ret, status;
-+	__le16 status;
-+	int ret;
- 
- 	ret = ltr501_drdy(data, LTR501_STATUS_PS_RDY);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = regmap_bulk_read(data->regmap, LTR501_PS_DATA,
--			       &status, 2);
-+			       &status, sizeof(status));
- 	if (ret < 0)
- 		return ret;
- 
--	return status;
-+	return le16_to_cpu(status);
- }
- 
- static int ltr501_read_intr_prst(struct ltr501_data *data,
+ 	switch (*op) {
+ 	case '-':
++		/*
++		 * Unfortunately, the modifier ".sym-offset"
++		 * can confuse things.
++		 */
++		if (op - str >= 4 && !strncmp(op - 4, ".sym-offset", 11))
++			return FIELD_OP_NONE;
++
+ 		if (*str == '-')
+ 			field_op = FIELD_OP_UNARY_MINUS;
+ 		else
 
 
