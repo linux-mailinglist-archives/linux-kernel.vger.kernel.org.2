@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B053CD3CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333463CD3DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236419AbhGSKoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235905AbhGSKoU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:44:20 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCD1C061574;
-        Mon, 19 Jul 2021 03:35:59 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 13:24:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1626693897;
-        bh=yzLETKdOH+GXTMHqntXOSgnP8jsRysvUGu+IjTrezqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QTfw+WZ5Gp0fxA2U7q3NvIAOPHoUwoCpvZB3dtczm3AZ7xYFFtmiUNV834OYITLqu
-         QI/dhl8/S2y/s0Pu5fWRPHfroiRKvtEhHZ99dFZmJOQ+222ccmcMRqMpycLQZ/Uwgo
-         O80kAy4d1hO4XwGPEKNVmj74lVLhew4klSvMPzSk=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, Ben Chen <ben_chen@bizlinktech.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] HID: cmedia: add support for HS-100B mute button
-Message-ID: <dded786c-e27e-4d78-999c-af99f3778c11@t-8ch.de>
-References: <20210719110911.310701-1-linux@weissschuh.net>
+        id S236436AbhGSKrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:47:19 -0400
+Received: from elvis.franken.de ([193.175.24.41]:39630 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236076AbhGSKrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 06:47:18 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1m5RRE-0008KT-00; Mon, 19 Jul 2021 13:27:56 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 4775DC0ED2; Mon, 19 Jul 2021 13:27:18 +0200 (CEST)
+Date:   Mon, 19 Jul 2021 13:27:18 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Joe Perches <joe@perches.com>
+Cc:     David Daney <david.daney@cavium.com>, linux-mips@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: octeon: Remove vestiges of CONFIG_CAVIUM_RESERVE32
+Message-ID: <20210719112718.GA7434@alpha.franken.de>
+References: <997c0cdbd57752252d87129185a973c7d42e491f.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210719110911.310701-1-linux@weissschuh.net>
+In-Reply-To: <997c0cdbd57752252d87129185a973c7d42e491f.camel@perches.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mo, 2021-07-19T13:09+0200, Thomas Weißschuh wrote:
-> These chips report mute button events in bit 4 of their report without
-> it being part of the report descriptor.
-> Use a custom descriptor that maps this bit.
+On Tue, Jul 13, 2021 at 10:49:15AM -0700, Joe Perches wrote:
+> The config option CAVIUM_RESERVE32 is not used.
+> Remove the dead code controlled by it.
 > 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> Signed-off-by: Joe Perches <joe@perches.com>
 > ---
-> v1: https://lore.kernel.org/linux-input/a769ae40-6d0c-47c4-803f-2c8dbc362f24@t-8ch.de/
 > 
-> v1 -> v2:
->  * Merged into the existing cmedia driver instead of creating a dedicated
->    driver.
+> Uncompiled, untested.
 > 
-> v2: https://lore.kernel.org/linux-input/20210716160659.154779-1-linux@weissschuh.net/
+> Found using a grep for unused Kconfig entries:
 > 
-> v2 -> v3:
->  * Fixed cosmetic checkpatch warnings
->  * CC-ed Ben Chen who is the original author of hid-cmedia.c
+> $ git grep -P '^\s*#\s*if(?:def\s+|\s*defined\s*\(?\s*)CONFIG_[A-Z0-9_]+' | \
+>   grep -oh -P '\bCONFIG_[A-Z0-9_]+\b' | \
+>   sort | sed -e 's/^CONFIG_//' -e 's/_MODULE$//' | uniq | \
+>   while read config ; do \
+>     echo CONFIG_$config; \
+>     git grep -w $config -- '*/Kconfig*' | \
+>     wc -l; \
+>   done | \
+>   grep -B1 '^0'
 > 
->  drivers/hid/Kconfig      |  5 +-
->  drivers/hid/hid-cmedia.c | 99 +++++++++++++++++++++++++++++++++++-----
->  drivers/hid/hid-ids.h    |  1 +
->  drivers/hid/hid-quirks.c |  1 +
->  4 files changed, 93 insertions(+), 13 deletions(-)
+> with some additional inspection of the kernel source tree to verify.
 > 
+>  arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c | 21 +++---------
+>  arch/mips/cavium-octeon/setup.c                    | 38 +---------------------
 
-FYI:
-The Mail to Ben bounced, so we will probably have to do without his review.
+applied to mips-next.
 
-Thomas
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
