@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB49D3CE6A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6D03CE6AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350711AbhGSQLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:11:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39718 "EHLO mail.kernel.org"
+        id S1350748AbhGSQL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:11:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345537AbhGSPJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AC8A60FE7;
-        Mon, 19 Jul 2021 15:49:10 +0000 (UTC)
+        id S1345568AbhGSPJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:09:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AA19613AF;
+        Mon, 19 Jul 2021 15:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709751;
-        bh=ltZ7vO6TGRJU0yf0niTNoGRE3EuoqsctVzx+HefZ7Do=;
+        s=korg; t=1626709754;
+        bh=9sHeRwrUUh9yPtTPlC8N358xe2XQYAzu9ijcoIe1FJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ZVxJgBo2elZ3em8u7Z91IZlU+K3gfmEbhKsclFZKnAYvA+U5PzhIh8urG2RNsIDq
-         TxZ8hT47Oq9dK8x5QZ+f8JLqdtqGHBZNZ95pPu1syhZCB7zp74BMn1kEYlrDddzXOH
-         p4E1TD4zSkoANSTxmLWAMIuc9Nw5eJ9+nveDMuTE=
+        b=nJnaaD2JrbtOPKECySllOOo1QTBLOAyyCM9qxvDIZ3iWk74p5+jOGMffI6dwmA+W+
+         /A6tW4OGNguKGQQPmd1C1vsTH8UYoM2LyKZf5nul2D6iSVPLBpDo+5AR8BkRipMAlw
+         JrS5kwLNahTw8soBCwsCWvUW6zI4OO4ishZTXb08=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Mike Marshall <hubcap@omnibond.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/149] PCI: tegra: Add missing MODULE_DEVICE_TABLE
-Date:   Mon, 19 Jul 2021 16:53:11 +0200
-Message-Id: <20210719144920.998602961@linuxfoundation.org>
+Subject: [PATCH 5.4 084/149] orangefs: fix orangefs df output.
+Date:   Mon, 19 Jul 2021 16:53:12 +0200
+Message-Id: <20210719144921.230617387@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
 References: <20210719144901.370365147@linuxfoundation.org>
@@ -44,37 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Mike Marshall <hubcap@omnibond.com>
 
-[ Upstream commit 7bf475a4614a9722b9b989e53184a02596cf16d1 ]
+[ Upstream commit 0fdec1b3c9fbb5e856a40db5993c9eaf91c74a83 ]
 
-Add missing MODULE_DEVICE_TABLE definition so we generate correct modalias
-for automatic loading of this driver when it is built as a module.
+Orangefs df output is whacky. Walt Ligon suggested this might fix it.
+It seems way more in line with reality now...
 
-Link: https://lore.kernel.org/r/1620792422-16535-1-git-send-email-zou_wei@huawei.com
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Vidya Sagar <vidyas@nvidia.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Mike Marshall <hubcap@omnibond.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-tegra.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/orangefs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
-index cfa3c83d6cc7..99d505a85067 100644
---- a/drivers/pci/controller/pci-tegra.c
-+++ b/drivers/pci/controller/pci-tegra.c
-@@ -2613,6 +2613,7 @@ static const struct of_device_id tegra_pcie_of_match[] = {
- 	{ .compatible = "nvidia,tegra20-pcie", .data = &tegra20_pcie },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, tegra_pcie_of_match);
+diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
+index ee5efdc35cc1..2f2e430461b2 100644
+--- a/fs/orangefs/super.c
++++ b/fs/orangefs/super.c
+@@ -209,7 +209,7 @@ static int orangefs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	buf->f_bavail = (sector_t) new_op->downcall.resp.statfs.blocks_avail;
+ 	buf->f_files = (sector_t) new_op->downcall.resp.statfs.files_total;
+ 	buf->f_ffree = (sector_t) new_op->downcall.resp.statfs.files_avail;
+-	buf->f_frsize = sb->s_blocksize;
++	buf->f_frsize = 0;
  
- static void *tegra_pcie_ports_seq_start(struct seq_file *s, loff_t *pos)
- {
+ out_op_release:
+ 	op_release(new_op);
 -- 
 2.30.2
 
