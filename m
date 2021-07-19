@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872EC3CE904
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C7B3CEAAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351630AbhGSQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:49:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
+        id S1355879AbhGSRPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:15:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346834AbhGSP1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:27:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8889E610D2;
-        Mon, 19 Jul 2021 16:07:53 +0000 (UTC)
+        id S1346066AbhGSPii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:38:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D94B7613F9;
+        Mon, 19 Jul 2021 16:18:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710874;
-        bh=8eobUuQb0nnIyN8H1ub91qT3MywiOl/yDIoK+PJlCpE=;
+        s=korg; t=1626711503;
+        bh=kR4rGXaj+fSyBhupG/0kvtljqdtyArO3zLmYzlaCnbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1kvdMrnj/EODkzWoshlQZuIva/3qxj0x3Bb8SFen7tnuD+5AhUoXuu47hYNpBQ3fA
-         r32L5e2lZTbID3yEbh0s8NHXHPEv0tX0Gr/X2yy50FLYCYKyTstOXQ1GSf1OmKf+Fg
-         gbdDca0MpQaWijc/RH1tdREcskaM7T0ubIpf9A6M=
+        b=zQCbZPrIspG8HpGeyIX7Z2BR1aValPI3HFfOv1sRKvO7WUgKNtK0g4xPr8Vaj/sws
+         /Yknm1Qkm6xi5LWIJImxV3aeua5z5mGVM099a1+ULHHcIaBregBJAlxBK9D0I9zC8i
+         AR0kT1Rb2naRIRfNfz7ATZeBRc4KbxgGT+RGve/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 141/351] staging: rtl8723bs: fix macro value for 2.4Ghz only device
-Date:   Mon, 19 Jul 2021 16:51:27 +0200
-Message-Id: <20210719144949.142289328@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.12 026/292] btrfs: zoned: fix wrong mutex unlock on failure to allocate log root tree
+Date:   Mon, 19 Jul 2021 16:51:28 +0200
+Message-Id: <20210719144943.389640644@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Aiuto <fabioaiuto83@gmail.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 6d490a27e23c5fb79b766530016ab8665169498e ]
+commit ea32af47f00a046a1f953370514d6d946efe0152 upstream.
 
-fix IQK_Matrix_Settings_NUM macro value to 14 which is
-the max channel number value allowed in a 2.4Ghz device.
+When syncing the log, if we fail to allocate the root node for the log
+root tree:
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-Link: https://lore.kernel.org/r/0b4a876929949248aa18cb919da3583c65e4ee4e.1624367072.git.fabioaiuto83@gmail.com
+1) We are unlocking fs_info->tree_log_mutex, but at this point we have
+   not yet locked this mutex;
+
+2) We have locked fs_info->tree_root->log_mutex, but we end up not
+   unlocking it;
+
+So fix this by unlocking fs_info->tree_root->log_mutex instead of
+fs_info->tree_log_mutex.
+
+Fixes: e75f9fd194090e ("btrfs: zoned: move log tree node allocation out of log_root_tree->log_mutex")
+CC: stable@vger.kernel.org # 5.13+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8723bs/hal/odm.h | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ fs/btrfs/tree-log.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/odm.h b/drivers/staging/rtl8723bs/hal/odm.h
-index ff21343fbe0b..a428b0d7e37c 100644
---- a/drivers/staging/rtl8723bs/hal/odm.h
-+++ b/drivers/staging/rtl8723bs/hal/odm.h
-@@ -197,10 +197,7 @@ struct odm_rate_adaptive {
- 
- #define AVG_THERMAL_NUM		8
- #define IQK_Matrix_REG_NUM	8
--#define IQK_Matrix_Settings_NUM	(14 + 24 + 21) /*   Channels_2_4G_NUM
--						* + Channels_5G_20M_NUM
--						* + Channels_5G
--						*/
-+#define IQK_Matrix_Settings_NUM	14 /* Channels_2_4G_NUM */
- 
- #define		DM_Type_ByFW			0
- #define		DM_Type_ByDriver		1
--- 
-2.30.2
-
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3173,7 +3173,7 @@ int btrfs_sync_log(struct btrfs_trans_ha
+ 		if (!log_root_tree->node) {
+ 			ret = btrfs_alloc_log_tree_node(trans, log_root_tree);
+ 			if (ret) {
+-				mutex_unlock(&fs_info->tree_log_mutex);
++				mutex_unlock(&fs_info->tree_root->log_mutex);
+ 				goto out;
+ 			}
+ 		}
 
 
