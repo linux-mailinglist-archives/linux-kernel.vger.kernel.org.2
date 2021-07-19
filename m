@@ -2,145 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54D93CD4AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD6B3CD4B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236882AbhGSLnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        id S236947AbhGSLns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhGSLnU (ORCPT
+        with ESMTP id S231290AbhGSLnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:43:20 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1E7C061574;
-        Mon, 19 Jul 2021 04:39:55 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id E3F9CB3F5CE;
-        Mon, 19 Jul 2021 14:23:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1626697437;
+        Mon, 19 Jul 2021 07:43:47 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07C0C061574;
+        Mon, 19 Jul 2021 04:40:24 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1626697464;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K5psd6Gyst7jbmkEY35fCzySbAqC76tMvxDPI72IBLU=;
-        b=cQTeim98LKn7CJbBdHfrCSWS7Gz5gbDejjwVrzQDQtHVIIhUvNWfN/pUwkdLmFNc0qLRSq
-        XNvt1ZgCZ9ZRF3Abv0BoYfh0kaLDqY4ylhReu8cF9PxgYOfJwGQ0JQbelnzYns9x1wJUp2
-        SRhuOZDLzgWOuQUS6G0xqoXx+t4oJ/8=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Miaohe Lin <linmiaohe@huawei.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, paulmck@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Chris Clayton <chris2553@googlemail.com>,
-        Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>, gregkh@linuxfoundation.org
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-Date:   Mon, 19 Jul 2021 14:23:55 +0200
-Message-ID: <2237123.PRLUojbHBq@natalenko.name>
-In-Reply-To: <YPVtBBumSTMKGuld@casper.infradead.org>
-References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com> <5812280.fcLxn8YiTP@natalenko.name> <YPVtBBumSTMKGuld@casper.infradead.org>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ymvuQOiwKUSpANGmy6VygBcyGlRswj0psccsffBvtok=;
+        b=eCPFUxyKaT0PGkj4bo4HFm2GuN3gDoTjjJKSyHJhsYzoyZFPEPq711H5pPQzxTWsOPKU3X
+        QawghvgEyqNzGvG2a53H/OBXKDyISHLeWj7WlVrBSu7jjXtRA3Ukv5ph/2XqKBgxtJw4sM
+        AmOhe6ASBKgJaPVRTPC71GL7zxZe5ls=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, roopa@nvidia.com,
+        nikolay@nvidia.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        courmisch@gmail.com, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us, johannes@sipsolutions.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH 1/4] rtnetlink: remove rtnetlink_send() in rtnetlink
+Date:   Mon, 19 Jul 2021 20:24:07 +0800
+Message-Id: <20210719122407.5253-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 14:16:04 CEST Matthew Wilcox wr=
-ote:
-> On Mon, Jul 19, 2021 at 02:12:15PM +0200, Oleksandr Natalenko wrote:
-> > On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 14:08:37 CEST Miaohe Lin wr=
-ote:
-> > > On 2021/7/19 19:59, Oleksandr Natalenko wrote:
-> > > > On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 13:50:07 CEST Miaohe Li=
-n wrote:
-> > > >> On 2021/7/19 19:22, Matthew Wilcox wrote:
-> > > >>> On Mon, Jul 19, 2021 at 07:12:58PM +0800, Miaohe Lin wrote:
-> > > >>>> When in the commit 2799e77529c2a, we're using the percpu_ref to
-> > > >>>> serialize
-> > > >>>> against concurrent swapoff, i.e. there's percpu_ref inside
-> > > >>>> get_swap_device() instead of rcu_read_lock(). Please see commit
-> > > >>>> 63d8620ecf93 ("mm/swapfile: use percpu_ref to serialize against
-> > > >>>> concurrent swapoff") for detail.
-> > > >>>=20
-> > > >>> Oh, so this is a backport problem.  2799e77529c2 was backported
-> > > >>> without
-> > > >>> its prerequisite 63d8620ecf93.  Greg, probably best to just drop
-> > > >>=20
-> > > >> Yes, they're posted as a patch set:
-> > > >>=20
-> > > >> https://lkml.kernel.org/r/20210426123316.806267-1-linmiaohe@huawei=
-=2Eco
-> > > >> m
-> > > >>=20
-> > > >>> 2799e77529c2 from all stable trees; the race described is not very
-> > > >>> important (swapoff vs reading a page back from that swap device).
-> > > >>> .
-> > > >>=20
-> > > >> The swapoff races with reading a page back from that swap device
-> > > >> should
-> > > >> be
-> > > >> really uncommon as most users only do swapoff when the system is
-> > > >> going to
-> > > >> shutdown.
-> > > >>=20
-> > > >> Sorry for the trouble!
-> > > >=20
-> > > > git log --oneline v5.13..v5.13.3 --author=3D"Miaohe Lin"
-> > > > 11ebc09e50dc mm/zswap.c: fix two bugs in zswap_writeback_entry()
-> > > > 95d192da198d mm/z3fold: use release_z3fold_page_locked() to release
-> > > > locked
-> > > > z3fold page
-> > > > ccb7848e2344 mm/z3fold: fix potential memory leak in
-> > > > z3fold_destroy_pool()
-> > > > 9f7229c901c1 mm/huge_memory.c: don't discard hugepage if other
-> > > > processes
-> > > > are mapping it
-> > > > f13259175e4f mm/huge_memory.c: add missing read-only THP checking in
-> > > > transparent_hugepage_enabled()
-> > > > afafd371e7de mm/huge_memory.c: remove dedicated macro
-> > > > HPAGE_CACHE_INDEX_MASK a533a21b692f mm/shmem: fix shmem_swapin() ra=
-ce
-> > > > with swapoff
-> > > > c3b39134bbd0 swap: fix do_swap_page() race with swapoff
-> > > >=20
-> > > > Do you suggest reverting "mm/shmem: fix shmem_swapin() race with
-> > > > swapoff"
-> > > > as well?
-> > >=20
-> > > This patch also rely on its prerequisite 63d8620ecf93. I think we sho=
-uld
-> > > either revert any commit in this series or just backport the entire
-> > > series.
-> >=20
-> > Then why not just pick up 2 more patches instead of dropping 2 patches.
-> > Greg, could you please make sure the whole series from [1] gets pulled?
->=20
-> Because none of these patches should have been backported in the first
-> place.  It's just not worth the destabilisation.
+rtnetlink_send() is similar to rtnl_notify(), so remove rtnetlink_send().
+Modify the fifth parameter from 'struct nlmsghdr *nlh' to 'int report'
+in rtnl_notify(). This will do well for the caller havn't nlh variable.
+And modify the return value to integer, Some caller may be need the
+return value.
 
-What about the rest then?
+Rename pid to portid to avoid confusion in rtnl_{unicast, notify}.
 
-git log --oneline v5.13..v5.13.3 -- mm/ | wc -l
-18
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ include/linux/rtnetlink.h |  7 +++----
+ net/core/rtnetlink.c      | 21 +++++----------------
+ 2 files changed, 8 insertions(+), 20 deletions(-)
 
-Those look to be fixes, these ones too.
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
+diff --git a/include/linux/rtnetlink.h b/include/linux/rtnetlink.h
+index bb9cb84114c1..409c334746a6 100644
+--- a/include/linux/rtnetlink.h
++++ b/include/linux/rtnetlink.h
+@@ -9,10 +9,9 @@
+ #include <linux/refcount.h>
+ #include <uapi/linux/rtnetlink.h>
+ 
+-extern int rtnetlink_send(struct sk_buff *skb, struct net *net, u32 pid, u32 group, int echo);
+-extern int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid);
+-extern void rtnl_notify(struct sk_buff *skb, struct net *net, u32 pid,
+-			u32 group, struct nlmsghdr *nlh, gfp_t flags);
++extern int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 portid);
++extern int rtnl_notify(struct sk_buff *skb, struct net *net, u32 portid,
++		       u32 group, int report, gfp_t flags);
+ extern void rtnl_set_sk_err(struct net *net, u32 group, int error);
+ extern int rtnetlink_put_metrics(struct sk_buff *skb, u32 *metrics);
+ extern int rtnl_put_cacheinfo(struct sk_buff *skb, struct dst_entry *dst,
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 670d74ab91ae..48bb9dc6f06f 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -707,31 +707,20 @@ static int rtnl_link_fill(struct sk_buff *skb, const struct net_device *dev)
+ 	return err;
+ }
+ 
+-int rtnetlink_send(struct sk_buff *skb, struct net *net, u32 pid, unsigned int group, int echo)
++int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 portid)
+ {
+ 	struct sock *rtnl = net->rtnl;
+ 
+-	return nlmsg_notify(rtnl, skb, pid, group, echo, GFP_KERNEL);
+-}
+-
+-int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid)
+-{
+-	struct sock *rtnl = net->rtnl;
+-
+-	return nlmsg_unicast(rtnl, skb, pid);
++	return nlmsg_unicast(rtnl, skb, portid);
+ }
+ EXPORT_SYMBOL(rtnl_unicast);
+ 
+-void rtnl_notify(struct sk_buff *skb, struct net *net, u32 pid, u32 group,
+-		 struct nlmsghdr *nlh, gfp_t flags)
++int rtnl_notify(struct sk_buff *skb, struct net *net, u32 portid,
++		u32 group, int report, gfp_t flags)
+ {
+ 	struct sock *rtnl = net->rtnl;
+-	int report = 0;
+-
+-	if (nlh)
+-		report = nlmsg_report(nlh);
+ 
+-	nlmsg_notify(rtnl, skb, pid, group, report, flags);
++	return nlmsg_notify(rtnl, skb, portid, group, report, flags);
+ }
+ EXPORT_SYMBOL(rtnl_notify);
+ 
+-- 
+2.32.0
 
