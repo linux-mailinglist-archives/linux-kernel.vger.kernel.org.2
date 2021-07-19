@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A543CD81F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B708C3CDAD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242770AbhGSOUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:20:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55504 "EHLO mail.kernel.org"
+        id S242522AbhGSOik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:38:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242250AbhGSOTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:19:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52AFF6024A;
-        Mon, 19 Jul 2021 15:00:03 +0000 (UTC)
+        id S244530AbhGSO3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:29:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF6196121F;
+        Mon, 19 Jul 2021 15:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706803;
-        bh=44Xma6sR9QDFxx24O/PYwhH3IGAclEOgZ7kRlh4pOSA=;
+        s=korg; t=1626707393;
+        bh=h2DogzvGRbeZfjjIyqGJFRAFA1mTAUuzLW1bLBME60A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=enhtbRfIR7OKzvoI6r/ztLx6SeyLSI40mkDjtt17C+cNJA9ddPio55BRMuK2oPi5s
-         trelHAXhEUYxWYcNA/b7w0XrhuUF1hX60Dr3RK3D5C5FHEFeUqzlyQ7TQHyK2eQ0Mf
-         /zbhz5M55GW7251u06MCBuy5Ftc4O81kHbTvDAeY=
+        b=vyk2hpoSK7AC3XH33qm45x9lR4NhdmJaQwzeuJhl3Kj7IfP2pETsHmUhLeFSx9jkk
+         Eg6poil3EFsTf5q0bN3o9lmC6nbiFIPCnROI/FKIO6mFvcepmkSIioVAmAKutqbtZ4
+         qSw9vZWoJ21XX4hGqWdPOj5Sn2SqJSouA3O3Q5U8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Klein <aksecurity@gmail.com>,
-        Willy Tarreau <w@1wt.eu>, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 104/188] ipv6: use prandom_u32() for ID generation
+Subject: [PATCH 4.9 146/245] atm: nicstar: use dma_free_coherent instead of kfree
 Date:   Mon, 19 Jul 2021 16:51:28 +0200
-Message-Id: <20210719144937.349504857@linuxfoundation.org>
+Message-Id: <20210719144945.123488640@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,92 +40,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit 62f20e068ccc50d6ab66fdb72ba90da2b9418c99 ]
+[ Upstream commit 6a1e5a4af17e440dd82a58a2c5f40ff17a82b722 ]
 
-This is a complement to commit aa6dd211e4b1 ("inet: use bigger hash
-table for IP ID generation"), but focusing on some specific aspects
-of IPv6.
+When 'nicstar_init_one' fails, 'ns_init_card_error' will be executed for
+error handling, but the correct memory free function should be used,
+otherwise it will cause an error. Since 'card->rsq.org' and
+'card->tsq.org' are allocated using 'dma_alloc_coherent' function, they
+should be freed using 'dma_free_coherent'.
 
-Contary to IPv4, IPv6 only uses packet IDs with fragments, and with a
-minimum MTU of 1280, it's much less easy to force a remote peer to
-produce many fragments to explore its ID sequence. In addition packet
-IDs are 32-bit in IPv6, which further complicates their analysis. On
-the other hand, it is often easier to choose among plenty of possible
-source addresses and partially work around the bigger hash table the
-commit above permits, which leaves IPv6 partially exposed to some
-possibilities of remote analysis at the risk of weakening some
-protocols like DNS if some IDs can be predicted with a good enough
-probability.
+Fix this by using 'dma_free_coherent' instead of 'kfree'
 
-Given the wide range of permitted IDs, the risk of collision is extremely
-low so there's no need to rely on the positive increment algorithm that
-is shared with the IPv4 code via ip_idents_reserve(). We have a fast
-PRNG, so let's simply call prandom_u32() and be done with it.
+This log reveals it:
 
-Performance measurements at 10 Gbps couldn't show any difference with
-the previous code, even when using a single core, because due to the
-large fragments, we're limited to only ~930 kpps at 10 Gbps and the cost
-of the random generation is completely offset by other operations and by
-the network transfer time. In addition, this change removes the need to
-update a shared entry in the idents table so it may even end up being
-slightly faster on large scale systems where this matters.
+[    3.440294] kernel BUG at mm/slub.c:4206!
+[    3.441059] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+[    3.441430] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.12.4-g70e7f0549188-dirty #141
+[    3.441986] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[    3.442780] RIP: 0010:kfree+0x26a/0x300
+[    3.443065] Code: e8 3a c3 b9 ff e9 d6 fd ff ff 49 8b 45 00 31 db a9 00 00 01 00 75 4d 49 8b 45 00 a9 00 00 01 00 75 0a 49 8b 45 08 a8 01 75 02 <0f> 0b 89 d9 b8 00 10 00 00 be 06 00 00 00 48 d3 e0 f7 d8 48 63 d0
+[    3.443396] RSP: 0000:ffffc90000017b70 EFLAGS: 00010246
+[    3.443396] RAX: dead000000000100 RBX: 0000000000000000 RCX: 0000000000000000
+[    3.443396] RDX: 0000000000000000 RSI: ffffffff85d3df94 RDI: ffffffff85df38e6
+[    3.443396] RBP: ffffc90000017b90 R08: 0000000000000001 R09: 0000000000000001
+[    3.443396] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888107dc0000
+[    3.443396] R13: ffffea00001f0100 R14: ffff888101a8bf00 R15: ffff888107dc0160
+[    3.443396] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000) knlGS:0000000000000000
+[    3.443396] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    3.443396] CR2: 0000000000000000 CR3: 000000000642e000 CR4: 00000000000006e0
+[    3.443396] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    3.443396] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    3.443396] Call Trace:
+[    3.443396]  ns_init_card_error+0x12c/0x220
+[    3.443396]  nicstar_init_one+0x10d2/0x1130
+[    3.443396]  local_pci_probe+0x4a/0xb0
+[    3.443396]  pci_device_probe+0x126/0x1d0
+[    3.443396]  ? pci_device_remove+0x100/0x100
+[    3.443396]  really_probe+0x27e/0x650
+[    3.443396]  driver_probe_device+0x84/0x1d0
+[    3.443396]  ? mutex_lock_nested+0x16/0x20
+[    3.443396]  device_driver_attach+0x63/0x70
+[    3.443396]  __driver_attach+0x117/0x1a0
+[    3.443396]  ? device_driver_attach+0x70/0x70
+[    3.443396]  bus_for_each_dev+0xb6/0x110
+[    3.443396]  ? rdinit_setup+0x40/0x40
+[    3.443396]  driver_attach+0x22/0x30
+[    3.443396]  bus_add_driver+0x1e6/0x2a0
+[    3.443396]  driver_register+0xa4/0x180
+[    3.443396]  __pci_register_driver+0x77/0x80
+[    3.443396]  ? uPD98402_module_init+0xd/0xd
+[    3.443396]  nicstar_init+0x1f/0x75
+[    3.443396]  do_one_initcall+0x7a/0x3d0
+[    3.443396]  ? rdinit_setup+0x40/0x40
+[    3.443396]  ? rcu_read_lock_sched_held+0x4a/0x70
+[    3.443396]  kernel_init_freeable+0x2a7/0x2f9
+[    3.443396]  ? rest_init+0x2c0/0x2c0
+[    3.443396]  kernel_init+0x13/0x180
+[    3.443396]  ? rest_init+0x2c0/0x2c0
+[    3.443396]  ? rest_init+0x2c0/0x2c0
+[    3.443396]  ret_from_fork+0x1f/0x30
+[    3.443396] Modules linked in:
+[    3.443396] Dumping ftrace buffer:
+[    3.443396]    (ftrace buffer empty)
+[    3.458593] ---[ end trace 3c6f8f0d8ef59bcd ]---
+[    3.458922] RIP: 0010:kfree+0x26a/0x300
+[    3.459198] Code: e8 3a c3 b9 ff e9 d6 fd ff ff 49 8b 45 00 31 db a9 00 00 01 00 75 4d 49 8b 45 00 a9 00 00 01 00 75 0a 49 8b 45 08 a8 01 75 02 <0f> 0b 89 d9 b8 00 10 00 00 be 06 00 00 00 48 d3 e0 f7 d8 48 63 d0
+[    3.460499] RSP: 0000:ffffc90000017b70 EFLAGS: 00010246
+[    3.460870] RAX: dead000000000100 RBX: 0000000000000000 RCX: 0000000000000000
+[    3.461371] RDX: 0000000000000000 RSI: ffffffff85d3df94 RDI: ffffffff85df38e6
+[    3.461873] RBP: ffffc90000017b90 R08: 0000000000000001 R09: 0000000000000001
+[    3.462372] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888107dc0000
+[    3.462871] R13: ffffea00001f0100 R14: ffff888101a8bf00 R15: ffff888107dc0160
+[    3.463368] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000) knlGS:0000000000000000
+[    3.463949] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    3.464356] CR2: 0000000000000000 CR3: 000000000642e000 CR4: 00000000000006e0
+[    3.464856] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    3.465356] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    3.465860] Kernel panic - not syncing: Fatal exception
+[    3.466370] Dumping ftrace buffer:
+[    3.466616]    (ftrace buffer empty)
+[    3.466871] Kernel Offset: disabled
+[    3.467122] Rebooting in 1 seconds..
 
-The risk of at least one collision here is about 1/80 million among
-10 IDs, 1/850k among 100 IDs, and still only 1/8.5k among 1000 IDs,
-which remains very low compared to IPv4 where all IDs are reused
-every 4 to 80ms on a 10 Gbps flow depending on packet sizes.
-
-Reported-by: Amit Klein <aksecurity@gmail.com>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20210529110746.6796-1-w@1wt.eu
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/output_core.c | 28 +++++-----------------------
- 1 file changed, 5 insertions(+), 23 deletions(-)
+ drivers/atm/nicstar.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv6/output_core.c b/net/ipv6/output_core.c
-index 6b896cc9604e..e2de4b0479f6 100644
---- a/net/ipv6/output_core.c
-+++ b/net/ipv6/output_core.c
-@@ -14,29 +14,11 @@ static u32 __ipv6_select_ident(struct net *net,
- 			       const struct in6_addr *dst,
- 			       const struct in6_addr *src)
- {
--	const struct {
--		struct in6_addr dst;
--		struct in6_addr src;
--	} __aligned(SIPHASH_ALIGNMENT) combined = {
--		.dst = *dst,
--		.src = *src,
--	};
--	u32 hash, id;
--
--	/* Note the following code is not safe, but this is okay. */
--	if (unlikely(siphash_key_is_zero(&net->ipv4.ip_id_key)))
--		get_random_bytes(&net->ipv4.ip_id_key,
--				 sizeof(net->ipv4.ip_id_key));
--
--	hash = siphash(&combined, sizeof(combined), &net->ipv4.ip_id_key);
--
--	/* Treat id of 0 as unset and if we get 0 back from ip_idents_reserve,
--	 * set the hight order instead thus minimizing possible future
--	 * collisions.
--	 */
--	id = ip_idents_reserve(hash, 1);
--	if (unlikely(!id))
--		id = 1 << 31;
-+	u32 id;
-+
-+	do {
-+		id = prandom_u32();
-+	} while (!id);
- 
- 	return id;
- }
+diff --git a/drivers/atm/nicstar.c b/drivers/atm/nicstar.c
+index b2bae94ffe4d..7c9544ac1849 100644
+--- a/drivers/atm/nicstar.c
++++ b/drivers/atm/nicstar.c
+@@ -838,10 +838,12 @@ static void ns_init_card_error(ns_dev *card, int error)
+ 			dev_kfree_skb_any(hb);
+ 	}
+ 	if (error >= 12) {
+-		kfree(card->rsq.org);
++		dma_free_coherent(&card->pcidev->dev, NS_RSQSIZE + NS_RSQ_ALIGNMENT,
++				card->rsq.org, card->rsq.dma);
+ 	}
+ 	if (error >= 11) {
+-		kfree(card->tsq.org);
++		dma_free_coherent(&card->pcidev->dev, NS_TSQSIZE + NS_TSQ_ALIGNMENT,
++				card->tsq.org, card->tsq.dma);
+ 	}
+ 	if (error >= 10) {
+ 		free_irq(card->pcidev->irq, card);
 -- 
 2.30.2
 
