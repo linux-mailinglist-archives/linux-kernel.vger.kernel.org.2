@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC903CE916
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F00F3CE9F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353302AbhGSQuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:50:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38168 "EHLO mail.kernel.org"
+        id S1354530AbhGSREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:04:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348083AbhGSPYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7531961421;
-        Mon, 19 Jul 2021 16:01:30 +0000 (UTC)
+        id S1348983AbhGSPfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0040861002;
+        Mon, 19 Jul 2021 16:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710491;
-        bh=RU3k0Z0HBpTjvUzhHGjfHYIslttXtXdKwuqO741+84o=;
+        s=korg; t=1626711351;
+        bh=0LbTZl/GtSu1ou7FYQwLRq1cIOY8xCp9qEaU6uDpBGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A+yM4kHUMdAM0wGB1rI7e9exR/FS4mEKVy9I/OVvgCOzJH5dSm9VMegXFaXKxyh5q
-         1SLnDLX8tcFXfz2ON9SbCauqzwDLUes6XqekhnxFrUX/wekCL/SEwbUzKHOhsgxxUF
-         AoYalq0xiku5eDEsLsp9RiOz3Zd0AEKCw9hehOlQ=
+        b=rCaw4GymyRdEt9sCWoS4svh6uac0Kl2I9tWAfR3S8d64SiOWeNGcK6covpCm/e1dJ
+         qjjyarAlNt34XEMXgbrqa8uVOEDhdkv3ZsokFPsK3/ug1vy4VmnV91+ZxrV2A2Bsym
+         5J8Qm/1/W0UzIXwFsY2L22L9BE9A6PWYk66SpAYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        stable@vger.kernel.org, Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 238/243] static_call: Fix static_call_text_reserved() vs __init
-Date:   Mon, 19 Jul 2021 16:54:27 +0200
-Message-Id: <20210719144948.607712484@linuxfoundation.org>
+Subject: [PATCH 5.13 322/351] thermal/drivers/sprd: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 19 Jul 2021 16:54:28 +0200
+Message-Id: <20210719144955.703269701@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,69 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-[ Upstream commit 2bee6d16e4379326b1eea454e68c98b17456769e ]
+[ Upstream commit 4d57fd9aeaa013a245bf1fade81e2c30a5efd491 ]
 
-It turns out that static_call_text_reserved() was reporting __init
-text as being reserved past the time when the __init text was freed
-and re-used.
+MODULE_DEVICE_TABLE is used to extract the device information out of the
+driver and builds a table when being compiled. If using this macro,
+kernel can find the driver if available when the device is plugged in,
+and then loads that driver and initializes the device.
 
-This is mostly harmless and will at worst result in refusing a kprobe.
-
-Fixes: 6333e8f73b83 ("static_call: Avoid kprobes on inline static_call()s")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20210628113045.106211657@infradead.org
+Fixes: 554fdbaf19b18 ("thermal: sprd: Add Spreadtrum thermal driver support")
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210512093752.243168-1-zhang.lyra@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/static_call.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/thermal/sprd_thermal.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index f59089a12231..b62a0c41c905 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -292,13 +292,15 @@ static int addr_conflict(struct static_call_site *site, void *start, void *end)
+diff --git a/drivers/thermal/sprd_thermal.c b/drivers/thermal/sprd_thermal.c
+index 3682edb2f466..fe06cccf14b3 100644
+--- a/drivers/thermal/sprd_thermal.c
++++ b/drivers/thermal/sprd_thermal.c
+@@ -532,6 +532,7 @@ static const struct of_device_id sprd_thermal_of_match[] = {
+ 	{ .compatible = "sprd,ums512-thermal", .data = &ums512_data },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, sprd_thermal_of_match);
  
- static int __static_call_text_reserved(struct static_call_site *iter_start,
- 				       struct static_call_site *iter_stop,
--				       void *start, void *end)
-+				       void *start, void *end, bool init)
- {
- 	struct static_call_site *iter = iter_start;
- 
- 	while (iter < iter_stop) {
--		if (addr_conflict(iter, start, end))
--			return 1;
-+		if (init || !static_call_is_init(iter)) {
-+			if (addr_conflict(iter, start, end))
-+				return 1;
-+		}
- 		iter++;
- 	}
- 
-@@ -324,7 +326,7 @@ static int __static_call_mod_text_reserved(void *start, void *end)
- 
- 	ret = __static_call_text_reserved(mod->static_call_sites,
- 			mod->static_call_sites + mod->num_static_call_sites,
--			start, end);
-+			start, end, mod->state == MODULE_STATE_COMING);
- 
- 	module_put(mod);
- 
-@@ -459,8 +461,9 @@ static inline int __static_call_mod_text_reserved(void *start, void *end)
- 
- int static_call_text_reserved(void *start, void *end)
- {
-+	bool init = system_state < SYSTEM_RUNNING;
- 	int ret = __static_call_text_reserved(__start_static_call_sites,
--			__stop_static_call_sites, start, end);
-+			__stop_static_call_sites, start, end, init);
- 
- 	if (ret)
- 		return ret;
+ static const struct dev_pm_ops sprd_thermal_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(sprd_thm_suspend, sprd_thm_resume)
 -- 
 2.30.2
 
