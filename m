@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35643CD1EF
+	by mail.lfdr.de (Postfix) with ESMTP id EB7813CD1F0
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236217AbhGSJuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:50:10 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:46406
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235172AbhGSJuF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:50:05 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 649FB40207;
-        Mon, 19 Jul 2021 10:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626690644;
-        bh=hya7L108CUJRjE5JN1TFdEqd6eaNpO4wxcvgoKtlo4E=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=r9RMg/uw6Hh0RhemOxOA48/WC6wWMhhZaTazsd8bzf7WwLE8AB4J75mBB7uW50AF7
-         VdpuGf9RK92KMGZ+cUWE1DlZKQx7mUALg/5RPu0gfIGo214asrEAg60n7OO/Zt0JkV
-         13eoczS+BP/jC+vSG4Sytsmyce6xonS/4dHd1/75ufQjiywSeVYJnSMsoOlYlUlYml
-         O8/p26IDhLgfhPNA/FGMOJkEiD3AXws/Nmf37a0IflXM8YC3cRlzC2cUC+hspIUsOa
-         D1RCIgtzQMVdoGlyfACT63DD4jlzv7p4w+J1vchiLIiJRz3l07/EjK5xJUTHhiUkd5
-         wLxe7hE61o0KA==
-From:   Colin King <colin.king@canonical.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] sound: Fix spelling mistake "synchronization" -> "synchronization"
-Date:   Mon, 19 Jul 2021 11:30:44 +0100
-Message-Id: <20210719103044.15315-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S236280AbhGSJus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:50:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:55006 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235172AbhGSJun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 05:50:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 921F46D;
+        Mon, 19 Jul 2021 03:31:23 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A19A13F73D;
+        Mon, 19 Jul 2021 03:31:22 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: [PATCH v2 0/2] sched/fair: nohz.next_balance vs newly-idle CPUs
+Date:   Mon, 19 Jul 2021 11:31:15 +0100
+Message-Id: <20210719103117.3624936-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi folks,
 
-There is a spelling mistake in the Kconfig text. Fix it.
+The single patch has grown a sibling, and a cover letter along with it.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/drivers/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This was caught up by our testing on an arm64 RB5 board - that's an 8 CPUs
+DynamIQ SoC with 4 littles, 3 mediums and 1 big. It seems to rely more on NOHZ
+balancing than our other boards being tested, which highlighted that not
+including a newly-idle CPU into nohz.next_balance can cause issues (especially
+when the other CPUs have had their balance_interval inflated by pinned tasks).
 
-diff --git a/sound/drivers/Kconfig b/sound/drivers/Kconfig
-index 7141f73cddd3..ca4cdf666f82 100644
---- a/sound/drivers/Kconfig
-+++ b/sound/drivers/Kconfig
-@@ -102,7 +102,7 @@ config SND_ALOOP
- 	  configured number of substreams (see the pcm_substreams module
- 	  parameter).
- 
--	  The loopback device allows time sychronization with an external
-+	  The loopback device allows time synchronization with an external
- 	  timing source using the time shift universal control (+-20%
- 	  of system time).
- 
+As suggested by Vincent, the approach here is to mimic what was done for
+nohz.has_blocked, which gives us sane(ish) ordering guarantees.
+
+Revisions
+=========
+
+v1 -> v2
+++++++++
+
+o Ditched the extra cpumasks and went with a sibling of nohz.has_blocked
+  (Vincent) 
+
+Cheers,
+Valentin
+
+Valentin Schneider (2):
+  sched/fair: Add NOHZ balancer flag for nohz.next_balance updates
+  sched/fair: Trigger nohz.next_balance updates when a CPU goes
+    NOHZ-idle
+
+ kernel/sched/fair.c  | 24 +++++++++++++++++++-----
+ kernel/sched/sched.h |  8 +++++++-
+ 2 files changed, 26 insertions(+), 6 deletions(-)
+
 -- 
-2.31.1
+2.25.1
 
