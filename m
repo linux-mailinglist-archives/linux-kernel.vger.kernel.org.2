@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FD73CD41B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A933CD420
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236469AbhGSLHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:07:50 -0400
-Received: from mga01.intel.com ([192.55.52.88]:64303 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230493AbhGSLHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:07:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="232810505"
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="232810505"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 04:48:27 -0700
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="494039926"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 04:48:25 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1m5Rkw-00FUxJ-MN; Mon, 19 Jul 2021 14:48:18 +0300
-Date:   Mon, 19 Jul 2021 14:48:18 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        vlad.dogaru@intel.com, linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [PATCH 2/4] iio: imu: add Bosch Sensortec BNO055 core driver
-Message-ID: <YPVmgpmWkagk+ngf@smile.fi.intel.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20210715141742.15072-3-andrea.merello@gmail.com>
- <CAHp75Vf_Og2wjRy2j0gC37DgR0x9B_F5iSUj8VOtWkhWjgiOag@mail.gmail.com>
- <CAN8YU5MFMqh3wZo-yOOE8och3x089kYWjtrr83Jt8wCQTKFE8Q@mail.gmail.com>
+        id S236392AbhGSLJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:09:31 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11344 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230493AbhGSLJa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:09:30 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GT0Qk0cnTz7tG1;
+        Mon, 19 Jul 2021 19:45:34 +0800 (CST)
+Received: from [10.174.177.180] (10.174.177.180) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 19:50:07 +0800
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Boqun Feng <boqun.feng@gmail.com>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, <paulmck@kernel.org>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, Chris Clayton <chris2553@googlemail.com>,
+        Chris Rankin <rankincj@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>, <gregkh@linuxfoundation.org>
+References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
+ <2245518.LNIG0phfVR@natalenko.name> <6698965.kvI7vG0SvZ@natalenko.name>
+ <20210718215914.GQ4397@paulmck-ThinkPad-P17-Gen-1>
+ <YPSweHyCrD2q2Pue@casper.infradead.org>
+ <20210719015313.GS4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2yE+3vzd+LgJDJcJ2f8qttJQSUQ6efD9MaFd2iD4xPTZA@mail.gmail.com>
+ <YPTmtNMJpykEpzx6@casper.infradead.org> <YPVQfaamqwu1PRrK@boqun-archlinux>
+ <08803f78-3e99-6b3f-e809-5828fe47cf06@huawei.com>
+ <YPVgaY6uw59Fqg5x@casper.infradead.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <8058e175-cec5-c243-6499-c1cd4e3c8605@huawei.com>
+Date:   Mon, 19 Jul 2021 19:50:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN8YU5MFMqh3wZo-yOOE8och3x089kYWjtrr83Jt8wCQTKFE8Q@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YPVgaY6uw59Fqg5x@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.180]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 11:02:07AM +0200, Andrea Merello wrote:
-> Il giorno gio 15 lug 2021 alle ore 18:50 Andy Shevchenko
-> <andy.shevchenko@gmail.com> ha scritto:
+On 2021/7/19 19:22, Matthew Wilcox wrote:
+> On Mon, Jul 19, 2021 at 07:12:58PM +0800, Miaohe Lin wrote:
+>> When in the commit 2799e77529c2a, we're using the percpu_ref to serialize against
+>> concurrent swapoff, i.e. there's percpu_ref inside get_swap_device() instead of
+>> rcu_read_lock(). Please see commit 63d8620ecf93 ("mm/swapfile: use percpu_ref to
+>> serialize against concurrent swapoff") for detail.
 > 
-> >
-> > > +/* must be called in configuration mode */
-> > > +int bno055_calibration_load(struct bno055_priv *priv, const struct firmware *fw)
-> > > +{
-> > > +       int i;
-> > > +       unsigned int tmp;
-> > > +       u8 cal[BNO055_CALDATA_LEN];
-> > > +       int read, tot_read = 0;
-> > > +       int ret = 0;
-> > > +       char *buf = kmalloc(fw->size + 1, GFP_KERNEL);
-> > > +
-> > > +       if (!buf)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       memcpy(buf, fw->data, fw->size);
-> >
-> > kmemdup() ?
-> >
+> Oh, so this is a backport problem.  2799e77529c2 was backported without
+> its prerequisite 63d8620ecf93.  Greg, probably best to just drop
+
+Yes, they're posted as a patch set:
+
+https://lkml.kernel.org/r/20210426123316.806267-1-linmiaohe@huawei.com
+
+> 2799e77529c2 from all stable trees; the race described is not very
+> important (swapoff vs reading a page back from that swap device).
+> .
 > 
-> As a second thought: no, the whole point of reallocating and copying
-> here, is that we want to allocate an extra byte; kmemdup() will
-> allocate and copy only the very same amount of memory
 
-kmemdup_nul() then.
+The swapoff races with reading a page back from that swap device should be really
+uncommon as most users only do swapoff when the system is going to shutdown.
 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sorry for the trouble!
