@@ -2,132 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF733CCDC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0F93CCDCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234433AbhGSGNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:13:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229916AbhGSGNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:13:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAADD61009;
-        Mon, 19 Jul 2021 06:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626675006;
-        bh=9Xkxp7fQFwANVRM0WqLxiEkC8wny/9xqb44M1wtP5TM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2aaI0PA0ZkxeJi0ny6sAIIK58tRuO+ZeCKV7IMmKzeA+gJRs0I/BSyb+0Ira5ry6t
-         XfvSO3fSM1ybAe0NxrFklwNFjsdFGg1K3haYWaBc+JI2R1VTf3t29FKNYheJ/p6/Cv
-         rfW6k65rJVp3EC6PfSx69JZSt3yR5VLH/U2F/K4k=
-Date:   Mon, 19 Jul 2021 08:10:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        linux- stable <stable@vger.kernel.org>, hca@linux.ibm.com
-Subject: Re: [PATCH 5.12 000/242] 5.12.18-rc1 review
-Message-ID: <YPUXPEiTrpKoKf+t@kroah.com>
-References: <20210715182551.731989182@linuxfoundation.org>
- <CAEUSe7_+8fQZ=1+jcxJVTRw0DYttGmR-aBdobZ0GWYQi3Vg97w@mail.gmail.com>
- <yt9dim16lv3u.fsf@linux.ibm.com>
+        id S234521AbhGSGOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:14:39 -0400
+Received: from mail-mw2nam08on2079.outbound.protection.outlook.com ([40.107.101.79]:3232
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229916AbhGSGOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 02:14:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V7PIJfQ+deSTvkJjEs+rjwculIpQgJ9nHcXSFoZELCmdpfnOXGowXPgFSmtMyFDHnsl0Jx4e3kWNsIyicYhmcLtLs8P08tqHhyaDnS6H3vQmGZYqq/oKGtgrZWGaLII7VcKz8iaCygHwch8hMTqq+hhKBD5E5KjyxSTdGKDwNoWKdHJyWzWbhjv/unkW7XvL+BBOEL7OT0VZ1dg7FTYN1Z98/e14pL2uPcCnuIA63DNsjD1lKsan7A4v5/LGmIMo2hOx5v8GhejO3v3v0s5Cird4k7OBZ0IokWbI2QntUg2aXGY/PXZvUyeTeDyeMA0dSzmqUTK1h651LaEURAKvlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mxljdsBvHogLJB5z/YcDnYE1k+kQ1JHdi5ZX4zi5Bbk=;
+ b=UY1wBTzUT7gC3yqhIXj0tgyKUf/0k5rz8Uy+6Q4GSXRlW8bKn005ZIY6NGA6O7yIfb49V6n37ra3WFJ4+kP0SF2Q5e40t3qdyqSqwvagYR3F8SO2EsOVkQ92Fpi28RK00ydy0ugt/kzNdy35YdoR9sh/8rkc+8weZmm79fFWYapzJKSUamB5w2PT1eAoQEk1Zf8fKxyWtSU4VNyEbMTfyVEptfiYAbOrGjJ5OHgB+MMElfullXvDpSUETWHqE8m33FM8b3gD4VLEP0lQMG0jhPS+BIAsYSvbG5yrLYtfrXVX+P1Gy5YaevwevVhSom2YbYmEzrYx5JMy4dt1m7gTAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mxljdsBvHogLJB5z/YcDnYE1k+kQ1JHdi5ZX4zi5Bbk=;
+ b=N/wvIW1isoKqsscSWnvXNG53CECfAED/xV3vci4XiaaoSbQzaTWYvgURBmIRrSuz5f5iBDzpFnnf2Tr5jUATtwgNLe6lORfxT3pEFdN714gtg8RZhdqJJLpKDncqBz5cuhdgyyFjc8Xt28odHO4fTmDo7ETjAIDccm4SSIeuozA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
+ by BYAPR12MB3224.namprd12.prod.outlook.com (2603:10b6:a03:137::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.29; Mon, 19 Jul
+ 2021 06:11:34 +0000
+Received: from BY5PR12MB3764.namprd12.prod.outlook.com
+ ([fe80::6c58:1598:e768:d45e]) by BY5PR12MB3764.namprd12.prod.outlook.com
+ ([fe80::6c58:1598:e768:d45e%7]) with mapi id 15.20.4331.032; Mon, 19 Jul 2021
+ 06:11:33 +0000
+Subject: Re: [git pull] drm fixes for 5.14-rc2
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAPM=9tzb9KSspAtVkSH3pYN97hQ815MoOBTSiuHzUJnnb2fhRA@mail.gmail.com>
+ <20210717214302.mpfil765uji5dnb7@box.shutemov.name>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <44538364-13c5-2626-502c-31d85161a0d4@amd.com>
+Date:   Mon, 19 Jul 2021 08:11:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210717214302.mpfil765uji5dnb7@box.shutemov.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: PR0P264CA0250.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100::22)
+ To BY5PR12MB3764.namprd12.prod.outlook.com (2603:10b6:a03:1ac::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <yt9dim16lv3u.fsf@linux.ibm.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:e48d:68a9:5ef4:9e09] (2a02:908:1252:fb60:e48d:68a9:5ef4:9e09) by PR0P264CA0250.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 06:11:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c9e01e07-4a50-4c11-bf15-08d94a7c0e5b
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3224:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB32243817205E61633FB66A6A83E19@BYAPR12MB3224.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MZ1/d6KQCz2qHFRDcAtAjt6lIy0ccLAoQgji2DpzRvmXEUU8BWf0+mThCUXbUPf6ap9dIXBCCzhBXEQScnUQdPPvFrF/jo9wKqrD2Ukwln9YvECYmeeOQLRzY5CJ8hvKmcB1+rfJqF0dnBH16V9EMfONpT1u+qCUQeJkTlC4oLE3sL3MpxrP68K4sV2UKPEfXuwhDcMsbjkONAhM4c6Jdkg4g26OEIRvZAA1HZuFN4TjA7YnhjVA/+s6ZmaLtwNXoKvOEK42YvsedoihyA8bJ8KpR2nxwc9VKkC/RiPvtrf+32nIQI2QLZvKSB5OCD3kpVcLcFldSTWaBkzDKtemE/TnpO6FEKW8q5kUCmlJ/UA++ni6cDAMXmQWX5JHqQfB4gLJPJltLbBHUvEiOoy74J/SJnsRBkrJJaQ0pdG4EWkad2RtJf0qY87OxXqyt6oK0omFkht1TLPWDy1i8bX88OZ0mKcbUS/sZGDCcTKE/7Ji6WlEiuYhXtVZZMCRzooCyDsuUsXk1jrq2iZSba+GbwD0Wn3AKqui9K/Os4aqByJVa7z0E9CxNE6YEaioVLdEBvi7lIigpwHsNagBV87kC55lgd8Iz86pOz9RN9SIWWKiGha+vKdbtIPcYM91mcRy5cSgW/qOtiyPI2Ch5t95Z6Hss5+8/6inVthmyAECihdLe/5pBtWuDqFmeMAZa15XbMqNJViALvJfNZNn1QCV2yZZ8dD6zWc/4nQN7Jj4aYKpwLNFp+ufyM8JcDODCsiWuWjRk9fKMngEdiy6aCqPGCXOV17zbf+UG/8mLDY5T9hS8lBJHJzwgnO9Tv2K947MNez90rBKH8iboM9AevlauQjbPKHtiAtP/j+gGNPCpfo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3764.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(110136005)(4326008)(316002)(86362001)(38100700002)(31696002)(45080400002)(966005)(8676002)(508600001)(8936002)(186003)(6666004)(2616005)(2906002)(36756003)(6486002)(83380400001)(31686004)(66946007)(5660300002)(66476007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VkZYOXpKZ1lZcTk2MDNVL2pSVkhzTnE0NWgwTnZhU2VXekkyWUYwZkdMR2ty?=
+ =?utf-8?B?ektORkhJRzF4K3JiOHV6OHNoNUh0VEFQQVJIazE5UkgxbktuajgyeG16Rzlp?=
+ =?utf-8?B?cDFjSnVOd25MOFZTazFQN2JGdEpEWU4zV0VCdVUrcTdtS3JDN0h6MnRBTk5M?=
+ =?utf-8?B?T2Q3dEJ6b0dmOXlrdXhBakpoZDVUZUlKTTVnMDRvQ1R6L2VvZW5yajNTOXFP?=
+ =?utf-8?B?ZWQ2ZTBnVFdvQVIwS3dWaC84VWpnRjBoNjRpMUN1ckdmK2J1WU9naUpHTkxJ?=
+ =?utf-8?B?dWJETEhLMFZkNWJxSmhtRndhTFNlcFhSNFg3aVF1bitGNmw1SGVDU1FmZkt3?=
+ =?utf-8?B?OFZCSUkrTDFrNXUvc3RjeS9SMFhBSUxJSlVIUzYzNXFNR0pxeDZKb25JN1N2?=
+ =?utf-8?B?Zy93Sm1rYjNoanJJcC9DRElleTZhKzl0UXVtWnluOXJ0TGJUKzlReHNSeE1t?=
+ =?utf-8?B?NDdaWGhrWDZpdG9ZZEF1VHhSeE9MYVlCV0hnS2ZNM3A2T2ZtNmo0VE9uSHVP?=
+ =?utf-8?B?VllWV0NMbjhFekE2NUFrRERxcFJwckJpc3dGd2FMVFdLWFphUHBTbVBmbVpm?=
+ =?utf-8?B?Z0VsMXg3WnhQNE02QlZkL3AzRjZqNjA3am80aTg3ZG53c1Q1YXlDVStKNVp3?=
+ =?utf-8?B?VHd4N2IwY1BZU1RPYXRyNTZmd2pwakdhUzNFcVdBVnpGR1RVYk5kL3pQMEFq?=
+ =?utf-8?B?TzN3NVhPeEYzVkNpUmVvbGJSR0V1VE9GOWV4ODZYS1gvMWxPdVhaZG5zTmdz?=
+ =?utf-8?B?Ynp6TTd4NXRlU0VXNzB4Slh5VG4rUFJYZmFKOC9IZFBJMkxoWXpuYy9LRHMw?=
+ =?utf-8?B?VzhnaElvRnhTZ3RqVUl0VTh0TXpGZ0xmODMxVnlndmdCTkpNNGtHZWwzNk9T?=
+ =?utf-8?B?LzVMalN2OUdYYzlGTTBaM0FWOWxVQm5lWm41ZzF0NVZXeTlhd0QzR001NzN4?=
+ =?utf-8?B?ckVFK2tlZGdhcmFwRFBpNVg5THI4dG9vTVFNQ1UxNkdPVzRLYitJenRqSXVX?=
+ =?utf-8?B?UEF1VUF0dEt6STAyZEVPZDlTbWpzc20yRnM3SHZGSEhVRXF2OEJ0dCs4cVpG?=
+ =?utf-8?B?c0pzZUJ4NkN4dXdPMzBuQzN0MDdod0RScmRSZnpQQWdhTktNZkEwM1V0Vnc4?=
+ =?utf-8?B?OXlWNWh2MTFKd0l5Y3pkRUE5cGJSbnppL0lNaWNlanh6SXIrd0ZIZUZmRGR4?=
+ =?utf-8?B?UVRELzE2WjlFemMzY0paVmZCM2pSOVJTWVFNTmVWaDBQci9YeGU4MUFCcDVa?=
+ =?utf-8?B?ck1RVkk1OTc1QzlobVQvSXovempoc3ptSkRRWjB3QzJZT0V4ZDlmUlhwbnVs?=
+ =?utf-8?B?TVFQZHhUQjVLVXVCNm1uL0s1UVFoSlVQd3Z1RGo1dE11MVNUWjlWS0JsMnJV?=
+ =?utf-8?B?clArMkVvZWlSK1VJeFpUTTYvcnl2UHM4TDhXSmJDWmVOL0R0dzZKeVRvVGMz?=
+ =?utf-8?B?VzJyNXNYdWtWZElmaEIrUjZPZGNpWHVzMWhoVW5oUVVsLzJNOHFmN2l1T0pO?=
+ =?utf-8?B?K3RUV09Fb1NUTG1JOWVzeWRVRGNRZ0dzQ3pZOENKMTUyaVE0QUR3dzErNnl3?=
+ =?utf-8?B?bWdpWnBocEloOVFHMzJBQWNYazNWQjR3eWVUQUdaMWE5MHhoZjdianFiVm1D?=
+ =?utf-8?B?U3lET3RuYjk3ZndrSGVtOEdGRWdEbnM4UFFXWlN5eEdrdUI2UitjOHJVMTFX?=
+ =?utf-8?B?S203cGd0ZERuZ2NpZXg4L1dXcFRHOU0xUldyOVpxeUdkTTN4dzhkWWwrREc3?=
+ =?utf-8?B?MnRQenlNUTlWVERUeTZ1SHlpUHVnd3Q2K3BwUC9WK0o0Z0x0OVJXWUtOa2FP?=
+ =?utf-8?B?YnlEMVFyL0dtYVNBbTMveHZjV2UycVJiTGJSU1BZWWtoTmNpQ0dYLzE2SW9C?=
+ =?utf-8?Q?97C8mDA6/zPtD?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9e01e07-4a50-4c11-bf15-08d94a7c0e5b
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3764.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 06:11:33.6444
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VRUYm8kOgYCXT5uQpHSgQFEhNyXqYUjWLQxqyJQyVO/yytR5yclVHwv96cuK8PF+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3224
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 07:40:21AM +0200, Sven Schnelle wrote:
-> Hi Daniel,
-> 
-> Daniel Díaz <daniel.diaz@linaro.org> writes:
-> 
-> > Hello!
-> >
-> > On Thu, 15 Jul 2021 at 13:56, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> >> This is the start of the stable review cycle for the 5.12.18 release.
-> >> There are 242 patches in this series, all will be posted as a response
-> >> to this one.  If anyone has any issues with these being applied, please
-> >> let me know.
-> >>
-> >> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
-> >> Anything received after that time might be too late.
-> >>
-> >> The whole patch series can be found in one patch at:
-> >>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.18-rc1.gz
-> >> or in the git tree and branch at:
-> >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> >> and the diffstat can be found below.
-> >>
-> >> thanks,
-> >>
-> >> greg k-h
-> >
-> > Build regressions have been found on this release candidate (and on 5.13-rc).
-> >
-> > ## Regressions (compared to v5.12.17)
-> > * s390, build
-> >   - clang-10-allnoconfig
-> >   - clang-10-defconfig
-> >   - clang-10-tinyconfig
-> >   - clang-11-allnoconfig
-> >   - clang-11-defconfig
-> >   - clang-11-tinyconfig
-> >   - clang-12-allnoconfig
-> >   - clang-12-defconfig
-> >   - clang-12-tinyconfig
-> >   - gcc-8-allnoconfig
-> >   - gcc-8-defconfig
-> >   - gcc-8-tinyconfig
-> >   - gcc-9-allnoconfig
-> >   - gcc-9-defconfig
-> >   - gcc-9-tinyconfig
-> >   - gcc-10-allnoconfig
-> >   - gcc-10-defconfig
-> >   - gcc-10-tinyconfig
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> >
-> > [...]
-> >> Sven Schnelle <svens@linux.ibm.com>
-> >>     s390/signal: switch to using vdso for sigreturn and syscall restart
-> > [...]
-> >
-> > Our bisections pointed to this commit. Reverting it made the build pass again.
-> 
-> If https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1428532107
-> is the logfile for this problem, than i see the following in the log:
-> 
-> make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- 'CC=sccache s390x-linux-gnu-gcc' 'HOSTCC=sccache gcc'
-> /bin/sh: 1: /builds/linux/arch/s390/kernel/vdso64/gen_vdso_offsets.sh: Permission denied
-> 
-> However, in the patch this script is 755, and other architecture are
-> using this for a while now - can you check what the permission are when
-> you're trying to build the kernel?
 
-Yes, the problem is that when handling patches, we can not change the
-permissions on files.  That causes this file to not be added with
-execute permissions.  This has generally been considered a bad thing
-anyway, and other scripts that relied on being executable have been
-changed over time to not be that way and be explicitly run by the
-calling script.
 
-But it looks like th gen_vdso_offsets.sh script has not been changed on
-any arch to do that yet.  It is one of the few hold outs.
+Am 17.07.21 um 23:43 schrieb Kirill A. Shutemov:
+> On Fri, Jul 16, 2021 at 01:41:18PM +1000, Dave Airlie wrote:
+>> Hi Linus,
+>>
+>> Regular rc2 fixes though a bit more than usual at rc2 stage, people
+>> must have been testing early or else some fixes from last week got a
+>> bit laggy. There is one larger change in the amd fixes to amalgamate
+>> some power management code on the newer chips with the code from the
+>> older chips, it should only affects chips where support was introduced
+>> in rc1 and it should make future fixes easier to maintain probably a
+>> good idea to merge it now. Otherwise it's mostly fixes across the
+>> board.
+>>
+>> Dave.
+>>
+>> drm-fixes-2021-07-16:
+>> drm fixes for 5.14-rc2
+> Dave, Daniel,
 
-Also, this feels like a HUGE change for a stable tree, adding new
-features like this, are you sure it's all needed?
+My fault, I've pushed it to drm-misc-next after the branch of.
 
-thanks,
+Just cherry-picked that to drm-misc-fixes. Should be in the next -rc
 
-greg k-h
+Thanks for the notice,
+Christian.
+
+>
+> Looks like the fix[1] for nouveau regression[2] is missing. Hm?
+>
+> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fnouveau%2F20210609172902.1937-1-christian.koenig%40amd.com%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cdfa76642807a4953a9dc08d9496bda6a%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637621549856073674%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=8wYkOJYcSoLt3P6cFdTsaYrvX2UEhm7M5RKkaSn5dws%3D&amp;reserved=0
+> [2] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2FYOC4uekpD7iA3xPi%40Red%2FT%2F%23u&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cdfa76642807a4953a9dc08d9496bda6a%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637621549856073674%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=h5QYbNjhPDAqioojBPTY7uVvfJx6XwEV7ic8rwuMxMc%3D&amp;reserved=0
+>
+
