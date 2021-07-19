@@ -2,146 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C023CEF4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 00:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCCB3CF0A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1390074AbhGSVjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 17:39:10 -0400
-Received: from mail-il1-f181.google.com ([209.85.166.181]:38474 "EHLO
-        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388871AbhGSVXS (ORCPT
+        id S1356913AbhGSXeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:34:24 -0400
+Received: from bizcloud-gusmanecalvi.com.br ([143.244.184.48]:41126 "EHLO
+        bizcloud-gusmanecalvi.com.br" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1390739AbhGSV5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 17:23:18 -0400
-Received: by mail-il1-f181.google.com with SMTP id s5so10418947ild.5;
-        Mon, 19 Jul 2021 15:03:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pzlQxVexFT0nXKu400I5otv1xS1kX5e7p5IFCKmC89Y=;
-        b=bb9a7HluwskF/TsSO8yL6ED15xvhBp5iyeHRX2rv5wH7siOBM++Sd7xZCBNh176q0p
-         IoKU9g7gG9u442xrIrLoz2lOBxe/HWbhwgq+w3PnynR+t0UJ6zPwPO6ZAJMoyt2zm3Or
-         9yu7nGuKNI6lLdYdnR1+sDhOvNJKzUdU5ZahniBipggWqQlW8pUS4b+OyFckoiQ0v5wM
-         UiIs3xpMblfr6wTXM5JlJv6LzSGrZLVjbZ7wpfnOSuhnp9WXKAhEA1uOA8pNHdeAY8f0
-         2MBoHIhQPEfd7TslGtG5UBRsIkomVzKwH9LndZQQ+2vi4WKC0OCw2cgCfGdpi7Uzc3uO
-         agdw==
-X-Gm-Message-State: AOAM533EnTMqVgJb4ffrxnlTt1kRwlRJMBhW3IpkQCsyMvzkGYF7hDGA
-        vRY3f4hn2oXQE8EyC8j/DwWueUEWcg==
-X-Google-Smtp-Source: ABdhPJzoKMbKmAb3ccakj6Vj9GEZRfR9hVNWLZmDghEpm/GdIZYC6nPCY4IPFscWPOJFp1koKn/oAw==
-X-Received: by 2002:a92:3209:: with SMTP id z9mr18796486ile.115.1626732235559;
-        Mon, 19 Jul 2021 15:03:55 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.248])
-        by smtp.googlemail.com with ESMTPSA id e17sm9973095ilr.51.2021.07.19.15.03.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 15:03:55 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        linux-pci@vger.kernel.org
-Subject: [PATCH] dt-bindings: PCI: intel,lgm-pcie: Add reference to common schemas
-Date:   Mon, 19 Jul 2021 16:03:51 -0600
-Message-Id: <20210719220351.2662758-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Mon, 19 Jul 2021 17:57:45 -0400
+X-Greylist: delayed 16782 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Jul 2021 17:57:43 EDT
+Received: from WIN-AFB83UJ513U (bizcloud-gusmanecalvi.com.br [IPv6:::1])
+        by bizcloud-gusmanecalvi.com.br (Postfix) with SMTP id 98FA36F6C1;
+        Mon, 19 Jul 2021 16:07:36 +0000 (UTC)
+Reply-To: <henktim03@gmail.com>
+From:   "Timothy Henkinson" <newsletter1@realitatea.net>
+Subject: Assistance Needed
+Date:   Mon, 19 Jul 2021 09:07:44 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20210719160736.98FA36F6C1@bizcloud-gusmanecalvi.com.br>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a reference to snps,dw-pcie.yaml (and indirectly pci-bus.yaml) schemas.
-With this, the common bus properties can be dropped from the schema.
+Attention:
 
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Dilip Kota <eswara.kota@linux.intel.com>
-Cc: linux-pci@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-This applies on top of Mauro's snps,dw-pcie.yaml series which I've 
-applied to the DT tree.
+First I will like to  explain in detail, All issues relating to the project, I am Timothy  Henkinson, a Security personnel at the Raleigh-Durham International Airport, North Carolina, USA. During a recent routine check at all Security/Storage Units at the airport, a discovery was made about an abandoned shipment with no name coming from Belgium, which was on Transit to Panama but was intercepted by the Raleigh-Durham International Airport Security: for lack of proper clearance papers as the consignment was scanned and seen to be containing cash and other valuable, between US$25.5Million US Dollars in estimation that was not properly declared to the authorities. Since the tags on the consignment showed the item contains personal belongings/ family treasures, which is not in regulations to the delivery requirements by the Transportation Security Administration (TSA).
 
- .../bindings/pci/intel-gw-pcie.yaml           | 34 +++----------------
- 1 file changed, 4 insertions(+), 30 deletions(-)
+However, be informed that the reason I have taken it upon myself as a Security personnel, at the Raleigh-Durham International Airport to contact you personally about this abandoned shipment, is because I would not want to lose opportunity since the box has not yet been returned to the United states Treasury Department for further inspection after being abandoned by the shipper.
 
-diff --git a/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml b/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
-index a1e2be737eec..e15730d31274 100644
---- a/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
-@@ -17,21 +17,15 @@ select:
-   required:
-     - compatible
- 
-+allOf:
-+  - $ref: /schemas/pci/snps,dw-pcie.yaml#
-+
- properties:
-   compatible:
-     items:
-       - const: intel,lgm-pcie
-       - const: snps,dw-pcie
- 
--  device_type:
--    const: pci
--
--  "#address-cells":
--    const: 3
--
--  "#size-cells":
--    const: 2
--
-   reg:
-     items:
-       - description: Controller control and status registers.
-@@ -62,30 +56,13 @@ properties:
-   reset-gpios:
-     maxItems: 1
- 
--  linux,pci-domain: true
--
-   num-lanes:
-     maximum: 2
--    description: Number of lanes to use for this port.
--
--  '#interrupt-cells':
--    const: 1
--
--  interrupt-map-mask:
--    description: Standard PCI IRQ mapping properties.
--
--  interrupt-map:
--    description: Standard PCI IRQ mapping properties.
- 
-   max-link-speed:
--    description: Specify PCI Gen for link capability.
--    $ref: /schemas/types.yaml#/definitions/uint32
-     enum: [1, 2, 3, 4]
-     default: 1
- 
--  bus-range:
--    description: Range of bus numbers associated with this controller.
--
-   reset-assert-ms:
-     description: |
-       Delay after asserting reset to the PCIe device.
-@@ -94,9 +71,6 @@ properties:
- 
- required:
-   - compatible
--  - device_type
--  - "#address-cells"
--  - "#size-cells"
-   - reg
-   - reg-names
-   - ranges
-@@ -109,7 +83,7 @@ required:
-   - interrupt-map
-   - interrupt-map-mask
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
--- 
-2.27.0
+So immediately the confirmation is made, I will go ahead with all negotiations with the airport authorities for the release of the consignment box to you as the legal owner of the box will give you update and prepare some legal paper that will back you as the real owner of the box, then I be able to arrange for the delivery to your city with a private courier company.
 
+Also I need us to invest the funds in a profitable business. I would like to involve you in this investment project because we anticipate that you should have a high level of professional credentials and appropriate investment managerial experience to qualify for this position. We look forward to a long-term consistent performance with a high point of investing in sectors that will yield great turn-around profits.
+
+I request that you kindly forward a summary of your company’s activities or any company that you are related to and its previous involvement in handling huge investments and the areas in details, where you intend to invest funds once we are able to get it claim and deliver it to you, lastly to enable me confirm if you are ready to do business with me so that we can continue with next step which is preparing a legal paper work with your name as the rightful owner of the consignment box
+
+so that it can be released and delivered to you like i said before by a private courier company. For confidentiality purposes, contact me through my private email for quick processing and response to you.
+
+Please reply to my private email: henktim03@gmail.com
+
+Timothy Henkinson
+Security/Inspection Manager
+Raleigh-Durham International Airport
+2400 John Brantley Blvd, Morris-ville, NC 27560, United State
