@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EFB3CEDC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AD53CEDCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387047AbhGSTp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:45:28 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46654 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358267AbhGSTWC (ORCPT
+        id S1387070AbhGSTps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:45:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1386015AbhGSTXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:22:02 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B5AF51C0B77; Mon, 19 Jul 2021 22:02:32 +0200 (CEST)
-Date:   Mon, 19 Jul 2021 22:02:32 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 000/188] 4.4.276-rc1 review
-Message-ID: <20210719200232.GA14510@duo.ucw.cz>
-References: <20210719144913.076563739@linuxfoundation.org>
+        Mon, 19 Jul 2021 15:23:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AF6C061574;
+        Mon, 19 Jul 2021 12:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=/Va7aGBo6zBlj5l5FvHAL96Jxg2PHZuQ/EZJgrQ6pXY=; b=uIllQ1oDecOK6YrHSA/xXpXAoa
+        dih8CbN+tqUG3wjtT2oCviI53z39WfQLun7bH3S4ooLvohHCRHh3+pXKaYQXZvqQAhhS7PMEbkz3I
+        itfHGwOnblx3sLdxdsdl7+eeixxVLvIT7iImpTGK9BGHTxUUM00dN6C2+ruCRvSJbXwF4BJnMWD+f
+        pLqCAuHot4f0VhJNoVcB9P6Fnrar88g5dMSXPdKCyESEuuBEpTFZRx3f5FyX1exaRWuXUGmOJNvGP
+        KM6sjHfiNZIHW2eAaIp9rDQtu8hi2Yspq374sk/EBPgYq67XpTuf3HPl4fF3VMPj8ZFttVLTxFBs2
+        meQtNccg==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5ZUO-00BDRo-88; Mon, 19 Jul 2021 20:03:44 +0000
+Subject: Re: [PATCH] fbdev: simplefb: limit its use to DRM_SIMPLEDRM=n
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20210719023327.17039-1-rdunlap@infradead.org>
+ <CAMuHMdUtTzgnP4GR5phFcVnFVCrU1J87sner-XN6Koc_eZ7Zhg@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5a667be9-d2cb-d8fd-d321-b35e673b237e@infradead.org>
+Date:   Mon, 19 Jul 2021 13:03:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
-Content-Disposition: inline
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMuHMdUtTzgnP4GR5phFcVnFVCrU1J87sner-XN6Koc_eZ7Zhg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/19/21 1:06 AM, Geert Uytterhoeven wrote:
+> Hi Randy,
+> 
+> On Mon, Jul 19, 2021 at 4:34 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>> When DRM_SIMPLEDRM=m, all of FB_CFB_{FILLRECT,COPYAREA,IMAGEBLIT} are =m,
+> 
+> Why does that happen?
+> FB_SIMPLE does select FB_CFB_*, so all of the latter should be builtin?
+> Do I need my morning coffee? I'm about to fetch it...
 
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Geert,
 
-Hi!
+I have no idea why this happens. It feels like a kconfig bug to me.
 
-> This is the start of the stable review cycle for the 4.4.276 release.
-> There are 188 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+>> causing undefined references in fbdev/simplefb.o.
+>>
+>> By restricting FB_SIMPLEFB to be set only when DRM_SIMPLEDRM is not set,
+>> the FB_CFB_* symbols are =y and the build completes without these
+>> undefined references.
+>>
+>> IOW, really "disable simplefb if simpledrm has been selected".
+> 
+> That does make sense, regardless of my question above ;-)
+> 
+>> or1k-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x2c): undefined reference to `cfb_fillrect'
+>> or1k-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x30): undefined reference to `cfb_copyarea'
+>> or1k-linux-ld: drivers/video/fbdev/simplefb.o:(.rodata+0x34): undefined reference to `cfb_imageblit'
+>>
+>> Fixes: 11e8f5fd223b ("drm: Add simpledrm driver")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+>> --- linux-next-20210716.orig/drivers/video/fbdev/Kconfig
+>> +++ linux-next-20210716/drivers/video/fbdev/Kconfig
+>> @@ -2192,7 +2192,7 @@ config FB_HYPERV
+>>
+>>  config FB_SIMPLE
+>>         bool "Simple framebuffer support"
+>> -       depends on (FB = y) && !DRM_SIMPLEDRM
+>> +       depends on (FB = y) && DRM_SIMPLEDRM=n
+>>         select FB_CFB_FILLRECT
+>>         select FB_CFB_COPYAREA
+>>         select FB_CFB_IMAGEBLIT
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
 
-CIP testing did not find any problems here:
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
+-- 
+~Randy
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
-
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---uAKRQypu60I7Lcqm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYPXaWAAKCRAw5/Bqldv6
-8v4lAKCxDNSq1NsONcFd3aCbEgNX9MqFqgCfWMyXgaqjTIHpzsd2SDk0wbuC4s4=
-=oDC2
------END PGP SIGNATURE-----
-
---uAKRQypu60I7Lcqm--
