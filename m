@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EBD3CEAC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B62C3CE9B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346534AbhGSRSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:18:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35796 "EHLO mail.kernel.org"
+        id S1357988AbhGSRAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:00:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347527AbhGSPle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:41:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00F9761241;
-        Mon, 19 Jul 2021 16:21:29 +0000 (UTC)
+        id S235289AbhGSPeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:34:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44ABB61376;
+        Mon, 19 Jul 2021 16:11:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711690;
-        bh=9zY3xMgQT4AeEHLyvTQjoZoyHJvvalLEv9eMVRj/HMk=;
+        s=korg; t=1626711062;
+        bh=6aTflyQFmFomlDwzDmPE7l9RTZTxsm8IuLC6j0pLP30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z/dvQQlu8FRCdqY2hMZiYlEW5DsPYUo8jw3fEZPJDMEq5unOIH9RUhPZWi72nAFzw
-         ij4MCSgckx5W4rKp/w3NiIxUXYW8nVoXcL+TQVn+ss4HTjPGCdBEXvAOfPWNSFmGfZ
-         q9t6z/bw+BXTGC9IqvbvmJ2k9gSe7MVZ5Qw6I6T8=
+        b=yX9m3bZIojTNyQSUR9CC8SchiX1aBgIwZkYjUKH5/SFsV46JoliL1btBqDxEQLD9H
+         YKYOVc/vRDC9Y/7Monnpqyxds4gcgnYgbvu3kmPxaXYWoIk5qXX5H9EzUDFagkUYu6
+         aNTRFC1+fMcuYN2kFI1VHf/UpFnofYaRnwHjEUmY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 097/292] gpio: pca953x: Add support for the On Semi pca9655
-Date:   Mon, 19 Jul 2021 16:52:39 +0200
-Message-Id: <20210719144945.689521591@linuxfoundation.org>
+Subject: [PATCH 5.13 214/351] NFSv4: Fix an Oops in pnfs_mark_request_commit() when doing O_DIRECT
+Date:   Mon, 19 Jul 2021 16:52:40 +0200
+Message-Id: <20210719144952.040944342@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Robinson <pbrobinson@gmail.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 6d49b3a0f351925b5ea5047166c112b7590b918a ]
+[ Upstream commit 3731d44bba8e0116b052b1b374476c5f6dd9a456 ]
 
-The On Semi pca9655 is a 16 bit variant of the On Semi pca9654 GPIO
-expander, with 16 GPIOs and interrupt functionality.
+Fix an Oopsable condition in pnfs_mark_request_commit() when we're
+putting a set of writes on the commit list to reschedule them after a
+failed pNFS attempt.
 
-Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
-[Bartosz: fixed indentation as noted by Andy]
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Fixes: 9c455a8c1e14 ("NFS/pNFS: Clean up pNFS commit operations")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-pca953x.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/nfs/direct.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-index c91d05651596..f5cfc0698799 100644
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -1241,6 +1241,7 @@ static const struct of_device_id pca953x_dt_ids[] = {
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index 2d30a4da49fa..2e894fec036b 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -700,8 +700,8 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
+ {
+ 	struct nfs_direct_req *dreq = hdr->dreq;
+ 	struct nfs_commit_info cinfo;
+-	bool request_commit = false;
+ 	struct nfs_page *req = nfs_list_entry(hdr->pages.next);
++	int flags = NFS_ODIRECT_DONE;
  
- 	{ .compatible = "onnn,cat9554", .data = OF_953X( 8, PCA_INT), },
- 	{ .compatible = "onnn,pca9654", .data = OF_953X( 8, PCA_INT), },
-+	{ .compatible = "onnn,pca9655", .data = OF_953X(16, PCA_INT), },
+ 	nfs_init_cinfo_from_dreq(&cinfo, dreq);
  
- 	{ .compatible = "exar,xra1202", .data = OF_953X( 8, 0), },
- 	{ }
+@@ -713,15 +713,9 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
+ 
+ 	nfs_direct_count_bytes(dreq, hdr);
+ 	if (hdr->good_bytes != 0 && nfs_write_need_commit(hdr)) {
+-		switch (dreq->flags) {
+-		case 0:
++		if (!dreq->flags)
+ 			dreq->flags = NFS_ODIRECT_DO_COMMIT;
+-			request_commit = true;
+-			break;
+-		case NFS_ODIRECT_RESCHED_WRITES:
+-		case NFS_ODIRECT_DO_COMMIT:
+-			request_commit = true;
+-		}
++		flags = dreq->flags;
+ 	}
+ 	spin_unlock(&dreq->lock);
+ 
+@@ -729,12 +723,15 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
+ 
+ 		req = nfs_list_entry(hdr->pages.next);
+ 		nfs_list_remove_request(req);
+-		if (request_commit) {
++		if (flags == NFS_ODIRECT_DO_COMMIT) {
+ 			kref_get(&req->wb_kref);
+ 			memcpy(&req->wb_verf, &hdr->verf.verifier,
+ 			       sizeof(req->wb_verf));
+ 			nfs_mark_request_commit(req, hdr->lseg, &cinfo,
+ 				hdr->ds_commit_idx);
++		} else if (flags == NFS_ODIRECT_RESCHED_WRITES) {
++			kref_get(&req->wb_kref);
++			nfs_mark_request_commit(req, NULL, &cinfo, 0);
+ 		}
+ 		nfs_unlock_and_release_request(req);
+ 	}
 -- 
 2.30.2
 
