@@ -2,209 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9113CEE38
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0EB3CEE36
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378347AbhGSU12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 16:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358447AbhGSTaR (ORCPT
+        id S1358203AbhGSUXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:23:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64646 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353342AbhGSTsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:30:17 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69B2C0617AB
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 13:03:17 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id f12-20020a056830204cb029048bcf4c6bd9so19403171otp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 13:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hFPa6LKCCsAi4pnEWUZRJHSePic1qLgoGWAT29y7mbQ=;
-        b=B50oKeFaBToKnH3uGmW30PKmcFxUGAj84V61Ai49IRKwWCd7XZoEddu02tdDNRTaHs
-         HEw8sl334Pefjg0RKRqDf/4CWMUW+lHdNJB5bM/vRHSLBlw5gQ0RCY5P38YYCV9pPID4
-         naGuZCNfJXgnzfqsqWgc3j1bViXoF1ggGk8AYQYPV/oO8fNVv2okAiZI3semYtnvbfhY
-         1oTA6Nu6eWfmQO63X/UH/M91UFJrsoIfM25YTxdZx1tf3PMXpAcrExD7TSFjy5Pv2sPH
-         FL0mcfVIh3vPAU/fVLvMsL+pWYrHgzh6TBqAXTIDpfmhL+Yo96T6t8Yxgtm6ASkkRAt/
-         N0Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hFPa6LKCCsAi4pnEWUZRJHSePic1qLgoGWAT29y7mbQ=;
-        b=iwjBO4KebQo1V5bvCANWEHT3Vr2ANwxcDuRSLApX9ii9nOk8/8o1y8ZIMJh+L7f5yu
-         Amd5EoK0P4Hai7Z8cBagaShszFn/nzTLk1vCRHbIRB8IEIjnLtXT7Rw84i2UDMWqAZs4
-         m0DtNnivs3+MaaztVrYI7y1tXei1adAKQYOEypEAYsXjkOvgB8KZIlBJOjX4sd3/7hnf
-         czlTmvgOs3tLKm7hL2tnALv3nifMCk8aYMsLjDtzh1vmRnr0NSYzeLChv4l44gxQsLWk
-         SaTYC7U61HnFplSXmuiDdiXSYXlABC9Q0js7QaFYMdIGumTNdsrZY2gUwJa5c85IclAF
-         PtXg==
-X-Gm-Message-State: AOAM533D8iDt9ESBlq+kp8qI85ULyQhQ50nJu4awZRB0LL+BmktleM/q
-        2p81trvPY9lD1H0LRmP87RDRdA==
-X-Google-Smtp-Source: ABdhPJy4mniYgstiy7JKHYbjfck2EpL67lUFZ04xoUq4ZKKRq8KqVQ9l9zL54JDVhRSJeVH5nWkP8Q==
-X-Received: by 2002:a05:6830:1e84:: with SMTP id n4mr15951300otr.210.1626725318216;
-        Mon, 19 Jul 2021 13:08:38 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x29sm3534020ooj.10.2021.07.19.13.08.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 13:08:37 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 15:08:35 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     rojay@codeaurora.org
-Cc:     Stephen Boyd <swboyd@chromium.org>, robh+dt@kernel.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        rajpat@codeaurora.org
-Subject: Re: [PATCH V3 1/3] arm64: dts: sc7280: Add QSPI node
-Message-ID: <YPXbw6a4+B5TBD0W@yoga>
-References: <20210604135439.19119-1-rojay@codeaurora.org>
- <20210604135439.19119-2-rojay@codeaurora.org>
- <YLxHTDxVcSvVxsd5@builder.lan>
- <98befc79fc039496b0c12d7983319c92@codeaurora.org>
- <2ad7a00924b5065bf61c47e8b6d24339@codeaurora.org>
- <CAE-0n51NfHSwRQvG0HnTcHBkv=Huy-CXEwJCxLG03MN3dSe5kA@mail.gmail.com>
- <498a2359eec36c6a0b811337ee187df8@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <498a2359eec36c6a0b811337ee187df8@codeaurora.org>
+        Mon, 19 Jul 2021 15:48:01 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JK5Goq025317;
+        Mon, 19 Jul 2021 16:28:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=dLLn3Ddivbbar2NOdA09Z05PpfxPdWUI/YG/ZtuVCAk=;
+ b=FZMHkmCoQt4LwOip+lhpAmiSRs9RT+G4G93NLiXMWABfSwVCzUmg0VEPw03G7S2EzFbx
+ dkhrKGqXDxsIZHjuipFF/hM/SAxwC1MsSqCYC7n095bDYxc2ksc1TAR981jQdAhvB6mp
+ 74XnO3nmxIdYCVGbghPpzwE3p8aw7FljJGligCYrl/VoEmCAN3bGqW5er0uhHRZTxzVi
+ ySEXWKFizLh5HgMIRlqiuqzyymfcdfFAOYtlNpleCBPoKi0aZuY6LtDEamjWxDzPw5yA
+ WEb2danQXvKNJwhaUDWZ36cSu1QPdJlKgT2RTCURaDRRbWblOSFBBJaCnblJt163B5Vl Lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wdkywdjb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 16:28:20 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16JK5T7w026703;
+        Mon, 19 Jul 2021 16:28:19 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39wdkywdhp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 16:28:19 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16JKDJqu022880;
+        Mon, 19 Jul 2021 20:28:17 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 39upu88vvs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 20:28:17 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16JKSEh523659004
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jul 2021 20:28:14 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF211A4085;
+        Mon, 19 Jul 2021 20:28:14 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AFEF3A4093;
+        Mon, 19 Jul 2021 20:28:12 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.28.163])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Jul 2021 20:28:12 +0000 (GMT)
+Message-ID: <2f4920dbdb16156e1af5cf78f592a5cf07ec3176.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 2/3] ima: Return int in the functions to measure a
+ buffer
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, paul@paul-moore.com
+Cc:     stephen.smalley.work@gmail.com, prsriva02@gmail.com,
+        tusharsu@linux.microsoft.com, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
+Date:   Mon, 19 Jul 2021 16:28:11 -0400
+In-Reply-To: <20210705090922.3321178-3-roberto.sassu@huawei.com>
+References: <20210705090922.3321178-1-roberto.sassu@huawei.com>
+         <20210705090922.3321178-3-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 2w5KZhLCtpdbMpDvISgprZ3YBpu6-GOI
+X-Proofpoint-ORIG-GUID: JV2oPkGbMj6r63Rb6FYfBEFd3b74dq70
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-19_10:2021-07-19,2021-07-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 suspectscore=0 mlxlogscore=999 lowpriorityscore=0
+ spamscore=0 phishscore=0 adultscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107190114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 14 Jul 02:47 CDT 2021, rojay@codeaurora.org wrote:
+Hi Roberto,
 
-> On 2021-07-09 06:26, Stephen Boyd wrote:
-> > Quoting rojay@codeaurora.org (2021-07-06 02:19:27)
-> > > On 2021-06-08 13:37, rojay@codeaurora.org wrote:
-> > > > On 2021-06-06 09:25, Bjorn Andersson wrote:
-> > > >> On Fri 04 Jun 08:54 CDT 2021, Roja Rani Yarubandi wrote:
-> > > >>
-> > > >>> Add QSPI DT node for SC7280 SoC.
-> > > >>>
-> > > >>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-> > > >>> ---
-> > > >>> Changes in V3:
-> > > >>>  - Broken the huge V2 patch into 3 smaller patches.
-> > > >>>    1. QSPI DT nodes
-> > > >>>    2. QUP wrapper_0 DT nodes
-> > > >>>    3. QUP wrapper_1 DT nodes
-> > > >>>
-> > > >>> Changes in V2:
-> > > >>>  - As per Doug's comments removed pinmux/pinconf subnodes.
-> > > >>>  - As per Doug's comments split of SPI, UART nodes has been done.
-> > > >>>  - Moved QSPI node before aps_smmu as per the order.
-> > > >>>
-> > > >>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 29 ++++++++++++
-> > > >>>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 61
-> > > >>> +++++++++++++++++++++++++
-> > > >>>  2 files changed, 90 insertions(+)
-> > > >>>
-> > > >>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > > >>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > > >>> index 3900cfc09562..d0edffc15736 100644
-> > > >>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > > >>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > > >>> @@ -268,6 +268,22 @@ pmr735b_die_temp {
-> > > >>>             };
-> > > >>>  };
-> > > >>>
-> > > >>> +&qspi {
-> > > >>> +   status = "okay";
-> > > >>> +   pinctrl-names = "default";
-> > > >>> +   pinctrl-0 = <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
-> > > >>> +
-> > > >>> +   flash@0 {
-> > > >>> +           compatible = "jedec,spi-nor";
-> > > >>> +           reg = <0>;
-> > > >>> +
-> > > >>> +           /* TODO: Increase frequency after testing */
-> > > >>> +           spi-max-frequency = <25000000>;
-> > > >>> +           spi-tx-bus-width = <2>;
-> > > >>> +           spi-rx-bus-width = <2>;
-> > > >>> +   };
-> > > >>> +};
-> > > >>> +
-> > > >>>  &qupv3_id_0 {
-> > > >>>     status = "okay";
-> > > >>>  };
-> > > >>> @@ -278,6 +294,19 @@ &uart5 {
-> > > >>>
-> > > >>>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
-> > > >>>
-> > > >>> +&qspi_cs0 {
-> > > >>> +   bias-disable;
-> > > >>> +};
-> > > >>> +
-> > > >>> +&qspi_clk {
-> > > >>> +   bias-disable;
-> > > >>> +};
-> > > >>> +
-> > > >>> +&qspi_data01 {
-> > > >>> +   /* High-Z when no transfers; nice to park the lines */
-> > > >>> +   bias-pull-up;
-> > > >>> +};
-> > > >>> +
-> > > >>>  &qup_uart5_default {
-> > > >>>     tx {
-> > > >>>             pins = "gpio46";
-> > > >>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > >>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > >>> index 6c9d5eb93f93..3047ab802cd2 100644
-> > > >>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > >>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > >>> @@ -1061,6 +1061,42 @@ apss_merge_funnel_in: endpoint {
-> > > >>>                     };
-> > > >>>             };
-> > > >>>
-> > > >>> +           qspi_opp_table: qspi-opp-table {
-> > > >>
-> > > >> This node doesn't represents anything on the mmio bus, so it shouldn't
-> > > >> live in in /soc. Can't you move it into &qspi?
-> > > >>
-> > > >> Regards,
-> > > >> Bjorn
-> > > >>
-> > > >
-> > > > Sure, will move it into qspi node.
-> > > >
-> > > > Thanks,
-> > > > Roja
-> > > >
-> > > 
-> > > Hi Bjorn,
-> > > 
-> > > Moving "qspi_opp_table" inside &qspi node causing this warning:
-> > > arch/arm64/boot/dts/qcom/sc7280.dtsi:1055.35-1072.6: Warning
-> > > (spi_bus_reg): /soc@0/spi@88dc000/qspi-opp-table: missing or empty reg
-> > > property
-> > 
-> > If DT folks are OK I think we should hard-code 'opp-table' as not a
-> > device for spi to populate on the spi bus and relax the warning in the
-> > devicetree compiler (see [1] for more details). Technically, nodes that
-> > are bus controllers assume all child nodes are devices on that bus.  In
-> > this case, we want to stick the opp table as a child of the spi node so
-> > that it can be called 'opp-table' and not be a node in the root of DT.
-> > 
-> > > 
-> > > Shall I keep the qspi-opp-table out of &qspi node?
-> > > 
-> > 
-> > If you do, please move it to / instead of putting it under /soc as it
-> > doesn't have an address or a reg property.
-> > 
-> 
-> Hi Bjorn, Rob
-> 
-> Can we move this "qspi_opp_table" to / from /soc?
-> 
+On Mon, 2021-07-05 at 11:09 +0200, Roberto Sassu wrote:
+> ima_measure_critical_data() and process_buffer_measurement() currently
+> don't return a result. A caller wouldn't be able to know whether those
+> functions were executed successfully.
 
-If you have made a proper attempt to convince Rob and Mark that
-a child "opp-table" in a SPI master is not a SPI device - and the
-conclusion is that this is not a good idea...then yes it should live
-outside /soc.
+Missing is an explanation as to why these functions aren't currently
+returning a result.   The LSM/IMA hooks only return a negative result
+for failure to appraise a file's integrity, not measure a file.  Only
+failure to appraise a file's integrity results in preventing the file
+from being read/executed/mmaped.  Other failures are only audited.
 
-Thanks,
-Bjorn
+> 
+> This patch modifies the return type from void to int, and returns 0 if the
+> buffer has been successfully measured, a negative value otherwise.
+
+Needed here is an explanation as to why ima_measure_critical_data() is
+special.
+
+> 
+> Also, this patch does not modify the behavior of existing callers by
+> processing the returned value. For those, the return value is ignored.
+
+I agree that the existing behavior shouldn't change, but will this
+result in the bots complaining?
+
+thanks,
+
+Mimi
+
