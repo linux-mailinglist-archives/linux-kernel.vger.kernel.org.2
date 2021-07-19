@@ -2,144 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844CA3CECF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1AC3CECEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382553AbhGSRj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        id S1382447AbhGSRjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352712AbhGSQOb (ORCPT
+        with ESMTP id S1352758AbhGSQOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:14:31 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222CBC05BD2D
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:08:19 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id t4-20020a05683014c4b02904cd671b911bso10702439otq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:31:44 -0700 (PDT)
+        Mon, 19 Jul 2021 12:14:37 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5057C069A4D
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:09:47 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id r80so7588205oie.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:33:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kbUdQK2vlTB6j8FkLGF5mfubURI8TtogZmmaDTQnPvE=;
-        b=m1Y5GGDzL9DhhIvkQOhKE8jm3ZPo4x4Kv6XvT4jPArx0adIOBT1hGUUUbAshqq35At
-         cndkNHv3bLE99B2KPXbx+BBHRsvMNEKx7wZFz3S2elI3zJMYHu0SAlm5rcIyp1hfBy2h
-         89LdnkHO0yJuDXGxtdbPbok1w/9yDgFDESo27uJMpG9xBVdPCaPb7TxfI4h1HltRqi8V
-         EVWjePQnUvjw4o8vQiw0vFx0L2ew1xzqVhz8912TvG7AK2WMYtMRkiu6XZ46lYpGSiap
-         Bv0DFKDwfzskPik/IwZXUFaBoM1tM253EjCycIAHlDL9qYGSyy3QqtYCqiS+KdK70o5r
-         SaNQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5pip44uz8G7BvdketPGGb7rO6ArAVuWxJOw8cYl5Dck=;
+        b=pTokBLHDVKUO6/S3IXyWzU0zhd+tz6Gtzh0fmA122RJbECmVbws0irqr5MuT96wcv1
+         cp95ZgMJQI6W+8Gsvt1v/hPalzRu+gYem1Vnp2KzyIzvDe3+Bk1lwZz4D3UXHlEDEMpr
+         gMlzSmzTVzSvTtMNRj38dm7zE9SY9GZRn5FzqPFL0/jf2qLcAyHyyA0addRmRIbFXTPN
+         8JXWYDD/ertD1+MhskCe8Ht+Fsxiej2r2UeMh4swFdfAxHW+WKIrSIKzfXj3AVsVUbaB
+         cjy5NuLdvuP1ZM4xpDC9qN78HCI5Rv5U2P/PPBkBWk/DRdhpgOEHPmSZZl8DILw5qtNn
+         oiUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kbUdQK2vlTB6j8FkLGF5mfubURI8TtogZmmaDTQnPvE=;
-        b=TY3urOHuhBXkLHStdF5xKrW+cnbnVndqhYYibL1qbf0dqXEyifemekP+nmDmQjjxiU
-         wnkyGsBGne+dLF0rAsv0W7m2BrJKv/B5SnwRQ37ytt8t6HIzaKCGrmAjHPMMzkVq54Uy
-         IInXhsA0g9yk+NujmxSvKqYHCusfw80RbG2Ti/BQq+15j5pH9BzhvL5bgDOmT62jWfkc
-         WK4QDMRdVDOXzqMP9BlKbBaMowwCzeUBeYM3Cek7mHYOsL9Gs58vyryW1OruXwYBsMOG
-         jMXQQQSzs5/NpLxooB6eiFR1vW9QyjhlHMN26pIEsRy+7AmiOPpu3Lp5PTX7uabXzehu
-         OQEg==
-X-Gm-Message-State: AOAM530u9gWy0eELGImwHJsD9IsrIp/U0DNz1sriCNFyt/aq7vnzvdBG
-        58s1fVJ5//t1eGd6wUv58puYx2rM38a9q0xLiSmALw==
-X-Google-Smtp-Source: ABdhPJxNFGGSwVV4mbFVlmbTZTuBcgOgdMnEF1cKN+gu3X2TRo9H89LDD1Q4vY5nLoK0erRMiePXRw+pMiFgx5TJODI=
-X-Received: by 2002:a05:6830:242f:: with SMTP id k15mr19821711ots.72.1626712304089;
- Mon, 19 Jul 2021 09:31:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5pip44uz8G7BvdketPGGb7rO6ArAVuWxJOw8cYl5Dck=;
+        b=qxU8wtnW2pANZWwFjARh3ZueqoLKor6vrK9j9Vd1OthqrLWLu1FDckEVscxZ7NEnh4
+         94l9un878i15SDDYzvtkUwMPrYdAYlTB0CsP8DFqlTdpj2ipMVOuVTAUK+sgPeo/0Vf0
+         4/mt0SmpJj5ZBdpbDBopGCnQZO7vjbB4m0bp71uYxFEOb0FGxUk6MZKCcM60nYkeVJhx
+         TjB+xgiL/LL2vN7fohWTWxbSiwxbHAyIhRvJmAoUU9kwN5wU5quUPDsH9quYNAFceRu+
+         BXbh53HQIVtj4NTdcgTSyDyxj24b9h7el3MJRoeiu3+VcVF0pwFTIyy6QryjXKAnZeih
+         R4+g==
+X-Gm-Message-State: AOAM530I6rjJQwyxrUa2AjRo0wDybPIkyJllRFKu0r5jpgjGbmTsWwXv
+        hF3qElabIfWvfMChILIW7hOMPw==
+X-Google-Smtp-Source: ABdhPJwQCvoXkJu7zax2U3Jk0zW9PX4Ges1w6phQIYQ662ersmvpvpSXwXazl78T/nS00H8n/6O//Q==
+X-Received: by 2002:aca:b309:: with SMTP id c9mr8414386oif.135.1626712385860;
+        Mon, 19 Jul 2021 09:33:05 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h1sm3774252otj.48.2021.07.19.09.33.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 09:33:05 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 11:33:02 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
+        tdas@codeaurora.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [Patch v3 4/6] arm64: boot: dts: qcom: sdm45: Add support for
+ LMh node
+Message-ID: <YPWpPt+EfTtAUEOH@yoga>
+References: <20210708120656.663851-1-thara.gopinath@linaro.org>
+ <20210708120656.663851-5-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-References: <20210719144940.904087935@linuxfoundation.org> <20210719144947.891096868@linuxfoundation.org>
-In-Reply-To: <20210719144947.891096868@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 19 Jul 2021 22:01:30 +0530
-Message-ID: <CA+G9fYt3-5vb_1rjdW3=4nASPGMe3gRrXzdCu10bSgR+Zeo-Hw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 216/243] arm64: dts: ti: k3-j721e-common-proc-board:
- Use external clock for SERDES
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708120656.663851-5-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 at 21:42, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Kishon Vijay Abraham I <kishon@ti.com>
->
-> [ Upstream commit f2a7657ad7a821de9cc77d071a5587b243144cd5 ]
->
-> Use external clock for all the SERDES used by PCIe controller. This will
-> make the same clock used by the local SERDES as well as the clock
-> provided to the PCIe connector.
->
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> Link: https://lore.kernel.org/r/20210603143427.28735-4-kishon@ti.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Thu 08 Jul 07:06 CDT 2021, Thara Gopinath wrote:
+
+> Add LMh nodes for cpu cluster0 and cpu cluster1. Also add interrupt
+> support in cpufreq node to capture the LMh interrupt and let the scheduler
+> know of the max frequency throttling.
+> 
+
+Just noticed, could you please drop "boot: " from $subject and add the
+missing '8', as you're resubmitting the series.
+
+Regards,
+Bjorn
+
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 > ---
->  .../dts/ti/k3-j721e-common-proc-board.dts     | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-> index 7cd31ac67f88..56a92f59c3a1 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-> @@ -9,6 +9,7 @@
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/input/input.h>
->  #include <dt-bindings/net/ti-dp83867.h>
-> +#include <dt-bindings/phy/phy-cadence.h>
-
-Following build errors noticed on arm64 architecture on 5.10 branch.
-
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
-CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
-'HOSTCC=sccache gcc'
-/builds/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts:12:10:
-fatal error: dt-bindings/phy/phy-cadence.h: No such file or directory
-   12 | #include <dt-bindings/phy/phy-cadence.h>
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[3]: *** [scripts/Makefile.lib:326:
-arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dtb] Error 1
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [/builds/linux/scripts/Makefile.build:497:
-arch/arm64/boot/dts/ti] Error 2
-make[2]: Target '__build' not remade because of errors.
-make[1]: *** [/builds/linux/Makefile:1358: dtbs] Error 2
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-ref:
-https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/
-https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/config
-
-Steps to reproduce:
---------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-
-tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11
---kconfig defconfig --kconfig-add
-https://builds.tuxbuild.com/1vXT3b334rT9K155TzUSkMWobkx/config
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> 
+> v2->v3:
+> 	- Changed the LMh low and high trip to 94500 and 95000 mC from
+> 	  74500 and 75000 mC. This was a bug that got introduced in v2.
+> v1->v2:
+> 	- Dropped dt property qcom,support-lmh as per Bjorn's review comments.
+> 	- Changed lmh compatible from generic to platform specific.
+> 	- Introduced properties specifying arm, low and high temp thresholds for LMh
+> 	  as per Daniel's suggestion.
+> 
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index 0a86fe71a66d..4da6b8f3dd7b 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -3646,6 +3646,30 @@ swm: swm@c85 {
+>  			};
+>  		};
+>  
+> +		lmh_cluster1: lmh@17d70800 {
+> +			compatible = "qcom,sdm845-lmh";
+> +			reg = <0 0x17d70800 0 0x401>;
+> +			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+> +			qcom,lmh-cpu-id = <0x4>;
+> +			qcom,lmh-temperature-arm = <65000>;
+> +			qcom,lmh-temperature-low = <94500>;
+> +			qcom,lmh-temperature-high = <95000>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <1>;
+> +		};
+> +
+> +		lmh_cluster0: lmh@17d78800 {
+> +			compatible = "qcom,sdm845-lmh";
+> +			reg = <0 0x17d78800 0 0x401>;
+> +			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+> +			qcom,lmh-cpu-id = <0x0>;
+> +			qcom,lmh-temperature-arm = <65000>;
+> +			qcom,lmh-temperature-low = <94500>;
+> +			qcom,lmh-temperature-high = <95000>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <1>;
+> +		};
+> +
+>  		sound: sound {
+>  		};
+>  
+> @@ -4911,6 +4935,8 @@ cpufreq_hw: cpufreq@17d43000 {
+>  			reg = <0 0x17d43000 0 0x1400>, <0 0x17d45800 0 0x1400>;
+>  			reg-names = "freq-domain0", "freq-domain1";
+>  
+> +			interrupts-extended = <&lmh_cluster0 0>, <&lmh_cluster1 0>;
+> +
+>  			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GPLL0>;
+>  			clock-names = "xo", "alternate";
+>  
+> -- 
+> 2.25.1
+> 
