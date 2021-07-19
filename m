@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083E93CEA7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAD33CE977
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377311AbhGSRQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:16:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34444 "EHLO mail.kernel.org"
+        id S1346345AbhGSQ4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:56:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347275AbhGSPjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C9C86113E;
-        Mon, 19 Jul 2021 16:18:57 +0000 (UTC)
+        id S1346701AbhGSP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F60D61396;
+        Mon, 19 Jul 2021 16:08:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711538;
-        bh=aHtjY/d65vtSfvpQcli1/vRzR582HUiBgpVbmOba30Q=;
+        s=korg; t=1626710909;
+        bh=HxbYvG5Rj6h4UHhku3DIzRD+CcvctKcna1ezGhDmGWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UgpVunwITaGsnUA+M7eIqWOMIUYhFrBgBWPux1P0D/V3uZOtioYUIF/BaY5J2Ok61
-         yVK26Qk91VbjQFVJ4yeznD+MRUDBkNSKP1n26xyf9kH5nZ/bGMo9Y0fNgTQGZgUZIT
-         f06MXxWg1/kIYGe6tYtU7mhKotPndqNl/Y7AAEbQ=
+        b=GnDyzOPI9qGzsY8ZVbXPf6phVfdfq7Zyoq+pZtbl9l968nMulEsHWe/8ngQnUk+sb
+         e49dG9GnDroeWt3EqOR7RGrINHSSbPRhbAzuqMDuXHhrquoZziCIadEn4JSZD7ZErQ
+         Y/iShhy5CiVji94nkgiIMsHtEhPSDT6FLF/oXQug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 038/292] srcu: Fix broken node geometry after early ssp init
+Subject: [PATCH 5.13 154/351] power: supply: ab8500: Enable USB and AC
 Date:   Mon, 19 Jul 2021 16:51:40 +0200
-Message-Id: <20210719144943.772588012@linuxfoundation.org>
+Message-Id: <20210719144950.069165370@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,149 +40,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit b5befe842e6612cf894cf4a199924ee872d8b7d8 ]
+[ Upstream commit f9184a228d7a60ad56b810d549a7debb355f1be6 ]
 
-An srcu_struct structure that is initialized before rcu_init_geometry()
-will have its srcu_node hierarchy based on CONFIG_NR_CPUS.  Once
-rcu_init_geometry() is called, this hierarchy is compressed as needed
-for the actual maximum number of CPUs for this system.
+The vendor code tree supplies platform data to enable he
+USB charging for AB8500 and AB8500 and disable the AC
+charging on the AB8505. This was missed when the driver
+was submitted to the mainline kernel.
 
-Later on, that srcu_struct structure is confused, sometimes referring
-to its initial CONFIG_NR_CPUS-based hierarchy, and sometimes instead
-to the new num_possible_cpus() hierarchy.  For example, each of its
-->mynode fields continues to reference the original leaf rcu_node
-structures, some of which might no longer exist.  On the other hand,
-srcu_for_each_node_breadth_first() traverses to the new node hierarchy.
+Fix this by doing what the vendor kernel does: always
+register the USB charger, do not register the AC charger
+on the AB8505.
 
-There are at least two bad possible outcomes to this:
-
-1) a) A callback enqueued early on an srcu_data structure (call it
-      *sdp) is recorded pending on sdp->mynode->srcu_data_have_cbs in
-      srcu_funnel_gp_start() with sdp->mynode pointing to a deep leaf
-      (say 3 levels).
-
-   b) The grace period ends after rcu_init_geometry() shrinks the
-      nodes level to a single one.  srcu_gp_end() walks through the new
-      srcu_node hierarchy without ever reaching the old leaves so the
-      callback is never executed.
-
-   This is easily reproduced on an 8 CPUs machine with CONFIG_NR_CPUS >= 32
-   and "rcupdate.rcu_self_test=1". The srcu_barrier() after early tests
-   verification never completes and the boot hangs:
-
-	[ 5413.141029] INFO: task swapper/0:1 blocked for more than 4915 seconds.
-	[ 5413.147564]       Not tainted 5.12.0-rc4+ #28
-	[ 5413.151927] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-	[ 5413.159753] task:swapper/0       state:D stack:    0 pid:    1 ppid:     0 flags:0x00004000
-	[ 5413.168099] Call Trace:
-	[ 5413.170555]  __schedule+0x36c/0x930
-	[ 5413.174057]  ? wait_for_completion+0x88/0x110
-	[ 5413.178423]  schedule+0x46/0xf0
-	[ 5413.181575]  schedule_timeout+0x284/0x380
-	[ 5413.185591]  ? wait_for_completion+0x88/0x110
-	[ 5413.189957]  ? mark_held_locks+0x61/0x80
-	[ 5413.193882]  ? mark_held_locks+0x61/0x80
-	[ 5413.197809]  ? _raw_spin_unlock_irq+0x24/0x50
-	[ 5413.202173]  ? wait_for_completion+0x88/0x110
-	[ 5413.206535]  wait_for_completion+0xb4/0x110
-	[ 5413.210724]  ? srcu_torture_stats_print+0x110/0x110
-	[ 5413.215610]  srcu_barrier+0x187/0x200
-	[ 5413.219277]  ? rcu_tasks_verify_self_tests+0x50/0x50
-	[ 5413.224244]  ? rdinit_setup+0x2b/0x2b
-	[ 5413.227907]  rcu_verify_early_boot_tests+0x2d/0x40
-	[ 5413.232700]  do_one_initcall+0x63/0x310
-	[ 5413.236541]  ? rdinit_setup+0x2b/0x2b
-	[ 5413.240207]  ? rcu_read_lock_sched_held+0x52/0x80
-	[ 5413.244912]  kernel_init_freeable+0x253/0x28f
-	[ 5413.249273]  ? rest_init+0x250/0x250
-	[ 5413.252846]  kernel_init+0xa/0x110
-	[ 5413.256257]  ret_from_fork+0x22/0x30
-
-2) An srcu_struct structure that is initialized before rcu_init_geometry()
-   and used afterward will always have stale rdp->mynode references,
-   resulting in callbacks to be missed in srcu_gp_end(), just like in
-   the previous scenario.
-
-This commit therefore causes init_srcu_struct_nodes to initialize the
-geometry, if needed.  This ensures that the srcu_node hierarchy is
-properly built and distributed from the get-go.
-
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/rcu.h      |  2 ++
- kernel/rcu/srcutree.c |  3 +++
- kernel/rcu/tree.c     | 16 +++++++++++++++-
- 3 files changed, 20 insertions(+), 1 deletion(-)
+ drivers/power/supply/ab8500-bm.h      |  2 --
+ drivers/power/supply/ab8500_charger.c | 24 ++++++++++++++----------
+ 2 files changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index bf0827d4b659..cfd06fb5ba6d 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -308,6 +308,8 @@ static inline void rcu_init_levelspread(int *levelspread, const int *levelcnt)
+diff --git a/drivers/power/supply/ab8500-bm.h b/drivers/power/supply/ab8500-bm.h
+index 012595a9d269..871bdc1f5cbd 100644
+--- a/drivers/power/supply/ab8500-bm.h
++++ b/drivers/power/supply/ab8500-bm.h
+@@ -507,8 +507,6 @@ struct abx500_bm_data {
+ 	int bkup_bat_v;
+ 	int bkup_bat_i;
+ 	bool autopower_cfg;
+-	bool ac_enabled;
+-	bool usb_enabled;
+ 	bool no_maintenance;
+ 	bool capacity_scaling;
+ 	bool chg_unknown_bat;
+diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
+index 57fbfe3d8c03..e6f23ae05f95 100644
+--- a/drivers/power/supply/ab8500_charger.c
++++ b/drivers/power/supply/ab8500_charger.c
+@@ -3511,7 +3511,14 @@ static int ab8500_charger_probe(struct platform_device *pdev)
+ 	di->ac_chg.max_out_curr =
+ 		di->bm->chg_output_curr[di->bm->n_chg_out_curr - 1];
+ 	di->ac_chg.wdt_refresh = CHG_WD_INTERVAL;
+-	di->ac_chg.enabled = di->bm->ac_enabled;
++	/*
++	 * The AB8505 only supports USB charging. If we are not the
++	 * AB8505, register an AC charger.
++	 *
++	 * TODO: if this should be opt-in, add DT properties for this.
++	 */
++	if (!is_ab8505(di->parent))
++		di->ac_chg.enabled = true;
+ 	di->ac_chg.external = false;
+ 
+ 	/* USB supply */
+@@ -3525,7 +3532,6 @@ static int ab8500_charger_probe(struct platform_device *pdev)
+ 	di->usb_chg.max_out_curr =
+ 		di->bm->chg_output_curr[di->bm->n_chg_out_curr - 1];
+ 	di->usb_chg.wdt_refresh = CHG_WD_INTERVAL;
+-	di->usb_chg.enabled = di->bm->usb_enabled;
+ 	di->usb_chg.external = false;
+ 	di->usb_state.usb_current = -1;
+ 
+@@ -3599,14 +3605,12 @@ static int ab8500_charger_probe(struct platform_device *pdev)
  	}
- }
  
-+extern void rcu_init_geometry(void);
-+
- /* Returns a pointer to the first leaf rcu_node structure. */
- #define rcu_first_leaf_node() (rcu_state.level[rcu_num_lvls - 1])
+ 	/* Register USB charger class */
+-	if (di->usb_chg.enabled) {
+-		di->usb_chg.psy = devm_power_supply_register(dev,
+-							&ab8500_usb_chg_desc,
+-							&usb_psy_cfg);
+-		if (IS_ERR(di->usb_chg.psy)) {
+-			dev_err(dev, "failed to register USB charger\n");
+-			return PTR_ERR(di->usb_chg.psy);
+-		}
++	di->usb_chg.psy = devm_power_supply_register(dev,
++						     &ab8500_usb_chg_desc,
++						     &usb_psy_cfg);
++	if (IS_ERR(di->usb_chg.psy)) {
++		dev_err(dev, "failed to register USB charger\n");
++		return PTR_ERR(di->usb_chg.psy);
+ 	}
  
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index e26547b34ad3..072e47288f1f 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -90,6 +90,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
- 	struct srcu_node *snp;
- 	struct srcu_node *snp_first;
- 
-+	/* Initialize geometry if it has not already been initialized. */
-+	rcu_init_geometry();
-+
- 	/* Work out the overall tree geometry. */
- 	ssp->level[0] = &ssp->node[0];
- 	for (i = 1; i < rcu_num_lvls; i++)
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a274622ed6fa..33bdbe0629d5 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4502,11 +4502,25 @@ static void __init rcu_init_one(void)
-  * replace the definitions in tree.h because those are needed to size
-  * the ->node array in the rcu_state structure.
-  */
--static void __init rcu_init_geometry(void)
-+void rcu_init_geometry(void)
- {
- 	ulong d;
- 	int i;
-+	static unsigned long old_nr_cpu_ids;
- 	int rcu_capacity[RCU_NUM_LVLS];
-+	static bool initialized;
-+
-+	if (initialized) {
-+		/*
-+		 * Warn if setup_nr_cpu_ids() had not yet been invoked,
-+		 * unless nr_cpus_ids == NR_CPUS, in which case who cares?
-+		 */
-+		WARN_ON_ONCE(old_nr_cpu_ids != nr_cpu_ids);
-+		return;
-+	}
-+
-+	old_nr_cpu_ids = nr_cpu_ids;
-+	initialized = true;
- 
- 	/*
- 	 * Initialize any unspecified boot parameters.
+ 	/* Identify the connected charger types during startup */
 -- 
 2.30.2
 
