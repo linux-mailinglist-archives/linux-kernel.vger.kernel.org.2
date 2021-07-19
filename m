@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37E23CE9BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838623CE9BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358514AbhGSRAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:00:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
+        id S1358744AbhGSRA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244397AbhGSPem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:34:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7928561283;
-        Mon, 19 Jul 2021 16:11:42 +0000 (UTC)
+        id S245417AbhGSPen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:34:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3DC16144A;
+        Mon, 19 Jul 2021 16:11:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711102;
-        bh=kp5U2wMvPLEruEUoRkyIsoRC0p+zdofnmaAK/4jyolI=;
+        s=korg; t=1626711105;
+        bh=/QR6brVOClMPf4+3Oi2SPBGUUxonK5+aExp4JsThlYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DWMnoDnALPNEYEpXP0sornUtRYCkiwdfNNhn7uG4iZ1ZYdke/CyKoWcxWErU7hBrC
-         /ro4z4jD5txYWoI8Z5PA2Z4t9t3bN7DzoircSOoLY0gzI+zBEljTu3n8jK3RVbLj/o
-         /AZ24JNlcgJDpJImnGhOuzS6oa45LH9sVAZYF5tI=
+        b=YN5KX3V89hRzD9DaDzJcXS7nPvDckAHVuXb2j73ky06SAk9nV59T58tc8A0f9WcMt
+         BSrKn0Bprj7EmkPmmO1FTzI3fgkZk9HwRyCR8Qv1pfoLFh40icpwGCjFHSDKCzNSFO
+         FyhZIcyknbH0wR+JeRvpxeqM9DIaHTUPyb6d6+uY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
+        stable@vger.kernel.org,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 228/351] SUNRPC: prevent port reuse on transports which dont request it.
-Date:   Mon, 19 Jul 2021 16:52:54 +0200
-Message-Id: <20210719144952.492483739@linuxfoundation.org>
+Subject: [PATCH 5.13 229/351] nfs: fix acl memory leak of posix_acl_create()
+Date:   Mon, 19 Jul 2021 16:52:55 +0200
+Message-Id: <20210719144952.524370682@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -40,47 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit bc1c56e9bbe92766d017efb5f0a0c71f80da5570 ]
+[ Upstream commit 1fcb6fcd74a222d9ead54d405842fc763bb86262 ]
 
-If an RPC client is created without RPC_CLNT_CREATE_REUSEPORT, it should
-not reuse the source port when a TCP connection is re-established.
-This is currently implemented by preventing the source port being
-recorded after a successful connection (the call to xs_set_srcport()).
+When looking into another nfs xfstests report, I found acl and
+default_acl in nfs3_proc_create() and nfs3_proc_mknod() error
+paths are possibly leaked. Fix them in advance.
 
-However the source port is also recorded after a successful bind in xs_bind().
-This may not be needed at all and certainly is not wanted when
-RPC_CLNT_CREATE_REUSEPORT wasn't requested.
-
-So avoid that assignment when xprt.reuseport is not set.
-
-With this change, NFSv4.1 and later mounts use a different port number on
-each connection.  This is helpful with some firewalls which don't cope
-well with port reuse.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
-Fixes: e6237b6feb37 ("NFSv4.1: Don't rebind to the same source port when reconnecting to the server")
+Fixes: 013cdf1088d7 ("nfs: use generic posix ACL infrastructure for v3 Posix ACLs")
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Anna Schumaker <anna.schumaker@netapp.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtsock.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/nfs/nfs3proc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index 316d04945587..3228b7a1836a 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -1689,7 +1689,8 @@ static int xs_bind(struct sock_xprt *transport, struct socket *sock)
- 		err = kernel_bind(sock, (struct sockaddr *)&myaddr,
- 				transport->xprt.addrlen);
- 		if (err == 0) {
--			transport->srcport = port;
-+			if (transport->xprt.reuseport)
-+				transport->srcport = port;
- 			break;
+diff --git a/fs/nfs/nfs3proc.c b/fs/nfs/nfs3proc.c
+index 5c4e23abc345..2299446b3b89 100644
+--- a/fs/nfs/nfs3proc.c
++++ b/fs/nfs/nfs3proc.c
+@@ -385,7 +385,7 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+ 				break;
+ 
+ 			case NFS3_CREATE_UNCHECKED:
+-				goto out;
++				goto out_release_acls;
  		}
- 		last = port;
+ 		nfs_fattr_init(data->res.dir_attr);
+ 		nfs_fattr_init(data->res.fattr);
+@@ -751,7 +751,7 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+ 		break;
+ 	default:
+ 		status = -EINVAL;
+-		goto out;
++		goto out_release_acls;
+ 	}
+ 
+ 	d_alias = nfs3_do_create(dir, dentry, data);
 -- 
 2.30.2
 
