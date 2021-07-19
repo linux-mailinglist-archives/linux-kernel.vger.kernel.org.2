@@ -2,130 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9243CEA9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FC53CE9EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378284AbhGSRRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
+        id S1353771AbhGSREP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239970AbhGSPkb (ORCPT
+        with ESMTP id S1348906AbhGSPff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:31 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96098C04E2E3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:32:17 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id p9so11709177pjl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:58:29 -0700 (PDT)
+        Mon, 19 Jul 2021 11:35:35 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E82C0A88CD
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:24:50 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id k20so19404377pgg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:51:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Kmt2cg/fkXuZjEdxyWE8pRVcvkj1R557wxD+8nN3Ok=;
-        b=hgL8lBoQqCRxpnus/lHkYBGhXNRWjb+JkyBny7Lu6W0bUAFSojtDkk0NRfcW/P67hN
-         ZTNrJcVKYpnFEsb+KmwmbCY+0gYmxObzaO/ROsKVqf2ZlqM+hqG0vgAShj1lbQVNiHxn
-         j6Odcu7sD7yQea5jIh3SP/FuexftrzpQ1Yu2c=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MkKhttHk1f1NxvEjszFkNPRaTR2uQK8NNQrR3I9+ckM=;
+        b=lMJZcOx6oA7r1fitEX6eCxK880OIlVRr2rH/LT49CPkL3ITNjZ/NPY6N6YmEwBHwT3
+         FvHe3PgnV5SmlS1oG+8cBvE4+Ow59gFX5xochDQ0tRZVdhxPkXYAGcvV+V2yUQ9RJ0mn
+         rYE0k/MGE6B7F8wRUS0zf/CmcLnsn058kUgZ9piS6aoX9r9HqLAdmLXb+CJFcpkHJbB+
+         92gVu13ylQzRpowsNN5al1KOXpfCMNxK01aZYtS/LArebMSTZuAuxu4kgMY2mbJsQ3oG
+         2nw2HqhJ3AOly/2NQwRte8o2k+GcV3HlcpyrAZpCRq+GS5E5VtevVrYO6A+Y6Y9FVGPf
+         B2yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Kmt2cg/fkXuZjEdxyWE8pRVcvkj1R557wxD+8nN3Ok=;
-        b=gV06+7173CHWkyDZSkR+22BzBpiJRnWjOlinnDGwsbrPk1opeNCaD4PSzTS/QTbmSP
-         CD6aY/tT5ueIAaCwx6SZZHV3CmjmNoGCYEIKAZjt0055sqoF8qFQJ3I3dQTfvYYjEunm
-         t17WDGWcUspeU+T26UQMCcN5GU9wj+E2MqBQRMXCtc7Gj8QtYdvEkmiRT7X6K4IJfEOH
-         KlFLrk0F2JVfUpNmIxWT40HM/vkrKf+hDVGoiEb//V1qcRgBSbwKDz1tezo3WraPKGH6
-         bgqOTlNar3fDmOJLYgp9IizcA9K95qXBeJstMFi0TbmJQPbpFyP8Y5VhqDBd9i5Lp7oD
-         LDAQ==
-X-Gm-Message-State: AOAM533yIf+BAUpux//14UM9MAsRJTZB0pcTXJWsNisCdh7t/H5/vxf5
-        4d/1350RRISSxibOnBYUMtqkDQ==
-X-Google-Smtp-Source: ABdhPJxyRJ7ou2o3JRD7V5QiKompWLrj/d5i7RO9xpszj74VyxKp7jCDNDZlK8szrGSsH+sqr4CI0g==
-X-Received: by 2002:a17:90a:9b03:: with SMTP id f3mr24337900pjp.184.1626710309067;
-        Mon, 19 Jul 2021 08:58:29 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:ed1c:9d37:79a:b9d8])
-        by smtp.gmail.com with UTF8SMTPSA id i8sm5713369pgj.78.2021.07.19.08.58.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 08:58:28 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 08:58:25 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Michael Walle <michael@walle.cc>, Nishanth Menon <nm@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v13 4/7] arm64: defconfig: Explicitly enable
- USB_XHCI_PLATFORM
-Message-ID: <YPWhIX06NxpjAfoH@google.com>
-References: <20210623184124.3504047-1-mka@chromium.org>
- <20210623114025.v13.4.Id45138610b749ff775186ac10b3d01c504ddf4f3@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MkKhttHk1f1NxvEjszFkNPRaTR2uQK8NNQrR3I9+ckM=;
+        b=E71lglemd0D5vF2BKjHQsdmNG5Rr6BTF4W93PRtrH7E5bVuMtIyQGghxQVErs21/W/
+         xnsA+L+w7t+W68kS0bsw8K7A2iT7rKb9r5enkABYGqGBLzGAryXkmk9pALa9z1la522c
+         WGFaPHe5v0n5zZflrv3IchaaOCEH93HgB+/igfwviNOhD6J+2iiNWPbla+2NBTKxRi1H
+         IDF0EH/+3Su3Ff1JEV2nfN7um3EpESUwwxD68bWb9RwoNRzwZea6UDxj3Opphs0IO2Je
+         YYbAaR9MrVOUDS/125mjgLAgXfiLs7zJUqWNCK5Px0kk/1Gbr+GYclZo4+HgTC09M+tT
+         U5jw==
+X-Gm-Message-State: AOAM5325ZOMKqExNbxnMvghJozjcpmD9K4AtnPG2B7XZRYmKYI419Fj4
+        gtUoTi+52Yfv3QcA8Hs/i28TBl1duoiZ0PBGPMAQkA==
+X-Google-Smtp-Source: ABdhPJwbPHFgosVLoCqok1vM0WItXj22KFp9TT5+FAelCfh+WtA7xCqRRbbFZHLQm+9yVwk+v+LDH1QIUgp0c6MCGLs=
+X-Received: by 2002:a63:3107:: with SMTP id x7mr17715236pgx.303.1626709896370;
+ Mon, 19 Jul 2021 08:51:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210623114025.v13.4.Id45138610b749ff775186ac10b3d01c504ddf4f3@changeid>
+References: <20210719145317.79692-1-stephan@gerhold.net> <20210719145317.79692-5-stephan@gerhold.net>
+In-Reply-To: <20210719145317.79692-5-stephan@gerhold.net>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Mon, 19 Jul 2021 18:01:33 +0200
+Message-ID: <CAMZdPi8oxRMo0erfd0wrUPzD2UsbexoR=86u2N75Fd9RpXHoKg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next 4/4] net: wwan: Add Qualcomm BAM-DMUX WWAN
+ network driver
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dmaengine@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Will/Catalin,
+Hi Stephan,
 
-does this change looks good to you and could get an Acked-by?
 
-If so: would it be ok to land it through the USB tree with the
-rest of the series? It seems a conflict would be relatively
-unlikely.
+On Mon, 19 Jul 2021 at 17:01, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> I'm not sure how to integrate the driver with the WWAN subsystem yet.
+> At the moment the driver creates network interfaces for all channels
+> announced by the modem, it does not make use of the WWAN link management
+> yet. Unfortunately, this is a bit complicated:
+>
+> Both QMAP and the built-in multiplexing layer might be needed at some point.
+> There are firmware versions that do not support QMAP and the other way around
+> (the built-in multiplexing was disabled on very recent firmware versions).
+> Only userspace can check if QMAP is supported in the firmware (via QMI).
+>
+> I could ignore QMAP completely for now but I think someone will show up
+> who will need this eventually. And if there is going to be common code for
+> QMAP/rmnet link management it would be nice if BAM-DMUX could also make
+> use of it.
 
-Thanks
+I have this on my TODO list for mhi-net QMAP.
 
-Matthias
+> But the question is, how could this look like? How do we know if we should
+> create a link for QMAP or a BAM-DMUX channel? Does it even make sense
+> to manage the 1-8 channels via the WWAN link management?
 
-On Wed, Jun 23, 2021 at 11:41:20AM -0700, Matthias Kaehlcke wrote:
-> The dependency of USB_DWC3 on USB_XHCI_PLATFORM is being changed
-> from 'select' to 'depends on' by another patch. The defconfig selects
-> USB_DWC3 and implicitly USB_DWC3_DUAL_ROLE, to keep this unchanged
-> USB_XHCI_PLATFORM now needs to be selected explicitly.
-> 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
-> 
-> Changes in v13:
-> - patch added to the series
-> 
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index 08c6f769df9a..d7f22b18e37a 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -795,6 +795,7 @@ CONFIG_USB_CONN_GPIO=m
->  CONFIG_USB=y
->  CONFIG_USB_OTG=y
->  CONFIG_USB_XHCI_HCD=y
-> +CONFIG_USB_XHCI_PLATFORM=y
->  CONFIG_USB_XHCI_TEGRA=y
->  CONFIG_USB_EHCI_HCD=y
->  CONFIG_USB_EHCI_EXYNOS=y
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
-> 
+Couldn't it be specified via dts (property or different compatible
+string)? would it make sense to have two drivers (with common core) to
+manage either the multi-bam channel or newer QMAP based single
+bam-channel modems.
+
+>
+> Another problem is that the WWAN subsystem currently creates all network
+> interfaces below the common WWAN device. This means that userspace like
+> ModemManager has no way to check which driver provides them. This is
+> necessary though to decide how to set it up via QMI (ModemManager uses it).
+
+Well, I have quite a similar concern since I'm currently porting
+mhi-net mbim to wwan framework, and I was thinking about not making
+wwan device parent of the network link/netdev (in the same way as
+wlan0 is not child of ieee80211 device), but not sure if it's a good
+idea or not since we can not really consider driver name part of the
+uapi.
+
+The way links are created is normally abstracted, so if you know which
+bam variant you have from wwan network driver side (e.g. via dts), you
+should have nothing to check on the user side, except the session id.
+
+Regards,
+Loic
