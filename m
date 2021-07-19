@@ -2,79 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CAB3CF0AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B693CF0B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378253AbhGSXhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 19:37:01 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:40710 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349383AbhGSWH4 (ORCPT
+        id S232471AbhGSXlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1441887AbhGSWOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:07:56 -0400
-Received: by mail-io1-f54.google.com with SMTP id l5so21935879iok.7;
-        Mon, 19 Jul 2021 15:48:19 -0700 (PDT)
+        Mon, 19 Jul 2021 18:14:03 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1393C0613B7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:50:07 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id y4so20749882pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:50:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/KQZ/og+MMwG7+gZQy+I2ifIZbW2sC3CrysTm6RWo48=;
+        b=TrC6uyzelR+/+DuhHGkQhT8ZilBSns6EN6zr6R3GsDzwt1A0B1ob14VfGLKbKtyYHf
+         UnePiDR4FpHICi6z5QS4Br4KOWkHIgLEeR8gx7IzpIzQOJFTLlF7+NNZycoVeKnxYD6h
+         HbjmZ/PaBHV0V8e+cfLnxBcowZivtCrjpWnTV8c2ZjABFcunj+ENtzWsgGQLyJbKIFv/
+         VR+A8muZqP5sibfw7uvl/qPo2Ty2GVOGxwdOKplp/U4hoGQCi7nhVUCLUrGwfAlFMGnd
+         p98tI4Tr+xvCXIgbQNI2AJDXVbX1JKOsFuuzRo2sS//yKyLQdg5uMFTMCUas9NSy8J5b
+         Frtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=H+s1FDJ9EwBpkzI+GJ2O2JpJDnxLYii183SrSuO+Z9Q=;
-        b=dtEoXoCtREb3czbexVOw1AGQx6cB/jsFV2I81fAJiuHV+jYo6djKR3IPau5a7vVh4x
-         KdFrGd6nnZNQCSjuvFmrLwb1EXVP09w7zo+b+g4aTwlyDuJ38r+qZZozsL9ms93zRx/G
-         DEABxchHBkR7YE+aaCCEVpR5xmn7m8GWvELlKQD8eZw/yXF7iRYiwS0V3ZEdeNCcIw6o
-         Tc0wdbX+4QSWRPqn7Mf62QJdoRCcj1xansSWRTDZnINums5vl4xvEFvpZWtTbSJjkxPx
-         588OviQkJ6KrIAWjG2vcE7whbRS+HR6LeApZb/9ZWX1ZHgrrkC7faTGehU0den+9B1OM
-         OY+A==
-X-Gm-Message-State: AOAM532EFVKhKcBaOTZkccjsmfRNYKqGakayMBoMXrSt5qQYgGTViNy/
-        3wzu+opOw4Nj3MN30sf8vg==
-X-Google-Smtp-Source: ABdhPJyyAAbHjlBKXIRhGHRG8Vcao9f7aE9QjW/W+gSmpqk3LF8NcoieqQS9WPRPZeZvmJfv8Uqycw==
-X-Received: by 2002:a05:6602:198:: with SMTP id m24mr7802813ioo.144.1626734886835;
-        Mon, 19 Jul 2021 15:48:06 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id v11sm10296671ilh.52.2021.07.19.15.48.05
+        bh=/KQZ/og+MMwG7+gZQy+I2ifIZbW2sC3CrysTm6RWo48=;
+        b=qcEZNdNJ7S66GXfDOAPuISGbY0V+OmFwNLbnwz9R4GoTVUPZUz44wMybOoJeOCf8YV
+         WxD7LLLjyoMB5OmasWb5BFq9pWcjODJUqpHf9S2Bxm2hjFqpDPSdek/6Gk5xcxbmm5n6
+         VoNEKVsJtM5WL8PSC6ys+MJPDKg4g0exPaJVfc0U39d5xH2CF+FeO2kRj5/Pe7erZg4f
+         8U5SWTN7saj38HEVJjaMy3EVf9l4IrgvN3l7TSjm1tySTy+QTUbVfuKxl+JLFgPfxqdR
+         xRtQQb5+cmjX3V2OCpzwJZnjzOeJtRLS28Gi6V4uDbSz/7jpiwoenT2Q1vAHRqH8HTp0
+         ucFA==
+X-Gm-Message-State: AOAM531gL74uR+6iOtM+iiK8wEdgALoFNiRwd6mNE6EgVxbdGiM20jly
+        UDIe5OVCtNF240UKAWyYnj1NAw==
+X-Google-Smtp-Source: ABdhPJy/imUID7VPk45W7GZdlhJTj17s4zd4R4dZUGmjWKYmnjQB23dmeWQOvmtu+8kvlA6P6vSXfw==
+X-Received: by 2002:a63:a558:: with SMTP id r24mr12070616pgu.438.1626735006916;
+        Mon, 19 Jul 2021 15:50:06 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p33sm21208412pfw.40.2021.07.19.15.50.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 15:48:06 -0700 (PDT)
-Received: (nullmailer pid 2769072 invoked by uid 1000);
-        Mon, 19 Jul 2021 22:48:04 -0000
-Date:   Mon, 19 Jul 2021 16:48:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alex Helms <alexander.helms.jy@renesas.com>
-Cc:     robh+dt@kernel.org, geert+renesas@glider.be,
-        mturquette@baylibre.com, linux-renesas-soc@vger.kernel.org,
-        david.cater.jc@renesas.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sboyd@kernel.org,
-        michal.simek@xilinx.com, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: Add binding for Renesas 8T49N241
-Message-ID: <20210719224804.GA2768983@robh.at.kernel.org>
-References: <20210719182001.1573-1-alexander.helms.jy@renesas.com>
- <20210719182001.1573-2-alexander.helms.jy@renesas.com>
+        Mon, 19 Jul 2021 15:50:06 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 22:50:02 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 38/40] KVM: SVM: Provide support for
+ SNP_GUEST_REQUEST NAE event
+Message-ID: <YPYBmlCuERUIO5+M@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-39-brijesh.singh@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210719182001.1573-2-alexander.helms.jy@renesas.com>
+In-Reply-To: <20210707183616.5620-39-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 11:20:00 -0700, Alex Helms wrote:
-> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
-> The 8T49N241 accepts up to two differential or single-ended input clocks
-> and a fundamental-mode crystal input. The internal PLL can lock to either
-> of the input reference clocks or to the crystal to behave as a frequency
-> synthesizer.
-> 
-> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
-> ---
->  .../bindings/clock/renesas,8t49n241.yaml      | 190 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 196 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
-> 
+On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> Version 2 of GHCB specification added the support two SNP Guest Request
+> Message NAE event. The events allows for an SEV-SNP guest to make request
+> to the SEV-SNP firmware through hypervisor using the SNP_GUEST_REQUEST
+> API define in the SEV-SNP firmware specification.
 
+IIUC, this snippet in the spec means KVM can't restrict what requests are made
+by the guests.  If so, that makes it difficult to detect/ratelimit a misbehaving
+guest, and also limits our options if there are firmware issues (hopefully there
+aren't).  E.g. ratelimiting a guest after KVM has explicitly requested it to
+migrate is not exactly desirable.
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+  The hypervisor cannot alter the messages without detection nor read the
+  plaintext of the messages.
 
-If a tag was not added on purpose, please state why and what changed.
+> The SNP_GUEST_REQUEST requires two unique pages, one page for the request
+> and one page for the response. The response page need to be in the firmware
+> state. The GHCB specification says that both the pages need to be in the
+> hypervisor state but before executing the SEV-SNP command the response page
+> need to be in the firmware state.
+ 
+...
 
+> Now that KVM supports all the VMGEXIT NAEs required for the base SEV-SNP
+> feature, set the hypervisor feature to advertise it.
+
+It would helpful if this changelog listed the Guest Requests that are required
+for "base" SNP, e.g. to provide some insight as to why we care about guest
+requests.
+
+>  static int snp_bind_asid(struct kvm *kvm, int *error)
+> @@ -1618,6 +1631,12 @@ static int snp_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  	if (rc)
+>  		goto e_free_context;
+>  
+> +	/* Used for rate limiting SNP guest message request, use the default settings */
+> +	ratelimit_default_init(&sev->snp_guest_msg_rs);
+
+Is this exposed to userspace in any way?  This feels very much like a knob that
+needs to be configurable per-VM.
+
+Also, what are the estimated latencies of a guest request?  If the worst case
+latency is >200ms, a default ratelimit frequency of 5hz isn't going to do a whole
+lot.
+
+> +static void snp_handle_guest_request(struct vcpu_svm *svm, struct ghcb *ghcb,
+> +				     gpa_t req_gpa, gpa_t resp_gpa)
+> +{
+> +	struct sev_data_snp_guest_request data = {};
+> +	struct kvm_vcpu *vcpu = &svm->vcpu;
+> +	struct kvm *kvm = vcpu->kvm;
+> +	struct kvm_sev_info *sev;
+> +	int rc, err = 0;
+> +
+> +	if (!sev_snp_guest(vcpu->kvm)) {
+> +		rc = -ENODEV;
+> +		goto e_fail;
+> +	}
+> +
+> +	sev = &to_kvm_svm(kvm)->sev_info;
+> +
+> +	if (!__ratelimit(&sev->snp_guest_msg_rs)) {
+> +		pr_info_ratelimited("svm: too many guest message requests\n");
+> +		rc = -EAGAIN;
+
+What guarantee do we have that the guest actually understands -EAGAIN?  Ditto
+for -EINVAL returned by snp_build_guest_buf().  AFAICT, our options are to return
+one of the error codes defined in "Table 95. Status Codes for SNP_GUEST_REQUEST"
+of the firmware ABI, kill the guest, or ratelimit the guest without returning
+control to the guest.
+
+> +		goto e_fail;
+> +	}
+> +
+> +	rc = snp_build_guest_buf(svm, &data, req_gpa, resp_gpa);
+> +	if (rc)
+> +		goto e_fail;
+> +
+> +	sev = &to_kvm_svm(kvm)->sev_info;
+> +
+> +	mutex_lock(&kvm->lock);
+
+Question on the VMPCK sequences.  The firmware ABI says:
+
+   Each guest has four VMPCKs ... Each message contains a sequence number per
+   VMPCK. The sequence number is incremented with each message sent. Messages
+   sent by the guest to the firmware and by the firmware to the guest must be
+   delivered in order. If not, the firmware will reject subsequent messages ...
+
+Does that mean there are four independent sequences, i.e. four streams the guest
+can use "concurrently", or does it mean the overall freshess/integrity check is
+composed from four VMPCK sequences, all of which must be correct for the message
+to be valid?
+
+If it's the latter, then a traditional mutex isn't really necessary because the
+guest must implement its own serialization, e.g. it's own mutex or whatever, to
+ensure there is at most one request in-flight at any given time.  And on the KVM
+side it means KVM can simpy reject requests if there is already an in-flight
+request.  It might also give us more/better options for ratelimiting?
+
+> +	rc = sev_issue_cmd(kvm, SEV_CMD_SNP_GUEST_REQUEST, &data, &err);
+> +	if (rc) {
+> +		mutex_unlock(&kvm->lock);
+
+I suspect you reused this pattern from other, more complex code, but here it's
+overkill.  E.g.
+
+	if (!rc)
+		rc = kvm_write_guest(kvm, resp_gpa, sev->snp_resp_page, PAGE_SIZE);
+	else if (err)
+		rc = err;
+
+	mutex_unlock(&kvm->lock);
+
+	ghcb_set_sw_exit_info_2(ghcb, rc);
+
+> +		/* If we have a firmware error code then use it. */
+> +		if (err)
+> +			rc = err;
+> +
+> +		goto e_fail;
+> +	}
+> +
+> +	/* Copy the response after the firmware returns success. */
+> +	rc = kvm_write_guest(kvm, resp_gpa, sev->snp_resp_page, PAGE_SIZE);
+> +
+> +	mutex_unlock(&kvm->lock);
+> +
+> +e_fail:
+> +	ghcb_set_sw_exit_info_2(ghcb, rc);
+> +}
+> +
+> +static void snp_handle_ext_guest_request(struct vcpu_svm *svm, struct ghcb *ghcb,
+> +					 gpa_t req_gpa, gpa_t resp_gpa)
+> +{
+> +	struct sev_data_snp_guest_request req = {};
+> +	struct kvm_vcpu *vcpu = &svm->vcpu;
+> +	struct kvm *kvm = vcpu->kvm;
+> +	unsigned long data_npages;
+> +	struct kvm_sev_info *sev;
+> +	unsigned long err;
+> +	u64 data_gpa;
+> +	int rc;
+> +
+> +	if (!sev_snp_guest(vcpu->kvm)) {
+> +		rc = -ENODEV;
+> +		goto e_fail;
+> +	}
+> +
+> +	sev = &to_kvm_svm(kvm)->sev_info;
+> +
+> +	if (!__ratelimit(&sev->snp_guest_msg_rs)) {
+> +		pr_info_ratelimited("svm: too many guest message requests\n");
+> +		rc = -EAGAIN;
+> +		goto e_fail;
+> +	}
+> +
+> +	if (!sev->snp_certs_data) {
+> +		pr_err("svm: certs data memory is not allocated\n");
+> +		rc = -EFAULT;
+
+Another instance where the kernel's error numbers will not suffice.
+
+> +		goto e_fail;
+> +	}
+> +
+> +	data_gpa = ghcb_get_rax(ghcb);
+> +	data_npages = ghcb_get_rbx(ghcb);
