@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AA23CEA99
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700813CE979
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378252AbhGSRRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
+        id S1348207AbhGSQ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:56:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347044AbhGSPka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5331A6113E;
-        Mon, 19 Jul 2021 16:20:36 +0000 (UTC)
+        id S1348052AbhGSPas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:30:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 037EE600EF;
+        Mon, 19 Jul 2021 16:10:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711636;
-        bh=bx2NjaHIi7EIzUuk5t5pEMwJV/11m704jcJmZ6JoNMI=;
+        s=korg; t=1626711004;
+        bh=Kr5HoqsE5MPFdwwLrEQmw5vIHfZj7/DGPLKFuD6t3uY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0iOLH85UXjoz8nzm2RbADSrDiikEc4cIGSY24wk+P27ulaSVW9OMJiUOZvUS26aIW
-         g7zEtsmDlJSV7JdyYfMgvM6B7jyHTJGN0QRI3aa5ThtK/FH+wz97Ci+7cSolYS6P2G
-         AdDNTiFmTYnJO5+l0dd70ST5pB8O5FQ2IGpEtbws=
+        b=lhDmA4uSyfyfxN/liaLAkk4zw6SQ7yUiN6rWk+71uE+HT/hcbBo/VF2tJ5ljY63D6
+         +2j6IQNbifKAe+e0x80EemzMwLKy0wUqMksXknqzm9qbgynlni60dwJsmyDVPUFN6Q
+         JrKpRS8fFYVzGfm1vO6NRdPNwWbyC3kp3eCOMpWw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Liguang Zhang <zhangliguang@linux.alibaba.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 075/292] scsi: qedi: Fix TMF session block/unblock use
+Subject: [PATCH 5.13 191/351] ACPI: AMBA: Fix resource name in /proc/iomem
 Date:   Mon, 19 Jul 2021 16:52:17 +0200
-Message-Id: <20210719144944.991185173@linuxfoundation.org>
+Message-Id: <20210719144951.290427919@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Liguang Zhang <zhangliguang@linux.alibaba.com>
 
-[ Upstream commit 2819b4ae2873d50fd55292877b0231ec936c3b2e ]
+[ Upstream commit 7718629432676b5ebd9a32940782fe297a0abf8d ]
 
-Drivers shouldn't be calling block/unblock session for tmf handling because
-the functions can change the session state from under libiscsi.
-iscsi_queuecommand's call to iscsi_prep_scsi_cmd_pdu->
-iscsi_check_tmf_restrictions will prevent new cmds from being sent to qedi
-after we've started handling a TMF. So we don't need to try and block it in
-the driver, and we can remove these block calls.
+In function amba_handler_attach(), dev->res.name is initialized by
+amba_device_alloc. But when address_found is false, dev->res.name is
+assigned to null value, which leads to wrong resource name display in
+/proc/iomem, "<BAD>" is seen for those resources.
 
-Link: https://lore.kernel.org/r/20210525181821.7617-25-michael.christie@oracle.com
-Reviewed-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_fw.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/acpi/acpi_amba.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/qedi/qedi_fw.c b/drivers/scsi/qedi/qedi_fw.c
-index c12bb2dd5ff9..4c87640e6a91 100644
---- a/drivers/scsi/qedi/qedi_fw.c
-+++ b/drivers/scsi/qedi/qedi_fw.c
-@@ -159,14 +159,9 @@ static void qedi_tmf_resp_work(struct work_struct *work)
- 	set_bit(QEDI_CONN_FW_CLEANUP, &qedi_conn->flags);
- 	resp_hdr_ptr =  (struct iscsi_tm_rsp *)qedi_cmd->tmf_resp_buf;
- 
--	iscsi_block_session(session->cls_session);
- 	rval = qedi_cleanup_all_io(qedi, qedi_conn, qedi_cmd->task, true);
--	if (rval) {
--		iscsi_unblock_session(session->cls_session);
-+	if (rval)
- 		goto exit_tmf_resp;
--	}
--
--	iscsi_unblock_session(session->cls_session);
- 
- 	spin_lock(&session->back_lock);
- 	__iscsi_complete_pdu(conn, (struct iscsi_hdr *)resp_hdr_ptr, NULL, 0);
+diff --git a/drivers/acpi/acpi_amba.c b/drivers/acpi/acpi_amba.c
+index 49b781a9cd97..ab8a4e0191b1 100644
+--- a/drivers/acpi/acpi_amba.c
++++ b/drivers/acpi/acpi_amba.c
+@@ -76,6 +76,7 @@ static int amba_handler_attach(struct acpi_device *adev,
+ 		case IORESOURCE_MEM:
+ 			if (!address_found) {
+ 				dev->res = *rentry->res;
++				dev->res.name = dev_name(&dev->dev);
+ 				address_found = true;
+ 			}
+ 			break;
 -- 
 2.30.2
 
