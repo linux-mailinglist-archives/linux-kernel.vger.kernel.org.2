@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB90A3CE91A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F643CE9F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353740AbhGSQue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40236 "EHLO mail.kernel.org"
+        id S1354592AbhGSREy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:04:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348079AbhGSPYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D9A61413;
-        Mon, 19 Jul 2021 16:01:37 +0000 (UTC)
+        id S1349033AbhGSPfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E67FE61283;
+        Mon, 19 Jul 2021 16:15:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710498;
-        bh=Ifk/wau8jYOZlYvrfmoY80f7YmQG8+LwihKN+8kngqc=;
+        s=korg; t=1626711359;
+        bh=sYAem16VqUqLD/uB6TbBoCxDXXCGI+F8rq4lvRX6WMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D9khYOff/W5IqIbiWTTGbdlrEb65CJFWylhfPSOORwN/EzRLB4fgSAD1ry7dSchM2
-         sYt7OSDtW1HvWIQCckbf14UItB/ubGzZ65hW2HJfAaB6/np1oizr71CTN54vNNHxHy
-         GVk7WZ2DVxdlRXVw2CMEBR+GOYFhziimJlPT7BRY=
+        b=mPFXNCuuzH2MCd0eLdctKv1X7b87LmJKV89qkJ9HMmmUZett/77R+pu+JgUtNOhhH
+         UIUN99l6ESgAA8flvhdfe81SZVJG0l8VLqjb6MbS7/Q7jjSCQ3EpTArvCPWCrD8mBy
+         ZGO6MRb3UI55vUJe1ggSvfwHPm1Go7UJHR90B0pY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 241/243] perf report: Fix --task and --stat with pipe input
-Date:   Mon, 19 Jul 2021 16:54:30 +0200
-Message-Id: <20210719144948.697998851@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        kernel@dh-electronics.com, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 325/351] ARM: dts: imx6q-dhcom: Add gpios pinctrl for i2c bus recovery
+Date:   Mon, 19 Jul 2021 16:54:31 +0200
+Message-Id: <20210719144955.810362798@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,102 +44,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Christoph Niedermaier <cniedermaier@dh-electronics.com>
 
-[ Upstream commit 892ba7f18621a02af4428c58d97451f64685dba4 ]
+[ Upstream commit ddc873cd3c0af4faad6a00bffda21c3f775126dd ]
 
-Current 'perf report' fails to process a pipe input when --task or
---stat options are used.  This is because they reset all the tool
-callbacks and fails to find a matching event for a sample.
+The i2c bus can freeze at the end of transaction so the bus can no longer work.
+This scenario is improved by adding scl/sda gpios definitions to implement the
+i2c bus recovery mechanism.
 
-When pipe input is used, the event info is passed via ATTR records so it
-needs to handle that operation.  Otherwise the following error occurs.
-Note, -14 (= -EFAULT) comes from evlist__parse_sample():
-
-  # perf record -a -o- sleep 1 | perf report -i- --stat
-  Can't parse sample, err = -14
-  0x271044 [0x38]: failed to process type: 9
-  Error:
-  failed to process sample
-  #
-
-Committer testing:
-
-Before:
-
-  $ perf record -o- sleep 1 | perf report -i- --stat
-  Can't parse sample, err = -14
-  [ perf record: Woken up 1 times to write data ]
-  0x1350 [0x30]: failed to process type: 9
-  Error:
-  failed to process sample
-  [ perf record: Captured and wrote 0.000 MB - ]
-  $
-
-After:
-
-  $ perf record -o- sleep 1 | perf report -i- --stat
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.000 MB - ]
-
-  Aggregated stats:
-             TOTAL events:         41
-              COMM events:          2  ( 4.9%)
-              EXIT events:          1  ( 2.4%)
-            SAMPLE events:          9  (22.0%)
-             MMAP2 events:          4  ( 9.8%)
-              ATTR events:          1  ( 2.4%)
-    FINISHED_ROUND events:          1  ( 2.4%)
-        THREAD_MAP events:          1  ( 2.4%)
-           CPU_MAP events:          1  ( 2.4%)
-      EVENT_UPDATE events:          1  ( 2.4%)
-         TIME_CONV events:          1  ( 2.4%)
-           FEATURE events:         19  (46.3%)
-  cycles:uhH stats:
-            SAMPLE events:          9
-  $
-
-Fixes: a4a4d0a7a2b20f78 ("perf report: Add --stats option to display quick data statistics")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20210630043058.1131295-1-namhyung@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 52c7a088badd ("ARM: dts: imx6q: Add support for the DHCOM iMX6 SoM and PDK2")
+Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Marek Vasut <marex@denx.de>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: kernel@dh-electronics.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-report.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm/boot/dts/imx6q-dhcom-som.dtsi | 36 +++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 3c74c9c0f3c3..f61558123099 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -710,9 +710,14 @@ static void report__output_resort(struct report *rep)
- 	ui_progress__finish();
- }
+diff --git a/arch/arm/boot/dts/imx6q-dhcom-som.dtsi b/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
+index 6043be73a1a8..e3de2b487cf4 100644
+--- a/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/imx6q-dhcom-som.dtsi
+@@ -105,22 +105,31 @@
  
-+static int process_attr(struct perf_tool *tool __maybe_unused,
-+			union perf_event *event,
-+			struct evlist **pevlist);
+ &i2c1 {
+ 	clock-frequency = <100000>;
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "gpio";
+ 	pinctrl-0 = <&pinctrl_i2c1>;
++	pinctrl-1 = <&pinctrl_i2c1_gpio>;
++	scl-gpios = <&gpio3 21 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio3 28 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ 	status = "okay";
+ };
+ 
+ &i2c2 {
+ 	clock-frequency = <100000>;
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "gpio";
+ 	pinctrl-0 = <&pinctrl_i2c2>;
++	pinctrl-1 = <&pinctrl_i2c2_gpio>;
++	scl-gpios = <&gpio4 12 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio4 13 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ 	status = "okay";
+ };
+ 
+ &i2c3 {
+ 	clock-frequency = <100000>;
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "gpio";
+ 	pinctrl-0 = <&pinctrl_i2c3>;
++	pinctrl-1 = <&pinctrl_i2c3_gpio>;
++	scl-gpios = <&gpio1 3 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio1 6 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ 	status = "okay";
+ 
+ 	ltc3676: pmic@3c {
+@@ -286,6 +295,13 @@
+ 		>;
+ 	};
+ 
++	pinctrl_i2c1_gpio: i2c1-gpio-grp {
++		fsl,pins = <
++			MX6QDL_PAD_EIM_D21__GPIO3_IO21		0x4001b8b1
++			MX6QDL_PAD_EIM_D28__GPIO3_IO28		0x4001b8b1
++		>;
++	};
 +
- static void stats_setup(struct report *rep)
- {
- 	memset(&rep->tool, 0, sizeof(rep->tool));
-+	rep->tool.attr = process_attr;
- 	rep->tool.no_warn = true;
- }
+ 	pinctrl_i2c2: i2c2-grp {
+ 		fsl,pins = <
+ 			MX6QDL_PAD_KEY_COL3__I2C2_SCL		0x4001b8b1
+@@ -293,6 +309,13 @@
+ 		>;
+ 	};
  
-@@ -732,6 +737,7 @@ static void tasks_setup(struct report *rep)
- 		rep->tool.mmap = perf_event__process_mmap;
- 		rep->tool.mmap2 = perf_event__process_mmap2;
- 	}
-+	rep->tool.attr = process_attr;
- 	rep->tool.comm = perf_event__process_comm;
- 	rep->tool.exit = perf_event__process_exit;
- 	rep->tool.fork = perf_event__process_fork;
++	pinctrl_i2c2_gpio: i2c2-gpio-grp {
++		fsl,pins = <
++			MX6QDL_PAD_KEY_COL3__GPIO4_IO12		0x4001b8b1
++			MX6QDL_PAD_KEY_ROW3__GPIO4_IO13		0x4001b8b1
++		>;
++	};
++
+ 	pinctrl_i2c3: i2c3-grp {
+ 		fsl,pins = <
+ 			MX6QDL_PAD_GPIO_3__I2C3_SCL		0x4001b8b1
+@@ -300,6 +323,13 @@
+ 		>;
+ 	};
+ 
++	pinctrl_i2c3_gpio: i2c3-gpio-grp {
++		fsl,pins = <
++			MX6QDL_PAD_GPIO_3__GPIO1_IO03		0x4001b8b1
++			MX6QDL_PAD_GPIO_6__GPIO1_IO06		0x4001b8b1
++		>;
++	};
++
+ 	pinctrl_pmic_hw300: pmic-hw300-grp {
+ 		fsl,pins = <
+ 			MX6QDL_PAD_EIM_A25__GPIO5_IO02		0x1B0B0
 -- 
 2.30.2
 
