@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149E53CE6A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45803CE85D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350612AbhGSQLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:11:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39250 "EHLO mail.kernel.org"
+        id S1356098AbhGSQkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:40:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345474AbhGSPJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A72516127C;
-        Mon, 19 Jul 2021 15:48:53 +0000 (UTC)
+        id S1346912AbhGSPSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:18:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A1276135D;
+        Mon, 19 Jul 2021 15:58:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709734;
-        bh=EVmXXHjaRF80xiIY8Q2N2toit2bFFczKgUbpR2q2xl4=;
+        s=korg; t=1626710291;
+        bh=SIeiKKr65/+iePijq9wHcz1W/ALmD3TMh+937v8EIEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rdEJG3nDw5a5BHMlwgTXbroZR9OnxJDXMIX02dVUmMQ48dKBLnEFer4Tx1+GUxokw
-         bvEEjbQrIsJxotmnsYZOGJYS3NIDB2Npjobq90LGUHD+++Io5j28t1UbI0R16vPdBs
-         zWV4meXPMmFDBC+VBB8+7AzXfO4w1sOIDj9Yn39s=
+        b=h2/8GYxSeR7a58F4lMIHMRMt7H0lBrECzbiznPYoE3XyVoJnLxBBFM4Z9oKS1DzFG
+         /Y7wWeosZRXmbz19OB0dnwCKTVB0Y1zZqwtyuj0QvimNvzjUMoGDWRIm3JOSjQewer
+         uFDIdIdAQ2XSDfXThhlNFh4i1To1YkOD9Tn1qkI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 076/149] PCI/P2PDMA: Avoid pci_get_slot(), which may sleep
-Date:   Mon, 19 Jul 2021 16:53:04 +0200
-Message-Id: <20210719144919.296693488@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Tong Zhang <ztong0001@gmail.com>
+Subject: [PATCH 5.10 156/243] misc: alcor_pci: fix inverted branch condition
+Date:   Mon, 19 Jul 2021 16:53:05 +0200
+Message-Id: <20210719144945.947068255@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,87 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Logan Gunthorpe <logang@deltatee.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 3ec0c3ec2d92c09465534a1ff9c6f9d9506ffef6 ]
+commit 281e468446994a7672733af2bf941f4110d4a895 upstream.
 
-In order to use upstream_bridge_distance_warn() from a dma_map function, it
-must not sleep. However, pci_get_slot() takes the pci_bus_sem so it might
-sleep.
+This patch fixes a trivial mistake that I made in the previous attempt
+in fixing the null bridge issue. The branch condition is inverted and we
+should call alcor_pci_find_cap_offset() only if bridge is not null.
 
-In order to avoid this, try to get the host bridge's device from the first
-element in the device list. It should be impossible for the host bridge's
-device to go away while references are held on child devices, so the first
-element should not be able to change and, thus, this should be safe.
-
-Introduce a static function called pci_host_bridge_dev() to obtain the host
-bridge's root device.
-
-Link: https://lore.kernel.org/r/20210610160609.28447-7-logang@deltatee.com
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 3ce3e45cc333 ("misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge")
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Link: https://lore.kernel.org/r/20210522043725.602179-1-ztong0001@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/p2pdma.c | 34 ++++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+ drivers/misc/cardreader/alcor_pci.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-index 0608aae72ccc..0153abdbbc8d 100644
---- a/drivers/pci/p2pdma.c
-+++ b/drivers/pci/p2pdma.c
-@@ -292,10 +292,41 @@ static const struct pci_p2pdma_whitelist_entry {
- 	{}
- };
+--- a/drivers/misc/cardreader/alcor_pci.c
++++ b/drivers/misc/cardreader/alcor_pci.c
+@@ -144,7 +144,7 @@ static void alcor_pci_init_check_aspm(st
+ 	 * priv->parent_pdev will be NULL. In this case we don't check its
+ 	 * capability and disable ASPM completely.
+ 	 */
+-	if (!priv->parent_pdev)
++	if (priv->parent_pdev)
+ 		priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
+ 							 priv->parent_pdev);
  
-+/*
-+ * This lookup function tries to find the PCI device corresponding to a given
-+ * host bridge.
-+ *
-+ * It assumes the host bridge device is the first PCI device in the
-+ * bus->devices list and that the devfn is 00.0. These assumptions should hold
-+ * for all the devices in the whitelist above.
-+ *
-+ * This function is equivalent to pci_get_slot(host->bus, 0), however it does
-+ * not take the pci_bus_sem lock seeing __host_bridge_whitelist() must not
-+ * sleep.
-+ *
-+ * For this to be safe, the caller should hold a reference to a device on the
-+ * bridge, which should ensure the host_bridge device will not be freed
-+ * or removed from the head of the devices list.
-+ */
-+static struct pci_dev *pci_host_bridge_dev(struct pci_host_bridge *host)
-+{
-+	struct pci_dev *root;
-+
-+	root = list_first_entry_or_null(&host->bus->devices,
-+					struct pci_dev, bus_list);
-+
-+	if (!root)
-+		return NULL;
-+	if (root->devfn != PCI_DEVFN(0, 0))
-+		return NULL;
-+
-+	return root;
-+}
-+
- static bool __host_bridge_whitelist(struct pci_host_bridge *host,
- 				    bool same_host_bridge)
- {
--	struct pci_dev *root = pci_get_slot(host->bus, PCI_DEVFN(0, 0));
-+	struct pci_dev *root = pci_host_bridge_dev(host);
- 	const struct pci_p2pdma_whitelist_entry *entry;
- 	unsigned short vendor, device;
- 
-@@ -304,7 +335,6 @@ static bool __host_bridge_whitelist(struct pci_host_bridge *host,
- 
- 	vendor = root->vendor;
- 	device = root->device;
--	pci_dev_put(root);
- 
- 	for (entry = pci_p2pdma_whitelist; entry->vendor; entry++) {
- 		if (vendor != entry->vendor || device != entry->device)
--- 
-2.30.2
-
 
 
