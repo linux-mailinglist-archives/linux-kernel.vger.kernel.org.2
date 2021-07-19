@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614383CDDCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BDC3CDD6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245479AbhGSPAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:00:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55638 "EHLO mail.kernel.org"
+        id S245192AbhGSO5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:57:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245591AbhGSOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 619516135D;
-        Mon, 19 Jul 2021 15:18:41 +0000 (UTC)
+        id S245618AbhGSOjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D82B6128D;
+        Mon, 19 Jul 2021 15:18:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707922;
-        bh=dK4oXBu7DvXkxRUmQC1iqHAflWit35SWU6qTryn/LvE=;
+        s=korg; t=1626707924;
+        bh=RIfABRfYT/bED/Jbu+5fxEe7EKDy5v+IXZj7vhdqYzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ejWDxItUr5LJoqB3GQS+iXgWmSSt9A9O9FxzVI4Q+Srxo9MchMZs+sxx0N7254Jbh
-         dIdOMqF4Q2yeiUVmSf1xIhty0bI65SQm7xPeqfDeOQL26zRcadLJZm1UtwxjeyqKGv
-         fRxQDGSsD81H5SPOuL72+8NI/6vw+aXQAX47Vr7o=
+        b=dvWHfqbpdTez781KjrGClPkMqUBKlxhR1GpkwmsI+QbcCXUO32+0AiQAoy7BFGVPF
+         2oFvLj0X+0flywGMfXKuS7KdPwi294FoZXRaiiZ1yFN3YQJqGHor5qAcvHcCnL+eWM
+         VwiLBpVk/rKHJEoi+Oom+/mO2BbLm/4xtVJEpF1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 075/315] media: s5p_cec: decrement usage count if disabled
-Date:   Mon, 19 Jul 2021 16:49:24 +0200
-Message-Id: <20210719144945.338705296@linuxfoundation.org>
+Subject: [PATCH 4.14 076/315] crypto: ixp4xx - dma_unmap the correct address
+Date:   Mon, 19 Jul 2021 16:49:25 +0200
+Message-Id: <20210719144945.369922396@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,37 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit 747bad54a677d8633ec14b39dfbeb859c821d7f2 ]
+[ Upstream commit 9395c58fdddd79cdd3882132cdd04e8ac7ad525f ]
 
-There's a bug at s5p_cec_adap_enable(): if called to
-disable the device, it should call pm_runtime_put()
-instead of pm_runtime_disable(), as the goal here is to
-decrement the usage_count and not to disable PM runtime.
+Testing ixp4xx_crypto with CONFIG_DMA_API_DEBUG lead to the following error:
+DMA-API: platform ixp4xx_crypto.0: device driver tries to free DMA memory it has not allocated [device address=0x0000000000000000] [size=24 bytes]
 
-Reported-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Fixes: 1bcbf6f4b6b0 ("[media] cec: s5p-cec: Add s5p-cec driver")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+This is due to dma_unmap using the wrong address.
+
+Fixes: 0d44dc59b2b4 ("crypto: ixp4xx - Fix handling of chained sg buffers")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/s5p-cec/s5p_cec.c | 2 +-
+ drivers/crypto/ixp4xx_crypto.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/s5p-cec/s5p_cec.c b/drivers/media/platform/s5p-cec/s5p_cec.c
-index 8837e2678bde..3032247c63a5 100644
---- a/drivers/media/platform/s5p-cec/s5p_cec.c
-+++ b/drivers/media/platform/s5p-cec/s5p_cec.c
-@@ -55,7 +55,7 @@ static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
- 	} else {
- 		s5p_cec_mask_tx_interrupts(cec);
- 		s5p_cec_mask_rx_interrupts(cec);
--		pm_runtime_disable(cec->dev);
-+		pm_runtime_put(cec->dev);
- 	}
+diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
+index 4b6773c345ab..a2266334297b 100644
+--- a/drivers/crypto/ixp4xx_crypto.c
++++ b/drivers/crypto/ixp4xx_crypto.c
+@@ -333,7 +333,7 @@ static void free_buf_chain(struct device *dev, struct buffer_desc *buf,u32 phys)
  
- 	return 0;
+ 		buf1 = buf->next;
+ 		phys1 = buf->phys_next;
+-		dma_unmap_single(dev, buf->phys_next, buf->buf_len, buf->dir);
++		dma_unmap_single(dev, buf->phys_addr, buf->buf_len, buf->dir);
+ 		dma_pool_free(buffer_pool, buf, phys);
+ 		buf = buf1;
+ 		phys = phys1;
 -- 
 2.30.2
 
