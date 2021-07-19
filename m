@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25553CE6B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B614E3CE7EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351043AbhGSQMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:12:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39126 "EHLO mail.kernel.org"
+        id S1354843AbhGSQf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346058AbhGSPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6EB0606A5;
-        Mon, 19 Jul 2021 15:50:24 +0000 (UTC)
+        id S1347847AbhGSPWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:22:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E796611ED;
+        Mon, 19 Jul 2021 15:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709825;
-        bh=tbiOlfmABFXttJJ+Fv02yuub1GSccbcasOq5KTMKJsc=;
+        s=korg; t=1626710378;
+        bh=DdZs0CnYd5ClsI3RA2M2WZlG2dH3WqMgEnXVCUf2saM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FCraE19jfLuYZ9lGKDZ9H/Bh7Jpsl+tlj8CXbjsl3r6lMUrT/x3Fo6wR1ukGktjjR
-         WdkhqeK2qC1/TjahTE2iflA7GUksACwyuTB50JBnweg36U7wIyeRpTkO8kUO+QF4al
-         +INAQfDDNvL+SaaZvK9K4lcP+m1uVxn8DxuO0OKo=
+        b=HiAsfNBE30Qgps7cIB8Wlfnf/UPHmGwo8SovgNbk1wgv5KoNwEpYQq22HejEa8RhZ
+         gam9X2+Xpy+FD5cIOpUf4+9sEMgM5r/t6wrWAYxUpsxvmVWvDAeVo+a5Iz7uPjjHuq
+         CLXOHMwMc0YBOuhQJnEc1m5dCquBV3ztspsYpHyo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 113/149] NFSv4/pNFS: Dont call _nfs4_pnfs_v3_ds_connect multiple times
+Subject: [PATCH 5.10 192/243] ARM: dts: exynos: fix PWM LED max brightness on Odroid HC1
 Date:   Mon, 19 Jul 2021 16:53:41 +0200
-Message-Id: <20210719144928.133333355@linuxfoundation.org>
+Message-Id: <20210719144947.114359123@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,102 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit f46f84931a0aa344678efe412d4b071d84d8a805 ]
+[ Upstream commit a7e59c84cf2055a1894f45855c8319191f2fa59e ]
 
-After we grab the lock in nfs4_pnfs_ds_connect(), there is no check for
-whether or not ds->ds_clp has already been initialised, so we can end up
-adding the same transports multiple times.
+There is no "max_brightness" property as pointed out by dtschema:
 
-Fixes: fc821d59209d ("pnfs/NFSv4.1: Add multipath capabilities to pNFS flexfiles servers over NFSv3")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+  arch/arm/boot/dts/exynos5422-odroidhc1.dt.yaml: led-controller: led-1: 'max-brightness' is a required property
+
+Fixes: 1ac49427b566 ("ARM: dts: exynos: Add support for Hardkernel's Odroid HC1 board")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210505135941.59898-4-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pnfs_nfs.c | 52 +++++++++++++++++++++++------------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+ arch/arm/boot/dts/exynos5422-odroidhc1.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/pnfs_nfs.c b/fs/nfs/pnfs_nfs.c
-index 8b37e7f8e789..249cf9037dbd 100644
---- a/fs/nfs/pnfs_nfs.c
-+++ b/fs/nfs/pnfs_nfs.c
-@@ -556,19 +556,16 @@ out:
- }
- EXPORT_SYMBOL_GPL(nfs4_pnfs_ds_add);
- 
--static void nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
-+static int nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
- {
- 	might_sleep();
--	wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING,
--			TASK_KILLABLE);
-+	return wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING, TASK_KILLABLE);
- }
- 
- static void nfs4_clear_ds_conn_bit(struct nfs4_pnfs_ds *ds)
- {
- 	smp_mb__before_atomic();
--	clear_bit(NFS4DS_CONNECTING, &ds->ds_state);
--	smp_mb__after_atomic();
--	wake_up_bit(&ds->ds_state, NFS4DS_CONNECTING);
-+	clear_and_wake_up_bit(NFS4DS_CONNECTING, &ds->ds_state);
- }
- 
- static struct nfs_client *(*get_v3_ds_connect)(
-@@ -734,30 +731,33 @@ int nfs4_pnfs_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds,
- {
- 	int err;
- 
--again:
--	err = 0;
--	if (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) == 0) {
--		if (version == 3) {
--			err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo,
--						       retrans);
--		} else if (version == 4) {
--			err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo,
--						       retrans, minor_version);
--		} else {
--			dprintk("%s: unsupported DS version %d\n", __func__,
--				version);
--			err = -EPROTONOSUPPORT;
--		}
-+	do {
-+		err = nfs4_wait_ds_connect(ds);
-+		if (err || ds->ds_clp)
-+			goto out;
-+		if (nfs4_test_deviceid_unavailable(devid))
-+			return -ENODEV;
-+	} while (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) != 0);
- 
--		nfs4_clear_ds_conn_bit(ds);
--	} else {
--		nfs4_wait_ds_connect(ds);
-+	if (ds->ds_clp)
-+		goto connect_done;
- 
--		/* what was waited on didn't connect AND didn't mark unavail */
--		if (!ds->ds_clp && !nfs4_test_deviceid_unavailable(devid))
--			goto again;
-+	switch (version) {
-+	case 3:
-+		err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo, retrans);
-+		break;
-+	case 4:
-+		err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo, retrans,
-+					       minor_version);
-+		break;
-+	default:
-+		dprintk("%s: unsupported DS version %d\n", __func__, version);
-+		err = -EPROTONOSUPPORT;
- 	}
- 
-+connect_done:
-+	nfs4_clear_ds_conn_bit(ds);
-+out:
- 	/*
- 	 * At this point the ds->ds_clp should be ready, but it might have
- 	 * hit an error.
+diff --git a/arch/arm/boot/dts/exynos5422-odroidhc1.dts b/arch/arm/boot/dts/exynos5422-odroidhc1.dts
+index 812659260278..88f5c150a30a 100644
+--- a/arch/arm/boot/dts/exynos5422-odroidhc1.dts
++++ b/arch/arm/boot/dts/exynos5422-odroidhc1.dts
+@@ -22,7 +22,7 @@
+ 			label = "blue:heartbeat";
+ 			pwms = <&pwm 2 2000000 0>;
+ 			pwm-names = "pwm2";
+-			max_brightness = <255>;
++			max-brightness = <255>;
+ 			linux,default-trigger = "heartbeat";
+ 		};
+ 	};
 -- 
 2.30.2
 
