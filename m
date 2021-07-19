@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A464C3CE717
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CABE3CE893
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350892AbhGSQUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
+        id S1353455AbhGSQnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:43:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345683AbhGSPMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:12:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 654CC61364;
-        Mon, 19 Jul 2021 15:52:43 +0000 (UTC)
+        id S239618AbhGSPZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:25:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C5D56008E;
+        Mon, 19 Jul 2021 16:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709963;
-        bh=ZyqBHHXgqDbHyhNuTUpOnoCuQU3MYDpJHC7okbgd5bg=;
+        s=korg; t=1626710771;
+        bh=YScusCExGV176r/kpK860fBFuQetm23YemSEX6cobH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HoIOVmcBNxIEBg8FzZ6bL77aMy6JsXVMYjqTrLxAzty71KuLILt3ipu2XhkMIs9eW
-         /QISsoFmc0fKV2DbWcKWWeGCz3fSVbnSySIFvEiwEXP+Wi+U9u6UyS6nhwgZJEB7Sn
-         yARsHAwMQx9CMSzNAdk9MmZI+scHVTrIVussmcaA=
+        b=df6BCi5zzdIw19X9WVUd83x8THbEvBO/YKdI+dOeUB/HkRtbK5psEFlM3cPy7juyM
+         LtlE2o5CgmtIRaNMjPsD4d32QKBYSySE2f+zzHU1OFRF/ZDnfcL/9lgeuW+Kd3JqNE
+         xIAAs/2OsQOzvI5LrvxQKhUc+qk3CZ4p5uXmdBtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Simon Ser <contact@emersion.fr>
-Subject: [PATCH 5.10 019/243] drm/ingenic: Switch IPU plane to type OVERLAY
-Date:   Mon, 19 Jul 2021 16:50:48 +0200
-Message-Id: <20210719144941.554898710@linuxfoundation.org>
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 103/351] ASoC: soc-pcm: fix the return value in dpcm_apply_symmetry()
+Date:   Mon, 19 Jul 2021 16:50:49 +0200
+Message-Id: <20210719144947.904406317@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,82 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Jaroslav Kysela <perex@perex.cz>
 
-commit 68b433fe6937cfa3f8975d18643d5956254edd6a upstream.
+[ Upstream commit 12ffd726824a2f52486f72338b6fd3244b512959 ]
 
-It should have been an OVERLAY from the beginning. The documentation
-stipulates that there should be an unique PRIMARY plane per CRTC.
+In case, where the loops are not executed for a reason, the uninitialized
+variable 'err' is returned to the caller. Make code fully predictible
+and assign zero in the declaration.
 
-Fixes: fc1acf317b01 ("drm/ingenic: Add support for the IPU")
-Cc: <stable@vger.kernel.org> # 5.8+
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Acked-by: Simon Ser <contact@emersion.fr>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210329175046.214629-2-paul@crapouillou.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20210614071746.1787072-1-perex@perex.cz
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c |   11 +++++------
- drivers/gpu/drm/ingenic/ingenic-ipu.c     |    2 +-
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/soc-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -347,7 +347,7 @@ static void ingenic_drm_plane_enable(str
- 	unsigned int en_bit;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8659089a87a0..46513bb97904 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1700,7 +1700,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 	struct snd_soc_dpcm *dpcm;
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(fe_substream);
+ 	struct snd_soc_dai *fe_cpu_dai;
+-	int err;
++	int err = 0;
+ 	int i;
  
- 	if (priv->soc_info->has_osd) {
--		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
-+		if (plane != &priv->f0)
- 			en_bit = JZ_LCD_OSDC_F1EN;
- 		else
- 			en_bit = JZ_LCD_OSDC_F0EN;
-@@ -362,7 +362,7 @@ void ingenic_drm_plane_disable(struct de
- 	unsigned int en_bit;
- 
- 	if (priv->soc_info->has_osd) {
--		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
-+		if (plane != &priv->f0)
- 			en_bit = JZ_LCD_OSDC_F1EN;
- 		else
- 			en_bit = JZ_LCD_OSDC_F0EN;
-@@ -389,8 +389,7 @@ void ingenic_drm_plane_config(struct dev
- 
- 	ingenic_drm_plane_enable(priv, plane);
- 
--	if (priv->soc_info->has_osd &&
--	    plane->type == DRM_PLANE_TYPE_PRIMARY) {
-+	if (priv->soc_info->has_osd && plane != &priv->f0) {
- 		switch (fourcc) {
- 		case DRM_FORMAT_XRGB1555:
- 			ctrl |= JZ_LCD_OSDCTRL_RGB555;
-@@ -423,7 +422,7 @@ void ingenic_drm_plane_config(struct dev
- 	}
- 
- 	if (priv->soc_info->has_osd) {
--		if (plane->type == DRM_PLANE_TYPE_PRIMARY) {
-+		if (plane != &priv->f0) {
- 			xy_reg = JZ_REG_LCD_XYP1;
- 			size_reg = JZ_REG_LCD_SIZE1;
- 		} else {
-@@ -455,7 +454,7 @@ static void ingenic_drm_plane_atomic_upd
- 		height = state->src_h >> 16;
- 		cpp = state->fb->format->cpp[0];
- 
--		if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
-+		if (!priv->soc_info->has_osd || plane == &priv->f0)
- 			hwdesc = priv->dma_hwdesc_f0;
- 		else
- 			hwdesc = priv->dma_hwdesc_f1;
---- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-@@ -753,7 +753,7 @@ static int ingenic_ipu_bind(struct devic
- 
- 	err = drm_universal_plane_init(drm, plane, 1, &ingenic_ipu_plane_funcs,
- 				       soc_info->formats, soc_info->num_formats,
--				       NULL, DRM_PLANE_TYPE_PRIMARY, NULL);
-+				       NULL, DRM_PLANE_TYPE_OVERLAY, NULL);
- 	if (err) {
- 		dev_err(dev, "Failed to init plane: %i\n", err);
- 		return err;
+ 	/* apply symmetry for FE */
+-- 
+2.30.2
+
 
 
