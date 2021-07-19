@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4CB3CDD98
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6634F3CDDA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244570AbhGSO65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:58:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
+        id S1344081AbhGSO72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:59:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344029AbhGSOjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C144D6112D;
-        Mon, 19 Jul 2021 15:20:24 +0000 (UTC)
+        id S1344082AbhGSOj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E50626113B;
+        Mon, 19 Jul 2021 15:20:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708025;
-        bh=so5s9QIfoDE8+8ZjuiUwgMCqr1/3RjEGVOxsxfQ07JA=;
+        s=korg; t=1626708027;
+        bh=XB1lbfNODKL/0dCeVgEWwEViT6E/AW7dZX8UgH08D/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MTjqJcwO7v9SYfGY9khUPQXPc9VUeb4CaKX2FFySh/o7IUC3FJcpC8u5WglIVYCQ6
-         bPgNlEPTqpAkpcdkSMr5PcL1l6SqNdgTmoxpof6xaCEFikbqCMZexjjmgSUMIxEqyL
-         zKXyl+Y618+hd8llvvPnCOpqTfgRTESFMaQd6ICA=
+        b=to1JMsAo3GwyvFzjy4kjOMpXghaPJiTlghbBrqNs/n5yw5b6FAn8a9bA9ww38fCmB
+         GRXWpuoQCwikxDYI9n0FF4I1DDWAz2c/CPjbDAroVzJidC7DbTC4TqAw2lH0SHiPox
+         J0buxAQBNwUyeVBV1YnouJeK0GW7XOR7mOHtXV6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 152/315] extcon: max8997: Add missing modalias string
-Date:   Mon, 19 Jul 2021 16:50:41 +0200
-Message-Id: <20210719144947.889945418@linuxfoundation.org>
+        stable@vger.kernel.org, Chung-Chiang Cheng <cccheng@synology.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 153/315] configfs: fix memleak in configfs_release_bin_file
+Date:   Mon, 19 Jul 2021 16:50:42 +0200
+Message-Id: <20210719144947.920586282@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,31 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Chung-Chiang Cheng <shepjeng@gmail.com>
 
-[ Upstream commit dc11fc2991e9efbceef93912b83e333d2835fb19 ]
+[ Upstream commit 3c252b087de08d3cb32468b54a158bd7ad0ae2f7 ]
 
-The platform device driver name is "max8997-muic", so advertise it
-properly in the modalias string. This fixes automated module loading when
-this driver is compiled as a module.
+When reading binary attributes in progress, buffer->bin_buffer is setup in
+configfs_read_bin_file() but never freed.
 
-Fixes: b76668ba8a77 ("Extcon: add MAX8997 extcon driver")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Fixes: 03607ace807b4 ("configfs: implement binary attributes")
+Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+[hch: move the vfree rather than duplicating it]
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-max8997.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/configfs/file.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
-index b9b48d45a6dc..17d426829f5d 100644
---- a/drivers/extcon/extcon-max8997.c
-+++ b/drivers/extcon/extcon-max8997.c
-@@ -783,3 +783,4 @@ module_platform_driver(max8997_muic_driver);
- MODULE_DESCRIPTION("Maxim MAX8997 Extcon driver");
- MODULE_AUTHOR("Donggeun Kim <dg77.kim@samsung.com>");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:max8997-muic");
+diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+index 50b7c4c4310e..38eb80e29715 100644
+--- a/fs/configfs/file.c
++++ b/fs/configfs/file.c
+@@ -496,13 +496,13 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
+ 					buffer->bin_buffer_size);
+ 		}
+ 		up_read(&frag->frag_sem);
+-		/* vfree on NULL is safe */
+-		vfree(buffer->bin_buffer);
+-		buffer->bin_buffer = NULL;
+-		buffer->bin_buffer_size = 0;
+-		buffer->needs_read_fill = 1;
+ 	}
+ 
++	vfree(buffer->bin_buffer);
++	buffer->bin_buffer = NULL;
++	buffer->bin_buffer_size = 0;
++	buffer->needs_read_fill = 1;
++
+ 	configfs_release(inode, file);
+ 	return 0;
+ }
 -- 
 2.30.2
 
