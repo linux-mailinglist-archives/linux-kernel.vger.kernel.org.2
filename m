@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D6F3CE915
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429433CE9F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353196AbhGSQuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:50:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38038 "EHLO mail.kernel.org"
+        id S1354633AbhGSRE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:04:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348082AbhGSPYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2EAE61434;
-        Mon, 19 Jul 2021 16:01:39 +0000 (UTC)
+        id S1349034AbhGSPfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9373B61287;
+        Mon, 19 Jul 2021 16:16:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710500;
-        bh=wrAXyTUu8iaEYGFgf4AL1J9lnFaFjPOR7mr8+BQtH7s=;
+        s=korg; t=1626711362;
+        bh=gOWZPvUwpqkulmVjVCCAwQS+gJTvdhBIbHnGweJFv1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0tZkHmksTlDIH/chAO2iXP9TcVvodZihWbxM205UVYvYBFls3dEe/uXP3a2yLXmd6
-         mZfJKP0QS+CENjob2aBG2ejQ/UucfhMVnujPIcPXdBuGvpJ2xR06lNaSOoe4xsFYf9
-         VHhdGHwXG7yp4mXTQQoQP1Q5JpP48Ei7pSzVdMrg=
+        b=Oqz/FJ4/GtT9wwRamOm8A/1Ykg0HK72A3DVZMcHiYDf5eK49VD4n6prXCGiTVq73G
+         QrGokrV3RY7YwQlL/T/FIoxx4xfG2ZxzU9lJR2K384yhwxSFrjxrFNLO/Cs7pk2e0r
+         lWRvHdL8IgFEWHPlRCTfTmDkHZa9sP0zSm4uWNho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Martin=20F=C3=A4cknitz?= <faecknitz@hotsplots.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 242/243] MIPS: vdso: Invalid GIC access through VDSO
-Date:   Mon, 19 Jul 2021 16:54:31 +0200
-Message-Id: <20210719144948.735522139@linuxfoundation.org>
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 326/351] arm64: dts: ti: k3-am642-main: fix ports mac properties
+Date:   Mon, 19 Jul 2021 16:54:32 +0200
+Message-Id: <20210719144955.843945988@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fäcknitz <faecknitz@hotsplots.de>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit 47ce8527fbba145a7723685bc9a27d9855e06491 ]
+[ Upstream commit 50c9bfca1bfe9ffd56d8c5deecf9204d14e20bfd ]
 
-Accessing raw timers (currently only CLOCK_MONOTONIC_RAW) through VDSO
-doesn't return the correct time when using the GIC as clock source.
-The address of the GIC mapped page is in this case not calculated
-correctly. The GIC mapped page is calculated from the VDSO data by
-subtracting PAGE_SIZE:
+The current device tree CPSW3g node adds non-zero "mac-address" property to
+the ports, which prevents random MAC address assignment to network devices
+if bootloader failed to update DT. This may cause more then one host to
+have the same MAC in the network.
 
-  void *get_gic(const struct vdso_data *data) {
-    return (void __iomem *)data - PAGE_SIZE;
-  }
+ mac-address = [00 00 de ad be ef];
+ mac-address = [00 01 de ad be ef];
 
-However, the data pointer is not page aligned for raw clock sources.
-This is because the VDSO data for raw clock sources (CS_RAW = 1) is
-stored after the VDSO data for coarse clock sources (CS_HRES_COARSE = 0).
-Therefore, only the VDSO data for CS_HRES_COARSE is page aligned:
+In addition, there is one MAC address available in eFuse registers which
+can be used for default port 1.
 
-  +--------------------+
-  |                    |
-  | vd[CS_RAW]         | ---+
-  | vd[CS_HRES_COARSE] |    |
-  +--------------------+    | -PAGE_SIZE
-  |                    |    |
-  |  GIC mapped page   | <--+
-  |                    |
-  +--------------------+
+Hence, fix ports MAC properties by:
+- resetting "mac-address" property to 0
+- adding ti,syscon-efuse = <&main_conf 0x200> to Port 1
 
-When __arch_get_hw_counter() is called with &vd[CS_RAW], get_gic returns
-the wrong address (somewhere inside the GIC mapped page). The GIC counter
-values are not returned which results in an invalid time.
-
-Fixes: a7f4df4e21dd ("MIPS: VDSO: Add implementations of gettimeofday() and clock_gettime()")
-Signed-off-by: Martin Fäcknitz <faecknitz@hotsplots.de>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: 3753b12877b6 ("arm64: dts: ti: k3-am64-main: Add CPSW DT node")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Link: https://lore.kernel.org/r/20210608184940.25934-1-grygorii.strashko@ti.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/vdso/vdso.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/vdso/vdso.h b/arch/mips/include/asm/vdso/vdso.h
-index 737ddfc3411c..a327ca21270e 100644
---- a/arch/mips/include/asm/vdso/vdso.h
-+++ b/arch/mips/include/asm/vdso/vdso.h
-@@ -67,7 +67,7 @@ static inline const struct vdso_data *get_vdso_data(void)
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index ca59d1f711f8..bcbf436a96b5 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -489,7 +489,8 @@
+ 				ti,mac-only;
+ 				label = "port1";
+ 				phys = <&phy_gmii_sel 1>;
+-				mac-address = [00 00 de ad be ef];
++				mac-address = [00 00 00 00 00 00];
++				ti,syscon-efuse = <&main_conf 0x200>;
+ 			};
  
- static inline void __iomem *get_gic(const struct vdso_data *data)
- {
--	return (void __iomem *)data - PAGE_SIZE;
-+	return (void __iomem *)((unsigned long)data & PAGE_MASK) - PAGE_SIZE;
- }
+ 			cpsw_port2: port@2 {
+@@ -497,7 +498,7 @@
+ 				ti,mac-only;
+ 				label = "port2";
+ 				phys = <&phy_gmii_sel 2>;
+-				mac-address = [00 01 de ad be ef];
++				mac-address = [00 00 00 00 00 00];
+ 			};
+ 		};
  
- #endif /* CONFIG_CLKSRC_MIPS_GIC */
 -- 
 2.30.2
 
