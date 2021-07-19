@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEC93CE6C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776BB3CE7F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352385AbhGSQNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:13:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
+        id S1355230AbhGSQgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:36:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346061AbhGSPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E60D611CE;
-        Mon, 19 Jul 2021 15:50:10 +0000 (UTC)
+        id S1348044AbhGSPYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B6F6613E9;
+        Mon, 19 Jul 2021 16:00:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709811;
-        bh=huLJDZdn50vD6yiRPtBwiM6S5sfp349IgCDvOFDzEyU=;
+        s=korg; t=1626710451;
+        bh=JajKYfSvdkS3qxYS3dbgKkhm3iuVL+DuP32Ghp1V2Ws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p0Z0HsE9SMA5kDJQ2wH44l+OLOcM3hVa8Tzo6xHzFAwgHHe3YRKQAZmn/yZrASFnv
-         5WMTvCt/tF0EVAvv9PRSvUc2FwALnF38302goKR7ck6VqJHW+dPkt8SmTiW87UzRwW
-         qQzGC6gsqWR9nlCmUBEHKx+8GibrdoSSsGhyfy/M=
+        b=RAY5xeCvG53e59WfNd+QSDl499mNVREbYB1ANjhYiV19syoT3xfEM3DbxxamlruDG
+         zyttb8MInxHiXlFx6zWACAphZ051hhicKx7Q6dvnDcZaoNwjSV9mtERSFAKKAJF9Bw
+         ZtL2IyKMkkxl+ST6vog+8qPCaJL6us4AjQv8H+kw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 108/149] x86/fpu: Limit xstate copy size in xstateregs_set()
-Date:   Mon, 19 Jul 2021 16:53:36 +0200
-Message-Id: <20210719144926.921367488@linuxfoundation.org>
+Subject: [PATCH 5.10 188/243] reset: RESET_INTEL_GW should depend on X86
+Date:   Mon, 19 Jul 2021 16:53:37 +0200
+Message-Id: <20210719144946.988860259@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 07d6688b22e09be465652cf2da0da6bf86154df6 ]
+[ Upstream commit 6ab9d6219f86f0db916105444813aafce626a2f4 ]
 
-If the count argument is larger than the xstate size, this will happily
-copy beyond the end of xstate.
+The Intel Gateway reset controller is only present on Intel Gateway
+platforms.  Hence add a dependency on X86, to prevent asking the user
+about this driver when configuring a kernel without Intel Gateway
+support.
 
-Fixes: 91c3dba7dbc1 ("x86/fpu/xstate: Fix PTRACE frames for XSAVES")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
-Reviewed-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210623121452.120741557@linutronix.de
+Fixes: c9aef213e38cde27 ("reset: intel: Add system reset controller driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/fpu/regset.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/reset/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index d652b939ccfb..68e1fb66e701 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -124,7 +124,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
- 	/*
- 	 * A whole standard-format XSAVE buffer is needed:
- 	 */
--	if ((pos != 0) || (count < fpu_user_xstate_size))
-+	if (pos != 0 || count != fpu_user_xstate_size)
- 		return -EFAULT;
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index b1d7369218e8..147543ad303f 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -76,6 +76,7 @@ config RESET_IMX7
  
- 	xsave = &fpu->state.xsave;
+ config RESET_INTEL_GW
+ 	bool "Intel Reset Controller Driver"
++	depends on X86 || COMPILE_TEST
+ 	depends on OF && HAS_IOMEM
+ 	select REGMAP_MMIO
+ 	help
 -- 
 2.30.2
 
