@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CDE3CEA14
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B649A3CEACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377062AbhGSRGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:06:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59804 "EHLO mail.kernel.org"
+        id S1378450AbhGSRTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:19:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239342AbhGSPeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:34:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E9EE610FB;
-        Mon, 19 Jul 2021 16:11:23 +0000 (UTC)
+        id S1346547AbhGSPmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:42:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32B3E61408;
+        Mon, 19 Jul 2021 16:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711084;
-        bh=dtrbSkRrJsSWp/litbZIc5oikePs1EjtcjMjJ7YtHmI=;
+        s=korg; t=1626711714;
+        bh=bTYqlpNdoAoSEPSHIyiL4RKxHJprX5EKA4dt7923Zoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p/MVPD9IVn8S+HiMEWXILsmumcVIQf8/pQ3Ddgjw4eCPz2p7PKXaryTQ/CYSShPHc
-         bHmSXaIXHe1U1raEk5I5FqbqTybpZTRwrWXVZUIhuTTlmyWkiWwKeTLGMFGWRmHcNT
-         JNjFVTBEmkzwHlfq411EmNLWlisa7Sz4peYeE+VU=
+        b=LGN4jeeMByawNi36zwtTMfjAPpO3P6aOTNAHird+4YLtZqf4cRtTqk52TshVBvVKN
+         9sCAdlbwI72jSoB45Ah0SuQ8YIWtefLhn0dMXM9/gFAaj1HnzVGckGSI6Ac+zFGY+o
+         12r8eq3nVs/ZoH/XPy78I7hO7JwxpZjAri5cG4jE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kris Pan <kris.pan@intel.com>,
-        Shruthi Sanil <shruthi.sanil@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Koby Elbaz <kelbaz@habana.ai>,
+        Oded Gabbay <ogabbay@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 221/351] watchdog: keembay: Upadate WDT pretimeout for every update in timeout
+Subject: [PATCH 5.12 105/292] habanalabs/gaudi: set the correct rc in case of err
 Date:   Mon, 19 Jul 2021 16:52:47 +0200
-Message-Id: <20210719144952.268879532@linuxfoundation.org>
+Message-Id: <20210719144945.949262227@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shruthi Sanil <shruthi.sanil@intel.com>
+From: Koby Elbaz <kelbaz@habana.ai>
 
-[ Upstream commit 0f7bfaf10c0abc979220442bae2af4f1f869c41e ]
+[ Upstream commit 1f7ef4bf41c7c2abad3d21b8c69db11fc3ebc4f5 ]
 
-The pre-timeout value to be programmed to the register has to be
-calculated and updated for every change in the timeout value.
-Else the threshold time wouldn't be calculated to its
-corresponding timeout.
+fix the following smatch warnings:
+gaudi_internal_cb_pool_init() warn: missing error code 'rc'
 
-Fixes: fa0f8d51e90d ("watchdog: Add watchdog driver for Intel Keembay Soc")
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Kris Pan <kris.pan@intel.com>
-Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
-Link: https://lore.kernel.org/r/20210517174953.19404-3-shruthi.sanil@intel.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Koby Elbaz <kelbaz@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/keembay_wdt.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/habanalabs/gaudi/gaudi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/watchdog/keembay_wdt.c b/drivers/watchdog/keembay_wdt.c
-index f2f5c9fae29c..b2afeb4a60e3 100644
---- a/drivers/watchdog/keembay_wdt.c
-+++ b/drivers/watchdog/keembay_wdt.c
-@@ -109,6 +109,7 @@ static int keembay_wdt_set_timeout(struct watchdog_device *wdog, u32 t)
- {
- 	wdog->timeout = t;
- 	keembay_wdt_set_timeout_reg(wdog);
-+	keembay_wdt_set_pretimeout_reg(wdog);
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 0c6092ebbc04..894056da22cf 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -8070,8 +8070,10 @@ static int gaudi_internal_cb_pool_init(struct hl_device *hdev,
+ 			HL_VA_RANGE_TYPE_HOST, HOST_SPACE_INTERNAL_CB_SZ,
+ 			HL_MMU_VA_ALIGNMENT_NOT_NEEDED);
  
- 	return 0;
- }
+-	if (!hdev->internal_cb_va_base)
++	if (!hdev->internal_cb_va_base) {
++		rc = -ENOMEM;
+ 		goto destroy_internal_cb_pool;
++	}
+ 
+ 	mutex_lock(&ctx->mmu_lock);
+ 	rc = hl_mmu_map_contiguous(ctx, hdev->internal_cb_va_base,
 -- 
 2.30.2
 
