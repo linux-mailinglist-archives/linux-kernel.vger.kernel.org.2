@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61F13CE810
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C073CE6F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352064AbhGSQhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40774 "EHLO mail.kernel.org"
+        id S1351753AbhGSQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:17:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348132AbhGSPYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52C936143D;
-        Mon, 19 Jul 2021 16:01:44 +0000 (UTC)
+        id S1343905AbhGSPKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC89A606A5;
+        Mon, 19 Jul 2021 15:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710504;
-        bh=z4KeSNDkN7Hq+Zvi4NxPHsyEx/NrKFmg+97Q72eo0kE=;
+        s=korg; t=1626709894;
+        bh=akWJEMxAsxv5NtMBhCQHrv5cI+M+jQxWlXYXs7RetEc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1g2wq3kRcD4Htjabx2y3qXOEvwWgFO5tve5gBrmagSXUD6QKO0j+HjUGsccAtWXNy
-         xPJOyxCQrvP3jKBH7BogH/EZDZZWQf+DOnw1LeBu0s3YxB+Fmw04Q/LG2QfLlD7jb1
-         ysAUvfdzfU9tfAorL7D+PMEufY52hNFhhxovpOm8=
+        b=xczERFnxYGlo2ufEnSIBDxXelbBm9D/SNNcvNksKI3ZYI/E9wcq87DtMJ33HTPNdT
+         gkS5r4AOOZzP9NpcxyOxLdWJ+AB7yboZpfdJj9IHqwo6rhufQLSoy7S01A3HNe2bPK
+         G9s0Km9SX5LNnPEVMdm7AXpZZbD8SiwVIXsqWFnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 219/243] memory: fsl_ifc: fix leak of private memory on probe failure
-Date:   Mon, 19 Jul 2021 16:54:08 +0200
-Message-Id: <20210719144948.001504197@linuxfoundation.org>
+Subject: [PATCH 5.4 141/149] firmware: turris-mox-rwtm: report failures better
+Date:   Mon, 19 Jul 2021 16:54:09 +0200
+Message-Id: <20210719144934.680046621@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Marek Behún <kabel@kernel.org>
 
-[ Upstream commit 8e0d09b1232d0538066c40ed4c13086faccbdff6 ]
+[ Upstream commit 72f99888944c44de1c899bbe44db1e53bdc9d994 ]
 
-On probe error the driver should free the memory allocated for private
-structure.  Fix this by using resource-managed allocation.
+Report a notice level message if a command is not supported by the rWTM
+firmware.
 
-Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210527154322.81253-2-krzysztof.kozlowski@canonical.com
+This should not be an error, merely a notice, because the firmware can
+be used on boards that do not have manufacturing information burned.
+
+Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver")
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Reviewed-by: Pali Rohár <pali@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/fsl_ifc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/firmware/turris-mox-rwtm.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-index a6324044a085..d062c2f8250f 100644
---- a/drivers/memory/fsl_ifc.c
-+++ b/drivers/memory/fsl_ifc.c
-@@ -97,7 +97,6 @@ static int fsl_ifc_ctrl_remove(struct platform_device *dev)
- 	iounmap(ctrl->gregs);
+diff --git a/drivers/firmware/turris-mox-rwtm.c b/drivers/firmware/turris-mox-rwtm.c
+index ecc9e2de6492..e22ad73d4c86 100644
+--- a/drivers/firmware/turris-mox-rwtm.c
++++ b/drivers/firmware/turris-mox-rwtm.c
+@@ -191,11 +191,14 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
+ 		return ret;
  
- 	dev_set_drvdata(&dev->dev, NULL);
--	kfree(ctrl);
+ 	ret = mox_get_status(MBOX_CMD_BOARD_INFO, reply->retval);
+-	if (ret < 0 && ret != -ENODATA) {
+-		return ret;
+-	} else if (ret == -ENODATA) {
++	if (ret == -ENODATA) {
+ 		dev_warn(rwtm->dev,
+ 			 "Board does not have manufacturing information burned!\n");
++	} else if (ret == -ENOSYS) {
++		dev_notice(rwtm->dev,
++			   "Firmware does not support the BOARD_INFO command\n");
++	} else if (ret < 0) {
++		return ret;
+ 	} else {
+ 		rwtm->serial_number = reply->status[1];
+ 		rwtm->serial_number <<= 32;
+@@ -224,10 +227,13 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
+ 		return ret;
  
- 	return 0;
- }
-@@ -209,7 +208,8 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
- 
- 	dev_info(&dev->dev, "Freescale Integrated Flash Controller\n");
- 
--	fsl_ifc_ctrl_dev = kzalloc(sizeof(*fsl_ifc_ctrl_dev), GFP_KERNEL);
-+	fsl_ifc_ctrl_dev = devm_kzalloc(&dev->dev, sizeof(*fsl_ifc_ctrl_dev),
-+					GFP_KERNEL);
- 	if (!fsl_ifc_ctrl_dev)
- 		return -ENOMEM;
+ 	ret = mox_get_status(MBOX_CMD_ECDSA_PUB_KEY, reply->retval);
+-	if (ret < 0 && ret != -ENODATA) {
+-		return ret;
+-	} else if (ret == -ENODATA) {
++	if (ret == -ENODATA) {
+ 		dev_warn(rwtm->dev, "Board has no public key burned!\n");
++	} else if (ret == -ENOSYS) {
++		dev_notice(rwtm->dev,
++			   "Firmware does not support the ECDSA_PUB_KEY command\n");
++	} else if (ret < 0) {
++		return ret;
+ 	} else {
+ 		u32 *s = reply->status;
  
 -- 
 2.30.2
