@@ -2,233 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E2B3CEDAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC853CEDBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386425AbhGSTeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
+        id S1386802AbhGSTjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385474AbhGSTAs (ORCPT
+        with ESMTP id S1385710AbhGSTHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:00:48 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE37C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:33:11 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id a6so12843824pgw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:40:51 -0700 (PDT)
+        Mon, 19 Jul 2021 15:07:52 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A6DC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:37:41 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id n187-20020a4a40c40000b029025e72bdf5d6so4761816ooa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:45:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=yeVfqvxxhE0mSwx2x3iRUTyGOO2anklSt9RyLFhrvCk=;
-        b=Fip8Auo8tlxDnlFNFh5BEBlvGSZnp8VF3pj+w42ROOmD93iRDrEmRvwZ8VZQ9qgy4Z
-         /tYZUc7s1AHJEldZtIU9T0/e8ipGJnXIRmP6vROODiOdi3/n1xp5lTZIA52hIg8+oTPe
-         FhKDAm6Iqvk8mGJtiATOaVoB2WWEkhzOA64zB+LQ3iD4vkViMXy4P82IsIxslMCLv/D9
-         KA43Mp3+2Vwf4bClKdBOqqrUZFw6zNnM6/u2fyNJcUlikGhz3YaROPymUdQyrOrON3RV
-         DfzSmCm9ivScdhxdc1AiDnvZFop1gK3UPZT9xlw7lK894YYLTSj9Xcd1NlJ3VyuXsp1G
-         o4oA==
+        bh=mQSEq7q+wxePH17WHb+2Y12YcuWTNetJZSsUU2m7H7E=;
+        b=N2B5cVOSFDnDhk7ZJikp57cYFtbff3OoOQABXLEuxfHd9w5r4YaazAcc8eRncMl+i9
+         CdTXPuNSjfJ+fAwAqjqmLVQTUKmjxMrLtxadKzernVCPQvvZtMHw+PfN2YcVoFRpOJVn
+         DO7kJXAMKW3uaCY8zg26hm+6/JN4SP0jKVMmYMwDnfqyuQw5+bpDBrJjC73C4be2Mazz
+         ZrwERWVVJ3yvNk51DT0mBrWPRKdhmtqxpBsxxlEcsISSz7PLLV4MeZgq2wir9Dcz6etg
+         xwTHQtPTxQMtjxgV1F5iZMxsUfm1ZThAV94QSeui+YSjZ+jd1hHx9N5U8/JBdGTb6QBW
+         jvRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=yeVfqvxxhE0mSwx2x3iRUTyGOO2anklSt9RyLFhrvCk=;
-        b=ooD/P6ElsmWjWMmvRm9g4OHmBhqu36pGPEnAKD0X5cFP02JOmNAq6RQHLOoKwQR1OO
-         EMOv6VyvlJyelMyedX2syh9xjvBGPA27wy4etuyLr29X5d9vYwJghSDgfZqXCJO3HN5G
-         4gIw9GT20RP9FEmaLqgHXmOg9U+tiZxJsE++eUbQioMy9HPslna+ZjsFVqExQ/uCxz5v
-         KQqzlgvtIo8DWHDhBKI82MFDZygAUK2KxxXuBsgTT4tu7V9S908itHsCgdTIVavvDFr7
-         Nc5d6kZBYPLyugUN3N79LajKJdXvKiZTJAav/zwDkr+ZpnoEePH0OaH1HX3S5ugSrj9C
-         pvFA==
-X-Gm-Message-State: AOAM533yGW8E25Nwrg9ksW4kWofXwXiAwdjz+7bdCCMQKGmMguFaoSwJ
-        +PgjNEFffPEpFlwcod3wMVEsrw==
-X-Google-Smtp-Source: ABdhPJzOqYl644Yog5cEUVP9Cr/d9G8L8UrThuNEvVKHf0Do95W9cUVofTDruJn20qA6CvztxXm1iQ==
-X-Received: by 2002:a63:e205:: with SMTP id q5mr26770972pgh.404.1626723651297;
-        Mon, 19 Jul 2021 12:40:51 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id js5sm16796502pjb.40.2021.07.19.12.40.49
+        bh=mQSEq7q+wxePH17WHb+2Y12YcuWTNetJZSsUU2m7H7E=;
+        b=WfV8XHeEq5ja/d5CK8p+FsHopVWbsW/HICt7ZPkNESXWPYU5owFPWGnlqG2S9QllKW
+         bPER9je3wS4qLNc6Y2DGeKbHExy5FQewHEbhh1PWhL+tmzPr7t5ttgctQsKif8oQLdrj
+         Y6eOO1yruPE+cVgzmq8kImoe7QO+V06cP39jIhT8ur5KhsuY43HJaWFyYcIeate4T5Np
+         xCBFWkHSYNwQBnIjpqy4ZTOtcVOkMuI0vN50kPPTzPdxW+YMeZUhR5Duk50DcagHqcra
+         71vNz3oAWn9iZM31x9RbXo399P/8aMgS/9XKo4rSKydfjvtDGVuUO15UsVCuq3danrgv
+         Yzjw==
+X-Gm-Message-State: AOAM530ZZTbrCqFREp7Kql6o1DlEIcZNqrRMqVxak9SIRc4nioD3+rFP
+        mNn9wKyBVnuR3v7etxPKbrvRnA==
+X-Google-Smtp-Source: ABdhPJyEgmEJXTA8pZhCE4A7kaDgxCC+tSYYlL5iU+L2BArlNQdV1CQLgfGgR5PaI1xtBZvOvuEvbQ==
+X-Received: by 2002:a4a:e14f:: with SMTP id p15mr1215289oot.42.1626723899832;
+        Mon, 19 Jul 2021 12:44:59 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v5sm1855606oor.33.2021.07.19.12.44.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 12:40:50 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 13:40:48 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     acme@kernel.org, coresight@lists.linaro.org, leo.yan@linaro.org,
-        al.grant@arm.com, branislav.rankov@arm.com, suzuki.poulose@arm.com,
-        anshuman.khandual@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] perf cs-etm: Pass unformatted flag to decoder
-Message-ID: <20210719194048.GG2255168@p14s>
-References: <20210713154008.29656-1-james.clark@arm.com>
- <20210713154008.29656-7-james.clark@arm.com>
+        Mon, 19 Jul 2021 12:44:59 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 14:44:57 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     robh+dt@kernel.org, swboyd@chromium.org, ulf.hansson@linaro.org,
+        rjw@rjwysocki.net, agross@kernel.org, ohad@wizery.com,
+        mathieu.poirier@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        rishabhb@codeaurora.org, sidgup@codeaurora.org
+Subject: Re: [PATCH v3 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
+ bindings
+Message-ID: <YPXWOeq++TdwH1r4@yoga>
+References: <1624560727-6870-1-git-send-email-sibis@codeaurora.org>
+ <1624560727-6870-3-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210713154008.29656-7-james.clark@arm.com>
+In-Reply-To: <1624560727-6870-3-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 04:40:08PM +0100, James Clark wrote:
-> The TRBE (Trace Buffer Extension) feature allows a separate trace buffer
-> for each trace source, therefore the trace wouldn't need to be
-> formatted. The driver was introduced in commit 3fbf7f011f24
-> ("coresight: sink: Add TRBE driver").
+On Thu 24 Jun 13:51 CDT 2021, Sibi Sankar wrote:
+
+> Add Qualcomm Mailbox Protocol (QMP) binding to replace the power domains
+> exposed by the AOSS QMP node.
 > 
-> The formatted/unformatted mode is encoded in one of the flags of the
-> AUX record. The first AUX record encountered for each event is used to
-> determine the mode, and this will persist for the remaining trace that
-> is either decoded or dumped.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
+
+I think this would be a good opportunity to describe why you need to
+make this change to the binding.
+
+Regards,
+Bjorn
+
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
->  tools/perf/util/cs-etm.c | 42 +++++++++++++++++++++++++++-------------
->  1 file changed, 29 insertions(+), 13 deletions(-)
 > 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 760050ea936d..62769a84a53f 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -461,13 +461,14 @@ static void cs_etm__set_trace_param_etmv4(struct cs_etm_trace_params *t_params,
->  }
+> v3:
+>  * Misc. documentation fixes:
+>   - Reduce power-domain maxItems due to load_state pd removal
+>   - Combine compatibles where possible with the load_state pd removal
+>   - Fixup the qcom,qmp ref to phandle type
+> 
+>  .../devicetree/bindings/remoteproc/qcom,adsp.yaml  | 62 +++++++++++-----------
+>  1 file changed, 30 insertions(+), 32 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> index 9ea05e608bc1..ad85617b43fa 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> @@ -75,11 +75,11 @@ properties:
 >  
->  static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
-> -				     struct cs_etm_auxtrace *etm)
-> +				     struct cs_etm_auxtrace *etm,
-> +				     int decoders_per_cpu)
->  {
->  	int i;
->  	u32 etmidr;
->  	u64 architecture;
+>    power-domains:
+>      minItems: 1
+> -    maxItems: 3
+> +    maxItems: 2
 >  
-> -	for (i = 0; i < etm->num_cpu; i++) {
-> +	for (i = 0; i < decoders_per_cpu; i++) {
->  		architecture = etm->metadata[i][CS_ETM_MAGIC];
+>    power-domain-names:
+>      minItems: 1
+> -    maxItems: 3
+> +    maxItems: 2
 >  
->  		switch (architecture) {
-> @@ -488,7 +489,8 @@ static int cs_etm__init_trace_params(struct cs_etm_trace_params *t_params,
+>    firmware-name:
+>      $ref: /schemas/types.yaml#/definitions/string
+> @@ -89,6 +89,10 @@ properties:
+>      maxItems: 1
+>      description: Reference to the reserved-memory for the Hexagon core
 >  
->  static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
->  				       struct cs_etm_queue *etmq,
-> -				       enum cs_etm_decoder_operation mode)
-> +				       enum cs_etm_decoder_operation mode,
-> +				       bool formatted)
->  {
->  	int ret = -EINVAL;
+> +  qcom,qmp:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Reference to the AOSS side-channel message RAM.
+> +
+>    qcom,smem-states:
+>      $ref: /schemas/types.yaml#/definitions/phandle-array
+>      description: States used by the AP to signal the Hexagon core
+> @@ -359,13 +363,11 @@ allOf:
+>        properties:
+>          power-domains:
+>            items:
+> -            - description: Load State power domain
+>              - description: CX power domain
+>              - description: MX power domain
+>              - description: MSS power domain
+>          power-domain-names:
+>            items:
+> -            - const: load_state
+>              - const: cx
+>              - const: mx
+>              - const: mss
+> @@ -381,43 +383,20 @@ allOf:
+>        properties:
+>          power-domains:
+>            items:
+> -            - description: Load State power domain
+>              - description: CX power domain
+> -        power-domain-names:
+> -          items:
+> -            - const: load_state
+> -            - const: cx
 >  
-> @@ -498,7 +500,7 @@ static int cs_etm__init_decoder_params(struct cs_etm_decoder_params *d_params,
->  	d_params->packet_printer = cs_etm__packet_dump;
->  	d_params->operation = mode;
->  	d_params->data = etmq;
-> -	d_params->formatted = true;
-> +	d_params->formatted = formatted;
->  	d_params->fsyncs = false;
->  	d_params->hsyncs = false;
->  	d_params->frame_aligned = true;
-> @@ -720,11 +722,13 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
->  	return len;
->  }
+>    - if:
+>        properties:
+>          compatible:
+>            contains:
+>              enum:
+> +              - qcom,sdx55-mpss-pas
+>                - qcom,sm8150-mpss-pas
+>                - qcom,sm8350-mpss-pas
+>      then:
+>        properties:
+>          power-domains:
+>            items:
+> -            - description: Load State power domain
+> -            - description: CX power domain
+> -            - description: MSS power domain
+> -        power-domain-names:
+> -          items:
+> -            - const: load_state
+> -            - const: cx
+> -            - const: mss
+> -
+> -  - if:
+> -      properties:
+> -        compatible:
+> -          contains:
+> -            enum:
+> -              - qcom,sdx55-mpss-pas
+> -    then:
+> -      properties:
+> -        power-domains:
+> -          items:
+>              - description: CX power domain
+>              - description: MSS power domain
+>          power-domain-names:
+> @@ -439,12 +418,10 @@ allOf:
+>        properties:
+>          power-domains:
+>            items:
+> -            - description: Load State power domain
+>              - description: LCX power domain
+>              - description: LMX power domain
+>          power-domain-names:
+>            items:
+> -            - const: load_state
+>              - const: lcx
+>              - const: lmx
 >  
-> -static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
-> +static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm,
-> +						bool formatted)
->  {
->  	struct cs_etm_decoder_params d_params;
->  	struct cs_etm_trace_params  *t_params = NULL;
->  	struct cs_etm_queue *etmq;
-> +	int decoders_per_cpu = formatted ? etm->num_cpu : 1;
+> @@ -458,12 +435,10 @@ allOf:
+>        properties:
+>          power-domains:
+>            items:
+> -            - description: Load State power domain
+>              - description: CX power domain
+>              - description: MXC power domain
+>          power-domain-names:
+>            items:
+> -            - const: load_state
+>              - const: cx
+>              - const: mxc
 >  
->  	etmq = zalloc(sizeof(*etmq));
->  	if (!etmq)
-> @@ -735,21 +739,23 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
->  		goto out_free;
+> @@ -499,6 +474,29 @@ allOf:
+>              - const: mss_restart
+>              - const: pdc_reset
 >  
->  	/* Use metadata to fill in trace parameters for trace decoder */
-> -	t_params = zalloc(sizeof(*t_params) * etm->num_cpu);
-> +	t_params = zalloc(sizeof(*t_params) * decoders_per_cpu);
->  
->  	if (!t_params)
->  		goto out_free;
->  
-> -	if (cs_etm__init_trace_params(t_params, etm))
-> +	if (cs_etm__init_trace_params(t_params, etm, decoders_per_cpu))
->  		goto out_free;
->  
->  	/* Set decoder parameters to decode trace packets */
->  	if (cs_etm__init_decoder_params(&d_params, etmq,
->  					dump_trace ? CS_ETM_OPERATION_PRINT :
-> -						     CS_ETM_OPERATION_DECODE))
-> +						     CS_ETM_OPERATION_DECODE,
-> +					formatted))
->  		goto out_free;
->  
-> -	etmq->decoder = cs_etm_decoder__new(etm->num_cpu, &d_params, t_params);
-> +	etmq->decoder = cs_etm_decoder__new(decoders_per_cpu, &d_params,
-> +					    t_params);
->  
->  	if (!etmq->decoder)
->  		goto out_free;
-> @@ -777,14 +783,15 @@ static struct cs_etm_queue *cs_etm__alloc_queue(struct cs_etm_auxtrace *etm)
->  
->  static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
->  			       struct auxtrace_queue *queue,
-> -			       unsigned int queue_nr)
-> +			       unsigned int queue_nr,
-> +			       bool formatted)
->  {
->  	struct cs_etm_queue *etmq = queue->priv;
->  
->  	if (list_empty(&queue->head) || etmq)
->  		return 0;
->  
-> -	etmq = cs_etm__alloc_queue(etm);
-> +	etmq = cs_etm__alloc_queue(etm, formatted);
->  
->  	if (!etmq)
->  		return -ENOMEM;
-> @@ -2430,8 +2437,14 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
->  		if (err)
->  			return err;
->  
-> +		/*
-> +		 * Knowing if the trace is formatted or not requires a lookup of
-> +		 * the aux record so only works in non-piped mode where data is
-> +		 * queued in cs_etm__queue_aux_records(). Always assume
-> +		 * formatted in piped mode (true).
-> +		 */
->  		err = cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
-> -					  idx);
-> +					  idx, true);
->  		if (err)
->  			return err;
->  
-> @@ -2678,6 +2691,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
->  	union perf_event auxtrace_fragment;
->  	__u64 aux_offset, aux_size;
->  	__u32 idx;
-> +	bool formatted;
->  
->  	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
->  						   struct cs_etm_auxtrace,
-> @@ -2745,7 +2759,9 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session, off_t file_o
->  			return err;
->  
->  		idx = auxtrace_event->idx;
-> -		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx], idx);
-> +		formatted = !(aux_event->flags & PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
-> +		return cs_etm__setup_queue(etm, &etm->queues.queue_array[idx],
-> +					   idx, formatted);
->  	}
->  
->  	/* Wasn't inside this buffer, but there were no parse errors. 1 == 'not found' */
-
-I'm running out of time with this one.  I'll continue tomorrow.
-
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,sc7180-mpss-pas
+> +              - qcom,sm8150-adsp-pas
+> +              - qcom,sm8150-cdsp-pas
+> +              - qcom,sm8150-mpss-pas
+> +              - qcom,sm8150-slpi-pas
+> +              - qcom,sm8250-adsp-pas
+> +              - qcom,sm8250-cdsp-pas
+> +              - qcom,sm8250-slpi-pas
+> +              - qcom,sm8350-adsp-pas
+> +              - qcom,sm8350-cdsp-pas
+> +              - qcom,sm8350-mpss-pas
+> +              - qcom,sm8350-slpi-pas
+> +    then:
+> +      properties:
+> +        qcom,qmp:
+> +          items:
+> +            - description: Reference to the AOSS side-channel message RAM.
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/clock/qcom,rpmcc.h>
 > -- 
-> 2.28.0
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
