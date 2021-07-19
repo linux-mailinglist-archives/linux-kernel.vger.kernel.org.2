@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A7B3CE908
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0243CE905
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352089AbhGSQth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
+        id S1351767AbhGSQtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:49:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343728AbhGSP1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:27:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D8536135D;
-        Mon, 19 Jul 2021 16:07:55 +0000 (UTC)
+        id S243361AbhGSP1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:27:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D4161287;
+        Mon, 19 Jul 2021 16:07:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710876;
-        bh=RJCSYonEIdY+Cg6Y3/6P0yc3xqk8QadSuTrGJqMxzLA=;
+        s=korg; t=1626710879;
+        bh=uj+ORLF5pISP46S1mI5o10kGfkNTzBTePAF3/5vtGTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=drqTpXkY8jsWG6jGLRKxifvl69/ALXOE6SRRmM2VJXFYnEVcwiF9qm4abGqZt4AUJ
-         X46ZrY70K8RROQUy+NT9uH/tYW2n3fXzvh2aQXGMEGxGV+p/4Yeyhn/QO3dlNBBHWG
-         vRWCCYc53UVOZQywzougnZMHl3uzPazmXSKU3Pxs=
+        b=ifH1a0rwILirfo7oVoBxw0W6QucWEbESF9KkFut+XCDYMfUzS8VZf97M2mlg1PIrz
+         xopCoXiayaxk2+22KH4xxSkA+QcgdWAtN3ErQpNQyVGgKuGHxvE8zsTrMkcwLK2kAU
+         1zbboyWUJ5P7hALNpJTuP8RviGBcQrZ3QpQSCtWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 142/351] staging: rtl8723bs: fix check allowing 5Ghz settings
-Date:   Mon, 19 Jul 2021 16:51:28 +0200
-Message-Id: <20210719144949.173975953@linuxfoundation.org>
+Subject: [PATCH 5.13 143/351] intel_th: Wait until port is in reset before programming it
+Date:   Mon, 19 Jul 2021 16:51:29 +0200
+Message-Id: <20210719144949.213140027@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -40,41 +41,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Aiuto <fabioaiuto83@gmail.com>
+From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 
-[ Upstream commit 990a1472930bf2bb7927ea2def4b434790780a8d ]
+[ Upstream commit ab1afed701d2db7eb35c1a2526a29067a38e93d1 ]
 
-fix check allowing 5Ghz settings, only disabled and
-2.4Ghz enabled states are allowed. Fix comment
-accordingly.
+Some devices don't drain their pipelines if we don't make sure that
+the corresponding output port is in reset before programming it for
+a new trace capture, resulting in bits of old trace appearing in the
+new trace capture. Fix that by explicitly making sure the reset is
+asserted before programming new trace capture.
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-Link: https://lore.kernel.org/r/df7d0ecc02ac7a27e568768523dd7b3f34acd551.1624367072.git.fabioaiuto83@gmail.com
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Link: https://lore.kernel.org/r/20210621151246.31891-5-alexander.shishkin@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/hwtracing/intel_th/core.c     | 17 +++++++++++++++++
+ drivers/hwtracing/intel_th/gth.c      | 16 ++++++++++++++++
+ drivers/hwtracing/intel_th/intel_th.h |  3 +++
+ 3 files changed, 36 insertions(+)
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-index 6d0d0beed402..0cd5608e6496 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-@@ -2602,10 +2602,9 @@ static int rtw_dbg_port(struct net_device *dev,
- 				case 0x12: /* set rx_stbc */
- 				{
- 					struct registry_priv *pregpriv = &padapter->registrypriv;
--					/*  0: disable, bit(0):enable 2.4g, bit(1):enable 5g, 0x3: enable both 2.4g and 5g */
--					/* default is set to enable 2.4GHZ for IOT issue with bufflao's AP at 5GHZ */
--					if (extra_arg == 0 || extra_arg == 1 ||
--					    extra_arg == 2 || extra_arg == 3)
-+					/*  0: disable, bit(0):enable 2.4g */
-+					/* default is set to enable 2.4GHZ */
-+					if (extra_arg == 0 || extra_arg == 1)
- 						pregpriv->rx_stbc = extra_arg;
- 				}
- 				break;
+diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
+index 24d0c974bfd5..1b44d86af9c2 100644
+--- a/drivers/hwtracing/intel_th/core.c
++++ b/drivers/hwtracing/intel_th/core.c
+@@ -215,6 +215,22 @@ static ssize_t port_show(struct device *dev, struct device_attribute *attr,
+ 
+ static DEVICE_ATTR_RO(port);
+ 
++static void intel_th_trace_prepare(struct intel_th_device *thdev)
++{
++	struct intel_th_device *hub = to_intel_th_hub(thdev);
++	struct intel_th_driver *hubdrv = to_intel_th_driver(hub->dev.driver);
++
++	if (hub->type != INTEL_TH_SWITCH)
++		return;
++
++	if (thdev->type != INTEL_TH_OUTPUT)
++		return;
++
++	pm_runtime_get_sync(&thdev->dev);
++	hubdrv->prepare(hub, &thdev->output);
++	pm_runtime_put(&thdev->dev);
++}
++
+ static int intel_th_output_activate(struct intel_th_device *thdev)
+ {
+ 	struct intel_th_driver *thdrv =
+@@ -235,6 +251,7 @@ static int intel_th_output_activate(struct intel_th_device *thdev)
+ 	if (ret)
+ 		goto fail_put;
+ 
++	intel_th_trace_prepare(thdev);
+ 	if (thdrv->activate)
+ 		ret = thdrv->activate(thdev);
+ 	else
+diff --git a/drivers/hwtracing/intel_th/gth.c b/drivers/hwtracing/intel_th/gth.c
+index 28509b02a0b5..b3308934a687 100644
+--- a/drivers/hwtracing/intel_th/gth.c
++++ b/drivers/hwtracing/intel_th/gth.c
+@@ -564,6 +564,21 @@ static void gth_tscu_resync(struct gth_device *gth)
+ 	iowrite32(reg, gth->base + REG_TSCU_TSUCTRL);
+ }
+ 
++static void intel_th_gth_prepare(struct intel_th_device *thdev,
++				 struct intel_th_output *output)
++{
++	struct gth_device *gth = dev_get_drvdata(&thdev->dev);
++	int count;
++
++	/*
++	 * Wait until the output port is in reset before we start
++	 * programming it.
++	 */
++	for (count = GTH_PLE_WAITLOOP_DEPTH;
++	     count && !(gth_output_get(gth, output->port) & BIT(5)); count--)
++		cpu_relax();
++}
++
+ /**
+  * intel_th_gth_enable() - enable tracing to an output device
+  * @thdev:	GTH device
+@@ -815,6 +830,7 @@ static struct intel_th_driver intel_th_gth_driver = {
+ 	.assign		= intel_th_gth_assign,
+ 	.unassign	= intel_th_gth_unassign,
+ 	.set_output	= intel_th_gth_set_output,
++	.prepare	= intel_th_gth_prepare,
+ 	.enable		= intel_th_gth_enable,
+ 	.trig_switch	= intel_th_gth_switch,
+ 	.disable	= intel_th_gth_disable,
+diff --git a/drivers/hwtracing/intel_th/intel_th.h b/drivers/hwtracing/intel_th/intel_th.h
+index 89c67e0e1d34..0ffb42990175 100644
+--- a/drivers/hwtracing/intel_th/intel_th.h
++++ b/drivers/hwtracing/intel_th/intel_th.h
+@@ -143,6 +143,7 @@ intel_th_output_assigned(struct intel_th_device *thdev)
+  * @remove:	remove method
+  * @assign:	match a given output type device against available outputs
+  * @unassign:	deassociate an output type device from an output port
++ * @prepare:	prepare output port for tracing
+  * @enable:	enable tracing for a given output device
+  * @disable:	disable tracing for a given output device
+  * @irq:	interrupt callback
+@@ -164,6 +165,8 @@ struct intel_th_driver {
+ 					  struct intel_th_device *othdev);
+ 	void			(*unassign)(struct intel_th_device *thdev,
+ 					    struct intel_th_device *othdev);
++	void			(*prepare)(struct intel_th_device *thdev,
++					   struct intel_th_output *output);
+ 	void			(*enable)(struct intel_th_device *thdev,
+ 					  struct intel_th_output *output);
+ 	void			(*trig_switch)(struct intel_th_device *thdev,
 -- 
 2.30.2
 
