@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0913CE00F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC463CDFC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346074AbhGSPNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:13:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40450 "EHLO mail.kernel.org"
+        id S1345476AbhGSPLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:11:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344258AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F1636024A;
-        Mon, 19 Jul 2021 15:27:24 +0000 (UTC)
+        id S1344280AbhGSOso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C100A61003;
+        Mon, 19 Jul 2021 15:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708445;
-        bh=ghKo1xjvWvhn4IaZZczjFnezfWRlmMquzd5E4DMGxMo=;
+        s=korg; t=1626708448;
+        bh=TNFVtHoJc3PqwJwXyaoHT9IFm9G1RO35rNOmgMwLZag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nPgg0OuFnAFnjYEoRuaYZEUFmbv9n9H+pw/WjY6o0hq2c49V/Dzw5CQJAZ98PeW75
-         Kf2Eb+lpUZCJ0Nr7SeXKPNVyr/8ddm/n5/fS7BnIcjPtSRyq0BINuEppS3JBZea/rc
-         wQFQxUPC4m1W4OD8m8/ncVlXWgXFYmqqIoKesmhc=
+        b=jnXFLnv3tsyNGA5bS9hRhI3wMfCJhebgoMt4CSbuOme0ctoLSB0T5jT5wrJCfPl/m
+         hoD0BnSma/g11j/UYTpG2KogtpRXgih7rcUMP3Vr5CqMChHtGgrt24nsX6HLqziEDg
+         M6MlhQv0JM86LlwU4F2FgzOr3PoOnzaI/cqoAZqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Martin=20F=C3=A4cknitz?= <faecknitz@hotsplots.de>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Kyungsik Lee <kyungsik.lee@lge.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 313/315] mips: disable branch profiling in boot/decompress.o
-Date:   Mon, 19 Jul 2021 16:53:22 +0200
-Message-Id: <20210719144953.772837505@linuxfoundation.org>
+Subject: [PATCH 4.14 314/315] MIPS: vdso: Invalid GIC access through VDSO
+Date:   Mon, 19 Jul 2021 16:53:23 +0200
+Message-Id: <20210719144953.805394783@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,46 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Martin Fäcknitz <faecknitz@hotsplots.de>
 
-[ Upstream commit 97e488073cfca0eea84450169ca4cbfcc64e33e3 ]
+[ Upstream commit 47ce8527fbba145a7723685bc9a27d9855e06491 ]
 
-Use DISABLE_BRANCH_PROFILING for arch/mips/boot/compressed/decompress.o
-to prevent linkage errors.
+Accessing raw timers (currently only CLOCK_MONOTONIC_RAW) through VDSO
+doesn't return the correct time when using the GIC as clock source.
+The address of the GIC mapped page is in this case not calculated
+correctly. The GIC mapped page is calculated from the VDSO data by
+subtracting PAGE_SIZE:
 
-mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
-decompress.c:(.text+0x8c): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: decompress.c:(.text+0xf4): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: decompress.c:(.text+0x200): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: decompress.c:(.text+0x230): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: decompress.c:(.text+0x320): undefined reference to `ftrace_likely_update'
-mips64-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x3f4): more undefined references to `ftrace_likely_update' follow
+  void *get_gic(const struct vdso_data *data) {
+    return (void __iomem *)data - PAGE_SIZE;
+  }
 
-Fixes: e76e1fdfa8f8 ("lib: add support for LZ4-compressed kernel")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Kyungsik Lee <kyungsik.lee@lge.com>
+However, the data pointer is not page aligned for raw clock sources.
+This is because the VDSO data for raw clock sources (CS_RAW = 1) is
+stored after the VDSO data for coarse clock sources (CS_HRES_COARSE = 0).
+Therefore, only the VDSO data for CS_HRES_COARSE is page aligned:
+
+  +--------------------+
+  |                    |
+  | vd[CS_RAW]         | ---+
+  | vd[CS_HRES_COARSE] |    |
+  +--------------------+    | -PAGE_SIZE
+  |                    |    |
+  |  GIC mapped page   | <--+
+  |                    |
+  +--------------------+
+
+When __arch_get_hw_counter() is called with &vd[CS_RAW], get_gic returns
+the wrong address (somewhere inside the GIC mapped page). The GIC counter
+values are not returned which results in an invalid time.
+
+Fixes: a7f4df4e21dd ("MIPS: VDSO: Add implementations of gettimeofday() and clock_gettime()")
+Signed-off-by: Martin Fäcknitz <faecknitz@hotsplots.de>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/boot/compressed/decompress.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/vdso/vdso.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
-index 3a015e41b762..66096c766a60 100644
---- a/arch/mips/boot/compressed/decompress.c
-+++ b/arch/mips/boot/compressed/decompress.c
-@@ -11,6 +11,8 @@
-  * option) any later version.
-  */
+diff --git a/arch/mips/vdso/vdso.h b/arch/mips/vdso/vdso.h
+index cfb1be441dec..921589b45bc2 100644
+--- a/arch/mips/vdso/vdso.h
++++ b/arch/mips/vdso/vdso.h
+@@ -81,7 +81,7 @@ static inline const union mips_vdso_data *get_vdso_data(void)
  
-+#define DISABLE_BRANCH_PROFILING
-+
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/string.h>
+ static inline void __iomem *get_gic(const union mips_vdso_data *data)
+ {
+-	return (void __iomem *)data - PAGE_SIZE;
++	return (void __iomem *)((unsigned long)data & PAGE_MASK) - PAGE_SIZE;
+ }
+ 
+ #endif /* CONFIG_CLKSRC_MIPS_GIC */
 -- 
 2.30.2
 
