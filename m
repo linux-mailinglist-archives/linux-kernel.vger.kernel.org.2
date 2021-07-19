@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FC03CE478
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C653CE61F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239956AbhGSPnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:43:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58644 "EHLO mail.kernel.org"
+        id S1351454AbhGSP74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:59:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345216AbhGSPAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:00:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF2A360238;
-        Mon, 19 Jul 2021 15:40:57 +0000 (UTC)
+        id S1346360AbhGSPFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:05:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C21AC601FD;
+        Mon, 19 Jul 2021 15:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709258;
-        bh=+qqo8JA4BoCH6CiOxaAFejhzP8O/BEP/zq++9AE1JWo=;
+        s=korg; t=1626709570;
+        bh=r8nFwJZzDXYJwpPPYt+7eTkcuqPC3tJF8xULDi0IxX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NbYOKJbgDgACqZErx3ahfNuEoFtoaqEnc9k86GJLygmkRUQc2/swcTjcxcPSvKdOk
-         3mnZyb0PeFxK3BoNbvXSCRxflIPwVEHfYCH1SJbd+acbsJQ5ZbNpZjT1fLxag/Xa+F
-         3kHrWCz3vdGxzUR7SB+8RhfXXGJXqKJu0vcdJ8lY=
+        b=FUOaKhNoirAfFhahTYtjzEa57zf6EOT/IhbEu6Mb+FsAJ4VF5euUeoIdrgMUN73Uq
+         ZkXGi13Rlz0EmLhgm6alSiZyfD7cRneWJlxkCxNVVxFsz+k7b9gtZY057UL6tohHvS
+         Bjvi9pz+51Hk/yB3QrrOPPWDE4filZmN22LHMgbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 311/421] media: gspca/sq905: fix control-request direction
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rui Miguel Silva <rui.silva@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 014/149] iio: gyro: fxa21002c: Balance runtime pm + use pm_runtime_resume_and_get().
 Date:   Mon, 19 Jul 2021 16:52:02 +0200
-Message-Id: <20210719144957.104625038@linuxfoundation.org>
+Message-Id: <20210719144904.796647817@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 53ae298fde7adcc4b1432bce2dbdf8dac54dfa72 upstream.
+[ Upstream commit 41120ebbb1eb5e9dec93320e259d5b2c93226073 ]
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+In both the probe() error path and remove() pm_runtime_put_noidle()
+is called which will decrement the runtime pm reference count.
+However, there is no matching function to have raised the reference count.
+Not this isn't a fix as the runtime pm core will stop the reference count
+going negative anyway.
 
-Fix the USB_REQ_SYNCH_FRAME request which erroneously used
-usb_sndctrlpipe().
+An alternative would have been to raise the count in these paths, but
+it is not clear why that would be necessary.
 
-Fixes: 27d35fc3fb06 ("V4L/DVB (10639): gspca - sq905: New subdriver.")
-Cc: stable@vger.kernel.org      # 2.6.30
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Whilst we are here replace some boilerplate with pm_runtime_resume_and_get()
+Found using coccicheck script under review at:
+https://lore.kernel.org/lkml/20210427141946.2478411-1-Julia.Lawall@inria.fr/
+
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Rui Miguel Silva <rui.silva@linaro.org>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/r/20210509113354.660190-2-jic23@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/sq905.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/gyro/fxas21002c_core.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
---- a/drivers/media/usb/gspca/sq905.c
-+++ b/drivers/media/usb/gspca/sq905.c
-@@ -125,7 +125,7 @@ static int sq905_command(struct gspca_de
- 	}
+diff --git a/drivers/iio/gyro/fxas21002c_core.c b/drivers/iio/gyro/fxas21002c_core.c
+index 958cf8b6002c..45e2b5b33072 100644
+--- a/drivers/iio/gyro/fxas21002c_core.c
++++ b/drivers/iio/gyro/fxas21002c_core.c
+@@ -300,14 +300,7 @@ out_unlock:
  
- 	ret = usb_control_msg(gspca_dev->dev,
--			      usb_sndctrlpipe(gspca_dev->dev, 0),
-+			      usb_rcvctrlpipe(gspca_dev->dev, 0),
- 			      USB_REQ_SYNCH_FRAME,                /* request */
- 			      USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 			      SQ905_PING, 0, gspca_dev->usb_buf, 1,
+ static int  fxas21002c_pm_get(struct fxas21002c_data *data)
+ {
+-	struct device *dev = regmap_get_device(data->regmap);
+-	int ret;
+-
+-	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0)
+-		pm_runtime_put_noidle(dev);
+-
+-	return ret;
++	return pm_runtime_resume_and_get(regmap_get_device(data->regmap));
+ }
+ 
+ static int  fxas21002c_pm_put(struct fxas21002c_data *data)
+@@ -940,7 +933,6 @@ int fxas21002c_core_probe(struct device *dev, struct regmap *regmap, int irq,
+ pm_disable:
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_set_suspended(dev);
+-	pm_runtime_put_noidle(dev);
+ 
+ 	return ret;
+ }
+@@ -954,7 +946,6 @@ void fxas21002c_core_remove(struct device *dev)
+ 
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_set_suspended(dev);
+-	pm_runtime_put_noidle(dev);
+ }
+ EXPORT_SYMBOL_GPL(fxas21002c_core_remove);
+ 
+-- 
+2.30.2
+
 
 
