@@ -2,249 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E8C3CEE54
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE0B3CEE62
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 23:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387822AbhGSUf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 16:35:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55272 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354316AbhGSUXp (ORCPT
+        id S1359044AbhGSUkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 16:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352508AbhGSUac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 16:23:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626728656;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mDzv4r/nKmHoEY/y/S31BYFYyCyd3ydFbHliB67gI10=;
-        b=ZypLFW8xkdb+aFF0+TYJSwLYYxoRilXOWlapqh1Q0ab+HWjaMvE0qNEOCF513jq3mnmqTP
-        Xf4u2FDuMC+aK3ODd32jdxf25UYJNFcPF83xDHDsZLdNQc/A71nuN6orvpzXWMyG0jYPOB
-        Bq1S03cjjNY2iDIPeK2DVGMW8wGjzSU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-Lt425qk5P-W4_BxnE0IKdQ-1; Mon, 19 Jul 2021 17:04:15 -0400
-X-MC-Unique: Lt425qk5P-W4_BxnE0IKdQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A49EA100C610;
-        Mon, 19 Jul 2021 21:04:13 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79F4A2706E;
-        Mon, 19 Jul 2021 21:04:01 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id E87DB4172ED4; Mon, 19 Jul 2021 18:03:55 -0300 (-03)
-Date:   Mon, 19 Jul 2021 18:03:55 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Jason Wang <jasowang@redhat.com>,
-        linux-block@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        virtualization@lists.linux-foundation.org,
-        linux-pm@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC 1/3] cpuidle: add poll_source API
-Message-ID: <20210719210355.GA46373@fuller.cnet>
-References: <20210713161906.457857-1-stefanha@redhat.com>
- <20210713161906.457857-2-stefanha@redhat.com>
+        Mon, 19 Jul 2021 16:30:32 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F32EC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:10:35 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i5so32538695lfe.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:10:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zb6rr15bSXQwTnBPqI4g1KEDBlw35vq1tATeF4vahZQ=;
+        b=l4zG9dD7D5TRbenNJfZXIawPdQYAmC+6KoVsGyDr8lFRRQ+nMV8zf6CakVJ74ozmx8
+         vECyxqO5TWTiHtWqFoi+uLPJxjW6P+c6KohNly84YXa5LEl918+v52vTCL8MUc04Fkg0
+         FidoisJjEXwrJEZGeYj2xyRBG8xrNKwGwp0Jy+L4vyThjoK5911PpAW4hJ2AglZOFbbS
+         jBycTJKlXbwBTmY1x+4yXw8i/eg9P80H1wR6TilaCK4a5Xo+m4xCFix+wNVNQ9hnJRTD
+         Rqkpss14DPkVkhN/ICpG16/LdrQfUh3SMEyfzYX8HNliUh5LEHcAarapfkhyJkKBbSHU
+         nzwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zb6rr15bSXQwTnBPqI4g1KEDBlw35vq1tATeF4vahZQ=;
+        b=VacJtUjQ1iQmKJfykFUU1nzsJb8lzC1kI/qSEOh7h3rEDoVREnIHl7GQxTOzZC0OSA
+         4oKrsuQv/4EGfzNfy0iLcwxvvBrd+7VZyY9p5yNY5R7+W7nfUVzDh4jvfPZnERyHj3eJ
+         9bgvGrXtb3u/IUx2axXkw2sxIunJFb1Vhyuv6CiEDLJQs8Y7YLyrO82tE4bnIwhD6Xa7
+         hrizCFXtRfBhCL9J4/D7bwc4cWM6jCV/DCcM5Ew7c1tO25KSin0KVOQuiZ0USbhqRpFP
+         YxRJcjr+mizPcd3ygn4RqqqXs9pzVdIFF/J7zeV+ZJw/h9tRw/NVrqJGrO+lF0Jpx7Vq
+         UFew==
+X-Gm-Message-State: AOAM530nK5SH6XnUZaHdX0/X7h8WC2ZAdWHBRgIAM6m3bqKEGLEWBlQv
+        5VmI25aCAV9/NKGG6q50exV7bRc/XkHDzSmh3AQcBg==
+X-Google-Smtp-Source: ABdhPJy0PZFmXCRTMOqx4byvOHdwlSuCDhdl5z9Ba70UxfA55JfR5WyxqS2xZlcRCm5/igJgrDDjUGdXBJsIXwQbZD4=
+X-Received: by 2002:ac2:4ac6:: with SMTP id m6mr20508306lfp.73.1626729043401;
+ Mon, 19 Jul 2021 14:10:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713161906.457857-2-stefanha@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210707224310.1403944-1-ndesaulniers@google.com>
+In-Reply-To: <20210707224310.1403944-1-ndesaulniers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 19 Jul 2021 14:10:32 -0700
+Message-ID: <CAKwvOdnG-E8HpK9txn4X=MiZSzfFHd90y1qny=0syNUWY3AaCg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] infer CROSS_COMPILE from ARCH for LLVM=1 LLVM_IAS=1
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+Masahiro,
+Do you have further thoughts on this series?
 
-On Tue, Jul 13, 2021 at 05:19:04PM +0100, Stefan Hajnoczi wrote:
-> Introduce an API for adding cpuidle poll callbacks:
-> 
->   struct poll_source_ops {
->       void (*start)(struct poll_source *src);
->       void (*stop)(struct poll_source *src);
->       void (*poll)(struct poll_source *src);
->   };
-> 
->   int poll_source_register(struct poll_source *src);
->   int poll_source_unregister(struct poll_source *src);
-> 
-> When cpuidle enters the poll state it invokes ->start() and then invokes
-> ->poll() repeatedly from the busy wait loop. Finally ->stop() is invoked
-> when the busy wait loop finishes.
-> 
-> The ->poll() function should check for activity and cause
-> TIF_NEED_RESCHED to be set in order to stop the busy wait loop.
-> 
-> This API is intended to be used by drivers that can cheaply poll for
-> events. Participating in cpuidle polling allows them to avoid interrupt
-> latencies during periods where the CPU is going to poll anyway.
-> 
-> Note that each poll_source is bound to a particular CPU. The API is
-> mainly intended to by used by drivers that have multiple queues with irq
-> affinity.
-> 
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> ---
->  drivers/cpuidle/Makefile      |  1 +
->  include/linux/poll_source.h   | 53 +++++++++++++++++++
->  drivers/cpuidle/poll_source.c | 99 +++++++++++++++++++++++++++++++++++
->  drivers/cpuidle/poll_state.c  |  6 +++
->  4 files changed, 159 insertions(+)
->  create mode 100644 include/linux/poll_source.h
->  create mode 100644 drivers/cpuidle/poll_source.c
-> 
-> diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
-> index 26bbc5e74123..994f72d6fe95 100644
-> --- a/drivers/cpuidle/Makefile
-> +++ b/drivers/cpuidle/Makefile
-> @@ -7,6 +7,7 @@ obj-y += cpuidle.o driver.o governor.o sysfs.o governors/
->  obj-$(CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED) += coupled.o
->  obj-$(CONFIG_DT_IDLE_STATES)		  += dt_idle_states.o
->  obj-$(CONFIG_ARCH_HAS_CPU_RELAX)	  += poll_state.o
-> +obj-$(CONFIG_ARCH_HAS_CPU_RELAX)	  += poll_source.o
->  obj-$(CONFIG_HALTPOLL_CPUIDLE)		  += cpuidle-haltpoll.o
->  
->  ##################################################################################
-> diff --git a/include/linux/poll_source.h b/include/linux/poll_source.h
-> new file mode 100644
-> index 000000000000..ccfb424e170b
-> --- /dev/null
-> +++ b/include/linux/poll_source.h
-> @@ -0,0 +1,53 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * poll_source.h - cpuidle busy waiting API
-> + */
-> +#ifndef __LINUX_POLLSOURCE_H__
-> +#define __LINUX_POLLSOURCE_H__
-> +
-> +#include <linux/list.h>
-> +
-> +struct poll_source;
-> +
-> +struct poll_source_ops {
-> +	void (*start)(struct poll_source *src);
-> +	void (*stop)(struct poll_source *src);
-> +	void (*poll)(struct poll_source *src);
-> +};
-> +
-> +struct poll_source {
-> +	const struct poll_source_ops *ops;
-> +	struct list_head node;
-> +	int cpu;
-> +};
-> +
-> +/**
-> + * poll_source_register - Add a poll_source for a CPU
-> + */
-> +#if defined(CONFIG_CPU_IDLE) && defined(CONFIG_ARCH_HAS_CPU_RELAX)
-> +int poll_source_register(struct poll_source *src);
-> +#else
-> +static inline int poll_source_register(struct poll_source *src)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
-> +/**
-> + * poll_source_unregister - Remove a previously registered poll_source
-> + */
-> +#if defined(CONFIG_CPU_IDLE) && defined(CONFIG_ARCH_HAS_CPU_RELAX)
-> +int poll_source_unregister(struct poll_source *src);
-> +#else
-> +static inline int poll_source_unregister(struct poll_source *src)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
-> +/* Used by the cpuidle driver */
-> +void poll_source_start(void);
-> +void poll_source_run_once(void);
-> +void poll_source_stop(void);
-> +
-> +#endif /* __LINUX_POLLSOURCE_H__ */
-> diff --git a/drivers/cpuidle/poll_source.c b/drivers/cpuidle/poll_source.c
-> new file mode 100644
-> index 000000000000..46100e5a71e4
-> --- /dev/null
-> +++ b/drivers/cpuidle/poll_source.c
-> @@ -0,0 +1,99 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * poll_source.c - cpuidle busy waiting API
-> + */
-> +
-> +#include <linux/lockdep.h>
-> +#include <linux/percpu.h>
-> +#include <linux/poll_source.h>
-> +
-> +/* The per-cpu list of registered poll sources */
-> +DEFINE_PER_CPU(struct list_head, poll_source_list);
-> +
-> +/* Called from idle task with TIF_POLLING_NRFLAG set and irqs enabled */
-> +void poll_source_start(void)
-> +{
-> +	struct poll_source *src;
-> +
-> +	list_for_each_entry(src, this_cpu_ptr(&poll_source_list), node)
-> +		src->ops->start(src);
-> +}
-> +
-> +/* Called from idle task with TIF_POLLING_NRFLAG set and irqs enabled */
-> +void poll_source_run_once(void)
-> +{
-> +	struct poll_source *src;
-> +
-> +	list_for_each_entry(src, this_cpu_ptr(&poll_source_list), node)
-> +		src->ops->poll(src);
-> +}
-> +
-> +/* Called from idle task with TIF_POLLING_NRFLAG set and irqs enabled */
-> +void poll_source_stop(void)
-> +{
-> +	struct poll_source *src;
-> +
-> +	list_for_each_entry(src, this_cpu_ptr(&poll_source_list), node)
-> +		src->ops->stop(src);
-> +}
-> +
-> +static void poll_source_register_this_cpu(void *opaque)
-> +{
-> +	struct poll_source *src = opaque;
-> +
-> +	lockdep_assert_irqs_disabled();
-> +
-> +	list_add_tail(&src->node, this_cpu_ptr(&poll_source_list));
-> +}
-> +
-> +int poll_source_register(struct poll_source *src)
-> +{
-> +	if (!list_empty(&src->node))
-> +		return -EBUSY;
-> +
-> +	/*
-> +	 * There is no race with src->cpu iterating over poll_source_list
-> +	 * because smp_call_function_single() just sets TIF_NEED_RESCHED
 
-Hum... what about 
+On Wed, Jul 7, 2021 at 3:43 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> We get constant feedback that the command line invocation of make is too
+> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+> target triple, or is an absolute path outside of $PATH, but it's mostly
+> redundant for a given ARCH.
+>
+> Instead, let's infer it from ARCH, and move some flag handling into a
+> new file included from the top level Makefile.
+>
+> Nick Desaulniers (2):
+>   Makefile: move initial clang flag handling into scripts/Makefile.clang
+>   Makefile: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
+>
+>  Documentation/kbuild/llvm.rst |  5 ++++
+>  MAINTAINERS                   |  1 +
+>  Makefile                      | 15 +----------
+>  scripts/Makefile.clang        | 48 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 55 insertions(+), 14 deletions(-)
+>  create mode 100644 scripts/Makefile.clang
+>
+>
+> base-commit: a0e781a2a35a8dd4e6a38571998d59c6b0e32cd8
+> --
+> 2.32.0.93.g670b81a890-goog
+>
 
-CPU-0				CPU-1
 
-poll_source_start		poll_source_register IPI'ing CPU-0
-
-Perhaps a llist can be used?
-
->               while (!need_resched()) {
-> +                     poll_source_run_once();
-
-Probably want to use static_key's for ->start, ->stop and ->poll?
-
+--
+Thanks,
+~Nick Desaulniers
