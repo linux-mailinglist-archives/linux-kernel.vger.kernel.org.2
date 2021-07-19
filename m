@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0ECF3CEAA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABF03CE923
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355369AbhGSROr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:14:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
+        id S1355765AbhGSQu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:50:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236201AbhGSPhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:37:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38B5D6120A;
-        Mon, 19 Jul 2021 16:17:45 +0000 (UTC)
+        id S1349299AbhGSP01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:26:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE4C8608FC;
+        Mon, 19 Jul 2021 16:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711465;
-        bh=uCErFtZRdNF5y07pqjRLmpl62TcxkfILFvZUtKYpVLg=;
+        s=korg; t=1626710827;
+        bh=D8wE6hMjQTlUe9QWH2Md16qINHYcgAlC8HKXj4ZNvMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dxtjBFBJDVwZIP8nM5heLY6ZFMh6wasWn8A9xDLBHS5G6W0vaTss/reTbWH8EKvwT
-         BB5RPL0oPXIOUTT4a6iD6e4H+y+bZqSOUEAQiZOkKIjocc1kPSlEaRcrIpBx1Z6CYu
-         PGk8CUcB12GXI5CPpDx1iP/P7tiZXFKGV3Da8HhA=
+        b=EU3Vrd4zM1ME0XfyPlxMlPcMbdd8x0DBDQLdqXHLB9ZYKPcbhOtAVuIZVEbw1XiRN
+         vdPVr/OcR8XwqEQzdNNKC8NeSCzTQae8YqL7u2bpsowmz73o/d8FyFOFh/aD1+zohQ
+         U7ZPlF305unacInJp2Grf2+hmIl/nneBBO/lKGrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 005/292] KVM: x86: Use guest MAXPHYADDR from CPUID.0x8000_0008 iff TDP is enabled
-Date:   Mon, 19 Jul 2021 16:51:07 +0200
-Message-Id: <20210719144942.694837936@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 122/351] s390/ipl_parm: fix program check new psw handling
+Date:   Mon, 19 Jul 2021 16:51:08 +0200
+Message-Id: <20210719144948.516519944@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit 4bf48e3c0aafd32b960d341c4925b48f416f14a5 upstream.
+[ Upstream commit 88c2510cecb7e2b518e3c4fdf3cf0e13ebe9377c ]
 
-Ignore the guest MAXPHYADDR reported by CPUID.0x8000_0008 if TDP, i.e.
-NPT, is disabled, and instead use the host's MAXPHYADDR.  Per AMD'S APM:
+The __diag308() inline asm temporarily changes the program check new
+psw to redirect a potential program check on the diag instruction.
+Restoring of the program check new psw is done in C code behind the
+inline asm.
 
-  Maximum guest physical address size in bits. This number applies only
-  to guests using nested paging. When this field is zero, refer to the
-  PhysAddrSize field for the maximum guest physical address size.
+This can be problematic, especially if the function is inlined, since
+the compiler can reorder instructions in such a way that a different
+instruction, which may result in a program check, might be executed
+before the program check new psw has been restored.
 
-Fixes: 24c82e576b78 ("KVM: Sanitize cpuid")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210623230552.4027702-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To avoid such a scenario move restoring into the inline asm. For
+consistency reasons move also saving of the original program check new
+psw into the inline asm.
+
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/cpuid.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/s390/boot/ipl_parm.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -844,8 +844,14 @@ static inline int __do_cpuid_func(struct
- 		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
- 		unsigned phys_as = entry->eax & 0xff;
+diff --git a/arch/s390/boot/ipl_parm.c b/arch/s390/boot/ipl_parm.c
+index d372a45fe10e..dd92092e3eec 100644
+--- a/arch/s390/boot/ipl_parm.c
++++ b/arch/s390/boot/ipl_parm.c
+@@ -28,22 +28,25 @@ static inline int __diag308(unsigned long subcode, void *addr)
+ 	register unsigned long _addr asm("0") = (unsigned long)addr;
+ 	register unsigned long _rc asm("1") = 0;
+ 	unsigned long reg1, reg2;
+-	psw_t old = S390_lowcore.program_new_psw;
++	psw_t old;
  
--		if (!g_phys_as)
-+		/*
-+		 * Use bare metal's MAXPHADDR if the CPU doesn't report guest
-+		 * MAXPHYADDR separately, or if TDP (NPT) is disabled, as the
-+		 * guest version "applies only to guests using nested paging".
-+		 */
-+		if (!g_phys_as || !tdp_enabled)
- 			g_phys_as = phys_as;
-+
- 		entry->eax = g_phys_as | (virt_as << 8);
- 		entry->edx = 0;
- 		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+ 	asm volatile(
++		"	mvc	0(16,%[psw_old]),0(%[psw_pgm])\n"
+ 		"	epsw	%0,%1\n"
+-		"	st	%0,%[psw_pgm]\n"
+-		"	st	%1,%[psw_pgm]+4\n"
++		"	st	%0,0(%[psw_pgm])\n"
++		"	st	%1,4(%[psw_pgm])\n"
+ 		"	larl	%0,1f\n"
+-		"	stg	%0,%[psw_pgm]+8\n"
++		"	stg	%0,8(%[psw_pgm])\n"
+ 		"	diag	%[addr],%[subcode],0x308\n"
+-		"1:	nopr	%%r7\n"
++		"1:	mvc	0(16,%[psw_pgm]),0(%[psw_old])\n"
+ 		: "=&d" (reg1), "=&a" (reg2),
+-		  [psw_pgm] "=Q" (S390_lowcore.program_new_psw),
++		  "+Q" (S390_lowcore.program_new_psw),
++		  "=Q" (old),
+ 		  [addr] "+d" (_addr), "+d" (_rc)
+-		: [subcode] "d" (subcode)
++		: [subcode] "d" (subcode),
++		  [psw_old] "a" (&old),
++		  [psw_pgm] "a" (&S390_lowcore.program_new_psw)
+ 		: "cc", "memory");
+-	S390_lowcore.program_new_psw = old;
+ 	return _rc;
+ }
+ 
+-- 
+2.30.2
+
 
 
