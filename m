@@ -2,150 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0A93CD45F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A353CD463
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236801AbhGSL3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:29:30 -0400
-Received: from mga04.intel.com ([192.55.52.120]:56346 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236505AbhGSL3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:29:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="209139606"
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="209139606"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 05:10:01 -0700
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="494044797"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 05:09:59 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m5S5o-00FVMa-Pg; Mon, 19 Jul 2021 15:09:52 +0300
-Date:   Mon, 19 Jul 2021 15:09:52 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Subject: Re: [PATCH v1 2/3] clk: fractional-divider: Introduce NO_PRESCALER
- flag
-Message-ID: <YPVrkAarqSBMY1tV@smile.fi.intel.com>
-References: <20210715120752.29174-1-andriy.shevchenko@linux.intel.com>
- <20210715120752.29174-2-andriy.shevchenko@linux.intel.com>
- <7941107fda10f075395870528f0e52d42e502d92.camel@nxp.com>
- <YPGHbvaCv/x/JlgH@smile.fi.intel.com>
- <bfa0c16e88c0d445137290b2bef104e5fa74d78a.camel@nxp.com>
+        id S236819AbhGSLam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:30:42 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:36734 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236505AbhGSLak (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:30:40 -0400
+Received: by mail-ot1-f51.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so17954599otl.3;
+        Mon, 19 Jul 2021 05:11:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2moxWKKaPa9ZFExfempOvPi7aHjsJs/En8lY3f7yAtE=;
+        b=owUxVM+dO9F6z5rFjUJEV5vQKegcYHWmBHXgH+UyyzbXAddaGHZRbCgMLM6Lz2xYT/
+         LpaLqTRh0xosQ2w/jc284zZVBA4iSLS3XCGM+elvkyN3FZZYazYX120LFURxcyITsnTJ
+         bMlLWl28nKaTkKjDkZ+MHx+lgvAIIP2YtO732CoMlf7pUipb83X5DIeUQVdC1ijGlVdO
+         WJ3D9Ls/sLdp8Fddy/L/0ffFOS9vekvWiAYGWxFoxHx5bERbY180yccLXfAobI7DdWXn
+         yUtlUH1vmeSwRls0UTsMfZLU2mVOdIbWoRz+q1mka8wQyRoopT6gz6fV61nLmo1Jk4i9
+         1okA==
+X-Gm-Message-State: AOAM53102r4yy3fm2TcKdsJHx8X1vXzQjXXsEtJFbV+3pQ2ORbF/umph
+        Z22ofFoq/Q6b//5HEqKJt+VulwCKh+pHFFQnklFqSKtuBkw=
+X-Google-Smtp-Source: ABdhPJxNOKlU+YwP89jrbWPKr9XB0U4es4cykMcIG5GYp2Qcj9p0FLrxZy4Wd61E9LXcchZSNnjpKAAKpU0pflyoK3w=
+X-Received: by 2002:a9d:2968:: with SMTP id d95mr18293090otb.321.1626696679462;
+ Mon, 19 Jul 2021 05:11:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bfa0c16e88c0d445137290b2bef104e5fa74d78a.camel@nxp.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210717031806.29866-1-wangrui@loongson.cn>
+In-Reply-To: <20210717031806.29866-1-wangrui@loongson.cn>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 19 Jul 2021 14:11:04 +0200
+Message-ID: <CAJZ5v0hWiLWHk2_CQ0uytP28ab26Atm-MU5YvUWWwHWdKS5c-A@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: Kconfig: Fix table override from built-in initrd
+To:     Rui Wang <wangrui@loongson.cn>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Shunyong Yang <shunyong.yang@hxt-semitech.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 11:16:07AM +0800, Liu Ying wrote:
-> On Fri, 2021-07-16 at 16:19 +0300, Andy Shevchenko wrote:
-> > On Fri, Jul 16, 2021 at 10:43:57AM +0800, Liu Ying wrote:
-> > > On Thu, 2021-07-15 at 15:07 +0300, Andy Shevchenko wrote:
+On Sat, Jul 17, 2021 at 5:18 AM Rui Wang <wangrui@loongson.cn> wrote:
+>
+> The commit 65e00e04e5aea ("initramfs: refactor the initramfs build rules")
+> had dropped the CONFIG_INITRAMFS_COMPRESSION.
+>
+> This patch updates INITRAMFS_COMPRESSION="" to INITRAMFS_COMPRESSION_NONE.
+>
+> CC: Rafael J. Wysocki <rjw@rjwysocki.net>
+> CC: Len Brown <lenb@kernel.org>
+> CC: Shunyong Yang <shunyong.yang@hxt-semitech.com>
+> CC: linux-acpi@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> Signed-off-by: Rui Wang <wangrui@loongson.cn>
 
-...
+I've already applied an alternative patch making the same change:
 
-> > > Second and more important, it seems that it would be good to decouple
-> > > the prescaler knowledge from this fractional divider clk driver so as
-> > > to make it simple(Output rate = (m / n) * parent_rate).  This way, the
-> > > CLK_FRAC_DIVIDER_NO_PRESCALER flag is not even needed at the first
-> > > place, which means rational_best_approximation() just _directly_
-> > > offer best_{numerator,denominator} for all cases.
-> > 
-> > Feel free to submit a patch, just give a good test to avoid breakage of almost
-> > all users of this driver.
-> 
-> Maybe someone may do that.
+https://patchwork.kernel.org/project/linux-acpi/patch/ad9c50c54887bde41ae5de782248231c06a527c0.1626262835.git.rrichter@amd.com/
 
-Perhaps. The idea per se is good I think, but I doubt that the implementation
-will be plausible.
-
-> I just shared my thought that it sounds
-> like a good idea
-
-Thanks!
-
-> to decouple the prescaler knowledge from this
-> fractional divider clk driver.
-
-Are you suggesting that each of the device that has _private_ pre-scaler has to
-be a clock provider at the same time?
-
-OTOH you will probably need irrespresentable hierarchy to avoid saturated values.
-
-At least those two issues I believe makes the idea fade in complications of the
-actual implementation. But again, send the code (you or anybody else) and we will
-see how it looks like.
-
-...
-
-> > > Further more, is it
-> > > possilbe for rational_best_approximation() to make sure there is no
-> > > risk of overflow for best_{numerator,denominator}, since
-> > > max_{numerator,denominator} are already handed over to
-> > > rational_best_approximation()?
-> > 
-> > How? It can not be satisfied for all possible inputs.
-> 
-> Just have rational_best_approximation() make sure
-> best_{numerator,denominator} are in the range of
-> [1, max_{numerator,denominator}] for all given_{numerator,denominator}.
-> At the same time, best_numerator/best_denominator should be as close
-> to given_numerator/given_denominator as possible. For this particular
-> fractional divider clk use case, clk_round_rate() can be called
-> multiple times until users find rounded rate is ok.
-
-How is it supposed to work IRL? E.g. this driver is being used for UART. Serial
-core (or even TTY) has a specific function to approximate the baud rate and it
-tries it 2 or 3 times. In case of *saturated* values it won't progress anyhow
-because from best rational approximation algorithm the very first attempt would
-be done against the best possible clock rate.
-
-Can you provide some code skeleton to see?
-
-...
-
-> > > Overflowed/unreasonable
-> > > best_{numerator,denominator} don't sound like the "best" offered value.
-> > 
-> > I don't follow here. If you got saturated values it means that your input is
-> > not convergent. In practice it means that we will supply quite a bad value to
-> > the caller.
-> 
-> Just like I mentioned above, if given_{numerator,denominator} are not
-> convergent, best_numerator/best_denominator should be as close
-> to given_numerator/given_denominator as possible and at the same time
-> best_{numerator,denominator} are in the range of
-> [1, max_{numerator,denominator}].  This way, caller may have chance to
-> propose convergent inputs.
-
-How? Again, provide some code to understand this better.
-(Spoiler: arithmetics won't allow you to do this. Or maybe
- I'm badly missing something very simple and obvious...)
-
-And, if it's possible to achieve, are you suggesting that part of
-what CCF driver should do the users will have been doing by their
-own?
-
-TL;DR: please send a code to discuss.
-
-Thanks for review and you review of v2 is warmly welcomed!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> ---
+>  drivers/acpi/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> index 9d872ea477a6..8f9940f40baa 100644
+> --- a/drivers/acpi/Kconfig
+> +++ b/drivers/acpi/Kconfig
+> @@ -370,7 +370,7 @@ config ACPI_TABLE_UPGRADE
+>  config ACPI_TABLE_OVERRIDE_VIA_BUILTIN_INITRD
+>         bool "Override ACPI tables from built-in initrd"
+>         depends on ACPI_TABLE_UPGRADE
+> -       depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION=""
+> +       depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION_NONE
+>         help
+>           This option provides functionality to override arbitrary ACPI tables
+>           from built-in uncompressed initrd.
+> --
+> 2.32.0
+>
