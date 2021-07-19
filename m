@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894113CE88A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF9B3CE76C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352255AbhGSQmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:42:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41754 "EHLO mail.kernel.org"
+        id S1353894AbhGSQ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:26:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348560AbhGSPYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1E1601FD;
-        Mon, 19 Jul 2021 16:05:33 +0000 (UTC)
+        id S1346079AbhGSPNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:13:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A31F861222;
+        Mon, 19 Jul 2021 15:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710734;
-        bh=4cmWkVFhdTzQWY9usqWWMyf40gKiTVqMUh3jZzfwEhU=;
+        s=korg; t=1626710007;
+        bh=IW+kRm7y3/w5PDA1gPnsPSpm83DD9zwtepBPUsz8hoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ntrnK3Q8yZ1u/J9PFmcCqwnikfseV2L4GOYhvRwzNciXORzsLgb8REIpMZyu8MmE2
-         KEx+If/sygyctoAEgQoy9hkvim4qq/b2rDTtYuzDnrMVOWfYLP0xAPkaTdhYxQoYPr
-         pxg0pjpW3jDTZm3mvp3F8Jju3oUmu6pQLhu+uKEw=
+        b=NfyrSFunvT/2Vpi7nHnp+OAtYksjqwSOjEf7WJ6P9dX89zhMDQNt7RJVCSUSRLLJK
+         dgnMwOL12Vem8NTXTAOYOu83mLKPJlrTkIUkVHO1Jz5xlnIaFzj47x+KTc7Jsqppab
+         pI3b2W1HmUIN/7aGAtV3/S14/VQrqjbEdg3pASKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>, Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 087/351] mfd: da9052/stmpe: Add and modify MODULE_DEVICE_TABLE
-Date:   Mon, 19 Jul 2021 16:50:33 +0200
-Message-Id: <20210719144947.379834520@linuxfoundation.org>
+        stable@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 005/243] KVM: x86/mmu: Do not apply HPA (memory encryption) mask to GPAs
+Date:   Mon, 19 Jul 2021 16:50:34 +0200
+Message-Id: <20210719144941.095751778@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +41,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 4700ef326556ed74aba188f12396740a8c1c21dd ]
+commit fc9bf2e087efcd81bda2e52d09616d2a1bf982a8 upstream.
 
-This patch adds/modifies MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Ignore "dynamic" host adjustments to the physical address mask when
+generating the masks for guest PTEs, i.e. the guest PA masks.  The host
+physical address space and guest physical address space are two different
+beasts, e.g. even though SEV's C-bit is the same bit location for both
+host and guest, disabling SME in the host (which clears shadow_me_mask)
+does not affect the guest PTE->GPA "translation".
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For non-SEV guests, not dropping bits is the correct behavior.  Assuming
+KVM and userspace correctly enumerate/configure guest MAXPHYADDR, bits
+that are lost as collateral damage from memory encryption are treated as
+reserved bits, i.e. KVM will never get to the point where it attempts to
+generate a gfn using the affected bits.  And if userspace wants to create
+a bogus vCPU, then userspace gets to deal with the fallout of hardware
+doing odd things with bad GPAs.
+
+For SEV guests, not dropping the C-bit is technically wrong, but it's a
+moot point because KVM can't read SEV guest's page tables in any case
+since they're always encrypted.  Not to mention that the current KVM code
+is also broken since sme_me_mask does not have to be non-zero for SEV to
+be supported by KVM.  The proper fix would be to teach all of KVM to
+correctly handle guest private memory, but that's a task for the future.
+
+Fixes: d0ec49d4de90 ("kvm/x86/svm: Support Secure Memory Encryption within KVM")
+Cc: stable@vger.kernel.org
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210623230552.4027702-5-seanjc@google.com>
+[Use a new header instead of adding header guards to paging_tmpl.h. - Paolo]
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/da9052-i2c.c | 1 +
- drivers/mfd/stmpe-i2c.c  | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c         |    2 ++
+ arch/x86/kvm/mmu/paging.h      |   14 ++++++++++++++
+ arch/x86/kvm/mmu/paging_tmpl.h |    4 ++--
+ arch/x86/kvm/mmu/spte.h        |    6 ------
+ 4 files changed, 18 insertions(+), 8 deletions(-)
+ create mode 100644 arch/x86/kvm/mmu/paging.h
 
-diff --git a/drivers/mfd/da9052-i2c.c b/drivers/mfd/da9052-i2c.c
-index 47556d2d9abe..8ebfc7bbe4e0 100644
---- a/drivers/mfd/da9052-i2c.c
-+++ b/drivers/mfd/da9052-i2c.c
-@@ -113,6 +113,7 @@ static const struct i2c_device_id da9052_i2c_id[] = {
- 	{"da9053-bc", DA9053_BC},
- 	{}
- };
-+MODULE_DEVICE_TABLE(i2c, da9052_i2c_id);
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -52,6 +52,8 @@
+ #include <asm/kvm_page_track.h>
+ #include "trace.h"
  
- #ifdef CONFIG_OF
- static const struct of_device_id dialog_dt_ids[] = {
-diff --git a/drivers/mfd/stmpe-i2c.c b/drivers/mfd/stmpe-i2c.c
-index 61aa020199f5..cd2f45257dc1 100644
---- a/drivers/mfd/stmpe-i2c.c
-+++ b/drivers/mfd/stmpe-i2c.c
-@@ -109,7 +109,7 @@ static const struct i2c_device_id stmpe_i2c_id[] = {
- 	{ "stmpe2403", STMPE2403 },
- 	{ }
- };
--MODULE_DEVICE_TABLE(i2c, stmpe_id);
-+MODULE_DEVICE_TABLE(i2c, stmpe_i2c_id);
++#include "paging.h"
++
+ extern bool itlb_multihit_kvm_mitigation;
  
- static struct i2c_driver stmpe_i2c_driver = {
- 	.driver = {
--- 
-2.30.2
-
+ static int __read_mostly nx_huge_pages = -1;
+--- /dev/null
++++ b/arch/x86/kvm/mmu/paging.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/* Shadow paging constants/helpers that don't need to be #undef'd. */
++#ifndef __KVM_X86_PAGING_H
++#define __KVM_X86_PAGING_H
++
++#define GUEST_PT64_BASE_ADDR_MASK (((1ULL << 52) - 1) & ~(u64)(PAGE_SIZE-1))
++#define PT64_LVL_ADDR_MASK(level) \
++	(GUEST_PT64_BASE_ADDR_MASK & ~((1ULL << (PAGE_SHIFT + (((level) - 1) \
++						* PT64_LEVEL_BITS))) - 1))
++#define PT64_LVL_OFFSET_MASK(level) \
++	(GUEST_PT64_BASE_ADDR_MASK & ((1ULL << (PAGE_SHIFT + (((level) - 1) \
++						* PT64_LEVEL_BITS))) - 1))
++#endif /* __KVM_X86_PAGING_H */
++
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -24,7 +24,7 @@
+ 	#define pt_element_t u64
+ 	#define guest_walker guest_walker64
+ 	#define FNAME(name) paging##64_##name
+-	#define PT_BASE_ADDR_MASK PT64_BASE_ADDR_MASK
++	#define PT_BASE_ADDR_MASK GUEST_PT64_BASE_ADDR_MASK
+ 	#define PT_LVL_ADDR_MASK(lvl) PT64_LVL_ADDR_MASK(lvl)
+ 	#define PT_LVL_OFFSET_MASK(lvl) PT64_LVL_OFFSET_MASK(lvl)
+ 	#define PT_INDEX(addr, level) PT64_INDEX(addr, level)
+@@ -57,7 +57,7 @@
+ 	#define pt_element_t u64
+ 	#define guest_walker guest_walkerEPT
+ 	#define FNAME(name) ept_##name
+-	#define PT_BASE_ADDR_MASK PT64_BASE_ADDR_MASK
++	#define PT_BASE_ADDR_MASK GUEST_PT64_BASE_ADDR_MASK
+ 	#define PT_LVL_ADDR_MASK(lvl) PT64_LVL_ADDR_MASK(lvl)
+ 	#define PT_LVL_OFFSET_MASK(lvl) PT64_LVL_OFFSET_MASK(lvl)
+ 	#define PT_INDEX(addr, level) PT64_INDEX(addr, level)
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -23,12 +23,6 @@
+ #else
+ #define PT64_BASE_ADDR_MASK (((1ULL << 52) - 1) & ~(u64)(PAGE_SIZE-1))
+ #endif
+-#define PT64_LVL_ADDR_MASK(level) \
+-	(PT64_BASE_ADDR_MASK & ~((1ULL << (PAGE_SHIFT + (((level) - 1) \
+-						* PT64_LEVEL_BITS))) - 1))
+-#define PT64_LVL_OFFSET_MASK(level) \
+-	(PT64_BASE_ADDR_MASK & ((1ULL << (PAGE_SHIFT + (((level) - 1) \
+-						* PT64_LEVEL_BITS))) - 1))
+ 
+ #define PT64_PERM_MASK (PT_PRESENT_MASK | PT_WRITABLE_MASK | shadow_user_mask \
+ 			| shadow_x_mask | shadow_nx_mask | shadow_me_mask)
 
 
