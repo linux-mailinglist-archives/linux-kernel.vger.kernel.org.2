@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A903CF0AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CAB3CF0AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377394AbhGSXfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 19:35:24 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:40622 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1392359AbhGSWGn (ORCPT
+        id S1378253AbhGSXhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:37:01 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:40710 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349383AbhGSWH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:06:43 -0400
-Received: by mail-io1-f44.google.com with SMTP id l5so21934172iok.7;
-        Mon, 19 Jul 2021 15:47:22 -0700 (PDT)
+        Mon, 19 Jul 2021 18:07:56 -0400
+Received: by mail-io1-f54.google.com with SMTP id l5so21935879iok.7;
+        Mon, 19 Jul 2021 15:48:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KvZduHEK4/JPd13AvRj7Dwo91+WDf4ZZkoTysoY/Z8c=;
-        b=C8ntqv2VbdZQLR0ghf46So1qeVVs/zRVH8+HvX8ekwXnt61iPsHBB5PdQz+bcMbrcI
-         t5CfL+MTiVz8ZEaEU/PCcG5dAOw8oh26hW7i4Ev0QpbdD8nc8We7weivWHB+rQfQqid6
-         t8Owmk+m4EwJoGKmugnSgn2HMnOvkT7kDORJedPE05ADZJaXzPLNTGSbYbQvChYrwp5u
-         Uck6PPyD/ZjfUEPNLEhO4cT6YjWfRwaEH+CXKvLj7PxzwK2c/2ymEH8vh9WzSk25Lxel
-         lid6a+Xrjva1u4IIkwp1x9HB1lz7ZuwxX2lq7zL1rNRFgXhwj/5EXcxQ8JTfDqVS0PJ2
-         3asA==
-X-Gm-Message-State: AOAM5321Z+feDVh/LHNpMVlc4jxBaLJ6ii/pEjd4E7BGuTQYqLmIAzJ9
-        caeKZBCNdHK1CW1TjYbc/w==
-X-Google-Smtp-Source: ABdhPJx2z9Xre7CdCLPouoO6dfskCrk/L/I3dMKprr4kx+Phkn3qCMvEw/eDabtuZvzFiQhg1hdthg==
-X-Received: by 2002:a6b:fe03:: with SMTP id x3mr1146470ioh.120.1626734842302;
-        Mon, 19 Jul 2021 15:47:22 -0700 (PDT)
+        bh=H+s1FDJ9EwBpkzI+GJ2O2JpJDnxLYii183SrSuO+Z9Q=;
+        b=dtEoXoCtREb3czbexVOw1AGQx6cB/jsFV2I81fAJiuHV+jYo6djKR3IPau5a7vVh4x
+         KdFrGd6nnZNQCSjuvFmrLwb1EXVP09w7zo+b+g4aTwlyDuJ38r+qZZozsL9ms93zRx/G
+         DEABxchHBkR7YE+aaCCEVpR5xmn7m8GWvELlKQD8eZw/yXF7iRYiwS0V3ZEdeNCcIw6o
+         Tc0wdbX+4QSWRPqn7Mf62QJdoRCcj1xansSWRTDZnINums5vl4xvEFvpZWtTbSJjkxPx
+         588OviQkJ6KrIAWjG2vcE7whbRS+HR6LeApZb/9ZWX1ZHgrrkC7faTGehU0den+9B1OM
+         OY+A==
+X-Gm-Message-State: AOAM532EFVKhKcBaOTZkccjsmfRNYKqGakayMBoMXrSt5qQYgGTViNy/
+        3wzu+opOw4Nj3MN30sf8vg==
+X-Google-Smtp-Source: ABdhPJyyAAbHjlBKXIRhGHRG8Vcao9f7aE9QjW/W+gSmpqk3LF8NcoieqQS9WPRPZeZvmJfv8Uqycw==
+X-Received: by 2002:a05:6602:198:: with SMTP id m24mr7802813ioo.144.1626734886835;
+        Mon, 19 Jul 2021 15:48:06 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id w10sm10283737ilo.17.2021.07.19.15.47.20
+        by smtp.gmail.com with ESMTPSA id v11sm10296671ilh.52.2021.07.19.15.48.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 15:47:21 -0700 (PDT)
-Received: (nullmailer pid 2767559 invoked by uid 1000);
-        Mon, 19 Jul 2021 22:47:18 -0000
-Date:   Mon, 19 Jul 2021 16:47:18 -0600
+        Mon, 19 Jul 2021 15:48:06 -0700 (PDT)
+Received: (nullmailer pid 2769072 invoked by uid 1000);
+        Mon, 19 Jul 2021 22:48:04 -0000
+Date:   Mon, 19 Jul 2021 16:48:04 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Chuanjia Liu <chuanjia.liu@mediatek.com>
-Cc:     linux-kernel@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        jianjun.wang@mediatek.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, bhelgaas@google.com,
-        ryder.lee@mediatek.com, robh+dt@kernel.org, matthias.bgg@gmail.com,
-        linux-pci@vger.kernel.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        devicetree@vger.kernel.org, yong.wu@mediatek.com
-Subject: Re: [PATCH v11 1/4] dt-bindings: PCI: mediatek: Update the Device
- tree bindings
-Message-ID: <20210719224718.GA2766057@robh.at.kernel.org>
-References: <20210719073456.28666-1-chuanjia.liu@mediatek.com>
- <20210719073456.28666-2-chuanjia.liu@mediatek.com>
+To:     Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     robh+dt@kernel.org, geert+renesas@glider.be,
+        mturquette@baylibre.com, linux-renesas-soc@vger.kernel.org,
+        david.cater.jc@renesas.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sboyd@kernel.org,
+        michal.simek@xilinx.com, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: Add binding for Renesas 8T49N241
+Message-ID: <20210719224804.GA2768983@robh.at.kernel.org>
+References: <20210719182001.1573-1-alexander.helms.jy@renesas.com>
+ <20210719182001.1573-2-alexander.helms.jy@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210719073456.28666-2-chuanjia.liu@mediatek.com>
+In-Reply-To: <20210719182001.1573-2-alexander.helms.jy@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 15:34:53 +0800, Chuanjia Liu wrote:
-> There are two independent PCIe controllers in MT2712 and MT7622
-> platform. Each of them should contain an independent MSI domain.
+On Mon, 19 Jul 2021 11:20:00 -0700, Alex Helms wrote:
+> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
+> The 8T49N241 accepts up to two differential or single-ended input clocks
+> and a fundamental-mode crystal input. The internal PLL can lock to either
+> of the input reference clocks or to the crystal to behave as a frequency
+> synthesizer.
 > 
-> In old dts architecture, MSI domain will be inherited from the root
-> bridge, and all of the devices will share the same MSI domain.
-> Hence that, the PCIe devices will not work properly if the irq number
-> which required is more than 32.
-> 
-> Split the PCIe node for MT2712 and MT7622 platform to comply with
-> the hardware design and fix MSI issue.
-> 
-> Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
 > ---
->  .../bindings/pci/mediatek-pcie-cfg.yaml       |  39 ++++
->  .../devicetree/bindings/pci/mediatek-pcie.txt | 206 ++++++++++--------
->  2 files changed, 150 insertions(+), 95 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/pci/mediatek-pcie-cfg.yaml
+>  .../bindings/clock/renesas,8t49n241.yaml      | 190 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 196 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
 > 
 
 
