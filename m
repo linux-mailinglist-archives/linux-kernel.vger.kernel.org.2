@@ -2,437 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299053CEDA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D7E3CEDA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357921AbhGSTR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:17:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28084 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1357659AbhGSSyx (ORCPT
+        id S1386210AbhGST0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1385345AbhGSS5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:54:53 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JJYOAD143360;
-        Mon, 19 Jul 2021 15:35:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=pqXKtbghbMmf3w30LRhE86ngmSMhfRpwYwu99K3exj8=;
- b=JqoAHktx0TUG9A8Zpq5oFl9QwnqbYSddDws+LQS5QIIsXsAIPSBM+0GHjTZnKb3J8Bz5
- 8po6EX+4tMXjjYDTXM5qqwUpOYtrnhyCAE+l3H+OlTVohFIDXOCt2x85AvzdsQYptiEe
- 9sze+TyqWza2aS2JI2cqOnM95E8Jd5NtpG59UDhrwUHLehBQz4dMQvpdbydNqCrdaNIs
- 5yXkaLPWBakOcKWxLkPSOpdF70JZjvLbdsC5CfjckU4btfWvyaYojWU3iaGby8zyMwvT
- sc9P8CDa1Rmc7f7SUtolhOjAl0bhumwvLweZEHhwhIKNVN5APpQ5dYVxP8KvGxDixexj Iw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39wegna56u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Jul 2021 15:35:09 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16JJZ9hp147260;
-        Mon, 19 Jul 2021 15:35:09 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39wegna565-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Jul 2021 15:35:09 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16JJRZdS016043;
-        Mon, 19 Jul 2021 19:35:08 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma05wdc.us.ibm.com with ESMTP id 39upuajb8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Jul 2021 19:35:08 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16JJZ7G031719716
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Jul 2021 19:35:07 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B301B112065;
-        Mon, 19 Jul 2021 19:35:07 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93F3D112061;
-        Mon, 19 Jul 2021 19:35:06 +0000 (GMT)
-Received: from fedora.ibmuc.com (unknown [9.85.184.30])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 19 Jul 2021 19:35:06 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-Subject: [PATCH 2/2] s390/vfio-ap: replace open coded locks for VFIO_GROUP_NOTIFY_SET_KVM notification
-Date:   Mon, 19 Jul 2021 15:35:03 -0400
-Message-Id: <20210719193503.793910-3-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210719193503.793910-1-akrowiak@linux.ibm.com>
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+        Mon, 19 Jul 2021 14:57:50 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF737C0613A8
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:28:02 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id a132so11139545oib.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AsVttpaIz6o+7rFOVPCQbe/BzglpTdJrFiNYOm9U9B4=;
+        b=xwBMdYLctnwna9IrwiJvv/IFdbPquUVCJaJF02XKLjARg7WlxJB/ZVtGmpR6HAwm0B
+         DAlHudRafT5FK7eCPyfAYclwILvV18U9HWuu2hZRtoN9T+Bw77VtgScRYrx1vCdYlljg
+         Iwkn0CtuZQHomiyQ0XeFefYfEq8KrIE0MKe0xvF9Tk4uob+ziMZ5iANeS3APKqwZTqBL
+         TOTExV4mKvdgaUSAOiUfnI2rc3QQ2HFMHuiK4+BzFBTfRyzhtilJeMf7h/0DDv2p1abI
+         MmF7SoQw7rmLOEZyWTtQUX/prQbprT9Gvc3gUPlbBtx+ehl7grqisfervRPvs/PmOmMX
+         ijQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AsVttpaIz6o+7rFOVPCQbe/BzglpTdJrFiNYOm9U9B4=;
+        b=eGe0u0xmd4FX027vypi5X24hNj90KkxnwofXEQ2rZHGwJF/sbJ7/4/y5PxD2Nmwrau
+         H7nX6CyawCDpphpgYVCuHuzKnq/Vy6n1xJzZXIuY+Ey0dH7ejC4s6pyJOpFmxyUPOgV3
+         TYRaZ0yjfntpEImoWxBaeyxdPGSR/kohZWFV9zVmHBeffVRnG76b/RFIHNPZ/lYrpBcv
+         Qr776EQMb6Y5xJnfZR4W37DLDdTjShOPJKaBM4vuVZgvv883dvueqTlQDu0R0qbForlb
+         e8qIKDkq9toqdPw2qsU1OsUfcWbvxGL/Ag+ALm1XSpCyV2u7ves78hxHOptdPVsHdVyH
+         tZfQ==
+X-Gm-Message-State: AOAM530I4SolPKyGrwLrGNUq8yoZ3BfFALZe3IAJ88ByXNdjH7WsL07z
+        f1S2iKanLy+5YL/wS6CVPK6pOA==
+X-Google-Smtp-Source: ABdhPJyja+h2hxOE+bpleMjs4kTNsVmCuEisdwIwTMDk7g7JkvErSsBCBiNgF7ZV7Ud5r3tIKV98WQ==
+X-Received: by 2002:aca:4406:: with SMTP id r6mr13822205oia.50.1626723365906;
+        Mon, 19 Jul 2021 12:36:05 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c8sm820849oto.17.2021.07.19.12.36.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 12:36:05 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 14:36:03 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
+ as a permenent module
+Message-ID: <YPXUI0VzpxYO56BU@yoga>
+References: <20210707045320.529186-1-john.stultz@linaro.org>
+ <YPJkF21ItYlKODyq@yoga>
+ <CALAqxLUzTNiA7u=4_y9pkrh=Q_+vpPgFrhf_6F8-U0XPQU9crQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OXFR4Jagve8VTtBtzgo7NJYaWmVdMQa4
-X-Proofpoint-ORIG-GUID: Ov19bRVWx8f9IhY9ON2iESbe4ZlWVSEV
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-19_09:2021-07-19,2021-07-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 clxscore=1015 priorityscore=1501 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107190111
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALAqxLUzTNiA7u=4_y9pkrh=Q_+vpPgFrhf_6F8-U0XPQU9crQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was pointed out during an unrelated patch review that locks should not
-be open coded - i.e., writing the algorithm of a standard lock in a
-function instead of using a lock from the standard library. The setting and
-testing of a busy flag and sleeping on a wait_event is the same thing
-a lock does. The open coded locks are invisible to lockdep, so potential
-locking problems are not detected.
+On Mon 19 Jul 14:00 CDT 2021, John Stultz wrote:
 
-This patch removes the open coded locks used during
-VFIO_GROUP_NOTIFY_SET_KVM notification. The busy flag
-and wait queue were introduced to resolve a possible circular locking
-dependency reported by lockdep when starting a secure execution guest
-configured with AP adapters and domains. Reversing the order in which
-the kvm->lock mutex and matrix_dev->lock mutex are locked resolves the
-issue reported by lockdep, thus enabling the removal of the open coded
-locks.
+> On Fri, Jul 16, 2021 at 10:01 PM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> > On Tue 06 Jul 23:53 CDT 2021, John Stultz wrote:
+> > > Allow the qcom_scm driver to be loadable as a permenent module.
+> > >
+> > > This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
+> > > ensure that drivers that call into the qcom_scm driver are
+> > > also built as modules. While not ideal in some cases its the
+> > > only safe way I can find to avoid build errors without having
+> > > those drivers select QCOM_SCM and have to force it on (as
+> > > QCOM_SCM=n can be valid for those drivers).
+> > >
+> > > Reviving this now that Saravana's fw_devlink defaults to on,
+> > > which should avoid loading troubles seen before.
+> > >
+> >
+> > Are you (in this last paragraph) saying that all those who have been
+> > burnt by fw_devlink during the last months and therefor run with it
+> > disabled will have a less fun experience once this is merged?
+> >
+> 
+> I guess potentially. So way back when this was originally submitted,
+> some folks had trouble booting if it was set as a module due to it
+> loading due to the deferred_probe_timeout expiring.
+> My attempts to change the default timeout value to be larger ran into
+> trouble, but Saravana's fw_devlink does manage to resolve things
+> properly for this case.
+> 
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
----
- arch/s390/kvm/kvm-s390.c              |  27 +++++-
- drivers/s390/crypto/vfio_ap_ops.c     | 132 ++++++++------------------
- drivers/s390/crypto/vfio_ap_private.h |   2 -
- 3 files changed, 63 insertions(+), 98 deletions(-)
+Unfortunately I see really weird things coming out of that, e.g. display
+on my db845c is waiting for the USB hub on PCIe to load its firmware,
+which typically times out after 60 seconds.
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index a08f242a9f27..4d2ef3a3286e 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -2559,12 +2559,24 @@ static void kvm_s390_set_crycb_format(struct kvm *kvm)
- 		kvm->arch.crypto.crycbd |= CRYCB_FORMAT1;
- }
- 
-+/*
-+ * kvm_arch_crypto_set_masks
-+ *
-+ * @kvm: a pointer to the object containing the crypto masks
-+ * @apm: the mask identifying the accessible AP adapters
-+ * @aqm: the mask identifying the accessible AP domains
-+ * @adm: the mask identifying the accessible AP control domains
-+ *
-+ * Set the masks that identify the adapters, domains and control domains to
-+ * which the KVM guest is granted access.
-+ *
-+ * Note: The kvm->lock mutex must be locked by the caller.
-+ */
- void kvm_arch_crypto_set_masks(struct kvm *kvm, unsigned long *apm,
- 			       unsigned long *aqm, unsigned long *adm)
- {
- 	struct kvm_s390_crypto_cb *crycb = kvm->arch.crypto.crycb;
- 
--	mutex_lock(&kvm->lock);
- 	kvm_s390_vcpu_block_all(kvm);
- 
- 	switch (kvm->arch.crypto.crycbd & CRYCB_FORMAT_MASK) {
-@@ -2595,13 +2607,21 @@ void kvm_arch_crypto_set_masks(struct kvm *kvm, unsigned long *apm,
- 	/* recreate the shadow crycb for each vcpu */
- 	kvm_s390_sync_request_broadcast(kvm, KVM_REQ_VSIE_RESTART);
- 	kvm_s390_vcpu_unblock_all(kvm);
--	mutex_unlock(&kvm->lock);
- }
- EXPORT_SYMBOL_GPL(kvm_arch_crypto_set_masks);
- 
-+/*
-+ * kvm_arch_crypto_set_masks
-+ *
-+ * @kvm: a pointer to the object containing the crypto masks
-+ *
-+ * Clear the masks that identify the adapters, domains and control domains to
-+ * which the KVM guest is granted access.
-+ *
-+ * Note: The kvm->lock mutex must be locked by the caller.
-+ */
- void kvm_arch_crypto_clear_masks(struct kvm *kvm)
- {
--	mutex_lock(&kvm->lock);
- 	kvm_s390_vcpu_block_all(kvm);
- 
- 	memset(&kvm->arch.crypto.crycb->apcb0, 0,
-@@ -2613,7 +2633,6 @@ void kvm_arch_crypto_clear_masks(struct kvm *kvm)
- 	/* recreate the shadow crycb for each vcpu */
- 	kvm_s390_sync_request_broadcast(kvm, KVM_REQ_VSIE_RESTART);
- 	kvm_s390_vcpu_unblock_all(kvm);
--	mutex_unlock(&kvm->lock);
- }
- EXPORT_SYMBOL_GPL(kvm_arch_crypto_clear_masks);
- 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 742277bc8d1c..a9c041d3b95f 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -294,15 +294,6 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
- 				   struct ap_matrix_mdev, pqap_hook);
- 
--	/*
--	 * If the KVM pointer is in the process of being set, wait until the
--	 * process has completed.
--	 */
--	wait_event_cmd(matrix_mdev->wait_for_kvm,
--		       !matrix_mdev->kvm_busy,
--		       mutex_unlock(&matrix_dev->lock),
--		       mutex_lock(&matrix_dev->lock));
--
- 	/* If the there is no guest using the mdev, there is nothing to do */
- 	if (!matrix_mdev->kvm)
- 		goto out_unlock;
-@@ -350,7 +341,6 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
- 
- 	matrix_mdev->mdev = mdev;
- 	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
--	init_waitqueue_head(&matrix_mdev->wait_for_kvm);
- 	mdev_set_drvdata(mdev, matrix_mdev);
- 	matrix_mdev->pqap_hook = handle_pqap;
- 	mutex_lock(&matrix_dev->lock);
-@@ -619,11 +609,8 @@ static ssize_t assign_adapter_store(struct device *dev,
- 
- 	mutex_lock(&matrix_dev->lock);
- 
--	/*
--	 * If the KVM pointer is in flux or the guest is running, disallow
--	 * un-assignment of adapter
--	 */
--	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-+	/* If the KVM guest is running, disallow assignment of adapter */
-+	if (matrix_mdev->kvm) {
- 		ret = -EBUSY;
- 		goto done;
- 	}
-@@ -692,11 +679,8 @@ static ssize_t unassign_adapter_store(struct device *dev,
- 
- 	mutex_lock(&matrix_dev->lock);
- 
--	/*
--	 * If the KVM pointer is in flux or the guest is running, disallow
--	 * un-assignment of adapter
--	 */
--	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-+	/* If the KVM guest is running, disallow unassignment of adapter */
-+	if (matrix_mdev->kvm) {
- 		ret = -EBUSY;
- 		goto done;
- 	}
-@@ -782,11 +766,8 @@ static ssize_t assign_domain_store(struct device *dev,
- 
- 	mutex_lock(&matrix_dev->lock);
- 
--	/*
--	 * If the KVM pointer is in flux or the guest is running, disallow
--	 * assignment of domain
--	 */
--	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-+	/* If the KVM guest is running, disallow assignment of domain */
-+	if (matrix_mdev->kvm) {
- 		ret = -EBUSY;
- 		goto done;
- 	}
-@@ -850,11 +831,8 @@ static ssize_t unassign_domain_store(struct device *dev,
- 
- 	mutex_lock(&matrix_dev->lock);
- 
--	/*
--	 * If the KVM pointer is in flux or the guest is running, disallow
--	 * un-assignment of domain
--	 */
--	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-+	/* If the KVM guest is running, disallow unassignment of domain */
-+	if (matrix_mdev->kvm) {
- 		ret = -EBUSY;
- 		goto done;
- 	}
-@@ -904,11 +882,8 @@ static ssize_t assign_control_domain_store(struct device *dev,
- 
- 	mutex_lock(&matrix_dev->lock);
- 
--	/*
--	 * If the KVM pointer is in flux or the guest is running, disallow
--	 * assignment of control domain.
--	 */
--	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-+	/* If the KVM guest is running, disallow assignment of control domain */
-+	if (matrix_mdev->kvm) {
- 		ret = -EBUSY;
- 		goto done;
- 	}
-@@ -963,11 +938,8 @@ static ssize_t unassign_control_domain_store(struct device *dev,
- 
- 	mutex_lock(&matrix_dev->lock);
- 
--	/*
--	 * If the KVM pointer is in flux or the guest is running, disallow
--	 * un-assignment of control domain.
--	 */
--	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-+	/* If a KVM guest is running, disallow unassignment of control domain */
-+	if (matrix_mdev->kvm) {
- 		ret = -EBUSY;
- 		goto done;
- 	}
-@@ -1108,28 +1080,30 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
- 	struct ap_matrix_mdev *m;
- 
- 	if (kvm->arch.crypto.crycbd) {
-+		down_write(&kvm->arch.crypto.pqap_hook_rwsem);
-+		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-+		up_write(&kvm->arch.crypto.pqap_hook_rwsem);
-+
-+		mutex_lock(&kvm->lock);
-+		mutex_lock(&matrix_dev->lock);
-+
- 		list_for_each_entry(m, &matrix_dev->mdev_list, node) {
--			if (m != matrix_mdev && m->kvm == kvm)
-+			if (m != matrix_mdev && m->kvm == kvm) {
-+				mutex_unlock(&kvm->lock);
-+				mutex_unlock(&matrix_dev->lock);
- 				return -EPERM;
-+			}
- 		}
- 
- 		kvm_get_kvm(kvm);
- 		matrix_mdev->kvm = kvm;
--		matrix_mdev->kvm_busy = true;
--		mutex_unlock(&matrix_dev->lock);
--
--		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
--		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
--		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
--
- 		kvm_arch_crypto_set_masks(kvm,
- 					  matrix_mdev->matrix.apm,
- 					  matrix_mdev->matrix.aqm,
- 					  matrix_mdev->matrix.adm);
- 
--		mutex_lock(&matrix_dev->lock);
--		matrix_mdev->kvm_busy = false;
--		wake_up_all(&matrix_mdev->wait_for_kvm);
-+		mutex_unlock(&kvm->lock);
-+		mutex_unlock(&matrix_dev->lock);
- 	}
- 
- 	return 0;
-@@ -1179,35 +1153,24 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
-  * done under the @matrix_mdev->lock.
-  *
-  */
--static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
-+static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev,
-+				   struct kvm *kvm)
- {
--	/*
--	 * If the KVM pointer is in the process of being set, wait until the
--	 * process has completed.
--	 */
--	wait_event_cmd(matrix_mdev->wait_for_kvm,
--		       !matrix_mdev->kvm_busy,
--		       mutex_unlock(&matrix_dev->lock),
--		       mutex_lock(&matrix_dev->lock));
--
--	if (matrix_mdev->kvm) {
--		matrix_mdev->kvm_busy = true;
--		mutex_unlock(&matrix_dev->lock);
--
--		if (matrix_mdev->kvm->arch.crypto.crycbd) {
--			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
--			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
--			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
--
--			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
--		}
-+	if (kvm->arch.crypto.crycbd) {
-+		down_write(&kvm->arch.crypto.pqap_hook_rwsem);
-+		kvm->arch.crypto.pqap_hook = NULL;
-+		up_write(&kvm->arch.crypto.pqap_hook_rwsem);
- 
-+		mutex_lock(&kvm->lock);
- 		mutex_lock(&matrix_dev->lock);
-+
-+		kvm_arch_crypto_clear_masks(kvm);
- 		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
--		kvm_put_kvm(matrix_mdev->kvm);
-+		kvm_put_kvm(kvm);
- 		matrix_mdev->kvm = NULL;
--		matrix_mdev->kvm_busy = false;
--		wake_up_all(&matrix_mdev->wait_for_kvm);
-+
-+		mutex_unlock(&kvm->lock);
-+		mutex_unlock(&matrix_dev->lock);
- 	}
- }
- 
-@@ -1220,16 +1183,13 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
- 	if (action != VFIO_GROUP_NOTIFY_SET_KVM)
- 		return NOTIFY_OK;
- 
--	mutex_lock(&matrix_dev->lock);
- 	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
- 
- 	if (!data)
--		vfio_ap_mdev_unset_kvm(matrix_mdev);
-+		vfio_ap_mdev_unset_kvm(matrix_mdev, matrix_mdev->kvm);
- 	else if (vfio_ap_mdev_set_kvm(matrix_mdev, data))
- 		notify_rc = NOTIFY_DONE;
- 
--	mutex_unlock(&matrix_dev->lock);
--
- 	return notify_rc;
- }
- 
-@@ -1363,14 +1323,11 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
- {
- 	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
- 
--	mutex_lock(&matrix_dev->lock);
--	vfio_ap_mdev_unset_kvm(matrix_mdev);
--	mutex_unlock(&matrix_dev->lock);
--
- 	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
- 				 &matrix_mdev->iommu_notifier);
- 	vfio_unregister_notifier(mdev_dev(mdev), VFIO_GROUP_NOTIFY,
- 				 &matrix_mdev->group_notifier);
-+	vfio_ap_mdev_unset_kvm(matrix_mdev, matrix_mdev->kvm);
- 	module_put(THIS_MODULE);
- }
- 
-@@ -1412,15 +1369,6 @@ static ssize_t vfio_ap_mdev_ioctl(struct mdev_device *mdev,
- 			break;
- 		}
- 
--		/*
--		 * If the KVM pointer is in the process of being set, wait until
--		 * the process has completed.
--		 */
--		wait_event_cmd(matrix_mdev->wait_for_kvm,
--			       !matrix_mdev->kvm_busy,
--			       mutex_unlock(&matrix_dev->lock),
--			       mutex_lock(&matrix_dev->lock));
--
- 		ret = vfio_ap_mdev_reset_queues(mdev);
- 		break;
- 	default:
-diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-index e12218e5a629..22d2e0ca3ae5 100644
---- a/drivers/s390/crypto/vfio_ap_private.h
-+++ b/drivers/s390/crypto/vfio_ap_private.h
-@@ -83,8 +83,6 @@ struct ap_matrix_mdev {
- 	struct ap_matrix matrix;
- 	struct notifier_block group_notifier;
- 	struct notifier_block iommu_notifier;
--	bool kvm_busy;
--	wait_queue_head_t wait_for_kvm;
- 	struct kvm *kvm;
- 	crypto_hook pqap_hook;
- 	struct mdev_device *mdev;
--- 
-2.30.2
+I've stared at it quite a bit and I don't understand how they are
+related.
 
+> But if folks are having issues w/ fw_devlink, and have it disabled,
+> and set QCOM_SCM=m they could still trip over the issue with the
+> timeout firing before it is loaded (especially if they are loading
+> modules from late mounted storage rather than ramdisk).
+> 
+
+I guess we'll have to force QCOM_SCM=y in the defconfig and hope people
+don't make it =m.
+
+> > (I'm picking this up, but I don't fancy the idea that some people are
+> > turning the boot process into a lottery)
+> 
+> Me neither, and I definitely think the deferred_probe_timeout logic is
+> way too fragile, which is why I'm eager for fw_devlink as it's a much
+> less racy approach to handling module loading dependencies.
+
+Right, deferred_probe_timeout is the main issue here. Without it we
+might get some weird probe deferral runs, but either some driver is
+missing or it settles eventually.
+
+With deferred_probe_timeout it's rather common for me to see things
+end up probe out of order (even more now with fw_devlink finding cyclic
+dependencies) and deferred_probe_timeout just breaking things.
+
+> So if you
+> want to hold on this, while any remaining fw_devlink issues get
+> sorted, that's fine.  But I'd also not cast too much ire at
+> fw_devlink, as the global probe timeout approach for handling optional
+> links isn't great, and we need a better solution.
+> 
+
+There's no end to the possible and valid ways you can setup your
+defconfig and run into the probe deferral issues, so I see no point in
+holding this one back any longer. I just hope that one day it will be
+possible to boot the upstream kernel in a reliable fashion.
+
+Thanks,
+Bjorn
