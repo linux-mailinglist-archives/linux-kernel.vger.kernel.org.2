@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE203CE939
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5CF3CE930
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357491AbhGSQvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:51:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37554 "EHLO mail.kernel.org"
+        id S1357312AbhGSQva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:51:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348021AbhGSPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91018613D4;
-        Mon, 19 Jul 2021 16:00:46 +0000 (UTC)
+        id S1348025AbhGSPYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7194613E3;
+        Mon, 19 Jul 2021 16:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710447;
-        bh=dQ6jBxel0zs8R32fG0TfjmV0geTMvOiuEXZIOSy8qzA=;
+        s=korg; t=1626710449;
+        bh=AMxmgdId/9AKJ7yXKxtlwCtKNpkb7gJja9f7Czjvff0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fAZqAprbkCwla8KQLeLU5JNDWRlD19dDzJz+d/9NKL3BitDjjP1sHISMN7Kxspmrd
-         +GmlUzvX/63Pecj2z0fx4EhxW6V3if5LRar+IXLJQH3WYxb/FrY75131fO4zC50/+v
-         Ta3e0iSpImoznqkkiv4yOxMntl+L1iyteFf0q9mA=
+        b=dnb96BVV+1LtDB3buDz/VFBMMOYVDMChOszjx91dftfW762heU1xt34zH4NQY5pSn
+         Ov2fGVFvqr1RkvoAXBiSpOF84dD6VtTi/DxSrmmkKo7v4dxCGR2jM+Hp70pPxbKPYe
+         oAxm0nEu8JL9NtSe5kPwR4vNtwcUbrrf+BniDI20=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 186/243] ARM: dts: gemini-rut1xx: remove duplicate ethernet node
-Date:   Mon, 19 Jul 2021 16:53:35 +0200
-Message-Id: <20210719144946.926265662@linuxfoundation.org>
+Subject: [PATCH 5.10 187/243] reset: RESET_BRCMSTB_RESCAL should depend on ARCH_BRCMSTB
+Date:   Mon, 19 Jul 2021 16:53:36 +0200
+Message-Id: <20210719144946.958150385@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,47 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 3d3bb3d27cd371d3edb43eeb1beb8ae4e92a356d ]
+[ Upstream commit 42f6a76fbe85e5243f83a3ed76809b1ebbb7087e ]
 
-Two ethernet node was added by
-commit 95220046a62c ("ARM: dts: Add ethernet to a bunch of platforms")
-and commit d6d0cef55e5b ("ARM: dts: Add the FOTG210 USB host to Gemini boards")
+The Broadcom STB RESCAL reset controller is only present on Broadcom
+BCM7216 platforms.  Hence add a dependency on ARCH_BRCMSTB, to prevent
+asking the user about this driver when configuring a kernel without
+BCM7216 support.
 
-This patch removes the duplicate one.
+Also, merely enabling CONFIG_COMPILE_TEST should not enable additional
+code, and thus should not enable this driver by default.
 
-Fixes: d6d0cef55e5b ("ARM: dts: Add the FOTG210 USB host to Gemini boards")
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 4cf176e52397853e ("reset: Add Broadcom STB RESCAL reset controller")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/gemini-rut1xx.dts | 12 ------------
- 1 file changed, 12 deletions(-)
+ drivers/reset/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/gemini-rut1xx.dts b/arch/arm/boot/dts/gemini-rut1xx.dts
-index 9611ddf06792..08091d2a64e1 100644
---- a/arch/arm/boot/dts/gemini-rut1xx.dts
-+++ b/arch/arm/boot/dts/gemini-rut1xx.dts
-@@ -125,18 +125,6 @@
- 			};
- 		};
- 
--		ethernet@60000000 {
--			status = "okay";
--
--			ethernet-port@0 {
--				phy-mode = "rgmii";
--				phy-handle = <&phy0>;
--			};
--			ethernet-port@1 {
--				/* Not used in this platform */
--			};
--		};
--
- 		usb@68000000 {
- 			status = "okay";
- 		};
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index 07d162b179fc..b1d7369218e8 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -52,7 +52,8 @@ config RESET_BRCMSTB
+ config RESET_BRCMSTB_RESCAL
+ 	bool "Broadcom STB RESCAL reset controller"
+ 	depends on HAS_IOMEM
+-	default ARCH_BRCMSTB || COMPILE_TEST
++	depends on ARCH_BRCMSTB || COMPILE_TEST
++	default ARCH_BRCMSTB
+ 	help
+ 	  This enables the RESCAL reset controller for SATA, PCIe0, or PCIe1 on
+ 	  BCM7216.
 -- 
 2.30.2
 
