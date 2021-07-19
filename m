@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72F83CD885
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4493F3CD874
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242998AbhGSOWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
+        id S242898AbhGSOW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:22:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242710AbhGSOUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242712AbhGSOUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:20:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27FC360551;
-        Mon, 19 Jul 2021 15:01:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3C956008E;
+        Mon, 19 Jul 2021 15:01:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706868;
-        bh=bQ6o2NIi3EfTjmaHCOFG+RzRJtr0dJpoXEu17KBfHcQ=;
+        s=korg; t=1626706871;
+        bh=n6nmUqmdKxTKnLhFD5LYShrjOaP+9FEZWtPmKcV9p/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJYHvaY2i6bkkBWy4LHKl/jcCPZM/8NlCqeTaq/T1shIJ72N9qb/NAUc68PZKaQ5i
-         +YROnSnFr7OxSWuyMIasz5gOokLc5TJKeggMFyLdj4fAFS3oqyxl0TiltvYdT2OqUO
-         8LlZVClu4Sq/Qj0Gb4x6i5qSFRU918Mm3b2gxj9k=
+        b=GrrSU4S8DMffHpcBxgUN2Y4+Rz8NACR0+VGcWgbFlTGWMaFQD85Tr6APKDoy9sQLu
+         LgBeG5PQWcb3f5ukApZTm03voab7V9kNj2FohoC5C3jxRmPVb7xbflpC9QHkd9C9tr
+         gGi1y8VinTZZAy2ufBhckg0o1APhWg+S3NCaXJfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 4.4 132/188] power: supply: ab8500: Fix an old bug
-Date:   Mon, 19 Jul 2021 16:51:56 +0200
-Message-Id: <20210719144940.808576241@linuxfoundation.org>
+        stable@vger.kernel.org, Yun Zhou <yun.zhou@windriver.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.4 133/188] seq_buf: Fix overflow in seq_buf_putmem_hex()
+Date:   Mon, 19 Jul 2021 16:51:57 +0200
+Message-Id: <20210719144940.838941988@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -41,38 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Yun Zhou <yun.zhou@windriver.com>
 
-commit f1c74a6c07e76fcb31a4bcc1f437c4361a2674ce upstream.
+commit d3b16034a24a112bb83aeb669ac5b9b01f744bb7 upstream.
 
-Trying to get the AB8500 charging driver working I ran into a bit
-of bitrot: we haven't used the driver for a while so errors in
-refactorings won't be noticed.
+There's two variables being increased in that loop (i and j), and i
+follows the raw data, and j follows what is being written into the buffer.
+We should compare 'i' to MAX_MEMHEX_BYTES or compare 'j' to HEX_CHARS.
+Otherwise, if 'j' goes bigger than HEX_CHARS, it will overflow the
+destination buffer.
 
-This one is pretty self evident: use argument to the macro or we
-end up with a random pointer to something else.
+Link: https://lore.kernel.org/lkml/20210625122453.5e2fe304@oasis.local.home/
+Link: https://lkml.kernel.org/r/20210626032156.47889-1-yun.zhou@windriver.com
 
 Cc: stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Marcus Cooper <codekipper@gmail.com>
-Fixes: 297d716f6260 ("power_supply: Change ownership from driver to core")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: 5e3ca0ec76fce ("ftrace: introduce the "hex" output method")
+Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/mfd/abx500/ux500_chargalg.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/seq_buf.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/include/linux/mfd/abx500/ux500_chargalg.h
-+++ b/include/linux/mfd/abx500/ux500_chargalg.h
-@@ -15,7 +15,7 @@
-  * - POWER_SUPPLY_TYPE_USB,
-  * because only them store as drv_data pointer to struct ux500_charger.
-  */
--#define psy_to_ux500_charger(x) power_supply_get_drvdata(psy)
-+#define psy_to_ux500_charger(x) power_supply_get_drvdata(x)
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -227,8 +227,10 @@ int seq_buf_putmem_hex(struct seq_buf *s
  
- /* Forward declaration */
- struct ux500_charger;
+ 	WARN_ON(s->size == 0);
+ 
++	BUILD_BUG_ON(MAX_MEMHEX_BYTES * 2 >= HEX_CHARS);
++
+ 	while (len) {
+-		start_len = min(len, HEX_CHARS - 1);
++		start_len = min(len, MAX_MEMHEX_BYTES);
+ #ifdef __BIG_ENDIAN
+ 		for (i = 0, j = 0; i < start_len; i++) {
+ #else
 
 
