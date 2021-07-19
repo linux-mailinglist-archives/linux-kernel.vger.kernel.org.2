@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2F73CD570
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CEE3CD57C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237132AbhGSMY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 08:24:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236883AbhGSMYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 08:24:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF97D610A5;
-        Mon, 19 Jul 2021 13:05:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626699905;
-        bh=35IH1Be/xn27F8mXBOPo5R8WaCBnv5MW7j4hM992ZeU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=onoAm0NSVStQeP9V4wR6k8eqWvO+KFUNnqtYFgRjuMLbse6Or2MUtp13xliIfe1qk
-         YEO/YIMZ9PAd3PDh9IHJHSZJ4GPoXzRkn+VC2DvhrbCM7WeN/Ta2k3GeMGbM67RtZV
-         qojNHhN5gTjV5jrCbHL+ZEJrkuPXOgdchTbUWM88=
-Date:   Mon, 19 Jul 2021 15:05:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Xiaotian Feng <xtfeng@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        kernel test robot <lkp@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 5.12 237/242] drm/ast: Remove reference to struct
- drm_device.pdev
-Message-ID: <YPV4fkUjqWcqhrRY@kroah.com>
-References: <20210715182551.731989182@linuxfoundation.org>
- <20210715182634.577299401@linuxfoundation.org>
- <CAJn8CcF+gfXToErpZv=pWmBKF-i--oVWmaM=6AQ8YZCb21X=oA@mail.gmail.com>
- <YPVgtybrZLxe3XeW@kroah.com>
- <CAJn8CcHHKSo7GF29Z1ufXJJpMUzn6+fdvwiqe9=JvgpcfvnbHQ@mail.gmail.com>
+        id S237178AbhGSM0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 08:26:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34405 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236935AbhGSM0m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 08:26:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626700042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=htLWUl9ptDYSCDmTTDEtd9WdgLa8oSPYzBBixivS3+w=;
+        b=UW9gD4QoFfaFK1+y7oVeHrA25a/zGUCq0FyabvhAfIiIuESlv5548hijX9NAYdj0lrL83j
+        fseBvMJR+QSabgzNvFqOZEY+tZH7tRO/cGYoMtSJ5iUdxpi5Rtc96TnwctMYQuieOj38il
+        Ge3y2MNOYH8PVe10COrEFt3oDMF+psU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-gD8EUaYAPV-gS68Nz1JOXQ-1; Mon, 19 Jul 2021 09:07:21 -0400
+X-MC-Unique: gD8EUaYAPV-gS68Nz1JOXQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 749BF362FF;
+        Mon, 19 Jul 2021 13:07:19 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 468DA5D6A1;
+        Mon, 19 Jul 2021 13:07:14 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
+Subject: [PATCH v3 00/12] mm/debug_vm_pgtable: Enhancements
+Date:   Mon, 19 Jul 2021 21:06:01 +0800
+Message-Id: <20210719130613.334901-1-gshan@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJn8CcHHKSo7GF29Z1ufXJJpMUzn6+fdvwiqe9=JvgpcfvnbHQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 07:43:39PM +0800, Xiaotian Feng wrote:
-> On Mon, Jul 19, 2021 at 7:23 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Jul 19, 2021 at 05:57:30PM +0800, Xiaotian Feng wrote:
-> > > On Fri, Jul 16, 2021 at 5:13 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > From: Thomas Zimmermann <tzimmermann@suse.de>
-> > > >
-> > > > commit 0ecb51824e838372e01330752503ddf9c0430ef7 upstream.
-> > > >
-> > > > Using struct drm_device.pdev is deprecated. Upcast with to_pci_dev()
-> > > > from struct drm_device.dev to get the PCI device structure.
-> > > >
-> > > > v9:
-> > > >         * fix remaining pdev references
-> > > >
-> > > > Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> > > > Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> > > > Fixes: ba4e0339a6a3 ("drm/ast: Fixed CVE for DP501")
-> > > > Cc: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-> > > > Cc: kernel test robot <lkp@intel.com>
-> > > > Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> > > > Cc: Dave Airlie <airlied@redhat.com>
-> > > > Cc: dri-devel@lists.freedesktop.org
-> > > > Link: https://patchwork.freedesktop.org/patch/msgid/20210429105101.25667-2-tzimmermann@suse.de
-> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > ---
-> > > >  drivers/gpu/drm/ast/ast_main.c |    5 ++---
-> > > >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > > >
-> > > > --- a/drivers/gpu/drm/ast/ast_main.c
-> > > > +++ b/drivers/gpu/drm/ast/ast_main.c
-> > > > @@ -411,7 +411,6 @@ struct ast_private *ast_device_create(co
-> > > >                 return ast;
-> > > >         dev = &ast->base;
-> > > >
-> > > > -       dev->pdev = pdev;
-> > > >         pci_set_drvdata(pdev, dev);
-> > > >
-> > > >         ast->regs = pcim_iomap(pdev, 1, 0);
-> > > > @@ -453,8 +452,8 @@ struct ast_private *ast_device_create(co
-> > > >
-> > > >         /* map reserved buffer */
-> > > >         ast->dp501_fw_buf = NULL;
-> > > > -       if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
-> > > > -               ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
-> > > > +       if (dev->vram_mm->vram_size < pci_resource_len(pdev, 0)) {
-> > > > +               ast->dp501_fw_buf = pci_iomap_range(pdev, 0, dev->vram_mm->vram_size, 0);
-> > > >                 if (!ast->dp501_fw_buf)
-> > > >                         drm_info(dev, "failed to map reserved buffer!\n");
-> > > >         }
-> > > >
-> > >
-> > > Hi Greg,
-> > >
-> > >      This backport is incomplete for 5.10 kernel,  kernel is panicked
-> > > on RIP: ast_device_create+0x7d.  When I look into the crash code, I
-> > > found
-> > >
-> > > struct ast_private *ast_device_create(struct drm_driver *drv,
-> > >                                       struct pci_dev *pdev,
-> > >                                       unsigned long flags)
-> > > {
-> > > .......
-> > >         dev->pdev = pdev;  // This is removed
-> > >         pci_set_drvdata(pdev, dev);
-> > >
-> > >         ast->regs = pcim_iomap(pdev, 1, 0);
-> > >         if (!ast->regs)
-> > >                 return ERR_PTR(-EIO);
-> > >
-> > >         /*
-> > >          * If we don't have IO space at all, use MMIO now and
-> > >          * assume the chip has MMIO enabled by default (rev 0x20
-> > >          * and higher).
-> > >          */
-> > >         if (!(pci_resource_flags(dev->pdev, 2) & IORESOURCE_IO)) { //
-> > > dev->pdev is in used here.
-> > >                 drm_info(dev, "platform has no IO space, trying MMIO\n");
-> > >                 ast->ioregs = ast->regs + AST_IO_MM_OFFSET;
-> > >         }
-> > >
-> > >         That's because commit 46fb883c3d0d8a823ef995ddb1f9b0817dea6882
-> > > is not backported to 5.10 kernel.
-> >
-> > So what should I do here?  Backport that commit (was was not called
-> > out), or just revert this?
-> >
-> I think we can just simply revert the patch. Because commit 46fb883c
-> removed drm_device.pdev usage,
-> then commit ba4e0339 used drm_device.pdev again. Since commit 46fb883c
-> is not in 5.10.50 kernel,
-> it's not a stable fix.
+There are couple of issues with current implementations and this series
+tries to resolve the issues:
 
-Now qropped, thanks.
+  (a) All needed information are scattered in variables, passed to various
+      test functions. The code is organized in pretty much relaxed fashion.
 
-greg k-h
+  (b) The page isn't allocated from buddy during page table entry modifying
+      tests. The page can be invalid, conflicting to the implementations
+      of set_xxx_at() on ARM64. The target page is accessed so that the iCache
+      can be flushed when execution permission is given on ARM64. Besides,
+      the target page can be unmapped and access to it causes kernel crash.
+
+"struct pgtable_debug_args" is introduced to address issue (a). For issue
+(b), the used page is allocated from buddy in page table entry modifying
+tests. The corresponding tets will be skipped if we fail to allocate the
+(huge) page. For other test cases, the original page around to kernel
+symbol (@start_kernel) is still used.
+
+The patches are organized as below. PATCH[2-10] could be combined to one
+patch, but it will make the review harder:
+
+  PATCH[1] introduces "struct pgtable_debug_args" as place holder of all
+           needed information. With it, the old and new implementation
+           can coexist.
+  PATCH[2-10] uses "struct pgtable_debug_args" in various test functions.
+  PATCH[11] removes the unused code for old implementation.
+  PATCH[12] fixes the issue of corrupted page flag for ARM64
+
+Changelog
+=========
+v3:
+   * Fix the warning caused by allocating more pages than
+     (1 << (MAX_ORDER - 1)) in init_args()                       (syzbot)
+   * Fix build warning by dropping unused variables in separate
+     patches                                                     (0-day)
+   * Missed "WARN_ON(!pud_none(pud))" in pud_huge_tests() in
+     PATCH[v2 09/12]                                             (0-day)
+   * Fix the subjects for PATCH[05/12] and PATCH[09/12]          (Gavin)
+v2:
+   * Rename struct vm_pgtable_debug to struct pgtable_debug_args.
+     The parameter name to various test functions are renamed
+     to "@args"                                                  (Anshuman)
+   * Code changes as suggested by Anshuman                       (Anshuman)
+
+Gavin Shan (12):
+  mm/debug_vm_pgtable: Introduce struct pgtable_debug_args
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in basic tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in leaf and
+    savewrite tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in protnone and
+    devmap tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in soft_dirty and
+    swap tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in migration and
+    thp tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PTE modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PMD modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PUD modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PGD and P4D
+    modifying tests
+  mm/debug_vm_pgtable: Remove unused code
+  mm/debug_vm_pgtable: Fix corrupted page flag
+
+ mm/debug_vm_pgtable.c | 849 ++++++++++++++++++++++++------------------
+ 1 file changed, 480 insertions(+), 369 deletions(-)
+
+-- 
+2.23.0
+
