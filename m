@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC2F3CE6D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F343CE7DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345369AbhGSQP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:15:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39644 "EHLO mail.kernel.org"
+        id S1352765AbhGSQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344695AbhGSPIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:08:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E39261351;
-        Mon, 19 Jul 2021 15:48:13 +0000 (UTC)
+        id S1346671AbhGSPRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:17:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 185376124B;
+        Mon, 19 Jul 2021 15:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709693;
-        bh=TLnzebTb9MmGCEw9e7SnEQlxLGwSIHh9/HCpE8FFGjg=;
+        s=korg; t=1626710276;
+        bh=jVncZAnMggGZeg3UTgJN68Hmf3jbpO01ey4iR3L8YYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=izFmtmIGHqVVoK+8bkAqjCc6PRaVSYz9VYTiiMqokSoe2VNrGP8T+LDbR+SQ62NfQ
-         8oKzFVe/ZBVU7jKZ92EJ5CBkOHh8EHLl9i55Qf3GsHmYw9k6nlEXCJrw0ljKCcZiVT
-         hkGf5zbJkbOi9Q9miq4gFZj3DXwOtzioOHGqah2g=
+        b=ASRVtcvIQuDgjPdXiLqJIIYqieh8335SlGthhn/4wlyg/Ln9Olhlr0il/3TRTlrL1
+         gCmbCbgQvmyPlqDwCoNs/lmLk2Jt3TrAUU2E2X5PSPmh62tAmQ+B+02eqNmFYX4leX
+         TngJV327eWfbyG9b4mShtGKMgYxT/0xe/WsVDu3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 027/149] scsi: megaraid_sas: Fix resource leak in case of probe failure
-Date:   Mon, 19 Jul 2021 16:52:15 +0200
-Message-Id: <20210719144907.967077289@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 107/243] i2c: core: Disable client irq on reboot/shutdown
+Date:   Mon, 19 Jul 2021 16:52:16 +0200
+Message-Id: <20210719144944.358369488@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,76 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit b5438f48fdd8e1c3f130d32637511efd32038152 ]
+[ Upstream commit b64210f2f7c11c757432ba3701d88241b2b98fb1 ]
 
-The driver doesn't clean up all the allocated resources properly when
-scsi_add_host(), megasas_start_aen() function fails during the PCI device
-probe.
+If an i2c client receives an interrupt during reboot or shutdown it may
+be too late to service it by making an i2c transaction on the bus
+because the i2c controller has already been shutdown. This can lead to
+system hangs if the i2c controller tries to make a transfer that is
+doomed to fail because the access to the i2c pins is already shut down,
+or an iommu translation has been torn down so i2c controller register
+access doesn't work.
 
-Clean up all those resources.
+Let's simply disable the irq if there isn't a shutdown callback for an
+i2c client when there is an irq associated with the device. This will
+make sure that irqs don't come in later than the time that we can handle
+it. We don't do this if the i2c client device already has a shutdown
+callback because presumably they're doing the right thing and quieting
+the device so irqs don't come in after the shutdown callback returns.
 
-Link: https://lore.kernel.org/r/20210528131307.25683-3-chandrakanth.patil@broadcom.com
-Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
-Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: kernel test robot <lkp@intel.com>
+[swboyd@chromium.org: Dropped newline, added commit text, added
+interrupt.h for robot build error]
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/megaraid/megaraid_sas_base.c   | 13 +++++++++++++
- drivers/scsi/megaraid/megaraid_sas_fusion.c |  1 +
- 2 files changed, 14 insertions(+)
+ drivers/i2c/i2c-core-base.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index b9c1f722f1de..418178c2b548 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -7415,11 +7415,16 @@ static int megasas_probe_one(struct pci_dev *pdev,
- 	return 0;
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index c13e7f107dd3..bdce6d3e5327 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -24,6 +24,7 @@
+ #include <linux/i2c-smbus.h>
+ #include <linux/idr.h>
+ #include <linux/init.h>
++#include <linux/interrupt.h>
+ #include <linux/irqflags.h>
+ #include <linux/jump_label.h>
+ #include <linux/kernel.h>
+@@ -585,6 +586,8 @@ static void i2c_device_shutdown(struct device *dev)
+ 	driver = to_i2c_driver(dev->driver);
+ 	if (driver->shutdown)
+ 		driver->shutdown(client);
++	else if (client->irq > 0)
++		disable_irq(client->irq);
+ }
  
- fail_start_aen:
-+	instance->unload = 1;
-+	scsi_remove_host(instance->host);
- fail_io_attach:
- 	megasas_mgmt_info.count--;
- 	megasas_mgmt_info.max_index--;
- 	megasas_mgmt_info.instance[megasas_mgmt_info.max_index] = NULL;
- 
-+	if (instance->requestorId && !instance->skip_heartbeat_timer_del)
-+		del_timer_sync(&instance->sriov_heartbeat_timer);
-+
- 	instance->instancet->disable_intr(instance);
- 	megasas_destroy_irqs(instance);
- 
-@@ -7427,8 +7432,16 @@ fail_io_attach:
- 		megasas_release_fusion(instance);
- 	else
- 		megasas_release_mfi(instance);
-+
- 	if (instance->msix_vectors)
- 		pci_free_irq_vectors(instance->pdev);
-+	instance->msix_vectors = 0;
-+
-+	if (instance->fw_crash_state != UNAVAILABLE)
-+		megasas_free_host_crash_buffer(instance);
-+
-+	if (instance->adapter_type != MFI_SERIES)
-+		megasas_fusion_stop_watchdog(instance);
- fail_init_mfi:
- 	scsi_host_put(host);
- fail_alloc_instance:
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index 5dcd7b9b72ce..ae7a3e154bb2 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -5177,6 +5177,7 @@ megasas_alloc_fusion_context(struct megasas_instance *instance)
- 		if (!fusion->log_to_span) {
- 			dev_err(&instance->pdev->dev, "Failed from %s %d\n",
- 				__func__, __LINE__);
-+			kfree(instance->ctrl_context);
- 			return -ENOMEM;
- 		}
- 	}
+ static void i2c_client_dev_release(struct device *dev)
 -- 
 2.30.2
 
