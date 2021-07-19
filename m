@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A656E3CE7D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0632D3CE7D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350241AbhGSQd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:33:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59740 "EHLO mail.kernel.org"
+        id S1349959AbhGSQeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:34:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347234AbhGSPRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347236AbhGSPRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:17:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B24F6113E;
-        Mon, 19 Jul 2021 15:58:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 795FF613E3;
+        Mon, 19 Jul 2021 15:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710281;
-        bh=4KsKW8tFlrctLEkYf5y+b9RxZ2NggOdutywFRqIHSJc=;
+        s=korg; t=1626710284;
+        bh=v1Cde9pBawz3Tgf65lztJSscdZvIxb28sxAbf7ESwCA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JaL4KShDuFJmy9SmC2hfbQmznfLdfFq8/JwNx4juIInxV9BiMZtkJvoy1JstrOVOk
-         qMHoD2hEeB/iLxUgVDBEfih5CXKLUTgZLw2yVwmdROQ0u2UFcz+53Unuj/BoJuh3Vk
-         8RKV1CNFFNjDSQsRm3taAfTctuysHnNuH6vgJmSg=
+        b=S7iYaI43UOfGxecp9GPhSu7iEfnvZdx/mU6anKINm5JfSRY68I0z4XNFF6M/6nHwZ
+         xH98Mu5hcASp94HvYvHWCtmv2NTlQcfrsCtTT/kWInXc3xIAM6I2QpZaIuyw/Ylrxx
+         lS1QViKIwWom0O9uMwfuIjYvuBL8RL2Mfu63aKEQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        stable@vger.kernel.org, Beomho Seo <beomho.seo@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 152/243] PCI/sysfs: Fix dsm_label_utf16s_to_utf8s() buffer overrun
-Date:   Mon, 19 Jul 2021 16:53:01 +0200
-Message-Id: <20210719144945.818478057@linuxfoundation.org>
+Subject: [PATCH 5.10 153/243] power: supply: rt5033_battery: Fix device tree enumeration
+Date:   Mon, 19 Jul 2021 16:53:02 +0200
+Message-Id: <20210719144945.849034642@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -41,42 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Wilczyński <kw@linux.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit bdcdaa13ad96f1a530711c29e6d4b8311eff767c ]
+[ Upstream commit f3076cd8d1d5fa64b5e1fa5affc045c2fc123baa ]
 
-"utf16s_to_utf8s(..., buf, PAGE_SIZE)" puts up to PAGE_SIZE bytes into
-"buf" and returns the number of bytes it actually put there.  If it wrote
-PAGE_SIZE bytes, the newline added by dsm_label_utf16s_to_utf8s() would
-overrun "buf".
+The fuel gauge in the RT5033 PMIC has its own I2C bus and interrupt
+line. Therefore, it is not actually part of the RT5033 MFD and needs
+its own of_match_table to probe properly.
 
-Reduce the size available for utf16s_to_utf8s() to use so there is always
-space for the newline.
+Also, given that it's independent of the MFD, there is actually
+no need to make the Kconfig depend on MFD_RT5033. Although the driver
+uses the shared <linux/mfd/rt5033.h> header, there is no compile
+or runtime dependency on the RT5033 MFD driver.
 
-[bhelgaas: reorder patch in series, commit log]
-Fixes: 6058989bad05 ("PCI: Export ACPI _DSM provided firmware instance number and string name to sysfs")
-Link: https://lore.kernel.org/r/20210603000112.703037-7-kw@linux.com
-Reported-by: Joe Perches <joe@perches.com>
-Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Beomho Seo <beomho.seo@samsung.com>
+Cc: Chanwoo Choi <cw00.choi@samsung.com>
+Fixes: b847dd96e659 ("power: rt5033_battery: Add RT5033 Fuel gauge device driver")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci-label.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/supply/Kconfig          | 3 ++-
+ drivers/power/supply/rt5033_battery.c | 7 +++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/pci-label.c b/drivers/pci/pci-label.c
-index 781e45cf60d1..cd84cf52a92e 100644
---- a/drivers/pci/pci-label.c
-+++ b/drivers/pci/pci-label.c
-@@ -162,7 +162,7 @@ static void dsm_label_utf16s_to_utf8s(union acpi_object *obj, char *buf)
- 	len = utf16s_to_utf8s((const wchar_t *)obj->buffer.pointer,
- 			      obj->buffer.length,
- 			      UTF16_LITTLE_ENDIAN,
--			      buf, PAGE_SIZE);
-+			      buf, PAGE_SIZE - 1);
- 	buf[len] = '\n';
- }
+diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+index 1699b9269a78..0aa46b451017 100644
+--- a/drivers/power/supply/Kconfig
++++ b/drivers/power/supply/Kconfig
+@@ -692,7 +692,8 @@ config BATTERY_GOLDFISH
  
+ config BATTERY_RT5033
+ 	tristate "RT5033 fuel gauge support"
+-	depends on MFD_RT5033
++	depends on I2C
++	select REGMAP_I2C
+ 	help
+ 	  This adds support for battery fuel gauge in Richtek RT5033 PMIC.
+ 	  The fuelgauge calculates and determines the battery state of charge
+diff --git a/drivers/power/supply/rt5033_battery.c b/drivers/power/supply/rt5033_battery.c
+index f330452341f0..9ad0afe83d1b 100644
+--- a/drivers/power/supply/rt5033_battery.c
++++ b/drivers/power/supply/rt5033_battery.c
+@@ -164,9 +164,16 @@ static const struct i2c_device_id rt5033_battery_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5033_battery_id);
+ 
++static const struct of_device_id rt5033_battery_of_match[] = {
++	{ .compatible = "richtek,rt5033-battery", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, rt5033_battery_of_match);
++
+ static struct i2c_driver rt5033_battery_driver = {
+ 	.driver = {
+ 		.name = "rt5033-battery",
++		.of_match_table = rt5033_battery_of_match,
+ 	},
+ 	.probe = rt5033_battery_probe,
+ 	.remove = rt5033_battery_remove,
 -- 
 2.30.2
 
