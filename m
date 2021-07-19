@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2CF3CE729
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825BD3CE857
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347345AbhGSQXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:23:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49596 "EHLO mail.kernel.org"
+        id S1355952AbhGSQkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:40:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345535AbhGSPNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:13:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3602F61363;
-        Mon, 19 Jul 2021 15:53:11 +0000 (UTC)
+        id S1348487AbhGSPYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FAAD6008E;
+        Mon, 19 Jul 2021 16:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709991;
-        bh=gkXu3sbTGyTrqtfgG5j2rg5rnTqyL/1tASBndj4S7fY=;
+        s=korg; t=1626710731;
+        bh=RtrY9dta6t2Gy46Bp1K5cieSkMwQ1R440dKMjGmESQ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UDIbpyhm4jdBzqB+QQBWG2papbxYjGSHsLhpim6uIxtFohTvtfMWd1Ah4ISB9ub0P
-         iVuOWCvTzSBdfkEBcQlU1qa2acII/58rkFrMn6cX3TZ4bva6h8XyM3fK1gsmnfdRLE
-         z7UD8mV+YK0tYmTGnCvueG/qcjb2/7K2UOA+ZdGw=
+        b=JxStiMj1beC9DITGlEfS8dnpwsGDP9k2jBMig1zc+xDLYi8jmJrFOYaDE7tID6KZc
+         gG3Q71uJGalImBvmIxw8Agp9uxmSyEs0JmjTDB2Ot0V5qWokgForfM0qbcfsbGY5Ky
+         dYATBQmKYA0B0QZUdQLUcltst856Z9S83yvZ/ekQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        kvm@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 5.10 003/243] KVM: mmio: Fix use-after-free Read in kvm_vm_ioctl_unregister_coalesced_mmio
+        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 086/351] scsi: qedi: Fix cleanup session block/unblock use
 Date:   Mon, 19 Jul 2021 16:50:32 +0200
-Message-Id: <20210719144941.027466727@linuxfoundation.org>
+Message-Id: <20210719144947.350282466@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,128 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Mike Christie <michael.christie@oracle.com>
 
-commit 23fa2e46a5556f787ce2ea1a315d3ab93cced204 upstream.
+[ Upstream commit 0c72191da68638a479602dd515b587ada913184a ]
 
-BUG: KASAN: use-after-free in kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
-Read of size 8 at addr ffff0000c03a2500 by task syz-executor083/4269
+Drivers shouldn't be calling block/unblock session for cmd cleanup because
+the functions can change the session state from under libiscsi.  This adds
+a new a driver level bit so it can block all I/O the host while it drains
+the card.
 
-CPU: 5 PID: 4269 Comm: syz-executor083 Not tainted 5.10.0 #7
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x0/0x2d0 arch/arm64/kernel/stacktrace.c:132
- show_stack+0x28/0x34 arch/arm64/kernel/stacktrace.c:196
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x110/0x164 lib/dump_stack.c:118
- print_address_description+0x78/0x5c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report+0x148/0x1e4 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:183 [inline]
- __asan_load8+0xb4/0xbc mm/kasan/generic.c:252
- kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
- kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
-
-Allocated by task 4269:
- stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc+0xdc/0x120 mm/kasan/common.c:461
- kasan_kmalloc+0xc/0x14 mm/kasan/common.c:475
- kmem_cache_alloc_trace include/linux/slab.h:450 [inline]
- kmalloc include/linux/slab.h:552 [inline]
- kzalloc include/linux/slab.h:664 [inline]
- kvm_vm_ioctl_register_coalesced_mmio+0x78/0x1cc arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:146
- kvm_vm_ioctl+0x7e8/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3746
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
-
-Freed by task 4269:
- stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track+0x38/0x6c mm/kasan/common.c:56
- kasan_set_free_info+0x20/0x40 mm/kasan/generic.c:355
- __kasan_slab_free+0x124/0x150 mm/kasan/common.c:422
- kasan_slab_free+0x10/0x1c mm/kasan/common.c:431
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook mm/slub.c:1577 [inline]
- slab_free mm/slub.c:3142 [inline]
- kfree+0x104/0x38c mm/slub.c:4124
- coalesced_mmio_destructor+0x94/0xa4 arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:102
- kvm_iodevice_destructor include/kvm/iodev.h:61 [inline]
- kvm_io_bus_unregister_dev+0x248/0x280 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4374
- kvm_vm_ioctl_unregister_coalesced_mmio+0x158/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:186
- kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
-
-If kvm_io_bus_unregister_dev() return -ENOMEM, we already call kvm_iodevice_destructor()
-inside this function to delete 'struct kvm_coalesced_mmio_dev *dev' from list
-and free the dev, but kvm_iodevice_destructor() is called again, it will lead
-the above issue.
-
-Let's check the the return value of kvm_io_bus_unregister_dev(), only call
-kvm_iodevice_destructor() if the return value is 0.
-
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-Id: <20210626070304.143456-1-wangkefeng.wang@huawei.com>
-Cc: stable@vger.kernel.org
-Fixes: 5d3c4c79384a ("KVM: Stop looking for coalesced MMIO zones if the bus is destroyed", 2021-04-20)
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210525181821.7617-26-michael.christie@oracle.com
+Reviewed-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- virt/kvm/coalesced_mmio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/qedi/qedi.h       |  1 +
+ drivers/scsi/qedi/qedi_iscsi.c | 17 +++++++++++++++--
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
---- a/virt/kvm/coalesced_mmio.c
-+++ b/virt/kvm/coalesced_mmio.c
-@@ -186,7 +186,6 @@ int kvm_vm_ioctl_unregister_coalesced_mm
- 		    coalesced_mmio_in_range(dev, zone->addr, zone->size)) {
- 			r = kvm_io_bus_unregister_dev(kvm,
- 				zone->pio ? KVM_PIO_BUS : KVM_MMIO_BUS, &dev->dev);
--			kvm_iodevice_destructor(&dev->dev);
+diff --git a/drivers/scsi/qedi/qedi.h b/drivers/scsi/qedi/qedi.h
+index c342defc3f52..ce199a7a16b8 100644
+--- a/drivers/scsi/qedi/qedi.h
++++ b/drivers/scsi/qedi/qedi.h
+@@ -284,6 +284,7 @@ struct qedi_ctx {
+ #define QEDI_IN_RECOVERY	5
+ #define QEDI_IN_OFFLINE		6
+ #define QEDI_IN_SHUTDOWN	7
++#define QEDI_BLOCK_IO		8
  
- 			/*
- 			 * On failure, unregister destroys all devices on the
-@@ -196,6 +195,7 @@ int kvm_vm_ioctl_unregister_coalesced_mm
- 			 */
- 			if (r)
- 				break;
-+			kvm_iodevice_destructor(&dev->dev);
- 		}
- 	}
+ 	u8 mac[ETH_ALEN];
+ 	u32 src_ip[4];
+diff --git a/drivers/scsi/qedi/qedi_iscsi.c b/drivers/scsi/qedi/qedi_iscsi.c
+index 4acc12111330..5f7e62f19d83 100644
+--- a/drivers/scsi/qedi/qedi_iscsi.c
++++ b/drivers/scsi/qedi/qedi_iscsi.c
+@@ -330,12 +330,22 @@ free_conn:
  
+ void qedi_mark_device_missing(struct iscsi_cls_session *cls_session)
+ {
+-	iscsi_block_session(cls_session);
++	struct iscsi_session *session = cls_session->dd_data;
++	struct qedi_conn *qedi_conn = session->leadconn->dd_data;
++
++	spin_lock_bh(&session->frwd_lock);
++	set_bit(QEDI_BLOCK_IO, &qedi_conn->qedi->flags);
++	spin_unlock_bh(&session->frwd_lock);
+ }
+ 
+ void qedi_mark_device_available(struct iscsi_cls_session *cls_session)
+ {
+-	iscsi_unblock_session(cls_session);
++	struct iscsi_session *session = cls_session->dd_data;
++	struct qedi_conn *qedi_conn = session->leadconn->dd_data;
++
++	spin_lock_bh(&session->frwd_lock);
++	clear_bit(QEDI_BLOCK_IO, &qedi_conn->qedi->flags);
++	spin_unlock_bh(&session->frwd_lock);
+ }
+ 
+ static int qedi_bind_conn_to_iscsi_cid(struct qedi_ctx *qedi,
+@@ -800,6 +810,9 @@ static int qedi_task_xmit(struct iscsi_task *task)
+ 	if (test_bit(QEDI_IN_SHUTDOWN, &qedi_conn->qedi->flags))
+ 		return -ENODEV;
+ 
++	if (test_bit(QEDI_BLOCK_IO, &qedi_conn->qedi->flags))
++		return -EACCES;
++
+ 	cmd->state = 0;
+ 	cmd->task = NULL;
+ 	cmd->use_slowpath = false;
+-- 
+2.30.2
+
 
 
