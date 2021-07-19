@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0441E3CE7BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D453CE68D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351118AbhGSQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:31:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56906 "EHLO mail.kernel.org"
+        id S1349179AbhGSQIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:08:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347438AbhGSPQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:16:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23708611C1;
-        Mon, 19 Jul 2021 15:56:55 +0000 (UTC)
+        id S1344152AbhGSPHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:07:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 029D861006;
+        Mon, 19 Jul 2021 15:47:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710216;
-        bh=4l/AoMsvGwjk7Lsth8aoRoQQpUwOUt4rTVkI0sOT9vM=;
+        s=korg; t=1626709660;
+        bh=KSb5fyDRzgf/RSbM09GKm1qwFWLZ1xYtmQj6I0EBBqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hdEjEs94FYfIakBWR0n+tM4VlrHf6i7t/yBmd8CSfy9sjrBCjrxsDdqJ6pMRMx5VO
-         4NCyuQwql4Pw4FaR2/1O3fImwpYbV1PNBlBGV4iIgmJ8y6hf5I5q3IxC4o17w06wV4
-         Igwye1wqN2Yxj69fjCWDjGgJ/5ptT+hJPJpQgVOY=
+        b=Tdx0hr5/RmBvocvc1ak0q7cEw5E+E6QXraIDyLX4Xtcf9LWvJhkRCLEshCr4ADQk7
+         lTSt8pR08PTmNV+jheUJeVE5Z3CKvWbSW0gBHXNpGrVZzweQWCUj1dQVUKzF3/W4C7
+         /tjsJgtQuVaVApMCpjC0VFeh4BarMniXT+CITVZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 125/243] watchdog: Fix possible use-after-free by calling del_timer_sync()
-Date:   Mon, 19 Jul 2021 16:52:34 +0200
-Message-Id: <20210719144944.942445469@linuxfoundation.org>
+Subject: [PATCH 5.4 047/149] gpio: pca953x: Add support for the On Semi pca9655
+Date:   Mon, 19 Jul 2021 16:52:35 +0200
+Message-Id: <20210719144912.609670390@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Peter Robinson <pbrobinson@gmail.com>
 
-[ Upstream commit d0212f095ab56672f6f36aabc605bda205e1e0bf ]
+[ Upstream commit 6d49b3a0f351925b5ea5047166c112b7590b918a ]
 
-This driver's remove path calls del_timer(). However, that function
-does not wait until the timer handler finishes. This means that the
-timer handler may still be running after the driver's remove function
-has finished, which would result in a use-after-free.
+The On Semi pca9655 is a 16 bit variant of the On Semi pca9654 GPIO
+expander, with 16 GPIOs and interrupt functionality.
 
-Fix by calling del_timer_sync(), which makes sure the timer handler
-has finished, and unable to re-schedule itself.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-Link: https://lore.kernel.org/r/1620802676-19701-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+[Bartosz: fixed indentation as noted by Andy]
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/lpc18xx_wdt.c | 2 +-
- drivers/watchdog/w83877f_wdt.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-pca953x.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/watchdog/lpc18xx_wdt.c b/drivers/watchdog/lpc18xx_wdt.c
-index 78cf11c94941..60b6d74f267d 100644
---- a/drivers/watchdog/lpc18xx_wdt.c
-+++ b/drivers/watchdog/lpc18xx_wdt.c
-@@ -292,7 +292,7 @@ static int lpc18xx_wdt_remove(struct platform_device *pdev)
- 	struct lpc18xx_wdt_dev *lpc18xx_wdt = platform_get_drvdata(pdev);
+diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
+index 9a24dce3c262..d9193ffa17a1 100644
+--- a/drivers/gpio/gpio-pca953x.c
++++ b/drivers/gpio/gpio-pca953x.c
+@@ -1272,6 +1272,7 @@ static const struct of_device_id pca953x_dt_ids[] = {
  
- 	dev_warn(&pdev->dev, "I quit now, hardware will probably reboot!\n");
--	del_timer(&lpc18xx_wdt->timer);
-+	del_timer_sync(&lpc18xx_wdt->timer);
+ 	{ .compatible = "onnn,cat9554", .data = OF_953X( 8, PCA_INT), },
+ 	{ .compatible = "onnn,pca9654", .data = OF_953X( 8, PCA_INT), },
++	{ .compatible = "onnn,pca9655", .data = OF_953X(16, PCA_INT), },
  
- 	return 0;
- }
-diff --git a/drivers/watchdog/w83877f_wdt.c b/drivers/watchdog/w83877f_wdt.c
-index 5772cc5d3780..f2650863fd02 100644
---- a/drivers/watchdog/w83877f_wdt.c
-+++ b/drivers/watchdog/w83877f_wdt.c
-@@ -166,7 +166,7 @@ static void wdt_startup(void)
- static void wdt_turnoff(void)
- {
- 	/* Stop the timer */
--	del_timer(&timer);
-+	del_timer_sync(&timer);
- 
- 	wdt_change(WDT_DISABLE);
- 
+ 	{ .compatible = "exar,xra1202", .data = OF_953X( 8, 0), },
+ 	{ }
 -- 
 2.30.2
 
