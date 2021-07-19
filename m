@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B017A3CE9EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E293CEA42
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353535AbhGSREN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:04:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
+        id S1354386AbhGSRKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:10:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348914AbhGSPff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D530C61351;
-        Mon, 19 Jul 2021 16:15:34 +0000 (UTC)
+        id S1348547AbhGSPf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FE7E61879;
+        Mon, 19 Jul 2021 16:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711335;
-        bh=SqMSKcVET3eL/CjFpttP+c/eX1PAOvEaZL+V4uhj9J0=;
+        s=korg; t=1626711246;
+        bh=r5EcMHYVJ7lLgi+IgoWeooNmnEAxM3OkhSNWpiylMPE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VeHJNFiIkExIATM4C3tKXTQ8oaBctFo1FnTXZDp86o968HK49BNN8EgEs02zIVdJ5
-         D/Q5Ad++pQs2OCpgddfwtpTIwtazaPdydUd5WUGNk/jh3F0Z8O0tYsUk/oY972zkZI
-         ALA0kDvF1tjgh9Z7MbxjWwwTTiqKK3MisIJ2Q2ks=
+        b=CSqLgjCkAEGKgHikzrkLwNSyJNIeHNqm5Gkkv7XTkxumGTYBHhgm20l4DPnoW9its
+         OdTdX6F3SClZYXyvabg8jNNOmgBcNMFIp51UHtzKUDqGTEGLDzPVFQDJi/vrIW0u/9
+         GfL+eC1Jht3gMjphMaGH9hk2JjNrRKTxCLt17Waw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 282/351] reset: brcmstb: Add missing MODULE_DEVICE_TABLE
-Date:   Mon, 19 Jul 2021 16:53:48 +0200
-Message-Id: <20210719144954.294111149@linuxfoundation.org>
+Subject: [PATCH 5.13 283/351] arm64: defconfig: Do not override the MTK_PMIC_WRAP symbol
+Date:   Mon, 19 Jul 2021 16:53:49 +0200
+Message-Id: <20210719144954.401225685@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -41,36 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-[ Upstream commit e207457f9045343a24d936fbb67eb4b412f1c6ad ]
+[ Upstream commit f0e70d4946332c681ceaba940652f30c7c33473d ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Commit 'fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot
+from usb")' added the MTK_PMIC_WRAP config built-in. It needs to be
+built-in in order to be able to boot from USB or the MMC without needing
+a ramdisk, but that symbol was already defined as a module so now we are
+getting the following warning:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 77750bc089e4 ("reset: Add Broadcom STB SW_INIT reset controller driver")
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Link: https://lore.kernel.org/r/1620789283-15048-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+  arch/arm64/configs/defconfig:996:warning: override: reassigning to symbol MTK_PMIC_WRAP
+
+Remove the MTK_PMIC_WRAP=m from the defconfig to remove the error.
+
+Fixes: fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot from usb")
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Link: https://lore.kernel.org/r/20210423075201.2616023-1-enric.balletbo@collabora.com
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/reset-brcmstb.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/configs/defconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/reset/reset-brcmstb.c b/drivers/reset/reset-brcmstb.c
-index f213264c8567..42c9d5241c53 100644
---- a/drivers/reset/reset-brcmstb.c
-+++ b/drivers/reset/reset-brcmstb.c
-@@ -111,6 +111,7 @@ static const struct of_device_id brcmstb_reset_of_match[] = {
- 	{ .compatible = "brcm,brcmstb-reset" },
- 	{ /* sentinel */ }
- };
-+MODULE_DEVICE_TABLE(of, brcmstb_reset_of_match);
- 
- static struct platform_driver brcmstb_reset_driver = {
- 	.probe	= brcmstb_reset_probe,
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 08c6f769df9a..9907a431db0d 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -491,7 +491,6 @@ CONFIG_SPI_S3C64XX=y
+ CONFIG_SPI_SH_MSIOF=m
+ CONFIG_SPI_SUN6I=y
+ CONFIG_SPI_SPIDEV=m
+-CONFIG_MTK_PMIC_WRAP=m
+ CONFIG_SPMI=y
+ CONFIG_PINCTRL_SINGLE=y
+ CONFIG_PINCTRL_MAX77620=y
 -- 
 2.30.2
 
