@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40463CE79D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0113CE794
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350369AbhGSQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:29:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49652 "EHLO mail.kernel.org"
+        id S243306AbhGSQ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:28:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346485AbhGSPOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:14:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B83610D0;
-        Mon, 19 Jul 2021 15:54:46 +0000 (UTC)
+        id S1347217AbhGSPPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:15:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7032601FD;
+        Mon, 19 Jul 2021 15:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710087;
-        bh=wGqizo7B1eaQJmXHE4bj1kRA04cvESZ01p+pgtNIxng=;
+        s=korg; t=1626710192;
+        bh=IxaehiJGGRFs1bfaxinZIXvUNI2hkK+ktz7VylF8d7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ItB9ApHj4S0mPxj7HL34+6LZN7nuFV7fQUvvEPve1Vgn640kZexO3iICWjzKNlFUq
-         q9j4vLWZ2XQIhXaoXzwxmVIQ4GwuDTRdkA/VbRI88zdS86n/arpFdf8WXX+mS3FkL6
-         fmnpoFN/umt3tAj/8mkcAJ3McyE19vCs2PKLWAJY=
+        b=DuEIMsw9J0YGFkuCEMHSx3ZEx9id/kIZdj+n4pKaRR7dSUygDy3qbblmZgHFqrO6u
+         DUAH5JuBSNfP0q82P9TOh0/Wni4n+KtWUF5Fm4mGzOZWYBUi1iONau+pM3ICIv+KQh
+         YirDQ5WpT0RISXVOSVjYRJqJZVOhcJ55u19/npy8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Fabrice Fontaine <fontaine.fabrice@gmail.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 069/243] s390/sclp_vt220: fix console name to match device
-Date:   Mon, 19 Jul 2021 16:51:38 +0200
-Message-Id: <20210719144943.139673018@linuxfoundation.org>
+Subject: [PATCH 5.10 070/243] s390: disable SSP when needed
+Date:   Mon, 19 Jul 2021 16:51:39 +0200
+Message-Id: <20210719144943.170500431@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -42,61 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+From: Fabrice Fontaine <fontaine.fabrice@gmail.com>
 
-[ Upstream commit b7d91d230a119fdcc334d10c9889ce9c5e15118b ]
+[ Upstream commit 42e8d652438f5ddf04e5dac299cb5e623d113dc0 ]
 
-Console name reported in /proc/consoles:
+Though -nostdlib is passed in PURGATORY_LDFLAGS and -ffreestanding in
+KBUILD_CFLAGS_DECOMPRESSOR, -fno-stack-protector must also be passed to
+avoid linking errors related to undefined references to
+'__stack_chk_guard' and '__stack_chk_fail' if toolchain enforces
+-fstack-protector.
 
-  ttyS1                -W- (EC p  )    4:65
+Fixes
+ - https://gitlab.com/kubu93/buildroot/-/jobs/1247043361
 
-does not match the char device name:
-
-  crw--w----    1 root     root        4,  65 May 17 12:18 /dev/ttysclp0
-
-so debian-installer inside a QEMU s390x instance gets confused and fails
-to start with the following error:
-
-  steal-ctty: No such file or directory
-
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Link: https://lore.kernel.org/r/20210427194010.9330-1-vvidic@valentin-vidic.from.hr
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Fabrice Fontaine <fontaine.fabrice@gmail.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Reviewed-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Tested-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210510053133.1220167-1-fontaine.fabrice@gmail.com
 Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/setup.c       | 2 +-
- drivers/s390/char/sclp_vt220.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/s390/Makefile           | 1 +
+ arch/s390/purgatory/Makefile | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 83a3f346e5bd..5cd9d20af31e 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -166,7 +166,7 @@ static void __init set_preferred_console(void)
- 	else if (CONSOLE_IS_3270)
- 		add_preferred_console("tty3270", 0, NULL);
- 	else if (CONSOLE_IS_VT220)
--		add_preferred_console("ttyS", 1, NULL);
-+		add_preferred_console("ttysclp", 0, NULL);
- 	else if (CONSOLE_IS_HVC)
- 		add_preferred_console("hvc", 0, NULL);
- }
-diff --git a/drivers/s390/char/sclp_vt220.c b/drivers/s390/char/sclp_vt220.c
-index 3f9a6ef650fa..3c2ed6d01387 100644
---- a/drivers/s390/char/sclp_vt220.c
-+++ b/drivers/s390/char/sclp_vt220.c
-@@ -35,8 +35,8 @@
- #define SCLP_VT220_MINOR		65
- #define SCLP_VT220_DRIVER_NAME		"sclp_vt220"
- #define SCLP_VT220_DEVICE_NAME		"ttysclp"
--#define SCLP_VT220_CONSOLE_NAME		"ttyS"
--#define SCLP_VT220_CONSOLE_INDEX	1	/* console=ttyS1 */
-+#define SCLP_VT220_CONSOLE_NAME		"ttysclp"
-+#define SCLP_VT220_CONSOLE_INDEX	0	/* console=ttysclp0 */
- 
- /* Representation of a single write request */
- struct sclp_vt220_request {
+diff --git a/arch/s390/Makefile b/arch/s390/Makefile
+index ba94b03c8b2f..92506918da63 100644
+--- a/arch/s390/Makefile
++++ b/arch/s390/Makefile
+@@ -28,6 +28,7 @@ KBUILD_CFLAGS_DECOMPRESSOR += -DDISABLE_BRANCH_PROFILING -D__NO_FORTIFY
+ KBUILD_CFLAGS_DECOMPRESSOR += -fno-delete-null-pointer-checks -msoft-float
+ KBUILD_CFLAGS_DECOMPRESSOR += -fno-asynchronous-unwind-tables
+ KBUILD_CFLAGS_DECOMPRESSOR += -ffreestanding
++KBUILD_CFLAGS_DECOMPRESSOR += -fno-stack-protector
+ KBUILD_CFLAGS_DECOMPRESSOR += $(call cc-disable-warning, address-of-packed-member)
+ KBUILD_CFLAGS_DECOMPRESSOR += $(if $(CONFIG_DEBUG_INFO),-g)
+ KBUILD_CFLAGS_DECOMPRESSOR += $(if $(CONFIG_DEBUG_INFO_DWARF4), $(call cc-option, -gdwarf-4,))
+diff --git a/arch/s390/purgatory/Makefile b/arch/s390/purgatory/Makefile
+index c57f8c40e992..21c4ebe29b9a 100644
+--- a/arch/s390/purgatory/Makefile
++++ b/arch/s390/purgatory/Makefile
+@@ -24,6 +24,7 @@ KBUILD_CFLAGS := -fno-strict-aliasing -Wall -Wstrict-prototypes
+ KBUILD_CFLAGS += -Wno-pointer-sign -Wno-sign-compare
+ KBUILD_CFLAGS += -fno-zero-initialized-in-bss -fno-builtin -ffreestanding
+ KBUILD_CFLAGS += -c -MD -Os -m64 -msoft-float -fno-common
++KBUILD_CFLAGS += -fno-stack-protector
+ KBUILD_CFLAGS += $(CLANG_FLAGS)
+ KBUILD_CFLAGS += $(call cc-option,-fno-PIE)
+ KBUILD_AFLAGS := $(filter-out -DCC_USING_EXPOLINE,$(KBUILD_AFLAGS))
 -- 
 2.30.2
 
