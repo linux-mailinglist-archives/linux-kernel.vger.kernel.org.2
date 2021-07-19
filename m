@@ -2,171 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343173CED77
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB563CED72
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384792AbhGSSgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 14:36:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383762AbhGSSKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:10:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43EFA6108B;
-        Mon, 19 Jul 2021 18:50:51 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.19.197-rt84
-Date:   Mon, 19 Jul 2021 18:48:07 -0000
-Message-ID: <162672048731.603329.3599964871498893076@puck.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        id S1384737AbhGSSeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 14:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1383719AbhGSSJV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 14:09:21 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496AAC061787
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 11:37:49 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id o3-20020a17090a6783b0290173ce472b8aso122079pjj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 11:49:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xs0QjZTAxJ4hJWmqebyF0esmS5yFAGMicwR/GdEGj2c=;
+        b=gnHG4ARHZtOcS3KynjUaW5BMR4pFmlGR6R81Q9pRmaNF/LzBno9XrxaoMNOTUjUF16
+         NQvdnvfs6sOOIuJiZYqUSh+BVmEQuyk2L6GE/6M9medSMcCB6gb+G+V7jLFKvEPut6gr
+         sg4tqMHMdh02cHG0pZzQpax+OpxaMR0VHK9RnG/2xQNeH63SxgNAvwmCpcsrIYEiW+cU
+         1bZvztlNPa0pYzUSE61XskbZ3a8G0kgdDivxAqeHIGlr4rsGNmXmZ7FyW+oV7hQ3b8rJ
+         9Kd0VjOMADXRtRDdl6g47w9LTNX/SmT8c7C4hCSYbeffEJcflraEacKpYWOjy2K6Erbm
+         nHHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xs0QjZTAxJ4hJWmqebyF0esmS5yFAGMicwR/GdEGj2c=;
+        b=GDXMmaJgZiuuGOUaFoKbw6U0++G/cvRMFD65eNsRYSZKcXBPL4xu8+wqoPIjXKJ+Rc
+         M7Vpsw0ToqcJmKMjEFAe8BXamv9XKjNBmx2YehNVqTr6V0/TQ1v/VuIhYS5MOKj9fMs4
+         r1OQtXuzYPLGqmxAVtW90wLjC59R0JojujKhZiMlDxoj+ISXjfJPZ6t22cVDO3Lhl1kU
+         1NIk3M8+V4f8k5+biDtAy+cw1wGsj0kSTnvLDDy9xq9tPeWS2dOb+ZnWfq2GkxXUXmKf
+         MbXIQaEJVzenPjSyCua6UuvclNmq5z8QZs7N7l39v/V9wKdBwGL3rEzI+fE7WnHyeGup
+         z4+w==
+X-Gm-Message-State: AOAM532NEgTbumS3X8lNft1bFLFhnEGFqq2Uzo9xpRbh7k04R4GTZ1+5
+        os4qeuvNSjDgqhNLtRwfPm46Aw==
+X-Google-Smtp-Source: ABdhPJyhoFt4sUCN2ajarBa7UvBpTh5hkuUpsoUV1xzwnnJa437MyM26Q8Ace9LMYPUCkke+XACaig==
+X-Received: by 2002:a17:902:f282:b029:12b:2b93:fbdd with SMTP id k2-20020a170902f282b029012b2b93fbddmr20432780plc.35.1626720584273;
+        Mon, 19 Jul 2021 11:49:44 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b3sm21272139pfi.179.2021.07.19.11.49.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 11:49:43 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 18:49:39 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH v2 8/8] KVM: x86: hyper-v: Deactivate APICv only when
+ AutoEOI feature is in use
+Message-ID: <YPXJQxLaJuoF6aXl@google.com>
+References: <20210713142023.106183-1-mlevitsk@redhat.com>
+ <20210713142023.106183-9-mlevitsk@redhat.com>
+ <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Sun, Jul 18, 2021, Maxim Levitsky wrote:
+> I am more inclined to fix this by just tracking if we hold the srcu
+> lock on each VCPU manually, just as we track the srcu index anyway,
+> and then kvm_request_apicv_update can use this to drop the srcu
+> lock when needed.
 
-I'm pleased to announce the 4.19.197-rt84 stable release.
+The entire approach of dynamically adding/removing the memslot seems doomed to
+failure, and is likely responsible for the performance issues with AVIC, e.g. a
+single vCPU temporarily inhibiting AVIC will zap all SPTEs _twice_; on disable
+and again on re-enable.
 
-NOTE: I had a conflict in kernel/kthread.c that I believe is resolved, but
-if you start having issues with kthread_cancel_* please let me know. 
+Rather than pile on more gunk, what about special casing the APIC access page
+memslot in try_async_pf()?  E.g. zap the GFN in avic_update_access_page() when
+disabling (and bounce through kvm_{inc,dec}_notifier_count()), and have the page
+fault path skip directly to MMIO emulation without caching the MMIO info.  It'd
+also give us a good excuse to rename try_async_pf() :-)
 
-You can get this release via the git tree at:
+If lack of MMIO caching is a performance problem, an alternative solution would
+be to allow caching but add a helper to zap the MMIO SPTE and request all vCPUs to
+clear their cache.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+It's all a bit gross, especially hijacking the mmu_notifier path, but IMO it'd be
+less awful than the current memslot+SRCU mess.
 
-  branch: v4.19-rt
-  Head SHA1: 8f51923033a34461ff3c65f2011ee86426141471
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index f4d35289f59e..ea434d76cfb0 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3767,9 +3767,9 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+                                  kvm_vcpu_gfn_to_hva(vcpu, gfn), &arch);
+ }
 
-Or to build 4.19.197-rt84 directly, the following patches should be applied:
+-static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+-                        gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
+-                        bool write, bool *writable)
++static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
++                           gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
++                           bool write, bool *writable, int *r)
+ {
+        struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+        bool async;
+@@ -3780,13 +3780,26 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+         * be zapped before KVM inserts a new MMIO SPTE for the gfn.
+         */
+        if (slot && (slot->flags & KVM_MEMSLOT_INVALID))
+-               return true;
++               goto out_retry;
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
+-       /* Don't expose private memslots to L2. */
+-       if (is_guest_mode(vcpu) && !kvm_is_visible_memslot(slot)) {
+-               *pfn = KVM_PFN_NOSLOT;
+-               *writable = false;
+-               return false;
++       if (!kvm_is_visible_memslot(slot)) {
++               /* Don't expose private memslots to L2. */
++               if (is_guest_mode(vcpu)) {
++                       *pfn = KVM_PFN_NOSLOT;
++                       *writable = false;
++                       return false;
++               }
++               /*
++                * If the APIC access page exists but is disabled, go directly
++                * to emulation without caching the MMIO access or creating a
++                * MMIO SPTE.  That way the cache doesn't need to be purged
++                * when the AVIC is re-enabled.
++                */
++               if (slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT &&
++                   !vcpu->kvm->arch.apic_access_memslot_enabled) {
++                       *r = RET_PF_EMULATE;
++                       return true;
++               }
+        }
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.197.xz
+        async = false;
+@@ -3800,14 +3813,19 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+                if (kvm_find_async_pf_gfn(vcpu, gfn)) {
+                        trace_kvm_async_pf_doublefault(cr2_or_gpa, gfn);
+                        kvm_make_request(KVM_REQ_APF_HALT, vcpu);
+-                       return true;
+-               } else if (kvm_arch_setup_async_pf(vcpu, cr2_or_gpa, gfn))
+-                       return true;
++                       goto out_retry;
++               } else if (kvm_arch_setup_async_pf(vcpu, cr2_or_gpa, gfn)) {
++                       goto out_retry;
++               }
+        }
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.197-rt84.patch.xz
+        *pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL,
+                                    write, writable, hva);
+        return false;
++
++out_retry:
++       *r = RET_PF_RETRY;
++       return true;
+ }
 
+ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+@@ -3839,9 +3857,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+        mmu_seq = vcpu->kvm->mmu_notifier_seq;
+        smp_rmb();
 
-You can also build from 4.19.196-rt83 by applying the incremental patch:
+-       if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, &hva,
+-                        write, &map_writable))
+-               return RET_PF_RETRY;
++       if (kvm_faultin_pfn(vcpu, prefault, gfn, gpa, &pfn, &hva, write,
++                           &map_writable, &r))
++               return r;
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.196-rt83-rt84.patch.xz
-
-Enjoy!
-Clark
-
-Changes from v4.19.196-rt83:
----
-
-Alex Shi (1):
-      mm: add VM_WARN_ON_ONCE_PAGE() macro
-
-Alper Gun (1):
-      KVM: SVM: Call SEV Guest Decommission if ASID binding fails
-
-Anson Huang (1):
-      ARM: dts: imx6qdl-sabresd: Remove incorrect power supply assignment
-
-Christian König (1):
-      drm/nouveau: fix dma_address check for CPU/GPU sync
-
-Clark Williams (2):
-      Merge tag 'v4.19.197' into v4.19-rt
-      Linux 4.19.197-rt84
-
-David Rientjes (1):
-      KVM: SVM: Periodically schedule when unregistering regions on destroy
-
-Greg Kroah-Hartman (1):
-      Linux 4.19.197
-
-Hugh Dickins (16):
-      mm/thp: fix __split_huge_pmd_locked() on shmem migration entry
-      mm/thp: make is_huge_zero_pmd() safe and quicker
-      mm/thp: try_to_unmap() use TTU_SYNC for safe splitting
-      mm/thp: fix vma_address() if virtual address below file offset
-      mm/thp: unmap_mapping_page() to fix THP truncate_cleanup_page()
-      mm: page_vma_mapped_walk(): use page for pvmw->page
-      mm: page_vma_mapped_walk(): settle PageHuge on entry
-      mm: page_vma_mapped_walk(): use pmde for *pvmw->pmd
-      mm: page_vma_mapped_walk(): prettify PVMW_MIGRATION block
-      mm: page_vma_mapped_walk(): crossing page table boundary
-      mm: page_vma_mapped_walk(): add a level of indentation
-      mm: page_vma_mapped_walk(): use goto instead of while (1)
-      mm: page_vma_mapped_walk(): get vma_address_end() earlier
-      mm/thp: fix page_vma_mapped_walk() if THP mapped by ptes
-      mm/thp: another PVMW_SYNC fix in page_vma_mapped_walk()
-      mm, futex: fix shared futex pgoff on shmem huge page
-
-Jue Wang (1):
-      mm/thp: fix page_address_in_vma() on file THP tails
-
-Juergen Gross (1):
-      xen/events: reset active flag for lateeoi events later
-
-ManYi Li (1):
-      scsi: sr: Return appropriate error code when disk is ejected
-
-Miaohe Lin (2):
-      mm/rmap: remove unneeded semicolon in page_not_mapped()
-      mm/rmap: use page_not_mapped in try_to_unmap()
-
-Petr Mladek (2):
-      kthread_worker: split code for canceling the delayed work timer
-      kthread: prevent deadlock when kthread_mod_delayed_work() races with kthread_cancel_delayed_work_sync()
-
-Tahsin Erdogan (1):
-      ext4: eliminate bogus error in ext4_data_block_valid_rcu()
-
-Tony Lindgren (3):
-      clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support
-      clocksource/drivers/timer-ti-dm: Prepare to handle dra7 timer wrap issue
-      clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
-
-Yang Shi (1):
-      mm: thp: replace DEBUG_VM BUG with VM_WARN when unmap fails for split
-
-afzal mohammed (1):
-      ARM: OMAP: replace setup_irq() by request_irq()
----
-Makefile                               |   2 +-
- arch/arm/boot/dts/dra7.dtsi            |  11 ++
- arch/arm/boot/dts/imx6qdl-sabresd.dtsi |   4 -
- arch/arm/mach-omap1/pm.c               |  13 ++-
- arch/arm/mach-omap1/time.c             |  10 +-
- arch/arm/mach-omap1/timer32k.c         |  10 +-
- arch/arm/mach-omap2/board-generic.c    |   4 +-
- arch/arm/mach-omap2/timer.c            | 181 +++++++++++++++++++++++----------
- arch/x86/kvm/svm.c                     |  33 ++++--
- drivers/clk/ti/clk-7xx.c               |   1 +
- drivers/gpu/drm/nouveau/nouveau_bo.c   |   4 +-
- drivers/scsi/sr.c                      |   2 +
- drivers/xen/events/events_base.c       |  23 ++++-
- fs/ext4/block_validity.c               |   4 +-
- include/linux/cpuhotplug.h             |   1 +
- include/linux/huge_mm.h                |   8 +-
- include/linux/hugetlb.h                |  16 ---
- include/linux/mm.h                     |   3 +
- include/linux/mmdebug.h                |  13 +++
- include/linux/pagemap.h                |  13 +--
- include/linux/rmap.h                   |   3 +-
- kernel/futex.c                         |   2 +-
- kernel/kthread.c                       |  77 +++++++++-----
- localversion-rt                        |   2 +-
- mm/huge_memory.c                       |  56 +++++-----
- mm/hugetlb.c                           |   5 +-
- mm/internal.h                          |  53 +++++++---
- mm/memory.c                            |  41 ++++++++
- mm/page_vma_mapped.c                   | 160 ++++++++++++++++++-----------
- mm/pgtable-generic.c                   |   4 +-
- mm/rmap.c                              |  48 +++++----
- mm/truncate.c                          |  43 ++++----
- 32 files changed, 546 insertions(+), 304 deletions(-)
----
+        if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
+                return r;
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index 490a028ddabe..9747124b877d 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -881,9 +881,9 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
+        mmu_seq = vcpu->kvm->mmu_notifier_seq;
+        smp_rmb();
+ 
+-       if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
+-                        write_fault, &map_writable))
+-               return RET_PF_RETRY;
++       if (kvm_faultin_pfn(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
++                           write_fault, &map_writable, &r))
++               return r;
+ 
+        if (handle_abnormal_pfn(vcpu, addr, walker.gfn, pfn, walker.pte_access, &r))
+                return r;
