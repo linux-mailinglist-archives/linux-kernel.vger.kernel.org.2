@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4043CEA25
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DD03CE9CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346580AbhGSRH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:07:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59808 "EHLO mail.kernel.org"
+        id S1359395AbhGSRB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:01:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347957AbhGSPfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AE62613FE;
-        Mon, 19 Jul 2021 16:13:02 +0000 (UTC)
+        id S1347896AbhGSPfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F405C613CC;
+        Mon, 19 Jul 2021 16:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711183;
-        bh=Se2FGQeQKMIAe4ioQZzPDNU3Yh/0eNuWMcgFHWocCG8=;
+        s=korg; t=1626711185;
+        bh=HqmlAkqCj5oe2HY1FIeZOrtpfv+jYtfWJVS8YpOkWRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZytQ5C26g+bXfhpKqf9wGu8ykaqXvwUlGetT9c3bg8INMhO1IqxQq1m1khp1ky3u6
-         PQAse5Be+ZPZMlL025fYM6yvQstiu5ztpdL/4DlCweMMjn9zHDVle13oKEzd0bP7r6
-         50iqHMEbHW8CV5MI1htxN+uEIDhxBE0KWS0Aspq0=
+        b=flNpj0gCzagPy6MkgBxcb/Bams/2CdQcocR4VcV33L9yAruLCGHHxRKBv6qh6y2UT
+         V9EWSPdAlrmK7SnFn4eKPxBgiW3S5q0eNPPuZ2vQbBnG78EkVqDPW8TeCc3CPHU6S6
+         Ox+wUhmCkKqXNB4AxVAvcGvGZ+v0EFsLHjh7xsKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
         "J. Bruce Fields" <bfields@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 258/351] nfsd: Reduce contention for the nfsd_file nf_rwsem
-Date:   Mon, 19 Jul 2021 16:53:24 +0200
-Message-Id: <20210719144953.482922922@linuxfoundation.org>
+Subject: [PATCH 5.13 259/351] NFSD: Prevent a possible oops in the nfs_dirent() tracepoint
+Date:   Mon, 19 Jul 2021 16:53:25 +0200
+Message-Id: <20210719144953.519491077@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -41,64 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit 474bc334698df98ce07c890f1898c7e7f389b0c7 ]
+[ Upstream commit 7b08cf62b1239a4322427d677ea9363f0ab677c6 ]
 
-When flushing out the unstable file writes as part of a COMMIT call, try
-to perform most of of the data writes and waits outside the semaphore.
+The double copy of the string is a mistake, plus __assign_str()
+uses strlen(), which is wrong to do on a string that isn't
+guaranteed to be NUL-terminated.
 
-This means that if the client is sending the COMMIT as part of a memory
-reclaim operation, then it can continue performing I/O, with contention
-for the lock occurring only once the data sync is finished.
-
-Fixes: 5011af4c698a ("nfsd: Fix stable writes")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
- Tested-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: 6019ce0742ca ("NFSD: Add a tracepoint to record directory entry encoding")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/vfs.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ fs/nfsd/trace.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-index 15adf1f6ab21..46485c04740d 100644
---- a/fs/nfsd/vfs.c
-+++ b/fs/nfsd/vfs.c
-@@ -1123,6 +1123,19 @@ out:
- }
- 
- #ifdef CONFIG_NFSD_V3
-+static int
-+nfsd_filemap_write_and_wait_range(struct nfsd_file *nf, loff_t offset,
-+				  loff_t end)
-+{
-+	struct address_space *mapping = nf->nf_file->f_mapping;
-+	int ret = filemap_fdatawrite_range(mapping, offset, end);
-+
-+	if (ret)
-+		return ret;
-+	filemap_fdatawait_range_keep_errors(mapping, offset, end);
-+	return 0;
-+}
-+
- /*
-  * Commit all pending writes to stable storage.
-  *
-@@ -1153,10 +1166,11 @@ nfsd_commit(struct svc_rqst *rqstp, struct svc_fh *fhp,
- 	if (err)
- 		goto out;
- 	if (EX_ISSYNC(fhp->fh_export)) {
--		int err2;
-+		int err2 = nfsd_filemap_write_and_wait_range(nf, offset, end);
- 
- 		down_write(&nf->nf_rwsem);
--		err2 = vfs_fsync_range(nf->nf_file, offset, end, 0);
-+		if (!err2)
-+			err2 = vfs_fsync_range(nf->nf_file, offset, end, 0);
- 		switch (err2) {
- 		case 0:
- 			nfsd_copy_boot_verifier(verf, net_generic(nf->nf_net,
+diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
+index e7a269291a73..f3961506fe16 100644
+--- a/fs/nfsd/trace.h
++++ b/fs/nfsd/trace.h
+@@ -408,7 +408,6 @@ TRACE_EVENT(nfsd_dirent,
+ 		__entry->ino = ino;
+ 		__entry->len = namlen;
+ 		memcpy(__get_str(name), name, namlen);
+-		__assign_str(name, name);
+ 	),
+ 	TP_printk("fh_hash=0x%08x ino=%llu name=%.*s",
+ 		__entry->fh_hash, __entry->ino,
 -- 
 2.30.2
 
