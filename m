@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F453CE81C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA763CE770
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350151AbhGSQqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:46:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43130 "EHLO mail.kernel.org"
+        id S1354033AbhGSQ0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:26:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347177AbhGSP1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:27:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3EE360200;
-        Mon, 19 Jul 2021 16:07:39 +0000 (UTC)
+        id S1346152AbhGSPOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:14:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54D10601FD;
+        Mon, 19 Jul 2021 15:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710860;
-        bh=ol+E2vJtoIGxg5jzdmCL+Y61nA1fIs0spuGJBTEUgNA=;
+        s=korg; t=1626710028;
+        bh=651vPCq6Maq6BkWOTJQanT2rRDroh8tOQQWo1JlNQeY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UDJ+LQL1Jhsimhh7obEmfL/FUekDTQ2agXBhc+/AgsXZ3iv6yQBk5lzOteg9l2o+/
-         cmdBDiU2kvDMQeQjL8u406RPPLldCGpKFltP/Us+hT0I5qUZ+7Z323lUr9GjH0PgeZ
-         NI6yETRIqlJPeQScqTbCHvo/w8OlOXmyZDJBa0w0=
+        b=EDds+q0nxcDKaHf2OVf0Aq/Ha2dcYNktpht4s3XVAI8EITiX6oLk3PBqULYxoK9rh
+         r8RQo/Uo1i6WKDePWtu6FogakZkCUGYX8Qs0bWmw4gCoSgfGyG2/Eyv+ghGnO3yQix
+         l6+L6KTaOWJRRDFS35TLUfCWE0sLiY6u3eC7wTZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 128/351] ALSA: usb-audio: scarlett2: Fix 18i8 Gen 2 PCM Input count
-Date:   Mon, 19 Jul 2021 16:51:14 +0200
-Message-Id: <20210719144948.722453878@linuxfoundation.org>
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 046/243] scsi: lpfc: Fix crash when lpfc_sli4_hba_setup() fails to initialize the SGLs
+Date:   Mon, 19 Jul 2021 16:51:15 +0200
+Message-Id: <20210719144942.407688270@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geoffrey D. Bennett <g@b4.vu>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit c5210f213456383482b4a77c5310282a89a106b5 ]
+[ Upstream commit 5aa615d195f1e142c662cb2253f057c9baec7531 ]
 
-The 18i8 Gen 2 has 8 PCM Inputs, not 20. Fix the ports entry in
-s18i8_gen2_info.
+The driver is encountering a crash in lpfc_free_iocb_list() while
+performing initial attachment.
 
-Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
-Link: https://lore.kernel.org/r/20210620164625.GA9165@m.b4.vu
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Code review found this to be an errant failure path that was taken, jumping
+to a tag that then referenced structures that were uninitialized.
+
+Fix the failure path.
+
+Link: https://lore.kernel.org/r/20210514195559.119853-9-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer_scarlett_gen2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc_sli.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index bca3e7fe27df..1982e67a0f32 100644
---- a/sound/usb/mixer_scarlett_gen2.c
-+++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -356,7 +356,7 @@ static const struct scarlett2_device_info s18i8_gen2_info = {
- 		},
- 		[SCARLETT2_PORT_TYPE_PCM] = {
- 			.id = 0x600,
--			.num = { 20, 18, 18, 14, 10 },
-+			.num = { 8, 18, 18, 14, 10 },
- 			.src_descr = "PCM %d",
- 			.src_num_offset = 1,
- 			.dst_descr = "PCM %02d Capture"
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index bf171ef61abd..990b700de689 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -7825,7 +7825,7 @@ lpfc_sli4_hba_setup(struct lpfc_hba *phba)
+ 				"0393 Error %d during rpi post operation\n",
+ 				rc);
+ 		rc = -ENODEV;
+-		goto out_destroy_queue;
++		goto out_free_iocblist;
+ 	}
+ 	lpfc_sli4_node_prep(phba);
+ 
+@@ -7991,8 +7991,9 @@ out_io_buff_free:
+ out_unset_queue:
+ 	/* Unset all the queues set up in this routine when error out */
+ 	lpfc_sli4_queue_unset(phba);
+-out_destroy_queue:
++out_free_iocblist:
+ 	lpfc_free_iocb_list(phba);
++out_destroy_queue:
+ 	lpfc_sli4_queue_destroy(phba);
+ out_stop_timers:
+ 	lpfc_stop_hba_timers(phba);
 -- 
 2.30.2
 
