@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EF03CEA75
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121E83CE906
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358542AbhGSRPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:15:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
+        id S1351833AbhGSQtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:49:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346107AbhGSPij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:38:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF3661355;
-        Mon, 19 Jul 2021 16:18:28 +0000 (UTC)
+        id S1346127AbhGSP1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:27:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 067DA6113A;
+        Mon, 19 Jul 2021 16:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711508;
-        bh=yaTQYHirmBKbG37mh1K7PYcOY8yl4a4MLQ1mreivnoc=;
+        s=korg; t=1626710881;
+        bh=NgYf5L9KJ6SIP4AvYq7HiB5s461VQyuNZ2Hi21ZO2Q4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+rhlbU76sr3OdyqvLXSTNrIN3qBMNYosvTK30hLP6KAQXP2601E1olJVJHVtmPHS
-         FxfEO4nwSzmQuRIJo0n3IUV7Vpbn9n8ztHZ9XMJ0eYmGgch5kAG14va9W5f2p2+p71
-         3kiOoiZTSDCr7nG2fMPW+6szF77H/6sHsQMNJDOs=
+        b=1iAt3VtRmy2T93xGEjF4+GUa8Cwi1xNzofiY6aXetFURtoAlJn1jizXJkH4BL8JHA
+         3dJyH9Qvp7qJmRm7AoS6KE2A9HDxm+bX+5OAIy0wpTj6BCc4gZsR/moxingPk9lizH
+         cXu7oGq3X/F96AHu0Fy02WoX7GIi0UQ69ngfjs4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wayne Lin <Wayne.Lin@amd.com>,
-        Lyude Paul <lyude@redhat.com>
-Subject: [PATCH 5.12 028/292] drm/dp_mst: Avoid to mess up payload table by ports in stale topology
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 144/351] i2c: core: Disable client irq on reboot/shutdown
 Date:   Mon, 19 Jul 2021 16:51:30 +0200
-Message-Id: <20210719144943.460842821@linuxfoundation.org>
+Message-Id: <20210719144949.243281585@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,121 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wayne Lin <Wayne.Lin@amd.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-commit 3769e4c0af5b82c8ea21d037013cb9564dfaa51f upstream.
+[ Upstream commit b64210f2f7c11c757432ba3701d88241b2b98fb1 ]
 
-[Why]
-After unplug/hotplug hub from the system, userspace might start to
-clear stale payloads gradually. If we call drm_dp_mst_deallocate_vcpi()
-to release stale VCPI of those ports which are not relating to current
-topology, we have chane to wrongly clear active payload table entry for
-current topology.
+If an i2c client receives an interrupt during reboot or shutdown it may
+be too late to service it by making an i2c transaction on the bus
+because the i2c controller has already been shutdown. This can lead to
+system hangs if the i2c controller tries to make a transfer that is
+doomed to fail because the access to the i2c pins is already shut down,
+or an iommu translation has been torn down so i2c controller register
+access doesn't work.
 
-E.g.
-We have allocated VCPI 1 in current payload table and we call
-drm_dp_mst_deallocate_vcpi() to clean VCPI 1 in stale topology. In
-drm_dp_mst_deallocate_vcpi(), it will call drm_dp_mst_put_payload_id()
-tp put VCPI 1 and which means ID 1 is available again. Thereafter, if we
-want to allocate a new payload stream, it will find ID 1 is available by
-drm_dp_mst_assign_payload_id(). However, ID 1 is being used
+Let's simply disable the irq if there isn't a shutdown callback for an
+i2c client when there is an irq associated with the device. This will
+make sure that irqs don't come in later than the time that we can handle
+it. We don't do this if the i2c client device already has a shutdown
+callback because presumably they're doing the right thing and quieting
+the device so irqs don't come in after the shutdown callback returns.
 
-[How]
-Check target sink is relating to current topology or not before doing
-any payload table update.
-Searching upward to find the target sink's relevant root branch device.
-If the found root branch device is not the same root of current
-topology, don't update payload table.
-
-Changes since v1:
-* Change debug macro to use drm_dbg_kms() instead
-* Amend the commit message to add Cc tag.
-
-Signed-off-by: Wayne Lin <Wayne.Lin@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210616035501.3776-3-Wayne.Lin@amd.com
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: kernel test robot <lkp@intel.com>
+[swboyd@chromium.org: Dropped newline, added commit text, added
+interrupt.h for robot build error]
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |   29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/i2c/i2c-core-base.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -94,6 +94,9 @@ static int drm_dp_mst_register_i2c_bus(s
- static void drm_dp_mst_unregister_i2c_bus(struct drm_dp_mst_port *port);
- static void drm_dp_mst_kick_tx(struct drm_dp_mst_topology_mgr *mgr);
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 5a97e4a02fa2..e314ccaf114a 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -24,6 +24,7 @@
+ #include <linux/i2c-smbus.h>
+ #include <linux/idr.h>
+ #include <linux/init.h>
++#include <linux/interrupt.h>
+ #include <linux/irqflags.h>
+ #include <linux/jump_label.h>
+ #include <linux/kernel.h>
+@@ -627,6 +628,8 @@ static void i2c_device_shutdown(struct device *dev)
+ 	driver = to_i2c_driver(dev->driver);
+ 	if (driver->shutdown)
+ 		driver->shutdown(client);
++	else if (client->irq > 0)
++		disable_irq(client->irq);
+ }
  
-+static bool drm_dp_mst_port_downstream_of_branch(struct drm_dp_mst_port *port,
-+						 struct drm_dp_mst_branch *branch);
-+
- #define DBG_PREFIX "[dp_mst]"
- 
- #define DP_STR(x) [DP_ ## x] = #x
-@@ -3362,6 +3365,7 @@ int drm_dp_update_payload_part1(struct d
- 	struct drm_dp_mst_port *port;
- 	int i, j;
- 	int cur_slots = 1;
-+	bool skip;
- 
- 	mutex_lock(&mgr->payload_lock);
- 	for (i = 0; i < mgr->max_payloads; i++) {
-@@ -3376,6 +3380,14 @@ int drm_dp_update_payload_part1(struct d
- 			port = container_of(vcpi, struct drm_dp_mst_port,
- 					    vcpi);
- 
-+			mutex_lock(&mgr->lock);
-+			skip = !drm_dp_mst_port_downstream_of_branch(port, mgr->mst_primary);
-+			mutex_unlock(&mgr->lock);
-+
-+			if (skip) {
-+				drm_dbg_kms("Virtual channel %d is not in current topology\n", i);
-+				continue;
-+			}
- 			/* Validated ports don't matter if we're releasing
- 			 * VCPI
- 			 */
-@@ -3475,6 +3487,7 @@ int drm_dp_update_payload_part2(struct d
- 	struct drm_dp_mst_port *port;
- 	int i;
- 	int ret = 0;
-+	bool skip;
- 
- 	mutex_lock(&mgr->payload_lock);
- 	for (i = 0; i < mgr->max_payloads; i++) {
-@@ -3484,6 +3497,13 @@ int drm_dp_update_payload_part2(struct d
- 
- 		port = container_of(mgr->proposed_vcpis[i], struct drm_dp_mst_port, vcpi);
- 
-+		mutex_lock(&mgr->lock);
-+		skip = !drm_dp_mst_port_downstream_of_branch(port, mgr->mst_primary);
-+		mutex_unlock(&mgr->lock);
-+
-+		if (skip)
-+			continue;
-+
- 		DRM_DEBUG_KMS("payload %d %d\n", i, mgr->payloads[i].payload_state);
- 		if (mgr->payloads[i].payload_state == DP_PAYLOAD_LOCAL) {
- 			ret = drm_dp_create_payload_step2(mgr, port, mgr->proposed_vcpis[i]->vcpi, &mgr->payloads[i]);
-@@ -4565,9 +4585,18 @@ EXPORT_SYMBOL(drm_dp_mst_reset_vcpi_slot
- void drm_dp_mst_deallocate_vcpi(struct drm_dp_mst_topology_mgr *mgr,
- 				struct drm_dp_mst_port *port)
- {
-+	bool skip;
-+
- 	if (!port->vcpi.vcpi)
- 		return;
- 
-+	mutex_lock(&mgr->lock);
-+	skip = !drm_dp_mst_port_downstream_of_branch(port, mgr->mst_primary);
-+	mutex_unlock(&mgr->lock);
-+
-+	if (skip)
-+		return;
-+
- 	drm_dp_mst_put_payload_id(mgr, port->vcpi.vcpi);
- 	port->vcpi.num_slots = 0;
- 	port->vcpi.pbn = 0;
+ static void i2c_client_dev_release(struct device *dev)
+-- 
+2.30.2
+
 
 
