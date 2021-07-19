@@ -2,489 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C308C3CD171
+	by mail.lfdr.de (Postfix) with ESMTP id 731BD3CD170
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236237AbhGSJSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:18:37 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:28052 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236240AbhGSJSg (ORCPT
+        id S236251AbhGSJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236212AbhGSJSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:18:36 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16J9uQ7G032289;
-        Mon, 19 Jul 2021 09:58:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=fUD2sNH4VpPL94hJVeC0HArY1XA7st2Xbs+9/DXfHg4=;
- b=Nvfj4qniIk3PFwILR/AWEGB7HDYm0ePCiR8NzAafjaSdLEoJADcdW/qRylK6G0yo8pO2
- CW0yEP/vE2VXhKrmHAsW3PZ3N7fKUtIs2Z+tKlt6FHIsKgNJpWuPTdiJCFcFVRyVm9K8
- a5PeirgiQkbI3UpMo0uzFCpjt3lRNiRzk46tD8D/J5drRb+BTFD4KAaW4FIilkjzRUYp
- dEbXt2bhIKccWQALrnIEI9X/zAw4lhjS91QzIaXsKxLbsqywuzqs2WMjo7Dmv0Kgb6aI
- aHRdxK9z1LNLTH3/nrszMfKHU1Z6cywjiz34NvYKQhOE0v2tZlxlsHdpsjUtdACD3AiK FQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=fUD2sNH4VpPL94hJVeC0HArY1XA7st2Xbs+9/DXfHg4=;
- b=xQrVzizpVPISQWYXWM86DUw8UxIRSnspZSDFySwEt33WLRlBG+a2xb2HuYuTYWqFqNCA
- fS/sK1D96T5o8SMDA4OekSvQCS2nyOjc0Z3g8VM55eCp3mIBbb7/fNXwRJbs6NzGgD0u
- PMykKJRLAA7t40G3fvBuy/OdQVDFsVw6TmD9qHR8DSoogbes6bi5XFrKua1XViLpOUk0
- z9FFBmk37qS08OAKcHnle0JuD96GzHb9FCpJadRKy31MtAqa4F44MuEwxvwOGKrMVh7c
- 1eVI2ZfRYHlSTAk0pTLbsEmN6ZT7FQ+nJpy7qppLfYtVB77XanVY/dZ/kagJ16TwLAL9 kg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39vrn5h20q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Jul 2021 09:58:43 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16J9tDLG105114;
-        Mon, 19 Jul 2021 09:58:42 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-        by aserp3030.oracle.com with ESMTP id 39upe807ec-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Jul 2021 09:58:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TQ5FX7vdUXmkcWg/DvpDvbEZJJREeMgpnFGumN/aEa8tbKxcjJqfOZWf5SkY7/hnDmEUb6/JLr0JWu0zxWqRlCePe72B4StajlNJaFeIJOjT3XI6gooG7i6MdmFipnwBWI1MEP51cvPQRBMoDHYS/7PVgBsMT71uYyNGuQbcnOASBd7QDcZ9QNuxBaDxorQ4OLbrftQ4zsL4wCeNF8pU6eSMEEQXGYcR1E1Tlv/IZ9pjbZDyKOavxOSJwFwFqqcznHw2TADyqjTCUVyJC+IL03CujCbRi5Z4ExgxDnGwoInB6jGkQPNqRyWdzTcMw7QTpPjy8VXCLrLqsGvnHaS42A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fUD2sNH4VpPL94hJVeC0HArY1XA7st2Xbs+9/DXfHg4=;
- b=jTD5VL/6M+7lRywNOqmNraPgCOhqjX9kSOkR3PU0yZdeF0Eve1tneFJBTL9HdbcQv9UwKJ4aY2a2XDqgG6Sqou652VYsB7XvF28DykdRo5n4jtVQv0tWq0hKVxPxdxPFjramfv1biWRGhlIi831GBHuo8Fgp6fntDBLx3UBuNc2sqKa5CP0w9uJrmNN5qpEzU1LLMOdNU5X1oIdiDen3RpT+ie3EcZ6QZCSOEO1RaLR/hMFqBTfe1ibTgnZM4BDTpnnV9lbP4pUTN1hBlU1XN5m5cLQ49jJh6LliDpCFoGoBTALAAfe7aLq3VGfeH68lpJjlrRkqEGUQDj6O+KJ3aA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 19 Jul 2021 05:18:18 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B29CC061574;
+        Mon, 19 Jul 2021 02:02:48 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id ee25so23126215edb.5;
+        Mon, 19 Jul 2021 02:58:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fUD2sNH4VpPL94hJVeC0HArY1XA7st2Xbs+9/DXfHg4=;
- b=NMd4AD4n0+dYTHuRxVd5a3RGVWAoBDH0wBXYKtw4SThyT08oclAZdNkRK92R5U5+FIu4ErqJ8zMu74dIQfFalrBDAnm0J8ULtUXgdVWuqxO3+JS1Hx+QRjp3WtZ59Un8orX+ndDBkVeU9TBd7bSzlEj1ubo5oe5qqRT3eGWjvdA=
-Authentication-Results: loongson.cn; dkim=none (message not signed)
- header.d=none;loongson.cn; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4690.namprd10.prod.outlook.com
- (2603:10b6:303:9f::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
- 2021 09:58:39 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 09:58:39 +0000
-Date:   Mon, 19 Jul 2021 12:58:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     lichenyang <lichenyang@loongson.cn>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devel@linuxdriverproject.org, Huacai Chen <chenhuacai@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v2 3/3] drm/loongson: Add interrupt driver for LS7A
-Message-ID: <20210719095819.GS1931@kadam>
-References: <20210715015809.107821-1-lichenyang@loongson.cn>
- <20210715015809.107821-3-lichenyang@loongson.cn>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715015809.107821-3-lichenyang@loongson.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0011.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::16)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FXmf8gnmrhy2GyOGMcTkKRbmrND8t8oV7ZWyl5/d3aI=;
+        b=TjIKZrf9Ms60L2amW06L8YjtBgylgXv6ZYq5B2EZ8I0BxZBYOcdK8EF/GK9NIPUq6R
+         4uwzWni2FbCqBN13OxHHNO0ldPBvvPJCyNg4fF78stdHM+qvZabF5e+gcZ2c842S5WDZ
+         i1zM4mG8cj2B3RLoOT9/T4UglMIR84LFhJ+Uudc84YrOvJuHcLOGQo5FfV0Gip49jVNC
+         TvUbhJ0xqGlc+Mt3eRIrvxgvWBIUgQCXRa9fyJ824k8Wt/+UodS/gTBUDRk1PEJVoyxN
+         lSF1KXDHu2AI3K7rvArATcgGH4yyMGAXGV9m/tkXyDAdLSgP3hyatkSQeWK0DSp2QtGO
+         Az6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FXmf8gnmrhy2GyOGMcTkKRbmrND8t8oV7ZWyl5/d3aI=;
+        b=AQi0RWqkwJ5aNKSq3NjNLOI4Y2H2FE60a2WbJkLj88DaztNfBpqk4b7gtMkf39J7E1
+         9n+3f5mj9WKB4P8erERzKavA0m9AqA02AhY+cBUR8j9iahGiYgqLJ1B9A2aU2AQQ76tK
+         cJRfbQOkHS2UaXViY+/5BIogTWfMD6lHAbEil3AV6ZSwG1Ww4+0gylwnaMcfJnCSdiqg
+         QMuB9DOfd0jNhbwwVN71ZsWYBfvzuF0Ivxn1TCzzq1aAStydX3cAetJ3MeTeWdoH03Ow
+         rv8Tlxy3gQt7IUK0KLNMSuQCS8m89a/pwXbBsACkSv4RNbIKvTA92bg8awkEHZlM5ioH
+         5now==
+X-Gm-Message-State: AOAM532DYzf7POOnqUQe5pM27b1FsTgeZyWms0Z38mSBFpLnBbgdgKpK
+        i5oNHA6Iu4v6NbmcFTpKNZMCvJffjYgy4yFuYns=
+X-Google-Smtp-Source: ABdhPJxwgNhJ13JftchIfihnAK4wrWoUBHwunAFqMOhuCHNJS0nl2W2bClagI2IslOPYbS/sC7WBD5jtohu1jX2SDyU=
+X-Received: by 2002:a05:6402:4c5:: with SMTP id n5mr33082879edw.322.1626688736695;
+ Mon, 19 Jul 2021 02:58:56 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JNAP275CA0011.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 09:58:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eea22496-4c98-4ed5-d6b8-08d94a9bc82b
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4690:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4690AEBF7C3533F37FAA2A068EE19@CO1PR10MB4690.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qhhtFLPEJC0Xu4OnhOyMuTD4S9Xe2UiLs7gKyKn0lMtYbLtcZsVHWyI6nI/bLbofmRRCG/yrOFMEAK4/B1IHdmwCleX/odcSz7uC277aModzt5BbeFB6Foo79RKxW97jn/GlSPCjKuC69Oq4jzjuPccct8+EpiG6vJ+th4/xgfUREwhdIDK/CIRkHKWXdl+7pT6FyzHUQp5zniGZimRFcAB7bzgrE7J83C12dPfjsgdGiShXtiKyOnidPEGdzVsXNZbCA85YEG0Q1CKzW3RveWZ3Fi6+FCLIgv7oeYdjN7o90YIjbdbWfLGr1uQvc4tFXX+gaLyAtEMNuKOwhUw8W42MyFb3+YfH+6Qmn8Rt/6jIigI5jYiGra32MB1oYGaDycoiUQNoxrag2CfQiBEVxurbMEb1nHntVIH9LEQVWFFJ3i13LK+j8qC42aHKGECgBWLuKUNvAyUYbtQLwMKp592RD/hMhpJ7xqjO31LYqrGuCXIFGz9ny+CHKyyiJCfeo3wXlV1iQbB9bjoQYdfa1RrEugYOy1hg2YwidPNUAqP4Yfzpw+Lc+MgjuuIU3sx0mTYIKcMvdBPzF+ONIBWfeNQ8o4hsd3oLtEoMfDmkjyBRj0aPRP+cw4diErK0z43AFhjo1ia1VnfGxd73aCjj4q9qPNSZFWmRnsYXlfIJneUwSsmFi6Tk5rlQgtWujEWjuVWcFJ+2jcMSknB3De2Fww==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(136003)(366004)(396003)(376002)(26005)(6916009)(186003)(2906002)(86362001)(54906003)(30864003)(33716001)(66476007)(66556008)(316002)(66946007)(5660300002)(1076003)(4326008)(8936002)(6666004)(9576002)(83380400001)(478600001)(38100700002)(38350700002)(956004)(52116002)(44832011)(8676002)(6496006)(33656002)(55016002)(9686003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vArUiJCM/uImWY+L0RBFhXW7OT+6fKhyV1iPW274b0bKfBaKiCiLbOj7z3sw?=
- =?us-ascii?Q?O+IZ7sYvKrtELzBuIp8IScfIG/FdQ0323dMCbuYtygShhahTdMPYbG3ZAHVw?=
- =?us-ascii?Q?Td1vAHMjhhKN/xL2Ur2gu/p8pKtlu5zd+ILBbIFuEqiVMyyD06boZ4iP5nIp?=
- =?us-ascii?Q?yZD/Tghavx2CVQ3MfGZUgYKkQNGUs64p0X6NzAdxnHSQdFCEbpvIKCMObPX3?=
- =?us-ascii?Q?BLfzsT/pbTxzWm4tMnjBRzwL7dM+JA6XB/Syx9TnW6Knz1gc+DzD1PwzvDhA?=
- =?us-ascii?Q?9qdwWuD1K81KNtbgiefM4PJGh7S3eyjWd+l45ar8Tj8br17dBHuXfsz0nNdK?=
- =?us-ascii?Q?J428xrjgRUgONWzhuiFp83Ovkb82IRhjiPWrezJDlfUh1N/A6c0FAD/jiPMb?=
- =?us-ascii?Q?msfdl4l0BVX1iWKHu96xgwsbwhRogwzf2y/q+/2cjlcFET9HNiOsVoX4LzsV?=
- =?us-ascii?Q?W8sOgxDcskoPLpSWK8V4qmZU2660Lw4NHqpLUgnPGzgkkuuLQJx5Y2V1+jO0?=
- =?us-ascii?Q?GuNmCMOfDAg6TFXjCYIR7WKecslfhjoRIHRMOjgxQyJe4TQVbisdLgM5S5vn?=
- =?us-ascii?Q?9HmmJJXMXtAn2W7szzp2hGpZpTWQPfrGxe6rf5v9PNgxdem+sc1pkJ6kmItp?=
- =?us-ascii?Q?xehZbUVeg9WxiY/RPRoujOemh9v+uLQm+g0WhTVFg9ewLeblsC8x2W8cvc9F?=
- =?us-ascii?Q?h4C8me2ybn/daz1OUbv40tPGtx1d0HTFiu+8ETcHvuGMNUdwRtiO2pQrB9/7?=
- =?us-ascii?Q?2ZiNHctgzD+3seLarw9eLqXEbqmaDA23xpVb80aE1KPUc8GAPkmSFMXJgSxL?=
- =?us-ascii?Q?gfB47XuxvhQg0NuComqhLqkcu1tzZ6zlVngIP6yEK9qZgjlcIBzmDNz8f3c3?=
- =?us-ascii?Q?8gkNX6ktF2TsuMSDpVFLpqjv7n2VJcpwA1R7m5QWFRLIH3QRtpPkUtXs+Oet?=
- =?us-ascii?Q?KslL0FWrXLfykHcNa5VScK9HZX/6ZQIPZqWI3gWcvR04UWTxzuXa1NFIFMXA?=
- =?us-ascii?Q?md7RfPTPxbySjqmlXN9153HAtF+YaNpCb7yMjh95+nCY1RQqHpKZPQXLI4rA?=
- =?us-ascii?Q?6HX+6T4g39Fj1q4FaJ5Ie8q0m8BVK0Bt6KSKxAY+R28K+ytSE0HO9KYG6dCJ?=
- =?us-ascii?Q?FEHqit1YUGON25JO2Q3PkXXriLgIDARbOzFLSg3H9p72fH55FRrL2R+3wWiF?=
- =?us-ascii?Q?IxB7gCVnvqdKXy6CfCbq9osPX73O8bcp1cENBp9iN4fAQB7wq2znEEAJ3+A1?=
- =?us-ascii?Q?iHmTarL3myfGQEipChXRb+97EMWh4Zw9PVc2t/FFC2ccoW3pdgoESCUcMLau?=
- =?us-ascii?Q?o8XOjh1bw9PJPOH/vpQ8RRec?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eea22496-4c98-4ed5-d6b8-08d94a9bc82b
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 09:58:39.2765
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k7nqbytOXUYQqRFTopQz2AnjJEkHx9qisZ18pBBKDnsFgMOLN2QPPd5vQPzOnoZ/spRDCCWVe6hy+jIuW+meGzEITdDgEKaGEHTmMh0VsQQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4690
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10049 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 bulkscore=0
- malwarescore=0 phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107190056
-X-Proofpoint-GUID: kqxbPwezhmudkwCDJuxNppxN6quqLrtj
-X-Proofpoint-ORIG-GUID: kqxbPwezhmudkwCDJuxNppxN6quqLrtj
+References: <20210707093409.1445747-1-mudongliangabcd@gmail.com>
+ <20210713084853.GA6572@gofer.mess.org> <CAD-N9QVao4jFEPNrFm5=_qS6brXQuJYfXkSo6YqECgUZtVhW3w@mail.gmail.com>
+ <CAD-N9QUVDPeJqZPA7WEYHS5rKojTP1ae_vDJ1bK0=-+Aqppebg@mail.gmail.com>
+In-Reply-To: <CAD-N9QUVDPeJqZPA7WEYHS5rKojTP1ae_vDJ1bK0=-+Aqppebg@mail.gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 19 Jul 2021 17:58:30 +0800
+Message-ID: <CAD-N9QWsdswh3JeOpe9+9gmv+KjznhaVQ5ujHa4yr-dQ_ZGXhQ@mail.gmail.com>
+Subject: Re: [PATCH v2] [media] em28xx-input: fix refcount bug in em28xx_usb_disconnect
+To:     Sean Young <sean@mess.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 09:58:09AM +0800, lichenyang wrote:
-> Add LS7A DC vsync interrupt enable and close function, and
-> register irq_handler function interface.
-> Add vbrank event processing flow.
-> 
-> V2:
-> - Remove the useless flags parameter.
+On Mon, Jul 19, 2021 at 5:57 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>
+> This can also fix another crash report - KASAN: use-after-free Read in
+> em28xx_close_extension [1]. It should be duplicated bug reports with
+> the memory leak.
 
-Do this in a separate patch.  It is an unrelated cleanup.
+not memory leak, just the refcount bug mentioned in the commit message.
 
-> - Added error handling in the loongson_drm_load function.
-> 
-> Signed-off-by: lichenyang <lichenyang@loongson.cn>
-> ---
->  drivers/gpu/drm/loongson/Makefile        |   3 +-
->  drivers/gpu/drm/loongson/loongson_crtc.c |  43 +++++++++-
->  drivers/gpu/drm/loongson/loongson_drv.c  |  22 +++--
->  drivers/gpu/drm/loongson/loongson_drv.h  |  17 +++-
->  drivers/gpu/drm/loongson/loongson_irq.c  | 105 +++++++++++++++++++++++
->  5 files changed, 179 insertions(+), 11 deletions(-)
->  create mode 100644 drivers/gpu/drm/loongson/loongson_irq.c
-> 
-> diff --git a/drivers/gpu/drm/loongson/Makefile b/drivers/gpu/drm/loongson/Makefile
-> index 773b806e99a2..cc50b65c7e03 100644
-> --- a/drivers/gpu/drm/loongson/Makefile
-> +++ b/drivers/gpu/drm/loongson/Makefile
-> @@ -11,5 +11,6 @@ loongson-y := loongson_drv.o \
->  	loongson_device.o \
->  	loongson_connector.o \
->  	loongson_encoder.o \
-> -	loongson_i2c.o
-> +	loongson_i2c.o \
-> +	loongson_irq.o
->  obj-$(CONFIG_DRM_LOONGSON) += loongson.o
-> diff --git a/drivers/gpu/drm/loongson/loongson_crtc.c b/drivers/gpu/drm/loongson/loongson_crtc.c
-> index 4cb65fa08778..4c62d5b2bd56 100644
-> --- a/drivers/gpu/drm/loongson/loongson_crtc.c
-> +++ b/drivers/gpu/drm/loongson/loongson_crtc.c
-> @@ -154,19 +154,25 @@ static void loongson_crtc_mode_set_nofb(struct drm_crtc *crtc)
->  }
->  
->  static void loongson_crtc_atomic_enable(struct drm_crtc *crtc,
-> -					struct drm_atomic_state *old_state)
-> +					struct drm_atomic_state *old_crtc_state)
->  {
->  	struct drm_device *dev = crtc->dev;
->  	struct loongson_device *ldev = dev->dev_private;
->  	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
->  	u32 reg_offset = lcrtc->reg_offset;
->  
-> +	if (lcrtc->cfg_reg & CFG_ENABLE)
-> +		goto vblank_on;
-> +
->  	lcrtc->cfg_reg |= CFG_ENABLE;
->  	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
-> +
-> +vblank_on:
-> +	drm_crtc_vblank_on(crtc);
->  }
->  
->  static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
-> -					 struct drm_atomic_state *old_state)
-> +					 struct drm_atomic_state *old_crtc_state)
->  {
->  	struct drm_device *dev = crtc->dev;
->  	struct loongson_device *ldev = dev->dev_private;
-> @@ -175,10 +181,36 @@ static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
->  
->  	lcrtc->cfg_reg &= ~CFG_ENABLE;
->  	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
-> +
-> +	spin_lock_irq(&crtc->dev->event_lock);
-> +	if (crtc->state->event) {
-> +		drm_crtc_send_vblank_event(crtc, crtc->state->event);
-> +		crtc->state->event = NULL;
-> +	}
-> +	spin_unlock_irq(&crtc->dev->event_lock);
-> +
-> +	drm_crtc_vblank_off(crtc);
-> +}
-> +
-> +static void loongson_crtc_atomic_flush(struct drm_crtc *crtc,
-> +				       struct drm_crtc_state *old_crtc_state)
-> +{
-> +	struct drm_pending_vblank_event *event = crtc->state->event;
-> +
-> +	if (event) {
-
-Flip this around:
-
-	if (!event)
-		return;
-
-
-> +		crtc->state->event = NULL;
-> +
-> +		spin_lock_irq(&crtc->dev->event_lock);
-> +		if (drm_crtc_vblank_get(crtc) == 0)
-> +			drm_crtc_arm_vblank_event(crtc, event);
-> +		else
-> +			drm_crtc_send_vblank_event(crtc, event);
-> +		spin_unlock_irq(&crtc->dev->event_lock);
-> +	}
->  }
->  
->  static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
-> -						const struct drm_display_mode *mode)
-> +		const struct drm_display_mode *mode)
->  {
->  	if (mode->hdisplay > 1920)
->  		return MODE_BAD;
-> @@ -194,9 +226,10 @@ static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
->  
->  static const struct drm_crtc_helper_funcs loongson_crtc_helper_funcs = {
->  	.mode_valid = loongson_mode_valid,
-> +	.mode_set_nofb = loongson_crtc_mode_set_nofb,
-> +	.atomic_flush = loongson_crtc_atomic_flush,
->  	.atomic_enable = loongson_crtc_atomic_enable,
->  	.atomic_disable = loongson_crtc_atomic_disable,
-> -	.mode_set_nofb = loongson_crtc_mode_set_nofb,
->  };
->  
->  static const struct drm_crtc_funcs loongson_crtc_funcs = {
-> @@ -206,6 +239,8 @@ static const struct drm_crtc_funcs loongson_crtc_funcs = {
->  	.destroy = drm_crtc_cleanup,
->  	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
->  	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
-> +	.enable_vblank = loongson_crtc_enable_vblank,
-> +	.disable_vblank = loongson_crtc_disable_vblank,
->  };
->  
->  int loongson_crtc_init(struct loongson_device *ldev, int index)
-> diff --git a/drivers/gpu/drm/loongson/loongson_drv.c b/drivers/gpu/drm/loongson/loongson_drv.c
-> index 252be9e25aff..13003f6ae062 100644
-> --- a/drivers/gpu/drm/loongson/loongson_drv.c
-> +++ b/drivers/gpu/drm/loongson/loongson_drv.c
-> @@ -24,7 +24,7 @@ static const struct drm_mode_config_funcs loongson_mode_funcs = {
->  	.mode_valid = drm_vram_helper_mode_valid
->  };
->  
-> -static int loongson_device_init(struct drm_device *dev, uint32_t flags)
-> +static int loongson_device_init(struct drm_device *dev)
->  {
->  	struct loongson_device *ldev = dev->dev_private;
->  	struct pci_dev *gpu_pdev;
-> @@ -131,7 +131,7 @@ int loongson_modeset_init(struct loongson_device *ldev)
->  	return 0;
->  }
->  
-> -static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
-> +static int loongson_drm_load(struct drm_device *dev)
->  {
->  	struct loongson_device *ldev;
->  	int ret;
-> @@ -143,7 +143,7 @@ static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
->  	dev->dev_private = ldev;
->  	ldev->dev = dev;
->  
-> -	ret = loongson_device_init(dev, flags);
-> +	ret = loongson_device_init(dev);
->  	if (ret)
->  		goto err;
->  
-> @@ -164,8 +164,16 @@ static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
->  	pci_set_drvdata(dev->pdev, dev);
->  
->  	ret = loongson_modeset_init(ldev);
-> -	if (ret)
-> +	if (ret) {
->  		dev_err(dev->dev, "Fatal error during modeset init: %d\n", ret);
-> +		goto err;
-> +	}
-> +
-> +	ret = loongson_irq_init(ldev);
-> +	if (ret) {
-> +		dev_err(dev->dev, "Fatal error during irq init: %d\n", ret);
-> +		goto err;
-> +	}
->  
->  	drm_kms_helper_poll_init(dev);
->  	drm_mode_config_reset(dev);
-> @@ -192,6 +200,10 @@ static struct drm_driver loongson_drm_driver = {
->  	.fops = &fops,
->  	DRM_GEM_VRAM_DRIVER,
->  
-> +	.irq_handler = loongson_irq_handler,
-> +	.irq_preinstall = loongson_irq_preinstall,
-> +	.irq_uninstall = loongson_irq_uninstall,
-> +
->  	.name = DRIVER_NAME,
->  	.desc = DRIVER_DESC,
->  	.date = DRIVER_DATE,
-> @@ -221,7 +233,7 @@ static int loongson_pci_probe(struct pci_dev *pdev,
->  		goto err_free;
->  	}
->  
-> -	ret = loongson_drm_load(dev, 0x0);
-> +	ret = loongson_drm_load(dev);
->  	if (ret) {
->  		drm_err(dev, "failed to load loongson: %d\n", ret);
->  		goto err_pdev;
-> diff --git a/drivers/gpu/drm/loongson/loongson_drv.h b/drivers/gpu/drm/loongson/loongson_drv.h
-> index 24a534c3c79c..60f5bd48f7f2 100644
-> --- a/drivers/gpu/drm/loongson/loongson_drv.h
-> +++ b/drivers/gpu/drm/loongson/loongson_drv.h
-> @@ -4,9 +4,11 @@
->  #define __LOONGSON_DRV_H__
->  
->  #include <drm/drm_drv.h>
-> +#include <drm/drm_fourcc.h>
-> +#include <drm/drm_vblank.h>
->  #include <drm/drm_gem.h>
-> +#include <drm/drm_irq.h>
->  #include <drm/drm_fb_helper.h>
-> -#include <drm/drm_fourcc.h>
->  #include <drm/drm_probe_helper.h>
->  #include <drm/drm_atomic.h>
->  #include <drm/drm_atomic_helper.h>
-> @@ -49,6 +51,7 @@
->  #define FB_HSYNC_REG (0x1420)
->  #define FB_VDISPLAY_REG (0x1480)
->  #define FB_VSYNC_REG (0x14a0)
-> +#define FB_INT_REG (0x1570)
->  
->  #define CFG_FMT GENMASK(2, 0)
->  #define CFG_FBSWITCH BIT(7)
-> @@ -60,6 +63,10 @@
->  #define FB_PANCFG_DEF 0x80001311
->  #define FB_HSYNC_PULSE (1 << 30)
->  #define FB_VSYNC_PULSE (1 << 30)
-> +#define FB_VSYNC1_ENABLE (1 << 16)
-> +#define FB_VSYNC0_ENABLE (1 << 18)
-> +#define FB_VSYNC1_INT (1 << 0)
-> +#define FB_VSYNC0_INT (1 << 2)
->  
->  /* PIX PLL */
->  #define LOOPC_MIN 24
-> @@ -136,6 +143,14 @@ int loongson_encoder_init(struct loongson_device *ldev, int index);
->  /* plane */
->  int loongson_plane_init(struct loongson_crtc *lcrtc);
->  
-> +/* irq */
-> +int loongson_irq_init(struct loongson_device *ldev);
-> +int loongson_crtc_enable_vblank(struct drm_crtc *crtc);
-> +void loongson_crtc_disable_vblank(struct drm_crtc *crtc);
-> +irqreturn_t loongson_irq_handler(int irq, void *arg);
-> +void loongson_irq_preinstall(struct drm_device *dev);
-> +void loongson_irq_uninstall(struct drm_device *dev);
-> +
->  /* i2c */
->  int loongson_dc_gpio_init(struct loongson_device *ldev);
->  
-> diff --git a/drivers/gpu/drm/loongson/loongson_irq.c b/drivers/gpu/drm/loongson/loongson_irq.c
-> new file mode 100644
-> index 000000000000..d212e16f3c00
-> --- /dev/null
-> +++ b/drivers/gpu/drm/loongson/loongson_irq.c
-> @@ -0,0 +1,105 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +#include "loongson_drv.h"
-> +#include <linux/pci.h>
-> +
-> +int loongson_irq_init(struct loongson_device *ldev)
-> +{
-> +	struct drm_device *dev;
-> +	int ret, irq;
-> +
-> +	dev = ldev->dev;
-> +	irq = dev->pdev->irq;
-> +
-> +	ret = drm_vblank_init(dev, ldev->num_crtc);
-> +	if (ret) {
-> +		dev_err(dev->dev, "Fatal error during vblank init: %d\n", ret);
-> +		return ret;
-> +	}
-> +	DRM_INFO("drm vblank init finished\n");
-> +
-> +	ret = drm_irq_install(dev, irq);
-> +	if (ret) {
-> +		dev_err(dev->dev, "Fatal error during irq install: %d\n", ret);
-> +		return ret;
-> +	}
-> +	DRM_INFO("loongson irq initialized\n");
-> +
-> +	return 0;
-> +}
-> +
-> +int loongson_crtc_enable_vblank(struct drm_crtc *crtc)
-> +{
-> +	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
-> +	struct loongson_device *ldev = lcrtc->ldev;
-> +	u32 reg_val;
-> +
-> +	if (lcrtc->crtc_id) {
-> +		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-> +		reg_val |= FB_VSYNC1_ENABLE;
-> +		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-> +	} else {
-> +		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-> +		reg_val |= FB_VSYNC0_ENABLE;
-> +		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +void loongson_crtc_disable_vblank(struct drm_crtc *crtc)
-> +{
-> +	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
-> +	struct loongson_device *ldev = lcrtc->ldev;
-> +	u32 reg_val;
-> +
-> +	if (lcrtc->crtc_id) {
-> +		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-> +		reg_val &= ~FB_VSYNC1_ENABLE;
-> +		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-> +	} else {
-> +		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-> +		reg_val &= ~FB_VSYNC0_ENABLE;
-> +		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-> +	}
-
-More readable to pull the common code in one place:
-
-	reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
-
-	if (lcrtc->crtc_id)
-		reg_val &= ~FB_VSYNC1_ENABLE;
-	else
-		reg_val &= ~FB_VSYNC0_ENABLE;
-
-	ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
-
-
-> +}
-> +
-
-regards,
-dan carpenter
-
+>
+> [1] https://syzkaller.appspot.com/bug?id=a09553fd4df4c4a3824dc37a4040bf80d2600a50
+>
+>
+> On Tue, Jul 13, 2021 at 5:49 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> >
+> > On Tue, Jul 13, 2021 at 4:48 PM Sean Young <sean@mess.org> wrote:
+> > >
+> > > On Wed, Jul 07, 2021 at 05:34:09PM +0800, Dongliang Mu wrote:
+> > > > If em28xx_ir_init fails, it would decrease the refcount of dev. However,
+> > > > in the em28xx_ir_fini, when ir is NULL, it goes to ref_put and decrease
+> > > > the refcount of dev. This will lead to a refcount bug.
+> > > >
+> > > > Fix this bug by removing the kref_put in the error handling code
+> > > > of em28xx_ir_init.
+> > > >
+> > > > refcount_t: underflow; use-after-free.
+> > > > WARNING: CPU: 0 PID: 7 at lib/refcount.c:28 refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
+> > > > Modules linked in:
+> > > > CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.13.0 #3
+> > > > Workqueue: usb_hub_wq hub_event
+> > > > RIP: 0010:refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
+> > > > Call Trace:
+> > > >   kref_put.constprop.0+0x60/0x85 include/linux/kref.h:69
+> > > >   em28xx_usb_disconnect.cold+0xd7/0xdc drivers/media/usb/em28xx/em28xx-cards.c:4150
+> > > >   usb_unbind_interface+0xbf/0x3a0 drivers/usb/core/driver.c:458
+> > > >   __device_release_driver drivers/base/dd.c:1201 [inline]
+> > > >   device_release_driver_internal+0x22a/0x230 drivers/base/dd.c:1232
+> > > >   bus_remove_device+0x108/0x160 drivers/base/bus.c:529
+> > > >   device_del+0x1fe/0x510 drivers/base/core.c:3540
+> > > >   usb_disable_device+0xd1/0x1d0 drivers/usb/core/message.c:1419
+> > > >   usb_disconnect+0x109/0x330 drivers/usb/core/hub.c:2221
+> > > >   hub_port_connect drivers/usb/core/hub.c:5151 [inline]
+> > > >   hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+> > > >   port_event drivers/usb/core/hub.c:5586 [inline]
+> > > >   hub_event+0xf81/0x1d40 drivers/usb/core/hub.c:5668
+> > > >   process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
+> > > >   process_scheduled_works kernel/workqueue.c:2338 [inline]
+> > > >   worker_thread+0x333/0x5b0 kernel/workqueue.c:2424
+> > > >   kthread+0x188/0x1d0 kernel/kthread.c:319
+> > > >   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> > > >
+> > > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > Fixes: ac5688637144 ("media: em28xx: Fix possible memory leak of em28xx struct")
+> > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > ---
+> > > > v1->v2: move kref_get to the original position
+> > > >  drivers/media/usb/em28xx/em28xx-input.c | 1 -
+> > > >  1 file changed, 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/media/usb/em28xx/em28xx-input.c b/drivers/media/usb/em28xx/em28xx-input.c
+> > > > index 59529cbf9cd0..0b6d77c3bec8 100644
+> > > > --- a/drivers/media/usb/em28xx/em28xx-input.c
+> > > > +++ b/drivers/media/usb/em28xx/em28xx-input.c
+> > > > @@ -842,7 +842,6 @@ static int em28xx_ir_init(struct em28xx *dev)
+> > > >       kfree(ir);
+> > > >  ref_put:
+> > > >       em28xx_shutdown_buttons(dev);
+> > > > -     kref_put(&dev->ref, em28xx_free_device);
+> > > >       return err;
+> > > >  }
+> > >
+> > > Ideally we want an init function to not have any side effects if it returns
+> > > an error (or to do undo those side effects). With this change, the as long
+> > > as is_audio_only is not set, we always do a kref_get(), even in the error
+> > > case. As long as is_audio_only is not set, fini always does a kref_put().
+> > >
+> > > Now this works but it's not really very readable code, and it requires that
+> > > the fini is called even if init returns an error.
+> > >
+> > > If an init function returns an error, it should undo any side effects like
+> > > allocations or reference counts. So the best way to handle this to only
+> > > do a kref_get() in the happy path of em28xx_ir_init().
+> >
+> > Hi Sean,
+> >
+> > In the v1 version, I moved kref_get from the beginning to the ending.
+> > Do you mean this change?
+> >
+> > @@ -708,7 +708,6 @@ static int em28xx_ir_init(struct em28xx *dev)
+> >   return 0;
+> >   }
+> >
+> > - kref_get(&dev->ref);
+> >   INIT_DELAYED_WORK(&dev->buttons_query_work, em28xx_query_buttons);
+> >
+> >   if (dev->board.buttons)
+> > @@ -833,6 +832,9 @@ static int em28xx_ir_init(struct em28xx *dev)
+> >
+> >   dev_info(&dev->intf->dev, "Input extension successfully initialized\n");
+> >
+> > + /* Only increase refcount when this function is executed successfully */
+> > + kref_get(&dev->ref);
+> > +
+> >   return 0;
+> >
+> > Another reason not to move kref_get is that Paval comments on my patch:
+> >
+> > > kref_get() should be before this call to not trigger UAF in em28xx_query_buttons()
+> >
+> > So I think it's safe to call kref_get at the beginning.
+> >
+> > >
+> > >
+> > > Thanks
+> > >
+> > > Sean
