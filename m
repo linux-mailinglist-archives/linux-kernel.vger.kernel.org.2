@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B8F3CD4D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCED23CD4C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237038AbhGSLxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:53:07 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34086 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236849AbhGSLxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:53:04 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16J8sHpO130195;
-        Mon, 19 Jul 2021 03:54:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626684857;
-        bh=W24F9tFUk5DLS11lecrx/SJziuED8Fh6w5AIMu6c6lI=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=gbW/5on8X7hZHMUL9hHpI6I1h3fYYsTUmH9SkrWe7GuFao/TEPvF6GAJppujslAr+
-         xIxX+MwTiI9sHZTwB418zuaauv6uSxdit3raSAmbt4IDH+E0KRmlw0lexBV41vISTu
-         Z+xyX/bsyTjMoYJdjMQDNOXcGQuZGHrVNC9mpDTY=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16J8sHAf003211
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Jul 2021 03:54:17 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
- Jul 2021 03:54:16 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 19 Jul 2021 03:54:16 -0500
-Received: from uda0131933.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16J8s3hF047822;
-        Mon, 19 Jul 2021 03:54:14 -0500
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-To:     Nishanth Menon <nm@ti.com>, <kristo@kernel.org>
-CC:     Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH 4/4] arm64: dts: ti: k3-am642-evm: Add ecap0 node
-Date:   Mon, 19 Jul 2021 14:24:02 +0530
-Message-ID: <20210719085402.28569-5-lokeshvutla@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210719085402.28569-1-lokeshvutla@ti.com>
-References: <20210719085402.28569-1-lokeshvutla@ti.com>
+        id S236826AbhGSLvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:51:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231290AbhGSLvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:51:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CEBE6113E;
+        Mon, 19 Jul 2021 12:31:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626697906;
+        bh=fheK/HYwVWc3ZOM2xABTkv7fnCAc75GRLPfud8UIPVQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=o5PHI94XBhXiBZwXAEpM5tiBAZxG0yn/0lyJ+lHBaOrGQMzFVaWYfMsv8a0MCeX5K
+         TJC+mgoilx+nJIag8FKZ/jHflf0pf4jwyBUEvFzSOOaxdclleY5E5Pts40JZ1wUPtC
+         SVEXWDE7N03DMIPHkPf6pk6k1cw/Xt099Iyq5YQMXStCQyYHK35GxiCWso3HVRsFfi
+         usVXi51WmNGr+We1pmezkF3EUOV9zDrvmbSv4n0JRsqvRtTmCNKH+H3CLAfspb/3+M
+         VhxQCLjb5Jqvi6AdzeGLKKLVct+483CuPq40Vi5qHOwURX2wvV96YmcXLysKVzBHTz
+         yAVXrfiyJwtBg==
+From:   Will Deacon <will@kernel.org>
+To:     iommu@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Claire Chang <tientzu@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 0/5] Fix restricted DMA vs swiotlb_exit()
+Date:   Mon, 19 Jul 2021 13:30:49 +0100
+Message-Id: <20210719123054.6844-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ecap0 can be configured to use pad ECAP0_IN_APWM_OUT (D18) which has a
-signal connected to Pin 1 of J12 on EVM. Add support for adding this
-pinmux so that pwm can be observed on pin 1 of Header J12
+Hi all,
 
-Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+This series fixes the issues which have been reported against the
+Restricted DMA series in -next:
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 030712221188..7da1238cb1d6 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -288,6 +288,12 @@ AM64X_IOPAD(0x0028, PIN_INPUT, 0) /* (M17) OSPI0_D7 */
- 			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
- 		>;
- 	};
-+
-+	main_ecap0_pins_default: main-ecap0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0270, PIN_INPUT, 0) /* (D18) ECAP0_IN_APWM_OUT */
-+		>;
-+	};
- };
- 
- &main_uart0 {
-@@ -574,3 +580,9 @@ &pcie0_ep {
- 	num-lanes = <1>;
- 	status = "disabled";
- };
-+
-+&ecap0 {
-+	/* PWM is available on Pin 1 of header J12 */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_ecap0_pins_default>;
-+};
+  * Fix the build for Sparc as reported by Guenter [1].
+
+  * Rework the lifetime of 'io_tlb_default_mem' so that devices
+    can retain valid references to it even after swiotlb_exit(). This,
+    in turn, fixes the x86/AMD IOMMU regressions reported by Nathan [2].
+
+I also then added a diagnostic to swiotlb_exit(), as suggested by Konrad
+[3] and the final patch frees the underlying buffer memory during the
+tear down, but I must confess that I don't know why this wasn't being
+done already.
+
+A massive thank you to Nathan for helping to debug this and also for
+testing these patches to confirm that they address the issue on his
+machine.
+
+Patches are based against swiotlb devel/for-linus-5.15.
+
+Cheers,
+
+Will
+
+[1] https://lore.kernel.org/r/20210702030807.GA2685166@roeck-us.net
+[2] https://lore.kernel.org/r/YNvMDFWKXSm4LRfZ@Ryzen-9-3900X.localdomain
+[3] https://lore.kernel.org/r/YORsr0h7u5l9DZwh@char.us.oracle.com
+
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Claire Chang <tientzu@chromium.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+
+--->8
+
+Will Deacon (5):
+  of: Return success from of_dma_set_restricted_buffer() when
+    !OF_ADDRESS
+  swiotlb: Point io_default_tlb_mem at static allocation
+  swiotlb: Remove io_tlb_default_mem indirection
+  swiotlb: Emit diagnostic in swiotlb_exit()
+  swiotlb: Free tbl memory in swiotlb_exit()
+
+ drivers/base/core.c       |  2 +-
+ drivers/of/of_private.h   |  3 +-
+ drivers/xen/swiotlb-xen.c |  4 +-
+ include/linux/swiotlb.h   |  4 +-
+ kernel/dma/swiotlb.c      | 82 +++++++++++++++++++++++----------------
+ 5 files changed, 56 insertions(+), 39 deletions(-)
+
 -- 
-2.30.0
+2.32.0.402.g57bb445576-goog
 
