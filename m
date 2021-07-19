@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9754F3CE9AE
+	by mail.lfdr.de (Postfix) with ESMTP id E03F33CE9AF
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354290AbhGSQ7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:59:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
+        id S1354353AbhGSQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236773AbhGSPcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:32:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68F1861426;
-        Mon, 19 Jul 2021 16:10:51 +0000 (UTC)
+        id S241847AbhGSPcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:32:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49CF46144C;
+        Mon, 19 Jul 2021 16:10:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711052;
-        bh=YnmAZuv+GSQjLqz/EuVkIS3SgkjoBz3aow2yGCSvJEc=;
+        s=korg; t=1626711054;
+        bh=CWqMh+QM9ckB9NzzDSfZFQ/HbKwFGcZAdhtbBYprJIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yblrE4ThPrayBv5AAv9b9+wsPolvZzTOi5hz8y9slZsc/9A4LMapRi85i2WKSyXi9
-         tOnwk+gPuQYu45Jc+YaNXPN50yxEFKEi/Sq1RUzVE3qux0DEX5i7FeeIlwdhICE3GL
-         V20VR1xHZOAE2L0ZBad+tmmX0FPspce9sBLoTjsU=
+        b=qzEo/RW2ORBt14BRjDy6W1gWZovJHtAGnMpPIo2E5FqwI1ZqAx26GGVJbtRWPn75K
+         jjbb25YDWSI8slAiM+5V7cNo1/WKstBrhpWQi3cDLz6i668d94XZ5vceN8LgqYS0h4
+         gWrtgVGM88rJO9Ua73r29E7oKlZo4PmhK6TA8Po0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 210/351] power: supply: surface-charger: Fix type of integer variable
-Date:   Mon, 19 Jul 2021 16:52:36 +0200
-Message-Id: <20210719144951.917110715@linuxfoundation.org>
+Subject: [PATCH 5.13 211/351] PCI/sysfs: Fix dsm_label_utf16s_to_utf8s() buffer overrun
+Date:   Mon, 19 Jul 2021 16:52:37 +0200
+Message-Id: <20210719144951.946827477@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -41,35 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maximilian Luz <luzmaximilian@gmail.com>
+From: Krzysztof Wilczyński <kw@linux.com>
 
-[ Upstream commit 601423bc0c06467d019cf2a446962a5bf1b5e330 ]
+[ Upstream commit bdcdaa13ad96f1a530711c29e6d4b8311eff767c ]
 
-The ac->state field is __le32, not u32. So change the variable we're
-temporarily storing it in to __le32 as well.
+"utf16s_to_utf8s(..., buf, PAGE_SIZE)" puts up to PAGE_SIZE bytes into
+"buf" and returns the number of bytes it actually put there.  If it wrote
+PAGE_SIZE bytes, the newline added by dsm_label_utf16s_to_utf8s() would
+overrun "buf".
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: e61ffb344591 ("power: supply: Add AC driver for Surface Aggregator Module")
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Reduce the size available for utf16s_to_utf8s() to use so there is always
+space for the newline.
+
+[bhelgaas: reorder patch in series, commit log]
+Fixes: 6058989bad05 ("PCI: Export ACPI _DSM provided firmware instance number and string name to sysfs")
+Link: https://lore.kernel.org/r/20210603000112.703037-7-kw@linux.com
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/surface_charger.c | 2 +-
+ drivers/pci/pci-label.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/surface_charger.c b/drivers/power/supply/surface_charger.c
-index 81a5b79822c9..a060c36c7766 100644
---- a/drivers/power/supply/surface_charger.c
-+++ b/drivers/power/supply/surface_charger.c
-@@ -66,7 +66,7 @@ struct spwr_ac_device {
+diff --git a/drivers/pci/pci-label.c b/drivers/pci/pci-label.c
+index c32f3b7540e8..76b381cf70b2 100644
+--- a/drivers/pci/pci-label.c
++++ b/drivers/pci/pci-label.c
+@@ -145,7 +145,7 @@ static void dsm_label_utf16s_to_utf8s(union acpi_object *obj, char *buf)
+ 	len = utf16s_to_utf8s((const wchar_t *)obj->buffer.pointer,
+ 			      obj->buffer.length,
+ 			      UTF16_LITTLE_ENDIAN,
+-			      buf, PAGE_SIZE);
++			      buf, PAGE_SIZE - 1);
+ 	buf[len] = '\n';
+ }
  
- static int spwr_ac_update_unlocked(struct spwr_ac_device *ac)
- {
--	u32 old = ac->state;
-+	__le32 old = ac->state;
- 	int status;
- 
- 	lockdep_assert_held(&ac->lock);
 -- 
 2.30.2
 
