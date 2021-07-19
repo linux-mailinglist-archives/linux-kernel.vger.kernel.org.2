@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E001B3CE4AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F923CE4AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349914AbhGSPp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52768 "EHLO mail.kernel.org"
+        id S1349947AbhGSPp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:45:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344162AbhGSO7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5781F6140F;
-        Mon, 19 Jul 2021 15:38:58 +0000 (UTC)
+        id S1344228AbhGSO7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09A6361220;
+        Mon, 19 Jul 2021 15:39:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709138;
-        bh=q77kN4tytM24fMd4RM69L2tBnwmcge1O7Vg8UEm2vfg=;
+        s=korg; t=1626709152;
+        bh=IRPEpEYxB0BX+tGtZoRbR9CFvmpTsjSrVMI6u1tpC74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VNyECsm789TjeTyGYtWSTV9xp/Tnjnxvqh4yP5NkWnUdFIQN0jE/fBpqPR5kO6t9D
-         Gkyudys8LfHKVTK1qWR6aAiNoQqlGxYr6zeIBpp61c1G9KKm7hTDu7iO4Wnfqe//is
-         isSdcKYTYFfu0HFT9v66sWJKpqt38tfHuXHHzxms=
+        b=wEWrfLZR6cM1ufDYT5fkNVfF13W1SFtPLbLttxJhXQby32FkjMX063C0vun8FlU6A
+         F/nDtbKI6XCpZSx+aAnmWWxWcjBnWPQAx4wtvd4cPG9qUvVTLGn7L769+lD5r1d984
+         mo5Y+rz0vgPhCR2HFtKH1izRo1EidZNH/kBSjd6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Gerd Rausch <gerd.rausch@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 268/421] sfc: error code if SRIOV cannot be disabled
-Date:   Mon, 19 Jul 2021 16:51:19 +0200
-Message-Id: <20210719144955.670709302@linuxfoundation.org>
+Subject: [PATCH 4.19 272/421] RDMA/cma: Fix rdma_resolve_route() memory leak
+Date:   Mon, 19 Jul 2021 16:51:23 +0200
+Message-Id: <20210719144955.792512277@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,69 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Íñigo Huguet <ihuguet@redhat.com>
+From: Gerd Rausch <gerd.rausch@oracle.com>
 
-[ Upstream commit 1ebe4feb8b442884f5a28d2437040096723dd1ea ]
+[ Upstream commit 74f160ead74bfe5f2b38afb4fcf86189f9ff40c9 ]
 
-If SRIOV cannot be disabled during device removal or module unloading,
-return error code so it can be logged properly in the calling function.
+Fix a memory leak when "mda_resolve_route() is called more than once on
+the same "rdma_cm_id".
 
-Note that this can only happen if any VF is currently attached to a
-guest using Xen, but not with vfio/KVM. Despite that in that case the
-VFs won't work properly with PF removed and/or the module unloaded, I
-have let it as is because I don't know what side effects may have
-changing it, and also it seems to be the same that other drivers are
-doing in this situation.
+This is possible if cma_query_handler() triggers the
+RDMA_CM_EVENT_ROUTE_ERROR flow which puts the state machine back and
+allows rdma_resolve_route() to be called again.
 
-In the case of being called during SRIOV reconfiguration, the behavior
-hasn't changed because the function is called with force=false.
-
-Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sfc/ef10_sriov.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/sfc/ef10_sriov.c b/drivers/net/ethernet/sfc/ef10_sriov.c
-index edd5ae855886..f074986a13b1 100644
---- a/drivers/net/ethernet/sfc/ef10_sriov.c
-+++ b/drivers/net/ethernet/sfc/ef10_sriov.c
-@@ -406,12 +406,17 @@ fail1:
- 	return rc;
- }
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 8cdf933310d1..842a30947bdc 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2558,7 +2558,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv, int timeout_ms)
  
-+/* Disable SRIOV and remove VFs
-+ * If some VFs are attached to a guest (using Xen, only) nothing is
-+ * done if force=false, and vports are freed if force=true (for the non
-+ * attachedc ones, only) but SRIOV is not disabled and VFs are not
-+ * removed in either case.
-+ */
- static int efx_ef10_pci_sriov_disable(struct efx_nic *efx, bool force)
- {
- 	struct pci_dev *dev = efx->pci_dev;
--	unsigned int vfs_assigned = 0;
--
--	vfs_assigned = pci_vfs_assigned(dev);
-+	unsigned int vfs_assigned = pci_vfs_assigned(dev);
-+	int rc = 0;
+ 	cma_init_resolve_route_work(work, id_priv);
  
- 	if (vfs_assigned && !force) {
- 		netif_info(efx, drv, efx->net_dev, "VFs are assigned to guests; "
-@@ -421,10 +426,12 @@ static int efx_ef10_pci_sriov_disable(struct efx_nic *efx, bool force)
- 
- 	if (!vfs_assigned)
- 		pci_disable_sriov(dev);
-+	else
-+		rc = -EBUSY;
- 
- 	efx_ef10_sriov_free_vf_vswitching(efx);
- 	efx->vf_count = 0;
--	return 0;
-+	return rc;
- }
- 
- int efx_ef10_sriov_configure(struct efx_nic *efx, int num_vfs)
+-	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
++	if (!route->path_rec)
++		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
+ 	if (!route->path_rec) {
+ 		ret = -ENOMEM;
+ 		goto err1;
 -- 
 2.30.2
 
