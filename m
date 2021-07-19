@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32A33CD1FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9553CD200
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236151AbhGSJwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
+        id S236244AbhGSJxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235440AbhGSJwu (ORCPT
+        with ESMTP id S236171AbhGSJxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:52:50 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D866CC061574;
-        Mon, 19 Jul 2021 02:40:12 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d9so4882191pfv.4;
-        Mon, 19 Jul 2021 03:33:29 -0700 (PDT)
+        Mon, 19 Jul 2021 05:53:00 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64199C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:40:24 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id jx7-20020a17090b46c7b02901757deaf2c8so11843176pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:33:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=Lu76TUF5t5P7dhULSWQL1jOmPG4hRwR7T2VCuhQQuSc=;
-        b=s/e2GR87SdKlpiDUPcwZ+dquU6uA39GKut+j1/4HcntzhbYi3Z7/E8VVQDfxiBGt9s
-         TOwP3W4uDRwEkYNx6sLQxz8/xmY+FwFbW3nWxk5Mt7SQrqefrvXHDJ/Dh6ZewK3qwCnx
-         RtmyF/EPz0wUZLHw6PxG4QkLRem5eWFeAOnNlkMeOi4zJsrom0YszNhftGIAD+VvcCf0
-         Whs77pdZvsdc7xqM2ljwWgkL4ERK0QfG1yKw5x6xYpVh6J7hiaY7Fzb20VKrKUzNHoMn
-         oJ1OHSrvqWYvh787wWCiR9PfR5JIwFds1prNGj4qV7QJpoDGSRkTVNLJhVF9atqHui7i
-         p12Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=K40Jyf6F4VypIX0uQQ58aazesoLZiATF2ozlOf/u82E=;
+        b=tm6QKxQaVJ1rfx4hcKqkfQh+kNZs1qfo7yu8WQJ/aS2+N/K/j3hAC7EJoGOLcI7mki
+         RbXLpX3EUAsaeCKfy7dK+lsB9pV6bpejySCGNZ0YrrUbjtL9cXrDtvYSaEOtKyH8Yl2h
+         pQwq59Y80QoFdRlHXZ8BxNEhIWPeZUnsy31tQXJKRws0GQIqiqzGSSdf27UDzkXZs8WU
+         e1QslQq68CgzpzJ9WZD1zQIK/3f5QCVmqRqT17KzPkbNDIEwoysrIasghiLrG6lc43/K
+         0V/1IrT6lyVKAbt3+yYq/dWQNyTPcSMQk5oAmymYYQz6722hEl9bSCG0440pYjIpbs0r
+         hcZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=Lu76TUF5t5P7dhULSWQL1jOmPG4hRwR7T2VCuhQQuSc=;
-        b=i/25vCHiK8fQoJrlZoflHnCHBpCZ7JcsJNxUQNWZ1pRarvROAbyT2gnFofXImcHDzK
-         HbX1WynWQN76Yhn0/lH5nl/Yvwncb+1cBhZ6bsz4jdC9PiazPRzCMEtpRtTQAIYSTkvG
-         3rZWrfUHIvXXU/b/IvKgpyszUkB5VHCXvgEmuLW5u+CSTSwQHGc2nFk6MPTUQrGia9jT
-         zmdkvjOhEEl8DOA3svEasvrDcKHtPpH4a9f+raZQi3n0mf6+txMswXFxxUx1YNwphlEh
-         igFPSUaHedr083x6+xlpZfLKAzUZJBTgp4aSD2c4Uhd4wC3/f3G9pFl/ZgIol2RVyZ6W
-         gKiQ==
-X-Gm-Message-State: AOAM530Ddxn3wh8AiTZjlhM4qyJhZ9yDmQJqdDBffmFV89vwWhZBMNlQ
-        /3R+LfJxtGmzhganqEgwMnhnI0i5vUB4y5P2h1nmQ5QYCKQK5pyx
-X-Google-Smtp-Source: ABdhPJyc6W2WqVVRhAqL8WPMeFs3lJRq2sffzWDsBMKIVXyG30vBCtTy1sl0G9+nn7MncbPvQs7tLgVu8y17tvuavIE=
-X-Received: by 2002:a05:6a00:9a5:b029:30d:fad7:4515 with SMTP id
- u37-20020a056a0009a5b029030dfad74515mr25338538pfg.28.1626690808507; Mon, 19
- Jul 2021 03:33:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=K40Jyf6F4VypIX0uQQ58aazesoLZiATF2ozlOf/u82E=;
+        b=VYc93i0dU17ID8I6vRxpugMpiluu+gTnPlUz1oLAT5jSs/7ZQ3VO+PSU8l0Dj09bcP
+         Wu7HlUNLuOEt/SkdLvdlFkaXtiwkfHtp4BD0PYVoOrWD/Sd7V4ELZiBvF2GtTRox7HU+
+         O7aaNYVKXo5ls2iMdD2L9UrB4cXQja869Y40OcrDszPx+Qi8A7JiPZ5qLiyopy2eh7Xv
+         hSf2PVVMFVtCuSHuP17x3Z0YCuT9rv9Gd0/OnSymM3CiSdpczAooV/Iju6oF9wsrg0+x
+         /HlNiapN6q3BUysns2fIYoVs97RO9wuwLcoayQgxz0e1tcsXU2c3GLBhg7MDZDpaWgu6
+         u6kg==
+X-Gm-Message-State: AOAM531RLv2UBwK1naJt8PjQxi7OoUG3P+M9VoVFpHg+ANX/TRA2LRYr
+        rhfSorO7Rva65YWh+sfKVlMx4g==
+X-Google-Smtp-Source: ABdhPJwl4MXidm+h6UyC6mKBdXmjy/5RSub0SZcKsJot16gWN5QT/b3nRghByFFqbqrk8t4XWLYxlA==
+X-Received: by 2002:a17:90a:b284:: with SMTP id c4mr24363136pjr.213.1626690819793;
+        Mon, 19 Jul 2021 03:33:39 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id w5sm19850101pfq.130.2021.07.19.03.33.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 03:33:38 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 16:03:36 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 1/5] dt-bindings: virtio: mmio: Add support for device
+ subnode
+Message-ID: <20210719103336.oyz6dppd5jf65w4m@vireshk-i7>
+References: <cover.1626173013.git.viresh.kumar@linaro.org>
+ <aa4bf68fdd13b885a6dc1b98f88834916d51d97d.1626173013.git.viresh.kumar@linaro.org>
+ <CAL_Jsq+SiE+ciZfASHKUfLU1YMPfB43YmSciT_+gQHvL99_wUA@mail.gmail.com>
+ <20210713151917.zouwfckidnjxvohn@vireshk-i7>
+ <CAL_JsqL9255n5RT=Gq_uru7rEP0bSVcyfXEPRY4F0M4S2HPvTA@mail.gmail.com>
+ <CAK8P3a3Gve=M9GF-E+2OJED1Hd1qngxOkVSO15wB0jVWK8D0_Q@mail.gmail.com>
+ <CAL_JsqKLjFx9AOcMiyxdQvDU7V8Sak8YPyrJm2TuSE-TTqvREw@mail.gmail.com>
+ <CAK8P3a2mS3GoW9MXdDNK7-EbnRH-9Kn4_k_TgnGSCycSez8Xow@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20210715141742.15072-3-andrea.merello@gmail.com> <CAHp75Vf_Og2wjRy2j0gC37DgR0x9B_F5iSUj8VOtWkhWjgiOag@mail.gmail.com>
- <CAN8YU5NKGLO6a4wqaW07NAU-OdsdBohoXzMCBcskaFsCRtrGhw@mail.gmail.com> <YPF97IvnlUDtIHar@smile.fi.intel.com>
-In-Reply-To: <YPF97IvnlUDtIHar@smile.fi.intel.com>
-Reply-To: andrea.merello@gmail.com
-From:   Andrea Merello <andrea.merello@gmail.com>
-Date:   Mon, 19 Jul 2021 12:33:16 +0200
-Message-ID: <CAN8YU5MMtP8M7jTDP2S3EBM-PM1dsxVLEgGyB-3BtY5xUF+JTQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] iio: imu: add Bosch Sensortec BNO055 core driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2mS3GoW9MXdDNK7-EbnRH-9Kn4_k_TgnGSCycSez8Xow@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > +               for (i = 0; i < 4; i++)
-> > > > +                       vals[i] = (s16)le16_to_cpu(raw_vals[i]);
-> > >
-> > > Extract this to be a helper like there are for u32 and u64.
-> >
-> > Could you please point me to those helpers? I don't know what you are
-> > referring to.
->
-> Read include/linux/byteorder/generic.h to the end.
+On 14-07-21, 23:07, Arnd Bergmann wrote:
+> On Wed, Jul 14, 2021 at 5:43 PM Rob Herring <robh+dt@kernel.org> wrote:
+> > I guess it comes down to is 'virtio,mmio' providing a bus or is it
+> > just a device? I guess a bus (so 2 nodes) does make sense here.
+> > 'virtio,mmio' defines how you access/discover the virtio queues (the
+> > bus) and the functional device (i2c, gpio, iommu, etc.) is accessed
+> > via the virtio queues.
+> 
+> It's not really a bus since there is only ever one device behind it.
+> A better analogy would be your 'serdev' framework: You could
+> have a 8250 or a pl011 uart, and behind that have a mouse, GPS
+> receiver or bluetooth dongle.
+> 
+> In Documentation/devicetree/bindings/serial/serial.yaml, you also
+> have two nodes for a single device, so we could follow that
+> example.
 
-I realized that implementing an helper like the other ones wouldn't
-work in this specific case: I'd say a reasonable helper would take a
-ptr to a s16 as its destination argument, but here we are assigning to
-a int vector; so our brand new helper would be of no use here.
+So two device nodes is final then ? Pretty much like how this patchset did it
+already ? I need to get rid of reg thing and use "virtio,DID" though.
 
-What I can do is to implement a macroized helper that would have no
-issues wrt ptr type; I guess something like this:
-
-#define le16_to_cpu_signed_array(dst, src, len) \
-({ \
-    size_t __i; \
-    for (__i = 0; __i < len; __i++) \
-        dst[__i] = (s16)le16_to_cpu(src[__i]); \
-})
-
-What's your opinion here? should I go with something like this or do
-you prefer to let the open-coded implementation stay in this specific
-case?
+-- 
+viresh
