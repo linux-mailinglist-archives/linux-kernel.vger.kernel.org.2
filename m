@@ -2,316 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B1A3CD2A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FEB3CD2AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236657AbhGSKF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54114 "EHLO
+        id S236527AbhGSKHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236316AbhGSKF4 (ORCPT
+        with ESMTP id S236499AbhGSKHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:05:56 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A986C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:54:24 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id f17so21456070wrt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:46:35 -0700 (PDT)
+        Mon, 19 Jul 2021 06:07:02 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604E5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:55:36 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id x6-20020a7bc2060000b0290218ad9a8d4aso3813417wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:47:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5ncXnlqgE4q5bQDJOQx33EL294v17db91qKDspkowjQ=;
-        b=ungfp4cTXQ44y4KuTxVLcf1GGvurYO8TLwbQKMgP74ALdslAVaFdsPuMlRxU4pAnmK
-         pC8mWs7URc3r9WRx9HHTjmk0zhwg1j0IT7BhQMGvZCeVXavOxFIYi+hry5cTouXjXSM4
-         f6rQm5cM+95BGiGzy3N/qEj32mPCJz9J83bmarGUZEJc63/4Gts/KZUMV0Aakubh5RAL
-         4WHg7eSvlxej3s8fQbXp4K7cunElN+xETCQOt3HRChnKs7inGvfYgistkjmHgCoU8Rb9
-         f2c0EtA5ywUpQ19Ec0+XwOo2qS2AzVpGR8RWQiYz+rXGOmzWoWxnG8cqGGnRUk6zKxD7
-         SfTA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6r6SQ5Sfe1ngDPnI/RzrWml59LLxArWehQBwowrYG0g=;
+        b=TT8gWUbNyJACYMfSgAbkMfXL/hIgt2K4TeYX1798Z+RVovD7a9k8A+Ys5fdzbqZULc
+         4B4P7CHpNEvod4gaq/gLeRGehtUvM3mqYd9uMnL6DvHv5ac9mTltH59uNuqNUJ6+FHMX
+         6K7zECMso0T+Ls2KaIQrVCU5PlKH3Im0K9x845PYuGR0Nlijm9kVeTa9AlAEx7TlHy++
+         FyexRWmDWWzgBlUDElyQiNQ2vKbRBh1YBi4tObrK7iEB5+Mq/UlRniB4sw1uIdHbZRAw
+         uZ575TJO1dEKtWRybLGfWQSPoqEwTr4VkbdKWgYrBmrVd1j9JN+rBwgxonbrMZJ4fnJM
+         80Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5ncXnlqgE4q5bQDJOQx33EL294v17db91qKDspkowjQ=;
-        b=TgDA6zfwBUFaUVB2+bZPNMZPMhFPIEV1pRNdYdInWSBsYo4AeMzv6HEIBv92BqIoB8
-         TfTYlMocK79mxmuhOmJ6x4wP793oDYUtNvyybaEQbtR1f/B2TT/YFYU0ThD8fUuQFEp2
-         n3fEBxKx4sam0V5A5eYQY0ZAOc59DBa5QC9hP8y408+YAAiZC1XoiC9A9zqUj5zFF1rv
-         mvIZ3dtWFb2xJiRJb4vwx1zbssqDzclA2WHpc9U4iMWcKKpvQVm3phzUy7tFBCoQFCx2
-         KS9T3NXlivMemR1mf8EOJk/NyVkoo1MrnsvujOwN2WmpOxr+hINoYAej7OXrvyglT72p
-         t50w==
-X-Gm-Message-State: AOAM5316ELWcOJ6N6CDL35HQpiJ9Sez5pXwRcMLmZPv4JuUhyjdYK1iP
-        LYs8ZbcFUeE8lOf/mxDr1dvmCg==
-X-Google-Smtp-Source: ABdhPJwUaYjrRPSzqoEsjQXPLH0r3dGAN4SRfhoJE2clHeZ1L9JYNPGK0AECgxfvyguoDFVppkgFFw==
-X-Received: by 2002:a5d:598f:: with SMTP id n15mr10849112wri.133.1626691594242;
-        Mon, 19 Jul 2021 03:46:34 -0700 (PDT)
-Received: from google.com ([31.124.24.141])
-        by smtp.gmail.com with ESMTPSA id h20sm12758613wmb.17.2021.07.19.03.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 03:46:33 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 11:46:31 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers
- bindings
-Message-ID: <YPVYB/biVd4/Z1wn@google.com>
-References: <20210607123317.3242031-1-robert.marko@sartura.hr>
- <20210607123317.3242031-5-robert.marko@sartura.hr>
- <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
- <20210713222528.GA952399@robh.at.kernel.org>
- <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6r6SQ5Sfe1ngDPnI/RzrWml59LLxArWehQBwowrYG0g=;
+        b=H+PgK2J7oxAHzimKqInnuyEdrrF/K67cpDGQQFA33UnwffF5ZA3c2ove0ULQsMVtu9
+         64DLx9/aShjfYXtn6P1Z88zvSIZ+Skgk6BVy6CDdo6rJr4zHIyA36rf9RvGZaQ6Grheq
+         XdfQee56/We2fNLjKTjwL4kjKz+e/ItiokMaUzRKB3hXluz7EKOfMmAEqST290Wtjlw8
+         vQzdqmGLm4MDDWq7F2thHGuiLwUIU5SK3qJ/Kpcl9wfj3tk1D2qwdn7QRJflIqiUu6vh
+         r9o8fgkmR7bPHNwpNUBv8/m8FUfqJiqs94kGs0TNaAyKzdbhk8tfjJYOxS6X54M3PmGz
+         P1JQ==
+X-Gm-Message-State: AOAM532T4ckv2vgpKtzmkKI+Pc7zCgLhyHWTqSu/VS1gIoL6l+PE4EKq
+        +MH49WdCQg2BFKUCVjH3AbMPavk7dGD9
+X-Google-Smtp-Source: ABdhPJyapMlzacXUANT8CGyWjaSfGRj8ZkKY3ZV1NxaiDQ/d+WmxKezlFsiAVAsdL+q2omGDMLjGV6nnVEbo
+X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:1a96:a43f:6c2e:bb5a])
+ (user=qperret job=sendgmr) by 2002:a5d:6846:: with SMTP id
+ o6mr29073942wrw.326.1626691660737; Mon, 19 Jul 2021 03:47:40 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 11:47:21 +0100
+Message-Id: <20210719104735.3681732-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+Subject: [PATCH 00/14] Track shared pages at EL2 in protected mode
+From:   Quentin Perret <qperret@google.com>
+To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 18 Jul 2021, Robert Marko wrote:
+Hi all,
 
-> On Wed, Jul 14, 2021 at 12:25 AM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Fri, Jun 25, 2021 at 01:46:08PM +0200, Robert Marko wrote:
-> > > On Mon, Jun 7, 2021 at 2:33 PM Robert Marko <robert.marko@sartura.hr> wrote:
-> > > >
-> > > > Add binding documents for the Delta TN48M CPLD drivers.
-> > > >
-> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > ---
-> > > > Changes in v3:
-> > > > * Include bindings for reset driver
-> > > >
-> > > > Changes in v2:
-> > > > * Implement MFD as a simple I2C MFD
-> > > > * Add GPIO bindings as separate
-> > > >
-> > > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 +++++++++
-> > > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 90 +++++++++++++++++++
-> > > >  .../bindings/reset/delta,tn48m-reset.yaml     | 35 ++++++++
-> > > >  3 files changed, 167 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
-> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
-> > > >  create mode 100644 Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..aca646aecb12
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
-> > > > @@ -0,0 +1,42 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/gpio/delta,tn48m-gpio.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Delta Networks TN48M CPLD GPIO controller
-> > > > +
-> > > > +maintainers:
-> > > > +  - Robert Marko <robert.marko@sartura.hr>
-> > > > +
-> > > > +description: |
-> > > > +  This module is part of the Delta TN48M multi-function device. For more
-> > > > +  details see ../mfd/delta,tn48m-cpld.yaml.
-> > > > +
-> > > > +  GPIO controller module provides GPIO-s for the SFP slots.
-> > > > +  It is split into 3 controllers, one output only for the SFP TX disable
-> > > > +  pins, one input only for the SFP present pins and one input only for
-> > > > +  the SFP LOS pins.
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    enum:
-> > > > +      - delta,tn48m-gpio-sfp-tx-disable
-> > > > +      - delta,tn48m-gpio-sfp-present
-> > > > +      - delta,tn48m-gpio-sfp-los
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  "#gpio-cells":
-> > > > +    const: 2
-> > > > +
-> > > > +  gpio-controller: true
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +  - "#gpio-cells"
-> > > > +  - gpio-controller
-> > > > +
-> > > > +additionalProperties: false
-> > > > diff --git a/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..2c6e2adf73ca
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
-> > > > @@ -0,0 +1,90 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/mfd/delta,tn48m-cpld.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Delta Networks TN48M CPLD controller
-> > > > +
-> > > > +maintainers:
-> > > > +  - Robert Marko <robert.marko@sartura.hr>
-> > > > +
-> > > > +description: |
-> > > > +  Lattice CPLD onboard the TN48M switches is used for system
-> > > > +  management.
-> > > > +
-> > > > +  It provides information about the hardware model, revision,
-> > > > +  PSU status etc.
-> > > > +
-> > > > +  It is also being used as a GPIO expander for the SFP slots and
-> > > > +  reset controller for the switch MAC-s and other peripherals.
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: delta,tn48m-cpld
-> > > > +
-> > > > +  reg:
-> > > > +    description:
-> > > > +      I2C device address.
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  "#address-cells":
-> > > > +    const: 1
-> > > > +
-> > > > +  "#size-cells":
-> > > > +    const: 0
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +  - "#address-cells"
-> > > > +  - "#size-cells"
-> > > > +
-> > > > +patternProperties:
-> > > > +  "^gpio(@[0-9a-f]+)?$":
-> > > > +    $ref: ../gpio/delta,tn48m-gpio.yaml
-> > > > +
-> > > > +  "^reset-controller?$":
-> > > > +    $ref: ../reset/delta,tn48m-reset.yaml
-> > > > +
-> > > > +additionalProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    i2c {
-> > > > +        #address-cells = <1>;
-> > > > +        #size-cells = <0>;
-> > > > +
-> > > > +        cpld@41 {
-> > > > +            compatible = "delta,tn48m-cpld";
-> > > > +            reg = <0x41>;
-> > > > +            #address-cells = <1>;
-> > > > +            #size-cells = <0>;
-> > > > +
-> > > > +            gpio@31 {
-> > > > +                compatible = "delta,tn48m-gpio-sfp-tx-disable";
-> > > > +                reg = <0x31>;
-> > > > +                gpio-controller;
-> > > > +                #gpio-cells = <2>;
-> > > > +            };
-> > > > +
-> > > > +            gpio@3a {
-> > > > +                compatible = "delta,tn48m-gpio-sfp-present";
-> > > > +                reg = <0x3a>;
-> > > > +                gpio-controller;
-> > > > +                #gpio-cells = <2>;
-> > > > +            };
-> > > > +
-> > > > +            gpio@40 {
-> > > > +                compatible = "delta,tn48m-gpio-sfp-los";
-> > > > +                reg = <0x40>;
-> > > > +                gpio-controller;
-> > > > +                #gpio-cells = <2>;
-> > > > +            };
-> > > > +
-> > > > +            reset-controller {
-> > > > +              compatible = "delta,tn48m-reset";
-> > > > +              #reset-cells = <1>;
-> > > > +            };
-> > > > +        };
-> > > > +    };
-> > > > diff --git a/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..0e5ee8decc0d
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
-> > > > @@ -0,0 +1,35 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/reset/delta,tn48m-reset.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Delta Networks TN48M CPLD reset controller
-> > > > +
-> > > > +maintainers:
-> > > > +  - Robert Marko <robert.marko@sartura.hr>
-> > > > +
-> > > > +description: |
-> > > > +  This module is part of the Delta TN48M multi-function device. For more
-> > > > +  details see ../mfd/delta,tn48m-cpld.yaml.
-> > > > +
-> > > > +  Reset controller modules provides resets for the following:
-> > > > +  * 88F7040 SoC
-> > > > +  * 88F6820 SoC
-> > > > +  * 98DX3265 switch MAC-s
-> > > > +  * 88E1680 PHY-s
-> > > > +  * 88E1512 PHY
-> > > > +  * PoE PSE controller
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: delta,tn48m-reset
-> > > > +
-> > > > +  "#reset-cells":
-> > > > +    const: 1
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - "#reset-cells"
-> > > > +
-> > > > +additionalProperties: false
-> > > >
-> > >
-> > > Are there any issues with the bindings?
-> >
-> > Yes. Primarily the GPIO function being part of the compatible. I'm
-> > surprised Linus W is okay with that.
-> 
-> I think I already explained this before, having a single compatible
-> won't work here.
-> Then there would not be anything to know whether its input or output
-> only as the pins have specific purpose.
+This series aims to improve how the nVHE hypervisor tracks ownership of memory
+pages when running in protected mode ("kvm-arm.mode=protected" on the kernel
+command line).
 
-Properties?
+The main issue with the existing ownership tracking code is that it is
+completely binary: a page is either owned by an entity (e.g. the host) or not.
+However, we'll need something smarter to track shared pages, as is needed for
+virtio, or even just host/hypervisor communications.
 
-> And knowing the capabilites is a requirment of the GPIO regmap driver
-> and the GPIO
-> core itself as it exposes that information in a generic manner and
-> driver like for the
-> SFP bus use that.
+This series introduces a few changes to the kvm page-table library to allow
+annotating shared pages in ignored bits (a.k.a. software bits) of leaf entries,
+and makes use of that infrastructure to track all pages that are shared between
+the host and the hypervisor. We will obviously want to apply the same treatment
+to guest stage-2 page-tables, but that is not really possible to do until EL2
+manages them directly, so I'll keep that for another series.
+
+The series is split as follows:
+
+ - patches 01-04 are essentially cleanups and optimizations of existing code
+   paths that might be relevant on their own, but also prepare the ground for
+   the rest of the series;
+
+ - patches 05-08 introduce support in the page-table library for annotating
+   shared pages with software bits;
+
+ - patches 09-14 make use of the previously introduced infrastructure to
+   annotate all pages shared between the host and the hypervisor;
+
+The series is based on the latest kvmarm/fixes branch, and has been tested
+on AML-S905X-CC (Le Potato) and using various Qemu configurations.
+
+Thanks!
+Quentin
+
+Quentin Perret (14):
+  KVM: arm64: Provide the host_stage2_try() helper macro
+  KVM: arm64: Optimize kvm_pgtable_stage2_find_range()
+  KVM: arm64: Continue stage-2 map when re-creating mappings
+  KVM: arm64: Rename KVM_PTE_LEAF_ATTR_S2_IGNORED
+  KVM: arm64: Don't overwrite ignored bits with owner id
+  KVM: arm64: Tolerate re-creating hyp mappings to set ignored bits
+  KVM: arm64: Enable forcing page-level stage-2 mappings
+  KVM: arm64: Add support for tagging shared pages in page-table
+  KVM: arm64: Mark host bss and rodata section as shared
+  KVM: arm64: Enable retrieving protections attributes of PTEs
+  KVM: arm64: Expose kvm_pte_valid() helper
+  KVM: arm64: Refactor pkvm_pgtable locking
+  KVM: arm64: Restrict hyp stage-1 manipulation in protected mode
+  KVM: arm64: Prevent late calls to __pkvm_create_private_mapping()
+
+ arch/arm64/include/asm/kvm_asm.h              |   2 +-
+ arch/arm64/include/asm/kvm_pgtable.h          | 109 ++++++---
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |   2 +
+ arch/arm64/kvm/hyp/include/nvhe/mm.h          |   3 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  17 +-
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 156 +++++++++++--
+ arch/arm64/kvm/hyp/nvhe/mm.c                  |  20 +-
+ arch/arm64/kvm/hyp/nvhe/setup.c               |  52 ++++-
+ arch/arm64/kvm/hyp/pgtable.c                  | 219 +++++++++++++-----
+ arch/arm64/kvm/mmu.c                          |  14 +-
+ 10 files changed, 454 insertions(+), 140 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.32.0.402.g57bb445576-goog
+
