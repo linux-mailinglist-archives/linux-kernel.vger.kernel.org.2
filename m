@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279A03CE6CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9103CE85C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352626AbhGSQOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:14:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39250 "EHLO mail.kernel.org"
+        id S1356076AbhGSQkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:40:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345908AbhGSPJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A9F9611C1;
-        Mon, 19 Jul 2021 15:49:43 +0000 (UTC)
+        id S1347481AbhGSPRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:17:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B66C6120A;
+        Mon, 19 Jul 2021 15:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709784;
-        bh=D6yXtrvX5n8nxlPpbKMnOyF6N///vAhnqCMPmQr5p68=;
+        s=korg; t=1626710259;
+        bh=OBUDEwLW8QxBiAPrBetZCJEGlhRS5cHmP3/lfv6A0Yg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=htsjXwpPCyIoIg7lR970hw3ZA2VMCv9+OMIvkFjEWdNTrWz1SL2sdgSbbGYxToagI
-         Dcmq6ZQq4WmIXqZfiYOMmxdAhT5oBff+SzbYRjSkyVGo0zbppfvF1YMnT8vl3NROMo
-         E03BBkGuiXjLf0rutBfItVRdM2ZRNcn53t26nLAM=
+        b=OzJ0v8JK4RI21TVI5/TnZyO/eVKZFLi4pHwAsL+jeNk378dwawWMpD6qcr0eCvuQm
+         FGlPRXndIP9jsBll90QdQWXBQLfUkRTVdgH8G8yXOAOffezbM/sVVG0MffSFPOB7IE
+         9BvDGVemKzm5wfWd3GOyG6JKkWpA5R5QKsUFmZGs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 062/149] backlight: lm3630a: Fix return code of .update_status() callback
+Subject: [PATCH 5.10 141/243] ACPI: video: Add quirk for the Dell Vostro 3350
 Date:   Mon, 19 Jul 2021 16:52:50 +0200
-Message-Id: <20210719144916.073153059@linuxfoundation.org>
+Message-Id: <20210719144945.468472625@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit b9481a667a90ec739995e85f91f3672ca44d6ffa ]
+[ Upstream commit 9249c32ec9197e8d34fe5179c9e31668a205db04 ]
 
-According to <linux/backlight.h> .update_status() is supposed to
-return 0 on success and a negative error code otherwise. Adapt
-lm3630a_bank_a_update_status() and lm3630a_bank_b_update_status() to
-actually do it.
+The Dell Vostro 3350 ACPI video-bus device reports spurious
+ACPI_VIDEO_NOTIFY_CYCLE events resulting in spurious KEY_SWITCHVIDEOMODE
+events being reported to userspace (and causing trouble there).
 
-While touching that also add the error code to the failure message.
+Add a quirk setting the report_key_events mask to
+REPORT_BRIGHTNESS_KEY_EVENTS so that the ACPI_VIDEO_NOTIFY_CYCLE
+events will be ignored, while still reporting brightness up/down
+hotkey-presses to userspace normally.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1911763
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/lm3630a_bl.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/acpi/acpi_video.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
-index f03ffe2bb237..8096202fbe5d 100644
---- a/drivers/video/backlight/lm3630a_bl.c
-+++ b/drivers/video/backlight/lm3630a_bl.c
-@@ -188,7 +188,7 @@ static int lm3630a_bank_a_update_status(struct backlight_device *bl)
- 	if ((pwm_ctrl & LM3630A_PWM_BANK_A) != 0) {
- 		lm3630a_pwm_ctrl(pchip, bl->props.brightness,
- 				 bl->props.max_brightness);
--		return bl->props.brightness;
-+		return 0;
- 	}
- 
- 	/* disable sleep */
-@@ -208,8 +208,8 @@ static int lm3630a_bank_a_update_status(struct backlight_device *bl)
- 	return 0;
- 
- out_i2c_err:
--	dev_err(pchip->dev, "i2c failed to access\n");
--	return bl->props.brightness;
-+	dev_err(pchip->dev, "i2c failed to access (%pe)\n", ERR_PTR(ret));
-+	return ret;
- }
- 
- static int lm3630a_bank_a_get_brightness(struct backlight_device *bl)
-@@ -265,7 +265,7 @@ static int lm3630a_bank_b_update_status(struct backlight_device *bl)
- 	if ((pwm_ctrl & LM3630A_PWM_BANK_B) != 0) {
- 		lm3630a_pwm_ctrl(pchip, bl->props.brightness,
- 				 bl->props.max_brightness);
--		return bl->props.brightness;
-+		return 0;
- 	}
- 
- 	/* disable sleep */
-@@ -285,8 +285,8 @@ static int lm3630a_bank_b_update_status(struct backlight_device *bl)
- 	return 0;
- 
- out_i2c_err:
--	dev_err(pchip->dev, "i2c failed to access REG_CTRL\n");
--	return bl->props.brightness;
-+	dev_err(pchip->dev, "i2c failed to access (%pe)\n", ERR_PTR(ret));
-+	return ret;
- }
- 
- static int lm3630a_bank_b_get_brightness(struct backlight_device *bl)
+diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+index a322a7bd286b..eb04b2f828ee 100644
+--- a/drivers/acpi/acpi_video.c
++++ b/drivers/acpi/acpi_video.c
+@@ -543,6 +543,15 @@ static const struct dmi_system_id video_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro V131"),
+ 		},
+ 	},
++	{
++	 .callback = video_set_report_key_events,
++	 .driver_data = (void *)((uintptr_t)REPORT_BRIGHTNESS_KEY_EVENTS),
++	 .ident = "Dell Vostro 3350",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++		DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
++		},
++	},
+ 	/*
+ 	 * Some machines change the brightness themselves when a brightness
+ 	 * hotkey gets pressed, despite us telling them not to. In this case
 -- 
 2.30.2
 
