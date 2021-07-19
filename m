@@ -2,118 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4013CD0F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA8A3CD0F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236016AbhGSIwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:52:16 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:49124 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbhGSIwP (ORCPT
+        id S235207AbhGSIwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:52:46 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6066 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236034AbhGSIwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:52:15 -0400
-Received: from localhost (unknown [192.168.167.13])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 79C2BD5AE3;
-        Mon, 19 Jul 2021 17:32:48 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [113.57.152.160])
-        by smtp.263.net (postfix) whith ESMTP id P30158T139874211661568S1626687167926777_;
-        Mon, 19 Jul 2021 17:32:48 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <a5d9e956cf5e9994d70d64ecaf34722e>
-X-RL-SENDER: chenhaoa@uniontech.com
-X-SENDER: chenhaoa@uniontech.com
-X-LOGIN-NAME: chenhaoa@uniontech.com
-X-FST-TO: peppe.cavallaro@st.com
-X-RCPT-COUNT: 11
-X-SENDER-IP: 113.57.152.160
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Hao Chen <chenhaoa@uniontech.com>
-To:     peppe.cavallaro@st.com
-Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        linux@armlinux.org.uk, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org, Hao Chen <chenhaoa@uniontech.com>
-Subject: [PATCH v4] net: stmmac: fix 'ethtool -P' return -EBUSY
-Date:   Mon, 19 Jul 2021 17:32:07 +0800
-Message-Id: <20210719093207.17343-1-chenhaoa@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
+        Mon, 19 Jul 2021 04:52:41 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16J98NqC049137;
+        Mon, 19 Jul 2021 05:32:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=qkVILrVrkezAlf6uEY13G0NBpgbAq5yXA5UCFY0v4F8=;
+ b=XDMXSQPadiDQ7oYweCTlM9XRsH5YaXFcXm7kCnYeFEkwTESmJYo+j/ION6GFGk+wM9IN
+ aZtvnSibGtyfTFH6oscH+6DSpdjIXhg0ABRhQZU3feal5wdl6xb0ePwU74Znn0smGL18
+ FZJqkvxhFxUprvL3skSrr1yAWjRpiuS8dvDOOX4SkOs2/RkOM3I94medeDDxsc5CH4VL
+ A+zOvK9ZX710xQ6ng6ggUE0MwBIayeVLOBqJx17UYJT+IIHejtMo18sr8kD1HFuDCwoE
+ ptBMiXjbh/3JMMUwHP7YczoqqFxUoumVYfPdBoWk2xWPFRnnN7Mvgro3t+sBSHZHMAKt cg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39w46hmk49-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 05:32:58 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16J98U4d049925;
+        Mon, 19 Jul 2021 05:32:58 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39w46hmk3j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 05:32:58 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16J9WiNO005206;
+        Mon, 19 Jul 2021 09:32:56 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 39upu88mqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Jul 2021 09:32:56 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16J9Wrw432768424
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jul 2021 09:32:53 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 86B7AA4054;
+        Mon, 19 Jul 2021 09:32:53 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D29DA4065;
+        Mon, 19 Jul 2021 09:32:51 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.84.3])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Jul 2021 09:32:51 +0000 (GMT)
+From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psampat@linux.ibm.com,
+        pratik.r.sampat@gmail.com
+Subject: [PATCH v5 0/1] Interface to represent PAPR firmware attributes
+Date:   Mon, 19 Jul 2021 15:02:49 +0530
+Message-Id: <20210719093250.41405-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: D8BPBzrnw6bdQVe4A0NyaaTTxsHvEIja
+X-Proofpoint-GUID: 6XSXm428OlZ6J4YW9x5e1oWRMwtn9nBY
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-19_02:2021-07-16,2021-07-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ suspectscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107190050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The permanent mac address should be available for query when the device
-is not up.
-NetworkManager, the system network daemon, uses 'ethtool -P' to obtain
-the permanent address after the kernel start. When the network device
-is not up, it will return the device busy error with 'ethtool -P'. At
-that time, it is unable to access the Internet through the permanent
-address by NetworkManager.
-I think that the '.begin' is not used to check if the device is up.
+RFC: https://lkml.org/lkml/2021/6/4/791
+PATCH v1: https://lkml.org/lkml/2021/6/16/805
+PATCH v2: https://lkml.org/lkml/2021/7/6/138
+PATCH v3: https://lkml.org/lkml/2021/7/12/2799
+PATCH v4: https://lkml.org/lkml/2021/7/16/532
 
-Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
----
- .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+Changelog v4 --> v5
+Based on comments from Fabiano
+1. Cleaned up unused/redundant headers
+2. Make "add_attr_group" use MAX_ATTRS instead of paramterizing "len"
+3. Cleanup previous "pgs[idx].pg.attrs" allocations on failiure
+4. Replaced strlen call with strnlen
+5. Cleanup of pgs structures for "num_attrs" instead of "MAX_ATTRS"
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index d0ce608b81c3..25c44c1ecbd6 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -15,6 +15,7 @@
- #include <linux/phylink.h>
- #include <linux/net_tstamp.h>
- #include <asm/io.h>
-+#include <linux/pm_runtime.h>
- 
- #include "stmmac.h"
- #include "dwmac_dma.h"
-@@ -410,13 +411,22 @@ static void stmmac_ethtool_setmsglevel(struct net_device *dev, u32 level)
- 
- }
- 
--static int stmmac_check_if_running(struct net_device *dev)
-+static int stmmac_ethtool_begin(struct net_device *dev)
- {
--	if (!netif_running(dev))
--		return -EBUSY;
-+	struct stmmac_priv *priv = netdev_priv(dev);
-+
-+	pm_runtime_get_sync(priv->device);
-+
- 	return 0;
- }
- 
-+static void stmmac_ethtool_complete(struct net_device *dev)
-+{
-+	struct stmmac_priv *priv = netdev_priv(dev);
-+
-+	pm_runtime_put(priv->device);
-+}
-+
- static int stmmac_ethtool_get_regs_len(struct net_device *dev)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
-@@ -1073,7 +1083,8 @@ static int stmmac_set_tunable(struct net_device *dev,
- static const struct ethtool_ops stmmac_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
- 				     ETHTOOL_COALESCE_MAX_FRAMES,
--	.begin = stmmac_check_if_running,
-+	.begin = stmmac_ethtool_begin,
-+	.complete = stmmac_ethtool_complete,
- 	.get_drvinfo = stmmac_ethtool_getdrvinfo,
- 	.get_msglevel = stmmac_ethtool_getmsglevel,
- 	.set_msglevel = stmmac_ethtool_setmsglevel,
+Also, have implemented a POC using this interface for the powerpc-utils'
+ppc64_cpu --frequency command-line tool to utilize this information
+in userspace.
+The POC for the new interface has been hosted here:
+https://github.com/pratiksampat/powerpc-utils/tree/H_GET_ENERGY_SCALE_INFO_v2
+
+Sample output from the powerpc-utils tool is as follows:
+
+# ppc64_cpu --frequency
+Power and Performance Mode: XXXX
+Idle Power Saver Status   : XXXX
+Processor Folding Status  : XXXX --> Printed if Idle power save status is supported
+
+Platform reported frequencies --> Frequencies reported from the platform's H_CALL i.e PAPR interface
+min        :    NNNN GHz
+max        :    NNNN GHz
+static     :    NNNN GHz
+
+Tool Computed frequencies
+min        :    NNNN GHz (cpu XX)
+max        :    NNNN GHz (cpu XX)
+avg        :    NNNN GHz
+
+Pratik R. Sampat (1):
+  powerpc/pseries: Interface to represent PAPR firmware attributes
+
+ .../sysfs-firmware-papr-energy-scale-info     |  26 ++
+ arch/powerpc/include/asm/hvcall.h             |  24 +-
+ arch/powerpc/kvm/trace_hv.h                   |   1 +
+ arch/powerpc/platforms/pseries/Makefile       |   3 +-
+ .../pseries/papr_platform_attributes.c        | 317 ++++++++++++++++++
+ 5 files changed, 369 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
+ create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
+
 -- 
-2.20.1
-
-
+2.31.1
 
