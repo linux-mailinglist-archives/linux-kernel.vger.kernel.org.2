@@ -2,33 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14FA3CE60F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F783CE642
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351874AbhGSQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:00:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59412 "EHLO mail.kernel.org"
+        id S242700AbhGSQDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:03:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345596AbhGSPEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3541610D0;
-        Mon, 19 Jul 2021 15:44:28 +0000 (UTC)
+        id S1345607AbhGSPEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60C22606A5;
+        Mon, 19 Jul 2021 15:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709469;
-        bh=bBUmxY9SmW/fbIBJRTm3Oz338qZMRe2V0cH6/8LP+sc=;
+        s=korg; t=1626709472;
+        bh=x88MS2ITws8FK+xlvLz/ieDFsmVgFG8E+Ow7UVUBkA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kt3qgiYE3B82aaIvFtwUOkJvUvo9JMQ5gH8K5vpNNfC03myyJJSoGRfqHS1UKNrRx
-         TR9s1F4xscyAvqtmfYPmBrG3vzuRN/3nx0qC5u81QcYkePdz6VfGJ4cQmWpT4apUFE
-         WDZxv5VW2y+NuFApsl0K8h6TXXl4o8IB3j2f5/Hg=
+        b=G9+d1gjYE1hlD5QT+cSKjf2e44AReYpLymMCpFVM/P6CFt7+rnwqQOYempUhWpEH3
+         j0fH2+hCRXJo4tQmSJ0/t3IK+MsT8xFuAedjpAITiAl5HP9ZKahT1cE8DvWB+5jnQs
+         aMTzSh1n7r4ucwR9ETA3hUzwkLhBIivmKCygeaDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Brian Cain <bcain@codeaurora.org>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Glitta <glittao@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 395/421] NFSv4/pNFS: Dont call _nfs4_pnfs_v3_ds_connect multiple times
-Date:   Mon, 19 Jul 2021 16:53:26 +0200
-Message-Id: <20210719145000.061210229@linuxfoundation.org>
+Subject: [PATCH 4.19 396/421] hexagon: use common DISCARDS macro
+Date:   Mon, 19 Jul 2021 16:53:27 +0200
+Message-Id: <20210719145000.096295657@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,102 +46,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit f46f84931a0aa344678efe412d4b071d84d8a805 ]
+[ Upstream commit 681ba73c72302214686401e707e2087ed11a6556 ]
 
-After we grab the lock in nfs4_pnfs_ds_connect(), there is no check for
-whether or not ds->ds_clp has already been initialised, so we can end up
-adding the same transports multiple times.
+ld.lld warns that the '.modinfo' section is not currently handled:
 
-Fixes: fc821d59209d ("pnfs/NFSv4.1: Add multipath capabilities to pNFS flexfiles servers over NFSv3")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+ld.lld: warning: kernel/built-in.a(workqueue.o):(.modinfo) is being placed in '.modinfo'
+ld.lld: warning: kernel/built-in.a(printk/printk.o):(.modinfo) is being placed in '.modinfo'
+ld.lld: warning: kernel/built-in.a(irq/spurious.o):(.modinfo) is being placed in '.modinfo'
+ld.lld: warning: kernel/built-in.a(rcu/update.o):(.modinfo) is being placed in '.modinfo'
+
+The '.modinfo' section was added in commit 898490c010b5 ("moduleparam:
+Save information about built-in modules in separate file") to the DISCARDS
+macro but Hexagon has never used that macro.  The unification of DISCARDS
+happened in commit 023bf6f1b8bf ("linker script: unify usage of discard
+definition") in 2009, prior to Hexagon being added in 2011.
+
+Switch Hexagon over to the DISCARDS macro so that anything that is
+expected to be discarded gets discarded.
+
+Link: https://lkml.kernel.org/r/20210521011239.1332345-3-nathan@kernel.org
+Fixes: e95bf452a9e2 ("Hexagon: Add configuration and makefiles for the Hexagon architecture.")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Acked-by: Brian Cain <bcain@codeaurora.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Oliver Glitta <glittao@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pnfs_nfs.c | 52 +++++++++++++++++++++++------------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+ arch/hexagon/kernel/vmlinux.lds.S | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/fs/nfs/pnfs_nfs.c b/fs/nfs/pnfs_nfs.c
-index acfb52bc0007..3f0c2436254a 100644
---- a/fs/nfs/pnfs_nfs.c
-+++ b/fs/nfs/pnfs_nfs.c
-@@ -555,19 +555,16 @@ out:
+diff --git a/arch/hexagon/kernel/vmlinux.lds.S b/arch/hexagon/kernel/vmlinux.lds.S
+index ad69d181c939..757f9554118e 100644
+--- a/arch/hexagon/kernel/vmlinux.lds.S
++++ b/arch/hexagon/kernel/vmlinux.lds.S
+@@ -73,13 +73,8 @@ SECTIONS
+ 
+ 	_end = .;
+ 
+-	/DISCARD/ : {
+-		EXIT_TEXT
+-		EXIT_DATA
+-		EXIT_CALL
+-	}
+-
+ 	STABS_DEBUG
+ 	DWARF_DEBUG
+ 
++	DISCARDS
  }
- EXPORT_SYMBOL_GPL(nfs4_pnfs_ds_add);
- 
--static void nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
-+static int nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
- {
- 	might_sleep();
--	wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING,
--			TASK_KILLABLE);
-+	return wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING, TASK_KILLABLE);
- }
- 
- static void nfs4_clear_ds_conn_bit(struct nfs4_pnfs_ds *ds)
- {
- 	smp_mb__before_atomic();
--	clear_bit(NFS4DS_CONNECTING, &ds->ds_state);
--	smp_mb__after_atomic();
--	wake_up_bit(&ds->ds_state, NFS4DS_CONNECTING);
-+	clear_and_wake_up_bit(NFS4DS_CONNECTING, &ds->ds_state);
- }
- 
- static struct nfs_client *(*get_v3_ds_connect)(
-@@ -728,30 +725,33 @@ int nfs4_pnfs_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds,
- {
- 	int err;
- 
--again:
--	err = 0;
--	if (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) == 0) {
--		if (version == 3) {
--			err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo,
--						       retrans);
--		} else if (version == 4) {
--			err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo,
--						       retrans, minor_version);
--		} else {
--			dprintk("%s: unsupported DS version %d\n", __func__,
--				version);
--			err = -EPROTONOSUPPORT;
--		}
-+	do {
-+		err = nfs4_wait_ds_connect(ds);
-+		if (err || ds->ds_clp)
-+			goto out;
-+		if (nfs4_test_deviceid_unavailable(devid))
-+			return -ENODEV;
-+	} while (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) != 0);
- 
--		nfs4_clear_ds_conn_bit(ds);
--	} else {
--		nfs4_wait_ds_connect(ds);
-+	if (ds->ds_clp)
-+		goto connect_done;
- 
--		/* what was waited on didn't connect AND didn't mark unavail */
--		if (!ds->ds_clp && !nfs4_test_deviceid_unavailable(devid))
--			goto again;
-+	switch (version) {
-+	case 3:
-+		err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo, retrans);
-+		break;
-+	case 4:
-+		err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo, retrans,
-+					       minor_version);
-+		break;
-+	default:
-+		dprintk("%s: unsupported DS version %d\n", __func__, version);
-+		err = -EPROTONOSUPPORT;
- 	}
- 
-+connect_done:
-+	nfs4_clear_ds_conn_bit(ds);
-+out:
- 	/*
- 	 * At this point the ds->ds_clp should be ready, but it might have
- 	 * hit an error.
 -- 
 2.30.2
 
