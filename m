@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A743CE7B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245433CE8A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350930AbhGSQbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48264 "EHLO mail.kernel.org"
+        id S1357033AbhGSQpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:45:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345605AbhGSPNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:13:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86A566121F;
-        Mon, 19 Jul 2021 15:53:21 +0000 (UTC)
+        id S1347042AbhGSP0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:26:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08326601FD;
+        Mon, 19 Jul 2021 16:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710002;
-        bh=osn4rjtANXWskyEV0mZWjevf0Tk15UGwMHiy8emKj2E=;
+        s=korg; t=1626710811;
+        bh=B9PwzVkDt+YbbI0grdaZ9+ed3WdmaMZd2+FoHBNeCZU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YdCvNYGXvbrpV8IJrR5Nv/Pd6W8UxKDOAcIe8np3jHHeKrSKMp40F1r1gIwE/tOW8
-         wHqjt0yb598Q3QzJ5Kuv65jjVcj0mORJsrrvaDPu1pzEz4M6iSBKA21npOgE0Qaco0
-         5t7B/UT8e3wGjkaY0dADzsmm8ELEC9TYxHDIhcx4=
+        b=XEHhzAk6acjowPJaHpcpkLe4ZtjshYBQC29EK+8oKCMOfIarfi3HZDHB9bWW+ww/I
+         1JFbynmvLtaDEDp8n4uvGyrKCZ9lP0irYpuFfH+blMjX2phQ3KSIfSUs38fkDGwVza
+         OEbjcb15UPabQtEFKbfDGh/2EQtMh6I1vOF05uFk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>, Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Ohad Sharabi <osharabi@habana.ai>,
+        Oded Gabbay <ogabbay@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 033/243] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
-Date:   Mon, 19 Jul 2021 16:51:02 +0200
-Message-Id: <20210719144942.003486390@linuxfoundation.org>
+Subject: [PATCH 5.13 117/351] habanalabs: fix mask to obtain page offset
+Date:   Mon, 19 Jul 2021 16:51:03 +0200
+Message-Id: <20210719144948.353558703@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Ohad Sharabi <osharabi@habana.ai>
 
-[ Upstream commit a75e5cdf4dd1307bb1541edbb0c008f40896644c ]
+[ Upstream commit 0f37510ca34848718db1003479bb4671e8f3c112 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+When converting virtual address to physical we need to add correct
+offset to the physical page.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Link: https://lore.kernel.org/r/1620791647-16024-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+For this we need to use mask that include ALL bits of page offset.
+
+Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_da7219_max98373.c | 1 +
- sound/soc/intel/boards/sof_rt5682.c          | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/misc/habanalabs/common/mmu/mmu.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
-index f3cb0773e70e..8d1ad892e86b 100644
---- a/sound/soc/intel/boards/sof_da7219_max98373.c
-+++ b/sound/soc/intel/boards/sof_da7219_max98373.c
-@@ -440,6 +440,7 @@ static const struct platform_device_id board_ids[] = {
- 	},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, board_ids);
+diff --git a/drivers/misc/habanalabs/common/mmu/mmu.c b/drivers/misc/habanalabs/common/mmu/mmu.c
+index b37189956b14..792d25b79ea6 100644
+--- a/drivers/misc/habanalabs/common/mmu/mmu.c
++++ b/drivers/misc/habanalabs/common/mmu/mmu.c
+@@ -501,12 +501,20 @@ static void hl_mmu_pa_page_with_offset(struct hl_ctx *ctx, u64 virt_addr,
  
- static struct platform_driver audio = {
- 	.probe = audio_probe,
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index ddbb9fe7cc06..1f94fa5a15db 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -877,6 +877,7 @@ static const struct platform_device_id board_ids[] = {
- 	},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, board_ids);
+ 	if ((hops->range_type == HL_VA_RANGE_TYPE_DRAM) &&
+ 			!is_power_of_2(prop->dram_page_size)) {
+-		u32 bit;
++		unsigned long dram_page_size = prop->dram_page_size;
+ 		u64 page_offset_mask;
+ 		u64 phys_addr_mask;
++		u32 bit;
  
- static struct platform_driver sof_audio = {
- 	.probe = sof_audio_probe,
+-		bit = __ffs64((u64)prop->dram_page_size);
+-		page_offset_mask = ((1ull << bit) - 1);
++		/*
++		 * find last set bit in page_size to cover all bits of page
++		 * offset. note that 1 has to be added to bit index.
++		 * note that the internal ulong variable is used to avoid
++		 * alignment issue.
++		 */
++		bit = find_last_bit(&dram_page_size,
++					sizeof(dram_page_size) * BITS_PER_BYTE) + 1;
++		page_offset_mask = (BIT_ULL(bit) - 1);
+ 		phys_addr_mask = ~page_offset_mask;
+ 		*phys_addr = (tmp_phys_addr & phys_addr_mask) |
+ 				(virt_addr & page_offset_mask);
 -- 
 2.30.2
 
