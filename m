@@ -2,43 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853873CD8AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A668D3CD941
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243719AbhGSOYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:24:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55876 "EHLO mail.kernel.org"
+        id S242153AbhGSO1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:27:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242522AbhGSOWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:22:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66126611F2;
-        Mon, 19 Jul 2021 15:02:29 +0000 (UTC)
+        id S243135AbhGSOW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:22:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A3F261166;
+        Mon, 19 Jul 2021 15:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706950;
-        bh=YXEHPD2Vi2xEUHW1TMUFHUcpQOipBhA/X0A+7MOjTEs=;
+        s=korg; t=1626706952;
+        bh=lwqM6PvVga1wrNPdaKICIzDas3E2Hl7kjyv++ULeiNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gg7B/WwtkXbFjqcljeN2fQiZ1/rFCBV8c1kJAggDX68hhdQh9o7w9Ge9QI8QX28zC
-         VMCPZhursUFGIvrpe2MBEvdwhNxicb4aCsAWRBNi5Zm7fhci9TGXZyIdiUTACRGxBe
-         DBD29nnITjK4Hrr7fnrkXCFzKbGpLq82p2ZF+Ai0=
+        b=BFzuLY5jHip1mnouG41sPcKBS8kvhxZf0QCyYD9iJ0zBaosmtRjf/Ju4n0yaGxo9U
+         wN4ykcAWHAbgTg/Rp374dbb5bgLjf6GKPgI9GIDMTduo0+6qrJnIZXW51tVmq7Laak
+         0GBIsfMHeVLOMrzREI8+qtnwcYgFTUEciB9rNs5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        Kyungsik Lee <kyungsik.lee@lge.com>,
-        Yinghai Lu <yinghai@kernel.org>,
-        Bongkyu Kim <bongkyu.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sven Schmidt <4sschmid@informatik.uni-hamburg.de>,
-        Rajat Asthana <thisisrast7@gmail.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Gao Xiang <hsiangkao@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 163/188] lib/decompress_unlz4.c: correctly handle zero-padding around initrds.
-Date:   Mon, 19 Jul 2021 16:52:27 +0200
-Message-Id: <20210719144941.828329620@linuxfoundation.org>
+Subject: [PATCH 4.4 164/188] pwm: spear: Dont modify HW state in .remove callback
+Date:   Mon, 19 Jul 2021 16:52:28 +0200
+Message-Id: <20210719144941.858243801@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -50,97 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 2c484419efc09e7234c667aa72698cb79ba8d8ed ]
+[ Upstream commit b601a18f12383001e7a8da238de7ca1559ebc450 ]
 
-lz4 compatible decompressor is simple.  The format is underspecified and
-relies on EOF notification to determine when to stop.  Initramfs buffer
-format[1] explicitly states that it can have arbitrary number of zero
-padding.  Thus when operating without a fill function, be extra careful to
-ensure that sizes less than 4, or apperantly empty chunksizes are treated
-as EOF.
+A consumer is expected to disable a PWM before calling pwm_put(). And if
+they didn't there is hopefully a good reason (or the consumer needs
+fixing). Also if disabling an enabled PWM was the right thing to do,
+this should better be done in the framework instead of in each low level
+driver.
 
-To test this I have created two cpio initrds, first a normal one,
-main.cpio.  And second one with just a single /test-file with content
-"second" second.cpio.  Then i compressed both of them with gzip, and with
-lz4 -l.  Then I created a padding of 4 bytes (dd if=/dev/zero of=pad4 bs=1
-count=4).  To create four testcase initrds:
+So drop the hardware modification from the .remove() callback.
 
- 1) main.cpio.gzip + extra.cpio.gzip = pad0.gzip
- 2) main.cpio.lz4  + extra.cpio.lz4 = pad0.lz4
- 3) main.cpio.gzip + pad4 + extra.cpio.gzip = pad4.gzip
- 4) main.cpio.lz4  + pad4 + extra.cpio.lz4 = pad4.lz4
-
-The pad4 test-cases replicate the initrd load by grub, as it pads and
-aligns every initrd it loads.
-
-All of the above boot, however /test-file was not accessible in the initrd
-for the testcase #4, as decoding in lz4 decompressor failed.  Also an
-error message printed which usually is harmless.
-
-Whith a patched kernel, all of the above testcases now pass, and
-/test-file is accessible.
-
-This fixes lz4 initrd decompress warning on every boot with grub.  And
-more importantly this fixes inability to load multiple lz4 compressed
-initrds with grub.  This patch has been shipping in Ubuntu kernels since
-January 2021.
-
-[1] ./Documentation/driver-api/early-userspace/buffer-format.rst
-
-BugLink: https://bugs.launchpad.net/bugs/1835660
-Link: https://lore.kernel.org/lkml/20210114200256.196589-1-xnox@ubuntu.com/ # v0
-Link: https://lkml.kernel.org/r/20210513104831.432975-1-dimitri.ledkov@canonical.com
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc: Kyungsik Lee <kyungsik.lee@lge.com>
-Cc: Yinghai Lu <yinghai@kernel.org>
-Cc: Bongkyu Kim <bongkyu.kim@lge.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Sven Schmidt <4sschmid@informatik.uni-hamburg.de>
-Cc: Rajat Asthana <thisisrast7@gmail.com>
-Cc: Nick Terrell <terrelln@fb.com>
-Cc: Gao Xiang <hsiangkao@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/decompress_unlz4.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/pwm/pwm-spear.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/lib/decompress_unlz4.c b/lib/decompress_unlz4.c
-index 036fc882cd72..f1449244fdd4 100644
---- a/lib/decompress_unlz4.c
-+++ b/lib/decompress_unlz4.c
-@@ -115,6 +115,9 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 				error("data corrupted");
- 				goto exit_2;
- 			}
-+		} else if (size < 4) {
-+			/* empty or end-of-file */
-+			goto exit_3;
- 		}
+diff --git a/drivers/pwm/pwm-spear.c b/drivers/pwm/pwm-spear.c
+index 6c6b44fd3f43..2d11ac277de8 100644
+--- a/drivers/pwm/pwm-spear.c
++++ b/drivers/pwm/pwm-spear.c
+@@ -231,10 +231,6 @@ static int spear_pwm_probe(struct platform_device *pdev)
+ static int spear_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct spear_pwm_chip *pc = platform_get_drvdata(pdev);
+-	int i;
+-
+-	for (i = 0; i < NUM_PWM; i++)
+-		pwm_disable(&pc->chip.pwms[i]);
  
- 		chunksize = get_unaligned_le32(inp);
-@@ -128,6 +131,10 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 			continue;
- 		}
- 
-+		if (!fill && chunksize == 0) {
-+			/* empty or end-of-file */
-+			goto exit_3;
-+		}
- 
- 		if (posp)
- 			*posp += 4;
-@@ -184,6 +191,7 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 		}
- 	}
- 
-+exit_3:
- 	ret = 0;
- exit_2:
- 	if (!input)
+ 	/* clk was prepared in probe, hence unprepare it here */
+ 	clk_unprepare(pc->clk);
 -- 
 2.30.2
 
