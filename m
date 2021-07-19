@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFE23CDDD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75F03CDE97
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344218AbhGSPA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:00:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56024 "EHLO mail.kernel.org"
+        id S1344063AbhGSPEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:04:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245688AbhGSOjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 216E461351;
-        Mon, 19 Jul 2021 15:18:48 +0000 (UTC)
+        id S244435AbhGSOhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:37:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A17E661222;
+        Mon, 19 Jul 2021 15:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707929;
-        bh=vDQYaUWtKkYuUFRbY8KYQCZVH5da7HqjIvW6w6inqxc=;
+        s=korg; t=1626707841;
+        bh=IROkhotbn8xzNqoeKJ4VtFkJvRI1T9V6UNapqUsSAY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YyrxfZR1ndylLfTmyCFTtQ7qC4sO6QpRU5WZk4+spFZPN7kW3+VK+dJjmaSt0FJYg
-         R6JMsZ1AWjSQnvAnv6aLOTt64FBSNrer8zRWzJbffb+IgT2ssic48lFvrLbcAk+RU5
-         MAst/XsgZwOBSU5g8LC+FoyURPViha7z3GvBhox8=
+        b=mC4KtvoGZ8q1mfOqNSJCot4tG9YOBi4Uj9kNxw9fdNpPwqDwFtfBSIBsEJBN7C+W8
+         +CtODEjwbUdWOFJMdP4XmJ4oH0Py1/XDkFLCV/QDh3n6vf8B0dzkZIK7gai+GyHeLn
+         tHxQZrZAuHA4SLzO93tjh4uH2mjbQ1uk2O3jcrc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 078/315] sata_highbank: fix deferred probing
-Date:   Mon, 19 Jul 2021 16:49:27 +0200
-Message-Id: <20210719144945.432424965@linuxfoundation.org>
+Subject: [PATCH 4.14 079/315] pata_rb532_cf: fix deferred probing
+Date:   Mon, 19 Jul 2021 16:49:28 +0200
+Message-Id: <20210719144945.461763690@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,42 +41,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 4a24efa16e7db02306fb5db84518bb0a7ada5a46 ]
+[ Upstream commit 2d3a62fbae8e5badc2342388f65ab2191c209cc0 ]
 
 The driver overrides the error codes returned by platform_get_irq() to
--EINVAL, so if it returns -EPROBE_DEFER, the driver would fail the probe
+-ENOENT, so if it returns -EPROBE_DEFER, the driver would fail the probe
 permanently instead of the deferred probing. Switch to propagating the
 error code upstream, still checking/overriding IRQ0 as libata regards it
 as "no IRQ" (thus polling) anyway...
 
 Fixes: 9ec36cafe43b ("of/irq: do irq resolution in platform_get_irq")
 Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Link: https://lore.kernel.org/r/105b456d-1199-f6e9-ceb7-ffc5ba551d1a@omprussia.ru
+Link: https://lore.kernel.org/r/771ced55-3efb-21f5-f21c-b99920aae611@omprussia.ru
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/sata_highbank.c | 6 ++++--
+ drivers/ata/pata_rb532_cf.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ata/sata_highbank.c b/drivers/ata/sata_highbank.c
-index e67815b896fc..1dd47a05b34b 100644
---- a/drivers/ata/sata_highbank.c
-+++ b/drivers/ata/sata_highbank.c
-@@ -483,10 +483,12 @@ static int ahci_highbank_probe(struct platform_device *pdev)
+diff --git a/drivers/ata/pata_rb532_cf.c b/drivers/ata/pata_rb532_cf.c
+index 653b9a0bf727..0416a390b94c 100644
+--- a/drivers/ata/pata_rb532_cf.c
++++ b/drivers/ata/pata_rb532_cf.c
+@@ -120,10 +120,12 @@ static int rb532_pata_driver_probe(struct platform_device *pdev)
  	}
  
  	irq = platform_get_irq(pdev, 0);
 -	if (irq <= 0) {
 +	if (irq < 0) {
- 		dev_err(dev, "no irq\n");
--		return -EINVAL;
+ 		dev_err(&pdev->dev, "no IRQ resource found\n");
+-		return -ENOENT;
 +		return irq;
  	}
 +	if (!irq)
 +		return -EINVAL;
  
- 	hpriv = devm_kzalloc(dev, sizeof(*hpriv), GFP_KERNEL);
- 	if (!hpriv) {
+ 	pdata = dev_get_platdata(&pdev->dev);
+ 	if (!pdata) {
 -- 
 2.30.2
 
