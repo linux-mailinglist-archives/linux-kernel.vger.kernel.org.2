@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0F93CDDAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F0A3CDDFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344195AbhGSO7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:59:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
+        id S1344856AbhGSPBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:01:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344087AbhGSOj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 294C460551;
-        Mon, 19 Jul 2021 15:20:29 +0000 (UTC)
+        id S1344104AbhGSOj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E41806113C;
+        Mon, 19 Jul 2021 15:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708029;
-        bh=yiOPudCo0r3bJ/oyPyTEsDgmCrlImhzhFzapo9dhIcE=;
+        s=korg; t=1626708032;
+        bh=dNMDX0yeP7Lhgmi9O4rPagiGeruxu2zsPOFAHtUz8tg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QEZ9jainSRziw+ynulzKGE/1PIGJ9gTLWM72wtIH0dX2bqkHEA/Uw0DK+K+Kf7KqS
-         Zig0fJPvK/Ub2kqOP5PBVjGFosmIIu56AkBIwMOoFJUW7ztJxjWaNjRZlQOAdvFUM1
-         wL4WMBOfv31EGzNeflkACnntI/c/5UAEaNz+E6i4=
+        b=K5IDehaG9b+QQOswg5RW+kthWiNMDJrC4Oo47XUedT/EhdUV1ILyD5epuPws+SuWw
+         Lpz6s3xB54E4t19I/710ewlRlE0pLTaOrMS9Bj2tQmyyI2nVIa5aPfNPHUeSwZ8JYA
+         zGR/djn02zkn8JrZB6gzWmEcbHFQszHx7b95v+tM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 154/315] leds: as3645a: Fix error return code in as3645a_parse_node()
-Date:   Mon, 19 Jul 2021 16:50:43 +0200
-Message-Id: <20210719144947.952658375@linuxfoundation.org>
+Subject: [PATCH 4.14 155/315] leds: ktd2692: Fix an error handling path
+Date:   Mon, 19 Jul 2021 16:50:44 +0200
+Message-Id: <20210719144947.984062003@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,35 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 96a30960a2c5246c8ffebe8a3c9031f9df094d97 ]
+[ Upstream commit ee78b9360e14c276f5ceaa4a0d06f790f04ccdad ]
 
-Return error code -ENODEV rather than '0' when the indicator node can not
-be found.
+In 'ktd2692_parse_dt()', if an error occurs after a successful
+'regulator_enable()' call, we should call 'regulator_enable()'.
 
-Fixes: a56ba8fbcb55 ("media: leds: as3645a: Add LED flash class driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+This is the same in 'ktd2692_probe()', if an error occurs after a
+successful 'ktd2692_parse_dt()' call.
+
+Instead of adding 'regulator_enable()' in several places, implement a
+resource managed solution and simplify the remove function accordingly.
+
+Fixes: b7da8c5c725c ("leds: Add ktd2692 flash LED driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-as3645a.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/leds/leds-ktd2692.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/leds/leds-as3645a.c b/drivers/leds/leds-as3645a.c
-index 9a257f969300..8109972998b7 100644
---- a/drivers/leds/leds-as3645a.c
-+++ b/drivers/leds/leds-as3645a.c
-@@ -564,6 +564,7 @@ static int as3645a_parse_node(struct as3645a *flash,
- 	if (!flash->indicator_node) {
- 		dev_warn(&flash->client->dev,
- 			 "can't find indicator node\n");
-+		rval = -ENODEV;
- 		goto out_err;
+diff --git a/drivers/leds/leds-ktd2692.c b/drivers/leds/leds-ktd2692.c
+index 45296aaca9da..02738b5b1dbf 100644
+--- a/drivers/leds/leds-ktd2692.c
++++ b/drivers/leds/leds-ktd2692.c
+@@ -259,6 +259,17 @@ static void ktd2692_setup(struct ktd2692_context *led)
+ 				 | KTD2692_REG_FLASH_CURRENT_BASE);
+ }
+ 
++static void regulator_disable_action(void *_data)
++{
++	struct device *dev = _data;
++	struct ktd2692_context *led = dev_get_drvdata(dev);
++	int ret;
++
++	ret = regulator_disable(led->regulator);
++	if (ret)
++		dev_err(dev, "Failed to disable supply: %d\n", ret);
++}
++
+ static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
+ 			    struct ktd2692_led_config_data *cfg)
+ {
+@@ -289,8 +300,14 @@ static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
+ 
+ 	if (led->regulator) {
+ 		ret = regulator_enable(led->regulator);
+-		if (ret)
++		if (ret) {
+ 			dev_err(dev, "Failed to enable supply: %d\n", ret);
++		} else {
++			ret = devm_add_action_or_reset(dev,
++						regulator_disable_action, dev);
++			if (ret)
++				return ret;
++		}
  	}
  
+ 	child_node = of_get_next_available_child(np, NULL);
+@@ -380,17 +397,9 @@ static int ktd2692_probe(struct platform_device *pdev)
+ static int ktd2692_remove(struct platform_device *pdev)
+ {
+ 	struct ktd2692_context *led = platform_get_drvdata(pdev);
+-	int ret;
+ 
+ 	led_classdev_flash_unregister(&led->fled_cdev);
+ 
+-	if (led->regulator) {
+-		ret = regulator_disable(led->regulator);
+-		if (ret)
+-			dev_err(&pdev->dev,
+-				"Failed to disable supply: %d\n", ret);
+-	}
+-
+ 	mutex_destroy(&led->lock);
+ 
+ 	return 0;
 -- 
 2.30.2
 
