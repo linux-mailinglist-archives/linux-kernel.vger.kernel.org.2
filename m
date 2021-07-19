@@ -2,147 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A62B3CCC1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 04:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755BC3CCC21
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 04:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbhGSCMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Jul 2021 22:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbhGSCL7 (ORCPT
+        id S234207AbhGSCMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Jul 2021 22:12:45 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12225 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233988AbhGSCMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Jul 2021 22:11:59 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AC8C061762;
-        Sun, 18 Jul 2021 19:08:59 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id e14so6035411plh.8;
-        Sun, 18 Jul 2021 19:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=9lv01krC1Ir3cayjbUkot1Snxc1f9rBCVOiKjknUIP0=;
-        b=ftGSn3Te9lfAd2fA/jvbEyqJ39OHlaJi5nieMP/BpV0GGNYRxIpA6JICntdXkwmJWo
-         7OUYi1HCrXBChZPh3iVZ/ys1rk95lPHFimvNhR/Vej7V94HrbK5yVOii03TUjX8p7yQ2
-         LL8eKCUjqdA/IRSPApzDOFSEDwvCgeF3HCvk06thDk9BL9k1wei9CRzBh/hfBW+GnWWu
-         LTcSpPhi+SV0zjc9nbs6Qm81V0b9F1JQSyTc+5xUkiaU1fIzfgol4s/HZEm9I2Q9ojEb
-         5XVJRO8y5gkvn61RiwKTMOlJF3hfQlYkGP6aP1mzhvA+OznqJO4DHkfXp71z8SBtWIK2
-         HcMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=9lv01krC1Ir3cayjbUkot1Snxc1f9rBCVOiKjknUIP0=;
-        b=cntNGiWYahu/GtiiCzK9DXGvQORsczJ42hmUTAYGmtqlgKHMTUI1J+URGYjPA9xMv+
-         yC9eQ0iV7at1lFZArwIQ933O2nJ4V95QNp6750YNVWuLDYMmnJuTz+//StWJjvUJqrKh
-         EjEl5T6U/+aBSDhAuPbPw2cHTDPltpyVY5tAGVpiglEd4zUujOEmBqLZrnRO2sWSfe6f
-         HPf9tBqpg/va4KWPKwc0jOoG+HnK0fkbC86lqbp5kmg4TLpAMHDeOVna+oyXMZVxN0GW
-         y374wJBjqIxs3fgjqYMzTXg/pz30eqBBOz6j3bCqBzkhIMu2NiNmoxYq9LYUDmssKdD/
-         fHIQ==
-X-Gm-Message-State: AOAM531oYA05S6E8m/IhSynpPwbp7SRXSxJZByhDGhf4vut7UuQYVCxQ
-        IPsvzsQnzyNY15jsOqOo5rzsqKzRV14=
-X-Google-Smtp-Source: ABdhPJw2OyruLoogmOXxsQVFb6JY44szeId2pZ2WKY3l9ZYwEDqS/yupU8eumm6uoe/puIpm753xcA==
-X-Received: by 2002:a17:90a:bd04:: with SMTP id y4mr28337661pjr.127.1626660538648;
-        Sun, 18 Jul 2021 19:08:58 -0700 (PDT)
-Received: from [10.144.0.86] ([45.135.186.26])
-        by smtp.gmail.com with ESMTPSA id v10sm18084837pjd.29.2021.07.18.19.08.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Jul 2021 19:08:58 -0700 (PDT)
-Subject: Re: [BUG] bus: mhi: possible ABBA deadlock in mhi_pm_m0_transition()
- and mhi_send_cmd()
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <0a213c92-32d5-efc8-079b-dd20d5ecfe20@gmail.com>
- <2fbeeb8dc647dc88e69ec6624c2078d1@codeaurora.org>
- <20210716064512.GE3323@workstation>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <34ea09b0-8622-90f5-ee70-68c27081de39@gmail.com>
-Date:   Mon, 19 Jul 2021 10:08:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Sun, 18 Jul 2021 22:12:44 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GSlWg2skQz1CLM2;
+        Mon, 19 Jul 2021 10:03:59 +0800 (CST)
+Received: from dggpemm500015.china.huawei.com (7.185.36.181) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 10:09:43 +0800
+Received: from [10.174.179.224] (10.174.179.224) by
+ dggpemm500015.china.huawei.com (7.185.36.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 10:09:42 +0800
+Subject: Re: [PATCH] Bluetooth: fix use-after-free error in lock_sock_nested()
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+CC:     <cj.chengjian@huawei.com>, Wei Yongjun <weiyongjun1@huawei.com>,
+        <yuehaibing@huawei.com>, <huawei.libin@huawei.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+References: <20210714031733.1395549-1-bobo.shaobowang@huawei.com>
+ <CABBYNZL37yLgj1LP7r=rbEcsPXCPy1y55ar816eZXka2W=7-Aw@mail.gmail.com>
+ <a1c4ddcb-afbd-c0e4-2003-90590b10ea84@huawei.com>
+ <32ffeb61-f8e8-2a62-e1a7-d5df9672267c@huawei.com>
+ <CABBYNZKy28hfo811zMB6Z=TEXrUn_JCkpehE7n_a7Cx10qBa8g@mail.gmail.com>
+From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Message-ID: <50a139c2-6252-1881-c253-cc548bca1947@huawei.com>
+Date:   Mon, 19 Jul 2021 10:09:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <20210716064512.GE3323@workstation>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CABBYNZKy28hfo811zMB6Z=TEXrUn_JCkpehE7n_a7Cx10qBa8g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Originating-IP: [10.174.179.224]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500015.china.huawei.com (7.185.36.181)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 2021/7/16 14:45, Manivannan Sadhasivam wrote:
-> On Thu, Jul 15, 2021 at 09:57:22AM -0700, Bhaumik Bhatt wrote:
->> On 2021-07-15 02:45 AM, Jia-Ju Bai wrote:
->>> Hello,
+>>> Hi,
 >>>
->>> I find there is a possible ABBA deadlock in the MHI driver in Linux
->>> 5.10:
+>>> In my case it looks OK, this is the diff:
 >>>
->>> In mhi_pm_m0_transition():
->>> 262:     read_lock_bh(&mhi_cntrl->pm_lock);
->>> 281:     spin_lock_irq(&mhi_cmd->lock);
+>>> diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+>>> index f1b1edd0b697..32ef3328ab49 100644
+>>> --- a/net/bluetooth/l2cap_sock.c
+>>> +++ b/net/bluetooth/l2cap_sock.c
+>>> @@ -1500,6 +1500,9 @@ static void l2cap_sock_close_cb(struct
+>>> l2cap_chan *chan)
+>>>   {
+>>>          struct sock *sk = chan->data;
 >>>
->>> In mhi_send_cmd():
->>> 1181:   spin_lock_bh(&mhi_cmd->lock);
->>> 1207:   read_lock_bh(&mhi_cntrl->pm_lock);
+>>> +       if (!sk)
+>>> +               return;
+>>> +
+>>>          l2cap_sock_kill(sk);
+>>>   }
 >>>
->>> When mhi_pm_m0_transition() and mhi_send_cmd() are concurrently
->>> executed, the deadlock can occur.
+>>> @@ -1508,6 +1511,9 @@ static void l2cap_sock_teardown_cb(struct
+>>> l2cap_chan *chan, int err)
+>>>          struct sock *sk = chan->data;
+>>>          struct sock *parent;
 >>>
->>> I check the code and find a possible case of such concurrent execution:
+>>> +       if (!sk)
+>>> +               return;
+>>> +
+>>>          BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
 >>>
->>> #CPU1:
->>> mhi_poll (mhi_event->process_event(...))
->>>    mhi_process_ctrl_ev_ring
->>>      mhi_pm_m0_transition
+>>>          /* This callback can be called both for server (BT_LISTEN)
+>>> @@ -1700,6 +1706,7 @@ static void l2cap_sock_destruct(struct sock *sk)
+>>>          BT_DBG("sk %p", sk);
 >>>
->>> #CPU2:
->>> mhi_prepare_for_transfer
->>>    mhi_prepare_channel
->>>      mhi_send_cmd
+>>>          if (l2cap_pi(sk)->chan)
+>>> +              l2cap_pi(sk)->chan->data = NULL;
+>>>                   l2cap_chan_put(l2cap_pi(sk)->chan);
 >>>
->>> Note that mhi_poll() and mhi_prepare_for_transfer() are both exported
->>> by EXPORT_SYMBOL.
->>> Thus, I guess these two functions could be concurrently called by a MHI
->>> driver.
+>>> But if it has potential risk if l2cap_sock_destruct() can not be
+>>> excuted in time ?
 >>>
->>> I am not quite sure whether this possible deadlock is real and how to
->>> fix it if it is real.
->>> Any feedback would be appreciated, thanks :)
+>>> sk_free():
 >>>
+>>>          if (refcount_dec_and_test(&sk->sk_wmem_alloc)) //is possible
+>>> this condition false ?
 >>>
->>> Best wishes,
->>> Jia-Ju Bai
->> Few pointers from your example:
+>>>                __sk_free(sk)   -> ... l2cap_sock_destruct()
+>>>
+>> Dear Luiz,
 >>
->> 1. mhi_poll() is currently not used by any client upstream yet.
-> Then this shouldn't be added in first place... :/
->
->> 2. Polling is not to be used for single event ring (shared control + data)
->> cases
->> since it is meant to be for client drivers with dedicated data packets only.
->> 3. mhi_send_cmd() will always be called after an mhi_pm_m0_transition() has
->> completed by design since we wait for the device to be held in M0 prior to
->> it.
->>
-> But client can be unloaded during M0 event!
->
-> Anyway, I don't think the deadlock scenario is valid because of the usage
-> of "read_lock_bh()". So if "mhi_send_cmd()" has acquired
-> "spin_lock_bh(&mhi_cmd->lock)", it can always acquire
-> "read_lock_bh(&mhi_cntrl->pm_lock)" as multiple readers can acquire the
-> read lock.
->
-> Deadlock would only occur if one of the functions take write lock.
->
-> Thanks for auditing.
+>> Not only that, if l2cap_sock_kill() has put 'l2cap_pi(sk)->chan', how
+>> does we avoid re-puting 'l2cap_pi(sk)->chan' if l2cap_sock_destruct()
+>> work postponed? this will cause underflow of chan->refcount; this PATCH
+>> 4e1a720d0312 ("Bluetooth: avoid killing an already killed socket") also
+>> may not work in any case because only sock_orphan() has excuted can this
+>> sock be killed, but if sco_sock_release() excute first, for this sock
+>> has been marked as SOCK_DEAD, this sock can never be killed. So should
+>> we think put chan->data = NULL in xx_sock_kill() is a better choice ?
+> Not sure what do you mean by postponed? Interrupted perhaps? Even in
+> that case what are trying to prevent is use after free so if the
+> callback has not run yet that means the sk has not been freed. Anyway
+> I think we could do it inconditionally in l2cap_sock_kill since we
+> will be releasing the reference owned by l2cap_pi(sk)->chan->data that
+> should be reset to NULL immediatelly.
 
-Thanks for the feedback and explanation :)
+Dear  Luiz,
 
+yes, that's right, if sk can be accessed, it also means that chan has 
+not been destroyed, thanks very much.
 
-Best wishes,
-Jia-Ju Bai
+-- Wang ShaoBo
+
