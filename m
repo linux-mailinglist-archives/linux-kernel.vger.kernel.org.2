@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E1C3CE6AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144043CE7C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350798AbhGSQMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
+        id S1351960AbhGSQcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:32:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345100AbhGSPHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:07:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12CDE6120A;
-        Mon, 19 Jul 2021 15:47:57 +0000 (UTC)
+        id S1346069AbhGSPQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:16:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D06A61249;
+        Mon, 19 Jul 2021 15:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709678;
-        bh=hwI9xTL2ebUdO0DmxdC1jpzwPPvsqSev3UsSzitDOfE=;
+        s=korg; t=1626710237;
+        bh=2Y87ANqT1IR8S1xi4zUf0mMImWInqGSIW0qfOzPDjc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0N9oGlGGLXNnvwyqEsY9ZnuOEUxHk9TMYOGp5KtQmkNH8Ugn+RdTM3L6Dj11LUQbO
-         41tzcboa8ibEzpzCj166DwBQm77cSWBhswNgguprQuATWZn+Z8E/cRnzcrBMNpi+7q
-         zcpK9yPLfqEM91cp+C2Dznh5f0dT6M424NhZ/3VE=
+        b=OI26XxVOQ5KuarmrRTp3kAuvpVyaGi1qvtMZn5rRFUizbcf65+LhlxhYJhFHwyo5G
+         CE2Y4QVSrDwOegMTWtHULgRXNLKoV6X/xSOI7rlAvZUBfbq/+JrdkvXzaZhm6wULIH
+         g8fHDRfM2KFKzF2X9y1QXr9DsRngCpluRM+VHQ2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yizhuo <yzhai003@ucr.edu>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 053/149] Input: hideep - fix the uninitialized use in hideep_nvm_unlock()
-Date:   Mon, 19 Jul 2021 16:52:41 +0200
-Message-Id: <20210719144913.980281995@linuxfoundation.org>
+Subject: [PATCH 5.10 133/243] drm/gma500: Add the missed drm_gem_object_put() in psb_user_framebuffer_create()
+Date:   Mon, 19 Jul 2021 16:52:42 +0200
+Message-Id: <20210719144945.209433073@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,65 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yizhuo Zhai <yzhai003@ucr.edu>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit cac7100d4c51c04979dacdfe6c9a5e400d3f0a27 ]
+[ Upstream commit cd8f318fbd266b127ffc93cc4c1eaf9a5196fafb ]
 
-Inside function hideep_nvm_unlock(), variable "unmask_code" could
-be uninitialized if hideep_pgm_r_reg() returns error, however, it
-is used in the later if statement after an "and" operation, which
-is potentially unsafe.
+psb_user_framebuffer_create() misses to call drm_gem_object_put() in an
+error path. Add the missed function call to fix it.
 
-Signed-off-by: Yizhuo <yzhai003@ucr.edu>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210629115956.15160-1-jingxiangfeng@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/hideep.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/gma500/framebuffer.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/hideep.c b/drivers/input/touchscreen/hideep.c
-index ddad4a82a5e5..e9547ee29756 100644
---- a/drivers/input/touchscreen/hideep.c
-+++ b/drivers/input/touchscreen/hideep.c
-@@ -361,13 +361,16 @@ static int hideep_enter_pgm(struct hideep_ts *ts)
- 	return -EIO;
- }
- 
--static void hideep_nvm_unlock(struct hideep_ts *ts)
-+static int hideep_nvm_unlock(struct hideep_ts *ts)
+diff --git a/drivers/gpu/drm/gma500/framebuffer.c b/drivers/gpu/drm/gma500/framebuffer.c
+index 54d9876b5305..6ef4ea07d1bb 100644
+--- a/drivers/gpu/drm/gma500/framebuffer.c
++++ b/drivers/gpu/drm/gma500/framebuffer.c
+@@ -435,6 +435,7 @@ static struct drm_framebuffer *psb_user_framebuffer_create
+ 			 const struct drm_mode_fb_cmd2 *cmd)
  {
- 	u32 unmask_code;
-+	int error;
+ 	struct drm_gem_object *obj;
++	struct drm_framebuffer *fb;
  
- 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_SFR_RPAGE);
--	hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
-+	error = hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
- 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_DEFAULT_PAGE);
-+	if (error)
-+		return error;
+ 	/*
+ 	 *	Find the GEM object and thus the gtt range object that is
+@@ -445,7 +446,11 @@ static struct drm_framebuffer *psb_user_framebuffer_create
+ 		return ERR_PTR(-ENOENT);
  
- 	/* make it unprotected code */
- 	unmask_code &= ~HIDEEP_PROT_MODE;
-@@ -384,6 +387,8 @@ static void hideep_nvm_unlock(struct hideep_ts *ts)
- 	NVM_W_SFR(HIDEEP_NVM_MASK_OFS, ts->nvm_mask);
- 	SET_FLASH_HWCONTROL();
- 	hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_DEFAULT_PAGE);
+ 	/* Let the core code do all the work */
+-	return psb_framebuffer_create(dev, cmd, obj);
++	fb = psb_framebuffer_create(dev, cmd, obj);
++	if (IS_ERR(fb))
++		drm_gem_object_put(obj);
 +
-+	return 0;
++	return fb;
  }
  
- static int hideep_check_status(struct hideep_ts *ts)
-@@ -462,7 +467,9 @@ static int hideep_program_nvm(struct hideep_ts *ts,
- 	u32 addr = 0;
- 	int error;
- 
--	hideep_nvm_unlock(ts);
-+       error = hideep_nvm_unlock(ts);
-+       if (error)
-+               return error;
- 
- 	while (ucode_len > 0) {
- 		xfer_len = min_t(size_t, ucode_len, HIDEEP_NVM_PAGE_SIZE);
+ static int psbfb_probe(struct drm_fb_helper *fb_helper,
 -- 
 2.30.2
 
