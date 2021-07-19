@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4D73CE0E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756073CE111
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243623AbhGSPSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:18:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42484 "EHLO mail.kernel.org"
+        id S1347535AbhGSPTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:19:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344732AbhGSOtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:49:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 489D160551;
-        Mon, 19 Jul 2021 15:29:46 +0000 (UTC)
+        id S1344846AbhGSOtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:49:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0558C60241;
+        Mon, 19 Jul 2021 15:29:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708586;
-        bh=y/npxEBPgWx6Nj/RGcHLzEbTg//DYvL0MZX+fQFqi4A=;
+        s=korg; t=1626708594;
+        bh=laX2QUMgM33K5uDB4opxgdizQO9drAjH4BCEMzCb5LA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Soxt/bQ7BYTe75RTem6CrRVQHOSSyHYsbaOlR8mBde7/gBnGwbwkpoLLF/r4hUvtM
-         ZHfAuEcsTtCXJ8B9I/xbJTZ3ysoiq+G6QaIwSREfwM9P7sMl+5NAFCOMpxlLXOtt3x
-         KM0oegfJEyCcfv7ScH8lo9EtvhwmLhfkjgC5DkO8=
+        b=CEyNAcO67jKRFa9FUBaBQIuG4sW+10EJ1l1JpLoQNeY7Nwf/4jTh9Q56PKqerU8SL
+         MVihQpWGSgXYwO+9FxlFpavRbWZHFN7ivYeU7J0ga3asJGynTSFhvBmp2DCQmNFCN+
+         fXn1/mcdKuxE1Zv91LJRHlwTQytUfN8S6s1WD45Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pradeep P V K <pragalla@codeaurora.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.19 050/421] fuse: check connected before queueing on fpq->io
-Date:   Mon, 19 Jul 2021 16:47:41 +0200
-Message-Id: <20210719144947.959746296@linuxfoundation.org>
+        stable@vger.kernel.org, Jay Fang <f.fangjian@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 053/421] spi: spi-topcliff-pch: Fix potential double free in pch_spi_process_messages()
+Date:   Mon, 19 Jul 2021 16:47:44 +0200
+Message-Id: <20210719144948.051979717@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -39,58 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Jay Fang <f.fangjian@huawei.com>
 
-commit 80ef08670d4c28a06a3de954bd350368780bcfef upstream.
+[ Upstream commit 026a1dc1af52742c5897e64a3431445371a71871 ]
 
-A request could end up on the fpq->io list after fuse_abort_conn() has
-reset fpq->connected and aborted requests on that list:
+pch_spi_set_tx() frees data->pkt_tx_buff on failure of kzalloc() for
+data->pkt_rx_buff, but its caller, pch_spi_process_messages(), will
+free data->pkt_tx_buff again. Set data->pkt_tx_buff to NULL after
+kfree() to avoid double free.
 
-Thread-1			  Thread-2
-========			  ========
-->fuse_simple_request()           ->shutdown
-  ->__fuse_request_send()
-    ->queue_request()		->fuse_abort_conn()
-->fuse_dev_do_read()                ->acquire(fpq->lock)
-  ->wait_for(fpq->lock) 	  ->set err to all req's in fpq->io
-				  ->release(fpq->lock)
-  ->acquire(fpq->lock)
-  ->add req to fpq->io
-
-After the userspace copy is done the request will be ended, but
-req->out.h.error will remain uninitialized.  Also the copy might block
-despite being already aborted.
-
-Fix both issues by not allowing the request to be queued on the fpq->io
-list after fuse_abort_conn() has processed this list.
-
-Reported-by: Pradeep P V K <pragalla@codeaurora.org>
-Fixes: fd22d62ed0c3 ("fuse: no fc->lock for iqueue parts")
-Cc: <stable@vger.kernel.org> # v4.2
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Jay Fang <f.fangjian@huawei.com>
+Link: https://lore.kernel.org/r/1620284888-65215-1-git-send-email-f.fangjian@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/dev.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/spi/spi-topcliff-pch.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -1310,6 +1310,15 @@ static ssize_t fuse_dev_do_read(struct f
- 		goto restart;
+diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+index 8a5966963834..ef19e050612c 100644
+--- a/drivers/spi/spi-topcliff-pch.c
++++ b/drivers/spi/spi-topcliff-pch.c
+@@ -584,8 +584,10 @@ static void pch_spi_set_tx(struct pch_spi_data *data, int *bpw)
+ 	data->pkt_tx_buff = kzalloc(size, GFP_KERNEL);
+ 	if (data->pkt_tx_buff != NULL) {
+ 		data->pkt_rx_buff = kzalloc(size, GFP_KERNEL);
+-		if (!data->pkt_rx_buff)
++		if (!data->pkt_rx_buff) {
+ 			kfree(data->pkt_tx_buff);
++			data->pkt_tx_buff = NULL;
++		}
  	}
- 	spin_lock(&fpq->lock);
-+	/*
-+	 *  Must not put request on fpq->io queue after having been shut down by
-+	 *  fuse_abort_conn()
-+	 */
-+	if (!fpq->connected) {
-+		req->out.h.error = err = -ECONNABORTED;
-+		goto out_end;
-+
-+	}
- 	list_add(&req->list, &fpq->io);
- 	spin_unlock(&fpq->lock);
- 	cs->req = req;
+ 
+ 	if (!data->pkt_rx_buff) {
+-- 
+2.30.2
+
 
 
