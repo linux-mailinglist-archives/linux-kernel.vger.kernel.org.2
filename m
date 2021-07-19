@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDA13CE89D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786EB3CE724
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355738AbhGSQod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:44:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43130 "EHLO mail.kernel.org"
+        id S242574AbhGSQWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:22:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349162AbhGSPZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:25:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DE7B601FD;
-        Mon, 19 Jul 2021 16:06:24 +0000 (UTC)
+        id S1345370AbhGSPNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:13:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0812360FD7;
+        Mon, 19 Jul 2021 15:53:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710785;
-        bh=2PZ0lzObAQRnJF57W3GYqnaYB/bfZfQaQjuMHASKseE=;
+        s=korg; t=1626709982;
+        bh=XTrAhiCQBgv6zHFyOrAJmGwSLDcsHJ+tJxlfFIqk2VA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CNH/H8VpKyvSlI2vcjA7JSMru4YdbnArjWmV7huaVmwphcJF0Qx1PvVNLOksqofr1
-         JYsn3HGu0SItHpcVyenEd5RwPNVsivSkeaur6UhN66bvib22U5IZehiQBAtkILFjuE
-         0ndPy2G67InjLZf9D7OirnRE9LEjKPArIG6EdKLE=
+        b=g/GTjhXxUiEldyUplsoQAjvy9IFRAio9cnhg6XGEjfNY6vFFQzx7XaOdme5lJGuc/
+         ldiihU9yFmWrU4OqtytuO/8Q+BygQ8xS8lTmsLcqqYjcT+robFGs9RSFEx9HKfLeAA
+         ew62bnUgVtDwuoJf4/oSMGn0xOkIAUTLSTFcAnuc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        stable@vger.kernel.org, ching Huang <ching2048@areca.com.tw>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 108/351] scsi: storvsc: Correctly handle multiple flags in srb_status
-Date:   Mon, 19 Jul 2021 16:50:54 +0200
-Message-Id: <20210719144948.061022382@linuxfoundation.org>
+Subject: [PATCH 5.10 026/243] scsi: arcmsr: Fix the wrong CDB payload report to IOP
+Date:   Mon, 19 Jul 2021 16:50:55 +0200
+Message-Id: <20210719144941.769904707@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,118 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Kelley <mikelley@microsoft.com>
+From: ching Huang <ching2048@areca.com.tw>
 
-[ Upstream commit 52e1b3b3daa9d53f0204bf474ee1d4b1beb38234 ]
+[ Upstream commit 5b8644968d2ca85abb785e83efec36934974b0c2 ]
 
-Hyper-V is observed to sometimes set multiple flags in the srb_status, such
-as ABORTED and ERROR. Current code in storvsc_handle_error() handles only a
-single flag being set, and does nothing when multiple flags are set.  Fix
-this by changing the case statement into a series of "if" statements
-testing individual flags. The functionality for handling each flag is
-unchanged.
+This patch fixes the wrong CDB payload report to IOP.
 
-Link: https://lore.kernel.org/r/1622827263-12516-3-git-send-email-mikelley@microsoft.com
-Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+Link: https://lore.kernel.org/r/d2c97df3c817595c6faf582839316209022f70da.camel@areca.com.tw
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/storvsc_drv.c | 61 +++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 28 deletions(-)
+ drivers/scsi/arcmsr/arcmsr_hba.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index e6718a74e5da..b2e28197a086 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1009,17 +1009,40 @@ static void storvsc_handle_error(struct vmscsi_request *vm_srb,
- 	struct storvsc_scan_work *wrk;
- 	void (*process_err_fn)(struct work_struct *work);
- 	struct hv_host_device *host_dev = shost_priv(host);
--	bool do_work = false;
+diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
+index e4fdb473b990..4838f790dac7 100644
+--- a/drivers/scsi/arcmsr/arcmsr_hba.c
++++ b/drivers/scsi/arcmsr/arcmsr_hba.c
+@@ -1928,8 +1928,12 @@ static void arcmsr_post_ccb(struct AdapterControlBlock *acb, struct CommandContr
  
--	switch (SRB_STATUS(vm_srb->srb_status)) {
--	case SRB_STATUS_ERROR:
-+	/*
-+	 * In some situations, Hyper-V sets multiple bits in the
-+	 * srb_status, such as ABORTED and ERROR. So process them
-+	 * individually, with the most specific bits first.
-+	 */
-+
-+	if (vm_srb->srb_status & SRB_STATUS_INVALID_LUN) {
-+		set_host_byte(scmnd, DID_NO_CONNECT);
-+		process_err_fn = storvsc_remove_lun;
-+		goto do_work;
-+	}
-+
-+	if (vm_srb->srb_status & SRB_STATUS_ABORTED) {
-+		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID &&
-+		    /* Capacity data has changed */
-+		    (asc == 0x2a) && (ascq == 0x9)) {
-+			process_err_fn = storvsc_device_scan;
-+			/*
-+			 * Retry the I/O that triggered this.
-+			 */
-+			set_host_byte(scmnd, DID_REQUEUE);
-+			goto do_work;
+ 		if (ccb->arc_cdb_size <= 0x300)
+ 			arc_cdb_size = (ccb->arc_cdb_size - 1) >> 6 | 1;
+-		else
+-			arc_cdb_size = (((ccb->arc_cdb_size + 0xff) >> 8) + 2) << 1 | 1;
++		else {
++			arc_cdb_size = ((ccb->arc_cdb_size + 0xff) >> 8) + 2;
++			if (arc_cdb_size > 0xF)
++				arc_cdb_size = 0xF;
++			arc_cdb_size = (arc_cdb_size << 1) | 1;
 +		}
-+	}
-+
-+	if (vm_srb->srb_status & SRB_STATUS_ERROR) {
- 		/*
- 		 * Let upper layer deal with error when
- 		 * sense message is present.
- 		 */
--
- 		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID)
--			break;
-+			return;
-+
- 		/*
- 		 * If there is an error; offline the device since all
- 		 * error recovery strategies would have already been
-@@ -1032,37 +1055,19 @@ static void storvsc_handle_error(struct vmscsi_request *vm_srb,
- 			set_host_byte(scmnd, DID_PASSTHROUGH);
- 			break;
- 		/*
--		 * On Some Windows hosts TEST_UNIT_READY command can return
--		 * SRB_STATUS_ERROR, let the upper level code deal with it
--		 * based on the sense information.
-+		 * On some Hyper-V hosts TEST_UNIT_READY command can
-+		 * return SRB_STATUS_ERROR. Let the upper level code
-+		 * deal with it based on the sense information.
- 		 */
- 		case TEST_UNIT_READY:
- 			break;
- 		default:
- 			set_host_byte(scmnd, DID_ERROR);
- 		}
--		break;
--	case SRB_STATUS_INVALID_LUN:
--		set_host_byte(scmnd, DID_NO_CONNECT);
--		do_work = true;
--		process_err_fn = storvsc_remove_lun;
--		break;
--	case SRB_STATUS_ABORTED:
--		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID &&
--		    (asc == 0x2a) && (ascq == 0x9)) {
--			do_work = true;
--			process_err_fn = storvsc_device_scan;
--			/*
--			 * Retry the I/O that triggered this.
--			 */
--			set_host_byte(scmnd, DID_REQUEUE);
--		}
--		break;
- 	}
-+	return;
- 
--	if (!do_work)
--		return;
--
-+do_work:
- 	/*
- 	 * We need to schedule work to process this error; schedule it.
- 	 */
+ 		ccb_post_stamp = (ccb->smid | arc_cdb_size);
+ 		writel(0, &pmu->inbound_queueport_high);
+ 		writel(ccb_post_stamp, &pmu->inbound_queueport_low);
 -- 
 2.30.2
 
