@@ -2,77 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1963CD032
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D493CD02C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbhGSIa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:30:27 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:33517 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235150AbhGSIaT (ORCPT
+        id S235589AbhGSI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:29:46 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:43613 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234991AbhGSI3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:30:19 -0400
-Received: by mail-ej1-f47.google.com with SMTP id bu12so27603794ejb.0;
-        Mon, 19 Jul 2021 02:10:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RBSq6zJFuhCvZnOd2gsZfOMT0eqyDUMuVPMMsfBiF1k=;
-        b=tyuwkC2PzoZWVuCqm9kCcz3M9SCCkXn/k2TPyTvNUCyrH//h97IumALBHO8pcUpWgj
-         OIWRiPnAheYYrXvjryxDIP6hOU9+DElevR87h88njDFs3ujo0voRJaw5/Ll1x8qjwGgv
-         zd1xKrFqSC+6ZSuU5Wyn9GEwDDm+eQGmeUJu/ZCU1tnUkp/B08O/yyMYbk60PfjNWBRs
-         HtRbPlO/whptCcPo2L3HmnD6a9KfspVqDB+1IKiFAVxZtb9cttM5npNsK/uS0YEHudjQ
-         v3detn/3H/nsLpPwP9PVzSAFnGO6NtzfUIcxd+tPhJ0i6uwXc9BWELDB/9jK/hpPQpXX
-         GHGw==
+        Mon, 19 Jul 2021 04:29:44 -0400
+Received: by mail-ua1-f45.google.com with SMTP id 109so6539635uar.10;
+        Mon, 19 Jul 2021 02:10:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RBSq6zJFuhCvZnOd2gsZfOMT0eqyDUMuVPMMsfBiF1k=;
-        b=FgQxKc5byMJe0bSG1fnGpoawYdpDi9fTYJDOnrhCStxHvzA5k3Yh0zBr6/BGhBJaSV
-         hAI/rKWJ3yLxZf9TJzJGl1s2KC3lLreXhQ/SuAXVsdHLxm91k0d1k/lHiAzdOOP3sCMt
-         QQAyvuXqtR0PChino0BErbaw4Ui6rTlJ+YPNQFOMPBsA7d0XIdVOQbanVHAtEMhiLmWd
-         7xfAb9VO8o1Vcm7B5vWKWr9MvOAwmIyIW91DRsVWCwrhUcRDf1qpr65X1pj8PjLeIfvs
-         SYaoyPlVBMJczgpxt+CoFYZWd+C0ZEmnreBEJUmKNQ4UIVAu9Ajaj4f5gTvH4nFfsqYQ
-         YiiA==
-X-Gm-Message-State: AOAM530I4p1W3KBuvr9MMnUBxhZC+jy8dYaw+/ddUO/a6OpbKZZv6g0k
-        qW0p4QZ+jHqUyxxKhZ2mkaOG53f6RqL7n18ZGjQ=
-X-Google-Smtp-Source: ABdhPJwubtgEMes7Ng29QD5qA/jN51mjW/q7+dtbpcLGkpLbDjrv1aOLcqCXW12Mc7+LVAk5fM+b/NX/9+Yz96jFMnM=
-X-Received: by 2002:a17:906:9d17:: with SMTP id fn23mr26835249ejc.191.1626685798074;
- Mon, 19 Jul 2021 02:09:58 -0700 (PDT)
+        bh=okZDt5izpXJNQv5Y4DDOChxLzV07ajEvC7VBXiOh8LY=;
+        b=cWGHAQ8PE09glp6S2rRn1Q69PKDOfXc7dilXirlBC41DyJdtTQIPq28zaBkipYr4h4
+         15x6eb4axcrcSjgpr5n1KXfqQ/oK90bIOJlqYsPvZByRJvS8MaRDyoeSRhDMv/q3zoGg
+         yhoXp2mI7MMQKtl6hxmMbli9GmGu+XO57rG7/Ny+QMeiTHf7V284S3GZiW8yOYeNQN+e
+         3sT9IFBCAwuf+B5agur1kHJMP1DKM77L1xu90uO7RQB1GDbvZ4fbByrXu+CBRLyFpp2m
+         AhM2fSom/e0QhNEKH9rKDPb+GBEZEfJ9TYOViz95Wa03ElD+OtYjuruwRgi3qwDjYgVD
+         Mv4A==
+X-Gm-Message-State: AOAM531Mrm1j5YPwZWQLgvT2zZTVsyUroXEdxlqnKLbs8qo4/oxEggbf
+        0C/K74WY0VfXKxPeLz6f1XDNzjz1cc9mq7MjfZA=
+X-Google-Smtp-Source: ABdhPJyza0rPFLN5A/2Q2WHtSDUhBdeTHSClHJ20aCaqDmOuQrq62WvQ5lCixLrr/o2RJaTRBm2jNEZq6ndlDa0DlwI=
+X-Received: by 2002:a9f:3649:: with SMTP id s9mr24642802uad.2.1626685823482;
+ Mon, 19 Jul 2021 02:10:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
- <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
-In-Reply-To: <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Mon, 19 Jul 2021 14:39:46 +0530
-Message-ID: <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
+References: <20210713214126.2278-1-alexander.helms.jy@renesas.com> <20210713214126.2278-3-alexander.helms.jy@renesas.com>
+In-Reply-To: <20210713214126.2278-3-alexander.helms.jy@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Jul 2021 11:10:12 +0200
+Message-ID: <CAMuHMdW5cYfc39pHWavW84ftjBAvyaSVCeLPtMB4o_8L6msW2Q@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] clk: Add ccf driver for Renesas 8T49N241
+To:     Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021 at 21:56, Richard Weinberger <richard@nod.at> wrote:
+Hi Alex,
 
-> >> My requirement:
-> >> To find the checksum of a real image in runtime which is flashed in an
-> >> MTD partition.
-> >
-> > Try using the dm-verity module for ensuring that a block device really
-> > is properly signed before mounting it.  That's what it was designed for
-> > and is independent of the block device type.
+On Tue, Jul 13, 2021 at 11:41 PM Alex Helms
+<alexander.helms.jy@renesas.com> wrote:
+> This is a common clock framework driver that supports the 8T49N241 chip.
+> No other chips in the family are currently supported. The driver
+> supports setting the rate for all four outputs on the chip and
+> automatically calculating/setting the appropriate VCO value.
 >
-> MTDs are not block devices. :-)
+> The driver can read a full register map from the device tree
+> and will use that register map to initialize the attached device
+> (via I2C) when the system boots. Any configuration not supported by
+> the common clock framework must be done via the full register map,
+> including optimized settings.
 >
-Is it possible to use dm-verity with squashfs ?
-We are using squashfs for our rootfs which is an MTD block /dev/mtdblock44
+> All outputs are currently assumed to be LVDS unless overridden in
+> the full register map in the DT.
+>
+> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
+
+Thanks for your patch!
+
+> Reported-by: kernel test robot <lkp@intel.com>
+
+I don't think that line belongs here (lkp requesting 8T49N241
+support? ;-)
+
+> ---
+>  MAINTAINERS                         |   1 +
+>  drivers/clk/Kconfig                 |  21 +
+>  drivers/clk/renesas/8t49n24x-core.c | 836 ++++++++++++++++++++++++++++
+>  drivers/clk/renesas/8t49n24x-core.h | 250 +++++++++
+>  drivers/clk/renesas/8t49n24x.c      | 572 +++++++++++++++++++
+>  drivers/clk/renesas/Makefile        |   4 +
+>  6 files changed, 1684 insertions(+)
+>  create mode 100644 drivers/clk/renesas/8t49n24x-core.c
+>  create mode 100644 drivers/clk/renesas/8t49n24x-core.h
+>  create mode 100644 drivers/clk/renesas/8t49n24x.c
+
+As this is a driver for a discrete part originally from IDT, not a
+clock generator integrated on a Renesas SoC, I think it belongs under
+drivers/clk/ instead of drivers/clk/renesas/.  That would align
+nicely with the Kconfig symbol already residing in drivers/clk/Kconfig.
+
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15580,6 +15580,7 @@ M:      Alex Helms <alexander.helms.jy@renesas.com>
+>  M:     David Cater <david.cater.jc@renesas.com>
+>  S:     Odd Fixes
+>  F:     Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+> +F:     drivers/clk/renesas/8t49n24x*
+>
+>  RENESAS CLOCK DRIVERS
+>  M:     Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
