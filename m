@@ -2,187 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B943CF216
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8B13CF202
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 04:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241534AbhGTB4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 21:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39322 "EHLO
+        id S234644AbhGTBlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 21:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442242AbhGSWxd (ORCPT
+        with ESMTP id S1443887AbhGSXFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:53:33 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43FAC0612FC
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id k20so20850872pgg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
+        Mon, 19 Jul 2021 19:05:21 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477A8C061767;
+        Mon, 19 Jul 2021 16:41:35 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id gh6so9276408qvb.3;
+        Mon, 19 Jul 2021 16:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ml3Q/kTxZiD4jac4rsa9z6q3oqgw/koE0r8JlYAWEoE=;
-        b=sMaBLc6xZX7zehQ8U1kn7T2/C76fdCJIRBEmJcwUdtN+Ur6xNDVNIA4wnj+n5MAgrI
-         fRKop8qSFfB5cJj5Qd7DEJPBG9n2V1DApSvIFOjQinvQRz7V6ozyOBexcCug8btYPM+J
-         MMZqkMfsPwKR7hJ8KfXCbL9q5j/u8ILTW+OotIbqxzJ+akWq3OX+Rux7DSgW64emjSxx
-         /G3uagHiW/9cKFWa857nddfAl6IcWtZDkPwv7s7H35o+5FI3X0D2AEhUoR4OdKHktGMB
-         5lpjpv8BqF9q2yg/iuIW7lEANMTukouIkKW+oDuuhgdavYXnIqR/tPR7p66hSzMduya7
-         pthQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tG3VNaXw5GOzMIsu0CiI5SvtjI+jDKkdFfqR2rMpbXQ=;
+        b=ukHLi4nkEFU5WxlAaCJhPm4GSHtNNmHN+xODDOgQkICkx9CLlFvbvBhNIBonKE0fJg
+         Ggl0q7FrCfw5psKcZbOcA1Awg1OodHbECGTMvBJ7ILivSLjEWJvHqh6YJxhmstdJEhyJ
+         B4ks3IjMvc5pGWlvmIEkZMk/OKQdj4yc1TYIau+JiZAe9CTXepZkAipq5jd9aaKaBbmw
+         EPg5FeoAzgE8ZJlfbZ5EiU8ZFn+f0cy/hUf7volywoSX8XeHfWFNcxo9Kd7/ApocefMa
+         BG2l0zy0o5Qm3AeaxilP2Qw8mesVRimXoojBWYpoYids/odf3d+QBQYpPqA3o5PuLXiD
+         yS1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ml3Q/kTxZiD4jac4rsa9z6q3oqgw/koE0r8JlYAWEoE=;
-        b=M23mqJhgG2q8asEQnt0zWkwabV2d3wCdWmz+I1MtYdlgeOpF8UJmUJkNyDJtpkxHLG
-         PIQfUFpAjWnXMiiyCGxpUw61NmqBQfqHryfz/LgJlb6FTTWaGWHQ+IdoJYuxIopnXIkr
-         Fyrl7vDpKC4ADnIYVZItpMGmeMhv+bfvJsjgZMvlg1jjdn5bm+qp8yFIHhKEicpgfrzF
-         MEdO6GC0cSSTkMHqawm30fN4/f3LWJHxu1HKOWHVTBe1XgRsDs3mc3uPm3WsupoHCyaQ
-         8+3Hbdlotq1jDLKfAKtyn2Dzhjtl8tKOxcdssVQwyIqToB6Txmg/z0Sf1YqiYhi/zR0K
-         F7hg==
-X-Gm-Message-State: AOAM530jm9HHiDz81Biw6YXDvg5xvpy4eshALHjHenKBV4yeyorUqJB9
-        sRr/i44dd3CbkbIOLHWI7Cx2tw==
-X-Google-Smtp-Source: ABdhPJxkrxZk/0Zz1bAor5ysJ9w0e2+YW2IaG8snr9Fl4r2Iz1JNpsaNu5NP3/nbL6PnRtlutO5udg==
-X-Received: by 2002:a62:4e0f:0:b029:329:20be:287a with SMTP id c15-20020a624e0f0000b029032920be287amr28021297pfb.55.1626737431050;
-        Mon, 19 Jul 2021 16:30:31 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id bt17sm571551pjb.40.2021.07.19.16.30.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tG3VNaXw5GOzMIsu0CiI5SvtjI+jDKkdFfqR2rMpbXQ=;
+        b=YX0JcxbUNLxbtfIYXs/0H8uwTVoLvniVrj+MA5ILhL5lhGX16pLcNqkSlVuN2pdHBa
+         QTiqWF+aaMADsk3caC811tCFjm5I1NXPjcr/rOcK9HABc7kI2uUpPlExR6UIAWCxM95h
+         tuUA0lGL71UpEJ3U65uB+7cvTiPfb4qaAht9Q43A9xWmmozyW6X3xINf6UaH2G28PluH
+         rOb0mcPk7PVen/CoqXuLZw8ZasAhX42PJKeGBBUOvjbYeY/TpkH9wyvle2Au0zXzPTY2
+         z4ZEBs/NTVaGByJn0Cd6Lvmwik421iRScCHoaJXIXdHD+f7o7G3rtq6xLCahakDS+XXE
+         f3pA==
+X-Gm-Message-State: AOAM533XkjxPHidiI3UMvVcX4Qjdk86khjie3bBzH9G4oGonLRCPO05v
+        kccTtxXXr4ext2VIfxm+2w==
+X-Google-Smtp-Source: ABdhPJyw8paABx4qYfJX/57pB1bFva0Goisp+bJsoBNRvSMQ1zD/qE054Th1ZxDlCQ55ru0Oyztmhg==
+X-Received: by 2002:a05:6214:1882:: with SMTP id cx2mr27485724qvb.2.1626738094460;
+        Mon, 19 Jul 2021 16:41:34 -0700 (PDT)
+Received: from bytedance.attlocal.net (ec2-52-52-7-82.us-west-1.compute.amazonaws.com. [52.52.7.82])
+        by smtp.gmail.com with ESMTPSA id l12sm124689qtx.45.2021.07.19.16.41.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 16:30:30 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 23:30:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part2 RFC v4 35/40] KVM: Add arch hooks to track the host
- write to guest memory
-Message-ID: <YPYLEksyzOWHZwpA@google.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-36-brijesh.singh@amd.com>
+        Mon, 19 Jul 2021 16:41:33 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Cc:     Peilin Ye <peilin.ye@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH net] net/sched: act_skbmod: Skip non-Ethernet packets
+Date:   Mon, 19 Jul 2021 16:41:24 -0700
+Message-Id: <20210719234124.18383-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707183616.5620-36-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021, Brijesh Singh wrote:
-> The kvm_write_guest{_page} and kvm_vcpu_write_guest{_page} are used by
-> the hypevisor to write to the guest memory. The kvm_vcpu_map() and
-> kvm_map_gfn() are used by the hypervisor to map the guest memory and
-> and access it later.
-> 
-> When SEV-SNP is enabled in the guest VM, the guest memory pages can
-> either be a private or shared. A write from the hypervisor goes through
-> the RMP checks. If hardware sees that hypervisor is attempting to write
-> to a guest private page, then it triggers an RMP violation (i.e, #PF with
-> RMP bit set).
-> 
-> Enhance the KVM guest write helpers to invoke an architecture specific
-> hooks (kvm_arch_write_gfn_{begin,end}) to track the write access from the
-> hypervisor.
-> 
-> When SEV-SNP is enabled, the guest uses the PAGE_STATE vmgexit to ask the
-> hypervisor to change the page state from shared to private or vice versa.
-> While changing the page state to private, use the
-> kvm_host_write_track_is_active() to check whether the page is being
-> tracked for the host write access (i.e either mapped or kvm_write_guest
-> is in progress). If its tracked, then do not change the page state.
-> 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
+From: Peilin Ye <peilin.ye@bytedance.com>
 
-...
+Currently tcf_skbmod_act() assumes that packets use Ethernet as their L2
+protocol, which is not always the case.  As an example, for CAN devices:
 
-> @@ -3468,3 +3489,33 @@ int sev_get_tdp_max_page_level(struct kvm_vcpu *vcpu, gpa_t gpa, int max_level)
->  
->  	return min_t(uint32_t, level, max_level);
->  }
-> +
-> +void sev_snp_write_page_begin(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn)
-> +{
-> +	struct rmpentry *e;
-> +	int level, rc;
-> +	kvm_pfn_t pfn;
-> +
-> +	if (!sev_snp_guest(kvm))
-> +		return;
-> +
-> +	pfn = gfn_to_pfn(kvm, gfn);
-> +	if (is_error_noslot_pfn(pfn))
-> +		return;
-> +
-> +	e = snp_lookup_page_in_rmptable(pfn_to_page(pfn), &level);
-> +	if (unlikely(!e))
-> +		return;
-> +
-> +	/*
-> +	 * A hypervisor should never write to the guest private page. A write to the
-> +	 * guest private will cause an RMP violation. If the guest page is private,
-> +	 * then make it shared.
+	$ ip link add dev vcan0 type vcan
+	$ ip link set up vcan0
+	$ tc qdisc add dev vcan0 root handle 1: htb
+	$ tc filter add dev vcan0 parent 1: protocol ip prio 10 \
+		matchall action skbmod swap mac
 
-NAK on converting RMP entries in response to guest accesses.  Corrupting guest
-data (due to dropping the "validated" flag) on a rogue/incorrect guest emulation
-request or misconfigured PV feature is double ungood.  The potential kernel panic
-below isn't much better.
+Doing the above silently corrupts all the packets.  Do not perform skbmod
+actions for non-Ethernet packets.
 
-And I also don't think we need this heavyweight flow for user access, e.g.
-__copy_to_user(), just eat the RMP violation #PF like all other #PFs and exit
-to userspace with -EFAULT.
+Fixes: 86da71b57383 ("net_sched: Introduce skbmod action")
+Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
+---
+ net/sched/act_skbmod.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-kvm_vcpu_map() and friends might need the manual lookup, at least initially, but
-in an ideal world that would be naturally handled by gup(), e.g. by unmapping
-guest private memory or whatever approach TDX ends up employing to avoid #MCs.
+diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
+index 81a1c67335be..8d17a543cc9f 100644
+--- a/net/sched/act_skbmod.c
++++ b/net/sched/act_skbmod.c
+@@ -6,6 +6,7 @@
+ */
+ 
+ #include <linux/module.h>
++#include <linux/if_arp.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/skbuff.h>
+@@ -33,6 +34,13 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
+ 	tcf_lastuse_update(&d->tcf_tm);
+ 	bstats_cpu_update(this_cpu_ptr(d->common.cpu_bstats), skb);
+ 
++	action = READ_ONCE(d->tcf_action);
++	if (unlikely(action == TC_ACT_SHOT))
++		goto drop;
++
++	if (!skb->dev || skb->dev->type != ARPHRD_ETHER)
++		return action;
++
+ 	/* XXX: if you are going to edit more fields beyond ethernet header
+ 	 * (example when you add IP header replacement or vlan swap)
+ 	 * then MAX_EDIT_LEN needs to change appropriately
+@@ -41,10 +49,6 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
+ 	if (unlikely(err)) /* best policy is to drop on the floor */
+ 		goto drop;
+ 
+-	action = READ_ONCE(d->tcf_action);
+-	if (unlikely(action == TC_ACT_SHOT))
+-		goto drop;
+-
+ 	p = rcu_dereference_bh(d->skbmod_p);
+ 	flags = p->flags;
+ 	if (flags & SKBMOD_F_DMAC)
+-- 
+2.20.1
 
-> +	 */
-> +	if (rmpentry_assigned(e)) {
-> +		pr_err("SEV-SNP: write to guest private gfn %llx\n", gfn);
-> +		rc = snp_make_page_shared(kvm_get_vcpu(kvm, 0),
-> +				gfn << PAGE_SHIFT, pfn, PG_LEVEL_4K);
-> +		BUG_ON(rc != 0);
-> +	}
-> +}
-
-...
-
-> +void kvm_arch_write_gfn_begin(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn)
-> +{
-> +	update_gfn_track(slot, gfn, KVM_PAGE_TRACK_WRITE, 1);
-
-Tracking only writes isn't correct, as KVM reads to guest private memory will
-return garbage.  Pulling the rug out from under KVM reads won't fail as
-spectacularly as writes (at least not right away), but they'll still fail.  I'm
-actually ok reading garbage if the guest screws up, but KVM needs consistent
-semantics.
-
-Good news is that per-gfn tracking is probably overkill anyways.  As mentioned
-above, user access don't need extra magic, they either fail or they don't.
-
-For kvm_vcpu_map(), one thought would be to add a "short-term" map variant that
-is not allowed to be retained across VM-Entry, and then use e.g. SRCU to block
-PSC requests until there are no consumers.
-
-> +	if (kvm_x86_ops.write_page_begin)
-> +		kvm_x86_ops.write_page_begin(kvm, slot, gfn);
-> +}
