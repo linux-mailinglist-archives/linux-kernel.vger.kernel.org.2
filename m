@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11743CEA3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539E33CE98A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353069AbhGSRJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:09:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
+        id S1351417AbhGSQ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:57:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348466AbhGSPfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF5686162C;
-        Mon, 19 Jul 2021 16:13:49 +0000 (UTC)
+        id S1347522AbhGSPTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:19:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4A3361415;
+        Mon, 19 Jul 2021 15:58:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711230;
-        bh=0PlvzfLiJ+k98d3szNpOOpxdwIBwSKvyIySsNoeI9Xg=;
+        s=korg; t=1626710301;
+        bh=E2RmQRbNJXBzx2Ef1fGcsPlJ5wyQTnwudubQj9I9VXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=URhUmJANGbzwdfLojIQPTSe0mXcA8zmtE02H7PBMhBLQbQBs8LzSibb2BGzPgCZrl
-         PJhHMSjljzAbOGvmBaqs8bdZTip68/CUB1o5lpEt3V+g1+jkon0O+0f580LgsXItu1
-         tUkU406vpuBi46t1RjMd4cfbZlD3e4FJfpUlYotA=
+        b=oLHl5tNk/VQjOkkeHZafLSeff/lxMYTDD76U8gQaGCCTzGqr5EAMqnyPvBOPu0OOh
+         w+I3dodxPSIF/xv+iQDoEt53oVSenkKK6kU5VcdFqwu9hRm/iLoA+2Mmqv4vwgdeG8
+         d0kLN1ASL16YYY10BctnXEl6f184AuDZhYPx41qk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 242/351] block: grab a device refcount in disk_uevent
-Date:   Mon, 19 Jul 2021 16:53:08 +0200
-Message-Id: <20210719144952.951063295@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 160/243] ubifs: journal: Fix error return code in ubifs_jnl_write_inode()
+Date:   Mon, 19 Jul 2021 16:53:09 +0200
+Message-Id: <20210719144946.068152235@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 498dcc13fd6463de29b94e160f40ed04d5477cd8 ]
+[ Upstream commit a2c2a622d41168f9fea2aa3f76b9fbaa88531aac ]
 
-Sending uevents requires the struct device to be alive.  To
-ensure that grab the device refcount instead of just an inode
-reference.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-Fixes: bc359d03c7ec ("block: add a disk_uevent helper")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210701081638.246552-2-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 9ca2d7326444 ("ubifs: Limit number of xattrs per inode")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/genhd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ubifs/journal.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 9f8cb7beaad1..ad7436bd60c1 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -402,12 +402,12 @@ void disk_uevent(struct gendisk *disk, enum kobject_action action)
- 	xa_for_each(&disk->part_tbl, idx, part) {
- 		if (bdev_is_partition(part) && !bdev_nr_sectors(part))
- 			continue;
--		if (!bdgrab(part))
-+		if (!kobject_get_unless_zero(&part->bd_device.kobj))
- 			continue;
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 7927dea2baba..7274bd23881b 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -882,6 +882,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
+ 		struct ubifs_dent_node *xent, *pxent = NULL;
  
- 		rcu_read_unlock();
- 		kobject_uevent(bdev_kobj(part), action);
--		bdput(part);
-+		put_device(&part->bd_device);
- 		rcu_read_lock();
- 	}
- 	rcu_read_unlock();
+ 		if (ui->xattr_cnt > ubifs_xattr_max_cnt(c)) {
++			err = -EPERM;
+ 			ubifs_err(c, "Cannot delete inode, it has too much xattrs!");
+ 			goto out_release;
+ 		}
 -- 
 2.30.2
 
