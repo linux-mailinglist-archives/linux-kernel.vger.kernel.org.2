@@ -2,46 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B453CE461
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC503CE4AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347623AbhGSPna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:43:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
+        id S1349806AbhGSPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:45:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344055AbhGSO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DDC1613AA;
-        Mon, 19 Jul 2021 15:38:30 +0000 (UTC)
+        id S1344090AbhGSO73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C9C5611C1;
+        Mon, 19 Jul 2021 15:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709110;
-        bh=/NkhAXhQ2HHWRaiUh3uIDaEq56gCIBgjcXmfbG1PUhw=;
+        s=korg; t=1626709115;
+        bh=G8kaSXHydDALx0th+NTQteMDHSlBM/XA3XY2yneF85E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UKpvQBhP3fVt6UXLhyUnSXpwKlhVG8BONXLj+84IC15NMYgHoAiXff6R7q5tMKdOA
-         B6/+s6BiN2oHxlpsv7+dztpT3QW6ECn5gDqmdchTRmV1NBlEx2PA0I1MA/qrsDVDVp
-         ML1YC1nR9EOGNly2BcP0aVMT6qB0GUfnLDEaSvRw=
+        b=iI51CIXOPJL+zpnBOiLfvy+g4vzatdBp3GIeUYKLbPQOvtO40nSSuMySBp7j4c6zZ
+         aF+Z29sTEc3vmCohEAQFuMjzfjcrb0z8fHg+DlZmMonuw/TldYdJ6VbnKlq2cLkAcH
+         a/5ufFGu3yxDWMHJ4ymxeFeu+IkQB/waKbqudx4s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 223/421] selftests/vm/pkeys: fix alloc_random_pkey() to make it really, really random
-Date:   Mon, 19 Jul 2021 16:50:34 +0200
-Message-Id: <20210719144954.065654793@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Michael Brunner <Michael.Brunner@kontron.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.19 225/421] mmc: block: Disable CMDQ on the ioctl path
+Date:   Mon, 19 Jul 2021 16:50:36 +0200
+Message-Id: <20210719144954.131915130@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -53,101 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+From: Bean Huo <beanhuo@micron.com>
 
-[ Upstream commit f36ef407628835a7d7fb3d235b1f1aac7022d9a3 ]
+commit 70b52f09080565030a530a784f1c9948a7f48ca3 upstream.
 
-Patch series "selftests/vm/pkeys: Bug fixes and a new test".
+According to the eMMC Spec:
+"When command queuing is enabled (CMDQ Mode En bit in CMDQ_MODE_EN
+field is set to ‘1’) class 11 commands are the only method through
+which data transfer tasks can be issued. Existing data transfer
+commands, namely CMD18/CMD17 and CMD25/CMD24, are not supported when
+command queuing is enabled."
+which means if CMDQ is enabled, the FFU commands will not be supported.
+To fix this issue, just simply disable CMDQ on the ioctl path, and
+re-enable CMDQ once ioctl request is completed.
 
-There has been a lot of activity on the x86 front around the XSAVE
-architecture which is used to context-switch processor state (among other
-things).  In addition, AMD has recently joined the protection keys club by
-adding processor support for PKU.
+Tested-by: Michael Brunner <Michael.Brunner@kontron.com>
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 1e8e55b67030 (mmc: block: Add CQE support)
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210504203209.361597-1-huobean@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The AMD implementation helped uncover a kernel bug around the PKRU "init
-state", which actually applied to Intel's implementation but was just
-harder to hit.  This series adds a test which is expected to help find
-this class of bug both on AMD and Intel.  All the work around pkeys on x86
-also uncovered a few bugs in the selftest.
-
-This patch (of 4):
-
-The "random" pkey allocation code currently does the good old:
-
-	srand((unsigned int)time(NULL));
-
-*But*, it unfortunately does this on every random pkey allocation.
-
-There may be thousands of these a second.  time() has a one second
-resolution.  So, each time alloc_random_pkey() is called, the PRNG is
-*RESET* to time().  This is nasty.  Normally, if you do:
-
-	srand(<ANYTHING>);
-	foo = rand();
-	bar = rand();
-
-You'll be quite guaranteed that 'foo' and 'bar' are different.  But, if
-you do:
-
-	srand(1);
-	foo = rand();
-	srand(1);
-	bar = rand();
-
-You are quite guaranteed that 'foo' and 'bar' are the *SAME*.  The recent
-"fix" effectively forced the test case to use the same "random" pkey for
-the whole test, unless the test run crossed a second boundary.
-
-Only run srand() once at program startup.
-
-This explains some very odd and persistent test failures I've been seeing.
-
-Link: https://lkml.kernel.org/r/20210611164153.91B76FB8@viggo.jf.intel.com
-Link: https://lkml.kernel.org/r/20210611164155.192D00FF@viggo.jf.intel.com
-Fixes: 6e373263ce07 ("selftests/vm/pkeys: fix alloc_random_pkey() to make it really random")
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Cc: Ram Pai <linuxram@us.ibm.com>
-Cc: Sandipan Das <sandipan@linux.ibm.com>
-Cc: Florian Weimer <fweimer@redhat.com>
-Cc: "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Michal Suchanek <msuchanek@suse.de>
-Cc: Shuah Khan <shuah@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/x86/protection_keys.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mmc/core/block.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/tools/testing/selftests/x86/protection_keys.c b/tools/testing/selftests/x86/protection_keys.c
-index b8778960da10..27661302a698 100644
---- a/tools/testing/selftests/x86/protection_keys.c
-+++ b/tools/testing/selftests/x86/protection_keys.c
-@@ -613,7 +613,6 @@ int alloc_random_pkey(void)
- 	int nr_alloced = 0;
- 	int random_index;
- 	memset(alloced_pkeys, 0, sizeof(alloced_pkeys));
--	srand((unsigned int)time(NULL));
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -1054,6 +1054,12 @@ static void mmc_blk_issue_drv_op(struct
  
- 	/* allocate every possible key and make a note of which ones we got */
- 	max_nr_pkey_allocs = NR_PKEYS;
-@@ -1479,6 +1478,8 @@ int main(void)
- {
- 	int nr_iterations = 22;
- 
-+	srand((unsigned int)time(NULL));
-+
- 	setup_handlers();
- 
- 	printf("has pku: %d\n", cpu_has_pku());
--- 
-2.30.2
-
+ 	switch (mq_rq->drv_op) {
+ 	case MMC_DRV_OP_IOCTL:
++		if (card->ext_csd.cmdq_en) {
++			ret = mmc_cmdq_disable(card);
++			if (ret)
++				break;
++		}
++		/* fallthrough */
+ 	case MMC_DRV_OP_IOCTL_RPMB:
+ 		idata = mq_rq->drv_op_data;
+ 		for (i = 0, ret = 0; i < mq_rq->ioc_count; i++) {
+@@ -1064,6 +1070,8 @@ static void mmc_blk_issue_drv_op(struct
+ 		/* Always switch back to main area after RPMB access */
+ 		if (rpmb_ioctl)
+ 			mmc_blk_part_switch(card, 0);
++		else if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
++			mmc_cmdq_enable(card);
+ 		break;
+ 	case MMC_DRV_OP_BOOT_WP:
+ 		ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_BOOT_WP,
 
 
