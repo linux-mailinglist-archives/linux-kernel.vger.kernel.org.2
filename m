@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D6C3CEDAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB423CEDAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386404AbhGSTdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:33:18 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:48326 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383807AbhGSSyM (ORCPT
+        id S1358911AbhGSTcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1385398AbhGSS7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 14:54:12 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1m5Z2E-0003Gd-IN; Mon, 19 Jul 2021 15:34:38 -0400
-Message-ID: <a9f568139f0bd82cc8460c2c4f831f03a74f2a89.camel@surriel.com>
-Subject: Re: [PATCH] x86,mm: print likely CPU at segfault time
-From:   Rik van Riel <riel@surriel.com>
-To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, kernel-team@fb.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Date:   Mon, 19 Jul 2021 15:34:38 -0400
-In-Reply-To: <c8e023cb-6f50-36f5-65d4-c5e25b264029@intel.com>
-References: <20210719150041.3c719c94@imladris.surriel.com>
-         <c8e023cb-6f50-36f5-65d4-c5e25b264029@intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-l5bQu8+DJCBx325/Mnpg"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        Mon, 19 Jul 2021 14:59:06 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC785C0613E8
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:30:11 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id u13so32084157lfs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wDda5dbFXyknFG+xoYFL2uxWIVC+IEB+7xC2zqUFwSc=;
+        b=C2kt/tLjq50F2/8YiWA2vApdMGBU1c/5g8q0V7XaPGvDRnYu01eyxREz3eqyUTFPjo
+         +RkvlkvZfYICjMHAI8gTK9GAf+/flWsUK+v7GAxtmc+xq9D5SUVbZ+DUZ9CiQxzMeanC
+         YwYKYS3yuZmuX9KNoLodu1DiX6u9M1TDj8A4sNlA8pqZqXdGe8vk+eCXrW99r7bbq4xn
+         aezOsvO51i/RTsOu+xwDKXdMBUxnzitKNY74AjA/4ymoyUgfBT077E45qJa7F/qXUBWW
+         ztnTsieI6KT6/2V/OeLJPzcwydkdGfXsTY7HAJUxHWTKjw57wll20Q46XtDXCQNoAQ7m
+         jF2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wDda5dbFXyknFG+xoYFL2uxWIVC+IEB+7xC2zqUFwSc=;
+        b=WYfdVY7kEVYAm8KG1Tydk/mnhbnr9pymePM+0MqN/8Y0Of3x+c8LznpFCfsRIZ7Ha3
+         9El9ZEnkf16sYT2SH45JjMgarGJqSfwCUxUB/U+upNeSJpbgnuP8OnHUCPJj6pW6h9mj
+         h/mrftB3kEOC98QN5XO2p9In+JOIMr5OiZfWUaznAXkdAnkNIWornMaKEBIRYCByW1R5
+         DVScSfpd2JejXN5Zbz44RYqRgOnnCsWJ2OKmckMtwX7u+S8r0v4Yxbj7Pdaz+kAHVEC2
+         lNVafIiUDLQeA4q484xZPutiAyGz9voreqaBF7OCFyg1VMFIFkM28jcEi788qUS+32wY
+         kxOQ==
+X-Gm-Message-State: AOAM532A91lCbiDziGYPHrynsOS2YA1SxqPHC1k/fo9iEhLjlRwsL+0q
+        3E1qyoMaYowrdZfdjop69KyTk0DBrnic9ecGefN6IA==
+X-Google-Smtp-Source: ABdhPJyPUYUhTA7ZwgH8jo3MfY2NUldDSUZwBUe+PjpACyXQEbBrAmTn2pGTqyellwWFMuv9G9LvWhR2OIXXWG8rOvc=
+X-Received: by 2002:ac2:46d0:: with SMTP id p16mr19415538lfo.23.1626723483858;
+ Mon, 19 Jul 2021 12:38:03 -0700 (PDT)
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+References: <20210608154805.216869-1-jean-philippe@linaro.org>
+ <c29ff5c8-9c94-6a6c-6142-3bed440676bf@arm.com> <YPW+Hv3r586zKxpY@myrica>
+In-Reply-To: <YPW+Hv3r586zKxpY@myrica>
+From:   Oliver Upton <oupton@google.com>
+Date:   Mon, 19 Jul 2021 12:37:52 -0700
+Message-ID: <CAOQ_QsjyP0PMGOorTss2Fpn011mHPwVqQ72x26Gs2L0bg2amsQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/5] KVM: arm64: Pass PSCI to userspace
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        salil.mehta@huawei.com, lorenzo.pieralisi@arm.com,
+        kvm@vger.kernel.org, corbet@lwn.net, maz@kernel.org,
+        linux-kernel@vger.kernel.org, jonathan.cameron@huawei.com,
+        catalin.marinas@arm.com, pbonzini@redhat.com, will@kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 19, 2021 at 11:02 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+> We forward the whole PSCI function range, so it's either KVM or userspace.
+> If KVM manages PSCI and the guest calls an unimplemented function, that
+> returns directly to the guest without going to userspace.
+>
+> The concern is valid for any other range, though. If userspace enables the
+> HVC cap it receives function calls that at some point KVM might need to
+> handle itself. So we need some negotiation between user and KVM about the
+> specific HVC ranges that userspace can and will handle.
 
---=-l5bQu8+DJCBx325/Mnpg
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Are we going to use KVM_CAPs for every interesting HVC range that
+userspace may want to trap? I wonder if a more generic interface for
+hypercall filtering would have merit to handle the aforementioned
+cases, and whatever else a VMM will want to intercept down the line.
 
-On Mon, 2021-07-19 at 12:20 -0700, Dave Hansen wrote:
+For example, x86 has the concept of 'MSR filtering', wherein userspace
+can specify a set of registers that it wants to intercept. Doing
+something similar for HVCs would avoid the need for a kernel change
+each time a VMM wishes to intercept a new hypercall.
 
-> If it's as trivial as:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0printk(KERN_CONT " on cpu=
-/core %d/%d",
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0raw_smp_processor_id(),
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0topology_core_id(raw_smp_processor_id()));
->=20
-> it would be handy.=C2=A0 But, it's also not hard to look at 10 segfaults,
-> see
-> that they happened only on 2 CPUs and realize that hyperthreading is
-> enabled.
-
-One problem with topology_core_id() is that that, on a
-multi-socket system, the core number may not be unique.
-
-That is why I ended up going with just the CPU number.
-It's pretty easy to put one and one together afterwards.
-
-Thanks for your quick patch review.
-
---=20
-All Rights Reversed.
-
---=-l5bQu8+DJCBx325/Mnpg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmD1084ACgkQznnekoTE
-3oMZwQf/dqGU0jn2GOBPnw0rMkRskRrmxg0yleYt5P2UKFatS3hTKRNCQVBg10pL
-5BA6gsz2yk/oSHc/188BCjcW8KcWdq21obf9oxflp0w1uGkP8A9CGIg1zt0VndA2
-zO2W18o6tECPgxYEevpaVlqqHI+yLV7XNN4Wk//UF5T1M2+QBr4BBvoPq9SVKp6w
-3kbE1smSvgTz2FmPS6LrbJkvZSkc/e30veMn8py1q6NHDZe/b5wVbgcQJwEAdU1S
-8eIiJnZ3VSQnRd/ay5kYrsYcm95T5rxjoTsBvIBy6FTBIiJXCy01kMff3/sicr5e
-xgBsiYv058s3wwzNquscFsBdQH7r0Q==
-=Ppt7
------END PGP SIGNATURE-----
-
---=-l5bQu8+DJCBx325/Mnpg--
-
+--
+Thanks,
+Oliver
