@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5693CE8AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F203CE714
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237143AbhGSQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:45:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45092 "EHLO mail.kernel.org"
+        id S1350715AbhGSQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349431AbhGSP06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:26:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 469DB601FD;
-        Mon, 19 Jul 2021 16:07:34 +0000 (UTC)
+        id S1345622AbhGSPML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:12:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9B536135C;
+        Mon, 19 Jul 2021 15:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710854;
-        bh=Lst4pXqfUhCRoD0flbxYKCxTTB3UKBzfb72GcLSlJIw=;
+        s=korg; t=1626709959;
+        bh=clzoqKNetUcJ+lkLQDWwtYU9CiEyEKAkHpiyoVX86Eo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M8bSiwBXioKO9gLQeEXYbwIaXXuAwHGySNDqJEapgxfSpnPfbfjRA0sVo5co/zplN
-         RBZyx2fSWB+ddhKrIZmKQu2KcPvMNb6+uhFPUyKnQnueZvkBj/1acQnirxCAztiy4t
-         eHEkRFoG4omzMgp8zK2VaYZEduTY0B4lvpMC9Wec=
+        b=dDCVq3Exqxh/2gG35oSrrWAu22TJplYUA/IRpz0M/9LxGAZ7W0EldZdxoxNN8vbyd
+         rYF/gq0kUKBv2Atr0rP5MIWF5J9soxoakyOPnCqVciflbOGitGaSBYj3NQhXb1GqQd
+         MJMdsvEvrutk4txZiolpu40+z5POzU2Tq3EeLjPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 100/351] iommu/arm-smmu: Fix arm_smmu_device refcount leak in address translation
+        stable@vger.kernel.org, Wayne Lin <Wayne.Lin@amd.com>,
+        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>
+Subject: [PATCH 5.10 017/243] drm/dp_mst: Add missing drm parameters to recently added call to drm_dbg_kms()
 Date:   Mon, 19 Jul 2021 16:50:46 +0200
-Message-Id: <20210719144947.813846142@linuxfoundation.org>
+Message-Id: <20210719144941.475992307@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: José Roberto de Souza <jose.souza@intel.com>
 
-[ Upstream commit 7c8f176d6a3fa18aa0f8875da6f7c672ed2a8554 ]
+commit 24ff3dc18b99c4b912ab1746e803ddb3be5ced4c upstream.
 
-The reference counting issue happens in several exception handling paths
-of arm_smmu_iova_to_phys_hard(). When those error scenarios occur, the
-function forgets to decrease the refcount of "smmu" increased by
-arm_smmu_rpm_get(), causing a refcount leak.
+Commit 3769e4c0af5b ("drm/dp_mst: Avoid to mess up payload table by
+ports in stale topology") added to calls to drm_dbg_kms() but it
+missed the first parameter, the drm device breaking the build.
 
-Fix this issue by jumping to "out" label when those error scenarios
-occur.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Reviewed-by: Rob Clark <robdclark@chromium.org>
-Link: https://lore.kernel.org/r/1623293391-17261-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 3769e4c0af5b ("drm/dp_mst: Avoid to mess up payload table by ports in stale topology")
+Cc: Wayne Lin <Wayne.Lin@amd.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: stable@vger.kernel.org
+Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210616194415.36926-1-jose.souza@intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index ee6cac9e7c02..1a647e0ea3eb 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -1271,6 +1271,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
- 	u64 phys;
- 	unsigned long va, flags;
- 	int ret, idx = cfg->cbndx;
-+	phys_addr_t addr = 0;
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -3385,7 +3385,9 @@ int drm_dp_update_payload_part1(struct d
+ 			mutex_unlock(&mgr->lock);
  
- 	ret = arm_smmu_rpm_get(smmu);
- 	if (ret < 0)
-@@ -1290,6 +1291,7 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
- 		dev_err(dev,
- 			"iova to phys timed out on %pad. Falling back to software table walk.\n",
- 			&iova);
-+		arm_smmu_rpm_put(smmu);
- 		return ops->iova_to_phys(ops, iova);
- 	}
- 
-@@ -1298,12 +1300,14 @@ static phys_addr_t arm_smmu_iova_to_phys_hard(struct iommu_domain *domain,
- 	if (phys & ARM_SMMU_CB_PAR_F) {
- 		dev_err(dev, "translation fault!\n");
- 		dev_err(dev, "PAR = 0x%llx\n", phys);
--		return 0;
-+		goto out;
- 	}
- 
-+	addr = (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
-+out:
- 	arm_smmu_rpm_put(smmu);
- 
--	return (phys & GENMASK_ULL(39, 12)) | (iova & 0xfff);
-+	return addr;
- }
- 
- static phys_addr_t arm_smmu_iova_to_phys(struct iommu_domain *domain,
--- 
-2.30.2
-
+ 			if (skip) {
+-				drm_dbg_kms("Virtual channel %d is not in current topology\n", i);
++				drm_dbg_kms(mgr->dev,
++					    "Virtual channel %d is not in current topology\n",
++					    i);
+ 				continue;
+ 			}
+ 			/* Validated ports don't matter if we're releasing
+@@ -3400,7 +3402,8 @@ int drm_dp_update_payload_part1(struct d
+ 						payload->start_slot = req_payload.start_slot;
+ 						continue;
+ 					} else {
+-						drm_dbg_kms("Fail:set payload to invalid sink");
++						drm_dbg_kms(mgr->dev,
++							    "Fail:set payload to invalid sink");
+ 						mutex_unlock(&mgr->payload_lock);
+ 						return -EINVAL;
+ 					}
 
 
