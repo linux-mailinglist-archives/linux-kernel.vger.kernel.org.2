@@ -2,85 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561503CD4A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54D93CD4AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236427AbhGSLlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:41:55 -0400
-Received: from mga09.intel.com ([134.134.136.24]:19753 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236918AbhGSLlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:41:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="211042056"
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="211042056"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 05:22:31 -0700
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="430831674"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 05:22:29 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m5SHu-00FVcR-V4; Mon, 19 Jul 2021 15:22:22 +0300
-Date:   Mon, 19 Jul 2021 15:22:22 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc:     Jon Nettleton <jon@solid-run.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] software node: balance refcount for managed sw nodes
-Message-ID: <YPVufjevu5WaaIxQ@smile.fi.intel.com>
-References: <20210716101602.1891-1-laurentiu.tudor@nxp.com>
- <YPF40t5bhgTFM2wK@smile.fi.intel.com>
- <CABdtJHuKyybhJazpAc8KT54ELtZ319rdb6CbSH6zB5x3NhgtAw@mail.gmail.com>
- <bb009f85-687e-d560-9cc5-1ac4f586a6bd@nxp.com>
+        id S236882AbhGSLnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231290AbhGSLnU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:43:20 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1E7C061574;
+        Mon, 19 Jul 2021 04:39:55 -0700 (PDT)
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id E3F9CB3F5CE;
+        Mon, 19 Jul 2021 14:23:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1626697437;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K5psd6Gyst7jbmkEY35fCzySbAqC76tMvxDPI72IBLU=;
+        b=cQTeim98LKn7CJbBdHfrCSWS7Gz5gbDejjwVrzQDQtHVIIhUvNWfN/pUwkdLmFNc0qLRSq
+        XNvt1ZgCZ9ZRF3Abv0BoYfh0kaLDqY4ylhReu8cF9PxgYOfJwGQ0JQbelnzYns9x1wJUp2
+        SRhuOZDLzgWOuQUS6G0xqoXx+t4oJ/8=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, paulmck@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Chris Clayton <chris2553@googlemail.com>,
+        Chris Rankin <rankincj@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>, gregkh@linuxfoundation.org
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Date:   Mon, 19 Jul 2021 14:23:55 +0200
+Message-ID: <2237123.PRLUojbHBq@natalenko.name>
+In-Reply-To: <YPVtBBumSTMKGuld@casper.infradead.org>
+References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com> <5812280.fcLxn8YiTP@natalenko.name> <YPVtBBumSTMKGuld@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb009f85-687e-d560-9cc5-1ac4f586a6bd@nxp.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 03:00:17PM +0300, Laurentiu Tudor wrote:
-> On 7/16/2021 8:21 PM, Jon Nettleton wrote:
-> > On Fri, Jul 16, 2021 at 2:17 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> >>
-> >> On Fri, Jul 16, 2021 at 01:16:02PM +0300, laurentiu.tudor@nxp.com wrote:
-> >>> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> >>>
-> >>> software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
-> >>> software nodes, thus leading to underflow errors. Balance the refcount by
-> >>> bumping it in the device_create_managed_software_node() function.
-> >>>
-> >>> The error [1] was encountered after adding a .shutdown() op to our
-> >>> fsl-mc-bus driver.
-> >>
-> >> Looking into the history of adding ->shutdown() to dwc3 driver (it got reverted
-> >> later on), I can tell that probably something is wrong in the ->shutdown()
-> >> method itself.
-> > 
-> > Isn't the other alternative to just remove the second kobject_put from
-> > KOBJ_REMOVE ?
-> > 
-> 
-> Or maybe on top of Heikki's suggestion, replace the calls to
-> sysfs_create_link() from KOBJ_ADD with sysfs_create_link_nowarn()?
+On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 14:16:04 CEST Matthew Wilcox wr=
+ote:
+> On Mon, Jul 19, 2021 at 02:12:15PM +0200, Oleksandr Natalenko wrote:
+> > On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 14:08:37 CEST Miaohe Lin wr=
+ote:
+> > > On 2021/7/19 19:59, Oleksandr Natalenko wrote:
+> > > > On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 13:50:07 CEST Miaohe Li=
+n wrote:
+> > > >> On 2021/7/19 19:22, Matthew Wilcox wrote:
+> > > >>> On Mon, Jul 19, 2021 at 07:12:58PM +0800, Miaohe Lin wrote:
+> > > >>>> When in the commit 2799e77529c2a, we're using the percpu_ref to
+> > > >>>> serialize
+> > > >>>> against concurrent swapoff, i.e. there's percpu_ref inside
+> > > >>>> get_swap_device() instead of rcu_read_lock(). Please see commit
+> > > >>>> 63d8620ecf93 ("mm/swapfile: use percpu_ref to serialize against
+> > > >>>> concurrent swapoff") for detail.
+> > > >>>=20
+> > > >>> Oh, so this is a backport problem.  2799e77529c2 was backported
+> > > >>> without
+> > > >>> its prerequisite 63d8620ecf93.  Greg, probably best to just drop
+> > > >>=20
+> > > >> Yes, they're posted as a patch set:
+> > > >>=20
+> > > >> https://lkml.kernel.org/r/20210426123316.806267-1-linmiaohe@huawei=
+=2Eco
+> > > >> m
+> > > >>=20
+> > > >>> 2799e77529c2 from all stable trees; the race described is not very
+> > > >>> important (swapoff vs reading a page back from that swap device).
+> > > >>> .
+> > > >>=20
+> > > >> The swapoff races with reading a page back from that swap device
+> > > >> should
+> > > >> be
+> > > >> really uncommon as most users only do swapoff when the system is
+> > > >> going to
+> > > >> shutdown.
+> > > >>=20
+> > > >> Sorry for the trouble!
+> > > >=20
+> > > > git log --oneline v5.13..v5.13.3 --author=3D"Miaohe Lin"
+> > > > 11ebc09e50dc mm/zswap.c: fix two bugs in zswap_writeback_entry()
+> > > > 95d192da198d mm/z3fold: use release_z3fold_page_locked() to release
+> > > > locked
+> > > > z3fold page
+> > > > ccb7848e2344 mm/z3fold: fix potential memory leak in
+> > > > z3fold_destroy_pool()
+> > > > 9f7229c901c1 mm/huge_memory.c: don't discard hugepage if other
+> > > > processes
+> > > > are mapping it
+> > > > f13259175e4f mm/huge_memory.c: add missing read-only THP checking in
+> > > > transparent_hugepage_enabled()
+> > > > afafd371e7de mm/huge_memory.c: remove dedicated macro
+> > > > HPAGE_CACHE_INDEX_MASK a533a21b692f mm/shmem: fix shmem_swapin() ra=
+ce
+> > > > with swapoff
+> > > > c3b39134bbd0 swap: fix do_swap_page() race with swapoff
+> > > >=20
+> > > > Do you suggest reverting "mm/shmem: fix shmem_swapin() race with
+> > > > swapoff"
+> > > > as well?
+> > >=20
+> > > This patch also rely on its prerequisite 63d8620ecf93. I think we sho=
+uld
+> > > either revert any commit in this series or just backport the entire
+> > > series.
+> >=20
+> > Then why not just pick up 2 more patches instead of dropping 2 patches.
+> > Greg, could you please make sure the whole series from [1] gets pulled?
+>=20
+> Because none of these patches should have been backported in the first
+> place.  It's just not worth the destabilisation.
 
-_noearn will hide the problem. It was there, it was removed from there.
-Perhaps we have to understand the root cause better (some specific flow?).
+What about the rest then?
 
-Any insight from you on the flow when the issue appears? I.o.w. what happened
-on the big picture that we got into the warning you see?
+git log --oneline v5.13..v5.13.3 -- mm/ | wc -l
+18
 
--- 
-With Best Regards,
-Andy Shevchenko
+Those look to be fixes, these ones too.
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
 
