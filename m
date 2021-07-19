@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1353CD9B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE5B3CD9BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242294AbhGSObR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:31:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38874 "EHLO mail.kernel.org"
+        id S244323AbhGSOb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:31:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243411AbhGSOZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:25:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05158611CE;
-        Mon, 19 Jul 2021 15:06:21 +0000 (UTC)
+        id S243442AbhGSOZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:25:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CFBD61205;
+        Mon, 19 Jul 2021 15:06:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707182;
-        bh=X2EDxjvK0rOqzWQFst1vMJ4Jfp9h5hDeMfQyj/fXr0E=;
+        s=korg; t=1626707185;
+        bh=3CYfEYC5jWOnnAvRxenogJ8DAKp6M9OxsyXnprxq/I4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LML9kxOoOW+U2wKree8wJ20v8RhMK84/cGNjklzOFVz6v7cxv6ePfw4byMe9yJWGO
-         EzpdzTYBjfMUeQUQZwjc0xy7rjYGXl+Lym0Nw7dNk8EZWH5PiF8bfER8QzxotXkqu0
-         HhR5wXgpepBHVZoefN0ToZAxaFE8dWdOPzlCe/j4=
+        b=jjbBQA8I+luXsNAdj3n3Gaz7QwyhJ/XlrqPwOKL1pqiYpTqK+jjZPTpMf8WBeUXSv
+         0egmbU2bOWByXEHaLxISVOFegz9Z7krEpE+8zzoaLP0gSkQy5cG3x3PmkWtquUusi1
+         2FlHTk7FB/P+KuvHo4vrB4+fxUJkN+kBdmQzt8+w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 059/245] crypto: ux500 - Fix error return code in hash_hw_final()
-Date:   Mon, 19 Jul 2021 16:50:01 +0200
-Message-Id: <20210719144942.309463689@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 060/245] sata_highbank: fix deferred probing
+Date:   Mon, 19 Jul 2021 16:50:02 +0200
+Message-Id: <20210719144942.339898675@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -42,35 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit b01360384009ab066940b45f34880991ea7ccbfb ]
+[ Upstream commit 4a24efa16e7db02306fb5db84518bb0a7ada5a46 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+The driver overrides the error codes returned by platform_get_irq() to
+-EINVAL, so if it returns -EPROBE_DEFER, the driver would fail the probe
+permanently instead of the deferred probing. Switch to propagating the
+error code upstream, still checking/overriding IRQ0 as libata regards it
+as "no IRQ" (thus polling) anyway...
 
-Fixes: 8a63b1994c50 ("crypto: ux500 - Add driver for HASH hardware")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 9ec36cafe43b ("of/irq: do irq resolution in platform_get_irq")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Link: https://lore.kernel.org/r/105b456d-1199-f6e9-ceb7-ffc5ba551d1a@omprussia.ru
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ux500/hash/hash_core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/ata/sata_highbank.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
-index 17c8e2b28c42..7500ec9efa6a 100644
---- a/drivers/crypto/ux500/hash/hash_core.c
-+++ b/drivers/crypto/ux500/hash/hash_core.c
-@@ -1006,6 +1006,7 @@ static int hash_hw_final(struct ahash_request *req)
- 			goto out;
- 		}
- 	} else if (req->nbytes == 0 && ctx->keylen > 0) {
-+		ret = -EPERM;
- 		dev_err(device_data->dev, "%s: Empty message with keylength > 0, NOT supported\n",
- 			__func__);
- 		goto out;
+diff --git a/drivers/ata/sata_highbank.c b/drivers/ata/sata_highbank.c
+index aafb8cc03523..13f339f07f2a 100644
+--- a/drivers/ata/sata_highbank.c
++++ b/drivers/ata/sata_highbank.c
+@@ -483,10 +483,12 @@ static int ahci_highbank_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0) {
++	if (irq < 0) {
+ 		dev_err(dev, "no irq\n");
+-		return -EINVAL;
++		return irq;
+ 	}
++	if (!irq)
++		return -EINVAL;
+ 
+ 	hpriv = devm_kzalloc(dev, sizeof(*hpriv), GFP_KERNEL);
+ 	if (!hpriv) {
 -- 
 2.30.2
 
