@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3643CCD46
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4051C3CCD47
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbhGSFU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 01:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        id S233194AbhGSFVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 01:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhGSFUZ (ORCPT
+        with ESMTP id S229512AbhGSFVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 01:20:25 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DD1C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 22:17:26 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id z9so15632616qkg.5
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Jul 2021 22:17:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DHVrqtdYh0+ezX5UJ5k9Sd/FBBWh5d9n+IK0Mwb7sUA=;
-        b=WOKLVuTZ2DH2z86799jz/I3LHftCfoCUttYlx5QOAGNYSNQNe5J/o33YCauJZZQX6R
-         IIBbTs2OlFXWMZKd1+T1JPai8T0VMYMVT7ETHSBVJuDphrnMZV6VLRIOiGar8e0gr7wJ
-         7TfWlWgRsjoasfI1HBdolgwnIEAiABc6BHKik=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DHVrqtdYh0+ezX5UJ5k9Sd/FBBWh5d9n+IK0Mwb7sUA=;
-        b=jAWoojC4kid36e51++r0SohUJljDUPfNNuAk02FKsaYKIIueNff2QXTRNX/2weEsQ8
-         VlORD3SNQNy/DQeyiYj1R30fxA2FVnkXyF7bOVBbqELMaMvMbppoAQgCksDYGdFT0mwB
-         emhrusgx0yZX/mJIHTQDvf9jw8Eo3I66DoTX/n8mw+CASRMbe1gQp4C5WQfNt4R0bpu5
-         LwCicJE85+2wDDO2bxCUVx4o/Ol2Bhwub5/ZiL5MqQDzKaEwvAvhFWEvS+/SwLBNAXH2
-         gtq6triCsHCFYpaeTytwMS0dttJ1PwHJgu+kWLXcUIoe7Cet7WK0WqYVT11ayQJFTE8y
-         FBtQ==
-X-Gm-Message-State: AOAM530GdttawIDAvo0KxiXCmNeWkM5Z9QjC2SrakOypJahvu6bpZniL
-        ghLAhcY3dMGFlMR0A1HE4jIo+9eeVhoYMZrb3d+cYWJ5UCo=
-X-Google-Smtp-Source: ABdhPJx1bZbfBzlkU6aXDmMJEi/cGfv5vrFsnI0MUjB1+6nx1xbSqSp1ohZGeAgksa22rG4d77V/k3Zddp2Kb50to0w=
-X-Received: by 2002:a05:620a:1242:: with SMTP id a2mr22037379qkl.443.1626671845953;
- Sun, 18 Jul 2021 22:17:25 -0700 (PDT)
+        Mon, 19 Jul 2021 01:21:37 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A5FC061762;
+        Sun, 18 Jul 2021 22:18:37 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1626671914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vthMeTbzAZtY0okruVW6qC1LJnjv61WTI0OJ6N5pgbk=;
+        b=NHm5vOJUd5siLlRil2h9aOuBAL4XvZlMre29vn0hltC3cGW4gbeaxnuYcoQ78mVolWyZhF
+        Q+wYsCLfYNqoN9rivnEay63oiwxH+lX2qCksvlIB/Bjd2TVyQp4U3NKKxkuJl2lC7u2GmO
+        zv5W5ZL4kf48hQ+kekbam2ppCFiyFf4=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] netlink: Deal with ESRCH error in nlmsg_notify()
+Date:   Mon, 19 Jul 2021 13:18:16 +0800
+Message-Id: <20210719051816.11762-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-References: <202107190200.Z2RoQoYz-lkp@intel.com>
-In-Reply-To: <202107190200.Z2RoQoYz-lkp@intel.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 19 Jul 2021 14:17:15 +0900
-Message-ID: <CAFr9PXng3dVVeHm8Xcy3i7MfjnPOM8ewCtGAWWUcgBZcM+RJqw@mail.gmail.com>
-Subject: Re: [linux-chenxing:mstar_v5_14_rebase_i2_drm 257/349]
- drivers/clk/mstar/clk-msc313-mux.c:27:2: error: implicit declaration of
- function 'regmap_field_read'; did you mean 'regmap_field_write'?
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 at 03:52, kernel test robot <lkp@intel.com> wrote:
->
-> tree:   git://github.com/linux-chenxing/linux.git mstar_v5_14_rebase_i2_drm
+Yonghong Song report:
+The bpf selftest tc_bpf failed with latest bpf-next. 
+The following is the command to run and the result:
+$ ./test_progs -n 132
+[   40.947571] bpf_testmod: loading out-of-tree module taints kernel.
+test_tc_bpf:PASS:test_tc_bpf__open_and_load 0 nsec
+test_tc_bpf:PASS:bpf_tc_hook_create(BPF_TC_INGRESS) 0 nsec
+test_tc_bpf:PASS:bpf_tc_hook_create invalid hook.attach_point 0 nsec
+test_tc_bpf_basic:PASS:bpf_obj_get_info_by_fd 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_attach 0 nsec
+test_tc_bpf_basic:PASS:handle set 0 nsec
+test_tc_bpf_basic:PASS:priority set 0 nsec
+test_tc_bpf_basic:PASS:prog_id set 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_attach replace mode 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_query 0 nsec
+test_tc_bpf_basic:PASS:handle set 0 nsec
+test_tc_bpf_basic:PASS:priority set 0 nsec
+test_tc_bpf_basic:PASS:prog_id set 0 nsec
+libbpf: Kernel error message: Failed to send filter delete notification
+test_tc_bpf_basic:FAIL:bpf_tc_detach unexpected error: -3 (errno 3)
+test_tc_bpf:FAIL:test_tc_internal ingress unexpected error: -3 (errno 3)
 
-Is it possible to stop this bot from building branches that don't make
-any sense?
-This branch for example was a work branch for reverse engineering the
-display hardware and has a lot of junk in it.
+The failure seems due to the commit
+    cfdf0d9ae75b ("rtnetlink: use nlmsg_notify() in rtnetlink_send()")
 
-Cheers,
+Deal with ESRCH error in nlmsg_notify() even the report variable is zero.
 
-Daniel
+Reported-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ net/netlink/af_netlink.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 380f95aacdec..24b7cf447bc5 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -2545,13 +2545,15 @@ int nlmsg_notify(struct sock *sk, struct sk_buff *skb, u32 portid,
+ 		/* errors reported via destination sk->sk_err, but propagate
+ 		 * delivery errors if NETLINK_BROADCAST_ERROR flag is set */
+ 		err = nlmsg_multicast(sk, skb, exclude_portid, group, flags);
++		if (err == -ESRCH)
++			err = 0;
+ 	}
+ 
+ 	if (report) {
+ 		int err2;
+ 
+ 		err2 = nlmsg_unicast(sk, skb, portid);
+-		if (!err || err == -ESRCH)
++		if (!err)
+ 			err = err2;
+ 	}
+ 
+-- 
+2.32.0
+
