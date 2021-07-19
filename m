@@ -2,86 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27713CD064
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3343CD044
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235992AbhGSIgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:36:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:11446 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235428AbhGSIgA (ORCPT
+        id S235731AbhGSIdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235518AbhGSIc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:36:00 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GSx316W5gzcfPs;
-        Mon, 19 Jul 2021 17:13:17 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 19 Jul 2021 17:16:39 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 19 Jul 2021 17:16:38 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <fengchengwen@huawei.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <lipeng321@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net 4/4] net: hns3: fix rx VLAN offload state inconsistent issue
-Date:   Mon, 19 Jul 2021 17:13:08 +0800
-Message-ID: <1626685988-25869-5-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1626685988-25869-1-git-send-email-huangguangbin2@huawei.com>
-References: <1626685988-25869-1-git-send-email-huangguangbin2@huawei.com>
+        Mon, 19 Jul 2021 04:32:58 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B600C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 01:14:42 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id t5so21070735wrw.12
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rammhold-de.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=GeYs5mUjYDt0F2pt9uFHOrxKHtsEsE7bcDIp+B4aHvo=;
+        b=bhk6S9NOUkSPKEjpHWFtoWIrtMtNdrMDrY5331MwknZwHcBc/vMseahQRkTCnlR9A2
+         6EKlOTD94+BUjmtwWwufy845nmzbvkGyuoJ6R5OL7MizcQXw4FwX282tzMZBmYl1+zU6
+         jBfoOBB4/QBA7a2XetktBSzCym1/4KiHpdkG6+gbCCnQ3GeJ8+3rWey5LWuhUZQdZLp0
+         tZ5NamtSPFmX+ROipJX5O2h5Nq5iZEAEUtC+OyeEvwRnVqtd1Mz0HrAhJ88f54T4x8X8
+         R0ostqChH3EE4MFoUylTYQUf00mCBjbG+mmlsas0blGJu2KCLyHiTHlHGa/a6HbY/jh4
+         RwVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GeYs5mUjYDt0F2pt9uFHOrxKHtsEsE7bcDIp+B4aHvo=;
+        b=opJJcOXUNOyceHen2QAuHRLpAi3lFkKRDhA2q31vqe8rnpMo1nMLvReIvJmyRdFDOR
+         ZCiBxKkauilvj/3vhUAghbcUU/1XHQ4vqJ/Nu5/JTVVdM1RH14qEi49Zcmj0jHzApTvJ
+         qE1jweLeZokZo24PtlljnaVLLMl++/NV7bOQyTP9/2TYv/qtnKG5ASMF27VNuYNG08rN
+         9jQygEG4mNwpxP1PawuylrlGf8eBMSBhFHtoWSP2stLX1+D/XtoXYh/ScRAWgKc9we3x
+         FTNofvV2ZD/hdEh43AXX1xJ1uzH11fRbpln3wxmOKSEieFbBDrIkaRQ3NgXm6qJtdgTV
+         1kPQ==
+X-Gm-Message-State: AOAM530Ty9oTuAzC1bzHkAilYamHwpDDAj9Y9C/ezcFXpkJ0K4FR80hh
+        /gPqlFh8gUkMKgl1uD1M4w13cQ==
+X-Google-Smtp-Source: ABdhPJzMCiKr5hj44zPyPDDx5BtCn4p8iU7luZUs62uKGnRmZidwZz3cAr2zupNUfWNosVeWl1wRwQ==
+X-Received: by 2002:a5d:464b:: with SMTP id j11mr28745704wrs.356.1626686016925;
+        Mon, 19 Jul 2021 02:13:36 -0700 (PDT)
+Received: from localhost ([2a00:e67:1fd:a:4af1:ba6e:49d3:2e89])
+        by smtp.gmail.com with ESMTPSA id r18sm19820621wrt.96.2021.07.19.02.13.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 02:13:36 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 11:13:35 +0200
+From:   andreas@rammhold.de
+To:     Sumit Garg <sumit.garg@linaro.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH] KEYS: trusted: Fix trusted key backends when building as
+ module
+Message-ID: <20210719091335.vwfebcpkf4pag3wm@wrt>
+References: <20210716081722.4130161-1-andreas@rammhold.de>
+ <0a684d56-66d0-184e-4853-9faafa2d243d@pengutronix.de>
+ <CAFA6WYNC2xasX4uKmgcK+ZmA4HUh5PhCci+e12VFWPfF0b0eWQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFA6WYNC2xasX4uKmgcK+ZmA4HUh5PhCci+e12VFWPfF0b0eWQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Shen <shenjian15@huawei.com>
+On 13:36 19.07.21, Sumit Garg wrote:
+> On Mon, 19 Jul 2021 at 12:40, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> >
+> > Hello Andreas,
+> >
+> > On 16.07.21 10:17, Andreas Rammhold wrote:
+> > > Before this commit the kernel could end up with no trusted key sources
+> > > even thought both of the currently supported backends (tpm & tee) were
+> > > compoiled as modules. This manifested in the trusted key type not being
+> > > registered at all.
+> >
+> > I assume (TPM) trusted key module use worked before the TEE rework? If so,
+> >
+> > an appropriate Fixes: Tag would then be in order.
+> >
+> > > When checking if a CONFIG_… preprocessor variable is defined we only
+> > > test for the builtin (=y) case and not the module (=m) case. By using
+> > > the IS_ENABLE(…) macro we to test for both cases.
+> >
+> > It looks to me like you could now provoke a link error if TEE is a module
+> > and built-in trusted key core tries to link against trusted_key_tee_ops.
+> >
+> 
+> That's true.
+> 
+> > One solution for that IS_REACHABLE(). Another is to address the root cause,
+> > which is the inflexible trusted keys Kconfig description:
+> >
+> > - Trusted keys despite TEE support can still only be built when TCG_TPM is enabled
+> > - There is no support to have TEE or TPM enabled without using those for
+> >   enabled trusted keys as well
+> > - As you noticed, module build of the backend has issues
+> >
+> > I addressed these three issues in a patch[1], a month ago, but have yet to
+> > receive feedback.
+> 
+> That's an oversight on my part since this patch was part of the new
+> CAAM trust source patch-set. Although I do admit that it was on my
+> TODO list. So I have provided some feedback on that patch. Can you
+> post the next version as an independent fix patch?
 
-Currently, VF doesn't enable rx VLAN offload when initializating,
-and PF does it for VFs. If user disable the rx VLAN offload for
-VF with ethtool -K, and reload the VF driver, it may cause the
-rx VLAN offload state being inconsistent between hardware and
-software.
+Thank you both for the feedback. In light of thes feedback and the
+patchset that Ahmad posted I'll not address the issue and not send a v2
+of this.
 
-Fixes it by enabling rx VLAN offload when VF initializing.
+I'll try to squeeze in some time to test the other patch and provide
+feedback.
 
-Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 52eaf82b7cd7..8784d61e833f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -2641,6 +2641,16 @@ static int hclgevf_rss_init_hw(struct hclgevf_dev *hdev)
- 
- static int hclgevf_init_vlan_config(struct hclgevf_dev *hdev)
- {
-+	struct hnae3_handle *nic = &hdev->nic;
-+	int ret;
-+
-+	ret = hclgevf_en_hw_strip_rxvtag(nic, true);
-+	if (ret) {
-+		dev_err(&hdev->pdev->dev,
-+			"failed to enable rx vlan offload, ret = %d\n", ret);
-+		return ret;
-+	}
-+
- 	return hclgevf_set_vlan_filter(&hdev->nic, htons(ETH_P_8021Q), 0,
- 				       false);
- }
--- 
-2.8.1
-
+Andi
