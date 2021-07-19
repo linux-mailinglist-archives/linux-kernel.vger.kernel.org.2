@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763B43CE116
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDBD3CE114
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347627AbhGSPUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:20:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34614 "EHLO mail.kernel.org"
+        id S1347585AbhGSPTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:19:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237644AbhGSOnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:43:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 016CF6023D;
-        Mon, 19 Jul 2021 15:22:21 +0000 (UTC)
+        id S237711AbhGSOoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:44:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 872A86120E;
+        Mon, 19 Jul 2021 15:22:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708142;
-        bh=FXpYRlDNveUhvsxDMzgruZlisuFWjVdYIfHBQ3b3vYc=;
+        s=korg; t=1626708148;
+        bh=flRU1/nWCDRQ6R0bshuPatNPWKM0h0EUK/k/aA8oMCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kpZ4EbtIQQy/jIvgc65TZmAXtLN0fMUcy0Th8FhSXhSTCOfFqqOwgTIsPg6wy48X7
-         ua24AhaW06lvEqIGSrAbNv/Og940g6GBsdqhn2PbTbBgPrJZYlLpfIHVAwnM5NHW3X
-         +KdyGQc99s3yq6v1Z7WltRVkDSp+J8ENwU+76NNU=
+        b=KT4nSl+fkGC9Z3fMrwGeBlBPi+N5tEXfrHJ137EBDpghJwO4u8w/4xj8may5hxvSK
+         ZXlB+09hhq8cjVNWbNUFGNS69da614sKlNzFmPq0oqxpJp7p2VoPnURR+HYnt4XUR6
+         Z7SG66ruDUkRbp+YKxZ9KoE7O2eMMGsToenOJ8oo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        stable@vger.kernel.org, Tim Jiang <tjiang@codeaurora.org>,
         Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 198/315] Bluetooth: Shutdown controller after workqueues are flushed or cancelled
-Date:   Mon, 19 Jul 2021 16:51:27 +0200
-Message-Id: <20210719144949.940312864@linuxfoundation.org>
+Subject: [PATCH 4.14 199/315] Bluetooth: btusb: fix bt fiwmare downloading failure issue for qca btsoc.
+Date:   Mon, 19 Jul 2021 16:51:28 +0200
+Message-Id: <20210719144949.971770642@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,112 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Tim Jiang <tjiang@codeaurora.org>
 
-[ Upstream commit 0ea9fd001a14ebc294f112b0361a4e601551d508 ]
+[ Upstream commit 4f00bfb372674d586c4a261bfc595cbce101fbb6 ]
 
-Rfkill block and unblock Intel USB Bluetooth [8087:0026] may make it
-stops working:
-[  509.691509] Bluetooth: hci0: HCI reset during shutdown failed
-[  514.897584] Bluetooth: hci0: MSFT filter_enable is already on
-[  530.044751] usb 3-10: reset full-speed USB device number 5 using xhci_hcd
-[  545.660350] usb 3-10: device descriptor read/64, error -110
-[  561.283530] usb 3-10: device descriptor read/64, error -110
-[  561.519682] usb 3-10: reset full-speed USB device number 5 using xhci_hcd
-[  566.686650] Bluetooth: hci0: unexpected event for opcode 0x0500
-[  568.752452] Bluetooth: hci0: urb 0000000096cd309b failed to resubmit (113)
-[  578.797955] Bluetooth: hci0: Failed to read MSFT supported features (-110)
-[  586.286565] Bluetooth: hci0: urb 00000000c522f633 failed to resubmit (113)
-[  596.215302] Bluetooth: hci0: Failed to read MSFT supported features (-110)
+This is btsoc timing issue, after host start to downloading bt firmware,
+ep2 need time to switch from function acl to function dfu, so host add
+20ms delay as workaround.
 
-Or kernel panics because other workqueues already freed skb:
-[ 2048.663763] BUG: kernel NULL pointer dereference, address: 0000000000000000
-[ 2048.663775] #PF: supervisor read access in kernel mode
-[ 2048.663779] #PF: error_code(0x0000) - not-present page
-[ 2048.663782] PGD 0 P4D 0
-[ 2048.663787] Oops: 0000 [#1] SMP NOPTI
-[ 2048.663793] CPU: 3 PID: 4491 Comm: rfkill Tainted: G        W         5.13.0-rc1-next-20210510+ #20
-[ 2048.663799] Hardware name: HP HP EliteBook 850 G8 Notebook PC/8846, BIOS T76 Ver. 01.01.04 12/02/2020
-[ 2048.663801] RIP: 0010:__skb_ext_put+0x6/0x50
-[ 2048.663814] Code: 8b 1b 48 85 db 75 db 5b 41 5c 5d c3 be 01 00 00 00 e8 de 13 c0 ff eb e7 be 02 00 00 00 e8 d2 13 c0 ff eb db 0f 1f 44 00 00 55 <8b> 07 48 89 e5 83 f8 01 74 14 b8 ff ff ff ff f0 0f c1
-07 83 f8 01
-[ 2048.663819] RSP: 0018:ffffc1d105b6fd80 EFLAGS: 00010286
-[ 2048.663824] RAX: 0000000000000000 RBX: ffff9d9ac5649000 RCX: 0000000000000000
-[ 2048.663827] RDX: ffffffffc0d1daf6 RSI: 0000000000000206 RDI: 0000000000000000
-[ 2048.663830] RBP: ffffc1d105b6fd98 R08: 0000000000000001 R09: ffff9d9ace8ceac0
-[ 2048.663834] R10: ffff9d9ace8ceac0 R11: 0000000000000001 R12: ffff9d9ac5649000
-[ 2048.663838] R13: 0000000000000000 R14: 00007ffe0354d650 R15: 0000000000000000
-[ 2048.663843] FS:  00007fe02ab19740(0000) GS:ffff9d9e5f8c0000(0000) knlGS:0000000000000000
-[ 2048.663849] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2048.663853] CR2: 0000000000000000 CR3: 0000000111a52004 CR4: 0000000000770ee0
-[ 2048.663856] PKRU: 55555554
-[ 2048.663859] Call Trace:
-[ 2048.663865]  ? skb_release_head_state+0x5e/0x80
-[ 2048.663873]  kfree_skb+0x2f/0xb0
-[ 2048.663881]  btusb_shutdown_intel_new+0x36/0x60 [btusb]
-[ 2048.663905]  hci_dev_do_close+0x48c/0x5e0 [bluetooth]
-[ 2048.663954]  ? __cond_resched+0x1a/0x50
-[ 2048.663962]  hci_rfkill_set_block+0x56/0xa0 [bluetooth]
-[ 2048.664007]  rfkill_set_block+0x98/0x170
-[ 2048.664016]  rfkill_fop_write+0x136/0x1e0
-[ 2048.664022]  vfs_write+0xc7/0x260
-[ 2048.664030]  ksys_write+0xb1/0xe0
-[ 2048.664035]  ? exit_to_user_mode_prepare+0x37/0x1c0
-[ 2048.664042]  __x64_sys_write+0x1a/0x20
-[ 2048.664048]  do_syscall_64+0x40/0xb0
-[ 2048.664055]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 2048.664060] RIP: 0033:0x7fe02ac23c27
-[ 2048.664066] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-[ 2048.664070] RSP: 002b:00007ffe0354d638 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[ 2048.664075] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fe02ac23c27
-[ 2048.664078] RDX: 0000000000000008 RSI: 00007ffe0354d650 RDI: 0000000000000003
-[ 2048.664081] RBP: 0000000000000000 R08: 0000559b05998440 R09: 0000559b05998440
-[ 2048.664084] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-[ 2048.664086] R13: 0000000000000000 R14: ffffffff00000000 R15: 00000000ffffffff
-
-So move the shutdown callback to a place where workqueues are either
-flushed or cancelled to resolve the issue.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/bluetooth/btusb.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index ba5c899d1edf..0958dbdd2906 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1569,14 +1569,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 424f399cc79b..f2e84e09c970 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2614,6 +2614,11 @@ static int btusb_setup_qca_download_fw(struct hci_dev *hdev,
+ 	sent += size;
+ 	count -= size;
  
- 	BT_DBG("%s %p", hdev->name, hdev);
- 
--	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
--	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
--	    test_bit(HCI_UP, &hdev->flags)) {
--		/* Execute vendor specific shutdown routine */
--		if (hdev->shutdown)
--			hdev->shutdown(hdev);
--	}
--
- 	cancel_delayed_work(&hdev->power_off);
- 
- 	hci_request_cancel_all(hdev);
-@@ -1644,6 +1636,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 		clear_bit(HCI_INIT, &hdev->flags);
- 	}
- 
-+	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-+	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-+	    test_bit(HCI_UP, &hdev->flags)) {
-+		/* Execute vendor specific shutdown routine */
-+		if (hdev->shutdown)
-+			hdev->shutdown(hdev);
-+	}
++	/* ep2 need time to switch from function acl to function dfu,
++	 * so we add 20ms delay here.
++	 */
++	msleep(20);
 +
- 	/* flush cmd  work */
- 	flush_work(&hdev->cmd_work);
+ 	while (count) {
+ 		size = min_t(size_t, count, QCA_DFU_PACKET_LEN);
  
 -- 
 2.30.2
