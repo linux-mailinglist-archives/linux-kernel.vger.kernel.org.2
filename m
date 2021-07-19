@@ -2,207 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB36C3CD3B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580553CD3B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236337AbhGSKhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:37:43 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:56336 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235999AbhGSKhe (ORCPT
+        id S236501AbhGSKhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236364AbhGSKhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:37:34 -0400
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id C42D73C0034;
-        Mon, 19 Jul 2021 13:17:43 +0200 (CEST)
-Received: from vmlxhi-082.adit-jv.com (10.72.92.165) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 19 Jul
- 2021 13:17:43 +0200
-Date:   Mon, 19 Jul 2021 13:17:40 +0200
-From:   Dennis Rachui <drachui@de.adit-jv.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
+        Mon, 19 Jul 2021 06:37:52 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FBBC061574;
+        Mon, 19 Jul 2021 03:29:00 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id my10so11179909pjb.1;
+        Mon, 19 Jul 2021 04:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jtGN9wE5doYwbAS2i6O5Ca83ymWdWG1+gIX4VaX3+84=;
+        b=O++o3n+t6UWk/1SXOY2/V03gj/0SqS/0GJ2FMoz8JFlv1FAWPaZdwQWdI5srcXmfHl
+         byg8lpjs1OFvMRHNCDDbfCk4Pk5IBolrPoCUIc0DU+pxMPpoEqXdySWkMG8k/r1QBssC
+         Y7n8IwysNQS6EqFmOLP4/OYSY6JY+GkDdiEAfkbz2G7QtAgxAYlEufGu6sK71yNi01qm
+         cHMu0LuVch21ABT5Qz+AZaFF7LQKG1V8NiYLdZG//x61ba+gdaTRzyZmKTOfjxfR5BgM
+         6L/jIPzL5FAyTReq2GrbfHs38WF8awj2HtyMzKHTR7n3G/SEJVfmvKwZiqEQWjjbqzOz
+         5C/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jtGN9wE5doYwbAS2i6O5Ca83ymWdWG1+gIX4VaX3+84=;
+        b=GnuDWDn01GZdPN7bfdkqihpH55nhgbSHcFxntN0ofpS/mUdvkxeeWMm107QlAw/7xD
+         gWlBhrc1H7kD6T0/tSGj/hZDaaDf14aehsK6gMKywLTPj2GaCAl4GqERJpi1zwEnngJ0
+         0FgqnwyebJxGD9gldUISMdTBv6Y8bhmlYKXHJzZJS9+OqyHuR1kgIUdtPC8PzgOs6j8W
+         vdXlNpjIcbmGlS+aprw+jZ5Ihl9O2SHVavImq378mcxqVNHkKbqch14zGPn5USAvmjRe
+         6NaRr9NudhYkTI/X9nVCRwRj42ovoI1Ux/8PC8WCz9qHw2gePwxCDwyuQF8Es/G1Z9n0
+         UPBg==
+X-Gm-Message-State: AOAM532ngOUDIzvq+YNw3YirGh60xn+wNWea7IGLpCz1JROKeoLGL4Vv
+        /RX5QodwcLuvr2oEz+7ri90=
+X-Google-Smtp-Source: ABdhPJzwCrIsgiHHT9QnO/6iY7EcjRnm6UVntloSqD0V+S18rTqZMBdtkzOV0afirvJCeuFjTTc1Og==
+X-Received: by 2002:a17:902:7246:b029:129:dcf5:b583 with SMTP id c6-20020a1709027246b0290129dcf5b583mr18804974pll.73.1626693511519;
+        Mon, 19 Jul 2021 04:18:31 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id i8sm21192758pfk.18.2021.07.19.04.18.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 04:18:31 -0700 (PDT)
+Subject: [RFC PATCH v2 7/7] docs/ko_KR: Use white spaces behind CJK characters
+ in ascii-art
+To:     Jonathan Corbet <corbet@lwn.net>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        <linux-media@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
-Message-ID: <20210719111740.GB19719@vmlxhi-082.adit-jv.com>
-References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
- <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
- <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
- <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
- <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
- <YPAUoQ8KmmAE3fWD@oden.dyn.berto.se>
- <YPAeirL/qtmNYx99@pendragon.ideasonboard.com>
- <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
- <YPGgldecdIHMjCuq@pendragon.ideasonboard.com>
+        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>
+Cc:     Hu Haowen <src.res@email.cn>,
+        Shinwoo Lee <shinwoo.lee.us@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <2babf4ef-d3f3-5591-667e-f87b6ea509ab@gmail.com>
+Date:   Mon, 19 Jul 2021 20:18:28 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YPGgldecdIHMjCuq@pendragon.ideasonboard.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.72.92.165]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
+In-Reply-To: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+In literal ascii-art of Korean translation of memory-barriers.txt,
+Sphinx is confused by tabs behind CJK chars and mis-caluculates number
+of necessary white spaces in LaTeX code.
 
-> On Fri, Jul 16, 2021 18:07:01 +0300, Laurent Pinchart wrote:
-> > On Fri, Jul 16, 2021 at 04:09:21PM +0200, Dennis Rachui wrote:
-> > > On Thu, Jul 15, 2021 at 12:57:37PM +0200, Niklas Söderlund wrote:
-> > > > On 2021-07-14 21:40:51 +0300, Laurent Pinchart wrote:
-> > > > > On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
-> > > > > > On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
-> > > > > > > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
-> > > > > > > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
-> > > > > > > > > Verify that streaming is not active before setting the pad format.
-> > > > > > > > > 
-> > > > > > > > > According to the VIDIOC documentation [1] changes to the 
-> > > > > > > > > active format of a media pad via the VIDIOC_SUBDEV_S_FMT 
-> > > > > > > > > ioctl are applied to the underlying hardware.
-> > > > > > > > > In rcar-csi2 a format change only applies to hardware, when 
-> > > > > > > > > the pipeline is started. While the device is not in use, it 
-> > > > > > > > > is therefore okay to update the format.
-> > > > > > > > > 
-> > > > > > > > > However, when the pipeline is active, this leads to a format 
-> > > > > > > > > mismatch between driver and device.
-> > > > > > > > > Other applications can query the format with 
-> > > > > > > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported a 
-> > > > > > > > > format that does not fit the current stream.
-> > > > > > > > > 
-> > > > > > > > > This commit prevents format update while streaming is active 
-> > > > > > > > > and returns -EBUSY to user space, as suggested by [1].
-> > > > > > > > > 
-> > > > > > > > > [1] 
-> > > > > > > > > Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rs
-> > > > > > > > > t
-> > > > > > > > 
-> > > > > > > > I like that this is addressed, but I wonder is this not 
-> > > > > > > > something that should be fixed in the V4L2 core and not in drivers?
-> > > > > > > 
-> > > > > > > Some drivers may support format changes during streaming (that's 
-> > > > > > > allowed by the V4L2 API, I'm not sure if it's used anywhere 
-> > > > > > > though). While I'd favour not duplicating the same logic in 
-> > > > > > > different (and differently
-> > > > > > > buggy) ways in drivers, I'm not sure how this could be 
-> > > > > > > implemented in a sane way in the V4L2 core in its current state.
-> > > > > > 
-> > > > > > I understand it's possible from some devices to support to format 
-> > > > > > changes during streaming, but as you point out it's the exception 
-> > > > > > and not the rule, if used at all.
-> > > > > > 
-> > > > > > So my point is if we start to enforce this in drivers we are 
-> > > > > > headed down a road where this will be messier to clean up. Would 
-> > > > > > it not make more sens to default the V4L2 core to disallow format 
-> > > > > > changes while streaming and add a new flag to V4L2_SUBDEV_CAP_ to 
-> > > > > > signal that the subdevice supports format changes while streaming?
-> > > > > > 
-> > > > > > We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a 
-> > > > > > subdevice only supports read-only operations so I think it would 
-> > > > > > not be too hard to move this functionality into the core?
-> > > > > 
-> > > > > Yes, that's something we could try. The subdev core will then need 
-> > > > > to track the streaming state, which may require wrapping the 
-> > > > > .s_stream() call. Locking should then also likely be handled by the 
-> > > > > core. Probably nothing impossible, but quite a bit of work. Any 
-> > > > > volunteer ? :-)
-> > > > 
-> > > > We already track the stream count in struct media_entity and it's 
-> > > > incremented/decremented under the media device lock by
-> > > > media_pipeline_start() and media_pipeline_stop(). So I don't think 
-> > > > it's such a hard feature to add.
-> > > > 
-> > > > The large task IMHO is to figure out if we have any subdevice in tree 
-> > > > that allows format changes while streaming and that would need to set 
-> > > > this new V4L2_SUBDEV_CAP_ flag.
-> > >
-> > > Many subdevs allow format changes during streaming. The question is
-> > > whether any of them do so knowingly, or if they're all buggy :-) I'd
-> > > be surprised if there > were more than a couple of drivers that
-> > > actually support this correctly.
-> > 
-> > From my perspective, the current stream_count from struct media_entity
-> > would not be sufficient. References should be counted per struct media_pad.
-> > Otherwise, devices that allow multiple parallel streams would block user
-> > space from updating media-pads that are not part of an active media-pipeline.
-> > E.g. in rcar-csi2 this could effect a source pad connected to currently
-> > unused VIN device.
->
-> We're working on moving the information to pads, see "[PATCH v7 06/27]
-> media: entity: Move the pipeline from entity to pads"
-> (https://lore.kernel.org/linux-media/20210524104408.599645-7-tomi.valkeinen@ideasonboard.com/).
-> Does this address your concern ?
+As a workaround, use white spaces in such cases.
 
-Since media links cannot be enabled / disabled while streaming, my concern
-is resolved. Anyways, the patch set you shared looks promising for better
-V4L2 integration of devices with independent parallel streaming capability.
+"html" output is also slightly improved by this change, but still need
+some proper font choice, which is out of the scope of this change.
 
-> > > > > > > > > Note: after creation of this commit, it was noticed that 
-> > > > > > > > > Steve Longerbeam has a very similar solution in his fork.
-> > > > > > > > > 
-> > > > > > > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
-> > > > > > > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
-> > > > > > > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
-> > > > > > > > > ---
-> > > > > > > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 ++++++++++++++++++++-
-> > > > > > > > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > > > > > > > > 
-> > > > > > > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c 
-> > > > > > > > > b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > > index e28eff0..98152e1 100644
-> > > > > > > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> > > > > > > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct 
-> > > > > > > > > v4l2_subdev *sd,  {
-> > > > > > > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
-> > > > > > > > >  	struct v4l2_mbus_framefmt *framefmt;
-> > > > > > > > > +	int ret = 0;
-> > > > > > > > > +
-> > > > > > > > > +	mutex_lock(&priv->lock);
-> > > > > > > > >  
-> > > > > > > > >  	if (!rcsi2_code_to_fmt(format->format.code))
-> > > > > > > > >  		format->format.code = rcar_csi2_formats[0].code;
-> > > > > > > > >  
-> > > > > > > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
-> > > > > > > > > +
-> > > > > > > > > +		/*
-> > > > > > > > > +		 * Do not apply changes to active format while streaming.
-> > > > > > > > > +		 *
-> > > > > > > > > +		 * Since video streams could be forwarded from sink pad to any
-> > > > > > > > > +		 * source pad (depending on CSI-2 channel routing), all
-> > > > > > > > > +		 * media pads are effected by this rule.
-> > > > > > > > > +		 */
-> > > > > > > > > +		if (priv->stream_count > 0) {
-> > > > > > > > > +			ret = -EBUSY;
-> > > > > > > > > +			goto out;
-> > > > > > > > > +		}
-> > > > > > > > > +
-> > > > > > > > >  		priv->mf = format->format;
-> > > > > > > > >  	} else {
-> > > > > > > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > > > > > > > >  		*framefmt = format->format;
-> > > > > > > > >  	}
-> > > > > > > > >  
-> > > > > > > > > -	return 0;
-> > > > > > > > > +out:
-> > > > > > > > > +	mutex_unlock(&priv->lock);
-> > > > > > > > > +
-> > > > > > > > > +	return ret;
-> > > > > > > > >  }
-> > > > > > > > >  
-> > > > > > > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+ .../translations/ko_KR/memory-barriers.txt         | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
--- 
-Regards,
-Dennis Rachui
+diff --git a/Documentation/translations/ko_KR/memory-barriers.txt b/Docum=
+entation/translations/ko_KR/memory-barriers.txt
+index 64d932f5dc77..ff36b857ef72 100644
+--- a/Documentation/translations/ko_KR/memory-barriers.txt
++++ b/Documentation/translations/ko_KR/memory-barriers.txt
+@@ -1364,7 +1364,7 @@ Multicopy =EC=9B=90=EC=9E=90=EC=84=B1=EC=9D=80 =EC=8B=
+=A4=EC=A0=9C=EC=9D=98 =EC=BB=B4=ED=93=A8=ED=84=B0 =EC=8B=9C=EC=8A=A4=ED=85=
+=9C=EC=97=90=EC=84=9C =ED=95=AD=EC=83=81 =EC=A0=9C=EA=B3=B5=EB=90=98=EC=A7=
+=80
+ 	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+ 		{ X =3D 0, Y =3D 0 }
+ 	STORE X=3D1		r1=3DLOAD X (reads 1)	LOAD Y (reads 1)
+-				<=EB=B2=94=EC=9A=A9 =EB=B0=B0=EB=A6=AC=EC=96=B4>		<=EC=9D=BD=EA=B8=B0=
+ =EB=B0=B0=EB=A6=AC=EC=96=B4>
++				<=EB=B2=94=EC=9A=A9 =EB=B0=B0=EB=A6=AC=EC=96=B4>           <=EC=9D=BD=
+=EA=B8=B0 =EB=B0=B0=EB=A6=AC=EC=96=B4>
+ 				STORE Y=3Dr1		LOAD X
+=20
+ CPU 2 =EC=9D=98 Y =EB=A1=9C=EC=9D=98 =EC=8A=A4=ED=86=A0=EC=96=B4=EC=97=90=
+ =EC=82=AC=EC=9A=A9=EB=90=98=EB=8A=94 X =EB=A1=9C=EB=93=9C=EC=9D=98 =EA=B2=
+=B0=EA=B3=BC=EA=B0=80 1 =EC=9D=B4=EC=97=88=EA=B3=A0 CPU 3 =EC=9D=98 Y =EB=
+=A1=9C=EB=93=9C=EA=B0=80
+@@ -1394,7 +1394,7 @@ CPU 3 =EC=9D=98 X =EB=A1=9C=EB=93=9C=EA=B0=80 CPU 2=
+ =EC=9D=98 =EB=A1=9C=EB=93=9C=EB=B3=B4=EB=8B=A4 =EB=92=A4=EC=97=90 =EC=9D=
+=B4=EB=A3=A8=EC=96=B4=EC=A1=8C=EC=9C=BC=EB=AF=80=EB=A1=9C, CPU 3
+ 	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+ 		{ X =3D 0, Y =3D 0 }
+ 	STORE X=3D1		r1=3DLOAD X (reads 1)	LOAD Y (reads 1)
+-				<=EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=9D=98=EC=A1=B4=EC=84=B1>		<=EC=9D=BD=
+=EA=B8=B0 =EB=B0=B0=EB=A6=AC=EC=96=B4>
++				<=EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=9D=98=EC=A1=B4=EC=84=B1>         <=EC=
+=9D=BD=EA=B8=B0 =EB=B0=B0=EB=A6=AC=EC=96=B4>
+ 				STORE Y=3Dr1		LOAD X (reads 0)
+=20
+ =EC=9D=B4 =EB=B3=80=ED=99=94=EB=8A=94 non-multicopy =EC=9B=90=EC=9E=90=EC=
+=84=B1=EC=9D=B4 =EB=A7=8C=EC=97=B0=ED=95=98=EA=B2=8C =ED=95=A9=EB=8B=88=EB=
+=8B=A4: =EC=9D=B4 =EC=98=88=EC=97=90=EC=84=9C, CPU 2 =EC=9D=98 X
+@@ -1789,10 +1789,10 @@ CPU =EB=A9=94=EB=AA=A8=EB=A6=AC =EB=B0=B0=EB=A6=AC=
+=EC=96=B4
+=20
+ 	TYPE		MANDATORY		SMP CONDITIONAL
+ 	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+-	=EB=B2=94=EC=9A=A9		mb()			smp_mb()
+-	=EC=93=B0=EA=B8=B0		wmb()			smp_wmb()
+-	=EC=9D=BD=EA=B8=B0		rmb()			smp_rmb()
+-	=EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=9D=98=EC=A1=B4=EC=84=B1				READ_ONCE()
++	=EB=B2=94=EC=9A=A9            mb()                    smp_mb()
++	=EC=93=B0=EA=B8=B0            wmb()                   smp_wmb()
++	=EC=9D=BD=EA=B8=B0            rmb()                   smp_rmb()
++	=EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=9D=98=EC=A1=B4=EC=84=B1                =
+           READ_ONCE()
+=20
+=20
+ =EB=8D=B0=EC=9D=B4=ED=84=B0 =EC=9D=98=EC=A1=B4=EC=84=B1 =EB=B0=B0=EB=A6=AC=
+=EC=96=B4=EB=A5=BC =EC=A0=9C=EC=99=B8=ED=95=9C =EB=AA=A8=EB=93=A0 =EB=A9=94=
+=EB=AA=A8=EB=A6=AC =EB=B0=B0=EB=A6=AC=EC=96=B4=EB=8A=94 =EC=BB=B4=ED=8C=8C=
+=EC=9D=BC=EB=9F=AC =EB=B0=B0=EB=A6=AC=EC=96=B4=EB=A5=BC
+@@ -2151,7 +2151,7 @@ wake_up() =EC=9D=B4 =EB=AC=B4=EC=96=B8=EA=B0=80=EB=A5=
+=BC =EA=B9=A8=EC=9A=B0=EA=B2=8C =EB=90=98=EB=A9=B4, =EC=9D=B4 =ED=95=A8=EC=
+=88=98=EB=8A=94 =EB=B2=94=EC=9A=A9 =EB=A9=94=EB=AA=A8=EB=A6=AC =EB=B0=B0
+ 	set_current_state();		STORE event_indicated
+ 	  smp_store_mb();		wake_up();
+ 	    STORE current->state	  ...
+-	    <=EB=B2=94=EC=9A=A9 =EB=B0=B0=EB=A6=AC=EC=96=B4>		  <=EB=B2=94=EC=9A=
+=A9 =EB=B0=B0=EB=A6=AC=EC=96=B4>
++	    <=EB=B2=94=EC=9A=A9 =EB=B0=B0=EB=A6=AC=EC=96=B4>                 <=EB=
+=B2=94=EC=9A=A9 =EB=B0=B0=EB=A6=AC=EC=96=B4>
+ 	LOAD event_indicated		  if ((LOAD task->state) & TASK_NORMAL)
+ 					    STORE task->state
+=20
+--=20
+2.17.1
+
+
 
