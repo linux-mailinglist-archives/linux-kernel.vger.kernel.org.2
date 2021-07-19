@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087F73CD876
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449BB3CDBD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242921AbhGSOWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:22:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
+        id S238715AbhGSOuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:50:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242754AbhGSOUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:20:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28E8B60FDC;
-        Mon, 19 Jul 2021 15:01:20 +0000 (UTC)
+        id S244172AbhGSOcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:32:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF69A60FE4;
+        Mon, 19 Jul 2021 15:12:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706881;
-        bh=pwDR3FkUhf104SvF8+Xhqb1svmlpt/mIr3WMqfl82bo=;
+        s=korg; t=1626707563;
+        bh=R1Xihc1NNDZ0fneJ85QhbquZvOMvD+zfFNAFUL88etY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=codgAWMKA8rEUTEUfIF7E3dkTNXbuPqtHgklkMtVU2cUKSMAKUKum83aQVO5q4lIW
-         efav5FLxQONlClYJkAviXX7I3hK8cGWC5QW+ivOTNbuIQrfAqeT+QuOcCIw34IniuZ
-         RIeqOBXml1ZDlzCbffOvxr0xO4hY3f9H4bOHTElY=
+        b=PzEPtGwBpX+ONO7L63bpnyrVAXNXfzOUt206ldtkj8kGVTbZBqT43Ks4bcO5D3HJF
+         vzZaaA1H41/LiLzx+ecZB9wEbTIq7lcJPlf4awgdtQv6lNPO3wSoRDLJBUWrmNW56V
+         GIq2y6cY/9yB2slRsFmmGVrPRkXy8l23IBPIpACE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.4 137/188] media: gspca/sq905: fix control-request direction
-Date:   Mon, 19 Jul 2021 16:52:01 +0200
-Message-Id: <20210719144940.978940881@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.9 180/245] KVM: x86: Use guest MAXPHYADDR from CPUID.0x8000_0008 iff TDP is enabled
+Date:   Mon, 19 Jul 2021 16:52:02 +0200
+Message-Id: <20210719144946.221453777@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 53ae298fde7adcc4b1432bce2dbdf8dac54dfa72 upstream.
+commit 4bf48e3c0aafd32b960d341c4925b48f416f14a5 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+Ignore the guest MAXPHYADDR reported by CPUID.0x8000_0008 if TDP, i.e.
+NPT, is disabled, and instead use the host's MAXPHYADDR.  Per AMD'S APM:
 
-Fix the USB_REQ_SYNCH_FRAME request which erroneously used
-usb_sndctrlpipe().
+  Maximum guest physical address size in bits. This number applies only
+  to guests using nested paging. When this field is zero, refer to the
+  PhysAddrSize field for the maximum guest physical address size.
 
-Fixes: 27d35fc3fb06 ("V4L/DVB (10639): gspca - sq905: New subdriver.")
-Cc: stable@vger.kernel.org      # 2.6.30
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 24c82e576b78 ("KVM: Sanitize cpuid")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210623230552.4027702-2-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/gspca/sq905.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/cpuid.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/media/usb/gspca/sq905.c
-+++ b/drivers/media/usb/gspca/sq905.c
-@@ -130,7 +130,7 @@ static int sq905_command(struct gspca_de
- 	}
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -633,8 +633,14 @@ static inline int __do_cpuid_ent(struct
+ 		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
+ 		unsigned phys_as = entry->eax & 0xff;
  
- 	ret = usb_control_msg(gspca_dev->dev,
--			      usb_sndctrlpipe(gspca_dev->dev, 0),
-+			      usb_rcvctrlpipe(gspca_dev->dev, 0),
- 			      USB_REQ_SYNCH_FRAME,                /* request */
- 			      USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 			      SQ905_PING, 0, gspca_dev->usb_buf, 1,
+-		if (!g_phys_as)
++		/*
++		 * Use bare metal's MAXPHADDR if the CPU doesn't report guest
++		 * MAXPHYADDR separately, or if TDP (NPT) is disabled, as the
++		 * guest version "applies only to guests using nested paging".
++		 */
++		if (!g_phys_as || !tdp_enabled)
+ 			g_phys_as = phys_as;
++
+ 		entry->eax = g_phys_as | (virt_as << 8);
+ 		entry->edx = 0;
+ 		/*
 
 
