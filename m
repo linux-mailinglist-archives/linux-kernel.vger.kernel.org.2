@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CA43CECE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA783CECE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382125AbhGSRjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:39:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        id S1382314AbhGSRjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343801AbhGSQEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:04:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C038F61019;
-        Mon, 19 Jul 2021 16:44:58 +0000 (UTC)
+        id S1344926AbhGSQGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 12:06:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1667611ED;
+        Mon, 19 Jul 2021 16:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626713099;
-        bh=nrRvggJviXFfdy9LsU0DWs5Wxc2DOv6ikzovAtFzfGs=;
+        s=korg; t=1626713109;
+        bh=jwxkV8jZGl94FlM/nlAXZjfg9eIq3wI2w8TCMXtD7B8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aKGfh78lIYxoBj2DJ+FaQzF2SywPURoMnTLMk1OMTreuAtx4FarvvP143i6H95pZG
-         03v59cWG/CImrU6rc6wADcVVNv1cRtcfUEvovzYiCjKGNqcSA1m4LuM3iNhvvhHKn6
-         iVOufXJoPp2RjWKSeg7ZsuXdUX3bOTiyAKNZVSI0=
+        b=tcP0ItaDzejkAW4rXKPSUYEFyiTbV97TspzcbWZIZ7clgL78X3vv6bOqYWByBC0pQ
+         5wKWAAJq9fG+11sxqCOh4pMI7kxPkd+ldSxOHvSDOFZneSjxa9uXgYpkkM7qmYNwn0
+         hQmxXoRa/Lhl1ojqXn2m4hGbVR6kEmGnmyA5zn5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 345/421] selftests/powerpc: Fix "no_handler" EBB selftest
-Date:   Mon, 19 Jul 2021 16:52:36 +0200
-Message-Id: <20210719144958.250388686@linuxfoundation.org>
+Subject: [PATCH 5.12 096/292] selftests/powerpc: Fix "no_handler" EBB selftest
+Date:   Mon, 19 Jul 2021 16:52:38 +0200
+Message-Id: <20210719144945.659093315@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -66,7 +66,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 deletions(-)
 
 diff --git a/tools/testing/selftests/powerpc/pmu/ebb/no_handler_test.c b/tools/testing/selftests/powerpc/pmu/ebb/no_handler_test.c
-index 8341d7778d5e..87630d44fb4c 100644
+index fc5bf4870d8e..01e827c31169 100644
 --- a/tools/testing/selftests/powerpc/pmu/ebb/no_handler_test.c
 +++ b/tools/testing/selftests/powerpc/pmu/ebb/no_handler_test.c
 @@ -50,8 +50,6 @@ static int no_handler_test(void)
