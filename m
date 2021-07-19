@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E693CEA95
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4703CE96D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378160AbhGSRRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34324 "EHLO mail.kernel.org"
+        id S1359037AbhGSQzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346801AbhGSPk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB4A2606A5;
-        Mon, 19 Jul 2021 16:20:28 +0000 (UTC)
+        id S1347579AbhGSPam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:30:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 136136140A;
+        Mon, 19 Jul 2021 16:09:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711629;
-        bh=JzNeu0lRuUQwB0SMFb5Z3uVDuV5W4TxSmVu3j2ozeaE=;
+        s=korg; t=1626710996;
+        bh=6fdzxeiB16kMmXzWA1bPJRay+c9grnZbVcMU4ORUmWc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iXX/hz1mV+os5blj8MIrXm25TM/LnyGVrSj0XMW1oB5YCqLiyK4l/glLSIX6jam+K
-         X0C8z/1X5XPy9WOTc0h1JvXGXkCLIicf0avnfFOaOO710NREBsbS39p3XcDjjogVIX
-         rdnt3mj6BV1i5IlDCK5NbDSrxn7UXzBFJNPUIs2E=
+        b=QbvzBNZMV9nFCy0prm6FV/9r7FE/JGYJ2Ydwdsn2EEwXdFeUQx+VzXu2u3cKf4t+z
+         PUB+2zwblLJ2jlzre+CO2BnRqGXGDUT18mOP4GEZ/m2/75NA+oBRQ6OtVNgOL5FeDb
+         vtX/2jPYCW9Cg4Wue4DM9AxlrS0yduZFjQEbxz1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Philip Yang <Philip.Yang@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 072/292] scsi: iscsi: Fix shost->max_id use
+Subject: [PATCH 5.13 188/351] drm/amdkfd: fix sysfs kobj leak
 Date:   Mon, 19 Jul 2021 16:52:14 +0200
-Message-Id: <20210719144944.893689316@linuxfoundation.org>
+Message-Id: <20210719144951.196516972@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,98 +41,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Philip Yang <Philip.Yang@amd.com>
 
-[ Upstream commit bdd4aad7ff92ae39c2e93c415bb6761cb8b584da ]
+[ Upstream commit dcdb4d904b4bd3078fe8d4d24b1658560d6078ef ]
 
-The iscsi offload drivers are setting the shost->max_id to the max number
-of sessions they support. The problem is that max_id is not the max number
-of targets but the highest identifier the targets can have. To use it to
-limit the number of targets we need to set it to max sessions - 1, or we
-can end up with a session we might not have preallocated resources for.
+3 cases of kobj leak, which causes memory leak:
 
-Link: https://lore.kernel.org/r/20210525181821.7617-15-michael.christie@oracle.com
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+kobj_type must have release() method to free memory from release
+callback. Don't need NULL default_attrs to init kobj.
+
+sysfs files created under kobj_status should be removed with kobj_status
+as parent kobject.
+
+Remove queue sysfs files when releasing queue from process MMU notifier
+release callback.
+
+Signed-off-by: Philip Yang <Philip.Yang@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/be2iscsi/be_main.c  | 4 ++--
- drivers/scsi/bnx2i/bnx2i_iscsi.c | 2 +-
- drivers/scsi/cxgbi/libcxgbi.c    | 4 ++--
- drivers/scsi/qedi/qedi_main.c    | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c           | 14 ++++++--------
+ .../gpu/drm/amd/amdkfd/kfd_process_queue_manager.c |  1 +
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index e9658a67d9da..09d2f8351539 100644
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -416,7 +416,7 @@ static struct beiscsi_hba *beiscsi_hba_alloc(struct pci_dev *pcidev)
- 			"beiscsi_hba_alloc - iscsi_host_alloc failed\n");
- 		return NULL;
- 	}
--	shost->max_id = BE2_MAX_SESSIONS;
-+	shost->max_id = BE2_MAX_SESSIONS - 1;
- 	shost->max_channel = 0;
- 	shost->max_cmd_len = BEISCSI_MAX_CMD_LEN;
- 	shost->max_lun = BEISCSI_NUM_MAX_LUN;
-@@ -5318,7 +5318,7 @@ static int beiscsi_enable_port(struct beiscsi_hba *phba)
- 	/* Re-enable UER. If different TPE occurs then it is recoverable. */
- 	beiscsi_set_uer_feature(phba);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+index d97e330a5022..7fe746c5a2b8 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+@@ -452,13 +452,9 @@ static const struct sysfs_ops procfs_stats_ops = {
+ 	.show = kfd_procfs_stats_show,
+ };
  
--	phba->shost->max_id = phba->params.cxns_per_ctrl;
-+	phba->shost->max_id = phba->params.cxns_per_ctrl - 1;
- 	phba->shost->can_queue = phba->params.ios_per_ctrl;
- 	ret = beiscsi_init_port(phba);
- 	if (ret < 0) {
-diff --git a/drivers/scsi/bnx2i/bnx2i_iscsi.c b/drivers/scsi/bnx2i/bnx2i_iscsi.c
-index 2ad85c6b99fd..8cf2f9a7cfdc 100644
---- a/drivers/scsi/bnx2i/bnx2i_iscsi.c
-+++ b/drivers/scsi/bnx2i/bnx2i_iscsi.c
-@@ -791,7 +791,7 @@ struct bnx2i_hba *bnx2i_alloc_hba(struct cnic_dev *cnic)
- 		return NULL;
- 	shost->dma_boundary = cnic->pcidev->dma_mask;
- 	shost->transportt = bnx2i_scsi_xport_template;
--	shost->max_id = ISCSI_MAX_CONNS_PER_HBA;
-+	shost->max_id = ISCSI_MAX_CONNS_PER_HBA - 1;
- 	shost->max_channel = 0;
- 	shost->max_lun = 512;
- 	shost->max_cmd_len = 16;
-diff --git a/drivers/scsi/cxgbi/libcxgbi.c b/drivers/scsi/cxgbi/libcxgbi.c
-index f6bcae829c29..506b561670af 100644
---- a/drivers/scsi/cxgbi/libcxgbi.c
-+++ b/drivers/scsi/cxgbi/libcxgbi.c
-@@ -337,7 +337,7 @@ void cxgbi_hbas_remove(struct cxgbi_device *cdev)
- EXPORT_SYMBOL_GPL(cxgbi_hbas_remove);
+-static struct attribute *procfs_stats_attrs[] = {
+-	NULL
+-};
+-
+ static struct kobj_type procfs_stats_type = {
+ 	.sysfs_ops = &procfs_stats_ops,
+-	.default_attrs = procfs_stats_attrs,
++	.release = kfd_procfs_kobj_release,
+ };
  
- int cxgbi_hbas_add(struct cxgbi_device *cdev, u64 max_lun,
--		unsigned int max_id, struct scsi_host_template *sht,
-+		unsigned int max_conns, struct scsi_host_template *sht,
- 		struct scsi_transport_template *stt)
- {
- 	struct cxgbi_hba *chba;
-@@ -357,7 +357,7 @@ int cxgbi_hbas_add(struct cxgbi_device *cdev, u64 max_lun,
+ int kfd_procfs_add_queue(struct queue *q)
+@@ -984,9 +980,11 @@ static void kfd_process_wq_release(struct work_struct *work)
  
- 		shost->transportt = stt;
- 		shost->max_lun = max_lun;
--		shost->max_id = max_id;
-+		shost->max_id = max_conns - 1;
- 		shost->max_channel = 0;
- 		shost->max_cmd_len = SCSI_MAX_VARLEN_CDB_SIZE;
- 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index 69c5b5ee2169..b33eff9ea80b 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -642,7 +642,7 @@ static struct qedi_ctx *qedi_host_alloc(struct pci_dev *pdev)
- 		goto exit_setup_shost;
- 	}
- 
--	shost->max_id = QEDI_MAX_ISCSI_CONNS_PER_HBA;
-+	shost->max_id = QEDI_MAX_ISCSI_CONNS_PER_HBA - 1;
- 	shost->max_channel = 0;
- 	shost->max_lun = ~0;
- 	shost->max_cmd_len = 16;
+ 			sysfs_remove_file(p->kobj, &pdd->attr_vram);
+ 			sysfs_remove_file(p->kobj, &pdd->attr_sdma);
+-			sysfs_remove_file(p->kobj, &pdd->attr_evict);
+-			if (pdd->dev->kfd2kgd->get_cu_occupancy != NULL)
+-				sysfs_remove_file(p->kobj, &pdd->attr_cu_occupancy);
++
++			sysfs_remove_file(pdd->kobj_stats, &pdd->attr_evict);
++			if (pdd->dev->kfd2kgd->get_cu_occupancy)
++				sysfs_remove_file(pdd->kobj_stats,
++						  &pdd->attr_cu_occupancy);
+ 			kobject_del(pdd->kobj_stats);
+ 			kobject_put(pdd->kobj_stats);
+ 			pdd->kobj_stats = NULL;
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+index 95a6c36cea4c..243dd1efcdbf 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_process_queue_manager.c
+@@ -153,6 +153,7 @@ void pqm_uninit(struct process_queue_manager *pqm)
+ 		if (pqn->q && pqn->q->gws)
+ 			amdgpu_amdkfd_remove_gws_from_process(pqm->process->kgd_process_info,
+ 				pqn->q->gws);
++		kfd_procfs_del_queue(pqn->q);
+ 		uninit_queue(pqn->q);
+ 		list_del(&pqn->process_queue_list);
+ 		kfree(pqn);
 -- 
 2.30.2
 
