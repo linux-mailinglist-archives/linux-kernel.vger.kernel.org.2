@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F813CE648
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14FA3CE60F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242977AbhGSQDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:03:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60470 "EHLO mail.kernel.org"
+        id S1351874AbhGSQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:00:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345580AbhGSPEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53EB5608FC;
-        Mon, 19 Jul 2021 15:44:26 +0000 (UTC)
+        id S1345596AbhGSPEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3541610D0;
+        Mon, 19 Jul 2021 15:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709466;
-        bh=dI0pHhPcB160m+cv+0IezzUj6hvXNpfMeDRFZDsAkXk=;
+        s=korg; t=1626709469;
+        bh=bBUmxY9SmW/fbIBJRTm3Oz338qZMRe2V0cH6/8LP+sc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NGXkh+4bK/jhiqpXSJ8I6MfcDtMqWsBwL4H6ePdRah/R5R52ziHe92jlaBh4QDinn
-         G5w0ox4a5D8oGlRKtrwDHd/XepB6t1G02DGUnwtTEyKBACnk2+0UZFYlzGFgBmai9+
-         IPlOkYBIEJQeY1D335uYXS9G0SzECd4KGG84rLLY=
+        b=kt3qgiYE3B82aaIvFtwUOkJvUvo9JMQ5gH8K5vpNNfC03myyJJSoGRfqHS1UKNrRx
+         TR9s1F4xscyAvqtmfYPmBrG3vzuRN/3nx0qC5u81QcYkePdz6VfGJ4cQmWpT4apUFE
+         WDZxv5VW2y+NuFApsl0K8h6TXXl4o8IB3j2f5/Hg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 394/421] ALSA: isa: Fix error return code in snd_cmi8330_probe()
-Date:   Mon, 19 Jul 2021 16:53:25 +0200
-Message-Id: <20210719145000.029787011@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 395/421] NFSv4/pNFS: Dont call _nfs4_pnfs_v3_ds_connect multiple times
+Date:   Mon, 19 Jul 2021 16:53:26 +0200
+Message-Id: <20210719145000.061210229@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,37 +40,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 31028cbed26a8afa25533a10425ffa2ab794c76c ]
+[ Upstream commit f46f84931a0aa344678efe412d4b071d84d8a805 ]
 
-When 'SB_HW_16' check fails, the error code -ENODEV instead of 0 should be
-returned, which is the same as that returned when 'WSS_HW_CMI8330' check
-fails.
+After we grab the lock in nfs4_pnfs_ds_connect(), there is no check for
+whether or not ds->ds_clp has already been initialised, so we can end up
+adding the same transports multiple times.
 
-Fixes: 43bcd973d6d0 ("[ALSA] Add snd_card_set_generic_dev() call to ISA drivers")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210707074051.2663-1-thunder.leizhen@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: fc821d59209d ("pnfs/NFSv4.1: Add multipath capabilities to pNFS flexfiles servers over NFSv3")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/cmi8330.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/pnfs_nfs.c | 52 +++++++++++++++++++++++------------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
-index 6b8c46942efb..75b3d76eb852 100644
---- a/sound/isa/cmi8330.c
-+++ b/sound/isa/cmi8330.c
-@@ -564,7 +564,7 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
- 	}
- 	if (acard->sb->hardware != SB_HW_16) {
- 		snd_printk(KERN_ERR PFX "SB16 not found during probe\n");
--		return err;
-+		return -ENODEV;
+diff --git a/fs/nfs/pnfs_nfs.c b/fs/nfs/pnfs_nfs.c
+index acfb52bc0007..3f0c2436254a 100644
+--- a/fs/nfs/pnfs_nfs.c
++++ b/fs/nfs/pnfs_nfs.c
+@@ -555,19 +555,16 @@ out:
+ }
+ EXPORT_SYMBOL_GPL(nfs4_pnfs_ds_add);
+ 
+-static void nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
++static int nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
+ {
+ 	might_sleep();
+-	wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING,
+-			TASK_KILLABLE);
++	return wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING, TASK_KILLABLE);
+ }
+ 
+ static void nfs4_clear_ds_conn_bit(struct nfs4_pnfs_ds *ds)
+ {
+ 	smp_mb__before_atomic();
+-	clear_bit(NFS4DS_CONNECTING, &ds->ds_state);
+-	smp_mb__after_atomic();
+-	wake_up_bit(&ds->ds_state, NFS4DS_CONNECTING);
++	clear_and_wake_up_bit(NFS4DS_CONNECTING, &ds->ds_state);
+ }
+ 
+ static struct nfs_client *(*get_v3_ds_connect)(
+@@ -728,30 +725,33 @@ int nfs4_pnfs_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds,
+ {
+ 	int err;
+ 
+-again:
+-	err = 0;
+-	if (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) == 0) {
+-		if (version == 3) {
+-			err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo,
+-						       retrans);
+-		} else if (version == 4) {
+-			err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo,
+-						       retrans, minor_version);
+-		} else {
+-			dprintk("%s: unsupported DS version %d\n", __func__,
+-				version);
+-			err = -EPROTONOSUPPORT;
+-		}
++	do {
++		err = nfs4_wait_ds_connect(ds);
++		if (err || ds->ds_clp)
++			goto out;
++		if (nfs4_test_deviceid_unavailable(devid))
++			return -ENODEV;
++	} while (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) != 0);
+ 
+-		nfs4_clear_ds_conn_bit(ds);
+-	} else {
+-		nfs4_wait_ds_connect(ds);
++	if (ds->ds_clp)
++		goto connect_done;
+ 
+-		/* what was waited on didn't connect AND didn't mark unavail */
+-		if (!ds->ds_clp && !nfs4_test_deviceid_unavailable(devid))
+-			goto again;
++	switch (version) {
++	case 3:
++		err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo, retrans);
++		break;
++	case 4:
++		err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo, retrans,
++					       minor_version);
++		break;
++	default:
++		dprintk("%s: unsupported DS version %d\n", __func__, version);
++		err = -EPROTONOSUPPORT;
  	}
  
- 	snd_wss_out(acard->wss, CS4231_MISC_INFO, 0x40); /* switch on MODE2 */
++connect_done:
++	nfs4_clear_ds_conn_bit(ds);
++out:
+ 	/*
+ 	 * At this point the ds->ds_clp should be ready, but it might have
+ 	 * hit an error.
 -- 
 2.30.2
 
