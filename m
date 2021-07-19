@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54DD3CD8AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4603CDB8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243644AbhGSOYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55086 "EHLO mail.kernel.org"
+        id S237635AbhGSOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:43:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242810AbhGSOWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:22:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2219160551;
-        Mon, 19 Jul 2021 15:02:23 +0000 (UTC)
+        id S244540AbhGSObn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:31:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAEF561263;
+        Mon, 19 Jul 2021 15:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706944;
-        bh=XWiPw7umbjmeU/JEnr2FjZX9/PD8fOl6yYG1jQX7LoE=;
+        s=korg; t=1626707538;
+        bh=nSsNmZDrAS+j3KgbbpCvHMzKMb8RmhrETKzUhdmliEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=17Gnq6o4rJe/WbtLYJziKGOPUlZwUciY+t9AuUin9E8lAg8W2hlMknRW6E0C8vh9u
-         bmspnFlDO7ATIrs+3Z1/x6k8k9QFShG9DvMsZV9HMUROjtFFNJVruPoh40w7r2aOmR
-         fVhi3FFORbFvNrqs+kVQwE5etoPrXozyym6myGM8=
+        b=fv3Wt7oDL2yKq08BkRB6PZbr2LwBaeZz0NZJKVHQ+vn3Jsmt4RuXGWSJICFvx0Vmz
+         tIi8SBg3TFK2hl88VW94wjgPK2PVYOIGURk/L0ovCW0uUWWa9Trc9HVDn98k1d5xHr
+         zFgIb7uwVYaOWJeVeEjMqgBwcVzbBkwpv/ufcMP0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 161/188] backlight: lm3630a: Fix return code of .update_status() callback
+Subject: [PATCH 4.9 203/245] powerpc/boot: Fixup device-tree on little endian
 Date:   Mon, 19 Jul 2021 16:52:25 +0200
-Message-Id: <20210719144941.761164150@linuxfoundation.org>
+Message-Id: <20210719144946.970836630@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +44,241 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-[ Upstream commit b9481a667a90ec739995e85f91f3672ca44d6ffa ]
+[ Upstream commit c93f80849bdd9b45d834053ae1336e28f0026c84 ]
 
-According to <linux/backlight.h> .update_status() is supposed to
-return 0 on success and a negative error code otherwise. Adapt
-lm3630a_bank_a_update_status() and lm3630a_bank_b_update_status() to
-actually do it.
+This fixes the core devtree.c functions and the ns16550 UART backend.
 
-While touching that also add the error code to the failure message.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
+Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/YMwXrPT8nc4YUdJ9@thinks.paulus.ozlabs.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/lm3630a_bl.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/powerpc/boot/devtree.c | 59 +++++++++++++++++++++----------------
+ arch/powerpc/boot/ns16550.c |  9 ++++--
+ 2 files changed, 41 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
-index 5ef6f9d420a2..ab882c04f975 100644
---- a/drivers/video/backlight/lm3630a_bl.c
-+++ b/drivers/video/backlight/lm3630a_bl.c
-@@ -183,7 +183,7 @@ static int lm3630a_bank_a_update_status(struct backlight_device *bl)
- 	if ((pwm_ctrl & LM3630A_PWM_BANK_A) != 0) {
- 		lm3630a_pwm_ctrl(pchip, bl->props.brightness,
- 				 bl->props.max_brightness);
--		return bl->props.brightness;
-+		return 0;
+diff --git a/arch/powerpc/boot/devtree.c b/arch/powerpc/boot/devtree.c
+index a7e21a35c03a..27c84b82b588 100644
+--- a/arch/powerpc/boot/devtree.c
++++ b/arch/powerpc/boot/devtree.c
+@@ -17,6 +17,7 @@
+ #include "string.h"
+ #include "stdio.h"
+ #include "ops.h"
++#include "of.h"
+ 
+ void dt_fixup_memory(u64 start, u64 size)
+ {
+@@ -27,21 +28,25 @@ void dt_fixup_memory(u64 start, u64 size)
+ 	root = finddevice("/");
+ 	if (getprop(root, "#address-cells", &naddr, sizeof(naddr)) < 0)
+ 		naddr = 2;
++	else
++		naddr = be32_to_cpu(naddr);
+ 	if (naddr < 1 || naddr > 2)
+ 		fatal("Can't cope with #address-cells == %d in /\n\r", naddr);
+ 
+ 	if (getprop(root, "#size-cells", &nsize, sizeof(nsize)) < 0)
+ 		nsize = 1;
++	else
++		nsize = be32_to_cpu(nsize);
+ 	if (nsize < 1 || nsize > 2)
+ 		fatal("Can't cope with #size-cells == %d in /\n\r", nsize);
+ 
+ 	i = 0;
+ 	if (naddr == 2)
+-		memreg[i++] = start >> 32;
+-	memreg[i++] = start & 0xffffffff;
++		memreg[i++] = cpu_to_be32(start >> 32);
++	memreg[i++] = cpu_to_be32(start & 0xffffffff);
+ 	if (nsize == 2)
+-		memreg[i++] = size >> 32;
+-	memreg[i++] = size & 0xffffffff;
++		memreg[i++] = cpu_to_be32(size >> 32);
++	memreg[i++] = cpu_to_be32(size & 0xffffffff);
+ 
+ 	memory = finddevice("/memory");
+ 	if (! memory) {
+@@ -49,9 +54,9 @@ void dt_fixup_memory(u64 start, u64 size)
+ 		setprop_str(memory, "device_type", "memory");
  	}
  
- 	/* disable sleep */
-@@ -203,8 +203,8 @@ static int lm3630a_bank_a_update_status(struct backlight_device *bl)
- 	return 0;
+-	printf("Memory <- <0x%x", memreg[0]);
++	printf("Memory <- <0x%x", be32_to_cpu(memreg[0]));
+ 	for (i = 1; i < (naddr + nsize); i++)
+-		printf(" 0x%x", memreg[i]);
++		printf(" 0x%x", be32_to_cpu(memreg[i]));
+ 	printf("> (%ldMB)\n\r", (unsigned long)(size >> 20));
  
- out_i2c_err:
--	dev_err(pchip->dev, "i2c failed to access\n");
--	return bl->props.brightness;
-+	dev_err(pchip->dev, "i2c failed to access (%pe)\n", ERR_PTR(ret));
-+	return ret;
- }
+ 	setprop(memory, "reg", memreg, (naddr + nsize)*sizeof(u32));
+@@ -69,10 +74,10 @@ void dt_fixup_cpu_clocks(u32 cpu, u32 tb, u32 bus)
+ 		printf("CPU bus-frequency <- 0x%x (%dMHz)\n\r", bus, MHZ(bus));
  
- static int lm3630a_bank_a_get_brightness(struct backlight_device *bl)
-@@ -260,7 +260,7 @@ static int lm3630a_bank_b_update_status(struct backlight_device *bl)
- 	if ((pwm_ctrl & LM3630A_PWM_BANK_B) != 0) {
- 		lm3630a_pwm_ctrl(pchip, bl->props.brightness,
- 				 bl->props.max_brightness);
--		return bl->props.brightness;
-+		return 0;
+ 	while ((devp = find_node_by_devtype(devp, "cpu"))) {
+-		setprop_val(devp, "clock-frequency", cpu);
+-		setprop_val(devp, "timebase-frequency", tb);
++		setprop_val(devp, "clock-frequency", cpu_to_be32(cpu));
++		setprop_val(devp, "timebase-frequency", cpu_to_be32(tb));
+ 		if (bus > 0)
+-			setprop_val(devp, "bus-frequency", bus);
++			setprop_val(devp, "bus-frequency", cpu_to_be32(bus));
  	}
  
- 	/* disable sleep */
-@@ -280,8 +280,8 @@ static int lm3630a_bank_b_update_status(struct backlight_device *bl)
- 	return 0;
+ 	timebase_period_ns = 1000000000 / tb;
+@@ -84,7 +89,7 @@ void dt_fixup_clock(const char *path, u32 freq)
  
- out_i2c_err:
--	dev_err(pchip->dev, "i2c failed to access REG_CTRL\n");
--	return bl->props.brightness;
-+	dev_err(pchip->dev, "i2c failed to access (%pe)\n", ERR_PTR(ret));
-+	return ret;
+ 	if (devp) {
+ 		printf("%s: clock-frequency <- %x (%dMHz)\n\r", path, freq, MHZ(freq));
+-		setprop_val(devp, "clock-frequency", freq);
++		setprop_val(devp, "clock-frequency", cpu_to_be32(freq));
+ 	}
  }
  
- static int lm3630a_bank_b_get_brightness(struct backlight_device *bl)
+@@ -137,8 +142,12 @@ void dt_get_reg_format(void *node, u32 *naddr, u32 *nsize)
+ {
+ 	if (getprop(node, "#address-cells", naddr, 4) != 4)
+ 		*naddr = 2;
++	else
++		*naddr = be32_to_cpu(*naddr);
+ 	if (getprop(node, "#size-cells", nsize, 4) != 4)
+ 		*nsize = 1;
++	else
++		*nsize = be32_to_cpu(*nsize);
+ }
+ 
+ static void copy_val(u32 *dest, u32 *src, int naddr)
+@@ -167,9 +176,9 @@ static int add_reg(u32 *reg, u32 *add, int naddr)
+ 	int i, carry = 0;
+ 
+ 	for (i = MAX_ADDR_CELLS - 1; i >= MAX_ADDR_CELLS - naddr; i--) {
+-		u64 tmp = (u64)reg[i] + add[i] + carry;
++		u64 tmp = (u64)be32_to_cpu(reg[i]) + be32_to_cpu(add[i]) + carry;
+ 		carry = tmp >> 32;
+-		reg[i] = (u32)tmp;
++		reg[i] = cpu_to_be32((u32)tmp);
+ 	}
+ 
+ 	return !carry;
+@@ -184,18 +193,18 @@ static int compare_reg(u32 *reg, u32 *range, u32 *rangesize)
+ 	u32 end;
+ 
+ 	for (i = 0; i < MAX_ADDR_CELLS; i++) {
+-		if (reg[i] < range[i])
++		if (be32_to_cpu(reg[i]) < be32_to_cpu(range[i]))
+ 			return 0;
+-		if (reg[i] > range[i])
++		if (be32_to_cpu(reg[i]) > be32_to_cpu(range[i]))
+ 			break;
+ 	}
+ 
+ 	for (i = 0; i < MAX_ADDR_CELLS; i++) {
+-		end = range[i] + rangesize[i];
++		end = be32_to_cpu(range[i]) + be32_to_cpu(rangesize[i]);
+ 
+-		if (reg[i] < end)
++		if (be32_to_cpu(reg[i]) < end)
+ 			break;
+-		if (reg[i] > end)
++		if (be32_to_cpu(reg[i]) > end)
+ 			return 0;
+ 	}
+ 
+@@ -244,7 +253,6 @@ static int dt_xlate(void *node, int res, int reglen, unsigned long *addr,
+ 		return 0;
+ 
+ 	dt_get_reg_format(parent, &naddr, &nsize);
+-
+ 	if (nsize > 2)
+ 		return 0;
+ 
+@@ -256,10 +264,10 @@ static int dt_xlate(void *node, int res, int reglen, unsigned long *addr,
+ 
+ 	copy_val(last_addr, prop_buf + offset, naddr);
+ 
+-	ret_size = prop_buf[offset + naddr];
++	ret_size = be32_to_cpu(prop_buf[offset + naddr]);
+ 	if (nsize == 2) {
+ 		ret_size <<= 32;
+-		ret_size |= prop_buf[offset + naddr + 1];
++		ret_size |= be32_to_cpu(prop_buf[offset + naddr + 1]);
+ 	}
+ 
+ 	for (;;) {
+@@ -282,7 +290,6 @@ static int dt_xlate(void *node, int res, int reglen, unsigned long *addr,
+ 
+ 		offset = find_range(last_addr, prop_buf, prev_naddr,
+ 		                    naddr, prev_nsize, buflen / 4);
+-
+ 		if (offset < 0)
+ 			return 0;
+ 
+@@ -300,8 +307,7 @@ static int dt_xlate(void *node, int res, int reglen, unsigned long *addr,
+ 	if (naddr > 2)
+ 		return 0;
+ 
+-	ret_addr = ((u64)last_addr[2] << 32) | last_addr[3];
+-
++	ret_addr = ((u64)be32_to_cpu(last_addr[2]) << 32) | be32_to_cpu(last_addr[3]);
+ 	if (sizeof(void *) == 4 &&
+ 	    (ret_addr >= 0x100000000ULL || ret_size > 0x100000000ULL ||
+ 	     ret_addr + ret_size > 0x100000000ULL))
+@@ -354,11 +360,14 @@ int dt_is_compatible(void *node, const char *compat)
+ int dt_get_virtual_reg(void *node, void **addr, int nres)
+ {
+ 	unsigned long xaddr;
+-	int n;
++	int n, i;
+ 
+ 	n = getprop(node, "virtual-reg", addr, nres * 4);
+-	if (n > 0)
++	if (n > 0) {
++		for (i = 0; i < n/4; i ++)
++			((u32 *)addr)[i] = be32_to_cpu(((u32 *)addr)[i]);
+ 		return n / 4;
++	}
+ 
+ 	for (n = 0; n < nres; n++) {
+ 		if (!dt_xlate_reg(node, n, &xaddr, NULL))
+diff --git a/arch/powerpc/boot/ns16550.c b/arch/powerpc/boot/ns16550.c
+index 8c9ead94be06..cea34a20085c 100644
+--- a/arch/powerpc/boot/ns16550.c
++++ b/arch/powerpc/boot/ns16550.c
+@@ -14,6 +14,7 @@
+ #include "stdio.h"
+ #include "io.h"
+ #include "ops.h"
++#include "of.h"
+ 
+ #define UART_DLL	0	/* Out: Divisor Latch Low */
+ #define UART_DLM	1	/* Out: Divisor Latch High */
+@@ -57,16 +58,20 @@ int ns16550_console_init(void *devp, struct serial_console_data *scdp)
+ 	int n;
+ 	u32 reg_offset;
+ 
+-	if (dt_get_virtual_reg(devp, (void **)&reg_base, 1) < 1)
++	if (dt_get_virtual_reg(devp, (void **)&reg_base, 1) < 1) {
++		printf("virt reg parse fail...\r\n");
+ 		return -1;
++	}
+ 
+ 	n = getprop(devp, "reg-offset", &reg_offset, sizeof(reg_offset));
+ 	if (n == sizeof(reg_offset))
+-		reg_base += reg_offset;
++		reg_base += be32_to_cpu(reg_offset);
+ 
+ 	n = getprop(devp, "reg-shift", &reg_shift, sizeof(reg_shift));
+ 	if (n != sizeof(reg_shift))
+ 		reg_shift = 0;
++	else
++		reg_shift = be32_to_cpu(reg_shift);
+ 
+ 	scdp->open = ns16550_open;
+ 	scdp->putc = ns16550_putc;
 -- 
 2.30.2
 
