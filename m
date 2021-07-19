@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E27E3CE897
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3443CE720
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353504AbhGSQn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43002 "EHLO mail.kernel.org"
+        id S1349025AbhGSQVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:21:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349098AbhGSPZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:25:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8797860200;
-        Mon, 19 Jul 2021 16:06:19 +0000 (UTC)
+        id S1345773AbhGSPMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:12:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8112461285;
+        Mon, 19 Jul 2021 15:52:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710780;
-        bh=oZYv39VanAcQo8CfNJJXpZS4pXJWzXIkBY41UUMDDt0=;
+        s=korg; t=1626709975;
+        bh=YUEniXoGWoNOiBcC3NU1p9VwfWhDIBz0E7edYEnC7PY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cmtuDIJmqMU7JNPWnF2lWBEdonJJEPb1k+6166rxL+66kb+eAaQqzUzU0dYwZWMNR
-         pSnYWfz7UB7og1p3eqU7IKrDeWgDXKsqYDcovOcxBNB+ri0Gx8u99SUDsd5+RLwSwp
-         AzviqPRe5mDXP6inqgzA2g1P8WWIHst07D2FwnSA=
+        b=JfT8hIC7K3C9QU2wYpYRBMO24K9FHigocujwew8g653rvOpkzRlbpvZ/0ubgs+0bx
+         plYeevLiEKOGFzb2IL6sEOZkdFM5Zi5kYLboj0emBUse75TLpmeYa/SOhkU4a6EsG1
+         g/esuJl8gK1nZn3nuOn+imedIpQNJ+75aAUKIIzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gil Fine <gil.fine@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 106/351] thunderbolt: Fix DROM handling for USB4 DROM
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 023/243] leds: tlc591xx: fix return value check in tlc591xx_probe()
 Date:   Mon, 19 Jul 2021 16:50:52 +0200
-Message-Id: <20210719144947.998718321@linuxfoundation.org>
+Message-Id: <20210719144941.677537927@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gil Fine <gil.fine@intel.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit b18f901382fdb74a138a0bf30458c54a023a1d86 ]
+[ Upstream commit ee522bcf026ec82ada793979c3a906274430595a ]
 
-DROM for USB4 host/device has a shorter header than Thunderbolt DROM
-header. This patch addresses host/device with USB4 DROM (According to spec:
-Universal Serial Bus 4 (USB4) Device ROM Specification, Rev 1.0, Feb-2021).
+After device_get_match_data(), tlc591xx is not checked, add
+check for it and also check np after dev_of_node.
 
-While there correct the data_len field to be 12 bits and rename
-__unknown1 to reserved following the spec.
-
-Signed-off-by: Gil Fine <gil.fine@intel.com>
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thunderbolt/eeprom.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/leds/leds-tlc591xx.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/thunderbolt/eeprom.c b/drivers/thunderbolt/eeprom.c
-index 46d0906a3070..470885e6f1c8 100644
---- a/drivers/thunderbolt/eeprom.c
-+++ b/drivers/thunderbolt/eeprom.c
-@@ -214,7 +214,10 @@ static u32 tb_crc32(void *data, size_t len)
- 	return ~__crc32c_le(~0, data, len);
- }
- 
--#define TB_DROM_DATA_START 13
-+#define TB_DROM_DATA_START		13
-+#define TB_DROM_HEADER_SIZE		22
-+#define USB4_DROM_HEADER_SIZE		16
-+
- struct tb_drom_header {
- 	/* BYTE 0 */
- 	u8 uid_crc8; /* checksum for uid */
-@@ -224,9 +227,9 @@ struct tb_drom_header {
- 	u32 data_crc32; /* checksum for data_len bytes starting at byte 13 */
- 	/* BYTE 13 */
- 	u8 device_rom_revision; /* should be <= 1 */
--	u16 data_len:10;
--	u8 __unknown1:6;
--	/* BYTES 16-21 */
-+	u16 data_len:12;
-+	u8 reserved:4;
-+	/* BYTES 16-21 - Only for TBT DROM, nonexistent in USB4 DROM */
- 	u16 vendor_id;
- 	u16 model_id;
- 	u8 model_rev;
-@@ -401,10 +404,10 @@ static int tb_drom_parse_entry_port(struct tb_switch *sw,
-  *
-  * Drom must have been copied to sw->drom.
-  */
--static int tb_drom_parse_entries(struct tb_switch *sw)
-+static int tb_drom_parse_entries(struct tb_switch *sw, size_t header_size)
+diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
+index 5b9dfdf743ec..cb7bd1353f9f 100644
+--- a/drivers/leds/leds-tlc591xx.c
++++ b/drivers/leds/leds-tlc591xx.c
+@@ -148,16 +148,20 @@ static int
+ tlc591xx_probe(struct i2c_client *client,
+ 	       const struct i2c_device_id *id)
  {
- 	struct tb_drom_header *header = (void *) sw->drom;
--	u16 pos = sizeof(*header);
-+	u16 pos = header_size;
- 	u16 drom_size = header->data_len + TB_DROM_DATA_START;
- 	int res;
+-	struct device_node *np = dev_of_node(&client->dev), *child;
++	struct device_node *np, *child;
+ 	struct device *dev = &client->dev;
+ 	const struct tlc591xx *tlc591xx;
+ 	struct tlc591xx_priv *priv;
+ 	int err, count, reg;
  
-@@ -566,7 +569,7 @@ static int tb_drom_parse(struct tb_switch *sw)
- 			header->data_crc32, crc);
- 	}
+-	tlc591xx = device_get_match_data(dev);
++	np = dev_of_node(dev);
+ 	if (!np)
+ 		return -ENODEV;
  
--	return tb_drom_parse_entries(sw);
-+	return tb_drom_parse_entries(sw, TB_DROM_HEADER_SIZE);
- }
- 
- static int usb4_drom_parse(struct tb_switch *sw)
-@@ -583,7 +586,7 @@ static int usb4_drom_parse(struct tb_switch *sw)
++	tlc591xx = device_get_match_data(dev);
++	if (!tlc591xx)
++		return -ENODEV;
++
+ 	count = of_get_available_child_count(np);
+ 	if (!count || count > tlc591xx->max_leds)
  		return -EINVAL;
- 	}
- 
--	return tb_drom_parse_entries(sw);
-+	return tb_drom_parse_entries(sw, USB4_DROM_HEADER_SIZE);
- }
- 
- /**
 -- 
 2.30.2
 
