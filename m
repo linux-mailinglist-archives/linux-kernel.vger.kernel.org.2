@@ -2,149 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B393CCDC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF733CCDC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbhGSGEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:04:06 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:47764
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229916AbhGSGEE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:04:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=Q7+BGXYftvCRag2jvBdOV8u/ImPBworA0uRtGNa9n5w=; b=O
-        6xxY12wmjSkSxdFAIsPHmL/5K61bxRfN5VyzvB14XwWxVAIP7q3TWdzBcN5IDd0u
-        x00WpOeTkhvoQusi9So2WNUMj3wFgHOfCcPR8otiT4M5G0ff8C6mBSc421gj/07X
-        /Nd4kP9NMa9c+LI9QCuSiY7+wKHRwAxFu6RBSWruaE=
-Received: from localhost.localdomain (unknown [10.162.86.133])
-        by app2 (Coremail) with SMTP id XQUFCgBn4GkYFfVgXUnoBA--.1807S3;
-        Mon, 19 Jul 2021 14:00:56 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] RDMA/hfi1: Convert from atomic_t to refcount_t on hfi1_devdata->user_refcount
-Date:   Mon, 19 Jul 2021 14:00:53 +0800
-Message-Id: <1626674454-56075-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgBn4GkYFfVgXUnoBA--.1807S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFWkXrWDArykZF45trWxtFb_yoW5Kr4rpF
-        4UKry5KFWFqF429a1ktayjvFWfXa4xJ3s5XF95t343uF13Zw4aqFnYkFyUXr95Jrn3Arya
-        vr4j9FWUCa1xWaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2
-        jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
-        ZFpf9x0JUqFALUUUUU=
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        id S234433AbhGSGNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:13:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229916AbhGSGNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 02:13:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAADD61009;
+        Mon, 19 Jul 2021 06:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626675006;
+        bh=9Xkxp7fQFwANVRM0WqLxiEkC8wny/9xqb44M1wtP5TM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2aaI0PA0ZkxeJi0ny6sAIIK58tRuO+ZeCKV7IMmKzeA+gJRs0I/BSyb+0Ira5ry6t
+         XfvSO3fSM1ybAe0NxrFklwNFjsdFGg1K3haYWaBc+JI2R1VTf3t29FKNYheJ/p6/Cv
+         rfW6k65rJVp3EC6PfSx69JZSt3yR5VLH/U2F/K4k=
+Date:   Mon, 19 Jul 2021 08:10:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        linux- stable <stable@vger.kernel.org>, hca@linux.ibm.com
+Subject: Re: [PATCH 5.12 000/242] 5.12.18-rc1 review
+Message-ID: <YPUXPEiTrpKoKf+t@kroah.com>
+References: <20210715182551.731989182@linuxfoundation.org>
+ <CAEUSe7_+8fQZ=1+jcxJVTRw0DYttGmR-aBdobZ0GWYQi3Vg97w@mail.gmail.com>
+ <yt9dim16lv3u.fsf@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <yt9dim16lv3u.fsf@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-refcount_t type and corresponding API can protect refcounters from
-accidental underflow and overflow and further use-after-free situations.
+On Mon, Jul 19, 2021 at 07:40:21AM +0200, Sven Schnelle wrote:
+> Hi Daniel,
+> 
+> Daniel Díaz <daniel.diaz@linaro.org> writes:
+> 
+> > Hello!
+> >
+> > On Thu, 15 Jul 2021 at 13:56, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> >> This is the start of the stable review cycle for the 5.12.18 release.
+> >> There are 242 patches in this series, all will be posted as a response
+> >> to this one.  If anyone has any issues with these being applied, please
+> >> let me know.
+> >>
+> >> Responses should be made by Sat, 17 Jul 2021 18:21:07 +0000.
+> >> Anything received after that time might be too late.
+> >>
+> >> The whole patch series can be found in one patch at:
+> >>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.18-rc1.gz
+> >> or in the git tree and branch at:
+> >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> >> and the diffstat can be found below.
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
+> >
+> > Build regressions have been found on this release candidate (and on 5.13-rc).
+> >
+> > ## Regressions (compared to v5.12.17)
+> > * s390, build
+> >   - clang-10-allnoconfig
+> >   - clang-10-defconfig
+> >   - clang-10-tinyconfig
+> >   - clang-11-allnoconfig
+> >   - clang-11-defconfig
+> >   - clang-11-tinyconfig
+> >   - clang-12-allnoconfig
+> >   - clang-12-defconfig
+> >   - clang-12-tinyconfig
+> >   - gcc-8-allnoconfig
+> >   - gcc-8-defconfig
+> >   - gcc-8-tinyconfig
+> >   - gcc-9-allnoconfig
+> >   - gcc-9-defconfig
+> >   - gcc-9-tinyconfig
+> >   - gcc-10-allnoconfig
+> >   - gcc-10-defconfig
+> >   - gcc-10-tinyconfig
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > [...]
+> >> Sven Schnelle <svens@linux.ibm.com>
+> >>     s390/signal: switch to using vdso for sigreturn and syscall restart
+> > [...]
+> >
+> > Our bisections pointed to this commit. Reverting it made the build pass again.
+> 
+> If https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1428532107
+> is the logfile for this problem, than i see the following in the log:
+> 
+> make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- 'CC=sccache s390x-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+> /bin/sh: 1: /builds/linux/arch/s390/kernel/vdso64/gen_vdso_offsets.sh: Permission denied
+> 
+> However, in the patch this script is 755, and other architecture are
+> using this for a while now - can you check what the permission are when
+> you're trying to build the kernel?
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- drivers/infiniband/hw/hfi1/chip.c     | 2 +-
- drivers/infiniband/hw/hfi1/file_ops.c | 6 +++---
- drivers/infiniband/hw/hfi1/hfi.h      | 3 ++-
- drivers/infiniband/hw/hfi1/init.c     | 2 +-
- 4 files changed, 7 insertions(+), 6 deletions(-)
+Yes, the problem is that when handling patches, we can not change the
+permissions on files.  That causes this file to not be added with
+execute permissions.  This has generally been considered a bad thing
+anyway, and other scripts that relied on being executable have been
+changed over time to not be that way and be explicitly run by the
+calling script.
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index c97544638367..50ffb8244625 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -15336,7 +15336,7 @@ int hfi1_init_dd(struct hfi1_devdata *dd)
- 	init_completion(&dd->user_comp);
- 
- 	/* The user refcount starts with one to inidicate an active device */
--	atomic_set(&dd->user_refcount, 1);
-+	refcount_set(&dd->user_refcount, 1);
- 
- 	goto bail;
- 
-diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-index 955c3637980e..6dbfb794c255 100644
---- a/drivers/infiniband/hw/hfi1/file_ops.c
-+++ b/drivers/infiniband/hw/hfi1/file_ops.c
-@@ -194,7 +194,7 @@ static int hfi1_file_open(struct inode *inode, struct file *fp)
- 	if (!((dd->flags & HFI1_PRESENT) && dd->kregbase1))
- 		return -EINVAL;
- 
--	if (!atomic_inc_not_zero(&dd->user_refcount))
-+	if (!refcount_inc_not_zero(&dd->user_refcount))
- 		return -ENXIO;
- 
- 	/* The real work is performed later in assign_ctxt() */
-@@ -213,7 +213,7 @@ static int hfi1_file_open(struct inode *inode, struct file *fp)
- nomem:
- 	kfree(fd);
- 	fp->private_data = NULL;
--	if (atomic_dec_and_test(&dd->user_refcount))
-+	if (refcount_dec_and_test(&dd->user_refcount))
- 		complete(&dd->user_comp);
- 	return -ENOMEM;
- }
-@@ -711,7 +711,7 @@ static int hfi1_file_close(struct inode *inode, struct file *fp)
- 	deallocate_ctxt(uctxt);
- done:
- 
--	if (atomic_dec_and_test(&dd->user_refcount))
-+	if (refcount_dec_and_test(&dd->user_refcount))
- 		complete(&dd->user_comp);
- 
- 	cleanup_srcu_struct(&fdata->pq_srcu);
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index 31664f43c27f..6cf03d16a495 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -48,6 +48,7 @@
-  *
-  */
- 
-+#include <linux/refcount.h>
- #include <linux/interrupt.h>
- #include <linux/pci.h>
- #include <linux/dma-mapping.h>
-@@ -1384,7 +1385,7 @@ struct hfi1_devdata {
- 	/* Number of verbs contexts which have disabled ASPM */
- 	atomic_t aspm_disabled_cnt;
- 	/* Keeps track of user space clients */
--	atomic_t user_refcount;
-+	refcount_t user_refcount;
- 	/* Used to wait for outstanding user space clients before dev removal */
- 	struct completion user_comp;
- 
-diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-index 0986aa065418..0b2e19a335c5 100644
---- a/drivers/infiniband/hw/hfi1/init.c
-+++ b/drivers/infiniband/hw/hfi1/init.c
-@@ -1752,7 +1752,7 @@ static void wait_for_clients(struct hfi1_devdata *dd)
- 	 * Remove the device init value and complete the device if there is
- 	 * no clients or wait for active clients to finish.
- 	 */
--	if (atomic_dec_and_test(&dd->user_refcount))
-+	if (refcount_dec_and_test(&dd->user_refcount))
- 		complete(&dd->user_comp);
- 
- 	wait_for_completion(&dd->user_comp);
--- 
-2.7.4
+But it looks like th gen_vdso_offsets.sh script has not been changed on
+any arch to do that yet.  It is one of the few hold outs.
 
+Also, this feels like a HUGE change for a stable tree, adding new
+features like this, are you sure it's all needed?
+
+thanks,
+
+greg k-h
