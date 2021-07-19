@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2233CD888
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7323CDB35
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242309AbhGSOXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:23:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57020 "EHLO mail.kernel.org"
+        id S245012AbhGSOlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:41:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242496AbhGSOVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:21:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D808F61175;
-        Mon, 19 Jul 2021 15:01:34 +0000 (UTC)
+        id S244197AbhGSOaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:30:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADBA860720;
+        Mon, 19 Jul 2021 15:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706895;
-        bh=elHRXhYquqeshzOoiW+zIVsO6BJRMF/0n4cZpRZTw3s=;
+        s=korg; t=1626707485;
+        bh=L0zgcQIKVkliCKL0ngoGDlHZIUlPMjmbdue2oigr6pI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a3E6U/eiRA7Wu+k2yUUgj8v2VDNVp4YHIcG/ic/mqlHrH7KgEpvv8UHiAtJDAKnch
-         8EvjgdV+VA4gn5vnhrK5xbCSumeDhVv3bNwg5T9uqCV9ZhAGOeevHiFrluIQ3tvdPg
-         TTqArBlupRHIsbJE2Ov1BI6cdyqM/VDFeufk6hzc=
+        b=UiVKBlLULIV/f1yk1azfeD8+FYVPngAwWimyOM3kWfXrL57fyrR6XEq8PwI7X79GI
+         OcdKiaZviLtZh09+SOjwwP//rGJuRpaEsTarkAcddtbbvRPzhPsspdN/0+U0XIgrC4
+         jQmu4K45FLESyVRrtrCmPXQpQU638ylN7Mgtq/O0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.4 141/188] KVM: x86: Use guest MAXPHYADDR from CPUID.0x8000_0008 iff TDP is enabled
-Date:   Mon, 19 Jul 2021 16:52:05 +0200
-Message-Id: <20210719144941.104890091@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 4.9 184/245] fscrypt: dont ignore minor_hash when hash is 0
+Date:   Mon, 19 Jul 2021 16:52:06 +0200
+Message-Id: <20210719144946.348022472@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +38,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 4bf48e3c0aafd32b960d341c4925b48f416f14a5 upstream.
+commit 77f30bfcfcf484da7208affd6a9e63406420bf91 upstream.
 
-Ignore the guest MAXPHYADDR reported by CPUID.0x8000_0008 if TDP, i.e.
-NPT, is disabled, and instead use the host's MAXPHYADDR.  Per AMD'S APM:
+When initializing a no-key name, fscrypt_fname_disk_to_usr() sets the
+minor_hash to 0 if the (major) hash is 0.
 
-  Maximum guest physical address size in bits. This number applies only
-  to guests using nested paging. When this field is zero, refer to the
-  PhysAddrSize field for the maximum guest physical address size.
+This doesn't make sense because 0 is a valid hash code, so we shouldn't
+ignore the filesystem-provided minor_hash in that case.  Fix this by
+removing the special case for 'hash == 0'.
 
-Fixes: 24c82e576b78 ("KVM: Sanitize cpuid")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210623230552.4027702-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+This is an old bug that appears to have originated when the encryption
+code in ext4 and f2fs was moved into fs/crypto/.  The original ext4 and
+f2fs code passed the hash by pointer instead of by value.  So
+'if (hash)' actually made sense then, as it was checking whether a
+pointer was NULL.  But now the hashes are passed by value, and
+filesystems just pass 0 for any hashes they don't have.  There is no
+need to handle this any differently from the hashes actually being 0.
+
+It is difficult to reproduce this bug, as it only made a difference in
+the case where a filename's 32-bit major hash happened to be 0.
+However, it probably had the largest chance of causing problems on
+ubifs, since ubifs uses minor_hash to do lookups of no-key names, in
+addition to using it as a readdir cookie.  ext4 only uses minor_hash as
+a readdir cookie, and f2fs doesn't use minor_hash at all.
+
+Fixes: 0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
+Cc: <stable@vger.kernel.org> # v4.6+
+Link: https://lore.kernel.org/r/20210527235236.2376556-1-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/cpuid.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/crypto/fname.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -611,8 +611,14 @@ static inline int __do_cpuid_ent(struct
- 		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
- 		unsigned phys_as = entry->eax & 0xff;
- 
--		if (!g_phys_as)
-+		/*
-+		 * Use bare metal's MAXPHADDR if the CPU doesn't report guest
-+		 * MAXPHYADDR separately, or if TDP (NPT) is disabled, as the
-+		 * guest version "applies only to guests using nested paging".
-+		 */
-+		if (!g_phys_as || !tdp_enabled)
- 			g_phys_as = phys_as;
-+
- 		entry->eax = g_phys_as | (virt_as << 8);
- 		entry->edx = 0;
- 		/*
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -294,12 +294,8 @@ int fscrypt_fname_disk_to_usr(struct ino
+ 					   oname->name);
+ 		return 0;
+ 	}
+-	if (hash) {
+-		memcpy(buf, &hash, 4);
+-		memcpy(buf + 4, &minor_hash, 4);
+-	} else {
+-		memset(buf, 0, 8);
+-	}
++	memcpy(buf, &hash, 4);
++	memcpy(buf + 4, &minor_hash, 4);
+ 	memcpy(buf + 8, iname->name + ((iname->len - 17) & ~15), 16);
+ 	oname->name[0] = '_';
+ 	oname->len = 1 + digest_encode(buf, 24, oname->name + 1);
 
 
