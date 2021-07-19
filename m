@@ -2,174 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5283CECF3
+	by mail.lfdr.de (Postfix) with ESMTP id B5B543CECF4
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382605AbhGSRje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        id S1382627AbhGSRjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346413AbhGSQ1B (ORCPT
+        with ESMTP id S244064AbhGSQ1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:27:01 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2703AC078822
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:30:19 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so18827463otq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:52:03 -0700 (PDT)
+        Mon, 19 Jul 2021 12:27:09 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE42BC061768
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:33:19 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d9so5807849pfv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:54:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Cy4iVbzufWhZCm436CcvP6lCnhJGscRGC54iYRVwmoo=;
-        b=hbfbYh82IVBorFGJBYfFg7s0s+R2hWKPmXttDt6CVLsSLfZLF98PDtcbYYMSjlJK0a
-         gqigxBkXyLt3nKL1xZPicYQCjsfXE2aJEZ5l/5l7ebEhwztVHrioy3Z0dCjOKg6ndmRi
-         RfLRUiiv7DVzYXo6+g+QebRL3FUtMp56mvCPfBFSe9MO/cmIA/+ofQWc8TVNLYsypRkJ
-         FJBxI13oAjee1XI4mTNhCILdJDaasWVZuEcRm51TNcK0j8reeH7H+AfZyJI2vNNBoln3
-         BQSLKEL+MliU+4Yj2aZZPc2eZt9XScS3PEYYXKcWqlPLX42iHpfQ+fY/koifIviBpqDt
-         D6Vg==
+        bh=pHb5bkAVRB42TqiPWwfLPH1AL+uUpnACNe29QjGSxaY=;
+        b=wWjAGEqCZT2SqkCZwd6sWt/7nsE3FDiXvtXZl03cKrrWqWxHoKPQIrsffQjKJ13WG3
+         EtmnIKLF+iUOmpw/nICZRgWdRYzg5CVsZ4JGG31bckuuXW2KmDIrtW0aUWPbywlk+Re+
+         ysYfGknbrkm6/fCX4e++AOlHrp85izifA31B0RM/WNmTyYeytvj3aGvaPOIheZbXd6Qg
+         +f65RrcEPsNUtrQthvx/IqpwUYrZZlqBFKSDm3xxgdP4+/YqaSNRZrvRYVhpZxne3Fe3
+         4pVNYC8FKZniaUHFqa3DGzuzMaVvBRv5hVoqiViY8Pgmw9z/gHkKcxQSKlLSDnwzB6Eb
+         AujA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Cy4iVbzufWhZCm436CcvP6lCnhJGscRGC54iYRVwmoo=;
-        b=C7bVOXRh1J6FgSokkXS8e4ixOBqCOcM5cK7KUwxmUfRYryyKE+93AjH3IWXehfZtEw
-         jxgdFdOkieq++3YTxrtTM87mjpKxaHxi2RKLdgpo1KzyKne8I3m84ylHS9Jdu+EMvtk+
-         NWeaccg7sp0V+jAQ64tkNk2/KUqZjgd7TSaT3siKn3SWm/p+2zsaEU2hH3YjsQ9UfIJb
-         lgF9/cD76ES95kXl2XnwXIZRMUEvkjYt+5lGVeaj2T+z5cTCeSqMx83t1xocK7xIxCEN
-         FIKHLAXneWAXWK+OOpKJt5kCCDB5J7TcNvwjE8En/ubk87WF3GOx8hw9d/qFsJy5Wngw
-         rZCQ==
-X-Gm-Message-State: AOAM532UI9n1JU5xnu4L3yVEAwDF3Lf5cKPQ9UifpRM42zrS1fMf4xk6
-        wb5qnYrrfk5hrA5ffgjHfg/fEw==
-X-Google-Smtp-Source: ABdhPJx3sDQ0mQzT1Ak+Tz9xwpnqNz8n4Z/jQM063iCfZPKDAyZDLp9h62NqEIDf5Wftb1H8RWUQ+w==
-X-Received: by 2002:a9d:1ec:: with SMTP id e99mr13761129ote.367.1626713522660;
-        Mon, 19 Jul 2021 09:52:02 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j22sm3728031otl.46.2021.07.19.09.52.01
+        bh=pHb5bkAVRB42TqiPWwfLPH1AL+uUpnACNe29QjGSxaY=;
+        b=sNXPENiCQmlyxy2QZ05cHG/kG6YojyjzyRbsZWmAz91VvuIXcLqNyspfZLj5fpiJ0f
+         lBM1qlzFzwmea9SHHmU31TJmIkyUaDrW7RFhODb0l3jaDbcywDfk3hOTkzUHJUOxZABz
+         T4FRySRL2HyFwreIESY/awIW8s14Z7Lg1sdGV3JY9cHM9bo1VLgDDwJN+jMyIbFaFPkO
+         MjSSKMuZOjgCoJ2S4MNB+IdYe8b3OWe7CXivNjuBUibEjAhN4691pO9TqDkZSJ4XlFBn
+         cDLDHR+7eezCNp/DOOvLZlQFohLKr6a+OVnE718mFAG2WHeKXx9piRVCxF61zOS/seTJ
+         9IHQ==
+X-Gm-Message-State: AOAM533DGCw6ohFL8htTyo4hcQSx1PBwG1Jk0vMSVb3h1Xj4S0hCPNP/
+        DS34tbEL/RumIMndueD4NYr3hA==
+X-Google-Smtp-Source: ABdhPJzjdliagIIxw89Ud0WLqDwORLqyx5dLKpfYjX5Qr2Jo5aV2ovPM9l2YmkMyXrKafSxH6Usw+Q==
+X-Received: by 2002:a65:648f:: with SMTP id e15mr26154606pgv.165.1626713689551;
+        Mon, 19 Jul 2021 09:54:49 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q11sm25570pjd.30.2021.07.19.09.54.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 09:52:02 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 11:52:00 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
-        balbi@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org
-Subject: Re: [PATCH v2 1/3] arm64: dts: qcom: Use correct naming for dwc3 usb
- nodes in dts files
-Message-ID: <YPWtsPbxTLsInOGv@yoga>
-References: <20210627114616.717101-1-bhupesh.sharma@linaro.org>
- <20210627114616.717101-2-bhupesh.sharma@linaro.org>
+        Mon, 19 Jul 2021 09:54:48 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 16:54:45 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 26/40] KVM: SVM: Add
+ KVM_SEV_SNP_LAUNCH_FINISH command
+Message-ID: <YPWuVY+rKU2/DVUS@google.com>
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-27-brijesh.singh@amd.com>
+ <YPHpk3RFSmE13ZXz@google.com>
+ <9ee5a991-3e43-3489-5ee1-ff8c66cfabc1@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210627114616.717101-2-bhupesh.sharma@linaro.org>
+In-Reply-To: <9ee5a991-3e43-3489-5ee1-ff8c66cfabc1@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 27 Jun 06:46 CDT 2021, Bhupesh Sharma wrote:
-
-> The dwc3 usb nodes in several arm64 qcom dts are currently named
-> differently, somewhere as 'usb@<addr>' and somewhere as 'dwc3@<addr>',
-> leading to some confusion when one sees the entries in sysfs or
-> dmesg:
-> [    1.943482] dwc3 a600000.usb: Adding to iommu group 1
-> [    2.266127] dwc3 a800000.dwc3: Adding to iommu group 2
+On Fri, Jul 16, 2021, Brijesh Singh wrote:
 > 
-> Name the usb nodes as 'usb@<addr>' for consistency, which is
-> the correct convention as per the 'snps,dwc3' dt-binding as
-> well (see [1]).
+> On 7/16/21 3:18 PM, Sean Christopherson wrote:
+> > On Wed, Jul 07, 2021, Brijesh Singh wrote:
+> >> +	data->gctx_paddr = __psp_pa(sev->snp_context);
+> >> +	ret = sev_issue_cmd(kvm, SEV_CMD_SNP_LAUNCH_FINISH, data, &argp->error);
+> > Shouldn't KVM unwind everything it did if LAUNCH_FINISH fails?  And if that's
+> > not possible, take steps to make the VM unusable?
 > 
-> [1]. Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> Well, I am not sure if VM need to unwind. If the command fail but VMM decide
+> to ignore the error then VMRUN will probably fail and user will get the KVM
+> shutdown event. The LAUNCH_FINISH command finalizes the VM launch process,
+> the firmware will probably not load the memory encryption keys until it moves
+> to the running state.
+
+Within reason, KVM needs to provide consistent, deterministic behavior.  Yes, more
+than likely failure at this point will be fatal to the VM, but that doesn't justify
+leaving the VM in a random/bogus state.  In addition to being a poor ABI, it also
+makes it more difficult to reason about what is/isn't possible in KVM.
+
+> >> +	 */
+> >> +	if (sev_snp_guest(vcpu->kvm)) {
+> >> +		struct rmpupdate e = {};
+> >> +		int rc;
+> >> +
+> >> +		rc = rmpupdate(virt_to_page(svm->vmsa), &e);
+> > So why does this not need to go through snp_page_reclaim()?
 > 
+> As I said in previous comments that by default all the memory is in the
+> hypervisor state. if the rmpupdate() failed that means nothing is changed in
+> the RMP and there is no need to reclaim. The reclaim is required only if the
+> pages are assigned in the RMP table.
 
-I thought we had more of the platforms sorted out already, thanks for
-fixing this Bhupesh.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/msm8994.dtsi | 2 +-
->  arch/arm64/boot/dts/qcom/sm8150.dtsi  | 2 +-
->  arch/arm64/boot/dts/qcom/sm8250.dtsi  | 4 ++--
->  arch/arm64/boot/dts/qcom/sm8350.dtsi  | 4 ++--
->  4 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8994.dtsi b/arch/arm64/boot/dts/qcom/msm8994.dtsi
-> index f9f0b5aa6a26..662f2f246b9b 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8994.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8994.dtsi
-> @@ -430,7 +430,7 @@ usb3: usb@f92f8800 {
->  			power-domains = <&gcc USB30_GDSC>;
->  			qcom,select-utmi-as-pipe-clk;
->  
-> -			dwc3@f9200000 {
-> +			usb@f9200000 {
->  				compatible = "snps,dwc3";
->  				reg = <0xf9200000 0xcc00>;
->  				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> index 612dda0fef43..9c931beeb614 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> @@ -2389,7 +2389,7 @@ usb_2: usb@a8f8800 {
->  
->  			resets = <&gcc GCC_USB30_SEC_BCR>;
->  
-> -			usb_2_dwc3: dwc3@a800000 {
-> +			usb_2_dwc3: usb@a800000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a800000 0 0xcd00>;
->  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 4798368b02ef..9c1462cc9dad 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -2321,7 +2321,7 @@ usb_1: usb@a6f8800 {
->  
->  			resets = <&gcc GCC_USB30_PRIM_BCR>;
->  
-> -			usb_1_dwc3: dwc3@a600000 {
-> +			usb_1_dwc3: usb@a600000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a600000 0 0xcd00>;
->  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -2372,7 +2372,7 @@ usb_2: usb@a8f8800 {
->  
->  			resets = <&gcc GCC_USB30_SEC_BCR>;
->  
-> -			usb_2_dwc3: dwc3@a800000 {
-> +			usb_2_dwc3: usb@a800000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a800000 0 0xcd00>;
->  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> index 0d16392bb976..a631d58166b1 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> @@ -1273,7 +1273,7 @@ usb_1: usb@a6f8800 {
->  
->  			resets = <&gcc GCC_USB30_PRIM_BCR>;
->  
-> -			usb_1_dwc3: dwc3@a600000 {
-> +			usb_1_dwc3: usb@a600000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a600000 0 0xcd00>;
->  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -1317,7 +1317,7 @@ usb_2: usb@a8f8800 {
->  
->  			resets = <&gcc GCC_USB30_SEC_BCR>;
->  
-> -			usb_2_dwc3: dwc3@a800000 {
-> +			usb_2_dwc3: usb@a800000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a800000 0 0xcd00>;
->  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-> -- 
-> 2.31.1
-> 
+I wasn't referring to RMPUPDATE failing here (or anywhere).  This is the vCPU free
+path, which I think means the svm->vmsa page was successfully updated in the RMP
+during LAUNCH_UPDATE.  snp_launch_update_vmsa() goes through snp_page_reclaim()
+on LAUNCH_UPDATE failure, whereas this happy path does not.  Is there some other
+transition during teardown that obviastes the need for reclaim?  If so, a comment
+to explain that would be very helpful.
