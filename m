@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEB03CD50D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CE73CD516
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbhGSMFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 08:05:24 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:13093 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237018AbhGSMFY (ORCPT
+        id S237080AbhGSMHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 08:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237048AbhGSMHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 08:05:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1626698764; x=1658234764;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=yLRoIPvTygYkIwv7dlQXZQXfrF3+CqCP047UYUYgMDM=;
-  b=PBrX9Hyv/25R5a5bBmTHZTVV8IfYj79Fv8Al4C/yShV58+B4Y6188wnr
-   Sn8auED6PqBb584SzlpeCwFsLjd1zcZzzAHqhdZZ5zCCiyR1svXtcXIFA
-   umyrrUgVuyNjQK1OKJIUY7XwR2pDmtHojLmbxXBxk1WkvSMAizKdwIFKI
-   jjOyhFonEjv98reJEmIcaZSDVp9MG6HGC34tYMuvmMBoFJNWLeSKbv+UO
-   ugQLZJyAPxRE01U2unAx1zIjpfC/1xmfEkZVU0KfSBEHZu+2IDOhQwqax
-   gRQvaHxbhhIih9TnBEAS0H8nOCg96BqPvM0+th+y77EByh7ID9mCXqoAj
-   Q==;
-IronPort-SDR: lcnFj/fDNWXhCfJ3rljfzAl1AXrFxUY4ujUTIux3kPTx7gIS3JjtYXqdbgK811E4THaqSWlKgK
- HlzuiNFX175zWqrpo4rZa5UBS+rJT7R+xewYQMPyoTpyGSsjBDTQZq8sfp/Zjjm8XEDQkOxQcC
- 4rnyoGB5b634aope+lYmGUiuoX0nWSVEXJBynRKMI6/j3MsAMgH1MLE7RCBC6qlXwpgxnlMO2z
- xMPuxiTR42mGfeiXLC6CodoWGwNIxjexzwMhaQ+3/0PS5Sg5MRkdwxTCE3ZySWwGGtSpfP7qmb
- XmeZfkV1Aw0RuLfP58M97g/h
-X-IronPort-AV: E=Sophos;i="5.84,252,1620716400"; 
-   d="scan'208";a="128841869"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jul 2021 05:46:03 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 19 Jul 2021 05:46:03 -0700
-Received: from [10.12.68.173] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Mon, 19 Jul 2021 05:46:01 -0700
-Subject: Re: [PATCH 2/2] clk: at91: add register definition for sama7g5's
- master clock
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <linux@armlinux.org.uk>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>
-CC:     <eugen.hristev@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <sfr@canb.auug.org.au>
-References: <20210719080317.1045832-1-claudiu.beznea@microchip.com>
- <20210719080317.1045832-3-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <3bee1689-5e1d-e65f-e66c-95d4521ea9f4@microchip.com>
-Date:   Mon, 19 Jul 2021 14:46:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 08:07:07 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7598BC061574;
+        Mon, 19 Jul 2021 05:05:42 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id h1so9512779plf.6;
+        Mon, 19 Jul 2021 05:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BOHLfhVl4IX0jBgxq0tnyQp2G2EwOVwQ6QtIbNjmVL4=;
+        b=BwBOE9uM1AY+Uh+eIMJgcSjFDrxGQiYieHqE8DHsDxmjfTTLSEJhMBRJ0Na6LOjCTx
+         ynnbyDPNdbL5i/xGIauqPd6AKgFtjisEzf/km17aZPQSrYI9yxzF8aLYB54afng34ZZd
+         EVna5SzPnhPbukw+rG6HIZ2mzZULX90AFnJ2kFTRRRoMDb92UlMDzz1csUhhG7KjRVvH
+         R44ZzSqbg187NzBCz5oG+SRc25G7x9G+Q6bZSNUR80VwKc3C9lGOfAyXE/luKXx+xbNW
+         T1QdFWiEQWE2I7QkQ5V+da6d8bOa74aaSjRKSiG+mItXjZ9UwNGhGFugX6vS18MS+wTy
+         LfFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BOHLfhVl4IX0jBgxq0tnyQp2G2EwOVwQ6QtIbNjmVL4=;
+        b=gn9KSH/QVYdlOCCHB/xnI7QySCQokYxEmyvYT8pwRuGYskdfzEj+BAL46Atm/iAoJs
+         lSvYmfjSXWH9V1TF1Y9cTH5lECC6wxd4mKGRkA3xEKseELIR7nEpfB4plGljSHntJcZB
+         C6bgcoqu0oKK2U1vAEeGwR3cBLaTuELCLBX4M/Cv5sU5jwrWKyYjCFGTSB4irVD9x51x
+         p0BpxjKJjqKRXAgBRU1HmIl0WaIZ7mI+RnAicDQmn7YkOz1O0qgdpPNSabWUuZnjKgKf
+         6fCad5Hrnw7WXxaD+q9LLKvkeAYxzvK4E4uDZKtklrsfqq1k02PT6dHWwthc6Roa2R3a
+         hqvg==
+X-Gm-Message-State: AOAM5322uX/+GYoexcIJiUgEuyEU8BRcHIFLikISpz3N4Q56JBEYrAfV
+        xBxt3SKUwxAZAnq5untKfqnQBnlTT/Nhn/WTVkg=
+X-Google-Smtp-Source: ABdhPJxwcacipucz4PoseENZgZjBWKi1SW7dWOKNKkP4F/S4fGWnSOCuFP9GvjxQ6z7ZIZbfaIdloSyeopenMQXRneo=
+X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr24796132pjb.228.1626698866913;
+ Mon, 19 Jul 2021 05:47:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210719080317.1045832-3-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210624224909.6350-1-pali@kernel.org> <20210717123829.5201-1-pali@kernel.org>
+ <20210717123829.5201-2-pali@kernel.org>
+In-Reply-To: <20210717123829.5201-2-pali@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 19 Jul 2021 15:47:07 +0300
+Message-ID: <CAHp75VeCC3cYu3RZPxuRN4iaM+vxp2rX+E4z+ZxzRGM8oHaMkw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] math64: New DIV_U64_ROUND_CLOSEST helper
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2021 at 10:03, Claudiu Beznea wrote:
-> Add register definitions for SAMA7G5's master clock. These would be
-> also used by architecture specific power saving code.
-> 
-> Fixes: 6cb0e54412a3 ("ARM: at91: pm: add support for MCK1..4 save/restore for ulp modes")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+On Sat, Jul 17, 2021 at 3:39 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> Provide DIV_U64_ROUND_CLOSEST helper which uses div_u64 to perform
+> division rounded to the closest integer using unsigned 64bit
+> dividend and unsigned 32bit divisor.
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+...
 
-> ---
-> 
-> Hi Stephen,
-> 
-> This is a part from patch at [1]. I keep it at minimum (only definitions)
-> for faster acceptance as the build is broken on arm multi_v7_defconfig
-> without it).
-> In next version of patch at [1] I will update it accordingly.
+> +/*
+> + * DIV_U64_ROUND_CLOSEST - unsigned 64bit divide with 32bit divisor roun=
+ded to nearest integer
 
-Stephen,
+> + * @dividend: unsigned 64bit dividend
 
-Before hearing from you I inserted this patch in our at91-soc branch 
-that is part of linux-next. With this at least the build don't break 
-anymore.
+Here you insist users to provide a u64 (or compatible) type.
 
-Tell me if you want to have an immutable branch that we could share with 
-it on top of 5.14-rc1 or if it's fine if we add the same patch in both 
-of our trees.
+> + * @divisor: unsigned 32bit divisor
+> + *
+> + * Divide unsigned 64bit dividend by unsigned 32bit divisor
+> + * and round to closest integer.
+> + *
+> + * Return: dividend / divisor rounded to nearest integer
+> + */
+> +#define DIV_U64_ROUND_CLOSEST(dividend, divisor)       \
 
-Best regards,
-   Nicolas
+> +       ({ u32 _tmp =3D (divisor); div_u64((u64)(dividend) + _tmp / 2, _t=
+mp); })
 
+Here is the casting to u64. Why? (Yes, I have read v1 discussion and I
+just want to continue it here).
 
-> [1] https://lore.kernel.org/linux-clk/20210401122726.28528-5-claudiu.beznea@microchip.com/
-> 
->   include/linux/clk/at91_pmc.h | 26 ++++++++++++++++++++++++++
->   1 file changed, 26 insertions(+)
-> 
-> diff --git a/include/linux/clk/at91_pmc.h b/include/linux/clk/at91_pmc.h
-> index a4f82e836a7c..ccb3f034bfa9 100644
-> --- a/include/linux/clk/at91_pmc.h
-> +++ b/include/linux/clk/at91_pmc.h
-> @@ -137,6 +137,32 @@
->   #define			AT91_PMC_PLLADIV2_ON		(1 << 12)
->   #define		AT91_PMC_H32MXDIV	BIT(24)
->   
-> +#define	AT91_PMC_MCR_V2		0x30				/* Master Clock Register [SAMA7G5 only] */
-> +#define		AT91_PMC_MCR_V2_ID_MSK	(0xF)
-> +#define			AT91_PMC_MCR_V2_ID(_id)		((_id) & AT91_PMC_MCR_V2_ID_MSK)
-> +#define		AT91_PMC_MCR_V2_CMD	(1 << 7)
-> +#define		AT91_PMC_MCR_V2_DIV	(7 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV1		(0 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV2		(1 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV4		(2 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV8		(3 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV16		(4 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV32		(5 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV64		(6 << 8)
-> +#define			AT91_PMC_MCR_V2_DIV3		(7 << 8)
-> +#define		AT91_PMC_MCR_V2_CSS	(0x1F << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_MD_SLCK	(0 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_TD_SLCK	(1 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_MAINCK	(2 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_MCK0	(3 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_SYSPLL	(5 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_DDRPLL	(6 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_IMGPLL	(7 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_BAUDPLL	(8 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_AUDIOPLL	(9 << 16)
-> +#define			AT91_PMC_MCR_V2_CSS_ETHPLL	(10 << 16)
-> +#define		AT91_PMC_MCR_V2_EN	(1 << 28)
-> +
->   #define AT91_PMC_XTALF		0x34			/* Main XTAL Frequency Register [SAMA7G5 only] */
->   
->   #define	AT91_PMC_USB		0x38			/* USB Clock Register [some SAM9 only] */
-> 
-
-
--- 
-Nicolas Ferre
+--=20
+With Best Regards,
+Andy Shevchenko
