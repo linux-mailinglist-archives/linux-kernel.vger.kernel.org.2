@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35FC3CE776
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783E33CE7A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354260AbhGSQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49078 "EHLO mail.kernel.org"
+        id S1353919AbhGSQ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:29:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346433AbhGSPOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346448AbhGSPOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:14:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08C9E61003;
-        Mon, 19 Jul 2021 15:54:29 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D73AC610D2;
+        Mon, 19 Jul 2021 15:54:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710070;
-        bh=rAYbW2UqpPZ9JX4gxQTDr5MbWh0vAa4y18WI67hklA8=;
+        s=korg; t=1626710075;
+        bh=4cmWkVFhdTzQWY9usqWWMyf40gKiTVqMUh3jZzfwEhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Twvp9qvWmFg+brdLMj1CjB9QaKVIHx4GlP6xI4mZVGvV/f9CMhm6nHbtpCI7lxTCk
-         po61C7pIQIhZfP8JzZQuL9snK6FcP0Yd3ZuCiCx7GzulWfjpaOyNKOBWggwlITgbZc
-         roa6Yqfwu4hvUPNB+mf5681/fb/llJKqDyAs8iA8=
+        b=I7M1wQVLjRmn2dV1OkG+r8vjBqixCoykZehV58r2WbCzdT0h7OFNkgT4mQEwZ5dxv
+         9JQOEn8m6dHG8uUcBJ0mraRc6j+REMXDZcD54AFzWu0Z4zJDzcNpIAT4sbqHFI8NHj
+         WWFOuco3f1sUbjoxVqB3J2s/0q9C3yCcJkVf6B5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>, Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 063/243] scsi: qedi: Fix cleanup session block/unblock use
-Date:   Mon, 19 Jul 2021 16:51:32 +0200
-Message-Id: <20210719144942.955976459@linuxfoundation.org>
+Subject: [PATCH 5.10 064/243] mfd: da9052/stmpe: Add and modify MODULE_DEVICE_TABLE
+Date:   Mon, 19 Jul 2021 16:51:33 +0200
+Message-Id: <20210719144942.985925961@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -41,76 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 0c72191da68638a479602dd515b587ada913184a ]
+[ Upstream commit 4700ef326556ed74aba188f12396740a8c1c21dd ]
 
-Drivers shouldn't be calling block/unblock session for cmd cleanup because
-the functions can change the session state from under libiscsi.  This adds
-a new a driver level bit so it can block all I/O the host while it drains
-the card.
+This patch adds/modifies MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Link: https://lore.kernel.org/r/20210525181821.7617-26-michael.christie@oracle.com
-Reviewed-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi.h       |  1 +
- drivers/scsi/qedi/qedi_iscsi.c | 17 +++++++++++++++--
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/mfd/da9052-i2c.c | 1 +
+ drivers/mfd/stmpe-i2c.c  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qedi/qedi.h b/drivers/scsi/qedi/qedi.h
-index c342defc3f52..ce199a7a16b8 100644
---- a/drivers/scsi/qedi/qedi.h
-+++ b/drivers/scsi/qedi/qedi.h
-@@ -284,6 +284,7 @@ struct qedi_ctx {
- #define QEDI_IN_RECOVERY	5
- #define QEDI_IN_OFFLINE		6
- #define QEDI_IN_SHUTDOWN	7
-+#define QEDI_BLOCK_IO		8
+diff --git a/drivers/mfd/da9052-i2c.c b/drivers/mfd/da9052-i2c.c
+index 47556d2d9abe..8ebfc7bbe4e0 100644
+--- a/drivers/mfd/da9052-i2c.c
++++ b/drivers/mfd/da9052-i2c.c
+@@ -113,6 +113,7 @@ static const struct i2c_device_id da9052_i2c_id[] = {
+ 	{"da9053-bc", DA9053_BC},
+ 	{}
+ };
++MODULE_DEVICE_TABLE(i2c, da9052_i2c_id);
  
- 	u8 mac[ETH_ALEN];
- 	u32 src_ip[4];
-diff --git a/drivers/scsi/qedi/qedi_iscsi.c b/drivers/scsi/qedi/qedi_iscsi.c
-index 604c4f408bc1..f51723e2d522 100644
---- a/drivers/scsi/qedi/qedi_iscsi.c
-+++ b/drivers/scsi/qedi/qedi_iscsi.c
-@@ -330,12 +330,22 @@ free_conn:
+ #ifdef CONFIG_OF
+ static const struct of_device_id dialog_dt_ids[] = {
+diff --git a/drivers/mfd/stmpe-i2c.c b/drivers/mfd/stmpe-i2c.c
+index 61aa020199f5..cd2f45257dc1 100644
+--- a/drivers/mfd/stmpe-i2c.c
++++ b/drivers/mfd/stmpe-i2c.c
+@@ -109,7 +109,7 @@ static const struct i2c_device_id stmpe_i2c_id[] = {
+ 	{ "stmpe2403", STMPE2403 },
+ 	{ }
+ };
+-MODULE_DEVICE_TABLE(i2c, stmpe_id);
++MODULE_DEVICE_TABLE(i2c, stmpe_i2c_id);
  
- void qedi_mark_device_missing(struct iscsi_cls_session *cls_session)
- {
--	iscsi_block_session(cls_session);
-+	struct iscsi_session *session = cls_session->dd_data;
-+	struct qedi_conn *qedi_conn = session->leadconn->dd_data;
-+
-+	spin_lock_bh(&session->frwd_lock);
-+	set_bit(QEDI_BLOCK_IO, &qedi_conn->qedi->flags);
-+	spin_unlock_bh(&session->frwd_lock);
- }
- 
- void qedi_mark_device_available(struct iscsi_cls_session *cls_session)
- {
--	iscsi_unblock_session(cls_session);
-+	struct iscsi_session *session = cls_session->dd_data;
-+	struct qedi_conn *qedi_conn = session->leadconn->dd_data;
-+
-+	spin_lock_bh(&session->frwd_lock);
-+	clear_bit(QEDI_BLOCK_IO, &qedi_conn->qedi->flags);
-+	spin_unlock_bh(&session->frwd_lock);
- }
- 
- static int qedi_bind_conn_to_iscsi_cid(struct qedi_ctx *qedi,
-@@ -789,6 +799,9 @@ static int qedi_task_xmit(struct iscsi_task *task)
- 	if (test_bit(QEDI_IN_SHUTDOWN, &qedi_conn->qedi->flags))
- 		return -ENODEV;
- 
-+	if (test_bit(QEDI_BLOCK_IO, &qedi_conn->qedi->flags))
-+		return -EACCES;
-+
- 	cmd->state = 0;
- 	cmd->task = NULL;
- 	cmd->use_slowpath = false;
+ static struct i2c_driver stmpe_i2c_driver = {
+ 	.driver = {
 -- 
 2.30.2
 
