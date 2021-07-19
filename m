@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEC73CE6D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D663CE7FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353052AbhGSQPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:15:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42190 "EHLO mail.kernel.org"
+        id S1353334AbhGSQfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345808AbhGSPJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B125A613CF;
-        Mon, 19 Jul 2021 15:49:18 +0000 (UTC)
+        id S1347572AbhGSPTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:19:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DE72610D0;
+        Mon, 19 Jul 2021 15:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709759;
-        bh=wJTkCpPAafROXRuvciOmVlu458zkKHcOo7i/SuZMZz4=;
+        s=korg; t=1626710317;
+        bh=aE4EcQzI7EurVGsuK7YUfKG+dbu4kak+gAxRPoDmFFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U2KDn5bI/4FcjmsR8woLDQ/WzBwRbRUHRZJ6zU1MFn017I8d55zAs6WqOnKSzy3WF
-         DgIgTV8W9tg4Azu0n4sWdZvgzzC7lbTROdtj4e8xWRSABLY7owAIrJHMG+xW8zZcQW
-         +FZKnGFos4sR7Uun6B1YPHrfCa6Dugdf5FnKOd7g=
+        b=vEOR3U8OohCiJ2xH9zRxCWNVzXiHLsKCswgZ+o3tM5xYOKicwASeZw54pU+lVkO9n
+         Ep+RYtMiK3ViArdZ+zhg1xY+hYzR2RgpJOgl9ItWsmcSlgQJKd162S+D08aJg7Uoy9
+         h/ENOrb6opDN0Sfrd0vDb1xFNgDxEogUSwm8tFYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 085/149] ceph: remove bogus checks and WARN_ONs from ceph_set_page_dirty
-Date:   Mon, 19 Jul 2021 16:53:13 +0200
-Message-Id: <20210719144921.450032028@linuxfoundation.org>
+Subject: [PATCH 5.10 165/243] ubifs: Set/Clear I_LINKABLE under i_lock for whiteout inode
+Date:   Mon, 19 Jul 2021 16:53:14 +0200
+Message-Id: <20210719144946.221579376@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 22d41cdcd3cfd467a4af074165357fcbea1c37f5 ]
+[ Upstream commit a801fcfeef96702fa3f9b22ad56c5eb1989d9221 ]
 
-The checks for page->mapping are odd, as set_page_dirty is an
-address_space operation, and I don't see where it would be called on a
-non-pagecache page.
+xfstests-generic/476 reports a warning message as below:
 
-The warning about the page lock also seems bogus.  The comment over
-set_page_dirty() says that it can be called without the page lock in
-some rare cases. I don't think we want to warn if that's the case.
+WARNING: CPU: 2 PID: 30347 at fs/inode.c:361 inc_nlink+0x52/0x70
+Call Trace:
+  do_rename+0x502/0xd40 [ubifs]
+  ubifs_rename+0x8b/0x180 [ubifs]
+  vfs_rename+0x476/0x1080
+  do_renameat2+0x67c/0x7b0
+  __x64_sys_renameat2+0x6e/0x90
+  do_syscall_64+0x66/0xe0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Following race case can cause this:
+         rename_whiteout(Thread 1)             wb_workfn(Thread 2)
+ubifs_rename
+  do_rename
+                                          __writeback_single_inode
+					    spin_lock(&inode->i_lock)
+    whiteout->i_state |= I_LINKABLE
+                                            inode->i_state &= ~dirty;
+---- How race happens on i_state:
+    (tmp = whiteout->i_state | I_LINKABLE)
+		                           (tmp = inode->i_state & ~dirty)
+    (whiteout->i_state = tmp)
+		                           (inode->i_state = tmp)
+----
+					    spin_unlock(&inode->i_lock)
+    inc_nlink(whiteout)
+    WARN_ON(!(inode->i_state & I_LINKABLE)) !!!
+
+Fix to add i_lock to avoid i_state update race condition.
+
+Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/addr.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ fs/ubifs/dir.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index a02e845eb0fb..34ab7b892b70 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -76,10 +76,6 @@ static int ceph_set_page_dirty(struct page *page)
- 	struct inode *inode;
- 	struct ceph_inode_info *ci;
- 	struct ceph_snap_context *snapc;
--	int ret;
--
--	if (unlikely(!mapping))
--		return !TestSetPageDirty(page);
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 08fde777c324..ad90a3a64293 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1335,7 +1335,10 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 			goto out_release;
+ 		}
  
- 	if (PageDirty(page)) {
- 		dout("%p set_page_dirty %p idx %lu -- already dirty\n",
-@@ -125,11 +121,7 @@ static int ceph_set_page_dirty(struct page *page)
- 	page->private = (unsigned long)snapc;
- 	SetPagePrivate(page);
++		spin_lock(&whiteout->i_lock);
+ 		whiteout->i_state |= I_LINKABLE;
++		spin_unlock(&whiteout->i_lock);
++
+ 		whiteout_ui = ubifs_inode(whiteout);
+ 		whiteout_ui->data = dev;
+ 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
+@@ -1428,7 +1431,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
  
--	ret = __set_page_dirty_nobuffers(page);
--	WARN_ON(!PageLocked(page));
--	WARN_ON(!page->mapping);
--
--	return ret;
-+	return __set_page_dirty_nobuffers(page);
- }
+ 		inc_nlink(whiteout);
+ 		mark_inode_dirty(whiteout);
++
++		spin_lock(&whiteout->i_lock);
+ 		whiteout->i_state &= ~I_LINKABLE;
++		spin_unlock(&whiteout->i_lock);
++
+ 		iput(whiteout);
+ 	}
  
- /*
 -- 
 2.30.2
 
