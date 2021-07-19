@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C963CE387
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBA73CE403
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347216AbhGSPjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:39:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53364 "EHLO mail.kernel.org"
+        id S1347626AbhGSPlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:41:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344040AbhGSO71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7580060238;
-        Mon, 19 Jul 2021 15:38:11 +0000 (UTC)
+        id S1344437AbhGSO7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C855961002;
+        Mon, 19 Jul 2021 15:40:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709092;
-        bh=VdodptyE2GAk1rTtpPV2NfeKVvsJfvOCXSVUuquwcyw=;
+        s=korg; t=1626709217;
+        bh=Ev6q87NjZyTZuJ9GPbmdDzgZN7HeAbVldkXVmGDfPB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gRz1dqXQF1R4BhiUGrfyR5si537irG4YrHCJt5GJ8uRKi8W89Htm3CzLp8bKRQD3e
-         q/KyzSBMbeEhHbBioHZoRYkHu5XzVPOJy5xrEc3m5rDKcPQ0zFje0Er0bYGaOdrBLT
-         W/7XY+xpn2mj6LGu/TXXYAh8XGGZ90qOrnlmym70=
+        b=wZwLmHklzqbHgtXJjpqYgu8eVww9UxacGbL1PTC1vabsyRkYRPSnfZgtg96d+SmPc
+         mJgt8DlnUJvQEgaRqOnjNsGbgpf3+sjaR/emRMt6uyP/M+lFVaB3+T60tN+3d6cbhP
+         NexmQOp3mtYchYAl1akMpLJunLZz+QLguAMeCDqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 248/421] virtio_net: Remove BUG() to avoid machine dead
-Date:   Mon, 19 Jul 2021 16:50:59 +0200
-Message-Id: <20210719144955.003159077@linuxfoundation.org>
+Subject: [PATCH 4.19 252/421] fjes: check return value after calling platform_get_resource()
+Date:   Mon, 19 Jul 2021 16:51:03 +0200
+Message-Id: <20210719144955.133778269@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -42,35 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xianting Tian <xianting.tian@linux.alibaba.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 85eb1389458d134bdb75dad502cc026c3753a619 ]
+[ Upstream commit f18c11812c949553d2b2481ecaa274dd51bed1e7 ]
 
-We should not directly BUG() when there is hdr error, it is
-better to output a print when such error happens. Currently,
-the caller of xmit_skb() already did it.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/fjes/fjes_main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 0b1c6a8906b9..84a82c4a9535 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1550,7 +1550,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
- 	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
- 				    virtio_is_little_endian(vi->vdev), false,
- 				    0))
--		BUG();
-+		return -EPROTO;
+diff --git a/drivers/net/fjes/fjes_main.c b/drivers/net/fjes/fjes_main.c
+index 1979f8f8dac7..778d3729f460 100644
+--- a/drivers/net/fjes/fjes_main.c
++++ b/drivers/net/fjes/fjes_main.c
+@@ -1277,6 +1277,10 @@ static int fjes_probe(struct platform_device *plat_dev)
+ 	adapter->interrupt_watch_enable = false;
  
- 	if (vi->mergeable_rx_bufs)
- 		hdr->num_buffers = 0;
+ 	res = platform_get_resource(plat_dev, IORESOURCE_MEM, 0);
++	if (!res) {
++		err = -EINVAL;
++		goto err_free_control_wq;
++	}
+ 	hw->hw_res.start = res->start;
+ 	hw->hw_res.size = resource_size(res);
+ 	hw->hw_res.irq = platform_get_irq(plat_dev, 0);
 -- 
 2.30.2
 
