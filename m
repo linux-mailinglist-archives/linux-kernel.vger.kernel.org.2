@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCB93CEA7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CB23CE973
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377005AbhGSRQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:16:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34196 "EHLO mail.kernel.org"
+        id S1359167AbhGSQzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:55:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347296AbhGSPjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6E5261175;
-        Mon, 19 Jul 2021 16:19:02 +0000 (UTC)
+        id S1346782AbhGSP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 982DD613BB;
+        Mon, 19 Jul 2021 16:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711543;
-        bh=LTJWYMUPiITN3Wa6Cf/Hoco6oaVd8XiUe0xBl1/a+Fo=;
+        s=korg; t=1626710919;
+        bh=RfE1IFR9OF9g0z4sWjAce4k+hRR+zDu2D930Zd6Iz0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iIAmSnwFapjC7zzP2Ye2rZvfI4o1i66rsAMaRmWG/wUpGIpwRXwRS5WmjjCm2gzsd
-         PBvqR733n54N4izZlg0O9x/vYfK3wPq9AKv9PAGgFXkasfwi2da9ysn0Fx4SJLZTJ6
-         /kMLmSMEidH5JvpzqyJ64ewjeflO4pjgD6e/1WyA=
+        b=NMYOT323/CmWlLC/SVHPKCltNPXfh4S6LsHZ0iaGTJSYOnxYLSkCNxPVIxerWvsqu
+         xD1jZCxfskfNZFcCf7WJL848ImL0dIyAYD5rrz5IQ3knUzyjCInV1rDyS4JUpBvEXf
+         tHMnAgVTpONoccyj3QECuBxGUifzTXudaYH8jOFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Raymond Tan <raymond.tan@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 040/292] usb: dwc3: pci: Fix DEFINE for Intel Elkhart Lake
-Date:   Mon, 19 Jul 2021 16:51:42 +0200
-Message-Id: <20210719144943.835218100@linuxfoundation.org>
+Subject: [PATCH 5.13 157/351] power: supply: max17042: Do not enforce (incorrect) interrupt trigger type
+Date:   Mon, 19 Jul 2021 16:51:43 +0200
+Message-Id: <20210719144950.166087862@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raymond Tan <raymond.tan@intel.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 457d22850b27de3aea336108272d08602c55fdf7 ]
+[ Upstream commit 7fbf6b731bca347700e460d94b130f9d734b33e9 ]
 
-There's no separate low power (LP) version of Elkhart Lake, thus
-this patch updates the PCI Device ID DEFINE to indicate this.
+Interrupt line can be configured on different hardware in different way,
+even inverted.  Therefore driver should not enforce specific trigger
+type - edge falling - but instead rely on Devicetree to configure it.
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Raymond Tan <raymond.tan@intel.com>
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Link: https://lore.kernel.org/r/20210512135901.28495-1-heikki.krogerus@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The Maxim 17047/77693 datasheets describe the interrupt line as active
+low with a requirement of acknowledge from the CPU therefore the edge
+falling is not correct.
+
+The interrupt line is shared between PMIC and RTC driver, so using level
+sensitive interrupt is here especially important to avoid races.  With
+an edge configuration in case if first PMIC signals interrupt followed
+shortly after by the RTC, the interrupt might not be yet cleared/acked
+thus the second one would not be noticed.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-pci.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/power/supply/max17042_battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
-index 19789e94bbd0..45ec5ac9876e 100644
---- a/drivers/usb/dwc3/dwc3-pci.c
-+++ b/drivers/usb/dwc3/dwc3-pci.c
-@@ -36,7 +36,7 @@
- #define PCI_DEVICE_ID_INTEL_CNPH		0xa36e
- #define PCI_DEVICE_ID_INTEL_CNPV		0xa3b0
- #define PCI_DEVICE_ID_INTEL_ICLLP		0x34ee
--#define PCI_DEVICE_ID_INTEL_EHLLP		0x4b7e
-+#define PCI_DEVICE_ID_INTEL_EHL			0x4b7e
- #define PCI_DEVICE_ID_INTEL_TGPLP		0xa0ee
- #define PCI_DEVICE_ID_INTEL_TGPH		0x43ee
- #define PCI_DEVICE_ID_INTEL_JSP			0x4dee
-@@ -167,7 +167,7 @@ static int dwc3_pci_quirks(struct dwc3_pci *dwc)
- 	if (pdev->vendor == PCI_VENDOR_ID_INTEL) {
- 		if (pdev->device == PCI_DEVICE_ID_INTEL_BXT ||
- 		    pdev->device == PCI_DEVICE_ID_INTEL_BXT_M ||
--		    pdev->device == PCI_DEVICE_ID_INTEL_EHLLP) {
-+		    pdev->device == PCI_DEVICE_ID_INTEL_EHL) {
- 			guid_parse(PCI_INTEL_BXT_DSM_GUID, &dwc->guid);
- 			dwc->has_dsm_for_pm = true;
- 		}
-@@ -375,8 +375,8 @@ static const struct pci_device_id dwc3_pci_id_table[] = {
- 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ICLLP),
- 	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
+index 1d7326cd8fc6..ce2041b30a06 100644
+--- a/drivers/power/supply/max17042_battery.c
++++ b/drivers/power/supply/max17042_battery.c
+@@ -1104,7 +1104,7 @@ static int max17042_probe(struct i2c_client *client,
+ 	}
  
--	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_EHLLP),
--	  (kernel_ulong_t) &dwc3_pci_intel_swnode },
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_EHL),
-+	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 	if (client->irq) {
+-		unsigned int flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
++		unsigned int flags = IRQF_ONESHOT;
  
- 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_TGPLP),
- 	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
+ 		/*
+ 		 * On ACPI systems the IRQ may be handled by ACPI-event code,
 -- 
 2.30.2
 
