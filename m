@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D495D3CE6C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219993CE7E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352103AbhGSQNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:13:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42190 "EHLO mail.kernel.org"
+        id S1354772AbhGSQfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:35:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346060AbhGSPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4955E61241;
-        Mon, 19 Jul 2021 15:50:15 +0000 (UTC)
+        id S1347848AbhGSPWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:22:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0A0961006;
+        Mon, 19 Jul 2021 15:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709815;
-        bh=6VI+H0xnqlJM+JgDKkrwBxzWYaGpPM5UawKrq2R/Mok=;
+        s=korg; t=1626710371;
+        bh=Z6ZydqLjlMDD66kySE5xSLlnlFJ4OA8zpDyXLTtJ/IE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XmiVyJtaaIVJ4YUafvGvOjRv28OKRCoZoycQNnTkBQzb1sWgjsvrj4olYYERs3nOH
-         xuK9LxNicVe565tXGUlbL7ayzS70rsMSICiRTe3coG8g95NzD5OCMAAXvZunVh0BeY
-         2AV/9QzV0oXcA0qtpa8gY+Jbn1L5sTtvLfvPO5xA=
+        b=P/oTsHBj36S2H6fIdjctm2eRoWABDayCM40CywRYM1wDZuyf1LRgRdKOdNi5r21US
+         v55aVxrDZZ1DmTzgP5eRDmZn6UIe/pgkIizj6XrLJf3dJZmuGWEBTzZKYbs3DqonkX
+         JKjN4oxHLuuv73hVZ922aWduwdzYaQlYcumgeqdM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 110/149] virtio_net: move tx vq operation under tx queue lock
+Subject: [PATCH 5.10 189/243] reset: a10sr: add missing of_match_table reference
 Date:   Mon, 19 Jul 2021 16:53:38 +0200
-Message-Id: <20210719144927.436821051@linuxfoundation.org>
+Message-Id: <20210719144947.021197330@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,69 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael S. Tsirkin <mst@redhat.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 5a2f966d0f3fa0ef6dada7ab9eda74cacee96b8a ]
+[ Upstream commit 466ba3c8ff4fae39e455ff8d080b3d5503302765 ]
 
-It's unsafe to operate a vq from multiple threads.
-Unfortunately this is exactly what we do when invoking
-clean tx poll from rx napi.
-Same happens with napi-tx even without the
-opportunistic cleaning from the receive interrupt: that races
-with processing the vq in start_xmit.
+The driver defined of_device_id table but did not use it with
+of_match_table.  This prevents usual matching via devicetree and causes
+a W=1 warning:
 
-As a fix move everything that deals with the vq to under tx lock.
+  drivers/reset/reset-a10sr.c:111:34: warning:
+    ‘a10sr_reset_of_match’ defined but not used [-Wunused-const-variable=]
 
-Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 627006820268 ("reset: Add Altera Arria10 SR Reset Controller")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210507112803.20012-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ drivers/reset/reset-a10sr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index af7d69719c4f..15453d6fcc23 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1504,6 +1504,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 	struct virtnet_info *vi = sq->vq->vdev->priv;
- 	unsigned int index = vq2txq(sq->vq);
- 	struct netdev_queue *txq;
-+	int opaque;
-+	bool done;
- 
- 	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
- 		/* We don't need to enable cb for XDP */
-@@ -1513,10 +1515,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 
- 	txq = netdev_get_tx_queue(vi->dev, index);
- 	__netif_tx_lock(txq, raw_smp_processor_id());
-+	virtqueue_disable_cb(sq->vq);
- 	free_old_xmit_skbs(sq, true);
-+
-+	opaque = virtqueue_enable_cb_prepare(sq->vq);
-+
-+	done = napi_complete_done(napi, 0);
-+
-+	if (!done)
-+		virtqueue_disable_cb(sq->vq);
-+
- 	__netif_tx_unlock(txq);
- 
--	virtqueue_napi_complete(napi, sq->vq, 0);
-+	if (done) {
-+		if (unlikely(virtqueue_poll(sq->vq, opaque))) {
-+			if (napi_schedule_prep(napi)) {
-+				__netif_tx_lock(txq, raw_smp_processor_id());
-+				virtqueue_disable_cb(sq->vq);
-+				__netif_tx_unlock(txq);
-+				__napi_schedule(napi);
-+			}
-+		}
-+	}
- 
- 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
- 		netif_tx_wake_queue(txq);
+diff --git a/drivers/reset/reset-a10sr.c b/drivers/reset/reset-a10sr.c
+index 7eacc89382f8..99b3bc8382f3 100644
+--- a/drivers/reset/reset-a10sr.c
++++ b/drivers/reset/reset-a10sr.c
+@@ -118,6 +118,7 @@ static struct platform_driver a10sr_reset_driver = {
+ 	.probe	= a10sr_reset_probe,
+ 	.driver = {
+ 		.name		= "altr_a10sr_reset",
++		.of_match_table	= a10sr_reset_of_match,
+ 	},
+ };
+ module_platform_driver(a10sr_reset_driver);
 -- 
 2.30.2
 
