@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E581E3CE763
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAFA3CE777
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353530AbhGSQZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:25:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56066 "EHLO mail.kernel.org"
+        id S1354295AbhGSQ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:26:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347182AbhGSPPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:15:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 584DE61003;
-        Mon, 19 Jul 2021 15:56:29 +0000 (UTC)
+        id S1346534AbhGSPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:14:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AEE061363;
+        Mon, 19 Jul 2021 15:55:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710189;
-        bh=YqEKOD+jbFI2SPkTCsG8hHcld8NPo8tsmJX1Z8hqID4=;
+        s=korg; t=1626710108;
+        bh=aNgvai2dHUFLmKna88+VloTUFYnAA2YEoAtKk5xaEIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ISETRliupciNk8Mqqt/NhW4d7q3oylGs5fEJZpPi/zOBTPQRxlNWHt8GS/p8mNFj+
-         LQ19dyQ6Jcv4Xu01iILa2EIP3/UE7nNU6iYhYSdqU2jVM8ZlBLDpdhtf0iq40RV8IK
-         iWz6q4PiY4HBfyr7n5jgZvNnlGUqRNxw7QYsIr/s=
+        b=GLvk+01MwpXtnGinp21PY4qBAk9hxIyh/JaGkUU5xHUmIugNgg+OAh3zwtL9efPVr
+         LG/BEDZY65r0g+bq20ocI1h11cBM4Pg4bLbkHr3SdER6Vy6Hx63PuhUfwWPLhAxGAR
+         Tu3Kcl26iLN75s4uCzC+Lbj2CO3m52wEYs7fVGEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 079/243] scsi: storvsc: Correctly handle multiple flags in srb_status
-Date:   Mon, 19 Jul 2021 16:51:48 +0200
-Message-Id: <20210719144943.450202519@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 080/243] ALSA: ppc: fix error return code in snd_pmac_probe()
+Date:   Mon, 19 Jul 2021 16:51:49 +0200
+Message-Id: <20210719144943.480855294@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,118 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Kelley <mikelley@microsoft.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 52e1b3b3daa9d53f0204bf474ee1d4b1beb38234 ]
+[ Upstream commit 80b9c1be567c3c6bbe0d4b290af578e630485b5d ]
 
-Hyper-V is observed to sometimes set multiple flags in the srb_status, such
-as ABORTED and ERROR. Current code in storvsc_handle_error() handles only a
-single flag being set, and does nothing when multiple flags are set.  Fix
-this by changing the case statement into a series of "if" statements
-testing individual flags. The functionality for handling each flag is
-unchanged.
+If snd_pmac_tumbler_init() or snd_pmac_tumbler_post_init() fails,
+snd_pmac_probe() need return error code.
 
-Link: https://lore.kernel.org/r/1622827263-12516-3-git-send-email-mikelley@microsoft.com
-Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210616021121.1991502-1-yangyingliang@huawei.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/storvsc_drv.c | 61 +++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 28 deletions(-)
+ sound/ppc/powermac.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index ded00a89bfc4..0ee0b80006e0 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -994,17 +994,40 @@ static void storvsc_handle_error(struct vmscsi_request *vm_srb,
- 	struct storvsc_scan_work *wrk;
- 	void (*process_err_fn)(struct work_struct *work);
- 	struct hv_host_device *host_dev = shost_priv(host);
--	bool do_work = false;
- 
--	switch (SRB_STATUS(vm_srb->srb_status)) {
--	case SRB_STATUS_ERROR:
-+	/*
-+	 * In some situations, Hyper-V sets multiple bits in the
-+	 * srb_status, such as ABORTED and ERROR. So process them
-+	 * individually, with the most specific bits first.
-+	 */
-+
-+	if (vm_srb->srb_status & SRB_STATUS_INVALID_LUN) {
-+		set_host_byte(scmnd, DID_NO_CONNECT);
-+		process_err_fn = storvsc_remove_lun;
-+		goto do_work;
-+	}
-+
-+	if (vm_srb->srb_status & SRB_STATUS_ABORTED) {
-+		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID &&
-+		    /* Capacity data has changed */
-+		    (asc == 0x2a) && (ascq == 0x9)) {
-+			process_err_fn = storvsc_device_scan;
-+			/*
-+			 * Retry the I/O that triggered this.
-+			 */
-+			set_host_byte(scmnd, DID_REQUEUE);
-+			goto do_work;
-+		}
-+	}
-+
-+	if (vm_srb->srb_status & SRB_STATUS_ERROR) {
- 		/*
- 		 * Let upper layer deal with error when
- 		 * sense message is present.
- 		 */
--
- 		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID)
--			break;
-+			return;
-+
- 		/*
- 		 * If there is an error; offline the device since all
- 		 * error recovery strategies would have already been
-@@ -1017,37 +1040,19 @@ static void storvsc_handle_error(struct vmscsi_request *vm_srb,
- 			set_host_byte(scmnd, DID_PASSTHROUGH);
- 			break;
- 		/*
--		 * On Some Windows hosts TEST_UNIT_READY command can return
--		 * SRB_STATUS_ERROR, let the upper level code deal with it
--		 * based on the sense information.
-+		 * On some Hyper-V hosts TEST_UNIT_READY command can
-+		 * return SRB_STATUS_ERROR. Let the upper level code
-+		 * deal with it based on the sense information.
- 		 */
- 		case TEST_UNIT_READY:
- 			break;
- 		default:
- 			set_host_byte(scmnd, DID_ERROR);
- 		}
--		break;
--	case SRB_STATUS_INVALID_LUN:
--		set_host_byte(scmnd, DID_NO_CONNECT);
--		do_work = true;
--		process_err_fn = storvsc_remove_lun;
--		break;
--	case SRB_STATUS_ABORTED:
--		if (vm_srb->srb_status & SRB_STATUS_AUTOSENSE_VALID &&
--		    (asc == 0x2a) && (ascq == 0x9)) {
--			do_work = true;
--			process_err_fn = storvsc_device_scan;
--			/*
--			 * Retry the I/O that triggered this.
--			 */
--			set_host_byte(scmnd, DID_REQUEUE);
--		}
--		break;
- 	}
-+	return;
- 
--	if (!do_work)
--		return;
--
-+do_work:
- 	/*
- 	 * We need to schedule work to process this error; schedule it.
- 	 */
+diff --git a/sound/ppc/powermac.c b/sound/ppc/powermac.c
+index 96ef55082bf9..b135d114ce89 100644
+--- a/sound/ppc/powermac.c
++++ b/sound/ppc/powermac.c
+@@ -77,7 +77,11 @@ static int snd_pmac_probe(struct platform_device *devptr)
+ 		sprintf(card->shortname, "PowerMac %s", name_ext);
+ 		sprintf(card->longname, "%s (Dev %d) Sub-frame %d",
+ 			card->shortname, chip->device_id, chip->subframe);
+-		if ( snd_pmac_tumbler_init(chip) < 0 || snd_pmac_tumbler_post_init() < 0)
++		err = snd_pmac_tumbler_init(chip);
++		if (err < 0)
++			goto __error;
++		err = snd_pmac_tumbler_post_init();
++		if (err < 0)
+ 			goto __error;
+ 		break;
+ 	case PMAC_AWACS:
 -- 
 2.30.2
 
