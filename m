@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBE43CE5CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAE33CE60B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbhGSPxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58992 "EHLO mail.kernel.org"
+        id S1351691AbhGSQAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:00:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345497AbhGSPEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:04:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B8D161351;
-        Mon, 19 Jul 2021 15:44:06 +0000 (UTC)
+        id S1345490AbhGSPEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:04:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D341261396;
+        Mon, 19 Jul 2021 15:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709447;
-        bh=A9iVZeAtGVUZg5jJkN5qSKQzO3MKOa1jvyK7N/uxNa4=;
+        s=korg; t=1626709449;
+        bh=tHqcx/RbHcKopyWXvSFnQBhyo19ftC2v//zfIdwxrEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nEKcf1ycZ2auY13Jm2Xs2EHGRLIs1RWtFNEyu6tarFG3vXnvjJrB+jtgiMpdIFa06
-         nJ9Sp0YvBo635WL1ENEzSDl59LMIJXsJcnNFVmnOzFqrZPSDhi75JtFkoCgu22RveN
-         5P8P2+XgOfGyrc1Sccwxk89uzfJ6UON48HkYmZaE=
+        b=vPWH7dob8boKECRXmenxovVmSqK6zhhsTX/uxmyyo8I64psx1wqW38IhVwvMs6l6j
+         My27ywV4yAO1gl0Kd/p/X6Q1JQbGvBk0OQIfbZ/YxgFpfML3rXqu1zkU2jmHQI7Q++
+         YtKTZHTSLJfUovmRXMX6kKbyq4T580iQvdqy0yJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amithash Prasad <amithash@fb.com>,
-        Tao Ren <rentao.bupt@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 387/421] watchdog: aspeed: fix hardware timeout calculation
-Date:   Mon, 19 Jul 2021 16:53:18 +0200
-Message-Id: <20210719144959.798187652@linuxfoundation.org>
+Subject: [PATCH 4.19 388/421] nfs: fix acl memory leak of posix_acl_create()
+Date:   Mon, 19 Jul 2021 16:53:19 +0200
+Message-Id: <20210719144959.834321741@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -42,38 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit e7dc481c92060f9ce872878b0b7a08c24713a7e5 ]
+[ Upstream commit 1fcb6fcd74a222d9ead54d405842fc763bb86262 ]
 
-Fix hardware timeout calculation in aspeed_wdt_set_timeout function to
-ensure the reload value does not exceed the hardware limit.
+When looking into another nfs xfstests report, I found acl and
+default_acl in nfs3_proc_create() and nfs3_proc_mknod() error
+paths are possibly leaked. Fix them in advance.
 
-Fixes: efa859f7d786 ("watchdog: Add Aspeed watchdog driver")
-Reported-by: Amithash Prasad <amithash@fb.com>
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210417034249.5978-1-rentao.bupt@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Fixes: 013cdf1088d7 ("nfs: use generic posix ACL infrastructure for v3 Posix ACLs")
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Anna Schumaker <anna.schumaker@netapp.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/aspeed_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/nfs3proc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-index d84d6cbd9697..814041d4e287 100644
---- a/drivers/watchdog/aspeed_wdt.c
-+++ b/drivers/watchdog/aspeed_wdt.c
-@@ -149,7 +149,7 @@ static int aspeed_wdt_set_timeout(struct watchdog_device *wdd,
+diff --git a/fs/nfs/nfs3proc.c b/fs/nfs/nfs3proc.c
+index ec8a9efa268f..e302f8370b9b 100644
+--- a/fs/nfs/nfs3proc.c
++++ b/fs/nfs/nfs3proc.c
+@@ -346,7 +346,7 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+ 				break;
  
- 	wdd->timeout = timeout;
+ 			case NFS3_CREATE_UNCHECKED:
+-				goto out;
++				goto out_release_acls;
+ 		}
+ 		nfs_fattr_init(data->res.dir_attr);
+ 		nfs_fattr_init(data->res.fattr);
+@@ -695,7 +695,7 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+ 		break;
+ 	default:
+ 		status = -EINVAL;
+-		goto out;
++		goto out_release_acls;
+ 	}
  
--	actual = min(timeout, wdd->max_hw_heartbeat_ms * 1000);
-+	actual = min(timeout, wdd->max_hw_heartbeat_ms / 1000);
- 
- 	writel(actual * WDT_RATE_1MHZ, wdt->base + WDT_RELOAD_VALUE);
- 	writel(WDT_RESTART_MAGIC, wdt->base + WDT_RESTART);
+ 	status = nfs3_do_create(dir, dentry, data);
 -- 
 2.30.2
 
