@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0F63CE7F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50163CE6E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355316AbhGSQgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40604 "EHLO mail.kernel.org"
+        id S1353543AbhGSQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:16:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348084AbhGSPYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:24:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A201B613F5;
-        Mon, 19 Jul 2021 16:00:53 +0000 (UTC)
+        id S1344523AbhGSPKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BBD461264;
+        Mon, 19 Jul 2021 15:51:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710454;
-        bh=xSBtEGB60n4H9EAEjCxhlr3ccB8h/4mssLV8fVgEEwY=;
+        s=korg; t=1626709879;
+        bh=4IG6gmizIJJXG3ujUKlj9tPQg7Xe/8JS38uDa1wvkzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Znr9dj3BsZaZkVQcrn1X9kSgUWWt5B9Br21esMvKrx2/BlenPJSheuueIiGYQrUwq
-         amcDNytyr0KQKTRZ1LvCZxq7U7Z/DHNIC/djmmNGxk2Anz6v7rbAYEJ7KCQ10e2HAf
-         UE19iKMmzkEV/XIj70WFrhPQ5mOSiLXUCpWm9TJA=
+        b=Vui9b9y+9h2GZikoJEr+0JbcQLwNP4RP9afkSvPrJK9nqk64bcD1KAZOaILhCaUF8
+         qX/QZGHrjZoiqGzDmG8QvzzivsZxTIS3F4qwdh6db2iEOjMenj+Oe3/edY1PerU4zl
+         wsN/cbt1fJcGNDEvCgMqOc3gO7fChJBj2RqxQmJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
         Zhen Lei <thunder.leizhen@huawei.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 179/243] ALSA: isa: Fix error return code in snd_cmi8330_probe()
-Date:   Mon, 19 Jul 2021 16:53:28 +0200
-Message-Id: <20210719144946.685052702@linuxfoundation.org>
+        anton.ivanov@cambridgegreys.com,
+        Richard Weinberger <richard@nod.at>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 101/149] um: fix error return code in slip_open()
+Date:   Mon, 19 Jul 2021 16:53:29 +0200
+Message-Id: <20210719144925.320280625@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +44,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 31028cbed26a8afa25533a10425ffa2ab794c76c ]
+[ Upstream commit b77e81fbe5f5fb4ad9a61ec80f6d1e30b6da093a ]
 
-When 'SB_HW_16' check fails, the error code -ENODEV instead of 0 should be
-returned, which is the same as that returned when 'WSS_HW_CMI8330' check
-fails.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-Fixes: 43bcd973d6d0 ("[ALSA] Add snd_card_set_generic_dev() call to ISA drivers")
+Fixes: a3c77c67a443 ("[PATCH] uml: slirp and slip driver cleanups and fixes")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210707074051.2663-1-thunder.leizhen@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-By: anton.ivanov@cambridgegreys.com
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/cmi8330.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/drivers/slip_user.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
-index 4669eb0cc8ce..5434cc90db1d 100644
---- a/sound/isa/cmi8330.c
-+++ b/sound/isa/cmi8330.c
-@@ -548,7 +548,7 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
+diff --git a/arch/um/drivers/slip_user.c b/arch/um/drivers/slip_user.c
+index 8016d32b6809..8d736eb62961 100644
+--- a/arch/um/drivers/slip_user.c
++++ b/arch/um/drivers/slip_user.c
+@@ -145,7 +145,8 @@ static int slip_open(void *data)
  	}
- 	if (acard->sb->hardware != SB_HW_16) {
- 		snd_printk(KERN_ERR PFX "SB16 not found during probe\n");
--		return err;
-+		return -ENODEV;
- 	}
+ 	sfd = err;
  
- 	snd_wss_out(acard->wss, CS4231_MISC_INFO, 0x40); /* switch on MODE2 */
+-	if (set_up_tty(sfd))
++	err = set_up_tty(sfd);
++	if (err)
+ 		goto out_close2;
+ 
+ 	pri->slave = sfd;
 -- 
 2.30.2
 
