@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F59B3CD950
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E01D3CD952
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243391AbhGSO2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:28:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55086 "EHLO mail.kernel.org"
+        id S243139AbhGSO20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:28:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242957AbhGSOXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:23:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E1E161263;
-        Mon, 19 Jul 2021 15:03:16 +0000 (UTC)
+        id S242807AbhGSOXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:23:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9C5361181;
+        Mon, 19 Jul 2021 15:03:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706997;
-        bh=H8XKvv7C/vZQIIq332tLdtjj2OrbCFylKP6Mya91x9g=;
+        s=korg; t=1626707000;
+        bh=MvPgqGi4tTT5o/ehOAay5tYuvqFudz92RH0/8OHz31k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GXMAuwe18k4q7HVNFJCc1HT5hGZEXeGIn01JYJs42J5LAaj+JzRsOf4WMxtD72Iy7
-         YlK5qSkKfo5bt73J1li2FQQQm3VJ3XqqBbr8el5tGqHO5h10Yc8CjezSWGa7Unh7SQ
-         aKVKthplOesQTA33xJ2jQuyQe/ZtsDlC9NHYBo+8=
+        b=XyL08Qq/keYyb1wuxMEvQCcbaN/pwOijZHd5nKrlIqoFsDLbzeSocnuVK5TNJepqS
+         qb2ivd6xDh+V8k0RD6wZ/xLaZcuA/fOxBBu9uljSaFGynqTlwbu24EAL0kOxX7LbCZ
+         cKDr54XsUKJplAde6ywFkWZoO+QmQPHoyfW804bk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 179/188] nfs: fix acl memory leak of posix_acl_create()
-Date:   Mon, 19 Jul 2021 16:52:43 +0200
-Message-Id: <20210719144942.341156605@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 180/188] ALSA: isa: Fix error return code in snd_cmi8330_probe()
+Date:   Mon, 19 Jul 2021 16:52:44 +0200
+Message-Id: <20210719144942.376985006@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -44,48 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 1fcb6fcd74a222d9ead54d405842fc763bb86262 ]
+[ Upstream commit 31028cbed26a8afa25533a10425ffa2ab794c76c ]
 
-When looking into another nfs xfstests report, I found acl and
-default_acl in nfs3_proc_create() and nfs3_proc_mknod() error
-paths are possibly leaked. Fix them in advance.
+When 'SB_HW_16' check fails, the error code -ENODEV instead of 0 should be
+returned, which is the same as that returned when 'WSS_HW_CMI8330' check
+fails.
 
-Fixes: 013cdf1088d7 ("nfs: use generic posix ACL infrastructure for v3 Posix ACLs")
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 43bcd973d6d0 ("[ALSA] Add snd_card_set_generic_dev() call to ISA drivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210707074051.2663-1-thunder.leizhen@huawei.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs3proc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/isa/cmi8330.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/nfs3proc.c b/fs/nfs/nfs3proc.c
-index cb28cceefebe..9f365b004453 100644
---- a/fs/nfs/nfs3proc.c
-+++ b/fs/nfs/nfs3proc.c
-@@ -363,7 +363,7 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
- 				break;
- 
- 			case NFS3_CREATE_UNCHECKED:
--				goto out;
-+				goto out_release_acls;
- 		}
- 		nfs_fattr_init(data->res.dir_attr);
- 		nfs_fattr_init(data->res.fattr);
-@@ -708,7 +708,7 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
- 		break;
- 	default:
- 		status = -EINVAL;
--		goto out;
-+		goto out_release_acls;
+diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
+index dfedfd85f205..463906882b95 100644
+--- a/sound/isa/cmi8330.c
++++ b/sound/isa/cmi8330.c
+@@ -564,7 +564,7 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
+ 	}
+ 	if (acard->sb->hardware != SB_HW_16) {
+ 		snd_printk(KERN_ERR PFX "SB16 not found during probe\n");
+-		return err;
++		return -ENODEV;
  	}
  
- 	status = nfs3_do_create(dir, dentry, data);
+ 	snd_wss_out(acard->wss, CS4231_MISC_INFO, 0x40); /* switch on MODE2 */
 -- 
 2.30.2
 
