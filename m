@@ -2,168 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540B53CD2C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524B73CD2CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236548AbhGSKJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236330AbhGSKJ0 (ORCPT
+        id S236482AbhGSKMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:12:49 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:56102 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235621AbhGSKMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:09:26 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A07C061766
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:58:08 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id k4so21430465wrc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=izuO6gvI65i5N9voqwWRAxIjJnPgY0dtLzVTkR8nBPo=;
-        b=k6FvzoDAJSW94zB39kfmFHDISI3yFTMUzn1gC61Vx6eoZyCD6lYdg1wA9VAdTUifZT
-         CaTyfzOWFktyxbYqVOfyWBbqdlSR+JtngddRYbSNz2/nMqfNEY0my6w93kOIwwTrt3UY
-         /trq4vQrsfCpKxbM9uTjxbp5UpdgKPdg2pBENE1o2WfluC0kfHVKlrdMZKHtxpC46B8+
-         C8IQKJL5iQIL8V/jdUf+bRjXSZs0n+C1W2iBe/byxnB/MzDJwTlU/rWJR+jqOZ0AU7yv
-         nyaUrtXPCPcr3JYHaxkSZKrLUBwWVqRrnNhxJAuOBgehnCcKVu4jfuZAoJ6NZHmP7aO0
-         2P+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=izuO6gvI65i5N9voqwWRAxIjJnPgY0dtLzVTkR8nBPo=;
-        b=ZlAHh5I8cCc0xPJP7j3X7u0pu6XNY7F2LRIEcA9fE/v87LBjDFOz/A4+zBhNFA9BzZ
-         qsBOKTt0YbJhsF0iZSQSvYroM/zNt0KI15C75bzBNZzNliZh416bPf/UGUZWud57FYCT
-         nzHnMp+9k4zpbonQbCKo6GifRAinpQR54qibSd/BY00EBjZdaEwZmZIv6qfsMXPXp0mZ
-         DakzBvQ8JsLMvf9aVXWGgZn1i4Nq/VC9NI8tTawEtvl02z+CzVgPDQ9Ze5Uy0SFFoCdM
-         YBOPH1LxKhziRy9Sxx/PJ8a5/pJ6O8/rKjXjSZDiWDBTupYaR3y61mRsCer7cYEEhOBp
-         oR1A==
-X-Gm-Message-State: AOAM532jyZcH0mKrw8YMVsLCJxsQhiLWkVUvNioCprErNhHq3gW5QUvK
-        XbyjQ1EjIL6PKlk+iVOHkr/OW5rYCSv0nImsLVASwg==
-X-Google-Smtp-Source: ABdhPJzUf1fsMNWHyhn42FHVh+pZyHssv36+V+/tCuvZ0KcZxOo+8M2I8EX37UE2nFduQe5u0Lrwyhm610xT5QNXuiw=
-X-Received: by 2002:a5d:6da9:: with SMTP id u9mr28517634wrs.7.1626691801564;
- Mon, 19 Jul 2021 03:50:01 -0700 (PDT)
+        Mon, 19 Jul 2021 06:12:48 -0400
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 6E0EE3C0034;
+        Mon, 19 Jul 2021 12:53:26 +0200 (CEST)
+Received: from vmlxhi-082.adit-jv.com (10.72.92.165) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 19 Jul
+ 2021 12:53:26 +0200
+Date:   Mon, 19 Jul 2021 12:53:11 +0200
+From:   Dennis Rachui <drachui@de.adit-jv.com>
+To:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+CC:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        <linux-media@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: rcar-csi2: do not update format while streaming
+Message-ID: <20210719105311.GA19719@vmlxhi-082.adit-jv.com>
+References: <1625750578-108454-1-git-send-email-drachui@de.adit-jv.com>
+ <YOhbOHnCn9eFgKWG@oden.dyn.berto.se>
+ <YOoiZM+oicZBD4o1@pendragon.ideasonboard.com>
+ <YO1f+SOTBS44/Wf0@oden.dyn.berto.se>
+ <YO8vs4V/lhVA8mY9@pendragon.ideasonboard.com>
+ <YPAUoQ8KmmAE3fWD@oden.dyn.berto.se>
+ <YPAeirL/qtmNYx99@pendragon.ideasonboard.com>
+ <20210716140921.GB109328@vmlxhi-082.adit-jv.com>
+ <YPGfkcdnwqgozVEu@oden.dyn.berto.se>
 MIME-Version: 1.0
-References: <20210716022332.GC3232@sequoia> <CAHLZf_t5U1bh1H8sULbJz7xrZ-r3Dcmxuw9MMmG2fehS3C72uQ@mail.gmail.com>
-In-Reply-To: <CAHLZf_t5U1bh1H8sULbJz7xrZ-r3Dcmxuw9MMmG2fehS3C72uQ@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 19 Jul 2021 12:49:51 +0200
-Message-ID: <CAHUa44EetPuA_5+UQLW-c=-_OApiRoiq+YjeFs6TRPj6=AJfHw@mail.gmail.com>
-Subject: Re: [PATCH v5 8/8] firmware: tee_bnxt: Release TEE shm, session, and
- context during kexec
-To:     Vikas Gupta <vikas.gupta@broadcom.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YPGfkcdnwqgozVEu@oden.dyn.berto.se>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.72.92.165]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Niklas,
 
-On Fri, Jul 16, 2021 at 4:48 AM Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+> On Fri, Jul 16, 2021 17:02:41 +0200, Niklas Söderlund wrote:
+> > On 2021-07-16 16:09:21 +0200, Dennis Rachui wrote:
+> > > On Thu, Jul 15, 2021 at 12:57:37PM +0200, Niklas Söderlund wrote:
+> > > > On 2021-07-14 21:40:51 +0300, Laurent Pinchart wrote:
+> > > > > On Tue, Jul 13, 2021 at 11:42:17AM +0200, Niklas Söderlund wrote:
+> > > > > > On 2021-07-11 01:42:44 +0300, Laurent Pinchart wrote:
+> > > > > > > On Fri, Jul 09, 2021 at 04:20:40PM +0200, Niklas Söderlund wrote:
+> > > > > > > > On 2021-07-08 15:22:58 +0200, Dennis Rachui wrote:
+> > > > > > > > > Verify that streaming is not active before setting the pad format.
+> > > > > > > > > 
+> > > > > > > > > According to the VIDIOC documentation [1] changes to the 
+> > > > > > > > > active format of a media pad via the VIDIOC_SUBDEV_S_FMT 
+> > > > > > > > > ioctl are applied to the underlying hardware.
+> > > > > > > > > In rcar-csi2 a format change only applies to hardware, when 
+> > > > > > > > > the pipeline is started. While the device is not in use, it 
+> > > > > > > > > is therefore okay to update the format.
+> > > > > > > > > 
+> > > > > > > > > However, when the pipeline is active, this leads to a format 
+> > > > > > > > > mismatch between driver and device.
+> > > > > > > > > Other applications can query the format with 
+> > > > > > > > > VIDIOC_SUBDEV_G_FMT at any time and would be reported a 
+> > > > > > > > > format that does not fit the current stream.
+> > > > > > > > > 
+> > > > > > > > > This commit prevents format update while streaming is active 
+> > > > > > > > > and returns -EBUSY to user space, as suggested by [1].
+> > > > > > > > > 
+> > > > > > > > > [1] 
+> > > > > > > > > Documentation/userspace-api/media/v4l/vidioc-subdev-g-fmt.rs
+> > > > > > > > > t
+> > > > > > > > 
+> > > > > > > > I like that this is addressed, but I wonder is this not 
+> > > > > > > > something that should be fixed in the V4L2 core and not in drivers?
+> > > > > > > 
+> > > > > > > Some drivers may support format changes during streaming (that's 
+> > > > > > > allowed by the V4L2 API, I'm not sure if it's used anywhere 
+> > > > > > > though). While I'd favour not duplicating the same logic in 
+> > > > > > > different (and differently
+> > > > > > > buggy) ways in drivers, I'm not sure how this could be 
+> > > > > > > implemented in a sane way in the V4L2 core in its current state.
+> > > > > > 
+> > > > > > I understand it's possible from some devices to support to format 
+> > > > > > changes during streaming, but as you point out it's the exception 
+> > > > > > and not the rule, if used at all.
+> > > > > > 
+> > > > > > So my point is if we start to enforce this in drivers we are 
+> > > > > > headed down a road where this will be messier to clean up. Would 
+> > > > > > it not make more sens to default the V4L2 core to disallow format 
+> > > > > > changes while streaming and add a new flag to V4L2_SUBDEV_CAP_ to 
+> > > > > > signal that the subdevice supports format changes while streaming?
+> > > > > > 
+> > > > > > We already have V4L2_SUBDEV_CAP_RO_SUBDEV to signal that a 
+> > > > > > subdevice only supports read-only operations so I think it would 
+> > > > > > not be too hard to move this functionality into the core?
+> > > > > 
+> > > > > Yes, that's something we could try. The subdev core will then need 
+> > > > > to track the streaming state, which may require wrapping the 
+> > > > > .s_stream() call. Locking should then also likely be handled by the 
+> > > > > core. Probably nothing impossible, but quite a bit of work. Any 
+> > > > > volunteer ? :-)
+> > > > 
+> > > > We already track the stream count in struct media_entity and it's 
+> > > > incremented/decremented under the media device lock by
+> > > > media_pipeline_start() and media_pipeline_stop(). So I don't think 
+> > > > it's such a hard feature to add.
+> > > > 
+> > > > The large task IMHO is to figure out if we have any subdevice in tree 
+> > > > that allows format changes while streaming and that would need to set 
+> > > > this new V4L2_SUBDEV_CAP_ flag.
+> > >
+> > > Many subdevs allow format changes during streaming. The question is whether any of them do so knowingly, or if they're all buggy :-) I'd be surprised if there
+> > > were more than a couple of drivers that actually support this correctly.
+> > 
+> > From my perspective, the current stream_count from struct media_entity
+> > would not be sufficient. References should be counted per struct media_pad.
+> > Otherwise, devices that allow multiple parallel streams would block user
+> > space from updating media-pads that are not part of an active media-pipeline.
+> > E.g. in rcar-csi2 this could effect a source pad connected to currently
+> > unused VIN device.
 >
-> Hi Allen/Tyler,
->  The patch looks good to me.
-
-Thanks.
-
-Rafal, is it OK if I include this patch together with the rest of the
-patches in this patch set in a pull request to arm-soc?
-
-Thanks,
-Jens
-
+> I understand your reasoning, but with the current V4L2 design is this 
+> really a concern? As s_stream() is not pad/stream aware it acts more or 
+> less as a big start / stop button.
 >
-> Thanks,
-> Vikas
->
->>
->> > From: Allen Pais <apais@linux.microsoft.com>
->> >
->> > Implement a .shutdown hook that will be called during a kexec operation
->> > so that the TEE shared memory, session, and context that were set up
->> > during .probe can be properly freed/closed.
->> >
->> > Additionally, don't use dma-buf backed shared memory for the
->> > fw_shm_pool. dma-buf backed shared memory cannot be reliably freed and
->> > unregistered during a kexec operation even when tee_shm_free() is called
->> > on the shm from a .shutdown hook. The problem occurs because
->> > dma_buf_put() calls fput() which then uses task_work_add(), with the
->> > TWA_RESUME parameter, to queue tee_shm_release() to be called before the
->> > current task returns to user mode. However, the current task never
->> > returns to user mode before the kexec completes so the memory is never
->> > freed nor unregistered.
->> >
->> > Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
->> > allocation so that tee_shm_free() can directly call tee_shm_release().
->> > This will ensure that the shm can be freed and unregistered during a
->> > kexec operation.
->> >
->> > Fixes: 246880958ac9 ("firmware: broadcom: add OP-TEE based BNXT f/w manager")
->> > Cc: stable@vger.kernel.org
->> > Signed-off-by: Allen Pais <apais@linux.microsoft.com>
->> > Co-developed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
->> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
->> > ---
->> >  drivers/firmware/broadcom/tee_bnxt_fw.c | 14 +++++++++++---
->> >  1 file changed, 11 insertions(+), 3 deletions(-)
->> >
->> > diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
->> > index ed10da5313e8..a5bf4c3f6dc7 100644
->> > --- a/drivers/firmware/broadcom/tee_bnxt_fw.c
->> > +++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
->> > @@ -212,10 +212,9 @@ static int tee_bnxt_fw_probe(struct device *dev)
->> >
->> >       pvt_data.dev = dev;
->> >
->> > -     fw_shm_pool = tee_shm_alloc(pvt_data.ctx, MAX_SHM_MEM_SZ,
->> > -                                 TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
->> > +     fw_shm_pool = tee_shm_alloc_kernel_buf(pvt_data.ctx, MAX_SHM_MEM_SZ);
->> >       if (IS_ERR(fw_shm_pool)) {
->> > -             dev_err(pvt_data.dev, "tee_shm_alloc failed\n");
->> > +             dev_err(pvt_data.dev, "tee_shm_alloc_kernel_buf failed\n");
->> >               err = PTR_ERR(fw_shm_pool);
->> >               goto out_sess;
->> >       }
->> > @@ -242,6 +241,14 @@ static int tee_bnxt_fw_remove(struct device *dev)
->> >       return 0;
->> >  }
->> >
->> > +static void tee_bnxt_fw_shutdown(struct device *dev)
->> > +{
->> > +     tee_shm_free(pvt_data.fw_shm_pool);
->> > +     tee_client_close_session(pvt_data.ctx, pvt_data.session_id);
->> > +     tee_client_close_context(pvt_data.ctx);
->> > +     pvt_data.ctx = NULL;
->> > +}
->> > +
->> >  static const struct tee_client_device_id tee_bnxt_fw_id_table[] = {
->> >       {UUID_INIT(0x6272636D, 0x2019, 0x0716,
->> >                   0x42, 0x43, 0x4D, 0x5F, 0x53, 0x43, 0x48, 0x49)},
->> > @@ -257,6 +264,7 @@ static struct tee_client_driver tee_bnxt_fw_driver = {
->> >               .bus            = &tee_bus_type,
->> >               .probe          = tee_bnxt_fw_probe,
->> >               .remove         = tee_bnxt_fw_remove,
->> > +             .shutdown       = tee_bnxt_fw_shutdown,
->> >       },
->> >  };
->> >
->> > --
->> > 2.25.1
->> >
->>
->> ----- End forwarded message -----
+> When starting all enabled media links formats needs to be evaluated 
+> (something we can't do yet with multiplexed streams..) and all 
+> subdivides that are part of the media graph are started. We can not 
+> enable or disable any media links while the pipeline is streaming so I'm 
+> not sure configuring the format of pads not part of the active capture 
+> is such a big concern, am I missing something?
+
+I missed the fact that media links can not be enabled / disabled while
+the pipeline is streaming. So I agree that preventing format updates while
+the entity is busy is no big concern. Userspace applications should be aware
+of this just as they must be aware that link enable / disable only works
+while the pipeline is not running.
+
+> 
+> > > > > > > > > Note: after creation of this commit, it was noticed that 
+> > > > > > > > > Steve Longerbeam has a very similar solution in his fork.
+> > > > > > > > > 
+> > > > > > > > > Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car 
+> > > > > > > > > MIPI CSI-2 receiver driver")
+> > > > > > > > > Cc: Steve Longerbeam <slongerbeam@gmail.com>
+> > > > > > > > > Signed-off-by: Dennis Rachui <drachui@de.adit-jv.com>
+> > > > > > > > > ---
+> > > > > > > > >  drivers/media/platform/rcar-vin/rcar-csi2.c | 21 
+> > > > > > > > > ++++++++++++++++++++-
+> > > > > > > > >  1 file changed, 20 insertions(+), 1 deletion(-)
+> > > > > > > > > 
+> > > > > > > > > diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c 
+> > > > > > > > > b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > > index e28eff0..98152e1 100644
+> > > > > > > > > --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > > +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> > > > > > > > > @@ -724,18 +724,37 @@ static int rcsi2_set_pad_format(struct 
+> > > > > > > > > v4l2_subdev *sd,  {
+> > > > > > > > >  	struct rcar_csi2 *priv = sd_to_csi2(sd);
+> > > > > > > > >  	struct v4l2_mbus_framefmt *framefmt;
+> > > > > > > > > +	int ret = 0;
+> > > > > > > > > +
+> > > > > > > > > +	mutex_lock(&priv->lock);
+> > > > > > > > >  
+> > > > > > > > >  	if (!rcsi2_code_to_fmt(format->format.code))
+> > > > > > > > >  		format->format.code = rcar_csi2_formats[0].code;
+> > > > > > > > >  
+> > > > > > > > >  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+> > > > > > > > > +
+> > > > > > > > > +		/*
+> > > > > > > > > +		 * Do not apply changes to active format while streaming.
+> > > > > > > > > +		 *
+> > > > > > > > > +		 * Since video streams could be forwarded from sink pad to any
+> > > > > > > > > +		 * source pad (depending on CSI-2 channel routing), all
+> > > > > > > > > +		 * media pads are effected by this rule.
+> > > > > > > > > +		 */
+> > > > > > > > > +		if (priv->stream_count > 0) {
+> > > > > > > > > +			ret = -EBUSY;
+> > > > > > > > > +			goto out;
+> > > > > > > > > +		}
+> > > > > > > > > +
+> > > > > > > > >  		priv->mf = format->format;
+> > > > > > > > >  	} else {
+> > > > > > > > >  		framefmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
+> > > > > > > > >  		*framefmt = format->format;
+> > > > > > > > >  	}
+> > > > > > > > >  
+> > > > > > > > > -	return 0;
+> > > > > > > > > +out:
+> > > > > > > > > +	mutex_unlock(&priv->lock);
+> > > > > > > > > +
+> > > > > > > > > +	return ret;
+> > > > > > > > >  }
+> > > > > > > > >  
+> > > > > > > > >  static int rcsi2_get_pad_format(struct v4l2_subdev *sd,
+
+--
+Regards,
+Dennis Rachui
