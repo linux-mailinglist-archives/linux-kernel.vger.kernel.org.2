@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F153CE9A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9973CEA0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351761AbhGSQ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:59:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
+        id S1376980AbhGSRG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:06:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239677AbhGSPcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234455AbhGSPcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 11:32:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDC756141C;
-        Mon, 19 Jul 2021 16:10:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7030C61422;
+        Mon, 19 Jul 2021 16:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711025;
-        bh=EayQJH41HGe9eO8a/AV/J7oH9DzSjk/fgRTLlqVfSI8=;
+        s=korg; t=1626711028;
+        bh=SnAOl7fKWjhe20IC1l1tJmqdbQ16Q/mHPq4YJDqkeLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vylTQSlIXXusVyWUkEa7ZvVqXv6irPTzFo5W4nZ+YxOZtHQjg9nFdt2db+tpmWVc4
-         9tGaqiRhFC+XPBaEBDW2Uw1g0aBQNyHDxgA3934aZKBYFDBYs/J7L+LX+w4nQRnHwk
-         gsUN7DHeJbEiEr+WkhExNFv/0qbm59WqyM/y22yA=
+        b=RGAepVItK7Slc7thB6ZC4yJDsvNTpXiys5UCKY7LtKl88ggDnLDJs4/BPpWM6eJMJ
+         6e+FUDKAcI8bvmGWBUa2NeB4ZbrCFuGXOG4C+864mZ/ZH4ZQPy+Ymx8yOFtEfHvhHn
+         j8b5EnmygfzJqd+MoElZprc9f/i9tZIr3PmvyA6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunguang Xu <brookxu@tencent.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 198/351] block: fix the problem of io_ticks becoming smaller
-Date:   Mon, 19 Jul 2021 16:52:24 +0200
-Message-Id: <20210719144951.514220664@linuxfoundation.org>
+Subject: [PATCH 5.13 199/351] power: supply: surface_battery: Fix battery event handling
+Date:   Mon, 19 Jul 2021 16:52:25 +0200
+Message-Id: <20210719144951.546574054@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
 References: <20210719144944.537151528@linuxfoundation.org>
@@ -40,40 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+From: Maximilian Luz <luzmaximilian@gmail.com>
 
-[ Upstream commit d80c228d44640f0b47b57a2ca4afa26ef87e16b0 ]
+[ Upstream commit e633f33d2669cb54db2846f9cde08662d254dbd3 ]
 
-On the IO submission path, blk_account_io_start() may interrupt
-the system interruption. When the interruption returns, the value
-of part->stamp may have been updated by other cores, so the time
-value collected before the interruption may be less than part->
-stamp. So when this happens, we should do nothing to make io_ticks
-more accurate? For kernels less than 5.0, this may cause io_ticks
-to become smaller, which in turn may cause abnormal ioutil values.
+The battery subsystem of the Surface Aggregator Module EC requires us to
+register the battery notifier with instance ID 0. However, battery
+events are actually sent with the instance ID corresponding to the
+device, which is nonzero. Thus, the strict-matching approach doesn't
+work here and will discard events that the driver is expected to handle.
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/1625521646-1069-1-git-send-email-brookxu.cn@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+To fix this we have to fall back on notifier matching by target-category
+only and have to manually check the instance ID in the notifier
+callback.
+
+Fixes: 167f77f7d0b3 ("power: supply: Add battery driver for Surface Aggregator Module")
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/supply/surface_battery.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 9bcdae93f6d4..ce0125efbaa7 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1253,7 +1253,7 @@ static void update_io_ticks(struct block_device *part, unsigned long now,
- 	unsigned long stamp;
- again:
- 	stamp = READ_ONCE(part->bd_stamp);
--	if (unlikely(stamp != now)) {
-+	if (unlikely(time_after(now, stamp))) {
- 		if (likely(cmpxchg(&part->bd_stamp, stamp, now) == stamp))
- 			__part_stat_add(part, io_ticks, end ? now - stamp : 1);
- 	}
+diff --git a/drivers/power/supply/surface_battery.c b/drivers/power/supply/surface_battery.c
+index 7efa431a62b2..5ec2e6bb2465 100644
+--- a/drivers/power/supply/surface_battery.c
++++ b/drivers/power/supply/surface_battery.c
+@@ -345,6 +345,16 @@ static u32 spwr_notify_bat(struct ssam_event_notifier *nf, const struct ssam_eve
+ 	struct spwr_battery_device *bat = container_of(nf, struct spwr_battery_device, notif);
+ 	int status;
+ 
++	/*
++	 * We cannot use strict matching when registering the notifier as the
++	 * EC expects us to register it against instance ID 0. Strict matching
++	 * would thus drop events, as those may have non-zero instance IDs in
++	 * this subsystem. So we need to check the instance ID of the event
++	 * here manually.
++	 */
++	if (event->instance_id != bat->sdev->uid.instance)
++		return 0;
++
+ 	dev_dbg(&bat->sdev->dev, "power event (cid = %#04x, iid = %#04x, tid = %#04x)\n",
+ 		event->command_id, event->instance_id, event->target_id);
+ 
+@@ -720,8 +730,8 @@ static void spwr_battery_init(struct spwr_battery_device *bat, struct ssam_devic
+ 	bat->notif.base.fn = spwr_notify_bat;
+ 	bat->notif.event.reg = registry;
+ 	bat->notif.event.id.target_category = sdev->uid.category;
+-	bat->notif.event.id.instance = 0;
+-	bat->notif.event.mask = SSAM_EVENT_MASK_STRICT;
++	bat->notif.event.id.instance = 0;	/* need to register with instance 0 */
++	bat->notif.event.mask = SSAM_EVENT_MASK_TARGET;
+ 	bat->notif.event.flags = SSAM_EVENT_SEQUENCED;
+ 
+ 	bat->psy_desc.name = bat->name;
 -- 
 2.30.2
 
