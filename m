@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9CA3CCDC1
+	by mail.lfdr.de (Postfix) with ESMTP id 52B393CCDC0
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbhGSGEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:04:10 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:52498
+        id S234641AbhGSGEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 02:04:06 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:47764
         "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229916AbhGSGEH (ORCPT
+        by vger.kernel.org with SMTP id S229916AbhGSGEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:04:07 -0400
+        Mon, 19 Jul 2021 02:04:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=OHtXPeheLKt25R6qdl+TNvmKAmxTmqb0MxhK2ixgViI=; b=X
-        IbDjUKJcxKOQTCFX0mso/24KvENgvOGgZ2lbFLgvHyKIJ9x6OH89tPvmd+7JGKgJ
-        ZiVD656QfGsMr9LNHF90JXGz63zH0Q3ijIF5S63EG1cL8xB2lE7J04HGsjJe9JXI
-        JGFn+aGJyLbDfCtp1LzFS2DxMz+9nbdeXC0H0BDFQo=
+        Message-Id; bh=Q7+BGXYftvCRag2jvBdOV8u/ImPBworA0uRtGNa9n5w=; b=O
+        6xxY12wmjSkSxdFAIsPHmL/5K61bxRfN5VyzvB14XwWxVAIP7q3TWdzBcN5IDd0u
+        x00WpOeTkhvoQusi9So2WNUMj3wFgHOfCcPR8otiT4M5G0ff8C6mBSc421gj/07X
+        /Nd4kP9NMa9c+LI9QCuSiY7+wKHRwAxFu6RBSWruaE=
 Received: from localhost.localdomain (unknown [10.162.86.133])
-        by app2 (Coremail) with SMTP id XQUFCgAn32gHFfVgD0joBA--.1817S3;
-        Mon, 19 Jul 2021 14:00:40 +0800 (CST)
+        by app2 (Coremail) with SMTP id XQUFCgBn4GkYFfVgXUnoBA--.1807S3;
+        Mon, 19 Jul 2021 14:00:56 +0800 (CST)
 From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+To:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
         Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] iommu/amd: Convert from atomic_t to refcount_t on device_state->count
-Date:   Mon, 19 Jul 2021 14:00:37 +0800
-Message-Id: <1626674437-56007-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Subject: [PATCH] RDMA/hfi1: Convert from atomic_t to refcount_t on hfi1_devdata->user_refcount
+Date:   Mon, 19 Jul 2021 14:00:53 +0800
+Message-Id: <1626674454-56075-1-git-send-email-xiyuyang19@fudan.edu.cn>
 X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XQUFCgAn32gHFfVgD0joBA--.1817S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZFykZr15CF15Jwb_yoW8Kr1kpF
-        4DGFy5KFW8Xrn7Kr13Aw17ur90g34kZ3yfKryjy3s7KFy3J3y5K3WkZFy7ArWUJFZ3Zry7
-        X3Wj9rs5uayjgF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: XQUFCgBn4GkYFfVgXUnoBA--.1807S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFWkXrWDArykZF45trWxtFb_yoW5Kr4rpF
+        4UKry5KFWFqF429a1ktayjvFWfXa4xJ3s5XF95t343uF13Zw4aqFnYkFyUXr95Jrn3Arya
+        vr4j9FWUCa1xWaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUvq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
         1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
@@ -47,7 +48,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3tF17ZFykZr15CF15Jwb_yoW8Kr1kpF
         8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
         xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI
         8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
+        jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
         ZFpf9x0JUqFALUUUUU=
 X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
@@ -60,66 +61,90 @@ accidental underflow and overflow and further use-after-free situations.
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- drivers/iommu/amd/iommu_v2.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/hfi1/chip.c     | 2 +-
+ drivers/infiniband/hw/hfi1/file_ops.c | 6 +++---
+ drivers/infiniband/hw/hfi1/hfi.h      | 3 ++-
+ drivers/infiniband/hw/hfi1/init.c     | 2 +-
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/amd/iommu_v2.c b/drivers/iommu/amd/iommu_v2.c
-index f8d4ad421e07..15d64f916fe5 100644
---- a/drivers/iommu/amd/iommu_v2.c
-+++ b/drivers/iommu/amd/iommu_v2.c
-@@ -6,6 +6,7 @@
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index c97544638367..50ffb8244625 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -15336,7 +15336,7 @@ int hfi1_init_dd(struct hfi1_devdata *dd)
+ 	init_completion(&dd->user_comp);
  
- #define pr_fmt(fmt)     "AMD-Vi: " fmt
+ 	/* The user refcount starts with one to inidicate an active device */
+-	atomic_set(&dd->user_refcount, 1);
++	refcount_set(&dd->user_refcount, 1);
+ 
+ 	goto bail;
+ 
+diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+index 955c3637980e..6dbfb794c255 100644
+--- a/drivers/infiniband/hw/hfi1/file_ops.c
++++ b/drivers/infiniband/hw/hfi1/file_ops.c
+@@ -194,7 +194,7 @@ static int hfi1_file_open(struct inode *inode, struct file *fp)
+ 	if (!((dd->flags & HFI1_PRESENT) && dd->kregbase1))
+ 		return -EINVAL;
+ 
+-	if (!atomic_inc_not_zero(&dd->user_refcount))
++	if (!refcount_inc_not_zero(&dd->user_refcount))
+ 		return -ENXIO;
+ 
+ 	/* The real work is performed later in assign_ctxt() */
+@@ -213,7 +213,7 @@ static int hfi1_file_open(struct inode *inode, struct file *fp)
+ nomem:
+ 	kfree(fd);
+ 	fp->private_data = NULL;
+-	if (atomic_dec_and_test(&dd->user_refcount))
++	if (refcount_dec_and_test(&dd->user_refcount))
+ 		complete(&dd->user_comp);
+ 	return -ENOMEM;
+ }
+@@ -711,7 +711,7 @@ static int hfi1_file_close(struct inode *inode, struct file *fp)
+ 	deallocate_ctxt(uctxt);
+ done:
+ 
+-	if (atomic_dec_and_test(&dd->user_refcount))
++	if (refcount_dec_and_test(&dd->user_refcount))
+ 		complete(&dd->user_comp);
+ 
+ 	cleanup_srcu_struct(&fdata->pq_srcu);
+diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
+index 31664f43c27f..6cf03d16a495 100644
+--- a/drivers/infiniband/hw/hfi1/hfi.h
++++ b/drivers/infiniband/hw/hfi1/hfi.h
+@@ -48,6 +48,7 @@
+  *
+  */
  
 +#include <linux/refcount.h>
- #include <linux/mmu_notifier.h>
- #include <linux/amd-iommu.h>
- #include <linux/mm_types.h>
-@@ -51,7 +52,7 @@ struct pasid_state {
- struct device_state {
- 	struct list_head list;
- 	u16 devid;
--	atomic_t count;
-+	refcount_t count;
- 	struct pci_dev *pdev;
- 	struct pasid_state **states;
- 	struct iommu_domain *domain;
-@@ -113,7 +114,7 @@ static struct device_state *get_device_state(u16 devid)
- 	spin_lock_irqsave(&state_lock, flags);
- 	dev_state = __get_device_state(devid);
- 	if (dev_state != NULL)
--		atomic_inc(&dev_state->count);
-+		refcount_inc(&dev_state->count);
- 	spin_unlock_irqrestore(&state_lock, flags);
+ #include <linux/interrupt.h>
+ #include <linux/pci.h>
+ #include <linux/dma-mapping.h>
+@@ -1384,7 +1385,7 @@ struct hfi1_devdata {
+ 	/* Number of verbs contexts which have disabled ASPM */
+ 	atomic_t aspm_disabled_cnt;
+ 	/* Keeps track of user space clients */
+-	atomic_t user_refcount;
++	refcount_t user_refcount;
+ 	/* Used to wait for outstanding user space clients before dev removal */
+ 	struct completion user_comp;
  
- 	return dev_state;
-@@ -144,7 +145,7 @@ static void free_device_state(struct device_state *dev_state)
- 
- static void put_device_state(struct device_state *dev_state)
- {
--	if (atomic_dec_and_test(&dev_state->count))
-+	if (refcount_dec_and_test(&dev_state->count))
- 		wake_up(&dev_state->wq);
- }
- 
-@@ -765,7 +766,7 @@ int amd_iommu_init_device(struct pci_dev *pdev, int pasids)
- 	for (dev_state->pasid_levels = 0; (tmp - 1) & ~0x1ff; tmp >>= 9)
- 		dev_state->pasid_levels += 1;
- 
--	atomic_set(&dev_state->count, 1);
-+	refcount_set(&dev_state->count, 1);
- 	dev_state->max_pasids = pasids;
- 
- 	ret = -ENOMEM;
-@@ -856,7 +857,7 @@ void amd_iommu_free_device(struct pci_dev *pdev)
- 	 * Wait until the last reference is dropped before freeing
- 	 * the device state.
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index 0986aa065418..0b2e19a335c5 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -1752,7 +1752,7 @@ static void wait_for_clients(struct hfi1_devdata *dd)
+ 	 * Remove the device init value and complete the device if there is
+ 	 * no clients or wait for active clients to finish.
  	 */
--	wait_event(dev_state->wq, !atomic_read(&dev_state->count));
-+	wait_event(dev_state->wq, !refcount_read(&dev_state->count));
- 	free_device_state(dev_state);
- }
- EXPORT_SYMBOL(amd_iommu_free_device);
+-	if (atomic_dec_and_test(&dd->user_refcount))
++	if (refcount_dec_and_test(&dd->user_refcount))
+ 		complete(&dd->user_comp);
+ 
+ 	wait_for_completion(&dd->user_comp);
 -- 
 2.7.4
 
