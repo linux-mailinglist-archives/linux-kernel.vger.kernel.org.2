@@ -2,105 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB283CEC19
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE393CECEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380525AbhGSR3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:29:25 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:16618 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346155AbhGSPqz (ORCPT
+        id S1382398AbhGSRjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352487AbhGSQOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:46:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626712055; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=0IX0cVxa2i7vjg48zuOCkM8MQPeVf5ULa5JqRGdLPGA=;
- b=jUmETp7jpbA+4eJkQiBtLifPxFanhLuBHf1SWIUozQuaVVNyn8moZG5lN2870eEESD4ftYnI
- v+BLOSj+pY2yaNfgZKsy1vfv0dcnNXxjOCwuCtEbfJt31CI99KhVxfP0/8C0rGjmp3uhlV+q
- cV3NJyywJ/1yqGvJoaPo+slY8Nk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60f5a7eee81205dd0a92a47d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Jul 2021 16:27:26
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 38DFCC41630; Mon, 19 Jul 2021 16:27:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 800F8C43146;
-        Mon, 19 Jul 2021 16:27:25 +0000 (UTC)
+        Mon, 19 Jul 2021 12:14:04 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4923C0225AB
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:04:29 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id c197so21282866oib.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2J/IJN7jTSaz10874klSZQm1VrNWG/qhaIIis0kLtYQ=;
+        b=sypUeMmx597p9nhCkl1CQmvT/Mma6iF6Jv0fGO4xYcRqJiCUNDymJQFsWCtuhcu0bj
+         rS1cBOsO5IxY91lSAwmgLaaMp4MkVRui5fvmEfGLOa/PQcijhrz/35vIJQXyrXII964G
+         nuaZ01IKuR5AX/5YbsHdOlHCqPNX2v4GKAD/IY9UhZJKd3UgJ+7Ymb0/aBDQqq/kXEmp
+         EFlnD0kfgpIIOusfU5YYtuQJD/zPf4u9Hqmlr6cix1IqGXsYPjs889WfTnmGAM6flcNr
+         iMlUb2AGpRqH0cT/wfGn2zoT9xLoW7xOFcL3XlJuyHhxb31FN6J1ZS+bZBBGSfiDo1Fr
+         aeng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2J/IJN7jTSaz10874klSZQm1VrNWG/qhaIIis0kLtYQ=;
+        b=r/txQoZL4aQDB51hLgpQjwB9PM19hknTm4CIy+2EtmYKzGA83jhlNXOChCWa9/Sf+H
+         OmShLP/nKlsK9u7b72Pkyx93i0VqOE6i7QZz2uSYHKfqwWr5jHTjkNY1qkGKNnqkxR2V
+         eQS0uXOneTIQpB/nduMb/2XuZL6kwmyTh1wnfuuIuBboWmqUWPjQw+05OLj84HyQagv5
+         CQrMdsKaZbtlQZYVnKFM89N3EQbTtFHhaTjOzU2mAMQYo80ooWHHeVSs+U5qkP3JLa5V
+         /0z+ZSM/C5eGZj0R4xz38J6pxQaTphkL8sWzG9pnI/0nDvdch1gcTduddXonsDPETHJt
+         jBlQ==
+X-Gm-Message-State: AOAM532cEAgLkpxeN6++MI+cmLKU8qXhNKqICY/+Ez1Om5/8PoiGOh4I
+        k1uFslQQDHhnwdy6bRSn+vkEsdTUOoDH/xJ8EPTy3w==
+X-Google-Smtp-Source: ABdhPJwXQgv+MnffwSXc9BXeRSV936RyyhNC8lxdnCS1gRFAcNCTLoF5HqVpY3wu1982brXNeIv2TfVyzM/1NbmGA90=
+X-Received: by 2002:aca:eb53:: with SMTP id j80mr12866322oih.13.1626712092215;
+ Mon, 19 Jul 2021 09:28:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 19 Jul 2021 21:57:25 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     p.zabel@pengutronix.de
-Cc:     agross@kernel.org, robh+dt@kernel.org, mani@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
-        sboyd@kernel.org
-Subject: Re: [PATCH v3 0/5] Enable miscellaneous hardware blocks to boot WPSS
-In-Reply-To: <1619693465-5724-1-git-send-email-sibis@codeaurora.org>
-References: <1619693465-5724-1-git-send-email-sibis@codeaurora.org>
-Message-ID: <19cc1c3cceaedd1e899732d874e6160a@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 19 Jul 2021 21:58:00 +0530
+Message-ID: <CA+G9fYv6TQOKp1O7JnN9zfEL_A5XP=VXRc3h-=n33jjXxP3OyA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/243] 5.10.52-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-29 16:21, Sibi Sankar wrote:
-> This series enables miscellaneous hardware blocks to boot Wireless
-> Processor Subsystem (WPSS) on SC7280 SoC.
-> 
-> V3:
->  * member placement and style changes [Philipp]
-> 
-> V2:
->  * place resets and num_resets adjacent to each other [Stephen]
->  * drop incorrect useage of tcsr_mutex_regs [Bjorn]
->  * Qualcomm is expected to drop master/slave naming from its mproc 
-> nodes
->    in future SoCs.
-> 
-> Sibi Sankar (5):
->   dt-bindings: mailbox: Add WPSS client index to IPCC
->   dt-bindings: reset: aoss: Add AOSS reset controller binding
->   dt-bindings: reset: pdc: Add PDC Global bindings
->   reset: qcom: Add PDC Global reset signals for WPSS
+On Mon, 19 Jul 2021 at 21:35, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.52 release.
+> There are 243 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.52-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Philipp,
 
-Can you pick the reset bindings
-and the reset driver changes
-through your tree, Bjorn has
-picked up the remainder of the
-series.
+Following build errors noticed on arm64 architecture on 5.10 branch.
 
->   arm64: dts: qcom: sc7280: Add nodes to boot WPSS
-> 
->  .../devicetree/bindings/reset/qcom,aoss-reset.yaml |   5 +
->  .../devicetree/bindings/reset/qcom,pdc-global.yaml |   4 +
->  arch/arm64/boot/dts/qcom/sc7280.dtsi               | 138 
-> +++++++++++++++++++++
->  drivers/reset/reset-qcom-pdc.c                     |  62 +++++++--
->  include/dt-bindings/mailbox/qcom-ipcc.h            |   1 +
->  include/dt-bindings/reset/qcom,sdm845-pdc.h        |   2 +
->  6 files changed, 201 insertions(+), 11 deletions(-)
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+> Kishon Vijay Abraham I <kishon@ti.com>
+>     arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for SERDES
+
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
+'HOSTCC=sccache gcc'
+/builds/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts:12:10:
+fatal error: dt-bindings/phy/phy-cadence.h: No such file or directory
+   12 | #include <dt-bindings/phy/phy-cadence.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[3]: *** [scripts/Makefile.lib:326:
+arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dtb] Error 1
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [/builds/linux/scripts/Makefile.build:497:
+arch/arm64/boot/dts/ti] Error 2
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [/builds/linux/Makefile:1358: dtbs] Error 2
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+--
+Linaro LKFT
+https://lkft.linaro.org
