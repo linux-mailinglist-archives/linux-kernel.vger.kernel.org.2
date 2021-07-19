@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D825B3CD812
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8003CDB0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242307AbhGSOUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:20:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55130 "EHLO mail.kernel.org"
+        id S244642AbhGSOkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:40:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242437AbhGSOTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:19:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F5DE6112D;
-        Mon, 19 Jul 2021 14:59:53 +0000 (UTC)
+        id S243545AbhGSOad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:30:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 684B76008E;
+        Mon, 19 Jul 2021 15:11:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706794;
-        bh=pkNwcE8NeRf1Ky4SVFk35x05hOggmYYFRNBoiRbfHIU=;
+        s=korg; t=1626707473;
+        bh=/XRd8tULFtrzaCZ6URnc8c+qKudLE1jX9tJAc3DmZao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tmznYVEeEmf3pIkpNkX/p4Wp4nPcKG5Jm92YtrFSqAgMkLXCnatagUczMcGO00nFC
-         EVXCivuAaLIgerlXG8Z5/fil65lfY8GHMnVEyAyzdbmZ6K34PcSAhhrdOtKHPj2u8z
-         jERc1XnKS5hUmFAJdPatxdO/8P8TqOCUlqRDbEyw=
+        b=VMwzi+LOuyLP7vH27yn0hMoZ6/7iiRMQ+6+grhUrd4Oqpu6V+xJ8WHCsN+NTfr2i/
+         1BoOvXfELnd6V7mGtijqqa0vvXPIkRrqQ6Tcr9OCpN7wN/7SFEcBuliLAY4t7erqT+
+         Dxl006NRQNj5A8Uk31VZ6GG1U9KBLfdf5WfPQOjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 101/188] drm/virtio: Fix double free on probe failure
-Date:   Mon, 19 Jul 2021 16:51:25 +0200
-Message-Id: <20210719144936.676818435@linuxfoundation.org>
+Subject: [PATCH 4.9 144/245] cw1200: add missing MODULE_DEVICE_TABLE
+Date:   Mon, 19 Jul 2021 16:51:26 +0200
+Message-Id: <20210719144945.062740877@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit cec7f1774605a5ef47c134af62afe7c75c30b0ee ]
+[ Upstream commit dd778f89225cd258e8f0fed2b7256124982c8bb5 ]
 
-The virtio_gpu_init() will free vgdev and vgdev->vbufs on failure.
-But such failure will be caught by virtio_gpu_probe() and then
-virtio_gpu_release() will be called to do some cleanup which
-will free vgdev and vgdev->vbufs again. So let's set dev->dev_private
-to NULL to avoid double free.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/20210517084913.403-2-xieyongji@bytedance.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1620788714-14300-1-git-send-email-zou_wei@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
+ drivers/net/wireless/st/cw1200/cw1200_sdio.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-index 476b9993b068..44f9762e86e8 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -233,6 +233,7 @@ err_ttm:
- err_vbufs:
- 	vgdev->vdev->config->del_vqs(vgdev->vdev);
- err_vqs:
-+	dev->dev_private = NULL;
- 	kfree(vgdev);
- 	return ret;
- }
+diff --git a/drivers/net/wireless/st/cw1200/cw1200_sdio.c b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
+index d3acc85932a5..de92107549ee 100644
+--- a/drivers/net/wireless/st/cw1200/cw1200_sdio.c
++++ b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
+@@ -62,6 +62,7 @@ static const struct sdio_device_id cw1200_sdio_ids[] = {
+ 	{ SDIO_DEVICE(SDIO_VENDOR_ID_STE, SDIO_DEVICE_ID_STE_CW1200) },
+ 	{ /* end: all zeroes */			},
+ };
++MODULE_DEVICE_TABLE(sdio, cw1200_sdio_ids);
+ 
+ /* hwbus_ops implemetation */
+ 
 -- 
 2.30.2
 
