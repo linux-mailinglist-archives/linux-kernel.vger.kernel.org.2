@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B543CD82E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FF53CDAC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242818AbhGSOVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:21:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
+        id S244972AbhGSOhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:37:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241302AbhGSOTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:19:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D52F61186;
-        Mon, 19 Jul 2021 15:00:21 +0000 (UTC)
+        id S244268AbhGSO3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:29:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A569761279;
+        Mon, 19 Jul 2021 15:09:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706822;
-        bh=KkWWnRNhlp8LbxSo+tla3YuGLc5zVPkQ9tsYTYZrJXQ=;
+        s=korg; t=1626707345;
+        bh=cIocqr/2eWHLk60vDJlVXLyodDMmSPmNZkVuuqH7N/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pkOaqGpDAxBhQBRFZImYHNiRqK4DB2V47eudsYRKMna+D8kdfyNk9rsjBDPYPGA8e
-         ARfBuCkwYJDtyZ1WHLs13TjZY+edy9dEkzq7yizHdoz/aV24IH0wE7Zc1OWovCsn8v
-         f5NcIHNok/j/nRMiE7pBldW4xm32ItBtiGQxWLNk=
+        b=AG8Om64SBTAWqcyWu2WS3IjTe41YaboDhVtUwjD/mfFIvcaKoNVdWJEHm32mlNMSp
+         nLxbBULmT3mmWKIaEJHJ/qCPdIBzuOkmJfORdumEH7Vtkyr+xweke1LHBZJtvZBy06
+         fCiefMmQVkCcnL+hLVrPCPNTAEdWpc0CSAS+onbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 080/188] iio: accel: stk8ba50: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:51:04 +0200
-Message-Id: <20210719144931.670175142@linuxfoundation.org>
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Quat Le <quat.le@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.9 123/245] scsi: core: Retry I/O for Notify (Enable Spinup) Required error
+Date:   Mon, 19 Jul 2021 16:51:05 +0200
+Message-Id: <20210719144944.391209315@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,70 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Quat Le <quat.le@oracle.com>
 
-[ Upstream commit 334883894bc1e145a1e0f5de1b0d1b6a1133f0e6 ]
+commit 104739aca4488909175e9e31d5cd7d75b82a2046 upstream.
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+If the device is power-cycled, it takes time for the initiator to transmit
+the periodic NOTIFY (ENABLE SPINUP) SAS primitive, and for the device to
+respond to the primitive to become ACTIVE. Retry the I/O request to allow
+the device time to become ACTIVE.
 
-Found during an audit of all calls of this function.
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210629155826.48441-1-quat.le@oracle.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Quat Le <quat.le@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: db6a19b8251f ("iio: accel: Add trigger support for STK8BA50")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-8-jic23@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/stk8ba50.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/scsi/scsi_lib.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iio/accel/stk8ba50.c b/drivers/iio/accel/stk8ba50.c
-index 5709d9eb8f34..b6e2d15024c8 100644
---- a/drivers/iio/accel/stk8ba50.c
-+++ b/drivers/iio/accel/stk8ba50.c
-@@ -95,12 +95,11 @@ struct stk8ba50_data {
- 	u8 sample_rate_idx;
- 	struct iio_trigger *dready_trig;
- 	bool dready_trigger_on;
--	/*
--	 * 3 x 16-bit channels (10-bit data, 6-bit padding) +
--	 * 1 x 16 padding +
--	 * 4 x 16 64-bit timestamp
--	 */
--	s16 buffer[8];
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		s16 chans[3];
-+		s64 timetamp __aligned(8);
-+	} scan;
- };
- 
- #define STK8BA50_ACCEL_CHANNEL(index, reg, axis) {			\
-@@ -330,7 +329,7 @@ static irqreturn_t stk8ba50_trigger_handler(int irq, void *p)
- 		ret = i2c_smbus_read_i2c_block_data(data->client,
- 						    STK8BA50_REG_XOUT,
- 						    STK8BA50_ALL_CHANNEL_SIZE,
--						    (u8 *)data->buffer);
-+						    (u8 *)data->scan.chans);
- 		if (ret < STK8BA50_ALL_CHANNEL_SIZE) {
- 			dev_err(&data->client->dev, "register read failed\n");
- 			goto err;
-@@ -343,10 +342,10 @@ static irqreturn_t stk8ba50_trigger_handler(int irq, void *p)
- 			if (ret < 0)
- 				goto err;
- 
--			data->buffer[i++] = ret;
-+			data->scan.chans[i++] = ret;
- 		}
- 	}
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   pf->timestamp);
- err:
- 	mutex_unlock(&data->lock);
--- 
-2.30.2
-
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -915,6 +915,7 @@ void scsi_io_completion(struct scsi_cmnd
+ 				case 0x07: /* operation in progress */
+ 				case 0x08: /* Long write in progress */
+ 				case 0x09: /* self test in progress */
++				case 0x11: /* notify (enable spinup) required */
+ 				case 0x14: /* space allocation in progress */
+ 					action = ACTION_DELAYED_RETRY;
+ 					break;
 
 
