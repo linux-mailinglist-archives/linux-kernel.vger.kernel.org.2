@@ -2,177 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00DF3CD3B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFBB3CD3B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236473AbhGSKge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        id S236623AbhGSKgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235999AbhGSKgb (ORCPT
+        with ESMTP id S235999AbhGSKge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:36:31 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3183C061574;
-        Mon, 19 Jul 2021 03:27:31 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id a6so11326932pgw.3;
-        Mon, 19 Jul 2021 04:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RbZ1fp7+3stRY8Uk9v8nVPrVKsRUvay5H0101Cor1uw=;
-        b=s4ToIQa77FMsUGF4lYXMm5uZ08NBZ4YXQmu156fcz17EtNkGjmgn1I8PurEN31ZUQT
-         3NeMOE9wW9Q0rqxLn5lktzPmUa7nSYQRmOfDWeV8KAhwaDj1NTtyJcA9oKiGG/U164LO
-         /c/eFte6RQNv0O9c5/Ovt4D9P5IKKB2KKngxRqbYjXrVcHyUsUAHofzvzTjeK/IryZFd
-         GmFYF/5kXjFMSUdLNgUspF6cPE/XmDdOoW4klrFwhonQHyq2SesrfB0UKfCV/u8U0ieL
-         gMhJuWguZw9ivuQtOizZWsnI1sUDeXxaDKwCEqvYxNFxsJaBtugQF7MtbF2eZqGwm6Dc
-         xedg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RbZ1fp7+3stRY8Uk9v8nVPrVKsRUvay5H0101Cor1uw=;
-        b=CZcAlzDNfQuZNn/PxqsvKBzT+SHe3OjtS1zyC3Nk/PfK2yGr6/G8YMrSsK6ZG7CcT2
-         PhLL+hqKI4O1r5wGz0O6JLX5dU32OsgrZtb+9rxLLg3THWHYlhboRdyqH3aS16Z3472b
-         iWta/YcvM6LbbYXBL3ARjWdupYwmIul8idO2Mhy1ccrLWz4jzUMolnZJs7j8TDEl65hz
-         z9nid1tc0+CITti+mbDkA1adsnyxJmgIOowm5nBTKuK8iGYWgM8TCUZeWhMaFvJ5A2nS
-         grzNnOiJy5uXQseL2raHNmBdqHf89LJx3JhC5ytFB0ffQTfL7UrTz0a5mty2CyzAswX3
-         lgxg==
-X-Gm-Message-State: AOAM533fBq+/zIrfHnEC0XUaWtVecuFKaF1gBehqPgNiTKzH4qRLAtk/
-        znMlFlTY19cln5Gpk52H3Ura2RZVUMI=
-X-Google-Smtp-Source: ABdhPJwdVAkySFY+2g4nXuawJrNPFGgW37tww6RvB2wF38sjh6CFN7ZMf90MX8FDpyMtS+hsCEeYnw==
-X-Received: by 2002:a62:e90b:0:b029:30e:4530:8dca with SMTP id j11-20020a62e90b0000b029030e45308dcamr25514964pfh.17.1626693430050;
-        Mon, 19 Jul 2021 04:17:10 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id p25sm19633277pff.120.2021.07.19.04.17.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 04:17:09 -0700 (PDT)
-Subject: [RFC PATCH v2 6/7] docs: pdfdocs: Add optional choices for Korean
- monospace font
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>
-Cc:     Hu Haowen <src.res@email.cn>,
-        Shinwoo Lee <shinwoo.lee.us@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <c5eccdd8-8172-6dc0-c412-4d7655bd26cc@gmail.com>
-Date:   Mon, 19 Jul 2021 20:17:06 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 06:36:34 -0400
+X-Greylist: delayed 48219 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 19 Jul 2021 03:27:36 PDT
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FFEC061574;
+        Mon, 19 Jul 2021 03:27:36 -0700 (PDT)
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 695A1B3F3D1;
+        Mon, 19 Jul 2021 13:17:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1626693429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wrtAMp8n8lOfYMpdjEfS7NS2+/lTSHmoD6u2/ln0m0M=;
+        b=TUtaLbEqSNYuzc0eN7Y8ZZEE82uB4YSU4usOV9A63uQh9EV1ZVvdPzRFFHrIW9iVWiJbi8
+        Q4UzzAQomutjXIc6CBkHdg8QNK+TWjSFTMONW7yFd6grqHJvuemKiH7uuvtLDlvjAsns/+
+        ejiX7ahR4cTe1KXWi/drpvktUGSQemc=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Boqun Feng <boqun.feng@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, paulmck@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Chris Clayton <chris2553@googlemail.com>,
+        Chris Rankin <rankincj@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Date:   Mon, 19 Jul 2021 13:17:07 +0200
+Message-ID: <11144384.Jnp629F0a1@natalenko.name>
+In-Reply-To: <08803f78-3e99-6b3f-e809-5828fe47cf06@huawei.com>
+References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com> <YPVQfaamqwu1PRrK@boqun-archlinux> <08803f78-3e99-6b3f-e809-5828fe47cf06@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Candidates of alternative choices of a *true* monospace font would
-be "D2Coding", "Sarasa Mono K", or "Unifont" font.
+Hello.
 
-The alignment of Korean ascii-art figures matters when the optional
-conf.py under Dodumentation/translations/ is effective.
-So, add conditional settings in the local config so that when one of
-the candidate fonts is found, it is used instead of "Noto Sans Mono
-CJK KR".
+On pond=C4=9Bl=C3=AD 19. =C4=8Dervence 2021 13:12:58 CEST Miaohe Lin wrote:
+> On 2021/7/19 18:14, Boqun Feng wrote:
+> > On Mon, Jul 19, 2021 at 03:43:00AM +0100, Matthew Wilcox wrote:
+> >> On Mon, Jul 19, 2021 at 10:24:18AM +0800, Zhouyi Zhou wrote:
+> >>> Meanwhile, I examined the 5.12.17 by naked eye, and found a suspicious
+> >>> place that could possibly trigger that problem:
+> >>>=20
+> >>> struct swap_info_struct *get_swap_device(swp_entry_t entry)
+> >>> {
+> >>>=20
+> >>>      struct swap_info_struct *si;
+> >>>      unsigned long offset;
+> >>>     =20
+> >>>      if (!entry.val)
+> >>>     =20
+> >>>              goto out;
+> >>>    =20
+> >>>     si =3D swp_swap_info(entry);
+> >>>     if (!si)
+> >>>    =20
+> >>>        goto bad_nofile;
+> >>>   =20
+> >>>    rcu_read_lock();
+> >>>  =20
+> >>>   if (data_race(!(si->flags & SWP_VALID)))
+> >>>  =20
+> >>>      goto unlock_out;
+> >>>  =20
+> >>>   offset =3D swp_offset(entry);
+> >>>   if (offset >=3D si->max)
+> >>>  =20
+> >>>    goto unlock_out;
+> >>>  =20
+> >>>   return si;
+> >>>=20
+> >>> bad_nofile:
+> >>>   pr_err("%s: %s%08lx\n", __func__, Bad_file, entry.val);
+> >>>=20
+> >>> out:
+> >>>   return NULL;
+> >>>=20
+> >>> unlock_out:
+> >>>   rcu_read_unlock();
+> >>>   return NULL;
+> >>>=20
+> >>> }
+> >>> I guess the function "return si" without a rcu_read_unlock.
+> >>=20
+> >> Yes, but the caller is supposed to call put_swap_device() which
+> >> calls rcu_read_unlock().  See commit eb085574a752.
+> >=20
+> > Right, but we need to make sure there is no sleepable function called
+> > before put_swap_device() called, and the call trace showed the following
+> >=20
+> > happened:
+> > 	do_swap_page():
+> > 	  si =3D get_swap_device():
+> > 	    rcu_read_lock();
+> > 	 =20
+> > 	  lock_page_or_retry():
+> > 	    might_sleep(); // call a sleepable function inside RCU read-side=20
+c.s.
+> > 	   =20
+> > 	    __lock_page_or_retry():
+> > 	      wait_on_page_bit_common():
+> > 	        schedule():
+> > 		  rcu_note_context_switch();
+> > 		  // Warn here
+> > 	 =20
+> > 	  put_swap_device();
+> > 	 =20
+> > 	    rcu_read_unlock();
+> >=20
+> > , which introduced by commit 2799e77529c2a
+>=20
+> When in the commit 2799e77529c2a, we're using the percpu_ref to serialize
+> against concurrent swapoff, i.e. there's percpu_ref inside
+> get_swap_device() instead of rcu_read_lock(). Please see commit
+> 63d8620ecf93 ("mm/swapfile: use percpu_ref to serialize against concurrent
+> swapoff") for detail.
 
-As xeCJK does not provide a macro to redefine an existing CJK font
-family, define a wrapper macro "\setKRmono" and use it in the
-"\kerneldocBeginKR" macro.
-
-Also mention the nice-to-have monospace Hangul fonts in the header
-comment in conf.py.
-
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
----
- Documentation/conf.py              |  4 +++-
- Documentation/translations/conf.py | 34 +++++++++++++++++++++++++++++-
- 2 files changed, 36 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 8a715765dada..1368c64e3993 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -382,6 +382,8 @@ latex_elements['preamble']  +=3D '''
- 	    \\scserif%
- 	    }
- 	\\newcommand{\\kerneldocEndSC}{\\endgroup}
-+	\\newcommand{\\setKRmono}{% For alternative Hangul monospace font
-+	    \\renewcommand{\\CJKttdefault}{KRmono}}
- 	\\newcommand{\\kerneldocBeginKR}{%
- 	    \\begingroup%
- 	    \\xeCJKDeclareCharClass{HalfLeft}{`=E2=80=9C,`=E2=80=98}%
-@@ -389,7 +391,7 @@ latex_elements['preamble']  +=3D '''
- 	    \\krserif%
- 	    \\renewcommand{\\CJKrmdefault}{KRserif}%
- 	    \\renewcommand{\\CJKsfdefault}{KRsans}%
--	    \\renewcommand{\\CJKttdefault}{KRmono}%
-+	    \\setKRmono%
- 	    \\xeCJKsetup{CJKspace =3D true} % For inter-phrase space
- 	    }
- 	\\newcommand{\\kerneldocEndKR}{\\endgroup}
-diff --git a/Documentation/translations/conf.py b/Documentation/translati=
-ons/conf.py
-index 92cdbba74229..0e171eed1862 100644
---- a/Documentation/translations/conf.py
-+++ b/Documentation/translations/conf.py
-@@ -3,10 +3,42 @@
+The problem here is that 2799e77529c2a got pulled into stable, but=20
+63d8620ecf93 was not pulled. Are you suggesting that 63d8620ecf93 should be=
 =20
- # -- Additinal options for LaTeX output --------------------------------=
---
- # font config for ascii-art alignment
--
-+#
-+# Note: Ascii-art figures involving Hangul characters need optional
-+#       monospace font. (Hangul in "Noto Sans Mono CJK" is slightly narr=
-ow.)
-+#       If you'd like to see properly aligned ascii-art figures in Korea=
-n
-+#       translations, you need to install a *true* monospace Hangul font=
-=2E
-+#
-+#       Candidates of such a monospace font which covers Hangul:
-+#   1)  D2Coding: Availabe at
-+#	    https://github.com/naver/d2codingfont/releases/latest
-+#   2)  Sarasa Mono K: Available at
-+#	    https://github.com/be5invis/Sarasa-Gothic/releases/latest
-+#   3)  Unifont: (easy to install but poor quality)
-+#	    Available as distro packages, e.g.:
-+#		Ubuntu/Debian: ttf-unifont
-+#		Fedora: unifont-fonts
-+#
- latex_elements['preamble']  +=3D '''
-     \\IfFontExistsTF{Noto Sans CJK SC}{
- 	% For CJK ascii-art alignment
- 	\\setmonofont{Noto Sans Mono CJK SC}[AutoFakeSlant]
-+	\\IfFontExistsTF{D2Coding}{
-+	  \\newCJKfontfamily[KRtruemono]\\krtruemono{D2Coding}[AutoFakeSlant]
-+	  \\renewcommand{\\setKRmono}{%
-+	    \\renewcommand{\\CJKttdefault}{KRtruemono}}
-+	}{
-+	  \\IfFontExistsTF{Sarasa Mono K}{
-+	    \\newCJKfontfamily[KRtruemono]\\krtruemono{Sarasa Mono K}
-+	    \\renewcommand{\\setKRmono}{%
-+	      \\renewcommand{\\CJKttdefault}{KRtruemono}}
-+	  }{
-+	    \\IfFontExistsTF{Unifont}{
-+	      \\newCJKfontfamily[KRtruemono]\\krtruemono{Unifont}[AutoFakeSlant=
-,AutoFakeBold]
-+	      \\renewcommand{\\setKRmono}{%
-+		\\renewcommand{\\CJKttdefault}{KRtruemono}}
-+	    }{}
-+	  }
-+	}
-     }{}
- '''
---=20
-2.17.1
+pulled into the stable kernel as well?
 
+Thanks.
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
 
