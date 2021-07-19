@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B2F3CE4A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C3A3CE665
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349276AbhGSPo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:44:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58644 "EHLO mail.kernel.org"
+        id S244978AbhGSQEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:04:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345276AbhGSPA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:00:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04B4C60241;
-        Mon, 19 Jul 2021 15:41:07 +0000 (UTC)
+        id S1344450AbhGSPFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:05:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D8E6601FD;
+        Mon, 19 Jul 2021 15:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709268;
-        bh=tWVXGu/HX1v3G1LQMW2of1bw8eLUL8rFjcAstOR9S8A=;
+        s=korg; t=1626709581;
+        bh=VyUYoGc0fRI9HeQs++m8Dx7lc69ovuKcRA88FLLpTxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sYs4JLfRt6pCyyYAPfpSXQ/io7lrMsjkGhHxiUiRJ9ApEdJCdcCXmVph59ifJXm7q
-         J0e092xwdsen8F/A4k2FMX+p23mA3fVjhTWrjjR6rlk3pSc4C77+ABWxEXMHmN1LWl
-         2GKSEky0T/uSeR0/XNkSfBydlfWjddMID9s7NuTA=
+        b=YH5myaGX8tTF2gxcXIAPoWG5NbGXNWvimfFcrYdPS6Ljfx+9gKuneeySioWK6Orkx
+         LCufrfiLNKezC6g7mtHOOCVrpOPTcaUkoDJwZsvxihItfHp6HfqR8w1mCjrSS5OBuy
+         WfStOfnXnEyIuBPk6RmyVN0MzJq912f1FfJLGgj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 315/421] jfs: fix GPF in diFree
+        stable@vger.kernel.org, Luiz Sampaio <sampaio.ime@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 018/149] w1: ds2438: fixing bug that would always get page0
 Date:   Mon, 19 Jul 2021 16:52:06 +0200
-Message-Id: <20210719144957.235331538@linuxfoundation.org>
+Message-Id: <20210719144905.789831079@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Luiz Sampaio <sampaio.ime@gmail.com>
 
-commit 9d574f985fe33efd6911f4d752de6f485a1ea732 upstream.
+[ Upstream commit 1f5e7518f063728aee0679c5086b92d8ea429e11 ]
 
-Avoid passing inode with
-JFS_SBI(inode->i_sb)->ipimap == NULL to
-diFree()[1]. GFP will appear:
+The purpose of the w1_ds2438_get_page function is to get the register
+values at the page passed as the pageno parameter. However, the page0 was
+hardcoded, such that the function always returned the page0 contents. Fixed
+so that the function can retrieve any page.
 
-	struct inode *ipimap = JFS_SBI(ip->i_sb)->ipimap;
-	struct inomap *imap = JFS_IP(ipimap)->i_imap;
-
-JFS_IP() will return invalid pointer when ipimap == NULL
-
-Call Trace:
- diFree+0x13d/0x2dc0 fs/jfs/jfs_imap.c:853 [1]
- jfs_evict_inode+0x2c9/0x370 fs/jfs/inode.c:154
- evict+0x2ed/0x750 fs/inode.c:578
- iput_final fs/inode.c:1654 [inline]
- iput.part.0+0x3fe/0x820 fs/inode.c:1680
- iput+0x58/0x70 fs/inode.c:1670
-
-Reported-and-tested-by: syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
+Link: https://lore.kernel.org/r/20210519223046.13798-5-sampaio.ime@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/inode.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/w1/slaves/w1_ds2438.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/jfs/inode.c
-+++ b/fs/jfs/inode.c
-@@ -161,7 +161,8 @@ void jfs_evict_inode(struct inode *inode
- 			if (test_cflag(COMMIT_Freewmap, inode))
- 				jfs_free_zero_link(inode);
+diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
+index d199e5a25cc0..404dacb15004 100644
+--- a/drivers/w1/slaves/w1_ds2438.c
++++ b/drivers/w1/slaves/w1_ds2438.c
+@@ -62,13 +62,13 @@ static int w1_ds2438_get_page(struct w1_slave *sl, int pageno, u8 *buf)
+ 		if (w1_reset_select_slave(sl))
+ 			continue;
+ 		w1_buf[0] = W1_DS2438_RECALL_MEMORY;
+-		w1_buf[1] = 0x00;
++		w1_buf[1] = (u8)pageno;
+ 		w1_write_block(sl->master, w1_buf, 2);
  
--			diFree(inode);
-+			if (JFS_SBI(inode->i_sb)->ipimap)
-+				diFree(inode);
+ 		if (w1_reset_select_slave(sl))
+ 			continue;
+ 		w1_buf[0] = W1_DS2438_READ_SCRATCH;
+-		w1_buf[1] = 0x00;
++		w1_buf[1] = (u8)pageno;
+ 		w1_write_block(sl->master, w1_buf, 2);
  
- 			/*
- 			 * Free the inode from the quota allocation.
+ 		count = w1_read_block(sl->master, buf, DS2438_PAGE_SIZE + 1);
+-- 
+2.30.2
+
 
 
