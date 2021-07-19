@@ -2,500 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53303CED61
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDCC3CED63
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384203AbhGSSZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 14:25:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383527AbhGSR4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 13:56:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9322161003;
-        Mon, 19 Jul 2021 18:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626719789;
-        bh=y4AfL6TIrX1EhPt8S66NNQQyYaRaoJ6rWyELkXF5yYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N0RPd/Hgi3fjjiaTdo057H/lykPpzcUqv3uMPJNLQC8+iv06A+tKG3b1gfDwy5I9/
-         2E5iqXO/Yzdmgvj39RI+GkkK8EYgdwcctAVE0WMmDmeQtwRaI13bseQh9cqbmMtlgT
-         ObrUlebXdg1Iyb1d/hTGnFvzh0f18a2KXDg0xDrwxE8d8EMTA6B+W4a06ur9g+HHyi
-         8+JF6yDI/OoLknnckcd8KtwZctDDuBVu+BlwllDlwidmiXRIYAYLmuIYESE6mEDRcM
-         0hoieGmWjOz9glZzPPAfuO2xCF5d8IwujsmO4cwoYU7qmTqNJFFF/jcXCHCD91O9QT
-         o41un9qCrkwvA==
-Date:   Mon, 19 Jul 2021 11:36:28 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
-Subject: Re: [RFC NO MERGE] f2fs: extent cache: support unaligned extent
-Message-ID: <YPXGLOhWyiXk74Ka@google.com>
-References: <20210707015815.1978-1-chao@kernel.org>
+        id S1384287AbhGSS1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 14:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1383602AbhGSR6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 13:58:03 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF22C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 11:25:48 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id k20so19905490pgg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 11:38:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=2GDIeoSRCpC7dRtQi/P8zv3DNxVEppuMxPefDLRGLvo=;
+        b=OeKjXa48A0pN/3XXle4GeVXRZmcs0TibjoXBcRIdYsE0wWIdF8DuLYtWLvTcn6o81k
+         JHl6klHO+oP4Tgu78um0l3O54z+eSY2KSs1SZV7jvtEz8RM5bRYFnpnzokRNoqBR006F
+         O8M0y2+DnNqwRWUC9WduzXsuMcuM/mQNmAF/fhbTlXxr8jc9lyTXmplLAUHK1cZCBJCb
+         mMZQNBpjp/3geQHIcyWs9CwWlS8dkm1XrSQZBFfvI6PO+SoRxYeJ3U6iERPgO6o9appT
+         pLSufwYQTbnqi+CMFgXS7hnWYnXs5CmDKy44sxTOKUV5bMHAcByM6GDutbDkys3Dw+zX
+         SP4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2GDIeoSRCpC7dRtQi/P8zv3DNxVEppuMxPefDLRGLvo=;
+        b=FlNB1x0ELbNvyoaiR+drdgvUWh3ItEyUdz9ju4vZm2CKEmYbLhMfS8BxGIWyHPJ71q
+         h+ekWxGZFurL32vGacmOgjrn7Zdx2PfPZTkQDED7aPxwK6klv8gBzval0u1NmLfN5JpQ
+         mZBTKaX/5ly+DwrCpybhqEXc/AKnqrNtfdbPUrLJ0R2WVTuyAMLn5aUkh8e29aI2RMMh
+         ht+n9fOiN3O91iwdAmdAgWhx+UwP/zAqv6KNBnKe+pDM63J0USdFrfp2rZSRj//xm7Kp
+         3AnCB3/Fec3O7B9RFC8ItBrpcA5NJKHAVSk1pNTNLG1YoL/5a1RRh0R4No13uXI4DoPk
+         LIow==
+X-Gm-Message-State: AOAM532/b0NTDvuCZkVfqcPDRoeBfK0xWG0lT6TG8vtO+D9opgEMEyDv
+        5sNe21ZWKy5/LakaeKMasy9OXg==
+X-Google-Smtp-Source: ABdhPJzFZKkogPgLbbV2IjYWsMbvhfkUBEIbqZhWjB8Cb9H93gbmTY1dTU0gdOOCJdmkUQhnxLwQBA==
+X-Received: by 2002:aa7:9a42:0:b029:333:a3d2:8d8f with SMTP id x2-20020aa79a420000b0290333a3d28d8fmr22583136pfj.45.1626719919373;
+        Mon, 19 Jul 2021 11:38:39 -0700 (PDT)
+Received: from [192.168.1.187] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id k19sm17420699pji.32.2021.07.19.11.38.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jul 2021 11:38:38 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in io_sq_thread_park (2)
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        syzbot <syzbot+ac957324022b7132accf@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        will@kernel.org
+References: <000000000000e1f38205c73b72cc@google.com>
+ <c57f80f7-440b-9f12-a7b7-a58ed7ab400a@gmail.com>
+ <3ff29943-0f93-1381-1c8a-46f80aecd0b4@kernel.dk>
+ <b48f3e01-c07d-56ac-3624-afc74ef08acd@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <98a5f4a7-428b-fc0c-3f8c-c368f98d79a2@kernel.dk>
+Date:   Mon, 19 Jul 2021 12:38:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707015815.1978-1-chao@kernel.org>
+In-Reply-To: <b48f3e01-c07d-56ac-3624-afc74ef08acd@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/07, Chao Yu wrote:
-> Compressed inode may suffer read performance issue due to it can not
-> use extent cache, so I propose to add this unaligned extent support
-> to improve it.
+On 7/19/21 11:28 AM, Pavel Begunkov wrote:
+> On 7/19/21 6:13 PM, Jens Axboe wrote:
+>> On 7/19/21 10:57 AM, Pavel Begunkov wrote:
+>>> On 7/16/21 11:57 AM, syzbot wrote:
+>>>> Hello,
+>>>>
+>>>> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+>>>> WARNING in io_uring_cancel_generic
+>>>
+>>> __arm_poll doesn't remove a second poll entry in case of failed
+>>> __io_queue_proc(), it's most likely the cause here.
+>>>
+>>> #syz test: https://github.com/isilence/linux.git syztest_sqpoll_hang
+>>
+>> Was my thought on seeing the last debug run too. Haven't written a test
+>> case, but my initial thought was catching this at the time that double
+>> poll is armed, in __io_queue_proc(). Totally untested, just tossing
+>> it out there.
 > 
-> Currently, it only works in readonly format f2fs image.
+> Wouldn't help, unfortunately, the way syz triggers it is making a
+> request to go through __io_queue_proc() three times.
 > 
-> Unaligned extent: in one compressed cluster, physical block number
-> will be less than logical block number, so we add an extra physical
-> block length in extent info in order to indicate such extent status.
+> Either it's 3 waitqueues or we need to extend the check below to
+> the double poll entry.
 > 
-> The idea is if one whole cluster blocks are contiguous physically,
-> once its mapping info was readed at first time, we will cache an
-> unaligned (or aligned) extent info entry in extent cache, it expects
-> that the mapping info will be hitted when rereading cluster.
+> if (poll_one->head == head)
+> 	return;
 
-How about just modifying to handle COMPRESS_ADDR when modifying the extent_cache
-like RO case?
+Yes good point, that'd depend on single poll erroring first. Given
+the variety of cases for it, catching it after the fact like in your
+patch is likely the simplest/cleanest way.
 
-> 
-> Merge policy:
-> - Aligned extents can be merged.
-> - Aligned extent and unaligned extent can not be merged.
-> 
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
-> 
-> I just post this for comments, it passes compiling, w/o any test.
-> 
->  fs/f2fs/compress.c     | 25 ++++++++++++
->  fs/f2fs/data.c         | 38 +++++++++++++-----
->  fs/f2fs/extent_cache.c | 90 +++++++++++++++++++++++++++++++++++++-----
->  fs/f2fs/f2fs.h         | 33 +++++++++++++---
->  fs/f2fs/node.c         | 20 ++++++++++
->  5 files changed, 181 insertions(+), 25 deletions(-)
-> 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 455561826c7d..f072ac33eba5 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -1666,6 +1666,31 @@ void f2fs_put_page_dic(struct page *page)
->  	f2fs_put_dic(dic);
->  }
->  
-> +/*
-> + * check whether cluster blocks are contiguous, and add extent cache entry
-> + * only if cluster blocks are logically and physically contiguous.
-> + */
-> +int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn)
-> +{
-> +	bool compressed = f2fs_data_blkaddr(dn) == COMPRESS_ADDR;
-> +	int i = compressed ? 1 : 0;
-> +	block_t first_blkaddr = data_blkaddr(dn->inode, dn->node_page,
-> +						dn->ofs_in_node + i);
-> +
-> +	for (i += 1; i < F2FS_I(dn->inode)->i_cluster_size; i++) {
-> +		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
-> +						dn->ofs_in_node + i);
-> +
-> +		if (!__is_valid_data_blkaddr(blkaddr))
-> +			break;
-> +		if (first_blkaddr + i - 1 != blkaddr)
-> +			return 0;
-> +	}
-> +
-> +	return compressed ? i - 1 : i;
-> +}
-> +
-> +
->  const struct address_space_operations f2fs_compress_aops = {
->  	.releasepage = f2fs_release_page,
->  	.invalidatepage = f2fs_invalidate_page,
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index d2cf48c5a2e4..9572d78da4d7 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -2115,6 +2115,8 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  	sector_t last_block_in_file;
->  	const unsigned blocksize = blks_to_bytes(inode, 1);
->  	struct decompress_io_ctx *dic = NULL;
-> +	struct extent_info_unaligned eiu;
-> +	bool extent_cache = false;
->  	int i;
->  	int ret = 0;
->  
-> @@ -2145,18 +2147,26 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  	if (f2fs_cluster_is_empty(cc))
->  		goto out;
->  
-> -	set_new_dnode(&dn, inode, NULL, NULL, 0);
-> -	ret = f2fs_get_dnode_of_data(&dn, start_idx, LOOKUP_NODE);
-> -	if (ret)
-> -		goto out;
-> +	if (f2fs_lookup_extent_cache_unaligned(inode, start_idx, &eiu))
-> +		extent_cache = true;
->  
-> -	f2fs_bug_on(sbi, dn.data_blkaddr != COMPRESS_ADDR);
-> +	if (!extent_cache) {
-> +		set_new_dnode(&dn, inode, NULL, NULL, 0);
-> +		ret = f2fs_get_dnode_of_data(&dn, start_idx, LOOKUP_NODE);
-> +		if (ret)
-> +			goto out;
-> +
-> +		f2fs_bug_on(sbi, dn.data_blkaddr != COMPRESS_ADDR);
-> +	}
->  
->  	for (i = 1; i < cc->cluster_size; i++) {
->  		block_t blkaddr;
->  
-> -		blkaddr = data_blkaddr(dn.inode, dn.node_page,
-> -						dn.ofs_in_node + i);
-> +		if (extent_cache)
-> +			blkaddr = eiu.ei.blk + i;
-> +		else
-> +			blkaddr = data_blkaddr(dn.inode, dn.node_page,
-> +							dn.ofs_in_node + i);
->  
->  		if (!__is_valid_data_blkaddr(blkaddr))
->  			break;
-> @@ -2166,6 +2176,9 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  			goto out_put_dnode;
->  		}
->  		cc->nr_cpages++;
-> +
-> +		if (extent_cache && i >= eiu.plen)
-> +			break;
->  	}
->  
->  	/* nothing to decompress */
-> @@ -2185,7 +2198,10 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  		block_t blkaddr;
->  		struct bio_post_read_ctx *ctx;
->  
-> -		blkaddr = data_blkaddr(dn.inode, dn.node_page,
-> +		if (extent_cache)
-> +			blkaddr = eiu.plen + i + 1;
-> +		else
-> +			blkaddr = data_blkaddr(dn.inode, dn.node_page,
->  						dn.ofs_in_node + i + 1);
->  
->  		f2fs_wait_on_block_writeback(inode, blkaddr);
-> @@ -2231,13 +2247,15 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  		*last_block_in_bio = blkaddr;
->  	}
->  
-> -	f2fs_put_dnode(&dn);
-> +	if (!extent_cache)
-> +		f2fs_put_dnode(&dn);
->  
->  	*bio_ret = bio;
->  	return 0;
->  
->  out_put_dnode:
-> -	f2fs_put_dnode(&dn);
-> +	if (!extent_cache)
-> +		f2fs_put_dnode(&dn);
->  out:
->  	for (i = 0; i < cc->cluster_size; i++) {
->  		if (cc->rpages[i]) {
-> diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
-> index 3ebf976a682d..db9de95f90dc 100644
-> --- a/fs/f2fs/extent_cache.c
-> +++ b/fs/f2fs/extent_cache.c
-> @@ -235,7 +235,7 @@ static struct kmem_cache *extent_node_slab;
->  static struct extent_node *__attach_extent_node(struct f2fs_sb_info *sbi,
->  				struct extent_tree *et, struct extent_info *ei,
->  				struct rb_node *parent, struct rb_node **p,
-> -				bool leftmost)
-> +				bool leftmost, bool unaligned)
->  {
->  	struct extent_node *en;
->  
-> @@ -247,6 +247,11 @@ static struct extent_node *__attach_extent_node(struct f2fs_sb_info *sbi,
->  	INIT_LIST_HEAD(&en->list);
->  	en->et = et;
->  
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> +	if (unaligned)
-> +		en->plen = ((struct extent_info_unaligned *)ei)->plen;
-> +#endif
-> +
->  	rb_link_node(&en->rb_node, parent, p);
->  	rb_insert_color_cached(&en->rb_node, &et->root, leftmost);
->  	atomic_inc(&et->node_cnt);
-> @@ -320,7 +325,7 @@ static struct extent_node *__init_extent_tree(struct f2fs_sb_info *sbi,
->  	struct rb_node **p = &et->root.rb_root.rb_node;
->  	struct extent_node *en;
->  
-> -	en = __attach_extent_node(sbi, et, ei, NULL, p, true);
-> +	en = __attach_extent_node(sbi, et, ei, NULL, p, true, false);
->  	if (!en)
->  		return NULL;
->  
-> @@ -439,6 +444,17 @@ static bool f2fs_lookup_extent_tree(struct inode *inode, pgoff_t pgofs,
->  		stat_inc_rbtree_node_hit(sbi);
->  
->  	*ei = en->ei;
-> +
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> +	if (is_inode_flag_set(inode, FI_COMPRESSED_FILE) &&
-> +				!f2fs_sb_has_readonly(sbi)) {
-> +		struct extent_info_unaligned *eiu =
-> +				(struct extent_info_unaligned *)ei;
-> +
-> +		eiu->plen = en->plen;
-> +	}
-> +#endif
-> +
->  	spin_lock(&sbi->extent_lock);
->  	if (!list_empty(&en->list)) {
->  		list_move_tail(&en->list, &sbi->extent_list);
-> @@ -457,17 +473,18 @@ static bool f2fs_lookup_extent_tree(struct inode *inode, pgoff_t pgofs,
->  static struct extent_node *__try_merge_extent_node(struct f2fs_sb_info *sbi,
->  				struct extent_tree *et, struct extent_info *ei,
->  				struct extent_node *prev_ex,
-> -				struct extent_node *next_ex)
-> +				struct extent_node *next_ex,
-> +				bool unaligned)
->  {
->  	struct extent_node *en = NULL;
->  
-> -	if (prev_ex && __is_back_mergeable(ei, &prev_ex->ei)) {
-> +	if (prev_ex && __is_back_mergeable(ei, &prev_ex->ei, unaligned)) {
->  		prev_ex->ei.len += ei->len;
->  		ei = &prev_ex->ei;
->  		en = prev_ex;
->  	}
->  
-> -	if (next_ex && __is_front_mergeable(ei, &next_ex->ei)) {
-> +	if (next_ex && __is_front_mergeable(ei, &next_ex->ei, unaligned)) {
->  		next_ex->ei.fofs = ei->fofs;
->  		next_ex->ei.blk = ei->blk;
->  		next_ex->ei.len += ei->len;
-> @@ -495,7 +512,7 @@ static struct extent_node *__insert_extent_tree(struct f2fs_sb_info *sbi,
->  				struct extent_tree *et, struct extent_info *ei,
->  				struct rb_node **insert_p,
->  				struct rb_node *insert_parent,
-> -				bool leftmost)
-> +				bool leftmost, bool unaligned)
->  {
->  	struct rb_node **p;
->  	struct rb_node *parent = NULL;
-> @@ -512,7 +529,7 @@ static struct extent_node *__insert_extent_tree(struct f2fs_sb_info *sbi,
->  	p = f2fs_lookup_rb_tree_for_insert(sbi, &et->root, &parent,
->  						ei->fofs, &leftmost);
->  do_insert:
-> -	en = __attach_extent_node(sbi, et, ei, parent, p, leftmost);
-> +	en = __attach_extent_node(sbi, et, ei, parent, p, leftmost, unaligned);
->  	if (!en)
->  		return NULL;
->  
-> @@ -594,7 +611,7 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
->  						end - dei.fofs + dei.blk,
->  						org_end - end);
->  				en1 = __insert_extent_tree(sbi, et, &ei,
-> -							NULL, NULL, true);
-> +						NULL, NULL, true, false);
->  				next_en = en1;
->  			} else {
->  				en->ei.fofs = end;
-> @@ -633,9 +650,10 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
->  	if (blkaddr) {
->  
->  		set_extent_info(&ei, fofs, blkaddr, len);
-> -		if (!__try_merge_extent_node(sbi, et, &ei, prev_en, next_en))
-> +		if (!__try_merge_extent_node(sbi, et, &ei,
-> +					prev_en, next_en, false))
->  			__insert_extent_tree(sbi, et, &ei,
-> -					insert_p, insert_parent, leftmost);
-> +				insert_p, insert_parent, leftmost, false);
->  
->  		/* give up extent_cache, if split and small updates happen */
->  		if (dei.len >= 1 &&
-> @@ -661,6 +679,47 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
->  		f2fs_mark_inode_dirty_sync(inode, true);
->  }
->  
-> +void f2fs_update_extent_tree_range_unaligned(struct inode *inode,
-> +				pgoff_t fofs, block_t blkaddr, unsigned int llen,
-> +				unsigned int plen)
-> +{
-> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> +	struct extent_tree *et = F2FS_I(inode)->extent_tree;
-> +	struct extent_node *en = NULL;
-> +	struct extent_node *prev_en = NULL, *next_en = NULL;
-> +	struct extent_info_unaligned eiu;
-> +	struct rb_node **insert_p = NULL, *insert_parent = NULL;
-> +	bool leftmost = false;
-> +
-> +	trace_f2fs_update_extent_tree_range(inode, fofs, blkaddr, llen);
-> +
-> +	write_lock(&et->lock);
-> +
-> +	if (is_inode_flag_set(inode, FI_NO_EXTENT)) {
-> +		write_unlock(&et->lock);
-> +		return;
-> +	}
-> +
-> +	en = (struct extent_node *)f2fs_lookup_rb_tree_ret(&et->root,
-> +				(struct rb_entry *)et->cached_en, fofs,
-> +				(struct rb_entry **)&prev_en,
-> +				(struct rb_entry **)&next_en,
-> +				&insert_p, &insert_parent, false,
-> +				&leftmost);
-> +	f2fs_bug_on(sbi, en);
-> +
-> +	set_extent_info(&eiu.ei, fofs, blkaddr, llen);
-> +	eiu.plen = plen;
-> +
-> +	if (!__try_merge_extent_node(sbi, et, (struct extent_info *)&eiu,
-> +				prev_en, next_en, true))
-> +		__insert_extent_tree(sbi, et, (struct extent_info *)&eiu,
-> +				insert_p, insert_parent, leftmost, true);
-> +
-> +	write_unlock(&et->lock);
-> +}
-> +
-> +
->  unsigned int f2fs_shrink_extent_tree(struct f2fs_sb_info *sbi, int nr_shrink)
->  {
->  	struct extent_tree *et, *next;
-> @@ -818,6 +877,17 @@ bool f2fs_lookup_extent_cache(struct inode *inode, pgoff_t pgofs,
->  	return f2fs_lookup_extent_tree(inode, pgofs, ei);
->  }
->  
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> +bool f2fs_lookup_extent_cache_unaligned(struct inode *inode, pgoff_t pgofs,
-> +					struct extent_info_unaligned *eiu)
-> +{
-> +	if (!f2fs_may_extent_tree(inode))
-> +		return false;
-> +
-> +	return f2fs_lookup_extent_tree(inode, pgofs, (struct extent_info *)eiu);
-> +}
-> +#endif
-> +
->  void f2fs_update_extent_cache(struct dnode_of_data *dn)
->  {
->  	pgoff_t fofs;
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 0fe239dd50f4..3a02642a26d4 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -578,11 +578,21 @@ struct extent_info {
->  	u32 blk;			/* start block address of the extent */
->  };
->  
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> +struct extent_info_unaligned {
-> +	struct extent_info ei;		/* extent info */
-> +	unsigned int plen;		/* physical extent length of compressed blocks */
-> +};
-> +#endif
-> +
->  struct extent_node {
->  	struct rb_node rb_node;		/* rb node located in rb-tree */
->  	struct extent_info ei;		/* extent info */
->  	struct list_head list;		/* node in global extent list of sbi */
->  	struct extent_tree *et;		/* extent tree pointer */
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> +	unsigned int plen;		/* physical extent length of compressed blocks */
-> +#endif
->  };
->  
->  struct extent_tree {
-> @@ -817,22 +827,29 @@ static inline bool __is_discard_front_mergeable(struct discard_info *cur,
->  }
->  
->  static inline bool __is_extent_mergeable(struct extent_info *back,
-> -						struct extent_info *front)
-> +				struct extent_info *front, bool unaligned)
->  {
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> +	struct extent_info_unaligned *be = (struct extent_info_unaligned *)back;
-> +	struct extent_info_unaligned *fe = (struct extent_info_unaligned *)front;
-> +
-> +	if (!unaligned || be->ei.len != be->plen || fe->ei.len != fe->plen)
-> +		return false;
-> +#endif
->  	return (back->fofs + back->len == front->fofs &&
->  			back->blk + back->len == front->blk);
->  }
->  
->  static inline bool __is_back_mergeable(struct extent_info *cur,
-> -						struct extent_info *back)
-> +				struct extent_info *back, bool unaligned)
->  {
-> -	return __is_extent_mergeable(back, cur);
-> +	return __is_extent_mergeable(back, cur, unaligned);
->  }
->  
->  static inline bool __is_front_mergeable(struct extent_info *cur,
-> -						struct extent_info *front)
-> +				struct extent_info *front, bool unaligned)
->  {
-> -	return __is_extent_mergeable(cur, front);
-> +	return __is_extent_mergeable(cur, front, unaligned);
->  }
->  
->  extern void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync);
-> @@ -3972,6 +3989,9 @@ struct rb_entry *f2fs_lookup_rb_tree_ret(struct rb_root_cached *root,
->  		bool force, bool *leftmost);
->  bool f2fs_check_rb_tree_consistence(struct f2fs_sb_info *sbi,
->  				struct rb_root_cached *root, bool check_key);
-> +void f2fs_update_extent_tree_range_unaligned(struct inode *inode,
-> +				pgoff_t fofs, block_t blkaddr, unsigned int llen,
-> +				unsigned int plen);
->  unsigned int f2fs_shrink_extent_tree(struct f2fs_sb_info *sbi, int nr_shrink);
->  void f2fs_init_extent_tree(struct inode *inode, struct page *ipage);
->  void f2fs_drop_extent_tree(struct inode *inode);
-> @@ -3979,6 +3999,8 @@ unsigned int f2fs_destroy_extent_node(struct inode *inode);
->  void f2fs_destroy_extent_tree(struct inode *inode);
->  bool f2fs_lookup_extent_cache(struct inode *inode, pgoff_t pgofs,
->  			struct extent_info *ei);
-> +bool f2fs_lookup_extent_cache_unaligned(struct inode *inode, pgoff_t pgofs,
-> +					struct extent_info_unaligned *eiu);
->  void f2fs_update_extent_cache(struct dnode_of_data *dn);
->  void f2fs_update_extent_cache_range(struct dnode_of_data *dn,
->  			pgoff_t fofs, block_t blkaddr, unsigned int len);
-> @@ -4055,6 +4077,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->  struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc);
->  void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed);
->  void f2fs_put_page_dic(struct page *page);
-> +int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn);
->  int f2fs_init_compress_ctx(struct compress_ctx *cc);
->  void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse);
->  void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index dd611efa8aa4..7be2b01caa2a 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -832,6 +832,26 @@ int f2fs_get_dnode_of_data(struct dnode_of_data *dn, pgoff_t index, int mode)
->  	dn->ofs_in_node = offset[level];
->  	dn->node_page = npage[level];
->  	dn->data_blkaddr = f2fs_data_blkaddr(dn);
-> +
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
-> +	if (is_inode_flag_set(dn->inode, FI_COMPRESSED_FILE) &&
-> +			!f2fs_sb_has_readonly(sbi)) {
-> +		int blknum = f2fs_cluster_blocks_are_contiguous(dn);
-> +
-> +		if (blknum) {
-> +			block_t blkaddr = f2fs_data_blkaddr(dn);
-> +
-> +			if (blkaddr == COMPRESS_ADDR)
-> +				blkaddr = data_blkaddr(dn->inode, dn->node_page,
-> +							dn->ofs_in_node + 1);
-> +
-> +			f2fs_update_extent_tree_range_unaligned(dn->inode,
-> +					index, blkaddr,
-> +					F2FS_I(dn->inode)->i_cluster_size,
-> +					blknum);
-> +		}
-> +	}
-> +#endif
->  	return 0;
->  
->  release_pages:
-> -- 
-> 2.22.1
+-- 
+Jens Axboe
+
