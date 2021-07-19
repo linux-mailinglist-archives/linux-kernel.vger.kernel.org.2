@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BD23CE5F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7683CE626
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348860AbhGSPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:55:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38194 "EHLO mail.kernel.org"
+        id S1352481AbhGSQBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345960AbhGSPFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:05:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F34460238;
-        Mon, 19 Jul 2021 15:45:47 +0000 (UTC)
+        id S1346038AbhGSPFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:05:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C13206023D;
+        Mon, 19 Jul 2021 15:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709548;
-        bh=gpjRWjPbeNOVff751auNa6T17/9i/Z6JF3WyIgzwXyg=;
+        s=korg; t=1626709551;
+        bh=HVAnDmf5mBzFTFIU5/PourG2v7nNC1fxLxf8dnzTuk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A4kVzfGSCXEwRvErRLdOWTZDc1s7+G+PeH2Lgx/kz9yzzFmh4l7SsC4yX09iqtCYN
-         OIhB29WC8pbkp90lWxWCuCnLcMbqW6X1HCEnxLunv6Bf6AyHuv9lkT2uTfvjJRTgfO
-         X0sopZ1HeHC3H+pamtQzV1rYX8iwVtc4WaxxcxMo=
+        b=ZAryqFPQC6dXzPnOcZFCETGC4UJY2MnpLMrO/mf3Ac9Zi0V3sSWd/VbwDspZxU8FU
+         kyIp7vbI/x8aVmZtQ26jRFFb2kXi8IPRpgYgY7EpOJM//NiJNjH3T/Of68z0gnI5nX
+         GMsfrWdCINxV1xuQuBk+wzxbCdrFqoRsEqQo29gM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Vorel <petr.vorel@gmail.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 405/421] arm64: dts: qcom: msm8994-angler: Fix gpio-reserved-ranges 85-88
-Date:   Mon, 19 Jul 2021 16:53:36 +0200
-Message-Id: <20210719145000.376934427@linuxfoundation.org>
+Subject: [PATCH 4.19 406/421] ARM: dts: BCM5301X: Fixup SPI binding
+Date:   Mon, 19 Jul 2021 16:53:37 +0200
+Message-Id: <20210719145000.408831082@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,38 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Vorel <petr.vorel@gmail.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit f890f89d9a80fffbfa7ca791b78927e5b8aba869 ]
+[ Upstream commit d5aede3e6dd1b8ca574600a1ecafe1e580c53f2f ]
 
-Reserve GPIO pins 85-88 as these aren't meant to be accessible from the
-application CPUs (causes reboot). Yet another fix similar to
-9134586715e3, 5f8d3ab136d0, which is needed to allow angler to boot after
-3edfb7bd76bd ("gpiolib: Show correct direction from the beginning").
+1. Reorder interrupts
+2. Fix typo: s/spi_lr_overhead/spi_lr_overread/
+3. Rename node: s/spi-nor@0/flash@0/
 
-Fixes: feeaf56ac78d ("arm64: dts: msm8994 SoC and Huawei Angler (Nexus 6P) support")
+This fixes:
+arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dt.yaml: spi@18029200: interrupt-names: 'oneOf' conditional failed, one must be fixed:
+        ['spi_lr_fullness_reached', 'spi_lr_session_aborted', 'spi_lr_impatient', 'spi_lr_session_done', 'spi_lr_overhead', 'mspi_done', 'mspi_halted'] is too long
+        Additional items are not allowed ('spi_lr_session_aborted', 'spi_lr_impatient', 'spi_lr_session_done', 'spi_lr_overhead', 'mspi_done', 'mspi_halted' were unexpected)
+        'mspi_done' was expected
+        'spi_l1_intr' was expected
+        'mspi_halted' was expected
+        'spi_lr_fullness_reached' was expected
+        'spi_lr_session_aborted' was expected
+        'spi_lr_impatient' was expected
+        'spi_lr_session_done' was expected
+        'spi_lr_overread' was expected
+        From schema: Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.yaml
+arch/arm/boot/dts/bcm4709-buffalo-wxr-1900dhp.dt.yaml: spi-nor@0: $nodename:0: 'spi-nor@0' does not match '^flash(@.*)?$'
+        From schema: Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
 
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Link: https://lore.kernel.org/r/20210415193913.1836153-1-petr.vorel@gmail.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm/boot/dts/bcm5301x.dtsi | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts b/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts
-index dfa08f513dc4..e5850c4d3334 100644
---- a/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts
-@@ -38,3 +38,7 @@
- 		};
- 	};
- };
-+
-+&tlmm {
-+	gpio-reserved-ranges = <85 4>;
-+};
+diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
+index c91716d5980c..fa3422c4caec 100644
+--- a/arch/arm/boot/dts/bcm5301x.dtsi
++++ b/arch/arm/boot/dts/bcm5301x.dtsi
+@@ -451,27 +451,27 @@
+ 		      <0x1811b408 0x004>,
+ 		      <0x180293a0 0x01c>;
+ 		reg-names = "mspi", "bspi", "intr_regs", "intr_status_reg";
+-		interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
++		interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
+-			     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
+-			     <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
+-			     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-names = "spi_lr_fullness_reached",
++			     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "mspi_done",
++				  "mspi_halted",
++				  "spi_lr_fullness_reached",
+ 				  "spi_lr_session_aborted",
+ 				  "spi_lr_impatient",
+ 				  "spi_lr_session_done",
+-				  "spi_lr_overhead",
+-				  "mspi_done",
+-				  "mspi_halted";
++				  "spi_lr_overread";
+ 		clocks = <&iprocmed>;
+ 		clock-names = "iprocmed";
+ 		num-cs = <2>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		spi_nor: spi-nor@0 {
++		spi_nor: flash@0 {
+ 			compatible = "jedec,spi-nor";
+ 			reg = <0>;
+ 			spi-max-frequency = <20000000>;
 -- 
 2.30.2
 
