@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8410E3CDC3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F293CE017
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243191AbhGSOvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46568 "EHLO mail.kernel.org"
+        id S1345416AbhGSPNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245368AbhGSOed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0245E6128A;
-        Mon, 19 Jul 2021 15:13:58 +0000 (UTC)
+        id S1344254AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BBAB61351;
+        Mon, 19 Jul 2021 15:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707639;
-        bh=COMMYMrIZyJA7Y/8b9KO9zfJUI/g6UHTY3iQqUVpiVw=;
+        s=korg; t=1626708473;
+        bh=4yeDjT5D5euz2WWCVdMQo2mPVg1rCQ9V0ZvkE5GBJ3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MyePAsyAfruDiZjmJUo1LtM/EPKj6Pkz+lUglUEFvWNcyzP9xnMdxXtOL2Nr8gPAG
-         OSf2EmHKhoIB/3RXGg0CHHMH4XVOMbmTBS9wIjXmYEkeWL1LWO3n+6831RbVL+Bt/K
-         PIPYmimV9Fpw9vV0Cg2pvptWfA3rFHoKTJanFBOw=
+        b=FO7t/pVBSVEMTNSirFlmIh6SrjaNWKoWe6bbSii/qyMe+afvklJmpmQ2PQqbJdaOu
+         FBUMSodzGXS+iDRQuzkNplthuFV1iPLI8BJLLWRxEzNtJU8/Rl2ICxkLt3Ll5bk0LB
+         7Sp8fwXiLYIUDM9W49BwQK9aZawHT9aSEjIq/BZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 243/245] mips: always link byteswap helpers into decompressor
-Date:   Mon, 19 Jul 2021 16:53:05 +0200
-Message-Id: <20210719144948.218519419@linuxfoundation.org>
+Subject: [PATCH 4.14 297/315] NFSv4/pNFS: Dont call _nfs4_pnfs_v3_ds_connect multiple times
+Date:   Mon, 19 Jul 2021 16:53:06 +0200
+Message-Id: <20210719144953.239040175@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
-References: <20210719144940.288257948@linuxfoundation.org>
+In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
+References: <20210719144942.861561397@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +40,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit cddc40f5617e53f97ef019d5b29c1bd6cbb031ec ]
+[ Upstream commit f46f84931a0aa344678efe412d4b071d84d8a805 ]
 
-My series to clean up the unaligned access implementation
-across architectures caused some mips randconfig builds to
-fail with:
+After we grab the lock in nfs4_pnfs_ds_connect(), there is no check for
+whether or not ds->ds_clp has already been initialised, so we can end up
+adding the same transports multiple times.
 
-   mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `decompress_kernel':
-   decompress.c:(.text.decompress_kernel+0x54): undefined reference to `__bswapsi2'
-
-It turns out that this problem has already been fixed for the XZ
-decompressor but now it also shows up in (at least) LZO and LZ4.  From my
-analysis I concluded that the compiler could always have emitted those
-calls, but the different implementation allowed it to make otherwise
-better decisions about not inlining the byteswap, which results in the
-link error when the out-of-line code is missing.
-
-While it could be addressed by adding it to the two decompressor
-implementations that are known to be affected, but as this only adds
-112 bytes to the kernel, the safer choice is to always add them.
-
-Fixes: c50ec6787536 ("MIPS: zboot: Fix the build with XZ compression on older GCC versions")
-Fixes: 0652035a5794 ("asm-generic: unaligned: remove byteshift helpers")
-Link: https://lore.kernel.org/linux-mm/202106301304.gz2wVY9w-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202106260659.TyMe8mjr-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202106172016.onWT6Tza-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202105231743.JJcALnhS-lkp@intel.com/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: fc821d59209d ("pnfs/NFSv4.1: Add multipath capabilities to pNFS flexfiles servers over NFSv3")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/boot/compressed/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nfs/pnfs_nfs.c | 52 +++++++++++++++++++++++------------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 0fa91c981658..3e93eea5a5f5 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -33,7 +33,7 @@ KBUILD_AFLAGS := $(LINUXINCLUDE) $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
- KCOV_INSTRUMENT		:= n
+diff --git a/fs/nfs/pnfs_nfs.c b/fs/nfs/pnfs_nfs.c
+index b0ef37f3e2dd..29bdf1525d82 100644
+--- a/fs/nfs/pnfs_nfs.c
++++ b/fs/nfs/pnfs_nfs.c
+@@ -555,19 +555,16 @@ out:
+ }
+ EXPORT_SYMBOL_GPL(nfs4_pnfs_ds_add);
  
- # decompressor objects (linked with vmlinuz)
--vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o
-+vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o $(obj)/bswapsi.o
+-static void nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
++static int nfs4_wait_ds_connect(struct nfs4_pnfs_ds *ds)
+ {
+ 	might_sleep();
+-	wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING,
+-			TASK_KILLABLE);
++	return wait_on_bit(&ds->ds_state, NFS4DS_CONNECTING, TASK_KILLABLE);
+ }
  
- ifdef CONFIG_DEBUG_ZBOOT
- vmlinuzobjs-$(CONFIG_DEBUG_ZBOOT)		   += $(obj)/dbg.o
-@@ -47,7 +47,7 @@ extra-y += uart-ath79.c
- $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
- 	$(call cmd,shipped)
+ static void nfs4_clear_ds_conn_bit(struct nfs4_pnfs_ds *ds)
+ {
+ 	smp_mb__before_atomic();
+-	clear_bit(NFS4DS_CONNECTING, &ds->ds_state);
+-	smp_mb__after_atomic();
+-	wake_up_bit(&ds->ds_state, NFS4DS_CONNECTING);
++	clear_and_wake_up_bit(NFS4DS_CONNECTING, &ds->ds_state);
+ }
  
--vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o $(obj)/bswapsi.o
-+vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
+ static struct nfs_client *(*get_v3_ds_connect)(
+@@ -728,30 +725,33 @@ int nfs4_pnfs_ds_connect(struct nfs_server *mds_srv, struct nfs4_pnfs_ds *ds,
+ {
+ 	int err;
  
- extra-y += ashldi3.c bswapsi.c
- $(obj)/ashldi3.o $(obj)/bswapsi.o: KBUILD_CFLAGS += -I$(srctree)/arch/mips/lib
+-again:
+-	err = 0;
+-	if (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) == 0) {
+-		if (version == 3) {
+-			err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo,
+-						       retrans);
+-		} else if (version == 4) {
+-			err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo,
+-						       retrans, minor_version);
+-		} else {
+-			dprintk("%s: unsupported DS version %d\n", __func__,
+-				version);
+-			err = -EPROTONOSUPPORT;
+-		}
++	do {
++		err = nfs4_wait_ds_connect(ds);
++		if (err || ds->ds_clp)
++			goto out;
++		if (nfs4_test_deviceid_unavailable(devid))
++			return -ENODEV;
++	} while (test_and_set_bit(NFS4DS_CONNECTING, &ds->ds_state) != 0);
+ 
+-		nfs4_clear_ds_conn_bit(ds);
+-	} else {
+-		nfs4_wait_ds_connect(ds);
++	if (ds->ds_clp)
++		goto connect_done;
+ 
+-		/* what was waited on didn't connect AND didn't mark unavail */
+-		if (!ds->ds_clp && !nfs4_test_deviceid_unavailable(devid))
+-			goto again;
++	switch (version) {
++	case 3:
++		err = _nfs4_pnfs_v3_ds_connect(mds_srv, ds, timeo, retrans);
++		break;
++	case 4:
++		err = _nfs4_pnfs_v4_ds_connect(mds_srv, ds, timeo, retrans,
++					       minor_version);
++		break;
++	default:
++		dprintk("%s: unsupported DS version %d\n", __func__, version);
++		err = -EPROTONOSUPPORT;
+ 	}
+ 
++connect_done:
++	nfs4_clear_ds_conn_bit(ds);
++out:
+ 	/*
+ 	 * At this point the ds->ds_clp should be ready, but it might have
+ 	 * hit an error.
 -- 
 2.30.2
 
