@@ -2,55 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926F53CEDB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFD13CEDB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386679AbhGSTg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:36:58 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34660 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1385728AbhGSTIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1386705AbhGSThT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:37:19 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:36523 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1385732AbhGSTIa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 15:08:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=MpEyn1pQ8l2HvWMWGEa3AhtkYJDX6GLV9nl0yEUWM14=; b=2s0wrwA8pwvnAuX2PxG+beLmQY
-        KpDRKdogrjz2PDRFl6GlhRaEdmMfOI5+R0uQNzQ4pBQsrJdepX6Xg8zlwIG2W68d012YY6c5e2gRB
-        cfA3mFDobMR1ySd8gajLhAqvMkJeEIDtSMc0GoHDOmUSmKvwSIiGJDO49od3im9QD/yE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m5ZFc-00DxMj-KL; Mon, 19 Jul 2021 21:48:28 +0200
-Date:   Mon, 19 Jul 2021 21:48:28 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Hao Chen <chenhaoa@uniontech.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] net: stmmac: fix 'ethtool -P' return -EBUSY
-Message-ID: <YPXXDDcH1Gs2Oek8@lunn.ch>
-References: <20210719093207.17343-1-chenhaoa@uniontech.com>
+Received: by mail-il1-f171.google.com with SMTP id j5so17112595ilk.3;
+        Mon, 19 Jul 2021 12:48:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GDUH5kKZnOHRCAbBYePTCiIA1/WaZH91n3x0Dno6HFQ=;
+        b=pOBPpmIUxOFi9+EDBocKHUAb6m+mJ/KxYcJ63V9wxvHyP4BwmzWmz7B0bZ3Y4KYuQK
+         ocf78dq0hez9lXKVRKEAZLSGqFA5n+OleUYZCk/2ZdRR5S6Ti9CqAicgdO0YZ0WX5cc8
+         JxnhGe99DKIj1LywuwAQEy7YA9Of4lZsRU5i9aI1VSOUdiMfrqBOcMeOPuN7fKklvAxM
+         xOlvwoTiZOShIiQwHLi7N3vhLrA1lbzuvY8BeWOsz8yipDAJcb4er1uRmtXqc/2LLiY8
+         6kiz8+PGhKvXykZAyFSNFZ94sjP5caS5kFlK6DY2fYA8UOJTbTZRbUfjtJuEs0FoGexK
+         TZcA==
+X-Gm-Message-State: AOAM532glg2WgmxKxiUHyH8iOEWTZrXM9rxQvbDRaDtvd2ZJnXrBOvfy
+        cSjjTrlhNtcVFbnIWSKD+A==
+X-Google-Smtp-Source: ABdhPJxne2/ZNMI2QOulVi9xVIAfp9pBxOds/kvhM1c+nWxPLBJeFq+sM2PJlMNuUEgGjrxakSXCEw==
+X-Received: by 2002:a92:d5cb:: with SMTP id d11mr17647954ilq.133.1626724133543;
+        Mon, 19 Jul 2021 12:48:53 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.248])
+        by smtp.googlemail.com with ESMTPSA id h10sm11306196ioe.43.2021.07.19.12.48.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 12:48:52 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        linux-media@vger.kernel.org
+Subject: [PATCH] dt-bindings: media: Fix graph 'unevaluatedProperties' related warnings
+Date:   Mon, 19 Jul 2021 13:48:50 -0600
+Message-Id: <20210719194850.2410511-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719093207.17343-1-chenhaoa@uniontech.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 05:32:07PM +0800, Hao Chen wrote:
-> The permanent mac address should be available for query when the device
-> is not up.
-> NetworkManager, the system network daemon, uses 'ethtool -P' to obtain
-> the permanent address after the kernel start. When the network device
-> is not up, it will return the device busy error with 'ethtool -P'. At
-> that time, it is unable to access the Internet through the permanent
-> address by NetworkManager.
-> I think that the '.begin' is not used to check if the device is up.
+The graph schema doesn't allow custom properties on endpoint nodes for
+'#/properties/port' and '#/$defs/port-base' should be used instead. This
+doesn't matter until 'unevaluatedProperties' support is implemented.
 
-You forgot to update the commit message.
+Cc: Eugen Hristev <eugen.hristev@microchip.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc: Ramesh Shanmugasundaram <rashanmu@gmail.com>
+Cc: linux-media@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/media/atmel,isc.yaml      | 3 ++-
+ Documentation/devicetree/bindings/media/microchip,xisc.yaml | 2 +-
+ Documentation/devicetree/bindings/media/renesas,drif.yaml   | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-    Andrew
+diff --git a/Documentation/devicetree/bindings/media/atmel,isc.yaml b/Documentation/devicetree/bindings/media/atmel,isc.yaml
+index 3e4bb8892d94..cd6d7af0c768 100644
+--- a/Documentation/devicetree/bindings/media/atmel,isc.yaml
++++ b/Documentation/devicetree/bindings/media/atmel,isc.yaml
+@@ -44,7 +44,8 @@ properties:
+     const: isc-mck
+ 
+   port:
+-    $ref: /schemas/graph.yaml#/properties/port
++    $ref: /schemas/graph.yaml#/$defs/port-base
++    unevaluatedProperties: false
+     description:
+       Input port node, single endpoint describing the input pad.
+ 
+diff --git a/Documentation/devicetree/bindings/media/microchip,xisc.yaml b/Documentation/devicetree/bindings/media/microchip,xisc.yaml
+index 41afe2e5f133..086e1430af4f 100644
+--- a/Documentation/devicetree/bindings/media/microchip,xisc.yaml
++++ b/Documentation/devicetree/bindings/media/microchip,xisc.yaml
+@@ -52,7 +52,7 @@ properties:
+       of the data and clock lines.
+ 
+   port:
+-    $ref: /schemas/graph.yaml#/properties/port
++    $ref: /schemas/graph.yaml#/$defs/port-base
+     description:
+       Input port node, single endpoint describing the input pad.
+ 
+diff --git a/Documentation/devicetree/bindings/media/renesas,drif.yaml b/Documentation/devicetree/bindings/media/renesas,drif.yaml
+index 817a6d566738..2867d11fe156 100644
+--- a/Documentation/devicetree/bindings/media/renesas,drif.yaml
++++ b/Documentation/devicetree/bindings/media/renesas,drif.yaml
+@@ -96,7 +96,7 @@ properties:
+       Indicates that the channel acts as primary among the bonded channels.
+ 
+   port:
+-    $ref: /schemas/graph.yaml#/properties/port
++    $ref: /schemas/graph.yaml#/$defs/port-base
+     unevaluatedProperties: false
+     description:
+       Child port node corresponding to the data input. The port node must
+-- 
+2.27.0
+
