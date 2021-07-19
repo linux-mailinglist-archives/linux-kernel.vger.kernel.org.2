@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547A53CDA19
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5753CDA22
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244338AbhGSOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:33:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37912 "EHLO mail.kernel.org"
+        id S243578AbhGSOeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:34:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243756AbhGSO1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:27:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A32560FDC;
-        Mon, 19 Jul 2021 15:07:31 +0000 (UTC)
+        id S243782AbhGSO1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:27:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F836120D;
+        Mon, 19 Jul 2021 15:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707251;
-        bh=KliTdoe5hJcH0PpJx2ajeKVcSDVcyge+e4e1Kk4KVVA=;
+        s=korg; t=1626707254;
+        bh=huPc52tDboBP0EbU8IYTHq4sD8C58o4OhUBwdx91lpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DQKqh1Q5hPq9QeFYUTuqVUtcli5cv1J/oihmG+lCCG0qzI4giSXQDvWFpFCy3QYaa
-         muXHNr89B30HDSQ35szSspnrgF57a4X7TN2V2g4NzjHhoSF9+H0TKdXv8WUuizD1pY
-         IYg1i5umaO53/5CGPiTQjvcZn3osnikzutR03Nt8=
+        b=lnPOIzWz9yTTDbQklO3FKyDxzRw/vK037+AYdtstWqNLkEuCIuqGpHz536CMFwIoZ
+         puY43n5Mg4fuDkY/rmkkc2JH0wXoincSDK1nwN4uj8KwXH5+ONC3mJA67GigKyKF1D
+         LRa2+dN1nScQHpQGWdbabz0oP/zYTtJnaldSML5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 086/245] net: ethernet: ezchip: fix error handling
-Date:   Mon, 19 Jul 2021 16:50:28 +0200
-Message-Id: <20210719144943.184081878@linuxfoundation.org>
+Subject: [PATCH 4.9 087/245] vxlan: add missing rcu_read_lock() in neigh_reduce()
+Date:   Mon, 19 Jul 2021 16:50:29 +0200
+Message-Id: <20210719144943.222814976@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -40,42 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 0de449d599594f5472e00267d651615c7f2c6c1d ]
+[ Upstream commit 85e8b032d6ebb0f698a34dd22c2f13443d905888 ]
 
-As documented at drivers/base/platform.c for platform_get_irq:
+syzbot complained in neigh_reduce(), because rcu_read_lock_bh()
+is treated differently than rcu_read_lock()
 
- * Gets an IRQ for a platform device and prints an error message if finding the
- * IRQ fails. Device drivers should check the return value for errors so as to
- * not pass a negative integer value to the request_irq() APIs.
+WARNING: suspicious RCU usage
+5.13.0-rc6-syzkaller #0 Not tainted
+-----------------------------
+include/net/addrconf.h:313 suspicious rcu_dereference_check() usage!
 
-So, the driver should check that platform_get_irq() return value
-is _negative_, not that it's equal to zero, because -ENXIO (return
-value from request_irq() if irq was not found) will
-pass this check and it leads to passing negative irq to request_irq()
+other info that might help us debug this:
 
-Fixes: 0dd077093636 ("NET: Add ezchip ethernet driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+rcu_scheduler_active = 2, debug_locks = 1
+3 locks held by kworker/0:0/5:
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2247
+ #1: ffffc90000ca7da8 ((work_completion)(&port->wq)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2251
+ #2: ffffffff8bf795c0 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1da/0x3130 net/core/dev.c:4180
+
+stack backtrace:
+CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.13.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events ipvlan_process_multicast
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ __in6_dev_get include/net/addrconf.h:313 [inline]
+ __in6_dev_get include/net/addrconf.h:311 [inline]
+ neigh_reduce drivers/net/vxlan.c:2167 [inline]
+ vxlan_xmit+0x34d5/0x4c30 drivers/net/vxlan.c:2919
+ __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4958 [inline]
+ xmit_one net/core/dev.c:3654 [inline]
+ dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3670
+ __dev_queue_xmit+0x2133/0x3130 net/core/dev.c:4246
+ ipvlan_process_multicast+0xa99/0xd70 drivers/net/ipvlan/ipvlan_core.c:287
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Fixes: f564f45c4518 ("vxlan: add ipv6 proxy support")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ezchip/nps_enet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/vxlan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/ezchip/nps_enet.c b/drivers/net/ethernet/ezchip/nps_enet.c
-index 1edf1c76c22c..6de29f2a0a09 100644
---- a/drivers/net/ethernet/ezchip/nps_enet.c
-+++ b/drivers/net/ethernet/ezchip/nps_enet.c
-@@ -624,7 +624,7 @@ static s32 nps_enet_probe(struct platform_device *pdev)
+diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
+index 088bb5870ac5..0bfadec8b79c 100644
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -1594,6 +1594,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb)
+ 	struct neighbour *n;
+ 	struct inet6_dev *in6_dev;
  
- 	/* Get IRQ number */
- 	priv->irq = platform_get_irq(pdev, 0);
--	if (!priv->irq) {
-+	if (priv->irq < 0) {
- 		dev_err(dev, "failed to retrieve <irq Rx-Tx> value from device tree\n");
- 		err = -ENODEV;
- 		goto out_netdev;
++	rcu_read_lock();
+ 	in6_dev = __in6_dev_get(dev);
+ 	if (!in6_dev)
+ 		goto out;
+@@ -1650,6 +1651,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb)
+ 	}
+ 
+ out:
++	rcu_read_unlock();
+ 	consume_skb(skb);
+ 	return NETDEV_TX_OK;
+ }
 -- 
 2.30.2
 
