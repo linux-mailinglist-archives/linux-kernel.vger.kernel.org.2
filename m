@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E650E3CEABC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720C83CE961
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378014AbhGSRRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37194 "EHLO mail.kernel.org"
+        id S1348614AbhGSQyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238175AbhGSPkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:40:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 472716120F;
-        Mon, 19 Jul 2021 16:20:04 +0000 (UTC)
+        id S1348349AbhGSPaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:30:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C02A661353;
+        Mon, 19 Jul 2021 16:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711604;
-        bh=GWvTKrGV15tk1eqTZlcA/1JJQ1myhoHUM9J+yVOGCmY=;
+        s=korg; t=1626710973;
+        bh=ILPk7AFgLm+fftyAdi77BNPMy+b7dHdjWXqEdGBBubA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uw4hHZ+vp7N1SQXIaqMXGqhQPDoEn1J6sos2PeYgCCAVxYtt8mFUhD9xTgbI/BJ4/
-         6/NOWAEaVMBHmXk4GPXOseZANNsbMmM7dGGsnxrcNadspbOAzZN7+SoFnf/JBXC7Gv
-         zZNsFAYMHyAUL5cpli4fNykqIABsOrMO7jl8f6gg=
+        b=IakwuRUIbVHSh5eaUcgDEMo7pvMG4e7DukZqG4G5mQn3n5e5KnYlfP41hJ30ZsffX
+         UDfMrRf1ds7wvZXFmfOR6L+lVWu49CW6j+ry9SuBjq66fywqkpWoU/0lxBncWqgqbH
+         E9VOb1YmxrPZ+bFFtnG0Iyb/yV/ezO6OBWk/pSx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 064/292] scsi: core: Fixup calling convention for scsi_mode_sense()
+Subject: [PATCH 5.13 180/351] ceph: remove bogus checks and WARN_ONs from ceph_set_page_dirty
 Date:   Mon, 19 Jul 2021 16:52:06 +0200
-Message-Id: <20210719144944.624911717@linuxfoundation.org>
+Message-Id: <20210719144950.937401442@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,161 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit 8793613de913e03e7c884f4cc56e350bc716431e ]
+[ Upstream commit 22d41cdcd3cfd467a4af074165357fcbea1c37f5 ]
 
-The description for scsi_mode_sense() claims to return the number of valid
-bytes on success, which is not what the code does.  Additionally there is
-no gain in returning the SCSI status, as everything the callers do is to
-check against scsi_result_is_good(), which is what scsi_mode_sense() does
-already.  So change the calling convention to return a standard error code
-on failure, and 0 on success, and adapt the description and all callers.
+The checks for page->mapping are odd, as set_page_dirty is an
+address_space operation, and I don't see where it would be called on a
+non-pagecache page.
 
-Link: https://lore.kernel.org/r/20210427083046.31620-4-hare@suse.de
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+The warning about the page lock also seems bogus.  The comment over
+set_page_dirty() says that it can be called without the page lock in
+some rare cases. I don't think we want to warn if that's the case.
+
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_lib.c           | 10 ++++++----
- drivers/scsi/scsi_transport_sas.c |  9 ++++-----
- drivers/scsi/sd.c                 | 12 ++++++------
- drivers/scsi/sr.c                 |  2 +-
- 4 files changed, 17 insertions(+), 16 deletions(-)
+ fs/ceph/addr.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index e172c660dcd5..1b02556f9ec0 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -2081,9 +2081,7 @@ EXPORT_SYMBOL_GPL(scsi_mode_select);
-  *	@sshdr: place to put sense data (or NULL if no sense to be collected).
-  *		must be SCSI_SENSE_BUFFERSIZE big.
-  *
-- *	Returns zero if unsuccessful, or the header offset (either 4
-- *	or 8 depending on whether a six or ten byte command was
-- *	issued) if successful.
-+ *	Returns zero if successful, or a negative error number on failure
-  */
- int
- scsi_mode_sense(struct scsi_device *sdev, int dbd, int modepage,
-@@ -2130,6 +2128,8 @@ scsi_mode_sense(struct scsi_device *sdev, int dbd, int modepage,
- 
- 	result = scsi_execute_req(sdev, cmd, DMA_FROM_DEVICE, buffer, len,
- 				  sshdr, timeout, retries, NULL);
-+	if (result < 0)
-+		return result;
- 
- 	/* This code looks awful: what it's doing is making sure an
- 	 * ILLEGAL REQUEST sense return identifies the actual command
-@@ -2174,13 +2174,15 @@ scsi_mode_sense(struct scsi_device *sdev, int dbd, int modepage,
- 			data->block_descriptor_length = buffer[3];
- 		}
- 		data->header_length = header_length;
-+		result = 0;
- 	} else if ((status_byte(result) == CHECK_CONDITION) &&
- 		   scsi_sense_valid(sshdr) &&
- 		   sshdr->sense_key == UNIT_ATTENTION && retry_count) {
- 		retry_count--;
- 		goto retry;
- 	}
+diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+index c1570fada3d8..998dc4dfdc6b 100644
+--- a/fs/ceph/addr.c
++++ b/fs/ceph/addr.c
+@@ -82,10 +82,6 @@ static int ceph_set_page_dirty(struct page *page)
+ 	struct inode *inode;
+ 	struct ceph_inode_info *ci;
+ 	struct ceph_snap_context *snapc;
+-	int ret;
 -
-+	if (result > 0)
-+		result = -EIO;
- 	return result;
+-	if (unlikely(!mapping))
+-		return !TestSetPageDirty(page);
+ 
+ 	if (PageDirty(page)) {
+ 		dout("%p set_page_dirty %p idx %lu -- already dirty\n",
+@@ -130,11 +126,7 @@ static int ceph_set_page_dirty(struct page *page)
+ 	BUG_ON(PagePrivate(page));
+ 	attach_page_private(page, snapc);
+ 
+-	ret = __set_page_dirty_nobuffers(page);
+-	WARN_ON(!PageLocked(page));
+-	WARN_ON(!page->mapping);
+-
+-	return ret;
++	return __set_page_dirty_nobuffers(page);
  }
- EXPORT_SYMBOL(scsi_mode_sense);
-diff --git a/drivers/scsi/scsi_transport_sas.c b/drivers/scsi/scsi_transport_sas.c
-index c9abed8429c9..4a96fb05731d 100644
---- a/drivers/scsi/scsi_transport_sas.c
-+++ b/drivers/scsi/scsi_transport_sas.c
-@@ -1229,16 +1229,15 @@ int sas_read_port_mode_page(struct scsi_device *sdev)
- 	char *buffer = kzalloc(BUF_SIZE, GFP_KERNEL), *msdata;
- 	struct sas_end_device *rdev = sas_sdev_to_rdev(sdev);
- 	struct scsi_mode_data mode_data;
--	int res, error;
-+	int error;
  
- 	if (!buffer)
- 		return -ENOMEM;
- 
--	res = scsi_mode_sense(sdev, 1, 0x19, buffer, BUF_SIZE, 30*HZ, 3,
--			      &mode_data, NULL);
-+	error = scsi_mode_sense(sdev, 1, 0x19, buffer, BUF_SIZE, 30*HZ, 3,
-+				&mode_data, NULL);
- 
--	error = -EINVAL;
--	if (!scsi_status_is_good(res))
-+	if (error)
- 		goto out;
- 
- 	msdata = buffer +  mode_data.header_length +
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index a0356f3707b8..3431ac12b730 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -2683,18 +2683,18 @@ sd_read_write_protect_flag(struct scsi_disk *sdkp, unsigned char *buffer)
- 		 * 5: Illegal Request, Sense Code 24: Invalid field in
- 		 * CDB.
- 		 */
--		if (!scsi_status_is_good(res))
-+		if (res < 0)
- 			res = sd_do_mode_sense(sdkp, 0, 0, buffer, 4, &data, NULL);
- 
- 		/*
- 		 * Third attempt: ask 255 bytes, as we did earlier.
- 		 */
--		if (!scsi_status_is_good(res))
-+		if (res < 0)
- 			res = sd_do_mode_sense(sdkp, 0, 0x3F, buffer, 255,
- 					       &data, NULL);
- 	}
- 
--	if (!scsi_status_is_good(res)) {
-+	if (res < 0) {
- 		sd_first_printk(KERN_WARNING, sdkp,
- 			  "Test WP failed, assume Write Enabled\n");
- 	} else {
-@@ -2755,7 +2755,7 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
- 	res = sd_do_mode_sense(sdkp, dbd, modepage, buffer, first_len,
- 			&data, &sshdr);
- 
--	if (!scsi_status_is_good(res))
-+	if (res < 0)
- 		goto bad_sense;
- 
- 	if (!data.header_length) {
-@@ -2787,7 +2787,7 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
- 		res = sd_do_mode_sense(sdkp, dbd, modepage, buffer, len,
- 				&data, &sshdr);
- 
--	if (scsi_status_is_good(res)) {
-+	if (!res) {
- 		int offset = data.header_length + data.block_descriptor_length;
- 
- 		while (offset < len) {
-@@ -2905,7 +2905,7 @@ static void sd_read_app_tag_own(struct scsi_disk *sdkp, unsigned char *buffer)
- 	res = scsi_mode_sense(sdp, 1, 0x0a, buffer, 36, SD_TIMEOUT,
- 			      sdkp->max_retries, &data, &sshdr);
- 
--	if (!scsi_status_is_good(res) || !data.header_length ||
-+	if (res < 0 || !data.header_length ||
- 	    data.length < 6) {
- 		sd_first_printk(KERN_WARNING, sdkp,
- 			  "getting Control mode page failed, assume no ATO\n");
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 7815ed642d43..1a94c7b1de2d 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -913,7 +913,7 @@ static void get_capabilities(struct scsi_cd *cd)
- 	rc = scsi_mode_sense(cd->device, 0, 0x2a, buffer, ms_len,
- 			     SR_TIMEOUT, 3, &data, NULL);
- 
--	if (!scsi_status_is_good(rc) || data.length > ms_len ||
-+	if (rc < 0 || data.length > ms_len ||
- 	    data.header_length + data.block_descriptor_length > data.length) {
- 		/* failed, drive doesn't have capabilities mode page */
- 		cd->cdi.speed = 1;
+ /*
 -- 
 2.30.2
 
