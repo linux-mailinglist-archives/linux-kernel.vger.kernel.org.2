@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A396C3CE675
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554143CE596
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348327AbhGSQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:06:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
+        id S1350105AbhGSPud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:50:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245340AbhGSPGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:06:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CDB560FEA;
-        Mon, 19 Jul 2021 15:46:50 +0000 (UTC)
+        id S1345132AbhGSPBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:01:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6556611ED;
+        Mon, 19 Jul 2021 15:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709610;
-        bh=wIFOHxxG1WGVVfYfKR8/d5d2XYXxPUVK5xaAmAYljR8=;
+        s=korg; t=1626709313;
+        bh=AaxiyUJgb/wWIUCoEmwa22p47FjVGGBCNWT7ikz188s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OY9OexXAf/D0hP07nIZk+8Mfw6UI1+7lSmXD80RII2fr+sA8I8UnnW4XBFCn5hLOy
-         /fv0MBJNifUqH2ViSVI1GPl+i6Au4mncuPjkkttXHFMQdVmMVXyQ6gWcbJEmfymGht
-         m8i8sjHd43OrM7/zyzQqFIo2Qe1VxsXw8Te0qSQA=
+        b=GhSLrxYDuanSJxKqXWDAq5ijUOMdGBr0c6s2ghzctAQgKNxCl/MXoMETeXq6V7unG
+         phxIsMrfK3gVCb9uP/Y40pumKB02USwqiPSmegZ5cr69Sq+ADtTNqFjEOmdGnn3inh
+         eD7V4xCPPd/WmzZoSwIdZR0I0uulEkjUCDgWbY18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomas Henzl <thenzl@redhat.com>,
-        kernel test robot <lkp@intel.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Luiz Sampaio <sampaio.ime@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 029/149] scsi: megaraid_sas: Handle missing interrupts while re-enabling IRQs
+Subject: [PATCH 4.19 326/421] w1: ds2438: fixing bug that would always get page0
 Date:   Mon, 19 Jul 2021 16:52:17 +0200
-Message-Id: <20210719144908.436534436@linuxfoundation.org>
+Message-Id: <20210719144957.599313334@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
+References: <20210719144946.310399455@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,74 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+From: Luiz Sampaio <sampaio.ime@gmail.com>
 
-[ Upstream commit 9bedd36e9146b34dda4d6994e3aa1d72bc6442c1 ]
+[ Upstream commit 1f5e7518f063728aee0679c5086b92d8ea429e11 ]
 
-While reenabling the IRQ after IRQ poll there may be a small window for the
-firmware to post the replies with interrupts raised. In that case the
-driver will not see the interrupts which leads to I/O timeout.
+The purpose of the w1_ds2438_get_page function is to get the register
+values at the page passed as the pageno parameter. However, the page0 was
+hardcoded, such that the function always returned the page0 contents. Fixed
+so that the function can retrieve any page.
 
-This issue only happens when there are many I/O completions on a single
-reply queue. This forces the driver to switch between the interrupt and IRQ
-context.
-
-Make the driver process the reply queue one more time after enabling the
-IRQ.
-
-Link: https://lore.kernel.org/linux-scsi/20201102072746.27410-1-sreekanth.reddy@broadcom.com/
-Link: https://lore.kernel.org/r/20210528131307.25683-5-chandrakanth.patil@broadcom.com
-Cc: Tomas Henzl <thenzl@redhat.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
-Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
+Link: https://lore.kernel.org/r/20210519223046.13798-5-sampaio.ime@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/megaraid/megaraid_sas_fusion.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/w1/slaves/w1_ds2438.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index ae7a3e154bb2..a78a702511fa 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -3716,6 +3716,7 @@ static void megasas_sync_irqs(unsigned long instance_addr)
- 		if (irq_ctx->irq_poll_scheduled) {
- 			irq_ctx->irq_poll_scheduled = false;
- 			enable_irq(irq_ctx->os_irq);
-+			complete_cmd_fusion(instance, irq_ctx->MSIxIndex, irq_ctx);
- 		}
- 	}
- }
-@@ -3747,6 +3748,7 @@ int megasas_irqpoll(struct irq_poll *irqpoll, int budget)
- 		irq_poll_complete(irqpoll);
- 		irq_ctx->irq_poll_scheduled = false;
- 		enable_irq(irq_ctx->os_irq);
-+		complete_cmd_fusion(instance, irq_ctx->MSIxIndex, irq_ctx);
- 	}
+diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
+index 7c4e33dbee4d..b005dda9c697 100644
+--- a/drivers/w1/slaves/w1_ds2438.c
++++ b/drivers/w1/slaves/w1_ds2438.c
+@@ -64,13 +64,13 @@ static int w1_ds2438_get_page(struct w1_slave *sl, int pageno, u8 *buf)
+ 		if (w1_reset_select_slave(sl))
+ 			continue;
+ 		w1_buf[0] = W1_DS2438_RECALL_MEMORY;
+-		w1_buf[1] = 0x00;
++		w1_buf[1] = (u8)pageno;
+ 		w1_write_block(sl->master, w1_buf, 2);
  
- 	return num_entries;
-@@ -3763,6 +3765,7 @@ megasas_complete_cmd_dpc_fusion(unsigned long instance_addr)
- {
- 	struct megasas_instance *instance =
- 		(struct megasas_instance *)instance_addr;
-+	struct megasas_irq_context *irq_ctx = NULL;
- 	u32 count, MSIxIndex;
+ 		if (w1_reset_select_slave(sl))
+ 			continue;
+ 		w1_buf[0] = W1_DS2438_READ_SCRATCH;
+-		w1_buf[1] = 0x00;
++		w1_buf[1] = (u8)pageno;
+ 		w1_write_block(sl->master, w1_buf, 2);
  
- 	count = instance->msix_vectors > 0 ? instance->msix_vectors : 1;
-@@ -3771,8 +3774,10 @@ megasas_complete_cmd_dpc_fusion(unsigned long instance_addr)
- 	if (atomic_read(&instance->adprecovery) == MEGASAS_HW_CRITICAL_ERROR)
- 		return;
- 
--	for (MSIxIndex = 0 ; MSIxIndex < count; MSIxIndex++)
--		complete_cmd_fusion(instance, MSIxIndex, NULL);
-+	for (MSIxIndex = 0 ; MSIxIndex < count; MSIxIndex++) {
-+		irq_ctx = &instance->irq_context[MSIxIndex];
-+		complete_cmd_fusion(instance, MSIxIndex, irq_ctx);
-+	}
- }
- 
- /**
+ 		count = w1_read_block(sl->master, buf, DS2438_PAGE_SIZE + 1);
 -- 
 2.30.2
 
