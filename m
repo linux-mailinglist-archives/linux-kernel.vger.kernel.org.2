@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDAF3CDC2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6960E3CDC1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242268AbhGSOve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:51:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47094 "EHLO mail.kernel.org"
+        id S238532AbhGSOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:51:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244123AbhGSOeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:34:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9190361181;
-        Mon, 19 Jul 2021 15:13:23 +0000 (UTC)
+        id S244548AbhGSOeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C305061248;
+        Mon, 19 Jul 2021 15:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707604;
-        bh=0MhgbH6QdC0c5kmzGdjW5OwP4rKEMVjEmrLTcINHv/E=;
+        s=korg; t=1626707606;
+        bh=l/HgkrSVWeDGyLslPfjYj0DAq4XWKbrr5gXo/3GNSFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G5fX8Y7ehFw5dwXKbnVX1kRFyN7b5Jx6P7n0KFXj5aNqJxQs+qIc8FruqmsAYujWE
-         pp0rlvjRtUPNysjhDx9i55MAb/sx8WPwvDRbwfOMumunRMzPlK/JYmEyZFmr3b98vF
-         Kkk/9YYX9/Zy8ZEAddp6E5yty3ljBQJXoA5jkauQ=
+        b=fsps8hqKx71opZg9xW9fNIXvua7U5PyUkp4w6UauWhVbKN/UW5XEnzYCYbVnW5NWL
+         vOHyOHiUXLXA9WcIqsIlo+Nur2GeXbudfXNxCKE58IuNCbd0x6kKgzPd9e2BxT7Y7Q
+         vNxdOmm2QBv7McecRuKzq7tSNDGoK6jD0eN9rueg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 230/245] ubifs: Set/Clear I_LINKABLE under i_lock for whiteout inode
-Date:   Mon, 19 Jul 2021 16:52:52 +0200
-Message-Id: <20210719144947.820522067@linuxfoundation.org>
+Subject: [PATCH 4.9 231/245] x86/fpu: Limit xstate copy size in xstateregs_set()
+Date:   Mon, 19 Jul 2021 16:52:53 +0200
+Message-Id: <20210719144947.851247620@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -40,77 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit a801fcfeef96702fa3f9b22ad56c5eb1989d9221 ]
+[ Upstream commit 07d6688b22e09be465652cf2da0da6bf86154df6 ]
 
-xfstests-generic/476 reports a warning message as below:
+If the count argument is larger than the xstate size, this will happily
+copy beyond the end of xstate.
 
-WARNING: CPU: 2 PID: 30347 at fs/inode.c:361 inc_nlink+0x52/0x70
-Call Trace:
-  do_rename+0x502/0xd40 [ubifs]
-  ubifs_rename+0x8b/0x180 [ubifs]
-  vfs_rename+0x476/0x1080
-  do_renameat2+0x67c/0x7b0
-  __x64_sys_renameat2+0x6e/0x90
-  do_syscall_64+0x66/0xe0
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Following race case can cause this:
-         rename_whiteout(Thread 1)             wb_workfn(Thread 2)
-ubifs_rename
-  do_rename
-                                          __writeback_single_inode
-					    spin_lock(&inode->i_lock)
-    whiteout->i_state |= I_LINKABLE
-                                            inode->i_state &= ~dirty;
----- How race happens on i_state:
-    (tmp = whiteout->i_state | I_LINKABLE)
-		                           (tmp = inode->i_state & ~dirty)
-    (whiteout->i_state = tmp)
-		                           (inode->i_state = tmp)
-----
-					    spin_unlock(&inode->i_lock)
-    inc_nlink(whiteout)
-    WARN_ON(!(inode->i_state & I_LINKABLE)) !!!
-
-Fix to add i_lock to avoid i_state update race condition.
-
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fixes: 91c3dba7dbc1 ("x86/fpu/xstate: Fix PTRACE frames for XSAVES")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210623121452.120741557@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/dir.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/kernel/fpu/regset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 87ab02e2d666..56eed54633cf 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1144,7 +1144,10 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 			return err;
- 		}
+diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+index 7052d9a65fe9..e1c9e94fcce6 100644
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -123,7 +123,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
+ 	/*
+ 	 * A whole standard-format XSAVE buffer is needed:
+ 	 */
+-	if ((pos != 0) || (count < fpu_user_xstate_size))
++	if (pos != 0 || count != fpu_user_xstate_size)
+ 		return -EFAULT;
  
-+		spin_lock(&whiteout->i_lock);
- 		whiteout->i_state |= I_LINKABLE;
-+		spin_unlock(&whiteout->i_lock);
-+
- 		whiteout_ui = ubifs_inode(whiteout);
- 		whiteout_ui->data = dev;
- 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
-@@ -1239,7 +1242,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 
- 		inc_nlink(whiteout);
- 		mark_inode_dirty(whiteout);
-+
-+		spin_lock(&whiteout->i_lock);
- 		whiteout->i_state &= ~I_LINKABLE;
-+		spin_unlock(&whiteout->i_lock);
-+
- 		iput(whiteout);
- 	}
- 
+ 	xsave = &fpu->state.xsave;
 -- 
 2.30.2
 
