@@ -2,182 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F043CD193
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7FF3CD1A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236111AbhGSJ3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:29:01 -0400
-Received: from mail-dm6nam11on2062.outbound.protection.outlook.com ([40.107.223.62]:31265
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        id S236168AbhGSJ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:29:37 -0400
+Received: from mail-mw2nam12on2105.outbound.protection.outlook.com ([40.107.244.105]:25184
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235713AbhGSJ3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:29:00 -0400
+        id S235179AbhGSJ3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 05:29:36 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XsRoKWspMqA75N1lmNxQA9tghL/FWvE7X6xR4oTvAsVOAkJc0+UgoghxXpDS9W8cB/kIRsP1/2LlP2RXUykQv5iwg2shrCmWQzXjnWtSO4XCVNfl8TEOX2AWbUN0jtpiW8YmnDy77eK7c8iEilBN/R4lPACOjOH9hyfuOCpVVvXaIRazhSC7fl8zrvh5tC2abrlUoSIqPk/suw2xZNNKh2YY9L0q+FjJ9sl65nWpkSQ6vTOhik6Zm9TDmww3yRPDQdFc2gCSgpNvFx+DNBxhbKq7iGWRozobGoFJbMKz+kDwPzWxbw527wNaNGoCMACud/ybBT0/MBdBDrv/8X0vQw==
+ b=dRVcdImujNLseqXrM1cnd74MsJF1VY8dI7BQ86bhSi3yXCfS+ty7c83NBNNMouP3pocX3R4iKCCiUlCH8bW+fmm07X5Z5UNLYFGvhI2Acbn4STTDLBYy/bJ6us7Pk1nNfyvu3hly/cUdEO+oXn03cUuJxlHdEns0/9sTr6geybNiEd8YlIuk8rpvrYJyeWlduM8OTm0x7zZWTRp/8/hRV0gT/n2eC/9Ow0Rb3gAtG/BDVYE09nzj6ojR37Y55foxHhOdFXIDs/XSNIVnexj0s0qX47ZNoQGbVe+eEuhItMEbxxtDy1/UCX0V93CCbZzD7r/T/nCI/rMjwyiT/AMm6Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PQtuta8vNIMEUfqy5MuLFMc7t5pmpUpE22Aly5sqi6k=;
- b=n4n0GPTZy0OPB+MOvG96w2wIBl/5F3IiyEoJkMqdF6neK6gvlxMSJMeyo3xqnUNNAeuERTbVkLTD+EipV6p8kZep1tM7nXOvgvmJ0uUQrjcKqkVPR6g3EhFmqyQG/QoP+iEl5xRi3ke9I9E++uykJW75yUmnsE+Z/74Zv0N4wloWczBEGR6aaVjNQGk2OxEpcVYRDtxYn7L2ikwpPYVqvREX/F2D9CsCY9Zjl0xqJ3Z4cwk5p/v0WtGVplP3ZGwj6+1BonVpDjxtCJnItA7Wkw7c+6EH2a9xtHBPGqlpcy7+iHUnXxMjv3XW+IIPgaays86v8x9fHHhMciOP8axPZA==
+ bh=lx1/ZatFg+OE6FxKtG8VLpqvIFWtgtaWAuXTsYaByWg=;
+ b=ec0/iLz53gb+SfhxueFgyPKArhkXzQQ0iNfNOgSTyMTjOPnEYoXV7lC1PgE3siTI2Cmz0No7eyyLZVpDqVYfHFRkjgtdUv77iCKBPsIiKviMOdTf5vExaFTo1zK7d/DNSpUErWAgWdh8SfPmKmtjv/nuN67FMitw21z11SFMnty98Q0+6yPf/J/fgbipqfP/mcgMwzGsqKl67OXXgMybYtBIq5fDEUCkUYohRNv+lMg1uBYRIeP/QPs/llB91yJmXpunCimUL5yde2NIAci+Lw/3xba8IS/aEezwj9UxnwT+bKTVxifvv4eLRLZb4G+iHfmPyrsKjWk1sRLhnfDoBg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PQtuta8vNIMEUfqy5MuLFMc7t5pmpUpE22Aly5sqi6k=;
- b=ZrPJgl9I63s2oXLq5FRMf0eHuAiaK4yXSha4rLcYRXlipiA8880OZnCX6YkB+SOFJJR6zgrEpc90OqOWRKNVjzDDeu9eLvumvZ49eXtSeV085b2Ulg5ilTJ1JWmiS6GllaKRxMfq9rcR6BGMOuMNUODy1EX8HUJFOLkRzLjxRpc=
-Received: from SN6PR02MB4093.namprd02.prod.outlook.com (2603:10b6:805:31::31)
- by SA2PR02MB7625.namprd02.prod.outlook.com (2603:10b6:806:143::5) with
+ bh=lx1/ZatFg+OE6FxKtG8VLpqvIFWtgtaWAuXTsYaByWg=;
+ b=Ob+aHqR0+Jygo+DJMXHd3Tpo719CTOv9LduHS2nA+ekoyPWTGWVnYf6d5CX+3xzwdjufYjMIjiSO8SWNjg+svruNBPF0UEkGd6iGOznJ/jUg0uK+3fdqIEn0XyPff6vB3PGjKMqf0SL3eEhY3PmSSXnQzH9NR06xSPDjuJGM+gU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BY5PR04MB6568.namprd04.prod.outlook.com (2603:10b6:a03:1de::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
- 2021 10:09:37 +0000
-Received: from SN6PR02MB4093.namprd02.prod.outlook.com
- ([fe80::c10a:fa45:9f2d:7601]) by SN6PR02MB4093.namprd02.prod.outlook.com
- ([fe80::c10a:fa45:9f2d:7601%6]) with mapi id 15.20.4331.026; Mon, 19 Jul 2021
- 10:09:37 +0000
-From:   Raviteja Narayanam <rna@xilinx.com>
-To:     Marek Vasut <marex@denx.de>, Michal Simek <michals@xilinx.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git <git@xilinx.com>, "joe@perches.com" <joe@perches.com>
-Subject: RE: [PATCH v2 00/10] i2c: xiic: Add features, bug fixes.
-Thread-Topic: [PATCH v2 00/10] i2c: xiic: Add features, bug fixes.
-Thread-Index: AQHXanX+JNOMVW+1VkKFPhgte5uemqspB/+AgBzauQCABE5f4A==
-Date:   Mon, 19 Jul 2021 10:09:37 +0000
-Message-ID: <SN6PR02MB40933E99A241952502B69F41CAE19@SN6PR02MB4093.namprd02.prod.outlook.com>
-References: <20210626102806.15402-1-raviteja.narayanam@xilinx.com>
- <95162fd0-10e6-2bc6-4079-899ac26f66ce@xilinx.com>
- <0c51785f-9763-aebc-a9ea-04337ad1accc@denx.de>
-In-Reply-To: <0c51785f-9763-aebc-a9ea-04337ad1accc@denx.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: denx.de; dkim=none (message not signed)
- header.d=none;denx.de; dmarc=none action=none header.from=xilinx.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1406326f-5352-42cb-8ea4-08d94a9d50d7
-x-ms-traffictypediagnostic: SA2PR02MB7625:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR02MB7625C863F36D4C1B540E0E40CAE19@SA2PR02MB7625.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +ntrwwRgxINQ+523lB0PVtFrUedEZf7pr3Lo4ThoyZ6WX7eqtA9nYv800G7aOZsfDXWBNU/c8T739UxPVnGB31SL9ppD8C9giOHQ0SLce/GtrFdXe6mm3BfmBZuHPRh+mTHY96htYnUmxiC7aaq6Jtkm5xatrWF6c0cxmeQrU9VqOjoaryqVKwDjpqrHv1EdzJYojkIssYJaNwqRpmDFGnFRXTzyp7XltFaakNK6PqZ3E/OvGFL0+CA9C77n1WTuA5iZB8ZrA8tIBe+MPNxZnzBbvvEvlKIDBZYjxZcJ0+m5Ul6VWisrxHrW6aE4lK0htvEalTbBvFQpP3qvZuoLhga/fwtezqsWlGmYb29hBfSIqbQjK7fxnmM50flT079eIsKUkGfoLyS9IuisVBKf/tkeMQbLjsi42xdUlz8FeGt6z2OXmTy4yrCcjDCIUXK3PWfgmjYhNW4Ocetzql9wE3+na9dVUGwPG9KuMcV+Y3md8gBFuTf10UJOGh5wjFPm/Ivv+yXCn8JbW2zgn5p/GU7c4pXtV+bPcl0RXKnDKFAnAcG/OEreAFd2Gxuh69B237S8P1HsvatWoxY5EGLr9MLFSszcTf6vr9TFZTmfp7IcCl0NaVXV5xVX98//syQ5m6GINCeRzj7JA40QHwuYXdhKu50hCmFGTKOblaWQ32f8R/rVRg5nOJT9c75I1fro8NHVOQfmISLLGDLdN8YZTfDBudGNYp8lHf4XsOagYeIT0zKw+SQwPQnu6n3tZ4Kd0F1uDQuSTVEOs4R7Mp/rxOUbmp4woGiILGlHxMAdvXI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR02MB4093.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(346002)(396003)(366004)(33656002)(38100700002)(83380400001)(86362001)(122000001)(76116006)(66446008)(64756008)(8676002)(66946007)(66556008)(66476007)(8936002)(966005)(52536014)(5660300002)(478600001)(71200400001)(55016002)(9686003)(2906002)(6506007)(54906003)(7696005)(53546011)(316002)(110136005)(186003)(26005)(4326008)(38070700004);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UVlic244YlBzRmVyamozVnd4TEZIVnA5cjdCd0d5K3lDayt0ZEIxaHlQNmFt?=
- =?utf-8?B?dUxxUXZNbGtjckxxMHoveGcrek4wTjZuNGVTWjZZZUVMVUUrWHk2bzYzTVVt?=
- =?utf-8?B?M1liZzBQV2NDVEhHcXdUNkw1Y0I2elBTWGZXSkU2ZHR2RXJqVkdxVjFEMlJw?=
- =?utf-8?B?TklGbWk4ejhiYmhia2xCeHNpTU1EZ1NpVGZGQ0IzK20xNDVNMUxkWVNIaVAy?=
- =?utf-8?B?d3ozc0Qxb0hkUjNZKy9KOGpzVGpJV1piTFVGbkkxdVBRZUhaWG45LzZ6TFJj?=
- =?utf-8?B?REZWSkhuTWJIZE44M01NMXB3NCsvdUdIT1RIZkhmV2k1YThFdy9FRGR2Z3RX?=
- =?utf-8?B?Z2RFb3hnL0RpMDVCd25Jd0MxOFYvWHFNMlVDNTQyZHJHMDd1NXFKWmZvSFRr?=
- =?utf-8?B?YXFQNGZyQnJPY3pWelU4MktjVkJwc1lORUJtb2NCNXl4a2VCZ3BtanZ1UlFU?=
- =?utf-8?B?YzR5QmJhU0JRQ21jS1dnSHVtUitaeVFPd2FDQ1c5WWQrRnBZc1JRdGF3cVZz?=
- =?utf-8?B?QmZLL1VCUXdxY0hNUmZkTXh1ckd5MUhqZFR0eDhMelNJTUVIb2pHc25EbktJ?=
- =?utf-8?B?QythRmhuOGthcXo1dXI2aHFzRGdvS0R0TTY5aXpkdHZyeGpGYXkrNnkwS2hu?=
- =?utf-8?B?QkFCRll3Sm9wMmZrczZRK3NLcnJya3ZUVU5EdTQwV3FSUmtKdkR4OVZtWlM4?=
- =?utf-8?B?MkFJOGRzbjN2YnlnNHJBWWFrM01nNk9teTA1MlFBSDZMT2VDWVM4cVpxZ3R0?=
- =?utf-8?B?YjZqYW5aN2VhTnpqMXZSbUlCcTJyaU5BZndWMVA0QzcvaDhTSWgyT1FySWo2?=
- =?utf-8?B?eFA3OXhxUjk2aTNuOWhieGkyT0VtazRlQXcvV2diTkZBYjIzZVNtbUhlZmlF?=
- =?utf-8?B?b0VzTzA0azZUZEpUNjd5OERZblA3WEpDUEJndlVWZlJQaWFpdEhPKytaazVC?=
- =?utf-8?B?L1dnZjBHT1ZWVDViQ1ViZ0R1UWllYWU5RDdiL2VzeUN5R3dhZ0lrd205anBk?=
- =?utf-8?B?UUJsU2hXLzJsQ3Fua3dlYTdzWGZxV0grMEpwQllnWVpKSFYzZVFZUTFxdEJa?=
- =?utf-8?B?VUZYNlRCNVhEdDVQdE9uVkZidGR1WVUvbnNBOWorZzBqcXR0Yk9KSmN2OXNM?=
- =?utf-8?B?aXRwbStKanlDT2pEa0Q0MmVXTTNQT2RYc1BqY3ZmVVRsd1g5MEJYVmpEZ2Jh?=
- =?utf-8?B?YlpxSmJMbUJPVTZTSEFMU3dwWHZZZ2JUQ3JQQndwRHJac2VjVmd0MkxTdU9y?=
- =?utf-8?B?V25qLzY4RFprOWRER01za2RwM2x5dU43Tm5NVHdkUE1ZUG01RThwQ2I4NVZ6?=
- =?utf-8?B?MFAwaTJvdGk4VmpjUEM5aU9RVU9hM3dtaGFoNmR0UDgxckdDZU9QeEl4L01h?=
- =?utf-8?B?ZVdBbzBQZGtwRG8xaS8vUWtwN0pXc2YydXBjbUJCL1dJaForSjJtS3d6RDl6?=
- =?utf-8?B?U2dtVnlhM253U1Vwek01UmF0bGxUdm5rWUlDMmMwVjR3MmQvWnQ3Z2diV2wr?=
- =?utf-8?B?SUVKUnlBSzB4alRoUUhlU3d4TDkyYjdzbUZGQUJzRVRUMzJYZitDSHZubmsz?=
- =?utf-8?B?dHZ1ajRyTkdOSzc5UmZLc2R1RnpuM1VEbHVoRjlGeldvZ3RkcVY0dSsrRmQv?=
- =?utf-8?B?RDAyV29EYzdQN3ZoR2kyNEJuZ1ltREZETUxhQ2krZXM4NittZHB2ZDVkWXBa?=
- =?utf-8?B?czVOQlFEMG9ieEFjaUh5aXEvQlQzcmtJNHpNZWxkS3NVTUtEYzU5Um14NjIw?=
- =?utf-8?Q?x0iEE/nsQ9dU0tUeeMKfRmsQjsEoFpnZZlRsl7g?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ 2021 10:10:15 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5c0e:fbe5:2bd6:ec6]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5c0e:fbe5:2bd6:ec6%4]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
+ 10:10:15 +0000
+Date:   Mon, 19 Jul 2021 18:10:09 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, Bernie Liang <bliang@analogixsemi.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        Zhen Li <zhenli@analogixsemi.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v10 1/4] dt-bindings:drm/bridge:anx7625:add vendor define
+ flags
+Message-ID: <85126d087cb045ea5e00a5100fc7d81840744a68.1626685856.git.xji@analogixsemi.com>
+References: <cover.1626685856.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1626685856.git.xji@analogixsemi.com>
+X-ClientProxiedBy: TYWPR01CA0026.jpnprd01.prod.outlook.com
+ (2603:1096:400:aa::13) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by TYWPR01CA0026.jpnprd01.prod.outlook.com (2603:1096:400:aa::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 10:10:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 77870901-4206-4363-f51a-08d94a9d672a
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6568:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR04MB6568E2DC2DA11AC51BD95253C7E19@BY5PR04MB6568.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OPVpCJiopYVkf1P1g61BMW0dLYIfHY85190uUCB2nfq/UVEB7BCfanp6hP+bWxq+5Km81M/ZhhG/1CRv3mKEI+vVrfwgui3tdaOgFziu9VKB4WSB0pSP3pT3pfMEO70cIRfFxGLGEVLGZ2jGrj+3nMRwBNM1uPuIcATSM8EhB3xN3kbVb0y0o9dU7L1RYUbIlx02e5R7QoclB1TA34BuEuIfeVsXub+LjRZGJF+ntDs0w7hXd1ahnM2henrXEEsD56uJ7UrLqRbk21ujwWZzYmSXeby33ssUmKeUeObsOoVAcAL9GP6FEraG8syBWYm+DNxkshDUW4TVAkD0/W7jxNIYFbhXJBlcMfmfzHCCi2X7E8XrGqdFW93yUq7j7LJDGMlDzMBLWbREgegBn5Xo2JJRAY497w8lP84C8N/1w0ILmruR/mIDtgmABCB+vRqpyi65aY2Blq2bMqgXrLgOWR5rlq3/rnmWDVGwa3wW2PVFqQXFQQ8bf/OOvjWT+NIWI09A9iLBQKWfUOrh2t0MAp86QtPXCSd7ylxaUXf9au2LeZchAZ7D+Hkve4PI+mhJX5DGIjFxhTZhl26DVNlt/v1uP/lRtIZ2Vlhvy01MLIRzeBdw/DceF0sPSY6PEIJbIn1CCKv1bBAbGgxn2Ah/EFa+e+x25UvJCtbsFeHHu9Il8Nk5hZIdNH6W1OVuQDNfVD9USHirNDEqImFBrh7/cg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(39840400004)(396003)(346002)(186003)(52116002)(83380400001)(6486002)(8936002)(86362001)(4326008)(6666004)(26005)(2906002)(55236004)(36756003)(5660300002)(66556008)(7416002)(66476007)(54906003)(956004)(316002)(2616005)(8676002)(110136005)(38350700002)(66946007)(38100700002)(6496006)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Rwd2NWQ6wJglOkpPxbrEOvU5L+EpEVPZRMvWt66tHR2B/5NNcwPUdHzo81A8?=
+ =?us-ascii?Q?cQXj3s1OrX0WnHWgAVQn3+pSTZ31oMW+Xje8Wt5IqDpk7Ad79ht+Vvcom9AN?=
+ =?us-ascii?Q?9tNV7JyuloPRnHwhfmYIBU+FXSbBVY4GrwMog0N3GWHJj+NLTZGRor1MkNS7?=
+ =?us-ascii?Q?zm9UPxa80jzniQTFisLOIC5oXsSPaTmWTiGpjwtWtex/nwT/Tg/r6IHSPn1d?=
+ =?us-ascii?Q?UtSHxu0vZH8j8ujAH9qQtL2xbDuEpQR7f4BNkhpZEnFfHl56pshuHJN5p19b?=
+ =?us-ascii?Q?L0nQc3wyvxtoBs25VswMaShFtAUyxHY3YjC6eAPTy4Yw9Lo0/GLrCR+BqXoE?=
+ =?us-ascii?Q?GqPlzVlxSaoLNmo8Rkv3h2dI2Bmj9xV4fJw7cuQHb1pN1TULWB24bfzCF3/0?=
+ =?us-ascii?Q?3782uma+zmEbIAk03K3LmPUr49nxmgRTh+N0w5bCzzdV3ywo3+PnhUWEqH+H?=
+ =?us-ascii?Q?f0OlznTDRbpYlDesQjNXBw9azf3K8aZth+OeKu6bBcAA7jOKq4qChwtEBEmQ?=
+ =?us-ascii?Q?qS7hjhiqXsfhCnJuRKWm4Qq9z64uMWSvCQEoeaVWUafVVD0+0/jI3Q4OIHmz?=
+ =?us-ascii?Q?0FQRxjoQVC35JfNcV8go0gTMc0O3wvIxWXBebaGDBr3XRPobFpdTzWbAs9Sy?=
+ =?us-ascii?Q?uAaRhmGf5IhvLHD7Ed+LLKLLFYhUydLdZus9wEzxkyA4zjd3nJWmhMm9eV+N?=
+ =?us-ascii?Q?jkpS6uBjN5bo+2mjTtl7MUHkyT+GmqGa8ZTspFVqQjKiS26ZhedM90i7mLNd?=
+ =?us-ascii?Q?+qHaS4+y6J6mvr+iK32Ni5m055JJw+xwuDuo75+RrXAccqvHF6MZABx1jLl6?=
+ =?us-ascii?Q?WnQmbk/7lO5QoEcsZ7RJOb5XloSObVPMt9n/PiNLI+wQqqWzSGJITuNSI4pS?=
+ =?us-ascii?Q?uCFWag/AOnAZ+y7UdtOud8L7AoPVeMH8J9CZrwsAyaydJA4bl65Ka+94d4ou?=
+ =?us-ascii?Q?HORoZWNi/1PHNkmgpOrjdvWxIqvo/3Iwpju7jmpz5x7lqx8cdvcD0Yi5KOnE?=
+ =?us-ascii?Q?y9yc7esK1SSdt1ElYx14effOebTCPIXlZ4/Ry/kUguFYHq96UhuSKubHrMLv?=
+ =?us-ascii?Q?kr34BU3XPjYuuhtFdS6yoE3/zMtA8nhSfz+4zItYHohoxECVF3CdrXSK/9ne?=
+ =?us-ascii?Q?gkJ2fyAoNSMEk3Fgcc3f5DFIWRKAK352vJD5mCqrWf/gLv96yKsKgN0zRw3k?=
+ =?us-ascii?Q?YGGClstVIM+HZDnSyKdkuvERHUKjglttsKKN7FUTQ85JCJ9DlLwkmTBgsaf7?=
+ =?us-ascii?Q?htoUa6EjLD2TbZQ9xAmQ9q2wGXPFki+yd8JotzveT6yKu/hZTcCeHEDB4Owr?=
+ =?us-ascii?Q?AVSvnGu3D8GRdYyApHbo5cAJ?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77870901-4206-4363-f51a-08d94a9d672a
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4093.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1406326f-5352-42cb-8ea4-08d94a9d50d7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2021 10:09:37.5021
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 10:10:15.3871
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7Sq301v/P1yn7UAwjemBnmTj8aoe3XqciuCbUJmfBT6Sh3ba5yJJsz5+7kOHA00N
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR02MB7625
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lg+NY8/S6eLDooXGy+XavqW+GEfKY7D3pB4P/8SgeN7CPkdbRmCaMXj71Enzdgp2bpsdjS7QUrmnhIRavWGhiA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6568
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyZWsgVmFzdXQgPG1h
-cmV4QGRlbnguZGU+DQo+IFNlbnQ6IEZyaWRheSwgSnVseSAxNiwgMjAyMSA5OjMxIFBNDQo+IFRv
-OiBNaWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47IFJhdml0ZWphIE5hcmF5YW5hbQ0K
-PiA8cm5hQHhpbGlueC5jb20+OyBsaW51eC1pMmNAdmdlci5rZXJuZWwub3JnDQo+IENjOiBsaW51
-eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
-bC5vcmc7IGdpdA0KPiA8Z2l0QHhpbGlueC5jb20+OyBqb2VAcGVyY2hlcy5jb20NCj4gU3ViamVj
-dDogUmU6IFtQQVRDSCB2MiAwMC8xMF0gaTJjOiB4aWljOiBBZGQgZmVhdHVyZXMsIGJ1ZyBmaXhl
-cy4NCj4gDQo+IE9uIDYvMjgvMjEgOToyMyBBTSwgTWljaGFsIFNpbWVrIHdyb3RlOg0KPiA+DQo+
-ID4NCj4gPiBPbiA2LzI2LzIxIDEyOjI3IFBNLCBSYXZpdGVqYSBOYXJheWFuYW0gd3JvdGU6DQo+
-ID4+IC1BZGQgJ3N0YW5kYXJkIG1vZGUnIGZlYXR1cmUgZm9yIHJlYWRzID4gMjU1IGJ5dGVzLg0K
-PiA+PiAtQWRkICdzbWJ1cyBibG9jayByZWFkJyBmdW5jdGlvbmFsaXR5Lg0KPiA+PiAtQWRkICd4
-bG54LGF4aS1paWMtMi4xJyBuZXcgSVAgdmVyc2lvbiBzdXBwb3J0Lg0KPiA+PiAtU3dpdGNoIHRv
-ICdBWEkgSTJDIHN0YW5kYXJkIG1vZGUnIGZvciBpMmMgcmVhZHMgaW4gYWZmZWN0ZWQgSVAgdmVy
-c2lvbnMuDQo+ID4+IC1SZW1vdmUgJ2xvY2FsX2lycV9zYXZlL3Jlc3RvcmUnIGNhbGxzIGFzIGRp
-c2N1c3NlZCBoZXJlOg0KPiBodHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51eC1pMmMv
-bXNnNDY0ODMuaHRtbC4NCj4gPj4gLVNvbWUgdHJpdmlhbCBmaXhlcy4NCj4gPj4NCj4gPj4gQ2hh
-bmdlcyBpbiB2MjoNCj4gPj4gLUdyb3VwZWQgdGhlIGNvbW1pdHMgYXMgZml4ZXMgZmlyc3QgYW5k
-IHRoZW4gZmVhdHVyZXMuDQo+ID4+IC1UaGUgZmlyc3QgNCBjb21taXRzIGZpeCB0aGUgZHluYW1p
-YyBtb2RlIGJyb2tlbiBmZWF0dXJlLg0KPiA+PiAtQ29ycmVjdGVkIHRoZSBpbmRlbnRhdGlvbiBp
-biBjb2Rpbmcgc3R5bGUgaXNzdWVzLg0KPiA+Pg0KPiA+PiBNaWNoYWwgU2ltZWsgKDEpOg0KPiA+
-PiAgICBpMmM6IHhpaWM6IEZpeCBjb2Rpbmcgc3R5bGUgaXNzdWVzDQo+ID4+DQo+ID4+IFJhdml0
-ZWphIE5hcmF5YW5hbSAoNyk6DQo+ID4+ICAgIGkyYzogeGlpYzogRml4IFR4IEludGVycnVwdCBw
-YXRoIGZvciBncm91cGVkIG1lc3NhZ2VzDQo+ID4+ICAgIGkyYzogeGlpYzogQWRkIHN0YW5kYXJk
-IG1vZGUgc3VwcG9ydCBmb3IgPiAyNTUgYnl0ZSByZWFkIHRyYW5zZmVycw0KPiA+PiAgICBpMmM6
-IHhpaWM6IFN3aXRjaCB0byBYaWljIHN0YW5kYXJkIG1vZGUgZm9yIGkyYy1yZWFkDQo+ID4+ICAg
-IGkyYzogeGlpYzogUmVtb3ZlIGludGVycnVwdCBlbmFibGUvZGlzYWJsZSBpbiBSeCBwYXRoDQo+
-ID4+ICAgIGR0LWJpbmRpbmdzOiBpMmM6IHhpaWM6IEFkZCAneGxueCxheGktaWljLTIuMScgdG8g
-Y29tcGF0aWJsZQ0KPiA+PiAgICBpMmM6IHhpaWM6IFVwZGF0ZSBjb21wYXRpYmxlIHdpdGggbmV3
-IElQIHZlcnNpb24NCj4gPj4gICAgaTJjOiB4aWljOiBBZGQgc21idXNfYmxvY2tfcmVhZCBmdW5j
-dGlvbmFsaXR5DQo+ID4+DQo+ID4+IFNodWJocmFqeW90aSBEYXR0YSAoMik6DQo+ID4+ICAgIGky
-YzogeGlpYzogUmV0dXJuIHZhbHVlIG9mIHhpaWNfcmVpbml0DQo+ID4+ICAgIGkyYzogeGlpYzog
-Rml4IHRoZSB0eXBlIGNoZWNrIGZvciB4aWljX3dha2V1cA0KPiA+Pg0KPiA+PiAgIC4uLi9iaW5k
-aW5ncy9pMmMveGxueCx4cHMtaWljLTIuMDAuYS55YW1sICAgICB8ICAgNCArLQ0KPiA+PiAgIGRy
-aXZlcnMvaTJjL2J1c3Nlcy9pMmMteGlpYy5jICAgICAgICAgICAgICAgICB8IDU5MyArKysrKysr
-KysrKysrKy0tLS0NCj4gPj4gICAyIGZpbGVzIGNoYW5nZWQsIDQ4NyBpbnNlcnRpb25zKCspLCAx
-MTAgZGVsZXRpb25zKC0pDQo+ID4+DQo+ID4NCj4gPiBBY2tlZC1ieTogTWljaGFsIFNpbWVrIDxt
-aWNoYWwuc2ltZWtAeGlsaW54LmNvbT4NCj4gDQo+IEkganVzdCB0ZXN0ZWQgdGhpcyBwYXRjaHNl
-dCBvbiBuZXh0LTIwMjEwNzE2IGFuZCB0aGUgWElJQyBmYWlsdXJlcyBhcmUgc3RpbGwNCj4gcHJl
-c2VudCwgc2VlOg0KDQpUaGUgcHJvYmUgb2YgJyBhdG1lbF9teHRfdHMnIGZhaWxlZCBhcyBwZXIg
-dGhlIGVycm9yLiBNYXkgSSBrbm93IHRoZSBkZXRhaWxzIG9mDQp5b3VyIHRlc3QgY2FzZSBpZiB5
-b3UgdHdlYWtlZCBhbnkgaTJjdHJhbnNmZXJzL2FkZGVkIGRlbGF5cy4gDQpJZiBpdCBmYWlsZWQg
-d2l0aG91dCBhZGRpbmcgYW55dGhpbmcsIHRoZW4gcGxlYXNlIGNoZWNrIHdoZXRoZXIgdGhlIHZp
-dmFkbyBkZXNpZ24gY29uc3RyYWludHMNCmFyZSBjb3JyZWN0bHkgYXBwbGllZCBvciBub3QuIA0K
-QWxzbyBjaGVjayBpZiB0aGUgb3RoZXIgZGV2aWNlcyBvbiB0aGUgYnVzIGFyZSBkZXRlY3RlZCBh
-bmQgaTJjdHJhbnNmZXIgY29tbWFuZCBpcyBzdWNjZXNzZnVsIG9uIHRoZW0uDQpJdCB3b3VsZCBi
-ZSBoZWxwZnVsIHRvIGtub3cgaWYgdGhlIGRldmljZSAnIGF0bWVsX214dF90cycgaXMgc3VjY2Vz
-c2Z1bGx5IHByb2JlZCB3aXRoIG5leHQtMjAyMTA3MTYNCndpdGhvdXQgYXBwbHlpbmcgdGhpcyBw
-YXRjaHNldC4gDQoNCkkgaGF2ZSB0ZXN0ZWQgdGhpcyBhZ2FpbiBvbiBvdXIgYm9hcmRzIHdpdGgg
-ZWVwcm9tIGFuZCBvdGhlciBzZW5zb3JzLCB0aGlzIGlzIHdvcmtpbmcgZmluZSBmb3IgdXMuDQoN
-ClJlZ2FyZHMsDQpSYXZpdGVqYSBODQoNCj4gDQo+IHhpaWMtaTJjIGEwMDEwMDAwLmkyYzogbW1p
-byBhMDAxMDAwMCBpcnEgMzYgeGlpYy1pMmMgYTAxMjAwMDAuaTJjOiBtbWlvDQo+IGEwMTIwMDAw
-IGlycSAzOCBhdG1lbF9teHRfdHMgMy0wMDRhOiBzdXBwbHkgdmRkYSBub3QgZm91bmQsIHVzaW5n
-IGR1bW15DQo+IHJlZ3VsYXRvciBhdG1lbF9teHRfdHMgMy0wMDRhOiBzdXBwbHkgdmRkIG5vdCBm
-b3VuZCwgdXNpbmcgZHVtbXkNCj4gcmVndWxhdG9yDQo+IA0KPiB4aWljLWkyYyBhMDEyMDAwMC5p
-MmM6IFRpbWVvdXQgd2FpdGluZyBhdCBUeCBlbXB0eQ0KPiANCj4gYXRtZWxfbXh0X3RzIDMtMDA0
-YTogX19teHRfcmVhZF9yZWc6IGkyYyB0cmFuc2ZlciBmYWlsZWQgKC01KSBhdG1lbF9teHRfdHMN
-Cj4gMy0wMDRhOiBteHRfYm9vdGxvYWRlcl9yZWFkOiBpMmMgcmVjdiBmYWlsZWQgKC01KSBhdG1l
-bF9teHRfdHMgMy0wMDRhOg0KPiBUcnlpbmcgYWx0ZXJuYXRlIGJvb3Rsb2FkZXIgYWRkcmVzcyBh
-dG1lbF9teHRfdHMgMy0wMDRhOg0KPiBteHRfYm9vdGxvYWRlcl9yZWFkOiBpMmMgcmVjdiBmYWls
-ZWQgKC01KQ0KPiBhdG1lbF9teHRfdHM6IHByb2JlIG9mIDMtMDA0YSBmYWlsZWQgd2l0aCBlcnJv
-ciAtNQ0KDQoNCg0KDQo=
+Add 'bus-type' and 'data-lanes' define for port0. Define DP tx lane0,
+lane1 swing register array define, and audio enable flag.
+
+The device which cannot pass DP tx PHY CTS caused by long PCB trace or
+embedded MUX, adjusting ANX7625 PHY parameters can pass the CTS test. The
+adjusting type include Pre-emphasis, Vp-p, Rterm(Resistor Termination)
+and Rsel(Driven Strength). Each lane has maximum 20 registers for
+these settings.
+
+For the DP tx swing setting, each lane has 10 different combination for
+swing, as Pre0: swing3|swing2|swing1|swing0, Pre1: swing2|swing1|swing0,
+Pre2: swing1|swing0, Pre3: swing0.
+
+Register definition as:
+[Boost_ctrl]
+These registers control post cursor manual, increase the Boost_Ctrl
+setting can increase Pre-emphasis value separately.
+Lane	Condition	Register address
+Lane0	Swing0_Pre0	0x7a:0x00 bit[3:0]
+Lane0	Swing1_Pre0	0x7a:0x01 bit[3:0]
+Lane0	Swing2_Pre0	0x7a:0x02 bit[3:0]
+Lane0	Swing3_Pre0	0x7a:0x03 bit[3:0]
+Lane0	Swing0_Pre1	0x7a:0x04 bit[3:0]
+Lane0	Swing1_Pre1	0x7a:0x05 bit[3:0]
+Lane0	Swing2_Pre1	0x7a:0x06 bit[3:0]
+Lane0	Swing0_Pre2	0x7a:0x07 bit[3:0]
+Lane0	Swing1_Pre2	0x7a:0x08 bit[3:0]
+Lane0	Swing0_Pre3	0x7a:0x09 bit[3:0]
+Lane1	Swing0_Pre0	0x7a:0x14 bit[3:0]
+Lane1	Swing1_Pre0	0x7a:0x15 bit[3:0]
+Lane1	Swing2_Pre0	0x7a:0x16 bit[3:0]
+Lane1	Swing3_Pre0	0x7a:0x17 bit[3:0]
+Lane1	Swing0_Pre1	0x7a:0x18 bit[3:0]
+Lane1	Swing1_Pre1	0x7a:0x19 bit[3:0]
+Lane1	Swing2_Pre1	0x7a:0x1a bit[3:0]
+Lane1	Swing0_Pre2	0x7a:0x1b bit[3:0]
+Lane1	Swing1_Pre2	0x7a:0x1c bit[3:0]
+Lane1	Swing0_Pre3	0x7a:0x1d bit[3:0]
+
+[Swing_ctrl]
+These registers control swing manual, increase Swing_Ctrl setting can
+increase Vp-p value separately.
+Lane	Condition	Register address
+Lane0	Swing0_Pre0	0x7a:0x00 bit[6:4]
+Lane0	Swing1_Pre0	0x7a:0x01 bit[6:4]
+Lane0	Swing2_Pre0	0x7a:0x02 bit[6:4]
+Lane0	Swing3_Pre0	0x7a:0x03 bit[6:4]
+Lane0	Swing0_Pre1	0x7a:0x04 bit[6:4]
+Lane0	Swing1_Pre1	0x7a:0x05 bit[6:4]
+Lane0	Swing2_Pre1	0x7a:0x06 bit[6:4]
+Lane0	Swing0_Pre2	0x7a:0x07 bit[6:4]
+Lane0	Swing1_Pre2	0x7a:0x08 bit[6:4]
+Lane0	Swing0_Pre3	0x7a:0x09 bit[6:4]
+Lane1	Swing0_Pre0	0x7a:0x14 bit[6:4]
+Lane1	Swing1_Pre0	0x7a:0x15 bit[6:4]
+Lane1	Swing2_Pre0	0x7a:0x16 bit[6:4]
+Lane1	Swing3_Pre0	0x7a:0x17 bit[6:4]
+Lane1	Swing0_Pre1	0x7a:0x18 bit[6:4]
+Lane1	Swing1_Pre1	0x7a:0x19 bit[6:4]
+Lane1	Swing2_Pre1	0x7a:0x1a bit[6:4]
+Lane1	Swing0_Pre2	0x7a:0x1b bit[6:4]
+Lane1	Swing1_Pre2	0x7a:0x1c bit[6:4]
+Lane1	Swing0_Pre3	0x7a:0x1d bit[6:4]
+
+[Rsel_ctrl]
+These registers control resistor compensation manual, increase Rsel_ctrl
+can increase the IO driven strength, increase Vp-p simultaneously.
+Lane	Condition	Register address
+Lane0	Swing0_Pre0	0x7a:0x0a bit[4:0]
+Lane0	Swing1_Pre0	0x7a:0x0b bit[4:0]
+Lane0	Swing2_Pre0	0x7a:0x0c bit[4:0]
+Lane0	Swing3_Pre0	0x7a:0x0d bit[4:0]
+Lane0	Swing0_Pre1	0x7a:0x0e bit[4:0]
+Lane0	Swing1_Pre1	0x7a:0x0f bit[4:0]
+Lane0	Swing2_Pre1	0x7a:0x10 bit[4:0]
+Lane0	Swing0_Pre2	0x7a:0x11 bit[4:0]
+Lane0	Swing1_Pre2	0x7a:0x12 bit[4:0]
+Lane0	Swing0_Pre3	0x7a:0x13 bit[4:0]
+Lane1	Swing0_Pre0	0x7a:0x1e bit[4:0]
+Lane1	Swing1_Pre0	0x7a:0x1f bit[4:0]
+Lane1	Swing2_Pre0	0x7a:0x20 bit[4:0]
+Lane1	Swing3_Pre0	0x7a:0x21 bit[4:0]
+Lane1	Swing0_Pre1	0x7a:0x22 bit[4:0]
+Lane1	Swing1_Pre1	0x7a:0x23 bit[4:0]
+Lane1	Swing2_Pre1	0x7a:0x24 bit[4:0]
+Lane1	Swing0_Pre2	0x7a:0x25 bit[4:0]
+Lane1	Swing1_Pre2	0x7a:0x26 bit[4:0]
+Lane1	Swing0_Pre3	0x7a:0x27 bit[4:0]
+
+[Rterm_ctrl]
+These registers adjust 50ohm impedance of DP tx
+00:55 ohm
+01:50 ohm(default)
+10:45 ohm
+11:40 ohm
+Lane	Condition	Register address
+Lane0	Swing0_Pre0	0x7a:0x0a bit[6:5]
+Lane0	Swing1_Pre0	0x7a:0x0b bit[6:5]
+Lane0	Swing2_Pre0	0x7a:0x0c bit[6:5]
+Lane0	Swing3_Pre0	0x7a:0x0d bit[6:5]
+Lane0	Swing0_Pre1	0x7a:0x0e bit[6:5]
+Lane0	Swing1_Pre1	0x7a:0x0f bit[6:5]
+Lane0	Swing2_Pre1	0x7a:0x10 bit[6:5]
+Lane0	Swing0_Pre2	0x7a:0x11 bit[6:5]
+Lane0	Swing1_Pre2	0x7a:0x12 bit[6:5]
+Lane0	Swing0_Pre3	0x7a:0x13 bit[6:5]
+lane1	Swing0_Pre0	0x7a:0x1e bit[6:5]
+Lane1	Swing1_Pre0	0x7a:0x1f bit[6:5]
+Lane1	Swing2_Pre0	0x7a:0x20 bit[6:5]
+Lane1	Swing3_Pre0	0x7a:0x21 bit[6:5]
+Lane1	Swing0_Pre1	0x7a:0x22 bit[6:5]
+Lane1	Swing1_Pre1	0x7a:0x23 bit[6:5]
+Lane1	Swing2_Pre1	0x7a:0x24 bit[6:5]
+Lane1	Swing0_Pre2	0x7a:0x25 bit[6:5]
+Lane1	Swing1_Pre2	0x7a:0x26 bit[6:5]
+Lane1	Swing0_Pre3	0x7a:0x27 bit[6:5]
+
+Signed-off-by: Xin Ji <xji@analogixsemi.com>
+---
+ .../display/bridge/analogix,anx7625.yaml      | 55 ++++++++++++++++++-
+ 1 file changed, 54 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+index ab48ab2f4240..77b160d7c269 100644
+--- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+@@ -43,6 +43,24 @@ properties:
+   vdd33-supply:
+     description: Regulator that provides the supply 3.3V power.
+ 
++  analogix,lane0-swing:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    maxItems: 20
++    description:
++      an array of swing register setting for DP tx lane0 PHY.
++
++  analogix,lane1-swing:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    maxItems: 20
++    description:
++      an array of swing register setting for DP tx lane1 PHY.
++
++  analogix,audio-enable:
++    type: boolean
++    description: let the driver enable audio HDMI codec function or not.
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+@@ -50,13 +68,43 @@ properties:
+       port@0:
+         $ref: /schemas/graph.yaml#/properties/port
+         description:
+-          Video port for MIPI DSI input.
++          MIPI DSI/DPI input.
++
++        properties:
++          endpoint:
++            $ref: /schemas/media/video-interfaces.yaml#
++            type: object
++            additionalProperties: false
++
++            properties:
++              remote-endpoint: true
++              bus-type: true
++              data-lanes: true
++
++            required:
++              - remote-endpoint
++
++        required:
++          - endpoint
++
+ 
+       port@1:
+         $ref: /schemas/graph.yaml#/properties/port
+         description:
+           Video port for panel or connector.
+ 
++        properties:
++          endpoint:
++            $ref: /schemas/media/video-interfaces.yaml#
++            type: object
++            additionalProperties: false
++
++            properties:
++              remote-endpoint: true
++
++            required:
++              - remote-endpoint
++
+     required:
+       - port@0
+       - port@1
+@@ -87,6 +135,9 @@ examples:
+             vdd10-supply = <&pp1000_mipibrdg>;
+             vdd18-supply = <&pp1800_mipibrdg>;
+             vdd33-supply = <&pp3300_mipibrdg>;
++            analogix,audio-enable;
++            analogix,lane0-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
++            analogix,lane1-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
+ 
+             ports {
+                 #address-cells = <1>;
+@@ -96,6 +147,8 @@ examples:
+                     reg = <0>;
+                     anx7625_in: endpoint {
+                         remote-endpoint = <&mipi_dsi>;
++                        bus-type = <5>;
++                        data-lanes = <0 1 2 3>;
+                     };
+                 };
+ 
+-- 
+2.25.1
+
