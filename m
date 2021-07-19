@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310263CE6A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4A63CE85F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350414AbhGSQKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:10:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39126 "EHLO mail.kernel.org"
+        id S1356134AbhGSQkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:40:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345369AbhGSPJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:09:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D0DB60238;
-        Mon, 19 Jul 2021 15:48:46 +0000 (UTC)
+        id S1346900AbhGSPST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:18:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9DCD6140C;
+        Mon, 19 Jul 2021 15:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709727;
-        bh=vlhTaWuRPTY+zCBeoALKBFA9mfR5UqFCjXRXlrpTVbk=;
+        s=korg; t=1626710286;
+        bh=iaom5LMGMUcs5cgKGLW7PvOCY5RHyoSGxIBVI4rq93w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=prsFFAYBCTV3kVjip6bMFImuMcI1f7GQ4b0F6iPuAx+fnwzCByWS/CVoeYFrB3S92
-         FA5TCbqcv5MfKM8hLLQzjy1kV80t6gwdm/bSeyi9lOKQb+0lDI5FdxhwOatoJpCfYD
-         ND/rXo7rvrD0QUA1VF6C4jNL/wzxTREPi/4rloYA=
+        b=cRqH+vSwaI4mhTmIY6rET54yb5bCOk6Xl8wInLVA+FCYwHrSb2BeyobucugFi2WtQ
+         sgLeCccMC5iALTUUPWSjtjit3BVlJIfoHLC4nz6W3JgRDp/tVwCBkfBgCXdNb5UgIV
+         wmrRmMc6PYgy/nI67O4CuUUqNBAnEVKsceuMme1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org,
+        Michael Wakabayashi <mwakabayashi@vmware.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 074/149] power: reset: gpio-poweroff: add missing MODULE_DEVICE_TABLE
-Date:   Mon, 19 Jul 2021 16:53:02 +0200
-Message-Id: <20210719144918.816029635@linuxfoundation.org>
+Subject: [PATCH 5.10 154/243] NFSv4: Initialise connection to the server in nfs4_alloc_client()
+Date:   Mon, 19 Jul 2021 16:53:03 +0200
+Message-Id: <20210719144945.880910336@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +41,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bixuan Cui <cuibixuan@huawei.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit ed3443fb4df4e140a22f65144546c8a8e1e27f4e ]
+[ Upstream commit dd99e9f98fbf423ff6d365b37a98e8879170f17c ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Set up the connection to the NFSv4 server in nfs4_alloc_client(), before
+we've added the struct nfs_client to the net-namespace's nfs_client_list
+so that a downed server won't cause other mounts to hang in the trunking
+detection code.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Reported-by: Michael Wakabayashi <mwakabayashi@vmware.com>
+Fixes: 5c6e5b60aae4 ("NFS: Fix an Oops in the pNFS files and flexfiles connection setup to the DS")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/reset/gpio-poweroff.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/nfs/nfs4client.c | 82 +++++++++++++++++++++++----------------------
+ 1 file changed, 42 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
-index 6a4bbb506551..97d1f58efef4 100644
---- a/drivers/power/reset/gpio-poweroff.c
-+++ b/drivers/power/reset/gpio-poweroff.c
-@@ -90,6 +90,7 @@ static const struct of_device_id of_gpio_poweroff_match[] = {
- 	{ .compatible = "gpio-poweroff", },
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, of_gpio_poweroff_match);
+diff --git a/fs/nfs/nfs4client.c b/fs/nfs/nfs4client.c
+index 7491323a5820..6d74f2e2de46 100644
+--- a/fs/nfs/nfs4client.c
++++ b/fs/nfs/nfs4client.c
+@@ -197,8 +197,11 @@ void nfs40_shutdown_client(struct nfs_client *clp)
  
- static struct platform_driver gpio_poweroff_driver = {
- 	.probe = gpio_poweroff_probe,
+ struct nfs_client *nfs4_alloc_client(const struct nfs_client_initdata *cl_init)
+ {
+-	int err;
++	char buf[INET6_ADDRSTRLEN + 1];
++	const char *ip_addr = cl_init->ip_addr;
+ 	struct nfs_client *clp = nfs_alloc_client(cl_init);
++	int err;
++
+ 	if (IS_ERR(clp))
+ 		return clp;
+ 
+@@ -222,6 +225,44 @@ struct nfs_client *nfs4_alloc_client(const struct nfs_client_initdata *cl_init)
+ 	init_waitqueue_head(&clp->cl_lock_waitq);
+ #endif
+ 	INIT_LIST_HEAD(&clp->pending_cb_stateids);
++
++	if (cl_init->minorversion != 0)
++		__set_bit(NFS_CS_INFINITE_SLOTS, &clp->cl_flags);
++	__set_bit(NFS_CS_DISCRTRY, &clp->cl_flags);
++	__set_bit(NFS_CS_NO_RETRANS_TIMEOUT, &clp->cl_flags);
++
++	/*
++	 * Set up the connection to the server before we add add to the
++	 * global list.
++	 */
++	err = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_GSS_KRB5I);
++	if (err == -EINVAL)
++		err = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_UNIX);
++	if (err < 0)
++		goto error;
++
++	/* If no clientaddr= option was specified, find a usable cb address */
++	if (ip_addr == NULL) {
++		struct sockaddr_storage cb_addr;
++		struct sockaddr *sap = (struct sockaddr *)&cb_addr;
++
++		err = rpc_localaddr(clp->cl_rpcclient, sap, sizeof(cb_addr));
++		if (err < 0)
++			goto error;
++		err = rpc_ntop(sap, buf, sizeof(buf));
++		if (err < 0)
++			goto error;
++		ip_addr = (const char *)buf;
++	}
++	strlcpy(clp->cl_ipaddr, ip_addr, sizeof(clp->cl_ipaddr));
++
++	err = nfs_idmap_new(clp);
++	if (err < 0) {
++		dprintk("%s: failed to create idmapper. Error = %d\n",
++			__func__, err);
++		goto error;
++	}
++	__set_bit(NFS_CS_IDMAP, &clp->cl_res_state);
+ 	return clp;
+ 
+ error:
+@@ -372,8 +413,6 @@ static int nfs4_init_client_minor_version(struct nfs_client *clp)
+ struct nfs_client *nfs4_init_client(struct nfs_client *clp,
+ 				    const struct nfs_client_initdata *cl_init)
+ {
+-	char buf[INET6_ADDRSTRLEN + 1];
+-	const char *ip_addr = cl_init->ip_addr;
+ 	struct nfs_client *old;
+ 	int error;
+ 
+@@ -381,43 +420,6 @@ struct nfs_client *nfs4_init_client(struct nfs_client *clp,
+ 		/* the client is initialised already */
+ 		return clp;
+ 
+-	/* Check NFS protocol revision and initialize RPC op vector */
+-	clp->rpc_ops = &nfs_v4_clientops;
+-
+-	if (clp->cl_minorversion != 0)
+-		__set_bit(NFS_CS_INFINITE_SLOTS, &clp->cl_flags);
+-	__set_bit(NFS_CS_DISCRTRY, &clp->cl_flags);
+-	__set_bit(NFS_CS_NO_RETRANS_TIMEOUT, &clp->cl_flags);
+-
+-	error = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_GSS_KRB5I);
+-	if (error == -EINVAL)
+-		error = nfs_create_rpc_client(clp, cl_init, RPC_AUTH_UNIX);
+-	if (error < 0)
+-		goto error;
+-
+-	/* If no clientaddr= option was specified, find a usable cb address */
+-	if (ip_addr == NULL) {
+-		struct sockaddr_storage cb_addr;
+-		struct sockaddr *sap = (struct sockaddr *)&cb_addr;
+-
+-		error = rpc_localaddr(clp->cl_rpcclient, sap, sizeof(cb_addr));
+-		if (error < 0)
+-			goto error;
+-		error = rpc_ntop(sap, buf, sizeof(buf));
+-		if (error < 0)
+-			goto error;
+-		ip_addr = (const char *)buf;
+-	}
+-	strlcpy(clp->cl_ipaddr, ip_addr, sizeof(clp->cl_ipaddr));
+-
+-	error = nfs_idmap_new(clp);
+-	if (error < 0) {
+-		dprintk("%s: failed to create idmapper. Error = %d\n",
+-			__func__, error);
+-		goto error;
+-	}
+-	__set_bit(NFS_CS_IDMAP, &clp->cl_res_state);
+-
+ 	error = nfs4_init_client_minor_version(clp);
+ 	if (error < 0)
+ 		goto error;
 -- 
 2.30.2
 
