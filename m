@@ -2,213 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3363CED05
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8E13CED07
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352487AbhGSRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:41:42 -0400
-Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:27808 "EHLO
-        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345150AbhGSQm6 (ORCPT
+        id S1382691AbhGSRmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:42:05 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:57066 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354902AbhGSQoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:42:58 -0400
-Received: from pps.filterd (m0127843.ppops.net [127.0.0.1])
-        by mx0b-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JHCm4n010716;
-        Mon, 19 Jul 2021 10:23:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version;
- s=proofpoint20171006; bh=obgY/s5oiudGHNeEQKYS9tPlkRS9xKG61gG/AyAMAzs=;
- b=b1ONvR/aEjE1eH9X3PVLbPeuKge2+NtLGLpjhYeMe3MFGBgfFiVg3scvU4TDrAjnjV1j
- 2VIqlcjzVlPQaZKrppi1KeJq/BgDEpnRHsiqm4bFpshnxU6HaKlv+oNx4Z7u/km2jNVE
- 90MzzdvC/vKIWd5k/4MG8zKXjweHpWJbkPGtXfb3ujpUDQD3/Z/AKGZoFXFbObqgvTLH
- d78KOq1z1tZpoiHuvT4rbpfeoeuIou5II1+BvVFDyqKl0V0ottC7k8F8ZLWpiFOrD8ZY
- uz4zYmESoOr4BYBgKU+npf2Autv1gZNk0J43yPKAWcdl8nWF8wFtuSYpeVMRbvkB3Xkk oQ== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2102.outbound.protection.outlook.com [104.47.55.102])
-        by mx0b-002c1b01.pphosted.com with ESMTP id 39w6ueru4v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Jul 2021 10:23:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SDgc7n7jK4VZOmQfGxAKPGFkCkDGffdIzMaDyQ3rjj9BsUYx4ps1O3w3v97mBoNIGbGhi6q3U7qzax6uOCmKX1dQSRwWkdBNmGouyGBJWHCEd3/agym3mmOyublegIES1Uc2HGDBms7KFBCXMM6vrFm70MgqPAJOB6ScO/S1KsxumfXKaC9w2yBtHQA448GkV4yNuBlPZiMQvG9GPPt7OdVDxmV2/Qp3O/KYjkusmk1Tsuidu+72P9gjndiyeUWY5lreZI2AAjEr20cAQj1XKtBXI3SJGPkaJd+9O3pb7JUOUOPvzMPkdcipoiegl2IIqWkeHSnsWJDJ6tzLf9GvnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=obgY/s5oiudGHNeEQKYS9tPlkRS9xKG61gG/AyAMAzs=;
- b=Lsa4l1MXb7tmKcOz+8BZQNOj7YF9OkbJa7KgvGCaRGMFVnUJk9Zo/J3pF9pA/qOobjP19RQqhZlNXMX32f/TDPYl0uI3hMjH6lV9yzp22ry61e9G60RB1COJizd/MieeegZq2KT/pE2xkAOmTsPegW6cV0xvBAtjpsaYTQ/rVf/nMN3AKidq9GIyEGKiatxebxrzN8iCXXJ63bA1WZuIVXae6S+TJJ2THLao2k5iWqXfwyPW8Cfw8HNXf/XorcTCF0T6VEtmjgK4yja00IqRFXehU5f/y+LI2RSwILeHJcA5uZu75RvaCARUuzLon7e++xb/ulmtjcVhyJFNe+IAeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
- dkim=pass header.d=nutanix.com; arc=none
-Received: from DM6PR02MB5578.namprd02.prod.outlook.com (2603:10b6:5:79::13) by
- DM6PR02MB6906.namprd02.prod.outlook.com (2603:10b6:5:257::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4331.22; Mon, 19 Jul 2021 17:23:14 +0000
-Received: from DM6PR02MB5578.namprd02.prod.outlook.com
- ([fe80::159:22bc:800a:52b8]) by DM6PR02MB5578.namprd02.prod.outlook.com
- ([fe80::159:22bc:800a:52b8%6]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 17:23:14 +0000
-From:   Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Alistair Popple <apopple@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        "Carl Waldspurger [C]" <carl.waldspurger@nutanix.com>,
-        Florian Schmidt <flosch@nutanix.com>
-Subject: Re: [PATCH v5 24/26] mm/pagemap: Recognize uffd-wp bit for
- shmem/hugetlbfs
-Thread-Topic: [PATCH v5 24/26] mm/pagemap: Recognize uffd-wp bit for
- shmem/hugetlbfs
-Thread-Index: AQHXebZmBTPHtO67e0+5F2gnOfKvWatKFHUAgABnSwCAABZVAA==
-Date:   Mon, 19 Jul 2021 17:23:14 +0000
-Message-ID: <D2FD5D85-BA6D-492E-801F-E5003452DA70@nutanix.com>
-References: <20210715201422.211004-1-peterx@redhat.com>
- <20210715201651.212134-1-peterx@redhat.com>
- <A83FCF8F-193E-4584-9442-C95B2635FD03@nutanix.com> <YPWiRsNaearMNB2g@t490s>
-In-Reply-To: <YPWiRsNaearMNB2g@t490s>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nutanix.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ecf8ad84-ace9-4423-585d-08d94ad9e44a
-x-ms-traffictypediagnostic: DM6PR02MB6906:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR02MB6906B6D20432273032925743E6E19@DM6PR02MB6906.namprd02.prod.outlook.com>
-x-proofpoint-crosstenant: true
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mYDade/ZJoso5bRpAckGEz8wyVonG9vHQmy7kd4cK06xBEMCX+MPgLTC+4sKdPACfM34jz6NUJMmWrG4ko9C6Iyw4XjcBIylf/T2rtkirBz9CGzylzDVtjVY3JP6GQjrme2ycc2agXp6GxWVjK/rUGOd7B9FWjPqem0kt8aErpmAnBPm2GxuC84RNEKtTnWbL31kl2jbqIMhjcKpBjjb1ieLRWfY/MF/wOBtLRmESHT0VcQh0XqLE2HZy2n6K4ezdzbd2hq3PjZDJ0k6Yf+JfqiiL/YoXkGqgPB85lf7jwoByHu2HAH7NUQFmHOCiKF2WX8UmH+0IRTCpVc8gQW66ZiT6/l/jQ0IovtgyR25XHEnz1hDNll5x7CXI8HyuP4ZiWEJ390bhZlTANq4u7pOyCiIqIa3lJa7gP48UYvTd5zRbdSrdIPPZSrhNv2TK5xeKzdR1AQ6BztT0RBRRyEPQkYO/CT8Lcsd0dPBULQXx29PEZIFFowRsT5F83nNQIzNv7ccicQUFb1r65kzsUDZKTwidUsEU0Sr1bc2khZqXQYMbrizOg7UrSjUXa32l7H2zUrhZtuKL+lFnxrcKIdJyNPJIWSccmHRzz+fpUx6SlEWh+oh0N7Z/nW+IT34o097UlPN8U1IEuH1TK8mpH4rh1UTvbFlIa/+Uhx9mUnFvC/+MrQV2PHm0RAEXEuXnLeZ670LeN+Ie1zqFS736zVFmrnIqFFIxrTAns3kDo0GHEg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB5578.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(366004)(136003)(346002)(39860400002)(8676002)(6916009)(33656002)(54906003)(6506007)(316002)(36756003)(7416002)(186003)(8936002)(83380400001)(44832011)(86362001)(4326008)(91956017)(76116006)(53546011)(478600001)(2906002)(5660300002)(6486002)(2616005)(122000001)(107886003)(38100700002)(66556008)(66446008)(64756008)(6512007)(66946007)(71200400001)(66476007)(38070700004)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?m/O48KeMQLHl1hfYOh4JHvmKNh6UXIf80AxLcoeFc/af3GSBO0+eg62GGfg6?=
- =?us-ascii?Q?abI8DD+92wqQp33OPhLfPP4pValMgM/lC0yCMd+ELuqs4ITX0xLTbonyMRKD?=
- =?us-ascii?Q?+YGUJB0BsTUX72mdETKdScvHtdXF0TpXKopaPCWTY4QYmfrKgWkdaOl4acrC?=
- =?us-ascii?Q?BkNnZpJWnAdwEZtwFZQeLFSWBajo/Ax2SecVuuy3XgETClvbkCKTpl74nXKd?=
- =?us-ascii?Q?NWIZ3YjkSveeck90ydrmltPQIQSHFC6ZzsOUXVTh8yOkzUpKRfwZej9QazbX?=
- =?us-ascii?Q?WtqaDtvi8I5Pad03Dp2P46/fd4GS9o9cfcDlinoey6vQpWFMf7oyWk/fS9yb?=
- =?us-ascii?Q?DyINysdqpqlV/q0efO0hULp5D9rb57dx/du7MDvd5MZB8maMgKARfHT3lLAr?=
- =?us-ascii?Q?WpWT4+a6ssdCLzhaJRMgUtXcJygMVThpFSK5Q39PJkpW//aMi1PS6+pwHLTW?=
- =?us-ascii?Q?ad5VJzDFRsizEpHwJicF+BpsVU/+YR0DeBkCuTZ2yp1DpMoFdWjqaeMyUjCy?=
- =?us-ascii?Q?k4qMxtlYG1t9NtHdVxPK2K1+QYovd7jXXKLmvyyH5E4hoAvGDRcbymIqtPIn?=
- =?us-ascii?Q?Sa71eEArE0NDuLbL+p+1aaWUP6xZEmwjQvA+VkfHT3HKWMhl93VS6suaSTmF?=
- =?us-ascii?Q?JH4XNSBOVfk1WUxnknOXfKQCRL8I7W1G6iHSR/p0GQqSPnoqZyz5hWXEgBQL?=
- =?us-ascii?Q?ZslV9QUAPkw0DV/AuwZFnYng5Mlw8KZcypDNN2HKA6FYUIHo6Gs/SA5ta+vd?=
- =?us-ascii?Q?Gi3673X0C01i6AcpOvPwVjdMlCby+SeuQSiMHrVaSflmggW8+2028rgHj0I9?=
- =?us-ascii?Q?YrTLmT4JPU9sj1kM4XcQaq5d4kbIIv1+Gn/NeDKOlXSGWbXK1qWc6f0M0Hxd?=
- =?us-ascii?Q?mhpAH1H9dNyGfxKkZIquM/PIXW1nV/vZiVCEbTIz2TA7pKopyVj9d3Bh0pDL?=
- =?us-ascii?Q?acagqHESpZxOOHLe0N4CKioBg/E2ln3UcfUIlteSnQK5oicRBEXFbZ8iQTpH?=
- =?us-ascii?Q?cWAG52fyL/8LyZ7sOGUGx/1rc7hbrTU9dNzfLTsBdG/1dW4vQPVdOZ2L+W7D?=
- =?us-ascii?Q?ghaaKzFYtFm8kJTrrcivrO/rT1DxbmP5BqVLWd+ZVee+ZjFAYa9yH5p9i4kc?=
- =?us-ascii?Q?P9l/ZXWRo1CO/NvkI3mHOghhEqp4ZbqFP2WNigZGMXKm52Xr97oLoZvYuvae?=
- =?us-ascii?Q?fowQ0tlusbcqoFrRGKVLTqDSFQANEnnm1nVzUsuC+waJQ97SUpT1BR6pY7/R?=
- =?us-ascii?Q?aFNEGIOfFt4RgiJI0QDkmdLr/15h1Bj35LmtfJvAyaWQVLTZICi3ndP7r8IL?=
- =?us-ascii?Q?0LyCoQtqAav3SRdWbWCRSifaeIont5O6EiD2+xyzizlFwYnjfWC/+/H+7sUR?=
- =?us-ascii?Q?5w+PFKxaObD/MLx0aLA6wRVDRJVW?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9E0A2EA3E08C4A4B97606EFA4FEBE24C@namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Mon, 19 Jul 2021 12:44:19 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:54702)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m5X0g-00C4v4-Ae; Mon, 19 Jul 2021 11:24:54 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:33948 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m5X0d-003mE2-D2; Mon, 19 Jul 2021 11:24:53 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+b6e65bd125a05f803d6b@syzkaller.appspotmail.com>,
+        legion@kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+In-Reply-To: <20210719094432.425-1-hdanton@sina.com> (Hillf Danton's message
+        of "Mon, 19 Jul 2021 17:44:32 +0800")
+References: <000000000000efe97f05c74bb995@google.com>
+        <20210719094432.425-1-hdanton@sina.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Mon, 19 Jul 2021 12:24:41 -0500
+Message-ID: <87czretdwm.fsf@disp2133>
 MIME-Version: 1.0
-X-OriginatorOrg: nutanix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR02MB5578.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecf8ad84-ace9-4423-585d-08d94ad9e44a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2021 17:23:14.6972
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: B7h7bQ13ABDxW3ODjUgs6fNaHFc0gTSsW15rVsC7OdWKPttmwE++1cFOmnXPVp6KUnkHhOa/c97L9Sf5wSxUozP/0oym2amNZ65oHlVrsDw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6906
-X-Proofpoint-ORIG-GUID: kL65nqyQ4lE9FNPWi_QRdZWrU8q0EySJ
-X-Proofpoint-GUID: kL65nqyQ4lE9FNPWi_QRdZWrU8q0EySJ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-19_09:2021-07-19,2021-07-19 signatures=0
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain
+X-XM-SPF: eid=1m5X0d-003mE2-D2;;;mid=<87czretdwm.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+r4YTAThb5EJYT8G6sGwLe/KfuCEXpKHw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.6 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,LotsOfNums_01,
+        T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XM_B_SpammyWords
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Hillf Danton <hdanton@sina.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 2084 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (0.5%), b_tie_ro: 9 (0.4%), parse: 1.13 (0.1%),
+         extract_message_metadata: 22 (1.0%), get_uri_detail_list: 6 (0.3%),
+        tests_pri_-1000: 29 (1.4%), tests_pri_-950: 1.30 (0.1%),
+        tests_pri_-900: 1.01 (0.0%), tests_pri_-90: 121 (5.8%), check_bayes:
+        118 (5.7%), b_tokenize: 21 (1.0%), b_tok_get_all: 19 (0.9%),
+        b_comp_prob: 5 (0.2%), b_tok_touch_all: 68 (3.3%), b_finish: 1.06
+        (0.1%), tests_pri_0: 738 (35.4%), check_dkim_signature: 0.84 (0.0%),
+        check_dkim_adsp: 2.6 (0.1%), poll_dns_idle: 1144 (54.9%),
+        tests_pri_10: 1.99 (0.1%), tests_pri_500: 1156 (55.4%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: [syzbot] KASAN: use-after-free Write in put_ucounts
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hillf Danton <hdanton@sina.com> writes:
 
-> On 19 Jul 2021, at 17:03, Peter Xu <peterx@redhat.com> wrote:
->=20
-> On Mon, Jul 19, 2021 at 09:53:36AM +0000, Tiberiu Georgescu wrote:
->>=20
->> Hello Peter,
->=20
-> Hi, Tiberiu,
->=20
->>=20
->>> On 15 Jul 2021, at 21:16, Peter Xu <peterx@redhat.com> wrote:
->>>=20
->>> This requires the pagemap code to be able to recognize the newly introd=
-uced
->>> swap special pte for uffd-wp, meanwhile the general case for hugetlb th=
-at we
->>> recently start to support.  It should make pagemap uffd-wp support comp=
-lete.
->>>=20
->>> Signed-off-by: Peter Xu <peterx@redhat.com>
->>> ---
->>> fs/proc/task_mmu.c | 7 +++++++
->>> 1 file changed, 7 insertions(+)
->>>=20
->>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
->>> index 9c5af77b5290..988e29fa1f00 100644
->>> --- a/fs/proc/task_mmu.c
->>> +++ b/fs/proc/task_mmu.c
->>> @@ -1389,6 +1389,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struc=
-t pagemapread *pm,
->>> 		flags |=3D PM_SWAP;
->>> 		if (is_pfn_swap_entry(entry))
->>> 			page =3D pfn_swap_entry_to_page(entry);
->>> +	} else if (pte_swp_uffd_wp_special(pte)) {
->>> +		flags |=3D PM_UFFD_WP;
->>> 	}
->>=20
->> ^ Would it not be important to also add PM_SWAP to flags?
->=20
-> Hmm, I'm not sure; it's the same as a none pte in this case, so imho we s=
-till
-> can't tell if it's swapped out or simply the pte got zapped but page cach=
-e will
-> still hit (even if being swapped out may be the most possible case).
+> On Fri, 16 Jul 2021 23:22:19 -0700
+>>syzbot found the following issue on:
+>>
+>>HEAD commit:    3dbdb38e2869 Merge branch 'for-5.14' of git://git.kernel.o..
+>>git tree:       upstream
+>>console output: https://syzkaller.appspot.com/x/log.txt?x=1541de9c300000
+>>kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
+>>dashboard link: https://syzkaller.appspot.com/bug?extid=b6e65bd125a05f803d6b
+>>userspace arch: i386
+>>
+>>Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>>IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>Reported-by: syzbot+b6e65bd125a05f803d6b@syzkaller.appspotmail.com
+>>
+>>==================================================================
+>>BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+>>BUG: KASAN: use-after-free in atomic_dec_and_test include/asm-generic/atomic-instrumented.h:542 [inline]
+>>BUG: KASAN: use-after-free in put_ucounts+0x1c/0x150 kernel/ucount.c:196
+>>Write of size 4 at addr ffff88801c86cc1c by task kworker/u4:3/166
+>>
+>>CPU: 0 PID: 166 Comm: kworker/u4:3 Not tainted 5.13.0-syzkaller #0
+>>Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>Workqueue: bat_events batadv_nc_worker
+>>Call Trace:
+>> <IRQ>
+>> __dump_stack lib/dump_stack.c:79 [inline]
+>> dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+>> print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
+>> __kasan_report mm/kasan/report.c:419 [inline]
+>> kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
+>> check_region_inline mm/kasan/generic.c:183 [inline]
+>> kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
+>> instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+>> atomic_dec_and_test include/asm-generic/atomic-instrumented.h:542 [inline]
+>> put_ucounts+0x1c/0x150 kernel/ucount.c:196
+>> put_cred_rcu+0x27a/0x520 kernel/cred.c:124
+>> rcu_do_batch kernel/rcu/tree.c:2558 [inline]
+>> rcu_core+0x7ab/0x1380 kernel/rcu/tree.c:2793
+>> __do_softirq+0x29b/0x9bd kernel/softirq.c:558
+>> invoke_softirq kernel/softirq.c:432 [inline]
+>> __irq_exit_rcu+0x16e/0x1c0 kernel/softirq.c:636
+>> irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+>> sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+>> </IRQ>
+>> asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+>>RIP: 0010:lock_acquire+0x1ef/0x510 kernel/locking/lockdep.c:5593
+>>Code: e1 a6 7e 83 f8 01 0f 85 a6 02 00 00 9c 58 f6 c4 02 0f 85 91 02 00 00 48 83 7c 24 08 00 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c3 48 c7 03 00 00 00 00 48 c7 43 08 00 00 00 00 48 8b 84 24
+>>RSP: 0018:ffffc900010bfba8 EFLAGS: 00000206
+>>RAX: dffffc0000000000 RBX: 1ffff92000217f77 RCX: 3f6e7590f6a9846c
+>>RDX: 1ffff1100283613d RSI: 0000000000000000 RDI: 0000000000000000
+>>RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff9049d8a7
+>>R10: fffffbfff2093b14 R11: 0000000000000000 R12: 0000000000000002
+>>R13: 0000000000000000 R14: ffffffff8c17bb80 R15: 0000000000000000
+>> rcu_lock_acquire include/linux/rcupdate.h:267 [inline]
+>> rcu_read_lock include/linux/rcupdate.h:671 [inline]
+>> batadv_nc_purge_orig_hash net/batman-adv/network-coding.c:404 [inline]
+>> batadv_nc_worker+0x12d/0xe50 net/batman-adv/network-coding.c:715
+>> process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+>> worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+>> kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>> ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+>>
+>>Allocated by task 8622:
+>> kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>> kasan_set_track mm/kasan/common.c:46 [inline]
+>> set_alloc_info mm/kasan/common.c:434 [inline]
+>> ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+>> ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+>> __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:522
+>> kmalloc include/linux/slab.h:591 [inline]
+>> kzalloc include/linux/slab.h:721 [inline]
+>> alloc_ucounts+0x23d/0x5b0 kernel/ucount.c:169
+>> set_cred_ucounts+0x171/0x3a0 kernel/cred.c:684
+>> copy_creds+0x853/0xb20 kernel/cred.c:375
+>> copy_process+0x1413/0x74c0 kernel/fork.c:1992
+>> kernel_clone+0xe7/0xab0 kernel/fork.c:2509
+>> __do_compat_sys_ia32_clone+0xac/0xe0 arch/x86/kernel/sys_ia32.c:254
+>> do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+>> do_int80_syscall_32+0x46/0x90 arch/x86/entry/common.c:132
+>> entry_INT80_compat+0x71/0x76 arch/x86/entry/entry_64_compat.S:413
+>>
+>>Last potentially related work creation:
+>> kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>> kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
+>> insert_work+0x48/0x370 kernel/workqueue.c:1332
+>> __queue_work+0x5c1/0xed0 kernel/workqueue.c:1498
+>> queue_work_on+0xee/0x110 kernel/workqueue.c:1525
+>> queue_work include/linux/workqueue.h:507 [inline]
+>> call_usermodehelper_exec+0x1f0/0x4c0 kernel/umh.c:435
+>> kobject_uevent_env+0xf8f/0x1650 lib/kobject_uevent.c:618
+>> kobject_synth_uevent+0x701/0x850 lib/kobject_uevent.c:208
+>> uevent_store+0x20/0x50 drivers/base/core.c:2370
+>> dev_attr_store+0x50/0x80 drivers/base/core.c:2071
+>> sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+>> kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+>> call_write_iter include/linux/fs.h:2114 [inline]
+>> new_sync_write+0x426/0x650 fs/read_write.c:518
+>> vfs_write+0x796/0xa30 fs/read_write.c:605
+>> ksys_write+0x12d/0x250 fs/read_write.c:658
+>> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>> do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>> entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>>Second to last potentially related work creation:
+>> kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>> kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
+>> insert_work+0x48/0x370 kernel/workqueue.c:1332
+>> __queue_work+0x5c1/0xed0 kernel/workqueue.c:1498
+>> queue_work_on+0xee/0x110 kernel/workqueue.c:1525
+>> queue_work include/linux/workqueue.h:507 [inline]
+>> call_usermodehelper_exec+0x1f0/0x4c0 kernel/umh.c:435
+>> kobject_uevent_env+0xf8f/0x1650 lib/kobject_uevent.c:618
+>> kobject_synth_uevent+0x701/0x850 lib/kobject_uevent.c:208
+>> uevent_store+0x42/0x90 drivers/base/bus.c:585
+>> drv_attr_store+0x6d/0xa0 drivers/base/bus.c:77
+>> sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+>> kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+>> call_write_iter include/linux/fs.h:2114 [inline]
+>> new_sync_write+0x426/0x650 fs/read_write.c:518
+>> vfs_write+0x796/0xa30 fs/read_write.c:605
+>> ksys_write+0x12d/0x250 fs/read_write.c:658
+>> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>> do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>> entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>>The buggy address belongs to the object at ffff88801c86cc00
+>> which belongs to the cache kmalloc-192 of size 192
+>>The buggy address is located 28 bytes inside of
+>> 192-byte region [ffff88801c86cc00, ffff88801c86ccc0)
+>>The buggy address belongs to the page:
+>>page:ffffea0000721b00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88801c86cc00 pfn:0x1c86c
+>>flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+>>raw: 00fff00000000200 ffffea00009f0e48 ffffea00009cd188 ffff888011041a00
+>>raw: ffff88801c86cc00 000000000010000b 00000001ffffffff 0000000000000000
+>>page dumped because: kasan: bad access detected
+>>page_owner tracks the page as allocated
+>>page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, ts 7975119940, free_ts 7474437105
+>> prep_new_page mm/page_alloc.c:2445 [inline]
+>> get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4178
+>> __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5386
+>> alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2147
+>> alloc_pages+0x238/0x2a0 mm/mempolicy.c:2270
+>> alloc_slab_page mm/slub.c:1702 [inline]
+>> allocate_slab+0x32b/0x4c0 mm/slub.c:1842
+>> new_slab mm/slub.c:1905 [inline]
+>> new_slab_objects mm/slub.c:2651 [inline]
+>> ___slab_alloc+0x4ba/0x820 mm/slub.c:2814
+>> __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2854
+>> slab_alloc_node mm/slub.c:2936 [inline]
+>> slab_alloc mm/slub.c:2978 [inline]
+>> kmem_cache_alloc_trace+0x325/0x3c0 mm/slub.c:2995
+>> kmalloc include/linux/slab.h:591 [inline]
+>> kzalloc include/linux/slab.h:721 [inline]
+>> call_usermodehelper_setup+0x97/0x340 kernel/umh.c:365
+>> kobject_uevent_env+0xf73/0x1650 lib/kobject_uevent.c:614
+>> device_add+0xb71/0x2100 drivers/base/core.c:3305
+>> register_virtio_device+0x1e1/0x2c0 drivers/virtio/virtio.c:363
+>> virtio_pci_probe+0x203/0x390 drivers/virtio/virtio_pci_common.c:552
+>> local_pci_probe+0xdb/0x190 drivers/pci/pci-driver.c:309
+>> pci_call_probe drivers/pci/pci-driver.c:366 [inline]
+>> __pci_device_probe drivers/pci/pci-driver.c:391 [inline]
+>> pci_device_probe+0x3dd/0x6f0 drivers/pci/pci-driver.c:434
+>> really_probe+0x291/0xf60 drivers/base/dd.c:576
+>>page last free stack trace:
+>> reset_page_owner include/linux/page_owner.h:24 [inline]
+>> free_pages_prepare mm/page_alloc.c:1355 [inline]
+>> free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1406
+>> free_unref_page_prepare mm/page_alloc.c:3341 [inline]
+>> free_unref_page+0x19/0x690 mm/page_alloc.c:3420
+>> __vunmap+0x783/0xb70 mm/vmalloc.c:2569
+>> free_work+0x58/0x70 mm/vmalloc.c:80
+>> process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+>> worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+>> kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>> ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+>>
+>>Memory state around the buggy address:
+>> ffff88801c86cb00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>> ffff88801c86cb80: 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc
+>>>ffff88801c86cc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>                            ^
+>> ffff88801c86cc80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>> ffff88801c86cd00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>>==================================================================
+>
+> To fix the uaf, add a couple of changes. Now only for thoughts.
 
-Yeah, that's true. Come to think of it, we also can't tell none pte from sw=
-apped
-out shmem pages (all bits are cleared out).
+>
+> 1/ s/atomic_add_negative/atomic_inc_not_zero/ to correct the get
+> method.
 
->=20
-> What we're clear is we know it's uffd wr-protected, so maybe setting PM_U=
-FFD_WP
-> is still the simplest?
+I really don't think so.  The use of atomic_add_negative is very
+deliberate.  Changing that fundamentally changes the algorithm into used
+to keep track of things.  Definitely not something to lead with.
 
-That's right, but if we were to require any of the differentiations above, =
-how
-does keeping another bit on the special pte sound to you? One to signal the=
- location on swap or otherwise (none or zapped).
+Before it even makes sense to talk about how to change the code,
+a plausible explanation for how a use after free happens is needed.
 
-Is there any other clearer way to do it? We wouldn't want to overload the
-special pte unnecessarily.
+That explanation should account for the fact this code was in linux-next
+the since last -rc1 without any kind of issue with the test code.
 
-Thanks,
+Did something change in the test infrastructure?  Is there another
+bug that is stomping memory and making it look like this code is buggy?
 
---
-Tibi
+I haven't had a chance to dig in in detail (everyone in my house is
+sick).  I am hoping that Alexey Gladkov will have that time soon.
 
+What I can say is that a solution that leads with your code is
+fundamentally misdesigned and everything needs to change, and there
+is no explanation for why it all needs to change is probably not a
+solution to the problem.
+
+Eric
