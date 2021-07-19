@@ -2,164 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEB83CD01F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07063CD046
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235930AbhGSI2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:28:06 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:41633 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbhGSI2F (ORCPT
+        id S235800AbhGSIdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235329AbhGSIdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:28:05 -0400
-Received: by mail-oi1-f179.google.com with SMTP id t143so19974252oie.8;
-        Mon, 19 Jul 2021 02:08:44 -0700 (PDT)
+        Mon, 19 Jul 2021 04:33:02 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E593FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 01:14:45 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id hd33so27485477ejc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=17mSjGJ9fsRSswzgwTitDY8y/XvKmjWDgDcVGv33dcM=;
-        b=BRky+81ddgvnKIrxX630Oda5Ci7yXLdzKcFeXIcpPYWHmZvBT0SyRoBCevIbbEaxS/
-         DH6RNBWmWOPnAuz4WXs3hMVwDn+0xps8Mynt45Mml6xm87OxGnCkfO2SKN/5mxnkA4kp
-         wDjPuS64kzZaBxgSV9ShNi4KtTecgm2YIBfg0Qnd6x0Ou/n7t2ZbtVkKra77EZaORFwc
-         ujCVa+OOVO5P6OlpcLs+aazaLKpDL23Hv91M9wCTd2BWHOA0ypjTo3oyr1t4gGjqWWPF
-         XrfEhqmLN0lPv5bVoEBtm8fot9PSeOAqvnU2fnVVcmIhdUUXc/kGmRHgSaf0tFjIiqig
-         V42g==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u5FkYygAP5aYXKhiToJncjQ4pnqt1axbUfxSA6M106E=;
+        b=RUoz3S+OzJer2hQ2zynaEh0ahbOByD6Ye2U9E+aySsu09fb59vHB8xqBnMBTNjooXK
+         J48srP6gvu9447896+hKmxhF7Yn3jmLZiyQCnSf7eqMm4aPtsMJWS8efN62jjFn9mbAr
+         AQL95z7CfrzZnBYbnITt4xTYVjHmXWcnLWPNA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=17mSjGJ9fsRSswzgwTitDY8y/XvKmjWDgDcVGv33dcM=;
-        b=jIvkm5sEhNGh7kxbFCChJLIWcZWOAIryAD603kZrZPMR0a5ezYbZX5YKRKiLykwnvX
-         HSWfs+0c/z7RXLyn1U7hLvTUDK3BAq7f3r8dglRrQGr+OyrKIPGOTcgaDIOBdKWhIb4w
-         i6sfLzx1JWFRkmQY2vk4KHeuUiOck7iXNclNYkG+ZT/vXNZAfOR2n3KPZpBQSkNXnOtM
-         qBAEwMj5KbVKB7kAesXeGO4KqjmFQtR/GKdC+d3tp+BJVqJcVuYpQxK16yG1gaByCE44
-         jYwaxiFz3gWudBeU03ZmFKw2bYDTyDdqqV188D/qAWdsW/CpEYq1tnEvGtPzzB6uXDXD
-         aZGA==
-X-Gm-Message-State: AOAM531Er2ngXpzLF6SuPE2iBoqOVn+NHwjrOhfK9YE70U1aHK2wTkgJ
-        phoXEZgjPmH+DtgMN8cj0RBxqlkjT+xGh41BH+gjpvwkKDR/eF5Q
-X-Google-Smtp-Source: ABdhPJyn4NWLSTBhnzfiO9C3NPMQAxsiG0vu2kflF/idfeLZuemMfpJtbyIEIuxsjoPNV9aiXm8TxLX9kyKgki2gLJU=
-X-Received: by 2002:a17:90a:7e16:: with SMTP id i22mr29885373pjl.12.1626684268331;
- Mon, 19 Jul 2021 01:44:28 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u5FkYygAP5aYXKhiToJncjQ4pnqt1axbUfxSA6M106E=;
+        b=Gkc+yvLwu5gMDRi6oToVtVLs4uMbHp3yfign4ibk0Xy6D1i2sp4eKKBcQlwkeiwtm0
+         79abqweW3rS6nr2tdKpL3geKGPrpGr2HH8n+g2NIzj0feSDWKtw16NrylHqDIycHbAlW
+         xTknbn2kfWuS36i5vT59jW+iOQeV/IyDKdDBIQ8dAjueai4V0tlKzCLNG3REM60aX+pf
+         LYtKlUCDVxMmaU6dWe7cmnYCtwZ6fQcTykVn/k3NBcqL0RhIDMtW9bcwmnJuVBVxbwA4
+         QOhNWGHRVwI3yOgWXodv+LxhfE29rfno/WCGKgKzOsAc6/qYDY6DYvdYMujU5kPHPxId
+         twMg==
+X-Gm-Message-State: AOAM532gkEp7aA+xpoOwxDoxbaMfrfPnDqMAr2hmSCMqG2cR8R/BA/kA
+        hBhFB9xqyABLQWoH2iTuGRm1X8bk1bY0cPPXx41H6UVSc0o=
+X-Google-Smtp-Source: ABdhPJzlxqfFGaZrZ/5HCQxqAtoUQFd+tAAHV7lDvF2Cb/wf0Cnc0joQvV4k+SOZgE1RrpeWhEROVb9+ifjTZjQ6mgs=
+X-Received: by 2002:ac2:43d4:: with SMTP id u20mr17544633lfl.451.1626684328396;
+ Mon, 19 Jul 2021 01:45:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20210715141742.15072-4-andrea.merello@gmail.com> <20210717163900.657ec48b@jic23-huawei>
-In-Reply-To: <20210717163900.657ec48b@jic23-huawei>
-Reply-To: andrea.merello@gmail.com
-From:   Andrea Merello <andrea.merello@gmail.com>
-Date:   Mon, 19 Jul 2021 10:44:17 +0200
-Message-ID: <CAN8YU5M3zSQzRarG=jz8dATsncL2Z-dZRpb9Zc2nHZdLqdQc-g@mail.gmail.com>
-Subject: Re: [PATCH 3/4] dt-bindings: iio: imu: add bosch BNO055 serdev driver bindings
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        vlad.dogaru@intel.com, linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Andrea Merello <andrea.merello@iit.it>
+References: <20210716100452.113652-1-lmb@cloudflare.com> <CAEf4BzauzWhNag0z31krN_MTZTGLynAJvkh_7P3yLQCx5XLTAg@mail.gmail.com>
+In-Reply-To: <CAEf4BzauzWhNag0z31krN_MTZTGLynAJvkh_7P3yLQCx5XLTAg@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 19 Jul 2021 09:45:16 +0100
+Message-ID: <CACAyw98RaF8SgA9nkduXo-wBdsRN86cP=seX9d83i0Qhi0gbeQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix OOB read when printing XDP link fdinfo
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno sab 17 lug 2021 alle ore 17:36 Jonathan Cameron
-<jic23@kernel.org> ha scritto:
+On Fri, 16 Jul 2021 at 21:44, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, 15 Jul 2021 16:17:41 +0200
-> Andrea Merello <andrea.merello@gmail.com> wrote:
+> Well, oops. Thanks for the fix!
 >
-> > Introduce new documentation file for the BNO055 serdev driver that will
-> dt bindings are for the device not the driver (so don't mention driver
-> in the binding or the patch description).
-
-Ah, right
-
-> > be included in next patches of this same series
-> >
-> > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-> > Cc: Andrea Merello <andrea.merello@gmail.com>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Matt Ranostay <matt.ranostay@konsulko.com>
-> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Cc: Vlad Dogaru <vlad.dogaru@intel.com>
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: linux-iio@vger.kernel.org
-> > ---
-> >  .../bindings/iio/imu/bosch,bno055-serial.yaml | 40 +++++++++++++++++++
-> >  1 file changed, 40 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml b/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
-> > new file mode 100644
-> > index 000000000000..743c784ebc94
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/imu/bosch,bno055-serial.yaml
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 >
-> Better to have just one doc covering this interface and i2c if that gets added.
+> It would be great to have a compilation error for something like this.
+> I wonder if we can do something to detect this going forward?
 
-OK
+I had a second patch that introduced MAX_BPF_LINK_TYPE, etc. and then
+added explicit array initializers:
 
-> > @@ -0,0 +1,40 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/imu/bosch,bno055-serial.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Serial-attached Bosch BNO055
-> > +
-> > +maintainers:
-> > +  - Jonathan Cameron <jic23@kernel.org>
->
-> That's just mean!  I have plenty of these to look after already! Joking
-> aside, you'd be a better maintainer for this than me as more likely
-> to pay attention.
+     [MAX_BPF_LINK_TYPE] = NULL,
 
-Ok. I was really embarrassed about this: didn't want to proclaim me as
-a maintainer, neither I wanted me to decide something about you :)
+That turns the OOB read into a NULL read. But it has to be done for
+every inclusion of bpf_types.h so it's
+a bit cumbersome. Maybe add MAX_BPF_LINK_TYPE and then add an entry in
+bpf_types.h for it as well?
 
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-> > +
-> > +description: |
-> > +  Inertial Measurement Unit with Accelerometer, Gyroscope, Magnetometer and
-> > +  internal MCU for sensor fusion
-> > +  https://www.bosch-sensortec.com/products/smart-sensors/bno055/
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +     - bosch,bno055-serial
-> > +
-> > +  reset-gpios:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > + - |
-> > +   #include <dt-bindings/gpio/gpio.h>
-> > +   bno055 {
->
-> name needs to be the one for the device type found in the device tree spec or
-> if it's not there, something in same 'spirit'.  Probably imu here
-
-OK
-
-> > +      compatible = "bosch,bno055-serial";
-> Don't need the -serial. It will bind based on the bus this is under.
-> Speaking of which, it's normal to provide that bus info as part of the example.
-> See for example chemical/sensiron,scd30.yaml
-
-OK
-
-> > +      reset-gpios = <&gpio0 54 GPIO_ACTIVE_LOW>;
-> > +      clocks = <&imu_clk>;
-> > +   };
->
+www.cloudflare.com
