@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EC03CD983
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CE33CD991
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243837AbhGSOad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:30:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
+        id S245191AbhGSOas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:30:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242683AbhGSOZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:25:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 557996113A;
-        Mon, 19 Jul 2021 15:06:06 +0000 (UTC)
+        id S242991AbhGSOZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:25:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C842160551;
+        Mon, 19 Jul 2021 15:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707166;
-        bh=OGyyDFvaYBHbqa5AhohYX3YCXPmQX3vG/H3NoKQ54dk=;
+        s=korg; t=1626707169;
+        bh=fV6bIYL1TAT2KqUVFIlxoCnLkvrPe4BRbeM0ImjmfBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MDJ2tilXuXfPOiVKR4+LI9n0yaFOb+VloGIr2nuMsNUFUunbgCKMEmlWnCyuWg7Fq
-         r/QYiRbaqU9yXhWEAVbwrICKnVhdBUxMOMvCvNMwt+YLPQhnkd6ntJS4/uHX0pwLTG
-         E8bgQ/AyZ/XhmyJM8I2NXuou7UKkUhGB52SmtklY=
+        b=azeU6NlvNMGhzYfl/DFuXe6dbMRoNFqQiX4DE5BXLFOj/Uhe4WPJpHdw8cTXIsMuK
+         S1vAQZs8C5E4kL2LZhrBb/or5W/L5udwnmWCodkO7to2QwRhJ/3xaak86saA+qjmvP
+         T9JaDOpsngt206WmZySmyEGNR6YUwf124gDsyEcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 054/245] platform/x86: toshiba_acpi: Fix missing error code in toshiba_acpi_setup_keyboard()
-Date:   Mon, 19 Jul 2021 16:49:56 +0200
-Message-Id: <20210719144942.150378815@linuxfoundation.org>
+Subject: [PATCH 4.9 055/245] ACPI: tables: Add custom DSDT file as makefile prerequisite
+Date:   Mon, 19 Jul 2021 16:49:57 +0200
+Message-Id: <20210719144942.187140079@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -41,38 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 28e367127718a9cb85d615a71e152f7acee41bfc ]
+[ Upstream commit d1059c1b1146870c52f3dac12cb7b6cbf39ed27f ]
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'error'.
+A custom DSDT file is mostly used during development or debugging,
+and in that case it is quite likely to want to rebuild the kernel
+after changing ONLY the content of the DSDT.
 
-Eliminate the follow smatch warning:
+This patch adds the custom DSDT as a prerequisite to tables.o
+to ensure a rebuild if the DSDT file is updated. Make will merge
+the prerequisites from multiple rules for the same target.
 
-drivers/platform/x86/toshiba_acpi.c:2834 toshiba_acpi_setup_keyboard()
-warn: missing error code 'error'.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Link: https://lore.kernel.org/r/1622628348-87035-1-git-send-email-jiapeng.chong@linux.alibaba.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/toshiba_acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
-index f25278bb3e1a..90b17cf74e9f 100644
---- a/drivers/platform/x86/toshiba_acpi.c
-+++ b/drivers/platform/x86/toshiba_acpi.c
-@@ -2866,6 +2866,7 @@ static int toshiba_acpi_setup_keyboard(struct toshiba_acpi_dev *dev)
- 
- 	if (!dev->info_supported && !dev->system_event_supported) {
- 		pr_warn("No hotkey query interface found\n");
-+		error = -EINVAL;
- 		goto err_remove_filter;
- 	}
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index 4c5678cfa9c4..c466d7bc861a 100644
+--- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -7,6 +7,11 @@ ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
+ #
+ # ACPI Boot-Time Table Parsing
+ #
++ifeq ($(CONFIG_ACPI_CUSTOM_DSDT),y)
++tables.o: $(src)/../../include/$(subst $\",,$(CONFIG_ACPI_CUSTOM_DSDT_FILE)) ;
++
++endif
++
+ obj-$(CONFIG_ACPI)		+= tables.o
+ obj-$(CONFIG_X86)		+= blacklist.o
  
 -- 
 2.30.2
