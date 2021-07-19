@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26A33CEA87
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F3D3CE928
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377592AbhGSRQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:16:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34260 "EHLO mail.kernel.org"
+        id S1357203AbhGSQvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:51:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347472AbhGSPja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 563CE61283;
-        Mon, 19 Jul 2021 16:19:05 +0000 (UTC)
+        id S1349369AbhGSP0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:26:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9703961004;
+        Mon, 19 Jul 2021 16:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711545;
-        bh=YE3aL0P/ukx86rH/nOPjZS+oU/mYIqW7gQhYJcpmOYk=;
+        s=korg; t=1626710838;
+        bh=zmj9WyXtSseTTgocPzLouGUl1hEY6kvuM9oHZQw1Zo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WilnyKu3wfAsWhZ6a6JbZDmsBFqGPoHQb3nopvxpMPS9Y+Oe49k7t3+mc9nBwBc46
-         iF0gX7mF1P2Wf8DXIh7ISxXoT45LC+uY4nEZx7lmwZKEpawKZpdzAo0Efy1eKKTAX6
-         EwEuMlpofKqjXCSHnGzy08XfxFl5c0jgC8Eg1Cvs=
+        b=vfYhdor672G7xDy4oHj2DuPLJmT8mGn4+IDP+KhDybE4Zj8MM0J2auA7VlP34Sd7I
+         ONXHOOsecx2yjSFepyBHiUkw8nDXJuSEms+nTWP/y2yjC3kWzqNhA2P1JaIPvKBlX1
+         KNnTjL3mNcDiAJaoxW7j8hfzSW/OarIJTiEqUQlU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Block <bblock@linux.ibm.com>,
-        Steffen Maier <maier@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.12 010/292] scsi: zfcp: Report port fc_security as unknown early during remote cable pull
+        stable@vger.kernel.org, Daniel Jozsef <daniel.jozsef@gmail.com>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 126/351] ALSA: bebob: add support for ToneWeal FW66
 Date:   Mon, 19 Jul 2021 16:51:12 +0200
-Message-Id: <20210719144942.867673356@linuxfoundation.org>
+Message-Id: <20210719144948.644622676@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +40,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Maier <maier@linux.ibm.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit 8b3bdd99c092bbaeaa7d9eecb1a3e5dc9112002b upstream.
+[ Upstream commit 50ebe56222bfa0911a932930f9229ee5995508d9 ]
 
-On remote cable pull, a zfcp_port keeps its status and only gets
-ZFCP_STATUS_PORT_LINK_TEST added. Only after an ADISC timeout, we would
-actually start port recovery and remove ZFCP_STATUS_COMMON_UNBLOCKED which
-zfcp_sysfs_port_fc_security_show() detected and reported as "unknown"
-instead of the old and possibly stale zfcp_port->connection_info.
+A user of FFADO project reported the issue of ToneWeal FW66. As a result,
+the device is identified as one of applications of BeBoB solution.
 
-Add check for ZFCP_STATUS_PORT_LINK_TEST for timely "unknown" report.
+I note that in the report the device returns contradictory result in plug
+discovery process for audio subunit. Fortunately ALSA BeBoB driver doesn't
+perform it thus it's likely to handle the device without issues.
 
-Link: https://lore.kernel.org/r/20210702160922.2667874-1-maier@linux.ibm.com
-Fixes: a17c78460093 ("scsi: zfcp: report FC Endpoint Security in sysfs")
-Cc: <stable@vger.kernel.org> #5.7+
-Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
-Signed-off-by: Steffen Maier <maier@linux.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I receive no reaction to test request for this patch yet, however it would
+be worth to add support for it.
+
+daniel@gibbonmoon:/sys/bus/firewire/devices/fw1$ grep -r . *
+Binary file config_rom matches
+dev:244:1
+guid:0x0023270002000000
+hardware_version:0x000002
+is_local:0
+model:0x020002
+model_name:FW66
+power/runtime_active_time:0
+power/runtime_active_kids:0
+power/runtime_usage:0
+power/runtime_status:unsupported
+power/async:disabled
+power/runtime_suspended_time:0
+power/runtime_enabled:disabled
+power/control:auto
+subsystem/drivers_autoprobe:1
+uevent:MAJOR=244
+uevent:MINOR=1
+uevent:DEVNAME=fw1
+units:0x00a02d:0x010001
+vendor:0x002327
+vendor_name:ToneWeal
+fw1.0/uevent:MODALIAS=ieee1394:ven00002327mo00020002sp0000A02Dver00010001
+fw1.0/power/runtime_active_time:0
+fw1.0/power/runtime_active_kids:0
+fw1.0/power/runtime_usage:0
+fw1.0/power/runtime_status:unsupported
+fw1.0/power/async:disabled
+fw1.0/power/runtime_suspended_time:0
+fw1.0/power/runtime_enabled:disabled
+fw1.0/power/control:auto
+fw1.0/model:0x020002
+fw1.0/rom_index:15
+fw1.0/specifier_id:0x00a02d
+fw1.0/model_name:FW66
+fw1.0/version:0x010001
+fw1.0/modalias:ieee1394:ven00002327mo00020002sp0000A02Dver00010001
+
+Cc: Daniel Jozsef <daniel.jozsef@gmail.com>
+Reference: https://lore.kernel.org/alsa-devel/20200119164335.GA11974@workstation/
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210619083922.16060-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/scsi/zfcp_sysfs.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/firewire/Kconfig       | 1 +
+ sound/firewire/bebob/bebob.c | 3 +++
+ 2 files changed, 4 insertions(+)
 
---- a/drivers/s390/scsi/zfcp_sysfs.c
-+++ b/drivers/s390/scsi/zfcp_sysfs.c
-@@ -487,6 +487,7 @@ static ssize_t zfcp_sysfs_port_fc_securi
- 	if (0 == (status & ZFCP_STATUS_COMMON_OPEN) ||
- 	    0 == (status & ZFCP_STATUS_COMMON_UNBLOCKED) ||
- 	    0 == (status & ZFCP_STATUS_PORT_PHYS_OPEN) ||
-+	    0 != (status & ZFCP_STATUS_PORT_LINK_TEST) ||
- 	    0 != (status & ZFCP_STATUS_COMMON_ERP_FAILED) ||
- 	    0 != (status & ZFCP_STATUS_COMMON_ACCESS_BOXED))
- 		i = sprintf(buf, "unknown\n");
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index def1f3d5ecf5..12664c3a1414 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -110,6 +110,7 @@ config SND_BEBOB
+ 	  * M-Audio Ozonic/NRV10/ProfireLightBridge
+ 	  * M-Audio FireWire 1814/ProjectMix IO
+ 	  * Digidesign Mbox 2 Pro
++	  * ToneWeal FW66
+ 
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-bebob.
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 90e98a6d1546..67fa0f2178b0 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -59,6 +59,7 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ #define VEN_MAUDIO1	0x00000d6c
+ #define VEN_MAUDIO2	0x000007f5
+ #define VEN_DIGIDESIGN	0x00a07e
++#define OUI_SHOUYO	0x002327
+ 
+ #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
+ #define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
+@@ -486,6 +487,8 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 			    &maudio_special_spec),
+ 	/* Digidesign Mbox 2 Pro */
+ 	SND_BEBOB_DEV_ENTRY(VEN_DIGIDESIGN, 0x0000a9, &spec_normal),
++	// Toneweal FW66.
++	SND_BEBOB_DEV_ENTRY(OUI_SHOUYO, 0x020002, &spec_normal),
+ 	/* IDs are unknown but able to be supported */
+ 	/*  Apogee, Mini-ME Firewire */
+ 	/*  Apogee, Mini-DAC Firewire */
+-- 
+2.30.2
+
 
 
