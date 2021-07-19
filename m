@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED223CDFB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FB13CDC0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344934AbhGSPLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41942 "EHLO mail.kernel.org"
+        id S241008AbhGSOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:51:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344049AbhGSOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D12D4613DF;
-        Mon, 19 Jul 2021 15:26:01 +0000 (UTC)
+        id S244497AbhGSOeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 682CE61353;
+        Mon, 19 Jul 2021 15:13:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708362;
-        bh=DPYLXDBQlJ4xCJUeTqh/3nUbSMOGFtVr9aV+f0tGoH0=;
+        s=korg; t=1626707601;
+        bh=UanXG94Kwo6+g5BQ3N4FtlOVTG+wTA0/tOHkzDJ0CG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y8jSsDM1041BDPaVe5B/4ZZASlcStd7tfIzYfm72a5Pft6TnmaP+FEvlZ6PYPKjBL
-         FtKhVQ1+MOrSntmL4GSEBLf7wOkwR2OWZebJi1H+pZyLNFgUytgtWqaGQ8LqjHziQU
-         Qz7pHpGg7bq6CCb3d6ZqffItD33x6cKilsIdWAkM=
+        b=OAbeUaRezXFoGnAAc1xK6ol1ffgLsCJ6F+ICDMU3LGDbo60nGQ6hFfgE74kp+BpFy
+         d+wUWnYDG4vuTIRNdJIcVd6zsqCSAkX5VlOH9ZKJPwdsOv6me/0wdv7iL0geYzaeZ4
+         RWpEHi9j1c8gnVW/CQmeSiFyqQovx0rbmK5EokXA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 281/315] pwm: tegra: Dont modify HW state in .remove callback
-Date:   Mon, 19 Jul 2021 16:52:50 +0200
-Message-Id: <20210719144952.663313904@linuxfoundation.org>
+Subject: [PATCH 4.9 229/245] nfs: fix acl memory leak of posix_acl_create()
+Date:   Mon, 19 Jul 2021 16:52:51 +0200
+Message-Id: <20210719144947.790560577@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
-References: <20210719144942.861561397@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit 86f7fa71cd830d18d7ebcaf719dffd5ddfe1acdd ]
+[ Upstream commit 1fcb6fcd74a222d9ead54d405842fc763bb86262 ]
 
-A consumer is expected to disable a PWM before calling pwm_put(). And if
-they didn't there is hopefully a good reason (or the consumer needs
-fixing). Also if disabling an enabled PWM was the right thing to do,
-this should better be done in the framework instead of in each low level
-driver.
+When looking into another nfs xfstests report, I found acl and
+default_acl in nfs3_proc_create() and nfs3_proc_mknod() error
+paths are possibly leaked. Fix them in advance.
 
-So drop the hardware modification from the .remove() callback.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fixes: 013cdf1088d7 ("nfs: use generic posix ACL infrastructure for v3 Posix ACLs")
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Anna Schumaker <anna.schumaker@netapp.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-tegra.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ fs/nfs/nfs3proc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pwm/pwm-tegra.c b/drivers/pwm/pwm-tegra.c
-index f8ebbece57b7..6be14e0f1dc3 100644
---- a/drivers/pwm/pwm-tegra.c
-+++ b/drivers/pwm/pwm-tegra.c
-@@ -245,7 +245,6 @@ static int tegra_pwm_probe(struct platform_device *pdev)
- static int tegra_pwm_remove(struct platform_device *pdev)
- {
- 	struct tegra_pwm_chip *pc = platform_get_drvdata(pdev);
--	unsigned int i;
- 	int err;
+diff --git a/fs/nfs/nfs3proc.c b/fs/nfs/nfs3proc.c
+index dc925b531f32..41bda33b630f 100644
+--- a/fs/nfs/nfs3proc.c
++++ b/fs/nfs/nfs3proc.c
+@@ -363,7 +363,7 @@ nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+ 				break;
  
- 	if (WARN_ON(!pc))
-@@ -255,18 +254,6 @@ static int tegra_pwm_remove(struct platform_device *pdev)
- 	if (err < 0)
- 		return err;
+ 			case NFS3_CREATE_UNCHECKED:
+-				goto out;
++				goto out_release_acls;
+ 		}
+ 		nfs_fattr_init(data->res.dir_attr);
+ 		nfs_fattr_init(data->res.fattr);
+@@ -708,7 +708,7 @@ nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+ 		break;
+ 	default:
+ 		status = -EINVAL;
+-		goto out;
++		goto out_release_acls;
+ 	}
  
--	for (i = 0; i < pc->chip.npwm; i++) {
--		struct pwm_device *pwm = &pc->chip.pwms[i];
--
--		if (!pwm_is_enabled(pwm))
--			if (clk_prepare_enable(pc->clk) < 0)
--				continue;
--
--		pwm_writel(pc, i, 0);
--
--		clk_disable_unprepare(pc->clk);
--	}
--
- 	reset_control_assert(pc->rst);
- 	clk_disable_unprepare(pc->clk);
- 
+ 	status = nfs3_do_create(dir, dentry, data);
 -- 
 2.30.2
 
