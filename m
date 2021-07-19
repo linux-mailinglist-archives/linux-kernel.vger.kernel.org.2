@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46423CDDA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5F93CDD88
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343593AbhGSO7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:59:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
+        id S243766AbhGSO6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343913AbhGSOju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343927AbhGSOju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:39:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B3A0613AE;
-        Mon, 19 Jul 2021 15:19:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 758876113E;
+        Mon, 19 Jul 2021 15:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707992;
-        bh=JvAO8tsgmqGtVkRSsjkDDkc4T4YTXP4Vct3TxBMM/PU=;
+        s=korg; t=1626707994;
+        bh=5Di+4VlsHRb3EMdV2Pu/RW8e5BgPJR39eMLIpSDH7X8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hxKzT8I9AeliORoIqaYh1FFvQ8fKA5NjL1xeh5T2/lWyM+iGpJ83BHnVlXd0VrBXu
-         BmIcDLrY9tfTgCklo7TsZHDf71x1VR1sknWetBYa7e9uk6UThQoq86i2n7Yvu5ICzU
-         Q/OZc1ztuKe+fjvTTp/+4QNEMqAFlX4dJqAUoRbE=
+        b=LLats0/soAmX2JytX8vfnZB95nFybT00WdDrbsL1ynsPxuVvd22LaW3lGgEtYVT36
+         99cHOHOQ0C90af1CA+ZAsuTgNqRDh1sh2AaUZXZuXCaSkoYq37oXzODLVEM1oZdfI+
+         aoG/3R6DDaVz2Mye78eehkx7Hcjqz2iW3YYhZwVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 136/315] iio: potentiostat: lmp91000: Fix alignment of buffer in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:50:25 +0200
-Message-Id: <20210719144947.353865816@linuxfoundation.org>
+Subject: [PATCH 4.14 137/315] ASoC: hisilicon: fix missing clk_disable_unprepare() on error in hi6210_i2s_startup()
+Date:   Mon, 19 Jul 2021 16:50:26 +0200
+Message-Id: <20210719144947.391544193@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,42 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 8979b67ec61abc232636400ee8c758a16a73c95f ]
+[ Upstream commit 375904e3931955fcf0a847f029b2492a117efc43 ]
 
-Add __aligned(8) to ensure the buffer passed to
-iio_push_to_buffers_with_timestamp() is suitable for the naturally
-aligned timestamp that will be inserted.
+After calling clk_prepare_enable(), clk_disable_unprepare() need
+be called when calling clk_set_rate() failed.
 
-Here structure is not used, because this buffer is also used
-elsewhere in the driver.
-
-Fixes: 67e17300dc1d ("iio: potentiostat: add LMP91000 support")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Matt Ranostay <matt.ranostay@konsulko.com>
-Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
-Link: https://lore.kernel.org/r/20210501171352.512953-8-jic23@kernel.org
+Fixes: 0bf750f4cbe1 ("ASoC: hisilicon: Add hi6210 i2s audio driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210518044514.607010-1-yangyingliang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/potentiostat/lmp91000.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/hisilicon/hi6210-i2s.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/potentiostat/lmp91000.c b/drivers/iio/potentiostat/lmp91000.c
-index afa8de3418d0..cb67edf53ab4 100644
---- a/drivers/iio/potentiostat/lmp91000.c
-+++ b/drivers/iio/potentiostat/lmp91000.c
-@@ -79,8 +79,8 @@ struct lmp91000_data {
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index 0c8f86d4020e..d8d14cdee786 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -111,18 +111,15 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
  
- 	struct completion completion;
- 	u8 chan_select;
--
--	u32 buffer[4]; /* 64-bit data + 64-bit timestamp */
-+	/* 64-bit data + 64-bit naturally aligned timestamp */
-+	u32 buffer[4] __aligned(8);
- };
+ 	for (n = 0; n < i2s->clocks; n++) {
+ 		ret = clk_prepare_enable(i2s->clk[n]);
+-		if (ret) {
+-			while (n--)
+-				clk_disable_unprepare(i2s->clk[n]);
+-			return ret;
+-		}
++		if (ret)
++			goto err_unprepare_clk;
+ 	}
  
- static const struct iio_chan_spec lmp91000_channels[] = {
+ 	ret = clk_set_rate(i2s->clk[CLK_I2S_BASE], 49152000);
+ 	if (ret) {
+ 		dev_err(i2s->dev, "%s: setting 49.152MHz base rate failed %d\n",
+ 			__func__, ret);
+-		return ret;
++		goto err_unprepare_clk;
+ 	}
+ 
+ 	/* enable clock before frequency division */
+@@ -174,6 +171,11 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
+ 	hi6210_write_reg(i2s, HII2S_SW_RST_N, val);
+ 
+ 	return 0;
++
++err_unprepare_clk:
++	while (n--)
++		clk_disable_unprepare(i2s->clk[n]);
++	return ret;
+ }
+ 
+ static void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
 -- 
 2.30.2
 
