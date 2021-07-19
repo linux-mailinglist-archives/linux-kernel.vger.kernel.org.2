@@ -2,52 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9423CD10F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAE63CD132
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235459AbhGSJBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:01:19 -0400
-Received: from verein.lst.de ([213.95.11.211]:48751 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231928AbhGSJBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:01:19 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id EE9EC67373; Mon, 19 Jul 2021 11:41:56 +0200 (CEST)
-Date:   Mon, 19 Jul 2021 11:41:56 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] genirq/affinity: add helper of irq_affinity_calc_sets
-Message-ID: <20210719094156.GB431@lst.de>
-References: <20210715111827.569756-1-ming.lei@redhat.com>
+        id S235317AbhGSJLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231928AbhGSJLC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 05:11:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12EAFC061574;
+        Mon, 19 Jul 2021 01:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iQFwetNCWaohzZV8iv6PgQHcEZRJwlyL4/9LIhUB9pw=; b=matIADMbTAYO362FQ2DGfB63BD
+        T+r8d82ScXlI16RPcEPNLHx5ljrAqlKlLZxVaqmmvCdewB8xM2nZXOryoJJuUOTQDcINEWx/pmExA
+        z/7cSvlQ5frxZbrEOtm3KoE29G5OEXMyEIThZS3mYrbKYKzjcjueeVGTqgskBMatVnLyiJAK6tMRJ
+        hT9Flh19DQ5xYK7cTtc4Lb6qJlTWBkaJuiND6CEkJkUXV934buWe7g4TO87ggElupQsEPdsfhsXR4
+        s6V0C5zB0+pQZDzkw9jdCx4D/b7OfEDVZ0LwbI5wRKwCBMVe2qV9yZzZXnAA/k75Fr7smfLzBfrie
+        SrgaNwtw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5Puf-006ibR-5I; Mon, 19 Jul 2021 09:50:23 +0000
+Date:   Mon, 19 Jul 2021 10:50:13 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
+        hare@suse.de, bvanassche@acm.org, ming.lei@redhat.com,
+        jack@suse.cz, osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] block: skip queue if NULL on blk_cleanup_queue()
+Message-ID: <YPVK1SPI0ZWmkOgd@infradead.org>
+References: <20210715045531.420201-1-mcgrof@kernel.org>
+ <20210715045531.420201-7-mcgrof@kernel.org>
+ <YO/fvbe5LeAP2Mtq@infradead.org>
+ <20210715190726.xlukndxddvph4fx6@garbanzo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210715111827.569756-1-ming.lei@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210715190726.xlukndxddvph4fx6@garbanzo>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 07:18:27PM +0800, Ming Lei wrote:
-> +				WARN_ON_ONCE(irq_affinity_calc_sets(1, affd));
+On Thu, Jul 15, 2021 at 12:07:26PM -0700, Luis Chamberlain wrote:
+> > For all drivers using blk_alloc_disk/blk_mq_alloc_disk there should
+> > always be a queue.  The others ones aren't ready to handle errors
+> > from add_disk yet in any way I think (and I plan to fix this up
+> > ASAP).
+> 
+> Have an example in mind?
 
-Hiding actual functionality inside a WARN_ON is nasty.
+The only ones left are nvme, dasd and scsi.  NVMe is trivial (attached),
+dasd needs a little more work, I need to send up a WIP to the
+maintainers.  scsi is the real problem and will require a fair amount
+of work.
 
-> +int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd)
-> +{
-> +	/*
-> +	 * Simple invocations do not provide a calc_sets() callback. Install
-> +	 * the generic one.
-> +	 */
-> +	if (!affd->calc_sets)
-> +		affd->calc_sets = default_calc_sets;
-> +
-> +	/* Recalculate the sets */
-> +	affd->calc_sets(affd, affvecs);
-
-I'm not sure a function like this should have side effects.  Either
-we move the assign to an init function with a single caller, or do an
-if / else here.
+---
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 11779be42186..35da956acef6 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -3726,9 +3726,14 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 	if (!ns)
+ 		goto out_free_id;
+ 
+-	ns->queue = blk_mq_init_queue(ctrl->tagset);
+-	if (IS_ERR(ns->queue))
++	disk = blk_mq_alloc_disk(ctrl->tagset, ns);
++	if (IS_ERR(disk))
+ 		goto out_free_ns;
++	disk->fops = &nvme_bdev_ops;
++	disk->private_data = ns;
++
++	ns->disk = disk;
++	ns->queue = disk->queue;
+ 
+ 	if (ctrl->opts && ctrl->opts->data_digest)
+ 		blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, ns->queue);
+@@ -3737,20 +3742,12 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 	if (ctrl->ops->flags & NVME_F_PCI_P2PDMA)
+ 		blk_queue_flag_set(QUEUE_FLAG_PCI_P2PDMA, ns->queue);
+ 
+-	ns->queue->queuedata = ns;
+ 	ns->ctrl = ctrl;
+ 	kref_init(&ns->kref);
+ 
+ 	if (nvme_init_ns_head(ns, nsid, ids, id->nmic & NVME_NS_NMIC_SHARED))
+-		goto out_free_queue;
+-
+-	disk = alloc_disk_node(0, node);
+-	if (!disk)
+-		goto out_unlink_ns;
++		goto out_cleanup_disk;
+ 
+-	disk->fops = &nvme_bdev_ops;
+-	disk->private_data = ns;
+-	disk->queue = ns->queue;
+ 	/*
+ 	 * Without the multipath code enabled, multiple controller per
+ 	 * subsystems are visible as devices and thus we cannot use the
+@@ -3759,15 +3756,14 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 	if (!nvme_mpath_set_disk_name(ns, disk->disk_name, &disk->flags))
+ 		sprintf(disk->disk_name, "nvme%dn%d", ctrl->instance,
+ 			ns->head->instance);
+-	ns->disk = disk;
+ 
+ 	if (nvme_update_ns_info(ns, id))
+-		goto out_put_disk;
++		goto out_unlink_ns;
+ 
+ 	if ((ctrl->quirks & NVME_QUIRK_LIGHTNVM) && id->vs[0] == 0x1) {
+ 		if (nvme_nvm_register(ns, disk->disk_name, node)) {
+ 			dev_warn(ctrl->device, "LightNVM init failure\n");
+-			goto out_put_disk;
++			goto out_unlink_ns;
+ 		}
+ 	}
+ 
+@@ -3786,10 +3782,7 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 	kfree(id);
+ 
+ 	return;
+- out_put_disk:
+-	/* prevent double queue cleanup */
+-	ns->disk->queue = NULL;
+-	put_disk(ns->disk);
++
+  out_unlink_ns:
+ 	mutex_lock(&ctrl->subsys->lock);
+ 	list_del_rcu(&ns->siblings);
+@@ -3797,8 +3790,8 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 		list_del_init(&ns->head->entry);
+ 	mutex_unlock(&ctrl->subsys->lock);
+ 	nvme_put_ns_head(ns->head);
+- out_free_queue:
+-	blk_cleanup_queue(ns->queue);
++ out_cleanup_disk:
++	blk_cleanup_disk(disk);
+  out_free_ns:
+ 	kfree(ns);
+  out_free_id:
