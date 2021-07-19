@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735833CCD8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109273CCD8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 07:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234573AbhGSFpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 01:45:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20824 "EHLO
+        id S234582AbhGSFpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 01:45:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52387 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234517AbhGSFpH (ORCPT
+        by vger.kernel.org with ESMTP id S234520AbhGSFpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 01:45:07 -0400
+        Mon, 19 Jul 2021 01:45:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626673327;
+        s=mimecast20190719; t=1626673330;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cr2t3w/DPyUo2+NGeMbRal0WxYPbCbWc2jZutGKY+IQ=;
-        b=Kiot9wlknWG95b+KdMnvdyXcf+iXmdsvbRQ5ONtG+MA3GxhiFuSiPJYMQCxhrZW/5Zu7X0
-        b5/0HJtnHqQn/IqueU+BqhAlwPRJ4k4d78MI20JuwlcmPMQcMDaUwmMq7tw+sDoHu/3L4X
-        lpEJ5msGzSShTj9k7lCPaBJ0kJVnSUI=
+        bh=OHn3ES90PqPzx3pjcflhkt+mowVhSyXgG6u7rS/p/2A=;
+        b=B0VzoTB/fa4JSifrJu7FXTDhVXaeINe1t1XsfAYZskuMrGuQSPmtT2DsyHqCaunTf7Omhz
+        BIOvPGgUd9FgQG4MctPRio8hhstTXF0IJatEZ1JI3QTt1usu5eQi61dZN7ySWTW9Sc0ZPd
+        iaYDljIiIljh/sEuZfGcpsPZYtKzEns=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-2wGW7V0yMNiTyXzXbnnn5w-1; Mon, 19 Jul 2021 01:42:04 -0400
-X-MC-Unique: 2wGW7V0yMNiTyXzXbnnn5w-1
+ us-mta-18-fCierSU7MIupTsv2uv6ncA-1; Mon, 19 Jul 2021 01:42:07 -0400
+X-MC-Unique: fCierSU7MIupTsv2uv6ncA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB6B21084F4B;
-        Mon, 19 Jul 2021 05:42:02 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCEBF19200C4;
+        Mon, 19 Jul 2021 05:42:05 +0000 (UTC)
 Received: from gshan.redhat.com (vpn2-54-195.bne.redhat.com [10.64.54.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B4632369A;
-        Mon, 19 Jul 2021 05:41:59 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 49423369A;
+        Mon, 19 Jul 2021 05:42:02 +0000 (UTC)
 From:   Gavin Shan <gshan@redhat.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
         catalin.marinas@arm.com, will@kernel.org,
         akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
-Subject: [PATCH v2 10/12] mm/debug_vm_pgtable: Use struct pgtable_debug_args in PGD and P4D modifying tests
-Date:   Mon, 19 Jul 2021 13:41:36 +0800
-Message-Id: <20210719054138.198373-11-gshan@redhat.com>
+Subject: [PATCH v2 11/12] mm/debug_vm_pgtable: Remove unused code
+Date:   Mon, 19 Jul 2021 13:41:37 +0800
+Message-Id: <20210719054138.198373-12-gshan@redhat.com>
 In-Reply-To: <20210719054138.198373-1-gshan@redhat.com>
 References: <20210719054138.198373-1-gshan@redhat.com>
 MIME-Version: 1.0
@@ -52,152 +52,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This uses struct pgtable_debug_args in PGD/P4D modifying tests. No
-allocated huge page is used in these tests.
+The variables used by old implementation isn't needed as we switched
+to "struct pgtable_debug_args". Lets remove it.
 
 Signed-off-by: Gavin Shan <gshan@redhat.com>
 ---
- mm/debug_vm_pgtable.c | 76 +++++++++++++++++++------------------------
- 1 file changed, 34 insertions(+), 42 deletions(-)
+ mm/debug_vm_pgtable.c | 84 -------------------------------------------
+ 1 file changed, 84 deletions(-)
 
 diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index ebe79ad3cd29..ca1faff6dbe3 100644
+index ca1faff6dbe3..162a12c10aa8 100644
 --- a/mm/debug_vm_pgtable.c
 +++ b/mm/debug_vm_pgtable.c
-@@ -519,27 +519,26 @@ static void __init pud_populate_tests(struct pgtable_debug_args *args) { }
- #endif /* PAGETABLE_PUD_FOLDED */
- 
- #ifndef __PAGETABLE_P4D_FOLDED
--static void __init p4d_clear_tests(struct mm_struct *mm, p4d_t *p4dp)
-+static void __init p4d_clear_tests(struct pgtable_debug_args *args)
+@@ -1122,17 +1122,6 @@ static int __init init_args(struct pgtable_debug_args *args)
+ static int __init debug_vm_pgtable(void)
  {
--	p4d_t p4d = READ_ONCE(*p4dp);
-+	p4d_t p4d = READ_ONCE(*(args->p4dp));
+ 	struct pgtable_debug_args args;
+-	struct vm_area_struct *vma;
+-	struct mm_struct *mm;
+-	pgd_t *pgdp;
+-	p4d_t *p4dp, *saved_p4dp;
+-	pud_t *pudp, *saved_pudp;
+-	pmd_t *pmdp, *saved_pmdp, pmd;
+-	pgtable_t saved_ptep;
+-	pgprot_t prot, protnone;
+-	phys_addr_t paddr;
+-	unsigned long vaddr, pte_aligned, pmd_aligned;
+-	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
+ 	spinlock_t *ptl = NULL;
+ 	int idx, ret;
  
--	if (mm_pud_folded(mm))
-+	if (mm_pud_folded(args->mm))
- 		return;
+@@ -1141,68 +1130,6 @@ static int __init debug_vm_pgtable(void)
+ 	if (ret)
+ 		return ret;
  
- 	pr_debug("Validating P4D clear\n");
- 	p4d = __p4d(p4d_val(p4d) | RANDOM_ORVALUE);
--	WRITE_ONCE(*p4dp, p4d);
--	p4d_clear(p4dp);
--	p4d = READ_ONCE(*p4dp);
-+	WRITE_ONCE(*(args->p4dp), p4d);
-+	p4d_clear(args->p4dp);
-+	p4d = READ_ONCE(*(args->p4dp));
- 	WARN_ON(!p4d_none(p4d));
+-	prot = vm_get_page_prot(VMFLAGS);
+-	vaddr = get_random_vaddr();
+-	mm = mm_alloc();
+-	if (!mm) {
+-		pr_err("mm_struct allocation failed\n");
+-		return 1;
+-	}
+-
+-	/*
+-	 * __P000 (or even __S000) will help create page table entries with
+-	 * PROT_NONE permission as required for pxx_protnone_tests().
+-	 */
+-	protnone = __P000;
+-
+-	vma = vm_area_alloc(mm);
+-	if (!vma) {
+-		pr_err("vma allocation failed\n");
+-		return 1;
+-	}
+-
+-	/*
+-	 * PFN for mapping at PTE level is determined from a standard kernel
+-	 * text symbol. But pfns for higher page table levels are derived by
+-	 * masking lower bits of this real pfn. These derived pfns might not
+-	 * exist on the platform but that does not really matter as pfn_pxx()
+-	 * helpers will still create appropriate entries for the test. This
+-	 * helps avoid large memory block allocations to be used for mapping
+-	 * at higher page table levels.
+-	 */
+-	paddr = __pa_symbol(&start_kernel);
+-
+-	pte_aligned = (paddr & PAGE_MASK) >> PAGE_SHIFT;
+-	pmd_aligned = (paddr & PMD_MASK) >> PAGE_SHIFT;
+-	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
+-	p4d_aligned = (paddr & P4D_MASK) >> PAGE_SHIFT;
+-	pgd_aligned = (paddr & PGDIR_MASK) >> PAGE_SHIFT;
+-	WARN_ON(!pfn_valid(pte_aligned));
+-
+-	pgdp = pgd_offset(mm, vaddr);
+-	p4dp = p4d_alloc(mm, pgdp, vaddr);
+-	pudp = pud_alloc(mm, p4dp, vaddr);
+-	pmdp = pmd_alloc(mm, pudp, vaddr);
+-	/*
+-	 * Allocate pgtable_t
+-	 */
+-	if (pte_alloc(mm, pmdp)) {
+-		pr_err("pgtable allocation failed\n");
+-		return 1;
+-	}
+-
+-	/*
+-	 * Save all the page table page addresses as the page table
+-	 * entries will be used for testing with random or garbage
+-	 * values. These saved addresses will be used for freeing
+-	 * page table pages.
+-	 */
+-	pmd = READ_ONCE(*pmdp);
+-	saved_p4dp = p4d_offset(pgdp, 0UL);
+-	saved_pudp = pud_offset(p4dp, 0UL);
+-	saved_pmdp = pmd_offset(pudp, 0UL);
+-	saved_ptep = pmd_pgtable(pmd);
+-
+ 	/*
+ 	 * Iterate over the protection_map[] to make sure that all
+ 	 * the basic page table transformation validations just hold
+@@ -1284,17 +1211,6 @@ static int __init debug_vm_pgtable(void)
+ 	pgd_populate_tests(&args);
+ 	spin_unlock(&(args.mm->page_table_lock));
+ 
+-	p4d_free(mm, saved_p4dp);
+-	pud_free(mm, saved_pudp);
+-	pmd_free(mm, saved_pmdp);
+-	pte_free(mm, saved_ptep);
+-
+-	vm_area_free(vma);
+-	mm_dec_nr_puds(mm);
+-	mm_dec_nr_pmds(mm);
+-	mm_dec_nr_ptes(mm);
+-	mmdrop(mm);
+-
+ 	destroy_args(&args);
+ 	return 0;
  }
- 
--static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
--				      pud_t *pudp)
-+static void __init p4d_populate_tests(struct pgtable_debug_args *args)
- {
- 	p4d_t p4d;
- 
--	if (mm_pud_folded(mm))
-+	if (mm_pud_folded(args->mm))
- 		return;
- 
- 	pr_debug("Validating P4D populate\n");
-@@ -547,34 +546,33 @@ static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
- 	 * This entry points to next level page table page.
- 	 * Hence this must not qualify as p4d_bad().
- 	 */
--	pud_clear(pudp);
--	p4d_clear(p4dp);
--	p4d_populate(mm, p4dp, pudp);
--	p4d = READ_ONCE(*p4dp);
-+	pud_clear(args->pudp);
-+	p4d_clear(args->p4dp);
-+	p4d_populate(args->mm, args->p4dp, args->start_pudp);
-+	p4d = READ_ONCE(*(args->p4dp));
- 	WARN_ON(p4d_bad(p4d));
- }
- 
--static void __init pgd_clear_tests(struct mm_struct *mm, pgd_t *pgdp)
-+static void __init pgd_clear_tests(struct pgtable_debug_args *args)
- {
--	pgd_t pgd = READ_ONCE(*pgdp);
-+	pgd_t pgd = READ_ONCE(*(args->pgdp));
- 
--	if (mm_p4d_folded(mm))
-+	if (mm_p4d_folded(args->mm))
- 		return;
- 
- 	pr_debug("Validating PGD clear\n");
- 	pgd = __pgd(pgd_val(pgd) | RANDOM_ORVALUE);
--	WRITE_ONCE(*pgdp, pgd);
--	pgd_clear(pgdp);
--	pgd = READ_ONCE(*pgdp);
-+	WRITE_ONCE(*(args->pgdp), pgd);
-+	pgd_clear(args->pgdp);
-+	pgd = READ_ONCE(*(args->pgdp));
- 	WARN_ON(!pgd_none(pgd));
- }
- 
--static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
--				      p4d_t *p4dp)
-+static void __init pgd_populate_tests(struct pgtable_debug_args *args)
- {
- 	pgd_t pgd;
- 
--	if (mm_p4d_folded(mm))
-+	if (mm_p4d_folded(args->mm))
- 		return;
- 
- 	pr_debug("Validating PGD populate\n");
-@@ -582,23 +580,17 @@ static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
- 	 * This entry points to next level page table page.
- 	 * Hence this must not qualify as pgd_bad().
- 	 */
--	p4d_clear(p4dp);
--	pgd_clear(pgdp);
--	pgd_populate(mm, pgdp, p4dp);
--	pgd = READ_ONCE(*pgdp);
-+	p4d_clear(args->p4dp);
-+	pgd_clear(args->pgdp);
-+	pgd_populate(args->mm, args->pgdp, args->start_p4dp);
-+	pgd = READ_ONCE(*(args->pgdp));
- 	WARN_ON(pgd_bad(pgd));
- }
- #else  /* !__PAGETABLE_P4D_FOLDED */
--static void __init p4d_clear_tests(struct mm_struct *mm, p4d_t *p4dp) { }
--static void __init pgd_clear_tests(struct mm_struct *mm, pgd_t *pgdp) { }
--static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
--				      pud_t *pudp)
--{
--}
--static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
--				      p4d_t *p4dp)
--{
--}
-+static void __init p4d_clear_tests(struct pgtable_debug_args *args) { }
-+static void __init pgd_clear_tests(struct pgtable_debug_args *args) { }
-+static void __init p4d_populate_tests(struct pgtable_debug_args *args) { }
-+static void __init pgd_populate_tests(struct pgtable_debug_args *args) { }
- #endif /* PAGETABLE_P4D_FOLDED */
- 
- static void __init pte_clear_tests(struct pgtable_debug_args *args)
-@@ -1285,12 +1277,12 @@ static int __init debug_vm_pgtable(void)
- 	pud_populate_tests(&args);
- 	spin_unlock(ptl);
- 
--	spin_lock(&mm->page_table_lock);
--	p4d_clear_tests(mm, p4dp);
--	pgd_clear_tests(mm, pgdp);
--	p4d_populate_tests(mm, p4dp, saved_pudp);
--	pgd_populate_tests(mm, pgdp, saved_p4dp);
--	spin_unlock(&mm->page_table_lock);
-+	spin_lock(&(args.mm->page_table_lock));
-+	p4d_clear_tests(&args);
-+	pgd_clear_tests(&args);
-+	p4d_populate_tests(&args);
-+	pgd_populate_tests(&args);
-+	spin_unlock(&(args.mm->page_table_lock));
- 
- 	p4d_free(mm, saved_p4dp);
- 	pud_free(mm, saved_pudp);
 -- 
 2.23.0
 
