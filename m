@@ -2,254 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB993CD54E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 14:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348793CD553
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237103AbhGSMTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 08:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236929AbhGSMTD (ORCPT
+        id S237076AbhGSMUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 08:20:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59778 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236780AbhGSMUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 08:19:03 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412B1C061574;
-        Mon, 19 Jul 2021 05:18:36 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso11361748pjx.1;
-        Mon, 19 Jul 2021 05:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=w+hwueRqTUCjaFujfVdoRLdn7shROrp5/7MNNeywa2w=;
-        b=iKAXaqJVoph4Wnx3nnZvXOYM8K9BpD+t4+MCSaNNMXRBfUFfP9JdpU9xW/PBGsQRy+
-         i477Cky90DiGCmCpeSP/JoCELpAgTZPGeDBTbip4UrPHCzeki10Rt8l+kC5smZBdp0V6
-         ZlVaINVfoer26+JpB375fwtDUu/1g1Tbe9VXgxv+5R6wbJJYuip1c715msy6/P7g1jEi
-         +eOvDZ0ynq+APTjZEDG0Wv/3Z3XW9FpXlj9S4YI83p8a3QyHq+qvC0MzFJ05Ep6pCbd4
-         maPGfgQ6JkCt9yh/FleZkmvq+qCsbFFxnMBWjm6YDxrnaqC9snVmV9ywhWRCIKr9upzC
-         +f4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=w+hwueRqTUCjaFujfVdoRLdn7shROrp5/7MNNeywa2w=;
-        b=gPfeq6Gnp/+McHrcHlvo/bvvWn2gnpf8MXYQFUKkW450P6p9zUw9x2BiDoVTc/E8F2
-         YH7oCD2nyTOYaFBvBG7fbgXwy16PHkCel+GsQQPkBde1BHOsLdWAZIad+q/RX5vmx9BO
-         iO/gQymivhylyyykNBwj4zhCIQDcffn2wrVwL7CZMdU7TK3A3Rg0euDh45K+yArhmcq8
-         ZP9VQ/BvxJlRWL/LYz53DYc4YTvbIzApqYDgoh9KFc/HZ9sMKMyfflpL+S0suzIP0Wf4
-         /DiiMG08v9w2L7B4FgJy70aRDg4hBZOAP3moZPVIEQzHc+EAuwXl9QrO13oPPE/M9I8m
-         4GPg==
-X-Gm-Message-State: AOAM530YuKvY7mwmZM6st9NGMLtkI247X75iwnEzP0j72sw65X0+1wyD
-        6zFeDZTSSObF1UPrPh96d6SVnLmys91kP1x8r9I=
-X-Google-Smtp-Source: ABdhPJyQMLeSewBNVKT1ExCATgS3p/vjjUQ0LVyLQcSQEAjorg53/92Fe//epKG/hMKAdpArQyY+7aqZHyxKUXQQKPU=
-X-Received: by 2002:a17:90a:880c:: with SMTP id s12mr24703016pjn.72.1626699581617;
- Mon, 19 Jul 2021 05:59:41 -0700 (PDT)
+        Mon, 19 Jul 2021 08:20:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626699655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ept8ytfNgi6/RWaxwL9ykdkTv8f6hQ4XyQuZbRrCM3g=;
+        b=jB3fF9X/2vca5/xDw1iAR+efp9xxD17Vw+h83vj1Su0hmVBr4Hmz6xKp1uBBoZZOnNow3l
+        ntLirWn5fz3/DLHWCesIVbqInI4+bzcmWotsa1wdsuefkmsWx/GbzK2Ud8ljkTmegptT2Q
+        vLkpRx4QRelCCw79qkMgjBTgX4JSpd0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-4aFD9ZsAOPGKmiPjRX_EPQ-1; Mon, 19 Jul 2021 09:00:50 -0400
+X-MC-Unique: 4aFD9ZsAOPGKmiPjRX_EPQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B981719057A0;
+        Mon, 19 Jul 2021 13:00:48 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5C92860CA0;
+        Mon, 19 Jul 2021 13:00:45 +0000 (UTC)
+Subject: Re: [PATCH v2 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+From:   Gavin Shan <gshan@redhat.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
+References: <20210719054138.198373-1-gshan@redhat.com>
+ <20210719054138.198373-2-gshan@redhat.com>
+Message-ID: <8d754894-5c21-1287-82b6-7ac3b064af3d@redhat.com>
+Date:   Mon, 19 Jul 2021 23:01:03 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20210715141742.15072-5-andrea.merello@gmail.com> <20210717165018.50a26629@jic23-huawei>
- <CAN8YU5M4+ZFNzLkGhP1w7Q80yKVBxAXqK=k6qYzpTYXj=+707w@mail.gmail.com> <YPVoTp3SPzL6LQ6X@smile.fi.intel.com>
-In-Reply-To: <YPVoTp3SPzL6LQ6X@smile.fi.intel.com>
-Reply-To: andrea.merello@gmail.com
-From:   Andrea Merello <andrea.merello@gmail.com>
-Date:   Mon, 19 Jul 2021 14:59:30 +0200
-Message-ID: <CAN8YU5N9mktrxT6Tv67m=nh_Cnw0SYBq+bf5kUzpoWUAToJm+Q@mail.gmail.com>
-Subject: Re: [PATCH 4/4] iio: imu: add BNO055 serdev driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210719054138.198373-2-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno lun 19 lug 2021 alle ore 13:56 Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> ha scritto:
->
-> On Mon, Jul 19, 2021 at 10:49:54AM +0200, Andrea Merello wrote:
-> > Il giorno sab 17 lug 2021 alle ore 17:48 Jonathan Cameron
-> > <jic23@kernel.org> ha scritto:
-> > > On Thu, 15 Jul 2021 16:17:42 +0200
-> > > Andrea Merello <andrea.merello@gmail.com> wrote:
->
-> ...
->
-> > > > +/*
-> > > > + * Register writes cmd have the following format
-> > > > + * +------+------+-----+-----+----- ... ----+
-> > > > + * | 0xAA | 0xOO | REG | LEN | payload[LEN] |
-> > > > + * +------+------+-----+-----+----- ... ----+
-> > > > + *
-> > > > + * Register write responses have the following format
-> > > > + * +------+----------+
-> > > > + * | 0xEE | ERROCODE |
-> > > > + * +------+----------+
-> > > > + *
-> > > > + * Register read have the following format
-> > > > + * +------+------+-----+-----+
-> > > > + * | 0xAA | 0xO1 | REG | LEN |
-> > > > + * +------+------+-----+-----+
-> > > > + *
-> > > > + * Successful register read response have the following format
-> > > > + * +------+-----+----- ... ----+
-> > > > + * | 0xBB | LEN | payload[LEN] |
-> > > > + * +------+-----+----- ... ----+
-> > > > + *
-> > > > + * Failed register read response have the following format
-> > > > + * +------+--------+
-> > > > + * | 0xEE | ERRCODE|  (ERRCODE always > 1)
-> > > > + * +------+--------+
-> > > > + *
-> > > > + * Error codes are
-> > > > + * 01: OK
-> > > > + * 02: read/write FAIL
-> > > > + * 04: invalid address
-> > > > + * 05: write on RO
-> > > > + * 06: wrong start byte
-> > > > + * 07: bus overrun
-> > > > + * 08: len too high
-> > > > + * 09: len too low
-> > > > + * 10: bus RX byte timeout (timeout is 30mS)
-> > > > + *
-> > > > + *
-> > > > + * **WORKAROUND ALERT**
-> > > > + *
-> > > > + * Serial communication seems very fragile: the BNO055 buffer seems to overflow
-> > > > + * very easy; BNO055 seems able to sink few bytes, then it needs a brief pause.
-> > > > + * On the other hand, it is also picky on timeout: if there is a pause > 30mS in
-> > > > + * between two bytes then the transaction fails (IMU internal RX FSM resets).
-> > > > + *
-> > > > + * BMU055 has been seen also failing to process commands in case we send them
-> > > > + * too close each other (or if it is somehow busy?)
-> > > > + *
-> > > > + * One idea would be to split data in chunks, and then wait 1-2mS between
-> > > > + * chunks (we hope not to exceed 30mS delay for any reason - which should
-> > > > + * be pretty a lot of time for us), and eventually retry in case the BNO055
-> > > > + * gets upset for any reason. This seems to work in avoiding the overflow
-> > > > + * errors, but indeed it seems slower than just perform a retry when an overflow
-> > > > + * error occur.
-> > > > + * In particular I saw these scenarios:
-> > > > + * 1) If we send 2 bytes per time, then the IMU never(?) overflows.
-> > > > + * 2) If we send 4 bytes per time (i.e. the full header), then the IMU could
-> > > > + *    overflow, but it seem to sink all 4 bytes, then it returns error.
-> > > > + * 3) If we send more than 4 bytes, the IMU could overflow, and I saw it sending
-> > > > + *    error after 4 bytes are sent; we have troubles in synchronizing again,
-> > > > + *    because we are still sending data, and the IMU interprets it as the 1st
-> > > > + *    byte of a new command.
-> > > > + *
-> > > > + * So, we workaround all this in the following way:
-> > > > + * In case of read we don't split the header but we rely on retries; This seems
-> > > > + * convenient for data read (where we TX only the hdr).
-> > > > + * For TX we split the transmission in 2-bytes chunks so that, we should not
-> > > > + * only avoid case 2 (which is still manageable), but we also hopefully avoid
-> > > > + * case 3, that would be by far worse.
-> > >
-> > > Nice docs and this sounds terrible!
-> >
-> > Indeed.. If anyone has nicer ideas, or is aware about better
-> > workaround, I would really love to know...
->
-> This needs somebody to go thru data sheet and check for possibilities, what you
-> described above is not gonna fly. Okay, "in a robust way".
->
-> I can't believe there is nothing in the communication protocol that may
-> increase a robustness.
+On 7/19/21 3:41 PM, Gavin Shan wrote:
+> In debug_vm_pgtable(), there are many local variables introduced to
+> track the needed information and they are passed to the functions for
+> various test cases. It'd better to introduce a struct as place holder
+> for these information. With it, what the functions for various test
+> cases need is the struct, to simplify the code. It also makes code
+> easier to be maintained.
+> 
+> Besides, set_xxx_at() could access the data on the corresponding pages
+> in the page table modifying tests. So the accessed pages in the tests
+> should have been allocated from buddy. Otherwise, we're accessing pages
+> that aren't owned by us. This causes issues like page flag corruption.
+> 
+> This introduces "struct pgtable_debug_args". The struct is initialized
+> and destroyed, but the information in the struct isn't used yet. They
+> will be used in subsequent patches.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>   mm/debug_vm_pgtable.c | 196 +++++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 195 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index 1c922691aa61..0cc44e7c166e 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -58,6 +58,36 @@
+>   #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
+>   #define RANDOM_NZVALUE	GENMASK(7, 0)
+>   
+> +struct pgtable_debug_args {
+> +	struct mm_struct	*mm;
+> +	struct vm_area_struct	*vma;
+> +
+> +	pgd_t			*pgdp;
+> +	p4d_t			*p4dp;
+> +	pud_t			*pudp;
+> +	pmd_t			*pmdp;
+> +	pte_t			*ptep;
+> +
+> +	p4d_t			*start_p4dp;
+> +	pud_t			*start_pudp;
+> +	pmd_t			*start_pmdp;
+> +	pgtable_t		start_ptep;
+> +
+> +	unsigned long		vaddr;
+> +	pgprot_t		page_prot;
+> +	pgprot_t		page_prot_none;
+> +
+> +	unsigned long		pud_pfn;
+> +	unsigned long		pmd_pfn;
+> +	unsigned long		pte_pfn;
+> +
+> +	unsigned long		fixed_pgd_pfn;
+> +	unsigned long		fixed_p4d_pfn;
+> +	unsigned long		fixed_pud_pfn;
+> +	unsigned long		fixed_pmd_pfn;
+> +	unsigned long		fixed_pte_pfn;
+> +};
+> +
+>   static void __init pte_basic_tests(unsigned long pfn, int idx)
+>   {
+>   	pgprot_t prot = protection_map[idx];
+> @@ -955,8 +985,166 @@ static unsigned long __init get_random_vaddr(void)
+>   	return random_vaddr;
+>   }
+>   
+> +static void __init destroy_args(struct pgtable_debug_args *args)
+> +{
+> +	struct page *page = NULL;
+> +
+> +	/* Free (huge) page */
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+> +	    has_transparent_hugepage() &&
+> +	    args->pud_pfn != ULONG_MAX) {
+> +		page = pfn_to_page(args->pud_pfn);
+> +		__free_pages(page, HPAGE_PUD_SHIFT - PAGE_SHIFT);
+> +	} else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +		   has_transparent_hugepage() &&
+> +		   args->pmd_pfn != ULONG_MAX) {
+> +		page = pfn_to_page(args->pmd_pfn);
+> +		__free_pages(page, HPAGE_PMD_ORDER);
+> +	} else if (args->pte_pfn != ULONG_MAX) {
+> +		page = pfn_to_page(args->pte_pfn);
+> +		__free_pages(page, 0);
+> +	}
+> +
+> +	/* Free page table */
+> +	if (args->start_ptep) {
+> +		pte_free(args->mm, args->start_ptep);
+> +		mm_dec_nr_ptes(args->mm);
+> +	}
+> +
+> +	if (args->start_pmdp) {
+> +		pmd_free(args->mm, args->start_pmdp);
+> +		mm_dec_nr_pmds(args->mm);
+> +	}
+> +
+> +	if (args->start_pudp) {
+> +		pud_free(args->mm, args->start_pudp);
+> +		mm_dec_nr_puds(args->mm);
+> +	}
+> +
+> +	if (args->start_p4dp)
+> +		p4d_free(args->mm, args->p4dp);
+> +
+> +	/* Free vma and mm struct */
+> +	if (args->vma)
+> +		vm_area_free(args->vma);
+> +	if (args->mm)
+> +		mmdrop(args->mm);
+> +}
+> +
+> +static int __init init_args(struct pgtable_debug_args *args)
+> +{
+> +	struct page *page = NULL;
+> +	phys_addr_t phys;
+> +	int ret = 0;
+> +
+> +	/* Initialize the debugging data */
+> +	memset(args, 0, sizeof(*args));
+> +	args->page_prot      = vm_get_page_prot(VMFLAGS);
+> +	args->page_prot_none = __P000;
+> +	args->pud_pfn        = ULONG_MAX;
+> +	args->pmd_pfn        = ULONG_MAX;
+> +	args->pte_pfn        = ULONG_MAX;
+> +	args->fixed_pgd_pfn  = ULONG_MAX;
+> +	args->fixed_p4d_pfn  = ULONG_MAX;
+> +	args->fixed_pud_pfn  = ULONG_MAX;
+> +	args->fixed_pmd_pfn  = ULONG_MAX;
+> +	args->fixed_pte_pfn  = ULONG_MAX;
+> +
+> +	/* Allocate mm and vma */
+> +	args->mm = mm_alloc();
+> +	if (!args->mm) {
+> +		pr_err("Failed to allocate mm struct\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	args->vma = vm_area_alloc(args->mm);
+> +	if (!args->vma) {
+> +		pr_err("Failed to allocate vma\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	/* Figure out the virtual address and allocate page table entries */
+> +	args->vaddr = get_random_vaddr();
+> +	args->pgdp = pgd_offset(args->mm, args->vaddr);
+> +	args->p4dp = p4d_alloc(args->mm, args->pgdp, args->vaddr);
+> +	args->pudp = args->p4dp ?
+> +		     pud_alloc(args->mm, args->p4dp, args->vaddr) : NULL;
+> +	args->pmdp = args->pudp ?
+> +		     pmd_alloc(args->mm, args->pudp, args->vaddr) : NULL;
+> +	args->ptep = args->pmdp ?
+> +		     pte_alloc_map(args->mm, args->pmdp, args->vaddr) : NULL;
+> +	if (!args->ptep) {
+> +		pr_err("Failed to allocate page table\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	/*
+> +	 * The above page table entries will be modified. Lets save the
+> +	 * page table entries so that they can be released when the tests
+> +	 * are completed.
+> +	 */
+> +	args->start_p4dp = p4d_offset(args->pgdp, 0UL);
+> +	args->start_pudp = pud_offset(args->p4dp, 0UL);
+> +	args->start_pmdp = pmd_offset(args->pudp, 0UL);
+> +	args->start_ptep = pmd_pgtable(READ_ONCE(*(args->pmdp)));
+> +
+> +	/*
+> +	 * Figure out the fixed addresses, which are all around the kernel
+> +	 * symbol (@start_kernel). The corresponding PFNs might be invalid,
+> +	 * but it's fine as the following tests won't access the pages.
+> +	 */
+> +	phys = __pa_symbol(&start_kernel);
+> +	args->fixed_pgd_pfn = __phys_to_pfn(phys & PGDIR_MASK);
+> +	args->fixed_p4d_pfn = __phys_to_pfn(phys & P4D_MASK);
+> +	args->fixed_pud_pfn = __phys_to_pfn(phys & PUD_MASK);
+> +	args->fixed_pmd_pfn = __phys_to_pfn(phys & PMD_MASK);
+> +	args->fixed_pte_pfn = __phys_to_pfn(phys & PAGE_MASK);
+> +
+> +	/*
+> +	 * Allocate (huge) pages because some of the tests need to access
+> +	 * the data in the pages. The corresponding tests will be skipped
+> +	 * if we fail to allocate (huge) pages.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+> +	    has_transparent_hugepage()) {
+> +		page = alloc_pages(GFP_KERNEL, HPAGE_PUD_SHIFT - PAGE_SHIFT);
+> +		if (page) {
+> +			args->pud_pfn = page_to_pfn(page);
+> +			args->pmd_pfn = args->pud_pfn;
+> +			args->pte_pfn = args->pud_pfn;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    has_transparent_hugepage()) {
+> +		page = alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
+> +		if (page) {
+> +			args->pmd_pfn = page_to_pfn(page);
+> +			args->pte_pfn = args->pmd_pfn;
+> +			return 0;
+> +		}
+> +	}
+> +
 
-The serial protocol is both described in the datasheet and in an
-application note "BNO055UART interface". Both of them mention the fact
-that  the IMU could just fail in processing the commands and responds
-with a status message with the "overflow" error code. The application
-note says this can happen because of an internal IMU buffer clearing
-stuff not happening in time, and that you have to retry the command in
-such case (which works for read commands, because after the header the
-IMU will always respond with something).
+As syzbot reported against v1 series, we could allocate pages larger than (1 << (MAX_ORDER - 1)) here.
+So __GFP_NOWARN is needed here. I will fix it in v3 series.
 
-They say nothing about the fact that the IMU could decide to respond
-with an "overflow" status message when a write command is still being
-TXed, even if it is not finished yet, but this actually happens (seen
-at least after the 4-bytes header).
+> +	page = alloc_pages(GFP_KERNEL, 0);
+> +	if (page)
+> +		args->pte_pfn = page_to_pfn(page);
+> +
+> +	return 0;
+> +
+> +error:
+> +	destroy_args(args);
+> +	return ret;
+> +}
+> +
+>   static int __init debug_vm_pgtable(void)
+>   {
+> +	struct pgtable_debug_args args;
+>   	struct vm_area_struct *vma;
+>   	struct mm_struct *mm;
+>   	pgd_t *pgdp;
+> @@ -970,9 +1158,13 @@ static int __init debug_vm_pgtable(void)
+>   	unsigned long vaddr, pte_aligned, pmd_aligned;
+>   	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
+>   	spinlock_t *ptl = NULL;
+> -	int idx;
+> +	int idx, ret;
+>   
+>   	pr_info("Validating architecture page table helpers\n");
+> +	ret = init_args(&args);
+> +	if (ret)
+> +		return ret;
+> +
+>   	prot = vm_get_page_prot(VMFLAGS);
+>   	vaddr = get_random_vaddr();
+>   	mm = mm_alloc();
+> @@ -1127,6 +1319,8 @@ static int __init debug_vm_pgtable(void)
+>   	mm_dec_nr_pmds(mm);
+>   	mm_dec_nr_ptes(mm);
+>   	mmdrop(mm);
+> +
+> +	destroy_args(&args);
+>   	return 0;
+>   }
+>   late_initcall(debug_vm_pgtable);
+> 
 
-I think there is not much other information about this in datasheet
-and application note. Besides, the message formats are also described
-the comments in bno055_sl.c
+Thanks,
+Gavin
 
-Given that the IMU behaves like this, I could only see three possible
-workarounds for managing write commands:
-1 - be quick enough on RX side in catching the IMU overflow status
-response before sending the next char, which seems unfeasible.
-2 - be slow enough to let the IMU do its own stuff, which seems doable.
-3 - let the mess happen and try to recover: when we get the IMU
-overflow error then we might still being TXing; in this case we stop
-and we wait for the IMU to complain for a malformed command, but I'm
-unsure how the IMU could handle this: it will refuse the wrong
-starting byte (unless our payload is 0xAA by chance), but then how
-many bytes does it throw away? How may (malformed) commands would it
-try to extract from a the garbage we TXed (how may complaints response
-would we receive and need to wait) ? And what if there is something in
-payload that resembles a valid command and got accepted? This seems
-worse than workaround #2
-
-What I meant: given this IMU behaviour, if someone has a better idea
-about how to deal with it, I would listen :)
-
-> > > > + */
->
-> ...
->
-> > > > +/* Read operation overhead:
-> > > > + * 4 bytes req + 2byte resp hdr
-> > > > + * 6 bytes = 60 bit (considering 1start + 1stop bits).
-> > > > + * 60/115200 = ~520uS
-> > > > + * In 520uS we could read back about 34 bytes that means 3 samples, this means
-> > > > + * that in case of scattered read in which the gap is 3 samples or less it is
-> > > > + * still convenient to go for a burst.
-> > > > + * We have to take into account also IMU response time - IMU seems to be often
-> > > > + * reasonably quick to respond, but sometimes it seems to be in some "critical
-> > > > + * section" in which it delays handling of serial protocol.
-> > > > + * By experiment, it seems convenient to burst up to about 5/6-samples-long gap
->
-> Missed perial and entire comment needs proper style and space occupation ratio.
-
-Perial? But OK: text reflow and I see the 1st line for multilne
-commend is not correct.
-
-> > > > + */
->
-> ...
->
-> > > > +     enum {
-> > > > +             STATUS_OK = 0,  /* command OK */
-> > > > +             STATUS_FAIL = 1,/* IMU communicated an error */
-> > > > +             STATUS_CRIT = -1/* serial communication with IMU failed */
->
-> enum may be kernel doc described.
-
-OK
-
-> > > > +     } cmd_status;
->
-> ...
->
-> > > > +static struct serdev_device_driver bno055_sl_driver = {
-> > > > +     .driver = {
->
-> > > > +             .name = BNO055_SL_DRIVER_NAME,
->
-> This is (semi-)ABI and preferably should be hard coded explicitly.
-
-OK
-
-> > > > +             .of_match_table = bno055_sl_of_match,
-> > > > +     },
-> > > > +     .probe = bno055_sl_probe,
-> > > > +};
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
