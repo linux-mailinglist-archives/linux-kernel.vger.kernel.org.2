@@ -2,180 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9053CD1A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C603CD178
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236219AbhGSJaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:30:35 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34888 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236180AbhGSJae (ORCPT
+        id S231928AbhGSJUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235172AbhGSJUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:30:34 -0400
-Received: from [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc] (unknown [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 609391F4248F;
-        Mon, 19 Jul 2021 11:11:12 +0100 (BST)
-Subject: Re: [PATCH v2, 10/14] media: mtk-vcodec: Add core thread
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-References: <20210717081233.7809-1-yunfei.dong@mediatek.com>
- <20210717081233.7809-11-yunfei.dong@mediatek.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <6bcb5964-0afa-f3c3-a80e-c34ef26eea4b@collabora.com>
-Date:   Mon, 19 Jul 2021 12:11:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 05:20:50 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B026C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:05:33 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id jx7-20020a17090b46c7b02901757deaf2c8so11799495pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dj2Pkj4697WEBKUdTIRcLnCnShjS53dNXfzQ6fBbXxk=;
+        b=bs1xjmd4PHfTEyV3tlkBGLYlk6CUL15nfckKPruC9/iyNosMEuf3lCLLZw7UL/Temd
+         P0QJzpXI17S0giZ8in4sM9pgBI12j5Y0aFV4AY7Kcz2T9Jj0atqgkyAZ9cntrMsXL9ph
+         VLcwYQINfCjWUvLOonL1E5MsjA750sMABlRcGaHlCNqJjcPy2OkRo/MHPz2ORykqHcV5
+         GbLjuDGi8qUXZIcuyXa0OqoROj0apbwTaEfYfnCL+SNOISHR6be9StFfsZo1g4fDlCIL
+         Eu/3/yitq2OvHSxWi2oJN7albQbWKkUWGvr2rT7nF32hRo2Rh2vULpLk+Y7571A+tLu2
+         XnhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dj2Pkj4697WEBKUdTIRcLnCnShjS53dNXfzQ6fBbXxk=;
+        b=Ino5GRNejHv/zhNUsybdt6Epka90JqB0yTudLJytGN0CoWI3QttrwD7JU5qdtmfHKz
+         3h8l7HS/eAdVqUrpkddRilqLYylkGl9FUQNWZ28KCGjwx3+z5TsR9o7rq5AHhPXVrSP9
+         fA92LgNGZ1P0b6iu7WIlaOyZ85TTJkDn2wTiD1IfGshh0SG7fHBf4UZWgP4ITOAdtWpk
+         r81KWpoXldy6qIoo1aOp39gURsnOzVyIC+MSQTO0YxvL/hx+pYPaZhWwxIpkGw/Mc/wB
+         iWBcF2ApwT8F/t+Zs6Vc2T6aEl38y0fawaYrFTMMh7sKjJW/FTFATfd3oCqBrxecobEi
+         c43g==
+X-Gm-Message-State: AOAM530NTH8TUiZwJ/RnitzPhiR3vhtZqbFNfMv4/TK3atPzHQRahkAB
+        ANW63r5SZL9kj0RL/ZO1i8lf5CqzJ5Fz13k8Zz7IIQ==
+X-Google-Smtp-Source: ABdhPJzaMXi3IhhHEWBwxgh2vvHsDCsAz6748LplsxwtZeNJ/QXxYLWdd/F+4L3nGf/wyoJ4iQhUD0BZowJRAYcaWVw=
+X-Received: by 2002:a17:90a:5892:: with SMTP id j18mr24424949pji.18.1626688889508;
+ Mon, 19 Jul 2021 03:01:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210717081233.7809-11-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210714211805.22350-1-richard.laing@alliedtelesis.co.nz>
+In-Reply-To: <20210714211805.22350-1-richard.laing@alliedtelesis.co.nz>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Mon, 19 Jul 2021 12:11:26 +0200
+Message-ID: <CAMZdPi-1E5pieVwt_XFF-+PML-cX05nM=PdD0pApD_ym5k_uMQ@mail.gmail.com>
+Subject: Re: [PATCH] bus: mhi: pci-generic: configurable network interface MRU
+To:     richard.laing@alliedtelesis.co.nz
+Cc:     David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Richard,
+
+On Wed, 14 Jul 2021 at 23:18, <richard.laing@alliedtelesis.co.nz> wrote:
+>
+> From: Richard Laing <richard.laing@alliedtelesis.co.nz>
+>
+> The MRU value used by the MHI MBIM network interface affects
+> the throughput performance of the interface. Different modem
+> models use different default MRU sizes based on their bandwidth
+> capabilities. Large values generally result in higher throughput
+> for larger packet sizes.
 
 
-On 17.07.21 10:12, Yunfei Dong wrote:
-> Core thread:
-> 1. Gets lat_buf from core msg queue.
-> 2. Proceeds core decode.
-> 3. Puts the lat_buf back to lat msg queue.
-> 
-> Both H264 and VP9 rely on the core thread.
-> 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
-> v2: no changes
-> ---
->   .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  6 ++++
->   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  3 ++
->   .../platform/mtk-vcodec/vdec_msg_queue.c      | 32 +++++++++++++++++++
->   .../platform/mtk-vcodec/vdec_msg_queue.h      |  6 ++++
->   4 files changed, 47 insertions(+)
-> 
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> index 078daeeff576..e05224aca888 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> @@ -437,6 +437,12 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->   		goto err_res;
->   	}
->   
-> +	if (VDEC_LAT_ARCH(dev->vdec_pdata->hw_arch)) {
-> +		vdec_msg_queue_init_ctx(&dev->core_ctx, MTK_VDEC_CORE);
-> +		dev->kthread_core = kthread_run(vdec_msg_queue_core_thead, dev,
-> +			"mtk-%s", "core");
+For my interest do you have some numbers here highlighting improvement?
 
-why would we want to run this thread when probing?
-also, don't we need to check errors?
+> In addition if the MRU used by the MHI device is larger than that
+> specified in the MHI net device the data is fragmented and needs
+> to be re-assembled which generates a (single) warning message about
+> the fragmented packets. Setting the MRU on both ends avoids the
+> extra processing to re-assemble the packets.
 
-> +	}
-> +
->   	for (i = 0; i < MTK_VDEC_HW_MAX; i++)
->   		mutex_init(&dev->dec_mutex[i]);
->   	mutex_init(&dev->dev_mutex);
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> index 9207ce079960..3beba0e2ea91 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> @@ -32,6 +32,7 @@
->   #define MTK_VCODEC_MAX_PLANES	3
->   #define MTK_V4L2_BENCHMARK	0
->   #define WAIT_INTR_TIMEOUT_MS	1000
-> +#define VDEC_LAT_ARCH(hw_arch) ((hw_arch) >= MTK_VDEC_LAT_SINGLE_CORE)
->   
->   /*
->    * enum mtk_hw_reg_idx - MTK hw register base index
-> @@ -480,6 +481,7 @@ struct mtk_vcodec_enc_pdata {
->    * @component_node: component node
->    * @comp_idx: component index
->    *
-> + * @kthread_core: thread used for core hardware decode
->    * @core_ctx: core queue context
->    */
->   struct mtk_vcodec_dev {
-> @@ -524,6 +526,7 @@ struct mtk_vcodec_dev {
->   	struct device_node *component_node[MTK_VDEC_HW_MAX];
->   	int comp_idx;
->   
-> +	struct task_struct *kthread_core;
->   	struct vdec_msg_queue_ctx core_ctx;
->   };
->   
-> diff --git a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
-> index 016a70416e55..60bc3796bb58 100644
-> --- a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
-> +++ b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
-> @@ -252,3 +252,35 @@ void vdec_msg_queue_deinit(
->   			kfree(lat_buf->private_data);
->   	}
->   }
-> +
-> +int vdec_msg_queue_core_thead(void *data)
-> +{
-> +	struct mtk_vcodec_dev *dev = data;
-> +	struct vdec_lat_buf *lat_buf;
-> +	struct mtk_vcodec_ctx *ctx;
-> +
-> +	set_freezable();
-> +	for (;;) {
-> +		try_to_freeze();
-> +		if (kthread_should_stop())
-> +			break;
-> +
-> +		lat_buf = vdec_msg_queue_dqbuf(&dev->core_ctx);
-> +		if (!lat_buf)
-> +			continue;
-> +
-> +		ctx = lat_buf->ctx;
-> +		mtk_vcodec_set_curr_ctx(dev, ctx, MTK_VDEC_CORE);
-> +
-> +		if (!lat_buf->core_decode)
-> +			mtk_v4l2_err("Core decode callback func is NULL");
-> +		else
-> +			lat_buf->core_decode(lat_buf);
-> +
-> +		mtk_vcodec_set_curr_ctx(dev, NULL, MTK_VDEC_CORE);
-> +		vdec_msg_queue_qbuf(&ctx->msg_queue.lat_ctx, lat_buf);
-> +	}
-> +
-> +	mtk_v4l2_debug(3, "Video Capture Thread End");
-> +	return 0;
-> +}
-> diff --git a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
-> index 297aa1598788..27ce528cbe89 100644
-> --- a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
-> +++ b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
-> @@ -134,4 +134,10 @@ void vdec_msg_queue_deinit(
->   	struct vdec_msg_queue *msg_queue,
->   	struct mtk_vcodec_ctx *ctx);
->   
-> +/**
-> + * vdec_msg_queue_core_thead - used for core decoder.
-> + * @data: private data used for each codec
-> + */
-> +int vdec_msg_queue_core_thead(void *data);
-> +
->   #endif
-> 
+
+Re-assembly is quite free since it's about chaining buffers (no copy
+or re-alloc).
+
+>
+>
+> This patch allows the documented MRU for a modem to be automatically
+> set as the MHI net device MRU avoiding fragmentation and improving
+> throughput performance.
+
+
+I would be interested in some numbers (throughput, CPU usage...) since
+I've not been able to test that at very high throughput for MBIM. The
+default MRU has been set so that MHI packets fit into 4K pages, for
+faster allocation. As you said, that causes more MHI transfers but
+there is Interrupt Coalescing at hardware level, which mitigates
+overhead.
+
+Regards,
+Loic
