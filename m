@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE6D3CE995
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEAA3CEAB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344621AbhGSQ56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:57:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
+        id S1377655AbhGSRQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:16:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237093AbhGSPcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:32:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51C126140C;
-        Mon, 19 Jul 2021 16:10:09 +0000 (UTC)
+        id S1347837AbhGSPjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95C6861107;
+        Mon, 19 Jul 2021 16:19:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711009;
-        bh=xWCCHaF5NQH3bwlPXq7cZGPq7DcVswBFm6vzcPVvN44=;
+        s=korg; t=1626711567;
+        bh=PFPsC1bwNfkre24GbZAloHDyURgIzkgS9yrhCz7qWhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YKX0DC6nelSa9v41Z8cI6s3sy5A+RBujFMifpMkjygkmvGsdteD3qrnhtpQONXQPT
-         xxakNkm/59YnKgUZQJeYRp3SDqwZTQKYEWI9lz3yhR6LZIN0hVnvR1LcGKWU45ZF5i
-         ty/I3DJ/jgBq2tEXYVyWjN9GWST9gxmm7wYwtFh4=
+        b=KJLyNsR3+JONBFF4kW108IApp7fhKKIBSgu+2/xNawBEvpbMremJvJl5I95lfZTIM
+         tgSNQ7BxJmHWnp7Xsdkj3fKXS0G2M/OkZUMLniF5aeCx1RLXkt9DpYx60Kdv3E56CA
+         Y21OUbmIwUcA9PNw+ygTi7EPoBqByMcbe2PytW0Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 166/351] watchdog: sc520_wdt: Fix possible use-after-free in wdt_turnoff()
-Date:   Mon, 19 Jul 2021 16:51:52 +0200
-Message-Id: <20210719144950.456387952@linuxfoundation.org>
+Subject: [PATCH 5.12 051/292] ALSA: usx2y: Dont call free_pages_exact() with NULL address
+Date:   Mon, 19 Jul 2021 16:51:53 +0200
+Message-Id: <20210719144944.195916262@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 90b7c141132244e8e49a34a4c1e445cce33e07f4 ]
+[ Upstream commit cae0cf651adccee2c3f376e78f30fbd788d0829f ]
 
-This module's remove path calls del_timer(). However, that function
-does not wait until the timer handler finishes. This means that the
-timer handler may still be running after the driver's remove function
-has finished, which would result in a use-after-free.
+Unlike some other functions, we can't pass NULL pointer to
+free_pages_exact().  Add a proper NULL check for avoiding possible
+Oops.
 
-Fix by calling del_timer_sync(), which makes sure the timer handler
-has finished, and unable to re-schedule itself.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/1620716691-108460-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Link: https://lore.kernel.org/r/20210517131545.27252-10-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/sc520_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/usx2y/usb_stream.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/watchdog/sc520_wdt.c b/drivers/watchdog/sc520_wdt.c
-index e66e6b905964..ca65468f4b9c 100644
---- a/drivers/watchdog/sc520_wdt.c
-+++ b/drivers/watchdog/sc520_wdt.c
-@@ -186,7 +186,7 @@ static int wdt_startup(void)
- static int wdt_turnoff(void)
- {
- 	/* Stop the timer */
--	del_timer(&timer);
-+	del_timer_sync(&timer);
+diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
+index 091c071b270a..cff684942c4f 100644
+--- a/sound/usb/usx2y/usb_stream.c
++++ b/sound/usb/usx2y/usb_stream.c
+@@ -142,8 +142,11 @@ void usb_stream_free(struct usb_stream_kernel *sk)
+ 	if (!s)
+ 		return;
  
- 	/* Stop the watchdog */
- 	wdt_config(0);
+-	free_pages_exact(sk->write_page, s->write_size);
+-	sk->write_page = NULL;
++	if (sk->write_page) {
++		free_pages_exact(sk->write_page, s->write_size);
++		sk->write_page = NULL;
++	}
++
+ 	free_pages_exact(s, s->read_size);
+ 	sk->s = NULL;
+ }
 -- 
 2.30.2
 
