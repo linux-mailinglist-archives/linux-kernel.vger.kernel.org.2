@@ -2,143 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7086B3CCE4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6933CCE57
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhGSHQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 03:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
+        id S234734AbhGSHUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhGSHQH (ORCPT
+        with ESMTP id S234559AbhGSHT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 03:16:07 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42737C061767;
-        Mon, 19 Jul 2021 00:13:08 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y4so15617356pfi.9;
-        Mon, 19 Jul 2021 00:13:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=YmX2Oxtcqjs3EK/fW8wr2ysw0zb7csbmsP0g4gVF/8U=;
-        b=qStvLfplae7S9qGcKJli3+3Fn78sFjqhvBMEd4pIZ4MVWSb7Ue7jISU3EzdhHrIHOZ
-         lym4TFCGfSqBXpxplm/SRpPpD9ShHwtIV2zdjIxqRD8fhcUrei/3kImfFgPSx1+L34q8
-         WMMhWzTaXHFlzgyPoo4p1O0Ozsd2y7WnAG/Iq8AH4IOJg1k9PjJS8BubR05DBbD4M12F
-         xWAqzDgV9LImSJC4FUQmq3IakF/oHqlkGsDtw28FQZaBUnrSRw/Do/9qRcJii2HGLqi/
-         riFvr0LJTUO0U0QeGBhTYbKu/LLvUbBezWXgHYAZAxfr7gctBMU/IsmLox3yJwlDTSHS
-         XpnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=YmX2Oxtcqjs3EK/fW8wr2ysw0zb7csbmsP0g4gVF/8U=;
-        b=SzlchttP3c7q3hi9mx6lznkkSQGz22tvu8aQoygAey4dBL1e9JzNOw/Od92B5EEORo
-         xkWfa28TqMA63AByCtidF5rPlTyOkQhS4eRhdDAHSM4uskUqLG2fELXZHAXhjJWgTGZm
-         Mg6O/q8o62QGUgoWmNVMhmK4Wg/g6uoh7cIW7A3GD87Xc68mzFeaeCGf8iDOgXc5U09Z
-         kUSNPSMP8nrxEe3QNBZRDBdcLr0JHwsTYoRWdKZr9W028h2tF9YY3/c0Fw8FUMZPOhbY
-         oOlLNdJUeq04M5+g4hbirgjcsKYGV3U3O9aUDHVo7+ndcuA39cGn7ZkJ76teKpKocTl5
-         33BA==
-X-Gm-Message-State: AOAM5311MY8pIzYpZWzALUWAg2o9cin6u4l2ZWseoy+ZCQelS4S7J8zT
-        5SXPA5DYD41jPOSrFHLjwYEqGbv4lvNtGMN6VynLvy4vBW8340S3
-X-Google-Smtp-Source: ABdhPJyghy5zzTp6QtQ92u0cdy9MGro4uAThQk75ovvLwo8qxXR0f3065s6UyG7/QVM+7NzX3GXvoPwV21ipE7vewB0=
-X-Received: by 2002:a63:67c5:: with SMTP id b188mr24111982pgc.333.1626678787737;
- Mon, 19 Jul 2021 00:13:07 -0700 (PDT)
+        Mon, 19 Jul 2021 03:19:59 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB864C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 00:16:59 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:80b1:eb38:fde3:179e])
+        by andre.telenet-ops.be with bizsmtp
+        id WvGt250040UDlMe01vGtJ9; Mon, 19 Jul 2021 09:16:55 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m5NWG-000kQw-VC; Mon, 19 Jul 2021 09:16:52 +0200
+Date:   Mon, 19 Jul 2021 09:16:52 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+X-X-Sender: geert@ramsan.of.borg
+To:     Amy Parker <apark0006@student.cerritos.edu>
+cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] swap led_brightness from enum to typedef
+In-Reply-To: <9b5902665dcc4c0fca7546987303e348d8657f59.1626383424.git.apark0006@student.cerritos.edu>
+Message-ID: <alpine.DEB.2.22.394.2107190912320.178229@ramsan.of.borg>
+References: <cover.1626383424.git.apark0006@student.cerritos.edu> <9b5902665dcc4c0fca7546987303e348d8657f59.1626383424.git.apark0006@student.cerritos.edu>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20210715141742.15072-3-andrea.merello@gmail.com> <CAHp75Vf_Og2wjRy2j0gC37DgR0x9B_F5iSUj8VOtWkhWjgiOag@mail.gmail.com>
- <CAN8YU5NKGLO6a4wqaW07NAU-OdsdBohoXzMCBcskaFsCRtrGhw@mail.gmail.com> <YPF97IvnlUDtIHar@smile.fi.intel.com>
-In-Reply-To: <YPF97IvnlUDtIHar@smile.fi.intel.com>
-Reply-To: andrea.merello@gmail.com
-From:   Andrea Merello <andrea.merello@gmail.com>
-Date:   Mon, 19 Jul 2021 09:12:56 +0200
-Message-ID: <CAN8YU5M6S11Bbe3LW74RCD3zqL6xQ+ZF5JtzMKSMMn7pxLL27g@mail.gmail.com>
-Subject: Re: [PATCH 2/4] iio: imu: add Bosch Sensortec BNO055 core driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just few inline comments; implicitly OK for others.
+ 	Hi Amy,
 
-Il giorno ven 16 lug 2021 alle ore 14:39 Andy Shevchenko
-<andy.shevchenko@gmail.com> ha scritto:
+On Thu, 15 Jul 2021, Amy Parker wrote:
+> This commit changes how led_brightness, declared in header file
+> include/linux/leds.h, works throughout the kernel, and updates other
+> files in accordance.
 >
+> The TODO located at drivers/leds/TODO requests:
 >
-> > > Useless parentheses. If the LEN is a plain number, use decimal, if
-> > > it's limited by register width, use the form of (BIT(x) - 1). In such
-> > > a case it's easy to see how many bits are used for it.
-> >
-> > It's byte number, defined by how many 8-bits registers make up the
-> > UID. I'll go for a decimal and I'll drop the parentheses.
+> * Get rid of led_brightness
 >
-> 15 seems the right one then?
-
-Isn't it 16? From my understanding of the datasheet registers involved
-are from 0x50 to 0x5F.
-
+> It is really an integer, as maximum is configurable. Get rid of it, or
+> make it into typedef or something.
 >
-> > > > +       if (res && res != -ERESTARTSYS) {
-> > >
-> > > Shouldn't RESTARTSYS be handled on a regmap level?
-> >
-> > Can you please elaborate on this?
+> This patch changes the declaration of led_brightness from an enum to a
+> typedef. In order to hold the currently existing enum values, macro
+> definitions are provided. Files which use led_brightness are updated to
+> conform to the new types.
 >
-> I meant if you need to take care about this it seems to me that it has to be
-> thought of on regmap level. I.o.w. what is the rationale behind this additional
-> check?
+> Signed-off-by: Amy Parker <apark0006@student.cerritos.edu>
 
-The regmap_bus write() and read() implementations wait for an
-interruptible completion, which is completed when a response from the
-IMU is received. In practice by hitting Ctrl-C at the "right" moment I
-got my kernel log polluted with dev_err() telling me the regmap
-operation failed, but in this specific case there was nothing wrong:
-it's just being aborted. Still, in all other error case I would like
-to know. This is the rationale behind this check. The ERESTARTSYS
-error have anyway to actually propagate in order to notify the caller
-that the read/write just didn't complete.
+Thanks for your patch!
 
-If you mean move the check+dev_err() in bno055_sl.c regmap_bus read()
-and write() ops, that is fine; my original point for putting it where
-it is now, was because I was wondering whether this has to be common
-to the (not yet here) I2C support code.
+> 207 files changed, 437 insertions(+), 438 deletions(-)
 
-> ...
+This touches a lot of files, so we better get it right.
+
+> --- a/include/linux/leds.h
+> +++ b/include/linux/leds.h
+> @@ -26,12 +26,11 @@ struct device_node;
+>  */
 >
-> > > Sounds like NIH hex2bin().
-> >
-> > Indeed.. I've failed to find out this helper. Looking at the code it
-> > seems it wouldn't work as drop-in replacement here, because of spaces
-> > in the HEX string. But I might just decide to format the HEX string
-> > without spaces in order to being able to use hex2bin().
->
-> I'm not even sure why it's in ASCII instead being directly binary file.
+> /* This is obsolete/useless. We now support variable maximum brightness. */
+> -enum led_brightness {
+> -	LED_OFF		= 0,
+> -	LED_ON		= 1,
+> -	LED_HALF	= 127,
+> -	LED_FULL	= 255,
+> -};
+> +typedef u8 led_brightness;
 
-That was almost a coin-flip for me. Just, being a few bytes, I decided
-to make them printable: If I load this driver for the 1st time, and
-start poking around in it's sysfs, cat-ting random stuff to give a
-look, I would just find a HEX line more friendly that a binary chunk
-on my console.
+In general, typedefs are frowned upon in the kernel, but there can be a
+good reason to use one.
+What if the maximum brightness is larger than 255?
+Using "unsigned int" sounds better to me, but let's wait for Pavel...
 
-.. But If you think it's better, I'll go for binary without any hesitation..
+> +#define LED_OFF 0
+> +#define LED_ON 1
+> +#define LED_HALF 127
+> +#define LED_FULL 255
 
->
-> > > IIO core should do this, besides the fact that it must use sysfs_emit().
-> > > Ditto for the similar.
-> >
-> > Ok for sysfs_emit(), thanks. But what do you mean with "IIO core
-> > should do this"? Can you please elaborate?
->
-> I believe that IIO has a generic method to print tables via sysfs. AFAIR it is
-> done via "_avail".
+Gr{oetje,eeting}s,
 
-Ah, do you refer to the read_avail() operation in iio_info?
-I'll try to go with it; I wasn't aware of that, thank you.
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
