@@ -2,81 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A9A3CD053
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2573CD058
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235861AbhGSIeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:34:37 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:42554 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235150AbhGSIee (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:34:34 -0400
-Received: by mail-ua1-f53.google.com with SMTP id z3so3115790uao.9;
-        Mon, 19 Jul 2021 02:15:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KbF3u8VOKIMWOyNH3C/YrjfY9jYpaj5M8r+Rgi/tb8s=;
-        b=M+Zu4VoVAaWGSCtS4KG2G4OTtv7C5wy6wCiBav3wEv+Pbd2YqW3s21ijFdIUp5Ot7m
-         0EWG71mA/6G9Vs/5J92VkYyedXnk14Xuv7YznUg93LkU3az4dKEFp1gxvCMiUIZOFG8p
-         djScmxgYxhZjvkXDRgJCazY6/0aNdX85vy8MgRnZDXo+Z0m/fP/pIALeGWAtCygBd06E
-         mHxccL2n1+zbapG207RZXasgi/yyx/IuavT4MJhnaM7TC8J3sT2ehryEKK1oJ5ycrxx0
-         6WQoyDXbOPSLvXx3aeNpHcNfHn5uU+/CAxLKask+MDLwari5Lorp7brieYwJO7hZasWl
-         Q+GQ==
-X-Gm-Message-State: AOAM5337k4q3zRHvepoP3qhJWiobSp5xgebLpmfsxZcMYIY003DN1kLR
-        WxC+Rqx1g8IIN+lfvNt8NgbN2oYRLlHLBmjSPRs=
-X-Google-Smtp-Source: ABdhPJzJUZYQw1ZZguOMz+6slZH4/cZSax+cq37DZFKc6MU6SHmtRn7UuHySQFUoPVTNIcLJPZZN+iY9ivpPweI1cWQ=
-X-Received: by 2002:a9f:3649:: with SMTP id s9mr24652061uad.2.1626686114123;
- Mon, 19 Jul 2021 02:15:14 -0700 (PDT)
+        id S235687AbhGSIfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:35:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:53378 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234991AbhGSIfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 04:35:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 641126D;
+        Mon, 19 Jul 2021 02:15:45 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5BF923F73D;
+        Mon, 19 Jul 2021 02:15:42 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 10:15:35 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Peter Hilber <peter.hilber@opensynergy.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        igor.skalkin@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v6 10/17] firmware: arm_scmi: Make polling mode optional
+Message-ID: <20210719091535.GG49078@e120937-lin>
+References: <20210712141833.6628-1-cristian.marussi@arm.com>
+ <20210712141833.6628-11-cristian.marussi@arm.com>
+ <4ad5a421-d9ab-816f-b721-9f88ffabfb39@opensynergy.com>
 MIME-Version: 1.0
-References: <20210719085840.21842-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210719085840.21842-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210719085840.21842-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Jul 2021 11:15:03 +0200
-Message-ID: <CAMuHMdW6vsJ_wg9JPn5jnmJ8q1LxD5s8ai-kdFmkc8joGFe6+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] clk: renesas: r9a07g044-cpg: Add clock and reset
- entries for ADC
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ad5a421-d9ab-816f-b721-9f88ffabfb39@opensynergy.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 10:59 AM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add clock and reset entries for ADC block in CPG driver.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+On Thu, Jul 15, 2021 at 06:36:10PM +0200, Peter Hilber wrote:
+> On 12.07.21 16:18, Cristian Marussi wrote:
+> > Add a check for the presence of .poll_done transport operation so that
+> > transports that do not need to support polling mode have no need to provide
+> > a dummy .poll_done callback either and polling mode can be disabled in the
+> > SCMI core for that tranport.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >   drivers/firmware/arm_scmi/driver.c | 43 ++++++++++++++++++------------
+> >   1 file changed, 26 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index a952b6527b8a..4183d25c9289 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -777,25 +777,34 @@ static int do_xfer(const struct scmi_protocol_handle *ph,
+> >   	}
+> >   	if (xfer->hdr.poll_completion) {
+> > -		ktime_t stop = ktime_add_ns(ktime_get(), SCMI_MAX_POLL_TO_NS);
+> > -
+> > -		spin_until_cond(scmi_xfer_done_no_timeout(cinfo, xfer, stop));
+> > -
+> > -		if (ktime_before(ktime_get(), stop)) {
+> > -			unsigned long flags;
+> > -
+> > -			/*
+> > -			 * Do not fetch_response if an out-of-order delayed
+> > -			 * response is being processed.
+> > -			 */
+> > -			spin_lock_irqsave(&xfer->lock, flags);
+> > -			if (xfer->state == SCMI_XFER_SENT_OK) {
+> > -				info->desc->ops->fetch_response(cinfo, xfer);
+> > -				xfer->state = SCMI_XFER_RESP_OK;
+> > +		if (info->desc->ops->poll_done) {
+> > +			ktime_t stop = ktime_add_ns(ktime_get(),
+> > +						    SCMI_MAX_POLL_TO_NS);
+> > +
+> > +			spin_until_cond(scmi_xfer_done_no_timeout(cinfo, xfer,
+> > +								  stop));
+> > +
+> > +			if (ktime_before(ktime_get(), stop)) {
+> > +				unsigned long flags;
+> > +
+> > +				/*
+> > +				 * Do not fetch_response if an out-of-order delayed
+> > +				 * response is being processed.
+> > +				 */
+> > +				spin_lock_irqsave(&xfer->lock, flags);
+> > +				if (xfer->state == SCMI_XFER_SENT_OK) {
+> > +					info->desc->ops->fetch_response(cinfo,
+> > +									xfer);
+> > +					xfer->state = SCMI_XFER_RESP_OK;
+> > +				}
+> > +				spin_unlock_irqrestore(&xfer->lock, flags);
+> > +			} else {
+> > +				ret = -ETIMEDOUT;
+> >   			}
+> > -			spin_unlock_irqrestore(&xfer->lock, flags);
+> >   		} else {
+> > -			ret = -ETIMEDOUT;
+> > +			dev_warn_once(dev,
+> > +				      "Polling mode is not supported by transport.\n");
+> > +			ret = EINVAL;
+> 
+> s/EINVAL/-EINVAL
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v5.15.
+Ah. Right. I'll fix.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Cristian
