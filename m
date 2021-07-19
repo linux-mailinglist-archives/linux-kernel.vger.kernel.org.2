@@ -2,38 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088DD3CD82C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DAC3CDA4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241679AbhGSOVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:21:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56152 "EHLO mail.kernel.org"
+        id S243057AbhGSOf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:35:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242216AbhGSOTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:19:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3B666113A;
-        Mon, 19 Jul 2021 15:00:17 +0000 (UTC)
+        id S244233AbhGSO32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:29:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FC2F61287;
+        Mon, 19 Jul 2021 15:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706818;
-        bh=SQAnv+E4QWEwI4QmMR7dSgYpZ/DWy0QnN+8spBuXf0o=;
+        s=korg; t=1626707340;
+        bh=zeHqsCcQ31O/wt2L4qPT2BBmQLyfLs2ZaJFSVRXw3E0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BW2QfnIVdhqewC9B3utZiA5W6W0F/A6OhKP4H05DpIWQVO7U785Mrr0Z2RUgG5w4C
-         FpLOGwnwd3RVTY1SFLi5KRHUawC7EziliWFs0CU+N9NCNKdw5/maLDFsx/gMafaC0q
-         GzuMcG8k7ZN4pmN3JEPmkXJVj36yUXT2EAh+x7+Q=
+        b=LnwbTQnjJkv39qdUJZQRahUoM+uSVLz6VFmhMe9Fx/FA8KNqO7S6ZTrLpJ2IJspX5
+         3AnazzgBN279E0MGvlW59E4p5CnhNXpYm1Kq9hjTETgRFD2B97lFXGADOlc93K9Xgv
+         XUj0jW6aU5NBizt33b35v+/T/IfrQ0+rQFKjmvvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 078/188] iio: accel: bma180: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 19 Jul 2021 16:51:02 +0200
-Message-Id: <20210719144931.243560738@linuxfoundation.org>
+Subject: [PATCH 4.9 121/245] selftests/vm/pkeys: fix alloc_random_pkey() to make it really, really random
+Date:   Mon, 19 Jul 2021 16:51:03 +0200
+Message-Id: <20210719144944.329974715@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +53,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-[ Upstream commit fc36da3131a747a9367a05caf06de19be1bcc972 ]
+[ Upstream commit f36ef407628835a7d7fb3d235b1f1aac7022d9a3 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+Patch series "selftests/vm/pkeys: Bug fixes and a new test".
 
-Found during an audit of all calls of this function.
+There has been a lot of activity on the x86 front around the XSAVE
+architecture which is used to context-switch processor state (among other
+things).  In addition, AMD has recently joined the protection keys club by
+adding processor support for PKU.
 
-Fixes: b9a6a237ffc9 ("iio:bma180: Drop _update_scan_mode()")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Peter Meerwald <pmeerw@pmeerw.net>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-2-jic23@kernel.org
+The AMD implementation helped uncover a kernel bug around the PKRU "init
+state", which actually applied to Intel's implementation but was just
+harder to hit.  This series adds a test which is expected to help find
+this class of bug both on AMD and Intel.  All the work around pkeys on x86
+also uncovered a few bugs in the selftest.
+
+This patch (of 4):
+
+The "random" pkey allocation code currently does the good old:
+
+	srand((unsigned int)time(NULL));
+
+*But*, it unfortunately does this on every random pkey allocation.
+
+There may be thousands of these a second.  time() has a one second
+resolution.  So, each time alloc_random_pkey() is called, the PRNG is
+*RESET* to time().  This is nasty.  Normally, if you do:
+
+	srand(<ANYTHING>);
+	foo = rand();
+	bar = rand();
+
+You'll be quite guaranteed that 'foo' and 'bar' are different.  But, if
+you do:
+
+	srand(1);
+	foo = rand();
+	srand(1);
+	bar = rand();
+
+You are quite guaranteed that 'foo' and 'bar' are the *SAME*.  The recent
+"fix" effectively forced the test case to use the same "random" pkey for
+the whole test, unless the test run crossed a second boundary.
+
+Only run srand() once at program startup.
+
+This explains some very odd and persistent test failures I've been seeing.
+
+Link: https://lkml.kernel.org/r/20210611164153.91B76FB8@viggo.jf.intel.com
+Link: https://lkml.kernel.org/r/20210611164155.192D00FF@viggo.jf.intel.com
+Fixes: 6e373263ce07 ("selftests/vm/pkeys: fix alloc_random_pkey() to make it really random")
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Ram Pai <linuxram@us.ibm.com>
+Cc: Sandipan Das <sandipan@linux.ibm.com>
+Cc: Florian Weimer <fweimer@redhat.com>
+Cc: "Desnes A. Nunes do Rosario" <desnesn@linux.vnet.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Michal Suchanek <msuchanek@suse.de>
+Cc: Shuah Khan <shuah@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/bma180.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ tools/testing/selftests/x86/protection_keys.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/accel/bma180.c b/drivers/iio/accel/bma180.c
-index f04b88406995..68c9e5478fec 100644
---- a/drivers/iio/accel/bma180.c
-+++ b/drivers/iio/accel/bma180.c
-@@ -120,7 +120,11 @@ struct bma180_data {
- 	int scale;
- 	int bw;
- 	bool pmode;
--	u8 buff[16]; /* 3x 16-bit + 8-bit + padding + timestamp */
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		s16 chan[4];
-+		s64 timestamp __aligned(8);
-+	} scan;
- };
+diff --git a/tools/testing/selftests/x86/protection_keys.c b/tools/testing/selftests/x86/protection_keys.c
+index 5338e668b5e6..d78736845b8e 100644
+--- a/tools/testing/selftests/x86/protection_keys.c
++++ b/tools/testing/selftests/x86/protection_keys.c
+@@ -609,7 +609,6 @@ int alloc_random_pkey(void)
+ 	int nr_alloced = 0;
+ 	int random_index;
+ 	memset(alloced_pkeys, 0, sizeof(alloced_pkeys));
+-	srand((unsigned int)time(NULL));
  
- enum bma180_chan {
-@@ -666,12 +670,12 @@ static irqreturn_t bma180_trigger_handler(int irq, void *p)
- 			mutex_unlock(&data->mutex);
- 			goto err;
- 		}
--		((s16 *)data->buff)[i++] = ret;
-+		data->scan.chan[i++] = ret;
- 	}
+ 	/* allocate every possible key and make a note of which ones we got */
+ 	max_nr_pkey_allocs = NR_PKEYS;
+@@ -1387,6 +1386,8 @@ int main(void)
+ {
+ 	int nr_iterations = 22;
  
- 	mutex_unlock(&data->mutex);
++	srand((unsigned int)time(NULL));
++
+ 	setup_handlers();
  
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buff, time_ns);
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan, time_ns);
- err:
- 	iio_trigger_notify_done(indio_dev->trig);
- 
+ 	printf("has pku: %d\n", cpu_has_pku());
 -- 
 2.30.2
 
