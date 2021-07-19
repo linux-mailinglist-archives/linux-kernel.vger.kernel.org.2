@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D993CE6C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C7A3CE6BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351856AbhGSQNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:13:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41044 "EHLO mail.kernel.org"
+        id S1351305AbhGSQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:13:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346085AbhGSPKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:10:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F418A60FE7;
-        Mon, 19 Jul 2021 15:50:29 +0000 (UTC)
+        id S1346108AbhGSPKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:10:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F2AB60FED;
+        Mon, 19 Jul 2021 15:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709830;
-        bh=dQ6jBxel0zs8R32fG0TfjmV0geTMvOiuEXZIOSy8qzA=;
+        s=korg; t=1626709833;
+        bh=Z6ZydqLjlMDD66kySE5xSLlnlFJ4OA8zpDyXLTtJ/IE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IrHOKH4lxLyrpAWaidzjo2YVamj2z8WX4khOvVb4ROirBYf4D/OCa+HmvJMHUGTA6
-         RZtxJx4vBavu/jDlhGkEtXHqIg2E8xZxYEwEZRdGhtxV18otocGtdhVeO7QSttWFjt
-         k/StexjXmEKKOsnkgpIY96maQqlS3thhX+0lpnEY=
+        b=o47dLeVFN3sITqMtY9SNTjg8P7PxW+FhbyLw4SmQ+dcuwzw64jZWobfQTLKRXx9l6
+         X6b6L/PvNpNZYsiI+mXqV9+j4n/rHoUP50poVSko2u9cAm7bRb7aVOIv2crq+HZPgQ
+         RtOEcDUSlFtTGJDMtWjOQbpguqsclJUkHOyfrN8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 115/149] ARM: dts: gemini-rut1xx: remove duplicate ethernet node
-Date:   Mon, 19 Jul 2021 16:53:43 +0200
-Message-Id: <20210719144928.633362567@linuxfoundation.org>
+Subject: [PATCH 5.4 116/149] reset: a10sr: add missing of_match_table reference
+Date:   Mon, 19 Jul 2021 16:53:44 +0200
+Message-Id: <20210719144928.880010531@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
 References: <20210719144901.370365147@linuxfoundation.org>
@@ -40,47 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 3d3bb3d27cd371d3edb43eeb1beb8ae4e92a356d ]
+[ Upstream commit 466ba3c8ff4fae39e455ff8d080b3d5503302765 ]
 
-Two ethernet node was added by
-commit 95220046a62c ("ARM: dts: Add ethernet to a bunch of platforms")
-and commit d6d0cef55e5b ("ARM: dts: Add the FOTG210 USB host to Gemini boards")
+The driver defined of_device_id table but did not use it with
+of_match_table.  This prevents usual matching via devicetree and causes
+a W=1 warning:
 
-This patch removes the duplicate one.
+  drivers/reset/reset-a10sr.c:111:34: warning:
+    ‘a10sr_reset_of_match’ defined but not used [-Wunused-const-variable=]
 
-Fixes: d6d0cef55e5b ("ARM: dts: Add the FOTG210 USB host to Gemini boards")
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 627006820268 ("reset: Add Altera Arria10 SR Reset Controller")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210507112803.20012-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/gemini-rut1xx.dts | 12 ------------
- 1 file changed, 12 deletions(-)
+ drivers/reset/reset-a10sr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/gemini-rut1xx.dts b/arch/arm/boot/dts/gemini-rut1xx.dts
-index 9611ddf06792..08091d2a64e1 100644
---- a/arch/arm/boot/dts/gemini-rut1xx.dts
-+++ b/arch/arm/boot/dts/gemini-rut1xx.dts
-@@ -125,18 +125,6 @@
- 			};
- 		};
- 
--		ethernet@60000000 {
--			status = "okay";
--
--			ethernet-port@0 {
--				phy-mode = "rgmii";
--				phy-handle = <&phy0>;
--			};
--			ethernet-port@1 {
--				/* Not used in this platform */
--			};
--		};
--
- 		usb@68000000 {
- 			status = "okay";
- 		};
+diff --git a/drivers/reset/reset-a10sr.c b/drivers/reset/reset-a10sr.c
+index 7eacc89382f8..99b3bc8382f3 100644
+--- a/drivers/reset/reset-a10sr.c
++++ b/drivers/reset/reset-a10sr.c
+@@ -118,6 +118,7 @@ static struct platform_driver a10sr_reset_driver = {
+ 	.probe	= a10sr_reset_probe,
+ 	.driver = {
+ 		.name		= "altr_a10sr_reset",
++		.of_match_table	= a10sr_reset_of_match,
+ 	},
+ };
+ module_platform_driver(a10sr_reset_driver);
 -- 
 2.30.2
 
