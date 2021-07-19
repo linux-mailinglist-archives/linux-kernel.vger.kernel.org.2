@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A085F3CE578
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254433CE5FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349980AbhGSPu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:50:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60210 "EHLO mail.kernel.org"
+        id S1349621AbhGSP7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:59:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344762AbhGSPBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:01:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A65D361003;
-        Mon, 19 Jul 2021 15:41:45 +0000 (UTC)
+        id S1346172AbhGSPFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:05:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11D5660238;
+        Mon, 19 Jul 2021 15:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709306;
-        bh=olyDjE2D53U+4YbHBN/EaMbR1X0nVqz1klnU62fx4Zk=;
+        s=korg; t=1626709556;
+        bh=v5VR3ML5WWx7WsjA2n/GGkbhcKCR+pId0vcZ6ZoDZzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VAkezbAN8o7i8yGDpya3rsGrGHcKWiW/rQG3RSmVo/oEYYf60S6QcKfoEgY99JPAb
-         r1VnLyw6gycULZa0bLJnFZVR7AAOYnM80hIEnZMhtd+5FYzKITx7FeC2Fbnir2ii9q
-         K24CVGXPno5qoI7h1awBA70LUs7mYIcD4b2AOemA=
+        b=rHsYpqr5V7+/tfrRw1hTX0P6Z4zJ2xMyd1GctO2bLET+uqwPtqufYOOYnOfJKSmQr
+         m/m+eb3Dimsd6FCU7UWEZDSG6kRIFgMXTdBtJ819BgjJK5LPgZz9KtMAq7mCXIHLYD
+         8qpXUh09brNU/ywbySqNJGyDIGzdjehrWx5rq4l4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 4.19 297/421] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
-Date:   Mon, 19 Jul 2021 16:51:48 +0200
-Message-Id: <20210719144956.619299585@linuxfoundation.org>
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        kvm@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH 5.4 001/149] KVM: mmio: Fix use-after-free Read in kvm_vm_ioctl_unregister_coalesced_mmio
+Date:   Mon, 19 Jul 2021 16:51:49 +0200
+Message-Id: <20210719144901.709931996@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
-References: <20210719144946.310399455@linuxfoundation.org>
+In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
+References: <20210719144901.370365147@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,62 +42,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-commit fca41af18e10318e4de090db47d9fa7169e1bf2f upstream.
+commit 23fa2e46a5556f787ce2ea1a315d3ab93cced204 upstream.
 
-fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
-which violates clang's CFI checking because fw_cfg_showrev()'s second
-parameter is 'struct attribute', whereas the ->show() member of 'struct
-kobj_structure' expects the second parameter to be of type 'struct
-kobj_attribute'.
+BUG: KASAN: use-after-free in kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
+Read of size 8 at addr ffff0000c03a2500 by task syz-executor083/4269
 
-$ cat /sys/firmware/qemu_fw_cfg/rev
-3
+CPU: 5 PID: 4269 Comm: syz-executor083 Not tainted 5.10.0 #7
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x0/0x2d0 arch/arm64/kernel/stacktrace.c:132
+ show_stack+0x28/0x34 arch/arm64/kernel/stacktrace.c:196
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x110/0x164 lib/dump_stack.c:118
+ print_address_description+0x78/0x5c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report+0x148/0x1e4 mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:183 [inline]
+ __asan_load8+0xb4/0xbc mm/kasan/generic.c:252
+ kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
+ kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+ __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+ el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+ do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+ el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+ el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+ el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 
-$ dmesg | grep "CFI failure"
-[   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
+Allocated by task 4269:
+ stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0xdc/0x120 mm/kasan/common.c:461
+ kasan_kmalloc+0xc/0x14 mm/kasan/common.c:475
+ kmem_cache_alloc_trace include/linux/slab.h:450 [inline]
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:664 [inline]
+ kvm_vm_ioctl_register_coalesced_mmio+0x78/0x1cc arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:146
+ kvm_vm_ioctl+0x7e8/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3746
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+ __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+ el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+ do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+ el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+ el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+ el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 
-Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
-this would have been caught automatically by the incompatible pointer
-types compiler warning. Update fw_cfg_showrev() accordingly.
+Freed by task 4269:
+ stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x38/0x6c mm/kasan/common.c:56
+ kasan_set_free_info+0x20/0x40 mm/kasan/generic.c:355
+ __kasan_slab_free+0x124/0x150 mm/kasan/common.c:422
+ kasan_slab_free+0x10/0x1c mm/kasan/common.c:431
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook mm/slub.c:1577 [inline]
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0x104/0x38c mm/slub.c:4124
+ coalesced_mmio_destructor+0x94/0xa4 arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:102
+ kvm_iodevice_destructor include/kvm/iodev.h:61 [inline]
+ kvm_io_bus_unregister_dev+0x248/0x280 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4374
+ kvm_vm_ioctl_unregister_coalesced_mmio+0x158/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:186
+ kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+ __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+ el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+ do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+ el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+ el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+ el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 
-Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1299
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Philippe Mathieu-Daudé <philmd@redhat.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+If kvm_io_bus_unregister_dev() return -ENOMEM, we already call kvm_iodevice_destructor()
+inside this function to delete 'struct kvm_coalesced_mmio_dev *dev' from list
+and free the dev, but kvm_iodevice_destructor() is called again, it will lead
+the above issue.
+
+Let's check the the return value of kvm_io_bus_unregister_dev(), only call
+kvm_iodevice_destructor() if the return value is 0.
+
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-Id: <20210626070304.143456-1-wangkefeng.wang@huawei.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210211194258.4137998-1-nathan@kernel.org
+Fixes: 5d3c4c79384a ("KVM: Stop looking for coalesced MMIO zones if the bus is destroyed", 2021-04-20)
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/firmware/qemu_fw_cfg.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ virt/kvm/coalesced_mmio.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/firmware/qemu_fw_cfg.c
-+++ b/drivers/firmware/qemu_fw_cfg.c
-@@ -296,15 +296,13 @@ static int fw_cfg_do_platform_probe(stru
- 	return 0;
- }
+--- a/virt/kvm/coalesced_mmio.c
++++ b/virt/kvm/coalesced_mmio.c
+@@ -190,7 +190,6 @@ int kvm_vm_ioctl_unregister_coalesced_mm
+ 		    coalesced_mmio_in_range(dev, zone->addr, zone->size)) {
+ 			r = kvm_io_bus_unregister_dev(kvm,
+ 				zone->pio ? KVM_PIO_BUS : KVM_MMIO_BUS, &dev->dev);
+-			kvm_iodevice_destructor(&dev->dev);
  
--static ssize_t fw_cfg_showrev(struct kobject *k, struct attribute *a, char *buf)
-+static ssize_t fw_cfg_showrev(struct kobject *k, struct kobj_attribute *a,
-+			      char *buf)
- {
- 	return sprintf(buf, "%u\n", fw_cfg_rev);
- }
+ 			/*
+ 			 * On failure, unregister destroys all devices on the
+@@ -200,6 +199,7 @@ int kvm_vm_ioctl_unregister_coalesced_mm
+ 			 */
+ 			if (r)
+ 				break;
++			kvm_iodevice_destructor(&dev->dev);
+ 		}
+ 	}
  
--static const struct {
--	struct attribute attr;
--	ssize_t (*show)(struct kobject *k, struct attribute *a, char *buf);
--} fw_cfg_rev_attr = {
-+static const struct kobj_attribute fw_cfg_rev_attr = {
- 	.attr = { .name = "rev", .mode = S_IRUSR },
- 	.show = fw_cfg_showrev,
- };
 
 
