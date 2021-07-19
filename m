@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB063CE7B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F45C3CE7AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348713AbhGSQbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:31:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49008 "EHLO mail.kernel.org"
+        id S1349654AbhGSQaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:30:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345675AbhGSPNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:13:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88D2C606A5;
-        Mon, 19 Jul 2021 15:53:43 +0000 (UTC)
+        id S1345165AbhGSPNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:13:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 008D8613F1;
+        Mon, 19 Jul 2021 15:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710024;
-        bh=+teWcXtYWVyK9YNcvQTLZzb1MYx+hhqYzIPdj2ggBek=;
+        s=korg; t=1626710026;
+        bh=QtvRV+ywbWvf5Ob5LjgKwga0Bz4DLWTM5dMniOTQAAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MkSZfdwzA0hhXDSXZUfXSBdiN/bNas9XrylXj/btBemgB8rRfKbtOmoDpi4EFMXuR
-         5aKVZubkLYdZUHmag45FbelO3pwnr4Hbs6upaRykDQLn6DXJW7JJkHrgqNw1DAooAK
-         sCHpzRpG+TVLIdTyA4TIQirOlFg3VGSt7QZrDweM=
+        b=gsfLIcP23bZxt9VNccfxqzMQKtaKi5/VxgtDmGYLv0fgtkt9lxEDG+B58XKZJrA0R
+         vqkCI5is+L2s7QP8Op96I+xyKoKwUh6JuXde5I4iNCeejbVob/2gHmceBJlyuMdON+
+         E+Av2lFr8skagwS15g6dWG6pdMDEicnSe2dq3TqA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 044/243] scsi: hisi_sas: Propagate errors in interrupt_init_v1_hw()
-Date:   Mon, 19 Jul 2021 16:51:13 +0200
-Message-Id: <20210719144942.347083655@linuxfoundation.org>
+Subject: [PATCH 5.10 045/243] scsi: lpfc: Fix "Unexpected timeout" error in direct attach topology
+Date:   Mon, 19 Jul 2021 16:51:14 +0200
+Message-Id: <20210719144942.377423412@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -41,83 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit ab17122e758ef68fb21033e25c041144067975f5 ]
+[ Upstream commit e30d55137edef47434c40d7570276a0846fe922c ]
 
-After commit 6c11dc060427 ("scsi: hisi_sas: Fix IRQ checks") we have the
-error codes returned by platform_get_irq() ready for the propagation
-upsream in interrupt_init_v1_hw() -- that will fix still broken deferred
-probing. Let's propagate the error codes from devm_request_irq() as well
-since I don't see the reason to override them with -ENOENT...
+An 'unexpected timeout' message may be seen in a point-2-point topology.
+The message occurs when a PLOGI is received before the driver is notified
+of FLOGI completion. The FLOGI completion failure causes discovery to be
+triggered for a second time. The discovery timer is restarted but no new
+discovery activity is initiated, thus the timeout message eventually
+appears.
 
-Link: https://lore.kernel.org/r/49ba93a3-d427-7542-d85a-b74fe1a33a73@omp.ru
-Acked-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+In point-2-point, when discovery has progressed before the FLOGI completion
+is processed, it is not a failure. Add code to FLOGI completion to detect
+that discovery has progressed and exit the FLOGI handling (noop'ing it).
+
+Link: https://lore.kernel.org/r/20210514195559.119853-4-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/scsi/lpfc/lpfc_els.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
-index 6c2a97f80b12..2e529d67de73 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
-@@ -1647,7 +1647,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
- 			if (irq < 0) {
- 				dev_err(dev, "irq init: fail map phy interrupt %d\n",
- 					idx);
--				return -ENOENT;
-+				return irq;
- 			}
- 
- 			rc = devm_request_irq(dev, irq, phy_interrupts[j], 0,
-@@ -1655,7 +1655,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
- 			if (rc) {
- 				dev_err(dev, "irq init: could not request phy interrupt %d, rc=%d\n",
- 					irq, rc);
--				return -ENOENT;
-+				return rc;
- 			}
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index b60945182db8..3d9889b3d5c8 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -1179,6 +1179,15 @@ stop_rr_fcf_flogi:
+ 			phba->fcf.fcf_redisc_attempted = 0; /* reset */
+ 			goto out;
  		}
- 	}
-@@ -1666,7 +1666,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
- 		if (irq < 0) {
- 			dev_err(dev, "irq init: could not map cq interrupt %d\n",
- 				idx);
--			return -ENOENT;
-+			return irq;
- 		}
- 
- 		rc = devm_request_irq(dev, irq, cq_interrupt_v1_hw, 0,
-@@ -1674,7 +1674,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
- 		if (rc) {
- 			dev_err(dev, "irq init: could not request cq interrupt %d, rc=%d\n",
- 				irq, rc);
--			return -ENOENT;
-+			return rc;
- 		}
++	} else if (vport->port_state > LPFC_FLOGI &&
++		   vport->fc_flag & FC_PT2PT) {
++		/*
++		 * In a p2p topology, it is possible that discovery has
++		 * already progressed, and this completion can be ignored.
++		 * Recheck the indicated topology.
++		 */
++		if (!sp->cmn.fPort)
++			goto out;
  	}
  
-@@ -1684,7 +1684,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
- 		if (irq < 0) {
- 			dev_err(dev, "irq init: could not map fatal interrupt %d\n",
- 				idx);
--			return -ENOENT;
-+			return irq;
- 		}
- 
- 		rc = devm_request_irq(dev, irq, fatal_interrupts[i], 0,
-@@ -1692,7 +1692,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
- 		if (rc) {
- 			dev_err(dev, "irq init: could not request fatal interrupt %d, rc=%d\n",
- 				irq, rc);
--			return -ENOENT;
-+			return rc;
- 		}
- 	}
- 
+ flogifail:
 -- 
 2.30.2
 
