@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF743CDA0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7015D3CDA0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244085AbhGSOcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:32:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38648 "EHLO mail.kernel.org"
+        id S242501AbhGSOcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:32:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242220AbhGSO0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:26:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C41C61181;
-        Mon, 19 Jul 2021 15:07:09 +0000 (UTC)
+        id S242932AbhGSO0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:26:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 932E461165;
+        Mon, 19 Jul 2021 15:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707230;
-        bh=tbjK3+KGzetC/M7kPMYQUIaqwKGcQVs9fdQyCa8T6zI=;
+        s=korg; t=1626707233;
+        bh=D4b9gHXrv43T+fv4IkZfUx+rzB3E8kFfNOGj/o9COeo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vleaCHPj0YHH5ulxRRt2RgIBoppJkuZF4Y0m1KD6CqcLzzaNx2GHObnQu/esmRE8P
-         7La8OfE19rq2SdOtOVaCkKeQHzmVF2zM0yTZDa9ddEBCGoS/N30E9m09WZKaFRWFf0
-         C3XYOH0wVtfX6XN8buDo02f32FhK4rImCokN1bcQ=
+        b=1Y50VwxJbx1jiP2u56egropgHJNRNywWzGlPybvfInRFPeDlHdNzZrYr7WGOraBGb
+         NG2E/JDVylb65MByX1pJ1BRcbU7tWl25JgzLsj3jtdeNQN4Pj+M7CQAqKzRXBDh6/C
+         IS7sYT1EiRByk8LRWc23SKWo9lGUoQo+oNkiDSP8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
         Kalle Valo <kvalo@codeaurora.org>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Christian Lamparter <chunkeey@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 079/245] wireless: carl9170: fix LEDS build errors & warnings
-Date:   Mon, 19 Jul 2021 16:50:21 +0200
-Message-Id: <20210719144942.959449221@linuxfoundation.org>
+Subject: [PATCH 4.9 080/245] brcmsmac: mac80211_if: Fix a resource leak in an error handling path
+Date:   Mon, 19 Jul 2021 16:50:22 +0200
+Message-Id: <20210719144942.990132945@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
 References: <20210719144940.288257948@linuxfoundation.org>
@@ -44,64 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 272fdc0c4542fad173b44965be02a16d6db95499 ]
+[ Upstream commit 9a25344d5177c2b9285532236dc3d10a091f39a8 ]
 
-kernel test robot reports over 200 build errors and warnings
-that are due to this Kconfig problem when CARL9170=m,
-MAC80211=y, and LEDS_CLASS=m.
+If 'brcms_attach()' fails, we must undo the previous 'ieee80211_alloc_hw()'
+as already done in the remove function.
 
-WARNING: unmet direct dependencies detected for MAC80211_LEDS
-  Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
-  Selected by [m]:
-  - CARL9170_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && CARL9170 [=m]
-
-CARL9170_LEDS selects MAC80211_LEDS even though its kconfig
-dependencies are not met. This happens because 'select' does not follow
-any Kconfig dependency chains.
-
-Fix this by making CARL9170_LEDS depend on MAC80211_LEDS, where
-the latter supplies any needed dependencies on LEDS_CLASS.
-
-Fixes: 1d7e1e6b1b8ed ("carl9170: Makefile, Kconfig files and MAINTAINERS")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Christian Lamparter <chunkeey@googlemail.com>
-Cc: linux-wireless@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Christian Lamparter <chunkeey@googlemail.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Christian Lamparter <chunkeey@gmail.com>
+Fixes: 5b435de0d786 ("net: wireless: add brcm80211 drivers")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210530031134.23274-1-rdunlap@infradead.org
+Link: https://lore.kernel.org/r/8fbc171a1a493b38db5a6f0873c6021fca026a6c.1620852921.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/carl9170/Kconfig | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ .../wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c    | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/carl9170/Kconfig b/drivers/net/wireless/ath/carl9170/Kconfig
-index 2e34baeaf764..2b782db20fde 100644
---- a/drivers/net/wireless/ath/carl9170/Kconfig
-+++ b/drivers/net/wireless/ath/carl9170/Kconfig
-@@ -15,13 +15,11 @@ config CARL9170
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
+index b820e80d4b4c..8b56aa627487 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
+@@ -1221,6 +1221,7 @@ static int brcms_bcma_probe(struct bcma_device *pdev)
+ {
+ 	struct brcms_info *wl;
+ 	struct ieee80211_hw *hw;
++	int ret;
  
- config CARL9170_LEDS
- 	bool "SoftLED Support"
--	depends on CARL9170
--	select MAC80211_LEDS
--	select LEDS_CLASS
--	select NEW_LEDS
- 	default y
-+	depends on CARL9170
-+	depends on MAC80211_LEDS
- 	help
--	  This option is necessary, if you want your device' LEDs to blink
-+	  This option is necessary, if you want your device's LEDs to blink.
+ 	dev_info(&pdev->dev, "mfg %x core %x rev %d class %d irq %d\n",
+ 		 pdev->id.manuf, pdev->id.id, pdev->id.rev, pdev->id.class,
+@@ -1245,11 +1246,16 @@ static int brcms_bcma_probe(struct bcma_device *pdev)
+ 	wl = brcms_attach(pdev);
+ 	if (!wl) {
+ 		pr_err("%s: brcms_attach failed!\n", __func__);
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto err_free_ieee80211;
+ 	}
+ 	brcms_led_register(wl);
  
- 	  Say Y, unless you need the LEDs for firmware debugging.
+ 	return 0;
++
++err_free_ieee80211:
++	ieee80211_free_hw(hw);
++	return ret;
+ }
  
+ static int brcms_suspend(struct bcma_device *pdev)
 -- 
 2.30.2
 
