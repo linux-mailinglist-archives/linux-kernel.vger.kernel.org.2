@@ -2,301 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F093CD2A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B1A3CD2A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236651AbhGSKGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:06:22 -0400
-Received: from comms.puri.sm ([159.203.221.185]:51808 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235471AbhGSKGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:06:18 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 4D3EDE122E;
-        Mon, 19 Jul 2021 03:46:28 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id TgGk5378cSYs; Mon, 19 Jul 2021 03:46:26 -0700 (PDT)
-Message-ID: <afea234be0fd5e8a3ee2cac128169bbf796d5412.camel@puri.sm>
-Subject: Re: [PATCH v6 2/3] media: imx: add a driver for i.MX8MQ mipi csi rx
- phy and controller
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     festevam@gmail.com, krzk@kernel.org, devicetree@vger.kernel.org,
-        kernel@pengutronix.de, kernel@puri.sm,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
-        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
-        shawnguo@kernel.org, slongerbeam@gmail.com
-Date:   Mon, 19 Jul 2021 12:46:19 +0200
-In-Reply-To: <YPFjwvjSCuvC1915@pendragon.ideasonboard.com>
-References: <20210714111931.324485-1-martin.kepplinger@puri.sm>
-         <20210714111931.324485-3-martin.kepplinger@puri.sm>
-         <YO8r6pZAduu1ZMK4@pendragon.ideasonboard.com>
-         <ce71a71a358247eca3b72ddcddd703206c90f284.camel@puri.sm>
-         <YPCuFA+utjudv11H@pendragon.ideasonboard.com>
-         <e88d99abbdcbd6a1b2c27849f08721e79f237adc.camel@puri.sm>
-         <YPFjwvjSCuvC1915@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S236657AbhGSKF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236316AbhGSKF4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 06:05:56 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A986C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:54:24 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id f17so21456070wrt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 03:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=5ncXnlqgE4q5bQDJOQx33EL294v17db91qKDspkowjQ=;
+        b=ungfp4cTXQ44y4KuTxVLcf1GGvurYO8TLwbQKMgP74ALdslAVaFdsPuMlRxU4pAnmK
+         pC8mWs7URc3r9WRx9HHTjmk0zhwg1j0IT7BhQMGvZCeVXavOxFIYi+hry5cTouXjXSM4
+         f6rQm5cM+95BGiGzy3N/qEj32mPCJz9J83bmarGUZEJc63/4Gts/KZUMV0Aakubh5RAL
+         4WHg7eSvlxej3s8fQbXp4K7cunElN+xETCQOt3HRChnKs7inGvfYgistkjmHgCoU8Rb9
+         f2c0EtA5ywUpQ19Ec0+XwOo2qS2AzVpGR8RWQiYz+rXGOmzWoWxnG8cqGGnRUk6zKxD7
+         SfTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5ncXnlqgE4q5bQDJOQx33EL294v17db91qKDspkowjQ=;
+        b=TgDA6zfwBUFaUVB2+bZPNMZPMhFPIEV1pRNdYdInWSBsYo4AeMzv6HEIBv92BqIoB8
+         TfTYlMocK79mxmuhOmJ6x4wP793oDYUtNvyybaEQbtR1f/B2TT/YFYU0ThD8fUuQFEp2
+         n3fEBxKx4sam0V5A5eYQY0ZAOc59DBa5QC9hP8y408+YAAiZC1XoiC9A9zqUj5zFF1rv
+         mvIZ3dtWFb2xJiRJb4vwx1zbssqDzclA2WHpc9U4iMWcKKpvQVm3phzUy7tFBCoQFCx2
+         KS9T3NXlivMemR1mf8EOJk/NyVkoo1MrnsvujOwN2WmpOxr+hINoYAej7OXrvyglT72p
+         t50w==
+X-Gm-Message-State: AOAM5316ELWcOJ6N6CDL35HQpiJ9Sez5pXwRcMLmZPv4JuUhyjdYK1iP
+        LYs8ZbcFUeE8lOf/mxDr1dvmCg==
+X-Google-Smtp-Source: ABdhPJwUaYjrRPSzqoEsjQXPLH0r3dGAN4SRfhoJE2clHeZ1L9JYNPGK0AECgxfvyguoDFVppkgFFw==
+X-Received: by 2002:a5d:598f:: with SMTP id n15mr10849112wri.133.1626691594242;
+        Mon, 19 Jul 2021 03:46:34 -0700 (PDT)
+Received: from google.com ([31.124.24.141])
+        by smtp.gmail.com with ESMTPSA id h20sm12758613wmb.17.2021.07.19.03.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 03:46:33 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 11:46:31 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers
+ bindings
+Message-ID: <YPVYB/biVd4/Z1wn@google.com>
+References: <20210607123317.3242031-1-robert.marko@sartura.hr>
+ <20210607123317.3242031-5-robert.marko@sartura.hr>
+ <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
+ <20210713222528.GA952399@robh.at.kernel.org>
+ <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, dem 16.07.2021 um 13:47 +0300 schrieb Laurent Pinchart:
-> Hi Martin,
-> 
-> On Fri, Jul 16, 2021 at 10:47:14AM +0200, Martin Kepplinger wrote:
-> > Am Freitag, dem 16.07.2021 um 00:52 +0300 schrieb Laurent Pinchart:
-> > > On Thu, Jul 15, 2021 at 09:37:24AM +0200, Martin Kepplinger
-> > > wrote:
-> > > > Am Mittwoch, dem 14.07.2021 um 21:24 +0300 schrieb Laurent
-> > > > Pinchart:
-> > > > > On Wed, Jul 14, 2021 at 01:19:30PM +0200, Martin Kepplinger
-> > > > > wrote:
-> > > > > > Add a driver to support the i.MX8MQ MIPI CSI receiver. The
-> > > > > > hardware side
-> > > > > > is based on
-> > > > > > https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/media/platform/imx8/mxc-mipi-csi2_yav.c?h=imx_5.4.70_2.3.0
-> > > > > > 
-> > > > > > It's built as part of VIDEO_IMX7_CSI because that's
-> > > > > > documented to support
-> > > > > > i.MX8M platforms. This driver adds i.MX8MQ support where
-> > > > > > currently only the
-> > > > > > i.MX8MM platform has been supported.
-> > > > > > 
-> > > > > > Signed-off-by: Martin Kepplinger
-> > > > > > <martin.kepplinger@puri.sm>
-> > > > > > ---
-> > > > > >  drivers/staging/media/imx/Makefile           |   1 +
-> > > > > >  drivers/staging/media/imx/imx8mq-mipi-csi2.c | 949
-> > > > > > +++++++++++++++++++
-> > > > > >  2 files changed, 950 insertions(+)
-> > > > > >  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-
-> > > > > > csi2.c
-> > > > > > 
-> > > > > > diff --git a/drivers/staging/media/imx/Makefile
-> > > > > > b/drivers/staging/media/imx/Makefile
-> > > > > > index 6ac33275cc97..19c2fc54d424 100644
-> > > > > > --- a/drivers/staging/media/imx/Makefile
-> > > > > > +++ b/drivers/staging/media/imx/Makefile
-> > > > > > @@ -16,3 +16,4 @@ obj-$(CONFIG_VIDEO_IMX_CSI) += imx6-mipi-
-> > > > > > csi2.o
-> > > 
-> > > [snip]
-> > > 
-> > > > > > +static int imx8mq_mipi_csi_calc_hs_settle(struct csi_state
-> > > > > > *state)
-> > > > > > +{
-> > > > > > +       u32 width = state-
-> > > > > > >format_mbus[MIPI_CSI2_PAD_SINK].width;
-> > > > > > +       u32 height = state-
-> > > > > > >format_mbus[MIPI_CSI2_PAD_SINK].height;
-> > > > > > +       s64 link_freq;
-> > > > > > +       u32 lane_rate;
-> > > > > > +
-> > > > > > +       /* Calculate the line rate from the pixel rate. */
-> > > > > > +       link_freq = v4l2_get_link_freq(state->src_sd-
-> > > > > > >ctrl_handler,
-> > > > > > +                                      state->csi2_fmt-
-> > > > > > >width,
-> > > > > > +                                      state-
-> > > > > > >bus.num_data_lanes * 2);
-> > > > > > +       if (link_freq < 0) {
-> > > > > > +               dev_err(state->dev, "Unable to obtain link
-> > > > > > frequency: %d\n",
-> > > > > > +                       (int)link_freq);
-> > > > > > +               return link_freq;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       lane_rate = link_freq * 2;
-> > > > > > +       if (lane_rate < 80000000 || lane_rate > 1500000000)
-> > > > > > {
-> > > > > > +               dev_dbg(state->dev, "Out-of-bound lane rate
-> > > > > > %u\n", lane_rate);
-> > > > > > +               return -EINVAL;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       /*
-> > > > > > https://community.nxp.com/t5/i-MX-Processors/Explenation-for-HS-SETTLE-parameter-in-MIPI-CSI-D-PHY-registers/m-p/764275/highlight/true#M118744
-> > > > > >  */
-> > > > > > +       if (lane_rate < 250000000)
-> > > > > > +               state->hs_settle = 0xb;
-> > > > > > +       else if (lane_rate < 500000000)
-> > > > > > +               state->hs_settle = 0x8;
-> > > > > > +       else
-> > > > > > +               state->hs_settle = 0x6;
-> > > > > 
-> > > > > We could possibly compute this value based on the formula
-> > > > > from the table
-> > > > > in that page, but maybe that's overkill ? If you want to give
-> > > > > it a try,
-> > > > > it would be along those lines.
-> > > > > 
-> > > > >         /*
-> > > > >          * The D-PHY specification requires Ths-settle to be
-> > > > > in the range
-> > > > >          * 85ns + 6*UI to 140ns + 10*UI, with the unit
-> > > > > interval UI being half
-> > > > >          * the clock period.
-> > > > >          *
-> > > > >          * The Ths-settle value is expressed in the hardware
-> > > > > as a multiple of
-> > > > >          * the Esc clock period:
-> > > > >          *
-> > > > >          * Ths-settle = (PRG_RXHS_SETTLE + 1) * Tperiod of
-> > > > > RxClkInEsc
-> > > > >          *
-> > > > >          * Due to the one cycle inaccuracy introduced by
-> > > > > rounding, the
-> > > > >          * documentation recommends picking a value away from
-> > > > > the boundaries.
-> > > > >          * Let's pick the average.
-> > > > >          */
-> > > > >         esc_clk_rate = clk_get_rate(...);
-> > > > > 
-> > > > >         min_ths_settle = 85 + 6 * 1000000 / (lane_rate /
-> > > > > 1000);
-> > > > >         max_ths_settle = 140 + 10 * 1000000 / (lane_rate /
-> > > > > 1000);
-> > > > >         ths_settle = (min_ths_settle + max_ths_settle) / 2;
-> > > > > 
-> > > > >         state->hs_settle = ths_settle * esc_clk_rate /
-> > > > > 1000000000 - 1;
-> > > > 
-> > > > I experimented a bit but would like to leave this as a task for
-> > > > later
-> > > > if that's ok. it's correct and simple now. also, using
-> > > > clks[i].clk
-> > > > based on the name string would feel better to submit seperately
-> > > > later.
-> > > 
-> > > That's OK with me, but I may then submit a patch on top fairly
-> > > soon :-)
-> > > Have you been able to test if this code works on your device ?
-> > > The main
-> > > reason why I think it's better is that it doesn't hardcode a
-> > > specific
-> > > escape clock frequency assumption, so it should be able to
-> > > accommodate a
-> > > wider range of use cases. If we change it later, there's always a
-> > > risk
-> > > of regressions, while if we do this from the start, we'll figure
-> > > out
-> > > quickly if it doesn't work in some cases.
-> > 
-> > taking your code basically as-is doesn't yet work, but it helps a
-> > bit.
-> 
-> Thanks for testing.
-> 
-> > tbh I don't even know how to correctly read that table /
-> > calculation:
-> > what is the exact relation of the calculated Ths_settle time
-> > inverval
-> > to the hs_settle register bits?
-> 
-> The PRG_RXHS_SETTLE field stores a number of timer ticks to cover the
-> Ths-settle internal. The D-PHY arms the timer when it detects the
-> transition to LP-00, and ignores transitions on the lane until the
-> timer
-> expires. The timer is clocked by the escape clock.
-> 
-> What hs_settle value do you currently use, and what value does my
-> code
-> produce ?
-> 
-> > if the 2 of us can't quickly figure it out I can ask NXP via that
-> > community forum issue and I created
-> > https://source.puri.sm/Librem5/linux-next/-/issues/340 so I won't
-> > forget about it.
-> 
+On Sun, 18 Jul 2021, Robert Marko wrote:
 
-hi Laurent,
+> On Wed, Jul 14, 2021 at 12:25 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Jun 25, 2021 at 01:46:08PM +0200, Robert Marko wrote:
+> > > On Mon, Jun 7, 2021 at 2:33 PM Robert Marko <robert.marko@sartura.hr> wrote:
+> > > >
+> > > > Add binding documents for the Delta TN48M CPLD drivers.
+> > > >
+> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > ---
+> > > > Changes in v3:
+> > > > * Include bindings for reset driver
+> > > >
+> > > > Changes in v2:
+> > > > * Implement MFD as a simple I2C MFD
+> > > > * Add GPIO bindings as separate
+> > > >
+> > > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 +++++++++
+> > > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 90 +++++++++++++++++++
+> > > >  .../bindings/reset/delta,tn48m-reset.yaml     | 35 ++++++++
+> > > >  3 files changed, 167 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > > >  create mode 100644 Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..aca646aecb12
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/gpio/delta,tn48m-gpio.yaml
+> > > > @@ -0,0 +1,42 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/gpio/delta,tn48m-gpio.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Delta Networks TN48M CPLD GPIO controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > > +
+> > > > +description: |
+> > > > +  This module is part of the Delta TN48M multi-function device. For more
+> > > > +  details see ../mfd/delta,tn48m-cpld.yaml.
+> > > > +
+> > > > +  GPIO controller module provides GPIO-s for the SFP slots.
+> > > > +  It is split into 3 controllers, one output only for the SFP TX disable
+> > > > +  pins, one input only for the SFP present pins and one input only for
+> > > > +  the SFP LOS pins.
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    enum:
+> > > > +      - delta,tn48m-gpio-sfp-tx-disable
+> > > > +      - delta,tn48m-gpio-sfp-present
+> > > > +      - delta,tn48m-gpio-sfp-los
+> > > > +
+> > > > +  reg:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  "#gpio-cells":
+> > > > +    const: 2
+> > > > +
+> > > > +  gpio-controller: true
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +  - "#gpio-cells"
+> > > > +  - gpio-controller
+> > > > +
+> > > > +additionalProperties: false
+> > > > diff --git a/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..2c6e2adf73ca
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/mfd/delta,tn48m-cpld.yaml
+> > > > @@ -0,0 +1,90 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/mfd/delta,tn48m-cpld.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Delta Networks TN48M CPLD controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > > +
+> > > > +description: |
+> > > > +  Lattice CPLD onboard the TN48M switches is used for system
+> > > > +  management.
+> > > > +
+> > > > +  It provides information about the hardware model, revision,
+> > > > +  PSU status etc.
+> > > > +
+> > > > +  It is also being used as a GPIO expander for the SFP slots and
+> > > > +  reset controller for the switch MAC-s and other peripherals.
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: delta,tn48m-cpld
+> > > > +
+> > > > +  reg:
+> > > > +    description:
+> > > > +      I2C device address.
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  "#address-cells":
+> > > > +    const: 1
+> > > > +
+> > > > +  "#size-cells":
+> > > > +    const: 0
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +  - "#address-cells"
+> > > > +  - "#size-cells"
+> > > > +
+> > > > +patternProperties:
+> > > > +  "^gpio(@[0-9a-f]+)?$":
+> > > > +    $ref: ../gpio/delta,tn48m-gpio.yaml
+> > > > +
+> > > > +  "^reset-controller?$":
+> > > > +    $ref: ../reset/delta,tn48m-reset.yaml
+> > > > +
+> > > > +additionalProperties: false
+> > > > +
+> > > > +examples:
+> > > > +  - |
+> > > > +    i2c {
+> > > > +        #address-cells = <1>;
+> > > > +        #size-cells = <0>;
+> > > > +
+> > > > +        cpld@41 {
+> > > > +            compatible = "delta,tn48m-cpld";
+> > > > +            reg = <0x41>;
+> > > > +            #address-cells = <1>;
+> > > > +            #size-cells = <0>;
+> > > > +
+> > > > +            gpio@31 {
+> > > > +                compatible = "delta,tn48m-gpio-sfp-tx-disable";
+> > > > +                reg = <0x31>;
+> > > > +                gpio-controller;
+> > > > +                #gpio-cells = <2>;
+> > > > +            };
+> > > > +
+> > > > +            gpio@3a {
+> > > > +                compatible = "delta,tn48m-gpio-sfp-present";
+> > > > +                reg = <0x3a>;
+> > > > +                gpio-controller;
+> > > > +                #gpio-cells = <2>;
+> > > > +            };
+> > > > +
+> > > > +            gpio@40 {
+> > > > +                compatible = "delta,tn48m-gpio-sfp-los";
+> > > > +                reg = <0x40>;
+> > > > +                gpio-controller;
+> > > > +                #gpio-cells = <2>;
+> > > > +            };
+> > > > +
+> > > > +            reset-controller {
+> > > > +              compatible = "delta,tn48m-reset";
+> > > > +              #reset-cells = <1>;
+> > > > +            };
+> > > > +        };
+> > > > +    };
+> > > > diff --git a/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..0e5ee8decc0d
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+> > > > @@ -0,0 +1,35 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/reset/delta,tn48m-reset.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Delta Networks TN48M CPLD reset controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Robert Marko <robert.marko@sartura.hr>
+> > > > +
+> > > > +description: |
+> > > > +  This module is part of the Delta TN48M multi-function device. For more
+> > > > +  details see ../mfd/delta,tn48m-cpld.yaml.
+> > > > +
+> > > > +  Reset controller modules provides resets for the following:
+> > > > +  * 88F7040 SoC
+> > > > +  * 88F6820 SoC
+> > > > +  * 98DX3265 switch MAC-s
+> > > > +  * 88E1680 PHY-s
+> > > > +  * 88E1512 PHY
+> > > > +  * PoE PSE controller
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: delta,tn48m-reset
+> > > > +
+> > > > +  "#reset-cells":
+> > > > +    const: 1
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - "#reset-cells"
+> > > > +
+> > > > +additionalProperties: false
+> > > >
+> > >
+> > > Are there any issues with the bindings?
+> >
+> > Yes. Primarily the GPIO function being part of the compatible. I'm
+> > surprised Linus W is okay with that.
+> 
+> I think I already explained this before, having a single compatible
+> won't work here.
+> Then there would not be anything to know whether its input or output
+> only as the pins have specific purpose.
 
-the below patch for hs_settle works (and calculates either the same or
-+/- 1 for the hs_settle value, compared to the table), but getting the
-esc clock looks really scary how I do it: how would you do that?
+Properties?
 
+> And knowing the capabilites is a requirment of the GPIO regmap driver
+> and the GPIO
+> core itself as it exposes that information in a generic manner and
+> driver like for the
+> SFP bus use that.
 
-@@ -284,6 +285,9 @@ static int imx8mq_mipi_csi_calc_hs_settle(struct
-csi_state *state)
- {
- 	s64 link_freq;
- 	u32 lane_rate;
-+	u32 esc_clk_rate = 0;
-+	u32 i, min_ths_settle, max_ths_settle, ths_settle_ns,
-esc_clk_period_ns;
-+	char *p;
- 
- 	/* Calculate the line rate from the pixel rate. */
- 	link_freq = v4l2_get_link_freq(state->src_sd->ctrl_handler,
-@@ -302,20 +306,44 @@ static int imx8mq_mipi_csi_calc_hs_settle(struct
-csi_state *state)
- 	}
- 
- 	/*
--	 * The following table is the source for this:
--	 *
-https://community.nxp.com/t5/i-MX-Processors/Explenation-for-HS-SETTLE-parameter-in-MIPI-CSI-D-PHY-registers/m-p/764275/highlight/true#M118744
--	 * but it would be even better to calculate the value for any
--	 * given datarate.
-+	 * The D-PHY specification requires Ths-settle to be in the
-range
-+	 * 85ns + 6*UI to 140ns + 10*UI, with the unit interval UI
-being half
-+	 * the clock period.
-+	 *
-+	 * The Ths-settle value is expressed in the hardware as a
-multiple of
-+	 * the Esc clock period:
-+	 *
-+	 * Ths-settle = (PRG_RXHS_SETTLE + 1) * Tperiod of RxClkInEsc
-+	 *
-+	 * Due to the one cycle inaccuracy introduced by rounding, the
-+	 * documentation recommends picking a value away from the
-boundaries.
-+	 * Let's pick the average.
- 	 */
--	if (lane_rate < 250000000)
--		state->hs_settle = 0xb;
--	else if (lane_rate < 500000000)
--		state->hs_settle = 0x8;
--	else
--		state->hs_settle = 0x6;
--
--	dev_dbg(state->dev, "start stream: lane rate %u hs_settle
-%u\n",
--		lane_rate, state->hs_settle);
-+	for (i = 0; i < CSI2_NUM_CLKS; i++) {
-+		p = (char *)__clk_get_name(state->clks[i].clk);
-+		/* we're getting csi1_esc here */
-+		if (strlen(p) > 7)
-+			p += 5;
-+
-+		dev_dbg(state->dev, "comparing: %s to esc\n", p);
-+		if (!strcmp(p, "esc"))
-+			esc_clk_rate = clk_get_rate(state-
->clks[i].clk);
-+	}
-+
-+	if (!esc_clk_rate)
-+		dev_err(state->dev, "Could not get esc clock rate\n");
-+
-+	dev_dbg(state->dev, "esc clk rate: %u\n", esc_clk_rate);
-+	esc_clk_period_ns = 1000000000 / esc_clk_rate;
-+
-+	min_ths_settle = 85 + 6 * 1000000 / (lane_rate / 1000);
-+	max_ths_settle = 140 + 10 * 1000000 / (lane_rate / 1000);
-+	ths_settle_ns = (min_ths_settle + max_ths_settle) / 2;
-+
-+	state->hs_settle = ths_settle_ns / esc_clk_period_ns - 1;
-+
-+	dev_dbg(state->dev, "lane rate %u Ths_settle %u hs_settle
-%u\n",
-+		lane_rate, ths_settle_ns, state->hs_settle);
- 
- 	return 0;
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
