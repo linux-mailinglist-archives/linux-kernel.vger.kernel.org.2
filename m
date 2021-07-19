@@ -2,42 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9ED03CDE9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2833CDEA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345430AbhGSPEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60952 "EHLO mail.kernel.org"
+        id S1345557AbhGSPEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:04:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242953AbhGSOmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:42:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2CD56113C;
-        Mon, 19 Jul 2021 15:22:00 +0000 (UTC)
+        id S1343584AbhGSOmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:42:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36C0660FE4;
+        Mon, 19 Jul 2021 15:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708121;
-        bh=IGUy4uFKzaDxa5jhaN0PRZYJ0wATDScp31KkOj9vHB8=;
+        s=korg; t=1626708128;
+        bh=XFIYqRr+Ko+Cclp+2bzYkg5sdLF66yLb3lyibASCLcg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dtvo6ugbm063wC5LAf/0dYz5a4MHZrJ2LLEaTEFTqQWU+SU/PzNKj2/ct+g2HO0Zn
-         AIioAKNaRrz4HtXSS11ONSo5Gz1i12eBkwCw71gZOsWI4TzCgUFtFCfkhLNEC5lrqL
-         TNeP10zltmuqTgLCUdsSFAAFqHlZOTei48qzAfUo=
+        b=kDExP3iGNoRsrLkbkSGL23RwUc+ArYeXcal3gqFF8ADZ2gB54ScDl/vlDq8H9+FSx
+         TXPu0kE80BUJxO4/KA7rPAUGF9feZSTGyrmT0Zx66YiY2VwneKattAECYjzifG7Ipq
+         kTupLxBUZEOIR4xRGqJWnk/ljgoAGLcmLzTN6mt8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        lixianming <lixianming5@huawei.com>,
-        "Longpeng(Mike)" <longpeng2@huawei.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 190/315] vsock: notify server to shutdown when client has pending signal
-Date:   Mon, 19 Jul 2021 16:51:19 +0200
-Message-Id: <20210719144949.169002804@linuxfoundation.org>
+Subject: [PATCH 4.14 193/315] sfc: avoid double pci_remove of VFs
+Date:   Mon, 19 Jul 2021 16:51:22 +0200
+Message-Id: <20210719144949.265773598@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -49,70 +41,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng(Mike) <longpeng2@huawei.com>
+From: Íñigo Huguet <ihuguet@redhat.com>
 
-[ Upstream commit c7ff9cff70601ea19245d997bb977344663434c7 ]
+[ Upstream commit 45423cff1db66cf0993e8a9bd0ac93e740149e49 ]
 
-The client's sk_state will be set to TCP_ESTABLISHED if the server
-replay the client's connect request.
+If pci_remove was called for a PF with VFs, the removal of the VFs was
+called twice from efx_ef10_sriov_fini: one directly with pci_driver->remove
+and another implicit by calling pci_disable_sriov, which also perform
+the VFs remove. This was leading to crashing the kernel on the second
+attempt.
 
-However, if the client has pending signal, its sk_state will be set
-to TCP_CLOSE without notify the server, so the server will hold the
-corrupt connection.
+Given that pci_disable_sriov already calls to pci remove function, get
+rid of the direct call to pci_driver->remove from the driver.
 
-            client                        server
+2 different ways to trigger the bug:
+- Create one or more VFs, then attach the PF to a virtual machine (at
+  least with qemu/KVM)
+- Create one or more VFs, then remove the PF with:
+  echo 1 > /sys/bus/pci/devices/PF_PCI_ID/remove
 
-1. sk_state=TCP_SYN_SENT         |
-2. call ->connect()              |
-3. wait reply                    |
-                                 | 4. sk_state=TCP_ESTABLISHED
-                                 | 5. insert to connected list
-                                 | 6. reply to the client
-7. sk_state=TCP_ESTABLISHED      |
-8. insert to connected list      |
-9. *signal pending* <--------------------- the user kill client
-10. sk_state=TCP_CLOSE           |
-client is exiting...             |
-11. call ->release()             |
-     virtio_transport_close
-      if (!(sk->sk_state == TCP_ESTABLISHED ||
-	      sk->sk_state == TCP_CLOSING))
-		return true; *return at here, the server cannot notice the connection is corrupt*
+Removing sfc module does not trigger the error, at least for me, because
+it removes the VF first, and then the PF.
 
-So the client should notify the peer in this case.
+Example of a log with the error:
+    list_del corruption, ffff967fd20a8ad0->next is LIST_POISON1 (dead000000000100)
+    ------------[ cut here ]------------
+    kernel BUG at lib/list_debug.c:47!
+    [...trimmed...]
+    RIP: 0010:__list_del_entry_valid.cold.1+0x12/0x4c
+    [...trimmed...]
+    Call Trace:
+    efx_dissociate+0x1f/0x140 [sfc]
+    efx_pci_remove+0x27/0x150 [sfc]
+    pci_device_remove+0x3b/0xc0
+    device_release_driver_internal+0x103/0x1f0
+    pci_stop_bus_device+0x69/0x90
+    pci_stop_and_remove_bus_device+0xe/0x20
+    pci_iov_remove_virtfn+0xba/0x120
+    sriov_disable+0x2f/0xe0
+    efx_ef10_pci_sriov_disable+0x52/0x80 [sfc]
+    ? pcie_aer_is_native+0x12/0x40
+    efx_ef10_sriov_fini+0x72/0x110 [sfc]
+    efx_pci_remove+0x62/0x150 [sfc]
+    pci_device_remove+0x3b/0xc0
+    device_release_driver_internal+0x103/0x1f0
+    unbind_store+0xf6/0x130
+    kernfs_fop_write+0x116/0x190
+    vfs_write+0xa5/0x1a0
+    ksys_write+0x4f/0xb0
+    do_syscall_64+0x5b/0x1a0
+    entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Jorgen Hansen <jhansen@vmware.com>
-Cc: Norbert Slusarek <nslusarek@gmx.net>
-Cc: Andra Paraschiv <andraprs@amazon.com>
-Cc: Colin Ian King <colin.king@canonical.com>
-Cc: David Brazdil <dbrazdil@google.com>
-Cc: Alexander Popov <alex.popov@linux.com>
-Suggested-by: Stefano Garzarella <sgarzare@redhat.com>
-Link: https://lkml.org/lkml/2021/5/17/418
-Signed-off-by: lixianming <lixianming5@huawei.com>
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/af_vsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/sfc/ef10_sriov.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index ae85a5e5648b..02a171916dd2 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1232,7 +1232,7 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+diff --git a/drivers/net/ethernet/sfc/ef10_sriov.c b/drivers/net/ethernet/sfc/ef10_sriov.c
+index 019cef1d3cf7..76c8d50882fc 100644
+--- a/drivers/net/ethernet/sfc/ef10_sriov.c
++++ b/drivers/net/ethernet/sfc/ef10_sriov.c
+@@ -443,7 +443,6 @@ int efx_ef10_sriov_init(struct efx_nic *efx)
+ void efx_ef10_sriov_fini(struct efx_nic *efx)
+ {
+ 	struct efx_ef10_nic_data *nic_data = efx->nic_data;
+-	unsigned int i;
+ 	int rc;
  
- 		if (signal_pending(current)) {
- 			err = sock_intr_errno(timeout);
--			sk->sk_state = TCP_CLOSE;
-+			sk->sk_state = sk->sk_state == TCP_ESTABLISHED ? TCP_CLOSING : TCP_CLOSE;
- 			sock->state = SS_UNCONNECTED;
- 			vsock_transport_cancel_pkt(vsk);
- 			goto out_wait;
+ 	if (!nic_data->vf) {
+@@ -453,14 +452,7 @@ void efx_ef10_sriov_fini(struct efx_nic *efx)
+ 		return;
+ 	}
+ 
+-	/* Remove any VFs in the host */
+-	for (i = 0; i < efx->vf_count; ++i) {
+-		struct efx_nic *vf_efx = nic_data->vf[i].efx;
+-
+-		if (vf_efx)
+-			vf_efx->pci_dev->driver->remove(vf_efx->pci_dev);
+-	}
+-
++	/* Disable SRIOV and remove any VFs in the host */
+ 	rc = efx_ef10_pci_sriov_disable(efx, true);
+ 	if (rc)
+ 		netif_dbg(efx, drv, efx->net_dev,
 -- 
 2.30.2
 
