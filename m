@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085ED3CD58A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C1A3CD58D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 15:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237456AbhGSM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 08:27:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45802 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237357AbhGSM11 (ORCPT
+        id S237210AbhGSM24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 08:28:56 -0400
+Received: from lucky1.263xmail.com ([211.157.147.135]:35778 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236855AbhGSM2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 08:27:27 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E1CD122347;
-        Mon, 19 Jul 2021 13:08:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626700085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l+48uTVBKsAfQWrBi2h/Hpln0+Jk5Zzi0x20gJCesT0=;
-        b=hpx37GdhPhruOYAmy6y5Vz5Jdv4J9u0IPYS7rY5HEdsmi5oZ5brxmgj/+OenJq6Qc9tp3U
-        /k/8+pmUFu8YnRI0zzp5WSOfG0PvzpQWBYCleBCNs05CXGhFO6zS0SXbwneIrQjl8JUMkC
-        85gjGwWVgUK5ySEkUg3jkBdn9u8z2qA=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BC511A3B92;
-        Mon, 19 Jul 2021 13:08:05 +0000 (UTC)
-Date:   Mon, 19 Jul 2021 15:08:05 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, kernel-team@fb.com
-Subject: Re: [PATCH v7 0/5] printk: Userspace format indexing support
-Message-ID: <YPV5NdCjwEgKtLnG@alley>
-References: <cover.1623775748.git.chris@chrisdown.name>
- <YMsfo3/b1LvOoiM0@alley>
- <YNBTrhErZsp0jKYG@alley>
- <20210623140847.6c548197dd03c6137a2b1a53@linux-foundation.org>
- <YNWjSkJa6y7G+fNj@alley>
- <YPV4vEbE58J14J+C@alley>
+        Mon, 19 Jul 2021 08:28:54 -0400
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id EDB8EB1936;
+        Mon, 19 Jul 2021 21:09:25 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by smtp.263.net (postfix) whith ESMTP id P13644T140562088032000S1626700165290287_;
+        Mon, 19 Jul 2021 21:09:26 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d0e9c68a6780ff19d835a3a8d28dbae0>
+X-RL-SENDER: chenhaoa@uniontech.com
+X-SENDER: chenhaoa@uniontech.com
+X-LOGIN-NAME: chenhaoa@uniontech.com
+X-FST-TO: peppe.cavallaro@st.com
+X-RCPT-COUNT: 11
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Hao Chen <chenhaoa@uniontech.com>
+To:     peppe.cavallaro@st.com
+Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, Hao Chen <chenhaoa@uniontech.com>
+Subject: [PATCH v5] net: stmmac: fix 'ethtool -P' return -EBUSY
+Date:   Mon, 19 Jul 2021 21:08:45 +0800
+Message-Id: <20210719130845.2102-1-chenhaoa@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPV4vEbE58J14J+C@alley>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-07-19 15:06:05, Petr Mladek wrote:
-> On Fri 2021-06-25 11:35:06, Petr Mladek wrote:
-> > On Wed 2021-06-23 14:08:47, Andrew Morton wrote:
-> > > On Mon, 21 Jun 2021 10:54:06 +0200 Petr Mladek <pmladek@suse.com> wrote:
-> > > 
-> > > > > Well, I would still like to get acks from:
-> > > > > 
-> > > > >    + Andy for the 1st patch
-> > > > >    + Jessica for the changes in the module loader code in 4th patch.
-> > > > 
-> > > > They provided the Acks, so that we could push it.
-> > > > 
-> > > > Andrew, this patchset depends on seq_file and string_helpers changes
-> > > > that are in -mm tree:
-> > > > 
-> > > > lib-string_helpers-switch-to-use-bit-macro.patch
-> > > > lib-string_helpers-move-escape_np-check-inside-else-branch-in-a-loop.patch
-> > > > lib-string_helpers-drop-indentation-level-in-string_escape_mem.patch
-> > > > lib-string_helpers-introduce-escape_na-for-escaping-non-ascii.patch
-> > > > lib-string_helpers-introduce-escape_nap-to-escape-non-ascii-and-non-printable.patch
-> > > > lib-string_helpers-allow-to-append-additional-characters-to-be-escaped.patch
-> > > > lib-test-string_helpers-print-flags-in-hexadecimal-format.patch
-> > > > lib-test-string_helpers-get-rid-of-trailing-comma-in-terminators.patch
-> > > > lib-test-string_helpers-add-test-cases-for-new-features.patch
-> > > > maintainers-add-myself-as-designated-reviewer-for-generic-string-library.patch
-> > > > seq_file-introduce-seq_escape_mem.patch
-> > > > seq_file-add-seq_escape_str-as-replica-of-string_escape_str.patch
-> > > > seq_file-convert-seq_escape-to-use-seq_escape_str.patch
-> > > > nfsd-avoid-non-flexible-api-in-seq_quote_mem.patch
-> > > > seq_file-drop-unused-_escape_mem_ascii.patch
-> > > > 
-> > > > 
-> > > > Would you mind to take this patchset via -mm tree as well, please?
-> > > > 
-> > > > You were not in CC. Should Chris send v8 with all the Acks and
-> > > > you in CC?
-> > > 
-> > > We're at -rc7, so I wouldn't be inclined to merge significant feature
-> > > work at this time.  I suggest a resend after -rc1, at which time the
-> > > above changes will be in mainline.
-> > 
-> > Fair enough. Let's postpone this patchset for 5.15. I am going to
-> > push it into the printk tree after the 5.14 merge window.
-> 
-> The patchset has been committed into printk/linux.git, branch
-> for-4.14-printk-index.
+The permanent mac address should be available for query when the device
+is not up.
+NetworkManager, the system network daemon, uses 'ethtool -P' to obtain
+the permanent address after the kernel start. When the network device
+is not up, it will return the device busy error with 'ethtool -P'. At
+that time, it is unable to access the Internet through the permanent
+address by NetworkManager.
+I think that the '.begin' is not used to check if the device is up, it's
+just a pre hook for ethtool. We shouldn't check if the device is up
+there.
 
-It is actually for-5.15-printk-index
+Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-I am sorry for the confusion.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index d0ce608b81c3..8901dc9f758e 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -410,13 +410,6 @@ static void stmmac_ethtool_setmsglevel(struct net_device *dev, u32 level)
+ 
+ }
+ 
+-static int stmmac_check_if_running(struct net_device *dev)
+-{
+-	if (!netif_running(dev))
+-		return -EBUSY;
+-	return 0;
+-}
+-
+ static int stmmac_ethtool_get_regs_len(struct net_device *dev)
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+@@ -1073,7 +1066,6 @@ static int stmmac_set_tunable(struct net_device *dev,
+ static const struct ethtool_ops stmmac_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
+ 				     ETHTOOL_COALESCE_MAX_FRAMES,
+-	.begin = stmmac_check_if_running,
+ 	.get_drvinfo = stmmac_ethtool_getdrvinfo,
+ 	.get_msglevel = stmmac_ethtool_getmsglevel,
+ 	.set_msglevel = stmmac_ethtool_setmsglevel,
+-- 
+2.20.1
 
-Best Regards,
-Petr
+
+
