@@ -2,87 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A933CD420
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3E43CD424
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 13:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236392AbhGSLJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 07:09:31 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:11344 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbhGSLJa (ORCPT
+        id S236605AbhGSLKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 07:10:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:59005 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236478AbhGSLKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:09:30 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GT0Qk0cnTz7tG1;
-        Mon, 19 Jul 2021 19:45:34 +0800 (CST)
-Received: from [10.174.177.180] (10.174.177.180) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 19 Jul 2021 19:50:07 +0800
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Boqun Feng <boqun.feng@gmail.com>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, <paulmck@kernel.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, Chris Clayton <chris2553@googlemail.com>,
-        Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>, <gregkh@linuxfoundation.org>
-References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
- <2245518.LNIG0phfVR@natalenko.name> <6698965.kvI7vG0SvZ@natalenko.name>
- <20210718215914.GQ4397@paulmck-ThinkPad-P17-Gen-1>
- <YPSweHyCrD2q2Pue@casper.infradead.org>
- <20210719015313.GS4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2yE+3vzd+LgJDJcJ2f8qttJQSUQ6efD9MaFd2iD4xPTZA@mail.gmail.com>
- <YPTmtNMJpykEpzx6@casper.infradead.org> <YPVQfaamqwu1PRrK@boqun-archlinux>
- <08803f78-3e99-6b3f-e809-5828fe47cf06@huawei.com>
- <YPVgaY6uw59Fqg5x@casper.infradead.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <8058e175-cec5-c243-6499-c1cd4e3c8605@huawei.com>
-Date:   Mon, 19 Jul 2021 19:50:07 +0800
+        Mon, 19 Jul 2021 07:10:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626695456; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=cuNYcuoxuLNPM9zRI3jedhlC+1gr//ok0e0lHbfvDqg=; b=weLvoX15VS3PrtnueKVNTgg+BpRtO/snJ4PTGtkXw7aStBgXVZVYHKeUYUAdpIhvUihjbgbr
+ rbzCL86Za4/XxJVqBtAr6MZxXIDQQsVhjaxANlSqEPGeDFpRtfjzPOMEqw062+CxB2mDRlCe
+ UxN/Z2MahGmRG5aVM3SMSsK8UqE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60f5671fd0100c7cf9fbf4c6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Jul 2021 11:50:55
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B9902C43217; Mon, 19 Jul 2021 11:50:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.50.42.221] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E0AD9C433D3;
+        Mon, 19 Jul 2021 11:50:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E0AD9C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v4 1/2] PM / Domains: Add support for 'required-opps' to
+ set default perf state
+To:     Stephen Boyd <swboyd@chromium.org>, bjorn.andersson@linaro.org,
+        ulf.hansson@linaro.org, viresh.kumar@linaro.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        rojay@codeaurora.org, stephan@gerhold.net
+References: <1626429658-18961-1-git-send-email-rnayak@codeaurora.org>
+ <1626429658-18961-2-git-send-email-rnayak@codeaurora.org>
+ <CAE-0n52AkJWAL0ptFgZOrD_BXrrMte5EbZUksf5UYzBxYisCBQ@mail.gmail.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <43c77084-cfea-ef7f-8454-6f0dbc3b6577@codeaurora.org>
+Date:   Mon, 19 Jul 2021 17:20:49 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YPVgaY6uw59Fqg5x@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAE-0n52AkJWAL0ptFgZOrD_BXrrMte5EbZUksf5UYzBxYisCBQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.180]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/19 19:22, Matthew Wilcox wrote:
-> On Mon, Jul 19, 2021 at 07:12:58PM +0800, Miaohe Lin wrote:
->> When in the commit 2799e77529c2a, we're using the percpu_ref to serialize against
->> concurrent swapoff, i.e. there's percpu_ref inside get_swap_device() instead of
->> rcu_read_lock(). Please see commit 63d8620ecf93 ("mm/swapfile: use percpu_ref to
->> serialize against concurrent swapoff") for detail.
+
+On 7/17/2021 1:49 AM, Stephen Boyd wrote:
+> Quoting Rajendra Nayak (2021-07-16 03:00:57)
+>> Some devics within power domains with performance states do not
 > 
-> Oh, so this is a backport problem.  2799e77529c2 was backported without
-> its prerequisite 63d8620ecf93.  Greg, probably best to just drop
-
-Yes, they're posted as a patch set:
-
-https://lkml.kernel.org/r/20210426123316.806267-1-linmiaohe@huawei.com
-
-> 2799e77529c2 from all stable trees; the race described is not very
-> important (swapoff vs reading a page back from that swap device).
-> .
+> devices
 > 
+>> support DVFS, but still need to vote on a default/static state
+>> while they are active. They can express this using the 'required-opps'
+>> property in device tree, which points to the phandle of the OPP
+>> supported by the corresponding power-domains.
+>>
+>> Add support to parse this information from DT and then set the
+>> specified performance state during attach and drop it on detach.
+>> Also drop/set as part of runtime suspend/resume callbacks.
+>>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+>>   drivers/base/power/domain.c | 37 ++++++++++++++++++++++++++++++++++---
+>>   include/linux/pm_domain.h   |  1 +
+>>   2 files changed, 35 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+>> index a934c67..dcc0b71 100644
+>> --- a/drivers/base/power/domain.c
+>> +++ b/drivers/base/power/domain.c
+>> @@ -1000,6 +1008,8 @@ static int genpd_runtime_resume(struct device *dev)
+>>          genpd_stop_dev(genpd, dev);
+>>   err_poweroff:
+>>          if (!pm_runtime_is_irq_safe(dev) || genpd_is_irq_safe(genpd)) {
+>> +               if (default_pstate)
+>> +                       dev_pm_genpd_set_performance_state(dev, 0);
+>>                  genpd_lock(genpd);
+>>                  gpd_data->rpm_pstate = genpd_drop_performance_state(dev);
+> 
+> Maybe this should be
+> 
+> 		  prev_state = genpd_drop_performance_state(dev);
+> 		  if (!default_pstate)
+> 		  	gdp_data->rpm_pstate = prev_state;
+> 
+> so we don't call dev_pm_genpd_set_performance_state() effectively twice?
+> Also it would make sure we call dev_pm_genpd_set_performance_state()
+> underneath the genpd_lock() if that is important. Similarly do that on
+> suspend path.
 
-The swapoff races with reading a page back from that swap device should be really
-uncommon as most users only do swapoff when the system is going to shutdown.
+looking through this more, I think I can completely drop any special
+handling for default_pstate in runtime suspend and resume. The existing
+drop/restore login Ulf has added should take care of it.
+I'll test and respin soon.
 
-Sorry for the trouble!
+> 
+>>                  genpd_power_off(genpd, true, 0);
+>> @@ -2598,6 +2608,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
+>>
+>>          dev_dbg(dev, "removing from PM domain %s\n", pd->name);
+>>
+>> +       /* Drop the default performance state */
+>> +       if (dev_gpd_data(dev)->default_pstate) {
+>> +               dev_pm_genpd_set_performance_state(dev, 0);
+>> +               dev_gpd_data(dev)->default_pstate = 0;
+>> +       }
+>> +
+>>          for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
+>>                  ret = genpd_remove_device(pd, dev);
+>>                  if (ret != -EAGAIN)
+>> @@ -2675,10 +2692,24 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>>                  genpd_unlock(pd);
+>>          }
+>>
+>> -       if (ret)
+>> +       if (ret) {
+>>                  genpd_remove_device(pd, dev);
+>> +               return -EPROBE_DEFER;
+>> +       }
+>> +
+>> +       /* Set the default performance state */
+>> +       np = base_dev->of_node;
+>> +       if (of_parse_phandle(np, "required-opps", index)) {
+>> +               pstate = of_get_required_opp_performance_state(np, index);
+>> +               if (pstate < 0) {
+>> +                       dev_err(dev, "failed to set pstate:%d", pstate);
+> 
+> Missing newline on printk. Also can we spell out pstate as "failed to
+> set required performance state %d for power-domain %d"?
+
+thanks, will fix when I respin.
+Thanks for the review.
+
+> 
+>> +                       ret = pstate;
+>> +               }
+>> +               dev_pm_genpd_set_performance_state(dev, pstate);
+>> +               dev_gpd_data(dev)->default_pstate = pstate;
+>> +       }
+>>
+>> -       return ret ? -EPROBE_DEFER : 1;
+>> +       return ret ? ret : 1;
+>>   }
+>>
+>>   /**
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
