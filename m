@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B233CF0AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A903CF0AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 02:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhGSXhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 19:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441860AbhGSWN7 (ORCPT
+        id S1377394AbhGSXfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 19:35:24 -0400
+Received: from mail-io1-f44.google.com ([209.85.166.44]:40622 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1392359AbhGSWGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:13:59 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8956BC0617A9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:46:29 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso19790620otu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 15:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KyE2hPx0TqjwF+EWXbiY19sKAIbJLJOpj7hrFpzW8Jo=;
-        b=FoqyEglhl36rO3FQbOJZIPaIFcaUh/wwHcS/yb0tvrWwASjD/ZL/M1qRfR0s5Ocvd/
-         O+e8DVfTH5lLbuJRvP+HSUYIUWeDY9oOgEL+AwPDAGwum/ONs0PsGamjBuGxomQm3gxi
-         XHcLJMJxaz0pJRkF2hrZ/3VbtWzgx+Rnwh8eaxT424m+kjFZeiD9O3ZVfIWGFLUJFx2q
-         nK6da++hxiBJ0q/wFDAT5xEWLiXhgsXJLOuWW24TCuVmTbSWNZtGIcGQafKJKhtLOtZc
-         K77kyEzBRDDzqK5YLy2V1Y3bBVim/eWuk044/pbzLlWNMBAEcnd5kUz4283vP5EYMWYy
-         dPyA==
+        Mon, 19 Jul 2021 18:06:43 -0400
+Received: by mail-io1-f44.google.com with SMTP id l5so21934172iok.7;
+        Mon, 19 Jul 2021 15:47:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KyE2hPx0TqjwF+EWXbiY19sKAIbJLJOpj7hrFpzW8Jo=;
-        b=fIsDSlhQlC1575whKgfe5NQUd0l9ME0kW/Kf3m6PDVNLy1x78M1c9CMfUW4Ik1B3gg
-         7FujvcqsqgNyOe7oA3kDqEuFb98EA4YGDXFFvHE+x7ryjc5YgIMyZZNi37dSrvSmW1VN
-         gWW88T+Iqigo2ZT6gNlyCLFkmyJqTIkoAyOwGgmnAm+O7ROp0VfaGs1gsIc9gaaZ24IA
-         JWcEctvS/zqKOdq3ZQdaF8N5Ix90cuyP/DJYydk2tvY0EW8XhcO+5KO8AT3f2elBY1iF
-         PUprcHDFgtxPsDoDZmgqfKX+yYTUL/GiDfcxhr7mmQEmleEI/tvx9ZA5innEczDJOHj7
-         I4sQ==
-X-Gm-Message-State: AOAM533y+TVVOmHtj4Wqf3EqOmAoeI44g0+scO5PKC1Utl3PFCqefqvT
-        630SqMykVU7px1+cOLrKHx5f1g==
-X-Google-Smtp-Source: ABdhPJwLChe+v+azZgkQTIZP1+AE5vYylGV93HF03MP9Oo7qXvqymJiFoPb0sJQmzXez/ISopfWe6g==
-X-Received: by 2002:a05:6830:40c4:: with SMTP id h4mr16818826otu.75.1626734788917;
-        Mon, 19 Jul 2021 15:46:28 -0700 (PDT)
-Received: from [192.168.17.50] ([189.219.74.83])
-        by smtp.gmail.com with ESMTPSA id p4sm3613598ooa.35.2021.07.19.15.46.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 15:46:28 -0700 (PDT)
-Subject: Re: [PATCH 5.4 000/148] 5.4.134-rc2 review
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        linux-kernel@vger.kernel.org, namhyung@kernel.org
-References: <20210719184316.974243081@linuxfoundation.org>
- <3d770ab7-5008-cbee-98c1-101d839739cd@linaro.org>
-Message-ID: <b98fa7ee-bfb2-4c0b-19e1-9b4175e4a167@linaro.org>
-Date:   Mon, 19 Jul 2021 17:46:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KvZduHEK4/JPd13AvRj7Dwo91+WDf4ZZkoTysoY/Z8c=;
+        b=C8ntqv2VbdZQLR0ghf46So1qeVVs/zRVH8+HvX8ekwXnt61iPsHBB5PdQz+bcMbrcI
+         t5CfL+MTiVz8ZEaEU/PCcG5dAOw8oh26hW7i4Ev0QpbdD8nc8We7weivWHB+rQfQqid6
+         t8Owmk+m4EwJoGKmugnSgn2HMnOvkT7kDORJedPE05ADZJaXzPLNTGSbYbQvChYrwp5u
+         Uck6PPyD/ZjfUEPNLEhO4cT6YjWfRwaEH+CXKvLj7PxzwK2c/2ymEH8vh9WzSk25Lxel
+         lid6a+Xrjva1u4IIkwp1x9HB1lz7ZuwxX2lq7zL1rNRFgXhwj/5EXcxQ8JTfDqVS0PJ2
+         3asA==
+X-Gm-Message-State: AOAM5321Z+feDVh/LHNpMVlc4jxBaLJ6ii/pEjd4E7BGuTQYqLmIAzJ9
+        caeKZBCNdHK1CW1TjYbc/w==
+X-Google-Smtp-Source: ABdhPJx2z9Xre7CdCLPouoO6dfskCrk/L/I3dMKprr4kx+Phkn3qCMvEw/eDabtuZvzFiQhg1hdthg==
+X-Received: by 2002:a6b:fe03:: with SMTP id x3mr1146470ioh.120.1626734842302;
+        Mon, 19 Jul 2021 15:47:22 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id w10sm10283737ilo.17.2021.07.19.15.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 15:47:21 -0700 (PDT)
+Received: (nullmailer pid 2767559 invoked by uid 1000);
+        Mon, 19 Jul 2021 22:47:18 -0000
+Date:   Mon, 19 Jul 2021 16:47:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chuanjia Liu <chuanjia.liu@mediatek.com>
+Cc:     linux-kernel@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        jianjun.wang@mediatek.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, bhelgaas@google.com,
+        ryder.lee@mediatek.com, robh+dt@kernel.org, matthias.bgg@gmail.com,
+        linux-pci@vger.kernel.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        devicetree@vger.kernel.org, yong.wu@mediatek.com
+Subject: Re: [PATCH v11 1/4] dt-bindings: PCI: mediatek: Update the Device
+ tree bindings
+Message-ID: <20210719224718.GA2766057@robh.at.kernel.org>
+References: <20210719073456.28666-1-chuanjia.liu@mediatek.com>
+ <20210719073456.28666-2-chuanjia.liu@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <3d770ab7-5008-cbee-98c1-101d839739cd@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719073456.28666-2-chuanjia.liu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 7/19/21 3:46 PM, Daniel Díaz wrote:
-> On 7/19/21 1:45 PM, Greg Kroah-Hartman wrote:
->> This is the start of the stable review cycle for the 5.4.134 release.
->> There are 148 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Wed, 21 Jul 2021 18:42:54 +0000.
->> Anything received after that time might be too late.
->>
->> The whole patch series can be found in one patch at:
->>     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.134-rc2.gz
->> or in the git tree and branch at:
->>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
->> and the diffstat can be found below.
->>
->> thanks,
->>
->> greg k-h
+On Mon, 19 Jul 2021 15:34:53 +0800, Chuanjia Liu wrote:
+> There are two independent PCIe controllers in MT2712 and MT7622
+> platform. Each of them should contain an independent MSI domain.
 > 
-> Perf fails to compile in 5.4 on Arm, Arm64, i386 and x86 (GCC 11 and GCC 7.3):
+> In old dts architecture, MSI domain will be inherited from the root
+> bridge, and all of the devices will share the same MSI domain.
+> Hence that, the PCIe devices will not work properly if the irq number
+> which required is more than 32.
 > 
->    builtin-report.c:669:12: error: 'process_attr' used but never defined [-Werror]
->      669 | static int process_attr(struct perf_tool *tool __maybe_unused,
->          |            ^~~~~~~~~~~~
->    cc1: all warnings being treated as errors
->    make[3]: *** [/builds/linux/tools/build/Makefile.build:96: /home/tuxbuild/.cache/tuxmake/builds/current/builtin-report.o] Error 1
+> Split the PCIe node for MT2712 and MT7622 platform to comply with
+> the hardware design and fix MSI issue.
+> 
+> Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
+> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> ---
+>  .../bindings/pci/mediatek-pcie-cfg.yaml       |  39 ++++
+>  .../devicetree/bindings/pci/mediatek-pcie.txt | 206 ++++++++++--------
+>  2 files changed, 150 insertions(+), 95 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/mediatek-pcie-cfg.yaml
+> 
 
-Bisection points to ee7531fb817c ("perf report: Fix --task and --stat with pipe input" [upstream commit 892ba7f18621a02af4428c58d97451f64685dba4]).
 
-Greetings!
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-Daniel Díaz
-daniel.diaz@linaro.org
+If a tag was not added on purpose, please state why and what changed.
+
