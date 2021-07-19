@@ -2,79 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FD33CD020
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45AD3CCFF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbhGSI2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:28:21 -0400
-Received: from mga06.intel.com ([134.134.136.31]:19386 "EHLO mga06.intel.com"
+        id S235547AbhGSIYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:24:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235235AbhGSI2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:28:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="272132044"
-X-IronPort-AV: E=Sophos;i="5.84,251,1620716400"; 
-   d="scan'208";a="272132044"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 01:46:59 -0700
-X-IronPort-AV: E=Sophos;i="5.84,251,1620716400"; 
-   d="scan'208";a="468350515"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 01:46:57 -0700
-Subject: Re: [kbuild-all] Re: [linux-stable-rc:linux-4.4.y 1449/1774]
- drivers/input/joydev.c:485:16: warning: comparison of integer expressions of
- different signedness: 'int' and 'long unsigned int'
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     Dan Carpenter <error27@gmail.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-References: <202107191112.AwqoFW63-lkp@intel.com>
- <20210719071758.GP1931@kadam>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <4dee6094-2bec-6afb-38ae-804675c8172c@intel.com>
-Date:   Mon, 19 Jul 2021 16:46:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S235878AbhGSIXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 04:23:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A189661009;
+        Mon, 19 Jul 2021 08:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626684454;
+        bh=Z8QxgJGFP3p/nfg2SDMpVEKedbs0kk0rI6anNltZnjo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=R1unZ01KJujtGTmo/J9J6hR8G0lo1mUHWxkHcROjETXmAY3mOFr8wU7azwnyqvsrA
+         bnwio/yvyJf8bAIW7xjuExhrcY709L88xKdffd72aVGMQzNXOq8ucpviRTUzFkh89G
+         rhh9XHEulz76ULCMS6hNKcuJ88eBERIljROHIz0LSpLferHS2XwUFPrdMsaM0Wfkbk
+         MDOQfY894w4x644N+tZcem2Aeb+76QQyNBS2PoZVKsbA2CeuwvIYE57vUHjJGkkneZ
+         WtCwbZsy1OzIB6i8ArNvEPp1nhZL8HQRmut1kULhCxYma7tCwvE9M/IWRizH8VSvHy
+         OcRM8B7H5Yy7Q==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Chao Yu <chao@kernel.org>
+Subject: [PATCH] f2fs: multidevice: support direct IO
+Date:   Mon, 19 Jul 2021 16:47:29 +0800
+Message-Id: <20210719084729.26117-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
-In-Reply-To: <20210719071758.GP1931@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 3c62be17d4f5 ("f2fs: support multiple devices") missed
+to support direct IO for multiple device feature, this patch
+adds to support the missing part of multidevice feature.
 
+In addition, for multiple device image, we should be aware of
+any issued direct write IO rather than just buffered write IO,
+so that fsync and syncfs can issue a preflush command to the
+device where direct write IO goes, to persist user data for
+posix compliant.
 
-On 7/19/21 3:17 PM, Dan Carpenter wrote:
-> On Mon, Jul 19, 2021 at 11:39:16AM +0800, kernel test robot wrote:
->>     drivers/input/joydev.c: In function 'joydev_handle_JSIOCSAXMAP':
->>     drivers/input/joydev.c:451:16: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
->>       451 |  for (i = 0; i < len && i < joydev->nabs; i++) {
-> We should figure out a way to turn this warning off in the compiler.
->
-> It's a stupid warning.  It never fixes any bugs.  It sometimes
-> introduces bugs.
->
-> In the kernel if you are in drivers/ and you have a loop which iterates
-> over 2 million times that's probably a bug.  But GCC is very very
-> stupid and not designed to be a static analysis tool.  It does not know
-> which loops can iterate more than 2 million times.  Even when it knows
-> that the loop only loops up to 5 or 10 times it still warns that maybe
-> it will loop over 2 million times.  INSULTS AND DISPARAGEMENT!
->
-> Seriously, please disable this warning unless you can point to one
-> single bug that it has fixed.
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/f2fs/data.c    | 52 +++++++++++++++++++++++++++++++++++++++++++++--
+ fs/f2fs/f2fs.h    | 24 +++++++++++++++++++---
+ fs/f2fs/segment.c | 29 +++++++++++++-------------
+ fs/f2fs/super.c   |  7 +++++++
+ 4 files changed, 93 insertions(+), 19 deletions(-)
 
-Hi Dan,
-
-Thanks for the explanation, we'll stop reporting this warning.
-
-Best Regards,
-Rong Chen
-
->
-> regards,
-> dan carpenter
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 095350ccf80d..be65dca0de40 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1451,10 +1451,16 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+ 	struct extent_info ei = {0,0,0};
+ 	block_t blkaddr;
+ 	unsigned int start_pgofs;
++	int bidx = 0;
++	bool multidevice_dio;
+ 
+ 	if (!maxblocks)
+ 		return 0;
+ 
++	multidevice_dio = f2fs_allow_multi_device_dio(sbi, flag);
++	if (multidevice_dio)
++		map->m_bdev = sbi->sb->s_bdev;
++
+ 	map->m_len = 0;
+ 	map->m_flags = 0;
+ 
+@@ -1477,6 +1483,16 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+ 		if (flag == F2FS_GET_BLOCK_DIO)
+ 			f2fs_wait_on_block_writeback_range(inode,
+ 						map->m_pblk, map->m_len);
++
++		if (multidevice_dio) {
++			bidx = f2fs_target_device_index(sbi, map->m_pblk);
++			if (bidx) {
++				map->m_bdev = FDEV(bidx).bdev;
++				map->m_pblk -= FDEV(bidx).start_blk;
++				map->m_len = min(map->m_len,
++					FDEV(bidx).end_blk + 1 - map->m_pblk);
++			}
++		}
+ 		goto out;
+ 	}
+ 
+@@ -1574,6 +1590,9 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+ 	if (flag == F2FS_GET_BLOCK_PRE_AIO)
+ 		goto skip;
+ 
++	if (multidevice_dio)
++		bidx = f2fs_target_device_index(sbi, blkaddr);
++
+ 	if (map->m_len == 0) {
+ 		/* preallocated unwritten block should be mapped for fiemap. */
+ 		if (blkaddr == NEW_ADDR)
+@@ -1582,10 +1601,15 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+ 
+ 		map->m_pblk = blkaddr;
+ 		map->m_len = 1;
++
++		if (multidevice_dio && map->m_bdev != FDEV(bidx).bdev)
++			map->m_bdev = FDEV(bidx).bdev;
+ 	} else if ((map->m_pblk != NEW_ADDR &&
+ 			blkaddr == (map->m_pblk + ofs)) ||
+ 			(map->m_pblk == NEW_ADDR && blkaddr == NEW_ADDR) ||
+ 			flag == F2FS_GET_BLOCK_PRE_DIO) {
++		if (multidevice_dio && map->m_bdev != FDEV(bidx).bdev)
++			goto sync_out;
+ 		ofs++;
+ 		map->m_len++;
+ 	} else {
+@@ -1638,11 +1662,27 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+ 
+ sync_out:
+ 
+-	/* for hardware encryption, but to avoid potential issue in future */
+-	if (flag == F2FS_GET_BLOCK_DIO && map->m_flags & F2FS_MAP_MAPPED)
++	if (flag == F2FS_GET_BLOCK_DIO && map->m_flags & F2FS_MAP_MAPPED) {
++		/*
++		 * for hardware encryption, but to avoid potential issue
++		 * in future
++		 */
+ 		f2fs_wait_on_block_writeback_range(inode,
+ 						map->m_pblk, map->m_len);
+ 
++		if (multidevice_dio) {
++			bidx = f2fs_target_device_index(sbi, map->m_pblk);
++			if (bidx) {
++				map->m_bdev = FDEV(bidx).bdev;
++				map->m_pblk -= FDEV(bidx).start_blk;
++				f2fs_bug_on(sbi,
++					map->m_bdev != FDEV(bidx).bdev ||
++					map->m_pblk + map->m_len >
++						FDEV(bidx).end_blk + 1);
++			}
++		}
++	}
++
+ 	if (flag == F2FS_GET_BLOCK_PRECACHE) {
+ 		if (map->m_flags & F2FS_MAP_MAPPED) {
+ 			unsigned int ofs = start_pgofs - map->m_lblk;
+@@ -1720,6 +1760,9 @@ static int __get_data_block(struct inode *inode, sector_t iblock,
+ 		map_bh(bh, inode->i_sb, map.m_pblk);
+ 		bh->b_state = (bh->b_state & ~F2FS_MAP_FLAGS) | map.m_flags;
+ 		bh->b_size = blks_to_bytes(inode, map.m_len);
++
++		if (f2fs_allow_multi_device_dio(F2FS_I_SB(inode), flag))
++			bh->b_bdev = map.m_bdev;
+ 	}
+ 	return err;
+ }
+@@ -3511,6 +3554,7 @@ static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
+ {
+ 	struct f2fs_private_dio *dio;
+ 	bool write = (bio_op(bio) == REQ_OP_WRITE);
++	block_t blkaddr = SECTOR_TO_BLOCK(bio->bi_iter.bi_sector);
+ 	unsigned int blkcnt = bio_sectors(bio) >> F2FS_LOG_SECTORS_PER_BLOCK;
+ 
+ 	dio = f2fs_kzalloc(F2FS_I_SB(inode),
+@@ -3527,6 +3571,10 @@ static void f2fs_dio_submit_bio(struct bio *bio, struct inode *inode,
+ 	bio->bi_end_io = f2fs_dio_end_io;
+ 	bio->bi_private = dio;
+ 
++	if (write)
++		f2fs_update_device_state(F2FS_I_SB(inode), inode->i_ino,
++							blkaddr, blkcnt);
++
+ 	inc_page_counts(F2FS_I_SB(inode),
+ 			write ? F2FS_DIO_WRITE : F2FS_DIO_READ, dio->blkcnt);
+ 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 7369f8087f64..f3ac3cbad2e3 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -607,6 +607,7 @@ struct extent_tree {
+ 				F2FS_MAP_UNWRITTEN)
+ 
+ struct f2fs_map_blocks {
++	struct block_device *m_bdev;	/* for multi-device */
+ 	block_t m_pblk;
+ 	block_t m_lblk;
+ 	unsigned int m_len;
+@@ -1712,12 +1713,15 @@ struct f2fs_sb_info {
+ 
+ 	/* For shrinker support */
+ 	struct list_head s_list;
++	struct mutex umount_mutex;
++	unsigned int shrinker_run_no;
++
++	/* For multi devices */
+ 	int s_ndevs;				/* number of devices */
+ 	struct f2fs_dev_info *devs;		/* for device list */
+ 	unsigned int dirty_device;		/* for checkpoint data flush */
+ 	spinlock_t dev_lock;			/* protect dirty_device */
+-	struct mutex umount_mutex;
+-	unsigned int shrinker_run_no;
++	bool aligned_blksize;			/* all devices has the same logical blksize */
+ 
+ 	/* For write statistics */
+ 	u64 sectors_written_start;
+@@ -3527,6 +3531,8 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+ 			block_t old_blkaddr, block_t *new_blkaddr,
+ 			struct f2fs_summary *sum, int type,
+ 			struct f2fs_io_info *fio);
++void f2fs_update_device_state(struct f2fs_sb_info *sbi, nid_t ino,
++					block_t blkaddr, unsigned int blkcnt);
+ void f2fs_wait_on_page_writeback(struct page *page,
+ 			enum page_type type, bool ordered, bool locked);
+ void f2fs_wait_on_block_writeback(struct inode *inode, block_t blkaddr);
+@@ -4334,6 +4340,16 @@ static inline int allow_outplace_dio(struct inode *inode,
+ 				!block_unaligned_IO(inode, iocb, iter));
+ }
+ 
++static inline bool f2fs_allow_multi_device_dio(struct f2fs_sb_info *sbi,
++								int flag)
++{
++	if (!f2fs_is_multi_device(sbi))
++		return false;
++	if (flag != F2FS_GET_BLOCK_DIO)
++		return false;
++	return sbi->aligned_blksize;
++}
++
+ static inline bool f2fs_force_buffered_io(struct inode *inode,
+ 				struct kiocb *iocb, struct iov_iter *iter)
+ {
+@@ -4342,7 +4358,9 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
+ 
+ 	if (f2fs_post_read_required(inode))
+ 		return true;
+-	if (f2fs_is_multi_device(sbi))
++
++	/* disallow direct IO if any of devices has unaligned blksize */
++	if (f2fs_is_multi_device(sbi) && !sbi->aligned_blksize)
+ 		return true;
+ 	/*
+ 	 * for blkzoned device, fallback direct IO to buffered IO, so
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 15cc89eef28d..6fcfd234108a 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -3442,24 +3442,24 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+ 	up_read(&SM_I(sbi)->curseg_lock);
+ }
+ 
+-static void update_device_state(struct f2fs_io_info *fio)
++void f2fs_update_device_state(struct f2fs_sb_info *sbi, nid_t ino,
++					block_t blkaddr, unsigned int blkcnt)
+ {
+-	struct f2fs_sb_info *sbi = fio->sbi;
+-	unsigned int devidx;
+-
+ 	if (!f2fs_is_multi_device(sbi))
+ 		return;
+ 
+-	devidx = f2fs_target_device_index(sbi, fio->new_blkaddr);
++	for (; blkcnt > 0; blkcnt--, blkaddr++) {
++		unsigned int devidx = f2fs_target_device_index(sbi, blkaddr);
+ 
+-	/* update device state for fsync */
+-	f2fs_set_dirty_device(sbi, fio->ino, devidx, FLUSH_INO);
++		/* update device state for fsync */
++		f2fs_set_dirty_device(sbi, ino, devidx, FLUSH_INO);
+ 
+-	/* update device state for checkpoint */
+-	if (!f2fs_test_bit(devidx, (char *)&sbi->dirty_device)) {
+-		spin_lock(&sbi->dev_lock);
+-		f2fs_set_bit(devidx, (char *)&sbi->dirty_device);
+-		spin_unlock(&sbi->dev_lock);
++		/* update device state for checkpoint */
++		if (!f2fs_test_bit(devidx, (char *)&sbi->dirty_device)) {
++			spin_lock(&sbi->dev_lock);
++			f2fs_set_bit(devidx, (char *)&sbi->dirty_device);
++			spin_unlock(&sbi->dev_lock);
++		}
+ 	}
+ }
+ 
+@@ -3486,7 +3486,7 @@ static void do_write_page(struct f2fs_summary *sum, struct f2fs_io_info *fio)
+ 		goto reallocate;
+ 	}
+ 
+-	update_device_state(fio);
++	f2fs_update_device_state(fio->sbi, fio->ino, fio->new_blkaddr, 1);
+ 
+ 	if (keep_order)
+ 		up_read(&fio->sbi->io_order_lock);
+@@ -3575,7 +3575,8 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+ 	else
+ 		err = f2fs_submit_page_bio(fio);
+ 	if (!err) {
+-		update_device_state(fio);
++		f2fs_update_device_state(fio->sbi, fio->ino,
++						fio->new_blkaddr, 1);
+ 		f2fs_update_iostat(fio->sbi, fio->io_type, F2FS_BLKSIZE);
+ 	}
+ 
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 72eb9d70969f..dced7778d530 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3646,6 +3646,7 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ {
+ 	struct f2fs_super_block *raw_super = F2FS_RAW_SUPER(sbi);
+ 	unsigned int max_devices = MAX_DEVICES;
++	unsigned int logical_blksize;
+ 	int i;
+ 
+ 	/* Initialize single device information */
+@@ -3666,6 +3667,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 	if (!sbi->devs)
+ 		return -ENOMEM;
+ 
++	logical_blksize = bdev_logical_block_size(sbi->sb->s_bdev);
++	sbi->aligned_blksize = true;
++
+ 	for (i = 0; i < max_devices; i++) {
+ 
+ 		if (i > 0 && !RDEV(i).path[0])
+@@ -3702,6 +3706,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 		/* to release errored devices */
+ 		sbi->s_ndevs = i + 1;
+ 
++		if (logical_blksize != bdev_logical_block_size(FDEV(i).bdev))
++			sbi->aligned_blksize = false;
++
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 		if (bdev_zoned_model(FDEV(i).bdev) == BLK_ZONED_HM &&
+ 				!f2fs_sb_has_blkzoned(sbi)) {
+-- 
+2.22.1
 
