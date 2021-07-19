@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7472B3CEABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434A73CE95E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377998AbhGSRRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36334 "EHLO mail.kernel.org"
+        id S1346513AbhGSQxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:53:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348192AbhGSPj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33DBD61244;
-        Mon, 19 Jul 2021 16:19:56 +0000 (UTC)
+        id S1348314AbhGSPaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:30:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEA246115B;
+        Mon, 19 Jul 2021 16:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711596;
-        bh=psjiZPoJqTbIx9wY8pQaLI33HJVWFseOA6R/5ygYdO4=;
+        s=korg; t=1626710968;
+        bh=MKvv0JDy2Rf+bA8Hb2DGAmiAM0YmdIEgaq3vBgN0j/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LUgK+AQ8VPD4Ub1aHF5ABzFhEqAPx3gjxchPfQbLNeJZPIZetjX6GkE2JWxWxpvwT
-         yG/k4L6ms0xf8qPuni+horjpYIiDZAIbjkKo4kQYyXp2wwdusIl1STZjRoFd8fS5D8
-         +gbNLFWMWxa52gO89QjvZyV6bhut54eFDpKSL1lg=
+        b=ZdcUt0nIOvdhVghBfNd95hmNhQpu5NWWg8JuiLY6jquOfX3rIDDN0GVjmsFRhxqDT
+         6ySspL59AJb4RqCnEkPx01zoeenWmRzav/1jevwOhAIxlN3CT6hS9C8V03OyreL5wd
+         mUYpxsx9ATwTO8X+XEtjCehw1xGlNdoci3D3o3nQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yufen Yu <yuyufen@huawei.com>, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 061/292] ALSA: ac97: fix PM reference leak in ac97_bus_remove()
-Date:   Mon, 19 Jul 2021 16:52:03 +0200
-Message-Id: <20210719144944.523160475@linuxfoundation.org>
+Subject: [PATCH 5.13 178/351] NFSv4: Fix handling of non-atomic change attrbute updates
+Date:   Mon, 19 Jul 2021 16:52:04 +0200
+Message-Id: <20210719144950.874359578@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufen Yu <yuyufen@huawei.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit a38e93302ee25b2ca6f4ee76c6c974cf3637985e ]
+[ Upstream commit 20cf7d4ea4ad7d9830b01ff7444f6ac64a727a23 ]
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+If the change attribute update is declared to be non-atomic by the
+server, or our cached value does not match the server's value before the
+operation was performed, then we should declare the inode cache invalid.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yufen Yu <yuyufen@huawei.com>
-Link: https://lore.kernel.org/r/20210524093811.612302-1-yuyufen@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+On the other hand, if the change to the directory raced with a lookup or
+getattr which already updated the change attribute, then optimise away
+the revalidation.
+
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/ac97/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/nfs4proc.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
-index d9077e91382b..6ddf646cda65 100644
---- a/sound/ac97/bus.c
-+++ b/sound/ac97/bus.c
-@@ -520,7 +520,7 @@ static int ac97_bus_remove(struct device *dev)
- 	struct ac97_codec_driver *adrv = to_ac97_driver(dev->driver);
- 	int ret;
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index e653654c10bc..451d3d56d80c 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -1205,12 +1205,12 @@ nfs4_update_changeattr_locked(struct inode *inode,
+ 	u64 change_attr = inode_peek_iversion_raw(inode);
  
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
+ 	cache_validity |= NFS_INO_INVALID_CTIME | NFS_INO_INVALID_MTIME;
++	if (S_ISDIR(inode->i_mode))
++		cache_validity |= NFS_INO_INVALID_DATA;
  
+ 	switch (NFS_SERVER(inode)->change_attr_type) {
+ 	case NFS4_CHANGE_TYPE_IS_UNDEFINED:
+-		break;
+-	case NFS4_CHANGE_TYPE_IS_TIME_METADATA:
+-		if ((s64)(change_attr - cinfo->after) > 0)
++		if (cinfo->after == change_attr)
+ 			goto out;
+ 		break;
+ 	default:
+@@ -1218,24 +1218,21 @@ nfs4_update_changeattr_locked(struct inode *inode,
+ 			goto out;
+ 	}
+ 
+-	if (cinfo->atomic && cinfo->before == change_attr) {
+-		nfsi->attrtimeo_timestamp = jiffies;
+-	} else {
+-		if (S_ISDIR(inode->i_mode)) {
+-			cache_validity |= NFS_INO_INVALID_DATA;
++	inode_set_iversion_raw(inode, cinfo->after);
++	if (!cinfo->atomic || cinfo->before != change_attr) {
++		if (S_ISDIR(inode->i_mode))
+ 			nfs_force_lookup_revalidate(inode);
+-		} else {
+-			if (!NFS_PROTO(inode)->have_delegation(inode,
+-							       FMODE_READ))
+-				cache_validity |= NFS_INO_REVAL_PAGECACHE;
+-		}
+ 
+-		if (cinfo->before != change_attr)
+-			cache_validity |= NFS_INO_INVALID_ACCESS |
+-					  NFS_INO_INVALID_ACL |
+-					  NFS_INO_INVALID_XATTR;
++		if (!NFS_PROTO(inode)->have_delegation(inode, FMODE_READ))
++			cache_validity |=
++				NFS_INO_INVALID_ACCESS | NFS_INO_INVALID_ACL |
++				NFS_INO_INVALID_SIZE | NFS_INO_INVALID_OTHER |
++				NFS_INO_INVALID_BLOCKS | NFS_INO_INVALID_NLINK |
++				NFS_INO_INVALID_MODE | NFS_INO_INVALID_XATTR |
++				NFS_INO_REVAL_PAGECACHE;
++		nfsi->attrtimeo = NFS_MINATTRTIMEO(inode);
+ 	}
+-	inode_set_iversion_raw(inode, cinfo->after);
++	nfsi->attrtimeo_timestamp = jiffies;
+ 	nfsi->read_cache_jiffies = timestamp;
+ 	nfsi->attr_gencount = nfs_inc_attr_generation_counter();
+ 	nfsi->cache_validity &= ~NFS_INO_INVALID_CHANGE;
 -- 
 2.30.2
 
