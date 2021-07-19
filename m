@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD6F3CDE0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD4D3CDD59
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344617AbhGSPBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
+        id S241123AbhGSO5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:57:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245694AbhGSOjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8FA36135C;
-        Mon, 19 Jul 2021 15:18:51 +0000 (UTC)
+        id S244361AbhGSOh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:37:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 140FE6113E;
+        Mon, 19 Jul 2021 15:17:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707932;
-        bh=gHI2DoY4IyNFtGPUKqbxnQZ2z7cG3IQxGPlRt7+kbcI=;
+        s=korg; t=1626707838;
+        bh=v7iF50Bzn4if2LlZ1Ia8/TQL6XSxe8GjQb6u9hcTzT4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ZwlQRSwj/9Km4el2pask7Yvz7VWjwutQDa3MwwIdic6GbFoLH3SqyDzbH83nJZNz
-         pA4eR1JwIQQw2tTiE+kFMpl+Fy//UlMISo4li3HRW5x8h8bOpzlkVf/jTiX3g7ICOs
-         KicLmI5yQf0uERSiK4k0YCpSmjVnKou37fUymGds=
+        b=1kVmDFgekQ1a8me8Xiws4JGUYmuL/uRHs9ud4WxVx9bzkYked/gTJlaf9R2RR6MUq
+         DW9rpxXJdxQigFpATG/qyhN3flmyjGdiK6HKFbPxg25jXGVjeFJlgxonAD7WzEP+qG
+         dPP8C5eLejvUVHXMI/WzgacfaIlZmNN2bQ9Uak/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Bob Moore <robert.moore@intel.com>,
+        stable@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 069/315] ACPICA: Fix memory leak caused by _CID repair function
-Date:   Mon, 19 Jul 2021 16:49:18 +0200
-Message-Id: <20210719144945.129445271@linuxfoundation.org>
+Subject: [PATCH 4.14 070/315] ACPI: bus: Call kobject_put() in acpi_init() error path
+Date:   Mon, 19 Jul 2021 16:49:19 +0200
+Message-Id: <20210719144945.159653639@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,53 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erik Kaneda <erik.kaneda@intel.com>
+From: Hanjun Guo <guohanjun@huawei.com>
 
-[ Upstream commit c27bac0314131b11bccd735f7e8415ac6444b667 ]
+[ Upstream commit 4ac7a817f1992103d4e68e9837304f860b5e7300 ]
 
-ACPICA commit 180cb53963aa876c782a6f52cc155d951b26051a
+Although the system will not be in a good condition or it will not
+boot if acpi_bus_init() fails, it is still necessary to put the
+kobject in the error path before returning to avoid leaking memory.
 
-According to the ACPI spec, _CID returns a package containing
-hardware ID's. Each element of an ASL package contains a reference
-count from the parent package as well as the element itself.
-
-Name (TEST, Package() {
-    "String object" // this package element has a reference count of 2
-})
-
-A memory leak was caused in the _CID repair function because it did
-not decrement the reference count created by the package. Fix the
-memory leak by calling acpi_ut_remove_reference on _CID package elements
-that represent a hardware ID (_HID).
-
-Link: https://github.com/acpica/acpica/commit/180cb539
-Tested-by: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
-Signed-off-by: Bob Moore <robert.moore@intel.com>
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+[ rjw: Subject and changelog edits ]
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/nsrepair2.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/acpi/bus.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/acpi/acpica/nsrepair2.c b/drivers/acpi/acpica/nsrepair2.c
-index 06037e044694..78b802b5f7d3 100644
---- a/drivers/acpi/acpica/nsrepair2.c
-+++ b/drivers/acpi/acpica/nsrepair2.c
-@@ -409,6 +409,13 @@ acpi_ns_repair_CID(struct acpi_evaluate_info *info,
- 
- 			(*element_ptr)->common.reference_count =
- 			    original_ref_count;
-+
-+			/*
-+			 * The original_element holds a reference from the package object
-+			 * that represents _HID. Since a new element was created by _HID,
-+			 * remove the reference from the _CID package.
-+			 */
-+			acpi_ut_remove_reference(original_element);
- 		}
- 
- 		element_ptr++;
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+index 1cb7c6a52f61..7ea02bb50c73 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -1249,6 +1249,7 @@ static int __init acpi_init(void)
+ 	init_acpi_device_notify();
+ 	result = acpi_bus_init();
+ 	if (result) {
++		kobject_put(acpi_kobj);
+ 		disable_acpi();
+ 		return result;
+ 	}
 -- 
 2.30.2
 
