@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02563CE035
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFAB3CE034
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346653AbhGSPO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:14:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40860 "EHLO mail.kernel.org"
+        id S1346606AbhGSPO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:14:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343776AbhGSOsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343777AbhGSOsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BC8961241;
-        Mon, 19 Jul 2021 15:24:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B11776124B;
+        Mon, 19 Jul 2021 15:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708293;
-        bh=nzdydNYmLflCaFutndl1RJtdrTqtelCnjdq+dPZ1GI8=;
+        s=korg; t=1626708296;
+        bh=C1ShubNXVTEITTM499ROiCEtSal1Awt21Bbup50aTP8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YYojfTaCh5JfXOgDMvvaPRxhNDcVO9SK2H5siQs9mA09YjAV+4Y0vj6cRHWSrrD2a
-         gW9G1u9e1qk5b2bfdM3ZXL3l+MH+Kb9v3Bfh0ttgHYwv1a0pMcqvYB+o0dx7RZcP8G
-         ZOTDmCWz3Dn7aVX+ZYkzs12cWUD9A2U/ToVv5ZYo=
+        b=WRkSJQxZIg/Q6jUHwrS8lapCXjz38ASlIc4Rk6F4d72fKf5IVdO9U4fhKd/dCoaQ4
+         gb423XsH70vOZzQq9T/JMPVEKUVcSs4QSMjGCwLFUrgjjUyNpwyDXjbzg+ZaEF+LQP
+         BwJy4nZ7CGl89/LW5pHhIeCEQdhRFt5asl5hFPZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH 4.14 221/315] ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe
-Date:   Mon, 19 Jul 2021 16:51:50 +0200
-Message-Id: <20210719144950.697009736@linuxfoundation.org>
+        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.14 222/315] dm btree remove: assign new_root only when removal succeeds
+Date:   Mon, 19 Jul 2021 16:51:51 +0200
+Message-Id: <20210719144950.728049887@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,45 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Hou Tao <houtao1@huawei.com>
 
-commit 9272e5d0028d45a3b45b58c9255e6e0df53f7ad9 upstream.
+commit b6e58b5466b2959f83034bead2e2e1395cca8aeb upstream.
 
-In the out_err_bus_register error branch of tpci200_pci_probe,
-tpci200->info->cfg_regs is freed by tpci200_uninstall()->
-tpci200_unregister()->pci_iounmap(..,tpci200->info->cfg_regs)
-in the first time.
+remove_raw() in dm_btree_remove() may fail due to IO read error
+(e.g. read the content of origin block fails during shadowing),
+and the value of shadow_spine::root is uninitialized, but
+the uninitialized value is still assign to new_root in the
+end of dm_btree_remove().
 
-But later, iounmap() is called to free tpci200->info->cfg_regs
-again.
+For dm-thin, the value of pmd->details_root or pmd->root will become
+an uninitialized value, so if trying to read details_info tree again
+out-of-bound memory may occur as showed below:
 
-My patch sets tpci200->info->cfg_regs to NULL after tpci200_uninstall()
-to avoid the double free.
+  general protection fault, probably for non-canonical address 0x3fdcb14c8d7520
+  CPU: 4 PID: 515 Comm: dmsetup Not tainted 5.13.0-rc6
+  Hardware name: QEMU Standard PC
+  RIP: 0010:metadata_ll_load_ie+0x14/0x30
+  Call Trace:
+   sm_metadata_count_is_more_than_one+0xb9/0xe0
+   dm_tm_shadow_block+0x52/0x1c0
+   shadow_step+0x59/0xf0
+   remove_raw+0xb2/0x170
+   dm_btree_remove+0xf4/0x1c0
+   dm_pool_delete_thin_device+0xc3/0x140
+   pool_message+0x218/0x2b0
+   target_message+0x251/0x290
+   ctl_ioctl+0x1c4/0x4d0
+   dm_ctl_ioctl+0xe/0x20
+   __x64_sys_ioctl+0x7b/0xb0
+   do_syscall_64+0x40/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fixes: cea2f7cdff2af ("Staging: ipack/bridges/tpci200: Use the TPCI200 in big endian mode")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Link: https://lore.kernel.org/r/20210524093205.8333-1-lyl2019@mail.ustc.edu.cn
+Fixing it by only assign new_root when removal succeeds
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ipack/carriers/tpci200.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/md/persistent-data/dm-btree-remove.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/ipack/carriers/tpci200.c
-+++ b/drivers/ipack/carriers/tpci200.c
-@@ -591,8 +591,11 @@ static int tpci200_pci_probe(struct pci_
+--- a/drivers/md/persistent-data/dm-btree-remove.c
++++ b/drivers/md/persistent-data/dm-btree-remove.c
+@@ -549,7 +549,8 @@ int dm_btree_remove(struct dm_btree_info
+ 		delete_at(n, index);
+ 	}
  
- out_err_bus_register:
- 	tpci200_uninstall(tpci200);
-+	/* tpci200->info->cfg_regs is unmapped in tpci200_uninstall */
-+	tpci200->info->cfg_regs = NULL;
- out_err_install:
--	iounmap(tpci200->info->cfg_regs);
-+	if (tpci200->info->cfg_regs)
-+		iounmap(tpci200->info->cfg_regs);
- out_err_ioremap:
- 	pci_release_region(pdev, TPCI200_CFG_MEM_BAR);
- out_err_pci_request:
+-	*new_root = shadow_root(&spine);
++	if (!r)
++		*new_root = shadow_root(&spine);
+ 	exit_shadow_spine(&spine);
+ 
+ 	return r;
 
 
