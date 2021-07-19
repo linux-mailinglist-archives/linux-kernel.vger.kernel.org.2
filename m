@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB133CE95D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FCF3CEA90
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241901AbhGSQxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:53:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48626 "EHLO mail.kernel.org"
+        id S1377978AbhGSRRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:17:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347740AbhGSPaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:30:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78EA061410;
-        Mon, 19 Jul 2021 16:09:20 +0000 (UTC)
+        id S1348139AbhGSPjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:39:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AE226121F;
+        Mon, 19 Jul 2021 16:19:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710960;
-        bh=9Gmjgaw6CKRktLHYhs42VVmA6blzP+3WCN+a42EApWI=;
+        s=korg; t=1626711588;
+        bh=9HYAn4H6c42SHnuqQuBKbjujV7IQoVm/S/Frx5aKixc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GoMjUkGStGVwgSfduDMPGATOFq/93rive6mzMDbY+TOAagIzV8XFA3XcqMFV1EfUL
-         TDbi3vZpFcJJqS0B5hzvvRRg+E1A2yK8zdpU2TXCL61axlPsnv4f2d2QOlozId3qGC
-         CTd/9zJGNc/gRWItHca6dvkrE0pWzMfrKnK6ukMc=
+        b=OsZy2O/LoWhTCfUPq4txjpIQTrMfQYPg2QGcxaqi6vMELWsYkewjMqV6d1Pa4i9s9
+         Fh4NHd1oVd3opuZqLfT5XPicNYirrSvKpnZ+OmDr9bIs+G/xKch5neEe7TpIIXm9mT
+         cbmtlt03byHnlIBPv7Jam/GEXzFUIk7YufhWnReo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 175/351] remoteproc: stm32: fix mbox_send_message call
+Subject: [PATCH 5.12 059/292] scsi: lpfc: Fix crash when lpfc_sli4_hba_setup() fails to initialize the SGLs
 Date:   Mon, 19 Jul 2021 16:52:01 +0200
-Message-Id: <20210719144950.770551853@linuxfoundation.org>
+Message-Id: <20210719144944.462165213@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,77 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 51c4b4e212269a8634dee2000182cfca7f11575b ]
+[ Upstream commit 5aa615d195f1e142c662cb2253f057c9baec7531 ]
 
-mbox_send_message is called by passing a local dummy message or
-a function parameter. As the message is queued, it is dereferenced.
-This works because the message field is not used by the stm32 ipcc
-driver, but it is not clean.
+The driver is encountering a crash in lpfc_free_iocb_list() while
+performing initial attachment.
 
-Fix by passing a constant string in all cases.
+Code review found this to be an errant failure path that was taken, jumping
+to a tag that then referenced structures that were uninitialized.
 
-The associated comments are removed because rproc should not have to
-deal with the behavior of the mailbox frame.
+Fix the failure path.
 
-Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Link: https://lore.kernel.org/r/20210420091922.29429-1-arnaud.pouliquen@foss.st.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210514195559.119853-9-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/stm32_rproc.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ drivers/scsi/lpfc/lpfc_sli.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 7353f9e7e7af..0e8203a432ab 100644
---- a/drivers/remoteproc/stm32_rproc.c
-+++ b/drivers/remoteproc/stm32_rproc.c
-@@ -474,14 +474,12 @@ static int stm32_rproc_attach(struct rproc *rproc)
- static int stm32_rproc_detach(struct rproc *rproc)
- {
- 	struct stm32_rproc *ddata = rproc->priv;
--	int err, dummy_data, idx;
-+	int err, idx;
- 
- 	/* Inform the remote processor of the detach */
- 	idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_DETACH);
- 	if (idx >= 0 && ddata->mb[idx].chan) {
--		/* A dummy data is sent to allow to block on transmit */
--		err = mbox_send_message(ddata->mb[idx].chan,
--					&dummy_data);
-+		err = mbox_send_message(ddata->mb[idx].chan, "stop");
- 		if (err < 0)
- 			dev_warn(&rproc->dev, "warning: remote FW detach without ack\n");
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 7551743835fc..c063a6d2b690 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -7962,7 +7962,7 @@ lpfc_sli4_hba_setup(struct lpfc_hba *phba)
+ 				"0393 Error %d during rpi post operation\n",
+ 				rc);
+ 		rc = -ENODEV;
+-		goto out_destroy_queue;
++		goto out_free_iocblist;
  	}
-@@ -493,15 +491,13 @@ static int stm32_rproc_detach(struct rproc *rproc)
- static int stm32_rproc_stop(struct rproc *rproc)
- {
- 	struct stm32_rproc *ddata = rproc->priv;
--	int err, dummy_data, idx;
-+	int err, idx;
+ 	lpfc_sli4_node_prep(phba);
  
- 	/* request shutdown of the remote processor */
- 	if (rproc->state != RPROC_OFFLINE) {
- 		idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_SHUTDOWN);
- 		if (idx >= 0 && ddata->mb[idx].chan) {
--			/* a dummy data is sent to allow to block on transmit */
--			err = mbox_send_message(ddata->mb[idx].chan,
--						&dummy_data);
-+			err = mbox_send_message(ddata->mb[idx].chan, "detach");
- 			if (err < 0)
- 				dev_warn(&rproc->dev, "warning: remote FW shutdown without ack\n");
- 		}
-@@ -556,7 +552,7 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
- 			continue;
- 		if (!ddata->mb[i].chan)
- 			return;
--		err = mbox_send_message(ddata->mb[i].chan, (void *)(long)vqid);
-+		err = mbox_send_message(ddata->mb[i].chan, "kick");
- 		if (err < 0)
- 			dev_err(&rproc->dev, "%s: failed (%s, err:%d)\n",
- 				__func__, ddata->mb[i].name, err);
+@@ -8128,8 +8128,9 @@ out_io_buff_free:
+ out_unset_queue:
+ 	/* Unset all the queues set up in this routine when error out */
+ 	lpfc_sli4_queue_unset(phba);
+-out_destroy_queue:
++out_free_iocblist:
+ 	lpfc_free_iocb_list(phba);
++out_destroy_queue:
+ 	lpfc_sli4_queue_destroy(phba);
+ out_stop_timers:
+ 	lpfc_stop_hba_timers(phba);
 -- 
 2.30.2
 
