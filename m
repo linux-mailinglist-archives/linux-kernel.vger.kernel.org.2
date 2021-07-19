@@ -2,87 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579FE3CEEEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 00:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57BC3CEEE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Jul 2021 00:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244003AbhGSVWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 17:22:55 -0400
-Received: from mga01.intel.com ([192.55.52.88]:46425 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354359AbhGSUcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 16:32:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="232907751"
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="232907751"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 14:12:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
-   d="scan'208";a="494298660"
-Received: from lkp-server01.sh.intel.com (HELO a467b34d8c10) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Jul 2021 14:12:09 -0700
-Received: from kbuild by a467b34d8c10 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m5aYa-0000nX-TC; Mon, 19 Jul 2021 21:12:08 +0000
-Date:   Tue, 20 Jul 2021 05:11:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Michael Tretter <m.tretter@pengutronix.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: [PATCH] drm/exynos: fix err_cast.cocci warnings
-Message-ID: <20210719211133.GA1443@564cc3e57b3e>
-References: <202107200518.l6jmQc04-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202107200518.l6jmQc04-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1389450AbhGSVTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 17:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1388263AbhGSUrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 16:47:51 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1A1C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:23:15 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z39-20020a25ada70000b029056092741626so27158611ybi.19
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 14:23:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=JqBecYsg8zAakph71sf/lypdtgnGpmLoT+MvOHlqW8M=;
+        b=PXGfLRe5xUHWj5P1l/3VqKayiC7Tah44TES9JEFW+1Ij2576ufCGnk1YcX5Q0BQhVF
+         0+/3g6oiPzfKcIEy0L59sNsNWbuhKWFj04C/VEGdwS1FM8Ic3GpuXBcwFznzAfWpSA7u
+         1GhuBf8gVxe/JsZC6NzNaIbbXkDrkZgOl/Rj4MjOTQ9aa9ftQAwn9EW7TtnrfND05VxT
+         hD0zYKtoJrDyr+wSAnEtKZYrYdmPdlCXkszwtjzFWCScOlsyPXGduFCmkjzX8osiog/y
+         FqDSFHt8TijraBbGnqUBTP1waOPOeXrCk0SFfm/BN1+MuixtzyYr7yESP7K0je5EzT04
+         b5Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=JqBecYsg8zAakph71sf/lypdtgnGpmLoT+MvOHlqW8M=;
+        b=gqQ9d9ecolemar3CbFlR6hImCJb9gyEiGHqK2dYuiRKMQOfK+Z1LjMCp3ZNHle3iwO
+         J0VDWGYANjYzKdl7O3KAQUEUT2RMyLe8xQvV5TKPbfi1XpAGDhyHio6ttNQKO8WmDI+P
+         px22mhbJBQxHaehDWg8R1MGYTUqBVa9xQ/2I0AvtFBuoiE+MA3Pikis1xWQ/qYedgRS0
+         SSC1exYsPEjY2wOUvV8vJBuLm+pW207KA65XgfABGRf0kQFMUSd6Aezz2RsTCDWQuLut
+         JrvTczVZT8Kzh18gmzpYMG5dRoaiGmZsylww/nOJBq2YjgYSCDeIbciV383AzlspuGI3
+         n0Ow==
+X-Gm-Message-State: AOAM533vYXtYZMvNKd/aZes5ZJj688NAyqAL0dfI/uWLyzL+mVjG10oS
+        pkgDqG5emPVPq8Nma1KBDwQjX0mBrQ+tog==
+X-Google-Smtp-Source: ABdhPJw4nAJeMTvnEaHi0aMGSkDMW888SJayo1LqkeRt75qVrfI6+Lr6chhVTyowcEe67nneME2fTYfT99tPXg==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:d686:24ec:b16b:9a7f])
+ (user=dlatypov job=sendgmr) by 2002:a5b:486:: with SMTP id
+ n6mr34800197ybp.95.1626729794723; Mon, 19 Jul 2021 14:23:14 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 14:23:02 -0700
+Message-Id: <20210719212302.167186-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
+Subject: [PATCH] lib/test: convert test_min_heap.c to use KUnit
+From:   Daniel Latypov <dlatypov@google.com>
+To:     irogers@google.com
+Cc:     peterz@infradead.org, brendanhiggins@google.com,
+        davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+We leave the file names and Kconfig option unchanged for now to minimize
+disruption.
 
-drivers/gpu/drm/bridge/samsung-dsim.c:1637:10-17: WARNING: ERR_CAST can be used with dsi -> clks [ i ]
-drivers/gpu/drm/bridge/samsung-dsim.c:1651:9-16: WARNING: ERR_CAST can be used with dsi -> phy
+So functionally, this just means that the test output will be slightly
+changed and it'll now depend on CONFIG_KUNIT=y/m.
 
+It'll still run at boot time and can still be built as a loadable
+module, but it can now be run a bit more easily via:
+$ ./tools/testing/kunit/kunit.py run
 
- Use ERR_CAST inlined function instead of ERR_PTR(PTR_ERR(...))
+By default, the above command will run with CONFIG_KUNIT_ALL_TESTS=y.
+Users could run this test individually via something like:
 
-Generated by: scripts/coccinelle/api/err_cast.cocci
+$ ./tools/testing/kunit/kunit.py run --kunitconfig /dev/stdin <<EOF
+CONFIG_KUNIT=y
+CONFIG_TEST_MIN_HEAP=y
+EOF
 
-CC: Michael Tretter <m.tretter@pengutronix.de>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+Example output:
+[14:57:54] ============================================================
+[14:57:54] ======== [PASSED] lib_minmax_heap ========
+[14:57:54] [PASSED] test_min_heap
+[14:57:54] [PASSED] test_max_heap
+[14:57:54] ============================================================
+[14:57:54] Testing complete. 2 tests run. 0 failed. 0 crashed. 0 skipped.
+[14:57:54] Elapsed time: 39.696s total, 0.001s configuring, 36.705s building, 0.000s running
+
+Note: this is the time it took after a `make mrproper`.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
+ lib/Kconfig.debug   |   5 ++-
+ lib/test_min_heap.c | 102 ++++++++++++++++++++------------------------
+ 2 files changed, 49 insertions(+), 58 deletions(-)
 
-tree:   https://git.pengutronix.de/git/lst/linux imx8m-power-domains-testing
-head:   743ce97bc237b4b97ffa933cd03f5a6c8b401384
-commit: 0ce8e59076392e581e9b82892a973b17d55f136b [44/58] drm/exynos: move bridge driver to bridges
-:::::: branch date: 5 hours ago
-:::::: commit date: 5 hours ago
-
- samsung-dsim.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/drivers/gpu/drm/bridge/samsung-dsim.c
-+++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -1634,7 +1634,7 @@ static struct samsung_dsim *__samsung_ds
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 831212722924..36e9529ede65 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2068,8 +2068,9 @@ config TEST_LIST_SORT
+ 	  If unsure, say N.
  
- 			dev_info(dev, "failed to get the clock: %s\n",
- 					clk_names[i]);
--			return ERR_PTR(PTR_ERR(dsi->clks[i]));
-+			return ERR_CAST(dsi->clks[i]);
+ config TEST_MIN_HEAP
+-	tristate "Min heap test"
+-	depends on DEBUG_KERNEL || m
++	tristate "Min heap test" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
+ 	help
+ 	  Enable this to turn on min heap function tests. This test is
+ 	  executed only once during system boot (so affects only boot time),
+diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
+index d19c8080fd4d..c0f1ef78c08e 100644
+--- a/lib/test_min_heap.c
++++ b/lib/test_min_heap.c
+@@ -1,27 +1,27 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-#define pr_fmt(fmt) "min_heap_test: " fmt
+-
+ /*
+  * Test cases for the min max heap.
+  */
+ 
++#include <kunit/test.h>
++
+ #include <linux/log2.h>
+ #include <linux/min_heap.h>
+ #include <linux/module.h>
+ #include <linux/printk.h>
+ #include <linux/random.h>
+ 
+-static __init bool less_than(const void *lhs, const void *rhs)
++static bool less_than(const void *lhs, const void *rhs)
+ {
+ 	return *(int *)lhs < *(int *)rhs;
+ }
+ 
+-static __init bool greater_than(const void *lhs, const void *rhs)
++static bool greater_than(const void *lhs, const void *rhs)
+ {
+ 	return *(int *)lhs > *(int *)rhs;
+ }
+ 
+-static __init void swap_ints(void *lhs, void *rhs)
++static void swap_ints(void *lhs, void *rhs)
+ {
+ 	int temp = *(int *)lhs;
+ 
+@@ -29,37 +29,27 @@ static __init void swap_ints(void *lhs, void *rhs)
+ 	*(int *)rhs = temp;
+ }
+ 
+-static __init int pop_verify_heap(bool min_heap,
+-				struct min_heap *heap,
+-				const struct min_heap_callbacks *funcs)
++static void pop_verify_heap(struct kunit *test, bool min_heap,
++			    struct min_heap *heap,
++			    const struct min_heap_callbacks *funcs)
+ {
+ 	int *values = heap->data;
+-	int err = 0;
+ 	int last;
+ 
+ 	last = values[0];
+ 	min_heap_pop(heap, funcs);
+ 	while (heap->nr > 0) {
+ 		if (min_heap) {
+-			if (last > values[0]) {
+-				pr_err("error: expected %d <= %d\n", last,
+-					values[0]);
+-				err++;
+-			}
++			KUNIT_EXPECT_LE(test, last, values[0]);
+ 		} else {
+-			if (last < values[0]) {
+-				pr_err("error: expected %d >= %d\n", last,
+-					values[0]);
+-				err++;
+-			}
++			KUNIT_EXPECT_GE(test, last, values[0]);
  		}
+ 		last = values[0];
+ 		min_heap_pop(heap, funcs);
  	}
+-	return err;
+ }
  
-@@ -1648,7 +1648,7 @@ static struct samsung_dsim *__samsung_ds
- 	dsi->phy = devm_phy_get(dev, "dsim");
- 	if (IS_ERR(dsi->phy)) {
- 		dev_info(dev, "failed to get dsim phy\n");
--		return ERR_PTR(PTR_ERR(dsi->phy));
-+		return ERR_CAST(dsi->phy);
+-static __init int test_heapify_all(bool min_heap)
++static void test_heapify_all(struct kunit *test, bool min_heap)
+ {
+ 	int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
+ 			 -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
+@@ -73,11 +63,11 @@ static __init int test_heapify_all(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, err;
++	int i;
+ 
+ 	/* Test with known set of values. */
+ 	min_heapify_all(&heap, &funcs);
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(test, min_heap, &heap, &funcs);
+ 
+ 
+ 	/* Test with randomly generated values. */
+@@ -86,12 +76,10 @@ static __init int test_heapify_all(bool min_heap)
+ 		values[i] = get_random_int();
+ 
+ 	min_heapify_all(&heap, &funcs);
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
+-
+-	return err;
++	pop_verify_heap(test, min_heap, &heap, &funcs);
+ }
+ 
+-static __init int test_heap_push(bool min_heap)
++static void test_heap_push(struct kunit *test, bool min_heap)
+ {
+ 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
+ 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
+@@ -106,25 +94,23 @@ static __init int test_heap_push(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, temp, err;
++	int i, temp;
+ 
+ 	/* Test with known set of values copied from data. */
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+ 		min_heap_push(&heap, &data[i], &funcs);
+ 
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(test, min_heap, &heap, &funcs);
+ 
+ 	/* Test with randomly generated values. */
+ 	while (heap.nr < heap.size) {
+ 		temp = get_random_int();
+ 		min_heap_push(&heap, &temp, &funcs);
  	}
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
+-
+-	return err;
++	pop_verify_heap(test, min_heap, &heap, &funcs);
+ }
  
- 	dsi->irq = platform_get_irq(pdev, 0);
+-static __init int test_heap_pop_push(bool min_heap)
++static void test_heap_pop_push(struct kunit *test, bool min_heap)
+ {
+ 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
+ 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
+@@ -139,7 +125,7 @@ static __init int test_heap_pop_push(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, temp, err;
++	int i, temp;
+ 
+ 	/* Fill values with data to pop and replace. */
+ 	temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
+@@ -150,7 +136,7 @@ static __init int test_heap_pop_push(bool min_heap)
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+ 		min_heap_pop_push(&heap, &data[i], &funcs);
+ 
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(test, min_heap, &heap, &funcs);
+ 
+ 	heap.nr = 0;
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+@@ -161,34 +147,38 @@ static __init int test_heap_pop_push(bool min_heap)
+ 		temp = get_random_int();
+ 		min_heap_pop_push(&heap, &temp, &funcs);
+ 	}
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(test, min_heap, &heap, &funcs);
++}
+ 
+-	return err;
++static void test_heap(struct kunit *test, bool min_heap)
++{
++	test_heapify_all(test, min_heap);
++	test_heap_push(test, min_heap);
++	test_heap_pop_push(test, min_heap);
+ }
+ 
+-static int __init test_min_heap_init(void)
++static void test_min_heap(struct kunit *test)
+ {
+-	int err = 0;
+-
+-	err += test_heapify_all(true);
+-	err += test_heapify_all(false);
+-	err += test_heap_push(true);
+-	err += test_heap_push(false);
+-	err += test_heap_pop_push(true);
+-	err += test_heap_pop_push(false);
+-	if (err) {
+-		pr_err("test failed with %d errors\n", err);
+-		return -EINVAL;
+-	}
+-	pr_info("test passed\n");
+-	return 0;
++	test_heap(test, true);
+ }
+-module_init(test_min_heap_init);
+ 
+-static void __exit test_min_heap_exit(void)
++static void test_max_heap(struct kunit *test)
+ {
+-	/* do nothing */
++	test_heap(test, false);
+ }
+-module_exit(test_min_heap_exit);
++
++static struct kunit_case __refdata minmax_heap_test_cases[] = {
++	KUNIT_CASE(test_min_heap),
++	KUNIT_CASE(test_max_heap),
++	{}
++};
++
++static struct kunit_suite minmax_heap_test_suite = {
++	.name = "lib_minmax_heap",
++	.test_cases = minmax_heap_test_cases,
++};
++
++kunit_test_suites(&minmax_heap_test_suite);
++
+ 
+ MODULE_LICENSE("GPL");
+
+base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
+-- 
+2.32.0.402.g57bb445576-goog
+
