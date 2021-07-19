@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F663CDF20
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0913CE00F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345105AbhGSPHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:07:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40444 "EHLO mail.kernel.org"
+        id S1346074AbhGSPNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:13:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344236AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344258AbhGSOsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4006F60FED;
-        Mon, 19 Jul 2021 15:27:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F1636024A;
+        Mon, 19 Jul 2021 15:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708442;
-        bh=MHBxAPKyqc+lJw8lq8G4ATINV2DINglleA8QB3vIpRs=;
+        s=korg; t=1626708445;
+        bh=ghKo1xjvWvhn4IaZZczjFnezfWRlmMquzd5E4DMGxMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zL0G2NoWIE+B7HVyjrLgHw2nQv79QI5nKaPkgqhIptxDy1iYzEXV3XUtiugyjVWJQ
-         e7f66+HqnTGKf/T/Zg7bzvimIYEUietrr3XCri9kdngBUakL5G5ha2clmXOBRYXD4u
-         0vZRGh1cHkNW07KNWTly81eqZRIaHEPnc2ZlJJvY=
+        b=nPgg0OuFnAFnjYEoRuaYZEUFmbv9n9H+pw/WjY6o0hq2c49V/Dzw5CQJAZ98PeW75
+         Kf2Eb+lpUZCJ0Nr7SeXKPNVyr/8ddm/n5/fS7BnIcjPtSRyq0BINuEppS3JBZea/rc
+         wQFQxUPC4m1W4OD8m8/ncVlXWgXFYmqqIoKesmhc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Kyungsik Lee <kyungsik.lee@lge.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 312/315] mips: always link byteswap helpers into decompressor
-Date:   Mon, 19 Jul 2021 16:53:21 +0200
-Message-Id: <20210719144953.740204246@linuxfoundation.org>
+Subject: [PATCH 4.14 313/315] mips: disable branch profiling in boot/decompress.o
+Date:   Mon, 19 Jul 2021 16:53:22 +0200
+Message-Id: <20210719144953.772837505@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -40,63 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit cddc40f5617e53f97ef019d5b29c1bd6cbb031ec ]
+[ Upstream commit 97e488073cfca0eea84450169ca4cbfcc64e33e3 ]
 
-My series to clean up the unaligned access implementation
-across architectures caused some mips randconfig builds to
-fail with:
+Use DISABLE_BRANCH_PROFILING for arch/mips/boot/compressed/decompress.o
+to prevent linkage errors.
 
-   mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `decompress_kernel':
-   decompress.c:(.text.decompress_kernel+0x54): undefined reference to `__bswapsi2'
+mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
+decompress.c:(.text+0x8c): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0xf4): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x200): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x230): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x320): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x3f4): more undefined references to `ftrace_likely_update' follow
 
-It turns out that this problem has already been fixed for the XZ
-decompressor but now it also shows up in (at least) LZO and LZ4.  From my
-analysis I concluded that the compiler could always have emitted those
-calls, but the different implementation allowed it to make otherwise
-better decisions about not inlining the byteswap, which results in the
-link error when the out-of-line code is missing.
-
-While it could be addressed by adding it to the two decompressor
-implementations that are known to be affected, but as this only adds
-112 bytes to the kernel, the safer choice is to always add them.
-
-Fixes: c50ec6787536 ("MIPS: zboot: Fix the build with XZ compression on older GCC versions")
-Fixes: 0652035a5794 ("asm-generic: unaligned: remove byteshift helpers")
-Link: https://lore.kernel.org/linux-mm/202106301304.gz2wVY9w-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202106260659.TyMe8mjr-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202106172016.onWT6Tza-lkp@intel.com/
-Link: https://lore.kernel.org/linux-mm/202105231743.JJcALnhS-lkp@intel.com/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: e76e1fdfa8f8 ("lib: add support for LZ4-compressed kernel")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Kyungsik Lee <kyungsik.lee@lge.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/boot/compressed/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/boot/compressed/decompress.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 516e593a8ee9..b5f08fac5ddc 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -33,7 +33,7 @@ KBUILD_AFLAGS := $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
- KCOV_INSTRUMENT		:= n
+diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+index 3a015e41b762..66096c766a60 100644
+--- a/arch/mips/boot/compressed/decompress.c
++++ b/arch/mips/boot/compressed/decompress.c
+@@ -11,6 +11,8 @@
+  * option) any later version.
+  */
  
- # decompressor objects (linked with vmlinuz)
--vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o
-+vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o $(obj)/bswapsi.o
- 
- ifdef CONFIG_DEBUG_ZBOOT
- vmlinuzobjs-$(CONFIG_DEBUG_ZBOOT)		   += $(obj)/dbg.o
-@@ -47,7 +47,7 @@ extra-y += uart-ath79.c
- $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
- 	$(call cmd,shipped)
- 
--vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o $(obj)/bswapsi.o
-+vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
- 
- extra-y += ashldi3.c bswapsi.c
- $(obj)/ashldi3.o $(obj)/bswapsi.o: KBUILD_CFLAGS += -I$(srctree)/arch/mips/lib
++#define DISABLE_BRANCH_PROFILING
++
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/string.h>
 -- 
 2.30.2
 
