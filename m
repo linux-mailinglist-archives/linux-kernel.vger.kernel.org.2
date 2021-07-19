@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFC63CE6F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C333CE7F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353037AbhGSQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:18:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
+        id S1355442AbhGSQgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:36:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343862AbhGSPLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:11:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A53B61166;
-        Mon, 19 Jul 2021 15:51:55 +0000 (UTC)
+        id S1348058AbhGSPYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9572C61400;
+        Mon, 19 Jul 2021 16:01:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709916;
-        bh=QBt2fCja8wWSrw/yeEU+bxMvfIIKOgsqE0yoYo6aaLA=;
+        s=korg; t=1626710466;
+        bh=LXNf/PvxCA1IwUCmIfU/z06fCS9WB2SZQ5H1ZYZ3i6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IPoTXI1jYSzsWDNplG5n9MFiuKa6GzhGaAhaAI4dFP/3naG71Swbjq80yDpYTfqfI
-         8a1N7U30qHpt+ya5HvU48jRsHbhnAXze2Q1xHnHgk9uH2iRFVwmayh+gXR5z/aVNx4
-         LrXiBcsRwwYXeWbOgx+atjOJBOfzEb0GUnC6y+IQ=
+        b=ir3TOjVZ4rk8tzGD9DyBxif8Gl9q9vTlMq1XSrmX80Q+gCv1zir2eq6Fd91BJASvd
+         r7C3zTkvRr6cb9U071aZ+Pe46nY7jXoxfnzEbXzSEljx7k+0Ebc937sUeRQGT2/Sta
+         RY+hOVe5/gF1xUyBzUKEg5yNFh8hbFs0eFnFlZms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Tong Zhang <ztong0001@gmail.com>
-Subject: [PATCH 5.4 149/149] misc: alcor_pci: fix inverted branch condition
-Date:   Mon, 19 Jul 2021 16:54:17 +0200
-Message-Id: <20210719144936.590080578@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 229/243] firmware: turris-mox-rwtm: fix reply status decoding function
+Date:   Mon, 19 Jul 2021 16:54:18 +0200
+Message-Id: <20210719144948.312268276@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-References: <20210719144901.370365147@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Marek Behún <kabel@kernel.org>
 
-commit 281e468446994a7672733af2bf941f4110d4a895 upstream.
+[ Upstream commit e34e60253d9272311831daed8a2d967cf80ca3dc ]
 
-This patch fixes a trivial mistake that I made in the previous attempt
-in fixing the null bridge issue. The branch condition is inverted and we
-should call alcor_pci_find_cap_offset() only if bridge is not null.
+The status decoding function mox_get_status() currently contains an
+incorrect check: if the error status is not MBOX_STS_SUCCESS, it always
+returns -EIO, so the comparison to MBOX_STS_FAIL is never executed and
+we don't get the actual error code sent by the firmware.
 
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 3ce3e45cc333 ("misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge")
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210522043725.602179-1-ztong0001@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this.
+
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Reviewed-by: Pali Rohár <pali@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver")
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/cardreader/alcor_pci.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/turris-mox-rwtm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/misc/cardreader/alcor_pci.c
-+++ b/drivers/misc/cardreader/alcor_pci.c
-@@ -138,7 +138,7 @@ static void alcor_pci_init_check_aspm(st
- 	 * priv->parent_pdev will be NULL. In this case we don't check its
- 	 * capability and disable ASPM completely.
- 	 */
--	if (!priv->parent_pdev)
-+	if (priv->parent_pdev)
- 		priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
- 							 priv->parent_pdev);
+diff --git a/drivers/firmware/turris-mox-rwtm.c b/drivers/firmware/turris-mox-rwtm.c
+index 50bb2a6d6ccf..54b98642ee1b 100644
+--- a/drivers/firmware/turris-mox-rwtm.c
++++ b/drivers/firmware/turris-mox-rwtm.c
+@@ -147,11 +147,14 @@ MOX_ATTR_RO(pubkey, "%s\n", pubkey);
  
+ static int mox_get_status(enum mbox_cmd cmd, u32 retval)
+ {
+-	if (MBOX_STS_CMD(retval) != cmd ||
+-	    MBOX_STS_ERROR(retval) != MBOX_STS_SUCCESS)
++	if (MBOX_STS_CMD(retval) != cmd)
+ 		return -EIO;
+ 	else if (MBOX_STS_ERROR(retval) == MBOX_STS_FAIL)
+ 		return -(int)MBOX_STS_VALUE(retval);
++	else if (MBOX_STS_ERROR(retval) == MBOX_STS_BADCMD)
++		return -ENOSYS;
++	else if (MBOX_STS_ERROR(retval) != MBOX_STS_SUCCESS)
++		return -EIO;
+ 	else
+ 		return MBOX_STS_VALUE(retval);
+ }
+-- 
+2.30.2
+
 
 
