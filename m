@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E4B3CCE3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B5C3CCE44
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234724AbhGSHNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 03:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234441AbhGSHNH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 03:13:07 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE43C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 00:10:07 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1m5NPg-0006h3-8C; Mon, 19 Jul 2021 09:10:04 +0200
-Subject: Re: [PATCH] KEYS: trusted: Fix trusted key backends when building as
- module
-To:     Andreas Rammhold <andreas@rammhold.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-References: <20210716081722.4130161-1-andreas@rammhold.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <0a684d56-66d0-184e-4853-9faafa2d243d@pengutronix.de>
-Date:   Mon, 19 Jul 2021 09:10:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234753AbhGSHOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:14:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234730AbhGSHOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 03:14:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 802B3611BE;
+        Mon, 19 Jul 2021 07:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626678664;
+        bh=Pn/1Cj/0aZG99zqoi3ZzrECnvCBXU+18iWFv6gPyfSM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bCW39FLNMP4SZgn5kgvw/weq+kRv4VAQe9Yl0X9IvGIET79Sv111ytlAfkeuQCy4+
+         0auxQNNbNpcDAZM+M+AmJAooC2j7JGbdI3GtyMeTbXItwsz/o3MvlXVKYKvsrfzlAe
+         7jHJ2Y7UFFpuEjHACQP7iXhobcygebdszESwk7tiR9tZGSToYXOe/f2ZQKwNNJfA4T
+         +WCaVuZ0r1K+eAHklgZ9MhZRHNmWZ65VuHQGHPiQOXyTpeXTvB+DriDAI2568NkFB7
+         ZTzq+bOFDk5gzVRiYpdiUuhKiM1fPVCQmHVYae8dSOnQ9xq1yNQaNcSvPR2uHEf6hh
+         XHmrehB38snjQ==
+Received: by mail-ot1-f51.google.com with SMTP id b18-20020a0568303112b02904cf73f54f4bso3719905ots.2;
+        Mon, 19 Jul 2021 00:11:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530EV1Tw4cezUdRpEDUjuz0Dw/388gXnTiowc4knwt9TvQHHHcAi
+        fUTiIIBWb62KeT1jMlUpfhn8So5to4UN6I//aFI=
+X-Google-Smtp-Source: ABdhPJwdHFS1KJDwdJGVFAPZ7EQmJ/6+hWchGT5fri4AF+nsIVeMNNoeRd43R/6tIlkpHhDM1d09UMCoJxuAR70rmFo=
+X-Received: by 2002:a05:6830:34a6:: with SMTP id c38mr5088922otu.108.1626678663841;
+ Mon, 19 Jul 2021 00:11:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210716081722.4130161-1-andreas@rammhold.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210625130947.1803678-1-javierm@redhat.com> <e61cf77c-6bff-dfcc-d3df-2fb6b48e5897@redhat.com>
+ <8dd26141-a09c-39e2-5174-4cad8d21c49c@suse.de> <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
+In-Reply-To: <CAPM=9tyfNPa2f5PDBLm4w_H_riEQ5P3rEhX73YGE1y_ygRox+w@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 19 Jul 2021 09:10:52 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
+Message-ID: <CAMj1kXErHteZ+MKYvp=yYmwVxV3A=vjtnG351hZHV+3BPwDQvw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] allow simple{fb, drm} drivers to be used on
+ non-x86 EFI platforms
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Borislav Petkov <bp@suse.de>, Will Deacon <will@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andreas,
+On Mon, 19 Jul 2021 at 04:59, Dave Airlie <airlied@gmail.com> wrote:
+>
+> On Thu, 15 Jul 2021 at 18:11, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> >
+> > Hi
+> >
+> > Am 13.07.21 um 18:59 schrieb Javier Martinez Canillas:
+> > > On 6/25/21 3:09 PM, Javier Martinez Canillas wrote:
+> > >> The simplefb and simpledrm drivers match against a "simple-framebuffer"
+> > >> device, but for aarch64 this is only registered when using Device Trees
+> > >> and there's a node with a "simple-framebuffer" compatible string.
+> > >>
+> > >> There is no code to register a "simple-framebuffer" platform device when
+> > >> using EFI instead. In fact, the only platform device that's registered in
+> > >> this case is an "efi-framebuffer", which means that the efifb driver is
+> > >> the only driver supported to have an early console with EFI on aarch64.
+> > >>
+> > >> The x86 architecture platform has a Generic System Framebuffers (sysfb)
+> > >> support, that register a system frambuffer platform device. It either
+> > >> registers a "simple-framebuffer" for the simple{fb,drm} drivers or legacy
+> > >> VGA/EFI FB devices for the vgafb/efifb drivers.
+> > >>
+> > >> The sysfb is generic enough to be reused by other architectures and can be
+> > >> moved out of the arch/x86 directory to drivers/firmware, allowing the EFI
+> > >> logic used by non-x86 architectures to be folded into sysfb as well.
+> > >>
+> > >
+> > > Any more comments on this series? It would be nice for this to land so the
+> > > simpledrm driver could be used on aarch64 EFI systems as well.
+> > >
+> > > The patches have already been acked by x86 and DRM folks.
+> >
+> > Time to get this merged, I'd say. People are asking for these patches
+> > already.
+>
+> Can we just merge via drm-misc and make sure the acks are present and
+> I'll deal with the fallout if any.
+>
 
-On 16.07.21 10:17, Andreas Rammhold wrote:
-> Before this commit the kernel could end up with no trusted key sources
-> even thought both of the currently supported backends (tpm & tee) were
-> compoiled as modules. This manifested in the trusted key type not being
-> registered at all.
+Fine with me. Could you stick it on a separate branch so I can double
+check whether there are any issues wrt the EFI tree?
 
-I assume (TPM) trusted key module use worked before the TEE rework? If so,
-
-an appropriate Fixes: Tag would then be in order.
-
-> When checking if a CONFIG_… preprocessor variable is defined we only
-> test for the builtin (=y) case and not the module (=m) case. By using
-> the IS_ENABLE(…) macro we to test for both cases.
-
-It looks to me like you could now provoke a link error if TEE is a module
-and built-in trusted key core tries to link against trusted_key_tee_ops.
-
-One solution for that IS_REACHABLE(). Another is to address the root cause,
-which is the inflexible trusted keys Kconfig description:
-
-- Trusted keys despite TEE support can still only be built when TCG_TPM is enabled
-- There is no support to have TEE or TPM enabled without using those for
-  enabled trusted keys as well
-- As you noticed, module build of the backend has issues
-
-I addressed these three issues in a patch[1], a month ago, but have yet to
-receive feedback.
-
-[1]: https://lore.kernel.org/linux-integrity/f8285eb0135ba30c9d846cf9dd395d1f5f8b1efc.1624364386.git-series.a.fatoum@pengutronix.de/
-
-Cheers,
-Ahmad
-
-> Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
-> ---
->  security/keys/trusted-keys/trusted_core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-> index d5c891d8d353..fd640614b168 100644
-> --- a/security/keys/trusted-keys/trusted_core.c
-> +++ b/security/keys/trusted-keys/trusted_core.c
-> @@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
->  MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
->  
->  static const struct trusted_key_source trusted_key_sources[] = {
-> -#if defined(CONFIG_TCG_TPM)
-> +#if IS_ENABLED(CONFIG_TCG_TPM)
->  	{ "tpm", &trusted_key_tpm_ops },
->  #endif
-> -#if defined(CONFIG_TEE)
-> +#if IS_ENABLED(CONFIG_TEE)
->  	{ "tee", &trusted_key_tee_ops },
->  #endif
->  };
-> 
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks,
+Ard.
