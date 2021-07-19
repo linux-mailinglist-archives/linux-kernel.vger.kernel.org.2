@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8ECF3CE4B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16C53CE595
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239724AbhGSPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:45:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
+        id S1350045AbhGSPua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:50:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344321AbhGSO7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94FE76120C;
-        Mon, 19 Jul 2021 15:39:46 +0000 (UTC)
+        id S1344882AbhGSPBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F7BF610A5;
+        Mon, 19 Jul 2021 15:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709187;
-        bh=lxo5OpBggpjvMAzCMAYvT0FbGUxzwNEToMFBodGRDhg=;
+        s=korg; t=1626709310;
+        bh=Yk4C3BLLAdIEdYekruoz0XI+8YhRHT61p0DV1dBQjYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BDYDAmXyQzagF4e1rCRHrijAG0mrdior3W8KTJofP4a+ft9SNtiExjRhmPLcfyTjo
-         WOLmkaziHlCQls4dsARKkRq6HCzhog7VVOwQTcTH78SQktFW+3egVXmSF9Iq4Yneup
-         7l8dYwfJWuZtolTp2mcfh05o6IVVV/g/Ri2hoebk=
+        b=NH4Tr0ztz6q19i1Zkj/YCMxSHb/IFiiRtrotkgye6lexEROWu5J0HZAWLCxMVywSR
+         Ll+rlM+MjHxxb9PHjY8id4gBSzmr+oLh2Zk2CXNZ2GENYp4UzFwY1AyUxNr9984SKy
+         EcQ24w2TRgMhqJVAA2mj6sCq7rjfvMNhEahhCafo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 284/421] powerpc/barrier: Avoid collision with clangs __lwsync macro
-Date:   Mon, 19 Jul 2021 16:51:35 +0200
-Message-Id: <20210719144956.189560616@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH 4.19 289/421] drm/msm/mdp4: Fix modifier support enabling
+Date:   Mon, 19 Jul 2021 16:51:40 +0200
+Message-Id: <20210719144956.351860614@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,57 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit 015d98149b326e0f1f02e44413112ca8b4330543 upstream.
+commit 35cbb8c91e9cf310277d3dfb4d046df8edf2df33 upstream.
 
-A change in clang 13 results in the __lwsync macro being defined as
-__builtin_ppc_lwsync, which emits 'lwsync' or 'msync' depending on what
-the target supports. This breaks the build because of -Werror in
-arch/powerpc, along with thousands of warnings:
+Setting the cap without the modifier list is very confusing to
+userspace. Fix that by listing the ones we support explicitly.
 
- In file included from arch/powerpc/kernel/pmc.c:12:
- In file included from include/linux/bug.h:5:
- In file included from arch/powerpc/include/asm/bug.h:109:
- In file included from include/asm-generic/bug.h:20:
- In file included from include/linux/kernel.h:12:
- In file included from include/linux/bitops.h:32:
- In file included from arch/powerpc/include/asm/bitops.h:62:
- arch/powerpc/include/asm/barrier.h:49:9: error: '__lwsync' macro redefined [-Werror,-Wmacro-redefined]
- #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
-        ^
- <built-in>:308:9: note: previous definition is here
- #define __lwsync __builtin_ppc_lwsync
-        ^
- 1 error generated.
+Stable backport so that userspace can rely on this working in a
+reasonable way, i.e. that the cap set implies IN_FORMATS is available.
 
-Undefine this macro so that the runtime patching introduced by
-commit 2d1b2027626d ("powerpc: Fixup lwsync at runtime") continues to
-work properly with clang and the build no longer breaks.
-
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1386
-Link: https://github.com/llvm/llvm-project/commit/62b5df7fe2b3fda1772befeda15598fbef96a614
-Link: https://lore.kernel.org/r/20210528182752.1852002-1-nathan@kernel.org
+Cc: Pekka Paalanen <pekka.paalanen@collabora.com>
+Cc: Rob Clark <robdclark@chromium.org>
+Cc: Jordan Crouse <jordan@cosmicpenguin.net>
+Cc: Emil Velikov <emil.velikov@collabora.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210427092018.832258-5-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/barrier.h |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c   |    2 --
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c |    8 +++++++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/include/asm/barrier.h
-+++ b/arch/powerpc/include/asm/barrier.h
-@@ -44,6 +44,8 @@
- #    define SMPWMB      eieio
- #endif
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+@@ -96,8 +96,6 @@ static int mdp4_hw_init(struct msm_kms *
+ 	if (mdp4_kms->rev > 1)
+ 		mdp4_write(mdp4_kms, REG_MDP4_RESET_STATUS, 1);
  
-+/* clang defines this macro for a builtin, which will not work with runtime patching */
-+#undef __lwsync
- #define __lwsync()	__asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
- #define dma_rmb()	__lwsync()
- #define dma_wmb()	__asm__ __volatile__ (stringify_in_c(SMPWMB) : : :"memory")
+-	dev->mode_config.allow_fb_modifiers = true;
+-
+ out:
+ 	pm_runtime_put_sync(dev->dev);
+ 
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_plane.c
+@@ -356,6 +356,12 @@ enum mdp4_pipe mdp4_plane_pipe(struct dr
+ 	return mdp4_plane->pipe;
+ }
+ 
++static const uint64_t supported_format_modifiers[] = {
++	DRM_FORMAT_MOD_SAMSUNG_64_32_TILE,
++	DRM_FORMAT_MOD_LINEAR,
++	DRM_FORMAT_MOD_INVALID
++};
++
+ /* initialize plane */
+ struct drm_plane *mdp4_plane_init(struct drm_device *dev,
+ 		enum mdp4_pipe pipe_id, bool private_plane)
+@@ -384,7 +390,7 @@ struct drm_plane *mdp4_plane_init(struct
+ 	type = private_plane ? DRM_PLANE_TYPE_PRIMARY : DRM_PLANE_TYPE_OVERLAY;
+ 	ret = drm_universal_plane_init(dev, plane, 0xff, &mdp4_plane_funcs,
+ 				 mdp4_plane->formats, mdp4_plane->nformats,
+-				 NULL, type, NULL);
++				 supported_format_modifiers, type, NULL);
+ 	if (ret)
+ 		goto fail;
+ 
 
 
