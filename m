@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107143CE498
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFEA53CE45A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348767AbhGSPo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:44:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53810 "EHLO mail.kernel.org"
+        id S1347190AbhGSPnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:43:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245719AbhGSO7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14C9B613F3;
-        Mon, 19 Jul 2021 15:36:41 +0000 (UTC)
+        id S1344045AbhGSO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D0C061370;
+        Mon, 19 Jul 2021 15:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709002;
-        bh=8pJA+G0n4iUQamhQpf38H+dZlIonVYD4OuPc0iKbylY=;
+        s=korg; t=1626709103;
+        bh=UOP27A4JLxIDp8jJiTk1cTNwlqd0gxcc5e01WKIxkSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B8Lbb/1Q8/Gprt5H2QBg6ETrSSd4F0r6yN9M7c1XB1A7hG6B9qygBcyFe/dE1nlnU
-         rm48rV3pMREFuzVFSgeN0jBQcdLSVx76ewPZbhikw3NjC2/Wckeo8WhtC6HZdE53AR
-         u6E8XXFNAvKTuz2MfxG0YyysCZWrFbH/jA4VdNyc=
+        b=MzL299UzwX9R1c1KJ9Pbft79BIhyBngj7hXUiAT3gepcZ/Nr592wL9pjff5e7yP4p
+         cPiQiIGCfs5TN96/bpVmIPRoiNUKAdMhkaN8ctmi+BPuH7jx++I/x7afgyFJcOjgeN
+         y567mdl+W8/sbR6HeG/iwG/erHMtOSWeQ4Pw0e2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 214/421] ASoC: atmel-i2s: Fix usage of capture and playback at the same time
-Date:   Mon, 19 Jul 2021 16:50:25 +0200
-Message-Id: <20210719144953.755692538@linuxfoundation.org>
+Subject: [PATCH 4.19 220/421] arm64: dts: marvell: armada-37xx: Fix reg for standard variant of UART
+Date:   Mon, 19 Jul 2021 16:50:31 +0200
+Message-Id: <20210719144953.967221694@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,98 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 3b7961a326f8a7e03f54a19f02fedae8d488b80f ]
+[ Upstream commit 2cbfdedef39fb5994b8f1e1df068eb8440165975 ]
 
-For both capture and playback streams to work at the same time, only the
-needed values from a register need to be updated. Also, clocks should be
-enabled only when the first stream is started and stopped when there is no
-running stream.
+UART1 (standard variant with DT node name 'uart0') has register space
+0x12000-0x12018 and not whole size 0x200. So fix also this in example.
 
-Fixes: b543e467d1a9 ("ASoC: atmel-i2s: add driver for the new Atmel I2S controller")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Link: https://lore.kernel.org/r/20210618150741.401739-2-codrin.ciubotariu@microchip.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: c737abc193d1 ("arm64: dts: marvell: Fix A37xx UART0 register size")
+Link: https://lore.kernel.org/r/20210624224909.6350-6-pali@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/atmel/atmel-i2s.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
-index d88c1d995036..99cc73150576 100644
---- a/sound/soc/atmel/atmel-i2s.c
-+++ b/sound/soc/atmel/atmel-i2s.c
-@@ -211,6 +211,7 @@ struct atmel_i2s_dev {
- 	unsigned int				fmt;
- 	const struct atmel_i2s_gck_param	*gck_param;
- 	const struct atmel_i2s_caps		*caps;
-+	int					clk_use_no;
- };
+diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+index 3a611250f598..1844fb8605f0 100644
+--- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+@@ -121,7 +121,7 @@
  
- static irqreturn_t atmel_i2s_interrupt(int irq, void *dev_id)
-@@ -332,9 +333,16 @@ static int atmel_i2s_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct atmel_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	bool is_playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
--	unsigned int mr = 0;
-+	unsigned int mr = 0, mr_mask;
- 	int ret;
- 
-+	mr_mask = ATMEL_I2SC_MR_FORMAT_MASK | ATMEL_I2SC_MR_MODE_MASK |
-+		ATMEL_I2SC_MR_DATALENGTH_MASK;
-+	if (is_playback)
-+		mr_mask |= ATMEL_I2SC_MR_TXMONO;
-+	else
-+		mr_mask |= ATMEL_I2SC_MR_RXMONO;
-+
- 	switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		mr |= ATMEL_I2SC_MR_FORMAT_I2S;
-@@ -413,7 +421,7 @@ static int atmel_i2s_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	return regmap_write(dev->regmap, ATMEL_I2SC_MR, mr);
-+	return regmap_update_bits(dev->regmap, ATMEL_I2SC_MR, mr_mask, mr);
- }
- 
- static int atmel_i2s_switch_mck_generator(struct atmel_i2s_dev *dev,
-@@ -506,18 +514,28 @@ static int atmel_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	is_master = (mr & ATMEL_I2SC_MR_MODE_MASK) == ATMEL_I2SC_MR_MODE_MASTER;
- 
- 	/* If master starts, enable the audio clock. */
--	if (is_master && mck_enabled)
--		err = atmel_i2s_switch_mck_generator(dev, true);
--	if (err)
--		return err;
-+	if (is_master && mck_enabled) {
-+		if (!dev->clk_use_no) {
-+			err = atmel_i2s_switch_mck_generator(dev, true);
-+			if (err)
-+				return err;
-+		}
-+		dev->clk_use_no++;
-+	}
- 
- 	err = regmap_write(dev->regmap, ATMEL_I2SC_CR, cr);
- 	if (err)
- 		return err;
- 
- 	/* If master stops, disable the audio clock. */
--	if (is_master && !mck_enabled)
--		err = atmel_i2s_switch_mck_generator(dev, false);
-+	if (is_master && !mck_enabled) {
-+		if (dev->clk_use_no == 1) {
-+			err = atmel_i2s_switch_mck_generator(dev, false);
-+			if (err)
-+				return err;
-+		}
-+		dev->clk_use_no--;
-+	}
- 
- 	return err;
- }
+ 			uart0: serial@12000 {
+ 				compatible = "marvell,armada-3700-uart";
+-				reg = <0x12000 0x200>;
++				reg = <0x12000 0x18>;
+ 				clocks = <&xtalclk>;
+ 				interrupts =
+ 				<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
 -- 
 2.30.2
 
