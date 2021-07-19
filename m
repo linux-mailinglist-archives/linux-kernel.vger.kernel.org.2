@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949BE3CEA1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5973CEAA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239614AbhGSRHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59804 "EHLO mail.kernel.org"
+        id S1378356AbhGSRSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:18:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347303AbhGSPfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BC4F6146B;
-        Mon, 19 Jul 2021 16:12:14 +0000 (UTC)
+        id S1346731AbhGSPlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:41:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2114460FDC;
+        Mon, 19 Jul 2021 16:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711134;
-        bh=fq1DtqfsAsAPtDE043gbUJrHJpIm+hdLhfaMOouPOM8=;
+        s=korg; t=1626711674;
+        bh=ZKJVrmLYGVPSJrHqQHBq6fK9ClMXludSvV3cqZNaBzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MJnhKL1wjEMrhvFy//DaMTj9VubXuApk/se81FpnfPhhJzNufICMN7s+fN0oMPDuw
-         3xUsHvKbDJYO3BQuH2x8VvpFH1/NIm/vodVQWPqEDESWW1cWNrb+Qj/5Sl8D1tKOsS
-         rpekkAnajmpwiUG7lDSogz9UmC0RzBvnEsxQPHvo=
+        b=ppg2ssB9/j/cSdIjqvK3IAUr/HwZNCyGSzd3PSA+NOkWAeEcLxtDmxqchn+VAxBck
+         ffIWe6vT8Afw0JrmZw8/tJFbVHLQvcfKOyApZr67Tl13f8P8vouwvkmhQyA/rJ7ssb
+         pT8GTEPkgjxN91vYyGjOWD61BU6H+PFtRHJY34ME=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 207/351] f2fs: compress: fix to disallow temp extension
+Subject: [PATCH 5.12 091/292] ASoC: soc-pcm: fix the return value in dpcm_apply_symmetry()
 Date:   Mon, 19 Jul 2021 16:52:33 +0200
-Message-Id: <20210719144951.816159116@linuxfoundation.org>
+Message-Id: <20210719144945.501844366@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,87 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Jaroslav Kysela <perex@perex.cz>
 
-[ Upstream commit 4a67d9b07ac8dce7f1034e0d887f2f4ee00fe118 ]
+[ Upstream commit 12ffd726824a2f52486f72338b6fd3244b512959 ]
 
-This patch restricts to configure compress extension as format of:
+In case, where the loops are not executed for a reason, the uninitialized
+variable 'err' is returned to the caller. Make code fully predictible
+and assign zero in the declaration.
 
- [filename + '.' + extension]
-
-rather than:
-
- [filename + '.' + extension + (optional: '.' + temp extension)]
-
-in order to avoid to enable compression incorrectly:
-
-1. compress_extension=so
-2. touch file.soa
-3. touch file.so.tmp
-
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20210614071746.1787072-1-perex@perex.cz
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/namei.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ sound/soc/soc-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index a9cd9cf97229..d4139e166b95 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -153,7 +153,8 @@ fail_drop:
- 	return ERR_PTR(err);
- }
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 14d85ca1e435..4a25a1e39831 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1695,7 +1695,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 	struct snd_soc_dpcm *dpcm;
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(fe_substream);
+ 	struct snd_soc_dai *fe_cpu_dai;
+-	int err;
++	int err = 0;
+ 	int i;
  
--static inline int is_extension_exist(const unsigned char *s, const char *sub)
-+static inline int is_extension_exist(const unsigned char *s, const char *sub,
-+						bool tmp_ext)
- {
- 	size_t slen = strlen(s);
- 	size_t sublen = strlen(sub);
-@@ -169,6 +170,13 @@ static inline int is_extension_exist(const unsigned char *s, const char *sub)
- 	if (slen < sublen + 2)
- 		return 0;
- 
-+	if (!tmp_ext) {
-+		/* file has no temp extension */
-+		if (s[slen - sublen - 1] != '.')
-+			return 0;
-+		return !strncasecmp(s + slen - sublen, sub, sublen);
-+	}
-+
- 	for (i = 1; i < slen - sublen; i++) {
- 		if (s[i] != '.')
- 			continue;
-@@ -194,7 +202,7 @@ static inline void set_file_temperature(struct f2fs_sb_info *sbi, struct inode *
- 	hot_count = sbi->raw_super->hot_ext_count;
- 
- 	for (i = 0; i < cold_count + hot_count; i++) {
--		if (is_extension_exist(name, extlist[i]))
-+		if (is_extension_exist(name, extlist[i], true))
- 			break;
- 	}
- 
-@@ -295,7 +303,7 @@ static void set_compress_inode(struct f2fs_sb_info *sbi, struct inode *inode,
- 	hot_count = sbi->raw_super->hot_ext_count;
- 
- 	for (i = cold_count; i < cold_count + hot_count; i++) {
--		if (is_extension_exist(name, extlist[i])) {
-+		if (is_extension_exist(name, extlist[i], false)) {
- 			up_read(&sbi->sb_lock);
- 			return;
- 		}
-@@ -306,7 +314,7 @@ static void set_compress_inode(struct f2fs_sb_info *sbi, struct inode *inode,
- 	ext = F2FS_OPTION(sbi).extensions;
- 
- 	for (i = 0; i < ext_cnt; i++) {
--		if (!is_extension_exist(name, ext[i]))
-+		if (!is_extension_exist(name, ext[i], false))
- 			continue;
- 
- 		set_compress_context(inode);
+ 	/* apply symmetry for FE */
 -- 
 2.30.2
 
