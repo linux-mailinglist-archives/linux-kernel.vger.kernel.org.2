@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594E33CEAA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4333CEA1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355983AbhGSRSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37966 "EHLO mail.kernel.org"
+        id S1348953AbhGSRHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346304AbhGSPlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:41:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 587C561221;
-        Mon, 19 Jul 2021 16:21:11 +0000 (UTC)
+        id S1347290AbhGSPfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B86A26147D;
+        Mon, 19 Jul 2021 16:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711671;
-        bh=1BWtIQ+bDDju4B6IewjLGl2AaJcRH26LIim6FejbrmU=;
+        s=korg; t=1626711132;
+        bh=Rip4FELKUyz/lijRNWSiJD8Ugn+6QYfxP/6Ldz7a6N0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wprYNh0ziFvjPK7uq9ieCE2Fx59OgioaySlpLEUSrAV/XuzEO7G80+zXwt3v441SS
-         cb1NS+v8/tl5ZxwKQya8LocnpORmE+GKinDF3ehdrvyVp5gSl1MBtt8P5zvXC0PNbT
-         G5bBnfEi7U7sZSqXiY7ElYXhl3vnHfx7SSPlg1Ww=
+        b=lNLMUAFthSEPWSjG2Vs1eHwwDAWwok/0OKOsSH6GpoHy2P3K8fDfRWOCGHhToRIxC
+         Z+/cDjRLjQ/n78QrPVoSin/+e8JCYbRpBDVS7He/FsIcoMW0IPh9mqhhm/HXPmD+J8
+         QyZHfEdMcDqYLRs0L2OcOSW101KSCiwNK5IjesJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 090/292] ALSA: n64: check return value after calling platform_get_resource()
+        stable@vger.kernel.org, marcosfrm <marcosfrm@gmail.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 206/351] f2fs: add MODULE_SOFTDEP to ensure crc32 is included in the initramfs
 Date:   Mon, 19 Jul 2021 16:52:32 +0200
-Message-Id: <20210719144945.469866333@linuxfoundation.org>
+Message-Id: <20210719144951.781479976@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit be471fe332f7f14aa6828010b220d7e6902b91a0 ]
+[ Upstream commit 0dd571785d61528d62cdd8aa49d76bc6085152fe ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+As marcosfrm reported in bugzilla:
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210610124958.116142-1-yangyingliang@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+https://bugzilla.kernel.org/show_bug.cgi?id=213089
+
+Initramfs generators rely on "pre" softdeps (and "depends") to include
+additional required modules.
+
+F2FS does not declare "pre: crc32" softdep. Then every generator (dracut,
+mkinitcpio...) has to maintain a hardcoded list for this purpose.
+
+Hence let's use MODULE_SOFTDEP("pre: crc32") in f2fs code.
+
+Fixes: 43b6573bac95 ("f2fs: use cryptoapi crc32 functions")
+Reported-by: marcosfrm <marcosfrm@gmail.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/mips/snd-n64.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/f2fs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/mips/snd-n64.c b/sound/mips/snd-n64.c
-index e35e93157755..463a6fe589eb 100644
---- a/sound/mips/snd-n64.c
-+++ b/sound/mips/snd-n64.c
-@@ -338,6 +338,10 @@ static int __init n64audio_probe(struct platform_device *pdev)
- 	strcpy(card->longname, "N64 Audio");
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 096492caaa6b..b29de80ab60e 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -4321,4 +4321,5 @@ module_exit(exit_f2fs_fs)
+ MODULE_AUTHOR("Samsung Electronics's Praesto Team");
+ MODULE_DESCRIPTION("Flash Friendly File System");
+ MODULE_LICENSE("GPL");
++MODULE_SOFTDEP("pre: crc32");
  
- 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!res) {
-+		err = -EINVAL;
-+		goto fail_dma_alloc;
-+	}
- 	if (devm_request_irq(&pdev->dev, res->start, n64audio_isr,
- 				IRQF_SHARED, "N64 Audio", priv)) {
- 		err = -EBUSY;
 -- 
 2.30.2
 
