@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFF73CE77D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6793CE77F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346237AbhGSQ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:27:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49078 "EHLO mail.kernel.org"
+        id S1345049AbhGSQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:27:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346586AbhGSPOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:14:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F353D606A5;
-        Mon, 19 Jul 2021 15:55:21 +0000 (UTC)
+        id S1346596AbhGSPOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:14:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 367EA610FB;
+        Mon, 19 Jul 2021 15:55:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710122;
-        bh=aRrgl50TSkvA7cyCBcLcQtFR1KFOjQLcQfq2O4NGl0M=;
+        s=korg; t=1626710124;
+        bh=10RNsTQrpkHSe4TnEWFup4u2UnNAxuJ9x0CMgCgE4Oc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0uBmj7jdRTFDMKRHG+h4wBfZni8UUjkBerG+FMJWYagNgd0DOGH1GIJwIM8JykUSu
-         nbLn7/CMW9bHtLgrVKwp5O2otp7xj5j2hb+4Ci71b+UY0ykUj1mil6fJE8MdV8EhIU
-         bRwRWpbZlKveRKUHFoFUujb/pBbXWQxXlh/lWAME=
+        b=M2M/TSot0RUVcDg8SeWYQbS5dGS+KKNCSb/+F+WqOE01bAPUaRsQ7JEFnCOjDP3TO
+         agavjOwtKJmqExGO1OKhSKHxtD51snUuPuqHydi4pH7zyVC3vdYLa/aIhjHAbrmxMa
+         TfcIlBSSZq4a3gRkVGP7vV0phfLVBfsLIHt6Iu7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Koby Elbaz <kelbaz@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 086/243] habanalabs: remove node from list before freeing the node
-Date:   Mon, 19 Jul 2021 16:51:55 +0200
-Message-Id: <20210719144943.670167746@linuxfoundation.org>
+Subject: [PATCH 5.10 087/243] s390/processor: always inline stap() and __load_psw_mask()
+Date:   Mon, 19 Jul 2021 16:51:56 +0200
+Message-Id: <20210719144943.703374080@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
 References: <20210719144940.904087935@linuxfoundation.org>
@@ -40,51 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Koby Elbaz <kelbaz@habana.ai>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit f5eb7bf0c487a212ebda3c1b048fc3ccabacc147 ]
+[ Upstream commit 9c9a915afd90f7534c16a71d1cd44b58596fddf3 ]
 
-fix the following smatch warnings:
+s390 is the only architecture which makes use of the __no_kasan_or_inline
+attribute for two functions. Given that both stap() and __load_psw_mask()
+are very small functions they can and should be always inlined anyway.
 
-goya_pin_memory_before_cs()
-warn: '&userptr->job_node' not removed from list
+Therefore get rid of __no_kasan_or_inline and always inline these
+functions.
 
-gaudi_pin_memory_before_cs()
-warn: '&userptr->job_node' not removed from list
-
-Signed-off-by: Koby Elbaz <kelbaz@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 1 +
- drivers/misc/habanalabs/goya/goya.c   | 1 +
- 2 files changed, 2 insertions(+)
+ arch/s390/include/asm/processor.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 044b2ae196f9..37edd663603f 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -3708,6 +3708,7 @@ already_pinned:
- 	return 0;
+diff --git a/arch/s390/include/asm/processor.h b/arch/s390/include/asm/processor.h
+index 962da04234af..0987c3fc45f5 100644
+--- a/arch/s390/include/asm/processor.h
++++ b/arch/s390/include/asm/processor.h
+@@ -211,7 +211,7 @@ static __always_inline unsigned long current_stack_pointer(void)
+ 	return sp;
+ }
  
- unpin_memory:
-+	list_del(&userptr->job_node);
- 	hl_unpin_host_memory(hdev, userptr);
- free_userptr:
- 	kfree(userptr);
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 986ed3c07208..5b5d6275c249 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -3190,6 +3190,7 @@ already_pinned:
- 	return 0;
+-static __no_kasan_or_inline unsigned short stap(void)
++static __always_inline unsigned short stap(void)
+ {
+ 	unsigned short cpu_address;
  
- unpin_memory:
-+	list_del(&userptr->job_node);
- 	hl_unpin_host_memory(hdev, userptr);
- free_userptr:
- 	kfree(userptr);
+@@ -250,7 +250,7 @@ static inline void __load_psw(psw_t psw)
+  * Set PSW mask to specified value, while leaving the
+  * PSW addr pointing to the next instruction.
+  */
+-static __no_kasan_or_inline void __load_psw_mask(unsigned long mask)
++static __always_inline void __load_psw_mask(unsigned long mask)
+ {
+ 	unsigned long addr;
+ 	psw_t psw;
 -- 
 2.30.2
 
