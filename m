@@ -2,108 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8A83CECD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19293CECD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381550AbhGSRiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
+        id S1381366AbhGSRiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352439AbhGSQBi (ORCPT
+        with ESMTP id S1352591AbhGSQBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 12:01:38 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58341C04E2D9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 08:57:49 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so18750395otl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 09:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XKdo9XusaOXvhRc1xDgAMMd4cCrJog3x0IHEZRiACfU=;
-        b=t/hCSbnnvABr5EzDl9o3nonZhzA04ztVlFeVHI7WAATO7zlVCfcD+foj6R+5UTpvz9
-         WJaRaH2V026Wh9NY8YUpQiGPnBgKv97S2DMrJkQUeF8w78gRoeHH/7IXBVkJpqwa5UEd
-         e2t7/SV6YnIaEo6JVFKzSXHHbvTbOXDYAPAxDGD1cWnCwDHVYmzrT8PIKQj50IpB8HXS
-         buJTY6H7wa3HiKOTb1y77Q6aAUmfV5PDuMzzcnUgRGT2lNEtIO5HmgobU5VHfUpKUvXz
-         9Zb8arNSaGb/uounuGWRGic7XahTFScRk//weodeUNRiMhd2XNYWdGFoX7ppe05YWLTw
-         ycfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XKdo9XusaOXvhRc1xDgAMMd4cCrJog3x0IHEZRiACfU=;
-        b=YWMM3uhCUBAvakOwN4sJzPl0znfF58OhXn7kKkR8dJkRpaJfaOYlaa6oQF4vVQ4LKT
-         9pwUHF31l22nqBY8W+aJnTuf3YdfFrznDXPRBKYw6aT1ckW8EYBchBRahz+iI8GciVnc
-         fu0BihSjSktIFLRXanscx61f855friR/hQRec/9DgLGLwyuq/BY03Fe2WFH5IdL1BNXK
-         ElnBdjnaHZEq1zZkzN/TjRqJZCKmJmNYNzqJW3mSVdz+TbqAUsPPT7kVU4XXC9XKgug8
-         ASuT6Wy3hWaQKMmZ5VWll3imzoC0/gdeYW6RRICEpFKle+v9Amrx+wNQ77J5kIIM+Anl
-         cIrw==
-X-Gm-Message-State: AOAM533u3hgG5TUGvJlwJ0Gteg9cuiNnoV0fbB/0Sx/sjB2f0EfWTh0D
-        lyKt4xAU74TQYg3W2FxXBbTlX+OpKQuL6Mhw8E0e8A==
-X-Google-Smtp-Source: ABdhPJz6IB0jLV0YEJvPVkTTOBrKT+6C26cjZrilbAk9BMlPd7TqiUEOfzoOdoy68/NHC8BMktzyeQ7NsfCU7PPZPww=
-X-Received: by 2002:a05:6830:242f:: with SMTP id k15mr19790859ots.72.1626711722713;
- Mon, 19 Jul 2021 09:22:02 -0700 (PDT)
+        Mon, 19 Jul 2021 12:01:47 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00259C0A8884;
+        Mon, 19 Jul 2021 08:58:22 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc] (unknown [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9E1B01F42D19;
+        Mon, 19 Jul 2021 17:22:32 +0100 (BST)
+Subject: Re: [PATCH v6 12/14] media: mtk-vcodec: vdec: add media device if
+ using stateless api
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+References: <20210705053258.1614177-1-acourbot@chromium.org>
+ <20210705053258.1614177-13-acourbot@chromium.org>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <a0a8b9a1-df9e-0e30-9ce6-36759f707e27@collabora.com>
+Date:   Mon, 19 Jul 2021 18:22:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210719144901.370365147@linuxfoundation.org>
-In-Reply-To: <20210719144901.370365147@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 19 Jul 2021 21:51:47 +0530
-Message-ID: <CA+G9fYuH=9=ssubxox8vpC2p-qMw45cH8Qta_dTs=Mae7A4W+Q@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/149] 5.4.134-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210705053258.1614177-13-acourbot@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 at 21:19, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.134 release.
-> There are 149 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Jul 2021 14:47:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.134-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-Following build errors noticed on arm64 architectures on 5.4 branch
-
-> Petr Vorel <petr.vorel@gmail.com>
->     arm64: dts: qcom: msm8994-angler: Fix gpio-reserved-ranges 85-88
 
 
-error: /builds/linux/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts:34.1-6
-Label or path tlmm not found
-FATAL ERROR: Syntax error parsing input tree
-make[3]: *** [scripts/Makefile.lib:285:
-arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dtb] Error 1
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [/builds/linux/scripts/Makefile.build:497:
-arch/arm64/boot/dts/qcom] Error 2
+On 05.07.21 07:32, Alexandre Courbot wrote:
+> From: Yunfei Dong <yunfei.dong@mediatek.com>
+> 
+> The stateless API requires a media device for issuing requests. Add one
+> if we are being instantiated as a stateless decoder.
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> [acourbot: refactor, cleanup and split]
+> Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> ---
+>   drivers/media/platform/Kconfig                |  2 +
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 38 +++++++++++++++++++
+>   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  2 +
+>   3 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index ae1468aa1b4e..aa277a19e275 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -315,6 +315,8 @@ config VIDEO_MEDIATEK_VCODEC
+>   	select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
+>   	select VIDEO_MEDIATEK_VCODEC_SCP if MTK_SCP
+>   	select V4L2_H264
+> +	select MEDIA_CONTROLLER
+> +	select MEDIA_CONTROLLER_REQUEST_API
+>   	help
+>   	  Mediatek video codec driver provides HW capability to
+>   	  encode and decode in a range of video formats on MT8173
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> index 1460951f302c..c8a84fa11e4a 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> @@ -14,6 +14,7 @@
+>   #include <media/v4l2-event.h>
+>   #include <media/v4l2-mem2mem.h>
+>   #include <media/videobuf2-dma-contig.h>
+> +#include <media/v4l2-device.h>
+>   
+>   #include "mtk_vcodec_drv.h"
+>   #include "mtk_vcodec_dec.h"
+> @@ -316,6 +317,30 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>   		goto err_event_workq;
+>   	}
+>   
+> +	if (dev->vdec_pdata->uses_stateless_api) {
+> +		dev->mdev_dec.dev = &pdev->dev;
+> +		strscpy(dev->mdev_dec.model, MTK_VCODEC_DEC_NAME,
+> +			sizeof(dev->mdev_dec.model));
+> +
+> +		media_device_init(&dev->mdev_dec);
+> +		dev->mdev_dec.ops = &mtk_vcodec_media_ops;
+> +		dev->v4l2_dev.mdev = &dev->mdev_dec;
+> +
+> +		ret = v4l2_m2m_register_media_controller(dev->m2m_dev_dec, dev->vfd_dec,
+> +							 MEDIA_ENT_F_PROC_VIDEO_DECODER);
+> +		if (ret) {
+> +			mtk_v4l2_err("Failed to register media controller");
+> +			goto err_reg_cont;
+> +		}
+> +
+> +		ret = media_device_register(&dev->mdev_dec);
+> +		if (ret) {
+> +			mtk_v4l2_err("Failed to register media device");
+> +			goto err_media_reg;
+> +		}
+> +
+> +		mtk_v4l2_debug(0, "media registered as /dev/media%d", vfd_dec->num);
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+the media's node minor is not vfd_dec->num
 
---
-Linaro LKFT
-https://lkft.linaro.org
+> +	}
+>   	ret = video_register_device(vfd_dec, VFL_TYPE_VIDEO, 0);
+>   	if (ret) {
+>   		mtk_v4l2_err("Failed to register video device");
+> @@ -328,6 +353,12 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>   	return 0;
+>   
+>   err_dec_reg:
+> +	if (dev->vdec_pdata->uses_stateless_api)
+> +		media_device_unregister(&dev->mdev_dec);
+> +err_media_reg:
+> +	if (dev->vdec_pdata->uses_stateless_api)
+> +		v4l2_m2m_unregister_media_controller(dev->m2m_dev_dec);
+> +err_reg_cont:
+>   	destroy_workqueue(dev->decode_workqueue);
+>   err_event_workq:
+>   	v4l2_m2m_release(dev->m2m_dev_dec);
+> @@ -360,6 +391,13 @@ static int mtk_vcodec_dec_remove(struct platform_device *pdev)
+>   
+>   	flush_workqueue(dev->decode_workqueue);
+>   	destroy_workqueue(dev->decode_workqueue);
+> +
+> +	if (media_devnode_is_registered(dev->mdev_dec.devnode)) {
+> +		media_device_unregister(&dev->mdev_dec);
+> +		v4l2_m2m_unregister_media_controller(dev->m2m_dev_dec);
+> +		media_device_cleanup(&dev->mdev_dec);
+> +	}
+> +
+>   	if (dev->m2m_dev_dec)
+>   		v4l2_m2m_release(dev->m2m_dev_dec);
+>   
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> index 8fb333a99a40..d4f840a7bbcb 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> @@ -389,6 +389,7 @@ struct mtk_vcodec_enc_pdata {
+>    * struct mtk_vcodec_dev - driver data
+>    * @v4l2_dev: V4L2 device to register video devices for.
+>    * @vfd_dec: Video device for decoder
+> + * @mdev_dec: Media device for decoder
+>    * @vfd_enc: Video device for encoder.
+>    *
+>    * @m2m_dev_dec: m2m device for decoder
+> @@ -426,6 +427,7 @@ struct mtk_vcodec_enc_pdata {
+>   struct mtk_vcodec_dev {
+
+This structs has a lot of duplicated fields for enc/dec
+Since the device represents either a decoder or an encoder,
+I think all those dupliactes can be removed, so for example
+instead of having both 'dec_irq' and 'enc_irq' we can have just 'irq'
+
+Thanks,
+Dafna
+
+>   	struct v4l2_device v4l2_dev;
+>   	struct video_device *vfd_dec;
+> +	struct media_device mdev_dec;
+>   	struct video_device *vfd_enc;
+>   
+>   	struct v4l2_m2m_dev *m2m_dev_dec;
+> 
