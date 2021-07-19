@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E32E3CD875
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212BB3CD88A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243180AbhGSOWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:22:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58348 "EHLO mail.kernel.org"
+        id S242716AbhGSOXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:23:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241837AbhGSOUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:20:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA8BB61166;
-        Mon, 19 Jul 2021 15:01:23 +0000 (UTC)
+        id S242275AbhGSOU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:20:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5709C61165;
+        Mon, 19 Jul 2021 15:01:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706884;
-        bh=7S6xckbLtnqd5D/C5AtfLm9Ntbs+gMVw9GWSx9WNNlU=;
+        s=korg; t=1626706889;
+        bh=V55OotZTM1O2aMmV9536ILQb5yI1FsYwaTgVcTdi8rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UHxGFcf36mQLdCb7pfLwZGszK76O5v2CExxZiGGRVa6PzL9AxEDaSIsgdgonz9BHi
-         IMml5g2MhY12Q8PUHWiM75p4E6S/IM1n0fuejQMztI4XcFgKxdbF5bsc/spdWVW19O
-         QpfMoHgEjrW+hjv1Ygza0rmSQ8z4xCA/JOsDejQM=
+        b=b/BJ3AUQiQYZwScZc+uKcjGgexvo71N3gRh97PVCF0Gme337KNLGRH1XpmxJADIWX
+         /KTnKku67B6Ep0JElSw9la4itdXtZKYMV34YtRSx+Q+rfma6YCUzNUlNADiFUXYkoE
+         5Lkz/lNM8M+eOfJ9BbN5T0CW4K4LGvMqX5t0Iu8g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Benjamin Drung <bdrung@posteo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.4 138/188] media: gspca/sunplus: fix zero-length control requests
-Date:   Mon, 19 Jul 2021 16:52:02 +0200
-Message-Id: <20210719144941.009611065@linuxfoundation.org>
+Subject: [PATCH 4.4 139/188] media: uvcvideo: Fix pixel format change for Elgato Cam Link 4K
+Date:   Mon, 19 Jul 2021 16:52:03 +0200
+Message-Id: <20210719144941.042349372@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -40,62 +40,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Benjamin Drung <bdrung@posteo.de>
 
-commit b4bb4d425b7b02424afea2dfdcd77b3b4794175e upstream.
+commit 4c6e0976295add7f0ed94d276c04a3d6f1ea8f83 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+The Elgato Cam Link 4K HDMI video capture card reports to support three
+different pixel formats, where the first format depends on the connected
+HDMI device.
 
-Control transfers without a data stage are treated as OUT requests by
-the USB stack and should be using usb_sndctrlpipe(). Failing to do so
-will now trigger a warning.
+```
+$ v4l2-ctl -d /dev/video0 --list-formats-ext
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
 
-Fix the single zero-length control request which was using the
-read-register helper, and update the helper so that zero-length reads
-fail with an error message instead.
+	[0]: 'NV12' (Y/CbCr 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+	[1]: 'NV12' (Y/CbCr 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+	[2]: 'YU12' (Planar YUV 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+```
 
-Fixes: 6a7eba24e4f0 ("V4L/DVB (8157): gspca: all subdrivers")
-Cc: stable@vger.kernel.org      # 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Changing the pixel format to anything besides the first pixel format
+does not work:
+
+```
+$ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
+Format Video Capture:
+	Width/Height      : 3840/2160
+	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
+	Field             : None
+	Bytes per Line    : 3840
+	Size Image        : 12441600
+	Colorspace        : sRGB
+	Transfer Function : Rec. 709
+	YCbCr/HSV Encoding: Rec. 709
+	Quantization      : Default (maps to Limited Range)
+	Flags             :
+```
+
+User space applications like VLC might show an error message on the
+terminal in that case:
+
+```
+libv4l2: error set_fmt gave us a different result than try_fmt!
+```
+
+Depending on the error handling of the user space applications, they
+might display a distorted video, because they use the wrong pixel format
+for decoding the stream.
+
+The Elgato Cam Link 4K responds to the USB video probe
+VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
+second byte contains bFormatIndex (instead of being the second byte of
+bmHint). The first byte is always zero. The third byte is always 1.
+
+The firmware bug was reported to Elgato on 2020-12-01 and it was
+forwarded by the support team to the developers as feature request.
+There is no firmware update available since then. The latest firmware
+for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
+
+Therefore correct the malformed data structure for this device. The
+change was successfully tested with VLC, OBS, and Chromium using
+different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
+1920x1080), and frame rates (29.970 and 59.940 fps).
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Benjamin Drung <bdrung@posteo.de>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/gspca/sunplus.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/media/usb/uvc/uvc_video.c |   27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
---- a/drivers/media/usb/gspca/sunplus.c
-+++ b/drivers/media/usb/gspca/sunplus.c
-@@ -255,6 +255,10 @@ static void reg_r(struct gspca_dev *gspc
- 		PERR("reg_r: buffer overflow\n");
- 		return;
- 	}
-+	if (len == 0) {
-+		PERR("reg_r: zero-length read\n");
-+		return;
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -89,10 +89,37 @@ int uvc_query_ctrl(struct uvc_device *de
+ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+ 	struct uvc_streaming_control *ctrl)
+ {
++	static const struct usb_device_id elgato_cam_link_4k = {
++		USB_DEVICE(0x0fd9, 0x0066)
++	};
+ 	struct uvc_format *format = NULL;
+ 	struct uvc_frame *frame = NULL;
+ 	unsigned int i;
+ 
++	/*
++	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
++	 * contains bFormatIndex (instead of being the second byte of bmHint).
++	 * The first byte is always zero. The third byte is always 1.
++	 *
++	 * The UVC 1.5 class specification defines the first five bits in the
++	 * bmHint bitfield. The remaining bits are reserved and should be zero.
++	 * Therefore a valid bmHint will be less than 32.
++	 *
++	 * Latest Elgato Cam Link 4K firmware as of 2021-03-23 needs this fix.
++	 * MCU: 20.02.19, FPGA: 67
++	 */
++	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) &&
++	    ctrl->bmHint > 255) {
++		u8 corrected_format_index = ctrl->bmHint >> 8;
++
++		/* uvc_dbg(stream->dev, VIDEO,
++			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: %u} to {bmHint: 0x%04x, bFormatIndex: %u}\n",
++			ctrl->bmHint, ctrl->bFormatIndex,
++			1, corrected_format_index); */
++		ctrl->bmHint = 1;
++		ctrl->bFormatIndex = corrected_format_index;
 +	}
- 	if (gspca_dev->usb_err < 0)
- 		return;
- 	ret = usb_control_msg(gspca_dev->dev,
-@@ -263,7 +267,7 @@ static void reg_r(struct gspca_dev *gspc
- 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 			0,		/* value */
- 			index,
--			len ? gspca_dev->usb_buf : NULL, len,
-+			gspca_dev->usb_buf, len,
- 			500);
- 	if (ret < 0) {
- 		pr_err("reg_r err %d\n", ret);
-@@ -739,7 +743,7 @@ static int sd_start(struct gspca_dev *gs
- 		case MegaImageVI:
- 			reg_w_riv(gspca_dev, 0xf0, 0, 0);
- 			spca504B_WaitCmdStatus(gspca_dev);
--			reg_r(gspca_dev, 0xf0, 4, 0);
-+			reg_w_riv(gspca_dev, 0xf0, 4, 0);
- 			spca504B_WaitCmdStatus(gspca_dev);
- 			break;
- 		default:
++
+ 	for (i = 0; i < stream->nformats; ++i) {
+ 		if (stream->format[i].index == ctrl->bFormatIndex) {
+ 			format = &stream->format[i];
 
 
