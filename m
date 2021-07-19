@@ -2,169 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915E63CD26D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCBD3CD277
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbhGSKCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 06:02:34 -0400
-Received: from mail-eopbgr80042.outbound.protection.outlook.com ([40.107.8.42]:13122
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236150AbhGSKCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:02:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mcw0SBhCeK47QhqTNeoSE2L1qNzCjYrUPwAssQbgRoMrWRDXZY1OKw4kHUiCKloHConvpt3qfWm8x5Pmgluzto+Zs2abUlYor2wZqqdjVk2ms+dR8ib95qJecrWjfZ8jwc3c7fRO6stqReNqGMtkmo8/ZIA/Z/MjFiraONCLF23hZXage0RhznwDwsWqkRwy1HVg56ueqRnr5ZRLkheEG04VZoIP49AEPX7np6f5QHtbG/ArTrEByeSl2ZJGQsby8/bY7nDNyUZBYxaYF5myvvoB9vTfFH2wjtfZPzfNEzqi6TrVtTOPWZCAEAb4WiNAlMizi9JFXHHSV9qybbSykQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1c7iUkpyv4Q9nIGrMvBcGNx7b3rQGsSPOv28sfkpS8I=;
- b=Unjt0ttS+G/CQm71QXiWuuJ8oYw7R1exZthJgC2EhhnP2GyRDBwgGKb5LhUbRYvrAgv9cXhHG5GG19+ZbimvnxOyEDOiM6BJ2WdvXbhHzlwGsnZfGRJELFXneVt+AXA6ePV+6ebA5llp8VkzU+HdqRCE+kIedSk9y66MYaRKFFfsBzamJ8w8+YqCaeQkEwsmgoipUKLqRgBnLgZhjZYi7HoKJA+kUd5T5Xggw8mXuZxkhJoehkIhrc55s4Bwq3vRsOUyzxBMzT/AgZ7FUzflBJd70otoGpvta13CWUlXVIBL1XxwGDlkiMOxYPHmYAndt84g/ELdz8ly9X2twXHoDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1c7iUkpyv4Q9nIGrMvBcGNx7b3rQGsSPOv28sfkpS8I=;
- b=FlkaZVe72npd6UN1D7l+HpLnzgm7JABy/ZtlhqO8DYfVlwToCdzK0tygCJoo38qw1fo/ymHemUrC0WJCXrwAGHrfyISqo4KNijmb7bhNg4yU+t7BNrmpPdIDNguvSNeHEbSLBcemh23spVfw/mjJGJmfu00SPTYad0QduivU15c=
-Authentication-Results: googlemail.com; dkim=none (message not signed)
- header.d=none;googlemail.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com (2603:10a6:800:57::8)
- by VI1PR0402MB3680.eurprd04.prod.outlook.com (2603:10a6:803:1e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Mon, 19 Jul
- 2021 10:43:09 +0000
-Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com
- ([fe80::1dc0:b737:bf34:46b]) by VI1PR0401MB2559.eurprd04.prod.outlook.com
- ([fe80::1dc0:b737:bf34:46b%3]) with mapi id 15.20.4331.032; Mon, 19 Jul 2021
- 10:43:08 +0000
-Date:   Mon, 19 Jul 2021 13:43:06 +0300
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH v1 2/6] clk: imx: clk-divider-gate: Switch to
- clk_divider.determine_rate
-Message-ID: <YPVXOkex7EfTQTre@ryzen>
-References: <20210702225145.2643303-1-martin.blumenstingl@googlemail.com>
- <20210702225145.2643303-3-martin.blumenstingl@googlemail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702225145.2643303-3-martin.blumenstingl@googlemail.com>
-X-ClientProxiedBy: VI1PR06CA0136.eurprd06.prod.outlook.com
- (2603:10a6:803:a0::29) To VI1PR0401MB2559.eurprd04.prod.outlook.com
- (2603:10a6:800:57::8)
+        id S236447AbhGSKDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 06:03:52 -0400
+Received: from relay.sw.ru ([185.231.240.75]:44462 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235975AbhGSKDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 06:03:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=iZ1ynByuioCDoTi2cQJPPrkVfNJCOxOFIYdlfBM1PN0=; b=k76dwmG/+ikvsiuwlWE
+        U2ephl4PQhMvGh2Y09udetgUKUe64bpUurFHaVD1zRCRHPgKPiDw0euvVnw3gmGqgiA1KbgUd1+S3
+        RPj1WAz6bwfvkHo4bNwF0P7uyBEFWrsjJuWH73tHy+fQnwndffiMpXH33Q+9UcEpuAAq6JBQAHw=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m5Qkx-004Rc7-T6; Mon, 19 Jul 2021 13:44:15 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH v5 00/16] memcg accounting from OpenVZ
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yutian Yang <nglaive@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        netdev <netdev@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+Message-ID: <9bf9d9bd-03b1-2adb-17b4-5d59a86a9394@virtuozzo.com>
+Date:   Mon, 19 Jul 2021 13:44:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ryzen (188.26.184.129) by VI1PR06CA0136.eurprd06.prod.outlook.com (2603:10a6:803:a0::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 10:43:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 59f8d39a-7c41-49ff-8e48-08d94aa1ff84
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3680:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB36806683DCD03F7C06A471C4F6E19@VI1PR0402MB3680.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AFwHXt0Ulyxi69wrwXHC6UiQ2mDn6L+7+xEZG0q8Y0k4bdkPSTqZl1vMMgDjUiXVfiT94nvgbSqwDFGoZWt7kIT1IYDwk10wZYAcCVPk5ajnWLnvUKUteO8baKiJFe1sxwSxH5TTBaRZHdSP8uxj0i4C9YlqPC2RcvwHMaqF+UMe1zgGNYWO4wOMkb7iwS5FHFVJD2tGNtOpgWYz7NIXGuzfABCZky57NbPzy64HWIvhVrMOUafVakzUDPWuJ2I44024YOHGLTHsT0leU6FjPvYsDp27BxZsiCqlBRcLJY4s28PZ4fDBPx4n2CEjAStwf+2ZVu8SGfIc+YmCN6ei4MPCM/QzP1dcPEUb8Q7j5MkPS8C6324TPIbWXRcmM4mMjLkB0dFDZsM3sJAtBIttG/N+2u2WIgc+WZIYnC1I3ecEf2hvcBq+X1nGJLyz2lvr3hpl/KDxUkjOka2gvLIO73PqJw9MzEj+7KflM4VLoF+aS8cbVN/UIy9zuqWvfGPB0qG+CbjrdYlDLZK5xNFsURqnQGd0q9T81mtHGfzBkr/oaJFUr19INiehYqppdappwl/Ft+Oy6QQyFqm/ag6AdlJ1dwi+pwrcSrC1JJ9ZSBKXRKrkxbBghqtRnB4t4XamZhW12tKuXx3JJOOGf5Kj5RVMnQDXsqVe4vQmrsQjW/j6f5Q6w9YgShvrfaqudq6BcrGZRlRhzogcJz/8LawyoA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2559.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(346002)(39860400002)(8936002)(33716001)(38350700002)(38100700002)(956004)(8676002)(9576002)(66556008)(2906002)(5660300002)(66476007)(66946007)(9686003)(44832011)(26005)(6916009)(316002)(4326008)(54906003)(83380400001)(53546011)(55016002)(86362001)(52116002)(6496006)(7416002)(186003)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dw4RfGQXiiLiIzBqqbxuLcvnZKhSFS+z15uPuWvUGz+1whDkkIznIWPG45FK?=
- =?us-ascii?Q?rW4ngWGlA8qvn8ynTlX+KTPVqIVf4iScA057EllxPN4WCFZnutZNxo39D6o3?=
- =?us-ascii?Q?KiCiBYFTJ6Y7J/Ox+A7mWL8SDtAKYqwUS0/MuAaT/K9hTCstmHa9RkcUNjiJ?=
- =?us-ascii?Q?kOcc3fIRmOoyheVHtg3be5HLC5OX4JIzKLNT+VCDEvzHWFDmifPfL2ebzqo6?=
- =?us-ascii?Q?erGCVpBSOaM9CffvrAAdkEdTD5Sfo2jUpdJfGPvlu1TQgc+0nDfoQV7es9K4?=
- =?us-ascii?Q?m2b9CU3YFvW/504baGUF3HCxGdrvcW60SEvRJlq+8nxFDCFHqRnhioOscPr6?=
- =?us-ascii?Q?MBnNsBNBywSIC/HAL/+h0/gGbLHGxTby3YQMRDtvILKmhjIH4fHV0lIngTDs?=
- =?us-ascii?Q?LfJXA4ZTSmsquxCReGFHBnpqlYGK7fJN3/x90ixi6kly4ccFeNFkdxj6u71m?=
- =?us-ascii?Q?H/Z0FEKJDE63HdGT8ilLKGQflBGnY0oiPvhaU1IY9BRK/6uvSV8U2AUH++nU?=
- =?us-ascii?Q?PfuHN+2bC9upF7rVyFatpAHQs7lYx07aEPwr1wma5xmL0GZu1VTx+THT1EL2?=
- =?us-ascii?Q?1oFYhIKlFX53BW9hzW34bSNXCePU4ZOQZ7VTD0fQsyTmEFJaiflQsJXEeRXb?=
- =?us-ascii?Q?75L38m014eBiR4eZIz58p6cbWG07T8hSFaO7nYoOyUvIstT25aE06EWUsi4L?=
- =?us-ascii?Q?qhf8q9DhyRhwjewV98yMs+jsNlg2mpUrD9u0RJueRMp/nlAu8b1YJlUTG8TO?=
- =?us-ascii?Q?Onaja8gTmshvctpxV/6VcqAIzeJ3Mw8QMnuiqd2MkuOisGtqKjZ79CZl9pKS?=
- =?us-ascii?Q?gncDDGYRUL3FNu4ZY9TYc/Op4Q7SmL0HaskeQSDS1HvVYcpEkgspSGUq0q9C?=
- =?us-ascii?Q?M0mFo6Z1VWK04X4o3cqdVKqgQD9a9us6iU3agJPxlaolOyJcq2wGZRup9buN?=
- =?us-ascii?Q?0jJI16LEn7RQp7UxrbPnUj4RergvRLhtMY14ki+FQyu4XxKSvNjUnzIJRGMf?=
- =?us-ascii?Q?v73TRWJplr3UByBevQ/60EOheTFbGYa4MiC6dz/4n1+4haxVWNr8L410yJWu?=
- =?us-ascii?Q?jQbO1dujQcxxnoK/OOMWPmB1/SA9FwAdBEUPA1axSI3KYPsvO1EH6sctm6/1?=
- =?us-ascii?Q?QyBHGuU9bgHv1E46kdqTeQQINjfs0oMrgNmUcxarJFhvvNLyMgD4WZYXYxey?=
- =?us-ascii?Q?1fWLnWuT8pUSUlP4/XnhZ64r4m33rOptJ4VYnlnw5PixwC+HOIbk5H6aCQtc?=
- =?us-ascii?Q?FLxZSPMFkf/U0mWsyR5OLFQoqxgj23D3as2YYsMJrxqtpgOCu87xfd7yMykv?=
- =?us-ascii?Q?qogeQz1RI0hyf2ipbiKMFlRj?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59f8d39a-7c41-49ff-8e48-08d94aa1ff84
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2559.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 10:43:08.8972
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6G7tP9DryY6UGtC9wlSndZ4q4jJL14HmyC5+dwlUt9/cn8s3thqcS0YNRXxyGiJ0rdnh9xSjG+PDPvh2w+wigA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3680
+In-Reply-To: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-07-03 00:51:41, Martin Blumenstingl wrote:
-> .determine_rate is meant to replace .round_rate in CCF in the future.
-> Switch over to .determine_rate now that clk_divider_ops has gained
-> support for that.
-> 
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Abel Vesa <abel.vesa@nxp.com>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+OpenVZ uses memory accounting 20+ years since v2.2.x linux kernels. 
+Initially we used our own accounting subsystem, then partially committed
+it to upstream, and a few years ago switched to cgroups v1.
+Now we're rebasing again, revising our old patches and trying to push
+them upstream.
 
-Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
+We try to protect the host system from any misuse of kernel memory 
+allocation triggered by untrusted users inside the containers.
 
-> ---
->  drivers/clk/imx/clk-divider-gate.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/clk/imx/clk-divider-gate.c b/drivers/clk/imx/clk-divider-gate.c
-> index 0322a843d245..26b210cba9be 100644
-> --- a/drivers/clk/imx/clk-divider-gate.c
-> +++ b/drivers/clk/imx/clk-divider-gate.c
-> @@ -64,10 +64,10 @@ static unsigned long clk_divider_gate_recalc_rate(struct clk_hw *hw,
->  				   div->flags, div->width);
->  }
->  
-> -static long clk_divider_round_rate(struct clk_hw *hw, unsigned long rate,
-> -				   unsigned long *prate)
-> +static int clk_divider_determine_rate(struct clk_hw *hw,
-> +				      struct clk_rate_request *req)
->  {
-> -	return clk_divider_ops.round_rate(hw, rate, prate);
-> +	return clk_divider_ops.determine_rate(hw, req);
->  }
->  
->  static int clk_divider_gate_set_rate(struct clk_hw *hw, unsigned long rate,
-> @@ -154,12 +154,12 @@ static int clk_divider_is_enabled(struct clk_hw *hw)
->  
->  static const struct clk_ops clk_divider_gate_ro_ops = {
->  	.recalc_rate = clk_divider_gate_recalc_rate_ro,
-> -	.round_rate = clk_divider_round_rate,
-> +	.determine_rate = clk_divider_determine_rate,
->  };
->  
->  static const struct clk_ops clk_divider_gate_ops = {
->  	.recalc_rate = clk_divider_gate_recalc_rate,
-> -	.round_rate = clk_divider_round_rate,
-> +	.determine_rate = clk_divider_determine_rate,
->  	.set_rate = clk_divider_gate_set_rate,
->  	.enable = clk_divider_enable,
->  	.disable = clk_divider_disable,
-> -- 
-> 2.32.0
-> 
+Patch-set is addressed mostly to cgroups maintainers and cgroups@ mailing
+list, though I would be very grateful for any comments from maintainersi
+of affected subsystems or other people added in cc:
+
+Compared to the upstream, we additionally account the following kernel objects:
+- network devices and its Tx/Rx queues
+- ipv4/v6 addresses and routing-related objects
+- inet_bind_bucket cache objects
+- VLAN group arrays
+- ipv6/sit: ip_tunnel_prl
+- scm_fp_list objects used by SCM_RIGHTS messages of Unix sockets 
+- nsproxy and namespace objects itself
+- IPC objects: semaphores, message queues and share memory segments
+- mounts
+- pollfd and select bits arrays
+- signals and posix timers
+- file lock
+- fasync_struct used by the file lease code and driver's fasync queues 
+- tty objects
+- per-mm LDT
+
+We have an incorrect/incomplete/obsoleted accounting for few other kernel
+objects: sk_filter, af_packets, netlink and xt_counters for iptables.
+They require rework and probably will be dropped at all.
+
+Also we're going to add an accounting for nft, however it is not ready yet.
+
+We have not tested performance on upstream, however, our performance team
+compares our current RHEL7-based production kernel and reports that
+they are at least not worse as the according original RHEL7 kernel.
+
+v5:
+- rebased to v5.14-rc1
+- updated ack tags
+
+v4:
+- improved description for tty patch
+- minor cleanup in LDT patch
+- rebased to v5.12
+- resent to lkml@
+
+v3:
+- added new patches for other kind of accounted objects
+- combined patches for ip address/routing-related objects
+- improved description
+- re-ordered and rebased for linux 5.12-rc8
+
+v2:
+- squashed old patch 1 "accounting for allocations called with disabled BH"
+   with old patch 2 "accounting for fib6_nodes cache" used such kind of memory allocation 
+- improved patch description
+- subsystem maintainers added to cc:
+
+Vasily Averin (16):
+  memcg: enable accounting for net_device and Tx/Rx queues
+  memcg: enable accounting for IP address and routing-related objects
+  memcg: enable accounting for inet_bin_bucket cache
+  memcg: enable accounting for VLAN group array
+  memcg: ipv6/sit: account and don't WARN on ip_tunnel_prl structs
+    allocation
+  memcg: enable accounting for scm_fp_list objects
+  memcg: enable accounting for mnt_cache entries
+  memcg: enable accounting for pollfd and select bits arrays
+  memcg: enable accounting for file lock caches
+  memcg: enable accounting for fasync_cache
+  memcg: enable accounting for new namesapces and struct nsproxy
+  memcg: enable accounting of ipc resources
+  memcg: enable accounting for signals
+  memcg: enable accounting for posix_timers_cache slab
+  memcg: enable accounting for tty-related objects
+  memcg: enable accounting for ldt_struct objects
+
+ arch/x86/kernel/ldt.c      | 6 +++---
+ drivers/tty/tty_io.c       | 4 ++--
+ fs/fcntl.c                 | 3 ++-
+ fs/locks.c                 | 6 ++++--
+ fs/namespace.c             | 7 ++++---
+ fs/select.c                | 4 ++--
+ ipc/msg.c                  | 2 +-
+ ipc/namespace.c            | 2 +-
+ ipc/sem.c                  | 9 +++++----
+ ipc/shm.c                  | 2 +-
+ kernel/cgroup/namespace.c  | 2 +-
+ kernel/nsproxy.c           | 2 +-
+ kernel/pid_namespace.c     | 2 +-
+ kernel/signal.c            | 2 +-
+ kernel/time/namespace.c    | 4 ++--
+ kernel/time/posix-timers.c | 4 ++--
+ kernel/user_namespace.c    | 2 +-
+ mm/memcontrol.c            | 2 +-
+ net/8021q/vlan.c           | 2 +-
+ net/core/dev.c             | 6 +++---
+ net/core/fib_rules.c       | 4 ++--
+ net/core/scm.c             | 4 ++--
+ net/dccp/proto.c           | 2 +-
+ net/ipv4/devinet.c         | 2 +-
+ net/ipv4/fib_trie.c        | 4 ++--
+ net/ipv4/tcp.c             | 4 +++-
+ net/ipv6/addrconf.c        | 2 +-
+ net/ipv6/ip6_fib.c         | 4 ++--
+ net/ipv6/route.c           | 2 +-
+ net/ipv6/sit.c             | 5 +++--
+ 30 files changed, 57 insertions(+), 49 deletions(-)
+
+-- 
+1.8.3.1
+
