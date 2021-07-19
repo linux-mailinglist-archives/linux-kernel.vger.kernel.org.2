@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E083CDECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C623CDFED
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245331AbhGSPGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:06:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40450 "EHLO mail.kernel.org"
+        id S1345827AbhGSPMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:12:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344371AbhGSOsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344387AbhGSOsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:48:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A975C61417;
-        Mon, 19 Jul 2021 15:28:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A77F61419;
+        Mon, 19 Jul 2021 15:28:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708512;
-        bh=kIYeZuyid6C6fRyCfOhurHhLHlzB7QsRiC/tD995oME=;
+        s=korg; t=1626708514;
+        bh=TNnwHyBmh1ARN61DyuJGeVepLm+XKYUVYIrHk0svcNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c00Dkq8DWOGR+s6I3IisSbdVIDdRnqD9VER2+c02y4zW0++guPc2QhxnIEG1qjJm3
-         InBSlvIqdhf7+dvCzf5GbsOOX1CIaKGHJ2X9MqkDrZfBazOng/mZoXdqnq96k5V2fk
-         qKmEBPZ4xnp3m3XkytcMTJ0cbfeDs5zJ6KBMMpJk=
+        b=c9GvLeXRAnHxXldHwAXKcrLe11PyscMzYBUDBafTeyQRRb2ZHgEGVJlpbUBYz/slY
+         ydbYo/7kBNMN0STPP+3mrPxBzH7KKRKKwBGs/tg1LCq/E+uALVq4WHDuikLP1eJulc
+         s3/NrLachz9rI3pUeqIlWf7KJhjmR5AYPQzQ84sQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.19 021/421] ext4: return error code when ext4_fill_flex_info() fails
-Date:   Mon, 19 Jul 2021 16:47:12 +0200
-Message-Id: <20210719144947.002082889@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.19 022/421] ext4: correct the cache_nr in tracepoint ext4_es_shrink_exit
+Date:   Mon, 19 Jul 2021 16:47:13 +0200
+Message-Id: <20210719144947.033424118@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -40,37 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-commit 8f6840c4fd1e7bd715e403074fb161c1a04cda73 upstream.
+commit 4fb7c70a889ead2e91e184895ac6e5354b759135 upstream.
 
-After commit c89128a00838 ("ext4: handle errors on
-ext4_commit_super"), 'ret' may be set to 0 before calling
-ext4_fill_flex_info(), if ext4_fill_flex_info() fails ext4_mount()
-doesn't return error code, it makes 'root' is null which causes crash
-in legacy_get_tree().
+The cache_cnt parameter of tracepoint ext4_es_shrink_exit means the
+remaining cache count after shrink, but now it is the cache count before
+shrink, fix it by read sbi->s_extent_cache_cnt again.
 
-Fixes: c89128a00838 ("ext4: handle errors on ext4_commit_super")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Cc: <stable@vger.kernel.org> # v4.18+
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210510111051.55650-1-yangyingliang@huawei.com
+Fixes: 1ab6c4997e04 ("fs: convert fs shrinkers to new scan/count API")
+Cc: stable@vger.kernel.org # 3.12+
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20210522103045.690103-3-yi.zhang@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/super.c |    1 +
+ fs/ext4/extents_status.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4524,6 +4524,7 @@ no_journal:
- 			ext4_msg(sb, KERN_ERR,
- 			       "unable to initialize "
- 			       "flex_bg meta info!");
-+			ret = -ENOMEM;
- 			goto failed_mount6;
- 		}
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -1085,6 +1085,7 @@ static unsigned long ext4_es_scan(struct
  
+ 	nr_shrunk = __es_shrink(sbi, nr_to_scan, NULL);
+ 
++	ret = percpu_counter_read_positive(&sbi->s_es_stats.es_stats_shk_cnt);
+ 	trace_ext4_es_shrink_scan_exit(sbi->s_sb, nr_shrunk, ret);
+ 	return nr_shrunk;
+ }
 
 
