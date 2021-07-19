@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FA53CE76A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3EB3CE8A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353828AbhGSQ0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:26:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49652 "EHLO mail.kernel.org"
+        id S1356944AbhGSQo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:44:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346023AbhGSPNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:13:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E11C6120A;
-        Mon, 19 Jul 2021 15:53:13 +0000 (UTC)
+        id S1346593AbhGSP0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:26:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7C6461002;
+        Mon, 19 Jul 2021 16:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709994;
-        bh=sm2FY7N6Td+dyjTpFS9FtsjJ7Nw+3308wntXtWM0dFs=;
+        s=korg; t=1626710801;
+        bh=pAlfz564xk2BTIyFgBpAxGng8eKBs92lkfvotMxPEZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rSNyLaM7vZVivgNkSDCoa5VApaNApNPcUJJqIn6fmu8gyWU4B2qXEgTIHkAJOkUTQ
-         vrMYAAZAXpQNqOmF2T/YhYlMlvtGcHcWKThrkrx04eCUY1Nm/52TKN2vWs8SmizD/t
-         SSxmqBCo78eWixF3+Cke5SEY3ZdAjtNID6vxcZ/c=
+        b=fvaghnsj1htbilHARter+DwKupGjP4F4aG+7kToSOHi1h84W5M1H+P1p6Eo+DfPfJ
+         S+Oudq3C2ZJdNvTzaYx10ptdV/m6B5VpoV+KHa1IF5yW1+hmocL+IogiycaPQ9qowp
+         hC4NzJU7QdAT6/bnDoI4peSlN4NL5D+gf9bzgotU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 030/243] serial: fsl_lpuart: disable DMA for console and fix sysrq
+Subject: [PATCH 5.13 113/351] ASoC: soc-core: Fix the error return code in snd_soc_of_parse_audio_routing()
 Date:   Mon, 19 Jul 2021 16:50:59 +0200
-Message-Id: <20210719144941.901092263@linuxfoundation.org>
+Message-Id: <20210719144948.221375695@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
-References: <20210719144940.904087935@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 8cac2f6eb8548245e6f8fb893fc7f2a714952654 ]
+[ Upstream commit 7d3865a10b9ff2669c531d5ddd60bf46b3d48f1e ]
 
-SYSRQ doesn't work with DMA. This is because there is no error
-indication whether a symbol had a framing error or not. Actually,
-this is not completely correct, there is a bit in the data register
-which is set in this case, but we'd have to read change the DMA access
-to 16 bit and we'd need to post process the data, thus make the DMA
-pointless in the first place.
+When devm_kcalloc() fails, the error code -ENOMEM should be returned
+instead of -EINVAL.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/20210512141255.18277-10-michael@walle.cc
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210617103729.1918-1-thunder.leizhen@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/fsl_lpuart.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 36f270261a57..2e74c88808db 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -1571,6 +1571,9 @@ static void lpuart_tx_dma_startup(struct lpuart_port *sport)
- 	u32 uartbaud;
- 	int ret;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a76974ccfce1..af0129cf90a2 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2793,7 +2793,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 	if (!routes) {
+ 		dev_err(card->dev,
+ 			"ASoC: Could not allocate DAPM route table\n");
+-		return -EINVAL;
++		return -ENOMEM;
+ 	}
  
-+	if (uart_console(&sport->port))
-+		goto err;
-+
- 	if (!sport->dma_tx_chan)
- 		goto err;
- 
-@@ -1600,6 +1603,9 @@ static void lpuart_rx_dma_startup(struct lpuart_port *sport)
- 	int ret;
- 	unsigned char cr3;
- 
-+	if (uart_console(&sport->port))
-+		goto err;
-+
- 	if (!sport->dma_rx_chan)
- 		goto err;
- 
+ 	for (i = 0; i < num_routes; i++) {
 -- 
 2.30.2
 
