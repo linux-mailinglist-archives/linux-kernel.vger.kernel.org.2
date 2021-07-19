@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CF13CDD87
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE283CDDEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245590AbhGSO6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:58:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55058 "EHLO mail.kernel.org"
+        id S1343655AbhGSPBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:01:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343942AbhGSOjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:39:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAC7F61205;
-        Mon, 19 Jul 2021 15:20:08 +0000 (UTC)
+        id S1343969AbhGSOjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28A4160720;
+        Mon, 19 Jul 2021 15:20:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708009;
-        bh=gorQrorFtXbNKpvFCDK8T4hudm0AkyiV0w3rGmTQsos=;
+        s=korg; t=1626708011;
+        bh=kE5MaaEftMFvC0HS/jQstkXJFHsTT1QcBB9WsCK/oUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hMAQoax0WP5k5xveLfVLkdjtrJg/NRIfmgePYU2g0MKmY+kMlzZN+vCLcqDpBnXNu
-         OHcogbS9ggaR10OQToinQyGQkxvKeozNKKtI7MfU+ACzEEajtVbPrBGOeUILz+S/lL
-         eFvs2FU7MhEKIoFDpu7SPqhKhxFGNc8rTXnqFnJM=
+        b=aui3B7nuH+6uQuxwnB8yk/XhWYfYDqgUImRTe33XcYchP8HFdFR+JmzqvqB/fI4tB
+         8OmKdWSxQ5sO5BAXCdv8PzSVYzd6yi54HayvP49QwRb03G3R/C3mTTtqTSS0kLJrLo
+         vsws7TrRp5WzPVPDFygjPB6hV/f5QjuLqRQFRraY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
+        stable@vger.kernel.org, Jian-Hong Pan <jhp@endlessos.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 111/315] vxlan: add missing rcu_read_lock() in neigh_reduce()
-Date:   Mon, 19 Jul 2021 16:50:00 +0200
-Message-Id: <20210719144946.522755885@linuxfoundation.org>
+Subject: [PATCH 4.14 112/315] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+Date:   Mon, 19 Jul 2021 16:50:01 +0200
+Message-Id: <20210719144946.559126652@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -41,82 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Jian-Hong Pan <jhp@endlessos.org>
 
-[ Upstream commit 85e8b032d6ebb0f698a34dd22c2f13443d905888 ]
+[ Upstream commit b2ac9800cfe0f8da16abc4e74e003440361c112e ]
 
-syzbot complained in neigh_reduce(), because rcu_read_lock_bh()
-is treated differently than rcu_read_lock()
+The Broadcom UniMAC MDIO bus from mdio-bcm-unimac module comes too late.
+So, GENET cannot find the ethernet PHY on UniMAC MDIO bus. This leads
+GENET fail to attach the PHY as following log:
 
-WARNING: suspicious RCU usage
-5.13.0-rc6-syzkaller #0 Not tainted
------------------------------
-include/net/addrconf.h:313 suspicious rcu_dereference_check() usage!
+bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
+...
+could not attach to PHY
+bcmgenet fd580000.ethernet eth0: failed to connect to PHY
+uart-pl011 fe201000.serial: no DMA platform data
+libphy: bcmgenet MII bus: probed
+...
+unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
 
-other info that might help us debug this:
+This patch adds the soft dependency to load mdio-bcm-unimac module
+before genet module to avoid the issue.
 
-rcu_scheduler_active = 2, debug_locks = 1
-3 locks held by kworker/0:0/5:
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
- #0: ffff888011064d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2247
- #1: ffffc90000ca7da8 ((work_completion)(&port->wq)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2251
- #2: ffffffff8bf795c0 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1da/0x3130 net/core/dev.c:4180
-
-stack backtrace:
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.13.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events ipvlan_process_multicast
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- __in6_dev_get include/net/addrconf.h:313 [inline]
- __in6_dev_get include/net/addrconf.h:311 [inline]
- neigh_reduce drivers/net/vxlan.c:2167 [inline]
- vxlan_xmit+0x34d5/0x4c30 drivers/net/vxlan.c:2919
- __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
- netdev_start_xmit include/linux/netdevice.h:4958 [inline]
- xmit_one net/core/dev.c:3654 [inline]
- dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3670
- __dev_queue_xmit+0x2133/0x3130 net/core/dev.c:4246
- ipvlan_process_multicast+0xa99/0xd70 drivers/net/ipvlan/ipvlan_core.c:287
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Fixes: f564f45c4518 ("vxlan: add ipv6 proxy support")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
+Fixes: 9a4e79697009 ("net: bcmgenet: utilize generic Broadcom UniMAC MDIO controller driver")
+Buglink: https://bugzilla.kernel.org/show_bug.cgi?id=213485
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/vxlan.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index 94a9add2fc87..066a4654e838 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -1681,6 +1681,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
- 	struct neighbour *n;
- 	struct nd_msg *msg;
- 
-+	rcu_read_lock();
- 	in6_dev = __in6_dev_get(dev);
- 	if (!in6_dev)
- 		goto out;
-@@ -1732,6 +1733,7 @@ static int neigh_reduce(struct net_device *dev, struct sk_buff *skb, __be32 vni)
- 	}
- 
- out:
-+	rcu_read_unlock();
- 	consume_skb(skb);
- 	return NETDEV_TX_OK;
- }
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 5855ffec4952..ce89c43ced8a 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3765,3 +3765,4 @@ MODULE_AUTHOR("Broadcom Corporation");
+ MODULE_DESCRIPTION("Broadcom GENET Ethernet controller driver");
+ MODULE_ALIAS("platform:bcmgenet");
+ MODULE_LICENSE("GPL");
++MODULE_SOFTDEP("pre: mdio-bcm-unimac");
 -- 
 2.30.2
 
