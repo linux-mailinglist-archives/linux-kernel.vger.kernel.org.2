@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B968F3CDE17
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D4B3CDD68
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344018AbhGSPBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:01:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
+        id S245112AbhGSO5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:57:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239505AbhGSOi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:38:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0062B60720;
-        Mon, 19 Jul 2021 15:18:07 +0000 (UTC)
+        id S243346AbhGSOjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:39:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56EC861287;
+        Mon, 19 Jul 2021 15:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707888;
-        bh=i1GhNBxdRdtwBVkRFEdH+UrbvrI/rlWNQSWg3bAIQl8=;
+        s=korg; t=1626707890;
+        bh=6zJiYBldBB3JnNo1phed6HXQsiFSZrwmqAgUBWm+mZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AxlU63F6UMboulzueF2gph0jlyrUOq8lfL7vBVQ0qlg6g7T7Xdb1x0uMMtKXrlFss
-         8Vpy1doowFviNzPZmsQN2AbKy2ttkcc5LhTiW9lWWDc0UbpapJaXPNtjwj+GWmntQh
-         5HYPdIvMOt1rOihMZbiO1Djz6cqADP8BXJ8kmw5Q=
+        b=kinVvANCpGuob6X8cQFae77ez1kBQi4eKcygiUkJ//i/rw8Doo46x+6SrwKggfAn1
+         F2bqFsXjj+TE+xxMxDeORQEs0AWLGmcJC50HtTsBGTBxjdM6/Dr/IWv1gP1xXyxBbT
+         2yLcL3UCxVfsWYe8cMZJFSbTPH3aZ4PQTPNKUVSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 096/315] net: pch_gbe: Propagate error from devm_gpio_request_one()
-Date:   Mon, 19 Jul 2021 16:49:45 +0200
-Message-Id: <20210719144946.039313326@linuxfoundation.org>
+Subject: [PATCH 4.14 097/315] drm/rockchip: cdn-dp-core: add missing clk_disable_unprepare() on error in cdn_dp_grf_write()
+Date:   Mon, 19 Jul 2021 16:49:46 +0200
+Message-Id: <20210719144946.069995450@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,53 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 9e3617a7b84512bf96c04f9cf82d1a7257d33794 ]
+[ Upstream commit ae41d925c75b53798f289c69ee8d9f7d36432f6d ]
 
-If GPIO controller is not available yet we need to defer
-the probe of GBE until provider will become available.
+After calling clk_prepare_enable(), clk_disable_unprepare() need
+be called when calling regmap_write() failed.
 
-While here, drop GPIOF_EXPORT because it's deprecated and
-may not be available.
-
-Fixes: f1a26fdf5944 ("pch_gbe: Add MinnowBoard support")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Flavio Suligoi <f.suligoi@asem.it>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 1a0f7ed3abe2 ("drm/rockchip: cdn-dp: add cdn DP support for rk3399")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210519134928.2696617-1-yangyingliang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/rockchip/cdn-dp-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index 5ae9681a2da7..cb16f86ab90a 100644
---- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-+++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -2599,9 +2599,13 @@ static int pch_gbe_probe(struct pci_dev *pdev,
- 	adapter->pdev = pdev;
- 	adapter->hw.back = adapter;
- 	adapter->hw.reg = pcim_iomap_table(pdev)[PCH_GBE_PCI_BAR];
-+
- 	adapter->pdata = (struct pch_gbe_privdata *)pci_id->driver_data;
--	if (adapter->pdata && adapter->pdata->platform_init)
--		adapter->pdata->platform_init(pdev);
-+	if (adapter->pdata && adapter->pdata->platform_init) {
-+		ret = adapter->pdata->platform_init(pdev);
-+		if (ret)
-+			goto err_free_netdev;
-+	}
- 
- 	adapter->ptp_pdev = pci_get_bus_and_slot(adapter->pdev->bus->number,
- 					       PCI_DEVFN(12, 4));
-@@ -2696,7 +2700,7 @@ err_free_netdev:
-  */
- static int pch_gbe_minnow_platform_init(struct pci_dev *pdev)
- {
--	unsigned long flags = GPIOF_DIR_OUT | GPIOF_INIT_HIGH | GPIOF_EXPORT;
-+	unsigned long flags = GPIOF_OUT_INIT_HIGH;
- 	unsigned gpio = MINNOW_PHY_RESET_GPIO;
- 	int ret;
+diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+index a57da051f516..97ce3c5c3fce 100644
+--- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
++++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+@@ -83,6 +83,7 @@ static int cdn_dp_grf_write(struct cdn_dp_device *dp,
+ 	ret = regmap_write(dp->grf, reg, val);
+ 	if (ret) {
+ 		DRM_DEV_ERROR(dp->dev, "Could not write to GRF: %d\n", ret);
++		clk_disable_unprepare(dp->grf_clk);
+ 		return ret;
+ 	}
  
 -- 
 2.30.2
