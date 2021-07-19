@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46243CE367
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91FF3CE3AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 18:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243840AbhGSPhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:37:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
+        id S1346947AbhGSPjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:39:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343893AbhGSO7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:59:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CED061409;
-        Mon, 19 Jul 2021 15:37:40 +0000 (UTC)
+        id S1343961AbhGSO7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:59:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF27B61003;
+        Mon, 19 Jul 2021 15:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626709060;
-        bh=AE2ODXO1OyHIAhGncv2pn4YNtNxzIUeIs4tpORT9ccE=;
+        s=korg; t=1626709063;
+        bh=mws9txGJPcGfM7UhUX4EsAEv/3s9Xo909zEe2o3eLxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X4SwLhnG1roCgdTsCrIgRT0nY3Gw7kzXfiOnyTFj0rrIls1oo8CuEAgb2abY9TyLL
-         Y15vQGk5OXzIX8n8aTXHa7M0MCuh5eKW3ZM5YhFZrt4+7Y2Fvg2LdysD0hpZCeoiab
-         yjHk7lDaKU3ex5RDozfYWeciIUTirZ8v1e8OKLjc=
+        b=BDSEdFCpV6E4PdWHjrgVjEeFAYO7yeBmicHjJk5AM9gVCmPb2XbBV2FvMqhc7tYYJ
+         V5JeTicOtGtGVelX69//0hkymK8VPiueFEzM3uYyU9QZg1SJqz+3nJjjdw9UFdsGij
+         Sv2ITqjwPVQ4Jcn9y0eAM5LZjQGtNzmp2cOSZ4nk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 237/421] reiserfs: add check for invalid 1st journal block
-Date:   Mon, 19 Jul 2021 16:50:48 +0200
-Message-Id: <20210719144954.630566874@linuxfoundation.org>
+Subject: [PATCH 4.19 238/421] drm/virtio: Fix double free on probe failure
+Date:   Mon, 19 Jul 2021 16:50:49 +0200
+Message-Id: <20210719144954.664408012@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,55 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit a149127be52fa7eaf5b3681a0317a2bbb772d5a9 ]
+[ Upstream commit cec7f1774605a5ef47c134af62afe7c75c30b0ee ]
 
-syzbot reported divide error in reiserfs.
-The problem was in incorrect journal 1st block.
+The virtio_gpu_init() will free vgdev and vgdev->vbufs on failure.
+But such failure will be caught by virtio_gpu_probe() and then
+virtio_gpu_release() will be called to do some cleanup which
+will free vgdev and vgdev->vbufs again. So let's set dev->dev_private
+to NULL to avoid double free.
 
-Syzbot's reproducer manualy generated wrong superblock
-with incorrect 1st block. In journal_init() wasn't
-any checks about this particular case.
-
-For example, if 1st journal block is before superblock
-1st block, it can cause zeroing important superblock members
-in do_journal_end().
-
-Link: https://lore.kernel.org/r/20210517121545.29645-1-paskripkin@gmail.com
-Reported-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210517084913.403-2-xieyongji@bytedance.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/reiserfs/journal.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
-index 8a76f9d14bc6..78be6dbcd762 100644
---- a/fs/reiserfs/journal.c
-+++ b/fs/reiserfs/journal.c
-@@ -2772,6 +2772,20 @@ int journal_init(struct super_block *sb, const char *j_dev_name,
- 		goto free_and_return;
- 	}
- 
-+	/*
-+	 * Sanity check to see if journal first block is correct.
-+	 * If journal first block is invalid it can cause
-+	 * zeroing important superblock members.
-+	 */
-+	if (!SB_ONDISK_JOURNAL_DEVICE(sb) &&
-+	    SB_ONDISK_JOURNAL_1st_BLOCK(sb) < SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
-+		reiserfs_warning(sb, "journal-1393",
-+				 "journal 1st super block is invalid: 1st reserved block %d, but actual 1st block is %d",
-+				 SB_JOURNAL_1st_RESERVED_BLOCK(sb),
-+				 SB_ONDISK_JOURNAL_1st_BLOCK(sb));
-+		goto free_and_return;
-+	}
-+
- 	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
- 		reiserfs_warning(sb, "sh-462",
- 				 "unable to initialize journal device");
+diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
+index 22397a23780c..d7555991d1af 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_kms.c
++++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
+@@ -237,6 +237,7 @@ err_ttm:
+ err_vbufs:
+ 	vgdev->vdev->config->del_vqs(vgdev->vdev);
+ err_vqs:
++	dev->dev_private = NULL;
+ 	kfree(vgdev);
+ 	return ret;
+ }
 -- 
 2.30.2
 
