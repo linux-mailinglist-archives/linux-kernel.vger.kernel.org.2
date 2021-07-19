@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5203CE001
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E083CDECF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345796AbhGSPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:13:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40460 "EHLO mail.kernel.org"
+        id S245331AbhGSPGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:06:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344363AbhGSOsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:48:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F182161416;
-        Mon, 19 Jul 2021 15:28:28 +0000 (UTC)
+        id S1344371AbhGSOsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:48:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A975C61417;
+        Mon, 19 Jul 2021 15:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626708509;
-        bh=oueryWnE7z8y3ossFKwSSsp1Cb6l4G/EcQN20EoyLUA=;
+        s=korg; t=1626708512;
+        bh=kIYeZuyid6C6fRyCfOhurHhLHlzB7QsRiC/tD995oME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I9R8VkLX8LM0T7q8meRLqeKSgJKon2Bi70Ct0e9dcwEqQgN4tanP9VY5H0Cdmlx55
-         vQ/oU9PnGWFYLpqLFMT0dKV8AG/VRsp0ywxLn9ImwuegmgaCPxzOPDyKCZ6YkFXqgq
-         o367h7s6MwtEseFeNeehrXmawYQfeq8wktP5L6xs=
+        b=c00Dkq8DWOGR+s6I3IisSbdVIDdRnqD9VER2+c02y4zW0++guPc2QhxnIEG1qjJm3
+         InBSlvIqdhf7+dvCzf5GbsOOX1CIaKGHJ2X9MqkDrZfBazOng/mZoXdqnq96k5V2fk
+         qKmEBPZ4xnp3m3XkytcMTJ0cbfeDs5zJ6KBMMpJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
         Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.19 020/421] ext4: fix kernel infoleak via ext4_extent_header
-Date:   Mon, 19 Jul 2021 16:47:11 +0200
-Message-Id: <20210719144946.972205608@linuxfoundation.org>
+Subject: [PATCH 4.19 021/421] ext4: return error code when ext4_fill_flex_info() fails
+Date:   Mon, 19 Jul 2021 16:47:12 +0200
+Message-Id: <20210719144947.002082889@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144946.310399455@linuxfoundation.org>
 References: <20210719144946.310399455@linuxfoundation.org>
@@ -41,51 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit ce3aba43599f0b50adbebff133df8d08a3d5fffe upstream.
+commit 8f6840c4fd1e7bd715e403074fb161c1a04cda73 upstream.
 
-Initialize eh_generation of struct ext4_extent_header to prevent leaking
-info to userspace. Fixes KMSAN kernel-infoleak bug reported by syzbot at:
-http://syzkaller.appspot.com/bug?id=78e9ad0e6952a3ca16e8234724b2fa92d041b9b8
+After commit c89128a00838 ("ext4: handle errors on
+ext4_commit_super"), 'ret' may be set to 0 before calling
+ext4_fill_flex_info(), if ext4_fill_flex_info() fails ext4_mount()
+doesn't return error code, it makes 'root' is null which causes crash
+in legacy_get_tree().
 
-Cc: stable@kernel.org
-Reported-by: syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com
-Fixes: a86c61812637 ("[PATCH] ext3: add extent map support")
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Link: https://lore.kernel.org/r/20210506185655.7118-1-mail@anirudhrb.com
+Fixes: c89128a00838 ("ext4: handle errors on ext4_commit_super")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Cc: <stable@vger.kernel.org> # v4.18+
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210510111051.55650-1-yangyingliang@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/extents.c |    3 +++
- 1 file changed, 3 insertions(+)
+ fs/ext4/super.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -858,6 +858,7 @@ int ext4_ext_tree_init(handle_t *handle,
- 	eh->eh_entries = 0;
- 	eh->eh_magic = EXT4_EXT_MAGIC;
- 	eh->eh_max = cpu_to_le16(ext4_ext_space_root(inode, 0));
-+	eh->eh_generation = 0;
- 	ext4_mark_inode_dirty(handle, inode);
- 	return 0;
- }
-@@ -1114,6 +1115,7 @@ static int ext4_ext_split(handle_t *hand
- 	neh->eh_max = cpu_to_le16(ext4_ext_space_block(inode, 0));
- 	neh->eh_magic = EXT4_EXT_MAGIC;
- 	neh->eh_depth = 0;
-+	neh->eh_generation = 0;
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4524,6 +4524,7 @@ no_journal:
+ 			ext4_msg(sb, KERN_ERR,
+ 			       "unable to initialize "
+ 			       "flex_bg meta info!");
++			ret = -ENOMEM;
+ 			goto failed_mount6;
+ 		}
  
- 	/* move remainder of path[depth] to the new leaf */
- 	if (unlikely(path[depth].p_hdr->eh_entries !=
-@@ -1191,6 +1193,7 @@ static int ext4_ext_split(handle_t *hand
- 		neh->eh_magic = EXT4_EXT_MAGIC;
- 		neh->eh_max = cpu_to_le16(ext4_ext_space_block_idx(inode, 0));
- 		neh->eh_depth = cpu_to_le16(depth - i);
-+		neh->eh_generation = 0;
- 		fidx = EXT_FIRST_INDEX(neh);
- 		fidx->ei_block = border;
- 		ext4_idx_store_pblock(fidx, oldblock);
 
 
