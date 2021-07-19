@@ -2,179 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6633CD09C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB543CD0A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235915AbhGSInC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:43:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40238 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235651AbhGSInB (ORCPT
+        id S235286AbhGSInk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 04:43:40 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:46063 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235172AbhGSIni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:43:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626686621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9GqID4T7OaGpULAvBbxYFa5ax0SCEaOJ8PLyIMtOMSM=;
-        b=L7Owi3r+Kv50EFlCOseqJQapUdDNGwB8eerhT0OOEb0Bod90vqdSd3+DXGskyq1r5Q/WM7
-        3Cde9c4lz0cJAgIMcQSioB0OQ9wj69+9hv4DbmZtGHc780PQLkiZNjYNP5+HLkaljn5r2w
-        whiTcElm+206cxmjFXfaRrJIbpwx16s=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-BO_-og0HNA2EBAaRH4oIVw-1; Mon, 19 Jul 2021 05:23:39 -0400
-X-MC-Unique: BO_-og0HNA2EBAaRH4oIVw-1
-Received: by mail-ed1-f71.google.com with SMTP id eg53-20020a05640228b5b02903ad3cc35040so7592067edb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:23:39 -0700 (PDT)
+        Mon, 19 Jul 2021 04:43:38 -0400
+Received: by mail-wr1-f42.google.com with SMTP id t5so21109300wrw.12;
+        Mon, 19 Jul 2021 02:24:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=9GqID4T7OaGpULAvBbxYFa5ax0SCEaOJ8PLyIMtOMSM=;
-        b=R3P9u5f/77uYtXe42lrr9emfVPmLFAgXH7ifkzVQwuRsZQWO14oWH9SQPLZ6VjB/0B
-         +gXfPfGfzdUj8lqQUs9K+oYjJeodSkRPRHDpd+EBgD7IBuBb756sHzuirYb+8nEb2SqX
-         zJPutzv7p1mRd2IobYs57BroK3OqlckIg1Da8JeIoaW1BiPNa8Pmt38cpt2QvvT6Q8af
-         4MgcMzHLy0pSEpfrWJN0bLy7tQipvzHgNkyhaIsR4J3qUEZ3XY+1y8tPb5xK63a3NeJt
-         lTlvsLbuMEC5V+7EA6fnEUEhCo+w8sGP/So4Br9p2d8c+fTrZqfm5eR27617vgOIfjfO
-         1W7g==
-X-Gm-Message-State: AOAM532BfTQYrdlOF20bw27YG0dyP3SmS9HJeoLL7GaHIavG9eSMDaC3
-        piHIBqSFhvpuSR7OXl+1gSE1R8leyLaWkoUQ4xgCaYy1KfukFgRAQ1RfACQxZ69k5dUjSWVJ6rk
-        gx+nnRvtPQ9e91RBgXEuT+zt3
-X-Received: by 2002:a05:6402:216:: with SMTP id t22mr32665957edv.70.1626686618714;
-        Mon, 19 Jul 2021 02:23:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzDoq6MqXcKUH37retGzkvPJnNJR2T4LyDxSw6U1qF5+Rn1F1pvug2dt5BUszcakXHhyZ9sBg==
-X-Received: by 2002:a05:6402:216:: with SMTP id t22mr32665939edv.70.1626686618525;
-        Mon, 19 Jul 2021 02:23:38 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id ee29sm7569047edb.39.2021.07.19.02.23.37
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D3+c2ib1Q+/SzUS6dxaIqKRFtrtYa6zrwTRQZyhXL/s=;
+        b=SNErU1uzo5XPbbJ379D2iIP2IgpV1Yr60F21uMAoadqgEt5kT49PxRRIW2cw5NBJFm
+         x3HaBAsy4KahAWOhJ60bXU69DEpeRjfJp7Dqok7gbctXDyi4Ws/lWKtNKgC08ElRw+3K
+         +ie++AjoEJiDVpC+VlnkCdV/hdSiF5XDZZOGTEQWhibFB8ZEAemVTVbW4LhWPMBiEL5C
+         dHHMcKY1RYy1+lop4yOTP/9VqsEaJkEhLHpQY26CGlhId8qnboqMNYKt4n2AN8nUKUFf
+         CER2lBS+6aDnEWmgnTjvzijLoPzLcdKI6kOTpz/+jkp3ZhKHXGmMsg1xor2/hvK6bsjw
+         4EIA==
+X-Gm-Message-State: AOAM533zb3HRPnaGU9L4FSG0W0d8lnLEXcwMQsLg7H6ELy9oOOK5et8Q
+        etgpQ55EVn9k1GXsczyhTBg=
+X-Google-Smtp-Source: ABdhPJxoEfX4pJX2uzno93/+e0vFnAvCo8Sa4iB6M7aAQK75IwQ7dbGyawzTWC3D0m9Is/TMX0yCew==
+X-Received: by 2002:a5d:53c5:: with SMTP id a5mr28942225wrw.15.1626686657747;
+        Mon, 19 Jul 2021 02:24:17 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id z7sm15190274wmp.34.2021.07.19.02.24.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 02:23:38 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v2 8/8] KVM: x86: hyper-v: Deactivate APICv only when
- AutoEOI feature is in use
-In-Reply-To: <b2978f4868437db23208718b3850b8fb6c0409eb.camel@redhat.com>
-References: <20210713142023.106183-1-mlevitsk@redhat.com>
- <20210713142023.106183-9-mlevitsk@redhat.com>
- <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
- <87wnpmzqw3.fsf@vitty.brq.redhat.com>
- <b2978f4868437db23208718b3850b8fb6c0409eb.camel@redhat.com>
-Date:   Mon, 19 Jul 2021 11:23:36 +0200
-Message-ID: <87tukqzmg7.fsf@vitty.brq.redhat.com>
+        Mon, 19 Jul 2021 02:24:17 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 09:24:15 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, daniel.lezcano@linaro.org, tglx@linutronix.de,
+        arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 1/1] drivers: hv: Decouple Hyper-V clock/timer code from
+ VMbus drivers
+Message-ID: <20210719092415.vgx2xsk2vsppojzp@liuwe-devbox-debian-v2>
+References: <1626220906-22629-1-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626220906-22629-1-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
+On Tue, Jul 13, 2021 at 05:01:46PM -0700, Michael Kelley wrote:
+> Hyper-V clock/timer code in hyperv_timer.c is mostly independent from
+> other VMbus drivers, but building for ARM64 without hyperv_timer.c
+> shows some remaining entanglements.  A default implementation of
+> hv_read_reference_counter can just read a Hyper-V synthetic register
+> and be independent of hyperv_timer.c, so move this code out and into
+> hv_common.c. Then it can be used by the timesync driver even if
+> hyperv_timer.c isn't built on a particular architecture.  If
+> hyperv_timer.c *is* built, it can override with a faster implementation.
+> 
+> Also provide stubs for stimer functions called by the VMbus driver when
+> hyperv_timer.c isn't built.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 
-> On Mon, 2021-07-19 at 09:47 +0200, Vitaly Kuznetsov wrote:
->> Maxim Levitsky <mlevitsk@redhat.com> writes:
->> 
->> > On Tue, 2021-07-13 at 17:20 +0300, Maxim Levitsky wrote:
->> > > From: Vitaly Kuznetsov <vkuznets@redhat.com>
->> > > 
->> > > APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
->> > > SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
->> > > however, possible to track whether the feature was actually used by the
->> > > guest and only inhibit APICv/AVIC when needed.
->> > > 
->> > > TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
->> > > Windows know that AutoEOI feature should be avoided. While it's up to
->> > > KVM userspace to set the flag, KVM can help a bit by exposing global
->> > > APICv/AVIC enablement: in case APICv/AVIC usage is impossible, AutoEOI
->> > > is still preferred.
->> > > Maxim:
->> > >    - added SRCU lock drop around call to kvm_request_apicv_update
->> > >    - always set HV_DEPRECATING_AEOI_RECOMMENDED in kvm_get_hv_cpuid,
->> > >      since this feature can be used regardless of AVIC
->> > > 
->> > > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> > > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
->> > > ---
->> > >  arch/x86/include/asm/kvm_host.h |  3 +++
->> > >  arch/x86/kvm/hyperv.c           | 34 +++++++++++++++++++++++++++------
->> > >  2 files changed, 31 insertions(+), 6 deletions(-)
->> > > 
->> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> > > index e11d64aa0bcd..f900dca58af8 100644
->> > > --- a/arch/x86/include/asm/kvm_host.h
->> > > +++ b/arch/x86/include/asm/kvm_host.h
->> > > @@ -956,6 +956,9 @@ struct kvm_hv {
->> > >  	/* How many vCPUs have VP index != vCPU index */
->> > >  	atomic_t num_mismatched_vp_indexes;
->> > >  
->> > > +	/* How many SynICs use 'AutoEOI' feature */
->> > > +	atomic_t synic_auto_eoi_used;
->> > > +
->> > >  	struct hv_partition_assist_pg *hv_pa_pg;
->> > >  	struct kvm_hv_syndbg hv_syndbg;
->> > >  };
->> > > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
->> > > index b07592ca92f0..6bf47a583d0e 100644
->> > > --- a/arch/x86/kvm/hyperv.c
->> > > +++ b/arch/x86/kvm/hyperv.c
->> > > @@ -85,9 +85,22 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
->> > >  	return false;
->> > >  }
->> > >  
->> > > +
->> > > +static void synic_toggle_avic(struct kvm_vcpu *vcpu, bool activate)
->> > > +{
->> > > +	srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
->> > > +	kvm_request_apicv_update(vcpu->kvm, activate,
->> > > +			APICV_INHIBIT_REASON_HYPERV);
->> > > +	vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
->> > > +}
->> > 
->> > Well turns out that this patch still doesn't work (on this
->> > weekend I found out that all my AVIC enabled VMs hang on reboot).
->> > 
->> > I finally found out what prompted me back then to make srcu lock drop
->> > in synic_update_vector conditional on whether the write was done
->> > by the host.
->> >  
->> > Turns out that while KVM_SET_MSRS does take the kvm->srcu lock,
->> > it stores the returned srcu index in a local variable and not
->> > in vcpu->srcu_idx, thus the lock drop in synic_toggle_avic
->> > doesn't work.
->> >  
->> > So it is likely that I have seen it not work, and blamed 
->> > KVM_SET_MSRS for not taking the srcu lock which was a wrong assumption.
->> >  
->> > I am more inclined to fix this by just tracking if we hold the srcu
->> > lock on each VCPU manually, just as we track the srcu index anyway,
->> > and then kvm_request_apicv_update can use this to drop the srcu
->> > lock when needed.
->> > 
->> 
->> Would it be possible to use some magic value in 'vcpu->srcu_idx' and not
->> introduce a new 'srcu_ls_locked' flag?
->
-> Well, currently the returned index value from srcu_read_lock is opaque 
-> (and we have two SRCU implementations and both I think return small positive numbers, 
-> but I haven't studied them in depth).
->  
-> We can ask the people that maintain SRCU to reserve a number (like -1)
-> or so.
-> I probably first add the 'srcu_is_locked' thought and then as a follow up patch
-> remove it if they agree.
->
-
-Ah, OK. BTW, I've just discovered srcu_read_lock_held() which sounds
-like the function we need but unfortunately it is not.
-
--- 
-Vitaly
-
+Applied to hyperv-next. Thanks.
