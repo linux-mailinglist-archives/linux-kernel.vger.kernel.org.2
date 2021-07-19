@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0833CE962
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBA43CEABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351473AbhGSQyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 12:54:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
+        id S1378069AbhGSRRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:17:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348363AbhGSPaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:30:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87C7460C40;
-        Mon, 19 Jul 2021 16:09:35 +0000 (UTC)
+        id S243651AbhGSPkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:40:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0649B61002;
+        Mon, 19 Jul 2021 16:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626710976;
-        bh=IWa6rNN8M5qqyxJN6EtU7EI4tHS7i0cvTiHx3ChZI0A=;
+        s=korg; t=1626711610;
+        bh=YpocWr17IC73lrDXfQ8pQR21WQ1hbjgFYsS/FrqkNUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SZVEnp9hS+O9Mvm04PDpAnRUhTFFHb/mm+gAU3FLTVOu+CqQAqssyAyJr1DY1Z6eI
-         FOI220G+xkmYEOR3Xg95PujAbulBgFfdZsG4IBDL4GloiQA/Jz3+gIHSLi7KqH3EOZ
-         yvcMfrfyWdPpOe74buQc0IxQ16+AkW4JJRZhDt8w=
+        b=kxsFINa06AZLNNMekbrJi9c8oLbvAaQDtwYoPbwJd8gBiKW80AuZ8b3wmxjS4v+ta
+         kF4miBKKHalx233SGUGCPIOXtnDGl3pXoo/ptzNbogZ2j3bzC4+vNayn68BlxF50DL
+         oJq96MOfxpdgyk0+LV4MI8tCA0EzISDl+oQT6/Eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 181/351] drm/gma500: Add the missed drm_gem_object_put() in psb_user_framebuffer_create()
-Date:   Mon, 19 Jul 2021 16:52:07 +0200
-Message-Id: <20210719144950.966658438@linuxfoundation.org>
+Subject: [PATCH 5.12 066/292] fs/jfs: Fix missing error code in lmLogInit()
+Date:   Mon, 19 Jul 2021 16:52:08 +0200
+Message-Id: <20210719144944.695274190@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
+References: <20210719144942.514164272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit cd8f318fbd266b127ffc93cc4c1eaf9a5196fafb ]
+[ Upstream commit 492109333c29e1bb16d8732e1d597b02e8e0bf2e ]
 
-psb_user_framebuffer_create() misses to call drm_gem_object_put() in an
-error path. Add the missed function call to fix it.
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'rc.
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210629115956.15160-1-jingxiangfeng@huawei.com
+Eliminate the follow smatch warning:
+
+fs/jfs/jfs_logmgr.c:1327 lmLogInit() warn: missing error code 'rc'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/framebuffer.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ fs/jfs/jfs_logmgr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/gma500/framebuffer.c b/drivers/gpu/drm/gma500/framebuffer.c
-index ebe9dccf2d83..0b8648396fb2 100644
---- a/drivers/gpu/drm/gma500/framebuffer.c
-+++ b/drivers/gpu/drm/gma500/framebuffer.c
-@@ -352,6 +352,7 @@ static struct drm_framebuffer *psb_user_framebuffer_create
- 			 const struct drm_mode_fb_cmd2 *cmd)
- {
- 	struct drm_gem_object *obj;
-+	struct drm_framebuffer *fb;
- 
- 	/*
- 	 *	Find the GEM object and thus the gtt range object that is
-@@ -362,7 +363,11 @@ static struct drm_framebuffer *psb_user_framebuffer_create
- 		return ERR_PTR(-ENOENT);
- 
- 	/* Let the core code do all the work */
--	return psb_framebuffer_create(dev, cmd, obj);
-+	fb = psb_framebuffer_create(dev, cmd, obj);
-+	if (IS_ERR(fb))
-+		drm_gem_object_put(obj);
-+
-+	return fb;
- }
- 
- static int psbfb_probe(struct drm_fb_helper *fb_helper,
+diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+index 9330eff210e0..78fd136ac13b 100644
+--- a/fs/jfs/jfs_logmgr.c
++++ b/fs/jfs/jfs_logmgr.c
+@@ -1324,6 +1324,7 @@ int lmLogInit(struct jfs_log * log)
+ 		} else {
+ 			if (!uuid_equal(&logsuper->uuid, &log->uuid)) {
+ 				jfs_warn("wrong uuid on JFS log device");
++				rc = -EINVAL;
+ 				goto errout20;
+ 			}
+ 			log->size = le32_to_cpu(logsuper->size);
 -- 
 2.30.2
 
