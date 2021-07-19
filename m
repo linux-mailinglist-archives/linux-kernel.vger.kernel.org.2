@@ -2,243 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC853CEDBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0E43CEDB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 22:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386802AbhGSTjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 15:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        id S1386734AbhGSThi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 15:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385710AbhGSTHw (ORCPT
+        with ESMTP id S1385721AbhGSTH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:07:52 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A6DC061786
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:37:41 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id n187-20020a4a40c40000b029025e72bdf5d6so4761816ooa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:45:00 -0700 (PDT)
+        Mon, 19 Jul 2021 15:07:58 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C44AC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:39:08 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id 109so7243988uar.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 12:46:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mQSEq7q+wxePH17WHb+2Y12YcuWTNetJZSsUU2m7H7E=;
-        b=N2B5cVOSFDnDhk7ZJikp57cYFtbff3OoOQABXLEuxfHd9w5r4YaazAcc8eRncMl+i9
-         CdTXPuNSjfJ+fAwAqjqmLVQTUKmjxMrLtxadKzernVCPQvvZtMHw+PfN2YcVoFRpOJVn
-         DO7kJXAMKW3uaCY8zg26hm+6/JN4SP0jKVMmYMwDnfqyuQw5+bpDBrJjC73C4be2Mazz
-         ZrwERWVVJ3yvNk51DT0mBrWPRKdhmtqxpBsxxlEcsISSz7PLLV4MeZgq2wir9Dcz6etg
-         xwTHQtPTxQMtjxgV1F5iZMxsUfm1ZThAV94QSeui+YSjZ+jd1hHx9N5U8/JBdGTb6QBW
-         jvRw==
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4pU0r9hs1kSSmt7CkjgwyTiy4kbef4H0m4sD9VOE0lo=;
+        b=Zw6wW8nxfTH3oPBuzjCMM6QBD3EdkiqPi2mbT24EnTuEmWFHKbFCrGK7tDiAtZ5PhG
+         QZ9zw6G+u4F3IvKJ5PEIcpHHwrBklvy3fkXpOJpVRyJdq2wHM+5AFv+caKizuckLdBj1
+         c4FojA6liKva3VOa3kT6SgTn0TLi2aiqBJWyNtCZMPKdRP4qj6nAd6mcMnE88OXcS10L
+         Ly1s6JfOznAi0b9FrqGHP0/DkFHjWqEKctXwWiENZbEL8w1PPfkgA2U65oSJO5m/C13x
+         ZDwdeaS0XP5NLEfKVlanbGdfAj6HPy4n2p5asPtynoLdphyqW3V3PV+hJ1RJVAiYVZF6
+         k6aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mQSEq7q+wxePH17WHb+2Y12YcuWTNetJZSsUU2m7H7E=;
-        b=WfV8XHeEq5ja/d5CK8p+FsHopVWbsW/HICt7ZPkNESXWPYU5owFPWGnlqG2S9QllKW
-         bPER9je3wS4qLNc6Y2DGeKbHExy5FQewHEbhh1PWhL+tmzPr7t5ttgctQsKif8oQLdrj
-         Y6eOO1yruPE+cVgzmq8kImoe7QO+V06cP39jIhT8ur5KhsuY43HJaWFyYcIeate4T5Np
-         xCBFWkHSYNwQBnIjpqy4ZTOtcVOkMuI0vN50kPPTzPdxW+YMeZUhR5Duk50DcagHqcra
-         71vNz3oAWn9iZM31x9RbXo399P/8aMgS/9XKo4rSKydfjvtDGVuUO15UsVCuq3danrgv
-         Yzjw==
-X-Gm-Message-State: AOAM530ZZTbrCqFREp7Kql6o1DlEIcZNqrRMqVxak9SIRc4nioD3+rFP
-        mNn9wKyBVnuR3v7etxPKbrvRnA==
-X-Google-Smtp-Source: ABdhPJyEgmEJXTA8pZhCE4A7kaDgxCC+tSYYlL5iU+L2BArlNQdV1CQLgfGgR5PaI1xtBZvOvuEvbQ==
-X-Received: by 2002:a4a:e14f:: with SMTP id p15mr1215289oot.42.1626723899832;
-        Mon, 19 Jul 2021 12:44:59 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v5sm1855606oor.33.2021.07.19.12.44.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 12:44:59 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 14:44:57 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     robh+dt@kernel.org, swboyd@chromium.org, ulf.hansson@linaro.org,
-        rjw@rjwysocki.net, agross@kernel.org, ohad@wizery.com,
-        mathieu.poirier@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        rishabhb@codeaurora.org, sidgup@codeaurora.org
-Subject: Re: [PATCH v3 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
- bindings
-Message-ID: <YPXWOeq++TdwH1r4@yoga>
-References: <1624560727-6870-1-git-send-email-sibis@codeaurora.org>
- <1624560727-6870-3-git-send-email-sibis@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4pU0r9hs1kSSmt7CkjgwyTiy4kbef4H0m4sD9VOE0lo=;
+        b=AXokp5u/sCCKis+jjdGrZ8Mb/36mjDsi3H7G2z7D7jvYe4xPfqDZYlzJ7EQ2W8OtEF
+         y8jcvNkBFpmBo0CSlXYeSxjls6MjAIoUwJGtj81nIyF3j7sqBvXUsH9Mz9B50Sy63S9v
+         kn4UDQpiLFEsqlDyecCn0QOMKUTFAs3pA49tXBURnv0HvvylzlEwSgeP20MKCsSwyn1Z
+         igZn+sYSjkpMJxp/12537ZjEMC8b6hMhkql/pauGAkcFOcGkCjvkiiUcZ+Y/d/JbEMM0
+         8suaRWqEmhe+Nb1p5GV/UbPdt6orR88eqX5JVHtygyZGWUywCk+iLwnhOdYTdtoJDg1w
+         mLjg==
+X-Gm-Message-State: AOAM533gpkwgHG9uxhcjWum2KjRSAzYHOl0Eq2Su3yu9KmOppbIdrnuv
+        PazwTnp2UED8skhzxXYP9tOjCQmOhMQwYEiKWVWx2g==
+X-Google-Smtp-Source: ABdhPJySfYjYdDPgPbT9XBnhI5qPVRSnT0qpEyR/JfRmjjij3OXAoS/C+layO1q6+PDoVPWSQtW0bzSPO6CEQdBgCYo=
+X-Received: by 2002:ab0:6797:: with SMTP id v23mr27731456uar.71.1626723980418;
+ Mon, 19 Jul 2021 12:46:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624560727-6870-3-git-send-email-sibis@codeaurora.org>
+References: <20210716184719.269033-5-posk@google.com> <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
+ <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com> <c8ea4892-51e5-0dc2-86c6-b705e8a23cde@uwaterloo.ca>
+In-Reply-To: <c8ea4892-51e5-0dc2-86c6-b705e8a23cde@uwaterloo.ca>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Mon, 19 Jul 2021 12:46:09 -0700
+Message-ID: <CAFTs51XW0H1UJKv0t2tq+5VLfgPMtZmDcxQVUQ5HkgDe38jHpw@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
+To:     Thierry Delisle <tdelisle@uwaterloo.ca>
+Cc:     Peter Oskolkov <posk@google.com>, Andrei Vagin <avagin@google.com>,
+        Ben Segall <bsegall@google.com>, Jann Horn <jannh@google.com>,
+        Jim Newsome <jnewsome@torproject.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-api@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul Turner <pjt@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Buhr <pabuhr@uwaterloo.ca>
+Content-Type: multipart/mixed; boundary="00000000000000512205c77f31f3"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24 Jun 13:51 CDT 2021, Sibi Sankar wrote:
+--00000000000000512205c77f31f3
+Content-Type: text/plain; charset="UTF-8"
 
-> Add Qualcomm Mailbox Protocol (QMP) binding to replace the power domains
-> exposed by the AOSS QMP node.
-> 
+On Mon, Jul 19, 2021 at 11:13 AM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
+>
+>  > Latency/efficiency: on worker wakeup an idle server can be picked from
+>  > the list and context-switched into synchronously, on the same CPU.
+>  > Using FDs and select/poll/epoll will add extra layers of abstractions;
+>  > synchronous context-switches (not yet fully implemented in UMCG) will
+>  > most likely be impossible. This patchset seems much more efficient and
+>  > lightweight than whatever can be built on top of FDs.
+>
+> I can believe that.
+>
+> Are you planning to support separate scheduling instances within a
+> single user
+> space? That is having multiple sets of server threads and workers can
+> only run
+> within a specific set.
 
-I think this would be a good opportunity to describe why you need to
-make this change to the binding.
+Yes, this is naturally supported in the current patchset on the kernel
+side, and is supported in libumcg (to be posted, later when the kernel
+side is settled); internally at Google, some applications use
+different "groups" of workers/servers per NUMA node.
 
-Regards,
-Bjorn
+>
+> I believe the problem with the idle_servers_ptr as specified is that it
+> is not
+> possible to reclaim used nodes safely. I don't see any indication of which
+> nodes the kernel can concurrently access and on which some memory
+> reclamation
+> scheme could be based.
 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
-> 
-> v3:
->  * Misc. documentation fixes:
->   - Reduce power-domain maxItems due to load_state pd removal
->   - Combine compatibles where possible with the load_state pd removal
->   - Fixup the qcom,qmp ref to phandle type
-> 
->  .../devicetree/bindings/remoteproc/qcom,adsp.yaml  | 62 +++++++++++-----------
->  1 file changed, 30 insertions(+), 32 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-> index 9ea05e608bc1..ad85617b43fa 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-> @@ -75,11 +75,11 @@ properties:
->  
->    power-domains:
->      minItems: 1
-> -    maxItems: 3
-> +    maxItems: 2
->  
->    power-domain-names:
->      minItems: 1
-> -    maxItems: 3
-> +    maxItems: 2
->  
->    firmware-name:
->      $ref: /schemas/types.yaml#/definitions/string
-> @@ -89,6 +89,10 @@ properties:
->      maxItems: 1
->      description: Reference to the reserved-memory for the Hexagon core
->  
-> +  qcom,qmp:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Reference to the AOSS side-channel message RAM.
-> +
->    qcom,smem-states:
->      $ref: /schemas/types.yaml#/definitions/phandle-array
->      description: States used by the AP to signal the Hexagon core
-> @@ -359,13 +363,11 @@ allOf:
->        properties:
->          power-domains:
->            items:
-> -            - description: Load State power domain
->              - description: CX power domain
->              - description: MX power domain
->              - description: MSS power domain
->          power-domain-names:
->            items:
-> -            - const: load_state
->              - const: cx
->              - const: mx
->              - const: mss
-> @@ -381,43 +383,20 @@ allOf:
->        properties:
->          power-domains:
->            items:
-> -            - description: Load State power domain
->              - description: CX power domain
-> -        power-domain-names:
-> -          items:
-> -            - const: load_state
-> -            - const: cx
->  
->    - if:
->        properties:
->          compatible:
->            contains:
->              enum:
-> +              - qcom,sdx55-mpss-pas
->                - qcom,sm8150-mpss-pas
->                - qcom,sm8350-mpss-pas
->      then:
->        properties:
->          power-domains:
->            items:
-> -            - description: Load State power domain
-> -            - description: CX power domain
-> -            - description: MSS power domain
-> -        power-domain-names:
-> -          items:
-> -            - const: load_state
-> -            - const: cx
-> -            - const: mss
-> -
-> -  - if:
-> -      properties:
-> -        compatible:
-> -          contains:
-> -            enum:
-> -              - qcom,sdx55-mpss-pas
-> -    then:
-> -      properties:
-> -        power-domains:
-> -          items:
->              - description: CX power domain
->              - description: MSS power domain
->          power-domain-names:
-> @@ -439,12 +418,10 @@ allOf:
->        properties:
->          power-domains:
->            items:
-> -            - description: Load State power domain
->              - description: LCX power domain
->              - description: LMX power domain
->          power-domain-names:
->            items:
-> -            - const: load_state
->              - const: lcx
->              - const: lmx
->  
-> @@ -458,12 +435,10 @@ allOf:
->        properties:
->          power-domains:
->            items:
-> -            - description: Load State power domain
->              - description: CX power domain
->              - description: MXC power domain
->          power-domain-names:
->            items:
-> -            - const: load_state
->              - const: cx
->              - const: mxc
->  
-> @@ -499,6 +474,29 @@ allOf:
->              - const: mss_restart
->              - const: pdc_reset
->  
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,sc7180-mpss-pas
-> +              - qcom,sm8150-adsp-pas
-> +              - qcom,sm8150-cdsp-pas
-> +              - qcom,sm8150-mpss-pas
-> +              - qcom,sm8150-slpi-pas
-> +              - qcom,sm8250-adsp-pas
-> +              - qcom,sm8250-cdsp-pas
-> +              - qcom,sm8250-slpi-pas
-> +              - qcom,sm8350-adsp-pas
-> +              - qcom,sm8350-cdsp-pas
-> +              - qcom,sm8350-mpss-pas
-> +              - qcom,sm8350-slpi-pas
-> +    then:
-> +      properties:
-> +        qcom,qmp:
-> +          items:
-> +            - description: Reference to the AOSS side-channel message RAM.
-> +
->  examples:
->    - |
->      #include <dt-bindings/clock/qcom,rpmcc.h>
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Please see the attached atomic_stack.h file - I use it in my tests,
+things seem to be working. Specifically, atomic_stack_gc does the
+cleanup. For the kernel side of things, see the third patch in this
+patchset.
+
+>
+> What is the benefit of having users maintain themselves a list of idle
+> servers
+> rather than each servers marking themselves as 'out of work' and having the
+> kernel maintain the list?
+
+To keep the kernel side light and simple. To also protect the kernel
+from spinning if userspace misbehaves. Basically, the overall approach
+is to delegate most of the work to the userspace, and keep the bare
+minimum in the kernel.
+
+--00000000000000512205c77f31f3
+Content-Type: text/x-chdr; charset="US-ASCII"; name="atomic_stack.h"
+Content-Disposition: attachment; filename="atomic_stack.h"
+Content-Transfer-Encoding: base64
+Content-ID: <f_krb1avrq0>
+X-Attachment-Id: f_krb1avrq0
+
+LyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgKi8KCiNpZm5kZWYgX19BVE9NSUNf
+U1RBQ0tfSAojZGVmaW5lIF9fQVRPTUlDX1NUQUNLX0gKCiNpbmNsdWRlIDxhc3NlcnQuaD4KI2lu
+Y2x1ZGUgPHN0ZGF0b21pYy5oPgojaW5jbHVkZSA8c3RkYm9vbC5oPgojaW5jbHVkZSA8c3RkZGVm
+Lmg+CiNpbmNsdWRlIDxzdGRpbnQuaD4KCiNpbmNsdWRlIDxzdGRpby5oPgojaW5jbHVkZSA8c3Rk
+bGliLmg+CgovKgogKiBBdG9taWMgU3RhY2s6IGEgc2lnbGUtbGlua2VkIHN0YWNrIHRoYXQgYWxs
+b3dzIGZ1bGx5IGNvbmN1cnJlbnQKICogcHVzaC9wb3Agb3BlcmF0aW9ucy4KICoKICogVGhlIHN0
+YWNrIGlzIHNpbXBsZTogaGVhZC0+bm9kZS0+bm9kZS0+TlVMTC4KICoKICoKICogU2FtcGxlIHVz
+YWdlOgogKgogKglzdHJ1Y3QgbXlfc3RhY2tfbm9kZSB7CiAqCQl0eXBlMSB2YWwxOwogKgkJdHlw
+ZTIgdmFsMjsKICoJCXVpbnQ2NF90IG5leHQ7CiAqCX0gX19hdHRyaWJ1dGVfXygoYWxpZ25lZCg4
+KSkpOwogKgogKgl1aW50NjRfdCBoZWFkID0gMFVMOwogKglzdHJ1Y3QgbXlfc3RhY2tfbm9kZSAq
+bm9kZTsKICoKICoJbm9kZSA9IG1hbGxvYyhzaXplb2Yoc3RydWN0IG15X3N0YWNrX25vZGUpKTsK
+ICoJbm9kZS0+dmFsMSA9IHh4eDsKICoJbm9kZS0+dmFsMiA9IHl5eTsKICoJYXRvbWljX3N0YWNr
+X3B1c2goJmhlYWQsICZub2RlLT5uZXh0KTsKICoKICoJYXNzZXJ0KG5vZGUgPT0gY29udGFpbmVy
+X29mKGF0b21pY19zdGFja19wb3AoJmhlYWQpLAogKgkJCQkJc3RydWN0IG15X3N0YWNrX25vZGUs
+IG5leHQpKTsKICovCgovKioKICogYXRvbWljX3N0YWNrX2lzX2VtcHR5IC0gY2hlY2sgaWYgdGhl
+IHN0YWNrIGlzIGVtcHR5CiAqIEBoZWFkIC0gYSBwb2ludGVyIHRvIHRoZSBoZWFkIG9mIHRoZSBz
+dGFjay4KICovCnN0YXRpYyBpbmxpbmUgYm9vbCBhdG9taWNfc3RhY2tfaXNfZW1wdHkodWludDY0
+X3QgKmhlYWQpCnsKCXVpbnQ2NF90IGN1cnIgPSBhdG9taWNfbG9hZF9leHBsaWNpdChoZWFkLCBt
+ZW1vcnlfb3JkZXJfYWNxdWlyZSk7CgoJZG8gewoJCXVpbnQ2NF90IG5leHQ7CgoJCWlmICghY3Vy
+cikKCQkJcmV0dXJuIHRydWU7CgoJCWFzc2VydCghKGN1cnIgJiAxVUwpKTsKCQluZXh0ID0gYXRv
+bWljX2xvYWRfZXhwbGljaXQoKHVpbnQ2NF90ICopY3VyciwgbWVtb3J5X29yZGVyX2FjcXVpcmUp
+OwoJCWlmICghKG5leHQgJiAxVUwpKQoJCQlyZXR1cm4gZmFsc2U7ICAvKiBmb3VuZCBhIG5vbi1k
+ZWxldGVkIG5vZGUgKi8KCgkJY3VyciA9IG5leHQgJiB+MVVMOwoJfSB3aGlsZSAodHJ1ZSk7Cn0K
+Ci8qKgogKiBhdG9taWNfc3RhY2tfcHVzaCAtIHB1c2ggYSBub2RlIG9udG8gdGhlIHN0YWNrCiAq
+IEBoZWFkIC0gYSBwb2ludGVyIHRvIHRoZSBoZWFkIG9mIHRoZSBzdGFjazsKICogQG5vZGUgLSBh
+IHBvaW50ZXIgdG8gdGhlIG5vZGUgdG8gcHVzaC4KICovCnN0YXRpYyBpbmxpbmUgdm9pZCBhdG9t
+aWNfc3RhY2tfcHVzaCh1aW50NjRfdCAqaGVhZCwgdWludDY0X3QgKm5vZGUpCnsKCXdoaWxlICh0
+cnVlKSB7CgkJdWludDY0X3QgZmlyc3QgPSBhdG9taWNfbG9hZF9leHBsaWNpdChoZWFkLAoJCQkJ
+bWVtb3J5X29yZGVyX2FjcXVpcmUpOwoKCQlhdG9taWNfc3RvcmVfZXhwbGljaXQobm9kZSwgZmly
+c3QsIG1lbW9yeV9vcmRlcl9yZWxlYXNlKTsKCgkJaWYgKGF0b21pY19jb21wYXJlX2V4Y2hhbmdl
+X3dlYWtfZXhwbGljaXQoaGVhZCwgJmZpcnN0LAoJCQkJCSh1aW50NjRfdClub2RlLAoJCQkJCW1l
+bW9yeV9vcmRlcl9hY3FfcmVsLAoJCQkJCW1lbW9yeV9vcmRlcl9yZWxheGVkKSkKCQkJcmV0dXJu
+OwoJfQp9CgovKioKICogYXRvbWljX3N0YWNrX3BvcCAtIHBvcCBhIG5vZGUgZnJvbSB0aGUgc3Rh
+Y2sKICogQGhlYWQgLSBhIHBvaW50ZXIgdG8gdGhlIGhlYWQgb2YgdGhlIHN0YWNrLgogKgogKiBS
+ZXR1cm5zIGEgcG9pbnRlciB0byB0aGUgcG9wcGVkIG5vZGUgKHRvIGJlIHVzZWQgaW4gY29udGFp
+bmVyX29mKSwgb3IgTlVMTAogKiBpZiB0aGUgc3RhY2sgaXMgZW1wdHkuCiAqLwpzdGF0aWMgaW5s
+aW5lIHVpbnQ2NF90KiBhdG9taWNfc3RhY2tfcG9wKHVpbnQ2NF90ICpoZWFkKQp7Cgl1aW50NjRf
+dCAqY3VyciA9ICh1aW50NjRfdCAqKWF0b21pY19sb2FkX2V4cGxpY2l0KGhlYWQsCgkJCQkJbWVt
+b3J5X29yZGVyX2FjcXVpcmUpOwoKCWRvIHsKCQl1aW50NjRfdCBuZXh0OwoKCQlpZiAoIWN1cnIp
+CgkJCXJldHVybiBOVUxMOwoKCQlhc3NlcnQoISgodWludDY0X3QpY3VyciAmIDFVTCkpOwoJCW5l
+eHQgPSBhdG9taWNfbG9hZF9leHBsaWNpdChjdXJyLCBtZW1vcnlfb3JkZXJfYWNxdWlyZSk7CgoJ
+CWlmIChuZXh0ICYgMVVMKSB7IC8qIGN1cnIgaXMgZGVsZXRlZCAqLwoJCQljdXJyID0gKHVpbnQ2
+NF90ICopKG5leHQgJiB+MVVMKTsKCQkJY29udGludWU7CgkJfQoKCQlpZiAoYXRvbWljX2NvbXBh
+cmVfZXhjaGFuZ2Vfc3Ryb25nX2V4cGxpY2l0KGN1cnIsCgkJCQkmbmV4dCwgbmV4dCB8IDFVTCwK
+CQkJCW1lbW9yeV9vcmRlcl9yZWxlYXNlLCBtZW1vcnlfb3JkZXJfcmVsYXhlZCkpCgkJCXJldHVy
+biBjdXJyOwoKCQljdXJyID0gKHVpbnQ2NF90ICopKG5leHQgJiB+MVVMKTsKCX0gd2hpbGUgKHRy
+dWUpOwp9CgpzdGF0aWMgaW5saW5lIGJvb2wgYXRvbWljX3N0YWNrX3JlbW92ZSh1aW50NjRfdCAq
+aGVhZCwgdWludDY0X3QgKm5vZGUpCnsKCXVpbnQ2NF90ICpjdXJyID0gKHVpbnQ2NF90ICopYXRv
+bWljX2xvYWRfZXhwbGljaXQoaGVhZCwKCQkJCQltZW1vcnlfb3JkZXJfYWNxdWlyZSk7CgoJZG8g
+ewoJCXVpbnQ2NF90IG5leHQ7CgoJCWlmICghY3VycikKCQkJcmV0dXJuIGZhbHNlOwoKCQluZXh0
+ID0gYXRvbWljX2xvYWRfZXhwbGljaXQoY3VyciwgbWVtb3J5X29yZGVyX2FjcXVpcmUpOwoKCQlp
+ZiAobmV4dCAmIDFVTCkgeyAvKiBjdXJyIGlzIGRlbGV0ZWQgKi8KCQkJaWYgKGN1cnIgPT0gbm9k
+ZSkKCQkJCXJldHVybiBmYWxzZTsKCQkJY3VyciA9ICh1aW50NjRfdCAqKShuZXh0ICYgfjFVTCk7
+CgkJCWNvbnRpbnVlOwoJCX0KCgkJaWYgKGN1cnIgPT0gbm9kZSkKCQkgICAgICAgcmV0dXJuIGF0
+b21pY19jb21wYXJlX2V4Y2hhbmdlX3N0cm9uZ19leHBsaWNpdCgKCQkJCQljdXJyLCAmbmV4dCwg
+bmV4dCB8IDFVTCwKCQkJCQltZW1vcnlfb3JkZXJfcmVsZWFzZSwKCQkJCQltZW1vcnlfb3JkZXJf
+cmVsYXhlZCk7CgoJCWN1cnIgPSAodWludDY0X3QgKikobmV4dCAmIH4xVUwpOwoJfSB3aGlsZSAo
+dHJ1ZSk7Cn0KCi8qKgogKiBhdG9taWNfc3RhY2tfcG9wX2FsbCAtIHBvcCBhbGwgbm9kZXMgZnJv
+bSB0aGUgc3RhY2sKICogQGhlYWQgLSBhIHBvaW50ZXIgdG8gdGhlIGhlYWQgb2YgdGhlIHN0YWNr
+LgogKgogKiBSZXR1cm5zIGEgcG9pbnRlciB0byB0aGUgZmlyc3Qgbm9kZSAodG8gYmUgdXNlZCBp
+biBjb250YWluZXJfb2YpLCBvciBOVUxMCiAqIGlmIHRoZSBzdGFjayBpcyBlbXB0eS4KICovCnN0
+YXRpYyBpbmxpbmUgdWludDY0X3QqIGF0b21pY19zdGFja19wb3BfYWxsKHVpbnQ2NF90ICpoZWFk
+KQp7Cgl3aGlsZSAodHJ1ZSkgewoJCWJvb2wgb2s7CgkJdWludDY0X3QgZmlyc3QgPSBhdG9taWNf
+bG9hZF9leHBsaWNpdChoZWFkLAoJCQkJbWVtb3J5X29yZGVyX2FjcXVpcmUpOwoKCQlpZiAoIWZp
+cnN0KQoJCQlyZXR1cm4gTlVMTDsKCgkJb2sgPSBhdG9taWNfY29tcGFyZV9leGNoYW5nZV9zdHJv
+bmdfZXhwbGljaXQoaGVhZCwgJmZpcnN0LCAwVUwsCgkJCQltZW1vcnlfb3JkZXJfcmVsZWFzZSwg
+bWVtb3J5X29yZGVyX3JlbGF4ZWQpOwoJCWFzc2VydChvayk7CgkJcmV0dXJuICh1aW50NjRfdCAq
+KShmaXJzdCk7Cgl9Cn0KCi8qKgogKiBhdG9taWNfc3RhY2tfZ2MgLSByZW1vdmUgcG9wcGVkL2Rl
+bGV0ZWQgZWxlbWVudHMgZnJvbSB0aGUgc3RhY2sKICogQGhlYWQgLSBhIHBvaW50ZXIgdG8gdGhl
+IGhlYWQgb2YgdGhlIHN0YWNrLgogKiAKICogTm90ZTogaXQgaXMgbW9zdCBsaWtlbHkgdW5zYWZl
+IHRvIHJ1biBzZXZlcmFsIGluc3RhbmNlcwogKiBvZiBhdG9taWNfc3RhY2tfZ2MoKSBjb25jdXJy
+ZW50bHksIGJ1dCBhIHNpbmdsZSBpbnN0YW5jZQogKiBzaG91bGQgYmUgc2FmZSB0byBydW4gY29u
+Y3VycmVudGx5IHdpdGggcHVzaC9wb3AvcmVtb3ZlLgogKi8Kc3RhdGljIGlubGluZSB2b2lkIGF0
+b21pY19zdGFja19nYyh1aW50NjRfdCAqaGVhZCkKewoJdWludDY0X3QgKnByZXYgPSBoZWFkOwoK
+CXdoaWxlICh0cnVlKSB7CgkJdWludDY0X3QgY3VyciwgbmV4dDsKCgkJYXNzZXJ0ICghKDFVTCAm
+ICh1aW50NjRfdClwcmV2KSk7CgkJY3VyciA9IGF0b21pY19sb2FkX2V4cGxpY2l0KHByZXYsIG1l
+bW9yeV9vcmRlcl9hY3F1aXJlKTsKCgkJaWYgKCFjdXJyKQoJCQlyZXR1cm47CgoJCWlmIChjdXJy
+ICYgMVVMKSB7CgkJCXByZXYgPSBoZWFkOyAgLyogcHJldiBtYXJrZWQgZGVsZXRlZDsgcmVzdGFy
+dCAqLwoJCQljb250aW51ZTsKCQl9CgoJCW5leHQgPSBhdG9taWNfbG9hZF9leHBsaWNpdCgodWlu
+dDY0X3QgKiljdXJyLCBtZW1vcnlfb3JkZXJfYWNxdWlyZSk7CgkJaWYgKCFuZXh0KQoJCQlyZXR1
+cm47CgoJCWlmIChuZXh0ICYgMVVMKSB7ICAvKiBjdXJyIG1hcmtlZCBkZWxldGVkICovCgkJCWlm
+IChhdG9taWNfY29tcGFyZV9leGNoYW5nZV9zdHJvbmdfZXhwbGljaXQocHJldiwKCQkJCQkmY3Vy
+ciwgbmV4dCAmIH4xVUwsCgkJCQkJbWVtb3J5X29yZGVyX3JlbGVhc2UsCgkJCQkJbWVtb3J5X29y
+ZGVyX3JlbGF4ZWQpKSB7CgkJCQljb250aW51ZTsKCQkJfQoKCQkJcHJldiA9IGhlYWQ7ICAvKiBw
+cmV2IG1hcmtlZCBhcyBkZWxldGVkOyByZXN0YXJ0ICovCgkJCWNvbnRpbnVlOwoJCX0KCgkJcHJl
+diA9ICh1aW50NjRfdCAqKWN1cnI7Cgl9Cn0KCnN0YXRpYyBpbmxpbmUgdm9pZCBhdG9taWNfc3Rh
+Y2tfcHJpbnQodWludDY0X3QgKmhlYWQsIGNvbnN0IGNoYXIgKmN0eCkKewoJdWludDY0X3QgY3Vy
+ciA9ICh1aW50NjRfdCloZWFkOwoKaW50IGNudCA9IDA7CglmcHJpbnRmKHN0ZGVyciwgIiVzIHN0
+YWNrOiAiLCBjdHgpOwoJZG8gewppZiAoKytjbnQgPiA2KSBicmVhazsKCQlmcHJpbnRmKHN0ZGVy
+ciwgIjB4JWx4ID0+ICIsIGN1cnIpOwoKCQlpZiAoY3VyciAmIDFVTCkKCQkJY3VyciAmPSB+MVVM
+OwoKCQlpZiAoIWN1cnIpCgkJCWJyZWFrOwoKCQljdXJyID0gKih1aW50NjRfdCAqKWN1cnI7Cgl9
+IHdoaWxlIChjdXJyKTsKCglmcHJpbnRmKHN0ZGVyciwgIiAobmlsKVxuIik7Cn0KCiNlbmRpZiAg
+LyogX19BVE9NSUNfU1RBQ0tfSCAqLwo=
+--00000000000000512205c77f31f3--
