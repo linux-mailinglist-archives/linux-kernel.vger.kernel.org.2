@@ -2,147 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFE83CD0D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E033CD12F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 11:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235570AbhGSItq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 04:49:46 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:36411 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234970AbhGSItp (ORCPT
+        id S235264AbhGSJK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:10:29 -0400
+Received: from gateway24.websitewelcome.com ([192.185.50.66]:39479 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234913AbhGSJK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 04:49:45 -0400
-Received: by mail-io1-f69.google.com with SMTP id d12-20020a5d9bcc0000b029053817be16cdso1351584ion.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:30:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=67fs8KaUaO1c90Lm7TwHr8NemEvb922vgP6rF13lB64=;
-        b=WUsCJMq08QX/uqhJSXQLs21laDKzWO7mDzcjgQsbRia8NV/C1+plnJ/05Z0ufgrYjt
-         ApfJxqAK0X00oeYuyeqr6NfTxW3J70GvxCfz4Tjc/N0adF5v97INvFKRVfA3qP3rI44h
-         RchAe/Hhv+NNU3R8mrO7CoTAy5Y+nrhGf2aBCoLud/Yns36YVuI+NerrbJZLiIzg939F
-         KgP5p83eVj/ys1OFpbuZvnir5NFpZuSjPEE5xLMlmGObrrATNFfgDJM7hB5M8DJGUr8M
-         ZENMcrHoVcHdVoRatO2HjVRFe6fQ+qhLbHlegz3i060ikPOSguCVKX2isPzTk0w1oIV8
-         LWAQ==
-X-Gm-Message-State: AOAM531xdpZihrwgF7pfoNHZKlb+RlptbcUz7lfr6jOX45uqWfb2Ebkf
-        7dJ/crl3j+6OMajN9oqE+EFMLtgx8deSWqdO71VCuyCdgHNs
-X-Google-Smtp-Source: ABdhPJwm+WkM5f20Ofvrm/S6HeDSkgvomzwsJu+/Y4AN5+RFrO0CpYrBnMs+UaP2lqUYVEeoeHQ4CJzCkvZAHak8NiaS2EgRIh9/
+        Mon, 19 Jul 2021 05:10:28 -0400
+X-Greylist: delayed 2100 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Jul 2021 05:10:28 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 2164719470
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 02:55:15 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id 5O7PmSd5YoIHn5O7PmgsKr; Mon, 19 Jul 2021 02:55:15 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-37-206-118.retail.telecomitalia.it ([79.37.206.118]:40920 helo=f34.bristot.me)
+        by gator4132.hostgator.com with esmtpa (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1m5O7K-004Hrb-2v; Mon, 19 Jul 2021 02:55:10 -0500
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        He Zhe <zhe.he@windriver.com>, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        stable@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH] eventfd: protect eventfd_wake_count with a local_lock
+Date:   Mon, 19 Jul 2021 09:54:52 +0200
+Message-Id: <523c91c4a30f21295508004c81cd2e46ccc37dc2.1626680553.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:1497:: with SMTP id 145mr18205338iou.128.1626687024976;
- Mon, 19 Jul 2021 02:30:24 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 02:30:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000048d99005c7769606@google.com>
-Subject: [syzbot] linux-next boot error: WARNING in debug_vm_pgtable
-From:   syzbot <syzbot+8730ec44a441a434a2c8@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.37.206.118
+X-Source-L: No
+X-Exim-ID: 1m5O7K-004Hrb-2v
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-37-206-118.retail.telecomitalia.it (f34.bristot.me) [79.37.206.118]:40920
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 9
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+eventfd_signal assumes that spin_lock_irqsave/spin_unlock_irqrestore is
+non-preemptable and therefore increments and decrements the percpu
+variable inside the critical section.
 
-syzbot found the following issue on:
+This obviously does not fly with PREEMPT_RT. If eventfd_signal is
+preempted and an unrelated thread calls eventfd_signal, the result is
+a spurious WARN. To avoid this, protect the percpu variable with a
+local_lock.
 
-HEAD commit:    08076eab6fef Add linux-next specific files for 20210719
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16624fd2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=29a82c885e192046
-dashboard link: https://syzkaller.appspot.com/bug?extid=8730ec44a441a434a2c8
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8730ec44a441a434a2c8@syzkaller.appspotmail.com
-
-Bluetooth: BNEP filters: protocol multicast
-Bluetooth: BNEP socket layer initialized
-Bluetooth: CMTP (CAPI Emulation) ver 1.0
-Bluetooth: CMTP socket layer initialized
-Bluetooth: HIDP (Human Interface Emulation) ver 1.2
-Bluetooth: HIDP socket layer initialized
-NET: Registered PF_RXRPC protocol family
-Key type rxrpc registered
-Key type rxrpc_s registered
-NET: Registered PF_KCM protocol family
-lec:lane_module_init: lec.c: initialized
-mpoa:atm_mpoa_init: mpc.c: initialized
-l2tp_core: L2TP core driver, V2.0
-l2tp_ppp: PPPoL2TP kernel driver, V2.0
-l2tp_ip: L2TP IP encapsulation support (L2TPv3)
-l2tp_netlink: L2TP netlink interface
-l2tp_eth: L2TP ethernet pseudowire support (L2TPv3)
-l2tp_ip6: L2TP IP encapsulation support for IPv6 (L2TPv3)
-NET: Registered PF_PHONET protocol family
-8021q: 802.1Q VLAN Support v1.8
-DCCP: Activated CCID 2 (TCP-like)
-DCCP: Activated CCID 3 (TCP-Friendly Rate Control)
-sctp: Hash tables configured (bind 32/56)
-NET: Registered PF_RDS protocol family
-Registered RDS/infiniband transport
-Registered RDS/tcp transport
-tipc: Activated (version 2.0.0)
-NET: Registered PF_TIPC protocol family
-tipc: Started in single node mode
-NET: Registered PF_SMC protocol family
-9pnet: Installing 9P2000 support
-NET: Registered PF_CAIF protocol family
-NET: Registered PF_IEEE802154 protocol family
-Key type dns_resolver registered
-Key type ceph registered
-libceph: loaded (mon/osd proto 15/24)
-batman_adv: B.A.T.M.A.N. advanced 2021.2 (compatibility version 15) loaded
-openvswitch: Open vSwitch switching datapath
-NET: Registered PF_VSOCK protocol family
-mpls_gso: MPLS GSO support
-IPI shorthand broadcast: enabled
-AVX2 version of gcm_enc/dec engaged.
-AES CTR mode by8 optimization enabled
-sched_clock: Marking stable (13057587730, 27846366)->(13084401149, 1032947)
-registered taskstats version 1
-Loading compiled-in X.509 certificates
-Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
-zswap: loaded using pool lzo/zbud
-debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at mm/page_alloc.c:5349 current_gfp_context include/linux/sched/mm.h:187 [inline]
-WARNING: CPU: 0 PID: 1 at mm/page_alloc.c:5349 __alloc_pages+0x45d/0x500 mm/page_alloc.c:5361
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc2-next-20210719-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages+0x45d/0x500 mm/page_alloc.c:5349
-Code: be c9 00 00 00 48 c7 c7 80 e4 96 89 c6 05 89 1a a5 0b 01 e8 4d ba 35 07 e9 6a ff ff ff 0f 0b e9 a0 fd ff ff 40 80 e5 3f eb 88 <0f> 0b e9 18 ff ff ff 4c 89 ef 44 89 e6 45 31 ed e8 6e 74 ff ff e9
-RSP: 0000:ffffc90000c67b08 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 1ffff9200018cf62 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000012 RDI: 0000000000000cc0
-RBP: 0000000000000000 R08: 000000000000003f R09: 0000000000000003
-R10: ffffffff81b9a5e8 R11: 0000000000000003 R12: 0000000000000012
-R13: 0000000000000012 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823ffff000 CR3: 000000000b68e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2124
- alloc_pages+0x26a/0x2d0 mm/mempolicy.c:2274
- alloc_mem mm/debug_vm_pgtable.c:1138 [inline]
- debug_vm_pgtable+0x762/0x2986 mm/debug_vm_pgtable.c:1169
- do_one_initcall+0x103/0x650 init/main.c:1285
- do_initcall_level init/main.c:1360 [inline]
- do_initcalls init/main.c:1376 [inline]
- do_basic_setup init/main.c:1396 [inline]
- kernel_init_freeable+0x6b8/0x741 init/main.c:1598
- kernel_init+0x1a/0x1d0 init/main.c:1490
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-
+Reported-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Fixes: b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
+Cc: He Zhe <zhe.he@windriver.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: stable@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Co-developed-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/eventfd.c            | 27 ++++++++++++++++++++++-----
+ include/linux/eventfd.h |  7 +------
+ 2 files changed, 23 insertions(+), 11 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index e265b6dd4f34..9754fcd38690 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -12,6 +12,7 @@
+ #include <linux/fs.h>
+ #include <linux/sched/signal.h>
+ #include <linux/kernel.h>
++#include <linux/local_lock.h>
+ #include <linux/slab.h>
+ #include <linux/list.h>
+ #include <linux/spinlock.h>
+@@ -25,8 +26,6 @@
+ #include <linux/idr.h>
+ #include <linux/uio.h>
+ 
+-DEFINE_PER_CPU(int, eventfd_wake_count);
+-
+ static DEFINE_IDA(eventfd_ida);
+ 
+ struct eventfd_ctx {
+@@ -45,6 +44,20 @@ struct eventfd_ctx {
+ 	int id;
+ };
+ 
++struct event_fd_recursion {
++	local_lock_t lock;
++	int count;
++};
++
++static DEFINE_PER_CPU(struct event_fd_recursion, event_fd_recursion) = {
++	.lock = INIT_LOCAL_LOCK(lock),
++};
++
++bool eventfd_signal_count(void)
++{
++	return this_cpu_read(event_fd_recursion.count);
++}
++
+ /**
+  * eventfd_signal - Adds @n to the eventfd counter.
+  * @ctx: [in] Pointer to the eventfd context.
+@@ -71,18 +84,22 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+ 	 * it returns true, the eventfd_signal() call should be deferred to a
+ 	 * safe context.
+ 	 */
+-	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
++	local_lock(&event_fd_recursion.lock);
++	if (WARN_ON_ONCE(this_cpu_read(event_fd_recursion.count))) {
++		local_unlock(&event_fd_recursion.lock);
+ 		return 0;
++	}
+ 
+ 	spin_lock_irqsave(&ctx->wqh.lock, flags);
+-	this_cpu_inc(eventfd_wake_count);
++	this_cpu_inc(event_fd_recursion.count);
+ 	if (ULLONG_MAX - ctx->count < n)
+ 		n = ULLONG_MAX - ctx->count;
+ 	ctx->count += n;
+ 	if (waitqueue_active(&ctx->wqh))
+ 		wake_up_locked_poll(&ctx->wqh, EPOLLIN);
+-	this_cpu_dec(eventfd_wake_count);
++	this_cpu_dec(event_fd_recursion.count);
+ 	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
++	local_unlock(&event_fd_recursion.lock);
+ 
+ 	return n;
+ }
+diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
+index fa0a524baed0..ca89d6c409c1 100644
+--- a/include/linux/eventfd.h
++++ b/include/linux/eventfd.h
+@@ -43,12 +43,7 @@ int eventfd_ctx_remove_wait_queue(struct eventfd_ctx *ctx, wait_queue_entry_t *w
+ 				  __u64 *cnt);
+ void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt);
+ 
+-DECLARE_PER_CPU(int, eventfd_wake_count);
+-
+-static inline bool eventfd_signal_count(void)
+-{
+-	return this_cpu_read(eventfd_wake_count);
+-}
++bool eventfd_signal_count(void);
+ 
+ #else /* CONFIG_EVENTFD */
+ 
+-- 
+2.31.1
+
