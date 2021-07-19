@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457023CD947
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA913CD945
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242168AbhGSO2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:28:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56618 "EHLO mail.kernel.org"
+        id S242942AbhGSO17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:27:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242337AbhGSOWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243206AbhGSOWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Jul 2021 10:22:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B6C061205;
-        Mon, 19 Jul 2021 15:02:53 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30A8A61175;
+        Mon, 19 Jul 2021 15:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626706974;
-        bh=K/um/lfJ9Ws0nA0pA/xXEP7knKZgHoSKQ7OfxnKKJuY=;
+        s=korg; t=1626706976;
+        bh=FoONX3ZOfkpWvhodWQ/lNmjzW83iMuuZ8KZhxY9TO7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iPrMwU1iGGJE1shVfdeqRbqd34E4XKWp7ZaU98+OnKGC5O9Q5KFvPYyK46Dqmgm8v
-         HP47OepmEOTbHdn+QGFd+QvO8yu1+BRLPsw2QvAGk7jFje563ATI/rgwaYhH4sh/k7
-         Uv5bMRV4Iz/ee3Uc0RjKTrSjH11IyA71GWZuShKo=
+        b=X7YvEt6SguUUFuMOxbNpAZuujxgWv9+lZSm1yOZoXKPClUUbWwOiKHadFlVu00h+v
+         iFb2rH/EDpq1jEFHh5BMJ2pAmj7s2DJ/O+WNdGeC0FjMR3RyFhm5wgm+U5lmutCKjR
+         03k3EsgHJL7oGkyVsRocSiUd4ElH+cfZRuZkdo10=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 171/188] ceph: remove bogus checks and WARN_ONs from ceph_set_page_dirty
-Date:   Mon, 19 Jul 2021 16:52:35 +0200
-Message-Id: <20210719144942.086181921@linuxfoundation.org>
+Subject: [PATCH 4.4 172/188] power: supply: charger-manager: add missing MODULE_DEVICE_TABLE
+Date:   Mon, 19 Jul 2021 16:52:36 +0200
+Message-Id: <20210719144942.117190252@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
 References: <20210719144913.076563739@linuxfoundation.org>
@@ -41,54 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 22d41cdcd3cfd467a4af074165357fcbea1c37f5 ]
+[ Upstream commit 073b5d5b1f9cc94a3eea25279fbafee3f4f5f097 ]
 
-The checks for page->mapping are odd, as set_page_dirty is an
-address_space operation, and I don't see where it would be called on a
-non-pagecache page.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-The warning about the page lock also seems bogus.  The comment over
-set_page_dirty() says that it can be called without the page lock in
-some rare cases. I don't think we want to warn if that's the case.
-
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/addr.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/power/charger-manager.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index fbf383048409..26de74684c17 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -72,10 +72,6 @@ static int ceph_set_page_dirty(struct page *page)
- 	struct inode *inode;
- 	struct ceph_inode_info *ci;
- 	struct ceph_snap_context *snapc;
--	int ret;
--
--	if (unlikely(!mapping))
--		return !TestSetPageDirty(page);
+diff --git a/drivers/power/charger-manager.c b/drivers/power/charger-manager.c
+index 1ea5d1aa268b..6656f847ed93 100644
+--- a/drivers/power/charger-manager.c
++++ b/drivers/power/charger-manager.c
+@@ -1490,6 +1490,7 @@ static const struct of_device_id charger_manager_match[] = {
+ 	},
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, charger_manager_match);
  
- 	if (PageDirty(page)) {
- 		dout("%p set_page_dirty %p idx %lu -- already dirty\n",
-@@ -121,11 +117,7 @@ static int ceph_set_page_dirty(struct page *page)
- 	page->private = (unsigned long)snapc;
- 	SetPagePrivate(page);
- 
--	ret = __set_page_dirty_nobuffers(page);
--	WARN_ON(!PageLocked(page));
--	WARN_ON(!page->mapping);
--
--	return ret;
-+	return __set_page_dirty_nobuffers(page);
- }
- 
- /*
+ static struct charger_desc *of_cm_parse_desc(struct device *dev)
+ {
 -- 
 2.30.2
 
