@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755563CD8F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAA93CDB9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242951AbhGSO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:26:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56772 "EHLO mail.kernel.org"
+        id S237455AbhGSOt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:49:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243674AbhGSOYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:24:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE42D61221;
-        Mon, 19 Jul 2021 15:03:56 +0000 (UTC)
+        id S244579AbhGSOeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D3E61002;
+        Mon, 19 Jul 2021 15:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707037;
-        bh=TNFVtHoJc3PqwJwXyaoHT9IFm9G1RO35rNOmgMwLZag=;
+        s=korg; t=1626707608;
+        bh=MvPgqGi4tTT5o/ehOAay5tYuvqFudz92RH0/8OHz31k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BdESDIcChGQhFVdFBbSnFIkeNF9KMEjmVlOUXKQR4mSlB9WnikV5Nx33XWRglCKPh
-         qpJxoI6eqqkLtZ6N4UnFMnnMqkWzcIY5OqbFzW3XpHN1PvcFO4pYf8WvwE4SbjK0X1
-         NGAAElZhXl1ElpinUqeSkOewv+xtuIXUN8UQQLFY=
+        b=RFrqwQlA9uoqt/paG8FRMbPmqq2OF5eFUMhYBo6ExJEb6OflRTXjsuEQHwF9I+z0i
+         vBJtI0QQ5BYhrak4jgcroVd9m4RAbnthchN+8N1WBSn054ROJ0/DacTzZjUzwP+2kt
+         ASthgXGrKLtjrHRa1njOvl20jCZjLkOGOZHc077o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Martin=20F=C3=A4cknitz?= <faecknitz@hotsplots.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 188/188] MIPS: vdso: Invalid GIC access through VDSO
-Date:   Mon, 19 Jul 2021 16:52:52 +0200
-Message-Id: <20210719144942.638725545@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 232/245] ALSA: isa: Fix error return code in snd_cmi8330_probe()
+Date:   Mon, 19 Jul 2021 16:52:54 +0200
+Message-Id: <20210719144947.882384930@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fäcknitz <faecknitz@hotsplots.de>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 47ce8527fbba145a7723685bc9a27d9855e06491 ]
+[ Upstream commit 31028cbed26a8afa25533a10425ffa2ab794c76c ]
 
-Accessing raw timers (currently only CLOCK_MONOTONIC_RAW) through VDSO
-doesn't return the correct time when using the GIC as clock source.
-The address of the GIC mapped page is in this case not calculated
-correctly. The GIC mapped page is calculated from the VDSO data by
-subtracting PAGE_SIZE:
+When 'SB_HW_16' check fails, the error code -ENODEV instead of 0 should be
+returned, which is the same as that returned when 'WSS_HW_CMI8330' check
+fails.
 
-  void *get_gic(const struct vdso_data *data) {
-    return (void __iomem *)data - PAGE_SIZE;
-  }
-
-However, the data pointer is not page aligned for raw clock sources.
-This is because the VDSO data for raw clock sources (CS_RAW = 1) is
-stored after the VDSO data for coarse clock sources (CS_HRES_COARSE = 0).
-Therefore, only the VDSO data for CS_HRES_COARSE is page aligned:
-
-  +--------------------+
-  |                    |
-  | vd[CS_RAW]         | ---+
-  | vd[CS_HRES_COARSE] |    |
-  +--------------------+    | -PAGE_SIZE
-  |                    |    |
-  |  GIC mapped page   | <--+
-  |                    |
-  +--------------------+
-
-When __arch_get_hw_counter() is called with &vd[CS_RAW], get_gic returns
-the wrong address (somewhere inside the GIC mapped page). The GIC counter
-values are not returned which results in an invalid time.
-
-Fixes: a7f4df4e21dd ("MIPS: VDSO: Add implementations of gettimeofday() and clock_gettime()")
-Signed-off-by: Martin Fäcknitz <faecknitz@hotsplots.de>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: 43bcd973d6d0 ("[ALSA] Add snd_card_set_generic_dev() call to ISA drivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210707074051.2663-1-thunder.leizhen@huawei.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/vdso/vdso.h | 2 +-
+ sound/isa/cmi8330.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/vdso/vdso.h b/arch/mips/vdso/vdso.h
-index cfb1be441dec..921589b45bc2 100644
---- a/arch/mips/vdso/vdso.h
-+++ b/arch/mips/vdso/vdso.h
-@@ -81,7 +81,7 @@ static inline const union mips_vdso_data *get_vdso_data(void)
+diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
+index dfedfd85f205..463906882b95 100644
+--- a/sound/isa/cmi8330.c
++++ b/sound/isa/cmi8330.c
+@@ -564,7 +564,7 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
+ 	}
+ 	if (acard->sb->hardware != SB_HW_16) {
+ 		snd_printk(KERN_ERR PFX "SB16 not found during probe\n");
+-		return err;
++		return -ENODEV;
+ 	}
  
- static inline void __iomem *get_gic(const union mips_vdso_data *data)
- {
--	return (void __iomem *)data - PAGE_SIZE;
-+	return (void __iomem *)((unsigned long)data & PAGE_MASK) - PAGE_SIZE;
- }
- 
- #endif /* CONFIG_CLKSRC_MIPS_GIC */
+ 	snd_wss_out(acard->wss, CS4231_MISC_INFO, 0x40); /* switch on MODE2 */
 -- 
 2.30.2
 
