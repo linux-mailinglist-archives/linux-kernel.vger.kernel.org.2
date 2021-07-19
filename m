@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980BC3CEA8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EBB3CE9A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377869AbhGSRRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35796 "EHLO mail.kernel.org"
+        id S1347163AbhGSQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:58:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348002AbhGSPjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:39:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00DA660FDC;
-        Mon, 19 Jul 2021 16:19:31 +0000 (UTC)
+        id S241542AbhGSPcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:32:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A198C61424;
+        Mon, 19 Jul 2021 16:10:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711572;
-        bh=N9tg4uOowuFl6i9wi0x5B9WKbHwNGTjWXkUqtqYIuno=;
+        s=korg; t=1626711036;
+        bh=96LjCpP+q2lNFwkuwSh8WkFF0CnkOkRCU0meSQEXn2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B7w7u2Of9yqdk20FRoX1CbMDEZXUwDJArNid+g72ToCHYbbRPDWeXx851Li1dIkO2
-         f+sBYH84imKuBtlHrLDjUnEi6QUZlGJi9r+x4CH6zHP+hY3+qYusYpnzuDdj6UCSCK
-         +8rTcqK85QiUfr5bq0r0rEtRpeGjA2GzrUirSXJw=
+        b=YUoKfVx3cIS2Xvra6sfMDjSy0WPYy6dLtlQzePSeWhSaeuk0cqYXG+wVYXhFiV+Vn
+         JS4v1MKwdm858YhtsoVZvpFuWgV3CnkvfwfZn7057BI6H1QyE7Cw7VnFromV9MXFvJ
+         5Oe9cXjrt6KALH5/BWMTJiHkNZ+DDVRyii1IUdSE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 053/292] usb: common: usb-conn-gpio: fix NULL pointer dereference of charger
+Subject: [PATCH 5.13 169/351] watchdog: iTCO_wdt: Account for rebooting on second timeout
 Date:   Mon, 19 Jul 2021 16:51:55 +0200
-Message-Id: <20210719144944.263116022@linuxfoundation.org>
+Message-Id: <20210719144950.563664788@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Jan Kiszka <jan.kiszka@siemens.com>
 
-[ Upstream commit 880287910b1892ed2cb38977893b947382a09d21 ]
+[ Upstream commit cb011044e34c293e139570ce5c01aed66a34345c ]
 
-When power on system with OTG cable, IDDIG's interrupt arises before
-the charger registration, it will cause a NULL pointer dereference,
-fix the issue by registering the power supply before requesting
-IDDIG/VBUS irq.
+This was already attempted to fix via 1fccb73011ea: If the BIOS did not
+enable TCO SMIs, the timer definitely needs to trigger twice in order to
+cause a reboot. If TCO SMIs are on, as well as SMIs in general, we can
+continue to assume that the BIOS will perform a reboot on the first
+timeout.
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1621406386-18838-1-git-send-email-chunfeng.yun@mediatek.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+QEMU with its ICH9 and related BIOS falls into the former category,
+currently taking twice the configured timeout in order to reboot the
+machine. For iTCO version that fall under turn_SMI_watchdog_clear_off,
+this is also true and was currently only addressed for v1, irrespective
+of the turn_SMI_watchdog_clear_off value.
+
+Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/0b8bb307-d08b-41b5-696c-305cdac6789c@siemens.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/common/usb-conn-gpio.c | 44 ++++++++++++++++++------------
- 1 file changed, 26 insertions(+), 18 deletions(-)
+ drivers/watchdog/iTCO_wdt.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
-index 6c4e3a19f42c..c9545a4eff66 100644
---- a/drivers/usb/common/usb-conn-gpio.c
-+++ b/drivers/usb/common/usb-conn-gpio.c
-@@ -149,14 +149,32 @@ static int usb_charger_get_property(struct power_supply *psy,
- 	return 0;
- }
+diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+index bf31d7b67a69..3f1324871cfd 100644
+--- a/drivers/watchdog/iTCO_wdt.c
++++ b/drivers/watchdog/iTCO_wdt.c
+@@ -71,6 +71,8 @@
+ #define TCOBASE(p)	((p)->tco_res->start)
+ /* SMI Control and Enable Register */
+ #define SMI_EN(p)	((p)->smi_res->start)
++#define TCO_EN		(1 << 13)
++#define GBL_SMI_EN	(1 << 0)
  
--static int usb_conn_probe(struct platform_device *pdev)
-+static int usb_conn_psy_register(struct usb_conn_info *info)
- {
--	struct device *dev = &pdev->dev;
--	struct power_supply_desc *desc;
--	struct usb_conn_info *info;
-+	struct device *dev = info->dev;
-+	struct power_supply_desc *desc = &info->desc;
- 	struct power_supply_config cfg = {
- 		.of_node = dev->of_node,
- 	};
-+
-+	desc->name = "usb-charger";
-+	desc->properties = usb_charger_properties;
-+	desc->num_properties = ARRAY_SIZE(usb_charger_properties);
-+	desc->get_property = usb_charger_get_property;
-+	desc->type = POWER_SUPPLY_TYPE_USB;
-+	cfg.drv_data = info;
-+
-+	info->charger = devm_power_supply_register(dev, desc, &cfg);
-+	if (IS_ERR(info->charger))
-+		dev_err(dev, "Unable to register charger\n");
-+
-+	return PTR_ERR_OR_ZERO(info->charger);
-+}
-+
-+static int usb_conn_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct usb_conn_info *info;
- 	bool need_vbus = true;
- 	int ret = 0;
+ #define TCO_RLD(p)	(TCOBASE(p) + 0x00) /* TCO Timer Reload/Curr. Value */
+ #define TCOv1_TMR(p)	(TCOBASE(p) + 0x01) /* TCOv1 Timer Initial Value*/
+@@ -355,8 +357,12 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
  
-@@ -218,6 +236,10 @@ static int usb_conn_probe(struct platform_device *pdev)
- 		return PTR_ERR(info->role_sw);
+ 	tmrval = seconds_to_ticks(p, t);
+ 
+-	/* For TCO v1 the timer counts down twice before rebooting */
+-	if (p->iTCO_version == 1)
++	/*
++	 * If TCO SMIs are off, the timer counts down twice before rebooting.
++	 * Otherwise, the BIOS generally reboots when the SMI triggers.
++	 */
++	if (p->smi_res &&
++	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+ 		tmrval /= 2;
+ 
+ 	/* from the specs: */
+@@ -521,7 +527,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
+ 		 * Disables TCO logic generating an SMI#
+ 		 */
+ 		val32 = inl(SMI_EN(p));
+-		val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
++		val32 &= ~TCO_EN;	/* Turn off SMI clearing watchdog */
+ 		outl(val32, SMI_EN(p));
  	}
  
-+	ret = usb_conn_psy_register(info);
-+	if (ret)
-+		goto put_role_sw;
-+
- 	if (info->id_gpiod) {
- 		info->id_irq = gpiod_to_irq(info->id_gpiod);
- 		if (info->id_irq < 0) {
-@@ -252,20 +274,6 @@ static int usb_conn_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	desc = &info->desc;
--	desc->name = "usb-charger";
--	desc->properties = usb_charger_properties;
--	desc->num_properties = ARRAY_SIZE(usb_charger_properties);
--	desc->get_property = usb_charger_get_property;
--	desc->type = POWER_SUPPLY_TYPE_USB;
--	cfg.drv_data = info;
--
--	info->charger = devm_power_supply_register(dev, desc, &cfg);
--	if (IS_ERR(info->charger)) {
--		dev_err(dev, "Unable to register charger\n");
--		return PTR_ERR(info->charger);
--	}
--
- 	platform_set_drvdata(pdev, info);
- 
- 	/* Perform initial detection */
 -- 
 2.30.2
 
