@@ -2,235 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FB13CCECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CEE3CCED4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 09:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbhGSHur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 03:50:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34724 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235027AbhGSHuo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 03:50:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626680864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aQyY2LkoWEws2okKALivBeq9d7IHNBUboUUbi3JwfRU=;
-        b=gpjlUZUhjySz5oDQ5+9asDmYocOWXtOM568UALLybfr4Z2YtmVb+jdAPfsic0oVCVqAj7n
-        ndtJR50kTj/BGLwnZaaY5+RgnQ+SVtQv0zYmDdL0Su+DouHIcpZBi84Z7erl8i3WbsNThJ
-        fHs1cHP0oxdOzmSnU4kEBZsjtWoEYW8=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-195-oavhDqFAN5SI544hQvTwag-1; Mon, 19 Jul 2021 03:47:43 -0400
-X-MC-Unique: oavhDqFAN5SI544hQvTwag-1
-Received: by mail-ej1-f69.google.com with SMTP id kf3-20020a17090776c3b0290536d9b62eb6so3554613ejc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Jul 2021 00:47:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=aQyY2LkoWEws2okKALivBeq9d7IHNBUboUUbi3JwfRU=;
-        b=QSzzEZNdG81gzIiBl4kwFOhXazGoYb7c36zaCZ2RNZJW9We7SeEA4A1YT5NPGb4hg3
-         KZL9i27gtZPsRLvbklrrj2/N7gPHisclZU56pkNJpGehexjTFH7zscvOIGGwTRUmEI13
-         3LCBPRStf1u4rHiCbOMqDVYmK76FwiuTUxmgPwQZthNduttyNYCcK1Hd/MM1HddDAC/B
-         JTICGJYz99uKPyv9uysqPoSFSCudnTYRaLEnNMnvLUCJFWA/GBQ0sxlfQe1Zbv7hFeOl
-         tythoKDPqrq6v71CRuLzOXVQVMWJXeUf9Cu2oiD6m129pJ4pQJSxQuUectTbs2x1sYfy
-         SxVg==
-X-Gm-Message-State: AOAM532hRiqGfj5KsK7hPiYA6QAFWe9hS/2dGrWT11o2pDJY1Fls085t
-        NCLx/9L8SRrULdxU0Sqobl9KbwarRDOmuPYKKy+pjLPuJAGQi4vForGO/dRjvo/oQrBXc4WZfPQ
-        GaGryM5vfCSxXpThrJ7lnZMPF
-X-Received: by 2002:a17:906:a019:: with SMTP id p25mr26004923ejy.483.1626680862030;
-        Mon, 19 Jul 2021 00:47:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZYXIum7rkACxTz1xexaRw6YIqAWInromG69uBBowedqZiHl6H9AEnpfXXj5TyDrFMIqBVew==
-X-Received: by 2002:a17:906:a019:: with SMTP id p25mr26004911ejy.483.1626680861815;
-        Mon, 19 Jul 2021 00:47:41 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id m15sm7362181edp.73.2021.07.19.00.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 00:47:41 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v2 8/8] KVM: x86: hyper-v: Deactivate APICv only when
- AutoEOI feature is in use
-In-Reply-To: <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
-References: <20210713142023.106183-1-mlevitsk@redhat.com>
- <20210713142023.106183-9-mlevitsk@redhat.com>
- <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
-Date:   Mon, 19 Jul 2021 09:47:40 +0200
-Message-ID: <87wnpmzqw3.fsf@vitty.brq.redhat.com>
+        id S234892AbhGSHvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:51:35 -0400
+Received: from mga04.intel.com ([192.55.52.120]:42170 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234932AbhGSHva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 03:51:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="209106661"
+X-IronPort-AV: E=Sophos;i="5.84,251,1620716400"; 
+   d="scan'208";a="209106661"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 00:48:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,251,1620716400"; 
+   d="scan'208";a="414231101"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 19 Jul 2021 00:48:17 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 8728E103; Mon, 19 Jul 2021 10:48:45 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v1 1/3] spi: pxa2xx: Convert reset_sccr1() to use pxa2xx_spi_update()
+Date:   Mon, 19 Jul 2021 10:48:40 +0300
+Message-Id: <20210719074842.36060-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
+Convert reset_sccr1() to use pxa2xx_spi_update().
+It will help for further improvements.
 
-> On Tue, 2021-07-13 at 17:20 +0300, Maxim Levitsky wrote:
->> From: Vitaly Kuznetsov <vkuznets@redhat.com>
->> 
->> APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
->> SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
->> however, possible to track whether the feature was actually used by the
->> guest and only inhibit APICv/AVIC when needed.
->> 
->> TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
->> Windows know that AutoEOI feature should be avoided. While it's up to
->> KVM userspace to set the flag, KVM can help a bit by exposing global
->> APICv/AVIC enablement: in case APICv/AVIC usage is impossible, AutoEOI
->> is still preferred.
->
->> 
->> Maxim:
->>    - added SRCU lock drop around call to kvm_request_apicv_update
->>    - always set HV_DEPRECATING_AEOI_RECOMMENDED in kvm_get_hv_cpuid,
->>      since this feature can be used regardless of AVIC
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
->> ---
->>  arch/x86/include/asm/kvm_host.h |  3 +++
->>  arch/x86/kvm/hyperv.c           | 34 +++++++++++++++++++++++++++------
->>  2 files changed, 31 insertions(+), 6 deletions(-)
->> 
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index e11d64aa0bcd..f900dca58af8 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -956,6 +956,9 @@ struct kvm_hv {
->>  	/* How many vCPUs have VP index != vCPU index */
->>  	atomic_t num_mismatched_vp_indexes;
->>  
->> +	/* How many SynICs use 'AutoEOI' feature */
->> +	atomic_t synic_auto_eoi_used;
->> +
->>  	struct hv_partition_assist_pg *hv_pa_pg;
->>  	struct kvm_hv_syndbg hv_syndbg;
->>  };
->> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
->> index b07592ca92f0..6bf47a583d0e 100644
->> --- a/arch/x86/kvm/hyperv.c
->> +++ b/arch/x86/kvm/hyperv.c
->> @@ -85,9 +85,22 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
->>  	return false;
->>  }
->>  
->> +
->> +static void synic_toggle_avic(struct kvm_vcpu *vcpu, bool activate)
->> +{
->> +	srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
->> +	kvm_request_apicv_update(vcpu->kvm, activate,
->> +			APICV_INHIBIT_REASON_HYPERV);
->> +	vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
->> +}
->
-> Well turns out that this patch still doesn't work (on this
-> weekend I found out that all my AVIC enabled VMs hang on reboot).
->
-> I finally found out what prompted me back then to make srcu lock drop
-> in synic_update_vector conditional on whether the write was done
-> by the host.
->  
-> Turns out that while KVM_SET_MSRS does take the kvm->srcu lock,
-> it stores the returned srcu index in a local variable and not
-> in vcpu->srcu_idx, thus the lock drop in synic_toggle_avic
-> doesn't work.
->  
-> So it is likely that I have seen it not work, and blamed 
-> KVM_SET_MSRS for not taking the srcu lock which was a wrong assumption.
->  
-> I am more inclined to fix this by just tracking if we hold the srcu
-> lock on each VCPU manually, just as we track the srcu index anyway,
-> and then kvm_request_apicv_update can use this to drop the srcu
-> lock when needed.
->
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi-pxa2xx.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-Would it be possible to use some magic value in 'vcpu->srcu_idx' and not
-introduce a new 'srcu_ls_locked' flag?
-
->
->> +
->>  static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
->>  				int vector)
->>  {
->> +	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
->> +	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
->> +	int auto_eoi_old, auto_eoi_new;
->> +
->>  	if (vector < HV_SYNIC_FIRST_VALID_VECTOR)
->>  		return;
->>  
->> @@ -96,10 +109,23 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
->>  	else
->>  		__clear_bit(vector, synic->vec_bitmap);
->>  
->> +	auto_eoi_old = bitmap_weight(synic->auto_eoi_bitmap, 256);
->> +
->>  	if (synic_has_vector_auto_eoi(synic, vector))
->>  		__set_bit(vector, synic->auto_eoi_bitmap);
->>  	else
->>  		__clear_bit(vector, synic->auto_eoi_bitmap);
->> +
->> +	auto_eoi_new = bitmap_weight(synic->auto_eoi_bitmap, 256);
->> +
->> +	/* Hyper-V SynIC auto EOI SINTs are not compatible with APICV */
->> +	if (!auto_eoi_old && auto_eoi_new) {
->> +		if (atomic_inc_return(&hv->synic_auto_eoi_used) == 1)
->> +			synic_toggle_avic(vcpu, false);
->> +	} else if (!auto_eoi_new && auto_eoi_old) {
->> +		if (atomic_dec_return(&hv->synic_auto_eoi_used) == 0)
->> +			synic_toggle_avic(vcpu, true);
->> +	}
->>  }
->>  
->>  static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
->> @@ -933,12 +959,6 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
->>  
->>  	synic = to_hv_synic(vcpu);
->>  
->> -	/*
->> -	 * Hyper-V SynIC auto EOI SINT's are
->> -	 * not compatible with APICV, so request
->> -	 * to deactivate APICV permanently.
->> -	 */
->> -	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
->>  	synic->active = true;
->>  	synic->dont_zero_synic_pages = dont_zero_synic_pages;
->>  	synic->control = HV_SYNIC_CONTROL_ENABLE;
->> @@ -2466,6 +2486,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
->>  				ent->eax |= HV_X64_ENLIGHTENED_VMCS_RECOMMENDED;
->>  			if (!cpu_smt_possible())
->>  				ent->eax |= HV_X64_NO_NONARCH_CORESHARING;
->> +
->> +			ent->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
->
-> Vitally, I would like to hear your opinion on this change I also made to your code.
-> I think that we should always expose HV_DEPRECATING_AEOI_RECOMMENDED as a supported
-> HV cpuid bit regardless of AVIC, so that qemu could set it regardless of AVIC
-> in the kernel, even if this is not optimal.
-
-Generally, I'm OK with the change. The meaning of the bit changes
-slightly depending on whether we expose it conditionally or not.
-
-If HV_DEPRECATING_AEOI_RECOMMENDED is always exposed it just means that
-the patch in question is in, nothing else. VMM has to figure out if
-APICv/AVIC is supported by some other means.
-
-If HV_DEPRECATING_AEOI_RECOMMENDED is exposed conditionally, then VMM
-can be stupid and solely rely on this information by just copying the
-bit to user visible CPUIDs (e.g. QEMU's 'hv-passthrough' mode).
-
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 974e30744b83..7c4c8179a329 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -594,24 +594,22 @@ static int u32_reader(struct driver_data *drv_data)
+ 
+ static void reset_sccr1(struct driver_data *drv_data)
+ {
+-	struct chip_data *chip =
+-		spi_get_ctldata(drv_data->controller->cur_msg->spi);
+-	u32 sccr1_reg;
++	struct chip_data *chip = spi_get_ctldata(drv_data->controller->cur_msg->spi);
++	u32 mask = drv_data->int_cr1;
+ 
+-	sccr1_reg = pxa2xx_spi_read(drv_data, SSCR1) & ~drv_data->int_cr1;
+ 	switch (drv_data->ssp_type) {
+ 	case QUARK_X1000_SSP:
+-		sccr1_reg &= ~QUARK_X1000_SSCR1_RFT;
++		mask |= QUARK_X1000_SSCR1_RFT;
+ 		break;
+ 	case CE4100_SSP:
+-		sccr1_reg &= ~CE4100_SSCR1_RFT;
++		mask |= CE4100_SSCR1_RFT;
+ 		break;
+ 	default:
+-		sccr1_reg &= ~SSCR1_RFT;
++		mask |= SSCR1_RFT;
+ 		break;
+ 	}
+-	sccr1_reg |= chip->threshold;
+-	pxa2xx_spi_write(drv_data, SSCR1, sccr1_reg);
++
++	pxa2xx_spi_update(drv_data, SSCR1, mask, chip->threshold);
+ }
+ 
+ static void int_stop_and_reset(struct driver_data *drv_data)
 -- 
-Vitaly
+2.30.2
 
