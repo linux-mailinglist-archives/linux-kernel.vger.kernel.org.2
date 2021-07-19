@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1D13CCE24
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79833CCE2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 08:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234677AbhGSG7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 02:59:08 -0400
-Received: from fallback9.mail.ru ([94.100.178.49]:56530 "EHLO
-        fallback9.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbhGSG7H (ORCPT
+        id S234675AbhGSHCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 03:02:17 -0400
+Received: from mail-vs1-f42.google.com ([209.85.217.42]:36781 "EHLO
+        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233689AbhGSHCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 02:59:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=jlVPb7XqgScpfTAiq8xf+wIhk75doE3OweTWVPymt5Q=;
-        t=1626677768;x=1627283168; 
-        b=A3fZIYZ22v6+Z1OQ32b5qQL17sJbfsC4sSzJn/DNeJ4euqKvIbYN38IS+WwOegFeF/KjpQuH5gHUjCYckgx2uM2OqkiIrNjnPvwLaQCV/wWLUOnC9Z1kS7DetfDphrR4jWUQeuv4bNTipBZZQTFD4Okf7DTBNO5/4kc9Gsu7FaQ=;
-Received: from [10.161.16.37] (port=41742 helo=smtp63.i.mail.ru)
-        by fallback9.m.smailru.net with esmtp (envelope-from <fido_max@inbox.ru>)
-        id 1m5NC9-0008M8-Px; Mon, 19 Jul 2021 09:56:06 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=jlVPb7XqgScpfTAiq8xf+wIhk75doE3OweTWVPymt5Q=;
-        t=1626677765;x=1627283165; 
-        b=j0mfH/SudyMMvimDXmI6ja1RntA7oHK5wscgac7BCqqN6hxIiWS+Q5YOqEqKSXzvqFkz6JzaNj3tpid2BM7wsyZkEkbPN3yVE4XrHkYk/ssTKpbquCGfbQ0hqH+F/FjlJMo50TR2V8D8TWDpgnYICk28nmMau0z+hn+lmmjlQDQ=;
-Received: by smtp63.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
-        id 1m5NC0-0008Kf-Kd; Mon, 19 Jul 2021 09:55:57 +0300
-Subject: Re: [PATCH] soc: fsl: qe: convert QE interrupt controller to
- platform_device
-To:     Li Yang <leoyang.li@nxp.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, saravanak@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Zhao Qiang <qiang.zhao@nxp.com>
-References: <20210705111250.1513634-1-fido_max@inbox.ru>
- <CADRPPNRYDBFHEppfpYLwsy7MMEdtsOLS764MJboL9ERW0-KK3Q@mail.gmail.com>
-From:   Maxim Kochetkov <fido_max@inbox.ru>
-Message-ID: <ec981260-fbe3-5cc4-1da3-dfb2f70f8f85@inbox.ru>
-Date:   Mon, 19 Jul 2021 09:58:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 19 Jul 2021 03:02:15 -0400
+Received: by mail-vs1-f42.google.com with SMTP id o19so6590054vsn.3;
+        Sun, 18 Jul 2021 23:59:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5NCNcBqTO22l3X4al8acu9AJJxnhiYKAu5aMxQckPxk=;
+        b=esA7f/1eOryitydOtRRS2BR2NntUeAYOildsJ++BtaV2UgFY/PHnBdvTAwWx1tooj0
+         aVU0i9faVWu5HTcdmu5cCFk+I95yrKdLCepWeDBRX9zWmUW6YOUmUXts6VkcngduORQm
+         q392loYQcBcBvoatdfPz7OMjqTnlOJhPq6Fij5skcdi1opoNWY4/2YhHS5Br9U5ZjmFL
+         5v3tHRa9+I8DmzmKB5/ggXW5+jxQS9KM/yqh3caTwAUwV1RkqdQNXRhU2ewUVL4VnzIj
+         MileSrc5+XgSG58dE1L7JlD0qpEJ4VZD70Dw8Fz/UkFLIPQaM0hX/v6HKmdYqGAKPqgY
+         jHLQ==
+X-Gm-Message-State: AOAM533buOuzs17GPI1hr9h/ZAKOezUsx3Nmn+HkLLRGnBhnp321A+XP
+        /J6tNmbhqeE2xtdRzsUEgrv9YZZQu8hmm8Pm554=
+X-Google-Smtp-Source: ABdhPJy9IdyG2rKF5NzGOGN5xKqJm9bCibQ2pE0G8Vx99QZGQQJXSZ4tsUqw9Paisv+zNMq8pJZfaQ8xGb9dpSkzbrs=
+X-Received: by 2002:a67:1542:: with SMTP id 63mr23590649vsv.40.1626677954982;
+ Sun, 18 Jul 2021 23:59:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CADRPPNRYDBFHEppfpYLwsy7MMEdtsOLS764MJboL9ERW0-KK3Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD941C43E597735A9C30288BCF456A452EC92BAB6D044D5CCDE182A05F538085040970E04EB18AC644E62BB44EC95E4DE5D7E6CFC7276E5AB684A5E87B9EF38C923
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7A8325FA649D0A450EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637B5932F77F0041FFB8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8624C5589F4A67543EA42AE62D2A384966F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE719E4A684E2A1C1059FA2833FD35BB23D9E625A9149C048EE33AC447995A7AD186FD1C55BDD38FC3FD2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8B292D688DDAD4E7BC389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F790063768889A976CB567F3D81D268191BDAD3DBD4B6F7A4D31EC0BEA7A3FFF5B025636D81D268191BDAD3D78DA827A17800CE70DE4A3D039A8938BEC76A7562686271EEC990983EF5C03292E808ACE2090B5E14AD6D5ED66289B5259CC434672EE63711DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C3EBF4D8D28E8B690335872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-C1DE0DAB: 0D63561A33F958A5BDAB937D0AAAF409900C4707482EDA874E14DF739995CE16D59269BC5F550898D99A6476B3ADF6B47008B74DF8BB9EF7333BD3B22AA88B938A852937E12ACA75BF6B963DD989C0FC410CA545F18667F91A7EA1CDA0B5A7A0
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D342E8FEDBD32DECB6DC437571DECC2E525555548622D32E58AA652C9B4DDF8FAF8BEA16A2CF5DD50191D7E09C32AA3244C155573CC54E23DA102D5B3B2736B6A1DD9ADFF0C0BDB8D1FDCA3B3C10BC03908
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj+8+KVR9NZrGMW3pz8SWWqg==
-X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB241E30759B32BE3EAEAC99A2C7D853D61063DB8BCE4C7EAB77EE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4DE24245422D83CE6F6EF26CB7A2DAAF2AD80CE56E34D1B8B049FFFDB7839CE9E74D7C836B7A62AF36E4DA991870F257BCD2B5554D74425294E2ADDE868B22C20
-X-7FA49CB5: 0D63561A33F958A5F817D3147438D2EB216344FC4F7B9A042139A057198A38C8CACD7DF95DA8FC8BD5E8D9A59859A8B6F657401E1635F1D7CC7F00164DA146DAFE8445B8C89999728AA50765F79006372255A60090D554F4389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8DA7BFA4571439BB2F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C568FCE88E0C8489D2D242C3BD2E3F4C64AD6D5ED66289B52698AB9A7B718F8C442539A7722CA490CD5E8D9A59859A8B60E26A56DB46E81E4089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
-X-C1DE0DAB: 0D63561A33F958A5F817D3147438D2EB216344FC4F7B9A0473D271DEF64DE5B1D59269BC5F550898D99A6476B3ADF6B4886A5961035A09600383DAD389E261318FB05168BE4CE3AF
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj+8+KVR9NZrE4QyZrWTrpSw==
-X-Mailru-MI: 800
-X-Mailru-Sender: A5480F10D64C90059D04A353E0DED3E654C6AA2CA14A4DDCBEE6447B0D21ED662C417F07DC1D704CC099ADC76E806A99D50E20E2BC48EF5A30D242760C51EA9CEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
+References: <cover.1626266516.git.geert+renesas@glider.be> <04c4d231fb03a3810d72a45c8a5bc2272c5975f3.1626266516.git.geert+renesas@glider.be>
+ <20210714135101.GB2441138@robh.at.kernel.org> <YPP06QG7hfypZgYg@kernel.org>
+In-Reply-To: <YPP06QG7hfypZgYg@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Jul 2021 08:59:03 +0200
+Message-ID: <CAMuHMdXfFhzm48U2Hvjz8yrjPsQbagW4aC_L-QE_Q6yx1Lo=tA@mail.gmail.com>
+Subject: Re: [PATCH v4 02/10] memblock: Add variables for usable memory limitation
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kexec@lists.infradead.org, Linux MM <linux-mm@kvack.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.07.2021 01:29, Li Yang wrote:
->  From the original code, this should be type = "qeic".  It is not
-> defined in current binding but probably needed for backward
-> compatibility.
+Hi Mike,
 
-I took these strings from this part:
+On Sun, Jul 18, 2021 at 11:31 AM Mike Rapoport <rppt@kernel.org> wrote:
+> On Wed, Jul 14, 2021 at 07:51:01AM -0600, Rob Herring wrote:
+> > On Wed, Jul 14, 2021 at 02:50:12PM +0200, Geert Uytterhoeven wrote:
+> > > Add two global variables (cap_mem_addr and cap_mem_size) for storing a
+> > > base address and size, describing a limited region in which memory may
+> > > be considered available for use by the kernel.  If enabled, memory
+> > > outside of this range is not available for use.
+> > >
+> > > These variables can by filled by firmware-specific code, and used in
+> > > calls to memblock_cap_memory_range() by architecture-specific code.
+> > > An example user is the parser of the "linux,usable-memory-range"
+> > > property in the DT "/chosen" node.
+> > >
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > ---
+> > > This is similar to how the initial ramdisk (phys_initrd_{start,size})
+> > > and ELF core headers (elfcorehdr_{addr,size})) are handled.
+> > >
+> > > Does there exist a suitable place in the common memblock code to call
+> > > "memblock_cap_memory_range(cap_mem_addr, cap_mem_size)", or does this
+> > > have to be done in architecture-specific code?
+> >
+> > Can't you just call it from early_init_dt_scan_usablemem? If the
+> > property is present, you want to call it. If the property is not
+> > present, nothing happens.
 
-        np = of_find_compatible_node(NULL, NULL, "fsl,qe-ic");
+I will have a look...
 
-        if (!np) {
+> For memblock_cap_memory_range() to work properly it should be called after
+> memory is detected and added to memblock with memblock_add[_node]()
+>
+> I'm not huge fan of adding more globals to memblock so if such ordering can
+> be implemented on the DT side it would be great.
 
-                np = of_find_node_by_type(NULL, "qeic");
+Me neither ;-)
 
-                if (!np)
+> I don't see a way to actually enforce this ordering, so maybe we'd want to
+> add warning in memblock_cap_memory_range() if memblock.memory is empty.
 
-                        return -ENODEV;
+"linux,usable-memory-range" is optional, and typically used only in
+crashdump kernels, so it would be a bad idea to add such a warning.
 
-        }
+Gr{oetje,eeting}s,
 
-However I can't find usage of "qeic" in any dts, so I will drop this in V2
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
