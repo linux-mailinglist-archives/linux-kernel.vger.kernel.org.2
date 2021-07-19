@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CEB3CDD23
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C183CDD25
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238496AbhGSO4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 10:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47966 "EHLO mail.kernel.org"
+        id S239294AbhGSO4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 10:56:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243282AbhGSOfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:35:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E28461002;
-        Mon, 19 Jul 2021 15:16:21 +0000 (UTC)
+        id S244864AbhGSOfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:35:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9276023D;
+        Mon, 19 Jul 2021 15:16:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707782;
-        bh=RTuMiah45fIxinGTF64R2yLNfcz5ZaPENDnAW9pz7kY=;
+        s=korg; t=1626707785;
+        bh=KSDvRfzR54iZ9zef91Rxx7AkHUixUncTfwBbntOwQ68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UdkU06HChakDe4IEmLAP565Gs0TjxTHUFapeEy8zBUsBFW6/udmQTs2wzMvR3jMzT
-         LqO2lRDnjJkXdhZ/nYLRtcmXBed2iJTXtUbHoK0KbeKpxo1CBslSBk319XcQsRUpPj
-         jH6WT+RtDpx/D2kJ8GTDhQ1pY4P+Vk0LFeFXZ5Gk=
+        b=vvLXvMEy+7qx5Ya0ibEGzU1JOH35js/h4V+hOWiCNN8c7Ba8Cb/NT0G2X7Qkufwlu
+         enroLV5yC1vLLVWGUtypE7lmIP1QQbWO5ZA1cfPuF032cIZpA14UdH1VACS3uCHcHF
+         S899Rg9oJnl6ISyQeIkJE/IhfgRsRSiXZ/AiHq2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 054/315] media: dvb_net: avoid speculation from net slot
-Date:   Mon, 19 Jul 2021 16:49:03 +0200
-Message-Id: <20210719144944.639510555@linuxfoundation.org>
+Subject: [PATCH 4.14 055/315] media: siano: fix device register error path
+Date:   Mon, 19 Jul 2021 16:49:04 +0200
+Message-Id: <20210719144944.670521126@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719144942.861561397@linuxfoundation.org>
 References: <20210719144942.861561397@linuxfoundation.org>
@@ -42,85 +42,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit abc0226df64dc137b48b911c1fe4319aec5891bb ]
+[ Upstream commit 5368b1ee2939961a16e74972b69088433fc52195 ]
 
-The risk of especulation is actually almost-non-existing here,
-as there are very few users of TCP/IP using the DVB stack,
-as, this is mainly used with DVB-S/S2 cards, and only by people
-that receives TCP/IP from satellite connections, which limits
-a lot the number of users of such feature(*).
+As reported by smatch:
+	drivers/media/common/siano/smsdvb-main.c:1231 smsdvb_hotplug() warn: '&client->entry' not removed from list
 
-(*) In thesis, DVB-C cards could also benefit from it, but I'm
-yet to see a hardware that supports it.
-
-Yet, fixing it is trivial.
+If an error occur at the end of the registration logic, it won't
+drop the device from the list.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-core/dvb_net.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ drivers/media/common/siano/smsdvb-main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/dvb-core/dvb_net.c b/drivers/media/dvb-core/dvb_net.c
-index 06b0dcc13695..280f941ca97d 100644
---- a/drivers/media/dvb-core/dvb_net.c
-+++ b/drivers/media/dvb-core/dvb_net.c
-@@ -56,6 +56,7 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/netdevice.h>
-+#include <linux/nospec.h>
- #include <linux/etherdevice.h>
- #include <linux/dvb/net.h>
- #include <linux/uio.h>
-@@ -1481,14 +1482,20 @@ static int dvb_net_do_ioctl(struct file *file,
- 		struct net_device *netdev;
- 		struct dvb_net_priv *priv_data;
- 		struct dvb_net_if *dvbnetif = parg;
-+		int if_num = dvbnetif->if_num;
+diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
+index 15e895c9f2e0..cbe5f08ae9ad 100644
+--- a/drivers/media/common/siano/smsdvb-main.c
++++ b/drivers/media/common/siano/smsdvb-main.c
+@@ -1187,6 +1187,10 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
+ 	return 0;
  
--		if (dvbnetif->if_num >= DVB_NET_DEVICES_MAX ||
--		    !dvbnet->state[dvbnetif->if_num]) {
-+		if (if_num >= DVB_NET_DEVICES_MAX) {
- 			ret = -EINVAL;
- 			goto ioctl_error;
- 		}
-+		if_num = array_index_nospec(if_num, DVB_NET_DEVICES_MAX);
- 
--		netdev = dvbnet->device[dvbnetif->if_num];
-+		if (!dvbnet->state[if_num]) {
-+			ret = -EINVAL;
-+			goto ioctl_error;
-+		}
+ media_graph_error:
++	mutex_lock(&g_smsdvb_clientslock);
++	list_del(&client->entry);
++	mutex_unlock(&g_smsdvb_clientslock);
 +
-+		netdev = dvbnet->device[if_num];
+ 	smsdvb_debugfs_release(client);
  
- 		priv_data = netdev_priv(netdev);
- 		dvbnetif->pid=priv_data->pid;
-@@ -1541,14 +1548,20 @@ static int dvb_net_do_ioctl(struct file *file,
- 		struct net_device *netdev;
- 		struct dvb_net_priv *priv_data;
- 		struct __dvb_net_if_old *dvbnetif = parg;
-+		int if_num = dvbnetif->if_num;
-+
-+		if (if_num >= DVB_NET_DEVICES_MAX) {
-+			ret = -EINVAL;
-+			goto ioctl_error;
-+		}
-+		if_num = array_index_nospec(if_num, DVB_NET_DEVICES_MAX);
- 
--		if (dvbnetif->if_num >= DVB_NET_DEVICES_MAX ||
--		    !dvbnet->state[dvbnetif->if_num]) {
-+		if (!dvbnet->state[if_num]) {
- 			ret = -EINVAL;
- 			goto ioctl_error;
- 		}
- 
--		netdev = dvbnet->device[dvbnetif->if_num];
-+		netdev = dvbnet->device[if_num];
- 
- 		priv_data = netdev_priv(netdev);
- 		dvbnetif->pid=priv_data->pid;
+ client_error:
 -- 
 2.30.2
 
