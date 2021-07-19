@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AA23CEAA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065E53CE9C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346066AbhGSRR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:17:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
+        id S1359260AbhGSRBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344345AbhGSPlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:41:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D44261107;
-        Mon, 19 Jul 2021 16:21:06 +0000 (UTC)
+        id S1347285AbhGSPfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:35:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38CA261461;
+        Mon, 19 Jul 2021 16:12:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711666;
-        bh=dg6PZhYDKEu5IrfYdh2th0q3Fhb88QjwQKmagB8cjX4=;
+        s=korg; t=1626711126;
+        bh=jHaHEvBaMngbGlFOPVwwTzBpRwK1qt1DGNPYQrrnlQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bEGjWpeKGHMHg4BcbxOoIM24UiCDQM45Zhfvk8VDzYqqHfUtXlJi2wqatpye2IO5h
-         RJUyC5w5WbHpc0GsBpiuwsXduPKC51+8pk4tm1Msx4tAO7Sw/OZPSWvHlsjB11q6zN
-         UvKwmULhxNmvl3m8mkU182wd2BkMAxmA1WE/p1rg=
+        b=QmHvCyGqZ5eHe50TbCBwag8OONjYZDcI5Hp3bc+3n/aEywCdKZPUfN+4Yltv25D3N
+         CVA15grp+OqfkzI9Le6wP4Bl70fk728tApuyWRV2NTIVEDcq60uR/StSKyjVWyL6vp
+         /jm4+NidZ8uO2hXapWeljKInV582fK/8U2hLeM9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 088/292] iommu/arm-smmu: Fix arm_smmu_device refcount leak when arm_smmu_rpm_get fails
+Subject: [PATCH 5.13 204/351] pwm: visconti: Fix and simplify period calculation
 Date:   Mon, 19 Jul 2021 16:52:30 +0200
-Message-Id: <20210719144945.407746801@linuxfoundation.org>
+Message-Id: <20210719144951.717684587@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 1adf30f198c26539a62d761e45af72cde570413d ]
+[ Upstream commit 937efa29e70f7f8424b74631375dcb35d82a4614 ]
 
-arm_smmu_rpm_get() invokes pm_runtime_get_sync(), which increases the
-refcount of the "smmu" even though the return value is less than 0.
+With the original code a request for period = 65536000 ns and period =
+32768000 ns yields the same register settings (which results in 32768000
+ns) because the value for pwmc0 was miscalculated.
 
-The reference counting issue happens in some error handling paths of
-arm_smmu_rpm_get() in its caller functions. When arm_smmu_rpm_get()
-fails, the caller functions forget to decrease the refcount of "smmu"
-increased by arm_smmu_rpm_get(), causing a refcount leak.
+Also simplify using that fls(0) is 0.
 
-Fix this issue by calling pm_runtime_resume_and_get() instead of
-pm_runtime_get_sync() in arm_smmu_rpm_get(), which can keep the refcount
-balanced in case of failure.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Link: https://lore.kernel.org/r/1623293672-17954-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 721b595744f1 ("pwm: visconti: Add Toshiba Visconti SoC PWM support")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Acked-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pwm/pwm-visconti.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index d8c6bfde6a61..128c2c87b4e5 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -74,7 +74,7 @@ static bool using_legacy_binding, using_generic_binding;
- static inline int arm_smmu_rpm_get(struct arm_smmu_device *smmu)
- {
- 	if (pm_runtime_enabled(smmu->dev))
--		return pm_runtime_get_sync(smmu->dev);
-+		return pm_runtime_resume_and_get(smmu->dev);
+diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
+index 46d903786366..af4e37d3e3a6 100644
+--- a/drivers/pwm/pwm-visconti.c
++++ b/drivers/pwm/pwm-visconti.c
+@@ -82,17 +82,14 @@ static int visconti_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 		return -ERANGE;
  
- 	return 0;
- }
+ 	/*
+-	 * PWMC controls a divider that divides the input clk by a
+-	 * power of two between 1 and 8. As a smaller divider yields
+-	 * higher precision, pick the smallest possible one.
++	 * PWMC controls a divider that divides the input clk by a power of two
++	 * between 1 and 8. As a smaller divider yields higher precision, pick
++	 * the smallest possible one. As period is at most 0xffff << 3, pwmc0 is
++	 * in the intended range [0..3].
+ 	 */
+-	if (period > 0xffff) {
+-		pwmc0 = ilog2(period >> 16);
+-		if (WARN_ON(pwmc0 > 3))
+-			return -EINVAL;
+-	} else {
+-		pwmc0 = 0;
+-	}
++	pwmc0 = fls(period >> 16);
++	if (WARN_ON(pwmc0 > 3))
++		return -EINVAL;
+ 
+ 	period >>= pwmc0;
+ 	duty_cycle >>= pwmc0;
 -- 
 2.30.2
 
