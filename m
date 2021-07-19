@@ -2,571 +2,489 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DEA3CD160
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C308C3CD171
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 12:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236120AbhGSJRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 05:17:22 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34674 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236099AbhGSJRQ (ORCPT
+        id S236237AbhGSJSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 05:18:37 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:28052 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236240AbhGSJSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 05:17:16 -0400
-Received: from [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc] (unknown [IPv6:2a02:810a:880:f54:121:b44d:bc4b:65bc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DE13E1F423C1;
-        Mon, 19 Jul 2021 10:57:54 +0100 (BST)
-Subject: Re: [PATCH v2, 07/14] media: mtk-vcodec: Add msg queue feature for
- lat and core architecture
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-References: <20210717081233.7809-1-yunfei.dong@mediatek.com>
- <20210717081233.7809-8-yunfei.dong@mediatek.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <2aca7aa7-84ef-72eb-9eeb-27f27a1857d2@collabora.com>
-Date:   Mon, 19 Jul 2021 11:57:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 19 Jul 2021 05:18:36 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16J9uQ7G032289;
+        Mon, 19 Jul 2021 09:58:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=fUD2sNH4VpPL94hJVeC0HArY1XA7st2Xbs+9/DXfHg4=;
+ b=Nvfj4qniIk3PFwILR/AWEGB7HDYm0ePCiR8NzAafjaSdLEoJADcdW/qRylK6G0yo8pO2
+ CW0yEP/vE2VXhKrmHAsW3PZ3N7fKUtIs2Z+tKlt6FHIsKgNJpWuPTdiJCFcFVRyVm9K8
+ a5PeirgiQkbI3UpMo0uzFCpjt3lRNiRzk46tD8D/J5drRb+BTFD4KAaW4FIilkjzRUYp
+ dEbXt2bhIKccWQALrnIEI9X/zAw4lhjS91QzIaXsKxLbsqywuzqs2WMjo7Dmv0Kgb6aI
+ aHRdxK9z1LNLTH3/nrszMfKHU1Z6cywjiz34NvYKQhOE0v2tZlxlsHdpsjUtdACD3AiK FQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=fUD2sNH4VpPL94hJVeC0HArY1XA7st2Xbs+9/DXfHg4=;
+ b=xQrVzizpVPISQWYXWM86DUw8UxIRSnspZSDFySwEt33WLRlBG+a2xb2HuYuTYWqFqNCA
+ fS/sK1D96T5o8SMDA4OekSvQCS2nyOjc0Z3g8VM55eCp3mIBbb7/fNXwRJbs6NzGgD0u
+ PMykKJRLAA7t40G3fvBuy/OdQVDFsVw6TmD9qHR8DSoogbes6bi5XFrKua1XViLpOUk0
+ z9FFBmk37qS08OAKcHnle0JuD96GzHb9FCpJadRKy31MtAqa4F44MuEwxvwOGKrMVh7c
+ 1eVI2ZfRYHlSTAk0pTLbsEmN6ZT7FQ+nJpy7qppLfYtVB77XanVY/dZ/kagJ16TwLAL9 kg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39vrn5h20q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jul 2021 09:58:43 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16J9tDLG105114;
+        Mon, 19 Jul 2021 09:58:42 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
+        by aserp3030.oracle.com with ESMTP id 39upe807ec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jul 2021 09:58:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TQ5FX7vdUXmkcWg/DvpDvbEZJJREeMgpnFGumN/aEa8tbKxcjJqfOZWf5SkY7/hnDmEUb6/JLr0JWu0zxWqRlCePe72B4StajlNJaFeIJOjT3XI6gooG7i6MdmFipnwBWI1MEP51cvPQRBMoDHYS/7PVgBsMT71uYyNGuQbcnOASBd7QDcZ9QNuxBaDxorQ4OLbrftQ4zsL4wCeNF8pU6eSMEEQXGYcR1E1Tlv/IZ9pjbZDyKOavxOSJwFwFqqcznHw2TADyqjTCUVyJC+IL03CujCbRi5Z4ExgxDnGwoInB6jGkQPNqRyWdzTcMw7QTpPjy8VXCLrLqsGvnHaS42A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fUD2sNH4VpPL94hJVeC0HArY1XA7st2Xbs+9/DXfHg4=;
+ b=jTD5VL/6M+7lRywNOqmNraPgCOhqjX9kSOkR3PU0yZdeF0Eve1tneFJBTL9HdbcQv9UwKJ4aY2a2XDqgG6Sqou652VYsB7XvF28DykdRo5n4jtVQv0tWq0hKVxPxdxPFjramfv1biWRGhlIi831GBHuo8Fgp6fntDBLx3UBuNc2sqKa5CP0w9uJrmNN5qpEzU1LLMOdNU5X1oIdiDen3RpT+ie3EcZ6QZCSOEO1RaLR/hMFqBTfe1ibTgnZM4BDTpnnV9lbP4pUTN1hBlU1XN5m5cLQ49jJh6LliDpCFoGoBTALAAfe7aLq3VGfeH68lpJjlrRkqEGUQDj6O+KJ3aA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fUD2sNH4VpPL94hJVeC0HArY1XA7st2Xbs+9/DXfHg4=;
+ b=NMd4AD4n0+dYTHuRxVd5a3RGVWAoBDH0wBXYKtw4SThyT08oclAZdNkRK92R5U5+FIu4ErqJ8zMu74dIQfFalrBDAnm0J8ULtUXgdVWuqxO3+JS1Hx+QRjp3WtZ59Un8orX+ndDBkVeU9TBd7bSzlEj1ubo5oe5qqRT3eGWjvdA=
+Authentication-Results: loongson.cn; dkim=none (message not signed)
+ header.d=none;loongson.cn; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO1PR10MB4690.namprd10.prod.outlook.com
+ (2603:10b6:303:9f::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Mon, 19 Jul
+ 2021 09:58:39 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
+ 09:58:39 +0000
+Date:   Mon, 19 Jul 2021 12:58:19 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     lichenyang <lichenyang@loongson.cn>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devel@linuxdriverproject.org, Huacai Chen <chenhuacai@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v2 3/3] drm/loongson: Add interrupt driver for LS7A
+Message-ID: <20210719095819.GS1931@kadam>
+References: <20210715015809.107821-1-lichenyang@loongson.cn>
+ <20210715015809.107821-3-lichenyang@loongson.cn>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715015809.107821-3-lichenyang@loongson.cn>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0011.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::16)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <20210717081233.7809-8-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (102.222.70.252) by JNAP275CA0011.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Mon, 19 Jul 2021 09:58:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eea22496-4c98-4ed5-d6b8-08d94a9bc82b
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4690:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO1PR10MB4690AEBF7C3533F37FAA2A068EE19@CO1PR10MB4690.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qhhtFLPEJC0Xu4OnhOyMuTD4S9Xe2UiLs7gKyKn0lMtYbLtcZsVHWyI6nI/bLbofmRRCG/yrOFMEAK4/B1IHdmwCleX/odcSz7uC277aModzt5BbeFB6Foo79RKxW97jn/GlSPCjKuC69Oq4jzjuPccct8+EpiG6vJ+th4/xgfUREwhdIDK/CIRkHKWXdl+7pT6FyzHUQp5zniGZimRFcAB7bzgrE7J83C12dPfjsgdGiShXtiKyOnidPEGdzVsXNZbCA85YEG0Q1CKzW3RveWZ3Fi6+FCLIgv7oeYdjN7o90YIjbdbWfLGr1uQvc4tFXX+gaLyAtEMNuKOwhUw8W42MyFb3+YfH+6Qmn8Rt/6jIigI5jYiGra32MB1oYGaDycoiUQNoxrag2CfQiBEVxurbMEb1nHntVIH9LEQVWFFJ3i13LK+j8qC42aHKGECgBWLuKUNvAyUYbtQLwMKp592RD/hMhpJ7xqjO31LYqrGuCXIFGz9ny+CHKyyiJCfeo3wXlV1iQbB9bjoQYdfa1RrEugYOy1hg2YwidPNUAqP4Yfzpw+Lc+MgjuuIU3sx0mTYIKcMvdBPzF+ONIBWfeNQ8o4hsd3oLtEoMfDmkjyBRj0aPRP+cw4diErK0z43AFhjo1ia1VnfGxd73aCjj4q9qPNSZFWmRnsYXlfIJneUwSsmFi6Tk5rlQgtWujEWjuVWcFJ+2jcMSknB3De2Fww==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(136003)(366004)(396003)(376002)(26005)(6916009)(186003)(2906002)(86362001)(54906003)(30864003)(33716001)(66476007)(66556008)(316002)(66946007)(5660300002)(1076003)(4326008)(8936002)(6666004)(9576002)(83380400001)(478600001)(38100700002)(38350700002)(956004)(52116002)(44832011)(8676002)(6496006)(33656002)(55016002)(9686003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vArUiJCM/uImWY+L0RBFhXW7OT+6fKhyV1iPW274b0bKfBaKiCiLbOj7z3sw?=
+ =?us-ascii?Q?O+IZ7sYvKrtELzBuIp8IScfIG/FdQ0323dMCbuYtygShhahTdMPYbG3ZAHVw?=
+ =?us-ascii?Q?Td1vAHMjhhKN/xL2Ur2gu/p8pKtlu5zd+ILBbIFuEqiVMyyD06boZ4iP5nIp?=
+ =?us-ascii?Q?yZD/Tghavx2CVQ3MfGZUgYKkQNGUs64p0X6NzAdxnHSQdFCEbpvIKCMObPX3?=
+ =?us-ascii?Q?BLfzsT/pbTxzWm4tMnjBRzwL7dM+JA6XB/Syx9TnW6Knz1gc+DzD1PwzvDhA?=
+ =?us-ascii?Q?9qdwWuD1K81KNtbgiefM4PJGh7S3eyjWd+l45ar8Tj8br17dBHuXfsz0nNdK?=
+ =?us-ascii?Q?J428xrjgRUgONWzhuiFp83Ovkb82IRhjiPWrezJDlfUh1N/A6c0FAD/jiPMb?=
+ =?us-ascii?Q?msfdl4l0BVX1iWKHu96xgwsbwhRogwzf2y/q+/2cjlcFET9HNiOsVoX4LzsV?=
+ =?us-ascii?Q?W8sOgxDcskoPLpSWK8V4qmZU2660Lw4NHqpLUgnPGzgkkuuLQJx5Y2V1+jO0?=
+ =?us-ascii?Q?GuNmCMOfDAg6TFXjCYIR7WKecslfhjoRIHRMOjgxQyJe4TQVbisdLgM5S5vn?=
+ =?us-ascii?Q?9HmmJJXMXtAn2W7szzp2hGpZpTWQPfrGxe6rf5v9PNgxdem+sc1pkJ6kmItp?=
+ =?us-ascii?Q?xehZbUVeg9WxiY/RPRoujOemh9v+uLQm+g0WhTVFg9ewLeblsC8x2W8cvc9F?=
+ =?us-ascii?Q?h4C8me2ybn/daz1OUbv40tPGtx1d0HTFiu+8ETcHvuGMNUdwRtiO2pQrB9/7?=
+ =?us-ascii?Q?2ZiNHctgzD+3seLarw9eLqXEbqmaDA23xpVb80aE1KPUc8GAPkmSFMXJgSxL?=
+ =?us-ascii?Q?gfB47XuxvhQg0NuComqhLqkcu1tzZ6zlVngIP6yEK9qZgjlcIBzmDNz8f3c3?=
+ =?us-ascii?Q?8gkNX6ktF2TsuMSDpVFLpqjv7n2VJcpwA1R7m5QWFRLIH3QRtpPkUtXs+Oet?=
+ =?us-ascii?Q?KslL0FWrXLfykHcNa5VScK9HZX/6ZQIPZqWI3gWcvR04UWTxzuXa1NFIFMXA?=
+ =?us-ascii?Q?md7RfPTPxbySjqmlXN9153HAtF+YaNpCb7yMjh95+nCY1RQqHpKZPQXLI4rA?=
+ =?us-ascii?Q?6HX+6T4g39Fj1q4FaJ5Ie8q0m8BVK0Bt6KSKxAY+R28K+ytSE0HO9KYG6dCJ?=
+ =?us-ascii?Q?FEHqit1YUGON25JO2Q3PkXXriLgIDARbOzFLSg3H9p72fH55FRrL2R+3wWiF?=
+ =?us-ascii?Q?IxB7gCVnvqdKXy6CfCbq9osPX73O8bcp1cENBp9iN4fAQB7wq2znEEAJ3+A1?=
+ =?us-ascii?Q?iHmTarL3myfGQEipChXRb+97EMWh4Zw9PVc2t/FFC2ccoW3pdgoESCUcMLau?=
+ =?us-ascii?Q?o8XOjh1bw9PJPOH/vpQ8RRec?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eea22496-4c98-4ed5-d6b8-08d94a9bc82b
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 09:58:39.2765
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: k7nqbytOXUYQqRFTopQz2AnjJEkHx9qisZ18pBBKDnsFgMOLN2QPPd5vQPzOnoZ/spRDCCWVe6hy+jIuW+meGzEITdDgEKaGEHTmMh0VsQQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4690
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10049 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 bulkscore=0
+ malwarescore=0 phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107190056
+X-Proofpoint-GUID: kqxbPwezhmudkwCDJuxNppxN6quqLrtj
+X-Proofpoint-ORIG-GUID: kqxbPwezhmudkwCDJuxNppxN6quqLrtj
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17.07.21 10:12, Yunfei Dong wrote:
-> For lat and core architecture, lat thread will send message to core
-> thread when lat decode done. Core hardware will use the message
-> from lat to decode, then free message to lat thread when decode done.
+On Thu, Jul 15, 2021 at 09:58:09AM +0800, lichenyang wrote:
+> Add LS7A DC vsync interrupt enable and close function, and
+> register irq_handler function interface.
+> Add vbrank event processing flow.
 > 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
-> v2: Reconstructed get/put lat buffer for lat and core hardware.
-> ---
->   drivers/media/platform/mtk-vcodec/Makefile    |   1 +
->   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |   9 +
->   .../platform/mtk-vcodec/vdec_msg_queue.c      | 254 ++++++++++++++++++
->   .../platform/mtk-vcodec/vdec_msg_queue.h      | 137 ++++++++++
->   4 files changed, 401 insertions(+)
->   create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
->   create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
+> V2:
+> - Remove the useless flags parameter.
+
+Do this in a separate patch.  It is an unrelated cleanup.
+
+> - Added error handling in the loongson_drm_load function.
 > 
-> diff --git a/drivers/media/platform/mtk-vcodec/Makefile b/drivers/media/platform/mtk-vcodec/Makefile
-> index edeb3b66e9e9..5000e59da576 100644
-> --- a/drivers/media/platform/mtk-vcodec/Makefile
-> +++ b/drivers/media/platform/mtk-vcodec/Makefile
-> @@ -11,6 +11,7 @@ mtk-vcodec-dec-y := vdec/vdec_h264_if.o \
->   		mtk_vcodec_dec_drv.o \
->   		vdec_drv_if.o \
->   		vdec_vpu_if.o \
-> +		vdec_msg_queue.o \
->   		mtk_vcodec_dec.o \
->   		mtk_vcodec_dec_stateful.o \
->   		mtk_vcodec_dec_stateless.o \
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> index 76160b6f4152..ae93b6c7b0b6 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> @@ -15,7 +15,9 @@
->   #include <media/v4l2-ioctl.h>
->   #include <media/v4l2-mem2mem.h>
->   #include <media/videobuf2-core.h>
+> Signed-off-by: lichenyang <lichenyang@loongson.cn>
+> ---
+>  drivers/gpu/drm/loongson/Makefile        |   3 +-
+>  drivers/gpu/drm/loongson/loongson_crtc.c |  43 +++++++++-
+>  drivers/gpu/drm/loongson/loongson_drv.c  |  22 +++--
+>  drivers/gpu/drm/loongson/loongson_drv.h  |  17 +++-
+>  drivers/gpu/drm/loongson/loongson_irq.c  | 105 +++++++++++++++++++++++
+>  5 files changed, 179 insertions(+), 11 deletions(-)
+>  create mode 100644 drivers/gpu/drm/loongson/loongson_irq.c
+> 
+> diff --git a/drivers/gpu/drm/loongson/Makefile b/drivers/gpu/drm/loongson/Makefile
+> index 773b806e99a2..cc50b65c7e03 100644
+> --- a/drivers/gpu/drm/loongson/Makefile
+> +++ b/drivers/gpu/drm/loongson/Makefile
+> @@ -11,5 +11,6 @@ loongson-y := loongson_drv.o \
+>  	loongson_device.o \
+>  	loongson_connector.o \
+>  	loongson_encoder.o \
+> -	loongson_i2c.o
+> +	loongson_i2c.o \
+> +	loongson_irq.o
+>  obj-$(CONFIG_DRM_LOONGSON) += loongson.o
+> diff --git a/drivers/gpu/drm/loongson/loongson_crtc.c b/drivers/gpu/drm/loongson/loongson_crtc.c
+> index 4cb65fa08778..4c62d5b2bd56 100644
+> --- a/drivers/gpu/drm/loongson/loongson_crtc.c
+> +++ b/drivers/gpu/drm/loongson/loongson_crtc.c
+> @@ -154,19 +154,25 @@ static void loongson_crtc_mode_set_nofb(struct drm_crtc *crtc)
+>  }
+>  
+>  static void loongson_crtc_atomic_enable(struct drm_crtc *crtc,
+> -					struct drm_atomic_state *old_state)
+> +					struct drm_atomic_state *old_crtc_state)
+>  {
+>  	struct drm_device *dev = crtc->dev;
+>  	struct loongson_device *ldev = dev->dev_private;
+>  	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
+>  	u32 reg_offset = lcrtc->reg_offset;
+>  
+> +	if (lcrtc->cfg_reg & CFG_ENABLE)
+> +		goto vblank_on;
 > +
->   #include "mtk_vcodec_util.h"
-> +#include "vdec_msg_queue.h"
->   
->   #define VDEC_HW_ACTIVE	0x10
->   #define VDEC_IRQ_CFG	0x11
-> @@ -292,6 +294,8 @@ struct vdec_pic_info {
->    * @decoded_frame_cnt: number of decoded frames
->    * @lock: protect variables accessed by V4L2 threads and worker thread such as
->    *	  mtk_video_dec_buf.
-> + *
-> + * @msg_queue: msg queue used to store lat buffer information.
->    */
->   struct mtk_vcodec_ctx {
->   	enum mtk_instance_type type;
-> @@ -339,6 +343,7 @@ struct mtk_vcodec_ctx {
->   	int decoded_frame_cnt;
->   	struct mutex lock;
->   
-> +	struct vdec_msg_queue msg_queue;
->   };
->   
->   enum mtk_chip {
-> @@ -472,6 +477,8 @@ struct mtk_vcodec_enc_pdata {
->    * @comp_dev: component hardware device
->    * @component_node: component node
->    * @comp_idx: component index
-> + *
-> + * @core_ctx: core queue context
->    */
->   struct mtk_vcodec_dev {
->   	struct v4l2_device v4l2_dev;
-> @@ -514,6 +521,8 @@ struct mtk_vcodec_dev {
->   	void *comp_dev[MTK_VDEC_HW_MAX];
->   	struct device_node *component_node[MTK_VDEC_HW_MAX];
->   	int comp_idx;
+>  	lcrtc->cfg_reg |= CFG_ENABLE;
+>  	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
 > +
-> +	struct vdec_msg_queue_ctx core_ctx;
-
-since 'ctx' is used for the decoding ctx, I would change the name of that field to 'msg_queu_ctx'
-
-I think the changes to mtk_vcodec_drv.h should move to the patch in which the new fields are actually used.
-
-
->   };
->   
->   static inline struct mtk_vcodec_ctx *fh_to_ctx(struct v4l2_fh *fh)
-> diff --git a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
-> new file mode 100644
-> index 000000000000..016a70416e55
-> --- /dev/null
-> +++ b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
-> @@ -0,0 +1,254 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Yunfei Dong <yunfei.dong@mediatek.com>
-> + */
+> +vblank_on:
+> +	drm_crtc_vblank_on(crtc);
+>  }
+>  
+>  static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
+> -					 struct drm_atomic_state *old_state)
+> +					 struct drm_atomic_state *old_crtc_state)
+>  {
+>  	struct drm_device *dev = crtc->dev;
+>  	struct loongson_device *ldev = dev->dev_private;
+> @@ -175,10 +181,36 @@ static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
+>  
+>  	lcrtc->cfg_reg &= ~CFG_ENABLE;
+>  	ls7a_mm_wreg(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
 > +
-> +#include <linux/freezer.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/kthread.h>
-> +
-> +#include "mtk_vcodec_dec_pm.h"
-> +#include "mtk_vcodec_drv.h"
-> +#include "vdec_msg_queue.h"
-> +
-> +#define VDEC_LAT_SLICE_HEADER_SZ    (640 * 1024)
-> +#define VDEC_ERR_MAP_SZ_AVC         ((8192 / 16) * (4352 / 16) / 8)
-> +
-> +static int vde_msg_queue_get_trans_size(int width, int height)
-> +{
-> +	if (width > 1920 || height > 1088)
-> +		return (30 * 1024 * 1024);
-> +	else
-> +		return 6 * 1024 * 1024;
-> +}
-
-Could you docemnt this function and explain the numbers used?
-
-> +
-> +void vdec_msg_queue_init_ctx(struct vdec_msg_queue_ctx *ctx,
-> +	int hardware_index)
-> +{
-> +	init_waitqueue_head(&ctx->ready_to_use);
-> +	INIT_LIST_HEAD(&ctx->ready_queue);
-> +	spin_lock_init(&ctx->ready_lock);
-> +	ctx->ready_num = 0;
-> +	ctx->hardware_index = hardware_index;
-> +}
-> +
-> +int vdec_msg_queue_init(
-> +	struct vdec_msg_queue *msg_queue,
-> +	struct mtk_vcodec_ctx *ctx,
-> +	core_decode_cb_t core_decode,
-> +	int private_size)
-> +{
-> +	struct vdec_lat_buf *lat_buf;
-> +	int i, err;
-> +
-> +	/* already init msg queue */
-> +	if (msg_queue->wdma_addr.size)
-> +		return 0;
-> +
-> +	vdec_msg_queue_init_ctx(&msg_queue->lat_ctx, MTK_VDEC_LAT0);
-> +	msg_queue->wdma_addr.size = vde_msg_queue_get_trans_size(
-> +		ctx->picinfo.buf_w, ctx->picinfo.buf_h);
-> +
-> +	err = mtk_vcodec_mem_alloc(ctx, &msg_queue->wdma_addr);
-> +	if (err) {
-> +		mtk_v4l2_err("failed to allocate wdma_addr buf");
-> +		return -ENOMEM;
+> +	spin_lock_irq(&crtc->dev->event_lock);
+> +	if (crtc->state->event) {
+> +		drm_crtc_send_vblank_event(crtc, crtc->state->event);
+> +		crtc->state->event = NULL;
 > +	}
-> +	msg_queue->wdma_rptr_addr = msg_queue->wdma_addr.dma_addr;
-> +	msg_queue->wdma_wptr_addr = msg_queue->wdma_addr.dma_addr;
+> +	spin_unlock_irq(&crtc->dev->event_lock);
 > +
-> +	for (i = 0; i < NUM_BUFFER_COUNT; i++) {
-> +		lat_buf = &msg_queue->lat_buf[i];
+> +	drm_crtc_vblank_off(crtc);
+> +}
 > +
-> +		lat_buf->wdma_err_addr.size = VDEC_ERR_MAP_SZ_AVC;
-> +		err = mtk_vcodec_mem_alloc(ctx, &lat_buf->wdma_err_addr);
-> +		if (err) {
-> +			mtk_v4l2_err("failed to allocate wdma_err_addr buf[%d]", i);
-> +			goto mem_alloc_err;
-> +		}
+> +static void loongson_crtc_atomic_flush(struct drm_crtc *crtc,
+> +				       struct drm_crtc_state *old_crtc_state)
+> +{
+> +	struct drm_pending_vblank_event *event = crtc->state->event;
 > +
-> +		lat_buf->slice_bc_addr.size = VDEC_LAT_SLICE_HEADER_SZ;
-> +		err = mtk_vcodec_mem_alloc(ctx, &lat_buf->slice_bc_addr);
-> +		if (err) {
-> +			mtk_v4l2_err("failed to allocate wdma_addr buf[%d]", i);
-> +			goto mem_alloc_err;
-> +		}
-> +
-> +		lat_buf->private_data = kzalloc(private_size, GFP_KERNEL);
-> +		if (!lat_buf->private_data) {
-> +			mtk_v4l2_err("failed to allocate private_data[%d]", i);
+> +	if (event) {
 
-What is the use of private_data?
+Flip this around:
 
-> +			goto mem_alloc_err;
-> +		}
-> +
-> +		lat_buf->ctx = ctx;
-> +		lat_buf->core_decode = core_decode;
-> +		vdec_msg_queue_qbuf(&msg_queue->lat_ctx, lat_buf);
-> +	}
-> +	return 0;
-> +
-> +mem_alloc_err:
-> +	vdec_msg_queue_deinit(msg_queue, ctx);
-> +	return -ENOMEM;
-> +}
-> +
-> +static struct list_head *vdec_get_buf_list(int hardware_index,
-> +	struct vdec_lat_buf *buf)
-> +{
-> +	switch (hardware_index) {
-> +	case MTK_VDEC_CORE:
-> +		return &buf->core_list;
-> +	case MTK_VDEC_LAT0:
-> +		return &buf->lat_list;
-> +	default:
-> +		return NULL;
-> +	}
-> +}
-> +
-> +void vdec_msg_queue_qbuf(struct vdec_msg_queue_ctx *ctx,
-> +	struct vdec_lat_buf *buf)
-> +{
-> +	struct list_head *head;
-> +
-> +	head = vdec_get_buf_list(ctx->hardware_index, buf);
-> +	if (!head) {
-> +		mtk_v4l2_err("fail to qbuf: %d",ctx->hardware_index);
-> +		return;
-> +	}
-> +
-> +	spin_lock(&ctx->ready_lock);
-> +	list_add_tail(head, &ctx->ready_queue);
-> +	ctx->ready_num++;
-> +
-> +	wake_up_all(&ctx->ready_to_use);
-> +
-> +	mtk_v4l2_debug(3, "enqueue buf type: %d addr: 0x%p num: %d",
-> +		ctx->hardware_index, buf, ctx->ready_num);
-> +	spin_unlock(&ctx->ready_lock);
-> +}
-> +
-> +static bool vdec_msg_queue_wait_event(struct vdec_msg_queue_ctx *ctx)
-> +{
-> +	long timeout_jiff;
-> +	int ret;
-> +
-> +	if (ctx->hardware_index == MTK_VDEC_CORE) {
-> +		ret = wait_event_freezable(ctx->ready_to_use,
-> +			!list_empty(&ctx->ready_queue));
-> +		if (ret)
-> +			return false;
-> +	} else {
-> +		timeout_jiff = msecs_to_jiffies(1500);
-> +		ret = wait_event_timeout(ctx->ready_to_use,
-> +			!list_empty(&ctx->ready_queue), timeout_jiff);
-> +		if (!ret)
-> +			return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +struct vdec_lat_buf *vdec_msg_queue_dqbuf(struct vdec_msg_queue_ctx *ctx)
-> +{
-> +	struct vdec_lat_buf *buf;
-> +	struct list_head *head;
-> +	int ret;
-> +
-> +	spin_lock(&ctx->ready_lock);
-> +	if (list_empty(&ctx->ready_queue)) {
-> +		mtk_v4l2_debug(3, "queue is NULL, type:%d num: %d",
-> +			ctx->hardware_index, ctx->ready_num);
-> +		spin_unlock(&ctx->ready_lock);
-> +		ret = vdec_msg_queue_wait_event(ctx);
-> +		if (!ret)
-> +			return NULL;
-> +		spin_lock(&ctx->ready_lock);
-> +	}
-> +
-> +	if (ctx->hardware_index == MTK_VDEC_CORE)
-> +		buf = list_first_entry(&ctx->ready_queue,
-> +			struct vdec_lat_buf, core_list);
-> +	else
-> +		buf = list_first_entry(&ctx->ready_queue,
-> +			struct vdec_lat_buf, lat_list);
-> +
-> +	head = vdec_get_buf_list(ctx->hardware_index, buf);
-> +	if (!head) {
-> +		mtk_v4l2_err("fail to dqbuf: %d",ctx->hardware_index);
-> +		return NULL;
-> +	}
-> +	list_del(head);
-> +
-> +	ctx->ready_num--;
-> +	mtk_v4l2_debug(3, "dqueue buf type:%d addr: 0x%p num: %d",
-> +		ctx->hardware_index, buf, ctx->ready_num);
-> +	spin_unlock(&ctx->ready_lock);
-> +
-> +	return buf;
-> +}
-> +
-> +void vdec_msg_queue_update_ube_rptr(struct vdec_msg_queue *msg_queue,
-> +	uint64_t ube_rptr)
-> +{
-> +	spin_lock(&msg_queue->lat_ctx.ready_lock);
-> +	msg_queue->wdma_rptr_addr = ube_rptr;
-> +	mtk_v4l2_debug(3, "update ube rprt (0x%llx)", ube_rptr);
-> +	spin_unlock(&msg_queue->lat_ctx.ready_lock);
-> +}
-> +
-> +void vdec_msg_queue_update_ube_wptr(struct vdec_msg_queue *msg_queue,
-> +	uint64_t ube_wptr)
-> +{
-> +	spin_lock(&msg_queue->lat_ctx.ready_lock);
-> +	msg_queue->wdma_wptr_addr = ube_wptr;
-> +	mtk_v4l2_debug(3, "update ube wprt: (0x%llx 0x%llx) offset: 0x%llx",
-> +		msg_queue->wdma_rptr_addr, msg_queue->wdma_wptr_addr, ube_wptr);
-> +	spin_unlock(&msg_queue->lat_ctx.ready_lock);
-> +}
-> +
-> +bool vdec_msg_queue_wait_lat_buf_full(struct vdec_msg_queue *msg_queue)
-> +{
-> +	long timeout_jiff;
-> +	int ret, ready_num;
-> +
-> +	ready_num = msg_queue->lat_ctx.ready_num;
-> +	timeout_jiff = msecs_to_jiffies(1000 * (NUM_BUFFER_COUNT + 2));
-> +
-> +	ret = wait_event_timeout(msg_queue->lat_ctx.ready_to_use,
-> +		ready_num == NUM_BUFFER_COUNT, timeout_jiff);
+	if (!event)
+		return;
 
-ready_num is a local variable that is set only once so I can't see how
-the condition 'ready_num == NUM_BUFFER_COUNT' can change with the time
 
+> +		crtc->state->event = NULL;
+> +
+> +		spin_lock_irq(&crtc->dev->event_lock);
+> +		if (drm_crtc_vblank_get(crtc) == 0)
+> +			drm_crtc_arm_vblank_event(crtc, event);
+> +		else
+> +			drm_crtc_send_vblank_event(crtc, event);
+> +		spin_unlock_irq(&crtc->dev->event_lock);
+> +	}
+>  }
+>  
+>  static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
+> -						const struct drm_display_mode *mode)
+> +		const struct drm_display_mode *mode)
+>  {
+>  	if (mode->hdisplay > 1920)
+>  		return MODE_BAD;
+> @@ -194,9 +226,10 @@ static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
+>  
+>  static const struct drm_crtc_helper_funcs loongson_crtc_helper_funcs = {
+>  	.mode_valid = loongson_mode_valid,
+> +	.mode_set_nofb = loongson_crtc_mode_set_nofb,
+> +	.atomic_flush = loongson_crtc_atomic_flush,
+>  	.atomic_enable = loongson_crtc_atomic_enable,
+>  	.atomic_disable = loongson_crtc_atomic_disable,
+> -	.mode_set_nofb = loongson_crtc_mode_set_nofb,
+>  };
+>  
+>  static const struct drm_crtc_funcs loongson_crtc_funcs = {
+> @@ -206,6 +239,8 @@ static const struct drm_crtc_funcs loongson_crtc_funcs = {
+>  	.destroy = drm_crtc_cleanup,
+>  	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
+>  	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
+> +	.enable_vblank = loongson_crtc_enable_vblank,
+> +	.disable_vblank = loongson_crtc_disable_vblank,
+>  };
+>  
+>  int loongson_crtc_init(struct loongson_device *ldev, int index)
+> diff --git a/drivers/gpu/drm/loongson/loongson_drv.c b/drivers/gpu/drm/loongson/loongson_drv.c
+> index 252be9e25aff..13003f6ae062 100644
+> --- a/drivers/gpu/drm/loongson/loongson_drv.c
+> +++ b/drivers/gpu/drm/loongson/loongson_drv.c
+> @@ -24,7 +24,7 @@ static const struct drm_mode_config_funcs loongson_mode_funcs = {
+>  	.mode_valid = drm_vram_helper_mode_valid
+>  };
+>  
+> -static int loongson_device_init(struct drm_device *dev, uint32_t flags)
+> +static int loongson_device_init(struct drm_device *dev)
+>  {
+>  	struct loongson_device *ldev = dev->dev_private;
+>  	struct pci_dev *gpu_pdev;
+> @@ -131,7 +131,7 @@ int loongson_modeset_init(struct loongson_device *ldev)
+>  	return 0;
+>  }
+>  
+> -static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
+> +static int loongson_drm_load(struct drm_device *dev)
+>  {
+>  	struct loongson_device *ldev;
+>  	int ret;
+> @@ -143,7 +143,7 @@ static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
+>  	dev->dev_private = ldev;
+>  	ldev->dev = dev;
+>  
+> -	ret = loongson_device_init(dev, flags);
+> +	ret = loongson_device_init(dev);
+>  	if (ret)
+>  		goto err;
+>  
+> @@ -164,8 +164,16 @@ static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
+>  	pci_set_drvdata(dev->pdev, dev);
+>  
+>  	ret = loongson_modeset_init(ldev);
+> -	if (ret)
 > +	if (ret) {
-> +		mtk_v4l2_debug(3, "success to get lat buf: %d",
-> +			msg_queue->lat_ctx.ready_num);
-> +		return true;
+>  		dev_err(dev->dev, "Fatal error during modeset init: %d\n", ret);
+> +		goto err;
 > +	}
-> +	mtk_v4l2_err("failed with lat buf isn't full: %d",
-> +		msg_queue->lat_ctx.ready_num);
-> +	return false;
-> +}
 > +
-> +void vdec_msg_queue_deinit(
-> +	struct vdec_msg_queue *msg_queue,
-> +	struct mtk_vcodec_ctx *ctx)
-> +{
-> +	struct vdec_lat_buf *lat_buf;
-> +	struct mtk_vcodec_mem *mem;
-> +	int i;
-> +
-> +	mem = &msg_queue->wdma_addr;
-> +	if (mem->va)
-> +		mtk_vcodec_mem_free(ctx, mem);
-> +	for (i = 0; i < NUM_BUFFER_COUNT; i++) {
-> +		lat_buf = &msg_queue->lat_buf[i];
-> +
-> +		mem = &lat_buf->wdma_err_addr;
-> +		if (mem->va)
-> +			mtk_vcodec_mem_free(ctx, mem);
-> +
-> +		mem = &lat_buf->slice_bc_addr;
-> +		if (mem->va)
-> +			mtk_vcodec_mem_free(ctx, mem);
-> +
-> +		if (lat_buf->private_data)
-> +			kfree(lat_buf->private_data);
+> +	ret = loongson_irq_init(ldev);
+> +	if (ret) {
+> +		dev_err(dev->dev, "Fatal error during irq init: %d\n", ret);
+> +		goto err;
 > +	}
-> +}
-> diff --git a/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
+>  
+>  	drm_kms_helper_poll_init(dev);
+>  	drm_mode_config_reset(dev);
+> @@ -192,6 +200,10 @@ static struct drm_driver loongson_drm_driver = {
+>  	.fops = &fops,
+>  	DRM_GEM_VRAM_DRIVER,
+>  
+> +	.irq_handler = loongson_irq_handler,
+> +	.irq_preinstall = loongson_irq_preinstall,
+> +	.irq_uninstall = loongson_irq_uninstall,
+> +
+>  	.name = DRIVER_NAME,
+>  	.desc = DRIVER_DESC,
+>  	.date = DRIVER_DATE,
+> @@ -221,7 +233,7 @@ static int loongson_pci_probe(struct pci_dev *pdev,
+>  		goto err_free;
+>  	}
+>  
+> -	ret = loongson_drm_load(dev, 0x0);
+> +	ret = loongson_drm_load(dev);
+>  	if (ret) {
+>  		drm_err(dev, "failed to load loongson: %d\n", ret);
+>  		goto err_pdev;
+> diff --git a/drivers/gpu/drm/loongson/loongson_drv.h b/drivers/gpu/drm/loongson/loongson_drv.h
+> index 24a534c3c79c..60f5bd48f7f2 100644
+> --- a/drivers/gpu/drm/loongson/loongson_drv.h
+> +++ b/drivers/gpu/drm/loongson/loongson_drv.h
+> @@ -4,9 +4,11 @@
+>  #define __LOONGSON_DRV_H__
+>  
+>  #include <drm/drm_drv.h>
+> +#include <drm/drm_fourcc.h>
+> +#include <drm/drm_vblank.h>
+>  #include <drm/drm_gem.h>
+> +#include <drm/drm_irq.h>
+>  #include <drm/drm_fb_helper.h>
+> -#include <drm/drm_fourcc.h>
+>  #include <drm/drm_probe_helper.h>
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_atomic_helper.h>
+> @@ -49,6 +51,7 @@
+>  #define FB_HSYNC_REG (0x1420)
+>  #define FB_VDISPLAY_REG (0x1480)
+>  #define FB_VSYNC_REG (0x14a0)
+> +#define FB_INT_REG (0x1570)
+>  
+>  #define CFG_FMT GENMASK(2, 0)
+>  #define CFG_FBSWITCH BIT(7)
+> @@ -60,6 +63,10 @@
+>  #define FB_PANCFG_DEF 0x80001311
+>  #define FB_HSYNC_PULSE (1 << 30)
+>  #define FB_VSYNC_PULSE (1 << 30)
+> +#define FB_VSYNC1_ENABLE (1 << 16)
+> +#define FB_VSYNC0_ENABLE (1 << 18)
+> +#define FB_VSYNC1_INT (1 << 0)
+> +#define FB_VSYNC0_INT (1 << 2)
+>  
+>  /* PIX PLL */
+>  #define LOOPC_MIN 24
+> @@ -136,6 +143,14 @@ int loongson_encoder_init(struct loongson_device *ldev, int index);
+>  /* plane */
+>  int loongson_plane_init(struct loongson_crtc *lcrtc);
+>  
+> +/* irq */
+> +int loongson_irq_init(struct loongson_device *ldev);
+> +int loongson_crtc_enable_vblank(struct drm_crtc *crtc);
+> +void loongson_crtc_disable_vblank(struct drm_crtc *crtc);
+> +irqreturn_t loongson_irq_handler(int irq, void *arg);
+> +void loongson_irq_preinstall(struct drm_device *dev);
+> +void loongson_irq_uninstall(struct drm_device *dev);
+> +
+>  /* i2c */
+>  int loongson_dc_gpio_init(struct loongson_device *ldev);
+>  
+> diff --git a/drivers/gpu/drm/loongson/loongson_irq.c b/drivers/gpu/drm/loongson/loongson_irq.c
 > new file mode 100644
-> index 000000000000..297aa1598788
+> index 000000000000..d212e16f3c00
 > --- /dev/null
-> +++ b/drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
-> @@ -0,0 +1,137 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Yunfei Dong <yunfei.dong@mediatek.com>
-> + */
+> +++ b/drivers/gpu/drm/loongson/loongson_irq.c
+> @@ -0,0 +1,105 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
 > +
-> +#ifndef _VDEC_MSG_QUEUE_H_
-> +#define _VDEC_MSG_QUEUE_H_
+> +#include "loongson_drv.h"
+> +#include <linux/pci.h>
 > +
-> +#include <linux/sched.h>
-> +#include <linux/semaphore.h>
-> +#include <linux/slab.h>
-> +#include <media/videobuf2-v4l2.h>
+> +int loongson_irq_init(struct loongson_device *ldev)
+> +{
+> +	struct drm_device *dev;
+> +	int ret, irq;
 > +
-> +#include "mtk_vcodec_util.h"
+> +	dev = ldev->dev;
+> +	irq = dev->pdev->irq;
 > +
-> +#define NUM_BUFFER_COUNT 3
+> +	ret = drm_vblank_init(dev, ldev->num_crtc);
+> +	if (ret) {
+> +		dev_err(dev->dev, "Fatal error during vblank init: %d\n", ret);
+> +		return ret;
+> +	}
+> +	DRM_INFO("drm vblank init finished\n");
 > +
-> +struct vdec_lat_buf;
-> +struct mtk_vcodec_ctx;
-> +struct mtk_vcodec_dev;
-> +typedef int (*core_decode_cb_t)(struct vdec_lat_buf *lat_buf);
+> +	ret = drm_irq_install(dev, irq);
+> +	if (ret) {
+> +		dev_err(dev->dev, "Fatal error during irq install: %d\n", ret);
+> +		return ret;
+> +	}
+> +	DRM_INFO("loongson irq initialized\n");
 > +
-> +/**
-> + * struct vdec_msg_queue_ctx - represents a queue for buffers ready to be
-> + *	                           processed
-> + * @ready_used: ready used queue used to signalize when get a job queue
-> + * @ready_queue: list of V4L2 mem-to-mem queues
-> + * @ready_lock: spin lock to protect the lat buffer usage
-> + * @ready_num: number of buffers ready to be processed
-> + * @hardware_index: hardware id that this queue is used for
-> + */
-> +struct vdec_msg_queue_ctx {
-> +	wait_queue_head_t ready_to_use;
-> +	struct list_head ready_queue;
-> +	spinlock_t ready_lock;
-> +	int ready_num;
-> +	int hardware_index;
-> +};
+> +	return 0;
+> +}
 > +
-> +/**
-> + * struct vdec_lat_buf - lat buffer message used to store lat
-> + *                       info for core decode
-> + */
+> +int loongson_crtc_enable_vblank(struct drm_crtc *crtc)
+> +{
+> +	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
+> +	struct loongson_device *ldev = lcrtc->ldev;
+> +	u32 reg_val;
+> +
+> +	if (lcrtc->crtc_id) {
+> +		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
+> +		reg_val |= FB_VSYNC1_ENABLE;
+> +		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
+> +	} else {
+> +		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
+> +		reg_val |= FB_VSYNC0_ENABLE;
+> +		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +void loongson_crtc_disable_vblank(struct drm_crtc *crtc)
+> +{
+> +	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
+> +	struct loongson_device *ldev = lcrtc->ldev;
+> +	u32 reg_val;
+> +
+> +	if (lcrtc->crtc_id) {
+> +		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
+> +		reg_val &= ~FB_VSYNC1_ENABLE;
+> +		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
+> +	} else {
+> +		reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
+> +		reg_val &= ~FB_VSYNC0_ENABLE;
+> +		ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
+> +	}
 
-coud you document each field?
+More readable to pull the common code in one place:
 
-> +struct vdec_lat_buf {
-> +	struct mtk_vcodec_mem wdma_err_addr;
-> +	struct mtk_vcodec_mem slice_bc_addr;
-> +	struct vb2_v4l2_buffer ts_info;
-> +
-> +	void *private_data;
-> +	struct mtk_vcodec_ctx *ctx;
-> +	core_decode_cb_t core_decode;
-> +	struct list_head lat_list;
-> +	struct list_head core_list;
-> +};
-> +
-> +/**
-> + * struct vdec_msg_queue - used to store lat buffer message
-> + */
-> +struct vdec_msg_queue {
-> +	struct vdec_lat_buf lat_buf[NUM_BUFFER_COUNT];
-> +
-> +	struct mtk_vcodec_mem wdma_addr;
-> +	uint64_t wdma_rptr_addr;
-> +	uint64_t wdma_wptr_addr;
-> +
-> +	struct vdec_msg_queue_ctx lat_ctx;
-> +};
-> +
-> +/**
-> + * vdec_msg_queue_init - init lat buffer information.
-> + * @msg_queue: used to store the lat buffer information
-> + * @ctx: v4l2 ctx
-> + * @core_decode: core decode callback for each codec
-> + * @private_size: the private data size used to share with core
-> + */
-> +int vdec_msg_queue_init(
-> +	struct vdec_msg_queue *msg_queue,
-> +	struct mtk_vcodec_ctx *ctx,
-> +	core_decode_cb_t core_decode,
-> +	int private_size);
-> +
-> +/**
-> + * vdec_msg_queue_get_lat_buf - get used lat buffer for core decode
+	reg_val = ls7a_mm_rreg(ldev, FB_INT_REG);
 
-the name of the function in the inline doc does not match the name of the function vdec_msg_queue_init_ctx
+	if (lcrtc->crtc_id)
+		reg_val &= ~FB_VSYNC1_ENABLE;
+	else
+		reg_val &= ~FB_VSYNC0_ENABLE;
 
-> + * @ctx: message queue context
-> + * @hardware_index: hardware index
-> + */
-> +void vdec_msg_queue_init_ctx(struct vdec_msg_queue_ctx *ctx,
-> +	int hardware_index);
-> +
-> +/**
-> + * vdec_msg_queue_qbuf - enqueue lat buffer to queue list.
-> + * @ctx: message queue context
-> + * @buf: current lat buffer
-> + */
-> +void vdec_msg_queue_qbuf(struct vdec_msg_queue_ctx *ctx,
-> +	struct vdec_lat_buf *buf);
-> +
-> +/**
-> + * vdec_msg_queue_dqbuf - dequeue lat buffer from queue list.
-> + * @ctx: message queue context
-> + */
-> +struct vdec_lat_buf *vdec_msg_queue_dqbuf(struct vdec_msg_queue_ctx *ctx);
-> +
-> +/**
-> + * vdec_msg_queue_update_ube_rptr - used to updata the ube read point.
+	ls7a_mm_wreg(ldev, FB_INT_REG, reg_val);
 
-what is ube read point?
 
-> + * @msg_queue: used to store the lat buffer information
-> + * @ube_rptr: current ube read point
-> + */
-> +void vdec_msg_queue_update_ube_rptr(struct vdec_msg_queue *msg_queue,
-> +	uint64_t ube_rptr);
+> +}
 > +
-> +/**
-> + * vdec_msg_queue_update_ube_wptr - used to updata the ube write point.
 
-what is ube write point?
+regards,
+dan carpenter
 
-Thanks,
-Dafna
-
-> + * @msg_queue: used to store the lat buffer information
-> + * @ube_wptr: current ube write point
-> + */
-> +void vdec_msg_queue_update_ube_wptr(struct vdec_msg_queue *msg_queue,
-> +	uint64_t ube_wptr);
-> +
-> +/**
-> + * vdec_msg_queue_wait_lat_buf_full - used to check whether all lat buffer
-> + *                                    in lat list.
-> + * @msg_queue: used to store the lat buffer information
-> + */
-> +bool vdec_msg_queue_wait_lat_buf_full(struct vdec_msg_queue *msg_queue);
-> +
-> +/**
-> + * vdec_msg_queue_deinit - deinit lat buffer information.
-> + * @msg_queue: used to store the lat buffer information
-> + * @ctx: v4l2 ctx
-> + */
-> +void vdec_msg_queue_deinit(
-> +	struct vdec_msg_queue *msg_queue,
-> +	struct mtk_vcodec_ctx *ctx);
-> +
-> +#endif
-> 
