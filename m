@@ -2,180 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F86F3CDF5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF2C3CDEA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346019AbhGSPJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:09:58 -0400
-Received: from mail-il1-f175.google.com ([209.85.166.175]:41840 "EHLO
-        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237535AbhGSOnh (ORCPT
+        id S1345689AbhGSPEy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Jul 2021 11:04:54 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:52391 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237683AbhGSOoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:43:37 -0400
-Received: by mail-il1-f175.google.com with SMTP id p3so16305139ilg.8;
-        Mon, 19 Jul 2021 08:24:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vzERivZqSSJFIGeAmgTC/Nw6CzI7ObBqzkfLEHhPO/w=;
-        b=R2idV5CPpdq41/jv8XCr25KVn6FDSxXoiutD3JoYNgI78dBqAPrsDURWDImKDTBZBs
-         YbB75ZIs4bLDthDqyCWZiuDzr3YgBhlrAjaOTHRERv0K1pBcmwoNbsHkvTAcc05H1gS1
-         e6hwU/Khd9/8ol9sbKQt7GGLi39cQEV6V0cSUKAYvKKCJ3QLV7T6J0k1Q9rN7iwNPyaM
-         rBLWYAZ2JC+vjC9HuzVIxmyv3QlWv9f4fFFrAK+useu+PSW9AheGG3yKfbrg35VaR9vi
-         5zmxhQ/nsSI70tQlFL/GxuSIVaMam4MBTclHAvpTEz9DC7CQ81oU3t77nUBm98qUJPtU
-         22Bw==
-X-Gm-Message-State: AOAM532SDF+WKSWg1QLC8Uqt9p2c6DHcWTedT0k5V8QAgz4VGmauGJ3v
-        W45exn2wwKaBY6TKeEzAaw==
-X-Google-Smtp-Source: ABdhPJyri+TXCyr4MCEpKVVzSSJx361AXYHcpD9imtD5zPDRk+xQaRGiGAFQK3C6ytmqRK551Sb+Kg==
-X-Received: by 2002:a92:d251:: with SMTP id v17mr16834647ilg.283.1626708256258;
-        Mon, 19 Jul 2021 08:24:16 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u10sm5867563iop.15.2021.07.19.08.24.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jul 2021 08:24:15 -0700 (PDT)
-Received: (nullmailer pid 1961107 invoked by uid 1000);
-        Mon, 19 Jul 2021 15:24:13 -0000
-Date:   Mon, 19 Jul 2021 09:24:13 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pratyush Yadav <p.yadav@ti.com>,
-        Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH] dt-bindings: mtd: spi-nand: Convert to DT schema format
-Message-ID: <20210719152413.GA1953551@robh.at.kernel.org>
-References: <20210718004125.733-1-a-nandan@ti.com>
+        Mon, 19 Jul 2021 10:44:08 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-178-iMvtmtATPRWN2iDCvXdP_A-1; Mon, 19 Jul 2021 16:24:39 +0100
+X-MC-Unique: iMvtmtATPRWN2iDCvXdP_A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Mon, 19 Jul 2021 16:24:38 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Mon, 19 Jul 2021 16:24:38 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Dan Carpenter' <dan.carpenter@oracle.com>,
+        Len Baker <len.baker@gmx.com>
+CC:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] staging/rtl8712: Remove all strcpy() uses in favor of
+ strscpy()
+Thread-Topic: [PATCH] staging/rtl8712: Remove all strcpy() uses in favor of
+ strscpy()
+Thread-Index: AQHXfGBOiwzYJ/Wx2kuQ1xZyGR2EOqtKavEA
+Date:   Mon, 19 Jul 2021 15:24:38 +0000
+Message-ID: <de94438319a84e0985b3ba0f5c00807b@AcuMS.aculab.com>
+References: <20210717155145.15041-1-len.baker@gmx.com>
+ <20210719053747.GN1931@kadam>
+In-Reply-To: <20210719053747.GN1931@kadam>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210718004125.733-1-a-nandan@ti.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 12:41:25AM +0000, Apurva Nandan wrote:
-> Convert spi-nand.txt binding to YAML format with an added example.
+From: Dan Carpenter
+> Sent: 19 July 2021 06:38
+...
+> Not related to your patch but this code is bad.  What it does is the
+> "ifname" can be set as a module parameter.  So instead of testing if it
+> has been set, it uses the checking inside dev_alloc_name() to see if we
+> can allocate what the user requested.  If not then set it to "wlan%d".
+> If we cannot allocate what the user wants then we should return an
+> error.
 > 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
->  .../devicetree/bindings/mtd/spi-nand.yaml     | 74 +++++++++++++++++++
->  2 files changed, 74 insertions(+), 5 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> It should do:
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> deleted file mode 100644
-> index 8b51f3b6d55c..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> +++ /dev/null
-> @@ -1,5 +0,0 @@
-> -SPI NAND flash
-> -
-> -Required properties:
-> -- compatible: should be "spi-nand"
-> -- reg: should encode the chip-select line used to access the NAND chip
-> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> new file mode 100644
-> index 000000000000..366b86e1b19c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> @@ -0,0 +1,74 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SPI NAND flash
-> +
-> +maintainers:
-> +  - Apurva Nandan <a-nandan@ti.com>
-> +
-> +allOf:
-> +  - $ref: "mtd.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: spi-nand
-
-Drop 'oneOf' as there is only one.
-
-> +
-> +  reg:
-> +    items:
-> +      description:
-> +        should encode the chip-select line used to access the NAND chip
-
-Just:
-
-reg:
-  maxItems: 1
-
-> +
-> +  spi-max-frequency: true
-> +  spi-rx-bus-width: true
-> +  spi-tx-bus-width: true
-> +
-> +  partitions:
-> +    type: object
-> +
-> +  '#address-cells': true
-> +  '#size-cells': true
-> +
-> +patternProperties:
-> +  # Note: use 'partitions' node for new users
-> +  '^partition@':
-> +    type: object
-> +
-> +  "^otp(-[0-9]+)?$":
-> +    type: object
-> +
-> +additionalProperties: false
-
-Just do:
-
-additionalProperties:
-  type: object
-
-and then drop partitions, partition@, and ^otp(-[0-9]+)?$.
-
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        flash@6 {
-> +            #address-cells = <1>;
-> +            #size-cells = <1>;
-> +            compatible = "spi-nand";
-> +            reg = <0x6>;
-> +            spi-max-frequency = <42000000>;
-> +
-> +            partitions {
-> +                compatible = "fixed-partitions";
-> +                #address-cells = <1>;
-> +                #size-cells = <1>;
-> +
-> +                partition@0 {
-> +                    label = "boot";
-> +                    reg = <0 0x200000>;
-> +                };
-> +
-> +                partition@200000 {
-> +                    label = "rootfs";
-> +                    reg = <0x200000 0xce0000>;
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.17.1
+> 	if (ifname[0] == '\0')
+> 		strscpy(ifname, "wlan%d", sizeof(ifname));
 > 
-> 
+> 	ret = dev_alloc_name(pnetdev, ifname);
+> 	if (ret < 0) {
+> 		dev_err(pnetdev, "allocating device name failed.\n");
+> 		return NULL;
+> 	}
+
+I know only root can set module parameters, but having one
+that contains a string used as a printf format seems
+dangerous at best.
+
+Isn't it best to let userspace rename the interfaces later on?
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
