@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8653CEAD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 20:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85593CE9B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355747AbhGSRUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:20:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43674 "EHLO mail.kernel.org"
+        id S1358356AbhGSRAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 13:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348353AbhGSPmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:42:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA55B61404;
-        Mon, 19 Jul 2021 16:21:56 +0000 (UTC)
+        id S239463AbhGSPeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:34:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E59A613D4;
+        Mon, 19 Jul 2021 16:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711717;
-        bh=HhGH2nShtf085j9Q6EdZ9DG6ZWL1jEl8tbmBg7X1qpk=;
+        s=korg; t=1626711087;
+        bh=5kAhOn2eRTsba3I5fnZ22AzHtv6emCoac4CtMYcaWvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tUyU5l2+QVzLZnRajUk6ixYHZoBrkuyRmtGDgutTQ5Vhn/WRUJL3A9/QEyilSYDM0
-         LFLiBym0xZsrnMjhRrAm4Ciu5b6Ld/q73fSQZL2yoh0SthYW85xv3AjURKrlqt40jj
-         rZ288awys396GeqIbbLt3AFbH82H7uOuwE4pohQE=
+        b=scc3NDeFzPBRSQRH3ZkO01K+KvozXfqR1myl2CnJk2XmZIXI1PmBLHOiu6mdoAkmB
+         RUcdyi+kCEKnK5fFhbpWo4WrEsf0xcQLS34U+GgDFvjA2clRegEls1o0Y0vbsSxF95
+         BnliyA6FH2EaxOH7blMtF3/sz75xCRbZoEuRT60g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kris Pan <kris.pan@intel.com>,
+        Shruthi Sanil <shruthi.sanil@intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 106/292] s390/processor: always inline stap() and __load_psw_mask()
+Subject: [PATCH 5.13 222/351] watchdog: keembay: Update pretimeout to zero in the TH ISR
 Date:   Mon, 19 Jul 2021 16:52:48 +0200
-Message-Id: <20210719144945.983944477@linuxfoundation.org>
+Message-Id: <20210719144952.298755584@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144942.514164272@linuxfoundation.org>
-References: <20210719144942.514164272@linuxfoundation.org>
+In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
+References: <20210719144944.537151528@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Shruthi Sanil <shruthi.sanil@intel.com>
 
-[ Upstream commit 9c9a915afd90f7534c16a71d1cd44b58596fddf3 ]
+[ Upstream commit 75f6c56dfeec92c53e09a72896547888ac9a27d7 ]
 
-s390 is the only architecture which makes use of the __no_kasan_or_inline
-attribute for two functions. Given that both stap() and __load_psw_mask()
-are very small functions they can and should be always inlined anyway.
+The pretimeout has to be updated to zero during the ISR of the
+ThresHold interrupt. Else the TH interrupt would be triggerred for
+every tick until the timeout.
 
-Therefore get rid of __no_kasan_or_inline and always inline these
-functions.
-
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Fixes: fa0f8d51e90d ("watchdog: Add watchdog driver for Intel Keembay Soc")
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Kris Pan <kris.pan@intel.com>
+Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
+Link: https://lore.kernel.org/r/20210517174953.19404-4-shruthi.sanil@intel.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/processor.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/watchdog/keembay_wdt.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/s390/include/asm/processor.h b/arch/s390/include/asm/processor.h
-index 023a15dc25a3..dbd380d81133 100644
---- a/arch/s390/include/asm/processor.h
-+++ b/arch/s390/include/asm/processor.h
-@@ -207,7 +207,7 @@ static __always_inline unsigned long current_stack_pointer(void)
- 	return sp;
- }
+diff --git a/drivers/watchdog/keembay_wdt.c b/drivers/watchdog/keembay_wdt.c
+index b2afeb4a60e3..6053416b8d3d 100644
+--- a/drivers/watchdog/keembay_wdt.c
++++ b/drivers/watchdog/keembay_wdt.c
+@@ -154,6 +154,8 @@ static irqreturn_t keembay_wdt_th_isr(int irq, void *dev_id)
+ 	struct keembay_wdt *wdt = dev_id;
+ 	struct arm_smccc_res res;
  
--static __no_kasan_or_inline unsigned short stap(void)
-+static __always_inline unsigned short stap(void)
- {
- 	unsigned short cpu_address;
- 
-@@ -246,7 +246,7 @@ static inline void __load_psw(psw_t psw)
-  * Set PSW mask to specified value, while leaving the
-  * PSW addr pointing to the next instruction.
-  */
--static __no_kasan_or_inline void __load_psw_mask(unsigned long mask)
-+static __always_inline void __load_psw_mask(unsigned long mask)
- {
- 	unsigned long addr;
- 	psw_t psw;
++	keembay_wdt_set_pretimeout(&wdt->wdd, 0x0);
++
+ 	arm_smccc_smc(WDT_ISR_CLEAR, WDT_ISR_MASK, 0, 0, 0, 0, 0, 0, &res);
+ 	dev_crit(wdt->wdd.parent, "Intel Keem Bay non-sec wdt pre-timeout.\n");
+ 	watchdog_notify_pretimeout(&wdt->wdd);
 -- 
 2.30.2
 
