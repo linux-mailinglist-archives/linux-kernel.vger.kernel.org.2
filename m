@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670B03CE9CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE203CE939
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 19:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359497AbhGSRBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 13:01:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
+        id S1357491AbhGSQvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 12:51:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348258AbhGSPfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:35:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FEC061581;
-        Mon, 19 Jul 2021 16:13:34 +0000 (UTC)
+        id S1348021AbhGSPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Jul 2021 11:24:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91018613D4;
+        Mon, 19 Jul 2021 16:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626711215;
-        bh=OwA5QZYq2jFhyFahTJ1Ej3yiVjxkMNWVrLHImZjzpBY=;
+        s=korg; t=1626710447;
+        bh=dQ6jBxel0zs8R32fG0TfjmV0geTMvOiuEXZIOSy8qzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PbsAen2UMrdfTVxGzKv67mfKFzJSJaF4Qf1YORxOTFb1AiG6/vA4IQklvdeSSXT1S
-         OdCsrDWpRqqGre3ER7+wSGP134bc7Gyl8F/F38ssMblzhstA1OzYfVpU+v9J56jfMi
-         z9QRmeLKD7DNFIBx3PIsYOPcfpS15LY2YYFAybBo=
+        b=fAZqAprbkCwla8KQLeLU5JNDWRlD19dDzJz+d/9NKL3BitDjjP1sHISMN7Kxspmrd
+         +GmlUzvX/63Pecj2z0fx4EhxW6V3if5LRar+IXLJQH3WYxb/FrY75131fO4zC50/+v
+         Ta3e0iSpImoznqkkiv4yOxMntl+L1iyteFf0q9mA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brian Cain <bcain@codeaurora.org>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Glitta <glittao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 269/351] hexagon: use common DISCARDS macro
+Subject: [PATCH 5.10 186/243] ARM: dts: gemini-rut1xx: remove duplicate ethernet node
 Date:   Mon, 19 Jul 2021 16:53:35 +0200
-Message-Id: <20210719144953.842059847@linuxfoundation.org>
+Message-Id: <20210719144946.926265662@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144944.537151528@linuxfoundation.org>
-References: <20210719144944.537151528@linuxfoundation.org>
+In-Reply-To: <20210719144940.904087935@linuxfoundation.org>
+References: <20210719144940.904087935@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,61 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit 681ba73c72302214686401e707e2087ed11a6556 ]
+[ Upstream commit 3d3bb3d27cd371d3edb43eeb1beb8ae4e92a356d ]
 
-ld.lld warns that the '.modinfo' section is not currently handled:
+Two ethernet node was added by
+commit 95220046a62c ("ARM: dts: Add ethernet to a bunch of platforms")
+and commit d6d0cef55e5b ("ARM: dts: Add the FOTG210 USB host to Gemini boards")
 
-ld.lld: warning: kernel/built-in.a(workqueue.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(printk/printk.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(irq/spurious.o):(.modinfo) is being placed in '.modinfo'
-ld.lld: warning: kernel/built-in.a(rcu/update.o):(.modinfo) is being placed in '.modinfo'
+This patch removes the duplicate one.
 
-The '.modinfo' section was added in commit 898490c010b5 ("moduleparam:
-Save information about built-in modules in separate file") to the DISCARDS
-macro but Hexagon has never used that macro.  The unification of DISCARDS
-happened in commit 023bf6f1b8bf ("linker script: unify usage of discard
-definition") in 2009, prior to Hexagon being added in 2011.
-
-Switch Hexagon over to the DISCARDS macro so that anything that is
-expected to be discarded gets discarded.
-
-Link: https://lkml.kernel.org/r/20210521011239.1332345-3-nathan@kernel.org
-Fixes: e95bf452a9e2 ("Hexagon: Add configuration and makefiles for the Hexagon architecture.")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Brian Cain <bcain@codeaurora.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Oliver Glitta <glittao@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: d6d0cef55e5b ("ARM: dts: Add the FOTG210 USB host to Gemini boards")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/hexagon/kernel/vmlinux.lds.S | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ arch/arm/boot/dts/gemini-rut1xx.dts | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/arch/hexagon/kernel/vmlinux.lds.S b/arch/hexagon/kernel/vmlinux.lds.S
-index 20f19539c5fc..57465bff1fe4 100644
---- a/arch/hexagon/kernel/vmlinux.lds.S
-+++ b/arch/hexagon/kernel/vmlinux.lds.S
-@@ -61,14 +61,9 @@ SECTIONS
+diff --git a/arch/arm/boot/dts/gemini-rut1xx.dts b/arch/arm/boot/dts/gemini-rut1xx.dts
+index 9611ddf06792..08091d2a64e1 100644
+--- a/arch/arm/boot/dts/gemini-rut1xx.dts
++++ b/arch/arm/boot/dts/gemini-rut1xx.dts
+@@ -125,18 +125,6 @@
+ 			};
+ 		};
  
- 	_end = .;
- 
--	/DISCARD/ : {
--		EXIT_TEXT
--		EXIT_DATA
--		EXIT_CALL
--	}
+-		ethernet@60000000 {
+-			status = "okay";
 -
- 	STABS_DEBUG
- 	DWARF_DEBUG
- 	ELF_DETAILS
- 
-+	DISCARDS
- }
+-			ethernet-port@0 {
+-				phy-mode = "rgmii";
+-				phy-handle = <&phy0>;
+-			};
+-			ethernet-port@1 {
+-				/* Not used in this platform */
+-			};
+-		};
+-
+ 		usb@68000000 {
+ 			status = "okay";
+ 		};
 -- 
 2.30.2
 
