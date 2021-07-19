@@ -2,110 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A8B3CDEA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F86F3CDF5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Jul 2021 17:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345617AbhGSPEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Jul 2021 11:04:46 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:60944 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343717AbhGSOmw (ORCPT
+        id S1346019AbhGSPJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Jul 2021 11:09:58 -0400
+Received: from mail-il1-f175.google.com ([209.85.166.175]:41840 "EHLO
+        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237535AbhGSOnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:42:52 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16JFNRrj095302;
-        Mon, 19 Jul 2021 10:23:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1626708207;
-        bh=+lxuCFG7CjSWwyH88HP6Xk82R9fNuIwH8NsBGZrwyAY=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=HOSw8CRzAkxyPC4CGVTqX9eCRIovDPwQYAA8eNewjIhMKkp4ql484xvKNSRG00SyY
-         zLE3uckzk54wOubU5oYfsr3LtVShP36MHCm5nBi2r5lOT7GV32zE0ksEKdHeIvc2Dw
-         3jyW5q4gkSbt348aPyl2EgiKYXNyVBVEhEav9DFk=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16JFNRC1116311
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Jul 2021 10:23:27 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
- Jul 2021 10:23:27 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 19 Jul 2021 10:23:27 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16JFNQk0032744;
-        Mon, 19 Jul 2021 10:23:26 -0500
-Date:   Mon, 19 Jul 2021 10:23:26 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Lokesh Vutla <lokeshvutla@ti.com>
-CC:     <kristo@kernel.org>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] arm64: dts: ti: k3-am642-sk: Add ecap0 node
-Message-ID: <20210719152326.op7ii76nvk5sve2a@fringe>
-References: <20210719085402.28569-1-lokeshvutla@ti.com>
- <20210719085402.28569-4-lokeshvutla@ti.com>
+        Mon, 19 Jul 2021 10:43:37 -0400
+Received: by mail-il1-f175.google.com with SMTP id p3so16305139ilg.8;
+        Mon, 19 Jul 2021 08:24:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vzERivZqSSJFIGeAmgTC/Nw6CzI7ObBqzkfLEHhPO/w=;
+        b=R2idV5CPpdq41/jv8XCr25KVn6FDSxXoiutD3JoYNgI78dBqAPrsDURWDImKDTBZBs
+         YbB75ZIs4bLDthDqyCWZiuDzr3YgBhlrAjaOTHRERv0K1pBcmwoNbsHkvTAcc05H1gS1
+         e6hwU/Khd9/8ol9sbKQt7GGLi39cQEV6V0cSUKAYvKKCJ3QLV7T6J0k1Q9rN7iwNPyaM
+         rBLWYAZ2JC+vjC9HuzVIxmyv3QlWv9f4fFFrAK+useu+PSW9AheGG3yKfbrg35VaR9vi
+         5zmxhQ/nsSI70tQlFL/GxuSIVaMam4MBTclHAvpTEz9DC7CQ81oU3t77nUBm98qUJPtU
+         22Bw==
+X-Gm-Message-State: AOAM532SDF+WKSWg1QLC8Uqt9p2c6DHcWTedT0k5V8QAgz4VGmauGJ3v
+        W45exn2wwKaBY6TKeEzAaw==
+X-Google-Smtp-Source: ABdhPJyri+TXCyr4MCEpKVVzSSJx361AXYHcpD9imtD5zPDRk+xQaRGiGAFQK3C6ytmqRK551Sb+Kg==
+X-Received: by 2002:a92:d251:: with SMTP id v17mr16834647ilg.283.1626708256258;
+        Mon, 19 Jul 2021 08:24:16 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id u10sm5867563iop.15.2021.07.19.08.24.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 08:24:15 -0700 (PDT)
+Received: (nullmailer pid 1961107 invoked by uid 1000);
+        Mon, 19 Jul 2021 15:24:13 -0000
+Date:   Mon, 19 Jul 2021 09:24:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pratyush Yadav <p.yadav@ti.com>,
+        Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH] dt-bindings: mtd: spi-nand: Convert to DT schema format
+Message-ID: <20210719152413.GA1953551@robh.at.kernel.org>
+References: <20210718004125.733-1-a-nandan@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210719085402.28569-4-lokeshvutla@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210718004125.733-1-a-nandan@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14:24-20210719, Lokesh Vutla wrote:
-> ecap0 can be configured to use pad ECAP0_IN_APWM_OUT (D18) which has a
-> signal connected to Pin 1 of J3. Add support for adding this pinmux so
-> that pwm can be observed on pin 1 of Header J3
+On Sun, Jul 18, 2021 at 12:41:25AM +0000, Apurva Nandan wrote:
+> Convert spi-nand.txt binding to YAML format with an added example.
 > 
-> Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 > ---
->  arch/arm64/boot/dts/ti/k3-am642-sk.dts | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
+>  .../devicetree/bindings/mtd/spi-nand.yaml     | 74 +++++++++++++++++++
+>  2 files changed, 74 insertions(+), 5 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> index d3aa2901e6fd..eb0d10e6e787 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-> @@ -210,6 +210,12 @@ AM64X_IOPAD(0x0028, PIN_INPUT, 0) /* (M17) OSPI0_D7 */
->  			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
->  		>;
->  	};
+> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+> deleted file mode 100644
+> index 8b51f3b6d55c..000000000000
+> --- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
+> +++ /dev/null
+> @@ -1,5 +0,0 @@
+> -SPI NAND flash
+> -
+> -Required properties:
+> -- compatible: should be "spi-nand"
+> -- reg: should encode the chip-select line used to access the NAND chip
+> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> new file mode 100644
+> index 000000000000..366b86e1b19c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	main_ecap0_pins_default: main-ecap0-pins-default {
-> +		pinctrl-single,pins = <
-> +			AM64X_IOPAD(0x0270, PIN_INPUT, 0) /* (D18) ECAP0_IN_APWM_OUT */
-> +		>;
-> +	};
->  };
->  
->  &mcu_uart0 {
-> @@ -453,3 +459,9 @@ &pcie0_rc {
->  &pcie0_ep {
->  	status = "disabled";
->  };
+> +title: SPI NAND flash
 > +
-> +&ecap0 {
-> +	/* PWM is available on Pin 1 of header J3 */
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&main_ecap0_pins_default>;
-> +};
+> +maintainers:
+> +  - Apurva Nandan <a-nandan@ti.com>
+> +
+> +allOf:
+> +  - $ref: "mtd.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: spi-nand
+
+Drop 'oneOf' as there is only one.
+
+> +
+> +  reg:
+> +    items:
+> +      description:
+> +        should encode the chip-select line used to access the NAND chip
+
+Just:
+
+reg:
+  maxItems: 1
+
+> +
+> +  spi-max-frequency: true
+> +  spi-rx-bus-width: true
+> +  spi-tx-bus-width: true
+> +
+> +  partitions:
+> +    type: object
+> +
+> +  '#address-cells': true
+> +  '#size-cells': true
+> +
+> +patternProperties:
+> +  # Note: use 'partitions' node for new users
+> +  '^partition@':
+> +    type: object
+> +
+> +  "^otp(-[0-9]+)?$":
+> +    type: object
+> +
+> +additionalProperties: false
+
+Just do:
+
+additionalProperties:
+  type: object
+
+and then drop partitions, partition@, and ^otp(-[0-9]+)?$.
+
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        flash@6 {
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +            compatible = "spi-nand";
+> +            reg = <0x6>;
+> +            spi-max-frequency = <42000000>;
+> +
+> +            partitions {
+> +                compatible = "fixed-partitions";
+> +                #address-cells = <1>;
+> +                #size-cells = <1>;
+> +
+> +                partition@0 {
+> +                    label = "boot";
+> +                    reg = <0 0x200000>;
+> +                };
+> +
+> +                partition@200000 {
+> +                    label = "rootfs";
+> +                    reg = <0x200000 0xce0000>;
+> +                };
+> +            };
+> +        };
+> +    };
 > -- 
-> 2.30.0
+> 2.17.1
 > 
-
-
-Do the other ecap and pwm nodes need to be disabled since they may not
-be pinned out?
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> 
